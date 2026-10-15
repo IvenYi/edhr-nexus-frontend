@@ -1,0 +1,12 @@
+{
+  "candidateCommit": "1dac6338c24efb2330fe8702ed018e55a8947711",
+  "targetCommit": "e9c00df8c85b021e7bf206e575a5a726cd46c12b",
+  "protectedFilesSha256": {
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java": "14299f1a1221b113fe820064dc587ada486533b6f633342a94ba9583daa2028f",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderCloseAtomicityTest.java": "c76a9587cc4f8c0e2dab93aeb88f858986d8cf1d80d6d1c2ad044d8b3d55c26e",
+    "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml": "91e56a9f7c80b5334fd85b020522bc03f7dc8aa8ef98e31d2c9a637ac3d484b1",
+    "docs/knowledge/evidence/production.yaml": "877e32bd7b65a29f942c4185b0040ca9be462ca7d84b08abd4e8fb7411fac56f",
+    "scripts/build-branch-review-inventory.py": "f77668cbf93108bd9bef10a83f07e6ba8de0433e9fee75448b3dc4934221b9df"
+  },
+  "reason": "Final quality runs on this candidate. Later report-only commits must not change these bytes."
+}

@@ -1,0 +1,217 @@
+qualityResult:
+  result: passed
+  baseCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+  headCommit: 1dac6338c24efb2330fe8702ed018e55a8947711
+  contractBaseline:
+    sourceCommit: 1dac6338c24efb2330fe8702ed018e55a8947711
+    targetBranch: edhr-dev
+    targetCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    contractReadCommit: 1dac6338c24efb2330fe8702ed018e55a8947711
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.independent-baseline-and-contracts
+      required: true
+      category: documentation
+      description: 实际未参与任何修复的全新实例独立核对实时目标、候选、工作树和角色契约。
+      method: command
+      command: git status --porcelain; git rev-parse HEAD; git ls-remote origin refs/heads/edhr-dev; git merge-base --is-ancestor e9c00df8 HEAD
+      outcome: passed
+      evidence:
+        - 实测目标base为e9c00df8c85b021e7bf206e575a5a726cd46c12b，功能head及被测试的已集成候选均为1dac6338c24efb2330fe8702ed018e55a8947711；目标是候选祖先，末次远端读取仍为e9c00df8。
+        - 初始及最终git status --porcelain均为空；本实例未修改产品、测试、知识或仓库台账，只在/tmp/edhr-audit-final-recheck写报告和运行本地检查。
+        - 从候选实际读取AGENTS、codeplzreadme、统一交接契约、quality-verifier；四份文件与实时目标逐字节一致，SHA256记于inventory-knowledge-check.json。
+        - 本实例没有参与首轮或随后修复，没有执行Actions、merge、部署或原PostgreSQL/历史数据操作。
+        - /tmp/edhr-audit-final-recheck/inventory-knowledge-check.json
+        - /tmp/edhr-audit-final-recheck/source-evidence-check.json
+    - id: check.authorized-first-tranche-scope
+      required: true
+      category: requirements
+      description: 核对实际完成用户指定第一轮内容，按L2验收已确定缺陷而保留全分支后续工作。
+      method: inspection
+      command: 阅读decision-package.yaml、README、NEXT、validation、findings及本体结果，并与实际diff和用户授权核对。
+      outcome: passed
+      evidence:
+        - 首批实际包含实时基线、全文件覆盖盘点、历史去重、首条DHR创建/冻结/历史读取源码映射、一个既有缺陷及其独立发现的并发回归整改。
+        - 明确整体W1至W7仍in-progress/pending；没有把盘点、33项静态映射或本批passed写成全分支审完、可发布或可自动merge。
+        - PR5/PR6保持已合并的历史，不重新收尾；未更改业务政策、数量下限、既有权限或状态机，未恢复历史数据。
+        - L2影响分析包含事务、审计、权限、邻接并发、兼容/回滚及未运行范围；采用现有transaction-orchestration边界，没有大模块改写。
+    - id: check.fixed-tree-inventory-reproducibility
+      required: true
+      category: documentation
+      description: 独立重建固定目标的完整路径清单并校对入口候选和迁移文件。
+      method: command
+      command: python3 scripts/build-branch-review-inventory.py --ref e9c00df8c85b021e7bf206e575a5a726cd46c12b --out /tmp/edhr-audit-final-recheck/inventory
+      outcome: passed
+      evidence:
+        - coverage.csv、entrypoints.csv、migrations.csv、inventory-summary.json四个再生产物与仓库对应文件逐字节相同。
+        - 独立git ls-tree集合比较为1423个目标路径，全部in_scope，无排除，13个二进制保留；文件清单全部inventory-only/pending，未冒充语义已审。
+        - 独立逐行核对437个HTTP注解、191个前端路由候选、1个后台候选和8个状态定义候选，与目标源代码位置和文本匹配；不等同于已解析URL或已运行的接口数。
+        - 124个迁移目录文件与目标路径集合完全一致，仍是清单而非已执行changeset。
+        - 候选实际1468个跟踪路径；1423是固定目标分母，新增审查交付资产及测试没有被倒填进旧分母，候选差异另行审查。
+        - /tmp/edhr-audit-final-recheck/inventory-knowledge-check.json
+    - id: check.knowledge-denominator-and-qualified-semantic-coverage
+      required: true
+      category: ontology
+      description: 按schema集合映射独立提取知识定义，并核对本批语义结论未伪造全量通过。
+      method: command
+      command: Python/PyYAML读取git固定树，按schema.collectionTypes及nestedCollectionTypes递归提取并比较知识台账、语义记录和候选增量。
+      outcome: passed
+      evidence:
+        - 252份起点知识文件、2485个唯一声明ID；候选为2486，仅新增evidence.work-order-close-audit-atomicity-test，无ID删除。
+        - 2485份原始记录的内容、来源路径及JSON定位与固定目标逐项一致；33项外置语义记录与主清单状态/结论逐项对齐。
+        - 33项实际静态核对为28 consistent、1局部superseded、4 evidence-gap，剩余2452 pending；28不是运行验收数量。
+        - 语义输入保留真实537bb240来源；相应知识blob与e9c00df8一致后承接，没有把旧提交报告改写成新运行证据。
+        - 四个evidence-gap继续保留，旧implemented/reviewed及历史成熟度未自动计作本轮一致。
+        - /tmp/edhr-audit-final-recheck/inventory-knowledge-check.json
+    - id: check.history-dedup-and-concrete-refactoring-plans
+      required: true
+      category: documentation
+      description: 独立核对历史主记录去重、结构线索分列及七项拆分方案的具体程度。
+      method: inspection
+      command: 阅读history/history-dedup.json和.md、structure/refactor-plan.md、source-review.json，并核对候选源文件、导入和函数边界。
+      outcome: passed
+      evidence:
+        - 历史为21个唯一masterId：10 known-fixed、10 confirmed-current静态观察、1当时pending；另6个结构线索均非功能发现。
+        - 主侧对关闭原子性及新增独立发现的整改叠加于findings，不覆写原历史分母或把全部静态观察宣布为新业务缺陷；F004仍待完整链核对。
+        - 七项方案给出具体提取文件/API、状态所有权、事务或撤销不变量、回归矩阵、实施顺序和回滚方式，均明确尚未实施。
+        - 抽核共享renderer依赖、store与registry的value循环、type-only返回边及七个源文件行数；相关537bb240源字节在当前候选未变，没有将类型循环伪报为运行故障。
+        - /tmp/edhr-audit-final-recheck/source-evidence-check.json
+    - id: check.dhr-first-chain-original-source-mapping
+      required: true
+      category: audit
+      description: 亲读关键方法及原始规则，独立复核创建、定义冻结、当前记录与历史版本的真实调用和存储边界。
+      method: inspection
+      command: 阅读ProductionExecutionController/Service、ExecutionSnapshotBuilder、DhrInstanceService、FormInstanceRecordService、DhrSummaryController/Service、DhrFrozenEvidenceIntegrity、0089及相关DHR决策/规则和测试断言。
+      outcome: passed
+      evidence:
+        - act先锁工单再锁对象，校验revision/操作者和状态；首次合法START才build执行定义并同事务创建DHR、开工、保存execution及动作审计。BATCH/SN及租户/生产对象唯一约束有实际定义。
+        - createAtFirstStart存context_snapshot和独立directory_snapshot；目录引用明确版本及字符串ID，后续detail从持久化目录和实际form_instance_record读取，没有重建当前模板覆盖旧定义。
+        - saved保留copyId/instanceNo及首次所用定义，更新最新已保存值/状态；保存刷新过程索引，COMPLETED才调用正式投影，索引、投影、DHR证据与审计未混成同一记录。
+        - detail是当前工作视图，包含未映射及不同来源的实际记录；submit重取完整候选和附件、比较scopeHash、核对完成条件及人工确认，冻结base/overlay/candidates/attachments/check/reviewBinding和源快照/hash。
+        - version按tenant+dhrId+versionId读取冻结字段并校验evidence与整体摘要，使用header而非live detail；历史正文不注入当前表单值，生命周期/审批结果等当前元数据另列。
+        - 本实例另亲读DhrSummaryPersistenceTest中历史值隔离、完整集合、人工核查、审计失败回滚断言，且本轮实际运行该24例；ProductionExecutionIntegrationTest的首次START/唯一性/回滚断言只阅读，未把它们称为本轮运行通过。
+        - 首次START与管理员改配置并发、终止/补录/审批签署、修订、ZIP/离线打印及完整HTTP/浏览器链仍待后续；未证实本批已读子链的新实现偏差，不等于这些未审范围通过。
+        - /tmp/edhr-audit-final-recheck/source-evidence-check.json
+    - id: check.close-transaction-lock-order-and-regression-strength
+      required: true
+      category: integration
+      description: 独立核对关闭修复及真实JPA五例能覆盖原子性和此前遗漏的陈旧实体并发路径。
+      method: inspection
+      command: 审查WorkOrderController.close、ProductionService.closeOrder、WorkOrderRepository及完整WorkOrderCloseAtomicityTest，并核对旧failed与红绿索引。
+      outcome: passed
+      evidence:
+        - close外层为真实Spring REQUIRED事务，第一条工单读取即调用已有PESSIMISTIC_WRITE仓储方法，持锁后构造before；服务仍检查COMPLETED并执行既有CLOSED状态边。
+        - 用例使用实际WorkOrder映射、Spring Data JPA Repository、Hibernate和JpaTransactionManager/private H2，Controller/Service/StateMachine实际；其余仓储为替身，audit替身向同事务连接写实际SQL，没有测试外层事务遮盖提交。
+        - 五例覆盖审计保存失败、序列化失败、正常提交准确前后状态/操作者/动作、非法状态零写入及双线程关闭一次成功一次业务拒绝且一条准确审计。
+        - 并发例保留对第二请求明确BusinessException消息的断言，不把锁异常当pass；私有H2十秒锁等待与两秒受控暂停只影响测试，生产锁参数未改。
+        - 本轮日志实际显示竞争线程在首请求释放前发出for update，约两秒后继续锁查询并按CLOSED拒绝；数据库最终仅一条COMPLETED到CLOSED审计。
+        - /tmp/edhr-audit-final-recheck/concurrency-lock-evidence.log
+    - id: check.backend-independent-regression
+      required: true
+      category: regression
+      description: 本实例在固定干净候选实际串行运行关闭五例与相邻生产/DHR回归。
+      method: automated-test
+      command: cd gmp-platform/backend && bash /tmp/pr6-mvn -Dexec.skip=true -Dtest=WorkOrderCloseAtomicityTest,WorkOrderControllerTest,ProductionServiceTest,DhrSummaryPersistenceTest,DhrInstanceLookupTest,DhrReviewLifecycleIntegrationTest test
+      outcome: passed
+      evidence:
+        - base e9c00df8c85b021e7bf206e575a5a726cd46c12b；feature head及tested integration candidate均为1dac6338c24efb2330fe8702ed018e55a8947711，源码/测试/知识无未提交变动。
+        - 56 tests / 0 failures / 0 errors / 0 skipped，退出0，BUILD SUCCESS，2026-10-15T14:38:00Z结束。
+        - 分项为WorkOrderCloseAtomicityTest 5、WorkOrderControllerTest 3、ProductionServiceTest 17、DhrSummaryPersistenceTest 24、DhrInstanceLookupTest 2、DhrReviewLifecycleIntegrationTest 5。
+        - exec.skip只跳过本组后端测试不消费的打印前端生成，不跳过测试；本结果不是完整打包、打印或前端构建验收。
+        - /tmp/edhr-audit-final-recheck/backend.log
+        - /tmp/edhr-audit-final-recheck/backend.exit
+        - /tmp/edhr-audit-final-recheck/backend-case-index.json
+    - id: check.knowledge-formal-independent-validation
+      required: true
+      category: ontology
+      description: 本实例实际执行正式Maven知识schema/ID/引用/投影校验。
+      method: automated-test
+      command: bash /tmp/pr6-mvn -B -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - 在后端回归结束后串行运行；实际候选仍为1dac6338c24efb2330fe8702ed018e55a8947711。
+        - BusinessKnowledgeModelTest 89 tests / 0 failures / 0 errors / 0 skipped，退出0，BUILD SUCCESS，2026-10-15T14:38:53Z结束。
+        - 独立审查知识diff只调整既有关闭差异的处置/证据并新增限定范围test evidence；DEC0015原决策声明、业务规则、历史来源和成熟度均保留，没有伪提升verified/runtime。
+        - /tmp/edhr-audit-final-recheck/knowledge.log
+        - /tmp/edhr-audit-final-recheck/knowledge.exit
+        - /tmp/edhr-audit-final-recheck/knowledge-case-index.json
+    - id: check.first-failure-preservation-and-change-boundaries
+      required: true
+      category: documentation
+      description: 首轮独立failed原样保留，且最终diff没有夹带业务政策、UI、迁移或历史数据变更。
+      method: command
+      command: 比较evidence/independent-first-failed与首实例/tmp原件字节；git diff e9c00df8 HEAD并核对当前源码和知识摘要。
+      outcome: passed
+      evidence:
+        - 首个quality-result.yaml仍为failed且QF-W1-001为open；报告、探针源码、两份case-index及摘要清单均与首实例原件逐字节相同，没有将旧结果覆盖成passed。
+        - 业务生产差异仅WorkOrderController.close的事务和先锁读取；新增/升级聚焦回归及本体证据对应实际缺陷，未改生产Service规则、权限表达式、状态机、数量规则、UI或SQL迁移。
+        - 当前原子性和并发high均由本全新未参与修复实例在实际候选重新核对，运行证据与历史55例、五例红轮及原failed分别记录，未相加虚增覆盖。
+        - /tmp/edhr-audit-final-recheck/source-evidence-check.json
+  findings:
+    - id: AUDIT-W1-001
+      severity: high
+      scope: work-order-close-audit-atomicity
+      summary: 原close服务已提交状态而控制器审计随后失败，产生CLOSED但缺失审计的部分结果；当前候选已修复并由本实例独立复核。
+      reproductionSteps:
+        - 原始537bb240生产代码关闭一个COMPLETED工单。
+        - 在随后审计保存或JSON快照序列化阶段注入异常，原红轮记录为4项中2项失败。
+        - 读取实际数据库状态及审计行；在本候选五例中重新执行相同异常路径。
+      expectedResult: 失败关闭保留COMPLETED且无审计行，成功关闭的状态与准确前后审计共同提交。
+      actualResult: 原始红轮保留CLOSED而无审计；当前候选实际回归两种失败均回滚，成功及非法状态路径也通过。
+      evidence:
+        - docs/development/branch-review-20261015/evidence/close-red-case-index.json
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java:112
+        - /tmp/edhr-audit-final-recheck/backend-case-index.json
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: 292dd8989f4a13860b115d4171d5832022495204
+        - type: commit
+          reference: 4e7fd37500157b4fd055e8a54fe8105f1bf03ae2
+        - type: command
+          reference: /tmp/edhr-audit-final-recheck/backend.log
+    - id: QF-W1-001
+      severity: high
+      scope: work-order-close-jpa-concurrency
+      summary: 首次外层事务补丁先普通读before再加锁，JPA复用陈旧受管实体允许并发重复关闭和双审计；当前先锁再读修复已由本全新实例独立回归。
+      reproductionSteps:
+        - 首实例在fbbf6318以真实JPA重现A普通读取COMPLETED后暂停。
+        - B关闭提交CLOSED，A恢复并通过行锁查询复用一级缓存旧COMPLETED，原结果为两次成功和两条审计。
+        - 当前五例在材料快照处启动第二线程竞争同一工单，并以真实Spring事务/JPA/SQL验证最终结果。
+      expectedResult: 同一工单关闭请求串行核对当前状态，仅一次成功且仅一条准确COMPLETED到CLOSED审计，另一请求按业务状态拒绝。
+      actualResult: 原独立failed及主侧五例红轮保留；当前独立运行第二请求明确业务拒绝，数据库为CLOSED且只有一条准确审计，五例全部通过。
+      evidence:
+        - docs/development/branch-review-20261015/evidence/independent-first-failed/quality-result.yaml
+        - docs/development/branch-review-20261015/evidence/close-jpa-red-case-index.json
+        - /tmp/edhr-audit-final-recheck/concurrency-lock-evidence.log
+        - /tmp/edhr-audit-final-recheck/backend-case-index.json
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: 4e7fd37500157b4fd055e8a54fe8105f1bf03ae2
+        - type: command
+          reference: /tmp/edhr-audit-final-recheck/backend.log
+  residualRisks:
+    - id: risk.full-branch-audit-in-progress
+      description: 本结果只裁定用户指定首批W0和第一条W1映射及已整改关闭缺陷；W1剩余路径、W2至W7和2452个待审知识ID没有完成。
+      impact: 不可用本批passed证明全分支无缺陷、全量语义一致、可发布或可自动merge。
+      mitigation: 按NEXT持续刷新edhr-dev并分批核对规则/触发/反证和源码，保留各批真实基线、覆盖状态及新实例验收。
+    - id: risk.runtime-and-persistence-coverage
+      description: 关闭五例使用真实WorkOrder JPA/Hibernate/private H2，其他仓储及AuditEventRepository为替身；审计替身写同事务实际SQL。未运行HTTP、真实AuditEvent JPA、PostgreSQL、完整DHR或浏览器/视觉、打印/ZIP、升级迁移及除双关闭外的并发/压力矩阵。
+      impact: 已通过的聚焦回归不能外推这些未运行范围，H2不等同于PostgreSQL全部锁和隔离行为。
+      mitigation: 在后续对应工作包补充真实运行矩阵；若再改持久化映射、锁顺序或事务配置，重新执行相应数据库与接口检查。
+    - id: risk.neighboring-commands-and-history-leads
+      description: cancel/edit及首次START配置竞争等邻接路径未由本批关闭五例覆盖；F004、10个历史静态观察及4个evidence-gap仍待主审逐项定案。
+      impact: 邻接路径或后续域仍可能存在独立缺陷；静态观察不能直接视为已确认业务问题，也不能被本批结果自动关闭。
+      mitigation: 按NEXT继续原始规则和调用链复核，有明确缺陷直接小批整改；只有真实业务歧义提交用户判断，不擅改政策。
+    - id: risk.remote-enforcement-not-verified
+      description: 本批未查询或触发GitHub Actions，也未核验远端required checks、ruleset或分支保护。
+      impact: 本地独立passed不是远端强制门禁或merge授权证明。
+      mitigation: 遵守用户不merge/部署及本次Actions边界，后续集成前刷新目标并在授权范围内核对适用远端状态。
+  blockingConditions: []

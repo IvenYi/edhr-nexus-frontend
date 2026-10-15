@@ -32,4 +32,6 @@
 
 首轮 4 例中 2 例失败，修复后 55 例通过仍未覆盖 JPA 缓存并发。最终回归升级为真实 WorkOrder 实体、Spring Data JPA 仓储、Hibernate/JpaTransactionManager/H2，并增加双请求用例；其余仓储仍为替身，审计写实际同事务 SQL。完整红绿和适用范围见 [validation.md](validation.md)。本批独立质量结果另存 `quality-result.yaml`，该结果只裁定本批交付，不是 W1–W7 完成或全分支可发布的证明。
 
+全新最终独立质量结果为 [passed](quality-result.yaml)，实际干净候选 `1dac6338c24efb2330fe8702ed018e55a8947711`，10 项适用检查通过，独立后端 56/56、知识 89/89，两个 high 均 resolved，本批 blockingConditions 为空。报告及用例索引原样保留；随后只增加报告和交付台账，不改变受测代码、测试、知识或工具字节，核对清单见 evidence/final-independent/candidate-protected-manifest.json。
+
 下一步按 [NEXT.md](NEXT.md) 连续推进。全量审查继续进行，目前没有需要用户新增决定的业务问题；已存 open questions 不用重复询问，也不会擅自补政策。

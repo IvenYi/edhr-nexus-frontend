@@ -53,4 +53,10 @@ bash /tmp/pr6-mvn -Dexec.skip=true -Dtest=WorkOrderCloseAtomicityTest,WorkOrderC
 
 云环境已有 Node/npm、Playwright Chromium、中文字体与 loopback PostgreSQL，可支持后续真实浏览器/视觉检查。本批没有把旧 PR 运行进程当成新 HEAD 服务，也未连接/改动用户 macOS 的原模拟库或上传目录。新上游 startup-commands 的 `/Users/...`、macOS JDK 和端口是其机器的记录，不是这台 Linux 的实测。浏览器联调按仓库统一 3000/8081，开始前先核对占用和源码版本。
 
-本批未做全系统/真实 PostgreSQL/浏览器全链、压力/并发、数据库升级、ZIP/离线打印或发布验收；这些属于后续工作包，并非本次单行事务修复失败的伪阻断。未查询/触发 Actions，未声明分支保护或远端 required checks 通过。
+本批未做全系统/真实 PostgreSQL/浏览器全链、完整压力/并发矩阵、数据库升级、ZIP/离线打印或发布验收；这些属于后续工作包，并非本次关闭事务修复失败的伪阻断。双请求关闭竞争的实际验证范围单独记录于上文。未查询/触发 Actions，未声明分支保护或远端 required checks 通过。
+
+## 最终独立验收
+
+实际未参与任何修复的新实例独立验收 `1dac6338c24efb2330fe8702ed018e55a8947711`，正式 [qualityResult 为 passed](quality-result.yaml)，10 项适用检查全部通过，两项 high resolved，无 blockingConditions。独立后端 56/0/0/0 于 14:38:00Z 结束，知识 89/0/0/0 于 14:38:53Z 结束；测试范围同上，未扩大为全分支验收。原报告 SHA256 `59377439cba1a3cd3b93fba97e947929bc93084898bc92d6c4f79042ece8c516`，复制件逐字节匹配。
+
+脱敏用例索引、独立 Git/知识全量计数校对和实际源码核对记录位于 evidence/final-independent。该实例亲读了 DHR 关键方法，并明确其他全链场景仍待审。后续交付提交仅收录报告/台账，以保护摘要核对代码、测试、知识和脚本字节不变，不重复或叠加声称新一轮运行通过。

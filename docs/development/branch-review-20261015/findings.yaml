@@ -1,6 +1,8 @@
 reviewStatus:
   fullBranchAudit: in-progress
   firstTranche: W0-and-first-W1-chain
+  firstTrancheQuality: passed
+  testedCandidate: 1dac6338c24efb2330fe8702ed018e55a8947711
   sourceCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
   historicalRecords: 21
   historicalKnownFixed: 10
@@ -13,8 +15,8 @@ findings:
   - id: AUDIT-W1-001
     historicalId: discrepancy.work-order-close-audit-atomicity
     severity: high
-    status: fixed-main-regression-passed
-    independentResult: See quality-result.yaml for actual independent closeout
+    status: closed-independent-passed
+    independentResult: quality-result.yaml
     title: 关闭工单审计失败后状态已单独提交
     location: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java:112
     authority: docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml
@@ -31,7 +33,8 @@ findings:
   - id: AUDIT-W1-002
     independentFinding: QF-W1-001
     severity: high
-    status: fixed-main-regression-passed
+    status: closed-independent-passed
+    independentResult: quality-result.yaml
     title: 外层事务先普通读取造成JPA陈旧实体并发重复关闭
     location: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java:114
     authority: 既有ProductionService.closeOrder只允许COMPLETED到CLOSED，不接受重复关闭；同DEC0015真实变更审计。
