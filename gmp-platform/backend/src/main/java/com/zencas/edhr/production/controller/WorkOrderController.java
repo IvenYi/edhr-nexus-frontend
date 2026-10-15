@@ -111,7 +111,8 @@ public class WorkOrderController {
     @PreAuthorize("hasAuthority('production.work-orders')")
     @Transactional
     public ApiResponse<WorkOrderResponse> close(@PathVariable Long id) {
-        WorkOrder beforeOrder = requireOrder(id);
+        WorkOrder beforeOrder = workOrderRepository.findByTenantIdAndIdForUpdate(TENANT_ID, id)
+                .orElseThrow(() -> error("工单不存在"));
         Map<String, Object> before = workOrderSnapshot(toResponse(beforeOrder));
         WorkOrderResponse response = toResponse(productionService.closeOrder(id));
         writeChangedAudit(id, "关闭工单", before, workOrderSnapshot(response));
