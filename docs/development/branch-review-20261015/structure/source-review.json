@@ -1,0 +1,54 @@
+{
+  "baseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+  "knowledgeModelVersion": "0.3.25",
+  "role": "read-only-focused-structure-analysis-input-not-final-quality",
+  "contractBaseline": {
+    "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "contractReadCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "uncommittedContractPaths": []
+  },
+  "applicableKnowledgeRead": [
+    "docs/knowledge/README.md (baseline and renderer/runtime contract excerpts)",
+    "docs/knowledge/open-questions.yaml (existing undecided policies; no inferred rule replacement)",
+    "docs/knowledge/decisions/DEC-0034-form-renderer-field-permission-contract.yaml",
+    "docs/knowledge/decisions/DEC-0061-dhr-template-version-design-isolation.yaml",
+    "docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml (decision statements and acceptance excerpt)",
+    "docs/knowledge/rules/form-fill-settings.yaml",
+    "docs/knowledge/rules/master-data-permission-audit.yaml"
+  ],
+  "sourceFilesPersonallyRead": 12,
+  "prioritySourceFiles": 7,
+  "fullSourceFileRead": ["gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx"],
+  "partialSourceFiles": [
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx","anchors":["imports/constants","WordTableCellRange and selection geometry","CanvasSheetWorkspace store subscriptions and local state","startStyleFillDrag and effect cleanup","renderImportedGrid opening","renderWordDocumentLayer opening"],"depth":"selected architectural boundaries; remaining component bodies pending"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx","anchors":["imports and type/config entries","getRouteParallelGroups and traversal helpers","fromRouteGraphResponse/toRouteGraphPayload","ProcessModelingPage state and query setup","saveRouteGraphMutation","openEditDialog and submitForm"],"depth":"selected architectural boundaries; W4 business semantics pending"},
+    {"path":"gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx","anchors":["persistentFlowGraph","validateFlowGraphForPublish opening/return and reachability","normalizeFlowGraph","FlowWorkspace state setup","recordHistory/undo/redo","WorkTemplateEditor query/saveGraph","version selection and confirmations"],"depth":"selected architectural boundaries; publish policy and all node types pending"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts","anchors":["imports","resolveDefaultComponentType/createBoundNodeFromField","TemplateDesignerStore interface","pushDocumentHistory/store initialization","replaceCurrentPageFromImport/insertSheetColumns/insertSheetRows","pasteSheetCells/fillSheetCellStyles","undoCanvasChange/redoCanvasChange","markSaved/isDirty"],"depth":"selected state/command/history boundaries; all command implementations pending"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx","anchors":["imports","PreviewFieldPermission/Action/Interaction","FormCanvasPreview","ReferencedFormPreview/DeferredFormPreview","keyed workspace wrapper","DhrTemplateWorkspace state/version selection and query setup","stageEvidenceDisplayName/saveCompositionMutation/requestClose"],"depth":"selected renderer and workspace boundaries; all staging/tree handlers pending"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx","anchors":["imports/interfaces/toVersionForm","RdoVersionTreeSelect grouping/selected display","ProductProcessVersionEditorDialog initialization/loadOptions","route graph initialization","selectedForms/selectedDocuments","binding addition and toPayload submit adaptation"],"depth":"selected identity/options/state boundaries; backend qualification and history sources pending"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java","anchors":["imports/repositories","importLegacyWordTemplate delegation","createFormTemplate/updateFormTemplate","saveFormTemplateVersionDesign","deleteFormTemplateVersion","listBatchRecordTemplates/createBatchRecordTemplate/deleteBatchRecordTemplate","category entry opening","writeChangedAudit/writeAudit/toAuditJson"],"depth":"selected transaction/audit/use-case boundaries; API authorization and all queries pending"},
+    {"path":"gmp-platform/frontend/src/router/index.tsx","anchors":["lazy page imports","ProtectedRoute","workflow/form-management/dhr-management/production/master-data route entries"],"depth":"entry mapping only"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/components/mock-fill/MockFillDialog.tsx","anchors":["imports/value and page prop types","renderMockFillControl attachment/image excerpt","FormSheetPage signature and layout setup","AST export spans"],"depth":"runtime dependency boundary only; full control rendering pending"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/componentRegistry.tsx","anchors":["imports/store dependency","StaticTextRenderer","createFieldComponentDefinition and container factory opening","getComponentDefinition AST signature"],"depth":"value dependency cycle and default-node factory separation only"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts","anchors":["parseReactTemplateDesignerDocument return","serializeTemplateDesignerDocument full function"],"depth":"persistence envelope boundary only"}
+  ],
+  "testSourcesInspectedPartially": [
+    "gmp-platform/frontend/scripts/test-review-batch-01.mjs",
+    "gmp-platform/frontend/scripts/test-dhr-word-preview.mjs"
+  ],
+  "testAssertionsLocatedBySymbolSearchOnly": [
+    "gmp-platform/frontend/scripts/test-form-document-preview.mjs",
+    "gmp-platform/frontend/scripts/test-sheet-cell-transfer.mjs",
+    "gmp-platform/frontend/scripts/test-quick-sub-table.mjs",
+    "gmp-platform/frontend/scripts/test-cell-display-components.mjs",
+    "gmp-platform/frontend/scripts/test-projection-panel.mjs",
+    "gmp-platform/frontend/scripts/test-field-business-purpose.mjs",
+    "gmp-platform/frontend/scripts/verify-process-modeling-pages.mjs",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/TemplateModelingControllerTest.java"
+  ],
+  "runtimeValidation": "none",
+  "repoWrites": [],
+  "findingsDisposition": "structural candidates and evidence gaps only; no independent passed conclusion"
+}

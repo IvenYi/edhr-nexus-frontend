@@ -64,13 +64,14 @@ decisions:
       - evidence.work-order-audit-snapshot-controller-test
       - evidence.audit-aspect
     - id: discrepancy.work-order-close-audit-atomicity
-      status: open
+      status: resolved
       severity: high
       visibility: internal
       path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
-      lineHint: 110
-      summary: 'provenance: original-evidence；工单 close 控制器未声明事务，调用事务服务 closeOrder 返回后再发布真实差量审计；服务提交与审计失败可能分离。创建、编辑和取消有控制器事务。须明确关闭动作与审计原子边界，当前仅静态发现，尚未执行故障回滚验证。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。'
+      lineHint: 112
+      summary: 'provenance: original-evidence；2026-10-15 已确认并修复关闭状态与审计分离提交：WorkOrderController.close 增加与创建、编辑和取消一致的 REQUIRED 事务边界，使真实 ProductionService.closeOrder 的状态变更、审计序列化和审计保存同事务成功或回滚，不改变权限、状态机或真实差量快照语义。新增四例主侧回归在修复前为 2 失败/0 错误，审计保存或序列化失败后状态仍被提交为 CLOSED；修复后四例及相邻回归共 55 项执行通过、0 失败/错误/跳过。该回归使用真实 Spring 控制器/服务事务代理及 H2 JDBC，repository 为测试适配替身，不是 HTTP、真实 JPA 或 PostgreSQL 验收。具体证据见本轮分支审查 validation.md；未参与修复的新实例仍须对最终候选独立验收，主侧通过不冒充独立质量结果。'
       evidenceIds:
       - evidence.work-order-controller
       - evidence.work-order-audit-snapshot-controller
       - evidence.production-service
+      - evidence.work-order-close-audit-atomicity-test

@@ -1,0 +1,12 @@
+{
+  "command": "mvn -B -f tools/knowledge-model/pom.xml test",
+  "runtimeWrapper": "bash /tmp/pr6-mvn",
+  "exitCode": 0,
+  "tests": 89,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "logSha256": "249b6f4bc328c2dff445c3c053eaa60e9f4502f0d2fb8e7d9b94366e3afaa84e",
+  "xmlSha256": "17d6a3f7c3c347ad011d55ec162e7683de95db52bdf4e34e1b28d3a1f19fb5cd",
+  "scope": "Schema/IDs/references; not full semantic or runtime audit"
+}

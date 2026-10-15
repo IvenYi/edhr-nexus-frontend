@@ -1,0 +1,61 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: aad4cfe9445a82658c1113de73c9c3561af566d5
+    targetBranch: edhr-dev
+    targetCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    contractReadCommit: 537bb2402227bfe6369c44c2b1b4686481c50f27
+    uncommittedContractPaths: []
+  reason: 仅同步已确认工单关闭审计原子性修复与主侧红绿证据；保留原政策、其他声明、历史内审、成熟度和0.3.25。sourceCommit为实际候选；其外未提交知识差异明确列于changedArtifacts。contractReadCommit记录实际初读537，已核对到当前候选三份契约Git
+    blob完全相同，不冒称重新读取新契约。主侧55项通过不冒充最终独立质量，正式知识Maven由主侧统一运行。
+  changedArtifacts:
+  - path: docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml
+    changeType: update
+    ids:
+    - discrepancy.work-order-close-audit-atomicity
+  - path: docs/knowledge/evidence/production.yaml
+    changeType: update
+    ids:
+    - evidence.work-order-close-audit-atomicity-test
+  knowledgeSync:
+  - id: discrepancy.work-order-close-audit-atomicity
+    disposition: updated
+    scope: 仅已证实的close审计事务缺口resolved、line112及红绿/验收边界；不改DEC0015-01..05、原快照缺口resolved项或真实差量审计政策。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java:112
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java:174
+    - /tmp/edhr-audit-close-green.log
+    - /tmp/edhr-audit-evidence/close-red-final
+  - id: evidence.work-order-close-audit-atomicity-test
+    disposition: updated
+    scope: 新增真实Spring事务代理/H2 JDBC与repository测试适配替身的四例证据；主侧合计55项通过，不证明HTTP/JPA/PostgreSQL或最终独立质量。
+    sourceReferences:
+    - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderCloseAtomicityTest.java
+    - docs/development/branch-review-20261015/validation.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.close-knowledge-scoped-structure-and-reference
+    checkType: reference
+    command: Python/PyYAML只读限定结构/唯一ID/引用/变更前后保护断言；详见close-knowledge-validation.json
+    outcome: passed
+    evidence:
+    - /tmp/edhr-audit-ontology/close-knowledge-validation.json
+    - 新工作树2486定义；仅新增一个evidence；原DEC声明、验收场景、其他resolved项及所有旧evidence保持。
+  - id: validation.dhr-original-map-candidate-blob-stability
+    checkType: evidence-path
+    command: git rev-parse old:path 与 candidate:path 对原33项映射涉及文件逐一比对
+    outcome: passed
+    evidence:
+    - /tmp/edhr-audit-ontology/dhr-original-map-candidate-blob-check.json
+    - 原33项映射仍保留实际537来源；未将新候选所有代码或运行验证一并判通过。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

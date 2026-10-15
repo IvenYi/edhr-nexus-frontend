@@ -1,0 +1,1078 @@
+{
+  "schema": "edhr-full-audit-history-dedup/v1",
+  "purpose": "Read-only historical lead import and current-source triage, not qualityResult",
+  "contractBaseline": {
+    "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "contractReadCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "knowledgeSchemaVersion": "1.2.0",
+  "baselineTree": "401d4bf799985d8a3079be0d44270aaa7f2813dc",
+  "handoverBaseline": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+  "historicalInventoryCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+  "historySourceDigest": "d2013461372575c9e311f4438874c72b42a7460932ef450da3ce7b48636e8016",
+  "records": [
+    {
+      "masterId": "AUD-H001",
+      "sourceId": "discrepancy.dhr-template-explicit-version-list-fallback",
+      "aliases": [
+        "F-003",
+        "F003",
+        "RUNTIME-F003-001",
+        "RUNTIME-F003-002"
+      ],
+      "sourcePath": "docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json",
+      "sourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+      "handoverSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "parentDecision": "DEC-0061",
+      "historicalSeverity": "high",
+      "status": "known-fixed",
+      "statusQualification": "triage of historical lead; not final independent qualityResult",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/dhrWorkspaceVersion.ts",
+          "symbol": "resolveDhrWorkspaceVersion",
+          "line": 11,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "072c3ac2ecf1d21d5415e1e82746719be221fa7c",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Explicit requested ID absent -> missing/null; preferred/first fallback exists only without requested ID."
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "symbol": "DhrTemplateWorkspace",
+          "line": 1261,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "566e092c21817572ce2e1db8ff35a2f978cd8691",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "refetchOnMount always; missing while fetching is verification; draft target stays explicit."
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "symbol": "saveCompositionMutation",
+          "line": 1774,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "566e092c21817572ce2e1db8ff35a2f978cd8691",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Requires canSave and matching draft identity; PUT uses the resolved same version."
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "symbol": "draftVersionId reset effect",
+          "line": 1408,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "566e092c21817572ce2e1db8ff35a2f978cd8691",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Draft reset depends on target identity, rather than a background query error. Historical runtime refinements remain related to same master record."
+        }
+      ],
+      "knownFixCommits": [
+        "3ad7568fbc40f95d95d5e0d747ff064ef1ce3aba",
+        "e0652d0b5579aebbf99a26498bacc7e32dfefa90"
+      ],
+      "nextConfirmationAction": "Preserve established regression guards. If W1 changes selection/read/save dependencies, rerun affected resolver, draft and real UI scenarios. This is source preservation verification, not new runtime acceptance.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H002",
+      "sourceId": "discrepancy.execution-form-plan-count-and-not-applicable-projection",
+      "aliases": [],
+      "sourcePath": "docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json",
+      "sourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+      "handoverSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "parentDecision": "DEC-0047",
+      "historicalSeverity": "medium",
+      "status": "confirmed-current",
+      "statusQualification": "triage of historical lead; not final independent qualityResult",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx",
+          "symbol": "renderForm",
+          "line": 145,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "3b84f63f4c5674408ea63d52a50a52efe3651bd3",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "arrived distinguishes actual copies, but metadata unconditionally renders 共 {instanceIds.length ?? 0} 份; fallback checks operation status before work completed."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+          "symbol": "formAvailabilityStatus",
+          "line": 351,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "8c5bbc16e977ccac438aa0cc3d574d940da8d4a3",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "No copies + operation != IN_PROGRESS returns WAITING_OPERATION_START before completed work can return NOT_APPLICABLE."
+        }
+      ],
+      "knownFixCommits": [],
+      "nextConfirmationAction": "Under DEC-0047-01, add focused planned-vs-instance and completed/unreached-work projection cases; keep normal configured copies unchanged. Runtime/UI still pending.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H003",
+      "sourceId": "discrepancy.form-fill-settings-missing-mode-default-and-validation-bypass",
+      "aliases": [],
+      "sourcePath": "docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json",
+      "sourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+      "handoverSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "parentDecision": "DEC-0067",
+      "historicalSeverity": "high",
+      "status": "confirmed-current",
+      "statusQualification": "triage of historical lead; not final independent qualityResult",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+          "symbol": "saveGraph",
+          "line": 183,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "04207489d3c1e9724f6a3185dd0256c3f34db347",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "FORM config missing/non-null fillMode is injected as DIRECT at line198; no full fill-settings validation in saveGraph."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+          "symbol": "validatePublishableFormProcessReferences",
+          "line": 742,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "04207489d3c1e9724f6a3185dd0256c3f34db347",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Only config containing fillMode/directFillConfig invokes full validation; absent mode/process can continue."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java",
+          "symbol": "usesProcess/serialize/validate",
+          "line": 24,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "f653346dc380b0f897d9e4d8602a209905754089",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Blank mode -> false; serialize line65 supplies DIRECT; validate line71 returns on null/missing and otherwise treats blank as direct."
+        },
+        {
+          "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java",
+          "symbol": "saveGraphPersistsExplicitDirectModeWithoutInferringDormantProcess",
+          "line": 738,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "fb819cf14d4c1480bc6205d5027b8b4f3f66098f",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Input has only formProcessVersionId; test explicitly expects inferred DIRECT at line752. Test name does not make mode explicit."
+        }
+      ],
+      "knownFixCommits": [],
+      "nextConfirmationAction": "Confirmed against DEC-0067-01/05 (current explicit choice/no legacy default). Write failing save/publish/service tests before targeted repair; inspect shared component fillMode helper and actual snapshot consumers; do not migrate existing business data.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H004",
+      "sourceId": "discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions",
+      "aliases": [],
+      "sourcePath": "docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json",
+      "sourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+      "handoverSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "parentDecision": "DEC-0023",
+      "historicalSeverity": "medium",
+      "status": "confirmed-current",
+      "statusQualification": "triage of historical lead; not final independent qualityResult",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx",
+          "symbol": "process selector onChange",
+          "line": 129,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "2ec5036c15636e9d2149a99f0f0df0e2b240e739",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "New process version is merged into existing value without pruning old fieldPermissions/eventBindings. Prune only occurs in direct update or permission-dialog save."
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+          "symbol": "updateSelectedNode",
+          "line": 2926,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "f57ee7650921a902a9a00de6206b2d555ee8df04",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Config spread merges old values and patch; form picker line4037 changes only template id/name."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+          "symbol": "saveGraph",
+          "line": 194,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "04207489d3c1e9724f6a3185dd0256c3f34db347",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Draft persistence validates graph boundary/edges, not invalid field/group binding cleanup; publish validation is a separate guard."
+        }
+      ],
+      "knownFixCommits": [],
+      "nextConfirmationAction": "Trace explicit DEC-0023-08 + DEC-0035 permission keys and source current field IDs, then test switch-and-immediate-draft-save; retain server publish rejection and avoid clearing valid exceptions blindly.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H005",
+      "sourceId": "discrepancy.form-reference-personal-entry-context-not-forwarded",
+      "aliases": [
+        "F-002",
+        "F002"
+      ],
+      "sourcePath": "docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json",
+      "sourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+      "handoverSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "parentDecision": "DEC-0060",
+      "historicalSeverity": "high",
+      "status": "known-fixed",
+      "statusQualification": "triage of historical lead; not final independent qualityResult",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx",
+          "symbol": "references callback",
+          "line": 257,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "9d5193a6fb10531c7692472d0acf6b1bf639d20d",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Callback now accepts dependencies and forwards it as getExecutionReferences final argument."
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+          "symbol": "references callback",
+          "line": 154,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "26076537400f1fc353aac8b588949c16732da489",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Approval callback accepts dependencies and forwards it; changes since handover in filling page did not drop this wire."
+        }
+      ],
+      "knownFixCommits": [
+        "3ad7568fbc40f95d95d5e0d747ff064ef1ce3aba"
+      ],
+      "nextConfirmationAction": "Reuse accepted PR5/6 scope as historical runtime evidence; rerun only if affected by new change. W2 still reviews full query/source permissions and current trace integration independently.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H006",
+      "sourceId": "discrepancy.product-family-transfer-unstarted-object-context",
+      "aliases": [],
+      "sourcePath": "docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json",
+      "sourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+      "handoverSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "parentDecision": "DEC-0002",
+      "historicalSeverity": "medium",
+      "status": "confirmed-current",
+      "statusQualification": "triage of historical lead; not final independent qualityResult",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+          "symbol": "split",
+          "line": 90,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "5b4324105d322c728187c69ab0a0ab50e2876f14",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Object creation persists workOrderId/processVersionId and target, no independent family binding identity."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+          "symbol": "build",
+          "line": 73,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "3c9590c696c4762c94bcc60a6f7ff81e223d829c",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Build reads current product_family_member at first START, uses family in work-binding matching at106."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+          "symbol": "requireProcessVersion",
+          "line": 243,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "5b4324105d322c728187c69ab0a0ab50e2876f14",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Locked order version still validated through current findVersionForProduct."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java",
+          "symbol": "findVersionForProduct",
+          "line": 56,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "0314a5c043be17df54cf6ec8e4a2b81af5bc64a4",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "PRODUCT_FAMILY ownership checks latest membership, so transfer can reject continuing old locked-family order."
+        }
+      ],
+      "knownFixCommits": [],
+      "nextConfirmationAction": "Static violation of DEC-0002-10, not runtime-tested here. W4 needs transfer between object creation/START and locked-order subsequent split cases, then minimal explicit-context design preserving old snapshots; no historical backfill authorization.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H007",
+      "sourceId": "discrepancy.production-object-execution-lifecycle-audit-projection",
+      "aliases": [],
+      "sourcePath": "docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json",
+      "sourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+      "handoverSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "parentDecision": "DEC-0019",
+      "historicalSeverity": "medium",
+      "status": "confirmed-current",
+      "statusQualification": "triage of historical lead; not final independent qualityResult",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+          "symbol": "act audit persistence",
+          "line": 228,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "8c5bbc16e977ccac438aa0cc3d574d940da8d4a3",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "First start/complete change object; audit at242 is PRODUCTION_EXECUTION CREATE/UPDATE with objectStatus in JSON."
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx",
+          "symbol": "audit query",
+          "line": 267,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "2da57f2bfb455f832f3b84ee6a328deaf643b0ac",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Object detail loads only entityType PRODUCTION_OBJECT; execution lifecycle event is not read by this query."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+          "symbol": "writeAudit",
+          "line": 175,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "6ebf0d29391db0345665e0b8ee357e9edb0f07f6",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Controller-owned object audit remains PRODUCTION_OBJECT; execution start/complete service does not route through it."
+        }
+      ],
+      "knownFixCommits": [],
+      "nextConfirmationAction": "DEC-0019 current object lifecycle UPDATE needs projection/write design plus transaction tests. Audit exists, so do not report complete lack of audit; distinguish new event generation vs historical read projection.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H008",
+      "sourceId": "discrepancy.production-sn-import-template-extra-remark",
+      "aliases": [],
+      "sourcePath": "docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json",
+      "sourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+      "handoverSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "parentDecision": "DEC-0016",
+      "historicalSeverity": "medium",
+      "status": "confirmed-current",
+      "statusQualification": "triage of historical lead; not final independent qualityResult",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx",
+          "symbol": "downloadImportTemplate",
+          "line": 561,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "e7cdf87900a2aecc3b462a01484fb0faf00b86d8",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "SN headers and sample contain four columns including remark; instruction line578 also advertises remark."
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx",
+          "symbol": "handleImport",
+          "line": 541,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "e7cdf87900a2aecc3b462a01484fb0faf00b86d8",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "SN import parses optional remark as well as implicit quantity1. DEC-0016-04 specifies only number and two planned times."
+        }
+      ],
+      "knownFixCommits": [],
+      "nextConfirmationAction": "W4 repair template output against explicit three-column confirmation; decide input rejection only if original rule demands it, do not infer extra destructive import policy. Keep SN=1 and server uniqueness.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H009",
+      "sourceId": "discrepancy.production-work-form-completion-condition-passthrough",
+      "aliases": [],
+      "sourcePath": "docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json",
+      "sourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+      "handoverSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "parentDecision": "DEC-0010",
+      "historicalSeverity": "medium",
+      "status": "confirmed-current",
+      "statusQualification": "triage of historical lead; not final independent qualityResult",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+          "symbol": "normalizeFlowGraph",
+          "line": 654,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "f57ee7650921a902a9a00de6206b2d555ee8df04",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Non-CONDITION config is shallow-copied at704, keeping historical unsupported completionCondition."
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+          "symbol": "persistentFlowGraph",
+          "line": 366,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "f57ee7650921a902a9a00de6206b2d555ee8df04",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Only selection/dragging removed; other node data retained and sent to graph API at4516."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+          "symbol": "saveGraph",
+          "line": 194,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "04207489d3c1e9724f6a3185dd0256c3f34db347",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Serializes full incoming graph nodes and stores nodesJson; no current unsupported field rejection."
+        }
+      ],
+      "knownFixCommits": [],
+      "nextConfirmationAction": "Use DEC-0010-02: no new writes, no historical read/migrate/cleanup. Prefer rejecting unsupported incoming field where appropriate rather than silently rewriting historical rows; add draft persistence regression.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H010",
+      "sourceId": "discrepancy.production-work-legacy-condition-save-publish-asymmetry",
+      "aliases": [],
+      "sourcePath": "docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json",
+      "sourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+      "handoverSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "parentDecision": "DEC-0011",
+      "historicalSeverity": "medium",
+      "status": "confirmed-current",
+      "statusQualification": "triage of historical lead; not final independent qualityResult",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+          "symbol": "saveGraph",
+          "line": 202,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "04207489d3c1e9724f6a3185dd0256c3f34db347",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Draft save invokes boundary/outgoing checks then persists; no hasLegacyConditionConfiguration."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+          "symbol": "conditionSourceHandles",
+          "line": 510,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "04207489d3c1e9724f6a3185dd0256c3f34db347",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Structural edge validation rejects branch.rule, but does not reject top-level legacy conditionRule with otherwise canonical branches."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+          "symbol": "validatePublishableConditionRules/hasLegacyConditionConfiguration",
+          "line": 547,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "04207489d3c1e9724f6a3185dd0256c3f34db347",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Publish rejects old conditionRule/catalog/snapshot/expression fields at555/616."
+        }
+      ],
+      "knownFixCommits": [],
+      "nextConfirmationAction": "DEC-0011 canonical save-or-publish acceptance is explicit. Add canonical+legacy simultaneous payload test then ensure save rejects same unsupported structure; incomplete draft AST policy stays separate.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H011",
+      "sourceId": "discrepancy.work-order-close-audit-atomicity",
+      "aliases": [],
+      "sourcePath": "docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json",
+      "sourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+      "handoverSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "parentDecision": "DEC-0015",
+      "historicalSeverity": "high",
+      "status": "pending",
+      "statusQualification": "triage of historical lead; not final independent qualityResult",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java",
+          "symbol": "close",
+          "line": 110,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "415febe2cdd10c9b76c374a05009563889e97e00",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Controller close invokes transactional service then changed-audit writer; unlike cancel, close has no controller @Transactional in current base."
+        }
+      ],
+      "knownFixCommits": [],
+      "nextConfirmationAction": "pending_to_root: root owns transaction boundary/source and failure rollback verification for this lead; do not duplicate fix or presume runtime severity based only on annotation.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H012",
+      "sourceId": "discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot",
+      "aliases": [],
+      "sourcePath": "docs/development/ontology-internal-audit-20261012/open-implementation-discrepancies.json",
+      "sourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+      "handoverSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "parentDecision": "DEC-0031",
+      "historicalSeverity": "medium",
+      "status": "confirmed-current",
+      "statusQualification": "triage of historical lead; not final independent qualityResult",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+          "symbol": "transferTask",
+          "line": 654,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "7b9eef6be1a1adccb8f2b1354417bba664fec376",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "At677 replaces same logical task candidateSnapshot with singleUserSnapshot(target)."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+          "symbol": "singleUserSnapshot",
+          "line": 742,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "7b9eef6be1a1adccb8f2b1354417bba664fec376",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "New snapshot only target userIds, TRANSFER source and no unresolvedSubjects; original resolution source not retained in this value."
+        },
+        {
+          "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+          "symbol": "transferKeepsOneLogicalTaskAndUpdatesTargetSnapshot",
+          "line": 412,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "d6e9bdb8217a7db5140191a032d205814024c3f5",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Current test expects candidate snapshot has exactly one user, preserving implementation branch, not proving source history retained."
+        }
+      ],
+      "knownFixCommits": [],
+      "nextConfirmationAction": "W3 inspect applicable transfer policy and original evidence for DEC-0031-04; preserve immutable origin separately from actionable transfer target. Do not conflate this generic workflow path with ProductionExecutionEngine.transferForm.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H013",
+      "sourceId": "F-004",
+      "aliases": [
+        "F004"
+      ],
+      "sourcePath": "historical-navigation/edhr-pr5-e0652d0-receipt-and-next-review.md §4; historical-navigation/eDHR-PR5-e0652d0-补验收束报告.md §7",
+      "sourceCommit": "e0652d0b5579aebbf99a26498bacc7e32dfefa90",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "status": "confirmed-current",
+      "statusQualification": "source-preservation check only; historical acceptance not rerun",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx",
+          "symbol": "toVersionForm/RdoVersionTreeSelect",
+          "line": 120,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "be70344d3e36786e3935dee5b7bb0051cd00793e",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Existing dhrTemplateVersionId copied; picker selected only options.find at277, blank if absent at312."
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx",
+          "symbol": "dhrTemplateChoices/summary/toPayload",
+          "line": 901,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "be70344d3e36786e3935dee5b7bb0051cd00793e",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Choices from candidate dhrTemplates only; summary at1062 same lookup; canSubmit requires only nonempty IDs at940, toPayload retains id at187."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java",
+          "symbol": "buildModelOptions",
+          "line": 216,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "7d1ee6df30fddc6664fbd8e5d367912db04db407",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "dhrTemplates filters isReferenceable at224; option parameter adds directory/form filtering, not existing DHR metadata display."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java",
+          "symbol": "applyVersionFields/validateReferences",
+          "line": 233,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "15ad8e5242a1955e505dbcb777eb21bd67ffe414",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Save references are validated and invalid DHR rejected at259; this existing business guard must remain separate from display fix."
+        }
+      ],
+      "knownFixCommits": [],
+      "nextConfirmationAction": "Original lead from e0652d0 report. W1 separate existing-reference display metadata from new-choice eligibility; show verified invalid-state warning; absence from candidates alone cannot mean deleted. List response can still display actual referenced names; no automatic ID replacement or production block.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H014",
+      "sourceId": "F-001",
+      "aliases": [
+        "F001",
+        "auth cache/session-generation isolation"
+      ],
+      "sourcePath": "HANDOFF.md §2.2 and historical-navigation (exact origin qualified below)",
+      "sourceCommit": "cb863ad83e2aca20caf86f0e78602120e8b4727f",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "status": "known-fixed",
+      "statusQualification": "source-preservation check only; historical acceptance not rerun",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/frontend/src/utils/queryClient.ts",
+          "symbol": "clearSessionQueryCache",
+          "line": 21,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "516148262a0afebc5ca432f2f16caa35ffa5512d",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Increment generation then cancel queries and clear query/mutation cache."
+        },
+        {
+          "path": "gmp-platform/frontend/src/utils/sessionPolicy.ts",
+          "symbol": "clearAuthStorage",
+          "line": 26,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "fcbcbb55676f818c61bc9c82b556867a6fcd08d4",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Clear generation/cache, token/user and policy before dispatching identity change."
+        },
+        {
+          "path": "gmp-platform/frontend/src/api/client.ts",
+          "symbol": "request/response interceptors",
+          "line": 23,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "4d67bf63a3ec49078ec7a6fe507cc84fa817c776",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Synchronous request captures generation; success/error reject old generation before business/status handling."
+        }
+      ],
+      "knownFixCommits": [
+        "3ad7568fbc40f95d95d5e0d747ff064ef1ce3aba",
+        "d8a8ac5b549c7a869507df24f781c27e4d9fa931"
+      ],
+      "nextConfirmationAction": "Retain accepted compositional 401 boundary. New W5 may review adjacent auth flows, but historical natural8h E2E not executed remains a limitation, not a new known bug. Re-evaluate if generation/parser/cancellation sequence changes.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H015",
+      "sourceId": "KNOWN-APPROVAL-TENANT-001",
+      "aliases": [
+        "configured subjects tenant0 mismatch"
+      ],
+      "sourcePath": "HANDOFF.md §2.2 and historical-navigation (exact origin qualified below)",
+      "sourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "status": "known-fixed",
+      "statusQualification": "source-preservation check only; historical acceptance not rerun",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+          "symbol": "resolve/subjectTenantId",
+          "line": 77,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "11cbf604a28ad8e4c091e259d2c53ea8fef4247c",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Subjects resolve through authenticated operator stored tenant, not hardcoded0, targetsubject or signer; captured approvers not rewritten once present at107."
+        }
+      ],
+      "knownFixCommits": [
+        "4601eb4907b146375ed14f6bcb568886457b247c"
+      ],
+      "nextConfirmationAction": "W3 preserve configured-candidate source/approval distinctions. Source fix present; current runtime positive/negative replay not run here.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H016",
+      "sourceId": "KNOWN-HOME-IDENTITY-001",
+      "aliases": [
+        "home stale display name"
+      ],
+      "sourcePath": "HANDOFF.md §2.2 and historical-navigation (exact origin qualified below)",
+      "sourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "status": "known-fixed",
+      "statusQualification": "source-preservation check only; historical acceptance not rerun",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/frontend/src/stores/authStore.ts",
+          "symbol": "refreshAuthSnapshot listener",
+          "line": 50,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "032f85ca07b8f4e99c310a48af18850268d29e3c",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Same-tab AUTH_USER_CHANGE_EVENT rebuilds token/user/store; login/logout update store and notify same-tab consumers."
+        }
+      ],
+      "knownFixCommits": [
+        "d8a8ac5b549c7a869507df24f781c27e4d9fa931"
+      ],
+      "nextConfirmationAction": "Preserve same-identity profile refresh vs real session switch; only rerun relevant regression when touched.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H017",
+      "sourceId": "PR6 deletion-protection schema mismatch",
+      "aliases": [],
+      "sourcePath": "HANDOFF.md §2.2 and historical-navigation (exact origin qualified below)",
+      "sourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "status": "known-fixed",
+      "statusQualification": "source-preservation check only; historical acceptance not rerun",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionRelations.java",
+          "symbol": "REFERENCES",
+          "line": 83,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "b439bfbd12bffafdd7900ad064b7dd5a46516b2e",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Current catalog uses material/product and dhr_instance version relations, including work_order.product_id and production_object/dhr lineage."
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionService.java",
+          "symbol": "DeletionProtectionService",
+          "line": 1,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "67170c7f4fadaf9879db1e2dcfc30bf918ead4df",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Catalog guard implementation present; historical fix not a proof every relation is complete at new base."
+        }
+      ],
+      "knownFixCommits": [
+        "e02a63fdac31567ac1e6b6e053fd30781fad3d3a"
+      ],
+      "nextConfirmationAction": "W4/W5 will verify newly added projection/final-output references as changed scope. Do not reopen old schema defect without current failing relation evidence.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H018",
+      "sourceId": "PR6 quantity fixture compatibility",
+      "aliases": [],
+      "sourcePath": "HANDOFF.md §2.2 and historical-navigation (exact origin qualified below)",
+      "sourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "status": "known-fixed",
+      "statusQualification": "source-preservation check only; historical acceptance not rerun",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionIntegrationTest.java",
+          "symbol": "workOrderInsertSql/legacy schema test",
+          "line": 63,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "5116d92eefe29bb83b0cdc806758c4b3a20bbc4a",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Introspects optional legacy quantity column; isolated test adds legacy NOT NULL without default and validates insert. No production quantity rule change."
+        }
+      ],
+      "knownFixCommits": [
+        "070f12a240dca018a52b099e567a7a379a1021aa"
+      ],
+      "nextConfirmationAction": "Reuse historical legacy/fresh QA result only as historical. Relevant test can rerun if deletion fixtures or migrations change; quantity lower-bound policy remains unresolved.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H019",
+      "sourceId": "PR6 equipment timestamp precision",
+      "aliases": [],
+      "sourcePath": "HANDOFF.md §2.2 and historical-navigation (exact origin qualified below)",
+      "sourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "status": "known-fixed",
+      "statusQualification": "source-preservation check only; historical acceptance not rerun",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java",
+          "symbol": "equipment/type create/update timestamps",
+          "line": 128,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "dc77efc2e401320e668b214f7b048bb46a571e57",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Timestamps truncate to MICROS on create/update (128/187/225/249), aligning PostgreSQL precision."
+        }
+      ],
+      "knownFixCommits": [
+        "6528adacf269eeff57f48580caafb9d3fbfc0442"
+      ],
+      "nextConfirmationAction": "Source fix preserved; no current timestamp test execution here. W4 may inspect adjacent audit/diff behavior.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H020",
+      "sourceId": "PR6 authorization notice Chinese font",
+      "aliases": [],
+      "sourcePath": "HANDOFF.md §2.2 and historical-navigation (exact origin qualified below)",
+      "sourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "status": "known-fixed",
+      "statusQualification": "source-preservation check only; historical acceptance not rerun",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+          "symbol": "loadAuthorizationNoticeFont",
+          "line": 751,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "d6c03a7e95dbd6934f00c7efc821b839bacbf3e0",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Configured path honored; glyph encoding verified at760; fails closed with explicit configuration guidance at766 rather than garbled fallback."
+        }
+      ],
+      "knownFixCommits": [
+        "e923c59a63a7f239b2fda86b8324499d24abb6ea"
+      ],
+      "nextConfirmationAction": "Deployment font availability remains environment prerequisite. Do not infer current runtime font installation merely from source.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    },
+    {
+      "masterId": "AUD-H021",
+      "sourceId": "PR6 Snowflake auth ID precision",
+      "aliases": [],
+      "sourcePath": "HANDOFF.md §2.2 and historical-navigation (exact origin qualified below)",
+      "sourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "status": "known-fixed",
+      "statusQualification": "source-preservation check only; historical acceptance not rerun",
+      "currentSourceEvidence": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+          "symbol": "login/me",
+          "line": 157,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "d6c03a7e95dbd6934f00c7efc821b839bacbf3e0",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "User id serialized via existing idToString at157 and203."
+        },
+        {
+          "path": "gmp-platform/frontend/src/stores/authStore.ts",
+          "symbol": "User.id",
+          "line": 6,
+          "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+          "blob": "032f85ca07b8f4e99c310a48af18850268d29e3c",
+          "evidenceLevel": "original-evidence",
+          "depth": "targeted-source-and-call-chain-inspection",
+          "observation": "Fresh identity string accepted with legacy cached numeric type compatibility; no Number conversion here."
+        }
+      ],
+      "knownFixCommits": [
+        "e28c9dfda06694e4cdfc4bececf435100103fd78"
+      ],
+      "nextConfirmationAction": "W5 review other current ID paths separately; this source check does not assert all repository IDs are strings.",
+      "runtimeVerification": "not-run-by-this-instance",
+      "knowledgeSynchronization": "not-modified"
+    }
+  ],
+  "structureLeads": [
+    {
+      "sourceId": "R-001",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "path": "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+      "physicalLines": 5143,
+      "measurement": "Git blob splitlines; includes blank/comment/JSX lines; no complexity claim",
+      "sourceBlob": "b962aaccef08d1035e96ef8e75a7ccf4a10baa3b",
+      "sourceReadDepth": "targeted-responsibility-sampling; not complete module review",
+      "symbolAnchors": [
+        "toRouteGraphPayload:1623",
+        "normalizeColumnSettings:1707",
+        "loadColumnSettings:1729",
+        "ProcessModelingPage:1867"
+      ],
+      "status": "pending-W6-detailed-design",
+      "isFunctionalFinding": false,
+      "proposal": "Route graph model transformation and list preference persistence have distinct responsibilities. Extract pure route graph payload functions accepting typed nodes/edges; reuse existing list preferences, then isolate route editor panel. Keep active route types/material-operation-route routing and exact relations/handles.",
+      "validationNeeded": "First route payload golden behavioral cases; then column key/order/width persistence; drag/connect/save real UI if extraction touches interactions.",
+      "implementation": "not-performed"
+    },
+    {
+      "sourceId": "R-002",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "path": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+      "physicalLines": 2980,
+      "measurement": "Git blob splitlines; includes blank/comment/JSX lines; no complexity claim",
+      "sourceBlob": "566e092c21817572ce2e1db8ff35a2f978cd8691",
+      "sourceReadDepth": "targeted-responsibility-sampling; not complete module review",
+      "symbolAnchors": [
+        "FormCanvasPreview:1021",
+        "DhrTemplateWorkspace:1206",
+        "saveCompositionMutation:1774"
+      ],
+      "status": "pending-W6-detailed-design",
+      "isFunctionalFinding": false,
+      "proposal": "Shared runtime preview exported from DHR editor page creates reverse dependencies. Extract FormCanvasPreview/SheetPreview/FieldListPreview into existing form-renderer boundary with document/permissions/interaction/runtime explicit props. Keep composition selection and mutation orchestration in DHR owner; no second renderer.",
+      "validationNeeded": "Preserve read-only, signature/reference callbacks, subtable row contexts and frozen document rendering; run filling/review/DHR previews and actual targeted UI.",
+      "implementation": "not-performed"
+    },
+    {
+      "sourceId": "R-003",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java",
+      "physicalLines": 1249,
+      "measurement": "Git blob splitlines; includes blank/comment/JSX lines; no complexity claim",
+      "sourceBlob": "f3c18d976594e0c71b4fab6ccc89587625366733",
+      "sourceReadDepth": "targeted-responsibility-sampling; not complete module review",
+      "symbolAnchors": [
+        "createFormTemplate:125",
+        "createBatchRecordTemplate:335"
+      ],
+      "status": "pending-W6-detailed-design",
+      "isFunctionalFinding": false,
+      "proposal": "Controller combines HTTP DTO, validation, initial version construction, repositories and paired audits. Extract domain-specific create/version application service owning one transaction; controller remains authorized request/response adapter. Projection endpoints added since old base require separate responsibility review.",
+      "validationNeeded": "Prove complete template+first-version+both-audit rollback and deletion guards; do not move writes across independent transaction proxies.",
+      "implementation": "not-performed"
+    },
+    {
+      "sourceId": "R-004",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+      "physicalLines": 7096,
+      "measurement": "Git blob splitlines; includes blank/comment/JSX lines; no complexity claim",
+      "sourceBlob": "4cd3c2f9c8e6ccf4c5f8a8409ee3a1c7142b583f",
+      "sourceReadDepth": "targeted-responsibility-sampling; not complete module review",
+      "symbolAnchors": [
+        "resolveVisibleRowRange:654",
+        "CanvasSheetWorkspace:1297"
+      ],
+      "status": "pending-W6-detailed-design",
+      "isFunctionalFinding": false,
+      "proposal": "Split imported-grid geometry/virtual row calculations as pure typed helpers; document page rendering and subtable overlays as components. Selection/gesture/clipboard command state must keep one explicit owner rather than copied local state.",
+      "validationNeeded": "Boundary row virtualization, merged-cell selection, pointer keyboard clipboard and drag contexts; same serialized document and one undo step per command.",
+      "implementation": "not-performed"
+    },
+    {
+      "sourceId": "R-005",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "physicalLines": 5049,
+      "measurement": "Git blob splitlines; includes blank/comment/JSX lines; no complexity claim",
+      "sourceBlob": "f57ee7650921a902a9a00de6206b2d555ee8df04",
+      "sourceReadDepth": "targeted-responsibility-sampling; not complete module review",
+      "symbolAnchors": [
+        "persistentFlowGraph:366",
+        "normalizeFlowGraph:654",
+        "updateSelectedNode:2926",
+        "saveGraph:4508"
+      ],
+      "status": "pending-W6-detailed-design",
+      "isFunctionalFinding": false,
+      "proposal": "Separate graph model and canonical validation, graph interaction, and selected-node settings component; typed graph commands own atomic history and persistence. Do not turn same large body into single giant hook; preserve node config contract while fixing confirmed errors independently.",
+      "validationNeeded": "Save/reread canonical nodes/edges, branch order/outlet shape, explicit fill mode/field exceptions, undo/redo, publish/authorization; no business policy invented as refactor.",
+      "implementation": "not-performed"
+    },
+    {
+      "sourceId": "R-006",
+      "currentBaseline": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+      "physicalLines": 3490,
+      "measurement": "Git blob splitlines; includes blank/comment/JSX lines; no complexity claim",
+      "sourceBlob": "96605724a1edb226b8978d10fc74bef72054c919",
+      "sourceReadDepth": "targeted-responsibility-sampling; not complete module review",
+      "symbolAnchors": [
+        "useTemplateDesignerStore:1903",
+        "undoCanvasChange:3306",
+        "redoCanvasChange:3319"
+      ],
+      "status": "pending-W6-detailed-design",
+      "isFunctionalFinding": false,
+      "proposal": "Group document row/column shifts, model-field creation, canvas/subtable conversion into pure document commands. Keep store transaction owner commitCanvasChange/history full-document semantics and single undo/redo event. New projection binding fields require retention in conversions.",
+      "validationNeeded": "Document snapshot roundtrip including projection/trace binding, insert/delete merged ranges/subtable regions, import/export and complete operation undo/redo; avoid separate set calls for one user command.",
+      "implementation": "not-performed"
+    }
+  ],
+  "statusCounts": {
+    "known-fixed": 10,
+    "confirmed-current": 10,
+    "pending": 1
+  },
+  "historicalTwelveCounts": {
+    "known-fixed": 2,
+    "confirmed-current": 9,
+    "pending": 1
+  },
+  "coverageQualification": "21 unique history master records plus6 structure leads; not all repository findings. Static source confirmations are not runtime repros or independent gate.",
+  "newRuntimeChecks": [],
+  "modifications": [],
+  "handoverAssessment": {
+    "reasonable": [
+      "Scope/authorization and W0 first deliverables are actionable",
+      "Historical leads are explicitly navigation, no automatic open finding; PR5/6 stay merged",
+      "Independent verifier must be truly uninvolved in repairs; roles need no user relay",
+      "Large module plans are separate from functional findings and not mandatory mass rewrite"
+    ],
+    "outdated": [
+      "Handover3977329 is behind actual537bb240; current baseline contains projection/trace integration and final-output linkage DEC-0077/78",
+      "Older inventory entries still open are historical source facts only; 2of12 already known-fixed in merged PRs",
+      "e065 failed/blocked and absent original DB objects do not supersede final accepted PR5/6 candidate"
+    ],
+    "boundaries": [
+      "This instance is read-only source assistance, not final independent quality",
+      "No Maven/CI/Actions/browser/DB/new data execution",
+      "No business policy change, history restoration, merge or deployment",
+      "Work-order close lead is pending root-owned atomicity validation"
+    ]
+  }
+}

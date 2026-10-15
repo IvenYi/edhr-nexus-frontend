@@ -160,6 +160,11 @@ evidence:
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderControllerTest.java
     description: 工单控制器测试验证创建审计事件的 CREATE 动作、空对象 contentBefore 及真实业务字段 contentAfter；并保留 AuditAspect 测试对方法参数不得伪装为快照的约束。编辑、取消和关闭快照仍需通过集成测试补充验证。
     visibility: internal
+  - id: evidence.work-order-close-audit-atomicity-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderCloseAtomicityTest.java
+    description: original-evidence；2026-10-15 关闭工单原子性四例回归使用真实 Spring WorkOrderController/ProductionService 事务代理和 H2 JDBC，repository 为测试适配替身。覆盖审计保存失败、审计 JSON 序列化失败时状态及审计整体回滚，合法关闭的真实前后状态/操作者同提交，以及非法状态无写入。主侧修复前四例为2失败/0错误，增加控制器 REQUIRED 事务后四例及相邻回归共55项通过、0失败/错误/跳过；命令、原始证据及候选版本见 docs/development/branch-review-20261015/validation.md。该证据不证明真实HTTP、JPA、PostgreSQL或最终独立质量验收，不提升知识为verified/runtime。
+    visibility: internal
   - id: evidence.production-process-selector-clearable
     type: code
     path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
