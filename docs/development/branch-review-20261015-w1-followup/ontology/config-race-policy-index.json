@@ -1,0 +1,457 @@
+[
+  {
+    "id": "DEC-0001-04",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/3",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "一个产品制程版本绑定一个工艺路线版本和一个 DHR 模板版本。",
+    "parentContext": "产品制程配置需要复用既有物料主数据，明确并行版本、路线、DHR、工序资源引用及未来生产执行的知识边界，同时避免将尚未实现的规划能力投影给客户或运行时。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0001-05",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/4",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "工艺路线版本包含工序节点，工序绑定归属于产品制程版本和对应路线节点。",
+    "parentContext": "产品制程配置需要复用既有物料主数据，明确并行版本、路线、DHR、工序资源引用及未来生产执行的知识边界，同时避免将尚未实现的规划能力投影给客户或运行时。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0001-06",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/5",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "工序可绑定 DHR 目录中的多个表单，每项追溯到 dhrTemplateItemId 和 formTemplateVersionId。",
+    "parentContext": "产品制程配置需要复用既有物料主数据，明确并行版本、路线、DHR、工序资源引用及未来生产执行的知识边界，同时避免将尚未实现的规划能力投影给客户或运行时。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0001-09",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/8",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "历史初始基线提出批次按选定制程版本冻结执行快照，当时未实现。当前对象拆分保存 processVersionId，首次合法 START 构建并保存局部执行快照，DHR 按后续 DEC-0062 同事务创建；产品簇独立冻结与通用规则集版本依据仍有缺口，不能由历史声明或局部实现推定完整运行资格。",
+    "parentContext": "产品制程配置需要复用既有物料主数据，明确并行版本、路线、DHR、工序资源引用及未来生产执行的知识边界，同时避免将尚未实现的规划能力投影给客户或运行时。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0001-11",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/10",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "前端不再允许选择生产模式；所有新建或复制产生的新制程版本固定保存为量产，编辑既有版本保留其已存储值；productionMode 后端字段、持久化、接口和审计快照继续保留。当前已确认不存在非量产制程，无需历史数据迁移。",
+    "parentContext": "产品制程配置需要复用既有物料主数据，明确并行版本、路线、DHR、工序资源引用及未来生产执行的知识边界，同时避免将尚未实现的规划能力投影给客户或运行时。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0002-10",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/9",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "产品簇成员转移只影响未来生产对象；未来创建的生产对象保存产品、产品簇、所选版本和配置快照。",
+    "parentContext": "产品簇复用产品现有的制程根、制程版本、工序表单和文档绑定模型；制程解析服务已实现产品版本优先、产品簇兜底和严格有效期。初始建模时工单/批次创建及快照落库尚未实现；后续 DEC-0012 提供对象创建及制程锁定，生产执行首次合法 START 提供局部配置快照。产品簇身份冻结、转移只影响未来对象的要求与当前实现差异由 discrepancy.product-family-transfer-unstarted-object-context 记录，不能把该缺口隐去或将转移政策反向改为代码现状。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0006-18",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/17",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "用户保存和发布的对象是选中的流程草稿，而不是整个全屏弹窗。发布草稿后，已发布版本只读并成为当前对外流程；系统自动创建继承节点、连线和节点配置的下一草稿，但界面保持查看刚发布的版本，不自动切换。",
+    "parentContext": "生产模块需要维护可复用的作业模板及其适用范围，但不能将尚未开始的生产执行、作业实例和运行规则伪装为已实现能力。作业模板属于生产配置；产品管理、产品簇和工艺路线继续属于数据主数据菜单。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0006-19",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/18",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "已发布流程可在二次确认后复制到当前草稿，覆盖草稿的节点、连线和节点配置但不改变草稿版本号；若当前不存在草稿，则复制操作创建下一号草稿并继承来源配置。复制不改变已发布历史；覆盖、发布和自动创建草稿都必须记录审计快照。任何作业流程版本（包括草稿、当前发布版本和历史版本）都不可单独删除；当作业模板不存在适用规则时，允许删除整个作业模板，由系统在同一事务中统一清理其全部流程版本并记录删除审计。存在适用规则的作业模板仍然禁止删除。",
+    "parentContext": "生产模块需要维护可复用的作业模板及其适用范围，但不能将尚未开始的生产执行、作业实例和运行规则伪装为已实现能力。作业模板属于生产配置；产品管理、产品簇和工艺路线继续属于数据主数据菜单。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0007-03",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/2",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "生产执行按生产上下文和作业适用规则自动匹配，不在产品或工序配置中手工引用作业模板/版本。后续首 START 已在受限 OPERATION_START 切片匹配并冻结命中规则所选字段与当前已发布作业图；其他触发及完整通用执行契约不能由此推定。",
+    "parentContext": "初始作业配置阶段尚无生产执行、作业实例运行和快照落库；当时确认模板删除只受适用规则引用阻断，规则配置须使用当前已发布流程，生产执行按上下文自动匹配作业并冻结执行依据。后续 ExecutionSnapshotBuilder/ProductionExecutionEngine 已有 OPERATION_START 范围的匹配、嵌入作业图快照、受限条件求值和节点推进，不能再概括为全部未实现；独立作业实例、完整规则修订依据及通用事实/异常审计契约仍有缺口。本决策仅替代 DEC-0006 的“存在已发布流程即禁止删除模板”和仅冻结作业版本的旧边界，其余配置、生命周期、审计与页面语义保留。",
+    "parentSupersedes": [
+      "DEC-0006"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0007-04",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/3",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "创建作业实例时必须冻结作业模板引用、创建时的当前已发布作业流程版本引用、命中的作业适用规则快照和该已发布流程的作业流程配置快照；后续模板、规则或流程发布不得改变既有实例的执行依据。",
+    "parentContext": "初始作业配置阶段尚无生产执行、作业实例运行和快照落库；当时确认模板删除只受适用规则引用阻断，规则配置须使用当前已发布流程，生产执行按上下文自动匹配作业并冻结执行依据。后续 ExecutionSnapshotBuilder/ProductionExecutionEngine 已有 OPERATION_START 范围的匹配、嵌入作业图快照、受限条件求值和节点推进，不能再概括为全部未实现；独立作业实例、完整规则修订依据及通用事实/异常审计契约仍有缺口。本决策仅替代 DEC-0006 的“存在已发布流程即禁止删除模板”和仅冻结作业版本的旧边界，其余配置、生命周期、审计与页面语义保留。",
+    "parentSupersedes": [
+      "DEC-0006"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0009-02",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/1",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "发布作业流程版本前，所有表单填写节点必须引用当前生效时间窗内的表单版本；不存在、未生效或已失效的表单版本不能满足发布要求。表单版本的用户可见生效状态由统一 RDO 生效时间窗计算，持久化 status 不参与该引用判断。",
+    "parentContext": "作业流程编辑需要允许用户逐步完成复杂配置，草稿保存与对外发布承担不同的业务责任。草稿是可继续编辑的中间状态，发布才建立可供适用规则和未来生产执行读取的只读流程版本。本决策补充 DEC-0006、DEC-0007 和 DEC-0008 的流程版本生命周期与条件规则边界，并已同步到当前作业流程编辑器和发布接口。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0009-05",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/4",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "已发布流程版本保持只读；只有通过发布完整性校验的草稿可以成为当前对外流程，草稿保存不会改变当前对外流程。",
+    "parentContext": "作业流程编辑需要允许用户逐步完成复杂配置，草稿保存与对外发布承担不同的业务责任。草稿是可继续编辑的中间状态，发布才建立可供适用规则和未来生产执行读取的只读流程版本。本决策补充 DEC-0006、DEC-0007 和 DEC-0008 的流程版本生命周期与条件规则边界，并已同步到当前作业流程编辑器和发布接口。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0009-06",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/5",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "已发布流程版本再次打开时，必须基于该版本冻结的 nodesJson 和 edgesJson 完整渲染只读图形投影，包含呈现其已保存连接线所需的图形端点；不得因为只读状态隐藏连接线投影、回退草稿数据或重新推导连接关系，编辑能力仍仅对可编辑草稿开放。",
+    "parentContext": "作业流程编辑需要允许用户逐步完成复杂配置，草稿保存与对外发布承担不同的业务责任。草稿是可继续编辑的中间状态，发布才建立可供适用规则和未来生产执行读取的只读流程版本。本决策补充 DEC-0006、DEC-0007 和 DEC-0008 的流程版本生命周期与条件规则边界，并已同步到当前作业流程编辑器和发布接口。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0012-02",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/1",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "provenance: user-confirmed；工单创建和编辑使用 CREATED，不存在发布或 RELEASED 状态；CREATED 与 IN_PROCESS 工单均可在剩余计划数量内继续拆分生产对象，且必须沿用已锁定制程和生产形态；首次对象开工进入 IN_PROCESS；对象完成或取消后按终态回算工单；已完成工单可 CLOSED；尚未开工且无对象工单可 CANCELLED。",
+    "parentContext": "provenance: user-confirmed；本决策确认 eDHR 生产准备阶段工单与生产对象（批次/SN）的最小管理闭环。工单创建时制程可选，首次拆分生产对象时必须从产品制程或产品簇兜底制程中选择并写回锁定；同一工单的对象继承同一制程和生产形态。首版仅覆盖量产、对象拆分及基础生命周期，不扩展到报工执行、表单流程或批次转 SN。实现结论由 original-evidence 代码、迁移和测试证据核对；已锁定制程过期后仍可继续拆分属于 implementation inference，并非新的客户承诺。",
+    "parentSupersedes": [
+      "DEC-0001",
+      "DEC-0002"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0012-04",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/3",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "provenance: user-confirmed；产品制程优先于产品簇制程作为拆分选项来源；首次拆分锁定制程后，后续对象只能继承该版本。",
+    "parentContext": "provenance: user-confirmed；本决策确认 eDHR 生产准备阶段工单与生产对象（批次/SN）的最小管理闭环。工单创建时制程可选，首次拆分生产对象时必须从产品制程或产品簇兜底制程中选择并写回锁定；同一工单的对象继承同一制程和生产形态。首版仅覆盖量产、对象拆分及基础生命周期，不扩展到报工执行、表单流程或批次转 SN。实现结论由 original-evidence 代码、迁移和测试证据核对；已锁定制程过期后仍可继续拆分属于 implementation inference，并非新的客户承诺。",
+    "parentSupersedes": [
+      "DEC-0001",
+      "DEC-0002"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0012-06",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/5",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "provenance: inference；当前实现通过不重新应用有效期筛选的锁定制程读取策略，使过期锁定制程仍可用于历史工单继续拆分；该策略需由主开发智能体与业务确认长期保留边界。",
+    "parentContext": "provenance: user-confirmed；本决策确认 eDHR 生产准备阶段工单与生产对象（批次/SN）的最小管理闭环。工单创建时制程可选，首次拆分生产对象时必须从产品制程或产品簇兜底制程中选择并写回锁定；同一工单的对象继承同一制程和生产形态。首版仅覆盖量产、对象拆分及基础生命周期，不扩展到报工执行、表单流程或批次转 SN。实现结论由 original-evidence 代码、迁移和测试证据核对；已锁定制程过期后仍可继续拆分属于 implementation inference，并非新的客户承诺。",
+    "parentSupersedes": [
+      "DEC-0001",
+      "DEC-0002"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0014-06",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/5",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "provenance: user-confirmed；已关联工单的制程版本在拆分阶段只读锁定，不允许改写；用户可打开只读预览查看版本元数据、工艺路线、批记录模板和工序配置。",
+    "parentContext": "provenance: user-confirmed；本决策补充工单生产对象弹窗的批次录入方式。生产批次继续复用 ProductionObject 的 BATCH 形态，不新增独立批次状态或持久化实体。手动添加、按数量批量添加及 CSV/XLS/XLSX 导入先进入待提交清单，用户确认后通过一次批量接口提交；服务端在单一事务边界内处理整批，任一条失败时整批回滚。导入模板约定批次号、数量为必填，计划起止时间和备注为可选。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0036-01",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0036-form-process-version-reference-governance.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/0",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "provenance: user-confirmed；作业流程表单填报节点保存具体表单流程版本引用，作业流程版本发布后该引用随流程配置快照冻结，不因表单流程后续升版自动改变。",
+    "parentContext": "provenance: user-confirmed；用户确认表单流程侧需要知道版本被哪些作业引用，同时作业流程发布后必须锁定表单流程版本。表单流程升版不自动改变已发布作业流程，草稿发现旧版时需要提醒并通过兼容性校验后受控升级；点击升级只修改当前画布草稿，不代替用户保存。表单流程本身可选，已被作业流程引用的表单流程禁止删除。普通入口只展示当前发布版本，历史已发布版本仅保留后续管理员维护口子。",
+    "parentSupersedes": [
+      "DEC-0023"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0036-01A",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0036-form-process-version-reference-governance.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/1",
+    "status": "deprecated",
+    "visibility": "internal",
+    "statement": "provenance: user-confirmed；作业流程表单填报节点必须绑定当前生效的表单模板版本，但表单流程本身可选；不需要审批流程时可以不配置表单流程并发布。只有实际绑定表单流程后，系统才校验该流程的字段权限、按钮事件和签名字段绑定；清除表单流程时同步清理绑定级配置。",
+    "parentContext": "provenance: user-confirmed；用户确认表单流程侧需要知道版本被哪些作业引用，同时作业流程发布后必须锁定表单流程版本。表单流程升版不自动改变已发布作业流程，草稿发现旧版时需要提醒并通过兼容性校验后受控升级；点击升级只修改当前画布草稿，不代替用户保存。表单流程本身可选，已被作业流程引用的表单流程禁止删除。普通入口只展示当前发布版本，历史已发布版本仅保留后续管理员维护口子。",
+    "parentSupersedes": [
+      "DEC-0023"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0036-04",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0036-form-process-version-reference-governance.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/4",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "provenance: user-confirmed；作业流程草稿引用的表单流程版本不再是当前发布版时，系统必须明确提醒用户已有新版，发布确认中也应提示；系统不得静默替换草稿引用。",
+    "parentContext": "provenance: user-confirmed；用户确认表单流程侧需要知道版本被哪些作业引用，同时作业流程发布后必须锁定表单流程版本。表单流程升版不自动改变已发布作业流程，草稿发现旧版时需要提醒并通过兼容性校验后受控升级；点击升级只修改当前画布草稿，不代替用户保存。表单流程本身可选，已被作业流程引用的表单流程禁止删除。普通入口只展示当前发布版本，历史已发布版本仅保留后续管理员维护口子。",
+    "parentSupersedes": [
+      "DEC-0023"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0036-05",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0036-form-process-version-reference-governance.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/5",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "provenance: user-confirmed；用户显式升级草稿引用时，目标版本必须是当前已发布表单流程版本，并先校验字段权限例外、按钮事件和签名字段绑定兼容性；不兼容时拒绝升级并返回具体原因。签名字段绑定目标还必须是签名类型字段。点击升级只修改当前画布草稿，不自动保存；用户显式保存草稿后才持久化引用并重建使用投影。",
+    "parentContext": "provenance: user-confirmed；用户确认表单流程侧需要知道版本被哪些作业引用，同时作业流程发布后必须锁定表单流程版本。表单流程升版不自动改变已发布作业流程，草稿发现旧版时需要提醒并通过兼容性校验后受控升级；点击升级只修改当前画布草稿，不代替用户保存。表单流程本身可选，已被作业流程引用的表单流程禁止删除。普通入口只展示当前发布版本，历史已发布版本仅保留后续管理员维护口子。",
+    "parentSupersedes": [
+      "DEC-0023"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0036-06",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0036-form-process-version-reference-governance.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/6",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "provenance: user-confirmed；普通配置入口只展示当前发布版本。后端暂时保留历史已发布版本可被显式引用的能力，为后续管理员级版本维护保留口子；未来开放该入口时必须补充专用权限、明确提示和审计记录。",
+    "parentContext": "provenance: user-confirmed；用户确认表单流程侧需要知道版本被哪些作业引用，同时作业流程发布后必须锁定表单流程版本。表单流程升版不自动改变已发布作业流程，草稿发现旧版时需要提醒并通过兼容性校验后受控升级；点击升级只修改当前画布草稿，不代替用户保存。表单流程本身可选，已被作业流程引用的表单流程禁止删除。普通入口只展示当前发布版本，历史已发布版本仅保留后续管理员维护口子。",
+    "parentSupersedes": [
+      "DEC-0023"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0061-01",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0061-dhr-template-version-design-isolation.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/0",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "批记录模板复制版本后，目标版本的目录和表单引用可独立于源版本保存。",
+    "parentContext": "user-confirmed；同一批记录模板可拥有独立版本 composition。用户从版本行点击设计时必须以明确选择的版本作为设计上下文，避免缓存或默认排序展示或保存到另一个版本。本决策具体化 RDO 版本治理中的显式版本引用约束，仅覆盖模板设计 composition，不改变 DHR 实例、生产快照、审计事件或持久化模型。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0061-02",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0061-dhr-template-version-design-isolation.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/1",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "从版本行点击设计时，DHR 模板设计窗口必须读取和保存用户明确选择的 templateId 与 versionId；不得以缓存、默认排序、最新版本或父模板替代该 versionId。",
+    "parentContext": "user-confirmed；同一批记录模板可拥有独立版本 composition。用户从版本行点击设计时必须以明确选择的版本作为设计上下文，避免缓存或默认排序展示或保存到另一个版本。本决策具体化 RDO 版本治理中的显式版本引用约束，仅覆盖模板设计 composition，不改变 DHR 实例、生产快照、审计事件或持久化模型。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0062-01",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/0",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "BATCH 与 SN 生产对象均在首次合法 START 时由系统自动创建唯一 DHR 实例，禁止手工创建；创建与生产开工处于同一事务，失败整体回滚。",
+    "parentContext": "user-confirmed；本决策保留第一期 BATCH/SN 唯一实例、同事务创建、冻结上下文、目录子视图、权限及管理员默认授权。第一期列表只读和延期范围仅解释当时切片，现行完整归集与汇总按 DEC-0063、填报审批按 DEC-0068、终止按 DEC-0069。2026-09-27 原位消除无 dhrItemId 即不进入 DHR 的错误现行解释；不改变唯一实例、开工或生产完成规则。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0062-03",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/2",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "DHR 创建时冻结工单、产品、生产对象、产品制程版本、工艺路线版本、DHR 模板版本和目录快照；后续模板变化不改写既有实例。",
+    "parentContext": "user-confirmed；本决策保留第一期 BATCH/SN 唯一实例、同事务创建、冻结上下文、目录子视图、权限及管理员默认授权。第一期列表只读和延期范围仅解释当时切片，现行完整归集与汇总按 DEC-0063、填报审批按 DEC-0068、终止按 DEC-0069。2026-09-27 原位消除无 dhrItemId 即不进入 DHR 的错误现行解释；不改变唯一实例、开工或生产完成规则。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0067-01",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/0",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "user-confirmed；作业表单节点和产品/产品簇工序绑定表单均显式选择直接填报或按流程填报，不以有无流程引用替代新配置入口的模式选择。",
+    "parentContext": "user-confirmed；依据 DEC-PACKAGE-20260922-FORM-FILL-MODES 及本任务完整确认建立 L2 工作树增量。仅替代 DEC-0036-01A 中无流程即跳过配置校验及清除流程即清理绑定配置的旧边界，保留表单版本必选、流程版本治理和其他声明；DEC-0035 在按流程模式中继续适用，DEC-0073 保留。最新用户确认当前 MVP 不兼容旧数据、旧数据可重造，撤销此前兼容回退推断及历史兼容验收范围；存储和双模式草稿保留仍是独立 inference，不能解释为新旧数据双轨兼容。基线 0.3.24，尚未经独立质量验证，不表示发布。",
+    "parentSupersedes": [
+      "DEC-0036"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0067-02",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/1",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "user-confirmed；直接填报无需另建表单审批流程，在当前绑定配置权限组、字段例外、按钮和签署，并在运行时执行适用设置；无流程不等于免除已配置的权限和签署要求。",
+    "parentContext": "user-confirmed；依据 DEC-PACKAGE-20260922-FORM-FILL-MODES 及本任务完整确认建立 L2 工作树增量。仅替代 DEC-0036-01A 中无流程即跳过配置校验及清除流程即清理绑定配置的旧边界，保留表单版本必选、流程版本治理和其他声明；DEC-0035 在按流程模式中继续适用，DEC-0073 保留。最新用户确认当前 MVP 不兼容旧数据、旧数据可重造，撤销此前兼容回退推断及历史兼容验收范围；存储和双模式草稿保留仍是独立 inference，不能解释为新旧数据双轨兼容。基线 0.3.24，尚未经独立质量验证，不表示发布。",
+    "parentSupersedes": [
+      "DEC-0036"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0067-03",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/2",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "user-confirmed；按流程填报沿用既有已发布表单流程及其配置，以流程节点推进；直接填报配置不能替代该模式的节点权限、按钮和签署规则。",
+    "parentContext": "user-confirmed；依据 DEC-PACKAGE-20260922-FORM-FILL-MODES 及本任务完整确认建立 L2 工作树增量。仅替代 DEC-0036-01A 中无流程即跳过配置校验及清除流程即清理绑定配置的旧边界，保留表单版本必选、流程版本治理和其他声明；DEC-0035 在按流程模式中继续适用，DEC-0073 保留。最新用户确认当前 MVP 不兼容旧数据、旧数据可重造，撤销此前兼容回退推断及历史兼容验收范围；存储和双模式草稿保留仍是独立 inference，不能解释为新旧数据双轨兼容。基线 0.3.24，尚未经独立质量验证，不表示发布。",
+    "parentSupersedes": [
+      "DEC-0036"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0067-05",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/4",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "user-confirmed；最新指令明确本填报设置切片的当前 MVP 不需要兼容旧数据，旧数据可重造；取消历史数据回填、新旧数据双轨兼容及旧数据自动迁移方案，不再按旧流程引用自动推导缺失模式或为旧数据保留开放默认。新执行快照仍不可变，既有权限与签署校验继续执行，不因取消兼容而放宽。",
+    "parentContext": "user-confirmed；依据 DEC-PACKAGE-20260922-FORM-FILL-MODES 及本任务完整确认建立 L2 工作树增量。仅替代 DEC-0036-01A 中无流程即跳过配置校验及清除流程即清理绑定配置的旧边界，保留表单版本必选、流程版本治理和其他声明；DEC-0035 在按流程模式中继续适用，DEC-0073 保留。最新用户确认当前 MVP 不兼容旧数据、旧数据可重造，撤销此前兼容回退推断及历史兼容验收范围；存储和双模式草稿保留仍是独立 inference，不能解释为新旧数据双轨兼容。基线 0.3.24，尚未经独立质量验证，不表示发布。",
+    "parentSupersedes": [
+      "DEC-0036"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0075-08",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/7",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "新增自定义表单选择的是表单模板，表单模板没有发布生命周期；候选查询和添加资格均不得要求表单模板版本的 PUBLISHED 状态。保留模板有效性与租户范围校验，显式选择 versionId 并冻结所选模板的完整执行快照。数据库中遗留的版本状态字段不构成产品发布规则，本修复不迁移该字段；作业流程及表单流程的已发布版本校验继续独立适用。",
+    "parentContext": "user-confirmed；用户确认自定义表单支持当前工序和当前批次两种归属，并于 2026-09-24 授权恢复本功能 L2 门禁实施。 本决策仅局部替代 DEC-0059 的所有普通表单随工序收尾及自定义未完成份补填延期边界； 为 DEC-0068 的创建新实例补录增加继续填写已有未完成自定义份的独立路径，不允许改写已完成实例。 保留 DEC-0062 的生产完工事实、DEC-0063/0072 的全部实际证据自动归集政策和 DEC-0068 的不可变版本、人工退回及记录控制所有权。 2026-10-12 内审纠正此处沿用旧版“可选纳入”的错误引用；依据 DEC-0063-02/04/05 与 DEC-0072-01/03，目录编排只决定展示位置，不决定证据是否纳入。本次不重写 2026-09-24 原始确认记录。 实现进行中；运行验证范围止于现有生产执行、DHR 汇总和审核链路。放行、正常归档及记录控制授权关闭衔接仅登记规范，不声称已有运行入口。 DEC-0047-02及其自定义挂载场景中仅限当前工序、已发布资格待决的旧范围由本决策01/02/08替代，其他三类来源、多份独立和人数去重继续。",
+    "parentSupersedes": [
+      "DEC-0059",
+      "DEC-0068",
+      "DEC-0047"
+    ],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0077-12",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/11",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "表单追溯与统计的字段来源映射随实际生产使用进入执行快照；工序或作业表单在生产对象首次开工时复制当时模板配置，执行中附加的自定义表单在附加时复制当时配置。后续修改同一表单模板版本不回写已形成的执行快照、来源表单或投影结果；新使用读取当时配置。表单模板沿用原有编辑和版本规则，不为追溯投影另设手动发布冻结或禁止编辑的生命周期。",
+    "parentContext": "user-confirmed；同一 DEC-PACKAGE-20260929-FORM-PROJECTION 切片从独立设计进入实现，2026-09-29 补充 Q1/Q2/Q5/Q7/Q8 确认，2026-09-30确认最终产出与独立质量统计口径，2026-10-03补录画布优先、低成本二开、跨表单指标汇总、查找追溯与业务统计并列可选、真实上下文统计归属及部分字段自动带入目标。2026-10-09的27–29收敛MVP开发历史处理、预置生产批次/SN的所属主体含义及组合查询匹配粒度；局部替代范围以各声明明确的supersedes文字为准，旧证据原文保留。2026-10-13的38确认四类独立菜单页面、详情直接查看来源原表单及字段/实际行定位，收敛Q16对应导航范围；逐笔流水和撤下合计入口仍是主智能体工程选择，未定跨报表组织继续保留。统计模型由产品方预定义，客户选择字段并配置来源，试验实现允许统一替换；新增正式统计与 DEC-0045/0046 的已保存数量过程参考分开，不废弃其历史解释。以下确认不是实现、发布或全报表验收证明；技术存储选择、未确认交互、跨表单同事件关联方式、未定检索历史及结果导航、上下文带入生命周期及 AI 不冒充用户业务决定。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0077-27",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/26",
+    "status": "specified",
+    "visibility": "internal",
+    "statement": "MVP开发阶段的历史数据可直接修复迁移或作废，无需为了旧开发数据维持兼容层，应保证此后功能数据遵守正确契约。在MVP开发历史范围内supersedes DEC-0077-02/09/25/26对应的旧数据保留限制及纯兼容负担；原决定和证据保留历史来源。本条不取消独立数据库、未来正确数据的使用时快照、真实生产/DHR关联、权限、签署或审计契约，不外推为删除真实客户生产证据。此为设计政策确认，本轮未执行数据修复、迁移或作废；具体处置须在实现记录中列明受影响数据与结果，开发清理不等同A12受控记录作废运行能力。",
+    "parentContext": "user-confirmed；同一 DEC-PACKAGE-20260929-FORM-PROJECTION 切片从独立设计进入实现，2026-09-29 补充 Q1/Q2/Q5/Q7/Q8 确认，2026-09-30确认最终产出与独立质量统计口径，2026-10-03补录画布优先、低成本二开、跨表单指标汇总、查找追溯与业务统计并列可选、真实上下文统计归属及部分字段自动带入目标。2026-10-09的27–29收敛MVP开发历史处理、预置生产批次/SN的所属主体含义及组合查询匹配粒度；局部替代范围以各声明明确的supersedes文字为准，旧证据原文保留。2026-10-13的38确认四类独立菜单页面、详情直接查看来源原表单及字段/实际行定位，收敛Q16对应导航范围；逐笔流水和撤下合计入口仍是主智能体工程选择，未定跨报表组织继续保留。统计模型由产品方预定义，客户选择字段并配置来源，试验实现允许统一替换；新增正式统计与 DEC-0045/0046 的已保存数量过程参考分开，不废弃其历史解释。以下确认不是实现、发布或全报表验收证明；技术存储选择、未确认交互、跨表单同事件关联方式、未定检索历史及结果导航、上下文带入生命周期及 AI 不冒充用户业务决定。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0078-01",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/0",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "每个具体产品或产品簇制程版本最多指定一个最终产出工序，可以不设；不设时明确显示未配置，不默认取末道工序，也不额外阻断生产。标记属于具体制程版本的路线节点绑定，不属于可复用的全局工序定义；实际执行按使用时冻结配置解释，当前制程修改不改写已使用实例。",
+    "parentContext": "user-confirmed；2026-10-15在DEC-0077-11/13的数量层级基础上，用户确认最终工序基数、正式生效即累计、多次报工、缺数与单位及旧实例不补算，并否决额外的逐工序单位配置与自动带入方案。来源为当前对话，原文与工程选择分列于确认证据。本决定不把冠骋的固定good_qty或SAVE时点照搬为我方规则，不扩展SN计数、生产/DHR生命周期、质量公式或A12受控修订作废。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  },
+  {
+    "id": "DEC-0078-06",
+    "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+    "path": "docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml",
+    "sourceLocator": "/decisions/0/decisionStatements/5",
+    "status": "implemented",
+    "visibility": "internal",
+    "statement": "不补算旧生产实例；新开工使用冻结的新最终产出配置与产品单位。不得把新用途或当前制程配置反套到没有相应冻结依据的旧实例，也不以默认零虚构其历史产出。",
+    "parentContext": "user-confirmed；2026-10-15在DEC-0077-11/13的数量层级基础上，用户确认最终工序基数、正式生效即累计、多次报工、缺数与单位及旧实例不补算，并否决额外的逐工序单位配置与自动带入方案。来源为当前对话，原文与工程选择分列于确认证据。本决定不把冠骋的固定good_qty或SAVE时点照搬为我方规则，不扩展SN计数、生产/DHR生命周期、质量公式或A12受控修订作废。",
+    "parentSupersedes": [],
+    "boundary": "Parent supersedes is navigation; README states exact local replacement, never whole-decision invalidation."
+  }
+]

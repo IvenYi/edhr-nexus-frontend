@@ -1,6 +1,6 @@
 # W1 后续审查进度
 
-本目录接续首批，固定来源/目标为 `edhr-dev@6379bf105127b05a65695992b008b55c142264f9`，审查分支 `audit/edhr-dev-w1-followup-20261015`。这是进行中的检查点，不是 W1 或全分支完成报告。仅增加审查文档/清单，不修改业务代码、测试、知识定义、迁移或历史数据。
+本目录接续首批，固定来源/目标为 `edhr-dev@6379bf105127b05a65695992b008b55c142264f9`，审查分支 `audit/edhr-dev-w1-followup-20261015`。这是进行中的审查批次，不是 W1 或全分支完成报告。首个检查点31a8074a只有审查文档/清单；后续本批已复现并修复首次START配置引用混合，增加回归和有限知识证据。没有迁移或历史数据处置。
 
 ## 首批已按用户授权合并
 
@@ -38,4 +38,16 @@ git rev-parse refs/remotes/origin/edhr-dev
 
 四个知识 gap 均已缩小到具体消费者/运行边界，但仍是 evidence-gap：没有通用事实读取器的证据，不能由列存在或硬编码领域实现自动提升 fact availability/成熟度。逐 ID 说明见 [ontology/README.md](ontology/README.md) 和 gap-recheck.jsonl。本体结果 not-applicable 仅指本次不写定义，整体审计继续适用。未新增已证实代码缺陷或必须让用户决定的业务歧义。
 
-下一检查点：先构造首次 START 与配置写入的受控并发证据；继续终止读取依赖及审批/修订/导出剩余入口，再处理 F004。仅有明确原规则、有效触发和反证后的代码偏差才最小整改；若形成代码修复或正式批次验收，再派未参与修复实例独立核对。W1 及 W2–W7 未标完成，未将本进度文档写成新 qualityResult passed。本目录为 L0 审查进度记录，无业务变更，不另跑无关全系统门禁。
+以上是31a8074a检查点当时的结论；其后的确定性整改单列于下，不用新发现覆盖当时的原始证据。
+
+## 后续 L2：首次 START 配置竞争整改
+
+已按 [决策包](decision-package.yaml) 完成实际PostgreSQL受控复现：START上下文route3/DHR4，却混入新配置form15/item150。原行锁保护生产状态，默认READ_COMMITTED无法保护跨查询的配置一致性。修复执行事务隔离级别及回滚后的特定40001冲突翻译；未更改业务政策。最终用例进一步验证旧DHR项被后续配置事务删除时仍冻结旧目录，新对象读取新配置，旧execution不回写。详情见 [发现](findings.yaml)、[验证说明](validation.md) 和 [红轮证据](evidence/start-configuration-red.json)。
+
+本批知识仅同步两条源码/测试说明并新增一个test evidence，定义2486→2487，版本0.3.25不变。35条相关原声明是定位索引，不是35个新增语义通过；四个evidence-gap仍保留。见 [本体结果](ontology/config-race-ontology-result.yaml)。
+
+PostgreSQL专项必须显式使用真实驱动运行；H2的隔离语义不能代替。运行、跳过与独立质量分开记录，原25项、首批56/89和本批数量不相加虚增覆盖。最终主侧及独立结果在本目录新增索引中记录，不回填6379固定清单或原检查点运行结果。
+
+最终全新独立实例已对代码候选 `1113fe14f7f7539b9727fc708f49838504287d4f` 返回 [qualityResult passed](evidence/independent-config/quality-result.yaml)：12项必需检查通过、该high resolved、无open finding/阻断。实际PostgreSQL67通过/2原夹具跳过、H2相邻33通过、知识89通过，另3项控制器分支probe未加进测试数。前后1,196个产品/测试/知识/工具/契约保护文件摘要一致。后续只加入报告及状态说明，不改写实际受测提交；交付边界与原始证据位置见[交付说明](evidence/independent-config/DELIVERY.md)。本批技术上建议审阅合并，不代表全分支审完或已获合并/部署授权。
+
+下一检查点：W1审批/修订/导出剩余入口，已补读的方法、保护边界和待执行场景见[剩余路径映射](remaining-path-map.md)；随后F004及W2–W7。七个方法级实际审查记录见[增量进度](review-progress.jsonl)，均未将整个文件或W1标完。本批只推送审查分支供审阅，不自动合并或部署；终止detail依赖目前仍无合法失败触发，暂不修改该处业务代码。

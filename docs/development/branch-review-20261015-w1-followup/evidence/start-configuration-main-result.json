@@ -1,0 +1,122 @@
+{
+  "runner": "primary-agent",
+  "independentQuality": false,
+  "headAtRun": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+  "workingTreeState": "code, test, knowledge and audit documentation changes on HEAD; exact scoped hashes below",
+  "targetCommit": "6379bf105127b05a65695992b008b55c142264f9",
+  "sourceSha256": {
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java": "2be98ada6ce0549c20b32bdaa4a27345fbaeff16bfadffef8d09ae2c8df26452",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java": "4d40cb12acd393aaeef966aaecd6918ba86d3135ed8435b94e2a55c3646bf59a",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java": "b0a752129382a761f435848b40719c93753facdd8932a83eb7ea1cf43894e7d7",
+    "docs/knowledge/evidence/production-execution.yaml": "37006edb6ca2ff539568d5e95831343f31bde913553d6db5695bf866298e6f1d"
+  },
+  "runs": [
+    {
+      "kind": "postgresql",
+      "database": "isolated PostgreSQL 16.15",
+      "exitCode": 0,
+      "tests": 69,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 2,
+      "passed": 67,
+      "suites": [
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "tests": 69,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 2,
+          "xmlPath": "/tmp/edhr-w1-snapshot-pg-final-xml/TEST-com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest.xml",
+          "xmlSha256": "e616941b759cf05cfefa3bfc355ad841feaffaba5a22c2c941e99a5996dcfc2d"
+        }
+      ],
+      "logPath": "/tmp/edhr-w1-snapshot-pg-final.log",
+      "logSha256": "6afda14c7f5443b22ef93b5f4160480c94df2d8ceb3d5ffea367e76aec8df0a7",
+      "execPluginSkipped": false
+    },
+    {
+      "kind": "h2",
+      "database": "isolated H2",
+      "exitCode": 0,
+      "tests": 102,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3,
+      "passed": 99,
+      "suites": [
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "tests": 69,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 3,
+          "xmlPath": "/tmp/edhr-w1-snapshot-h2-final-xml/TEST-com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest.xml",
+          "xmlSha256": "ce61592a751c0aff5aa65a3dbd58230c4a084a89472e4ac84ee797dbccc230b1"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.WorkOrderCloseAtomicityTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "xmlPath": "/tmp/edhr-w1-snapshot-h2-final-xml/TEST-com.zencas.edhr.production.controller.WorkOrderCloseAtomicityTest.xml",
+          "xmlSha256": "653a3907403ddc6f4c422fe283ad67eb6dea27f901a423e0bdf29df4b85d229f"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrFillingServiceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "xmlPath": "/tmp/edhr-w1-snapshot-h2-final-xml/TEST-com.zencas.edhr.production.service.DhrFillingServiceTest.xml",
+          "xmlSha256": "673aacd22eb3f04d8c20a18e1121b1d618f8cad32000954474e9b5c93e590735"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+          "tests": 24,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "xmlPath": "/tmp/edhr-w1-snapshot-h2-final-xml/TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml",
+          "xmlSha256": "cf276372afc7f0cf99f169b99b0514fb471e0bc4a5fc11ba93f31c3987485fcd"
+        }
+      ],
+      "logPath": "/tmp/edhr-w1-snapshot-h2-final.log",
+      "logSha256": "eef1098262498578aca17c4ee2206c80a7b6f14c86e465ba3e3f0d75fe3d710a",
+      "execPluginSkipped": false
+    },
+    {
+      "kind": "knowledge",
+      "database": "none",
+      "exitCode": 0,
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 89,
+      "suites": [
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "tests": 89,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "xmlPath": "/tmp/edhr-w1-snapshot-knowledge-final-xml/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+          "xmlSha256": "481b3edc145ddc05994381c622e34b7ee0a083360e5f09ef44107d6a85340705"
+        }
+      ],
+      "logPath": "/tmp/edhr-w1-snapshot-knowledge.log",
+      "logSha256": "edb88f91e406cd4b7e2d2a76bb5e5917e4794eb74f931731540388a04fb70e20",
+      "execPluginSkipped": null
+    }
+  ],
+  "coverageLimits": [
+    "PostgreSQL dedicated configuration case actually executed; H2 cannot substitute its database-wide MVCC semantics.",
+    "Two original opt-in browser fixtures skipped; PostgreSQL-only case additionally skipped under H2; no skip counted as passed.",
+    "Backend HTTP is authenticated MockMvc; administrator writes model valid source transactions via SQL, not administrator HTTP E2E.",
+    "DHR print resources rebuilt by backend Maven, but no full UI/PDF visual scenario executed in this batch.",
+    "Knowledge checks are schema/IDs/references/tests, not complete semantic audit.",
+    "No user database, historical recovery, merge, deployment or Actions query/trigger."
+  ]
+}

@@ -1,0 +1,70 @@
+auxiliaryCheckResult:
+  result: passed
+  role: read-only-policy-and-source-boundary-subcheck
+  finalIndependentQualityResult: false
+  baseCommit: 31a8074a8962da66b2c4e49f4bf5a1a92724bfa0
+  headCommit: 1113fe14f7f7539b9727fc708f49838504287d4f
+  contractBaseline:
+    sourceCommit: 1113fe14f7f7539b9727fc708f49838504287d4f
+    targetBranch: edhr-dev
+    targetCommit: 6379bf105127b05a65695992b008b55c142264f9
+    contractReadCommit: 1113fe14f7f7539b9727fc708f49838504287d4f
+    uncommittedContractPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.actual-atomic-configuration-writer
+      outcome: passed
+      method: inspection
+      evidence:
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java:261
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java:132
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java:238
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java:295
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java:345
+    - id: check.actual-composition-replacement-and-delete-restrictions
+      outcome: passed
+      method: inspection
+      evidence:
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/DhrTemplateWorkspaceController.java:101
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/DhrTemplateWorkspaceController.java:120
+        - gmp-platform/backend/src/main/resources/db/changelog/0086-master-data-deletion-protection.sql:68
+        - gmp-platform/backend/src/main/resources/db/changelog/0086-master-data-deletion-protection.sql:69
+    - id: check.existing-policy-and-history-protection
+      outcome: passed
+      method: inspection
+      evidence:
+        - DEC-0001-04
+        - DEC-0001-05
+        - DEC-0001-06
+        - DEC-0001-09
+        - DEC-0062-02
+        - DEC-0062-03
+        - DEC-0077-12
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java:153
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java:176
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFillingService.java:63
+    - id: check.scoped-evidence-sync
+      outcome: passed
+      method: command
+      command: Python/PyYAML compare production-execution.yaml at 31a against candidate; recursively count non-schema definition IDs
+      evidence:
+        - one new evidence; two description-only changes; no removed definitions
+        - 2487 non-schema definition IDs; zero duplicate definition IDs
+        - knowledge model 0.3.25 unchanged
+    - id: check.contract-blob-baseline
+      outcome: passed
+      method: command
+      command: git rev-parse commits:path for AGENTS.md, quality-verifier.md and agent-handoff-contract.md
+      evidence:
+        - candidate, target6379 and original-read537 have identical three contract blobs
+  findings: []
+  residualRisks:
+    - id: gap.administrator-http-and-full-matrix
+      description: Controlled SQL is a sourced model of atomic admin updates, not administrator HTTP/JPA E2E or all configuration interleavings.
+    - id: gap.execution-owned-by-parent-quality
+      description: No Maven, PG/H2 runtime, browser or migration execution by this auxiliary instance. Parent quality must execute applicable tests independently.
+    - id: gap.delete-scope
+      description: Item removal is valid for the controlled no-remaining-reference case; no unconditional historical-item deletion conclusion or full delete-guard acceptance.
+  blockingConditions: []
+  changedRepositoryPaths: []
+  report: /tmp/edhr-w1-snapshot-policy-subcheck/README.md

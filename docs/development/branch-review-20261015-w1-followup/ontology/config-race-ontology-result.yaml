@@ -1,0 +1,70 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 1113fe14f7f7539b9727fc708f49838504287d4f
+    targetBranch: edhr-dev
+    targetCommit: 6379bf105127b05a65695992b008b55c142264f9
+    contractReadCommit: 537bb2402227bfe6369c44c2b1b4686481c50f27
+    uncommittedContractPaths: []
+  reason: 对已复现身份/引用混合的最小技术修复进行有限证据同步；仅production-execution证据文件两条源码/测试说明及一个新测试证据，不改已确认DEC/规则/生命周期/成熟度。原政策只读核对基线31a；本次完成时实际HEAD1113fe14已包含主侧代码、测试及本知识同步，ontology报告尚为其外未提交新增文件。契约实际初读537并核对source/target相同blob，见同步核对记录。RR与40001翻译为工程策略，管理写侧为两次有序原子SQL模型而非管理员HTTP。PostgreSQL专项必须显式执行，H2跳过不计通过；主侧实际运行结果与独立质量分列，本体不冒称运行或最终质量通过。
+  changedArtifacts:
+  - path: docs/knowledge/evidence/production-execution.yaml
+    changeType: update
+    ids:
+    - evidence.production-execution-service-source
+    - evidence.production-execution-integration-tests
+    - evidence.production-execution-start-configuration-consistency-tests
+  knowledgeSync:
+  - id: evidence.production-execution-service-source
+    disposition: updated
+    scope: 源码说明限定act的一致视图、同事务DHR目录读取，以及直接控制器在事务回滚后仅翻译40001、不自动重试；不变业务政策或全入口隔离承诺。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java
+  - id: evidence.production-execution-integration-tests
+    disposition: updated
+    scope: 原测试范围保留，增加定向配置交错断言导航；新增专项以PostgreSQL driver条件执行，必须实际运行PostgreSQL，H2跳过不计通过。源码不等于运行。
+    sourceReferences:
+    - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+  - id: evidence.production-execution-start-configuration-consistency-tests
+    disposition: updated
+    scope: 新增有界PostgreSQL必跑测试证据：旧context查询后新制程父子配置提交，再独立移除旧DHR项；本次旧绑定/目录、新对象新配置、旧execution不改写。H2缺少该数据库级MVCC语义而条件跳过，不能替代专项；不降低断言。管理侧有序SQL模型不是管理员HTTP E2E；不穷举所有配置并发。
+    sourceReferences:
+    - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    - docs/development/branch-review-20261015-w1-followup/decision-package.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.w1-config-race-scoped-knowledge-sync
+    checkType: reference
+    command: Python/PyYAML核对限定schema、唯一ID、源码路径及原有证据保留
+    outcome: passed
+    evidence:
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-knowledge-sync-validation.json
+    - 2486→2487；仅新增1 test evidence与两条description，版本0.3.25不变；非Maven或运行通过。
+  - id: validation.w1-config-race-policy-evidence-boundary
+    checkType: evidence-path
+    command: 对照原DEC/用户确认、实际实现diff和两事务测试源码限定原政策/工程策略/未执行范围
+    outcome: passed
+    evidence:
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-policy.md
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-policy-index.json
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-policy-baseline.json
+  - id: validation.w1-config-race-main-knowledge-suite
+    checkType: schema
+    command: 主侧统一执行BusinessKnowledgeModelTest；本实例未运行Maven
+    outcome: passed
+    evidence:
+    - docs/development/branch-review-20261015-w1-followup/validation.md
+    - /tmp/edhr-w1-snapshot-knowledge.log
+    - 主侧实际89条目、0失败/error/skip，覆盖本知识差异；不替代全量语义审查或最终独立质量。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
