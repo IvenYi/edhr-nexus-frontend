@@ -1,0 +1,30 @@
+[
+  {
+    "suite": "com.zencas.edhr.production.controller.WorkOrderCloseAtomicityTest",
+    "tests": 4,
+    "failures": 2,
+    "errors": 0,
+    "skipped": 0,
+    "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "testSourceSha256": "2159eacd43c18600f7d90516ed1ea8f8f1fdd551a040cc0f7caa694b2f897c10",
+    "cases": [
+      {
+        "name": "auditSerializationFailureAlsoRollsBackTheClose",
+        "failure": "\nexpected: \"COMPLETED\"\n but was: \"CLOSED\""
+      },
+      {
+        "name": "auditWriteFailureRollsBackTheAlreadyExecutedClose",
+        "failure": "\nexpected: \"COMPLETED\"\n but was: \"CLOSED\""
+      },
+      {
+        "name": "successfulCloseCommitsBothStatusAndExactBeforeAfterAudit",
+        "failure": null
+      },
+      {
+        "name": "invalidStateRemainsRejectedWithoutStatusOrAuditWrite",
+        "failure": null
+      }
+    ],
+    "originalXmlSha256": "ef5a8f4342b2ea9bae92709e6a728295e869dc17d054e686381a1780b81441ac"
+  }
+]

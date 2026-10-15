@@ -1,0 +1,127 @@
+{
+  "originalMapCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+  "candidateCommit": "aad4cfe9445a82658c1113de73c9c3561af566d5",
+  "paths": [
+    {
+      "path": "docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml",
+      "reviewedBlob": "da08120e9917f838a62e60a3eddbe8ca9c55f5d9",
+      "candidateBlob": "da08120e9917f838a62e60a3eddbe8ca9c55f5d9",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "reviewedBlob": "864c6ec676bcd8b9a9351a3c7326350a6d260217",
+      "candidateBlob": "864c6ec676bcd8b9a9351a3c7326350a6d260217",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-instance-management-user-confirmed.md",
+      "reviewedBlob": "d3522fbc555b7fe270dafbb02cc066d08b515072",
+      "candidateBlob": "d3522fbc555b7fe270dafbb02cc066d08b515072",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "reviewedBlob": "2625731535c1997c9435d7c9d69497241a79854c",
+      "candidateBlob": "2625731535c1997c9435d7c9d69497241a79854c",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-instance-management.yaml",
+      "reviewedBlob": "a4875067d85c2bbe7acab1081d73bb4fec887cf1",
+      "candidateBlob": "a4875067d85c2bbe7acab1081d73bb4fec887cf1",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "reviewedBlob": "3c2eb0c083b1bc9ec6a49d3bac70e9a620eaef85",
+      "candidateBlob": "3c2eb0c083b1bc9ec6a49d3bac70e9a620eaef85",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-instance-management.yaml",
+      "reviewedBlob": "b65b7969ab3eba2474792b57f7fc2ef21fe5355c",
+      "candidateBlob": "b65b7969ab3eba2474792b57f7fc2ef21fe5355c",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-summary.yaml",
+      "reviewedBlob": "c2c1989649eaddaa78fcf236c92bb4619cbce832",
+      "candidateBlob": "c2c1989649eaddaa78fcf236c92bb4619cbce832",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrInstanceController.java",
+      "reviewedBlob": "84c4c7a644e7345e426c35463ae2da163e88e6e4",
+      "candidateBlob": "84c4c7a644e7345e426c35463ae2da163e88e6e4",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrSummaryController.java",
+      "reviewedBlob": "048d7c0fb045827b41f167d6f9b4776f00325e34",
+      "candidateBlob": "048d7c0fb045827b41f167d6f9b4776f00325e34",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java",
+      "reviewedBlob": "9401ccff54412a60fc60b5097f2a5167168d28ca",
+      "candidateBlob": "9401ccff54412a60fc60b5097f2a5167168d28ca",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "reviewedBlob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "candidateBlob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "reviewedBlob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "candidateBlob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "reviewedBlob": "3c9590c696c4762c94bcc60a6f7ff81e223d829c",
+      "candidateBlob": "3c9590c696c4762c94bcc60a6f7ff81e223d829c",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java",
+      "reviewedBlob": "5a566444bdabdad4f8371730bf153bd73d051ee9",
+      "candidateBlob": "5a566444bdabdad4f8371730bf153bd73d051ee9",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "reviewedBlob": "8c5bbc16e977ccac438aa0cc3d574d940da8d4a3",
+      "candidateBlob": "8c5bbc16e977ccac438aa0cc3d574d940da8d4a3",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+      "reviewedBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+      "candidateBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+      "reviewedBlob": "2a1019c1e68fd1bf20bed6b0e95bdfda81755867",
+      "candidateBlob": "2a1019c1e68fd1bf20bed6b0e95bdfda81755867",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrInstanceMigrationTest.java",
+      "reviewedBlob": "9f0b25e2535dda7ed93f02d76a17a23f9aaa1d88",
+      "candidateBlob": "9f0b25e2535dda7ed93f02d76a17a23f9aaa1d88",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java",
+      "reviewedBlob": "9a0578268c0b47f23ebac329c1e25aac4dbaaf5a",
+      "candidateBlob": "9a0578268c0b47f23ebac329c1e25aac4dbaaf5a",
+      "unchanged": true
+    }
+  ],
+  "scope": "Only original33 mapped source/test/policy paths, not whole current branch; unchanged blobs support limited reuse, not rerun runtime"
+}

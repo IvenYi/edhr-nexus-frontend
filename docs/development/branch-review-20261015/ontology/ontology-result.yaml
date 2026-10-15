@@ -1,0 +1,42 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 537bb2402227bfe6369c44c2b1b4686481c50f27
+    targetBranch: edhr-dev
+    targetCommit: 537bb2402227bfe6369c44c2b1b4686481c50f27
+    contractReadCommit: 537bb2402227bfe6369c44c2b1b4686481c50f27
+    uncommittedContractPaths: []
+  reason: 本体全量审计适用且进行中；本批只读盘点及第一条DHR静态逐ID映射，不改变业务/知识定义、成熟度、发布投影或阶段。not-applicable仅指本批无知识定义变更，绝不表示全分支本体审计不适用或完成。33/2485项完成限定静态语义核对，其他2452
+    pending，证据不足不计一致。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.w0-knowledge-schema-driven-enumeration
+    checkType: reference
+    command: python3 /tmp/edhr-audit-ontology/inventory.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-audit-ontology/inventory-summary.json
+    - 2485 unique schema-driven definition IDs; 252 tracked knowledge files; no ID
+      references counted as definitions; old2292 preserved separately
+  - id: validation.w1-static-dhr-semantic-map
+    checkType: evidence-path
+    command: python3 /tmp/edhr-audit-ontology/semantic_review.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-audit-ontology/semantic-review.jsonl
+    - /tmp/edhr-audit-ontology/semantic-summary.json
+    - 33 manually read and scoped static source/test-assertion mappings; 28 consistent,1
+      partially superseded,4 evidence-gap; no runtime or Maven claim
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

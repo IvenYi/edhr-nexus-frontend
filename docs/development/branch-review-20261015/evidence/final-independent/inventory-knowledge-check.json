@@ -1,0 +1,56 @@
+{
+  "head": "1dac6338c24efb2330fe8702ed018e55a8947711",
+  "targetRef": "e9c00df8c85b021e7bf206e575a5a726cd46c12b",
+  "trackedTargetPaths": 1423,
+  "trackedCandidatePaths": 1468,
+  "targetTree": "e6de29f854bf77658da07fa6d74f9c69a5d9badf",
+  "reproductionByteMatches": {
+    "coverage.csv": true,
+    "entrypoints.csv": true,
+    "migrations.csv": true,
+    "inventory-summary.json": true
+  },
+  "entryCandidates": {
+    "http-annotation": 437,
+    "state-definition-candidate": 8,
+    "background-candidate": 1,
+    "frontend-route-candidate": 191
+  },
+  "migrationFiles": 124,
+  "knowledgeFiles": 252,
+  "knowledgeRecordTypeCounts": {
+    "decision": 77,
+    "decisionStatement": 498,
+    "acceptanceScenario": 385,
+    "implementationDiscrepancy": 71,
+    "evidence": 470,
+    "executionContract": 2,
+    "fact": 263,
+    "term": 136,
+    "implementationAnchor": 61,
+    "concept": 128,
+    "relation": 142,
+    "openQuestion": 19,
+    "rule": 233
+  },
+  "baselineDefinitions": 2485,
+  "candidateDefinitions": 2486,
+  "newIds": [
+    "evidence.work-order-close-audit-atomicity-test"
+  ],
+  "deletedIds": [],
+  "semanticReviewed": 33,
+  "semanticConclusions": {
+    "consistent": 28,
+    "superseded": 1,
+    "evidence-gap": 4
+  },
+  "remainingPending": 2452,
+  "contractSha256": {
+    "AGENTS.md": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+    "codeplzreadme.md": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+    "docs/agents/agent-handoff-contract.md": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+    "docs/agents/quality-verifier.md": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+  },
+  "workingTreePorcelain": ""
+}

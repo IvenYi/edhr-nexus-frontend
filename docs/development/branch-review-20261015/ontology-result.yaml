@@ -1,0 +1,64 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 4e7fd37500157b4fd055e8a54fe8105f1bf03ae2
+    targetBranch: edhr-dev
+    targetCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    contractReadCommit: 537bb2402227bfe6369c44c2b1b4686481c50f27
+    uncommittedContractPaths: []
+  reason: 在实际4e7fd375代码提交上，仅更新已有DEC0015关闭审计差异与同一测试证据的说明，记录先锁再before解决JPA一级缓存重复关闭；旧55、首个独立failed和新真实JPA五例/合计56分开。两处知识说明仍是sourceCommit之外的未提交变更；无新ID或业务政策。实际契约初读537，已逐文件核对到4e7契约blob未变，不伪造新读取记录。正式Maven由主侧统一运行；本结果不是最终独立质量。
+  changedArtifacts:
+  - path: docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml
+    changeType: update
+    ids:
+    - discrepancy.work-order-close-audit-atomicity
+  - path: docs/knowledge/evidence/production.yaml
+    changeType: update
+    ids:
+    - evidence.work-order-close-audit-atomicity-test
+  knowledgeSync:
+  - id: discrepancy.work-order-close-audit-atomicity
+    disposition: updated
+    scope: 仅说明新增外层事务修复后暴露的JPA陈旧before/重复close根因、入口先锁再快照及实际红绿；保留resolved/line112、原声明、权限、生命周期与审计前后政策，独立failed原样保留，最终全新质量尚待验收。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java:112
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/repository/WorkOrderRepository.java:16
+    - docs/development/branch-review-20261015/evidence/independent-first-failed/quality-result.yaml
+    - docs/development/branch-review-20261015/validation.md
+  - id: evidence.work-order-close-audit-atomicity-test
+    disposition: updated
+    scope: 同一ID更新为真实WorkOrder/SpringDataJpaRepository/Hibernate/JpaTransactionManager/H2五例；其他repository与AuditEventRepository仍测试替身，后者同事务真实SQL。5项1fail红轮与5+相邻56全部通过绿轮分列，不与旧55相加；不宣称HTTP、AuditEvent
+      JPA、PostgreSQL或最终独立质量。
+    sourceReferences:
+    - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderCloseAtomicityTest.java
+    - docs/development/branch-review-20261015/evidence/close-jpa-red-case-index.json
+    - docs/development/branch-review-20261015/evidence/close-jpa-green-case-index.json
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.close-jpa-knowledge-scoped-schema-reference-preservation
+    checkType: reference
+    command: Python/PyYAML限定schema字段、唯一ID、引用、修改范围和历史保留断言
+    outcome: passed
+    evidence:
+    - /tmp/edhr-audit-ontology/close-jpa-knowledge-validation.json
+    - 2486定义，0 ID增删；仅既有summary/description两个字段变化；其他DEC声明与差异、所有其他证据不变。
+  - id: validation.close-jpa-evidence-and-baseline-consistency
+    checkType: evidence-path
+    command: 读取主侧最终green log/.exit及红绿用例索引；核对旧独立failed保留与契约blob
+    outcome: passed
+    evidence:
+    - /tmp/edhr-audit-ontology/close-jpa-knowledge-validation.json
+    - /tmp/edhr-audit-jpa-close-green-final.log
+    - /tmp/edhr-audit-jpa-close-green-final.exit
+    - docs/development/branch-review-20261015/evidence/independent-first-failed/quality-result.yaml
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

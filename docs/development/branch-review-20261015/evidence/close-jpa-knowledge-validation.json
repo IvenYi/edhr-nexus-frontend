@@ -1,0 +1,36 @@
+{
+  "sourceCommit": "4e7fd37500157b4fd055e8a54fe8105f1bf03ae2",
+  "targetCommit": "e9c00df8c85b021e7bf206e575a5a726cd46c12b",
+  "contractReadCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+  "contractBlobsUnchanged": [
+    "AGENTS.md",
+    "docs/agents/agent-handoff-contract.md",
+    "docs/agents/business-knowledge-modeler.md"
+  ],
+  "workingTreeChangedKnowledgePaths": [
+    "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml",
+    "docs/knowledge/evidence/production.yaml"
+  ],
+  "onlyDescriptionOrSummaryChanged": true,
+  "idsAdded": [],
+  "idsRemoved": [],
+  "currentWorkingDefinitionCount": 2486,
+  "originalPolicyAndOtherDiscrepanciesPreserved": true,
+  "schemaReferenceAndScopeCheck": "passed",
+  "firstIndependentResultPreserved": "failed",
+  "mainNewJPARed": {
+    "tests": 5,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "mainNewJPAGreen": {
+    "tests": 56,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit": 0
+  },
+  "formalMavenRunByThisInstance": false,
+  "finalIndependentQualityClaim": false
+}

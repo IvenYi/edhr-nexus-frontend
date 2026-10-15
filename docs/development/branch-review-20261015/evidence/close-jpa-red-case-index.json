@@ -1,0 +1,34 @@
+{
+  "suite": "com.zencas.edhr.production.controller.WorkOrderCloseAtomicityTest",
+  "tests": 5,
+  "failures": 1,
+  "errors": 0,
+  "skipped": 0,
+  "testSourceSha256": "ebf6e8713f3c9a0868425f5da7a71e1cd52ffe85434a02ab62916f4b7504edcd",
+  "cases": [
+    {
+      "name": "auditSerializationFailureAlsoRollsBackTheClose",
+      "failure": null
+    },
+    {
+      "name": "auditWriteFailureRollsBackTheAlreadyExecutedClose",
+      "failure": null
+    },
+    {
+      "name": "concurrentCloseIsAcceptedOnceWithOneAccurateAudit",
+      "failure": "\nexpected: \"只有已完成的工单可以关闭\"\n but was: \"accepted\""
+    },
+    {
+      "name": "successfulCloseCommitsBothStatusAndExactBeforeAfterAudit",
+      "failure": null
+    },
+    {
+      "name": "invalidStateRemainsRejectedWithoutStatusOrAuditWrite",
+      "failure": null
+    }
+  ],
+  "xmlSha256": "eceff31ba2bbe925ada3cdb4af74ac3f9babf377bec65b8f55ac246c838fbb4e",
+  "productionCommit": "fbbf631838efc774ecae323ecf1dba7c296b99a0",
+  "testSourceWorkingTree": true,
+  "laterTestFixtureChange": "Private H2 LOCK_TIMEOUT 2000ms default -> explicit10000ms; assertions unchanged; controlled pause is2s. Red reproducer finishes B before A lock and does not need lock waiting."
+}

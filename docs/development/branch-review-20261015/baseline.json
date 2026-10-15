@@ -1,0 +1,1464 @@
+{
+  "sourceCommit": "e9c00df8c85b021e7bf206e575a5a726cd46c12b",
+  "targetBranch": "edhr-dev",
+  "targetCommit": "e9c00df8c85b021e7bf206e575a5a726cd46c12b",
+  "contractReadCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+  "uncommittedContractPaths": [],
+  "sourceTree": "e6de29f854bf77658da07fa6d74f9c69a5d9badf",
+  "reviewBranch": "audit/edhr-dev-full-review-20261015",
+  "handoverCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+  "handoverTree": "c9f6f2b2e1096a1dd74157dd7151be6bc96b8729",
+  "handoverArchiveSha256": "94a5b669dd40cfda38815827f0120b8e82919ed631f372a7d24330435f3b50d1",
+  "handoverVerifiedFiles": 17,
+  "deltaSinceHandover": {
+    "commits": 39,
+    "files": 236,
+    "entries": [
+      {
+        "status": "M",
+        "paths": [
+          "docs/architecture/business-knowledge-model.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/architecture/form-traceability-projection-brief.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/architecture/form-traceability-projection-design.md"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "docs/architecture/transaction-traceability-dhr-business-rules.md"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "docs/development/TODO.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/ansukang-e2e-2026-10-14.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/ansukang-e2e-2026-10-14.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/diagrams/form-projection-overview-2026-10-07.mmd"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/directional-trace-runtime-2026-10-14.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/final-output-linkage-2026-10-15.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/final-output-linkage-decision-package.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/final-output-linkage-delivery-quality.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/final-output-linkage-ontology-result.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/final-output-linkage-quality-final.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/final-output-linkage-quality-review.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/final-output-linkage-todo-2026-10-15.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-and-dhr-trace-query-review-2026-10-13.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-lookup-catalog-2026-10-07.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-lookup-catalog-quality-2026-10-07.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-lookup-catalog-quality-final-2026-10-07.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-annotation-review-2026-10-09.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-annotation-review-quality-2026-10-09.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-business-fields-implementation-2026-10-13.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-business-fields-quality-2026-10-13.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-business-report-field-review-2026-10-12.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-business-report-field-review-quality-2026-10-12.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-canvas-source-quality-2026-10-12.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-clarifications-quality-2026-10-09.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-configuration-feedback-2026-10-11.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-configuration-feedback-quality-2026-10-11.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-configuration-simplification-2026-10-12.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-design-clarifications-2026-10-09.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-design-clarifications-2026-10-10.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-designer-followup-2026-10-07.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-designer-followup-quality-2026-10-07.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-designer-preset-quality-2026-10-05.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-detail-conformance-quality-2026-10-07.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-final-design-review-2026-10-07.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-gct-report-reference.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-inline-main-quality-2026-10-12.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-interaction-2026-10-05.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-interaction-quality-2026-10-05.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-interaction-quality-final-2026-10-05.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-optional-info-quality-2026-10-12.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-panel-quality-2026-10-06.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-panel-quality-final-2026-10-06.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-preset-source-quality-2026-10-05.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-preset-source-review-2026-10-05.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-progress-quality-2026-10-10.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-progress-quality-final-2026-10-10.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-reference-followup-2026-10-07.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-reference-followup-quality-2026-10-07.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-reference-followup-quality-final-2026-10-07.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-report-person-hours-quality-2026-10-12.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-runtime-correction-2026-10-10.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-runtime-quality-2026-10-10.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-runtime-quality-final-2026-10-10.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-runtime-quality-release-2026-10-10.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-sidebar-review-2026-10-09.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-sidebar-review-quality-2026-10-09.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-ui-conformance-2026-10-07.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-projection-ui-conformance-quality-2026-10-07.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-traceability-projection-decision-package.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-traceability-projection-handoff-2026-10-03.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-traceability-projection-ontology-result.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-traceability-projection-quality-initial.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-traceability-projection-quality-result.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-traceability-projection-quality-use-time-final.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-traceability-projection-quality-use-time.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/form-traceability-projection-running.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/projection-dev-integration-2026-10-15-ontology.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/projection-dev-integration-2026-10-15-quality.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/projection-dev-integration-2026-10-15.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/projection-dev-integration-2026-10-15.yaml"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "docs/development/startup-commands.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/trace-query-layout-2026-10-14.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/development/typed-trace-catalog-2026-10-14.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/frontend/detail-drawer-guidelines.md"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "docs/frontend/dialog-guidelines.md"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "docs/frontend/list-page-guidelines.md"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "docs/knowledge/README.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/knowledge/evidence/final-output-linkage-2026-10-15.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/knowledge/evidence/final-output-linkage-2026-10-15.yaml"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "docs/knowledge/evidence/form-reference-runtime-confirmed.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/knowledge/evidence/form-traceability-projection-ownership.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/knowledge/evidence/projection-integration-2026-10-15.md"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/knowledge/evidence/projection-integration-2026-10-15.yaml"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "docs/knowledge/facts/core-business.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/knowledge/facts/form-projection.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/knowledge/facts/production-output.yaml"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "docs/knowledge/glossary.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/knowledge/implementation-anchors/form-projection.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "docs/knowledge/implementation-anchors/production-output.yaml"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "docs/knowledge/open-questions.yaml"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "docs/knowledge/rules/product-process.yaml"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "docs/knowledge/rules/production-execution.yaml"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "docs/knowledge/rules/production-form-copies.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/scripts/form-lookup-catalog-demo.py"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/scripts/form-projection-demo.py"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/scripts/form-projection-report-demo.py"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/scripts/form-projection-runtime-demo.py"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/scripts/form-projection-ux-demo.py"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/dto/ProductProcessVersionRequest.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcessOperationBinding.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionBatchController.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/TraceReportController.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionWorker.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/TraceCondition.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/TraceReportFilters.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/FormLookupCatalogController.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/template/entity/FormTemplateVersion.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupValue.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/resources/application-projection.yml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/resources/db/changelog/0106-form-projection-freeze.sql"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/resources/db/changelog/0108-form-lookup-items.sql"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/resources/db/changelog/0109-saved-form-trace-index.sql"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/resources/db/changelog/0110-projection-detail-display.sql"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/resources/db/changelog/0111-form-instance-saved-stage.sql"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/resources/db/changelog/0112-typed-trace-catalog.sql"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/resources/db/changelog/0113-trace-date-preset.sql"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/main/resources/db/changelog/0114-final-output-operation.sql"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/FormProjectionAuthorizationTest.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionBatchControllerTest.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionObjectControllerTest.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/TraceReportAuthorizationTest.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderControllerTest.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrTraceReportPostgresTest.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormInstanceRecordStageTest.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormProjectionPostgresTest.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexServiceTest.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionEngineTest.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionFormValuesTest.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/TraceConditionTest.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/FormLookupCatalogAuthorizationTest.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/TemplateModelingControllerTest.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/TemplateProjectionAuthorizationTest.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormLookupCatalogPostgresTest.java"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormProjectionInterpreterTest.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceLookupTest.java"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/scripts/test-execution-form-selector.mjs"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/scripts/test-execution-form-values.mjs"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/scripts/test-form-document-preview.mjs"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/scripts/test-production-output.mjs"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/scripts/test-projection-panel.mjs"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/scripts/test-projection-preview.mjs"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/scripts/test-projection-report-navigation.mjs"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/scripts/test-projection-report.mjs"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/scripts/test-projection-source-editor.mjs"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/scripts/test-runtime-row-values.mjs"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/scripts/test-signature-display.mjs"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/scripts/verify-template-designer-react.mjs"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/api/formLookupCatalog.ts"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/api/product-modeling.ts"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/api/production-execution.ts"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/api/trace-reports.ts"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/api/work-orders.ts"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/components/DetailDrawer.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/components/ProductionOutput.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/components/form-renderer/FormRuntimeField.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/components/form-renderer/newSubTableRow.ts"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/components/form-renderer/referenceConfig.ts"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/components/form-renderer/signaturePresentation.ts"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/components/shared/AppLayout.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/dhr-management/DhrWorkspaceNavigation.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/ProductModelingPage.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/components/FinalOutputOperationControl.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionCanvasPicker.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionRemoveButton.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionValidationDialog.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/SubTableProjectionConfig.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasNodeRenderer.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/componentRegistry.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/types/document.ts"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/types/model.ts"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionPreview.ts"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/production/executionFormValues.ts"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/reports/DhrTraceReportPage.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/reports/TraceQueryPanel.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/reports/projectionReportColumns.ts"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/reports/projectionSourceHighlight.ts"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/system/FormLookupBindingPreview.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/system/FormLookupBindingsDialog.tsx"
+        ]
+      },
+      {
+        "status": "A",
+        "paths": [
+          "gmp-platform/frontend/src/pages/system/FormLookupItemsPage.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/router/index.tsx"
+        ]
+      },
+      {
+        "status": "M",
+        "paths": [
+          "gmp-platform/frontend/src/utils/menuManagement.ts"
+        ]
+      }
+    ]
+  },
+  "contractBlobs": {
+    "AGENTS.md": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+    "codeplzreadme.md": "2e7e18097620e602c4408b83f71404fae346f8be",
+    "docs/agents/agent-handoff-contract.md": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+    "docs/agents/business-knowledge-modeler.md": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+    "docs/agents/quality-verifier.md": "581e647c37daebeb9dd3d6397ae53e30e7822fb3"
+  },
+  "knowledgeBaselineVersion": "0.3.25/schema1.2.0",
+  "newAuditArtifacts": "Review tools/ledgers and new tests are additions outside the fixed baseline inventory, tracked separately by git diff; never counted as old source semantically reviewed.",
+  "scope": "W0 and first W1 slice; W1-W7 remaining coverage pending",
+  "remoteActionsPolicy": "Do not query/trigger/add Actions; local validation, no merge/deploy",
+  "contractBlobRecheckAt": "e9c00df8c85b021e7bf206e575a5a726cd46c12b",
+  "candidateAfterCodeAndTargetIntegration": "aad4cfe9445a82658c1113de73c9c3561af566d5",
+  "codeFixCommit": "292dd8989f4a13860b115d4171d5832022495204",
+  "baselineRefresh": {
+    "initialCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "currentTargetCommit": "e9c00df8c85b021e7bf206e575a5a726cd46c12b",
+    "changedPaths": [
+      "docs/development/final-output-linkage-2026-10-15.md",
+      "docs/development/final-output-linkage-delivery-quality.yaml",
+      "docs/development/startup-commands.md"
+    ],
+    "sourceOrKnowledgeChanged": false,
+    "reviewedNewDocuments": true,
+    "provenance": "Source/knowledge inspections retain original 537bb240 provenance; relevant blobs compared unchanged. Startup paths describe user macOS, not this cloud."
+  },
+  "finalCodeFixCommit": "4e7fd37500157b4fd055e8a54fe8105f1bf03ae2",
+  "independentFirstCandidate": "fbbf631838efc774ecae323ecf1dba7c296b99a0",
+  "independentFirstResult": "failed: QF-W1-001 JPA concurrent close"
+}

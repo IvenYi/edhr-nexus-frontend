@@ -1,0 +1,117 @@
+[
+  {
+    "suite": "com.zencas.edhr.production.controller.WorkOrderCloseAtomicityTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "xmlSha256": "84ecfb3af1e10b37db72b3b3dcc85d51b5029bd8345d1275c2eac32a83b4be32",
+    "cases": [
+      "auditSerializationFailureAlsoRollsBackTheClose",
+      "auditWriteFailureRollsBackTheAlreadyExecutedClose",
+      "successfulCloseCommitsBothStatusAndExactBeforeAfterAudit",
+      "invalidStateRemainsRejectedWithoutStatusOrAuditWrite"
+    ]
+  },
+  {
+    "suite": "com.zencas.edhr.production.controller.WorkOrderControllerTest",
+    "tests": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "xmlSha256": "c4b8a3aebbad36a1494551c5c4bff70adce55e7168c37951ca755082397ddbdb",
+    "cases": [
+      "cancelWritesStatusChangeBeforeServiceMutatesManagedEntity",
+      "createWritesBeforeAndAfterWorkOrderSnapshots",
+      "createRejectsMissingMaterialWithoutSavingOrderOrAudit"
+    ]
+  },
+  {
+    "suite": "com.zencas.edhr.production.service.ProductionServiceTest",
+    "tests": 17,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "xmlSha256": "ef10635d74998d7a4ff273aa6d3377a9262ab41cb9cfaedcb6cfce3d8dfe71b8",
+    "cases": [
+      "normalizesConfiguredBatchLabelsToTheProductionObjectType",
+      "createsSnObjectWithUnitQuantityAndConfiguredNumber",
+      "rejectsUnsupportedProductionForms",
+      "allowsResplittingTheQuantityOfACancelledUnstartedObject",
+      "usesTheConfirmedLightweightWorkOrderLifecycle",
+      "keepsCreatedOrderAvailableWhenItsOnlyObjectIsCancelled",
+      "blocksFirstSplitUntilTheWorkOrderHasAProcessVersion",
+      "cancelsUnsplitCreatedOrderThroughTheStateMachine",
+      "splitsCreatedWorkOrderWithoutReleaseStep",
+      "completesInProcessOrderWhenRemainingObjectsAreCompletedOrCancelled",
+      "rejectsChangingTheLockedProcessVersion",
+      "blocksObjectStartWhenItsWorkOrderIsAlreadyTerminal",
+      "rejectsObjectTargetsBeyondTheWorkOrderPlan",
+      "endsInProgressObjectWithRequiredReason",
+      "splitsInProcessWorkOrderWithItsLockedProcessVersion",
+      "rejectsSnObjectQuantityOtherThanOne",
+      "rejectsInvalidProductionObjectPlannedWindow"
+    ]
+  },
+  {
+    "suite": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "tests": 24,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "xmlSha256": "31905cd02c0f1bde242add65fcfd2b3937d29caa41fc1b1e63405dc4fe96c60e",
+    "cases": [
+      "auditFailureRollsBackDraftAndStatus",
+      "unnumberedOptionalCustomCopyBlocksSummaryEvenWhenNotPlaced",
+      "partialDisplayPlacementStillFreezesAllActualEvidence",
+      "missingFormOriginalBlocksSubmitWithoutDiscardingDraft",
+      "recoveredDraftRequiresFreshScopeSaveAndManualCheckBeforeFreezing",
+      "failedSubmitRetainsSavedRevisionAndSuccessfulRetryFreezesEvidence",
+      "directoryProjectionKeepsLongIdsExactWithoutMutatingFrozenData",
+      "explicitReorganizationPreservesOriginalEvidenceAndChecksVersionAndReason",
+      "historicalVersionDoesNotRequireReadableLiveFormValues",
+      "savesRecordBeforeAndAfterAndRejectStaleRevisionWithoutChangingData",
+      "historicalVersionDoesNotReturnLiveFormValuesOutsideFrozenCandidates",
+      "sourceCopiesMayFreezeAtSeparateDirectoriesOrInterleavedPositions",
+      "changedFrozenAttachmentListBlocksHistoricalVersionRead",
+      "summaryDisplayNameRejectsBlankAndOversizedValues",
+      "requiredReviewUsesFrozenBindingAndFailedWorkflowRollsBackSubmission",
+      "changedFrozenCandidateCannotBypassOriginalFileCheck",
+      "newSourceRecordAfterDraftRequiresFreshCheckAndIsNeverSilentlyOmitted",
+      "submitRequiresAuditableManualCheckBeforeFreezing",
+      "directoryDisplayNameSurvivesDraftFreezeAndReorganizationWithoutChangingBase",
+      "summaryDisplayNameIsFrozenWithoutChangingSourceAndSurvivesReorganization",
+      "optionalInstanceOrderSurvivesDraftFreezeReadAndReorganization",
+      "directoryRenameCannotMoveReorderDuplicateOrUseInvalidNames",
+      "submitAuditFailureRollsBackVersionEvidenceAndDraftDeletion",
+      "staleScopeAndIncompleteSupplementBlockSubmission"
+    ]
+  },
+  {
+    "suite": "com.zencas.edhr.production.service.DhrInstanceLookupTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "xmlSha256": "55534fb6ed3f691bb598037aa19b1e45a5de5202fec97a00229eca274a315127",
+    "cases": [
+      "findsDhrByProductionObjectWithinTenant",
+      "missingDhrReturnsNullWithoutCreatingOne"
+    ]
+  },
+  {
+    "suite": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "xmlSha256": "b0ec3081b14a59911bc35f6cc7126796f89724214a313397256a2225e32edb08",
+    "cases": [
+      "incompleteFrozenManualReviewBlocksApprovalButAllowsReturn",
+      "realWorkflowReturnResubmitSignAndApprovedImpactPreserveHistory",
+      "concurrentApprovalCreatesOnlyOneOutcomeAndSignature",
+      "newlyAppearingRecordAndAttachmentBlockApprovalWithoutChangingFrozenVersion",
+      "legacyPendingReviewCannotApproveUnfinishedUnincludedCustomCopyButCanReturn"
+    ]
+  }
+]

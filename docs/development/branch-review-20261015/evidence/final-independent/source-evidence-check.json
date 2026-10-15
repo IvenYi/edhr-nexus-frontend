@@ -1,0 +1,62 @@
+{
+  "testedCommit": "1dac6338c24efb2330fe8702ed018e55a8947711",
+  "baseAncestor": "e9c00df8c85b021e7bf206e575a5a726cd46c12b",
+  "historicalMasterRecords": 21,
+  "historyStatusCounts": {
+    "known-fixed": 10,
+    "confirmed-current": 10,
+    "pending": 1
+  },
+  "nonFunctionalStructureLeads": 6,
+  "preservedFirstFailedByteMatches": {
+    "quality-result.yaml": true,
+    "CloseJpaRaceProbe.java": true,
+    "backend-case-index.json": true,
+    "knowledge-case-index.json": true,
+    "evidence-sha256.json": true
+  },
+  "candidateChangedCriticalFilesSha256": {
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java": "14299f1a1221b113fe820064dc587ada486533b6f633342a94ba9583daa2028f",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderCloseAtomicityTest.java": "c76a9587cc4f8c0e2dab93aeb88f858986d8cf1d80d6d1c2ad044d8b3d55c26e",
+    "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml": "91e56a9f7c80b5334fd85b020522bc03f7dc8aa8ef98e31d2c9a637ac3d484b1",
+    "docs/knowledge/evidence/production.yaml": "877e32bd7b65a29f942c4185b0040ca9be462ca7d84b08abd4e8fb7411fac56f"
+  },
+  "sourceBlobChecks": {
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java": "c898998a2077cbdc6f1fa13975334040886863a30c943b703228dfc7609970ad",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java": "06c1dcbdd8ba9a8497c17c583566fdc794725e1a57b7fefd901434406b023e5e",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java": "e8057ad990bda9be33ae2b91929683629a81cc602943446e7f97481d5b88232a",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java": "b4f620dd8093972d4abf59204b97374611eb7570513cce936181364811d1b47a",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java": "3dcf8632a2049d9a13e8e178e55ff5c24643f50f496410ba2ef3f8f71c054e66",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx": {
+      "sha256": "4e18d205936492e0d3833ff3b6b7f9eec8ceed056ff90d802a3a4d7acb2438ea",
+      "lines": 7096
+    },
+    "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx": {
+      "sha256": "633bdd70964a196396d4271e3ffd7367c10b53f1de2e90d55294c4323d638df1",
+      "lines": 5143
+    },
+    "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx": {
+      "sha256": "fc38c5494efda78ee81eddadb82c403386932e06c6ff3323eca506365c823284",
+      "lines": 5049
+    },
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts": {
+      "sha256": "807c8abd57e9047cf706acc05cd47c51349b23111f424b3c19f03422357f4321",
+      "lines": 3490
+    },
+    "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx": {
+      "sha256": "0f13b9484df79eb09e82094b54ef450e665e310709cdc6671fb6e94c93c4daf7",
+      "lines": 2980
+    },
+    "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx": {
+      "sha256": "0e29bfe19aa0b8331a1ad588d22b4c0f6e14bbd79e6a11ca6af42cb039496ea9",
+      "lines": 1155
+    },
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java": {
+      "sha256": "195bb14c7f2aa00f6bc93d4c6b4eaff8476fda6f1d2eee8cfcfaedb5c4eff5a3",
+      "lines": 1249
+    }
+  },
+  "treeUnchanged": true
+}

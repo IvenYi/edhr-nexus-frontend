@@ -1,0 +1,61 @@
+reviewStatus:
+  fullBranchAudit: in-progress
+  firstTranche: W0-and-first-W1-chain
+  firstTrancheQuality: passed
+  testedCandidate: 1dac6338c24efb2330fe8702ed018e55a8947711
+  sourceCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+  historicalRecords: 21
+  historicalKnownFixed: 10
+  currentStaticObservationsRequiringRootTriage: 10
+  formerlyPendingNowReproducedAndFixed: 1
+  newIndependentFindings: 1
+  structuralLeads: 6
+  note: 原助手confirmed-current只说明源码观察存在，未逐项经主审确认为业务缺陷；原历史报告只读保存。
+findings:
+  - id: AUDIT-W1-001
+    historicalId: discrepancy.work-order-close-audit-atomicity
+    severity: high
+    status: closed-independent-passed
+    independentResult: quality-result.yaml
+    title: 关闭工单审计失败后状态已单独提交
+    location: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java:112
+    authority: docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml
+    trigger: 合法COMPLETED工单关闭后，审计保存或JSON快照序列化抛出异常。
+    expected: 失败动作的状态与审计共同回滚。
+    actualBeforeFix: 调用失败，但工单已CLOSED且无审计。
+    rootCause: closeOrder服务的事务先完成；控制器随后生成并写审计，未纳入外层事务。
+    fix: close增加Transactional，且在before快照前获取同一工单行锁，服务REQUIRED参与同一事务。
+    codeCommits: [292dd898, 4e7fd375]
+    regression: WorkOrderCloseAtomicityTest; validation.md; evidence/close-red-case-index.json; evidence/close-green-case-index.json
+    boundaries: 首轮为JDBC仓储替身；最终五例为真实WorkOrder的SpringDataJPA/Hibernate/H2，其他仓储替身；无HTTP/PostgreSQL验收宣称。
+    policyChanged: false
+    historicalDataChanged: false
+  - id: AUDIT-W1-002
+    independentFinding: QF-W1-001
+    severity: high
+    status: closed-independent-passed
+    independentResult: quality-result.yaml
+    title: 外层事务先普通读取造成JPA陈旧实体并发重复关闭
+    location: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java:114
+    authority: 既有ProductionService.closeOrder只允许COMPLETED到CLOSED，不接受重复关闭；同DEC0015真实变更审计。
+    trigger: A普通读取COMPLETED后暂停，B关闭提交，再恢复A的锁查询。
+    expected: 并发请求串行检查真实状态，成功一次且仅一条审计。
+    actualBeforeFix: 两次成功，JPA行锁查询复用A受管实体旧状态，生成重复审计。
+    rootCause: 新外层事务让普通before读取与锁查询共用持久上下文，行锁不会自动刷新已管理实体。
+    fix: close入口第一条工单读取即使用已有PESSIMISTIC_WRITE仓储方法，锁后才做before快照。
+    codeCommit: 4e7fd375
+    regression: WorkOrderCloseAtomicityTest.concurrentCloseIsAcceptedOnceWithOneAccurateAudit
+    evidence: evidence/independent-first-failed/quality-result.yaml; evidence/close-jpa-red-case-index.json; validation.md
+    policyChanged: false
+    historicalDataChanged: false
+pending:
+  - id: F004
+    status: pending-current-end-to-end-source-triage
+    action: 核对保存的具体版本/绑定被候选过滤后的显示与保存链，不擅自开放过期候选。
+  - id: other-history-observations
+    status: pending-rule-trigger-and-counterevidence-review
+    evidence: history/history-dedup.json
+  - id: dhr-semantic-evidence-gaps
+    status: evidence-gap
+    count: 4
+    evidence: ontology/semantic-review.jsonl

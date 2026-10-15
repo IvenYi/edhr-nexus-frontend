@@ -160,6 +160,11 @@ evidence:
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderControllerTest.java
     description: 工单控制器测试验证创建审计事件的 CREATE 动作、空对象 contentBefore 及真实业务字段 contentAfter；并保留 AuditAspect 测试对方法参数不得伪装为快照的约束。编辑、取消和关闭快照仍需通过集成测试补充验证。
     visibility: internal
+  - id: evidence.work-order-close-audit-atomicity-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderCloseAtomicityTest.java
+    description: original-evidence；2026-10-15 首轮四例与相邻55项通过是 Spring/H2 JDBC 和仓储适配替身的历史结果，未覆盖 JPA 一级缓存并发；随后独立 failed 的 QF-W1-001 证明先普通读 before 再加锁可导致重复关闭及双审计。当前五例升级为真实 WorkOrder 实体、Spring Data JPA 仓储、Hibernate、JpaTransactionManager 和私有 H2，实际 Controller/Service/状态机不变；其他仓储为替身，AuditEventRepository 替身写同事务实际 test_audit SQL。覆盖审计保存和序列化失败回滚、成功关闭准确前后状态/操作者同提交、非法状态无写，以及双线程关闭仅一次成功和一条审计。新五例在锁前修复前为5项/1失败/0错误，入口先锁再构造快照后五例及相邻合计56项通过、0失败/错误/跳过，不与旧55相加。2秒暂停及10秒锁等待仅为私有测试库设置，生产锁参数未改。命令、实际候选、首轮 failed 和 close-jpa-red/green-case-index.json 见 docs/development/branch-review-20261015/validation.md；不证明 HTTP、真实 AuditEvent JPA、PostgreSQL或最终独立质量，不提升为verified/runtime。
+    visibility: internal
   - id: evidence.production-process-selector-clearable
     type: code
     path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx

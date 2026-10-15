@@ -1,0 +1,55 @@
+{
+  "sourceCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+  "tree": "401d4bf799985d8a3079be0d44270aaa7f2813dc",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "totalKnowledgeFiles": 252,
+  "yamlFiles": 198,
+  "markdownFiles": 54,
+  "definitionCount": 2485,
+  "byRecordType": {
+    "decision": 77,
+    "decisionStatement": 498,
+    "acceptanceScenario": 385,
+    "implementationDiscrepancy": 71,
+    "evidence": 470,
+    "executionContract": 2,
+    "fact": 263,
+    "term": 136,
+    "implementationAnchor": 61,
+    "concept": 128,
+    "relation": 142,
+    "openQuestion": 19,
+    "rule": 233
+  },
+  "byAssetStatus": {
+    "specified": 810,
+    "implemented": 648,
+    "planned": 25,
+    "not-declared": 874,
+    "open": 25,
+    "deprecated": 55,
+    "resolved": 23,
+    "accepted": 23,
+    "verified": 2
+  },
+  "byVisibility": {
+    "internal": 2098,
+    "not-declared": 385,
+    "runtime": 2
+  },
+  "definitionDeltaFromHistoricalAudit": {
+    "changed": 206,
+    "unchanged": 2086,
+    "added": 193
+  },
+  "removedHistoricalIds": [],
+  "historicalBaseline": {
+    "commit": "7bf87c00a4a1158d6fbb4085eb9fb632918bcb50",
+    "definitionCount": 2292,
+    "fileCount": 239,
+    "historicalReportsPreserved": true
+  },
+  "extractionRule": "Only schema.collectionTypes top-level collections and schema.nestedCollectionTypes allowed children are definitions. termId, targetId, evidenceIds, fact references, supersedes and text mentions are references and not counted. schema.yaml enum cardinality IDs are vocabulary registry entries and separately registered as a schema file, not business definition IDs. Markdown is a file-level denominator even if it mentions IDs.",
+  "semanticReview": "All extracted definitions initially pending. Historical conclusions remain separate and never promoted to current-semantic-reviewed automatically."
+}

@@ -1,0 +1,2231 @@
+{
+  "baseline": {
+    "head": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "tree": "401d4bf799985d8a3079be0d44270aaa7f2813dc",
+    "targetBranch": "edhr-dev",
+    "knowledgeModelVersion": "0.3.25"
+  },
+  "methodology": {
+    "trackedScope": "git ls-files -z, all tracked regular files; binary files retained without line metrics",
+    "physicalLines": "newline-delimited physical lines, includes blank lines/comments, ending newline not counted as extra line",
+    "typescript": "TypeScript compiler createSourceFile AST; real function declaration/arrow/method spans. Branch counts include nested functions and are structural indicators, not cyclomatic complexity.",
+    "java": "Comment/string/text-block masked brace-balanced regex method recognition; approximate, not Java grammar validation. Does not claim every constructor/lambda/record captured.",
+    "hookCounts": "TypeScript AST identifier call count including generic calls; no alias/symbol resolution",
+    "imports": "static ES imports/exports with relative or @ alias resolution, dynamic imports/requires not included in graph; typeOnly is retained separately and SCC totals below include type imports unless explicitly runtime.",
+    "reviewMeaning": "All-file structural enumeration only; not semantic review pass"
+  },
+  "counts": {
+    "trackedPaths": 1422,
+    "measuredRegularFiles": 1422,
+    "binaryFiles": 13,
+    "tsJsFiles": 323,
+    "javaFiles": 448,
+    "staticLocalImportCycles": 3,
+    "runtimeStaticLocalImportCycles": 1
+  },
+  "staticLocalImportCycles": [
+    [
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/types/model.ts",
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/types/canvas.ts"
+    ],
+    [
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx",
+      "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx"
+    ],
+    [
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/componentRegistry.tsx",
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts"
+    ]
+  ],
+  "runtimeStaticLocalImportCycles": [
+    [
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/componentRegistry.tsx",
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts"
+    ]
+  ],
+  "priorityFiles": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java",
+      "bytes": 67247,
+      "physicalLines": 1249,
+      "blankLines": 96,
+      "language": "java-lexical",
+      "imports": [
+        {
+          "specifier": "com.fasterxml.jackson.core.JsonProcessingException",
+          "line": 3
+        },
+        {
+          "specifier": "com.fasterxml.jackson.databind.ObjectMapper",
+          "line": 4
+        },
+        {
+          "specifier": "com.fasterxml.jackson.databind.SerializationFeature",
+          "line": 5
+        },
+        {
+          "specifier": "com.fasterxml.jackson.datatype.jsr310.JavaTimeModule",
+          "line": 6
+        },
+        {
+          "specifier": "com.zencas.edhr.common.audit.AuditContext",
+          "line": 7
+        },
+        {
+          "specifier": "com.zencas.edhr.common.dto.ApiResponse",
+          "line": 8
+        },
+        {
+          "specifier": "com.zencas.edhr.common.dto.PageResult",
+          "line": 9
+        },
+        {
+          "specifier": "com.zencas.edhr.common.exception.BusinessException",
+          "line": 10
+        },
+        {
+          "specifier": "com.zencas.edhr.common.exception.ErrorCode",
+          "line": 11
+        },
+        {
+          "specifier": "com.zencas.edhr.common.util.SnowflakeIdGenerator",
+          "line": 12
+        },
+        {
+          "specifier": "com.zencas.edhr.common.util.RdoVersionStatusResolver",
+          "line": 13
+        },
+        {
+          "specifier": "com.zencas.edhr.compliance.entity.AuditEvent",
+          "line": 14
+        },
+        {
+          "specifier": "com.zencas.edhr.compliance.repository.AuditEventRepository",
+          "line": 15
+        },
+        {
+          "specifier": "com.zencas.edhr.template.dto.TemplateModelingRequest",
+          "line": 16
+        },
+        {
+          "specifier": "com.zencas.edhr.template.dto.TemplateImportGridResponse",
+          "line": 17
+        },
+        {
+          "specifier": "com.zencas.edhr.template.entity.DhrTemplate",
+          "line": 18
+        },
+        {
+          "specifier": "com.zencas.edhr.template.entity.DhrTemplateVersion",
+          "line": 19
+        },
+        {
+          "specifier": "com.zencas.edhr.template.entity.DhrDirectory",
+          "line": 20
+        },
+        {
+          "specifier": "com.zencas.edhr.template.entity.DhrTemplateItem",
+          "line": 21
+        },
+        {
+          "specifier": "com.zencas.edhr.template.entity.FormTemplate",
+          "line": 22
+        },
+        {
+          "specifier": "com.zencas.edhr.template.entity.FormTemplateVersion",
+          "line": 23
+        },
+        {
+          "specifier": "com.zencas.edhr.template.entity.TemplateCategory",
+          "line": 24
+        },
+        {
+          "specifier": "com.zencas.edhr.template.repository.DhrTemplateRepository",
+          "line": 25
+        },
+        {
+          "specifier": "com.zencas.edhr.template.repository.DhrTemplateVersionRepository",
+          "line": 26
+        },
+        {
+          "specifier": "com.zencas.edhr.template.repository.DhrDirectoryRepository",
+          "line": 27
+        },
+        {
+          "specifier": "com.zencas.edhr.template.repository.DhrTemplateItemRepository",
+          "line": 28
+        },
+        {
+          "specifier": "com.zencas.edhr.template.repository.FormTemplateRepository",
+          "line": 29
+        },
+        {
+          "specifier": "com.zencas.edhr.template.repository.FormTemplateVersionRepository",
+          "line": 30
+        },
+        {
+          "specifier": "com.zencas.edhr.template.repository.TemplateCategoryRepository",
+          "line": 31
+        },
+        {
+          "specifier": "com.zencas.edhr.template.service.TemplateLegacyWordImportService",
+          "line": 32
+        },
+        {
+          "specifier": "com.zencas.edhr.template.service.FormProjectionInterpreter",
+          "line": 33
+        },
+        {
+          "specifier": "com.zencas.edhr.template.service.FormLookupCatalogService",
+          "line": 34
+        },
+        {
+          "specifier": "com.zencas.edhr.template.support.DhrTemplateVersionStatusResolver",
+          "line": 35
+        },
+        {
+          "specifier": "lombok.RequiredArgsConstructor",
+          "line": 36
+        },
+        {
+          "specifier": "org.springframework.http.MediaType",
+          "line": 37
+        },
+        {
+          "specifier": "org.springframework.security.access.prepost.PreAuthorize",
+          "line": 38
+        },
+        {
+          "specifier": "org.springframework.data.domain.Page",
+          "line": 39
+        },
+        {
+          "specifier": "org.springframework.data.domain.PageRequest",
+          "line": 40
+        },
+        {
+          "specifier": "org.springframework.data.domain.Pageable",
+          "line": 41
+        },
+        {
+          "specifier": "org.springframework.data.domain.Sort",
+          "line": 42
+        },
+        {
+          "specifier": "org.springframework.data.jpa.domain.Specification",
+          "line": 43
+        },
+        {
+          "specifier": "org.springframework.transaction.annotation.Transactional",
+          "line": 44
+        },
+        {
+          "specifier": "org.springframework.util.StringUtils",
+          "line": 45
+        },
+        {
+          "specifier": "org.springframework.web.bind.annotation.DeleteMapping",
+          "line": 46
+        },
+        {
+          "specifier": "org.springframework.web.bind.annotation.GetMapping",
+          "line": 47
+        },
+        {
+          "specifier": "org.springframework.web.bind.annotation.PathVariable",
+          "line": 48
+        },
+        {
+          "specifier": "org.springframework.web.bind.annotation.PostMapping",
+          "line": 49
+        },
+        {
+          "specifier": "org.springframework.web.bind.annotation.PutMapping",
+          "line": 50
+        },
+        {
+          "specifier": "org.springframework.web.bind.annotation.RequestBody",
+          "line": 51
+        },
+        {
+          "specifier": "org.springframework.web.bind.annotation.RequestMapping",
+          "line": 52
+        },
+        {
+          "specifier": "org.springframework.web.bind.annotation.RequestParam",
+          "line": 53
+        },
+        {
+          "specifier": "org.springframework.web.bind.annotation.RestController",
+          "line": 54
+        },
+        {
+          "specifier": "org.springframework.web.multipart.MultipartFile",
+          "line": 55
+        },
+        {
+          "specifier": "java.io.IOException",
+          "line": 57
+        },
+        {
+          "specifier": "java.time.LocalDateTime",
+          "line": 58
+        },
+        {
+          "specifier": "java.time.format.DateTimeFormatter",
+          "line": 59
+        },
+        {
+          "specifier": "java.time.format.DateTimeParseException",
+          "line": 60
+        },
+        {
+          "specifier": "java.util.ArrayList",
+          "line": 61
+        },
+        {
+          "specifier": "java.util.Comparator",
+          "line": 62
+        },
+        {
+          "specifier": "java.util.LinkedHashMap",
+          "line": 63
+        },
+        {
+          "specifier": "java.util.List",
+          "line": 64
+        },
+        {
+          "specifier": "java.util.Map",
+          "line": 65
+        },
+        {
+          "specifier": "java.util.Objects",
+          "line": 66
+        },
+        {
+          "specifier": "java.util.stream.Collectors",
+          "line": 67
+        }
+      ],
+      "transactionAnnotations": 14,
+      "largestFunctions": [
+        {
+          "name": "formTemplateSpec",
+          "kind": "java-method-lexical-approximation",
+          "startLine": 512,
+          "endLine": 551,
+          "spanLines": 40,
+          "branchTokensInclusive": 7
+        },
+        {
+          "name": "createBatchRecordTemplate",
+          "kind": "java-method-lexical-approximation",
+          "startLine": 335,
+          "endLine": 369,
+          "spanLines": 35,
+          "branchTokensInclusive": 3
+        },
+        {
+          "name": "listBatchRecordTemplates",
+          "kind": "java-method-lexical-approximation",
+          "startLine": 291,
+          "endLine": 319,
+          "spanLines": 29,
+          "branchTokensInclusive": 1
+        },
+        {
+          "name": "addDhrVersionStatusPredicate",
+          "kind": "java-method-lexical-approximation",
+          "startLine": 600,
+          "endLine": 628,
+          "spanLines": 29,
+          "branchTokensInclusive": 4
+        },
+        {
+          "name": "reorderCategories",
+          "kind": "java-method-lexical-approximation",
+          "startLine": 483,
+          "endLine": 510,
+          "spanLines": 28,
+          "branchTokensInclusive": 5
+        },
+        {
+          "name": "toDhrTemplateResponse",
+          "kind": "java-method-lexical-approximation",
+          "startLine": 1044,
+          "endLine": 1069,
+          "spanLines": 26,
+          "branchTokensInclusive": 1
+        },
+        {
+          "name": "createFormTemplate",
+          "kind": "java-method-lexical-approximation",
+          "startLine": 125,
+          "endLine": 149,
+          "spanLines": 25,
+          "branchTokensInclusive": 0
+        },
+        {
+          "name": "saveFormTemplateVersionDesign",
+          "kind": "java-method-lexical-approximation",
+          "startLine": 230,
+          "endLine": 254,
+          "spanLines": 25,
+          "branchTokensInclusive": 4
+        },
+        {
+          "name": "loadDhrVersionCompositionCounts",
+          "kind": "java-method-lexical-approximation",
+          "startLine": 1015,
+          "endLine": 1038,
+          "spanLines": 24,
+          "branchTokensInclusive": 3
+        },
+        {
+          "name": "toVersionResponse",
+          "kind": "java-method-lexical-approximation",
+          "startLine": 1095,
+          "endLine": 1117,
+          "spanLines": 23,
+          "branchTokensInclusive": 3
+        },
+        {
+          "name": "updateFormTemplateVersion",
+          "kind": "java-method-lexical-approximation",
+          "startLine": 205,
+          "endLine": 225,
+          "spanLines": 21,
+          "branchTokensInclusive": 0
+        },
+        {
+          "name": "dhrTemplateSpec",
+          "kind": "java-method-lexical-approximation",
+          "startLine": 553,
+          "endLine": 573,
+          "spanLines": 21,
+          "branchTokensInclusive": 3
+        }
+      ],
+      "incomingStaticImports": []
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+      "bytes": 107323,
+      "physicalLines": 2980,
+      "blankLines": 71,
+      "language": "typescript-ast",
+      "parseDiagnostics": 0,
+      "imports": [
+        {
+          "specifier": "@/utils/recordLocation",
+          "resolved": "gmp-platform/frontend/src/utils/recordLocation.ts",
+          "typeOnly": false,
+          "line": 1
+        },
+        {
+          "specifier": "@mui/icons-material",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 2
+        },
+        {
+          "specifier": "@mui/material",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 17
+        },
+        {
+          "specifier": "@/components/TableStateCell",
+          "resolved": "gmp-platform/frontend/src/components/TableStateCell.tsx",
+          "typeOnly": false,
+          "line": 46
+        },
+        {
+          "specifier": "@/components/AppDialog",
+          "resolved": "gmp-platform/frontend/src/components/AppDialog.tsx",
+          "typeOnly": false,
+          "line": 47
+        },
+        {
+          "specifier": "@/components/form-renderer/FormRuntimeField",
+          "resolved": "gmp-platform/frontend/src/components/form-renderer/FormRuntimeField.tsx",
+          "typeOnly": false,
+          "line": 48
+        },
+        {
+          "specifier": "./template-designer-react/components/CellDisplayContent",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/CellDisplayContent.tsx",
+          "typeOnly": false,
+          "line": 49
+        },
+        {
+          "specifier": "./template-designer-react/registry/commonComponentRegistry",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/commonComponentRegistry.ts",
+          "typeOnly": false,
+          "line": 50
+        },
+        {
+          "specifier": "@/components/StatusBadge",
+          "resolved": "gmp-platform/frontend/src/components/StatusBadge.tsx",
+          "typeOnly": false,
+          "line": 51
+        },
+        {
+          "specifier": "@tanstack/react-query",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 52
+        },
+        {
+          "specifier": "react",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 53
+        },
+        {
+          "specifier": "@/api/template-modeling",
+          "resolved": "gmp-platform/frontend/src/api/template-modeling.ts",
+          "typeOnly": false,
+          "line": 62
+        },
+        {
+          "specifier": "./template-designer-react/utils/document",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts",
+          "typeOnly": false,
+          "line": 75
+        },
+        {
+          "specifier": "./template-designer-react/components/form-preview/FormDocumentPreview",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx",
+          "typeOnly": false,
+          "line": 76
+        },
+        {
+          "specifier": "./template-designer-react/utils/sheetCellBorders",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/sheetCellBorders.ts",
+          "typeOnly": false,
+          "line": 77
+        },
+        {
+          "specifier": "./template-designer-react/components/canvas/WordCanvasPreview",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/WordCanvasPreview.tsx",
+          "typeOnly": false,
+          "line": 78
+        },
+        {
+          "specifier": "./template-designer-react/types",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/types/index.ts",
+          "typeOnly": true,
+          "line": 79
+        },
+        {
+          "specifier": "@/utils/rdoVersionStatus",
+          "resolved": "gmp-platform/frontend/src/utils/rdoVersionStatus.ts",
+          "typeOnly": false,
+          "line": 85
+        },
+        {
+          "specifier": "./dhrWorkspaceVersion",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/dhrWorkspaceVersion.ts",
+          "typeOnly": false,
+          "line": 86
+        }
+      ],
+      "hooks": {
+        "useState": 26,
+        "useEffect": 12,
+        "useMemo": 10,
+        "useQuery": 5,
+        "useMutation": 1
+      },
+      "largestFunctions": [
+        {
+          "name": "DhrTemplateWorkspace",
+          "kind": "FunctionDeclaration",
+          "startLine": 1206,
+          "endLine": 2980,
+          "spanLines": 1775,
+          "branchNodesInclusive": 94,
+          "nestedFunctionsInclusive": 133,
+          "maxControlDepthInclusive": 6
+        },
+        {
+          "name": "DhrContentTree",
+          "kind": "FunctionDeclaration",
+          "startLine": 203,
+          "endLine": 486,
+          "spanLines": 284,
+          "branchNodesInclusive": 17,
+          "nestedFunctionsInclusive": 22,
+          "maxControlDepthInclusive": 2
+        },
+        {
+          "name": "SheetPreview",
+          "kind": "FunctionDeclaration",
+          "startLine": 651,
+          "endLine": 884,
+          "spanLines": 234,
+          "branchNodesInclusive": 26,
+          "nestedFunctionsInclusive": 17,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "<callback:visibleFormOptions.flatMap>",
+          "kind": "ArrowFunction",
+          "startLine": 2457,
+          "endLine": 2674,
+          "spanLines": 218,
+          "branchNodesInclusive": 14,
+          "nestedFunctionsInclusive": 11,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "FieldListPreview",
+          "kind": "FunctionDeclaration",
+          "startLine": 886,
+          "endLine": 1019,
+          "spanLines": 134,
+          "branchNodesInclusive": 17,
+          "nestedFunctionsInclusive": 6,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "renderDirectory",
+          "kind": "ArrowFunction",
+          "startLine": 350,
+          "endLine": 479,
+          "spanLines": 130,
+          "branchNodesInclusive": 9,
+          "nestedFunctionsInclusive": 7,
+          "maxControlDepthInclusive": 2
+        },
+        {
+          "name": "<callback:Array.from(\n              { length: page.sheet.rowCount },\n           >",
+          "kind": "ArrowFunction",
+          "startLine": 733,
+          "endLine": 836,
+          "spanLines": 104,
+          "branchNodesInclusive": 19,
+          "nestedFunctionsInclusive": 2,
+          "maxControlDepthInclusive": 2
+        },
+        {
+          "name": "<callback:groups.map>",
+          "kind": "ArrowFunction",
+          "startLine": 913,
+          "endLine": 1015,
+          "spanLines": 103,
+          "branchNodesInclusive": 14,
+          "nestedFunctionsInclusive": 4,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "<callback:Array.from(\n                { length: page.sheet.columnCount },\n      >",
+          "kind": "ArrowFunction",
+          "startLine": 737,
+          "endLine": 836,
+          "spanLines": 100,
+          "branchNodesInclusive": 19,
+          "nestedFunctionsInclusive": 0,
+          "maxControlDepthInclusive": 2
+        },
+        {
+          "name": "renderForm",
+          "kind": "ArrowFunction",
+          "startLine": 255,
+          "endLine": 348,
+          "spanLines": 94,
+          "branchNodesInclusive": 6,
+          "nestedFunctionsInclusive": 3,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "<callback:option.versions.map>",
+          "kind": "ArrowFunction",
+          "startLine": 2578,
+          "endLine": 2671,
+          "spanLines": 94,
+          "branchNodesInclusive": 6,
+          "nestedFunctionsInclusive": 4,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "FormCanvasPreview",
+          "kind": "FunctionDeclaration",
+          "startLine": 1021,
+          "endLine": 1106,
+          "spanLines": 86,
+          "branchNodesInclusive": 5,
+          "nestedFunctionsInclusive": 10,
+          "maxControlDepthInclusive": 2
+        }
+      ],
+      "incomingStaticImports": [
+        {
+          "path": "gmp-platform/frontend/src/components/form-fill-settings/FormFieldPermissions.tsx",
+          "specifier": "@/pages/master-data/DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 5
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/dhr-management/DhrEvidenceCanvas.tsx",
+          "specifier": "@/pages/master-data/DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 5
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx",
+          "specifier": "@/pages/master-data/DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 17
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx",
+          "specifier": "@/pages/master-data/DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 77
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx",
+          "specifier": "@/pages/master-data/DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 51
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx",
+          "specifier": "@/pages/master-data/DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 52
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+          "specifier": "@/pages/master-data/DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 27
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx",
+          "specifier": "./DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 108
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx",
+          "specifier": "../DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 49
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx",
+          "specifier": "@/pages/master-data/DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": true,
+          "line": 9
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/FormInstanceDetailDrawer.tsx",
+          "specifier": "@/pages/master-data/DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 6
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx",
+          "specifier": "@/pages/master-data/DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 8
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx",
+          "specifier": "@/pages/master-data/DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 15
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/system/FormLookupBindingPreview.tsx",
+          "specifier": "@/pages/master-data/DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 6
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+          "specifier": "@/pages/master-data/DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 106
+        }
+      ]
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+      "bytes": 245857,
+      "physicalLines": 5143,
+      "blankLines": 285,
+      "language": "typescript-ast",
+      "parseDiagnostics": 0,
+      "imports": [
+        {
+          "specifier": "@/utils/recordLocation",
+          "resolved": "gmp-platform/frontend/src/utils/recordLocation.ts",
+          "typeOnly": false,
+          "line": 1
+        },
+        {
+          "specifier": "@/components/TableStateCell",
+          "resolved": "gmp-platform/frontend/src/components/TableStateCell.tsx",
+          "typeOnly": false,
+          "line": 2
+        },
+        {
+          "specifier": "@/components/listTableStyles",
+          "resolved": "gmp-platform/frontend/src/components/listTableStyles.ts",
+          "typeOnly": false,
+          "line": 3
+        },
+        {
+          "specifier": "@/components/ListTableShell",
+          "resolved": "gmp-platform/frontend/src/components/ListTableShell.tsx",
+          "typeOnly": false,
+          "line": 4
+        },
+        {
+          "specifier": "react",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 5
+        },
+        {
+          "specifier": "@tanstack/react-query",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 18
+        },
+        {
+          "specifier": "@xyflow/react",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 21
+        },
+        {
+          "specifier": "@xyflow/react/dist/style.css",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 40
+        },
+        {
+          "specifier": "@mui/material",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 41
+        },
+        {
+          "specifier": "@/components/AppDialog",
+          "resolved": "gmp-platform/frontend/src/components/AppDialog.tsx",
+          "typeOnly": false,
+          "line": 77
+        },
+        {
+          "specifier": "@/components/FormDialog",
+          "resolved": "gmp-platform/frontend/src/components/FormDialog.tsx",
+          "typeOnly": false,
+          "line": 78
+        },
+        {
+          "specifier": "@/components/FormDialogFieldGrid",
+          "resolved": "gmp-platform/frontend/src/components/FormDialogFieldGrid.tsx",
+          "typeOnly": false,
+          "line": 79
+        },
+        {
+          "specifier": "./components/OperationImportActions",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/components/OperationImportActions.tsx",
+          "typeOnly": false,
+          "line": 80
+        },
+        {
+          "specifier": "@mui/icons-material",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 81
+        },
+        {
+          "specifier": "@/components/StatusBadge",
+          "resolved": "gmp-platform/frontend/src/components/StatusBadge.tsx",
+          "typeOnly": false,
+          "line": 103
+        },
+        {
+          "specifier": "@/utils/rdoVersionStatus",
+          "resolved": "gmp-platform/frontend/src/utils/rdoVersionStatus.ts",
+          "typeOnly": false,
+          "line": 104
+        },
+        {
+          "specifier": "@/api/master-data",
+          "resolved": "gmp-platform/frontend/src/api/master-data.ts",
+          "typeOnly": false,
+          "line": 105
+        },
+        {
+          "specifier": "@/api/audit",
+          "resolved": "gmp-platform/frontend/src/api/audit.ts",
+          "typeOnly": false,
+          "line": 154
+        },
+        {
+          "specifier": "@/types/common",
+          "resolved": "gmp-platform/frontend/src/types/common.ts",
+          "typeOnly": true,
+          "line": 155
+        }
+      ],
+      "hooks": {
+        "useState": 45,
+        "useMemo": 28,
+        "useRef": 3,
+        "useEffect": 10,
+        "useQuery": 5,
+        "useMutation": 10
+      },
+      "largestFunctions": [
+        {
+          "name": "ProcessModelingPage",
+          "kind": "FunctionDeclaration",
+          "startLine": 1867,
+          "endLine": 5143,
+          "spanLines": 3277,
+          "branchNodesInclusive": 446,
+          "nestedFunctionsInclusive": 476,
+          "maxControlDepthInclusive": 12
+        },
+        {
+          "name": "renderFormField",
+          "kind": "ArrowFunction",
+          "startLine": 3635,
+          "endLine": 3812,
+          "spanLines": 178,
+          "branchNodesInclusive": 29,
+          "nestedFunctionsInclusive": 25,
+          "maxControlDepthInclusive": 2
+        },
+        {
+          "name": "renderTableRow",
+          "kind": "ArrowFunction",
+          "startLine": 4478,
+          "endLine": 4601,
+          "spanLines": 124,
+          "branchNodesInclusive": 22,
+          "nestedFunctionsInclusive": 9,
+          "maxControlDepthInclusive": 6
+        },
+        {
+          "name": "RouteDesignerNode",
+          "kind": "FunctionDeclaration",
+          "startLine": 449,
+          "endLine": 561,
+          "spanLines": 113,
+          "branchNodesInclusive": 26,
+          "nestedFunctionsInclusive": 9,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "renderRouteDesignerPanel",
+          "kind": "ArrowFunction",
+          "startLine": 4348,
+          "endLine": 4449,
+          "spanLines": 102,
+          "branchNodesInclusive": 4,
+          "nestedFunctionsInclusive": 8,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "renderRouteCanvasToolbar",
+          "kind": "ArrowFunction",
+          "startLine": 4176,
+          "endLine": 4246,
+          "spanLines": 71,
+          "branchNodesInclusive": 4,
+          "nestedFunctionsInclusive": 6,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "renderOperationCategoryPanel",
+          "kind": "ArrowFunction",
+          "startLine": 2616,
+          "endLine": 2684,
+          "spanLines": 69,
+          "branchNodesInclusive": 12,
+          "nestedFunctionsInclusive": 9,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "renderRouteCanvasContextMenu",
+          "kind": "ArrowFunction",
+          "startLine": 4280,
+          "endLine": 4346,
+          "spanLines": 67,
+          "branchNodesInclusive": 4,
+          "nestedFunctionsInclusive": 4,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "renderRouteVersionTable",
+          "kind": "ArrowFunction",
+          "startLine": 4113,
+          "endLine": 4174,
+          "spanLines": 62,
+          "branchNodesInclusive": 14,
+          "nestedFunctionsInclusive": 7,
+          "maxControlDepthInclusive": 12
+        },
+        {
+          "name": "renderMaterialVersionTable",
+          "kind": "ArrowFunction",
+          "startLine": 4055,
+          "endLine": 4111,
+          "spanLines": 57,
+          "branchNodesInclusive": 13,
+          "nestedFunctionsInclusive": 7,
+          "maxControlDepthInclusive": 10
+        },
+        {
+          "name": "<anonymous>",
+          "kind": "ArrowFunction",
+          "startLine": 4788,
+          "endLine": 4844,
+          "spanLines": 57,
+          "branchNodesInclusive": 8,
+          "nestedFunctionsInclusive": 13,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "<callback:operationCategoryOptions.map>",
+          "kind": "ArrowFunction",
+          "startLine": 2627,
+          "endLine": 2681,
+          "spanLines": 55,
+          "branchNodesInclusive": 12,
+          "nestedFunctionsInclusive": 8,
+          "maxControlDepthInclusive": 1
+        }
+      ],
+      "incomingStaticImports": []
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx",
+      "bytes": 71367,
+      "physicalLines": 1155,
+      "blankLines": 44,
+      "language": "typescript-ast",
+      "parseDiagnostics": 0,
+      "imports": [
+        {
+          "specifier": "@/utils/recordLocation",
+          "resolved": "gmp-platform/frontend/src/utils/recordLocation.ts",
+          "typeOnly": false,
+          "line": 1
+        },
+        {
+          "specifier": "react",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 2
+        },
+        {
+          "specifier": "@tanstack/react-query",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 3
+        },
+        {
+          "specifier": "@xyflow/react",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 4
+        },
+        {
+          "specifier": "@xyflow/react/dist/style.css",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 5
+        },
+        {
+          "specifier": "@mui/material",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 6
+        },
+        {
+          "specifier": "@mui/icons-material",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 28
+        },
+        {
+          "specifier": "@/components/AppDialog",
+          "resolved": "gmp-platform/frontend/src/components/AppDialog.tsx",
+          "typeOnly": false,
+          "line": 29
+        },
+        {
+          "specifier": "@/components/form-fill-settings/FormFillSettingsButton",
+          "resolved": "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettingsButton.tsx",
+          "typeOnly": false,
+          "line": 30
+        },
+        {
+          "specifier": "@/components/form-fill-settings/types",
+          "resolved": "gmp-platform/frontend/src/components/form-fill-settings/types.ts",
+          "typeOnly": true,
+          "line": 31
+        },
+        {
+          "specifier": "@/components/ConfirmDialog",
+          "resolved": "gmp-platform/frontend/src/components/ConfirmDialog.tsx",
+          "typeOnly": false,
+          "line": 32
+        },
+        {
+          "specifier": "./FinalOutputOperationControl",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/components/FinalOutputOperationControl.tsx",
+          "typeOnly": false,
+          "line": 33
+        },
+        {
+          "specifier": "@/api/product-modeling",
+          "resolved": "gmp-platform/frontend/src/api/product-modeling.ts",
+          "typeOnly": false,
+          "line": 34
+        },
+        {
+          "specifier": "@/api/master-data",
+          "resolved": "gmp-platform/frontend/src/api/master-data.ts",
+          "typeOnly": false,
+          "line": 45
+        },
+        {
+          "specifier": "@/api/files",
+          "resolved": "gmp-platform/frontend/src/api/files.ts",
+          "typeOnly": false,
+          "line": 46
+        },
+        {
+          "specifier": "@/api/template-modeling",
+          "resolved": "gmp-platform/frontend/src/api/template-modeling.ts",
+          "typeOnly": false,
+          "line": 47
+        },
+        {
+          "specifier": "../template-designer-react/utils/document",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts",
+          "typeOnly": false,
+          "line": 48
+        },
+        {
+          "specifier": "../DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 49
+        },
+        {
+          "specifier": "@/api/workflow-templates",
+          "resolved": "gmp-platform/frontend/src/api/workflow-templates.ts",
+          "typeOnly": false,
+          "line": 50
+        }
+      ],
+      "hooks": {
+        "useState": 23,
+        "useMemo": 20,
+        "useQuery": 4,
+        "useEffect": 3,
+        "useRef": 1
+      },
+      "largestFunctions": [
+        {
+          "name": "ProductProcessVersionEditorDialog",
+          "kind": "FunctionDeclaration",
+          "startLine": 831,
+          "endLine": 1155,
+          "spanLines": 325,
+          "branchNodesInclusive": 45,
+          "nestedFunctionsInclusive": 110,
+          "maxControlDepthInclusive": 8
+        },
+        {
+          "name": "DhrDirectoryFormPicker",
+          "kind": "FunctionDeclaration",
+          "startLine": 497,
+          "endLine": 641,
+          "spanLines": 145,
+          "branchNodesInclusive": 29,
+          "nestedFunctionsInclusive": 33,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "RdoVersionTreeSelect",
+          "kind": "FunctionDeclaration",
+          "startLine": 237,
+          "endLine": 369,
+          "spanLines": 133,
+          "branchNodesInclusive": 20,
+          "nestedFunctionsInclusive": 30,
+          "maxControlDepthInclusive": 4
+        },
+        {
+          "name": "RdoVersionMultiSelect",
+          "kind": "FunctionDeclaration",
+          "startLine": 371,
+          "endLine": 490,
+          "spanLines": 120,
+          "branchNodesInclusive": 23,
+          "nestedFunctionsInclusive": 30,
+          "maxControlDepthInclusive": 4
+        },
+        {
+          "name": "ReferenceBindingList",
+          "kind": "FunctionDeclaration",
+          "startLine": 700,
+          "endLine": 761,
+          "spanLines": 62,
+          "branchNodesInclusive": 6,
+          "nestedFunctionsInclusive": 7,
+          "maxControlDepthInclusive": 2
+        },
+        {
+          "name": "RouteGraph",
+          "kind": "FunctionDeclaration",
+          "startLine": 643,
+          "endLine": 698,
+          "spanLines": 56,
+          "branchNodesInclusive": 5,
+          "nestedFunctionsInclusive": 5,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "renderDirectory",
+          "kind": "ArrowFunction",
+          "startLine": 592,
+          "endLine": 626,
+          "spanLines": 35,
+          "branchNodesInclusive": 17,
+          "nestedFunctionsInclusive": 7,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "DocumentPreviewDialog",
+          "kind": "FunctionDeclaration",
+          "startLine": 795,
+          "endLine": 829,
+          "spanLines": 35,
+          "branchNodesInclusive": 10,
+          "nestedFunctionsInclusive": 5,
+          "maxControlDepthInclusive": 6
+        },
+        {
+          "name": "toVersionForm",
+          "kind": "FunctionDeclaration",
+          "startLine": 120,
+          "endLine": 149,
+          "spanLines": 30,
+          "branchNodesInclusive": 6,
+          "nestedFunctionsInclusive": 0,
+          "maxControlDepthInclusive": 2
+        },
+        {
+          "name": "toOperationDrafts",
+          "kind": "FunctionDeclaration",
+          "startLine": 151,
+          "endLine": 179,
+          "spanLines": 29,
+          "branchNodesInclusive": 0,
+          "nestedFunctionsInclusive": 6,
+          "maxControlDepthInclusive": 0
+        },
+        {
+          "name": "<callback:visibleGroups.map>",
+          "kind": "ArrowFunction",
+          "startLine": 456,
+          "endLine": 481,
+          "spanLines": 26,
+          "branchNodesInclusive": 14,
+          "nestedFunctionsInclusive": 6,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "<callback:nodes\n    .filter((node) => !node.nodeType || node.nodeType === 'OPERA>",
+          "kind": "ArrowFunction",
+          "startLine": 156,
+          "endLine": 178,
+          "spanLines": 23,
+          "branchNodesInclusive": 0,
+          "nestedFunctionsInclusive": 2,
+          "maxControlDepthInclusive": 0
+        }
+      ],
+      "incomingStaticImports": [
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx",
+          "specifier": "./components/ProductProcessVersionEditorDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx",
+          "typeOnly": false,
+          "line": 85
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/ProductModelingPage.tsx",
+          "specifier": "./components/ProductProcessVersionEditorDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx",
+          "typeOnly": false,
+          "line": 69
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx",
+          "specifier": "./components/ProductProcessVersionEditorDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx",
+          "typeOnly": false,
+          "line": 89
+        }
+      ]
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+      "bytes": 292225,
+      "physicalLines": 7096,
+      "blankLines": 333,
+      "language": "typescript-ast",
+      "parseDiagnostics": 0,
+      "imports": [
+        {
+          "specifier": "react",
+          "resolved": null,
+          "typeOnly": true,
+          "line": 1
+        },
+        {
+          "specifier": "react",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 2
+        },
+        {
+          "specifier": "react-dom",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 9
+        },
+        {
+          "specifier": "@mui/icons-material/AddRounded",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 10
+        },
+        {
+          "specifier": "@mui/icons-material/CloseRounded",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 11
+        },
+        {
+          "specifier": "@mui/icons-material/ContentCopyRounded",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 12
+        },
+        {
+          "specifier": "@mui/icons-material/DeleteOutlineRounded",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 13
+        },
+        {
+          "specifier": "@mui/icons-material/DragIndicatorRounded",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 14
+        },
+        {
+          "specifier": "@mui/icons-material/SettingsOutlined",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 15
+        },
+        {
+          "specifier": "@mui/material",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 16
+        },
+        {
+          "specifier": "@mui/material/styles",
+          "resolved": null,
+          "typeOnly": true,
+          "line": 37
+        },
+        {
+          "specifier": "@/components/AppDialog",
+          "resolved": "gmp-platform/frontend/src/components/AppDialog.tsx",
+          "typeOnly": false,
+          "line": 38
+        },
+        {
+          "specifier": "./CanvasDropZone",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasDropZone.tsx",
+          "typeOnly": false,
+          "line": 39
+        },
+        {
+          "specifier": "./CanvasNodeRenderer",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasNodeRenderer.tsx",
+          "typeOnly": false,
+          "line": 40
+        },
+        {
+          "specifier": "../../types",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/types/index.ts",
+          "typeOnly": true,
+          "line": 41
+        },
+        {
+          "specifier": "../../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 42
+        },
+        {
+          "specifier": "../../registry/componentRegistry",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/componentRegistry.tsx",
+          "typeOnly": false,
+          "line": 43
+        },
+        {
+          "specifier": "../../registry/fieldRegistry",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/fieldRegistry.ts",
+          "typeOnly": false,
+          "line": 44
+        },
+        {
+          "specifier": "../../utils/subTableRegion",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/subTableRegion.ts",
+          "typeOnly": false,
+          "line": 45
+        },
+        {
+          "specifier": "../../registry/commonComponentRegistry",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/commonComponentRegistry.ts",
+          "typeOnly": false,
+          "line": 46
+        },
+        {
+          "specifier": "../../utils/wordTableOperations",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/wordTableOperations.ts",
+          "typeOnly": false,
+          "line": 47
+        },
+        {
+          "specifier": "../../utils/wordTableLayout",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/wordTableLayout.ts",
+          "typeOnly": false,
+          "line": 57
+        },
+        {
+          "specifier": "../../utils/wordTableInlineContent",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/wordTableInlineContent.ts",
+          "typeOnly": false,
+          "line": 58
+        },
+        {
+          "specifier": "@/components/SnackbarProvider",
+          "resolved": "gmp-platform/frontend/src/components/SnackbarProvider.tsx",
+          "typeOnly": false,
+          "line": 65
+        },
+        {
+          "specifier": "./WordTableCellStyleContext",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/WordTableCellStyleContext.tsx",
+          "typeOnly": false,
+          "line": 66
+        },
+        {
+          "specifier": "../../utils/sheetCellTransfer",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/sheetCellTransfer.ts",
+          "typeOnly": false,
+          "line": 67
+        }
+      ],
+      "hooks": {
+        "useTemplateDesignerStore": 49,
+        "useState": 29,
+        "useRef": 25,
+        "useEffect": 18,
+        "useMemo": 19,
+        "useCallback": 3
+      },
+      "largestFunctions": [
+        {
+          "name": "CanvasSheetWorkspace",
+          "kind": "FunctionDeclaration",
+          "startLine": 1297,
+          "endLine": 7096,
+          "spanLines": 5800,
+          "branchNodesInclusive": 572,
+          "nestedFunctionsInclusive": 552,
+          "maxControlDepthInclusive": 4
+        },
+        {
+          "name": "renderWordDocumentLayer",
+          "kind": "ArrowFunction",
+          "startLine": 5139,
+          "endLine": 5594,
+          "spanLines": 456,
+          "branchNodesInclusive": 29,
+          "nestedFunctionsInclusive": 35,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "<callback:wordDocument.blocks.map>",
+          "kind": "ArrowFunction",
+          "startLine": 5152,
+          "endLine": 5591,
+          "spanLines": 440,
+          "branchNodesInclusive": 28,
+          "nestedFunctionsInclusive": 34,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "renderImportedGrid",
+          "kind": "ArrowFunction",
+          "startLine": 4908,
+          "endLine": 5137,
+          "spanLines": 230,
+          "branchNodesInclusive": 44,
+          "nestedFunctionsInclusive": 18,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "renderSubTableOverlays",
+          "kind": "ArrowFunction",
+          "startLine": 2958,
+          "endLine": 3165,
+          "spanLines": 208,
+          "branchNodesInclusive": 12,
+          "nestedFunctionsInclusive": 5,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "<callback:getSubTableNodes(currentPage.nodes).map>",
+          "kind": "ArrowFunction",
+          "startLine": 2961,
+          "endLine": 3164,
+          "spanLines": 204,
+          "branchNodesInclusive": 11,
+          "nestedFunctionsInclusive": 4,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "<callback:visibleRows.flatMap>",
+          "kind": "ArrowFunction",
+          "startLine": 4920,
+          "endLine": 5112,
+          "spanLines": 193,
+          "branchNodesInclusive": 40,
+          "nestedFunctionsInclusive": 16,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "<callback:columns.map>",
+          "kind": "ArrowFunction",
+          "startLine": 4920,
+          "endLine": 5112,
+          "spanLines": 193,
+          "branchNodesInclusive": 40,
+          "nestedFunctionsInclusive": 15,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "renderQuickAddFieldDialog",
+          "kind": "ArrowFunction",
+          "startLine": 5768,
+          "endLine": 5950,
+          "spanLines": 183,
+          "branchNodesInclusive": 0,
+          "nestedFunctionsInclusive": 10,
+          "maxControlDepthInclusive": 0
+        },
+        {
+          "name": "<callback:block.cells.map>",
+          "kind": "ArrowFunction",
+          "startLine": 5377,
+          "endLine": 5531,
+          "spanLines": 155,
+          "branchNodesInclusive": 16,
+          "nestedFunctionsInclusive": 12,
+          "maxControlDepthInclusive": 2
+        },
+        {
+          "name": "beginWordTableCellSelection",
+          "kind": "ArrowFunction",
+          "startLine": 2129,
+          "endLine": 2264,
+          "spanLines": 136,
+          "branchNodesInclusive": 14,
+          "nestedFunctionsInclusive": 9,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "renderWordTableContextMenu",
+          "kind": "ArrowFunction",
+          "startLine": 5639,
+          "endLine": 5766,
+          "spanLines": 128,
+          "branchNodesInclusive": 1,
+          "nestedFunctionsInclusive": 14,
+          "maxControlDepthInclusive": 1
+        }
+      ],
+      "incomingStaticImports": [
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx",
+          "specifier": "../../components/canvas/CanvasSheetWorkspace",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+          "typeOnly": false,
+          "line": 11
+        }
+      ]
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+      "bytes": 120889,
+      "physicalLines": 3490,
+      "blankLines": 286,
+      "language": "typescript-ast",
+      "parseDiagnostics": 0,
+      "imports": [
+        {
+          "specifier": "zustand",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 1
+        },
+        {
+          "specifier": "@/components/form-renderer/referenceConfig",
+          "resolved": "gmp-platform/frontend/src/components/form-renderer/referenceConfig.ts",
+          "typeOnly": false,
+          "line": 2
+        },
+        {
+          "specifier": "../types",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/types/index.ts",
+          "typeOnly": true,
+          "line": 3
+        },
+        {
+          "specifier": "../registry/commonComponentRegistry",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/commonComponentRegistry.ts",
+          "typeOnly": false,
+          "line": 21
+        },
+        {
+          "specifier": "../registry/componentRegistry",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/componentRegistry.tsx",
+          "typeOnly": false,
+          "line": 22
+        },
+        {
+          "specifier": "../registry/fieldRegistry",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/fieldRegistry.ts",
+          "typeOnly": false,
+          "line": 23
+        },
+        {
+          "specifier": "../utils/subTableRegion",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/subTableRegion.ts",
+          "typeOnly": false,
+          "line": 24
+        },
+        {
+          "specifier": "../utils/wordTableInlineContent",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/wordTableInlineContent.ts",
+          "typeOnly": false,
+          "line": 25
+        },
+        {
+          "specifier": "../utils/sheetCellTransfer",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/sheetCellTransfer.ts",
+          "typeOnly": false,
+          "line": 26
+        }
+      ],
+      "hooks": {},
+      "largestFunctions": [
+        {
+          "name": "<callback:create>",
+          "kind": "ArrowFunction",
+          "startLine": 1903,
+          "endLine": 3490,
+          "spanLines": 1588,
+          "branchNodesInclusive": 166,
+          "nestedFunctionsInclusive": 244,
+          "maxControlDepthInclusive": 4
+        },
+        {
+          "name": "setSelectedSubTableHeaderVisible",
+          "kind": "ArrowFunction",
+          "startLine": 2623,
+          "endLine": 2732,
+          "spanLines": 110,
+          "branchNodesInclusive": 6,
+          "nestedFunctionsInclusive": 7,
+          "maxControlDepthInclusive": 2
+        },
+        {
+          "name": "<callback:set>",
+          "kind": "ArrowFunction",
+          "startLine": 2623,
+          "endLine": 2732,
+          "spanLines": 110,
+          "branchNodesInclusive": 6,
+          "nestedFunctionsInclusive": 6,
+          "maxControlDepthInclusive": 2
+        },
+        {
+          "name": "deleteSheetColumns",
+          "kind": "ArrowFunction",
+          "startLine": 2904,
+          "endLine": 2959,
+          "spanLines": 56,
+          "branchNodesInclusive": 3,
+          "nestedFunctionsInclusive": 3,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "<callback:set>",
+          "kind": "ArrowFunction",
+          "startLine": 2904,
+          "endLine": 2959,
+          "spanLines": 56,
+          "branchNodesInclusive": 3,
+          "nestedFunctionsInclusive": 2,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "deleteSheetRows",
+          "kind": "ArrowFunction",
+          "startLine": 2960,
+          "endLine": 3015,
+          "spanLines": 56,
+          "branchNodesInclusive": 3,
+          "nestedFunctionsInclusive": 3,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "<callback:set>",
+          "kind": "ArrowFunction",
+          "startLine": 2960,
+          "endLine": 3015,
+          "spanLines": 56,
+          "branchNodesInclusive": 3,
+          "nestedFunctionsInclusive": 2,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "shiftCanvasNodesForDeletedRows",
+          "kind": "FunctionDeclaration",
+          "startLine": 684,
+          "endLine": 735,
+          "spanLines": 52,
+          "branchNodesInclusive": 9,
+          "nestedFunctionsInclusive": 1,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "shiftCanvasNodesForDeletedColumns",
+          "kind": "FunctionDeclaration",
+          "startLine": 737,
+          "endLine": 788,
+          "spanLines": 52,
+          "branchNodesInclusive": 9,
+          "nestedFunctionsInclusive": 1,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "mergePageCellValuesInRange",
+          "kind": "FunctionDeclaration",
+          "startLine": 209,
+          "endLine": 257,
+          "spanLines": 49,
+          "branchNodesInclusive": 11,
+          "nestedFunctionsInclusive": 0,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "bindFieldToNode",
+          "kind": "ArrowFunction",
+          "startLine": 2539,
+          "endLine": 2587,
+          "spanLines": 49,
+          "branchNodesInclusive": 6,
+          "nestedFunctionsInclusive": 5,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "<callback:set>",
+          "kind": "ArrowFunction",
+          "startLine": 2539,
+          "endLine": 2587,
+          "spanLines": 49,
+          "branchNodesInclusive": 6,
+          "nestedFunctionsInclusive": 4,
+          "maxControlDepthInclusive": 1
+        }
+      ],
+      "incomingStaticImports": [
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx",
+          "specifier": "./store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 8
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ComponentLibrary.tsx",
+          "specifier": "../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 13
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx",
+          "specifier": "../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 12
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx",
+          "specifier": "../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 6
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx",
+          "specifier": "../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 3
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionCanvasPicker.tsx",
+          "specifier": "../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 3
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx",
+          "specifier": "../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 8
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx",
+          "specifier": "../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 2
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx",
+          "specifier": "../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 7
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionValidationDialog.tsx",
+          "specifier": "../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 4
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig.tsx",
+          "specifier": "../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 8
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/SubTableProjectionConfig.tsx",
+          "specifier": "../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 4
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasDesignerToolbar.tsx",
+          "specifier": "../../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 19
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasDropZone.tsx",
+          "specifier": "../../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 3
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasNodeRenderer.tsx",
+          "specifier": "../../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 11
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasPageThumbnails.tsx",
+          "specifier": "../../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 5
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+          "specifier": "../../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 42
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/WordTableCellStyleContext.tsx",
+          "specifier": "../../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 3
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/componentRegistry.tsx",
+          "specifier": "../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 25
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx",
+          "specifier": "../../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 18
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx",
+          "specifier": "../../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 53
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/workflow/WorkflowTab.tsx",
+          "specifier": "../../store/useTemplateDesignerStore",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "typeOnly": false,
+          "line": 15
+        }
+      ]
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "bytes": 184245,
+      "physicalLines": 5049,
+      "blankLines": 92,
+      "language": "typescript-ast",
+      "parseDiagnostics": 0,
+      "imports": [
+        {
+          "specifier": "react",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 1
+        },
+        {
+          "specifier": "@tanstack/react-query",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 15
+        },
+        {
+          "specifier": "@/utils/recordLocation",
+          "resolved": "gmp-platform/frontend/src/utils/recordLocation.ts",
+          "typeOnly": false,
+          "line": 16
+        },
+        {
+          "specifier": "react-router-dom",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 17
+        },
+        {
+          "specifier": "@mui/icons-material",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 18
+        },
+        {
+          "specifier": "@xyflow/react",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 41
+        },
+        {
+          "specifier": "@xyflow/react/dist/style.css",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 60
+        },
+        {
+          "specifier": "@mui/material",
+          "resolved": null,
+          "typeOnly": false,
+          "line": 61
+        },
+        {
+          "specifier": "@/components/AppDialog",
+          "resolved": "gmp-platform/frontend/src/components/AppDialog.tsx",
+          "typeOnly": false,
+          "line": 81
+        },
+        {
+          "specifier": "@/components/form-fill-settings/FormFillSettings",
+          "resolved": "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx",
+          "typeOnly": false,
+          "line": 82
+        },
+        {
+          "specifier": "@/components/form-fill-settings/FormFieldPermissions",
+          "resolved": "gmp-platform/frontend/src/components/form-fill-settings/FormFieldPermissions.tsx",
+          "typeOnly": true,
+          "line": 83
+        },
+        {
+          "specifier": "@/components/form-fill-settings/types",
+          "resolved": "gmp-platform/frontend/src/components/form-fill-settings/types.ts",
+          "typeOnly": false,
+          "line": 84
+        },
+        {
+          "specifier": "@/components/ConfirmDialog",
+          "resolved": "gmp-platform/frontend/src/components/ConfirmDialog.tsx",
+          "typeOnly": false,
+          "line": 85
+        },
+        {
+          "specifier": "@/components/SnackbarProvider",
+          "resolved": "gmp-platform/frontend/src/components/SnackbarProvider.tsx",
+          "typeOnly": false,
+          "line": 86
+        },
+        {
+          "specifier": "@/api/workflow-work",
+          "resolved": "gmp-platform/frontend/src/api/workflow-work.ts",
+          "typeOnly": false,
+          "line": 87
+        },
+        {
+          "specifier": "@/api/template-modeling",
+          "resolved": "gmp-platform/frontend/src/api/template-modeling.ts",
+          "typeOnly": false,
+          "line": 99
+        },
+        {
+          "specifier": "@/pages/master-data/template-designer-react/utils/document",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts",
+          "typeOnly": false,
+          "line": 105
+        },
+        {
+          "specifier": "@/pages/master-data/DhrTemplateWorkspaceDialog",
+          "resolved": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+          "typeOnly": false,
+          "line": 106
+        },
+        {
+          "specifier": "@/components/condition-builder/ConditionRuleDialog",
+          "resolved": "gmp-platform/frontend/src/components/condition-builder/ConditionRuleDialog.tsx",
+          "typeOnly": false,
+          "line": 107
+        },
+        {
+          "specifier": "@/components/condition-builder/ConditionRuleBuilder",
+          "resolved": "gmp-platform/frontend/src/components/condition-builder/ConditionRuleBuilder.tsx",
+          "typeOnly": false,
+          "line": 108
+        },
+        {
+          "specifier": "./workConditionAdapter",
+          "resolved": "gmp-platform/frontend/src/pages/workflow-center/workConditionAdapter.tsx",
+          "typeOnly": false,
+          "line": 113
+        },
+        {
+          "specifier": "@/api/form-processes",
+          "resolved": "gmp-platform/frontend/src/api/form-processes.ts",
+          "typeOnly": false,
+          "line": 117
+        },
+        {
+          "specifier": "@/components/flow-designer/FlowDesigner",
+          "resolved": "gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx",
+          "typeOnly": false,
+          "line": 121
+        }
+      ],
+      "hooks": {
+        "useQuery": 7,
+        "useMemo": 5,
+        "useState": 27,
+        "useRef": 12,
+        "useEffect": 5,
+        "useMutation": 5
+      },
+      "largestFunctions": [
+        {
+          "name": "<callback:forwardRef>",
+          "kind": "ArrowFunction",
+          "startLine": 1683,
+          "endLine": 4415,
+          "spanLines": 2733,
+          "branchNodesInclusive": 208,
+          "nestedFunctionsInclusive": 239,
+          "maxControlDepthInclusive": 7
+        },
+        {
+          "name": "WorkTemplateEditor",
+          "kind": "FunctionDeclaration",
+          "startLine": 4420,
+          "endLine": 5049,
+          "spanLines": 630,
+          "branchNodesInclusive": 41,
+          "nestedFunctionsInclusive": 41,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "WorkFlowNode",
+          "kind": "FunctionDeclaration",
+          "startLine": 1052,
+          "endLine": 1499,
+          "spanLines": 448,
+          "branchNodesInclusive": 29,
+          "nestedFunctionsInclusive": 19,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "<callback:formGroups.map>",
+          "kind": "ArrowFunction",
+          "startLine": 3884,
+          "endLine": 4128,
+          "spanLines": 245,
+          "branchNodesInclusive": 9,
+          "nestedFunctionsInclusive": 9,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "validateFlowGraphForPublish",
+          "kind": "FunctionDeclaration",
+          "startLine": 454,
+          "endLine": 652,
+          "spanLines": 199,
+          "branchNodesInclusive": 31,
+          "nestedFunctionsInclusive": 21,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "<callback:group.parents.map>",
+          "kind": "ArrowFunction",
+          "startLine": 3928,
+          "endLine": 4124,
+          "spanLines": 197,
+          "branchNodesInclusive": 6,
+          "nestedFunctionsInclusive": 6,
+          "maxControlDepthInclusive": 2
+        },
+        {
+          "name": "<callback:[\n            ...conditionBranches.map((branch) => ({\n              id>",
+          "kind": "ArrowFunction",
+          "startLine": 1312,
+          "endLine": 1475,
+          "spanLines": 164,
+          "branchNodesInclusive": 14,
+          "nestedFunctionsInclusive": 9,
+          "maxControlDepthInclusive": 3
+        },
+        {
+          "name": "FormFieldPermissionEditor",
+          "kind": "FunctionDeclaration",
+          "startLine": 1503,
+          "endLine": 1660,
+          "spanLines": 158,
+          "branchNodesInclusive": 10,
+          "nestedFunctionsInclusive": 7,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "alignNodes",
+          "kind": "ArrowFunction",
+          "startLine": 2160,
+          "endLine": 2313,
+          "spanLines": 154,
+          "branchNodesInclusive": 20,
+          "nestedFunctionsInclusive": 20,
+          "maxControlDepthInclusive": 2
+        },
+        {
+          "name": "<callback:selectedConditionBranches.map>",
+          "kind": "ArrowFunction",
+          "startLine": 4200,
+          "endLine": 4313,
+          "spanLines": 114,
+          "branchNodesInclusive": 7,
+          "nestedFunctionsInclusive": 3,
+          "maxControlDepthInclusive": 2
+        },
+        {
+          "name": "<callback:parent.versions.map>",
+          "kind": "ArrowFunction",
+          "startLine": 4011,
+          "endLine": 4119,
+          "spanLines": 109,
+          "branchNodesInclusive": 3,
+          "nestedFunctionsInclusive": 3,
+          "maxControlDepthInclusive": 1
+        },
+        {
+          "name": "normalizeFlowGraph",
+          "kind": "FunctionDeclaration",
+          "startLine": 654,
+          "endLine": 749,
+          "spanLines": 96,
+          "branchNodesInclusive": 13,
+          "nestedFunctionsInclusive": 11,
+          "maxControlDepthInclusive": 2
+        }
+      ],
+      "incomingStaticImports": []
+    }
+  ]
+}
