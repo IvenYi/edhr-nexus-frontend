@@ -23,6 +23,9 @@ public class FormReferenceLookup {
             case "material" -> new Source("material r", "r.status='ACTIVE'", Map.of("code", "r.code", "name", "r.name", "specification", "r.specification"), "name");
             case "product" -> new Source("material r JOIN material_type t ON t.id=r.material_type_id", "r.status='ACTIVE' AND t.name IN ('产成品','半成品')", Map.of("code", "r.code", "name", "r.name", "specification", "r.specification"), "name");
             case "equipment" -> new Source("equipment r", "r.status='ACTIVE'", Map.of("code", "r.code", "name", "r.name", "model", "r.model"), "name");
+            case "productionBatch", "serialNumber" -> new Source("production_object r JOIN work_order w ON w.id=r.work_order_id", "r.tenant_id='default' AND w.tenant_id='default' AND r.object_type='" + ("productionBatch".equals(type) ? "BATCH" : "SN") + "'", Map.of("code", "r.object_no", "name", "r.object_no", "workOrderNo", "w.order_no"), "code");
+            case "workOrder" -> new Source("work_order r", "r.tenant_id='default'", Map.of("code", "r.order_no", "name", "r.order_no"), "code");
+            case "operation" -> new Source("operation r", "r.tenant_id='default'", Map.of("code", "r.code", "name", "r.name"), "name");
             case "dictionary" -> new Source("business_dictionary_item r JOIN business_dictionary d ON d.id=r.dictionary_id", "r.status='ACTIVE' AND d.status='ACTIVE'", Map.of("code", "d.code", "name", "r.label", "value", "r.value"), "name");
             default -> throw invalid("引用来源尚不可用，请重新配置引用字段");
         };
@@ -34,7 +37,8 @@ public class FormReferenceLookup {
         String display = config.path("referenceField").asText();
         if (display.isBlank()) display = source.defaultField;
         String column = column(source, display);
-        StringBuilder sql = new StringBuilder("SELECT r.id, COALESCE(" + column + ",'') AS name FROM " + source.from + " WHERE " + source.active);
+        String code = column(source, switch (config.path("sourceType").asText()) { case "user" -> "username"; case "dictionary" -> "value"; default -> "code"; });
+        StringBuilder sql = new StringBuilder("SELECT r.id, COALESCE(" + column + ",'') AS name, COALESCE(" + code + ",'') AS code FROM " + source.from + " WHERE " + source.active);
         List<Object> args = new ArrayList<>();
         JsonNode conditions = config.path("referenceQueryConditions");
         if (!conditions.isMissingNode() && !conditions.isNull() && !conditions.isArray()) throw invalid("引用查询条件格式不正确");
@@ -71,9 +75,9 @@ public class FormReferenceLookup {
     public List<Map<String, String>> search(JsonNode config, String keyword, JsonNode values) {
         Query query = query(config, values);
         String search = "%" + escape(keyword == null ? "" : keyword.toLowerCase(Locale.ROOT)) + "%";
-        query.args.add(search); query.args.add(search);
-        return jdbc.query("SELECT id, name FROM (" + query.sql + ") refs WHERE (LOWER(name) LIKE ? ESCAPE '!' OR CAST(id AS VARCHAR) LIKE ? ESCAPE '!') ORDER BY id LIMIT 100",
-                (rs, i) -> Map.of("id", rs.getString("id"), "name", rs.getString("name")), query.args.toArray());
+        query.args.add(search); query.args.add(search); query.args.add(search);
+        return jdbc.query("SELECT id, name, code FROM (" + query.sql + ") refs WHERE (LOWER(name) LIKE ? ESCAPE '!' OR LOWER(code) LIKE ? ESCAPE '!' OR CAST(id AS VARCHAR) LIKE ? ESCAPE '!') ORDER BY id LIMIT 100",
+                (rs, i) -> Map.of("id", rs.getString("id"), "name", rs.getString("name"), "code", rs.getString("code"), "sourceType", config.path("sourceType").asText()), query.args.toArray());
     }
 
     public void validate(JsonNode config, JsonNode value, JsonNode values) {
@@ -82,7 +86,11 @@ public class FormReferenceLookup {
         try { id = Long.parseLong(value.path("id").asText()); } catch (NumberFormatException e) { throw invalid("引用记录标识不正确"); }
         Query query = query(config, values);
         query.args.add(id);
-        boolean found = jdbc.query(query.sql + " AND r.id=?", (rs, i) -> rs.getString("name"), query.args.toArray()).stream().anyMatch(value.path("name").asText()::equals);
+        boolean metadata = value.has("sourceType") || value.has("code");
+        if (metadata && (!value.path("sourceType").isTextual() || !value.path("code").isTextual()
+                || !config.path("sourceType").asText().equals(value.path("sourceType").asText()))) throw invalid("引用对象类型或编号不正确，请重新选择");
+        boolean found = jdbc.query(query.sql + " AND r.id=?", (rs, i) -> Map.of("name", rs.getString("name"), "code", rs.getString("code")), query.args.toArray()).stream()
+                .anyMatch(row -> value.path("name").asText().equals(row.get("name")) && (!metadata || value.path("code").asText().equals(row.get("code"))));
         if (!found) throw invalid("引用记录已失效或不符合查询条件，请重新选择");
     }
 

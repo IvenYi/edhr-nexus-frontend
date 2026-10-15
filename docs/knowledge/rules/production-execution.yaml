@@ -15,7 +15,7 @@ rules:
       fields: [goodQuantity, ngQuantity, scrapQuantity, outputQuantity]
       source: current-operation-production-form-fields
       outputComponents: [goodQuantity, ngQuantity, scrapQuantity]
-    explanation: user-confirmed；当前工序产出包括良品、不良品和报废数量，由当前工序生产表单中的字段汇总；字段通过内置业务用途标识明确映射，不按名称猜测。本规则定义工序数量来源，不将数量汇总解释为工序完工条件、批次最终产出或工单完成率；数字类型限制、缺值显示、保存时点和目标分母等实施策略由实现证据另行说明，不提升为用户确认的通用规则。
+    explanation: user-confirmed；当前工序过程参考包括良品、不良品和报废数量，由当前工序生产表单中显式标记用途的字段汇总，不按名称猜测。该过程参考不是批次最终产出或工单完成率；2026-09-30 用户确认批次最终产出须另取指定最终产出工序的正式报工数量，质量用途不自动加减最终产出，详见 planned 规则 rule.product-process.final-output。数字类型限制、缺值显示、保存时点和目标分母等实现策略由实现证据另行说明，不提升为用户确认的通用规则。
     evidenceIds: [evidence.operation-output-user-decision, evidence.operation-output-field-purpose-source, evidence.operation-output-model-editor-source, evidence.operation-output-summary-source, evidence.operation-output-summary-tests, evidence.operation-output-persistence-tests, evidence.production-execution-snapshot-builder-source, evidence.production-execution-service-source]
   - id: rule.production-execution-context
     name: 批次和SN执行上下文

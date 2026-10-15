@@ -22,6 +22,8 @@ import com.zencas.edhr.template.repository.FormTemplateRepository;
 import com.zencas.edhr.template.repository.FormTemplateVersionRepository;
 import com.zencas.edhr.template.repository.TemplateCategoryRepository;
 import com.zencas.edhr.template.service.TemplateLegacyWordImportService;
+import com.zencas.edhr.template.service.FormLookupCatalogService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,7 +64,13 @@ class TemplateModelingControllerTest {
     @Mock private AuditEventRepository auditEventRepository;
     @Mock private SnowflakeIdGenerator idGenerator;
     @Mock private TemplateLegacyWordImportService templateLegacyWordImportService;
+    @Mock private FormLookupCatalogService formLookupCatalogService;
     @InjectMocks private TemplateModelingController controller;
+
+    @BeforeEach void preserveLegacyDesignInCatalogAdapter() {
+        org.mockito.Mockito.lenient().when(formLookupCatalogService.prepareDesign(org.mockito.ArgumentMatchers.any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+    }
     @InjectMocks private DhrTemplateWorkspaceController workspaceController;
 
     private final ObjectMapper objectMapper = new ObjectMapper();

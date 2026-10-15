@@ -1,0 +1,137 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261015-PROJECTION-DEV-INTEGRATION
+  scope: 投影分支合入edhr-dev及按目标新契约增量对齐；最终产出遗漏仅登记TODO
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: eedc24721d8d5137b29840575867422577386141
+    targetBranch: edhr-dev
+    targetCommit: 3977329d13c4c74bd862e21abac4ae982e5b8f83
+    contractReadCommit: 3977329d13c4c74bd862e21abac4ae982e5b8f83
+    uncommittedContractPaths: []
+  summary: 保留双方提交历史和目标契约、类型校验与身份安全修复，处理投影知识ID碰撞、语义及代码衔接；本轮不实现最终产出联动，不改运行库及旧模拟。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.projection-integration-id-reallocation
+      statement: 目标已有自定义表单DEC-0075和治理DEC-0076，投影DEC-0075及其声明改用候选树未占用的DEC-0077，保留旧分支到新ID映射。
+      rationale: 新契约要求未合入的同ID异义记录重新编号，不能全仓替换目标已有含义。
+      relatedIds: [DEC-0075, DEC-0076]
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0077-27
+      supersededStatementIds: [DEC-0077-02, DEC-0077-09, DEC-0077-25, DEC-0077-26]
+      scope: MVP开发历史可修复迁移或作废，不维持纯旧数据兼容负担。
+      retainedScope: 独立数据库、真实生产证据、未来正确使用时快照、权限签署审计及新含义旧实例补覆盖的二期边界保留。
+      sourceReferences: [docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+    - decisionStatementId: DEC-0077-29
+      supersededStatementIds: [DEC-0077-20]
+      scope: 表单组合条件已明确同实例，同子表条件须同实际行，不再作为未决。
+      retainedScope: 不同子表组合、复杂OR、目录其他生命周期和真实归属不由此确认。
+      sourceReferences: [docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+    - decisionStatementId: DEC-0077-30
+      supersededStatementIds: [DEC-0077-28, DEC-0077-18]
+      scope: 无上下文可登记系统内生产批次或SN但不生成归属；草稿免阻断性业务完整性及投影校验。
+      retainedScope: 有上下文沿真实所属，认证、权限、签署及最终完成校验保留，其他带入生命周期仍未决。
+      sourceReferences: [docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+    - decisionStatementId: DEC-0077-33
+      supersededStatementIds: [DEC-0077-17, DEC-0077-20, DEC-0077-29]
+      scope: 成功保存或暂存后的最近内容可查，索引生效时点和过程状态范围不再未决。
+      retainedScope: 正式统计仍等最终完成和处理成功，未保存输入、失效历史及A12不因此开放。
+      sourceReferences: [docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+    - decisionStatementId: DEC-0077-36
+      supersededStatementIds: [DEC-0077-35]
+      scope: 报工人来源收敛为人员引用或签名，不接受普通文本。
+      retainedScope: 人时由填写数字字段读取，业务起止/生产日期独立，非创建人替代，不计算人时或多人分摊。
+      sourceReferences: [docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+    - decisionStatementId: DEC-0077-37
+      supersededStatementIds: [DEC-0077-36]
+      scope: 非必需未配置字段收进更多业务字段，必需、已配置或出错来源外显，替代所有业务属性默认外显。
+      retainedScope: 不改变字段类型、必需性、身份、安全、保存和最终生效时点。
+      sourceReferences: [docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+    - decisionStatementId: DEC-0077-40
+      supersededStatementIds: [DEC-0077-20, DEC-0077-39]
+      scope: 九项预置及三默认六固定展开、文本数字日期类型、日期型追溯日期和反向撤下归属属性已明确。
+      retainedScope: 业务报表固定筛选、正向真实属性、来源授权、同表单实际行/同DHR粒度、历史快照及自定义引用延期保留。
+      sourceReferences: [docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: knowledge-integration
+        change: 对齐0.3.25/schema1.2.0；处理投影ID、类型、引用、当前定义及声明级替代范围，保留目标治理与批次数量下限待决。
+        evidenceReferences: [AGENTS.md, docs/agents/agent-handoff-contract.md, docs/development/ontology-foundation-repair.md]
+      - area: execution-integration
+        change: 合并正式投影/过程索引与目标批次自定义表单归属、补填原因、认证主体及文档安全修复。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java, gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx]
+    transitiveImpacts:
+      - area: source-ownership
+        change: 原始表单、过程内容索引、正式业务事实、真实归属、DHR证据与审计仍保留各自来源、时点和权限；合并不以内容文本改归属。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml]
+    potentialImpacts:
+      - area: merged-regression
+        concern: 自动合并可能保留旧假设或遗漏新认证、批次共享表单与直接填报分支，须用聚焦测试和源码核对发现并修复。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: final-output-runtime
+        reason: 仅保存调研TODO，未确认的必配/基数、回写时点与历史补算不在本次实现范围。
+    compatibilityAndMigration:
+      - area: initialization-and-history
+        change: 核对投影初始化及迁移纳入主清单、测试在独立库执行；不迁移或回写当前8087运行库，不上传本地模拟或未跟踪output。
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml]
+    snapshotImpacts:
+      - area: execution-snapshots
+        change: 保留目标表单归属/资料齐套及投影绑定冻结，两者不能相互覆盖；正确历史继续按各自冻结配置解释。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
+    auditImpacts:
+      - area: projection-audit
+        change: 保留实际操作者/签署者、配置解除与目录CRUD审计，不补造历史验收；历史研究的旧ID以来源提交和映射说明解释。
+        evidenceReferences: [docs/knowledge/evidence/form-traceability-projection-ownership.yaml]
+    permissionImpacts:
+      - area: source-access-and-identity
+        change: 保留目标账号精确身份及主体范围修复，投影报告与DHR详情继续按来源权限授权，不能用报告权限绕过。
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/TraceReportAuthorizationTest.java]
+    testImpacts:
+      - scope: actual-merge-candidate
+        scenarios: [知识结构与类型及引用, 业务配置与正式投影, 最近保存过程查询, 正反向及DHR匹配, 目录预置与自定义解除, 批次自定义表单归属, 认证主体与按钮签署, 前端构建与相邻回归, 独立数据库迁移]
+        evidenceReferences: [tools/knowledge-model/pom.xml, .github/workflows/frontend-review-regression.yml]
+    evidenceGaps:
+      - 不将目标分支历史全量内审覆盖率套用到投影新增资产；本轮按投影及实际集成影响范围增量核对。
+      - 本地验收不证明远端分支保护或必需检查已启用；本轮不改变仓库管理设置。
+  extensionStrategy:
+    selectedPaths: [configuration, product-core]
+    rationale: 保留双方既有标准能力与领域所有权，修复集成接缝；不新增客户分支或通用规则引擎。
+    ownershipBoundaries:
+      - owner: main-agent
+        responsibility: TODO、代码冲突、测试适配、集成报告、提交与推送。
+      - owner: ontology-agent
+        responsibility: docs/knowledge及必要架构的知识冲突、ID映射、当前语义及引用/类型对齐。
+      - owner: quality-agent
+        responsibility: 收尾独立验证实际合并候选，不参与修复。
+  affectedFiles:
+    - path: docs/knowledge
+      changeType: update
+      reason: 投影新增资产与目标新schema/契约的增量对齐及冲突处理。
+    - path: gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+      changeType: update
+      reason: 冲突同时保留正确表单所属工序和数字值序列化。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr
+      changeType: update
+      reason: 仅按集成行为调整受影响断言及补足针对性回归，不降低要求。
+    - path: docs/development/final-output-linkage-todo-2026-10-15.md
+      changeType: update
+      reason: 保留研究与未决问题并修复当前ID链接。
+  acceptanceScenarios:
+    - id: scenario.projection-dev-integration
+      given: 固定目标3977329d与投影eedc2472分别有有效改动及DEC-0075碰撞。
+      when: 在隔离工作树普通合并并按目标新契约修复。
+      then: 两提交均为最终候选祖先，当前ID唯一且引用/语义一致，双方关键行为回归通过，无强推和运行数据改写。
+      evidenceRequirements: [源目标候选完整提交, 知识验证与逐ID同步结果, 主集成测试与前端构建, 独立质量passed]
+  ontologyRoadmap:
+    currentStage: P0
+    targetOutcome: 在既有阶段内将投影知识接入目标事实类型与契约保障，明确所有权和证据，不另起试点。
+    entryCriteria: [目标已具备0.3.25与schema1.2.0正式校验入口, 用户明确授权投影分支集成并对齐新契约]
+    exitCriteria: [投影ID冲突与类型引用修复并通过正式校验, 受影响知识同步及实际合并候选独立验收]
+    explicitNonGoals: [不宣告全库语义审计完成, 不升级整个P0成熟度, 不引入RDF或规则执行平台, 不开发最终产出联动]
+    nextStage: P1

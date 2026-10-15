@@ -1,0 +1,153 @@
+qualityResult:
+  result: passed
+  baseCommit: d050f8b63b53974523936175c990f4804f768881
+  headCommit: d050f8b63b53974523936175c990f4804f768881
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/business-knowledge-model.md
+      - docs/development/form-projection-business-report-field-review-2026-10-12.md
+      - docs/development/form-projection-business-fields-implementation-2026-10-13.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormProjectionInterpreterTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormProjectionPostgresTest.java
+      - gmp-platform/backend/scripts/form-projection-report-demo.py
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts
+      - gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx
+      - gmp-platform/frontend/src/pages/reports/projectionReportColumns.ts
+      - gmp-platform/frontend/scripts/test-projection-source-editor.mjs
+      - gmp-platform/frontend/scripts/test-projection-report.mjs
+    excludedPaths: [output/, gmp-platform/frontend/output/, .playwright-cli/]
+    untrackedPaths:
+      - gmp-platform/backend/scripts/form-projection-report-demo.py
+      - gmp-platform/frontend/scripts/test-projection-report.mjs
+      - gmp-platform/frontend/src/pages/reports/projectionReportColumns.ts
+      - docs/development/form-projection-business-fields-quality-2026-10-13.yaml
+      - docs/development/form-projection-business-fields-implementation-2026-10-13.md
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.confirmed-manual-hours-and-scope
+      required: true
+      category: requirements
+      description: 独立核对最新用户确认、DEC-0075-35与同切片L2影响分析和扩展边界。
+      method: inspection
+      command: 阅读DEC-0075、open-questions、decisionPackage、报表字段复核及实际代码差异
+      outcome: passed
+      evidence:
+        - 工时只映射数字字段，未增加起止差值、人数或签名数量计算；日期、起止、报工人独立。
+        - 已覆盖直接和传递影响、冻结、权限、审计、无迁移及测试；可选性与单人来源正确标作工程选择。
+        - 旧人时来源或自动算法待定解释已改写；多人分摊、原因分项、表头共享和产出联动没有被静默实施。
+    - id: check.independent-backend-tests
+      required: true
+      category: integration
+      description: 独立重跑解释器、真实PostgreSQL投影与查询、方法权限边界测试。
+      method: automated-test
+      command: cd gmp-platform/backend && PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_form_projection mvn -Dexec.skip=true -Dtest=FormProjectionInterpreterTest,FormProjectionPostgresTest,FormProjectionAuthorizationTest test
+      outcome: passed
+      evidence:
+        - /tmp/projection-business-fields-independent-qa.log
+        - 31 tests，0 failures，0 errors，0 skipped；BUILD SUCCESS。
+        - PostgreSQL测试使用独立临时schema并清理，不覆盖演示数据或原业务库。
+        - 涵盖负人时、非法业务日期、倒置区间、跨午夜、空人时、子表逐行、冻结context/引用值、明细及合计同过滤和既有授权边界。
+    - id: check.independent-frontend-tests
+      required: true
+      category: unit
+      description: 独立重跑用途来源编辑与专用业务报表投影测试。
+      method: automated-test
+      command: cd gmp-platform/frontend && node --test scripts/test-projection-report.mjs scripts/test-projection-source-editor.mjs
+      outcome: passed
+      evidence:
+        - /tmp/projection-business-fields-frontend-independent-qa.log
+        - 22 tests，22 pass，0 fail，0 skipped。
+        - 人时仅数字来源，日期/日期时间兼容，专用列与过滤，缺失值不造0，原因标签不变为汇总分组。
+    - id: check.independent-live-api
+      required: true
+      category: api
+      description: 对运行中8087独立库执行只读查询及无副作用预览边界验证。
+      method: query
+      command: Python urllib登录后调用reports/form-projections/query及master-data/template-modeling/projection-preview，使用虚构对象1053018
+      outcome: passed
+      evidence:
+        - 实际查询两笔报工良品合计30、人时3.5；一笔缺人时保持属性缺失；起止跨天仍读取填写值。
+        - 划伤筛选合计2、污染筛选合计3；生产日期2026-10-13起筛选为0。
+        - 非法日期2026-02-30、报工人绑定设备引用、负人时及同用途重复数值来源均返回业务错误。
+        - 预览有起止无工时不产生workHours，有3.5人时及46小时区间仍返回3.5。
+        - 未修改模板、用户权限或运行数据；保存/完成E2E证据来源为主智能体demo脚本，不冒称本质量实例重跑该写流程。
+    - id: check.freeze-and-security-code-review
+      required: true
+      category: security
+      description: 核对数据沿最终完成冻结链传播、过滤参数化、权限与统计粒度保持。
+      method: inspection
+      command: 阅读FormProjectionInterpreter、FormProjectionController、FormProjectionService、FormReferenceLookup、ProductionExecutionService及差异
+      outcome: passed
+      evidence:
+        - 属性及字典/人员code、label、id来自保存快照；工单产品读取批次frozen_source.context。
+        - 逐笔与合计复用同一WHERE；所有新增属性路径与值参数化且key白名单；仍仅SUCCEEDED正式投影。
+        - 原对象/工序/物料/批号/单位分组未改，人时SUM缺失值保持null；无新增权限豁免或DHR改归属。
+        - 无数据库迁移；未替换既有生产暂存、完成、审计与重试事务。
+    - id: check.main-regression-evidence
+      required: true
+      category: regression
+      description: 复核主智能体其他基础回归日志，不把读取日志说成独立执行。
+      method: inspection
+      command: 读取/tmp/projection-report-tests.log与/tmp/projection-report-regression.log
+      outcome: passed
+      evidence:
+        - 主智能体69项基础测试与76项邻接回归均0 failures/errors/skipped。
+        - 邻接回归含BusinessKnowledgeModelTest 59、FormTraceIndexPostgresTest 7、FormFillSnapshotTest 2、ProductionExecutionFormValuesTest 8。
+    - id: check.ui-source-and-screenshot
+      required: true
+      category: visual
+      description: 对照现有列表/详情规范审查组件复用，并独立查看主智能体实际运行截图。
+      method: inspection
+      command: 阅读ProjectionSourceEditor、FormProjectionReportPage、projectionReportColumns及查看output/playwright/report-person-hours-detail-20261013.png
+      outcome: passed
+      evidence:
+        - 保持同侧栏来源配置、画布选取入口和可收起报工信息，未新开配置面板。
+        - 查询继续公共面板布局；逐笔表保留行点击和键盘详情、按用途独立列偏好。
+        - 截图显示标准信息查看抽屉、数据信息/数据审计页签、两列信息和3.5人时/独立业务起止；无明显布局阻断。
+        - 本质量实例未独立执行浏览器点击、窄屏或实际保存；该部分由主智能体浏览器验收提供补充证据。
+    - id: check.final-fixture-and-browser-evidence
+      required: true
+      category: regression
+      description: 最终小范围复核演示画布修正、时间格式展示、实施记录及浏览器验收补充。
+      method: inspection
+      command: 核对demo节点position:absolute、projectionReportColumns时间展示、实施记录；查看report-person-hours-designer-fixed-20261013.png；重跑node --test scripts/test-projection-report.mjs
+      outcome: passed
+      evidence:
+        - demo唯一后改为生成节点增加position:absolute，符合画布绝对定位；修正不改已冻结实例或业务解释器。
+        - 独立查看output/playwright/report-person-hours-designer-fixed-20261013.png，字段无重叠，侧栏人时来源与可折叠报工信息可读。
+        - 主智能体实际执行人时画布选取、展开报工信息、顶部保存成功、API重读hours1、刷新重开保留绑定；本实例核对截图与实施记录，不冒称亲自点击。
+        - 业务开始/结束展示将T替换为空格，仅格式化显示，不改变存储值或计算；报表脚本独立重跑3项全部通过。
+        - form-projection-business-fields-implementation-2026-10-13.md正确限定已实现范围、证据来源、未执行窄屏/全系统E2E及暂缓项，无越界完成声明。
+    - id: check.patch-hygiene
+      required: true
+      category: documentation
+      description: 检查手工改动格式与未跟踪功能文件纳入范围。
+      method: command
+      command: git diff --check && git status --short
+      outcome: passed
+      evidence:
+        - git diff --check退出0。
+        - 新增projectionReportColumns.ts、test-projection-report.mjs及demo脚本均已审查；output目录不属于功能源码提交。
+  findings: []
+  residualRisks:
+    - id: risk.visual-coverage
+      description: 独立质量视觉检查限源码及已生成桌面截图，不是独立浏览器端到端/窄屏验证。
+      impact: 不宣称已由本实例验证所有响应式视口和浏览器保存交互。
+      mitigation: 主智能体已补浏览器画布选取、保存与刷新重开证据；最终交付仍明确未执行窄屏及全系统E2E。
+    - id: risk.mvp-known-boundaries
+      description: 新增报工人先支持单值；不支持多人分摊、表头跨行共享、人时自动计算、按原因重新分组或客户自建报表。
+      impact: 本结果仅覆盖已授权的当前实现切片，不代表完整MVP或所有报表口径已完备。
+      mitigation: 保持已明确分期和未决项；后续功能另行确认，复用冻结事实和来源链。
+    - id: risk.business-datetime-presentation
+      description: 业务日期时间已将ISO分隔符T格式化为空格；详情字段顺序仍沿已保存属性顺序，可读性可后续精修。
+      impact: 不影响时间值、查询、冻结或人时计算；不作为本次功能阻断。
+      mitigation: 后续局部展示优化可统一日期格式及按业务目录排列开始/结束字段，不改底层值。
+  blockingConditions: []

@@ -44,7 +44,7 @@ import {
   TranslateRounded,
 } from '@mui/icons-material';
 import { type SidebarMenu, type SidebarModule } from '@/utils/constants';
-import { inferPermissionCode, isRetiredSidebarPath, useManagedSidebarModules } from '@/utils/menuManagement';
+import { inferPermissionCode, isProjectionReportPath, isRetiredSidebarPath, useManagedSidebarModules } from '@/utils/menuManagement';
 import { useSystemBranding } from '@/hooks/useSystemBranding';
 import { renderManagedIcon } from '@/utils/iconAssets';
 import { getMe, logout } from '@/api/auth';
@@ -228,7 +228,8 @@ function getLayoutPermissionCode(path: string): string | undefined {
 function getLayoutPermissionCodes(path: string): string[] {
   const code = getLayoutPermissionCode(path);
   if (!code) return [];
-  if (isPathSegmentMatch(path, '/form-management')) return [code, 'production.execution'];
+  if (path === '/reports/dhr-trace') return [code, 'production.execution', 'dhr.instances.view'];
+  if (isPathSegmentMatch(path, '/form-management') || isProjectionReportPath(path)) return [code, 'production.execution'];
   return [code];
 }
 

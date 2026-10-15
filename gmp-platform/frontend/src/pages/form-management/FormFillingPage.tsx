@@ -12,7 +12,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Drawer,
   IconButton,
   InputAdornment,
   MenuItem,
@@ -28,7 +27,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { Close, ExpandMore, InfoOutlined, PlayCircleOutline, PreviewOutlined, RestartAlt, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
+import { ExpandMore, InfoOutlined, PlayCircleOutline, PreviewOutlined, RestartAlt, Search, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
+import DetailDrawer from '@/components/DetailDrawer';
 import AppDialog from '@/components/AppDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import ListColumnSettingsPopover, { getCurrentUserPreferenceStorageKey, loadListColumnSettings, reorderListColumns } from '@/components/ListColumnSettingsPopover';
@@ -77,9 +77,6 @@ const bodyCellSx = formTableBodyCellSx;
 const fieldSx = formListFieldSx;
 const actionHeadSx = { position: 'sticky' as const, right: 0, zIndex: 4, width: 96, minWidth: 96, maxWidth: 96, textAlign: 'center' as const, bgcolor: '#f5f7fa', ...listTableStickyEdgeSx };
 const actionBodySx = { position: 'sticky' as const, right: 0, zIndex: 2, width: 96, minWidth: 96, maxWidth: 96, textAlign: 'center' as const, bgcolor: '#fff', ...listTableStickyEdgeSx };
-const drawerRootSx = { top: 0, bottom: 0, zIndex: (theme: { zIndex: { drawer: number } }) => theme.zIndex.drawer + 2 };
-const drawerPaperSx = { width: { xs: '100vw', sm: 560 }, top: 0, bottom: 0, height: '100vh', transform: 'none !important' };
-
 type FillingView = Extract<FormWorklistView, 'FILLABLE' | 'CREATED' | 'FILLED'>;
 type FillingColumnId = 'instanceNo' | 'template' | 'creationType' | 'productionObject' | 'workOrder' | 'operation' | 'status' | 'node' | 'updatedAt' | 'actions';
 const FILLING_COLUMNS: ReadonlyArray<{ id: FillingColumnId; label: string; width: number; minWidth: number }> = [
@@ -125,7 +122,7 @@ function DetailSection({ title, children }: { title: string; children: ReactNode
 }
 
 function DetailField({ label, value }: { label: string; value: ReactNode }) {
-  return <Box sx={{ minWidth: 0 }}><Typography variant="caption" sx={{ color: '#909399', display: 'block', mb: 0.35 }}>{label}</Typography><Typography component="div" variant="body2" sx={{ color: '#303133', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{value === null || value === undefined || value === '' ? '-' : value}</Typography></Box>;
+  return <Box sx={{ minWidth: 0 }}><Typography variant="caption" sx={{ color: '#909399', display: 'block', mb: 0.5 }}>{label}</Typography><Typography component="div" variant="body2" sx={{ color: '#303133', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{value === null || value === undefined || value === '' ? '-' : value}</Typography></Box>;
 }
 
 function PreviewSummaryField({ label, value }: { label: string; value: ReactNode }) {
@@ -346,32 +343,28 @@ function FormWorklistDetailDrawer({ view, identity, onClose, onOpenExecution, on
     queryFn: () => loadProductionAuditLogs(productionObjectId!, operationId),
   });
   const openExecution = () => { if (detail) onOpenExecution(detail); };
-  return <Drawer anchor="right" open={Boolean(identity)} onClose={onClose} sx={drawerRootSx} slotProps={{ backdrop: { sx: { top: 0 } } }} PaperProps={{ sx: drawerPaperSx }}>
-    <Box sx={{ minHeight: '100%', overflow: 'auto', bgcolor: '#f7f9fc', p: 2 }}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}><Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#303133' }}>填报记录</Typography><IconButton size="small" onClick={onClose} aria-label="关闭详情"><Close fontSize="small" /></IconButton></Stack>
+  return <DetailDrawer open={Boolean(identity)} onClose={onClose} label="填报记录详情" tab={detailTab} onTabChange={setDetailTab}>
       {detailQuery.isFetching ? <Box sx={{ py: 8, display: 'grid', placeItems: 'center' }}><CircularProgress size={24} /></Box> : detailQuery.isError ? <Typography sx={{ py: 8, textAlign: 'center', color: '#c62828' }}>填报记录加载失败</Typography> : detail ? <>
-        <Box sx={{ borderBottom: '1px solid #e4e7ed' }}><Tabs value={detailTab} onChange={(_, value: number) => setDetailTab(value)} aria-label="填报记录详情切换"><Tab label="数据信息" /><Tab label="数据审计" /></Tabs></Box>
-        {detailTab === 0 ? <Stack spacing={2} sx={{ mt: 2 }}>
-          <DetailSection title="表单信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.75 }}>
+        {detailTab === 0 ? <Stack spacing={2}>
+          <DetailSection title="表单信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
             <DetailField label="表单实例号" value={detail.instanceNo || PENDING_INSTANCE_LABEL} /><DetailField label="表单模板" value={detail.templateName} />
             <DetailField label="表单编码" value={detail.templateCode} /><DetailField label="模板版本" value={detail.templateVersion} />
             <DetailField label="填报状态" value={statusBadge(detail.recordStatus)} />
             {view === 'CREATED' ? <DetailField label="创建类型" value={creationTypeLabel(detail.creationType)} /> : null}
             <DetailField label="当前节点" value={detail.nodeName} /><DetailField label="到达时间" value={formatDateTime(detail.arrivedAt)} />
           </Box></DetailSection>
-          <DetailSection title="生产来源"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.75 }}>
+          <DetailSection title="生产来源"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
             <DetailField label="生产对象" value={`${detail.productionObjectNo || '-'}（${typeLabel(detail.productionObjectType)}）`} /><DetailField label="工单" value={detail.workOrderNo} />
             <DetailField label="工序" value={detail.operationName} /><DetailField label="表单来源" value="生产执行" />
           </Box></DetailSection>
           {view === 'FILLABLE' ? <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}><Button variant="contained" startIcon={<PlayCircleOutline />} disabled={!detail.controls?.canAct} onClick={openExecution}>{detail.controls?.canAct ? '进入填报' : '当前不可处理'}</Button></Box> : null}
           <DetailSection title="表单内容"><Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} alignItems={{ xs: 'stretch', sm: 'center' }} justifyContent="space-between"><Typography variant="body2" sx={{ color: '#606266' }}>完整表单在宽屏预览中查看，便于核对表格和字段内容。</Typography><Button variant="outlined" startIcon={<PreviewOutlined />} onClick={onOpenPreview} sx={{ flexShrink: 0 }}>查看完整表单</Button></Stack></DetailSection>
           <DetailSection title="本人处理记录">{detail.myEvents?.length ? <Stack spacing={1}>{detail.myEvents.map((event, index) => <Accordion key={`${event.at}-${index}`} disableGutters elevation={0} sx={{ border: '1px solid #e4e7ed', borderRadius: '4px !important', overflow: 'hidden', '&::before': { display: 'none' }, '&.Mui-expanded': { m: 0 } }}><AccordionSummary expandIcon={<ExpandMore fontSize="small" />} sx={{ minHeight: 44, px: 1.5, '&.Mui-expanded': { minHeight: 44 }, '& .MuiAccordionSummary-content': { my: 0 } }}><Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', columnGap: 1, width: '100%', minWidth: 0 }}><Typography variant="body2" noWrap>{event.actionCode}</Typography><Typography variant="body2" noWrap>{event.nodeName}</Typography><Typography variant="body2" noWrap sx={{ color: '#606266' }}>{formatDateTime(event.at)}</Typography></Box></AccordionSummary><AccordionDetails sx={{ pt: 0, pb: 1.5 }}><Typography variant="caption" color="text.secondary">操作人：{event.operator || '-'}</Typography></AccordionDetails></Accordion>)}</Stack> : <Typography variant="body2" sx={{ color: '#909399' }}>暂无处理记录</Typography>}</DetailSection>
-        </Stack> : <Stack spacing={1} sx={{ mt: 2 }}>
-          {auditQuery.isFetching ? <Box sx={{ py: 8, display: 'grid', placeItems: 'center' }}><CircularProgress size={24} /></Box> : auditQuery.isError ? <Typography sx={{ py: 8, textAlign: 'center', color: '#c62828' }}>数据审计加载失败</Typography> : auditQuery.data?.length ? auditQuery.data.map((item) => <Accordion key={item.id} disableGutters elevation={0} sx={{ border: '1px solid #e4e7ed', borderRadius: '4px !important', overflow: 'hidden', '&::before': { display: 'none' }, '&.Mui-expanded': { m: 0 } }}><AccordionSummary expandIcon={<ExpandMore fontSize="small" />} sx={{ minHeight: 44, px: 1.5, '&.Mui-expanded': { minHeight: 44 }, '& .MuiAccordionSummary-content': { my: 0 }, '& .MuiAccordionSummary-content.Mui-expanded': { my: 0 } }}><Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', columnGap: 1, width: '100%', minWidth: 0 }}><Typography variant="body2" noWrap>{item.operatorDisplayName || item.operatorAccount || '-'}</Typography><Typography variant="body2" noWrap>{item.actionLabel || item.action || '-'}</Typography><Typography variant="body2" noWrap sx={{ color: '#606266' }}>{formatDateTime(item.operationTime || item.createdAt)}</Typography></Box></AccordionSummary><AccordionDetails sx={{ pt: 0, pb: 1.5 }}><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}><AuditFieldBlock title="变更前" fields={toProductionAuditFields(item.contentBefore, { objectStatus: '生产对象状态' })} /><AuditFieldBlock title="变更后" fields={toProductionAuditFields(item.contentAfter, { objectStatus: '生产对象状态' })} /></Box></AccordionDetails></Accordion>) : <Typography sx={{ py: 8, textAlign: 'center', color: '#909399' }}>暂无审计记录</Typography>}
+        </Stack> : <Stack spacing={1}>
+          {auditQuery.isFetching ? <Box sx={{ py: 8, display: 'grid', placeItems: 'center' }}><CircularProgress size={24} /></Box> : auditQuery.isError ? <Typography sx={{ py: 8, textAlign: 'center', color: '#c62828' }}>数据审计加载失败</Typography> : auditQuery.data?.length ? auditQuery.data.map((item) => <Accordion key={item.id} disableGutters elevation={0} sx={{ border: '1px solid #e4e7ed', borderRadius: '4px !important', overflow: 'hidden', '&::before': { display: 'none' }, '&.Mui-expanded': { m: 0 } }}><AccordionSummary expandIcon={<ExpandMore fontSize="small" />} sx={{ minHeight: 44, px: 1.5, '&.Mui-expanded': { minHeight: 44 }, '& .MuiAccordionSummary-content': { my: 0 }, '& .MuiAccordionSummary-content.Mui-expanded': { my: 0 } }}><Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', columnGap: 1, width: '100%', minWidth: 0 }}><Typography variant="body2" noWrap>{item.operatorDisplayName || item.operatorAccount || '-'}</Typography><Typography variant="body2" noWrap>{item.actionLabel || item.action || '-'}</Typography><Typography variant="body2" noWrap sx={{ color: '#606266' }}>{formatDateTime(item.operationTime || item.createdAt)}</Typography></Box></AccordionSummary><AccordionDetails sx={{ pt: 0, pb: 1.5 }}><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}><AuditFieldBlock title="变更前" fields={toProductionAuditFields(item.contentBefore, { objectStatus: '生产对象状态' })} /><AuditFieldBlock title="变更后" fields={toProductionAuditFields(item.contentAfter, { objectStatus: '生产对象状态' })} /></Box></AccordionDetails></Accordion>) : <Typography sx={{ py: 8, textAlign: 'center', color: '#909399' }}>暂无审计记录</Typography>}
         </Stack>}
       </> : null}
-    </Box>
-  </Drawer>;
+  </DetailDrawer>;
 }
 
 export default function FormFillingPage() {

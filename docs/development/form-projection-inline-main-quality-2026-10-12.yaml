@@ -1,0 +1,97 @@
+qualityResult:
+  result: passed
+  baseCommit: b4427c44beb0f5d9d3c1fd1f549d14bf51157336
+  headCommit: b4427c44beb0f5d9d3c1fd1f549d14bf51157336
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig.tsx
+      - gmp-platform/frontend/scripts/test-projection-source-editor.mjs
+      - docs/development/form-projection-configuration-simplification-2026-10-12.md
+    excludedPaths:
+      - output/
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - output/
+      - gmp-platform/frontend/output/
+      - docs/development/form-projection-inline-main-quality-2026-10-12.yaml
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.inline-main-requirements
+      required: true
+      category: requirements
+      description: 独立审查用户确认、L1影响分析、三组件及用途总览复用边界
+      method: inspection
+      command: git diff; inspect ProjectionDialog.tsx and DEC-0075
+      outcome: passed
+      evidence:
+        - 主表直接渲染同一份StatisticsProjectionConfig，已移除面板切换状态与两个入口按钮。
+        - add始终创建空sources；当前字段仅影响参与角色提示，不参与默认绑定。
+        - 子表列分支及原配置更新、保存、快照、统计规则未改动；无迁移或后端变更。
+        - 用途总览复用同一配置及store，未产生独立副本；本次不新增业务规则，本体not-applicable依据成立。
+    - id: check.focused-tests
+      required: true
+      category: unit
+      description: 独立复跑受影响配置及邻接测试
+      method: automated-test
+      command: cd gmp-platform/frontend && node --test scripts/test-projection-panel.mjs scripts/test-projection-source-editor.mjs scripts/test-projection-preview.mjs
+      outcome: passed
+      evidence:
+        - 23 tests passed, 0 failed。
+        - 包括主表直接用途选择、当前角色与全部记录、子表保持整表入口、来源候选、预览区域隔离。
+    - id: check.designer-static
+      required: true
+      category: regression
+      description: 独立设计器静态检查与空白错误检查
+      method: command
+      command: cd gmp-platform/frontend && npm run verify:template-designer-react; git diff --check
+      outcome: passed
+      evidence:
+        - verify-template-designer-react passed；git diff --check退出码0。
+    - id: check.main-inline-browser
+      required: true
+      category: e2e
+      description: 主表首次就地配置、来源双入口、撤销与保存重开
+      method: browser
+      command: CUA IAB localhost:3007; ASK-MAIN-TWO-DETAILS-DEMO-20261012 V1
+      outcome: passed
+      evidence:
+        - 独立库演示中临时移除两条消耗配置，选择电容物料1时主表统计什么下拉直接可用。
+        - 选择实际物料消耗就地展开消耗明细1，物料和数量均为空，未自动绑定当前物料字段。
+        - 画布选取电容物料1、下拉选择实际用量1成功；切到电容物料2仍显示同一条已配明细，没有复制或自动绑定。
+        - 撤销5步恢复原两条完整映射后保存；版本更新时间22:34，重新打开显示两条原配置且仅第2条标注当前字段作为物料。
+        - 未保存错误配置，未创建生产记录；子表测试只读，已关闭独立标签页。
+    - id: check.subtable-and-overview
+      required: true
+      category: regression
+      description: 子表列切整表及总览复用回归
+      method: browser
+      command: CUA IAB localhost:3007; REFERENCE-FOLLOWUP-MAIN-20261007 V1
+      outcome: passed
+      evidence:
+        - 点击上料明细物料列显示整张子表的业务统计、本列作为物料及切换到上料明细配置统计按钮。
+        - 点击该按钮后上下文变为当前子表上料明细，原物料、批号、数量、单位映射完整显示，无主表配置串入。
+        - 用途总览选择主表字段领料数量后，主表就地用途下拉可用，现有追溯及子表配置保持显示；未新增映射。
+    - id: check.visual
+      required: true
+      category: visual
+      description: 1280x720主表侧栏视觉核对
+      method: browser
+      command: CUA screenshot and UI constraints inspection
+      outcome: passed
+      evidence:
+        - output/inline-main-quality-20261012/main-reopened.png
+        - 原侧栏内紧凑MUI控件、轻边框与移除图标保持；明细角色与来源可读，侧栏独立滚动，无新增面板跳转。
+  findings: []
+  residualRisks:
+    - id: risk.user-usability-trial
+      description: 未进行真实工厂用户试用或移动端、Word内联及多页模板新增验证。
+      impact: 本轮不能证明所有版式覆盖或客户学习成本已验收。
+      mitigation: 当前L1仅调整配置呈现；沿用既有来源选择契约，后续针对实际客户模板验收。
+    - id: risk.build-evidence
+      description: 本质量实例未重复完整前端构建；主实现已报告本次构建通过。
+      impact: 独立构建证据限于设计器静态检查及23项聚焦测试。
+      mitigation: 本轮三组件局部UI变更已完成独立浏览器实操和源码审查。
+  blockingConditions: []

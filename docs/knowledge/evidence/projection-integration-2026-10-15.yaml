@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.projection-integration-source-boundaries
+    type: document
+    path: docs/knowledge/evidence/projection-integration-2026-10-15.md
+    description: original-evidence与user-confirmed分列；2026-10-15按目标新契约核对投影来源eedc2472与目标3977329d的实际合并树，保留目标DEC-0075自定义表单和DEC-0076治理，将投影同名决策映射DEC-0077。记录声明级替代、原始表单/工作数据/正式投影/内容查询/DHR/审计所有权及必要事实和锚点。只覆盖本切片，不改写历史契约读取、不提升既有成熟度或宣称全库审计。
+    visibility: internal
+  - id: evidence.projection-formal-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java
+    description: original-evidence；2026-10-15读取completed/process/failed及FormInstanceRecordService.sync，最终完成同事务保存冻结form/model/values/context/operationId及幂等键，异步生成正式来源记录并保留成功/失败状态。只证明持久化与解释器调用边界，未读取运行数据库；没有批次最终产出配置或工单数量回写，不把旧测试源码当本轮执行通过。
+    visibility: internal
+  - id: evidence.projection-saved-content-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java
+    description: original-evidence；2026-10-15读取refresh/extract/query和DhrTraceReportService.matches，成功保存的显式绑定值进入独立内容索引。正向按支持来源真实属性，不要求内容绑定；表单反向同实例/实际行，DHR反向条件可由同DHR内不同真实关联表单贡献。授权由报告控制器及来源服务维持，索引命中不创建生产或DHR关联；终止查询按可核验快照，不读取任意历史汇总版本。
+    visibility: internal

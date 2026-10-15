@@ -1,0 +1,140 @@
+qualityResult:
+  result: passed
+  baseCommit: "5dacb5859e95724e98f932544f0fd4f46c30db38"
+  headCommit: "5dacb5859e95724e98f932544f0fd4f46c30db38"
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/frontend/src/pages/system/FormLookupItemsPage.tsx
+      - gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-projection-ui-conformance-2026-10-07.md
+      - docs/development/form-projection-ui-conformance-quality-2026-10-07.yaml
+    excludedPaths:
+      - output/
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - docs/development/form-projection-ui-conformance-2026-10-07.md
+      - docs/development/form-projection-ui-conformance-quality-2026-10-07.yaml
+      - output/
+      - gmp-platform/frontend/output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.projection-ui.scope-and-contract
+      required: true
+      category: requirements
+      description: 本轮 L1 前端规范修复与同一决策包、影响分析和实际变更一致
+      method: inspection
+      command: git diff -- gmp-platform/frontend/src/pages/system/FormLookupItemsPage.tsx gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx
+      outcome: passed
+      evidence:
+        - 已读取 AGENTS.md、质量角色及统一交接契约、知识 README/open-questions、DEC-0075、当前决策包和本轮精简影响分析。
+        - 已读取 list-page-guidelines.md 第5.1/5.1.1及6/7节、dialog-guidelines.md、organization-management-ui-standard.md、vue-admin-plus-ui-style-constraints.md。
+        - 本轮仅两页交互展示及文档；未改后端、数据库、权限、冻结、统计分组或业务审计证据。Q6/Q9/Q15/Q17未被本轮关闭。
+        - 本体 not-applicable 与实际改动相符；扩展路径 product-core，复用公共列表、分页、字段设置及 FormDialogSection。
+    - id: check.projection-ui.focused-regression
+      required: true
+      category: regression
+      description: 既有投影预览和面板状态回归
+      method: automated-test
+      command: node --test scripts/test-projection-preview.mjs scripts/test-projection-panel.mjs
+      outcome: passed
+      evidence:
+        - 独立在 gmp-platform/frontend 执行，6 tests、6 pass、0 fail、0 skipped，退出码0。
+        - 主开发 npm run build 最终日志 /tmp/edhr-projection-ui-conformance-build.log 显示 built in 5.73s；本实例核对日志，未把主开发构建声明为独立运行。
+        - 独立 git diff --check 退出码0。
+    - id: check.projection-ui.catalog-query-and-events
+      required: true
+      category: e2e
+      description: 追溯项管理查询、回车、重置、行详情与编辑事件隔离
+      method: browser
+      command: Playwright CLI session projection-ui-qa，localhost:3007/system/form-lookup-items
+      outcome: passed
+      evidence:
+        - 独立浏览器使用本地开发管理员登录；不输出凭据token，不修改业务数据。
+        - 名称或描述填入 QA末轮，两次回车及重置均通过预先监听 waitForResponse 验证实际 GET /form-lookup-items。
+        - 重置输入为空并恢复第一页，查询只过滤已提交关键词。
+        - 点击 QA末轮批号（内部）行打开详情；编辑按钮仅打开编辑表单，Drawer保持关闭；取消未保存。
+        - 关联单据号行可键盘 Enter 打开详情；源码 Space 同一路径且阻止默认滚动。
+        - 操作列只保留独立编辑动作、64px宽度并阻止冒泡；纯详情入口由行承载。
+    - id: check.projection-ui.report-query-panel
+      required: true
+      category: e2e
+      description: 报表查询布局与提交、重置、分页条件行为
+      method: browser
+      command: Playwright CLI session projection-ui-qa，localhost:3007/reports/form-projections
+      outcome: passed
+      evidence:
+        - 1440×900收起时查询面板高度74px、grid单行40px、三列约358.664px；重置/查询/展开按钮各80×40px，第三列居右。
+        - 展开后生产对象编号位于首行第三列，高级条件三区网格，操作组位于底部；收起不保留空网格行。
+        - 展开、收起再展开不发查询，生产对象编号及第二匹配值保持。
+        - 捕获5个实际POST：回车、同条件再次查询、每页条数切换、重置、空条件再次重置。
+        - 前两次请求均为 formTrace、materialLotText=DEMO-L1、teamText=甲班、objectNo=PROJECTION-DEMO-BATCH、page=0、size=20。
+        - 输入改成未提交 UNSUBMITTED-VALUE 后切换50条每页，请求仍携带已提交 DEMO-L1/甲班/生产对象，仅size=50；未把编辑中条件用于分页读取。
+        - 两次重置实际POST均filters为空、page=0，并清空输入。
+        - output/playwright/projection-ui-qa-report-expanded.png
+        - output/playwright/projection-ui-qa-report-collapsed.png
+    - id: check.projection-ui.details-and-audit
+      required: true
+      category: visual
+      description: 两页规范详情抽屉、分组响应式及折叠审计和纵向滚动
+      method: browser
+      command: Playwright CLI desktop1440×900、1200×733、mobile390×844
+      outcome: passed
+      evidence:
+        - 目录桌面Drawer实测560×900，分组网格245px/245px、gap12px；基本信息和系统信息分组、16px内容边距、浅灰背景、白色分组，完整视口高度。
+        - 目录390×844实测Drawer宽390px、内容网格单列332px；报表390×844同样全宽、单列。
+        - 目录真实既有2条审计折叠项可展开和收起，变更前后不展示内部JSON，未改原始审计记录。
+        - 报表1200×733展示 FR-20260929-000001 六处命中；560×733抽屉、独立overflow:auto内容区，7个分组各高105.797或213.391px，连续组间隔16px，无重叠或缩扁。
+        - 报表数据审计显示系统信息及6个字段来源Accordion，第一项展开后显示中文来源字段与命中位置；短窗口滚动能到预览与DHR入口。
+        - 关闭按钮无底部重复关闭文案；两页Tooltip title关闭、data-popper-placement=left经真实悬停核验，点击关闭有效。
+        - output/playwright/projection-ui-qa-catalog-mobile.png
+        - output/playwright/projection-ui-qa-multihit-top.png
+        - output/playwright/projection-ui-qa-multihit-bottom.png
+        - output/playwright/projection-ui-qa-source-audit-expanded.png
+        - output/playwright/projection-ui-qa-close-tooltip.png
+    - id: check.projection-ui.preset-reports-and-source-preview
+      required: true
+      category: e2e
+      description: 预设统计视图、行来源详情及来源表单预览相邻回归
+      method: browser
+      command: Playwright CLI three preset report tabs and existing virtual DEMO-POT-001 source
+      outcome: passed
+      evidence:
+        - 真实查询报工4条/4组、报废4条/4组、消耗8条/8组；三个视图来源明细行均可打开详情。
+        - 三个视图按工序／用途合计行点击均不打开来源Drawer，合计未伪装成单笔来源详情；页面省略重复查看操作列。
+        - FR-20261007-000005 来源预览正常打开全屏AppDialog，显示锅次编号与冻结值DEMO-POT-001，真实input.readOnly=true。
+        - 预览Esc关闭正常，来源Drawer关闭正常；未执行实际DHR读取或写操作，本轮未改变该业务接口。
+        - output/playwright/projection-ui-qa-custom-source.png
+  findings:
+    - id: QF-UI-CONFORMANCE-001
+      severity: low
+      scope: FormLookupItemsPage详情关闭图标
+      summary: 目录详情关闭图标缺少规范要求的Tooltip，报表关闭Tooltip方向未显式为left
+      reproductionSteps:
+        - 点击目录任意行打开详情并悬停右上角关闭X。
+        - 静态核对目录IconButton与报表Tooltip外壳。
+      expectedResult: 关闭图标有Tooltip关闭，并在图标左侧显示。
+      actualResult: 初次验证目录仅有aria-label、无Tooltip；报表Tooltip采用默认方向。
+      evidence:
+        - 初次工作树FormLookupItemsPage.tsx第120行及FormProjectionReportPage.tsx第155行。
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: source
+          reference: 主开发最新工作树两页Tooltip title=关闭 placement=left；目录新增Tooltip外壳，报表补placement。
+        - type: browser
+          reference: 独立悬停两页关闭X，Tooltip关闭可见且data-popper-placement=left；关闭成功，截图output/playwright/projection-ui-qa-close-tooltip.png。
+  residualRisks:
+    - id: RR-UI-CONFORMANCE-001
+      description: 普通编辑表单调用既有FormDialogFieldGrid时出现6条Emotion nth-child/nth-last-child服务端渲染安全提示；React Router有既有future flag警告。
+      impact: 本轮未观察到交互失败；不能声明浏览器console完全无告警。
+      mitigation: 共享FormDialogFieldGrid在HEAD与工作树一致，后续单独处理共享组件兼容，当前不扩大修复。
+    - id: RR-UI-CONFORMANCE-002
+      description: 旧虚构样例FR-20260929-000001的来源预览当前呈现空网格；本轮来源解析与FormCanvasPreview实现未修改。
+      impact: 该样例只证明预览开关可用，不据此证明来源字段画布呈现完整。
+      mitigation: 已另用FR-20261007-000005真实验证冻结锅次值及只读预览；保留旧记录，后续单独核对旧演示快照。
+    - id: RR-UI-CONFORMANCE-003
+      description: 只按本轮L1影响范围验证，未重做全系统、后端数据库迁移、生产完成事务、权限矩阵或客户易用性试用；现有数据不足20条，未实际切换到第二页。
+      impact: 质量通过仅适用于当前两页工作树规范修复；不代表完整MVP或全系统验收。
+      mitigation: 每页条数变化已实测保持已提交条件，页码更新沿用同一request对象经源码核对；业务层未改变，复用上轮证据且如实列出未执行范围。
+  blockingConditions: []

@@ -9,7 +9,7 @@ export interface SignaturePresentation {
 export function readSignaturePresentation(value: unknown): SignaturePresentation | null {
   if (typeof value === 'string') {
     if (!value.trim()) return null;
-    // Production execution currently stores: operator · signedAt · signatureId.
+    // Older button signatures stored: operator · signedAt · signatureId.
     const match = value.match(/^(.*) · (\d{4}-\d{2}-\d{2}T[^ ]+) · ([^·]+)$/);
     return match ? { signerName: match[1], signedAt: match[2] } : { signerName: value };
   }

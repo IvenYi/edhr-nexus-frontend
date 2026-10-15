@@ -1,0 +1,91 @@
+qualityResult:
+  result: passed
+  baseCommit: "346590b6f3b13877d312bde5ae5323f9befaec9d"
+  headCommit: "346590b6f3b13877d312bde5ae5323f9befaec9d"
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-projection-configuration-simplification-2026-10-12.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - gmp-platform/frontend/scripts/test-projection-source-editor.mjs
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig.tsx
+    excludedPaths: [output/, gmp-platform/frontend/output/]
+    untrackedPaths: [output/, gmp-platform/frontend/output/]
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: optional-info.scope
+      required: true
+      category: requirements
+      description: L1局部交互、提示和既有属性解释，复用同一决策包与增量影响分析
+      method: inspection
+      command: git diff; read AGENTS, role contracts, knowledge baseline, open questions, UI constraints and increment
+      outcome: passed
+      evidence:
+        - 标题右侧加号有业务名称aria-label与tooltip；其他用途为中性色折叠入口
+        - 补充属性折叠不更新binding，取消当前binding的画布选取；错误补充来源自动展开
+        - 无API、数据库、统计粒度、权限、审计或执行快照变更
+    - id: optional-info.tests
+      required: true
+      category: unit
+      description: 独立重跑25项聚焦测试及设计器静态检查
+      method: command
+      command: cd gmp-platform/frontend && node --test scripts/test-projection-panel.mjs scripts/test-projection-source-editor.mjs scripts/test-projection-preview.mjs && npm run verify:template-designer-react
+      outcome: passed
+      evidence:
+        - 25 tests, 25 pass, 0 fail; verify-template-designer-react passed
+        - SSR覆盖补充映射摘要、失效来源自动展开、报工文案、标题添加及子表入口
+    - id: optional-info.browser
+      required: true
+      category: e2e
+      description: 独立库虚构模板中验证新增、折叠、画布取消、保存重开及恢复
+      method: browser
+      command: CUA browser 3 tab 1; localhost3007; ASK-MAIN-TWO-DETAILS-DEMO-20261012
+      outcome: passed
+      evidence:
+        - 标题加号新增消耗明细3，来源为空、已展开、自动滚动至可视顶部
+        - 消耗明细2临时设置原因来源，收起后保留摘要；分类画布选取启动后收起，点击画布其他字段正常切换且未误绑定
+        - 保存并返回重开，原因映射保留；随后清空临时原因并保存，新增报工仅展示班组和单据补充信息及正确数量提示
+        - 删除临时报工和第三条消耗，再保存重开确认仅原两条消耗及原来源，撤销按钮禁用
+        - REFERENCE-FOLLOWUP-MAIN-20261007点击物料列仍显示整表配置来源，切换进入上料明细，原消耗配置完整；未修改该模板
+    - id: optional-info.visual
+      required: true
+      category: visual
+      description: 默认1280x720下检查局部视觉及侧栏滚动
+      method: browser
+      command: CUA screenshots
+      outcome: passed
+      evidence:
+        - output/optional-info-quality-20261012/sidebar.png
+        - output/optional-info-quality-20261012/folded.png
+        - 标题加号、红色移除图标、灰色折叠入口与原有侧栏样式一致；无新增面板切换
+    - id: optional-info.explanation
+      required: true
+      category: documentation
+      description: 核对补充信息解释与我方实际消费者一致
+      method: inspection
+      command: inspect FormProjectionReportPage visibleAttributes/detailRows/hit.details and FormProjectionController filters/GROUP BY
+      outcome: passed
+      evidence:
+        - 预设属性参与来源值摘要及详情展示，原因分类班组单据支持精确筛选
+        - GROUP BY不含原因分类班组单据；文档未宣称自动按这些属性分组
+        - 任意展示字段仍与预设补充属性分开，无自定义统计模型新增
+    - id: optional-info.diff
+      required: true
+      category: documentation
+      description: 工作树差异卫生
+      method: command
+      command: git diff --check
+      outcome: passed
+      evidence: [exit code 0]
+  findings: []
+  residualRisks:
+    - id: optional-info.validation-limits
+      description: 未独立重复完整构建、后端报表运行、移动端或真实工厂制表人员试用；本轮限两个组件交互组织及现有消费者静态核对
+      impact: 不代表完整投影业务或客户学习成本验收
+      mitigation: 主开发已执行目标构建；业务统计口径未变，后续实际客户试用单独验收
+    - id: optional-info.environment-refresh
+      description: 首次新增后浏览器曾一次返回模板列表且筛选清空，未有主动导航；重开重复相同新增流程及后续保存重开未再现，未能归因
+      impact: 本次所需交互随后均完成验证；不能将该单次环境现象认定为已修复产品缺陷
+      mitigation: 如再次出现，采集开发服务与浏览器重载日志定位
+  blockingConditions: []

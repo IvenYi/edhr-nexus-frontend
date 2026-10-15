@@ -1,0 +1,90 @@
+qualityResult:
+  result: passed
+  baseCommit: 8f5ddb063abacd5f43c5dd2b1c9abc021a0201a3
+  headCommit: 8f5ddb063abacd5f43c5dd2b1c9abc021a0201a3
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-projection-business-report-field-review-2026-10-12.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+    excludedPaths:
+      - output/
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - docs/development/form-projection-business-report-field-review-2026-10-12.md
+      - docs/development/form-projection-business-report-field-review-quality-2026-10-12.yaml
+      - output/
+      - gmp-platform/frontend/output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: report-review-original-screenshots
+      required: true
+      category: requirements
+      description: 核对六张用户原始截图的筛选条件与展示列，不将截断列或列名称推断成后台绑定。
+      method: inspection
+      command: 对照本轮用户附件与主报告第2节；Python检查六张原始图片路径存在
+      outcome: passed
+      evidence:
+        - 报废有分类/原因及创建信息；报工有工时/h、报工人及生产日期；消耗有修改人与修改时间。
+        - 未将生产日期等同于报工提交时间，未补猜报废隐藏列或消耗产品列的实际引用。
+        - docs/development/form-projection-business-report-field-review-2026-10-12.md
+    - id: report-review-original-capture-and-consumers
+      required: true
+      category: documentation
+      description: 从原始源码独立核对采集、保存、合计消费者与列表证据边界。
+      method: inspection
+      command: 读取OnlineFormDataCatchService、ProductNumDataService、BizReportDataSearchBs、FormReportSummaryBs、MaterialLoadingSubmitBs及相关原始字段定义；rg检索aggregateEntities/catchDataFormForm/updateOutPutQty调用
+      outcome: passed
+      evidence:
+        - 冠骋OnlineFormDataCatchService.java第375–385行直接保存主子表报工记录，aggregateEntities调用在第380行已注释。
+        - 同文件第600–730行按MATERIAL_CONSUME每行生成UUID和实体并保存；另有MaterialLoadingSubmitBs第95–98行写同一消耗模型。
+        - 工时显式采集，生产日期与系统handleDate独立；报工人读取签名数组和签名历史用户ID。
+        - FormReportSummaryBs接收外部过滤后调用单结果合计，工作台才附加系统当日和当前修改人；两者都未冒称截图列表GROUP BY。
+        - 原始字段结构声明工时精度、日期类型和报废字典，不据此推出我方必填、工时算法或字段全集。
+    - id: report-review-current-implementation-gap
+      required: true
+      category: regression
+      description: 核实我方当前用途角色、实际分组和通用展示，与建议设计明确分开。
+      method: inspection
+      command: 读取FormProjectionInterpreter.java、FormProjectionController.java及FormProjectionReportPage.tsx目标段
+      outcome: passed
+      evidence:
+        - 我方production角色尚无工时、生产日期、报工人和起止时间。
+        - 当前正式记录审计列来自form_instance_record；合计键包含对象、工序、物料ID与名称、批号和单位。
+        - 当前三类报表共用取值列，来源与合计为两个页签，合计行未连接逐组下钻。
+        - 主报告未宣称本轮修复了任何运行代码。
+    - id: report-review-knowledge-and-impact
+      required: true
+      category: ontology
+      description: 核对知识基线、DEC-0075及未决项，确认新建议未写成已确认运行规则。
+      method: inspection
+      command: 对照AGENTS、角色契约、business-knowledge-model、知识README/open-questions、DEC-0075、decisionPackage增量与证据文末
+      outcome: passed
+      evidence:
+        - 维持0.3.24基线，未新增verified状态、业务规则或运行契约。
+        - 报废分类/原因可直接在逐笔列表显示，未以是否分组作为只能下钻的依据。
+        - 保留真实执行归属、最终完成正式统计、空批号/单位、不做换算、使用时快照及二期自定义报表边界。
+        - 工时含义、日期/人员来源、多原因与表头共享仍未擅自定版；主报告第7节覆盖L2影响和扩展路径。
+    - id: report-review-document-validation
+      required: true
+      category: documentation
+      description: 校验差异、YAML与本轮文档引用。
+      method: command
+      command: git diff --check；Ruby YAML.load_file解析decisionPackage与本结果；Python检查报告相对链接和六张截图文件
+      outcome: passed
+      evidence:
+        - git diff --check退出码0。
+        - decisionPackage与质量结果YAML解析成功。
+        - 报告相对链接及六张原始图片文件存在。
+  findings: []
+  residualRisks:
+    - id: report-deployed-list-evidence-gap
+      description: 未取得三张冠骋部署页面的实际低代码配置及列表请求；本地原始代码副本无法与截图部署版本对应。
+      impact: 无法确认三页精确查询分组、隐藏列和消耗产品列的实际绑定；本次passed只覆盖已查实证据与诚实边界，不证明竞品完整运行行为。
+      mitigation: 报告已明示缺口，后续取得部署配置或请求再补核，不将采集层/工作台合计/已注释聚合当作列表事实。
+    - id: report-business-design-pending
+      description: 新增工时、业务日期、报工人及原因分项的具体产品口径仍待确认和实现。
+      impact: 本轮研究通过不代表三类业务报表已经实现完整字段或运行验收通过。
+      mitigation: 按报告第6–7节先确认真实业务口径，再贯通配置、采集、快照、查询展示和聚焦运行验证；本轮无代码变更，未运行应用测试、数据库迁移或E2E。
+  blockingConditions: []

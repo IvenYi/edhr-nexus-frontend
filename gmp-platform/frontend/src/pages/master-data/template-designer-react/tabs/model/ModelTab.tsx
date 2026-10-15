@@ -358,6 +358,7 @@ interface ModelTabProps {
   subTableDesignFieldId?: string | null;
   onSubTableDesignFieldIdChange?: (fieldId: string | null) => void;
   onFieldConfirmPersist?: () => Promise<void>;
+  onProjectionField?: (field: ModelField, tableId?: string) => void;
   saving?: boolean;
 }
 
@@ -365,6 +366,7 @@ export default function ModelTab({
   subTableDesignFieldId = null,
   onSubTableDesignFieldIdChange,
   onFieldConfirmPersist,
+  onProjectionField,
   saving = false,
 }: ModelTabProps) {
   const { showMessage } = useSnackbar();
@@ -929,6 +931,9 @@ export default function ModelTab({
                             {field.status === 'enabled' ? <ToggleOffOutlined sx={{ fontSize: 16 }} /> : <ToggleOnOutlined sx={{ fontSize: 16 }} />}
                           </IconButton>
                         </Tooltip>
+                        {onProjectionField && field.type !== 'subTable' && <Tooltip title="打开全表追溯配置（标出当前字段）" arrow>
+                          <IconButton size="small" aria-label={`在全表追溯配置中查看${field.name}`} onClick={() => onProjectionField(field, subTableDesignFieldId ?? undefined)} sx={{ width: 24, height: 24 }}><Search sx={{ fontSize: 16 }} /></IconButton>
+                        </Tooltip>}
                         <Tooltip title="编辑" arrow>
                           <IconButton
                             size="small"

@@ -6,12 +6,22 @@ export const MENU_MANAGEMENT_STORAGE_KEY = 'edhr:managed-sidebar-modules';
 export const MENU_MANAGEMENT_EVENT = 'edhr:managed-sidebar-modules-change';
 export const MAX_MENU_CHILDREN_DEPTH = 2;
 
+export const PROJECTION_REPORT_PAGES = [
+  { modelId: 'formTrace', label: '表单追溯', path: '/reports/form-trace' },
+  { modelId: 'dhrTrace', label: 'DHR追溯', path: '/reports/dhr-trace' },
+  { modelId: 'production', label: '报工记录', path: '/reports/production-records' },
+  { modelId: 'scrap', label: '报废记录', path: '/reports/scrap-records' },
+  { modelId: 'consumption', label: '消耗记录', path: '/reports/consumption-records' },
+] as const;
+export const isProjectionReportPath = (path: string) => path === '/reports/form-projections' || PROJECTION_REPORT_PAGES.some(page => page.path === path);
+
 function cloneSidebarModules(modules: SidebarModule[]): SidebarModule[] {
   return JSON.parse(JSON.stringify(modules)) as SidebarModule[];
 }
 
 const REQUIRED_SYSTEM_MANAGEMENT_CHILDREN: SidebarSubMenu[] = [
   { label: '业务字典', path: '/system/dictionaries' },
+  { label: '追溯项管理', path: '/system/form-lookup-items' },
   { label: '图标管理', path: '/system/icons' },
   { label: '系统设置', path: '/system/settings' },
 ];
@@ -104,7 +114,7 @@ const REQUIRED_RECORDS_MODULE: SidebarModule = {
   id: 'records',
   label: '记录',
   icon: 'FactCheck',
-  menus: [REQUIRED_FORM_MANAGEMENT_MENU, REQUIRED_DHR_MANAGEMENT_MENU],
+  menus: [REQUIRED_FORM_MANAGEMENT_MENU, REQUIRED_DHR_MANAGEMENT_MENU, { label: '报表', icon: 'FactCheck', children: PROJECTION_REPORT_PAGES.map(({ label, path }) => ({ label, path })) }],
 };
 
 const REQUIRED_PRODUCTION_PREPARATION_MENU: SidebarMenu = {
@@ -290,6 +300,9 @@ export function ensureRequiredSystemMenus(modules: SidebarModule[]): SidebarModu
   }
 
   const children = systemManagement.children ?? [];
+  for (const child of children) {
+    if (child.path === '/system/form-lookup-items' && child.label === '查找项管理') child.label = '追溯项管理';
+  }
   const existingPaths = new Set(children.map((child) => child.path));
   const requiredChildren = REQUIRED_SYSTEM_MANAGEMENT_CHILDREN.filter((child) => !existingPaths.has(child.path));
 
@@ -393,8 +406,15 @@ function ensureRequiredRecordsModule(modules: SidebarModule[]) {
 
   recordsModule.label = REQUIRED_RECORDS_MODULE.label;
   recordsModule.icon = recordsModule.icon || REQUIRED_RECORDS_MODULE.icon;
-  recordsModule.menus = recordsModule.menus.filter((menu) => ![REQUIRED_FORM_MANAGEMENT_MENU.label, REQUIRED_DHR_MANAGEMENT_MENU.label].includes(menu.label));
-  recordsModule.menus.unshift(...cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0].menus);
+  const reportMenu = recordsModule.menus.find((menu) => menu.label === '报表');
+  recordsModule.menus = recordsModule.menus.filter((menu) => ![REQUIRED_FORM_MANAGEMENT_MENU.label, REQUIRED_DHR_MANAGEMENT_MENU.label, '报表'].includes(menu.label));
+  const requiredMenus = cloneSidebarModules([REQUIRED_RECORDS_MODULE])[0].menus;
+  const requiredReport = requiredMenus.find((menu) => menu.label === '报表');
+  if (reportMenu && requiredReport) {
+    requiredReport.children = [...(reportMenu.children ?? []).filter((child) => !isProjectionReportPath(child.path)), ...(requiredReport.children ?? [])];
+    if (reportMenu.path && !isProjectionReportPath(reportMenu.path)) recordsModule.menus.push(reportMenu);
+  }
+  recordsModule.menus.unshift(...requiredMenus);
 }
 
 function ensureRequiredSecurityManagement(systemModule: SidebarModule) {
@@ -511,6 +531,7 @@ export function inferPermissionCode(path: string): string | undefined {
   if (path === '/production/batches') return 'production.batches';
   if (path === '/production/execution') return 'production.execution';
   if (path === '/form-management/list') return 'form-instances.view';
+  if (isProjectionReportPath(path)) return 'form-instances.view';
   if (path === '/form-management/filling') return 'form-management.filling';
   if (path === '/form-management/review') return 'form-management.review';
   if (path === '/dhr-management/list') return 'dhr.instances.view';
@@ -519,6 +540,7 @@ export function inferPermissionCode(path: string): string | undefined {
   if (path === '/dhr-management/review') return 'records.dhr-review';
   if (path === '/system/menu-management') return 'system.edit';
   if (path === '/system/dictionaries') return 'system.dictionaries';
+  if (path === '/system/form-lookup-items') return 'system.edit';
   if (path === '/system/icons') return 'system.icons';
   if (path === '/system/settings') return 'system.settings';
   if (path === '/system/login-logs') return 'system.login-logs';

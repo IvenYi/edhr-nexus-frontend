@@ -94,6 +94,7 @@ class ProductionExecutionIntegrationTest {
         jdbc.execute("DROP TABLE IF EXISTS dhr_summary_version");
         jdbc.execute("DROP TABLE IF EXISTS dhr_instance");
         jdbc.execute("DROP SEQUENCE IF EXISTS dhr_instance_number_seq");
+        jdbc.execute("DROP TABLE IF EXISTS form_trace_value");
         jdbc.execute("DROP TABLE IF EXISTS form_instance_record");
         jdbc.execute("DROP SEQUENCE IF EXISTS form_instance_number_seq");
         var migration = new String(getClass().getResourceAsStream("/db/changelog/0082-form-instance-records.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
@@ -108,6 +109,13 @@ class ProductionExecutionIntegrationTest {
         for (String sql : sourceMigration.split(";")) {
             if (sql.contains("ALTER") || sql.contains("CREATE")) jdbc.execute(sql);
         }
+        var traceMigration = new String(getClass().getResourceAsStream("/db/changelog/0109-saved-form-trace-index.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+        for (String sql : traceMigration.split("--changeset codex:0109-saved-form-trace-index-baseline")[0].split(";")) {
+            if (sql.contains("CREATE")) jdbc.execute(sql);
+        }
+        jdbc.execute("ALTER TABLE form_trace_value ADD COLUMN value_type VARCHAR(16) NOT NULL DEFAULT 'text'");
+        var stageMigration = new String(getClass().getResourceAsStream("/db/changelog/0111-form-instance-saved-stage.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+        for (String sql : stageMigration.split(";")) if (sql.contains("ALTER")) jdbc.execute(sql);
         for (String ddl : List.of(
             "material(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),code VARCHAR(64),name VARCHAR(128),specification VARCHAR(128),unit VARCHAR(16))",
             "product_process_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),version_label VARCHAR(64),production_mode VARCHAR(64),production_form VARCHAR(64),route_version_id BIGINT,dhr_template_version_id BIGINT,dhr_review_mode VARCHAR(16) DEFAULT 'NONE',dhr_review_workflow_definition_id BIGINT,dhr_review_workflow_version_id BIGINT)",
@@ -215,6 +223,37 @@ class ProductionExecutionIntegrationTest {
             .header("Authorization", "Bearer " + tokens.generateToken("1", "operator", "测试", 5, List.of("master-data.form-templates")))).andExpect(status().isForbidden());
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM production_execution", Integer.class)).isZero();
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isZero();
+    }
+
+    @Test void productionReferencesSaveTypedIdentityAndNumbersWithoutChangingExecutionOwnership() throws Exception {
+        String model = """
+            {"fields":[{"id":"batch","type":"reference","status":"enabled","typeConfig":{"sourceType":"productionBatch","referenceField":"workOrderNo"}},
+              {"id":"order","type":"reference","status":"enabled","typeConfig":{"sourceType":"workOrder"}},
+              {"id":"rows","type":"subTable","status":"enabled","typeConfig":{"columns":[
+                {"id":"sn","type":"reference","status":"enabled","typeConfig":{"sourceType":"serialNumber"}}]}}]}
+            """;
+        jdbc.update("UPDATE form_template_version SET model_design_json=?,canvas_design_json='{}' WHERE id=5", model);
+        jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity,good_quantity,ng_quantity,scrap_quantity,status,created_at,updated_at) VALUES(103,'default',100,'B02','BATCH',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        String endpoint = "/api/v1/production/execution/101/references";
+        mvc.perform(auth(post(endpoint).contentType("application/json").content("{\"operationId\":\"a\",\"formId\":\"form-51\",\"fieldId\":\"batch\",\"keyword\":\"B02\"}")))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data[0].id").value("103"))
+                .andExpect(jsonPath("$.data[0].code").value("B02")).andExpect(jsonPath("$.data[0].name").value("WO01"))
+                .andExpect(jsonPath("$.data[0].sourceType").value("productionBatch"));
+        Map<String, Object> batch = Map.of("id", "103", "sourceType", "productionBatch", "code", "B02", "name", "WO01");
+        Map<String, Object> values = Map.of("batch", batch, "order", Map.of("id", "100", "sourceType", "workOrder", "code", "WO01", "name", "WO01"),
+                "rows", List.of(Map.of("sn", Map.of("id", "102", "sourceType", "serialNumber", "code", "SN01", "name", "SN01"))));
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", values)).andExpect(status().isOk());
+        JsonNode saved = mapper.readTree(jdbc.queryForObject("SELECT values_json FROM form_instance_record WHERE object_id=101", String.class));
+        assertThat(saved.path("batch").path("code").asText()).isEqualTo("B02");
+        assertThat(saved.path("batch").path("id").asText()).isEqualTo("103");
+        assertThat(saved.path("rows").get(0).path("sn").path("sourceType").asText()).isEqualTo("serialNumber");
+        assertThat(jdbc.queryForObject("SELECT object_id FROM form_instance_record", Long.class)).isEqualTo(101);
+        var forged = new HashMap<>(values);
+        forged.put("batch", Map.of("id", "102", "sourceType", "productionBatch", "code", "SN01", "name", "WO01"));
+        action(101, "SAVE", 2, "a", Map.of("formId", "form-51", "values", forged)).andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(2);
+        assertThat(jdbc.queryForObject("SELECT values_json FROM form_instance_record WHERE object_id=101", String.class)).contains("B02");
     }
 
     @Test void batchAndSnScanAreReadOnlyAndReturnCorrectConfiguration() throws Exception {
@@ -1679,7 +1718,7 @@ class ProductionExecutionIntegrationTest {
 
     @Configuration(proxyBeanMethods = false)
     @EnableAutoConfiguration(exclude = JpaRepositoriesAutoConfiguration.class)
-    @Import({DhrFillingController.class, DhrFillingService.class, FormWorklistController.class, FormWorklistService.class, FormInstanceQueryController.class, FormInstanceQueryService.class, FormInstanceRecordController.class, FormInstanceRecordService.class, DhrInstanceController.class, DhrInstanceService.class, ProductionExecutionController.class, ProductionExecutionService.class, ProductionExecutionEngine.class, ExecutionSnapshotBuilder.class, ExecutionPresenceRegistry.class,
+    @Import({DhrFillingController.class, DhrFillingService.class, FormWorklistController.class, FormWorklistService.class, FormInstanceQueryController.class, FormInstanceQueryService.class, FormInstanceRecordController.class, FormInstanceRecordService.class, FormProjectionService.class, DhrInstanceController.class, DhrInstanceService.class, ProductionExecutionController.class, ProductionExecutionService.class, ProductionExecutionEngine.class, ExecutionSnapshotBuilder.class, ExecutionPresenceRegistry.class,
         ProductionService.class, ExecutionAccess.class, SubjectResolver.class, FileController.class, GlobalExceptionHandler.class, SecurityConfig.class, JwtAuthenticationFilter.class,
         com.zencas.edhr.template.controller.FormReferenceController.class, com.zencas.edhr.template.service.FormReferenceLookup.class})
     static class Config {

@@ -44,9 +44,24 @@ export interface ModelFieldGroup {
 export type FieldReportColumnWidths = Record<string, Record<string, number>>;
 
 export interface ModelDesignState {
+  projection?: {
+    version: string;
+    bindings: ProjectionBinding[];
+    lookupItems?: Record<string, { name: string; type: 'text'; revision: number }>;
+  };
   groups: ModelFieldGroup[];
   fields: ModelField[];
   fieldReportColumnWidths?: FieldReportColumnWidths;
+}
+
+export interface ProjectionBinding {
+  id: string;
+  enabled: boolean;
+  modelId: string;
+  tableId?: string;
+  rowKeyFieldId?: string;
+  sources: Record<string, string>;
+  detailFieldIds?: string[];
 }
 
 export interface FieldTypeDefinition {

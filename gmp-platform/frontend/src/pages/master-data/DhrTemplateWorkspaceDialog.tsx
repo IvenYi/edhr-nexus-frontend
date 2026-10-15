@@ -522,6 +522,7 @@ export type PreviewFieldAction = {
 
 export type PreviewFieldInteraction = {
   highlightFieldId?: string | null;
+  isFieldHighlighted?: (fieldId: string, tableId: string | undefined, rowIndex: number) => boolean;
   onFieldHover?: (fieldId: string | null) => void;
   actionsForField?: (field: {
     id: string;

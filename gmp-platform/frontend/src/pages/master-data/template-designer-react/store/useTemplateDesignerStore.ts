@@ -12,6 +12,7 @@ import type {
   FieldType,
   ModelField,
   ModelFieldStatus,
+  ProjectionBinding,
   SubTableRegion,
   TemplateDesignerCanvasRailKey,
   TemplateDesignerDocument,
@@ -1463,7 +1464,9 @@ function selectionCrossesSubTableBoundary(nodes: CanvasNode[], targetRange: Canv
 function resolveSelectedCellRail(
   selectedFieldNode: CanvasNode | null,
   selectedRange: CanvasSelectionRange | null,
+  activeRail: TemplateDesignerCanvasRailKey,
 ) {
+  if (activeRail === 'projection') return 'projection';
   if (selectedFieldNode) {
     return selectedFieldNode?.type === 'sub-table' ? 'fields' : 'config';
   }
@@ -1797,6 +1800,7 @@ export interface TemplateDesignerStore {
   selectedRange: CanvasSelectionRange | null;
   setDocument: (document: TemplateDesignerDocument) => void;
   setActiveTab: (tab: TemplateDesignerTabKey) => void;
+  setProjectionBindings: (bindings: ProjectionBinding[], version?: string) => void;
   setActiveCanvasRail: (rail: TemplateDesignerCanvasRailKey) => void;
   setCanvasSidebarVisible: (visible: boolean) => void;
   setCurrentPageId: (pageId: string) => void;
@@ -1927,6 +1931,15 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     selectedSubTableGroupNodeId: null,
   }),
   setActiveTab: (activeTab) => set({ activeTab }),
+  setProjectionBindings: (bindings, version) => set((state) => pushDocumentHistory(state, {
+    document: state.document ? {
+      ...state.document,
+      model: {
+        ...state.document.model,
+        projection: { ...state.document.model.projection, version: version ?? state.document.model.projection?.version ?? 'form-projection-v1', bindings },
+      },
+    } : null,
+  })),
   setActiveCanvasRail: (activeCanvasRail) => set({ activeCanvasRail, isCanvasSidebarVisible: true }),
   setCanvasSidebarVisible: (isCanvasSidebarVisible) => set({ isCanvasSidebarVisible }),
   setCurrentPageId: (pageId) => set((state) => ({
@@ -1984,7 +1997,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       selectedRange,
       selectedNodeId: selectedFieldNodeId,
       selectedSubTableGroupNodeId: null,
-      activeCanvasRail: resolveSelectedCellRail(selectedFieldNode, selectedRange),
+      activeCanvasRail: resolveSelectedCellRail(selectedFieldNode, selectedRange, state.activeCanvasRail),
       isCanvasSidebarVisible: true,
     };
   }),
@@ -2005,7 +2018,7 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       } : null),
       selectedNodeId: selectedFieldNodeId,
       selectedSubTableGroupNodeId: null,
-      activeCanvasRail: resolveSelectedCellRail(selectedFieldNode, normalizedSelection),
+      activeCanvasRail: resolveSelectedCellRail(selectedFieldNode, normalizedSelection, state.activeCanvasRail),
       isCanvasSidebarVisible: true,
     };
   }),

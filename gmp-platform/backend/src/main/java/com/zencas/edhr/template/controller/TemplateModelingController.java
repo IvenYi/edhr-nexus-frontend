@@ -30,6 +30,8 @@ import com.zencas.edhr.template.repository.FormTemplateRepository;
 import com.zencas.edhr.template.repository.FormTemplateVersionRepository;
 import com.zencas.edhr.template.repository.TemplateCategoryRepository;
 import com.zencas.edhr.template.service.TemplateLegacyWordImportService;
+import com.zencas.edhr.template.service.FormProjectionInterpreter;
+import com.zencas.edhr.template.service.FormLookupCatalogService;
 import com.zencas.edhr.template.support.DhrTemplateVersionStatusResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -90,6 +92,7 @@ public class TemplateModelingController {
     private final AuditEventRepository auditEventRepository;
     private final SnowflakeIdGenerator idGenerator;
     private final TemplateLegacyWordImportService templateLegacyWordImportService;
+    private final FormLookupCatalogService formLookupCatalogService;
 
     @GetMapping("/form-templates")
     public ApiResponse<PageResult<FormTemplateResponse>> listFormTemplates(
@@ -222,6 +225,7 @@ public class TemplateModelingController {
     }
 
     @PutMapping("/form-templates/{id}/versions/{versionId}/design")
+    @PreAuthorize("hasAuthority('master-data.form-templates')")
     @Transactional
     public ApiResponse<TemplateVersionResponse> saveFormTemplateVersionDesign(
             @PathVariable Long id,
@@ -233,7 +237,7 @@ public class TemplateModelingController {
         Map<String, Object> before = versionSnapshot(version);
         if (request != null) {
             if (request.getModelDesignJson() != null) {
-                version.setModelDesignJson(trimToNull(request.getModelDesignJson()));
+                version.setModelDesignJson(formLookupCatalogService.prepareDesign(trimToNull(request.getModelDesignJson())));
             }
             if (request.getCanvasDesignJson() != null) {
                 version.setCanvasDesignJson(trimToNull(request.getCanvasDesignJson()));
@@ -247,6 +251,19 @@ public class TemplateModelingController {
         FormTemplateVersion saved = formTemplateVersionRepository.save(version);
         writeChangedAudit("FORM_TEMPLATE_VERSION", saved.getId(), "表单模板", "保存设计", before, versionSnapshot(saved));
         return ApiResponse.success(toVersionResponse(saved));
+    }
+
+    @GetMapping("/projection-catalog")
+    @PreAuthorize("hasAuthority('master-data.form-templates')")
+    public ApiResponse<com.fasterxml.jackson.databind.node.ObjectNode> projectionCatalog() {
+        return ApiResponse.success(formLookupCatalogService.projectionCatalog());
+    }
+
+    @PostMapping("/projection-preview")
+    @PreAuthorize("hasAuthority('master-data.form-templates')")
+    public ApiResponse<com.fasterxml.jackson.databind.node.ArrayNode> projectionPreview(
+            @RequestBody com.fasterxml.jackson.databind.JsonNode request) {
+        return ApiResponse.success(FormProjectionInterpreter.preview(formLookupCatalogService.withLookupSnapshot(request.path("model")), request.path("values")));
     }
 
     @DeleteMapping("/form-templates/{id}/versions/{versionId}")

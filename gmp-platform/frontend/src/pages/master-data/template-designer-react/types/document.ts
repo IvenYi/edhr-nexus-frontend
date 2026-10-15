@@ -3,7 +3,7 @@ import type { ModelDesignState } from './model';
 import type { WorkflowDesignState } from './workflow';
 
 export type TemplateDesignerTabKey = 'model' | 'canvas' | 'workflow';
-export type TemplateDesignerCanvasRailKey = 'thumbnails' | 'fields' | 'grid' | 'config';
+export type TemplateDesignerCanvasRailKey = 'thumbnails' | 'fields' | 'grid' | 'config' | 'projection';
 
 export interface TemplateDesignerMeta {
   schema: 'edhr-template-designer-react';

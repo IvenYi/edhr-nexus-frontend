@@ -1,0 +1,414 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: eedc24721d8d5137b29840575867422577386141
+    targetBranch: edhr-dev
+    targetCommit: 3977329d13c4c74bd862e21abac4ae982e5b8f83
+    contractReadCommit: 3977329d13c4c74bd862e21abac4ae982e5b8f83
+    uncommittedContractPaths: []
+  reason: 投影按实际目标新契约增量重放，解决同ID异义及三文件冲突，保留双方有效政策；补齐当前概念、来源事实、实现锚点、局部替代和历史导航，不提升业务成熟度或实施最终产出。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+      changeType: update
+      ids: ["DEC-0077", "DEC-0077-01", "DEC-0077-02", "DEC-0077-03", "DEC-0077-04", "DEC-0077-05", "DEC-0077-06", "DEC-0077-07", "DEC-0077-08", "DEC-0077-09", "DEC-0077-10", "DEC-0077-11", "DEC-0077-12", "DEC-0077-13", "DEC-0077-14", "DEC-0077-15", "DEC-0077-16", "DEC-0077-17", "DEC-0077-18", "DEC-0077-19", "DEC-0077-20", "DEC-0077-21", "DEC-0077-22", "DEC-0077-23", "DEC-0077-24", "DEC-0077-25", "DEC-0077-26", "DEC-0077-27", "DEC-0077-28", "DEC-0077-29", "DEC-0077-30", "DEC-0077-31", "DEC-0077-32", "DEC-0077-33", "DEC-0077-34", "DEC-0077-35", "DEC-0077-36", "DEC-0077-37", "DEC-0077-38", "DEC-0077-39", "DEC-0077-40", "DEC-0077-41"]
+    - path: docs/knowledge/glossary.yaml
+      changeType: update
+      ids: ["term.form-projection-configuration", "term.form-business-projection", "term.form-instance", "term.form-lookup-item"]
+    - path: docs/knowledge/ontology.yaml
+      changeType: update
+      ids: ["concept.form-projection-configuration", "concept.form-business-projection", "concept.custom-form-scope", "concept.dhr-record-completeness", "concept.form-production-subject-trace-item", "concept.form-saved-content-trace", "relation.execution-snapshot-freezes-form-projection-configuration", "relation.form-business-projection-derived-from-form-instance"]
+    - path: docs/knowledge/facts/form-projection.yaml
+      changeType: update
+      ids: ["fact.form-projection.source-configuration", "fact.form-projection.formal-source-snapshot"]
+    - path: docs/knowledge/implementation-anchors/form-projection.yaml
+      changeType: update
+      ids: ["anchor.form-projection.configuration-snapshot", "anchor.form-projection.formal-source", "anchor.form-projection.saved-content-trace"]
+    - path: docs/knowledge/open-questions.yaml
+      changeType: update
+      ids: ["question.form-projection-notebook-effective-unit", "question.form-projection-defect-count-semantics", "question.form-projection-free-text-identity", "question.form-projection-header-shared-fields", "question.form-projection-sidebar-mode-interaction", "question.form-projection-cross-form-event-association", "question.form-projection-customer-owned-model-capability", "question.form-projection-first-phase-detailed-scope", "question.form-projection-trace-index-effective-scope", "question.form-projection-trace-result-navigation", "question.form-projection-context-prefill-lifecycle"]
+    - path: docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      changeType: update
+      ids: ["evidence.form-projection-trace-date-and-reverse-scope-20261014", "evidence.form-projection-progressive-query-layout-20261014", "evidence.form-projection-custom-trace-crud-20261014", "evidence.form-projection-typed-trace-catalog-20261014", "evidence.form-and-dhr-trace-query-20261013", "evidence.form-projection-report-pages-source-20261013", "evidence.form-projection-compact-statistics-sidebar-20261013", "evidence.form-projection-report-source-visibility-and-reporter-20261013", "evidence.form-traceability-projection-ownership-user-confirmed", "evidence.form-projection-reference-followup", "evidence.form-projection-clarifications-20261009", "evidence.form-projection-clarifications-20261010", "evidence.form-projection-runtime-correction-20261010"]
+    - path: docs/knowledge/evidence/projection-integration-2026-10-15.yaml
+      changeType: update
+      ids: ["evidence.projection-integration-source-boundaries", "evidence.projection-formal-source", "evidence.projection-saved-content-source"]
+    - path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      changeType: update
+      ids: []
+    - path: docs/knowledge/evidence/projection-integration-2026-10-15.md
+      changeType: update
+      ids: []
+    - path: docs/knowledge/rules/product-process.yaml
+      changeType: update
+      ids: ["rule.product-process.final-output"]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      ids: []
+    - path: docs/architecture/form-traceability-projection-design.md
+      changeType: update
+      ids: []
+    - path: docs/architecture/form-traceability-projection-brief.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: DEC-0077
+      disposition: updated
+      scope: 投影来源eedc24721d8d5137b29840575867422577386141旧DEC-0075映射DEC-0077，41条声明后缀及成熟度不变；目标同ID不同含义不替换。
+      sourceReferences: ["docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-01
+      disposition: updated
+      scope: 旧投影DEC-0075-01一一映射为当前DEC-0077-01；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-02
+      disposition: updated
+      scope: 旧投影DEC-0075-02一一映射为当前DEC-0077-02；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-03
+      disposition: updated
+      scope: 旧投影DEC-0075-03一一映射为当前DEC-0077-03；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-04
+      disposition: updated
+      scope: 旧投影DEC-0075-04一一映射为当前DEC-0077-04；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-05
+      disposition: updated
+      scope: 旧投影DEC-0075-05一一映射为当前DEC-0077-05；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-06
+      disposition: updated
+      scope: 旧投影DEC-0075-06一一映射为当前DEC-0077-06；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-07
+      disposition: updated
+      scope: 旧投影DEC-0075-07一一映射为当前DEC-0077-07；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-08
+      disposition: updated
+      scope: 旧投影DEC-0075-08一一映射为当前DEC-0077-08；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-09
+      disposition: updated
+      scope: 旧投影DEC-0075-09一一映射为当前DEC-0077-09；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-10
+      disposition: updated
+      scope: 旧投影DEC-0075-10一一映射为当前DEC-0077-10；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-11
+      disposition: updated
+      scope: 旧投影DEC-0075-11一一映射为当前DEC-0077-11；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-12
+      disposition: updated
+      scope: 旧投影DEC-0075-12一一映射为当前DEC-0077-12；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-13
+      disposition: updated
+      scope: 旧投影DEC-0075-13一一映射为当前DEC-0077-13；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-14
+      disposition: updated
+      scope: 旧投影DEC-0075-14一一映射为当前DEC-0077-14；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-15
+      disposition: updated
+      scope: 旧投影DEC-0075-15一一映射为当前DEC-0077-15；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-16
+      disposition: updated
+      scope: 旧投影DEC-0075-16一一映射为当前DEC-0077-16；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-17
+      disposition: updated
+      scope: 旧投影DEC-0075-17一一映射为当前DEC-0077-17；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-18
+      disposition: updated
+      scope: 旧投影DEC-0075-18一一映射为当前DEC-0077-18；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-19
+      disposition: updated
+      scope: 旧投影DEC-0075-19一一映射为当前DEC-0077-19；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-20
+      disposition: updated
+      scope: 旧投影DEC-0075-20一一映射为当前DEC-0077-20；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-21
+      disposition: updated
+      scope: 旧投影DEC-0075-21一一映射为当前DEC-0077-21；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-22
+      disposition: updated
+      scope: 旧投影DEC-0075-22一一映射为当前DEC-0077-22；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-23
+      disposition: updated
+      scope: 旧投影DEC-0075-23一一映射为当前DEC-0077-23；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-24
+      disposition: updated
+      scope: 旧投影DEC-0075-24一一映射为当前DEC-0077-24；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-25
+      disposition: updated
+      scope: 旧投影DEC-0075-25一一映射为当前DEC-0077-25；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-26
+      disposition: updated
+      scope: 旧投影DEC-0075-26一一映射为当前DEC-0077-26；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-27
+      disposition: updated
+      scope: 旧投影DEC-0075-27一一映射为当前DEC-0077-27；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-28
+      disposition: updated
+      scope: 旧投影DEC-0075-28一一映射为当前DEC-0077-28；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-29
+      disposition: updated
+      scope: 旧投影DEC-0075-29一一映射为当前DEC-0077-29；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-30
+      disposition: updated
+      scope: 旧投影DEC-0075-30一一映射为当前DEC-0077-30；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-31
+      disposition: updated
+      scope: 旧投影DEC-0075-31一一映射为当前DEC-0077-31；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-32
+      disposition: updated
+      scope: 旧投影DEC-0075-32一一映射为当前DEC-0077-32；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-33
+      disposition: updated
+      scope: 旧投影DEC-0075-33一一映射为当前DEC-0077-33；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-34
+      disposition: updated
+      scope: 旧投影DEC-0075-34一一映射为当前DEC-0077-34；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-35
+      disposition: updated
+      scope: 旧投影DEC-0075-35一一映射为当前DEC-0077-35；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-36
+      disposition: updated
+      scope: 旧投影DEC-0075-36一一映射为当前DEC-0077-36；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-37
+      disposition: updated
+      scope: 旧投影DEC-0075-37一一映射为当前DEC-0077-37；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-38
+      disposition: updated
+      scope: 旧投影DEC-0075-38一一映射为当前DEC-0077-38；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-39
+      disposition: updated
+      scope: 旧投影DEC-0075-39一一映射为当前DEC-0077-39；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-40
+      disposition: updated
+      scope: 旧投影DEC-0075-40一一映射为当前DEC-0077-40；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0077-41
+      disposition: updated
+      scope: 旧投影DEC-0075-41一一映射为当前DEC-0077-41；按集成核对表保留本声明适用和局部替代边界，不因合并推升状态或把代码差异当政策。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml", "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0075
+      disposition: retained
+      scope: 目标自定义表单与治理含义、批次共享实例及资料齐套边界保留；与投影字段命中/正式数量各自独立。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: DEC-0076
+      disposition: retained
+      scope: 目标试点和全量审计治理原文保留；本次只增量核对投影，不扩大为新试点或全库审计，不用旧审计覆盖率证明本次新增内容。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0076-ontology-guided-pilots-and-legacy-audit.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: term.custom-form-scope
+      disposition: retained
+      scope: 目标自定义表单与治理含义、批次共享实例及资料齐套边界保留；与投影字段命中/正式数量各自独立。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: term.dhr-record-completeness
+      disposition: retained
+      scope: 目标自定义表单与治理含义、批次共享实例及资料齐套边界保留；与投影字段命中/正式数量各自独立。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: concept.custom-form-scope
+      disposition: retained
+      scope: 目标自定义表单与治理含义、批次共享实例及资料齐套边界保留；与投影字段命中/正式数量各自独立。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: concept.dhr-record-completeness
+      disposition: retained
+      scope: 目标自定义表单与治理含义、批次共享实例及资料齐套边界保留；与投影字段命中/正式数量各自独立。
+      sourceReferences: ["docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: fact.form-projection.source-configuration
+      disposition: updated
+      scope: 按本轮直接读取的来源路径、符号、接口/迁移与时点登记，object类型不误写string；implemented/internal仅表示来源已有实现，不注册通用求值或运行规则。
+      sourceReferences: ["docs/knowledge/facts/form-projection.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: fact.form-projection.formal-source-snapshot
+      disposition: updated
+      scope: 按本轮直接读取的来源路径、符号、接口/迁移与时点登记，object类型不误写string；implemented/internal仅表示来源已有实现，不注册通用求值或运行规则。
+      sourceReferences: ["docs/knowledge/facts/form-projection.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: anchor.form-projection.configuration-snapshot
+      disposition: updated
+      scope: 按本轮直接读取的来源路径、符号、接口/迁移与时点登记，object类型不误写string；implemented/internal仅表示来源已有实现，不注册通用求值或运行规则。
+      sourceReferences: ["docs/knowledge/implementation-anchors/form-projection.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: anchor.form-projection.formal-source
+      disposition: updated
+      scope: 按本轮直接读取的来源路径、符号、接口/迁移与时点登记，object类型不误写string；implemented/internal仅表示来源已有实现，不注册通用求值或运行规则。
+      sourceReferences: ["docs/knowledge/implementation-anchors/form-projection.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: anchor.form-projection.saved-content-trace
+      disposition: updated
+      scope: 按本轮直接读取的来源路径、符号、接口/迁移与时点登记，object类型不误写string；implemented/internal仅表示来源已有实现，不注册通用求值或运行规则。
+      sourceReferences: ["docs/knowledge/implementation-anchors/form-projection.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: evidence.projection-integration-source-boundaries
+      disposition: updated
+      scope: 按本轮直接读取的来源路径、符号、接口/迁移与时点登记，object类型不误写string；implemented/internal仅表示来源已有实现，不注册通用求值或运行规则。
+      sourceReferences: ["docs/knowledge/evidence/projection-integration-2026-10-15.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: evidence.projection-formal-source
+      disposition: updated
+      scope: 按本轮直接读取的来源路径、符号、接口/迁移与时点登记，object类型不误写string；implemented/internal仅表示来源已有实现，不注册通用求值或运行规则。
+      sourceReferences: ["docs/knowledge/evidence/projection-integration-2026-10-15.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: evidence.projection-saved-content-source
+      disposition: updated
+      scope: 按本轮直接读取的来源路径、符号、接口/迁移与时点登记，object类型不误写string；implemented/internal仅表示来源已有实现，不注册通用求值或运行规则。
+      sourceReferences: ["docs/knowledge/evidence/projection-integration-2026-10-15.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: term.form-projection-configuration
+      disposition: updated
+      scope: 当前定义分离使用时来源配置、原始实例、保存索引、正式记录与真实归属；保留目标批次自定义共享及投影目录兼容范围，具体边界见对应当前资产。
+      sourceReferences: ["docs/knowledge/glossary.yaml", "docs/knowledge/ontology.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: term.form-business-projection
+      disposition: updated
+      scope: 当前定义分离使用时来源配置、原始实例、保存索引、正式记录与真实归属；保留目标批次自定义共享及投影目录兼容范围，具体边界见对应当前资产。
+      sourceReferences: ["docs/knowledge/glossary.yaml", "docs/knowledge/ontology.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: term.form-instance
+      disposition: updated
+      scope: 当前定义分离使用时来源配置、原始实例、保存索引、正式记录与真实归属；保留目标批次自定义共享及投影目录兼容范围，具体边界见对应当前资产。
+      sourceReferences: ["docs/knowledge/glossary.yaml", "docs/knowledge/ontology.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: term.form-lookup-item
+      disposition: updated
+      scope: 当前定义分离使用时来源配置、原始实例、保存索引、正式记录与真实归属；保留目标批次自定义共享及投影目录兼容范围，具体边界见对应当前资产。
+      sourceReferences: ["docs/knowledge/glossary.yaml", "docs/knowledge/ontology.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: concept.form-projection-configuration
+      disposition: updated
+      scope: 当前定义分离使用时来源配置、原始实例、保存索引、正式记录与真实归属；保留目标批次自定义共享及投影目录兼容范围，具体边界见对应当前资产。
+      sourceReferences: ["docs/knowledge/glossary.yaml", "docs/knowledge/ontology.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: concept.form-business-projection
+      disposition: updated
+      scope: 当前定义分离使用时来源配置、原始实例、保存索引、正式记录与真实归属；保留目标批次自定义共享及投影目录兼容范围，具体边界见对应当前资产。
+      sourceReferences: ["docs/knowledge/glossary.yaml", "docs/knowledge/ontology.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: concept.form-production-subject-trace-item
+      disposition: updated
+      scope: 当前定义分离使用时来源配置、原始实例、保存索引、正式记录与真实归属；保留目标批次自定义共享及投影目录兼容范围，具体边界见对应当前资产。
+      sourceReferences: ["docs/knowledge/glossary.yaml", "docs/knowledge/ontology.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: concept.form-saved-content-trace
+      disposition: updated
+      scope: 当前定义分离使用时来源配置、原始实例、保存索引、正式记录与真实归属；保留目标批次自定义共享及投影目录兼容范围，具体边界见对应当前资产。
+      sourceReferences: ["docs/knowledge/glossary.yaml", "docs/knowledge/ontology.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: relation.execution-snapshot-freezes-form-projection-configuration
+      disposition: updated
+      scope: 当前定义分离使用时来源配置、原始实例、保存索引、正式记录与真实归属；保留目标批次自定义共享及投影目录兼容范围，具体边界见对应当前资产。
+      sourceReferences: ["docs/knowledge/glossary.yaml", "docs/knowledge/ontology.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: relation.form-business-projection-derived-from-form-instance
+      disposition: updated
+      scope: 当前定义分离使用时来源配置、原始实例、保存索引、正式记录与真实归属；保留目标批次自定义共享及投影目录兼容范围，具体边界见对应当前资产。
+      sourceReferences: ["docs/knowledge/glossary.yaml", "docs/knowledge/ontology.yaml", "docs/knowledge/evidence/projection-integration-2026-10-15.md"]
+    - id: question.form-projection-notebook-effective-unit
+      disposition: retained
+      scope: 仅把投影决策当前引用导航改为DEC-0077，保留既有未决依赖范围；已确认日期/数字、目录CRUD、DHR定位不重新列为待决。
+      sourceReferences: ["docs/knowledge/open-questions.yaml"]
+    - id: question.form-projection-defect-count-semantics
+      disposition: retained
+      scope: 仅把投影决策当前引用导航改为DEC-0077，保留既有未决依赖范围；已确认日期/数字、目录CRUD、DHR定位不重新列为待决。
+      sourceReferences: ["docs/knowledge/open-questions.yaml"]
+    - id: question.form-projection-free-text-identity
+      disposition: retained
+      scope: 仅把投影决策当前引用导航改为DEC-0077，保留既有未决依赖范围；已确认日期/数字、目录CRUD、DHR定位不重新列为待决。
+      sourceReferences: ["docs/knowledge/open-questions.yaml"]
+    - id: question.form-projection-header-shared-fields
+      disposition: retained
+      scope: 仅把投影决策当前引用导航改为DEC-0077，保留既有未决依赖范围；已确认日期/数字、目录CRUD、DHR定位不重新列为待决。
+      sourceReferences: ["docs/knowledge/open-questions.yaml"]
+    - id: question.form-projection-sidebar-mode-interaction
+      disposition: retained
+      scope: 仅把投影决策当前引用导航改为DEC-0077，保留既有未决依赖范围；已确认日期/数字、目录CRUD、DHR定位不重新列为待决。
+      sourceReferences: ["docs/knowledge/open-questions.yaml"]
+    - id: question.form-projection-cross-form-event-association
+      disposition: retained
+      scope: 仅把投影决策当前引用导航改为DEC-0077，保留既有未决依赖范围；已确认日期/数字、目录CRUD、DHR定位不重新列为待决。
+      sourceReferences: ["docs/knowledge/open-questions.yaml"]
+    - id: question.form-projection-customer-owned-model-capability
+      disposition: retained
+      scope: 仅把投影决策当前引用导航改为DEC-0077，保留既有未决依赖范围；已确认日期/数字、目录CRUD、DHR定位不重新列为待决。
+      sourceReferences: ["docs/knowledge/open-questions.yaml"]
+    - id: question.form-projection-first-phase-detailed-scope
+      disposition: retained
+      scope: 仅把投影决策当前引用导航改为DEC-0077，保留既有未决依赖范围；已确认日期/数字、目录CRUD、DHR定位不重新列为待决。
+      sourceReferences: ["docs/knowledge/open-questions.yaml"]
+    - id: question.form-projection-trace-index-effective-scope
+      disposition: retained
+      scope: 仅把投影决策当前引用导航改为DEC-0077，保留既有未决依赖范围；已确认日期/数字、目录CRUD、DHR定位不重新列为待决。
+      sourceReferences: ["docs/knowledge/open-questions.yaml"]
+    - id: question.form-projection-trace-result-navigation
+      disposition: retained
+      scope: 仅把投影决策当前引用导航改为DEC-0077，保留既有未决依赖范围；已确认日期/数字、目录CRUD、DHR定位不重新列为待决。
+      sourceReferences: ["docs/knowledge/open-questions.yaml"]
+    - id: question.form-projection-context-prefill-lifecycle
+      disposition: retained
+      scope: 仅把投影决策当前引用导航改为DEC-0077，保留既有未决依赖范围；已确认日期/数字、目录CRUD、DHR定位不重新列为待决。
+      sourceReferences: ["docs/knowledge/open-questions.yaml"]
+    - id: evidence.form-traceability-projection-ownership-user-confirmed
+      disposition: historical
+      scope: 保留原始确认正文、旧投影编号及各时点验证；仅补来源提交和当前导航，未反填旧契约读取。
+      sourceReferences: ["docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md"]
+    - id: rule.product-process.final-output
+      disposition: deferred
+      scope: 保留planned/internal及11/13已确认语义；必配/基数、回写时点和历史补算等待后续TODO讨论，只阻塞该实现，不阻塞集成。
+      sourceReferences: ["docs/knowledge/rules/product-process.yaml", "docs/development/final-output-linkage-todo-2026-10-15.md"]
+    - id: rule.production.production-batch-input-quantity-required
+      disposition: retained
+      scope: 目标数量下限补正原样保留，两条历史组合规则仍deprecated/internal且阈值待决，不以当前实现推定新政策。
+      sourceReferences: ["docs/knowledge/open-questions.yaml", "docs/knowledge/evidence/ontology-foundation-fact-types.md"]
+    - id: rule.production.mass-batch-quantity-distribution
+      disposition: retained
+      scope: 目标数量下限补正原样保留，两条历史组合规则仍deprecated/internal且阈值待决，不以当前实现推定新政策。
+      sourceReferences: ["docs/knowledge/open-questions.yaml", "docs/knowledge/evidence/ontology-foundation-fact-types.md"]
+    - id: question.production-batch-quantity-lower-bound
+      disposition: retained
+      scope: 目标数量下限补正原样保留，两条历史组合规则仍deprecated/internal且阈值待决，不以当前实现推定新政策。
+      sourceReferences: ["docs/knowledge/open-questions.yaml", "docs/knowledge/evidence/ontology-foundation-fact-types.md"]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.projection-integration-knowledge-maven
+      checkType: schema
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn -f tools/knowledge-model/pom.xml test -q
+      outcome: passed
+      evidence: [独立知识入口89项通过，0失败/错误/跳过；包括结构、事实类型、操作符、引用、成熟度、投影和负向探针, tools/knowledge-model/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml]
+    - id: validation.projection-integration-identity-maturity
+      checkType: reference
+      command: Python核对源提交与当前DEC声明后缀/成熟度，并比对目标DEC-0075/0076原始内容
+      outcome: passed
+      evidence: [41个声明后缀及成熟度逐项相同, 目标DEC-0075与DEC-0076文件内容未改, docs/knowledge/evidence/projection-integration-2026-10-15.md]
+    - id: validation.projection-integration-current-navigation
+      checkType: evidence-path
+      command: 检查新增知识和当前简版Markdown相对导航路径及git diff --check
+      outcome: passed
+      evidence: [新增集成核对及简版的相对链接均存在, 无空白错误；历史原始确认旧ID保留且有当前导航]
+    - id: validation.projection-integration-ownership
+      checkType: projection
+      command: 直接读取当前合并树的快照构建/来源保存/正式投影/过程索引/DHR匹配/控制器及目录审计源码
+      outcome: passed
+      evidence: [docs/knowledge/evidence/projection-integration-2026-10-15.md, docs/knowledge/evidence/projection-integration-2026-10-15.yaml, 只核对声明适用与实现边界，未执行浏览器或运行数据库操作，不宣称完整运行验收]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

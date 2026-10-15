@@ -5,7 +5,7 @@ import vm from 'node:vm';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const result = await build({ entryPoints: ['src/pages/production/ExecutionFormSelector.tsx'], bundle: true, write: false, format: 'cjs', platform: 'node', packages: 'external',
-  plugins: [{ name: 'api-boundary', setup(plugin) { plugin.onResolve({ filter: /^@\/api/ }, () => ({ path: 'api', namespace: 'stub' })); plugin.onLoad({ filter: /.*/, namespace: 'stub' }, () => ({ contents: 'export const getExecutionTemplates=()=>Promise.resolve([])' })); } }] });
+  plugins: [{ name: 'api-boundary', setup(plugin) { plugin.onResolve({ filter: /^@\/api/ }, () => ({ path: 'api', namespace: 'stub' })); plugin.onLoad({ filter: /.*/, namespace: 'stub' }, () => ({ contents: 'export const getExecutionTemplates=()=>Promise.resolve([]); export const checkDeletion=()=>Promise.resolve({}); export const DELETION_BLOCKED_EVENT="deletion-blocked"; export const showDeletionProtection=()=>{};' })); } }] });
 const context = { module: { exports: {} }, require }; context.exports = context.module.exports;
 vm.runInNewContext(result.outputFiles[0].text, context);
 const { formSource, selectableForms, workFormStages, workFormGroups } = context.module.exports;

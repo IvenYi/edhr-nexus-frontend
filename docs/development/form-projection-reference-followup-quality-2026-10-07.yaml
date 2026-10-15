@@ -1,0 +1,207 @@
+qualityResult:
+  result: failed
+  baseCommit: bb613f1195be9b249f9f332dd5931ad1e66deb70
+  headCommit: bb613f1195be9b249f9f332dd5931ad1e66deb70
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-projection-reference-followup-2026-10-07.md
+      - docs/knowledge/README.md
+      - docs/knowledge/evidence/form-reference-runtime-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormLookupCatalogPostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormProjectionInterpreterTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceLookupTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+      - gmp-platform/frontend/src/components/form-renderer/FormRuntimeField.tsx
+      - gmp-platform/frontend/src/components/form-renderer/referenceConfig.ts
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionPreview.ts
+      - gmp-platform/frontend/scripts/test-projection-preview.mjs
+      - gmp-platform/frontend/scripts/test-projection-source-editor.mjs
+      - gmp-platform/frontend/scripts/verify-template-designer-react.mjs
+    excludedPaths: [output/, gmp-platform/frontend/output/]
+    untrackedPaths:
+      - docs/development/form-projection-reference-followup-2026-10-07.md
+      - docs/development/form-projection-reference-followup-quality-2026-10-07.yaml
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: reference-requirements-boundaries
+      required: true
+      category: requirements
+      description: 核对DEC-0060及DEC-0075、同一决策包和L2增量影响分析；原生引用与用途正交、编号与显示值区分、真实执行身份及旧快照保护。
+      method: inspection
+      command: 阅读角色契约、知识入口、DEC-0060/0075及本轮followup记录和全部产品diff
+      outcome: passed
+      evidence:
+        - 本轮不包含Q6文本解析、Q17带入、任意模型引用、工序预置追溯或自定义文本项引用适配。
+        - 兼容矩阵由稳定预置ID确定，服务端重建referenceSources并随使用配置保存，客户伪造自定义兼容信息会被覆盖。
+        - FormProjectionInterpreter读取已保存code；不会用配置展示name兜底或读取最新编号重写历史。
+    - id: reference-core-tests
+      required: true
+      category: integration
+      description: 独立复跑受影响引用SQL、解释器、目录/投影PostgreSQL临时schema及接口权限聚焦检查。
+      method: automated-test
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_form_projection mvn -Dtest=FormReferenceLookupTest,FormReferenceConfigTest,FormProjectionInterpreterTest,FormLookupCatalogPostgresTest,FormProjectionPostgresTest,TemplateProjectionAuthorizationTest,FormProjectionAuthorizationTest,FormLookupCatalogAuthorizationTest test
+      outcome: passed
+      evidence:
+        - /tmp/reference-followup-quality-backend-20261007.log
+        - 43 tests，0 failures，0 errors，0 skipped。
+        - 实际命令另含不存在的ProductionExecutionServiceTest模式；没有该类执行证据，以上列出真实执行集合。
+        - 首次Java发现器未找到Java21而回落26，Byte Buddy报环境错误；指定Homebrew Java21后通过，未改测试断言。
+    - id: reference-production-regression
+      required: true
+      category: regression
+      description: 独立扩大至真实运行访问、冻结快照及执行引擎相邻回归。
+      method: automated-test
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn -Dtest=ProductionExecutionEngineTest,ExecutionAccessTest,FormFillSnapshotTest test
+      outcome: failed
+      evidence:
+        - /tmp/reference-followup-quality-production-20261007.log
+        - 34 tests，0 failures，1 error；ExecutionAccessTest material fixture缺code。
+        - 主开发已补fixture及增量编号断言，本实例不参与修复且不执行修复后最终验收。
+    - id: reference-actual-execution-integration
+      required: true
+      category: integration
+      description: 验证生产入口冻结引用配置及正式保存、预览权限和数量映射的实际集成链。
+      method: automated-test
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn '-Dtest=ProductionExecutionIntegrationTest#referenceLookupUsesFrozenCanvasAndValidatesCurrentRowAtSave+previewReferencesRequireDesignPermissionAndDoNotWriteData+outputUsesSavedPurposeFieldsAndFrozenMappingWithoutChangingBatchCounters' test
+      outcome: failed
+      evidence:
+        - /tmp/reference-followup-quality-actual-reference-20261007.log
+        - 3 tests因显式测试Config缺FormProjectionService而ApplicationContext启动失败，未进入业务用例。
+        - 主开发已补Config，本实例未复验修复结果；不得称本轮实际生产集成已通过。
+    - id: reference-frontend-tests
+      required: true
+      category: unit
+      description: 原生引用配置同步、面板选择保存/撤销、语义候选匹配、预览多行及依赖字段装配。
+      method: automated-test
+      command: node scripts/test-form-references.mjs && node scripts/test-projection-panel.mjs && node scripts/test-projection-source-editor.mjs && node scripts/test-projection-preview.mjs && npm run verify:template-designer-react
+      outcome: passed
+      evidence:
+        - 独立执行references 5、panel 3、source-editor 5、preview 4，共17项通过。
+        - verify-template-designer-react passed。
+        - 候选按sourceType兼容，不让批次引用匹配物料批号；物料统计的引用类型约束保留。
+    - id: reference-live-api
+      required: true
+      category: api
+      description: 在隔离库实际调用七类引用来源接口并核对编号/显示值/类型协议。
+      method: query
+      command: authenticated POST /api/v1/master-data/template-modeling/reference-options
+      outcome: passed
+      evidence:
+        - productionBatch 3、workOrder 3、material 5条虚构现有记录，均返回id/name/code/sourceType。
+        - serialNumber、operation、equipment、product各返回正常空集合；不把空列表当作选择成功。
+        - 本轮浏览器按生产批次code搜索、workOrderNo显示，候选和选择值符合配置。
+    - id: reference-designer-browser
+      required: true
+      category: e2e
+      description: 在独立虚构模板实际配置原生批次和追溯含义，保存重开及模拟两行子表和混合编号。
+      method: browser
+      command: playwright-cli --session=reference-followup-quality-20261007
+      outcome: passed
+      evidence:
+        - 虚构模板REFERENCE-FOLLOWUP-QUALITY-20261007，id383272975886254080、version383272975886254081；未改原模板、未绑定生产。
+        - UI设置productionBatch及workOrderNo，候选仅生产批次号/相关生产批次号；保存重開保持配置、两份来源及referenceSources冻结定义。
+        - 用途预览生成两条独立物料消耗QA-A/QA-B，以及同编号文本/原生引用两条查表证据；未将引用误当物料或使用显示工单号索引。
+        - 非投影依赖字段领料单位配置为workOrderNo条件后，预览自动补入依赖输入，填写WO后只返回相应批次；未保存这项临时条件。
+        - 模拟填报按PROJECTION-DEMO2-BATCH搜索，选择后显示PROJECTION-DEMO2-WO。
+        - output/playwright/reference-followup-quality-preview-20261007.png
+        - output/playwright/reference-followup-quality-fill-20261007.png
+        - 验证后关闭本实例浏览器session，保留审计过的虚构模板；无正式填报数据写入。
+    - id: reference-ui-conformance
+      required: true
+      category: visual
+      description: 查阅统一规范并核对复用现有字段侧栏、RuntimeReference和FormDialog外壳，不新增页面或详情外壳。
+      method: inspection
+      command: 阅读docs/frontend/list-page-guidelines.md、dialog-guidelines.md、detail-drawer-guidelines.md，查看独立浏览器截图
+      outcome: passed
+      evidence:
+        - 现有画布同级侧栏及主/子表组件继续使用，引用对象与显示内容分开，编号说明次要呈现。
+        - 实际预览内引用主名称及编码呈现、行隔离正常；本轮不涉及详情抽屉迁移。
+    - id: reference-database-history
+      required: true
+      category: database
+      description: 本轮无schema迁移；实际PG临时schema投影兼容与原有完成证据指纹保持。
+      method: query
+      command: SELECT count(*)||'|'||md5(string_agg(to_jsonb(b)::text,',' ORDER BY id)) FROM form_projection_batch b
+      outcome: passed
+      evidence:
+        - 验证前后均5|37a1da10aa28db1defd81185ba32f47e。
+        - 仅edhr_form_projection；未连接开发原库写入或迁移。
+        - PG集成检查覆盖文本/native同编号命中、表单去重、来源raw身份及真正执行归属不改变。
+    - id: reference-diff-hygiene
+      required: true
+      category: documentation
+      description: 检查本轮diff范围、无输出目录纳入，核对测试证据不冒充完整MVP完成。
+      method: command
+      command: git diff --check
+      outcome: passed
+      evidence: [退出码0；本轮未新增业务表或新生产动作；未提升知识模型版本或verified状态]
+  findings:
+    - id: QF-REFERENCE-001
+      severity: medium
+      scope: execution-access-regression-fixture
+      summary: 编号增量查询使相邻ExecutionAccessTest原有无code的物料fixture无法运行。
+      reproductionSteps:
+        - Java21执行ProductionExecutionEngineTest,ExecutionAccessTest,FormFillSnapshotTest。
+        - 进入referenceSearchAndValidationReachIdsBeyondFirstHundredSameNameRows。
+      expectedResult: 保留超过100个同名记录按ID找到105的验证，同时验证新值编号元数据；整套聚焦回归通过。
+      actualResult: 修改前fixture的material只有id/name/status，新SQL引用r.code发生BadSqlGrammarException。
+      evidence: ["/tmp/reference-followup-quality-production-20261007.log:51", "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java:184"]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: document
+          reference: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java:184
+        - type: command
+          reference: /tmp/reference-followup-production-20261007.log:4579（主开发11项回归通过；本实例只核对输出，最终复验由全新实例承担）
+    - id: QF-REFERENCE-002
+      severity: medium
+      scope: actual-execution-integration-config
+      summary: 既有生产集成测试显式Config缺投影服务，使适用的冻结引用/提交检查无法进入用例。
+      reproductionSteps:
+        - Java21执行reference-actual-execution-integration所列三个方法。
+        - Spring构建FormInstanceRecordService时解析构造参数FormProjectionService。
+      expectedResult: 显式测试Config注册实际投影服务及必要临时表，三项适用检查运行并通过。
+      actualResult: No qualifying bean of type FormProjectionService，3 errors；当前测试未验证实际生产保存。
+      evidence: ["/tmp/reference-followup-quality-actual-reference-20261007.log:775", "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java:1585"]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: document
+          reference: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java:1585
+        - type: command
+          reference: /tmp/reference-followup-production-20261007.log:4573（主开发原3项及新增typed身份SAVE共4项通过；本实例只核对输出）
+  residualRisks:
+    - id: limited-source-samples
+      description: 本轮隔离库SN/工序/设备/产品无真实样本；实际接口空返回正常，带样本选择依赖H2受控fixture/既有原生引用证据。
+      impact: 不能称已在当前库浏览器逐一选择全部来源。
+      mitigation: 后续全新验收可用PG临时schema补样本，避免影响原有业务表；客户真实数据试用另行进行。
+    - id: customer-usability
+      description: 使用的是虚构模板与独立技术验收，未做客户真实表单试用。
+      impact: 低学习成本目标尚无客户证据。
+      mitigation: 以安速康实际表单后续试用；不把本次通过UI交互解释为客户易用性已验证。
+    - id: excluded-capabilities
+      description: Q6、Q9、Q12、Q15、Q17、A12、自定义项引用语义及工序预置追溯仍为明确后续范围。
+      impact: 本轮仅受控来源和既有预置编号检索补修，不代表全部MVP与生命周期已闭环。
+      mitigation: 最终交付继续列出范围，业务语义未决在对应运行实现前确认。
+    - id: unrelated-template-detail-console-warning
+      description: 打开现有模板只读详情出现StatusBadge div位于Typography p中的React DOM nesting警告；不在本轮产品diff。
+      impact: 非本轮引用运行故障，保留为既有页面一致性线索。
+      mitigation: 后续对应详情切片修复，当前不顺带改非目标页面。
+  blockingConditions: []
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]
+    note: 主开发已提供两个fixture修复及38项通过输出，本实例已只读核对修复内容和结果；须全新未参与修复实例独立复验并给出最终passed。本报告保留首次检查失败，不充当最终完成门禁。

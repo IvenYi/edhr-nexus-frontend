@@ -77,6 +77,10 @@ import { clearAuthStorage } from '@/utils/sessionPolicy';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
 import { dhrDetailRowSx, dhrRowDetailProps, dhrObjectTypeLabel, dhrStatusFilters, dhrStatusMeta } from './dhrListPresentation';
+import client from '@/api/client';
+import type { DhrTraceDetail } from '@/api/trace-reports';
+import type { TraceRequest } from '@/pages/reports/TraceQueryPanel';
+import { sourceHighlight } from '@/pages/reports/projectionSourceHighlight';
 
 const COLUMN_SETTINGS_VERSION = 2;
 const COLUMN_STORAGE_KEY_PREFIX = 'dhr-list-columns:';
@@ -158,10 +162,12 @@ function Meta({ label, value }: { label: string; value?: ReactNode }) {
   );
 }
 
-function DetailDialog({ selected, onClose }: { selected: DhrInstanceSummary | null; onClose: () => void }) {
+export function DhrEvidenceViewer({ selected, onClose, traceRequest }: { selected: DhrInstanceSummary | null; onClose: () => void; traceRequest?: TraceRequest }) {
   const query = useQuery({
-    queryKey: ['dhr-instance-detail', selected?.id],
-    queryFn: () => getDhrInstance(selected!.id),
+    queryKey: ['dhr-instance-detail', selected?.id, traceRequest],
+    queryFn: async (): Promise<DhrTraceDetail> => traceRequest
+      ? (await client.post(`/reports/trace/dhrs/${selected!.id}/detail`, traceRequest)).data.data
+      : getDhrInstance(selected!.id),
     enabled: Boolean(selected),
   });
   const detail = query.data;
@@ -170,14 +176,20 @@ function DetailDialog({ selected, onClose }: { selected: DhrInstanceSummary | nu
   const [recordId, setRecordId] = useState('');
   const [instancePanelOpen, setInstancePanelOpen] = useState(false);
   const [navigationView, setNavigationView] = useState<DhrNavigationView>('ARCHIVE');
+  const previewRef = useRef<HTMLDivElement>(null);
+  const [located, setLocated] = useState<boolean | null>(null);
+  const matchedRecordIds = useMemo(() => new Set(detail?.traceHits?.map(hit => hit.instanceId) ?? []), [detail]);
 
   useEffect(() => {
     if (!detail) return;
+    const records = [...detail.recordsByOrigin.directory, ...detail.recordsByOrigin.work, ...detail.recordsByOrigin.custom];
+    const firstHit = detail.traceHits?.[0]?.instanceId;
     const firstItem = detail.directorySnapshot.directories.flatMap((directory) => directory.items)[0];
     setSource('DIRECTORY');
-    setNodeKey(firstItem ? `item-${firstItem.id}` : '');
-    setRecordId('');
-    setInstancePanelOpen(false);
+    setNodeKey(firstHit ? archiveNavigation(detail.directorySnapshot.directories, records, detail.archiveLayout?.overlayDirectories, detail.archiveLayout?.placements).find(node => node.recordIds.includes(firstHit))?.key ?? '' : firstItem ? `item-${firstItem.id}` : '');
+    setRecordId(firstHit ?? '');
+    setInstancePanelOpen(Boolean(firstHit));
+    setNavigationView('ARCHIVE');
   }, [detail]);
 
   const allRecords = useMemo(() => detail ? [...detail.recordsByOrigin.directory, ...detail.recordsByOrigin.work, ...detail.recordsByOrigin.custom] : [], [detail]);
@@ -186,8 +198,8 @@ function DetailDialog({ selected, onClose }: { selected: DhrInstanceSummary | nu
   const selectedForm = navigation.find(node => !node.folder && node.key === nodeKey) ?? navigation.find(node => !node.folder);
   const sourceRecords = useMemo(() => (selectedForm?.recordIds ?? []).map(id => allRecords.find(item => item.id === id)).filter((item): item is DhrEvidenceRecord => Boolean(item)), [allRecords, selectedForm]);
   useEffect(() => {
-    if (!sourceRecords.some((record) => record.id === recordId)) setRecordId(sourceRecords[0]?.id ?? '');
-  }, [recordId, sourceRecords]);
+    if (!sourceRecords.some((record) => record.id === recordId)) setRecordId(sourceRecords.find(item => matchedRecordIds.has(item.id))?.id ?? sourceRecords[0]?.id ?? '');
+  }, [recordId, sourceRecords, matchedRecordIds]);
   const record = sourceRecords.find((item) => item.id === recordId) ?? null;
   const selectedDirectoryItem = useMemo<DhrDirectoryItem | null>(() => {
     if (!detail || !(selectedForm?.key.startsWith('item-') || selectedForm?.key.startsWith('base-item-'))) return null;
@@ -207,6 +219,17 @@ function DetailDialog({ selected, onClose }: { selected: DhrInstanceSummary | nu
       return parsed;
     } catch { return null; }
   }, [record]);
+  const recordHits = detail?.traceHits?.find(hit => hit.instanceId === record?.id)?.hits ?? [];
+  const highlight = useMemo(() => sourceHighlight(recordHits, record?.fieldValues ?? {}, previewDocument?.model.projection?.bindings), [recordHits, record, previewDocument]);
+  useEffect(() => {
+    setLocated(null);
+    if (!recordHits.length || !previewDocument) return;
+    const frame = requestAnimationFrame(() => {
+      const field = previewRef.current?.querySelector('[data-form-preview-highlighted="true"]');
+      setLocated(Boolean(field)); field?.scrollIntoView({ block: 'center', inline: 'nearest' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [record, previewDocument, detail]);
 
   return (
     <Dialog
@@ -222,7 +245,7 @@ function DetailDialog({ selected, onClose }: { selected: DhrInstanceSummary | nu
             <Typography variant="h6" noWrap>{selected?.dhrNo}</Typography>
             {selected && <Chip size="small" label={`${dhrObjectTypeLabel[selected.objectType]} · ${selected.objectNo}`} variant="outlined" />}
             {selected && <DhrStatusBadge displayStatus={detail?.displayStatus ?? selected.displayStatus} />}
-            {detail && <Typography variant="caption" color="text.secondary">模板版本 {detail.dhrTemplateVersion || '—'}</Typography>}
+            {detail && <Typography variant="caption" color="text.secondary">模板版本 {detail.dhrTemplateVersion || '—'}{traceRequest && ` · ${detail.traceEvidenceBasis === 'TERMINATION_SNAPSHOT' ? '终止时证据快照' : '当前已保存证据'}`}</Typography>}
           </Stack>
           <IconButton onClick={onClose} aria-label="关闭 DHR 详情"><CloseRounded /></IconButton>
         </Stack>
@@ -231,6 +254,7 @@ function DetailDialog({ selected, onClose }: { selected: DhrInstanceSummary | nu
         {query.isLoading ? <Box sx={{ height: '100%', display: 'grid', placeItems: 'center' }}><CircularProgress /></Box> : query.isError || !detail ? (
           <Box sx={{ height: '100%', display: 'grid', placeItems: 'center' }}><Stack alignItems="center" spacing={1.5}><Typography fontWeight={700}>DHR 详情加载失败</Typography><Button variant="outlined" startIcon={<RefreshRounded />} onClick={() => query.refetch()}>重新加载</Button></Stack></Box>
         ) : <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          {detail.traceConditionsSatisfied === false && <Alert severity="info" sx={{ mx: 2, my: 1 }}>来源内容已更新，当前DHR不再满足全部查询条件。请重新查询。</Alert>}
           {detail.displayStatus === 'TERMINATED' && <Alert severity="info" sx={{ flexShrink: 0, mx: 2, my: 1 }}>
             {dhrObjectTypeLabel[detail.objectType]}于 {formatTime(detail.terminationAt)} 提前结束，DHR 已终止。原因：{detail.terminationReason || '历史记录未保存结束原因'}。已保存记录保留供查阅。
             {detail.terminatedBy ? ` 原操作人：${detail.terminatedBy}。` : ' 原操作人：历史记录未留存。'}
@@ -243,16 +267,17 @@ function DetailDialog({ selected, onClose }: { selected: DhrInstanceSummary | nu
               setNodeKey(nodes.find(node => node.recordIds.includes(recordId))?.key ?? '');
               setSource(nextSource); setNavigationView(value);
             }} source={source} onSourceChange={value => { setSource(value); setNodeKey(''); setRecordId(''); setInstancePanelOpen(false); }}
-              nodes={navigation} selectedKey={selectedForm?.key ?? ''} instancesOpen={instancePanelOpen}
+              nodes={navigation} selectedKey={selectedForm?.key ?? ''} instancesOpen={instancePanelOpen} matchedRecordIds={matchedRecordIds}
               onSelect={node => { if (node.key !== selectedForm?.key) { setNodeKey(node.key); setRecordId(''); } }}
               onInstances={node => { if (node.key === selectedForm?.key) setInstancePanelOpen(open => !open); else { setNodeKey(node.key); setRecordId(''); setInstancePanelOpen(true); } }} />
             <DhrInstancePanel open={instancePanelOpen} title={selectedForm?.label ?? '表单'} selectedId={recordId} onSelect={setRecordId} onClose={() => setInstancePanelOpen(false)}
-              items={sourceRecords.map(item => ({ id: item.id, label: item.instanceNo, secondary: `${item.status === 'COMPLETED' ? '已完成' : '未完成'} · ${formatTime(item.updatedAt)}` }))} />
+              items={sourceRecords.map(item => ({ id: item.id, label: item.instanceNo, secondary: `${item.status === 'COMPLETED' ? '已完成' : '未完成'} · ${formatTime(item.updatedAt)}`, matched: matchedRecordIds.has(item.id) }))} />
           <Box sx={{ ...workspacePanelSx, flex: 1 }}>
             <Box sx={{ px: 2.5, py: 1.5, bgcolor: '#fff', borderBottom: '1px solid #dfe3eb' }}>
               {record ? <Stack direction="row" justifyContent="space-between" alignItems="center" gap={2}><Box minWidth={0}><Typography fontWeight={700} noWrap>{(navigationView === 'ARCHIVE' && detail.archiveLayout?.placements.find(p => p.recordId === record.id)?.displayName) || selectedDirectoryItem?.displayName || selectedDirectoryItem?.formName || record.templateName}</Typography><Typography variant="caption" color="text.secondary">{record.instanceNo} · {record.templateVersion} · {record.operationName || '生产执行'} · {formatTime(record.updatedAt)}</Typography></Box><Stack direction="row" alignItems="center" gap={1}><EvidenceStatus records={[record]} showLabel stopped={detail.displayStatus === 'TERMINATED'} /></Stack></Stack> : <Stack direction="row" alignItems="center" gap={1}><EvidenceStatus records={selectedDirectoryItem?.records ?? []} showLabel stopped={detail.displayStatus === 'TERMINATED'} /><Typography color="text.secondary">{selectedDirectoryItem ? '该目录表单尚无实例' : '请选择一份表单实例'}</Typography></Stack>}
             </Box>
-            {record ? previewDocument ? <FormCanvasPreview document={previewDocument} fullPage runtime={{ values: record.fieldValues, disabled: true, onChange: () => {} }} /> : <Box sx={{ m: 3, p: 3, bgcolor: '#fff', border: '1px solid #dfe3eb' }}><Typography fontWeight={700} sx={{ mb: 2 }}>表单数据</Typography><Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: 2 }}>{Object.entries(record.fieldValues).map(([key, value]) => <Meta key={key} label={key} value={typeof value === 'object' ? JSON.stringify(value) : String(value ?? '—')} />)}</Box></Box> : <Box sx={{ flex: 1, display: 'grid', placeItems: 'center' }}><Typography color="text.secondary">选择左侧目录表单查看真实表单内容</Typography></Box>}
+            {recordHits.length > 0 && <Box sx={{ px: 2.5, py: 1, borderBottom: '1px solid #e4e7ed' }}><Typography variant="body2" color="primary">命中内容：{recordHits.flatMap(hit => Object.values(hit.attributes).map(value => `${Object.values(hit.fieldNames).join('、')}：${value}${hit.tableId ? '（子表行）' : ''}`)).join('；')}</Typography>{located === false && <Typography variant="caption" color="text.secondary">当前版式无法定位，请按上述字段和值核对。</Typography>}</Box>}
+            {record ? previewDocument ? <Box ref={previewRef} sx={{ display: 'flex', flex: 1, minHeight: 0 }}><FormCanvasPreview document={previewDocument} fullPage interaction={{ isFieldHighlighted: highlight.isFieldHighlighted }} runtime={{ values: record.fieldValues, disabled: true, onChange: () => {} }} /></Box> : <Box sx={{ m: 3, p: 3, bgcolor: '#fff', border: '1px solid #dfe3eb' }}><Typography fontWeight={700} sx={{ mb: 2 }}>表单数据</Typography><Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: 2 }}>{Object.entries(record.fieldValues).map(([key, value]) => <Meta key={key} label={key} value={typeof value === 'object' ? JSON.stringify(value) : String(value ?? '—')} />)}</Box></Box> : <Box sx={{ flex: 1, display: 'grid', placeItems: 'center' }}><Typography color="text.secondary">选择左侧目录表单查看真实表单内容</Typography></Box>}
           </Box>
           </Box>
         </Box>}
@@ -264,7 +289,7 @@ function DetailDialog({ selected, onClose }: { selected: DhrInstanceSummary | nu
 export function DhrArchiveViewer({ selected, onClose, viewOnly = false }: { selected: DhrInstanceSummary; onClose: () => void; viewOnly?: boolean }) {
   return selected.summaryStatus === 'DRAFT' || selected.summaryStatus === 'PENDING_REVIEW' || selected.summaryStatus === 'FORMALIZED'
     ? <SummaryWorkspace dhr={selected} viewOnly={viewOnly} onClose={onClose} />
-    : <DetailDialog selected={selected} onClose={onClose} />;
+    : <DhrEvidenceViewer selected={selected} onClose={onClose} />;
 }
 
 export default function DhrManagementPage() {

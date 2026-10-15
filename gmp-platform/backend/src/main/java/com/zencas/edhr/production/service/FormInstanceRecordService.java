@@ -22,6 +22,7 @@ import static com.zencas.edhr.production.service.ExecutionSnapshotBuilder.invali
 public class FormInstanceRecordService {
     private final JdbcTemplate jdbc;
     private final ObjectMapper mapper;
+    private final FormProjectionService projection;
 
     @Transactional(readOnly = true)
     public void projectCreationMetadata(Long objectId, String tenantId, ObjectNode state) {
@@ -59,10 +60,13 @@ public class FormInstanceRecordService {
         String actor = AuditContext.getOperatorName();
         if (actor == null || actor.isBlank()) actor = AuditContext.getOperatorId();
         String instanceNo;
+        Long recordId;
+        String savedStage = savedStage(form, formState);
         if (existing.isEmpty()) {
             long versionId = Long.parseLong(form.path("versionId").asText());
             Long templateId = jdbc.queryForObject("SELECT template_id FROM form_template_version WHERE id=?", Long.class, versionId);
             Long id = jdbc.queryForObject("SELECT nextval('form_instance_number_seq')", Long.class);
+            recordId = id;
             instanceNo = "FR-" + now.format(DateTimeFormatter.BASIC_ISO_DATE) + "-" + String.format(java.util.Locale.ROOT, "%06d", id);
             jdbc.update("""
                 INSERT INTO form_instance_record(id,tenant_id,source_type,instance_no,object_id,operation_id,form_id,copy_id,template_id,version_id,
@@ -73,16 +77,39 @@ public class FormInstanceRecordService {
             JsonNode context = snapshot.path("context");
             jdbc.update("""
                 UPDATE form_instance_record SET template_code=?,template_name=?,template_version=?,work_order_id=?,
-                    work_order_no=?,object_no=?,object_type=?,operation_name=?,created_by_id=?,updated_by_id=? WHERE id=? AND tenant_id=?
+                    work_order_no=?,object_no=?,object_type=?,operation_name=?,saved_stage=?,created_by_id=?,updated_by_id=? WHERE id=? AND tenant_id=?
                 """, form.path("code").asText(null), form.path("name").asText(null), form.path("version").asText(null),
                 context.path("workOrderId").asText(null), context.path("workOrderNo").asText(null), context.path("objectNo").asText(null),
-                context.path("objectType").asText(null), operationName, AuditContext.getOperatorId(), AuditContext.getOperatorId(), id, tenantId);
+                context.path("objectType").asText(null), operationName, savedStage, AuditContext.getOperatorId(), AuditContext.getOperatorId(), id, tenantId);
         } else {
             instanceNo = existing.getFirst().get("instance_no").toString();
-            jdbc.update("UPDATE form_instance_record SET values_json=?,status=?,updated_by=?,updated_at=?,updated_by_id=? WHERE id=? AND tenant_id=?",
-                    formState.path("values").toString(), formState.path("status").asText(), actor, now, AuditContext.getOperatorId(), existing.getFirst().get("id"), tenantId);
+            recordId = ((Number) existing.getFirst().get("id")).longValue();
+            jdbc.update("UPDATE form_instance_record SET values_json=?,status=?,saved_stage=?,updated_by=?,updated_at=?,updated_by_id=? WHERE id=? AND tenant_id=?",
+                    formState.path("values").toString(), formState.path("status").asText(), savedStage, actor, now, AuditContext.getOperatorId(), existing.getFirst().get("id"), tenantId);
         }
         ((ObjectNode) formState).put("instanceNo", instanceNo);
+        new FormTraceIndexService(jdbc, mapper).refresh(recordId, tenantId, form, formState.path("values"));
+        if ("COMPLETED".equals(formState.path("status").asText())) {
+            projection.completed(recordId, tenantId, form, formState.path("values"), snapshot.path("context"), operationId);
+        }
+    }
+
+    // Display metadata for the saved content; this does not change the execution lifecycle or frozen form.
+    static String savedStage(JsonNode form, JsonNode state) {
+        if ("COMPLETED".equals(state.path("status").asText())) return "COMPLETED";
+        boolean approval = false, filling = false;
+        for (JsonNode activeId : state.path("active")) {
+            boolean approvalNode = false;
+            for (JsonNode node : form.path("flow").path("nodes")) {
+                if (activeId.asText().equals(node.path("id").asText())) {
+                    approvalNode = "APPROVAL".equals(node.path("data").path("kind").asText());
+                    break;
+                }
+            }
+            if (approvalNode) approval = true;
+            else filling = true;
+        }
+        return approval ? (filling ? "FILLING_AND_APPROVAL" : "APPROVAL") : "FILLING";
     }
 
     @Transactional(readOnly = true)

@@ -4,6 +4,7 @@ import { FormRuntimeContext, FormRuntimeField, type FormRuntime } from '@/compon
 import SignatureDisplay from '@/components/form-renderer/SignatureDisplay';
 import { resolveReferenceField } from '@/components/form-renderer/referenceConfig';
 import { readSignaturePresentation } from '@/components/form-renderer/signaturePresentation';
+import { newSubTableRow } from '@/components/form-renderer/newSubTableRow';
 import type { CanvasNode, ModelField, TemplateDesignerDocument } from '../../types';
 import type { PreviewFieldInteraction } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import WordCanvasPreview from '../canvas/WordCanvasPreview';
@@ -57,7 +58,10 @@ export default function FormDocumentPreview({ document, runtime, fieldPermission
     if (!runtime || !node || !fieldId || tableReadOnly(node)) return;
     const current = Array.isArray(runtime.values[fieldId]) ? runtime.values[fieldId] as Record<string, unknown>[] : [];
     const count = Math.max(1, current.length);
-    runtime.onChange(fieldId, Array.from({ length: Math.max(1, count + delta) }, (_, index) => current[index] ?? {}));
+    const rawColumns = document.model.fields.find(field => field.id === fieldId)?.typeConfig.columns;
+    const columns = Array.isArray(rawColumns) ? rawColumns as ModelField[] : [];
+    const fieldNodes = allNodes.filter(entry => entry.bindings?.subTableId === fieldId);
+    runtime.onChange(fieldId, Array.from({ length: Math.max(1, count + delta) }, (_, index) => current[index] ?? newSubTableRow(columns, fieldNodes)));
   };
   const renderField = (node: CanvasNode, suppliedField: ModelField | null, recordIndex = 0): ReactNode => {
     if (node.bindings?.hidden) return null;
@@ -90,13 +94,14 @@ export default function FormDocumentPreview({ document, runtime, fieldPermission
         ? <SignatureDisplay value={value} displayMode={node.bindings?.widgetConfig?.signatureDisplayMode ?? field.typeConfig.signatureDisplayMode} />
         : fallbackControl();
     const actions = field ? interaction?.actionsForField?.({ id: field.id, name: field.name, type: field.type }) ?? [] : [];
-    const highlighted = Boolean(field && interaction?.highlightFieldId === field.id);
-    return <Box data-form-preview-field={field?.id} onMouseEnter={() => field && interaction?.onFieldHover?.(field.id)} onMouseLeave={() => interaction?.onFieldHover?.(null)}
+    const highlighted = Boolean(field && (interaction?.highlightFieldId === field.id || interaction?.isFieldHighlighted?.(field.id, node.bindings?.subTableId, recordIndex)));
+    return <Box data-form-preview-field={field?.id} data-form-preview-table={node.bindings?.subTableId} data-form-preview-row={node.bindings?.subTableId ? recordIndex : undefined}
+      data-form-preview-highlighted={highlighted ? 'true' : undefined} onMouseEnter={() => field && interaction?.onFieldHover?.(field.id)} onMouseLeave={() => interaction?.onFieldHover?.(null)}
       sx={{ position: 'relative', height: '100%', minHeight: 0, minWidth: 0,
         outline: highlighted ? '2px solid #1677c8' : undefined,
         '&:hover .preview-field-actions, &:focus-within .preview-field-actions': { opacity: 1 } }}>
       <Box {...(readOnly ? { inert: '' } : {})} sx={{ height: '100%', minHeight: 0, minWidth: 0,
-        ...(interaction && readOnly ? { bgcolor: '#f3f5f7', '& .MuiInputBase-root': { bgcolor: '#f3f5f7' } } : {}) }}>{control}</Box>
+        ...(interaction && readOnly ? { bgcolor: highlighted ? '#eaf4ff' : '#f3f5f7', '& .MuiInputBase-root': { bgcolor: highlighted ? '#eaf4ff' : '#f3f5f7' } } : {}) }}>{control}</Box>
       {field && actions.length ? <Box className="preview-field-actions" sx={{ position: 'absolute', top: 2, right: 2, display: 'flex', gap: 0.25, opacity: 0,
         bgcolor: 'rgba(255,255,255,.96)', border: '1px solid #d9e4f0', borderRadius: 1, boxShadow: '0 2px 8px rgba(31,45,61,.12)' }}>
         {actions.map(action => <Tooltip key={action.key} title={action.title} arrow><IconButton size="small" aria-label={action.title}

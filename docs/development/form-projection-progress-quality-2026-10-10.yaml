@@ -1,0 +1,138 @@
+qualityResult:
+  result: failed
+  baseCommit: b63d68ee299de9a286bf4cc1cad0d0d829e39217
+  headCommit: b63d68ee299de9a286bf4cc1cad0d0d829e39217
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/business-knowledge-model.md
+      - docs/architecture/form-traceability-projection-brief.md
+      - docs/architecture/form-traceability-projection-design.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/development/form-projection-design-clarifications-2026-10-09.md
+      - docs/development/form-projection-design-clarifications-2026-10-10.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/ontology.yaml
+      - docs/knowledge/open-questions.yaml
+    excludedPaths:
+      - docs/development/form-projection-annotation-review-2026-10-09.md
+      - docs/development/form-projection-annotation-review-quality-2026-10-09.yaml
+      - docs/development/form-projection-clarifications-quality-2026-10-09.yaml
+      - docs/development/form-projection-sidebar-review-2026-10-09.md
+      - docs/development/form-projection-sidebar-review-quality-2026-10-09.yaml
+      - gmp-platform/frontend/output/
+      - output/
+    untrackedPaths:
+      - docs/development/form-projection-annotation-review-2026-10-09.md
+      - docs/development/form-projection-annotation-review-quality-2026-10-09.yaml
+      - docs/development/form-projection-clarifications-quality-2026-10-09.yaml
+      - docs/development/form-projection-design-clarifications-2026-10-09.md
+      - docs/development/form-projection-design-clarifications-2026-10-10.md
+      - docs/development/form-projection-sidebar-review-2026-10-09.md
+      - docs/development/form-projection-sidebar-review-quality-2026-10-09.yaml
+      - docs/development/form-projection-progress-quality-2026-10-10.yaml
+      - gmp-platform/frontend/output/
+      - output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.progress-review-scope
+      required: true
+      category: documentation
+      description: 核对分支、完整HEAD、工作树和本轮设计知识审查范围；没有运行代码或数据库改动
+      method: command
+      command: git status --short; git branch --show-current; git rev-parse HEAD; git diff --stat
+      outcome: passed
+      evidence:
+        - 当前分支form-traceability-projection，HEAD等于baseCommit；11个已跟踪变更均为docs，另含上述未跟踪文档和排除目录
+        - 本实例只创建本结果文件，不修改任何实现或修复文档
+    - id: check.progress-requirements-and-local-supersession
+      required: true
+      category: requirements
+      description: 核对第三轮七条注释和异步回复、confirmed/inferred及Q15/Q17局部收敛；初审发现活动字段仍残留已被替代的索引未定结论
+      method: inspection
+      command: 直接阅读第三轮澄清报告、主decisionPackage、DEC-0075-30至34、词典/本体/未决问题及架构投影
+      outcome: failed
+      evidence:
+        - 草稿免阻断业务校验、权限与证据安全、无上下文登记不建立DHR归属、空批号/单位及完整聚合粒度、二期已有事实报表均与用户确认一致
+        - 明细展示列、单位控件、缺失归一和技术索引方案保留为inference，未误标implemented或verified
+        - 初审主包indexEffectiveScopeConfirmed仍为false，两条活动inference仍把已确认过程状态/更新时间或缺上下文行为写为未定，详见QF-001
+        - 主智能体已修正文档并回执；本报告保留初审失败，不替代L2全新实例的最终回归
+    - id: check.progress-knowledge-formal
+      required: true
+      category: ontology
+      description: 独立执行正式知识模型校验，覆盖结构、引用、版本、状态和证据路径约束
+      method: automated-test
+      command: cd gmp-platform/backend && mvn -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - BUILD SUCCESS，2026-10-10T00:24:51+08:00，退出码0
+        - Tests run 59，Failures 0，Errors 0，Skipped 0
+        - gmp-platform/backend/target/surefire-reports/com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.txt
+        - 此结果仅证明知识校验，不证明新投影、过程追溯、可空数据或无上下文运行功能通过
+    - id: check.progress-yaml-and-diff
+      required: true
+      category: documentation
+      description: 主包与受影响结构化资产YAML可解析，主包29规则标识唯一，变更无空白错误
+      method: command
+      command: Ruby YAML.safe_load解析主包及受影响知识YAML；核对confirmed.rules唯一；git diff --check
+      outcome: passed
+      evidence:
+        - YAML parsed; 29 unique decision rules; level L2
+        - git diff --check退出码0
+    - id: check.progress-original-source-differences
+      required: true
+      category: documentation
+      description: 从原始源码核实当前运行差异，不以二手研究或知识校验替代运行证据
+      method: inspection
+      command: 直接读取FormProjectionInterpreter、FormProjectionController、FormInstanceRecordService、ProductionExecutionEngine、FormRuntimeField、DesignerInspector和0082迁移
+      outcome: passed
+      evidence:
+        - FormProjectionInterpreter.java:104-109及178-184强制单位/批号来源与非空；物料批号没有仓库存在性校验
+        - FormProjectionController.java:40-86仅读SUCCEEDED完成批次；统计限定model，并保留实际对象、工序、物料身份/名称、批号及单位的分组维度
+        - FormInstanceRecordService.java:87-90仅在COMPLETED通知正式投影；保存后过程追溯尚非当前能力
+        - ProductionExecutionEngine.java:246-327的SAVE跳过完整validateValues，但权限、引用证据及签署安全仍执行；不能删除整段安全检查
+        - FormRuntimeField.tsx:37-45支持本地单选选项，DesignerInspector.tsx:1490提供新增选项入口；字典不是唯一单位选择方式
+        - 0082-form-instance-records.sql:9的object_id为NOT NULL，无上下文登记需另行改造，不能用选中对象伪造实际归属
+        - 本轮未调用浏览器、数据库或生产运行API，以上均为静态original-evidence
+  findings:
+    - id: QF-001
+      severity: medium
+      scope: form-projection-design-knowledge-consistency
+      summary: 保存后过程追溯已确认，但主包活动结构化字段及部分设计说明仍保留旧未定结论
+      reproductionSteps:
+        - 阅读新saved-progress-trace规则、DEC-0075-33及用户采用保存/暂存后可查的异步回复
+        - 对照初审主包independent-trace-and-statistics.result.indexEffectiveScopeConfirmed=false
+        - 阅读trace-and-business-shared-foundation与context-prefill-source-orthogonal-to-use的初审rationale，以及主设计第7节图说明
+      expectedResult: 活动结论明确保存生效及过程状态范围已确认；只将失效历史/A12、结果导航和其余带入生命周期保留为未决
+      actualResult: 初审活动字段与rationale仍写索引时机/状态或缺上下文未定，容易使后续实现重新确认已确定范围；主智能体随后修正，等待全新实例最终回归
+      evidence:
+        - 初审docs/development/form-traceability-projection-decision-package.yaml:420的indexEffectiveScopeConfirmed=false
+        - 初审主包相关两条inference.rationale与docs/architecture/form-traceability-projection-design.md:304图说明
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: document
+          reference: docs/development/form-traceability-projection-decision-package.yaml:420
+        - type: document
+          reference: docs/architecture/form-traceability-projection-design.md:290
+        - type: document
+          reference: docs/architecture/form-traceability-projection-design.md:304
+        - type: document
+          reference: 主智能体本轮apply_patch修复回执；已改true并补具体状态、失效历史未定及DEC-0075-33来源，两条活动inference收窄
+  residualRisks:
+    - id: risk.progress-final-regression-required
+      description: 本实例是发现QF-001的初审实例；本结果保留初审失败，不能作为L2最终passed门禁
+      impact: 主智能体修复后仍须全新、未参与修复的质量实例执行最终回归
+      mitigation: 由主智能体派发全新实例，复核当前文档和正式校验后取得结构化passed结果
+    - id: risk.progress-runtime-not-implemented
+      description: 可空单位/批号、保存后过程检索、无上下文登记和明细展示仍有运行差距
+      impact: 不能将本轮设计知识审查或59条知识测试当作完整MVP功能通过
+      mitigation: 后续实现各切片时执行真实保存查询、权限、快照、聚合及独立数据库回归
+    - id: risk.progress-remaining-design-details
+      description: Q6最终错误值、Q9表头共享、Q12行身份、Q16结果导航、Q17其余带入生命周期及A12仍未整体闭环
+      impact: 依赖这些细则的实现需单独定版，不应扩大本轮确认
+      mitigation: 沿同一决策包分阶段推进，无依赖范围先行；已确认保存时机、草稿和空值政策不再重复提问
+  blockingConditions: []

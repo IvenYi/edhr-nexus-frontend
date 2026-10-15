@@ -1,5 +1,9 @@
 # Development TODO
 
+## 工序产出 → 批次最终产出 → 工单产出联动（遗漏项）
+
+- [ ] 按[最终产出联动任务与调研记录](final-output-linkage-todo-2026-10-15.md)补齐最终产出工序配置、使用时快照、正式产出来源及工序/批次/工单联动。先将投影分支合入 `edhr-dev`，读取并对齐更新后的本体契约；再确认记录中的真实未决问题，按新契约开发和验收。此项是已确认业务规则的实现缺口，不是用户已同意的二期能力；本次登记不代表运行联动已完成。
+
 ## Production Work Condition Runtime Closure
 
 - [ ] Before opening production work condition fields, confirm each field's real source, type, value snapshot method, field catalog version, supported operators, and execution-engine parsing contract. Then implement field selection, value controls, business validation, runtime condition evaluation, and auditable execution snapshots. Until this is complete, the first-release condition builder is draft-only and must not be treated as a closed production execution capability. The main agent must remind the user of this TODO when production execution or condition evaluation work begins.

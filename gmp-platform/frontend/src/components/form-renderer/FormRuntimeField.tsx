@@ -7,7 +7,8 @@ import { isCellDisplayNode } from '@/pages/master-data/template-designer-react/r
 import { readNodeCellRange } from '@/pages/master-data/template-designer-react/utils/subTableRegion';
 import SignatureDisplay from './SignatureDisplay';
 import { readSignaturePresentation } from './signaturePresentation';
-import { referenceConditions, referenceDependencyValues } from './referenceConfig';
+import { referenceConditions, referenceDependencyValues, type ReferenceValue } from './referenceConfig';
+import { newSubTableRow } from './newSubTableRow';
 
 export interface SignatureTarget { fieldId: string; tableId?: string; rowIndex?: number }
 export interface FormRuntime {
@@ -19,7 +20,7 @@ export interface FormRuntime {
   signaturesInvalidated?: boolean;
   upload?: (file: File) => Promise<{ fileId: string; originalName: string }>;
   referenceValues?: Record<string, unknown>;
-  references?: (fieldId: string, keyword: string, values: Record<string, unknown>) => Promise<Array<{ id: string; name: string }>>;
+  references?: (fieldId: string, keyword: string, values: Record<string, unknown>) => Promise<ReferenceValue[]>;
 }
 export const FormRuntimeContext = createContext<FormRuntime | undefined>(undefined);
 export const SignatureDisplayModeContext = createContext<Record<string, unknown>>({});
@@ -71,12 +72,12 @@ function RuntimeSubTable({ field, disabled, runtime }: { field: ModelField; disa
   if (displayNodes.length) entries.sort((a, b) => a.position - b.position);
   if (!entries.length) return <Alert severity="warning">子表尚未配置字段，无法填报。</Alert>;
   return <Box sx={{ width: '100%', overflowX: 'auto' }}><Table size="small"><TableHead><TableRow>{entries.map((entry) => <TableCell key={entry.id}>{entry.label}</TableCell>)}<TableCell /></TableRow></TableHead><TableBody>
-    {rows.map((row, index) => <TableRow key={index}>{entries.map(({ id, node, column }) => <TableCell key={id} sx={{ minWidth: node ? 40 : 140 }}>{node ? <Box sx={{ height: 32 }}><CellDisplayContent node={node} recordIndex={index} /></Box> : column ? <FormRuntimeContext.Provider value={{ ...runtime, values: row, referenceValues: { ...runtime.values, ...row }, disabled,
+    {rows.map((row, index) => <TableRow key={String(row.__rowId ?? index)}>{entries.map(({ id, node, column }) => <TableCell key={id} sx={{ minWidth: node ? 40 : 140 }}>{node ? <Box sx={{ height: 32 }}><CellDisplayContent node={node} recordIndex={index} /></Box> : column ? <FormRuntimeContext.Provider value={{ ...runtime, values: row, referenceValues: { ...runtime.values, ...row }, disabled,
       signaturePermissions: { [column.id]: runtime.signaturePermissions?.[field.id] ?? 'READ_ONLY' },
       onSignatureRequest: runtime.onSignatureRequest ? () => runtime.onSignatureRequest?.({ fieldId: column.id, tableId: field.id, rowIndex: index }) : undefined,
-      onChange: (id, value) => runtime.onChange(field.id, rows.map((item, i) => i === index ? { ...item, [id]: value } : item)) }}><FormRuntimeField field={column} readOnly={disabled} /></FormRuntimeContext.Provider> : null}</TableCell>)}
+      onChange: (id, value) => runtime.onChange(field.id, rows.map((item, i) => i === index ? { ...item, [id]: value } : item)) }}><FormRuntimeField field={column} readOnly={disabled || Boolean((column as ModelField & { readOnly?: boolean }).readOnly || column.typeConfig.readonly)} /></FormRuntimeContext.Provider> : null}</TableCell>)}
       <TableCell><IconButton size="small" aria-label={`删除第 ${index + 1} 行`} disabled={disabled} onClick={() => runtime.onChange(field.id, rows.filter((_, i) => i !== index))}><DeleteOutlineRounded /></IconButton></TableCell></TableRow>)}
-  </TableBody></Table><Button startIcon={<AddRounded />} size="small" disabled={disabled} onClick={() => runtime.onChange(field.id, [...rows, {}])}>添加记录</Button></Box>;
+  </TableBody></Table><Button startIcon={<AddRounded />} size="small" disabled={disabled} onClick={() => runtime.onChange(field.id, [...rows, newSubTableRow(columns, templateNodes)])}>添加记录</Button></Box>;
 }
 
 function RuntimeFiles({ field, disabled, runtime }: { field: ModelField; disabled: boolean; runtime: FormRuntime }) {
@@ -93,7 +94,7 @@ function RuntimeFiles({ field, disabled, runtime }: { field: ModelField; disable
 }
 
 export function RuntimeReference({ field, disabled, runtime, canvas = false }: { field: ModelField; disabled: boolean; runtime: FormRuntime; canvas?: boolean }) {
-  const [options, setOptions] = useState<Array<{ id: string; name: string }>>([]); const [error, setError] = useState('');
+  const [options, setOptions] = useState<ReferenceValue[]>([]); const [error, setError] = useState('');
   const [keyword, setKeyword] = useState('');
   const [loading, setLoading] = useState(false);
   const [retry, setRetry] = useState(0);
@@ -118,7 +119,7 @@ export function RuntimeReference({ field, disabled, runtime, canvas = false }: {
     }, 200);
     return () => { active = false; window.clearTimeout(timer); };
   }, [field.id, disabled, runtime.references, keyword, retry, dependencies, configKey, incomplete, missing]);
-  const value = runtime.values[field.id] as { id: string; name: string } | undefined;
+  const value = runtime.values[field.id] as ReferenceValue | undefined;
   return <Autocomplete fullWidth size="small" disabled={disabled} options={options} value={value?.id ? value : null} loading={loading}
     popupIcon={error ? <Tooltip title="引用数据加载失败，点击查看详情" placement="top" arrow><WarningAmberRounded sx={{ fontSize: 17, color: 'error.main' }} /></Tooltip> : <ArrowDropDownRounded />}
     openText={error ? '查看引用数据加载异常' : '展开选项'} closeText="收起选项"
@@ -127,6 +128,6 @@ export function RuntimeReference({ field, disabled, runtime, canvas = false }: {
     getOptionLabel={(item) => item.name} isOptionEqualToValue={(item, selected) => item.id === selected.id} filterOptions={(items) => items}
     noOptionsText={error ? <Box role="status"><Typography sx={{ fontSize: 13, fontWeight: 600, color: '#344256', mb: 0.5 }}>引用数据加载失败</Typography><Typography sx={{ fontSize: 12, lineHeight: 1.6, color: '#718096' }}>{error}</Typography><Button size="small" startIcon={<RefreshRounded />} onMouseDown={(event) => event.preventDefault()} onClick={() => setRetry((value) => value + 1)} sx={{ mt: 1, px: 0.75, minWidth: 0, fontSize: 12 }}>重新加载</Button></Box> : <Box><Typography sx={{ fontSize: 12, color: '#526277' }}>{missing ? '请先填写查询条件关联的字段' : '未找到匹配记录'}</Typography>{!missing && <Typography sx={{ fontSize: 12, color: '#718096' }}>请尝试其他名称或记录编号</Typography>}</Box>} loadingText="正在查询…" onInputChange={(_, text, reason) => { if (reason === 'input' || reason === 'clear') setKeyword(text); }}
     onChange={(_, selected) => runtime.onChange(field.id, selected)}
-    renderOption={(props, item) => <li {...props} key={item.id}>{item.name}</li>}
+    renderOption={(props, item) => <li {...props} key={item.id}><Box><Typography variant="body2">{item.name}</Typography>{item.code && item.code !== item.name && <Typography variant="caption" color="text.secondary">{item.code}</Typography>}</Box></li>}
     renderInput={(params) => <TextField {...params} label={canvas ? undefined : field.name} placeholder={canvas ? field.name : undefined} inputProps={{ ...params.inputProps, 'aria-label': field.name }} helperText={!canvas && !disabled ? '输入名称或记录编号搜索' : undefined} />} />;
 }

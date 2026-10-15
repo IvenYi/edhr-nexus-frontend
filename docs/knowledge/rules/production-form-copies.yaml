@@ -110,5 +110,5 @@ rules:
       aggregation: sum
       source: formCopies.savedOutputPurposeValues
       fields: [goodQuantity, ngQuantity, scrapQuantity, outputQuantity]
-    explanation: user-confirmed；每份数量是本份新增数量，按当前工序各份已保存的显式用途字段累加，例如两份良品为10和12时显示22，不取最新一份累计值。工序配置、作业发起和自定义挂载即使引用同一模板版本，仍是独立表单记录并分别计入；沿用良品、不良、报废显式用途映射以及当前工序边界。本规则不改写批次最终产出或定义新的工序完工数量阈值。
+    explanation: user-confirmed；每份数量是本份新增数量，按当前工序各份已保存的显式用途字段分别累加，例如两份良品为10和12时显示22，不取最新一份累计值。工序配置、作业发起和自定义挂载即使引用同一模板版本，仍是独立表单记录并分别计入；良品、不良、报废保持不同用途及当前工序边界。该汇总是工序过程参考，不跨工序相加为批次产出；批次最终产出与工单汇总由 planned 规则 rule.product-process.final-output 承载。本规则不改写批次最终产出或定义新的工序完工数量阈值。
     evidenceIds: [evidence.production-form-copies-user-decision, evidence.operation-output-user-decision]

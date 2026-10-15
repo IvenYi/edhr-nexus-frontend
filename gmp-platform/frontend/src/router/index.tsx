@@ -4,6 +4,7 @@ import { Box, CircularProgress } from '@mui/material';
 import LoginPage from '@/pages/LoginPage';
 import AppLayout from '@/components/shared/AppLayout';
 import NotFoundPage from '@/pages/NotFoundPage';
+import { PROJECTION_REPORT_PAGES } from '@/utils/menuManagement';
 
 const DashboardPage = lazy(() => import('@/pages/dashboard/DashboardPage'));
 const PersonalSettingsPage = lazy(() => import('@/pages/account/PersonalSettingsPage'));
@@ -22,6 +23,8 @@ const InstanceDetail = lazy(() => import('@/pages/workflow-center/InstanceDetail
 const InstanceLogs = lazy(() => import('@/pages/workflow-center/InstanceLogs'));
 const TaskDetail = lazy(() => import('@/pages/workflow-center/TaskDetail'));
 const FormInstanceListPage = lazy(() => import('@/pages/form-management/FormInstanceListPage'));
+const FormProjectionReportPage = lazy(() => import('@/pages/reports/FormProjectionReportPage'));
+const DhrTraceReportPage = lazy(() => import('@/pages/reports/DhrTraceReportPage'));
 const FormFillingPage = lazy(() => import('@/pages/form-management/FormFillingPage'));
 const FormReviewPage = lazy(() => import('@/pages/form-management/FormReviewPage'));
 const DhrManagementPage = lazy(() => import('@/pages/dhr-management/DhrManagementPage'));
@@ -42,6 +45,7 @@ const UserPage = lazy(() => import('@/pages/system/UserPage'));
 const RolePage = lazy(() => import('@/pages/system/RolePage'));
 const MenuManagementPage = lazy(() => import('@/pages/system/MenuManagementPage'));
 const BusinessDictionaryPage = lazy(() => import('@/pages/system/BusinessDictionaryPage'));
+const FormLookupItemsPage = lazy(() => import('@/pages/system/FormLookupItemsPage'));
 const IconManagementPage = lazy(() => import('@/pages/system/IconManagementPage'));
 const SystemSettingsPage = lazy(() => import('@/pages/system/SystemSettingsPage'));
 const AuditLogPage = lazy(() => import('@/pages/system/AuditLogPage'));
@@ -103,6 +107,8 @@ const AppRouter = () => {
           <Route path="filling" element={<Suspense fallback={<Loading />}><FormFillingPage /></Suspense>} />
           <Route path="review" element={<Suspense fallback={<Loading />}><FormReviewPage /></Suspense>} />
         </Route>
+        <Route path="reports/form-projections" element={<Navigate to="/reports/form-trace" replace />} />
+        {PROJECTION_REPORT_PAGES.map(page => <Route key={page.path} path={page.path.slice(1)} element={<Suspense fallback={<Loading />}>{page.modelId === 'dhrTrace' ? <DhrTraceReportPage /> : <FormProjectionReportPage key={page.modelId} modelId={page.modelId} />}</Suspense>} />)}
         <Route path="dhr-management">
           <Route path="list" element={<Suspense fallback={<Loading />}><DhrManagementPage /></Suspense>} />
           <Route path="summary" element={<Suspense fallback={<Loading />}><DhrSummaryPage /></Suspense>} />
@@ -136,6 +142,7 @@ const AppRouter = () => {
           <Route path="roles" element={<Suspense fallback={<Loading />}><RolePage /></Suspense>} />
           <Route path="menu-management" element={<Suspense fallback={<Loading />}><MenuManagementPage /></Suspense>} />
           <Route path="dictionaries" element={<Suspense fallback={<Loading />}><BusinessDictionaryPage /></Suspense>} />
+          <Route path="form-lookup-items" element={<Suspense fallback={<Loading />}><FormLookupItemsPage /></Suspense>} />
           <Route path="icons" element={<Suspense fallback={<Loading />}><IconManagementPage /></Suspense>} />
           <Route path="settings" element={<Suspense fallback={<Loading />}><SystemSettingsPage /></Suspense>} />
           <Route path="login-logs" element={<Suspense fallback={<Loading />}><LoginLogPage /></Suspense>} />

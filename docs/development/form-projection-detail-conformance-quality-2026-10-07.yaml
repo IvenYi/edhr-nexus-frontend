@@ -1,0 +1,200 @@
+qualityResult:
+  result: passed
+  baseCommit: f2a7509f5ed30236dbb22846c1a3f9f7a5f1b410
+  headCommit: f2a7509f5ed30236dbb22846c1a3f9f7a5f1b410
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-projection-ui-conformance-2026-10-07.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/frontend/dialog-guidelines.md
+      - docs/frontend/list-page-guidelines.md
+      - docs/frontend/detail-drawer-guidelines.md
+      - gmp-platform/frontend/src/components/DetailDrawer.tsx
+      - gmp-platform/frontend/src/pages/system/FormLookupItemsPage.tsx
+      - gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx
+      - gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx
+    excludedPaths: [output/, gmp-platform/frontend/output/]
+    untrackedPaths:
+      - docs/frontend/detail-drawer-guidelines.md
+      - gmp-platform/frontend/src/components/DetailDrawer.tsx
+      - docs/development/form-projection-detail-conformance-quality-2026-10-07.yaml
+      - output/
+      - gmp-platform/frontend/output/
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.scope-and-baseline
+      required: true
+      category: requirements
+      description: 本轮L1只读详情外壳及精确规范，不把视觉统一扩展为统计、权限、审计语义或全系统迁移
+      method: inspection
+      command: 阅读AGENTS、质量角色、交接契约、知识README/open-questions、DEC-0075-26及同日补修影响分析
+      outcome: passed
+      evidence:
+        - knowledgeModelVersion为0.3.24；DEC-0075-26要求统一现有UI/UE且不改变稳定身份和运行规则
+        - 复用DEC-PACKAGE-20260929-FORM-PROJECTION；直接影响和product-core公共外壳所有权与实际差异一致
+        - ontologyResult为not-applicable；本轮无知识资产、后端或数据库迁移变更
+    - id: check.code-and-data-boundaries
+      required: true
+      category: regression
+      description: 迁移三处外壳，保留领域请求、原关闭/页签入口、审计分页及两种预览返回流程
+      method: inspection
+      command: git diff --三处页面；阅读DetailDrawer及HEAD版本对应函数
+      outcome: passed
+      evidence:
+        - 新公共组件仅接收open/onClose/label/tab/onTabChange/children/footer，不承接领域请求或权限计算
+        - 追溯项openDetail继续重置页签和审计页码；来源行继续重置页签/DHR；填报identity变化继续重置页签
+        - 源数据读取、正式投影、canEdit/canDhr/canRetry/canAct、只读预览runtime及填报提交/签名代码未变
+        - 填报onOpenPreview原有setIdentity(null)保留；投影来源previewOpen关闭后保留selected
+    - id: check.precise-shell-and-reference
+      required: true
+      category: visual
+      description: 同浏览器1440x900对比三处新详情、物料RDO和DHR业务详情并检查计算样式
+      method: browser
+      command: Playwright独立会话detail-conformance-qa-20261007；实际行点击及DOM计算样式、截图视觉检查
+      outcome: passed
+      evidence:
+        - 三处与物料基准均560px、标题信息查看16px/600、背景rgb(247,249,252)、页签相对X16/Y58、关闭点击区域34px
+        - 稳定打开时追溯项右边界1440、左880，首组左边缘相对16px；已等待入场动画完成后截图
+        - 字段标签12px/16.8px、rgb(144,147,153)，标签底间距4px；值14px/21px、rgb(48,49,51)；分组标题14px/600
+        - 主题body1/body2同为14px；没有用用户截图裁切或缩放推断字段字号差异
+        - output/playwright/detail-qa-lookup-desktop.png
+        - output/playwright/detail-qa-source-desktop.png
+        - output/playwright/detail-qa-filling-desktop.png
+        - output/playwright/detail-qa-material-desktop.png
+        - output/playwright/detail-qa-dhr-desktop.png
+    - id: check.real-detail-interactions
+      required: true
+      category: e2e
+      description: 三处行点击、Enter/Space、两页签、换对象重置、关闭图标/Escape/遮罩行为
+      method: browser
+      command: 独立会话操作既有虚构追溯项及FR-20260929-000003、FR-20261007-000005
+      outcome: passed
+      evidence:
+        - 三处真实打开、切换审计后关闭并用另一行重新打开均aria-selected数据信息为true
+        - 三处Enter/Space打开及关闭图标、桌面遮罩、Escape关闭均成功
+        - 投影来源统一标题后实例号仍在正文及审计说明中可见；换对象显示对应新实例号
+        - 完成填报详情仍显示已完成、模板/版本、真实生产对象、工单及工序；未点击任何填报提交或签名动作
+    - id: check.trace-audit-and-pagination
+      required: true
+      category: audit
+      description: 追溯项真实审计中文展开及原分页保留，来源审计字段位置保留
+      method: browser
+      command: 展开虚构演示灭菌锅次真实新增审计并调整每页条数；展开来源命中1字段来源
+      outcome: passed
+      evidence:
+        - 追溯项展开显示变更前无、变更后名称及中文说明；历史动作名新增查找项属于保留的旧证据
+        - 审计GET相同entityId=lookup_383198887906512896，page=1，size从20改50，均200
+        - 短窗1280x420审计分页区域在Y364至420固定可见
+        - 来源审计仍显示实例/修订及单位、物料、数量、责任班组、物料批号对应原字段名
+        - output/playwright/detail-qa-lookup-audit.png
+        - output/playwright/detail-qa-source-audit.png
+    - id: check.frozen-preview-and-return
+      required: true
+      category: e2e
+      description: 实际来源和填报完整预览只读，关闭后按原页面流程返回
+      method: browser
+      command: 打开FR-20260929-000003两种完整预览、检查实际input/textarea及关闭
+      outcome: passed
+      evidence:
+        - 两种预览均11个输入只读，值包含DEMO-L1/DEMO-L2/2/3/100及原物料与班组
+        - 投影预览标题保留实例及修订1，只有关闭按钮；Escape返回原来源详情和相同实例
+        - 填报完整预览关闭后返回列表，保留既有行为；仅有头部/底部关闭按钮，未出现保存提交
+        - output/playwright/detail-qa-source-preview.png
+        - output/playwright/detail-qa-filling-preview.png
+    - id: check.responsive-and-scroll
+      required: true
+      category: visual
+      description: 桌面短窗、390px窄屏及修复minmax后的长值/独立正文滚动
+      method: browser
+      command: 1280x420与390x700/390x420实际详情滚动、DOM测量及截图；微调后原独立实例复验
+      outcome: passed
+      evidence:
+        - 短窗三处宽560高420，正文滚动后页签Y58不变；来源内容scrollTop1115，填报434，追溯项141
+        - 390px窄屏三处抽屉宽390，正文scrollWidth-clientWidth=0；长生产对象/工单/描述保持边界内
+        - 最终390x420填报正文scrollTop723、页签Y58保持；目标详情及审计双列均改为repeat(2,minmax(0,1fr))
+        - output/playwright/detail-qa-lookup-short.png
+        - output/playwright/detail-qa-source-short.png
+        - output/playwright/detail-qa-filling-short.png
+        - output/playwright/detail-qa-lookup-mobile-final.png
+        - output/playwright/detail-qa-source-mobile-final.png
+        - output/playwright/detail-qa-filling-mobile-final.png
+    - id: check.loading-and-error-shell
+      required: true
+      category: regression
+      description: 填报详情读取加载及失败时标题和两页签保持稳定
+      method: browser
+      command: 独立浏览器临时拦截FILLED/detail查询，延迟后模拟503，finally撤销拦截
+      outcome: passed
+      evidence:
+        - 加载progressbar及模拟失败填报记录加载失败时均保留信息查看、数据信息、数据审计及关闭入口
+        - 这是浏览器模拟错误，非真实服务故障；没有修改服务、请求契约或数据库
+        - output/playwright/detail-qa-filling-simulated-error.png
+    - id: check.documentation-and-adjacent-pages
+      required: true
+      category: documentation
+      description: 规范参数与组件及三处实现一致，区分普通表单/只读详情/专用预览并只读核对分类模板相邻页面
+      method: inspection
+      command: 阅读三份规范/公共组件及实际分类模板详情和编辑入口（仅打开取消）
+      outcome: passed
+      evidence:
+        - 新详情规范明确组件、标题/背景/宽度/关闭/页签/分组参数、独立滚动、响应式、真实同屏对照和验收边界
+        - 列表与普通表单规范链接新详细规范；普通表单20px/600与只读详情16px/600为不同适用外壳，没有矛盾
+        - 分类模板原有详情仍有信息查看/数据信息/数据审计/基本信息/系统信息；编辑居中600px、20px/600，无详情页签，只取消未保存
+        - 新规范明确外壳通过不代表既有领域审计内容合规，也不要求改变原预览返回流程或批量迁移旧页
+        - output/playwright/detail-qa-classified-template.png
+        - output/playwright/detail-qa-classified-edit-form.png
+    - id: check.focused-tests-and-build
+      required: true
+      category: regression
+      description: 独立聚焦前端10项、设计器静态检查、最终构建及diff卫生检查
+      method: command
+      command: node --test scripts/test-projection-source-editor.mjs scripts/test-projection-preview.mjs scripts/test-projection-panel.mjs; node scripts/verify-template-designer-react.mjs; npm run build; git diff --check
+      outcome: passed
+      evidence:
+        - 独立执行10项全部passed，0 failed/skip；静态检查verify-template-designer-react passed
+        - 最终minmax微调后独立npm run build退出0；日志/tmp/edhr-detail-conformance-qa-build.log
+        - git diff --check退出0；没有重跑后端136项或全系统测试
+    - id: check.read-only-requests-and-database
+      required: true
+      category: database
+      description: 只读业务验证及独立数据库投影数据未改变
+      method: query
+      command: Playwright requests；psql -X -d edhr_form_projection查询form_projection_batch数量及排序JSON指纹
+      outcome: passed
+      evidence:
+        - 独立会话实际业务请求为GET及只读POST reports/form-projections/query，均200；只有认证login为非查询POST
+        - 没有目录保存、模板保存、生产动作、表单创建、提交、签名或投影重试请求
+        - form_projection_batch仍为5条，MD5指纹37a1da10aa28db1defd81185ba32f47e，与交接前基线相同
+        - edhr_form_projection独立于原edhr_dev；本轮没有数据库迁移或主动业务数据写入，认证系统可产生登录日志
+  findings:
+    - id: QF-DETAIL-001
+      severity: low
+      scope: 目标详情双列网格与新规范一致性
+      summary: 初次审查部分目标详情及审计双列仍写1fr 1fr，没有使用新规范明确的minmax
+      reproductionSteps: [对照三页gridTemplateColumns与detail-drawer-guidelines第3节]
+      expectedResult: 明确使用repeat(2,minmax(0,1fr))以限制长内容列宽
+      actualResult: 初版部分网格写1fr 1fr；样例未出现横向溢出，但未精确落实规范
+      evidence: [主开发收到独立审查提示后仅修改三处目标网格]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: command
+          reference: rg核对三页目标详情/审计gridTemplateColumns均为repeat(2,minmax(0,1fr))；最终独立npm run build退出0
+        - type: screenshot
+          reference: output/playwright/detail-qa-filling-mobile-final.png
+        - type: screenshot
+          reference: output/playwright/detail-qa-source-mobile-final.png
+  residualRisks:
+    - id: risk.preexisting-production-audit-translation
+      description: FR-20260929-000003填报详情真实审计仍显示未知键execution的原始嵌套JSON及objectStatus值IN_PROGRESS；HEAD版本已有相同toProductionAuditFields路径，非本轮引入
+      impact: 本轮外壳和原行为通过不代表填报领域审计内容符合中文转换规范
+      mitigation: 已通知主开发并在任务及规范记录缺口；领域转换按对应规则另行修复，不静默改变审计语义。证据output/playwright/detail-qa-filling-audit-existing-gap.png
+    - id: risk.unmigrated-historical-details
+      description: 历史DHR关闭区域30px/页签Y54、物料与模板原外壳仍非公共组件；物料/模板既有React嵌套及Emotion nth-child控制台提示未迁移
+      impact: 不能宣称全系统详情已完全统一；本轮三处与物料共性对齐
+      mitigation: 后续触及历史详情时按新规范公共组件迁移并独立核验；不扩展本轮精准改动
+    - id: risk.verification-limits
+      description: 数据不足一审计页，未实测审计翻第二页；FILLABLE无可处理虚构数据，未执行填报权限矩阵、提交签名、后端事务、迁移或全系统回归
+      impact: 本结果仅涵盖L1详情外壳、原有只读行为和相关前端回归，不能替代完整业务MVP及客户易用性验收
+      mitigation: 分页实际条数请求及源码已核对；动作权限和提交签名路径未变，业务验收按原L2范围独立执行
+  blockingConditions: []

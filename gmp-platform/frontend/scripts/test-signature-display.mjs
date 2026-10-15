@@ -52,6 +52,15 @@ test('legacy production signature strings retain signer and recorded time withou
   assert.equal(readSignaturePresentation(''), null);
 });
 
+test('authenticated button signature objects display the actual signer without an image', () => {
+  const value = { type: 'signature', signatureId: '123', signerId: '2', signerName: '实际报工人', signedAt: '2026-10-13T01:00:00' };
+  assert.equal(readSignaturePresentation(value).signerName, '实际报工人');
+  const html = renderToStaticMarkup(React.createElement(SignatureDisplay, { value, displayMode: 'signatureDateTime' }));
+  assert.match(html, /实际报工人/);
+  assert.match(html, />2026-10-13 01:00:00<\/time>/);
+  assert.doesNotMatch(html, /<img/);
+});
+
 test('image and date are separate visible elements; signature-only omits the time line', () => {
   const dated = renderToStaticMarkup(React.createElement(SignatureDisplay, { value: signature, displayMode: 'signatureDateTime', imageMarker: 'data-mock-fill-signature-image' }));
   assert.match(dated, /data-mock-fill-signature-image="true"/);

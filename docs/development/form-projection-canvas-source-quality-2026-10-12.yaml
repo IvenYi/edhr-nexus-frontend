@@ -1,0 +1,180 @@
+qualityResult:
+  result: passed
+  baseCommit: "156a0d4116693292f077d5a4189ae93f740c3f35"
+  headCommit: "156a0d4116693292f077d5a4189ae93f740c3f35"
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-projection-configuration-simplification-2026-10-12.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      - docs/knowledge/open-questions.yaml
+      - gmp-platform/frontend/scripts/test-projection-source-editor.mjs
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionCanvasPicker.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasNodeRenderer.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/componentRegistry.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts
+    excludedPaths:
+      - output/
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionCanvasPicker.tsx
+      - docs/development/form-projection-canvas-source-quality-2026-10-12.yaml
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.requirements-and-scope
+      required: true
+      category: requirements
+      description: L1侧栏逐条配置、画布选取与下拉同源、业务名称及不变边界审查
+      method: inspection
+      command: git diff; inspect ProjectionCanvasPicker.tsx and current increment documentation
+      outcome: passed
+      evidence:
+        - 用户确认的侧栏逐条与业务命名已落实，主表编号按用途计算；同用途新增空sources，不复制数量。
+        - 画布与下拉共同调用projectionSourceCandidates，兼容类型、区域、停用与同笔角色冲突规则一致。
+        - 选取状态在React局部context；未加入持久化模型。没有后端、数据库、权限、快照或正式统计运行变更。
+        - 字段追溯入口沿用当前字段来源，未增加画布选择步骤或单字段仅一个追溯项的新限制。
+    - id: check.ontology-alignment
+      required: true
+      category: ontology
+      description: 用户确认证据、开放问题收敛及知识版本核对
+      method: inspection
+      command: inspect docs/knowledge/README.md, open-questions.yaml and ownership-user-confirmed evidence delta
+      outcome: passed
+      evidence:
+        - 实际读取基线0.3.24，Q10只保留客户体验验证，未把工程验收写成客户低学习成本已验证。
+        - 本增量明确没有新增统计实体、业务规则、归属或来源冻结契约。
+    - id: check.focused-tests
+      required: true
+      category: unit
+      description: 独立复跑投影侧栏、来源配置、模拟预览测试
+      method: automated-test
+      command: cd gmp-platform/frontend && node --test scripts/test-projection-panel.mjs scripts/test-projection-source-editor.mjs scripts/test-projection-preview.mjs
+      outcome: passed
+      evidence:
+        - 修复前及修复后独立执行，各21项通过，0失败、0跳过。
+        - 包含用途内编号、候选范围排除、删除入口、空值、来源冲突、子表多用途保留和主表参与角色断言。
+    - id: check.designer-and-build
+      required: true
+      category: regression
+      description: 独立设计器结构检查与TypeScript生产构建
+      method: command
+      command: cd gmp-platform/frontend && npm run verify:template-designer-react && npm run build
+      outcome: passed
+      evidence:
+        - verify-template-designer-react passed；tsc -b及Vite均退出0。
+        - 修复后独立构建12158模块，Vite构建6.25秒。
+    - id: check.main-canvas-interaction
+      required: true
+      category: e2e
+      description: 独立浏览器验证两组主表来源配置及取消、错误和普通画布操作
+      method: browser
+      command: CUA IAB localhost:3007; ASK-MAIN-TWO-DETAILS-DEMO-20261012 V1
+      outcome: passed
+      evidence:
+        - 打开主表范围，展开消耗明细1，数量选取误点电容物料2，出现具体不兼容提示且未改变映射。
+        - 点击实际用量1后退出选取；再次进入并按Esc，设计器仍在，普通字段点击恢复；电容物料2只显示消耗明细2参与角色。
+        - 新增消耗明细3直接打开空来源，物料/数量提示待补齐；外露删除icon可直接移除。
+        - 数量下拉仅提供实际用量1和实际用量2，和画布两个兼容标记一致。
+        - 已独立重开读取主实现保存的两条映射；本质量实例仅临时操作，不保存业务或模板变化。
+    - id: check.subtable-trace-regression
+      required: true
+      category: regression
+      description: 子表列切整表、区域隔离与原字段追溯入口回归
+      method: browser
+      command: CUA IAB localhost:3007; REFERENCE-FOLLOWUP-MAIN-20261007 V1
+      outcome: passed
+      evidence:
+        - 点击上料明细物料列，显示整张子表来源及本列角色；切换按钮进入上料明细整表统计。
+        - 子表数量选取误点主表领料数量被拒绝；点击本子表实际用量成功，侧栏保持整表范围。
+        - 选取期间切到字段配置再返回，选取状态已退出；正常点击选择的生产批次显示生产批次/SN追溯项，无来源选取icon。
+        - 子表测试临时改动通过放弃并关闭退出，原模板未保存更改。
+    - id: check.delayed-unmount-retest
+      required: true
+      category: regression
+      description: 独立复验延迟卸载不会取消另一条新开始的选取
+      method: browser
+      command: CUA consecutive clicks detail2 -> detail1 -> pick quantity; inspect after Collapse exit
+      outcome: passed
+      evidence:
+        - 原实现复现数量选取无故变回aria-pressed=false；主实现修改cleanup为按bindingId取消。
+        - 修复后相同快速操作，旧明细退出后aria-pressed=true且请在表单中选择数量提示保持，Esc仍可退出。
+        - 质量实例仅复核，未参与实现修复。
+    - id: check.visual-and-markers
+      required: true
+      category: visual
+      description: 1280x720真实画布、侧栏和兼容标记核对
+      method: browser
+      command: CUA getScreenshot on main detail quantity selection; inspect normal and Word inline source markers
+      outcome: passed
+      evidence:
+        - 紧凑MUI控件、蓝色主色、浅边框和现有画布布局保持一致，侧栏可滚动访问完整来源。
+        - 1px内描边候选提示可见性不足已反馈；主实现改为2px外虚线后两个数量字段清晰可见，不改变布局。
+        - 普通CanvasNodeRenderer与WordTableCell内联占位都有字段身份标记；Word内联分支本轮仅源码核对，未另造Word模板进行实操。
+    - id: check.diff-hygiene
+      required: true
+      category: documentation
+      description: 工作树范围和补丁空白检查
+      method: command
+      command: git status --short; git diff --check; git rev-parse HEAD
+      outcome: passed
+      evidence:
+        - diff检查退出0；完整HEAD为156a0d4116693292f077d5a4189ae93f740c3f35。
+        - 两个output目录不纳入可提交修改范围。
+  findings:
+    - id: QF-CANVAS-001
+      severity: medium
+      scope: ProjectionSourceEditor cleanup / ProjectionCanvasPicker cancellation
+      summary: 快速切换明细后旧编辑器延迟卸载取消新明细选取
+      reproductionSteps:
+        - 展开消耗明细2。
+        - 点击消耗明细1标题，立即点击其从表单选取数量按钮。
+        - 等旧Collapse完成退出，读取选择状态。
+      expectedResult: 新明细选取保持，直到用户选取、取消或离开配置。
+      actualResult: 修复前新明细的aria-pressed变为false且提示消失。
+      evidence:
+        - CUA独立复现；原SourceEditor卸载cleanup无条件调用全局cancel。
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: document
+          reference: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionCanvasPicker.tsx
+        - type: document
+          reference: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx
+        - type: command
+          reference: 本报告check.delayed-unmount-retest，修复后相同步骤aria-pressed=true。
+    - id: QF-CANVAS-002
+      severity: low
+      scope: Canvas compatible source outline
+      summary: 兼容来源内描边被输入控件边框遮盖，提示难以发现
+      reproductionSteps:
+        - 在1280x720视口进入主表数量选取。
+        - 查看实际用量1和实际用量2的兼容高亮。
+      expectedResult: 可供选取字段有清晰且不改布局的蓝色标记。
+      actualResult: 修复前1px内虚线多数被控件边框覆盖，仅角点明显。
+      evidence:
+        - CUA独立截图与既有主截图output/canvas-source-20261012/pick-material.png。
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: document
+          reference: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionCanvasPicker.tsx
+        - type: command
+          reference: 本报告check.visual-and-markers，2px外虚线实际截图复核清晰可见。
+  residualRisks:
+    - id: risk.customer-usability
+      description: 未执行真实工厂制表人员的学习成本试用。
+      impact: 工程验证通过不等于客户易用性已验收。
+      mitigation: 保留Q10体验验证，使用两组物料实际任务继续收集用户反馈。
+    - id: risk.word-and-multipage
+      description: Word内联分支和跨页选取只完成源码边界核对，没有单独实操模板。
+      impact: 不宣称覆盖所有导入排版；跨页选取当前通过翻页取消，仍可下拉选择。
+      mitigation: 保留共用候选和事件拦截；遇到具体Word或多页模板再进行针对性回归。
+    - id: risk.unchanged-runtime
+      description: 本L1未重跑后端投影、数据库迁移、审计或生产完成流程。
+      impact: 本报告只覆盖配置交互增量，不代表整个投影MVP或此前延期项完成。
+      mitigation: 后端、快照和统计契约未变化；其后续变更按L2重新验收。
+  blockingConditions: []

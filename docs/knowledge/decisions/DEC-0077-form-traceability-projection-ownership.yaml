@@ -1,0 +1,445 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0077
+    title: 电子表单追溯与业务投影的模型所有权和配置边界
+    status: specified
+    visibility: internal
+    context: user-confirmed；同一 DEC-PACKAGE-20260929-FORM-PROJECTION 切片从独立设计进入实现，2026-09-29 补充 Q1/Q2/Q5/Q7/Q8 确认，2026-09-30确认最终产出与独立质量统计口径，2026-10-03补录画布优先、低成本二开、跨表单指标汇总、查找追溯与业务统计并列可选、真实上下文统计归属及部分字段自动带入目标。2026-10-09的27–29收敛MVP开发历史处理、预置生产批次/SN的所属主体含义及组合查询匹配粒度；局部替代范围以各声明明确的supersedes文字为准，旧证据原文保留。2026-10-13的38确认四类独立菜单页面、详情直接查看来源原表单及字段/实际行定位，收敛Q16对应导航范围；逐笔流水和撤下合计入口仍是主智能体工程选择，未定跨报表组织继续保留。统计模型由产品方预定义，客户选择字段并配置来源，试验实现允许统一替换；新增正式统计与 DEC-0045/0046 的已保存数量过程参考分开，不废弃其历史解释。以下确认不是实现、发布或全报表验收证明；技术存储选择、未确认交互、跨表单同事件关联方式、未定检索历史及结果导航、上下文带入生命周期及 AI 不冒充用户业务决定。
+    decisionStatements:
+      - id: DEC-0077-01
+        statement: 各报表使用的统计模型由产品方预先定义和维护；客户负责从自身表单选择取值字段并配置对应来源，不承担从头建立统计模型的职责。配置体验以降低实施和培训成本为目标，但原型或设计文档不能作为客户已经能独立低成本配置的验证证据。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-02
+        statement: 现有试验性、零散的表单用途和投影代码可以被更合理的统一方案替换，不能以旧实现限制新设计；该授权只覆盖相关实现的统一收敛，不授权删除源表单、历史投影、签名、审计或 DHR 证据。实际历史处置须在后续实现前清点并明确。此前历史保留限制在MVP开发历史范围内已由DEC-0077-27替代，不能继续作为该范围修复迁移或作废的阻断；真实客户生产证据与未来正确数据快照不在此局部替代范围内。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-03
+        statement: 并非每张客户表单都需要内容追溯或业务统计配置，应按实际查询与统计需求选择用途；没有配置这类用途不改变表单记录保存、实际生产关联及既有 DHR 证据归集职责。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-04
+        statement: 报废后自动扣库存等新增业务动作不纳入本次追溯投影配置范围，应另行提出业务需求并开发相应功能；不能把此类动作当作新增查询属性或展示维度自动开放。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-05
+        statement: 报废数量取客户明确配置为报废数量的字段，不强加申请、批准或实际处理阶段；保留具体字段来源。统计模型仍由产品方维护，不能通过字段名称猜测口径。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-06
+        statement: 正式统计按工序和用途合计并可回查逐来源明细；同工序配置为正式来源的多份记录可累加，重复记载表只配置查表用途。同批工序A报工100件、工序B报工100件不得合称批次产量200件；技术重试幂等不解决业务重复来源选择问题。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-07
+        statement: 必要业务数据或配置校验失败阻止表单最终完成；完成状态与待投影事件必须同事务持久化。投影系统处理故障或延迟不撤销已完成表单，必须明确展示待处理或失败并支持可靠重试；依赖正式投影结果的下游动作须等待成功。保存、提交待审及退回不是正式统计生效事件。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-08
+        statement: 生产工作台保留进行中数量并明确标为过程参考，不混入最终正式报表；既有数量用途和跨份已保存汇总仅在此边界继续解释。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-09
+        statement: 本轮保留原数据库及全部旧数据，使用独立本地数据库和虚构新模板、数据验证；Git功能分支本身不隔离数据库，本次不授权历史转换、清理或正式生产切换。此为2026-09-29阶段政策，MVP开发历史不得修复迁移或作废的限制已由DEC-0077-27替代；独立数据库要求及不据此宣称正式生产切换的边界继续适用。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-10
+        statement: 用户接受本分支先交付首次最终完成的投影闭环；A12受控修订和作废未覆盖，不作为本次已实现范围，也不据此宣称完整记录控制或正式生产发布。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-11
+        statement: 数量层级为工序报工更新各自工序产出，批次最终产出来自配置的最终产出工序，工单产出为所属批次产出之和；不能把不同工序直接相加为批次产出。最终产出字段语义已由 DEC-0077-13 于 2026-09-30 确认；2026-09-29 曾记录的良品或总量未决状态仅为当时状态。当前首次投影与工序报表不证明批次/工单最终产出联动已实现。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-12
+        statement: 表单追溯与统计的字段来源映射随实际生产使用进入执行快照；工序或作业表单在生产对象首次开工时复制当时模板配置，执行中附加的自定义表单在附加时复制当时配置。后续修改同一表单模板版本不回写已形成的执行快照、来源表单或投影结果；新使用读取当时配置。表单模板沿用原有编辑和版本规则，不为追溯投影另设手动发布冻结或禁止编辑的生命周期。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-13
+        statement: 用途配置在正式生效后按配置形成统计或内容追溯投影；未配置用途不强制产生投影，实际生产关联与 DHR 证据独立保留。批次最终产出取指定最终产出工序的正式报工数量，工单汇总各批次产出，不能跨工序相加。所选报工字段须表达约定的产出语义，但不强制映射任何外部系统字段名或固定为 goodQty。良品、不良和报废按各自配置独立统计，不自动加减最终产出；计算产出不要求另有质量表单。无采集或无正式生效数据不等于实际零。同一表单可配置多个用途，相关指标可在同一报表展示；质量比率、对账、倒扣等另行提出需求。使用时配置冻结和历史实例保护继续适用，A12 受控修订/作废仍延期。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-14
+        statement: 表单画布上直接点选字段或子表是用途配置的主要入口；集中配置面向熟练后的总览与调整。页面应有主次并渐进展示，降低首次配置的学习门槛。该要求替代此前集中配置优先的建议；轻量侧栏、用途配置模式及与布局编辑的具体交互仍是待评审建议，不因本条确认而定版。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-15
+        statement: 未来新增业务用途允许二次开发，目标是开发成本低、容易维护；不要求所有业务通过零代码配置完成，也不为此提前建设庞大通用规则引擎。统计模型默认由产品方维护的现有边界继续适用；公共配置与投影基础流程加用途独立业务实现的拆分属于技术建议，客户自建业务模型能力仍未定。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-16
+        statement: 认可不同表单分别提供指标并汇总到同一报表行的方向，但每个指标必须明确统计对象、范围与来源。该方向不等于已支持任意跨表单事件关联；同一次业务事件的关联方式仍待定。指标并列不自动产生最终产出加减、良率或对账规则，无正式生效数据仍不能记为真实零；原始表单记录、正式业务数据、报表汇总与证据追溯保持各自层次。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-17
+        statement: 画布优先配置覆盖用于查找与追溯、用于业务统计两个并列且可选的任务，允许仅前者、仅后者、两者都配或都不配；查找与追溯不能藏成业务统计的高级附属。原始表单或证据入口与业务报表入口分开。按明确绑定字段内容反向检索只说明该值命中，不证明正式谱系、设备使用或工序执行身份；文本不覆盖实际执行上下文，同字符串的不同信息类型不混查，命中保留字段来源与实例。正向按真实关联属性查询，不要求另配追溯用途；业务报表筛选正式事实，不依赖客户追溯目录。成功保存或暂存后可授权查询最近已保存内容，未保存输入不参与，正式统计仍等首次最终完成；失效历史及A12另定。所有相关限既有授权范围，不开放越权全局查询。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-18
+        statement: 冠骋源码与产品可作参考对照，交互应自行设计以降低配置学习成本，并满足可维护二开目标，不照搬竞品交互。业务统计事实必须按用途定义具有批次、工序等明确归属与粒度，由真实执行上下文确定，不依赖额外手填同名字段或配置查找追溯用途。部分表单字段可配置生产上下文自动带入；系统事实归属、上下文字段展示或原始证据、字段检索采集须分层，同字段可兼容带入与查询或统计但不能因此重复形成事实，编辑显示文本不能覆盖实际身份。取值来源与用途正交、身份字段只读或受控修改是交互建议；带入时机、持久化、缺上下文、刷新、可编辑覆盖及多个设备选择与唯一性仍待定，不假设单工序单设备，也不以文本设备号形成正式设备使用关系。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-19
+        statement: 首期用途配置同时覆盖子表和主表多个分散字段组合成一条业务明细的场景；子表是常见采集形式和降低配置成本的交互设计重点，不代表首期只交付子表投影或将主表字段配对延期。用户对安速康表单子表常见性的观察属于用户反馈，不是本轮原始样本统计。数据对象用于解释哪些值属于同一条明细，但不因本条确认而定版具体配置交互、子表行身份、表头共享字段或其他运行契约；Q14只收敛来源形态范围，其余阶段出口和能力分期继续待定。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-20
+        statement: MVP纳入客户维护可复用追溯项目录、普通字段或子表列关联追溯项、表单及DHR反向查询按追溯项提供条件并回查有权限来源表单与命中位置的路径；名称不同的来源字段可以关联同一追溯项。客户管理员定义追溯项，制表人配置字段来源，查询人使用条件；此职责划分不规定每份表单必须由三人依次操作。当前支持文本、数字和日期，数字精确值查询、日期起止范围查询及预置清单按DEC-0077-40；自定义项的引用字段兼容延期，不据此撤销既有预置项合法引用能力。追溯项是内容反向查询配置，不用于定义正向真实关联属性或业务报表固定条件，不等于客户编辑研发本体、定义任意统计口径或据文本建立正式实体关系。保存后过程可查及表单/DHR各自组合范围按现行已确认规则；自定义项CRUD、先解除表单配置再删除及历史填报内容保留按DEC-0077-41，不再将这一范围列为待定。更多类型和操作符、其余目录生命周期、复杂OR和历史处理仍须在对应实现前明确。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-21
+        statement: MVP业务统计继续使用预设报表展示，不新增用户自定义报表编辑器；自定义报表放第二期，当前架构保留扩展空间，不提前实现BI、自由公式或跨来源连接引擎。二期自定义报表组合不等于客户自由创建统计模型，其指标、维度、编辑分享权限及开放范围仍待设计。此分期不取消首期子表与主表分散字段明细、查找与统计并列可选、产品维护统计口径、真实执行归属、使用时快照与历史保护、正式统计首次最终完成、来源权限、独立数据库及A12延期；Q14仅进一步收敛本条所列分期边界，其他未定运行契约不因此获得默认答案。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-22
+        statement: 查找与统计采用同一表单画布内的独立侧栏入口，与字段配置同级；不以离开画布的独立整页作为日常配置入口。切换侧栏保留所选字段或子表及画布定位，共用原有来源配置、保存和撤销；用途面板显示当前配置范围。子表与主表分散字段两类来源继续覆盖，集中总览承担核对和预览。此确认仅收敛Q10的入口组织与上下文连续性，不证明客户易用性已经验证，也不决定目录CRUD、行身份、独立索引、上下文带入生命周期或新增统计口径；其余规则与未决项继续适用。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-23
+        statement: 普通文本只有在明确配置的追溯或统计用途表示相应物料时，才可触发对应身份匹配；不能凭字段名、内容形态或仅声明其他文本查找含义猜测物料身份。匹配信息采用次要展示，优先hover且避免遮挡相邻单元格；影响正式统计的阻断问题仍须明确定位，不能仅藏在hover。原生引用字段继续按自身引用配置查询、选取和校验，不要求另配投影用途，沿用DEC-0060。本条仅确认普通文本匹配的触发前提与展示要求，不确认Q6编号唯一范围、改号重用、零或多匹配处置及解析是否纳入MVP，不将唯一匹配视为填写意图证明，也不授权自动建立物料使用关系。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-24
+        statement: 管理员新增可用追溯项后，表单设计侧兼容字段的用途候选和授权表单/DHR反向追溯页面的条件候选自动从同一目录获得该项，不另维护反向页面条件，不要求先有模板绑定、实例或索引命中。正向属性和业务报表固定条件不从该目录生成。制表人仍须明确关联来源字段，查询人选择条件后输入实际查询值；候选出现不代表已有数据已覆盖。设计侧按产品支持类型与语义兼容性筛选，查询侧继续遵守权限，目录管理不授予来源数据访问权。自定义项删除与表单配置解除按DEC-0077-41；本条不新增任意统计模型、实体类型或操作符，也不决定其余目录停用生命周期及失效历史视图。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-25
+        statement: 新查找含义对未关联该含义的旧实例进行补充覆盖，包括回填绑定、补索引或重新解释，排入第二期；MVP不凭旧字段同名或同值猜测新含义。新增配置供后续采用该配置的新实例使用；原有已配置实例的查询、冻结快照、审计和DHR证据继续保留。本延期不授权删除旧数据、不允许用最新目录或模板解释静默覆盖旧实例；DEC-0077-41允许解除表单配置后删除自定义目录项并保留历史填报内容，不是删除源实例或追溯证据。删除项退出新候选与历史原表单仍可授权查看属于本轮工程边界，目录历史检索入口及其余生命周期另定，不能据本条要求已删除目录项继续出现在新条件中。上述开发旧数据保留及兼容负担在MVP开发历史范围内由DEC-0077-27替代；二期补充覆盖分期与未来正确实例快照不被取消。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-26
+        statement: 产品对外将查找项统一称为追溯项，两者表示同一配置含义，不创建第二套目录或重分配身份。开发页面须遵循仓库统一UI/UE、列表及弹窗规范，不自行引入不一致的交互和样式。历史用户引文和证据原文保留旧称，既有稳定ID、API、表名和历史快照保持兼容；本次称谓与界面约束不改变统计、冻结、引用或索引规则，不关闭原有未决项，也不证明完整功能或客户易用性已验证。为MVP开发旧数据维持纯兼容路径的要求已由DEC-0077-27替代；统一术语及不另建同义目录的要求继续适用，实际API或存储改造另以实现范围和验证为准。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-27
+        statement: MVP开发阶段的历史数据可直接修复迁移或作废，无需为了旧开发数据维持兼容层，应保证此后功能数据遵守正确契约。在MVP开发历史范围内supersedes DEC-0077-02/09/25/26对应的旧数据保留限制及纯兼容负担；原决定和证据保留历史来源。本条不取消独立数据库、未来正确数据的使用时快照、真实生产/DHR关联、权限、签署或审计契约，不外推为删除真实客户生产证据。此为设计政策确认，本轮未执行数据修复、迁移或作废；具体处置须在实现记录中列明受影响数据与结果，开发清理不等同A12受控记录作废运行能力。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-28
+        statement: 产品预置的生产批次/SN追溯项在具有真实生产或作业执行上下文时表示本单所属生产对象，含义同时覆盖批次与SN；所属身份沿该上下文确定，不以用户填写或选择另一个编号改变表单、统计或DHR归属。本条收敛DEC-0077-17/18/20中的预置主体含义，不将内容提及的其他对象等同所属主体。2026-10-10的DEC-0077-30局部替代本条无上下文时始终表示真实所属及草稿校验阶段尚未定的解释：无上下文可登记系统内对象但不据此建立归属，草稿不做阻断性业务校验。自动带入时机、持久化、刷新、覆盖及不存在对象的最终完成校验细则继续未定，不因含义确认而宣称已实现校验或带入。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-29
+        statement: 追溯查询的多个主表字段条件按同一表单实例同时满足；同一子表的多个明细条件按同一实际行同时满足，父级主表条件可与该行条件联合，不从不同子表行拼出不存在的记录，也不由隐藏配置组或配置顺序决定匹配粒度。本条在该匹配粒度范围内supersedes DEC-0077-20中组合条件尚未明确的状态；不同子表之间如何组合及更复杂OR规则仍待定，索引时机未定的历史状态在2026-10-10已由DEC-0077-33局部替代。2026-10-10保存索引已按同实例/实际行匹配，10-14表单反向保持该规则而DHR反向按39的同DHR范围；原内部投影组AND属于修正前差距，不再作为当前缺口，也不从局部测试推定整功能已验收。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-30
+        statement: 草稿保存或暂存不做阻断性字段完整性与投影业务校验，认证、来源授权、字段权限、请求格式及证据和签署安全校验继续适用，不将草稿免业务校验解释为绕过写入权限或伪造证据。无生产上下文时，已配置自动带入的字段明确提示无法带入；未配置自动带入时允许用户自行填写或选择系统内生产批次/SN。无上下文填选对象只登记内容，不自动生成真实生产执行、统计归属或DHR成员；正式归入其DHR仍须特别业务流程，流程本身本次未定义或实现。有上下文时仍沿真实执行归属，最终完成业务校验未被取消。本条局部supersedes DEC-0077-28的无上下文绝对所属解释与DEC-0077-18中的缺上下文行为未定状态，不一并确认带入取值时点、持久化、刷新覆盖或不存在对象的最终校验细则。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-31
+        statement: 消耗或报废等已明确物料数量用途的物料批号允许为空，也允许登记系统内未建档的自由文本批号，不要求仓库物料批实体存在。空批号表示未记录批号，不自动补造批号或认定为已知批实体；物料身份、数量含义及来源粒度继续按既有用途契约，客户主动将表单字段设为必填的普通字段约束不因此取消。该确认使投影不再一律要求配置非空物料批号来源及值；2026-10-10运行修正已取消投影对批号的一律必填要求，原强制配置和非空校验是修正前差距，不再称为当前未实现规则。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-32
+        statement: MVP不做单位换算，统计用途的单位不再由投影强制必填，允许无单位来源或空值；空单位只与同一工序且单位同样为空、其他用途粒度也相同的数量合计。保留用途、实际生产对象及适用的物料、物料批号等分组维度，不能把只强调工序和单位解释为跨对象或跨物料混加；有单位记录不与空单位合并，也不根据物料或默认值自动猜测缺失单位。空单位分组不证明实际计量一致，不赋予单位换算或物理总量含义；普通字段自身必填约束不被取消。此为用户确认的可空及合计边界，未填写标记、单位字典或普通单选的具体交互仍为建议；2026-10-10运行修正已取消投影对单位的一律必填并保持完整合计键，原强制单位差距只属于修正前实现。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-33
+        statement: 已成功保存或暂存的最新表单内容即可在授权追溯查询中查到，包含草稿、填报中、审批中及已完成记录，结果显示来源记录状态；未保存输入不参与查询。正式业务统计仍等待最终完成及其投影成功，不把过程查询命中当成正式结果、DHR归属或业务关系，来源授权与真实归属继续适用。本条在保存生效时点、已保存过程内容及可查状态范围内supersedes DEC-0077-17/20/29的独立索引尚未定状态；失效历史与A12视图仍另定，不因本条开放受控修订或作废。2026-10-10已按保存事务维护独立内容索引，并保存过程阶段；2026-10-14正向进一步不依赖索引绑定。检索存储是工程实现而非客户另建业务，原只查完成SUCCEEDED批次属于修正前差距，不再作为当前范围；未引入异步延迟政策。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-34
+        statement: MVP继续展示产品预设统计报表，并为二期用户基于已有正式业务事实进行报表统计设计保留扩展空间；本条在二期已有事实报表设计方向上收敛DEC-0077-21。该方向不要求客户新建业务用途或定义任意统计模型，不授权MVP提前实现报表编辑器、自由公式、任意跨事实联表或分摊规则；已有事实的指标、维度、可用聚合、视图分享权限与配置生命周期仍须在二期设计。可选明细展示列从既有字段选取的方案及多选扩展仍是建议，不随本条变成已确认完整能力；日期与数字追溯项目录已由DEC-0077-40单独确认，不再列为该目录的延期范围，也不据此开放任意业务统计扩展。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-35
+        statement: 报工用途的工时表示投入人时，绑定由用户填写的数字字段；系统读取该值，不根据报工起止时间、人数或签名计算工时。报工开始时间与报工结束时间分别记录业务起止，生产日期独立记录，不以表单创建、提交、最终完成或投影处理等审计时点替代，也不将创建人当作报工人。该确认局部supersedes同切片2026-10-12报表复核中人时来源或自动算法尚待决定的解释，旧解释直接改写；不引入逐人工时、多人分摊、生产日期派生及表头共享规则。字段可选性属于最小实现选择；报工人候选不再接受普通文本，依DEC-0077-36只接受人员引用或签名。2026-10-13手填人时及独立时间/报工人来源链、专用逐笔报表已实现并完成主智能体基础验证，本条局部标implemented/internal，不标verified；真实执行归属、使用时快照、正式统计最终完成及其余未决口径保持不变。
+        status: implemented
+        visibility: internal
+      - id: DEC-0077-36
+        statement: 在现有画布统计侧栏中，预设业务报表展示的来源字段默认直接呈现在展开的业务配置内，不放入另一个默认收起的可选区；正式报工的开始时间、结束时间、报工人、生产日期及其他用途的同类报表属性均适用。展示层级不改变字段是否必填、保存校验或统计分组。静态操作与口径说明移至对应tip，投入工时下的解释段落直接删除；具体缺项、错误来源及其他阻断问题仍须明确可见并定位，不只藏在tip。报工人来源只接受引用-人员或签名，签名来源读取已保存的实际签署人身份及名称，不以文本、查询时当前登录人或创建人替代，不按签名人数扩展或重复计量数量和人时。本条局部supersedes DEC-0077-35及同切片现行说明中允许文本报工人与报表业务来源默认折叠的最小工程选择；不改变签名认证、来源权限、字段权限、原流程、使用时快照、最终完成入统计及真实执行/DHR归属。共用来源编辑器、字段顺序及签名值的具体读取路径属于工程选择；字段签署SIGN_FIELD与按钮事件FILL_SIGN_FIELD两条既有合法路径均保留已认证实际签署人的身份、名称及签名记录标识，不拆解历史展示文本猜身份。后者的结构化回填是本轮缺陷修复，不是新签署流程或新业务授权。同日后续DEC-0077-37已局部替代本条所有未配置可选来源也默认外显的展示要求，已配置、必需及错误来源仍外显，人员身份和tip要求继续适用。本条当前specified/internal，不宣称实现验收或客户低学习成本已经验证。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-37
+        statement: 业务统计配置采用用户明确选择的已配置外显、未配置可选来源收起方式；必需来源和报工良品/不良数量二选一的两个来源常显，具体错误来源也须直接可见并可修复。未配置可选来源在更多业务字段内选择，选配后直接显示，下次重开依据保存配置外显，不因上次收起隐藏已配置结果。主表业务用途组标题统一可展开收起，新增同一用途的记录打开该组并展开新记录；记录仍称消耗明细、报废明细或报工记录。用户要求撤下各业务用途的明细中另外显示入口；只撤配置入口、不自动清除已有保存映射或正式事实，失效旧展示映射以具体问题及明确移除操作处理，后两项是保护数据及可修复性的工程选择。用户提出生产报工称呼，主智能体采纳为production显示名，模型ID不变；正式表示最终完成后的统计生效阶段，不再充当业务用途名。本条在未配置可选来源的展示范围内局部supersedes DEC-0077-36及现行额外展示选择入口的工程方案，保留36人员引用/签名约束、实际签署人身份与tip要求。不改变来源必填性、字段自身约束、统计粒度、单位、人时手填、最终完成边界、真实生产/DHR归属、追溯交互或既有快照，不新增统计模型。本条specified/internal，不以层级调整宣称客户低学习成本或整体功能已验证。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-38
+        statement: 表单追溯、报工记录、报废记录和消耗记录分别提供独立菜单与页面，不要求查询人先进入共用页面再切换业务用途。详情直接展示有权限的来源原表单，并定位和高亮命中字段或相应实际子表行，仍可核对真实执行归属及按原权限回查实际DHR关系。追溯读取最近成功保存内容，正式业务记录读取其最终完成时冻结来源，不用最新模板或当前字段值替换历史证据。本条在四类页面入口及直接来源定位范围内局部supersedes DEC-0077-17/20中结果页面组织尚未确认的解释，Q16只保留其余跨报表组织与历史视图；不改保存后过程可查、最终完成正式统计、真实生产/DHR归属、签名、授权或快照。用户认为冠骋消耗可能是流水并要求核对属于调研判断，原始采集链支持逐笔来源，但部署列表配置与详情参数仍缺失；本轮逐笔业务列表、撤下业务记录/合计二级页签及按稳定rowKey在显示快照中定位属于主智能体工程选择，不提升为独立用户业务确认，不证明完整复制冠骋或运行验收通过。已有按工序用途合计的计算/API保留，不因撤下页面入口而废弃DEC-0077-06/32。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-39
+        statement: 报工、报废和消耗报表使用产品预定义的固定业务筛选条件，参考冠骋，不要求查询人逐条选择筛选字段再添加条件；业务条件读取正式业务属性、真实上下文及准确命名的审计信息，不依赖来源字段另配追溯用途。表单追溯区分正向与反向：正向沿真实关联工单、产品、生产对象等属性查询支持来源内有权读取、满足筛选条件的已保存实际实例，未配置内容追溯用途也可查；未使用模板不等于实例，未保存输入和无权记录不可查，不能解释为无条件查询所有业务域的表单。反向按明确绑定追溯项的已保存填写值查表，支持客户维护的自定义追溯项动态选择。DHR追溯采用相同两向含义，反向命中只沿真实表单证据关系找到DHR，不按内容编号认领归属。DHR多个反向条件在同一DHR范围内分别满足即可，允许不同真实关联表单贡献命中；表单反向仍按同一表单主表及同一实际子表行匹配，不从跨表单DHR匹配推定一笔跨行或跨表单业务事实。反向打开完整DHR详情后须标记命中的表单及对应字段，子表命中须定位实际行，保留其他关联证据供核对。本条明确查询入口、各自条件范围和命中查看要求；原位纠正现行知识中把正向、业务筛选或过程可查依赖于内容追溯项/最终统计的错误表述，不新增旁路替代决策。2026-10-14当前查询展示按DEC-0077-40收敛：按用户最新授权重新设计反向查询区域，不再强制沿用表单列表布局；方向页签仍沿作业模板形式，添加查询条件入口默认隐藏于展开区；九项预置中生产批次/SN、物料批号和工单号默认外显，其余六项是展开区的固定条件，预置不可删除，添加查询条件只含自定义项。自定义项支持文本、数字和日期，数字精确值与日期起止范围分别由匹配类型的控件承接；引用类型兼容延后。原全部builtin默认外显及仅文本目录的现行解释被本轮替换，不再据旧标记数量展开展示。匹配粒度、权限、快照和业务固定条件边界保持；表单和DHR反向查询移除整块归属与属性条件，不新增限定范围浮层；正向原布局及结果列表实际归属展示保持，不将内容命中与真实属性混同。正向及业务具体条件清单、默认正向、DHR去重一行及命中表单数、共享值控件为inferred工程选择。查询、命中与详情须遵守原权限及同一来源依据；保存后过程可查、最终完成正式事实、真实归属、来源权限和冻结证据不变，历史版本反向及A12仍另定。冠骋本地原始前端只证明固定条件数组及目录/实例标记，未取得GET核心、完整状态覆盖或该路径的精确字段高亮证据；用户要求我方精确字段定位，不能将此需求写成竞品事实。动态自定义目录是我方确认需求，关联批次标签不等于物料批号，笛卡尔组合、AUTO_CONNECT、漏映射或关闭数据/字段规则均不照搬。2026-10-14固定业务条件、表单/DHR两向API、完整DHR命中字段/实际行已接通并完成基础测试，39局部标implemented/internal；当前生产保存证据与摘要核验后的终止快照同源读取，不切换任意冻结汇总版本，不扩大来源域。实际证据与本轮知识校验见证据文末及运行报告，浏览器和独立质量另记，不标verified或整功能验收通过。
+        status: implemented
+        visibility: internal
+      - id: DEC-0077-40
+        statement: 追溯项目录只保留九项预置：生产批次/SN、物料批号、设备编号、物料编码、工单号、产品编码、供应商批号、客户订单号和追溯日期。生产批次/SN统一覆盖本单系统内批次或SN，既有有上下文所属及无上下文登记边界继续适用；产品序列号不另列预置，相关生产批次号、责任班组和关联单据号退出预置清单，客户按具体含义自定义，不能把组件或外部编号机械合并为本单SN。供应商批号与内部物料批号保留不同含义，客户订单号不混同其他ERP单据。新增预置追溯日期为date型且不可删除，由制表人明确绑定实际业务日期字段，不自动取创建时间；既有自定义日期项保持独立，不按名称或类型自动合并。表单和DHR反向默认展示生产批次/SN、物料批号、工单号，其余六项作为固定查询条件默认隐藏于展开区；预置项不能删除，不进入添加查询条件候选，添加条件只包含客户自定义项。用户最新授权反向查询区域不沿旧布局规范重新设计，添加查询条件入口默认隐藏于展开区；页签仍保持现有作业模板形式。自定义追溯项支持文本、数字和日期，选择项后按类型呈现输入控件；首版数字按精确值查询，日期按起止日期范围查询，自定义项的引用类型兼容延后。表单和DHR反向查询移除整块归属与属性条件，不新增限定范围浮层，正向原布局和结果列表实际归属展示保持。本条明确收敛DEC-0077-20的产品类型范围及原位替代39全部预置默认外显的旧解释；三业务报表固定条件、正向真实属性、保存后授权追溯、同表单/实际行与同DHR粒度、真实归属和使用时快照不变。日期仅日历日期、闭区间/单边边界、十进制数字规范化、类型创建后不可改及撤项对旧MVP配置的提示属于工程inferred，原始证据单独登记，不冒充用户逐字确认。当前specified/internal，不以确认代替新类型的运行测试或独立质量验收。
+        status: specified
+        visibility: internal
+      - id: DEC-0077-41
+        statement: 追溯项管理只有预置项禁止删除，客户后续创建的自定义项应支持新增、查看、修改和删除；自定义项仍被表单配置使用时，必须先解除对应配置关联，才允许删除目录项。操作列提供关联配置弹窗，可查看所有表单配置项，支持逐项勾选或全选后解除；解除只作用于用户选择的追溯项关联，不自动移除其他追溯含义或业务统计用途。用户追加要求关联配置支持表单预览，能看清对应字段在表单中的具体位置；主表字段和子表列应精确定位而不按相似名称猜测。删除目录项和解除模板配置都保留历史填报内容，不改写已经形成的实例、执行或DHR证据。此确认原位纠正此前全目录均无删除入口及自定义删除整体延期的遗漏，不另建旁路DEC；40的九项清单、默认条件、类型与预置保护继续适用。按仍存在模板各版本的实际sources映射而不按残留lookupItems或实例快照列关联、预置可解除字段映射但不可删目录、删除项退出新候选、目录与模板锁版本协同、system.edit及原模板权限共同校验、删除和解除的既有审计路径属于工程inferred。预览首版平铺逐条不分组、以指定当前模板版本版式只读高亮而不读取实际填报/DHR快照、返回保留勾选、关联变化或未放版式明确提示亦为工程选择；无可靠业务频率数据，不宣称一项多处使用经实测很少。本条specified/internal，不冒充用户逐字确认或因源码核对宣称CRUD、预览、并发、快照保留或独立质量已验证；不开放强制级联删除历史或A12运行能力。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.form-projection-report-source-visibility-and-reporter-20261013, evidence.form-projection-compact-statistics-sidebar-20261013, evidence.form-projection-report-pages-source-20261013, evidence.form-and-dhr-trace-query-20261013, evidence.form-projection-typed-trace-catalog-20261014, evidence.form-projection-custom-trace-crud-20261014, evidence.form-projection-progressive-query-layout-20261014, evidence.form-projection-trace-date-and-reverse-scope-20261014]
+    acceptanceScenarios:
+      - id: scenario.form-projection-custom-trace-delete-protection
+        given: 目录有产品预置项、未使用的自定义项和被表单配置关联的自定义项
+        when: 管理员尝试删除不同来源的目录项
+        then: 服务端拒绝删除预置项，未使用自定义项可删除；有配置关联的自定义项拒绝删除并引导查看关联配置。只有隐藏预置删除按钮不证明服务端保护已验收
+        evidenceIds: [evidence.form-projection-custom-trace-crud-20261014]
+      - id: scenario.form-projection-selective-trace-binding-unlink
+        given: 一个追溯项有多条主表字段或子表列来源配置，另有其他追溯及业务统计来源
+        when: 从操作列打开关联配置弹窗，勾选部分关联并解除，或全选全部关联并解除
+        then: 弹窗展示对应表单配置及定位信息，支持全选和逐项选择；部分解除只移除所选映射，仍有配置关联时自定义项仍不可删，全部解除后才可删。其他追溯项、统计配置和画布保持，陈旧选择须刷新后重试而不覆盖新配置；版本校验是工程验收边界，本例不证明已运行
+        evidenceIds: [evidence.form-projection-custom-trace-crud-20261014]
+      - id: scenario.form-projection-trace-binding-preview-location
+        given: 关联配置清单包含指定模板版本的主表字段及子表列，字段名可能相似，用户已勾选待解除项
+        when: 点击某条配置的预览定位入口并返回关联配置弹窗
+        then: 只读显示对应模板版本配置版式并按稳定字段及子表身份定位高亮，不显示成实际填报实例或DHR证据；返回保留已有勾选。关联已经变化或字段未放版式时明确提示而不猜测位置。首版平铺逐条不分组为工程选择，不能据此宣称同项多处使用很少或预览权限/交互已经通过验收
+        evidenceIds: [evidence.form-projection-custom-trace-crud-20261014]
+      - id: scenario.form-projection-trace-directory-delete-keeps-saved-evidence
+        given: 历史填报记录已经冻结自定义追溯定义及填写内容，目录项已从全部现存模板配置解除
+        when: 删除该自定义项并按原授权打开历史原表单或DHR证据
+        then: 历史填写值、签署、审计、实例与执行或DHR快照保留，不因删除目录项级联清理；旧快照不改用最新模板或目录解释。删除项退出新候选是工程选择，历史目录检索入口及A12仍另定，不宣称目录删除即记录作废
+        evidenceIds: [evidence.form-projection-custom-trace-crud-20261014]
+      - id: scenario.form-projection-nine-fixed-trace-items-three-defaults
+        given: 当前追溯目录含九项预置与客户自定义项，客户打开表单或DHR反向查询
+        when: 初次显示查询区、展开固定条件或添加自定义条件
+        then: 生产批次/SN、物料批号和工单号默认显示；包含追溯日期的其余六项预置作为固定条件收进展开区，不进入添加条件候选，也不能从目录删除；追溯日期提供起止范围，添加条件只包含自定义项，展开收起保留已填值。产品序列号不与生产批次/SN重复，撤项不被机械改绑成本单SN或正式归属
+        evidenceIds: [evidence.form-projection-typed-trace-catalog-20261014]
+      - id: scenario.form-projection-preset-trace-date-explicit-source
+        given: 初始化目录包含日期型预置追溯日期，历史表单存在创建时间且可能已有自定义日期项
+        when: 制表人显式绑定实际业务日期字段，保存填报后按固定追溯日期范围查询
+        then: 只匹配绑定来源中的已保存业务日期，未绑定或未填写时不以创建时间补值；已有自定义日期项不合并或自动改绑，历史实例及索引不回填。预置不可删除，日期范围按既有日历日期闭区间及单边规则处理；范围细节与增量幂等初始化属工程验收，不冒充已验证
+        evidenceIds: [evidence.form-projection-trace-date-and-reverse-scope-20261014]
+      - id: scenario.form-projection-typed-custom-trace-conditions
+        given: 管理员定义数字追溯项和日期追溯项，制表人员关联相应主表字段或子表列并成功保存内容
+        when: 查询人添加该自定义条件，按数字精确值或日期起止范围查询表单及DHR
+        then: 查询值控件与项类型匹配；数字不按文本模糊匹配，日期从绑定的业务日期取值而不从创建时间推导。命中保留来源字段和实际行，表单不跨行拼接，DHR可在同DHR真实关联表单内满足；不形成实体归属或正式统计。本例是验收要求，不证明运行或质量门禁已通过
+        evidenceIds: [evidence.form-projection-typed-trace-catalog-20261014]
+      - id: scenario.form-projection-report-query-ui-catalog-defaults
+        given: 表单与DHR共用追溯目录，目录中含预置项与客户自定义项，业务页采用产品固定条件
+        when: 打开反向查询、展开更多固定追溯条件、添加自定义条件或切换方向
+        then: 按DEC-0077-40显示三个默认固定预置条件，其余预置固定条件在展开区，自定义项通过添加查询条件选择且不与预置项重复；查询布局按最新授权重新设计、页签复用作业模板；添加查询条件入口默认隐藏于展开区。展开收起不清除已填值，查询、重置和方向切换沿既有契约；反向不展示或提交归属与属性条件，不另设限定范围浮层；正向原布局及列表真实归属展示保持，日期数字条件按各自确认类型匹配
+        evidenceIds: [evidence.form-and-dhr-trace-query-20261013, evidence.form-projection-progressive-query-layout-20261014, evidence.form-projection-trace-date-and-reverse-scope-20261014]
+      - id: scenario.form-projection-fixed-business-report-filters
+        given: 正式业务记录已保存物料、原因、人员等合法业务属性，来源字段未关联内容追溯项
+        when: 查询人按对应报表的产品固定筛选条件查询
+        then: 读取业务事实及真实上下文，不要求添加追溯项或先选择筛选字段；业务页不依赖客户追溯项目录，目录失败不影响业务筛选。具体条件清单与控件由实现方案定义
+        evidenceIds: [evidence.form-and-dhr-trace-query-20261013]
+      - id: scenario.form-projection-forward-trace-without-content-binding
+        given: 有权读取的已保存表单真实关联工单、产品和生产对象，但没有配置任何内容追溯用途
+        when: 按真实关联属性进行表单正向查询
+        then: 支持来源内满足条件且有权的已保存实际实例可查，不因缺少内容索引排除；模板、未保存输入及无权记录不可查，字段提及另一对象不改变归属；不伪造内容命中
+        evidenceIds: [evidence.form-and-dhr-trace-query-20261013]
+      - id: scenario.form-projection-form-and-dhr-reverse-condition-scope
+        given: 同一DHR内一份实际关联表单记录物料批号，另一份实际关联表单记录设备号，双方均有明确追溯绑定和读取权限
+        when: 按物料批号和设备号同时进行DHR反向查询，或改为表单反向查询
+        then: DHR范围允许两份表单分别满足条件且须保留各自贡献来源，不证明两者属于同笔业务；表单范围仍须同一表单及适用的同一实际子表行满足，不能跨表单或跨行拼接。打开完整DHR详情标记两份命中表单及对应字段/实际行，其他证据仍可核对
+        evidenceIds: [evidence.form-and-dhr-trace-query-20261013]
+      - id: scenario.form-projection-independent-report-pages-direct-source
+        given: 查询人有实例查看及生产来源权限，追溯、报工、报废和消耗各有授权记录
+        when: 从对应独立菜单打开页面并查看一条记录详情
+        then: 页面保持对应用途及查询状态，详情直接显示来源原表单并保留真实归属；过程追溯读取最近已保存内容，业务记录读取最终完成冻结快照，原DHR回查额外权限仍适用。此为本轮已确认验收要求，不是运行结果
+        evidenceIds: [evidence.form-projection-report-pages-source-20261013]
+      - id: scenario.form-projection-stable-row-source-highlight
+        given: 同一子表两行具有相同物料和数量而稳定行身份不同，来源命中其中一行且显示快照顺序可能已调整
+        when: 打开来源原表单并解析命中定位
+        then: 工程实现必须按显示快照中的稳定rowKey定位该实际行，不能按相同值或陈旧rowIndex高亮另一行；行身份不存在或重复时不猜测高亮，不改写源值或触发签名、保存等写动作
+        evidenceIds: [evidence.form-projection-report-pages-source-20261013]
+      - id: scenario.form-projection-record-pages-do-not-merge-facts
+        given: 同物料、批号、单位、工序有两笔独立正式消耗事实，且可能来自同一表单的两个实际行
+        when: 在本轮消耗记录页面查询并分别打开来源
+        then: 按本轮工程选择显示两条独立事实，各自保留来源与实际行；不把一笔来源冒充多笔合计。三业务页面撤下记录/合计二级页签，已有合计API、键和计算继续保留且不新增汇总入口；此例不证明冠骋部署列表的实际SQL或稳定行高亮机制
+        evidenceIds: [evidence.form-projection-report-pages-source-20261013]
+      - id: scenario.form-projection-report-menu-normalization-permissions
+        given: 用户可能保存过旧共用报表菜单或直接访问旧URL，且权限组合不同
+        when: 归一化菜单并反复加载，或访问新的四条路径与来源详情
+        then: 本轮工程选择将旧菜单和URL导向有效独立入口，归一化幂等且不复制菜单；来源仍同时要求form-instances.view与production.execution，DHR回查仍另需dhr.instances.view，不开放新写权限，不进行数据迁移
+        evidenceIds: [evidence.form-projection-report-pages-source-20261013]
+      - id: scenario.form-projection-configured-sources-visible-and-empty-optional-collapsed
+        given: 制表人在主表或子表展开报工、报废或消耗来源配置，部分可选来源已保存，其他尚未配置
+        when: 打开或重新打开配置，并在更多业务字段中选择一个可选来源
+        then: 必需来源、报工数量二选一及已配置或出错来源直接显示；未配置可选来源收在更多业务字段，选配后外显且保存重开后仍外显。未配可选项不因此变成必填，具体错误不只藏在tip；此为验收要求，不证明客户试用已完成
+        evidenceIds: [evidence.form-projection-compact-statistics-sidebar-20261013]
+      - id: scenario.form-projection-purpose-group-collapse-and-add-record
+        given: 主表存在生产报工、报废或消耗用途组，组内有一笔或多笔记录配置
+        when: 点击用途标题收起，再新增同用途的记录
+        then: 标题统一支持展开收起，新增时打开该用途组并展开新记录，来源下拉与主动画布选取仍可用；production显示名为生产报工而稳定模型ID及最终完成才正式统计边界不变
+        evidenceIds: [evidence.form-projection-compact-statistics-sidebar-20261013]
+      - id: scenario.form-projection-extra-display-entry-removed-without-data-loss
+        given: 三类业务配置可能已有保存的补充展示映射，其中一条引用的来源已失效
+        when: 打开配置并处理具体保存校验问题
+        then: 不提供明细中另外显示选择入口，不自动清空有效旧映射或改写已有事实；失效映射的具体问题直接显示，并有明确移除动作，不留下无法修复的隐藏阻塞。此为本轮工程保护验收要求，不增加二期自定义报表能力
+        evidenceIds: [evidence.form-projection-compact-statistics-sidebar-20261013]
+      - id: scenario.form-projection-report-sources-directly-visible
+        given: 制表人员在主表或子表业务用途的侧栏展开一笔报工、报废或消耗配置
+        when: 对应业务报表存在时间、人员、原因、分类等预设展示属性的来源配置
+        then: 按36确认时要求报表属性直接呈现；同日后续37收敛为已配置、必需及错误来源外显，未配置可选来源进更多业务字段，现行展示按37处理。静态说明通过对应tip查看，人时下无解释段落，具体校验仍可见；展示不增加必填性或改变合计粒度，客户试用仍未由此证明
+        evidenceIds: [evidence.form-projection-report-source-visibility-and-reporter-20261013]
+      - id: scenario.form-projection-reporter-from-user-or-signature
+        given: 表单包含普通文本、人员引用、其他对象引用和保存了实际签署人信息的签名字段，创建人与签署人不同，签名可由字段签署或既有按钮签署事件回填
+        when: 制表人员选择报工人来源并在正式业务记录中读取该值
+        then: 候选仅包含人员引用及签名；文本与其他对象引用不作为报工人来源。两种合法签署路径均保存实际签署人身份、名称及签名记录标识，报工人从该保存值读取，不用创建人替代，不改变签名认证或将工时按签名人数计算；此例不证明运行验证已经完成
+        evidenceIds: [evidence.form-projection-report-source-visibility-and-reporter-20261013]
+      - id: scenario.form-projection-person-hours-distinct-from-report-period
+        given: 一笔报工的业务开始和结束之间经过2小时，填报人在所绑定数字字段中填写4人时，表单在稍后提交并最终完成
+        when: 读取该笔报工的工时、业务时间与报工人来源
+        then: 工时读取填写的4人时，不根据2小时区间或人员及签名数重算；业务起止与生产日期读取各自来源，不取审计时点替代，创建人不冒充报工人。此例不要求逐人工时模块或自动分摊；当前指定定义不证明运行已验证
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-product-owned-models
+        given: 产品设计包含表单配置、报表统计模型和客户实施流程
+        when: 核对模型所有权与客户操作职责
+        then: 统计模型由产品方维护，客户只配置来源；候选配置体验不被表述为已经通过客户易用性验收
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-replacement-preserves-evidence
+        given: 后续实现准备统一替换试验性字段用途和投影逻辑
+        when: 判断本次授权范围
+        then: 可以重构相关代码；MVP开发历史按DEC-0077-27可修复迁移或作废，真实客户生产证据不据此删除；不能宣称新的运行契约已经实现
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-optional-scope
+        given: 客户表单没有内容追溯或业务统计需求
+        when: 配置该表单并判断关联业务范围
+        then: 无需强制配置数据用途，既有表单与生产证据职责保留；新增库存动作另走需求
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-operation-purpose-total
+        given: 同批次工序A与工序B各有正式报工100件，另有仅供查表的重复记载
+        when: 查询正式统计及来源明细
+        then: 每个工序和用途分别合计100件，重复记载不入账，每笔正式结果可定位来源表单，不显示批次产量200件
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-completion-retry
+        given: 最终完成前业务校验通过，但完成后投影处理发生系统故障
+        when: 查询状态、重试并尝试依赖正式结果的下游动作
+        then: 已完成表单与持久化事件保留，状态明确且重试不重复入账，下游等待成功；必要业务校验失败则不完成
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-use-time-snapshot
+        given: 一个表单模板版本已配置追溯来源，生产实例已开工或已附加自定义表单
+        when: 修改同一模板版本的字段或来源映射并创建新的生产使用
+        then: 已使用实例继续按自己的执行快照填写、完成和投影；新的使用复制修改后的配置，不要求执行追溯专属发布冻结动作
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-final-output-and-independent-quality-quantities
+        given: 指定的最终产出工序有正式报工，且表单可配置产出、不良和报废等多个用途
+        when: 形成批次/工单最终产出及同报表中的用途统计
+        then: 批次最终产出只取指定工序约定语义的正式报工数量，工单只汇总所属批次；不良和报废按配置独立展示且不自动加减产出，无数据不显示为实际零
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-canvas-primary-entry
+        given: 制表人员首次配置用途，并在画布选中字段或子表
+        when: 从所选对象进入配置，再需要全表总览或调整
+        then: 预期主要配置路径从画布开始，信息按需渐进展示，集中入口承担总览与调整；此场景是未来验收要求，具体侧栏与模式交互仍待评审，不证明当前实现或易用性验收已通过
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-cross-form-independent-metrics
+        given: 同一已明确统计对象与范围中，表A正式良品指标为90，表B正式不良指标为5
+        when: 将两项指标汇总到同一报表行
+        then: 预期可以并列展示90与5并分别回查来源，不能据此自动扣减最终产出或计算良率；此例不证明任意跨表单同事件关联已支持，也不是已运行测试结果
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-cross-form-missing-metric
+        given: 同一已明确统计范围中，表A存在正式指标，表B无正式生效数据
+        when: 展示该报表行及指标来源
+        then: 预期表A指标仍可展示，表B不填为真实0；如何表示缺失值随后定义，此例仅是验收行为而非当前运行结果
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-same-fact-header-detail-no-double-count
+        given: 同一业务事实同时有表头总数和子表明细合计，另有独立的多次正式记录
+        when: 按明确的事实身份、统计粒度与来源形成汇总
+        then: 预期同一事实的表头与明细不重复累计，独立多次记录仍可累计；事实身份及具体去重实现待设计，此例不证明当前解释器已完成去重
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-new-purpose-preserves-old-snapshot
+        given: 已有生产实例在START或ATTACH_FORM时冻结了用途配置
+        when: 后续新增业务用途或字段并形成新的使用
+        then: 预期新增配置不改写旧实例的冻结配置，旧记录与投影继续按原快照解释；此例延续DEC-0077-12，不新增发布冻结步骤或宣称本例已运行验证
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-trace-only-source-search
+        given: 表单设备号字段只配置查找与追溯，用户在既有授权范围查询；待确认的索引契约已明确哪些数据可查询
+        when: 按对应设备号信息类型检索匹配字段值
+        then: 预期定位准确表单实例与字段位置，保留来源，不产生报工、报废或消耗正式统计明细；不同信息类型的同字符串不混查，命中不证明设备实际使用或改变执行身份。本例不预设索引生效时机或记录状态范围，不证明已实现或运行验收通过
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-context-owned-statistics-and-prefill
+        given: 批次B001在工序P10的真实执行上下文中启用表单并配置正式统计，部分字段配置上下文带入，但不配置查找追溯用途
+        when: 按未来确认的带入生命周期呈现字段，并按既有正式生效边界形成统计事实
+        then: 预期统计归属由真实B001/P10上下文及用途粒度确定，所配置带入字段显示相应信息；没有检索用途不影响统计归属，字段显示或查询复用不重复统计，也不能改写真实上下文。本例不预定带入时机、证据持久化、刷新或覆盖规则，不证明已实现或运行验收通过
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-first-phase-both-source-shapes
+        given: 表单既有用子表采集明细的场景，也有主表多个分散字段描述同一条业务明细的场景
+        when: 评审首期配置范围及后续交互稿
+        then: 预期两种来源形态都进入首期，子表配置以简单快捷清晰为重点；主表字段配对不被排除或延期。本例不预定具体交互、行身份或表头共享机制，也不证明两类配置已实现或通过易用性验收
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-mvp-reusable-lookup-items
+        given: 客户有灭菌锅次等查找需求，相关索引可查范围和来源权限已按对应契约明确
+        when: 管理员定义产品支持类型的查找项，制表人把不同名称的普通字段或子表列关联同一查找项，查询人按值查询
+        then: 预期查询页面提供对应条件并定位有权限的来源表单和命中位置；仅查找不要求统计数量，也不形成正式实体关系。本例不预定类型全集、组合条件、索引生命周期或历史回填，不证明当前已实现或验收通过
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-mvp-preset-reports-phase-two-custom-reports
+        given: MVP已有产品维护的业务统计口径及预设报表，后续希望客户组合自定义报表
+        when: 核对本轮MVP交付与二期扩展范围
+        then: MVP保留预设报表而不加入自定义报表编辑器，架构留二期扩展空间；不重复生成事实、不改写旧快照，不把二期报表组合解释为客户任意建立统计模型或已完成二期能力
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-independent-canvas-panel
+        given: 制表人在同一画布选择普通字段或子表，并有当前来源配置的未保存修改
+        when: 在字段配置与独立查找统计侧栏间切换，或在用途面板选择另一来源
+        then: 预期保留画布选择及定位，面板明确当前范围，沿同一配置、保存和撤销处理修改；不自动启用用途或跳转离开画布。此为本次交互验收要求，不证明运行测试、完整MVP或客户易用性已经通过
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-text-material-match-explicit-purpose
+        given: 普通文本未声明物料用途，原生物料引用已配置自身数据来源但未配置投影用途
+        when: 填写文本或使用引用选择器，并判断未来文本匹配是否可触发
+        then: 普通文本不能凭名称或内容触发物料解析，原生引用仍按自身配置查询选取和校验；明确物料用途仅满足未来解析的必要前提，Q6其余契约及MVP纳入未定，本例不证明文本解析已经实现
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.form-reference-user-confirmed]
+      - id: scenario.form-projection-text-match-secondary-presentation
+        given: 未来文本身份匹配能力已按另行确认的Q6契约实现，表格存在相邻可填写单元格
+        when: 展示物料匹配信息或需要阻断正式统计的异常
+        then: 匹配信息次要呈现且优先hover，不遮挡相邻单元格；阻断异常仍明确定位而非仅藏于hover。轻量标记与聚焦点击是候选实现，不证明当前解析或客户易用性已验证
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-new-lookup-item-without-bindings
+        given: 管理员新增产品支持类型的可用灭菌锅次查找项，尚无模板关联或命中数据
+        when: 制表人打开兼容字段的用途候选，授权查询人员选择追溯条件
+        then: 两处均从同一目录提供该项，无需二次维护查询条件；来源关联仍须显式配置，没有数据不伪造命中。本例是当前目录切片验收要求，不证明已完成运行验证
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-new-meaning-no-implicit-history
+        given: 旧实例具有与新查找项同名或同值的字段，但其冻结配置未关联该项，另有实例已配置原有查找含义
+        when: 新增查找项并查询新旧含义
+        then: 未关联旧实例不因字段同名或同值被新项命中，未来正确实例继续按自身快照解释；新含义历史补充覆盖排二期，MVP开发历史可按DEC-0077-27直接修复迁移或作废而无需兼容，本例不证明历史回填已实现
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-trace-item-terminology
+        given: 产品目录、设计器用途候选及追溯条件仍有查找项旧称，且已存在稳定配置身份和历史证据
+        when: 按统一UI/UE规范更新对外页面、提示、列表与弹窗
+        then: 同一业务含义统一显示为追溯项，历史引文保留原文，不仅因改称另建同义目录；MVP开发旧数据兼容负担按DEC-0077-27取消，未来正确快照不被改写，不新增统计或索引规则。本例不证明产品或视觉检查已通过
+        evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed]
+      - id: scenario.form-projection-mvp-history-repair-or-invalidate
+        given: MVP开发历史中存在旧投影或旧配置数据，未来实例将遵循当前正确契约
+        when: 选择已明确范围的开发历史修复迁移或作废方案
+        then: 不要求保留纯旧数据兼容层；实际处置另行记录受影响数据与结果，不能据此取消未来使用时快照或真实生产证据契约，也不能称本轮已执行数据库处置
+        evidenceIds: [evidence.form-projection-clarifications-20261009]
+      - id: scenario.form-projection-preset-subject-is-real-owner
+        given: 表单来自生产对象A的真实执行上下文，某字段记录或选中了另一对象B
+        when: 解释预置生产批次/SN追溯项及统计和DHR归属
+        then: 预置项表达A的所属主体含义，字段里的B不将表单或DHR移交给B；带入和错误值具体校验阶段另定，不将仅提及B当成所属关系
+        evidenceIds: [evidence.form-projection-clarifications-20261009]
+      - id: scenario.form-projection-main-conditions-ignore-hidden-groups
+        given: 同一表单的两个主表字段分别被关联到不同内部配置组，查询条件要求两者同时满足
+        when: 按已确认多条件查询契约判断匹配
+        then: 条件按同一表单匹配，不受隐藏配置组或配置先后顺序影响；此为验收要求，当前实现差异未在本轮修复
+        evidenceIds: [evidence.form-projection-clarifications-20261009]
+      - id: scenario.form-projection-detail-conditions-same-actual-row
+        given: 同一子表第一行物料M1批号L1，第二行物料M2批号L2，查询要求物料M1且批号L2
+        when: 在同一表单及同一子表查找同时满足两条件的明细
+        then: 不返回由两行拼成的不存在记录；查询主表条件可与同一实际行联合，不据本例推定不同子表组合或OR规则已确定
+        evidenceIds: [evidence.form-projection-clarifications-20261009]
+      - id: scenario.form-projection-draft-without-business-blocking
+        given: 用户具备草稿保存权限，字段尚未补齐，提交的请求格式和证据访问合法
+        when: 保存或暂存草稿
+        then: 不因字段完整性或投影业务校验阻止暂存；仍执行来源权限、字段权限和请求格式及证据安全校验，最终完成仍按其业务规则校验
+        evidenceIds: [evidence.form-projection-clarifications-20261010]
+      - id: scenario.form-projection-unbound-object-is-content-only
+        given: 表单没有生产执行上下文，用户登记系统内生产对象B，或已设自动带入却缺少上下文
+        when: 暂存内容并按B追溯查询
+        then: 自动带入缺上下文时有明确提示；手填或引用B只作为内容登记，不自动生成B的执行或DHR成员、统计归属，DHR归属另经特别业务流程
+        evidenceIds: [evidence.form-projection-clarifications-20261010]
+      - id: scenario.form-projection-optional-material-lot
+        given: 螺丝或水等物料用途记录有明确物料和数量，但没有物料批号
+        when: 校验并形成该用途的正式明细
+        then: 投影不因缺少批号来源或值拒绝记录，不要求仓库登记批号；空批号保留缺失含义，物料、数量及普通字段自身约束仍适用
+        evidenceIds: [evidence.form-projection-clarifications-20261010]
+      - id: scenario.form-projection-optional-unit-full-grain
+        given: 同一用途、实际对象、工序、物料及适用批号内有两笔单位为空的数量，另有单位为件的数量
+        when: 汇总正式数量
+        then: 两笔空单位数量只在完整粒度相同的空单位分组内合计，不混入件或其他工序、对象及物料；无单位换算，不把空单位分组描述为已证明计量一致
+        evidenceIds: [evidence.form-projection-clarifications-20261010]
+      - id: scenario.form-projection-saved-progress-search
+        given: 草稿、填报中或审批中的表单内容已成功保存或暂存，查询人有来源查看权限
+        when: 按已配置追溯项查询最新保存内容
+        then: 来源记录及命中位置可查并显示状态，之后未保存的输入不参与查询；正式数量不因该命中提前计入报表，实际DHR归属不变
+        evidenceIds: [evidence.form-projection-clarifications-20261010]
+      - id: scenario.form-projection-phase-two-existing-fact-report
+        given: MVP已有产品维护的正式业务事实及预设统计报表
+        when: 规划二期客户报表设计扩展
+        then: 用户针对已有事实设计报表的方向保留，MVP不提前实现编辑器或要求客户造模型；任意联表、公式、权限和聚合细则不凭该方向推定已确认
+        evidenceIds: [evidence.form-projection-clarifications-20261010]

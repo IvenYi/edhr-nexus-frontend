@@ -8,6 +8,7 @@ import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.production.entity.ProductionObject;
 import com.zencas.edhr.production.entity.WorkOrder;
+import com.zencas.edhr.template.service.FormProjectionInterpreter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -185,7 +186,12 @@ public class ExecutionSnapshotBuilder {
             FROM form_template_version v JOIN form_template t ON t.id = v.template_id WHERE v.id = ?
             """, Long.valueOf(versionId));
         JsonNode model = json(form.path("model").asText(), mapper.createObjectNode());
-        form.set("fields", model.has("payload") ? model.path("payload").path("fields") : model.path("fields"));
+        JsonNode payload = model.has("payload") ? model.path("payload") : model;
+        if (payload.hasNonNull("projection")) {
+            FormProjectionInterpreter.validate(payload);
+            form.set("projection", payload.path("projection").deepCopy());
+        }
+        form.set("fields", payload.path("fields"));
         normalizeColumns(form.path("fields"));
         JsonNode canvas = json(form.path("canvas").asText(), mapper.createObjectNode());
         collectBindings(canvas, form.path("fields"));

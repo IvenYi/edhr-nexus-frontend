@@ -1,5 +1,17 @@
 knowledgeModelVersion: 0.3.25
 concepts:
+  - id: concept.form-projection-configuration
+    termId: term.form-projection-configuration
+    kind: configuration-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.projection-integration-source-boundaries]
+  - id: concept.form-business-projection
+    termId: term.form-business-projection
+    kind: runtime-fact
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.projection-formal-source]
   - id: concept.custom-form-scope
     termId: term.custom-form-scope
     kind: configuration-fact
@@ -12,6 +24,18 @@ concepts:
     status: specified
     visibility: internal
     evidenceIds: [evidence.custom-form-scope-confirmed]
+  - id: concept.form-production-subject-trace-item
+    termId: term.form-production-subject-trace-item
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-projection-clarifications-20261009, evidence.form-projection-clarifications-20261010]
+  - id: concept.form-saved-content-trace
+    termId: term.form-saved-content-trace
+    kind: business-concept
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-projection-clarifications-20261010, evidence.form-and-dhr-trace-query-20261013]
   - id: concept.form-fill-settings
     termId: term.form-fill-settings
     kind: business-configuration
@@ -770,6 +794,22 @@ concepts:
     visibility: internal
     evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-instance-entity, evidence.equipment-legacy-schema]
 relations:
+  - id: relation.execution-snapshot-freezes-form-projection-configuration
+    source: concept.execution-snapshot
+    target: concept.form-projection-configuration
+    cardinality: one-to-zero-or-many
+    description: 每个执行快照可冻结各已用表单的用途配置；自定义表单在实际附加时复制，不从最新模板重解释旧实例。此关系不新增模板发布生命周期或改变批次自定义表单的共享归属。
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.projection-integration-source-boundaries]
+  - id: relation.form-business-projection-derived-from-form-instance
+    source: concept.form-business-projection
+    target: concept.form-instance
+    cardinality: many-to-one
+    description: 每条正式投影经所属处理批次定位一个最终完成来源实例，保留冻结值、用途与字段及实际行身份；不以投影数量、内容编号或报表分组建立新的生产或DHR归属。
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.projection-formal-source]
   - id: relation.dhr-summary-version-contains-evidence-instances
     source: concept.dhr-summary-version
     target: concept.form-instance

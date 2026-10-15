@@ -2,6 +2,8 @@
 
 以物料新建/编辑弹窗为视觉基准，适用于列表页及普通配置页的新建、编辑表单。全屏设计器、预览、确认、签名等弹窗不套用此表单外壳。
 
+列表行只读详情使用右侧公共 `DetailDrawer`，遵循 [列表详情抽屉规范](detail-drawer-guidelines.md)，不能套用本文件的新建/编辑外壳。复用字段分组组件并不意味着标题、页签和滚动已经一致，必须按详情规范做同屏对照验收。
+
 ## 组件
 
 - 使用 `src/components/FormDialog.tsx` 承载普通表单，保留 `DialogTitle`、`DialogContent dividers`、`DialogActions` 三段结构。已有复杂页面可在 `AppDialog` 上设置 `variant="form"`，但不得给全屏模式套普通表单样式。

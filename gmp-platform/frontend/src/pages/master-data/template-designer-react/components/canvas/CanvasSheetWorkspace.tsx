@@ -2892,7 +2892,7 @@ export default function CanvasSheetWorkspace() {
           range: { top: sourceRow, left: sourceCol, bottom: sourceRow, right: sourceCol },
         });
         setSelectedNodeId(nodeId);
-        setActiveCanvasRail('config');
+        if (useTemplateDesignerStore.getState().activeCanvasRail !== 'projection') setActiveCanvasRail('config');
       }
       if (eventTarget instanceof HTMLElement) eventTarget.releasePointerCapture?.(pointerId);
     };
@@ -3029,7 +3029,7 @@ export default function CanvasSheetWorkspace() {
                 event.stopPropagation();
                 setSelectedRange(normalizedRegionRange, { row: normalizedRegionRange.t, col: normalizedRegionRange.l });
                 setSelectedNodeId(node.id);
-                setActiveCanvasRail('config');
+                if (useTemplateDesignerStore.getState().activeCanvasRail !== 'projection') setActiveCanvasRail('config');
               }}
               sx={{
                 minWidth: 0,
@@ -5522,7 +5522,7 @@ export default function CanvasSheetWorkspace() {
                               range: { top: cell.row, left: cell.col, bottom: cell.row, right: cell.col },
                             });
                             setSelectedNodeId(nodeId);
-                            setActiveCanvasRail('config');
+                            if (useTemplateDesignerStore.getState().activeCanvasRail !== 'projection') setActiveCanvasRail('config');
                           }}
                         />
                       </Box>

@@ -21,11 +21,21 @@ const nodeRequire = createRequire(import.meta.url);
 const sandbox = { module: { exports: {} }, require: specifier => {
   const loaded = nodeRequire(specifier);
   return specifier.startsWith('@mui/icons-material/') ? loaded.default ?? loaded : loaded;
-}, console };
+}, console, crypto: globalThis.crypto };
 sandbox.exports = sandbox.module.exports;
 vm.runInNewContext(result.outputFiles[0].text, sandbox);
 const { default: FormDocumentPreview, bindFormPreviewField } = sandbox.module.exports;
-const render = (document, runtime, fieldPermissions) => renderToStaticMarkup(createElement(FormDocumentPreview, { document, runtime, fieldPermissions }));
+const render = (document, runtime, fieldPermissions, interaction) => renderToStaticMarkup(createElement(FormDocumentPreview, { document, runtime, fieldPermissions, interaction }));
+
+test('readonly source preview highlights only the selected actual row, including its other columns', () => {
+  const html = render(fixedTableDocument('dynamic'), { values: { 'inspection-table': [{ quantity: 100, result: 'pass' }, { quantity: 50, result: 'pass' }] }, disabled: true, onChange() { throw Error('source preview cannot write'); } }, undefined,
+    { isFieldHighlighted: (_field, table, index) => table === 'inspection-table' && index === 1 });
+  assert.equal((html.match(/data-form-preview-row="1" data-form-preview-highlighted="true"/g) ?? []).length, 2);
+  assert.doesNotMatch(html, /data-form-preview-row="0" data-form-preview-highlighted="true"/);
+  assert.doesNotMatch(html, /data-mock-fill-sub-table-add-row|data-mock-fill-sub-table-remove-row/);
+  assert.match(html, /value="100"/);
+  assert.match(html, /value="50"/);
+});
 
 test('execution uses the same initial subtable row, serial, placeholders and frame as template preview', () => {
   const document = fixedTableDocument('dynamic');
@@ -52,6 +62,34 @@ test('runtime renders every persisted record in its template cells, with real va
   assert.match(html, />2<\/span>/);
   assert.match(html, /data-mock-fill-sub-table-add-row/);
   assert.match(html, /data-mock-fill-sub-table-remove-row/);
+});
+
+test('paper row actions create identities and canvas defaults while preserving existing records', () => {
+  const document = fixedTableDocument('dynamic');
+  const table = document.model.fields.find(field => field.type === 'subTable');
+  const nodes = document.canvas.pages.flatMap(page => page.nodes);
+  table.typeConfig.columns = nodes.filter(node => node.bindings?.subTableField).map(node => node.bindings.subTableField);
+  const column = table.typeConfig.columns.find(field => field.id === 'quantity');
+  column.typeConfig.defaultValue = '2';
+  nodes.find(node => node.bindings?.subTableFieldId === 'quantity').bindings.defaultValue = '3';
+  const existing = { __rowId: '4509e12a-7929-426a-8f3e-e7954edbf87c', quantity: '10', result: 'pass' };
+  const writes = [];
+  const runtime = { values: { [table.id]: [existing] }, onChange: (id, value) => writes.push({ id, value }) };
+  const tree = FormDocumentPreview({ document, runtime });
+  const findPage = element => Array.isArray(element) ? element.map(findPage).find(Boolean)
+    : element?.props?.onAddSubTableRecord ? element : findPage(element?.props?.children ?? []);
+  const page = findPage(tree);
+  assert.ok(page);
+  const tableNode = nodes.find(node => node.type === 'sub-table');
+  page.props.onAddSubTableRecord(tableNode.id);
+  assert.equal(writes[0].id, table.id);
+  assert.equal(writes[0].value[0], existing);
+  assert.equal(writes[0].value[1].quantity, 3);
+  assert.match(writes[0].value[1].__rowId, /^[0-9a-f-]{36}$/);
+  assert.notEqual(writes[0].value[1].__rowId, existing.__rowId);
+  runtime.disabled = true;
+  findPage(FormDocumentPreview({ document, runtime })).props.onAddSubTableRecord(tableNode.id);
+  assert.equal(writes.length, 1, 'readonly paper cannot add records');
 });
 
 test('readonly table permissions hide row actions and prevent edits', () => {

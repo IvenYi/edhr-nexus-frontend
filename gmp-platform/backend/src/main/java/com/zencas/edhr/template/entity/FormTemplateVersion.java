@@ -70,6 +70,10 @@ public class FormTemplateVersion {
     @Column(name = "workflow_design_json", columnDefinition = "TEXT")
     private String workflowDesignJson;
 
+    @jakarta.persistence.Version
+    @Column(name = "lock_version")
+    private Long lockVersion;
+
     @Column(name = "status")
     @Builder.Default
     private String status = "DRAFT";

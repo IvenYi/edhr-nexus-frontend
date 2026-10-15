@@ -18,6 +18,7 @@ import './ProductionExecutionPage.css';
 import { executionRouteLinks } from './executionRouteLinks';
 import { executionForms, formOwner, visibleFormCopies } from './executionCustomForms';
 import ExecutionDocumentViewer from './ExecutionDocumentViewer';
+import { executionFormValues } from './executionFormValues';
 import ExecutionQuickPanel, { type ExecutionPanelId } from './ExecutionQuickPanel';
 import ExecutionOperationDrawer from './ExecutionOperationDrawer';
 import ExecutionCopyDrawer from './ExecutionCopyDrawer';
@@ -336,7 +337,8 @@ export default function ProductionExecutionPage() {
     busyRef.current = true; setBusy(true); setError(''); setNotice('');
     try {
       const owner = command.formId ? formOwner(view, operationId, command.formId) : operationId;
-      const next = await executeProduction(context.objectId, { ...command, revision: view.revision, operationId: owner });
+      const next = await executeProduction(context.objectId, { ...command,
+        ...(command.values && form ? { values: executionFormValues(form.fields, command.values) } : {}), revision: view.revision, operationId: owner });
       if (command.action === 'UPDATE_FORM_COPY_REMARK') setView(next);
       else receive(next);
       setSigning(null); setAccount(''); setPassword(''); setOpinion('');
@@ -485,7 +487,7 @@ export default function ProductionExecutionPage() {
             <Box><Typography component="dt">工单</Typography><Typography component="dd">{context?.workOrderNo || '—'}</Typography></Box>
             <Box className="execution-product-summary"><Typography component="dt">生产产品</Typography><Box component="dd"><ExecutionProductDetails key={view.snapshot.context.objectId} context={view.snapshot.context} container={() => rootRef.current} suspended={Boolean(busy || signing || pendingSwitch || operationDrawerOpen || formDrawerOpen || copyDrawerOpen || activePanel)} /></Box></Box>
             <Box><Typography component="dt">目标数量</Typography><Typography component="dd">{context?.targetQuantity != null ? `${context.targetQuantity} ${context.unit ?? ''}`.trim() : '—'}</Typography></Box>
-            {([['产出数量', output?.outputQuantity], ['良品数量', output?.goodQuantity], ['报废数量', output?.scrapQuantity]] as const).map(([label, quantity]) => <Box key={label} title={`当前工序：${op?.name || op?.code || '暂无工序'} · ${output?.message || '暂无工序产出数据'}`}><Typography component="dt">{label}</Typography><Typography component="dd">{output?.status === 'READY' && quantity != null ? `${quantity} ${context?.unit ?? ''}`.trim() : '—'}</Typography></Box>)}
+            {([['产出数量', output?.outputQuantity], ['良品数量', output?.goodQuantity], ['报废数量', output?.scrapQuantity]] as const).map(([label, quantity]) => <Box key={label} title={`过程参考，来自当前已保存值，并非最终统计。当前工序：${op?.name || op?.code || '暂无工序'} · ${output?.message || '暂无工序产出数据'}`}><Typography component="dt">{label}（过程参考）</Typography><Typography component="dd">{output?.status === 'READY' && quantity != null ? `${quantity} ${context?.unit ?? ''}`.trim() : '—'}</Typography></Box>)}
           </Box>
           <Box className="execution-object-progress" title="按已完成工序数占总工序数计算">
             <Box className="execution-progress-caption">

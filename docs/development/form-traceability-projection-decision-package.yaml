@@ -1,0 +1,1485 @@
+decisionPackage:
+  id: DEC-PACKAGE-20260929-FORM-PROJECTION
+  scope: form-traceability-projection-implementation
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: eedc24721d8d5137b29840575867422577386141
+    targetBranch: edhr-dev
+    targetCommit: 3977329d13c4c74bd862e21abac4ae982e5b8f83
+    contractReadCommit: 3977329d13c4c74bd862e21abac4ae982e5b8f83
+    uncommittedContractPaths: []
+  # 2026-10-15按目标新契约重放当前包。投影旧DEC-0075及声明现为DEC-0077；
+  # 下文投影引用已映射当前ID；旧基线与旧验收只按eedc2472及更早投影提交解释，不指目标自定义表单DEC-0075。
+  # 不反填过去的契约读取或验证；当前集成范围、替代清单及新验收见projection-dev-integration-2026-10-15.yaml。
+  replacementScopes: [] # 本包本次只重放标识和元数据；声明级同步清单由上述独立集成包承载。
+  # 当前custom-trace-crud-20261014同切片L2：自定义先解绑配置再删，操作列弹窗全选/逐项解除及每条只读版式预览/字段定位；实例与DHR冻结不改。门禁覆盖本轮追加预览，不复用typed目录结果。
+  # 当前同切片L2：九项预置/三默认六展开，新增date型追溯日期，显式绑定实际业务日期，不取创建时间、不合并自定义日期。0113仅增项。
+  # 反向撤下全部归属属性及空自定义分组，添加入口仍默认隐藏；正向原布局和结果归属展示不动。接口兼容、匹配、权限、快照不改。收起计数和错误可见为inferred；本轮验证见trace-query-layout-2026-10-14.md。
+  # 2026-10-13 directional-trace-runtime沿DEC-0077-39原位修正并实施，L2。固定业务条件、两向含义、DHR跨表单组合及完整DHR命中表单/字段定位已明确；具体字段/页签/去重计数仍inferred。该历史切片不新增替代DEC、不把我方范围冒充竞品GET范围；本轮目录与类型确认见DEC-0077-40。
+  # 当前增量report-pages-source-20261013为L2：四独立菜单页面与原表单详情已确认；逐笔列表、撤下二级合计入口及stable rowKey定位为工程inferred。沿同包维护影响与验收，不复用此前切片QA。
+  # 2026-10-13手填人时与字段链、三类专用逐笔报表已实现，基础测试和真实API证据见报表复核第8节，该切片独立QA已通过；来源展示与签名报工人修正的全新独立复验见第9节。局部implemented/internal，不标整体verified。可选性、单人来源与严格日期类型仍是inferred工程选择。
+  # 2026-10-12原始证据复核区分列表、采集、工作台合计与产出回写；竞品部署列表精确分组仍有证据缺口，不阻断我方当前字段和专用列表切片，也不作为新增分组依据。
+  # 2026-10-12用户确认侧栏按业务逐条配置、画布点选/下拉同源、消耗明细/报废明细/报工记录术语；本轮L1精简影响、成功标准和验证见form-projection-configuration-simplification-2026-10-12.md增量。沿用原来源和快照契约，无新统计口径。
+  summary: 当前沿同包实施DEC-0077-39/40，执行L2。九项预置为生产批次/SN、物料批号、工单号、设备编号、物料编码、产品编码、供应商批号、客户订单号和追溯日期，前三项默认，其余六项固定展开；预置不可删除且不进入自定义添加候选。追溯日期为date型，显式绑定实际业务日期，不取创建时间、不自动合并现有自定义日期项；0113增量初始化不重写历史配置、实例或索引。反向移除归属与属性区域及范围浮层，空自定义分组简化，添加入口仍默认隐藏；正向原布局和结果列表归属保留。自定义text/number/date、数字精确值、日期范围、同表单实际行及同DHR粒度、原权限与快照保持；日历闭区间/单边范围和紧凑布局是工程inferred。历史反向/A12、Q6/Q17及无上下文登记未决边界保持，运行测试与本轮独立门禁见trace-query-layout-2026-10-14.md，不复用历史门禁或标整体verified。
+  # 2026-10-05预置项复核时管理员目录尚未实现；从冠骋原始字段与消费者提炼候选，见form-projection-preset-source-review-2026-10-05.md。该历史增量不修改运行目录、统计默认、数据库或未决问题；10-07当前实现以目录切片记录为准。
+  # 同日整体补查：直接核对冠骋前端设计器8种追溯/21种业务字段和后端41种注册声明，补字典选项/取值来源/动作分层；候选非运行默认，未新增字段类型、统计规则或Q17答案。
+  # 同日追加：查找与追溯、业务统计是并列可选任务，可仅其一/两者/都不配；部分字段可配置生产上下文自动带入。统计归属独立来自实际执行上下文。Q15-Q17保留独立索引时机、结果页面及字段带入生命周期，当前formTrace完成路径不替未来需求定版。
+  # 首期来源形态补充确认：子表是交互设计重点，但首期也覆盖主表多个分散字段组成一条业务明细；子表优先不等于仅交付子表。具体交互与其他运行契约继续按对应未决项处理。
+  # 同日用户确认独立侧栏：查找与统计作为画布内同级入口；保留当前选择、同一配置与统一保存，不跳到脱离画布的整页。本增量不实现目录CRUD或改变Q12/Q15-Q17。
+  # 2026-10-07开发前整体评审及多角色流程图见form-projection-final-design-review-2026-10-07.md；复用本决策包。仅核对并提出建议，未修改产品代码或数据库，未将混合编号检索、Q6/Q9/Q15/Q17建议提升为confirmed。该评审补充当前切片L2影响与验收范围，不新建竞争性决策包。
+  # 2026-10-07侧边用户确认增量见主设计2.5节及handoff同日入口：用途驱动的文本匹配与次要展示、查找项自动进入两处候选、新含义对未关联旧实例的补充覆盖排二期。其余Q6/Q9/Q15/Q17保留；原生引用能力与原有历史查询保留。主会话须同步适用结构化知识并复核门禁，本条不冒充已完成同步或实现。用户追加授权：交接后判断开发/优化条件，具备则开始。
+  # 2026-10-07同切片L1前端规范修复：查询布局、点击行详情、560px分组抽屉与折叠审计；不改变本包L2业务契约。本轮精简影响分析、not-applicable本体依据与针对性质量结果见form-projection-ui-conformance-2026-10-07.md。
+  # 2026-10-07继续L2设计器优化：已有主表/子表侧栏与总览继续完善；追溯来源按已关联项渐进展示、主表草稿可就地启用、预览名称保真及配置总览规范分组。具体工程选择不新增业务口径或关闭Q6/Q9/Q12/Q15/Q17；本轮证据见form-projection-designer-followup-2026-10-07.md。
+  # 2026-10-07同切片L1详情视觉补修：三处详情复用公共DetailDrawer，补充精确外壳与同屏对照规范；不改变本包业务契约。影响增量及not-applicable本体依据见form-projection-ui-conformance-2026-10-07.md同日补修节。
+  # 2026-10-07同切片L2引用补修：落实原生引用及两用途边界，补常用生产来源和兼容预置项的编号追溯；不关闭Q6/Q9/Q12/Q15/Q17。工程范围、完整影响与门禁见form-projection-reference-followup-2026-10-07.md。
+  # 2026-10-09同切片L2客户解释评审：核对当前侧栏类型过滤、编辑范围、勾选语义、追溯组合查询及统计差异，见form-projection-sidebar-review-2026-10-09.md。仅记录源码事实和未实施建议，不新增运行默认、规则或关闭未决项。
+  # 2026-10-09用户十一条注释深化复核：见form-projection-annotation-review-2026-10-09.md；回到冠骋原始查询页面/字段及本项目唯一约束，修正主体查询与统计维度解释。统一批次/SN、系统行身份、单位来源、上下文带入和组合查询均为候选讨论，不改变confirmed、运行实现或未决项。
+  # 2026-10-09第二轮十五条注释：生产主体含义、组合查询匹配粒度及MVP开发历史处理已明确确认，以下增量取代上一轮对应候选状态；其他建议仍为inferred，见form-projection-design-clarifications-2026-10-09.md。本轮仅更新设计/知识，不执行数据处理或改运行代码。
+  # 2026-10-10第三轮七条注释及异步回复：草稿不做阻断性业务校验、无上下文可登记系统内对象而不自动归属DHR；物料批号及单位可空；空单位保持其余粒度合计，不换算；二期基于已有事实设计报表；保存/暂存后草稿与进行中可追溯已确认。仅更新设计/知识，见form-projection-design-clarifications-2026-10-10.md。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: design-rule.form-projection.custom-trace-delete
+        name: 自定义追溯项删除与配置解除
+        status: implemented
+        trigger: trace-catalog.delete-or-unlink
+        condition:
+          all:
+            - fact: report.modelId
+              operator: equals
+              value: formTrace
+        result:
+          type: manage-trace-item-associations
+          builtinDeletion: prohibited
+          customDeletion: only-without-template-bindings
+          bindingManagement: selectable-or-select-all-in-dialog
+          bindingPreview: read-only-template-layout-with-field-location
+          retainedInstanceEvidence: unchanged
+        sourceReferences: [user-confirmed-20261014-custom-trace-crud]
+      - id: design-rule.form-projection.typed-trace-catalog
+        name: 精简预置与有类型的自定义追溯
+        status: implemented
+        trigger: trace-catalog-and-query.configure
+        condition:
+          all:
+            - fact: report.modelId
+              operator: equals
+              value: formTrace
+        result:
+          type: typed-trace-catalog
+          presetItems: [lookup_production_batch, materialLotText, equipmentText, lookup_material_code, lookup_work_order, lookup_product_code, lookup_supplier_lot, lookup_order_number]
+          defaultItems: [lookup_production_batch, materialLotText, lookup_work_order]
+          otherPresets: fixed-collapsed-fields
+          presetDeletion: prohibited
+          customQueryEntry: custom-items-only
+          customTypes: [text, number, date]
+          numberQuery: exact-numeric-value
+          dateQuery: date-range
+          customReferenceCompatibility: deferred
+        sourceReferences: [user-confirmed-20261014-typed-trace-catalog, DEC-0077-40]
+      - id: design-rule.form-projection.fixed-business-report-filters
+        name: 业务报表产品固定筛选独立于追溯目录
+        status: implemented
+        trigger: form-projection.business-report-query-design
+        condition:
+          all:
+            - fact: report.modelId
+              operator: in
+              value: [production, scrap, consumption]
+        result:
+          type: define-business-filter-boundary
+          filterDefinitionsOwner: product
+          selectFieldThenAddCondition: false
+          requiresTraceItemBinding: false
+          formalBusinessFactBoundaryChanged: false
+        sourceReferences: [user-confirmed-20261013-fixed-business-filters, DEC-0077-18, DEC-0077-39]
+      - id: design-rule.form-projection.form-and-dhr-forward-reverse-query
+        name: 表单与DHR正反向含义和各自条件范围
+        status: implemented
+        trigger: form-projection.trace-query-design
+        condition:
+          all:
+            - fact: report.modelId
+              operator: in
+              value: [formTrace, dhrTrace]
+        result:
+          type: define-trace-query-boundary
+          forwardBasis: actual-related-attributes
+          forwardRequiresContentTraceBinding: false
+          forwardRecords: authorized-persisted-instances-in-supported-source-and-filter-scope
+          templatesAreInstances: false
+          unsavedInputsQueryable: false
+          reverseBasis: explicitly-bound-saved-field-values
+          dynamicCustomReverseItems: true
+          reverseDefaultItemsSource: existing-catalog-builtin-flag
+          reverseCustomItemsEntry: add-query-condition
+          queryLayoutReference: existing-form-instance-list
+          directionTabsStyleReference: existing-work-template-list
+          addDhrTraceReportWithSameDirections: true
+          formConditionScope: same-form-and-actual-subtable-row
+          dhrConditionScope: same-actual-dhr
+          dhrConditionsMayUseDifferentRelatedForms: true
+          dhrDetailScope: complete-actual-evidence
+          markMatchedFormsAndCorrespondingFields: true
+          locateActualSubtableRow: true
+          contentHitCreatesOwnership: false
+          savedProgressAndFrozenEvidenceBoundaryChanged: false
+        sourceReferences: [user-confirmed-20261013-form-dhr-directions, user-confirmed-20261013-dhr-cross-form-condition-reply, user-confirmed-20261013-dhr-detail-fields-and-in-place-correction, user-confirmed-20261014-report-query-layout, DEC-0077-29, DEC-0077-33, DEC-0077-39]
+      - id: design-rule.form-projection.independent-report-pages-direct-source
+        name: 独立记录页面直接查看来源原表单
+        status: specified
+        trigger: form-projection.report-navigation-and-source-view
+        condition:
+          all:
+            - fact: report.modelId
+              operator: in
+              value: [formTrace, production, scrap, consumption]
+        result:
+          type: organize-authorized-source-view
+          independentMenuPages: [表单追溯, 报工记录, 报废记录, 消耗记录]
+          detailDefault: original-source-form
+          locateMatchedFieldOrActualSubtableRow: true
+          traceSource: latest-successfully-saved-content
+          businessSource: final-completion-frozen-snapshot
+          preserveActualContextDhrAndAuthorization: true
+          grantsSourceWritePermission: false
+        sourceReferences: [user-confirmed-20261013-report-pages-source, DEC-0077-33, DEC-0077-38]
+      - id: design-rule.form-projection.compact-statistics-sidebar
+        name: 生产报工命名与业务用途渐进配置
+        status: specified
+        trigger: form-projection.configure-statistics
+        condition:
+          all:
+            - fact: projection.modelId
+              operator: in
+              value: [production, scrap, consumption]
+        result:
+          type: organize-source-configuration
+          productionPurposeName: 生产报工
+          purposeGroupCollapsible: true
+          configuredOptionalSourcesVisible: true
+          unconfiguredOptionalSourcesCollapsed: true
+          requiredAndAlternativeQuantitySourcesVisible: true
+          invalidSourcesVisible: true
+          extraDisplayFieldSelectorVisible: false
+          persistedMappingsAutomaticallyCleared: false
+        sourceReferences: [user-confirmed-20261013-compact-statistics-sidebar]
+      - id: design-rule.form-projection.report-field-visibility-and-reporter
+        name: 业务报表来源说明与报工人类型
+        status: specified
+        trigger: form-projection.configure-report-sources
+        condition:
+          all:
+            - fact: projection.modelId
+              operator: in
+              value: [production, scrap, consumption]
+        result:
+          type: constrain-source-configuration
+          requirednessChangedByVisibility: false
+          staticHelpPresentation: tooltip
+          workHoursHelperParagraph: false
+          reporterSourceTypes: [user-reference, signature]
+          signatureReporterValue: actual-signer-identity
+          signatureAuthenticationChanged: false
+        sourceReferences: [user-confirmed-20261013-report-source-visibility-and-reporter, user-confirmed-20261013-compact-statistics-sidebar]
+      - id: design-rule.form-projection.report-person-hours-and-period
+        name: 报工人时与开始结束时间分开记录
+        status: implemented
+        trigger: form-projection.production-record-definition
+        condition:
+          all:
+            - fact: projection.modelId
+              operator: equals
+              value: production
+        result:
+          type: define-report-time-semantics
+          workHoursMeaning: person-hours
+          workHoursSource: user-filled-number-field
+          workHoursAutomaticallyCalculated: false
+          headcountOrSignaturesCalculateWorkHours: false
+          reportTimeFields: [report-start-time, report-end-time]
+          elapsedTimeEqualsPersonHours: false
+          auditTimestampsReplaceReportTimes: false
+          productionDateIndependent: true
+          creatorReplacesReporter: false
+        sourceReferences: [user-confirmed-20261012-report-person-hours-and-period, user-confirmed-20261013-manual-person-hours-development, implementation-20261013-manual-person-hours-report-fields]
+      - id: design-rule.form-projection.draft-and-unbound-context
+        name: 草稿业务校验与无上下文登记边界
+        status: specified
+        trigger: form-instance.save-or-complete
+        condition:
+          all:
+            - fact: formInstance.usesProjectionConfiguration
+              operator: equals
+              value: true
+        result:
+          type: constrain-validation-and-ownership
+          draftBlockingBusinessValidation: false
+          authenticationPermissionAndPayloadSafetyChecksRemain: true
+          missingContextWithAutoPrefill: show-explicit-hint
+          manualSystemObjectEntryOrSelectionWithoutContextAllowed: true
+          manualEntryCreatesExecutionOrDhrOwnership: false
+          formalDhrAssociationRequiresSeparateBusinessFlow: true
+          finalCompletionBusinessValidationRemains: true
+        sourceReferences: [user-confirmed-20261010-annotation-1]
+      - id: design-rule.form-projection.optional-material-lot
+        name: 物料批号允许未登记与空值
+        status: specified
+        trigger: form-projection.material-quantity-record
+        condition:
+          all:
+            - fact: businessRecord.usesMaterialLot
+              operator: equals
+              value: true
+        result:
+          type: constrain-optional-source
+          warehouseLotExistenceRequired: false
+          materialLotRequiredByProjection: false
+          emptyLotRepresentsKnownLot: false
+          materialIdentityAndQuantityRulesUnchanged: true
+        sourceReferences: [user-confirmed-20261010-annotation-3]
+      - id: design-rule.form-projection.optional-unit-aggregation
+        name: 单位可空并按完整粒度隔离合计
+        status: specified
+        trigger: form-projection.aggregate-quantity
+        condition:
+          all:
+            - fact: report.aggregatesQuantity
+              operator: equals
+              value: true
+        result:
+          type: constrain-aggregation
+          unitRequiredByProjection: false
+          unitConversionInMvp: false
+          emptyUnitAggregatesOnlyWithEmptyUnit: true
+          preserveModelObjectOperationMaterialAndLotDimensions: true
+          emptyUnitProvesMeasurementConsistency: false
+        sourceReferences: [user-confirmed-20261010-annotation-2, user-confirmed-20261010-annotation-6]
+      - id: design-rule.form-projection.phase-two-existing-fact-reports
+        name: 二期基于已有事实进行报表设计
+        status: specified
+        trigger: form-projection.plan-report-extension
+        condition:
+          all:
+            - fact: reportExtension.targetsCustomerDesign
+              operator: equals
+              value: true
+        result:
+          type: constrain-extension-scope
+          mvpReports: product-preset
+          phaseTwoCustomerReportDesign: existing-facts
+          requiresCustomerDefinedBusinessModels: false
+          implementReportDesignerInMvp: false
+        sourceReferences: [user-confirmed-20261010-annotation-5, DEC-0077-21]
+      - id: design-rule.form-projection.saved-progress-trace
+        name: 保存或暂存后过程内容可追溯
+        status: specified
+        trigger: form-instance.persist-content
+        condition:
+          all:
+            - fact: formInstance.contentSuccessfullyPersisted
+              operator: equals
+              value: true
+        result:
+          type: expose-authorized-saved-content
+          searchableStates: [draft, filling, pending-approval, completed]
+          includeUnsavedInput: false
+          displayRecordStatus: true
+          formalStatisticsStillRequiresFinalCompletion: true
+          preserveSourceAuthorizationAndActualOwnership: true
+        sourceReferences: [user-confirmed-20261010-annotation-7, user-confirmed-20261010-saved-progress-trace-reply]
+      - id: design-rule.form-projection.mvp-development-history
+        name: MVP开发历史允许修复迁移或作废
+        status: specified
+        trigger: form-projection.mvp-migration
+        condition:
+          all:
+            - fact: affectedData.isMvpDevelopmentHistory
+              operator: equals
+              value: true
+        result:
+          type: constrain-migration
+          legacyCompatibilityRequired: false
+          permittedTreatments: [repair-and-migrate, invalidate]
+          futureDataMustFollowCurrentContract: true
+          futureUseTimeSnapshotsRemainAuthoritative: true
+          actualDataTreatmentExecutedInThisReview: false
+        sourceReferences: [user-confirmed-20261009-annotation-1]
+      - id: design-rule.form-projection.owning-production-trace-item
+        name: 预置生产批次SN表示本单所属生产对象
+        status: specified
+        trigger: form-projection.configure-production-trace-item
+        condition:
+          all:
+            - fact: selectedTraceItem.isPresetProductionSubject
+              operator: equals
+              value: true
+        result:
+          type: constrain-semantic-meaning
+          customerLabel: 生产批次/SN
+          meaningWithExecutionContext: owning-production-object
+          meaningWithoutExecutionContext: recorded-system-production-object
+          ownershipSource: actual-production-or-work-execution-context
+          fieldValueMayChangeOwnership: false
+          unboundManualObjectCreatesDhrAssociation: false
+        sourceReferences: [user-confirmed-20261009-annotation-13, user-confirmed-20261010-annotation-1, DEC-0077-17, DEC-0077-18]
+      - id: design-rule.form-projection.trace-condition-granularity
+        name: 追溯组合条件按同一表单与同一实际子表行匹配
+        status: specified
+        trigger: form-trace.query-multiple-conditions
+        condition:
+          all:
+            - fact: traceQuery.hasMultipleConditions
+              operator: equals
+              value: true
+        result:
+          type: constrain-query-matching
+          mainFieldScope: same-form-instance
+          detailFieldScope: same-physical-subtable-row
+          combineParentAndDetailConditions: true
+          crossRowValuePairingAllowed: false
+          hiddenConfigurationGroupControlsMatching: false
+        sourceReferences: [user-confirmed-20261009-annotation-15]
+      - id: design-rule.form-projection.trace-item-terminology
+        name: 产品统一使用追溯项并遵循统一页面规范
+        status: specified
+        trigger: form-projection.present
+        condition:
+          all:
+            - fact: presentation.targetsCustomer
+              operator: equals
+              value: true
+        result:
+          type: constrain-presentation
+          preferredTerm: 追溯项
+          previousTerm: 查找项
+          sharedUiGuidelinesRequired: true
+          futureStableIdentifiersAndHistoricalEvidenceRequired: true
+          mvpDevelopmentHistoryPolicy: design-rule.form-projection.mvp-development-history
+        sourceReferences: [docs/development/form-lookup-catalog-2026-10-07.md]
+      - id: design-rule.form-projection.explicit-text-material-purpose
+        name: 普通文本须明确物料用途才触发身份匹配
+        status: specified
+        trigger: form-field.text-identity-match
+        condition:
+          all:
+            - fact: field.explicitPurposeRepresentsMaterial
+              operator: equals
+              value: true
+        result:
+          type: constrain-identity-matching
+          inferFromFieldNameOrTextShape: false
+          presentation: secondary-hover-preferred
+          nativeReferenceRequiresProjectionPurpose: false
+          uniqueMatchProvesUserIntent: false
+        sourceReferences: [docs/architecture/form-traceability-projection-design.md#25-c侧边讨论确认增量2026-10-07供主开发会话接手]
+      - id: design-rule.form-projection.lookup-directory-shared-candidates
+        name: 新增查找项自动进入设计与查询候选
+        status: specified
+        trigger: form-lookup-item.create
+        condition:
+          all:
+            - fact: lookupItem.available
+              operator: equals
+              value: true
+        result:
+          type: expose-shared-directory
+          targets: [compatible-designer-sources, authorized-query-conditions]
+          requiresExistingBindingsOrHits: false
+          sourceBinding: explicit
+        sourceReferences: [docs/architecture/form-traceability-projection-design.md]
+      - id: design-rule.form-projection.new-meaning-history-phase-two
+        name: 未关联新含义的历史补充覆盖排二期
+        status: specified
+        trigger: form-lookup-item.create
+        condition:
+          all:
+            - fact: historicalInstance.snapshotHasLookupBinding
+              operator: equals
+              value: false
+        result:
+          type: defer-historical-enrichment
+          targetPhase: phase-two
+          inferBindingFromNameOrValue: false
+          preserveFutureCorrectQueriesAndEvidence: true
+          mvpDevelopmentHistoryPolicy: design-rule.form-projection.mvp-development-history
+        sourceReferences: [docs/architecture/form-traceability-projection-design.md]
+      - id: design-rule.form-projection.product-owned-models
+        name: 统计模型由产品方维护
+        status: specified
+        trigger: form-projection.configure
+        condition:
+          all:
+            - fact: configuration.targetsBusinessReport
+              operator: equals
+              value: true
+        result:
+          type: persist-field-contract
+          modelOwner: product-team
+          customerResponsibility: select-source-fields-and-confirm-mappings
+        sourceReferences:
+          - docs/architecture/transaction-traceability-dhr-business-rules.md
+          - user-confirmed-20260929-statistical-models-owned-by-product
+      - id: design-rule.form-projection.unified-replacement
+        name: 试验实现允许被统一方案替换
+        status: specified
+        trigger: form-projection.implement
+        condition:
+          all:
+            - fact: implementation.isExperimentalProjectionLogic
+              operator: equals
+              value: true
+        result:
+          type: allow-with-governance
+          target: unified-projection-contract
+          scope: relevant-experimental-code
+          historicalDataDeletionAuthorizedByOriginalDecision: false
+          mvpDevelopmentHistoryPolicy: design-rule.form-projection.mvp-development-history
+        sourceReferences:
+          - user-confirmed-20260929-replace-experimental-projection-code
+      - id: design-rule.form-projection.optional-use
+        name: 按实际需求配置追溯与统计
+        status: specified
+        trigger: form-template.configure
+        condition:
+          all:
+            - fact: template.requiresTraceOrStatistics
+              operator: equals
+              value: false
+        result:
+          type: omit-projection
+          preserveFormAndProductionEvidence: true
+        sourceReferences:
+          - user-confirmed-not-every-customer-form-needs-projection
+          - docs/architecture/transaction-traceability-dhr-business-rules.md
+      - id: design-rule.form-projection.first-completion
+        name: 首次完成正式投影边界
+        status: specified
+        trigger: form.final-completion
+        condition:
+          all:
+            - fact: projection.enabled
+              operator: equals
+              value: true
+        result:
+          type: validate-and-enqueue-atomically
+          operationalFailureRevokesCompletion: false
+          retryRequiresReason: true
+          downstreamRequiresSucceeded: true
+        sourceReferences: [DEC-0077-07, DEC-0077-10]
+      - id: design-rule.form-projection.use-time-snapshot
+        name: 来源配置在生产使用时进入执行快照
+        status: specified
+        trigger: production-execution.first-use-or-attach-form
+        condition:
+          all:
+            - fact: formTemplateVersion.selectedForUse
+              operator: equals
+              value: true
+        result:
+          type: validate-and-copy-execution-snapshot
+          templateRemainsEditable: true
+          completedProjectionReadsInstanceSnapshot: true
+        sourceReferences: [DEC-0077-12]
+      - id: design-rule.form-projection.operation-totals
+        name: 工序用途合计与数量来源
+        status: specified
+        trigger: report.aggregate
+        condition:
+          all:
+            - fact: projection.status
+              operator: equals
+              value: SUCCEEDED
+        result:
+          type: aggregate-by-operation-and-purpose
+          scrapQuantityFrom: configured-field
+          retainSourceDetails: true
+          implyBatchFinalOutput: false
+        sourceReferences: [DEC-0077-05, DEC-0077-06, DEC-0077-11]
+      - id: design-rule.form-projection.batch-final-output-source
+        name: 批次最终产出使用最终产出工序正式报工数量
+        status: specified
+        trigger: production.batch-final-output
+        condition:
+          all:
+            - fact: operation.finalOutput
+              operator: equals
+              value: true
+        result:
+          type: planned-final-output
+          quantitySource: configured-formal-production-report-quantity
+          operationScope: designated-final-output-operation-only
+          workOrderAggregation: sum-final-output-by-associated-batches
+          qualityQuantities: independently-configured-statistics
+          autoAddOrSubtractQualityQuantities: false
+          requiresSeparateQualityForm: false
+          missingOrNotEffectiveDataMeansZero: false
+          fixedGoodQuantityFieldRequired: false
+        sourceReferences: [DEC-0077-13, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - id: design-rule.form-projection.isolated-first-delivery
+        name: 独立演示与分期交付
+        status: specified
+        trigger: form-projection.deliver
+        condition:
+          all:
+            - fact: delivery.scope
+              operator: equals
+              value: first-completion
+        result:
+          type: constrain-delivery-scope
+          isolatedDatabase: true
+          originalNonDevelopmentDatabaseUnchanged: true
+          mvpDevelopmentHistoryPolicy: design-rule.form-projection.mvp-development-history
+          ongoingQuantityLabel: process-reference
+          exclude: [controlled-revision, void, rule-rebuild]
+        sourceReferences: [DEC-0077-08, DEC-0077-09, DEC-0077-10]
+      - id: design-rule.form-projection.canvas-primary-entry
+        name: 画布字段和子表作为主要配置入口
+        status: specified
+        trigger: form-projection.configure
+        condition:
+          all:
+            - fact: configuration.domain
+              operator: equals
+              value: form-projection
+        result:
+          type: design-entry-priority
+          primary: canvas-field-or-subtable-selection
+          secondary: central-overview-and-adjustment
+          progressiveDisclosure: true
+          goal: lower-learning-cost
+        sourceReferences: [DEC-0077-14, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - id: design-rule.form-projection.low-cost-purpose-development
+        name: 新增用途允许低成本可维护二开
+        status: specified
+        trigger: form-projection.extend
+        condition:
+          all:
+            - fact: configuration.domain
+              operator: equals
+              value: form-projection
+        result:
+          type: design-extension-goal
+          businessDevelopmentAllowed: true
+          goal: low-development-cost-and-maintainability
+          allBusinessZeroCodeRequired: false
+          largeGenericRuleEngineRequiredInAdvance: false
+        sourceReferences: [DEC-0077-15, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - id: design-rule.form-projection.cross-form-metric-direction
+        name: 跨表单同报表行指标必须明确统计对象范围来源
+        status: specified
+        trigger: form-projection.report-design
+        condition:
+          all:
+            - fact: configuration.targetsBusinessReport
+              operator: equals
+              value: true
+        result:
+          type: design-metric-boundary
+          require: [statistical-object, scope, per-metric-source]
+          differentFormsMayProvideMetrics: true
+          arbitraryCrossFormEventAssociationConfirmed: false
+        sourceReferences: [DEC-0077-16, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - id: design-rule.form-projection.independent-trace-and-statistics
+        name: 查找追溯与业务统计并列可选
+        status: specified
+        trigger: form-projection.configure
+        condition:
+          all:
+            - fact: configuration.domain
+              operator: equals
+              value: form-projection
+        result:
+          type: independent-purpose-selection
+          tasks: [lookup-and-trace, business-statistics]
+          combinations: [trace-only, statistics-only, both, neither]
+          canvasPrimaryForBothTasks: true
+          traceIsAdvancedStatisticsSubtask: false
+          traceOnlyRequiresBusinessQuantityFields: false
+          allRelatedScope: existing-source-authorization
+          traceHitEstablishesFormalBusinessRelationship: false
+          indexEffectiveScopeConfirmed: true
+          indexEffectiveScope: latest-saved-draft-progress-and-completed-content
+          invalidatedHistoryViewConfirmed: false
+          resultPageConfirmed: false
+        sourceReferences: [DEC-0077-17, DEC-0077-33, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - id: design-rule.form-projection.context-ownership-and-field-prefill
+        name: 执行上下文归属与字段自动带入分开
+        status: specified
+        trigger: form-projection.context-design
+        condition:
+          all:
+            - fact: configuration.domain
+              operator: equals
+              value: form-projection
+        result:
+          type: context-and-field-boundaries
+          statisticalOwnership: execution-context-and-purpose-grain
+          ownershipRequiresHandEnteredIdentityField: false
+          ownershipRequiresTracePurpose: false
+          configurableContextFieldPrefillRequired: true
+          compatiblePrefillAndFieldUseAllowed: true
+          displayEditsOverrideExecutionIdentity: false
+          competitorReferenceMeansCopyInteraction: false
+          prefillLifecycleConfirmed: false
+          singleEquipmentPerOperationAssumed: false
+        sourceReferences: [DEC-0077-18, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - id: design-rule.form-projection.first-phase-source-shapes
+        name: 首期覆盖子表和主表分散字段组成业务明细
+        status: specified
+        trigger: form-projection.first-phase-design
+        condition:
+          all:
+            - fact: configuration.domain
+              operator: equals
+              value: form-projection
+        result:
+          type: source-shape-scope
+          sourceShapes: [subtable, scattered-main-form-fields]
+          subtableInteractionPriority: true
+          subtableOnlyFirstPhase: false
+          concreteInteractionConfirmed: false
+          remainingRuntimeContractsConfirmed: false
+        sourceReferences: [DEC-0077-19, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - id: design-rule.form-projection.customer-trace-query-catalog
+        name: MVP客户维护可复用查找项目录
+        status: specified
+        trigger: form-projection.mvp-scope-design
+        condition:
+          all:
+            - fact: configuration.domain
+              operator: equals
+              value: form-projection
+        result:
+          type: trace-query-catalog-scope
+          definitionOwner: customer-administrator
+          supportedTypesOwner: product
+          commonDefinitionsPredefined: true
+          sourceShapes: [ordinary-field, subtable-column]
+          crossFormDefinitionReuse: true
+          definitionAndQueryValueSeparated: true
+          queryControlsFollowDefinitions: true
+          resultsIncludeAuthorizedSourcesAndHitLocations: true
+          permitsCustomerBusinessOntologyEditing: false
+          runtimeLifecycleConfirmed: false
+        sourceReferences: [DEC-0077-20, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - id: design-rule.form-projection.mvp-preset-reports-phase-two-custom-reports
+        name: MVP预设统计报表和二期自定义报表
+        status: specified
+        trigger: form-projection.mvp-scope-design
+        condition:
+          all:
+            - fact: configuration.domain
+              operator: equals
+              value: form-projection
+        result:
+          type: report-phase-scope
+          mvpTraceQueryCatalog: true
+          mvpBusinessReports: product-preset
+          customerCustomReportPhase: phase-two
+          preserveExtensionSpace: true
+          existingSourceShapeAndUseBoundariesPreserved: true
+          customerOwnedBusinessModelsConfirmed: false
+          arbitraryFormulaAndCrossSourceJoinConfirmed: false
+        sourceReferences: [DEC-0077-21, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - id: design-rule.form-projection.independent-canvas-panel
+        name: 同一画布内独立查找与统计侧栏
+        status: specified
+        trigger: form-projection.designer-interaction
+        condition:
+          all:
+            - fact: configuration.domain
+              operator: equals
+              value: form-projection
+        result:
+          type: designer-panel-scope
+          entryLevel: canvas-side-rail
+          preserveSelectedSource: true
+          sharedConfigurationAndSave: true
+          fullPageNavigation: false
+          sourceShapes: [subtable, scattered-main-form-fields]
+        sourceReferences: [DEC-0077-22, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+    executionContracts: []
+  inferred:
+    - id: inference.form-projection.form-dhr-query-presentation-20261013
+      statement: 业务常用固定条件外显、低频属性展开；表单/DHR默认正向，反向显示命中摘要。反向按最新确认仅含内容追溯条件，原归属属性展开设计已撤下，不加范围浮层；九预置三默认六展开，自定义添加入口默认隐藏，页签保持现有形式。DHR每实例去重一行并显示命中表单数，复用同一追溯目录及类型控件。完整DHR命中表单及字段/实际行定位已明确，查询、数量、标记与详情须同一授权来源；正向无内容条件不伪造字段高亮，当前与冻结版本不混用。
+      rationale: 最新确认覆盖反向入口、追溯日期和预置显示范围；具体正向与业务条件、默认方向及去重计数仍为工程选择。冠骋页面/字段目录支持参考，GET核心及截图新增三字段来源尚缺证据；不将推断冒充竞品事实。历史反向和A12另定，运行实现须独立验证。
+      relatedIds: [DEC-0077-39, evidence.form-and-dhr-trace-query-20261013, docs/development/form-and-dhr-trace-query-review-2026-10-13.md]
+    - id: inference.form-projection.record-pages-and-stable-source-highlight-20261013
+      statement: 本轮三业务记录页按每个独立fact逐笔展示，不合并多次登记；撤下业务记录/合计二级页签，保留已有合计API、键和计算而不新增汇总入口。详情直接用只读来源预览；主表按命中fieldId，子表按稳定rowKey在当前显示的来源快照中解析实际行并高亮，不按同值或陈旧rowIndex猜测，身份不存在或重复时不高亮。旧菜单归一化为四独立路径，旧URL重定向，保持原权限且不迁移业务数据。
+      rationale: 用户明确独立菜单与原表单定位；异步认为消耗可能是流水并要求源码核对。原始三用途采集支持逐笔来源，aggregateEntities只见注释调用，sum consumer不是列表证据；通用trace-render按值includes也不是稳定单行定位证明。以上是主智能体在授权范围内采纳的最小工程选择，不独立提升为用户口径确认或完整复制冠骋。
+      relatedIds: [DEC-0077-38, evidence.form-projection-report-pages-source-20261013]
+    - id: inference.form-projection.business-report-field-implementation-20261013
+      statement: 在已授权开发范围新增可选workHours、reportStartTime、reportEndTime、productionDate、reporter来源；工时只接受数字来源，业务时间使用严格日期类型。报工人来源现由2026-10-13追加确认收紧为人员引用或签名，不再沿用文本工程选择。reason/category适配字典标识与显示快照，三类业务使用专用逐笔列与过滤。保留已有合计分组，并合计明确保存的人时；本轮report-pages-source撤下二级合计页面入口，不删除此计算。不将新字段可选或单人限制伪称用户确认。
+      rationale: 复用现有来源、attributes/details、完成投影和报表契约，以最小工程范围补齐已识别消费者需求；不新增自动工时、多人绩效、原因分配、库存、产出回写或自定义报表平台。
+      relatedIds: [DEC-0077-35, docs/development/form-projection-business-report-field-review-2026-10-12.md]
+    - id: inference.form-projection.clarified-runtime-correction-20261010
+      statement: 本轮进入运行改造：同一画布侧栏按字段追溯和整表统计组织，单列统计修改定位整表；主表从预设用途一次配齐来源，统一顶部保存。可空批号/单位保留完整分组，补充展示从同笔来源字段选择。保存后过程追溯使用独立于正式数量事实的检索记录，主表条件按实例且子表条件按同一实际行组合，来源回查沿实例与真实归属。技术选型和交互细节属于已授权工程实现，不新增客户自建统计模型。
+      rationale: 用户明确要求开始开发修正并简化交互；复用已确认DEC-0077-30至34及原有两类来源、使用时快照、正式完成边界。Q6最终错误值与Q17具体带入生命周期仍待本轮集中回复，先实施无依赖切片。
+      relatedIds: [DEC-0077-29, DEC-0077-30, DEC-0077-31, DEC-0077-32, DEC-0077-33, DEC-0077-34]
+    - id: inference.form-projection.third-annotation-implementation
+      statement: 本轮工程实现使用普通单选本地选项或共享字典提供单位；额外展示从同区域已有字段选择，不注册任意统计属性。空批号/单位保留完整粒度，保存事务维护独立追溯视图；工程选择不新增业务统计模型。
+      rationale: 原运行限制已在本轮修正，源码、聚焦测试及独立库API证据见运行修正记录；无上下文登记仍需独立来源流程，不能仅去掉对象归属约束。
+      relatedIds: [docs/development/form-projection-design-clarifications-2026-10-10.md]
+    - id: inference.form-projection.second-annotation-ux-and-data-guidance
+      statement: 建议列统计摘要明确来自整表、编辑切换整子表选择；主表同一侧栏一次配齐来源，不新增业务配置模块。统一顶部保存与校验，单位字典/default须实际持久化并适配；备注作为明细展示列，日期作为有明确含义的范围/业务日期，多选不自动重复计量。以上尚非完整用户确认或运行实现。
+      rationale: 第二轮十五条注释及实际源码复核显示现有配置语义混杂、单位引用结构与标量统计不兼容、子表新增空行；保持统一入口减少学习负担，实际值与主体完整性仍需检查。
+      relatedIds: [docs/development/form-projection-design-clarifications-2026-10-09.md, DEC-0077-22]
+    - id: inference.form-projection.owning-versus-mentioned-result
+      statement: 有生产上下文时生产批次/SN沿真实所属对象，字段内容不得改归属；2026-10-10已确认无上下文可手填或选择系统内对象作为内容登记，不自动建立DHR关系，取代此前只接受真实所属对象的绝对建议。结果仍建议明确区分真实所属与内容提及/登记，并显示实际归属；外部编号使用自定义文本项，推荐取消相关批次的独立内置项。草稿阻断豁免及缺上下文提示已确认，自动带入其他生命周期和目录类型扩展仍待设计。
+      rationale: 所属主体规则现在具有上下文分支，不能将内容登记赋予实际执行身份；冠骋原始索引区分subjectNo和materialNo，笛卡尔跨行组合不适合本项目已确认同一实际行匹配。
+      relatedIds: [design-rule.form-projection.owning-production-trace-item, design-rule.form-projection.draft-and-unbound-context, design-rule.form-projection.trace-condition-granularity, docs/development/form-projection-design-clarifications-2026-10-10.md]
+    - id: inference.form-projection.designer-field-preset-layers
+      statement: 建议总体提炼查找含义、统计用途、模型属性/字典来源、取值来源和独立业务动作；关联批次/订单号为补充查找候选，检验/评审选项只作后续候选。客户配置按场景渐进显示，普通字段及子表列复用已有组件。
+      rationale: 原始在线表单前端入口为8种追溯和21种业务字段，后端41类声明不等于菜单；引用、系统日期、上下文默认及签名职责各异，不能机械复制类型枚举、唯一性约束或结论即动作。总体考虑不扩大MVP三类统计用途、不新增数量/人员/日期默认规则。
+      relatedIds: [DEC-0077-18, DEC-0077-19, DEC-0077-20, DEC-0077-21, docs/development/form-projection-preset-source-review-2026-10-05.md]
+    - id: inference.form-projection.source-derived-presets
+      statement: 建议从冠骋实际反查消费者提炼生产批号/产品序列号、设备、工单、产品、记录单号等查找含义，保留现有物料批号及补充项；日期查询属于类型扩展候选。统计MVP保留正式报工、报废、实耗；工时现按DEC-0077-35采集用户数字字段填写的人时，检验/仓储另定规则。
+      rationale: 原始LOT/SN关联生产标识，不能误当物料批号；枚举混合度量、维度、实体引用和动作，不能直接全部作为查找项或投影用途。2026-10-05复核时管理员目录未实现，10-07已完成的目录范围以当日实现记录为准；正式报工独立产出属性及批次/工单联动仍缺失，历史候选不升为用户已确认默认。
+      relatedIds: [DEC-0077-18, DEC-0077-20, DEC-0077-21, docs/development/form-projection-preset-source-review-2026-10-05.md]
+    - id: inference.form-projection.metadata-and-extension-storage
+      statement: 采用产品维护的属性目录、固定业务核心字段及有类型的JSONB扩展值；客户不建立统计模型或自定义执行动作。
+      rationale: 减少字段枚举膨胀及预留空列，满足既有报表的新增展示、筛选和分组需求；存储与接口名称是待评审技术建议。
+      relatedIds: [design-rule.form-projection.product-owned-models]
+    - id: inference.form-projection.unified-entrypoints
+      statement: 建议画布主入口与集中总览调整编辑同一配置并可互相定位，可选AI只提供同一配置的候选；入口主次已确认，互定位等具体交互仍为建议。
+      rationale: 避免不同入口产生重复规则或双重计数；尚未作为已实现或用户已定版的交互写入权威规则。
+      relatedIds: [design-rule.form-projection.unified-replacement]
+    - id: inference.form-projection.current-scope
+      statement: 批次最终产出数量来源已确认，但当前首次完成切片未实现批次/工单产出联动；工作台工序汇总仍只作过程参考。
+      rationale: 截至ac1a395b，ExecutionOutputSummary仅汇总工序良品、不良和报废过程数量；product-process最终产出规则仍planned，未见最终产出写回或工单汇总实现。
+      relatedIds: [DEC-0077-11, DEC-0077-13]
+    - id: inference.form-projection.progressive-configuration-order
+      statement: 建议画布加轻量侧栏，选字段后选用途并引导补齐同一业务记录所需字段，集中入口默认收起详细来源；用途配置模式区分布局编辑，提供单条与子表逐行预览。
+      rationale: 画布优先与渐进展示已确认，DEC-0077-22进一步确认画布内独立同级侧栏及选择/配置/保存连续性；其余选项顺序、引导和客户使用频率仍缺少试用证据。
+      relatedIds: [design-rule.form-projection.optional-use]
+    - id: inference.form-projection.purpose-owned-business-implementation
+      statement: 建议通用配置与投影基础流程加用途独立业务实现，普通新用途主要加定义、业务代码和测试并少改公共页面；用途按业务事实定义，新报表优先复用已有事实。
+      rationale: 支持已确认的低成本可维护二开目标；实现所有权和详细开发范围仍待评审，不能提升为已确认架构。
+      relatedIds: [DEC-0077-15]
+    - id: inference.form-projection.aggregate-before-merge
+      statement: 建议各来源先按目标行粒度分别聚合再合并指标，保留各指标来源，避免原始明细多对多放大。
+      rationale: 跨表单同报表行方向已确认，但同次事件的跨表单关联仍待定；报表汇总不改写原始记录或正式业务事实。
+      relatedIds: [DEC-0077-16]
+    - id: inference.form-projection.trace-and-business-shared-foundation
+      statement: 建议共享画布点选、配置快照和来源定位基础；查找索引检索字段值，业务投影形成有明确语义/粒度的事实，两类用途不要求同一生效时机。本轮独立四菜单与直接来源定位已由DEC-0077-38确认，其余跨报表组织仍待设计。
+      rationale: 两类任务并列且独立已确认，保存后最新草稿/进行中内容可查也已确认；失效历史/A12视图和未定跨报表导航继续保留。当前完成链路是源码事实，不能替代新过程查询契约。
+      relatedIds: [DEC-0077-17, DEC-0077-33]
+    - id: inference.form-projection.context-prefill-source-orthogonal-to-use
+      statement: 建议画布点字段分别设置取值来源（手填/当前生产上下文等）和数据用途，自动带入不是第三种报表用途；身份显示字段只读或受控修改，语义兼容时同字段复用带入与用途配置。
+      rationale: 自动带入能力目标及缺上下文提示/手填登记分支已确认，其他具体交互、取值时机、持久化、重开刷新、编辑覆盖和多设备选择/唯一性未定；不得由设备文本号形成正式使用关系。
+      relatedIds: [DEC-0077-18, DEC-0077-30]
+    - id: inference.form-projection.source-shape-progressive-interaction
+      statement: 建议子表沿每行明细配置列含义，避免逐行创建记录组；主表从一个字段发起业务用途，再引导选择同一明细的其他来源字段。用具体业务名称解释配对，内部数据对象不要求用户先行建模。
+      rationale: 首期两种来源形态及子表交互重点已确认；每行语义、具体引导、命名和行身份机制仍需交互稿核对，不能凭物理表格或字段名称自动确定业务口径。
+      relatedIds: [DEC-0077-19, DEC-0077-14, DEC-0077-17]
+    - id: inference.form-projection.trace-query-catalog-contract
+      statement: 当前目录切片复用既有文本精确/单选来源、稳定身份及同记录条件匹配；新增与显示信息维护先行，不开放改类型或删除。更多类型与生命周期后续设计，新含义未关联历史的补充覆盖已排二期。
+      rationale: 这是明确目录目标下的最小工程范围，不把工程选择写成完整生命周期确认，也不扩大既有查询索引时机。
+      relatedIds: [DEC-0077-20]
+    - id: inference.form-projection.phase-two-report-extension-boundary
+      statement: 建议二期报表定义复用属性身份、正式事实与来源定位，来源绑定不依赖某一张报表；MVP不提前建设报表编辑器、自由公式或通用跨表查询引擎。
+      rationale: 自定义业务报表已明确进入二期；保留扩展边界不等于提前实现全部二期能力，也不确认客户自由建立统计模型。
+      relatedIds: [DEC-0077-21, DEC-0077-01, DEC-0077-15]
+  # 当前实现已明确的查询切片；无依赖开发与知识维护并行，真正未决能力见open-questions及evidenceGaps，不擅建默认规则。
+  unresolved: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: custom-trace-crud-20261014
+        change: 自定义项删除需解除现存表单配置；操作列弹窗提供全选或逐项解除，每条可通过专用双权限API预览当前配置版式并按fieldId/tableId定位。目录锁与模板版本锁协调删除和保存，独立保留实例/DHR证据；无schema迁移。本轮L2权限/审计/并发/实际交互门禁不复用前轮。
+        evidenceReferences: [docs/development/typed-trace-catalog-2026-10-14.md, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/FormLookupCatalogController.java, gmp-platform/frontend/src/pages/system/FormLookupBindingsDialog.tsx, gmp-platform/frontend/src/pages/system/FormLookupBindingPreview.tsx]
+      - area: typed-trace-catalog-20261014
+        change: 8项预置、3项默认及固定展开；自定义日期/数字创建、字段兼容与冻结类型、保存索引、表单/DHR类型化匹配及命中。新增0112迁移允许类型并撤旧4项，不机械改绑SN，不改写实例证据。
+        evidenceReferences: [docs/development/typed-trace-catalog-2026-10-14.md, gmp-platform/backend/src/main/resources/db/changelog/0112-typed-trace-catalog.sql, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java, gmp-platform/frontend/src/pages/reports/TraceQueryPanel.tsx]
+      - area: report-query-ui-20261014
+        change: 当前L2反向查询仅含内容追溯项，移除归属属性和空自定义分组；正向保持原布局。九项中三默认六固定展开，日期范围控件复用dateRanges，自定义添加入口默认隐藏。0113新增预置追溯日期并以原配置更新8087，API兼容/匹配/权限/快照不改，迁移与日期来源链独立验证。
+        evidenceReferences: [gmp-platform/frontend/src/pages/reports/TraceQueryPanel.tsx, gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx, gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx, gmp-platform/frontend/src/pages/form-management/formManagementListStyles.tsx, gmp-platform/frontend/src/pages/workflow-center/WorkTemplateList.tsx, gmp-platform/frontend/src/api/formLookupCatalog.ts, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - area: directional-trace-runtime-20261013
+        change: 实施产品固定业务筛选、表单正反向及DHR两向查询；正向覆盖支持来源内有权且满足条件的已保存实际实例，无追溯绑定不排除。DHR条件可由不同真实关联表单贡献，表单仍同实例/实际行；完整DHR详情标记命中表单及对应字段/实际行。当前错误知识原位改写，不新增旁路DEC，实际实现验证另记不提前验收。
+        evidenceReferences: [docs/development/form-and-dhr-trace-query-review-2026-10-13.md, docs/development/directional-trace-runtime-2026-10-14.md, gmp-platform/frontend/src/pages/reports/TraceQueryPanel.tsx, gmp-platform/frontend/src/pages/reports/DhrTraceReportPage.tsx, gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/TraceReportController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java]
+      - area: report-pages-source-20261013
+        change: 四类独立菜单/路由页面代替共用页面切换用途；列表查询保持各自模型，三业务记录按独立fact逐笔，不开放新的汇总入口。详情直接显示来源原表单并定位主字段或实际子表行。菜单归一化、记录页和共享只读高亮的实现由主智能体完成，本条不提前宣称运行验证通过。
+        evidenceReferences: [gmp-platform/frontend/src/utils/menuManagement.ts, gmp-platform/frontend/src/router/index.tsx, gmp-platform/frontend/src/components/shared/AppLayout.tsx, gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx, gmp-platform/frontend/src/pages/reports/projectionSourceHighlight.ts, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - area: compact-statistics-sidebar-20261013
+        change: L1侧栏交互增量；production显示名改生产报工，不改模型ID或正式完成规则。主表三用途标题均可收起，新增时自动展开；必需/数量二选一及已配来源直接显示，未配可选来源在更多字段内，失效来源仍可修复。移除额外展示字段选择入口，已有配置不自动清除，失效旧展示配置提供明确移除操作。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
+      - area: report-source-sidebar-20261013-followup
+        change: 业务报表字段默认展示；说明移至对应tip、人时说明删除；报工人前后端只接受人员引用或签名，签名读实际签署人。独立QA发现现用FILL_SIGN_FIELD按钮回填文本不能作为报工人，现修正为已认证签署人及已保存signatureId结构，与SIGN_FIELD路径一致。
+        evidenceReferences: [user-confirmed-20261013-report-source-visibility-and-reporter, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java]
+      - area: business-report-fields-implementation-20261013
+        change: 已实现三类逐笔报表、专用列与过滤，数字手填人时、独立报工起止及生产日期、报工人来源和原因分类字典快照适配；模板候选、来源类型校验、正式事实与查询同步修改。原分组增加人时合计，无自动工时算法；基础及独立QA已通过，详细证据见报表复核第8节，后续来源及签名修正的全新独立复验见第9节。
+        evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - area: business-report-field-review-20261012
+        change: 核对用户六张原始截图和冠骋字段到保存链，纠正当前合计键等于完整需求及非分组字段只能下钻的解释；补齐三用途属性与消费者矩阵。原始列表部署配置仍有缺口；我方人时已明确为用户数字字段填写、不计算，报工起止分别采集，不将竞品未查明分组或算法提升为规则。
+        evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - area: configuration-simplification-20261012
+        change: 用户授权按安速康全量调研简化配置；子表新增其他用途渐进展示，主表按独立明细标明角色来源和当前字段参与状态，保存失败单独列出问题并可就地修复后调用原保存流程。只改变设计器交互，不限制原有多用途数据或改变正式来源规则。
+        evidenceReferences: [docs/development/form-projection-configuration-simplification-2026-10-12.md]
+      - area: configuration-feedback-20261011
+        change: 同切片追加L1设计器反馈增量；移除图标常显，主表作用范围明确，顶部保存定位缺项并按角色标红。沿用现有完整性和重复数量约束，不改统计口径、公共Snackbar、数据库或运行校验。
+        evidenceReferences: [docs/development/form-projection-configuration-feedback-2026-10-11.md]
+      - area: clarified-runtime-correction-20261010
+        change: 从文档澄清进入表单侧栏、可空来源及过程追溯的运行修正。新增过程检索不提前形成统计事实，配置与源值继续各自快照及审计；新增迁移仅独立数据库应用。实际实现与验证逐项登记，不复用设计passed作为运行验收。
+        evidenceReferences: [docs/development/form-projection-runtime-correction-2026-10-10.md, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java]
+      - area: draft-progress-and-optional-source-clarifications
+        change: 草稿业务完整性豁免与安全校验保留；空批号/单位及过程追溯已运行修正。无上下文登记/DHR流程仍有差距，不将当前执行保存路径当其实现。
+        evidenceReferences: [docs/development/form-projection-design-clarifications-2026-10-10.md, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java]
+      - area: clarified-production-trace-and-query-semantics
+        change: 主体带入设计保留且生命周期仍待Q17；过程组合查询已改同一实例及同一实际行，不依赖内部配组顺序。正式统计继续按整笔正式业务，不跨来源拼值。
+        evidenceReferences: [docs/development/form-projection-design-clarifications-2026-10-09.md, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java]
+      - area: designer-followup-usability
+        change: 本轮在同画布简化字段追溯含义、子表统计与单列角色入口、主表同笔来源，模板顶部保存统一校验，不单独启用；系统行身份不要求客户维护。总览与侧栏共用状态，额外展示按需选择。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx, docs/development/form-projection-designer-followup-2026-10-07.md]
+      - area: current-lookup-directory-slice
+        change: 新增可审计查找项及显示信息编辑，复用现有文本精确取值；设计器与查询页动态读取同一目录，服务端捕获所选自定义定义；不扩展统计模型和引用来源。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
+      - area: independent-canvas-projection-panel
+        change: 将字段配置中的查找统计模式拆为同一画布独立侧栏；切换不改选择，选新来源保持用途面板，沿用共享映射及保存/撤销。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+      - area: designer-field-source-coverage
+        change: 补齐冠骋设计器追溯/业务字段原始入口、后端注册声明、结论字典和默认/引用取值链的总体来源表，区分显示条件、候选与已实现。
+        evidenceReferences: [docs/development/form-projection-preset-source-review-2026-10-05.md]
+      - area: preset-source-review
+        change: 复核固定三类统计用途、五种查找属性与管理员目录缺口；增补冠骋原始定义及消费者证据、候选分层和实现差异，不新增运行预置项。
+        evidenceReferences: [docs/development/form-projection-preset-source-review-2026-10-05.md, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
+      - area: mvp-trace-and-report-phase-scope
+        change: 2026-10-05阶段先同步查找项目录三角色路径并改造设计器交互，当时目录与动态查询未实现；2026-10-07已接续实现文本目录及既有完成投影的动态条件，范围以本包lookup-directory切片和当日实现记录为准。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - area: first-phase-source-shape-coverage
+        change: 首期配置交互覆盖子表及主表分散字段形成业务明细，子表作为降低配置成本的设计重点；不将普通字段配对场景推迟到首期之外。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - area: template-projection-report
+        change: 统一属性目录和解释器、模板内配置及生产使用时快照、完成事件持久化、报表明细与合计、快照回查。
+        evidenceReferences: [docs/architecture/transaction-traceability-dhr-business-rules.md]
+      - area: template-designer-field-configuration
+        change: 字段设置与查找统计配置分开；普通字段及整子表均提供并列可选的两类用途，子表一次配置列映射，主表引导补齐同一笔业务来源。全表总览与多行模拟填写分成独立页签，继续编辑同一份支持撤销的映射。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/SubTableProjectionConfig.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx]
+      - area: production-final-output
+        change: 已确认指定最终产出工序的正式报工数量是批次最终产出来源，工单汇总批次；实现联动仍在本期之外。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - area: knowledge
+        change: 记录用户确认的用途投影、数量来源、独立质量统计与未实现边界，尚未闭环能力保持planned/internal。
+        evidenceReferences: [docs/knowledge/README.md]
+    transitiveImpacts:
+      - area: trace-membership-query-and-detail-evidence
+        change: 正向读取实例而非依赖内容索引；DHR反向沿实际证据关系查询，不按内容认领。列表、计数、跨表单条件贡献、目录/实例标记与字段/实际行定位共用同一授权来源依据，须联合验证；共享目录和值控件不授予来源权限。
+        evidenceReferences: [docs/development/form-and-dhr-trace-query-review-2026-10-13.md, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java]
+      - area: report-menu-preferences-and-shared-readonly-preview
+        change: 用户保存的旧共用菜单需要幂等归一化，旧URL导向有效入口；共用画布预览增加展示高亮，回归只读字段、子表及签名禁写。来源定位必须从所显示的最近保存/最终冻结快照解析稳定rowKey，不将列表行位置当来源行身份。
+        evidenceReferences: [gmp-platform/frontend/src/utils/menuManagement.ts, gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx, gmp-platform/frontend/src/pages/reports/projectionSourceHighlight.ts]
+      - area: reporter-projection-and-query
+        change: 签名来源只投影签署人身份和名称快照，逐笔列表与人员筛选沿既有reporter属性，不推算人时或改变签署权限。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java]
+      - area: typed-business-facts-and-consumers-20261013
+        change: 主表与子表共用类型化角色、来源校验和快照解释；逐笔列、筛选、详情与既有合计读取同一正式事实。空缺新增值不使用0、今天、创建人填补，也不让筛选后的人时与未筛选数量混合。
+        evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md]
+      - area: source-state-and-report-separation
+        change: 过程追溯需显示已保存内容与状态，无上下文手填对象不建立DHR关系，空单位合计保留其他维度；正式统计与完成快照仍沿各自契约。
+        evidenceReferences: [docs/development/form-projection-design-clarifications-2026-10-10.md]
+      - area: future-custom-report-extension
+        change: 二期报表可复用查找属性与已有业务事实的方向保留；新查找项不自动成为所有统计指标的合法维度，需明确事实归属和兼容。
+        evidenceReferences: [docs/architecture/form-traceability-projection-design.md]
+      - area: future-template-and-report-integration
+        change: 模板可编辑，生产使用时快照、完成事件及报表读取共用稳定映射契约；普通未配置模板保持原路径。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
+    potentialImpacts:
+      - area: competitor-direction-and-permission-evidence-gaps
+        concern: 冠骋GET核心Controller/Service/DTO与部署实际请求缺失；正反向固定数组、目录/实例标记不证明组合粒度、所有状态或完整权限。relatedLotNo原标签为关联批次，不能改称物料批号；笛卡尔积、AUTO_CONNECT、详情条件漏映射和关闭数据/字段规则不能进入我方权威契约。
+        evidenceReferences: [docs/development/form-and-dhr-trace-query-review-2026-10-13.md]
+      - area: competitor-deployed-report-and-detail-metadata
+        concern: 冠骋部署列表metadata/requestSQL及详情buttonparams不可得；原始采集链、六张列表图、原表单详情图和通用trace values不能证明完整运行分组或精确稳定单行高亮，不用该缺口扩大我方统计/身份范围。
+        evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - area: report-grain-and-person-hours-20261013
+        concern: 表头工时向多行复制、多人归属和原因分项可能重复计量，均不在当前切片自动展开；Q4及表头共享保持未决。数字源与日期源的类型收紧需回归已有用途，字典显示不得丢失快照或把ID误当名称。
+        evidenceReferences: [docs/knowledge/open-questions.yaml, docs/development/form-projection-business-report-field-review-2026-10-12.md]
+      - area: unbound-record-storage-and-progress-index
+        concern: 实例表目前object_id非空且保存沿执行上下文；无上下文登记需另行扩展来源与生命周期，不能把字段选择对象当实际归属。保存可查需更新独立过程索引，既不能提前生成正式数量事实，也不能以不明确的异步延迟替代保存后可查契约。
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql, docs/development/form-projection-design-clarifications-2026-10-10.md]
+      - area: customer-query-catalog-runtime
+        concern: 更多支持类型与操作符、定义停用删除和跨记录条件语义仍待设计；当前复用文本精确及同记录查询，旧实例无新绑定的历史补充覆盖排二期。
+        evidenceReferences: [docs/architecture/form-traceability-projection-design.md]
+      - area: cross-form-record-authority
+        concern: 同工序正式来源记录累加，重复记载表只配置查表用途；不同工序不合为批次产量。配置人员误标正式来源仍需培训和预览发现。
+        evidenceReferences: []
+      - area: notebook-and-task-domains
+        concern: 长期记录本及灭菌/检验/放行任务需要各自关联和生命周期来源，不能用表单属性伪造。
+        evidenceReferences: []
+      - area: configuration-usability
+        concern: 选项展示顺序是开发者反馈下的初步设计，尚未有客户制表人员试用或实际使用频率数据。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: query-correction-preserves-business-runtime
+        reason: 本轮修改只读查询、页面入口与命中呈现，不修改生产状态机、电子签名、正式事实采集、单位合计键、DHR真实成员、冻结版本或生产证据，不授予新写权限。
+      - area: report-record-semantics-and-execution
+        reason: 只拆入口及来源只读呈现，不修改解释器、完成状态、保存后追溯时机、最终完成统计、业务fact身份、单位/合计键、真实生产context或DHR成员关系；不删除原合计API或计算。
+      - area: production-signature-and-dhr-lifecycle
+        reason: 不修改签署认证、权限、生产完成条件、DHR归集和冻结成员；按钮签署只修正已认证身份的签名字段回填结构，不自动创建DHR、不做库存动作。
+    compatibilityAndMigration:
+      - area: directional-trace-runtime-compatibility
+        requirement: 新增只读DHR追溯入口及两向查询接口，不重新解释既有绑定、源值、配置快照或实际DHR成员。菜单迁移及数据库变更仅以实际实现记录为准，不提前声称已经执行；无业务数据清理目标，不保留错误设计的运行兼容分支，历史反向/A12仍延期。
+      - area: report-pages-menu-and-legacy-url-20261013
+        requirement: 新路径为/reports/form-trace、/reports/production-records、/reports/scrap-records、/reports/consumption-records；已保存旧/reports/form-projections菜单幂等归一化，旧URL重定向。无schema或业务数据迁移，不改写记录、配置或冻结快照；只撤下合计UI入口而不破坏已有API与键。
+      - area: reporter-source-constraint-20261013
+        requirement: 无数据库结构迁移。旧文本报工人映射不得静默转换为人员或签名；编辑来源时标明不匹配，MVP演示数据可修复或作废。已完成快照不被新模板配置重写。
+      - area: new-report-role-values-20261013
+        requirement: 优先复用既有attributes/details；本次新增可选角色的旧缺失值保持未记录，不伪造人时、生产日期或报工人。MVP旧开发数据允许修复或作废，但未来正确来源快照不重解释；是否需要结构迁移按实际实现记录，不预称已执行。
+      - area: mvp-development-history-policy
+        change: 用户允许旧MVP开发数据修复迁移或作废，不再要求旧试验格式兼容；仅替代相应开发历史保留约束，不取消后续正确数据的使用时快照。本轮仅在独立开发库对显式冻结追溯绑定建立0109索引基线、统一0110主体项显示名并新增0111阶段字段；不改原非开发库或旧完成快照，旧MVP目录整合仍未实施。
+        evidenceReferences: [user-confirmed-20261009-annotation-1, docs/development/form-projection-design-clarifications-2026-10-09.md]
+      - area: current-scope-recording
+        requirement: 0108既有实现新增目录表与常用文本项；2026-10-10在独立edhr_form_projection实际应用0109至0111，新索引只读取实例自己的显式冻结追溯绑定。未来正确数据不凭同名同值回填绑定；旧MVP开发数据按mvp-development-history允许修复迁移或作废，无须新增v1兼容层。
+      - area: future-experimental-code-replacement
+        requirement: 原非开发数据库保持隔离，功能使用独立edhr_form_projection及虚构数据；本功能MVP开发历史允许修复迁移或作废，取消对旧试验数据一律不转换的限制，未来正确数据使用快照继续有效。
+    snapshotImpacts:
+      - area: trace-query-source-version-consistency
+        requirement: 查询、命中数、目录/实例标记与字段/实际行详情沿同一来源依据；过程读取最近成功保存内容，正式业务仍读取完成冻结来源，终止来源沿既有快照。不能按最新值命中却显示旧正文；本轮不建设冻结历史反向索引或A12，不新增OCR/附件全文索引。
+      - area: report-direct-source-highlight-20261013
+        requirement: 过程追溯来源继续读取最近成功保存内容，正式业务继续读取完成投影批次冻结source_json；稳定rowKey只在该显示快照解析。缺失/重复identity不按值或陈旧rowIndex替代，也不要求用户配置额外唯一列；不写入源表单或回填历史。
+      - area: typed-report-role-snapshots-20261013
+        requirement: 新角色的配置随使用冻结，正式完成时保存实际来源值；字典及人员标识和显示值保留快照。字段签署与按钮签署均保存实际签署人标识、姓名和签名证据ID，报工人引用此结构；查询不读取最新模板或当前字典名称替换历史事实，不根据起止重算已保存人时。
+      - area: future-query-catalog-binding
+        requirement: 来源映射继续在使用时进入快照，结果读取当时名称/类型/修订号；当前实现曾对无目录快照旧来源沿v1解释，该旧MVP格式兼容不是未来要求。旧开发数据按新策略处理，未来正确实例不被最新目录/模板静默重解释；完整目录生命周期仍待设计。
+      - area: future-projection
+        requirement: 首次执行或后续挂接表单时冻结当时配置及目录版本；最终值与生产上下文、来源回查读取投影批次快照，不读取最新模板替代。
+    auditImpacts:
+      - area: form-dhr-trace-readonly-runtime
+        requirement: 两向查询及命中定位不创建填写、签署、归属或证据修改动作；表单创建/更新时点不改称业务发生时间。新接口沿既有读取日志与权限链，实际审计核对另记，不伪造写审计。
+      - area: report-direct-source-readonly-20261013
+        requirement: 来源查看和高亮不创建新写动作或新审计语义；保留已有端点日志及授权读取链。查询时不修改源值、签名、完成事件、重试审计或DHR归属，既有投影重试仍沿原权限和原因校验。
+      - area: business-time-and-reporter-20261013
+        requirement: 报工开始、结束、生产日期和报工人是业务来源，审计创建/修改身份与时点继续真实记录、准确命名；不从当前用户或提交时间补业务事实，不改变签署认证、签名证据创建或最终完成时机。FILL_SIGN_FIELD回填复用已有access.sign返回的证据ID及authenticateButtonSigner返回的实际签署人，不把会话操作者替代成签署人。
+      - area: future-query-catalog-management
+        requirement: 新增与显示信息编辑记录FORM_LOOKUP_ITEM审计，与目录写入同事务；并发修订号防止覆盖。不提供改变含义/类型或删除定义的接口，完整停用生命周期仍另行收敛。
+      - area: future-projection
+        requirement: 模板保存沿既有审计，生产执行保存快照并审计；投影重试需审计，批次保留来源。专属投影发布审计退出；变更作废运行模块未闭环。
+    permissionImpacts:
+      - area: form-dhr-trace-query-source-authorization
+        requirement: 表单列表/计数/详情保持form-instances.view与production.execution；DHR追溯及贡献表单还须dhr.instances.view。不能先用无权证据筛出DHR再隐藏来源或泄漏数量；目录管理/候选资格不授予来源访问，不照搬NoPermission关闭规则。精确接口权限及支持来源范围按实际实现验证，不宣称完整多租户能力。
+      - area: independent-report-page-authorization-20261013
+        requirement: 五菜单与路由、查询和source继续同时要求form-instances.view与production.execution；DHR追溯及回查另需dhr.instances.view，原重试还需system.edit。独立菜单或交互高亮不授予填写、签署、附件写入或业务编辑权限。
+      - area: future-query-catalog
+        requirement: 当前目录管理使用system.edit；目录候选允许模板设计权限或已有报表读取资格，均不赋予相互操作权限。记录查询继续原有来源权限，不用目录管理权限读取来源；细粒度只读查询授权另行完善。
+      - area: future-report
+        requirement: 搜索、聚合、来源回查和导出均复用来源授权，报表入口不扩大数据可见范围。
+      - area: template-projection-configuration
+        requirement: 保存追溯映射属于模板设计修改，接口显式要求 master-data.form-templates；仅登录或仅有报表权限不能修改未来投影口径。
+    testImpacts:
+      - scope: report-query-ui-20261014
+        scenarios: [前端目标构建, 正向原布局保持, 三预置默认且其余六项固定展开, 反向无归属区域, 添加查询条件默认隐藏且仅含自定义项, 展开后结果列表可见, 收起保值计数及隐藏条件错误可见, 日期范围提交与重置方向切换, 0113迁移重放与原自定义日期证据保留, 追溯日期绑定兼容和范围命中且不取创建时间, 九项预置删除保护, 本轮知识结构及引用核对]
+        evidenceReferences: [gmp-platform/frontend/src/pages/reports/TraceQueryPanel.tsx, gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - scope: directional-trace-runtime-20261013
+        scenarios: [业务固定条件及目录故障隔离, 无内容绑定的正向已保存实例可查, 模板及未保存输入不可查, 自定义反向项显式绑定及类型兼容, 内容提及其他对象不改归属, 表单同实例同实际行, DHR跨表单条件贡献但不造业务明细, 多命中去重及分页总数, 完整DHR保留其他证据并标记命中表单字段实际行, 当前冻结终止来源一致, 列表条件与详情标记一致, 无权DHR或表单不能贡献或泄漏计数, A12历史范围不提前开放]
+        evidenceReferences: [docs/development/form-and-dhr-trace-query-review-2026-10-13.md, docs/development/directional-trace-runtime-2026-10-14.md, docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/TraceReportAuthorizationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrTraceReportPostgresTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java]
+      - scope: report-pages-source-20261013
+        scenarios: [四独立菜单路由与旧URL重定向, 已保存菜单幂等归一化且权限组合隔离, 三业务逐笔不合并同物料两事实, 原合计API与键保留, 主字段与实际子表行来源定位, 重排行身份定位且同值不误高亮, 缺失或重复identity不猜测高亮, 最近保存与最终冻结来源隔离, 真实浏览器从列表直接看原表单, 只读字段子表与签名不触发写入, 实际context和DHR回查额外权限]
+        evidenceReferences: [gmp-platform/frontend/scripts/verify-menu-management.mjs, gmp-platform/frontend/src/pages/reports/projectionSourceHighlight.ts, gmp-platform/frontend/scripts/test-signature-display.mjs, gmp-platform/frontend/scripts/test-projection-report.mjs, docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md]
+      - scope: compact-statistics-sidebar-20261013
+        scenarios: [用途标题展开收起及新增自动展开, 已配置来源保存重开外显, 未配置可选来源折叠及选择后外显, 必填与数量二选一常显, 错误来源定位修复, 旧展示来源保留与失效时可移除, 三用途主表子表共享交互, 生产报工目录名称]
+        evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md]
+      - scope: report-source-sidebar-and-signature-reporter
+        scenarios: [默认业务字段可见, tip与校验分离, 人员引用及签名候选, 拒绝文本及其他引用, 字段签署人与按钮实际签署人投影, 签名按钮完成与报表过滤, 无图片签名对象展示, 保存重开, 主表子表相邻回归]
+        evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md]
+      - scope: business-report-fields-20261013
+        scenarios: [数字来源人时与起止差值无关, 日期与日期时间来源兼容及无效值校验, 新增字段缺失不补0或审计值, 人员引用或签名报工人与创建人区分, 原因分类字典显示快照及过滤, 主表多笔与子表逐行不串值, 保存重开及使用快照稳定, 最终完成前不产生统计, 专用逐笔列与过滤一致, 原有分组及空单位隔离且人时合计, 统一UI与必要真实交互, 既有权限边界]
+        evidenceReferences: [docs/development/form-projection-business-report-field-review-2026-10-12.md]
+      - scope: configuration-feedback-20261011
+        scenarios: [多项追溯与多统计用途的原始源码核对, 未展开即可移除与撤销, 缺项与重复数量定位, 对应来源标红和修复后消失, 顶部保存与重开, 公共tip不变, 构建与浏览器核验]
+        evidenceReferences: [docs/development/form-projection-configuration-feedback-2026-10-11.md]
+      - scope: runtime-correction-20261010
+        scenarios: [暂存后立即追溯而不产生正式统计, 主表同实例且子表同实际行, 主表和子表条件组合, 文本与兼容引用编号, 重排保持UUID及只读签署保护, 默认值实际持久化, 空批号与空单位隔离, 明细展示不改变合计, 审批阶段可见且不改生命周期, 统一保存重开, 动态查询条件与真实DHR, 0109至0111迁移]
+        evidenceReferences: [docs/development/form-projection-runtime-correction-2026-10-10.md]
+      - scope: third-annotation-knowledge-and-future-runtime
+        scenarios: [草稿缺项可暂存但鉴权不绕过, 无上下文自动带入提示, 手填系统对象不自动绑定DHR, 空批号不造身份, 空单位仅同粒度同空值合计, 不同物料不混加, 草稿与审批中保存内容可查且状态可见, 未保存值不可查, 过程追溯不提前产生正式统计, 二期报表使用已有事实]
+        evidenceReferences: [docs/development/form-projection-design-clarifications-2026-10-10.md]
+      - scope: designer-followup
+        scenarios: [追溯编辑不铺开无关项, 动态新增与失效来源可见, 主表草稿画布调整并启用, 追溯项括号名称在预览保真, 子表多行不串行, 主表统计配对, 保存重开与撤销重做, 两并列用途, 原使用快照不漂移, 规范分组及短窗口滚动]
+        evidenceReferences: [docs/development/form-projection-designer-followup-2026-10-07.md]
+      - scope: lookup-directory-slice
+        scenarios: [目录无数据也进入两处候选, 主表和子表显式关联, 客户定义不能生成统计属性, 服务端覆盖伪造目录解释, 新旧内置名称在来源解释中不漂移, 客户名称括号保真, 同名同值旧表不误命中, 旧条件保留, 同行配对不串行, 权限隔离, 新增编辑审计与并发冲突, 0108空schema迁移及独立库实际迁移]
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/0108-form-lookup-items.sql]
+      - scope: designer-field-source-review
+        scenarios: [前端8种追溯/21种业务与后端41声明区分, 条件性菜单不误为全版本无条件可用, 字典初始化与当前租户/本项目默认区分, 字段默认与人员签署/实际执行归属分开, 候选不新增运行规则, 来源锚点指纹与知识正式校验]
+        evidenceReferences: [docs/development/form-projection-preset-source-review-2026-10-05.md]
+      - scope: preset-source-provenance
+        scenarios: [当前目录与源码一致, LOT/SN生产标识不误为物料批号, 定义与消费者分开, 候选与已实现分开, 不默认关闭未决项, 知识正式校验及独立来源审查]
+        evidenceReferences: [docs/development/form-projection-preset-source-review-2026-10-05.md]
+      - scope: current-mvp-phase-decision
+        scenarios: [DEC-0077-20与21一致, MVP目录三角色链路, MVP统计保持预设报表, 二期自定义报表不误为客户自由建模, 两类来源与快照权限继续适用, Q15-Q17和目录运行细则未被默认关闭]
+        evidenceReferences: [docs/architecture/form-traceability-projection-design.md, docs/development/form-traceability-projection-handoff-2026-10-03.md]
+      - scope: first-phase-source-shape-design
+        scenarios: [子表与主表分散字段均进入首期, 子表优先不缩成唯一范围, 两种形态的查找与统计并列, 具体交互和运行契约仍区分确认与建议]
+        evidenceReferences: [docs/architecture/form-traceability-projection-design.md, docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]
+      - scope: current-knowledge-delivery
+        scenarios: [知识正式校验, 文档内部引用检查, 已确认与候选边界核对, 独立读者和质量审查]
+        evidenceReferences: [docs/agents/quality-verifier.md]
+      - scope: current-first-completion-delivery
+        scenarios: [分组取值, 使用时校验, 模板编辑前后实例快照隔离, 完成与退回, 幂等并发, 部分失败回滚, 来源权限, 同条过滤, 工序与单位隔离, 报表回查, 独立数据库迁移]
+        evidenceReferences: []
+      - scope: field-configuration-usability
+        scenarios: [普通字段及整子表入口, 查找与统计并列且可独立选择, 主表同笔来源引导, 子表列映射逐行生效, 配置草稿与启用, 保存重开与撤销, 总览及侧栏共用配置, 多行预览不串行不写入模板, 左侧滚动, 窄屏布局]
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx, gmp-platform/frontend/scripts/test-projection-preview.mjs]
+    evidenceGaps:
+      - 本轮report-pages-source实现与独立质量需单独收尾，不复用报表复核第8/9节已通过的旧QA。冠骋部署列表metadata/requestSQL及详情buttonparams仍缺失，不能证明完整分组或稳定单行高亮；原始采集支持逐笔工程选择，不阻断本轮入口与来源查看，也不授权原因分项、多人绩效、跨行共享、库存、产出联动或自定义报表。
+      - 同日设计器整体补查未运行冠骋UI或外部SDK，关联批次完整业务语义、当前租户字典及所有联动校验未证明。前端入口有套件/版本/表单模式条件；字段或字典声明不证明业务动作、生产带入生命周期、公式或运行统计已闭环。
+      - 2026-10-05冠骋预置项研究为本机原始源码静态复核，外部SDK与可运行页面未获得；未确认完整检验报表消费链路。枚举与候选名单不代表本项目运行能力，不将未核对的运算、唯一性、索引状态和库存动作提升为规则。
+      - Q14已确认首期两种来源形态，并于2026-10-05收敛MVP查找目录链路和预设统计报表、自定义报表二期；具体交互、阶段出口及其余运行契约仍待定，不把范围确认等同Q9-Q17全部闭环。用户对安速康表单子表常见性的观察是用户反馈，不是本轮原始样本统计。
+      - 当前目录切片复用产品既有文本精确及同记录匹配，新增与显示信息维护不证明完整生命周期已定版。更多类型/操作符、停用删除及跨记录条件需后续设计；新含义对无冻结绑定旧实例的补充覆盖明确二期。自定义报表二期的指标组合/权限/布局细则及客户自建模型Q13没有定版。
+      - Q15保存/暂存后可查询已保存草稿、填报中和审批中已于2026-10-10确认；剩余失效/终止与历史视图另行设计。Q16四类独立菜单与直接原表单字段/实际行定位已于2026-10-13确认，只保留其余跨报表组织与历史入口；Q17自动带入取值时点/刷新/覆盖及多设备策略仍未定版。缺上下文提示与手填系统对象不自动归DHR的分支已确认；同字符串不同类型不混查，所有相关限已有权限。
+      - formTrace已独立于正式完成事实，保存后可查且按真实节点展示阶段；失效/终止历史未覆盖。字段自动带入见Q17，不能把普通默认值或执行context当带入闭环。
+      - 2026-10-03曾新增Q9-Q14六项未来待定；其后Q14首期范围与Q10同一画布独立侧栏入口已分别收敛，其余表头共享、跨表单关联、稳定行标识、客户自建模型及未确认交互细节仍以open-questions为准，不将未回复建议写成确认。
+      - 隐藏UUID已落地并在保存、重开、重排和签署聚焦测试中验证，新保存模板不保留客户行键要求；重试和独立质量证据收尾登记。表头共享给子表统计及同事实总数加明细去重仍未实现。
+      - Q3长期记录本、Q4不良件数与缺陷次数、Q6自由文本身份解析不属于本轮实现范围；最终产出数量来源已确认，但批次/工单联动仍待实现。
+      - A12受控修订作废及规则重建按用户确认暂缓；首次最终来源修订固定为1。
+      - 当前实现只覆盖四个标准用途，没有证明全部客户表单或报表矩阵已实现。
+      - 客户制表人员试用、真实AI效果及生产迁移验证尚未进行。
+      - 配置项实际使用频率及新手理解成本缺少客户试用证据；当前渐进式顺序不能宣称为已验证最优流程。
+  extensionStrategy:
+    selectedPaths: [product-core, configuration, transaction-orchestration]
+    rationale: 产品内核维护固定业务条件、两向查询与来源导航，客户在支持类型内维护追溯目录并显式绑定来源。当前修正采用product-core及已有configuration，不新增运行编排或客户条件分支，保留前轮独立菜单和共享只读定位；transaction-orchestration仍只解释既有正式投影事件链。MVP预设业务记录与二期已有事实报表边界保持。
+    ownershipBoundaries:
+      - owner: template-module
+        responsibility: 字段与分组身份、模板版本及可编辑配置入口；不新增专属发布锁。
+      - owner: projection-module
+        responsibility: 标准模型和受控查询类型、查找目录契约、取值校验、投影批次、业务记录与查询索引；客户定义查找项不修改内核统计规则。
+      - owner: production-and-work-runtime
+        responsibility: 首次执行或后续挂接时校验并保存配置快照、真实执行上下文、最终完成事件与来源权限。
+      - owner: report-and-dhr
+        responsibility: 产品固定业务条件、表单/DHR两向查询、完整DHR命中表单及字段/实际行定位；沿实际证据关系与原权限读取，组合范围、分页去重与来源一致，不改归属。共享预览只提供只读定位，不写源记录或提前实现历史查询。
+      - owner: frontend-menu-configuration
+        responsibility: 本轮五菜单路径（含DHR追溯）及已保存旧菜单的幂等归一化，保留原权限与旧URL有效导向；不迁移业务数据或扩展后端统计。
+  # affectedFiles保留历史实现及后续计划；2026-10-07增量为查找目录、动态候选、显式绑定快照和既有完成查询，不改统计口径。
+  affectedFiles:
+    - path: docs/development/directional-trace-runtime-2026-10-14.md
+      changeType: create
+      reason: 同包跨日运行修正、来源与权限边界、基础及最终验证证据；主开发维护，不新决策包。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/TraceReportController.java
+      changeType: create
+      reason: 固定属性正向与显式绑定反向分离，表单双权限、DHR额外权限及同事务查询和详情。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java
+      changeType: create
+      reason: 同真实DHR跨表单条件、完整证据命中字段/实际行、当前及终止同源核对和去重分页。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/TraceReportFilters.java
+      changeType: create
+      reason: 产品固定筛选白名单和准确命名的日期范围，独立于客户追溯目录。
+    - path: gmp-platform/frontend/src/pages/reports/TraceQueryPanel.tsx
+      changeType: create
+      reason: 表单/DHR两向共用查询面板；获准重设查询区分组，页签不变，三预置默认/其余固定展开，自定义添加默认隐藏，收起保值计数与错误可见，查询语义不变。
+    - path: gmp-platform/frontend/src/pages/reports/DhrTraceReportPage.tsx
+      changeType: create
+      reason: 独立DHR追溯菜单页面，真实DHR列表打开完整目录并定位命中表单。
+    - path: gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx
+      changeType: update
+      reason: 复用DhrEvidenceViewer完整目录标记命中实例和对应字段/实际行，来源只读和依据明确。
+    - path: gmp-platform/frontend/src/pages/dhr-management/DhrWorkspaceNavigation.tsx
+      changeType: update
+      reason: 完整目录和实例列表统一标记命中，不隐藏其他证据。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/TraceReportAuthorizationTest.java
+      changeType: create
+      reason: 两向与DHR额外授权，正向不依赖客户追溯目录。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrTraceReportPostgresTest.java
+      changeType: create
+      reason: 同DHR跨表单条件、保留其他证据、当前/终止同源、真实属性及去重计数。
+    - path: docs/development/form-and-dhr-trace-query-review-2026-10-13.md
+      changeType: create
+      reason: 本轮原始固定条件、表单/DHR两向、用户DHR组合范围及未来查询展示和验收设计；主智能体维护，本体只读取。
+    - path: gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx
+      changeType: update
+      reason: 本轮按路由固定用途并直接展示来源原表单，业务列表逐笔且撤下合计二级入口；2026-10-14 L1仅整理固定查询布局，复用表单列表操作规范。
+    - path: gmp-platform/frontend/src/pages/reports/projectionSourceHighlight.ts
+      changeType: create
+      reason: 本轮从显示快照按稳定rowKey解析目标实际行，不按相同值或陈旧索引高亮。
+    - path: gmp-platform/frontend/src/utils/menuManagement.ts
+      changeType: update
+      reason: 本轮五独立菜单（含DHR追溯）及持久化旧菜单幂等归一化，沿原权限。
+    - path: gmp-platform/frontend/src/router/index.tsx
+      changeType: update
+      reason: 本轮独立路由与旧共用URL重定向。
+    - path: gmp-platform/frontend/src/components/shared/AppLayout.tsx
+      changeType: update
+      reason: 本轮报表菜单沿既有查看和生产来源权限显示。
+    - path: gmp-platform/frontend/src/components/DetailDrawer.tsx
+      changeType: update
+      reason: 本轮来源详情所需布局复用共享抽屉，不扩展写权限。
+    - path: gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx
+      changeType: update
+      reason: 本轮共享只读画布来源高亮，并保持签名禁写。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx
+      changeType: update
+      reason: 本轮只读文档预览提供字段/实际行展示高亮，回归签名及子表。
+    - path: docs/development/form-projection-configuration-feedback-2026-10-11.md
+      changeType: create
+      reason: 本轮用户解释、最小影响及反馈验收证据。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionRemoveButton.tsx
+      changeType: create
+      reason: 当前设计器用途共用移除图标、提示和可访问名称，保留撤销与统一保存。
+    - path: docs/development/form-projection-runtime-correction-2026-10-10.md
+      changeType: create
+      reason: 本轮运行范围、交互使用方式、独立数据库与实际验证证据。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java
+      changeType: create
+      reason: 同保存事务维护过程检索与实际行组合条件，不提前形成正式数量事实。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0109-saved-form-trace-index.sql
+      changeType: create
+      reason: 独立保存索引及仅显式冻结映射的开发基线。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0110-projection-detail-display.sql
+      changeType: create
+      reason: 额外明细冻结展示及主体追溯项显示名统一。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0111-form-instance-saved-stage.sql
+      changeType: create
+      reason: 保存时实际节点阶段展示，保持全局生命周期及配置快照不变。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/StatisticsProjectionConfig.tsx
+      changeType: create
+      reason: 主表同笔字段和整子表复用一份统计来源配置，不暴露独立启用/客户行键。
+    - path: gmp-platform/frontend/src/components/form-renderer/newSubTableRow.ts
+      changeType: create
+      reason: 新行隐藏身份和冻结默认值，不覆盖既有值。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx
+      changeType: update
+      reason: 实际纸面子表新增行接入共享身份和画布默认值，保留旧行及只读边界。
+    - path: gmp-platform/frontend/scripts/test-form-document-preview.mjs
+      changeType: update
+      reason: 真实纸面新增行回调验证默认值优先级、系统身份、已有行保留和禁止只读写入。
+    - path: gmp-platform/backend/scripts/form-projection-runtime-demo.py
+      changeType: create
+      reason: 独立库虚构子表的真实API闭环与朋友复现。
+    - path: docs/development/form-projection-design-clarifications-2026-10-10.md
+      changeType: create
+      reason: 第三轮注释及异步回复的澄清、分阶段实施建议与运行差距。
+    - path: docs/development/form-projection-design-clarifications-2026-10-09.md
+      changeType: create
+      reason: 回应第二轮十五条注释，记录三个已确认结论与原始消费者证据，区分建议和未实现差距。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0108-form-lookup-items.sql
+      changeType: create
+      reason: 独立目录表及12项常用文本含义，不改写旧实例。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java
+      changeType: create
+      reason: 目录新增/显示信息更新、并发版本、事务审计与服务端定义快照。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/FormLookupCatalogController.java
+      changeType: create
+      reason: 管理员写权限与设计/查询角色读权限。
+    - path: gmp-platform/frontend/src/pages/system/FormLookupItemsPage.tsx
+      changeType: create
+      reason: 按列表规范提供目录管理和真实审计详情。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormLookupCatalogPostgresTest.java
+      changeType: create
+      reason: 临时schema验证目录、事务回滚、快照、旧值不回填和子表不跨行匹配。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/FormLookupCatalogAuthorizationTest.java
+      changeType: create
+      reason: 管理/设计/查询角色权限矩阵。
+    - path: gmp-platform/backend/scripts/form-lookup-catalog-demo.py
+      changeType: create
+      reason: 仅独立本地库的虚构目录到完成查询及来源回查API闭环。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx
+      changeType: create
+      reason: 独立用途面板解析当前字段/子表并复用原来源配置，提供明确的选择范围和空态。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx
+      changeType: update
+      reason: 查找与统计同级入口、可访问标签及共享画布侧栏滚动。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx
+      changeType: update
+      reason: 用途模式下点选字段或子表不强制切回字段配置。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasNodeRenderer.tsx
+      changeType: update
+      reason: 直接输入节点及子表标识的选择回调也须保持用途面板；以实际画布点击验证，不仅验证store选择动作。
+    - path: gmp-platform/frontend/scripts/test-projection-panel.mjs
+      changeType: create
+      reason: 聚焦选择保留、用途配置撤销及切换后共享状态。
+    - path: docs/development/form-projection-preset-source-review-2026-10-05.md
+      changeType: create
+      reason: 冠骋原始字段与消费者复核、当前目录缺口、候选清单及来源指纹，区分事实和建议。
+    - path: docs/development/form-projection-gct-report-reference.md
+      changeType: update
+      reason: 既有来源索引链接同日预置项复核，不以历史摘要替代原始源码。
+    - path: docs/development/form-traceability-projection-handoff-2026-10-03.md
+      changeType: create
+      reason: 同一方案短交接入口，列必读、确认/建议/待定、统计基线、当前差异、验收例子和开发前核对。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+      changeType: create
+      reason: 四个标准模型、来源类型校验和预览与运行共用解释器。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java
+      changeType: create
+      reason: 首次完成同事务事件及原子投影，配套worker和registry完成入口。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java
+      changeType: create
+      reason: 同条筛选、查表去重与事实复用、工序单位分组、权限、回查和审计重试。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql
+      changeType: create
+      reason: 批次事件及事实表；已应用的0106遗留列保留但不作为运行入口。
+    - path: gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx
+      changeType: create
+      reason: 复用公共列表规范、来源详情与冻结表单预览。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx
+      changeType: update
+      reason: 全表用途总览和模拟填写分开，支持多行子表预览，复用同一配置，不新增模板发布。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/FieldProjectionConfig.tsx
+      changeType: update
+      reason: 查找与统计并列，主表字段从具体业务用途发起，仅有其他可配对来源时才显示同笔选择。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/SubTableProjectionConfig.tsx
+      changeType: create
+      reason: 整子表一次配置查找列及预设统计用途，复用现有行定位契约。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx
+      changeType: create
+      reason: 侧栏和总览共用来源编辑，必需项先行、补充信息后展开。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts
+      changeType: create
+      reason: 共用目录读取、类型候选及草稿完整性提示，不代替后端权威校验。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionPreview.ts
+      changeType: create
+      reason: 按区域和行构造独立模拟值，不修改模板或正式记录。
+    - path: gmp-platform/frontend/scripts/test-projection-preview.mjs
+      changeType: create
+      reason: 验证多行隔离、同列多用途、空数量及草稿排除，不用缺省零代替缺数据。
+    - path: gmp-platform/backend/scripts/form-projection-ux-demo.py
+      changeType: create
+      reason: 固定本机独立库的虚构主表和子表设计器配置样本；只初始化配置，不绑定或生成生产记录，重复运行保留已编辑样本。
+    - path: docs/development/form-projection-interaction-2026-10-05.md
+      changeType: create
+      reason: 区分本轮交互可验收阶段、完整MVP待实现项及实际测试证据。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx
+      changeType: update
+      reason: 保证侧栏在受限高度中可独立滚动。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx
+      changeType: update
+      reason: 全表配置入口改为用途总览，保持画布入口主次。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx
+      changeType: update
+      reason: 普通字段的侧栏接入数据用途配置。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts
+      changeType: update
+      reason: 字段面板与全表弹窗共用支持撤销的映射更新。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx
+      changeType: update
+      reason: 将字段设计快捷入口的说明标明为全表配置。
+    - path: gmp-platform/backend/scripts/form-projection-demo.py
+      changeType: create
+      reason: 独立库虚构配置及真实生产API演示闭环。
+    - path: gmp-platform/backend/src/main/resources/application-projection.yml
+      changeType: create
+      reason: 数据库、上传目录及端口隔离。
+    - path: docs/architecture/transaction-traceability-dhr-business-rules.md
+      changeType: update
+      reason: 仅修正相关范围说明并链接独立方案。
+    - path: docs/architecture/form-traceability-projection-design.md
+      changeType: update
+      reason: 同步2026-09-30最终产出数量来源、质量统计分离和当前未实现边界。
+    - path: docs/architecture/form-traceability-projection-brief.md
+      changeType: update
+      reason: 同步最终产出来源、质量数量分离和当前联动未实现范围。
+    - path: docs/development/form-traceability-projection-decision-package.yaml
+      changeType: create
+      reason: 同一切片的已确认边界和影响分析。
+    - path: docs/development/form-traceability-projection-running.md
+      changeType: update
+      reason: 记录本轮用户确认、当前正式产出联动未实现、非零值缺省语义及A12延期。
+    - path: docs/architecture/transaction-traceability-dhr-business-rules.md
+      changeType: update
+      reason: 同步跨模块投影和批次/工单产出边界。
+    - path: docs/knowledge/README.md
+      changeType: update
+      reason: 本体角色按已确认内容登记内部设计增量。
+    - path: docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+      changeType: create
+      reason: 记录模型所有权、按需配置和统一替换试验代码的已确认边界。
+    - path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      changeType: create
+      reason: 保存用户原话并区分已有约束与候选设计。
+    - path: docs/knowledge/evidence/form-traceability-projection-ownership.yaml
+      changeType: create
+      reason: 注册仓库内确认证据。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionOutputSummary.java
+      changeType: read-only
+      reason: 核对当前工序过程汇总仍把良品、不良和报废相加为工作台过程参考；不将其作为批次最终产出。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+      changeType: read-only
+      reason: 核对表单用途按模型独立解释，当前没有批次/工单最终产出联动。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceQueryService.java
+      changeType: read-only
+      reason: 核对现有元数据查询与来源权限。
+  acceptanceScenarios:
+    - id: scenario.report-query-ui-catalog-defaults
+      given: 同一目录含预置与自定义项，表单及DHR采用共享查询面板，业务报表使用固定条件
+      when: 查看反向默认条件，添加自定义条件，展开收起属性，查询重置并切换方向
+      then: 预置条件按builtin=true驱动而非写死三个ID，自定义候选不与默认项重复；布局和操作复用表单列表，页签复用作业模板。隐藏已填值不丢失，查询请求保持既有属性/内容边界，业务报表不读取追溯目录；不改变匹配、权限、快照或目录属性。须由本轮前端与浏览器证据验证，不使用历史QA代替。
+      evidenceRequirements: [user-confirmed-20261014-report-query-layout, 前端目标构建, 默认动态条件及展开重置切换浏览器操作, 本轮知识校验, 本轮独立质量]
+    - id: scenario.fixed-business-query-without-trace-catalog
+      given: 三业务记录已有合法事实属性，来源未关联内容追溯项
+      when: 查询人使用对应报表产品固定条件
+      then: 不要求选字段添加条件或维护追溯项，正式事实筛选与客户目录独立；业务页面不读取目录且目录故障不影响查询。实际运行结果须有本轮聚焦证据。
+      evidenceRequirements: [user-confirmed-20261013-fixed-business-filters, 正式知识校验, 固定业务查询及目录故障隔离回归]
+    - id: scenario.forward-trace-includes-unbound-saved-forms
+      given: 已保存表单具有真实工单产品生产对象关系但无内容追溯绑定
+      when: 按真实关联属性正向查表
+      then: 支持来源内有权且满足条件的已保存实际实例可查，不要求内容索引且不伪造内容命中；模板、未保存输入及无权来源不可查，不外推全部业务域。
+      evidenceRequirements: [user-confirmed-20261013-form-dhr-directions, 正式知识校验, 正向无内容绑定及范围排除测试]
+    - id: scenario.dhr-reverse-conditions-from-related-forms
+      given: 同一DHR内上料表记录物料批号，设备表记录设备号，各自有显式追溯绑定和真实证据关系
+      when: 同时按两个条件反向查DHR
+      then: 可由两份已授权且真实关联的表单贡献同DHR匹配，不推定一笔物料设备业务；表单反向仍同实例/实际行。完整DHR详情保留其他证据并标记命中表单及对应字段/实际行，数量与详情保持同一来源依据。
+      evidenceRequirements: [user-confirmed-20261013-dhr-cross-form-condition-reply, user-confirmed-20261013-dhr-detail-fields-and-in-place-correction, 正式知识校验, 跨表单贡献及权限分页测试, 完整DHR命中实例字段与实际行交互]
+    - id: scenario.trace-query-detail-same-evidence-basis
+      given: 当前DHR证据与冻结版本可能具有不同表单内容，且部分来源无权读取
+      when: 查询、统计命中及打开目录标记和原表单详情
+      then: 保持同一授权证据依据，不按最新值命中后展示旧正文，不靠隐藏详情掩盖无权计数；冻结历史反向及A12分期保持，本轮不建设历史反向索引。
+      evidenceRequirements: [docs/development/form-and-dhr-trace-query-review-2026-10-13.md, 当前冻结终止来源与权限测试]
+    - id: scenario.report-pages-source-independent-navigation
+      given: 用户有原报表权限，旧菜单配置可能含共用追溯与统计入口
+      when: 打开菜单，分别进入表单追溯、报工、报废和消耗，再重载或访问旧URL
+      then: 四入口分别进入固定用途页面，已保存菜单归一化幂等且旧URL有效；无权限组合不能靠新路径扩大可见范围。
+      evidenceRequirements: [菜单与路由聚焦测试, 权限组合核对, 真实浏览器导航, 本轮独立质量验收]
+    - id: scenario.report-pages-source-two-identical-material-facts
+      given: 同一来源表单两实际行保存同物料和相同数量但具有不同稳定rowKey，最终完成后分别形成独立消耗fact
+      when: 查询消耗记录并打开第二笔详情
+      then: 显示两条独立记录且直接打开原表单，只定位第二个真实行；不按同值合并或误高亮第一行，不提供记录/合计二级切换，已有合计API和键不删除。
+      evidenceRequirements: [逐笔记录及来源rowKey聚焦测试, 显示快照重排与缺失重复identity测试, 真实来源详情浏览器核对, 本轮独立质量验收]
+    - id: scenario.report-pages-source-snapshot-and-readonly
+      given: 过程追溯命中最新已保存内容，业务记录具有最终冻结来源，原表单包含签名及子表
+      when: 从两类记录直接打开来源，检查字段/行定位并尝试只读控件
+      then: 各自读取正确来源，实例模板和context不被当前配置重解释；无签名、保存或子表修改写动作，实际DHR关系及额外回查权限保持。
+      evidenceRequirements: [来源端点与快照静态核对, 只读签名/预览聚焦回归, 真实浏览器直接来源查看, 本轮独立质量验收]
+    - id: scenario.saved-progress-trace-before-completion
+      given: 有权限的填报人暂存了包含追溯来源值但尚未完整的表单
+      when: 查询人员在暂存成功后查询该已保存值
+      then: 可找到来源与其草稿/进行中状态，未保存变化不命中，不提前生成正式统计；2026-10-10已实施并用真实保存/查询API及聚焦测试验证。
+      evidenceRequirements: [user-confirmed-20261010-saved-progress-trace-reply, 正式知识校验, 独立知识审查, 保存与查询真实集成验证]
+    - id: scenario.unbound-manual-object-is-not-dhr-owner
+      given: 表单没有生产上下文，用户填选系统内B001
+      when: 保存登记并执行内容查询
+      then: 这是记录中登记的对象而非自动取得的生产/DHR归属；配置自动带入时明确提示无上下文，正式DHR关联另走业务流程。
+      evidenceRequirements: [user-confirmed-20261010-annotation-1, 正式知识校验, 独立知识审查]
+    - id: scenario.optional-lot-and-unit-grouping
+      given: 物料消耗记录未填批号或单位
+      when: 核对完成校验与合计规则
+      then: 投影不因该空值阻断，空值不推断身份或单位，空单位仅在同用途/对象/工序/物料/批号的空单位组累计，不与明确单位混算；2026-10-10已实施并用虚构API及聚焦测试验证。
+      evidenceRequirements: [user-confirmed-20261010-annotation-3, user-confirmed-20261010-annotation-6, 正式知识校验, 独立知识审查]
+    - id: scenario.mvp-development-history-policy
+      given: 本功能旧MVP开发数据与新方案不一致
+      when: 核对迁移和兼容要求
+      then: 允许修复迁移或作废，不要求旧格式双轨兼容；本轮只在独立开发库应用0109至0111，不改原业务库和旧完成快照，未来正确数据使用时快照仍有效。
+      evidenceRequirements: [user-confirmed-20261009-annotation-1, 正式知识校验, 独立知识质量审查]
+    - id: scenario.owning-production-trace-item-semantics
+      given: 表单真实所属生产对象A，内容可能提及B
+      when: 解释预置生产批次SN与DHR归属
+      then: 预置项表示本单所属A，字段不能改绑真实归属；内容提及B不把该表单纳入B的正式DHR。自动回写仍未实施；来源详情可核对真实归属与内容命中位置。
+      evidenceRequirements: [user-confirmed-20261009-annotation-13, 正式知识校验, 独立知识质量审查]
+    - id: scenario.trace-query-same-actual-row
+      given: 同一子表两行分别物料M1批号L1及物料M2批号L2
+      when: 查询物料M1且批号L2并结合主表条件
+      then: 主表按同表单匹配，明细组合必须命中同一实际行，不跨行拼接，不由内部配置组或添加顺序决定；2026-10-10已实施并经PostgreSQL与真实API验证。
+      evidenceRequirements: [user-confirmed-20261009-annotation-15, 正式知识校验, 独立知识质量审查]
+    - id: scenario.lookup-catalog-ready-slice
+      given: 管理员新建文本查找项，尚无绑定与填写值
+      when: 制表人员打开兼容字段候选，查询人员打开条件候选
+      then: 两处均提供新项；无结果正常返回空集，不按旧同名字段或同值自动回填；显式配置的新实例保存后可查到字段或子表行，正式统计仍等最终完成。
+      evidenceRequirements: [真实PostgreSQL集成测试, 方法权限测试, 迁移与实际API闭环, 浏览器新增与查询验证]
+    - id: scenario.independent-canvas-projection-panel
+      given: 画布已选择普通字段或整子表，来源配置有未保存修改
+      when: 切换字段配置与查找统计侧栏，或在用途面板点选另一来源
+      then: 保持画布与选中位置，显示对应字段/子表用途；配置、撤销及保存共用原链路，空白或不支持的来源只显示指引，不自动启用用途。
+      evidenceRequirements: [前端聚焦测试, 浏览器主表/子表交互, 保存重开及撤销, 侧栏滚动与窄屏核对]
+    - id: scenario.projection-designer-preset-source-review
+      given: 用户要求总体参考冠骋表单设计器追溯与业务字段，现有目录仍固定且MVP统计维持三类
+      when: 补核对原始前端入口、后端完整声明、字典初始化及默认/引用取值链
+      then: 总表覆盖8种追溯/21种业务入口与其余声明差异，按含义/用途/属性/来源/动作提炼候选，不新增运行默认或关闭未决项
+      evidenceRequirements: [docs/development/form-projection-preset-source-review-2026-10-05.md, 原始前端/后端及迁移锚点指纹, 知识正式校验, 本轮独立质量审查]
+    - id: scenario.projection-preset-source-review
+      given: 2026-10-05调研时目录仍是固定五种查找属性与三类统计用途，用户要求参考冠骋原始字段提炼预置项
+      when: 核对字段定义、实际反查及报表消费者并提出候选
+      then: 明确调研时管理员目录未实现，区分生产LOT/SN与物料批号、度量维度与业务动作，候选不改运行默认或关闭未决项；后续10-07目录实现不改变该历史调研证据
+      evidenceRequirements: [docs/development/form-projection-preset-source-review-2026-10-05.md, 原始源码锚点及指纹, 知识正式校验, 独立来源质量审查]
+    - id: scenario.projection.mvp-customer-trace-query-catalog
+      given: 管理员定义灭菌锅次查找项，两个表单的普通字段或子表列名称不同但关联同一项
+      when: 查询人员按该项输入值，在明确索引范围和权限内查询
+      then: 按同一查询含义查到授权来源及准确命中位置，无需为该项新增硬编码类别或配置业务统计；文本精确目录、两类来源绑定及保存后查询链已实现，更多类型/操作符及历史视图另行设计，不代表完整MVP。
+      evidenceRequirements: [DEC-0077-20, 目录与两类来源绑定及授权查询测试, 保存后查询运行验证]
+    - id: scenario.projection.mvp-preset-statistics-phase-two-custom-reports
+      given: MVP与二期交付范围需要区分
+      when: 核对预设业务报表和客户自定义报表能力
+      then: MVP业务统计保持预设报表，自定义业务报表进入二期；保留扩展边界且不取消两类用途或两类来源，不把二期方向解释为任意模型/公式/跨表关联已确认。
+      evidenceRequirements: [DEC-0077-21, 设计简版主稿与交接入口一致核对]
+    - id: scenario.projection.first-phase-source-shape-coverage
+      given: 首期设计包含子表及分散在主表的多个字段，分别用于查找或组成正式业务明细
+      when: 核对首期范围与交互建议
+      then: 两种来源形态均覆盖，子表为交互重点，主表明细配对不被延后；2026-10-10已落实统一侧栏和系统行身份，表头共享及其他未实现契约仍按对应待定项处理，不宣称完整MVP。
+      evidenceRequirements: [用户本轮范围澄清, DEC-0077-19, 后续两种来源形态的交互与运行验证]
+    - id: scenario.projection.trace-only-configured-field-search
+      given: 表单仅将设备号等字段配置为查找与追溯，未配置任何业务统计用途
+      when: 在已明确索引生效范围内，授权用户按相应信息类型及字段值查询
+      then: 能找到准确原始实例及命中字段/明细位置，不生成报工报废消耗统计明细；2026-10-10保存后独立追溯索引和来源页面已实施并验证。
+      evidenceRequirements: [用途独立选择核验, 来源类型及位置和权限核验, 保存后独立索引聚焦运行测试]
+    - id: scenario.projection.trace-types-and-source-authorization
+      given: 批次号和设备号具有相同字符串，另有无权来源
+      when: 按明确检索信息类型查找所有相关记录
+      then: 不混查不同类型，不泄露无权记录及数量，命中不形成正式谱系设备关系或工序身份，不覆盖执行context；此为验收期望。
+      evidenceRequirements: [类型范围和授权说明, 后续检索权限运行验证]
+    - id: scenario.projection.context-ownership-and-configured-prefill
+      given: 批次B001工序P10的真实执行上下文启动表单，配置业务统计及上下文带入字段但没有检索用途
+      when: 按后续明确的带入生命周期展示字段并形成正式统计事实
+      then: 事实归属由真实B001/P10执行上下文确定，所配字段可显示对应信息，不依赖额外手填或检索配置；具体带入时机持久化刷新编辑及多设备策略仍待定，此为验收期望。
+      evidenceRequirements: [执行context与字段展示的分别核验, 带入生命周期确认, 后续聚焦运行与快照测试]
+    - id: scenario.projection-cross-form-independent-metrics
+      given: 同一明确统计范围表A良品90、表B不良5，两者分别有正式来源
+      when: 后续实现同报表行展示与来源回查
+      then: 两指标并列且分别回查，不自动扣产出或算良率，不默认同次事件关联；这是验收期望，不是已实现声明。
+      evidenceRequirements: [统计范围和来源说明, 后续聚焦运行测试与独立质量验收]
+    - id: scenario.projection-cross-form-missing-metric
+      given: 同一明确范围表A有效，表B无正式数据
+      when: 后续查询同报表行
+      then: A仍可展示，B保持无正式数据而不填真实0；这是验收期望。
+      evidenceRequirements: [缺失值语义与来源回查, 后续聚焦运行测试]
+    - id: scenario.projection-summary-detail-same-fact
+      given: 同一事实表头总数与子表明细并存，另有独立多次正式记录
+      when: 后续合计正式业务数据
+      then: 同事实表头与明细不重复累计，独立多次记录仍可累计，正式来源选择可解释；这是验收期望，当前仍有静态风险。
+      evidenceRequirements: [正式来源粒度说明, 后续重复计数与独立记录测试]
+    - id: scenario.projection-new-purpose-old-snapshot
+      given: 旧实例已按START或ATTACH_FORM冻结配置
+      when: 模板新增用途或字段
+      then: 旧实例冻结配置不改写，新使用读取当时配置；这是验收期望，保留既有历史隔离规则。
+      evidenceRequirements: [冻结前后配置对比, 后续快照隔离测试]
+    - id: scenario.projection-field-configuration
+      given: 制表人员在表单设计画布选中普通字段
+      when: 从数据用途先选查表或正式业务明细、再选字段含义，必要时加入同条明细并保存
+      then: 无需打开全表弹窗即可编辑来源；保存重开后回显，全表入口先显示摘要并能展开同一配置；模拟值不保存。
+      evidenceRequirements: [前端构建, 设计器检查, 独立库浏览器保存重开]
+    - id: scenario.projection-design-brief-and-handoff
+      given: 朋友阅读简版，后续开发上下文阅读完整方案
+      when: 分别理解客户配置过程和定位开发起点
+      then: 简版以实例解释配置与报表复用，明确首次完成交付与未覆盖范围；开发版提供接手顺序、约束、问题依赖及阶段出口，二者业务含义一致。
+      evidenceRequirements: [独立读者审查, 两版一致性检查, 本地链接检查]
+    - id: scenario.projection-design-customer-responsibility
+      given: 读者只阅读设计文档
+      when: 判断谁定义统计模型和扩展属性
+      then: 能确认由产品方维护，客户只配置来源，不要求客户建模。
+      evidenceRequirements: [独立读者审查]
+    - id: scenario.projection-design-maturity-and-scope
+      given: 文档包含原型、当前源码、候选设计与实施计划
+      when: 读者判断可交付范围和剩余问题
+      then: 能区分已确认边界、待评审实现、现有能力与后续问题，不误认全部矩阵已实现。
+      evidenceRequirements: [原始源码核对, 文档一致性检查]
+    - id: scenario.projection-batch-final-output-quantity
+      given: 生产对象按已确认配置具有指定最终产出工序，正式报工记录可从配置用途来源取得数量
+      when: 未来实现批次和工单产出投影
+      then: 批次只读取该工序正式报工数量，工单汇总批次；不跨工序相加，不把不良或报废自动加减该值，也不将缺少正式生效数据记为实际零。实现需保留用途快照并另行完成运行验证。
+      evidenceRequirements: [用户确认, 知识正式校验, 最终产出运行实现与独立质量验收]
+    - id: scenario.projection-design-branch-sharing
+      given: 用户希望在GitHub功能分支向朋友展示
+      when: 阅读协作与演示计划
+      then: 本目录功能分支可推送，分支不隔离数据库；朋友按运行说明在空的独立数据库迁移和运行虚构演示。
+      evidenceRequirements: [Git状态只读核对, 文档审查]
+    - id: scenario.projection-configuration-feedback
+      given: 主表或子表用途不完整、来源失效或同用途数量重复，部分卡片尚未展开
+      when: 制表人移除用途、撤销，或点击顶部保存
+      then: 移除图标在未展开卡片中可用且撤销恢复映射；保存未通过时保留修改，定位区域与用途并显示具体待配置角色，修复后错误消失，公共tip和业务校验不变。
+      evidenceRequirements: [聚焦组件与配置测试, 浏览器交互, 独立质量结果]
+    - id: scenario.projection-main-multiple-details
+      given: 主表有两组独立物料、批号及数量字段，子表已有一项统计用途
+      when: 新增第二条主表明细、切换字段或检查子表配置
+      then: 两条主表明细分别显示编号和角色来源，当前字段参与状态明确，新增不自动复制数量；子表其他用途按需展开且已有配置保留。
+      evidenceRequirements: [聚焦组件测试, 浏览器真实交互, 独立质量验证]
+    - id: scenario.projection-focused-save-correction
+      given: 多条主表或子表用途配置存在缺失或来源冲突
+      when: 点击保存并逐项修正
+      then: 专门的校验弹窗仅列本轮待处理项，标红对应控件，修好项保留完成反馈；补齐后重新校验并调用原保存，失败保留修改，成功关闭弹窗。
+      evidenceRequirements: [浏览器保存与重开, 聚焦校验测试, 独立质量验证]

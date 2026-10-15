@@ -1,0 +1,66 @@
+qualityResult:
+  result: passed
+  baseCommit: d54aae72c4ee7bce8d62b73cf8cee8fe1ef0030d
+  headCommit: d54aae72c4ee7bce8d62b73cf8cee8fe1ef0030d
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-projection-business-report-field-review-2026-10-12.md
+      - docs/development/form-traceability-projection-decision-package.yaml
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+      - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+    excludedPaths: [output/, gmp-platform/frontend/output/]
+    untrackedPaths: [output/, gmp-platform/frontend/output/]
+  knowledgeBaselineVersion: 0.3.24
+  checks:
+    - id: check.person-hours-user-definition
+      required: true
+      category: requirements
+      description: 两项定义与本轮用户原话一致，未把解释示例提升为自动计算或逐人工时模块要求。
+      method: inspection
+      command: git diff -- docs/development/form-projection-business-report-field-review-2026-10-12.md docs/development/form-traceability-projection-decision-package.yaml docs/knowledge
+      outcome: passed
+      evidence:
+        - DEC-0075-35与报表复核第6节明确工时为投入人时，报工时间分别为实际业务开始和结束。
+        - 表单创建、提交、最终完成与投影审计时间不得冒充实际业务起止时间；多人例子仅解释人时含义。
+        - 自动算法、签名人数乘法、多人分摊、表头共享、必填默认与生产日期派生均未擅自确认。
+    - id: check.person-hours-knowledge-boundary
+      required: true
+      category: ontology
+      description: 同切片局部替代陈旧待定解释，保持指定内部语义及未实现状态。
+      method: inspection
+      command: 阅读知识README、开放问题、DEC-0075、用户确认证据及同一decisionPackage影响分析
+      outcome: passed
+      evidence:
+        - baseline仍为0.3.24，DEC-0075-35为specified/internal，没有新增verified/runtime声称。
+        - 本轮只收敛人时及报工起止定义；Q4、Q6、表头共享和其他开放问题保持原范围。
+        - 我方用户确认没有倒写成冠骋已证实采用人时算法；原部署报表证据缺口继续保留。
+        - 修改仅五个设计与知识文档，无运行代码、接口、数据库或快照变化；未来跨模块影响与扩展路径沿原L2研究分析保留。
+    - id: check.person-hours-structure
+      required: true
+      category: documentation
+      description: 差异格式与修改的YAML可解析。
+      method: command
+      command: git diff --check；ruby YAML.load_file解析decisionPackage与DEC-0075
+      outcome: passed
+      evidence:
+        - git diff --check无输出且退出0。
+        - 两个YAML文件解析均输出PASS。
+    - id: check.person-hours-formal-validation-evidence
+      required: true
+      category: ontology
+      description: 独立读取本体智能体执行的正式知识测试结果，不重复完整测试。
+      method: inspection
+      command: cat gmp-platform/backend/target/surefire-reports/com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.txt
+      outcome: passed
+      evidence:
+        - Tests run 59，Failures 0，Errors 0，Skipped 0。
+        - 报告修改时点2026-10-12 23:52:32晚于DEC文件23:52:23，覆盖本轮知识修改。
+  findings: []
+  residualRisks:
+    - id: risk.report-time-runtime-not-delivered
+      description: 本轮只验证定义与知识补录，尚未交付新增工时和起止时间的运行采集、校验或报表。
+      impact: 不可将本轮质量通过作为业务运行验收。
+      mitigation: 后续实现切片按已确认定义及明确的来源粒度完成聚焦测试和适用的真实交互验证；本轮无代码变更，未运行应用E2E、数据库或UI验证。
+  blockingConditions: []

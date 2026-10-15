@@ -1,0 +1,104 @@
+# 追溯投影开发环境
+
+本功能分支为 `form-traceability-projection`，从 `edhr-dev` 的 `f2710af9ea717e760fef456cad09d6304c7f4e55` 创建，直接使用项目目录。
+
+**2026-10-10当前运行增量**：保存后独立过程追溯、同实例/同实际行条件、隐藏系统行身份、可空批号/单位、额外明细展示和画布侧栏优化已实现。新增0109–0111，独立库及8087/3007沿用。当前范围及证据以[本轮运行修正记录](form-projection-runtime-correction-2026-10-10.md)为准，下方早期日期保留当时证据。
+
+2026-10-07目录切片：新增“系统 → 系统管理 → 追溯项管理”，动态提供设计及追溯条件，沿用已完成投影查询和使用时快照。0108新增目录表及12项文本含义。产品统一称“追溯项”，历史“查找项”同义。当前真实范围、验证及新增虚构演示脚本见[目录实现记录](form-lookup-catalog-2026-10-07.md)；下文旧日期的未实现说明按当时状态解释，独立索引和完整MVP仍未交付。
+
+同日引用补修：原生来源新增生产批次、SN、工单、工序；兼容预置追溯项可同时接受文本与引用编号。实际范围、矩阵及验证见[引用补修记录](form-projection-reference-followup-2026-10-07.md)。本轮不新增迁移，沿用下面的独立数据库和端口；自定义追溯项引用兼容、文本实体解析与旧数据补索引仍未实现。
+
+2026-10-03仅补录文档并只读核对源码，没有执行下文启动、演示或业务测试。原开发会话先读[交接入口](form-traceability-projection-handoff-2026-10-03.md)，核对实际路径/分支/worktree及未提交文件后再定开发计划；历史运行结果不证明本轮新增验收例子已实现。
+
+同日追加需求：查找/追溯与业务统计是并列可选任务，允许仅配其一、都配或都不配。当前`formTrace`仍在最终完成后进入成功批次查询；独立索引的其他状态范围/更新时机和结果页面待定，不从统计时机推定。统计事实归属由执行上下文提供，不要求手填同名字段或配置检索用途；部分字段可配置上下文自动带入是新要求，具体生命周期与多设备策略待定，不能据当前上下文存在就宣称字段带入已实现。详情见主设计第6.6/6.7及18节。
+
+2026-10-05开始交互改造：本轮覆盖普通字段与整子表的渐进配置、全表用途总览和独立多行模拟预览，继续使用v1映射。客户可维护查找项目录、系统行身份及独立索引状态契约尚未完成；不要将此次界面改造等同完整MVP。实际验证见[本轮交互记录](form-projection-interaction-2026-10-05.md)。
+
+## 隔离与启动
+
+依赖：Java 21、Maven、Node/npm、PostgreSQL。先安装前端依赖；后端构建也会构建 DHR 打印资源。
+
+```sh
+git fetch origin
+git switch form-traceability-projection
+cd gmp-platform/frontend
+npm ci
+```
+
+在本地 PostgreSQL 创建空数据库（不要从现有业务库复制真实数据）。已有仓库开发账号 `edhr` 时直接创建；没有该账号时先按项目本地开发说明创建账号，或自行创建专用账号并用下述环境变量配置。数据库创建者需要本机建库权限：
+
+```sh
+createdb -O edhr edhr_form_projection
+```
+
+后端在 `gmp-platform/backend` 启动，Liquibase 自动迁移独立库：
+
+```sh
+mvn spring-boot:run -Dspring-boot.run.profiles=projection
+```
+
+前端在 `gmp-platform/frontend` 启动：
+
+```sh
+VITE_API_PROXY_TARGET=http://localhost:8087 npm run dev -- --port 3007 --strictPort
+```
+
+数据库账号、密码和 URL 可以用 `PROJECTION_DATABASE_USER`、`PROJECTION_DATABASE_PASSWORD`、`PROJECTION_DATABASE_URL` 覆盖；本地默认凭据沿用仓库开发账号。不要将生产连接或密钥写入提交。上传目录默认独立为 `uploads-projection`，可用 `PROJECTION_UPLOAD_DIR` 指定。只启用 `projection` profile，不同时启用 `dev`。
+
+端口 8087/3007 分别对应本功能后端和前端；已有 5432 数据库服务可共用，数据库名称独立。Git 分支本身不隔离数据。切回其他分支前停止本功能进程，避免同目录热更新加载其他分支文件。
+
+## 接手时的只读清点
+
+2026-09-29：原 `edhr_dev` 有 3 个模板版本、13 份实例（11 完成、2 活动）；1 个模板版本含旧 `businessPurpose`。本功能不删除、转换或重建这些历史数据。无关 `output/` 和 `gmp-platform/frontend/output/` 不进入提交。
+
+## 虚构演示
+
+后端启动成功后，在 `gmp-platform/backend` 运行：
+
+```sh
+python3 scripts/form-projection-demo.py
+```
+
+脚本只允许本机 `edhr_form_projection` / `8087`，需要 Python 3、可连接该库的 `psql` 与开发管理员登录。`psql` 沿用本机 PGUSER/PGPASSWORD 等连接配置；`PROJECTION_DEMO_PASSWORD` 可覆盖初始化管理员密码（默认沿用仓库初始化值）。脚本不打印令牌。
+
+脚本创建 `PROJECTION-DEMO2-*` 虚构主数据（ID 980001–980020），随后通过真实 API 启动生产执行、暂存、最终完成并等待投影。断言暂存不投影、两个工序各100件、4条消耗明细、同条条件不跨组误配、使用时快照中的来源值及真实DHR关联。重复运行成功样本不会改写完成记录。运行前不要自行占用该虚构ID区间。
+
+访问 `http://localhost:3007`，菜单“记录 → 报表 → 追溯与统计”。本机还保留早期虚构样本作开发证据，可展开筛选并输入生产对象编号 `PROJECTION-DEMO2-BATCH` 只看当前演示。新拉取环境只会产生当前演示样本。表单追溯按实例去重，展开详情查看所有命中；报工、报废、消耗可切换“来源明细／按工序用途合计”。
+
+在表单设计画布选择字段或整个子表，点击左侧“查找与统计”。字段关联追溯项；整子表统计一次对应各列，各行共用。单列说明来自哪张子表及承担什么角色，修改切换整表；主表在同一侧栏选择预设业务并配齐同笔字段。顶部“保存”统一校验和保存，无需单独启用或客户行唯一字段；系统维护行身份。“用途总览”用于核对与模拟，模拟值不入正式报表。模板仍可编辑，使用时复制配置，旧实例不随模板变化。运行暂存允许业务缺项，保存即可追溯；正式统计仍等最终完成。有审批流程沿原引擎决定完成时机。
+
+可选的设计器演示样本（仅本机独立库，虚构配置，不绑定生产）：
+
+```sh
+python3 scripts/form-projection-ux-demo.py
+```
+
+脚本在`edhr_form_projection`创建`PROJECTION-UX-20261005`及V1，包含主表分散字段和子表列，预配子表消耗用途。新建时占用984001–984002；已存在同编码则保留全部编辑结果。脚本只写配置样本，不生成正式业务记录；初始化不作为用户操作审计证据，后续界面保存仍走原API审计。不要把领料数量直接视为实际消耗，或将同一事实的表头总数和子表明细同时配置为正式统计来源。
+
+引用配置操作：选中主表引用字段或子表引用列，在“字段配置”选择“引用对象”、显示内容和必要筛选；在“查找与统计”关联兼容的追溯项，再点顶部“保存”。例如批次引用可显示工单号，但“生产批次/SN”追溯仍取选择时保存的生产对象编号。原生选择不依赖勾选用途；工序可原生选择，当前没有对应预置内容追溯项。追溯在成功保存后可查，正式统计在最终完成后生成；文本批号与引用批号可按同一追溯项命中，生产和DHR归属仍沿真实执行关系。旧引用不自动补编号，新增引用追溯配置遇到无编号旧值需重新选择；旧实例继续使用原快照。
+
+## 验证与范围
+
+本轮可额外执行 `python3 scripts/form-projection-runtime-demo.py`，覆盖整张子表的过程追溯、默认值、系统行身份、空批号/单位、额外明细及最终正式结果。只在本机独立库8087运行，完整说明见本轮记录。
+
+```sh
+# backend；真实PostgreSQL测试在随机临时schema内执行并清理
+PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_form_projection \
+  mvn -Dexec.skip=true -Dtest=FormProjectionInterpreterTest,FormTraceIndexServiceTest,FormTraceIndexPostgresTest,FormProjectionPostgresTest,FormProjectionAuthorizationTest,ProductionExecutionFormValuesTest,ProductionExecutionEngineTest,ProductionExecutionIntegrationTest,TemplateModelingControllerTest,TemplateProjectionAuthorizationTest,FormFillSnapshotTest,FormLookupCatalogPostgresTest,FormInstanceRecordStageTest,BusinessKnowledgeModelTest test
+# frontend
+node --test scripts/test-projection-panel.mjs scripts/test-projection-preview.mjs scripts/test-projection-source-editor.mjs scripts/test-runtime-row-values.mjs scripts/test-form-document-preview.mjs
+npm run verify:template-designer-react
+npm run build
+```
+
+测试 DB 环境变量缺失时 PostgreSQL 集成测试会跳过；不能把跳过当通过。不要并行运行多个 Maven 测试进程共享同一 `target/`。2026-09-29 初始交付已运行空库全量 Liquibase、真实演示 API 闭环及浏览器来源回查；此前独立质量结果见同目录 `form-traceability-projection-quality-result.yaml`。改为使用时快照后，主开发重新运行上述139项测试（零失败、零跳过）、前端构建，并在隔离库的虚构模板上验证旧版本仍可保存；本体核对结果为 `updated`。首次独立复验发现设计保存接口缺少显式模板管理权限，修复前结果见 `form-traceability-projection-quality-use-time.yaml`；补权限后由未参与修复的全新质量实例重跑139项测试、构建和浏览器回归，最终结果 `passed`，见 `form-traceability-projection-quality-use-time-final.yaml`。独立验证未重演来源审批签署提交或生产降级演练。
+
+交付四项标准用途：表单内容追溯、正式报工、报废、物料消耗。显式追溯用途在保存／暂存事务更新最近保存索引；正式统计在最终完成后产生待处理事件，成功后可查正式结果。无用途的表单保留原路径，不强制生成投影，实际生产关联及DHR证据独立保留。表单完成与待处理事件同事务，消费者原子写入结果；失败保留来源及完成状态，系统管理员填写原因后可重试，报表明确提示待处理／失败。生产工作台旧汇总标为过程参考。无采集或无正式生效数据表示当前无结果，不代表实际数量为零。此前分支已应用的 `projection_frozen_json` 列为演示遗留列，当前运行与界面不再读取；已启动生产执行的 `snapshot_json` 保持原样。
+
+用户已接受首次完成范围：A12修订／作废及规则重建未覆盖；首次来源修订为1。长期记录本、不良原因件数／缺陷次数、文本自动解析实体、库存、复杂谱系、AI、批次／工单最终产出联动和客户制表试用未实现。2026-09-30已确认批次最终产出取配置的最终产出工序正式报工数量，工单汇总所属批次，不跨工序相加；字段必须表达约定产出语义，不强制映射固定良品字段。不良与报废分别统计且不自动加减最终产出，计算产出不要求额外质量表单。同一表单可配置多种用途，指标可在同一报表展示。质量比率、对账、倒扣另行确认。没有采集或没有正式生效值不表示实际为零。此来源规则已确认，但批次/工单联动仍未实现；工序汇总不能直接作为批次产量。使用时快照与历史实例保护保留，A12继续延期。无报表导出功能。DHR链接只展示实际生产关系，不按批号字符串伪造归属。
+
+报表分组最多显示200组并提示截断，明细分页。未做大数据量性能或全系统回归验证；当前来源授权沿用已有全局表单查看与生产执行权限，未引入字段隐藏授权模型。当前没有新增依赖投影结果的下游业务动作，后续接入必须检查成功状态，不能把“表单已完成”等同于“投影已可用”。
+
+## 数据与恢复边界
+
+未在原 `edhr_dev` 执行迁移、写入或历史转换。独立库包含两张正式投影表、独立追溯索引和追溯项目录；0106 曾增加模板 `projection_frozen_json` 与并发版本列，前者不再参与运行，以免改写已应用 Liquibase 变更和演示历史。它共享本机PostgreSQL进程但不共享数据库表；本轮未做生产迁移或降级验证。演示重建应新建空库并重新运行迁移与脚本，不能删除真实业务库。原库记录清点保持3模板版本、13实例。
