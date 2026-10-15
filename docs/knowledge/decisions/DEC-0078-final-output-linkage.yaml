@@ -1,0 +1,59 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0078
+    title: 最终产出工序、批次与工单数量联动
+    status: implemented
+    visibility: internal
+    context: user-confirmed；2026-10-15在DEC-0077-11/13的数量层级基础上，用户确认最终工序基数、正式生效即累计、多次报工、缺数与单位及旧实例不补算，并否决额外的逐工序单位配置与自动带入方案。来源为当前对话，原文与工程选择分列于确认证据。本决定不把冠骋的固定good_qty或SAVE时点照搬为我方规则，不扩展SN计数、生产/DHR生命周期、质量公式或A12受控修订作废。
+    decisionStatements:
+      - id: DEC-0078-01
+        statement: 每个具体产品或产品簇制程版本最多指定一个最终产出工序，可以不设；不设时明确显示未配置，不默认取末道工序，也不额外阻断生产。标记属于具体制程版本的路线节点绑定，不属于可复用的全局工序定义；实际执行按使用时冻结配置解释，当前制程修改不改写已使用实例。
+        status: implemented
+        visibility: internal
+      - id: DEC-0078-02
+        statement: 表单最终完成且该笔正式投影成功后即纳入累计，不等待工序整体完工；同工序多份表单、同表单中不同业务记录及实际明细行的有效正式产出分别累计，重复回调或处理重试不重复计数。工序完工不再次增加数量；保存、审批中、待处理与失败来源不提前当成正式产出。
+        status: implemented
+        visibility: internal
+      - id: DEC-0078-03
+        statement: 各工序只统计自己的正式产出；批次最终产出只取冻结配置中指定的最终产出工序，工单只汇总真实所属各批次产出，不能将其他工序相加。来源表达约定的产出语义，不强制等于良品，也不默认良品、不良品、报废相加或相减；三项质量统计独立，不改生产/DHR状态或以目标数量冒充实际产出。
+        status: implemented
+        visibility: internal
+      - id: DEC-0078-04
+        statement: 工单显示已知的有效累计，并在所属批次有未配置、缺来源、无正式数据、待处理、失败或待核对等情况时明确标为部分汇总或对应未齐状态；详情说明未齐来源。全部无数据为缺失而非实际零；已有正式记录确实为零时才显示0，已知零与未齐提示可同时存在。
+        status: implemented
+        visibility: internal
+      - id: DEC-0078-05
+        statement: 最终产出工序须按产品计量单位核对；单位为空或与产品单位不一致的报工保留原始与正式来源事实，标为待核对，暂不并入批次与工单权威产出，不自动补单位、转换单位或修改填报值。该要求只收敛权威产出口径，DEC-0077-31/32允许报工/报表空单位隔离统计的范围继续保留。
+        status: implemented
+        visibility: internal
+      - id: DEC-0078-06
+        statement: 不补算旧生产实例；新开工使用冻结的新最终产出配置与产品单位。不得把新用途或当前制程配置反套到没有相应冻结依据的旧实例，也不以默认零虚构其历史产出。
+        status: implemented
+        visibility: internal
+      - id: DEC-0078-07
+        statement: 不新增各工序的额外报工单位配置，也不因绑定报工单位用途自动带入产品单位；普通工序按用户填写的单位分别累计，仅影响该工序的数量展示。前道按根、最终工序按件可以共存，前道单位不参与批次最终产出，不在本轮增加单位换算或自动填值规则；最终工序仍按DEC-0078-05核对产品单位。
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-main-validation, evidence.final-output-linkage-postgres-test]
+    acceptanceScenarios:
+      - id: scenario.final-output-single-optional-node
+        given: 一份具体制程版本有多个稳定路线节点
+        when: 保存零个、一个或两个最终产出工序标记并开始新批次
+        then: 零个允许保存和生产并明确未配置，一个允许且进入新实例快照，两个拒绝；后续改配置不改变已开始实例
+        evidenceIds: [evidence.final-output-linkage-confirmed]
+      - id: scenario.final-output-multiple-reports
+        given: 最终工序两笔正式产出10件与12件，前道另报100根
+        when: 两笔完成投影成功后查询，随后重试处理并完成工序
+        then: 最终工序及批次22件，前道100根独立，工序完工和重试不重复加数；工单只按所属批次累计
+        evidenceIds: [evidence.final-output-linkage-confirmed]
+      - id: scenario.final-output-unit-and-missing
+        given: 产品单位件，最终工序正式记录为0件、10空单位与2kg，另有尚无正式数据的所属批次
+        when: 查询批次与工单权威产出
+        then: 已知0件可展示且标部分汇总和待核对；原10和2的来源事实保留，不默默折算、不混合累计，不将缺失解释为零
+        evidenceIds: [evidence.final-output-linkage-confirmed]
+      - id: scenario.final-output-no-old-backfill
+        given: 旧实例没有本轮产出策略及最终节点冻结依据，当前制程已设最终节点
+        when: 查询旧实例或修改当前配置
+        then: 不按当前配置补算旧产出，不改原始值、正式来源或历史执行快照
+        evidenceIds: [evidence.final-output-linkage-confirmed]

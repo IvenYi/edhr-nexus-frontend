@@ -1,5 +1,17 @@
 knowledgeModelVersion: 0.3.25
 concepts:
+  - id: concept.final-output-operation
+    termId: term.final-output-operation
+    kind: configuration-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-configuration-source, evidence.final-output-linkage-main-validation]
+  - id: concept.production-output-summary
+    termId: term.production-output-summary
+    kind: runtime-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-runtime-source, evidence.final-output-linkage-main-validation]
   - id: concept.form-projection-configuration
     termId: term.form-projection-configuration
     kind: configuration-fact
@@ -794,6 +806,22 @@ concepts:
     visibility: internal
     evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-instance-entity, evidence.equipment-legacy-schema]
 relations:
+  - id: relation.process-version-final-output-operation
+    source: concept.product-process-version
+    target: concept.final-output-operation
+    cardinality: one-to-zero-or-one
+    status: implemented
+    visibility: internal
+    description: 具体制程版本最多指定一个稳定路线节点作为最终产出工序；可不设，不推断最后节点，不改变全局工序。
+    evidenceIds: [evidence.final-output-linkage-confirmed]
+  - id: relation.production-output-derived-from-formal-projection
+    source: concept.production-output-summary
+    target: concept.form-business-projection
+    cardinality: one-to-zero-or-many
+    status: implemented
+    visibility: internal
+    description: 累计仅来自真实执行上下文内成功正式投影的明确产出来源；多份表单/实际行保留稳定来源，不按文本拼关系；工单只合计所属批次，缺失不虚构零。
+    evidenceIds: [evidence.final-output-linkage-confirmed]
   - id: relation.execution-snapshot-freezes-form-projection-configuration
     source: concept.execution-snapshot
     target: concept.form-projection-configuration

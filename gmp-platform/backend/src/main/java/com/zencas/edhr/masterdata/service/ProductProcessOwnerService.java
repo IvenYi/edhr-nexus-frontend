@@ -298,6 +298,9 @@ public class ProductProcessOwnerService {
                 .toList();
         Map<String, RouteNode> nodes = routeNodes.stream().collect(Collectors.toMap(RouteNode::getNodeKey, Function.identity(), (left, right) -> left));
         List<ProductProcessVersionRequest.OperationBindingRequest> safeRequests = requests == null ? List.of() : requests;
+        if (safeRequests.stream().filter(Objects::nonNull).filter(item -> Boolean.TRUE.equals(item.getFinalOutput())).count() > 1) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "同一制程版本最多设置一个最终产出工序");
+        }
         if (safeRequests.stream().map(ProductProcessVersionRequest.OperationBindingRequest::getRouteNodeKey).filter(this::hasText).distinct().count() != safeRequests.size()) {
             throw new BusinessException(ErrorCode.GENERAL_001, "工序配置不能重复或缺少路线节点");
         }
@@ -315,6 +318,7 @@ public class ProductProcessOwnerService {
                     .id(idGenerator.nextId()).productProcessVersionId(version.getId()).routeNodeKey(node.getNodeKey())
                     .operationId(node.getOperationId()).operationCode(node.getOperationCode())
                     .operationName(hasText(node.getOperationName()) ? node.getOperationName() : node.getNodeKey())
+                    .finalOutput(Boolean.TRUE.equals(request.getFinalOutput()))
                     .sortOrder(request.getSortOrder() == null ? node.getSortOrder() : request.getSortOrder())
                     .createdAt(LocalDateTime.now()).build());
         }
@@ -386,7 +390,7 @@ public class ProductProcessOwnerService {
                 data.forms().getOrDefault(operation.getId(), List.of()).stream()
                         .map(form -> new ProductProcessVersionRequest.FormBindingRequest(form.getDhrTemplateItemId(), form.getFormTemplateVersionId(), form.getRequired(), form.getSortOrder(), fillSettingsService.parse(form.getFillSettingsJson()))).toList(),
                 data.documents().getOrDefault(operation.getId(), List.of()).stream()
-                        .map(document -> new ProductProcessVersionRequest.DocumentBindingRequest(document.getDocumentVersionId(), document.getSortOrder(), document.getPageStart(), document.getPageEnd())).toList()))
+                        .map(document -> new ProductProcessVersionRequest.DocumentBindingRequest(document.getDocumentVersionId(), document.getSortOrder(), document.getPageStart(), document.getPageEnd())).toList(), operation.getFinalOutput()))
                 .toList();
     }
 
@@ -475,6 +479,7 @@ public class ProductProcessOwnerService {
     private Map<String, Object> operationSnapshot(ProductProcessOperationBinding operation, OperationBindingData data) {
         Map<String, Object> snapshot = new LinkedHashMap<>();
         snapshot.put("operation", joinReference(operation.getOperationCode(), operation.getOperationName()));
+        snapshot.put("finalOutput", Boolean.TRUE.equals(operation.getFinalOutput()));
         snapshot.put("forms", data.forms().getOrDefault(operation.getId(), List.of()).stream().map(form -> {
             String reference = "表单版本 #" + form.getFormTemplateVersionId();
             return Boolean.TRUE.equals(form.getRequired()) ? reference + "（工序结束前完成）" : reference;

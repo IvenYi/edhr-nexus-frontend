@@ -50,6 +50,7 @@ public class ExecutionSnapshotBuilder {
                 .put("objectType", object.getObjectType()).put("workOrderId", order.getId().toString())
                 .put("workOrderNo", order.getOrderNo()).put("targetQuantity", object.getTargetQuantity());
         root.set("context", context);
+        root.put("outputPolicyVersion", 1);
         long routeId = context.path("routeVersionId").asLong();
         ArrayNode nodes = rows("""
             SELECT node_key AS id, operation_id AS "operationId", operation_code AS code,
@@ -75,10 +76,11 @@ public class ExecutionSnapshotBuilder {
             if (!Set.of("OPERATION", "REWORK").contains(node.path("type").asText())) continue;
             ObjectNode op = ((ObjectNode) node).deepCopy();
             op.set("config", json(node.path("config").asText(), mapper.createObjectNode()));
-            ArrayNode bindings = rows("SELECT id FROM product_process_operation_binding WHERE product_process_version_id = ? AND route_node_key = ?",
+            ArrayNode bindings = rows("SELECT id, final_output AS \"finalOutput\" FROM product_process_operation_binding WHERE product_process_version_id = ? AND route_node_key = ?",
                     object.getProcessVersionId(), node.path("id").asText());
             ArrayNode forms = op.putArray("forms"); ArrayNode documents = op.putArray("documents");
             if (!bindings.isEmpty()) {
+                op.put("finalOutput", bindings.get(0).path("finalOutput").asBoolean());
                 long bindingId = bindings.get(0).path("id").asLong();
                 for (JsonNode binding : rows("""
                     SELECT id, form_template_version_id AS "versionId", dhr_template_item_id AS "dhrItemId", required, fill_settings_json AS "fillSettings"

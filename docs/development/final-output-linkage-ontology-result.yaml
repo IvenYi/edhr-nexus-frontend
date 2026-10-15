@@ -1,0 +1,265 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    targetBranch: edhr-dev
+    targetCommit: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    contractReadCommit: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    uncommittedContractPaths: []
+  reason: 已确认规则按新契约同步，收尾重读同一4b236d7d契约及当前实现差异、主侧交付报告与实际测试结果；有实现与基础验证证据的新词典/概念/关系/事实/规则/锚点升implemented/internal，知识89项最终通过。读时全量重算仍是工程选择，不伪造verified执行契约或runtime发布。主侧后端134项中132执行通过2条件跳过、前端40及构建、隔离PG9项和真实API18+9=27证据已核对；本体角色未亲自重跑生产流程，不把首次QA failed或正在收尾的新质量实例当passed。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml
+      changeType: create
+      ids: ["DEC-0078","DEC-0078-01","DEC-0078-02","DEC-0078-03","DEC-0078-04","DEC-0078-05","DEC-0078-06","DEC-0078-07","scenario.final-output-single-optional-node","scenario.final-output-multiple-reports","scenario.final-output-unit-and-missing","scenario.final-output-no-old-backfill"]
+    - path: docs/knowledge/glossary.yaml
+      changeType: update
+      ids: ["term.final-output-operation","term.production-output-summary","term.form-business-projection"]
+    - path: docs/knowledge/ontology.yaml
+      changeType: update
+      ids: ["concept.final-output-operation","concept.production-output-summary","relation.process-version-final-output-operation","relation.production-output-derived-from-formal-projection"]
+    - path: docs/knowledge/facts/core-business.yaml
+      changeType: update
+      ids: ["fact.catalog.operation-finaloutput"]
+    - path: docs/knowledge/facts/production-output.yaml
+      changeType: create
+      ids: ["fact.production-output.final-operation-count","fact.production-output.snapshot-policy-version","fact.production-output.frozen-product-unit","fact.production-output.formal-quantity","fact.production-output.summary"]
+    - path: docs/knowledge/rules/product-process.yaml
+      changeType: update
+      ids: ["rule.product-process.final-output","rule.product-process.final-output-at-most-one"]
+    - path: docs/knowledge/rules/production-execution.yaml
+      changeType: update
+      ids: ["rule.operation-output-field-purpose"]
+    - path: docs/knowledge/rules/production-form-copies.yaml
+      changeType: update
+      ids: ["rule.production-form-copy-output-sum"]
+    - path: docs/knowledge/implementation-anchors/production-output.yaml
+      changeType: create
+      ids: ["anchor.production-output.configuration","anchor.production-output.formal-summary"]
+    - path: docs/knowledge/evidence/final-output-linkage-2026-10-15.yaml
+      changeType: create
+      ids: ["evidence.final-output-linkage-confirmed","evidence.final-output-linkage-runtime-source","evidence.final-output-linkage-configuration-source","evidence.final-output-linkage-postgres-test","evidence.final-output-linkage-main-validation"]
+    - path: docs/knowledge/evidence/final-output-linkage-2026-10-15.md
+      changeType: create
+      ids: []
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: DEC-0078
+      disposition: updated
+      scope: "七条确认与四场景集中登记，收尾有实现/测试证据支持implemented/internal；不将outputQuantity字段名、读时重算和DTO布局冒充用户指定，不撤销DEC-0077其他范围。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: DEC-0078-01
+      disposition: updated
+      scope: "具体制程零或一最终节点，未配置不阻断、不默认末道，归版本绑定并随使用冻结。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: DEC-0078-02
+      disposition: updated
+      scope: "成功正式投影后即累计，同工序多次报工分别计入而重试/工序完工不再重复加数。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: DEC-0078-03
+      disposition: updated
+      scope: "保留工序/批次/工单数量层级与质量独立，禁止跨工序合计为最终产出。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: DEC-0078-04
+      disposition: updated
+      scope: "已知累计与未齐同时表达，缺失不作零，实际零仍保留。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: DEC-0078-05
+      disposition: updated
+      scope: "最终单位核对仅约束权威产出，不撤销普通报工报表空单位隔离。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: DEC-0078-06
+      disposition: updated
+      scope: "旧实例不补算，不把当前配置反套旧快照。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: DEC-0078-07
+      disposition: updated
+      scope: "否决未确认的逐工序单位配置与自动带入；普通工序按填报单位分组，最终才核对产品单位。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: scenario.final-output-single-optional-node
+      disposition: updated
+      scope: "验收场景表达对应确认的业务预期；本轮主侧聚焦/隔离测试及实际API证据按相应场景关联，不将场景文字本身作为运行通过证明。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: scenario.final-output-multiple-reports
+      disposition: updated
+      scope: "验收场景表达对应确认的业务预期；本轮主侧聚焦/隔离测试及实际API证据按相应场景关联，不将场景文字本身作为运行通过证明。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: scenario.final-output-unit-and-missing
+      disposition: updated
+      scope: "验收场景表达对应确认的业务预期；本轮主侧聚焦/隔离测试及实际API证据按相应场景关联，不将场景文字本身作为运行通过证明。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: scenario.final-output-no-old-backfill
+      disposition: updated
+      scope: "验收场景表达对应确认的业务预期；本轮主侧聚焦/隔离测试及实际API证据按相应场景关联，不将场景文字本身作为运行通过证明。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: term.final-output-operation
+      disposition: updated
+      scope: "登记具体版本稳定节点的配置含义；当前implemented/internal，有两入口保存/复制/冻结证据，不标verified。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: term.production-output-summary
+      disposition: updated
+      scope: "登记正式累计、单位/完整性及缺失边界；与过程参考、质量和生命周期区分。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: term.form-business-projection
+      disposition: updated
+      scope: "正式投影提供原始来源，不凭成功投影把全部工序加成批次产出。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: concept.final-output-operation
+      disposition: updated
+      scope: "新增配置事实概念并关联确认来源，不作为全局工序属性。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: concept.production-output-summary
+      disposition: updated
+      scope: "新增运行事实概念，表示确定性派生结果而非第二份数量真相。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: relation.process-version-final-output-operation
+      disposition: updated
+      scope: "具体制程到最终节点的one-to-zero-or-one关系，不附带反向唯一假设。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: relation.production-output-derived-from-formal-projection
+      disposition: updated
+      scope: "累计可对应零到多正式来源，缺数不虚构来源或零。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: fact.catalog.operation-finaloutput
+      disposition: updated
+      scope: "旧string/not-available/planned占位纠正为版本绑定boolean；保留ID及operation.finalOutput别名，旧历史仍可从Git解释。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: fact.production-output.final-operation-count
+      disposition: updated
+      scope: "integer来源连接saveOperationBindings统计，供至多一个校验。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: fact.production-output.snapshot-policy-version
+      disposition: updated
+      scope: "integer冻结策略标识；旧缺失不按当前配置追算，不冒充通用规则发布版本。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: fact.production-output.frozen-product-unit
+      disposition: updated
+      scope: "string来源为使用时snapshot.context.unit，不从当前主数据回读刷新。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: fact.production-output.formal-quantity
+      disposition: updated
+      scope: "decimal来源为明确outputQuantity及sources；不从良品自动推定，缺失不同于0。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: fact.production-output.summary
+      disposition: updated
+      scope: "object派生来源连到完整正式数据和冻结配置；无缓存写回、数量与完整性分别解释。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: rule.product-process.final-output
+      disposition: updated
+      scope: "从planned占位改为implemented/internal规范与类型化条件；源码、PG9项与真实API18+9=27支撑，结果为内部查询投影，未伪提升verified。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: rule.product-process.final-output-at-most-one
+      disposition: updated
+      scope: "新增配置保存两个以上阻断，零个允许；不新增开工阻断。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: rule.operation-output-field-purpose
+      disposition: updated
+      scope: "仅更新最终产出导航不再称planned；保留原过程参考成熟度与算法解释。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: rule.production-form-copy-output-sum
+      disposition: updated
+      scope: "保留过程参考范围，导航到正式累计时点/单位的新确认；不把过程参考变成权威最终量。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: anchor.production-output.configuration
+      disposition: updated
+      scope: "连接具体版本保存/复制/冻结、迁移及两个配置UI，共用控件及旧入口丢标记修复已核对；主侧聚焦回归/API/浏览器证据支撑implemented/internal。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: anchor.production-output.formal-summary
+      disposition: updated
+      scope: "连接生产内核、既有生产入口、来源与测试，PG9项及主侧实际API和页面证据支撑implemented/internal；不冒充本体角色亲跑E2E。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: evidence.final-output-linkage-confirmed
+      disposition: updated
+      scope: "保留本轮原话，独立标注inference和历史范围。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: evidence.final-output-linkage-runtime-source
+      disposition: updated
+      scope: "实际阅读本轮未提交ProductionOutputService，来源/无写入边界有定位，未伪称运行通过。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: evidence.final-output-linkage-configuration-source
+      disposition: updated
+      scope: "实际阅读版本保存、复制、两现存配置入口与snapshot冻结源码，主侧隔离0114迁移、配置复制/冻结与旧入口保存回读证据另行关联；首次QA failed不替代最终通过。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: evidence.final-output-linkage-postgres-test
+      disposition: updated
+      scope: 读取9个隔离PostgreSQL测试及对应surefire9执行0失败/错误/跳过报告；实际执行主体为主开发，本体角色复核来源。
+      sourceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java, docs/development/final-output-linkage-2026-10-15.md]
+    - id: evidence.final-output-linkage-main-validation
+      disposition: updated
+      scope: 记录主侧实际134后端/40前端/构建、隔离迁移、API18+9=27和配置浏览器回读，不宣称安速康原表完整复跑、旧数据补算或全新质量已passed。
+      sourceReferences: [docs/development/final-output-linkage-2026-10-15.md]
+    - id: DEC-0077-11
+      disposition: retained
+      scope: "数量层级保持；当时实现差距是历史事实，当前规范由DEC-0078细化，不整份废弃旧决定。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: DEC-0077-13
+      disposition: retained
+      scope: "独立产出语义与质量独立保持，未采集不作实际零。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: DEC-0077-31
+      disposition: retained
+      scope: "普通报工/统计允许空单位；最终权威量核对单位不是全面撤销此范围。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: DEC-0077-32
+      disposition: retained
+      scope: "空单位在适用完整粒度隔离统计保持，不与产品单位权威量混合。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: anchor.form-projection.formal-source
+      disposition: historical
+      scope: "sourceRevision eedc2472描述正式投影服务本身不回写批次工单；本轮新增生产查询计算在新anchor说明，不反填旧运行验证。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: question.production-batch-quantity-lower-bound
+      disposition: retained
+      scope: "目标数量小数下限待决不被本轮最终实际产出规则覆盖。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: question.form-projection-context-prefill-lifecycle
+      disposition: retained
+      scope: "本轮只否决工序单位配置及自动带入建议，其他生产上下文字段取值/覆盖生命周期仍待决。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - id: execution.production-output-query
+      disposition: deferred
+      scope: "未登记此候选ID：schema只允许verified执行契约，本轮按implemented/internal交付确定性生产服务，不把局部实现/基础验证提升为verified运行知识发布。输入/输出、缺失/异常、版本、权限与纯查询边界已在证据说明保留；不改schema、不伪造登记，也不以此暂缓已确认业务实现。"
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.final-output-knowledge-model
+      checkType: schema
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - 收尾成熟度/缩进更新后BusinessKnowledgeModelTest最终89项，失败0、错误0、跳过0，BUILD SUCCESS；2026-10-15 21:31:34 +08:00。
+        - 覆盖正式schema、ID/引用、事实类型/操作符及成熟度投影约束；不是业务运行、数据库或浏览器验收。
+        - /tmp/final-output-ontology-test-final.log
+    - id: validation.final-output-source-boundary
+      checkType: evidence-path
+      command: rg核对ProductProcessOwnerService.saveOperationBindings/toOperationRequests、ExecutionSnapshotBuilder.build、ProductionOutputService.object/order/read/summarize/operation及对应controller mapping
+      outcome: passed
+      evidence:
+        - 本轮未提交差异在4b236d7d工作树可定位；只读源码核对，未运行用户数据变更。
+        - 既有生产权限入口保持，不以查询返回的来源标识授予原表单读取权限。
+    - id: validation.final-output-implementation-maturity
+      checkType: status-transition
+      command: 读取主侧交付报告、最终后端surefire与前端40项/构建日志，对照新知识实现锚点和两现存配置入口源码
+      outcome: passed
+      evidence:
+        - docs/development/final-output-linkage-2026-10-15.md
+        - gmp-platform/backend/target/surefire-reports/com.zencas.edhr.production.service.ProductionOutputPostgresTest.txt为9执行0失败错误跳过，源码9场景对应数量/单位/幂等/历史/子表和共享表单边界。
+        - /tmp/edhr-final-output-frontend-final.log为40通过；/tmp/edhr-final-output-frontend-build-final.log构建成功。
+        - 主侧API及浏览器证据由原执行报告定位，本体未亲自重跑；新知识仅implemented/internal，不伪造executionContract verified或独立质量passed。
+    - id: validation.final-output-diff
+      checkType: reference
+      command: git diff --check
+      outcome: passed
+      evidence: [未发现空白错误；该检查不验证业务语义。]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

@@ -467,6 +467,9 @@ public class ProductProcessController {
                 .toList();
         Map<String, RouteNode> nodes = routeNodes.stream().collect(Collectors.toMap(RouteNode::getNodeKey, Function.identity(), (left, right) -> left));
         List<ProductProcessVersionRequest.OperationBindingRequest> safeRequests = requests == null ? List.of() : requests;
+        if (safeRequests.stream().filter(Objects::nonNull).filter(item -> Boolean.TRUE.equals(item.getFinalOutput())).count() > 1) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "同一制程版本最多设置一个最终产出工序");
+        }
         if (safeRequests.stream().map(ProductProcessVersionRequest.OperationBindingRequest::getRouteNodeKey).filter(this::hasText).distinct().count() != safeRequests.size()) {
             throw new BusinessException(ErrorCode.GENERAL_001, "工序配置不能重复或缺少路线节点");
         }
@@ -488,6 +491,7 @@ public class ProductProcessController {
                     .operationId(node.getOperationId())
                     .operationCode(node.getOperationCode())
                     .operationName(hasText(node.getOperationName()) ? node.getOperationName() : node.getNodeKey())
+                    .finalOutput(Boolean.TRUE.equals(request.getFinalOutput()))
                     .sortOrder(request.getSortOrder() == null ? node.getSortOrder() : request.getSortOrder())
                     .createdAt(LocalDateTime.now())
                     .build());
@@ -573,7 +577,7 @@ public class ProductProcessController {
                 .map(operation -> new ProductProcessVersionRequest.OperationBindingRequest(
                         operation.getRouteNodeKey(), operation.getSortOrder(),
                         data.forms().getOrDefault(operation.getId(), List.of()).stream().map(form -> new ProductProcessVersionRequest.FormBindingRequest(form.getDhrTemplateItemId(), form.getFormTemplateVersionId(), form.getRequired(), form.getSortOrder(), fillSettingsService.parse(form.getFillSettingsJson()))).toList(),
-                        data.documents().getOrDefault(operation.getId(), List.of()).stream().map(document -> new ProductProcessVersionRequest.DocumentBindingRequest(document.getDocumentVersionId(), document.getSortOrder(), document.getPageStart(), document.getPageEnd())).toList()))
+                        data.documents().getOrDefault(operation.getId(), List.of()).stream().map(document -> new ProductProcessVersionRequest.DocumentBindingRequest(document.getDocumentVersionId(), document.getSortOrder(), document.getPageStart(), document.getPageEnd())).toList(), operation.getFinalOutput()))
                 .toList();
     }
 
@@ -656,7 +660,7 @@ public class ProductProcessController {
         List<ProductProcessOperationResponse> operations = bindingData.bindings().stream()
                 .map(operation -> new ProductProcessOperationResponse(id(operation.getId()), operation.getRouteNodeKey(), idOrNull(operation.getOperationId()), operation.getOperationCode(), operation.getOperationName(), operation.getSortOrder(),
                         bindingData.forms().getOrDefault(operation.getId(), List.of()).stream().map(this::toFormBindingResponse).toList(),
-                        bindingData.documents().getOrDefault(operation.getId(), List.of()).stream().map(binding -> toDocumentBindingResponse(binding, documentCategoriesById)).toList()))
+                        bindingData.documents().getOrDefault(operation.getId(), List.of()).stream().map(binding -> toDocumentBindingResponse(binding, documentCategoriesById)).toList(), Boolean.TRUE.equals(operation.getFinalOutput())))
                 .toList();
         return new ProductProcessVersionResponse(id(version.getId()), version.getVersionLabel(), version.getProductionMode(), version.getProductionForm(),
                 idOrNull(version.getRouteVersionId()), route == null ? null : route.getName(), routeVersion == null ? null : routeVersion.getCode(), routeVersion == null ? null : routeVersion.getVersion(),
@@ -752,6 +756,7 @@ public class ProductProcessController {
     private Map<String, Object> operationSnapshot(ProductProcessOperationResponse operation) {
         Map<String, Object> snapshot = new LinkedHashMap<>();
         snapshot.put("operation", joinReference(operation.operationCode(), operation.operationName()));
+        snapshot.put("finalOutput", operation.finalOutput());
         snapshot.put("forms", operation.forms().stream()
                 .map(form -> joinReference(form.templateCode(), form.templateName(), form.version()) + (Boolean.TRUE.equals(form.required()) ? "（工序结束前完成）" : ""))
                 .toList());
@@ -868,7 +873,7 @@ public class ProductProcessController {
     public record ProductSourceResponse(String id, String name, String code, String version, String specification, String materialTypeName, String unit, String status, String createdBy, LocalDateTime createdAt, String updatedBy, LocalDateTime updatedAt, int modelVersionCount, int activeModelVersionCount) {}
     public record ProductProcessResponse(String id, List<ProductProcessVersionResponse> versions) {}
     public record ProductProcessVersionResponse(String id, String version, String productionMode, String productionForm, String routeVersionId, String routeName, String routeCode, String routeVersion, String dhrTemplateVersionId, String dhrTemplateName, String dhrTemplateCode, String dhrTemplateVersion, String dhrReviewMode, String dhrReviewWorkflowDefinitionId, String dhrReviewWorkflowVersionId, String description, LocalDateTime effectiveFrom, LocalDateTime effectiveTo, String status, String createdBy, LocalDateTime createdAt, String updatedBy, LocalDateTime updatedAt, List<ProductProcessOperationResponse> operations) {}
-    public record ProductProcessOperationResponse(String id, String routeNodeKey, String operationId, String operationCode, String operationName, Integer sortOrder, List<FormBindingResponse> forms, List<DocumentBindingResponse> documents) {}
+    public record ProductProcessOperationResponse(String id, String routeNodeKey, String operationId, String operationCode, String operationName, Integer sortOrder, List<FormBindingResponse> forms, List<DocumentBindingResponse> documents, boolean finalOutput) {}
     public record FormBindingResponse(String id, String dhrTemplateItemId, String formTemplateVersionId, String templateName, String templateCode, String version, Boolean required, Integer sortOrder, com.fasterxml.jackson.databind.JsonNode fillSettings) {}
     public record DocumentBindingResponse(String id, String documentVersionId, String title, String code, String documentCategoryName, String version, Integer sortOrder, Integer pageStart, Integer pageEnd) {}
     public record ProductModelOptionsResponse(List<RouteOption> routes, List<TemplateOption> dhrTemplates, List<TemplateOption> formTemplates, List<DocumentOption> documents, List<DhrDirectoryOption> dhrDirectories) {}

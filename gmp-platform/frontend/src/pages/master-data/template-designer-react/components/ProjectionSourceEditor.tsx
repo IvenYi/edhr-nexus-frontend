@@ -28,11 +28,11 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
   const isTrace = binding.modelId === 'formTrace';
   const attributes = definition.attributes.filter(attribute => !isTrace || binding.sources[attribute.id] || attribute.id === addedTraceId);
   if (!isTrace) {
-    const order = ['material', 'quantity', 'goodQuantity', 'ngQuantity', 'workHours', 'unit', 'materialLotText', 'reportStartTime', 'reportEndTime', 'productionDate', 'reporter', 'category', 'reason', 'teamText', 'documentNumberText'];
+    const order = ['material', 'quantity', 'outputQuantity', 'goodQuantity', 'ngQuantity', 'workHours', 'unit', 'materialLotText', 'reportStartTime', 'reportEndTime', 'productionDate', 'reporter', 'category', 'reason', 'teamText', 'documentNumberText'];
     attributes.sort((left, right) => (order.indexOf(left.id) < 0 ? order.length : order.indexOf(left.id)) - (order.indexOf(right.id) < 0 ? order.length : order.indexOf(right.id)));
   }
   const visibleAttributes = attributes.filter(attribute => isTrace || required.includes(attribute.id)
-    || binding.modelId === 'production' && ['goodQuantity', 'ngQuantity'].includes(attribute.id)
+    || binding.modelId === 'production' && ['outputQuantity', 'goodQuantity', 'ngQuantity'].includes(attribute.id)
     || binding.sources[attribute.id] || errorFor(attribute.id));
   const moreAttributes = attributes.filter(attribute => !visibleAttributes.includes(attribute));
   const missingAttributes = Object.keys(binding.sources).filter(id => !definition.attributes.some(attribute => attribute.id === id));
@@ -76,7 +76,7 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
     <Stack direction="row" alignItems="center" justifyContent="space-between">
       <Typography variant="caption" color="text.secondary">来源配置</Typography>
       <Tooltip title={isTrace ? '关联字段记录的信息。填报仍按原方式录入，查询时在追溯页面输入要查的值。'
-        : `${binding.tableId ? '配置一次列含义，每行分别形成业务明细，由系统自动定位。' : '选择描述同一笔业务的字段；另一笔业务单独配置。'}${binding.modelId === 'production' ? '良品数量、不良品数量至少配置一项；单位可不填。' : '物料、数量必须配置；物料批号、单位可不填。'}`}>
+        : `${binding.tableId ? '配置一次列含义，每行分别形成业务明细，由系统自动定位。' : '选择描述同一笔业务的字段；另一笔业务单独配置。'}${binding.modelId === 'production' ? '产出、良品、不良数量至少配置一项。产出可复用良品或不良的数字字段；最终产出需明确配置产出来源并填写与产品一致的单位。' : '物料、数量必须配置；物料批号、单位可不填。'}`}>
         <IconButton size="small" aria-label="来源配置说明"><InfoOutlined fontSize="small" /></IconButton>
       </Tooltip>
     </Stack>

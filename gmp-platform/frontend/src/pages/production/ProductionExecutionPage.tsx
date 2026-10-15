@@ -487,6 +487,7 @@ export default function ProductionExecutionPage() {
             <Box><Typography component="dt">工单</Typography><Typography component="dd">{context?.workOrderNo || '—'}</Typography></Box>
             <Box className="execution-product-summary"><Typography component="dt">生产产品</Typography><Box component="dd"><ExecutionProductDetails key={view.snapshot.context.objectId} context={view.snapshot.context} container={() => rootRef.current} suspended={Boolean(busy || signing || pendingSwitch || operationDrawerOpen || formDrawerOpen || copyDrawerOpen || activePanel)} /></Box></Box>
             <Box><Typography component="dt">目标数量</Typography><Typography component="dd">{context?.targetQuantity != null ? `${context.targetQuantity} ${context.unit ?? ''}`.trim() : '—'}</Typography></Box>
+            <Box><Typography component="dt">当前工序累计产出</Typography><Box component="dd"><ProductionOutputValue output={op ? view.formalOutput?.operations?.[op.id] : undefined} /></Box></Box>
             {([['产出数量', output?.outputQuantity], ['良品数量', output?.goodQuantity], ['报废数量', output?.scrapQuantity]] as const).map(([label, quantity]) => <Box key={label} title={`过程参考，来自当前已保存值，并非最终统计。当前工序：${op?.name || op?.code || '暂无工序'} · ${output?.message || '暂无工序产出数据'}`}><Typography component="dt">{label}（过程参考）</Typography><Typography component="dd">{output?.status === 'READY' && quantity != null ? `${quantity} ${context?.unit ?? ''}`.trim() : '—'}</Typography></Box>)}
           </Box>
           <Box className="execution-object-progress" title="按已完成工序数占总工序数计算">
@@ -626,3 +627,4 @@ function ConditionList({ issues, emptyText, met = false }: { issues: string[]; e
   return <Stack spacing={1.25}>{issues.length ? issues.map((issue) => <Stack key={issue} direction="row" spacing={1} alignItems="flex-start"><LockOutlined sx={{ fontSize: 17, mt: 0.2, color: 'warning.main' }} /><Typography variant="body2">{issue}</Typography></Stack>)
     : <Stack direction="row" spacing={1}>{met ? <CheckCircleRounded sx={{ fontSize: 18, color: 'success.main' }} /> : <InfoOutlined sx={{ fontSize: 18, color: 'text.secondary' }} />}<Typography variant="body2" color="text.secondary">{emptyText}</Typography></Stack>}</Stack>;
 }
+import { ProductionOutputValue } from '@/components/ProductionOutput';

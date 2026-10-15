@@ -39,6 +39,7 @@ public class WorkOrderController {
     private final MaterialRepository materialRepository;
     private final ProductProcessVersionRepository processVersionRepository;
     private final ProductionService productionService;
+    private final com.zencas.edhr.production.service.ProductionOutputService outputs;
     private final SnowflakeIdGenerator idGenerator;
     private final AuditEventRepository auditEventRepository;
     private final ObjectMapper objectMapper;
@@ -163,7 +164,7 @@ public class WorkOrderController {
                 order.getProcessVersionId() == null ? null : String.valueOf(order.getProcessVersionId()),
                 version == null ? "-" : version.getVersionLabel(), order.getProductionMode(), order.getProductionForm(),
                 order.getPlannedQuantity(), order.getPlannedStartAt(), order.getPlannedEndAt(), order.getOrderNumber(),
-                order.getStatus(), order.getRemark(), order.getCreatedAt(), order.getUpdatedAt());
+                order.getStatus(), order.getRemark(), order.getCreatedAt(), order.getUpdatedAt(), outputs.order(order.getId()));
     }
 
     private Map<String, Object> workOrderSnapshot(WorkOrderResponse response) {
@@ -222,5 +223,5 @@ public class WorkOrderController {
     public record WorkOrderResponse(String id, String orderNo, String productId, String productName, String productCode,
                                     String processVersionId, String processVersion, String productionMode, String productionForm,
                                     BigDecimal plannedQuantity, LocalDateTime plannedStartAt, LocalDateTime plannedEndAt,
-                                    String orderNumber, String status, String remark, LocalDateTime createdAt, LocalDateTime updatedAt) {}
+                                    String orderNumber, String status, String remark, LocalDateTime createdAt, LocalDateTime updatedAt, com.fasterxml.jackson.databind.JsonNode output) {}
 }

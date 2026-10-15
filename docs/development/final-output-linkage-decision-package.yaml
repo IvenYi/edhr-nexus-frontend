@@ -1,0 +1,213 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261015-FINAL-OUTPUT-LINKAGE
+  scope: 批次形态的最终产出工序配置、正式工序产出、批次与工单累计及列表详情展示
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    targetBranch: edhr-dev
+    targetCommit: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    contractReadCommit: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    uncommittedContractPaths: []
+  summary: 用户确认五项待决；同工序多次报工累计，旧实例不补算。
+  confirmed:
+    concepts:
+      - id: concept.final-output-operation
+        name: 最终产出工序
+        definition: 具体制程版本中至多一个且可不设、用于批次产出解释的稳定路线节点绑定。
+        status: implemented
+        sourceReferences: [docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+      - id: concept.production-output-summary
+        name: 正式产出累计
+        definition: 工序各自累计、批次取指定最终工序、工单汇总所属批次，数量与完整性分别解释。
+        status: implemented
+        sourceReferences: [docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+    relationships:
+      - id: relation.process-version-final-output-operation
+        sourceId: concept.product-process-version
+        targetId: concept.final-output-operation
+        cardinality: one-to-zero-or-one
+        description: 具体制程显式选择而不推断末道，不设不阻断生产。
+        sourceReferences: [docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+      - id: relation.production-output-derived-from-formal-projection
+        sourceId: concept.production-output-summary
+        targetId: concept.form-business-projection
+        cardinality: one-to-zero-or-many
+        description: 累计来自真实对象范围内成功正式记录，多次报工分别计入、重试不重复。
+        sourceReferences: [docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+    rules:
+      - id: rule.product-process.final-output
+        name: 最终产出按冻结配置解释正式来源
+        status: implemented
+        sourceReferences: [docs/knowledge/rules/product-process.yaml, docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+      - id: rule.product-process.final-output-at-most-one
+        name: 具体制程至多一个最终产出工序
+        status: implemented
+        sourceReferences: [docs/knowledge/rules/product-process.yaml, docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+    executionContracts: []
+  confirmedSource:
+    - source: 当前对话2026-10-15用户回复
+      text: 1.我觉得你建议ok，你也可以看一下冠骋是否也这样 2.ok，但是要考虑一个工序可能多次报工的情况 3.ok 4.ok 5.不用补。
+      statements:
+        - 每个具体制程版本最多一个最终产出工序，可以不设；不设明确未配置且不默认末工序、不额外阻断生产。
+        - 最终完成且正式投影处理成功即累计；同工序多次报工分别累计，完工不得再重复加数。
+        - 工单显示已知累计并标部分汇总，全部无数据显示缺失，实际零才为0。
+        - 产品计量单位为统一口径；空或异单位保留原报工事实但标待核对、不并入权威产出，不自动补单位或换算。
+        - 旧实例不补算；新开工使用冻结的新配置。
+    - source: 当前对话2026-10-15数量展示讨论
+      statements:
+        - 批次与工单各设累计产出列，数量与单位及完整性在同一单元格展示，详情说明来源工序与未齐原因。
+    - source: 当前对话2026-10-15工序单位澄清
+      text: 其他的单位我觉得都可以让用户填，我们报工的时候应该这只会影响工序的数量？最终批次的数量肯定还是由最终报工数量决定的不是吗？
+      statements:
+        - 不增加各工序单位配置或自动带入；普通工序按填报单位分组累计，只影响本工序数量。
+        - 最终产出工序以产品单位核对，只有该工序的有效正式报工决定批次产出。
+    - source: docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+      statements: [DEC-0077-11, DEC-0077-12, DEC-0077-13, DEC-0077-32]
+  inferred:
+    - id: inference.final-output-query-authority
+      statement: 生产领域直接从完整正式事实重算权威数量，不维护第二份可漂移的累计缓存，也不消费有限制的报表查询。
+      rationale: 不重复计数且规避异步乱序写回覆盖；正式事实与冻结来源已持久化，读时计算仍有唯一可复核来源。
+      relatedIds: [rule.product-process.final-output]
+    - id: inference.final-output-independent-role
+      statement: 生产报工增加明确的产出数量角色，可与同笔良品或不良角色复用同一数字字段；不同角色分别统计，同角色不得重复绑定同一来源。
+      rationale: 既有确认不强制良品且不要求重复物理输入框。
+      relatedIds: [DEC-0077-13]
+    - id: inference.final-output-scope
+      statement: 本切片不把批次公式推广为SN计数，不改生产或DHR终态，不因缺数增加新的开工完工阻断。
+      rationale: 本次确认范围为批次数量链；SN目标为1不能推导实际产出为1。
+      relatedIds: [rule.product-process.final-output]
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0078-01
+      supersededStatementIds: []
+      scope: 收敛最终产出TODO的基数为零或一个，标记属于具体版本稳定路线节点；不是替代DEC-0077-11/13的数量层级。
+      retainedScope: 使用时冻结、真实执行归属、全局工序复用与不额外阻断生产保持。
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - decisionStatementId: DEC-0078-02
+      supersededStatementIds: []
+      scope: 补齐正式完成且成功投影后即累计、多次报工及幂等时点，不把工序完工当第二次加数。
+      retainedScope: DEC-0077正式完成边界与原始来源身份保持；工程读时重算不冒充用户指定存储方式。
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - decisionStatementId: DEC-0078-04
+      supersededStatementIds: []
+      scope: 收敛已知累计、部分汇总和真实零语义，不再将缺数展示策略留作本轮待决。
+      retainedScope: DEC-0077-13无数据不等于零及质量独立保持；提示状态不改变生产/DHR状态。
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - decisionStatementId: DEC-0078-05
+      supersededStatementIds: []
+      scope: 最终权威产出新增产品单位一致性核对；空或异单位保留事实而不并入，禁止自动换算。
+      retainedScope: DEC-0077-31/32普通报工报表可空单位和按原单位隔离统计继续有效，不强制所有工序使用产品单位。
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - decisionStatementId: DEC-0078-06
+      supersededStatementIds: []
+      scope: 本轮明确旧实例不补算，不能用当前配置改写无新冻结依据历史。
+      retainedScope: 原始记录、历史正式投影及正确使用时快照保留，A12仍另定。
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+    - decisionStatementId: DEC-0078-07
+      supersededStatementIds: []
+      scope: 否决此前尚未确认的逐工序单位配置和自动带入建议，普通工序按填报单位分别累计；建议不构成需要保留的既有政策。
+      retainedScope: 最终工序产品单位核对仍有效，其他上下文带入生命周期待决范围不受影响。
+      sourceReferences: [docs/knowledge/evidence/final-output-linkage-2026-10-15.md]
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: product-process
+        change: 最终工序标记及至多一个校验，复制编辑审计与使用时冻结。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java]
+      - area: production-output
+        change: 独立产出来源与生产领域完整累计，批次工单列表及工序展示。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java]
+    transitiveImpacts:
+      - area: form-projection
+        change: 来源角色复用、校验和正式事实输出；报工流水增加产出列。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
+    potentialImpacts:
+      - area: SN与记录控制
+        concern: SN实际产出、受控修订作废后的当前有效量需各自契约，不能提前推断。
+        evidenceReferences: [docs/knowledge/open-questions.yaml]
+    unaffectedAreas:
+      - area: lifecycle-and-quality
+        reason: 不按数量改生产/DHR状态，不将良品NG报废回写为最终产出，不使用旧三项之和约束最终产出。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml]
+    compatibilityAndMigration:
+      - change: 新增最终工序标记默认false和至多一个数据库约束；不更新存量实例快照或数量。
+        evidenceReferences: [docs/development/final-output-linkage-todo-2026-10-15.md]
+    snapshotImpacts:
+      - change: 新开工冻结最终节点与产品单位和产出策略标识；旧无标识实例不按当前配置追算。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
+    auditImpacts:
+      - change: 制程审计包含最终标记；数量可定位正式记录、来源批次与字段实际行，查询不伪造业务动作。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java]
+    permissionImpacts:
+      - change: 汇总沿用现有生产页面权限，不新增原表单读取或修改豁免。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionBatchController.java]
+    testImpacts:
+      - scope: final-output
+        scenarios: [零或一个或多个最终节点, 配置复制及冻结, 主表及子表多次报工, 双批次工单合计, 只计成功正式事实, 重试并发不重复, 缺数和实际零, 空及异单位, 旧实例不补算, 页面完整性与来源]
+        evidenceReferences: []
+    evidenceGaps: []
+  extensionStrategy:
+    selectedPaths: [configuration, product-core]
+    rationale: 制程配置拥有最终节点，生产内核拥有数量解释，正式投影提供来源事实。
+    ownershipBoundaries:
+      - owner: product-process
+        responsibility: 版本配置、唯一性、复制审计及冻结输入。
+      - owner: production
+        responsibility: 从正式事实计算工序批次工单产出与完整性，禁止借用报表结果写权威数量。
+  affectedFiles:
+    - path: docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml
+      changeType: create
+      reason: 正式登记七项确认与验收边界，不把工程方案混入确认。
+    - path: docs/knowledge/facts/production-output.yaml
+      changeType: create
+      reason: 配置数量、策略标识、冻结产品单位、正式数量及累计对象的类型化来源。
+    - path: docs/knowledge/facts/core-business.yaml
+      changeType: update
+      reason: 原finalOutput占位事实按实际配置boolean及具体绑定所有权纠正，保留ID与alias。
+    - path: docs/knowledge/rules/product-process.yaml
+      changeType: update
+      reason: 从planned差距改为本轮确认的累计解释与零或一配置校验；成熟度按证据报告。
+    - path: docs/knowledge/implementation-anchors/production-output.yaml
+      changeType: create
+      reason: 连接配置、冻结、生产数量与源事实的实现和测试入口。
+    - path: docs/knowledge/evidence/final-output-linkage-2026-10-15.md
+      changeType: create
+      reason: 保留用户原话并区分工程选择、服务边界和历史替代范围。
+    - path: docs/knowledge/evidence/final-output-linkage-2026-10-15.yaml
+      changeType: create
+      reason: 登记确认和本轮源码核对证据。
+    - path: docs/knowledge/glossary.yaml
+      changeType: update
+      reason: 最终工序与正式累计定义及正式投影来源边界同步。
+    - path: docs/knowledge/ontology.yaml
+      changeType: update
+      reason: 同步配置、累计概念及版本零或一最终节点、来源关系。
+    - path: docs/knowledge/rules/production-execution.yaml
+      changeType: update
+      reason: 移除最终产出仍planned的现行导航，保持过程参考独立。
+    - path: docs/knowledge/rules/production-form-copies.yaml
+      changeType: update
+      reason: 多份过程参考与正式产出累计的边界同步，不扩大原规则。
+    - path: docs/knowledge/README.md
+      changeType: update
+      reason: 给出本轮当前入口与历史集成状态的区别。
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      reason: 人员阅读投影同步当前有效单位、配置和数量解释。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+      changeType: create
+      reason: 生产领域权威累计与来源解释。
+    - path: gmp-platform/backend/src/main/resources/db/changelog/0114-final-output-operation.sql
+      changeType: create
+      reason: 配置持久化及唯一性。
+  acceptanceScenarios:
+    - id: scenario.final-output-repeated-reporting
+      given: 同一批次最终工序两笔正式报工分别为10与12，另一个工序报100。
+      when: 两笔正式投影成功且重复调用处理。
+      then: 最终工序及批次为22，不是122；工单只累计所属批次，重试不重复。
+      evidenceRequirements: [聚焦数据库测试, UI验收证据]
+    - id: scenario.final-output-partial-unit
+      given: 产品单位件，正式记录分别为0件、10空单位与2kg。
+      when: 查询权威数量。
+      then: 显示已知0件并标待核对与部分汇总，来源记录不被修改或默默换算。
+      evidenceRequirements: [数据库与展示测试]

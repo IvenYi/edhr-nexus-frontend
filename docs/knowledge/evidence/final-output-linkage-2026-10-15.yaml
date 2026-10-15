@@ -1,0 +1,27 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.final-output-linkage-confirmed
+    type: document
+    path: docs/knowledge/evidence/final-output-linkage-2026-10-15.md
+    description: user-confirmed与inference分列；保留2026-10-15五项确认及后续否决逐工序单位配置/自动带入的原话。DEC-0078补齐零或一最终工序、成功正式投影后累计及多次报工、已知与缺失、产品单位核对、旧实例不补算；不替代DEC-0077的质量独立和普通报表空单位隔离。
+    visibility: internal
+  - id: evidence.final-output-linkage-runtime-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+    description: original-evidence；本轮在4b236d7d基础上阅读未提交差异object/order/read/summarize/operation。一次SQL读取完整来源集合，来源真实对象与租户、SUCCEEDED状态、明确outputQuantity及冻结最终节点/单位决定累计；来源保留record/instance/binding/table/row/field身份，批次共享自定义表单不冒充显示工序。无缓存回写，不读取报表有限分页，不改生产/DHR状态及质量。此条仅证明源码路径，运行测试另由本轮结果报告，不据阅读标verified。
+    visibility: internal
+  - id: evidence.final-output-linkage-configuration-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java
+    description: original-evidence；本轮阅读saveOperationBindings、toOperationRequests及审计snapshot；最终标记随具体版本绑定保存/复制，两个以上拒绝、零个允许。ExecutionSnapshotBuilder.build冻结outputPolicyVersion=1、operations[].finalOutput及context.unit，0114迁移以false默认并加partial unique index，不给存量实例追算。收尾复核新增FinalOutputOperationControl，两现存配置入口均携带flag，主侧修复旧工作区保存丢标记及三处审计中文；实际运行证据另见main-validation，不将首次质量failed当passed。
+    visibility: internal
+  - id: evidence.final-output-linkage-postgres-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java
+    description: original-evidence；收尾读取9个实际隔离PostgreSQL用例及本轮surefire报告，9执行0失败/错误/跳过，主侧执行命令与日志见交付报告。本体角色仅复核测试源码和结果，不冒充亲自执行生产流程。覆盖多笔主表/子表实际行、多次报工、双批次、前道单位隔离、0/空/异单位、待处理失败重试、并发、旧策略快照、数据库唯一性和批次共享表单排除。
+    visibility: internal
+  - id: evidence.final-output-linkage-main-validation
+    type: document
+    path: docs/development/final-output-linkage-2026-10-15.md
+    description: 原始执行记录由主开发采集，本体角色收尾读取该记录及对应日志/surefire源码核对；后端134项中132执行通过、2条件夹具跳过，前端40项及构建通过；隔离8097迁移0114、真实API两批次18+9=27及前道根隔离、标记唯一/复制/冻结和旧配置入口浏览器保存回读。未补旧数据，非安速康原表完整复跑；记录首次QA failed及修复，全新独立质量最终结果另取，不伪称已passed或远端CI发布。
+    visibility: internal

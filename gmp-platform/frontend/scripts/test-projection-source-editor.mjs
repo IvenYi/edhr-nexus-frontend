@@ -55,6 +55,19 @@ test('trace source editor shows its assigned meaning without expanding unrelated
   assert.deepEqual(changes, [], 'rendering must not rewrite existing mappings');
 });
 
+test('output source may share one quality field without conflating good and rejected quantities', () => {
+  const qty = { id: 'qty', name: '本次产出', type: 'number', typeConfig: {} };
+  const model = { fields: [qty], projection: { bindings: [] } };
+  const definition = { id: 'production', attributes: ['outputQuantity', 'goodQuantity', 'ngQuantity'].map(id => ({ id, name: id, type: 'number' })) };
+  const binding = { id: 'p', enabled: true, modelId: 'production', sources: { goodQuantity: 'qty' } };
+  assert.equal(projectionSourceCandidates(model, binding, definition.attributes[0]).length, 1);
+  assert.equal(projectionSourceCandidates(model, binding, definition.attributes[2]).length, 0);
+  binding.sources.outputQuantity = 'qty';
+  assert.deepEqual(projectionConfigurationProblems(model, binding, definition), []);
+  binding.sources.ngQuantity = 'qty';
+  assert.ok(projectionConfigurationProblems(model, binding, definition).some(problem => problem.message.includes('不能使用同一个')));
+});
+
 test('report roles accept only compatible temporal and person sources, with manually supplied hours', () => {
   const date = {id: 'date', type: 'datetime', typeConfig: {mode: 'date'}};
   const period = {...date, typeConfig: {mode: 'datetime'}};

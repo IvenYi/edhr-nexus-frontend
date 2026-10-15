@@ -253,6 +253,21 @@ class FormProjectionInterpreterTest {
         ((ObjectNode) values.path("lines").get(0)).remove("__rowId");
         assertThatThrownBy(() -> FormProjectionInterpreter.preview(model, values)).hasMessageContaining("记录键缺失");
     }
+    @Test void outputCanReuseOneQualityFieldButCannotMakeGoodAndNgTheSameSource() throws Exception {
+        var model = mapper.readTree("""
+          {"fields":[{"id":"qty","type":"number"}],"projection":{"version":"form-projection-v1","bindings":[
+          {"id":"p","enabled":true,"modelId":"production","sources":{"outputQuantity":"qty","goodQuantity":"qty"}}]}}
+          """);
+        var record = FormProjectionInterpreter.preview(model, mapper.readTree("{\"qty\":10}")).get(0);
+        assertThat(record.path("attributes").path("outputQuantity").asInt()).isEqualTo(10);
+        assertThat(record.path("attributes").path("goodQuantity").asInt()).isEqualTo(10);
+        ((ObjectNode) model.path("projection").path("bindings").get(0).path("sources")).put("ngQuantity", "qty");
+        assertThatThrownBy(() -> FormProjectionInterpreter.validate(model)).hasMessageContaining("不能重复映射");
+        ((ObjectNode) model.path("projection").path("bindings").get(0).path("sources")).remove("goodQuantity");
+        FormProjectionInterpreter.validate(model);
+        ((ObjectNode) model.path("projection").path("bindings").get(0).path("sources")).remove("ngQuantity");
+        FormProjectionInterpreter.validate(model);
+    }
     @Test void dictionaryUnitUsesFrozenValueWithoutConversion() throws Exception {
         var model = mapper.readTree("""
           {"fields":[{"id":"qty","type":"number"},{"id":"unit","type":"reference","typeConfig":{"sourceType":"dictionary"}}],

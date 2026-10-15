@@ -168,11 +168,12 @@ const AUDIT_LABELS: Record<string, string> = {
   name: '名称', code: '编码', version: '版本', productionMode: '生产模式', productionForm: '生产方式',
   routeVersion: '工艺路线版本', dhrTemplateVersion: '批记录模板版本', description: '版本说明',
   effectiveFrom: '生效时间', effectiveTo: '失效时间', operationBindings: '工序配置',
-  operation: '工序', forms: 'DHR 目录表单', documents: 'SOP 文档', operationCount: '已配置工序数',
+  operation: '工序', forms: 'DHR 目录表单', documents: 'SOP 文档', operationCount: '已配置工序数', finalOutput: '最终产出工序',
   materialTypeName: '物料类型', specification: '规格型号', unit: '单位', status: '状态',
 };
 
 function formatAuditValue(value: unknown): string {
+  if (typeof value === 'boolean') return value ? '是' : '否';
   if (value === null || value === undefined || value === '') return '-';
   if (value === 'ACTIVE') return '生效';
   if (value === 'EXPIRED') return '失效';

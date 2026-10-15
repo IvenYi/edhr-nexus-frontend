@@ -1,4 +1,5 @@
 import TableStateCell from '@/components/TableStateCell';
+import FinalOutputOperationControl from './components/FinalOutputOperationControl';
 import FormFillSettingsButton, { FormFillModeLabel } from '@/components/form-fill-settings/FormFillSettingsButton';
 import {
   useEffect,
@@ -106,6 +107,7 @@ interface VersionForm {
 }
 
 interface OperationDraft {
+  finalOutput: boolean;
   routeNodeKey: string;
   operationName: string;
   operationCode?: string | null;
@@ -168,6 +170,7 @@ function toPayload(form: VersionForm, operationBindings?: OperationDraft[]): Pro
     effectiveFrom: form.effectiveFrom || null,
     effectiveTo: form.effectiveTo || null,
     operationBindings: operationBindings?.map((operation) => ({
+      finalOutput: operation.finalOutput,
       routeNodeKey: operation.routeNodeKey,
       sortOrder: operation.sortOrder,
       forms: operation.forms.map((formBinding) => ({ ...formBinding })),
@@ -205,6 +208,7 @@ function toOperationDrafts(nodes: RouteNodeRecord[], configured: ProductProcessO
         operationName: node.operationName || node.nodeKey,
         operationCode: node.operationCode,
         sortOrder: current?.sortOrder ?? node.sortOrder ?? index + 1,
+        finalOutput: current?.finalOutput ?? false,
         forms: (current?.forms ?? []).map((form) => ({ dhrTemplateItemId: form.dhrTemplateItemId, formTemplateVersionId: form.formTemplateVersionId, fillSettings: form.fillSettings, required: form.required, sortOrder: form.sortOrder ?? 0 })),
         documents: (current?.documents ?? []).map((document) => ({ documentVersionId: document.documentVersionId, sortOrder: document.sortOrder ?? 0, pageStart: document.pageStart ?? null, pageEnd: document.pageEnd ?? null })),
       };
@@ -231,6 +235,7 @@ const AUDIT_FIELD_LABELS: Record<string, string> = {
   effectiveTo: '失效时间',
   status: '版本状态',
   operationBindings: '工序配置',
+  finalOutput: '最终产出工序',
   operation: '工序',
   forms: '待填表单',
   documents: '工序文档',
@@ -250,6 +255,7 @@ function parseAuditContent(content: unknown): Record<string, unknown> {
 }
 
 function formatAuditValue(value: unknown): string {
+  if (typeof value === 'boolean') return value ? '是' : '否';
   if (value === null || value === undefined || value === '') return '-';
   if (Array.isArray(value)) return value.length ? value.map(formatAuditValue).join('、') : '-';
   if (typeof value === 'object') {
@@ -769,6 +775,8 @@ function OperationDialog({ open, version, options, graph, drafts, onChange, load
               </AccordionSummary>
               <AccordionDetails sx={{ borderTop: '1px solid #ebeef5', pt: 2 }}>
                 <Stack spacing={2}>
+                  <FinalOutputOperationControl operation={draft} operations={drafts} disabled={saving}
+                    onChange={checked => updateDraft(draft.routeNodeKey, current => ({ ...current, finalOutput: checked }))} />
                   <ReferenceBindingList
                     label="DHR 目录表单"
                     options={options.formTemplates}

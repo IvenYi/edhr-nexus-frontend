@@ -243,3 +243,5 @@ databaseChangeLog:
       file: db/changelog/0112-typed-trace-catalog.sql
   - include:
       file: db/changelog/0113-trace-date-preset.sql
+  - include:
+      file: db/changelog/0114-final-output-operation.sql

@@ -70,6 +70,7 @@ class ProductionExecutionIntegrationTest {
     @Autowired JdbcTemplate jdbc;
     @Autowired JwtTokenProvider tokens;
     @MockBean MaterialRepository materials;
+    @MockBean com.zencas.edhr.production.service.ProductionOutputService outputs;
     @MockBean ProductProcessVersionRepository processVersions;
     @MockBean ProductProcessResolutionService resolution;
     @MockBean StateMachineService stateMachines;
@@ -127,7 +128,7 @@ class ProductionExecutionIntegrationTest {
             "dhr_template_item(id BIGINT PRIMARY KEY,directory_id BIGINT,form_template_id BIGINT,form_template_version_id BIGINT,display_name VARCHAR(128),sort_order INT,is_required BOOLEAN)",
             "route_node(id BIGINT PRIMARY KEY,route_version_id BIGINT,node_key VARCHAR(64),operation_id BIGINT,operation_code VARCHAR(64),operation_name VARCHAR(128),node_type VARCHAR(32),config_json TEXT,sort_order INT)",
             "route_relation(id BIGINT PRIMARY KEY,route_version_id BIGINT,source_node_key VARCHAR(64),target_node_key VARCHAR(64),relation_type VARCHAR(64),rule_expression TEXT,priority INT)",
-            "product_process_operation_binding(id BIGINT PRIMARY KEY,product_process_version_id BIGINT,route_node_key VARCHAR(64))",
+            "product_process_operation_binding(id BIGINT PRIMARY KEY,product_process_version_id BIGINT,route_node_key VARCHAR(64),final_output BOOLEAN DEFAULT FALSE)",
             "product_process_operation_form_binding(id BIGINT PRIMARY KEY,product_process_operation_binding_id BIGINT,form_template_version_id BIGINT,dhr_template_item_id BIGINT,required BOOLEAN,sort_order INT,fill_settings_json TEXT)",
             "product_process_operation_document_binding(id BIGINT PRIMARY KEY,product_process_operation_binding_id BIGINT,document_version_id BIGINT,page_start INT,page_end INT,sort_order INT)",
             "sop_document(id BIGINT PRIMARY KEY,title VARCHAR(128))",
@@ -166,7 +167,7 @@ class ProductionExecutionIntegrationTest {
         jdbc.update("INSERT INTO dhr_template_item VALUES(50,40,5,5,'装配记录',1,true)");
         jdbc.update("INSERT INTO route_node VALUES(11,3,'a',11,'O01','装配','OPERATION','{}',1),(12,3,'b',12,'O02','检验','OPERATION','{}',2)");
         jdbc.update("INSERT INTO route_relation VALUES(1,3,'a','b','SEQUENTIAL',NULL,1)");
-        jdbc.update("INSERT INTO product_process_operation_binding VALUES(11,2,'a'),(12,2,'b')");
+        jdbc.update("INSERT INTO product_process_operation_binding(id,product_process_version_id,route_node_key) VALUES(11,2,'a'),(12,2,'b')");
         jdbc.update("INSERT INTO form_template(id,name,code,category_name) VALUES(5,'装配记录','F01','生产记录')");
         jdbc.update("INSERT INTO form_template_version(id,template_id,version_label,model_design_json,canvas_design_json) VALUES(5,5,'V1',?,?)",
             "{\"fields\":[{\"id\":\"temperature\",\"name\":\"温度\",\"type\":\"number\",\"status\":\"enabled\"}]}",

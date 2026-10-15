@@ -17,7 +17,7 @@ class ProductionBatchControllerTest {
     void missingProductDoesNotHideOtherBatchesOrBreakFilteringAndPagination() {
         var repository = mock(ProductionObjectRepository.class);
         var service = mock(ProductionService.class);
-        var controller = new ProductionBatchController(repository, service);
+        var controller = new ProductionBatchController(repository, service, mock(com.zencas.edhr.production.service.ProductionOutputService.class));
         var orphan = ProductionObject.builder().id(1L).objectNo("BATCH-OLD").workOrderId(10L).status("CREATED").build();
         var normal = ProductionObject.builder().id(2L).objectNo("BATCH-NEW").workOrderId(20L).status("CREATED").build();
         when(repository.findByTenantIdAndObjectTypeOrderByCreatedAtDesc("default", "BATCH")).thenReturn(List.of(orphan, normal));

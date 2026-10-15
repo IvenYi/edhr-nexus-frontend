@@ -1,0 +1,82 @@
+knowledgeModelVersion: 0.3.25
+facts:
+  - id: fact.production-output.final-operation-count
+    name: 具体制程最终产出工序数
+    conceptId: concept.final-output-operation
+    valueType: integer
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java
+    aliases: [processVersion.finalOutputOperationCount]
+    availability: configuration
+    allowedOperators: [greater-than-or-equal, equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-main-validation]
+    sourceRevision: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    sourceLocator: 本轮未提交差异中saveOperationBindings统计同一请求operations[].finalOutput；不按全局工序或排序推断
+    capturedAt: '2026-10-15'
+    reviewStatus: reviewed
+  - id: fact.production-output.snapshot-policy-version
+    name: 冻结的最终产出策略版本
+    conceptId: concept.execution-snapshot
+    valueType: integer
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+    aliases: [execution.outputPolicyVersion]
+    availability: runtime
+    allowedOperators: [equals, exists]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-main-validation]
+    sourceRevision: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    sourceLocator: 本轮新开工snapshot_json.outputPolicyVersion=1；缺失标识的旧实例不读当前配置补算，标识只版本化本轮确定性算法，不是通用知识规则发布版本
+    capturedAt: '2026-10-15'
+    reviewStatus: reviewed
+  - id: fact.production-output.frozen-product-unit
+    name: 使用时冻结的产品计量单位
+    conceptId: concept.execution-snapshot
+    valueType: string
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+    aliases: [execution.outputProductUnit]
+    availability: runtime
+    allowedOperators: [equals, exists]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-main-validation]
+    sourceRevision: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    sourceLocator: snapshot_json.context.unit复制开工时实际产品单位；最终来源空/异单位不并入权威产出，普通工序不强制该单位；不得用当前主数据刷新旧值
+    capturedAt: '2026-10-15'
+    reviewStatus: reviewed
+  - id: fact.production-output.formal-quantity
+    name: 正式报工的明确产出数量
+    conceptId: concept.form-business-projection
+    valueType: decimal
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+    aliases: [production.outputQuantity]
+    availability: runtime
+    allowedOperators: [exists, greater-than-or-equal, equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-main-validation]
+    sourceRevision: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    sourceLocator: 本轮production.outputQuantity数字来源写入form_projection_record.attributes且sources保留fieldId；只有成功正式批次进入累计，不从goodQuantity等自动推断；0为实际数字值，缺失不转为0
+    capturedAt: '2026-10-15'
+    reviewStatus: reviewed
+  - id: fact.production-output.summary
+    name: 工序批次工单的正式产出累计对象
+    conceptId: concept.production-output-summary
+    valueType: object
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+    aliases: [production.outputSummary]
+    availability: runtime
+    allowedOperators: [exists]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-main-validation]
+    sourceRevision: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    sourceLocator: 本轮object/order以一次SQL读取完整持久化来源并计算数量/单位/完整性及来源身份；quantity缺失为null，known零为0；不另写缓存、生命周期或质量字段，不赋予原始表单读取权限
+    capturedAt: '2026-10-15'
+    reviewStatus: reviewed

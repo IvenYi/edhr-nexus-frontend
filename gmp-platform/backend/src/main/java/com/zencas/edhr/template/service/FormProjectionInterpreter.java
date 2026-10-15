@@ -26,6 +26,7 @@ public final class FormProjectionInterpreter {
         ATTRIBUTES.put("material", "物料（主数据引用）");
         ATTRIBUTES.put("quantity", "数量");
         ATTRIBUTES.put("goodQuantity", "良品数量");
+        ATTRIBUTES.put("outputQuantity", "产出数量");
         ATTRIBUTES.put("ngQuantity", "不良品数量");
         ATTRIBUTES.put("workHours", "投入工时（人时）");
         ATTRIBUTES.put("reportStartTime", "报工开始时间");
@@ -37,7 +38,7 @@ public final class FormProjectionInterpreter {
         ATTRIBUTES.put("category", "分类");
     }
     private static final Map<String, String> MODELS = Map.of("formTrace", "按内容查找表单", "production", "生产报工", "scrap", "报废记录", "consumption", "实际物料消耗");
-    private static final Set<String> NUMBERS = Set.of("quantity", "goodQuantity", "ngQuantity", "workHours");
+    private static final Set<String> NUMBERS = Set.of("quantity", "outputQuantity", "goodQuantity", "ngQuantity", "workHours");
     private static final Set<String> TIMES = Set.of("reportStartTime", "reportEndTime");
     private static final Set<String> DICTIONARIES = Set.of("unit", "reason", "category");
     // Stable preset meanings, independent of display names or administrator-created text items.
@@ -56,7 +57,7 @@ public final class FormProjectionInterpreter {
     private static Set<String> allowed(String model) {
         return switch (model) {
             case "formTrace" -> Set.of("materialLotText", "serialNumberText", "equipmentText", "teamText", "documentNumberText");
-            case "production" -> Set.of("goodQuantity", "ngQuantity", "workHours", "reportStartTime", "reportEndTime", "productionDate", "reporter", "unit", "teamText", "documentNumberText");
+            case "production" -> Set.of("outputQuantity", "goodQuantity", "ngQuantity", "workHours", "reportStartTime", "reportEndTime", "productionDate", "reporter", "unit", "teamText", "documentNumberText");
             case "scrap", "consumption" -> Set.of("material", "materialLotText", "quantity", "unit", "reason", "category", "teamText", "documentNumberText");
             default -> throw invalid("不支持的统计模型");
         };
@@ -96,7 +97,7 @@ public final class FormProjectionInterpreter {
         if (!VERSION.equals(configuration.path("version").asText())) throw invalid("追溯配置版本不受支持");
         if (!configuration.path("bindings").isArray()) throw invalid("追溯用途列表格式不正确");
         Set<String> ids = new HashSet<>();
-        Set<String> quantitySources = new HashSet<>();
+        Map<String, String> quantitySources = new java.util.HashMap<>();
         for (JsonNode binding : configuration.path("bindings")) {
             String id = required(binding, "id", "用途标识");
             if (!ids.add(id)) throw invalid("用途标识重复：" + id);
@@ -117,7 +118,7 @@ public final class FormProjectionInterpreter {
             if (!sources.isObject() || sources.isEmpty()) throw invalid("请至少选择一个查询属性及来源字段");
             if (!"formTrace".equals(modelId)) {
                 if ("production".equals(modelId)) {
-                    if (!sources.hasNonNull("goodQuantity") && !sources.hasNonNull("ngQuantity")) throw invalid("请配置生产报工数量来源");
+                    if (!sources.hasNonNull("outputQuantity") && !sources.hasNonNull("goodQuantity") && !sources.hasNonNull("ngQuantity")) throw invalid("请配置生产报工数量来源");
                 } else if (!sources.hasNonNull("quantity") || !sources.hasNonNull("material"))
                     throw invalid("请配置物料及数量来源");
             }
@@ -129,7 +130,14 @@ public final class FormProjectionInterpreter {
                         && FormLookupValue.TYPES.contains(configuration.path("lookupItems").path(entry.getKey()).path("type").asText())
                         && !configuration.path("lookupItems").path(entry.getKey()).path("name").asText().isBlank();
                 if (!allowed(modelId).contains(entry.getKey()) && !lookup) throw invalid("不支持的查询属性：" + entry.getKey());
-                if (!entry.getValue().isTextual() || !sourceIds.add(entry.getValue().asText())) throw invalid("同一用途不能重复映射同一字段");
+                if (!entry.getValue().isTextual()) throw invalid("来源字段格式不正确");
+                if (!sourceIds.add(entry.getValue().asText())) {
+                    Set<String> sharedRoles = new HashSet<>();
+                    sources.fields().forEachRemaining(other -> { if (entry.getValue().equals(other.getValue())) sharedRoles.add(other.getKey()); });
+                    boolean outputReuse = "production".equals(modelId) && sharedRoles.size() == 2
+                            && sharedRoles.contains("outputQuantity") && Set.of("outputQuantity", "goodQuantity", "ngQuantity").containsAll(sharedRoles);
+                    if (!outputReuse) throw invalid("同一用途不能重复映射同一字段");
+                }
                 JsonNode source = field(fields, entry.getValue().asText());
                 String lookupType = "formTrace".equals(modelId) ? configuration.path("lookupItems").path(entry.getKey()).path("type").asText("text") : "";
                 if ("number".equals(lookupType)) {
@@ -139,7 +147,8 @@ public final class FormProjectionInterpreter {
                         throw invalid("日期追溯项请选择日期字段");
                 } else if (NUMBERS.contains(entry.getKey())) {
                     if (!"number".equals(source.path("type").asText())) throw invalid(ATTRIBUTES.get(entry.getKey()) + "来源必须是数字字段");
-                    if (!quantitySources.add(modelId + "/" + tableId + "/" + entry.getValue().asText()))
+                    String previousBinding = quantitySources.putIfAbsent(modelId + "/" + tableId + "/" + entry.getValue().asText(), id);
+                    if (previousBinding != null && !previousBinding.equals(id))
                         throw invalid("同一数量来源不能重复配置为同一用途的正式记录");
                 } else if ("material".equals(entry.getKey())) {
                     if (!"reference".equals(source.path("type").asText()) || !"material".equals(source.path("typeConfig").path("sourceType").asText()))

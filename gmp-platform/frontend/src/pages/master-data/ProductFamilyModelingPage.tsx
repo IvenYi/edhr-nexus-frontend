@@ -229,6 +229,7 @@ const AUDIT_LABELS: Record<string, string> = {
   effectiveFrom: "生效时间",
   effectiveTo: "失效时间",
   operationBindings: "工序配置",
+  finalOutput: "最终产出工序",
   operation: "工序",
   forms: "DHR 目录表单",
   documents: "文档",
@@ -240,6 +241,7 @@ const AUDIT_LABELS: Record<string, string> = {
 const HIDDEN_AUDIT_FIELDS = new Set(["id", "productProcessId"]);
 
 function formatAuditValue(value: unknown): string {
+  if (typeof value === 'boolean') return value ? '是' : '否';
   if (value === null || value === undefined || value === "") return "-";
   if (value === "ACTIVE") return "生效";
   if (value === "EXPIRED") return "失效";

@@ -45,6 +45,7 @@ export interface ProductProcessDocumentBinding {
 }
 
 export interface ProductProcessOperation {
+  finalOutput?: boolean;
   id?: string;
   routeNodeKey: string;
   operationId?: string | null;
@@ -171,6 +172,7 @@ export interface ProductProcessVersionPayload {
   effectiveFrom?: string | null;
   effectiveTo?: string | null;
   operationBindings?: Array<{
+    finalOutput?: boolean;
     routeNodeKey: string;
     sortOrder?: number | null;
     forms: Array<{ dhrTemplateItemId?: string | null; formTemplateVersionId: string; fillSettings?: FormFillSettingsValue; required: boolean; sortOrder?: number | null }>;

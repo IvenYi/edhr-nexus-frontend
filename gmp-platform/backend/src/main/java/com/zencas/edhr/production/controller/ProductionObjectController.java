@@ -36,6 +36,7 @@ import java.util.Objects;
 public class ProductionObjectController {
     private static final String TENANT_ID = "default";
     private final ProductionService productionService;
+    private final com.zencas.edhr.production.service.ProductionOutputService outputs;
     private final RouteVersionRepository routeVersionRepository;
     private final DhrTemplateVersionRepository dhrTemplateVersionRepository;
     private final AuditEventRepository auditEventRepository;
@@ -125,7 +126,7 @@ public class ProductionObjectController {
 
     private ProductionObjectResponse toResponse(ProductionObject object, WorkOrder order, Material product) {
         ProductProcessVersion version = productionService.findProcessVersion(object.getProcessVersionId());
-        return new ProductionObjectResponse(String.valueOf(object.getId()), object.getObjectNo(), object.getObjectType(), String.valueOf(object.getWorkOrderId()), product == null ? "产品已不存在" : product.getName(), product == null ? String.valueOf(order.getProductId()) : product.getCode(), String.valueOf(object.getProcessVersionId()), version == null ? "-" : version.getVersionLabel(), object.getTargetQuantity(), object.getGoodQuantity(), object.getNgQuantity(), object.getScrapQuantity(), object.getStatus(), object.getRemark(), object.getTerminationReason(), object.getTerminationAt(), object.getPlannedStartAt(), object.getPlannedEndAt(), object.getCreatedAt(), object.getUpdatedAt());
+        return new ProductionObjectResponse(String.valueOf(object.getId()), object.getObjectNo(), object.getObjectType(), String.valueOf(object.getWorkOrderId()), product == null ? "产品已不存在" : product.getName(), product == null ? String.valueOf(order.getProductId()) : product.getCode(), String.valueOf(object.getProcessVersionId()), version == null ? "-" : version.getVersionLabel(), object.getTargetQuantity(), object.getGoodQuantity(), object.getNgQuantity(), object.getScrapQuantity(), object.getStatus(), object.getRemark(), object.getTerminationReason(), object.getTerminationAt(), object.getPlannedStartAt(), object.getPlannedEndAt(), object.getCreatedAt(), object.getUpdatedAt(), outputs.object(object.getId()));
     }
 
     private Map<String, Object> productionObjectSnapshot(Long id) {
@@ -199,5 +200,5 @@ public class ProductionObjectController {
     public record BatchSplitRequest(List<SplitRequest> items) {}
     public record EndRequest(String reason) {}
     public record ProcessOption(String id, String version, String productionMode, String productionForm, String routeVersion, String dhrTemplateVersion) {}
-    public record ProductionObjectResponse(String id, String objectNo, String objectType, String workOrderId, String productName, String productCode, String processVersionId, String processVersion, BigDecimal targetQuantity, BigDecimal goodQuantity, BigDecimal ngQuantity, BigDecimal scrapQuantity, String status, String remark, String terminationReason, LocalDateTime terminationAt, LocalDateTime plannedStartAt, LocalDateTime plannedEndAt, LocalDateTime createdAt, LocalDateTime updatedAt) {}
+    public record ProductionObjectResponse(String id, String objectNo, String objectType, String workOrderId, String productName, String productCode, String processVersionId, String processVersion, BigDecimal targetQuantity, BigDecimal goodQuantity, BigDecimal ngQuantity, BigDecimal scrapQuantity, String status, String remark, String terminationReason, LocalDateTime terminationAt, LocalDateTime plannedStartAt, LocalDateTime plannedEndAt, LocalDateTime createdAt, LocalDateTime updatedAt, com.fasterxml.jackson.databind.JsonNode output) {}
 }

@@ -1,0 +1,249 @@
+qualityResult:
+  result: passed
+  baseCommit: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+  headCommit: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+  contractBaseline:
+    sourceCommit: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    targetBranch: edhr-dev
+    targetCommit: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    contractReadCommit: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/business-knowledge-model.md
+      - docs/development/final-output-linkage-2026-10-15.md
+      - docs/development/final-output-linkage-decision-package.yaml
+      - docs/development/final-output-linkage-ontology-result.yaml
+      - docs/development/final-output-linkage-quality-review.yaml
+      - docs/development/final-output-linkage-todo-2026-10-15.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml
+      - docs/knowledge/evidence/final-output-linkage-2026-10-15.md
+      - docs/knowledge/evidence/final-output-linkage-2026-10-15.yaml
+      - docs/knowledge/facts/core-business.yaml
+      - docs/knowledge/facts/production-output.yaml
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/implementation-anchors/production-output.yaml
+      - docs/knowledge/ontology.yaml
+      - docs/knowledge/rules/product-process.yaml
+      - docs/knowledge/rules/production-execution.yaml
+      - docs/knowledge/rules/production-form-copies.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/dto/ProductProcessVersionRequest.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcessOperationBinding.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionBatchController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+      - gmp-platform/backend/src/main/resources/db/changelog/0114-final-output-operation.sql
+      - gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionBatchControllerTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionObjectControllerTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderControllerTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormProjectionInterpreterTest.java
+      - gmp-platform/frontend/scripts/test-production-output.mjs
+      - gmp-platform/frontend/scripts/test-projection-source-editor.mjs
+      - gmp-platform/frontend/src/api/product-modeling.ts
+      - gmp-platform/frontend/src/api/production-execution.ts
+      - gmp-platform/frontend/src/api/work-orders.ts
+      - gmp-platform/frontend/src/components/ProductionOutput.tsx
+      - gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/ProductModelingPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx
+      - gmp-platform/frontend/src/pages/master-data/components/FinalOutputOperationControl.tsx
+      - gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionSourceEditor.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts
+      - gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx
+      - gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+      - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+      - gmp-platform/frontend/src/pages/reports/projectionReportColumns.ts
+    excludedPaths: [output/, gmp-platform/frontend/node_modules]
+    untrackedPaths:
+      - docs/development/final-output-linkage-2026-10-15.md
+      - docs/development/final-output-linkage-decision-package.yaml
+      - docs/development/final-output-linkage-ontology-result.yaml
+      - docs/development/final-output-linkage-quality-review.yaml
+      - docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml
+      - docs/knowledge/evidence/final-output-linkage-2026-10-15.md
+      - docs/knowledge/evidence/final-output-linkage-2026-10-15.yaml
+      - docs/knowledge/facts/production-output.yaml
+      - docs/knowledge/implementation-anchors/production-output.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+      - gmp-platform/backend/src/main/resources/db/changelog/0114-final-output-operation.sql
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java
+      - gmp-platform/frontend/scripts/test-production-output.mjs
+      - gmp-platform/frontend/src/components/ProductionOutput.tsx
+      - gmp-platform/frontend/src/pages/master-data/components/FinalOutputOperationControl.tsx
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.final-quality.baseline-and-scope
+      required: true
+      category: requirements
+      description: 全新独立实例核对实际Git基线、最终工作树、确认规则与L2影响分析。
+      method: inspection
+      command: git rev-parse HEAD; git rev-parse origin/edhr-dev; git status --short; git diff及未跟踪资产审读
+      outcome: passed
+      evidence:
+        - 独立读取HEAD与origin/edhr-dev均为4b236d7d53e7792ad5831d77220b037f30b69e1a；被测试候选为该提交加列明工作树，不为未提交内容编造新hash。
+        - 已读取AGENTS、codeplzreadme、交接和quality角色契约、当前知识说明/开放问题、DEC0078、决策包和最终本体结果；本实例未参与任何源码/测试/数据修复。
+        - 确认基数零或一、成功正式投影生效、多次报工、部分累计、产品单位核对、普通单位隔离及不补历史；未加入逐工序单位配置或自动填值。
+        - 替代范围保持DEC0077数量层级、普通报表单位隔离、真实归属、生产/DHR状态和质量独立；extensionStrategy为configuration/product-core。
+    - id: check.final-quality.knowledge
+      required: true
+      category: ontology
+      description: 独立重跑最终知识入口并核对声明、事实、成熟度和来源同步。
+      method: automated-test
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - /tmp/final-output-final-quality-knowledge.log；2026-10-15T21:32:55+08:00，89项实际执行，0失败/错误/跳过。
+        - 已重新读取本体收尾ontologyResult=updated；相关新资产implemented/internal，executionContract未伪标verified/runtime，P0仍in-progress。
+        - 原TODO现已区分历史缺口与本轮已确认实现，未把旧实例未补算或原安速康未复跑冒充完成。
+    - id: check.final-quality.backend
+      required: true
+      category: integration
+      description: 独立执行产出、正式投影、解释器、执行和配置/生产控制器相邻回归。
+      method: automated-test
+      command: cd gmp-platform/backend && JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test mvn --batch-mode --no-transfer-progress -Dtest=ProductionOutputPostgresTest,FormProjectionInterpreterTest,ProductProcessOwnerServiceTest,ProductProcessControllerTest,ProductionObjectControllerTest,ProductionBatchControllerTest,WorkOrderControllerTest,ProductionExecutionIntegrationTest,FormProjectionPostgresTest test
+      outcome: passed
+      evidence:
+        - /tmp/final-output-final-quality-backend.log；2026-10-15T21:29:31+08:00，134总项，132实际执行通过，0失败/错误，2条件浏览器夹具未启用。
+        - 新ProductionOutputPostgresTest 9项全部实际执行；FormProjectionInterpreterTest 19、既有FormProjectionPostgresTest 13实际执行。
+        - 新PG测试随机schema隔离并清理，覆盖多次报工/重试/并发、双批次工单、普通工序分单位、实际零/空异单位、待处理失败恢复、历史不追算、数据库唯一性、子表实际行及多主表绑定、共享批次表单排除。
+    - id: check.final-quality.frontend-and-build
+      required: true
+      category: unit
+      description: 独立运行产出组件、来源配置与投影相邻检查以及TypeScript和生产构建。
+      method: automated-test
+      command: cd gmp-platform/frontend && node --test scripts/test-production-output.mjs scripts/test-projection-*.mjs && npm run build
+      outcome: passed
+      evidence:
+        - /tmp/final-output-final-quality-frontend.log：40项通过，0失败/跳过。
+        - /tmp/final-output-final-quality-build.log：tsc -b与vite build完成，Vite built in 6.08s。
+        - 数量0、缺数、部分汇总、异常单位、多单位组及来源显示受测试覆盖；既有来源类型边界回归保持。
+    - id: check.final-quality.workspace-roundtrip
+      required: true
+      category: regression
+      description: 独立复核旧制程工作区保存丢finalOutput的high修复及两个配置入口。
+      method: command
+      command: 以TypeScript AST提取当前Workspace的toOperationDrafts/toPayload/formatAuditValue原函数，transpile后在Node VM执行；并只读浏览器核对现有配置
+      outcome: passed
+      evidence:
+        - 原函数输入finalOutput=[false,true]，draft=[false,true]，request=[false,true]；审计Boolean=[是,否]。未改测试或业务数据。
+        - 两入口都使用FinalOutputOperationControl；旧工作区现已读取/提交finalOutput，当前编辑器也在草稿/请求保留该字段。
+        - 独立Cua标签页读取旧/master-data/products/386170042225332224/modeling：前道最终标记未选且因已有最终节点禁用，最终工序标记选中；未点击保存、未修改业务数据。
+        - 主侧实际保存及API回读证据/tmp/edhr-final-output-config-evidence.json的legacyWorkspaceSaveRetained=true、copiedVersion保留标记；此项区分主侧采集与本实例独立读取验证。
+    - id: check.final-quality.database
+      required: true
+      category: database
+      description: 独立核对实际迁移、唯一性与存量默认不推断。
+      method: query
+      command: 只读psql查询edhr_projection_integration_test的databasechangelog、pg_indexes和information_schema；PG测试执行0114
+      outcome: passed
+      evidence:
+        - 0114-final-output-operation在实际独立库为EXECUTED；final_output字段存在，uk_process_version_final_output为同版本WHERE final_output部分唯一索引。
+        - PG测试实际验证旧行默认false及第二个true违反唯一性；迁移不更新执行快照或历史数量，无隐含末道推断。
+        - 原8087与旧模拟库未由本实例迁移或重启；本实例只查询独立库，测试仅写随机测试schema。
+    - id: check.final-quality.authorization-source-audit
+      required: true
+      category: security
+      description: 核对真实归属、现有权限入口、只读数量边界和审计修复。
+      method: inspection
+      command: 阅读ProductionOutputService及控制器PreAuthorize、配置审计snapshot和三个formatAuditValue；浏览器展开旧工作区数据审计
+      outcome: passed
+      evidence:
+        - 汇总限定实际form_instance_record.object_id、默认租户和PRODUCTION_EXECUTION来源，并按冻结operationId和成功投影取数；共享批次自定义表单不能认领其展示工序产出。
+        - 批次、工单和执行沿原权限入口返回，未新增原表单读取豁免；完整来源查询不调用有分页/筛选的报表API，也不写入质量数量或生产/DHR生命周期。
+        - 两配置保存路径/复制与使用时快照保留finalOutput；查询不伪造业务动作审计。
+        - 本实例真实UI展开旧工作区审计已显示最终产出工序：是/否；另两格式化器源码均已加中文key及Boolean是/否。既有其他技术字段格式化不在本轮新增范围。
+    - id: check.final-quality.browser-output
+      required: true
+      category: e2e
+      description: 独立真实浏览器核验列表、详情与工序数量隔离，全部只读。
+      method: browser
+      command: Cua独立隐藏标签页，3017前端连接8097隔离后端；批次与工单菜单、行详情及执行工序切换
+      outcome: passed
+      evidence:
+        - /production/batches列表AX可读FINAL-OUT-A=18件、FINAL-OUT-B=9件；A行详情显示最终工序及FR-20261015-000002的10件、FR-20261015-000003的8件，两者已计入。
+        - /production/work-orders列表AX可读FINAL-OUT-WO-20261015累计27件；行详情批次来源表显示A18件/B9件，生产对象查看也显示18/9。
+        - 执行详情切换前道/最终工序，当前工序累计分别100根/18件；前道单位未混入批次。已完成只读状态未被冒充为DHR放行。
+        - 本实例未重新生产提交或签署；正常API创建/START/SUBMIT/ADD_FORM_COPY/END_FORM/COMPLETE全链证据为主侧/tmp/edhr-final-output-runtime-evidence.json与totals.json，来源已区分。
+        - Cua截图与AX观察对应上述实际页面；本实例独立临时标签已关闭，未影响主侧标签。
+    - id: check.final-quality.visual-responsive
+      required: true
+      category: visual
+      description: 复用既有表格/详情/配置控件，检查窄屏和本轮静态审计新增范围。
+      method: browser
+      command: Cua默认1280x720与临时768x900视口；读取DESIGN.md/既有UI规范；运行premium audit strict并对照实际diff
+      outcome: passed
+      evidence:
+        - 默认视口详情沿既有右抽屉展示，累计数量/单位和来源文字可读；窄屏768x900工单详情27件及A18/B9来源无覆盖裁切，列表保留内部横向滚动，检查后已reset视口。
+        - 共用FinalOutputOperationControl在两个配置入口一致，无新增独立样式系统；新产出组件沿既有MUI和详情表格。
+        - output/final-output-linkage-2026-10-15/final-quality-premium-audit.json：全项目strict仍有84既有报告项，退出码2；本报告不声称全项目UI审计通过。
+        - 审计命中的本轮变更文件仅WorkOrderPage既有表单novalidate条目，该位置不在新增差异；新增组件无审计命中，不将既有全站问题扩大为本轮整改。
+    - id: check.final-quality.diff-hygiene
+      required: true
+      category: documentation
+      description: 检查交付差异与报告边界。
+      method: command
+      command: git diff --check
+      outcome: passed
+      evidence:
+        - 本轮差异未见空白错误；输出、临时node_modules symlink及构建产物不作为提交源码。
+        - 明确不补历史、不实现SN实际产出算法、A12数量撤回、DHR导出栏位或安速康原表完整复跑；不声称远端CI/全库语义审计/整套UI合规通过。
+  findings:
+    - id: QF-FINAL-001
+      severity: high
+      scope: product-process-existing-workspace
+      summary: 既有产品制程工作台保存会清除finalOutput的前轮问题已独立复核修复。
+      reproductionSteps:
+        - 原问题为已设最终节点后由旧Workspace保存工序绑定。
+        - 本次提取修复后的真实草稿/请求函数，以两个节点false/true运行往返，并只读核对现存配置UI。
+      expectedResult: 已设最终节点在所有可访问编辑入口读取与提交均保留。
+      actualResult: 输入、草稿和请求均为false/true，两入口共用唯一选择控件；主侧实际旧入口保存后回读也保持。
+      evidence: [docs/development/final-output-linkage-quality-review.yaml, gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: command
+          reference: 本实例TypeScript AST原函数独立执行输出input=[false,true],draft=[false,true],request=[false,true]
+        - type: document
+          reference: /tmp/edhr-final-output-config-evidence.json
+    - id: QF-FINAL-002
+      severity: medium
+      scope: product-process-audit-display
+      summary: 三处制程配置审计中的finalOutput和Boolean显示已中文化。
+      reproductionSteps:
+        - 读取三处审计格式化器并运行旧工作区Boolean格式化函数。
+        - 真实浏览器展开V1制程编辑工序配置的审计前后值。
+      expectedResult: 显示最终产出工序与是/否。
+      actualResult: 三格式化器均有中文字段映射和Boolean分支，实际旧工作区审计显示最终产出工序：是/否。
+      evidence: [gmp-platform/frontend/src/pages/master-data/ProductModelingPage.tsx, gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx, gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: command
+          reference: 本实例formatAuditValue(true/false)独立运行返回是/否
+        - type: audit-record
+          reference: 独立Cua旧产品工作区V1数据审计，编辑2026-10-15 21:25:17，前后值含最终产出工序：是/否
+  residualRisks:
+    - id: risk.final-quality.read-volume
+      description: 列表原为内存筛选分页，本轮逐对象/工单完整查询产出来源；未执行规模性能压测。
+      impact: 报工和批次规模增大后的时延、响应大小与查询次数没有本轮实测保证。
+      mitigation: 以实际规模测量后做批量读取或详情按需加载，保留完整事实及冻结口径，不拿分页报表替代权威汇总。
+    - id: risk.final-quality.explicit-deferrals
+      description: 原安速康整套原表未重新导入签署；旧实例不补算，SN算法、A12修订作废数量影响和DHR导出新增栏位不在本轮。
+      impact: 不得以本轮虚构新场景18+9=27推断这些延期范围已验收。
+      mitigation: 保留旧记录；后续按各自确认与独立验证实施，不反套当前配置。
+    - id: risk.final-quality.global-ui-and-ci
+      description: 全项目静态UI审计仍有84既有条目，本轮未跑全站主题/离线/200%缩放矩阵，未核验远端CI强制保护。
+      impact: 通过仅覆盖本切片和已列相邻回归，不表示全站UI、生产发布或仓库全量门禁均通过。
+      mitigation: 按后续真实任务治理既有问题；任何候选代码/契约变动应重新评估对应检查。
+  blockingConditions: []

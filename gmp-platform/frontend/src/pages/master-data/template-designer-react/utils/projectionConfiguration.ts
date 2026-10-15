@@ -48,7 +48,12 @@ export function projectionDetailName(modelId: string) {
 
 export function projectionSourceCandidates(model: ModelDesignState, binding: ProjectionBinding, attribute: ProjectionAttribute) {
   return projectionSources(model, binding).filter(field => acceptsProjectionAttribute(field, attribute)
-    && !Object.entries(binding.sources).some(([id, source]) => id !== attribute.id && source === field.id));
+    && !Object.entries(binding.sources).some(([id, source]) => id !== attribute.id && source === field.id && !canShareOutputSource(binding.modelId, id, attribute.id)));
+}
+
+function canShareOutputSource(modelId: string, left: string, right: string) {
+  return modelId === 'production' && [left, right].includes('outputQuantity')
+    && [left, right].every(id => ['outputQuantity', 'goodQuantity', 'ngQuantity'].includes(id));
 }
 
 export function projectionSourceRoles(model: ModelDesignState, binding: ProjectionBinding, definition?: ProjectionModel) {
@@ -78,15 +83,15 @@ export function projectionConfigurationProblems(model: ModelDesignState, binding
   for (const id of projectionRequiredAttributes(binding.modelId)) {
     if (!binding.sources[id]) issues.push({ attributeId: id, message: `请选择“${name(id)}”的来源${binding.tableId ? '列' : '字段'}` });
   }
-  if (binding.modelId === 'production' && !binding.sources.goodQuantity && !binding.sources.ngQuantity)
-    issues.push(...['goodQuantity', 'ngQuantity'].map(attributeId => ({ attributeId, message: '良品数量、不良数量至少配置一项来源' })));
+  if (binding.modelId === 'production' && !binding.sources.outputQuantity && !binding.sources.goodQuantity && !binding.sources.ngQuantity)
+    issues.push(...['outputQuantity', 'goodQuantity', 'ngQuantity'].map(attributeId => ({ attributeId, message: '产出、良品、不良数量至少配置一项来源' })));
   if (!Object.keys(binding.sources).length && binding.modelId === 'formTrace') issues.push({ message: '请选择至少一个追溯项及来源字段' });
   for (const [attributeId, fieldId] of Object.entries(binding.sources)) {
     const attribute = definition.attributes.find(item => item.id === attributeId);
     const field = fields.find(item => item.id === fieldId);
     if (!attribute || !field || !acceptsProjectionAttribute(field, attribute))
       issues.push({ attributeId, message: `“${name(attributeId)}”的来源${field ? `“${field.name}”类型不匹配` : '已失效'}，请重新选择` });
-    const otherRole = Object.entries(binding.sources).find(([id, source]) => id !== attributeId && source === fieldId);
+    const otherRole = Object.entries(binding.sources).find(([id, source]) => id !== attributeId && source === fieldId && !canShareOutputSource(binding.modelId, id, attributeId));
     if (otherRole) issues.push({ attributeId, message: `“${name(attributeId)}”与“${name(otherRole[0])}”不能使用同一个来源字段` });
     if (attribute?.type === 'number' && (model.projection?.bindings ?? []).some(other => other.id !== binding.id && other.modelId === binding.modelId
       && (other.tableId ?? '') === (binding.tableId ?? '') && Object.entries(other.sources).some(([id, source]) => source === fieldId && definition.attributes.some(item => item.id === id && item.type === 'number'))))

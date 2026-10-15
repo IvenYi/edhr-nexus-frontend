@@ -1,7 +1,18 @@
 import client from './client';
 import type { PageResult } from '@/types/common';
 
+export interface ProductionOutput {
+  quantity: string | null; unit: string | null; status: string; message: string;
+  operationName?: string; objectNo?: string; objectId?: string;
+  knownBatches?: number; totalBatches?: number;
+  groups?: Array<{ quantity: string; unit: string }>;
+  operations?: Record<string, ProductionOutput>;
+  batches?: ProductionOutput[];
+  sources?: Array<{ recordId: string; instanceId: string; instanceNo: string; bindingId: string; tableId: string; rowKey: string; fieldId: string; quantity?: string; unit: string; included: boolean; message?: string }>;
+}
+
 export interface WorkOrder {
+  output?: ProductionOutput;
   id: string; orderNo: string; productId: string; productName: string; productCode: string;
   processVersionId?: string | null; processVersion: string; productionMode?: string | null; productionForm?: string | null;
   plannedQuantity: number; plannedStartAt?: string | null; plannedEndAt?: string | null; orderNumber?: string | null;
@@ -12,6 +23,7 @@ export interface WorkOrderRequest {
   plannedQuantity: number; plannedStartAt?: string | null; plannedEndAt?: string | null; remark?: string;
 }
 export interface ProductionObject {
+  output?: ProductionOutput;
   id: string; objectNo: string; objectType: 'BATCH' | 'SN'; workOrderId: string;
   productName: string; productCode: string; processVersionId: string; processVersion: string;
   targetQuantity: number; goodQuantity: number; ngQuantity: number; scrapQuantity: number;

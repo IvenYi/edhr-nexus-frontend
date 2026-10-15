@@ -689,20 +689,36 @@ rules:
     explanation: 工序开始前事务校验仅为内部规划，当前不存在运行时阻断行为。
     evidenceIds: [evidence.business-knowledge-model]
   - id: rule.product-process.final-output
-    name: 最终产出
-    status: planned
+    name: 最终产出按冻结配置解释正式来源
+    status: implemented
     visibility: internal
-    trigger: operation.output.configure
-    scope: product-process-version
+    trigger: production.output.query
+    scope: production-batch-and-work-order
     condition:
       all:
-        - fact: operation.finalOutput
-          operator: planned
-          value: true
+        - fact: fact.production-output.snapshot-policy-version
+          operator: equals
+          value: 1
     result:
-      type: planned-final-output
-    explanation: DEC-0077-11/13已确认：工序报工更新各自工序产出；批次最终产出取指定最终产出工序的正式报工数量，工单汇总所属批次，禁止跨工序加总。来源字段须表达约定产出语义，不强制映射外部系统字段名；良品、不良、报废按各自配置独立统计，不自动加减最终产出，也不要求另有质量表单。无采集或无正式生效数据不等于实际零。配置与批次/工单运行联动仍为内部规划；当前首次完成投影及工序报表不能证明本规则已实现，不进入客户或运行时投影。
-    evidenceIds: [evidence.business-knowledge-model, evidence.form-traceability-projection-ownership-user-confirmed]
+      type: return-query-projection
+      target: production.outputSummary
+      sourceFactId: fact.production-output.summary
+      sourcePolicy: completed-form-and-succeeded-formal-projection
+      recomputeFromCompletePersistedSources: true
+    explanation: DEC-0078细化DEC-0077-11/13：新实例按冻结的最终节点与产品单位解释明确产出来源，多次报工/实际行累计，重试不重复；工序完工不再加数。普通工序按填报单位分组，批次只取指定最终工序且单位一致的有效数，工单只汇总所属批次；未齐保留已知量并提示，缺失不作零。空或异单位保留正式事实并待核对，不自动换算；良品、不良和报废独立，不修改生产/DHR状态或质量指标。产出来源角色和读时全量计算是本轮工程方案，不是客户任意规则。旧无策略标识实例不补算，不从当前配置推定。本轮已具有实现、隔离PostgreSQL9项及主侧真实API18+9=27的证据，保持implemented/internal；不宣称正式executionContract注册、verified/runtime发布、完整安速康原表复跑或独立质量已通过。
+    evidenceIds: [evidence.business-knowledge-model, evidence.form-traceability-projection-ownership-user-confirmed, evidence.final-output-linkage-confirmed, evidence.final-output-linkage-runtime-source, evidence.final-output-linkage-postgres-test, evidence.final-output-linkage-main-validation]
+  - id: rule.product-process.final-output-at-most-one
+    name: 具体制程至多一个最终产出工序
+    status: implemented
+    visibility: internal
+    trigger: product-process-version.save
+    scope: product-process-version
+    condition: {fact: fact.production-output.final-operation-count, operator: greater-than-or-equal, value: 2}
+    result:
+      type: block
+      code: FINAL_OUTPUT_OPERATION_NOT_UNIQUE
+    explanation: 同一具体制程版本出现两个或以上标记时阻断配置保存；零个允许且不新增生产阻断，不默认最后节点。该条件不是要求必选，也不改变全局工序定义。
+    evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-configuration-source, evidence.final-output-linkage-main-validation]
   - id: rule.product-process.material-readiness
     name: 物料齐套校验
     status: planned

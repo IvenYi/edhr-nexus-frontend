@@ -1,4 +1,5 @@
 import client from './client';
+import type { ProductionOutput } from './work-orders';
 import type { ModelField } from '@/pages/master-data/template-designer-react/types';
 
 export type ExecutionValues = Record<string, unknown>;
@@ -27,6 +28,7 @@ export interface ExecutionFormCopies {
   requiresSupplementReason?: boolean;
 }
 export interface ExecutionView {
+  formalOutput?: ProductionOutput;
   operationOutputs?: Record<string, { status: 'READY' | 'NOT_CONFIGURED' | 'PENDING' | 'INVALID'; message: string; outputQuantity: string | null; goodQuantity: string | null; ngQuantity: string | null; scrapQuantity: string | null }>;
   snapshot: {
     context: { objectId: string; objectNo: string; objectType: string; workOrderNo: string; productName: string; productCode: string; specification?: string;

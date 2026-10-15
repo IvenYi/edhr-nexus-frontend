@@ -40,6 +40,7 @@ public class ProductionExecutionService {
     private final ExecutionPresenceRegistry presence;
     private final UserAccountRepository userAccounts;
     private final FormInstanceRecordService formRecords;
+    private final ProductionOutputService outputs;
     private final DhrInstanceService dhrInstances;
 
     @Transactional(readOnly = true)
@@ -291,6 +292,7 @@ public class ProductionExecutionService {
         response.set("batchCompletionIssues", mapper.valueToTree(CustomFormPolicy.incomplete(snapshot, state, true)));
         ObjectNode availability = response.putObject("availability");
         ObjectNode operationOutputs = response.putObject("operationOutputs");
+        response.set("formalOutput", outputs.object(object.getId()));
         for (JsonNode op : snapshot.path("operations")) {
             if (allowed) engine.settleCompletedWorkForms(snapshot, state, op.path("id").asText(), null);
             String id = op.path("id").asText(); JsonNode current = state.path("operations").path(id);

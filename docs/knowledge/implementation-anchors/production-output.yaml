@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.25
+implementationAnchors:
+  - id: anchor.production-output.configuration
+    targetId: rule.product-process.final-output-at-most-one
+    targetType: rule
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcessOperationBinding.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
+    apiReferences: ['POST /api/v1/master-data/product-modeling/process-owners/{ownerType}/{ownerId}/versions', 'PUT /api/v1/master-data/product-modeling/process-owners/{ownerType}/{ownerId}/versions/{versionId}']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0114-final-output-operation.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx, gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx, gmp-platform/frontend/src/pages/master-data/components/FinalOutputOperationControl.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerServiceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProductProcessControllerTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-configuration-source, evidence.final-output-linkage-main-validation, evidence.final-output-linkage-postgres-test]
+    sourceRevision: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    sourceLocator: 本轮未提交差异saveOperationBindings/toOperationRequests与build及两现存配置入口；配置/控制器聚焦回归、数据库唯一性和主侧真实API复制/冻结、旧工作区浏览器保存回读有证据，不以首次QA failed代最终通过
+    capturedAt: '2026-10-15'
+    reviewStatus: reviewed
+  - id: anchor.production-output.formal-summary
+    targetId: concept.production-output-summary
+    targetType: concept
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionBatchController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
+    apiReferences: [GET /api/v1/production/batches, GET /api/v1/production/work-orders]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql]
+    uiReferences: [gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx, gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx, gmp-platform/frontend/src/pages/production/ExecutionOperationDrawer.tsx, gmp-platform/frontend/src/components/ProductionOutput.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormProjectionInterpreterTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormProjectionPostgresTest.java, gmp-platform/frontend/scripts/test-production-output.mjs]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-runtime-source, evidence.final-output-linkage-main-validation, evidence.final-output-linkage-postgres-test]
+    sourceRevision: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    sourceLocator: 本轮未提交差异ProductionOutputService.object/order/read；源集无分页/报表过滤，明确产出角色并保留证据身份；隔离PG9项与主侧真实API18+9=27、来源页面有结果；本体角色只复核证据，不冒充亲自运行，独立质量最终结果另记
+    capturedAt: '2026-10-15'
+    reviewStatus: reviewed

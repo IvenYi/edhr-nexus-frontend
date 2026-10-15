@@ -30,6 +30,7 @@ import AppDialog from '@/components/AppDialog';
 import FormFillSettingsButton, { FormFillModeLabel } from '@/components/form-fill-settings/FormFillSettingsButton';
 import type { FormFillSettingsValue } from '@/components/form-fill-settings/types';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import FinalOutputOperationControl from './FinalOutputOperationControl';
 import {
   getProductModelOptions,
   type ProductModelDhrDirectoryOption,
@@ -65,6 +66,7 @@ interface VersionForm {
 }
 
 interface OperationDraft {
+  finalOutput: boolean;
   routeNodeKey: string;
   operationName: string;
   operationCode?: string | null;
@@ -154,6 +156,7 @@ function toOperationDrafts(nodes: RouteNodeRecord[], configured: ProductProcessO
     .map((node, index) => {
       const configuredOperation = configuredByNode.get(node.nodeKey);
       return {
+        finalOutput: configuredOperation?.finalOutput ?? false,
         routeNodeKey: node.nodeKey,
         operationName: node.operationName || node.nodeKey,
         operationCode: node.operationCode,
@@ -189,6 +192,7 @@ function toPayload(form: VersionForm, drafts: OperationDraft[]): ProductProcessV
     effectiveFrom: form.effectiveFrom || null,
     effectiveTo: form.effectiveTo || null,
     operationBindings: drafts.map((draft) => ({
+      finalOutput: draft.finalOutput,
       routeNodeKey: draft.routeNodeKey,
       sortOrder: draft.sortOrder,
       forms: draft.forms.map((formBinding, index) => ({ ...formBinding, sortOrder: index + 1 })),
@@ -1064,6 +1068,8 @@ export default function ProductProcessVersionEditorDialog({
             <Box sx={{ minWidth: 0, minHeight: { xs: 360, lg: 0 }, p: 1.5, bgcolor: '#fff', display: 'flex', flexDirection: 'column', overflow: { xs: 'visible', lg: 'hidden' } }}>
               {!selectedNode ? <Typography variant="body2" sx={{ color: '#909399', textAlign: 'center', py: 5 }}>请选择工艺路线中的工序节点</Typography> : <Stack spacing={1.25} sx={{ minHeight: 0, flex: 1 }}>
                 <Stack direction="row" spacing={0.75} alignItems="baseline" sx={{ minHeight: 28, px: 0.25 }}><Typography variant="caption" sx={{ color: '#909399' }}>当前工序</Typography><Typography variant="body2" sx={{ color: '#303133', fontWeight: 600 }}>{selectedNode.operationName}</Typography>{selectedNode.operationCode ? <Typography variant="caption" sx={{ color: '#909399' }}>/ {selectedNode.operationCode}</Typography> : null}</Stack>
+                <FinalOutputOperationControl operation={selectedNode} operations={drafts} disabled={saving}
+                  onChange={checked => updateSelectedNode(draft => ({ ...draft, finalOutput: checked }))} />
                 <Tabs value={activeReferenceTab} onChange={(_, value: 'forms' | 'documents') => setActiveReferenceTab(value)} variant="fullWidth" sx={{ minHeight: 36, borderBottom: '1px solid #e4e7ed', '& .MuiTab-root': { minHeight: 36, minWidth: 0, px: 1, fontSize: 13 } }}>
                   <Tab value="forms" label={`DHR 目录表单 (${selectedForms.length})`} />
                   <Tab value="documents" label={`文档 (${selectedDocuments.length})`} />

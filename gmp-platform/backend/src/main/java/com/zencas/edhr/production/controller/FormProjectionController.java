@@ -152,6 +152,7 @@ public class FormProjectionController {
                 r.attributes->>'unit' AS unit,
                 string_agg(DISTINCT nullif(r.attributes->>'unitLabel',''),' / ') AS "unitLabel",
                 sum((r.attributes->>'quantity')::numeric) AS quantity,
+                sum((r.attributes->>'outputQuantity')::numeric) AS "outputQuantity",
                 sum((r.attributes->>'goodQuantity')::numeric) AS "goodQuantity",
                 sum((r.attributes->>'workHours')::numeric) AS "workHours",
                 sum((r.attributes->>'ngQuantity')::numeric) AS "ngQuantity",count(*) AS "recordCount"

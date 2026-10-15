@@ -36,6 +36,12 @@ public class ProductProcessVersionRequest {
         private Integer sortOrder;
         private List<FormBindingRequest> forms;
         private List<DocumentBindingRequest> documents;
+        private Boolean finalOutput;
+
+        public OperationBindingRequest(String routeNodeKey, Integer sortOrder, List<FormBindingRequest> forms,
+                                       List<DocumentBindingRequest> documents) {
+            this(routeNodeKey, sortOrder, forms, documents, false);
+        }
     }
 
     @Data

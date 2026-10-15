@@ -43,6 +43,7 @@ import { getDhrByProductionObject, type DhrInstanceSummary } from '@/api/dhr-ins
 import { DhrArchiveViewer } from '@/pages/dhr-management/DhrManagementPage';
 import { useAuthStore } from '@/stores/authStore';
 import type { PageResult } from '@/types/common';
+import { ProductionOutputDetails, ProductionOutputValue } from '@/components/ProductionOutput';
 import { toProductionAuditFields, type ProductionAuditField } from '@/utils/productionAudit';
 import ListColumnSettingsPopover, {
   getCurrentUserPreferenceStorageKey,
@@ -57,7 +58,7 @@ const BATCH_COLUMN_SETTINGS_VERSION = 1;
 const BATCH_COLUMN_SETTINGS_PREFIX = 'production-batch-columns:';
 const BATCH_COLUMN_WIDTHS_PREFIX = 'production-batch-column-widths:';
 const BATCH_ACTION_COLUMN_WIDTH = 128;
-type BatchColumnId = 'batchNo' | 'workOrderNo' | 'product' | 'processVersion' | 'targetQuantity' | 'goodQuantity' | 'ngQuantity' | 'scrapQuantity' | 'plannedStartAt' | 'plannedEndAt' | 'status';
+type BatchColumnId = 'batchNo' | 'workOrderNo' | 'product' | 'processVersion' | 'targetQuantity' | 'output' | 'goodQuantity' | 'ngQuantity' | 'scrapQuantity' | 'plannedStartAt' | 'plannedEndAt' | 'status';
 type BatchColumn = ListColumnOption<BatchColumnId> & { width: number; minWidth: number };
 type BatchColumnWidths = Partial<Record<BatchColumnId, number>>;
 const BATCH_COLUMNS: BatchColumn[] = [
@@ -66,6 +67,7 @@ const BATCH_COLUMNS: BatchColumn[] = [
   { id: 'product', label: '产品', width: 190, minWidth: 160 },
   { id: 'processVersion', label: '制程版本', width: 150, minWidth: 120 },
   { id: 'targetQuantity', label: '目标数量', width: 110, minWidth: 96 },
+  { id: 'output', label: '累计产出', width: 150, minWidth: 130 },
   { id: 'goodQuantity', label: '良品', width: 100, minWidth: 88 },
   { id: 'ngQuantity', label: 'NG', width: 100, minWidth: 88 },
   { id: 'scrapQuantity', label: '报废', width: 100, minWidth: 88 },
@@ -213,6 +215,7 @@ function BatchDetailDrawer({ detail, tab, onTabChange, auditRows, auditLoading, 
             <DetailField label="NG" value={detail.ngQuantity} /><DetailField label="报废" value={detail.scrapQuantity} />
             <DetailField label="计划开始时间" value={formatDateTime(detail.plannedStartAt)} /><DetailField label="计划结束时间" value={formatDateTime(detail.plannedEndAt)} />
           </Box></DetailSection>
+          <DetailSection title="累计产出"><ProductionOutputDetails output={detail.output} /></DetailSection>
           <DetailSection title="备注"><Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', color: detail.remark ? '#303133' : '#909399' }}>{detail.remark || '暂无备注'}</Typography></DetailSection>
         </Stack> : <Stack spacing={1} sx={{ mt: 2 }}>
           {auditLoading ? <Box sx={{ py: 8, display: 'grid', placeItems: 'center' }}><CircularProgress size={24} /></Box> : auditError ? <Box sx={{ py: 8, textAlign: 'center', color: '#c62828' }}>数据审计加载失败</Box> : auditRows.length === 0 ? <Box sx={{ py: 8, textAlign: 'center', color: '#909399' }}>暂无数据审计记录</Box> : auditRows.map((item) => <Accordion key={item.id} disableGutters elevation={0} sx={{ border: '1px solid #e4e7ed', borderRadius: '4px !important', overflow: 'hidden', '&::before': { display: 'none' }, '&.Mui-expanded': { m: 0 } }}>
@@ -342,6 +345,7 @@ export default function BatchManagementPage() {
       case 'product': return <TableCell sx={commonSx} title={`${row.productName}（${row.productCode}）`}><Typography variant="body2" noWrap>{row.productName}</Typography><Typography variant="caption" display="block" color="text.secondary" noWrap>{row.productCode}</Typography></TableCell>;
       case 'processVersion': return <TableCell sx={commonSx}>{row.processVersion || '-'}</TableCell>;
       case 'targetQuantity': return <TableCell sx={commonSx}>{row.targetQuantity}</TableCell>;
+      case 'output': return <TableCell sx={commonSx}><ProductionOutputValue output={row.output} /></TableCell>;
       case 'goodQuantity': return <TableCell sx={commonSx}>{row.goodQuantity}</TableCell>;
       case 'ngQuantity': return <TableCell sx={commonSx}>{row.ngQuantity}</TableCell>;
       case 'scrapQuantity': return <TableCell sx={commonSx}>{row.scrapQuantity}</TableCell>;

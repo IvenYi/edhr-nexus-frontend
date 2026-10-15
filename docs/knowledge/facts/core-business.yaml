@@ -835,21 +835,21 @@ facts:
     capturedAt: '2026-09-13'
     reviewStatus: reviewed
   - id: fact.catalog.operation-finaloutput
-    name: "规则事实 operation.finalOutput"
-    conceptId: concept.operation
-    valueType: string
+    name: 制程版本路线节点的最终产出标记
+    conceptId: concept.final-output-operation
+    valueType: boolean
     sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcessOperationBinding.java
     aliases: ["operation.finalOutput"]
-    availability: not-available
-    allowedOperators: [planned]
-    status: specified
+    availability: configuration-and-runtime
+    allowedOperators: [equals, exists]
+    status: implemented
     visibility: internal
-    evidenceIds: [evidence.product-process-resolution-service]
-    sourceRevision: working-tree
-    sourceLocator: "operation.finalOutput"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-configuration-source, evidence.final-output-linkage-main-validation]
+    sourceRevision: 4b236d7d53e7792ad5831d77220b037f30b69e1a
+    sourceLocator: 本轮未提交差异ProductProcessOperationBinding.finalOutput；只属于具体制程绑定，新执行副本operations[].finalOutput冻结同一含义；替代旧string/not-available占位，不据代码改写用户政策
+    capturedAt: '2026-10-15'
+    reviewStatus: reviewed
   - id: fact.catalog.operation-formpermissions
     name: "规则事实 operation.formPermissions"
     conceptId: concept.operation

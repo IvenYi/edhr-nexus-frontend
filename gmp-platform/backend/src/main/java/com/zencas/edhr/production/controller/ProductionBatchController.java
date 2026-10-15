@@ -24,6 +24,7 @@ public class ProductionBatchController {
     private static final String TENANT_ID = "default";
     private final ProductionObjectRepository productionObjectRepository;
     private final ProductionService productionService;
+    private final com.zencas.edhr.production.service.ProductionOutputService outputs;
 
     @GetMapping
     @PreAuthorize("hasAuthority('production.batches')")
@@ -79,7 +80,7 @@ public class ProductionBatchController {
                 object.getPlannedEndAt(),
                 object.getRemark(),
                 object.getCreatedAt(),
-                object.getUpdatedAt());
+                object.getUpdatedAt(), outputs.object(object.getId()));
     }
 
     public record BatchResponse(
@@ -104,5 +105,6 @@ public class ProductionBatchController {
             java.time.LocalDateTime plannedEndAt,
             String remark,
             java.time.LocalDateTime createdAt,
-            java.time.LocalDateTime updatedAt) {}
+            java.time.LocalDateTime updatedAt,
+            com.fasterxml.jackson.databind.JsonNode output) {}
 }

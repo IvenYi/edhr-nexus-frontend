@@ -7,14 +7,14 @@ export const businessAttributeNames: Record<string, string> = {
 };
 export function businessRecordColumns(model: string) {
   return columns([...context, ...(model === 'production'
-    ? [['goodQuantity', '良品数量'], ['ngQuantity', '不良品数量'], ['unit', '单位'], ...Object.entries(businessAttributeNames)]
+    ? [['outputQuantity', '产出数量'], ['goodQuantity', '良品数量'], ['ngQuantity', '不良品数量'], ['unit', '单位'], ...Object.entries(businessAttributeNames)]
     : [...material, ['quantity', model === 'scrap' ? '报废数量' : '消耗数量'], ['unit', '单位'], ['category', model === 'scrap' ? '报废分类' : '分类'], ['reason', model === 'scrap' ? '报废原因' : '原因']]),
     ['teamText', '责任班组'], ['documentNumberText', '关联单据号'], ['instanceNo', '来源表单'], ['location', '来源位置'],
     ['createdBy', '表单创建人'], ['createdAt', '表单创建时间'], ['updatedBy', '表单更新人'], ['updatedAt', '表单更新时间']]);
 }
 export function businessTotalColumns(model: string) {
   return columns([['objectNo', '所属生产批次/SN'], ['operationName', '工序'], ...(model === 'production'
-    ? [['unit', '单位'], ['goodQuantity', '良品数量'], ['ngQuantity', '不良品数量'], ['workHours', '投入工时（人时）']]
+    ? [['unit', '单位'], ['outputQuantity', '产出数量'], ['goodQuantity', '良品数量'], ['ngQuantity', '不良品数量'], ['workHours', '投入工时（人时）']]
     : [['materialName', '物料'], ['materialLot', '物料批号'], ['unit', '单位'], ['quantity', model === 'scrap' ? '报废数量' : '消耗数量']]), ['recordCount', '明细数']]);
 }
 export function businessFilters(model: string): string[][] {

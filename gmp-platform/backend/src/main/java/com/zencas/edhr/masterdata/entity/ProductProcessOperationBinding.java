@@ -32,6 +32,8 @@ public class ProductProcessOperationBinding {
     private String operationName;
     @Column(name = "sort_order", nullable = false)
     @Builder.Default private Integer sortOrder = 0;
+    @Column(name = "final_output", nullable = false)
+    @Builder.Default private Boolean finalOutput = false;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

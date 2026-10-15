@@ -34,6 +34,7 @@ import static org.mockito.Mockito.when;
 class ProductionObjectControllerTest {
 
     @Mock private ProductionService productionService;
+    @Mock private com.zencas.edhr.production.service.ProductionOutputService outputs;
     @Mock private RouteVersionRepository routeVersionRepository;
     @Mock private DhrTemplateVersionRepository dhrTemplateVersionRepository;
     @Mock private AuditEventRepository auditEventRepository;

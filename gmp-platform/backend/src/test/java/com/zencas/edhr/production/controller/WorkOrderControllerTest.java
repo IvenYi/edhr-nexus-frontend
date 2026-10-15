@@ -34,6 +34,7 @@ class WorkOrderControllerTest {
     @Mock private MaterialRepository materialRepository;
     @Mock private ProductProcessVersionRepository processVersionRepository;
     @Mock private ProductionService productionService;
+    @Mock private com.zencas.edhr.production.service.ProductionOutputService outputs;
     @Mock private SnowflakeIdGenerator idGenerator;
     @Mock private AuditEventRepository auditEventRepository;
     @Spy private ObjectMapper objectMapper = new ObjectMapper();

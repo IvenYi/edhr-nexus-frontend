@@ -1,5 +1,17 @@
 knowledgeModelVersion: 0.3.25
 terms:
+  - id: term.final-output-operation
+    name: 最终产出工序
+    definition: 具体产品或产品簇制程版本中显式指定、用于决定批次最终产出的一个稳定路线节点绑定；至多一个且可不设，不默认末道工序、不额外阻断生产。新实例按使用时冻结配置解释，不是可复用全局工序的属性。
+    aliases: [最终产出节点]
+    status: implemented
+    visibility: internal
+  - id: term.production-output-summary
+    name: 正式产出累计
+    definition: 从最终完成且投影成功的产出来源记录计算的生产数量及完整性。普通工序按填写单位分别累计；批次仅取冻结的最终产出工序且核对冻结产品单位；工单只汇总所属批次。多次报工分别计入而重试不重复，无数据不等于零，空或异单位保留事实并标待核对。它不等同良品、不良品、报废合计、过程参考数或生产/DHR生命周期状态，不补算缺少新冻结依据的旧实例。
+    aliases: [累计产出数量, 批次最终产出, 工单累计产出]
+    status: implemented
+    visibility: internal
   - id: term.form-projection-configuration
     name: 表单用途配置
     definition: 制表人把产品维护的统计用途或追溯项显式关联到主表字段组合或子表列的配置；来源映射、目录含义和模型版本随实际生产使用复制，后续模板及目录修改不静默回写已使用实例。它不建立真实生产或DHR归属，不是客户自由编写业务规则。
@@ -8,7 +20,7 @@ terms:
     visibility: internal
   - id: term.form-business-projection
     name: 正式业务投影
-    definition: 表单最终完成时在同事务留下待处理批次，再由确定性解释器按该次冻结来源生成的报工、报废或消耗记录；保存及审批中内容只参与过程追溯，不提前计入正式统计。每条保留来源实例、用途、字段及实际行身份，投影不是原表单或DHR的替代记录，成功投影也不证明批次及工单最终产出已联动。
+    definition: 表单最终完成时在同事务留下待处理批次，再由确定性解释器按该次冻结来源生成的报工、报废或消耗记录；保存及审批中内容只参与过程追溯，不提前计入正式统计。每条保留来源实例、用途、字段及实际行身份，投影不是原表单或DHR的替代记录；正式产出另按DEC-0078的显式产出来源、冻结最终节点及产品单位解释，不能仅凭成功投影就把全部报工数量相加为批次产出。
     aliases: [正式统计来源记录]
     status: specified
     visibility: internal
