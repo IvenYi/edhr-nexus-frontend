@@ -18,7 +18,9 @@ W2-T001-CELL-DISPLAY-HARNESS：更宽94项Node初跑93通过、1失败，定位�
 
 npm run build（tsc -b及Vite）通过。npm run lint仍因缺少ESLint配置退出2；verify-template-designer-react仍因已存在的vendor/online-form-designer缓存退出1，未删除缓存或弱化检查。官方premium严格扫描前后均84项（13 unresolved、71 violations），逐项对照新增0、消失0，严格命令仍退出2，不称全局通过。上述全局限制不归本次坐标修复关闭；未改UI markup、token、主题、共享原语、locale或构建配置，新增生产diff无native-dialog/非语义点击等模式。
 
-主侧原始日志仅留/tmp/edhr-w2-designer-evidence；安全命令/结果/文件摘要见[evidence/primary-result.json](evidence/primary-result.json)。本体正式[not-applicable](evidence/ontologyResult.yaml)，没有知识修改或成熟度升级。最终质量必须针对冻结候选由全新未参与修复的实例实际复验，当前待验收，不能用主侧结果代替。
+主侧原始日志仅留/tmp/edhr-w2-designer-evidence；安全命令/结果/文件摘要见[evidence/primary-result.json](evidence/primary-result.json)。本体正式[not-applicable](evidence/ontologyResult.yaml)，没有知识修改或成熟度升级。全新未参与修复实例针对8450aa781e6d8c602d214392182c0d6a7614dac6实际独立复跑同组94 Node、7 Chromium及tsc/Vite构建，最终[qualityResult passed](evidence/independent/qualityResult.yaml)，9项必需检查通过、blockingConditions为空；两项发现均resolved。原基线5项Node expected-red与首个1440px菜单actual3/expected4均独立重放；第二个基线浏览器场景未执行，不计入证据。主侧与独立次数不相加为不同覆盖。
+
+独立实例前后1858 tracked文件和3项受保护工具摘要均相同，所有进程结束后才生成保护回执，浏览器及自建临时服务在finally清理。14份安全产物及白名单已逐字节归档，原始日志/SSR HTML/XML/完整保护清单仅留/tmp。受测提交之后只有L0证据登记和交付链接，不修改源码、测试、知识或治理，也不把新文档提交说成重新运行，见[交付范围凭据](evidence/delivery-receipt.json)。全局lint/vendor/premium的原失败在独立结果中单列保留，不属于本批passed声明。
 
 ## 保留检查点
 

@@ -1,7 +1,9 @@
 findings:
   - id: W2-F002-COLUMN-INSERT-NODE-ALIGNMENT
     severity: medium
-    status: fixed-awaiting-independent-verification
+    status: independently-verified
+    testedCandidate: 8450aa781e6d8c602d214392182c0d6a7614dac6
+    qualityResult: evidence/independent/qualityResult.yaml
     trigger: 正常画布左侧/右侧新增列，范围前或内部已有字段或子表。
     expected: 组件、标签、子表范围/组/anchor/派生偏移同步，来源ID保持，一次undo完整恢复。
     actualAtBaseline: cells/mergedCells移动而nodes未动；第3列字段前插1列后仍为3，标签已到4。
@@ -12,7 +14,9 @@ findings:
     businessPolicyChanged: false
   - id: W2-T001-CELL-DISPLAY-HARNESS
     severity: low
-    status: fixed-awaiting-independent-verification
+    status: independently-verified
+    testedCandidate: 8450aa781e6d8c602d214392182c0d6a7614dac6
+    qualityResult: evidence/independent/qualityResult.yaml
     trigger: 相邻动态行序号SSR回归运行。
     rootCause: 旧测试导出已不存在的MockFillPage，生产组件已改名FormSheetPage。
     fix: 引用真实公开组件并删除无效export注入；保留原fixture和全部断言。

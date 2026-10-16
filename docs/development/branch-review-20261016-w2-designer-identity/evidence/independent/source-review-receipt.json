@@ -1,0 +1,22 @@
+{
+  "candidate": "8450aa781e6d8c602d214392182c0d6a7614dac6",
+  "productionAddedLines": 61,
+  "productionDeletedLines": 0,
+  "antiPatternSearchScope": "new production diff only; existing static findings retained separately",
+  "newMatches": {
+    "native-dialog": [],
+    "nonsemantic-click": [],
+    "new-form-or-search": [],
+    "new-fetch-effect": []
+  },
+  "semanticInspection": "Range/geometry transformation and existing reconcile/history reuse only; IDs/model/projection preserved, no policy or API changes. Full source/test diff inspected.",
+  "screenshotsViewed": [
+    "screenshots/column-insertion-1440.png",
+    "screenshots/column-insertion-390.png",
+    "screenshots/save-in-flight-desktop.png",
+    "screenshots/save-in-flight-narrow.png"
+  ],
+  "narrowBoundary": "Sidebar collapsed and canvas scrolled to reach destination. Existing toolbar/canvas overflow remains; no complete mobile or whole-app visual claim.",
+  "skillRead": "Successfully reread current installed frontend-design, frontend-design-premium 1.4.0, canonical-ui-resolution, verification-checklist and anti-patterns through skills.read; Chinese eDHR product tool, no new Japan-facing scope.",
+  "canonicalOwners": "Actual existing Shell/Canvas MUI Menu/toolbar, Zustand store command/history, FormSheetPage runtime component. No new markup/theme/control owner or UX contract added."
+}

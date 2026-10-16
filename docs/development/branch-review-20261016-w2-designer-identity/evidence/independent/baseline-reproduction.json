@@ -1,0 +1,106 @@
+{
+  "baseline": "8a9cd91f62742e9469c785baee482129eb6ec84e",
+  "mechanism": "Existing esbuild plugin reads original store/Shell from Git objects without checkout/worktree or test/assertion changes.",
+  "node": {
+    "exitCode": 1,
+    "total": 5,
+    "failed": 5,
+    "passed": 0,
+    "skipped": 0,
+    "expectedRed": true,
+    "failures": [
+      {
+        "name": "bound field before insert",
+        "actual": {
+          "t": 2,
+          "b": 2,
+          "l": 3,
+          "r": 3
+        },
+        "expected": {
+          "t": 2,
+          "b": 2,
+          "l": 5,
+          "r": 5
+        }
+      },
+      {
+        "name": "inside merged field",
+        "actual": {
+          "t": 2,
+          "b": 2,
+          "l": 2,
+          "r": 4
+        },
+        "expected": {
+          "t": 2,
+          "b": 2,
+          "l": 2,
+          "r": 6
+        }
+      },
+      {
+        "name": "before subtable",
+        "actual": {
+          "t": 4,
+          "b": 6,
+          "l": 2,
+          "r": 5
+        },
+        "expected": {
+          "t": 4,
+          "b": 6,
+          "l": 3,
+          "r": 6
+        }
+      },
+      {
+        "name": "inside subtable",
+        "actual": {
+          "t": 4,
+          "b": 6,
+          "l": 2,
+          "r": 5
+        },
+        "expected": {
+          "t": 4,
+          "b": 6,
+          "l": 2,
+          "r": 7
+        }
+      },
+      {
+        "name": "recursive anchored node",
+        "actual": {
+          "t": 2,
+          "b": 2,
+          "l": 3,
+          "r": 3
+        },
+        "expected": {
+          "t": 2,
+          "b": 2,
+          "l": 4,
+          "r": 4
+        }
+      }
+    ]
+  },
+  "browser": {
+    "exitCode": 1,
+    "firstCaseViewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "actualColumn": 3,
+    "expectedColumn": 4,
+    "expectedRed": true,
+    "second390pxBaselineCaseExecuted": false
+  },
+  "candidateResult": {
+    "nodePassed": 94,
+    "nodeSkipped": 0,
+    "browserPassed": 7
+  },
+  "candidate": "8450aa781e6d8c602d214392182c0d6a7614dac6"
+}
