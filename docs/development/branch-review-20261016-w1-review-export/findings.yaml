@@ -29,6 +29,20 @@ inheritedOpenItems:
     blocksWholeDhrLifecycleCompletion: true
     disposition: 保留原模块所有权与待交付依赖，不从接口存在推定全链实现，不以手工改数据库当合法生效场景。
     evidence: [ontology/README.md, ontology/adjacent-policy.json, source-map.md]
+followupDependencyDecision:
+  recordedOn: '2026-10-16'
+  source: 当前用户明确确认记录控制的表单变更和作废尚未实现，相关工作暂缓至实现后继续。
+  recordControlImplementation: not-implemented-user-confirmed
+  disposition: deferred-until-upstream-implementation
+  deferredScopes:
+    - 真实来源变更作废生效接口、有效修订标识与DHR消费接入。
+    - 依赖该生效入口的主动影响通知和生效与批准并发联调。
+  independentReviewScopes:
+    - 现有合法来源写入口的状态限制、锁与冻结证据比较，确定缺陷才整改。
+    - 既有客观检查、三项人工确认及其冻结/追溯是否完整；不新增通用质量自动判定规则。
+  resumptionTrigger: 记录控制模块交付可核对的实现分支、正式生效入口及有效修订/事务契约后，重取最新目标并继续真实联调。
+  inheritedHighItemsClosed: false
+  evidence: [followup-20261016-source-dependency.md]
 acceptanceBoundary:
   currentBatch: 已实现路径的源码及运行证据审查，无产品代码候选或新功能交付。
   wholeW1Complete: false
