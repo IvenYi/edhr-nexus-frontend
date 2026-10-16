@@ -1,0 +1,233 @@
+[
+  {
+    "class": "com.zencas.edhr.production.controller.WorkOrderCloseAtomicityTest",
+    "name": "auditSerializationFailureAlsoRollsBackTheClose",
+    "time": "0.162",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.controller.WorkOrderCloseAtomicityTest",
+    "name": "auditWriteFailureRollsBackTheAlreadyExecutedClose",
+    "time": "0.095",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.controller.WorkOrderCloseAtomicityTest",
+    "name": "concurrentCloseIsAcceptedOnceWithOneAccurateAudit",
+    "time": "2.089",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.controller.WorkOrderCloseAtomicityTest",
+    "name": "successfulCloseCommitsBothStatusAndExactBeforeAfterAudit",
+    "time": "0.016",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.controller.WorkOrderCloseAtomicityTest",
+    "name": "invalidStateRemainsRejectedWithoutStatusOrAuditWrite",
+    "time": "0.008",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrFillingServiceTest",
+    "name": "auditFailureRollsBackNewCopyAndRevision",
+    "time": "0.087",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrFillingServiceTest",
+    "name": "supplementChangesExecutionRevisionButNeverProductionOrDraftStatus",
+    "time": "0.035",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrFillingServiceTest",
+    "name": "rejectsReviewInProgressMissingReasonFutureTimestampAndUnknownDhr",
+    "time": "0.021",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrFillingServiceTest",
+    "name": "finalizedDhrRequiresExplicitReorganizationBeforeSupplement",
+    "time": "0.011",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "auditFailureRollsBackDraftAndStatus",
+    "time": "0.68",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "unnumberedOptionalCustomCopyBlocksSummaryEvenWhenNotPlaced",
+    "time": "0.066",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "partialDisplayPlacementStillFreezesAllActualEvidence",
+    "time": "0.072",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "missingFormOriginalBlocksSubmitWithoutDiscardingDraft",
+    "time": "0.036",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "recoveredDraftRequiresFreshScopeSaveAndManualCheckBeforeFreezing",
+    "time": "0.053",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "failedSubmitRetainsSavedRevisionAndSuccessfulRetryFreezesEvidence",
+    "time": "0.078",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "directoryProjectionKeepsLongIdsExactWithoutMutatingFrozenData",
+    "time": "0.023",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "explicitReorganizationPreservesOriginalEvidenceAndChecksVersionAndReason",
+    "time": "0.062",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "historicalVersionDoesNotRequireReadableLiveFormValues",
+    "time": "0.031",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "savesRecordBeforeAndAfterAndRejectStaleRevisionWithoutChangingData",
+    "time": "0.037",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "historicalVersionDoesNotReturnLiveFormValuesOutsideFrozenCandidates",
+    "time": "0.032",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "sourceCopiesMayFreezeAtSeparateDirectoriesOrInterleavedPositions",
+    "time": "0.035",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "changedFrozenAttachmentListBlocksHistoricalVersionRead",
+    "time": "0.038",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "summaryDisplayNameRejectsBlankAndOversizedValues",
+    "time": "0.024",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "requiredReviewUsesFrozenBindingAndFailedWorkflowRollsBackSubmission",
+    "time": "0.098",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "changedFrozenCandidateCannotBypassOriginalFileCheck",
+    "time": "0.05",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "newSourceRecordAfterDraftRequiresFreshCheckAndIsNeverSilentlyOmitted",
+    "time": "0.035",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "submitRequiresAuditableManualCheckBeforeFreezing",
+    "time": "0.019",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "directoryDisplayNameSurvivesDraftFreezeAndReorganizationWithoutChangingBase",
+    "time": "0.046",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "summaryDisplayNameIsFrozenWithoutChangingSourceAndSurvivesReorganization",
+    "time": "0.044",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "optionalInstanceOrderSurvivesDraftFreezeReadAndReorganization",
+    "time": "0.046",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "directoryRenameCannotMoveReorderDuplicateOrUseInvalidNames",
+    "time": "0.022",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "submitAuditFailureRollsBackVersionEvidenceAndDraftDeletion",
+    "time": "0.023",
+    "outcome": "passed",
+    "skipReason": null
+  },
+  {
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "name": "staleScopeAndIncompleteSupplementBlockSubmission",
+    "time": "0.019",
+    "outcome": "passed",
+    "skipReason": null
+  }
+]

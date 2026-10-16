@@ -2,6 +2,8 @@ package com.zencas.edhr.production.controller;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zencas.edhr.common.dto.ApiResponse;
+import com.zencas.edhr.common.exception.BusinessException;
+import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.production.service.ProductionExecutionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,7 +52,17 @@ public class ProductionExecutionController {
 
     @PostMapping("/{id}/actions")
     public ApiResponse<ObjectNode> act(@PathVariable Long id, @RequestBody ProductionExecutionService.Command command) {
-        return ApiResponse.success(service.act(id, command));
+        try {
+            return ApiResponse.success(service.act(id, command));
+        } catch (RuntimeException failure) {
+            // The service transaction has rolled back before translating PostgreSQL's snapshot conflict.
+            for (Throwable cause = failure; cause != null; cause = cause.getCause()) {
+                if (cause instanceof java.sql.SQLException sql && "40001".equals(sql.getSQLState())) {
+                    throw new BusinessException(ErrorCode.GENERAL_001, "执行记录已被更新，请刷新后重试，未保存内容仍保留在页面");
+                }
+            }
+            throw failure;
+        }
     }
 
     public record ReferenceQuery(String operationId, String formId, String fieldId, String keyword, com.fasterxml.jackson.databind.JsonNode values) {}

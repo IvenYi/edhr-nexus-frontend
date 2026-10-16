@@ -1,0 +1,53 @@
+{
+  "sourceCommit": "1113fe14f7f7539b9727fc708f49838504287d4f",
+  "targetCommit": "6379bf105127b05a65695992b008b55c142264f9",
+  "contractReadCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+  "uncommittedContractPaths": [],
+  "knowledgeBaselineBefore": "0.3.25",
+  "knowledgeBaselineAfter": "0.3.25",
+  "changedDefinitionIds": [
+    "evidence.production-execution-service-source",
+    "evidence.production-execution-integration-tests"
+  ],
+  "newDefinitionIds": [
+    "evidence.production-execution-start-configuration-consistency-tests"
+  ],
+  "beforeDefinitionCount": 2486,
+  "afterDefinitionCount": 2487,
+  "existingEvidencePreservedExceptTwoDescriptions": true,
+  "scopedSchemaReferenceAndUniqueIdChecks": "passed",
+  "formalKnowledgeMavenExecutedByThisInstance": false,
+  "businessOrQualityPassedClaim": false,
+  "observedWorkingTreeChanges": [
+    " M docs/development/branch-review-20261015-w1-followup/README.md",
+    "?? docs/development/branch-review-20261015-w1-followup/decision-package.yaml",
+    "?? docs/development/branch-review-20261015-w1-followup/evidence/start-configuration-main-case-index.json",
+    "?? docs/development/branch-review-20261015-w1-followup/evidence/start-configuration-main-result.json",
+    "?? docs/development/branch-review-20261015-w1-followup/evidence/start-configuration-red.json",
+    "?? docs/development/branch-review-20261015-w1-followup/findings.yaml",
+    "?? docs/development/branch-review-20261015-w1-followup/ontology/config-race-knowledge-sync-validation.json",
+    "?? docs/development/branch-review-20261015-w1-followup/ontology/config-race-ontology-result.yaml",
+    "?? docs/development/branch-review-20261015-w1-followup/ontology/config-race-policy-baseline.json",
+    "?? docs/development/branch-review-20261015-w1-followup/ontology/config-race-policy-index.json",
+    "?? docs/development/branch-review-20261015-w1-followup/ontology/config-race-policy.md",
+    "?? docs/development/branch-review-20261015-w1-followup/validation.md"
+  ],
+  "rootOwnedImplementationSha256": {
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java": "2be98ada6ce0549c20b32bdaa4a27345fbaeff16bfadffef8d09ae2c8df26452",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java": "4d40cb12acd393aaeef966aaecd6918ba86d3135ed8435b94e2a55c3646bf59a",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java": "b0a752129382a761f435848b40719c93753facdd8932a83eb7ea1cf43894e7d7"
+  },
+  "evidenceBoundary": "Read source/test assertions, original PostgreSQL RED, final PostgreSQL XML attributes and main log summaries; no Maven/DB executed by this instance. Main PostgreSQL 69 entries / 67 passed / 2 existing fixture skips; H2 102 / 99 / 3 skips; knowledge 89 / 89 / 0. PostgreSQL专项必须显式运行；H2 conditional skip cannot substitute for PostgreSQL database-wide MVCC. Two ordered SQL writers model updateVersion and old composition removal, not administrator HTTP. Final independent quality pending.",
+  "policyReadSourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+  "knowledgeSyncCommittedAt": "1113fe14f7f7539b9727fc708f49838504287d4f",
+  "mainPostgresXmlObserved": {
+    "tests": "69",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "2"
+  },
+  "mainLogSummariesObserved": {
+    "h2": "[WARNING] Tests run: 102, Failures: 0, Errors: 0, Skipped: 3",
+    "knowledge": "[INFO] Tests run: 89, Failures: 0, Errors: 0, Skipped: 0"
+  }
+}

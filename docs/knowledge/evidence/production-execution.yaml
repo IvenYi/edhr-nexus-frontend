@@ -78,7 +78,7 @@ evidence:
   - id: evidence.production-execution-service-source
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
-    description: original-evidence；扫码和查询只读；首次合法START生成并持久化对象执行快照，后续沿用快照与运行记录，revision防止过期提交。查询投影对未创建实例的计划表单按当前工序和作业节点返回 WAITING_OPERATION_START、WAITING_WORK_NODE 或 NOT_APPLICABLE，避免将不可填的计划表单冒充为未填报实例。执行事务按工单后对象获取锁并在锁后重新判断终态，历史已开工但无记录不能补造状态；全部普通工序完成后更新对象完成。执行状态、对象状态及PRODUCTION_EXECUTION前后快照审计在同一事务保存。该局部运行链不代表全系统所有生产操作已具备同等验证。
+    description: original-evidence；扫码和查询只读；首次合法START生成并持久化对象执行快照，后续沿用快照与运行记录，revision防止过期提交。查询投影对未创建实例的计划表单按当前工序和作业节点返回 WAITING_OPERATION_START、WAITING_WORK_NODE 或 NOT_APPLICABLE，避免将不可填的计划表单冒充为未填报实例。执行事务按工单后对象获取锁并在锁后重新判断终态，历史已开工但无记录不能补造状态；全部普通工序完成后更新对象完成。2026-10-15本批源码将act声明为REPEATABLE_READ，使其首次START多次配置读取与同事务DHR目录构建使用一致已提交视图，防止所选旧路线/DHR身份混入新子绑定；该隔离机制属于工程选择，不新增发布、禁编辑或提前冻结政策。直接执行控制器在服务事务代理回滚后只将原因链SQLState40001映射为既有陈旧修订的400业务提示，不自动重试，其他异常继续抛出。执行状态、对象状态、DHR及PRODUCTION_EXECUTION前后快照审计保持同事务保存；源码本身不证明测试执行通过或全系统所有生产入口均获得相同隔离与验证。
     visibility: internal
   - id: evidence.production-execution-access-source
     type: code
@@ -113,7 +113,12 @@ evidence:
   - id: evidence.production-execution-integration-tests
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
-    description: original-evidence；使用真实ExecutionAccess、SubjectResolver、BCrypt和JPA持久化的聚焦集成测试，覆盖批次/SN只读扫描、冻结快照、草稿回读、完整工序完成、权限、陈旧修订、并发唯一开工、等待锁后并发终态、审计失败原子回滚、作业与eDHR及确认动作、审批身份和密码签署落库；浏览器夹具测试默认跳过，不能计作自动业务验收通过。该测试的受控上下文不等于全应用生产环境。
+    description: original-evidence；使用真实ExecutionAccess、SubjectResolver、BCrypt和JPA持久化的聚焦集成测试，覆盖批次/SN只读扫描、冻结快照、草稿回读、完整工序完成、权限、陈旧修订、并发唯一开工、等待锁后并发终态、审计失败原子回滚、作业与eDHR及确认动作、审批身份和密码签署落库。本批新增首次START与合法配置提交交错的冻结一致性断言，具体范围见evidence.production-execution-start-configuration-consistency-tests；该专项仅在PostgreSQL driver条件满足时执行，H2条件跳过不能替代必须实际执行的PostgreSQL专项，源码断言不单独证明本轮执行通过。原浏览器夹具仍为显式opt-in，实际执行/跳过须分别报告，跳过不计业务验收通过。该测试的受控上下文不等于全应用生产环境。
+    visibility: internal
+  - id: evidence.production-execution-start-configuration-consistency-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    description: original-evidence；firstStartFreezesOneCommittedConfigurationDuringProcessRebinding 通过真实PostgreSQL及执行MockMvc入口，在实际查询完成旧制程context后控制交错；spy只控制时点，配置查询仍执行真实SQL。另一线程先按ProductProcessOwnerService.updateVersion的原子父子替换模型提交新路线/DHR及表单绑定，再以独立事务移除旧DHR目录项，建模当前composition保存的后续合法变化。断言本次execution与同事务DHR目录仍保留旧版本及item50，后续对象采用新版本及item150，旧execution不回写。专项由EnabledIfSystemProperty要求execution.test.driver=org.postgresql.Driver，必须另在隔离PostgreSQL实际执行；H2的REPEATABLE_READ不能提供本例所需的数据库级MVCC，条件跳过不计通过，未降低200及精确旧引用断言，也未修改业务兼容H2。本轮红绿、H2初次失败、执行/跳过项及候选版本由docs/development/branch-review-20261015-w1-followup中的验证台账另记，本体仅核对源码和边界。管理写侧是依据现行服务/控制器的有序原子SQL模型，不是管理员HTTP E2E；不穷举全部配置写交错，不把源码当执行通过，也不提升为verified/runtime。
     visibility: internal
   - id: evidence.production-execution-migration-tests
     type: test

@@ -1,0 +1,33 @@
+findings:
+  - id: W1-START-CONFIGURATION-MIX
+    severity: high
+    status: resolved-independent-passed
+    scope: 首次START生成执行快照及DHR目录
+    description: 默认READ_COMMITTED下，制程上下文查询与子绑定查询之间提交配置更新，会冻结从未共同有效的路线/DHR/表单引用组合。
+    originalEvidence:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/DhrTemplateWorkspaceController.java
+      - evidence/start-configuration-red.json
+    reproduce:
+      - 在隔离PostgreSQL运行ProductionExecutionIntegrationTest.firstStartFreezesOneCommittedConfigurationDuringProcessRebinding，使用修复前的ProductionExecutionService。
+      - START已读取制程2对应路线3/DHR4后，独立事务原子切换为路线13/DHR14和form15/item150绑定，提交后才允许START继续。
+      - 原代码继续读取新子绑定，仍持旧context，并成功持久化。
+    expected: 冻结上下文路线3/DHR4应配其form5/item50，而后续新对象读取路线13/DHR14与form15/item150。
+    actualBeforeFix: 回归断言期待form versionId=5，实际15；数据库快照同时记录routeVersionId=3、dhrTemplateVersionId=4及dhrItemId=150。
+    rootCause: 已有生产行锁只保护工单和对象，不能使多次配置及DHR目录查询具有一致的已提交视图。
+    remediation: 执行事务使用PostgreSQL REPEATABLE_READ；控制器在回滚后仅把SQLState40001翻译为现有刷新重试业务错误，不自动重试或放松业务门禁。
+    resolutionCommit: 1113fe14f7f7539b9727fc708f49838504287d4f
+    independentResult: evidence/independent-config/quality-result.yaml
+    policyReferences: [DEC-0001-04, DEC-0001-05, DEC-0001-06, DEC-0062-03, DEC-0077-12]
+    boundaries:
+      - 管理写侧按真实服务/控制器建模事务和有效配置，不是管理员HTTP全链测试。
+      - 不禁止原地编辑，不指定请求到达作为政策冻结时刻，不改数量、生命周期或权限。
+      - 不恢复或重写历史执行；目标生产库未连接或变更。
+  - id: W1-TERMINATED-DETAIL-DEPENDENCY
+    severity: observation
+    status: deferred-no-proven-valid-trigger
+    scope: DhrInstanceService.detail终止快照返回前的execution解析
+    description: 依赖确实存在；已核对主源码execution JSON写入者，未找到合法后续动作能使已终止execution不可解析。
+    originalEvidence: [ontology/config-race-policy.md]
+    disposition: 保留风险和继续审查入口，暂不修改代码，不用手写坏数据库JSON判定可达缺陷。

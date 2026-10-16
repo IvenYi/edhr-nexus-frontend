@@ -1,0 +1,18 @@
+{
+  "testedCommit": "6379bf105127b05a65695992b008b55c142264f9",
+  "runner": "primary-agent",
+  "independentQuality": false,
+  "command": "PLAYWRIGHT_BROWSERS_PATH=/workspace/.pr6-playwright bash /tmp/pr6-mvn '-Dtest=ProductionExecutionIntegrationTest#concurrentStartCreatesOneExecutionAndOneDhr+waitingExecutionSeesConcurrentTerminationAfterAcquiringLocks+earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning+missingDhrBlocksEarlyTerminationWithoutChangingProduction+executionMissingDhrCannotComplete,DhrSummaryPersistenceTest#explicitReorganizationPreservesOriginalEvidenceAndChecksVersionAndReason+historicalVersionDoesNotReturnLiveFormValuesOutsideFrozenCandidates+historicalVersionDoesNotRequireReadableLiveFormValues,DhrAttachmentAndArchiveTest,DhrFillingServiceTest' test",
+  "cwd": "gmp-platform/backend",
+  "execPluginSkipped": false,
+  "exitCode": 0,
+  "tests": 25,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "printRendererRebuilt": true,
+  "browser": "Playwright Chromium via actual DhrPdfRenderer",
+  "environmentScope": "MockMvc, isolated H2, temporary attachment files; not user database or full UI E2E",
+  "logPath": "/tmp/edhr-audit-w1-followup-tests.log",
+  "logSha256": "91bb70e6c80e9fed0e10233d85ee8b171ebf2239c70f3d31e14d787cb99db94a"
+}

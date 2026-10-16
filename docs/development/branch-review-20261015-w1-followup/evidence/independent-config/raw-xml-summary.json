@@ -1,0 +1,82 @@
+[
+  {
+    "environment": "postgresql",
+    "file": "postgresql-xml/TEST-com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest.xml",
+    "sha256": "657179e4b09b0bac1f8f74de404266b393ebe3580c8ba8720122cd04ab4e4472",
+    "bytes": 3491234,
+    "attributes": {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd",
+      "version": "3.0",
+      "name": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+      "time": "34.443",
+      "tests": "69",
+      "errors": "0",
+      "skipped": "2",
+      "failures": "0"
+    }
+  },
+  {
+    "environment": "h2",
+    "file": "h2-xml/TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml",
+    "sha256": "5029b3bae2fb23cdf32f78c642b83b8a1b4bdedaa8c1e34329416e4f5c4b0a60",
+    "bytes": 36654,
+    "attributes": {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd",
+      "version": "3.0",
+      "name": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+      "time": "4.456",
+      "tests": "24",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    }
+  },
+  {
+    "environment": "h2",
+    "file": "h2-xml/TEST-com.zencas.edhr.production.service.DhrFillingServiceTest.xml",
+    "sha256": "1891ba864512471dadb271794ba3e85b6b921347880235007b8baf97b4bda569",
+    "bytes": 32586,
+    "attributes": {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd",
+      "version": "3.0",
+      "name": "com.zencas.edhr.production.service.DhrFillingServiceTest",
+      "time": "0.516",
+      "tests": "4",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    }
+  },
+  {
+    "environment": "h2",
+    "file": "h2-xml/TEST-com.zencas.edhr.production.controller.WorkOrderCloseAtomicityTest.xml",
+    "sha256": "55b1bc8fd68a4e9dc057c8504a5836121969df8fb00d4f31d05c3604694e0bc3",
+    "bytes": 34372,
+    "attributes": {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd",
+      "version": "3.0",
+      "name": "com.zencas.edhr.production.controller.WorkOrderCloseAtomicityTest",
+      "time": "5.54",
+      "tests": "5",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    }
+  },
+  {
+    "environment": "knowledge",
+    "file": "knowledge-xml/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+    "sha256": "9c8379b958190d60435238dec9ebc5f1590e4b06c1392c9e9f22d05069009957",
+    "bytes": 20373,
+    "attributes": {
+      "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd",
+      "version": "3.0",
+      "name": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "time": "21.534",
+      "tests": "89",
+      "errors": "0",
+      "skipped": "0",
+      "failures": "0"
+    }
+  }
+]
