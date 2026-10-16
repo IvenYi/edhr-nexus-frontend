@@ -1,0 +1,45 @@
+{
+  "recordedAt": "2026-10-16T07:32:08.062843+00:00",
+  "testedCandidate": "8450aa781e6d8c602d214392182c0d6a7614dac6",
+  "target": "8a9cd91f62742e9469c785baee482129eb6ec84e",
+  "postAcceptanceScope": "L0 result registration, byte-identical safe evidence archive and delivery links only",
+  "originalTrackedFileCount": 1858,
+  "unchangedOriginalTrackedFiles": 1855,
+  "changedExistingPaths": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261016-w2-designer-identity/README.md",
+    "docs/development/branch-review-20261016-w2-designer-identity/findings.yaml"
+  ],
+  "protectedToolsUnchanged": 3,
+  "productTestKnowledgeGovernanceChangesAfterAcceptance": [],
+  "newSafeEvidencePathsValidated": [
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/archive-receipt.json",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/baseline-reproduction.json",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/browser.json",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/command-receipt.json",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/inventory-receipt.json",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/node-case-index.json",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/premium-comparison.json",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/premium.json",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/protection-receipt.json",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/qualityResult.yaml",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/safe-artifacts.json",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/screenshots/column-insertion-1440.png",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/screenshots/column-insertion-390.png",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/screenshots/save-in-flight-desktop.png",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/screenshots/save-in-flight-narrow.png",
+    "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/source-review-receipt.json"
+  ],
+  "qualityResultSha256": "898a8231ced49ff5269b98e190b136a559677843a9111193a0709bd9671564a0",
+  "requiredChecksPassed": 9,
+  "originalIndependentResultUnmodified": true,
+  "retainedGlobalFailedChecks": [
+    "ESLint configuration missing",
+    "existing designer vendor cache",
+    "premium strict 84 findings with zero new findings"
+  ],
+  "manualMergeOnly": true,
+  "wholeW2Complete": false,
+  "wholeBranchComplete": false,
+  "githubActionsQueriedOrTriggered": false
+}

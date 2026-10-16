@@ -1,0 +1,55 @@
+{
+  "comparisonFields": [
+    "file",
+    "line",
+    "ruleId",
+    "category",
+    "severity",
+    "message"
+  ],
+  "baselineSource": "primary-before-fix artifact checked independently against actual strict scan of frozen candidate",
+  "candidate": "8450aa781e6d8c602d214392182c0d6a7614dac6",
+  "summaries": [
+    {
+      "errors": 84,
+      "total": 84,
+      "unresolved": 13,
+      "violations": 71,
+      "warnings": 0
+    },
+    {
+      "errors": 84,
+      "total": 84,
+      "unresolved": 13,
+      "violations": 71,
+      "warnings": 0
+    },
+    {
+      "errors": 84,
+      "total": 84,
+      "unresolved": 13,
+      "violations": 71,
+      "warnings": 0
+    }
+  ],
+  "candidateAdded": [],
+  "candidateRemoved": [],
+  "candidateEqualsPrimaryFinal": true,
+  "sources": [
+    {
+      "name": "premium-baseline.json",
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a",
+      "bytes": 34340
+    },
+    {
+      "name": "premium-final.json",
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a",
+      "bytes": 34340
+    },
+    {
+      "name": "premium.json",
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a",
+      "bytes": 34340
+    }
+  ]
+}

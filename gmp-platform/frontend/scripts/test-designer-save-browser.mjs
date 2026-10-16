@@ -178,6 +178,57 @@ try {
     await continueEditing.press('Enter');
     assert.equal(await dirty(page), true);
   }, { width: 390, height: 844 });
+  for (const viewport of [{ width: 1440, height: 960 }, { width: 390, height: 844 }]) {
+    await run(`column insertion keeps the same field aligned and undoable at ${viewport.width}px`, async page => {
+      const seeded = await page.evaluate(() => {
+        const state = window.__store.getState();
+        const field = state.addField('text', '设备编号');
+        state.addNodeFromFieldToCell(field.id, { range: { t: 2, b: 2, l: 3, r: 3 }, left: 196, top: 36, width: 98, height: 36 });
+        state.updateSheetCellValue(3, 3, '设备标签');
+        state.setProjectionBindings([{ id: 'trace', modelId: 'formTrace', enabled: true, sources: { equipmentText: field.id } }]);
+        const document = window.__store.getState().document;
+        window.__store.getState().setDocument(document);
+        window.__store.getState().setCanvasSidebarVisible(false);
+        window.__store.getState().markSaved();
+        return { fieldId: field.id, before: JSON.stringify(document), columns: document.canvas.pages[0].sheet.columnCount };
+      });
+      const header = page.locator('[data-sheet-column-ruler="true"] [data-sheet-column-active]').nth(2);
+      await header.click({ button: 'right' });
+      const insert = page.getByRole('menuitem').filter({ hasText: '左侧新增列' });
+      await insert.focus();
+      await page.keyboard.press('Enter');
+      await page.waitForFunction(columns => window.__store.getState().document.canvas.pages[0].sheet.columnCount === columns + 1, seeded.columns);
+      const snapshot = await page.evaluate(fieldId => {
+        const state = window.__store.getState();
+        const page = state.document.canvas.pages[0];
+        return { node: page.nodes.find(node => node.bindings?.fieldId === fieldId), source: state.document.model.projection.bindings[0].sources.equipmentText,
+          label: page.cells['3:4']?.value, history: state.undoStack.length };
+      }, seeded.fieldId);
+      assert.equal(snapshot.node.style.cellRange.l, 4);
+      assert.equal(snapshot.node.style.cellRange.r, 4);
+      assert.equal(snapshot.source, seeded.fieldId);
+      assert.equal(snapshot.label, '设备标签');
+      assert.equal(snapshot.history, 1);
+      const closeSidebar = page.getByRole('button', { name: '关闭侧边栏', exact: true });
+      if (await closeSidebar.isVisible()) await closeSidebar.click();
+      const rendered = page.locator(`[data-canvas-node="true"][data-projection-field-id="${seeded.fieldId}"]`).first();
+      await rendered.scrollIntoViewIfNeeded();
+      const nodeBox = await rendered.boundingBox();
+      const cellBox = await page.locator('[data-projection-canvas="true"] [data-sheet-cell-row="2"][data-sheet-cell-col="4"]').first().boundingBox();
+      assert.ok(nodeBox && cellBox && Math.abs(nodeBox.x - cellBox.x - 3) <= 1, 'the actual rendered control follows the destination cell');
+      assert.ok(nodeBox.x >= 0 && nodeBox.x + nodeBox.width <= viewport.width, 'the destination control is reachable in the viewport');
+      if (process.env.W2_SCREENSHOT_DIR) {
+        await mkdir(process.env.W2_SCREENSHOT_DIR, { recursive: true });
+        await page.screenshot({ path: path.join(process.env.W2_SCREENSHOT_DIR, `column-insertion-${viewport.width}.png`), animations: 'disabled' });
+      }
+      await page.getByRole('button', { name: '撤销', exact: true }).click();
+      assert.equal(await page.evaluate(() => JSON.stringify(window.__store.getState().document)), seeded.before);
+      assert.equal(await dirty(page), false);
+      await page.getByRole('button', { name: '重做', exact: true }).click();
+      assert.equal(await page.evaluate(fieldId => window.__store.getState().document.canvas.pages[0].nodes.find(node => node.bindings?.fieldId === fieldId).style.cellRange.l, seeded.fieldId), 4);
+      assert.equal(await dirty(page), true);
+    }, viewport);
+  }
   const result = { kind: 'actual-shell-and-canvas-with-controlled-save-callback', baseline: baseline ?? null, results };
   if (process.env.W2_RESULT_PATH) await writeFile(process.env.W2_RESULT_PATH, JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify(result, null, 2));

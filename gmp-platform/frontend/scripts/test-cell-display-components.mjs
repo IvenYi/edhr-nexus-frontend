@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createRequire } from 'node:module';
-import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
 import { build } from 'esbuild';
@@ -10,12 +9,11 @@ import { renderToStaticMarkup } from 'react-dom/server';
 
 const base = 'src/pages/master-data/template-designer-react';
 const result = await build({
-  stdin: { contents: `export * from './${base}/store/useTemplateDesignerStore'; export * from './${base}/registry/commonComponentRegistry'; export { MockFillPage } from './${base}/components/mock-fill/MockFillDialog'; export * from './src/components/form-renderer/FormRuntimeField';`, resolveDir: fileURLToPath(new URL('..', import.meta.url)), loader: 'tsx' },
+  stdin: { contents: `export * from './${base}/store/useTemplateDesignerStore'; export * from './${base}/registry/commonComponentRegistry'; export { FormSheetPage } from './${base}/components/mock-fill/MockFillDialog'; export * from './src/components/form-renderer/FormRuntimeField';`, resolveDir: fileURLToPath(new URL('..', import.meta.url)), loader: 'tsx' },
   bundle: true, write: false, platform: 'node', format: 'cjs', packages: 'external', external: ['@mui/icons-material'], logLevel: 'silent',
   plugins: [{ name: 'presentation-test', setup(plugin) {
     plugin.onResolve({ filter: /^@mui\/icons-material\// }, ({ path }) => ({ path: path.split('/').at(-1), namespace: 'icon' }));
     plugin.onLoad({ filter: /.*/, namespace: 'icon' }, ({ path }) => ({ contents: `export { ${path} as default } from '@mui/icons-material';` }));
-    plugin.onLoad({ filter: /MockFillDialog\.tsx$/ }, async ({ path }) => ({ contents: `${await readFile(path, 'utf8')}\nexport { MockFillPage };`, loader: 'tsx' }));
     plugin.onResolve({ filter: /^@\/api\/(files|identity)$/ }, () => ({ path: 'api', namespace: 'stub' }));
     plugin.onLoad({ filter: /.*/, namespace: 'stub' }, () => ({ contents: 'export const getFilePreviewBlob = () => {}; export const verifyCurrentUserSignaturePassword = () => {};' }));
   } }],
@@ -23,7 +21,7 @@ const result = await build({
 const sandbox = { module: { exports: {} }, require: createRequire(import.meta.url), console, structuredClone };
 sandbox.exports = sandbox.module.exports;
 vm.runInNewContext(result.outputFiles[0].text, sandbox);
-const { useTemplateDesignerStore: store, cellDisplayComponentIds, isCellDisplayComponent, MockFillPage, FormRuntimeField, FormRuntimeContext, SubTableDisplayNodesContext } = sandbox.module.exports;
+const { useTemplateDesignerStore: store, cellDisplayComponentIds, isCellDisplayComponent, FormSheetPage, FormRuntimeField, FormRuntimeContext, SubTableDisplayNodesContext } = sandbox.module.exports;
 const layout = (range) => ({ left: 0, top: 30, width: 50, height: 30, range });
 const cell = { t: 2, b: 2, l: 1, r: 1 };
 function reset() {
@@ -90,7 +88,7 @@ test('mock dynamic rows render contiguous serials after adding and deleting reco
   store.getState().addCommonComponentToCell('serial-number', layout(cell));
   for (const count of [1, 3, 2]) {
     const doc = documentNow();
-    const html = renderToStaticMarkup(React.createElement(MockFillPage, { page: doc.canvas.pages[0], document: doc, values: {}, subTableRecordCounts: { region: count }, onValueChange() {}, onSignatureRequest() {}, onAddSubTableRecord() {}, onRemoveSubTableRecord() {} }));
+    const html = renderToStaticMarkup(React.createElement(FormSheetPage, { page: doc.canvas.pages[0], document: doc, values: {}, subTableRecordCounts: { region: count }, onValueChange() {}, onSignatureRequest() {}, onAddSubTableRecord() {}, onRemoveSubTableRecord() {} }));
     assert.deepEqual(serials(html), Array.from({ length: count }, (_, index) => index + 1));
   }
 });

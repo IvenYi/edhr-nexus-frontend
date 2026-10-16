@@ -396,6 +396,32 @@ function shiftRangeForInsertedRows(range: CanvasSelectionRange, insertAt: number
   };
 }
 
+function shiftRangeForInsertedColumns(range: CanvasSelectionRange, insertAt: number, count: number): CanvasSelectionRange {
+  return shiftMergedRangesForInsertedColumns([normalizeRange(range)], insertAt, count)[0];
+}
+
+function shiftSubTableRegionForInsertedColumns(region: SubTableRegion, insertAt: number, count: number): SubTableRegion {
+  return {
+    ...region,
+    ranges: region.ranges.map((fragment) => ({
+      ...fragment,
+      range: shiftRangeForInsertedColumns(fragment.range, insertAt, count),
+    })),
+    recordTemplate: {
+      ...region.recordTemplate,
+      anchor: {
+        ...region.recordTemplate.anchor,
+        col: region.recordTemplate.anchor.col >= insertAt
+          ? region.recordTemplate.anchor.col + count
+          : region.recordTemplate.anchor.col,
+      },
+      groupRange: region.recordTemplate.groupRange
+        ? shiftRangeForInsertedColumns(region.recordTemplate.groupRange, insertAt, count)
+        : region.recordTemplate.groupRange,
+    },
+  };
+}
+
 function shiftSubTableRegionForInsertedRows(region: SubTableRegion, insertAt: number, count: number): SubTableRegion {
   return {
     ...region,
@@ -641,6 +667,38 @@ function expandSelectedSubTableForHeaderRow(
       },
     },
   };
+}
+
+function shiftCanvasNodesForInsertedColumns(
+  nodes: CanvasNode[],
+  insertAt: number,
+  count: number,
+  columnOffset: number,
+): CanvasNode[] {
+  return nodes.map((node) => {
+    const cellRange = readNodeCellRange(node);
+    const shiftedRange = cellRange ? shiftRangeForInsertedColumns(cellRange, insertAt, count) : null;
+    const shouldShiftAbsoluteLeft = Boolean(cellRange && cellRange.l >= insertAt);
+    const shouldExpandAbsoluteWidth = Boolean(cellRange && cellRange.l < insertAt && cellRange.r >= insertAt);
+    const subTableRegion = node.bindings?.subTableRegion
+      ? shiftSubTableRegionForInsertedColumns(node.bindings.subTableRegion, insertAt, count)
+      : undefined;
+    const nextNode: CanvasNode = {
+      ...node,
+      style: {
+        ...node.style,
+        ...(shiftedRange ? { cellRange: shiftedRange } : {}),
+        ...(shouldShiftAbsoluteLeft ? { compLeft: readNumericStyle(node.style.compLeft, 0) + columnOffset } : {}),
+        ...(shouldExpandAbsoluteWidth ? { compWidth: readNumericStyle(node.style.compWidth, 0) + columnOffset } : {}),
+      },
+      bindings: subTableRegion ? { ...node.bindings, subTableRegion } : node.bindings,
+    };
+    if (!nextNode.children?.length) return nextNode;
+    return {
+      ...nextNode,
+      children: shiftCanvasNodesForInsertedColumns(nextNode.children, insertAt, count, columnOffset),
+    };
+  });
 }
 
 function shiftCanvasNodesForInsertedRows(
@@ -2853,6 +2911,9 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
         },
         cells: shiftCellsForInsertedColumns(page.cells, insertAt, count),
         mergedCells: shiftMergedRangesForInsertedColumns(page.mergedCells, insertAt, count),
+        nodes: reconcileSubTableRegionTemplates(
+          shiftCanvasNodesForInsertedColumns(page.nodes, insertAt, count, count * page.sheet.defaultColumnWidth),
+        ),
       })),
       selectedRange: state.selectedRange
         ? normalizeRange({

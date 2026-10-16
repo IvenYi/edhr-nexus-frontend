@@ -1,0 +1,237 @@
+{
+  "role": "read-only-technical-helper-not-independent-quality",
+  "contractBaseline": {
+    "sourceCommit": "8a9cd91f62742e9469c785baee482129eb6ec84e",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "8a9cd91f62742e9469c785baee482129eb6ec84e",
+    "contractReadCommit": "8a9cd91f62742e9469c785baee482129eb6ec84e",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "mergeVerification": {
+    "pr": 12,
+    "mergeCommit": "8a9cd91f62742e9469c785baee482129eb6ec84e",
+    "approvedDeliveryCommit": "0eb8d24195fa558e40954d72bef73be57edde47f",
+    "mergeTree": "03faafccd95f3d7262ebbdd80a20f20aaedcb05c",
+    "deliveryTree": "03faafccd95f3d7262ebbdd80a20f20aaedcb05c",
+    "fullTreeDiffPaths": [],
+    "contractKnowledgeArchitectureDiffPaths": []
+  },
+  "inventory": {
+    "paths": 1843,
+    "uniquePaths": 1843,
+    "allPending": true,
+    "reviewDepth": "inventory-only",
+    "source": "git ls-tree -r -z fixed baseline"
+  },
+  "artifacts": [
+    {
+      "path": "/tmp/edhr-w2-designer-inventory.csv",
+      "bytes": 339677,
+      "sha256": "215bf78a4dc67558d7ed7f06ee8d1608bb8e39beb7f33a01f3b8fdfe566fa035"
+    },
+    {
+      "path": "/tmp/edhr-w2-designer-inventory.md",
+      "bytes": 10022,
+      "sha256": "98c10760496b625c05696550741138063c6f9478dfc0c96933337ff71cc38be0"
+    }
+  ],
+  "sourceReads": [
+    {
+      "path": "AGENTS.md",
+      "sourceBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "sourceSha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "sourceBlob": "2e7e18097620e602c4408b83f71404fae346f8be",
+      "sourceSha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sourceBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "sourceSha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "docs/development/branch-review-20261015/NEXT.md",
+      "sourceBlob": "1ce90ca5661b3ea169e17ab0857236dcd61256f0",
+      "sourceSha256": "b0c48d8183404c0d92e07a59f1a8a28cbbdbc61f7117383c3ecdba269e45e5d0",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "sourceBlob": "63703d111d8f01fc7ff71e97ff311ee38bbb3a40",
+      "sourceSha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx",
+      "sourceBlob": "b6046ecbf54e221018f0b43209a228a29374de41",
+      "sourceSha256": "fcb9b7af815bd33f5dc8976737da10039d0f2551357dd50b2f80d047a1ed406a",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+      "sourceBlob": "12b4dd33af9e2d692207423b9f6cb6cee07ad95f",
+      "sourceSha256": "7ae006fcad3e0b3eb40378c16ae4d629eab981c8672b6e2bd510f0c6a363a124",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx",
+      "sourceBlob": "6ceba5768ec29243f1a34f5bc9f140e6405ab0b5",
+      "sourceSha256": "e900e762f93410825e35a2117f4965d422e2a228174873fd49de3c3f3566d892",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/templateImport.ts",
+      "sourceBlob": "19bf8784bad7948b5fa7d649c6bba2e6ff9e11a6",
+      "sourceSha256": "b7b433dd43f67a6bcb59069d1d84f081818bc5c16659d6322a22c06e79ec87b0",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importExcel.ts",
+      "sourceBlob": "0f712e21b315019cd67ccdcd7de0bf0aeea195c8",
+      "sourceSha256": "007dc0356c9a3bf441de22e6f76986e2d5b0bdb9b865b8bf15750bd10d3df285",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts",
+      "sourceBlob": "cfa7dbcabddab742d6e6f07afd75286fc1ebf0eb",
+      "sourceSha256": "0cece9cafc633df65bd27f0e08cfc0dca7feaae7a71d546644c0bf57805dae07",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importGrid.ts",
+      "sourceBlob": "aba73c6a050dbabc7d8a416e16f4f47a5afec3cb",
+      "sourceSha256": "429d55fb6bb3cbc44aeec357acf2bb08c8932b17670792ec1cd57b32a33bacd2",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts",
+      "sourceBlob": "2aefbf9737ce58110c59993bd28fae118a476a15",
+      "sourceSha256": "41c9d82177d0a03b0babfec20ec6b2295c4aeb9346bf65e7061f4126f30cd31a",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts",
+      "sourceBlob": "113595f259626f4ee4690a908e0ac809ee6042b3",
+      "sourceSha256": "0f031816fbb2be0e7f4bb61dd8293f53b9c6424eb48c7c7e94afe34c2639e899",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionValidationDialog.tsx",
+      "sourceBlob": "03b4e115d5160ad0e6576bbae0becd9640aab222",
+      "sourceSha256": "1b47996f39b2fff75de398a93dbbbb9f9d8f841e876b392b67eb11d5e6da4eac",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+      "sourceBlob": "4cd3c2f9c8e6ccf4c5f8a8409ee3a1c7142b583f",
+      "sourceSha256": "4e18d205936492e0d3833ff3b6b7f9eec8ceed056ff90d802a3a4d7acb2438ea",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasDesignerToolbar.tsx",
+      "sourceBlob": "3487d74c55d542bdfe3a2259984dd03a8ade1e89",
+      "sourceSha256": "06d92fd70116c034de111440132c217fb39fc1b79e1dd80d046bf10b5dbb594e",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx",
+      "sourceBlob": "4d415496a615a4a58ef61c932b40cc61d298a1e0",
+      "sourceSha256": "1ba6bdca9d536eca40cabe81e4c4597e5f18f9922f7266429c9a7761ee141562",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/mock-fill/MockFillDialog.tsx",
+      "sourceBlob": "9518efbdce0622325cdb4d5a365a7773f9d97d5e",
+      "sourceSha256": "80b549a8fe57c4f29423b4124189ce600dbf34fcd7b1a673c724fcf029f03db6",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx",
+      "sourceBlob": "0580c435a8d8a61f8358543bbc800d6012ae49fe",
+      "sourceSha256": "196645bac94d8e96e4df24b311706ec64036ec57bb26479a1bf3e0564316da94",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+      "sourceBlob": "566e092c21817572ce2e1db8ff35a2f978cd8691",
+      "sourceSha256": "0f13b9484df79eb09e82094b54ef450e665e310709cdc6671fb6e94c93c4daf7",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-renderer/FormRuntimeField.tsx",
+      "sourceBlob": "98a5a11ab4514e16db741d873eb5ff960d852fa6",
+      "sourceSha256": "5a43d7aa99fe0806fcf199172b098f0e45fa5835ebb71c6e0d593af1a20527a6",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java",
+      "sourceBlob": "f3c18d976594e0c71b4fab6ccc89587625366733",
+      "sourceSha256": "195bb14c7f2aa00f6bc93d4c6b4eaff8476fda6f1d2eee8cfcfaedb5c4eff5a3",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java",
+      "sourceBlob": "ee599f69180be03555c331a7b9fa1693bbf33bbf",
+      "sourceSha256": "d71ea3be6c87daecfe2be89e1a02da06481ce7a869dcc7aa578a4451252e63d8",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java",
+      "sourceBlob": "d020bdecc33ee3255340044e349867b6c8c4faec",
+      "sourceSha256": "53058121979ac68ec8b300e0102351f042f383820904a8cea12bbac955333bf2",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-designer-save-state.mjs",
+      "sourceBlob": "2843312a9b929290f2e1502cc5e49c2b836be1b4",
+      "sourceSha256": "0d0e207970c7a25b7ef44375e14850dd568be86374f14ec4b479e73af8775aff",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "docs/development/branch-review-20261015/history/history-dedup.md",
+      "sourceBlob": "7866b5d4d74897d12b424c428815dcf872b1aa25",
+      "sourceSha256": "a843ad29519916ced5f9fc615b895b89dc787b1958a539748f0b6a04423b5c74",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "docs/development/branch-review-20261016-w2-form-integrity/findings.yaml",
+      "sourceBlob": "475a0d645ceafb46bf59acfa5a5543e779a9713a",
+      "sourceSha256": "caef2098880176f3dda474c809efca2a55ceceb6cf508d682f9bfee9537fe52b",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    },
+    {
+      "path": "docs/development/branch-review-20261016-w2-projection-integrity/findings.yaml",
+      "sourceBlob": "f210bd7ee421e3cec9bf0a9d3ff876b7ff8b0114",
+      "sourceSha256": "19a417bd6c04a661f5042c63ea559ab65f5d18ec5498d19ed1679aa791129014",
+      "scope": "method-or-excerpt-read-only-not-whole-file-acceptance"
+    }
+  ],
+  "runtimeChecksRun": [],
+  "repoFilesChangedByHelper": [],
+  "clues": [
+    {
+      "id": "W2-column-insertion",
+      "status": "static-confirmed-absence-of-nodes-update-runtime-owned-by-primary",
+      "nextAction": "primary implements and reproduces; fresh independent QA later"
+    },
+    {
+      "id": "W2-C002-SUBTABLE-FIELD-SNAPSHOT",
+      "status": "next-checkpoint-source-supported-inference-not-runtime-confirmed",
+      "counterEvidenceBoundary": "RuntimeSubTable canonical columns only; full-page and mockfill prefer embedded child snapshot"
+    }
+  ],
+  "limits": [
+    "not qualityResult",
+    "not whole-file or whole-branch acceptance",
+    "no runtime/test/browser/build/database/Actions execution",
+    "no repository edits or Git mutations",
+    "A12 and two old DHR high remain deferred/open"
+  ]
+}

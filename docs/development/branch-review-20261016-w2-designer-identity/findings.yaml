@@ -1,0 +1,36 @@
+findings:
+  - id: W2-F002-COLUMN-INSERT-NODE-ALIGNMENT
+    severity: medium
+    status: independently-verified
+    testedCandidate: 8450aa781e6d8c602d214392182c0d6a7614dac6
+    qualityResult: evidence/independent/qualityResult.yaml
+    trigger: 正常画布左侧/右侧新增列，范围前或内部已有字段或子表。
+    expected: 组件、标签、子表范围/组/anchor/派生偏移同步，来源ID保持，一次undo完整恢复。
+    actualAtBaseline: cells/mergedCells移动而nodes未动；第3列字段前插1列后仍为3，标签已到4。
+    rootCause: insertSheetColumns遗漏nodes变换，与已有行插入和列删除不对称。
+    fix: 在原文档命令中同步水平节点/子表坐标并重建派生模板，保留完整文档history所有者。
+    originalEvidence: evidence/primary-result.json
+    productionCode: gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts
+    businessPolicyChanged: false
+  - id: W2-T001-CELL-DISPLAY-HARNESS
+    severity: low
+    status: independently-verified
+    testedCandidate: 8450aa781e6d8c602d214392182c0d6a7614dac6
+    qualityResult: evidence/independent/qualityResult.yaml
+    trigger: 相邻动态行序号SSR回归运行。
+    rootCause: 旧测试导出已不存在的MockFillPage，生产组件已改名FormSheetPage。
+    fix: 引用真实公开组件并删除无效export注入；保留原fixture和全部断言。
+    productionCodeChanged: false
+clues:
+  - id: W2-C002-SUBFIELD-EMBEDDED-SNAPSHOT
+    status: source-supported-next-checkpoint-not-runtime-confirmed
+    observation: 父模型子列编辑保留ID，但部分画布/模拟/全页优先使用embedded subTableField；通用子表使用canonical columns，不能互相替代证据。
+    nextAction: 合法新增/放置/编辑同一子列，实际核对模拟填写、全页与列表、保存重读及undo，再决定整改。
+    evidence: evidence/inventory-review.md
+remainingScope:
+  wholeW2: not-complete
+  wholeBranch: not-complete
+  A12: deferred-by-user
+  oldDhrHighItems: open
+  fullBackendHttpJpaAuthenticationSignature: not-verified-by-browser-fixtures
+  globalLintPremiumAndVendor: retained-failures-no-new-pass-claim

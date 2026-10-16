@@ -1,0 +1,27 @@
+{
+  "candidate": "8450aa781e6d8c602d214392182c0d6a7614dac6",
+  "remoteTargetAtEnd": "8a9cd91f62742e9469c785baee482129eb6ec84e",
+  "startedAt": "2026-10-16T07:22:46.363993+00:00",
+  "endedAt": "2026-10-16T07:26:21.857501+00:00",
+  "trackedFilesBefore": 1858,
+  "trackedFilesAfter": 1858,
+  "protectedToolsBefore": 3,
+  "protectedToolsAfter": 3,
+  "changedProtectedPaths": [],
+  "workingTreeBefore": "",
+  "workingTreeAfter": "",
+  "beforeManifestSha256": "b6d3dc876b2a5be3ab3a9f6565383138744c9c01c0e25ed104a3ceaafdbb244b",
+  "afterManifestSha256": "dcb4263cfa56e65aa57fff9c0287d0e799b68bdbe2314e73605b5b0f098597f9",
+  "testProcessesCompleted": {
+    "node": 0,
+    "chromium": 0,
+    "build": 0,
+    "baselineNodeExpectedRed": 1,
+    "baselineChromiumExpectedRed": 1,
+    "lintKnownFailure": 2,
+    "designerStaticKnownFailure": 1,
+    "premiumStrictKnownFailure": 2
+  },
+  "runtimeCleanup": "Browser scripts finally close each context, Chromium, loopback HTTP server and temporary bundle directory. All eight exec sessions returned actual exit codes before this after-manifest. No shared service was stopped.",
+  "scope": "Only temp artifacts and normal ignored build outputs written; no tracked files or protected tools changed."
+}

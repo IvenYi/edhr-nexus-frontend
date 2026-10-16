@@ -1,0 +1,74 @@
+{
+  "candidate": "8450aa781e6d8c602d214392182c0d6a7614dac6",
+  "base": "8a9cd91f62742e9469c785baee482129eb6ec84e",
+  "workingDirectory": "gmp-platform/frontend except premium command at repository root",
+  "commands": [
+    {
+      "id": "node",
+      "exitCode": 0,
+      "result": "94 passed, 0 failed, 0 skipped",
+      "rawLogTemporaryOnly": "node.log",
+      "sha256": "d7ee9164b4a671b2d03cd38c735887ed7d64c7e5dcc11d0bc3baea543a349634",
+      "bytes": 9537
+    },
+    {
+      "id": "chromium",
+      "exitCode": 0,
+      "result": "7 passed; 4 screenshots actually inspected",
+      "rawLogTemporaryOnly": "browser.log",
+      "sha256": "3564fd39d4fa4425cd5e6beef0aa06ee2b7f6961942fc6aacf31d592c67509c1",
+      "bytes": 1446
+    },
+    {
+      "id": "build",
+      "exitCode": 0,
+      "result": "tsc -b and Vite production build completed",
+      "rawLogTemporaryOnly": "build.log",
+      "sha256": "462ca0525bbeca12080436491a3a61a0ec5e1545e0751f7fa4bb971d8cdc70b6",
+      "bytes": 9335
+    },
+    {
+      "id": "baselineNode",
+      "exitCode": 1,
+      "result": "expected-red: 5 failed, 0 passed/skipped; original node-range assertions",
+      "rawLogTemporaryOnly": "baseline-node.log",
+      "sha256": "8b86c352b6f9f617525c8cc38b0d660c0fb755c235094db7fbe15ed901952288",
+      "bytes": 6049
+    },
+    {
+      "id": "baselineChromium",
+      "exitCode": 1,
+      "result": "expected-red: first 1440px menu case actual 3 versus expected 4; 390px baseline case not executed",
+      "rawLogTemporaryOnly": "baseline-browser.log",
+      "sha256": "6e8c9dc7432703b4aa9f0e782ad18ce4c6f88da4b32cfcc48d761bdba9750cee",
+      "bytes": 2175
+    },
+    {
+      "id": "eslint",
+      "exitCode": 2,
+      "result": "existing missing ESLint configuration",
+      "rawLogTemporaryOnly": "lint.log",
+      "sha256": "ce1ab04f5660d6cb81c2cdf842c1d4dd91f6f5ee6932d4d486e157c45077d8d1",
+      "bytes": 819
+    },
+    {
+      "id": "designerStatic",
+      "exitCode": 1,
+      "result": "existing vendor/online-form-designer cache is the sole failure",
+      "rawLogTemporaryOnly": "designer-static.log",
+      "sha256": "ff22b6580b1b32845715d8f94e31718535f50444e0f583766f98e714a9b41f28",
+      "bytes": 113
+    },
+    {
+      "id": "premiumStrict",
+      "exitCode": 2,
+      "result": "84 existing errors; no added/removed findings",
+      "rawLogTemporaryOnly": "premium.log",
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a",
+      "bytes": 34340
+    }
+  ],
+  "allProcessesEndedBeforeAfterManifest": true,
+  "fullBackendJavaPostgresAuthenticationSignature": "not-run; no affected code; not claimed",
+  "actions": "neither queried nor triggered"
+}

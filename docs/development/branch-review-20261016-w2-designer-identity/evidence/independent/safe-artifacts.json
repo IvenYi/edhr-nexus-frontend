@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "candidate": "8450aa781e6d8c602d214392182c0d6a7614dac6",
+  "base": "8a9cd91f62742e9469c785baee482129eb6ec84e",
+  "root": "/tmp/edhr-w2-designer-independent",
+  "artifacts": [
+    {
+      "path": "qualityResult.yaml",
+      "source": "/tmp/edhr-w2-designer-independent/qualityResult.yaml",
+      "sha256": "898a8231ced49ff5269b98e190b136a559677843a9111193a0709bd9671564a0",
+      "bytes": 18916
+    },
+    {
+      "path": "node-case-index.json",
+      "source": "/tmp/edhr-w2-designer-independent/node-case-index.json",
+      "sha256": "10f30df3534db8293d487b844e242107df534196dbb89e9f536d9812b5107aec",
+      "bytes": 13105
+    },
+    {
+      "path": "browser.json",
+      "source": "/tmp/edhr-w2-designer-independent/browser.json",
+      "sha256": "3564fd39d4fa4425cd5e6beef0aa06ee2b7f6961942fc6aacf31d592c67509c1",
+      "bytes": 1446
+    },
+    {
+      "path": "inventory-receipt.json",
+      "source": "/tmp/edhr-w2-designer-independent/inventory-receipt.json",
+      "sha256": "4b937b9c17362988407bb5faf898879697c443868788337ccbb3bf7d6d7910c1",
+      "bytes": 2022
+    },
+    {
+      "path": "premium.json",
+      "source": "/tmp/edhr-w2-designer-independent/premium.json",
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a",
+      "bytes": 34340
+    },
+    {
+      "path": "premium-comparison.json",
+      "source": "/tmp/edhr-w2-designer-independent/premium-comparison.json",
+      "sha256": "3c1536c36f2a3d3536f9255aad38d594f9d3959ceb38a56f2cfc5bf4cc9c10b8",
+      "bytes": 1243
+    },
+    {
+      "path": "protection-receipt.json",
+      "source": "/tmp/edhr-w2-designer-independent/protection-receipt.json",
+      "sha256": "3909c68294620086a57cca0273ec4c164ed8b173eca82d271a87d1cd799e62ca",
+      "bytes": 1233
+    },
+    {
+      "path": "command-receipt.json",
+      "source": "/tmp/edhr-w2-designer-independent/command-receipt.json",
+      "sha256": "a048feff15236328326cd6baeda6ab1a7f5223983f3f2eac61e6e99d324d7d53",
+      "bytes": 2676
+    },
+    {
+      "path": "baseline-reproduction.json",
+      "source": "/tmp/edhr-w2-designer-independent/baseline-reproduction.json",
+      "sha256": "58c124eee218e1ba48bfb237b61bbf4055a64a6c2b71deeca98f5e58bd59bfba",
+      "bytes": 2045
+    },
+    {
+      "path": "source-review-receipt.json",
+      "source": "/tmp/edhr-w2-designer-independent/source-review-receipt.json",
+      "sha256": "bbd20c4bec3316f5e58f644b1f5326e2314539620d9e0e84e71c494482bc5989",
+      "bytes": 1366
+    },
+    {
+      "path": "screenshots/column-insertion-1440.png",
+      "source": "/tmp/edhr-w2-designer-independent/screenshots/column-insertion-1440.png",
+      "sha256": "e9b9c0c154156ad7123befc225c303977830192b2aa2b1b222b160b51c1f295a",
+      "bytes": 66337
+    },
+    {
+      "path": "screenshots/column-insertion-390.png",
+      "source": "/tmp/edhr-w2-designer-independent/screenshots/column-insertion-390.png",
+      "sha256": "19dc136580416be48bb5a2ec7010f500fd250a0e74e6d47a8c8652cca850a2f3",
+      "bytes": 25840
+    },
+    {
+      "path": "screenshots/save-in-flight-desktop.png",
+      "source": "/tmp/edhr-w2-designer-independent/screenshots/save-in-flight-desktop.png",
+      "sha256": "e26d7eabff41509d95651e7dc3d0e72243784af8578310b1477ddf8c34407440",
+      "bytes": 103555
+    },
+    {
+      "path": "screenshots/save-in-flight-narrow.png",
+      "source": "/tmp/edhr-w2-designer-independent/screenshots/save-in-flight-narrow.png",
+      "sha256": "0fd88cf106ff307a89657d6d07012fb40cadbb25c847f3a34e5523354b3e2560",
+      "bytes": 35219
+    }
+  ],
+  "excluded": [
+    "raw execution logs",
+    "SSR HTML and source excerpts",
+    "XML",
+    "full before/after source/tool manifests",
+    "test bundles",
+    "credentials or authentication test values"
+  ],
+  "copyPolicy": "Only these files may be archived, preserving exact bytes and verifying SHA256/bytes."
+}

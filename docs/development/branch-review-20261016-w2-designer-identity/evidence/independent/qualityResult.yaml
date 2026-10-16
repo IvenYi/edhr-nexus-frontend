@@ -1,0 +1,206 @@
+qualityResult:
+  result: passed
+  baseCommit: 8a9cd91f62742e9469c785baee482129eb6ec84e
+  headCommit: 8450aa781e6d8c602d214392182c0d6a7614dac6
+  contractBaseline:
+    sourceCommit: 8450aa781e6d8c602d214392182c0d6a7614dac6
+    targetBranch: edhr-dev
+    targetCommit: 8a9cd91f62742e9469c785baee482129eb6ec84e
+    contractReadCommit: 8450aa781e6d8c602d214392182c0d6a7614dac6
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.current-baseline-and-inventory
+      required: true
+      category: documentation
+      description: Independently verify the frozen candidate, live target, PR12 tree, exact inventory and contract drift.
+      method: command
+      command: git rev-parse HEAD; git ls-remote origin refs/heads/edhr-dev; git ls-tree -rz --full-tree 8a9cd91f62742e9469c785baee482129eb6ec84e; compare coverage.csv paths/blob IDs
+      outcome: passed
+      evidence:
+        - 'Actual reviewed/tested candidate: 8450aa781e6d8c602d214392182c0d6a7614dac6; live target at start and end: 8a9cd91f62742e9469c785baee482129eb6ec84e; worktree clean.'
+        - '1843 unique baseline paths/blob IDs match the CSV exactly; every row remains pending/inventory-only. Candidate has 1858 tracked files, a different denominator.'
+        - PR12 merge and approved delivery 0eb8d24195fa558e40954d72bef73be57edde47f share tree 03faafccd95f3d7262ebbdd80a20f20aaedcb05c.
+        - No candidate delta in AGENTS.md, codeplzreadme.md, docs/agents, docs/knowledge or docs/architecture; knowledge 0.3.25/schema 1.2.0 retained.
+        - inventory-receipt.json
+    - id: check.contract-policy-impact-and-source-review
+      required: true
+      category: requirements
+      description: Inspect L2 handoff, current applicable policies, complete source/test diff, fixtures, UI ownership and local repair boundaries.
+      method: inspection
+      command: Read AGENTS.md, codeplzreadme.md general principles, quality-verifier.md, agent-handoff-contract.md, knowledge README/open-questions, DEC-0077-12/22, DESIGN.md, applicable frontend guidelines, current installed frontend-design and premium skills/references, and batch decision/source/evidence files.
+      outcome: passed
+      evidence:
+        - Original evidence is actual source and independently executed candidate tests; primary artifacts are comparison references, not replacement execution evidence.
+        - Read decision-package.yaml, baseline.json, README.md, findings.yaml, source-map.md and evidence/ontologyResult.yaml. Actual 19-path diff contains one production store change of 61 added lines, three test paths and audit records only.
+        - Store synchronizes cellRange, compLeft/compWidth, subtable ranges/anchor/groupRange and recursively bound nodes, then calls the existing reconcile/rebuild owner for derived offsets. Insertion before shifts, inside expands and after preserves; free nodes without a cell anchor retain geometry.
+        - The same pushDocumentHistory/updateCanvasPage command remains the only write/history owner. Model, node/field/table/subfield/projection IDs and noncurrent pages are preserved; document parse/serialize protocol is unchanged.
+        - New fixture uses public store field/subfield creation and supported placements/projection configuration, unequal column widths and inserted default-width columns. Design field IDs and derived colOffset are not runtime row UUIDs or new business quantity rules.
+        - The nested/free-node case uses typed tree operations for the recursive helper boundary; the public Canvas menu trigger is separately exercised in Chromium.
+        - W2-T001 changes only the SSR test import to actual exported FormSheetPage and removes invalid MockFillPage export injection; fixture, dynamic row-count sequence and all original assertions remain.
+        - UI ownership remains the actual Shell/Canvas/MUI controls and current save/undo owner. No markup/token/locale/shared primitive was added. New production lines contain no native dialog, nonsemantic click, new form/search/async handler or duplicated UI owner.
+        - No backend, migration, authentication, authorization, signature or knowledge changes; Java/PG/full authenticated backend E2E were not run and are not claimed.
+    - id: check.ontology-nonapplicability
+      required: true
+      category: ontology
+      description: Verify current policy preservation and the formal not-applicable result without inventing a policy or maturity change.
+      method: inspection
+      command: Inspect DEC-0077-12/22, current open questions, architecture ownership boundaries and evidence/ontologyResult.yaml against source diff.
+      outcome: passed
+      evidence:
+        - DEC-0077-12 use-time freezing/history protection and DEC-0077-22 common canvas configuration/save/undo are preserved.
+        - Formal ontology result is not-applicable; changedArtifacts, knowledgeSync, conflicts and questions are empty. Its dirty base-stage source inspection is explicitly distinct from this independent frozen-candidate runtime result.
+        - No authoritative knowledge edits, policy replacements, new pilot or P0/maturity upgrade occurred. Deferred A12 and current open questions remain open in their actual dependency scopes.
+    - id: check.node-focused-and-adjacent
+      required: true
+      category: regression
+      description: Independently run all selected designer/source/display/save-state regressions, including the five new column-insertion cases.
+      method: automated-test
+      command: node --test scripts/test-designer-column-insertion.mjs scripts/test-projection-panel.mjs scripts/test-sheet-cell-transfer.mjs scripts/test-quick-sub-table.mjs scripts/test-field-business-purpose.mjs scripts/test-projection-source-editor.mjs scripts/test-form-document-preview.mjs scripts/test-dynamic-sub-table-layout.mjs scripts/test-cell-display-components.mjs scripts/test-designer-save-state.mjs
+      outcome: passed
+      evidence:
+        - Run from gmp-platform/frontend against candidate 8450aa781e6d8c602d214392182c0d6a7614dac6; process exit 0; 94 tests passed, 0 failed/cancelled/skipped/todo.
+        - Tests assert same source/node IDs, cells and merged geometry, subtable/group/anchor/actual field offsets, recursive/free boundaries, noncurrent page, full-document undo/redo and serialize/reopen behavior.
+        - node-case-index.json contains all 94 actual passing case names. Raw execution log remains only in the temporary QA directory.
+    - id: check.actual-browser-and-visual
+      required: true
+      category: e2e
+      description: Independently exercise the actual Shell/Canvas/MUI/store in Chromium, including menu keyboard activation and DOM alignment at two viewport widths.
+      method: browser
+      command: CHROME_PATH=/usr/bin/chromium W2_SCREENSHOT_DIR=/tmp/edhr-w2-designer-independent/screenshots W2_RESULT_PATH=/tmp/edhr-w2-designer-independent/browser.json node scripts/test-designer-save-browser.mjs
+      outcome: passed
+      evidence:
+        - Process exit 0; all 7 actual browser cases passed with no page runtime errors. Controlled catalog GET and save callbacks are fixtures; this is not authenticated HTTP/JPA/signature E2E.
+        - Original five cases retain pending-save/duplicate prevention, later-unsaved edits, successful save, failed-save/retry, full undo/redo saved boundary and narrow unsaved-warning keyboard behavior.
+        - Two added cases use actual right-click column menu, focus and Enter; assert moved column/source ID, one history entry, destination DOM x alignment, viewport reachability and undo/redo at 1440x960 and 390x844.
+        - Independently viewed all four screenshots. Desktop field is aligned in destination column D; narrow field and label are reachable after collapsing sidebar and scrolling. No claim of complete mobile layout or whole-app accessibility compliance is made.
+        - browser.json; screenshots/column-insertion-1440.png; screenshots/column-insertion-390.png; screenshots/save-in-flight-desktop.png; screenshots/save-in-flight-narrow.png
+    - id: check.build
+      required: true
+      category: integration
+      description: Independently execute TypeScript project build and production Vite bundle without a competing dist writer.
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence:
+        - Ran from gmp-platform/frontend; command executes tsc -b then vite build --config vite.config.ts. Process exit 0; Vite production build completed normally.
+        - Only normal ignored generated build outputs were written; protected tracked-source comparison is unchanged.
+    - id: check.baseline-expected-red
+      required: true
+      category: regression
+      description: Independently confirm new regression detects the original production defect using read-only Git-object baseline loading.
+      method: automated-test
+      command: W2_BASELINE_COMMIT=8a9cd91f62742e9469c785baee482129eb6ec84e node --test scripts/test-designer-column-insertion.mjs; CHROME_PATH=/usr/bin/chromium W2_BASELINE_COMMIT=8a9cd91f62742e9469c785baee482129eb6ec84e W2_CASE_FILTER='column insertion' node scripts/test-designer-save-browser.mjs
+      outcome: passed
+      evidence:
+        - Expected-red confirmation, not a candidate failure. Node baseline process exit 1, all five cases fail at node cellRange assertions; zero skips. Candidate same five cases pass within the 94-test run.
+        - Baseline browser process exit 1 at the first 1440px normal-menu case, actual column 3 versus expected 4. The script exits immediately, so its second 390px case was not executed at baseline.
+        - Existing baseline loader substitutes only the original store (and browser Shell) from Git objects; no checkout/worktree, test guard change or baseline source mutation occurred.
+        - baseline-reproduction.json
+    - id: check.premium-no-new-static-findings
+      required: true
+      category: visual
+      description: Compare independently executed current premium strict scan with preserved pre-fix findings using full finding keys; do not relabel strict as passed.
+      method: command
+      command: python3 /tmp/edhr-w2-designer-audit-project.py /workspace/edhr-nexus-frontend --mode strict --output /tmp/edhr-w2-designer-independent/premium.json; compare baseline/final/current finding multisets
+      outcome: passed
+      evidence:
+        - No-new-findings comparison passed; strict command itself exits 2 and remains failed globally.
+        - Baseline reference, primary final and independent candidate scan each have 84 errors (13 unresolved and 71 violations). Exact file/line/ruleId/category/severity/message multiset difference is added 0, removed 0; JSON files are byte-identical.
+        - Baseline is the primary before-fix artifact, disclosed as a reference; the independent current scan was actually rerun after freezing the candidate. No independent baseline export is claimed.
+        - premium.json; premium-comparison.json
+    - id: check.global-eslint-retained-failure
+      required: false
+      category: regression
+      description: Record unchanged global lint limitation without creating new configuration or weakening the lint command.
+      method: command
+      command: npm run lint
+      outcome: failed
+      evidence:
+        - Actual exit 2; ESLint 8.57.1 cannot find an ESLint configuration. No lint configuration or lint script changed in this candidate. This pre-existing global limitation is retained, not passed or closed.
+    - id: check.global-designer-static-retained-failure
+      required: false
+      category: regression
+      description: Record existing vendor-cache static verification failure without deleting or moving the cache or modifying the guard.
+      method: command
+      command: node scripts/verify-template-designer-react.mjs
+      outcome: failed
+      evidence:
+        - Actual exit 1; sole reported item is vendor/online-form-designer, Vue designer vendor package must be removed. The existing ignored cache is retained; guard and script are unchanged.
+    - id: check.global-premium-strict-retained-failure
+      required: false
+      category: visual
+      description: Preserve the global strict result independently from the successful no-new-findings comparison.
+      method: command
+      command: python3 /tmp/edhr-w2-designer-audit-project.py /workspace/edhr-nexus-frontend --mode strict --output /tmp/edhr-w2-designer-independent/premium.json
+      outcome: failed
+      evidence:
+        - Actual exit 2, 84 pre-existing errors. Missing or incomplete global UX/canonical/evidence contracts and existing UI violations remain out of this local coordinate fix; no full-site compliance claim or contract expansion is made.
+    - id: check.protected-files-and-process-completion
+      required: true
+      category: audit
+      description: Verify exact frozen candidate, source/tool nonmutation, runtime cleanup and all process completion before finalizing.
+      method: command
+      command: Compare full SHA256/byte-size before/after manifests; git status --porcelain; git ls-remote origin refs/heads/edhr-dev; git -c core.whitespace=cr-at-eol diff --check 8a9cd91f62742e9469c785baee482129eb6ec84e HEAD
+      outcome: passed
+      evidence:
+        - All 1858 tracked files and 3 protected tools have unchanged paths, SHA256 and byte sizes. Protected tools were hashed only; no credential contents were printed. Worktree remains clean and HEAD unchanged.
+        - All eight test/build/check commands returned final exit codes before the after-manifest. Browser scripts close contexts, Chromium, their loopback HTTP server and temporary bundle in finally; no shared service was stopped.
+        - Live target was independently checked again at end and remains 8a9cd91f62742e9469c785baee482129eb6ec84e. Whitespace check passed with CRLF inventory handling; no Actions query/trigger, commit, push, merge, deployment or history-data operation occurred.
+        - protection-receipt.json; command-receipt.json. Full source/tool manifests and raw logs remain temporary and are excluded from safe-artifacts.json.
+  findings:
+    - id: W2-F002-COLUMN-INSERT-NODE-ALIGNMENT
+      severity: medium
+      scope: template-designer column insertion
+      summary: Original column insertion left bound node and subtable coordinates behind moved sheet cells; local repair independently verified.
+      reproductionSteps:
+        - Create and place a field through normal store APIs at column 3, retain its projection source and use the actual Canvas column menu to insert to its left.
+        - Replay the new tests against the fixed baseline Git store or run baseline Chromium filtered to column insertion.
+      expectedResult: Field/label/subtable source geometry move together while IDs and full-document save/undo ownership remain unchanged.
+      actualResult: Baseline Node cases fail 5/5; baseline Chromium reports 3 rather than 4. Frozen candidate passes all 94 Node and 7 browser cases.
+      evidence: [baseline-reproduction.json, node-case-index.json, browser.json, screenshots/column-insertion-1440.png, screenshots/column-insertion-390.png]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: 8450aa781e6d8c602d214392182c0d6a7614dac6
+        - type: command
+          reference: check.node-focused-and-adjacent and check.actual-browser-and-visual independently passed
+    - id: W2-T001-CELL-DISPLAY-HARNESS
+      severity: low
+      scope: existing cell-display SSR harness
+      summary: Stale test component export repaired to actual public FormSheetPage without modifying original fixtures/assertions.
+      reproductionSteps:
+        - Inspect original harness export injection and the actual public FormSheetPage declaration in MockFillDialog.
+        - Run the existing cell-display component cases in the focused 94-test command.
+      expectedResult: Existing dynamic row serial assertions execute against the maintained runtime component.
+      actualResult: Original serial fixture and assertions are preserved; all selected cell-display tests actually pass on candidate.
+      evidence: [node-case-index.json]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: 8450aa781e6d8c602d214392182c0d6a7614dac6
+        - type: command
+          reference: check.node-focused-and-adjacent independently passed
+  residualRisks:
+    - id: risk.retained-global-quality-debt
+      description: Global ESLint, designer vendor-cache guard and premium strict checks still fail with their documented existing causes.
+      impact: This passed result covers the repaired local insertion/source-identity slice and unchanged adjacent regressions; it does not establish whole-site static compliance or release readiness.
+      mitigation: Keep exact failures and premium delta evidence visible; handle broader global debt in its own authorized audit batches. Do not lower guards or delete shared caches merely to obtain green.
+    - id: risk.browser-boundary
+      description: Chromium uses actual Shell/Canvas/MUI/store with controlled GET catalog and save callbacks; narrow screenshot still shows existing toolbar/canvas overflow.
+      impact: No proof of real backend/JPA persistence, authentication/signature, complete mobile reflow, all browser/IME/theme/assistive-technology combinations or customer usability.
+      mitigation: Preserve fixture and viewport scope. This horizontal coordinate repair adds no API/lifecycle/auth/markup/theme behavior; use a future scoped workflow review for those separate guarantees.
+    - id: risk.remaining-review-and-deferred-policy
+      description: Full W2 and whole-branch audit remain unfinished; W2-C002 embedded subfield snapshot clue has not been runtime confirmed. A12 form change/void and two old DHR high issues remain user-deferred/open.
+      impact: This batch cannot close those items, assert whole-branch coverage from an inventory, or authorize history backfill, merge/deploy or new business policy.
+      mitigation: Continue the legal create/place/edit/reopen/undo chain for W2-C002 next, then the recorded audit order; revisit A12-dependent items after their prerequisites are implemented.
+    - id: risk.repository-enforcement-not-queried
+      description: GitHub Actions and branch protection/ruleset enforcement were not queried or triggered by this independent instance.
+      impact: Local independent evidence is not a claim that required remote status checks or branch settings are configured or satisfied.
+      mitigation: Retain the no-Actions instruction; owner performs normal repository merge governance using this exact candidate and assesses any target changes before integration.
+  blockingConditions: []

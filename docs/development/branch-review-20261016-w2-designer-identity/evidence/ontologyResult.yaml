@@ -1,0 +1,83 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 8a9cd91f62742e9469c785baee482129eb6ec84e
+    targetBranch: edhr-dev
+    targetCommit: 8a9cd91f62742e9469c785baee482129eb6ec84e
+    contractReadCommit: 8a9cd91f62742e9469c785baee482129eb6ec84e
+    uncommittedContractPaths: []
+  reason: >-
+    本批在既有设计器插列文档命令内补齐节点几何、子表范围/锚点/记录组及派生列偏移同步。
+    直接核对的实现保留 node.id、fieldId、subTableId、subTableFieldId、model.projection.sources
+    和完整文档的单次历史所有者；没有重新定义字段业务用途、计量、归属、正式生效或生命周期。
+    DEC-0077-12 的使用时冻结及历史保护、DEC-0077-22 的同画布来源配置与统一保存撤销继续适用。
+    附带测试入口由失效 MockFillPage 改为实际公开 FormSheetPage，未修改运行组件或原断言语义。
+    因此无需改动权威知识资产、业务政策或成熟度，不以本次源码核对替代独立质量验收。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: ontology.designer.actual-contract-baseline
+      checkType: reference
+      command: git rev-parse HEAD origin/edhr-dev; git diff -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge docs/architecture
+      outcome: passed
+      evidence:
+        - original-evidence：实际读取 AGENTS.md、codeplzreadme.md 通用原则、docs/agents/business-knowledge-modeler.md、docs/agents/agent-handoff-contract.md。
+        - original-evidence：HEAD 与本地最近获取的 origin/edhr-dev 均为 8a9cd91f62742e9469c785baee482129eb6ec84e；契约、知识和架构无未提交差异。
+        - original-evidence：docs/knowledge/README.md 与 open-questions.yaml 的现行基线为 0.3.25/schema 1.2.0；未对待决问题做政策选择。
+    - id: ontology.designer.policy-scope
+      checkType: reference
+      command: 源码和现行决策定位审读；未运行测试
+      outcome: passed
+      evidence:
+        - original-evidence：docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml:53–56（DEC-0077-12）与93–96（DEC-0077-22）。
+        - original-evidence：docs/architecture/business-knowledge-model.md 中知识/代码/生产快照所有权与成熟度边界；docs/architecture/form-traceability-projection-brief.md 第2节的同一配置、顶部保存、撤销与使用时快照。
+        - original-evidence：docs/knowledge/glossary.yaml:795–800 的 term.form-field-business-purpose 仍以显式实际字段或子表列来源映射表达用途。
+        - original-evidence：docs/knowledge/open-questions.yaml 的数量下限、表头共享、Q10客户试用、带入生命周期、A12历史视图等均不依赖本次几何补齐，不由本批关闭。
+        - secondary-reference：docs/superpowers/plans/2026-07-01-template-designer-react-rewrite.md 为历史实施线索；不将其中旧路径、旧发布状态或规划当成当前业务政策。
+    - id: ontology.designer.identity-and-history-preservation
+      checkType: projection
+      command: git diff -- gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts; 定位审读同目录 utils/subTableRegion.ts 与 utils/document.ts
+      outcome: passed
+      evidence:
+        - original-evidence：store/useTemplateDesignerStore.ts 的 shiftRangeForInsertedColumns、shiftSubTableRegionForInsertedColumns、shiftCanvasNodesForInsertedColumns 仅变换位置/跨度并递归子节点，展开保留原节点和绑定身份。
+        - original-evidence：insertSheetColumns 继续通过唯一 updateCanvasPage 和 pushDocumentHistory 写当前页；字段模型、用途来源和其他页未在新增变换内重建或重分配。
+        - original-evidence：reconcileSubTableRegionTemplates 调用既有 rebuildSubTableRecordTemplate，按真实 subTableFieldId 和节点相对锚点重新计算 rowOffset/colOffset/span；该派生位置不是新的业务数量或行身份。
+        - original-evidence：utils/document.ts 的 parseReactTemplateDesignerDocument 与 serializeTemplateDesignerDocument 持续使用原 model/canvas/workflow 三段协议；本批无协议或后端冻结路径修改。
+        - original-evidence：undoCanvasChange/redoCanvasChange 仍恢复整份 document；未增设独立来源配置 history、保存回调或第二套持久化真相。
+    - id: ontology.designer.test-scope-inspection
+      checkType: evidence-path
+      command: 只读审查 test-designer-column-insertion.mjs、test-designer-save-browser.mjs 与 test-cell-display-components.mjs 差异
+      outcome: passed
+      evidence:
+        - original-evidence：新增五条 Node 用例断言范围/像素同步、原 node 与字段身份、projection 完整保留、非当前页、一次撤销重做、保存重读、子表偏移和自由组件边界；本体实例未执行它们。
+        - original-evidence：新增桌面/390px 浏览器场景使用实际 Shell/Canvas/MUI/store 和菜单交互，断言来源 ID 与 DOM 对齐及撤销重做；catalog 与保存回调为受控替身，不是后端/JPA/签署端到端证据。
+        - original-evidence：旧 cell-display harness 改用 MockFillDialog.tsx:980 实际公开导出的 FormSheetPage，并删除对不存在 MockFillPage 的追加导出；fixture、序号断言和运行组件未被改写。
+        - 本结果只证明所述政策与源码的语义范围核对；测试执行、浏览器截图和独立质量结果由主审与未参与修复的新质量实例分别提供。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]
+  reviewScope:
+    reviewedAtUtc: '2026-10-16T07:16:41Z'
+    decisionPackageId: DEC-PACKAGE-20261016-W2-DESIGNER-IDENTITY
+    workingTreeState: dirty
+    productionScope: 仅设计器插列命令及其相邻只读位置/保存/历史实现；不是全 W2 或全分支语义通过。
+    preservedDeferredScope:
+      - A12 表单变更/作废与两项既有 DHR high 仍按用户授权暂缓，未在本批关闭。
+      - 子列 embedded snapshot 同步线索尚未由本体运行确认，留后续检查点；不伪装为本批已修缺陷。
+      - 不恢复历史数据、不回填生产快照、不执行合并或部署、不提高知识成熟度。
+    commandsNotRun: [测试, 构建, 浏览器, 数据库操作, GitHub Actions]
+    readArtifactDigests:
+      - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts
+        sha256: a0c31c8184989d6eefada1839d8c24417acc7a3194940bc1fd3f69fce35af9f2
+      - path: gmp-platform/frontend/scripts/test-designer-column-insertion.mjs
+        sha256: dfabee37be5be1a76bcca0493c023da8f345cfad8209583dbe86b64a94fd99ed
+      - path: gmp-platform/frontend/scripts/test-designer-save-browser.mjs
+        sha256: 8fb314ec874cc037ed8c2c4e63b9638460d65296c23419030ba212c36f7da083
+      - path: gmp-platform/frontend/scripts/test-cell-display-components.mjs
+        sha256: f119938f2e105061022c2b2a2e1c573748574d81513088bb536778fbc2f997d6
