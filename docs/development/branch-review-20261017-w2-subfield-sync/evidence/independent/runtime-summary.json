@@ -1,0 +1,101 @@
+{
+  "reviewer": "/root/w2_subfield_independent_final",
+  "generatedAt": "2026-10-16T20:16:58.620745+00:00",
+  "candidateCommit": "845b3a7f067e6d0fb54f77b73dcc8b3024d94f82",
+  "allRuntimeProcessesCompleted": true,
+  "commands": [
+    {
+      "file": "node.log",
+      "purpose": "candidate-node-109",
+      "exitCode": 0,
+      "bytes": 11018,
+      "sha256": "d2ce41d1cb88b53b55c6cf969106853596a9c79f95d55cbe06e8550fc5014aa6",
+      "publishRawLog": false
+    },
+    {
+      "file": "browser.log",
+      "purpose": "candidate-chromium-9",
+      "exitCode": 0,
+      "bytes": 1846,
+      "sha256": "36498a70713a8005388ddf0d9b755680656ea2a7ab90c16474480443963418c6",
+      "publishRawLog": false
+    },
+    {
+      "file": "build.log",
+      "purpose": "candidate-tsc-vite",
+      "exitCode": 0,
+      "bytes": 9335,
+      "sha256": "2940e505517d8ea915d5f8d9fbf51f2cc88d11b5d48fb86e17f933962d23bed5",
+      "publishRawLog": false
+    },
+    {
+      "file": "expected-red.log",
+      "purpose": "expected-baseline-store-red",
+      "exitCode": 1,
+      "bytes": 7151,
+      "sha256": "c39c5249b47178ceda7f54aafecc23fdde5db981349d4685206b5490f7c23f25",
+      "publishRawLog": false
+    },
+    {
+      "file": "browser-expected-red.log",
+      "purpose": "expected-baseline-ui-red",
+      "exitCode": 1,
+      "bytes": 2247,
+      "sha256": "11e6b54edf6cc27bb0a0098a2a6bf42e20a16e339fb601ef7205ff6533ceeb40",
+      "publishRawLog": false
+    },
+    {
+      "file": "lint.log",
+      "purpose": "global-eslint-config-missing",
+      "exitCode": 2,
+      "bytes": 819,
+      "sha256": "ce1ab04f5660d6cb81c2cdf842c1d4dd91f6f5ee6932d4d486e157c45077d8d1",
+      "publishRawLog": false
+    },
+    {
+      "file": "designer-static.log",
+      "purpose": "global-existing-vendor-guard",
+      "exitCode": 1,
+      "bytes": 426,
+      "sha256": "507bbbef45ebf5722eec0303f65c095357423f4fe10ce2be1346045c290687c8",
+      "publishRawLog": false
+    },
+    {
+      "file": "premium-base.log",
+      "purpose": "official-baseline-strict",
+      "exitCode": 2,
+      "bytes": 34357,
+      "sha256": "b56c9cad01fecc48fee4a5f0f8a8f6921b8e21de2647a8dd50f1d98e21733e2c",
+      "publishRawLog": false
+    },
+    {
+      "file": "premium-candidate.log",
+      "purpose": "official-candidate-strict",
+      "exitCode": 2,
+      "bytes": 34340,
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a",
+      "publishRawLog": false
+    }
+  ],
+  "node": {
+    "tests": 109,
+    "passed": 109,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "tests": 9,
+    "passed": 9,
+    "pageErrorAssertionsPassed": 9
+  },
+  "build": {
+    "tscPassed": true,
+    "vitePassed": true,
+    "exitCode": 0
+  },
+  "officialScannerRecoveredThisInstance": true,
+  "globalStrictPassed": false,
+  "backendOrDatabaseRuntimeExecuted": false,
+  "fullAccessibilityTouchZoomMatrixExecuted": false,
+  "githubActionsQueriedOrTriggered": false
+}

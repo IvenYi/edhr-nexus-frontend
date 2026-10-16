@@ -4,7 +4,7 @@ findings:
   - id: W2-F003-SUBFIELD-DEFINITION-SYNC
     previousClue: W2-C002-SUBFIELD-EMBEDDED-SNAPSHOT
     severity: medium
-    status: fixed-awaiting-independent-verification
+    status: fixed-and-independently-verified
     scope: 同一当前设计文档的子列编辑与画布/模拟/完整纸面消费
     originalEvidence: [gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
     trigger: 合法新增子表及文本子列、放置后，通过字段设计编辑同一列名称和类型。
@@ -14,7 +14,14 @@ findings:
     minimumFix: 原syncBoundNodesForField补父表和子列ID匹配，沿原组件兼容和history规则同步当前文档。
     primaryEvidence: evidence/primary-result.json
     boundaries: [不改生产冻结快照, 不自动迁移旧模板, 不新增停用隐藏政策, 不改变投影来源身份, 不新增后端保存协议]
-    independentEvidence: []
+    independentEvidence: [evidence/independent/qualityResult.yaml, evidence/independent/runtime-summary.json]
+documentationDisposition:
+  id: W2-QF-001
+  severity: low
+  status: corrected-after-independent-review
+  change: source-map的Shell文件名及方法行号更正为TemplateDesignerReactShell.tsx的persistCurrentDocument:102。
+  evidence: evidence/delivery-receipt.json
+  originalQualityReportPreserved: true
 unresolvedBusinessQuestions: []
 historicalDeduplication:
   - PR5/6及H005/H017/H018/H019-21按原验收保留，不重开。

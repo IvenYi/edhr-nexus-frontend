@@ -1,0 +1,35 @@
+{
+  "baselineCommit": "37bc05ec268d1e0d2faf105c2f1c449caeb7ed46",
+  "testFile": "scripts/test-designer-subfield-sync.mjs",
+  "storeReplay": {
+    "exitCode": 1,
+    "tests": 7,
+    "failed": 6,
+    "passed": 1,
+    "skipped": 0,
+    "failedCases": [
+      "renaming or disabling the same model column updates its placed definition without changing identity or inventing visibility policy",
+      "a changed column type uses the compatible component and clears only incompatible widget overrides",
+      "compatible column edits retain explicit widget overrides and preserve the previous immutable definition",
+      "the same parent column updates on other pages and nested nodes without changing unrelated fields",
+      "column edit is one complete undo step and serializes consistently without rewriting the former document",
+      "mock paper and full runtime paper both render the edited column definition"
+    ],
+    "passedCases": [
+      "generic table renderer already reads canonical model columns and remains a separate positive control"
+    ]
+  },
+  "browserReplay": {
+    "exitCode": 1,
+    "filter": "subfield edit",
+    "executedViewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "failedAssertion": "actual mock paper uses the edited column name",
+    "actual": false,
+    "expected": true,
+    "second390ViewportExecuted": false,
+    "failureOccurredAfterActualModelTabEditAndMockOpen": true
+  }
+}

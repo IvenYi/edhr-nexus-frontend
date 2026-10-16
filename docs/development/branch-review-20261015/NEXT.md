@@ -1,6 +1,6 @@
 # 持续推进台账
 
-PR7至PR13均已由用户人工合入，各批修复与原始验收证据保留。PR13合并0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d的树精确等于批准交付6d4cd54fb721e6fb8df7d7d96e77380b6edc697c。最新拉取目标37bc05ec268d1e0d2faf105c2f1c449caeb7ed46另含报表导航修复，无契约/知识漂移。当前为[W2子列定义同步](../branch-review-20261017-w2-subfield-sync/README.md)，以37bc新建第五批分支；原W2-C002已经真实UI/store/SSR复现并最小整改，等待全新质量实例验收。不回填旧结果或重收尾已合PR。原[插列与来源身份](../branch-review-20261016-w2-designer-identity/README.md)、[保存到正式投影](../branch-review-20261016-w2-projection-integrity/README.md)及其他报告均保持各自证据范围。
+PR7至PR13均已由用户人工合入，各批修复与原始验收证据保留。PR13合并0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d的树精确等于批准交付6d4cd54fb721e6fb8df7d7d96e77380b6edc697c。最新拉取目标37bc05ec268d1e0d2faf105c2f1c449caeb7ed46另含报表导航修复，无契约/知识漂移。当前为[W2子列定义同步](../branch-review-20261017-w2-subfield-sync/README.md)，以37bc新建第五批分支；原W2-C002已真实UI/store/SSR复现并最小整改，全新质量实例对845b3a7f正式passed，收尾只登记L0文档/证据，待人工合并。不回填旧结果或重收尾已合PR。原[插列与来源身份](../branch-review-20261016-w2-designer-identity/README.md)、[保存到正式投影](../branch-review-20261016-w2-projection-integrity/README.md)及其他报告均保持各自证据范围。
 
 ## 当前实际状态
 
@@ -11,7 +11,7 @@ PR7至PR13均已由用户人工合入，各批修复与原始验收证据保留�
 - W2前三批分别随PR10、PR11、PR12人工合入，原1606/1780/1820清单及各批独立结果只覆盖原范围。第三批固定400c，未确认新的生产缺陷，只新增SAVE/换序/完成/正式失败重试与最终预检回滚两条PG贯通测试。主侧及全新独立实例分别实际通过同组173 Java（含45 PG、89知识、7方法安全授权）及13 Node，无跳过；独立受测3b642ab4，16项必需检查passed，后续仅L0登记，临时PG已清理。这些是第三批原验收，不外推第四批或完整W2；既有全局限制继续保留。
 - W3/W4/W5/W6/W7排队；结构测量和七项拆分候选只属前置材料，W2本批给出具体文档命令/工厂/事务拆分路径，未执行大重构。
 - W2第四批固定8a9的1843路径/blob仍全pending。已核对导入/字段编辑/文档命令入口，并以5条Node及真实Chromium复现W2-F002插列遗漏nodes更新；局部同步几何/子表范围及派生偏移，保留来源ID和一次完整文档history。另修W2-T001旧cell-display测试失效组件名，原断言保留。本体not-applicable；主侧及全新独立实例分别通过同组94 Node、7浏览器及tsc/Vite构建，独立受测8450aa78，9项必需检查passed、本批无阻断。随后仅L0登记，已随PR13人工合并。ESLint缺配置、vendor缓存及premium84项严格失败属该批原结果，逐项无新增也仅覆盖该批，不外推本轮。
-- W2第五批固定37bc的1894路径/blob仍全pending；原W2-C002确认为W2-F003-SUBFIELD-DEFINITION-SYNC。正常子列编辑仅更新model，embedded副本仍旧，原基线新增7项6失败1列表正对照通过，真实1440px编辑→模拟同样失败。修复只同步当前文档写路径，不迁移旧模板/执行快照，不新增停用隐藏政策。本体not-applicable，主侧109 Node、9浏览器及构建通过，等待全新独立质量验收。ESLint/vendor实际仍失败；官方premium本轮不可获取而未运行，不能引用历史84为本轮扫描或零新增。完整W2未完成。
+- W2第五批固定37bc的1894路径/blob仍全pending；原W2-C002确认为W2-F003-SUBFIELD-DEFINITION-SYNC。正常子列编辑仅更新model，embedded副本仍旧，原基线新增7项6失败1列表正对照通过，真实1440px编辑→模拟同样失败。修复只同步当前文档写路径，不迁移旧模板/执行快照，不新增停用隐藏政策。本体not-applicable；主侧及全新独立实例分别实际通过同组109 Node、9浏览器及构建，独立受测845b3a7f，11项必需检查passed且无阻断。独立报告唯一low文件名笔误仅L0更正，原报告保留。ESLint/vendor实际仍失败；主侧官方premium不可用的原记录不回写，独立随后恢复官方脚本实际扫描base/candidate各84项，完整集合相同新增0，strict仍退出2。完整W2未完成。
 
 ## W1保留边界与W2当前检查点
 
@@ -23,7 +23,7 @@ PR7至PR13均已由用户人工合入，各批修复与原始验收证据保留�
 
 ## W2→W7 已定顺序
 
-W2第二批H002随PR11合入，第三批保存至正式投影组合回归已随[PR12](https://github.com/IvenYi/edhr-nexus-frontend/pull/12)合入，独立受测3b642ab4的原结果不改写。第四批插列确定性修复和相邻测试入口针对8450aa78的原验收passed，已随[PR13](https://github.com/IvenYi/edhr-nexus-frontend/pull/13)人工合入。第五批已沿合法子列编辑完成原线索红绿，当前等待全新独立验收。随后以新目标核对剩余W2的历史fillMode/条件、保存重读及各renderer消费差异，再收敛W2并推进W3；每批拉取最新edhr-dev、固定分母。完整执行HTTP/JPA/签署、历史不一致模板迁移和旧配置兼容不因本批测试自动获得通过。W1 gap、A12及两旧DHR high保留。H005不重开；H003/4与H009/10仍留W3，无新增合法证据不计已修。
+W2第二批H002随PR11合入，第三批保存至正式投影组合回归已随[PR12](https://github.com/IvenYi/edhr-nexus-frontend/pull/12)合入，独立受测3b642ab4的原结果不改写。第四批插列确定性修复和相邻测试入口针对8450aa78的原验收passed，已随[PR13](https://github.com/IvenYi/edhr-nexus-frontend/pull/13)人工合入。第五批已沿合法子列编辑完成红绿及全新实例845b3a7f正式passed，待人工合并。随后以新目标核对剩余W2的历史fillMode/条件、保存重读及各renderer消费差异，再收敛W2并推进W3；每批拉取最新edhr-dev、固定分母。完整执行HTTP/JPA/签署、历史不一致模板迁移和旧配置兼容不因本批测试自动获得通过。W1 gap、A12及两旧DHR high保留。H005不重开；H003/4与H009/10仍留W3，无新增合法证据不计已修。
 
 | 工作包 | 主要后续内容 | 本批准备材料 |
 | --- | --- | --- |

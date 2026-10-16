@@ -13,7 +13,7 @@
 | components/form-preview/FormDocumentPreview.tsx renderField:68 | suppliedField 或 embedded 优先，FormSheetPage 的 suppliedField 也来自同一 resolver；实际 SSR 与模拟分别验证。 |
 | components/form-renderer/FormRuntimeField.tsx RuntimeSubTable:58（frontend/src 下） | 通用列表直接用 parent.columns，原来已正确；独立正对照，不替代纸面验证。 |
 | components/form-renderer/referenceConfig.ts syncReferenceConfig:20、store updateNodeBindings:2646 | 既有参照配置命令已按 parent/child 同步；不代表通用 ModelTab 编辑此前也有同步。 |
-| TemplateDesignerShell.tsx persistCurrentDocument:101、utils/document.ts serialize:360/parse:345 | 原 model/canvas/workflow 三片保存，解析不重绑 child；本批受控回调及序列化验证不外推真实 HTTP/JPA。 |
+| TemplateDesignerReactShell.tsx persistCurrentDocument:102、utils/document.ts serialize:360/parse:345 | 原 model/canvas/workflow 三片保存，解析不重绑 child；本批受控回调及序列化验证不外推真实 HTTP/JPA。 |
 | store pushDocumentHistory:1946、undoCanvasChange:3367/redo:3380 | 单一完整 document 历史、上限50；本批同命令单次 undo/redo，保存边界不变。 |
 | backend template/FormLookupCatalogService.prepareDesign:248 | 源码核对 model/canvas 分别处理，无后端自动修复旧 embedded 的保证；无后端改动。 |
 | backend production/ExecutionSnapshotBuilder.form:187、ProductionExecutionService | 使用时复制当时模板，已有执行读自身 snapshot；不改读取所有权或旧快照。仅源码边界检查。 |

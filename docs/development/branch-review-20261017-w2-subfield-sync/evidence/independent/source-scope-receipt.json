@@ -1,0 +1,65 @@
+{
+  "baseCommit": "37bc05ec268d1e0d2faf105c2f1c449caeb7ed46",
+  "candidateCommit": "845b3a7f067e6d0fb54f77b73dcc8b3024d94f82",
+  "executionLevel": "L2",
+  "knowledgeModelVersion": "0.3.25",
+  "knowledgeSchemaVersion": "1.2.0",
+  "productionDiff": {
+    "files": 1,
+    "addedLines": 13,
+    "removedLines": 5
+  },
+  "candidateSourceTestDigests": [
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+      "bytes": 124246,
+      "sha256": "9beb8217a6e802508ebcbeeb10eebf99b49a1ab0a7e71a207d140694ff4084a3"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-designer-subfield-sync.mjs",
+      "bytes": 11155,
+      "sha256": "5363a42630517802de7dda4c1575455149b3c30d8f607c07b9dd44091ab11073"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-designer-save-browser.mjs",
+      "bytes": 21059,
+      "sha256": "506a68144b787765c176a4b13024cb2550818140ce678986d2107ecd059ef98e"
+    }
+  ],
+  "ontologyReadSourceDigestsMatchCandidate": true,
+  "inspectedMethods": [
+    "ModelTab.updateSubTableFields/setCurrentFieldStatus/handleSaveField",
+    "store.createBoundNodeFromSubTableField/syncBoundNodesForField/updateField/pushDocumentHistory/undoCanvasChange/redoCanvasChange",
+    "registry.useBoundField; DesignerInspector bound field fallback",
+    "MockFillDialog.resolveBoundField/renderFieldNode; FormDocumentPreview.renderField; RuntimeSubTable canonical columns",
+    "TemplateDesignerReactShell.persistCurrentDocument/handleSave; document.parseReactTemplateDesignerDocument/serializeTemplateDesignerDocument",
+    "ProductionExecutionService.act START/existing snapshot branches; ExecutionSnapshotBuilder.form/normalizeColumns/collectBindings; FormLookupCatalogService.prepareDesign"
+  ],
+  "currentDocumentOnly": true,
+  "noHistoricalMigrationOrFrozenBackfill": true,
+  "noNewDisabledVisibilityPolicy": true,
+  "existingWidgetCompatibilityRuleRetained": true,
+  "singleDocumentHistoryOwnerRetained": true,
+  "localAddedProductionLinePatternCounts": {
+    "nativeDialog": 0,
+    "newClickHandler": 0,
+    "newMarkup": 0,
+    "newAsyncRequest": 0
+  },
+  "patternReviewScope": "diff-only; does not replace official scan or full-file/runtime accessibility review",
+  "knownDocumentationTypo": {
+    "path": "docs/development/branch-review-20261017-w2-subfield-sync/source-map.md",
+    "line": 16,
+    "actual": "TemplateDesignerShell.tsx",
+    "expected": "TemplateDesignerReactShell.tsx",
+    "severity": "low",
+    "statusAtCandidate": "open",
+    "plannedOwner": "primary-agent L0 documentation correction"
+  },
+  "scopeLimits": [
+    "not whole module/full repository coverage",
+    "controlled GET/save callback, not real backend persistence/auth/signature",
+    "390 viewport, not touch/no-hover/full mobile support",
+    "A12 and two historical DHR high remain deferred/open"
+  ]
+}
