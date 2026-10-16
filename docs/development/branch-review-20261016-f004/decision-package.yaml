@@ -1,0 +1,89 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261016-F004-REFERENCE-DISPLAY
+  scope: F004已保存制程版本引用退出当前候选后的显示与保存边界
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: d63a73ce017388c5ae89bd1fbc66e872f998f825
+    targetBranch: edhr-dev
+    targetCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    contractReadCommit: d63a73ce017388c5ae89bd1fbc66e872f998f825
+    uncommittedContractPaths: []
+  summary: 延续已授权分支审查，仅修正有原依据和真实复现的显示遗漏；保存资格及生产快照规则保持，A12依赖继续暂缓。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: process-editor-reference-display
+        change: 已保存routeVersionId/dhrTemplateVersionId及名称版本与候选分开显示；仅在当前路线配置已成功加载并初始化草稿后允许保存，防止发送空替换绑定。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx, docs/development/branch-review-20261015/history/history-dedup.json]
+    transitiveImpacts:
+      - area: product-and-family
+        change: 共用编辑器需覆盖编辑/复制以及产品/产品簇loadOptions入口，防止引用显示与负载偏移。
+        evidenceReferences: [gmp-platform/frontend/src/api/product-modeling.ts]
+    potentialImpacts:
+      - area: binding-initialization
+        concern: 已复现路线图慢加载时可提前提交空operationBindings，后端按替换语义清除原绑定；已纳入同一组件最小修复。未验证的其他并发场景保留，不扩大重构。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx]
+    unaffectedAreas:
+      - area: eligibility-and-lifecycle
+        reason: 不重新开放过期新候选，不修改后端保存校验、业务状态、既有执行快照或A12。
+        evidenceReferences: [docs/knowledge/rules/product-process.yaml, docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]
+    compatibilityAndMigration:
+      - change: 无历史恢复、数据重写或迁移；已存ID保持至用户显式更换。
+        evidenceReferences: [decision-package.yaml]
+    snapshotImpacts:
+      - area: production-snapshots
+        change: 已开工执行/DHR快照保持；模板有效期不是记录作废。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml]
+    auditImpacts:
+      - area: saved-reference-identity
+        change: 不产生自动替换或虚构删除结论，提交继续使用真实已选身份及原审计。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java]
+    permissionImpacts:
+      - area: reference-metadata
+        change: 优先复用原响应已授权元数据，不新建越权查询。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java]
+    testImpacts:
+      - scope: focused-reference-regression
+        scenarios: [合法候选过滤, 已存引用显示, 缺少元数据, 显式改选, 复制与编辑, 保存拒绝非法引用, 慢路线图不得提交空绑定, 路线失败重试保持绑定, 浏览器键盘与窄屏]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProductProcessControllerTest.java]
+    evidenceGaps:
+      - 当前历史报告仅作线索，必须重新实际复现；完整全分支审查未完成。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用共用制程编辑器和既有API/控件，不新造生命周期或全局重设计。
+    ownershipBoundaries:
+      - owner: primary-agent
+        responsibility: 复现、源码修复、必要测试与台账交付。
+      - owner: business-knowledge-modeler
+        responsibility: 有限只读核对原依据与是否需知识同步。
+      - owner: quality-verifier
+        responsibility: 实现及基础测试完成后独立复核实际候选。
+  affectedFiles:
+    - path: gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
+      changeType: update
+      reason: 修正候选显示和summary，并在路线配置初始化前阻断不完整负载。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java
+      changeType: read-only
+      reason: 引用元数据和候选过滤。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java
+      changeType: read-only
+      reason: 保留原引用校验。
+  acceptanceScenarios:
+    - id: scenario.f004-saved-reference-not-in-candidates
+      given: 已存制程引用的版本不再出现在当前合法候选中
+      when: 打开编辑或复制
+      then: 已知名称版本及身份仍明确可见，不误显示成未选择或自动更换，不把旧引用加入可新选候选；不降低保存资格。
+      evidenceRequirements: [真实源码及运行复现, 聚焦回归, 独立最终验收]
+    - id: scenario.f004-async-binding-preservation
+      given: 已存制程具有工序绑定，当前引用合法但路线图请求尚未完成或失败
+      when: 打开编辑或复制，并尝试保存或重试路线请求
+      then: 加载与初始化前不得提交空替换绑定；成功初始化后保留同路线原绑定及最终产出配置，失败提供重试且不产生保存。
+      evidenceRequirements: [真实组件慢请求红绿回归, 失败重试回归, 后端替换语义源码核对, 全新实例最终独立验收]

@@ -230,7 +230,7 @@ interface RdoVersionCategoryGroup {
   parents: RdoVersionParentGroup[];
 }
 
-function formatRdoVersionChoice(choice: RdoVersionChoice) {
+function formatRdoVersionChoice(choice: Pick<RdoVersionChoice, 'parentName' | 'version'>) {
   return [choice.parentName || '-', choice.version || '-'].join(' / ');
 }
 
@@ -239,6 +239,7 @@ function RdoVersionTreeSelect({
   required = false,
   options,
   value,
+  savedReference,
   onChange,
   emptyText = '暂无可引用版本',
 }: {
@@ -246,6 +247,7 @@ function RdoVersionTreeSelect({
   required?: boolean;
   options: RdoVersionChoice[];
   value: string;
+  savedReference?: Pick<RdoVersionChoice, 'id' | 'parentName' | 'version'>;
   onChange: (id: string) => void;
   emptyText?: string;
 }) {
@@ -274,7 +276,9 @@ function RdoVersionTreeSelect({
   }, [options, showCategories]);
   const parentKeys = useMemo(() => groups.flatMap((group) => group.parents.map((parent) => parent.key)), [groups]);
   const categoryKeys = useMemo(() => groups.map((group) => group.key), [groups]);
-  const selected = options.find((option) => option.id === value) ?? null;
+  const candidate = options.find((option) => option.id === value);
+  const selected = candidate ?? (savedReference?.id === value ? savedReference : null);
+  const unavailable = Boolean(value && !candidate);
   const normalizedSearch = searchText.trim().toLocaleLowerCase();
   const visibleGroups = useMemo(() => groups.map((group) => ({
     ...group,
@@ -309,7 +313,9 @@ function RdoVersionTreeSelect({
       size="small"
       fullWidth
       label={label}
-      value={selected ? formatRdoVersionChoice(selected) : ''}
+      value={selected ? formatRdoVersionChoice(selected) : value ? `版本 #${value} / -` : ''}
+      error={unavailable}
+      helperText={unavailable ? '已保存的引用不在当前可选范围，请选择生效版本后保存。' : undefined}
       placeholder="选择版本"
       onClick={(event) => openPicker(event.currentTarget)}
       onFocus={(event) => { if (!anchorEl) openPicker(event.currentTarget); }}
@@ -890,6 +896,23 @@ export default function ProductProcessVersionEditorDialog({
     },
   });
   const selectedRoute = options?.routes.find((route) => route.id === form.routeVersionId) ?? null;
+  const selectedDhrTemplate = options?.dhrTemplates.find((template) => template.id === form.dhrTemplateVersionId);
+  const savedRouteReference = target ? {
+    id: target.routeVersionId,
+    parentName: target.routeName || `已保存版本 #${target.routeVersionId}`,
+    version: target.routeVersion,
+  } : undefined;
+  const savedDhrReference = target ? {
+    id: target.dhrTemplateVersionId,
+    parentName: target.dhrTemplateName || `已保存版本 #${target.dhrTemplateVersionId}`,
+    version: target.dhrTemplateVersion,
+  } : undefined;
+  const routeReferenceText = selectedRoute ? `${selectedRoute.routeName} / ${selectedRoute.version}`
+    : savedRouteReference?.id === form.routeVersionId ? formatRdoVersionChoice(savedRouteReference) : '选择工艺路线后加载路线图';
+  const dhrReferenceText = selectedDhrTemplate ? optionText(selectedDhrTemplate)
+    : savedDhrReference?.id === form.dhrTemplateVersionId
+      ? [target?.dhrTemplateCode, savedDhrReference.parentName, savedDhrReference.version].filter(Boolean).join(' / ')
+      : `版本 #${form.dhrTemplateVersionId}`;
   const routeChoices = useMemo<RdoVersionChoice[]>(() => (options?.routes ?? []).map((route) => ({
     id: route.id,
     parentId: route.routeId,
@@ -937,7 +960,9 @@ export default function ProductProcessVersionEditorDialog({
     return option ? { ...option, pageStart: binding.pageStart ?? null, pageEnd: binding.pageEnd ?? null } : null;
   }).filter((item): item is ProductModelDocumentOption & { pageStart: number | null; pageEnd: number | null } => Boolean(item)) ?? [];
   const title = mode === 'create' ? '新建制程配置版本' : mode === 'copy' ? '复制制程配置版本' : '编辑制程配置版本';
-  const canSubmit = Boolean(form.version.trim() && form.productionMode && form.productionForm && form.routeVersionId && form.dhrTemplateVersionId
+  const canSubmit = Boolean(form.version.trim() && form.productionMode && form.productionForm && selectedRoute && selectedDhrTemplate
+    && !optionsQuery.isLoading && !optionsQuery.isError
+    && routeGraphQuery.isSuccess && initializedRoute.current === form.routeVersionId
     && (form.dhrReviewMode === 'NONE' || (form.dhrReviewWorkflowDefinitionId && form.dhrReviewWorkflowVersionId)));
 
   const set = <K extends keyof VersionForm>(key: K, value: VersionForm[K]) => {
@@ -1025,8 +1050,8 @@ export default function ProductProcessVersionEditorDialog({
           <TextField select required size="small" label="生产方式" value={form.productionForm} onChange={(event) => set('productionForm', event.target.value)}>
             {PRODUCTION_FORM_OPTIONS.map((option) => <MenuItem key={option} value={option}>{option}</MenuItem>)}
           </TextField>
-          <RdoVersionTreeSelect label="工艺路线版本" required options={routeChoices} value={form.routeVersionId} onChange={handleRouteChange} emptyText="暂无可引用工艺路线版本" />
-          <RdoVersionTreeSelect label="批记录模板版本" required options={dhrTemplateChoices} value={form.dhrTemplateVersionId} onChange={handleDhrChange} emptyText="暂无可引用批记录模板版本" />
+          <RdoVersionTreeSelect label="工艺路线版本" required options={routeChoices} value={form.routeVersionId} savedReference={savedRouteReference} onChange={handleRouteChange} emptyText="暂无可引用工艺路线版本" />
+          <RdoVersionTreeSelect label="批记录模板版本" required options={dhrTemplateChoices} value={form.dhrTemplateVersionId} savedReference={savedDhrReference} onChange={handleDhrChange} emptyText="暂无可引用批记录模板版本" />
           <TextField select required size="small" label="DHR 汇总审核" value={form.dhrReviewMode} onChange={(event) => {
             const mode = event.target.value as 'NONE' | 'REQUIRED';
             setForm((current) => ({ ...current, dhrReviewMode: mode, dhrReviewWorkflowDefinitionId: mode === 'NONE' ? '' : current.dhrReviewWorkflowDefinitionId, dhrReviewWorkflowVersionId: mode === 'NONE' ? '' : current.dhrReviewWorkflowVersionId }));
@@ -1058,12 +1083,14 @@ export default function ProductProcessVersionEditorDialog({
         <Box sx={{ minWidth: 0, display: 'grid', gridTemplateRows: 'auto minmax(0, 1fr)', bgcolor: '#fcfdff' }}>
           <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid #e4e7ed', display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
             <Typography variant="subtitle2" sx={{ color: '#303133' }}>路线工序配置</Typography>
-            <Typography variant="caption" sx={{ color: '#909399' }}>{selectedRoute ? `${selectedRoute.routeName} / ${selectedRoute.version}` : '选择工艺路线后加载路线图'}</Typography>
-            {form.dhrTemplateVersionId ? <Chip size="small" label={`批记录：${optionText(options.dhrTemplates.find((option) => option.id === form.dhrTemplateVersionId))}`} sx={{ ml: { sm: 'auto' }, bgcolor: '#eef6ff', color: '#1677c8' }} /> : null}
+            <Typography variant="caption" sx={{ color: '#909399' }}>{routeReferenceText}</Typography>
+            {form.dhrTemplateVersionId ? <Chip size="small" label={`批记录：${dhrReferenceText}`} sx={{ ml: { sm: 'auto' }, bgcolor: '#eef6ff', color: '#1677c8' }} /> : null}
           </Box>
           {!form.routeVersionId ? <Box sx={{ minHeight: { xs: 300, lg: 0 }, display: 'grid', placeItems: 'center', color: '#909399' }}>请先选择工艺路线版本</Box> : <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: 'minmax(440px, 1fr) minmax(380px, 430px)' }, gridTemplateRows: { xs: 'minmax(240px, 34vh) minmax(360px, 1fr)', lg: 'minmax(0, 1fr)' }, minHeight: 0, overflow: { xs: 'visible', lg: 'hidden' } }}>
             <Box sx={{ minWidth: 0, minHeight: 0, borderRight: { lg: '1px solid #e4e7ed' }, borderBottom: { xs: '1px solid #e4e7ed', lg: 0 } }}>
-              <RouteGraph graph={routeGraphQuery.data} selectedNodeKey={selectedNodeKey} onSelectNode={(nodeKey) => { if (drafts.some((draft) => draft.routeNodeKey === nodeKey)) setSelectedNodeKey(nodeKey); }} />
+              {routeGraphQuery.isLoading ? <Box sx={{ height: '100%', minHeight: 160, display: 'grid', placeItems: 'center' }}><CircularProgress size={28} aria-label="正在加载路线配置" /></Box>
+                : routeGraphQuery.isError ? <Stack role="alert" spacing={1} sx={{ p: 2, alignItems: 'flex-start' }}><Typography color="error" variant="body2">工艺路线配置加载失败，无法保存；已保存配置未更改。</Typography><Button onClick={() => { void routeGraphQuery.refetch(); }}>重新加载路线配置</Button></Stack>
+                  : <RouteGraph graph={routeGraphQuery.data} selectedNodeKey={selectedNodeKey} onSelectNode={(nodeKey) => { if (drafts.some((draft) => draft.routeNodeKey === nodeKey)) setSelectedNodeKey(nodeKey); }} />}
             </Box>
             <Box sx={{ minWidth: 0, minHeight: { xs: 360, lg: 0 }, p: 1.5, bgcolor: '#fff', display: 'flex', flexDirection: 'column', overflow: { xs: 'visible', lg: 'hidden' } }}>
               {!selectedNode ? <Typography variant="body2" sx={{ color: '#909399', textAlign: 'center', py: 5 }}>请选择工艺路线中的工序节点</Typography> : <Stack spacing={1.25} sx={{ minHeight: 0, flex: 1 }}>

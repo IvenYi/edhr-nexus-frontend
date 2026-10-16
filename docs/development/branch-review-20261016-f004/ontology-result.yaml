@@ -1,0 +1,32 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: d63a73ce017388c5ae89bd1fbc66e872f998f825
+    targetBranch: edhr-dev
+    targetCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    contractReadCommit: d63a73ce017388c5ae89bd1fbc66e872f998f825
+    uncommittedContractPaths: []
+  reason: 本批只读核对F004引用显示与保存资格，既有定义足够，无知识、政策或成熟度变更；整体审计仍未完成。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.f004-policy-reference-boundary
+      checkType: reference
+      command: 定向读取本批契约/决策包、DEC及规则，并核对响应投影、候选过滤与保存校验源码
+      outcome: passed
+      evidence:
+        - DEC-0001-04/05/06；DEC-0002-04/09/12；DEC-0012-02/04/06
+        - rule.product-process.bind-route-and-dhr-versions
+        - ProductProcessController.java:216–224、653–670
+        - ProductProcessOwnerService.java:251–262
+        - ProductProcessVersionEditorDialog.tsx:120–127、277、892–919（修前源码）
+        - 本体实例未修改文件，未运行Maven、浏览器、Actions或独立质量。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

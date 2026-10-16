@@ -1,0 +1,23 @@
+{
+  "baselineCommit": "d63a73ce017388c5ae89bd1fbc66e872f998f825",
+  "strictExitCodeBefore": 2,
+  "strictExitCodeAfter": 2,
+  "baselineSummary": {
+    "errors": 26,
+    "total": 26,
+    "unresolved": 13,
+    "violations": 13,
+    "warnings": 0
+  },
+  "currentSummary": {
+    "errors": 26,
+    "total": 26,
+    "unresolved": 13,
+    "violations": 13,
+    "warnings": 0
+  },
+  "newFindingKeys": [],
+  "removedFindingKeys": [],
+  "scope": "global project skill audit; pre-existing findings retained for W5/W6, not F004 feature acceptance or global UI compliance",
+  "eslint": "project script fails before linting because no ESLint configuration exists"
+}

@@ -154,6 +154,36 @@ class ProductProcessOwnerServiceTest {
                 .hasMessageContaining("生产方式仅支持SN或批次");
     }
 
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource({
+            "PRODUCT, true", "PRODUCT, false", "PRODUCT_FAMILY, true", "PRODUCT_FAMILY, false"
+    })
+    void rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType ownerType, boolean expiredRoute) {
+        Long ownerId = ownerType == ProcessOwnerType.PRODUCT ? 101L : 201L;
+        if (ownerType == ProcessOwnerType.PRODUCT) {
+            when(materialRepository.findById(ownerId)).thenReturn(Optional.of(Material.builder()
+                    .id(ownerId).materialTypeId(1L).name("产品").code("P-001").build()));
+            when(materialTypeRepository.findAll()).thenReturn(List.of(MaterialType.builder().id(1L).name("产成品").build()));
+        } else {
+            when(productFamilyRepository.findById(ownerId)).thenReturn(Optional.of(ProductFamily.builder()
+                    .id(ownerId).name("产品簇").code("PF-001").build()));
+        }
+        when(productProcessRepository.findByTenantIdAndOwnerTypeAndOwnerId("default", ownerType.name(), ownerId))
+                .thenReturn(Optional.of(process(1001L, ownerType.name(), ownerId)));
+        when(routeVersionRepository.findById(301L)).thenReturn(Optional.of(RouteVersion.builder().id(301L)
+                .expiryDate(expiredRoute ? LocalDateTime.now().minusDays(1) : null).build()));
+        if (!expiredRoute) {
+            when(dhrTemplateVersionRepository.findById(401L)).thenReturn(Optional.of(DhrTemplateVersion.builder()
+                    .id(401L).effectiveTo(LocalDateTime.now().minusDays(1)).build()));
+        }
+
+        assertThatThrownBy(() -> service.createVersion(ownerType, ownerId, request("V2.0")))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining(expiredRoute ? "仅能引用生效中的工艺路线版本" : "仅能引用生效中的批记录模板版本");
+        verify(productProcessVersionRepository, org.mockito.Mockito.never()).save(any());
+        verify(auditEventRepository, org.mockito.Mockito.never()).save(any());
+    }
+
     @Test
     void recordsProductFamilyUpdateAndDeleteAuditsWithOperationConfigurationSnapshots() {
         ProductProcess process = process(1001L, "PRODUCT_FAMILY", 201L);

@@ -1,0 +1,38 @@
+findings:
+  - id: F004
+    historicalAlias: AUD-H013
+    severity: medium
+    status: fixed-awaiting-independent-verification
+    scope: 产品与产品簇共用制程编辑器的已存路线/DHR引用显示及其候选边界。
+    trigger: 已保存具体版本ID及可读名称/版本，但该版本退出当前合法候选，打开编辑或复制。
+    expected: 显示实际保存的引用身份及已知名称版本，明确当前候选不包含该引用，不自动更换、不推断删除、不开放非法新选择或保存。
+    actualBefore: ID保留，字段只按候选查找而显示空白，DHR摘要为“-”。
+    rootCause: RdoVersionTreeSelect和摘要将显示来源等同于当前可选集合，未使用按已存ID返回的元数据。
+    remediation: 将已存元数据用于显示回退并提示更换，候选仍独立；等待合法选项或加载失败时不提交。服务端资格校验保持并新增产品/产品簇保护回归。
+    originalPolicy: [DEC-0001-04, DEC-0001-05, DEC-0001-06, DEC-0002-04, rule.product-process.bind-route-and-dhr-versions]
+    historicalScopePreserved: true
+    productionSnapshotChanged: false
+    backendProductionLogicChanged: false
+  - id: F004-ASYNC-BINDING-LOSS
+    severity: high
+    status: fixed-awaiting-independent-verification
+    scope: 同一制程编辑器的异步路线图加载与工序绑定替换。
+    trigger: 已有一条工序绑定，路线与DHR引用均合法，路线图请求延迟，用户在请求返回前保存。
+    expected: 路线配置成功加载且同路线原绑定初始化前不得保存空配置；失败可重试，原绑定保持。
+    actualBefore: 实际组件回调生成operationBindings=[]，原已存绑定1条；后端saveOperationBindings接受空列表并先deleteOperationBindings，属于清空替换请求。
+    rootCause: drafts初始为空且依赖异步路线图useEffect初始化，canSubmit只核对基本ID而不检查请求及初始化完成。
+    remediation: 保存需routeGraphQuery成功且initializedRoute匹配；加载状态明确展示，失败显示错误及重试；无服务端业务规则变更。
+    redEvidence: 实际Chromium慢请求捕获回调，operationBindings.length=0而期望1，见evidence原始日志索引。
+    freshIndependentFinalRequired: true
+    productionDataActuallyWrittenDuringReproduction: false
+inheritedDependencies:
+  recordControlChangeAndVoid: deferred-by-user-until-upstream-implementation
+  dhrHighItemsClosed: false
+residualChecks:
+  eslint: blocked-no-existing-project-configuration
+  premiumGlobalAudit: pre-existing-findings-remain-26-no-new
+  fullBackendHttpAndDatabaseFlow: not-claimed-by-component-browser-fixtures
+acceptanceBoundary:
+  wholeW1Complete: false
+  wholeBranchComplete: false
+  productionReleaseApproved: false
