@@ -2,7 +2,10 @@ findings:
   - id: F004
     historicalAlias: AUD-H013
     severity: medium
-    status: fixed-awaiting-independent-verification
+    status: resolved
+    verifiedCandidate: 58fb346f2d1eb860c09c3f95eed448ef8b813112
+    integrationStatus: awaiting-manual-merge
+    independentResult: evidence/independent/qualityResult.yaml
     scope: 产品与产品簇共用制程编辑器的已存路线/DHR引用显示及其候选边界。
     trigger: 已保存具体版本ID及可读名称/版本，但该版本退出当前合法候选，打开编辑或复制。
     expected: 显示实际保存的引用身份及已知名称版本，明确当前候选不包含该引用，不自动更换、不推断删除、不开放非法新选择或保存。
@@ -15,7 +18,10 @@ findings:
     backendProductionLogicChanged: false
   - id: F004-ASYNC-BINDING-LOSS
     severity: high
-    status: fixed-awaiting-independent-verification
+    status: resolved
+    verifiedCandidate: 58fb346f2d1eb860c09c3f95eed448ef8b813112
+    integrationStatus: awaiting-manual-merge
+    independentResult: evidence/independent/qualityResult.yaml
     scope: 同一制程编辑器的异步路线图加载与工序绑定替换。
     trigger: 已有一条工序绑定，路线与DHR引用均合法，路线图请求延迟，用户在请求返回前保存。
     expected: 路线配置成功加载且同路线原绑定初始化前不得保存空配置；失败可重试，原绑定保持。

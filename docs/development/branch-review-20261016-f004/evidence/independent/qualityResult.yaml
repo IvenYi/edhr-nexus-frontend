@@ -1,0 +1,246 @@
+qualityResult:
+  result: passed
+  baseCommit: d63a73ce017388c5ae89bd1fbc66e872f998f825
+  headCommit: 58fb346f2d1eb860c09c3f95eed448ef8b813112
+  contractBaseline:
+    sourceCommit: 58fb346f2d1eb860c09c3f95eed448ef8b813112
+    targetBranch: edhr-dev
+    targetCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    contractReadCommit: 58fb346f2d1eb860c09c3f95eed448ef8b813112
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.f004.baseline-contract
+    required: true
+    category: documentation
+    description: 实际读取候选契约、目标增量、知识入口及完整本批决策包；候选包含目标全部提交。
+    method: command
+    command: git fetch origin refs/heads/edhr-dev:refs/remotes/origin/edhr-dev; git merge-base --is-ancestor TARGET
+      HEAD; source/target contract blob comparison
+    outcome: passed
+    evidence:
+    - target=76b214426a271929bba2708cdda9e4d84d1f0679; feature/head/tested candidate=58fb346f2d1eb860c09c3f95eed448ef8b813112;
+      feature parent=d63a73ce017388c5ae89bd1fbc66e872f998f825
+    - 目标未变化；d63与76差异只为前批文档；候选知识/架构/项目/质量/交接契约/DESIGN未改变。
+    - verification-facts.json；inventory-verification.json
+  - id: check.f004.requirements-source
+    required: true
+    category: requirements
+    description: 核对显示身份、合法候选/保存资格、异步初始化、防止空绑定替换及产品/产品簇共用入口。
+    method: inspection
+    command: Read editor query/effect/canSubmit/toPayload/RdoVersionTreeSelect; controller projection/filter; OwnerService
+      validateReferences/saveOperationBindings; product/family callers
+    outcome: passed
+    evidence:
+    - DEC-0001-04/05/06；DEC-0002-04/09/12；DEC-0012-02/04/06；rule.product-process.bind-route-and-dhr-versions；DEC-0062-03。
+    - 已存元数据仅按匹配ID回退显示，不进入候选，不新增越权取数；元数据缺失仍显示ID。
+    - canSubmit同时要求合法候选、选项无错误、routeGraphQuery.isSuccess、initializedRoute等于当前路线；服务端仍按原有效期校验。
+    - OwnerService空绑定列表的删除/替换语义未改；路线失败无写请求、可重试；本批未改变快照/权限/审计/数据库。
+  - id: check.f004.inventory
+    required: true
+    category: documentation
+    description: 固定来源分母与真实UTF-8路径/blob集合、方法级核对和主侧SHA匹配。
+    method: command
+    command: Independent Python csv/json parsing against git ls-tree -r -z d63/target/HEAD and SHA256
+    outcome: passed
+    evidence:
+    - inventory-verification.json：d63清单1569行，唯一路径/真实UTF-8/blob完全相等，全pending；target1524；candidate1586，不混分母。
+    - 4条方法级进度symbols及currentSourceSha256真实，wholeFileReviewComplete均false。
+    - main-result三处代码/测试SHA与候选相同；主侧运行时HEAD=d63且工作树为最终同字节内容，不能写成主侧曾在58fb上运行。
+  - id: check.f004.baseline-red
+    required: true
+    category: regression
+    description: 最终浏览器脚本只读装载旧真实组件，独立复现两个缺陷。
+    method: automated-test
+    command: CHROME_PATH=/workspace/.pr6-playwright/chromium-1208/chrome-linux64/chrome F004_BASELINE_COMMIT=d63a73ce017388c5ae89bd1fbc66e872f998f825
+      F004_CASE_FILTER="saved DHR reference" node scripts/test-product-process-reference-browser.mjs; separately
+      same command with F004_CASE_FILTER="slow graph" (frontend cwd)
+    outcome: passed
+    evidence:
+    - baseline-display-red.log：exit1，实际空字符串，期望原批记录 / V0.9。
+    - baseline-async-red.log：exit1，实际operationBindings.length=0，原有/期望1。
+    - 这是预期红回归通过，非最终候选失败；未修改工作区、未写真实数据库。
+  - id: check.f004.browser-green
+    required: true
+    category: regression
+    description: 实际Chromium运行最终真实React/MUI/Query编辑器12项回归。
+    method: automated-test
+    command: CHROME_PATH=/workspace/.pr6-playwright/chromium-1208/chrome-linux64/chrome F004_RESULT_PATH=/tmp/edhr-f004-independent-20261016/browser-result.json
+      F004_SCREENSHOT_DIR=/tmp/edhr-f004-independent-20261016/screens node scripts/test-product-process-reference-browser.mjs
+    outcome: passed
+    evidence:
+    - browser-result.json：12项通过，0失败；browser.log。
+    - 含已存DHR/路线、元数据缺失、复制、新建、空候选、显式改选及保存ID、慢路线不发空绑定、失败重试保留绑定/最终产出、选项加载/失败、键盘与390px。
+    - 浏览器页实际组件；选项及HTTP均fixture，onSubmit回调负载，非真实后端HTTP/数据库E2E。
+  - id: check.f004.backend-unit
+    required: true
+    category: unit
+    description: 独立运行直接控制器/服务Mockito单元测试，包含4个产品/产品簇过期引用保护参数。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -o -Dtest=ProductProcessControllerTest,ProductProcessOwnerServiceTest
+      test
+    outcome: passed
+    evidence:
+    - backend-result.json；case-index.json；original-xml/ 两个真实XML及SHA。
+    - 21实际用例，0失败/错误/跳过，Controller14+OwnerService7；既存审计/绑定替换/候选有效期断言保留。
+    - 使用固定完整JDK21 wrapper；非真实HTTP/数据库集成，不声称独立重编译122源。
+  - id: check.f004.frontend-build
+    required: true
+    category: regression
+    description: 完整前端TypeScript项目构建与生产打包。
+    method: command
+    command: npm run build
+    outcome: passed
+    evidence:
+    - frontend-build.log：exit0，tsc -b && vite build；真实候选未提交改动为空。
+  - id: check.f004.existing-static
+    required: true
+    category: regression
+    description: 保留并执行项目既有制程页面检查。
+    method: command
+    command: node scripts/verify-process-modeling-pages.mjs
+    outcome: passed
+    evidence:
+    - process-static.log：exit0。
+  - id: check.f004.visual
+    required: true
+    category: visual
+    description: 亲看本实例桌面与390px截图，核对已存身份/纠正提示/禁用保存；运行中已打开候选并以键盘显式选择。
+    method: browser
+    command: view_image independent screens/f004-desktop.png and screens/f004-narrow.png; actual component keyboard
+      interaction
+    outcome: passed
+    evidence:
+    - 两张本实例截图已亲看；字段原名称/版本清楚，候选缺失解释不推断删除，提示文字可读，保存禁用，窄屏操作底栏可见。
+    - 复用现有MUI/TextField/Popper/AppDialog，产品和产品簇调用同一编辑器；DESIGN第10节与list-page-guidelines等维护规则优先于技能默认。
+    - 本次为现有组件局部行为修复，不是全站视觉/WCAG或多浏览器验收。
+  - id: check.f004.ontology
+    required: true
+    category: ontology
+    description: 只读核对本体结果及现行定义，无新政策、知识或成熟度修改。
+    method: inspection
+    command: Read ontology-result.yaml and related DEC/rules; compare docs/knowledge and docs/architecture trees
+    outcome: passed
+    evidence:
+    - ontologyResult=not-applicable，knowledgeModelVersion0.3.25。
+    - DEC既有身份/绑定/有效期/不可改写历史快照足够支持修复。
+    - 两项旧DHR high仍open+用户明确暂缓；不由本批关闭W1/全分支/P0或授权发布。
+  - id: check.f004.primary-evidence
+    required: true
+    category: documentation
+    description: 回到主侧原始日志/XML验证哈希，区分主侧与独立实际运行。
+    method: command
+    command: Independent SHA256 verification of main-result 9 original logs and 2 preserved XML
+    outcome: passed
+    evidence:
+    - main-evidence-verification.json：11处均存在且SHA匹配。
+    - 本实例后端21和浏览器12为新实际运行，不拿主侧原结果代替；原始认证类输出仅留/tmp。
+  - id: check.f004.premium-delta
+    required: true
+    category: regression
+    description: 同一官方技能脚本在独立只读导出的旧frontend与候选frontend运行，核对没有新增全局发现。
+    method: command
+    command: python audit_project.py <baseline frontend> / <candidate frontend> --mode strict --output <tmp files>;
+      compare file/rule/category/message keys
+    outcome: passed
+    evidence:
+    - premium-baseline.json、premium-frontend.json、premium-delta.json：修前/修后均26（13unresolved+13violations），新增0、移除0；本次修改组件0静态发现。
+    - 官方技能脚本SHA256=67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68；没有改扫描配置或降低标准。
+  - id: check.global.eslint-unconfigured
+    required: false
+    category: regression
+    description: 全局ESLint尝试；项目没有配置，读取代码前退出。
+    method: command
+    command: npm run lint
+    outcome: blocked
+    evidence:
+    - eslint.log：exit2，无法找到ESLint配置；不记passed，既存全局工程检查缺口归后续W5/W6。
+  - id: check.global.premium-strict
+    required: false
+    category: visual
+    description: 全局premium strict仍有既存问题；不代表全局UI合规。
+    method: command
+    command: python audit_project.py /workspace/edhr-nexus-frontend/gmp-platform/frontend --mode strict
+    outcome: failed
+    evidence:
+    - premium-frontend.json：exit2，26项现存，0新增；非本两项修复的新增缺陷。
+    - 补充repository-root探索扫描premium-audit.json：84项，其中26为同一frontend发现，另58来自未改的docs/.superpowers；verification-facts核对其路径与来源blob未变。
+  - id: check.f004.protected-sources
+    required: true
+    category: documentation
+    description: 验证前后所有候选跟踪文件及工具摘要保持，不参与修复。
+    method: command
+    command: SHA256 before/after manifests; git status --porcelain; git rev-parse HEAD
+    outcome: passed
+    evidence:
+    - protected-before.json=protected-after.json；1586个跟踪文件+2个额外Maven工具文件无变化。
+    - workingTree干净，HEAD不变58fb346f；所有原始日志/XML/扫描/报告仅在/tmp。
+  findings:
+  - id: F004
+    severity: medium
+    scope: product/product-family process editor saved version identity
+    summary: 退出当前候选的已存DHR/路线引用原先空白，最终候选已修复。
+    reproductionSteps:
+    - 用最终浏览器脚本加载d63旧组件并运行saved DHR reference场景。
+    - 候选仅有501、target已存502及原名称版本，打开编辑。
+    expectedResult: 明确显示原ID对应元数据，旧引用不进入候选；保存继续遵守有效资格。
+    actualResult: 旧基线空显示红复现；58fb最终组件显示正确并通过全12项。
+    evidence:
+    - baseline-display-red.log
+    - browser-result.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 58fb346f2d1eb860c09c3f95eed448ef8b813112
+    - type: command
+      reference: browser-result.json；baseline-display-red.log
+    - type: screenshot
+      reference: screens/f004-desktop.png；screens/f004-narrow.png
+  - id: F004-ASYNC-BINDING-LOSS
+    severity: high
+    scope: same editor asynchronous route graph and replacement payload
+    summary: 旧组件慢路线图时可发送空operationBindings清空原绑定；最终候选阻断直到同路线配置初始化并保留原绑定。
+    reproductionSteps:
+    - 只读加载d63旧组件，运行slow graph场景。
+    - target有1条绑定且finalOutput=true，延迟路线图响应，提前点击保存。
+    expectedResult: 路线加载/失败不得保存；成功重试后仍发原绑定和最终标记。
+    actualResult: 旧基线回调0条，预期1条；58fb慢加载与失败重试均保留1条及finalOutput=true。
+    evidence:
+    - baseline-async-red.log
+    - browser-result.json
+    - ProductProcessOwnerService.saveOperationBindings替换语义只读核对
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 58fb346f2d1eb860c09c3f95eed448ef8b813112
+    - type: command
+      reference: browser-result.json：slow graph / failed graph load and retry 两场景passed
+    - type: document
+      reference: backend-result.json：候选相邻21项passed，checks check.f004.browser-green及backend-unit由未参与修复的新实例执行
+  residualRisks:
+  - id: risk.fixture-not-full-e2e
+    description: 浏览器为真实组件+隔离选项/HTTP fixture；21后端项为Mockito单元。
+    impact: 不证明真实鉴权HTTP/数据库持久化/PG并发或全链发布。
+    mitigation: 当前仅接受显示与请求初始化两项；未来发布按真实环境补完整链。
+  - id: risk.global-lint-and-premium
+    description: ESLint无配置；全站premium26既存问题仍在，strict退出2。
+    impact: 不能宣布全局lint或UI合规通过。
+    mitigation: 保留失败/blocked证据，W5/W6后续统一处理；本批不做大重构。
+  - id: discrepancy.dhr-review-complete-evidence-impact-gap
+    description: 旧DHR完整证据影响比较/主动通知high继续open；依赖记录控制变更/作废部分用户确认暂缓。
+    impact: 完整DHR生命周期未验收；不属于本次显示/异步绑定修复关闭范围。
+    mitigation: 上游实际实现后再接入和独立复验；现有模板停用不改写冻结批次。
+  - id: discrepancy.dhr-review-effective-source-integration
+    description: 记录控制表单变更/作废未实现，真实生效结果DHR接入继续open+deferred。
+    impact: 没有真实生效/通知/并发联调证据。
+    mitigation: 等待上游实现，不用SQL造数据代替合法业务生效证据。
+  - id: risk.audit-coverage-incomplete
+    description: 固定1569清单仍全pending，4条方法级记录不代表整文件或整分支审完。
+    impact: W1、W2-W7及全量分支审查未完成；不构成生产发布批准。
+    mitigation: 沿台账下一批继续；本结论限定F004和F004-ASYNC-BINDING-LOSS。
+  blockingConditions: []

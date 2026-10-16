@@ -20,4 +20,4 @@ F004/AUD-H013原记录是线索。本批亲读产品/产品簇共用编辑器、
 
 ESLint在读取代码前因仓库没有配置文件退出。frontend-design-premium严格扫描修前/修后均返回26项全局既存问题、0新增（按file/rule/category/message比较，保留原行定位），见技能扫描证据。全局扫描不是passed，不据此声称全站UI合规；按已授权小批审查范围登记至W5/W6，不为本显示修复重写全站设计或降低配置。现有DESIGN第10节、docs/frontend/list-page-guidelines.md、MUI控件及AppDialog是本工作区的维护来源；本批无视觉系统或治理契约改动。
 
-本体有限只读结果为not-applicable：已有引用与保存资格规则足够，无业务政策或知识定义更改。独立质量结果仅在真实实例正式返回后登记；当前记录不代表W1或全分支完成。
+本体有限只读结果为not-applicable：已有引用与保存资格规则足够，无业务政策或知识定义更改。全新实例已正式返回[qualityResult passed](evidence/independent/qualityResult.yaml)，针对实际候选58fb346f完成13项必需检查，独立运行12个浏览器场景、21项后端单元测试、完整前端构建及制程静态检查，并亲看桌面/窄屏截图；两个旧组件红回归也实际复现。原始报告、来源分母和工具/源码摘要保持原样，报告后只作L0结果登记。两项resolved指该审查候选已修复，仍待人工合入edhr-dev。本记录不代表W1、全分支、全站UI或生产发布完成。

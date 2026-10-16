@@ -1,0 +1,29 @@
+{
+  "runner": "audit_f004_independent",
+  "candidate": "58fb346f2d1eb860c09c3f95eed448ef8b813112",
+  "tests": 21,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "suites": [
+    {
+      "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xml": "/tmp/edhr-f004-independent-20261016/original-xml/TEST-com.zencas.edhr.masterdata.controller.ProductProcessControllerTest.xml",
+      "sha256": "1429cec6741f01dc8847510c090b08c0c75856e4ca194d2a11b768cbd73a5a4b"
+    },
+    {
+      "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xml": "/tmp/edhr-f004-independent-20261016/original-xml/TEST-com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest.xml",
+      "sha256": "f80b206d0f31f6f9ee6ff2c72c140f6d088181d1f059085769596772b0a6e372"
+    }
+  ],
+  "scope": "Mockito direct controller/service unit tests; no actual backend HTTP or database integration"
+}

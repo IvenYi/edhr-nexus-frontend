@@ -76,6 +76,12 @@ decisionPackage:
     - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java
       changeType: read-only
       reason: 保留原引用校验。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerServiceTest.java
+      changeType: update
+      reason: 验证两类owner的过期路线及DHR引用均被原后端规则拒绝。
+    - path: gmp-platform/frontend/scripts/test-product-process-reference-browser.mjs
+      changeType: create
+      reason: 实际组件的显示、候选、异步绑定保留与错误重试回归，并可只读加载旧组件复现。
   acceptanceScenarios:
     - id: scenario.f004-saved-reference-not-in-candidates
       given: 已存制程引用的版本不再出现在当前合法候选中
