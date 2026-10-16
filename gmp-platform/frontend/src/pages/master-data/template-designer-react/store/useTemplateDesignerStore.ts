@@ -1804,13 +1804,20 @@ function isFieldBoundToOtherNode(nodes: CanvasNode[], fieldId: string, nodeId: s
 }
 
 function syncBoundNodesForField(nodes: CanvasNode[], fieldId: string, field: ModelField): CanvasNode[] {
-  const definition = getFieldTypeDefinition(field.type);
+  const columns = field.type === 'subTable' && Array.isArray(field.typeConfig.columns)
+    ? field.typeConfig.columns as ModelField[]
+    : [];
   return nodes.map((node) => {
+    const subTableField = node.bindings?.subTableId === fieldId && node.bindings.subTableFieldId
+      ? columns.find((column) => column.id === node.bindings?.subTableFieldId)
+      : undefined;
+    const boundField = node.bindings?.fieldId === fieldId ? field : subTableField;
     let nextNode = node;
-    if (node.bindings?.fieldId === fieldId) {
+    if (boundField) {
+      const definition = getFieldTypeDefinition(boundField.type);
       const nextType = definition.compatibleComponents.includes(node.type)
         ? node.type
-        : resolveDefaultComponentType(field);
+        : resolveDefaultComponentType(boundField);
       const nextDefaults = getComponentDefinition(nextType).createDefaultNode();
       nextNode = {
         ...node,
@@ -1818,12 +1825,13 @@ function syncBoundNodesForField(nodes: CanvasNode[], fieldId: string, field: Mod
         props: {
           ...nextDefaults.props,
           ...node.props,
-          label: field.name || node.props.label || definition.label,
+          label: boundField.name || node.props.label || definition.label,
         },
         bindings: {
           ...node.bindings,
+          ...(subTableField ? { subTableField } : {}),
           widgetConfig: definition.compatibleComponents.includes(node.type)
-            ? node.bindings.widgetConfig
+            ? node.bindings?.widgetConfig
             : {},
         },
       };

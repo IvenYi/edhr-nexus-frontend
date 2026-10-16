@@ -1,0 +1,113 @@
+{
+  "role": "primary-implementer-not-independent-quality",
+  "testedState": "uncommitted candidate based on 37bc05ec268d1e0d2faf105c2f1c449caeb7ed46",
+  "generatedAtUtc": "2026-10-16T20:09:52.289460+00:00",
+  "productionSource": {
+    "path": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+    "bytes": 124246,
+    "sha256": "9beb8217a6e802508ebcbeeb10eebf99b49a1ab0a7e71a207d140694ff4084a3"
+  },
+  "node": {
+    "tests": 109,
+    "pass": 109,
+    "fail": 0,
+    "skip": 0,
+    "caseIndex": "primary-node-cases.json"
+  },
+  "browser": {
+    "cases": 9,
+    "pass": 9,
+    "fail": 0,
+    "result": "primary-browser.json",
+    "scope": "Actual Shell/ModelTab/Canvas/MUI/store with controlled catalog GET and save callback; 390px viewport is not touch or full mobile certification"
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "scope": "tsc -b and Vite"
+  },
+  "baselineReplay": {
+    "commit": "37bc05ec268d1e0d2faf105c2f1c449caeb7ed46",
+    "node": {
+      "tests": 7,
+      "pass": 1,
+      "fail": 6,
+      "skip": 0
+    },
+    "browser": {
+      "reached": "Actual legal field edit then mock paper at1440",
+      "expectedFailure": "actual mock paper uses the edited column name",
+      "exitCode": 1,
+      "390pxExecuted": false
+    }
+  },
+  "earlierDiagnostics": {
+    "firstCandidateBuild": "TS18048 possibly undefined node.bindings; fixed optional access, final build passed",
+    "harnessAttempts": "Earlier selector/navigation errors excluded from defect reproduction and test totals",
+    "initialAssertion": "Corrected test to existing decimal inputdouble factory before final replay; no production factory policy change"
+  },
+  "optionalChecks": {
+    "lint": {
+      "exitCode": 2,
+      "reason": "ESLint configuration absent"
+    },
+    "designerStatic": {
+      "exitCode": 1,
+      "reason": "existing vendor/online-form-designer present"
+    },
+    "officialPremium": {
+      "executed": false,
+      "reason": "script absent; original skill package unavailable; current cloud skills empty",
+      "historical84": "historical only; not a current count or current no-new-findings proof"
+    }
+  },
+  "notExecuted": [
+    "Backend HTTP/JPA/database/signature E2E",
+    "Historical migration/backfill",
+    "Official premium current scan",
+    "GitHub Actions query/trigger"
+  ],
+  "rawLogsKeptOnlyInTmp": [
+    {
+      "path": "/tmp/edhr-w2-subfield-evidence/node-final-current.log",
+      "bytes": 11008,
+      "sha256": "b07387b71514ea93720e970f244154234987b4db025db1334df8406b02120e59"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-evidence/browser-final-current.log",
+      "bytes": 1846,
+      "sha256": "36498a70713a8005388ddf0d9b755680656ea2a7ab90c16474480443963418c6"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-evidence/build-final.log",
+      "bytes": 9335,
+      "sha256": "a64cb8f3f0230a876b4374e3f39d507cfffba4c767a90f600cae8672668183f2"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-evidence/subfield-red-replayed.log",
+      "bytes": 7155,
+      "sha256": "34d3bd2f67d2f2e934fdbdbd88ff2c80dae6282c5665d53d972c98ad3eed334b"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-evidence/browser-red-actual.log",
+      "bytes": 2247,
+      "sha256": "11e6b54edf6cc27bb0a0098a2a6bf42e20a16e339fb601ef7205ff6533ceeb40"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-evidence/lint.log",
+      "bytes": 819,
+      "sha256": "ce1ab04f5660d6cb81c2cdf842c1d4dd91f6f5ee6932d4d486e157c45077d8d1"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-evidence/designer-static.log",
+      "bytes": 113,
+      "sha256": "ff22b6580b1b32845715d8f94e31718535f50444e0f583766f98e714a9b41f28"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-evidence/build.log",
+      "bytes": 431,
+      "sha256": "d1ffef1b022f8985ba5c3cb9a5cb86ccdd62a9e046bdd315439c83f738eebe3d"
+    }
+  ],
+  "independentVerification": "pending fresh instance"
+}

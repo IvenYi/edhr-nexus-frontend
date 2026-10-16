@@ -1,0 +1,79 @@
+{
+  "generatedAtUtc": "2026-10-16T19:52:53.463573+00:00",
+  "role": "read-only-technical-assistance-not-quality-verification",
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "37bc05ec268d1e0d2faf105c2f1c449caeb7ed46",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "37bc05ec268d1e0d2faf105c2f1c449caeb7ed46",
+    "contractReadCommit": "37bc05ec268d1e0d2faf105c2f1c449caeb7ed46",
+    "uncommittedContractPaths": []
+  },
+  "sourceBranchAtDispatch": "audit/edhr-dev-w2-subfield-sync-20261017",
+  "remoteTargetRead": "37bc05ec268d1e0d2faf105c2f1c449caeb7ed46",
+  "baselineTree": "a74751d87d6effe283d75b900d6fa0bdd8d07fc5",
+  "trackedPathCount": 1894,
+  "uniquePathCount": 1894,
+  "reviewStatusCounts": {
+    "pending": 1894
+  },
+  "reviewDepthCounts": {
+    "inventory-only": 1894
+  },
+  "csv": {
+    "path": "/tmp/edhr-w2-subfield-inventory.csv",
+    "bytes": 349383,
+    "sha256": "a0f003c1bb7d9cb37a5a4fae35f8755c3b0f29ff50dd3a0781d0143e47b8a86a",
+    "encoding": "UTF-8",
+    "lineEnding": "CRLF"
+  },
+  "pr13": {
+    "approvedCommit": "6d4cd54fb721e6fb8df7d7d96e77380b6edc697c",
+    "mergeCommit": "0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d",
+    "approvedTree": "848f9ccee1d269aedd9cd1d04754ec19258eee65",
+    "mergedTree": "848f9ccee1d269aedd9cd1d04754ec19258eee65",
+    "treeIdentical": true
+  },
+  "postPr13NavigationCommit": "37bc05ec268d1e0d2faf105c2f1c449caeb7ed46",
+  "postPr13ChangedPaths": [
+    "docs/development/report-menu-navigation-2026-10-16.md",
+    "docs/development/report-menu-navigation-2026-10-16.yaml",
+    "docs/development/report-menu-navigation-quality-2026-10-16.yaml",
+    "gmp-platform/frontend/scripts/test-report-menu-navigation.mjs",
+    "gmp-platform/frontend/src/components/shared/AppLayout.tsx",
+    "output/report-menu-navigation-2026-10-16/after-form-trace.png",
+    "output/report-menu-navigation-2026-10-16/baseline-verifier-and-video.json",
+    "output/report-menu-navigation-2026-10-16/before-form-trace.png",
+    "output/report-menu-navigation-2026-10-16/build.txt",
+    "output/report-menu-navigation-2026-10-16/final-tab-navigation.json",
+    "output/report-menu-navigation-2026-10-16/legacy-shell-check.txt",
+    "output/report-menu-navigation-2026-10-16/main-browser-facts.json",
+    "output/report-menu-navigation-2026-10-16/quality-browser-facts.json",
+    "output/report-menu-navigation-2026-10-16/quality-build.txt",
+    "output/report-menu-navigation-2026-10-16/quality-form-trace-sidebar.png",
+    "output/report-menu-navigation-2026-10-16/quality-route-regression.txt",
+    "output/report-menu-navigation-2026-10-16/quality-source-baseline.json",
+    "output/report-menu-navigation-2026-10-16/route-regression-after.txt",
+    "output/report-menu-navigation-2026-10-16/route-regression-before.txt",
+    "output/report-menu-navigation-2026-10-16/source-baseline.json"
+  ],
+  "governanceKnowledgeArchitectureDelta": [],
+  "checksExecuted": [
+    "git-objects-and-diff-read",
+    "remote-branch-read",
+    "fixed-tree-csv-generation",
+    "targeted-source-read"
+  ],
+  "checksNotExecuted": [
+    "tests",
+    "browser",
+    "build",
+    "database",
+    "GitHub-Actions"
+  ],
+  "limitations": [
+    "Inventory is not reviewed coverage or semantic consistency.",
+    "This technical report is not qualityResult and does not complete W2."
+  ]
+}

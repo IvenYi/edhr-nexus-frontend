@@ -1,0 +1,82 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261017-W2-SUBFIELD-SYNC
+  scope: W2第五批；同一设计工作文档中子列定义与已放置组件同步，复验W2-C002并最小整改。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 37bc05ec268d1e0d2faf105c2f1c449caeb7ed46
+    targetBranch: edhr-dev
+    targetCommit: 37bc05ec268d1e0d2faf105c2f1c449caeb7ed46
+    contractReadCommit: 37bc05ec268d1e0d2faf105c2f1c449caeb7ed46
+    uncommittedContractPaths: []
+  summary: 正常子列编辑更新父模型columns，却遗漏已放组件subTableField副本、label及类型；store/SSR和真实ModelTab到模拟填报均复现。仅在原写路径按父表及子列ID同步，保持冻结读取政策和统一历史所有者。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  existingPolicyReferences:
+    - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml#DEC-0077-12
+    - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml#DEC-0077-22
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: template-designer-current-document
+        change: 父子表columns编辑时同步同parentId/childId的placement定义、label和兼容组件类型，保留稳定身份。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+    transitiveImpacts:
+      - area: canvas-and-paper-consumers
+        change: 当前编辑文档的画布、检查器、模拟及全页不再消费旧副本，保存model/canvas保持一致。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/mock-fill/MockFillDialog.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx]
+    potentialImpacts:
+      - area: widget-overrides-and-history
+        concern: 兼容widget覆盖保留；类型不兼容沿既有主字段行为重置widget配置；跨页/递归和旧document不可原地改写。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+    unaffectedAreas:
+      - area: execution-and-backend
+        reason: 无后端/数量/权限/签署/生命周期/投影生效变化，不查询最新模板替换冻结定义。
+      - area: visual-system-and-navigation
+        reason: 无markup/token/theme/locale变更；保留最新37bc导航修复并执行相邻8项导航回归。
+    compatibilityAndMigration: [只修后续当前文档编辑命令，不自动迁移已存不一致文档或回填历史；缺失列/旧字符串列不猜测身份或删除。]
+    snapshotImpacts: [同步当前工作文档里的组件定义，不回写之前的document/history或既有生产冻结表单。]
+    auditImpacts: [复用updateField和一次pushDocumentHistory，不拆分保存或审计事务。]
+    permissionImpacts: [保留node readonly/required/hidden等绑定，不新增停用后隐藏或删除政策；不改变真实授权或签署。]
+    testImpacts:
+      - scope: subfield-definition-and-consumers
+        scenarios: [改名/说明/状态同步, 类型和typeConfig, 有效覆盖保留及不兼容覆盖清理, 不相关字段/跨页/递归, 原ID/布局/投影不变, 一次undo/redo, 客户端序列化重读, 模拟及完整画布SSR, canonical列表正对照]
+        evidenceReferences: [gmp-platform/frontend/scripts/test-designer-subfield-sync.mjs]
+      - scope: actual-model-edit-ui
+        scenarios: [真实卡片hover进入子表, 字段编辑弹窗改名改型, 返回上一层, 模拟填报新名称及数字输入, 一次undo/redo, 实际保存回调载荷两片一致, 1440px及390px]
+        evidenceReferences: [gmp-platform/frontend/scripts/test-designer-save-browser.mjs]
+    evidenceGaps: [浏览器使用实际Shell/ModelTab/Canvas/MUI/store但GET和保存回调为替身，不证明后端/JPA/认证/签署E2E；390px不等于触屏或全移动端体验。官方premium脚本本轮/tmp不存在，技能目录为空且原package不可读，未重跑扫描，不以旧84项当本轮结果。]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在原updateField的现有同步函数补父表/子列匹配，沿既有组件兼容规则和完整document历史，不增加第二真相或读时修复。
+    ownershipBoundaries:
+      - owner: template-designer-store
+        responsibility: 同一当前文档字段和placement同步、唯一命令history。
+      - owner: execution-snapshot
+        responsibility: 继续读取原冻结document，本批只读核对边界、不修改。
+  affectedFiles:
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts
+      changeType: update
+      reason: 补子表列定义同步，保留原主字段行为。
+    - path: gmp-platform/frontend/scripts/test-designer-subfield-sync.mjs
+      changeType: create
+      reason: 真实store和SSR回归、列表正对照及原Git基线重放。
+    - path: gmp-platform/frontend/scripts/test-designer-save-browser.mjs
+      changeType: update
+      reason: 复用实际Shell测试框架新增两个合法子列编辑场景，保留旧7个场景。
+  acceptanceScenarios:
+    - id: scenario.subfield-current-definition
+      given: 正常创建并放置子表和文本子列
+      when: 通过真实字段编辑把同一子列改名/改成数字
+      then: 模型和当前placement同步，画布/模拟/完整表单读取新定义；列表继续canonical，ID和布局保持。
+      evidenceRequirements: [store/SSR原基线6失败1通过的正反证, 真实ModelTab到模拟填报旧名复现, 候选回归及截图]
+    - id: scenario.subfield-history-and-save
+      given: 旧文档已保存且节点有显式绑定/组件覆盖
+      when: 同一编辑命令、undo、redo及客户端保存重读
+      then: 一次完整历史、前文档不变、有效覆盖及身份保持，保存载荷model/canvas一致，不补算历史冻结来源。
+      evidenceRequirements: [完整document比较, 受控保存回调载荷, 当前及之前文档定义反证]
