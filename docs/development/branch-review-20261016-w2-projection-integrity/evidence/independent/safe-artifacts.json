@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "verifiedHead": "3b642ab47ed55e8a26f3531b09f107b7f06188c9",
+  "targetCommit": "400c2dd2b836aa520f7b671c348ad9e79ac33748",
+  "artifacts": [
+    {
+      "path": "qualityResult.yaml",
+      "bytes": 15974,
+      "sha256": "c67c07ed76c6539be59517f83085fc58645a54db5899c5800f0b6ebcab6bb4a9",
+      "safeToArchive": true
+    },
+    {
+      "path": "verification-scope.md",
+      "bytes": 6804,
+      "sha256": "3de8c486f03d5421db022dfea4764de000d73d7dde304b9282cd1e38b8c8f099",
+      "safeToArchive": true
+    },
+    {
+      "path": "backend-case-index.json",
+      "bytes": 53458,
+      "sha256": "eefeafc27f3bc88cd26097b8fdf97848cdb2f9f152084c8b642718e876d9daf3",
+      "safeToArchive": true
+    },
+    {
+      "path": "frontend-case-index.json",
+      "bytes": 2043,
+      "sha256": "191e6a326952afb370e1526969c1ff4e2b6bb1cb48266323c334467b6df75ae9",
+      "safeToArchive": true
+    },
+    {
+      "path": "inventory-receipt.json",
+      "bytes": 164,
+      "sha256": "97a52f60057b21819bdef3eb3209252a38f367c1f24912e964d50f607f04241c",
+      "safeToArchive": true
+    },
+    {
+      "path": "run-receipt.json",
+      "bytes": 2136,
+      "sha256": "b2c5ead58165dcd4e0c27c0f2843655f719dae7e5abfe65af403a1abca5429b9",
+      "safeToArchive": true
+    },
+    {
+      "path": "protection-receipt.json",
+      "bytes": 868,
+      "sha256": "f4dbd87a2a4ec06fd4bf542027f1442df361ebc65a77f6a9d1c83016859b008c",
+      "safeToArchive": true
+    },
+    {
+      "path": "database-receipt.json",
+      "bytes": 442,
+      "sha256": "15a1e8d9f83d3618802b3894000bfb99e89683b1bd577d6b08dfc052e0e63513",
+      "safeToArchive": true
+    }
+  ],
+  "excluded": [
+    "backend.log",
+    "frontend-node.log",
+    "raw-xml/",
+    "protected-before.json",
+    "protected-after.json",
+    "database-before.txt",
+    "database-after.txt"
+  ],
+  "exclusionReason": "Raw logs/XML and full source/tool manifests remain temporary; safe summaries/case indexes/equality receipts contain no authentication values."
+}

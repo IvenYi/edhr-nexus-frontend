@@ -15,12 +15,12 @@
 1. 真实engine开工并SAVE，内部UUID经序列化重开和换序保存后仍指向同一行，查询命中行位置随换序更新；SUBMIT后真实记录服务生成不可变outbox，待处理时正式报表无数据。注入明细写入故障后中间正式结果全部回滚、记录仍COMPLETED；通过真实retry方法并重复process，主表与两行明细只生成三笔正式记录，UUID、来源字段及冻结source保持。主表5是另一笔独立报工，不是子表2+3的小计，总10不能外推为同事实可重复统计。
 2. 合法草稿SAVE后，在最终提交中改追溯文本并给正式数量负数；必要预检失败，数据库原记录status/values、追溯索引均回滚，outbox没有生成。该失败是业务预检，与已完成后投影系统故障分开。
 
-组合用例使用真实引擎、记录服务、索引、正式投影和读取controller，PostgreSQL事务由TransactionTemplate驱动；身份权限和重试审计仓储为替身。这不是完整ProductionExecutionService HTTP/JPA事务、真实签署或全权限矩阵证明。现有MockMvc授权回归单列，不冒充完整生产端到端。
+组合用例使用真实引擎、记录服务、索引、正式投影和读取controller，PostgreSQL事务由TransactionTemplate驱动；身份权限和重试审计仓储为替身。这不是完整ProductionExecutionService HTTP/JPA事务、真实签署或全权限矩阵证明。现有Spring方法安全授权回归单列，不冒充HTTP层或完整生产端到端。
 
-主侧173项Java用例通过（含45项真实PG、89项知识及7项授权），0失败/错误/跳过；13项前端Node用例通过。原75项是扩展前基线，不与后续重复累加为额外覆盖。最后只新增一行注释明确独立报工语义，最终候选仍需新实例验收。无UI/生产/构建配置变更，本批未重跑完整前端构建或浏览器视觉，不把旧PR通过记录冒充本轮通过。
+主侧173项Java用例通过（含45项真实PG、89项知识及7项方法安全授权），0失败/错误/跳过；13项前端Node用例通过。原75项是扩展前基线，不与后续重复累加为额外覆盖。全新独立实例实际复跑冻结候选3b642ab47ed55e8a26f3531b09f107b7f06188c9，同组173 Java及13 Node全部通过、无跳过；主侧与独立次数不累加为不同覆盖。无UI/生产/构建配置变更，本批未重跑完整前端构建或浏览器视觉，不把旧PR通过记录冒充本轮通过。
 
-原始日志/XML留/tmp/edhr-w2-projection-evidence，安全结果索引见[evidence/primary-result.json](evidence/primary-result.json)。测试新建临时PostgreSQL16.15容器，端口预检为空，只绑定127.0.0.1:5432、数据为tmpfs，数据库为edhr_projection_integration_test；每项PG测试使用随机schema并清理，未恢复或改写任何既有库。临时容器在全部主侧/独立验证结束后停止。可复用的可选PG验证启动说明已追加保存至云环境start_skill草稿，install_script、网络、凭证和仓库声明未改；草稿不等于已发布或新任务恢复验证。
+主侧原始日志/XML留/tmp/edhr-w2-projection-evidence，安全结果索引见[evidence/primary-result.json](evidence/primary-result.json)。测试新建临时PostgreSQL16.15容器，端口预检为空，只绑定127.0.0.1:5432、数据为tmpfs，数据库为edhr_projection_integration_test；每项PG测试使用随机schema并清理，未恢复或改写任何既有库。全部主侧/独立进程结束后已确认测试schema及public表均为0，停止并自动删除本轮容器，复查容器不存在、5432已关闭，见[清理凭据](evidence/runtime-cleanup.json)。可复用的可选PG验证启动说明已追加保存至云环境start_skill草稿，install_script、网络、凭证和仓库声明未改；草稿不等于已发布或新任务恢复验证。
 
-本体正式结果为[not-applicable](evidence/ontologyResult.yaml)：当前知识与政策已准确，不新增决策或提高成熟度。最终质量结果尚待冻结候选后的新实例，不以主侧结果代替。ESLint缺配置、既有premium全局84项及无关vendor缓存检查限制继续保留，本批没有修改相应工具或声称重新通过。
+本体正式结果为[not-applicable](evidence/ontologyResult.yaml)：当前知识与政策已准确，不新增决策或提高成熟度。全新实例[最终质量结果passed](evidence/independent/qualityResult.yaml)，16项必需检查通过、blockingConditions为空；1831 tracked文件及2项受保护工具前后摘要一致。原报告保留非阻断low QF-W2-PROJECTION-DOC-001在受测SHA时open的事实；后续L0登记已将上述MockMvc称谓改为Spring方法安全授权，未修改任何源码、测试、知识或治理契约，范围见[交付凭据](evidence/delivery-receipt.json)。独立原始日志/XML及全量摘要只留/tmp，8份安全产物按白名单逐字节归档。ESLint缺配置、既有premium全局84项及无关vendor缓存检查限制继续保留，本批没有修改相应工具或声称重新通过。
 
 完整W2及全分支审查未完成。A12表单变更/作废及两项旧DHR high继续按用户决定暂缓，不因首次完成回归关闭。后续仍需核对设计器其他命令、导入和撤销对字段身份/来源映射的保护，再推进W3；大模块拆分沿已有具体方案留W6，本批不做大重构。不合并、部署、恢复历史或查询/触发GitHub Actions。
