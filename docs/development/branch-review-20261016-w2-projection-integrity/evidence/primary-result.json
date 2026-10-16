@@ -1,0 +1,155 @@
+{
+  "kind": "primary-review-and-validation-not-independent-QA",
+  "contractBaseline": {
+    "sourceCommit": "400c2dd2b836aa520f7b671c348ad9e79ac33748",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "400c2dd2b836aa520f7b671c348ad9e79ac33748",
+    "contractReadCommit": "400c2dd2b836aa520f7b671c348ad9e79ac33748",
+    "uncommittedContractPaths": []
+  },
+  "workingTreeState": "dirty: test extension and review documents; final comment clarifies independent main report after the test run, no behavior/assertion change",
+  "knowledgeVersion": "0.3.25",
+  "inventory": {
+    "paths": 1820,
+    "status": "pending/inventory-only",
+    "coverageSha256": "0c815f39c646c2a54958452e318be1d46a122df37144d141adb7bef5adc52650"
+  },
+  "productionCodeChanged": false,
+  "testExtension": {
+    "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java",
+    "newCases": 2,
+    "scope": "real engine + record + index + outbox + process + report methods; explicit TransactionTemplate; identity/auth/retry-audit collaborators mocked",
+    "excluded": "full ProductionExecutionService HTTP/JPA orchestration, actual signatures, full browser flows and A12"
+  },
+  "checks": [
+    {
+      "id": "backend-final",
+      "command": "PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test bash /workspace/.edhr-cloud-tools/mvn-edhr -o -Dmaven.repo.local=/workspace/.pr6-m2 -Dtest=FormProjectionPostgresTest,FormTraceIndexPostgresTest,FormLookupCatalogPostgresTest,FormProjectionInterpreterTest,FormTraceIndexServiceTest,ProductionExecutionFormValuesTest,FormInstanceRecordStageTest,FormProjectionAuthorizationTest,TraceReportAuthorizationTest,BusinessKnowledgeModelTest test",
+      "exitCode": 0,
+      "tests": 173,
+      "pgTests": 45,
+      "knowledgeTestsIncluded": 89,
+      "authorizationTestsIncluded": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": [
+        {
+          "name": "FormProjectionPostgresTest",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "xmlSha256": "72e8115fe0a1649cdd4f031dcf69cf8a980fc7f880988dae6b4a46865007d136"
+        },
+        {
+          "name": "FormTraceIndexPostgresTest",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "xmlSha256": "467f3927faef6015dc50eade527843d89ac1a00354789d5b2bdeb7a3428ed872"
+        },
+        {
+          "name": "FormLookupCatalogPostgresTest",
+          "tests": 22,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "xmlSha256": "b2a703daf4088c1928db3e5f3d329399f56a20f759d040985c137ebc483995b6"
+        },
+        {
+          "name": "FormProjectionInterpreterTest",
+          "tests": 19,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "xmlSha256": "62e6d0fb8eada16515dbfbe93e441eeab84baf983af43ea9a6b11e743604a5f8"
+        },
+        {
+          "name": "FormTraceIndexServiceTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "xmlSha256": "769626fea5d89e5d85b8beb7fb3653c576778d00e984ddfd305ff2d7a1233134"
+        },
+        {
+          "name": "ProductionExecutionFormValuesTest",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "xmlSha256": "df73d6d8ec0bec1627c37ce200000fd25ccaabeb970d514e93f6bb36c8d66553"
+        },
+        {
+          "name": "FormInstanceRecordStageTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "xmlSha256": "aa002def802dbea777331a007510dadadc4daac141cb2e57a4163af14e41aee9"
+        },
+        {
+          "name": "FormProjectionAuthorizationTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "xmlSha256": "99be70e7e4aa3bfd2c511244357d22c82ba932552886a5789acae8e6716702e2"
+        },
+        {
+          "name": "TraceReportAuthorizationTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "xmlSha256": "85ae125c29e5ae79808c2e05cbb8711f95a8ae8ce93769689cc3c8f130f4b01a"
+        },
+        {
+          "name": "BusinessKnowledgeModelTest",
+          "tests": 89,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "xmlSha256": "2a54d7fc5bcfe2a845fc83dc935c1e482fd831e251e9c91be57b17a1b3984425"
+        }
+      ],
+      "log": "/tmp/edhr-w2-projection-evidence/backend-final.log",
+      "logSha256": "65d64916850215ab24d935e66ba88b51ed63d08b30d85114814e8cce88bddc34"
+    },
+    {
+      "id": "frontend-node",
+      "command": "node --test scripts/test-projection-report.mjs scripts/test-projection-report-navigation.mjs scripts/test-execution-form-values.mjs scripts/test-production-quantity-sources.mjs",
+      "exitCode": 0,
+      "tests": 13,
+      "failed": 0,
+      "skipped": 0,
+      "logSha256": "f76a010b110192697619360b46a0443dc01a5c01b32653cb16effeda02b932bb"
+    },
+    {
+      "id": "baseline-not-extra-coverage",
+      "tests": 75,
+      "note": "pre-extension baseline passed, not added to final173 count",
+      "logSha256": "ce5c68a39df878a9a87f4d95aced9d590d34d7d8b704fb29365cff5b69012e61"
+    }
+  ],
+  "runtime": {
+    "postgres": "16.15",
+    "container": "edhr-w2-projection-validation-20261016",
+    "bind": "127.0.0.1:5432",
+    "database": "edhr_projection_integration_test",
+    "storage": "tmpfs disposable; existing port was free; no preexisting running containers/databases were used",
+    "schemaCleanupAfterPrimary": 0,
+    "containerCleanup": "pending final independent validation"
+  },
+  "notRun": [
+    "full frontend build",
+    "browser visual",
+    "full ProductionExecutionService HTTP/JPA/signature",
+    "global premium/ESLint/vendor rechecks"
+  ],
+  "independentResult": "pending-fresh-instance",
+  "wholeW2Complete": false,
+  "wholeBranchReviewComplete": false
+}

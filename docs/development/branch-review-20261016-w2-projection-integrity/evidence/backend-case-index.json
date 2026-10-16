@@ -1,0 +1,867 @@
+[
+  {
+    "suite": "FormProjectionPostgresTest",
+    "case": "repeatedCompletionAndConcurrentConsumersPublishOneSet",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionPostgresTest",
+    "case": "aggregatesKeepOperationsAndUnitsSeparate",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionPostgresTest",
+    "case": "reportBusinessFieldsSurviveCompletionAndFiltersApplyToRecordsAndTotals",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionPostgresTest",
+    "case": "savedTraceIsIndependentOfPendingStatisticalProjectionAndDoesNotReuseStatisticalFields",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionPostgresTest",
+    "case": "traceOnlyCompletionDoesNotCreateOutboxOrValidateTraceAsFormalStatisticalData",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionPostgresTest",
+    "case": "completionAndOutboxRollbackTogetherOnFailure",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionPostgresTest",
+    "case": "statisticalRowLocationUsesFrozenSystemIdentityRatherThanLatestOrder",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionPostgresTest",
+    "case": "partialInsertFailureRollsBackAndRetryRecovers",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionPostgresTest",
+    "case": "finalProjectionPublishesOnlyStatisticalFactsWhenTraceAndStatisticsAreBothConfigured",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionPostgresTest",
+    "case": "restartUsesPersistedSnapshotRatherThanLaterValues",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionPostgresTest",
+    "case": "scrapCauseLabelsFilterWholeRecordsWithoutChangingGrouping",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionPostgresTest",
+    "case": "signatureReporterIsFrozenAndQueryableWithoutChangingQuantities",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionPostgresTest",
+    "case": "editingTemplateAfterFirstUseDoesNotChangeThatExecutionSnapshot",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormTraceIndexPostgresTest",
+    "case": "savedContentAndDhrUseRealOwnerAndDoNotLeakOtherTenant",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormTraceIndexPostgresTest",
+    "case": "failedIndexWriteRollsBackSavedContentAndIndexTogether",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormTraceIndexPostgresTest",
+    "case": "savedDraftIsImmediatelyTraceableAndReplacementDoesNotGenerateStatistics",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormTraceIndexPostgresTest",
+    "case": "mainConditionsCombineAcrossBindingsAndDetailConditionsMustShareActualRow",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormTraceIndexPostgresTest",
+    "case": "realEngineRowsKeepTheirIdentityFromSavedTraceThroughCompletionAndFailedProjectionRetry",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormTraceIndexPostgresTest",
+    "case": "productionObjectCandidatesSupportInputFilterAndKeepTenantAndLiteralWildcardBoundaries",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormTraceIndexPostgresTest",
+    "case": "unconfiguredStatisticalSourcesAreExcludedAndMigrationUsesFrozenSavedMappings",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormTraceIndexPostgresTest",
+    "case": "finalBusinessPrecheckRollsBackTheSavedRecordAndTraceIndexTogether",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormTraceIndexPostgresTest",
+    "case": "realEngineSubmissionKeepsActiveLifecycleAndSavesApprovalStageForTraceAndSource",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormTraceIndexPostgresTest",
+    "case": "forwardTraceFindsUnboundSavedInstancesAndUsesRealFrozenContext",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "duplicateNamesConcurrencyAndAuditFailureDoNotOverwriteDefinitions",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "snapshotCannotBeForgedAndCustomMeaningDoesNotBecomeStatisticalAttribute",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "committedNewBindingBlocksConcurrentDeletion",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "customDeletionProtectsPresetsRevisionsAndHistoricalEvidence",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "prepareDesignMakesCompleteStatisticsActiveWithoutAnotherEnableAction",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "explicitBindingProducesSavedHitsAndDirectoryRenamePreservesInstanceLookupSnapshot",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "catalogNeverLeaksOtherTenantDefinitions",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "legacyLookupNamesFreezeOnNewSaveAndReportsNeverReadCurrentAliases",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "traceDatePresetIsProtectedTypedAndOnlyQueriesExplicitlyBoundDates",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "textAndNativeBatchNumbersShareLookupWithoutChangingContextOrDuplicatingForms",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "businessSourcesDoNotDependOnRetiredTraceCatalogItems",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "traceDateUpgradeAndReplayPreserveExistingCustomDatesAndSavedEvidence",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "mainSubtableAndAllVersionsCanBeSelectivelyUnlinkedWithoutChangingOtherBusiness",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "serverSnapshotRejectsForgedCustomReferenceCompatibility",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "newItemIsAvailableWithoutAnyBindingOrHitAndWritesAudit",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "staleBatchSelectionRollsBackEveryVersionAndMetadataAloneDoesNotBlockDeletion",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "typedItemsFreezeTypesAndOnlyAcceptMatchingFieldSources",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "migrationKeepsNineDistinctPresetsAndRetiresAmbiguousMvpDefinitions",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "typedSavedValuesQuerySameActualRowWithNumericNormalizationAndDateBounds",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "committedDeletionRejectsConcurrentNewBinding",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "prepareDesignRejectsIncompleteStatisticsEvenWhenLegacyEnabledFlagIsFalse",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormLookupCatalogPostgresTest",
+    "case": "customSubtableFiltersMatchOneRowAndPreserveItsLocation",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "subtableHoursRemainPerRowAndCannotBorrowHeaderHours",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "disabledIncompleteDraftIsExplicitlyAllowed",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "outputCanReuseOneQualityFieldButCannotMakeGoodAndNgTheSameSource",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "horizontalGroupsStayPairedAndDeterministic",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "scrapDictionaryRolesKeepCodesAndLabelsWithoutChangingQuantity",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "reporterAcceptsOnlyUserReferenceOrSignatureAndUsesActualSigner",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "noInventedStatisticsOrUnknownAttributes",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "subtableSignatureReportersStayWithTheirOwnRows",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "subtableRequiresStableUniqueRowKeysAndRejectsCrossGroupReferences",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "reportTemporalRolesRejectWrongFieldTypesInvalidDatesAndReversedPeriod",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "formalQuantityAllowsBlankUnitsButRejectsNegativeAndDuplicateSources",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "dictionaryUnitUsesFrozenValueWithoutConversion",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "referenceTraceUsesFrozenCodeAndRejectsWrongTypesOrLegacyDisplayFallback",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "objectValuesCannotMasqueradeAsTextIdentities",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "noConfigurationDoesNotBlockOrdinaryForms",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "referenceSubtableRowsRetainSeparateCodesAndLocations",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "personHoursAreExplicitAndIndependentOfPeriodDateAndReporter",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "consumptionNeedsOnlyMaterialAndQuantityAndUsesSystemRowIdentity",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionInterpreterTest",
+    "case": "deletedOrChangedFieldsCannotPublish",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormTraceIndexServiceTest",
+    "case": "onlyExplicitTraceSourcesAndSavedSupportedValuesAreCollected",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormTraceIndexServiceTest",
+    "case": "systemRowIdentityIsIndependentOfBindingsAndDisplayOrder",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormTraceIndexServiceTest",
+    "case": "referenceUsesFrozenCodeAndRequiresCompatibleIdentity",
+    "outcome": "passed"
+  },
+  {
+    "suite": "ProductionExecutionFormValuesTest",
+    "case": "draftSaveRejectsDuplicateMalformedIdentityAndUndeclaredColumns",
+    "outcome": "passed"
+  },
+  {
+    "suite": "ProductionExecutionFormValuesTest",
+    "case": "savedRowsReceiveStableIdentityAcrossReopenReorderAndDeletion",
+    "outcome": "passed"
+  },
+  {
+    "suite": "ProductionExecutionFormValuesTest",
+    "case": "readonlyValuesFollowRowIdentityAndCannotBeChangedOrRemoved",
+    "outcome": "passed"
+  },
+  {
+    "suite": "ProductionExecutionFormValuesTest",
+    "case": "signatureEvidenceContainsIdentityBeforeSigningAndForgedSignatureIsRejected",
+    "outcome": "passed"
+  },
+  {
+    "suite": "ProductionExecutionFormValuesTest",
+    "case": "ambiguousDisabledAndInvalidSelectDefaultsAreNotGuessed",
+    "outcome": "passed"
+  },
+  {
+    "suite": "ProductionExecutionFormValuesTest",
+    "case": "mainDefaultsArePersistedAndSelectLabelsResolveToStoredOptionValues",
+    "outcome": "passed"
+  },
+  {
+    "suite": "ProductionExecutionFormValuesTest",
+    "case": "wholeTableReadonlyCannotBeBypassedByValidIdentity",
+    "outcome": "passed"
+  },
+  {
+    "suite": "ProductionExecutionFormValuesTest",
+    "case": "frozenCanvasDefaultsApplyToMainAndNewRowsWithoutOverwritingInputOrClearedValues",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormInstanceRecordStageTest",
+    "case": "completedLifecycleTakesPrecedenceAndDirectEntryRemainsFilling",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormInstanceRecordStageTest",
+    "case": "activeApprovalNodesAndMixedParallelNodesHaveDifferentDisplayStages",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionAuthorizationTest",
+    "case": "businessFiltersRejectLookupItemsAndRolesFromOtherModelsBeforeReadingData",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionAuthorizationTest",
+    "case": "reportReaderCannotRetryOrReadDhrWithoutThosePermissions",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionAuthorizationTest",
+    "case": "administrativePermissionsDoNotReplaceSourcePermissions",
+    "outcome": "passed"
+  },
+  {
+    "suite": "FormProjectionAuthorizationTest",
+    "case": "reportPermissionAloneCannotReadProductionSourceOrCount",
+    "outcome": "passed"
+  },
+  {
+    "suite": "TraceReportAuthorizationTest",
+    "case": "authorizedForwardQueryDoesNotNeedLookupCatalog",
+    "outcome": "passed"
+  },
+  {
+    "suite": "TraceReportAuthorizationTest",
+    "case": "formReadersCannotReadDhrRowsCountsOrDetails",
+    "outcome": "passed"
+  },
+  {
+    "suite": "TraceReportAuthorizationTest",
+    "case": "dhrPermissionDoesNotReplaceFormAndProductionAccess",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "yamlParserErrorsContainTheRepositoryRelativeFilePath(Path)",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "unknownScalarCollectionsAreRejected",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "explicitFactReferencesCannotBeUsedAsPredicateExpectations",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "factCatalogCannotBeBypassedByOmittingProfile",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "conditionGroupsRejectAdditionalFields",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[1]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[2]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[3]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "repositoryRootCanBeLocatedFromRootBackendAndIdeWorkingDirectories",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "invalidRuleResultTypesAreRejected",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "nestedCollectionsAreDiscoveredFromSchemaMappings",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "currentKnowledgeModelIsValid",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[1]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[2]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[3]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "factsRequireProvenanceFields",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "schemaCollectionMappingsMustCoverEveryRecordType",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "verifiedInternalRecordsRequireExecutionContracts",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "stringOperatorsRejectNonStringFacts",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "malformedTopLevelCollectionsReportTheirDocument",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "executionContractReferencesMustResolveEvenForNonVerifiedRules",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "invalidStatusesAreRejected",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "factCatalogRejectsOperatorNotAllowedByFact",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "schemaRejectsNestedDescriptorMappingMismatch",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "factValueTypesMustComeFromTheControlledVocabulary",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "factNamesInStringsAreNeverImplicitlyDereferenced",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "knownNestedCollectionsCannotAppearOnUndeclaredParentRecordTypes",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "invalidConditionOperatorsAreRejected",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[1]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[2]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[3]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[4]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[5]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[6]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[7]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[8]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "danglingEvidenceIdsAreRejected",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "verifiedRulesCanReferenceValidRegisteredExecutionContracts",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "invalidCardinalitiesAreRejected",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "factCatalogRejectsUnknownSemanticAlias",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "conditionNotGroupsRequireOneExpression",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "enumFactsRequireAnExplicitNonEmptyValueSet",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "numericComparisonRejectsStringFactEvenWhenItsOperatorIsListed",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "schemaIdPrefixesMustCoverEveryRecordType",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "nestedDuplicateIdsAreRejected",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[1]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[2]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[3]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[4]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[5]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[6]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[7]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[8]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[9]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[10]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "conditionLeavesRejectAdditionalFields",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "absoluteEvidencePathsAreRejectedEvenWhenTheyExist",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "conditionGroupsMustBeNonEmpty",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "unknownEmptyCollectionsAreRejected",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "implementationAnchorsRejectUnknownProvenanceReviewStatus",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "numericOperandsMustBeFinite",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "currentKnowledgeBaselineUsesTheTypedFactSchema",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "factReferenceObjectsMustUseTheExactOperandShape",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "topLevelCollectionsAreDiscoveredFromSchemaMappings",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "danglingTermIdsAreRejected",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "verifiedRuntimeRecordsRequireEvidence",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "schemaCollectionMappingsRejectDuplicateTargetsDeterministically",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "recordIdsMustUseSchemaPrefixes(String, String)[1]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "recordIdsMustUseSchemaPrefixes(String, String)[2]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "normalizedEvidencePathsCannotEscapeRepository(Path)",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "duplicateIdsAreRejected",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "explicitFactOperandsMustHaveCompatibleTypes",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "conditionValuesMustUseSchemaValueTypes",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "schemaCollectionMappingsRejectUnknownRecordTypes",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[1]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[2]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[3]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[4]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[5]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[6]",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "explicitFactOperandsResolveIdsAndAliasesWithoutBeingTreatedAsClauses",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "unknownNestedRecordCollectionsAreRejected",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "unknownTopLevelCollectionsReportTheirDocumentAndSortedAllowedCollections",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "missingEvidencePathsAreRejected",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "explicitFactOperandsRejectUnknownReferences",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "executionContractIdsUseSchemaPrefixes",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "realEvidencePathsCannotEscapeRepositoryThroughSymlinks(Path)",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "implementedRecordsCannotEnterCustomerProjection",
+    "outcome": "passed"
+  },
+  {
+    "suite": "BusinessKnowledgeModelTest",
+    "case": "aliasesCannotShadowAnotherFactIdInEitherCollectionOrder",
+    "outcome": "passed"
+  }
+]
