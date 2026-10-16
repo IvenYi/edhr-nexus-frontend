@@ -1,0 +1,134 @@
+{
+  "runner": "primary-agent",
+  "independentQuality": false,
+  "headWhileRunning": "d63a73ce017388c5ae89bd1fbc66e872f998f825",
+  "workingTreeChangedProductAndTestPaths": {
+    "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx": "6996db14f5388c21a936be3ae04595d993e734c4f895a6a103e948032cbdbdf7",
+    "gmp-platform/frontend/scripts/test-product-process-reference-browser.mjs": "818e922db3f4ac157e123df8fdf2a5d7e6af3119056455a9a91f346d91c147a9",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerServiceTest.java": "851bae337b6ac603f41156ab8a9c44fcfdd85b929bea4ca7b5274738e4f24983"
+  },
+  "actualBackendTests": 21,
+  "backendFailures": 0,
+  "backendErrors": 0,
+  "backendSkipped": 0,
+  "backendSuites": [
+    {
+      "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "originalXml": "/workspace/edhr-nexus-frontend/gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.masterdata.controller.ProductProcessControllerTest.xml",
+      "sha256": "10d9379465f4c27000eb19ded8309c245d90bdcfe4b06f7b5655d6c19b28c7be",
+      "caseNames": [
+        "productModelingRejectsBatchToSnProductionForm",
+        "productModelingAllowsOverlappingWindowsForTheSameModeAndForm",
+        "productModelingRouteOptionsDoNotExposeParentCodesOrExpiredVersions",
+        "productModelingRejectsDuplicateDhrDirectoryFormsInOneOperation",
+        "productModelingDocumentOptionsExposeTheActualDocumentCategoryName",
+        "productModelingFlushesRemovedOperationBindingsBeforeReplacingThemOnUpdate",
+        "productModelingWorkspaceReturnsFutureEffectiveVersionsAsExpired",
+        "productModelingDhrOptionsExcludeExpiredVersions",
+        "processOwnerWorkspaceUsesTheSharedServiceForAProductFamily",
+        "productModelingRejectsUnsupportedProductionMode",
+        "productModelingAllowsAFutureVersionWhoseWindowStartsWhenThePriorVersionEnds",
+        "productModelingCreationAuditIncludesSavedOperationBindings",
+        "productModelingRejectsAProductThatIsNotDerivedFromFinishedOrSemiFinishedMaterial",
+        "productModelingRejectsAFormOutsideTheSelectedDhrDirectory"
+      ],
+      "preservedOriginalXml": "/tmp/edhr-f004-main-xml-20261016/TEST-com.zencas.edhr.masterdata.controller.ProductProcessControllerTest.xml"
+    },
+    {
+      "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "originalXml": "/workspace/edhr-nexus-frontend/gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest.xml",
+      "sha256": "78f17b0900fe7913107fb64e01b71016ed712abf62d18844eaafa430da73423d",
+      "caseNames": [
+        "recordsProductFamilyUpdateAndDeleteAuditsWithOperationConfigurationSnapshots",
+        "createsSeparateOwnerRootsAndRejectsDuplicateLabelsWithinTheSameOwner",
+        "sharedOwnerServiceRejectsBatchToSnProductionForm",
+        "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[1]",
+        "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[2]",
+        "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[3]",
+        "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[4]"
+      ],
+      "preservedOriginalXml": "/tmp/edhr-f004-main-xml-20261016/TEST-com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest.xml"
+    }
+  ],
+  "browserScenarios": 12,
+  "browserScope": "real Chromium/component; fixture options and HTTP; no real backend or database integration",
+  "frontendBuild": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "typecheckIncluded": true
+  },
+  "processStatic": {
+    "command": "node scripts/verify-process-modeling-pages.mjs",
+    "exitCode": 0
+  },
+  "commands": {
+    "backend": "bash /workspace/.edhr-cloud-tools/mvn-edhr -o -Dtest=ProductProcessControllerTest,ProductProcessOwnerServiceTest test",
+    "browser": "CHROME_PATH=/workspace/.pr6-playwright/chromium-1208/chrome-linux64/chrome node scripts/test-product-process-reference-browser.mjs"
+  },
+  "expectedBaselineRegressionFailures": [
+    "F004 blank display: actual empty input, expected saved name/version",
+    "F004-ASYNC-BINDING-LOSS: callback has0 bindings while saved target has1"
+  ],
+  "logEvidence": {
+    "backend-final": {
+      "path": "/tmp/edhr-f004-main-backend-complete-jdk-20261016.log",
+      "sha256": "839b364a7ebe9bb14d59b7cdb1dfa21cce6110e1f522c3ab9deea439e25e640c"
+    },
+    "backend-incomplete-jdk-failed-before-tests": {
+      "path": "/tmp/edhr-f004-main-backend-20261016.log",
+      "sha256": "b8b7120a53c58a37af4b2619d43faa9489b1ee635e6250736933a5f74a353d95"
+    },
+    "frontend-build": {
+      "path": "/tmp/edhr-f004-main-build-20261016.log",
+      "sha256": "1b094041a0044b1bff4005bc475c84fba3ffbab0222689ebdf0ff17cd69e2782"
+    },
+    "browser-green": {
+      "path": "/tmp/edhr-f004-browser-green-20261016.log",
+      "sha256": "fa455f739bfaeed15bcfa4be74dc65f3638c27525948e5dacdbb55a8ff8aa87c"
+    },
+    "display-red": {
+      "path": "/tmp/edhr-f004-final-script-red-20261016.log",
+      "sha256": "ed3a13f958c611d113c6f41361164d500c7b08546619fccb30127f5017282cdc"
+    },
+    "async-binding-red": {
+      "path": "/tmp/edhr-f004-slow-graph-baseline-red-20261016.log",
+      "sha256": "cee7ed4fcf2729c38a87a204cecccda96a3d6170002c55a98ed379d9d933a43b"
+    },
+    "process-static": {
+      "path": "/tmp/edhr-f004-main-process-static-20261016.log",
+      "sha256": "e3b0afd4719c7b749a8dd777ebb9719322387fc9685d7e4a17753b890d2858e1"
+    },
+    "eslint-unconfigured": {
+      "path": "/tmp/edhr-f004-main-eslint-20261016.log",
+      "sha256": "44e86ef0d9bd500f850018167293deb8507a03371e074c331a8aca1edafb53b6"
+    },
+    "jdk-install": {
+      "path": "/tmp/edhr-f004-toolchain-install-20261016.log",
+      "sha256": "964b712de7a3b7e84d63538384d9852fc1fb4abaf5ee75d43f1aff29c3fdabb7"
+    }
+  },
+  "environmentRecovery": {
+    "systemJava21MissingCtSym": true,
+    "initialRecompileFailureCountedAsPass": false,
+    "officialJdk": "Temurin21.0.12.1+1",
+    "officialSha256": "ce79869e1307ed8ee1e2baa86a412b1eb5b75d10a01006d788a6f968bcfaee94",
+    "wrapper": "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "completeTestsActuallyRecompiled": true,
+    "savedDraftFields": [
+      "install_script",
+      "start_skill"
+    ],
+    "draftRequiresPublish": true
+  },
+  "wholeW1Complete": false,
+  "wholeBranchComplete": false,
+  "productionReleaseApproved": false
+}

@@ -1,0 +1,106 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261015-W1-START-CONFIGURATION
+  scope: 首次START配置与DHR目录冻结一致性
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 31a8074a8962da66b2c4e49f4bf5a1a92724bfa0
+    targetBranch: edhr-dev
+    targetCommit: 6379bf105127b05a65695992b008b55c142264f9
+    contractReadCommit: 537bb2402227bfe6369c44c2b1b4686481c50f27
+    uncommittedContractPaths: []
+  summary: 修复已复现的旧路线/DHR上下文混入新配置子绑定；保留管理员编辑、使用时复制和历史快照规则。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedSource:
+    - source: docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml
+      statements: [DEC-0001-04, DEC-0001-05, DEC-0001-06, DEC-0001-09]
+    - source: docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml
+      statements: [DEC-0062-02, DEC-0062-03]
+    - source: docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+      statements: [DEC-0077-12]
+  inferred:
+    - id: inference.w1-start-consistent-transaction
+      statement: PostgreSQL事务一致视图用于一次START的多次配置与目录读取；隔离机制属于工程选择。
+      rationale: 默认READ_COMMITTED允许同事务不同查询看到不同已提交配置；原规则没有要求禁止管理员编辑或指定请求到达时刻。
+      relatedIds: [DEC-0001-04, DEC-0001-05, DEC-0001-06, DEC-0062-03, DEC-0077-12]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: production-execution-start
+        change: 首次START多次配置读取及同事务DHR目录创建采用同一PostgreSQL快照。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java]
+    transitiveImpacts:
+      - area: frozen-execution-and-dhr
+        change: 下游表单、目录归集与历史读取沿用同一已冻结依据，不重建旧实例。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java]
+      - area: concurrent-production-actions
+        change: 需要回归工单/对象行锁等待时的序列化冲突、重复开工、终止与失败原子性。
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    potentialImpacts:
+      - area: other-configuration-combinations
+        concern: 事务一致视图覆盖多查询，但受控复现不穷举所有模板、作业、路线图编辑交错。
+        evidenceReferences: [ontology/config-race-policy.md]
+    unaffectedAreas:
+      - area: policy-and-ui
+        reason: 不增加发布生命周期、编辑禁令、数量校验或前端交互；产品簇转移政策不在本次修复范围。
+        evidenceReferences: [ontology/config-race-policy.md]
+      - area: terminated-detail
+        reason: 已定位前置execution解析依赖，但未找到合法后续写入触发坏JSON，保留风险而不修改代码。
+        evidenceReferences: [ontology/config-race-policy.md]
+    compatibilityAndMigration:
+      - change: 无schema、迁移或API结构变化，不处理历史数据；回滚限于revert本批代码。
+        evidenceReferences: [decision-package.yaml]
+    snapshotImpacts:
+      - area: first-use-snapshot
+        change: 修复当前新使用的上下文与子绑定一致性，已有执行快照不回写。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
+    auditImpacts:
+      - area: atomicity
+        change: 保持执行、对象、DHR与审计同提交或同回滚，不增加自动重试可能导致的重复动作。
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    permissionImpacts:
+      - area: entrypoint
+        change: 既有production.execution权限、认证和签署校验不变；并发冲突必须在事务代理回滚后返回可重试错误。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java]
+    testImpacts:
+      - scope: PostgreSQL-and-adjacent-regression
+        scenarios: [配置父子原子替换与START交错, 后续对象采用新配置且旧快照不变, 并发START唯一性, 等锁遇到终止, 审计失败整体回滚]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    evidenceGaps:
+      - 管理员写事务在测试中按实际updateVersion源码使用SQL建模，未冒称管理员HTTP全链E2E。
+      - 本批不代表W1全部入口、W2到W7或完整配置并发矩阵已完成。
+  extensionStrategy:
+    selectedPaths: [transaction-orchestration]
+    rationale: 在现有执行事务边界修复读取一致性，避免跨主数据模块加锁重构或业务编辑限制。
+    ownershipBoundaries:
+      - owner: production-execution
+        responsibility: 首次开工一致读取与同事务冻结，原生命周期、权限及审计校验继续由现有领域入口负责。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      changeType: update
+      reason: 事务一致配置视图
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java
+      changeType: update
+      reason: 持锁竞争回滚后的错误语义兼容
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+      changeType: update
+      reason: 有效配置事务交错回归，不削弱既有断言
+    - path: docs/knowledge/evidence/production-execution.yaml
+      changeType: update
+      reason: 限定范围的源码及测试证据同步，不变更业务政策或成熟度
+  acceptanceScenarios:
+    - id: scenario.first-start-coherent-configuration
+      given: 配置A与B各自有效，制程同一ID可原子切换路线/DHR及绑定
+      when: START已读A上下文后B事务完成，再读取子绑定及DHR目录
+      then: 本次冻结仍自洽，后续对象使用B，旧对象不回写
+      evidenceRequirements: [真实PostgreSQL红绿轮, 持久化JSON引用核对]
+    - id: scenario.execution-concurrency-and-rollback
+      given: 同对象双START、终止持锁或审计失败
+      when: 执行请求发生竞争或失败
+      then: 一次合法提交、冲突拒绝且无部分写入，原有断言保持
+      evidenceRequirements: [PostgreSQL相邻回归, H2现有回归, 全新独立质量实例最终结果]

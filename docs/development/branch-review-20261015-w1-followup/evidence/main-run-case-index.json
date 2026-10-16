@@ -1,0 +1,67 @@
+[
+  {
+    "suite": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "xmlSha256": "74dddde3c6df79471d0422a1915768b5d1d2844613ec0e6bb967661c9aef2cd7",
+    "cases": [
+      "waitingExecutionSeesConcurrentTerminationAfterAcquiringLocks",
+      "executionMissingDhrCannotComplete",
+      "earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning",
+      "concurrentStartCreatesOneExecutionAndOneDhr",
+      "missingDhrBlocksEarlyTerminationWithoutChangingProduction"
+    ]
+  },
+  {
+    "suite": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "tests": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "xmlSha256": "b0829185b80bd0beeb481af212d368eb6162f771b03334ed0f3242fd652cd1a8",
+    "cases": [
+      "explicitReorganizationPreservesOriginalEvidenceAndChecksVersionAndReason",
+      "historicalVersionDoesNotRequireReadableLiveFormValues",
+      "historicalVersionDoesNotReturnLiveFormValuesOutsideFrozenCandidates"
+    ]
+  },
+  {
+    "suite": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+    "tests": 13,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "xmlSha256": "efb1162e8289833a0250d579a60678cc0092770c37ec6e556d7c8c18926a6179",
+    "cases": [
+      "rejectsRenamedOfficeTemplatesAndTruncatedZipDirectory(String)[1]",
+      "rejectsRenamedOfficeTemplatesAndTruncatedZipDirectory(String)[2]",
+      "rejectsExcessiveOfficeZipExpansionBeforeParsing",
+      "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[1]",
+      "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[2]",
+      "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[3]",
+      "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[4]",
+      "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[5]",
+      "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[6]",
+      "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[7]",
+      "acceptsExactly50MiBButRejectsOneByteOverBeforeReading",
+      "officeRejectsDisguisedUnsupportedCorruptEncryptedAndMacroFiles",
+      "attachmentRequiresReadableBytesAndPreservesUnlinkedHistory"
+    ]
+  },
+  {
+    "suite": "com.zencas.edhr.production.service.DhrFillingServiceTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "xmlSha256": "baf45467207e6f182161eb2974d57a1847adb8e9b864d247417f220e9f1cef90",
+    "cases": [
+      "auditFailureRollsBackNewCopyAndRevision",
+      "supplementChangesExecutionRevisionButNeverProductionOrDraftStatus",
+      "rejectsReviewInProgressMissingReasonFutureTimestampAndUnknownDhr",
+      "finalizedDhrRequiresExplicitReorganizationBeforeSupplement"
+    ]
+  }
+]

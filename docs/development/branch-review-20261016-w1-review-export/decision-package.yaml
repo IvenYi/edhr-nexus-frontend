@@ -1,0 +1,101 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261016-W1-REVIEW-EXPORT
+  scope: edhr-dev最新合并基线的DHR审批、汇总修订及冻结导出审查
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    targetBranch: edhr-dev
+    targetCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    contractReadCommit: 537bb2402227bfe6369c44c2b1b4686481c50f27
+    uncommittedContractPaths: []
+  summary: 延续已授权W0到W7审查；PR8已由用户手动合并。本批先验证既有审批/签署/版本/导出保护，仅对有合法触发及原依据的确定缺陷最小整改。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedSource:
+    - source: docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+      statements: [DEC-0068-03, DEC-0068-04, DEC-0068-05, DEC-0068-06, DEC-0068-07, DEC-0068-08, DEC-0068-11]
+    - source: docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+      statements: [沿用完整冻结证据和原版本导出规则，具体声明由本体按原来源定位]
+    - source: docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml
+      statements: [会话操作者与实际按钮签署人双身份及原认证边界]
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: dhr-review
+        change: 核对任务本人资格、冻结版本/hash、按钮、真实签署人及过时证据阻断。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java]
+      - area: summary-history-and-export
+        change: 核对显式修订草稿、旧冻结版本及FULL/SELECTED导出范围、附件摘要和审计。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java]
+    transitiveImpacts:
+      - area: workflow
+        change: 核对通用流程入口防绕过、DHR专属完成及并发锁和回滚。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java]
+    potentialImpacts:
+      - area: record-control-effective-events
+        concern: 来源修订/作废的真实生效消费者、主动通知及并发联调仍需实际核对；不能把端口存在视为完整实现。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    unaffectedAreas:
+      - area: policy-and-ui
+        reason: 不新增业务政策、放行、完整A12流程或UI功能；未发现依赖前不改这些范围。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    compatibilityAndMigration:
+      - change: 本批不恢复、补算或迁移用户历史数据，不因审查创建业务功能。
+        evidenceReferences: [decision-package.yaml]
+    snapshotImpacts:
+      - area: immutable-evidence
+        change: 原提交快照及批准仅解释其当时版本，新整理另建草稿/版本。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    auditImpacts:
+      - area: atomicity-and-identity
+        change: 核对动作与签署/审计同事务，导出审计及失败清理，保留真实双身份。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java]
+    permissionImpacts:
+      - area: task-and-version-access
+        change: 通用查看权不替代任务资格，任务附件不得越过冻结版本成员。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java]
+    testImpacts:
+      - scope: main-targeted-run
+        scenarios: [审批服务, 真实工作流签署回滚与双批准, 通用接口防绕过, DHR工作区权限, 冻结附件/归档与审计读取]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java]
+    evidenceGaps:
+      - 既有测试包含Mock或隔离H2，不能冒称真实来源变更生效整链、管理员HTTP或完整浏览器E2E。
+      - 本批只完成实际检查范围，W1及W2到W7和原四个知识gap不能提前标完。
+  extensionStrategy:
+    selectedPaths: [transaction-orchestration, product-core]
+    rationale: 复用现有生产/工作流边界与验收，只有证明问题后才决定最小代码修改。
+    ownershipBoundaries:
+      - owner: primary-agent
+        responsibility: 源码核对、合法复现、代码/必要回归及交付，独立质量不参与修复。
+      - owner: business-knowledge-modeler
+        responsibility: 原确认与局部替代范围、实现缺口边界及稳定证据同步。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java
+      changeType: read-only
+      reason: 审批领域动作与完整证据校验
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+      changeType: read-only
+      reason: DHR专属动作、通用入口保护及并发
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+      changeType: read-only
+      reason: 重新整理和历史版本
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java
+      changeType: read-only
+      reason: 冻结导出及错误清理
+  acceptanceScenarios:
+    - id: scenario.w1-review-authority-and-atomicity
+      given: DHR待办绑定冻结版本与签署配置
+      when: 本人或越权请求、双批准、签署失败或审计失败
+      then: 原有授权、唯一动作及整体回滚成立，通用入口不能绕过
+      evidenceRequirements: [真实源码和现有聚焦测试，确定缺陷才新增必要红绿用例，适用独立最终结果]
+    - id: scenario.w1-version-and-selected-export
+      given: 新草稿与旧冻结版本并存
+      when: 读取、修订或选择导出某版本成员
+      then: 旧证据不被实时内容替换，成员/原件/hash/权限及审计边界保持
+      evidenceRequirements: [版本与归档聚焦验证，不把代码存在或旧提交通过当新目标运行]

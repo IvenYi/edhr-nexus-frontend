@@ -1,0 +1,45 @@
+{
+  "coverageSourceCommit": "d63a73ce017388c5ae89bd1fbc66e872f998f825",
+  "coverageRows": 1569,
+  "sourcePaths": 1569,
+  "targetPaths": 1524,
+  "candidatePaths": 1586,
+  "pathsUnique": true,
+  "exactPathBlobEquality": true,
+  "allPending": true,
+  "missing": [],
+  "extra": [],
+  "mainSourceHashes": {
+    "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx": true,
+    "gmp-platform/frontend/scripts/test-product-process-reference-browser.mjs": true,
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerServiceTest.java": true
+  },
+  "progress": [
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx",
+      "hashMatches": true,
+      "symbolsPresent": true,
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/product-modeling.ts",
+      "hashMatches": true,
+      "symbolsPresent": true,
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java",
+      "hashMatches": true,
+      "symbolsPresent": true,
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java",
+      "hashMatches": true,
+      "symbolsPresent": true,
+      "wholeFileReviewComplete": false
+    }
+  ],
+  "targetAncestorOfHead": true,
+  "knowledgeAndContractDiff": []
+}

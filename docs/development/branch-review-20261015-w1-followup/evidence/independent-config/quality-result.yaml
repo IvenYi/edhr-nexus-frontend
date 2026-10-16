@@ -1,0 +1,256 @@
+qualityResult:
+  result: passed
+  baseCommit: 6379bf105127b05a65695992b008b55c142264f9
+  headCommit: 1113fe14f7f7539b9727fc708f49838504287d4f
+  contractBaseline:
+    sourceCommit: 1113fe14f7f7539b9727fc708f49838504287d4f
+    targetBranch: edhr-dev
+    targetCommit: 6379bf105127b05a65695992b008b55c142264f9
+    contractReadCommit: 1113fe14f7f7539b9727fc708f49838504287d4f
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+    - docs/development/branch-review-20261015-w1-followup/README.md
+    - docs/development/branch-review-20261015/NEXT.md
+    - docs/development/branch-review-20261015-w1-followup/decision-package.yaml
+    - docs/development/branch-review-20261015-w1-followup/evidence/start-configuration-main-case-index.json
+    - docs/development/branch-review-20261015-w1-followup/evidence/start-configuration-main-result.json
+    - docs/development/branch-review-20261015-w1-followup/evidence/start-configuration-red.json
+    - docs/development/branch-review-20261015-w1-followup/findings.yaml
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-knowledge-sync-validation.json
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-ontology-result.yaml
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-policy-baseline.json
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-policy-index.json
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-policy.md
+    - docs/development/branch-review-20261015-w1-followup/remaining-path-map.md
+    - docs/development/branch-review-20261015-w1-followup/review-progress.jsonl
+    - docs/development/branch-review-20261015-w1-followup/validation.md
+    excludedPaths: []
+    untrackedPaths:
+    - docs/development/branch-review-20261015-w1-followup/decision-package.yaml
+    - docs/development/branch-review-20261015-w1-followup/evidence/start-configuration-main-case-index.json
+    - docs/development/branch-review-20261015-w1-followup/evidence/start-configuration-main-result.json
+    - docs/development/branch-review-20261015-w1-followup/evidence/start-configuration-red.json
+    - docs/development/branch-review-20261015-w1-followup/findings.yaml
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-knowledge-sync-validation.json
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-ontology-result.yaml
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-policy-baseline.json
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-policy-index.json
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-policy.md
+    - docs/development/branch-review-20261015-w1-followup/remaining-path-map.md
+    - docs/development/branch-review-20261015-w1-followup/review-progress.jsonl
+    - docs/development/branch-review-20261015-w1-followup/validation.md
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.baseline-and-immutability
+    required: true
+    category: documentation
+    description: 独立核对实际来源、目标、契约blob、祖先关系及前后1196个保护文件SHA；额外工作树仅15个审查台账路径。
+    method: command
+    command: git rev-parse HEAD refs/remotes/origin/edhr-dev; git merge-base --is-ancestor BASE HEAD; SHA-256 before/after protected
+      manifest
+    outcome: passed
+    evidence:
+    - actual target/base=6379bf105127b05a65695992b008b55c142264f9; tested candidate/head=1113fe14f7f7539b9727fc708f49838504287d4f; this
+      descendant already contains the target; no separate synthetic merge commit
+    - contract-blob-baseline.json
+    - protected-manifest-start.json
+    - protected-manifest-final.json
+    - working-tree-final.json
+    - reviewed-documentation-manifest.json
+  - id: check.policy-and-source-boundary
+    required: true
+    category: requirements
+    description: 已确认一制程一route/DHR及节点/目录/表单引用链；技术一致性修复不新增发布、编辑、删除、数量、终态政策或历史回写。
+    method: inspection
+    command: Inspect actual DEC-0001-04/05/06/09, DEC-0062-01/02/03, DEC-0077-12; actual source writer and candidate diff
+    outcome: passed
+    evidence:
+    - candidate-diff.patch
+    - /tmp/edhr-w1-snapshot-policy-subcheck/result.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java:132
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/DhrTemplateWorkspaceController.java:101
+    - gmp-platform/backend/src/main/resources/db/changelog/0086-master-data-deletion-protection.sql:68
+  - id: check.pg-first-start-coherent-configuration
+    required: true
+    category: database
+    description: 独立在全新PostgreSQL16.15数据库实际通过新专项；旧route3/DHR4/form5/item50及旧目录同视图，新对象使用13/14/15/150，旧execution不回写。
+    method: automated-test
+    command: bash /tmp/pr6-mvn -Dtest=ProductionExecutionIntegrationTest -Dexecution.test.url=jdbc:postgresql://127.0.0.1:15432/edhr_w1_independent_snapshot_20261015
+      -Dexecution.test.driver=org.postgresql.Driver -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect -Dexecution.test.user=edhr
+      test
+    outcome: passed
+    evidence:
+    - postgresql-result.json
+    - postgresql-case-index.json#firstStartFreezesOneCommittedConfigurationDuringProcessRebinding
+    - postgresql-xml/TEST-com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest.xml
+    - primary-red-crosscheck.json
+    - configuration writer is valid ordered SQL model, not administrator HTTP E2E
+  - id: check.pg-concurrency-and-conflict
+    required: true
+    category: integration
+    description: 双START精确200/400且只留一execution/DHR/对应审计；等锁遇到终止精确400且revision/终态不变；本次日志确认真实40001两次。
+    method: automated-test
+    command: bash /tmp/pr6-mvn -Dtest=ProductionExecutionIntegrationTest -Dexecution.test.url=jdbc:postgresql://127.0.0.1:15432/edhr_w1_independent_snapshot_20261015
+      -Dexecution.test.driver=org.postgresql.Driver -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect -Dexecution.test.user=edhr
+      test
+    outcome: passed
+    evidence:
+    - postgresql-case-index.json#concurrentStartCreatesOneExecutionAndOneDhr
+    - postgresql-case-index.json#waitingExecutionSeesConcurrentTerminationAfterAcquiringLocks
+    - postgresql.log (two SQLState 40001 entries; never reproduce raw authentication payloads)
+  - id: check.pg-audit-signature-rollback
+    required: true
+    category: audit
+    description: 独立执行全类中审计失败、对象/execution/DHR回滚、签署/表单分配/自动推进失败回滚，保留原断言。
+    method: automated-test
+    command: bash /tmp/pr6-mvn -Dtest=ProductionExecutionIntegrationTest -Dexecution.test.url=jdbc:postgresql://127.0.0.1:15432/edhr_w1_independent_snapshot_20261015
+      -Dexecution.test.driver=org.postgresql.Driver -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect -Dexecution.test.user=edhr
+      test
+    outcome: passed
+    evidence:
+    - postgresql-case-index.json#failedAuditRollsBackObjectStateAndExecutionTogether
+    - postgresql-case-index.json#failedAuditRollsBackFormInstanceAllocation
+    - postgresql-case-index.json#inlineSignatureRollsBackWhenAuditFails
+    - postgresql-case-index.json#failedSignedActionRollsBackSignatureValuesAndAudit
+    - postgresql-case-index.json#automaticWorkAdvanceRollsBackWithItsSubmissionWhenAuditFails
+  - id: check.pg-permission-and-history-neighbors
+    required: true
+    category: security
+    description: 独立执行缺权限403、冻结字段权限、真实签署人、外租户/来源隔离、旧快照/终止证据等相邻既有回归。
+    method: automated-test
+    command: bash /tmp/pr6-mvn -Dtest=ProductionExecutionIntegrationTest -Dexecution.test.url=jdbc:postgresql://127.0.0.1:15432/edhr_w1_independent_snapshot_20261015
+      -Dexecution.test.driver=org.postgresql.Driver -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect -Dexecution.test.user=edhr
+      test
+    outcome: passed
+    evidence:
+    - postgresql-case-index.json#missingPermissionCannotReadOrExecute
+    - postgresql-case-index.json#inlineSignatureHonorsFrozenReadonlyAndNodePermissions
+    - postgresql-case-index.json#globalQueryExactDetailsTenantBoundaryAndSourceControls
+    - postgresql-case-index.json#earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning
+    - 'PostgreSQL full selected class: 69 entries; 67 passed, 2 preexisting opt-in browser fixtures skipped, no failures/errors'
+  - id: check.controller-conflict-translation
+    required: true
+    category: api
+    description: 额外只读临时probe验证真实候选控制器仅将原因链SQLState40001转原400；23503和普通异常保持原对象重抛；无自动重试。
+    method: command
+    command: Compile/run /tmp/edhr-w1-snapshot-independent/ControllerConflictProbe.java against current backend target/classes + verified
+      dependency classpath
+    outcome: passed
+    evidence:
+    - ControllerConflictProbe.java
+    - controller-probe-result.json
+    - controller-probe.log
+    - Transaction rollback/security proven by PG integration; this isolated mock-service probe only covers branch selection
+  - id: check.h2-adjacent-regression
+    required: true
+    category: regression
+    description: 独立H2实际执行工单关闭原子性、DHR填报及汇总持久化三类33通过，0失败/error/skip。
+    method: automated-test
+    command: bash /tmp/pr6-mvn -Dtest=WorkOrderCloseAtomicityTest,DhrFillingServiceTest,DhrSummaryPersistenceTest test
+    outcome: passed
+    evidence:
+    - h2-result.json
+    - h2-case-index.json
+    - h2-xml/
+    - Initial root-directory command found no pom and ran zero tests; preserved h2-wrong-directory-h2.log; corrected working directory
+      then all33 passed.
+  - id: check.knowledge-automation
+    required: true
+    category: unit
+    description: 独立运行tools/knowledge-model全部89测试，0失败/error/skip；只代表schema/ID/引用及现有知识校验。
+    method: automated-test
+    command: cd tools/knowledge-model && bash /tmp/pr6-mvn test
+    outcome: passed
+    evidence:
+    - knowledge-result.json
+    - knowledge-case-index.json
+    - knowledge-xml/
+  - id: check.knowledge-sync-semantics
+    required: true
+    category: ontology
+    description: 核对3个受影响evidence ID；只新增1test evidence、两条description，2486到2487，0.3.25/schema1.2不变，无DEC/规则/成熟度提升。
+    method: inspection
+    command: Compare docs/knowledge to 31a8074a and ontologyResult knowledgeSync; inspect actual source and test behavior
+    outcome: passed
+    evidence:
+    - candidate-diff.patch
+    - docs/development/branch-review-20261015-w1-followup/ontology/config-race-ontology-result.yaml
+    - /tmp/edhr-w1-snapshot-policy-subcheck/result.yaml
+  - id: check.evidence-and-scope-honesty
+    required: true
+    category: documentation
+    description: 核对原红轮XML/快照SHA及真实混合引用；区分主测与独立、PG专项与H2、SQL模型与管理员E2E、资源构建与视觉，台账没有提升全分支完成。
+    method: inspection
+    command: Cross-check source/test/raw red evidence, main case/result indexes, validation.md, README, progress and remaining map
+    outcome: passed
+    evidence:
+    - primary-red-crosscheck.json
+    - raw-xml-summary.json
+    - commands.json
+    - docs/development/branch-review-20261015-w1-followup/remaining-path-map.md
+    - docs/development/branch-review-20261015-w1-followup/review-progress.jsonl
+    - Both backend runs actually built build:dhr-print; neither performed browser/PDF visual verification
+  - id: check.whitespace
+    required: true
+    category: documentation
+    description: 本批提交及工作树审查文档无新增空白错误；既有CSV按其CRLF格式检查。
+    method: command
+    command: git -c core.whitespace=cr-at-eol diff --check 6379bf105127b05a65695992b008b55c142264f9 HEAD; git -c core.whitespace=cr-at-eol
+      diff --check
+    outcome: passed
+    evidence:
+    - both exit0; source manifest unchanged
+  findings:
+  - id: W1-START-CONFIGURATION-MIX
+    severity: high
+    scope: 首次START execution与DHR目录冻结
+    summary: 默认READ_COMMITTED下可冻结旧route/DHR上下文与新子绑定；候选以一次PostgreSQL一致视图修复。
+    reproductionSteps:
+    - 修复前在隔离PG中让START读取process2→route3/DHR4上下文。
+    - 另事务合法原子更新父配置到route13/DHR14并替换children为form15/item150。
+    - 继续START读取并持久化；原始红轮记录期待form5实际15。
+    expectedResult: 同一次START的上下文、绑定及DHR目录自洽；后续新对象采用新配置，既有快照不回写。
+    actualResult: 原始红轮被独立hash/content核对；本实例真实PG专项已通过并包含随后移除旧目录项的加强场景。
+    evidence:
+    - primary-red-crosscheck.json
+    - postgresql-case-index.json#firstStartFreezesOneCommittedConfigurationDuringProcessRebinding
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 1113fe14f7f7539b9727fc708f49838504287d4f
+    - type: command
+      reference: /tmp/edhr-w1-snapshot-independent/postgresql-result.json; 67passed/2preexistingSkip; new case passed
+    - type: document
+      reference: /tmp/edhr-w1-snapshot-independent/protected-manifest-final.json
+  residualRisks:
+  - id: risk.configuration-writer-model
+    description: 管理员写侧以真实源码顺序和有效原子配置SQL建模，未运行管理员HTTP的验证/审计整链；不穷举全部route/form/workflow编辑交错。
+    impact: 通过结论限本批首次START快照一致性及所测相邻路径。
+    mitigation: 后续按W1入口清单补充实际管理员E2E/有价值并发矩阵，不因此改业务政策。
+  - id: risk.database-specific-case
+    description: 新增专项条件要求真实PostgreSQL；H2不提供本例需要的数据库级RR MVCC。
+    impact: 默认H2条件跳过不能当专项通过；本实例已独立实际PG通过。
+    mitigation: 集成/发布验收保持真实PG专项必跑，不降低断言或只引用H2结果。
+  - id: risk.opt-in-browser-fixtures
+    description: formRecordsBrowserFixture及browserEvidenceFixture因既有opt-in系统属性未配置而跳过；其余67执行类用例通过。
+    impact: 本批没有整页浏览器E2E、视觉或PDF渲染的新结论，构建打印资源不等于这些验证。
+    mitigation: 本次未修改UI；需要对应产品验收时另启动真实交互/视觉验证。
+  - id: risk.nested-existing-transaction
+    description: DhrFillingService现有外层事务加入act时不会升级到RR；该入口白名单不允许START，已独立核对。
+    impact: 不把act注解解释为所有嵌套调用均提升隔离。
+    mitigation: 将来新增START调用者或事务编排须重核事务边界及冲突翻译；当前直接控制器START受本修复覆盖。
+  - id: risk.remaining-branch-review
+    description: W1其余审批/修订/导出及F004、W2到W7、四个knowledge evidence-gap仍待推进。
+    impact: 本批passed不能声明全分支完成或所有剩余gap关闭。
+    mitigation: 保留固定清单分母与方法级partial状态，按台账连续审查。
+  - id: risk.terminated-detail-dependency
+    description: 已终止详情在返回冻结正文前仍解析当前execution；未找到合法后续写者可产生坏JSON。
+    impact: 当前只是未证实可达触发的读取依赖观察，不构成此候选新的已确认代码阻断。
+    mitigation: 保留观察，后续合法新写入口出现时复核，不以手工损坏DB捏造真实业务缺陷。
+  - id: risk.integration-not-performed
+    description: 本实例没有查/触发Actions、核验仓库强制CI规则、合并或部署；目标引用6379由主侧当轮fetch后独立核对本地引用和祖先关系。
+    impact: 通过仅为该候选及列明文档快照的技术质量结果，非发布或合并授权。
+    mitigation: 目标或保护源变化时重新评估适用检查；执行集成前依用户授权与最新目标。
+  blockingConditions: []

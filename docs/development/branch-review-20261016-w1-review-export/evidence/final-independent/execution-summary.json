@@ -1,0 +1,19 @@
+{
+  "result": "passed",
+  "executedByThisInstance": [
+    "git exact path/blob inventory and UTF8 red/green check",
+    "historical inventory baseline checks",
+    "all tracked source SHA256 and Git blobs versus actual runtime originals",
+    "raw XML/log SHA checks and exact unique case sets",
+    "source method locator/hash existence",
+    "36 declaration policy index/source locator checks",
+    "JSON/YAML/JSONL parsing and report artifact SHA checks"
+  ],
+  "didNotExecute": [
+    "Maven tests",
+    "database lifecycle or PostgreSQL transaction tests",
+    "browser E2E or visual page checks",
+    "repair or repository mutations"
+  ],
+  "reusedEvidence": "First independent instance actually ran74; primary separately ran74; both source76 unchanged"
+}

@@ -1,0 +1,103 @@
+{
+  "tests": 12,
+  "failures": 0,
+  "results": [
+    {
+      "name": "saved DHR reference remains visible without becoming a candidate",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "saved route identity is shown without inferred expiry or deletion",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "missing display metadata retains the saved ID",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "copy keeps inherited reference visible until an explicit replacement",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "new configuration has no invented saved reference",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "an empty candidate set still displays both saved references",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "eligible saved identities remain unchanged on submit",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "slow graph never submits an empty replacement for saved operation bindings",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "failed graph load and retry preserve saved operation bindings",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "loading cannot submit before options are known",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "failed option load preserves failure and blocks submission",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "narrow viewport exposes the saved label and its correction hint",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    }
+  ],
+  "scope": "real Chromium/component; fixture options and HTTP; no real backend or database integration"
+}

@@ -1,0 +1,33 @@
+{
+  "runner": "primary-agent",
+  "independentQuality": false,
+  "sourceCommit": "31a8074a8962da66b2c4e49f4bf5a1a92724bfa0",
+  "targetCommit": "6379bf105127b05a65695992b008b55c142264f9",
+  "productionCode": "unchanged pre-fix",
+  "test": "firstStartFreezesOneCommittedConfigurationDuringProcessRebinding",
+  "testSourceAtRun": "original single-rebind version, before adding subsequent old-DHR composition removal",
+  "database": "isolated PostgreSQL 16.15, edhr_w1_snapshot_race_20261015",
+  "tests": 1,
+  "failures": 1,
+  "errors": 0,
+  "skipped": 0,
+  "actualPersisted": {
+    "routeVersionId": "3",
+    "dhrTemplateVersionId": "4",
+    "formVersionId": "15",
+    "dhrItemId": "150"
+  },
+  "expectedOldFormVersionId": "5",
+  "expectedOldDhrItemId": "50",
+  "rawEvidence": {
+    "xmlPath": "/tmp/edhr-w1-snapshot-red/TEST-com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest.xml",
+    "xmlSha256": "eb299effae2d7f03a74f207a850c1c4c316dca568c92ed35e6ee438d34343256",
+    "snapshotPath": "/tmp/edhr-w1-snapshot-red/frozen-snapshot.json",
+    "snapshotSha256": "89ccb141d05ea95e6ba91a42c5c95a70806680a2c6614788f2e35ea1bb510af4",
+    "sourceHashes": [
+      "06c1dcbdd8ba9a8497c17c583566fdc794725e1a57b7fefd901434406b023e5e  src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "4eea5faae41f62633d2f1cf455abe50b79ab6e0ac7dc3aa40136ad0f71e3fd68  src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java"
+    ]
+  },
+  "limit": "SQL-modelled valid administrator transaction; not administrator HTTP E2E; test source and raw evidence are distinct from final candidate"
+}

@@ -16,6 +16,7 @@ import com.zencas.edhr.production.repository.ProductionObjectRepository;
 import com.zencas.edhr.production.repository.WorkOrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -149,7 +150,8 @@ public class ProductionExecutionService {
         return engine.transferTargets(parse(execution.getSnapshotJson()), parse(execution.getStateJson()), operationId, formId, instanceId, operator, keyword);
     }
 
-    @Transactional
+    // First START reads mutable configuration and the DHR directory in multiple queries.
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public ObjectNode act(Long id, Command command) {
         if (command == null || command.action() == null || command.revision() == null) throw invalid("执行动作和修订号不能为空");
         if (command.operationId() == null || command.operationId().isBlank()) throw invalid("请选择执行工序");

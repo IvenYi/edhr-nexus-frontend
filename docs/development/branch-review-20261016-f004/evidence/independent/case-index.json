@@ -1,0 +1,107 @@
+[
+  {
+    "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "name": "productModelingRejectsBatchToSnProductionForm",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "name": "productModelingAllowsOverlappingWindowsForTheSameModeAndForm",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "name": "productModelingRouteOptionsDoNotExposeParentCodesOrExpiredVersions",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "name": "productModelingRejectsDuplicateDhrDirectoryFormsInOneOperation",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "name": "productModelingDocumentOptionsExposeTheActualDocumentCategoryName",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "name": "productModelingFlushesRemovedOperationBindingsBeforeReplacingThemOnUpdate",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "name": "productModelingWorkspaceReturnsFutureEffectiveVersionsAsExpired",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "name": "productModelingDhrOptionsExcludeExpiredVersions",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "name": "processOwnerWorkspaceUsesTheSharedServiceForAProductFamily",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "name": "productModelingRejectsUnsupportedProductionMode",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "name": "productModelingAllowsAFutureVersionWhoseWindowStartsWhenThePriorVersionEnds",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "name": "productModelingCreationAuditIncludesSavedOperationBindings",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "name": "productModelingRejectsAProductThatIsNotDerivedFromFinishedOrSemiFinishedMaterial",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "name": "productModelingRejectsAFormOutsideTheSelectedDhrDirectory",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+    "name": "recordsProductFamilyUpdateAndDeleteAuditsWithOperationConfigurationSnapshots",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+    "name": "createsSeparateOwnerRootsAndRejectsDuplicateLabelsWithinTheSameOwner",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+    "name": "sharedOwnerServiceRejectsBatchToSnProductionForm",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+    "name": "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[1]",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+    "name": "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[2]",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+    "name": "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[3]",
+    "status": "passed"
+  },
+  {
+    "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+    "name": "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[4]",
+    "status": "passed"
+  }
+]

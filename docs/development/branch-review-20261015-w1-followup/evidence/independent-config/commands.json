@@ -1,0 +1,23 @@
+[
+  {
+    "id": "postgresql",
+    "cwd": "gmp-platform/backend",
+    "command": "bash /tmp/pr6-mvn -Dtest=ProductionExecutionIntegrationTest -Dexecution.test.url=jdbc:postgresql://127.0.0.1:15432/edhr_w1_independent_snapshot_20261015 -Dexecution.test.driver=org.postgresql.Driver -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect -Dexecution.test.user=edhr test",
+    "exitCode": 0,
+    "log": "postgresql.log"
+  },
+  {
+    "id": "h2",
+    "cwd": "gmp-platform/backend",
+    "command": "bash /tmp/pr6-mvn -Dtest=WorkOrderCloseAtomicityTest,DhrFillingServiceTest,DhrSummaryPersistenceTest test",
+    "exitCode": 0,
+    "log": "h2.log"
+  },
+  {
+    "id": "knowledge",
+    "cwd": "tools/knowledge-model",
+    "command": "bash /tmp/pr6-mvn test",
+    "exitCode": 0,
+    "log": "knowledge.log"
+  }
+]

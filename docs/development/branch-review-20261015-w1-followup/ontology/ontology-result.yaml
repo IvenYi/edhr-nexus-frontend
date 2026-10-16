@@ -1,0 +1,38 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 6379bf105127b05a65695992b008b55c142264f9
+    targetBranch: edhr-dev
+    targetCommit: 6379bf105127b05a65695992b008b55c142264f9
+    contractReadCommit: 537bb2402227bfe6369c44c2b1b4686481c50f27
+    uncommittedContractPaths: []
+  reason: 本体全量审计适用且in-progress；本批只读复核原33项中的4个evidence-gap并逐项缩小范围，无知识定义/成熟度/政策改动。not-applicable仅指本批不写定义。当前source/target实际6379，原领域读取3cfff与目标38个作用范围文件blob相同；契约实际初读537，后续无增量/blob核对不能冒充重读。本实例未执行Maven/运行验收、未承担最终独立质量。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.w1-four-gap-source-evidence-map
+    checkType: evidence-path
+    command: 逐ID读取原始规则/决策/真实源码与测试断言，并在外部目录登记有界结论
+    outcome: passed
+    evidence:
+    - /tmp/edhr-audit-w1-next-ontology/gap-recheck.jsonl
+    - 4个原有ID复核且仍保留evidence-gap，未读/未运行范围不计一致或运行通过。
+  - id: validation.w1-domain-read-to-merged-target-blob-stability
+    checkType: reference
+    command: git rev-parse 3cfff:path 与6379bf:path逐文件比较，仅使用固定Git对象
+    outcome: passed
+    evidence:
+    - /tmp/edhr-audit-w1-next-ontology/baseline.json
+    - 38个已定位作用范围文件blob不变；这不表示整文件/整分支均语义审完。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

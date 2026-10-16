@@ -1,0 +1,7 @@
+# 独立结果安全交付
+
+本目录原样复制/root/audit_f004_independent在正式FINAL中交付的安全报告、摘要、manifest和纯fixture截图。报告实际受测候选为58fb346f2d1eb860c09c3f95eed448ef8b813112，原工作目录为/tmp/edhr-f004-independent-20261016；报告相对证据及manifest按该原目录解释。原日志、XML、扫描工具及临时baseline-export留本机，不复制认证类输出或把本机路径当永久下载地址。
+
+qualityResult SHA256为0011cb8d9690dc05567d6516e7aa8c6738959793a4587e7d0af5e5f5d38548c9。passed只针对本两项整改及适用相邻验证；其中全局ESLint仍blocked、premium strict仍failed，旧DHR high仍open及用户暂缓。没有把12浏览器fixture场景和21Mockito单元改称真实数据库/HTTP E2E。
+
+FINAL后主侧只登记resolved状态、补齐决策包的测试文件导航、更新README/NEXT及交付回执；不改写原独立报告、manifest或把后续文档提交改称新的独立受测产品SHA。交付前另核对代码/测试/知识/契约/工具字节与原保护摘要一致。

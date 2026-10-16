@@ -1,0 +1,72 @@
+{
+  "scope": "L0 post-FINAL acceptance recording and safe evidence delivery only",
+  "createdAtUtc": "2026-10-16T03:31:14.372007+00:00",
+  "sourceCommit": "d63a73ce017388c5ae89bd1fbc66e872f998f825",
+  "targetBranch": "edhr-dev",
+  "targetCommitAfterFreshFetch": "76b214426a271929bba2708cdda9e4d84d1f0679",
+  "independentlyTestedCandidate": "58fb346f2d1eb860c09c3f95eed448ef8b813112",
+  "independentQualityResult": {
+    "result": "passed",
+    "report": "evidence/independent/qualityResult.yaml",
+    "sha256": "0011cb8d9690dc05567d6516e7aa8c6738959793a4587e7d0af5e5f5d38548c9",
+    "requiredChecksPassed": 13,
+    "browserFixtureScenarios": 12,
+    "backendMockitoCases": 21,
+    "notDoubleCountedAcrossPrimaryAndIndependentRuns": true
+  },
+  "safeEvidenceDelivery": {
+    "safeArtifactsCopiedByteIdentical": 17,
+    "originalManifest": "evidence/independent/artifact-manifest.json",
+    "originalManifestSha256": "dbaf27763079fe3e9f3909882c4d62e8a4866c30cade3b2b581ec9f8ad7d5a75",
+    "manifestIncludesLocalOnlyReferences": true,
+    "rawLogsXmlAndToolNotCopied": true
+  },
+  "postFinalProtectedBytes": {
+    "originalTrackedCandidateFiles": 1586,
+    "extraProtectedToolFiles": 2,
+    "unchangedTrackedCandidateFiles": 1582,
+    "unchangedExtraTools": 2,
+    "changedOriginalPaths": [
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "testedSha256": "e0b5dd7b747d2c35f53ab6ed32d03f122fc791417b3274511a3293d62a0bc8e3",
+        "deliverySha256": "e8b1b3209e3aff29d46e8cea32c8fb875009961e879076f3dbaa506f93ecd1da"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-f004/README.md",
+        "testedSha256": "6179e0ae36b377b44fa26ab2e4072ed67fae6b2af8c6c8d8edd0ead84ed37fe4",
+        "deliverySha256": "81521584965f382b0ce176123e65c0984f8265343a8e587d99c725c9cdb25b06"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-f004/decision-package.yaml",
+        "testedSha256": "967b491f9c6b3d6ba4ac9d4d4c7d233cbe52f87b4f117bb0fc9e2126b94a9f84",
+        "deliverySha256": "95c55409a2491d8a9e3f51884c851f4d0887753f754fd9af8b45137c3a638ed8"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-f004/findings.yaml",
+        "testedSha256": "8d4ddbdabefb066a127aa2d1de83bda44e1e6ee23039c5af8ae0575c47b7a541",
+        "deliverySha256": "dad7722ee05a4fb3609ef797f7a31c50c0e03c337caad162ab14a3fb708a5ee3"
+      }
+    ],
+    "productTestsKnowledgeContractsDesignAndToolsUnchanged": true,
+    "noRuntimeRetestForDocumentationOnlyChanges": true,
+    "laterDocumentationCommitIsNotANewIndependentlyTestedCandidate": true
+  },
+  "inventory": {
+    "sourceCommit": "d63a73ce017388c5ae89bd1fbc66e872f998f825",
+    "rows": 1569,
+    "scope": "source inventory; method-scoped review is separate; all rows remain pending"
+  },
+  "environmentSetupDraft": {
+    "status": "saved",
+    "requiresPublish": true,
+    "currentInstanceCompleteJdk21Verified": true
+  },
+  "remainingBoundaries": [
+    "manual merge pending",
+    "record-control change/void and dependent old DHR high items remain deferred/open",
+    "project ESLint unconfigured; global premium strict remains failed at 26 unchanged frontend findings",
+    "fixture browser and Mockito checks do not establish real HTTP/database E2E",
+    "W1 and whole-branch audit and production release not accepted"
+  ]
+}

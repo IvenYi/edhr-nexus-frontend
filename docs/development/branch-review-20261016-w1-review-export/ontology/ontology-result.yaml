@@ -1,0 +1,43 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    targetBranch: edhr-dev
+    targetCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    contractReadCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    uncommittedContractPaths: []
+  reason: >-
+    本批为有限只读原政策与既有gap核对，无知识定义、ID、成熟度、版本、生命周期或业务政策变更，
+    因而无需知识同步写入；not-applicable仅指本批无定义修改，不指本体整体不适用。
+    已实际读取当前76的项目/角色/统一契约、当前决策包、指定四DEC的36条声明、仓库保存的原确认摘录及有限源码边界。
+    精确政策与局部替代导航已输出/tmp，未把政策索引计为36项全链通过，
+    未关闭A12真实生效、主动通知、质量/签署有效性及并发缺口。
+    不运行Maven、DB、浏览器或最终独立质量，不修改仓库文件、不提交；整体全量审计及P0继续in-progress。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.w1-review-export-policy-baseline
+      checkType: reference
+      command: git rev-parse HEAD/origin/edhr-dev；git ls-remote origin refs/heads/edhr-dev；契约blob与工作树逐项核对
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w1-review-export-policy-20261016/baseline.json
+        - source/target/remote及实际本次契约读取均为76b214426a271929bba2708cdda9e4d84d1f0679；三份契约无未提交差异。
+    - id: validation.w1-review-export-policy-index
+      checkType: evidence-path
+      command: Python/PyYAML按当前声明ID核对statement原文、YAML locator、原确认证据路径及JSON/YAML解析
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w1-review-export-policy-20261016/policy-index.json
+        - /tmp/edhr-w1-review-export-policy-20261016/adjacent-policy.json
+        - /tmp/edhr-w1-review-export-policy-20261016/README.md
+        - 指定四DEC共36条政策声明导航；定义分母2487、知识252文件、全仓1524路径保持。路径及结构核对不等于完整语义或业务运行通过。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]
