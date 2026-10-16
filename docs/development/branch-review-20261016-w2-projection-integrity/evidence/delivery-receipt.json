@@ -1,0 +1,42 @@
+{
+  "recordedAt": "2026-10-16T06:33:01.971967+00:00",
+  "testedCandidate": "3b642ab47ed55e8a26f3531b09f107b7f06188c9",
+  "target": "400c2dd2b836aa520f7b671c348ad9e79ac33748",
+  "postAcceptanceScope": "L0 result registration, byte-identical safe evidence copy, temporary runtime cleanup receipt and low documentation terminology correction only",
+  "originalTrackedFileCount": 1831,
+  "unchangedTrackedFileCount": 1828,
+  "changedExistingPaths": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261016-w2-projection-integrity/README.md",
+    "docs/development/branch-review-20261016-w2-projection-integrity/findings.yaml"
+  ],
+  "unchangedProtectedTools": 2,
+  "newSafeEvidencePathsValidated": [
+    "docs/development/branch-review-20261016-w2-projection-integrity/evidence/independent/archive-receipt.json",
+    "docs/development/branch-review-20261016-w2-projection-integrity/evidence/independent/backend-case-index.json",
+    "docs/development/branch-review-20261016-w2-projection-integrity/evidence/independent/database-receipt.json",
+    "docs/development/branch-review-20261016-w2-projection-integrity/evidence/independent/frontend-case-index.json",
+    "docs/development/branch-review-20261016-w2-projection-integrity/evidence/independent/inventory-receipt.json",
+    "docs/development/branch-review-20261016-w2-projection-integrity/evidence/independent/protection-receipt.json",
+    "docs/development/branch-review-20261016-w2-projection-integrity/evidence/independent/qualityResult.yaml",
+    "docs/development/branch-review-20261016-w2-projection-integrity/evidence/independent/run-receipt.json",
+    "docs/development/branch-review-20261016-w2-projection-integrity/evidence/independent/safe-artifacts.json",
+    "docs/development/branch-review-20261016-w2-projection-integrity/evidence/independent/verification-scope.md",
+    "docs/development/branch-review-20261016-w2-projection-integrity/evidence/runtime-cleanup.json"
+  ],
+  "productTestKnowledgeGovernanceChanges": [],
+  "qualityResultSha256": "c67c07ed76c6539be59517f83085fc58645a54db5899c5800f0b6ebcab6bb4a9",
+  "requiredChecksPassed": 16,
+  "originalIndependentResultUnmodified": true,
+  "documentationCorrection": {
+    "id": "QF-W2-PROJECTION-DOC-001",
+    "originalTestedCandidateStatus": "open-non-blocking",
+    "deliveryStatus": "corrected",
+    "evidence": "README now states Spring method-security authorization regression and retains unverified HTTP/JPA/signature boundary."
+  },
+  "runtimeCleanup": "evidence/runtime-cleanup.json",
+  "manualMergeOnly": true,
+  "wholeW2Complete": false,
+  "wholeBranchAuditComplete": false,
+  "githubActionsQueriedOrTriggered": false
+}

@@ -271,4 +271,133 @@ class FormTraceIndexPostgresTest {
         assertThat(query(Map.of("materialLotText", "L1", "teamText", "A")).path("total").asInt()).isEqualTo(1);
         assertThat(query(Map.of("materialLotText", "L1", "teamText", "B")).path("total").asInt()).isZero();
     }
+
+    @Test void realEngineRowsKeepTheirIdentityFromSavedTraceThroughCompletionAndFailedProjectionRetry() throws Exception {
+        var actualProjection = useRealProjection();
+        var engine = projectionEngine(); var snapshot = projectionSnapshot(); var state = engine.initialState(snapshot);
+        engine.start(snapshot, state, "op", "1");
+        projectionAction(engine, snapshot, state, "SAVE", projectionValues());
+        var saved = state.at("/operations/op/forms/form/values").deepCopy();
+        String first = saved.at("/details/0/__rowId").asText(), second = saved.at("/details/1/__rowId").asText();
+        assertThat(UUID.fromString(first).toString()).isEqualTo(first);
+        assertThat(second).isNotEqualTo(first);
+        String instanceNo = reports.instanceSource(1).getData().path("instanceNo").asText();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM form_projection_batch", Integer.class)).isZero();
+
+        // Reopen the serialized engine state, then save the same actual rows in the opposite order.
+        state = (ObjectNode) mapper.readTree(state.toString());
+        var reordered = (ObjectNode) saved.deepCopy();
+        reordered.set("details", mapper.createArrayNode().add(saved.path("details").get(1)).add(saved.path("details").get(0)));
+        projectionAction(engine, snapshot, state, "SAVE", reordered);
+        var hits = query(Map.of("materialLotText", "L1")).at("/records/0/hits");
+        assertThat(hits).hasSize(1);
+        assertThat(hits.get(0).path("rowKey").asText()).isEqualTo(first);
+        assertThat(hits.get(0).path("rowIndex").asInt()).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM form_projection_batch", Integer.class)).isZero();
+
+        projectionAction(engine, snapshot, state, "SUBMIT", reordered);
+        assertThat(jdbc.queryForObject("SELECT status FROM form_instance_record WHERE id=1", String.class)).isEqualTo("COMPLETED");
+        long batchId = jdbc.queryForObject("SELECT id FROM form_projection_batch", Long.class);
+        String frozen = jdbc.queryForObject("SELECT source_json::text FROM form_projection_batch", String.class);
+        assertThat(mapper.readTree(frozen).at("/values/details/1/__rowId").asText()).isEqualTo(first);
+        assertThat(reports.query(new FormProjectionController.Query("production", null, null, Map.of(), 0, 20, null, null))
+                .getData().path("total").asInt()).isZero();
+
+        jdbc.execute("ALTER TABLE form_projection_record ADD CONSTRAINT simulated_detail_failure CHECK(binding_id<>'detail-stat')");
+        assertThatThrownBy(() -> tx.executeWithoutResult(ignored -> actualProjection.process(batchId))).isInstanceOf(RuntimeException.class);
+        actualProjection.failed(batchId);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM form_projection_record", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT status FROM form_projection_batch", String.class)).isEqualTo("FAILED");
+        assertThat(jdbc.queryForObject("SELECT status FROM form_instance_record WHERE id=1", String.class)).isEqualTo("COMPLETED");
+        jdbc.execute("ALTER TABLE form_projection_record DROP CONSTRAINT simulated_detail_failure");
+        tx.executeWithoutResult(ignored -> reports.retry(batchId, Map.of("reason", "模拟故障恢复，保留冻结来源")));
+        tx.executeWithoutResult(ignored -> actualProjection.process(batchId));
+        tx.executeWithoutResult(ignored -> actualProjection.process(batchId));
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM form_projection_record", Integer.class)).isEqualTo(3);
+        assertThat(jdbc.queryForObject("SELECT attempts FROM form_projection_batch", Integer.class)).isEqualTo(2);
+        assertThat(jdbc.queryForObject("SELECT source_json::text FROM form_projection_batch", String.class)).isEqualTo(frozen);
+        assertThat(reports.instanceSource(1).getData().path("instanceNo").asText()).isEqualTo(instanceNo);
+        var result = reports.query(new FormProjectionController.Query("production", null, null, Map.of(), 0, 20, null, null)).getData();
+        assertThat(result.path("records")).hasSize(3);
+        // The main 5 is an independent report, not a subtotal of the two detail reports (2 and 3).
+        assertThat(result.at("/totals/0/goodQuantity").decimalValue()).isEqualByComparingTo("10");
+        for (var record : result.path("records")) {
+            assertThat(record.path("instanceId").asText()).isEqualTo("1");
+            if ("main-stat".equals(record.path("bindingId").asText())) {
+                assertThat(record.path("rowKey").asText()).isEqualTo("form");
+                assertThat(record.at("/sources/goodQuantity").asText()).isEqualTo("mainQty");
+            } else {
+                assertThat(record.path("rowKey").asText()).isIn(first, second);
+                assertThat(record.path("rowIndex").asInt()).isEqualTo(record.path("rowKey").asText().equals(first) ? 1 : 0);
+                assertThat(record.at("/sources/goodQuantity").asText()).isEqualTo("qty");
+            }
+        }
+    }
+
+    @Test void finalBusinessPrecheckRollsBackTheSavedRecordAndTraceIndexTogether() throws Exception {
+        useRealProjection();
+        var engine = projectionEngine(); var snapshot = projectionSnapshot(); var state = engine.initialState(snapshot);
+        engine.start(snapshot, state, "op", "1");
+        projectionAction(engine, snapshot, state, "SAVE", projectionValues());
+        String savedJson = jdbc.queryForObject("SELECT values_json FROM form_instance_record WHERE id=1", String.class);
+        var attemptedState = (ObjectNode) mapper.readTree(state.toString());
+        var invalid = (ObjectNode) state.at("/operations/op/forms/form/values").deepCopy();
+        invalid.put("equipment", "REJECTED").put("mainQty", -1);
+        assertThatThrownBy(() -> projectionAction(engine, snapshot, attemptedState, "SUBMIT", invalid)).hasMessageContaining("非负数字");
+        assertThat(jdbc.queryForObject("SELECT status FROM form_instance_record WHERE id=1", String.class)).isEqualTo("ACTIVE");
+        assertThat(jdbc.queryForObject("SELECT values_json FROM form_instance_record WHERE id=1", String.class)).isEqualTo(savedJson);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM form_projection_batch", Integer.class)).isZero();
+        assertThat(query(Map.of("equipmentText", "E1")).path("total").asInt()).isEqualTo(1);
+        assertThat(query(Map.of("equipmentText", "REJECTED")).path("total").asInt()).isZero();
+        assertThat(reports.instanceSource(1).getData().path("values")).isEqualTo(mapper.readTree(savedJson));
+    }
+
+    private FormProjectionService useRealProjection() throws Exception {
+        try (var connection = dataSource.getConnection()) {
+            ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0108-form-lookup-items.sql"));
+            ScriptUtils.executeSqlScript(connection, new ClassPathResource("db/changelog/0110-projection-detail-display.sql"));
+        }
+        var actualProjection = new FormProjectionService(jdbc, mapper);
+        records = new FormInstanceRecordService(jdbc, mapper, actualProjection);
+        return actualProjection;
+    }
+
+    private ProductionExecutionEngine projectionEngine() {
+        var access = mock(ExecutionAccess.class);
+        when(access.canAct(any(), any(), any(), any())).thenReturn(true);
+        when(access.permissions(any(), any(), any(), any())).thenReturn(mapper.createObjectNode()
+                .put("equipment", "EDIT").put("mainQty", "EDIT").put("mainUnit", "EDIT").put("details", "EDIT"));
+        return new ProductionExecutionEngine(mapper, access);
+    }
+
+    private ObjectNode projectionSnapshot() throws Exception {
+        return (ObjectNode) mapper.readTree("""
+                {"context":{"objectId":"100","objectNo":"B-OWNER","objectType":"BATCH","workOrderId":"500","workOrderNo":"WO1"},
+                 "routeNodes":[{"id":"op","type":"OPERATION"}],"routeEdges":[],
+                 "operations":[{"id":"op","name":"工序A","type":"OPERATION","works":[],"forms":[
+                   {"id":"form","versionId":"20","version":"V1","code":"F1","name":"主子表贯通验证","fields":[
+                     {"id":"equipment","name":"设备编号","type":"text"},{"id":"mainQty","name":"主表报工","type":"number"},{"id":"mainUnit","name":"主表单位","type":"text"},
+                     {"id":"details","name":"报工明细","type":"subTable","typeConfig":{"columns":[
+                       {"id":"lot","name":"物料批号","type":"text"},{"id":"qty","name":"明细报工","type":"number"},{"id":"detailUnit","name":"明细单位","type":"text"}]}}],
+                   "projection":{"version":"form-projection-v1","bindings":[
+                     {"id":"head","modelId":"formTrace","enabled":true,"sources":{"equipmentText":"equipment"}},
+                     {"id":"detail","modelId":"formTrace","enabled":true,"tableId":"details","sources":{"materialLotText":"lot"}},
+                     {"id":"main-stat","modelId":"production","enabled":true,"sources":{"goodQuantity":"mainQty","unit":"mainUnit"}},
+                     {"id":"detail-stat","modelId":"production","enabled":true,"tableId":"details","sources":{"goodQuantity":"qty","unit":"detailUnit"}}]}}]}]}
+                """);
+    }
+
+    private ObjectNode projectionValues() throws Exception {
+        return (ObjectNode) mapper.readTree("""
+                {"equipment":"E1","mainQty":5,"mainUnit":"件","details":[
+                  {"lot":"L1","qty":2,"detailUnit":"件"},{"lot":"L2","qty":3,"detailUnit":"件"}]}
+                """);
+    }
+
+    private void projectionAction(ProductionExecutionEngine engine, ObjectNode snapshot, ObjectNode state, String action, ObjectNode values) {
+        tx.executeWithoutResult(ignored -> {
+            engine.formAction(snapshot, state, "op", "form", action, values, null, null, null, "1");
+            records.saved(100L, "default", snapshot, state, "op", "form", null);
+        });
+    }
 }

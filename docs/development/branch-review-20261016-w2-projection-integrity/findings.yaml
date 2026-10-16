@@ -1,0 +1,32 @@
+productionFindings: []
+conclusion: 本批列明源码及合法运行范围内未确认新的生产缺陷；不是完整W2或全分支无缺陷声明。
+regressionImprovements:
+  - id: W2-R001-SAVED-TO-FORMAL-ROW-IDENTITY
+    status: independently-verified
+    testedCandidate: 3b642ab47ed55e8a26f3531b09f107b7f06188c9
+    qualityResult: evidence/independent/qualityResult.yaml
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java
+    change: 两条真实PG贯通回归保护行UUID/主子表来源、最终预检回滚与系统失败重试。
+    businessSemanticsChanged: false
+    productionCodeChanged: false
+documentationFindings:
+  - id: QF-W2-PROJECTION-DOC-001
+    severity: low
+    statusAtTestedCandidate: open-non-blocking
+    deliveryStatus: corrected-in-L0-registration
+    correction: README改为Spring方法安全授权回归，不再称MockMvc；保留HTTP/JPA/签署未验边界。
+    evidence: evidence/delivery-receipt.json
+clues:
+  - id: W2-C001-LEGACY-ROW-KEY
+    status: no-legal-current-entry-trigger-confirmed
+    observation: 旧自选/空白rowKey与索引或读取高亮路径存在不同解释。
+    counterEvidence: 正常design API及编辑器移除rowKeyFieldId，执行保存生成并校验规范UUID；未用直接注入旧配置制造新缺陷。
+    disposition: 当前不修改；不声明全部旧冻结配置兼容已验收，不恢复或回填旧记录。
+remainingScope:
+  fullW2: not-complete
+  wholeBranchReview: not-complete
+  A12: deferred-by-user
+  oldDhrHighItems: open
+  fullExecutionHttpJpaAndSignature: not-verified-by-new-composed-tests
+  currentVisualOrFrontendBuild: not-run-no-ui-or-production-change
+  globalEslintPremiumAndVendorLimitations: retained-no-new-passed-claim

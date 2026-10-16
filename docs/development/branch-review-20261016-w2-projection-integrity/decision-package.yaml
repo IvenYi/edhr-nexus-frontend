@@ -1,0 +1,85 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261016-W2-PROJECTION-INTEGRITY
+  scope: W2第三批；保存、完成事务、主/子表来源身份、过程索引与正式统计投影的源码核对和确定性整改。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 400c2dd2b836aa520f7b671c348ad9e79ac33748
+    targetBranch: edhr-dev
+    targetCommit: 400c2dd2b836aa520f7b671c348ad9e79ac33748
+    contractReadCommit: 400c2dd2b836aa520f7b671c348ad9e79ac33748
+    uncommittedContractPaths: []
+  summary: PR11已人工合并且合并树与批准交付相同；已核对现行DEC0077/78/79，未确认当前合法入口的生产缺陷。只补两条主子表来源/事务失败/重试贯通PG回归，不修改生产代码或规则。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  existingPolicyReferences:
+    - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+    - docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml
+    - docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: form-instance-record
+        change: 核对实际保存份身份、冻结来源、最新保存值及正式完成时点。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java]
+      - area: projection-and-trace
+        change: 核对过程索引与正式统计分层、主子表行身份、事务失败及处理重试的确定性。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java]
+    transitiveImpacts:
+      - area: source-navigation
+        change: 核对冻结来源的回查与行定位，不以最新行序猜测历史记录。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java]
+    potentialImpacts:
+      - area: quantity-summaries
+        concern: 新DEC0079消费正式来源及保存参考，需保留真实份、用途和行身份，不混合两种计入时点。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml]
+    unaffectedAreas:
+      - area: A12-record-control
+        reason: 用户明确暂缓未实现的表单变更/作废及依赖，不以当前审查关闭旧DHR high。
+    compatibilityAndMigration: [不恢复历史数据、不回填旧索引或正式投影，不发明缺失行身份及单位。]
+    snapshotImpacts: [使用既有冻结配置与完成时持久化来源，不改生产快照生命周期。]
+    auditImpacts: [核对保存/完成/重试证据及原子性，未确认缺陷前不改变写入或审计语义。]
+    permissionImpacts: [保持真实上下文权限与只读来源边界，不新增绕过或宽松查询。]
+    testImpacts:
+      - scope: saved-to-formal-projection
+        scenarios: [保存未完成不正式计入, 完成业务预检失败回滚, 系统处理失败与幂等重试, 主子表字段和真实rowKey定位, 冻结来源不读最新配置]
+        evidenceReferences: []
+    evidenceGaps: [新贯通用例为真实服务配显式TransactionTemplate，不覆盖完整执行HTTP/JPA/签署；无UI或生产变更，未重跑完整前端构建/浏览器视觉。不将盘点或173项运行计为完整W2。]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 若证实缺陷，在现有实例、索引、解释器或读取边界内局部修复，保持事务及文档协议所有者，不进行大模块重构。
+    ownershipBoundaries:
+      - owner: production-execution
+        responsibility: 保存动作与完成事务、不可变正式来源及过程索引。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+      changeType: read-only
+      reason: 实际份保存与完成入口。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java
+      changeType: read-only
+      reason: outbox及处理幂等边界。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java
+      changeType: read-only
+      reason: 保存索引及主子表身份。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+      changeType: read-only
+      reason: 字段/行身份及业务预检。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java
+      changeType: update
+      reason: 补实际SAVE/换序/完成/失败/重试贯通回归，不替换既有断言或降低标准。
+  acceptanceScenarios:
+    - id: scenario.w2-projection-row-chain
+      given: 同一实际份有独立主表报工5及两行独立报工2和3，子表尚无客户配置行键
+      when: 真实engine保存、序列化重开、换序保存、最终完成及投影失败重试
+      then: UUID及字段来源保持；过程立即可查、正式等成功，重试只产生三笔记录、合计10，冻结source不变。
+      evidenceRequirements: [真实PostgreSQL与生产组件组合测试, 失败中间写入回滚, 重复处理幂等, 真实读取行索引]
+    - id: scenario.w2-projection-business-rejection
+      given: 合法草稿已保存并可追溯
+      when: 最终提交改追溯文本并含正式数量负数
+      then: 必要业务预检失败，数据库原记录和索引一起回滚，未生成outbox。
+      evidenceRequirements: [真实引擎及保存服务事务回归, 原值和状态核对, 新旧追溯查询反证]

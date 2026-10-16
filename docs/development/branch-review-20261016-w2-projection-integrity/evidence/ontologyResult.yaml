@@ -1,0 +1,117 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 400c2dd2b836aa520f7b671c348ad9e79ac33748
+    targetBranch: edhr-dev
+    targetCommit: 400c2dd2b836aa520f7b671c348ad9e79ac33748
+    contractReadCommit: 400c2dd2b836aa520f7b671c348ad9e79ac33748
+    uncommittedContractPaths: []
+  reason: >-
+    本批实际知识核对未发现依赖本次范围的业务歧义或权威定义错误；主审尚未确认生产缺陷，当前交付仅在既有PostgreSQL测试中补充首次完成来源身份及事务失败的贯通回归。
+    DEC-0077/0078/0079及当前证据已准确表达使用时冻结、保存过程与正式分层、业务预检失败回滚、系统故障保留完成并可靠重试、主子表实际来源及UUID工程选择。
+    本次不改变概念、关系、生命周期、规则、审计含义、客户解释或执行契约，因此无需新增或修改知识资产；不为新增测试制造业务决策、不提升既有成熟度，不将本结果当成产品独立质量验收。
+  changedArtifacts: []
+  knowledgeSync:
+    - id: DEC-0077-07
+      disposition: retained
+      scope: 必要业务预检失败不完成且同事务回滚；系统处理故障保留完成及冻结outbox，状态可见、可靠幂等重试，下游等待投影成功。新增测试补证既有规范，不替换其含义。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java
+    - id: DEC-0077-12
+      disposition: retained
+      scope: START或ATTACH_FORM时复制来源配置；完成outbox保留自己的form/model/values/context/operationId，处理和重试不读当前模板或重生行身份。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - docs/knowledge/facts/form-projection.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java
+    - id: DEC-0077-29
+      disposition: retained
+      scope: 主表条件按同一实际实例、同一子表条件按同一实际行匹配；重排后的来源定位沿UUID而非旧行序，不跨行拼接。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java
+    - id: DEC-0077-33
+      disposition: retained
+      scope: 成功保存后最近内容在原授权内可查，未保存输入不参与；过程索引刷新与来源保存同事务，查询命中不自动形成正式统计或DHR归属。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java
+    - id: scenario.form-projection-stable-row-source-highlight
+      disposition: retained
+      scope: 在实际显示的来源快照按稳定rowKey定位；缺失或重复身份不猜测高亮。首次完成内部UUID方案已经收敛，不重新列为业务待决，不将旧固定索引位置扩展成跨保存或跨修订稳定身份。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java
+    - id: DEC-0078-02
+      disposition: retained
+      scope: 最终完成且正式投影成功才纳入累计，独立实际份、业务配置及实际行分别累计，技术重试与工序完工不再次加数。主表与子表若表达同一事实总数则不得重复累计，新增夹具总10仅能表达三笔独立报工。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java
+    - id: DEC-0079-06
+      disposition: retained
+      scope: 已填报包含已生效，两者不能相加；来源按真实份次、用途配置及实际行识别，表单COMPLETED不能代替统计成功。当前测试不修改数量呈现或这一规范的specified/internal成熟度。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+    - id: DEC-0077-10
+      disposition: deferred
+      scope: A12受控修订/作废及跨修订行身份按用户明确范围继续延期；本轮首次完成贯通回归不构成这些能力的实现或验收，不新增记录控制政策。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - docs/knowledge/open-questions.yaml
+    - id: discrepancy.dhr-review-complete-evidence-impact-gap
+      disposition: deferred
+      scope: 继续保持open/high；主动有效来源通知、完整质量结果变化比较和记录控制联调及并发发布级证据不由本次首次完成链测试关闭。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+    - id: discrepancy.dhr-review-effective-source-integration
+      disposition: deferred
+      scope: 继续保持open/high；真实变更/作废生效接口、有效修订标识、主动通知与并发集成证据仍依赖尚未实现的记录控制范围，不把系统重试当有效来源修订。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.w2-projection-contract-and-policy-inspection
+      checkType: reference
+      command: 只读核对AGENTS.md、docs/agents/business-knowledge-modeler.md、agent-handoff-contract.md、business-knowledge-model.md、knowledge README/open-questions及本批decision-package与DEC-0077/0078/0079
+      outcome: passed
+      evidence:
+        - 知识基线0.3.25、schema1.2.0，实际HEAD与origin/edhr-dev均为400c2dd2b836aa520f7b671c348ad9e79ac33748；未提交契约路径为空。
+        - /tmp/edhr-w2-projection-ontology-policy-notes.md
+        - DEC77/78/79和历史去重台账不存在本批同类正式完成/行身份implementationDiscrepancy；未把静态线索登记为运行缺陷。
+    - id: validation.w2-projection-source-and-test-inspection
+      checkType: projection
+      command: git diff -- gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java；只读核对真实引擎、来源保存、过程索引、正式outbox与查询源码
+      outcome: passed
+      evidence:
+        - 新测试调用真实engine与record/trace/projection及查询controller，在显式TransactionTemplate中验证保存、序列化重开、换序、首次完成、部分写入故障回滚、失败状态、重试和重复处理。
+        - 另一用例从合法保存进入最终业务负数预检失败，检查来源记录及trace索引回滚且无outbox；未用畸形手工状态伪造合法流程。
+        - fixture的ExecutionAccess、catalog及审计仓储为替身；本核对不证明完整ProductionExecutionService HTTP/JPA外层事务、真实电子签署/权限、A12或完整端到端已通过。
+        - 当时工作树仅该既有测试类新增128行；生产代码、知识、接口和迁移没有修改。后续夹具名称/字段标识微调后的实际重跑由主审及最终独立质量记录承担。
+    - id: validation.w2-projection-main-evidence-read
+      checkType: evidence-path
+      command: tail -n 45 /tmp/edhr-w2-projection-evidence/backend-composed.log；tail -n 26 /tmp/edhr-w2-projection-evidence/backend-baseline.log
+      outcome: passed
+      evidence:
+        - 本体实例实际只读主审初跑日志：基线75项，新增贯通后的FormTraceIndexPostgresTest共10项，均零失败、错误和跳过，BUILD SUCCESS。
+        - 本体没有执行这些Maven、浏览器或数据库操作，日志属于主审执行的原始产物，不冒充本实例运行或独立QA通过。
+        - 初跑日志不代替夹具字段/名称轻调后的最终候选完整回归；本体结果仅确认既有规范无需变更。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

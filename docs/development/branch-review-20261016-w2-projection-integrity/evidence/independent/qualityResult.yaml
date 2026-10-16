@@ -1,0 +1,233 @@
+qualityResult:
+  result: passed
+  baseCommit: "400c2dd2b836aa520f7b671c348ad9e79ac33748"
+  headCommit: "3b642ab47ed55e8a26f3531b09f107b7f06188c9"
+  contractBaseline:
+    sourceCommit: "3b642ab47ed55e8a26f3531b09f107b7f06188c9"
+    targetBranch: edhr-dev
+    targetCommit: "400c2dd2b836aa520f7b671c348ad9e79ac33748"
+    contractReadCommit: "3b642ab47ed55e8a26f3531b09f107b7f06188c9"
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.baseline-and-current-target
+      required: true
+      category: documentation
+      description: Independently fix actual base, candidate and read contract baseline; confirm current remote and PR11 tree equivalence.
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git ls-remote origin refs/heads/edhr-dev; compare 400c2dd2 and 2b73e72f trees
+      outcome: passed
+      evidence:
+        - Base/target 400c2dd2b836aa520f7b671c348ad9e79ac33748; feature and tested candidate 3b642ab47ed55e8a26f3531b09f107b7f06188c9.
+        - run-receipt.json
+    - id: check.fixed-source-inventory
+      required: true
+      category: documentation
+      description: Compare all 1820 tracked path/blob pairs and preserve pending inventory-only classification.
+      method: command
+      command: Python CSV comparison against git ls-tree -r -z 400c2dd2b836aa520f7b671c348ad9e79ac33748
+      outcome: passed
+      evidence:
+        - inventory-receipt.json
+        - 1820 unique rows; zero missing/extra paths or blob mismatches; all pending/inventory-only.
+    - id: check.change-scope-and-standards
+      required: true
+      category: regression
+      description: Verify test-only code delta, unchanged production and governance, and no weakened tests or guards.
+      method: command
+      command: git diff --name-only/--numstat base..head; git -c core.whitespace=cr-at-eol diff --check base..head; full added-test review
+      outcome: passed
+      evidence:
+        - run-receipt.json
+        - Only FormTraceIndexPostgresTest.java has non-document changes, +129/-0; production/UI/configuration/migrations/knowledge/governance unchanged.
+    - id: check.policy-and-ontology-boundary
+      required: true
+      category: ontology
+      description: Confirm DEC0077/78/79 boundaries, independent-report fixture meaning and not-applicable ontology result.
+      method: inspection
+      command: Read current decisions/open questions, decision package, source map and ontologyResult; compare against original production sources and added fixtures
+      outcome: passed
+      evidence:
+        - verification-scope.md
+        - No new business rule or knowledge/maturity change; main 5 is independent of two detail reports 2 and 3; A12/high deferrals retained.
+    - id: check.current-entry-counterevidence
+      required: true
+      category: requirements
+      description: Do not turn unproven old custom-row-key paths into a current defect or speculative production fix.
+      method: inspection
+      command: Inspect TemplateModelingController design save, FormLookupCatalogService.prepareDesign, ProjectionSourceEditor and real engine row identity; confirm catalog regression execution
+      outcome: passed
+      evidence:
+        - Normal design save and editor clear rowKeyFieldId; normal engine saves generate and validate canonical UUIDs, rejecting duplicates.
+        - backend-case-index.json
+    - id: check.composed-test-legality-and-scope
+      required: true
+      category: integration
+      description: Verify real legal engine actions and database components rather than hand-injected completed state or implementation-mirroring assertions.
+      method: inspection
+      command: Read both new tests and helpers in full; compare engine/service/controller contracts and TransactionTemplate boundaries
+      outcome: passed
+      evidence:
+        - verification-scope.md
+        - Real SAVE, serialize/reopen, reorder SAVE, SUBMIT, record/index/outbox/process/retry; mocked access/catalog/audit and explicit JDBC transaction limits disclosed.
+    - id: check.actual-row-and-field-source-identity
+      required: true
+      category: integration
+      description: Verify UUID and saved/formal field provenance survive reorder, completion and retry.
+      method: automated-test
+      command: Maven FormTraceIndexPostgresTest.realEngineRowsKeepTheirIdentityFromSavedTraceThroughCompletionAndFailedProjectionRetry
+      outcome: passed
+      evidence:
+        - backend-case-index.json
+        - Fresh non-skipped test checks trace actual rowKey and new rowIndex, instance identity, main/detail field source and frozen source JSON equality.
+    - id: check.business-precheck-atomicity
+      required: true
+      category: database
+      description: Business rejection preserves the original source record and trace and creates no formal outbox.
+      method: automated-test
+      command: Maven FormTraceIndexPostgresTest.finalBusinessPrecheckRollsBackTheSavedRecordAndTraceIndexTogether
+      outcome: passed
+      evidence:
+        - backend-case-index.json
+        - Negative formal quantity rejected; status/values remain original ACTIVE draft, E1 remains searchable, REJECTED absent and outbox count zero.
+    - id: check.processing-failure-and-retry
+      required: true
+      category: database
+      description: SQL failure rolls back partial formal inserts while completion survives; actual retry and repeated processing remain idempotent.
+      method: automated-test
+      command: Maven FormTraceIndexPostgresTest.realEngineRowsKeepTheirIdentityFromSavedTraceThroughCompletionAndFailedProjectionRetry
+      outcome: passed
+      evidence:
+        - backend-case-index.json
+        - Detail CHECK failure after main insert rolls back all formal facts; FAILED retains COMPLETED source; retry then duplicate process produces three records total10, attempts2 and unchanged frozen source.
+    - id: check.independent-postgres-regression
+      required: true
+      category: database
+      description: Independently execute all 45 selected PostgreSQL tests without conditional skipping.
+      method: automated-test
+      command: PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test bash /workspace/.edhr-cloud-tools/mvn-edhr -o -Dmaven.repo.local=/workspace/.pr6-m2 -Dtest=FormProjectionPostgresTest,FormTraceIndexPostgresTest,FormLookupCatalogPostgresTest,FormProjectionInterpreterTest,FormTraceIndexServiceTest,ProductionExecutionFormValuesTest,FormInstanceRecordStageTest,FormProjectionAuthorizationTest,TraceReportAuthorizationTest,BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - backend-case-index.json
+        - Overall Maven exit0 BUILD SUCCESS; 173 total, 0 failures/errors/skips. PG 13+10+22=45 are included in 173; all selected fresh XML suites non-zero and new methods executed.
+    - id: check.adjacent-unit-and-security-regression
+      required: true
+      category: security
+      description: Independently execute interpreter, trace, execution-value/stage units and existing Spring method-security authorization regressions.
+      method: automated-test
+      command: Same independently executed Maven selection; inspect FormProjectionAuthorizationTest and TraceReportAuthorizationTest actual method-security mechanism
+      outcome: passed
+      evidence:
+        - backend-case-index.json
+        - 32 adjacent unit cases and 7 Spring method-security proxy cases pass; these are subsets of 173, not HTTP/MockMvc or full signature/production transaction proof.
+    - id: check.current-knowledge-validation
+      required: true
+      category: ontology
+      description: Independently execute formal BusinessKnowledgeModelTest against unchanged current knowledge.
+      method: automated-test
+      command: Same Maven selection including BusinessKnowledgeModelTest
+      outcome: passed
+      evidence:
+        - backend-case-index.json
+        - 89 knowledge cases pass without skips, included in 173; this is structural/runtime validator coverage, not a whole-knowledge semantic audit.
+    - id: check.frontend-node-regression
+      required: true
+      category: regression
+      description: Independently rerun relevant projection, navigation, execution-value and quantity-source helpers.
+      method: automated-test
+      command: node --test scripts/test-projection-report.mjs scripts/test-projection-report-navigation.mjs scripts/test-execution-form-values.mjs scripts/test-production-quantity-sources.mjs
+      outcome: passed
+      evidence:
+        - frontend-case-index.json
+        - Exit0; 13 tests passed, 0 failed/cancelled/skipped. No browser render is claimed.
+    - id: check.database-isolation-and-schema-cleanup
+      required: true
+      category: database
+      description: Verify actual dedicated database/version and no leaked test schemas before or after the independent run.
+      method: query
+      command: docker exec edhr-w2-projection-validation-20261016 psql -U edhr -d edhr_projection_integration_test -v ON_ERROR_STOP=1 -Atc SELECT-version/database-and-non-system-schema-count
+      outcome: passed
+      evidence:
+        - database-receipt.json
+        - Actual PostgreSQL16.15; dedicated localhost/tmpfs test DB; non-system schema count0 before and after. Parent-owned container left running for parent cleanup; no other DB touched.
+    - id: check.frozen-source-and-tool-protection
+      required: true
+      category: documentation
+      description: All test processes ended; tracked source and protected tool hashes/sizes and fixed Git state unchanged.
+      method: command
+      command: Compare independent before/after SHA256+size manifests for git ls-files and mvn-edhr/settings.xml; git status/rev-parse
+      outcome: passed
+      evidence:
+        - protection-receipt.json
+        - All1831 tracked files and2 protected tools unchanged; HEAD3b642ab4 and target400c2dd2 unchanged; clean initial/final worktree; Maven/Node exit0.
+    - id: check.validation-applicability-and-deferrals
+      required: true
+      category: requirements
+      description: Ensure unexecuted whole-app/build/visual checks and A12/old-high/full-audit gaps are explicitly scoped and not called passed.
+      method: inspection
+      command: Compare actual test-only diff, decision package, original source scope, README/source-map/findings and this quality result
+      outcome: passed
+      evidence:
+        - verification-scope.md
+        - No product/UI/build/migration change; another full frontend build/browser/global lint/migration rollout is not required for this slice and was not executed. No whole W2/full-branch or A12 closure is claimed.
+    - id: check.optional-documentation-test-mechanism-wording
+      required: false
+      category: documentation
+      description: README incorrectly labels existing method-security authorization tests MockMvc.
+      method: inspection
+      command: Compare batch README authorization sentence with both actual authorization test classes and their Spring security configuration
+      outcome: failed
+      evidence:
+        - QF-W2-PROJECTION-DOC-001
+        - Parent accepted subsequent L0 terminology correction; actual independently executed check above is precisely method-security, not HTTP or MockMvc.
+  findings:
+    - id: QF-W2-PROJECTION-DOC-001
+      severity: low
+      scope: docs/development/branch-review-20261016-w2-projection-integrity/README.md
+      summary: Existing seven authorization regressions are described as MockMvc although they invoke Spring method-security proxies directly.
+      reproductionSteps:
+        - Read the README sentence containing 现有MockMvc授权回归单列.
+        - Inspect FormProjectionAuthorizationTest and TraceReportAuthorizationTest imports, Spring context, WithMockUser and direct controller calls.
+      expectedResult: Describe the actually executed scope as Spring method-security authorization regression; retain the HTTP/JPA/signature evidence limitation.
+      actualResult: Both suites use method-security proxies and direct calls; neither imports or invokes MockMvc.
+      evidence:
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/FormProjectionAuthorizationTest.java
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/TraceReportAuthorizationTest.java
+        - verification-scope.md
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.production-http-jpa-signature-and-audit
+      description: New composed tests use real JDBC transactions and production components with mocked access/catalog/retry audit repository; they do not execute full ProductionExecutionService HTTP/JPA, real authentication/signature, persisted retry audit or whole workflow concurrency.
+      impact: Do not extend these passes to production release or full security/audit end-to-end certification.
+      mitigation: Retain exact test boundary and validate the remaining runtime paths in their applicable later slices.
+    - id: risk.old-frozen-custom-row-keys
+      description: Source discrepancy involving legacy custom/blank row keys has no confirmed current normal-entry trigger and old frozen configuration compatibility was not exhaustively executed.
+      impact: This batch is not a historical compatibility or recovery guarantee.
+      mitigation: Preserve the bounded clue and counterevidence; do not change policy or restore/backfill data without an applicable authorized task.
+    - id: risk.deferred-a12-and-two-old-dhr-highs
+      description: User-deferred record-control revision/void integration and two existing DHR high discrepancies remain open.
+      impact: They continue to limit their dependent lifecycle acceptance; no closure follows from first-completion projection tests.
+      mitigation: Keep existing ledger/knowledge deferrals and revisit with record-control implementation.
+    - id: risk.remaining-w2-and-whole-branch
+      description: 1820 inventory rows remain pending; current runtime verification covers the named tests and source methods, while remaining designer command/import/undo scope and full branch review are incomplete.
+      impact: No whole-W2 or whole-branch defect-free claim is supported.
+      mitigation: Continue the repository's staged audit plan using latest target and separate source/method/runtime evidence.
+    - id: risk.nonapplicable-checks-and-existing-tool-limitations
+      description: This test-only slice did not rerun whole frontend build, browser visual/global premium lint/ESLint or vendor check; existing ESLint configuration, premium84 and vendor limitations remain historical limitations, not newly verified passes.
+      impact: Actual component rendering, full responsive/accessibility coverage and global lint health are not evidenced by this run.
+      mitigation: Reevaluate and execute applicable checks when UI/production/build configuration changes or a concrete dependency warrants them.
+    - id: risk.ci-enforcement-not-queried
+      description: GitHub Actions and branch protection/ruleset state were not queried or triggered under current task restrictions.
+      impact: Local independent acceptance does not establish repository-enforced merge checks or a completed deployment.
+      mitigation: Report local scope accurately and leave merge/deployment to the user.
+    - id: risk.low-documentation-correction-pending
+      description: QF-W2-PROJECTION-DOC-001 remains open at the tested candidate; parent accepted a subsequent L0 wording correction.
+      impact: Non-blocking terminology discrepancy only; no production/test or actual verification result is affected.
+      mitigation: Correct only the README label in an explicit later L0 receipt and preserve this original tested SHA/result.
+  blockingConditions: []

@@ -1,0 +1,16 @@
+{
+  "database": "edhr_projection_integration_test",
+  "version": "PostgreSQL 16.15",
+  "dedicatedContainer": "edhr-w2-projection-validation-20261016",
+  "bindAddress": "127.0.0.1:5432",
+  "dataStorage": "tmpfs",
+  "randomSchemasBefore": 0,
+  "randomSchemasAfter": 0,
+  "queryExitCodes": [
+    0,
+    0
+  ],
+  "testSchemasDropped": true,
+  "historicalDataRestoredOrModified": false,
+  "parentOwnedContainerLeftRunningForParentCleanup": true
+}

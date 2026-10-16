@@ -1,0 +1,20 @@
+{
+  "recordedAt": "2026-10-16T06:31:44.037327+00:00",
+  "testedCandidate": "3b642ab47ed55e8a26f3531b09f107b7f06188c9",
+  "owner": "root",
+  "container": "edhr-w2-projection-validation-20261016",
+  "database": "edhr_projection_integration_test",
+  "preStopQueryChecks": {
+    "executedByRoot": true,
+    "nonSystemSchemaCount": 0,
+    "publicTableCount": 0
+  },
+  "containerStopCommandExitCode": 0,
+  "containerAbsentOnFollowup": true,
+  "autoRemoved": true,
+  "loopback5432ClosedOnFollowup": true,
+  "initialImmediateRemovalCheck": "Container removal/port release had not settled immediately; subsequent actual checks confirmed both absent/closed.",
+  "otherContainersStopped": false,
+  "existingOrHistoricalDataRestoredOrModified": false,
+  "scope": "Dedicated disposable tmpfs database only, after all primary and independent test processes ended."
+}

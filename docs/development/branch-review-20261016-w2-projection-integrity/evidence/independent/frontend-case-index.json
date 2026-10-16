@@ -1,0 +1,61 @@
+{
+  "runHead": "3b642ab47ed55e8a26f3531b09f107b7f06188c9",
+  "tests": 13,
+  "passed": 13,
+  "failed": 0,
+  "skipped": 0,
+  "cases": [
+    {
+      "name": "main and actual subtable quantities reach persistence as numbers without changing source identities",
+      "outcome": "passed"
+    },
+    {
+      "name": "blank and invalid numeric input remains available to server validation, while zero and negative numbers retain their meaning",
+      "outcome": "passed"
+    },
+    {
+      "name": "30 effective + 20 saved only: two sources, unchanged independent totals",
+      "outcome": "passed"
+    },
+    {
+      "name": "same labels and amounts never merge different copies, rows, or bindings",
+      "outcome": "passed"
+    },
+    {
+      "name": "completed form is not sufficient for effective status; unit review remains visible",
+      "outcome": "passed"
+    },
+    {
+      "name": "zero, absent, and heterogeneous units remain distinct; discrepant values retained",
+      "outcome": "passed"
+    },
+    {
+      "name": "legacy saved menus normalize to independent reports including DHR trace without duplicating pages or losing custom reports",
+      "outcome": "passed"
+    },
+    {
+      "name": "all five pages and the legacy URL remain within the report permission boundary",
+      "outcome": "passed"
+    },
+    {
+      "name": "source location uses stable identity after reordering, not a matching value or stale index",
+      "outcome": "passed"
+    },
+    {
+      "name": "missing or duplicate identities never highlight a guessed row; main groups highlight only their own sources",
+      "outcome": "passed"
+    },
+    {
+      "name": "business records expose their actual attributes rather than a shared values blob",
+      "outcome": "passed"
+    },
+    {
+      "name": "display uses frozen names and explicit hours while unknown data remains absent",
+      "outcome": "passed"
+    },
+    {
+      "name": "production date ranges are available only for reports with that business meaning",
+      "outcome": "passed"
+    }
+  ]
+}

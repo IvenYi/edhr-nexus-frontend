@@ -1,0 +1,1305 @@
+{
+  "runHead": "3b642ab47ed55e8a26f3531b09f107b7f06188c9",
+  "base": "400c2dd2b836aa520f7b671c348ad9e79ac33748",
+  "source": "fresh independent Surefire XML",
+  "tests": 173,
+  "postgresTests": 45,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "tests": "13",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.514"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.32"
+    },
+    {
+      "name": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "tests": "22",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "2.372"
+    },
+    {
+      "name": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "tests": "19",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.017"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.009"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.048"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.FormInstanceRecordStageTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.017"
+    },
+    {
+      "name": "com.zencas.edhr.production.controller.FormProjectionAuthorizationTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.764"
+    },
+    {
+      "name": "com.zencas.edhr.production.controller.TraceReportAuthorizationTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.133"
+    },
+    {
+      "name": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": "89",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "8.638"
+    }
+  ],
+  "cases": [
+    {
+      "suite": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "name": "repeatedCompletionAndConcurrentConsumersPublishOneSet",
+      "outcome": "passed",
+      "time": "0.261"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "name": "aggregatesKeepOperationsAndUnitsSeparate",
+      "outcome": "passed",
+      "time": "0.143"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "name": "reportBusinessFieldsSurviveCompletionAndFiltersApplyToRecordsAndTotals",
+      "outcome": "passed",
+      "time": "0.155"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "name": "savedTraceIsIndependentOfPendingStatisticalProjectionAndDoesNotReuseStatisticalFields",
+      "outcome": "passed",
+      "time": "0.149"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "name": "traceOnlyCompletionDoesNotCreateOutboxOrValidateTraceAsFormalStatisticalData",
+      "outcome": "passed",
+      "time": "0.051"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "name": "completionAndOutboxRollbackTogetherOnFailure",
+      "outcome": "passed",
+      "time": "0.055"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "name": "statisticalRowLocationUsesFrozenSystemIdentityRatherThanLatestOrder",
+      "outcome": "passed",
+      "time": "0.079"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "name": "partialInsertFailureRollsBackAndRetryRecovers",
+      "outcome": "passed",
+      "time": "0.115"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "name": "finalProjectionPublishesOnlyStatisticalFactsWhenTraceAndStatisticsAreBothConfigured",
+      "outcome": "passed",
+      "time": "0.108"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "name": "restartUsesPersistedSnapshotRatherThanLaterValues",
+      "outcome": "passed",
+      "time": "0.069"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "name": "scrapCauseLabelsFilterWholeRecordsWithoutChangingGrouping",
+      "outcome": "passed",
+      "time": "0.119"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "name": "signatureReporterIsFrozenAndQueryableWithoutChangingQuantities",
+      "outcome": "passed",
+      "time": "0.09"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "name": "editingTemplateAfterFirstUseDoesNotChangeThatExecutionSnapshot",
+      "outcome": "passed",
+      "time": "0.106"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "name": "savedContentAndDhrUseRealOwnerAndDoNotLeakOtherTenant",
+      "outcome": "passed",
+      "time": "0.182"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "name": "failedIndexWriteRollsBackSavedContentAndIndexTogether",
+      "outcome": "passed",
+      "time": "0.089"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "name": "savedDraftIsImmediatelyTraceableAndReplacementDoesNotGenerateStatistics",
+      "outcome": "passed",
+      "time": "0.168"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "name": "mainConditionsCombineAcrossBindingsAndDetailConditionsMustShareActualRow",
+      "outcome": "passed",
+      "time": "0.128"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "name": "realEngineRowsKeepTheirIdentityFromSavedTraceThroughCompletionAndFailedProjectionRetry",
+      "outcome": "passed",
+      "time": "0.258"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "name": "productionObjectCandidatesSupportInputFilterAndKeepTenantAndLiteralWildcardBoundaries",
+      "outcome": "passed",
+      "time": "0.071"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "name": "unconfiguredStatisticalSourcesAreExcludedAndMigrationUsesFrozenSavedMappings",
+      "outcome": "passed",
+      "time": "0.113"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "name": "finalBusinessPrecheckRollsBackTheSavedRecordAndTraceIndexTogether",
+      "outcome": "passed",
+      "time": "0.106"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "name": "realEngineSubmissionKeepsActiveLifecycleAndSavesApprovalStageForTraceAndSource",
+      "outcome": "passed",
+      "time": "0.104"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "classname": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "name": "forwardTraceFindsUnboundSavedInstancesAndUsesRealFrozenContext",
+      "outcome": "passed",
+      "time": "0.095"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "duplicateNamesConcurrencyAndAuditFailureDoNotOverwriteDefinitions",
+      "outcome": "passed",
+      "time": "0.125"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "snapshotCannotBeForgedAndCustomMeaningDoesNotBecomeStatisticalAttribute",
+      "outcome": "passed",
+      "time": "0.088"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "committedNewBindingBlocksConcurrentDeletion",
+      "outcome": "passed",
+      "time": "0.236"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "customDeletionProtectsPresetsRevisionsAndHistoricalEvidence",
+      "outcome": "passed",
+      "time": "0.097"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "prepareDesignMakesCompleteStatisticsActiveWithoutAnotherEnableAction",
+      "outcome": "passed",
+      "time": "0.05"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "explicitBindingProducesSavedHitsAndDirectoryRenamePreservesInstanceLookupSnapshot",
+      "outcome": "passed",
+      "time": "0.12"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "catalogNeverLeaksOtherTenantDefinitions",
+      "outcome": "passed",
+      "time": "0.068"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "legacyLookupNamesFreezeOnNewSaveAndReportsNeverReadCurrentAliases",
+      "outcome": "passed",
+      "time": "0.104"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "traceDatePresetIsProtectedTypedAndOnlyQueriesExplicitlyBoundDates",
+      "outcome": "passed",
+      "time": "0.125"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "textAndNativeBatchNumbersShareLookupWithoutChangingContextOrDuplicatingForms",
+      "outcome": "passed",
+      "time": "0.121"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "businessSourcesDoNotDependOnRetiredTraceCatalogItems",
+      "outcome": "passed",
+      "time": "0.047"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "traceDateUpgradeAndReplayPreserveExistingCustomDatesAndSavedEvidence",
+      "outcome": "passed",
+      "time": "0.106"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "mainSubtableAndAllVersionsCanBeSelectivelyUnlinkedWithoutChangingOtherBusiness",
+      "outcome": "passed",
+      "time": "0.151"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "serverSnapshotRejectsForgedCustomReferenceCompatibility",
+      "outcome": "passed",
+      "time": "0.056"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "newItemIsAvailableWithoutAnyBindingOrHitAndWritesAudit",
+      "outcome": "passed",
+      "time": "0.069"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "staleBatchSelectionRollsBackEveryVersionAndMetadataAloneDoesNotBlockDeletion",
+      "outcome": "passed",
+      "time": "0.117"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "typedItemsFreezeTypesAndOnlyAcceptMatchingFieldSources",
+      "outcome": "passed",
+      "time": "0.098"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "migrationKeepsNineDistinctPresetsAndRetiresAmbiguousMvpDefinitions",
+      "outcome": "passed",
+      "time": "0.065"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "typedSavedValuesQuerySameActualRowWithNumericNormalizationAndDateBounds",
+      "outcome": "passed",
+      "time": "0.118"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "committedDeletionRejectsConcurrentNewBinding",
+      "outcome": "passed",
+      "time": "0.223"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "prepareDesignRejectsIncompleteStatisticsEvenWhenLegacyEnabledFlagIsFalse",
+      "outcome": "passed",
+      "time": "0.053"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "classname": "com.zencas.edhr.template.service.FormLookupCatalogPostgresTest",
+      "name": "customSubtableFiltersMatchOneRowAndPreserveItsLocation",
+      "outcome": "passed",
+      "time": "0.126"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "subtableHoursRemainPerRowAndCannotBorrowHeaderHours",
+      "outcome": "passed",
+      "time": "0.002"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "disabledIncompleteDraftIsExplicitlyAllowed",
+      "outcome": "passed",
+      "time": "0.0"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "outputCanReuseOneQualityFieldButCannotMakeGoodAndNgTheSameSource",
+      "outcome": "passed",
+      "time": "0.0"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "horizontalGroupsStayPairedAndDeterministic",
+      "outcome": "passed",
+      "time": "0.0"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "scrapDictionaryRolesKeepCodesAndLabelsWithoutChangingQuantity",
+      "outcome": "passed",
+      "time": "0.0"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "reporterAcceptsOnlyUserReferenceOrSignatureAndUsesActualSigner",
+      "outcome": "passed",
+      "time": "0.001"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "noInventedStatisticsOrUnknownAttributes",
+      "outcome": "passed",
+      "time": "0.0"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "subtableSignatureReportersStayWithTheirOwnRows",
+      "outcome": "passed",
+      "time": "0.0"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "subtableRequiresStableUniqueRowKeysAndRejectsCrossGroupReferences",
+      "outcome": "passed",
+      "time": "0.001"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "reportTemporalRolesRejectWrongFieldTypesInvalidDatesAndReversedPeriod",
+      "outcome": "passed",
+      "time": "0.001"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "formalQuantityAllowsBlankUnitsButRejectsNegativeAndDuplicateSources",
+      "outcome": "passed",
+      "time": "0.001"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "dictionaryUnitUsesFrozenValueWithoutConversion",
+      "outcome": "passed",
+      "time": "0.001"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "referenceTraceUsesFrozenCodeAndRejectsWrongTypesOrLegacyDisplayFallback",
+      "outcome": "passed",
+      "time": "0.001"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "objectValuesCannotMasqueradeAsTextIdentities",
+      "outcome": "passed",
+      "time": "0.0"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "noConfigurationDoesNotBlockOrdinaryForms",
+      "outcome": "passed",
+      "time": "0.001"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "referenceSubtableRowsRetainSeparateCodesAndLocations",
+      "outcome": "passed",
+      "time": "0.0"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "personHoursAreExplicitAndIndependentOfPeriodDateAndReporter",
+      "outcome": "passed",
+      "time": "0.002"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "consumptionNeedsOnlyMaterialAndQuantityAndUsesSystemRowIdentity",
+      "outcome": "passed",
+      "time": "0.001"
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "classname": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "deletedOrChangedFieldsCannotPublish",
+      "outcome": "passed",
+      "time": "0.0"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "classname": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "name": "onlyExplicitTraceSourcesAndSavedSupportedValuesAreCollected",
+      "outcome": "passed",
+      "time": "0.003"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "classname": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "name": "systemRowIdentityIsIndependentOfBindingsAndDisplayOrder",
+      "outcome": "passed",
+      "time": "0.003"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "classname": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "name": "referenceUsesFrozenCodeAndRequiresCompatibleIdentity",
+      "outcome": "passed",
+      "time": "0.001"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "classname": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "draftSaveRejectsDuplicateMalformedIdentityAndUndeclaredColumns",
+      "outcome": "passed",
+      "time": "0.005"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "classname": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "savedRowsReceiveStableIdentityAcrossReopenReorderAndDeletion",
+      "outcome": "passed",
+      "time": "0.004"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "classname": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "readonlyValuesFollowRowIdentityAndCannotBeChangedOrRemoved",
+      "outcome": "passed",
+      "time": "0.004"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "classname": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "signatureEvidenceContainsIdentityBeforeSigningAndForgedSignatureIsRejected",
+      "outcome": "passed",
+      "time": "0.007"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "classname": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "ambiguousDisabledAndInvalidSelectDefaultsAreNotGuessed",
+      "outcome": "passed",
+      "time": "0.004"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "classname": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "mainDefaultsArePersistedAndSelectLabelsResolveToStoredOptionValues",
+      "outcome": "passed",
+      "time": "0.005"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "classname": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "wholeTableReadonlyCannotBeBypassedByValidIdentity",
+      "outcome": "passed",
+      "time": "0.003"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "classname": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "frozenCanvasDefaultsApplyToMainAndNewRowsWithoutOverwritingInputOrClearedValues",
+      "outcome": "passed",
+      "time": "0.004"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormInstanceRecordStageTest",
+      "classname": "com.zencas.edhr.production.service.FormInstanceRecordStageTest",
+      "name": "completedLifecycleTakesPrecedenceAndDirectEntryRemainsFilling",
+      "outcome": "passed",
+      "time": "0.014"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormInstanceRecordStageTest",
+      "classname": "com.zencas.edhr.production.service.FormInstanceRecordStageTest",
+      "name": "activeApprovalNodesAndMixedParallelNodesHaveDifferentDisplayStages",
+      "outcome": "passed",
+      "time": "0.0"
+    },
+    {
+      "suite": "com.zencas.edhr.production.controller.FormProjectionAuthorizationTest",
+      "classname": "com.zencas.edhr.production.controller.FormProjectionAuthorizationTest",
+      "name": "businessFiltersRejectLookupItemsAndRolesFromOtherModelsBeforeReadingData",
+      "outcome": "passed",
+      "time": "0.057"
+    },
+    {
+      "suite": "com.zencas.edhr.production.controller.FormProjectionAuthorizationTest",
+      "classname": "com.zencas.edhr.production.controller.FormProjectionAuthorizationTest",
+      "name": "reportReaderCannotRetryOrReadDhrWithoutThosePermissions",
+      "outcome": "passed",
+      "time": "0.006"
+    },
+    {
+      "suite": "com.zencas.edhr.production.controller.FormProjectionAuthorizationTest",
+      "classname": "com.zencas.edhr.production.controller.FormProjectionAuthorizationTest",
+      "name": "administrativePermissionsDoNotReplaceSourcePermissions",
+      "outcome": "passed",
+      "time": "0.003"
+    },
+    {
+      "suite": "com.zencas.edhr.production.controller.FormProjectionAuthorizationTest",
+      "classname": "com.zencas.edhr.production.controller.FormProjectionAuthorizationTest",
+      "name": "reportPermissionAloneCannotReadProductionSourceOrCount",
+      "outcome": "passed",
+      "time": "0.004"
+    },
+    {
+      "suite": "com.zencas.edhr.production.controller.TraceReportAuthorizationTest",
+      "classname": "com.zencas.edhr.production.controller.TraceReportAuthorizationTest",
+      "name": "authorizedForwardQueryDoesNotNeedLookupCatalog",
+      "outcome": "passed",
+      "time": "0.016"
+    },
+    {
+      "suite": "com.zencas.edhr.production.controller.TraceReportAuthorizationTest",
+      "classname": "com.zencas.edhr.production.controller.TraceReportAuthorizationTest",
+      "name": "formReadersCannotReadDhrRowsCountsOrDetails",
+      "outcome": "passed",
+      "time": "0.003"
+    },
+    {
+      "suite": "com.zencas.edhr.production.controller.TraceReportAuthorizationTest",
+      "classname": "com.zencas.edhr.production.controller.TraceReportAuthorizationTest",
+      "name": "dhrPermissionDoesNotReplaceFormAndProductionAccess",
+      "outcome": "passed",
+      "time": "0.003"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "yamlParserErrorsContainTheRepositoryRelativeFilePath(Path)",
+      "outcome": "passed",
+      "time": "0.111"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "unknownScalarCollectionsAreRejected",
+      "outcome": "passed",
+      "time": "0.401"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "explicitFactReferencesCannotBeUsedAsPredicateExpectations",
+      "outcome": "passed",
+      "time": "0.281"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "factCatalogCannotBeBypassedByOmittingProfile",
+      "outcome": "passed",
+      "time": "0.191"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "conditionGroupsRejectAdditionalFields",
+      "outcome": "passed",
+      "time": "0.132"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[1]",
+      "outcome": "passed",
+      "time": "0.118"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[2]",
+      "outcome": "passed",
+      "time": "0.088"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[3]",
+      "outcome": "passed",
+      "time": "0.067"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "repositoryRootCanBeLocatedFromRootBackendAndIdeWorkingDirectories",
+      "outcome": "passed",
+      "time": "0.007"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "invalidRuleResultTypesAreRejected",
+      "outcome": "passed",
+      "time": "0.094"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "nestedCollectionsAreDiscoveredFromSchemaMappings",
+      "outcome": "passed",
+      "time": "0.127"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "currentKnowledgeModelIsValid",
+      "outcome": "passed",
+      "time": "0.172"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[1]",
+      "outcome": "passed",
+      "time": "0.16"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[2]",
+      "outcome": "passed",
+      "time": "0.141"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[3]",
+      "outcome": "passed",
+      "time": "0.12"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "factsRequireProvenanceFields",
+      "outcome": "passed",
+      "time": "0.085"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "schemaCollectionMappingsMustCoverEveryRecordType",
+      "outcome": "passed",
+      "time": "0.067"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "verifiedInternalRecordsRequireExecutionContracts",
+      "outcome": "passed",
+      "time": "0.076"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "stringOperatorsRejectNonStringFacts",
+      "outcome": "passed",
+      "time": "0.088"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "malformedTopLevelCollectionsReportTheirDocument",
+      "outcome": "passed",
+      "time": "0.063"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "executionContractReferencesMustResolveEvenForNonVerifiedRules",
+      "outcome": "passed",
+      "time": "0.079"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "invalidStatusesAreRejected",
+      "outcome": "passed",
+      "time": "0.075"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "factCatalogRejectsOperatorNotAllowedByFact",
+      "outcome": "passed",
+      "time": "0.083"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "schemaRejectsNestedDescriptorMappingMismatch",
+      "outcome": "passed",
+      "time": "0.078"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "factValueTypesMustComeFromTheControlledVocabulary",
+      "outcome": "passed",
+      "time": "0.095"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "factNamesInStringsAreNeverImplicitlyDereferenced",
+      "outcome": "passed",
+      "time": "0.086"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "knownNestedCollectionsCannotAppearOnUndeclaredParentRecordTypes",
+      "outcome": "passed",
+      "time": "0.062"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "invalidConditionOperatorsAreRejected",
+      "outcome": "passed",
+      "time": "0.08"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[1]",
+      "outcome": "passed",
+      "time": "0.094"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[2]",
+      "outcome": "passed",
+      "time": "0.096"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[3]",
+      "outcome": "passed",
+      "time": "0.091"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[4]",
+      "outcome": "passed",
+      "time": "0.118"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[5]",
+      "outcome": "passed",
+      "time": "0.125"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[6]",
+      "outcome": "passed",
+      "time": "0.119"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[7]",
+      "outcome": "passed",
+      "time": "0.088"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[8]",
+      "outcome": "passed",
+      "time": "0.092"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "danglingEvidenceIdsAreRejected",
+      "outcome": "passed",
+      "time": "0.072"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "verifiedRulesCanReferenceValidRegisteredExecutionContracts",
+      "outcome": "passed",
+      "time": "0.095"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "invalidCardinalitiesAreRejected",
+      "outcome": "passed",
+      "time": "0.068"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "factCatalogRejectsUnknownSemanticAlias",
+      "outcome": "passed",
+      "time": "0.091"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "conditionNotGroupsRequireOneExpression",
+      "outcome": "passed",
+      "time": "0.085"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "enumFactsRequireAnExplicitNonEmptyValueSet",
+      "outcome": "passed",
+      "time": "0.088"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "numericComparisonRejectsStringFactEvenWhenItsOperatorIsListed",
+      "outcome": "passed",
+      "time": "0.088"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "schemaIdPrefixesMustCoverEveryRecordType",
+      "outcome": "passed",
+      "time": "0.077"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "nestedDuplicateIdsAreRejected",
+      "outcome": "passed",
+      "time": "0.086"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[1]",
+      "outcome": "passed",
+      "time": "0.093"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[2]",
+      "outcome": "passed",
+      "time": "0.091"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[3]",
+      "outcome": "passed",
+      "time": "0.088"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[4]",
+      "outcome": "passed",
+      "time": "0.084"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[5]",
+      "outcome": "passed",
+      "time": "0.084"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[6]",
+      "outcome": "passed",
+      "time": "0.082"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[7]",
+      "outcome": "passed",
+      "time": "0.09"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[8]",
+      "outcome": "passed",
+      "time": "0.1"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[9]",
+      "outcome": "passed",
+      "time": "0.085"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[10]",
+      "outcome": "passed",
+      "time": "0.08"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "conditionLeavesRejectAdditionalFields",
+      "outcome": "passed",
+      "time": "0.074"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "absoluteEvidencePathsAreRejectedEvenWhenTheyExist",
+      "outcome": "passed",
+      "time": "0.086"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "conditionGroupsMustBeNonEmpty",
+      "outcome": "passed",
+      "time": "0.101"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "unknownEmptyCollectionsAreRejected",
+      "outcome": "passed",
+      "time": "0.107"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "implementationAnchorsRejectUnknownProvenanceReviewStatus",
+      "outcome": "passed",
+      "time": "0.088"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "numericOperandsMustBeFinite",
+      "outcome": "passed",
+      "time": "0.111"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "currentKnowledgeBaselineUsesTheTypedFactSchema",
+      "outcome": "passed",
+      "time": "0.064"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "factReferenceObjectsMustUseTheExactOperandShape",
+      "outcome": "passed",
+      "time": "0.084"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "topLevelCollectionsAreDiscoveredFromSchemaMappings",
+      "outcome": "passed",
+      "time": "0.076"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "danglingTermIdsAreRejected",
+      "outcome": "passed",
+      "time": "0.064"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "verifiedRuntimeRecordsRequireEvidence",
+      "outcome": "passed",
+      "time": "0.095"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "schemaCollectionMappingsRejectDuplicateTargetsDeterministically",
+      "outcome": "passed",
+      "time": "0.053"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "recordIdsMustUseSchemaPrefixes(String, String)[1]",
+      "outcome": "passed",
+      "time": "0.071"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "recordIdsMustUseSchemaPrefixes(String, String)[2]",
+      "outcome": "passed",
+      "time": "0.1"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "normalizedEvidencePathsCannotEscapeRepository(Path)",
+      "outcome": "passed",
+      "time": "0.089"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "duplicateIdsAreRejected",
+      "outcome": "passed",
+      "time": "0.07"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "explicitFactOperandsMustHaveCompatibleTypes",
+      "outcome": "passed",
+      "time": "0.082"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "conditionValuesMustUseSchemaValueTypes",
+      "outcome": "passed",
+      "time": "0.075"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "schemaCollectionMappingsRejectUnknownRecordTypes",
+      "outcome": "passed",
+      "time": "0.053"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[1]",
+      "outcome": "passed",
+      "time": "0.078"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[2]",
+      "outcome": "passed",
+      "time": "0.061"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[3]",
+      "outcome": "passed",
+      "time": "0.068"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[4]",
+      "outcome": "passed",
+      "time": "0.063"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[5]",
+      "outcome": "passed",
+      "time": "0.068"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[6]",
+      "outcome": "passed",
+      "time": "0.062"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "explicitFactOperandsResolveIdsAndAliasesWithoutBeingTreatedAsClauses",
+      "outcome": "passed",
+      "time": "0.184"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "unknownNestedRecordCollectionsAreRejected",
+      "outcome": "passed",
+      "time": "0.077"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "unknownTopLevelCollectionsReportTheirDocumentAndSortedAllowedCollections",
+      "outcome": "passed",
+      "time": "0.056"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "missingEvidencePathsAreRejected",
+      "outcome": "passed",
+      "time": "0.079"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "explicitFactOperandsRejectUnknownReferences",
+      "outcome": "passed",
+      "time": "0.086"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "executionContractIdsUseSchemaPrefixes",
+      "outcome": "passed",
+      "time": "0.088"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "realEvidencePathsCannotEscapeRepositoryThroughSymlinks(Path)",
+      "outcome": "passed",
+      "time": "0.086"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "implementedRecordsCannotEnterCustomerProjection",
+      "outcome": "passed",
+      "time": "0.087"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "classname": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "name": "aliasesCannotShadowAnotherFactIdInEitherCollectionOrder",
+      "outcome": "passed",
+      "time": "0.156"
+    }
+  ]
+}
