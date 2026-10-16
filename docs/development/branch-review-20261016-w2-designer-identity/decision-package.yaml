@@ -1,0 +1,86 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261016-W2-DESIGNER-IDENTITY
+  scope: W2第四批；设计器导入、字段编辑和文档命令的来源身份保护；本次整改仅为插列遗漏字段/子表坐标同步。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 8a9cd91f62742e9469c785baee482129eb6ec84e
+    targetBranch: edhr-dev
+    targetCommit: 8a9cd91f62742e9469c785baee482129eb6ec84e
+    contractReadCommit: 8a9cd91f62742e9469c785baee482129eb6ec84e
+    uncommittedContractPaths: []
+  summary: 正常画布插列只移动cells/mergedCells而遗漏nodes，真实store及Chromium入口均复现错位；在唯一文档命令内同步几何和子表来源位置，保留字段身份、projection及单次撤销。不新增业务政策。
+  validationMaintenance: 相邻cell-display测试原引用不存在的MockFillPage；仅改为真实公开导出FormSheetPage，移除无效测试追加export，保留fixture和所有断言。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  existingPolicyReferences:
+    - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml#DEC-0077-12
+    - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml#DEC-0077-22
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: template-designer-document-command
+        change: 插列同步字段cellRange及compLeft/compWidth，子表ranges/anchor/groupRange，重建派生列偏移。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+    transitiveImpacts:
+      - area: canvas-source-selection-and-persistence
+        change: 同一字段与标签保持位置，仍以原fieldId映射；完整文档保存/解析与undo/redo必须保持。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts]
+    potentialImpacts:
+      - area: nested-and-subtable-layout
+        concern: 插入范围前或内部的节点、子列与记录组须同步；无单元格锚点的自由组件不应平移。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/subTableRegion.ts]
+    unaffectedAreas:
+      - area: production-workflow-and-final-projection
+        reason: 不改执行引擎、业务数量、正式生效、权限、签署及DHR状态。
+      - area: visual-design-system
+        reason: 不修改组件markup、token、主题、locale及共享交互原语。
+    compatibilityAndMigration: [不修改持久协议或历史实例，不恢复、迁移或补算历史；仅后续设计器插列命令生效。]
+    snapshotImpacts: [字段与投影绑定ID保持；保存当前设计不回写已有生产冻结快照。]
+    auditImpacts: [保留既有设计保存审计和完整文档history所有者，不增加异步或独立写入。]
+    permissionImpacts: [无权限入口或签署变更；不以组件浏览器替身验证冒充真实认证。]
+    testImpacts:
+      - scope: insert-columns-and-source-identity
+        scenarios: [字段前插列, 跨合并字段内部插列, 子表前和内部插列, 子列偏移, 递归节点与自由组件, 原ID与投影保留, 非当前页保留, 单次undo及redo, 保存重读]
+        evidenceReferences: [gmp-platform/frontend/scripts/test-designer-column-insertion.mjs]
+      - scope: real-canvas-interaction
+        scenarios: [正常右键菜单加键盘确认, 实际DOM位置, 桌面与窄屏, undo及redo, 既有保存失败与未保存保护]
+        evidenceReferences: [gmp-platform/frontend/scripts/test-designer-save-browser.mjs]
+    evidenceGaps: [浏览器使用实际Shell/Canvas/MUI/store，catalog和保存回调为受控替身；不作为真实后端/JPA/签署E2E。子列embedded snapshot同步疑点未实跑确认，留下一检查点。完整W2及全分支未完成。]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在现有store文档命令及坐标变换内局部补齐，与既有行插入/列删除同一所有者，不建立第二套状态或大模块重构。
+    ownershipBoundaries:
+      - owner: template-designer-store
+        responsibility: 单次文档命令及完整文档history。
+      - owner: subTableRegion
+        responsibility: 从节点与锚点重建派生字段偏移。
+  affectedFiles:
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts
+      changeType: update
+      reason: 同步插列节点和子表坐标。
+    - path: gmp-platform/frontend/scripts/test-designer-column-insertion.mjs
+      changeType: create
+      reason: 独立行为断言及可重放旧基线红证据。
+    - path: gmp-platform/frontend/scripts/test-designer-save-browser.mjs
+      changeType: update
+      reason: 复用实际Shell/Canvas浏览器框架补桌面和窄屏插列场景，保留旧用例。
+    - path: gmp-platform/frontend/scripts/test-cell-display-components.mjs
+      changeType: update
+      reason: 修正旧组件重命名后的测试入口，使原动态行序号断言实际运行，不改变断言或生产页面。
+  acceptanceScenarios:
+    - id: scenario.designer-column-insertion-source-alignment
+      given: 合法字段或子表已放置于画布，并配置来源
+      when: 正常菜单在范围前或内部插入列
+      then: 单元格、合并范围、组件、子表及子列偏移同步；ID和来源保持，其他页与自由组件不受影响。
+      evidenceRequirements: [实际生产store行为回归, Chromium真实菜单及DOM几何, 旧基线红与候选绿]
+    - id: scenario.designer-column-insertion-history
+      given: 插列前完整设计已保存
+      when: 插列、撤销、重做、序列化重读
+      then: 一次命令对应一次history，完整文档与原来源ID保持，撤销返回已保存状态。
+      evidenceRequirements: [完整文档比较, 序列化重读断言, 真实浏览器undo/redo]

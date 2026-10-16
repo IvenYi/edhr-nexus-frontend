@@ -1,0 +1,126 @@
+{
+  "recordedAt": "2026-10-16T07:20:16.447761+00:00",
+  "sourceHead": "8a9cd91f62742e9469c785baee482129eb6ec84e",
+  "workingTreeState": "dirty-with-batch-store-tests-and-review-docs",
+  "tests": {
+    "node": 94,
+    "browser": 7,
+    "failures": 0,
+    "skipped": 0,
+    "build": "passed-tsc-and-vite",
+    "browserHarness": "actual Shell/Canvas/MUI/Zustand, controlled catalog API and save callbacks",
+    "fullBackendAuthJpaSignature": "not-run-no-backend-change"
+  },
+  "redEvidence": {
+    "storeTests": 5,
+    "storeFailures": 5,
+    "browserExecutedFailingScenario": 1,
+    "browserExpectedColumn": 4,
+    "browserActualColumn": 3,
+    "source": "Original tracked production store at baseline; new tests only.",
+    "adjacentInitialRun": {
+      "tests": 94,
+      "passed": 93,
+      "failed": 1,
+      "reason": "Stale MockFillPage export in test harness; corrected to real FormSheetPage, assertions retained."
+    }
+  },
+  "retainedGlobalLimitations": [
+    {
+      "check": "npm run lint",
+      "exitCode": 2,
+      "reason": "Missing existing ESLint configuration"
+    },
+    {
+      "check": "verify-template-designer-react",
+      "exitCode": 1,
+      "reason": "Existing vendor/online-form-designer cache presence"
+    },
+    {
+      "check": "official premium strict",
+      "exitCode": 2,
+      "before": {
+        "errors": 84,
+        "total": 84,
+        "unresolved": 13,
+        "violations": 71,
+        "warnings": 0
+      },
+      "after": {
+        "errors": 84,
+        "total": 84,
+        "unresolved": 13,
+        "violations": 71,
+        "warnings": 0
+      },
+      "addedFindings": 0,
+      "removedFindings": 0,
+      "comparison": "Exact file/line/rule/category/severity/message equality; global audit remains failed."
+    }
+  ],
+  "rawArtifactsRemainTemporary": [
+    {
+      "file": "columns-red.log",
+      "bytes": 6044,
+      "sha256": "ede485b54b5d355116c0ef8ae8a3c02fd09073a0b2044a6717af83d80ba876a4"
+    },
+    {
+      "file": "columns-green.log",
+      "bytes": 700,
+      "sha256": "f16e6b9d862e3ff792750ade609ec4424936a7fcd03228370bbeaf734c302ef8"
+    },
+    {
+      "file": "browser-red.log",
+      "bytes": 2175,
+      "sha256": "aca3c2fc36953464670768678138dba70376f499384df15f106ba8198544b662"
+    },
+    {
+      "file": "browser-final.log",
+      "bytes": 1446,
+      "sha256": "3564fd39d4fa4425cd5e6beef0aa06ee2b7f6961942fc6aacf31d592c67509c1"
+    },
+    {
+      "file": "frontend-tests.log",
+      "bytes": 11823,
+      "sha256": "cd6aafcd9f28dc422a3f8a92835531f14ba6ae10342dacd659b498d29350eec1"
+    },
+    {
+      "file": "frontend-final.log",
+      "bytes": 9536,
+      "sha256": "773d7f7a49985353916c393c4510b6822fc010ca9f162dd280ac00318c8ab8d1"
+    },
+    {
+      "file": "cell-display-green.log",
+      "bytes": 700,
+      "sha256": "8dacdaf5c6faa06a0da931b63a1fa52ad07339e2e97a457a1dd8c3b9f302617f"
+    },
+    {
+      "file": "build.log",
+      "bytes": 9335,
+      "sha256": "3826b20091bd5608181fdac2d9a8b8230718bd238453036974b0fe91c3b4bf61"
+    },
+    {
+      "file": "lint.log",
+      "bytes": 819,
+      "sha256": "ce1ab04f5660d6cb81c2cdf842c1d4dd91f6f5ee6932d4d486e157c45077d8d1"
+    },
+    {
+      "file": "verify-designer.log",
+      "bytes": 113,
+      "sha256": "ff22b6580b1b32845715d8f94e31718535f50444e0f583766f98e714a9b41f28"
+    },
+    {
+      "file": "premium-baseline.json",
+      "bytes": 34340,
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a"
+    },
+    {
+      "file": "premium-final.json",
+      "bytes": 34340,
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a"
+    }
+  ],
+  "sourceVerification": "1843 fixed paths inventory-only; source-map methods only, not complete W2",
+  "independentVerification": "pending-frozen-candidate",
+  "cloudSetup": "Existing dependencies and /usr/bin/chromium reused, no new configuration draft required."
+}
