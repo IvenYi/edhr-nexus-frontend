@@ -103,7 +103,7 @@ export default function TemplateDesignerReactShell({
     const currentDocument = useTemplateDesignerStore.getState().document;
     if (!currentDocument) return;
     await persist(serializeTemplateDesignerDocument(currentDocument));
-    markSaved();
+    markSaved(currentDocument);
   };
 
   const handleSave = async () => {

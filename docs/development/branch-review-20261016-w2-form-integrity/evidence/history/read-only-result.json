@@ -1,0 +1,204 @@
+{
+  "schema": "edhr-w2-readonly-history-assistance-v1",
+  "knowledgeBaselineVersion": "0.3.25",
+  "contractBaseline": {
+    "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+    "contractReadCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+    "uncommittedContractPaths": []
+  },
+  "scope": "Read-only W2 history deduplication, source/test navigation, inventory identity verification and optional decomposition planning.",
+  "role": "read-only-assistance; not final independent quality",
+  "inventoryResult": "inventory-verification.json",
+  "findingsReport": "history-and-test-map.md",
+  "sourceEvidence": [
+    {
+      "path": "AGENTS.md",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "codeplzreadme.md",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "2e7e18097620e602c4408b83f71404fae346f8be",
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "ca0833a2c1f2544091b5f74b3de4eda88342ea37",
+      "sha256": "2f413b4f846f1c87f90d3e563827fd4f8230d907fc6e5d0dc1454b25c146ff26",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "8b77bd25598fc0aa7e03da2d10f23215b6252e2e",
+      "sha256": "240025fe24927b141cefef45e641b1f88673bb8352ce59221cf9cbc8bc0b12c4",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "0b621715fc3b381aa492fafe38b7db1278eab46a",
+      "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "docs/development/branch-review-20261015/structure/refactor-plan.md",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "401cfa3083f66a6fe07ee04b4509ca7dc6271ef1",
+      "sha256": "537eab7186b450076b95c97d58ae90aedcef0bced8ddc20dcf981b4001220f9d",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "2aefbf9737ce58110c59993bd28fae118a476a15",
+      "sha256": "41c9d82177d0a03b0babfec20ec6b2295c4aeb9346bf65e7061f4126f30cd31a",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "96605724a1edb226b8978d10fc74bef72054c919",
+      "sha256": "807c8abd57e9047cf706acc05cd47c51349b23111f424b3c19f03422357f4321",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "3b84f63f4c5674408ea63d52a50a52efe3651bd3",
+      "sha256": "b2604820abeee0e7b0294db192427d5a9553ee6740ac93fa24fe34cd1b64c003",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "9d5193a6fb10531c7692472d0acf6b1bf639d20d",
+      "sha256": "babf7d1e039cef91c7d2c3b2b16711934be0d3f43cefa2ffcfdff8d0f9654c2b",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "26076537400f1fc353aac8b588949c16732da489",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "2ec5036c15636e9d2149a99f0f0df0e2b240e739",
+      "sha256": "aabe8d929f055c2b9f502760716d99c79806077f8cbee283579c7633b5b3ac9a",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "f57ee7650921a902a9a00de6206b2d555ee8df04",
+      "sha256": "fc38c5494efda78ee81eddadb82c403386932e06c6ff3323eca506365c823284",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "04207489d3c1e9724f6a3185dd0256c3f34db347",
+      "sha256": "a51be81fb3f639e7b2586289dd808ff6cee2c8aaf86a2965fb626277fea990d5",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "f653346dc380b0f897d9e4d8602a209905754089",
+      "sha256": "8ec94d44a00b875a66d12f7fa4961fdbc59d98742cff205cdacb2de72d4464e5",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "9fe1ffd85be746b5e158472658cbc1c1e4ac7ed2",
+      "sha256": "2be98ada6ce0549c20b32bdaa4a27345fbaeff16bfadffef8d09ae2c8df26452",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "5a566444bdabdad4f8371730bf153bd73d051ee9",
+      "sha256": "b4f620dd8093972d4abf59204b97374611eb7570513cce936181364811d1b47a",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java",
+      "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+      "blob": "09639444c1da640d990d6443a9b65fc654508c95",
+      "sha256": "fecd3763b9a44f4bd73258002d1a01b2b2575f54a093d72b64a809de317ae1f8",
+      "worktreeBytesMatchBaseline": true,
+      "readDepth": "targeted-source-and-navigation-inspection",
+      "wholeFileReviewComplete": false
+    }
+  ],
+  "newRuntimeChecks": [],
+  "modifications": [],
+  "knowledgeSynchronization": "not-modified",
+  "qualityResult": null,
+  "prohibitedActionsNotPerformed": [
+    "Maven",
+    "browser",
+    "build",
+    "GitHub Actions",
+    "database",
+    "repository edits",
+    "tool configuration edits",
+    "merge",
+    "deployment"
+  ],
+  "qualification": "No qualityResult passed claim. Historical source shapes were re-located; unexecuted runtime hypotheses remain unconfirmed."
+}

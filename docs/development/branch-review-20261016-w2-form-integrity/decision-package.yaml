@@ -1,0 +1,98 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261016-W2-FORM-INTEGRITY
+  scope: edhr-dev W2第一批；表单设计保存/撤销/序列化，填报保存—最终完成—过程追溯及正式来源读取链的定向审查与确定性整改
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 9542cb4cc2071df2c00129cc5dbb4572a245cfa1
+    targetBranch: edhr-dev
+    targetCommit: 9542cb4cc2071df2c00129cc5dbb4572a245cfa1
+    contractReadCommit: 9542cb4cc2071df2c00129cc5dbb4572a245cfa1
+    uncommittedContractPaths: []
+  summary: 修复设计器成功回调误把请求期间未发送修改标为已保存的竞态；定向映射设计—保存—完成—追溯链，不新增业务政策、不恢复历史、不自动合并或部署。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  existingPolicyReferences:
+    - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+    - docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml
+    - docs/knowledge/decisions/DEC-0034-form-renderer-field-permission-contract.yaml
+    - docs/knowledge/decisions/DEC-0060-form-reference-runtime.yaml
+  inferred:
+    - id: inference.w2-save-acknowledges-request-document
+      statement: 保存成功只确认该请求实际序列化的完整文档；其他模板/版本的延迟确认不替换当前基线。
+      rationale: 恢复现有未保存提示与统一撤销语义，不新增保存资格或业务规则。
+      relatedIds: [DEC-0077-22, DEC-0077-12]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: template-designer
+        change: Shell将成功请求捕获的完整文档交给store.markSaved；后续本地编辑继续dirty，统一撤销/重做按成功请求文档比较。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+      - area: form-instance
+        change: 核对草稿保存、最终完成与冻结来源边界，不以现有代码推定新业务资格。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java]
+    transitiveImpacts:
+      - area: trace-and-statistics
+        change: 保存后的过程追溯及最终完成后的正式记录可能受来源文档/值一致性影响；逐方法核对。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]
+    potentialImpacts:
+      - area: renderer-and-history
+        concern: 主表/子表身份、数量空值及已保存来源定位存在相邻风险，须回到源码及现有回归，不能仅凭历史线索确认缺陷。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: record-control
+        reason: 用户已明确变更/作废尚未实现，其依赖项暂缓，不能在本批补造生效链。
+    compatibilityAndMigration:
+      - 无历史恢复、迁移或业务数据重算授权；本批不改写既有实例。
+    snapshotImpacts:
+      - 保持START及ATTACH_FORM使用时冻结配置、最终完成正式来源和历史读取边界；如发现需改快照语义必须先查明依据。
+    auditImpacts:
+      - 保持既有签署与审计，不以投影成功或界面操作取代原始证据。
+    permissionImpacts:
+      - 保持来源权限、字段权限、完成资格和现有授权域；草稿免业务完整性校验不免安全检查。
+    testImpacts:
+      - scope: W2定向链
+        scenarios: [文档往返与撤销重做, 草稿和最终完成边界, 保存后可查与正式来源冻结, 数量与缺失值]
+        evidenceReferences: []
+    evidenceGaps:
+      - 已完成本批列明的定向方法映射；完整W2、所有编辑命令与真实HTTP/数据库全链尚未验收。
+      - 复杂OR、跨子表组合、自由文本身份解析、表头共享及A12历史视图遵守现有未决问题，不用默认值填补。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 若证实通用表单能力缺陷，在现有文档命令及表单记录所有者内最小修正，不引入客户条件分支或通用规则引擎。
+    ownershipBoundaries:
+      - owner: template-designer
+        responsibility: 设计文档、来源映射、单次编辑命令与统一撤销历史。
+      - owner: production-form-records
+        responsibility: 合法保存、最终完成、来源快照、过程追溯与正式投影。
+  affectedFiles:
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts
+      changeType: update
+      reason: 保存确认绑定实际成功请求文档，保护其他模板/版本的当前保存基线。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx
+      changeType: update
+      reason: 手动保存与字段自动保存共用入口明确传递请求所捕获文档。
+    - path: gmp-platform/frontend/scripts/test-designer-save-state.mjs
+      changeType: create
+      reason: 真实store行为、序列化、统一撤销及跨模板/版本延迟确认回归。
+    - path: gmp-platform/frontend/scripts/test-designer-save-browser.mjs
+      changeType: create
+      reason: 真实Shell与Canvas键盘输入、延迟保存回调、关闭提示及失败重试回归；API和保存回调均为隔离fixture。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      changeType: read-only
+      reason: 保存/动作事务及记录同步入口。
+  acceptanceScenarios:
+    - id: scenario.w2-request-a-does-not-acknowledge-unsent-b
+      given: 设计器发送文档A保存请求，响应尚未返回。
+      when: 用户继续通过画布编辑为B，随后A成功，点击关闭。
+      then: A仍是成功请求内容，B保持未保存并出现关闭确认；实际再保存B成功才解除提示。
+      evidenceRequirements: [旧组件红复现, 真实组件浏览器绿回归, 新实例独立验证]
+    - id: scenario.w2-save-baseline-history-and-context
+      given: 保存A期间发生后续编辑、撤销重做或切换模板/版本。
+      when: A的成功确认返回，或保存失败后重试。
+      then: 撤销回A后clean、重做B后dirty；其他模板/版本保存基线不受A确认影响；失败保留内容及dirty并可重试。
+      evidenceRequirements: [真实store回归, 序列化往返, 浏览器保存失败及键盘交互]

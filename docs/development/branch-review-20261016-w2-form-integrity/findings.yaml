@@ -1,0 +1,24 @@
+findings:
+  - id: W2-F001-SAVE-ACK
+    severity: high
+    status: fixed-awaiting-independent
+    scope: 共用React表单设计器的手动保存与字段自动保存确认。
+    trigger: 发出文档A的保存请求后，在请求完成前继续编辑成B；A成功后关闭设计器。
+    expected: 仅A被确认已保存，未发送的B仍dirty并触发关闭确认。
+    actualBefore: 实际Chromium中请求payload只有A，随后实际画布键盘编辑B；A返回后点击关闭直接退出，__closed为1而预期0，B未保存提示缺失。
+    rootCause: Shell捕获并序列化currentDocument后await持久化，回调无参数markSaved却读取此时store的最新document，把未发送修改纳入savedSnapshot。
+    remediation: markSaved可接受实际成功请求文档，Shell共用持久化入口传捕获文档；模板或版本不同的延迟确认不替换当前savedSnapshot。
+    policyReferences: [DEC-0077-22, DEC-0077-12]
+    engineeringChoice: 保存确认绑定请求快照是现有保存语义的纠错，不是新增发布、校验或冻结政策。
+    backendProductionChanged: false
+    apiOrSchemaChanged: false
+    historicalDataChanged: false
+    freshIndependentRequired: true
+    integrationStatus: review-branch-only
+remainingScope:
+  fullW2: not-complete
+  fullBranchAudit: not-complete
+  productionRelease: not-approved
+  recordControlChangeAndVoid: deferred-by-user-until-upstream-implementation
+  oldDhrHighItems: remain-open
+  otherHistoricalClues: historical-read-only-map-no-new-runtime-finding
