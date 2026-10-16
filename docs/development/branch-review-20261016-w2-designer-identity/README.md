@@ -1,5 +1,7 @@
 # W2第四批：设计器插列与来源身份
 
+交付：[PR13](https://github.com/IvenYi/edhr-nexus-frontend/pull/13)，目标edhr-dev，待用户人工合并。实际独立受测提交为8450aa78；其后仅L0证据登记和交付链接，不冒称重新执行测试。
+
 PR12已由用户人工合并。最新拉取基线8a9cd91f62742e9469c785baee482129eb6ec84e，合并树与批准交付0eb8d241完全相同；项目、角色、知识及架构无额外漂移，知识0.3.25。1843条路径/blob均为pending/inventory-only，未把盘点、历史验收或定向源码阅读等同全量完成。
 
 本批为L2。实际核对导入、字段/子表编辑、文档结构命令、来源映射、保存与完整文档撤销链，方法范围见[source-map.md](source-map.md)，辅助原文见[evidence/inventory-review.md](evidence/inventory-review.md)。当前文件导入为Excel/Word，JSON是持久协议，不把手工坏JSON当合法导入；字段停用或类型不匹配保留原来源ID并经前后端校验，不随意清空绑定。
