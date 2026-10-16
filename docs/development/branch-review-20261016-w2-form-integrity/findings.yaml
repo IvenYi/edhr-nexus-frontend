@@ -1,7 +1,9 @@
 findings:
   - id: W2-F001-SAVE-ACK
     severity: high
-    status: fixed-awaiting-independent
+    status: resolved
+    verifiedCandidate: 6db50c935d81d9601bf0e8e1212c28f0c4499bfa
+    independentResult: evidence/independent/qualityResult.yaml
     scope: 共用React表单设计器的手动保存与字段自动保存确认。
     trigger: 发出文档A的保存请求后，在请求完成前继续编辑成B；A成功后关闭设计器。
     expected: 仅A被确认已保存，未发送的B仍dirty并触发关闭确认。
@@ -14,7 +16,7 @@ findings:
     apiOrSchemaChanged: false
     historicalDataChanged: false
     freshIndependentRequired: true
-    integrationStatus: review-branch-only
+    integrationStatus: awaiting-manual-merge
 remainingScope:
   fullW2: not-complete
   fullBranchAudit: not-complete

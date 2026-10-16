@@ -1,0 +1,38 @@
+{
+  "testedCommit": "6db50c935d81d9601bf0e8e1212c28f0c4499bfa",
+  "node": {
+    "tests": 79,
+    "passed": 79,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "scenarios": 5,
+    "passed": 5,
+    "fixtureBoundaries": "actual Shell/Canvas, controlled saving callback and catalog GET APIs"
+  },
+  "backend": {
+    "tests": 34,
+    "passed": 34,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "buildExitCode": 0,
+  "designerWorkspaceExitCode": 1,
+  "designerTrackedExportExitCode": 0,
+  "eslintExitCode": 2,
+  "premiumStrictExitCodes": [
+    2,
+    2
+  ],
+  "noActionsQueriedOrTriggered": true,
+  "fullW2Accepted": false,
+  "fullBranchAuditAccepted": false,
+  "productionReleaseApproved": false,
+  "screensViewedByIndependent": [
+    "screens/save-in-flight-desktop.png",
+    "screens/save-in-flight-narrow.png"
+  ],
+  "narrowScope": "390px warning dialog and keyboard access only; existing canvas/header clipping is not certified mobile adaptation"
+}

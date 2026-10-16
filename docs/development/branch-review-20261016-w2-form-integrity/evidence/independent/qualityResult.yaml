@@ -1,0 +1,242 @@
+qualityResult:
+  result: passed
+  baseCommit: 9542cb4cc2071df2c00129cc5dbb4572a245cfa1
+  headCommit: 6db50c935d81d9601bf0e8e1212c28f0c4499bfa
+  contractBaseline:
+    sourceCommit: 6db50c935d81d9601bf0e8e1212c28f0c4499bfa
+    targetBranch: edhr-dev
+    targetCommit: 9542cb4cc2071df2c00129cc5dbb4572a245cfa1
+    contractReadCommit: 6db50c935d81d9601bf0e8e1212c28f0c4499bfa
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.independent-candidate-baseline
+    required: true
+    category: documentation
+    description: 独立获取目标、核对实际完整候选和契约增量
+    method: command
+    command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git diff base..head -- AGENTS.md docs/agents
+      docs/knowledge docs/architecture DESIGN.md docs/frontend
+    outcome: passed
+    evidence:
+    - baseline-verification.json
+    - 实际 base/target=9542cb4cc2071df2c00129cc5dbb4572a245cfa1; feature/head/tested=6db50c935d81d9601bf0e8e1212c28f0c4499bfa;
+      target 是候选祖先，候选工作树干净，契约/知识/架构/设计增量为空。
+  - id: check.policy-and-ontology-scope
+    required: true
+    category: ontology
+    description: 以现有保存/撤销、冻结与过程/正式来源政策核对本体处置及未决范围
+    method: inspection
+    command: 定向读取相关DEC、知识README/open-questions及ontologyResult，与两处实际生产差异比较
+    outcome: passed
+    evidence:
+    - source-review.md
+    - 既有知识0.3.25，未新增业务政策、数量标准、发布冻结或知识成熟度；not-applicable准确。
+  - id: check.original-source-and-impact
+    required: true
+    category: requirements
+    description: 源码复核实际请求确认、同文档历史及相邻来源读写链
+    method: inspection
+    command: git diff base..head -- gmp-platform; 读取两处生产方法、实际宿主mutation及列明后端/来源方法
+    outcome: passed
+    evidence:
+    - source-review.md
+    - 两个生产路径局部修复、两个新真实回归脚本；无后端生产/API/schema/业务资格变化，完整W2仍待审。
+  - id: check.frontend-behavior
+    required: true
+    category: regression
+    description: 实际真实store行为/序列化和相邻SSR/函数回归
+    method: automated-test
+    command: node --test scripts/test-designer-save-state.mjs scripts/test-projection-panel.mjs scripts/test-quick-sub-table.mjs
+      scripts/test-sheet-cell-transfer.mjs scripts/test-field-business-purpose.mjs scripts/test-runtime-row-values.mjs
+      scripts/test-form-document-preview.mjs scripts/test-projection-source-editor.mjs
+    outcome: passed
+    evidence:
+    - node.log
+    - case-index.json
+    - 79 tests,79 passed,0 failed/cancelled/skipped; 全部在实际干净6db候选执行。
+  - id: check.browser-and-targeted-visual
+    required: true
+    category: visual
+    description: 实际Shell/Canvas键盘输入、异步保存、关闭确认、失败重试与截图亲看
+    method: browser
+    command: CHROME_PATH=/workspace/.pr6-playwright/chromium-1208/chrome-linux64/chrome W2_SCREENSHOT_DIR=/tmp/edhr-w2-independent-20261016/screens
+      W2_RESULT_PATH=/tmp/edhr-w2-independent-20261016/browser-result.json node scripts/test-designer-save-browser.mjs
+    outcome: passed
+    evidence:
+    - browser.log
+    - browser-result.json
+    - screens/save-in-flight-desktop.png
+    - screens/save-in-flight-narrow.png
+    - 5/5真实组件场景通过；截图已亲看。保存与目录接口为fixture，390px仅确认框和键盘可达，大画布移动适配不在通过范围。
+  - id: check.old-source-red-reproduction
+    required: true
+    category: regression
+    description: 使用同一最终测试只读加载旧组件复现原缺陷
+    method: automated-test
+    command: W2_BASELINE_COMMIT=9542cb4cc2071df2c00129cc5dbb4572a245cfa1 W2_CASE_FILTER='edits during save' node
+      scripts/test-designer-save-browser.mjs; 同BASELINE环境node --test scripts/test-designer-save-state.mjs
+    outcome: passed
+    evidence:
+    - baseline-browser-red.log
+    - baseline-store-red.log
+    - 旧浏览器实际closed=1、期望0，exit1；旧store五项4红1绿。候选对应全部通过；无修改源码/测试/断言。
+  - id: check.backend-adjacent
+    required: true
+    category: integration
+    description: 直接引擎、解释器、过程提取、阶段与快照既有相邻回归
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -o -Dtest=ProductionExecutionFormValuesTest,FormTraceIndexServiceTest,FormProjectionInterpreterTest,FormInstanceRecordStageTest,FormFillSnapshotTest
+      test
+    outcome: passed
+    evidence:
+    - backend.log
+    - backend-result.json
+    - case-index.json
+    - 34 tests,0 failures/errors/skips，5 XML逐例核对；直接Java/Mockito/H2，不是实际PG或管理HTTP全链。
+  - id: check.frontend-build
+    required: true
+    category: regression
+    description: 完整TypeScript和Vite构建
+    method: command
+    command: npm run build
+    outcome: passed
+    evidence:
+    - build.log
+    - tsc -b与Vite均通过，exit0。
+  - id: check.original-designer-verifier-on-exact-tracked-export
+    required: true
+    category: regression
+    description: 保留原工作区缓存失败并验证实际候选全部跟踪前端字节的隔离导出
+    method: command
+    command: git archive 6db50c935d81d9601bf0e8e1212c28f0c4499bfa gmp-platform/frontend; 逐blob比对; 在导出中 node scripts/verify-template-designer-react.mjs
+    outcome: passed
+    evidence:
+    - tracked-export-verification.json
+    - designer-tracked.log
+    - designer-workspace.log
+    - 候选343份前端文件逐字节等于候选blob；只链接node_modules，原未修改脚本exit0，原工作区vendor缓存exit1另列非通过。
+  - id: check.inventory-and-method-evidence
+    required: true
+    category: documentation
+    description: 独立核对固定清单分母及实际方法记录，不冒充全量语义审查
+    method: command
+    command: python3 verify-evidence.py inventory/record assertions
+    outcome: passed
+    evidence:
+    - inventory-verification.json
+    - 1606 UTF-8路径/blob与9542完整源树一一相等，全部pending/inventory-only；12方法记录基线blob、当前SHA及符号匹配，wholeFileReviewComplete均false。
+  - id: check.primary-evidence-provenance
+    required: true
+    category: audit
+    description: 回核主侧原始证据及候选字节，区分主侧未提交运行与独立候选运行
+    method: command
+    command: python3 verify-evidence.py primary log/XML/source SHA assertions
+    outcome: passed
+    evidence:
+    - main-evidence-verification.json
+    - 11日志和5保留XML的SHA均匹配，主侧4代码/测试字节等候选；主侧运行HEAD是9542+dirty，独立实际运行HEAD6db+clean。1条inspect-xml摘要是保守分类，原始及独立XML均通过。
+  - id: check.premium-existing-delta
+    required: true
+    category: visual
+    description: 独立原官方strict扫描比较新增影响
+    method: command
+    command: python3 /tmp/edhr-w2-audit-project-20261016.py <baseline/candidate frontend> --mode strict --output
+      <independent json>
+    outcome: passed
+    evidence:
+    - premium-baseline.json
+    - premium-candidate.json
+    - premium-delta.json
+    - 工具SHA67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68；前后均26项(13 unresolved+13 violation)，added/removed均空。全局strict仍failed。
+  - id: check.independence-and-readonly-protection
+    required: true
+    category: audit
+    description: 独立实例未参与修复且所有保护字节保持不变
+    method: command
+    command: 前后逐文件SHA256与git status，完整清单仅留/tmp
+    outcome: passed
+    evidence:
+    - readonly-protection.json
+    - 1632候选跟踪文件+2 Maven wrapper/settings共1634个前后SHA相等，干净工作树；未查询Actions、修改缓存、业务数据、规则、测试或配置。
+  - id: check.workspace-designer-cache
+    required: false
+    category: regression
+    description: 原工作区既有vendor缓存触发原检查失败，单独保留
+    method: command
+    command: node scripts/verify-template-designer-react.mjs
+    outcome: failed
+    evidence:
+    - designer-workspace.log
+    - 'exit1: vendor/online-form-designer: Vue designer vendor package must be removed；当前被测跟踪源码在独立相同blob导出通过。'
+  - id: check.global-eslint
+    required: false
+    category: regression
+    description: 现存ESLint配置缺失
+    method: command
+    command: npm run lint
+    outcome: blocked
+    evidence:
+    - lint.log
+    - exit2，ESLint未找到项目配置，在源代码检查前结束；不称lint通过。
+  - id: check.global-premium-strict
+    required: false
+    category: visual
+    description: 保留全前端既存未解决strict发现
+    method: command
+    command: 官方premium strict双侧扫描
+    outcome: failed
+    evidence:
+    - premium-baseline.json
+    - premium-candidate.json
+    - 前后均exit2、26项，归W5/W6，不称全局UI合规通过。
+  findings:
+  - id: W2-F001-SAVE-ACK
+    severity: high
+    scope: shared React form designer save acknowledgement
+    summary: 保存A成功把未发送B误标为已保存，可能无提示关闭丢失B；候选已修复并独立验证。
+    reproductionSteps:
+    - 使用9542原始Shell/store和最终同一脚本，真实F2键盘输入A并发起保存。
+    - 保存等待中真实编辑为B，再完成A请求并点击关闭。
+    expectedResult: B未发送应继续dirty并显示未保存确认；仅再保存B成功后解除。
+    actualResult: 旧组件closed=1而预期0；6db候选closed=0显示确认，重试保存B、undo/redo、失败及跨模板/版本store边界通过。
+    evidence:
+    - baseline-browser-red.log
+    - baseline-store-red.log
+    - browser-result.json
+    - case-index.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 6db50c935d81d9601bf0e8e1212c28f0c4499bfa
+    - type: command
+      reference: browser.log; node.log
+    - type: screenshot
+      reference: screens/save-in-flight-desktop.png
+  residualRisks:
+  - id: risk.batch-scope-only
+    description: 仅W2-F001及明确相邻方法/测试验收；其余W2和W0-W7全分支未完成。
+    impact: 不得由本报告宣称全量代码、权限、业务生命周期或生产发布已验收。
+    mitigation: 按仓库台账继续后续批次，保留1606清单pending。
+  - id: risk.old-dhr-a12-deferred
+    description: 两项旧DHR high仍open，A12表单变更/作废及依赖工作按用户确认暂缓。
+    impact: 完整证据影响和来源生效集成未闭环，不属于保存确认修复可解决或可豁免范围。
+    mitigation: 在上游记录控制实现后另批重新验收，当前不改规则或历史。
+  - id: risk.fixture-and-database-boundary
+    description: 浏览器保存/目录为隔离fixture；后端为直接Java、Mockito和H2。
+    impact: 未验证真实HTTP/PG事务、部署环境或完整授权矩阵。
+    mitigation: 范围表述限于实际运行，后续发布验收安排真实环境。
+  - id: risk.existing-global-checks
+    description: ESLint缺配置exit2、premium全局26项非通过；vendor缓存原工作区检查exit1。
+    impact: 不能宣称全局lint/UI strict或当前工作区全部脚本通过。
+    mitigation: 保留原始状态和相同候选blob隔离结果，W5/W6处理全球UI/工具欠账，不删除用户缓存。
+  - id: risk.narrow-existing-layout
+    description: 390px只验证关闭确认及键盘可达，现有头部/大画布仍裁切。
+    impact: 不构成整体移动适配或WCAG验收。
+    mitigation: 该既存布局范围留后续UI审查，本批未改样式。
+  blockingConditions: []

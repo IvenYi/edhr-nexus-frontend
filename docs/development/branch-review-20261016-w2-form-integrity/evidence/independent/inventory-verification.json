@@ -1,0 +1,148 @@
+{
+  "sourceCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+  "inventoryCount": 1606,
+  "actualSourceTreeCount": 1606,
+  "utf8PathsAndBlobPairsExact": true,
+  "allStatuses": "pending",
+  "allDepths": "inventory-only",
+  "textContentReviewedCount": null,
+  "semanticAuditCompletionClaim": false,
+  "selectedMethodRecordCount": 12,
+  "selectedMethodRecords": [
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx",
+      "symbols": [
+        "persistCurrentDocument",
+        "handleSave",
+        "handleFieldConfirmPersist",
+        "handleClose"
+      ],
+      "sha256": "fcb9b7af815bd33f5dc8976737da10039d0f2551357dd50b2f80d047a1ed406a",
+      "sourceBlobMatches": true,
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+      "symbols": [
+        "pushDocumentHistory",
+        "setProjectionBindings",
+        "updateSheetCellValue",
+        "undoCanvasChange",
+        "redoCanvasChange",
+        "markSaved",
+        "isDirty"
+      ],
+      "sha256": "7ae006fcad3e0b3eb40378c16ae4d629eab981c8672b6e2bd510f0c6a363a124",
+      "sourceBlobMatches": true,
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts",
+      "symbols": [
+        "normalizeModelField",
+        "normalizeModelState",
+        "createEmptyTemplateDesignerDocument",
+        "parseReactTemplateDesignerDocument",
+        "serializeTemplateDesignerDocument"
+      ],
+      "sha256": "41c9d82177d0a03b0babfec20ec6b2295c4aeb9346bf65e7061f4126f30cd31a",
+      "sourceBlobMatches": true,
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx",
+      "symbols": [
+        "saveDesignerPayload",
+        "autoSaveDesignerMutation",
+        "saveDesignerMutation"
+      ],
+      "sha256": "8ce2164244a15f77e8a3641f00f13108a238e507ea394f979c597f1d788bcb11",
+      "sourceBlobMatches": true,
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "symbols": [
+        "formRecords.saved",
+        "executions.saveAndFlush",
+        "audits.save"
+      ],
+      "sha256": "2be98ada6ce0549c20b32bdaa4a27345fbaeff16bfadffef8d09ae2c8df26452",
+      "sourceBlobMatches": true,
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "symbols": [
+        "formActionInternal",
+        "validateValues"
+      ],
+      "sha256": "9e7f4b66d43780b5294acac5fdd7f1893ec71073d71104ac634a6e4a8ca50e4a",
+      "sourceBlobMatches": true,
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java",
+      "symbols": [
+        "saved",
+        "savedStage",
+        "detail"
+      ],
+      "sha256": "b4f620dd8093972d4abf59204b97374611eb7570513cce936181364811d1b47a",
+      "sourceBlobMatches": true,
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java",
+      "symbols": [
+        "refresh",
+        "extract"
+      ],
+      "sha256": "878429f3a4e6c5056a30f91421a27ab7e6c58c092621a77841ae42e4de67353c",
+      "sourceBlobMatches": true,
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java",
+      "symbols": [
+        "completed",
+        "process",
+        "failed"
+      ],
+      "sha256": "fecd3763b9a44f4bd73258002d1a01b2b2575f54a093d72b64a809de317ae1f8",
+      "sourceBlobMatches": true,
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java",
+      "symbols": [
+        "query",
+        "instanceSource",
+        "source"
+      ],
+      "sha256": "9a7768be7d41b3a8773b4fb8f0ce4570efa43f7fc28f0b6d11102dd59ab46399",
+      "sourceBlobMatches": true,
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/reports/projectionSourceHighlight.ts",
+      "symbols": [
+        "sourceHighlight"
+      ],
+      "sha256": "ec90fe1e673e23dfdc1311df388fb1fa6696670535557359df71a2789cb2791a",
+      "sourceBlobMatches": true,
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx",
+      "symbols": [
+        "sourcePath",
+        "sourceChanged",
+        "sourceHighlight"
+      ],
+      "sha256": "f6bd112b584a3a37eb78fb9db34e6094139ed516ec12cf1717ed7540ca7105b6",
+      "sourceBlobMatches": true,
+      "wholeFileReviewComplete": false
+    }
+  ]
+}
