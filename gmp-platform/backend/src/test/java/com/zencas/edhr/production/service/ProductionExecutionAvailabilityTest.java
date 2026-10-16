@@ -112,6 +112,7 @@ class ProductionExecutionAvailabilityTest {
     }
 
     private ObjectNode read(ObjectNode snapshot, ObjectNode state) {
+        assertThat(object.getObjectType()).isEqualTo(snapshot.at("/context/objectType").asText());
         var execution = ProductionExecution.builder().objectId(1L).revision(3L).startedAt(LocalDateTime.of(2026, 10, 16, 0, 0))
                 .snapshotJson(snapshot.toString()).stateJson(state.toString()).build();
         when(executions.findById(1L)).thenReturn(Optional.of(execution));
@@ -150,6 +151,7 @@ class ProductionExecutionAvailabilityTest {
                  {"source":"entry","target":"e"}]}]}]}
             """);
         ((ObjectNode) snapshot.path("context")).put("objectType", objectType);
+        object.setObjectType(objectType);
         return snapshot;
     }
 }
