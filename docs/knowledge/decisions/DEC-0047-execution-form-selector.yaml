@@ -52,12 +52,18 @@ decisions:
         evidenceRequirements: [用户身份去重, 跨份窗口与隔离测试, 只读排除, 离开和过期测试]
     implementationDiscrepancies:
     - id: discrepancy.execution-form-plan-count-and-not-applicable-projection
-      status: open
+      status: resolved
       severity: medium
       visibility: internal
       path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
-      lineHint: 350
-      summary: 'provenance: original-evidence；未实例化的计划表单在抽屉仍显示共0份；后端 formAvailabilityStatus 先以工序非IN_PROGRESS返回WAITING_OPERATION_START，使已结束而未到达的作业表单可能不能投影NOT_APPLICABLE。应维持计划/实例区别及已结束不适用规范；本次未运行UI或实际实例回归。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。'
+      lineHint: 355
+      summary: >-
+        provenance: original-evidence；历史静态审读记录（保留当时范围）：未实例化的计划表单在抽屉仍显示共0份；后端 formAvailabilityStatus 先以工序非IN_PROGRESS返回WAITING_OPERATION_START，使已结束而未到达的作业表单可能不能投影NOT_APPLICABLE。应维持计划/实例区别及已结束不适用规范；本次未运行UI或实际实例回归。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。
+        2026-10-16以edhr-dev@41f19bca31a6232ae568dde073ef366c5d894e86为新审查基线另行取得真实红绿证据：合法条件分支跳过FORM、作业结束及工序正常完工后，public service.get原投影待开工；局部修复保持已有实例状态优先，无实例且作业已结束投影不适用，再判断工序待开工。实际React选择器的普通行和作业步骤tooltip不再对未实例化计划显示共0份，不捏造计划份数；非当前步骤已有份保留实际进行中或完成状态，缺少copyControls时按已结束作业解释无实例预览。原预览、当前动作、权限及实际多份计数保持。
+        本轮测试覆盖合法引擎到公开只读服务、GET不写库，以及现存END_FORM兼容口产生的已结束作业未完成选填份；该兼容验证不恢复已取消的显式结束按钮。浏览器验证使用实际组件及受控只读fixtures，不能冒充生产服务或数据库端到端验收。原静态审读未运行的历史不改写，DEC-0047及相关规则成熟度仍specified/internal；本差异收敛不代表W2全量审查、独立质量或知识运行投影已经完成。
       evidenceIds:
       - evidence.execution-form-selector-user-decision
       - evidence.production-execution-service-source
+      - evidence.execution-form-availability-read-regression
+      - evidence.execution-form-availability-selector-browser
+      - evidence.execution-form-availability-batch-validation

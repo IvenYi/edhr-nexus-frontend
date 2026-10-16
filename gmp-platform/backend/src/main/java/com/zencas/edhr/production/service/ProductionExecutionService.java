@@ -356,13 +356,13 @@ public class ProductionExecutionService {
         if (!ExecutionFormCopies.ids(operationState, formId).isEmpty()) {
             return ExecutionFormCopies.status(operationState, formId);
         }
+        if (form.has("workId") && "COMPLETED".equals(operationState.path("works").path(form.path("workId").asText()).path("status").asText())) {
+            return "NOT_APPLICABLE";
+        }
         if (!"IN_PROGRESS".equals(operationState.path("status").asText())) {
             return "WAITING_OPERATION_START";
         }
         if (form.has("workId")) {
-            if ("COMPLETED".equals(operationState.path("works").path(form.path("workId").asText()).path("status").asText())) {
-                return "NOT_APPLICABLE";
-            }
             return "WAITING_WORK_NODE";
         }
         return "PENDING";
