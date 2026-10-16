@@ -284,16 +284,19 @@ class ProductionExecutionIntegrationTest {
             action(object, "START", 0, "a", Map.of()).andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.operationOutputs.a.status").value("PENDING"));
             action(object, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", "0.1", "ng", "0.2", "scrap", 0)))
-                    .andExpect(status().isOk()).andExpect(jsonPath("$.data.operationOutputs.a.outputQuantity").value("0.3"))
+                    .andExpect(status().isOk()).andExpect(jsonPath("$.data.operationOutputs.a.outputQuantity").isEmpty())
+                    .andExpect(jsonPath("$.data.operationOutputs.a.goodQuantity").value("0.1"))
                     .andExpect(jsonPath("$.data.operationOutputs.b.status").value("NOT_CONFIGURED"));
         }
         jdbc.update("UPDATE form_template_version SET model_design_json='{}' WHERE id=5");
         int auditsBeforeRead = jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class);
         mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.operationOutputs.a.outputQuantity").value("0.3"))
+                .andExpect(jsonPath("$.data.operationOutputs.a.outputQuantity").isEmpty())
+                .andExpect(jsonPath("$.data.operationOutputs.a.goodQuantity").value("0.1"))
                 .andExpect(jsonPath("$.data.snapshot.operations[0].forms[0].fields[0].typeConfig.businessPurpose").value("PRODUCTION_GOOD"));
         action(101, "SAVE", 2, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 2, "ng", 1, "scrap", 0)))
-                .andExpect(status().isOk()).andExpect(jsonPath("$.data.operationOutputs.a.outputQuantity").value("3"));
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.operationOutputs.a.outputQuantity").isEmpty())
+                .andExpect(jsonPath("$.data.operationOutputs.a.goodQuantity").value("2"));
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isGreaterThan(auditsBeforeRead);
         assertThat(jdbc.queryForObject("SELECT good_quantity FROM production_object WHERE id=101", java.math.BigDecimal.class)).isEqualByComparingTo("0");
         String persisted = jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class);

@@ -1,0 +1,53 @@
+{
+  "production": {
+    "rows": 3,
+    "sum": "97",
+    "instances": [
+      "FR-20261015-000028",
+      "FR-20261015-000025",
+      "FR-20261015-000024"
+    ]
+  },
+  "consumption": {
+    "rows": 4,
+    "sum": "200",
+    "instances": [
+      "FR-20261015-000029",
+      "FR-20261015-000029",
+      "FR-20261015-000026",
+      "FR-20261015-000026"
+    ]
+  },
+  "scrap": {
+    "rows": 2,
+    "sum": "3",
+    "instances": [
+      "FR-20261015-000030",
+      "FR-20261015-000027"
+    ]
+  },
+  "formsforward": 7,
+  "dhrsforward": 2,
+  "formsreverse": 0,
+  "dhrsreverse": 1,
+  "reverseMatchedForms": 4,
+  "dhrB": {
+    "id": "13",
+    "number": "DHR-20261015-000013",
+    "records": 3,
+    "cleanInstances": [
+      "FR-20261015-000028"
+    ],
+    "completeness": "COMPLETE"
+  },
+  "dhrA": {
+    "id": "12",
+    "number": "DHR-20261015-000012",
+    "records": 4,
+    "cleanInstances": [
+      "FR-20261015-000024",
+      "FR-20261015-000025"
+    ],
+    "completeness": "COMPLETE"
+  }
+}

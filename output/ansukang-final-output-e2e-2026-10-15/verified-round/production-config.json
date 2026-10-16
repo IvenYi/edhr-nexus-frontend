@@ -1,0 +1,290 @@
+{
+  "process": {
+    "id": "386188645280583680",
+    "version": "V1.0",
+    "productionMode": "量产",
+    "productionForm": "批次",
+    "routeVersionId": "386188644974399488",
+    "routeName": "安速康新轮模拟·刀头验证路线",
+    "routeCode": "ASK-FINAL-20261015-R",
+    "routeVersion": "V1.0",
+    "dhrTemplateVersionId": "386188645100228608",
+    "dhrTemplateName": "安速康新轮模拟·刀头DHR",
+    "dhrTemplateCode": null,
+    "dhrTemplateVersion": "V1.0",
+    "dhrReviewMode": "NONE",
+    "dhrReviewWorkflowDefinitionId": null,
+    "dhrReviewWorkflowVersionId": null,
+    "description": "新原表模拟；清洁显式最终产出，多次报工累计，单位件手填",
+    "effectiveFrom": "2026-10-15T00:00:00",
+    "effectiveTo": null,
+    "status": "ACTIVE",
+    "createdBy": "系统管理员",
+    "createdAt": "2026-10-15T22:29:08.072141",
+    "updatedBy": "系统管理员",
+    "updatedAt": "2026-10-15T22:29:08.072142",
+    "operations": [
+      {
+        "id": "386188645314138112",
+        "routeNodeKey": "op1",
+        "operationId": "386188644890513408",
+        "operationCode": "ASK-FINAL-20261015-OP1",
+        "operationName": "安速康新轮模拟·末道清洁",
+        "sortOrder": 1,
+        "forms": [
+          {
+            "id": "386188645318332416",
+            "dhrTemplateItemId": "386188645188308992",
+            "formTemplateVersionId": "386185810564419584",
+            "templateName": "安速康新轮模拟·刀头末道清洁",
+            "templateCode": "ASK-FINAL-20261015-CLEAN",
+            "version": "V1.0",
+            "required": true,
+            "sortOrder": 1,
+            "fillSettings": {
+              "fillMode": "DIRECT",
+              "directFillConfig": {
+                "defaultPermission": "EDIT",
+                "conflictPolicy": "READ_ONLY_FIRST",
+                "guardMode": "BLOCK_ON_INVALID",
+                "buttons": [
+                  {
+                    "id": "save",
+                    "action": "SAVE",
+                    "label": "暂存",
+                    "visible": true,
+                    "style": "DEFAULT"
+                  },
+                  {
+                    "id": "submit",
+                    "action": "SUBMIT",
+                    "label": "签署并提交",
+                    "visible": true,
+                    "style": "PRIMARY"
+                  }
+                ],
+                "buttonEvents": [
+                  {
+                    "id": "operator-sign",
+                    "event": "BEFORE",
+                    "action": "SUBMIT",
+                    "builtin": "FILL_SIGN_FIELD",
+                    "signatureMethod": "ACCOUNT_PASSWORD"
+                  }
+                ],
+                "eventBindings": {
+                  "entry:operator-sign": {
+                    "fieldId": "operator"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "documents": [],
+        "finalOutput": true
+      },
+      {
+        "id": "386188645314138113",
+        "routeNodeKey": "op2",
+        "operationId": "386188644924067840",
+        "operationCode": "ASK-FINAL-20261015-OP2",
+        "operationName": "安速康新轮模拟·标签说明书领用",
+        "sortOrder": 2,
+        "forms": [
+          {
+            "id": "386188645322526720",
+            "dhrTemplateItemId": "386188645192503296",
+            "formTemplateVersionId": "386187095552364544",
+            "templateName": "安速康新轮模拟·标签说明书领用",
+            "templateCode": "ASK-FINAL-20261015-LABEL",
+            "version": "V1.0",
+            "required": true,
+            "sortOrder": 1,
+            "fillSettings": {
+              "fillMode": "DIRECT"
+            }
+          }
+        ],
+        "documents": [],
+        "finalOutput": false
+      },
+      {
+        "id": "386188645314138114",
+        "routeNodeKey": "op3",
+        "operationId": "386188644945039360",
+        "operationCode": "ASK-FINAL-20261015-OP3",
+        "operationName": "安速康新轮模拟·报废处置记录",
+        "sortOrder": 3,
+        "forms": [
+          {
+            "id": "386188645326721024",
+            "dhrTemplateItemId": "386188645196697600",
+            "formTemplateVersionId": "386187095581724673",
+            "templateName": "安速康新轮模拟·报废处理单",
+            "templateCode": "ASK-FINAL-20261015-SCRAP",
+            "version": "V1.0",
+            "required": true,
+            "sortOrder": 1,
+            "fillSettings": {
+              "fillMode": "DIRECT"
+            }
+          }
+        ],
+        "documents": [],
+        "finalOutput": false
+      }
+    ]
+  },
+  "assets": {
+    "product": {
+      "id": "386188432511930368",
+      "tenantId": "default",
+      "code": "ASK-FINAL-20261015-P",
+      "name": "安速康新轮模拟·刀头",
+      "specification": null,
+      "brandName": null,
+      "version": "V1.0",
+      "materialPurpose": "生产物料",
+      "effectiveDate": null,
+      "expiryDate": null,
+      "materialTypeId": 10132,
+      "materialTypeName": "产成品",
+      "unit": "件",
+      "description": "新一轮原表模拟，非真实生产主数据",
+      "status": "ACTIVE",
+      "createdBy": "系统管理员",
+      "createdAt": "2026-10-15T22:28:17.344373",
+      "updatedBy": "系统管理员",
+      "updatedAt": "2026-10-15T22:28:17.344373"
+    },
+    "label": {
+      "id": "386188432549679104",
+      "tenantId": "default",
+      "code": "ASK-FINAL-20261015-L",
+      "name": "安速康新轮模拟·刀头标签",
+      "specification": null,
+      "brandName": null,
+      "version": "V1.0",
+      "materialPurpose": "生产物料",
+      "effectiveDate": null,
+      "expiryDate": null,
+      "materialTypeId": 10134,
+      "materialTypeName": "包材",
+      "unit": "件",
+      "description": "新一轮原表模拟，非真实生产主数据",
+      "status": "ACTIVE",
+      "createdBy": "系统管理员",
+      "createdAt": "2026-10-15T22:28:17.353407",
+      "updatedBy": "系统管理员",
+      "updatedAt": "2026-10-15T22:28:17.353407"
+    },
+    "manual": {
+      "id": "386188432574844928",
+      "tenantId": "default",
+      "code": "ASK-FINAL-20261015-M",
+      "name": "安速康新轮模拟·刀头说明书",
+      "specification": null,
+      "brandName": null,
+      "version": "V1.0",
+      "materialPurpose": "生产物料",
+      "effectiveDate": null,
+      "expiryDate": null,
+      "materialTypeId": 10134,
+      "materialTypeName": "包材",
+      "unit": "件",
+      "description": "新一轮原表模拟，非真实生产主数据",
+      "status": "ACTIVE",
+      "createdBy": "系统管理员",
+      "createdAt": "2026-10-15T22:28:17.359784",
+      "updatedBy": "系统管理员",
+      "updatedAt": "2026-10-15T22:28:17.359784"
+    }
+  },
+  "workOrder": {
+    "id": "386193988572221440",
+    "orderNo": "ASK-FINAL-20261015-R2-WO",
+    "productId": "386188432511930368",
+    "productName": "安速康新轮模拟·刀头",
+    "productCode": "ASK-FINAL-20261015-P",
+    "processVersionId": "386188645280583680",
+    "processVersion": "V1.0",
+    "productionMode": "量产",
+    "productionForm": "BATCH",
+    "plannedQuantity": 100,
+    "plannedStartAt": null,
+    "plannedEndAt": null,
+    "orderNumber": null,
+    "status": "CREATED",
+    "remark": "日期录入核验后的正式模拟轮；新原表副本、独立新记录，保留此前尝试与旧数据；非真实生产或放行。",
+    "createdAt": "2026-10-15T22:50:22.024898",
+    "updatedAt": "2026-10-15T22:50:22.024898",
+    "output": {
+      "status": "NO_DATA",
+      "message": "暂无产出数据",
+      "quantity": null,
+      "unit": null,
+      "batches": [],
+      "knownBatches": 0,
+      "totalBatches": 0
+    }
+  },
+  "batches": [
+    {
+      "id": "386193988710633472",
+      "objectNo": "ASK-FINAL-20261015-R2-A",
+      "objectType": "BATCH",
+      "workOrderId": "386193988572221440",
+      "productName": "安速康新轮模拟·刀头",
+      "productCode": "ASK-FINAL-20261015-P",
+      "processVersionId": "386188645280583680",
+      "processVersion": "V1.0",
+      "targetQuantity": 60,
+      "goodQuantity": 0,
+      "ngQuantity": 0,
+      "scrapQuantity": 0,
+      "status": "CREATED",
+      "remark": "新原表模拟修正版，日期显式填写，历史记录不回写。",
+      "terminationReason": null,
+      "terminationAt": null,
+      "plannedStartAt": null,
+      "plannedEndAt": null,
+      "createdAt": "2026-10-15T22:50:22.046647",
+      "updatedAt": "2026-10-15T22:50:22.046647",
+      "output": {
+        "status": "NOT_STARTED",
+        "message": "尚未开工，暂无冻结的产出配置",
+        "quantity": null,
+        "unit": null
+      }
+    },
+    {
+      "id": "386193988731604992",
+      "objectNo": "ASK-FINAL-20261015-R2-B",
+      "objectType": "BATCH",
+      "workOrderId": "386193988572221440",
+      "productName": "安速康新轮模拟·刀头",
+      "productCode": "ASK-FINAL-20261015-P",
+      "processVersionId": "386188645280583680",
+      "processVersion": "V1.0",
+      "targetQuantity": 40,
+      "goodQuantity": 0,
+      "ngQuantity": 0,
+      "scrapQuantity": 0,
+      "status": "CREATED",
+      "remark": "新原表模拟修正版，日期显式填写，历史记录不回写。",
+      "terminationReason": null,
+      "terminationAt": null,
+      "plannedStartAt": null,
+      "plannedEndAt": null,
+      "createdAt": "2026-10-15T22:50:22.051585",
+      "updatedAt": "2026-10-15T22:50:22.051585",
+      "output": {
+        "status": "NO_DATA",
+        "message": "暂无产出数据",
+        "quantity": null,
+        "unit": null
+      }
+    }
+  ]
+}

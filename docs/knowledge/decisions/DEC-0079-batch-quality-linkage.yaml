@@ -1,0 +1,55 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0079
+    title: 批次质量三项与当前工序来源分层累计
+    status: implemented
+    visibility: internal
+    context: user-confirmed；2026-10-15用户确认批次良品和NG按最终工序累计、产品报废覆盖全流程本批产品、排除其他物料、缺数非零及缺单位待核对并可hover查看来源。细化DEC-0077-06/08/13与DEC-0078-03的独立质量指标，不改变明确产出角色或生产/DHR生命周期。supersedes仅导航DEC-0045，精确替代其07被理解为良品+NG+报废构成产出公式的范围；保留原面板及显式来源目标、原话与当时实现历史，不将整份0045废弃。读时计算、冻结身份比较及浮层具体形式为工程选择，不提升成用户逐字确认。
+    decisionStatements:
+      - id: DEC-0079-01
+        statement: 批次良品数量和NG数量分别累计冻结最终产出工序中各自用途的正式报工记录；同工序多次报工分别计入，技术重试不重复计数。前道良品或NG不跨工序相加为批次质量指标；不能用产出数量或目标数量代替未采集的良品或NG。NG为累计报告不良量，不自动等同当前待处置库存。
+        status: implemented
+        visibility: internal
+      - id: DEC-0079-02
+        statement: 批次产品报废登记量按全流程真实所属本批且明确属于本批产品的正式报废记录累计，不能混入原料、半成品或包材等其他物料；记录所在工序无需是最终工序。物料或单位无法核对时保留原始数量、物料和单位及来源，提示待核对，不自动认领产品、补单位或换算。报废按既有显式用途的登记含义解释，不擅自改成实际销毁或库存扣减事实。
+        status: implemented
+        visibility: internal
+      - id: DEC-0079-03
+        statement: 未采集或尚无正式生效来源不显示为实际0；正式记录明确填0时才是已知0。单位缺失或与适用产品单位不符时提示待核对，权威同单位累计只含可核对记录；待核对时可hover查看所有已记录的相关来源数据及其原数量、单位、物料和来源位置，明确计入或未计入原因，不用提示替代真实数据。
+        status: implemented
+        visibility: internal
+      - id: DEC-0079-04
+        statement: 当前工序面板只累计真实属于当前工序、按报工或报废等业务用途显式配置的对应指标，不跨工序累计；正式完成且成功投影的累计与已保存进行中过程参考分层展示。工序范围不等于批次最终工序范围，普通工序不同单位及不同报废物料不得混算。良品、NG、报废与明确产出各自独立，不把三项相加或相减推导产出，也不修改生产或DHR完成状态。
+        status: implemented
+        visibility: internal
+      - id: DEC-0079-05
+        statement: 本轮补齐展示和来源联动，旧数据不动；不为缺失的单位、产品身份、用途或最终工序配置回填源表、投影、签署或历史执行快照。没有相应冻结依据的旧实例不按当前配置追算；已有冻结依据的正式事实可按本轮明确口径只读计算，不以旧实体默认0解释历史实际质量。
+        status: implemented
+        visibility: internal
+      - id: DEC-0079-06
+        statement: 2026-10-16确认工序数量主值展示已生效数量，将已保存过程累计称为已填报数量并收进同指标的数值浮层，不再在左栏独立展开。已填报包含已生效部分，两者不能相加；同源按真实表单份次、用途配置及实际行识别并只列一次，不按名称或数量猜测合并。来源分别显示表单状态和是否计入正式累计，不能凭表单已完成判定已生效；无正式值或待核对也可查看已有来源。浮层可悬浮查看、点击固定并内部滚动；报废按物料和单位分别展示。进度一行显示已完成工序x/y并保留细进度条。仅替代04在左栏分开展示过程参考的具体形式，保留04的时点、真实当前工序范围、独立指标、单位及物料边界，不改变计算、生效条件、生命周期或旧数据。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0045]
+    evidenceIds: [evidence.batch-quality-linkage-confirmed, evidence.batch-quality-linkage-runtime-source, evidence.batch-quality-linkage-main-validation, evidence.final-output-linkage-confirmed, evidence.form-traceability-projection-ownership-user-confirmed, evidence.operation-quantity-popover-confirmed]
+    acceptanceScenarios:
+      - id: scenario.operation-quantity-effective-and-reported
+        given: 当前工序一笔良品30件已生效，另一笔20件已经保存但尚未完成
+        when: 打开良品数值浮层
+        then: 已生效30件、已填报50件，两个来源各列一次且分开显示表单状态及统计状态；不相加成80，浮层不推挤表单操作区
+        evidenceIds: [evidence.operation-quantity-popover-confirmed]
+      - id: scenario.batch-quality-final-operation-and-reports
+        given: 最终工序两笔正式报工良品30与28、NG各1，前道另有良品100根
+        when: 查询批次和各工序面板并重试处理已成功报工
+        then: 批次良品58、NG2，前道100根仅在前道展示；重试不重复，产出仍沿显式产出用途独立解释
+        evidenceIds: [evidence.batch-quality-linkage-confirmed]
+      - id: scenario.batch-quality-product-scrap-unit-review
+        given: 本批产品报废2但单位空，另一物料报废5kg，另有别批同名产品报废记录
+        when: 查询本批质量与报废发生工序面板
+        then: 本批产品报废待核对，hover可见原2及空单位；其他物料和别批记录不混入本批产品汇总，工序内其他物料按自己的单位和身份单列
+        evidenceIds: [evidence.batch-quality-linkage-confirmed]
+      - id: scenario.batch-quality-missing-and-zero
+        given: 一个批次没有NG采集，另一个批次最终工序明确正式填0件NG
+        when: 查询两批次质量
+        then: 前者显示未采集或无正式数据，后者显示实际0；缺单位及待处理或失败仍保留状态和来源
+        evidenceIds: [evidence.batch-quality-linkage-confirmed]

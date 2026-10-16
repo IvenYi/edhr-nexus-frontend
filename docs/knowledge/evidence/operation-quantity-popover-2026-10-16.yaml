@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.operation-quantity-popover-confirmed
+    type: document
+    path: docs/knowledge/evidence/operation-quantity-popover-2026-10-16.md
+    description: user-confirmed；用户要求保留过程累计，作为数量hover中的次级信息，按表单状态说明是否生效；接受已生效数量与已填报数量文案，以及已完成工序x/y细进度条。来源合并身份、两个状态分列及不相加边界来自被接受的主侧方案；不声称实现或UI验收已通过。
+    visibility: internal
+  - id: evidence.operation-output-empty-unit-correction
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+    description: original-evidence；2026-10-16同切片质量发现普通工序expectedUnit=null时空单位可被误计入，operation.valid已增加!unit.isBlank()。落实既有空单位待核对，不新增表单单位必填、不删除报表空单位来源、不修改历史。聚焦PG测试与验证边界见同名日期Markdown；只静态核对主侧报告，不冒称运行验收。
+    visibility: internal

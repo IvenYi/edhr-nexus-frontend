@@ -1,0 +1,77 @@
+{
+  "request": {
+    "direction": "FORWARD",
+    "properties": {
+      "workOrderNo": "ASK-FINAL-20261015-R2-WO"
+    },
+    "filters": {},
+    "dateRanges": {},
+    "page": 0,
+    "size": 100
+  },
+  "result": {
+    "total": 2,
+    "records": [
+      {
+        "id": "13",
+        "dhrNo": "DHR-20261015-000013",
+        "productionObjectId": "386193988731604992",
+        "objectNo": "ASK-FINAL-20261015-R2-B",
+        "objectType": "BATCH",
+        "workOrderId": "386193988572221440",
+        "workOrderNo": "ASK-FINAL-20261015-R2-WO",
+        "productCode": "ASK-FINAL-20261015-P",
+        "productName": "安速康新轮模拟·刀头",
+        "processVersion": "V1.0",
+        "routeName": "安速康新轮模拟·刀头验证路线",
+        "routeVersion": "V1.0",
+        "dhrTemplateName": "安速康新轮模拟·刀头DHR",
+        "dhrTemplateVersion": "V1.0",
+        "status": "COMPLETED",
+        "productionStatus": "COMPLETED",
+        "displayStatus": "PENDING_SUMMARY",
+        "summaryStatus": "NOT_STARTED",
+        "dhrReviewMode": "NONE",
+        "createdBy": "系统管理员",
+        "createdAt": "2026-10-15T22:50:32.383410",
+        "updatedBy": "系统管理员",
+        "updatedAt": "2026-10-15T22:50:37.383434",
+        "completedAt": "2026-10-15T22:50:37.383434",
+        "terminationReason": null,
+        "terminationAt": null,
+        "terminatedBy": null,
+        "terminationSnapshotAvailable": false
+      },
+      {
+        "id": "12",
+        "dhrNo": "DHR-20261015-000012",
+        "productionObjectId": "386193988710633472",
+        "objectNo": "ASK-FINAL-20261015-R2-A",
+        "objectType": "BATCH",
+        "workOrderId": "386193988572221440",
+        "workOrderNo": "ASK-FINAL-20261015-R2-WO",
+        "productCode": "ASK-FINAL-20261015-P",
+        "productName": "安速康新轮模拟·刀头",
+        "processVersion": "V1.0",
+        "routeName": "安速康新轮模拟·刀头验证路线",
+        "routeVersion": "V1.0",
+        "dhrTemplateName": "安速康新轮模拟·刀头DHR",
+        "dhrTemplateVersion": "V1.0",
+        "status": "COMPLETED",
+        "productionStatus": "COMPLETED",
+        "displayStatus": "PENDING_SUMMARY",
+        "summaryStatus": "NOT_STARTED",
+        "dhrReviewMode": "NONE",
+        "createdBy": "系统管理员",
+        "createdAt": "2026-10-15T22:50:22.110013",
+        "updatedBy": "系统管理员",
+        "updatedAt": "2026-10-15T22:50:32.266668",
+        "completedAt": "2026-10-15T22:50:32.266668",
+        "terminationReason": null,
+        "terminationAt": null,
+        "terminatedBy": null,
+        "terminationSnapshotAvailable": false
+      }
+    ]
+  }
+}

@@ -25,8 +25,8 @@ implementationAnchors:
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormProjectionInterpreterTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormProjectionPostgresTest.java, gmp-platform/frontend/scripts/test-production-output.mjs]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-runtime-source, evidence.final-output-linkage-main-validation, evidence.final-output-linkage-postgres-test]
-    sourceRevision: 4b236d7d53e7792ad5831d77220b037f30b69e1a
-    sourceLocator: 本轮未提交差异ProductionOutputService.object/order/read；源集无分页/报表过滤，明确产出角色并保留证据身份；隔离PG9项与主侧真实API18+9=27、来源页面有结果；本体角色只复核证据，不冒充亲自运行，独立质量最终结果另记
-    capturedAt: '2026-10-15'
+    evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-runtime-source, evidence.final-output-linkage-main-validation, evidence.final-output-linkage-postgres-test, evidence.operation-output-empty-unit-correction]
+    sourceRevision: 6379bf105127b05a65695992b008b55c142264f9
+    sourceLocator: 原2026-10-15证据为ProductionOutputService.object/order/read及隔离PG9项，历史来源保留。2026-10-16另核对6379bf1未提交候选operation.valid增加非空单位要求；普通工序expectedUnit=null仍按原有效单位分组，但空单位不计入、原值保留UNIT_REVIEW，落实已有空单位待核对规则。新增PG测试实际断言正式产出与正式good不计入空单位、有效0根计入，未直接断言processQuality；新来源见evidence.operation-output-empty-unit-correction，不以旧验证代新L2最终质量。
+    capturedAt: '2026-10-16'
     reviewStatus: reviewed

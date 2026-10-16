@@ -1,5 +1,11 @@
 knowledgeModelVersion: 0.3.25
 concepts:
+  - id: concept.production-quality-summary
+    termId: term.production-quality-summary
+    kind: runtime-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.batch-quality-linkage-confirmed, evidence.batch-quality-linkage-runtime-source, evidence.batch-quality-linkage-main-validation]
   - id: concept.final-output-operation
     termId: term.final-output-operation
     kind: configuration-fact
@@ -806,6 +812,14 @@ concepts:
     visibility: internal
     evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-instance-entity, evidence.equipment-legacy-schema]
 relations:
+  - id: relation.production-quality-derived-from-formal-projection
+    source: concept.production-quality-summary
+    target: concept.form-business-projection
+    cardinality: one-to-zero-or-many
+    status: implemented
+    visibility: internal
+    description: 正式质量分别沿真实归属及字段/实际行来源累计；批次良品和NG限冻结最终工序，产品报废覆盖全流程本批产品；工序累计限当前工序，不以显示工序认领共享批次表单，不按相同文本建立产品身份。
+    evidenceIds: [evidence.batch-quality-linkage-confirmed, evidence.batch-quality-linkage-runtime-source, evidence.batch-quality-linkage-main-validation]
   - id: relation.process-version-final-output-operation
     source: concept.product-process-version
     target: concept.final-output-operation

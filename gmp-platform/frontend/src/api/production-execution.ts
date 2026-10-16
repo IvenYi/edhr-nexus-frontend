@@ -29,6 +29,7 @@ export interface ExecutionFormCopies {
 }
 export interface ExecutionView {
   formalOutput?: ProductionOutput;
+  processQuality?: Record<string, Partial<Record<'outputQuantity' | 'goodQuantity' | 'ngQuantity' | 'scrapQuantity', ProductionOutput>>>;
   operationOutputs?: Record<string, { status: 'READY' | 'NOT_CONFIGURED' | 'PENDING' | 'INVALID'; message: string; outputQuantity: string | null; goodQuantity: string | null; ngQuantity: string | null; scrapQuantity: string | null }>;
   snapshot: {
     context: { objectId: string; objectNo: string; objectType: string; workOrderNo: string; productName: string; productCode: string; specification?: string;

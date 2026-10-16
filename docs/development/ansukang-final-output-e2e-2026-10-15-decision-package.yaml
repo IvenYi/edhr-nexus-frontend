@@ -1,0 +1,91 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261015-ANSUKANG-FINAL-OUTPUT-E2E
+  scope: 在3000/8081用三份安速康原始Excel重新导入新模板并新建模拟，验证多次正式报工、最终工序、批次工单累计、DHR与报表追溯；保留旧数据。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    targetBranch: edhr-dev
+    targetCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    contractReadCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    uncommittedContractPaths: []
+  summary: 运行配置和新一轮模拟验收，不新增业务政策；用户已确认只在本轮模拟副本手填增补单位。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedSource:
+    - source: 当前对话用户请求
+      statement: 在3000用安速康原始表单新建模拟，完整验证最终工序、多次报工、批次工单联动、DHR与各类报表，旧数据不动，完成后用户确认。
+    - source: 当前对话异步问题回复
+      statement: 允许只在本轮新模拟模板副本补充标明模拟增补的报工单位，用户手填件，新模拟产品单位件；原Excel、旧模板和旧记录均不修改。
+    - source: docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml
+      statements: [DEC-0078-01, DEC-0078-02, DEC-0078-03, DEC-0078-04, DEC-0078-05, DEC-0078-06, DEC-0078-07]
+  inferred:
+    - id: inference.ask-e2e-clean-output
+      statement: 本轮模拟将原表E8合格数量显式共用于outputQuantity与goodQuantity，E9独立作不良；没有客户普遍产出口径推断。
+      rationale: 原表有合格数量，可不增加重复数量输入；模拟映射与系统通用政策分别解释。
+      relatedIds: [DEC-0078-03]
+    - id: inference.ask-e2e-three-form-route
+      statement: 使用末道清洁、标签领用、报废处理三张原表组成简化验证路线，清洁节点显式标为最终产出；后续节点不等同物理产出节点。
+      rationale: 复用已核对原表覆盖报工、消耗、报废三类用途；不声称还原客户全部工艺或批准SOP。
+      relatedIds: [DEC-0078-01]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: simulation-configuration
+        change: 新建独立模板、主数据、制程、工单批次与模拟记录，模板标识ASK-FINAL-20261015，有效验收工单标识ASK-FINAL-20261015-R2；保留第一次无日期尝试，不回写完成记录。
+        evidenceReferences: [docs/development/ansukang-final-output-e2e-2026-10-15-ontology.yaml]
+    transitiveImpacts:
+      - area: formal-projection-and-dhr
+        change: 新记录产生正式报工报废消耗、追溯索引与冻结DHR。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]
+    potentialImpacts:
+      - area: discovered-defects
+        concern: 如真实交互发现会改变验收的实现缺陷，限定修复范围并另做聚焦回归；未发现前不扩展代码。
+        evidenceReferences: [docs/development/ansukang-final-output-e2e-2026-10-15-date-quality.yaml]
+    unaffectedAreas:
+      - area: old-data-and-customer-policy
+        reason: 不修改旧配置、旧记录、原Excel；模拟值不作为客户正式生产和放行证据。
+        evidenceReferences: [output/ansukang-final-output-e2e-2026-10-15/original-business-row-digests-before.json]
+    compatibilityAndMigration: []
+    snapshotImpacts:
+      - change: 新开工冻结新配置及产品单位，多次报工保留各实际表单身份。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+    auditImpacts:
+      - change: 正常配置、签署、生产完成与DHR定稿由实际产品入口执行并保留真实审计，不用SQL伪造完成事实。
+        evidenceReferences: [docs/development/ansukang-e2e-2026-10-14.md]
+    permissionImpacts:
+      - change: 沿用已确认admin调试签署规则及现有权限，不改认证或密码。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml]
+    testImpacts:
+      - scope: simulation-e2e
+        scenarios: [三份原件重新导入, 最终工序显式选择, 多次报工累计, 部分工单累计, 两批次工单汇总, 报表流水及来源高亮, 表单DHR正反向, DHR完整性和定稿, 旧业务行保留]
+        evidenceReferences: [output/ansukang-final-output-e2e-2026-10-15/verified-round/verified-records-summary.json, output/ansukang-final-output-e2e-2026-10-15/verified-round/verified-summary.json]
+    evidenceGaps: []
+  extensionStrategy:
+    selectedPaths: [configuration]
+    rationale: 用已实现配置和正式流程完成新模拟，不新增客户条件分支或计算规则。
+    ownershipBoundaries:
+      - owner: simulation-assets
+        responsibility: 新模板、制程和模拟数据；现有产品内核保持其通用事实归属、快照和累计职责。
+  affectedFiles:
+    - path: docs/development/ansukang-final-output-e2e-2026-10-15-decision-package.yaml
+      changeType: create
+      reason: 固定本轮范围、确认及运行验收计划。
+    - path: docs/development/ansukang-final-output-e2e-2026-10-15-ontology.yaml
+      changeType: create
+      reason: 原始证据及语义边界核对。
+  acceptanceScenarios:
+    - id: scenario.ask-final-output-multiple-reports
+      given: A批计划60，两次清洁分别合格30和28、不良各1；B批计划40，清洁合格39、不良1；单位件。
+      when: 各表单正式完成且投影成功。
+      then: A批产出58、B批39、工单97；A的两笔报工分别保留，不因完工重复累计，不良和报废不重复扣减。
+      evidenceRequirements: [实际执行与正式来源, 批次工单列表详情, 独立只读复核]
+    - id: scenario.ask-final-output-old-data
+      given: 本轮之前37类业务表320行已保存整行摘要并备份。
+      when: 完成新一轮模拟。
+      then: 旧行摘要均仍存在，新增数据与旧模拟可分别筛选。
+      evidenceRequirements: [前后数据库摘要对比]

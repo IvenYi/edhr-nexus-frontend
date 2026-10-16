@@ -41,14 +41,11 @@ final class ExecutionOutputSummary {
         for (Purpose purpose : Purpose.values()) if (!summary.mapped.contains(purpose)) missing.add(purpose.label);
         if (!missing.isEmpty()) return result.put("status", "NOT_CONFIGURED").put("message", "请在表单数字字段中配置业务用途：" + String.join("、", missing));
         if (!summary.pending.isEmpty()) return result.put("status", "PENDING").put("message", "请填写并保存产出数量：" + String.join("、", summary.pending));
-        BigDecimal total = BigDecimal.ZERO;
         for (Purpose purpose : Purpose.values()) {
             BigDecimal quantity = summary.quantities.getOrDefault(purpose, BigDecimal.ZERO);
             result.put(purpose.key, quantity.stripTrailingZeros().toPlainString());
-            total = total.add(quantity);
         }
-        return result.put("status", "READY").put("message", "按当前工序表单已保存的良品、不良品和报废数量汇总")
-                .put("outputQuantity", total.stripTrailingZeros().toPlainString());
+        return result.put("status", "READY").put("message", "旧用途的已保存质量数量仅供过程参考，不组合推导产出；新用途及单位明细见过程参考分项");
     }
 
     private void collect(JsonNode fields, JsonNode values, String prefix) {

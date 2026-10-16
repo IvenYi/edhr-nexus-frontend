@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.batch-quality-linkage-confirmed
+    type: document
+    path: docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md
+    description: user-confirmed；保留用户确认批次良品/NG按最终工序、产品报废全流程本批产品、排除其他物料、缺数非零、缺单位待核对、hover来源及旧数据不动的原话。既有当前工序来源范围与本轮澄清问句、工程实现选择分列，不从问句发明公式。
+    visibility: internal
+  - id: evidence.batch-quality-linkage-runtime-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionQualitySummary.java
+    description: original-evidence；本体收尾重新读取6379bf1未提交候选，ProductionOutputService从完整正式源计算批次及工序quality，metric按角色、真实工序、产品身份及单位分组，并保留成功、待处理及失败原值和排除原因。ExecutionQualitySummary只读每份保存值，新绑定优先/无绑定legacy过程fallback；旧operationOutputs不再三项合成产出。UI来源浮层及各页面接入经源码核对，当前物料类别明确为读时辅助，不冒称历史冻结或3000已验。
+    visibility: internal
+  - id: evidence.batch-quality-linkage-main-validation
+    type: document
+    path: docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md
+    description: 本体复核主侧当前测试源码、surefire报告及日志，6类111项含109执行通过、2已有property夹具条件跳过、0失败/错误；质量新增4项及PG新增2项覆盖指标范围、产品/其他物料、缺数/单位、保存参考和幂等。前后端构建由主侧完成；本体不冒充亲跑业务测试、不代独立质量或实际3000浏览器，具体计数和界限见本文收尾。
+    visibility: internal

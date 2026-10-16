@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.25
+implementationAnchors:
+  - id: anchor.production-quality.formal-summary
+    targetId: concept.production-quality-summary
+    targetType: concept
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionQualitySummary.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionBatchController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java]
+    apiReferences: [GET /api/v1/production/batches, 'GET /api/v1/production/work-orders/{id}/objects', 'GET /api/v1/production/execution/{objectId}']
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql]
+    uiReferences: [gmp-platform/frontend/src/components/ProductionOutput.tsx, gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx, gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx, gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionQualitySummaryTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.batch-quality-linkage-confirmed, evidence.batch-quality-linkage-runtime-source, evidence.batch-quality-linkage-main-validation]
+    sourceRevision: 6379bf105127b05a65695992b008b55c142264f9
+    sourceLocator: 本轮未提交候选ProductionOutputService.summarize/read及ProductionQualitySummary.metric；按完整来源独立派生、可空scalar、来源全保留，不回写旧三列；主侧源码/聚焦测试已复核，3000与独立质量另验。
+    capturedAt: '2026-10-15'
+    reviewStatus: reviewed
+  - id: anchor.production-quality.saved-reference
+    targetId: fact.production-quality.saved-reference
+    targetType: fact
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionQualitySummary.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionOutputSummary.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java]
+    apiReferences: ['GET /api/v1/production/execution/{objectId}']
+    databaseReferences: []
+    uiReferences: [gmp-platform/frontend/src/components/ProductionOutput.tsx, gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionQualitySummaryTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionOutputSummaryTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionFormCopiesTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.batch-quality-linkage-confirmed, evidence.batch-quality-linkage-runtime-source, evidence.batch-quality-linkage-main-validation]
+    sourceRevision: 6379bf105127b05a65695992b008b55c142264f9
+    sourceLocator: 2026-10-15未提交候选project/legacy和processQuality响应核对；新统计绑定优先，无绑定legacy只保留过程参考且不猜产品单位，旧API不再合成产出。当时正式层与details内过程参考分别展示；2026-10-16已确认的同指标浮层取代该呈现，见DEC-0079-06，本条旧源码及主测证据不覆盖新UI验收。
+    capturedAt: '2026-10-15'
+    reviewStatus: reviewed

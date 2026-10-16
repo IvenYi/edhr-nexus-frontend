@@ -1,0 +1,86 @@
+decisionPackage:
+  id: DEC-PACKAGE-OPERATION-QUANTITY-20261016
+  scope: production-execution quantity presentation
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 6379bf105127b05a65695992b008b55c142264f9
+    targetBranch: edhr-dev
+    targetCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    contractReadCommit: 6379bf105127b05a65695992b008b55c142264f9
+    uncommittedContractPaths: []
+  summary: 工序已填报累计收进已生效数值浮层，保留填表操作空间。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedStatements:
+    - 用户确认保留过程累计，使用已生效数量与已填报数量文案；已填报包含已生效部分，不能相加。
+    - 每指标复用数值hover浮层，支持点击固定、键盘、滚动；无值和待核对也可查看来源。
+    - 来源按真实表单份次、配置及实际行去重；显示表单状态及是否计入正式累计，不能仅凭已完成认定生效。
+    - 报废按物料和单位分组，不同单位不相加；未采集不显示实际0，待核对保留原值。
+    - 移除左栏过程参考展开区，累计四项两行展示；进度保留细条和已完成工序x/y一行，去掉重复百分比。
+  inferred:
+    - id: inference.operation-quantity-source-metadata
+      statement: 只读来源增加copyId及状态元数据，供前端稳定合并；不改变数量计算或持久化。
+      rationale: 现有正式来源是数据库实例ID，保存来源是执行份次ID，必须显式关联，不能用名称或数量猜测。
+      relatedIds: [DEC-0079-04]
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0079-06
+      supersededStatementIds: [DEC-0079-04]
+      scope: 仅替代左栏分开展示过程参考的具体形式，改为同指标浮层分层展示。
+      retainedScope: 正式生效与已保存的口径、当前工序范围、独立指标及旧数据保护全部保持。
+      sourceReferences: [本次用户2026-10-16确认]
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: production-execution
+        change: 布局、来源浮层、只读状态和份次关联元数据。
+        evidenceReferences: [gmp-platform/frontend/src/components/ProductionOutput.tsx, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java]
+      - area: ordinary-operation-output
+        change: 修正expectedUnit为null时空单位误计入正式产出；增加非空单位条件，保留原数量来源并标待核对，落实既有规则而非新增单位必填政策。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java, docs/knowledge/rules/product-process.yaml, docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml, docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml]
+    transitiveImpacts: [所有读取operations中普通工序产出的页面得到同一纠正后结果；已生效/已填报浮层不再出现空单位正式产出被计入而保存参考未计入的矛盾。]
+    potentialImpacts: [共享数值浮层在批次和工单页面需保持原行为。, 共享operation方法的最终工序单位校验及工单汇总需回归，不能以普通工序修复为由放宽产品单位校验。]
+    unaffectedAreas: [最终产出工序选择和真实批次/工单范围、有效非空单位累计、表单单位可空及报表空单位来源保留、生命周期、签名、权限]
+    compatibilityAndMigration: [只读汇总增加空单位拒绝计入及可选响应元数据，无迁移，不回填或修改旧数据。, 旧无冻结策略实例继续LEGACY，不按当前配置追算；已存在空单位来源保留原始数值但不再展示为有效工序累计。]
+    snapshotImpacts: [不更改冻结最终工序或产品单位，不重建执行快照；单位从原来源读取，不能猜补当前产品单位。]
+    auditImpacts: [查询派生不写报工/报废或审计历史，不制造新的完成、重投影或签名事件。]
+    permissionImpacts: [沿既有执行和来源查询授权，不新增访问路径或扩大字段可见范围。]
+    testImpacts: [来源合并及状态单测、后端元数据聚焦测试、前端构建、3000悬浮与点击及低高度布局验证, 普通工序空单位30保留原值但不计入且显示UNIT_REVIEW，有单位实际0可以计入，多单位分别累计与最终产品单位校验回归, 8081按用户确认使用edhr_form_projection只读验证R2，核对旧业务记录保留，L2修复后全新质量实例验收]
+    evidenceGaps: [本体未运行本轮业务浏览器与数据库交互；实现和主侧报告静态核对不能替代新L2独立质量及实际3000验证。]
+    levelEscalation: 独立复核发现普通工序产出缺单位仍计入的旧漏洞；按用户既有单位缺失待核对规则修正只读汇总，不写回历史记录。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 扩展现有共享数量浮层，工序页传入已填报数据；其他调用不启用该展示。
+    ownershipBoundaries: [ProductionOutput共享展示、生产服务只读来源元数据、ProductionExecutionPage布局、ProductionOutputService普通工序空单位计入校验]
+  affectedFiles:
+    - path: gmp-platform/frontend/src/components/ProductionOutput.tsx
+      changeType: update
+      reason: 同指标生效和填报来源合并展示
+    - path: gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+      changeType: update
+      reason: 紧凑累计和进度布局
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+      changeType: update
+      reason: 普通工序空单位不得并入正式产出，原始证据仍保留
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java
+      changeType: update
+      reason: 覆盖普通工序缺单位原值保留、待核对及有效实际0
+  acceptanceScenarios:
+    - id: scenario.operation-output-missing-unit
+      given: 普通工序正式来源产出30但单位为空，另有产出0根
+      when: 查询当前工序产出
+      then: 空单位30保留来源且未计入，状态UNIT_REVIEW；有效0根单独计入，不能补产品单位，也不改变批次最终工序范围
+      evidenceRequirements: [ordinaryOutputWithoutUnitKeepsEvidenceButDoesNotEnterEitherCumulative测试、独立质量复验]
+    - id: scenario.operation-quantity-effective-and-saved
+      given: 一笔30已生效，一笔20已保存未完成
+      when: 查看良品浮层
+      then: 已生效30、已填报50，来源两条且状态分列
+      evidenceRequirements: [聚焦测试]
+    - id: scenario.operation-quantity-workspace-space
+      given: 1280x720及更低窗口
+      when: 悬浮或固定数量浮层
+      then: 不推挤左栏，切换表单入口可见，长来源内部滚动
+      evidenceRequirements: [浏览器检查]

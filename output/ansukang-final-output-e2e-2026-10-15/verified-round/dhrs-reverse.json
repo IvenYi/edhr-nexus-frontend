@@ -1,0 +1,254 @@
+{
+  "request": {
+    "direction": "REVERSE",
+    "properties": {},
+    "filters": {
+      "materialLotText": "ASK-FINAL-20261015-R2-SCRAP-A"
+    },
+    "dateRanges": {
+      "lookup_trace_date": {
+        "from": "2026-10-15",
+        "to": "2026-10-15"
+      }
+    },
+    "page": 0,
+    "size": 100
+  },
+  "result": {
+    "total": 1,
+    "records": [
+      {
+        "id": "12",
+        "dhrNo": "DHR-20261015-000012",
+        "productionObjectId": "386193988710633472",
+        "objectNo": "ASK-FINAL-20261015-R2-A",
+        "objectType": "BATCH",
+        "workOrderId": "386193988572221440",
+        "workOrderNo": "ASK-FINAL-20261015-R2-WO",
+        "productCode": "ASK-FINAL-20261015-P",
+        "productName": "安速康新轮模拟·刀头",
+        "processVersion": "V1.0",
+        "routeName": "安速康新轮模拟·刀头验证路线",
+        "routeVersion": "V1.0",
+        "dhrTemplateName": "安速康新轮模拟·刀头DHR",
+        "dhrTemplateVersion": "V1.0",
+        "status": "COMPLETED",
+        "productionStatus": "COMPLETED",
+        "displayStatus": "PENDING_SUMMARY",
+        "summaryStatus": "NOT_STARTED",
+        "dhrReviewMode": "NONE",
+        "createdBy": "系统管理员",
+        "createdAt": "2026-10-15T22:50:22.110013",
+        "updatedBy": "系统管理员",
+        "updatedAt": "2026-10-15T22:50:32.266668",
+        "completedAt": "2026-10-15T22:50:32.266668",
+        "terminationReason": null,
+        "terminationAt": null,
+        "terminatedBy": null,
+        "terminationSnapshotAvailable": false,
+        "hitFormCount": 4,
+        "hits": [
+          {
+            "instanceId": "24",
+            "instanceNo": "FR-20261015-000024",
+            "templateName": "安速康新轮模拟·刀头末道清洁",
+            "hits": [
+              {
+                "bindingId": "trace",
+                "tableId": "",
+                "rowKey": "form",
+                "rowIndex": -1,
+                "attributes": {
+                  "lookup_trace_date": "2026-10-15"
+                },
+                "sources": {
+                  "lookup_trace_date": "date"
+                },
+                "fieldNames": {
+                  "date": "生产日期"
+                }
+              }
+            ],
+            "lookupItems": {
+              "lookup_work_order": {
+                "name": "工单号",
+                "type": "text",
+                "revision": 1,
+                "referenceSources": [
+                  "workOrder"
+                ]
+              },
+              "lookup_production_batch": {
+                "name": "生产批次/SN",
+                "type": "text",
+                "revision": 2,
+                "referenceSources": [
+                  "productionBatch",
+                  "serialNumber"
+                ]
+              },
+              "lookup_product_code": {
+                "name": "产品编码",
+                "type": "text",
+                "revision": 1,
+                "referenceSources": [
+                  "product"
+                ]
+              },
+              "materialLotText": {
+                "name": "物料批号",
+                "type": "text",
+                "revision": 1,
+                "referenceSources": []
+              },
+              "lookup_trace_date": {
+                "name": "追溯日期",
+                "type": "date",
+                "revision": 1,
+                "referenceSources": []
+              }
+            }
+          },
+          {
+            "instanceId": "25",
+            "instanceNo": "FR-20261015-000025",
+            "templateName": "安速康新轮模拟·刀头末道清洁",
+            "hits": [
+              {
+                "bindingId": "trace",
+                "tableId": "",
+                "rowKey": "form",
+                "rowIndex": -1,
+                "attributes": {
+                  "lookup_trace_date": "2026-10-15"
+                },
+                "sources": {
+                  "lookup_trace_date": "date"
+                },
+                "fieldNames": {
+                  "date": "生产日期"
+                }
+              }
+            ],
+            "lookupItems": {
+              "lookup_work_order": {
+                "name": "工单号",
+                "type": "text",
+                "revision": 1,
+                "referenceSources": [
+                  "workOrder"
+                ]
+              },
+              "lookup_production_batch": {
+                "name": "生产批次/SN",
+                "type": "text",
+                "revision": 2,
+                "referenceSources": [
+                  "productionBatch",
+                  "serialNumber"
+                ]
+              },
+              "lookup_product_code": {
+                "name": "产品编码",
+                "type": "text",
+                "revision": 1,
+                "referenceSources": [
+                  "product"
+                ]
+              },
+              "materialLotText": {
+                "name": "物料批号",
+                "type": "text",
+                "revision": 1,
+                "referenceSources": []
+              },
+              "lookup_trace_date": {
+                "name": "追溯日期",
+                "type": "date",
+                "revision": 1,
+                "referenceSources": []
+              }
+            }
+          },
+          {
+            "instanceId": "26",
+            "instanceNo": "FR-20261015-000026",
+            "templateName": "安速康新轮模拟·标签说明书领用",
+            "hits": [
+              {
+                "bindingId": "trace",
+                "tableId": "",
+                "rowKey": "form",
+                "rowIndex": -1,
+                "attributes": {
+                  "lookup_trace_date": "2026-10-15"
+                },
+                "sources": {
+                  "lookup_trace_date": "date"
+                },
+                "fieldNames": {
+                  "date": "生产日期"
+                }
+              }
+            ],
+            "lookupItems": {
+              "lookup_work_order": {
+                "name": "工单号",
+                "type": "text",
+                "revision": 1,
+                "referenceSources": [
+                  "workOrder"
+                ]
+              },
+              "lookup_production_batch": {
+                "name": "生产批次/SN",
+                "type": "text",
+                "revision": 2,
+                "referenceSources": [
+                  "productionBatch",
+                  "serialNumber"
+                ]
+              },
+              "lookup_trace_date": {
+                "name": "追溯日期",
+                "type": "date",
+                "revision": 1,
+                "referenceSources": []
+              }
+            }
+          },
+          {
+            "instanceId": "27",
+            "instanceNo": "FR-20261015-000027",
+            "templateName": "安速康新轮模拟·报废处理单",
+            "hits": [
+              {
+                "bindingId": "trace",
+                "tableId": "",
+                "rowKey": "form",
+                "rowIndex": -1,
+                "attributes": {
+                  "materialLotText": "ASK-FINAL-20261015-R2-SCRAP-A"
+                },
+                "sources": {
+                  "materialLotText": "lot"
+                },
+                "fieldNames": {
+                  "lot": "物料批号"
+                }
+              }
+            ],
+            "lookupItems": {
+              "materialLotText": {
+                "name": "物料批号",
+                "type": "text",
+                "revision": 1,
+                "referenceSources": []
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

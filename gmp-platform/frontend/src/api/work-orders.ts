@@ -5,10 +5,11 @@ export interface ProductionOutput {
   quantity: string | null; unit: string | null; status: string; message: string;
   operationName?: string; objectNo?: string; objectId?: string;
   knownBatches?: number; totalBatches?: number;
-  groups?: Array<{ quantity: string; unit: string }>;
+  groups?: Array<{ quantity: string; unit: string; materialName?: string; materialCode?: string }>;
+  quality?: Partial<Record<'goodQuantity' | 'ngQuantity' | 'scrapQuantity', ProductionOutput>>;
   operations?: Record<string, ProductionOutput>;
   batches?: ProductionOutput[];
-  sources?: Array<{ recordId: string; instanceId: string; instanceNo: string; bindingId: string; tableId: string; rowKey: string; fieldId: string; quantity?: string; unit: string; included: boolean; message?: string }>;
+  sources?: Array<{ recordId: string; instanceId: string; instanceNo: string; copyId?: string; formStatus?: string; projectionStatus?: string; bindingId: string; tableId: string; rowKey: string; fieldId: string; fieldName?: string; tableName?: string; rowLabel?: string; quantity?: string; unit: string; included: boolean; message?: string; operationName?: string; materialName?: string; materialCode?: string; currentMaterialType?: string; attributes?: Record<string, unknown>; details?: Array<{ name: string; value: unknown }> }>;
 }
 
 export interface WorkOrder {
@@ -26,7 +27,7 @@ export interface ProductionObject {
   output?: ProductionOutput;
   id: string; objectNo: string; objectType: 'BATCH' | 'SN'; workOrderId: string;
   productName: string; productCode: string; processVersionId: string; processVersion: string;
-  targetQuantity: number; goodQuantity: number; ngQuantity: number; scrapQuantity: number;
+  targetQuantity: number; goodQuantity: number | null; ngQuantity: number | null; scrapQuantity: number | null;
   status: string; remark?: string | null; terminationReason?: string | null; terminationAt?: string | null; plannedStartAt?: string | null; plannedEndAt?: string | null; createdAt?: string | null; updatedAt?: string | null;
 }
 export interface ProcessOption {

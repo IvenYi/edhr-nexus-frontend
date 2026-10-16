@@ -1,0 +1,34 @@
+knowledgeModelVersion: 0.3.25
+facts:
+  - id: fact.production-quality.summary
+    name: 批次及工序的正式质量累计对象
+    conceptId: concept.production-quality-summary
+    valueType: object
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+    aliases: [production.qualitySummary]
+    availability: runtime
+    allowedOperators: [exists]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.batch-quality-linkage-confirmed, evidence.batch-quality-linkage-runtime-source, evidence.batch-quality-linkage-main-validation]
+    sourceRevision: 6379bf105127b05a65695992b008b55c142264f9
+    sourceLocator: 本轮6379bf1未提交候选summarize返回quality及operations[operationId].quality，经ProductionQualitySummary.metric消费完整正式来源，null与实际0分开，批次产品身份沿context.productId；质量scalar由qualityQuantity派生，不回写旧三列。本体已读源码和主侧测试报告，不冒充亲自运行3000。
+    capturedAt: '2026-10-15'
+    reviewStatus: reviewed
+  - id: fact.production-quality.saved-reference
+    name: 当前工序分项已填报数量（已保存过程累计）
+    conceptId: concept.production-execution-workspace
+    valueType: object
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionQualitySummary.java
+    aliases: [execution.processQuality]
+    availability: runtime
+    allowedOperators: [exists]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.batch-quality-linkage-confirmed, evidence.batch-quality-linkage-runtime-source, evidence.batch-quality-linkage-main-validation, evidence.operation-quantity-popover-confirmed]
+    sourceRevision: 6379bf105127b05a65695992b008b55c142264f9
+    sourceLocator: 本轮未提交候选project读取冻结工序forms和每份已保存values，新production/scrap绑定优先，无该统计绑定才legacy fallback；保存值只作参考，空单位保留来源待核对，不套产品单位，不写正式投影。旧operationOutputs保留API且outputQuantity为空，不再三项相加。
+    capturedAt: '2026-10-15'
+    reviewStatus: reviewed

@@ -1,0 +1,1083 @@
+{
+  "content": [
+    {
+      "id": "386193988572221440",
+      "orderNo": "ASK-FINAL-20261015-R2-WO",
+      "productId": "386188432511930368",
+      "productName": "安速康新轮模拟·刀头",
+      "productCode": "ASK-FINAL-20261015-P",
+      "processVersionId": "386188645280583680",
+      "processVersion": "V1.0",
+      "productionMode": "量产",
+      "productionForm": "BATCH",
+      "plannedQuantity": 100.0,
+      "plannedStartAt": null,
+      "plannedEndAt": null,
+      "orderNumber": null,
+      "status": "COMPLETED",
+      "remark": "日期录入核验后的正式模拟轮；新原表副本、独立新记录，保留此前尝试与旧数据；非真实生产或放行。",
+      "createdAt": "2026-10-15T22:50:22.024898",
+      "updatedAt": "2026-10-15T22:50:37.392249",
+      "output": {
+        "status": "READY",
+        "message": "所属批次已知累计产出，不代表工单已完工",
+        "quantity": "97",
+        "unit": "件",
+        "batches": [
+          {
+            "status": "READY",
+            "message": "已知正式报工累计，不代表工序已完工",
+            "quantity": "58",
+            "unit": "件",
+            "operations": {
+              "op1": {
+                "status": "READY",
+                "message": "已知正式报工累计，不代表工序已完工",
+                "quantity": "58",
+                "unit": "件",
+                "operationName": "安速康新轮模拟·末道清洁",
+                "sources": [
+                  {
+                    "recordId": "54",
+                    "instanceId": "24",
+                    "instanceNo": "FR-20261015-000024",
+                    "bindingId": "ask-final-clean-report",
+                    "rowKey": "form",
+                    "tableId": "",
+                    "fieldId": "good",
+                    "unit": "件",
+                    "included": true,
+                    "quantity": "30"
+                  },
+                  {
+                    "recordId": "55",
+                    "instanceId": "25",
+                    "instanceNo": "FR-20261015-000025",
+                    "bindingId": "ask-final-clean-report",
+                    "rowKey": "form",
+                    "tableId": "",
+                    "fieldId": "good",
+                    "unit": "件",
+                    "included": true,
+                    "quantity": "28"
+                  }
+                ],
+                "groups": [
+                  {
+                    "unit": "件",
+                    "quantity": "58"
+                  }
+                ],
+                "pending": 0,
+                "failed": 0,
+                "rejected": 0,
+                "quality": {
+                  "goodQuantity": {
+                    "quantity": "58",
+                    "unit": "件",
+                    "sources": [
+                      {
+                        "recordId": "54",
+                        "instanceId": "24",
+                        "instanceNo": "FR-20261015-000024",
+                        "operationId": "op1",
+                        "operationName": "安速康新轮模拟·末道清洁",
+                        "bindingId": "ask-final-clean-report",
+                        "rowKey": "form",
+                        "tableId": "",
+                        "fieldId": "good",
+                        "unit": "件",
+                        "included": true,
+                        "materialName": "",
+                        "materialCode": "",
+                        "currentMaterialType": "null",
+                        "attributes": {
+                          "unit": "件",
+                          "reporter": "1",
+                          "ngQuantity": 1,
+                          "reporterId": "1",
+                          "goodQuantity": 30,
+                          "reporterLabel": "系统管理员",
+                          "outputQuantity": 30,
+                          "productionDate": "2026-10-15"
+                        },
+                        "details": [],
+                        "fieldName": "合格数量",
+                        "quantity": "30",
+                        "message": "已计入"
+                      },
+                      {
+                        "recordId": "55",
+                        "instanceId": "25",
+                        "instanceNo": "FR-20261015-000025",
+                        "operationId": "op1",
+                        "operationName": "安速康新轮模拟·末道清洁",
+                        "bindingId": "ask-final-clean-report",
+                        "rowKey": "form",
+                        "tableId": "",
+                        "fieldId": "good",
+                        "unit": "件",
+                        "included": true,
+                        "materialName": "",
+                        "materialCode": "",
+                        "currentMaterialType": "null",
+                        "attributes": {
+                          "unit": "件",
+                          "reporter": "1",
+                          "ngQuantity": 1,
+                          "reporterId": "1",
+                          "goodQuantity": 28,
+                          "reporterLabel": "系统管理员",
+                          "outputQuantity": 28,
+                          "productionDate": "2026-10-15"
+                        },
+                        "details": [],
+                        "fieldName": "合格数量",
+                        "quantity": "28",
+                        "message": "已计入"
+                      }
+                    ],
+                    "groups": [
+                      {
+                        "quantity": "58",
+                        "unit": "件",
+                        "materialId": "",
+                        "materialName": "",
+                        "materialCode": ""
+                      }
+                    ],
+                    "status": "READY",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "已知正式记录累计，不代表剩余库存或处置完成"
+                  },
+                  "ngQuantity": {
+                    "quantity": "2",
+                    "unit": "件",
+                    "sources": [
+                      {
+                        "recordId": "54",
+                        "instanceId": "24",
+                        "instanceNo": "FR-20261015-000024",
+                        "operationId": "op1",
+                        "operationName": "安速康新轮模拟·末道清洁",
+                        "bindingId": "ask-final-clean-report",
+                        "rowKey": "form",
+                        "tableId": "",
+                        "fieldId": "ng",
+                        "unit": "件",
+                        "included": true,
+                        "materialName": "",
+                        "materialCode": "",
+                        "currentMaterialType": "null",
+                        "attributes": {
+                          "unit": "件",
+                          "reporter": "1",
+                          "ngQuantity": 1,
+                          "reporterId": "1",
+                          "goodQuantity": 30,
+                          "reporterLabel": "系统管理员",
+                          "outputQuantity": 30,
+                          "productionDate": "2026-10-15"
+                        },
+                        "details": [],
+                        "fieldName": "不合格数量",
+                        "quantity": "1",
+                        "message": "已计入"
+                      },
+                      {
+                        "recordId": "55",
+                        "instanceId": "25",
+                        "instanceNo": "FR-20261015-000025",
+                        "operationId": "op1",
+                        "operationName": "安速康新轮模拟·末道清洁",
+                        "bindingId": "ask-final-clean-report",
+                        "rowKey": "form",
+                        "tableId": "",
+                        "fieldId": "ng",
+                        "unit": "件",
+                        "included": true,
+                        "materialName": "",
+                        "materialCode": "",
+                        "currentMaterialType": "null",
+                        "attributes": {
+                          "unit": "件",
+                          "reporter": "1",
+                          "ngQuantity": 1,
+                          "reporterId": "1",
+                          "goodQuantity": 28,
+                          "reporterLabel": "系统管理员",
+                          "outputQuantity": 28,
+                          "productionDate": "2026-10-15"
+                        },
+                        "details": [],
+                        "fieldName": "不合格数量",
+                        "quantity": "1",
+                        "message": "已计入"
+                      }
+                    ],
+                    "groups": [
+                      {
+                        "quantity": "2",
+                        "unit": "件",
+                        "materialId": "",
+                        "materialName": "",
+                        "materialCode": ""
+                      }
+                    ],
+                    "status": "READY",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "已知正式记录累计，不代表剩余库存或处置完成"
+                  },
+                  "scrapQuantity": {
+                    "quantity": null,
+                    "unit": null,
+                    "sources": [],
+                    "groups": [],
+                    "status": "NOT_CONFIGURED",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "未配置此项业务数量来源"
+                  }
+                }
+              },
+              "op2": {
+                "status": "NOT_CONFIGURED",
+                "message": "未绑定产出数量来源",
+                "quantity": null,
+                "unit": null,
+                "operationName": "安速康新轮模拟·标签说明书领用",
+                "sources": [],
+                "groups": [],
+                "pending": 0,
+                "failed": 0,
+                "rejected": 0,
+                "quality": {
+                  "goodQuantity": {
+                    "quantity": null,
+                    "unit": null,
+                    "sources": [],
+                    "groups": [],
+                    "status": "NOT_CONFIGURED",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "未配置此项业务数量来源"
+                  },
+                  "ngQuantity": {
+                    "quantity": null,
+                    "unit": null,
+                    "sources": [],
+                    "groups": [],
+                    "status": "NOT_CONFIGURED",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "未配置此项业务数量来源"
+                  },
+                  "scrapQuantity": {
+                    "quantity": null,
+                    "unit": null,
+                    "sources": [],
+                    "groups": [],
+                    "status": "NOT_CONFIGURED",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "未配置此项业务数量来源"
+                  }
+                }
+              },
+              "op3": {
+                "status": "NOT_CONFIGURED",
+                "message": "未绑定产出数量来源",
+                "quantity": null,
+                "unit": null,
+                "operationName": "安速康新轮模拟·报废处置记录",
+                "sources": [],
+                "groups": [],
+                "pending": 0,
+                "failed": 0,
+                "rejected": 0,
+                "quality": {
+                  "goodQuantity": {
+                    "quantity": null,
+                    "unit": null,
+                    "sources": [],
+                    "groups": [],
+                    "status": "NOT_CONFIGURED",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "未配置此项业务数量来源"
+                  },
+                  "ngQuantity": {
+                    "quantity": null,
+                    "unit": null,
+                    "sources": [],
+                    "groups": [],
+                    "status": "NOT_CONFIGURED",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "未配置此项业务数量来源"
+                  },
+                  "scrapQuantity": {
+                    "quantity": null,
+                    "unit": null,
+                    "sources": [
+                      {
+                        "recordId": "58",
+                        "instanceId": "27",
+                        "instanceNo": "FR-20261015-000027",
+                        "operationId": "op3",
+                        "operationName": "安速康新轮模拟·报废处置记录",
+                        "bindingId": "ask-final-scrap",
+                        "rowKey": "form",
+                        "tableId": "",
+                        "fieldId": "quantity",
+                        "unit": "",
+                        "included": false,
+                        "materialName": "安速康新轮模拟·刀头",
+                        "materialCode": "ASK-FINAL-20261015-P",
+                        "currentMaterialType": "产成品",
+                        "attributes": {
+                          "reason": "新原表虚构模拟：刀头表面划伤；不良与处置独立，不重复扣产出。",
+                          "material": {
+                            "id": "386188432511930368",
+                            "code": "ASK-FINAL-20261015-P",
+                            "name": "安速康新轮模拟·刀头",
+                            "sourceType": "material"
+                          },
+                          "quantity": 2,
+                          "materialLotText": "ASK-FINAL-20261015-R2-SCRAP-A",
+                          "documentNumberText": "S20261015_41"
+                        },
+                        "details": [],
+                        "fieldName": "报废数量",
+                        "quantity": "2",
+                        "message": "单位未填写，待核对"
+                      }
+                    ],
+                    "groups": [],
+                    "status": "UNIT_REVIEW",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 1,
+                    "message": "部分记录待核对，仅累计数量与单位明确的来源"
+                  }
+                }
+              }
+            },
+            "operationName": "安速康新轮模拟·末道清洁",
+            "sources": [
+              {
+                "recordId": "54",
+                "instanceId": "24",
+                "instanceNo": "FR-20261015-000024",
+                "bindingId": "ask-final-clean-report",
+                "rowKey": "form",
+                "tableId": "",
+                "fieldId": "good",
+                "unit": "件",
+                "included": true,
+                "quantity": "30"
+              },
+              {
+                "recordId": "55",
+                "instanceId": "25",
+                "instanceNo": "FR-20261015-000025",
+                "bindingId": "ask-final-clean-report",
+                "rowKey": "form",
+                "tableId": "",
+                "fieldId": "good",
+                "unit": "件",
+                "included": true,
+                "quantity": "28"
+              }
+            ],
+            "groups": [
+              {
+                "unit": "件",
+                "quantity": "58"
+              }
+            ],
+            "pending": 0,
+            "failed": 0,
+            "rejected": 0,
+            "quality": {
+              "goodQuantity": {
+                "quantity": "58",
+                "unit": "件",
+                "sources": [
+                  {
+                    "recordId": "54",
+                    "instanceId": "24",
+                    "instanceNo": "FR-20261015-000024",
+                    "operationId": "op1",
+                    "operationName": "安速康新轮模拟·末道清洁",
+                    "bindingId": "ask-final-clean-report",
+                    "rowKey": "form",
+                    "tableId": "",
+                    "fieldId": "good",
+                    "unit": "件",
+                    "included": true,
+                    "materialName": "",
+                    "materialCode": "",
+                    "currentMaterialType": "null",
+                    "attributes": {
+                      "unit": "件",
+                      "reporter": "1",
+                      "ngQuantity": 1,
+                      "reporterId": "1",
+                      "goodQuantity": 30,
+                      "reporterLabel": "系统管理员",
+                      "outputQuantity": 30,
+                      "productionDate": "2026-10-15"
+                    },
+                    "details": [],
+                    "fieldName": "合格数量",
+                    "quantity": "30",
+                    "message": "已计入"
+                  },
+                  {
+                    "recordId": "55",
+                    "instanceId": "25",
+                    "instanceNo": "FR-20261015-000025",
+                    "operationId": "op1",
+                    "operationName": "安速康新轮模拟·末道清洁",
+                    "bindingId": "ask-final-clean-report",
+                    "rowKey": "form",
+                    "tableId": "",
+                    "fieldId": "good",
+                    "unit": "件",
+                    "included": true,
+                    "materialName": "",
+                    "materialCode": "",
+                    "currentMaterialType": "null",
+                    "attributes": {
+                      "unit": "件",
+                      "reporter": "1",
+                      "ngQuantity": 1,
+                      "reporterId": "1",
+                      "goodQuantity": 28,
+                      "reporterLabel": "系统管理员",
+                      "outputQuantity": 28,
+                      "productionDate": "2026-10-15"
+                    },
+                    "details": [],
+                    "fieldName": "合格数量",
+                    "quantity": "28",
+                    "message": "已计入"
+                  }
+                ],
+                "groups": [
+                  {
+                    "quantity": "58",
+                    "unit": "件",
+                    "materialId": "",
+                    "materialName": "",
+                    "materialCode": ""
+                  }
+                ],
+                "status": "READY",
+                "pending": 0,
+                "failed": 0,
+                "rejected": 0,
+                "message": "已知正式记录累计，不代表剩余库存或处置完成"
+              },
+              "ngQuantity": {
+                "quantity": "2",
+                "unit": "件",
+                "sources": [
+                  {
+                    "recordId": "54",
+                    "instanceId": "24",
+                    "instanceNo": "FR-20261015-000024",
+                    "operationId": "op1",
+                    "operationName": "安速康新轮模拟·末道清洁",
+                    "bindingId": "ask-final-clean-report",
+                    "rowKey": "form",
+                    "tableId": "",
+                    "fieldId": "ng",
+                    "unit": "件",
+                    "included": true,
+                    "materialName": "",
+                    "materialCode": "",
+                    "currentMaterialType": "null",
+                    "attributes": {
+                      "unit": "件",
+                      "reporter": "1",
+                      "ngQuantity": 1,
+                      "reporterId": "1",
+                      "goodQuantity": 30,
+                      "reporterLabel": "系统管理员",
+                      "outputQuantity": 30,
+                      "productionDate": "2026-10-15"
+                    },
+                    "details": [],
+                    "fieldName": "不合格数量",
+                    "quantity": "1",
+                    "message": "已计入"
+                  },
+                  {
+                    "recordId": "55",
+                    "instanceId": "25",
+                    "instanceNo": "FR-20261015-000025",
+                    "operationId": "op1",
+                    "operationName": "安速康新轮模拟·末道清洁",
+                    "bindingId": "ask-final-clean-report",
+                    "rowKey": "form",
+                    "tableId": "",
+                    "fieldId": "ng",
+                    "unit": "件",
+                    "included": true,
+                    "materialName": "",
+                    "materialCode": "",
+                    "currentMaterialType": "null",
+                    "attributes": {
+                      "unit": "件",
+                      "reporter": "1",
+                      "ngQuantity": 1,
+                      "reporterId": "1",
+                      "goodQuantity": 28,
+                      "reporterLabel": "系统管理员",
+                      "outputQuantity": 28,
+                      "productionDate": "2026-10-15"
+                    },
+                    "details": [],
+                    "fieldName": "不合格数量",
+                    "quantity": "1",
+                    "message": "已计入"
+                  }
+                ],
+                "groups": [
+                  {
+                    "quantity": "2",
+                    "unit": "件",
+                    "materialId": "",
+                    "materialName": "",
+                    "materialCode": ""
+                  }
+                ],
+                "status": "READY",
+                "pending": 0,
+                "failed": 0,
+                "rejected": 0,
+                "message": "已知正式记录累计，不代表剩余库存或处置完成"
+              },
+              "scrapQuantity": {
+                "quantity": null,
+                "unit": null,
+                "sources": [
+                  {
+                    "recordId": "58",
+                    "instanceId": "27",
+                    "instanceNo": "FR-20261015-000027",
+                    "operationId": "op3",
+                    "operationName": "安速康新轮模拟·报废处置记录",
+                    "bindingId": "ask-final-scrap",
+                    "rowKey": "form",
+                    "tableId": "",
+                    "fieldId": "quantity",
+                    "unit": "",
+                    "included": false,
+                    "materialName": "安速康新轮模拟·刀头",
+                    "materialCode": "ASK-FINAL-20261015-P",
+                    "currentMaterialType": "产成品",
+                    "attributes": {
+                      "reason": "新原表虚构模拟：刀头表面划伤；不良与处置独立，不重复扣产出。",
+                      "material": {
+                        "id": "386188432511930368",
+                        "code": "ASK-FINAL-20261015-P",
+                        "name": "安速康新轮模拟·刀头",
+                        "sourceType": "material"
+                      },
+                      "quantity": 2,
+                      "materialLotText": "ASK-FINAL-20261015-R2-SCRAP-A",
+                      "documentNumberText": "S20261015_41"
+                    },
+                    "details": [],
+                    "fieldName": "报废数量",
+                    "quantity": "2",
+                    "message": "单位未填写，待核对"
+                  }
+                ],
+                "groups": [],
+                "status": "UNIT_REVIEW",
+                "pending": 0,
+                "failed": 0,
+                "rejected": 1,
+                "message": "部分记录待核对，仅累计数量与单位明确的来源"
+              }
+            },
+            "operationId": "op1",
+            "objectId": "386193988710633472",
+            "objectNo": "ASK-FINAL-20261015-R2-A"
+          },
+          {
+            "status": "READY",
+            "message": "已知正式报工累计，不代表工序已完工",
+            "quantity": "39",
+            "unit": "件",
+            "operations": {
+              "op1": {
+                "status": "READY",
+                "message": "已知正式报工累计，不代表工序已完工",
+                "quantity": "39",
+                "unit": "件",
+                "operationName": "安速康新轮模拟·末道清洁",
+                "sources": [
+                  {
+                    "recordId": "59",
+                    "instanceId": "28",
+                    "instanceNo": "FR-20261015-000028",
+                    "bindingId": "ask-final-clean-report",
+                    "rowKey": "form",
+                    "tableId": "",
+                    "fieldId": "good",
+                    "unit": "件",
+                    "included": true,
+                    "quantity": "39"
+                  }
+                ],
+                "groups": [
+                  {
+                    "unit": "件",
+                    "quantity": "39"
+                  }
+                ],
+                "pending": 0,
+                "failed": 0,
+                "rejected": 0,
+                "quality": {
+                  "goodQuantity": {
+                    "quantity": "39",
+                    "unit": "件",
+                    "sources": [
+                      {
+                        "recordId": "59",
+                        "instanceId": "28",
+                        "instanceNo": "FR-20261015-000028",
+                        "operationId": "op1",
+                        "operationName": "安速康新轮模拟·末道清洁",
+                        "bindingId": "ask-final-clean-report",
+                        "rowKey": "form",
+                        "tableId": "",
+                        "fieldId": "good",
+                        "unit": "件",
+                        "included": true,
+                        "materialName": "",
+                        "materialCode": "",
+                        "currentMaterialType": "null",
+                        "attributes": {
+                          "unit": "件",
+                          "reporter": "1",
+                          "ngQuantity": 1,
+                          "reporterId": "1",
+                          "goodQuantity": 39,
+                          "reporterLabel": "系统管理员",
+                          "outputQuantity": 39,
+                          "productionDate": "2026-10-15"
+                        },
+                        "details": [],
+                        "fieldName": "合格数量",
+                        "quantity": "39",
+                        "message": "已计入"
+                      }
+                    ],
+                    "groups": [
+                      {
+                        "quantity": "39",
+                        "unit": "件",
+                        "materialId": "",
+                        "materialName": "",
+                        "materialCode": ""
+                      }
+                    ],
+                    "status": "READY",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "已知正式记录累计，不代表剩余库存或处置完成"
+                  },
+                  "ngQuantity": {
+                    "quantity": "1",
+                    "unit": "件",
+                    "sources": [
+                      {
+                        "recordId": "59",
+                        "instanceId": "28",
+                        "instanceNo": "FR-20261015-000028",
+                        "operationId": "op1",
+                        "operationName": "安速康新轮模拟·末道清洁",
+                        "bindingId": "ask-final-clean-report",
+                        "rowKey": "form",
+                        "tableId": "",
+                        "fieldId": "ng",
+                        "unit": "件",
+                        "included": true,
+                        "materialName": "",
+                        "materialCode": "",
+                        "currentMaterialType": "null",
+                        "attributes": {
+                          "unit": "件",
+                          "reporter": "1",
+                          "ngQuantity": 1,
+                          "reporterId": "1",
+                          "goodQuantity": 39,
+                          "reporterLabel": "系统管理员",
+                          "outputQuantity": 39,
+                          "productionDate": "2026-10-15"
+                        },
+                        "details": [],
+                        "fieldName": "不合格数量",
+                        "quantity": "1",
+                        "message": "已计入"
+                      }
+                    ],
+                    "groups": [
+                      {
+                        "quantity": "1",
+                        "unit": "件",
+                        "materialId": "",
+                        "materialName": "",
+                        "materialCode": ""
+                      }
+                    ],
+                    "status": "READY",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "已知正式记录累计，不代表剩余库存或处置完成"
+                  },
+                  "scrapQuantity": {
+                    "quantity": null,
+                    "unit": null,
+                    "sources": [],
+                    "groups": [],
+                    "status": "NOT_CONFIGURED",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "未配置此项业务数量来源"
+                  }
+                }
+              },
+              "op2": {
+                "status": "NOT_CONFIGURED",
+                "message": "未绑定产出数量来源",
+                "quantity": null,
+                "unit": null,
+                "operationName": "安速康新轮模拟·标签说明书领用",
+                "sources": [],
+                "groups": [],
+                "pending": 0,
+                "failed": 0,
+                "rejected": 0,
+                "quality": {
+                  "goodQuantity": {
+                    "quantity": null,
+                    "unit": null,
+                    "sources": [],
+                    "groups": [],
+                    "status": "NOT_CONFIGURED",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "未配置此项业务数量来源"
+                  },
+                  "ngQuantity": {
+                    "quantity": null,
+                    "unit": null,
+                    "sources": [],
+                    "groups": [],
+                    "status": "NOT_CONFIGURED",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "未配置此项业务数量来源"
+                  },
+                  "scrapQuantity": {
+                    "quantity": null,
+                    "unit": null,
+                    "sources": [],
+                    "groups": [],
+                    "status": "NOT_CONFIGURED",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "未配置此项业务数量来源"
+                  }
+                }
+              },
+              "op3": {
+                "status": "NOT_CONFIGURED",
+                "message": "未绑定产出数量来源",
+                "quantity": null,
+                "unit": null,
+                "operationName": "安速康新轮模拟·报废处置记录",
+                "sources": [],
+                "groups": [],
+                "pending": 0,
+                "failed": 0,
+                "rejected": 0,
+                "quality": {
+                  "goodQuantity": {
+                    "quantity": null,
+                    "unit": null,
+                    "sources": [],
+                    "groups": [],
+                    "status": "NOT_CONFIGURED",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "未配置此项业务数量来源"
+                  },
+                  "ngQuantity": {
+                    "quantity": null,
+                    "unit": null,
+                    "sources": [],
+                    "groups": [],
+                    "status": "NOT_CONFIGURED",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 0,
+                    "message": "未配置此项业务数量来源"
+                  },
+                  "scrapQuantity": {
+                    "quantity": null,
+                    "unit": null,
+                    "sources": [
+                      {
+                        "recordId": "62",
+                        "instanceId": "30",
+                        "instanceNo": "FR-20261015-000030",
+                        "operationId": "op3",
+                        "operationName": "安速康新轮模拟·报废处置记录",
+                        "bindingId": "ask-final-scrap",
+                        "rowKey": "form",
+                        "tableId": "",
+                        "fieldId": "quantity",
+                        "unit": "",
+                        "included": false,
+                        "materialName": "安速康新轮模拟·刀头",
+                        "materialCode": "ASK-FINAL-20261015-P",
+                        "currentMaterialType": "产成品",
+                        "attributes": {
+                          "reason": "新原表虚构模拟：刀头表面划伤；不良与处置独立，不重复扣产出。",
+                          "material": {
+                            "id": "386188432511930368",
+                            "code": "ASK-FINAL-20261015-P",
+                            "name": "安速康新轮模拟·刀头",
+                            "sourceType": "material"
+                          },
+                          "quantity": 1,
+                          "materialLotText": "ASK-FINAL-20261015-R2-SCRAP-B",
+                          "documentNumberText": "S20261015_42"
+                        },
+                        "details": [],
+                        "fieldName": "报废数量",
+                        "quantity": "1",
+                        "message": "单位未填写，待核对"
+                      }
+                    ],
+                    "groups": [],
+                    "status": "UNIT_REVIEW",
+                    "pending": 0,
+                    "failed": 0,
+                    "rejected": 1,
+                    "message": "部分记录待核对，仅累计数量与单位明确的来源"
+                  }
+                }
+              }
+            },
+            "operationName": "安速康新轮模拟·末道清洁",
+            "sources": [
+              {
+                "recordId": "59",
+                "instanceId": "28",
+                "instanceNo": "FR-20261015-000028",
+                "bindingId": "ask-final-clean-report",
+                "rowKey": "form",
+                "tableId": "",
+                "fieldId": "good",
+                "unit": "件",
+                "included": true,
+                "quantity": "39"
+              }
+            ],
+            "groups": [
+              {
+                "unit": "件",
+                "quantity": "39"
+              }
+            ],
+            "pending": 0,
+            "failed": 0,
+            "rejected": 0,
+            "quality": {
+              "goodQuantity": {
+                "quantity": "39",
+                "unit": "件",
+                "sources": [
+                  {
+                    "recordId": "59",
+                    "instanceId": "28",
+                    "instanceNo": "FR-20261015-000028",
+                    "operationId": "op1",
+                    "operationName": "安速康新轮模拟·末道清洁",
+                    "bindingId": "ask-final-clean-report",
+                    "rowKey": "form",
+                    "tableId": "",
+                    "fieldId": "good",
+                    "unit": "件",
+                    "included": true,
+                    "materialName": "",
+                    "materialCode": "",
+                    "currentMaterialType": "null",
+                    "attributes": {
+                      "unit": "件",
+                      "reporter": "1",
+                      "ngQuantity": 1,
+                      "reporterId": "1",
+                      "goodQuantity": 39,
+                      "reporterLabel": "系统管理员",
+                      "outputQuantity": 39,
+                      "productionDate": "2026-10-15"
+                    },
+                    "details": [],
+                    "fieldName": "合格数量",
+                    "quantity": "39",
+                    "message": "已计入"
+                  }
+                ],
+                "groups": [
+                  {
+                    "quantity": "39",
+                    "unit": "件",
+                    "materialId": "",
+                    "materialName": "",
+                    "materialCode": ""
+                  }
+                ],
+                "status": "READY",
+                "pending": 0,
+                "failed": 0,
+                "rejected": 0,
+                "message": "已知正式记录累计，不代表剩余库存或处置完成"
+              },
+              "ngQuantity": {
+                "quantity": "1",
+                "unit": "件",
+                "sources": [
+                  {
+                    "recordId": "59",
+                    "instanceId": "28",
+                    "instanceNo": "FR-20261015-000028",
+                    "operationId": "op1",
+                    "operationName": "安速康新轮模拟·末道清洁",
+                    "bindingId": "ask-final-clean-report",
+                    "rowKey": "form",
+                    "tableId": "",
+                    "fieldId": "ng",
+                    "unit": "件",
+                    "included": true,
+                    "materialName": "",
+                    "materialCode": "",
+                    "currentMaterialType": "null",
+                    "attributes": {
+                      "unit": "件",
+                      "reporter": "1",
+                      "ngQuantity": 1,
+                      "reporterId": "1",
+                      "goodQuantity": 39,
+                      "reporterLabel": "系统管理员",
+                      "outputQuantity": 39,
+                      "productionDate": "2026-10-15"
+                    },
+                    "details": [],
+                    "fieldName": "不合格数量",
+                    "quantity": "1",
+                    "message": "已计入"
+                  }
+                ],
+                "groups": [
+                  {
+                    "quantity": "1",
+                    "unit": "件",
+                    "materialId": "",
+                    "materialName": "",
+                    "materialCode": ""
+                  }
+                ],
+                "status": "READY",
+                "pending": 0,
+                "failed": 0,
+                "rejected": 0,
+                "message": "已知正式记录累计，不代表剩余库存或处置完成"
+              },
+              "scrapQuantity": {
+                "quantity": null,
+                "unit": null,
+                "sources": [
+                  {
+                    "recordId": "62",
+                    "instanceId": "30",
+                    "instanceNo": "FR-20261015-000030",
+                    "operationId": "op3",
+                    "operationName": "安速康新轮模拟·报废处置记录",
+                    "bindingId": "ask-final-scrap",
+                    "rowKey": "form",
+                    "tableId": "",
+                    "fieldId": "quantity",
+                    "unit": "",
+                    "included": false,
+                    "materialName": "安速康新轮模拟·刀头",
+                    "materialCode": "ASK-FINAL-20261015-P",
+                    "currentMaterialType": "产成品",
+                    "attributes": {
+                      "reason": "新原表虚构模拟：刀头表面划伤；不良与处置独立，不重复扣产出。",
+                      "material": {
+                        "id": "386188432511930368",
+                        "code": "ASK-FINAL-20261015-P",
+                        "name": "安速康新轮模拟·刀头",
+                        "sourceType": "material"
+                      },
+                      "quantity": 1,
+                      "materialLotText": "ASK-FINAL-20261015-R2-SCRAP-B",
+                      "documentNumberText": "S20261015_42"
+                    },
+                    "details": [],
+                    "fieldName": "报废数量",
+                    "quantity": "1",
+                    "message": "单位未填写，待核对"
+                  }
+                ],
+                "groups": [],
+                "status": "UNIT_REVIEW",
+                "pending": 0,
+                "failed": 0,
+                "rejected": 1,
+                "message": "部分记录待核对，仅累计数量与单位明确的来源"
+              }
+            },
+            "operationId": "op1",
+            "objectId": "386193988731604992",
+            "objectNo": "ASK-FINAL-20261015-R2-B"
+          }
+        ],
+        "knownBatches": 2,
+        "totalBatches": 2
+      }
+    }
+  ],
+  "page": 1,
+  "size": 20,
+  "totalElements": 1,
+  "totalPages": 1
+}

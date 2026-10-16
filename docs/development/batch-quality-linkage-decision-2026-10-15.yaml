@@ -1,0 +1,129 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261015-BATCH-QUALITY-LINKAGE
+  scope: 批次质量三项、生产执行工序面板与待核对来源明细；只读正式来源计算，不回写旧业务记录。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 6379bf105127b05a65695992b008b55c142264f9
+    targetBranch: edhr-dev
+    targetCommit: 6379bf105127b05a65695992b008b55c142264f9
+    contractReadCommit: 6379bf105127b05a65695992b008b55c142264f9
+    uncommittedContractPaths: []
+  summary: 用户确认最终工序良品及NG累计，全流程本批产品报废独立统计，缺失不为零、缺单位待核对且可hover查看所有已记录来源；同步本体并在3000验证。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: rule.production-quality.batch-final-operation
+        name: 批次良品及NG只累计冻结最终工序
+        status: implemented
+        trigger: production-quality.query
+        condition: {fact: fact.production-output.snapshot-policy-version, operator: equals, value: 1}
+        result: {type: return-query-projection, sourceFactId: fact.production-quality.summary, fields: [goodQuantity, ngQuantity], sourcePolicy: final-operation-completed-form-and-succeeded-projection}
+        sourceReferences: [docs/knowledge/rules/production-quality.yaml, docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml]
+      - id: rule.production-quality.product-scrap-all-operations
+        name: 批次产品报废覆盖真实本批全流程
+        status: implemented
+        trigger: production-quality.query
+        condition: {fact: fact.production-output.snapshot-policy-version, operator: equals, value: 1}
+        result: {type: return-query-projection, sourceFactId: fact.production-quality.summary, fields: [scrapQuantity], sourcePolicy: actual-batch-product-all-operations}
+        sourceReferences: [docs/knowledge/rules/production-quality.yaml, docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml]
+      - id: rule.production-quality.missing-unit-and-evidence
+        name: 质量缺失与待核对来源明确展示
+        status: implemented
+        trigger: production-quality.query
+        condition: {fact: fact.production-quality.summary, operator: exists, value: true}
+        result: {type: return-query-projection, preserveMissingAsNull: true, preserveExplicitZero: true, preserveRecordedSources: true}
+        sourceReferences: [docs/knowledge/rules/production-quality.yaml, docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml]
+    executionContracts: []
+  confirmedSource:
+    - id: confirmed.batch-quality-final-operation
+      statement: 批次良品及NG取冻结最终工序的各自正式指标，同工序多次报工分别累计
+      sourceReferences: [当前用户明确确认, docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+    - id: confirmed.batch-quality-product-scrap
+      statement: 产品报废按全流程真实所属本批的产品报废记录累计，其他物料不混入
+      sourceReferences: [当前用户明确确认]
+    - id: confirmed.batch-quality-missing-and-evidence
+      statement: 未采集不显示0，单位缺失提示待核对，可hover查看所有已记录来源
+      sourceReferences: [当前用户明确确认]
+    - id: confirmed.operation-quality-value-hover
+      statement: 当前工序良品和不良按各自用途累计；报废数值自身悬停展示明细，批次产品范围仍独立于工序全部物料。
+      sourceReferences: [同切片后续用户明确确认]
+  inferred:
+    - id: inference.batch-quality-read-time
+      statement: 沿现有ProductionOutputService读取完整正式事实，返回quality分项和工序分项；不维护另一套回写数量，保留旧列及约束为历史结构而停止当作可信显示值。
+      rationale: 避免重复累计、旧三项互斥约束及改写旧业务记录，复用现有生产汇总所有权。
+      relatedIds: [confirmed.batch-quality-final-operation, confirmed.batch-quality-product-scrap]
+    - id: inference.batch-quality-panel
+      statement: 执行页正式良品/NG/报废独立显示；工序报废按物料和单位分别分组，批次报废才仅限本批产品。已保存过程参考仍保留并按当前projection绑定取值、按原单位分组，不用良品加NG加报废推导产出。
+      rationale: 当前面板旧businessPurpose不覆盖新配置且误套产品单位；原已确认过程参考与正式统计应区分。
+      relatedIds: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]
+    - id: inference.batch-quality-hover
+      statement: 复用共享数量组件的交互式来源浮层，支持hover、键盘focus及点击；来源区可滚动，含计入及排除记录、物料/原单位/原因/表单/实际行，不做无关页面重排。
+      rationale: 用户明确hover查看；兼顾键盘触屏及长来源列表。
+      relatedIds: [confirmed.batch-quality-missing-and-evidence]
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0079-04
+      supersededStatementIds: [DEC-0045-07]
+      scope: 仅替代良品、NG、报废三项组成或相加得出当前工序或批次产出的解释，正式质量及过程参考按各自显式用途独立累计。
+      retainedScope: 保留当前工序面板、目标展示、显式用途来源、跨份本次增量及原始确认历史；DEC-0077-08/13和DEC-0078独立产出与终态边界继续。
+      sourceReferences: [docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md, docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: production-quality
+        change: 批次列表详情及工单生产对象弹窗停止显示旧实体默认0，工序面板采用同一正式来源计算。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java, gmp-platform/frontend/src/components/ProductionOutput.tsx]
+    transitiveImpacts:
+      - area: production-api
+        change: 三项可空数值与quality状态、来源一起返回，缺失与实际0分开；既有output数量含义保持。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java]
+    potentialImpacts:
+      - area: duplicate-business-and-rework
+        concern: 技术重试幂等不等于同实物去重；NG仍为报告累计，不引入剩余NG库存算法。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]
+    unaffectedAreas:
+      - area: historical-business-data
+        reason: 不补单位、不改源表、DHR、旧快照或投影，不新增生产动作，不改变最终产出及生产状态。
+        evidenceReferences: []
+    compatibilityAndMigration:
+      - change: 无数据库迁移或回写；没有最终节点冻结依据的历史实例明确未配置，不用当前制程追算。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+    snapshotImpacts:
+      - change: 消费现有冻结最终工序、产品身份及单位；本次计算不改变源快照。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
+    auditImpacts:
+      - change: 汇总为只读派生，不制造新的数量写回或签署事实；现有审计和DHR冻结不变。
+        evidenceReferences: []
+    permissionImpacts:
+      - change: 沿既有生产对象查询权限和真实归属，只返回当前有权对象的来源；不增全局检索入口。
+        evidenceReferences: []
+    testImpacts:
+      - scope: focused
+        scenarios: [最终与前道分离, 多次报工和重试, 产品与其他物料隔离, 空单位和异单位, 缺失与实际0, pending和failed, 子表实际行, 共享表单归属, 当前工序与批次汇总不同, hover键盘及滚动, 3000接口页面, 旧行保护]
+        evidenceReferences: []
+    evidenceGaps: []
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 生产领域拥有数量统计，共享组件负责来源交互，不新增客户条件分支。
+    ownershipBoundaries:
+      - owner: production
+        responsibility: 读取正式事实并按冻结归属计算质量分项与来源，不修改报表事实。
+      - owner: shared-production-ui
+        responsibility: 统一数量、状态、详情和无障碍交互。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+      changeType: update
+      reason: 批次及工序质量汇总与来源
+    - path: gmp-platform/frontend/src/components/ProductionOutput.tsx
+      changeType: update
+      reason: 复用数量状态及hover来源
+    - path: docs/knowledge
+      changeType: update
+      reason: 同步本次已确认规则，保留既有独立指标含义
+  acceptanceScenarios:
+    - id: scenario.batch-quality-ansukang
+      given: 现有R2正式事实A清洁30/1和28/1，B39/1，报废产品2与1但单位空
+      when: 查询批次及执行页
+      then: 良品58和39，NG2和1，产品报废待核对且hover保留原2/1空单位；产出仍58/39/97，源记录与DHR不变。
+      evidenceRequirements: [真实API及3000浏览器, 旧业务行摘要保护, 独立质量]

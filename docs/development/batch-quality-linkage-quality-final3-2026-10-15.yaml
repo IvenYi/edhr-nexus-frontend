@@ -1,0 +1,183 @@
+qualityResult:
+  result: failed
+  baseCommit: 6379bf105127b05a65695992b008b55c142264f9
+  headCommit: 6379bf105127b05a65695992b008b55c142264f9
+  contractBaseline:
+    sourceCommit: 6379bf105127b05a65695992b008b55c142264f9
+    targetBranch: edhr-dev
+    targetCommit: 6379bf105127b05a65695992b008b55c142264f9
+    contractReadCommit: 6379bf105127b05a65695992b008b55c142264f9
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/batch-quality-linkage-decision-2026-10-15.yaml
+      - docs/development/batch-quality-linkage-2026-10-15.md
+      - docs/development/batch-quality-linkage-ontology-2026-10-15.yaml
+      - docs/architecture/business-knowledge-model.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0045-production-execution-workspace.yaml
+      - docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/ontology.yaml
+      - docs/knowledge/rules/production-execution.yaml
+      - docs/knowledge/rules/production-form-copies.yaml
+      - docs/knowledge/rules/production-quality.yaml
+      - docs/knowledge/facts/production-quality.yaml
+      - docs/knowledge/implementation-anchors/production-quality.yaml
+      - docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md
+      - docs/knowledge/evidence/batch-quality-linkage-2026-10-15.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionQualitySummary.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionQualitySummary.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionOutputSummary.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionBatchController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionQualitySummaryTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionOutputSummaryTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+      - gmp-platform/frontend/src/api/production-execution.ts
+      - gmp-platform/frontend/src/api/work-orders.ts
+      - gmp-platform/frontend/src/components/ProductionOutput.tsx
+      - gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx
+      - gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+      - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+    excludedPaths:
+      - docs/development/TODO.md
+      - docs/development/final-output-linkage-todo-2026-10-15.md
+      - docs/development/ansukang-final-output-e2e-2026-10-15*
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - docs/development/batch-quality-linkage-decision-2026-10-15.yaml
+      - docs/development/batch-quality-linkage-2026-10-15.md
+      - docs/development/batch-quality-linkage-ontology-2026-10-15.yaml
+      - docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+      - docs/knowledge/rules/production-quality.yaml
+      - docs/knowledge/facts/production-quality.yaml
+      - docs/knowledge/implementation-anchors/production-quality.yaml
+      - docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md
+      - docs/knowledge/evidence/batch-quality-linkage-2026-10-15.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionQualitySummary.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionQualitySummary.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionQualitySummaryTest.java
+      - output/batch-quality-linkage-2026-10-15/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.final3.baseline-and-semantics
+      required: true
+      category: requirements
+      description: 独立重读契约、DEC77/78/79、当前规则及实现，核对数量边界和精确替代范围
+      method: inspection
+      command: git rev-parse HEAD origin/edhr-dev；读取AGENTS、质量及交接契约、知识README/open-questions、decisionPackage、production-quality资产及本轮实现
+      outcome: passed
+      evidence:
+        - 独立获取到HEAD和origin/edhr-dev均6379bf105127b05a65695992b008b55c142264f9；适用契约无未提交差异，知识0.3.25/schema1.2.0。
+        - 批次最终工序良品/NG、真实本批产品全流程报废、其他物料排除但保留来源、当前工序分物料及单位、正式与保存参考独立符合已确认规则。
+        - 无身份物料待核对而非当作其他物料排除；空单位不补、实际0与缺失区分；独立产出未由质量项相加推导。
+        - DEC79-04只替代DEC45-07三项组合产出解释，保留原始历史证据及DEC77/78其他范围；未对已有生产快照追算或回写。
+    - id: check.final3.backend-and-knowledge-evidence
+      required: true
+      category: integration
+      description: 独立核对最终未改动后端与知识校验的实际XML、源码及第二实例执行记录
+      method: inspection
+      command: 读取六组target/surefire-reports/TEST-*.xml及tools/knowledge-model/target/surefire-reports/TEST-*.xml，核对第二实例最终后端执行记录与当前源码
+      outcome: passed
+      evidence:
+        - output/batch-quality-linkage-2026-10-15/qa-final-accepted-runtime.json。
+        - 六组113声明测试、111实跑、0失败及错误、2项既有browser-property夹具跳过；知识89项、0失败/错误/跳过。
+        - 本实例没有重跑整组；复用第二实例实际执行且此后未改变的后端与知识范围，独立读取XML及风险相关测试源码，不把XML核对声称为亲自执行测试。
+        - 单测覆盖独立指标、最终/前道隔离、全流程产品与其他物料、缺单位/异单位、实际零、无身份待核对、来源实际行与新绑定保存参考；PG集成覆盖正式数据、重试、pending/failed及完整来源集合。
+    - id: check.final3.runtime-and-old-data
+      required: true
+      category: database
+      description: 本实例普通登录后独立GET运行接口，并只读比较37表456条旧行业务摘要
+      method: query
+      command: Python login/request查询R2 objects、execution和工单；psql逐表读取md5(to_jsonb(t)::text)并与before multiset比较
+      outcome: passed
+      evidence:
+        - output/batch-quality-linkage-2026-10-15/qa-final-accepted-runtime.json。
+        - A良品58/NG2、B良品39/NG1；产品报废均null且UNIT_REVIEW，原数2/1及空单位保留，字段名报废数量。
+        - 正式op1及保存参考吻合；op3未采良品不伪造0；产出58/39/工单97不变。
+        - 37张业务表456条before摘要全部原样保留，缺失或变更0，包括DHR、签署、源记录、投影、执行快照及旧三项数量列。
+        - 只读GET与SQL；普通登录会话/登录审计不在旧业务保护分母内。
+    - id: check.final3.short-screen-hover
+      required: true
+      category: visual
+      description: 独立复验1280x720批次NG多笔来源纯悬停、移入阅读与移开关闭
+      method: browser
+      command: 新建隐藏Cua tab1，查询R2-A，横向滚至NG2件；CDP Input.dispatchMouseEvent mouseMoved纯移入数值、进入浮层、移出；只读DOM几何及截图
+      outcome: passed
+      evidence:
+        - output/batch-quality-linkage-2026-10-15/qa-final-accepted-ng-hover.jpg。
+        - 浮层x704/y300/宽480/高411.953125，bottom711.953125小于720；两份各1件来源、字段不合格数量及各自原值均可见。
+        - 指针进入浮层可继续阅读，离开后自动关闭；修复前760.45底部溢出未重现。
+    - id: check.final3.dialog-keyboard-and-pinning
+      required: true
+      category: e2e
+      description: 独立复验生产对象Dialog中的点击固定、Escape范围与焦点返回
+      method: browser
+      command: 1280x720工单R2生产对象弹窗，点击A的NG数值；从已聚焦的数量来源列表执行页面press Escape；另一次点击后将鼠标移至10,100并延后读取
+      outcome: failed
+      evidence:
+        - output/batch-quality-linkage-2026-10-15/qa-final3-escape-focus.json和qa-final3-escape-focus.jpg。
+        - 从来源列表按页面Escape后inner关闭、outer保留，但焦点稳定落到role=presentation的DIV，未回到触发数值。
+        - output/batch-quality-linkage-2026-10-15/qa-final3-pointer-leave.json及before/after-pointer-leave.jpg：click后expanded=true、来源区聚焦；移开后expanded=false且inner不存在，未保持固定。
+        - 若数值已持有焦点，页面press Escape可以只关inner并保持数值焦点，第二次Escape关闭outer；因此捕获阶段修复有效，但不覆盖从浮层内部的焦点恢复。
+        - 被验数量组件SHA256为aa1b07fc02bc15d00157239a42591bed0c96f092fee7c8260229af5322f003b3。
+    - id: check.final3.diff-check
+      required: true
+      category: regression
+      description: 差异空白和修改范围核对
+      method: command
+      command: git diff --check
+      outcome: passed
+      evidence: [命令退出0；无数据库迁移或初始化修改，质量实例未修改实现/测试/配置/业务数据。]
+  findings:
+    - id: QF-BATCH-QUALITY-003
+      severity: medium
+      scope: gmp-platform/frontend/src/components/ProductionOutput.tsx
+      summary: 从来源浮层内部按Escape后未将焦点返回数值
+      reproductionSteps:
+        - 1280x720打开工单管理，查询ASK-FINAL-20261015-R2-WO并打开生产对象弹窗。
+        - 点击A的NG2件，确认来源列表可见且该列表持有键盘焦点。
+        - 使用页面键盘方式对数量来源列表press Escape。
+        - 读取document.activeElement及两个Dialog的存在状态。
+      expectedResult: 只关闭数量明细，外层弹窗保留，键盘焦点回到A的NG数值且不重开浮层。
+      actualResult: 内层关闭且外层保留，但activeElement为role=presentation的DIV（MuiDialog-container），失去触发数值焦点。
+      evidence:
+        - output/batch-quality-linkage-2026-10-15/qa-final3-escape-focus.json
+        - output/batch-quality-linkage-2026-10-15/qa-final3-escape-focus.jpg
+      resolutionStatus: open
+      resolutionEvidence: []
+    - id: QF-BATCH-QUALITY-004
+      severity: medium
+      scope: gmp-platform/frontend/src/components/ProductionOutput.tsx
+      summary: 生产对象弹窗NG数值点击后移开鼠标，来源未保持固定
+      reproductionSteps:
+        - 在同一生产对象弹窗中点击A的NG2件，确认aria-expanded=true且来源列表可见。
+        - 不再点击其他控件，只将鼠标移动到页面10,100。
+        - 150ms后延后读取aria-expanded与来源Dialog是否存在。
+      expectedResult: 点击将来源固定，单纯移开鼠标不关闭；Escape、关闭按钮或click-away才关闭。
+      actualResult: aria-expanded变为false，来源Dialog消失；重复两次以上。具体是遮挡点击还是关闭定时器竞争尚未据黑盒证据确定。
+      evidence:
+        - output/batch-quality-linkage-2026-10-15/qa-final3-pointer-leave.json
+        - output/batch-quality-linkage-2026-10-15/qa-final3-before-pointer-leave.jpg
+        - output/batch-quality-linkage-2026-10-15/qa-final3-after-pointer-leave.jpg
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.final3.native-escape-tool-path
+      description: Cua native tab.pressKey(null,Escape)曾使内外同时关闭；页面Playwright press可区分内外。原生路径可能含AX取消行为，本报告不将该工具差异单独包装为产品失败。
+      impact: Escape结论限定于可复现页面键盘语义；失败项是来源内部实际焦点未恢复和点后移开未固定。
+      mitigation: 后续修复须以普通页面键盘交互、只读focus与可见状态复验，不用仅立即AX状态代替固定持久性。
+    - id: risk.final3.unfinished-final-ui-matrix
+      description: 发现上述失败后未继续宣称本实例已完整复验窄屏滚动及执行工序切换；这些旧实例证据不能替代修复后的最终独立验收。
+      impact: 本结果为failed，不能作为功能交付完成门禁。
+      mitigation: 主智能体修复后按L2使用未参与修复的新实例完成最终候选所需UI及相邻回归；不必重复未受影响的整组后端测试。
+    - id: risk.final3.global-ui-and-branch-protection
+      description: 全仓UI严格审计138项为主侧既有报告，本实例未复跑该全仓审计，亦未核验GitHub必需检查/分支保护。
+      impact: 不宣称全仓UI清零或门禁已由GitHub强制实施。
+      mitigation: 保持本次功能范围，不扩大无关修复；报告实际检查边界。
+  blockingConditions: []

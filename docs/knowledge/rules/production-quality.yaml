@@ -1,0 +1,44 @@
+knowledgeModelVersion: 0.3.25
+rules:
+  - id: rule.production-quality.batch-final-operation
+    name: 批次良品及NG只累计冻结最终工序
+    status: implemented
+    visibility: internal
+    trigger: production-quality.query
+    scope: production-batch
+    condition: {fact: fact.production-output.snapshot-policy-version, operator: equals, value: 1}
+    result:
+      type: return-query-projection
+      sourceFactId: fact.production-quality.summary
+      fields: [goodQuantity, ngQuantity]
+      sourcePolicy: final-operation-completed-form-and-succeeded-projection
+    explanation: DEC-0079-01；良品及NG按各自用途独立累计，限真实本批冻结最终工序。多份报工及不同实际行分别计入，重试不重复，不跨工序汇总；未采集不从明确产出或计划值推导。NG是报告累计，不代表剩余待处置库存。
+    evidenceIds: [evidence.batch-quality-linkage-confirmed, evidence.batch-quality-linkage-runtime-source, evidence.batch-quality-linkage-main-validation]
+  - id: rule.production-quality.product-scrap-all-operations
+    name: 批次产品报废覆盖真实本批全流程
+    status: implemented
+    visibility: internal
+    trigger: production-quality.query
+    scope: production-batch
+    condition: {fact: fact.production-output.snapshot-policy-version, operator: equals, value: 1}
+    result:
+      type: return-query-projection
+      sourceFactId: fact.production-quality.summary
+      fields: [scrapQuantity]
+      sourcePolicy: actual-batch-product-all-operations
+    explanation: DEC-0079-02；按真实对象归属和明确产品身份筛选全工序正式报废来源。其他物料、别批记录和仅同名/同字符串记录不混入。缺身份或单位的原事实保留并待核对，不自动补成产品单位，不扣最终产出或库存，不将登记解释为已销毁。
+    evidenceIds: [evidence.batch-quality-linkage-confirmed, evidence.batch-quality-linkage-runtime-source, evidence.batch-quality-linkage-main-validation]
+  - id: rule.production-quality.missing-unit-and-evidence
+    name: 质量缺失与待核对来源明确展示
+    status: implemented
+    visibility: internal
+    trigger: production-quality.query
+    scope: production-quality-summary
+    condition: {fact: fact.production-quality.summary, operator: exists, value: true}
+    result:
+      type: return-query-projection
+      preserveMissingAsNull: true
+      preserveExplicitZero: true
+      preserveRecordedSources: true
+    explanation: DEC-0079-03/05；未采集或未生效不显示实际0，正式填0才为已知0。缺/异单位不猜补换算，权威累计仅纳入可核对来源，状态和可hover的全部相关来源保留原数量、单位、物料、实际行和计入原因。只读派生不改旧列、源表、投影、DHR或快照，无冻结依据的旧实例不按新配置补算；质量与明确产出及生命周期互不替代。
+    evidenceIds: [evidence.batch-quality-linkage-confirmed, evidence.batch-quality-linkage-runtime-source, evidence.batch-quality-linkage-main-validation]

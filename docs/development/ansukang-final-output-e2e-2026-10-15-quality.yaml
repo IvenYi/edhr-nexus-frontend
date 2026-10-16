@@ -1,0 +1,171 @@
+qualityResult:
+  result: passed
+  baseCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+  headCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+  contractBaseline:
+    sourceCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    targetBranch: edhr-dev
+    targetCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    contractReadCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/ansukang-final-output-e2e-2026-10-15-decision-package.yaml
+      - docs/development/ansukang-final-output-e2e-2026-10-15-ontology.yaml
+      - docs/development/ansukang-final-output-e2e-2026-10-15-date-quality.yaml
+      - docs/development/ansukang-final-output-e2e-2026-10-15.md
+      - docs/development/ansukang-final-output-e2e-2026-10-15-quality.yaml
+      - output/ansukang-final-output-e2e-2026-10-15/
+    excludedPaths:
+      - gmp-platform/frontend/output/
+      - output/下其他既有任务产物
+    untrackedPaths:
+      - docs/development/ansukang-final-output-e2e-2026-10-15-decision-package.yaml
+      - docs/development/ansukang-final-output-e2e-2026-10-15-ontology.yaml
+      - docs/development/ansukang-final-output-e2e-2026-10-15-date-quality.yaml
+      - docs/development/ansukang-final-output-e2e-2026-10-15.md
+      - docs/development/ansukang-final-output-e2e-2026-10-15-quality.yaml
+      - gmp-platform/frontend/output/
+      - output/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.ask-final-contract-and-scope
+      required: true
+      category: requirements
+      description: 独立核对实际提交、契约、已确认口径与本轮L2模拟范围。
+      method: inspection
+      command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git diff --stat HEAD; 读取项目及质量角色契约、交接契约、知识README/open-questions、DEC-0077/0078和本轮决策包。
+      outcome: passed
+      evidence:
+        - 独立fetch后HEAD、origin/edhr-dev及实际读取的契约均为e9c00df8c85b021e7bf206e575a5a726cd46c12b，未提交产品代码或契约差异为空。
+        - 本轮范围为新增模拟配置与执行验收，不是新的产品实现或全仓审计；没有重用旧分支质量结论替代本轮验证。
+        - 用户允许仅新导入清洁副本补充明确标识的手填单位；E8同时作产出和良品是模拟选择，不提升为通用政策。
+        - 本体结果not-applicable与现有规则配置执行的范围相符；原始证据、用户确认、工程推断在本体报告中分列。
+    - id: check.ask-final-old-data-preservation
+      required: true
+      category: database
+      description: 对开始前37类业务表320行摘要逐表进行多重集合包含检查，允许新增但不允许旧行摘要缺失。
+      method: automated-test
+      command: python3 output/ansukang-final-output-e2e-2026-10-15/quality-independent/read_only_review.py
+      outcome: passed
+      evidence:
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/original-row-preservation.json
+        - 独立对运行库edhr_form_projection执行只读to_jsonb整行MD5查询；37表320个原摘要全部仍存在，missing=0。
+        - 三份原XLSX重新计算SHA-256，与本轮原始证据逐项一致；本检查没有修改数据或模板。
+        - pg_restore --list可读取开始前CUSTOM备份，目录563项；未执行恢复以免破坏现环境。
+    - id: check.ask-final-runtime-and-catalog
+      required: true
+      category: integration
+      description: 验证统一端口和运行目录目录数据可读。
+      method: query
+      command: lsof读取监听端口；GET localhost:3000/api/v1/form-lookup-items及生产查询。
+      outcome: passed
+      evidence:
+        - 实际监听Java7857为8081、Node7893为3000、PostgreSQL56246为5432；3007和8087未监听。
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/lookup-items.json
+        - 目录可读，九项builtin包括date型lookup_trace_date，其余八项为文本；本轮不执行破坏性的删除校验或修改预置清单。
+    - id: check.ask-final-frozen-output-and-quantities
+      required: true
+      category: api
+      description: 独立读取两批执行快照、正式产出来源和工单累计，核对多次报工及非末节点最终工序。
+      method: automated-test
+      command: python3 output/ansukang-final-output-e2e-2026-10-15/quality-independent/read_only_review.py
+      outcome: passed
+      evidence:
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/A-execution.json
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/B-execution.json
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/work-orders.json
+        - 工单ASK-FINAL-20261015-R2-WO计划100，A60/B40；执行快照仅op1标最终产出，路线末节点是op3，产品单位冻结为件。
+        - A正式来源24/25分别30与28，B来源28为39；全部完成后仍为58/39/97件，READY且来源included，工序完工未重复计数。
+        - 两批与工单状态COMPLETED，记录完整性COMPLETE且recordIssues为空；数量READY与生产状态分别核对。
+    - id: check.ask-final-business-ledgers
+      required: true
+      category: api
+      description: 独立按真实工单查询三类正式流水，不按相同物料批号合并多次报工。
+      method: automated-test
+      command: python3 output/ansukang-final-output-e2e-2026-10-15/quality-independent/read_only_review.py
+      outcome: passed
+      evidence:
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/production-report.json
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/consumption-report.json
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/scrap-report.json
+        - 报工3笔产出30/28/39，良品97、不良3；生产日期2026-10-15、报工人为实际签署人1；未以创建时间补工时或开始结束业务值。
+        - 消耗4笔60/60/40/40，按物料分别标签100、说明书100；核对总200不代表单物料或统一单位业务合计。
+        - 报废2笔2与1，保留独立原因和来源，产出仍97，不重复扣减。
+    - id: check.ask-final-summary-and-signature-evidence
+      required: true
+      category: audit
+      description: 独立读取两份正式化冻结版本、来源值和保存提交审计，核对三份真实签名记录。
+      method: automated-test
+      command: python3 output/ansukang-final-output-e2e-2026-10-15/quality-independent/read_only_review.py
+      outcome: passed
+      evidence:
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/dhr-A-frozen.json
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/dhr-B-frozen.json
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/dhr-A-audit.json
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/dhr-B-audit.json
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/signature-metadata.json
+        - DHR12/13各有唯一FORMALIZED V1，冻结实际源表4/3份，evidenceChanges为空；三项人工核查为true，说明明确仅模拟，自动解释质量结论为false。
+        - 三份清洁及两份标签日期均为2026-10-15；两份报废不伪造业务日期。清洁三份签名具有不同signatureId、实际用户1和已存快照摘要，认证方式为已有ADMIN_LOGIN_PASSWORD调试路径。
+        - 两份各有5条DHR审计事件，包括首次开工、生产完成、草稿保存和一次正式提交；提交snapshotHash与所读冻结版本一致。
+        - 第一轮失败尝试DHR10/11仍为NOT_STARTED汇总状态；没有回写日期或伪装为本轮定稿。
+    - id: check.ask-final-trace-scope-api
+      required: true
+      category: api
+      description: 对同一组日期和批号条件独立验证表单同实例与DHR跨关联表单的范围区别。
+      method: automated-test
+      command: python3 output/ansukang-final-output-e2e-2026-10-15/quality-independent/read_only_review.py
+      outcome: passed
+      evidence:
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/forms-forward.json
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/dhrs-forward.json
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/forms-reverse.json
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/dhr-A-cross-form-reverse.json
+        - 正向按真实所属工单得到表单7、DHR2；反向物料批号ASK-FINAL-20261015-R2-SCRAP-A与日期2026-10-15组合得到表单0、DHR1，DHR详情traceConditionsSatisfied=true且4份命中。
+    - id: check.ask-final-ui-reports-output-and-frozen-dhr
+      required: true
+      category: e2e
+      description: 用全新隐藏IAB标签独立验证三类列表、第二笔来源、数量可见和冻结档案可打开；不触发数据修改。
+      method: browser
+      command: cua_repl；实际页面工单过滤、来源查看、生产对象及DHR档案查看。
+      outcome: passed
+      evidence:
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/production-source.jpg
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/consumption-source.jpg
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/order-batches.jpg
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/dhr-frozen-A.jpg
+        - 三类页面分别显示3/4/2条；报工000025打开的确是第二份28而非第一份30，原表相关取值有蓝框定位；消耗源表两合并组实际值60/60可见。
+        - 工单列表累计产出97件，生产对象弹窗A58件/B39件；旧良品/NG/报废列0的独立风险另列，不将这些列当作质量合计通过。
+        - DHR-20261015-000012可打开冻结汇总V1，显示已正式化、实际4份，清洁实例列表包含000024和000025。
+    - id: check.ask-final-ui-trace-and-highlighting
+      required: true
+      category: visual
+      description: 独立使用原生日期控件重做DHR及表单反向查询，验证命中表单和字段定位。
+      method: browser
+      command: cua_repl；AX setValue填写日期范围并实际查询、打开DHR和报废源表。
+      outcome: passed
+      evidence:
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/dhr-cross-form-hit.jpg
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/dhr-cross-form-hit-ax.txt
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/form-forward-ax.txt
+        - output/ansukang-final-output-e2e-2026-10-15/quality-independent/form-reverse-ax.txt
+        - DHR反向默认仅批次/SN、物料批号和工单号；更多条件位于按钮左侧，收起时自定义添加入口隐藏；原生AX起止日期均输入2026-10-15后组合返回A批1份。
+        - 完整DHR目录标记清洁命中2份、标签1份、报废1份；切换报废000027显示物料批号命中说明，原表对应批号输入区域蓝框高亮且值正确。
+        - 表单正向工单查询7笔；相同反向批号与日期组合实查0笔，未跨表拼接单张表单证据。
+        - 实查浏览器没有error日志；仅React Router未来版本提示，不影响当前验证。
+  findings: []
+  residualRisks:
+    - id: risk.ask-final-legacy-quality-columns
+      description: 批次列表和工单生产对象弹窗既有良品、NG、报废列仍直接读取ProductionObject旧独立默认0字段，本轮未与正式报工质量指标联动。
+      impact: 这些0不能作为本轮正式质量结论；本次通过限定于新增累计产出58/39/97及三类正式报表，不表示所有数量列已联动。
+      mitigation: 本轮报告明确披露并以正式业务报表核对良品97/不良3/报废3；后续先确定各工序质量汇总口径，再决定隐藏、替换或同步旧列，不擅自按产出公式回写。
+    - id: risk.ask-final-mixed-ui-and-api-execution
+      description: 第一轮实际UI执行因自动化fill原生日期无效而保留失败尝试，最终验收R2通过常规产品API执行生产事务，不能描述为R2每次填报均纯UI点击。
+      impact: 本次独立角色只读验证完成事实，未重新执行生产签署或提交，也不以当前GET断言替代写入时权限、并发、重试全矩阵。
+      mitigation: 披露操作边界，保留失败尝试和独立日期报告；实际UI已覆盖原件导入、第一轮生产操作、R2汇总定稿及独立报表追溯核验，没有发现需要改产品代码的日期缺陷。
+    - id: risk.ask-final-simulation-only
+      description: 三张原表构成的是简化虚构验证路线，管理员签署使用既有调试例外；本轮无附件。
+      impact: 不证明客户完整工艺/SOP、真实报废处置、普通员工认证签署、附件文件字节链、生产放行或全系统验证。
+      mitigation: 保留模拟标识及原件，不改客户政策；客户确认本轮结果后，真实上线另按实际职责、流程和证据范围验收。
+  blockingConditions: []

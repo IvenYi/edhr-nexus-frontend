@@ -1,0 +1,133 @@
+qualityResult:
+  result: failed
+  baseCommit: 6379bf105127b05a65695992b008b55c142264f9
+  headCommit: 6379bf105127b05a65695992b008b55c142264f9
+  contractBaseline:
+    sourceCommit: 6379bf105127b05a65695992b008b55c142264f9
+    targetBranch: edhr-dev
+    targetCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    contractReadCommit: 6379bf105127b05a65695992b008b55c142264f9
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/frontend/src/components/productionQuantitySources.ts
+      - gmp-platform/frontend/src/components/ProductionOutput.tsx
+      - gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+      - gmp-platform/frontend/src/pages/production/ProductionExecutionPage.css
+      - gmp-platform/frontend/src/api/work-orders.ts
+      - gmp-platform/frontend/scripts/test-production-quantity-sources.mjs
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionQualitySummary.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionQualitySummary.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionQualitySummaryTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java
+      - docs/development/operation-quantity-popover-2026-10-16.yaml
+      - docs/development/operation-quantity-popover-ontology-2026-10-16.yaml
+      - docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+      - docs/knowledge/rules/production-execution.yaml
+      - docs/knowledge/facts/production-quality.yaml
+      - docs/knowledge/README.md
+    excludedPaths:
+      - 上一轮批次质量联动中与本次工序浮层无关的控制器、批次和工单页面及其他未提交资产
+      - output/中历史模拟和验收证据（不重写）
+    untrackedPaths:
+      - gmp-platform/frontend/src/components/productionQuantitySources.ts
+      - gmp-platform/frontend/scripts/test-production-quantity-sources.mjs
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionQualitySummary.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionQualitySummary.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionQualitySummaryTest.java
+      - docs/development/operation-quantity-popover-2026-10-16.yaml
+      - docs/development/operation-quantity-popover-ontology-2026-10-16.yaml
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.operation-popover-contract-baseline
+      required: true
+      category: documentation
+      description: 独立读取项目、质量角色、交接契约、知识基线及相关未决问题，核对实际Git基线。
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git diff HEAD..origin/edhr-dev -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - HEAD为6379bf105127b05a65695992b008b55c142264f9，远端为76b214426a271929bba2708cdda9e4d84d1f0679，所列契约无差异；未声称已集成远端。
+        - docs/knowledge/README.md声明0.3.25/schema1.2.0；相关开放问题不授权改变数量或单位口径。
+    - id: check.operation-popover-source-identity
+      required: true
+      category: unit
+      description: 独立运行来源合并、统计状态、零值和分组测试。
+      method: automated-test
+      command: cd gmp-platform/frontend && node scripts/test-production-quantity-sources.mjs
+      outcome: passed
+      evidence:
+        - 4 tests passed，0 failed；30已生效与50已填报保留独立总量，两条真实来源。
+        - 人工核对合并键为copyId、bindingId、tableId、rowKey、fieldId，缺身份不猜测；调用方传入同一当前工序。
+        - FAILED/PENDING优先于included，表单COMPLETED本身不等于统计已生效。
+    - id: check.operation-popover-backend-metadata
+      required: true
+      category: unit
+      description: 独立运行只读元数据和质量摘要聚焦单测。
+      method: automated-test
+      command: cd gmp-platform/backend && JAVA_HOME=/opt/homebrew/opt/openjdk@21 /opt/homebrew/bin/mvn -q -Dtest=ProductionQualitySummaryTest test
+      outcome: passed
+      evidence:
+        - /tmp/operation-quantity-independent-unit.log
+        - gmp-platform/backend/target/surefire-reports/com.zencas.edhr.production.service.ProductionQualitySummaryTest.txt（7 tests，0 failures/errors/skipped）
+        - 已读取主侧ProductionOutputPostgresTest报告11 tests通过；本实例未重跑数据库集成，亦未操作运行数据库或服务。
+    - id: check.operation-popover-semantic-boundary
+      required: true
+      category: requirements
+      description: 核对已生效/已填报包含关系及空单位待核对规则。
+      method: inspection
+      command: inspect ProductionOutputService.operation and ProductionQualitySummary.metric
+      outcome: failed
+      evidence:
+        - QF-OPQ-001：普通工序空单位正式产出可被计入，但已填报摘要拒绝计入，新增并列展示暴露不一致。
+    - id: check.operation-popover-ontology
+      required: true
+      category: ontology
+      description: 核对DEC-0079-06声明级替代与现行规则，本轮展示不改变已确认统计范围。
+      method: inspection
+      command: inspect DEC-0079-04/06, rule.operation-output-field-purpose and fact.production-quality.saved-reference
+      outcome: passed
+      evidence:
+        - 06仅替代独立展开的展示形式；真实工序、独立指标、单位/物料、历史保护范围保留，旧原文保留。
+        - 本体报告updated、89项知识测试通过；本实例只作人工语义复核，未冒称亲自重跑89项。
+        - 新展示声明仍specified/internal，不以知识更新宣称3000交互验收完成。
+    - id: check.operation-popover-browser
+      required: true
+      category: visual
+      description: 低高度切换表单/份次可见、浮层滚动与hover/click/Escape实际交互。
+      method: inspection
+      command: pending runtime browser evidence
+      outcome: blocked
+      evidence:
+        - 本实例未收到本轮实际浏览器证据；主智能体指示先结束为failed，修复后全新质量实例复核。
+  findings:
+    - id: QF-OPQ-001
+      severity: medium
+      scope: 普通工序产出浮层的已生效/已填报数量
+      summary: 空单位正式产出仍被计入，造成已生效有数量而已填报无可核对总量，与既有空单位规则和新包含关系不一致。
+      reproductionSteps:
+        - 使用非最终工序，配置显式outputQuantity及unit来源。
+        - 保存并最终完成一份数量30、单位空的报工，使正式投影SUCCEEDED。
+        - 读取该工序的formalOutput及processQuality，打开产出浮层。
+      expectedResult: 空单位来源保留原始30及来源位置，正式累计显示待核对且不作为可核对数量计入；双累计不形成矛盾解释。
+      actualResult: ProductionOutputService.operation在expectedUnit=null时valid不要求非空单位，累加30并标READY；ExecutionQualitySummary使用ProductionQualitySummary.metric拒绝空单位，quantity为null且UNIT_REVIEW。新增浮层会并列显示已生效30（单位未填写）与已填报—。
+      evidence:
+        - 审查发现时ProductionOutputService.java:145-146的valid仅为value.isNumber、非负及expectedUnit分支，没有!unit.isBlank；收尾期间主智能体开始修复，后续当前文件不能替代本次发现时点。
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionQualitySummary.java:68（unit.isBlank返回待核对）
+        - gmp-platform/frontend/src/components/ProductionOutput.tsx:21（双累计并列展示）
+        - 此差异已存在于本切片之前的普通工序正式产出算法；本次UI新包含关系使其直接影响验收。本实例基于确定源码分支复核，未在业务库写入复现数据。
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.operation-popover-unmerged-target
+      description: 远端76b2144尚未合入本工作树，本结果只覆盖HEAD6379bf1上的指定未提交切片。
+      impact: 不能作为后续合并候选的完整通过记录。
+      mitigation: 集成后按实际差异重新评估必要检查。
+  blockingConditions:
+    - id: block.operation-popover-runtime-evidence
+      condition: 本次实例结束前未收到实际3000浏览器证据。
+      impact: 不能确认低高度布局、浮层与表单切换真实交互通过。
+      requiredAction: 主智能体完成修复、运行验证后，由全新质量实例复核适用场景。
+      owner: 主开发智能体

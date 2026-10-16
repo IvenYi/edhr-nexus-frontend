@@ -70,7 +70,7 @@ const BATCH_COLUMNS: BatchColumn[] = [
   { id: 'output', label: '累计产出', width: 150, minWidth: 130 },
   { id: 'goodQuantity', label: '良品', width: 100, minWidth: 88 },
   { id: 'ngQuantity', label: 'NG', width: 100, minWidth: 88 },
-  { id: 'scrapQuantity', label: '报废', width: 100, minWidth: 88 },
+  { id: 'scrapQuantity', label: '产品报废登记', width: 120, minWidth: 100 },
   { id: 'plannedStartAt', label: '计划开始', width: 160, minWidth: 148 },
   { id: 'plannedEndAt', label: '计划结束', width: 160, minWidth: 148 },
   { id: 'status', label: '状态', width: 110, minWidth: 96, fixed: true },
@@ -211,8 +211,8 @@ function BatchDetailDrawer({ detail, tab, onTabChange, auditRows, auditLoading, 
             {detail.terminationReason && <><DetailField label="结束原因" value={detail.terminationReason} /><DetailField label="结束时间" value={formatDateTime(detail.terminationAt)} /></>}
           </Box></DetailSection>
           <DetailSection title="数量与计划"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.75 }}>
-            <DetailField label="目标数量" value={detail.targetQuantity} /><DetailField label="良品" value={detail.goodQuantity} />
-            <DetailField label="NG" value={detail.ngQuantity} /><DetailField label="报废" value={detail.scrapQuantity} />
+            <DetailField label="目标数量" value={detail.targetQuantity} /><DetailField label="良品" value={<ProductionOutputValue output={detail.output?.quality?.goodQuantity} label="批次良品" />} />
+            <DetailField label="NG" value={<ProductionOutputValue output={detail.output?.quality?.ngQuantity} label="批次不良品" />} /><DetailField label="产品报废登记" value={<ProductionOutputValue output={detail.output?.quality?.scrapQuantity} label="产品报废登记" />} />
             <DetailField label="计划开始时间" value={formatDateTime(detail.plannedStartAt)} /><DetailField label="计划结束时间" value={formatDateTime(detail.plannedEndAt)} />
           </Box></DetailSection>
           <DetailSection title="累计产出"><ProductionOutputDetails output={detail.output} /></DetailSection>
@@ -346,9 +346,9 @@ export default function BatchManagementPage() {
       case 'processVersion': return <TableCell sx={commonSx}>{row.processVersion || '-'}</TableCell>;
       case 'targetQuantity': return <TableCell sx={commonSx}>{row.targetQuantity}</TableCell>;
       case 'output': return <TableCell sx={commonSx}><ProductionOutputValue output={row.output} /></TableCell>;
-      case 'goodQuantity': return <TableCell sx={commonSx}>{row.goodQuantity}</TableCell>;
-      case 'ngQuantity': return <TableCell sx={commonSx}>{row.ngQuantity}</TableCell>;
-      case 'scrapQuantity': return <TableCell sx={commonSx}>{row.scrapQuantity}</TableCell>;
+      case 'goodQuantity': return <TableCell sx={commonSx}><ProductionOutputValue output={row.output?.quality?.goodQuantity} label="批次良品" /></TableCell>;
+      case 'ngQuantity': return <TableCell sx={commonSx}><ProductionOutputValue output={row.output?.quality?.ngQuantity} label="批次不良品" /></TableCell>;
+      case 'scrapQuantity': return <TableCell sx={commonSx}><ProductionOutputValue output={row.output?.quality?.scrapQuantity} label="产品报废登记" /></TableCell>;
       case 'plannedStartAt': return <TableCell sx={commonSx}>{formatDateTime(row.plannedStartAt)}</TableCell>;
       case 'plannedEndAt': return <TableCell sx={commonSx}>{formatDateTime(row.plannedEndAt)}</TableCell>;
       case 'status': return <TableCell sx={{ ...commonSx, ...getStatusColumnSx(width, 'body') }}>{statusBadge(row.status)}</TableCell>;

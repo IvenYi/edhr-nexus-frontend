@@ -1,0 +1,69 @@
+qualityResult:
+  result: passed
+  baseCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+  headCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+  contractBaseline:
+    sourceCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    targetBranch: edhr-dev
+    targetCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    contractReadCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/ansukang-final-output-e2e-2026-10-15-decision-package.yaml
+      - docs/development/ansukang-final-output-e2e-2026-10-15-date-quality.yaml
+    excludedPaths:
+      - docs/development/ansukang-final-output-e2e-2026-10-15-ontology.yaml
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - output/ansukang-final-output-e2e-2026-10-15/date-quality/native-date-after-rerender.png
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.ask-date-contract-baseline
+      required: true
+      category: documentation
+      description: 核对独立质量角色、交接格式和日期输入核验范围。
+      method: command
+      command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git diff --name-only HEAD -- AGENTS.md docs/agents/quality-verifier.md docs/agents/agent-handoff-contract.md
+      outcome: passed
+      evidence:
+        - 已实际读取AGENTS.md、质量角色、统一交接契约、知识README/open-questions和本轮decisionPackage；schema知识版本0.3.25。
+        - 本次独立fetch后HEAD与origin/edhr-dev均为e9c00df8c85b021e7bf206e575a5a726cd46c12b；三份契约没有未提交差异。
+        - 本轮不修改代码、测试、模板、正式记录或已有completed实例；仅输入不持久化的设计器模拟预览。
+    - id: check.ask-date-automation-comparison
+      required: true
+      category: e2e
+      description: 在本轮安速康清洁模板的临时模拟中比较自动fill和系统原生可访问输入。
+      method: browser
+      command: Cua独立隐藏IAB标签；模板列表展开ASK-FINAL-20261015-CLEAN版本，设计→模拟填报。
+      outcome: passed
+      evidence:
+        - 模板386185810556030976、版本386185810564419584；页面显示安速康新轮模拟·刀头末道清洁V1.0；模拟区只有一个input[type=date]。
+        - 在空日期上使用playwright.locator('input[type="date"]').fill('2026-10-15')，read-only DOM读取value立即为''；随后对模拟增补单位普通文本fill('件')，日期value仍为''。独立重做同场景得到相同结果。
+        - native typeText粘贴式日期也未形成完整日期；逐键输入可改变分段日期，但本次未取得可靠的年月日分段键盘顺序，不把该尝试当作成功手工日期录入证据。
+        - 对AX树中的date field使用tab.setValue(index,'2026-10-15')，AX显示2026-10-15且read-only DOM读取value为2026-10-15。
+        - 随后以playwright普通文本fill('件-重绘核验')改变另一个受控字段，日期DOM仍为2026-10-15，AX也继续显示该日期。表明原生可访问输入后的日期可进入受控视图并经其他字段重绘保持。
+        - output/ansukang-final-output-e2e-2026-10-15/date-quality/native-date-after-rerender.png
+    - id: check.ask-date-onchange-inspection
+      required: true
+      category: integration
+      description: 核对模拟和正式字段的日期onChange链路，没有根据自动化失败推定产品不支持日期。
+      method: inspection
+      command: rg -n 'onValueChange|handleValueChange|type=\{inputType\}' gmp-platform/frontend/src/pages/master-data/template-designer-react/components/mock-fill/MockFillDialog.tsx; inspect FormRuntimeField.tsx
+      outcome: passed
+      evidence:
+        - MockFillDialog.tsx:751-787按日期模式渲染受控TextField，782行onChange直传event.target.value到onValueChange；1431-1433更新React values。
+        - FormRuntimeField.tsx:55-57的正式运行字段同样按日期模式设置type并通过onChange传入runtime.onChange。
+        - 没有使用evaluate写DOM/state、派发脚本事件、修改预览默认值或调用生产保存API。
+  findings: []
+  residualRisks:
+    - id: risk.ask-date-automation-boundary
+      description: 当前IAB的Playwright fill日期在本控件上无效；未定位浏览器代理内部实现，因此只能确认方法差异，不能断言具体事件实现原因。
+      impact: 自动化显示动作成功不等于日期已经录入；若直接提交可能漏日期且无法命中日期追溯。
+      mitigation: 本轮真实新模拟使用AX date field的tab.setValue；每次提交前检查AX/DOM日期，改变普通字段触发重绘再验证，并保存后由主智能体检查持久化值。
+    - id: risk.ask-date-persistence-outside-scope
+      description: 此实例只核验不持久化模拟预览，没有创建或编辑任何正式记录，也未验证生产保存接口、索引和DHR日期命中。
+      impact: 本报告不是整轮E2E通过证明，无法替代新模拟的正式保存与报表追溯验收。
+      mitigation: 主智能体按正常流程新建修正版模拟，原有七份completed记录不回写；随后由全新最终质量实例核验完整链路。
+  blockingConditions: []

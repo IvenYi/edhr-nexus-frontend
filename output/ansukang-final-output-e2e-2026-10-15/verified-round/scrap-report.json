@@ -1,0 +1,198 @@
+{
+  "total": 2,
+  "records": [
+    {
+      "id": "62",
+      "batchId": "29",
+      "instanceId": "30",
+      "instanceNo": "FR-20261015-000030",
+      "objectId": "386193988731604992",
+      "objectNo": "ASK-FINAL-20261015-R2-B",
+      "operationId": "op3",
+      "operationName": "安速康新轮模拟·报废处置记录",
+      "bindingId": "ask-final-scrap",
+      "rowKey": "form",
+      "revision": 1,
+      "createdBy": "系统管理员",
+      "createdAt": "2026-10-15 22:50:37.356964",
+      "updatedBy": "系统管理员",
+      "updatedAt": "2026-10-15 22:50:37.356964",
+      "attributes": {
+        "reason": "新原表虚构模拟：刀头表面划伤；不良与处置独立，不重复扣产出。",
+        "material": {
+          "id": "386188432511930368",
+          "code": "ASK-FINAL-20261015-P",
+          "name": "安速康新轮模拟·刀头",
+          "sourceType": "material"
+        },
+        "quantity": 1,
+        "materialLotText": "ASK-FINAL-20261015-R2-SCRAP-B",
+        "documentNumberText": "S20261015_42"
+      },
+      "sources": {
+        "reason": "reason",
+        "material": "material",
+        "quantity": "quantity",
+        "materialLotText": "lot",
+        "documentNumberText": "document"
+      },
+      "details": [],
+      "hits": [],
+      "lookupItems": {
+        "materialLotText": {
+          "name": "物料批号",
+          "type": "text",
+          "revision": 1,
+          "referenceSources": []
+        }
+      },
+      "context": {
+        "unit": "件",
+        "dhrCode": null,
+        "dhrName": "安速康新轮模拟·刀头DHR",
+        "objectId": "386193988731604992",
+        "objectNo": "ASK-FINAL-20261015-R2-B",
+        "productId": "386188432511930368",
+        "routeCode": null,
+        "routeName": "安速康新轮模拟·刀头验证路线",
+        "dhrVersion": "V1.0",
+        "objectType": "BATCH",
+        "productCode": "ASK-FINAL-20261015-P",
+        "productName": "安速康新轮模拟·刀头",
+        "workOrderId": "386193988572221440",
+        "workOrderNo": "ASK-FINAL-20261015-R2-WO",
+        "routeVersion": "V1.0",
+        "dhrReviewMode": "NONE",
+        "dhrTemplateId": "386188645096034304",
+        "specification": null,
+        "processVersion": "V1.0",
+        "productionForm": "批次",
+        "productionMode": "量产",
+        "routeVersionId": "386188644974399488",
+        "targetQuantity": 40.0,
+        "processVersionId": "386188645280583680",
+        "dhrTemplateVersionId": "386188645100228608",
+        "dhrReviewWorkflowCode": null,
+        "dhrReviewWorkflowName": null,
+        "dhrReviewWorkflowVersion": null,
+        "dhrReviewWorkflowVersionId": null,
+        "dhrReviewWorkflowDefinitionId": null
+      }
+    },
+    {
+      "id": "58",
+      "batchId": "26",
+      "instanceId": "27",
+      "instanceNo": "FR-20261015-000027",
+      "objectId": "386193988710633472",
+      "objectNo": "ASK-FINAL-20261015-R2-A",
+      "operationId": "op3",
+      "operationName": "安速康新轮模拟·报废处置记录",
+      "bindingId": "ask-final-scrap",
+      "rowKey": "form",
+      "revision": 1,
+      "createdBy": "系统管理员",
+      "createdAt": "2026-10-15 22:50:32.234575",
+      "updatedBy": "系统管理员",
+      "updatedAt": "2026-10-15 22:50:32.234575",
+      "attributes": {
+        "reason": "新原表虚构模拟：刀头表面划伤；不良与处置独立，不重复扣产出。",
+        "material": {
+          "id": "386188432511930368",
+          "code": "ASK-FINAL-20261015-P",
+          "name": "安速康新轮模拟·刀头",
+          "sourceType": "material"
+        },
+        "quantity": 2,
+        "materialLotText": "ASK-FINAL-20261015-R2-SCRAP-A",
+        "documentNumberText": "S20261015_41"
+      },
+      "sources": {
+        "reason": "reason",
+        "material": "material",
+        "quantity": "quantity",
+        "materialLotText": "lot",
+        "documentNumberText": "document"
+      },
+      "details": [],
+      "hits": [],
+      "lookupItems": {
+        "materialLotText": {
+          "name": "物料批号",
+          "type": "text",
+          "revision": 1,
+          "referenceSources": []
+        }
+      },
+      "context": {
+        "unit": "件",
+        "dhrCode": null,
+        "dhrName": "安速康新轮模拟·刀头DHR",
+        "objectId": "386193988710633472",
+        "objectNo": "ASK-FINAL-20261015-R2-A",
+        "productId": "386188432511930368",
+        "routeCode": null,
+        "routeName": "安速康新轮模拟·刀头验证路线",
+        "dhrVersion": "V1.0",
+        "objectType": "BATCH",
+        "productCode": "ASK-FINAL-20261015-P",
+        "productName": "安速康新轮模拟·刀头",
+        "workOrderId": "386193988572221440",
+        "workOrderNo": "ASK-FINAL-20261015-R2-WO",
+        "routeVersion": "V1.0",
+        "dhrReviewMode": "NONE",
+        "dhrTemplateId": "386188645096034304",
+        "specification": null,
+        "processVersion": "V1.0",
+        "productionForm": "批次",
+        "productionMode": "量产",
+        "routeVersionId": "386188644974399488",
+        "targetQuantity": 60.0,
+        "processVersionId": "386188645280583680",
+        "dhrTemplateVersionId": "386188645100228608",
+        "dhrReviewWorkflowCode": null,
+        "dhrReviewWorkflowName": null,
+        "dhrReviewWorkflowVersion": null,
+        "dhrReviewWorkflowVersionId": null,
+        "dhrReviewWorkflowDefinitionId": null
+      }
+    }
+  ],
+  "totals": [
+    {
+      "objectId": "386193988710633472",
+      "objectNo": "ASK-FINAL-20261015-R2-A",
+      "operationId": "op3",
+      "operationName": "安速康新轮模拟·报废处置记录",
+      "materialId": "386188432511930368",
+      "materialName": "安速康新轮模拟·刀头",
+      "materialLot": "ASK-FINAL-20261015-R2-SCRAP-A",
+      "unit": null,
+      "unitLabel": null,
+      "quantity": 2,
+      "outputQuantity": null,
+      "goodQuantity": null,
+      "workHours": null,
+      "ngQuantity": null,
+      "recordCount": 1
+    },
+    {
+      "objectId": "386193988731604992",
+      "objectNo": "ASK-FINAL-20261015-R2-B",
+      "operationId": "op3",
+      "operationName": "安速康新轮模拟·报废处置记录",
+      "materialId": "386188432511930368",
+      "materialName": "安速康新轮模拟·刀头",
+      "materialLot": "ASK-FINAL-20261015-R2-SCRAP-B",
+      "unit": null,
+      "unitLabel": null,
+      "quantity": 1,
+      "outputQuantity": null,
+      "goodQuantity": null,
+      "workHours": null,
+      "ngQuantity": null,
+      "recordCount": 1
+    }
+  ],
+  "totalsTruncated": false
+}

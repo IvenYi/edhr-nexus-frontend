@@ -1,0 +1,148 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 6379bf105127b05a65695992b008b55c142264f9
+    targetBranch: edhr-dev
+    targetCommit: 6379bf105127b05a65695992b008b55c142264f9
+    contractReadCommit: 6379bf105127b05a65695992b008b55c142264f9
+    uncommittedContractPaths: []
+  reason: 同一切片已确认的批次质量范围、当前工序分层、缺数/单位及来源展示已同步并保留历史；收尾重新读取6379bf1未提交候选实现及主侧源码/测试报告，新增质量资产和对应当前规则推进implemented/internal。111项中109执行通过、2条件跳过，前后端构建主侧完成，不冒充本体亲跑业务测试、不代实际3000和独立质量结果，不标verified/runtime。知识及schema版本仍0.3.25/1.2.0。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+      changeType: add
+      ids: [DEC-0079, DEC-0079-01, DEC-0079-02, DEC-0079-03, DEC-0079-04, DEC-0079-05, scenario.batch-quality-final-operation-and-reports, scenario.batch-quality-product-scrap-unit-review, scenario.batch-quality-missing-and-zero]
+    - path: docs/knowledge/glossary.yaml
+      changeType: update
+      ids: [term.production-quality-summary, term.production-batch, term.production-object, term.form-field-business-purpose]
+    - path: docs/knowledge/ontology.yaml
+      changeType: update
+      ids: [concept.production-quality-summary, relation.production-quality-derived-from-formal-projection]
+    - path: docs/knowledge/rules/production-quality.yaml
+      changeType: add
+      ids: [rule.production-quality.batch-final-operation, rule.production-quality.product-scrap-all-operations, rule.production-quality.missing-unit-and-evidence]
+    - path: docs/knowledge/facts/production-quality.yaml
+      changeType: add
+      ids: [fact.production-quality.summary, fact.production-quality.saved-reference]
+    - path: docs/knowledge/implementation-anchors/production-quality.yaml
+      changeType: add
+      ids: [anchor.production-quality.formal-summary, anchor.production-quality.saved-reference]
+    - path: docs/knowledge/rules/production-execution.yaml
+      changeType: update
+      ids: [rule.operation-output-field-purpose]
+    - path: docs/knowledge/rules/production-form-copies.yaml
+      changeType: update
+      ids: [rule.production-form-copy-output-sum]
+    - path: docs/knowledge/decisions/DEC-0045-production-execution-workspace.yaml
+      changeType: update
+      ids: [DEC-0045]
+    - path: docs/knowledge/evidence/batch-quality-linkage-2026-10-15.yaml
+      changeType: add
+      ids: [evidence.batch-quality-linkage-confirmed, evidence.batch-quality-linkage-runtime-source, evidence.batch-quality-linkage-main-validation]
+    - path: docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md
+      changeType: add
+      ids: []
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: DEC-0079-01
+      disposition: updated
+      scope: 批次良品及NG仅取冻结最终工序各自正式来源，多次增量报工及技术重试边界；NG为报告累计而非待处置库存。
+      sourceReferences: [docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md, docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+    - id: DEC-0079-02
+      disposition: updated
+      scope: 全流程真实本批产品报废与其他物料隔离；报废来源允许各类真实物料，不把批次产品筛选变为表单物料类别限制。
+      sourceReferences: [docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
+    - id: DEC-0079-03
+      disposition: updated
+      scope: 缺数非零、明确零保留、空或异单位待核对；hover及来源保留要求与原单位、物料及实际行位置分开解释。
+      sourceReferences: [docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md]
+    - id: DEC-0079-04
+      disposition: updated
+      scope: 当前工序自己的正式质量与已保存过程参考分层，普通工序按单位和适用物料分组；三项独立不组成产出公式。
+      sourceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml, docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md]
+    - id: DEC-0079-05
+      disposition: updated
+      scope: 旧数据不动，不回填原表、单位、快照、投影或DHR；无冻结依据不按当前配置追算，旧列默认0不是实际质量。
+      sourceReferences: [docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md]
+    - id: DEC-0045-07
+      disposition: historical
+      scope: 保留旧产出包括三项的原文和验收历史，当前不作三项相加公式；仅由DEC-0079-04导航该解释替代，其他工作台范围保留。
+      sourceReferences: [docs/knowledge/decisions/DEC-0045-production-execution-workspace.yaml, docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml]
+    - id: rule.operation-output-field-purpose
+      disposition: updated
+      scope: 删除易误解的outputComponents组合字段，明确当前显式用途、时点分层及独立指标；新链已按本轮源码及主测核对为implemented/internal，旧API不再将三项相加为产出。
+      sourceReferences: [docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml]
+    - id: rule.production-form-copy-output-sum
+      disposition: updated
+      scope: 保留每份本次新增量和已保存过程参考，补充真实工序、共享批次表单不认领、指标和正式统计分离。
+      sourceReferences: [docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml]
+    - id: fact.production-quality.summary
+      disposition: updated
+      scope: 类型化派生对象对应ProductionOutputService.quality，完整正式源、冻结节点/产品身份及可空scalar已核对；原拟实现定位由本轮候选源码与主测支持，不回写旧三列。
+      sourceReferences: [docs/knowledge/facts/production-quality.yaml, docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md]
+    - id: fact.production-quality.saved-reference
+      disposition: updated
+      scope: 新增当前工序已保存过程参考事实，projection优先、无新绑定legacy fallback；空单位原值保留，不作正式投影、不三项合成产出。
+      sourceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionQualitySummary.java, docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md]
+    - id: anchor.production-quality.formal-summary
+      disposition: updated
+      scope: 登记正式质量与两个对象controller、相关页面及PG和单元测试实现锚点；当前物料类别只作读时辅助，不是历史快照。
+      sourceReferences: [docs/knowledge/implementation-anchors/production-quality.yaml]
+    - id: anchor.production-quality.saved-reference
+      disposition: updated
+      scope: 登记新processQuality及旧operationOutputs兼容边界、独立UI区域和测试；无新3000/质量最终结果时不声称独立验收通过。
+      sourceReferences: [docs/knowledge/implementation-anchors/production-quality.yaml]
+    - id: term.production-batch
+      disposition: updated
+      scope: 当前批次质量与旧兼容列分离，同步production-object及字段用途词条、quality概念关系和规则，不因旧默认值伪称已采集。
+      sourceReferences: [docs/knowledge/glossary.yaml, docs/knowledge/ontology.yaml, docs/knowledge/rules/production-quality.yaml]
+    - id: DEC-0077-13
+      disposition: retained
+      scope: 质量独立、不自动加减最终产出、无采集不为零及A12分期继续；本轮仅细化质量统计范围。
+      sourceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]
+    - id: DEC-0078
+      disposition: retained
+      scope: 明确产出角色、冻结最终节点、正式时点、单位和旧实例保护保持；不将新质量细则改成good默认产出。
+      sourceReferences: [docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.batch-quality-knowledge-junit
+      checkType: schema
+      command: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml clean test
+      outcome: passed
+      evidence: [89 tests run, 0 failures, 0 errors, 0 skipped, tools/knowledge-model/target/surefire-reports/com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.txt]
+    - id: validation.batch-quality-knowledge-final-junit
+      checkType: reference
+      command: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence: [最后补充DEC0045历史导航与多份规则后89 tests run, 0 failures, 0 errors, 0 skipped]
+    - id: validation.batch-quality-whitespace
+      checkType: evidence-path
+      command: git diff --check -- docs/knowledge docs/architecture
+      outcome: passed
+      evidence: [命令退出0，无空白错误]
+    - id: validation.batch-quality-implementation-review
+      checkType: projection
+      command: 读取ProductionOutputService、ProductionQualitySummary、ExecutionQualitySummary、ExecutionOutputSummary、两个对象controller及ProductionOutput和三页面源码，对照DEC0079与当前主侧surefire报告
+      outcome: passed
+      evidence:
+        - 本体复核正式来源、最终节点/产品身份、各分项及单位分组、pending/failed原值、null/0区分与legacy只作保存参考；未冒充执行3000。
+        - 当前surefire六类共111项，109实跑通过、2已有property条件跳过，0失败/错误；计数由本体解析XML核对。
+        - 当前UI接入和可交互浮层已有实现；3000实际操作、旧业务行保护及独立质量由主侧继续验证，不把源码存在当视觉通过。
+    - id: validation.batch-quality-anchors-junit
+      checkType: reference
+      command: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence: [收尾新增正式/保存参考锚点、事实及证据后89 tests run, 0 failures, 0 errors, 0 skipped, BUILD SUCCESS]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

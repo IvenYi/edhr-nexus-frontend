@@ -1,0 +1,172 @@
+review:
+  id: ansukang-original-form-final-output-review-20261015
+  scope: 新一轮模拟的原始表单字段与数量语义边界；不修改生产数据、原始文件、运行代码或权威知识政策
+  reviewedAt: 2026-10-15
+  knowledgeBaselineVersion: 0.3.25
+  schemaVersion: 1.2.0
+  decisionPackage: docs/development/ansukang-final-output-e2e-2026-10-15-decision-package.yaml
+  contractBaseline:
+    sourceCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    targetBranch: edhr-dev
+    targetCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    contractReadCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    uncommittedContractPaths: []
+  method:
+    type: original-evidence
+    runtime: /Users/ivenwang/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3
+    library: openpyxl
+    operation: 只读加载三份原始XLSX，枚举所有非空单元格及合并单元格，检查格式、校验与drawing/VML包部件并计算SHA-256
+    sourceIndex: output/ansukang-e2e-2026-10-14/original-form-evidence.md
+    sourceIndexRole: secondary-reference；只用来定位原文件，本轮结论重新读取原件
+  originalEvidence:
+    - id: original.ansukang-final-cleaning
+      path: /Users/ivenwang/Documents/iven space/安速康表单/安速康生产/刀头/CX11-ZYJ11-06-JL01 刀头生产及检验记录-末道清洁 A0.xlsx
+      sha256: cb7366363317fbf63b571d91c7fc2abcb23bc79cb4c4ed669f446505b6062a5a
+      sheet: Sheet1
+      findings:
+        - location: D8/E8、D9/E9
+          observation: 标题分别为合格数量、不合格数量；E8与E9原始为空且不在合并区内
+          provenance: original-evidence
+        - location: H4/I4
+          observation: H4为产品信息数量标题；I4为空，没有与D8对应的正式产出语义声明
+          provenance: original-evidence
+        - location: D12/E12、D13/E13、D14/E14
+          observation: 标题分别为操作员签名、确认人签名、日期；输入区为空
+          provenance: original-evidence
+        - location: D10/E10、D11/E11
+          observation: 原件标题为所使用酒精批号、更换无尘布数量；原件mergeCells不包含D10:E10或D11:E11，实际导入版式应另验
+          provenance: original-evidence
+        - location: 全部37行10列、非空单元格、drawing/VML部件
+          observation: 没有独立报工单位字段或数量旁的明确单位标签；非空单元格均为General格式，无数据校验，无drawing/VML部件
+          provenance: original-evidence
+        - location: B8
+          observation: 工艺说明中有无尘布在擦拭100把刀头外管后需更换；这是无尘布更换频次说明，不能据此确认E8数量的单位来源
+          provenance: original-evidence
+      absentFields: [独立报工单位, 投入人时, 报工开始时间, 报工结束时间]
+    - id: original.ansukang-label-consumption
+      path: /Users/ivenwang/Documents/iven space/安速康表单/安速康生产/CX14-ZYG02-JL01 标签和说明书打印及领用记录 A1.xlsx
+      sha256: a33494c86f493b003c88d66c9e5506b417d37ff7160f9a8c287aed0953f38169
+      sheet: Sheet1
+      findings:
+        - location: A7、F7、H7、K7、L7
+          observation: 分别为标签名称/料号、打印数量、领用数量、实际使用数量、结余回收数量
+          provenance: original-evidence
+        - location: A8:C11/K8:K11、A12:C15/K12:K15、A16:C19/K16:K19、A20:C23/K20:K23
+          observation: 四组纵向合并区域；实际数量锚点只有K8、K12、K16、K20，不能当作16条明细
+          provenance: original-evidence
+        - location: E6/F6、D7、E7、G7、I7、J7
+          observation: 生产日期标题E6；各组打印人、检验人、确认人、领用人分别有独立标题，不能自动认定统一报工人
+          provenance: original-evidence
+      absentFields: [每组独立物料批号, 每组独立消耗单位]
+    - id: original.ansukang-scrap
+      path: /Users/ivenwang/Documents/iven space/安速康表单/安速康生产/报废处理单.xlsx
+      sha256: 4058f34bd96872812037acb44c628f022e7bd315f0b4b361f4b5425db629023d
+      sheet: Sheet1
+      findings:
+        - location: A5、F5、A6、F6、A7、F7
+          observation: 分别为报废处理单号、NCR号、物料号、物料名称、批号、数量；批号标题未区分生产批号或物料批号
+          provenance: original-evidence
+        - location: A8、A9、A10
+          observation: 原件为包含原因及申请人/日期、批准及管理者代表签字/日期、处理结果及处理人/财务确认日期的整段版式文字，不是已存在的独立输入控件
+          provenance: original-evidence
+      absentFields: [独立报废分类, 独立数量单位]
+  confirmed:
+    - statement: 本轮只新建模拟数据；旧数据及旧快照不修改，不将当前制程反套到旧生产实例
+      provenance: user-confirmed
+      sourceReferences: [当前任务用户请求, DEC-0078-06]
+    - statement: 最终产出只按冻结最终工序的显式产出来源累计，多次正式报工分别计入；不强制等于良品数，不与不良或报废自动加减
+      provenance: user-confirmed
+      sourceReferences: [DEC-0078-02, DEC-0078-03]
+    - statement: 最终产出单位必须与冻结产品单位一致；空或异单位保留原始事实并待核对，不自动回填或换算
+      provenance: user-confirmed
+      sourceReferences: [DEC-0078-05, DEC-0078-07]
+    - statement: 报工人只接受人员引用或实际签名身份，生产日期和追溯日期从显式业务日期来源读取，不取创建或完成时间替代
+      provenance: user-confirmed
+      sourceReferences: [DEC-0077-35, DEC-0077-36, DEC-0077-40]
+    - statement: 用户允许仅本轮新模拟副本增补明确标识的报工单位字段，人工填写件，新模拟产品单位件；不改原始Excel、旧模板或旧记录，不自动带入单位
+      provenance: user-confirmed
+      sourceReferences: [当前对话允许模拟副本补充单位的明确回复, docs/development/ansukang-final-output-e2e-2026-10-15-decision-package.yaml]
+  clarificationHistory:
+    - issue: 原始末道清洁没有报工单位来源，初次证据审查因此暂停正常权威产出链的模拟选择
+      previousResult: blocked-by-question
+      resolution: 用户允许本轮副本补充标明模拟增补的手填单位，原件与旧数据不变；当前无未决
+      scope: 只解决本轮新模拟副本的配置来源，不变更DEC-0078单位校验或客户政策
+  simulationChoices:
+    - statement: 本轮可将末道清洁E8显式同时配置为outputQuantity和goodQuantity；这是模拟映射选择，不证明安速康或全部客户的最终产出恒等于合格数
+      provenance: inference
+      conditions: [必须明确配置两角色, 不将同字段按两个角色重复相加, 本轮副本使用用户已允许的独立模拟增补单位字段并手填件]
+    - statement: 末道E14可显式配置为生产日期和追溯日期，E12配置签名；E13保持复核人独立，不凭签名人数累计数量
+      provenance: inference
+    - statement: 标签本轮若只用前两组，应仅配置K8与K12两笔实际消耗；打印F列、领用H列、结余L列均不再累计为消耗
+      provenance: inference
+    - statement: 报废G7作为独立报废数量，B7输入区的批号明确按本轮所报废物料批号填写；无报废分类显示未采集，不新增并冒称来自原表
+      provenance: inference
+  plannedScenario:
+    status: planned-not-runtime-evidence
+    sourceReferences: [docs/development/ansukang-final-output-e2e-2026-10-15-decision-package.yaml]
+    quantitySources:
+      outputQuantity: 原表E8合格数量的显式模拟绑定
+      goodQuantity: 与outputQuantity共用原表E8但独立指标，不重复加入产出
+      ngQuantity: 原表E9不合格数量
+      unit: 本轮新副本独立增补并明确标识的报工单位字段，手填件
+    expected:
+      batchA: 两笔报工30/1与28/1，最终产出58件
+      batchB: 一笔报工39/1，最终产出39件
+      workOrder: 97件
+    boundary: 以上为计划输入与期望，不是实际执行已通过的证据；实际运行及质量门禁由主智能体和独立质量角色另行记录
+  duplicateCountingGuards:
+    - 末道表头H4/I4产品信息数量不与E8生产报工重复累计
+    - outputQuantity与goodQuantity共享E8时，产出只读outputQuantity一次，良品指标独立展示
+    - 无尘布更换数量不自动当成已建模物料消耗
+    - 标签合并组只以锚点表示一笔，不按合并区域每一行展开计数
+    - 不合格数量不自动转报废，报废不自动扣最终产出
+    - 字段内容相同不制造生产归属、DHR成员关系或正式物料身份
+
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    targetBranch: edhr-dev
+    targetCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    contractReadCommit: e9c00df8c85b021e7bf206e575a5a726cd46c12b
+    uncommittedContractPaths: []
+  reason: 用户已解决本轮模拟副本单位来源，当前无未决。本轮只在DEC-0077及DEC-0078现有语义下配置新的模拟资产和证据；显式E8双角色、独立手填单位及58/39/97计划值不构成新的客户业务政策或权威知识变更，故不更新知识版本、概念、规则、事实或成熟度。本结果只关闭语义边界核对，不代表真实执行或质量验收通过。
+  changedArtifacts: []
+  knowledgeSync:
+    - id: DEC-0078-03
+      disposition: retained
+      scope: 显式产出来源不强制等于良品数；E8双角色仅作为本轮模拟选择
+      sourceReferences: [docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+    - id: DEC-0078-05
+      disposition: retained
+      scope: 原表单位缺失不能由产品单位或工艺说明静默补足
+      sourceReferences: [docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+    - id: DEC-0078-07
+      disposition: retained
+      scope: 不新增逐工序单位设置或自动带入；如果增补单位来源须在本轮副本清楚标识并手填
+      sourceReferences: [docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.ansukang-original-xlsx-read
+      checkType: evidence-path
+      command: bundled Python openpyxl.load_workbook(data_only=False)逐单元格只读枚举、合并区域核对、hashlib.sha256及zipfile部件检查
+      outcome: passed
+      evidence:
+        - 三份原文件均可读取，SHA-256与本报告originalEvidence逐项一致
+        - 末道清洁37行10列，标签60行14列，报废21行9列，均无drawing/VML部件
+    - id: validation.ansukang-simulation-boundary-replay
+      checkType: reference
+      command: 读取同包decisionPackage并逐项对照DEC-0077-35/36/40及DEC-0078-01至07
+      outcome: passed
+      evidence:
+        - 同包用户确认解决副本手填单位，未要求自动带入或逐工序单位设置，unresolved为空
+        - 产出与良品共用E8仅为显式模拟绑定，不变更产出不强制等于良品的政策
+        - 旧数据及原始XLSX保持范围不变，计划期望未冒充真实运行验收结果
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

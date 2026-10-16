@@ -1,7 +1,7 @@
 knowledgeModelVersion: 0.3.25
 rules:
   - id: rule.operation-output-field-purpose
-    name: 当前工序产出字段显式映射
+    name: 当前工序显式用途的正式累计与过程参考
     status: implemented
     visibility: internal
     trigger: production-execution.query
@@ -13,10 +13,11 @@ rules:
     result:
       type: return-query-projection
       fields: [goodQuantity, ngQuantity, scrapQuantity, outputQuantity]
-      source: current-operation-production-form-fields
-      outputComponents: [goodQuantity, ngQuantity, scrapQuantity]
-    explanation: user-confirmed；当前工序过程参考包括良品、不良品和报废数量，由当前工序生产表单中显式标记用途的字段汇总，不按名称猜测。该过程参考不是批次最终产出或工单完成率；2026-09-30 用户确认批次最终产出须另取指定最终产出工序的正式报工数量，质量用途不自动加减最终产出，详见规则 rule.product-process.final-output 及DEC-0078的时点、单位和历史范围。数字类型限制、缺值显示、保存时点和目标分母等实现策略由实现证据另行说明，不提升为用户确认的通用规则。
-    evidenceIds: [evidence.operation-output-user-decision, evidence.operation-output-field-purpose-source, evidence.operation-output-model-editor-source, evidence.operation-output-summary-source, evidence.operation-output-summary-tests, evidence.operation-output-persistence-tests, evidence.production-execution-snapshot-builder-source, evidence.production-execution-service-source]
+      source: current-operation-explicit-business-purpose-sources
+      separateFormalAndSavedReference: true
+      independentMetrics: true
+    explanation: 当前工序按真实属于该工序的显式报工、报废等用途来源分别累计良品、NG、报废和明确产出，不按字段名猜测，不把三项相加或相减推导产出。已生效数量限最终完成且成功投影并满足指标计入条件的来源；已填报数量是各份已保存内容的累计，包含已生效部分，不等于待生效量，两者不能相加。DEC-0079-06确认以主值浮层展示已填报累计，来源按真实份次、配置及实际行去重并分别标明表单状态及计入状态；不凭已完成推断已生效，无正式值或待核对仍可查看来源。普通工序按原单位和适用物料分组，不能套用产品单位或把全部物料报废视作产品报废；批次质量范围按DEC-0079另定。保留DEC-0045原始确认和历史实现证据；新projection优先、无新统计绑定时legacy仅过程兼容，旧operationOutputs不再合成产出。既有累计链为implemented/internal；06新增展示承诺的实现及3000交互须取得本轮证据，不以知识更新冒充验收或标verified/runtime。
+    evidenceIds: [evidence.batch-quality-linkage-confirmed, evidence.batch-quality-linkage-runtime-source, evidence.batch-quality-linkage-main-validation, evidence.operation-output-user-decision, evidence.operation-output-field-purpose-source, evidence.operation-output-summary-source, evidence.production-execution-snapshot-builder-source, evidence.production-execution-service-source, evidence.operation-quantity-popover-confirmed]
   - id: rule.production-execution-context
     name: 批次和SN执行上下文
     status: implemented

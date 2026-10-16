@@ -292,11 +292,13 @@ public class ProductionExecutionService {
         response.set("batchCompletionIssues", mapper.valueToTree(CustomFormPolicy.incomplete(snapshot, state, true)));
         ObjectNode availability = response.putObject("availability");
         ObjectNode operationOutputs = response.putObject("operationOutputs");
+        ObjectNode processQuality = response.putObject("processQuality");
         response.set("formalOutput", outputs.object(object.getId()));
         for (JsonNode op : snapshot.path("operations")) {
             if (allowed) engine.settleCompletedWorkForms(snapshot, state, op.path("id").asText(), null);
             String id = op.path("id").asText(); JsonNode current = state.path("operations").path(id);
             operationOutputs.set(id, ExecutionOutputSummary.project(mapper, op, current));
+            processQuality.set(id, ExecutionQualitySummary.project(mapper, op, current));
             ObjectNode entry = availability.putObject(id);
             List<String> start = engine.startIssues(snapshot, state, op);
             List<String> completion = engine.completionIssues(op, current);

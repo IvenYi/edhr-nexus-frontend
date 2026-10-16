@@ -59,12 +59,15 @@ public class ProductionOutputService {
             SELECT o.id,o.object_no,o.object_type,o.status AS object_status,e.snapshot_json,
               COALESCE((SELECT jsonb_agg(jsonb_build_object(
                 'id',b.id::text,'operationId',b.source_json->>'operationId','status',b.status,
-                'form',b.source_json->'form','model',b.source_json->'model',
+                'form',b.source_json->'form','model',b.source_json->'model','values',b.source_json->'values',
+                'operationName',f.operation_name,'copyId',f.copy_id,'formStatus',f.status,
                 'instanceId',f.id::text,'instanceNo',f.instance_no,
                 'records',COALESCE((SELECT jsonb_agg(jsonb_build_object('id',r.id::text,
                   'bindingId',r.binding_id,'rowKey',r.row_key,'tableId',r.table_id,
-                  'attributes',r.attributes,'sources',r.sources))
-                  FROM form_projection_record r WHERE r.batch_id=b.id AND r.model_id='production'),'[]'::jsonb)))
+                  'modelId',r.model_id,'attributes',r.attributes,'sources',r.sources,'details',r.details,
+                  'currentMaterialType',(SELECT t.name FROM material m JOIN material_type t ON t.id=m.material_type_id
+                    WHERE m.id::text=r.attributes->'material'->>'id')))
+                  FROM form_projection_record r WHERE r.batch_id=b.id AND r.model_id IN ('production','scrap')),'[]'::jsonb)))
                 FROM form_projection_batch b JOIN form_instance_record f ON f.id=b.form_instance_id
                 WHERE f.object_id=o.id AND f.tenant_id=o.tenant_id AND b.tenant_id=o.tenant_id
                   AND f.source_type='PRODUCTION_EXECUTION' AND b.status<>'INVALIDATED'),'[]'::jsonb)::text AS batches
@@ -82,16 +85,37 @@ public class ProductionOutputService {
         String productUnit = snapshot.path("context").path("unit").asText("");
         ObjectNode total = empty("NOT_CONFIGURED", "未设置最终产出工序");
         ObjectNode operations = total.putObject("operations");
+        ObjectNode quality = mapper.createObjectNode();
+        for (String role : List.of("goodQuantity", "ngQuantity")) quality.set(role, empty("NOT_CONFIGURED", "未设置最终产出工序"));
+        boolean scrapConfigured = false;
         for (JsonNode op : snapshot.path("operations")) {
             boolean finalOutput = op.path("finalOutput").asBoolean();
             ObjectNode summary = operation(op, batches, finalOutput ? productUnit : null);
+            ObjectNode operationQuality = mapper.createObjectNode();
+            for (String role : List.of("goodQuantity", "ngQuantity", "scrapQuantity"))
+                operationQuality.set(role, ProductionQualitySummary.metric(mapper, batches, role, op.path("id").asText(), finalOutput && !role.equals("scrapQuantity") ? productUnit : null, null,
+                        ProductionQualitySummary.configured(op.path("forms"), role), false));
+            summary.set("quality", operationQuality);
+            scrapConfigured |= ProductionQualitySummary.configured(op.path("forms"), "scrapQuantity");
             operations.set(op.path("id").asText(), summary);
             if (finalOutput) {
                 total.setAll(summary);
                 total.put("operationId", op.path("id").asText()).put("operationName", op.path("name").asText());
+                for (String role : List.of("goodQuantity", "ngQuantity")) quality.set(role,
+                        ProductionQualitySummary.metric(mapper, batches, role, op.path("id").asText(), productUnit, null,
+                                ProductionQualitySummary.configured(op.path("forms"), role), false));
             }
         }
+        quality.set("scrapQuantity", ProductionQualitySummary.metric(mapper, batches, "scrapQuantity", null, productUnit,
+                snapshot.path("context").path("productId").asText(), scrapConfigured, false));
+        total.set("quality", quality);
         return total;
+    }
+
+    public static BigDecimal qualityQuantity(JsonNode output, String role) {
+        if (output == null) return null;
+        JsonNode value = output.path("quality").path(role).path("quantity");
+        return value.isMissingNode() || value.isNull() ? null : new BigDecimal(value.asText());
     }
 
     private ObjectNode operation(JsonNode op, JsonNode batches, String expectedUnit) {
@@ -109,6 +133,8 @@ public class ProductionOutputService {
             configured = true;
             if (!"SUCCEEDED".equals(batch.path("status").asText())) {
                 if ("FAILED".equals(batch.path("status").asText())) failed++; else pending++;
+                sources.addAll((ArrayNode) ProductionQualitySummary.metric(mapper, mapper.createArrayNode().add(batch),
+                        "outputQuantity", op.path("id").asText(), expectedUnit, null, true, false).path("sources"));
                 continue;
             }
             for (JsonNode record : batch.path("records")) {
@@ -116,10 +142,12 @@ public class ProductionOutputService {
                 if (!record.path("sources").hasNonNull("outputQuantity")) continue;
                 String unit = attributes.path("unit").asText("");
                 JsonNode value = attributes.path("outputQuantity");
-                boolean valid = value.isNumber() && value.decimalValue().signum() >= 0
+                boolean valid = value.isNumber() && value.decimalValue().signum() >= 0 && !unit.isBlank()
                         && (expectedUnit == null || !expectedUnit.isBlank() && expectedUnit.equals(unit));
                 ObjectNode source = sources.addObject().put("recordId", record.path("id").asText())
                         .put("instanceId", batch.path("instanceId").asText()).put("instanceNo", batch.path("instanceNo").asText())
+                        .put("copyId", batch.path("copyId").asText()).put("formStatus", batch.path("formStatus").asText())
+                        .put("projectionStatus", batch.path("status").asText())
                         .put("bindingId", record.path("bindingId").asText()).put("rowKey", record.path("rowKey").asText())
                         .put("tableId", record.path("tableId").asText()).put("fieldId", record.path("sources").path("outputQuantity").asText())
                         .put("unit", unit).put("included", valid);

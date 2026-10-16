@@ -1,0 +1,173 @@
+qualityResult:
+  result: failed
+  baseCommit: 6379bf105127b05a65695992b008b55c142264f9
+  headCommit: 6379bf105127b05a65695992b008b55c142264f9
+  contractBaseline:
+    sourceCommit: 6379bf105127b05a65695992b008b55c142264f9
+    targetBranch: edhr-dev
+    targetCommit: 6379bf105127b05a65695992b008b55c142264f9
+    contractReadCommit: 6379bf105127b05a65695992b008b55c142264f9
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/batch-quality-linkage-decision-2026-10-15.yaml
+      - docs/development/batch-quality-linkage-ontology-2026-10-15.yaml
+      - docs/architecture/business-knowledge-model.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0045-production-execution-workspace.yaml
+      - docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/ontology.yaml
+      - docs/knowledge/rules/production-execution.yaml
+      - docs/knowledge/rules/production-form-copies.yaml
+      - docs/knowledge/rules/production-quality.yaml
+      - docs/knowledge/facts/production-quality.yaml
+      - docs/knowledge/implementation-anchors/production-quality.yaml
+      - docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md
+      - docs/knowledge/evidence/batch-quality-linkage-2026-10-15.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionQualitySummary.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionQualitySummary.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionOutputSummary.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionBatchController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionQualitySummaryTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionOutputSummaryTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionFormCopiesTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+      - gmp-platform/frontend/src/api/production-execution.ts
+      - gmp-platform/frontend/src/api/work-orders.ts
+      - gmp-platform/frontend/src/components/ProductionOutput.tsx
+      - gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx
+      - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+      - gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+    excludedPaths:
+      - docs/development/TODO.md
+      - docs/development/final-output-linkage-todo-2026-10-15.md
+      - docs/development/ansukang-final-output-e2e-2026-10-15*
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - docs/development/batch-quality-linkage-decision-2026-10-15.yaml
+      - docs/development/batch-quality-linkage-ontology-2026-10-15.yaml
+      - docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+      - docs/knowledge/rules/production-quality.yaml
+      - docs/knowledge/facts/production-quality.yaml
+      - docs/knowledge/implementation-anchors/production-quality.yaml
+      - docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md
+      - docs/knowledge/evidence/batch-quality-linkage-2026-10-15.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionQualitySummary.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionQualitySummary.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionQualitySummaryTest.java
+      - output/batch-quality-linkage-2026-10-15/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.batch-quality.contract-and-semantics
+      required: true
+      category: requirements
+      description: 独立核对当前契约、已确认独立指标及声明级替代范围
+      method: inspection
+      command: git fetch origin edhr-dev；读取AGENTS/codeplzreadme/交接/质量契约、DEC0077/78/79及production-quality资产并对照实现
+      outcome: passed
+      evidence:
+        - 来源、目标、实际契约提交及被测候选基点均6379bf105127b05a65695992b008b55c142264f9；工作树是未提交功能候选。
+        - 独立用途累计、冻结最终工序与真实对象、全流程产品报废、工序按物料及单位分组、正式与保存参考分层吻合。
+        - DEC0079仅替代DEC0045-07三项组合产出解释，原历史证据保留，DEC0077/78独立产出含义保持。
+    - id: check.batch-quality.focused-tests
+      required: true
+      category: integration
+      description: 独立执行六组聚焦单元及真实PostgreSQL集成回归
+      method: automated-test
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21 PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test mvn -q -Dtest=ProductionQualitySummaryTest,ProductionOutputPostgresTest,ExecutionOutputSummaryTest,ExecutionFormCopiesTest,ProductionExecutionIntegrationTest,FormProjectionPostgresTest test
+      outcome: passed
+      evidence:
+        - /tmp/batch-quality-independent-tests.log；进程退出0。
+        - output/batch-quality-linkage-2026-10-15/qa-independent-runtime.json记录六组XML计数；112声明测试，110实跑通过，0失败/错误，2已有browser property夹具条件跳过。
+        - 覆盖多次报工、重试并发幂等、前道/最终隔离、空/异单位、实际零/缺失、pending及output failed、子表实际行、批次共享表工序排除、新用途保存参考及指标独立。
+    - id: check.batch-quality.knowledge-tests
+      required: true
+      category: ontology
+      description: 独立校验当前受影响知识结构及引用
+      method: automated-test
+      command: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - /tmp/batch-quality-independent-knowledge.log；89 tests run，0 failures，0 errors，0 skipped，BUILD SUCCESS。
+        - 不将schema通过当全仓语义审计；本轮人工语义范围为DEC0077/78/79及本功能受影响定义。
+    - id: check.batch-quality.runtime-api-and-data-preservation
+      required: true
+      category: database
+      description: 独立GET实际3000接口并逐表对照旧行业务摘要
+      method: query
+      command: 独立Python普通登录后GET工单objects/execution/work-orders；37表md5(to_jsonb(t)::text) multiset与before逐行比较
+      outcome: passed
+      evidence:
+        - output/batch-quality-linkage-2026-10-15/qa-independent-runtime.json。
+        - A良品58/NG2，B良品39/NG1；两批产品报废scalar为null、UNIT_REVIEW，来源原数2/1且unit空、字段名报废数量。
+        - 产出A58/B39/工单97保持；当前op1正式及保存参考值吻合，未配置工序不伪造0。
+        - 37表456条before摘要全部原样存在；旧production_object三数量列仍为0，未回写；所含DHR、源记录、签署及快照旧行摘要保持。
+    - id: check.batch-quality.hover-keyboard-and-panel
+      required: true
+      category: e2e
+      description: 独立隐藏标签实际悬停、键盘、点击固定及执行工序切换
+      method: browser
+      command: Cua tab1批次A产品报废值mouseMoved悬停；点击固定后Escape；Shift+Tab聚焦NG；执行详情展开保存参考并切换报废工序
+      outcome: passed
+      evidence:
+        - output/batch-quality-linkage-2026-10-15/qa-hover-product-scrap.png。
+        - 数值本体hover可开来源，显示原2/空单位、当前产成品类别、原因/批号/单据号和主表报废数量字段；无额外图标。
+        - 点击固定后Escape关闭，焦点回数值且不重开；键盘聚焦NG显示两份各1件及各自原值。
+        - output/batch-quality-linkage-2026-10-15/qa-execution-scrap-panel.png；清洁58/2，报废工序good/ng未配置，scrap待核对，保存参考独立展开。
+        - 独立标签已关闭，未操作主侧tab4，未修改业务数据。
+    - id: check.batch-quality.popover-viewport
+      required: true
+      category: visual
+      description: 低屏幕高度下来源浮层完整可见及内部滚动
+      method: browser
+      command: 1280x720批次A列表横向滚至NG列，聚焦NG2件打开两条来源，检查浮层及来源区域边界
+      outcome: failed
+      evidence:
+        - output/batch-quality-linkage-2026-10-15/qa-ng-overflow.png。
+        - 浮层x496/y348.5/宽480/高411.953125，bottom760.453125超过viewport720；来源clientHeight331等于scrollHeight331，无法在来源内部滚出被裁掉部分。
+        - 本检查定位的是修复前候选。主侧随后已修改overflow/viewport约束，此实例未复验该修复，不以源码修改替代实际通过。
+    - id: check.batch-quality.whitespace
+      required: true
+      category: regression
+      description: 差异空白及修改范围核对
+      method: command
+      command: git diff --check
+      outcome: passed
+      evidence: [命令退出0；无迁移或初始化脚本变更，无旧业务源数据修复动作。]
+  findings:
+    - id: QF-BATCH-QUALITY-001
+      severity: medium
+      scope: gmp-platform/frontend/src/components/ProductionOutput.tsx
+      summary: 低屏幕高度下NG来源浮层底部超出视口，末条来源被裁掉且内部不滚动
+      reproductionSteps:
+        - 在1280x720浏览器打开3000批次管理并查询ASK-FINAL-20261015-R2-A。
+        - 横向滚动表格至NG及产品报废列。
+        - 键盘聚焦NG2件数值打开明细，或悬停打开该两份报工来源。
+        - 对照浮层bottom760.453125和viewport720；来源区域scrollHeight331与clientHeight331相同。
+      expectedResult: 浮层在视口内，来源列表有需要时内部滚动，所有已记录明细可达。
+      actualResult: 源列表最大高度只固定340，整个浮层在锚点下方溢出，第二份来源下部被裁掉。
+      evidence:
+        - output/batch-quality-linkage-2026-10-15/qa-ng-overflow.png
+        - 修复前Paper边界x496/y348.5/480x411.953125，bottom760.453125，viewport1280x720。
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.batch-quality.candidate-updated-after-check
+      description: 主侧在本实例报告问题后开始修复浮层，并自行修复空物料身份提前归入其他物料排除分支；本实例没有参与修复，且未验证这两项新候选。
+      impact: 本结果不能覆盖修复后的最终工作树；其余已通过检查只证明此处明确列出的被测范围。
+      mitigation: L2修复后由全新独立实例针对最终候选复验业务及交互受影响范围。
+    - id: risk.batch-quality.fixture-coverage
+      description: 两个现有浏览器property夹具未开启；本轮独立Cua实际检查批次列表和执行面板，未新增原始表单全流程数据。
+      impact: 不把测试跳过误报为通过或宣称本轮重新完整填报全部安速康原表。
+      mitigation: 沿用已有完整模拟来源并对其API/旧行保护实测；最终实例明确实际E2E范围。
+    - id: risk.batch-quality.global-ui-and-protection
+      description: 全仓UI审计138项既有结果由主侧报告，本实例未重跑全仓设计审计；GitHub必需检查及分支保护未核验。
+      impact: 不能宣称全仓UI清零或仓库设置已强制门禁。
+      mitigation: 仅验本功能布局和交互；不扩大无关修复。
+  blockingConditions: []

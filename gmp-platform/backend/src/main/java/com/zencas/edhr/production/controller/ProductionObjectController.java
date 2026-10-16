@@ -18,6 +18,7 @@ import com.zencas.edhr.template.repository.DhrTemplateVersionRepository;
 import com.zencas.edhr.production.entity.ProductionObject;
 import com.zencas.edhr.production.entity.WorkOrder;
 import com.zencas.edhr.production.service.ProductionService;
+import com.zencas.edhr.production.service.ProductionOutputService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,7 +127,8 @@ public class ProductionObjectController {
 
     private ProductionObjectResponse toResponse(ProductionObject object, WorkOrder order, Material product) {
         ProductProcessVersion version = productionService.findProcessVersion(object.getProcessVersionId());
-        return new ProductionObjectResponse(String.valueOf(object.getId()), object.getObjectNo(), object.getObjectType(), String.valueOf(object.getWorkOrderId()), product == null ? "产品已不存在" : product.getName(), product == null ? String.valueOf(order.getProductId()) : product.getCode(), String.valueOf(object.getProcessVersionId()), version == null ? "-" : version.getVersionLabel(), object.getTargetQuantity(), object.getGoodQuantity(), object.getNgQuantity(), object.getScrapQuantity(), object.getStatus(), object.getRemark(), object.getTerminationReason(), object.getTerminationAt(), object.getPlannedStartAt(), object.getPlannedEndAt(), object.getCreatedAt(), object.getUpdatedAt(), outputs.object(object.getId()));
+        var output = outputs.object(object.getId());
+        return new ProductionObjectResponse(String.valueOf(object.getId()), object.getObjectNo(), object.getObjectType(), String.valueOf(object.getWorkOrderId()), product == null ? "产品已不存在" : product.getName(), product == null ? String.valueOf(order.getProductId()) : product.getCode(), String.valueOf(object.getProcessVersionId()), version == null ? "-" : version.getVersionLabel(), object.getTargetQuantity(), ProductionOutputService.qualityQuantity(output, "goodQuantity"), ProductionOutputService.qualityQuantity(output, "ngQuantity"), ProductionOutputService.qualityQuantity(output, "scrapQuantity"), object.getStatus(), object.getRemark(), object.getTerminationReason(), object.getTerminationAt(), object.getPlannedStartAt(), object.getPlannedEndAt(), object.getCreatedAt(), object.getUpdatedAt(), output);
     }
 
     private Map<String, Object> productionObjectSnapshot(Long id) {

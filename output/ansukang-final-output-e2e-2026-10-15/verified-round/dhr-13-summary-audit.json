@@ -1,0 +1,66 @@
+{
+  "page": 0,
+  "total": 5,
+  "events": [
+    {
+      "id": "386195371153231872",
+      "entityType": "DHR_SUMMARY_VERSION",
+      "entityId": "386195371111288832",
+      "action": "SUBMIT",
+      "functionName": "提交 DHR 汇总",
+      "operator": "系统管理员",
+      "at": "2026-10-15T22:55:51.645103",
+      "reason": null,
+      "before": null,
+      "after": "{\"dhrId\": \"13\", \"status\": \"FORMALIZED\", \"versionNo\": 1, \"snapshotHash\": \"ee6e8ef709ae0bf3b60eef8975006ff7df0c2460e8909fbb98d8c3573a634d11\"}"
+    },
+    {
+      "id": "386195371014819840",
+      "entityType": "DHR_SUMMARY_DRAFT",
+      "entityId": "386195269361668096",
+      "action": "SAVE",
+      "functionName": "保存汇总草稿",
+      "operator": "系统管理员",
+      "at": "2026-10-15T22:55:51.612796",
+      "reason": null,
+      "before": "{\"dhrId\": \"13\", \"revision\": 1, \"placements\": [], \"overlayDirectories\": []}",
+      "after": "{\"dhrId\": \"13\", \"revision\": 2, \"placements\": [], \"overlayDirectories\": []}"
+    },
+    {
+      "id": "386195269361668097",
+      "entityType": "DHR_SUMMARY_DRAFT",
+      "entityId": "386195269361668096",
+      "action": "SAVE",
+      "functionName": "保存汇总草稿",
+      "operator": "系统管理员",
+      "at": "2026-10-15T22:55:27.376939",
+      "reason": null,
+      "before": null,
+      "after": "{\"dhrId\": \"13\", \"revision\": 1, \"placements\": [], \"overlayDirectories\": []}"
+    },
+    {
+      "id": "386194053042868224",
+      "entityType": "DHR_INSTANCE",
+      "entityId": "13",
+      "action": "UPDATE",
+      "functionName": "生产完成",
+      "operator": "系统管理员",
+      "at": "2026-10-15T22:50:37.383827",
+      "reason": null,
+      "before": "{\"status\": \"IN_PROGRESS\"}",
+      "after": "{\"status\": \"COMPLETED\", \"completedAt\": \"2026-10-15T22:50:37.383434\"}"
+    },
+    {
+      "id": "386194032079736832",
+      "entityType": "DHR_INSTANCE",
+      "entityId": "13",
+      "action": "CREATE",
+      "functionName": "首次开工创建",
+      "operator": "系统管理员",
+      "at": "2026-10-15T22:50:32.385387",
+      "reason": null,
+      "before": null,
+      "after": "{\"dhrNo\": \"DHR-20261015-000013\", \"status\": \"IN_PROGRESS\", \"objectNo\": \"ASK-FINAL-20261015-R2-B\", \"objectType\": \"BATCH\", \"productionObjectId\": \"386193988731604992\", \"dhrTemplateVersionId\": \"386188645100228608\"}"
+    }
+  ]
+}

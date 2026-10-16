@@ -1,0 +1,73 @@
+{
+  "runtime": [
+    {
+      "objectNo": "ASK-FINAL-20261015-R2-A",
+      "good": 58,
+      "ng": 2,
+      "scrap": null,
+      "recordedScrap": "2",
+      "formalOutput": "58",
+      "scrapStatus": "UNIT_REVIEW",
+      "scrapSourceField": "报废数量"
+    },
+    {
+      "objectNo": "ASK-FINAL-20261015-R2-B",
+      "good": 39,
+      "ng": 1,
+      "scrap": null,
+      "recordedScrap": "1",
+      "formalOutput": "39",
+      "scrapStatus": "UNIT_REVIEW",
+      "scrapSourceField": "报废数量"
+    }
+  ],
+  "workOrderOutput": "97",
+  "protectedTables": 37,
+  "protectedRows": 456,
+  "missingOrChanged": {},
+  "legacyColumns": "ASK-FINAL-20261015-R2-A|0.0000|0.0000|0.0000\nASK-FINAL-20261015-R2-B|0.0000|0.0000|0.0000\n",
+  "tests": [
+    {
+      "name": "com.zencas.edhr.production.service.ProductionQualitySummaryTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionOutputPostgresTest",
+      "tests": "11",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ExecutionOutputSummaryTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ExecutionFormCopiesTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+      "tests": "68",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "2"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "tests": "13",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ]
+}

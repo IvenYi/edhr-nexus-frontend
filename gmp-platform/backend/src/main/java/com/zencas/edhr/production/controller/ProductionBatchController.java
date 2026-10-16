@@ -8,6 +8,7 @@ import com.zencas.edhr.production.entity.ProductionObject;
 import com.zencas.edhr.production.entity.WorkOrder;
 import com.zencas.edhr.production.repository.ProductionObjectRepository;
 import com.zencas.edhr.production.service.ProductionService;
+import com.zencas.edhr.production.service.ProductionOutputService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,6 +59,7 @@ public class ProductionBatchController {
         WorkOrder order = productionService.requireOrder(object.getWorkOrderId());
         Material product = productionService.findProduct(order.getProductId());
         ProductProcessVersion process = productionService.findProcessVersion(object.getProcessVersionId());
+        var output = outputs.object(object.getId());
         return new BatchResponse(
                 String.valueOf(object.getId()),
                 object.getObjectNo(),
@@ -70,9 +72,9 @@ public class ProductionBatchController {
                 String.valueOf(object.getProcessVersionId()),
                 process == null ? "-" : process.getVersionLabel(),
                 object.getTargetQuantity(),
-                object.getGoodQuantity(),
-                object.getNgQuantity(),
-                object.getScrapQuantity(),
+                ProductionOutputService.qualityQuantity(output, "goodQuantity"),
+                ProductionOutputService.qualityQuantity(output, "ngQuantity"),
+                ProductionOutputService.qualityQuantity(output, "scrapQuantity"),
                 object.getStatus(),
                 object.getTerminationReason(),
                 object.getTerminationAt(),
@@ -80,7 +82,7 @@ public class ProductionBatchController {
                 object.getPlannedEndAt(),
                 object.getRemark(),
                 object.getCreatedAt(),
-                object.getUpdatedAt(), outputs.object(object.getId()));
+                object.getUpdatedAt(), output);
     }
 
     public record BatchResponse(

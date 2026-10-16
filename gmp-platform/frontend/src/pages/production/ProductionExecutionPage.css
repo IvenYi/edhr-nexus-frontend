@@ -56,7 +56,9 @@
 .execution-guide .MuiTypography-caption { font-size: 12px; }
 .execution-sidebar { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
 .execution-identity { display: flex; flex-direction: column; border: 1px solid #dfe5ed; border-radius: 8px; background: white; flex: 1; min-height: 0; overflow: hidden; }
-.execution-page .execution-identity-heading { gap: 10px; flex-direction: column; align-items: stretch; padding: 12px; flex-shrink: 0; }
+.execution-page .execution-identity-heading { gap: 8px; flex-direction: column; align-items: stretch; padding: 12px; flex-shrink: 0; box-sizing: border-box; }
+.execution-page:not([data-narrow="true"]) .execution-identity-heading { max-height: 52%; overflow: auto; }
+.execution-page .execution-identity-heading > * { flex-shrink: 0; }
 .execution-page .execution-object-heading { min-width: 0; gap: 4px; flex-direction: column; align-items: flex-start; }
 .execution-object-label { color: #718096; font-size: 12px; white-space: nowrap; }
 .execution-object-label-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; }
@@ -68,10 +70,18 @@
 .execution-object-progress .execution-completed-operations { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-top: 5px; font-size: 12px; line-height: 1.5; color: #718096; }
 .execution-completed-operations > span:last-child { color: #344256; font-size: 13px; font-weight: 600; text-align: right; }
 .execution-identity-heading h2 { font-size: 14px; line-height: 1.5; font-weight: 650; overflow-wrap: anywhere; }
-.execution-order-summary { display: flex; flex-direction: column; gap: 10px; margin: 0; }
+.execution-order-summary { display: flex; flex-direction: column; gap: 8px; margin: 0; }
 .execution-order-summary > div { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
 .execution-order-summary dt { font-size: 12px; color: #718096; white-space: nowrap; }
 .execution-order-summary dd { margin: 0 0 0 auto; font-size: 13px; font-weight: 600; color: #344256; overflow-wrap: anywhere; text-align: right; }
+.execution-quantity-summary { width: 100%; }
+.execution-quantity-summary h3 { margin: 0 0 6px; font-size: 12px; font-weight: 500; color: #718096; }
+.execution-quantity-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 16px; margin: 0; }
+.execution-quantity-grid > div { display: flex; align-items: baseline; justify-content: space-between; min-width: 0; gap: 6px; }
+.execution-quantity-grid dt { font-size: 12px; color: #718096; white-space: nowrap; }
+.execution-quantity-grid dd { margin: 0; min-width: 0; text-align: right; }
+.execution-quantity-grid .MuiButtonBase-root { flex-direction: row; justify-content: flex-end; flex-wrap: wrap; gap: 2px 4px; }
+.execution-quantity-grid .MuiTypography-root { line-height: 20px; }
 .execution-product-summary dd { display: flex; align-items: baseline; min-width: 0; }
 .execution-product-details { display: flex; align-items: baseline; min-width: 0; }
 .execution-page .execution-product-trigger { display: flex; min-width: 0; min-height: 0; max-width: 100%; padding: 0; gap: 5px; font-size: 13px; font-weight: 600; text-align: right; line-height: 1.5; }
@@ -142,8 +152,10 @@
 .execution-navigation-name { font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
 .execution-navigation-detail { font-size: 11px; line-height: 1.4; color: #718096; }
 .execution-page .execution-navigation-empty { font-size: 12px; color: #718096; padding: 8px 2px; }
-.execution-current-form { min-height: 0; overflow: auto; padding: 0 2px 2px; }
-.execution-current-form-heading { display: flex; align-items: center; gap: 8px; }
+.execution-current-form { display: flex; flex-direction: column; min-height: 0; overflow: hidden; padding: 0 2px 2px; }
+.execution-current-form-heading { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.execution-current-form-switches { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 0; flex-shrink: 0; }
+.execution-current-form .execution-current-form-fields { min-height: 0; overflow: auto; }
 .execution-current-form-name { flex: 1; min-width: 0; font-size: 13px; line-height: 1.5; font-weight: 600; color: #344256; overflow-wrap: anywhere; }
 .execution-page .execution-sidebar-shortcuts .execution-quick-rail .execution-form-switch-action { flex-shrink: 0; width: auto; height: auto; padding: 2px 4px; color: #1677c8; white-space: nowrap; }
 .execution-form-drawer-list { padding: 12px; }

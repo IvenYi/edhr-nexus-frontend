@@ -1,0 +1,120 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 6379bf105127b05a65695992b008b55c142264f9
+    targetBranch: edhr-dev
+    targetCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    contractReadCommit: 6379bf105127b05a65695992b008b55c142264f9
+    uncommittedContractPaths: []
+  reason: 已确认同指标浮层和已生效/已填报文案同步到当前定义；只替代过程参考独立展开形式，不改业务计数或生效政策。同切片L2增量核对普通工序空单位误计入的实现纠错，既有规则已覆盖，补实施锚点及证据并细化L2影响范围，不创设新政策。新展示声明specified/internal，已有计算链成熟度不变，未宣称本轮UI或L2验收已完成。
+  changedArtifacts:
+    - path: docs/development/operation-quantity-popover-2026-10-16.yaml
+      changeType: update
+      ids: [DEC-PACKAGE-OPERATION-QUANTITY-20261016]
+    - path: docs/knowledge/implementation-anchors/production-output.yaml
+      changeType: update
+      ids: [anchor.production-output.formal-summary]
+    - path: docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+      changeType: update
+      ids: [DEC-0079-06, scenario.operation-quantity-effective-and-reported]
+    - path: docs/knowledge/rules/production-execution.yaml
+      changeType: update
+      ids: [rule.operation-output-field-purpose]
+    - path: docs/knowledge/glossary.yaml
+      changeType: update
+      ids: [term.production-quality-summary]
+    - path: docs/knowledge/facts/production-quality.yaml
+      changeType: update
+      ids: [fact.production-quality.saved-reference]
+    - path: docs/knowledge/implementation-anchors/production-quality.yaml
+      changeType: update
+      ids: [anchor.production-quality.saved-reference]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+    - path: docs/knowledge/evidence/operation-quantity-popover-2026-10-16.yaml
+      changeType: add
+      ids: [evidence.operation-quantity-popover-confirmed, evidence.operation-output-empty-unit-correction]
+    - path: docs/knowledge/evidence/operation-quantity-popover-2026-10-16.md
+      changeType: add
+      ids: []
+  knowledgeSync:
+    - id: rule.product-process.final-output
+      disposition: retained
+      scope: 已明确空单位保留事实且待核对，本轮修复普通工序实现未落实该要求的差异；不改变产品单位校验或报表空单位隔离显示。
+      sourceReferences: [docs/knowledge/rules/product-process.yaml, docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml, docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml]
+    - id: anchor.production-output.formal-summary
+      disposition: updated
+      scope: 记录ordinary operation空单位拒绝计入的源码和PG用例，原始历史验证保留，不以旧通过记录覆盖本次L2修复。
+      sourceReferences: [docs/knowledge/evidence/operation-quantity-popover-2026-10-16.md, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java]
+    - id: DEC-0079-06
+      disposition: updated
+      scope: 当前工序正式主值加同指标浮层，保留保存过程累计并改名已填报；来源去重和状态分列，进度只保留完成工序比及细条。
+      sourceReferences: [docs/development/operation-quantity-popover-2026-10-16.yaml, docs/knowledge/evidence/operation-quantity-popover-2026-10-16.md]
+    - id: DEC-0079-04
+      disposition: historical
+      scope: 原文保留；仅左栏分层展开的具体显示形式由06替代。真实当前工序、成功正式来源、单位/物料、独立指标及生命周期边界继续有效，并非整条废弃。
+      sourceReferences: [docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml]
+    - id: rule.operation-output-field-purpose
+      disposition: updated
+      scope: 当前定义区分已生效与已填报且不相加，表单完成与统计计入不同，浮层去重不改变底层累计。
+      sourceReferences: [docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml]
+    - id: term.production-quality-summary
+      disposition: updated
+      scope: 关联生产用语及包含关系，不改变批次和工序范围；未采集不显示实际0的语义保持。
+      sourceReferences: [docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml]
+    - id: fact.production-quality.saved-reference
+      disposition: updated
+      scope: 名称对齐已填报数量；原事实ID、processQuality来源、已保存时点和兼容边界保持。
+      sourceReferences: [docs/knowledge/evidence/operation-quantity-popover-2026-10-16.md]
+    - id: anchor.production-quality.saved-reference
+      disposition: updated
+      scope: 保留原始实现核对日期，明确details区域为当时呈现，不以旧证据覆盖本轮浮层验收。
+      sourceReferences: [docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md, docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml]
+    - id: concept.production-quality-summary
+      disposition: retained
+      scope: 同一质量累计概念，仅展示层改变，不新增重复概念或改变正式来源关系。
+      sourceReferences: [docs/knowledge/ontology.yaml]
+    - id: relation.production-quality-derived-from-formal-projection
+      disposition: retained
+      scope: 正式结果仍来源于正式成功投影；保存内容的内部计算标记不代表正式生效。
+      sourceReferences: [docs/knowledge/ontology.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionQualitySummary.java]
+    - id: scenario.operation-quantity-effective-and-reported
+      disposition: updated
+      scope: 30已生效加20仅保存时展示30/50，两条来源，不能相加为80；本记录定义验收，不冒称已经运行通过。
+      sourceReferences: [docs/development/operation-quantity-popover-2026-10-16.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.operation-quantity-l2-knowledge
+      checkType: reference
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21 /opt/homebrew/bin/mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence: [L2纠错证据及正式产出锚点更新后89 tests run, 0 failures, 0 errors, 0 skipped, /tmp/operation-quantity-knowledge-l2-validation.log]
+    - id: validation.operation-output-empty-unit-source
+      checkType: projection
+      command: 读取ProductionOutputService.operation、ordinaryOutputWithoutUnitKeepsEvidenceButDoesNotEnterEitherCumulative及当前surefire XML
+      outcome: passed
+      evidence: [源码valid含非空单位条件并保留来源未计入原因，新增测试断言普通工序空单位30和有效0根。, 当前ProductionOutputPostgresTest报告12项通过且新增用例存在；本体仅静态复核，未亲跑业务数据库或浏览器。]
+    - id: validation.operation-quantity-knowledge
+      checkType: schema
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21 /opt/homebrew/bin/mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence: [89 tests run, 0 failures, 0 errors, 0 skipped, /tmp/operation-quantity-knowledge-validation.log, tools/knowledge-model/target/surefire-reports/com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.txt]
+    - id: validation.operation-quantity-contract
+      checkType: reference
+      command: git rev-parse HEAD origin/edhr-dev; git diff 6379bf105127b05a65695992b008b55c142264f9..76b214426a271929bba2708cdda9e4d84d1f0679 -- AGENTS.md codeplzreadme.md docs/agents/business-knowledge-modeler.md docs/agents/agent-handoff-contract.md
+      outcome: passed
+      evidence: [本体独立读取实际提交匹配交接，四契约无差异且无未提交契约改动；不是目标分支已集成声明。]
+    - id: validation.operation-quantity-whitespace
+      checkType: evidence-path
+      command: git diff --check -- docs/knowledge docs/architecture
+      outcome: passed
+      evidence: [退出0，无空白错误；新证据路径被知识校验解析。]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

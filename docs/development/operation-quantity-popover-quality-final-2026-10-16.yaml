@@ -1,0 +1,186 @@
+qualityResult:
+  result: passed
+  baseCommit: 6379bf105127b05a65695992b008b55c142264f9
+  headCommit: 6379bf105127b05a65695992b008b55c142264f9
+  contractBaseline:
+    sourceCommit: 6379bf105127b05a65695992b008b55c142264f9
+    targetBranch: edhr-dev
+    targetCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    contractReadCommit: 6379bf105127b05a65695992b008b55c142264f9
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/frontend/src/components/productionQuantitySources.ts
+      - gmp-platform/frontend/src/components/ProductionOutput.tsx
+      - gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+      - gmp-platform/frontend/src/pages/production/ProductionExecutionPage.css
+      - gmp-platform/frontend/src/api/work-orders.ts
+      - gmp-platform/frontend/scripts/test-production-quantity-sources.mjs
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionQualitySummary.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionQualitySummary.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionQualitySummaryTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java
+      - docs/development/operation-quantity-popover-2026-10-16.yaml
+      - docs/development/operation-quantity-popover-ontology-2026-10-16.yaml
+      - docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+      - docs/knowledge/rules/production-execution.yaml
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/facts/production-quality.yaml
+      - docs/knowledge/implementation-anchors/production-output.yaml
+      - docs/knowledge/implementation-anchors/production-quality.yaml
+      - docs/knowledge/evidence/operation-quantity-popover-2026-10-16.md
+      - docs/knowledge/evidence/operation-quantity-popover-2026-10-16.yaml
+      - docs/knowledge/README.md
+    excludedPaths:
+      - 上轮批次质量联动与本切片无关的控制器、批次及工单页面等未提交差异；仅运行相关邻接回归，不声称重新全量验收该功能。
+      - 历史模拟证据及未合入的远端76b2144功能差异。
+    untrackedPaths:
+      - gmp-platform/frontend/src/components/productionQuantitySources.ts
+      - gmp-platform/frontend/scripts/test-production-quantity-sources.mjs
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionQualitySummary.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionQualitySummary.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionQualitySummaryTest.java
+      - docs/development/operation-quantity-popover-2026-10-16.yaml
+      - docs/development/operation-quantity-popover-ontology-2026-10-16.yaml
+      - docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+      - docs/knowledge/facts/production-quality.yaml
+      - docs/knowledge/implementation-anchors/production-quality.yaml
+      - docs/knowledge/evidence/operation-quantity-popover-2026-10-16.md
+      - docs/knowledge/evidence/operation-quantity-popover-2026-10-16.yaml
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.operation-popover-final-contract
+      required: true
+      category: documentation
+      description: 全新质量实例独立读取契约、决策包、当前知识与未决问题，未参与实现或测试修复。
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git diff HEAD..origin/edhr-dev -- AGENTS.md codeplzreadme.md docs/agents; git diff --check
+      outcome: passed
+      evidence:
+        - 实际HEAD6379bf105127b05a65695992b008b55c142264f9、目标76b214426a271929bba2708cdda9e4d84d1f0679；契约无增量及未提交改动。
+        - 本结果针对HEAD加所列未提交候选，不是远端合并候选或推送验收。
+        - L2影响分析覆盖普通工序空单位纠错、最终工序冻结、只读来源元数据、历史保护、权限和审计边界。
+    - id: check.operation-popover-final-source-merge
+      required: true
+      category: unit
+      description: 独立执行来源合并和显示口径测试，并核对调用方当前工序边界。
+      method: automated-test
+      command: cd gmp-platform/frontend && node scripts/test-production-quantity-sources.mjs
+      outcome: passed
+      evidence:
+        - 4 tests passed，0 failed；30已生效和50已填报保持独立总量、仅两条来源。
+        - 稳定键为copyId、bindingId、tableId、rowKey、fieldId；缺标识不猜测合并，不能依名称或数值合并不同份次。
+        - 表单完成与投影生效独立，失败/待处理优先于included；单位缺失、实际0和分组值保持区别。
+    - id: check.operation-popover-final-backend
+      required: true
+      category: integration
+      description: 独立重跑普通工序空单位修复及最终工序、多次报工、旧快照、并发、质量和执行邻接回归。
+      method: automated-test
+      command: cd gmp-platform/backend && JAVA_HOME=/opt/homebrew/opt/openjdk@21 PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test /opt/homebrew/bin/mvn -q -Dtest=ProductionQualitySummaryTest,ProductionOutputPostgresTest,ExecutionOutputSummaryTest,ProductionExecutionIntegrationTest test
+      outcome: passed
+      evidence:
+        - /tmp/operation-quantity-final-independent-tests.log，退出0。
+        - ProductionQualitySummaryTest 7、ProductionOutputPostgresTest 12、ExecutionOutputSummaryTest 5、ProductionExecutionIntegrationTest 68；共92项计数，90实际执行，0失败/错误，2条件性浏览器fixture未启用。
+        - 跳过项为formRecordsBrowserFixture和browserEvidenceFixture，分别缺form.records.browser/execution.browser系统属性；不是单位纠错或数量计算测试。
+        - PG使用专用edhr_projection_integration_test随机schema，未向安速康业务库写测试数据。
+        - ordinaryOutputWithoutUnitKeepsEvidenceButDoesNotEnterEitherCumulative确认普通工序空单位30保留来源、included=false、UNIT_REVIEW，有单位0仍有效；现有最终产品单位和多单位分组测试继续通过。
+    - id: check.operation-popover-final-api
+      required: true
+      category: api
+      description: 独立读取恢复后的3000/8081安速康R2真实API，核对元数据与来源合并身份。
+      method: query
+      command: GET /api/v1/production/execution/386193988710633472 and /386193988731604992
+      outcome: passed
+      evidence:
+        - output/operation-quantity-popover-2026-10-16/independent-api-summary.json
+        - A良品58，两条正式/保存来源；B良品39，一条来源；两侧稳定键集合一致。
+        - 正式来源表单COMPLETED、投影SUCCEEDED；保存侧projectionStatus为空，不用内部计算成功标记伪造正式状态。
+        - 两批报废工序保持UNIT_REVIEW；前端不将无有效数量显示成0。
+    - id: check.operation-popover-final-preservation
+      required: true
+      category: database
+      description: 独立只读对比历史业务行摘要；数量修正是派生查询，未回填旧事实。
+      method: query
+      command: 比对edhr_form_projection中37表md5(to_jsonb(t)::text)与既有business-row-digests-before.json
+      outcome: passed
+      evidence:
+        - output/operation-quantity-popover-2026-10-16/independent-old-row-preservation.json
+        - 456旧行均保留，缺失或改变0；登录可能产生正常会话/登录审计，不将其表述为全库零写入。
+        - 无本轮新迁移、无快照或旧投影重建；审查服务代码未新增写入或权限路径。
+    - id: check.operation-popover-final-ontology
+      required: true
+      category: ontology
+      description: 独立语义核对声明级替代及本体增量，并重跑知识校验。
+      method: automated-test
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21 /opt/homebrew/bin/mvn -q --file tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - /tmp/operation-quantity-final-independent-knowledge.log，89 tests，0 failures/errors/skipped。
+        - ontologyResult updated已返回；DEC-0079-06只替代独立过程参考区的显示形式，DEC-0079-04原始证据及统计边界保留。
+        - 当前规则、词条、保存参考事实及实施锚点对齐已生效/已填报包含关系；普通工序空单位修复落实既有DEC-0078/0079规则，不创建新政策。
+        - 0.3.25/schema1.2.0保持；未把本轮局部验证提升为P0整体或通用运行规则验收。
+    - id: check.operation-popover-final-visual
+      required: true
+      category: visual
+      description: 独立查看最终截图和DOM测量，核对用户反馈后的实际容器高度限制、紧凑指标和表单入口。
+      method: inspection
+      command: inspect final screenshots, final-layout-600.json and browser-verification.md
+      outcome: passed
+      evidence:
+        - output/operation-quantity-popover-2026-10-16/1470x740-compact-sidebar.png
+        - output/operation-quantity-popover-2026-10-16/1470x740-fullscreen-compact.png
+        - output/operation-quantity-popover-2026-10-16/1280x600-final.png
+        - output/operation-quantity-popover-2026-10-16/final-layout-600.json
+        - 独立图像检查确认1470x740普通模式信息、两行数量、进度和切换入口可见，全屏表单元信息完整；600高时上区独立滚动，表单/份序入口底部508.58/536.08均在视口内。
+        - 最终CSS按实际侧栏52%上限保护下区，标签与值同行；早期720/600截图仅证明当时浮层/切换，不作为最终布局证据。
+    - id: check.operation-popover-final-interaction
+      required: true
+      category: e2e
+      description: 对照源码复核主侧本轮只读真实浏览器交互证据；本实例没有重复操控共享浏览器。
+      method: inspection
+      command: inspect output/operation-quantity-popover-2026-10-16/browser-verification.md and ProductionOutput.tsx
+      outcome: passed
+      evidence:
+        - 鼠标hover移入/移出、点击固定后移出保持、Escape关闭回焦；600高来源区End后scrollTop61/clientHeight150/scrollHeight211。
+        - 实际打开表单抽屉及切换至第2份；切换控件不随表单元信息滚出可视范围。
+        - 1600x900-good-hover.png中A的30和28两来源，1600x900-scrap-review.png中原数量2/空单位/物料及原因保留，状态待核对。
+        - 代码保留悬浮关闭延迟、点击固定、键盘及滚动，抽屉等活动时suspended关闭；工序key变化重建指标浮层。
+    - id: check.operation-popover-final-build
+      required: true
+      category: regression
+      description: 核对最终前端构建和变更卫生；后端独立测试本身也运行配套构建。
+      method: inspection
+      command: inspect /tmp/quantity-popover-build.log; git diff --check
+      outcome: passed
+      evidence:
+        - 最终CSS调整后npm run build退出0，/tmp/quantity-popover-build.log最终built in 24.49s。
+        - git diff --check退出0；没有因视觉微调重复不相关全系统验证。
+  findings:
+    - id: QF-OPQ-001
+      severity: medium
+      scope: 普通工序产出浮层的已生效/已填报数量
+      summary: 原普通工序空单位正式产出误计入的问题已修复并由未参与修复的全新质量实例复核。
+      reproductionSteps:
+        - 普通工序显式产出30，单位为空，正式投影成功。
+        - 查询当前工序产出，再增加有效0根来源。
+      expectedResult: 空单位30保留原始来源但不计入，状态待核对；有效0根可累计，不影响最终工序统计范围。
+      actualResult: 当前valid要求非空单位，PG回归确认quantity=null、UNIT_REVIEW、source.quantity=30且included=false；随后有效0根累计为0。
+      evidence: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: command
+          reference: /tmp/operation-quantity-final-independent-tests.log
+        - type: document
+          reference: gmp-platform/backend/target/surefire-reports/com.zencas.edhr.production.service.ProductionOutputPostgresTest.txt
+  residualRisks:
+    - id: risk.operation-popover-unmerged-target
+      description: 远端76b2144尚未合入；当前结果只覆盖HEAD6379bf1及所列工作树功能切片。
+      impact: 不能替代后续实际合并候选验收。
+      mitigation: 集成后重新评估差异并执行适用检查。
+    - id: risk.operation-popover-browser-scope
+      description: 实际浏览器交互由主侧执行、本实例复核证据；真实数据只读使用R2，30/50未生效场景由聚焦测试验证。
+      impact: 未创建新的生产签署/报工，也未重新执行完整生产流程；极低高度需局部滚动，并非所有尺寸全字段免滚动。
+      mitigation: 当前只读展示范围已覆盖；未来扩大写入或生命周期范围时重新执行对应E2E。
+  blockingConditions: []

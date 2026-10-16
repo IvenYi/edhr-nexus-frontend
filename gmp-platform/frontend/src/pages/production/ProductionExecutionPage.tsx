@@ -131,7 +131,9 @@ export default function ProductionExecutionPage() {
   const op = operations.find((item) => item.id === operationId);
   const opState = view?.state.operations[operationId];
   const available = view?.availability[operationId];
-  const output = view?.operationOutputs?.[operationId];
+  const quality = view?.formalOutput?.operations?.[operationId]?.quality;
+  const processQuality = view?.processQuality?.[operationId];
+  const quantitySuspended = Boolean(busy || signing || pendingSwitch || operationDrawerOpen || formDrawerOpen || copyDrawerOpen || activePanel);
   const forms = executionForms(view, operationId);
   const form = forms.find((item) => item.id === formId);
   const formOperationId = formOwner(view, operationId, formId);
@@ -429,16 +431,16 @@ export default function ProductionExecutionPage() {
         <Typography className="execution-current-form-name">{form.name}</Typography>
         <Button className="execution-form-switch-action" aria-label={`切换表单，当前${form.name}`} aria-haspopup="dialog" aria-expanded={formDrawerOpen} aria-controls="execution-form-drawer" disabled={busy} onClick={() => setFormDrawerOpen(true)}><SwapHorizRounded /><span>切换表单</span></Button>
       </Box>
-      <Box component="dl" className="execution-order-summary execution-current-form-fields">
-        <Box><Typography component="dt">表单编码</Typography><Typography component="dd">{form.code || '—'}</Typography></Box>
-        <Box><Typography component="dt">表单版本</Typography><Typography component="dd">{form.version || '—'}</Typography></Box>
-        <Box><Typography component="dt">表单实例号</Typography><Typography component="dd" className="execution-form-instance-number" title={formState?.instanceNo || '首次暂存或提交当前份后生成'}>{formState?.instanceNo || '未生成'}</Typography></Box>
-        <Box className="execution-copy-summary"><Typography component="dt">表单份序</Typography><Box component="dd">
+      <Box className="execution-current-form-switches"><Typography variant="caption" color="text.secondary">表单份序</Typography>
           <Button className="execution-copy-switch" title="切换份序" aria-label={`切换份序，当前第 ${Math.max(1, instanceIds.indexOf(selectedInstanceId) + 1)} 份，共 ${Math.max(1, instanceIds.length)} 份`} aria-haspopup="dialog" aria-expanded={copyDrawerOpen} aria-controls="execution-copy-drawer" disabled={busy} onClick={() => setCopyDrawerOpen(true)}>
             <span className="execution-copy-switch-value">第 {Math.max(1, instanceIds.indexOf(selectedInstanceId) + 1)} 份 / 共 {Math.max(1, instanceIds.length)} 份</span>
             <SwapHorizRounded />
           </Button>
-        </Box></Box>
+      </Box>
+      <Box component="dl" className="execution-order-summary execution-current-form-fields">
+        <Box><Typography component="dt">表单编码</Typography><Typography component="dd">{form.code || '—'}</Typography></Box>
+        <Box><Typography component="dt">表单版本</Typography><Typography component="dd">{form.version || '—'}</Typography></Box>
+        <Box><Typography component="dt">表单实例号</Typography><Typography component="dd" className="execution-form-instance-number" title={formState?.instanceNo || '首次暂存或提交当前份后生成'}>{formState?.instanceNo || '未生成'}</Typography></Box>
         <Box><Typography component="dt">表单状态</Typography><Typography component="dd" className="execution-form-status" data-status={formStatus}>{formStatusLabel}</Typography></Box>
         <Box><Typography component="dt">表单模板分类</Typography><Typography component="dd" title={form.categoryName === undefined ? '历史执行未保存分类，展示模板当前分类' : '执行快照中的表单模板分类'}>{form.categoryName !== undefined ? form.categoryName || '未分类' : formCategory?.versionId === form.versionId ? formCategory.name : '—'}</Typography></Box>
       </Box>
@@ -487,16 +489,19 @@ export default function ProductionExecutionPage() {
             <Box><Typography component="dt">工单</Typography><Typography component="dd">{context?.workOrderNo || '—'}</Typography></Box>
             <Box className="execution-product-summary"><Typography component="dt">生产产品</Typography><Box component="dd"><ExecutionProductDetails key={view.snapshot.context.objectId} context={view.snapshot.context} container={() => rootRef.current} suspended={Boolean(busy || signing || pendingSwitch || operationDrawerOpen || formDrawerOpen || copyDrawerOpen || activePanel)} /></Box></Box>
             <Box><Typography component="dt">目标数量</Typography><Typography component="dd">{context?.targetQuantity != null ? `${context.targetQuantity} ${context.unit ?? ''}`.trim() : '—'}</Typography></Box>
-            <Box><Typography component="dt">当前工序累计产出</Typography><Box component="dd"><ProductionOutputValue output={op ? view.formalOutput?.operations?.[op.id] : undefined} /></Box></Box>
-            {([['产出数量', output?.outputQuantity], ['良品数量', output?.goodQuantity], ['报废数量', output?.scrapQuantity]] as const).map(([label, quantity]) => <Box key={label} title={`过程参考，来自当前已保存值，并非最终统计。当前工序：${op?.name || op?.code || '暂无工序'} · ${output?.message || '暂无工序产出数据'}`}><Typography component="dt">{label}（过程参考）</Typography><Typography component="dd">{output?.status === 'READY' && quantity != null ? `${quantity} ${context?.unit ?? ''}`.trim() : '—'}</Typography></Box>)}
+          </Box>
+          <Box className="execution-quantity-summary">
+            <Typography component="h3">当前工序 · 已生效数量</Typography>
+            <Box component="dl" className="execution-quantity-grid">
+              {([['产出', 'outputQuantity'], ['良品', 'goodQuantity'], ['不良品', 'ngQuantity'], ['报废登记', 'scrapQuantity']] as const).map(([label, role]) => <Box key={`${op?.id}:${role}`}><Typography component="dt">{label}</Typography><Box component="dd"><ProductionOutputValue output={role === 'outputQuantity' ? (op ? view.formalOutput?.operations?.[op.id] : undefined) : quality?.[role]} savedOutput={processQuality?.[role]} label={`当前工序${label}`} suspended={quantitySuspended} compact /></Box></Box>)}
+            </Box>
           </Box>
           <Box className="execution-object-progress" title="按已完成工序数占总工序数计算">
             <Box className="execution-progress-caption">
-              <Typography>{context?.objectType === 'SN' ? 'SN 完成进度' : '批次完成进度'}</Typography>
-              <Typography>{completionPercent == null ? '—' : `${completionPercent}%`}</Typography>
+              <Typography>已完成工序</Typography>
+              <Typography>{view.historicalWithoutExecution ? '无执行记录' : `${completed} / ${total}`}</Typography>
             </Box>
             <LinearProgress variant="determinate" value={completionPercent ?? 0} aria-label={context?.objectType === 'SN' ? 'SN 完成进度' : '批次完成进度'} aria-valuetext={completionPercent == null ? '无执行进度' : `${completionPercent}%`} />
-            <Typography className="execution-completed-operations">{view.historicalWithoutExecution ? '无执行记录' : <><span>已完成工序</span><span>{completed} / {total}</span></>}</Typography>
           </Box>
         </Stack>
         <Box ref={setQuickRailContainer} className="execution-sidebar-shortcuts" />

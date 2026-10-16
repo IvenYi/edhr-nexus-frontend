@@ -1,5 +1,11 @@
 knowledgeModelVersion: 0.3.25
 terms:
+  - id: term.production-quality-summary
+    name: 正式质量累计
+    definition: 从真实归属内成功正式报工或报废来源分别计算的良品、NG和报废登记量及其完整性。批次良品与NG只取冻结最终工序；产品报废取全流程本批产品，其他物料不混入。工序面板只取当前工序并按原单位及适用物料分别展示，正式累计显示为已生效数量，已保存过程参考显示为已填报数量；后者包含前者，不是待生效量，不相加，同指标浮层中分别解释。表单状态不等于统计计入状态。未采集不是0，缺失或不符单位待核对并保留来源，NG不是待处置库存、报废登记不是自动销毁；质量三项不加减明确产出，不改生命周期或旧证据。
+    aliases: [批次质量指标, 工序质量累计, 产品报废登记量]
+    status: implemented
+    visibility: internal
   - id: term.final-output-operation
     name: 最终产出工序
     definition: 具体产品或产品簇制程版本中显式指定、用于决定批次最终产出的一个稳定路线节点绑定；至多一个且可不设，不默认末道工序、不额外阻断生产。新实例按使用时冻结配置解释，不是可复用全局工序的属性。
@@ -464,7 +470,7 @@ terms:
     visibility: internal
   - id: term.production-batch
     name: 生产批次
-    definition: 工单拆分形成的生产对象在 BATCH 生产形态下的业务称谓；对象保存工单、产品制程版本、对象编号、目标数量、计划起止时间、备注及独立的良品、NG 和报废数量，采用 CREATED、IN_PROGRESS、COMPLETED、EARLY_TERMINATED、CANCELLED 生命周期。当前首次合法 START 已生成受限生产执行快照及 DHR 上下文；完整通用规则执行依据仍按后续契约建设。
+    definition: 工单拆分形成的生产对象在 BATCH 生产形态下的业务称谓；对象保存工单、产品制程版本、对象编号、目标数量、计划起止时间及备注，采用 CREATED、IN_PROGRESS、COMPLETED、EARLY_TERMINATED、CANCELLED 生命周期。质量显示按DEC-0079派生：良品与NG取冻结最终工序，产品报废取全流程本批产品；旧兼容数量列及其默认0不代表实际采集或当前累计。当前首次合法 START 已生成受限生产执行快照及 DHR 上下文；完整通用规则执行依据仍按后续契约建设。
     aliases: [批次, 工单批次]
     status: specified
     visibility: internal
@@ -602,7 +608,7 @@ terms:
     visibility: internal
   - id: term.production-object
     name: 生产对象
-    definition: 工单拆分后实际管理的批次或 SN 对象，保存对象编号、生产形态、锁定制程版本、目标数量、计划起止时间、备注、良品、NG、报废数量和对象生命周期状态。
+    definition: 工单拆分后实际管理的批次或 SN 对象，保存对象编号、生产形态、锁定制程版本、目标数量、计划起止时间、备注和生命周期状态。BATCH的正式产出与质量累计分别按DEC-0078/0079从真实冻结来源解释，不以旧实体良品、NG、报废兼容列的默认0作为真实质量证据，也不据本轮BATCH算法推定SN质量算法已实现。
     aliases: [批次对象, SN 对象, 工单对象]
     status: implemented
     visibility: internal
@@ -788,7 +794,7 @@ terms:
     visibility: internal
   - id: term.form-field-business-purpose
     name: 表单字段业务用途
-    definition: 表单真实字段显式声明的业务用途标识；当前用于明确映射当前工序的良品、不良品或报废数量，不通过字段名称猜测数量含义。
+    definition: 表单真实字段或实际子表列显式关联的业务含义；通过用途来源映射明确报工、报废等指标，不通过字段名称猜测。当前工序质量和已保存过程参考分别按相应来源与时点累计，良品、NG、报废与明确产出独立；旧字段用途标记属于历史实现来源，不是任意将三项相加为产出的公式。
     aliases: [字段业务用途标识]
     status: implemented
     visibility: internal
