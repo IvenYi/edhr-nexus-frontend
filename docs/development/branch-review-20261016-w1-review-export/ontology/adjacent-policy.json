@@ -1,0 +1,825 @@
+{
+  "reportType": "limited-read-only-policy-audit",
+  "capturedAt": "2026-10-16",
+  "contractBaseline": {
+    "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+    "contractReadCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "scope": "DEC-0069终止、DEC-0074共享终端按钮签署及A12表单变更作废与DHR汇总修订的相邻政策；不承担本批主要源码审查，不新增规则，不运行Maven/DB/Actions或提交。",
+  "contractReadEvidence": [
+    {
+      "path": "AGENTS.md",
+      "scope": "本实例在当前HEAD读取项目契约，含三级节奏和完成门禁"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "scope": "完整角色契约"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "scope": "完整统一契约"
+    },
+    {
+      "path": "docs/development/branch-review-20261016-w1-review-export/decision-package.yaml",
+      "scope": "完整当前批次范围"
+    }
+  ],
+  "provenanceBoundary": "以下user-confirmed依据是仓库保存的用户确认摘录/政策确认说明。本实例实际重读这些文件，但未取得或重新读取原ChatGPT对话全文；不得声称对外部原始会话完成独立核验。源码为本次直接观察；历史测试仅导航，不继承运行通过。",
+  "statementRecords": [
+    {
+      "id": "DEC-0069-01",
+      "sourcePath": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "sourceLocator": {
+        "line": 16,
+        "statementLine": 17
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；BATCH/SN 生产对象执行既有“提前结束”时，已关联且仍填报中的 DHR 在同一事务真实进入已终止；任一环节失败全部回滚。终止不是正常完成、表单作废、审核通过或产品放行，不新增工单级直接提前结束命令。"
+    },
+    {
+      "id": "DEC-0069-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "sourceLocator": {
+        "line": 20,
+        "statementLine": 21
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；DHR 已终止后保留终止前服务端已保存的目录、三类来源的各实例、暂存内容、已完成记录、签名和审计，并保留可追溯的终止时视图；未完成实例显示已停止但不伪称已完成，不自动作废表单或补造未产生的实例。后续受控变化不得覆盖终止时证据。"
+    },
+    {
+      "id": "DEC-0069-03",
+      "sourcePath": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "sourceLocator": {
+        "line": 24,
+        "statementLine": 25
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；终止记录保留操作者、服务端时间、原因、原状态、关联生产动作和版本标识；重复命令不覆盖首次终止事实。生产、DHR、通用表单和普通工作流入口均不得继续正常执行或修改，相关待办停止可执行并说明原因；记录控制模块仍独立判定日后受控变更或作废资格。"
+    },
+    {
+      "id": "DEC-0069-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "sourceLocator": {
+        "line": 28,
+        "statementLine": 29
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；DHR 列表、填报、详情、汇总和审核使用同一 DHR 状态与允许动作投影，区分生产对象状态和审核任务处理状态。正常采集完成展示待汇总，不能将底层 COMPLETED 直接展示为总体已完成；终止记录只读可查，不进入普通汇总或审核队列。NONE 免审核定版不称审核通过，退回和人工新版本保留既有历史。"
+    },
+    {
+      "id": "DEC-0069-05",
+      "sourcePath": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "sourceLocator": {
+        "line": 32,
+        "statementLine": 33
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；本期不默认开放终止后补录、异常结案审核或恢复生产，不新增独立质量审批，也不改变已正常完成的其他对象/DHR、DHR_SUMMARY 冻结策略及产品放行语义。企业 SOP 对额外签名的要求作为未来配置研究，不成为本期未经确认的阻断条件。"
+    },
+    {
+      "id": "DEC-0069-06",
+      "sourcePath": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "sourceLocator": {
+        "line": 36,
+        "statementLine": 37
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；历史修正仅针对“生产已提前结束、DHR 仍 IN_PROGRESS、且无汇总草稿或版本”的明确记录，要求幂等和可审计；冲突记录人工核对，缺失的历史操作者或终止时快照明确标缺失，不用迁移时数据冒充历史现场。"
+    },
+    {
+      "id": "DEC-0074-01",
+      "sourcePath": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "sourceLocator": {
+        "line": 9,
+        "statementLine": 10
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；普通按钮签署使用实际签署账号的独立电子签名密码及有效个人认证，不使用该账号的登录密码。共享终端允许 A 登录、B 本人输入 B 的账号及签名密码签署；签署人须有本次动作的业务处理资格，不能借用 A 的权限，不切换 A 的登录会话。"
+    },
+    {
+      "id": "DEC-0074-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "sourceLocator": {
+        "line": 13,
+        "statementLine": 14
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；暂仅按签署用户名 admin 识别内部超管按钮认证例外，使用其登录密码且不要求个人电子签名认证；不按管理员角色识别，不扩大到客户管理员。例外不豁免账号可用性、节点授权、业务状态、字段权限、快照或审计约束。"
+    },
+    {
+      "id": "DEC-0074-03",
+      "sourcePath": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "sourceLocator": {
+        "line": 17,
+        "statementLine": 18
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；非 admin 签署人未完成认证或认证过期时只阻断并就地提示，保留表单输入，不自动跳转或在 A 会话打开 B 的个人设置；不因认证失败推进动作或保存成功签署。"
+    },
+    {
+      "id": "DEC-0074-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "sourceLocator": {
+        "line": 21,
+        "statementLine": 22
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；SIGN_FIELD 继续使用当前会话用户的原字段签名逻辑，包括独立签名密码、有效认证与图片、字段权限、签后内容修改失效和历史证据保留。不得把按钮的跨账号签署或 admin 登录密码例外应用于字段签名，也不修改个人认证设置。"
+    },
+    {
+      "id": "DEC-0068-03",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "line": 26,
+        "statementLine": 27
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；受控追加创建新的表单实例，不修改旧实例，不手工新建 DHR，不覆写旧汇总版本。完工补录不自动重开生产或恢复工序执行；旧记录、签署和审计历史保留。"
+    },
+    {
+      "id": "DEC-0068-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "line": 30,
+        "statementLine": 31
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；表单变更、表单作废由朋友负责的记录控制模块实现与判定生效，DHR 只消费有效来源变化并评估证据影响；申请发起或审批中不等同于已生效，不接管变更作废审批或替其定义活动记录作废资格。"
+    },
+    {
+      "id": "DEC-0068-05",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "line": 34,
+        "statementLine": 35
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；汇总版本审核中，系统自动识别并标识完整证据范围的有效变化（包括新增关联证据、来源版本/状态及附件变化），通知受影响情况并阻断基于过时证据的批准；退回整理必须由人执行，不由系统自动退回。退回后形成新草稿与新汇总版本，原提交快照与审批历史保留。"
+    },
+    {
+      "id": "DEC-0068-06",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "line": 38,
+        "statementLine": 39
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；已批准汇总版本受到证据变化影响时，不自动退回、不清除批准结论或历史，不就地改写旧版证据；需要重新审核时，由人发起新版本整理和重审，旧批准只解释其当时的冻结版本。列表操作栏使用符合共享规范的纯图标及提示表达“发起修订”，查看弹窗直接显示同名按钮，不再藏于更多菜单。两入口共用原技术动作、资格、原因和权限，基于最新定版创建 DRAFT 汇总中草稿，不立即生成下一冻结版本或进入批准；重新核查提交时才分配下一 version_no，并按原配置审批。当前草稿与历次冻结版本都可通过版本选择访问；即使存在草稿，旧版本仍只读且可按原权限导出，不混入实时内容，不由数据审计替代正文查看，不因入口调整授予编辑或导出权限。"
+    },
+    {
+      "id": "DEC-0068-07",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "line": 42,
+        "statementLine": 43
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；需要审核的汇总按生产开工时冻结的 DHR_SUMMARY 流程定义及版本显式启动，审核任务与结果绑定本次不可变汇总版本；不得自动追随最新流程、临时改用绑定规则或通过通用流程入口绕过 DHR 的权限、证据有效性和版本校验。NONE 仅不另启本系统汇总审批，不豁免源表单签署、适用法定审核或产品放行要求；审批对象必须包含完整证据及检查结果，不能只审批人工目录子集。"
+    },
+    {
+      "id": "DEC-0068-08",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "line": 46,
+        "statementLine": 47
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；填报、追加、证据影响识别、退回、新版本重审与批准均不自动改变生产完成状态或产品放行状态；不新增产品放行规则或自动重开生产。错误旧汇总按 DEC-0063-09 转成待核查草稿或清理，不补造历史审核绑定、核查确认及审批事实，不覆盖已有当前模型冻结和草稿；正常发起修订仍保留原版本与批准。审批统一要求本次冻结核查结果，不能用旧模型分支绕过人工核查。"
+    },
+    {
+      "id": "DEC-0042-01",
+      "sourcePath": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceLocator": {
+        "line": 9,
+        "statementLine": 10
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "provenance: user-confirmed；记录控制域拥有申请、来源资格、申请人签名和批准后业务落地；公共流程域拥有候选流程、显式版本启动、路由、任务和流程运行日志。记录控制域不得复制公共流程引擎或任务模型，公共流程域不得直接读取或修改记录控制来源数据。"
+    },
+    {
+      "id": "DEC-0042-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceLocator": {
+        "line": 21,
+        "statementLine": 22
+      },
+      "maturity": "implemented",
+      "visibility": "internal",
+      "statement": "provenance: original-evidence；阶段一共享类型和独立撤回端口已声明 APPROVE、RETURN、TRANSFER、撤回、重新分配、WorkflowResultEvent、结果处理器和业务详情投影边界，但当前运行时只闭环候选查询和显式启动。审批、退回、转办、撤回、重新分配、结果事件触发与消费，以及申请确认事务仍不得投影为 implemented、verified 或 runtime。"
+    },
+    {
+      "id": "DEC-0042-05",
+      "sourcePath": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceLocator": {
+        "line": 25,
+        "statementLine": 26
+      },
+      "maturity": "implemented",
+      "visibility": "internal",
+      "statement": "provenance: original-evidence-and-inference-boundary；当前源码只声明 RecordControlWorkflowResultHandler 接口，尚无处理器实现、流程完成调用或结果消费幂等测试。接口注释描述的同步 P0 边界及单体事务传输选择在运行时闭环前不作为本阶段已确认或已实现的业务规则。"
+    },
+    {
+      "id": "DEC-0037-01",
+      "sourcePath": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sourceLocator": {
+        "line": 9,
+        "statementLine": 10
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "provenance: user-confirmed；表单变更和表单作废分别创建独立申请，已完成记录不可直接编辑；变更产生新修订，作废只使当前有效修订失效且不修改字段值。"
+    },
+    {
+      "id": "DEC-0037-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sourceLocator": {
+        "line": 13,
+        "statementLine": 14
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "provenance: user-confirmed；变更通过后新修订成为唯一当前有效修订，旧修订保留完整快照、签名和哈希并只读；作废通过后当前修订为 VOIDED，历史修订、投影、DHR 成员、签名和审计不物理删除。"
+    },
+    {
+      "id": "DEC-0037-03",
+      "sourcePath": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sourceLocator": {
+        "line": 17,
+        "statementLine": 18
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "provenance: user-confirmed；P0 申请确认时申请人必须显式选择有权限、动作类型匹配且状态为已发布的审核流程版本；无候选时阻断确认，确认成功后冻结 workflowDefinitionId 和 workflowVersionId。申请确认即启动审核的事务和开始节点无按钮边界由 DEC-0041 补充。"
+    },
+    {
+      "id": "DEC-0037-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sourceLocator": {
+        "line": 21,
+        "statementLine": 22
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "provenance: user-confirmed；审核中来源记录保持原业务主状态，只增加变更审核中或作废审核中标记并锁定冲突申请；退回或受限撤回不落地业务结果。"
+    },
+    {
+      "id": "DEC-0037-08",
+      "sourcePath": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sourceLocator": {
+        "line": 37,
+        "statementLine": 38
+      },
+      "maturity": "specified",
+      "visibility": "internal",
+      "statement": "provenance: user-confirmed；表单变更与作废的审核运行日志和不可变合规审计分层保存，提交、审核、退回、撤回、转办、重新分配及落地均需可追溯。"
+    }
+  ],
+  "sourceGroups": [
+    {
+      "id": "termination-user-confirmation",
+      "statementIds": [
+        "DEC-0069-01",
+        "DEC-0069-02",
+        "DEC-0069-03",
+        "DEC-0069-04",
+        "DEC-0069-05",
+        "DEC-0069-06"
+      ],
+      "evidence": [
+        {
+          "path": "docs/knowledge/evidence/dhr-termination-lifecycle-confirmed.md",
+          "locator": {
+            "line": 7,
+            "lineEnd": 16
+          },
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/dhr-termination-lifecycle-design.md",
+          "locator": {
+            "line": 61,
+            "lineEnd": 80
+          },
+          "provenance": "secondary-reference"
+        }
+      ],
+      "interpretation": "用户确认本期推荐政策；设计本期政策可解释确认，但SQL/接口/锁等实现建议仍inferred。"
+    },
+    {
+      "id": "button-signature-user-confirmation",
+      "statementIds": [
+        "DEC-0074-01",
+        "DEC-0074-02",
+        "DEC-0074-03",
+        "DEC-0074-04"
+      ],
+      "evidence": [
+        {
+          "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+          "locator": {
+            "line": 7,
+            "lineEnd": 17
+          },
+          "provenance": "user-confirmed"
+        }
+      ],
+      "interpretation": "实际签署身份、独立签名密码、exact-admin按钮例外、认证失败原位保值和SIGN_FIELD保留；不自动扩展A12认证。"
+    },
+    {
+      "id": "record-control-and-dhr-ownership",
+      "statementIds": [
+        "DEC-0068-03",
+        "DEC-0068-04",
+        "DEC-0068-05",
+        "DEC-0068-06",
+        "DEC-0068-07",
+        "DEC-0068-08",
+        "DEC-0037-01",
+        "DEC-0037-02",
+        "DEC-0037-03",
+        "DEC-0037-04",
+        "DEC-0037-08"
+      ],
+      "evidence": [
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "locator": {
+            "line": 149,
+            "lineEnd": 161
+          },
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "locator": {
+            "line": 106,
+            "lineEnd": 120
+          },
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/record-control-start-entry-user-confirmed.md",
+          "locator": {
+            "line": 11,
+            "lineEnd": 19
+          },
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md",
+          "locator": {
+            "line": 54,
+            "lineEnd": 67
+          },
+          "provenance": "secondary-reference"
+        }
+      ],
+      "interpretation": "A12改变来源记录当前有效修订/作废，DHR消费实际生效；DHR发起修订改变汇总草稿/后续冻结版，并不替代来源变更审批。"
+    }
+  ],
+  "replacementScopes": [
+    {
+      "decisionStatementIds": [
+        "DEC-0069-01",
+        "DEC-0069-02",
+        "DEC-0069-03"
+      ],
+      "supersededStatementIds": [
+        "DEC-0018-02",
+        "DEC-0062-04",
+        "DEC-0062-08"
+      ],
+      "scope": "仅把旧生产规则abandon-dhr可误读为作废的DHR投影明确为真实终止和表单保留，并收敛0062提前结束未定义/阶段性排除。0062-08其他汇总/审批切片已由0063/0068按各自范围解释；不把整个08归0069。",
+      "retainedScope": "工单/对象EARLY_TERMINATED区别正常完成/取消/关闭、唯一DHR、首次开工、正常完工及冻结上下文继续有效；工单级主动提前结束命令仍非本期。保留0063完整来源/不可变汇总、0068正常完工补录和审核；不自动开放终止后补录。",
+      "sourceReferences": [
+        {
+          "path": "docs/knowledge/evidence/dhr-termination-lifecycle-confirmed.md",
+          "locator": {
+            "line": 13,
+            "lineEnd": 15
+          },
+          "provenance": "user-confirmed"
+        }
+      ]
+    },
+    {
+      "decisionStatementIds": [
+        "DEC-0074-01",
+        "DEC-0074-02",
+        "DEC-0074-03"
+      ],
+      "supersededStatementIds": [
+        "DEC-0028-03"
+      ],
+      "affectedNonStatementScopes": [
+        "DEC-0058.context中的按钮登录密码沿用",
+        "DEC-0028/DEC-0058按钮回归场景的认证约定"
+      ],
+      "scope": "只替代生产/DHR按钮账号登录密码认证为实际签署人的独立签名密码和有效认证，并应用仅exact-admin按钮例外。DEC-0028-03当前已原位引用0074，旧文本在Git历史。",
+      "retainedScope": "DEC-0058-01/02和SIGN_FIELD当前会话/认证/图片/有效期/签后内容变化失效/历史保留不变。按钮事件、动作前签署、稳定字段绑定和发布快照治理不变。技术枚举ACCOUNT_PASSWORD不决定真实认证方法。",
+      "sourceReferences": [
+        {
+          "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+          "locator": {
+            "line": 13,
+            "lineEnd": 17
+          },
+          "provenance": "user-confirmed"
+        }
+      ]
+    }
+  ],
+  "identityAndAuditPolicy": [
+    {
+      "id": "policy.actual-signer-authority",
+      "basis": "user-confirmed",
+      "decisionIds": [
+        "DEC-0074-01",
+        "DEC-0074-02"
+      ],
+      "meaning": "A登录、B本人签署，不切换A会话；B须有当前动作业务资格，不能借A权限。admin仅更换认证凭据，不豁免任务/状态/字段/快照/审计。",
+      "sourceReferences": [
+        {
+          "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+          "locator": {
+            "line": 7,
+            "lineEnd": 11
+          },
+          "provenance": "user-confirmed"
+        }
+      ]
+    },
+    {
+      "id": "policy.dhr-shared-terminal-access-boundary",
+      "basis": "existing-engineering-and-audit-acceptance-scope",
+      "decisionIds": [
+        "DEC-0074-01"
+      ],
+      "meaning": "DHR入口先保留A任务资格；需签署时验证B并再检查B任务资格，任务动作及签名归B，顶层AuditEvent.operator仍归A，payload关联A/B/signatureId。这是既有工程/审计验收边界，不冒充额外用户确认；不能以共享终端规则推定允许A无任务访问权而借B扩权。",
+      "sourceReferences": [
+        {
+          "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+          "locator": {
+            "line": 44,
+            "lineEnd": 48
+          },
+          "provenance": "original-evidence"
+        },
+        {
+          "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+          "locator": {
+            "line": 58,
+            "lineEnd": 60
+          },
+          "provenance": "inference"
+        }
+      ],
+      "currentSourceReferences": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+          "locator": {
+            "line": 99,
+            "lineEnd": 142
+          },
+          "provenance": "original-evidence"
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+          "locator": {
+            "line": 253,
+            "lineEnd": 269
+          },
+          "provenance": "original-evidence"
+        }
+      ]
+    },
+    {
+      "id": "policy.authentication-is-not-source-signature-validity",
+      "basis": "user-confirmed-and-existing-boundary",
+      "decisionIds": [
+        "DEC-0074-01",
+        "DEC-0074-03",
+        "DEC-0074-04"
+      ],
+      "meaning": "普通按钮检查实际签署人当前认证及签名密码；源表单已有签署是否满足质量/SOP不由该认证函数自动判读。SIGN_FIELD不跨账号、不享admin例外。",
+      "sourceReferences": [
+        {
+          "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+          "locator": {
+            "line": 7,
+            "lineEnd": 10
+          },
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "locator": {
+            "line": 116,
+            "lineEnd": 117
+          },
+          "provenance": "user-confirmed"
+        }
+      ],
+      "currentSourceReferences": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+          "locator": {
+            "line": 228,
+            "lineEnd": 246
+          },
+          "provenance": "original-evidence"
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+          "locator": {
+            "line": 274,
+            "lineEnd": 305
+          },
+          "provenance": "original-evidence"
+        }
+      ]
+    }
+  ],
+  "a12VsDhrSummary": [
+    {
+      "layer": "source-record-control",
+      "decisionIds": [
+        "DEC-0037-01",
+        "DEC-0037-02",
+        "DEC-0037-04",
+        "DEC-0042-01",
+        "DEC-0068-04"
+      ],
+      "meaning": "已完成来源不能直接编辑；独立变更申请通过后新修订成为唯一当前有效修订，旧修订快照/签署/hash只读保留；独立作废通过使当前有效修订失效且不改字段、不删除DHR成员或历史。待审申请只加活动标记，不伪装来源已生效。来源资格/批准落地归记录控制域。"
+    },
+    {
+      "layer": "dhr-summary-revision",
+      "decisionIds": [
+        "DEC-0068-05",
+        "DEC-0068-06"
+      ],
+      "meaning": "来源有效变化及新增来源/附件变化由DHR识别影响，审核中阻断过时批准，人工退回；已批准版不自动退回/擦除/覆写。人工发起修订基于最新定版先建DRAFT，重新核查提交才生成下一version_no并依原冻结审批配置；旧冻结版只读按权导出。它不变更源表单、不恢复生产、不自动放行。",
+      "sourceReferences": [
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "locator": {
+            "line": 10,
+            "lineEnd": 10
+          },
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "locator": {
+            "line": 13,
+            "lineEnd": 14
+          },
+          "provenance": "user-confirmed"
+        }
+      ],
+      "currentSourceReferences": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+          "locator": {
+            "line": 372,
+            "lineEnd": 407
+          },
+          "provenance": "original-evidence"
+        }
+      ]
+    },
+    {
+      "layer": "termination",
+      "decisionIds": [
+        "DEC-0069-02",
+        "DEC-0069-03",
+        "DEC-0069-04",
+        "DEC-0069-05"
+      ],
+      "meaning": "终止保留终止时证据，后续合法受控变化不得回写终止时视图。普通汇总/审核/补录/恢复生产不因A12潜在资格而开放；A12资格仍独立，不能从普通执行阻断推导受控变更绝对禁止或自动允许。终止留存不是DhrSummaryVersion。",
+      "sourceReferences": [
+        {
+          "path": "docs/knowledge/evidence/dhr-termination-lifecycle-confirmed.md",
+          "locator": {
+            "line": 7,
+            "lineEnd": 16
+          },
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/dhr-termination-lifecycle-design.md",
+          "locator": {
+            "line": 65,
+            "lineEnd": 80
+          },
+          "provenance": "secondary-reference"
+        }
+      ]
+    }
+  ],
+  "directlyActionableExistingPolicies": [
+    {
+      "id": "check.button-signature-auth-boundary",
+      "decisionIds": [
+        "DEC-0074-01",
+        "DEC-0074-02",
+        "DEC-0074-03",
+        "DEC-0074-04"
+      ],
+      "acceptance": "若可合法触发登录密码接受普通按钮、管理员角色或大写ADMIN豁免、B借A权限、失败保存成功签名或推进、SIGN_FIELD跨账号/继承例外，属于明确规则差异，可直接最小修复。",
+      "observedBoundary": "有限源码已见普通签名密码+认证、exact-admin、DHR A/B两次eligible及签名/审计双身份；本实例未证明缺陷或运行通过。"
+    },
+    {
+      "id": "check.summary-history-immutability",
+      "decisionIds": [
+        "DEC-0068-05",
+        "DEC-0068-06",
+        "DEC-0069-02"
+      ],
+      "acceptance": "合法修订/补录/附件变化后不得重写旧冻结正文、旧批准或终止证据；已有批准对象检测到有效变化应阻断，人工退回或新草稿。",
+      "observedBoundary": "现有reorganize/prepareNextDraft保留旧版并创建草稿；批准调用changes，终止detail验证hash并返回冻结dhr。只证明当前hook，不证明真实A12生效整链或所有入口。"
+    },
+    {
+      "id": "check.source-effective-not-pending",
+      "decisionIds": [
+        "DEC-0037-04",
+        "DEC-0068-04"
+      ],
+      "acceptance": "如合法入口把仅待审申请当作来源已生效而替换旧证据/修改源值/自动擦批准，是明确差异；不能人工改表模拟待审状态变化，再把读时检测归为真生效链测试。",
+      "observedBoundary": "有限全目录命名搜索只见WorkflowResultEvent record与RecordControlWorkflowResultHandler接口，没有处理器实现/调用，尚不能构造已实现来源生效闭环。"
+    }
+  ],
+  "implementationGaps": [
+    {
+      "id": "gap.a12-effective-result-consumer",
+      "decisionIds": [
+        "DEC-0042-04",
+        "DEC-0042-05",
+        "DEC-0068-04"
+      ],
+      "kind": "unimplemented-integration-boundary",
+      "finding": "本次rg核对main/java中RecordControlWorkflowResultHandler、WorkflowResultEvent及修订相关名称，结果只见事件record、结果接口、撤回端口引用及projection声明；未见处理器实现或调用。接口注释不等于运行机制。",
+      "sourceReferences": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowResultHandler.java",
+          "locator": {
+            "line": 5,
+            "lineEnd": 11
+          },
+          "provenance": "original-evidence"
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowContracts.java",
+          "locator": {
+            "line": 108,
+            "lineEnd": 130
+          },
+          "provenance": "original-evidence"
+        },
+        {
+          "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+          "locator": {
+            "line": 21,
+            "lineEnd": 27
+          },
+          "provenance": "original-evidence"
+        }
+      ],
+      "impact": "不能宣称真实来源申请→审批→生效→DHR通知/阻断并发已闭环；本批不能通过临时实现整个A12来填平。"
+    },
+    {
+      "id": "gap.complete-effective-evidence-impact",
+      "decisionIds": [
+        "DEC-0068-05"
+      ],
+      "kind": "partial-implementation-and-evidence-gap",
+      "finding": "changes比较冻结记录的snapshot_json/values_json/status/template version、新增PRODUCTION_EXECUTION实例及附件范围/hash/核验/文件；批准时调用并阻断非空。没有来源有效修订ID、结果事件订阅/主动通知或任意质量检查结果的完整比较证据。",
+      "currentSourceReferences": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+          "locator": {
+            "line": 25,
+            "lineEnd": 75
+          },
+          "provenance": "original-evidence"
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+          "locator": {
+            "line": 107,
+            "lineEnd": 116
+          },
+          "provenance": "original-evidence"
+        }
+      ],
+      "existingGapIds": [
+        "discrepancy.dhr-review-complete-evidence-impact-gap",
+        "discrepancy.dhr-review-effective-source-integration"
+      ],
+      "impact": "保留原gap；读时比较和端口存在不升级为事件/通知整链通过，测试存在不等于本次已执行。"
+    },
+    {
+      "id": "gap.termination-read-adjacent-live-dependency",
+      "decisionIds": [
+        "DEC-0069-02",
+        "DEC-0069-03"
+      ],
+      "kind": "read-only-dependency-without-proven-legal-defect",
+      "finding": "detail先读取/解析当前execution的完整性，再进入EARLY_TERMINATED快照hash核验及冻结返回。依赖实际存在，但本实例未找到合法服务动作把终止execution写成不可解析JSON，不以坏DB、手改SQL作真实业务触发。后续受控变更历史与通知尚须A12真实接口证据。",
+      "currentSourceReferences": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+          "locator": {
+            "line": 249,
+            "lineEnd": 262
+          },
+          "provenance": "original-evidence"
+        }
+      ],
+      "impact": "不据此单独提出确定修复；终止普通汇总/审核/补录限制保持。"
+    },
+    {
+      "id": "gap.activity-void-business-question",
+      "kind": "existing-business-question",
+      "questionId": "question.record-control-active-form-void-boundary",
+      "finding": "活动/未填报表单是否可申请作废仍未确认。设计文档2026-10-12补记明确旧统一阻断描述为待确认方案。",
+      "sourceReferences": [
+        {
+          "path": "docs/knowledge/open-questions.yaml",
+          "locator": {
+            "line": 116,
+            "lineEnd": 124
+          },
+          "provenance": "original-evidence"
+        },
+        {
+          "path": "docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md",
+          "locator": {
+            "line": 8,
+            "lineEnd": 8
+          },
+          "provenance": "secondary-reference"
+        }
+      ],
+      "impact": "只阻塞未来相应A12资格；不能以审查之名新增活动作废一律禁止/一律允许，不阻塞本批无关核对。"
+    },
+    {
+      "id": "gap.termination-sop-extra-signature",
+      "kind": "existing-deferred-business-question",
+      "questionId": "question.dhr-termination-sop-extra-signature",
+      "finding": "企业SOP额外签名未来配置研究，DEC0069不新增独立质量审批；不能从法规引用/历史系统自行添加，也不能削弱其他既有签署。",
+      "sourceReferences": [
+        {
+          "path": "docs/knowledge/open-questions.yaml",
+          "locator": {
+            "line": 99,
+            "lineEnd": 106
+          },
+          "provenance": "original-evidence"
+        }
+      ],
+      "impact": "既定非本期阻断；不影响本批已有规则直接核对。"
+    }
+  ],
+  "validationBoundary": {
+    "repositoryMutations": [],
+    "performed": [
+      "读取当前HEAD契约、决策、原确认摘录",
+      "有限源码hook静态核对",
+      "main/java事件/处理器/修订名只读搜索",
+      "声明ID和locator从当前YAML实际生成"
+    ],
+    "notPerformed": [
+      "Maven",
+      "数据库/迁移",
+      "Actions",
+      "浏览器",
+      "运行集成回归",
+      "独立最终qualityResult"
+    ],
+    "stage": "P0/in-progress",
+    "overallAuditComplete": false
+  }
+}

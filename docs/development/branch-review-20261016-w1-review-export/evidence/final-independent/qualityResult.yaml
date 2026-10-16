@@ -1,0 +1,190 @@
+qualityResult:
+  result: passed
+  baseCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+  headCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+  contractBaseline:
+    sourceCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    targetBranch: edhr-dev
+    targetCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    contractReadCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths: &id001
+    - docs/development/branch-review-20261016-w1-review-export/README.md
+    - docs/development/branch-review-20261016-w1-review-export/baseline.json
+    - docs/development/branch-review-20261016-w1-review-export/coverage.csv
+    - docs/development/branch-review-20261016-w1-review-export/decision-package.yaml
+    - docs/development/branch-review-20261016-w1-review-export/evidence/coverage-utf8-correction.json
+    - docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/DELIVERY.md
+    - docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/README.md
+    - docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/artifact-manifest.json
+    - docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/baseline-before.json
+    - docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/case-index.json
+    - docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/coverage-first-observed.csv
+    - docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/inventory-initial-failure.json
+    - docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/protected-after.json
+    - docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/protected-before.json
+    - docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/qualityResult.yaml
+    - docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/test-result.json
+    - docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/verification-facts.json
+    - docs/development/branch-review-20261016-w1-review-export/evidence/legacy-inventory-path-recheck.json
+    - docs/development/branch-review-20261016-w1-review-export/evidence/main-case-index.json
+    - docs/development/branch-review-20261016-w1-review-export/evidence/main-result.json
+    - docs/development/branch-review-20261016-w1-review-export/findings.yaml
+    - docs/development/branch-review-20261016-w1-review-export/merge-receipt.json
+    - docs/development/branch-review-20261016-w1-review-export/ontology/README.md
+    - docs/development/branch-review-20261016-w1-review-export/ontology/adjacent-policy.json
+    - docs/development/branch-review-20261016-w1-review-export/ontology/baseline.json
+    - docs/development/branch-review-20261016-w1-review-export/ontology/ontology-result.yaml
+    - docs/development/branch-review-20261016-w1-review-export/ontology/policy-index.json
+    - docs/development/branch-review-20261016-w1-review-export/review-progress.jsonl
+    - docs/development/branch-review-20261016-w1-review-export/source-map.md
+    excludedPaths: []
+    untrackedPaths: *id001
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.exact-inventory-and-utf8-correction
+    required: true
+    category: documentation
+    description: 本实例实际核对固定Git树全部真实UTF8路径及blob，六转义路径红绿证据。
+    method: command
+    command: python3 /tmp/verify_w1_final_documentation_20261016.py; git ls-tree -r
+      -z 76b214426a271929bba2708cdda9e4d84d1f0679
+    outcome: passed
+    evidence:
+    - inventory-check.json
+    - 1524唯一路径与blob精确相等，无遗漏/额外/排除，全部pending/inventory-only；不是只核对数量。
+    - 原CSV SHA256 3f2b6d1e759982a695342e671d8efadaf20a51680331f34d71bd42d6eb5c33f2；修正后bf31c5b82d9f14ee09782d3001f4210d2470cab5cb9986fc8c47cbc12b3cfc36。
+  - id: check.legacy-inventories-preserved
+    required: true
+    category: documentation
+    description: 按各自基线独立核对历史清单path/blob且原文件未变。
+    method: command
+    command: Python csv/Git -z exact set and blob comparison
+    outcome: passed
+    evidence:
+    - legacy-inventory-check.json
+    - 1423基线e9c00df8c85b021e7bf206e575a5a726cd46c12b、1474基线6379bf105127b05a65695992b008b55c142264f9；两份均精确且保留。
+  - id: check.actual-baseline-and-unchanged-tested-source
+    required: true
+    category: documentation
+    description: 独立核对当前HEAD/实时远端/契约及全部受测跟踪源字节。
+    method: command
+    command: git rev-parse HEAD; git ls-remote origin refs/heads/edhr-dev; Python
+      SHA256 and git hash-object for 1524 paths
+    outcome: passed
+    evidence:
+    - baseline.json
+    - protected-current.json
+    - source/base/head/target/实际契约新读均76b214426a271929bba2708cdda9e4d84d1f0679；所有1524跟踪字节与首轮实际运行前后相等。
+    - 产品、测试、知识、迁移、契约均未变；工作树仅本批未跟踪审查文档。未为后续文档提交虚写新的产品受测SHA。
+  - id: check.first-independent-runtime-original-evidence
+    required: true
+    category: integration
+    description: 本实例核对首轮真实独立74与主侧真实74原证据；本人不重跑测试。
+    method: command
+    command: Python original XML parsing, raw SHA256/log build-marker checks and exact
+      unique case sets
+    outcome: passed
+    evidence:
+    - runtime-evidence-check.json
+    - 首轮独立实际74/0/0/0，主侧另行74/0/0/0；两套10 suite/74唯一case集合精确相等。
+    - 日志、20原XML、首轮22项artifact manifest摘要可复核；build:dhr-print实际执行，13项归档真实Chromium/PDFBox。
+    - 本实例执行的是原证据复核，没有执行Maven、DB或浏览器；实际产品受测提交仍76b214426a271929bba2708cdda9e4d84d1f0679。
+  - id: check.first-round-failed-record-integrity
+    required: true
+    category: documentation
+    description: 亲读首轮正式failed并核对安全副本，不覆写原观察结论。
+    method: command
+    command: Read first-round qualityResult/README and SHA256 compare original versus
+      safe repository copies
+    outcome: passed
+    evidence:
+    - first-round-safe-copy-check.json
+    - 首轮qualityResult SHA256 af3113fe40ddd73c012a5e8e7ed4fd10df55f278b7e37a56928b514805179eb2。
+    - 该failed只针对原CSV的medium；产品74测试均实际通过。当前最终复核独立接受修后CSV，不倒改首轮报告。
+  - id: check.scoped-source-and-fixture-claims
+    required: true
+    category: documentation
+    description: 核对12方法级path/symbol/hash及Mock/真实运行边界，不把局部证据扩大为全链。
+    method: inspection
+    command: Read source-map/review-progress and actual lifecycle/archive fixture
+      Config; verify hashes/symbols
+    outcome: passed
+    evidence:
+    - documentation-policy-check.json
+    - DhrReviewLifecycleIntegrationTest实际mock DhrInstanceService、DhrFormFiles、DhrAttachmentService、SubjectResolver等；归档13实际文件/PDF测试单列。
+    - 12源码摘要与方法存在精确匹配，wholeFileReviewComplete=false。无完整HTTP、整页视觉、PG事务或A12整链通过声明。
+  - id: check.policy-provenance-and-inherited-boundaries
+    required: true
+    category: ontology
+    description: 对照36原声明与定位、知识分母及not-applicable范围，确认两个旧high和剩余审查不提前关闭。
+    method: command
+    command: Python PyYAML original declaration/locator comparison and schema collectionTypes/nestedCollectionTypes
+      definition enumeration
+    outcome: passed
+    evidence:
+    - documentation-policy-check.json
+    - 36条原文/ID/status/visibility/locator符合原YAML；仅导航非36项全链通过。正式schema分母2487唯一ID/252文件/0.3.25未变。
+    - 两个既有high继续open并阻断完整DHR生命周期，四gap/F004/W1剩余/W2-W7未关闭；本批通过仅是审查文档和已实现范围证据质量。
+  - id: check.report-parse-and-professional-final
+    required: true
+    category: documentation
+    description: 实际解析本批JSON/YAML/JSONL并核对专业实例返回FINAL。
+    method: command
+    command: Python json/yaml parsing; collaboration.list_agents inspection
+    outcome: passed
+    evidence:
+    - reviewed-document-manifest.json
+    - execution-summary.json
+    - 本体实例、辅助政策实例及首轮质量实例均completed且正式结构化结果已读取；没有其他进行专业实例，本实例无子任务。
+  findings:
+  - id: QF-W1-REVIEW-EXPORT-001
+    severity: medium
+    scope: review-ledger-inventory
+    summary: 原清单六个Git转义中文路径已由主侧修正，本全新实例精确集合复核通过。
+    reproductionSteps:
+    - 将原观察CSV path列与76提交git ls-tree -r -z路径比较，发现六缺失/六额外。
+    - 再对修后CSV逐项比较1524 path/blob及pending状态。
+    expectedResult: 真实UTF8路径和对应blob完整、唯一、可定位。
+    actualResult: 当前修后清单全部满足；原失败快照及安全报告保留。
+    evidence:
+    - inventory-check.json
+    - legacy-inventory-check.json
+    - first-round-safe-copy-check.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: command
+      reference: python3 /tmp/verify_w1_final_documentation_20261016.py -> passed;
+        inventory-check.json
+    - type: document
+      reference: docs/development/branch-review-20261016-w1-review-export/evidence/coverage-utf8-correction.json;
+        corrected CSV SHA256 bf31c5b82d9f14ee09782d3001f4210d2470cab5cb9986fc8c47cbc12b3cfc36
+  residualRisks:
+  - id: risk.existing-whole-lifecycle-high-gaps
+    description: discrepancy.dhr-review-complete-evidence-impact-gap和discrepancy.dhr-review-effective-source-integration均继续open/high。
+    impact: 阻断完整DHR生命周期/发布完成，不属本批已修复或功能验收通过。
+    mitigation: 按原所有权继续真实A12生效、完整质量影响比较、主动通知和并发联调；不把待审/手工改行当合法生效。
+  - id: risk.actual-runtime-fixture-limits
+    description: 首轮74/主侧74为隔离H2及列明Mocks，归档13另用真实Chromium/PDFBox；本人只核对原证据。
+    impact: 不能据此声称真实PG事务、完整HTTP/浏览器视觉或来源变更整链已验证。
+    mitigation: 按所列原测试范围复用同源证据，后续相关源码或依赖变更再补适用运行。
+  - id: risk.remaining-global-audit
+    description: 四个知识evidence-gap、F004、W1其余和W2-W7仍未完成；36政策只是导航。
+    impact: 本批不构成全分支或发布结论。
+    mitigation: 保持固定新基线和分批覆盖台账，继续无依赖审查。
+  blockingConditions: []
+assessmentBoundary:
+  kind: fresh-independent-final-audit-documentation-correction-and-evidence-verification
+  currentProductCodeChanged: false
+  reviewerParticipatedInRepair: false
+  mavenExecutedByThisInstance: false
+  originalIndependentExecutedTests: 74
+  primaryExecutedTests: 74
+  uniqueRuntimeCaseCoverage: 74
+  actualRuntimeProductCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+  wholeDhrLifecycleComplete: false
+  wholeW1Complete: false
+  wholeBranchComplete: false
+  productionReleaseApproved: false

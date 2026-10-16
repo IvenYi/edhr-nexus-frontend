@@ -1,0 +1,115 @@
+{
+  "kind": "L0-post-review-audit-delivery",
+  "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+  "targetBranch": "edhr-dev",
+  "targetCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+  "actualRuntimeProductCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+  "primaryTests": {
+    "executed": 74,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "firstIndependentTests": {
+    "executed": 74,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "reportResult": "failed",
+    "failureScope": "original inventory CSV medium only; original report preserved"
+  },
+  "uniqueRuntimeCases": 74,
+  "freshIndependentFinal": {
+    "result": "passed",
+    "requiredChecks": 8,
+    "mavenExecutedByFinalInstance": false,
+    "report": "evidence/final-independent/qualityResult.yaml",
+    "reportSha256": "302404e2549e9fab213bf828d62cee98c81c780dd3996c4310d6b9b8da09d065"
+  },
+  "ontologyResult": "not-applicable: no definition write; global audit remains in-progress",
+  "postFinalChanges": [
+    {
+      "path": "docs/development/branch-review-20261016-w1-review-export/README.md",
+      "reviewedSha256": "609a7efbc1859c51f1e80022289ad3741e2204be50ad378518a4fb5558a807aa",
+      "deliverySha256": "aebfb15758eea920bc4378ac1c1e209bffef880972fec726041cf3183d864ff3"
+    },
+    {
+      "path": "docs/development/branch-review-20261016-w1-review-export/evidence/main-result.json",
+      "reviewedSha256": "5f8f48a8ea5af2859873d68888fc32eec72147573ce665021c249b8e27f7797b",
+      "deliverySha256": "908b12d0648d2425bb001867108a9d4123429110cfcd52ccb9e48250b980f651"
+    },
+    {
+      "path": "docs/development/branch-review-20261016-w1-review-export/findings.yaml",
+      "reviewedSha256": "b27b589baef0261dcd3b850d97cbcbc5a680f1512f6f2d0995eb40f4bf5b91de",
+      "deliverySha256": "ef0d535800619f3cc812c9773b311159f0c628c2bf9fad3225d0150204051030"
+    },
+    {
+      "path": "docs/development/branch-review-20261016-w1-review-export/ontology/adjacent-policy.json",
+      "reviewedSha256": "f285bdda34a0d042f9df3167bdc9bc82e8154f59eed715ac837d551b67c377f7",
+      "deliverySha256": "2d98b35a86fa2622aa1c4b9bd25ebdaf1da0bba25f03b4327f6ca6120b0c5a77"
+    }
+  ],
+  "postFinalReason": "L0 result registration, medium resolution status, NEXT latest checkpoint/F004 entry, and one EOF blank-line removal from ontology/adjacent-policy.json; parsed JSON unchanged. All copied final independent artifacts remain byte-identical.",
+  "reviewedDocumentCount": 29,
+  "reviewedUnchangedDocumentCount": 25,
+  "baselineTrackedPaths": 1524,
+  "baselineTrackedUnchangedAtDelivery": 1523,
+  "expectedL0TrackedChangedPaths": [
+    "docs/development/branch-review-20261015/NEXT.md"
+  ],
+  "expectedL0TrackedChangedSha256": {
+    "docs/development/branch-review-20261015/NEXT.md": "6bd01b8d38a58acc69c30ddbd6d1c258521b5c02ecc8f7a38066cfebb947127e"
+  },
+  "productTestKnowledgeContractChangedPaths": [],
+  "newConfirmedProductCodeDefects": [],
+  "remainingHighIds": [
+    "discrepancy.dhr-review-complete-evidence-impact-gap",
+    "discrepancy.dhr-review-effective-source-integration"
+  ],
+  "wholeDhrLifecycleComplete": false,
+  "wholeW1Complete": false,
+  "wholeBranchComplete": false,
+  "productionReleaseApproved": false,
+  "newReviewArtifacts": [
+    "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/DELIVERY.md",
+    "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/README.md",
+    "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/artifact-manifest.json",
+    "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/baseline.json",
+    "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/documentation-policy-check.json",
+    "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/execution-summary.json",
+    "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/first-round-safe-copy-check.json",
+    "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/inventory-check.json",
+    "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/legacy-inventory-check.json",
+    "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/protected-current.json",
+    "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/qualityResult.yaml",
+    "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/reviewed-document-manifest.json",
+    "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/runtime-evidence-check.json",
+    "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/verification.py"
+  ],
+  "validation": [
+    "all report JSON/YAML/JSONL parses",
+    "current inventory exact UTF8 path/blob matches fixed Git tree; no pending promotion",
+    "protected product/test/knowledge/contracts unchanged",
+    "final and first-round copied artifact hashes match originals",
+    "post-final edits limited to result registration, next pointer and one EOF-only JSON normalization; parsed JSON identical"
+  ],
+  "runtimeTestsRepeatedForDocumentationOnly": false,
+  "mergeExecutedByAgent": false,
+  "deployExecuted": false,
+  "historicalDataRestored": false,
+  "environmentSetupDraft": {
+    "status": "saved",
+    "fields": [
+      "install_script",
+      "start_skill"
+    ],
+    "requiresPublish": true
+  },
+  "ontologyCopyEofNormalization": {
+    "path": "docs/development/branch-review-20261016-w1-review-export/ontology/adjacent-policy.json",
+    "originalLocalPath": "/tmp/edhr-w1-review-export-policy-20261016/adjacent-policy.json",
+    "originalSha256": "f285bdda34a0d042f9df3167bdc9bc82e8154f59eed715ac837d551b67c377f7",
+    "deliverySha256": "2d98b35a86fa2622aa1c4b9bd25ebdaf1da0bba25f03b4327f6ca6120b0c5a77",
+    "parsedJsonEqual": true
+  }
+}

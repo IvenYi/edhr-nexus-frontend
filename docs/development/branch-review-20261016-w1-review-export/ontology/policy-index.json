@@ -1,0 +1,948 @@
+{
+  "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+  "purpose": "36 specified decision statements for policy navigation; count is not semantic/runtime acceptance or new global completion",
+  "records": [
+    {
+      "id": "DEC-0063-01",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 9,
+        "statementLine": 10
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；DHR 列表和 DHR 汇总作为独立菜单；列表负责查询与来源/目录视图，汇总负责自动归集后的人工核查、展示整理、草稿与提交冻结；DHR 填报及审核职责沿用 DEC-0068。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 106,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0063-02",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 13,
+        "statementLine": 14
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；按生产对象自动归集目录直接绑定、作业表单节点、生产执行自定义表单的实际实例以及受控附件；同模板多份逐实例追溯，来源组仅用于展示整理，不能按同模板合并身份。空来源不生成虚构证据，应有缺项按适用规则阻断。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 106,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0063-03",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 17,
+        "statementLine": 18
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；首次开工冻结的基础目录不可改名、删除或移动；草稿可在展示层增加根级自定义目录及子目录并为作业/自定义实例整理位置。四工作区以分段按钮统一提供“档案目录/按来源”两视图，仅按来源视图显示来源分类；切换保持选择身份及填报未保存保护。填报默认按来源，汇总、查看、审批默认档案目录。DIRECTORY 来源显示名为“批记录模板”，WORK/CUSTOM 显示为“作业表单/自定义表单”，枚举及来源关系不变。目录编排、同级顺序和别名不决定证据范围；整理后来源视图仍保留当前范围内全部实例，两视图引用同一实例，同一证据不重复计数。档案目录的默认作业/自定义区域可折叠，零项仍保留紧凑入口及空态；已调整位置的实例只挂在其档案位置，不重复挂在默认目录。整理只是档案目录的编辑状态，不是第三种业务视图或生命周期状态；完成整理返回档案浏览并保留选中目录和实例。使用紧凑的“DHR 导航”标题，范围说明移至工作区头部，整理切换位于导航标题行；模式和实例栏以短过渡切换并支持减少动态效果。编辑时来源与目录相邻，整组和单份沿用既有摆放、顺序及别名规则；取消自定义位置恢复默认位置，不删除证据或改变生产归属，整理完成不代表提交、审批或定版。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 109,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0063-04",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 21,
+        "statementLine": 22
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；实际关联实例不以手选或完成状态决定证据可见；未完成、失败、作废、已替代记录保留真实状态与追溯，不能冒充合格完成。表单 COMPLETED 不等于检验合格，质量结果及失败处置须核查；提交资格由适用完整性、有效性、签署及未完成补录等检查决定，不因选填或目录整理豁免检查。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 107,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0063-05",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 25,
+        "statementLine": 26
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；自动收集持续发生，但普通整理/提交仍限生产正常完成。提交时重核集合和来源版本并阻断陈旧提交，冻结全部实际关联证据及来源版本、状态、内容快照/哈希、附件引用、检查结果、基础及展示目录、逐实例位置/别名和审批绑定。审批、版本详情与导出读取同一冻结证据基准；来源导航报错修复只读取当前冻结版本 candidates，不以实时实例或草稿补齐冻结成员；后续变化不改写旧版，实时视图须明确区分。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 115,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0063-06",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 29,
+        "statementLine": 30
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；产品与产品簇共用制程版本配置 NONE/REQUIRED；REQUIRED 绑定已发布 DHR_SUMMARY 定义和版本，首次开工冻结。NONE 仅表示不另启本系统汇总审批，不豁免适用法定审核、源表单签署或产品放行。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 117,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0063-07",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 33,
+        "statementLine": 34
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；DHR 审核提供针对完整冻结证据版本及检查结果的个人待办/已办，沿用 DEC-0068 的人工退回和新版本重审。当前已有审批代码但尚未满足本次新设计，不再把审核整体写成未开发，也不把旧 PENDING_REVIEW 或局部测试视为新能力验收。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 118,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0063-08",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 37,
+        "statementLine": 38
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；DHR 汇总、NONE 定版或审批通过均不等于最终产品放行；授权放行仍须检查完整生产、检验、偏差及适用批准记录。终止政策保持 DEC-0069，不恢复生产、不开放终止后普通汇总审批。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 117,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0063-09",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 41,
+        "statementLine": 42
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；前期错误旧汇总统一转换到当前自动完整归集、人工核查、目录仅展示的模型，不能转换的旧汇总可清理。缺少 checkResult 的旧冻结即使为 NONE/FORMALIZED 也不能追认为已完成核查或合规完成；保留可用目录、位置、顺序及别名转换为待核查草稿，重新归集源表单并再次核查提交，清理对应错误旧冻结和证据位置，不补造过去的检查、确认或审批。自动迁移仅处理 NONE、无审批且生产正常完成的明确旧记录；意外旧审批依赖或非完成记录须阻断并排查，不自动扩大清理，也不形成运行时旧模型兼容。已有当前模型冻结版本和草稿优先且不得覆盖。迁移须备份原汇总与关联、保留原审计并追加迁移事件，不删除原始表单、生产对象、签署、附件文件或终止快照，不改变生产完成状态、审批策略或权限。移除 evidence_model_version/evidenceModelVersion 模型分支及无意义兼容；version_no/versionNo 正常业务修订继续保留。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 79,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0063-10",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 45,
+        "statementLine": 46
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；手工补充附件与纸质扫描件须核验来源、对应生产对象及内容关联，并保留关联与核验追溯；它们是受控附件证据，不虚构为第四种表单实例业务来源。保留 PDF/PNG/JPEG，新增 DOC/DOCX/XLS/XLSX；单文件上限 50MB，定义为 50*1024*1024=52428800 字节且含边界。Office 仅原文件上传下载，不在线预览、编辑或转换；保留原件字节及 SHA-256、受控核验、原权限与冻结引用。附件在 DHR 导航底部提供独立入口，零份附件仍可打开；汇总及冻结查看点击该入口后以附件列表作为右侧主内容，沿用原上传元信息、核验、下载及带原因解除关联，历史文件不物理删除；冻结查看只读，其他工作区不增加写权限。本次不新增附件接口，不改变证据范围或冻结版本边界。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 54,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0063-11",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 49,
+        "statementLine": 50
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；冻结版本通过统一入口选择完整 ZIP 或自定义 ZIP；选择器按当前冻结档案目录、顺序与别名展示，支持目录、组及实例勾选，并可混选本版附件，切换版本清空选择。ZIP 使用中文目录，包含按冻结档案顺序汇成的可打印总 DHR PDF，以及按批记录模板、作业表单、自定义表单来源分类的单实例原模板版式 PDF；档案位置不改来源身份，也不重复计算同一实例。表单内上传文件是该实例的原证据，放在对应实例的附件目录；汇总整理附件放在与来源目录同级的汇总附件目录。实例原件缺失或内容损坏时不得省略附件后输出“完整档案”，包含该实例的选定范围导出也须阻断。附件内容不并入总 PDF，只在 PDF 中列附件索引，并在 ZIP 中保留原文件；Office 不预览、编辑或转换。JSON 及机器清单保留于追溯资料，服务冻结数据、摘要、审计及签署追溯，不作为用户打印正文。总 PDF、单表 PDF、附件引用及追溯资料均绑定同一显式冻结版本，不以当前草稿或当前表单值替代；范围及版本须明确标识，选定范围不得冒充完整 DHR，总 PDF 也不能替代含附件原件的完整 ZIP。本轮提供可下载打印的 PDF，不新增在线打印流程；具体打印引擎、文件防护及命名去重算法仍属工程方案，不表示已实现或已验证。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 15,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0063-12",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 53,
+        "statementLine": 54
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；实例操作日志负责填报、签署、表单变更/作废及历史内容定位，以表单管理为主入口，本轮不新增 DHR 实例日志 UI；DHR 详情的数据审计记录目录、附件关联、核查、提交、审批和导出。移除业务工作区重复的 DHR 数据审计按钮，保留四列表行详情中的数据审计入口。两层沿证据身份和版本关联，不相互替代；查看、整理、附件、提交、审批、导出分权，入口调整不改变审计语义和原授权。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 120,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0063-13",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 57,
+        "statementLine": 58
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；作业/工序表单由执行上下文绑定生产对象，不设计为人工选择归属。填入另一批次的值属于内容错误；自定义表单选错执行上下文或附件误关联属于不同错误，应分别核验，不假设正常自动归属会错，也不开放跨批次移动。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 113,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0063-14",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 61,
+        "statementLine": 62
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；submit 必须由人逐项确认质量结果与异常处置、来源审批签署和完整证据范围，并填写核查说明；确认项、确认人、时间与说明冻结于 checkResult。系统不得把任意表单质量结论自动判读为合格，人工确认亦不替代可自动执行的客观阻断检查或最终放行。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 116,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0063-15",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": {
+        "recordLine": 65,
+        "statementLine": 66
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；整份与选定范围 ZIP 均应携带与该冻结版本关联的来源生产执行审计及签名，连同 DHR 审计和审批签署保持可追溯；选定范围仅改变导出内容，不改变冻结证据或审批对象。导出和审批统一当前模型，不保留旧模型特例；错误旧汇总按 DEC-0063-09 转换或清理，不能靠翻模型标记或补造 checkResult 获得完整档案或合规结论。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+          "line": 121,
+          "provenance": "user-confirmed"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0068-01",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "recordLine": 18,
+        "statementLine": 19
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；DHR 管理保留 DHR填报、DHR汇总、DHR审批、DHR列表四个菜单（客户展示沿用 DEC-0070）。填报承载来源表单的填报与受控追加，汇总整理并冻结版本，审核提供针对不可变汇总版本的个人待办/已办，列表承担查询与详情；不能因新增入口混淆职责或授予其他动作权限。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 151,
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 133,
+          "provenance": "user-confirmed-current-complete-evidence-correction"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0068-02",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "recordLine": 22,
+        "statementLine": 23
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；沿用目录、作业、自定义三类表单实际实例并自动归集受控附件，保留全部真实状态和逐实例身份；DIRECTORY 的来源显示名为“批记录模板”，不改变枚举、来源关系或归集规则。目录及来源组仅用于展示，未手选不能排除证据。整理后来源视图仍含当前范围内全部记录，来源和档案位置指向同一实例，同一证据不重复计数；来源分类不随展示目录移动而改变。档案默认作业/自定义区域可折叠，零项保留入口及空态，已移实例不重复挂回默认目录。审批和定版查看的两视图使用同一任务或显式版本的冻结候选及位置，不混入实时草稿；来源导航报错修复仅读取冻结 candidates，不借实时来源补齐；填报展示当前生产实例和只读既有编排，不增加整理、上传或其他写入权限。补录创建新的表单实例，附件及纸质扫描按独立受控附件核验来源，不虚构第四种表单实例业务来源。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 152,
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 133,
+          "provenance": "user-confirmed-current-complete-evidence-correction"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0068-03",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "recordLine": 26,
+        "statementLine": 27
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；受控追加创建新的表单实例，不修改旧实例，不手工新建 DHR，不覆写旧汇总版本。完工补录不自动重开生产或恢复工序执行；旧记录、签署和审计历史保留。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 153,
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 133,
+          "provenance": "user-confirmed-current-complete-evidence-correction"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0068-04",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "recordLine": 30,
+        "statementLine": 31
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；表单变更、表单作废由朋友负责的记录控制模块实现与判定生效，DHR 只消费有效来源变化并评估证据影响；申请发起或审批中不等同于已生效，不接管变更作废审批或替其定义活动记录作废资格。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 154,
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 133,
+          "provenance": "user-confirmed-current-complete-evidence-correction"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0068-05",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "recordLine": 34,
+        "statementLine": 35
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；汇总版本审核中，系统自动识别并标识完整证据范围的有效变化（包括新增关联证据、来源版本/状态及附件变化），通知受影响情况并阻断基于过时证据的批准；退回整理必须由人执行，不由系统自动退回。退回后形成新草稿与新汇总版本，原提交快照与审批历史保留。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 155,
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 133,
+          "provenance": "user-confirmed-current-complete-evidence-correction"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0068-06",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "recordLine": 38,
+        "statementLine": 39
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；已批准汇总版本受到证据变化影响时，不自动退回、不清除批准结论或历史，不就地改写旧版证据；需要重新审核时，由人发起新版本整理和重审，旧批准只解释其当时的冻结版本。列表操作栏使用符合共享规范的纯图标及提示表达“发起修订”，查看弹窗直接显示同名按钮，不再藏于更多菜单。两入口共用原技术动作、资格、原因和权限，基于最新定版创建 DRAFT 汇总中草稿，不立即生成下一冻结版本或进入批准；重新核查提交时才分配下一 version_no，并按原配置审批。当前草稿与历次冻结版本都可通过版本选择访问；即使存在草稿，旧版本仍只读且可按原权限导出，不混入实时内容，不由数据审计替代正文查看，不因入口调整授予编辑或导出权限。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 156,
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 133,
+          "provenance": "user-confirmed-current-complete-evidence-correction"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0068-07",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "recordLine": 42,
+        "statementLine": 43
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；需要审核的汇总按生产开工时冻结的 DHR_SUMMARY 流程定义及版本显式启动，审核任务与结果绑定本次不可变汇总版本；不得自动追随最新流程、临时改用绑定规则或通过通用流程入口绕过 DHR 的权限、证据有效性和版本校验。NONE 仅不另启本系统汇总审批，不豁免源表单签署、适用法定审核或产品放行要求；审批对象必须包含完整证据及检查结果，不能只审批人工目录子集。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 158,
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 133,
+          "provenance": "user-confirmed-current-complete-evidence-correction"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0068-08",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "recordLine": 46,
+        "statementLine": 47
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；填报、追加、证据影响识别、退回、新版本重审与批准均不自动改变生产完成状态或产品放行状态；不新增产品放行规则或自动重开生产。错误旧汇总按 DEC-0063-09 转成待核查草稿或清理，不补造历史审核绑定、核查确认及审批事实，不覆盖已有当前模型冻结和草稿；正常发起修订仍保留原版本与批准。审批统一要求本次冻结核查结果，不能用旧模型分支绕过人工核查。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 157,
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 133,
+          "provenance": "user-confirmed-current-complete-evidence-correction"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0068-09",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "recordLine": 50,
+        "statementLine": 51
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；DHR 四列表复用当前共享组件规范。行点击打开右侧详情抽屉，包含数据信息、数据审计页签；独立业务按钮打开相应工作区，不与行点击互相触发，不在操作列重复提供同一对象的数据审计入口。移除业务工作区重复 DHR 数据审计按钮，保留四列表行详情审计；实例日志以表单管理为主入口，本轮不新增 DHR 实例日志 UI。详情和审计沿各入口原有读取授权，不额外授予工作区写动作；实例操作日志与 DHR 数据审计仍按 DEC-0063-12 分层关联。独立列表使用 ListTableShell、共享表格样式及 TableStateCell；普通新建编辑使用 FormDialog、FormDialogSection 与 FormDialogFieldGrid，确认使用 ConfirmDialog；预览和签名按既有专用组件边界处理。查看、填报、汇总、审批四工作区以分段按钮统一“档案目录/按来源”两视图，仅按来源视图显示来源分类，切换保持选择身份及未保存保护；填报默认按来源，其余默认档案目录；表单选择及实例窄栏布局一致，首次打开第一份，关闭实例面板保留已选实例，切换时保留填报未保存保护。导航统一称“DHR 导航”并压缩标题留白，范围说明移至工作区头部；整理切换位于导航标题行，整理只是档案编辑状态，完成返回档案浏览并保留当前目录和实例，不新增生命周期状态或提交动作。模式和实例栏以短过渡切换并支持减少动态效果；附件位于导航底部独立入口，零份仍可打开，不增加第四种表单来源；汇总及冻结查看以附件列表切换右侧主内容，原上传元信息、核验、下载及带原因解除关联保持，历史文件不物理删除，冻结查看只读，不新增附件接口或其他工作区写权。冻结版本统一导出入口支持完整 ZIP 或当前冻结成员内跨来源实例与附件混选的自定义 ZIP，部分包明确标记，切换版本清空选择，不改变证据范围。汇总编辑时来源位于目录旁边，组/单份沿用既有摆放规则；双视图不改变各页归集、权限、写入、节点动作或冻结只读边界。此为原设计补正，规范路径和验收要点见本决策证据，不另建 UI 规范。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 78,
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 133,
+          "provenance": "user-confirmed-current-complete-evidence-correction"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0068-10",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "recordLine": 54,
+        "statementLine": 55
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；本次当前模型统一、旧汇总转换及工作区调整采用 product-core，DHR 主开发负责迁移、服务、UI 和测试，本体角色仅维护 DHR 知识。既有适用检查和审批策略的 configuration、流程编排的 transaction-orchestration 职责保留，朋友仍负责表单变更作废模块；本次不改变审批配置或权限，不增加客户条件分支。原审计保留并追加迁移事件，实例日志与 DHR 审计继续分层。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 159,
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 133,
+          "provenance": "user-confirmed-current-complete-evidence-correction"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0068-11",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sourceLocator": {
+        "recordLine": 58,
+        "statementLine": 59
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；DHR 审批任务的专属附件下载只授权当前任务候选处理人或本人已办任务持有人，并且只可取得任务绑定冻结版本包含的附件；DHR 通用查看权或其他任务的资格不得替代任务授权，也不得越过版本附件快照。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 133,
+          "provenance": "user-confirmed"
+        },
+        {
+          "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+          "line": 133,
+          "provenance": "user-confirmed-current-complete-evidence-correction"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0069-01",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "sourceLocator": {
+        "recordLine": 16,
+        "statementLine": 17
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；BATCH/SN 生产对象执行既有“提前结束”时，已关联且仍填报中的 DHR 在同一事务真实进入已终止；任一环节失败全部回滚。终止不是正常完成、表单作废、审核通过或产品放行，不新增工单级直接提前结束命令。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-termination-lifecycle-confirmed.md",
+          "line": 7,
+          "provenance": "user-confirmed-repository-preserved-excerpt",
+          "additionalScopeLocator": "lines13-15 local replacement boundaries; exact current policy in statement locator"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0069-02",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "sourceLocator": {
+        "recordLine": 20,
+        "statementLine": 21
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；DHR 已终止后保留终止前服务端已保存的目录、三类来源的各实例、暂存内容、已完成记录、签名和审计，并保留可追溯的终止时视图；未完成实例显示已停止但不伪称已完成，不自动作废表单或补造未产生的实例。后续受控变化不得覆盖终止时证据。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-termination-lifecycle-confirmed.md",
+          "line": 7,
+          "provenance": "user-confirmed-repository-preserved-excerpt",
+          "additionalScopeLocator": "lines13-15 local replacement boundaries; exact current policy in statement locator"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0069-03",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "sourceLocator": {
+        "recordLine": 24,
+        "statementLine": 25
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；终止记录保留操作者、服务端时间、原因、原状态、关联生产动作和版本标识；重复命令不覆盖首次终止事实。生产、DHR、通用表单和普通工作流入口均不得继续正常执行或修改，相关待办停止可执行并说明原因；记录控制模块仍独立判定日后受控变更或作废资格。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-termination-lifecycle-confirmed.md",
+          "line": 7,
+          "provenance": "user-confirmed-repository-preserved-excerpt",
+          "additionalScopeLocator": "lines13-15 local replacement boundaries; exact current policy in statement locator"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0069-04",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "sourceLocator": {
+        "recordLine": 28,
+        "statementLine": 29
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；DHR 列表、填报、详情、汇总和审核使用同一 DHR 状态与允许动作投影，区分生产对象状态和审核任务处理状态。正常采集完成展示待汇总，不能将底层 COMPLETED 直接展示为总体已完成；终止记录只读可查，不进入普通汇总或审核队列。NONE 免审核定版不称审核通过，退回和人工新版本保留既有历史。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-termination-lifecycle-confirmed.md",
+          "line": 7,
+          "provenance": "user-confirmed-repository-preserved-excerpt",
+          "additionalScopeLocator": "lines13-15 local replacement boundaries; exact current policy in statement locator"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0069-05",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "sourceLocator": {
+        "recordLine": 32,
+        "statementLine": 33
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；本期不默认开放终止后补录、异常结案审核或恢复生产，不新增独立质量审批，也不改变已正常完成的其他对象/DHR、DHR_SUMMARY 冻结策略及产品放行语义。企业 SOP 对额外签名的要求作为未来配置研究，不成为本期未经确认的阻断条件。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-termination-lifecycle-confirmed.md",
+          "line": 7,
+          "provenance": "user-confirmed-repository-preserved-excerpt",
+          "additionalScopeLocator": "lines13-15 local replacement boundaries; exact current policy in statement locator"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0069-06",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "sourceLocator": {
+        "recordLine": 36,
+        "statementLine": 37
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；历史修正仅针对“生产已提前结束、DHR 仍 IN_PROGRESS、且无汇总草稿或版本”的明确记录，要求幂等和可审计；冲突记录人工核对，缺失的历史操作者或终止时快照明确标缺失，不用迁移时数据冒充历史现场。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/dhr-termination-lifecycle-confirmed.md",
+          "line": 7,
+          "provenance": "user-confirmed-repository-preserved-excerpt",
+          "additionalScopeLocator": "lines13-15 local replacement boundaries; exact current policy in statement locator"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0074-01",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "sourceLocator": {
+        "recordLine": 9,
+        "statementLine": 10
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；普通按钮签署使用实际签署账号的独立电子签名密码及有效个人认证，不使用该账号的登录密码。共享终端允许 A 登录、B 本人输入 B 的账号及签名密码签署；签署人须有本次动作的业务处理资格，不能借用 A 的权限，不切换 A 的登录会话。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+          "line": 7,
+          "provenance": "user-confirmed-repository-preserved-excerpt",
+          "additionalScopeLocator": "lines15-17 local replacement; lines44-48 and58-60 existing engineering/audit scope"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0074-02",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "sourceLocator": {
+        "recordLine": 13,
+        "statementLine": 14
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；暂仅按签署用户名 admin 识别内部超管按钮认证例外，使用其登录密码且不要求个人电子签名认证；不按管理员角色识别，不扩大到客户管理员。例外不豁免账号可用性、节点授权、业务状态、字段权限、快照或审计约束。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+          "line": 9,
+          "provenance": "user-confirmed-repository-preserved-excerpt",
+          "additionalScopeLocator": "lines15-17 local replacement; lines44-48 and58-60 existing engineering/audit scope"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0074-03",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "sourceLocator": {
+        "recordLine": 17,
+        "statementLine": 18
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；非 admin 签署人未完成认证或认证过期时只阻断并就地提示，保留表单输入，不自动跳转或在 A 会话打开 B 的个人设置；不因认证失败推进动作或保存成功签署。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+          "line": 8,
+          "provenance": "user-confirmed-repository-preserved-excerpt",
+          "additionalScopeLocator": "lines15-17 local replacement; lines44-48 and58-60 existing engineering/audit scope"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    },
+    {
+      "id": "DEC-0074-04",
+      "recordType": "decisionStatement",
+      "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "sourcePath": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "sourceLocator": {
+        "recordLine": 21,
+        "statementLine": 22
+      },
+      "status": "specified",
+      "visibility": "internal",
+      "statement": "user-confirmed；SIGN_FIELD 继续使用当前会话用户的原字段签名逻辑，包括独立签名密码、有效认证与图片、字段权限、签后内容修改失效和历史证据保留。不得把按钮的跨账号签署或 admin 登录密码例外应用于字段签名，也不修改个人认证设置。",
+      "originalSources": [
+        {
+          "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+          "line": 10,
+          "provenance": "user-confirmed-repository-preserved-excerpt",
+          "additionalScopeLocator": "lines15-17 local replacement; lines44-48 and58-60 existing engineering/audit scope"
+        }
+      ],
+      "reviewScope": "current normative policy and original confirmation; not full source-chain/runtime semantic acceptance",
+      "implementationVerdict": "not-assessed-by-this-policy-index"
+    }
+  ],
+  "adjacentStatementsActuallyRead": [
+    {
+      "id": "DEC-0042-01",
+      "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "scope": "record-control owns application/source eligibility/signature/effective landing",
+      "line": 9
+    },
+    {
+      "id": "DEC-0042-04",
+      "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "scope": "declared action and event types do not complete runtime",
+      "line": 21
+    },
+    {
+      "id": "DEC-0042-05",
+      "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "scope": "result handler interface is not implementation/callback/idempotence proof",
+      "line": 25
+    },
+    {
+      "id": "DEC-0075-03",
+      "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+      "scope": "production check disabled does not relax fields/signatures/workflow",
+      "line": 17
+    },
+    {
+      "id": "DEC-0075-04",
+      "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+      "scope": "complete evidence and unfinished custom records block formalization/approval",
+      "line": 21
+    },
+    {
+      "id": "DEC-0075-05",
+      "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+      "scope": "continue unfinished instance distinct from new-instance supplement and completed-record edit",
+      "line": 25
+    },
+    {
+      "id": "DEC-0075-06",
+      "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+      "scope": "authorized closure only actual effective record-control result",
+      "line": 29
+    },
+    {
+      "id": "DEC-0077-10",
+      "path": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "scope": "A12 outside accepted first-final-completion projection implementation",
+      "line": 45
+    },
+    {
+      "id": "DEC-0070-01",
+      "path": "docs/knowledge/decisions/DEC-0070-dhr-approval-menu-display.yaml",
+      "line": 14,
+      "scope": "current DHR approval menu display locally supersedes earlier review label only"
+    }
+  ],
+  "preciseConfirmationPackages": [
+    {
+      "path": "docs/development/dhr-workspace-navigation-decision-package.yaml",
+      "locator": "revisionPrintableExport.confirmed lines34-39; inferred lines40-43; acceptance lines61-65"
+    },
+    {
+      "path": "docs/development/dhr-summary-decision-package.yaml",
+      "locator": "confirmed.freeze-version lines21-30; owner boundaries lines91-96"
+    }
+  ],
+  "finiteImplementationReads": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "locator": "25-75",
+      "observation": "read-time snapshot/value/status/version/new-member/attachment comparison; no notification consumer here"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "locator": "74-150",
+      "observation": "task-authorized same-version detail; A and B eligibility; approve comparison; double identity; no runtime execution claimed"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowResultHandler.java",
+      "locator": "9-11",
+      "observation": "interface declaration only; repository symbol lookup found no implementation or completion callback"
+    }
+  ],
+  "adjacentPolicyReport": "adjacent-policy.json",
+  "provenanceBoundary": "Repository-preserved user confirmation excerpts actually read; no external conversation, competitor files or historical runtime revalidation claimed."
+}
