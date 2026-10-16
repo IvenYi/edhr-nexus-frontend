@@ -1,5 +1,7 @@
 # W2第三批：保存到正式投影的来源一致性
 
+交付PR：[PR12](https://github.com/IvenYi/edhr-nexus-frontend/pull/12)，目标edhr-dev；已推送，待用户人工合并。独立受测候选固定为3b642ab4，后续提交仅登记证据、文档称谓和PR链接，不冒称重新执行测试。
+
 用户已手动合并PR11。重新拉取edhr-dev并从400c2dd2b836aa520f7b671c348ad9e79ac33748建立audit/edhr-dev-w2-projection-integrity-20261016；合并树与批准交付2b73e72f完全相同，没有额外契约、知识或代码增量。知识0.3.25。1820路径/blob清单全部pending/inventory-only，定向阅读与运行范围另记，不把盘点当完成率。
 
 本批按L2核对保存、完成、原始份、过程索引和正式投影的关键数据契约，最终独立验证针对冻结候选另记。**没有确认新的生产代码缺陷，没有修改生产代码或业务规则。**只在既有FormTraceIndexPostgresTest新增两条贯通回归，保护已确认行为；没有为了旧线索或测试结果改变规则、补算历史数据。
