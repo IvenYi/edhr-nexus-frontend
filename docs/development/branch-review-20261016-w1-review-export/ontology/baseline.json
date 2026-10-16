@@ -1,0 +1,46 @@
+{
+  "sourceCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+  "targetBranch": "edhr-dev",
+  "targetCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+  "remoteObserved": "76b214426a271929bba2708cdda9e4d84d1f0679",
+  "remoteObservationCommand": "git ls-remote origin refs/heads/edhr-dev",
+  "contractReadCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+  "uncommittedContractPaths": [],
+  "contractBlobChecks": [
+    {
+      "path": "AGENTS.md",
+      "actualReadCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "readBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "targetBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "uncommitted": false
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "actualReadCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "readBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "targetBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "uncommitted": false
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "actualReadCommit": "76b214426a271929bba2708cdda9e4d84d1f0679",
+      "readBlob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "targetBlob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "uncommitted": false
+    }
+  ],
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "definitionCount": 2487,
+  "trackedKnowledgeFileCount": 252,
+  "trackedRepositoryPathCount": 1524,
+  "readOnly": true,
+  "repositoryModifiedByThisInstance": false,
+  "runtimeOrMavenExecutedByThisInstance": false,
+  "capturedAt": "2026-10-16T00:16:18.090354+00:00",
+  "observedWorkingTreeChanges": [
+    "?? docs/development/branch-review-20261016-w1-review-export/"
+  ],
+  "policyIndexCount": 36,
+  "policyIndexCountMeaning": "authority navigation only; no global audit completion reset"
+}

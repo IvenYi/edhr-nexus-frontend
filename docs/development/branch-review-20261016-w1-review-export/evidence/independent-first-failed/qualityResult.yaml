@@ -1,0 +1,185 @@
+qualityResult:
+  result: failed
+  baseCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+  headCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+  contractBaseline:
+    sourceCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    targetBranch: edhr-dev
+    targetCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    contractReadCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/branch-review-20261016-w1-review-export/README.md
+      - docs/development/branch-review-20261016-w1-review-export/baseline.json
+      - docs/development/branch-review-20261016-w1-review-export/coverage.csv
+      - docs/development/branch-review-20261016-w1-review-export/decision-package.yaml
+      - docs/development/branch-review-20261016-w1-review-export/evidence/main-case-index.json
+      - docs/development/branch-review-20261016-w1-review-export/evidence/main-result.json
+      - docs/development/branch-review-20261016-w1-review-export/findings.yaml
+      - docs/development/branch-review-20261016-w1-review-export/merge-receipt.json
+      - docs/development/branch-review-20261016-w1-review-export/ontology/README.md
+      - docs/development/branch-review-20261016-w1-review-export/ontology/adjacent-policy.json
+      - docs/development/branch-review-20261016-w1-review-export/ontology/baseline.json
+      - docs/development/branch-review-20261016-w1-review-export/ontology/ontology-result.yaml
+      - docs/development/branch-review-20261016-w1-review-export/ontology/policy-index.json
+      - docs/development/branch-review-20261016-w1-review-export/review-progress.jsonl
+      - docs/development/branch-review-20261016-w1-review-export/source-map.md
+    excludedPaths: []
+    untrackedPaths:
+      - docs/development/branch-review-20261016-w1-review-export/README.md
+      - docs/development/branch-review-20261016-w1-review-export/baseline.json
+      - docs/development/branch-review-20261016-w1-review-export/coverage.csv
+      - docs/development/branch-review-20261016-w1-review-export/decision-package.yaml
+      - docs/development/branch-review-20261016-w1-review-export/evidence/main-case-index.json
+      - docs/development/branch-review-20261016-w1-review-export/evidence/main-result.json
+      - docs/development/branch-review-20261016-w1-review-export/findings.yaml
+      - docs/development/branch-review-20261016-w1-review-export/merge-receipt.json
+      - docs/development/branch-review-20261016-w1-review-export/ontology/README.md
+      - docs/development/branch-review-20261016-w1-review-export/ontology/adjacent-policy.json
+      - docs/development/branch-review-20261016-w1-review-export/ontology/baseline.json
+      - docs/development/branch-review-20261016-w1-review-export/ontology/ontology-result.yaml
+      - docs/development/branch-review-20261016-w1-review-export/ontology/policy-index.json
+      - docs/development/branch-review-20261016-w1-review-export/review-progress.jsonl
+      - docs/development/branch-review-20261016-w1-review-export/source-map.md
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.independent-baseline-and-protected-source
+      required: true
+      category: documentation
+      description: 独立读取当前契约，核对来源、远端目标及运行前后全部跟踪字节。
+      method: command
+      command: git rev-parse HEAD; git ls-remote origin refs/heads/edhr-dev; git ls-files -z plus SHA-256 before/after
+      outcome: passed
+      evidence:
+        - baseline-before.json
+        - protected-before.json
+        - protected-after.json
+        - verification-facts.json
+        - source/target/tested commit均76b214426a271929bba2708cdda9e4d84d1f0679，1524跟踪文件运行前后未变；无产品或契约修改。
+    - id: check.inventory-literal-paths
+      required: true
+      category: documentation
+      description: 全量清单必须逐一使用可解析到真实仓库文件的路径，而非Git输出转义文本。
+      method: command
+      command: Python csv.DictReader coverage.csv and exact set comparison against git ls-files -z
+      outcome: failed
+      evidence:
+        - inventory-initial-failure.json
+        - 原观察CSV SHA256 3f2b6d1e759982a695342e671d8efadaf20a51680331f34d71bd42d6eb5c33f2
+        - 1524行计数正确且全部pending，但6个中文路径为Git带引号八进制转义字符串，真实集合少6项且多6个无效路径。
+    - id: check.policy-and-acceptance-boundaries
+      required: true
+      category: ontology
+      description: 精确声明来源、局部替代及既有功能缺口持续开放；导航和运行范围不冒称全链验收。
+      method: inspection
+      command: Read DEC-0063/0068/0069/0074, related rules and stored user confirmation extracts; compare 36 indexed statement strings and source locators
+      outcome: passed
+      evidence:
+        - verification-facts.json
+        - docs/development/branch-review-20261016-w1-review-export/ontology/policy-index.json
+        - docs/development/branch-review-20261016-w1-review-export/ontology/README.md
+        - 36条声明文本/ID/定位及确认文件存在核对通过；它们仅作来源导航，不计36项全链通过。知识252文件/2487唯一ID/0.3.25不变。
+        - 两个既有high和原四个evidence-gap未关闭；not-applicable仅表示本批无需定义写入。
+    - id: check.review-signing-and-workflow-source
+      required: true
+      category: security
+      description: 核对已实现任务资格、双身份签署、冻结hash与原件、锁顺序及通用入口防绕过。
+      method: inspection
+      command: Read DhrReviewService/detail/act, DhrReviewController, WorkflowEngine DHR start/completion/guards, WorkflowTaskController and adjacent source methods
+      outcome: passed
+      evidence:
+        - README.md
+        - DhrReviewService先锁workflow、object、DHR并重读任务；会话与实际签署人均须符合原任务资格；动作和签署归实际签署人、审计保留双身份。
+        - 通用完成/启动/转办/干预阻断DHR绕过；提交使用首次冻结的显式流程版本；没有依据将端口声明认定为完整A12生效消费者。
+    - id: check.revision-history-and-frozen-export-source
+      required: true
+      category: audit
+      description: 核对显式修订、旧冻结正文、FULL/SELECTED成员、原件摘要、审计及临时文件失败清理。
+      method: inspection
+      command: Read DhrSummaryService/version/saveDraft/submit/reorganize/prepareNextDraft, DhrAttachmentService, DhrArchiveService/export and controller
+      outcome: passed
+      evidence:
+        - README.md
+        - 修订先创建DRAFT，提交才新version_no；旧版读取指定冻结列，不用当前表单内容补齐。
+        - 导出校验本版成员、目录排序集合与原件摘要；部分包明确范围并排除对象级原始载荷；构建/审计失败及响应流finally清理ZIP。
+    - id: check.independent-selected-runtime
+      required: true
+      category: integration
+      description: 全新独立实例实际原样执行74个选中用例，包含真实打印资源构建、Chromium及PDFBox归档。
+      method: automated-test
+      command: "cd gmp-platform/backend && bash /workspace/.edhr-cloud-tools/mvn-edhr -o '-Dtest=DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest,DhrGenericAccessTest,DhrWorkbenchPermissionsTest,DhrAttachmentAndArchiveTest,DhrAuditReadTest,WorkflowTaskControllerTest,RecordControlWorkflowControllerTest,DhrSummaryPersistenceTest,WorkflowEngineTest#dhrUsesFrozenPublishedVersionEvenWhenNoLongerCurrent+genericTaskCompletionCannotBypassDhrDomainChecks' test"
+      outcome: passed
+      evidence:
+        - test-result.json
+        - case-index.json
+        - original-xml/
+        - 10套件74个唯一case，0failure/error/skip，退出码0，BUILD SUCCESS；case集合与主侧完全一致。
+        - 真正执行build:dhr-print，13项归档测试调用真实DhrPdfRenderer/Chromium/PDFBox；没有exec.skip。
+        - 原始日志SHA256 4893f5901bc9b115a45e3f0c5986575602e10a6bb7ccc9e5601dcc7bae811e54
+    - id: check.evidence-provenance-and-scope
+      required: true
+      category: documentation
+      description: 核对主侧原日志/XML摘要、逐case集合、12方法级摘要和报告JSON/YAML，不沿用旧通过记录。
+      method: command
+      command: Python json/yaml parsing, SHA-256 verification of main logs/XML and 12 source records, unique case set comparison
+      outcome: passed
+      evidence:
+        - verification-facts.json
+        - test-result.json
+        - 12条列明方法摘要符合当前源码且wholeFileReviewComplete=false；并非全1524文件完成。
+        - 主侧两轮实际48+26=74用例的原日志和XML摘要可核对；新的独立74单列，不虚加覆盖率。
+  findings:
+    - id: QF-W1-REVIEW-EXPORT-001
+      severity: medium
+      scope: review-ledger-inventory
+      summary: 首轮coverage.csv将6个中文文件名记录为Git转义文本，无法按清单路径定位真实文件。
+      reproductionSteps:
+        - 读取观察时CSV（SHA256 3f2b6d1e759982a695342e671d8efadaf20a51680331f34d71bd42d6eb5c33f2）的path列。
+        - 用git ls-files -z获取HEAD的1524个真实UTF-8路径。
+        - 比较两集合；6个中文真实路径缺失，取而代之的是带双引号及反斜线八进制转义的非实际路径。
+      expectedResult: 1524个清单路径与固定提交的真实路径集合完全相等，均可定位到对应blob。
+      actualResult: 行数相同但6个路径不能直接定位；清单计数不能替代路径完整性。
+      evidence:
+        - inventory-initial-failure.json
+        - docs/development/branch-review-20261016-w1-review-export/coverage.csv (first observed SHA256 3f2b6d1e759982a695342e671d8efadaf20a51680331f34d71bd42d6eb5c33f2)
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.first-round-document-snapshot
+      description: 本failed记录首轮CSV观察快照；ROOT已接手修正。修正后的文档未由本实例最终接受，不能把本报告描述为修后仍失败或修后已通过。
+      impact: 当前审查台账需另一个最终复核结果；本实例不参与任何修复。
+      mitigation: 保留本首轮结果及红证据，主侧修正文档后用全新实例核对差异/全清单/保护摘要与本次实际74证据，无需因纯路径文档更正重复产品测试。
+    - id: risk.whole-lifecycle-existing-high-gaps
+      description: discrepancy.dhr-review-complete-evidence-impact-gap与discrepancy.dhr-review-effective-source-integration继续open/high；真实A12生效消费者、主动通知、完整质量影响比较及发布级并发未闭环。
+      impact: 阻断宣称完整DHR生命周期或发布验收完成，本批既有路径通过不能关闭这些既有缺口。
+      mitigation: 保留原所有权与待交付依赖；真实来源生效/待审对照/通知及并发联调另批处理，不将手工改数据库视作A12业务入口。
+    - id: risk.runtime-fixture-boundaries
+      description: H2和部分stub/mock；生命周期类仍mock DhrInstanceService、DhrAttachmentService、DhrFormFiles、主体/状态机/绑定边界。审核服务类mock workflow/signature/audit仓储，覆盖其真实JDBC状态回滚和双身份传递，不能证明全部持久对象同一真实整链回滚。
+      impact: 74项不等于PostgreSQL事务矩阵、完整HTTP/用户浏览器E2E、A12集成或签署认证全矩阵。
+      mitigation: 按test-result与源码界定实际证据；归档类真实浏览器PDF/原件检查单列，不宣称整页视觉验收。
+    - id: risk.unfinished-global-audit
+      description: 原四个知识evidence-gap、F004及W1其余/W2-W7仍待推进，知识成熟度及完整质量/源签署有效性自动闭环未提高。
+      impact: 当前局部源码和运行记录不构成全分支审查或发布通过。
+      mitigation: 继续固定分支基线和分批清单，不以1524盘点、36导航或74测试数推定完整语义覆盖。
+  blockingConditions: []
+
+assessmentBoundary:
+  kind: first-round-read-only-review-evidence-verification
+  assessedInventorySha256: 3f2b6d1e759982a695342e671d8efadaf20a51680331f34d71bd42d6eb5c33f2
+  currentProductOrTestCandidateChanges: false
+  reviewerParticipatedInRepair: false
+  newConfirmedProductCodeDefectsInReadMethods: []
+  immediateProductCodeRepairRequiredByThisReview: false
+  documentCorrectionRequiresFinalRecheck: true
+  wholeW1Complete: false
+  wholeBranchComplete: false
+  productionReleaseApproved: false
+  inheritedOpenHighItems:
+    - id: discrepancy.dhr-review-complete-evidence-impact-gap
+      status: open
+      blocksWholeDhrLifecycleCompletion: true
+    - id: discrepancy.dhr-review-effective-source-integration
+      status: open
+      blocksWholeDhrLifecycleCompletion: true

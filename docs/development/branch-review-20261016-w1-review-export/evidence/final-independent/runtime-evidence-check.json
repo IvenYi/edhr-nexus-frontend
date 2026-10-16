@@ -1,0 +1,172 @@
+{
+  "thisInstanceExecutedMaven": false,
+  "firstIndependentActuallyExecuted": {
+    "tests": 74,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "primaryActuallyExecuted": {
+    "tests": 74,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "same74UniqueCaseSet": true,
+  "selectedSuites": [
+    {
+      "class": "com.zencas.edhr.production.controller.DhrGenericAccessTest",
+      "path": "/tmp/edhr-w1-review-export-independent-20261016/original-xml/TEST-com.zencas.edhr.production.controller.DhrGenericAccessTest.xml",
+      "sha256": "3df6e1a5f72c93bdf86e3dd34c98bc47773751c097f3aa196c3a55713f103770",
+      "tests": 3
+    },
+    {
+      "class": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest",
+      "path": "/tmp/edhr-w1-review-export-independent-20261016/original-xml/TEST-com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest.xml",
+      "sha256": "2d844f826333c0d263ff56032a61ca7d21b92508c2b2de576bfafb7e9b506b8d",
+      "tests": 8
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+      "path": "/tmp/edhr-w1-review-export-independent-20261016/original-xml/TEST-com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest.xml",
+      "sha256": "8dc601ddab6ac5042930cafbf1b511230b5a357f5c6c74454d3f331fff9fe060",
+      "tests": 13
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrAuditReadTest",
+      "path": "/tmp/edhr-w1-review-export-independent-20261016/original-xml/TEST-com.zencas.edhr.production.service.DhrAuditReadTest.xml",
+      "sha256": "6d2a41d49c78dad95bf74fcb0df05a42b0c5711a38070f680e083271f5a1b53d",
+      "tests": 4
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+      "path": "/tmp/edhr-w1-review-export-independent-20261016/original-xml/TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml",
+      "sha256": "ee3121c8ea67950a2af0fa5aecf89c62004cd918420ac12654df3e9172369c7b",
+      "tests": 5
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "path": "/tmp/edhr-w1-review-export-independent-20261016/original-xml/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml",
+      "sha256": "ae7ae05584b7467be98efb9e14f5d41a60ce68a21620a0ca96228b066d5e05ea",
+      "tests": 10
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+      "path": "/tmp/edhr-w1-review-export-independent-20261016/original-xml/TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml",
+      "sha256": "14a86ec4afd604fe9f7ceee0bdb6fbb7144c8bff876fef5671978d99bf1bba99",
+      "tests": 24
+    },
+    {
+      "class": "com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest",
+      "path": "/tmp/edhr-w1-review-export-independent-20261016/original-xml/TEST-com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest.xml",
+      "sha256": "a1c093f3e8a7e1106549a873e215cdec317bb68d471e2771c9b2fc66861e2574",
+      "tests": 3
+    },
+    {
+      "class": "com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest",
+      "path": "/tmp/edhr-w1-review-export-independent-20261016/original-xml/TEST-com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest.xml",
+      "sha256": "833462b76ff093b26564205c97df1e1d0866350565536244b761caa771e06082",
+      "tests": 2
+    },
+    {
+      "class": "com.zencas.edhr.workflow.engine.WorkflowEngineTest",
+      "path": "/tmp/edhr-w1-review-export-independent-20261016/original-xml/TEST-com.zencas.edhr.workflow.engine.WorkflowEngineTest.xml",
+      "sha256": "81a1651e2aeaf2c10cd9b929f71a82cd68d93f296e7e085f69faefc579113125",
+      "tests": 2
+    }
+  ],
+  "independentLog": {
+    "path": "/tmp/edhr-w1-review-export-independent-20261016/maven.log",
+    "sha256": "4893f5901bc9b115a45e3f0c5986575602e10a6bb7ccc9e5601dcc7bae811e54",
+    "buildSuccess": true,
+    "actualPrintBuildMarker": true
+  },
+  "primaryLogs": [
+    {
+      "path": "/tmp/edhr-w1-review-export-baseline-20261016.log",
+      "sha256": "e07024ea2957f53f0ca4872689d37857c48c2edc93be0974ab52cef873ae90a2",
+      "buildSuccess": true,
+      "actualPrintBuildMarker": true
+    },
+    {
+      "path": "/tmp/edhr-w1-review-export-history-engine-20261016.log",
+      "sha256": "7ce91e6a37b945b357061bfdfc01c0427d52825f738a23304e28f455e542c9ad",
+      "buildSuccess": true,
+      "actualPrintBuildMarker": true
+    }
+  ],
+  "primaryOriginalXml": [
+    {
+      "class": "com.zencas.edhr.production.controller.DhrGenericAccessTest",
+      "path": "/tmp/edhr-w1-review-export-baseline-xml-20261016/TEST-com.zencas.edhr.production.controller.DhrGenericAccessTest.xml",
+      "sha256": "620f49a146038d032db3c59f373f1f455ec4bc28db077729cbd69140582c9d81",
+      "tests": 3
+    },
+    {
+      "class": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest",
+      "path": "/tmp/edhr-w1-review-export-baseline-xml-20261016/TEST-com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest.xml",
+      "sha256": "33a5b95140e6b0280f1453a4f29f5b858b087e7978bae861fb20e613f8c01df1",
+      "tests": 8
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+      "path": "/tmp/edhr-w1-review-export-baseline-xml-20261016/TEST-com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest.xml",
+      "sha256": "8804a673f85f29b9236acdba2c018dc059fe138c6d1decde47005160e70910f7",
+      "tests": 13
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrAuditReadTest",
+      "path": "/tmp/edhr-w1-review-export-baseline-xml-20261016/TEST-com.zencas.edhr.production.service.DhrAuditReadTest.xml",
+      "sha256": "271603dcf1907591d0077336836733a1d3c488cfbe29ecca2d52c54dd2b6f854",
+      "tests": 4
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+      "path": "/tmp/edhr-w1-review-export-baseline-xml-20261016/TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml",
+      "sha256": "59e6a7e8a1cacc207e182879ca214f420a8f117232e75c13e0d30fc36ee90a08",
+      "tests": 5
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "path": "/tmp/edhr-w1-review-export-baseline-xml-20261016/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml",
+      "sha256": "8246135894b905e4f952efd8fd392e1b4d78018fdf79c1fd58ce66a83ab5b0bb",
+      "tests": 10
+    },
+    {
+      "class": "com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest",
+      "path": "/tmp/edhr-w1-review-export-baseline-xml-20261016/TEST-com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest.xml",
+      "sha256": "d08c177755d7ce5ffeb85369015386b175d57d5a8825060768590e6fd8c89aa2",
+      "tests": 3
+    },
+    {
+      "class": "com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest",
+      "path": "/tmp/edhr-w1-review-export-baseline-xml-20261016/TEST-com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest.xml",
+      "sha256": "c916f25a9a921f2b1dcf57e82003707db1dee173ba657fdc5f2a997afb361572",
+      "tests": 2
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+      "path": "/tmp/edhr-w1-review-export-history-engine-xml-20261016/TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml",
+      "sha256": "697940174e519ec659e90a4baa108c1e823b9933caf5742cdcf3c4f408691d6b",
+      "tests": 24
+    },
+    {
+      "class": "com.zencas.edhr.workflow.engine.WorkflowEngineTest",
+      "path": "/tmp/edhr-w1-review-export-history-engine-xml-20261016/TEST-com.zencas.edhr.workflow.engine.WorkflowEngineTest.xml",
+      "sha256": "d15e1f70a20e87160b5c3e0321b6279cd4e7fdfa790696b2d2ea854c499ec18e",
+      "tests": 2
+    }
+  ],
+  "firstArtifactManifestEntriesVerified": 22,
+  "independentResultSha256": "af3113fe40ddd73c012a5e8e7ed4fd10df55f278b7e37a56928b514805179eb2",
+  "sourceCommitOfActualRuntime": "76b214426a271929bba2708cdda9e4d84d1f0679",
+  "currentTrackedSourceExactlySame": true,
+  "archiveRealRendererCases": 13,
+  "excludedClaims": [
+    "full UI E2E",
+    "full HTTP original-file lifecycle",
+    "PostgreSQL transaction matrix",
+    "A12 effective-source integration",
+    "full branch or release acceptance"
+  ]
+}

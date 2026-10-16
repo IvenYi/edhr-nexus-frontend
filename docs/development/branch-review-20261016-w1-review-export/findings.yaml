@@ -1,0 +1,37 @@
+newConfirmedDefects: []
+auditDocumentationCorrections:
+  - id: audit.coverage-git-quoted-chinese-paths
+    severity: medium
+    status: resolved-by-fresh-independent-verification
+    scope: coverage.csv中的六个中文路径
+    rootCause: 初次git ls-tree未使用-z，core.quotePath把中文路径输出成带引号的转义文本；总数正确但路径集合不等于真实Git树。
+    remediation: 主侧以git ls-tree -r -z按UTF-8生成，逐条核对1524个实际路径及blob；pending和分母不变。
+    evidence: [evidence/coverage-utf8-correction.json, evidence/legacy-inventory-path-recheck.json, evidence/final-independent/qualityResult.yaml, evidence/final-independent/inventory-check.json]
+    productCodeChanged: false
+inheritedOpenItems:
+  - id: discrepancy.dhr-review-complete-evidence-impact-gap
+    severity: high
+    status: open
+    originalSource: docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+    expected: 完整有效来源变化的识别、通知与过时批准阻断，不自动退回或擦除旧结论。
+    actualScopeVerified: 已有读时表单/新增范围/附件比较及批准阻断；未取得主动通知、质量检查完整比较或发布级并发闭环证据。
+    remainsOpen: true
+    blocksWholeDhrLifecycleCompletion: true
+    disposition: 本次既有路径测试不关闭该功能/集成缺口，不为得到通过新增政策或建设尚未落地的通知能力。
+    evidence: [ontology/README.md, source-map.md, evidence/main-result.json]
+  - id: discrepancy.dhr-review-effective-source-integration
+    severity: high
+    status: open
+    originalSource: docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+    expected: 消费记录控制域实际生效的来源变更/作废，区分申请待审与生效，并保留冻结版本及历史。
+    actualScopeVerified: 工作流侧端口和读时比较存在，未定位完整来源生效消费者/真实联调；汇总修订是另建草稿与汇总版本，不能代替A12来源修订。
+    remainsOpen: true
+    blocksWholeDhrLifecycleCompletion: true
+    disposition: 保留原模块所有权与待交付依赖，不从接口存在推定全链实现，不以手工改数据库当合法生效场景。
+    evidence: [ontology/README.md, ontology/adjacent-policy.json, source-map.md]
+acceptanceBoundary:
+  currentBatch: 已实现路径的源码及运行证据审查，无产品代码候选或新功能交付。
+  wholeW1Complete: false
+  wholeBranchComplete: false
+  productionReleaseApproved: false
+  oldFourKnowledgeEvidenceGapsClosed: false

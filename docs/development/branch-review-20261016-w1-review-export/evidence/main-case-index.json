@@ -1,0 +1,446 @@
+[
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.controller.DhrGenericAccessTest",
+    "test": "allGenericSingleObjectReadsRejectDhrBeforeReturningEvidence",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.controller.DhrGenericAccessTest",
+    "test": "cannotForgeReparentOverwriteOrDeleteDhrAuditLogs",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.controller.DhrGenericAccessTest",
+    "test": "databasePaginationExcludesDhrBeforeComputingCounts",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest",
+    "test": "reviewAttachmentDownloadRequiresReviewMenuPermission",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest",
+    "test": "reviewAuditChecksTaskThenUsesOnlyServerResolvedVersion",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest",
+    "test": "reorganizingDoesNotInheritOrdinaryEditOrSubmitPermission",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest",
+    "test": "summaryDetailAndAuditKeepExistingReadBoundary",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest",
+    "test": "reviewRequiresBothMenuAndActionPermission",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest",
+    "test": "fillingDetailAndAuditUseMenuReadPermissionWithoutGlobalViewOrWrite",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest",
+    "test": "fillingAndSupplementPermissionsAreIndependent",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest",
+    "test": "reviewOfficeDownloadKeepsOriginalNameAndTaskFrozenVersion",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+    "test": "rejectsRenamedOfficeTemplatesAndTruncatedZipDirectory(String)[1]",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+    "test": "rejectsRenamedOfficeTemplatesAndTruncatedZipDirectory(String)[2]",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+    "test": "rejectsExcessiveOfficeZipExpansionBeforeParsing",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+    "test": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[1]",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+    "test": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[2]",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+    "test": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[3]",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+    "test": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[4]",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+    "test": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[5]",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+    "test": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[6]",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+    "test": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[7]",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+    "test": "acceptsExactly50MiBButRejectsOneByteOverBeforeReading",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+    "test": "officeRejectsDisguisedUnsupportedCorruptEncryptedAndMacroFiles",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+    "test": "attachmentRequiresReadableBytesAndPreservesUnlinkedHistory",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAuditReadTest",
+    "test": "versionAuditDoesNotLeakOtherVersionsOrDraftsAndRejectsMismatchedDhr",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAuditReadTest",
+    "test": "removedDevelopmentSummaryAuditRemainsVisibleWithoutCrossDhrLeak",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAuditReadTest",
+    "test": "dhrAuditIncludesOnlyItsLifecycleDraftAttachmentsAndVersions",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrAuditReadTest",
+    "test": "paginationIsStableAndDoesNotRewriteAuditEvidence",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+    "test": "incompleteFrozenManualReviewBlocksApprovalButAllowsReturn",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+    "test": "realWorkflowReturnResubmitSignAndApprovedImpactPreserveHistory",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+    "test": "concurrentApprovalCreatesOnlyOneOutcomeAndSignature",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+    "test": "newlyAppearingRecordAndAttachmentBlockApprovalWithoutChangingFrozenVersion",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+    "test": "legacyPendingReviewCannotApproveUnfinishedUnincludedCustomCopyButCanReturn",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+    "test": "personalListAndDetailCannotLeakAnotherUsersTask",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+    "test": "frozenButtonVisibilityOpinionAndSignatureAreEnforcedOnServer",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+    "test": "approvalRequiresUnchangedEvidenceAndCurrentHashButDoesNotAutoReturn",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+    "test": "approvalSeparatesRuntimeOutcomeFromFrozenEvidenceAndRejectsSecondAction",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+    "test": "signedReviewChecksNamedSignerAndRecordsBothIdentities",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+    "test": "missingFrozenFormOriginalBlocksApprovalButNotReturn",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+    "test": "intermediateApprovalKeepsPendingAndAuditFailureRollsBackOutcome",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+    "test": "humanReturnAllowsChangedEvidenceAndCreatesNextDraftOnlyExplicitly",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+    "test": "missingAndNewRecordsBothAffectCompleteEvidenceScope",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+    "test": "unreadableLiveValuesAreReportedAsImpactAndBlockApproval",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest",
+    "test": "mapsChineseApplicationRequestToTypedPublishedCandidates",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest",
+    "test": "rejectsUnsupportedBusinessType",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest",
+    "test": "candidateEndpointRequiresMatchingRecordControlCreatePermission",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest",
+    "test": "doneUsesAuthenticatedOperatorInsteadOfRequestParameter",
+    "status": "passed"
+  },
+  {
+    "run": "review-and-export",
+    "class": "com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest",
+    "test": "todoUsesAuthenticatedOperatorAndOneDatabaseLookup",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "auditFailureRollsBackDraftAndStatus",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "unnumberedOptionalCustomCopyBlocksSummaryEvenWhenNotPlaced",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "partialDisplayPlacementStillFreezesAllActualEvidence",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "missingFormOriginalBlocksSubmitWithoutDiscardingDraft",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "recoveredDraftRequiresFreshScopeSaveAndManualCheckBeforeFreezing",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "failedSubmitRetainsSavedRevisionAndSuccessfulRetryFreezesEvidence",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "directoryProjectionKeepsLongIdsExactWithoutMutatingFrozenData",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "explicitReorganizationPreservesOriginalEvidenceAndChecksVersionAndReason",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "historicalVersionDoesNotRequireReadableLiveFormValues",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "savesRecordBeforeAndAfterAndRejectStaleRevisionWithoutChangingData",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "historicalVersionDoesNotReturnLiveFormValuesOutsideFrozenCandidates",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "sourceCopiesMayFreezeAtSeparateDirectoriesOrInterleavedPositions",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "changedFrozenAttachmentListBlocksHistoricalVersionRead",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "summaryDisplayNameRejectsBlankAndOversizedValues",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "requiredReviewUsesFrozenBindingAndFailedWorkflowRollsBackSubmission",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "changedFrozenCandidateCannotBypassOriginalFileCheck",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "newSourceRecordAfterDraftRequiresFreshCheckAndIsNeverSilentlyOmitted",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "submitRequiresAuditableManualCheckBeforeFreezing",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "directoryDisplayNameSurvivesDraftFreezeAndReorganizationWithoutChangingBase",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "summaryDisplayNameIsFrozenWithoutChangingSourceAndSurvivesReorganization",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "optionalInstanceOrderSurvivesDraftFreezeReadAndReorganization",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "directoryRenameCannotMoveReorderDuplicateOrUseInvalidNames",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "submitAuditFailureRollsBackVersionEvidenceAndDraftDeletion",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+    "test": "staleScopeAndIncompleteSupplementBlockSubmission",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.workflow.engine.WorkflowEngineTest",
+    "test": "dhrUsesFrozenPublishedVersionEvenWhenNoLongerCurrent",
+    "status": "passed"
+  },
+  {
+    "run": "history-and-engine",
+    "class": "com.zencas.edhr.workflow.engine.WorkflowEngineTest",
+    "test": "genericTaskCompletionCannotBypassDhrDomainChecks",
+    "status": "passed"
+  }
+]
