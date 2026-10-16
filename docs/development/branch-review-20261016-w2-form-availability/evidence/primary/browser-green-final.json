@@ -1,0 +1,54 @@
+{
+  "kind": "actual-selector-with-controlled-read-fixtures",
+  "baseline": null,
+  "results": [
+    {
+      "name": "plans have no fabricated instance count in rows or work tooltips and remain previewable",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "actual counts and current actionable copy are retained with future work still uninstantiated",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "completed work without a reached copy is not applicable including missing-copy-controls compatibility",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "existing unfinished copies remain in progress after operation and work completion",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "search and keyboard preview work in a narrow viewport while busy blocks selection",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "name": "quantity regression retains separate unit values in the source popover under the current grouped summary",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    }
+  ]
+}

@@ -15,3 +15,18 @@ evidence:
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java
     description: original-evidence；TemplateModelingController创建表单模板版本及有效时间，响应可使用RDO状态投影，未提供表单模板版本发布动作。DEC-0075-08 已明确不设PUBLISHED候选前提；该结论不是继续待决，也不能以测试手填PUBLISHED证明真实发布路径。本次只核对当前创建及状态职责。
     visibility: internal
+  - id: evidence.execution-form-availability-read-regression
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionAvailabilityTest.java
+    description: original-evidence；2026-10-16本批测试以真实ProductionExecutionEngine合法条件分支及表单动作产生状态后调用公开ProductionExecutionService.get，覆盖开工前无实例、未到达作业表单在工序完工后不适用、实际多份身份和完成状态优先、既有END_FORM兼容口保留未完成选填份；断言持久化JSON及业务事实不变且无repository.save。根缺陷红测四项中唯一失败为NOT_APPLICABLE实际WAITING_OPERATION_START，修复后四项通过；测试仓储和身份为mock，不宣称真实HTTP或数据库验收。主侧命令及分时结果见本轮branch-review-20261016-w2-form-availability报告，不继承旧PR通过记录。
+    visibility: internal
+  - id: evidence.execution-form-availability-selector-browser
+    type: test
+    path: gmp-platform/frontend/scripts/test-execution-form-selector-browser.mjs
+    description: original-evidence；实际React/MUI选择器及现有CSS在隔离浏览器中运行，只控制只读接口/组件props，不替换选择器实现。覆盖计划行和步骤tooltip不冒充实际共0份、真实多份和当前动作、作业结束未到达及缺copyControls兼容、已有未完成份真实状态、搜索键盘预览及busy阻断；本轮红绿结果和适用桌面/窄屏截图另记。浏览器fixture不等于生产接口和数据库端到端，数量指标正式/过程层级继续按DEC-0079独立解释。
+    visibility: internal
+  - id: evidence.execution-form-availability-batch-validation
+    type: document
+    path: docs/development/branch-review-20261016-w2-form-availability/README.md
+    description: original-evidence；2026-10-16本轮W2第二批报告固定新基线、原始红绿命令、受测范围及evidence/primary/primary-result.json。原始临时红测日志与主侧绿测、实际组件浏览器/截图分别登记，不将历史静态审读反填为当时已通过，不将主侧回归写作独立质量。独立验证须由未参与修复的新合格实例另给qualityResult；本轮只收敛既有计划/实例份数和只读状态差异，不关闭A12或全量W2。
+    visibility: internal

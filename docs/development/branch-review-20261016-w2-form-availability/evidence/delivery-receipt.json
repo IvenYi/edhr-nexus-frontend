@@ -1,0 +1,37 @@
+{
+  "testedCandidate": "518ac6838b3c418fd16aca0c84c0f216b33d17d8",
+  "target": "41f19bca31a6232ae568dde073ef366c5d894e86",
+  "postAcceptanceScope": "L0 result registration and byte-identical safe evidence copy only",
+  "originalTrackedFileCount": 1804,
+  "unchangedTrackedFileCount": 1801,
+  "changedExistingPaths": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261016-w2-form-availability/README.md",
+    "docs/development/branch-review-20261016-w2-form-availability/findings.yaml"
+  ],
+  "unchangedProtectedTools": 2,
+  "newSafeEvidencePathsValidated": [
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/archive-receipt.json",
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/backend-case-index.json",
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/browser-baseline.json",
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/browser.json",
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/fixture-review.json",
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/inventory-review.json",
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/knowledge-review.json",
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/manifest-comparison.json",
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/premium-audit.json",
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/premium-comparison.json",
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/qualityResult.yaml",
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/safe-artifacts.json",
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/screenshots/not-applicable-work-desktop.png",
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/screenshots/planned-form-narrow.png",
+    "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/screenshots/planned-work-desktop.png"
+  ],
+  "productTestKnowledgeGovernanceChanges": [],
+  "qualityResultSha256": "d2e46c951aeb514c1094b2b21c9de23e1c30ef2f8a6244b8afe124c74e6be5d6",
+  "requiredChecksPassed": 15,
+  "manualMergeOnly": true,
+  "wholeW2Complete": false,
+  "wholeBranchAuditComplete": false,
+  "githubActionsQueriedOrTriggered": false
+}

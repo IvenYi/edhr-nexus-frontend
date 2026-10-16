@@ -30,7 +30,8 @@ test('partial quantities and unit problems carry visible status text', () => {
 });
 test('ordinary-operation unit groups stay separate', () => {
   const html = value({quantity: null, status: 'READY', message: '', groups: [{quantity: '10', unit: '根'}, {quantity: '12', unit: '件'}]});
-  assert.ok(html.includes('10 根；12 件'));
+  // DEC-0079-06 summarizes distinct groups; their values remain in the source popover.
+  assert.ok(html.includes('2 组（分物料/单位）'));
   assert.ok(!html.includes('22'));
 });
 test('batch details explain excluded source records', () => {

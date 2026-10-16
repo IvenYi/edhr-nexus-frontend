@@ -1,0 +1,21 @@
+{
+  "candidate": "0346f4102cdc1f88515cf2f9d9a34b1b23fcd2a5",
+  "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionAvailabilityTest.java",
+  "entityObjectType": {
+    "line": 38,
+    "value": "BATCH"
+  },
+  "snapshotSnCalls": [
+    {
+      "line": 80,
+      "method": "reachedWorkCopyAndMultipleConfiguredCopiesKeepTheirActualStatusAndIdentity"
+    },
+    {
+      "line": 99,
+      "method": "optionalUnfinishedWorkCopyIsNotRelabeledNotApplicableWhenWorkAndOperationEnd"
+    }
+  ],
+  "snapshotHelperSetsOnlySnapshotContextObjectType": true,
+  "productionRootDefectBatchScenarioEntityAndSnapshotAgree": true,
+  "assessment": "Test-fixture consistency finding; no additional product defect established."
+}

@@ -1,0 +1,278 @@
+[
+  {
+    "case": "missingPermissionCannotReadOrExecute",
+    "outcome": "passed"
+  },
+  {
+    "case": "formRecordsBrowserFixture",
+    "outcome": "skipped"
+  },
+  {
+    "case": "globalQueryRejectsUnsupportedAndMalformedConditions",
+    "outcome": "passed"
+  },
+  {
+    "case": "missingQueryPrincipalCannotAdvanceApprovalOrChangePersistedEvidence",
+    "outcome": "passed"
+  },
+  {
+    "case": "globalQueryUsesFrozenMetadataCrossTemplateFiltersAndStablePages",
+    "outcome": "passed"
+  },
+  {
+    "case": "productionReferencesSaveTypedIdentityAndNumbersWithoutChangingExecutionOwnership",
+    "outcome": "passed"
+  },
+  {
+    "case": "directSigningBlocksMissingExpiredAndCustomerAdminLoginCredentialsWithoutLosingDraft",
+    "outcome": "passed"
+  },
+  {
+    "case": "failedSignedActionRollsBackSignatureValuesAndAudit",
+    "outcome": "passed"
+  },
+  {
+    "case": "worklistHistoricalNodeFiltersMatchTheSameEventBeforeSelectingTheLatest",
+    "outcome": "passed"
+  },
+  {
+    "case": "inlineSignatureHonorsFrozenReadonlyAndNodePermissions",
+    "outcome": "passed"
+  },
+  {
+    "case": "worklistFilteringPaginationAndLegacyHistoryDoNotInventParticipation",
+    "outcome": "passed"
+  },
+  {
+    "case": "inlineSignatureRollsBackWhenAuditFails",
+    "outcome": "passed"
+  },
+  {
+    "case": "executionPersistsSnapshotDraftAndAuditThenCompletesOnlyAfterAllOperations",
+    "outcome": "passed"
+  },
+  {
+    "case": "waitingExecutionSeesConcurrentTerminationAfterAcquiringLocks",
+    "outcome": "passed"
+  },
+  {
+    "case": "dhrSupplementUsesRealExecutionAndRecordServicesWithoutReopeningProduction",
+    "outcome": "passed"
+  },
+  {
+    "case": "worklistExplicitCreationIsIndependentFromFirstSaverAndSystemFirstCopy",
+    "outcome": "passed"
+  },
+  {
+    "case": "legacyTextSubtableColumnsUseTheSameStableIdsAsTheUnifiedRenderer",
+    "outcome": "passed"
+  },
+  {
+    "case": "previewReferencesRequireDesignPermissionAndDoNotWriteData",
+    "outcome": "passed"
+  },
+  {
+    "case": "executionMissingDhrCannotComplete",
+    "outcome": "passed"
+  },
+  {
+    "case": "historicalExecutionWithoutDhrCanAttachCustomFormWithoutFabricatingDhr",
+    "outcome": "passed"
+  },
+  {
+    "case": "historicalCopyMetadataUsesRecordedSourcesWithoutWritingOrInventingMissingValues",
+    "outcome": "passed"
+  },
+  {
+    "case": "inlineSignatureSavesWithoutSubmittingAndContentChangesInvalidateIt",
+    "outcome": "passed"
+  },
+  {
+    "case": "dhrFillingProjectsAndFiltersProductionStatusWithoutChangingDhrOrWriteRules",
+    "outcome": "passed"
+  },
+  {
+    "case": "batchAndSnScanAreReadOnlyAndReturnCorrectConfiguration",
+    "outcome": "passed"
+  },
+  {
+    "case": "subtableCanvasReadonlyIsEnforcedForNewAndLegacySnapshots",
+    "outcome": "passed"
+  },
+  {
+    "case": "failedAuditRollsBackFormInstanceAllocation",
+    "outcome": "passed"
+  },
+  {
+    "case": "globalQueryRequiresBothPermissionsAndPreservesOldEntry",
+    "outcome": "passed"
+  },
+  {
+    "case": "remarkEditPersistsAuditsAndPreservesSubmittedFormReceipt",
+    "outcome": "passed"
+  },
+  {
+    "case": "globalQueryExactDetailsTenantBoundaryAndSourceControls",
+    "outcome": "passed"
+  },
+  {
+    "case": "deletingSignedRowsInvalidatesRemainingSignaturesAndRejectsForgery",
+    "outcome": "passed"
+  },
+  {
+    "case": "inlineSignatureRejectsUnavailableCertificationAndInvalidTargets",
+    "outcome": "passed"
+  },
+  {
+    "case": "legacyCompletedWorkProjectsNextNodeWithoutWritingAndSettlesOnTheNextAuditedAction",
+    "outcome": "passed"
+  },
+  {
+    "case": "earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning",
+    "outcome": "passed"
+  },
+  {
+    "case": "customTemplatePickerDoesNotTruncateVersions",
+    "outcome": "passed"
+  },
+  {
+    "case": "copiesPersistSeparateValuesSumOutputAndRejectStaleOrForeignWrites",
+    "outcome": "passed"
+  },
+  {
+    "case": "operationCustomGateAndExplicitScopeValidationCannotBeBypassed",
+    "outcome": "passed"
+  },
+  {
+    "case": "batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch",
+    "outcome": "passed"
+  },
+  {
+    "case": "concurrentStartCreatesOneExecutionAndOneDhr",
+    "outcome": "passed"
+  },
+  {
+    "case": "anOperationWithoutConfiguredFormsCanAttachItsFirstOptionalForm",
+    "outcome": "passed"
+  },
+  {
+    "case": "worklistReturnAndResubmitKeepPersonalHistoryAndUseActualApprovalQualification",
+    "outcome": "passed"
+  },
+  {
+    "case": "customFormTemplatesSearchAllVersionsWithoutPublicationAndKeepTenantBoundaries",
+    "outcome": "passed"
+  },
+  {
+    "case": "returnAndApprovalKeepTheOriginalFormNumber",
+    "outcome": "passed"
+  },
+  {
+    "case": "firstStartFreezesOneCommittedConfigurationDuringProcessRebinding",
+    "outcome": "skipped"
+  },
+  {
+    "case": "failedAuditRollsBackObjectStateAndExecutionTogether",
+    "outcome": "passed"
+  },
+  {
+    "case": "browserEvidenceFixture",
+    "outcome": "skipped"
+  },
+  {
+    "case": "missingDhrBlocksEarlyTerminationWithoutChangingProduction",
+    "outcome": "passed"
+  },
+  {
+    "case": "internalAdminUsesLoginPasswordOnlyForButtonAndUnsignedActionsDoNotImpersonate",
+    "outcome": "passed"
+  },
+  {
+    "case": "presenceCountsEditorsAcrossCopiesAndRejectsReadOnlyInstances",
+    "outcome": "passed"
+  },
+  {
+    "case": "configuredAndWorkFormsUsingTheSameTemplateRemainIndependent",
+    "outcome": "passed"
+  },
+  {
+    "case": "worklistRejectsWrongPermissionsParamsAndFailedActionsCreateNoHistory",
+    "outcome": "passed"
+  },
+  {
+    "case": "globalQueryDoesNotGrantAnActiveApprovalNodeAndKeepsPrincipalHistory",
+    "outcome": "passed"
+  },
+  {
+    "case": "worklistIncludesUnsavedAndSavedButFilledRequiresActualSubmit",
+    "outcome": "passed"
+  },
+  {
+    "case": "copyMetadataPersistsAndSurvivesSaveWithoutChangingItsCreationIdentity",
+    "outcome": "passed"
+  },
+  {
+    "case": "automaticWorkAdvanceRollsBackWithItsSubmissionWhenAuditFails",
+    "outcome": "passed"
+  },
+  {
+    "case": "optionalCopyCompletionRequiresAcknowledgementAndPersistsUnfinishedState",
+    "outcome": "passed"
+  },
+  {
+    "case": "sharedWorkstationUsesSignerPermissionsAndDualIdentityWithoutChangingSession",
+    "outcome": "passed"
+  },
+  {
+    "case": "concurrentFirstSavesAllocateDifferentNumbers",
+    "outcome": "passed"
+  },
+  {
+    "case": "staleRevisionAndTerminatedObjectsCannotAdvance",
+    "outcome": "passed"
+  },
+  {
+    "case": "formInstanceNumbersAreStableSearchableAndUseFrozenSnapshots",
+    "outcome": "passed"
+  },
+  {
+    "case": "realApprovalIdentityAndSignaturePasswordPersistAtomically",
+    "outcome": "passed"
+  },
+  {
+    "case": "formApprovalTransferMovesPendingTaskWithoutAdvancingTheFlow",
+    "outcome": "passed"
+  },
+  {
+    "case": "customFormsFreezeSelectedVersionAndRequireExplicitRequiredChoice",
+    "outcome": "passed"
+  },
+  {
+    "case": "firstStartAndDetailKeepSnowflakeDirectoryIdsAsStrings",
+    "outcome": "passed"
+  },
+  {
+    "case": "transferProjectionIsNodeScopedAndReassignmentIsClearedByReturn",
+    "outcome": "passed"
+  },
+  {
+    "case": "invalidCopyRemarksAndFailedAuditCannotCreateCopies",
+    "outcome": "passed"
+  },
+  {
+    "case": "optionalCustomFormCanBeFinishedAfterProductionWithReasonAndFrozenDhrProtection",
+    "outcome": "passed"
+  },
+  {
+    "case": "inlineSignaturesCoexistAndSubtableContentInvalidatesAllWithoutDeletingEvidence",
+    "outcome": "passed"
+  },
+  {
+    "case": "outputUsesSavedPurposeFieldsAndFrozenMappingWithoutChangingBatchCounters",
+    "outcome": "passed"
+  },
+  {
+    "case": "referenceLookupUsesFrozenCanvasAndValidatesCurrentRowAtSave",
+    "outcome": "passed"
+  }
+]

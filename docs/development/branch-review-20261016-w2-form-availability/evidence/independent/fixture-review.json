@@ -1,0 +1,16 @@
+{
+  "findingId": "QF-W2-AVAILABILITY-001",
+  "originalCandidate": "0346f4102cdc1f88515cf2f9d9a34b1b23fcd2a5",
+  "fixedAndRetestedCandidate": "518ac6838b3c418fd16aca0c84c0f216b33d17d8",
+  "testFixAddedLinesOnly": 2,
+  "entityObjectTypeSynchronizedToSnapshot": true,
+  "explicitIdentityAssertionBeforePublicGet": true,
+  "existingBusinessAssertionsRemoved": 0,
+  "productionFilesUnchangedSinceFirstCandidate": true,
+  "changedProductionPaths": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+    "gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx"
+  ],
+  "actualFocusedTestRun": "145 run / 145 pass / 0 skipped; new 4 pass",
+  "qualification": "Both SN reach/legacy-optional chains now pair SN entity and SN context; BATCH skipped-chain remains BATCH. Real engine transitions precede public get. Repository and identity fixtures remain mocks."
+}

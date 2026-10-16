@@ -1,0 +1,319 @@
+{
+  "kind": "primary-implementation-validation-not-independent-QA",
+  "contractBaseline": {
+    "sourceCommit": "41f19bca31a6232ae568dde073ef366c5d894e86",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "41f19bca31a6232ae568dde073ef366c5d894e86",
+    "contractReadCommit": "41f19bca31a6232ae568dde073ef366c5d894e86",
+    "uncommittedContractPaths": []
+  },
+  "workingTreeState": "dirty: product/tests/knowledge and new review documents",
+  "knowledgeModelVersion": "0.3.25",
+  "inventory": {
+    "baselinePaths": 1780,
+    "reviewStatus": "pending",
+    "reviewDepth": "inventory-only",
+    "coverageSha256": "3fba547c186632f1a5e5085093e668678baa53b1894c0f0d7242ce47600ddd2d"
+  },
+  "productSourceSha256": {
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java": "b8a880d267f7b01086eed5526ca226e9e03cd6380f0f8888a7f09c27112ae09e",
+    "gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx": "28aaf8159a7f2e02f010d4bdc228f6ce1b398eabff4657c51d5a1bcda98ca4e0"
+  },
+  "checks": [
+    {
+      "id": "backend-red",
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -o -Dmaven.repo.local=/workspace/.pr6-m2 -Dtest=ProductionExecutionAvailabilityTest test",
+      "exitCode": 1,
+      "expectedFailure": true,
+      "tests": 4,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "failure": "skippedConditionalFormStaysNotApplicableAfterOperationCompletion: expected NOT_APPLICABLE; actual WAITING_OPERATION_START",
+      "evidenceLog": "/tmp/edhr-w2-availability-evidence/backend-red-final.log",
+      "logSha256": "fa1cf2f622d306f80a477b58a6044709bdd9c04fed9ab8e3417644ea324f0ad2"
+    },
+    {
+      "id": "backend-green",
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -o -Dmaven.repo.local=/workspace/.pr6-m2 -Dtest=ProductionExecutionAvailabilityTest,ProductionExecutionEngineTest,ExecutionFormCopiesTest,ExecutionOutputSummaryTest,ProductionQualitySummaryTest,ProductionExecutionFormValuesTest,BusinessKnowledgeModelTest test",
+      "exitCode": 0,
+      "suites": [
+        {
+          "name": "ProductionExecutionAvailabilityTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "sourceXmlSha256": "92ce3c6735713ded986ef51e29e4b2fccba6a1af573950ab6e1d19357c035bff"
+        },
+        {
+          "name": "ProductionExecutionEngineTest",
+          "tests": 22,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "sourceXmlSha256": "659024aba6b2dc414ec6f82b3f6ee47e4a4277e8f96b3be8622cb57e2d81d6a9"
+        },
+        {
+          "name": "ExecutionFormCopiesTest",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "sourceXmlSha256": "86acb28f49ddb005f77493f4ce0d76fa7e78353f0c636c3a220df98b58deeb93"
+        },
+        {
+          "name": "ExecutionOutputSummaryTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "sourceXmlSha256": "9e96935b3f83766cd23fa73e2b48e162634d74e168eae424106bd75d8cb2789d"
+        },
+        {
+          "name": "ProductionQualitySummaryTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "sourceXmlSha256": "5902f68fe01d9b8b2fb87e864d1d98007a80bf40e83b91b6435cc4d343cae7c5"
+        },
+        {
+          "name": "ProductionExecutionFormValuesTest",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "sourceXmlSha256": "2e79c72e679f6938aa3990c6c668ec1a5bac794b08a643d3bc71df55435013d0"
+        },
+        {
+          "name": "BusinessKnowledgeModelTest",
+          "tests": 89,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "sourceXmlSha256": "81ca8598875a77f7a00346d68dcbbd4c4536c6f2203b99ae67048bc8ae17fc30"
+        }
+      ],
+      "tests": 145,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "evidenceLog": "/tmp/edhr-w2-availability-evidence/backend-green.log",
+      "logSha256": "be30c8b35045611c5279191a84173404005aa10fb0bcf44cd9c3af85e1d09ba1",
+      "qualification": "preliminary before fixture correction; two SN service fixtures had BATCH entities, not final legal same-object acceptance"
+    },
+    {
+      "id": "frontend-node",
+      "command": "node --test scripts/test-execution-form-selector.mjs scripts/test-execution-template-picker.mjs scripts/test-execution-copy-drawer.mjs scripts/test-execution-form-values.mjs scripts/test-execution-custom-forms.mjs scripts/test-production-quantity-sources.mjs scripts/test-production-output.mjs scripts/test-execution-history.mjs scripts/test-designer-save-state.mjs",
+      "exitCode": 0,
+      "tests": 52,
+      "failures": 0,
+      "skipped": 0,
+      "evidenceLog": "/tmp/edhr-w2-availability-evidence/frontend-green-final.log",
+      "logSha256": "5729635462616affc69f44e6a285d17b4bc2fbc5884fdfd86e5fb457236406c9"
+    },
+    {
+      "id": "frontend-build",
+      "command": "npm run build",
+      "exitCode": 0,
+      "scope": "tsc -b and vite production build",
+      "evidenceLog": "/tmp/edhr-w2-availability-evidence/frontend-build.log",
+      "logSha256": "4a7c27a7a2d15dc6c00667798f10deca5f47086c42b676622f11740acde8b751"
+    },
+    {
+      "id": "eslint",
+      "command": "npm run lint",
+      "exitCode": 2,
+      "outcome": "blocked-before-code-analysis",
+      "reason": "existing missing ESLint configuration",
+      "evidenceLog": "/tmp/edhr-w2-availability-evidence/lint.log",
+      "logSha256": "4072a2a05ee82c5471348b2e593c2c6b58b14f65fe5c4ef2b385e71f0914dbdd"
+    },
+    {
+      "id": "official-premium-strict",
+      "command": "python /tmp/edhr-w2-audit-project-20261016.py /workspace/edhr-nexus-frontend --mode strict --output /tmp/.../design-{before,after}.json",
+      "exitCode": 2,
+      "outcome": "global-failed",
+      "before": {
+        "errors": 84,
+        "total": 84,
+        "unresolved": 13,
+        "violations": 71,
+        "warnings": 0
+      },
+      "after": {
+        "errors": 84,
+        "total": 84,
+        "unresolved": 13,
+        "violations": 71,
+        "warnings": 0
+      },
+      "newFindings": [],
+      "removedFindings": [],
+      "applicationSourceFindings": 26,
+      "scannerSha256": "67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68"
+    },
+    {
+      "id": "HTTP-MockMvc-with-real-H2-database-and-transaction-repositories",
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -o -Dmaven.repo.local=/workspace/.pr6-m2 -Dtest=ProductionExecutionIntegrationTest test",
+      "exitCode": 0,
+      "tests": 69,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3,
+      "passed": 66,
+      "sourceXmlSha256": "fe144be47fba641dfe4755a05139540eef1f2680d59af67b0f0a44d50d48ddf0",
+      "logSha256": "59a3a533665db39ecc1bac0a8273ecd164993a66dcf551f3b6bc3133078132de",
+      "evidenceLog": "/tmp/edhr-w2-availability-evidence/backend-http-h2.log",
+      "skips": [
+        {
+          "name": "formRecordsBrowserFixture",
+          "reason": "System property [form.records.browser] does not exist"
+        },
+        {
+          "name": "firstStartFreezesOneCommittedConfigurationDuringProcessRebinding",
+          "reason": "System property [execution.test.driver] does not exist"
+        },
+        {
+          "name": "browserEvidenceFixture",
+          "reason": "System property [execution.browser] does not exist"
+        }
+      ]
+    },
+    {
+      "id": "final-knowledge-after-two-knowledge-edits-and-new-report-paths-exist",
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -o -Dmaven.repo.local=/workspace/.pr6-m2 -Dtest=BusinessKnowledgeModelTest test",
+      "exitCode": 0,
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 89,
+      "sourceXmlSha256": "9ee66410b5e5e22aab9d590140992871e274d6a1870c00418cfc319f9f21564e",
+      "logSha256": "12800836e4266bdd3ee69840927eda57000dc163e174b0ebe59071d37ae013f6",
+      "evidenceLog": "/tmp/edhr-w2-availability-evidence/knowledge-final.log",
+      "skips": []
+    },
+    {
+      "id": "browser-red-final",
+      "command": "CHROME_PATH=... W2_BASELINE_COMMIT=41f19bca31a6232ae568dde073ef366c5d894e86 node scripts/test-execution-form-selector-browser.mjs",
+      "exitCode": 1,
+      "evidence": "browser-red-final.json",
+      "sourceSha256": "6b64488543093eaa11d92113a45e9f1530668dfa4324ec784b15c8a2c526004c"
+    },
+    {
+      "id": "browser-green-final",
+      "command": "CHROME_PATH=... node scripts/test-execution-form-selector-browser.mjs",
+      "exitCode": 0,
+      "evidence": "browser-green-final.json",
+      "sourceSha256": "4101b3be21d2b538e4bb8f66783e649d5119177afd1d6cd3b11334a6f46b1e45"
+    },
+    {
+      "id": "process-modeling-contract",
+      "command": "node scripts/verify-process-modeling-pages.mjs",
+      "exitCode": 0,
+      "logSha256": "e3b0afd4719c7b749a8dd777ebb9719322387fc9685d7e4a17753b890d2858e1"
+    },
+    {
+      "id": "list-table-contract",
+      "command": "node scripts/verify-list-table-style-contract.mjs",
+      "exitCode": 0,
+      "logSha256": "bbd010033a0ce55c48117a943c33475a4ee7eeb8eae95eb196dfaef6fc05b57f"
+    },
+    {
+      "id": "backend-green-fixture-corrected",
+      "sourceCommit": "0346f4102cdc1f88515cf2f9d9a34b1b23fcd2a5",
+      "workingTreeIncludedChanges": [
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionAvailabilityTest.java: object type synchronized and identity assertion"
+      ],
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -o -Dmaven.repo.local=/workspace/.pr6-m2 -Dtest=ProductionExecutionAvailabilityTest,ProductionExecutionEngineTest,ExecutionFormCopiesTest,ExecutionOutputSummaryTest,ProductionQualitySummaryTest,ProductionExecutionFormValuesTest,BusinessKnowledgeModelTest test",
+      "exitCode": 0,
+      "tests": 145,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": [
+        {
+          "name": "ProductionExecutionAvailabilityTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "sourceXmlSha256": "820d8d5914d71ae82e46af51670bae79ff70d0bc3dc75dd0be4760203c9deb28"
+        },
+        {
+          "name": "ProductionExecutionEngineTest",
+          "tests": 22,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "sourceXmlSha256": "934f186b04b2f96eb74a153a3c95f8b12a6fe8f89bca6595835bce24248364e2"
+        },
+        {
+          "name": "ExecutionFormCopiesTest",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "sourceXmlSha256": "d37706ef98fa6be2314bd1ab4fc9136c0925ac7ba685374aa22ee651745968b4"
+        },
+        {
+          "name": "ExecutionOutputSummaryTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "sourceXmlSha256": "e5563f1a2b1f17f2bf6fb4e4bd87fbd41b02ba69b11511a24860ea010a3b22bc"
+        },
+        {
+          "name": "ProductionQualitySummaryTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "sourceXmlSha256": "ed5fcbcf3a99a8a9232db22d056c025b95c274858f46eb0e278e33570c3f26d0"
+        },
+        {
+          "name": "ProductionExecutionFormValuesTest",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "sourceXmlSha256": "db8b9838c1a6c2fdea40f978a3bf0da9c2f4c6454a8f3effc0e5b39f3c9d0da3"
+        },
+        {
+          "name": "BusinessKnowledgeModelTest",
+          "tests": 89,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "sourceXmlSha256": "fbaafbc43a88757cb3a8f4f778c7414d1882722ce967e3d0065238ac81a22a1e"
+        }
+      ],
+      "evidenceLog": "/tmp/edhr-w2-availability-evidence/backend-green-fixture-corrected.log",
+      "logSha256": "044dd668b1981331868352741089aef0060a29bfef0c245e5441a95144ebf527",
+      "fixtureSourceSha256": "1c930545a83ee7829970c400e16948014ad041e0821224d622c08c368cb44729"
+    }
+  ],
+  "independentResult": "first frozen candidate0346 failed fixture review; preserved evidence/independent-first; awaiting new candidate and fresh final instance",
+  "wholeW2Complete": false,
+  "wholeBranchAuditComplete": false,
+  "screenshots": [
+    {
+      "path": "not-applicable-work-desktop.png",
+      "sha256": "478c748f3e744eda3eac574bb48d6cc0bc4919ae53794a33389eaf401a369605",
+      "reviewed": "primary visually inspected: scoped content/reachability only"
+    },
+    {
+      "path": "planned-form-narrow.png",
+      "sha256": "2dd9731bd8c9ca8d3ebc56bad9e79d8b49ef3ae50506bd3838a374144cdd5dca",
+      "reviewed": "primary visually inspected: scoped content/reachability only"
+    },
+    {
+      "path": "planned-work-desktop.png",
+      "sha256": "41caf655320aa47e1c4ea29da4bce6209023c2322fe3f3faf6b56e61619f2f5f",
+      "reviewed": "primary visually inspected: scoped content/reachability only"
+    }
+  ]
+}

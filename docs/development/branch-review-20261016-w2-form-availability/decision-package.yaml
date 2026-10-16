@@ -1,0 +1,103 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261016-W2-FORM-AVAILABILITY
+  scope: W2第二批；冻结计划表单与实际实例份数、已结束但未到达作业表单的只读状态投影；先复现再最小整改
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 41f19bca31a6232ae568dde073ef366c5d894e86
+    targetBranch: edhr-dev
+    targetCommit: 41f19bca31a6232ae568dde073ef366c5d894e86
+    contractReadCommit: 41f19bca31a6232ae568dde073ef366c5d894e86
+    uncommittedContractPaths: []
+  summary: PR10已合并且保存修复字节保持；接纳目标新增DEC0079数量口径。H002已由现行DEC0047及合法引擎/实际组件红测确认，只在两个现有文件局部修复只读投影；同一历史项去重，不新增政策。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  existingPolicyReferences:
+    - docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml
+    - docs/knowledge/decisions/DEC-0046-production-form-copies.yaml
+    - docs/knowledge/decisions/DEC-0059-production-form-auto-finish.yaml
+    - docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml
+    - docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: execution-form-selector
+        change: 核对未实例化计划不显示实例份数；存在实例时展示真实数量，名称/版本/必填与预览可选性保持。
+        evidenceReferences: [gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx]
+      - area: production-execution-read
+        change: 核对未到达表单在其作业结束后显示不适用；已有实例优先保留真实完成或进行中状态。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java]
+    transitiveImpacts:
+      - area: work-preview
+        change: 抽屉、作业步骤预览及服务端formCopies使用同一真实状态；不新增实例或开放填报动作。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml]
+    potentialImpacts:
+      - area: production-quantity
+        concern: 目标新增质量/数量来源投影，需保留其计算和响应增量，不以旧基线覆盖。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml]
+    unaffectedAreas:
+      - area: record-control
+        reason: 用户暂缓表单变更/作废及依赖项，旧DHR high保持开放。
+    compatibilityAndMigration: [不恢复或改写历史实例、配置、签署、投影或数据库；保留缺少copyControls时原前端预览兼容。]
+    snapshotImpacts: [保持使用时冻结快照；只读解释实际状态，不修改生产执行推进。]
+    auditImpacts: [不新增写动作或改既有审计语义。]
+    permissionImpacts: [原canAct与禁用写入规则保持；可预览不等于可填报。]
+    testImpacts:
+      - scope: selector-and-service-projection
+        scenarios: [开工前计划无实例数, 到达后真实多份, 作业结束未到达不适用, 已有实例真实状态优先, 相邻数量投影保留]
+        evidenceReferences: []
+    evidenceGaps: [新增回归为真实引擎到公开服务及实际浏览器组件fixture，不冒充生产端到端或PostgreSQL迁移/并发验收；完整W2仍待后续。]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在现有选择器和服务端只读投影局部修正已确认差异，保持生命周期及事务所有权。
+    ownershipBoundaries:
+      - owner: production-execution
+        responsibility: 冻结计划/实际份及只读状态。
+  affectedFiles:
+    - path: gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx
+      changeType: update
+      reason: 抽屉行及作业步骤tooltip的计划/实例边界。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      changeType: update
+      reason: formAvailabilityStatus及完整响应投影。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionAvailabilityTest.java
+      changeType: create
+      reason: 合法条件分支及既有实例读取状态、无持久化写回回归。
+    - path: gmp-platform/frontend/scripts/test-execution-form-selector-browser.mjs
+      changeType: create
+      reason: 实际组件行、作业步骤、预览、键盘及相邻数量明细回归。
+    - path: gmp-platform/frontend/scripts/test-production-output.mjs
+      changeType: update
+      reason: 旧主值断言对齐当前DEC0079，并保留异单位不相加的浏览器明细断言。
+    - path: docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml
+      changeType: update
+      reason: 同一历史实现差异的本轮修复证据，保留原始来源及成熟度。
+    - path: docs/knowledge/evidence/execution-form-selector.yaml
+      changeType: update
+      reason: 索引本轮源码、测试及报告。
+  acceptanceScenarios:
+    - id: scenario.w2-plan-count
+      given: 工序未开工或作业表单尚未到达，无实际instanceIds
+      when: 打开填报表单列表及作业步骤tooltip
+      then: 名称版本必填及预览保留，不显示实际共0份或捏造1份。
+      evidenceRequirements: [实际React组件浏览器回归, 预览回调且无挂载调用]
+    - id: scenario.w2-skipped-work-read
+      given: 合法条件分支跳过FORM且作业与工序已正常结束
+      when: 读取执行记录
+      then: 无实例的作业表单为NOT_APPLICABLE，不是WAITING_OPERATION_START，不新增记录或开放填报。
+      evidenceRequirements: [真实引擎动作到公开service.get, 原始持久化JSON及业务事实保持]
+    - id: scenario.w2-real-copy-priority
+      given: 实际多份或既有未完成选填份存在
+      when: 读取或展开非当前步骤
+      then: 显示真实份数及聚合状态，已结束作业不得把实际进行中份改成未到达或不适用。
+      evidenceRequirements: [实际多份身份测试, 既有END_FORM兼容流程, 实际浏览器步骤回归]
+    - id: scenario.w2-quantity-regression
+      given: 当前DEC0079下有10根和12件两个单位组
+      when: 查看数量主值及明细
+      then: 主值2组，弹层分别保留10根和12件，不产生22。
+      evidenceRequirements: [SSR主值断言, 实际ProductionOutput弹层浏览器断言]

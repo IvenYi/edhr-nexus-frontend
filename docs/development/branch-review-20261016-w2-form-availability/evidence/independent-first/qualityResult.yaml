@@ -1,0 +1,119 @@
+qualityResult:
+  result: failed
+  baseCommit: 41f19bca31a6232ae568dde073ef366c5d894e86
+  headCommit: 0346f4102cdc1f88515cf2f9d9a34b1b23fcd2a5
+  contractBaseline:
+    sourceCommit: 0346f4102cdc1f88515cf2f9d9a34b1b23fcd2a5
+    targetBranch: edhr-dev
+    targetCommit: 41f19bca31a6232ae568dde073ef366c5d894e86
+    contractReadCommit: 0346f4102cdc1f88515cf2f9d9a34b1b23fcd2a5
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.actual-candidate-and-contract
+      required: true
+      category: documentation
+      description: 实际核对受测候选、目标引用及独立质量角色契约。
+      method: command
+      command: git rev-parse HEAD; git rev-parse origin/edhr-dev; git status --porcelain=v1 -uall; 读取AGENTS和quality-verifier及统一交接契约
+      outcome: passed
+      evidence:
+        - base/target=41f19bca31a6232ae568dde073ef366c5d894e86，feature/head/tested candidate=0346f4102cdc1f88515cf2f9d9a34b1b23fcd2a5。
+        - 三份治理契约相对目标无差异；本实例实际读取工作树版本，工作树始终干净。
+        - /tmp/edhr-w2-availability-independent/manifest-before.json
+        - /tmp/edhr-w2-availability-independent/manifest-after.json
+    - id: check.fixture-object-snapshot-consistency
+      required: true
+      category: requirements
+      description: 独立核对真实引擎到公开读取服务测试装配的生产对象与冻结上下文一致性。
+      method: inspection
+      command: 阅读ProductionExecutionAvailabilityTest的object构造、SN场景、snapshot helper及ProductionExecutionService.get/view
+      outcome: failed
+      evidence:
+        - ProductionExecutionAvailabilityTest.java第38行将实体固定为BATCH；第80、99行构建SN快照；helper第153行只改快照context。
+        - 当前读取路径不按实体objectType验证快照，因此这两项仍可通过；不能据此把装配不一致解释为产品状态机缺陷。
+        - 根缺陷BATCH跳过分支场景实体/快照一致，未推翻该根缺陷复现。
+        - /tmp/edhr-w2-availability-independent/fixture-review.json
+    - id: check.frontend-node
+      required: true
+      category: unit
+      description: 独立执行九个既有前端Node套件。
+      method: automated-test
+      command: node --test scripts/test-execution-form-selector.mjs scripts/test-execution-template-picker.mjs scripts/test-execution-copy-drawer.mjs scripts/test-execution-form-values.mjs scripts/test-execution-custom-forms.mjs scripts/test-production-quantity-sources.mjs scripts/test-production-output.mjs scripts/test-execution-history.mjs scripts/test-designer-save-state.mjs
+      outcome: passed
+      evidence:
+        - 52 tests，52 passed，0 failed，0 skipped；进程退出0。
+        - /tmp/edhr-w2-availability-independent/node.log
+    - id: check.actual-component-browser
+      required: true
+      category: e2e
+      description: 实际React/MUI组件与只读fixture浏览器回归，不是生产数据库端到端。
+      method: browser
+      command: CHROME_PATH=/workspace/.pr6-playwright/chromium-1208/chrome-linux64/chrome W2_RESULT_PATH=/tmp/edhr-w2-availability-independent/browser.json W2_SCREENSHOT_DIR=/tmp/edhr-w2-availability-independent/screenshots node scripts/test-execution-form-selector-browser.mjs
+      outcome: passed
+      evidence:
+        - 6场景通过，进程退出0；涵盖计划无实例数/预览、真实多份/当前copy、结束未到达不适用、已有未完成份保持进行中、390px搜索键盘及busy、当前数量分组明细。
+        - /tmp/edhr-w2-availability-independent/browser.json
+        - 原始截图由实际浏览器生成，本次提前收尾前未进行人工视觉验收，不将截图生成等同视觉通过。
+    - id: check.backend-focused
+      required: true
+      category: regression
+      description: 实际独立执行七个后端聚焦套件；运行通过与fixture资格缺陷分别记录。
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -o -Dmaven.repo.local=/workspace/.pr6-m2 -Dtest=ProductionExecutionAvailabilityTest,ProductionExecutionEngineTest,ExecutionFormCopiesTest,ExecutionOutputSummaryTest,ProductionQualitySummaryTest,ProductionExecutionFormValuesTest,BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - Maven退出0，BUILD SUCCESS；145 tests，0 failures/errors/skipped；包含新增读取4项与知识89项。
+        - /tmp/edhr-w2-availability-independent/backend-focused.log
+        - /tmp/edhr-w2-availability-independent/backend-case-index.json
+        - 包括不一致fixture在内的运行结果仅证明当前断言通过；本次不因此批准候选。
+    - id: check.protected-sources-and-tools
+      required: true
+      category: audit
+      description: 所有已启动进程完成后，独立验证源码与环境工具零修改。
+      method: command
+      command: 对1799个tracked路径及mvn-edhr/settings.xml在执行前后分别计算SHA256并对比
+      outcome: passed
+      evidence:
+        - 1799个tracked文件及2个环境工具逐项摘要相同；HEAD、目标引用均未变化，git status为空。
+        - before/after manifest SHA256均为3947cfd13c39d60636304c74ae4d229b347fe525dc6797d98d87da5ab7ca9f88。
+        - /tmp/edhr-w2-availability-independent/manifest-comparison.json
+        - 本实例没有修改源码、测试、知识、配置，没有commit/push，没有查询或触发GitHub Actions。
+  findings:
+    - id: QF-W2-AVAILABILITY-001
+      severity: medium
+      scope: W2读取回归的测试fixture装配与证据准确性
+      summary: 两个SN到达分支的冻结上下文与mock生产对象类型不一致，需修正后重新形成合法链验收。
+      reproductionSteps:
+        - 在受测0346f410提交读取ProductionExecutionAvailabilityTest.java第37至38行，实体objectType固定为BATCH。
+        - 读取reachedWorkCopyAndMultipleConfiguredCopiesKeepTheirActualStatusAndIdentity及optionalUnfinishedWorkCopyIsNotRelabeledNotApplicableWhenWorkAndOperationEnd，两项都调用snapshot("SN")。
+        - 读取snapshot helper，它只向快照context写入SN，未同步实体objectType；public get返回该mock实体与快照组合。
+      expectedResult: 验收fixture的生产对象类型与用于合法引擎推进的冻结上下文类型一致，两项SN边界能代表相同真实生产对象。
+      actualResult: 两项读取测试将BATCH实体与SN快照配对；由于当前读取投影不校验该属性，所有断言仍通过，证据装配不满足声明的对象一致性。
+      evidence:
+        - /tmp/edhr-w2-availability-independent/fixture-review.json
+        - /tmp/edhr-w2-availability-independent/backend-case-index.json
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionAvailabilityTest.java:38
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionAvailabilityTest.java:80
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionAvailabilityTest.java:99
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.review-stopped-before-complete
+      description: 主审决定先修复fixture，本轮按其要求停止新检查并以failed收尾；仅上列已启动检查实际完成。
+      impact: 未执行构建、独立H2 HTTP回归、旧基线红测、全局premium/ESLint复查、人工截图检查及完整规则/覆盖清单核对；不得将这些工作记为passed或环境blocked。
+      mitigation: 由主审修正fixture、固定新提交并完成基础回归，再由全新质量实例完成全部适用验收。
+    - id: risk.fixture-versus-production-boundary
+      description: 浏览器使用实际组件及受控只读props，新增服务测试使用真实引擎但仓储/身份为mock。
+      impact: 不证明PostgreSQL首次START并发、真实生产数据库端到端、迁移、全站移动端或WCAG合规。
+      mitigation: 后续按相关风险单独安排；不复用历史通过证明本次未执行场景。
+    - id: risk.whole-audit-and-record-control-deferred
+      description: 本次提前收尾的局部结果不表示完整W2、W3至W7或全分支审查完成；A12变更/作废与旧DHR high按既定范围仍保留。
+      impact: 不提供发布、部署或全分支合并许可。
+      mitigation: 继续仓库台账中的分批审查和用户已确认的依赖安排。
+  blockingConditions: []

@@ -146,13 +146,13 @@ export default function ExecutionFormSelector(props: Props) {
     const group = copies[form.id]; const active = form.id === selectedId; const users = editors ? Object.values(editors[form.id] ?? {}) : null;
     const arrived = Boolean(group?.instanceIds.length);
     const workCompleted = form.workId && workStates?.[form.workId]?.status === 'COMPLETED';
-    const status = group?.status ?? (operationStatus !== 'IN_PROGRESS' ? 'WAITING_OPERATION_START' : workCompleted ? 'NOT_APPLICABLE' : form.workId ? 'WAITING_WORK_NODE' : 'PENDING');
+    const status = group?.status ?? (workCompleted ? 'NOT_APPLICABLE' : operationStatus !== 'IN_PROGRESS' ? 'WAITING_OPERATION_START' : form.workId ? 'WAITING_WORK_NODE' : 'PENDING');
     const required = group?.required ?? form.required ?? true;
     return <Box key={form.id} role="listitem" className={`execution-form-selector-row${active ? ' is-selected' : ''}${arrived ? '' : ' is-planned'}`}>
       <button type="button" className="execution-form-selector-target" disabled={busy} aria-current={active || undefined} onClick={() => onSelect(form.id)}>
         <span className="execution-form-selector-title-row"><span className="execution-form-selector-name" title={form.name}>{form.name}</span><span className="execution-form-status" data-status={status}>{statusLabel(status)}</span></span>
         <span className="execution-form-selector-code" title={`表单编码：${form.code || '—'}`}>{form.code || '编码未设置'}</span>
-        <span className="execution-form-selector-meta"><span title={`版本：${form.version || '—'}`}>版本 {form.version || '—'}</span><span>共 {group?.instanceIds.length ?? 0} 份</span>{form.sourceType === 'CUSTOM' && <span className="execution-form-scope">{form.scope === 'BATCH' ? '批次 · 跨工序' : '当前工序'}</span>}</span>
+        <span className="execution-form-selector-meta"><span title={`版本：${form.version || '—'}`}>版本 {form.version || '—'}</span>{arrived && <span>共 {group.instanceIds.length} 份</span>}{form.sourceType === 'CUSTOM' && <span className="execution-form-scope">{form.scope === 'BATCH' ? '批次 · 跨工序' : '当前工序'}</span>}</span>
         <span className="execution-form-corner" data-required={required}>{required ? '必填' : '选填'}</span>
       </button>
       {arrived && <EditorAvatars users={users} onClick={event => setPeople({ anchor: event.currentTarget, id: form.id })} />}
@@ -216,12 +216,13 @@ export default function ExecutionFormSelector(props: Props) {
             {expanded && <Box id={`work-forms-${work.id}`} role="list" aria-label={`${work.name}的全部表单`} className="execution-work-steps">
               {matches.map(form => {
                 const group = copies[form.id]; const isCurrent = current?.id === form.id; const completed = group?.status === 'COMPLETED';
-                const label = isCurrent ? status : completed ? '已完成' : group?.status === 'NOT_APPLICABLE' ? '不适用' : '未到达';
+                const label = isCurrent ? status : group?.instanceIds.length ? statusLabel(group.status)
+                  : group?.status === 'NOT_APPLICABLE' || workStates?.[work.id]?.status === 'COMPLETED' ? '不适用' : '未到达';
                 const users = editors ? Object.values(editors[form.id] ?? {}) : null;
                 return <Box role="listitem" key={form.id} className={`execution-work-step${form.id === selectedId ? ' is-selected' : ''}`}>
                   <button type="button" disabled={busy} aria-current={form.id === selectedId || undefined} onClick={() => onSelect(form.id, isCurrent ? instanceId : undefined)} className="execution-work-step-target"
                     aria-label={`${isCurrent ? '打开' : '预览'}${form.name}，第 ${stages[form.workNodeId ?? '']} 步，${label}`}
-                    title={`${form.code || '编码未设置'} · ${form.version || '—'} · ${group?.required ?? form.required ?? true ? '必填' : '选填'} · 共 ${group?.instanceIds.length ?? 0} 份`}>
+                    title={`${form.code || '编码未设置'} · ${form.version || '—'} · ${group?.required ?? form.required ?? true ? '必填' : '选填'}${group?.instanceIds.length ? ` · 共 ${group.instanceIds.length} 份` : ''}`}>
                     <span className="execution-work-step-order">{completed ? <CheckRounded /> : isCurrent ? <ArrowForwardRounded /> : <LockOutlined />}<span>{stages[form.workNodeId ?? '']}</span></span>
                     <span className="execution-work-step-name" title={form.name}>{form.name}</span><span className="execution-work-state" data-actionable={isCurrent && canAct}>{label}</span>
                   </button>

@@ -1,0 +1,128 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 41f19bca31a6232ae568dde073ef366c5d894e86
+    targetBranch: edhr-dev
+    targetCommit: 41f19bca31a6232ae568dde073ef366c5d894e86
+    contractReadCommit: 41f19bca31a6232ae568dde073ef366c5d894e86
+    uncommittedContractPaths: []
+  reason: >-
+    实际读取当前项目、角色、交接契约及知识基线，核对DEC-0047/0046/0059/0075与目标新增DEC-0079，未发现本批适用范围冲突。
+    依既有明确政策收敛同一计划/实例份数及只读状态差异，保留原静态审读当时未运行验收的原文，并另记本轮真实红绿证据。
+    只修改两份知识资产，未新增政策、关系、事实、执行契约或成熟度升级；本结果对应41f基线上的本批未提交差异，不是未来候选提交或独立质量结果。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml
+      changeType: update
+      ids:
+        - discrepancy.execution-form-plan-count-and-not-applicable-projection
+    - path: docs/knowledge/evidence/execution-form-selector.yaml
+      changeType: update
+      ids:
+        - evidence.execution-form-availability-read-regression
+        - evidence.execution-form-availability-selector-browser
+        - evidence.execution-form-availability-batch-validation
+  knowledgeSync:
+    - id: discrepancy.execution-form-plan-count-and-not-applicable-projection
+      disposition: updated
+      scope: >-
+        既有medium实现差异由open改resolved。无实例计划不显示实际份数，接口没有计划份数字段时不捏造1份；已有真实份优先保留进行中或完成状态，无份且对应作业已结束为不适用。
+        实际引擎到公开只读服务与实际React组件分别取得红绿证据，GET不写回持久化JSON。现存END_FORM兼容口只用于生成已有记录边界，不恢复已取消按钮或开放后续填报。
+        原历史静态审读未运行UI/实际实例回归的记录完整保留，不反填成当时通过。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionAvailabilityTest.java
+        - gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx
+        - gmp-platform/frontend/scripts/test-execution-form-selector-browser.mjs
+        - docs/development/branch-review-20261016-w2-form-availability/README.md
+        - docs/development/branch-review-20261016-w2-form-availability/evidence/primary/primary-result.json
+    - id: DEC-0047-01
+      disposition: retained
+      scope: 三类来源、计划可预览不可填、未到达与不适用、实际份数和聚合状态规范逐值未改；DEC-0047整体及声明维持specified/internal。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml
+    - id: DEC-0046-03
+      disposition: retained
+      scope: 非必填未完成份可在其他条件满足并告知后允许工序完工，但原未完成份和值保持进行中；不把工序完成投射为全部表单完成。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0046-production-form-copies.yaml
+        - docs/knowledge/decisions/DEC-0059-production-form-auto-finish.yaml
+    - id: DEC-0059-03
+      disposition: retained
+      scope: 作业已有份全部最终完成才自动推进；空集合不冒充完成。当前只读投影修复不改变自动收尾、审批或后续节点契约。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0059-production-form-auto-finish.yaml
+    - id: DEC-0075-05
+      disposition: retained
+      scope: 自定义已有未完成份的原因、权限、汇总阶段限制及生产完成事实保持；本批未修改继续填报或A12授权关闭路径。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml
+    - id: DEC-0079
+      disposition: retained
+      scope: 目标新增数量决策全部保留；独立指标、真实工序/最终工序范围、正式与已保存来源分层、不同单位不相加及旧数据保护不变。旧数量展示测试断言只按当前已确认主值/明细规则修正，不改数量业务代码或知识规则。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+        - docs/knowledge/rules/production-form-copies.yaml
+    - id: question.record-control-active-form-void-boundary
+      disposition: deferred
+      scope: 用户已决定暂缓表单变更/作废及其DHR依赖，开放问题与两项旧DHR high继续保留；本批不关闭A12、不定义活动表单作废资格，不阻塞无依赖的只读投影整改。
+      sourceReferences:
+        - docs/knowledge/open-questions.yaml
+        - docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.w2-availability-focused-structure
+      checkType: schema
+      command: python /tmp/edhr-w2-availability-ontology-validate.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w2-availability-ontology-structure.json
+        - SHA256 e8dcbe2107380174f018b7904e41e7b46360434acfbfacc8fdc91ee03edbc89c
+        - 修改YAML可解析、知识版本保持0.3.25；结构遍历2516个记录ID无重复，不代表2516条语义审查。
+    - id: validation.w2-availability-policy-history-preservation
+      checkType: status-transition
+      command: python /tmp/edhr-w2-availability-ontology-validate.py
+      outcome: passed
+      evidence:
+        - DEC-0047除implementationDiscrepancies外与41f原文解析值完全一致，原三个evidence记录逐值不变。
+        - 原静态审读summary完整保留为历史原文，当前差异单独open至resolved，不提高既有规则或决策成熟度。
+    - id: validation.w2-availability-references-and-paths
+      checkType: evidence-path
+      command: python /tmp/edhr-w2-availability-ontology-validate.py
+      outcome: passed
+      evidence:
+        - 新增三个evidence ID唯一可解析，backend测试、browser脚本、本轮README及primary-result实际存在。
+        - 报告与主侧结果注明fixture/mock、只读边界、独立质量尚待新实例及全W2未完成，不冒充HTTP或数据库端到端。
+    - id: validation.w2-availability-source-and-runtime-evidence
+      checkType: projection
+      command: 核对两处生产源码diff、实际backend红绿日志与browser-red.json/browser-green.json
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w2-availability-evidence/backend-red-final.log
+        - /tmp/edhr-w2-availability-evidence/backend-green.log
+        - /tmp/edhr-w2-availability-evidence/browser-red.json
+        - /tmp/edhr-w2-availability-evidence/browser-green.json
+        - 合法engine到public service.get红测4项唯一失败NOT_APPLICABLE实际WAITING_OPERATION_START，修后4项通过；实际组件原5场景4失败1通过，最终6场景全部通过。
+        - 本角色只读取源码和主侧运行证据，不参与生产/测试修复，不把本体核对冒充独立QA。
+    - id: validation.w2-availability-final-formal-knowledge
+      checkType: schema
+      command: 主智能体执行Maven BusinessKnowledgeModelTest；本角色实际核对knowledge-final.log及其SHA256
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w2-availability-evidence/knowledge-final.log
+        - SHA256 12800836e4266bdd3ee69840927eda57000dc163e174b0ebe59071d37ae013f6
+        - 新增知识文件与报告路径实际存在后于2026-10-16T05:20:52Z完成，89 tests/0 failures/0 errors/0 skipped，BUILD SUCCESS；执行者为主智能体，不冒称本角色重跑。
+    - id: validation.w2-availability-knowledge-whitespace
+      checkType: evidence-path
+      command: git diff --check -- docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml docs/knowledge/evidence/execution-form-selector.yaml
+      outcome: passed
+      evidence:
+        - 命令退出0，无本轮知识差异空白错误。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]
