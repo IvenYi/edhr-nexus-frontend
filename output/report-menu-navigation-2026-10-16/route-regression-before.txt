@@ -1,0 +1,142 @@
+✖ 表单追溯: report navigation and reload keep the records module (0.992625ms)
+✖ DHR追溯: report navigation and reload keep the records module (0.067584ms)
+✖ 报工记录: report navigation and reload keep the records module (0.054167ms)
+✖ 报废记录: report navigation and reload keep the records module (0.040959ms)
+✖ 消耗记录: report navigation and reload keep the records module (0.044542ms)
+✖ legacy report entry belongs to records before redirecting to form trace (0.092041ms)
+✔ existing non-report module routes keep their ownership (0.064792ms)
+✔ unknown paths and similar prefixes do not claim another module (0.035042ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 2
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4.223083
+
+✖ failing tests:
+
+test at scripts/test-report-menu-navigation.mjs:32:3
+✖ 表单追溯: report navigation and reload keep the records module (0.992625ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  'home' !== 'records'
+
+      at TestContext.<anonymous> (file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-report-menu-navigation.mjs:34:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.start (node:internal/test_runner/test:1096:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'home',
+    expected: 'records',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/test-report-menu-navigation.mjs:32:3
+✖ DHR追溯: report navigation and reload keep the records module (0.067584ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  'home' !== 'records'
+
+      at TestContext.<anonymous> (file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-report-menu-navigation.mjs:34:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'home',
+    expected: 'records',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/test-report-menu-navigation.mjs:32:3
+✖ 报工记录: report navigation and reload keep the records module (0.054167ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  'home' !== 'records'
+
+      at TestContext.<anonymous> (file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-report-menu-navigation.mjs:34:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'home',
+    expected: 'records',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/test-report-menu-navigation.mjs:32:3
+✖ 报废记录: report navigation and reload keep the records module (0.040959ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  'home' !== 'records'
+
+      at TestContext.<anonymous> (file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-report-menu-navigation.mjs:34:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'home',
+    expected: 'records',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/test-report-menu-navigation.mjs:32:3
+✖ 消耗记录: report navigation and reload keep the records module (0.044542ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  'home' !== 'records'
+
+      at TestContext.<anonymous> (file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-report-menu-navigation.mjs:34:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'home',
+    expected: 'records',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts/test-report-menu-navigation.mjs:39:1
+✖ legacy report entry belongs to records before redirecting to form trace (0.092041ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  'home' !== 'records'
+
+      at TestContext.<anonymous> (file:///Users/ivenwang/Documents/edhr-nexus/gmp-platform/frontend/scripts/test-report-menu-navigation.mjs:40:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'home',
+    expected: 'records',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

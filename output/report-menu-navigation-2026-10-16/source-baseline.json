@@ -1,0 +1,8 @@
+{
+  "head": "0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d",
+  "sourceSha256": "61289d0cb45f772a2604840430764c42ead20060fe8a5c1d263572645719ca88",
+  "baselinePermissionClause": "  if (isPathSegmentMatch(path, '/form-management') || isProjectionReportPath(path)) return [code, 'production.execution'];",
+  "currentPermissionClause": "  if (isPathSegmentMatch(path, '/form-management') || isProjectionReportPath(path)) return [code, 'production.execution'];",
+  "baselineContainsLegacyAssertion": false,
+  "scope": "Runtime code changes only: registered report ownership and route navigation synchronization. Permissions are unchanged."
+}

@@ -1,0 +1,72 @@
+decisionPackage:
+  id: DEC-PACKAGE-REPORT-MENU-NAVIGATION-20261016
+  scope: app-shell report route module selection
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d
+    targetBranch: edhr-dev
+    targetCommit: 0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d
+    contractReadCommit: 0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d
+    uncommittedContractPaths: []
+  summary: 修复报表正文正确但左栏分栏回到首页；五个报表与旧别名统一归属记录模块。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.report-menu-fallback
+      statement: 现有路径推断遗漏报表，默认回退home；选中模块与面包屑分别取值导致不一致。同步effect仅依赖推断模块ID，手动浏览别的分栏后在同模块内切标签也不会重新同步。
+      rationale: 原始录屏6秒后与修复前3000实测一致，getModuleIdByPath缺少reports，而findRouteModule可定位真实菜单。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  ontologyResult:
+    result: not-applicable
+    reason: 仅补齐已有注册报表路径的左栏模块选中逻辑，不改变追溯、统计、权限、数据或业务政策；无需派发本体更新。
+  impactAnalysis:
+    level: L1
+    directImpacts:
+      - area: app-shell
+        change: 所有注册报表及旧报表别名的自动模块识别返回records；同步effect依赖实际导航location.key，覆盖同模块及重复选择当前标签，防止左栏停留在手动浏览的其他模块；仅浏览模块菜单而未导航时仍保留手动选择。
+        evidenceReferences: [gmp-platform/frontend/src/components/shared/AppLayout.tsx, gmp-platform/frontend/src/utils/menuManagement.ts]
+    transitiveImpacts: []
+    potentialImpacts:
+      - area: sidebar-tabs
+        concern: 需验证其他模块、手动浏览模块菜单、标签切换及浏览器历史不受影响。
+        evidenceReferences: [gmp-platform/frontend/src/components/shared/AppLayout.tsx]
+    unaffectedAreas: [报表查询和数据、API、权限、签署、生产/DHR生命周期、数据库]
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts: []
+    permissionImpacts: []
+    testImpacts: [8项路径归属回归、前端构建、五报表进入/刷新/标签切换实测、相邻模块与手动模块浏览检查]
+    evidenceGaps: []
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在既有布局路径解析器复用报表注册表判断，不在各报表页重复设置分栏，不新增状态或持久化配置。
+    ownershipBoundaries: [AppLayout负责分栏选中，menuManagement提供已有注册路径，报表页面不承担外壳导航状态]
+  affectedFiles:
+    - path: gmp-platform/frontend/src/components/shared/AppLayout.tsx
+      changeType: update
+      reason: 补齐报表路径归属
+    - path: gmp-platform/frontend/scripts/test-report-menu-navigation.mjs
+      changeType: create
+      reason: 执行真实路径解析器，防止五报表和旧别名回退首页
+  acceptanceScenarios:
+    - id: scenario.reports-retain-records-sidebar
+      given: 刷新工作台后进入其他模块页面，再从记录菜单进入任一报表
+      when: 页面跳转、刷新或使用已打开标签切换
+      then: 正文、面包屑、记录分栏及对应报表菜单一致，保留其他报表入口
+      evidenceRequirements: [实际3000只读交互、截图及DOM记录]
+    - id: scenario.manual-module-browsing
+      given: 正在查看报表
+      when: 点击另一模块图标但尚未选择该模块页面
+      then: 允许浏览该模块菜单，当前正文保持；实际进入新页面时按路径选择正确模块
+      evidenceRequirements: [实际3000只读交互]
+  primaryVerification:
+    routeRegression: 修复前6失败/2通过，修复后8通过，0失败/跳过。
+    build: npm run build通过。
+    legacyShellVerifier: verify-app-shell-topbar.mjs有1项既有静态字符串断言失败；原有权限判断已加入报表OR分支，脚本仍要求旧整行文本。本次不改权限或放宽该历史断言，另记录基线核对。
+    originalVideo: 用户PixPin_2026-10-16_22-12-21.mp4共10秒；逐秒精确帧核对，2至4秒数据菜单正常，5秒记录分栏，6秒表单追溯正文出现而分栏退回首页，与3000复现一致。
+    browserEvidence: output/report-menu-navigation-2026-10-16/main-browser-facts.json记录五报表菜单及刷新、跨模块标签、前进后退和旧别名；final-tab-navigation.json补充最终location.key实现的同模块不同标签及重复当前标签实测，均正确。

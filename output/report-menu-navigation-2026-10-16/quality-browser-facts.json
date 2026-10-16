@@ -1,0 +1,898 @@
+[
+  {
+    "label": "form-trace-menu-entry",
+    "breadcrumb": "记录报表表单追溯",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "表单追溯"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/production/execution",
+        "text": "生产工作台"
+      },
+      {
+        "path": "/production/work-orders",
+        "text": "工单管理"
+      },
+      {
+        "path": "/reports/form-trace",
+        "text": "表单追溯"
+      }
+    ],
+    "url": "http://localhost:3000/reports/form-trace"
+  },
+  {
+    "label": "form-trace-reload",
+    "breadcrumb": "记录报表表单追溯",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "表单追溯"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/form-trace",
+        "text": "表单追溯"
+      }
+    ],
+    "url": "http://localhost:3000/reports/form-trace"
+  },
+  {
+    "label": "DHR追溯-menu-entry",
+    "breadcrumb": "记录报表DHR追溯",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "DHR追溯"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/form-trace",
+        "text": "表单追溯"
+      },
+      {
+        "path": "/reports/dhr-trace",
+        "text": "DHR追溯"
+      }
+    ],
+    "url": "http://localhost:3000/reports/dhr-trace"
+  },
+  {
+    "label": "DHR追溯-reload",
+    "breadcrumb": "记录报表DHR追溯",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "DHR追溯"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/dhr-trace",
+        "text": "DHR追溯"
+      }
+    ],
+    "url": "http://localhost:3000/reports/dhr-trace"
+  },
+  {
+    "label": "报工记录-menu-entry",
+    "breadcrumb": "记录报表报工记录",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "报工记录"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/dhr-trace",
+        "text": "DHR追溯"
+      },
+      {
+        "path": "/reports/production-records",
+        "text": "报工记录"
+      }
+    ],
+    "url": "http://localhost:3000/reports/production-records"
+  },
+  {
+    "label": "报工记录-reload",
+    "breadcrumb": "记录报表报工记录",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "报工记录"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/production-records",
+        "text": "报工记录"
+      }
+    ],
+    "url": "http://localhost:3000/reports/production-records"
+  },
+  {
+    "label": "报废记录-menu-entry",
+    "breadcrumb": "记录报表报废记录",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "报废记录"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/production-records",
+        "text": "报工记录"
+      },
+      {
+        "path": "/reports/scrap-records",
+        "text": "报废记录"
+      }
+    ],
+    "url": "http://localhost:3000/reports/scrap-records"
+  },
+  {
+    "label": "报废记录-reload",
+    "breadcrumb": "记录报表报废记录",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "报废记录"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/scrap-records",
+        "text": "报废记录"
+      }
+    ],
+    "url": "http://localhost:3000/reports/scrap-records"
+  },
+  {
+    "label": "消耗记录-menu-entry",
+    "breadcrumb": "记录报表消耗记录",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "消耗记录"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/scrap-records",
+        "text": "报废记录"
+      },
+      {
+        "path": "/reports/consumption-records",
+        "text": "消耗记录"
+      }
+    ],
+    "url": "http://localhost:3000/reports/consumption-records"
+  },
+  {
+    "label": "消耗记录-reload",
+    "breadcrumb": "记录报表消耗记录",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "消耗记录"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/consumption-records",
+        "text": "消耗记录"
+      }
+    ],
+    "url": "http://localhost:3000/reports/consumption-records"
+  },
+  {
+    "label": "manual-data-menu-browse",
+    "breadcrumb": "记录报表消耗记录",
+    "menu": "eDHR 系统\n\n数据\n\n工艺建模\n\n物料管理\n工序管理\n工艺路线\n产品管理\n产品簇\n文档管理\n\n模板建模\n\n表单模板\n批记录模板\n\n工厂建模\n\n车间管理\n\n设备建模\n\n设备类型\n设备列表",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/consumption-records",
+        "text": "消耗记录"
+      }
+    ],
+    "url": "http://localhost:3000/reports/consumption-records"
+  },
+  {
+    "label": "repeat-active-report-tab",
+    "breadcrumb": "记录报表消耗记录",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "消耗记录"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/consumption-records",
+        "text": "消耗记录"
+      }
+    ],
+    "url": "http://localhost:3000/reports/consumption-records"
+  },
+  {
+    "label": "manual-production-browse-form-trace",
+    "breadcrumb": "记录报表表单追溯",
+    "menu": "eDHR 系统\n\n生产\n\n生产准备\n\n工单管理\n批次管理\n\n生产执行\n\n生产工作台\n\n流程中心\n\n审批流程\n表单流程\n流程实例\n\n生产配置\n\n作业模板",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "生产"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/consumption-records",
+        "text": "消耗记录"
+      },
+      {
+        "path": "/reports/form-trace",
+        "text": "表单追溯"
+      }
+    ],
+    "url": "http://localhost:3000/reports/form-trace"
+  },
+  {
+    "label": "same-module-other-report-tab",
+    "breadcrumb": "记录报表消耗记录",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "消耗记录"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/consumption-records",
+        "text": "消耗记录"
+      },
+      {
+        "path": "/reports/form-trace",
+        "text": "表单追溯"
+      }
+    ],
+    "url": "http://localhost:3000/reports/consumption-records"
+  },
+  {
+    "label": "normal-work-orders-menu",
+    "breadcrumb": "生产生产准备工单管理",
+    "menu": "eDHR 系统\n\n生产\n\n生产准备\n\n工单管理\n批次管理\n\n生产执行\n\n生产工作台\n\n流程中心\n\n审批流程\n表单流程\n流程实例\n\n生产配置\n\n作业模板",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "生产"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "工单管理"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/consumption-records",
+        "text": "消耗记录"
+      },
+      {
+        "path": "/reports/form-trace",
+        "text": "表单追溯"
+      },
+      {
+        "path": "/production/work-orders",
+        "text": "工单管理"
+      }
+    ],
+    "url": "http://localhost:3000/production/work-orders"
+  },
+  {
+    "label": "cross-module-report-tab",
+    "breadcrumb": "记录报表表单追溯",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "表单追溯"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/consumption-records",
+        "text": "消耗记录"
+      },
+      {
+        "path": "/reports/form-trace",
+        "text": "表单追溯"
+      },
+      {
+        "path": "/production/work-orders",
+        "text": "工单管理"
+      }
+    ],
+    "url": "http://localhost:3000/reports/form-trace"
+  },
+  {
+    "label": "history-back-work-orders",
+    "breadcrumb": "生产生产准备工单管理",
+    "menu": "eDHR 系统\n\n生产\n\n生产准备\n\n工单管理\n批次管理\n\n生产执行\n\n生产工作台\n\n流程中心\n\n审批流程\n表单流程\n流程实例\n\n生产配置\n\n作业模板",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(24, 144, 255, 0.616)",
+        "name": "生产"
+      },
+      {
+        "background": "rgba(24, 144, 255, 0.384)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "工单管理"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/consumption-records",
+        "text": "消耗记录"
+      },
+      {
+        "path": "/reports/form-trace",
+        "text": "表单追溯"
+      },
+      {
+        "path": "/production/work-orders",
+        "text": "工单管理"
+      }
+    ],
+    "url": "http://localhost:3000/production/work-orders"
+  },
+  {
+    "label": "history-forward-form-trace",
+    "breadcrumb": "记录报表表单追溯",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(24, 144, 255, 0.15)",
+        "name": "生产"
+      },
+      {
+        "background": "rgba(24, 144, 255, 0.85)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "表单追溯"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/consumption-records",
+        "text": "消耗记录"
+      },
+      {
+        "path": "/reports/form-trace",
+        "text": "表单追溯"
+      },
+      {
+        "path": "/production/work-orders",
+        "text": "工单管理"
+      }
+    ],
+    "url": "http://localhost:3000/reports/form-trace"
+  },
+  {
+    "label": "normal-form-list",
+    "breadcrumb": "记录表单管理表单列表",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "表单列表"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/consumption-records",
+        "text": "消耗记录"
+      },
+      {
+        "path": "/reports/form-trace",
+        "text": "表单追溯"
+      },
+      {
+        "path": "/production/work-orders",
+        "text": "工单管理"
+      },
+      {
+        "path": "/form-management/list",
+        "text": "表单列表"
+      }
+    ],
+    "url": "http://localhost:3000/form-management/list"
+  },
+  {
+    "label": "legacy-report-alias",
+    "breadcrumb": "记录报表表单追溯",
+    "menu": "eDHR 系统\n\n记录\n\n表单管理\n\n表单列表\n表单填报\n表单审批\n\nDHR管理\n\nDHR列表\nDHR填报\nDHR汇总\nDHR审批\n\n报表\n\n表单追溯\nDHR追溯\n报工记录\n报废记录\n消耗记录",
+    "rail": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "首页"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "数据"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "生产"
+      },
+      {
+        "background": "rgb(24, 144, 255)",
+        "name": "记录"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "name": "系统"
+      }
+    ],
+    "selectedMenus": [
+      "表单追溯"
+    ],
+    "tabs": [
+      {
+        "path": "/",
+        "text": "首页"
+      },
+      {
+        "path": "/reports/form-projections",
+        "text": "记录"
+      },
+      {
+        "path": "/reports/form-trace",
+        "text": "表单追溯"
+      }
+    ],
+    "url": "http://localhost:3000/reports/form-trace"
+  }
+]

@@ -1,0 +1,120 @@
+qualityResult:
+  result: passed
+  baseCommit: 0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d
+  headCommit: 0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d
+  contractBaseline:
+    sourceCommit: 0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d
+    targetBranch: edhr-dev
+    targetCommit: 0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d
+    contractReadCommit: 0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/frontend/src/components/shared/AppLayout.tsx
+      - gmp-platform/frontend/scripts/test-report-menu-navigation.mjs
+      - docs/development/report-menu-navigation-2026-10-16.yaml
+      - docs/development/report-menu-navigation-quality-2026-10-16.yaml
+      - output/report-menu-navigation-2026-10-16/
+    excludedPaths:
+      - gmp-platform/frontend/output/
+      - output/下除report-menu-navigation-2026-10-16以外的既有未跟踪历史产物
+    untrackedPaths:
+      - gmp-platform/frontend/scripts/test-report-menu-navigation.mjs
+      - docs/development/report-menu-navigation-2026-10-16.yaml
+      - docs/development/report-menu-navigation-quality-2026-10-16.yaml
+      - output/report-menu-navigation-2026-10-16/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.report-navigation-contract-and-scope
+      required: true
+      category: requirements
+      description: 独立读取项目/质量/交接契约、知识README与未决问题，核对L1影响分析、内核扩展边界及本体不适用依据。
+      method: inspection
+      command: git rev-parse HEAD origin/edhr-dev; git diff --name-only e088c175 HEAD -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - 来源HEAD及origin/edhr-dev均为0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d；相对e088c175契约无增量，无未提交契约修改。
+        - 实际测试候选为该HEAD加workingTreeState列出的未提交改动，非已提交修复版本。
+        - 两处实现差异仅补充已注册报表所属records及导航时同步选中模块；未修改报表业务语义、查询、权限、API或数据，ontologyResult not-applicable合理。
+        - output/report-menu-navigation-2026-10-16/quality-source-baseline.json记录独立核对基线与被测文件SHA256。
+    - id: check.report-navigation-code-review
+      required: true
+      category: regression
+      description: 独立审查路径识别与React同步依赖，核对所有五报表、旧入口及手动浏览菜单行为。
+      method: inspection
+      command: git diff -- gmp-platform/frontend/src/components/shared/AppLayout.tsx
+      outcome: passed
+      evidence:
+        - getModuleIdByPath复用menuManagement既有isProjectionReportPath，覆盖五个精确路径及旧别名，不以宽泛前缀认领未知路径。
+        - location.key依赖覆盖跨模块、同模块及重复选择当前标签的导航；单独点击模块图标没有导航，仍允许浏览其他模块菜单。
+        - 两行局部修改未触及getLayoutPermissionCodes或权限过滤；不在各报表页面重复维护分栏状态。
+    - id: check.report-navigation-route-tests
+      required: true
+      category: unit
+      description: 独立执行真实路径解析器与注册表回归。
+      method: automated-test
+      command: cd gmp-platform/frontend && node scripts/test-report-menu-navigation.mjs
+      outcome: passed
+      evidence:
+        - 8项通过，0失败，0跳过；包括五报表、旧别名、原有模块及相似/未知路径。
+        - 测试通过TypeScript AST读取实际声明后运行，未复制路径解析实现。
+        - output/report-menu-navigation-2026-10-16/quality-route-regression.txt
+    - id: check.report-navigation-build
+      required: true
+      category: integration
+      description: 独立重跑完整前端目标构建。
+      method: command
+      command: cd gmp-platform/frontend && npm run build
+      outcome: passed
+      evidence:
+        - 命令退出0，Vite构建成功。
+        - output/report-menu-navigation-2026-10-16/quality-build.txt
+    - id: check.report-navigation-live-browser
+      required: true
+      category: e2e
+      description: 在3000使用独立隐藏浏览器页实际只读导航，回归五报表、标签与邻接菜单。
+      method: browser
+      command: CUA浏览器实际点击菜单、标签、刷新、前进和后退；DOM观察与截图留证。
+      outcome: passed
+      evidence:
+        - 从生产工作台刷新后进入工单管理，再浏览记录分栏并进入表单追溯；正文、面包屑、记录分栏和选中菜单一致。
+        - 表单追溯、DHR追溯、报工记录、报废记录、消耗记录分别从菜单进入并刷新，均保持记录分栏和对应选中菜单。
+        - 在报表正文手动浏览数据/生产菜单时正文保持；再次点击当前报表标签或同属记录的另一报表标签，正确回到记录菜单。
+        - 工单管理与报表跨模块标签切换、浏览器后退到工单及前进到表单追溯正常；普通表单列表菜单正常。
+        - 旧/reports/form-projections实际重定向/reports/form-trace且保持记录菜单。
+        - output/report-menu-navigation-2026-10-16/quality-browser-facts.json包含20个独立观察点的URL、分栏背景、选中菜单及已打开标签。
+        - output/report-menu-navigation-2026-10-16/quality-form-trace-sidebar.png
+        - 本轮只执行读取和导航，无表单填报、配置保存或业务记录修改动作；临时浏览器页已关闭。
+    - id: check.report-navigation-legacy-shell-verifier
+      required: false
+      category: regression
+      description: 独立复核旧外壳静态验证的既有失败，明确其不由本次修复引入。
+      method: command
+      command: node scripts/verify-app-shell-topbar.mjs；另在临时目录以git show HEAD恢复该脚本及其四项依赖后执行相同命令。
+      outcome: failed
+      evidence:
+        - 当前及原始HEAD均退出1，唯一相同失败为缺少旧权限判断整行字符串。
+        - HEAD及当前实际判断均为form-management或isProjectionReportPath时返回相同的权限合取；本次两行修复未修改该判断，未为通过验证放宽断言。
+        - output/report-menu-navigation-2026-10-16/quality-source-baseline.json记录独立临时基线重跑结果。
+    - id: check.report-navigation-diff-hygiene
+      required: true
+      category: documentation
+      description: 核对补丁卫生及未提交范围，无无关代码混入。
+      method: command
+      command: git diff --check; git diff --numstat -- gmp-platform/frontend/src/components/shared/AppLayout.tsx
+      outcome: passed
+      evidence:
+        - diff检查退出0；唯一已跟踪代码差异为AppLayout 2增1减。
+        - 质量实例未参与实现或测试修复，只新增本报告及独立验证产物。
+  findings: []
+  residualRisks:
+    - id: risk.preexisting-shell-static-verifier
+      description: 既有verify-app-shell-topbar.mjs依赖旧整行文本，因此全量外壳静态命令仍失败。
+      impact: 无法声称该历史静态检查全绿；本次路径回归、构建和实际导航验收已独立通过。
+      mitigation: 后续由实现方在独立范围维护该静态检查；本次保留失败原文及基线证据，不改权限或降低断言。
+    - id: risk.navigation-verification-boundary
+      description: 浏览器验证使用现有系统管理员，在3000开发环境验证导航；未运行全部权限组合或全系统业务流程。
+      impact: 当前结论限于局部导航修复及列明的相邻回归，不代表报表业务或权限系统全量验收。
+      mitigation: 权限代码、后端和业务数据均不在本次差异中；未来相关变更按对应风险另行验证。
+  blockingConditions: []

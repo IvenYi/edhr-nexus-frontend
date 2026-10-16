@@ -1,0 +1,15 @@
+{
+  "head": "0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d",
+  "originTarget": "0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d",
+  "contractDelta": "",
+  "baselineLegacyVerifier": {
+    "exitCode": 1,
+    "stdout": "",
+    "stderr": "App shell verification failed:\n- missing \"if (isPathSegmentMatch(path, '/form-management')) return [code, 'production.execution'];\" (form management routes should require both the records permission and production execution source permission)\n"
+  },
+  "sha256": {
+    "gmp-platform/frontend/src/components/shared/AppLayout.tsx": "61289d0cb45f772a2604840430764c42ead20060fe8a5c1d263572645719ca88",
+    "gmp-platform/frontend/scripts/test-report-menu-navigation.mjs": "4b42f86a9690579905306a5227cfc72d0721264df98bf41d78663fec13853bb0",
+    "docs/development/report-menu-navigation-2026-10-16.yaml": "102fd4b425a244390c79a5e860c8dc0edc0b2f72c16f951a27a695e53c38da09"
+  }
+}

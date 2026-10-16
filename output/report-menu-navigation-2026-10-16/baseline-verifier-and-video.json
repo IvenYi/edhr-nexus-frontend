@@ -1,0 +1,12 @@
+{
+  "baselineCommit": "0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d",
+  "baselineShellVerifier": {
+    "exitCode": 1,
+    "output": "App shell verification failed:\n- missing \"if (isPathSegmentMatch(path, '/form-management')) return [code, 'production.execution'];\" (form management routes should require both the records permission and production execution source permission)\n"
+  },
+  "originalVideo": {
+    "name": "PixPin_2026-10-16_22-12-21.mp4",
+    "sha256": "96344ace62b0827da5f3adcd43af38edd71f3b6b53fe0256a36ddf14e4dd90f9",
+    "durationSeconds": 10
+  }
+}
