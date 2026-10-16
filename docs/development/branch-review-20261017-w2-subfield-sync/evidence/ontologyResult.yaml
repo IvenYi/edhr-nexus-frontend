@@ -1,0 +1,101 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 37bc05ec268d1e0d2faf105c2f1c449caeb7ed46
+    targetBranch: edhr-dev
+    targetCommit: 37bc05ec268d1e0d2faf105c2f1c449caeb7ed46
+    contractReadCommit: 37bc05ec268d1e0d2faf105c2f1c449caeb7ed46
+    uncommittedContractPaths: []
+  reason: >-
+    本批是当前设计工作文档的确定性写入纠错：ModelTab原编辑路径已更新父子表的canonical columns，
+    但原syncBoundNodesForField只同步主字段，遗漏同父表及同子列ID的已放置组件副本。
+    修复在该既有函数中同步subTableField、标签和兼容组件类型，沿用原主字段的widget兼容规则，
+    复用updateField的一次完整document历史；没有新增或替代业务概念、关系、规则、生命周期、
+    权限、签署、审计或执行契约。当前编辑文档同步不等于读取最新配置替换既有执行快照，
+    也不等于自动迁移已保存的不一致模板或历史实例；DEC-0077-12和DEC-0077-22继续原义适用。
+    不存在需要同步的现行知识差异，知识版本、schema版本和成熟度均保持。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.w2-subfield.contract-and-baseline
+      checkType: reference
+      command: git branch --show-current; git rev-parse HEAD origin/edhr-dev; git diff --name-only 37bc05ec268d1e0d2faf105c2f1c449caeb7ed46 -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge docs/architecture/business-knowledge-model.md
+      outcome: passed
+      evidence:
+        - 实读AGENTS.md、codeplzreadme.md通用原则、本体角色契约及统一交接契约的基线和ontologyResult条款。
+        - 实际分支audit/edhr-dev-w2-subfield-sync-20261017；HEAD及本地origin/edhr-dev均为37bc05ec268d1e0d2faf105c2f1c449caeb7ed46。
+        - 读取时契约、知识及人员架构投影相对该提交均无未提交差异；未将主侧尚未提交修复编造为独立Git提交。
+        - 读取docs/knowledge/README.md现行基线、维护/成熟度边界，schema.yaml版本头及open-questions.yaml全部159行，实际0.3.25/schema1.2.0。
+        - 0e16363e至37bc05ec的实际路径增量为导航源码、导航测试和报告/输出，不涉及本批store、知识或协作契约。
+    - id: validation.w2-subfield.policy-source
+      checkType: reference
+      command: sed -n '1,120p' docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml; sed -n '80,89p' docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md; sed -n '337,356p' docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+      outcome: passed
+      evidence:
+        - DEC-0077-12及原始user-confirmed记录规定使用时冻结，新配置供新使用，不回写旧执行快照；没有投影专属手动发布或编辑禁令。
+        - DEC-0077-22及原始确认规定同一画布、配置和保存/撤销，当前命令同步沿用该所有权；未将其扩展为全部具体交互或客户低学习成本已获确认。
+        - relation.execution-snapshot-freezes-form-projection-configuration、fact.form-projection.source-configuration及anchor.form-projection.configuration-snapshot原定义与本批边界一致，均未修改。
+    - id: validation.w2-subfield.current-document-source
+      checkType: projection
+      command: git diff -- gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts; sed -n '1700,1850p' gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts; sed -n '2250,2297p' gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts
+      outcome: passed
+      evidence:
+        - ModelTab.updateSubTableFields将子列编辑提交给父表updateField；实读正常编辑分支没有通过字段名称猜测身份。
+        - 生产差异为13行新增/5行删除，按bindings.subTableId与parent fieldId、subTableFieldId与column.id匹配，仅更新命中的当前文档节点。
+        - 当前model、所有canvas页及递归子节点由原updateField/pushDocumentHistory共同形成下一document，原document留在undoStack；不原地覆盖旧document或拆成第二条历史。
+        - 缺失列或旧字符串columns不会在本修复内猜测ID、创建字段或删除节点；原projection、实际行身份、节点ID、布局和其他绑定无新增改写路径。
+        - 列status随embedded定义同步只是元数据一致性；未增加停用即隐藏、删除或生产阻断规则。有效widget覆盖保留，不兼容组件沿原主字段行为重置widgetConfig。
+        - MockFillDialog.resolveBoundField与FormDocumentPreview.renderField实际优先使用embedded subTableField；保留reader读取传入document，纠错发生在当前编辑写路径。
+    - id: validation.w2-subfield.frozen-source-boundary
+      checkType: projection
+      command: sed -n '150,199p' gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java; sed -n '175,226p' gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+      outcome: passed
+      evidence:
+        - 实读首次START由snapshots.build复制当时模板model/canvas，已有执行使用execution.getSnapshotJson；自定义附加保持原customForm使用时复制路径。
+        - 本批生产差异没有后端、持久化、来源索引、正式投影、权限或签署变更；不新增读时取最新模板替代历史document的路径。
+        - 以上为源码边界核对，不是本轮后端、数据库、真实签署或完整生产HTTP/JPA链运行验收。
+    - id: validation.w2-subfield.acceptance-scope
+      checkType: evidence-path
+      command: sed -n '1,240p' gmp-platform/frontend/scripts/test-designer-subfield-sync.mjs; git diff -- gmp-platform/frontend/scripts/test-designer-save-browser.mjs
+      outcome: passed
+      evidence:
+        - 已读取7个新store/SSR测试及2个真实ModelTab编辑浏览器场景的源码；既有7个浏览器场景没有被删除。
+        - 测试明确区分当前编辑定义与之前document，覆盖一次undo/redo、序列化重读、稳定ID/布局/投影、兼容覆盖和全页/递归节点。
+        - mock纸面和完整FormDocumentPreview的消费测试与canonical通用列表正对照分列，未用后者替代纸面链验证。
+        - 浏览器保存回调和GET为受控替身；测试源码不构成后端持久化、认证、签署或真实客户试用证据。
+        - 本体实例没有运行测试、构建、浏览器、数据库或官方premium扫描，不将主侧进度或旧84项扫描称为本轮独立运行通过。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]
+  reviewScope:
+    schemaVersion: 1.2.0
+    decisionPackageId: DEC-PACKAGE-20261017-W2-SUBFIELD-SYNC
+    decisionPackagePath: docs/development/branch-review-20261017-w2-subfield-sync/decision-package.yaml
+    workingTreeStatus: dirty
+    reviewedKnowledgeIds:
+      - DEC-0077-12
+      - DEC-0077-22
+      - relation.execution-snapshot-freezes-form-projection-configuration
+      - fact.form-projection.source-configuration
+      - anchor.form-projection.configuration-snapshot
+      - evidence.form-traceability-projection-ownership-user-confirmed
+    scopeLimits:
+      - 只核对当前子列同步纠错对现行政策、来源和冻结边界的影响；不是存量全库本体审计。
+      - 不新建政策、试点、运行知识契约，不提高业务规则成熟度或P0阶段。
+      - A12、两项旧DHR high及open-questions的其他未决范围继续保留，不由本结果关闭。
+      - 未自动修复或迁移已经保存但不一致的旧模板、来源表单、执行快照或历史投影。
+    inspectedWorkingTreeDigests:
+      - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts
+        sha256: 9beb8217a6e802508ebcbeeb10eebf99b49a1ab0a7e71a207d140694ff4084a3
+      - path: gmp-platform/frontend/scripts/test-designer-subfield-sync.mjs
+        sha256: 5363a42630517802de7dda4c1575455149b3c30d8f607c07b9dd44091ab11073
+      - path: gmp-platform/frontend/scripts/test-designer-save-browser.mjs
+        sha256: 506a68144b787765c176a4b13024cb2550818140ce678986d2107ecd059ef98e
+      - path: docs/development/branch-review-20261017-w2-subfield-sync/decision-package.yaml
+        sha256: b50fbb349a5af4cb70788b3cd8373762a4a0884b521ba826e848ab42c7cbd6a2

@@ -1,0 +1,110 @@
+{
+  "kind": "explicit-safe-artifact-whitelist",
+  "candidateCommit": "845b3a7f067e6d0fb54f77b73dcc8b3024d94f82",
+  "artifacts": [
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/qualityResult.yaml",
+      "relativePath": "qualityResult.yaml",
+      "bytes": 17057,
+      "sha256": "a0a9e2ef9dcc8c8ad0c0c7d08482e8cff95f94d0740e6161d6bfe0c50bcf9176"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/quality-format-validation.json",
+      "relativePath": "quality-format-validation.json",
+      "bytes": 332,
+      "sha256": "459d4e3666fe5611a80725b7f10846ed583b8a184f50a4006cb2e63148bf5d1a"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/browser.json",
+      "relativePath": "browser.json",
+      "bytes": 1846,
+      "sha256": "36498a70713a8005388ddf0d9b755680656ea2a7ab90c16474480443963418c6"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/node-cases.json",
+      "relativePath": "node-cases.json",
+      "bytes": 9961,
+      "sha256": "4b91d14badaa3330f092e217f28bca2028001d5450879dccfd10a2882e4d8a6d"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/expected-red-summary.json",
+      "relativePath": "expected-red-summary.json",
+      "bytes": 1428,
+      "sha256": "882f5eb2d4ab98e99484208e1fd8ce592611c7dd36d12b875f622410b4341357"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/runtime-summary.json",
+      "relativePath": "runtime-summary.json",
+      "bytes": 2922,
+      "sha256": "77986526206c906d45cd947fa1255865ba749349baf764c9a8c95563858cfc27"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/source-scope-receipt.json",
+      "relativePath": "source-scope-receipt.json",
+      "bytes": 2885,
+      "sha256": "f93bc2aed45388f178954be3657c954dd33ccab0dd4069c9e623277f0f59cf0a"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/baseline-inventory-check.json",
+      "relativePath": "baseline-inventory-check.json",
+      "bytes": 396,
+      "sha256": "295158218ca7a1c7df4af16979ce2071dd2a416a67c034bd6d1e1bd4914a63c3"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/protection-receipt.json",
+      "relativePath": "protection-receipt.json",
+      "bytes": 564,
+      "sha256": "14ca83edb34b657fd4fdfb2cc07bea3b0a5c09f9a5878f372a872d601970010b"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/official-audit-provenance.json",
+      "relativePath": "official-audit-provenance.json",
+      "bytes": 455,
+      "sha256": "1fc7a7cfdafa73b944d252039205abafd7c6602297fc80dcb695efeba44e7edf"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/premium-base.json",
+      "relativePath": "premium-base.json",
+      "bytes": 34357,
+      "sha256": "b56c9cad01fecc48fee4a5f0f8a8f6921b8e21de2647a8dd50f1d98e21733e2c"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/premium-candidate.json",
+      "relativePath": "premium-candidate.json",
+      "bytes": 34340,
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/premium-comparison.json",
+      "relativePath": "premium-comparison.json",
+      "bytes": 717,
+      "sha256": "970edf6cc9a49d2d857aab5a5cd2ec2713e8dd5ab03979f417e25e8005e4fb8d"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/screenshots/subfield-edit-1440.png",
+      "relativePath": "screenshots/subfield-edit-1440.png",
+      "bytes": 21474,
+      "sha256": "b2c4e726d162965d42ece8355e3f37e8a56305415863ebfaabf5868c9ccf829a"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/screenshots/subfield-edit-390.png",
+      "relativePath": "screenshots/subfield-edit-390.png",
+      "bytes": 12738,
+      "sha256": "96de6fe53aefc2bcadaba786141a8fd02c9a10da9c65cff78655fa5b2f7d647a"
+    },
+    {
+      "path": "/tmp/edhr-w2-subfield-independent/baseline-screenshots/subfield-edit-1440.png",
+      "relativePath": "baseline-screenshots/subfield-edit-1440.png",
+      "bytes": 21117,
+      "sha256": "783965b6e235299581c5f2ac1ce4fcb6d0b667b62c35a5094f6aa61b95ca2341"
+    }
+  ],
+  "excluded": [
+    "raw logs",
+    "raw SSR HTML/XML",
+    "full source files and official script",
+    "before/after full tracked/tool manifests",
+    "baseline-tree archive snapshot"
+  ],
+  "copyPolicy": "Only the listed original bytes may be copied into repository evidence; do not rewrite original reports."
+}

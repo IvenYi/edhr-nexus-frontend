@@ -229,6 +229,64 @@ try {
       assert.equal(await dirty(page), true);
     }, viewport);
   }
+  for (const viewport of [{ width: 1440, height: 960 }, { width: 390, height: 844 }]) {
+    await run(`subfield edit updates the placed control and saved definition at ${viewport.width}px`, async page => {
+      const seeded = await page.evaluate(() => {
+        const state = window.__store.getState();
+        const table = state.addField('subTable', '检验明细');
+        const [field] = state.addSubTableFields(table.id, [{ name: '旧编号', type: 'text' }]);
+        state.addSubTableRegionFromFieldToRange(table.id, { t: 2, b: 5, l: 2, r: 5 }, { left: 98, top: 36, width: 392, height: 144 });
+        state.addNodeFromSubTableFieldToCell(table.id, field, { range: { t: 3, b: 3, l: 3, r: 4 }, left: 196, top: 72, width: 196, height: 36 });
+        const document = window.__store.getState().document;
+        window.__store.getState().setDocument(document);
+        window.__store.getState().markSaved();
+        return { tableId: table.id, fieldId: field.id, before: JSON.stringify(document) };
+      });
+      await page.getByRole('button', { name: '字段设计', exact: true }).click();
+      await page.locator('[data-field-name-with-usage="true"]').getByText('检验明细', { exact: true }).hover();
+      await page.getByRole('button', { name: '设计子表', exact: true }).click();
+      await page.locator('[data-field-name-with-usage="true"]').getByText('旧编号', { exact: true }).hover();
+      await page.getByRole('button', { name: '编辑字段', exact: true }).click();
+      const editor = page.locator('[data-field-create-dialog="true"]');
+      await editor.getByLabel('字段名称', { exact: true }).fill('新数量');
+      await editor.getByText('文本', { exact: true }).click();
+      await page.getByRole('option', { name: '数字', exact: true }).click();
+      await editor.getByRole('button', { name: '保存修改', exact: true }).press('Enter');
+      await editor.waitFor({ state: 'hidden' });
+      await page.getByRole('button', { name: '返回上一层', exact: true }).click();
+      await page.getByRole('button', { name: '表单设计', exact: true }).click();
+      await page.getByRole('button', { name: '模拟填报', exact: true }).click();
+      const mock = page.locator('[data-mock-fill-dialog="true"]');
+      await mock.waitFor({ state: 'visible' });
+      if (process.env.W2_SCREENSHOT_DIR) {
+        await mkdir(process.env.W2_SCREENSHOT_DIR, { recursive: true });
+        await page.screenshot({ path: path.join(process.env.W2_SCREENSHOT_DIR, `subfield-edit-${viewport.width}.png`), animations: 'disabled' });
+      }
+      const placeholders = await mock.locator('input[placeholder]').evaluateAll(inputs => inputs.map(input => input.getAttribute('placeholder')));
+      assert.ok(placeholders.includes('新数量'), 'actual mock paper uses the edited column name');
+      assert.ok(!placeholders.includes('旧编号'), 'actual mock paper cannot retain the former name');
+      const control = mock.getByPlaceholder('新数量', { exact: true }).first();
+      assert.equal(await control.getAttribute('inputmode'), 'decimal');
+      await control.fill('42');
+      assert.equal(await control.inputValue(), '42');
+      await mock.getByRole('button', { name: '关闭模拟填报', exact: true }).press('Enter');
+      await page.getByRole('button', { name: '撤销', exact: true }).click();
+      assert.equal(await page.evaluate(() => JSON.stringify(window.__store.getState().document)), seeded.before);
+      await page.getByRole('button', { name: '重做', exact: true }).click();
+      await submit(page, 1); await settle(page, 0);
+      const saved = await page.evaluate(({ tableId, fieldId }) => {
+        const payload = window.__requests[0].payload;
+        const model = JSON.parse(payload.modelDesignJson).payload;
+        const canvas = JSON.parse(payload.canvasDesignJson).payload;
+        return { column: model.fields.find(field => field.id === tableId).typeConfig.columns.find(field => field.id === fieldId),
+          node: canvas.pages[0].nodes.find(node => node.bindings?.subTableFieldId === fieldId) };
+      }, seeded);
+      assert.equal(saved.column.name, '新数量');
+      assert.equal(saved.node.bindings.subTableField.name, saved.column.name);
+      assert.equal(saved.node.bindings.subTableField.type, 'number');
+      assert.equal(saved.node.bindings.subTableFieldId, seeded.fieldId);
+    }, viewport);
+  }
   const result = { kind: 'actual-shell-and-canvas-with-controlled-save-callback', baseline: baseline ?? null, results };
   if (process.env.W2_RESULT_PATH) await writeFile(process.env.W2_RESULT_PATH, JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify(result, null, 2));

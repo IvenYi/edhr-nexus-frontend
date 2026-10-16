@@ -1,0 +1,70 @@
+supplementalReview:
+  result: passed
+  executionLevel: L0
+  reviewer: /root/w2_subfield_independent_final
+  testedCandidateCommit: 845b3a7f067e6d0fb54f77b73dcc8b3024d94f82
+  reviewedDeliveryCommit: 2ae06d4aed42aa8c7d449fbcd86038eb5c8240dd
+  scope: 独立质量验收后的四项报告文档、原始安全证据归档及W2-QF-001定位笔误复核。
+  workingTreeState: clean
+  knowledgeBaselineVersion: 0.3.25
+  contractAndKnowledgeChanged: false
+  runtimeChecksRepeated: false
+  originalQualityResult:
+    result: passed
+    headCommit: 845b3a7f067e6d0fb54f77b73dcc8b3024d94f82
+    path: docs/development/branch-review-20261017-w2-subfield-sync/evidence/independent/qualityResult.yaml
+    sha256: a0a9e2ef9dcc8c8ad0c0c7d08482e8cff95f94d0740e6161d6bfe0c50bcf9176
+    bytes: 17057
+    originalBytesPreserved: true
+    originalOpenFindingNotRewritten: true
+  checks:
+    - id: check.l0-change-scope
+      outcome: passed
+      method: read-only git diff --name-status and full four-document diff
+      evidence:
+        - 相对845b3a7f仅修改README.md、findings.yaml、source-map.md及持续台账NEXT.md四项文档。
+        - 新增18项均为16个白名单原始安全产物、原safe-artifacts.json以及delivery-receipt.json。
+        - 原1912个tracked中除上述四文档外1908个文件bytes/SHA256完全不变；源码、测试、知识、契约及原主侧证据均未改动。
+        - 两项环境工具bytes/SHA256不变；未读取或输出配置内容。
+    - id: check.l0-original-evidence-copies
+      outcome: passed
+      method: compare original /tmp whitelist and all copied repository artifact bytes/SHA256
+      evidence:
+        - 16个白名单产物逐一与原/tmp文件、原bytes及SHA256精确匹配。
+        - safe-artifacts.json本身原字节一致，SHA256为f4f7eb28f193e900ec267de8b2b58bfdd8132e4d50964159cc3a91adff18680c。
+        - 原qualityResult内容及SHA256不变，仍保留W2-QF-001在原候选时的open事实；本补充记录真实后续处置。
+    - id: check.l0-acceptance-statements
+      outcome: passed
+      method: inspect updated README/NEXT/findings against original qualityResult and safe runtime summaries
+      evidence:
+        - 机器重新计数qualityResult必需检查为11项，11项均passed；README及NEXT现在同为11项。
+        - 原node-cases/runtime/browser证据为109 Node、9实际Chromium及完整构建通过；文档未重复累加两实例运行数。
+        - 主侧官方扫描当时不可用记录保持；独立后续恢复后实际base/candidate各84项且逐项相同、strict退出2的事实单独追加。
+        - 全局lint/vendor/premium未通过、受控保存回调、窄视口边界、A12及两旧DHR high、未完成W2范围继续披露。
+    - id: check.l0-qf001-correction
+      outcome: passed
+      method: inspect committed source-map line16 and actual tracked Shell definition line102
+      evidence:
+        - source-map.md第16行现为TemplateDesignerReactShell.tsx persistCurrentDocument:102。
+        - 实际gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx第102行定义const persistCurrentDocument。
+        - 此次只更正文档文件名及定位行号，未修改实际Shell或其他产品/测试文件。
+  findingDispositions:
+    - id: W2-QF-001
+      severity: low
+      resolutionStatus: resolved
+      resolvedBy: primary-agent
+      independentlyVerifiedBy: /root/w2_subfield_independent_final
+      resolutionEvidence:
+        - type: commit
+          reference: 2ae06d4aed42aa8c7d449fbcd86038eb5c8240dd
+        - type: document
+          reference: docs/development/branch-review-20261017-w2-subfield-sync/source-map.md:16
+        - type: command
+          reference: read-only git diff 845b3a7f067e6d0fb54f77b73dcc8b3024d94f82 2ae06d4aed42aa8c7d449fbcd86038eb5c8240dd; actual Shell source line102 inspection
+  findings: []
+  blockingConditions: []
+  scopeLimits:
+    - 本次只读L0补充不替代原候选845b3a7f的109/9、构建或官方扫描证据。
+    - 未重新运行Node、浏览器、构建、官方扫描、后端或数据库测试，未更改其结果。
+    - 全局静态限制及其他既存/暂缓范围继续按原qualityResult披露。
+    - 本实例未修改仓库、提交、推送、查询或触发GitHub Actions、合并、部署或恢复历史数据。

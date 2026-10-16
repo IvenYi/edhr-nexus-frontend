@@ -1,0 +1,224 @@
+qualityResult:
+  result: passed
+  baseCommit: 37bc05ec268d1e0d2faf105c2f1c449caeb7ed46
+  headCommit: 845b3a7f067e6d0fb54f77b73dcc8b3024d94f82
+  contractBaseline:
+    sourceCommit: 845b3a7f067e6d0fb54f77b73dcc8b3024d94f82
+    targetBranch: edhr-dev
+    targetCommit: 37bc05ec268d1e0d2faf105c2f1c449caeb7ed46
+    contractReadCommit: 845b3a7f067e6d0fb54f77b73dcc8b3024d94f82
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.independent-baseline-and-contract
+      required: true
+      category: documentation
+      description: 独立核对实时目标、候选、契约增量及审查清单分母。
+      method: command
+      command: git ls-remote origin refs/heads/edhr-dev; git rev-parse HEAD; read-only path/blob CSV comparison and contract diff
+      outcome: passed
+      evidence:
+        - 实时目标base为37bc05ec268d1e0d2faf105c2f1c449caeb7ed46，功能head及实际tested候选为845b3a7f067e6d0fb54f77b73dcc8b3024d94f82；测试前后HEAD不变且工作树clean。
+        - 候选为目标的后继，无目标之外未集成提交；PR13 merge 0e16363e的tree精确等于已批准交付6d4cd54f。
+        - 实读AGENTS.md、质量角色、统一交接契约、codeplzreadme通用原则；base至候选无契约、知识、人员架构或DESIGN.md差异。
+        - baseline-inventory-check.json记录1894条基线路径/blob精确匹配，全部pending/inventory-only；候选1912 tracked，新增18条单列，不宣称W2或全仓已审完。
+    - id: check.requirements-source-and-ownership
+      required: true
+      category: requirements
+      description: 原始源码核对合法编辑入口、修复所有权、消费链、兼容与冻结边界。
+      method: inspection
+      command: inspect ModelTab/updateField/syncBoundNodesForField, registry, Inspector, mock/full paper, serialization, Shell, execution snapshot boundaries and current decisionPackage
+      outcome: passed
+      evidence:
+        - 生产差异仅store既有同步函数13行新增/5行删除，按subTableId及subTableFieldId匹配canonical column，不按名称猜测身份。
+        - 子列编辑仍由原updateField构造完整nextDocument，经一次pushDocumentHistory；其他页及children递归同步，保留节点/字段ID、布局、投影和readonly/required/hidden。
+        - 保留原组件兼容规则：有效显式widget覆盖保留，不兼容类型按原主字段行为重置；status仅同步元数据，不增加停用即隐藏/删除规则。
+        - 真实消费者优先使用embedded子列定义，故写路径纠错覆盖canvas/Inspector/MockFillDialog/FormDocumentPreview；canonical列表另作正对照。
+        - 无读时拉最新模板、无旧文档自动迁移、无已保存历史/生产冻结快照回填；真实后端持久化、权限、签署及生命周期未改动。
+        - source-scope-receipt.json列方法范围、实际hash及覆盖边界；没有将整个大模块或整站认定已通过。
+    - id: check.knowledge-and-ontology-consistency
+      required: true
+      category: ontology
+      description: 核对现行知识、原始用户确认及本体结果与实际变更一致。
+      method: inspection
+      command: read docs/knowledge/README.md, open-questions.yaml, schema version, DEC-0077-12/22 and user-confirmed evidence; compare ontologyResult and current production digests
+      outcome: passed
+      evidence:
+        - 实读知识基线0.3.25/schema1.2.0、相关DEC-0077-12/22及原始user-confirmed；使用时冻结和同画布配置/保存/撤销含义保留。
+        - 正式ontologyResult为not-applicable，changedArtifacts/knowledgeSync/conflicts/questions均空；本批不新增业务语义，无需改变知识版本或成熟度。
+        - 本体角色所读store及两测试脚本hash与冻结候选精确匹配；其contractReadCommit为37bc05ec时点，质量角色实际读取提交单独记录为845b3a7f。
+        - A12与两项旧DHR high按用户暂缓范围继续open；不重开PR5/6、不推断其他open-questions已解决、不提升P0。
+    - id: check.node-regression-109
+      required: true
+      category: regression
+      description: 独立执行7个新增store/SSR及设计器、投影、保存、导航相邻回归。
+      method: automated-test
+      command: node --test scripts/test-designer-subfield-sync.mjs scripts/test-designer-column-insertion.mjs scripts/test-projection-panel.mjs scripts/test-sheet-cell-transfer.mjs scripts/test-quick-sub-table.mjs scripts/test-field-business-purpose.mjs scripts/test-projection-source-editor.mjs scripts/test-form-document-preview.mjs scripts/test-dynamic-sub-table-layout.mjs scripts/test-cell-display-components.mjs scripts/test-designer-save-state.mjs scripts/test-report-menu-navigation.mjs
+      outcome: passed
+      evidence:
+        - 独立进程退出0，实际109 tests/109 pass/0 fail/0 cancelled/0 skipped/0 todo；node-cases.json为本轮用例清单。
+        - 新7项覆盖改名/说明/状态、改型/typeConfig、有效覆盖、跨页递归、不相关字段、身份/布局/投影、一次undo/redo、旧document不可变、serialize/parse、mock及完整纸面SSR。
+        - 37bc05ec目标新增导航的8项用例实际纳入109总数，不沿用历史报告或重复计数。
+    - id: check.baseline-store-negative-proof
+      required: true
+      category: regression
+      description: 用同一最终测试只读加载原Git store，验证缺陷确实存在。
+      method: automated-test
+      command: W2_BASELINE_COMMIT=37bc05ec268d1e0d2faf105c2f1c449caeb7ed46 node --test scripts/test-designer-subfield-sync.mjs
+      outcome: passed
+      evidence:
+        - 预期负向进程实际退出1，7 tests中6 fail/1 pass，0 skip；expected-red-summary.json记录实际失败名称。
+        - 唯一通过项是原本即读canonical model.columns的generic table正对照；不拿列表通过替代纸面验证。
+        - 负向原store只通过esbuild onLoad读git show，未checkout/worktree或修改任何仓库文件；不计为候选测试失败。
+    - id: check.chromium-ui-9
+      required: true
+      category: e2e
+      description: 在真实Chromium执行Shell/Canvas/ModelTab/MUI/store的9个UI场景。
+      method: browser
+      command: CHROME_PATH=/usr/bin/chromium W2_SCREENSHOT_DIR=/tmp/edhr-w2-subfield-independent/screenshots W2_RESULT_PATH=/tmp/edhr-w2-subfield-independent/browser.json node scripts/test-designer-save-browser.mjs
+      outcome: passed
+      evidence:
+        - 独立进程退出0，browser.json实际9 passed，旧7场景全部保留，各场景pageerror断言均为空。
+        - 新1440x960及390x844场景通过实际字段卡片hover、子表设计、编辑弹窗、MUI打开选项改文本为数字、Enter保存、返回及模拟填报。
+        - 模拟输入placeholder为新数量且无旧编号，inputmode为decimal，实际fill/read42；一次undo恢复完整旧document，redo后真实保存回调载荷model/canvas同名同类型同child ID。
+        - 旧7场景涵盖保存中后续修改、保存成功关闭、失败/重试、保存边界undo/redo、窄屏未保存提示键盘访问及两宽度插列。
+        - catalog GET及保存回调为受控替身，非后端HTTP/JPA、认证、真实签署或客户试用验收。
+    - id: check.baseline-ui-negative-proof
+      required: true
+      category: e2e
+      description: 独立以原Git store重现合法UI编辑后模拟纸面仍用旧列名。
+      method: browser
+      command: W2_BASELINE_COMMIT=37bc05ec268d1e0d2faf105c2f1c449caeb7ed46 W2_CASE_FILTER='subfield edit' CHROME_PATH=/usr/bin/chromium W2_SCREENSHOT_DIR=/tmp/edhr-w2-subfield-independent/baseline-screenshots node scripts/test-designer-save-browser.mjs
+      outcome: passed
+      evidence:
+        - 实际退出1，首个1440px场景通过真实ModelTab改名改型进入模拟填报后，actual mock paper uses the edited column name断言actual=false/expected=true。
+        - baseline-screenshots/subfield-edit-1440.png显示旧编号；不是选择器/准备阶段失败。
+        - 第二390px因首场景失败未执行，不计作另一个负向通过/失败或完整负向UI矩阵。
+    - id: check.visual-slice
+      required: true
+      category: visual
+      description: 亲看实际新旧纸面截图，核对标签与窄视口边界。
+      method: inspection
+      command: view actual independent candidate screenshots at 1440/390 and baseline 1440
+      outcome: passed
+      evidence:
+        - 候选1440与390截图均显示新数量，基线1440显示旧编号；同一纸面/对话框视觉与布局沿用既有实现，无新markup/token/theme/locale。
+        - 390px截图仍是固定纸面横向裁切/滚动，输入通过真实fill42验证可达；不声称触屏、无hover、200%缩放、完整移动端或全站视觉通过。
+    - id: check.production-build
+      required: true
+      category: integration
+      description: 独立完成TypeScript和Vite生产构建。
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence:
+        - 独立进程实际退出0；package脚本为tsc -b && vite build --config vite.config.ts，两个阶段均完成，Vite built in 29.73s。
+        - 候选含node.bindings?.widgetConfig的安全访问修正，无TS18048；主侧更早失败记录不当作当前候选结果。
+    - id: check.official-premium-baseline-comparison
+      required: true
+      category: visual
+      description: 使用恢复的同一官方脚本比较base与候选全部静态finding，核对本批没有增加UI契约违规。
+      method: command
+      command: python3 /tmp/edhr-w2-subfield-independent/audit_project.py <base-archive-or-candidate-root> --mode strict --output <independent-output>
+      outcome: passed
+      evidence:
+        - 本实例通过skills.read实际读取官方1.4.0脚本，来源及原始脚本SHA256/bytes见official-audit-provenance.json；未近似实现扫描器。
+        - 只读git archive导出37bc05ec基线，无checkout/worktree；base与候选均执行官方strict，实际各退出2。
+        - 本轮base及候选各84项：71 violations、13 unresolved、84 errors；逐项完整finding multiset精确相同，introduced=[]/removed=[]，修改生产store命中0。
+        - premium-base.json、premium-candidate.json及premium-comparison.json为本轮原始结果；比较通过不等于全局官方strict通过，后者单独披露。
+    - id: check.global-premium-strict
+      required: false
+      category: visual
+      description: 全仓官方strict当前仍有既存违规和未解决所有权。
+      method: command
+      command: python3 /tmp/edhr-w2-subfield-independent/audit_project.py /workspace/edhr-nexus-frontend --mode strict --output /tmp/edhr-w2-subfield-independent/premium-candidate.json
+      outcome: blocked
+      evidence:
+        - 实际退出2，84项含13个native-select所有权未决、68个actionless-button、2个form.novalidate-missing、1个scrollbar.webkit-only。
+        - 全局strict不通过，未豁免或修改guard；完整finding与基线相同、此次不新增markup/owner，高风险全局UI合规不能由本切片通过代替。
+    - id: check.global-eslint
+      required: false
+      category: regression
+      description: 实际运行既有ESLint入口并记录仓库配置限制。
+      method: command
+      command: npm run lint
+      outcome: blocked
+      evidence:
+        - 实际退出2，ESLint8.57.1找不到配置；未安装/生成配置、未修改依赖或降低max-warnings。
+        - 构建与聚焦回归独立执行，不称全仓lint通过。
+    - id: check.existing-designer-static-guard
+      required: false
+      category: regression
+      description: 实际执行正确designer guard脚本，保留现存vendor目录失败。
+      method: command
+      command: npm run verify:template-designer-react
+      outcome: failed
+      evidence:
+        - "实际退出1，唯一报告为vendor/online-form-designer: Vue designer vendor package must be removed。"
+        - 未移动、删除或绕开vendor缓存，未修改guard；该既存全局环境项不是本批store编辑语义失败。
+    - id: check.source-map-shell-filename
+      required: false
+      category: documentation
+      description: 方法映射内Shell文件名存在一处不影响源码判断的定位笔误。
+      method: inspection
+      command: compare source-map.md Shell entry with git-tracked TemplateDesignerReactShell.tsx
+      outcome: failed
+      evidence:
+        - W2-QF-001记录source-map.md第16行TemplateDesignerShell.tsx应为TemplateDesignerReactShell.tsx；主侧已知悉，计划在独立结束后以L0更正，当前候选尚未修。
+    - id: check.read-only-evidence-protection
+      required: true
+      category: audit
+      description: 全部runtime结束后复核完整tracked与两项工具的bytes/SHA256不变。
+      method: command
+      command: independent before/after SHA256+bytes manifest comparison; git status --porcelain=v1 -uall
+      outcome: passed
+      evidence:
+        - protection-receipt.json记录测试前后1912 tracked路径/bytes/SHA256逐项精确不变，两项环境工具hash及bytes不变；不读取或输出settings内容。
+        - 所有Node/expected-red/Chromium/build/lint/guard/两次官方扫描及baseline UI进程均已实际结束后才生成after manifest。
+        - 测试前后HEAD均845b3a7f、工作树clean，无新untracked；只写独立/tmp证据和被忽略构建产物。
+        - 本实例未参与任何修复，未更改源码/测试/配置/文档/工具，未提交/推送/切换分支/创建worktree/查询或触发GitHub Actions/合并/部署。
+  findings:
+    - id: W2-QF-001
+      severity: low
+      scope: docs/development/branch-review-20261017-w2-subfield-sync/source-map.md
+      summary: Shell方法映射文件名遗漏React，文档定位应更正为真实tracked文件名。
+      reproductionSteps:
+        - 阅读source-map.md含persistCurrentDocument的Shell行。
+        - 对照实际tracked路径及persistCurrentDocument定义。
+      expectedResult: 定位使用TemplateDesignerReactShell.tsx。
+      actualResult: 当前写作不存在的TemplateDesignerShell.tsx，方法与行号意图可唯一识别。
+      evidence:
+        - source-map.md第16行；gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx第102行。
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.global-ui-static-debt
+      description: 官方premium strict在base及候选都实际退出2，当前84项全局UI问题未整改。
+      impact: 无法宣称全局UI合规或完整前端质量通过；本切片只确认没有新增静态finding且修复相关store不命中。
+      mitigation: 保留本轮原始84项和精确差异，后续按全量审查批次处理；不改变现有标准或guard。
+    - id: risk.global-lint-and-vendor-guard
+      description: ESLint缺配置退出2，设计器静态guard因旧vendor目录退出1。
+      impact: 全仓lint和designer静态通过声明仍不成立。
+      mitigation: 按后续独立环境/治理切片处理，保留实际失败，不在此次业务小修中删除缓存规避。
+    - id: risk.controlled-browser-boundary
+      description: 浏览器实际Shell/ModelTab/Canvas/store，但catalog GET和保存回调为受控替身。
+      impact: 不证明后端HTTP/JPA持久化、真实认证/签署、正式客户任务或运行部署。
+      mitigation: 按真实持久化或生产流程对应切片另行安排；本次无后端协议或安全变更。
+    - id: risk.existing-saved-inconsistent-documents
+      description: 本修复只影响今后当前文档编辑命令，不自动迁移已经保存的不一致模板或任何冻结快照。
+      impact: 已存在坏副本不会因打开或部署自动修复。
+      mitigation: 后续若有明确实例证据另行评估当前草稿受控编辑；禁止自动回填生产历史。
+    - id: risk.narrow-viewport-scope
+      description: 390px真实输入和键盘保存可操作，但固定纸面仍横向滚动且字段卡片使用hover入口。
+      impact: 不构成触屏、无hover、完整移动端或全站响应式验收。
+      mitigation: 保留截图及范围说明，后续按明确支持矩阵独立审查，不扩展本批业务修复。
+    - id: risk.deferred-and-unreviewed-scope
+      description: A12与两项旧DHR high继续按用户决定暂缓/open，1894基线清单为inventory-only，其他W2及W3至W7未完成。
+      impact: 本切片通过不能宣称旧high已关闭、完整记录控制、W2或全仓审查完成。
+      mitigation: 保留持续台账和原始历史证据，按W2剩余具体方法链继续，不重开PR5/6。
+  blockingConditions: []

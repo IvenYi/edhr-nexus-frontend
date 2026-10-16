@@ -1,0 +1,51 @@
+{
+  "kind": "L0-post-independent-acceptance-receipt",
+  "generatedAtUtc": "2026-10-16T20:19:17.240592+00:00",
+  "baseCommit": "37bc05ec268d1e0d2faf105c2f1c449caeb7ed46",
+  "testedCandidateCommit": "845b3a7f067e6d0fb54f77b73dcc8b3024d94f82",
+  "formalQualityResult": "passed",
+  "requiredChecksPassed": 11,
+  "ontologyResult": "not-applicable",
+  "originalQualitySha256": "a0a9e2ef9dcc8c8ad0c0c7d08482e8cff95f94d0740e6161d6bfe0c50bcf9176",
+  "unchangedCandidateTrackedFilesOutsideAllowedDocuments": 1908,
+  "allowedChangedDocuments": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261017-w2-subfield-sync/README.md",
+    "docs/development/branch-review-20261017-w2-subfield-sync/findings.yaml",
+    "docs/development/branch-review-20261017-w2-subfield-sync/source-map.md"
+  ],
+  "noProductTestKnowledgeGovernanceChangeAfterIndependentVerification": true,
+  "originalIndependentArtifactPolicy": "16 whitelist artifacts copied byte-identical; original low/open report not rewritten",
+  "documentationDisposition": {
+    "id": "W2-QF-001",
+    "status": "corrected-by-primary-after-independent-review",
+    "original": "TemplateDesignerShell.tsx persistCurrentDocument:101",
+    "corrected": "TemplateDesignerReactShell.tsx persistCurrentDocument:102",
+    "validation": "Actual tracked Shell definition inspected; source-map points to the existing file; only Markdown locator changed"
+  },
+  "primaryEnvironmentObservationPreserved": "Official scanner unavailable at primary run; independent skill recovered and official base/candidate strict re-run is archived separately",
+  "runtimeReRunAfterL0": false,
+  "reason": "Only four review documents and original safe evidence added; runtime code/tests byte-identical to tested candidate",
+  "manualMergeOnly": true,
+  "noDeployOrHistoryRestoration": true,
+  "protectedEnvironmentToolsRecheckedAfterL0": 2,
+  "protectedEnvironmentToolsBytesSha256Unchanged": true,
+  "supplementalIndependentReview": {
+    "result": "passed",
+    "reviewedCommit": "2ae06d4aed42aa8c7d449fbcd86038eb5c8240dd",
+    "path": "independent/l0-document-review.yaml",
+    "bytes": 4380,
+    "sha256": "ee3e7389d4374a7e94985c70184183adbc9fa194c67df1792e89da7fe958eb26",
+    "qf001IndependentlyResolved": true
+  },
+  "pullRequest": {
+    "number": 14,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/14",
+    "base": "edhr-dev",
+    "head": "audit/edhr-dev-w2-subfield-sync-20261017",
+    "mergeableObserved": "MERGEABLE",
+    "observedHead": "2ae06d4aed42aa8c7d449fbcd86038eb5c8240dd",
+    "manualMergePending": true
+  },
+  "finalAppendixScope": "Only PR link, independently verified low resolution and original L0 supplemental report added after 2ae06d4a; no runtime change."
+}
