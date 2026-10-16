@@ -1,0 +1,549 @@
+{
+  "testedCommit": "6db50c935d81d9601bf0e8e1212c28f0c4499bfa",
+  "frontend": [
+    {
+      "name": "a successful save acknowledges its submitted document, retaining edits made in flight",
+      "status": "passed"
+    },
+    {
+      "name": "a save without further edits becomes clean and the next successful save can acknowledge B",
+      "status": "passed"
+    },
+    {
+      "name": "undo and redo compare with the acknowledged document rather than the latest local edit",
+      "status": "passed"
+    },
+    {
+      "name": "a late acknowledgement for another template or version cannot replace its saved baseline",
+      "status": "passed"
+    },
+    {
+      "name": "source mappings and layout share one document history and survive serialization",
+      "status": "passed"
+    },
+    {
+      "name": "purpose changes preserve numeric configuration and ordinary selection clears old semantics",
+      "status": "passed"
+    },
+    {
+      "name": "top-level and subtable mappings survive save and reload with stable field ids",
+      "status": "passed"
+    },
+    {
+      "name": "store merging cannot retain a cleared or changed-type business purpose",
+      "status": "passed"
+    },
+    {
+      "name": "legacy fields keep their names and do not acquire inferred purposes",
+      "status": "passed"
+    },
+    {
+      "name": "Word-only content renders paragraphs and merged table cells without sheet nodes",
+      "status": "passed"
+    },
+    {
+      "name": "imported native Word text and images render at saved dimensions without duplicate paragraphs",
+      "status": "passed"
+    },
+    {
+      "name": "Word table field markers render inline and do not leak internal marker text",
+      "status": "passed"
+    },
+    {
+      "name": "legacy DOC and Excel grid previews still render their stored cells",
+      "status": "passed"
+    },
+    {
+      "name": "explicit field-list layout remains available for Word documents",
+      "status": "passed"
+    },
+    {
+      "name": "full-page sheet preview keeps portrait paper and configured margins around the grid",
+      "status": "passed"
+    },
+    {
+      "name": "full-page landscape preview retains narrow columns and short rows from the designer",
+      "status": "passed"
+    },
+    {
+      "name": "full-page paper grows with oversized content and preserves fields and images",
+      "status": "passed"
+    },
+    {
+      "name": "sheet preview draws shared horizontal and vertical borders only once",
+      "status": "passed"
+    },
+    {
+      "name": "merged-cell borders use visible neighbor anchors and retain uncovered edges",
+      "status": "passed"
+    },
+    {
+      "name": "sheet preview keeps explicit borders when background grid lines are hidden",
+      "status": "passed"
+    },
+    {
+      "name": "full-page preview repeats every fixed-table field and serial number, clearing stale placeholders",
+      "status": "passed"
+    },
+    {
+      "name": "dynamic tables show the same initial record without preview row-edit actions",
+      "status": "passed"
+    },
+    {
+      "name": "preview renders real controls and default values without file inputs or signing dialog",
+      "status": "passed"
+    },
+    {
+      "name": "full-page preview stacks every sheet and preserves Word content in mixed documents",
+      "status": "passed"
+    },
+    {
+      "name": "full-page preview retains field-list fallback for a template without canvas content",
+      "status": "passed"
+    },
+    {
+      "name": "cached form first renders a loading state before any document parsing",
+      "status": "passed"
+    },
+    {
+      "name": "readonly source preview highlights only the selected actual row, including its other columns",
+      "status": "passed"
+    },
+    {
+      "name": "execution uses the same initial subtable row, serial, placeholders and frame as template preview",
+      "status": "passed"
+    },
+    {
+      "name": "runtime renders every persisted record in its template cells, with real values",
+      "status": "passed"
+    },
+    {
+      "name": "paper row actions create identities and canvas defaults while preserving existing records",
+      "status": "passed"
+    },
+    {
+      "name": "readonly table permissions hide row actions and prevent edits",
+      "status": "passed"
+    },
+    {
+      "name": "signature placeholder matches preview while real saved signatures are preserved",
+      "status": "passed"
+    },
+    {
+      "name": "signature callbacks carry field and row identity while readonly previews stay inert",
+      "status": "passed"
+    },
+    {
+      "name": "runtime keeps references as records and shows their names in the paper controls",
+      "status": "passed"
+    },
+    {
+      "name": "production does not seed simulation values or enable disabled choices",
+      "status": "passed"
+    },
+    {
+      "name": "unconfigured single and multi fields show the same default choices as the designer",
+      "status": "passed"
+    },
+    {
+      "name": "runtime single and multi choices use configured widget options before model options",
+      "status": "passed"
+    },
+    {
+      "name": "subtable single and multi dropdowns display labels from their widget options",
+      "status": "passed"
+    },
+    {
+      "name": "field binding updates only the chosen record and preserves other values",
+      "status": "passed"
+    },
+    {
+      "name": "readonly, disabled, parent-table permissions and signatures never write values",
+      "status": "passed"
+    },
+    {
+      "name": "switching panels preserves the selected source, document, dirty state and undo history",
+      "status": "passed"
+    },
+    {
+      "name": "projection selection follows fields, subtables and empty canvas without switching panels",
+      "status": "passed"
+    },
+    {
+      "name": "source edits share the existing save, undo and redo state across panels",
+      "status": "passed"
+    },
+    {
+      "name": "trace source editor shows its assigned meaning without expanding unrelated catalog entries",
+      "status": "passed"
+    },
+    {
+      "name": "output source may share one quality field without conflating good and rejected quantities",
+      "status": "passed"
+    },
+    {
+      "name": "report roles accept only compatible temporal and person sources, with manually supplied hours",
+      "status": "passed"
+    },
+    {
+      "name": "a removed trace definition keeps its original source visible and removable",
+      "status": "passed"
+    },
+    {
+      "name": "a removed field keeps its assigned meaning and explicit invalid-source warning",
+      "status": "passed"
+    },
+    {
+      "name": "save feedback identifies and marks each required source, including an unfinished usage",
+      "status": "passed"
+    },
+    {
+      "name": "repeat quantities identify the source while different models and shared dimensions stay allowed",
+      "status": "passed"
+    },
+    {
+      "name": "same field cannot fill two roles inside one business and invalid optional sources remain locatable",
+      "status": "passed"
+    },
+    {
+      "name": "collapsed business cards and each trace assignment expose consistent removal icons",
+      "status": "passed"
+    },
+    {
+      "name": "main details identify each source role and selected-field participation without changing mappings",
+      "status": "passed"
+    },
+    {
+      "name": "main field directly offers statistical purposes without a separate configuration panel",
+      "status": "passed"
+    },
+    {
+      "name": "subtable column keeps the whole-table configuration entry instead of inline main statistics",
+      "status": "passed"
+    },
+    {
+      "name": "configured subtable preserves multiple existing purposes but defers adding others",
+      "status": "passed"
+    },
+    {
+      "name": "configured report fields stay visible while empty optional fields are collapsed, preserving mappings",
+      "status": "passed"
+    },
+    {
+      "name": "production instructions describe quantities rather than material lots, and add belongs to the purpose heading",
+      "status": "passed"
+    },
+    {
+      "name": "canvas and dropdown candidates share type, region, disabled and occupied-role constraints",
+      "status": "passed"
+    },
+    {
+      "name": "business-specific labels count records within each business without changing identities",
+      "status": "passed"
+    },
+    {
+      "name": "trace editor offers no additional meaning when every compatible source is already used",
+      "status": "passed"
+    },
+    {
+      "name": "trace accepts compatible native sources while statistics and unrelated meanings keep their boundaries",
+      "status": "passed"
+    },
+    {
+      "name": "typed custom trace meanings offer only matching number or date sources",
+      "status": "passed"
+    },
+    {
+      "name": "whole-table statistics keeps optional sources collapsed without a manual row identity or extra display selector",
+      "status": "passed"
+    },
+    {
+      "name": "removing the extra display selector preserves valid saved columns and keeps invalid ones explicitly repairable",
+      "status": "passed"
+    },
+    {
+      "name": "creates a named sub-table and binds the selected region in one undoable operation",
+      "status": "passed"
+    },
+    {
+      "name": "empty names and a single-cell selection do not create fields or history",
+      "status": "passed"
+    },
+    {
+      "name": "duplicate names and overlapping regions do not leave an orphan sub-table field",
+      "status": "passed"
+    },
+    {
+      "name": "new rows have distinct system identities and persist configured defaults using actual option values",
+      "status": "passed"
+    },
+    {
+      "name": "canvas defaults override model defaults without rewriting them",
+      "status": "passed"
+    },
+    {
+      "name": "copy/paste preserves merged cells, text, styles and borders as an independent snapshot",
+      "status": "passed"
+    },
+    {
+      "name": "empty merged cells still paste their structure",
+      "status": "passed"
+    },
+    {
+      "name": "fill repeats format and horizontal merges, preserves target text and does not mutate the source",
+      "status": "passed"
+    },
+    {
+      "name": "vertical merge patterns fill complete blocks and never exceed the last row",
+      "status": "passed"
+    },
+    {
+      "name": "unmerged source removes target merges and obsolete formatting",
+      "status": "passed"
+    },
+    {
+      "name": "partial source/target merges and out-of-bounds paste reject atomically",
+      "status": "passed"
+    },
+    {
+      "name": "merge changes do not hide or delete bound fields",
+      "status": "passed"
+    },
+    {
+      "name": "paste and drag each create one undo step; redo restores the whole operation",
+      "status": "passed"
+    },
+    {
+      "name": "external plain text paste keeps its existing TSV behavior",
+      "status": "passed"
+    }
+  ],
+  "backend": [
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "draftSaveRejectsDuplicateMalformedIdentityAndUndeclaredColumns",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "savedRowsReceiveStableIdentityAcrossReopenReorderAndDeletion",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "readonlyValuesFollowRowIdentityAndCannotBeChangedOrRemoved",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "signatureEvidenceContainsIdentityBeforeSigningAndForgedSignatureIsRejected",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "ambiguousDisabledAndInvalidSelectDefaultsAreNotGuessed",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "mainDefaultsArePersistedAndSelectLabelsResolveToStoredOptionValues",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "wholeTableReadonlyCannotBeBypassedByValidIdentity",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "frozenCanvasDefaultsApplyToMainAndNewRowsWithoutOverwritingInputOrClearedValues",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "name": "onlyExplicitTraceSourcesAndSavedSupportedValuesAreCollected",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "name": "systemRowIdentityIsIndependentOfBindingsAndDisplayOrder",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "name": "referenceUsesFrozenCodeAndRequiresCompatibleIdentity",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "subtableHoursRemainPerRowAndCannotBorrowHeaderHours",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "disabledIncompleteDraftIsExplicitlyAllowed",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "outputCanReuseOneQualityFieldButCannotMakeGoodAndNgTheSameSource",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "horizontalGroupsStayPairedAndDeterministic",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "scrapDictionaryRolesKeepCodesAndLabelsWithoutChangingQuantity",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "reporterAcceptsOnlyUserReferenceOrSignatureAndUsesActualSigner",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "noInventedStatisticsOrUnknownAttributes",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "subtableSignatureReportersStayWithTheirOwnRows",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "subtableRequiresStableUniqueRowKeysAndRejectsCrossGroupReferences",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "reportTemporalRolesRejectWrongFieldTypesInvalidDatesAndReversedPeriod",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "formalQuantityAllowsBlankUnitsButRejectsNegativeAndDuplicateSources",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "dictionaryUnitUsesFrozenValueWithoutConversion",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "referenceTraceUsesFrozenCodeAndRejectsWrongTypesOrLegacyDisplayFallback",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "objectValuesCannotMasqueradeAsTextIdentities",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "noConfigurationDoesNotBlockOrdinaryForms",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "referenceSubtableRowsRetainSeparateCodesAndLocations",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "personHoursAreExplicitAndIndependentOfPeriodDateAndReporter",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "consumptionNeedsOnlyMaterialAndQuantityAndUsesSystemRowIdentity",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "deletedOrChangedFieldsCannotPublish",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormInstanceRecordStageTest",
+      "name": "completedLifecycleTakesPrecedenceAndDirectEntryRemainsFilling",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormInstanceRecordStageTest",
+      "name": "activeApprovalNodesAndMixedParallelNodesHaveDifferentDisplayStages",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormFillSnapshotTest",
+      "name": "directSettingsBecomeSelfContainedEntryAndDoNotReadDormantFlow",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormFillSnapshotTest",
+      "name": "processSettingsFreezePublishedGraphAndBindingOverrides",
+      "status": "passed"
+    }
+  ],
+  "browser": [
+    {
+      "name": "edits during save remain unsaved and closing asks for confirmation",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "successful save without later edits allows closing",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "failed save preserves unsaved content and retry can save it",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "undo and redo retain the correct successful-save boundary",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "narrow viewport retains keyboard access to the unsaved warning",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    }
+  ],
+  "baselineRed": {
+    "commit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+    "store": {
+      "tests": 5,
+      "passed": 1,
+      "failed": 4
+    },
+    "browser": {
+      "actualClosed": 1,
+      "expectedClosed": 0,
+      "exitCode": 1
+    }
+  },
+  "countingNote": "79 Node behavior/SSR cases, 5 actual component browser scenarios and 34 backend cases are separate denominators; primary and independent repeats are not additive coverage."
+}

@@ -1,0 +1,233 @@
+{
+  "root": "/tmp/edhr-w2-independent-20261016",
+  "testedCommit": "6db50c935d81d9601bf0e8e1212c28f0c4499bfa",
+  "policy": "Only explicitly marked safe summaries and fixture screenshots may be copied; raw logs/XML/full manifests/exports stay local.",
+  "excludedExportDirectories": [
+    "candidate-export",
+    "baseline-export"
+  ],
+  "artifacts": [
+    {
+      "path": "README.md",
+      "sha256": "05f5ff329150c45a1110a80a80c9ca468d54a8a2f8f14a1802605cc2714d84c7",
+      "bytes": 2354,
+      "safeToCommit": true
+    },
+    {
+      "path": "backend-result.json",
+      "sha256": "7bf5981955ff3fa5c81920f0dcabe65aaa4762b84f9b4694531ea3da219166ae",
+      "bytes": 1546,
+      "safeToCommit": true
+    },
+    {
+      "path": "backend.log",
+      "sha256": "4ec9f1609d9f366386ac17355344b40b1b98f5549608730e2406d4448f7424d0",
+      "bytes": 4143,
+      "safeToCommit": false
+    },
+    {
+      "path": "baseline-browser-red.log",
+      "sha256": "3dafa41481ac210bcc67718b6d7341d7acadcaadc92f7229b236985977b66f2d",
+      "bytes": 1848,
+      "safeToCommit": false
+    },
+    {
+      "path": "baseline-store-red.log",
+      "sha256": "a430c0337de09d2dfb0e1b8dd81f3e578f594d05362d76b8dad233cd69fa3b79",
+      "bytes": 8114,
+      "safeToCommit": false
+    },
+    {
+      "path": "baseline-verification.json",
+      "sha256": "9ff1aa7117fff961aa2ccbd8b521bd39df85217e79d57fdf15ad971aec5157f0",
+      "bytes": 565,
+      "safeToCommit": true
+    },
+    {
+      "path": "browser-result.json",
+      "sha256": "05132f5296f9f9cb2abe8fbb23376a0610ac9872df59195539d815c4b7a9dbcf",
+      "bytes": 1052,
+      "safeToCommit": true
+    },
+    {
+      "path": "browser.log",
+      "sha256": "05132f5296f9f9cb2abe8fbb23376a0610ac9872df59195539d815c4b7a9dbcf",
+      "bytes": 1052,
+      "safeToCommit": false
+    },
+    {
+      "path": "build.log",
+      "sha256": "5b9c883f9e4d2b68e853dfdce44d6427f19e4aff5eac79d1173fade4d1485b43",
+      "bytes": 9335,
+      "safeToCommit": false
+    },
+    {
+      "path": "case-index.json",
+      "sha256": "a1b8281913b59f80e5d43b6629461f8f6f61feee8d6e83a490b5f5597b24e81d",
+      "bytes": 18975,
+      "safeToCommit": true
+    },
+    {
+      "path": "create-result.py",
+      "sha256": "33ffca43e68789d5f71a60b8d5b1ec69d4879d3efd21136657172a0c3fecba75",
+      "bytes": 13385,
+      "safeToCommit": false
+    },
+    {
+      "path": "designer-tracked.log",
+      "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77",
+      "bytes": 38,
+      "safeToCommit": false
+    },
+    {
+      "path": "designer-workspace.log",
+      "sha256": "ff22b6580b1b32845715d8f94e31718535f50444e0f583766f98e714a9b41f28",
+      "bytes": 113,
+      "safeToCommit": false
+    },
+    {
+      "path": "inventory-verification.json",
+      "sha256": "154e7cf8bb495f07eb4dfed60ad42edefd60caa3f20866414b272341ba6cc2e7",
+      "bytes": 5084,
+      "safeToCommit": true
+    },
+    {
+      "path": "lint.log",
+      "sha256": "ce1ab04f5660d6cb81c2cdf842c1d4dd91f6f5ee6932d4d486e157c45077d8d1",
+      "bytes": 819,
+      "safeToCommit": false
+    },
+    {
+      "path": "main-evidence-verification.json",
+      "sha256": "7fccdc71d6a9fa76a734d1760057af8bf939f2176b342d9be511be364f8f3afb",
+      "bytes": 5219,
+      "safeToCommit": true
+    },
+    {
+      "path": "node.log",
+      "sha256": "5ec6016bfcac0a38824f07e7737e6e67a7d8a43fac9cd675aadc31a906938863",
+      "bytes": 7994,
+      "safeToCommit": false
+    },
+    {
+      "path": "premium-baseline.json",
+      "sha256": "b6cbfcb2bcec25af81f4535361ae1e197caee4b9aee60c2fe86fe97f17869694",
+      "bytes": 10459,
+      "safeToCommit": true
+    },
+    {
+      "path": "premium-baseline.log",
+      "sha256": "b6cbfcb2bcec25af81f4535361ae1e197caee4b9aee60c2fe86fe97f17869694",
+      "bytes": 10459,
+      "safeToCommit": false
+    },
+    {
+      "path": "premium-candidate.json",
+      "sha256": "10c764e3d0d045248504dc9254ba0626f79c6695daa71666eacd2e893365a49e",
+      "bytes": 10440,
+      "safeToCommit": true
+    },
+    {
+      "path": "premium-candidate.log",
+      "sha256": "10c764e3d0d045248504dc9254ba0626f79c6695daa71666eacd2e893365a49e",
+      "bytes": 10440,
+      "safeToCommit": false
+    },
+    {
+      "path": "premium-delta.json",
+      "sha256": "5d5fc0f1a64223ebb21df0d9d0b737c6606c479938fb46cc49fb33a0d2bfe58a",
+      "bytes": 475,
+      "safeToCommit": true
+    },
+    {
+      "path": "protected-after.json",
+      "sha256": "a9a33f00269dfe2b8bfc26d4eeecffd488010e55de0a3eb61b5044ebd98656db",
+      "bytes": 311357,
+      "safeToCommit": false
+    },
+    {
+      "path": "protected-before.json",
+      "sha256": "a9a33f00269dfe2b8bfc26d4eeecffd488010e55de0a3eb61b5044ebd98656db",
+      "bytes": 311357,
+      "safeToCommit": false
+    },
+    {
+      "path": "qualityResult.yaml",
+      "sha256": "f165440af5c3ef4dc1313342935eaa37a0ddd637036104a0380f83a57a833123",
+      "bytes": 12020,
+      "safeToCommit": true
+    },
+    {
+      "path": "raw-xml/TEST-com.zencas.edhr.production.service.FormFillSnapshotTest.xml",
+      "sha256": "b25337fb33f9f026d329f14dcc49074442a19339d1d7b6dc55b406e4c433755c",
+      "bytes": 33072,
+      "safeToCommit": false
+    },
+    {
+      "path": "raw-xml/TEST-com.zencas.edhr.production.service.FormInstanceRecordStageTest.xml",
+      "sha256": "ad6557cd13b895d409cbde9be37bffc48acb14b3e6277cb08b21675f1d86a677",
+      "bytes": 32408,
+      "safeToCommit": false
+    },
+    {
+      "path": "raw-xml/TEST-com.zencas.edhr.production.service.FormTraceIndexServiceTest.xml",
+      "sha256": "860d9d33bfc79a908263f59e29e5f5d3caf852350d4a4d3d9ab727ab59ee2656",
+      "bytes": 32549,
+      "safeToCommit": false
+    },
+    {
+      "path": "raw-xml/TEST-com.zencas.edhr.production.service.ProductionExecutionFormValuesTest.xml",
+      "sha256": "18f6376a36649313d381c2b43111e6632fbc9eae52bfd6a6fd32c7fa7eef88dd",
+      "bytes": 33497,
+      "safeToCommit": false
+    },
+    {
+      "path": "raw-xml/TEST-com.zencas.edhr.template.service.FormProjectionInterpreterTest.xml",
+      "sha256": "ad40d9d238cbf711d4f8683e788121f2a73c550695f0072c80eb375591cafff6",
+      "bytes": 35169,
+      "safeToCommit": false
+    },
+    {
+      "path": "readonly-protection.json",
+      "sha256": "1376ab54ee909e94fd479cf3a6fce6649922ec7267e684a164e78b50b6262871",
+      "bytes": 425,
+      "safeToCommit": true
+    },
+    {
+      "path": "screens/save-in-flight-desktop.png",
+      "sha256": "66c4a665a2f82deed83e3921b73ee454c187a8fee99cd46c61fcd1531ac28152",
+      "bytes": 103881,
+      "safeToCommit": true
+    },
+    {
+      "path": "screens/save-in-flight-narrow.png",
+      "sha256": "ef19cad8ff0375c0ca765ad58feb411a243eb6b2eb6f6baa02c138683eeb108e",
+      "bytes": 36540,
+      "safeToCommit": true
+    },
+    {
+      "path": "source-review.md",
+      "sha256": "0b17f84766dab86ce8b4ef94adc6ee7b778d0568c27cefabdc2362e8afc1882e",
+      "bytes": 3134,
+      "safeToCommit": true
+    },
+    {
+      "path": "tracked-export-verification.json",
+      "sha256": "1ef20bc6c2d8e1733012c2e6b0570e1245619544d72ee1887edb503bad725d7b",
+      "bytes": 821,
+      "safeToCommit": true
+    },
+    {
+      "path": "verification-facts.json",
+      "sha256": "dcfd83ba065035bd521e780fa175308e9b352f231d3d0205a81638b0e0024593",
+      "bytes": 970,
+      "safeToCommit": true
+    },
+    {
+      "path": "verify-evidence.py",
+      "sha256": "9010358722e8c1d8df25f08f769345f7c79fcd26a52f89d4c3299c0ce683334c",
+      "bytes": 9264,
+      "safeToCommit": false
+    }
+  ]
+}

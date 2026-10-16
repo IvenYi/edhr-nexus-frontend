@@ -1,0 +1,220 @@
+{
+  "tests": 34,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "cases": [
+    {
+      "class": "com.zencas.edhr.production.service.FormFillSnapshotTest",
+      "name": "directSettingsBecomeSelfContainedEntryAndDoNotReadDormantFlow",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormFillSnapshotTest",
+      "name": "processSettingsFreezePublishedGraphAndBindingOverrides",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormInstanceRecordStageTest",
+      "name": "completedLifecycleTakesPrecedenceAndDirectEntryRemainsFilling",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormInstanceRecordStageTest",
+      "name": "activeApprovalNodesAndMixedParallelNodesHaveDifferentDisplayStages",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "name": "onlyExplicitTraceSourcesAndSavedSupportedValuesAreCollected",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "name": "systemRowIdentityIsIndependentOfBindingsAndDisplayOrder",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "name": "referenceUsesFrozenCodeAndRequiresCompatibleIdentity",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "subtableHoursRemainPerRowAndCannotBorrowHeaderHours",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "disabledIncompleteDraftIsExplicitlyAllowed",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "outputCanReuseOneQualityFieldButCannotMakeGoodAndNgTheSameSource",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "horizontalGroupsStayPairedAndDeterministic",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "scrapDictionaryRolesKeepCodesAndLabelsWithoutChangingQuantity",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "reporterAcceptsOnlyUserReferenceOrSignatureAndUsesActualSigner",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "noInventedStatisticsOrUnknownAttributes",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "subtableSignatureReportersStayWithTheirOwnRows",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "subtableRequiresStableUniqueRowKeysAndRejectsCrossGroupReferences",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "reportTemporalRolesRejectWrongFieldTypesInvalidDatesAndReversedPeriod",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "formalQuantityAllowsBlankUnitsButRejectsNegativeAndDuplicateSources",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "dictionaryUnitUsesFrozenValueWithoutConversion",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "referenceTraceUsesFrozenCodeAndRejectsWrongTypesOrLegacyDisplayFallback",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "objectValuesCannotMasqueradeAsTextIdentities",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "noConfigurationDoesNotBlockOrdinaryForms",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "referenceSubtableRowsRetainSeparateCodesAndLocations",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "personHoursAreExplicitAndIndependentOfPeriodDateAndReporter",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "consumptionNeedsOnlyMaterialAndQuantityAndUsesSystemRowIdentity",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "name": "deletedOrChangedFieldsCannotPublish",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "draftSaveRejectsDuplicateMalformedIdentityAndUndeclaredColumns",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "savedRowsReceiveStableIdentityAcrossReopenReorderAndDeletion",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "readonlyValuesFollowRowIdentityAndCannotBeChangedOrRemoved",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "signatureEvidenceContainsIdentityBeforeSigningAndForgedSignatureIsRejected",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "ambiguousDisabledAndInvalidSelectDefaultsAreNotGuessed",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "mainDefaultsArePersistedAndSelectLabelsResolveToStoredOptionValues",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "wholeTableReadonlyCannotBeBypassedByValidIdentity",
+      "status": "passed"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "name": "frozenCanvasDefaultsApplyToMainAndNewRowsWithoutOverwritingInputOrClearedValues",
+      "status": "passed"
+    }
+  ],
+  "originalXml": [
+    {
+      "path": "/tmp/edhr-w2-main-backend-xml-20261016/TEST-com.zencas.edhr.production.service.FormFillSnapshotTest.xml",
+      "sha256": "6536a2f56ef3f3ef35a12a5fd671fd4f5c30905bb1c31308566f9c469fe15505",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "/tmp/edhr-w2-main-backend-xml-20261016/TEST-com.zencas.edhr.production.service.FormInstanceRecordStageTest.xml",
+      "sha256": "aeac381813d1f23ee4fd7122d623755b096abc8cf07d39a96a48155268f341a2",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "/tmp/edhr-w2-main-backend-xml-20261016/TEST-com.zencas.edhr.production.service.FormTraceIndexServiceTest.xml",
+      "sha256": "2d1cdce1609d8dcbfee59196101c28e6d80332240ac66a600894adb20299d323",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "/tmp/edhr-w2-main-backend-xml-20261016/TEST-com.zencas.edhr.template.service.FormProjectionInterpreterTest.xml",
+      "sha256": "5fc9a2eaac6d73768a7338a275d27807b52a61fd8b09841c7d04099df11eac7f",
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "path": "/tmp/edhr-w2-main-backend-xml-20261016/TEST-com.zencas.edhr.production.service.ProductionExecutionFormValuesTest.xml",
+      "sha256": "faa83ba0ba5d871671afdc51fa162f41801a8d0d357aa748d5fcb469e738170a",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ]
+}

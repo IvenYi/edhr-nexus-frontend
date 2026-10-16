@@ -1,0 +1,50 @@
+{
+  "testedCommit": "6db50c935d81d9601bf0e8e1212c28f0c4499bfa",
+  "tests": 34,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "kind": "direct engine/interpreter/extraction; Mockito; H2 snapshot, no real PostgreSQL or managed HTTP E2E",
+  "suites": [
+    {
+      "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "xmlSha256": "18f6376a36649313d381c2b43111e6632fbc9eae52bfd6a6fd32c7fa7eef88dd",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "xmlSha256": "860d9d33bfc79a908263f59e29e5f5d3caf852350d4a4d3d9ab727ab59ee2656",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "xmlSha256": "ad40d9d238cbf711d4f8683e788121f2a73c550695f0072c80eb375591cafff6",
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormInstanceRecordStageTest",
+      "xmlSha256": "ad6557cd13b895d409cbde9be37bffc48acb14b3e6277cb08b21675f1d86a677",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormFillSnapshotTest",
+      "xmlSha256": "b25337fb33f9f026d329f14dcc49074442a19339d1d7b6dc55b406e4c433755c",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ]
+}

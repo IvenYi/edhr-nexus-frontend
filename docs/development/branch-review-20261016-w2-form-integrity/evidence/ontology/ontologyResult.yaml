@@ -1,0 +1,87 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 9542cb4cc2071df2c00129cc5dbb4572a245cfa1
+    targetBranch: edhr-dev
+    targetCommit: 9542cb4cc2071df2c00129cc5dbb4572a245cfa1
+    contractReadCommit: 9542cb4cc2071df2c00129cc5dbb4572a245cfa1
+    uncommittedContractPaths: []
+  reason: >-
+    本批是 W2 定向现有政策和原始方法入口核对；已确认的同一配置保存/撤销、使用时冻结、草稿免业务完整性阻断、权限证据安全、保存后过程追溯及最终完成正式来源边界足够支持确定性整改。
+    主侧候选“保存 A 成功回调误把未发送 B 标为已保存”应按实际成功请求文档确认保存，是恢复已有保存语义的工程修复，不新增业务资格、规则、状态、来源归属或知识定义。
+    本角色只读仓库，未修改知识、业务、测试或配置，也未做质量验收；not-applicable 不等于 W2、全分支或全本体审计通过。
+  changedArtifacts: []
+  knowledgeSync:
+    - id: DEC-0077-22
+      disposition: retained
+      scope: 保留同画布共用配置、保存和撤销；实际成功请求才可确认对应保存状态，未发送修改不能被静默标为已保存。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+    - id: DEC-0077-12
+      disposition: retained
+      scope: 保留 START/ATTACH_FORM 使用时冻结与旧实例保护，候选保存状态修复不新增发布或历史回填。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+    - id: DEC-0077-30
+      disposition: retained
+      scope: 草稿免阻断性业务完整性校验，认证、来源授权、字段权限、请求格式及证据签署安全继续适用。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    - id: DEC-0077-33
+      disposition: retained
+      scope: 最近成功保存内容可授权过程检索，未保存输入不参与，正式统计仍待最终完成与投影成功。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java
+    - id: DEC-0034
+      disposition: retained
+      scope: 保留模板版本和稳定字段身份、EDIT/READ_ONLY、共享渲染及服务端权限重校；推断的未知字段诊断不扩为新增规则。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0034-form-renderer-field-permission-contract.yaml
+    - id: DEC-0078
+      disposition: retained
+      scope: 最终完成且正式来源成功才累计，真实零与缺数分开，最终单位核对及旧实例不补算；不因保存状态修复改变产出口径。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml
+        - docs/knowledge/rules/product-process.yaml
+    - id: question.form-projection-trace-index-effective-scope
+      disposition: deferred
+      scope: 仅失效历史及 A12 受控修订/作废视图待上游实现；保存后的过程可查已定，不重复提问或自动实施 A12。
+      sourceReferences:
+        - docs/knowledge/open-questions.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.w2-policy-contract-baseline
+      checkType: reference
+      command: git rev-parse HEAD; git rev-parse refs/remotes/origin/edhr-dev; git diff --name-only -- AGENTS.md docs/agents docs/knowledge docs/architecture
+      outcome: passed
+      evidence:
+        - 来源与本地已获取目标引用均为 9542cb4cc2071df2c00129cc5dbb4572a245cfa1。
+        - 实际读取项目、角色与交接契约，未提交契约或知识架构修改清单为空。
+        - source-evidence.json 记录 24 份定向来源的基线 blob 和 SHA256，采集时均与基线字节一致；数量不是完整语义覆盖率。
+    - id: validation.w2-existing-policy-boundaries
+      checkType: reference
+      command: 定向读取 DEC-0077、DEC-0078、DEC-0034、DEC-0060、知识README/open-questions、相应用户确认证据与受影响规则。
+      outcome: passed
+      evidence:
+        - policy-map.md 的已确认规则、历史局部替代及未决边界均能定位到现有声明。
+        - 未为候选保存确认竞态发明政策、默认值、历史恢复或生命周期。
+    - id: validation.w2-original-source-mapping
+      checkType: evidence-path
+      command: 定向读取 Shell.persistCurrentDocument/handleClose、store.markSaved/isDirty/统一历史、document序列化及生产保存/索引/正式来源方法。
+      outcome: passed
+      evidence:
+        - policy-map.md 记录实际读取的方法入口、源码与规范的证据类别及适用范围。
+        - 本角色未运行浏览器、数据库、业务测试、Actions 或独立质量验收；路径与局部入口核对不代表运行通过。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

@@ -1,0 +1,145 @@
+{
+  "primaryRunHead": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+  "primaryRunWorkingTree": "dirty: two final production files and new regression scripts; audit documentation generated separately",
+  "primaryRunWasNotCommittedCandidate": true,
+  "candidateSourceByteMatches": [
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx",
+      "sha256": "fcb9b7af815bd33f5dc8976737da10039d0f2551357dd50b2f80d047a1ed406a",
+      "matchesCandidate": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+      "sha256": "7ae006fcad3e0b3eb40378c16ae4d629eab981c8672b6e2bd510f0c6a363a124",
+      "matchesCandidate": true
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-designer-save-state.mjs",
+      "sha256": "0d0e207970c7a25b7ef44375e14850dd568be86374f14ec4b479e73af8775aff",
+      "matchesCandidate": true
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-designer-save-browser.mjs",
+      "sha256": "3ef9a3772a99300328514a3b459a6409baedfb1ebff237b466f110f62cf780c7",
+      "matchesCandidate": true
+    }
+  ],
+  "verifiedRawLogCount": 11,
+  "rawLogs": [
+    {
+      "id": "frontend-green",
+      "path": "/tmp/edhr-w2-frontend-green-20261016.log",
+      "sha256": "3eea3ffa221bfd8414309227c11879211c057d4cc6f528d4e2fd0a7e456ca6d8",
+      "matches": true
+    },
+    {
+      "id": "backend-adjacent",
+      "path": "/tmp/edhr-w2-backend-baseline-20261016.log",
+      "sha256": "d396041fa8cd9d10be49b6bb9810b5c7ba452feeb13bd887d63ad70e19a399f0",
+      "matches": true
+    },
+    {
+      "id": "browser-green",
+      "path": "/tmp/edhr-w2-browser-result-final-20261016.log",
+      "sha256": "05132f5296f9f9cb2abe8fbb23376a0610ac9872df59195539d815c4b7a9dbcf",
+      "matches": true
+    },
+    {
+      "id": "browser-baseline-red",
+      "path": "/tmp/edhr-w2-final-script-baseline-red-20261016.log",
+      "sha256": "3dafa41481ac210bcc67718b6d7341d7acadcaadc92f7229b236985977b66f2d",
+      "matches": true
+    },
+    {
+      "id": "store-baseline-red",
+      "path": "/tmp/edhr-w2-save-state-red-20261016.log",
+      "sha256": "25e3da576fea6d0438d9d06aebfb32574646b0f9ecf5a2417e0ef1ff3397d20b",
+      "matches": true
+    },
+    {
+      "id": "build",
+      "path": "/tmp/edhr-w2-build-20261016.log",
+      "sha256": "1616902fa690d1d6301f5e3b7b3bb3ad6d9a30ba1bfa564dc1e112743aaf7300",
+      "matches": true
+    },
+    {
+      "id": "designer-workspace",
+      "path": "/tmp/edhr-w2-designer-verification-20261016.log",
+      "sha256": "ff22b6580b1b32845715d8f94e31718535f50444e0f583766f98e714a9b41f28",
+      "matches": true
+    },
+    {
+      "id": "designer-tracked-export",
+      "path": "/tmp/edhr-w2-designer-tracked-export-20261016.log",
+      "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77",
+      "matches": true
+    },
+    {
+      "id": "eslint-unconfigured",
+      "path": "/tmp/edhr-w2-eslint-20261016.log",
+      "sha256": "4072a2a05ee82c5471348b2e593c2c6b58b14f65fe5c4ef2b385e71f0914dbdd",
+      "matches": true
+    },
+    {
+      "id": "premium-before",
+      "path": "/tmp/edhr-w2-premium-before-20261016.log",
+      "sha256": "10c764e3d0d045248504dc9254ba0626f79c6695daa71666eacd2e893365a49e",
+      "matches": true
+    },
+    {
+      "id": "premium-after",
+      "path": "/tmp/edhr-w2-premium-after-20261016.log",
+      "sha256": "10c764e3d0d045248504dc9254ba0626f79c6695daa71666eacd2e893365a49e",
+      "matches": true
+    }
+  ],
+  "verifiedXmlCount": 5,
+  "xmlSuites": [
+    {
+      "suite": "com.zencas.edhr.production.service.FormFillSnapshotTest",
+      "sha256": "6536a2f56ef3f3ef35a12a5fd671fd4f5c30905bb1c31308566f9c469fe15505",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormInstanceRecordStageTest",
+      "sha256": "aeac381813d1f23ee4fd7122d623755b096abc8cf07d39a96a48155268f341a2",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "sha256": "2d1cdce1609d8dcbfee59196101c28e6d80332240ac66a600894adb20299d323",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "sha256": "5fc9a2eaac6d73768a7338a275d27807b52a61fd8b09841c7d04099df11eac7f",
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "sha256": "faa83ba0ba5d871671afdc51fa162f41801a8d0d357aa748d5fcb469e738170a",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "primaryCounts": {
+    "node": 79,
+    "browser": 5,
+    "backend": 34
+  },
+  "primaryIndexNote": "One FormFillSnapshotTest case has inspect-xml rather than passed in the primary summary. Its original and independently executed XML contain no failure/error/skipped; system-out/system-err do not indicate test failure. No source or test fix required."
+}

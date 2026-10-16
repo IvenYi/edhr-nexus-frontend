@@ -1881,7 +1881,7 @@ export interface TemplateDesignerStore {
   addWorkflowNode: () => void;
   setWorkflowNodes: (nodes: TemplateDesignerDocument['workflow']['nodes']) => void;
   setWorkflowEdges: (edges: TemplateDesignerDocument['workflow']['edges']) => void;
-  markSaved: () => void;
+  markSaved: (savedDocument?: TemplateDesignerDocument) => void;
   isDirty: () => boolean;
 }
 
@@ -3478,8 +3478,13 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
         }
       : state.document,
   })),
-  markSaved: () => {
-    const document = get().document;
+  markSaved: (savedDocument) => {
+    const currentDocument = get().document;
+    if (savedDocument && (
+      String(savedDocument.meta.templateId) !== String(currentDocument?.meta.templateId)
+      || String(savedDocument.meta.versionId) !== String(currentDocument?.meta.versionId)
+    )) return;
+    const document = savedDocument ?? currentDocument;
     set({ savedSnapshot: document ? JSON.stringify(document) : '' });
   },
   isDirty: () => {

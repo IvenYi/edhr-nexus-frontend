@@ -1,0 +1,81 @@
+{
+  "scope": "L0 post-FINAL evidence and acceptance registration only",
+  "createdAtUtc": "2026-10-16T04:20:38.807826+00:00",
+  "sourceBaseCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+  "targetBranch": "edhr-dev",
+  "freshTargetCommit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+  "independentlyTestedCandidate": "6db50c935d81d9601bf0e8e1212c28f0c4499bfa",
+  "independentResult": {
+    "result": "passed",
+    "report": "evidence/independent/qualityResult.yaml",
+    "sha256": "f165440af5c3ef4dc1313342935eaa37a0ddd637036104a0380f83a57a833123",
+    "requiredChecksPassed": 13,
+    "frontendNodeCases": 79,
+    "browserFixtureScenarios": 5,
+    "backendDirectMockitoH2Cases": 34,
+    "primaryAndIndependentCountsNotAdded": true
+  },
+  "safeEvidenceDelivery": {
+    "byteIdenticalOriginalSafeArtifacts": 17,
+    "originalManifest": "evidence/independent/artifact-manifest.json",
+    "originalManifestSha256": "470aabe4cab7a031a6a81701003badb763d5fe49c82679692b013efb15613400",
+    "rawLogsXmlProtectedListsAndExportsRemainLocal": true
+  },
+  "protectedCandidateBytes": {
+    "originalTrackedFiles": 1632,
+    "originalExtraTools": 2,
+    "unchangedTrackedFiles": 1628,
+    "unchangedExtraTools": 2,
+    "changedOriginalPaths": [
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "testedSha256": "7bd93969ce0964bfa80ae41b49f890f58c59cd20c5580cb3a6b215d038b0a2bd",
+        "deliverySha256": "4a19ccb7ef812269b8e91f7e9508811f6697d8f33b09fead828bb856790f1c29"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w2-form-integrity/README.md",
+        "testedSha256": "848fbaf0354be08875a3d629fa560ee517019e4ee1777935076f8df41890a766",
+        "deliverySha256": "252827b111f49397fc640a0fc7a35cc0d197d4cc77e5382d741e4870f3964953"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w2-form-integrity/evidence/backend-case-index.json",
+        "testedSha256": "fe8d7830b967a848f95ac6e555c251902c06ab858258241994dc27490731fa12",
+        "deliverySha256": "c157a9221e64f3c67ca2fc5e436c3496b3dc34e3ad2c897c53709db6702fbb7d"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w2-form-integrity/findings.yaml",
+        "testedSha256": "3dcb6db36b01527f16652f9bb4467bf77eeb7e5ca4310b03c8d47ba226449101",
+        "deliverySha256": "caef2098880176f3dda474c809efca2a55ceceb6cf508d682f9bfee9537fe52b"
+      }
+    ],
+    "productTestsKnowledgeContractsDesignAndToolsUnchanged": true
+  },
+  "l0CaseSummaryCorrection": {
+    "class": "com.zencas.edhr.production.service.FormFillSnapshotTest",
+    "case": "directSettingsBecomeSelfContainedEntryAndDoNotReadDormantFlow",
+    "before": "inspect-xml",
+    "after": "passed",
+    "basis": "primary and independent XML contain no failure/error/skipped; only system-out/system-err; counters 34/0/0/0 unchanged",
+    "noProductOrTestOrAssertionChange": true
+  },
+  "sourceInventory": {
+    "commit": "9542cb4cc2071df2c00129cc5dbb4572a245cfa1",
+    "pathsAndBlobs": 1606,
+    "allPending": true,
+    "methodsSeparatelyRecorded": 12
+  },
+  "verificationBoundary": {
+    "newRuntimeTestsForL0Docs": false,
+    "laterDocumentationHeadIsNotANewIndependentlyTestedProductCandidate": true,
+    "fullW2Accepted": false,
+    "wholeBranchAccepted": false,
+    "productionReleaseApproved": false,
+    "manualMergePending": true
+  },
+  "remainingChecks": [
+    "workspace designer check failed on existing vendor cache; identical 343-blob export passed unchanged verifier",
+    "ESLint remains blocked; premium strict remains failed at 26 unchanged findings",
+    "old DHR high items open; user deferred record-control change/void dependencies",
+    "save/API fixtures and direct/Mockito/H2 tests do not establish real HTTP/PG E2E;390px only confirmation and keyboard access"
+  ]
+}
