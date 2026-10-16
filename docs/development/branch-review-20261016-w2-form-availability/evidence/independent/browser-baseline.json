@@ -1,0 +1,58 @@
+{
+  "kind": "actual-selector-with-controlled-read-fixtures",
+  "baseline": "41f19bca31a6232ae568dde073ef366c5d894e86",
+  "results": [
+    {
+      "name": "plans have no fabricated instance count in rows or work tooltips and remain previewable",
+      "status": "failed",
+      "message": "The input was expected to not match the regular expression /共\\s*0\\s*份/. Input:\n\n'工序记录\\n待工序开工\\nCONFIGURED\\n版本 V1.0\\n共 0 份\\n必填'\n",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "actual counts and current actionable copy are retained with future work still uninstantiated",
+      "status": "failed",
+      "message": "The input was expected to not match the regular expression /共\\s*0\\s*份/. Input:\n\n'WORK · V1.0 · 必填 · 共 0 份'\n",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "completed work without a reached copy is not applicable including missing-copy-controls compatibility",
+      "status": "failed",
+      "message": "The input did not match the regular expression /不适用/. Input:\n\n'预览分支记录，第 1 步，未到达'\n",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "existing unfinished copies remain in progress after operation and work completion",
+      "status": "failed",
+      "message": "The input did not match the regular expression /进行中/. Input:\n\n'预览分支记录，第 1 步，未到达'\n",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "search and keyboard preview work in a narrow viewport while busy blocks selection",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "name": "quantity regression retains separate unit values in the source popover under the current grouped summary",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    }
+  ]
+}

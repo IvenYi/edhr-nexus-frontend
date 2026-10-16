@@ -1,0 +1,92 @@
+{
+  "candidate": "518ac6838b3c418fd16aca0c84c0f216b33d17d8",
+  "target": "41f19bca31a6232ae568dde073ef366c5d894e86",
+  "artifactCount": 13,
+  "artifacts": [
+    {
+      "path": "qualityResult.yaml",
+      "source": "/tmp/edhr-w2-availability-final/qualityResult.yaml",
+      "sha256": "d2e46c951aeb514c1094b2b21c9de23e1c30ef2f8a6244b8afe124c74e6be5d6",
+      "size": 19704
+    },
+    {
+      "path": "backend-case-index.json",
+      "source": "/tmp/edhr-w2-availability-final/backend-case-index.json",
+      "sha256": "24a73de132f2f617572e95f8f645f0cb1eb671f8bbd7c190d1aa74241a130b80",
+      "size": 28896
+    },
+    {
+      "path": "browser.json",
+      "source": "/tmp/edhr-w2-availability-final/browser.json",
+      "sha256": "4101b3be21d2b538e4bb8f66783e649d5119177afd1d6cd3b11334a6f46b1e45",
+      "size": 1426
+    },
+    {
+      "path": "browser-baseline.json",
+      "source": "/tmp/edhr-w2-availability-final/browser-baseline.json",
+      "sha256": "6b64488543093eaa11d92113a45e9f1530668dfa4324ec784b15c8a2c526004c",
+      "size": 2077
+    },
+    {
+      "path": "fixture-review.json",
+      "source": "/tmp/edhr-w2-availability-final/fixture-review.json",
+      "sha256": "3735fbdf266efe59c210348af9933301f873c6d7b0e61206c01800e52aa9c422",
+      "size": 926
+    },
+    {
+      "path": "inventory-review.json",
+      "source": "/tmp/edhr-w2-availability-final/inventory-review.json",
+      "sha256": "a607803b8b10d4fa8a583d3a710b059b11ab0b5e8a4c6a3bd00d371c1f5e338e",
+      "size": 219
+    },
+    {
+      "path": "knowledge-review.json",
+      "source": "/tmp/edhr-w2-availability-final/knowledge-review.json",
+      "sha256": "79566ff19ac3fad90e0b78667fec4ae76ad2ace50d29b5487fa892b0fdb3fe40",
+      "size": 735
+    },
+    {
+      "path": "manifest-comparison.json",
+      "source": "/tmp/edhr-w2-availability-final/manifest-comparison.json",
+      "sha256": "7e708001819577b6dd17cd9aae89300c684423b8bbec132148e46945adb922a6",
+      "size": 1004
+    },
+    {
+      "path": "premium-comparison.json",
+      "source": "/tmp/edhr-w2-availability-final/premium-comparison.json",
+      "sha256": "1187d0c85bfdcf0950952a73b68676adb608f37685a60d5d42e0bf874e1926dd",
+      "size": 796
+    },
+    {
+      "path": "premium-audit.json",
+      "source": "/tmp/edhr-w2-availability-final/premium-audit.json",
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a",
+      "size": 34340
+    },
+    {
+      "path": "screenshots/planned-work-desktop.png",
+      "source": "/tmp/edhr-w2-availability-final/screenshots/planned-work-desktop.png",
+      "sha256": "41caf655320aa47e1c4ea29da4bce6209023c2322fe3f3faf6b56e61619f2f5f",
+      "size": 22836
+    },
+    {
+      "path": "screenshots/not-applicable-work-desktop.png",
+      "source": "/tmp/edhr-w2-availability-final/screenshots/not-applicable-work-desktop.png",
+      "sha256": "30f126de98f966f02324e48208f991a66dfe65b6ec5f9571f4cd97917349a480",
+      "size": 24243
+    },
+    {
+      "path": "screenshots/planned-form-narrow.png",
+      "source": "/tmp/edhr-w2-availability-final/screenshots/planned-form-narrow.png",
+      "sha256": "2dd9731bd8c9ca8d3ebc56bad9e79d8b49ef3ae50506bd3838a374144cdd5dca",
+      "size": 14620
+    }
+  ],
+  "excluded": [
+    "raw logs",
+    "raw surefire XML including system-out/system-err",
+    "full source/tool manifest-before.json and manifest-after.json",
+    "environment tool content/credentials"
+  ],
+  "review": "Synthetic fixture results, test-name/status index, static audit output and receipts contain no authentication values or environment configuration content; only selected files are approved for repository evidence copy."
+}

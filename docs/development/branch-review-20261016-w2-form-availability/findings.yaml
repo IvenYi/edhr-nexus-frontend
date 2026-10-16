@@ -2,7 +2,8 @@ findings:
   - id: W2-F002-FORM-AVAILABILITY
     historicalIds: [AUD-H002, discrepancy.execution-form-plan-count-and-not-applicable-projection]
     severity: medium
-    status: fixed-awaiting-independent-verification
+    status: resolved
+    verifiedCandidate: 518ac6838b3c418fd16aca0c84c0f216b33d17d8
     scope: 计划与实际实例份数、非当前作业步骤状态、已结束未到达表单的只读状态。
     policyReferences: [DEC-0047-01, DEC-0046-03, DEC-0059-02, DEC-0059-04, DEC-0075, DEC-0079]
     rootCauses:
@@ -12,10 +13,12 @@ findings:
     reproduction: 真实React组件与真实引擎合法条件分支到公开service.get；详见README和primary-result。
     dataOrLifecycleMutation: false
     apiOrSchemaChanged: false
-    independentResult: pending
+    independentResult: evidence/independent/qualityResult.yaml
   - id: W2-T001-QUANTITY-ASSERTION
     severity: low
-    status: fixed-awaiting-independent-verification
+    status: resolved
+    verifiedCandidate: 518ac6838b3c418fd16aca0c84c0f216b33d17d8
+    independentResult: evidence/independent/qualityResult.yaml
     scope: 目标新增DEC0079后旧SSR测试主值预期失配。
     remediation: 主值断言2组；实际浏览器明细保留10根和12件且禁止22，不改数量业务代码。
 remainingScope:

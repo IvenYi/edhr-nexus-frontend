@@ -1,0 +1,260 @@
+qualityResult:
+  result: passed
+  baseCommit: 41f19bca31a6232ae568dde073ef366c5d894e86
+  headCommit: 518ac6838b3c418fd16aca0c84c0f216b33d17d8
+  contractBaseline:
+    sourceCommit: 518ac6838b3c418fd16aca0c84c0f216b33d17d8
+    targetBranch: edhr-dev
+    targetCommit: 41f19bca31a6232ae568dde073ef366c5d894e86
+    contractReadCommit: 518ac6838b3c418fd16aca0c84c0f216b33d17d8
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.final-candidate-and-contract
+      required: true
+      category: documentation
+      description: 全新未参与修复实例实际核对来源、最新目标及项目和专业角色契约。
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git ls-remote origin refs/heads/edhr-dev; git status --porcelain; 读取AGENTS、quality-verifier、统一handoff、知识README/open-questions及本批交接
+      outcome: passed
+      evidence:
+        - 实际base和远端目标为41f19bca31a6232ae568dde073ef366c5d894e86；功能head及本轮tested candidate均为518ac6838b3c418fd16aca0c84c0f216b33d17d8，包含最新目标。
+        - contractReadCommit为实际阅读工作树提交518ac683；无未提交契约，工作树前后干净；未查询或触发GitHub Actions。
+        - /tmp/edhr-w2-availability-final/manifest-comparison.json
+    - id: check.scope-policy-and-production-diff
+      required: true
+      category: requirements
+      description: 核对L2影响分析、四项验收场景与两处最小生产修改，保留既有政策和最新数量增量。
+      method: inspection
+      command: 阅读decision-package/source-map/findings、DEC0047/0046/0059/0075/0079、ProductionExecutionService.get/view及ExecutionFormSelector；git diff 41f19bca..518ac683
+      outcome: passed
+      evidence:
+        - 生产差异仅service.formAvailabilityStatus与Selector行/步骤展示，8行增加7行删除；无engine、act、事务、权限、数量生产代码、迁移或历史数据变更。
+        - 实际instanceIds状态优先；无份且作业COMPLETED投影NOT_APPLICABLE先于工序待开工；计划行及步骤title仅有真实份才显示共N份，不捏造计划1份。
+        - 当前步骤保留可填报/待审批/审批中/仅查看与实际可操作copy选择；非当前真实份保留实际状态，预览不等于填报；新增回归未开放动作权限。
+        - 当前DEC0079主值2组及分单位来源保留；旧SSR断言按确认后的主值口径对齐，并由真实弹层分别断言10根、12件且禁止22。
+        - git -c core.whitespace=cr-at-eol diff --check 41f19bca..HEAD退出0；本次不将历史END_FORM兼容样例解释为恢复取消按钮。
+    - id: check.full-inventory-denominator
+      required: true
+      category: audit
+      description: 独立核对固定源分母、路径/blob与盘点状态，区分清单和已审范围。
+      method: command
+      command: Python读取git ls-tree -r -z 41f19bca及coverage.csv逐路径/blob/状态比对
+      outcome: passed
+      evidence:
+        - 1780个基线blob路径与1780行清单一一匹配、无重复或缺失，全部pending/inventory-only；候选自身1804 tracked另列，不混淆分母。
+        - 定向源码映射、历史AUD-H002去重和运行验证另行记载；未将目录盘点或运行绿测计为完整W2/W7通过。
+        - /tmp/edhr-w2-availability-final/inventory-review.json
+    - id: check.fixture-identity-fix
+      required: true
+      category: requirements
+      description: 独立复核首次failed发现已修正，并对新候选完整重跑。
+      method: inspection
+      command: git diff 0346f410..518ac683 -- ProductionExecutionAvailabilityTest.java；核对snapshot helper/read及真实引擎动作；执行backend-focused命令
+      outcome: passed
+      evidence:
+        - 两项SN到达/旧选填场景已同步mock实体objectType与冻结context.objectType；public get前新增一致性断言，BATCH跳过分支仍保持BATCH。
+        - 相对首次候选只新增这两行测试代码，无原业务断言删除、弱化或跳过；两生产文件自0346以来字节未变。
+        - 新候选4项读取测试与全部145项聚焦测试实跑通过；保留首次0346的failed，不将其补写passed或作为本次最终通过。
+        - /tmp/edhr-w2-availability-final/fixture-review.json
+        - /tmp/edhr-w2-availability-final/backend-case-index.json
+    - id: check.knowledge-sync-and-history
+      required: true
+      category: ontology
+      description: 核对本体结果、受影响声明、全局ID/引用和历史证据边界。
+      method: command
+      command: Python按schema collectionTypes/nestedCollectionTypes核对ID及两知识文件；BusinessKnowledgeModelTest随聚焦Maven实跑
+      outcome: passed
+      evidence:
+        - 实际知识版本0.3.25/schema1.2.0；ontologyResult为updated且无冲突或未决项，未提高P0阶段或政策成熟度。
+        - 2516个结构记录ID无重复；仅新增3个evidence ID，其引用测试/报告路径实际存在；该结构检查不等于2516条语义审查。
+        - DEC0047除既有implementationDiscrepancy收敛外逐值不变；原evidence记录逐值保留，历史静态审读未执行运行验收的文本仍在；当前修复证据单独追加。
+        - 89项正式知识测试实际通过，已包含在145项中，不重复累加覆盖。
+        - /tmp/edhr-w2-availability-final/knowledge-review.json
+        - /tmp/edhr-w2-availability-final/backend-case-index.json
+    - id: check.frontend-node
+      required: true
+      category: unit
+      description: 独立执行选择器、模板/份选择、值、自定义表单、数量、历史与保存状态相邻回归。
+      method: automated-test
+      command: node --test scripts/test-execution-form-selector.mjs scripts/test-execution-template-picker.mjs scripts/test-execution-copy-drawer.mjs scripts/test-execution-form-values.mjs scripts/test-execution-custom-forms.mjs scripts/test-production-quantity-sources.mjs scripts/test-production-output.mjs scripts/test-execution-history.mjs scripts/test-designer-save-state.mjs
+      outcome: passed
+      evidence:
+        - 52 tests，52 passed，0 failed/cancelled/skipped，退出0；含当前审批/只读和实际copy优先的既有断言。
+        - /tmp/edhr-w2-availability-final/node.log
+    - id: check.actual-component-browser
+      required: true
+      category: e2e
+      description: 实际React/MUI选择器、现有CSS和数量弹层在隔离浏览器中运行，受控只读fixture。
+      method: browser
+      command: CHROME_PATH=/workspace/.pr6-playwright/chromium-1208/chrome-linux64/chrome W2_RESULT_PATH=/tmp/edhr-w2-availability-final/browser.json W2_SCREENSHOT_DIR=/tmp/edhr-w2-availability-final/screenshots node scripts/test-execution-form-selector-browser.mjs
+      outcome: passed
+      evidence:
+        - 6场景全部通过、退出0、无浏览器runtime error；计划行/tooltip、真实多份/当前copy、结束未到达/缺controls、已有未完成份、390px搜索无结果/键盘/busy、数量弹层分单位均实际执行。
+        - 预览仅产生选择回调，所有场景attach调用0；未调用既有3000/8081服务或生产数据库。
+        - /tmp/edhr-w2-availability-final/browser.json
+    - id: check.original-selector-negative-replay
+      required: true
+      category: regression
+      description: 同一最终脚本只读加载旧基线选择器，证明新增断言能识别原缺陷。
+      method: browser
+      command: CHROME_PATH=/workspace/.pr6-playwright/chromium-1208/chrome-linux64/chrome W2_BASELINE_COMMIT=41f19bca31a6232ae568dde073ef366c5d894e86 W2_RESULT_PATH=/tmp/edhr-w2-availability-final/browser-baseline.json node scripts/test-execution-form-selector-browser.mjs
+      outcome: passed
+      evidence:
+        - 实际退出1、4 failed/2 passed，恰为期望的负向重放；失败指向计划共0份、未来work共0份、兼容不适用回落未到达及实际进行中份被标未到达。
+        - 窄屏搜索键盘与当前数量明细两项在旧组件中仍通过；未修改源码还原或降低最终断言。
+        - /tmp/edhr-w2-availability-final/browser-baseline.json
+    - id: check.visual-and-canonical-ui
+      required: true
+      category: visual
+      description: 人工实际查看新生成桌面及390px截图，并核对既有共享UI所有权和列表规范适用范围。
+      method: inspection
+      command: view_image三张新截图；读取完整DESIGN和适用list-page规范及Selector/AppDialog/现有CSS
+      outcome: passed
+      evidence:
+        - 三张实际截图已人工查看：计划作业显示未到达且无伪实例数，结束无份步骤显示不适用，390px计划行版本/必填/待开工可见且选择入口在视口内。
+        - 复用原Drawer、MUI语义按钮及中文状态，不增加新布局、样式、token或另一套弹窗；键盘Enter预览实际通过。生产执行工作区预览不是普通列表详情，未强套列表详情Drawer规范。
+        - /tmp/edhr-w2-availability-final/screenshots/planned-work-desktop.png
+        - /tmp/edhr-w2-availability-final/screenshots/not-applicable-work-desktop.png
+        - /tmp/edhr-w2-availability-final/screenshots/planned-form-narrow.png
+        - 仅对本批状态文字、入口和布局给出局部视觉结论，不宣称全站移动端或WCAG达标。
+    - id: check.backend-focused
+      required: true
+      category: regression
+      description: 独立执行真实引擎到公开读取服务及相邻生命周期、数量、值与知识套件。
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -o -Dmaven.repo.local=/workspace/.pr6-m2 -Dtest=ProductionExecutionAvailabilityTest,ProductionExecutionEngineTest,ExecutionFormCopiesTest,ExecutionOutputSummaryTest,ProductionQualitySummaryTest,ProductionExecutionFormValuesTest,BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - Maven退出0，BUILD SUCCESS；145 tests、0 failures/errors/skipped。新增4项经合法engine start/submit/add/end/complete产生状态后读取public get，不人工拼造终态。
+        - 原持久化snapshot/state JSON、历史、作业、group身份和实际份状态/值保持，repository.save从未调用；仓储和身份为mock，不能冒充数据库验收。
+        - /tmp/edhr-w2-availability-final/backend.log
+        - /tmp/edhr-w2-availability-final/backend-case-index.json
+    - id: check.existing-http-h2
+      required: true
+      category: integration
+      description: 既有真实HTTP/事务回归在默认内存H2及随机端口独立执行，条件未启用项单列。
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -o -Dmaven.repo.local=/workspace/.pr6-m2 -Dtest=ProductionExecutionIntegrationTest test
+      outcome: passed
+      evidence:
+        - Maven退出0，BUILD SUCCESS；69报告项中66实跑通过、3 skipped、0 failure/error；H2内存jdbc及server.port=0，不触碰5432现有库。
+        - formRecordsBrowserFixture、browserEvidenceFixture需要显式fixture标志未启用；firstStartFreezesOneCommittedConfigurationDuringProcessRebinding需要PostgreSQL驱动未执行。这3项未记为passed。
+        - /tmp/edhr-w2-availability-final/http-h2.log
+        - /tmp/edhr-w2-availability-final/backend-case-index.json
+    - id: check.frontend-build
+      required: true
+      category: regression
+      description: 完整TypeScript项目检查及Vite生产构建。
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence:
+        - 原package命令tsc -b && vite build实际退出0，Vite产物构建完成；未更改构建配置。
+        - /tmp/edhr-w2-availability-final/build.log
+    - id: check.existing-page-contracts
+      required: true
+      category: regression
+      description: 现有工艺建模与列表样式契约检查。
+      method: command
+      command: node scripts/verify-process-modeling-pages.mjs && node scripts/verify-list-table-style-contract.mjs
+      outcome: passed
+      evidence:
+        - 两个原脚本实际退出0；未修改脚本/规范来改变检查结果。
+        - /tmp/edhr-w2-availability-final/process-contract.log
+        - /tmp/edhr-w2-availability-final/list-contract.log
+    - id: check.premium-no-new-findings
+      required: true
+      category: regression
+      description: 官方扫描器完整finding对象与修前基线逐项相同，当前有限差异未增加静态问题。
+      method: command
+      command: 官方audit_project.py实际strict输出与design-before.json按完整finding对象含路径/行号比较
+      outcome: passed
+      evidence:
+        - 当前及修前均84项，13 unresolved/71 violations，应用26/支撑58；逐对象一致，新增0/移除0。全局strict本身仍失败，另列optional检查。
+        - 官方脚本SHA256为67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68；未改脚本、配置或规则白化。
+        - /tmp/edhr-w2-availability-final/premium-comparison.json
+    - id: check.protected-source-and-tools
+      required: true
+      category: audit
+      description: 全部启动进程结束后核对全部tracked源、两项环境工具和实际分支未变。
+      method: command
+      command: 对1804个tracked文件与mvn-edhr/settings.xml计算执行前后SHA256及size并逐项比较；重新核对HEAD、目标与git status及远端目标
+      outcome: passed
+      evidence:
+        - 1804源文件及2工具全部摘要/size相同；HEAD=518ac683、目标及远端=41f19bca，git status前后为空。
+        - before/after manifest SHA256均为4f53f58a95e86f05c3b8d09db06cc02966d696d1fb517d906d70359d0364c7fe；完整manifest留/tmp，安全归档仅含相等receipt。
+        - 所有Node、浏览器、构建、静态和Maven进程均已完成；实际组件harness正常关闭浏览器/私有server并清理自身bundle。
+        - 本实例没有修复或编辑任何仓库代码/测试/知识/配置，没有commit/push/merge/deploy，没有查询/触发Actions，也未改现有服务或历史数据。
+        - /tmp/edhr-w2-availability-final/manifest-comparison.json
+    - id: check.premium-global-strict-existing
+      required: false
+      category: visual
+      description: 全局官方strict扫描保留既存未完成项，不把差异通过冒充全局通过。
+      method: command
+      command: python /tmp/edhr-w2-audit-project-20261016.py /workspace/edhr-nexus-frontend --mode strict --output /tmp/edhr-w2-availability-final/premium-audit.json
+      outcome: failed
+      evidence:
+        - 实际退出2，84项既存问题与修前逐项一致；涉及全局未决所有权及现有静态违例，当前批次无新增。
+        - /tmp/edhr-w2-availability-final/premium-audit.json
+        - /tmp/edhr-w2-availability-final/premium.log
+    - id: check.eslint-existing-environment
+      required: false
+      category: regression
+      description: 原lint入口在检查代码前因仓库缺ESLint配置退出，保持环境限制。
+      method: command
+      command: npm run lint
+      outcome: blocked
+      evidence:
+        - 实际退出2，ESLint8.57.1提示找不到配置文件；未新增宽松配置、跳过断言或把该检查标绿。
+        - /tmp/edhr-w2-availability-final/lint.log
+  findings:
+    - id: QF-W2-AVAILABILITY-001
+      severity: medium
+      scope: W2读取回归fixture的生产对象与冻结上下文同一性
+      summary: 首次0346候选的两个SN场景曾与BATCH mock实体配对；本次518ac已修正并由全新实例完整复核。
+      reproductionSteps:
+        - 读取首次0346f410的ProductionExecutionAvailabilityTest，实体固定BATCH，两项到达/旧选填场景构建SN快照且helper未同步实体类型。
+        - 对照518ac683的snapshot helper与read：新增object.setObjectType(objectType)，公开读取前断言实体与context类型一致。
+        - 对新候选实际重跑全部145聚焦及H2 HTTP、Node、浏览器、构建与适用静态/视觉检查。
+      expectedResult: 同一生产对象和冻结快照类型一致，合法引擎推进形成的状态可作为公开读取服务验收依据。
+      actualResult: 当前BATCH跳过和两个SN到达/选填边界对象类型均一致，新增4项及145聚焦全部通过；原业务断言保留。
+      evidence:
+        - docs/development/branch-review-20261016-w2-form-availability/evidence/independent-first/qualityResult.yaml
+        - /tmp/edhr-w2-availability-final/fixture-review.json
+        - /tmp/edhr-w2-availability-final/backend-case-index.json
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: 518ac6838b3c418fd16aca0c84c0f216b33d17d8
+        - type: command
+          reference: /tmp/edhr-w2-availability-final/backend.log
+        - type: document
+          reference: /tmp/edhr-w2-availability-final/fixture-review.json
+  residualRisks:
+    - id: risk.fixture-and-production-environment-boundary
+      description: 新增后端读取为真实引擎配mock仓储/身份；浏览器为实际组件配受控只读props，既有HTTP回归只在内存H2执行。
+      impact: 不证明真实生产数据库全链、PostgreSQL首次START并发、迁移、完整生产业务端到端或真实终端全部权限场景。
+      mitigation: 本批仅两处只读投影，未改事务/引擎/迁移；相关数据库和发布候选风险在对应切片单独验收，不将3条件未启用算通过。
+    - id: risk.existing-global-static-gaps
+      description: 全局premium84项既存问题未关闭；ESLint缺配置导致未进入源码检查。
+      impact: 不具备全站strict视觉/行为符合性或完整lint通过证明；这些现有范围不因本批通过自动清零。
+      mitigation: 如实保留optional failed/blocked和零新增证据，后续按授权小批治理；不改工具、测试标准或业务规则求绿。
+    - id: risk.limited-visual-matrix
+      description: 实际查看了本批桌面及390px状态截图并执行键盘预览，未做全站移动端、全设备触控、200%zoom或完整WCAG验证。
+      impact: 局部视觉通过不能提升为全站可访问性、移动端或发布验收。
+      mitigation: 维持原共享布局与控件；需要更大设备/辅助技术承诺时安排相应实机矩阵。
+    - id: risk.audit-progress-and-record-control-dependency
+      description: 本结果只覆盖W2第二批AUD-H002读投影；完整W2、W1剩余gap、W3至W7与全分支审查未完成。A12变更/作废及依赖按用户决定暂缓。
+      impact: discrepancy.dhr-review-complete-evidence-impact-gap及discrepancy.dhr-review-effective-source-integration两项旧DHR high仍open；当前通过不授权关闭它们、全分支merge或生产发布。
+      mitigation: 保留台账及依赖边界；本批小范围可审阅集成，后续继续最新edhr-dev上的分批审查，不重收尾PR5/6/8/9/10。
+    - id: risk.unrelated-designer-cache-check
+      description: 既有vendor缓存导致的无关设计器静态脚本限制未在本批重验，缓存未删除或移动。
+      impact: 不对该无关检查给出新的通过结论，也不把历史通过自动继承到新候选。
+      mitigation: 使用本批原有52项及完整构建覆盖相邻保存状态；若后续修改设计器再按其真实范围验收。
+  blockingConditions: []
