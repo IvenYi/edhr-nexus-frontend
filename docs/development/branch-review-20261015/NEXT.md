@@ -23,7 +23,7 @@ PR7至PR13均已由用户人工合入，各批修复与原始验收证据保留�
 
 ## W2→W7 已定顺序
 
-W2第二批H002随PR11合入，第三批保存至正式投影组合回归已随[PR12](https://github.com/IvenYi/edhr-nexus-frontend/pull/12)合入，独立受测3b642ab4的原结果不改写。第四批插列确定性修复和相邻测试入口针对8450aa78的原验收passed，已随[PR13](https://github.com/IvenYi/edhr-nexus-frontend/pull/13)人工合入。第五批已沿合法子列编辑完成红绿及全新实例845b3a7f正式passed，待人工合并。随后以新目标核对剩余W2的历史fillMode/条件、保存重读及各renderer消费差异，再收敛W2并推进W3；每批拉取最新edhr-dev、固定分母。完整执行HTTP/JPA/签署、历史不一致模板迁移和旧配置兼容不因本批测试自动获得通过。W1 gap、A12及两旧DHR high保留。H005不重开；H003/4与H009/10仍留W3，无新增合法证据不计已修。
+W2第二批H002随PR11合入，第三批保存至正式投影组合回归已随[PR12](https://github.com/IvenYi/edhr-nexus-frontend/pull/12)合入，独立受测3b642ab4的原结果不改写。第四批插列确定性修复和相邻测试入口针对8450aa78的原验收passed，已随[PR13](https://github.com/IvenYi/edhr-nexus-frontend/pull/13)人工合入。第五批已沿合法子列编辑完成红绿及全新实例845b3a7f正式passed，交付[PR14](https://github.com/IvenYi/edhr-nexus-frontend/pull/14)待人工合并；唯一low定位笔误在2ae06d4a仅L0更正并获独立补充passed，原报告不回写。随后以新目标核对剩余W2的历史fillMode/条件、保存重读及各renderer消费差异，再收敛W2并推进W3；每批拉取最新edhr-dev、固定分母。完整执行HTTP/JPA/签署、历史不一致模板迁移和旧配置兼容不因本批测试自动获得通过。W1 gap、A12及两旧DHR high保留。H005不重开；H003/4与H009/10仍留W3，无新增合法证据不计已修。
 
 | 工作包 | 主要后续内容 | 本批准备材料 |
 | --- | --- | --- |

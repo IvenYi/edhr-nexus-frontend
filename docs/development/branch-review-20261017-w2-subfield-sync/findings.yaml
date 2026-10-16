@@ -18,9 +18,10 @@ findings:
 documentationDisposition:
   id: W2-QF-001
   severity: low
-  status: corrected-after-independent-review
+  status: independently-verified-resolved
   change: source-map的Shell文件名及方法行号更正为TemplateDesignerReactShell.tsx的persistCurrentDocument:102。
-  evidence: evidence/delivery-receipt.json
+  evidence: evidence/independent/l0-document-review.yaml
+  resolutionCommit: 2ae06d4aed42aa8c7d449fbcd86038eb5c8240dd
   originalQualityReportPreserved: true
 unresolvedBusinessQuestions: []
 historicalDeduplication:

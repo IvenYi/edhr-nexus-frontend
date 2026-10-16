@@ -29,5 +29,23 @@
   "manualMergeOnly": true,
   "noDeployOrHistoryRestoration": true,
   "protectedEnvironmentToolsRecheckedAfterL0": 2,
-  "protectedEnvironmentToolsBytesSha256Unchanged": true
+  "protectedEnvironmentToolsBytesSha256Unchanged": true,
+  "supplementalIndependentReview": {
+    "result": "passed",
+    "reviewedCommit": "2ae06d4aed42aa8c7d449fbcd86038eb5c8240dd",
+    "path": "independent/l0-document-review.yaml",
+    "bytes": 4380,
+    "sha256": "ee3e7389d4374a7e94985c70184183adbc9fa194c67df1792e89da7fe958eb26",
+    "qf001IndependentlyResolved": true
+  },
+  "pullRequest": {
+    "number": 14,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/14",
+    "base": "edhr-dev",
+    "head": "audit/edhr-dev-w2-subfield-sync-20261017",
+    "mergeableObserved": "MERGEABLE",
+    "observedHead": "2ae06d4aed42aa8c7d449fbcd86038eb5c8240dd",
+    "manualMergePending": true
+  },
+  "finalAppendixScope": "Only PR link, independently verified low resolution and original L0 supplemental report added after 2ae06d4a; no runtime change."
 }
