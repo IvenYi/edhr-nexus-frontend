@@ -3,12 +3,19 @@ decisionPackage:
   scope: production-execution quantity presentation
   knowledgeBaselineVersion: 0.3.25
   contractBaseline:
-    sourceCommit: 6379bf105127b05a65695992b008b55c142264f9
+    sourceCommit: b60aaebc6a021646fe1761cef7f47cf364451349
     targetBranch: edhr-dev
-    targetCommit: 76b214426a271929bba2708cdda9e4d84d1f0679
-    contractReadCommit: 6379bf105127b05a65695992b008b55c142264f9
+    targetCommit: 9542cb4cc2071df2c00129cc5dbb4572a245cfa1
+    contractReadCommit: b60aaebc6a021646fe1761cef7f47cf364451349
     uncommittedContractPaths: []
   summary: 工序已填报累计收进已生效数值浮层，保留填表操作空间。
+  integrationAcceptance:
+    featureCommit: 63e20e74
+    candidateCommit: b60aaebc6a021646fe1761cef7f47cf364451349
+    targetCommit: 9542cb4cc2071df2c00129cc5dbb4572a245cfa1
+    scope: 合并数量联动、工序面板和数量明细的已确认改动；复核远端开工一致性及制程引用修复的相邻影响，再提交验收记录并推送edhr-dev。
+    relatedDecisionPackages: [docs/development/batch-quality-linkage-decision-2026-10-15.yaml]
+    presentationFollowup: 数值常态使用产品链接同色蓝色，浮层累计概览、来源卡片、状态和字段表对齐；仅展示调整，构建及实际3000检查已通过。
   confirmed:
     concepts: []
     relationships: []

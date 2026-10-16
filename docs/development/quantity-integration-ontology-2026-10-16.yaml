@@ -1,0 +1,115 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: b60aaebc6a021646fe1761cef7f47cf364451349
+    targetBranch: edhr-dev
+    targetCommit: 9542cb4cc2071df2c00129cc5dbb4572a245cfa1
+    contractReadCommit: b60aaebc6a021646fe1761cef7f47cf364451349
+    uncommittedContractPaths: []
+  reason: 本次是已建模数量切片与目标分支的集成复核，没有新增业务决定；当前DEC-0077/0078/0079及词典、事实、规则已表达本次功能差异和局部展示替代，目标W1开工一致性及F004引用显示修复未与之冲突，因此无需再次修改权威知识或成熟度。not-applicable仅指本轮额外知识同步，不撤销既有批次质量及浮层切片的本体更新，也不替代新候选的质量或运行验收。
+  changedArtifacts: []
+  knowledgeSync:
+    - id: DEC-0077-06
+      disposition: retained
+      scope: 正式来源按真实工序与用途累计，技术重试幂等不等于业务重复记录去重；跨工序不合成批次产出。来源浮层按真实份次、binding、table、row及field识别同源，不按名称或数量猜测。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - gmp-platform/frontend/src/components/productionQuantitySources.ts
+    - id: DEC-0077-07
+      disposition: retained
+      scope: 最终完成与待投影事件同事务持久化，正式投影成功才按指标计入；保存参考不成为正式事实。当前来源分别返回表单状态、投影状态和included，表单已完成不独自证明数量生效。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionQualitySummary.java
+    - id: DEC-0077-12
+      disposition: retained
+      scope: 使用时冻结及后改配置不回写旧执行继续有效；目标W1的REPEATABLE_READ确保首次START多次读取及同事务DHR构建采用一致已提交视图，是既有政策的实现保障，不增加模板禁编辑、发布或提前冻结政策。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - docs/knowledge/evidence/production-execution.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    - id: DEC-0078
+      disposition: retained
+      scope: 具体制程版本零或一个最终工序；批次取冻结最终节点、工单只汇总真实所属批次，产出角色独立于良品/NG/报废。普通工序按填报单位分组，空单位待核对不计入，最终节点额外核对冻结产品单位；旧无策略实例不从当前制程追算。F004仅保留已存引用展示并等待合法引用及路线加载，不重写冻结最终节点或开工配置时点。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml
+        - docs/knowledge/rules/product-process.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+        - gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
+    - id: DEC-0079
+      disposition: retained
+      scope: 批次良品/NG只累计冻结最终工序，产品报废覆盖全流程真实本批产品，其他物料不混入；当前工序按自己显式用途分别累计。未采集与实际0分开，空或适用异单位、缺身份保留来源并待核对，三项不加减产出、不改生产/DHR终态、不回填旧数据。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+        - docs/knowledge/rules/production-quality.yaml
+        - docs/knowledge/facts/production-quality.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionQualitySummary.java
+    - id: DEC-0079-06
+      disposition: retained
+      scope: 只替代DEC-0079-04在左栏独立展开过程参考的呈现，改为主值已生效数量及同指标浮层中的已填报数量；后者包含前者且不得相加，表单状态与统计状态分别显示。蓝色数值、概览及来源卡片属于展示实现，不新增数量政策；保留当前specified/internal，不因本轮静态复核提升为verified/runtime。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+        - docs/knowledge/evidence/operation-quantity-popover-2026-10-16.md
+        - docs/development/operation-quantity-popover-2026-10-16.yaml
+        - gmp-platform/frontend/src/components/ProductionOutput.tsx
+    - id: DEC-0045-07
+      disposition: historical
+      scope: 保留原面板说明及当时实现证据；三项质量组成产出的解释已由DEC-0077-13/0078-03及0079-04替代，不重新恢复该公式，也不删除整份DEC-0045。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0045-production-execution-workspace.yaml
+        - docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml
+    - id: fact.production-quality.saved-reference
+      disposition: retained
+      scope: ExecutionQualitySummary读取冻结当前工序逐份已保存内容，显式统计绑定优先、legacy仅作过程兼容；批次共享表单不因显示工序被认领。来源内部构造标记不代表真实正式投影成功，UI生效状态仍取正式来源，旧operationOutputs不合成产出。
+      sourceReferences:
+        - docs/knowledge/facts/production-quality.yaml
+        - docs/knowledge/rules/production-form-copies.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionQualitySummary.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionOutputSummary.java
+    - id: question.form-projection-cross-form-event-association
+      disposition: deferred
+      scope: 相同对象范围内分别累计不建立跨表单同事件身份；当前实现无需该未决规则，继续保留问题，不扩展业务去重、返工冲销、库存或A12受控修订作废。
+      sourceReferences:
+        - docs/knowledge/open-questions.yaml
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.quantity-integration-contract-baseline
+      checkType: evidence-path
+      command: git rev-parse HEAD；git rev-parse 63e20e74；git diff 6379bf105127b05a65695992b008b55c142264f9 HEAD -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - 实际候选b60aaebc6a021646fe1761cef7f47cf364451349；功能提交63e20e74b15716b1919a807dbd305baea4ec237c；目标9542cb4cc2071df2c00129cc5dbb4572a245cfa1。
+        - 本体实例实际重读当前项目、角色、交接契约、知识README、架构、open-questions及两个决策包；上述契约相对旧6379bf1无增量，且无未提交契约修改。
+    - id: validation.quantity-integration-semantics
+      checkType: reference
+      command: 定向读取DEC-0077-05至13、DEC-0078、DEC-0079及对应词典/事实/规则/证据，并核对ProductionOutputService、ProductionQualitySummary、ExecutionQualitySummary、ExecutionOutputSummary与前端来源合并及浮层代码
+      outcome: passed
+      evidence:
+        - 候选相对目标9542cb4c的受影响数量定义及来源链一致；本轮只核对当前功能与主要相邻边界，不宣称全仓语义审计。
+        - 普通工序operation.valid显式拒绝空单位计入且保留来源，最终节点仍核对冻结产品单位；两者与DEC-0078-05/07、DEC-0079-03及既有规则一致。
+        - 主体/物料归属沿真实对象和冻结context.productId，当前物料类别仅供显示；同源关联使用稳定份次及来源身份，未用显示名推断正式身份。
+        - 已核对DEC-0079-06对04的声明级替代；旧本体及QA结果仍保留，不反填旧验收。
+    - id: validation.quantity-integration-adjacent-policies
+      checkType: reference
+      command: 核对ProductionExecutionService.act的REPEATABLE_READ及F004目标源码；git diff --quiet 9542cb4cc2071df2c00129cc5dbb4572a245cfa1 HEAD -- gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
+      outcome: passed
+      evidence:
+        - W1开工配置一致性保障与使用时冻结兼容；正式/已保存累计查询不新增开工动作、发布或历史冻结政策。
+        - F004编辑器与目标版本无差异，已存引用可见性与可保存资格分开，路线加载完成前不能保存；不影响本次数量策略与只读来源链。
+    - id: validation.quantity-integration-yaml-baseline
+      checkType: schema
+      command: Ruby YAML.safe_load解析docs/knowledge/**/*.yaml，检查knowledgeModelVersion、schemaVersion和非schema记录ID唯一性
+      outcome: passed
+      evidence:
+        - 本体实例实际执行：204个YAML文件全部解析，版本0.3.25/schema1.2.0，2513个ID唯一。
+        - 该检查是解析/版本/ID诊断，不替代BusinessKnowledgeModelTest正式门禁；本体未运行业务测试、数据库或浏览器，新候选运行与独立质量结果由主侧另记。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

@@ -1,0 +1,95 @@
+{
+  "candidateCommit": "b60aaebc6a021646fe1761cef7f47cf364451349",
+  "backendMainSuites": [
+    {
+      "class": "com.zencas.edhr.production.service.ProductionQualitySummaryTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": [],
+      "xmlSha256": "83f1a4447515305703e6a82cc6c02859f871b3adf7863c883cc54498f671fdff"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionOutputPostgresTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": [],
+      "xmlSha256": "865458df063a1eed830f5c5b291ad8b2622a408a35be014fa2f0c85f2e40e065"
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ExecutionOutputSummaryTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": [],
+      "xmlSha256": "29e2f6670c9bb9ee35d985792c59ef309efa33cbd6179182b32812d9921cccdf"
+    },
+    {
+      "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+      "tests": 69,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3,
+      "skippedCases": [
+        "formRecordsBrowserFixture",
+        "firstStartFreezesOneCommittedConfigurationDuringProcessRebinding",
+        "browserEvidenceFixture"
+      ],
+      "xmlSha256": "831286003b9992fbf2d7cacd96666bae51e1624fa2248a69050c3a38028bcd9a"
+    },
+    {
+      "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": [],
+      "xmlSha256": "9fdb4b37ae820dfa3ea61e4d63760cb88d4c20e19e8b8f1755fa7c66e295c16c"
+    }
+  ],
+  "postgresStartCase": {
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      "firstStartFreezesOneCommittedConfigurationDuringProcessRebinding"
+    ],
+    "xmlSha256": "4f58b17648816e4813b9b733345291e53032ba41b852f1b4a42b157ca7fe1cfc"
+  },
+  "knowledgeSuites": [
+    {
+      "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "frontendBuild": {
+    "exitCode": 0,
+    "logSha256": "b5bd9c99c138d15eab769d04e43cb567448ca3057aef42691f4e35e28214d3b7"
+  },
+  "frontendSourceTests": {
+    "tests": 4,
+    "passed": 4,
+    "failed": 0
+  },
+  "backendPackage": {
+    "exitCode": 0,
+    "logSha256": "e8060cbd112764c0ae46c30e02c6484818f7e8455e5976f504e85c74d1147a53"
+  },
+  "localRuntime": {
+    "frontendPort": 3000,
+    "backendPort": 8081,
+    "databasePort": 5432,
+    "database": "edhr_form_projection",
+    "liquibaseEnabled": false,
+    "jarSha256": "818d783421c9b945d9e7d020203fd6d22fb1de4b9b2644176b4991e99116431c",
+    "startupLog": "/tmp/edhr-8081-quantity-integrated.log"
+  }
+}

@@ -1,0 +1,149 @@
+qualityResult:
+  result: passed
+  baseCommit: 9542cb4cc2071df2c00129cc5dbb4572a245cfa1
+  headCommit: b60aaebc6a021646fe1761cef7f47cf364451349
+  contractBaseline:
+    sourceCommit: b60aaebc6a021646fe1761cef7f47cf364451349
+    targetBranch: edhr-dev
+    targetCommit: 9542cb4cc2071df2c00129cc5dbb4572a245cfa1
+    contractReadCommit: b60aaebc6a021646fe1761cef7f47cf364451349
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/operation-quantity-popover-2026-10-16.yaml
+      - docs/development/quantity-integration-ontology-2026-10-16.yaml
+      - docs/development/quantity-integration-2026-10-16/README.md
+      - docs/development/quantity-integration-2026-10-16/main-tests.json
+      - docs/development/quantity-integration-quality-2026-10-16.yaml
+      - output/quantity-integration-2026-10-16
+    excludedPaths:
+      - gmp-platform/frontend/output
+      - output目录中非本次quantity-integration-2026-10-16的既有未跟踪临时文件及其他功能资产
+    untrackedPaths:
+      - docs/development/quantity-integration-ontology-2026-10-16.yaml
+      - docs/development/quantity-integration-2026-10-16
+      - docs/development/quantity-integration-quality-2026-10-16.yaml
+      - output/quantity-integration-2026-10-16
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.quantity-integration-baseline
+      required: true
+      category: documentation
+      description: 独立读取当前角色、交接及知识契约，并固定包含双方提交的实际候选。
+      method: command
+      command: git rev-parse HEAD；git diff 6379bf1..HEAD -- AGENTS.md codeplzreadme.md docs/agents/agent-handoff-contract.md docs/agents/quality-verifier.md；git diff origin/edhr-dev..HEAD
+      outcome: passed
+      evidence:
+        - 实际测试及审查候选为b60aaebc6a021646fe1761cef7f47cf364451349，功能提交63e20e74b15716b1919a807dbd305baea4ec237c，目标9542cb4cc2071df2c00129cc5dbb4572a245cfa1。
+        - 契约相对6379bf1无增量，当前无未提交契约修改；已读取质量角色、统一交接契约、README、open-questions、DEC-0077相关声明、DEC-0078/0079及相关数量规则。
+        - 本实例未修改业务代码或测试；无迁移或初始化资产变更。已按L2核对当前切片和W1/F004相邻整合，未执行全系统审计。
+    - id: check.quantity-rules-and-read-only-ownership
+      required: true
+      category: requirements
+      description: 独立核对数量范围、来源时点、单位及旧数据边界与候选源码。
+      method: inspection
+      command: 审读ProductionOutputService、ProductionQualitySummary、ExecutionQualitySummary、ExecutionOutputSummary、两个生产controller及前端接入差异。
+      outcome: passed
+      evidence:
+        - 批次良品/NG取冻结最终节点；产品报废按真实对象、冻结productId遍历全部工序，其他物料保留排除来源；工序按自己来源/物料/单位累计。
+        - 未采集保持null；有效实际0可计入；空单位及适用异单位保留原值并待核对，普通工序空单位产出不进入有效累计。
+        - 保存参考读取逐份保存值，未将其提前当成正式投影；旧operationOutputs已移除三项相加生成产出。无回写旧源表、DHR、投影、签署或快照路径。
+        - quality来源包含copyId、bindingId、tableId、rowKey、fieldId和表单/投影状态；前端只按稳定来源身份合并，数量与名称不作为身份。
+    - id: check.quantity-independent-backend
+      required: true
+      category: integration
+      description: 对合并候选独立执行质量与真实PostgreSQL数量投影聚焦回归。
+      method: automated-test
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21 PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test mvn -q -Dtest=ProductionQualitySummaryTest,ProductionOutputPostgresTest,ExecutionOutputSummaryTest test
+      outcome: passed
+      evidence:
+        - output/quantity-integration-2026-10-16/independent-tests.json
+        - Quality7、OutputPostgres12、ExecutionOutput5，共24项实际执行通过，0失败/错误/跳过。PostgreSQL用例逐个随机schema隔离，不对业务库执行测试写入。
+        - 覆盖多次报工及重试、最终/前道隔离、实际0及空/异单位、pending/failed、旧无策略实例、共享表单归属、子表实际行、并发完整来源集和质量只读计算。
+    - id: check.quantity-independent-frontend
+      required: true
+      category: unit
+      description: 独立核对有效及保存来源的合并身份和状态展示。
+      method: automated-test
+      command: node --test scripts/test-production-quantity-sources.mjs
+      outcome: passed
+      evidence:
+        - 本实例实际运行4项全部通过，0失败/跳过。
+        - 30已生效与50已填报保持各自累计，仅列两个来源；不同份次/行/绑定不合并；completed不能代替投影生效；缺数、0、异单位及差异原值均保留。
+    - id: check.quantity-independent-live-api
+      required: true
+      category: api
+      description: 合并候选重启8081后，经3000正常业务API只读复核安速康R2真实记录。
+      method: query
+      command: admin登录后GET工单生产对象、两批execution及工单列表；未提交任何生产动作或表单保存。
+      outcome: passed
+      evidence:
+        - output/quantity-integration-2026-10-16/independent-api-summary.json
+        - A产出/良品58、NG2，两笔来源；B产出/良品39、NG1，一笔来源；工单产出97。
+        - 产品报废原2和1均空单位、quantity为null且UNIT_REVIEW；正式与保存来源的copy/binding/table/row/field身份集合一致，表单COMPLETED与正式SUCCEEDED分别返回。
+        - 正常业务API成功作为8081可用证据；未使用不存在的actuator健康路由作通过依据。环境保持3000/8081/5432与edhr_form_projection。
+    - id: check.quantity-independent-old-business-rows
+      required: true
+      category: database
+      description: 独立重新计算原业务行摘要，确认没有历史数量、原表单或DHR改写。
+      method: query
+      command: 对business-row-digests-before.json列明37张表执行只读md5(to_jsonb(t)::text)，以多重集合比较原行摘要。
+      outcome: passed
+      evidence:
+        - output/quantity-integration-2026-10-16/independent-old-row-preservation.json
+        - 37表456条原业务记录均保留，missingOrChanged为0。该结论覆盖固定清单，不包括普通登录/查询审计和认证会话。
+    - id: check.quantity-independent-browser
+      required: true
+      category: e2e
+      description: 本实例在隐藏新标签中实际验证3000数量浮层及低高度工作台交互。
+      method: browser
+      command: cua_repl打开生产工作台，扫码R2-B，点击/悬浮不良品数量，Escape/点击外部关闭，1280x600内部PageDown并打开份序抽屉。
+      outcome: passed
+      evidence:
+        - output/quantity-integration-2026-10-16/independent-browser-facts.json
+        - output/quantity-integration-2026-10-16/independent-popover.png
+        - output/quantity-integration-2026-10-16/independent-1280x600.png
+        - 数值常态为primary蓝色；浮层分别展示累计概览、来源卡片、表单/统计状态及两列字段明细，数量与原来源一致。
+        - 1280x600数量浮层底部572小于600，来源区实际可内部滚动；切换表单和份序入口bottom分别508.58/536.08且份序抽屉成功打开。
+        - 点击固定、Escape返回原数量触发器、点击外部关闭和鼠标移出防抖后关闭均实际通过。DOM中另有既有隐藏抽屉role，关闭判断按数量浮层出现/移除，不把总dialog数当零。
+        - 结束已恢复viewport并关闭本实例临时标签；未保存、签署或修改任何业务表单。
+    - id: check.quantity-independent-knowledge
+      required: true
+      category: ontology
+      description: 独立核对受影响声明级替代、当前知识和合并候选正式校验。
+      method: automated-test
+      command: JAVA_HOME=/opt/homebrew/opt/openjdk@21 mvn -q --file tools/knowledge-model/pom.xml test，并审读DEC-0079-04/06与DEC-0045-07的替代范围。
+      outcome: passed
+      evidence:
+        - output/quantity-integration-2026-10-16/independent-knowledge-tests.json
+        - 89项实际执行通过，0失败/错误/跳过。知识0.3.25/schema1.2.0保持。
+        - DEC-0079-06仅替代独立过程参考展开布局，保留04的时点、当前工序范围及单位/物料边界；DEC-0045原始历史保留，三项构成产出的旧解释不作为现行公式。
+        - 整合本体交接not-applicable只说明本轮额外知识同步不适用，既有受影响知识已更新；未把本轮代码或测试提升为verified/runtime或P0整体完成。
+    - id: check.quantity-candidate-main-evidence-and-adjacency
+      required: true
+      category: regression
+      description: 核对本候选主侧构建、执行及制程配置回归证据与远端相邻改动。
+      method: inspection
+      command: 核对main-tests.json及候选W1/F004源码差异；git diff --check origin/edhr-dev..HEAD。
+      outcome: passed
+      evidence:
+        - docs/development/quantity-integration-2026-10-16/main-tests.json
+        - 主侧本候选前端构建退出0，来源测试4项；后端5类共100条目97执行通过、3条件跳过；其中PG开工一致性专项另行执行1项通过，余下2项显式浏览器夹具跳过。该证据为本轮主侧运行复核，不冒充本实例重跑全部100项。
+        - W1的REPEATABLE_READ与controller对40001的事务外转换保持，兼容首次开工冻结一致性；本次数量增加是查询派生。F004制程引用编辑器与目标9542cb4c一致，既存引用显示与可保存资格分开，不覆写最终节点。
+        - git diff --check通过；集成交付README与实际范围、暂缓项及测试统计一致。后续仅允许加入验收文档/证据，业务代码或目标变化须重新评估验收。
+  findings: []
+  residualRisks:
+    - id: risk.quantity-integration-bounded-verification
+      description: 本次没有重新填报并签署完整安速康生产/DHR流程，也未逐页重跑全部报表、追溯、制程编辑器浏览器回归。
+      impact: 本结论覆盖数量切片、当前只读记录和相邻整合；前序完整模拟证据仍仅证明当时版本。
+      mitigation: 本轮后端聚焦测试、候选主侧执行/配置回归、真实API和工作台交互补足本次变更风险；无关完整流程不计为本轮执行通过。
+    - id: risk.quantity-integration-deferred-business-scope
+      description: 跨表单业务事件去重、NG处置/返工冲销、库存扣减、类别历史快照及A12受控修订作废仍是既定暂缓范围。
+      impact: 不得把报告累计解释为剩余库存、已销毁量或任意跨表单同事件去重。
+      mitigation: 当前知识、源码及交付文档保留边界，本轮未引入上述行为。
+    - id: risk.quantity-integration-repository-gates
+      description: 未核验GitHub分支保护/ruleset及必需CI状态配置。
+      impact: 本地独立通过不等于仓库服务端已经强制执行门禁。
+      mitigation: 推送采用正常快进历史并核对远端结果，未宣称强制CI或生产发布完成。
+  blockingConditions: []

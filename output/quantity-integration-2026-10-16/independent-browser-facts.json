@@ -1,0 +1,117 @@
+{
+  "initial": {
+    "dialog": [
+      {
+        "label": ":r1p:-title",
+        "rect": {
+          "bottom": 0,
+          "height": 0,
+          "top": 0
+        }
+      },
+      {
+        "label": ":r1r:-title",
+        "rect": {
+          "bottom": 700,
+          "height": 578,
+          "top": 122
+        }
+      },
+      {
+        "label": ":r1l:-title",
+        "rect": {
+          "bottom": 691.5,
+          "height": 286,
+          "top": 405.5
+        }
+      }
+    ],
+    "quantityTriggers": [
+      {
+        "color": "rgb(24, 144, 255)",
+        "label": "当前工序产出：39 件，查看来源明细"
+      },
+      {
+        "color": "rgb(24, 144, 255)",
+        "label": "当前工序良品：39 件，查看来源明细"
+      },
+      {
+        "color": "rgb(9, 109, 217)",
+        "label": "当前工序不良品：1 件，查看来源明细"
+      },
+      {
+        "color": "rgb(24, 144, 255)",
+        "label": "当前工序报废登记：—，未配置，查看来源明细"
+      }
+    ],
+    "sources": "来源 1安速康新轮模拟·刀头末道清洁 · 第1份1 件表单：已完成统计：已生效工序：安速康新轮模拟·末道清洁主表 · 不合格数量已计入产出数量39良品数量39不良品数量1单位件生产日期2026-10-15",
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    }
+  },
+  "escape": {
+    "dialogs": 2,
+    "focus": "当前工序不良品：1 件，查看来源明细"
+  },
+  "low": {
+    "controls": [
+      {
+        "bottom": 508.578125,
+        "label": "切换表单，当前安速康新轮模拟·刀头末道清洁",
+        "top": 472.578125
+      },
+      {
+        "bottom": 536.078125,
+        "label": "切换份序，当前第 1 份，共 1 份",
+        "top": 516.078125
+      }
+    ],
+    "dialog": [
+      {
+        "bottom": 0,
+        "height": 0,
+        "top": 0
+      },
+      {
+        "bottom": 580,
+        "height": 458,
+        "top": 122
+      },
+      {
+        "bottom": 572,
+        "height": 229,
+        "top": 343
+      }
+    ],
+    "list": [
+      {
+        "height": 62,
+        "overflow": "auto",
+        "scrollHeight": 319
+      }
+    ],
+    "viewport": {
+      "height": 600,
+      "width": 1280
+    }
+  },
+  "scroll": {
+    "dialogCount": 3,
+    "height": 62,
+    "scrollHeight": 319,
+    "scrollTop": 12
+  },
+  "clickAway": {
+    "dialogs": 2
+  },
+  "hover": {
+    "dialogs": 3
+  },
+  "pointerLeave": {
+    "dialogs": 3
+  },
+  "pointerLeaveAfterDebounce": {
+    "quantityDialogs": []
+  }
+}
