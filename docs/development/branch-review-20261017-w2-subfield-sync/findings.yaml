@@ -1,0 +1,30 @@
+baselineCommit: 37bc05ec268d1e0d2faf105c2f1c449caeb7ed46
+executionLevel: L2
+findings:
+  - id: W2-F003-SUBFIELD-DEFINITION-SYNC
+    previousClue: W2-C002-SUBFIELD-EMBEDDED-SNAPSHOT
+    severity: medium
+    status: fixed-and-independently-verified
+    scope: 同一当前设计文档的子列编辑与画布/模拟/完整纸面消费
+    originalEvidence: [gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+    trigger: 合法新增子表及文本子列、放置后，通过字段设计编辑同一列名称和类型。
+    expected: 同一当前文档model.columns和绑定子列的placement定义一致，保存重读及一次撤销重做保持同一来源身份。
+    actualBefore: model更新，旧sync只匹配parentId，child placement仍含旧名称/类型，模拟和完整纸面优先消费旧副本。
+    rootCause: 子列node.fieldId为childId；updateField(parentId)未按subTableId和subTableFieldId同步子列副本。
+    minimumFix: 原syncBoundNodesForField补父表和子列ID匹配，沿原组件兼容和history规则同步当前文档。
+    primaryEvidence: evidence/primary-result.json
+    boundaries: [不改生产冻结快照, 不自动迁移旧模板, 不新增停用隐藏政策, 不改变投影来源身份, 不新增后端保存协议]
+    independentEvidence: [evidence/independent/qualityResult.yaml, evidence/independent/runtime-summary.json]
+documentationDisposition:
+  id: W2-QF-001
+  severity: low
+  status: independently-verified-resolved
+  change: source-map的Shell文件名及方法行号更正为TemplateDesignerReactShell.tsx的persistCurrentDocument:102。
+  evidence: evidence/independent/l0-document-review.yaml
+  resolutionCommit: 2ae06d4aed42aa8c7d449fbcd86038eb5c8240dd
+  originalQualityReportPreserved: true
+unresolvedBusinessQuestions: []
+historicalDeduplication:
+  - PR5/6及H005/H017/H018/H019-21按原验收保留，不重开。
+  - PR10保存确认、PR11份数状态、PR12正式投影组合回归和PR13插列/测试入口均已人工合入，各保留原测试基线。
+  - A12与两项旧DHR high继续open且用户暂缓；H003/4及H009/10留W3。
