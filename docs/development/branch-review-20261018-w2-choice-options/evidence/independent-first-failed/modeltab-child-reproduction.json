@@ -1,0 +1,40 @@
+{
+  "kind": "actual-independent-modeltab-new-child-choice-reproduction",
+  "candidateCommit": "c4491dde7703e778c0b4ba7dd293dc940d8a262d",
+  "realUiActions": [
+    "字段设计",
+    "设计子表",
+    "新增字段",
+    "字段类型=单选",
+    "确认",
+    "表单设计",
+    "设为默认值 without option text edits",
+    "actual FormDocumentPreview新增行"
+  ],
+  "controlledSetup": "Existing table and canvas geometry seeded through public store; child itself created through actual ModelTab dialog. Save callback controlled.",
+  "created": {
+    "tableId": "field-549726f5-f155-4efc-9915-3b24e3be9238",
+    "fieldId": "sub-field-bf9c8771-a377-4171-b7c5-49cc440e1a6a",
+    "type": "singleSelect",
+    "canonicalOptions": []
+  },
+  "displayedPresets": [
+    "选项1",
+    "选项2"
+  ],
+  "afterDefault": {
+    "canonicalOptions": [],
+    "defaultValue": "选项1"
+  },
+  "values": {
+    "field-549726f5-f155-4efc-9915-3b24e3be9238": [
+      {
+        "__rowId": "88df0714-f877-4a70-b4fe-6ec41d0a1937"
+      },
+      {
+        "__rowId": "7f274e15-135a-4543-bb12-c1bae2437aee"
+      }
+    ]
+  },
+  "defaultMissingFromEveryRow": true
+}

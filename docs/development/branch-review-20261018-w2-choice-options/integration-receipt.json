@@ -1,0 +1,23 @@
+{
+  "kind": "L0-final-acceptance-integration-not-new-business-test",
+  "testedCommit": "9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7",
+  "targetCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "verifiedAtUtc": "2026-10-18T07:08:03.436224+00:00",
+  "nonDevelopmentTrackedFilesIdenticalToTestedCandidate": true,
+  "finalOriginalArtifactCount": 39,
+  "finalQualityResultSha256": "d62ecc92873116de9d15d2af77c34990d7b80fc0189809e4b95496a842e938ea",
+  "toolFingerprints": [
+    {
+      "path": "/workspace/.edhr-cloud-tools/mvn-edhr",
+      "bytes": 1898,
+      "sha256": "ebc3436428ffe9d8689b1f4d4f825675c7b49dd7baba02235ee6d0781df73dae"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/settings.xml",
+      "bytes": 198,
+      "sha256": "26bd47ed597f0fd6cc1b609cc3921e9795750d66946687fe8828784b1cae0ff2"
+    }
+  ],
+  "postTestAllowedDelta": "docs/development acceptance records, unchanged original safe evidence copies and PR link only",
+  "mergeOrDeploymentPerformed": false
+}

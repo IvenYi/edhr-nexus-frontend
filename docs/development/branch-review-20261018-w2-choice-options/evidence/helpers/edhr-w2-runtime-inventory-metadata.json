@@ -1,0 +1,39 @@
+{
+  "artifactType": "read-only-technical-inventory-not-qualityResult",
+  "contractBaseline": {
+    "sourceCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+    "contractReadCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "sourceTree": "c18e8b782a1a9d85b4435673f86a8e227e6d88ef",
+  "approvedPr14Delivery": "1246cda13aca6ae5a5f98c3b7a5bf79f58f4b26e",
+  "pr14TreeEquality": true,
+  "previousAuditBase": "37bc05ec268d1e0d2faf105c2f1c449caeb7ed46",
+  "governanceKnowledgeDesignDelta": [],
+  "trackedPathCount": 1931,
+  "reviewStatusCounts": {
+    "pending": 1931
+  },
+  "reviewDepthCounts": {
+    "inventory-only": 1931
+  },
+  "encoding": "UTF-8",
+  "bom": false,
+  "lineEnding": "CRLF",
+  "csv": {
+    "path": "/tmp/edhr-w2-runtime-inventory.csv",
+    "sha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b",
+    "bytes": 356732
+  },
+  "runtimeChecksExecuted": [],
+  "repositoryEdits": [],
+  "limitations": [
+    "Inventory does not imply source review completion or runtime acceptance.",
+    "Technical helper, not independent QA or ontology role.",
+    "All current paths are pending; prior batch conclusions remain separately scoped."
+  ]
+}

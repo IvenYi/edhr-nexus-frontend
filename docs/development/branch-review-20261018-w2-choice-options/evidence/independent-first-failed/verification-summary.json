@@ -1,0 +1,302 @@
+{
+  "kind": "independent-qualified-quality-verifier-safe-summary",
+  "recordedAtUtc": "2026-10-18T06:51:49.290907+00:00",
+  "baseCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "testedCandidateCommit": "c4491dde7703e778c0b4ba7dd293dc940d8a262d",
+  "result": "failed",
+  "requiredChecks": 15,
+  "requiredChecksPassed": 13,
+  "optionalChecksActualFailures": [
+    "raw whole-project premium strict exit2 with unchanged84",
+    "repository lint exit2 missing config"
+  ],
+  "node": {
+    "tests": 126,
+    "suites": 0,
+    "pass": 126,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "baselineNode": {
+    "tests": 10,
+    "suites": 0,
+    "pass": 2,
+    "fail": 8,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "browserCasesPassed": 13,
+  "java": {
+    "tests": 189,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3,
+    "passed": 186
+  },
+  "newCrossLayerCasePassed": true,
+  "premium": {
+    "baselineExitCode": 2,
+    "candidateExitCode": 2,
+    "baselineSummary": {
+      "errors": 84,
+      "total": 84,
+      "unresolved": 13,
+      "violations": 71,
+      "warnings": 0
+    },
+    "candidateSummary": {
+      "errors": 84,
+      "total": 84,
+      "unresolved": 13,
+      "violations": 71,
+      "warnings": 0
+    },
+    "exactFullFindingMultisetEqual": true,
+    "introduced": [],
+    "removed": []
+  },
+  "commands": [
+    {
+      "name": "node",
+      "command": [
+        "node",
+        "--test",
+        "scripts/test-designer-choice-options.mjs",
+        "scripts/test-form-document-preview.mjs",
+        "scripts/test-form-references.mjs",
+        "scripts/test-runtime-row-values.mjs",
+        "scripts/test-designer-subfield-sync.mjs",
+        "scripts/test-designer-column-insertion.mjs",
+        "scripts/test-projection-panel.mjs",
+        "scripts/test-sheet-cell-transfer.mjs",
+        "scripts/test-quick-sub-table.mjs",
+        "scripts/test-field-business-purpose.mjs",
+        "scripts/test-projection-source-editor.mjs",
+        "scripts/test-dynamic-sub-table-layout.mjs",
+        "scripts/test-cell-display-components.mjs",
+        "scripts/test-designer-save-state.mjs",
+        "scripts/test-report-menu-navigation.mjs"
+      ],
+      "cwd": "gmp-platform/frontend",
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "durationSeconds": 11.375,
+      "rawLog": {
+        "bytes": 12834,
+        "sha256": "07e3f9bf72523853374d15d772b24b1f291bd7051d866798bd8dd0314c11540f"
+      }
+    },
+    {
+      "name": "node-base",
+      "command": [
+        "node",
+        "--test",
+        "scripts/test-designer-choice-options.mjs"
+      ],
+      "cwd": "gmp-platform/frontend",
+      "environmentOverrides": {
+        "W2_BASELINE_COMMIT": "b191e054892ae06cb0d8a45f62d034deabbba3e3"
+      },
+      "exitCode": 1,
+      "durationSeconds": 1.26,
+      "rawLog": {
+        "bytes": 9941,
+        "sha256": "b86b58de6930fc915e3be461002c69a83adbd40b1d788fe34ff9a7f0808dcc09"
+      }
+    },
+    {
+      "name": "browser",
+      "command": [
+        "node",
+        "scripts/test-designer-save-browser.mjs"
+      ],
+      "cwd": "gmp-platform/frontend",
+      "environmentOverrides": {
+        "NODE_PATH": "/workspace/.edhr-browser-tools/node_modules",
+        "CHROME_PATH": "/usr/bin/chromium",
+        "W2_SCREENSHOT_DIR": "/tmp/edhr-w2-choice-independent/screenshots",
+        "W2_RESULT_PATH": "/tmp/edhr-w2-choice-independent/browser-results.json"
+      },
+      "exitCode": 0,
+      "durationSeconds": 73.343,
+      "rawLog": {
+        "bytes": 2682,
+        "sha256": "cfd18218a177fc17cfb45f88da01400b2c64dcbe2ff3eb15160d950281a2182e"
+      }
+    },
+    {
+      "name": "browser-base",
+      "command": [
+        "node",
+        "scripts/test-designer-save-browser.mjs"
+      ],
+      "cwd": "gmp-platform/frontend",
+      "environmentOverrides": {
+        "NODE_PATH": "/workspace/.edhr-browser-tools/node_modules",
+        "CHROME_PATH": "/usr/bin/chromium",
+        "W2_BASELINE_COMMIT": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+        "W2_CASE_FILTER": "choice options share",
+        "W2_SCREENSHOT_DIR": "/tmp/edhr-w2-choice-independent/baseline-screenshots",
+        "W2_RESULT_PATH": "/tmp/edhr-w2-choice-independent/browser-base-results.json"
+      },
+      "exitCode": 1,
+      "durationSeconds": 5.067,
+      "rawLog": {
+        "bytes": 2585,
+        "sha256": "ced2776335e3535c642ac1fc7cdbc2bcb60171eeff1573d561faef107ed78c07"
+      }
+    },
+    {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "gmp-platform/frontend",
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "durationSeconds": 45.677,
+      "rawLog": {
+        "bytes": 9335,
+        "sha256": "f845f9dfba4f1d473092331f2fb8ce087bcd001df23666ffca3e650bf683d251"
+      }
+    },
+    {
+      "name": "static",
+      "command": [
+        "npm",
+        "run",
+        "verify:template-designer-react"
+      ],
+      "cwd": "gmp-platform/frontend",
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "durationSeconds": 2.95,
+      "rawLog": {
+        "bytes": 351,
+        "sha256": "095b68b9c497f1b6259a40ea77f747757afd7c7d33fec30c49923c2546c3790b"
+      }
+    },
+    {
+      "name": "java",
+      "command": [
+        "bash",
+        "/workspace/.edhr-cloud-tools/mvn-edhr",
+        "-o",
+        "-C",
+        "-Dtest=ProductionExecutionIntegrationTest,ProductionExecutionFormValuesTest,ProductionExecutionEngineTest,BusinessKnowledgeModelTest",
+        "test"
+      ],
+      "cwd": "gmp-platform/backend",
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "durationSeconds": 45.578,
+      "rawLog": {
+        "bytes": 3451391,
+        "sha256": "77dfda0850a4a53606e528bcc490952f4e34479107ca5be3caba3fe5ca1adf8a"
+      }
+    },
+    {
+      "name": "lint",
+      "command": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "cwd": "gmp-platform/frontend",
+      "environmentOverrides": {},
+      "exitCode": 2,
+      "durationSeconds": 0.755,
+      "rawLog": {
+        "bytes": 819,
+        "sha256": "ce1ab04f5660d6cb81c2cdf842c1d4dd91f6f5ee6932d4d486e157c45077d8d1"
+      }
+    }
+  ],
+  "scopedProductionAndTestSourceFingerprints": {
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java": {
+      "bytes": 173281,
+      "sha256": "a123efea6f3173ce377ab7908c534c22da7646fa3b11fa2a28de8cf7e98d11dc"
+    },
+    "gmp-platform/backend/src/test/resources/fixtures/shared-choice-options-design.json": {
+      "bytes": 6343,
+      "sha256": "721d500935aa38b52dae95414e45d1c41c8921b2c50788864ea3554a2ada2b63"
+    },
+    "gmp-platform/frontend/scripts/test-designer-choice-options.mjs": {
+      "bytes": 12838,
+      "sha256": "22c83b66fb5df0686d20405ecd288c3abd0a02b13b1e2d1cafb842bd233ca97b"
+    },
+    "gmp-platform/frontend/scripts/test-designer-save-browser.mjs": {
+      "bytes": 30775,
+      "sha256": "df7f5d2bbfa04253953de68476e91bd7fb7eef650d1f851223505b172a07668f"
+    },
+    "gmp-platform/frontend/scripts/verify-template-designer-react.mjs": {
+      "bytes": 361000,
+      "sha256": "b9383964df477a5c718afbadd28bc07afe9d76e5c7afaa28cac8959894669dc6"
+    },
+    "gmp-platform/frontend/src/components/form-renderer/choiceOptions.ts": {
+      "bytes": 4780,
+      "sha256": "2bd79bcaea5c03b07e35a4437b64d18bd008400977bd19caeae84062eb844ecd"
+    },
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx": {
+      "bytes": 78965,
+      "sha256": "487590565f51074b943d900791028bf9a52f53581801e8ea8f7bd869ff624649"
+    },
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/mock-fill/MockFillDialog.tsx": {
+      "bytes": 64064,
+      "sha256": "2ba2fdbeb481ba3ecc658c6b5c4642d5881651fc900e9a7abed9790a673cad72"
+    },
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts": {
+      "bytes": 125021,
+      "sha256": "076f7c622e7307e012870b0c21a0ebeda3c0fb0c7c43c2e79bc742c88aab3d7e"
+    }
+  },
+  "protectionSummary": "protection-summary.json",
+  "rawLogsXmlFullManifestsConfigurationsPublished": false,
+  "independence": "Fresh verifier did not participate in any repair; read-only documentation helper did not implement or execute tests. This result is limited to the shared-choice slice, not whole W2 or full ontology audit.",
+  "openFindings": [
+    {
+      "id": "QF-W2-CHOICE-001",
+      "severity": "medium",
+      "scope": "ModelTab实际子列创建和主动类型变更入口；canonical选项与动态行默认。",
+      "summary": "子列字段设计对话框绕过新选项初始化，新建单选子列仍保存空canonical选项，点击可见预置默认后真实新行缺失该值。",
+      "reproductionSteps": [
+        "打开字段设计，已有子表点击设计子表。",
+        "在实际新增字段对话框填写名称，字段类型选单选，确认；不通过store.addSubTableFields快捷入口创建。",
+        "返回表单设计，将该子列放入动态子表；保持可见预置选项1和选项2文本不变，直接点击选项1的设为默认值。",
+        "在实际FormDocumentPreview新增行，检查canonical model options、组件defaultValue及真实行值。"
+      ],
+      "expectedResult": "当前新建单选子列canonical模型持久化与界面相同的两个预置，defaultValue选项1能由既有行工厂解析并写入新行。",
+      "actualResult": "实际ModelTab新增得到type=singleSelect且canonical options=[]；Inspector显示选项1和选项2，点击默认记录选项1，但canonical仍空，实际新增两行均没有该字段值。",
+      "evidence": [
+        "modeltab-child-reproduction.json",
+        "modeltab-child-default.png",
+        "原始源码ModelTab.tsx:270 createSubTableField直接definition.defaultField；:576 updateSubTableFields调用父表updateField；:608子列主动改型及:631子列新增均走该路径。",
+        "store.updateField:2263仅对父字段自身typeChanged执行initializeChoiceField，父表columns变化时不处理新建/实际改型子列；已有126Node/13浏览器以已修store.addSubTableFields创建，未覆盖真实ModelTab子列对话框。",
+        "主开发已在收到线索后独立读源码确认遗漏；质量实例未修改源码/测试/夹具/配置，未参与修复。"
+      ],
+      "resolutionStatus": "open",
+      "resolutionEvidence": []
+    }
+  ],
+  "additionalActualBrowserDefectProbe": {
+    "command": "NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium node /tmp/edhr-w2-choice-independent/modeltab-probe.mjs",
+    "exitCode": 0,
+    "meaning": "Diagnostic asserts defect exists; not business acceptance passed. Real ModelTab creates child with empty canonical options; visible preset default is absent in both actual runtime rows.",
+    "observedArtifact": "modeltab-child-reproduction.json",
+    "probeScriptFingerprint": {
+      "bytes": 14949,
+      "sha256": "a1ac6d7c90c4045d33fd745831e83ff639e894997f37bf049f32eaf3efe34286"
+    },
+    "rawLogFingerprint": {
+      "bytes": 285,
+      "sha256": "7283577015d60703c9f16fa73c569cc586b8e107a7e9ee0123d8e941f1e69c90"
+    },
+    "rawProbeLogAndScriptPublished": false,
+    "initialLocatorErrorExcludedFromDefectEvidence": true
+  }
+}

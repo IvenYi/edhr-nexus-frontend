@@ -1,0 +1,111 @@
+{
+  "artifactType": "original-helper-copy-receipts-not-qualityResult",
+  "sourceCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "copyPolicy": "Original safe bytes retained; copied files were compared byte-for-byte. Corrections are recorded separately, not patched into originals.",
+  "scope": {
+    "inventoryAndConsumers": "Temporary read-only technical helpers; no tests, build, browser, database, Actions, repository edits or independent QA.",
+    "environment": "Tool restoration and synthetic environment smoke only. Saved draft readback confirmed; requires_publish remains true. Full new-task bootstrap and business suites not executed by the helper.",
+    "handoff": "User-provided historical handoff reference, not new authorization. Current user instructions and current repository contracts prevail.",
+    "ledger": "Documentation assistant; no product repair, tests, build, browser, commit or push, and not independent QA."
+  },
+  "corrections": [
+    {
+      "originalPath": "edhr-w2-runtime-consumers.md",
+      "locator": "Section 3, production value persistence paragraph",
+      "originalWording": "ProductionExecutionService.java154 execute",
+      "correctedWording": "ProductionExecutionService.act at line 155; line 154 is REPEATABLE_READ transaction annotation.",
+      "originalPreserved": true,
+      "sourceReference": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java"
+    }
+  ],
+  "files": [
+    {
+      "source": "/tmp/edhr-w2-runtime-inventory.md",
+      "copy": "edhr-w2-runtime-inventory.md",
+      "bytes": 12131,
+      "sha256": "d16614a74ef44070384acc936b27d22a05db8255f5bc1210313bb2badda5e670"
+    },
+    {
+      "source": "/tmp/edhr-w2-runtime-inventory.csv",
+      "copy": "edhr-w2-runtime-inventory.csv",
+      "bytes": 356732,
+      "sha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b"
+    },
+    {
+      "source": "/tmp/edhr-w2-runtime-inventory-metadata.json",
+      "copy": "edhr-w2-runtime-inventory-metadata.json",
+      "bytes": 1375,
+      "sha256": "a5a85f6a36a24862ab7989e90a7e042330b14bc49a19206cd989b72cb0273cfd"
+    },
+    {
+      "source": "/tmp/edhr-w2-runtime-consumers.md",
+      "copy": "edhr-w2-runtime-consumers.md",
+      "bytes": 15253,
+      "sha256": "c140bd286c852595cc45eb4ef17433a2eff94a8223e144005c1ea4ff8140e6c6"
+    },
+    {
+      "source": "/tmp/edhr-w2-runtime-consumers-metadata.json",
+      "copy": "edhr-w2-runtime-consumers-metadata.json",
+      "bytes": 658,
+      "sha256": "efb975f91bc3135d5b4f3f88f19fb76fd90bf1d183472acc1408bd53f5844edc"
+    },
+    {
+      "source": "/tmp/edhr-w3-mode-callers.md",
+      "copy": "edhr-w3-mode-callers.md",
+      "bytes": 15071,
+      "sha256": "e538254b1683b3aa30c566788ceedf5d4185d796230decab7d435425b5ced5fe"
+    },
+    {
+      "source": "/tmp/edhr-w2-runtime-environment-result.json",
+      "copy": "edhr-w2-runtime-environment-result.json",
+      "bytes": 9064,
+      "sha256": "1f9dcefd052465e1fbe96eaa57af32919ee555c463a024b33045f6bffc5462b0"
+    },
+    {
+      "source": "/tmp/edhr-w2-choice-ledger-handoff/START-HERE.md",
+      "copy": "handoff/START-HERE.md",
+      "bytes": 2833,
+      "sha256": "c80a0906bfdf00e61ad5cc21b6b057e530c66cbf68ddb326303e097bd61ea0a8"
+    },
+    {
+      "source": "/tmp/edhr-w2-choice-ledger-handoff/HANDOFF.md",
+      "copy": "handoff/HANDOFF.md",
+      "bytes": 36369,
+      "sha256": "ab5fde0b140a8d041a168bf06af144b0ac8662f65ca1209a394340b02f9222d7"
+    }
+  ],
+  "coverageCopy": {
+    "source": "/tmp/edhr-w2-runtime-inventory.csv",
+    "copyRelativeToBatch": "coverage.csv",
+    "bytes": 356732,
+    "sha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b",
+    "rowCount": 1931,
+    "allStatuses": ["pending"],
+    "allDepths": ["inventory-only"]
+  },
+  "handoffArchive": {
+    "sourceFileId": "file_000000003bb081f5beeaae9990b4703d",
+    "localPath": "/workspace/attachments/52242da4-557a-4319-9c73-ef1f752cbae0/edhr-codex-full-audit-handoff-package.zip",
+    "bytes": 53233,
+    "sha256": "94a5b669dd40cfda38815827f0120b8e82919ed631f372a7d24330435f3b50d1",
+    "archiveMemberChecks": ["No absolute paths", "No parent traversal segments", "No symlink members"],
+    "extractedAndRead": ["START-HERE.md", "HANDOFF.md"],
+    "otherMembersNotImported": true
+  },
+  "treeScope": {
+    "copiedOriginalFiles": 9,
+    "paths": [
+      "edhr-w2-runtime-inventory.md",
+      "edhr-w2-runtime-inventory.csv",
+      "edhr-w2-runtime-inventory-metadata.json",
+      "edhr-w2-runtime-consumers.md",
+      "edhr-w2-runtime-consumers-metadata.json",
+      "edhr-w3-mode-callers.md",
+      "edhr-w2-runtime-environment-result.json",
+      "handoff/START-HERE.md",
+      "handoff/HANDOFF.md"
+    ],
+    "receiptPath": "receipts.json",
+    "excluded": ["Raw application logs", "JUnit XML", "Credentials", "Full environment or Maven settings", "Browser profiles", "Database files", "Source dumps", "Dependency archives"]
+  }
+}

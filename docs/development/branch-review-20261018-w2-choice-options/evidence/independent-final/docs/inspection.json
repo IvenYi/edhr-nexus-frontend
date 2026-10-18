@@ -1,0 +1,1434 @@
+{
+  "kind": "independent-readonly-document-and-evidence-assistance-not-final-qualityResult",
+  "baseCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "headCommit": "9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7",
+  "knowledgeBaselineVersion": "0.3.25",
+  "contractBaseline": {
+    "sourceCommit": "9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+    "contractReadCommit": "9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7",
+    "uncommittedContractPaths": []
+  },
+  "scope": "Read-only seven-path knowledge delta, DEC0080 user confirmation and retained DEC0077, original safe-copy receipts, fixed1931 path/blob coverage, historical failed and followup time scope, deferred W3/A12/highs, concrete S04 proposal. No global ontology semantic audit.",
+  "runtimeTestsExecuted": false,
+  "repoOrToolEdits": false,
+  "fullBeforeAfterProtectionPerformed": false,
+  "checks": [
+    {
+      "id": "actual-head",
+      "outcome": "passed",
+      "evidence": {
+        "actual": "9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7",
+        "expected": "9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7"
+      }
+    },
+    {
+      "id": "contracts-unchanged",
+      "outcome": "passed",
+      "evidence": [
+        "AGENTS.md",
+        "codeplzreadme.md",
+        "docs/agents/quality-verifier.md",
+        "docs/agents/agent-handoff-contract.md"
+      ]
+    },
+    {
+      "id": "original-safe-copy-receipts",
+      "outcome": "passed",
+      "evidence": {
+        "checked": 63,
+        "failed": []
+      }
+    },
+    {
+      "id": "original-handoff-archive",
+      "outcome": "passed",
+      "evidence": {
+        "path": "/workspace/attachments/52242da4-557a-4319-9c73-ef1f752cbae0/edhr-codex-full-audit-handoff-package.zip",
+        "recorded": {
+          "bytes": 53233,
+          "sha256": "94a5b669dd40cfda38815827f0120b8e82919ed631f372a7d24330435f3b50d1"
+        },
+        "actual": {
+          "bytes": 53233,
+          "sha256": "94a5b669dd40cfda38815827f0120b8e82919ed631f372a7d24330435f3b50d1"
+        },
+        "twoOriginalMembersEqualArchivedBytes": {
+          "START-HERE.md": true,
+          "HANDOFF.md": true
+        }
+      }
+    },
+    {
+      "id": "fixed1931-inventory",
+      "outcome": "passed",
+      "evidence": {
+        "count": 1931,
+        "uniquePaths": 1931,
+        "baseTrackedPaths": 1931,
+        "statusCounts": {
+          "pending": 1931
+        },
+        "depthCounts": {
+          "inventory-only": 1931
+        },
+        "bytes": 356732,
+        "sha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b",
+        "allPathBlobPairsMatchBase": true,
+        "allBaselineCommitsMatch": true,
+        "onlyCrLf": true,
+        "bom": false
+      }
+    },
+    {
+      "id": "seven-knowledge-paths-and-dec0080",
+      "outcome": "passed",
+      "evidence": {
+        "changedPaths": [
+          "docs/architecture/business-knowledge-model.md",
+          "docs/knowledge/README.md",
+          "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+          "docs/knowledge/evidence/shared-choice-options-2026-10-18.md",
+          "docs/knowledge/evidence/shared-choice-options-2026-10-18.yaml",
+          "docs/knowledge/glossary.yaml",
+          "docs/knowledge/ontology.yaml"
+        ],
+        "decisionId": "DEC-0080",
+        "statementId": "DEC-0080-01",
+        "knowledgeVersion": "0.3.25",
+        "status": "specified",
+        "visibility": "internal",
+        "scenarioCount": 3,
+        "supersedes": []
+      }
+    },
+    {
+      "id": "user-confirmation-and-no-new-question",
+      "outcome": "passed",
+      "evidence": {
+        "quote": "必须共用同一组选项（推荐）",
+        "unresolved": [],
+        "replacementScopes": [],
+        "existingPolicyReferences": [
+          "DEC-0077-12",
+          "DEC-0077-22",
+          "term.form-template-field",
+          "concept.form-template-field"
+        ]
+      }
+    },
+    {
+      "id": "retained-policy-and-openquestions",
+      "outcome": "passed",
+      "evidence": [
+        "docs/knowledge/open-questions.yaml",
+        "docs/knowledge/schema.yaml",
+        "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml"
+      ]
+    },
+    {
+      "id": "ontology-original-and-followup-consistency",
+      "outcome": "passed",
+      "evidence": {
+        "initialResult": "updated",
+        "followupResult": "updated",
+        "initialBaselineBefore": "0.3.25",
+        "initialBaselineAfter": "0.3.25",
+        "followupBaselineBefore": "0.3.25",
+        "followupBaselineAfter": "0.3.25",
+        "initialActualHead": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+        "followupActualHead": "c4491dde7703e778c0b4ba7dd293dc940d8a262d",
+        "initialKnowledgeArtifacts": [
+          {
+            "path": "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+            "recorded": {
+              "bytes": 3431,
+              "sha256": "9b61e114aadf7948d86baa704aae94325449fe6cca0dd825c5b921a22814bd08"
+            },
+            "atFirstCandidate": {
+              "bytes": 3431,
+              "sha256": "9b61e114aadf7948d86baa704aae94325449fe6cca0dd825c5b921a22814bd08"
+            },
+            "matchesFirstCandidate": true
+          },
+          {
+            "path": "docs/knowledge/evidence/shared-choice-options-2026-10-18.yaml",
+            "recorded": {
+              "bytes": 1073,
+              "sha256": "7a23fab99ec4690e5c58712cf7d9269de6717d85c6c16a4863d76fc8510f5dc5"
+            },
+            "atFirstCandidate": {
+              "bytes": 1073,
+              "sha256": "7a23fab99ec4690e5c58712cf7d9269de6717d85c6c16a4863d76fc8510f5dc5"
+            },
+            "matchesFirstCandidate": true
+          },
+          {
+            "path": "docs/knowledge/evidence/shared-choice-options-2026-10-18.md",
+            "recorded": {
+              "bytes": 7627,
+              "sha256": "9b756a20219f95c404448e5a0512636871eb9ead5eba30cd98357f2691139150"
+            },
+            "atFirstCandidate": {
+              "bytes": 7627,
+              "sha256": "9b756a20219f95c404448e5a0512636871eb9ead5eba30cd98357f2691139150"
+            },
+            "matchesFirstCandidate": true
+          },
+          {
+            "path": "docs/knowledge/glossary.yaml",
+            "recorded": {
+              "bytes": 66048,
+              "sha256": "4f958050af2b4414ba2a909fbc52019ec9ceb7a5dbba2c32e42f90ce8c0eb40a"
+            },
+            "atFirstCandidate": {
+              "bytes": 66048,
+              "sha256": "4f958050af2b4414ba2a909fbc52019ec9ceb7a5dbba2c32e42f90ce8c0eb40a"
+            },
+            "matchesFirstCandidate": true
+          },
+          {
+            "path": "docs/knowledge/ontology.yaml",
+            "recorded": {
+              "bytes": 89548,
+              "sha256": "3e32be8c60add6421ab5f84e337809ec4207d89bf1b021e4a63ff18d7e61db48"
+            },
+            "atFirstCandidate": {
+              "bytes": 89548,
+              "sha256": "3e32be8c60add6421ab5f84e337809ec4207d89bf1b021e4a63ff18d7e61db48"
+            },
+            "matchesFirstCandidate": true
+          },
+          {
+            "path": "docs/knowledge/README.md",
+            "recorded": {
+              "bytes": 87576,
+              "sha256": "bc778e717f06478605a97b76eccd2a8d4c5bf19e4009fb63570153d933cce781"
+            },
+            "atFirstCandidate": {
+              "bytes": 87576,
+              "sha256": "bc778e717f06478605a97b76eccd2a8d4c5bf19e4009fb63570153d933cce781"
+            },
+            "matchesFirstCandidate": true
+          },
+          {
+            "path": "docs/architecture/business-knowledge-model.md",
+            "recorded": {
+              "bytes": 56932,
+              "sha256": "768c2962de30dbc77f52fb861e9aeddb3aadcbab83a7d5eb96cacad4a4be5a06"
+            },
+            "atFirstCandidate": {
+              "bytes": 56932,
+              "sha256": "768c2962de30dbc77f52fb861e9aeddb3aadcbab83a7d5eb96cacad4a4be5a06"
+            },
+            "matchesFirstCandidate": true
+          }
+        ],
+        "followupSourceChecks": [
+          {
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+            "matchesCurrent": true
+          },
+          {
+            "path": "gmp-platform/frontend/scripts/test-designer-choice-options.mjs",
+            "matchesCurrent": true
+          },
+          {
+            "path": "gmp-platform/frontend/scripts/test-designer-save-browser.mjs",
+            "matchesCurrent": true
+          },
+          {
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx",
+            "matchesCurrent": true
+          },
+          {
+            "path": "docs/knowledge/glossary.yaml",
+            "matchesCurrent": true
+          },
+          {
+            "path": "docs/knowledge/ontology.yaml",
+            "matchesCurrent": true
+          },
+          {
+            "path": "docs/knowledge/README.md",
+            "matchesCurrent": true
+          },
+          {
+            "path": "docs/architecture/business-knowledge-model.md",
+            "matchesCurrent": true
+          },
+          {
+            "path": "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+            "matchesCurrent": true
+          },
+          {
+            "path": "docs/knowledge/evidence/shared-choice-options-2026-10-18.yaml",
+            "matchesCurrent": true
+          },
+          {
+            "path": "AGENTS.md",
+            "matchesCurrent": true
+          },
+          {
+            "path": "codeplzreadme.md",
+            "matchesCurrent": true
+          },
+          {
+            "path": "docs/agents/agent-handoff-contract.md",
+            "matchesCurrent": true
+          },
+          {
+            "path": "docs/agents/business-knowledge-modeler.md",
+            "matchesCurrent": true
+          },
+          {
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/fieldRegistry.ts",
+            "matchesCurrent": true
+          },
+          {
+            "path": "gmp-platform/frontend/src/components/form-renderer/newSubTableRow.ts",
+            "matchesCurrent": true
+          },
+          {
+            "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+            "matchesCurrent": true
+          },
+          {
+            "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+            "matchesCurrent": true
+          }
+        ],
+        "originalMdPreservedAsPrefix": true,
+        "originalMdBytes": 7627,
+        "appendedMdBytes": 3754
+      }
+    },
+    {
+      "id": "first-independent-failed-retained",
+      "outcome": "passed",
+      "evidence": {
+        "result": "failed",
+        "head": "c4491dde7703e778c0b4ba7dd293dc940d8a262d",
+        "base": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+        "finding": {
+          "id": "QF-W2-CHOICE-001",
+          "severity": "medium",
+          "resolutionStatus": "open"
+        },
+        "archivedOriginalsMatchHead": true
+      }
+    },
+    {
+      "id": "primary-time-scopes-and-case-receipts",
+      "outcome": "passed",
+      "evidence": {
+        "firstSources": [
+          {
+            "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+            "matchesFirstCandidate": true
+          },
+          {
+            "path": "gmp-platform/backend/src/test/resources/fixtures/shared-choice-options-design.json",
+            "matchesFirstCandidate": true
+          },
+          {
+            "path": "gmp-platform/frontend/scripts/test-designer-choice-options.mjs",
+            "matchesFirstCandidate": true
+          },
+          {
+            "path": "gmp-platform/frontend/scripts/test-designer-save-browser.mjs",
+            "matchesFirstCandidate": true
+          },
+          {
+            "path": "gmp-platform/frontend/scripts/verify-template-designer-react.mjs",
+            "matchesFirstCandidate": true
+          },
+          {
+            "path": "gmp-platform/frontend/src/components/form-renderer/choiceOptions.ts",
+            "matchesFirstCandidate": true
+          },
+          {
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx",
+            "matchesFirstCandidate": true
+          },
+          {
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/mock-fill/MockFillDialog.tsx",
+            "matchesFirstCandidate": true
+          },
+          {
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+            "matchesFirstCandidate": true
+          }
+        ],
+        "followupSources": [
+          {
+            "path": "gmp-platform/frontend/scripts/test-designer-choice-options.mjs",
+            "matchesCurrent": true
+          },
+          {
+            "path": "gmp-platform/frontend/scripts/test-designer-save-browser.mjs",
+            "matchesCurrent": true
+          },
+          {
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+            "matchesCurrent": true
+          }
+        ],
+        "firstNodeCounts": {
+          "tests": 126,
+          "pass": 126,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "firstBaseCounts": {
+          "tests": 10,
+          "pass": 2,
+          "fail": 8,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "followupNode": {
+          "tests": 128,
+          "pass": 128,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "firstCandidateNew12": {
+          "tests": 12,
+          "pass": 10,
+          "fail": 2,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "actualModelTab": {
+          "kind": "actual-shell-and-canvas-with-controlled-save-callback",
+          "baseline": null,
+          "results": [
+            {
+              "name": "ModelTab child creation and type conversion persist presets before default selection at 1440px",
+              "status": "passed",
+              "viewport": {
+                "width": 1440,
+                "height": 960
+              }
+            },
+            {
+              "name": "ModelTab child creation and type conversion persist presets before default selection at 390px",
+              "status": "passed",
+              "viewport": {
+                "width": 390,
+                "height": 844
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "w3-a12-oldhigh-retained",
+      "outcome": "passed",
+      "evidence": {
+        "paths": [
+          "README.md",
+          "findings.md",
+          "docs/development/branch-review-20261015/NEXT.md"
+        ],
+        "scope": "H003/H004/H009/H010 remain future W3; A12/form change-void and two old DHR highs remain deferred/open; no W3 production source changed."
+      }
+    },
+    {
+      "id": "concrete-s04-plan-exists",
+      "outcome": "passed",
+      "evidence": {
+        "source": "source-map.md#大模块具体拆分方案",
+        "owners": [
+          "pure coordinates and document commands",
+          "field binding alignment",
+          "registry component node factory",
+          "existing persistence/snapshot/record/projection/audit transaction boundaries"
+        ],
+        "hasInputsOutputsTestsRollback": true,
+        "implementationClaimed": false
+      }
+    }
+  ],
+  "receiptChecks": [
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory.md",
+      "expected": {
+        "bytes": 12131,
+        "sha256": "d16614a74ef44070384acc936b27d22a05db8255f5bc1210313bb2badda5e670"
+      },
+      "actual": {
+        "bytes": 12131,
+        "sha256": "d16614a74ef44070384acc936b27d22a05db8255f5bc1210313bb2badda5e670"
+      },
+      "source": "/tmp/edhr-w2-runtime-inventory.md",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory.csv",
+      "expected": {
+        "bytes": 356732,
+        "sha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b"
+      },
+      "actual": {
+        "bytes": 356732,
+        "sha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b"
+      },
+      "source": "/tmp/edhr-w2-runtime-inventory.csv",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory-metadata.json",
+      "expected": {
+        "bytes": 1375,
+        "sha256": "a5a85f6a36a24862ab7989e90a7e042330b14bc49a19206cd989b72cb0273cfd"
+      },
+      "actual": {
+        "bytes": 1375,
+        "sha256": "a5a85f6a36a24862ab7989e90a7e042330b14bc49a19206cd989b72cb0273cfd"
+      },
+      "source": "/tmp/edhr-w2-runtime-inventory-metadata.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-consumers.md",
+      "expected": {
+        "bytes": 15253,
+        "sha256": "c140bd286c852595cc45eb4ef17433a2eff94a8223e144005c1ea4ff8140e6c6"
+      },
+      "actual": {
+        "bytes": 15253,
+        "sha256": "c140bd286c852595cc45eb4ef17433a2eff94a8223e144005c1ea4ff8140e6c6"
+      },
+      "source": "/tmp/edhr-w2-runtime-consumers.md",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-consumers-metadata.json",
+      "expected": {
+        "bytes": 658,
+        "sha256": "efb975f91bc3135d5b4f3f88f19fb76fd90bf1d183472acc1408bd53f5844edc"
+      },
+      "actual": {
+        "bytes": 658,
+        "sha256": "efb975f91bc3135d5b4f3f88f19fb76fd90bf1d183472acc1408bd53f5844edc"
+      },
+      "source": "/tmp/edhr-w2-runtime-consumers-metadata.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w3-mode-callers.md",
+      "expected": {
+        "bytes": 15071,
+        "sha256": "e538254b1683b3aa30c566788ceedf5d4185d796230decab7d435425b5ced5fe"
+      },
+      "actual": {
+        "bytes": 15071,
+        "sha256": "e538254b1683b3aa30c566788ceedf5d4185d796230decab7d435425b5ced5fe"
+      },
+      "source": "/tmp/edhr-w3-mode-callers.md",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-environment-result.json",
+      "expected": {
+        "bytes": 9064,
+        "sha256": "1f9dcefd052465e1fbe96eaa57af32919ee555c463a024b33045f6bffc5462b0"
+      },
+      "actual": {
+        "bytes": 9064,
+        "sha256": "1f9dcefd052465e1fbe96eaa57af32919ee555c463a024b33045f6bffc5462b0"
+      },
+      "source": "/tmp/edhr-w2-runtime-environment-result.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/handoff/START-HERE.md",
+      "expected": {
+        "bytes": 2833,
+        "sha256": "c80a0906bfdf00e61ad5cc21b6b057e530c66cbf68ddb326303e097bd61ea0a8"
+      },
+      "actual": {
+        "bytes": 2833,
+        "sha256": "c80a0906bfdf00e61ad5cc21b6b057e530c66cbf68ddb326303e097bd61ea0a8"
+      },
+      "source": "/tmp/edhr-w2-choice-ledger-handoff/START-HERE.md",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/handoff/HANDOFF.md",
+      "expected": {
+        "bytes": 36369,
+        "sha256": "ab5fde0b140a8d041a168bf06af144b0ac8662f65ca1209a394340b02f9222d7"
+      },
+      "actual": {
+        "bytes": 36369,
+        "sha256": "ab5fde0b140a8d041a168bf06af144b0ac8662f65ca1209a394340b02f9222d7"
+      },
+      "source": "/tmp/edhr-w2-choice-ledger-handoff/HANDOFF.md",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/ontology/edhr-w2-choice-ontology-result.yaml",
+      "expected": {
+        "bytes": 10343,
+        "sha256": "f4f2b94e3971e94f87a422fec13041ed370ffa7d5f563307d49f9be529ae7347"
+      },
+      "actual": {
+        "bytes": 10343,
+        "sha256": "f4f2b94e3971e94f87a422fec13041ed370ffa7d5f563307d49f9be529ae7347"
+      },
+      "source": "/tmp/edhr-w2-choice-ontology-result.yaml",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/ontology/edhr-w2-choice-ontology-scope.json",
+      "expected": {
+        "bytes": 12563,
+        "sha256": "32d6e4b80e377ea7fca668e7d101f1da5942672224b72297030e58a3098ca8cd"
+      },
+      "actual": {
+        "bytes": 12563,
+        "sha256": "32d6e4b80e377ea7fca668e7d101f1da5942672224b72297030e58a3098ca8cd"
+      },
+      "source": "/tmp/edhr-w2-choice-ontology-scope.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/ontology/edhr-w2-choice-ontology-diagnostic.json",
+      "expected": {
+        "bytes": 775,
+        "sha256": "fba612efef1ac97d37aa4e1aebf5765bc918c20f52ce1d4932b7dcf054e177a7"
+      },
+      "actual": {
+        "bytes": 775,
+        "sha256": "fba612efef1ac97d37aa4e1aebf5765bc918c20f52ce1d4932b7dcf054e177a7"
+      },
+      "source": "/tmp/edhr-w2-choice-ontology-diagnostic.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/ontology-followup/edhr-w2-choice-ontology-followup-result.yaml",
+      "expected": {
+        "bytes": 7336,
+        "sha256": "ee5caac88b0284978627d8ba30d9e42f66487e6d2d0a0a7dfb8a6fe836092661"
+      },
+      "actual": {
+        "bytes": 7336,
+        "sha256": "ee5caac88b0284978627d8ba30d9e42f66487e6d2d0a0a7dfb8a6fe836092661"
+      },
+      "source": "/tmp/edhr-w2-choice-ontology-followup-result.yaml",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/ontology-followup/edhr-w2-choice-ontology-followup-diagnostic.json",
+      "expected": {
+        "bytes": 6887,
+        "sha256": "5159e9ed61698c041627df398bf71f149644750040a81553b8da8089e83514a3"
+      },
+      "actual": {
+        "bytes": 6887,
+        "sha256": "5159e9ed61698c041627df398bf71f149644750040a81553b8da8089e83514a3"
+      },
+      "source": "/tmp/edhr-w2-choice-ontology-followup-diagnostic.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/quality-result.yaml",
+      "expected": {
+        "bytes": 20445,
+        "sha256": "3282222ca70f0e203aa41ffa5b4f9343e54cb95a6b9ae7c1a11591dae0127253"
+      },
+      "actual": {
+        "bytes": 20445,
+        "sha256": "3282222ca70f0e203aa41ffa5b4f9343e54cb95a6b9ae7c1a11591dae0127253"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/quality-result.yaml",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/verification-summary.json",
+      "expected": {
+        "bytes": 11348,
+        "sha256": "59045b0e7553d2fcbc92131e8b85e09fbd48142c06a65304a0411380529129a9"
+      },
+      "actual": {
+        "bytes": 11348,
+        "sha256": "59045b0e7553d2fcbc92131e8b85e09fbd48142c06a65304a0411380529129a9"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/verification-summary.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/protection-summary.json",
+      "expected": {
+        "bytes": 1235,
+        "sha256": "962edfc8096e4aba7622d4428e12748aa2891c14b27f2a7747018b3b2fb5d9eb"
+      },
+      "actual": {
+        "bytes": 1235,
+        "sha256": "962edfc8096e4aba7622d4428e12748aa2891c14b27f2a7747018b3b2fb5d9eb"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/protection-summary.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/node-cases.json",
+      "expected": {
+        "bytes": 19145,
+        "sha256": "d93678a0a3b9c4cb8be7c28818b0ff61a6c01f1e8bc55c9636b8e0e64c72d069"
+      },
+      "actual": {
+        "bytes": 19145,
+        "sha256": "d93678a0a3b9c4cb8be7c28818b0ff61a6c01f1e8bc55c9636b8e0e64c72d069"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/node-cases.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/node-base-cases.json",
+      "expected": {
+        "bytes": 2536,
+        "sha256": "98af08cb4fe974f9600aba9fc76981949f527f97cc84a5cd8ec76b75f0b3b6a2"
+      },
+      "actual": {
+        "bytes": 2536,
+        "sha256": "98af08cb4fe974f9600aba9fc76981949f527f97cc84a5cd8ec76b75f0b3b6a2"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/node-base-cases.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/java-cases.json",
+      "expected": {
+        "bytes": 44254,
+        "sha256": "ae5dc18f6383694b0bcac804b43b7157ba442ca2337bc7f2477c72208c5ac6db"
+      },
+      "actual": {
+        "bytes": 44254,
+        "sha256": "ae5dc18f6383694b0bcac804b43b7157ba442ca2337bc7f2477c72208c5ac6db"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/java-cases.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/browser-results.json",
+      "expected": {
+        "bytes": 2682,
+        "sha256": "cfd18218a177fc17cfb45f88da01400b2c64dcbe2ff3eb15160d950281a2182e"
+      },
+      "actual": {
+        "bytes": 2682,
+        "sha256": "cfd18218a177fc17cfb45f88da01400b2c64dcbe2ff3eb15160d950281a2182e"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/browser-results.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/browser-base-summary.json",
+      "expected": {
+        "bytes": 1468,
+        "sha256": "6f1704f307d81b1d7ddf1df5ae1c4550f22e6257086bd28040069758c2e31f90"
+      },
+      "actual": {
+        "bytes": 1468,
+        "sha256": "6f1704f307d81b1d7ddf1df5ae1c4550f22e6257086bd28040069758c2e31f90"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/browser-base-summary.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/premium-base.json",
+      "expected": {
+        "bytes": 34354,
+        "sha256": "4b908dafbac2f033c846a450f73d4be966bf6d23d72049a3b41b06847f782262"
+      },
+      "actual": {
+        "bytes": 34354,
+        "sha256": "4b908dafbac2f033c846a450f73d4be966bf6d23d72049a3b41b06847f782262"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/premium-base.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/premium-candidate.json",
+      "expected": {
+        "bytes": 34359,
+        "sha256": "4d93141f4cdf801511f61af89b41e68e6d1e67bdc73c536e7f0c4764d6065f65"
+      },
+      "actual": {
+        "bytes": 34359,
+        "sha256": "4d93141f4cdf801511f61af89b41e68e6d1e67bdc73c536e7f0c4764d6065f65"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/premium-candidate.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/premium-comparison.json",
+      "expected": {
+        "bytes": 1830,
+        "sha256": "33645e40480f849598a4e39a10a8d3ed36d91b01cd41780eb17af391e9976fba"
+      },
+      "actual": {
+        "bytes": 1830,
+        "sha256": "33645e40480f849598a4e39a10a8d3ed36d91b01cd41780eb17af391e9976fba"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/premium-comparison.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/readonly-doc-review.md",
+      "expected": {
+        "bytes": 5119,
+        "sha256": "0ddb8b9d79dd279b76e0e2feaaecf5f16e649883edf3baa8bdd6331c416e35a3"
+      },
+      "actual": {
+        "bytes": 5119,
+        "sha256": "0ddb8b9d79dd279b76e0e2feaaecf5f16e649883edf3baa8bdd6331c416e35a3"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/readonly-doc-review.md",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/readonly-doc-inspection.json",
+      "expected": {
+        "bytes": 15959,
+        "sha256": "c0bb15c469c98e906ffd3924130762dd6677ffbd9b075047f0cc001b0295891f"
+      },
+      "actual": {
+        "bytes": 15959,
+        "sha256": "c0bb15c469c98e906ffd3924130762dd6677ffbd9b075047f0cc001b0295891f"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/readonly-doc-inspection.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/modeltab-child-reproduction.json",
+      "expected": {
+        "bytes": 1150,
+        "sha256": "faa2d392e6d36ed6497b74aa2d97111707065d7d6fc35bd38ed3cb0e94ea98c6"
+      },
+      "actual": {
+        "bytes": 1150,
+        "sha256": "faa2d392e6d36ed6497b74aa2d97111707065d7d6fc35bd38ed3cb0e94ea98c6"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/modeltab-child-reproduction.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/modeltab-child-default.png",
+      "expected": {
+        "bytes": 107193,
+        "sha256": "1c024cdb7b0392dafed9254b3be44bf13dfeb264187eb86058186e6bdbd2018e"
+      },
+      "actual": {
+        "bytes": 107193,
+        "sha256": "1c024cdb7b0392dafed9254b3be44bf13dfeb264187eb86058186e6bdbd2018e"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/modeltab-child-default.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/node-execution.json",
+      "expected": {
+        "bytes": 979,
+        "sha256": "4a3021ff92236af961c2618c944bcd768b8f5430b58539b9bb502ca2db013bfe"
+      },
+      "actual": {
+        "bytes": 979,
+        "sha256": "4a3021ff92236af961c2618c944bcd768b8f5430b58539b9bb502ca2db013bfe"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/node-execution.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/node-base-execution.json",
+      "expected": {
+        "bytes": 418,
+        "sha256": "8e3c04fb2c3ea9d0b1077d8cdfc5677657f92148a1a628c46b59cc38be068c02"
+      },
+      "actual": {
+        "bytes": 418,
+        "sha256": "8e3c04fb2c3ea9d0b1077d8cdfc5677657f92148a1a628c46b59cc38be068c02"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/node-base-execution.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/browser-execution.json",
+      "expected": {
+        "bytes": 586,
+        "sha256": "9b603e3a9b9e03178b29f6b4aa414037a4bb7e36fce91dbc21030847fd958b56"
+      },
+      "actual": {
+        "bytes": 586,
+        "sha256": "9b603e3a9b9e03178b29f6b4aa414037a4bb7e36fce91dbc21030847fd958b56"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/browser-execution.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/browser-base-execution.json",
+      "expected": {
+        "bytes": 720,
+        "sha256": "f0ffb4584542ff1903f94c4c2582320a011157e66baac47d0b4fd5c2ba1aab51"
+      },
+      "actual": {
+        "bytes": 720,
+        "sha256": "f0ffb4584542ff1903f94c4c2582320a011157e66baac47d0b4fd5c2ba1aab51"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/browser-base-execution.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/build-execution.json",
+      "expected": {
+        "bytes": 305,
+        "sha256": "1508caed088b233e1fae77260f6a6215ce5e514fccc57754981755b81f2286b7"
+      },
+      "actual": {
+        "bytes": 305,
+        "sha256": "1508caed088b233e1fae77260f6a6215ce5e514fccc57754981755b81f2286b7"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/build-execution.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/static-execution.json",
+      "expected": {
+        "bytes": 328,
+        "sha256": "3b7fcd36a82e706a970e72090dfe4c43fe68aeeaf0b60b296914412efaadb6fd"
+      },
+      "actual": {
+        "bytes": 328,
+        "sha256": "3b7fcd36a82e706a970e72090dfe4c43fe68aeeaf0b60b296914412efaadb6fd"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/static-execution.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/java-execution.json",
+      "expected": {
+        "bytes": 500,
+        "sha256": "a8b48e713d2705b745aa5fa18f2b074d09812dafd04a43aabf787ad5114bce45"
+      },
+      "actual": {
+        "bytes": 500,
+        "sha256": "a8b48e713d2705b745aa5fa18f2b074d09812dafd04a43aabf787ad5114bce45"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/java-execution.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/lint-execution.json",
+      "expected": {
+        "bytes": 301,
+        "sha256": "1a991d586db3870a5586c7222559dbd7bce8fb6dcf3bbce469cd34227cb01a02"
+      },
+      "actual": {
+        "bytes": 301,
+        "sha256": "1a991d586db3870a5586c7222559dbd7bce8fb6dcf3bbce469cd34227cb01a02"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/lint-execution.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/screenshots/choice-inspector-1440.png",
+      "expected": {
+        "bytes": 108977,
+        "sha256": "c7ee0a5cad8f12170f3c242398cbdf8c5f0c0aef3c2f2f7a7884bfa4d9b44bdf"
+      },
+      "actual": {
+        "bytes": 108977,
+        "sha256": "c7ee0a5cad8f12170f3c242398cbdf8c5f0c0aef3c2f2f7a7884bfa4d9b44bdf"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/screenshots/choice-inspector-1440.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/screenshots/choice-inspector-390.png",
+      "expected": {
+        "bytes": 62780,
+        "sha256": "a7cc128289ef08c625ae7a5196f5c2de78519bae03f22fead617dfb8cf032f21"
+      },
+      "actual": {
+        "bytes": 62780,
+        "sha256": "a7cc128289ef08c625ae7a5196f5c2de78519bae03f22fead617dfb8cf032f21"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/screenshots/choice-inspector-390.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/screenshots/choice-runtime-1440.png",
+      "expected": {
+        "bytes": 17537,
+        "sha256": "a1fd2b75b27b48fbbd67cccd548bccdcd5cad5053c858b1cb86625951876745f"
+      },
+      "actual": {
+        "bytes": 17537,
+        "sha256": "a1fd2b75b27b48fbbd67cccd548bccdcd5cad5053c858b1cb86625951876745f"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/screenshots/choice-runtime-1440.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/screenshots/choice-runtime-390.png",
+      "expected": {
+        "bytes": 8998,
+        "sha256": "e5071a5346570d5027e741568384d9850d27cc9407d9694a517dfcf2140438b8"
+      },
+      "actual": {
+        "bytes": 8998,
+        "sha256": "e5071a5346570d5027e741568384d9850d27cc9407d9694a517dfcf2140438b8"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/screenshots/choice-runtime-390.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/screenshots/column-insertion-1440.png",
+      "expected": {
+        "bytes": 66334,
+        "sha256": "e48e4bb4e08d9cb54938fcc40dd6715d134223452a2dc99ed5912c40e91cf8f5"
+      },
+      "actual": {
+        "bytes": 66334,
+        "sha256": "e48e4bb4e08d9cb54938fcc40dd6715d134223452a2dc99ed5912c40e91cf8f5"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/screenshots/column-insertion-1440.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/screenshots/column-insertion-390.png",
+      "expected": {
+        "bytes": 31880,
+        "sha256": "08f289248fc2ebc20a8e122d689bb7fe3ccac77fdb4322a25252e7df478d742d"
+      },
+      "actual": {
+        "bytes": 31880,
+        "sha256": "08f289248fc2ebc20a8e122d689bb7fe3ccac77fdb4322a25252e7df478d742d"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/screenshots/column-insertion-390.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/screenshots/multi-choice-inspector-1440.png",
+      "expected": {
+        "bytes": 105754,
+        "sha256": "ece221489adaabefd0714fd8b1cd8c16e2939040d2d28c1dfb321bb3cac14159"
+      },
+      "actual": {
+        "bytes": 105754,
+        "sha256": "ece221489adaabefd0714fd8b1cd8c16e2939040d2d28c1dfb321bb3cac14159"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/screenshots/multi-choice-inspector-1440.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/screenshots/multi-choice-inspector-390.png",
+      "expected": {
+        "bytes": 61320,
+        "sha256": "7bb8b3a9edc437a16b921952db1f362c59a3aa19aa3f9b00f13e9fe01c30dc6d"
+      },
+      "actual": {
+        "bytes": 61320,
+        "sha256": "7bb8b3a9edc437a16b921952db1f362c59a3aa19aa3f9b00f13e9fe01c30dc6d"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/screenshots/multi-choice-inspector-390.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/screenshots/save-in-flight-desktop.png",
+      "expected": {
+        "bytes": 103555,
+        "sha256": "e26d7eabff41509d95651e7dc3d0e72243784af8578310b1477ddf8c34407440"
+      },
+      "actual": {
+        "bytes": 103555,
+        "sha256": "e26d7eabff41509d95651e7dc3d0e72243784af8578310b1477ddf8c34407440"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/screenshots/save-in-flight-desktop.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/screenshots/save-in-flight-narrow.png",
+      "expected": {
+        "bytes": 35219,
+        "sha256": "0fd88cf106ff307a89657d6d07012fb40cadbb25c847f3a34e5523354b3e2560"
+      },
+      "actual": {
+        "bytes": 35219,
+        "sha256": "0fd88cf106ff307a89657d6d07012fb40cadbb25c847f3a34e5523354b3e2560"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/screenshots/save-in-flight-narrow.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/screenshots/subfield-edit-1440.png",
+      "expected": {
+        "bytes": 21474,
+        "sha256": "b2c4e726d162965d42ece8355e3f37e8a56305415863ebfaabf5868c9ccf829a"
+      },
+      "actual": {
+        "bytes": 21474,
+        "sha256": "b2c4e726d162965d42ece8355e3f37e8a56305415863ebfaabf5868c9ccf829a"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/screenshots/subfield-edit-1440.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/screenshots/subfield-edit-390.png",
+      "expected": {
+        "bytes": 12738,
+        "sha256": "96de6fe53aefc2bcadaba786141a8fd02c9a10da9c65cff78655fa5b2f7d647a"
+      },
+      "actual": {
+        "bytes": 12738,
+        "sha256": "96de6fe53aefc2bcadaba786141a8fd02c9a10da9c65cff78655fa5b2f7d647a"
+      },
+      "source": "/tmp/edhr-w2-choice-independent/screenshots/subfield-edit-390.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/browser-results.json",
+      "expected": {
+        "bytes": 2682,
+        "sha256": "cfd18218a177fc17cfb45f88da01400b2c64dcbe2ff3eb15160d950281a2182e"
+      },
+      "actual": {
+        "bytes": 2682,
+        "sha256": "cfd18218a177fc17cfb45f88da01400b2c64dcbe2ff3eb15160d950281a2182e"
+      },
+      "source": "/tmp/edhr-w2-choice-browser-final.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/java-cases.json",
+      "expected": {
+        "bytes": 26707,
+        "sha256": "1bba81938510b3a6574140e14cfafe3ea48712376a0885d8f7462b5ac4084828"
+      },
+      "actual": {
+        "bytes": 26707,
+        "sha256": "1bba81938510b3a6574140e14cfafe3ea48712376a0885d8f7462b5ac4084828"
+      },
+      "source": "/tmp/edhr-w2-choice-primary-java.json",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/choice-inspector-1440.png",
+      "expected": {
+        "bytes": 108977,
+        "sha256": "c7ee0a5cad8f12170f3c242398cbdf8c5f0c0aef3c2f2f7a7884bfa4d9b44bdf"
+      },
+      "actual": {
+        "bytes": 108977,
+        "sha256": "c7ee0a5cad8f12170f3c242398cbdf8c5f0c0aef3c2f2f7a7884bfa4d9b44bdf"
+      },
+      "source": "/tmp/edhr-w2-choice-screenshots-final/choice-inspector-1440.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/choice-inspector-390.png",
+      "expected": {
+        "bytes": 62780,
+        "sha256": "b530f8cc738bb270ccaf392276b246eb5e09c43a978474d03966c96a359748de"
+      },
+      "actual": {
+        "bytes": 62780,
+        "sha256": "b530f8cc738bb270ccaf392276b246eb5e09c43a978474d03966c96a359748de"
+      },
+      "source": "/tmp/edhr-w2-choice-screenshots-final/choice-inspector-390.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/choice-runtime-1440.png",
+      "expected": {
+        "bytes": 17537,
+        "sha256": "a1fd2b75b27b48fbbd67cccd548bccdcd5cad5053c858b1cb86625951876745f"
+      },
+      "actual": {
+        "bytes": 17537,
+        "sha256": "a1fd2b75b27b48fbbd67cccd548bccdcd5cad5053c858b1cb86625951876745f"
+      },
+      "source": "/tmp/edhr-w2-choice-screenshots-final/choice-runtime-1440.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/choice-runtime-390.png",
+      "expected": {
+        "bytes": 8998,
+        "sha256": "e5071a5346570d5027e741568384d9850d27cc9407d9694a517dfcf2140438b8"
+      },
+      "actual": {
+        "bytes": 8998,
+        "sha256": "e5071a5346570d5027e741568384d9850d27cc9407d9694a517dfcf2140438b8"
+      },
+      "source": "/tmp/edhr-w2-choice-screenshots-final/choice-runtime-390.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/column-insertion-1440.png",
+      "expected": {
+        "bytes": 66337,
+        "sha256": "e9b9c0c154156ad7123befc225c303977830192b2aa2b1b222b160b51c1f295a"
+      },
+      "actual": {
+        "bytes": 66337,
+        "sha256": "e9b9c0c154156ad7123befc225c303977830192b2aa2b1b222b160b51c1f295a"
+      },
+      "source": "/tmp/edhr-w2-choice-screenshots-final/column-insertion-1440.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/column-insertion-390.png",
+      "expected": {
+        "bytes": 25840,
+        "sha256": "19dc136580416be48bb5a2ec7010f500fd250a0e74e6d47a8c8652cca850a2f3"
+      },
+      "actual": {
+        "bytes": 25840,
+        "sha256": "19dc136580416be48bb5a2ec7010f500fd250a0e74e6d47a8c8652cca850a2f3"
+      },
+      "source": "/tmp/edhr-w2-choice-screenshots-final/column-insertion-390.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/multi-choice-inspector-1440.png",
+      "expected": {
+        "bytes": 105754,
+        "sha256": "ece221489adaabefd0714fd8b1cd8c16e2939040d2d28c1dfb321bb3cac14159"
+      },
+      "actual": {
+        "bytes": 105754,
+        "sha256": "ece221489adaabefd0714fd8b1cd8c16e2939040d2d28c1dfb321bb3cac14159"
+      },
+      "source": "/tmp/edhr-w2-choice-screenshots-final/multi-choice-inspector-1440.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/multi-choice-inspector-390.png",
+      "expected": {
+        "bytes": 61326,
+        "sha256": "6c151cb13f444a8dda464690e388ffc539e6be1ddc21910a0840de0fe2b7dd60"
+      },
+      "actual": {
+        "bytes": 61326,
+        "sha256": "6c151cb13f444a8dda464690e388ffc539e6be1ddc21910a0840de0fe2b7dd60"
+      },
+      "source": "/tmp/edhr-w2-choice-screenshots-final/multi-choice-inspector-390.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/save-in-flight-desktop.png",
+      "expected": {
+        "bytes": 103555,
+        "sha256": "e26d7eabff41509d95651e7dc3d0e72243784af8578310b1477ddf8c34407440"
+      },
+      "actual": {
+        "bytes": 103555,
+        "sha256": "e26d7eabff41509d95651e7dc3d0e72243784af8578310b1477ddf8c34407440"
+      },
+      "source": "/tmp/edhr-w2-choice-screenshots-final/save-in-flight-desktop.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/save-in-flight-narrow.png",
+      "expected": {
+        "bytes": 35219,
+        "sha256": "0fd88cf106ff307a89657d6d07012fb40cadbb25c847f3a34e5523354b3e2560"
+      },
+      "actual": {
+        "bytes": 35219,
+        "sha256": "0fd88cf106ff307a89657d6d07012fb40cadbb25c847f3a34e5523354b3e2560"
+      },
+      "source": "/tmp/edhr-w2-choice-screenshots-final/save-in-flight-narrow.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/subfield-edit-1440.png",
+      "expected": {
+        "bytes": 21474,
+        "sha256": "b2c4e726d162965d42ece8355e3f37e8a56305415863ebfaabf5868c9ccf829a"
+      },
+      "actual": {
+        "bytes": 21474,
+        "sha256": "b2c4e726d162965d42ece8355e3f37e8a56305415863ebfaabf5868c9ccf829a"
+      },
+      "source": "/tmp/edhr-w2-choice-screenshots-final/subfield-edit-1440.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/subfield-edit-390.png",
+      "expected": {
+        "bytes": 12738,
+        "sha256": "96de6fe53aefc2bcadaba786141a8fd02c9a10da9c65cff78655fa5b2f7d647a"
+      },
+      "actual": {
+        "bytes": 12738,
+        "sha256": "96de6fe53aefc2bcadaba786141a8fd02c9a10da9c65cff78655fa5b2f7d647a"
+      },
+      "source": "/tmp/edhr-w2-choice-screenshots-final/subfield-edit-390.png",
+      "sourceAvailable": true,
+      "originalBytesEqual": true,
+      "outcome": "passed"
+    }
+  ],
+  "observations": [
+    {
+      "id": "DOC-TIMING-001",
+      "severity": "informational",
+      "scope": "baseline.json",
+      "description": "Freeze-time ledger has candidateCommit=null and ontology status initial-updated-followup-result-pending, while the separately preserved formal followup updated report exists. This is an explicit pending ledger, not a false pass; update in final L0 receipt only after current QA ends.",
+      "productBlocker": false
+    },
+    {
+      "id": "DOC-TIMING-002",
+      "severity": "informational",
+      "scope": "README/findings/NEXT",
+      "description": "Top-level ledgers intentionally retain pending final QA and initial primary126/13 then followup128/2 case counts. They do not claim fresh15-browser/Java/premium final acceptance yet; current independent QA must supply its own actual result.",
+      "productBlocker": false
+    }
+  ],
+  "outcome": "passed",
+  "publicationExcludes": [
+    "raw logs",
+    "JUnit XML",
+    "credentials",
+    "full source dumps",
+    "Maven settings",
+    "full repository before/after manifests"
+  ]
+}

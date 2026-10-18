@@ -1,0 +1,52 @@
+{
+  "contractBaseline": {
+    "sourceCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+    "contractReadCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "workingBranch": "audit/edhr-dev-w2-shared-choice-options-20261018",
+  "baselineTree": "c18e8b782a1a9d85b4435673f86a8e227e6d88ef",
+  "trackedPathCount": 1931,
+  "coverage": {
+    "path": "coverage.csv",
+    "bytes": 356732,
+    "sha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b",
+    "statusCounts": { "pending": 1931 },
+    "depthCounts": { "inventory-only": 1931 },
+    "encoding": "UTF-8",
+    "lineEnding": "CRLF",
+    "bom": false
+  },
+  "pr14": {
+    "approvedCommit": "1246cda13aca6ae5a5f98c3b7a5bf79f58f4b26e",
+    "mergeCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+    "approvedTree": "c18e8b782a1a9d85b4435673f86a8e227e6d88ef",
+    "mergedTree": "c18e8b782a1a9d85b4435673f86a8e227e6d88ef",
+    "treeIdentical": true
+  },
+  "previousAuditBase": "37bc05ec268d1e0d2faf105c2f1c449caeb7ed46",
+  "governanceKnowledgeArchitectureDesignDeltaFromPreviousBase": [],
+  "firstCandidateCommit": "c4491dde7703e778c0b4ba7dd293dc940d8a262d",
+  "firstIndependentResult": "failed-QF-W2-CHOICE-001-ModelTab-child-write-path",
+  "candidateCommit": "9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7",
+  "pullRequest": {
+    "number": 15,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/15",
+    "baseBranch": "edhr-dev",
+    "mergeAuthority": "user-manual"
+  },
+  "currentVerificationStatus": {
+    "primary": "followup-128-node-2-actual-ModelTab-viewports-build-static-passed; prior-backend-186-pass-3-skip-preserved",
+    "ontology": "initial-and-followup-updated",
+    "independentQuality": "fresh-final-passed-15-required-checks-128-node-15-browser-186-java-pass-3-conditional-skip"
+  },
+  "scopeLimits": [
+    "Inventory is not full source or semantic review completion.",
+    "Read-only helper reports and this ledger are not independent qualityResult.",
+    "No W3 production fix, historical data migration, merge or deployment in this slice."
+  ]
+}

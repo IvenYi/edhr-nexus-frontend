@@ -392,7 +392,7 @@ terms:
     visibility: internal
   - id: term.form-template-field
     name: 表单真实字段
-    definition: 某个表单模板版本中实际存在并具有稳定 fieldId 的字段；字段例外权限只能引用该字段，不跨表单共享字段身份。
+    definition: 某个表单模板版本中实际存在并具有稳定 fieldId 的字段；字段例外权限只能引用该字段，不跨表单共享字段身份。同一单选或多选字段在表单各放置位置共用同一组选项，位置副本不是独立字段或独立选项定义；名称或控件类型相同不使不同字段自动共享选项，按DEC-0080-01定义。
     aliases: [表单字段, 真实表单字段]
     status: specified
     visibility: internal

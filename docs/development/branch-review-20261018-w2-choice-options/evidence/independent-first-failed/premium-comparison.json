@@ -1,0 +1,58 @@
+{
+  "kind": "actual-official-script-same-base-candidate-strict-comparison",
+  "source": "skills.read c1/frontend-design-premium scripts/audit_project.py retrieved during this independent run",
+  "officialScriptBytes": 37716,
+  "officialScriptSha256": "67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68",
+  "baseCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "candidateCommit": "c4491dde7703e778c0b4ba7dd293dc940d8a262d",
+  "commands": [
+    {
+      "name": "base",
+      "commit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+      "command": [
+        "python",
+        "/tmp/edhr-w2-choice-independent/tools/audit_project.py",
+        "/tmp/edhr-w2-choice-independent/archive-base",
+        "--mode",
+        "strict",
+        "--output",
+        "/tmp/edhr-w2-choice-independent/premium-base.json"
+      ],
+      "exitCode": 2,
+      "summary": {
+        "errors": 84,
+        "total": 84,
+        "unresolved": 13,
+        "violations": 71,
+        "warnings": 0
+      }
+    },
+    {
+      "name": "candidate",
+      "commit": "c4491dde7703e778c0b4ba7dd293dc940d8a262d",
+      "command": [
+        "python",
+        "/tmp/edhr-w2-choice-independent/tools/audit_project.py",
+        "/tmp/edhr-w2-choice-independent/archive-candidate",
+        "--mode",
+        "strict",
+        "--output",
+        "/tmp/edhr-w2-choice-independent/premium-candidate.json"
+      ],
+      "exitCode": 2,
+      "summary": {
+        "errors": 84,
+        "total": 84,
+        "unresolved": 13,
+        "violations": 71,
+        "warnings": 0
+      }
+    }
+  ],
+  "introduced": [],
+  "removed": [],
+  "exactFindingMultisetEqual": true,
+  "candidateFindingsOnChangedPaths": [],
+  "archiveExtraction": "git archive only; not a Git worktree",
+  "scopeLimit": "Static evidence only; not global UI compliance or runtime proof."
+}

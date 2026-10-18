@@ -1,0 +1,142 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: b191e054892ae06cb0d8a45f62d034deabbba3e3
+    targetBranch: edhr-dev
+    targetCommit: b191e054892ae06cb0d8a45f62d034deabbba3e3
+    contractReadCommit: b191e054892ae06cb0d8a45f62d034deabbba3e3
+    uncommittedContractPaths: []
+  reason: 已按本会话原始用户答复同步同一字段所有放置位置共用选项的最小知识。复用真实字段术语及概念，新增DEC-0080、1条确认声明、3条工程验收和2个来源证据；无旧独立选项政策需要替代。已实际核对最终当前写命令、原读取/冻结/提交边界和主侧正式知识/业务证据；本体角色未执行业务测试。当前HEAD仍为上述base，实际包含dirty源码/测试/知识范围及SHA256见scope receipt，不能把base误作修复已提交SHA。新定义保持specified/internal，不新建执行规则/事实/契约或提升阶段。独立质量仍须主侧另取真实最终结果。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml
+      changeType: create
+      ids: [DEC-0080, DEC-0080-01, scenario.same-field-shares-choice-options, scenario.shared-choice-options-single-document-history, scenario.shared-choice-options-frozen-validation]
+    - path: docs/knowledge/evidence/shared-choice-options-2026-10-18.yaml
+      changeType: create
+      ids: [evidence.shared-choice-options-user-confirmed, evidence.shared-choice-options-original-source]
+    - path: docs/knowledge/evidence/shared-choice-options-2026-10-18.md
+      changeType: create
+      ids: []
+    - path: docs/knowledge/glossary.yaml
+      changeType: update
+      ids: [term.form-template-field]
+    - path: docs/knowledge/ontology.yaml
+      changeType: update
+      ids: [concept.form-template-field]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: DEC-0080
+      disposition: updated
+      scope: 新增最小稳定决策，不为工程差异伪造旧政策替代；无跨字段共享、默认值全生命周期或历史迁移授权。
+      sourceReferences: [docs/knowledge/evidence/shared-choice-options-2026-10-18.md]
+    - id: DEC-0080-01
+      disposition: updated
+      scope: 用户原答复必须共用同一组选项；同一单选/多选字段的所有位置共享，不能由名称或控件类型合并不同字段身份。
+      sourceReferences: [docs/knowledge/evidence/shared-choice-options-2026-10-18.md]
+    - id: scenario.same-field-shares-choice-options
+      disposition: updated
+      scope: 验收模型与全部同身份位置对齐、跨页/父表隔离；工程方案在原写命令执行，不改变业务字段身份。
+      sourceReferences: [docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml, gmp-platform/frontend/src/components/form-renderer/choiceOptions.ts]
+    - id: scenario.shared-choice-options-single-document-history
+      disposition: updated
+      scope: 单次完整document撤销/重做及保存重读的工程验收；不另建保存或历史所有权。
+      sourceReferences: [docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml, gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+    - id: scenario.shared-choice-options-frozen-validation
+      disposition: updated
+      scope: 默认按钮记录实际选项值，冻结model沿原提交规则接受合法值拒绝未知值；不表述为全部默认值生命周期已确认或多选新行工厂增强。
+      sourceReferences: [docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    - id: evidence.shared-choice-options-user-confirmed
+      disposition: updated
+      scope: 保存原始异步问题和必须共用同一组选项（推荐）原答复，区分推荐标签与实际业务含义。
+      sourceReferences: [docs/knowledge/evidence/shared-choice-options-2026-10-18.md]
+    - id: evidence.shared-choice-options-original-source
+      disposition: updated
+      scope: 原基线源码、最终dirty源码、主侧实际报告及本体只读核对分时记录；区分H2兼容模式、受控保存回调和原生PG/完整HTTP验收缺口。
+      sourceReferences: [docs/knowledge/evidence/shared-choice-options-2026-10-18.md, /tmp/edhr-w2-choice-ontology-scope.json]
+    - id: term.form-template-field
+      disposition: updated
+      scope: 现行真实字段定义补共享选项边界，保留原稳定fieldId及字段例外权限、不跨表单共享身份的含义和specified/internal状态。
+      sourceReferences: [docs/knowledge/glossary.yaml, docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml]
+    - id: concept.form-template-field
+      disposition: updated
+      scope: 复用现有概念，仅追加新用户确认证据，kind与specified/internal成熟度保持。
+      sourceReferences: [docs/knowledge/ontology.yaml, docs/knowledge/evidence/shared-choice-options-2026-10-18.yaml]
+    - id: DEC-0077-12
+      disposition: retained
+      scope: 使用时冻结和后改模板不回写原快照继续；打开/parse旧空或缺失options不补预置，不迁移旧不一致模板或执行。
+      sourceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
+    - id: DEC-0077-22
+      disposition: retained
+      scope: 同一document配置、保存和撤销所有权保持；不新增旁路保存事务或改变画布入口组织。
+      sourceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.shared-choice-yaml-and-fields
+      checkType: schema
+      command: python3 /tmp/edhr-w2-choice-ontology-diagnostic.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w2-choice-ontology-diagnostic.json
+        - 206份YAML解析、版本与声明字段/枚举诊断通过；不是正式Maven替代。
+    - id: validation.shared-choice-ids-and-references
+      checkType: reference
+      command: python3 /tmp/edhr-w2-choice-ontology-diagnostic.py
+      outcome: passed
+      evidence:
+        - 2523个全局ID检查无碰撞；本批新增7条记录，证据/术语/概念/supersedes引用可解析。
+    - id: validation.shared-choice-paths-and-scope
+      checkType: evidence-path
+      command: python3 /tmp/edhr-w2-choice-ontology-diagnostic.py; git diff --check -- docs/knowledge docs/architecture; read-only SHA256 receipt inspection
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w2-choice-ontology-scope.json
+        - 7个owned知识/架构路径及14个实际读取源码/测试路径摘要；actualHead与dirty scope明确。
+        - 所有code/database/test/document证据路径位于仓库且存在，知识diff whitespace通过。
+    - id: validation.shared-choice-maturity-and-projection
+      checkType: projection
+      command: python3 /tmp/edhr-w2-choice-ontology-diagnostic.py; compare baseline bytes for schema/open-questions/execution-contracts and contracts
+      outcome: passed
+      evidence:
+        - 新DEC及声明保持specified/internal，未新增运行规则/事实/执行契约；schema、open-questions、execution-contracts与项目/角色/交接契约字节未改。
+        - 0.3.25/1.2.0保持；未声明全库语义一致、知识发布或P0完成。
+    - id: validation.shared-choice-current-source-and-history
+      checkType: status-transition
+      command: inspect final dirty choiceOptions/store/Inspector/MockFillDialog and unchanged registry/newSubTableRow/ExecutionSnapshotBuilder/ProductionExecutionEngine
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w2-choice-ontology-scope.json
+        - 最终initializeChoiceField只属于主动创建/类型变更写命令；registry已恢复，旧缺失/空配置读取不补预置。
+        - 显式选项编辑同步当前canonical模型和全部同field/parent位置；无关绑定修改不采纳旧不一致配置。默认选项使用actual value；重复展示key含node身份但值身份不变。
+        - 原冻结构建与服务端允许值校验生产源码未改，无runtime取最新模板或widget并集放行。
+    - id: validation.shared-choice-inspected-primary-formal-knowledge
+      checkType: schema
+      command: inspect /tmp/edhr-w2-choice-primary-java.json and primary test source; no Maven executed by ontology role
+      outcome: passed
+      evidence:
+        - BusinessKnowledgeModelTest由主侧实际执行89/89通过，0skip；报告实际包含逐case。
+        - 主侧完整当前套件189项中186实跑通过、3项既有条件跳过、0fail/error；不能写成189实跑或零跳过。
+    - id: validation.shared-choice-inspected-primary-cross-layer
+      checkType: evidence-path
+      command: inspect primary node/browser/java reports and compare raw UI fixture bytes with backend test resource
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w2-choice-primary-java.json
+        - /tmp/edhr-w2-choice-browser-final.json
+        - /tmp/edhr-w2-choice-ontology-scope.json
+        - Node126pass0skip；真实Chromium13pass，含旧9及单选/多选各两视口；主侧tsc/Vite与设计器guard通过。
+        - 原UI fixture与backend测试资源6343bytes完全相同，SHA256为721d500935aa38b52dae95414e45d1c41c8921b2c50788864ea3554a2ada2b63。
+        - 新冻结SAVE/未知SUBMIT回滚/合法SUBMIT及完整parsed snapshot不变场景已实际pass；后端为H2兼容模式MockMvc/JPA/JDBC，不是原生PG或全认证HTTP浏览器。
+        - 390px原toolbar溢出/固定纸面横滚仍保留；官方premium当前未运行、ESLint缺配置；这些范围未被冒称全局或移动验收通过。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

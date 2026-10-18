@@ -1,0 +1,266 @@
+{
+  "kind": "fresh-independent-final-quality-verifier-safe-summary",
+  "recordedAtUtc": "2026-10-18T07:05:35.663539+00:00",
+  "baseCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "testedCandidateCommit": "9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7",
+  "result": "passed",
+  "requiredChecks": 15,
+  "requiredChecksPassed": 15,
+  "optionalActualFailures": [
+    "check.optional-repository-lint",
+    "check.optional-whole-project-premium-strict"
+  ],
+  "node": {
+    "tests": 128,
+    "suites": 0,
+    "pass": 128,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "baselineNode": {
+    "tests": 12,
+    "suites": 0,
+    "pass": 2,
+    "fail": 10,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "firstCandidateNode": {
+    "tests": 12,
+    "suites": 0,
+    "pass": 10,
+    "fail": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "browserCasesPassed": 15,
+  "browserCaseConsoleAndPageErrors": "separately asserted strictly empty for all15cases",
+  "java": {
+    "tests": 189,
+    "passed": 186,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3
+  },
+  "newCrossLayerCasePassed": true,
+  "premium": {
+    "baselineExitCode": 2,
+    "candidateExitCode": 2,
+    "baselineSummary": {
+      "errors": 84,
+      "total": 84,
+      "unresolved": 13,
+      "violations": 71,
+      "warnings": 0
+    },
+    "candidateSummary": {
+      "errors": 84,
+      "total": 84,
+      "unresolved": 13,
+      "violations": 71,
+      "warnings": 0
+    },
+    "exactFullFindingMultisetEqual": true,
+    "introduced": [],
+    "removed": []
+  },
+  "commands": [
+    {
+      "name": "browser",
+      "command": [
+        "node",
+        "scripts/test-designer-save-browser.mjs"
+      ],
+      "cwd": "/workspace/edhr-nexus-frontend/gmp-platform/frontend",
+      "environmentOverrides": {
+        "NODE_PATH": "/workspace/.edhr-browser-tools/node_modules",
+        "CHROME_PATH": "/usr/bin/chromium",
+        "W2_SCREENSHOT_DIR": "/tmp/edhr-w2-choice-final-retest/screenshots",
+        "W2_RESULT_PATH": "/tmp/edhr-w2-choice-final-retest/browser-results.json"
+      },
+      "exitCode": 0,
+      "durationSeconds": 91.834,
+      "finishedAtUtc": "2026-10-18T07:01:38.182614+00:00",
+      "rawLogPrivate": {
+        "bytes": 3128,
+        "sha256": "2874cf56a6c261d8bf60d4f6123bd11c219608cff70bdc8e5a2d96a6e2a0cc09"
+      }
+    },
+    {
+      "name": "browser-first-candidate",
+      "command": [
+        "node",
+        "scripts/test-designer-save-browser.mjs"
+      ],
+      "cwd": "/workspace/edhr-nexus-frontend/gmp-platform/frontend",
+      "environmentOverrides": {
+        "NODE_PATH": "/workspace/.edhr-browser-tools/node_modules",
+        "CHROME_PATH": "/usr/bin/chromium",
+        "W2_BASELINE_COMMIT": "c4491dde7703e778c0b4ba7dd293dc940d8a262d",
+        "W2_CASE_FILTER": "ModelTab",
+        "W2_SCREENSHOT_DIR": "/tmp/edhr-w2-choice-final-retest/first-candidate-screenshots",
+        "W2_RESULT_PATH": "/tmp/edhr-w2-choice-final-retest/browser-first-candidate-results.json"
+      },
+      "exitCode": 1,
+      "durationSeconds": 7.836,
+      "finishedAtUtc": "2026-10-18T07:01:55.803046+00:00",
+      "rawLogPrivate": {
+        "bytes": 2619,
+        "sha256": "1fa8f3498ee4e68c66fe22a6aad8d97eac1e9628b92bb35c8a3ad453524a029e"
+      }
+    },
+    {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "/workspace/edhr-nexus-frontend/gmp-platform/frontend",
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "durationSeconds": 64.141,
+      "finishedAtUtc": "2026-10-18T07:01:24.764981+00:00",
+      "rawLogPrivate": {
+        "bytes": 9335,
+        "sha256": "4b689c55e6d94b97002d4726db2f879a9af8f87a19cf8644ee9e3d711d62a7f8"
+      }
+    },
+    {
+      "name": "java",
+      "command": [
+        "bash",
+        "/workspace/.edhr-cloud-tools/mvn-edhr",
+        "-o",
+        "-C",
+        "-Dtest=ProductionExecutionIntegrationTest,ProductionExecutionFormValuesTest,ProductionExecutionEngineTest,BusinessKnowledgeModelTest",
+        "test"
+      ],
+      "cwd": "/workspace/edhr-nexus-frontend/gmp-platform/backend",
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "durationSeconds": 49.611,
+      "finishedAtUtc": "2026-10-18T07:02:36.299570+00:00",
+      "rawLogPrivate": {
+        "bytes": 3451390,
+        "sha256": "47af18aaa8d16fef93e50af0d3362801a05a3fab20e5eab21ceeab1e034075a8"
+      }
+    },
+    {
+      "name": "lint",
+      "command": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "cwd": "/workspace/edhr-nexus-frontend/gmp-platform/frontend",
+      "environmentOverrides": {},
+      "exitCode": 2,
+      "durationSeconds": 0.904,
+      "finishedAtUtc": "2026-10-18T07:01:10.617243+00:00",
+      "rawLogPrivate": {
+        "bytes": 819,
+        "sha256": "ce1ab04f5660d6cb81c2cdf842c1d4dd91f6f5ee6932d4d486e157c45077d8d1"
+      }
+    },
+    {
+      "name": "node-base",
+      "command": [
+        "node",
+        "--test",
+        "scripts/test-designer-choice-options.mjs"
+      ],
+      "cwd": "/workspace/edhr-nexus-frontend/gmp-platform/frontend",
+      "environmentOverrides": {
+        "W2_BASELINE_COMMIT": "b191e054892ae06cb0d8a45f62d034deabbba3e3"
+      },
+      "exitCode": 1,
+      "durationSeconds": 3.095,
+      "finishedAtUtc": "2026-10-18T07:00:23.704555+00:00",
+      "rawLogPrivate": {
+        "bytes": 12256,
+        "sha256": "cac57cf42ada98da05758cd6bff7d7170aa791f7226228ef4098c8e43051a383"
+      }
+    },
+    {
+      "name": "node",
+      "command": [
+        "node",
+        "--test",
+        "scripts/test-designer-choice-options.mjs",
+        "scripts/test-form-document-preview.mjs",
+        "scripts/test-form-references.mjs",
+        "scripts/test-runtime-row-values.mjs",
+        "scripts/test-designer-subfield-sync.mjs",
+        "scripts/test-designer-column-insertion.mjs",
+        "scripts/test-projection-panel.mjs",
+        "scripts/test-sheet-cell-transfer.mjs",
+        "scripts/test-quick-sub-table.mjs",
+        "scripts/test-field-business-purpose.mjs",
+        "scripts/test-projection-source-editor.mjs",
+        "scripts/test-dynamic-sub-table-layout.mjs",
+        "scripts/test-cell-display-components.mjs",
+        "scripts/test-designer-save-state.mjs",
+        "scripts/test-report-menu-navigation.mjs"
+      ],
+      "cwd": "/workspace/edhr-nexus-frontend/gmp-platform/frontend",
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "durationSeconds": 12.398,
+      "finishedAtUtc": "2026-10-18T07:00:17.447604+00:00",
+      "rawLogPrivate": {
+        "bytes": 13083,
+        "sha256": "80ff27ba4d65667fb02deead4204f7df3cc27bbca86f20cbcf940c45edf47420"
+      }
+    },
+    {
+      "name": "node-first-candidate",
+      "command": [
+        "node",
+        "--test",
+        "scripts/test-designer-choice-options.mjs"
+      ],
+      "cwd": "/workspace/edhr-nexus-frontend/gmp-platform/frontend",
+      "environmentOverrides": {
+        "W2_BASELINE_COMMIT": "c4491dde7703e778c0b4ba7dd293dc940d8a262d"
+      },
+      "exitCode": 1,
+      "durationSeconds": 2.244,
+      "finishedAtUtc": "2026-10-18T07:00:22.862064+00:00",
+      "rawLogPrivate": {
+        "bytes": 3608,
+        "sha256": "75f17e7a100430869b182e4719bc56ee4a013c083ff6c90f4016c2f22ee52a43"
+      }
+    },
+    {
+      "name": "static",
+      "command": [
+        "npm",
+        "run",
+        "verify:template-designer-react"
+      ],
+      "cwd": "/workspace/edhr-nexus-frontend/gmp-platform/frontend",
+      "environmentOverrides": {},
+      "exitCode": 0,
+      "durationSeconds": 6.538,
+      "finishedAtUtc": "2026-10-18T07:00:27.107719+00:00",
+      "rawLogPrivate": {
+        "bytes": 351,
+        "sha256": "095b68b9c497f1b6259a40ea77f747757afd7c7d33fec30c49923c2546c3790b"
+      }
+    }
+  ],
+  "resolvedFindings": [
+    "QF-W2-CHOICE-001"
+  ],
+  "independence": "Fresh final quality-verifier had no repair participation. Readonly evidence helper only inspected docs and receipts; no runtime or implementation. No repository or protected tool byte changed.",
+  "allRuntimeCompleted": true,
+  "sourceInspection": "source-inspection.json",
+  "protectionSummary": "protection-summary.json",
+  "rawLogsXmlFullSourcesFullManifestsAndConfigurationsPublished": false,
+  "nonblockingLedgerFollowup": "baseline.json candidateCommit=null/ontology followup pending are pre-freeze placeholders; root should update only final L0 acceptance ledger without rewriting original evidence."
+}

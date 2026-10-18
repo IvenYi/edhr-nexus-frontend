@@ -1,0 +1,30 @@
+{
+  "name": "node",
+  "command": [
+    "node",
+    "--test",
+    "scripts/test-designer-choice-options.mjs",
+    "scripts/test-form-document-preview.mjs",
+    "scripts/test-form-references.mjs",
+    "scripts/test-runtime-row-values.mjs",
+    "scripts/test-designer-subfield-sync.mjs",
+    "scripts/test-designer-column-insertion.mjs",
+    "scripts/test-projection-panel.mjs",
+    "scripts/test-sheet-cell-transfer.mjs",
+    "scripts/test-quick-sub-table.mjs",
+    "scripts/test-field-business-purpose.mjs",
+    "scripts/test-projection-source-editor.mjs",
+    "scripts/test-dynamic-sub-table-layout.mjs",
+    "scripts/test-cell-display-components.mjs",
+    "scripts/test-designer-save-state.mjs",
+    "scripts/test-report-menu-navigation.mjs"
+  ],
+  "cwd": "gmp-platform/frontend",
+  "environmentOverrides": {},
+  "exitCode": 0,
+  "durationSeconds": 11.375,
+  "rawLog": {
+    "bytes": 12834,
+    "sha256": "07e3f9bf72523853374d15d772b24b1f291bd7051d866798bd8dd0314c11540f"
+  }
+}

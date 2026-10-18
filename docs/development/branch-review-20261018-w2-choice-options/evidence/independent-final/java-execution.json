@@ -1,0 +1,20 @@
+{
+  "name": "java",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-o",
+    "-C",
+    "-Dtest=ProductionExecutionIntegrationTest,ProductionExecutionFormValuesTest,ProductionExecutionEngineTest,BusinessKnowledgeModelTest",
+    "test"
+  ],
+  "cwd": "/workspace/edhr-nexus-frontend/gmp-platform/backend",
+  "environmentOverrides": {},
+  "exitCode": 0,
+  "durationSeconds": 49.611,
+  "finishedAtUtc": "2026-10-18T07:02:36.299570+00:00",
+  "rawLogPrivate": {
+    "bytes": 3451390,
+    "sha256": "47af18aaa8d16fef93e50af0d3362801a05a3fab20e5eab21ceeab1e034075a8"
+  }
+}

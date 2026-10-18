@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { syncReferenceConfig } from '@/components/form-renderer/referenceConfig';
+import { choiceWidgetConfig, defaultChoiceOptions, isChoiceField, syncChoiceOptions } from '@/components/form-renderer/choiceOptions';
 import type {
   CanvasCellBorder,
   CanvasMode,
@@ -139,17 +140,25 @@ function normalizeModelFieldColumns(columns: unknown): ModelField[] {
     .filter((field): field is ModelField => Boolean(field));
 }
 
+// Write commands only: registry defaults are also used to read old documents.
+function initializeChoiceField(field: ModelField): ModelField {
+  const options = field.typeConfig?.options;
+  return isChoiceField(field) && (options == null || (Array.isArray(options) && !options.length))
+    ? { ...field, typeConfig: { ...field.typeConfig, options: defaultChoiceOptions() } }
+    : field;
+}
+
 function createModelFieldFromInput(input: CreateFieldInput, sortOrder: number, fields: ModelField[], idPrefix = 'field') {
   const effectiveType = input.type === 'subTable' ? 'text' : input.type;
   const definition = getFieldTypeDefinition(effectiveType);
   const preferredName = input.name.trim() || definition.label;
   const name = createUniqueFieldName(fields, preferredName);
-  return {
+  return initializeChoiceField({
     ...definition.defaultField(name, sortOrder),
     id: createId(idPrefix),
     code: createUniqueFieldCode(fields, name, definition.type),
     description: input.description?.trim() ?? '',
-  };
+  });
 }
 
 function getCellKey(row: number, col: number) {
@@ -1685,7 +1694,7 @@ function createBoundNodeFromField(field: ModelField, layout?: FieldCellLayout) {
     required: false,
     readonly: false,
     hidden: false,
-    widgetConfig: {},
+    widgetConfig: choiceWidgetConfig(field, {}),
   };
   if (layout) {
     node.style = {
@@ -1830,9 +1839,9 @@ function syncBoundNodesForField(nodes: CanvasNode[], fieldId: string, field: Mod
         bindings: {
           ...node.bindings,
           ...(subTableField ? { subTableField } : {}),
-          widgetConfig: definition.compatibleComponents.includes(node.type)
+          widgetConfig: choiceWidgetConfig(boundField, definition.compatibleComponents.includes(node.type)
             ? node.bindings?.widgetConfig
-            : {},
+            : {}),
         },
       };
     }
@@ -2158,11 +2167,11 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
     const fields = get().document?.model.fields ?? [];
     const sortOrder = fields.length + 1;
     const fieldName = name?.trim() || definition.label;
-    const field = {
+    const field = initializeChoiceField({
       ...definition.defaultField(fieldName, sortOrder),
       id: createId('field'),
       code: createUniqueFieldCode(fields, fieldName, definition.type),
-    };
+    });
     set((state) => pushDocumentHistory(state, {
       document: state.document
         ? {
@@ -2270,6 +2279,19 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
           ? { ...definition.defaultField(field.name, field.sortOrder).typeConfig }
           : { ...field.typeConfig, ...(patch.typeConfig ?? {}) },
       };
+      if (typeChanged) updatedField = initializeChoiceField(updatedField);
+      // ModelTab creates/converts child fields by replacing the parent's columns.
+      // Existing same-type columns, including old empty definitions, stay untouched.
+      if (updatedField.type === 'subTable' && Array.isArray(patch.typeConfig?.columns)) {
+        const previousColumns = Array.isArray(field.typeConfig.columns) ? field.typeConfig.columns as ModelField[] : [];
+        updatedField = { ...updatedField, typeConfig: { ...updatedField.typeConfig,
+          columns: (patch.typeConfig.columns as ModelField[]).map(column => {
+            if (!column || typeof column !== 'object') return column;
+            const previous = previousColumns.find(item => item?.id === column.id);
+            return !previous || previous.type !== column.type ? initializeChoiceField(column) : column;
+          }),
+        } };
+      }
       return updatedField;
     });
 
@@ -2642,9 +2664,9 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
               ...node.bindings,
               fieldId: field.id,
               displayLabel: undefined,
-              widgetConfig: definition.compatibleComponents.includes(node.type)
+              widgetConfig: choiceWidgetConfig(field, definition.compatibleComponents.includes(node.type)
                 ? node.bindings?.widgetConfig
-                : {},
+                : {}),
             },
           };
         }),
@@ -2653,13 +2675,13 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
   }),
   updateNodeBindings: (nodeId, patch) => set((state) => pushDocumentHistory(state, {
     document: state.document
-      ? syncReferenceConfig(updateCanvasPage(state.document, (page) => ({
+      ? syncChoiceOptions(syncReferenceConfig(updateCanvasPage(state.document, (page) => ({
           ...page,
           nodes: mapNodes(page.nodes, nodeId, (node) => ({
             ...node,
             bindings: { ...node.bindings, ...patch } as CanvasNode['bindings'],
           })),
-        })), nodeId)
+        })), nodeId), nodeId, state.document)
       : state.document,
   })),
   updateSelectedSubTableRegion: (patch) => set((state) => {

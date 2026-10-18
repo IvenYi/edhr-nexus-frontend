@@ -1,0 +1,200 @@
+{
+  "kind": "ontology-small-patch-followup-diagnostic",
+  "actualHead": "c4491dde7703e778c0b4ba7dd293dc940d8a262d",
+  "targetCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "workingTreeStatus": "dirty",
+  "knowledgeBaselineBefore": "0.3.25",
+  "knowledgeBaselineAfter": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "knowledgeYamlFilesUnchanged": 206,
+  "onlyOwnedChangedArtifact": {
+    "path": "docs/knowledge/evidence/shared-choice-options-2026-10-18.md",
+    "bytes": 11381,
+    "sha256": "bbd6694ea84e47c605942044558ee8a69cdc108aa4590e5ec524245cc50b7013"
+  },
+  "originalMdBytes": 7627,
+  "appendedBytes": 3754,
+  "oldMdPreservedAsBytePrefix": true,
+  "oldOntologyArtifactsUnchanged": true,
+  "readSourceScope": [
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+      "bytes": 125856,
+      "sha256": "8e21536a02bc5502ed2c65d70288d38a980b686999d227dc0c687ba72b5d40ab"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-designer-choice-options.mjs",
+      "bytes": 15033,
+      "sha256": "5ae73660a90d7ed6fd2e181bbfac7f5e4ed042776ea9479715aac9abd8b9ca43"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-designer-save-browser.mjs",
+      "bytes": 36443,
+      "sha256": "0e4560ba89a5bbdf86560e202c762caaa2c58371c86d5c41b766f634ae271cfa"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx",
+      "bytes": 58098,
+      "sha256": "e900e762f93410825e35a2117f4965d422e2a228174873fd49de3c3f3566d892"
+    }
+  ],
+  "protectedBoundaries": [
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "bytes": 66048,
+      "sha256": "4f958050af2b4414ba2a909fbc52019ec9ceb7a5dbba2c32e42f90ce8c0eb40a"
+    },
+    {
+      "path": "docs/knowledge/ontology.yaml",
+      "bytes": 89548,
+      "sha256": "3e32be8c60add6421ab5f84e337809ec4207d89bf1b021e4a63ff18d7e61db48"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "bytes": 87576,
+      "sha256": "bc778e717f06478605a97b76eccd2a8d4c5bf19e4009fb63570153d933cce781"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "bytes": 56932,
+      "sha256": "768c2962de30dbc77f52fb861e9aeddb3aadcbab83a7d5eb96cacad4a4be5a06"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+      "bytes": 3431,
+      "sha256": "9b61e114aadf7948d86baa704aae94325449fe6cca0dd825c5b921a22814bd08"
+    },
+    {
+      "path": "docs/knowledge/evidence/shared-choice-options-2026-10-18.yaml",
+      "bytes": 1073,
+      "sha256": "7a23fab99ec4690e5c58712cf7d9269de6717d85c6c16a4863d76fc8510f5dc5"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/fieldRegistry.ts",
+      "bytes": 7458,
+      "sha256": "2dfef47bafc68d840a973abda8848241aca5697025674bc02b9afdbdc24bca4e"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-renderer/newSubTableRow.ts",
+      "bytes": 1486,
+      "sha256": "e5526d301a4d7f5073cd12764aa7fd59c76032b44baed13e96d09bab6ddc27fe"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "bytes": 16823,
+      "sha256": "e8057ad990bda9be33ae2b91929683629a81cc602943446e7f97481d5b88232a"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "bytes": 64019,
+      "sha256": "9e7f4b66d43780b5294acac5fdd7f1893ec71073d71104ac634a6e4a8ca50e4a"
+    }
+  ],
+  "firstIndependentFailure": {
+    "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/quality-result.yaml",
+    "bytes": 20445,
+    "sha256": "3282222ca70f0e203aa41ffa5b4f9343e54cb95a6b9ae7c1a11591dae0127253"
+  },
+  "firstFindingRetained": {
+    "id": "QF-W2-CHOICE-001",
+    "severity": "medium",
+    "resolutionStatus": "open"
+  },
+  "primaryEvidenceInspected": [
+    {
+      "path": "/tmp/edhr-w2-choice-node-followup.log",
+      "bytes": 13085,
+      "sha256": "2f6827c674cb90889b7928439f206f9c08466f78baae826bb72c1c0d91966772"
+    },
+    {
+      "path": "/tmp/edhr-w2-choice-first-candidate-red.log",
+      "bytes": 3604,
+      "sha256": "3cf1ce688fca3bcee0bc9167d6894b336bfbdb0a07624edd33a131d98027a5c8"
+    },
+    {
+      "path": "/tmp/edhr-w2-choice-modeltab-green.log",
+      "bytes": 1520,
+      "sha256": "efcbee711eb97851499bf3d8ca32fd8209daac433faa066d1b79618a44531011"
+    },
+    {
+      "path": "/tmp/edhr-w2-choice-modeltab-browser.json",
+      "bytes": 555,
+      "sha256": "652d9b9c927b25b2fd890902c87d9ff6b5a95389f1eb7935947307eb4a0fe8a5"
+    },
+    {
+      "path": "/tmp/edhr-w2-choice-modeltab-browser-red.log",
+      "bytes": 2619,
+      "sha256": "1fa8f3498ee4e68c66fe22a6aad8d97eac1e9628b92bb35c8a3ad453524a029e"
+    },
+    {
+      "path": "/tmp/edhr-w2-choice-build-followup.log",
+      "bytes": 9335,
+      "sha256": "25c923d783f357baf22aad7d6b1d255eda93ddfa8cbb5189b86466f9fb0e7ff3"
+    },
+    {
+      "path": "/tmp/edhr-w2-choice-static-followup.log",
+      "bytes": 351,
+      "sha256": "095b68b9c497f1b6259a40ea77f747757afd7c7d33fec30c49923c2546c3790b"
+    }
+  ],
+  "primaryFollowupOnly": {
+    "node": {
+      "tests": 128,
+      "pass": 128,
+      "fail": 0,
+      "skipped": 0
+    },
+    "choiceTestsOnFirstCandidate": {
+      "tests": 12,
+      "pass": 10,
+      "fail": 2,
+      "skipped": 0
+    },
+    "choiceTestsOnCurrentDirtySource": {
+      "tests": 12,
+      "pass": 12,
+      "fail": 0,
+      "skipped": 0
+    },
+    "browserAddedCasesPassed": 2,
+    "browserViewports": [
+      1440,
+      390
+    ],
+    "build": "passed",
+    "staticGuard": "passed"
+  },
+  "actualCommandsRunByOntologyRole": [
+    "python3 /tmp/edhr-w2-choice-ontology-followup-diagnostic.py",
+    "git diff --check -- docs/knowledge/evidence/shared-choice-options-2026-10-18.md"
+  ],
+  "businessTestsRunByOntologyRole": false,
+  "notClaimed": [
+    "new independent quality passed",
+    "all 15 browser cases on followup source",
+    "189 Java cases rerun on followup source",
+    "native PostgreSQL or authenticated full HTTP",
+    "new policy or maturity increase"
+  ],
+  "outcome": "passed"
+}

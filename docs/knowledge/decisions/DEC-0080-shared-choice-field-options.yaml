@@ -1,0 +1,33 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0080
+    title: 同一表单字段的所有放置位置共用选项
+    status: specified
+    visibility: internal
+    context: user-confirmed；2026-10-18用户对同一字段多处放置时选项能否分别配置的明确提问，回答“必须共用同一组选项（推荐）”。只确认同一字段的共享选项边界，不要求不同字段或不同表单共用选项，不确认默认值全生命周期。此前各widget可单独编辑而后端仅按模型允许值校验，是原实现差异，不是已确认的独立选项政策；无旧决策声明需要替代。canonical model、当前写命令内同步及默认按钮保存实际值为工程实现选择，原始依据和验证时点分列于证据。继续保留DEC-0077-12使用时冻结、历史实例保护及22同一配置保存撤销边界；不迁移旧模板或执行快照，不增加widget选项并集放行路径。
+    decisionStatements:
+      - id: DEC-0080-01
+        statement: 同一表单中的同一单选或多选字段在画布各处放置时，必须共用同一组选项；各放置位置不能各自定义不同选项。字段身份以实际稳定字段身份为准，名称相同或同属一种控件不使不同字段自动共享选项。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.shared-choice-options-user-confirmed, evidence.shared-choice-options-original-source]
+    acceptanceScenarios:
+      - id: scenario.same-field-shares-choice-options
+        given: 当前表单的同一选择字段在画布多处或跨页放置
+        when: 在任一位置修改选项配置，或从模型入口修改该字段选项
+        then: 模型和同身份放置位置使用同一组选项，其他字段不被修改；子表列须同时核对父表和列身份，不能因同名或相同列ID跨父表误同步
+        evidenceIds: [evidence.shared-choice-options-user-confirmed, evidence.shared-choice-options-original-source]
+        evidenceRequirements: [原基线反例, 当前store及序列化回归, 实际Inspector编辑与回显]
+      - id: scenario.shared-choice-options-single-document-history
+        given: 同一字段选项已在当前模型和画布位置同步修改
+        when: 撤销、重做及保存重读当前表单设计
+        then: 作为同一次完整document编辑恢复或保存，身份、无关样式和字段权限保持；此为现有历史所有权下的工程验收边界，不新增第二套历史或保存事务
+        evidenceIds: [evidence.shared-choice-options-original-source]
+        evidenceRequirements: [完整document单次undo及redo, 保存载荷和parse回归]
+      - id: scenario.shared-choice-options-frozen-validation
+        given: 当前设计的选择字段配置和默认选择已经保存，并据此创建新使用快照
+        when: 创建新子表行及执行选择值的正式提交
+        then: 默认按钮保存对应实际选项值，新增行能解析该值，后端仍从该次冻结model允许值接受合法值并拒绝未知值；既有执行快照不被刷新或改写。本例只定义本批工程验收范围，不确认全默认值生命周期或声明已运行
+        evidenceIds: [evidence.shared-choice-options-original-source]
+        evidenceRequirements: [默认行和实际纸面交互, 后端冻结提交正反证, 旧快照不变核对]

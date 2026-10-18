@@ -1,0 +1,31 @@
+{
+  "name": "node",
+  "command": [
+    "node",
+    "--test",
+    "scripts/test-designer-choice-options.mjs",
+    "scripts/test-form-document-preview.mjs",
+    "scripts/test-form-references.mjs",
+    "scripts/test-runtime-row-values.mjs",
+    "scripts/test-designer-subfield-sync.mjs",
+    "scripts/test-designer-column-insertion.mjs",
+    "scripts/test-projection-panel.mjs",
+    "scripts/test-sheet-cell-transfer.mjs",
+    "scripts/test-quick-sub-table.mjs",
+    "scripts/test-field-business-purpose.mjs",
+    "scripts/test-projection-source-editor.mjs",
+    "scripts/test-dynamic-sub-table-layout.mjs",
+    "scripts/test-cell-display-components.mjs",
+    "scripts/test-designer-save-state.mjs",
+    "scripts/test-report-menu-navigation.mjs"
+  ],
+  "cwd": "/workspace/edhr-nexus-frontend/gmp-platform/frontend",
+  "environmentOverrides": {},
+  "exitCode": 0,
+  "durationSeconds": 12.398,
+  "finishedAtUtc": "2026-10-18T07:00:17.447604+00:00",
+  "rawLogPrivate": {
+    "bytes": 13083,
+    "sha256": "80ff27ba4d65667fb02deead4204f7df3cc27bbca86f20cbcf940c45edf47420"
+  }
+}

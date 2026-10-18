@@ -1,0 +1,469 @@
+{
+  "kind": "read-only-doc-evidence-inspection-not-test-or-qualityResult",
+  "baseCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "headCommit": "c4491dde7703e778c0b4ba7dd293dc940d8a262d",
+  "workingTreeClean": true,
+  "checks": [
+    {
+      "group": "helpers",
+      "artifacts": [
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory.md",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory.csv",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory-metadata.json",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-consumers.md",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-consumers-metadata.json",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w3-mode-callers.md",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-environment-result.json",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/handoff/START-HERE.md",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/handoff/HANDOFF.md",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        }
+      ]
+    },
+    {
+      "group": "ontology",
+      "artifacts": [
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/ontology/edhr-w2-choice-ontology-result.yaml",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/ontology/edhr-w2-choice-ontology-scope.json",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/ontology/edhr-w2-choice-ontology-diagnostic.json",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        }
+      ]
+    },
+    {
+      "group": "primary",
+      "artifacts": [
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/browser-results.json",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/java-cases.json",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/choice-inspector-1440.png",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/choice-inspector-390.png",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/choice-runtime-1440.png",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/choice-runtime-390.png",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/column-insertion-1440.png",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/column-insertion-390.png",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/multi-choice-inspector-1440.png",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/multi-choice-inspector-390.png",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/save-in-flight-desktop.png",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/save-in-flight-narrow.png",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/subfield-edit-1440.png",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/subfield-edit-390.png",
+          "bytesMatch": true,
+          "shaMatch": true,
+          "sourceExists": true,
+          "originalBytesEqual": true
+        }
+      ]
+    },
+    {
+      "group": "primary-source-scope",
+      "artifacts": [
+        {
+          "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/backend/src/test/resources/fixtures/shared-choice-options-design.json",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/scripts/test-designer-choice-options.mjs",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/scripts/test-designer-save-browser.mjs",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/scripts/verify-template-designer-react.mjs",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/src/components/form-renderer/choiceOptions.ts",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/mock-fill/MockFillDialog.tsx",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "bytesMatch": true,
+          "shaMatch": true
+        }
+      ]
+    },
+    {
+      "group": "ontology-ownedChangedArtifacts",
+      "artifacts": [
+        {
+          "path": "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "docs/knowledge/evidence/shared-choice-options-2026-10-18.yaml",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "docs/knowledge/evidence/shared-choice-options-2026-10-18.md",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "docs/knowledge/glossary.yaml",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "docs/knowledge/ontology.yaml",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "docs/knowledge/README.md",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "docs/architecture/business-knowledge-model.md",
+          "bytesMatch": true,
+          "shaMatch": true
+        }
+      ]
+    },
+    {
+      "group": "ontology-readSourceAndTestScope",
+      "artifacts": [
+        {
+          "path": "gmp-platform/frontend/src/components/form-renderer/choiceOptions.ts",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/mock-fill/MockFillDialog.tsx",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/fieldRegistry.ts",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/types/model.ts",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/src/components/form-renderer/newSubTableRow.ts",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/backend/src/test/resources/fixtures/shared-choice-options-design.json",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/scripts/test-designer-choice-options.mjs",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/scripts/test-designer-save-browser.mjs",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "gmp-platform/frontend/scripts/verify-template-designer-react.mjs",
+          "bytesMatch": true,
+          "shaMatch": true
+        }
+      ]
+    },
+    {
+      "group": "ontology-readContractScope",
+      "artifacts": [
+        {
+          "path": "AGENTS.md",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "docs/agents/agent-handoff-contract.md",
+          "bytesMatch": true,
+          "shaMatch": true
+        },
+        {
+          "path": "docs/agents/business-knowledge-modeler.md",
+          "bytesMatch": true,
+          "shaMatch": true
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "coverageHeader": [
+    "baseline_commit",
+    "path",
+    "source_blob",
+    "review_status",
+    "review_depth"
+  ],
+  "coverageCounts": {
+    "baseline_commit": {
+      "b191e054892ae06cb0d8a45f62d034deabbba3e3": 1931
+    },
+    "review_status": {
+      "pending": 1931
+    },
+    "review_depth": {
+      "inventory-only": 1931
+    }
+  },
+  "coverageBytes": 356732,
+  "coverageSha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b",
+  "coverageRows": 1931,
+  "baseTreePaths": 1931,
+  "coverageSample": {
+    "baseline_commit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+    "path": ".github/workflows/frontend-review-regression.yml",
+    "source_blob": "30b47bd2effa0a09249a20a12cc95a4affa80744",
+    "review_status": "pending",
+    "review_depth": "inventory-only"
+  },
+  "ontologyScopeKeys": [
+    "kind",
+    "actualHead",
+    "baseCommit",
+    "knowledgeBefore",
+    "knowledgeAfter",
+    "workingTreeStatus",
+    "statusPorcelainV1",
+    "ownedChangedArtifacts",
+    "readSourceAndTestScope",
+    "readContractScope",
+    "inspectedPrimaryEvidence",
+    "ownCommands",
+    "primaryReportedAndInspectedChecks",
+    "executedBusinessTestsByOntologyRole",
+    "limitations"
+  ],
+  "handoffArchive": {
+    "exists": true,
+    "bytesMatch": true,
+    "shaMatch": true,
+    "copiedMemberBytesEqual": {
+      "START-HERE.md": true,
+      "HANDOFF.md": true
+    }
+  },
+  "coveragePathColumn": "path",
+  "coverageBlobColumn": "source_blob",
+  "coveragePathsEqualBase": true,
+  "coverageBlobsEqualBase": true,
+  "coverageLineEnding": {
+    "bom": false,
+    "allNewlinesCRLF": true
+  },
+  "baseUnchangedProtectedPaths": {
+    "AGENTS.md": true,
+    "codeplzreadme.md": true,
+    "docs/agents/quality-verifier.md": true,
+    "docs/agents/agent-handoff-contract.md": true,
+    "docs/knowledge/schema.yaml": true,
+    "docs/knowledge/open-questions.yaml": true
+  },
+  "fixtureOriginalSameBytes": true,
+  "allReceiptArtifactChecksPassed": true,
+  "knownRecordTiming": {
+    "baselineCandidateCommit": null,
+    "ontologyResultSourceCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3 with explicit dirty scope; all snapshotted artifacts matched frozen c4491dde",
+    "independentResult": "pending in frozen ledger; final acceptance update is L0 follow-up"
+  }
+}

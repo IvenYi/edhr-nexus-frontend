@@ -1,0 +1,262 @@
+qualityResult:
+  result: passed
+  baseCommit: b191e054892ae06cb0d8a45f62d034deabbba3e3
+  headCommit: 9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7
+  contractBaseline:
+    sourceCommit: 9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7
+    targetBranch: edhr-dev
+    targetCommit: b191e054892ae06cb0d8a45f62d034deabbba3e3
+    contractReadCommit: 9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.final-live-baseline-contract
+      required: true
+      category: documentation
+      description: 实时目标、实际冻结候选和所读契约一致，当前L2最终实例未参与任何修复。
+      method: command
+      command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; inspect AGENTS/codeplz/quality-verifier/agent-handoff-contract
+      outcome: passed
+      evidence:
+        - 本轮开始和全部runtime结束后的实际fetch均为edhr-dev b191e054892ae06cb0d8a45f62d034deabbba3e3；被测候选9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7包含该base，工作树clean。
+        - 项目/质量/交接/编码契约相对base无差异，实际在当前HEAD读取；当前质量实例及只读辅助均未参与修复。
+        - protection-summary.json
+    - id: check.final-confirmed-policy-and-knowledge
+      required: true
+      category: ontology
+      description: 核对DEC0080、知识同步与正式本体结果，仅当前受影响范围。
+      method: inspection
+      command: inspect decision-package, DEC-0080, DEC-0077-12/22, knowledge README/open-questions and ontology/followup originals
+      outcome: passed
+      evidence:
+        - 用户原话为必须共用同一组选项（推荐）；同字段身份及父表/列身份限定，不跨字段或表单共享。
+        - 七知识文件范围正确，0.3.25/schema1.2.0及specified/internal保持；两正式本体结果updated，followup证据只追加，未伪提升知识成熟度。
+        - docs/inspection.json
+        - docs/review.md
+    - id: check.final-source-write-boundaries
+      required: true
+      category: requirements
+      description: 核对真实ModelTab遗漏修复与选项同步、历史和兼容边界。
+      method: inspection
+      command: inspect ModelTab createSubTableField/handleSaveField/updateSubTableFields to store updateField; inspect choiceOptions, Inspector, MockFillDialog and unchanged registry/document/backend production
+      outcome: passed
+      evidence:
+        - 当前父表columns写命令按原同ID列及实际type差异，只初始化新增或主动改型选择列；同ID同类型旧缺/空options及父表改名不补。registry和document读路径相对base未修改。
+        - 选项文本确实改变才反向采纳widget；模型反向投影覆盖跨页children，父表和字段身份隔离；同value保留ID及disabled元数据，无关权限/布局保留，单次完整document history。
+        - 默认按钮存parsed value，多选toggle保留数组支持；React key附node ID仅区分显示位置，原共享数据身份不变；未新增multi默认行工厂能力。
+        - 后端生产源码、冻结/允许值生产逻辑和原行工厂无改动，无历史迁移/回填/快照刷新或widget并集放行。
+        - source-inspection.json
+    - id: check.final-node-regression
+      required: true
+      category: regression
+      description: 当前15个Node脚本完整回归，包含12条选择字段用例。
+      method: automated-test
+      command: node --test scripts/test-designer-choice-options.mjs scripts/test-form-document-preview.mjs scripts/test-form-references.mjs scripts/test-runtime-row-values.mjs scripts/test-designer-subfield-sync.mjs scripts/test-designer-column-insertion.mjs scripts/test-projection-panel.mjs scripts/test-sheet-cell-transfer.mjs scripts/test-quick-sub-table.mjs scripts/test-field-business-purpose.mjs scripts/test-projection-source-editor.mjs scripts/test-dynamic-sub-table-layout.mjs scripts/test-cell-display-components.mjs scripts/test-designer-save-state.mjs scripts/test-report-menu-navigation.mjs
+      outcome: passed
+      evidence: [node-execution.json, node-cases.json, 实际128项全部通过，0跳过/失败。]
+    - id: check.final-node-original-and-first-candidate-red
+      required: true
+      category: unit
+      description: 同一12条选择测试加载真实Git旧源码，证明缺陷敏感性及本次入口补漏。
+      method: automated-test
+      command: W2_BASELINE_COMMIT=<b191 or c449 full SHA> node --test scripts/test-designer-choice-options.mjs
+      outcome: passed
+      evidence:
+        - b191实际exit1，10fail/2pass；两条旧读取/无关绑定保护为通过正例。
+        - c449实际exit1，2fail/10pass；两失败恰为ModelTab父表columns新增和主动改型，当前12条全部通过。
+        - 对照结果不累加128覆盖数；loader从git show读取实际store/registry源码，不是自造替代实现。
+        - node-base-execution.json
+        - node-base-cases.json
+        - node-first-candidate-execution.json
+        - node-first-candidate-cases.json
+    - id: check.final-actual-browser-interaction
+      required: true
+      category: e2e
+      description: 真实Chromium执行完整15场景，保留旧13场景并新增两个视口ModelTab真实对话框路径。
+      method: browser
+      command: NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium W2_SCREENSHOT_DIR=<own tmp> W2_RESULT_PATH=<own tmp> node scripts/test-designer-save-browser.mjs
+      outcome: passed
+      evidence:
+        - 实际15场景均passed，每场pageErrors与consoleErrors均由严格断言分别校验为空。
+        - 实际ModelTab新增和改型、自动保存callback payload、未改选项文本直接默认及两行真实值在1440和390均通过，改型child ID保持。
+        - Inspector单/多选parsedvalue、选择/取消/保存、共享组件、undo/redo、真实纸面增删行与稳定行ID均实际执行。
+        - 此为实际Shell/Inspector/纸面加受控保存callback，并非浏览器认证后端HTTP全链；backend由独立JUnit覆盖。
+        - browser-execution.json
+        - browser-results.json
+    - id: check.final-modeltab-first-candidate-browser-red
+      required: true
+      category: e2e
+      description: 同一浏览器脚本加载首候选c449，真实ModelTab保存断言复现原缺陷。
+      method: browser
+      command: W2_BASELINE_COMMIT=c4491dde7703e778c0b4ba7dd293dc940d8a262d W2_CASE_FILTER=ModelTab NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium node scripts/test-designer-save-browser.mjs
+      outcome: passed
+      evidence:
+        - 实际exit1；1440场景在actual ModelTab creation saves canonical presets before Inspector edits断言失败，actual=[]而expected为选项1/选项2。390场景未达到，不能称旧390已复现。
+        - 当前相同两视口场景均实际通过；失败发生在真实对话框确认并自动保存的payload，不是只调用快捷store工厂。
+        - browser-first-candidate-execution.json
+        - browser-first-candidate-summary.json
+    - id: check.final-visual-slice
+      required: true
+      category: visual
+      description: 人工实际查看本轮1440与390单选、多选、ModelTab及运行纸面截图。
+      method: inspection
+      command: view_image actual current screenshots at 1440x960 and 390x844
+      outcome: passed
+      evidence:
+        - 已实际查看8张当前截图，选项文本、default active marker和纸面合法值显示一致，无本切片新增样式或布局。
+        - 390原工具栏部分横向溢出、固定纸面需横向滚动及hover入口仍为既有边界；不宣称全站响应式、touch或DESIGN全面符合。
+        - visual-review.md
+        - screenshots/choice-inspector-1440.png
+        - screenshots/choice-inspector-390.png
+        - screenshots/choice-runtime-1440.png
+        - screenshots/choice-runtime-390.png
+        - screenshots/multi-choice-inspector-1440.png
+        - screenshots/multi-choice-inspector-390.png
+        - screenshots/modeltab-choice-inspector-1440.png
+        - screenshots/modeltab-choice-inspector-390.png
+    - id: check.final-typescript-vite-build
+      required: true
+      category: regression
+      description: 实际执行TypeScript与Vite生产构建。
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence: [build-execution.json, 实际tsc -b及vite build exit0；随后才启动Maven打印构建。]
+    - id: check.final-designer-static-guard
+      required: true
+      category: regression
+      description: 原设计器guard完整实际运行，parsedvalue断言更严格。
+      method: command
+      command: npm run verify:template-designer-react
+      outcome: passed
+      evidence:
+        - static-execution.json
+        - 当前无vendor/online-form-designer目录，原guard真实exit0；单选/多选要求parseChoiceOption实际value、active/toggle与既有数组支持，未删除旧门槛。
+    - id: check.final-backend-and-knowledge
+      required: true
+      category: integration
+      description: 实际运行四组Java测试及DHR打印Vite构建。
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -o -C -Dtest=ProductionExecutionIntegrationTest,ProductionExecutionFormValuesTest,ProductionExecutionEngineTest,BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - 实际189项=186pass/0fail/0error/3既有条件skip；知识89/89、values8/8、engine22/22、integration67实跑通过加3skip。
+        - 三skip精确名为formRecordsBrowserFixture、firstStartFreezesOneCommittedConfigurationDuringProcessRebinding、browserEvidenceFixture；不声称0skip或nativePG并发已验。
+        - 使用H2 PostgreSQL兼容模式及MockMvc/JPA/JDBC事务，不是nativePostgreSQL；DHR打印Vite构建真实执行，未exec.skip。
+        - java-execution.json
+        - java-cases.json
+    - id: check.final-frozen-values-and-rollback
+      required: true
+      category: audit
+      description: 浏览器原夹具经实际冻结SAVE/SUBMIT的合法、非法及审计原子性验证。
+      method: automated-test
+      command: ProductionExecutionIntegrationTest.inspectorChoiceOptionsSaveAndSubmitAgainstTheSameFrozenCanonicalValues
+      outcome: passed
+      evidence:
+        - 该新增case在本轮XML中实际passed；模板后改为空仍读原冻结model，合法pass被SAVE和SUBMIT接受，unknown-option返回400且revision/values/audit不变，最终COMPLETED。
+        - 整个解析后snapshot JSON树保持不变，无忽略子树；仅数字序列化词法与格式差异不当作业务变化。
+        - 原安全合成浏览器fixture6343bytes/SHA721d500935aa38b52dae95414e45d1c41c8921b2c50788864ea3554a2ada2b63，本轮未重写或重新生成。
+        - java-cases.json
+        - source-inspection.json
+    - id: check.final-receipts-and-coverage-boundary
+      required: true
+      category: documentation
+      description: 原证据收据、固定清单和历史失败时点核对。
+      method: inspection
+      command: readonly helper inspect actual receipt bytes/source equality, base tracked path/blob list, historical first failed and next-batch ledger
+      outcome: passed
+      evidence:
+        - 只读辅助13组核对、63原件收据全匹配且可获得源件逐字节一致；我核对其正式结果和当前时点边界。
+        - base清单1931条路径/blob与b191一致，全部pending/inventory-only；不宣称全覆盖审完或W2完成。
+        - 首轮c449正式failed及QF原件medium/open均保留；主侧首轮/跟进结果未冒用本轮通过；W3/A12/旧DHR high与S04待拆分方案保留。
+        - docs/inspection.json
+        - docs/review.md
+    - id: check.final-official-premium-delta
+      required: true
+      category: regression
+      description: 同一官方原脚本对真实base/最终候选重新strict扫描，比较全部finding multiset。
+      method: command
+      command: python3 <unchanged official audit_project.py> <actual git archive b191 or 9ac> --mode strict --output <own JSON>
+      outcome: passed
+      evidence:
+        - 当前cloud技能目录为空，c1/frontend-design-premium读取失败；实际复用首独立QA从官方skills.read取得且已归档来源摘要的原脚本，37716bytes/SHA67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68逐字节未改。
+        - 本轮实际b191及9ac原始strict均exit2，各84项=71violation/13unresolved；完整JSON finding multiset相等，introduced/removed均空，当前changed paths无finding。
+        - 仅增量无新增通过；不把raw strict失败说成全站设计规范通过。
+        - premium-base.json
+        - premium-candidate.json
+        - premium-comparison.json
+    - id: check.final-readonly-protection
+      required: true
+      category: security
+      description: 全部tracked文件与两工具在全部runtime前后字节及SHA一致，候选保持clean。
+      method: command
+      command: compare complete git ls-files byte/SHA256 snapshots plus two protected tool fingerprints before/after all runtime
+      outcome: passed
+      evidence:
+        - 实际2020个tracked文件前后逐个bytes/SHA全部不变，HEAD仍9ac5e0e2，git status clean，未修改任何产品/测试/夹具/lock/config/docs/知识。
+        - mvn-edhr1898bytes SHAebc3436428ffe9d8689b1f4d4f825675c7b49dd7baba02235ee6d0781df73dae及settings.xml198bytes SHA26bd47ed597f0fd6cc1b609cc3921e9795750d66946687fe8828784b1cae0ff2均不变，未输出配置或凭据。
+        - 全部Node、浏览器、构建、Maven、官方扫描runtime已完成；无Actions查询/触发、安装、worktree、commit/push/merge/deploy或历史DB恢复。
+        - protection-summary.json
+    - id: check.optional-repository-lint
+      required: false
+      category: regression
+      description: 原工程lint能力限制，真实执行并保留失败。
+      method: command
+      command: npm run lint
+      outcome: failed
+      evidence: [lint-execution.json, 实际exit2；ESLint8.57.1未找到原工程配置，未新增或降低规则绕过。]
+    - id: check.optional-whole-project-premium-strict
+      required: false
+      category: visual
+      description: 全站官方strict静态规范现状，原始失败未覆盖或降级为通过。
+      method: command
+      command: python3 <official audit_project.py> <9ac git archive> --mode strict --output premium-candidate.json
+      outcome: failed
+      evidence: [premium-candidate.json, premium-comparison.json, 本轮实际exit2及84既有问题；此共享选项批次没有新增或移除finding。]
+  findings:
+    - id: QF-W2-CHOICE-001
+      severity: medium
+      scope: ModelTab实际子列新增及主动类型变更到父表columns的当前编辑写路径。
+      summary: 首轮c449漏初始化的ModelTab路径已在当前候选修复，并由全新实例实际回归关闭。
+      reproductionSteps:
+        - 从字段设计进入子表，实际新增字段对话框选择单选并确认，读取自动保存payload。
+        - 将已有text子列从实际编辑对话框主动改为单选；放置两子列，不修改预置选项文本，直接选择默认选项1。
+        - 打开真实纸面新增两行并读取真实行值；同脚本分别加载c449与9ac。
+      expectedResult: 新增和实际改型canonical持久化两预置且新增两行有合法默认，旧同类型缺/空定义不被自动迁移。
+      actualResult: 当前9ac在1440和390全部满足；c449在1440实际canonical=[]保存断言失败且390未达到。当前12条选择测试通过，c449恰两条入口测试失败。
+      evidence: [browser-results.json, browser-first-candidate-summary.json, node-cases.json, node-first-candidate-cases.json, screenshots/modeltab-choice-inspector-1440.png, screenshots/modeltab-choice-inspector-390.png]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: 9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7
+        - type: command
+          reference: browser-execution.json and node-execution.json, actual full15 browser and128Node passed by fresh final verifier
+        - type: screenshot
+          reference: screenshots/modeltab-choice-inspector-390.png
+  residualRisks:
+    - id: risk.original-lint-and-premium-debt
+      description: 原工程无ESLint配置，官方全站strict仍84项；均真实失败，非本切片新增。
+      impact: 不能宣称全项目lint或视觉规范全部通过。
+      mitigation: 保留本轮原始结果；本切片源核对、构建、聚焦回归及官方同源全finding增量比较通过，历史债务另批处理。
+    - id: risk.limited-runtime-environment
+      description: 实际后端是H2兼容与MockMvc，三既有条件skip；浏览器为受控保存callback。
+      impact: 不证明nativePG特有并发、真实鉴权HTTP端到端或完整部署环境。
+      mitigation: 本批无后端生产变更；明确分层证据，nativePG/完整HTTP仅在依赖范围需要时另验，不伪称已覆盖。
+    - id: risk.existing-narrow-and-touch-layout
+      description: 390工具栏部分溢出、固定纸面横向滚动及hover交互仍存在。
+      impact: 当前有限功能交互通过不代表全面移动端或touch可用性验收。
+      mitigation: 本批无样式改动；保留实际截图和边界，不扩展为全站UI改造。
+    - id: risk.deferred-audit-scopes
+      description: 1931清单仍pending/inventory-only；W2未整体完成，W3 H003/H004/H009/H010、A12及两项旧DHR high仍待后续。
+      impact: 本passed只覆盖DEC0080共享选择字段切片及QF入口补漏，不覆盖完整系统或全本体审计。
+      mitigation: 继续沿仓库NEXT和具体S04方案按既定小批推进，保持旧问题暂缓状态。
+    - id: risk.freeze-time-ledger-placeholders
+      description: baseline.json仍为冻结前candidateCommit=null及ontology followup pending，真实正式followup结果已归档。
+      impact: 非产品阻断；最终交付台账应明确9ac被测提交和当前正式结果，避免读者误用旧时点。
+      mitigation: 主会在最终L0证据收尾更新台账时点，保留所有原始首轮failed/ontology/primary字节，不回写历史报告。
+  blockingConditions: []

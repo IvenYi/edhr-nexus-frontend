@@ -1,0 +1,20 @@
+{
+  "name": "browser",
+  "command": [
+    "node",
+    "scripts/test-designer-save-browser.mjs"
+  ],
+  "cwd": "gmp-platform/frontend",
+  "environmentOverrides": {
+    "NODE_PATH": "/workspace/.edhr-browser-tools/node_modules",
+    "CHROME_PATH": "/usr/bin/chromium",
+    "W2_SCREENSHOT_DIR": "/tmp/edhr-w2-choice-independent/screenshots",
+    "W2_RESULT_PATH": "/tmp/edhr-w2-choice-independent/browser-results.json"
+  },
+  "exitCode": 0,
+  "durationSeconds": 73.343,
+  "rawLog": {
+    "bytes": 2682,
+    "sha256": "cfd18218a177fc17cfb45f88da01400b2c64dcbe2ff3eb15160d950281a2182e"
+  }
+}

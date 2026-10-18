@@ -1,0 +1,251 @@
+{
+  "kind": "actual-primary-working-tree-verification-not-independent-QA",
+  "recordedAtUtc": "2026-10-18T06:39:00.715205+00:00",
+  "baseCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "productionAndTestSources": {
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java": {
+      "bytes": 173281,
+      "sha256": "a123efea6f3173ce377ab7908c534c22da7646fa3b11fa2a28de8cf7e98d11dc"
+    },
+    "gmp-platform/backend/src/test/resources/fixtures/shared-choice-options-design.json": {
+      "bytes": 6343,
+      "sha256": "721d500935aa38b52dae95414e45d1c41c8921b2c50788864ea3554a2ada2b63"
+    },
+    "gmp-platform/frontend/scripts/test-designer-choice-options.mjs": {
+      "bytes": 12838,
+      "sha256": "22c83b66fb5df0686d20405ecd288c3abd0a02b13b1e2d1cafb842bd233ca97b"
+    },
+    "gmp-platform/frontend/scripts/test-designer-save-browser.mjs": {
+      "bytes": 30775,
+      "sha256": "df7f5d2bbfa04253953de68476e91bd7fb7eef650d1f851223505b172a07668f"
+    },
+    "gmp-platform/frontend/scripts/verify-template-designer-react.mjs": {
+      "bytes": 361000,
+      "sha256": "b9383964df477a5c718afbadd28bc07afe9d76e5c7afaa28cac8959894669dc6"
+    },
+    "gmp-platform/frontend/src/components/form-renderer/choiceOptions.ts": {
+      "bytes": 4780,
+      "sha256": "2bd79bcaea5c03b07e35a4437b64d18bd008400977bd19caeae84062eb844ecd"
+    },
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx": {
+      "bytes": 78965,
+      "sha256": "487590565f51074b943d900791028bf9a52f53581801e8ea8f7bd869ff624649"
+    },
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/mock-fill/MockFillDialog.tsx": {
+      "bytes": 64064,
+      "sha256": "2ba2fdbeb481ba3ecc658c6b5c4642d5881651fc900e9a7abed9790a673cad72"
+    },
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts": {
+      "bytes": 125021,
+      "sha256": "076f7c622e7307e012870b0c21a0ebeda3c0fb0c7c43c2e79bc742c88aab3d7e"
+    }
+  },
+  "commands": [
+    {
+      "command": "node --test scripts/test-designer-choice-options.mjs scripts/test-form-document-preview.mjs scripts/test-form-references.mjs scripts/test-runtime-row-values.mjs scripts/test-designer-subfield-sync.mjs scripts/test-designer-column-insertion.mjs scripts/test-projection-panel.mjs scripts/test-sheet-cell-transfer.mjs scripts/test-quick-sub-table.mjs scripts/test-field-business-purpose.mjs scripts/test-projection-source-editor.mjs scripts/test-dynamic-sub-table-layout.mjs scripts/test-cell-display-components.mjs scripts/test-designer-save-state.mjs scripts/test-report-menu-navigation.mjs",
+      "cwd": "gmp-platform/frontend",
+      "exitCode": 0,
+      "result": {
+        "tests": 126,
+        "pass": 126,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "command": "W2_BASELINE_COMMIT=b191e054892ae06cb0d8a45f62d034deabbba3e3 node --test scripts/test-designer-choice-options.mjs",
+      "cwd": "gmp-platform/frontend",
+      "exitCode": 1,
+      "result": {
+        "tests": 10,
+        "pass": 2,
+        "fail": 8,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "expectedRed": true
+    },
+    {
+      "command": "NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium W2_SCREENSHOT_DIR=/tmp/edhr-w2-choice-screenshots-final W2_RESULT_PATH=/tmp/edhr-w2-choice-browser-final.json node scripts/test-designer-save-browser.mjs",
+      "cwd": "gmp-platform/frontend",
+      "exitCode": 0,
+      "passed": 13,
+      "pageAndConsoleErrors": "asserted empty separately for all 13 cases"
+    },
+    {
+      "command": "npm run build",
+      "cwd": "gmp-platform/frontend",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run verify:template-designer-react",
+      "cwd": "gmp-platform/frontend",
+      "exitCode": 0
+    },
+    {
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -o -C -Dtest=ProductionExecutionIntegrationTest,ProductionExecutionFormValuesTest,ProductionExecutionEngineTest,BusinessKnowledgeModelTest test",
+      "cwd": "gmp-platform/backend",
+      "exitCode": 0,
+      "result": {
+        "tests": 189,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 3,
+        "passed": 186
+      },
+      "database": "H2 PostgreSQL compatibility, not native PostgreSQL"
+    },
+    {
+      "command": "npm run lint",
+      "cwd": "gmp-platform/frontend",
+      "exitCode": 2,
+      "reason": "repository has no ESLint configuration"
+    }
+  ],
+  "officialPremiumScan": {
+    "outcome": "not-executed",
+    "reason": "current cloud skill catalog empty; historical scans are not current results"
+  },
+  "baselineActualBrowserRed": {
+    "exitCode": 1,
+    "viewport": {
+      "width": 1440,
+      "height": 960
+    },
+    "assertion": "actual Inspector editing updates the canonical option value",
+    "actual": "undefined",
+    "expected": "pass",
+    "narrowCase": "not executed after first failing assertion"
+  },
+  "fixture": {
+    "path": "gmp-platform/backend/src/test/resources/fixtures/shared-choice-options-design.json",
+    "bytes": 6343,
+    "sha256": "721d500935aa38b52dae95414e45d1c41c8921b2c50788864ea3554a2ada2b63",
+    "origin": "actual initial primary Inspector edit + controlled Shell save callback + actual FormDocumentPreview add row; original /tmp/edhr-w2-choice-design.json retained byte-for-byte, not regenerated by final screenshots",
+    "completeBackendHttpTemplateSaveClaim": false
+  },
+  "unpublishedRawLogs": {
+    "edhr-w2-choice-node-final.log": {
+      "bytes": 12862,
+      "sha256": "3d6d0cd4aa9993f53667bf204286c0034f49ce2d0c2a1ac980ed2fe101b53b67"
+    },
+    "edhr-w2-choice-red-final.log": {
+      "bytes": 9945,
+      "sha256": "38bfc953ce604b182a5d992e83b3bf5215620ee63698e769df299ad2c83ee016"
+    },
+    "edhr-w2-choice-browser-red.log": {
+      "bytes": 2585,
+      "sha256": "9ac911a5f487b9b1b3b828f65aa81e171690c3646538062fa01d6412539bc130"
+    },
+    "edhr-w2-choice-browser-final.log": {
+      "bytes": 2682,
+      "sha256": "cfd18218a177fc17cfb45f88da01400b2c64dcbe2ff3eb15160d950281a2182e"
+    },
+    "edhr-w2-choice-build-final.log": {
+      "bytes": 9335,
+      "sha256": "00a30aaa3bba14e8cf1440bb686ca557c5a24e96e10f3211ead0f414132d6156"
+    },
+    "edhr-w2-choice-designer-static-final.log": {
+      "bytes": 351,
+      "sha256": "095b68b9c497f1b6259a40ea77f747757afd7c7d33fec30c49923c2546c3790b"
+    },
+    "edhr-w2-choice-backend-final.log": {
+      "bytes": 3452260,
+      "sha256": "ba72fb9dfa3efdb275ef5e94499988c2897a0c4aa0e073f365808e16d24f118d"
+    },
+    "edhr-w2-choice-lint.log": {
+      "bytes": 819,
+      "sha256": "ce1ab04f5660d6cb81c2cdf842c1d4dd91f6f5ee6932d4d486e157c45077d8d1"
+    }
+  },
+  "originalArtifactCopies": [
+    {
+      "path": "browser-results.json",
+      "bytes": 2682,
+      "sha256": "cfd18218a177fc17cfb45f88da01400b2c64dcbe2ff3eb15160d950281a2182e",
+      "source": "/tmp/edhr-w2-choice-browser-final.json"
+    },
+    {
+      "path": "java-cases.json",
+      "bytes": 26707,
+      "sha256": "1bba81938510b3a6574140e14cfafe3ea48712376a0885d8f7462b5ac4084828",
+      "source": "/tmp/edhr-w2-choice-primary-java.json"
+    },
+    {
+      "path": "screenshots/choice-inspector-1440.png",
+      "bytes": 108977,
+      "sha256": "c7ee0a5cad8f12170f3c242398cbdf8c5f0c0aef3c2f2f7a7884bfa4d9b44bdf",
+      "source": "/tmp/edhr-w2-choice-screenshots-final/choice-inspector-1440.png"
+    },
+    {
+      "path": "screenshots/choice-inspector-390.png",
+      "bytes": 62780,
+      "sha256": "b530f8cc738bb270ccaf392276b246eb5e09c43a978474d03966c96a359748de",
+      "source": "/tmp/edhr-w2-choice-screenshots-final/choice-inspector-390.png"
+    },
+    {
+      "path": "screenshots/choice-runtime-1440.png",
+      "bytes": 17537,
+      "sha256": "a1fd2b75b27b48fbbd67cccd548bccdcd5cad5053c858b1cb86625951876745f",
+      "source": "/tmp/edhr-w2-choice-screenshots-final/choice-runtime-1440.png"
+    },
+    {
+      "path": "screenshots/choice-runtime-390.png",
+      "bytes": 8998,
+      "sha256": "e5071a5346570d5027e741568384d9850d27cc9407d9694a517dfcf2140438b8",
+      "source": "/tmp/edhr-w2-choice-screenshots-final/choice-runtime-390.png"
+    },
+    {
+      "path": "screenshots/column-insertion-1440.png",
+      "bytes": 66337,
+      "sha256": "e9b9c0c154156ad7123befc225c303977830192b2aa2b1b222b160b51c1f295a",
+      "source": "/tmp/edhr-w2-choice-screenshots-final/column-insertion-1440.png"
+    },
+    {
+      "path": "screenshots/column-insertion-390.png",
+      "bytes": 25840,
+      "sha256": "19dc136580416be48bb5a2ec7010f500fd250a0e74e6d47a8c8652cca850a2f3",
+      "source": "/tmp/edhr-w2-choice-screenshots-final/column-insertion-390.png"
+    },
+    {
+      "path": "screenshots/multi-choice-inspector-1440.png",
+      "bytes": 105754,
+      "sha256": "ece221489adaabefd0714fd8b1cd8c16e2939040d2d28c1dfb321bb3cac14159",
+      "source": "/tmp/edhr-w2-choice-screenshots-final/multi-choice-inspector-1440.png"
+    },
+    {
+      "path": "screenshots/multi-choice-inspector-390.png",
+      "bytes": 61326,
+      "sha256": "6c151cb13f444a8dda464690e388ffc539e6be1ddc21910a0840de0fe2b7dd60",
+      "source": "/tmp/edhr-w2-choice-screenshots-final/multi-choice-inspector-390.png"
+    },
+    {
+      "path": "screenshots/save-in-flight-desktop.png",
+      "bytes": 103555,
+      "sha256": "e26d7eabff41509d95651e7dc3d0e72243784af8578310b1477ddf8c34407440",
+      "source": "/tmp/edhr-w2-choice-screenshots-final/save-in-flight-desktop.png"
+    },
+    {
+      "path": "screenshots/save-in-flight-narrow.png",
+      "bytes": 35219,
+      "sha256": "0fd88cf106ff307a89657d6d07012fb40cadbb25c847f3a34e5523354b3e2560",
+      "source": "/tmp/edhr-w2-choice-screenshots-final/save-in-flight-narrow.png"
+    },
+    {
+      "path": "screenshots/subfield-edit-1440.png",
+      "bytes": 21474,
+      "sha256": "b2c4e726d162965d42ece8355e3f37e8a56305415863ebfaabf5868c9ccf829a",
+      "source": "/tmp/edhr-w2-choice-screenshots-final/subfield-edit-1440.png"
+    },
+    {
+      "path": "screenshots/subfield-edit-390.png",
+      "bytes": 12738,
+      "sha256": "96de6fe53aefc2bcadaba786141a8fd02c9a10da9c65cff78655fa5b2f7d647a",
+      "source": "/tmp/edhr-w2-choice-screenshots-final/subfield-edit-390.png"
+    }
+  ],
+  "rawLogsAndXmlPublished": false
+}

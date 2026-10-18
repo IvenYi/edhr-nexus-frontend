@@ -9,6 +9,7 @@ import PropertyFormRenderer from './PropertyFormRenderer';
 import { getFieldTypeDefinition } from '../registry/fieldRegistry';
 import { getComponentDefinition } from '../registry/componentRegistry';
 import { isCellDisplayNode } from '../registry/commonComponentRegistry';
+import { parseChoiceOption } from '@/components/form-renderer/choiceOptions';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { FieldTypeIconKey, ModelField } from '../types';
 
@@ -1507,7 +1508,8 @@ export default function DesignerInspector() {
             sx={optionListEditorSx}
           >
             {optionRows.map((optionLabel, index) => {
-              const isDefaultOption = readText(bindings.defaultValue) === optionLabel;
+              const optionValue = parseChoiceOption(optionLabel, index).value;
+              const isDefaultOption = readText(bindings.defaultValue) === optionValue;
               return (
                 <Box
                   key={`${index}-${optionRows.length}`}
@@ -1560,7 +1562,7 @@ export default function DesignerInspector() {
                         data-option-default-active-marker="true"
                         aria-label="设为默认值"
                         sx={optionDefaultDotSx}
-                        onClick={() => updateBinding({ defaultValue: optionLabel })}
+                        onClick={() => updateBinding({ defaultValue: optionValue })}
                       />
                     </Tooltip>
                   </Box>
@@ -1890,7 +1892,8 @@ export default function DesignerInspector() {
             sx={optionListEditorSx}
           >
             {optionRows.map((optionLabel, index) => {
-              const isDefaultOption = defaultValues.includes(optionLabel);
+              const optionValue = parseChoiceOption(optionLabel, index).value;
+              const isDefaultOption = defaultValues.includes(optionValue);
               return (
                 <Box
                   key={`${index}-${optionRows.length}`}
@@ -1943,7 +1946,7 @@ export default function DesignerInspector() {
                         data-option-default-active-marker="true"
                         aria-label="设为默认值"
                         sx={optionDefaultDotSx}
-                        onClick={() => toggleMultiSelectDefaultOption(optionLabel)}
+                        onClick={() => toggleMultiSelectDefaultOption(optionValue)}
                       />
                     </Tooltip>
                   </Box>

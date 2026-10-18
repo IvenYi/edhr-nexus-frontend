@@ -1,0 +1,22 @@
+{
+  "name": "browser-base",
+  "command": [
+    "node",
+    "scripts/test-designer-save-browser.mjs"
+  ],
+  "cwd": "gmp-platform/frontend",
+  "environmentOverrides": {
+    "NODE_PATH": "/workspace/.edhr-browser-tools/node_modules",
+    "CHROME_PATH": "/usr/bin/chromium",
+    "W2_BASELINE_COMMIT": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+    "W2_CASE_FILTER": "choice options share",
+    "W2_SCREENSHOT_DIR": "/tmp/edhr-w2-choice-independent/baseline-screenshots",
+    "W2_RESULT_PATH": "/tmp/edhr-w2-choice-independent/browser-base-results.json"
+  },
+  "exitCode": 1,
+  "durationSeconds": 5.067,
+  "rawLog": {
+    "bytes": 2585,
+    "sha256": "ced2776335e3535c642ac1fc7cdbc2bcb60171eeff1573d561faef107ed78c07"
+  }
+}
