@@ -1,0 +1,114 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261018-W3-BINDING-REFERENCES
+  scope: AUD-H004；作业草稿活动绑定失效权限/字段/事件引用的保存阻断与既有字段配置命令纠正。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    targetBranch: edhr-dev
+    targetCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    contractReadCommit: c54abcf259930982e360dd3a6310d4569a997fde
+    uncommittedContractPaths: []
+  summary: PR16已合入且合并树精确相同。复用DEC-0023-08的清理或阻止保存边界，按DEC-0035权限组键及真实fieldId判断；不把DEC-0009不完整草稿升级成发布校验，不清休眠配置。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  existingPolicyReferences: [DEC-0023-03, DEC-0023-04, DEC-0023-08, DEC-0035-01, DEC-0035-02, DEC-0035-03, DEC-0035-04, DEC-0035-05, DEC-0067-04, DEC-0067-05, DEC-0009-01, DEC-0009-05]
+  inferred:
+    - id: inference.w3b-authoritative-draft-reference-guard
+      statement: 草稿在合法显式活动模式且表单/必要流程上下文已可解析时，仅核对已提供的权限组、字段及事件引用；不要求未配置模式/引用/必需签名完成，不回填或自动删值。
+      rationale: 采用既有“阻止保存”选项避免异步列表未带nodesJson时误清；缺失ID/记录不存在/未发布/类型不匹配的未完成上下文继续留到既有发布完整性门禁。元数据损坏或查询异常不吞掉、不当作空集合清配置，失败时不写入。
+      relatedIds: [DEC-0023-08, DEC-0035-03, DEC-0009-01]
+    - id: inference.w3b-explicit-confirmation-correction
+      statement: 既有字段权限弹窗的明确保存命令同时prune权限例外及事件引用，仅在当前权威元数据成功加载时允许；打开/取消及加载失败不清配置，合法例外和休眠模式保留。
+      rationale: 原保存只prune事件，隐藏的旧组/旧字段无法直接删除，需提供现有命令内的可用纠正路径。
+      relatedIds: [DEC-0023-08, DEC-0067-04]
+  unresolved: []
+  replacementScopes: []
+  deliveryRequirements:
+    - 用户新增要求：本批审查与独立验收完成后、创建PR之前，实际复核任务漂移并汇报整体进度和剩余工作；不以创建PR替代该汇报。
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: work-draft-binding-references
+        change: 保存图之前校验已提供的活动绑定引用，不写入失效例外，不要求发布级完整性。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java]
+      - area: shared-field-configuration-confirmation
+        change: 用户明确保存配置时清理已不可用权限组和fieldId；元数据不完整时禁用纠正命令，保留原输入。
+        evidenceReferences: [gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx, gmp-platform/frontend/src/components/form-fill-settings/FormFieldPermissions.tsx]
+    transitiveImpacts:
+      - area: product-and-family-operation-bindings
+        change: 共享界面纠正命令同时适用于两种工序父适配；原保存/复制完整校验不放宽。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx, gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx]
+    potentialImpacts:
+      - area: asynchronous-and-diagnostic-boundaries
+        concern: 列表选项没有流程图，不能按空subjects清理；原始精确签署错误、绑定组/字段语义与发布完整性仍需回归。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/FormFillSettingsController.java, gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx]
+    unaffectedAreas:
+      - area: historical-frozen-data-and-next-findings
+        reason: 不改冻结/历史读取/运行引擎；CUSTOM、H009/H010、A12及两旧DHR high不夹带整改，H003不重开。
+    compatibilityAndMigration: [不迁移或恢复历史数据，不自动清旧草稿，初始打开和取消不制造写入。]
+    snapshotImpacts: [首次快照及已有冻结消费者不修改，原模式/权限/签署校验继续执行。]
+    auditImpacts: [引用拒绝须在graph/版本/审计写入前；有效保存及其原审计保持。]
+    permissionImpacts: [失效引用不得影响新绑定，有效例外/default继续保留，非活动配置不做同步清理；草稿不要求所有必需签名字段完成。]
+    testImpacts:
+      - scope: reference-boundaries-and-correction
+        scenarios: [原基线合法图保存失效引用反例, DIRECT与PROCESS组字段事件正反例, 缺失未完成上下文仍可存, 有效例外及休眠配置不变, 拒绝时图和审计不写, 明确保存配置纠正, 打开取消不清理, 元数据延迟失败不清理, 现有发布签署回归]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/FormFillSettingsServiceTest.java]
+    evidenceGaps: [本批不穷举全部管理HTTP复制或全站UI，不称完整W3/W2或分支审查完成；实际H2/原生PG及受控API浏览器层次分别说明。]
+  extensionStrategy:
+    selectedPaths: [configuration, product-core]
+    rationale: 配置引用属于共享填报设置所有者，复用现有校验与prune纯函数；作业controller仅接入保存门槛，不造新政策/规则引擎或页面私有解析。
+    ownershipBoundaries:
+      - owner: FormFillSettingsService
+        responsibility: 当前组/事件/字段引用集合与严格发布、有限草稿检查，原完整校验不放宽。
+      - owner: WorkTemplateController
+        responsibility: 在原事务写图前接入草稿引用检查，保持不完整草稿边界。
+      - owner: shared-form-fill-settings
+        responsibility: 明确配置保存命令与元数据就绪状态，保持MUI/AppDialog/现有反馈及父适配。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java
+      changeType: update
+      reason: 共享引用检查与有限草稿入口。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+      changeType: update
+      reason: 写入前阻断失效活动引用。
+    - path: gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx
+      changeType: update
+      reason: 用户确认时prune字段权限并保护元数据就绪；不加打开effect。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java
+      changeType: update
+      reason: 原基线保存反例及有效/不完整/休眠正对照，拒绝时图和审计不写。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/FormFillSettingsServiceTest.java
+      changeType: update
+      reason: 草稿与严格签署分层、空引用不读和仓储失败传播。
+    - path: gmp-platform/frontend/scripts/test-binding-reference-confirmation-browser.mjs
+      changeType: create
+      reason: 真实共用确认命令红绿、两模式两视口、取消/延迟/请求失败和配置隔离。
+    - path: docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml
+      changeType: update
+      reason: 纠正场景投影为原规范清理或阻止保存，维护同根实现差异和证据。
+    - path: docs/knowledge/evidence/binding-reference-audit-2026-10-18.md
+      changeType: create
+      reason: 当前源依据、工程选择、实际验证边界。
+    - path: docs/knowledge/evidence/form-fill-settings.yaml
+      changeType: update
+      reason: 新增本批证据引用。
+    - path: docs/knowledge/README.md
+      changeType: update
+      reason: 当前局部实现/验证边界说明。
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      reason: 人员投影纠正为已有清理或阻止保存二选一规范。
+  acceptanceScenarios:
+    - id: scenario.w3b-invalid-reference-save
+      given: 已切换到可解析的新表单或流程，活动配置仍携带失效引用
+      when: 直接保存作业草稿
+      then: 拒绝且不写图/版本/审计，有效例外保留且可经明确配置保存纠正。
+      evidenceRequirements: [原基线红证, 控制器真实service正反例, 明确配置保存真实浏览器]
+    - id: scenario.w3b-incomplete-and-inactive-boundaries
+      given: 元数据未加载或草稿尚不完整，或存在非活动配置
+      when: 打开取消配置或保存合法未完成草稿
+      then: 不依据空列表清理，不要求发布级完整性，不改休眠配置或旧冻结数据。
+      evidenceRequirements: [延迟失败与取消交互, 草稿正对照, 原发布签署和模式回归]

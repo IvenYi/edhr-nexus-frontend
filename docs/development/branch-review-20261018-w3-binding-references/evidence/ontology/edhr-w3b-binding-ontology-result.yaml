@@ -1,0 +1,129 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    targetBranch: edhr-dev
+    targetCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    contractReadCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    uncommittedContractPaths: []
+  reason: >-
+    AUD-H004按DEC-0023-08原已允许的清理或阻止保存、DEC-0035现行组键和稳定fieldId落实；
+    与DEC-0009不完整草稿、DEC-0067模式隔离无冲突。两处仅清理的验收/人员投影按原文纠错，
+    当前采用有限服务端阻断与用户明确确认内纠正属于inference工程选择，不新增业务政策。
+    本体已核对当前3生产文件、主侧302项中299实跑通过/3既有条件跳过的XML元数据及共享UI6场原件，
+    将同根discrepancy更新为resolved；本体未亲自执行Maven、Node、浏览器、数据库或独立质量，
+    不将该状态扩大成DEC全部验收、W3/W2或全分支完成。原始确认/历史报告、specified/internal、
+    schema1.2.0与P0/in-progress保持，A12、两项旧DHR high及H009/H010不在本批关闭。
+  changedArtifacts:
+    - path: docs/knowledge/evidence/binding-reference-audit-2026-10-18.md
+      changeType: create
+      ids: []
+    - path: docs/knowledge/evidence/form-fill-settings.yaml
+      changeType: update
+      ids: [evidence.form-fill-binding-reference-audit-20261018]
+    - path: docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml
+      changeType: update
+      ids: [DEC-0023, scenario.production-form-process-binding-switch-cleans-exceptions, discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: evidence.form-fill-binding-reference-audit-20261018
+      disposition: updated
+      scope: 新增本批原始源码/主侧运行时点与工程选择证据；只对应AUD-H004，不冒称完整入口或全分支验收。
+      sourceReferences:
+        - docs/knowledge/evidence/binding-reference-audit-2026-10-18.md
+        - docs/development/branch-review-20261018-w3-binding-references/decision-package.yaml
+    - id: scenario.production-form-process-binding-switch-cleans-exceptions
+      disposition: updated
+      scope: 按DEC-0023-08及原始设计纠正过窄的只清理投影为清理或阻止保存，并按DEC-0035当前组粒度解释；不新增或替代政策。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml
+        - docs/knowledge/evidence/production-form-process-permission-default-exception-design-v2.md
+        - docs/knowledge/evidence/production-form-process-user-confirmed-v4.md
+    - id: discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions
+      disposition: updated
+      scope: 据当前有限草稿guard、写入前Controller接入、明确确认双prune和主侧实际回归由open更新resolved；只关闭同根实现差异，独立质量另取本批最终qualityResult。
+      sourceReferences:
+        - docs/knowledge/evidence/binding-reference-audit-2026-10-18.md
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+        - gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/FormFillSettingsServiceTest.java
+        - gmp-platform/frontend/scripts/test-binding-reference-confirmation-browser.mjs
+    - id: DEC-0023-08
+      disposition: retained
+      scope: 仍是原始implementation-constraint清理或阻止保存；DEC-0035只替代主体粒度而非取消有效引用约束，原始确认与历史报告不修改。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml
+        - docs/knowledge/evidence/production-form-process-permission-default-exception-design-v2.md
+    - id: DEC-0035
+      disposition: retained
+      scope: 保留01至05的填报组/审批节点组、稳定fieldId、默认权限及按钮独立事件语义；草稿引用检查不代替原发布级必需签名及资格校验。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0035-form-process-permission-groups-and-node-events.yaml
+        - docs/knowledge/evidence/production-form-process-user-confirmed-v4.md
+        - docs/knowledge/evidence/production-form-process-buttons-events-v2.md
+    - id: DEC-0009
+      disposition: retained
+      scope: 未配置模式、表单/流程ID、未找到或尚未发布等未完成上下文仍可保存；不要求全图或签署在草稿完整，损坏JSON和读取异常不吞成空集合。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml
+        - docs/knowledge/evidence/binding-reference-audit-2026-10-18.md
+    - id: DEC-0067
+      disposition: retained
+      scope: 显式活动模式、新快照不可变及原权限签署保持；休眠草稿保留仍为工程选择，旧无流程即清理局部替代不扩大，本批不重开已合入H003。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml
+        - docs/knowledge/evidence/form-fill-settings-confirmed.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.w3b-schema
+      checkType: schema
+      command: python /tmp/edhr-w3b-binding-ontology-diagnostic.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w3b-binding-ontology-diagnostic.json
+        - 实际206份YAML解析及schema声明的必填/字段类型/枚举和条件形状检查无错误；不是正式Maven或完整语义校验。
+    - id: validation.w3b-references
+      checkType: reference
+      command: python /tmp/edhr-w3b-binding-ontology-diagnostic.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w3b-binding-ontology-diagnostic.json
+        - 实际2525个全局ID唯一，本批只新增1个evidence；证据/决策替代/词典/概念/锚点等受检类型引用可解析。
+    - id: validation.w3b-status
+      checkType: status-transition
+      command: python /tmp/edhr-w3b-binding-ontology-diagnostic.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w3b-binding-ontology-diagnostic.json
+        - DEC0023声明、成熟度及visibility与ca98基线相同，仅本批既有discrepancy可由open到resolved；其余差异保持原文。
+        - 当前Surefire10suite元数据302总/299实跑/3条件跳过/0失败错误，及6场共享UI原件已只读核对；独立质量未由本体执行。
+    - id: validation.w3b-projection
+      checkType: projection
+      command: python /tmp/edhr-w3b-binding-ontology-diagnostic.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w3b-binding-ontology-diagnostic.json
+        - 本批新证据internal，DEC0023等现行specified/internal不提升，未新增runtime执行契约；规则成熟度/投影约束无错误。
+    - id: validation.w3b-path
+      checkType: evidence-path
+      command: python /tmp/edhr-w3b-binding-ontology-diagnostic.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w3b-binding-ontology-diagnostic.json
+        - /tmp/edhr-w3b-binding-ontology-scope.json
+        - 证据及受检源码/锚点路径存在且不越仓库；既有目录型差异路径和数据库表/列symbol来源按各自类型处理，不修改知识逃避诊断。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

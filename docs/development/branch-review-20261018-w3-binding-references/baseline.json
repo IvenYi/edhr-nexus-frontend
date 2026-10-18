@@ -1,0 +1,45 @@
+{
+  "contractBaseline": {
+    "sourceCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+    "contractReadCommit": "c54abcf259930982e360dd3a6310d4569a997fde",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "workingBranch": "audit/edhr-dev-w3-binding-config-boundaries-20261018",
+  "baselineTree": "37f7ce2645911f08946a921c81dc04db0c774275",
+  "trackedPathCount": 2118,
+  "coverage": {
+    "path": "coverage.csv",
+    "bytes": 396721,
+    "sha256": "2b8a2f53947fe25ea7dd332a998b12c3726cf70a851ea8db1ef7ac5074dea95d",
+    "statusCounts": {
+      "pending": 2118
+    },
+    "depthCounts": {
+      "inventory-only": 2118
+    },
+    "encoding": "UTF-8",
+    "lineEnding": "CRLF",
+    "bom": false
+  },
+  "pr16": {
+    "mergeCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+    "approvedDelivery": "c54abcf259930982e360dd3a6310d4569a997fde",
+    "treeIdentical": true
+  },
+  "currentScope": "AUD-H004 only; H009/H010 read-only preparation, no fix",
+  "currentVerificationStatus": {
+    "primary": "299 Java pass / 3 conditional skip; 13 Node; 6 new and 5 neighbor real browser cases; build passed",
+    "ontology": "formal FINAL updated; no conflict/question; version/maturity unchanged",
+    "independentQuality": "not started"
+  },
+  "prePrScopeReview": "required by user; to finalize after independent quality and report before creating PR",
+  "limits": [
+    "Inventory is not review completion",
+    "H2 PostgreSQL-compatible and controlled API browser; not native PG/full authenticated E2E",
+    "No merge/deploy/migration/history recovery"
+  ]
+}

@@ -85,6 +85,87 @@ class WorkTemplateControllerTest {
     }
 
     @Test
+    void rejectsSavingStaleActiveBindingReferencesBeforeGraphOrAuditWrites() throws Exception {
+        for (String mode : List.of("DIRECT", "PROCESS")) {
+            for (String invalidReference : List.of("group", "field", "event", "eventField")) {
+                var config = bindingReferenceSettings(mode);
+                var active = "DIRECT".equals(mode) ? config.withObject("/directFillConfig") : config;
+                switch (invalidReference) {
+                    case "group" -> active.withObject("/fieldPermissions").putObject("start:removed").putArray("editableFieldIds").add("keep");
+                    case "field" -> active.withObject("/fieldPermissions/start:current").putArray("editableFieldIds").add("removed");
+                    case "event" -> active.withObject("/eventBindings").putObject("entry:removed").put("fieldId", "signature");
+                    case "eventField" -> active.withObject("/eventBindings").putObject("entry:sign").put("fieldId", "removed");
+                }
+                WorkflowDefinitionVersion draft = stubBindingReferenceDraft();
+                String before = draft.getNodesJson();
+                assertThatThrownBy(() -> controller.saveGraph(101L, 201L, bindingReferencePayload(config)))
+                        .as(mode + ":" + invalidReference).hasMessageContaining("不存在");
+                assertThat(draft.getNodesJson()).isEqualTo(before);
+                verify(versionRepository, times(0)).save(any());
+                verify(auditEventRepository, times(0)).save(any());
+                verify(formProcessReferenceService, times(0)).rebuildForWorkVersion(any());
+            }
+        }
+    }
+
+    @Test
+    void savesCurrentBindingReferencesAndDormantSettingsWithoutRequiringCompletedSignatureConfiguration() throws Exception {
+        for (String mode : List.of("DIRECT", "PROCESS")) {
+            var config = bindingReferenceSettings(mode);
+            var active = "DIRECT".equals(mode) ? config.withObject("/directFillConfig") : config;
+            active.remove("eventBindings"); // A declared required signature is a publish gate, not draft completeness.
+            if ("DIRECT".equals(mode)) config.putObject("fieldPermissions").putObject("dormant:removed").putArray("editableFieldIds").add("removed");
+            else config.putObject("directFillConfig").putObject("fieldPermissions").putObject("dormant:removed").putArray("editableFieldIds").add("removed");
+            stubBindingReferenceDraft();
+            when(versionRepository.save(any(WorkflowDefinitionVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
+            var saved = controller.saveGraph(101L, 201L, bindingReferencePayload(config)).getData();
+            assertThat(jsonObjectMapper.readTree(saved.getNodesJson()).get(1).path("data").path("config")).isEqualTo(config);
+            assertThat(saved.getStatus()).isEqualTo("DRAFT");
+        }
+    }
+
+    @Test
+    void savesUnresolvedBindingContextAsAnIncompleteDraftWithoutCleaningProvidedConfiguration() throws Exception {
+        for (String json : List.of("{}", "{\"fillMode\":\"PROCESS\"}",
+                "{\"fillMode\":\"PROCESS\",\"formTemplateVersionId\":\"702\",\"fieldPermissions\":{\"old\":{\"editableFieldIds\":[\"old\"]}}}",
+                "{\"fillMode\":\"DIRECT\",\"formTemplateVersionId\":\"999\",\"directFillConfig\":{\"fieldPermissions\":{\"old\":{\"editableFieldIds\":[\"old\"]}}}}")) {
+            var config = jsonObjectMapper.readTree(json);
+            stubBindingReferenceDraft();
+            when(versionRepository.save(any(WorkflowDefinitionVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
+            var saved = controller.saveGraph(101L, 201L, bindingReferencePayload(config)).getData();
+            assertThat(jsonObjectMapper.readTree(saved.getNodesJson()).get(1).path("data").path("config")).isEqualTo(config);
+        }
+    }
+
+    private com.fasterxml.jackson.databind.node.ObjectNode bindingReferenceSettings(String mode) {
+        var config = jsonObjectMapper.createObjectNode().put("fillMode", mode).put("formTemplateVersionId", "702");
+        var active = "DIRECT".equals(mode) ? config.putObject("directFillConfig") : config;
+        if ("PROCESS".equals(mode)) config.put("formProcessVersionId", "901");
+        active.putArray("permissionGroupRules").addObject().put("id", "current").putArray("subjects");
+        active.putArray("buttonEvents").addObject().put("id", "sign").put("builtin", "FILL_SIGN_FIELD");
+        active.putObject("fieldPermissions").putObject("start:current").put("defaultPermission", "READ_ONLY").putArray("editableFieldIds").add("keep");
+        active.putObject("eventBindings").putObject("entry:sign").put("fieldId", "signature");
+        return config;
+    }
+
+    private WorkflowDefinitionVersion stubBindingReferenceDraft() {
+        var draft = draftVersion(201L, "[]");
+        when(workflowDefinitionRepository.findById(101L)).thenReturn(Optional.of(WorkflowDefinition.builder().id(101L).type("WORK").build()));
+        when(versionRepository.findById(201L)).thenReturn(Optional.of(draft));
+        lenient().when(formTemplateVersionRepository.findById(702L)).thenReturn(Optional.of(FormTemplateVersion.builder().id(702L)
+                .modelDesignJson("{\"fields\":[{\"id\":\"keep\",\"type\":\"text\"},{\"id\":\"signature\",\"type\":\"signature\"}]}").build()));
+        lenient().when(versionRepository.findById(901L)).thenReturn(Optional.of(WorkflowDefinitionVersion.builder().id(901L).definitionId(902L).status("PUBLISHED")
+                .nodesJson("[{\"id\":\"entry\",\"data\":{\"kind\":\"START\",\"config\":{\"permissionGroupRules\":[{\"id\":\"current\"}],\"buttonEvents\":[{\"id\":\"sign\",\"builtin\":\"FILL_SIGN_FIELD\"}]}}}]").build()));
+        return draft;
+    }
+
+    private Map<String, Object> bindingReferencePayload(JsonNode config) {
+        return Map.of("nodes", List.of(Map.of("id", "start", "data", Map.of("kind", "START")),
+                Map.of("id", "form", "data", Map.of("kind", "FORM", "config", config)),
+                Map.of("id", "end", "data", Map.of("kind", "END"))), "edges", List.of());
+    }
+
+    @Test
     void savesUnconfiguredModeAsAnIncompleteDraftWithoutAddingDirect() throws Exception {
         WorkflowDefinition work = WorkflowDefinition.builder().id(101L).type("WORK").build();
         WorkflowDefinitionVersion draft = draftVersion(201L, "[]");

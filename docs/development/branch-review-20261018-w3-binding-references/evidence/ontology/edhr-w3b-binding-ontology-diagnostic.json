@@ -1,0 +1,56 @@
+{
+  "purpose": "schema-driven YAML/ID/ref/path/projection diagnostic; not official Maven/JUnit or full semantic audit",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractReadCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "headAtDiagnostic": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "yamlFiles": 206,
+  "globalIds": 2525,
+  "checks": {
+    "yaml-and-required-types": "passed",
+    "global-id-uniqueness": "passed",
+    "typed-references": "passed",
+    "evidence-and-source-paths": "passed",
+    "rule-projection-maturity": "passed",
+    "scoped-status-and-policy-diff": "passed"
+  },
+  "newEvidenceIds": [
+    "evidence.form-fill-binding-reference-audit-20261018"
+  ],
+  "errors": [],
+  "artifacts": [
+    {
+      "path": "docs/knowledge/evidence/binding-reference-audit-2026-10-18.md",
+      "bytes": 10626,
+      "sha256": "c21d3d604dbece57243c2a3a2d5450d0eae50cd5e4355eb1a6eae10d173c927e"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-fill-settings.yaml",
+      "bytes": 4301,
+      "sha256": "9022056ed908318e4ddc26bde1d1a657e5418a503614a0c559281c1492cfdce7"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml",
+      "bytes": 8818,
+      "sha256": "c00e8ea3b1a47d75207bfdb481c12a8ede40a8fe0fda0771109b0c15dc4ebc08"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "bytes": 89133,
+      "sha256": "bcc435195a344aeeef250d7bf9d4ad137a5f59a59ac21d5d715202d50cbe8b89"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "bytes": 58316,
+      "sha256": "cd952e25a69def140721ed5a436a29e72d8a66981c7dbf7aa264b7e9020d2fec"
+    }
+  ],
+  "notExecutedByOntologyRole": [
+    "Maven/JUnit",
+    "Node",
+    "browser",
+    "database",
+    "build",
+    "independent quality"
+  ]
+}

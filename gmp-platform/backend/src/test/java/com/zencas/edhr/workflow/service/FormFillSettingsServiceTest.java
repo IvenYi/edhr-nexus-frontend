@@ -59,6 +59,29 @@ class FormFillSettingsServiceTest {
         verifyNoInteractions(versions, definitions);
     }
 
+    @Test void draftReferencesAllowUnfinishedSignatureBindingWhilePublishStillRejectsIt() throws Exception {
+        var value = direct();
+        value.withObject("/directFillConfig").remove("eventBindings");
+        String before = value.toString();
+        service.validateDraftBindingReferences(value, 1L);
+        assertThat(value.toString()).isEqualTo(before);
+        assertThatThrownBy(() -> service.validate(value, 1L)).hasMessageContaining("必须绑定");
+    }
+
+    @Test void draftWithoutProvidedReferencesDoesNotReadMetadata() throws Exception {
+        var value = mapper.readTree("{\"fillMode\":\"DIRECT\",\"directFillConfig\":{\"fieldPermissions\":{},\"eventBindings\":{}}}");
+        service.validateDraftBindingReferences(value, 1L);
+        verifyNoInteractions(forms, versions, definitions);
+    }
+
+    @Test void draftMetadataFailureIsNotTreatedAsAnEmptyContextAndDoesNotRewriteConfiguration() throws Exception {
+        var value = direct();
+        String before = value.toString();
+        when(forms.findById(1L)).thenThrow(new IllegalStateException("metadata unavailable"));
+        assertThatThrownBy(() -> service.validateDraftBindingReferences(value, 1L)).hasMessageContaining("metadata unavailable");
+        assertThat(value.toString()).isEqualTo(before);
+    }
+
     @Test void savesExplicitDirectModeWithoutInferringFromDormantReference() throws Exception {
         direct();
         var value = mapper.readTree("{\"fillMode\":\"DIRECT\",\"formProcessVersionId\":\"2\"}");

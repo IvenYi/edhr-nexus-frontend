@@ -1,0 +1,178 @@
+{
+  "artifactType": "read-only-tooling-readiness-not-application-validation",
+  "generatedAt": "2026-10-18T15:56:18.796355+00:00",
+  "baselineCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "versions": [
+    {
+      "name": "node",
+      "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "exists": true,
+      "exitCode": 0,
+      "version": "24.19.0",
+      "rawOutputPublished": false
+    },
+    {
+      "name": "npm",
+      "executable": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/npm",
+      "exists": true,
+      "exitCode": 0,
+      "version": "11.9.0",
+      "rawOutputPublished": false
+    },
+    {
+      "name": "jdk21-java",
+      "executable": "/workspace/.edhr-cloud-tools/jdk-21/bin/java",
+      "exists": true,
+      "exitCode": 0,
+      "version": "21.0.12.1",
+      "rawOutputPublished": false
+    },
+    {
+      "name": "jdk21-javac",
+      "executable": "/workspace/.edhr-cloud-tools/jdk-21/bin/javac",
+      "exists": true,
+      "exitCode": 0,
+      "version": "21.0.12.1",
+      "rawOutputPublished": false
+    },
+    {
+      "name": "maven-version-only",
+      "executable": "/workspace/.edhr-cloud-tools/apache-maven-3.9.11/bin/mvn",
+      "exists": true,
+      "exitCode": 0,
+      "version": "3.9.11",
+      "rawOutputPublished": false
+    },
+    {
+      "name": "chromium-version-only",
+      "executable": "/usr/bin/chromium",
+      "exists": true,
+      "exitCode": 0,
+      "version": "154.0.8037.57",
+      "rawOutputPublished": false
+    }
+  ],
+  "protectedHelperFiles": [
+    {
+      "path": "/workspace/.edhr-cloud-tools/mvn-edhr",
+      "exists": true,
+      "bytes": 1898,
+      "sha256": "ebc3436428ffe9d8689b1f4d4f825675c7b49dd7baba02235ee6d0781df73dae",
+      "expected": {
+        "bytes": 1898,
+        "sha256": "ebc3436428ffe9d8689b1f4d4f825675c7b49dd7baba02235ee6d0781df73dae"
+      },
+      "matchesExpected": true
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/settings.xml",
+      "exists": true,
+      "bytes": 198,
+      "sha256": "26bd47ed597f0fd6cc1b609cc3921e9795750d66946687fe8828784b1cae0ff2",
+      "expected": {
+        "bytes": 198,
+        "sha256": "26bd47ed597f0fd6cc1b609cc3921e9795750d66946687fe8828784b1cae0ff2"
+      },
+      "matchesExpected": true
+    }
+  ],
+  "dependencyPresence": [
+    {
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules",
+      "exists": true,
+      "type": "directory"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/.package-lock.json",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/.bin/tsc",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/.bin/vite",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "path": "/workspace/.edhr-browser-tools/node_modules/playwright",
+      "exists": true,
+      "type": "directory"
+    },
+    {
+      "path": "/workspace/.edhr-browser-tools/node_modules/playwright-core",
+      "exists": true,
+      "type": "directory"
+    },
+    {
+      "path": "/workspace/.edhr-npm-cache",
+      "exists": true,
+      "type": "directory"
+    },
+    {
+      "path": "/workspace/.pr6-m2",
+      "exists": true,
+      "type": "directory"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/jdk-21/lib/ct.sym",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "path": "/etc/ssl/certs/java/cacerts",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/cloud-install.sh",
+      "exists": true,
+      "type": "file"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/cloud-start.md",
+      "exists": true,
+      "type": "file"
+    }
+  ],
+  "packageVersionsFromMetadataOnly": [
+    {
+      "name": "playwright",
+      "path": "/workspace/.edhr-browser-tools/node_modules/playwright/package.json",
+      "exists": true,
+      "version": "1.58.2"
+    },
+    {
+      "name": "typescript",
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/typescript/package.json",
+      "exists": true,
+      "version": "5.9.3"
+    },
+    {
+      "name": "vite",
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/vite/package.json",
+      "exists": true,
+      "version": "5.4.21"
+    },
+    {
+      "name": "react",
+      "path": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/react/package.json",
+      "exists": true,
+      "version": "18.3.1"
+    }
+  ],
+  "runtimeApplicationChecksExecuted": [],
+  "mutationsByThisHelper": [],
+  "draftSettings": "Not read or changed by this helper.",
+  "limitations": [
+    "Version commands and file/cache existence only; presence does not establish complete offline dependency resolution.",
+    "No application test, build, browser launch, database, installation, GitHub Actions query or execution.",
+    "No repository/configuration/tool modification, setup-draft mutation, or settings/environment/credential dump.",
+    "Readonly technical helper, not an independent qualityResult, ontologyResult, or fresh-install validation."
+  ]
+}
