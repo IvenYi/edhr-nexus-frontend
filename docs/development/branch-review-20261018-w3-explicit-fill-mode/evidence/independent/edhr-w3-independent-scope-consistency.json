@@ -1,0 +1,626 @@
+{
+  "artifactType": "independent-readonly-scope-and-claim-consistency-helper",
+  "baseCommit": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+  "headCommit": "2f8144220d1f7fc5a54b183204777bcae5bbd564",
+  "workingTreeStatus": [],
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "2f8144220d1f7fc5a54b183204777bcae5bbd564",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+    "contractReadCommit": "2f8144220d1f7fc5a54b183204777bcae5bbd564",
+    "uncommittedContractPaths": []
+  },
+  "coverage": {
+    "bytes": 384885,
+    "sha256": "b475671f2ba5d3eec18fe8a0bdbd0f28cbf489a624abf1c203ee6bea5c23837e",
+    "rows": 2062,
+    "baseTreePaths": 2062,
+    "nonBlobEntries": [],
+    "statusCounts": {
+      "pending": 2062
+    },
+    "depthCounts": {
+      "inventory-only": 2062
+    },
+    "missingPaths": [],
+    "extraPaths": [],
+    "duplicatePaths": [],
+    "badBaseOrBlobRows": [],
+    "bom": false,
+    "CRLFCount": 2063,
+    "bareLFCount": 0
+  },
+  "historicalCsvs": [
+    {
+      "path": "docs/development/branch-review-20261015-w1-followup/coverage.csv",
+      "unchanged": true,
+      "bytes": 402180,
+      "sha256": "fa07044c64ab9d3b09283a8a612bcdafcf2bfdb7620038a714917f6d74413b78"
+    },
+    {
+      "path": "docs/development/branch-review-20261015/coverage.csv",
+      "unchanged": true,
+      "bytes": 387980,
+      "sha256": "8ec8a72328e307fdfc678c284d19fe66056a524213c28288e6dcb199a23b8227"
+    },
+    {
+      "path": "docs/development/branch-review-20261015/ontology/ontology-coverage.csv",
+      "unchanged": true,
+      "bytes": 737142,
+      "sha256": "04ac2eaba5962d16e9d5e88e644616acef2d08a17a46b1d430c7d8a3cc4e799c"
+    },
+    {
+      "path": "docs/development/branch-review-20261016-f004/coverage.csv",
+      "unchanged": true,
+      "bytes": 287895,
+      "sha256": "d44fd50645e143af1c336a31693744eec5a0ba9ff15e64b3a0051a6f1b0fb503"
+    },
+    {
+      "path": "docs/development/branch-review-20261016-w1-review-export/coverage.csv",
+      "unchanged": true,
+      "bytes": 420497,
+      "sha256": "bf31c5b82d9f14ee09782d3001f4210d2470cab5cb9986fc8c47cbc12b3cfc36"
+    },
+    {
+      "path": "docs/development/branch-review-20261016-w2-designer-identity/coverage.csv",
+      "unchanged": true,
+      "bytes": 339677,
+      "sha256": "215bf78a4dc67558d7ed7f06ee8d1608bb8e39beb7f33a01f3b8fdfe566fa035"
+    },
+    {
+      "path": "docs/development/branch-review-20261016-w2-form-availability/coverage.csv",
+      "unchanged": true,
+      "bytes": 326812,
+      "sha256": "3fba547c186632f1a5e5085093e668678baa53b1894c0f0d7242ce47600ddd2d"
+    },
+    {
+      "path": "docs/development/branch-review-20261016-w2-form-integrity/coverage.csv",
+      "unchanged": true,
+      "bytes": 294726,
+      "sha256": "672434c4f18a26f5afb7f47db45ef6df7c039a287af929ffacc0bef9442c47c6"
+    },
+    {
+      "path": "docs/development/branch-review-20261016-w2-projection-integrity/coverage.csv",
+      "unchanged": true,
+      "bytes": 335040,
+      "sha256": "0c815f39c646c2a54958452e318be1d46a122df37144d141adb7bef5adc52650"
+    },
+    {
+      "path": "docs/development/branch-review-20261017-w2-subfield-sync/coverage.csv",
+      "unchanged": true,
+      "bytes": 349383,
+      "sha256": "a0f003c1bb7d9cb37a5a4fae35f8755c3b0f29ff50dd3a0781d0143e47b8a86a"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/coverage.csv",
+      "unchanged": true,
+      "bytes": 356732,
+      "sha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b"
+    },
+    {
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory.csv",
+      "unchanged": true,
+      "bytes": 356732,
+      "sha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b"
+    }
+  ],
+  "protectedContracts": [
+    {
+      "path": ".github/workflows/frontend-review-regression.yml",
+      "unchanged": true,
+      "baseBlob": "30b47bd2effa0a09249a20a12cc95a4affa80744",
+      "headBlob": "30b47bd2effa0a09249a20a12cc95a4affa80744"
+    },
+    {
+      "path": ".github/workflows/knowledge-model.yml",
+      "unchanged": true,
+      "baseBlob": "1c30a718254eaa35a5721e3ea7a4b874cf247d80",
+      "headBlob": "1c30a718254eaa35a5721e3ea7a4b874cf247d80"
+    },
+    {
+      "path": "AGENTS.md",
+      "unchanged": true,
+      "baseBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "headBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665"
+    },
+    {
+      "path": "DESIGN.md",
+      "unchanged": true,
+      "baseBlob": "29d9e21e96170cef0d371d4867e7b8b5d6f56568",
+      "headBlob": "29d9e21e96170cef0d371d4867e7b8b5d6f56568"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "unchanged": true,
+      "baseBlob": "2e7e18097620e602c4408b83f71404fae346f8be",
+      "headBlob": "2e7e18097620e602c4408b83f71404fae346f8be"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "unchanged": true,
+      "baseBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "headBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "unchanged": true,
+      "baseBlob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "headBlob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb"
+    },
+    {
+      "path": "docs/agents/persistent-agent-collaboration-acceptance.md",
+      "unchanged": true,
+      "baseBlob": "df4507ce98b113ec371de57f9717e37f47950d16",
+      "headBlob": "df4507ce98b113ec371de57f9717e37f47950d16"
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "unchanged": true,
+      "baseBlob": "581e647c37daebeb9dd3d6397ae53e30e7822fb3",
+      "headBlob": "581e647c37daebeb9dd3d6397ae53e30e7822fb3"
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "unchanged": true,
+      "baseBlob": "63703d111d8f01fc7ff71e97ff311ee38bbb3a40",
+      "headBlob": "63703d111d8f01fc7ff71e97ff311ee38bbb3a40"
+    }
+  ],
+  "knowledgeDiffs": [
+    {
+      "path": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+      "versionBefore": "0.3.25",
+      "versionAfter": "0.3.25",
+      "stateChanges": [
+        {
+          "id": "discrepancy.form-fill-settings-missing-mode-default-and-validation-bypass",
+          "before": {
+            "status": "open",
+            "visibility": "internal"
+          },
+          "after": {
+            "status": "resolved",
+            "visibility": "internal"
+          }
+        }
+      ],
+      "newIds": [],
+      "removedIds": []
+    },
+    {
+      "path": "docs/knowledge/evidence/form-fill-settings.yaml",
+      "versionBefore": "0.3.25",
+      "versionAfter": "0.3.25",
+      "stateChanges": [],
+      "newIds": [
+        "evidence.form-fill-explicit-mode-audit-20261018"
+      ],
+      "removedIds": []
+    },
+    {
+      "path": "docs/knowledge/facts/form-fill-settings.yaml",
+      "versionBefore": "0.3.25",
+      "versionAfter": "0.3.25",
+      "stateChanges": [],
+      "newIds": [],
+      "removedIds": []
+    },
+    {
+      "path": "docs/knowledge/rules/form-fill-settings.yaml",
+      "versionBefore": "0.3.25",
+      "versionAfter": "0.3.25",
+      "stateChanges": [],
+      "newIds": [],
+      "removedIds": []
+    }
+  ],
+  "decisionStatementsUnchanged": true,
+  "rulesUnchangedApartFromEvidenceIds": true,
+  "sourceSymbolChecks": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java",
+      "sha256": "0410663aa7c3709cc9f7965d4f46d7635c45274b13a37572dd1d558940b91caf",
+      "checks": [
+        {
+          "text": "boolean usesProcess(",
+          "exists": true
+        },
+        {
+          "text": "String serialize(",
+          "exists": true
+        },
+        {
+          "text": "void validate(",
+          "exists": true
+        },
+        {
+          "text": "JsonNode parse(",
+          "exists": true
+        },
+        {
+          "text": "JsonNode activeBinding(",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "sha256": "ef5c060bcef440931b6c7500114f617940d8155412b32dcdd09474277753dff8",
+      "checks": [
+        {
+          "text": " saveGraph(",
+          "exists": true
+        },
+        {
+          "text": " publishVersion(",
+          "exists": true
+        },
+        {
+          "text": " formProcessReferenceStatuses(",
+          "exists": true
+        },
+        {
+          "text": " validatePublishableFormProcessReferences(",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java",
+      "sha256": "0e631a766955c4ffceb1a82f1bda93f556e92126562bc6a923f479eadc583b4f",
+      "checks": [
+        {
+          "text": " saveOperationBindings(",
+          "exists": true
+        },
+        {
+          "text": " toOperationRequests(",
+          "exists": true
+        },
+        {
+          "text": "fillSettingsService.serialize(",
+          "exists": true
+        },
+        {
+          "text": "fillSettingsService.parse(",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java",
+      "sha256": "8f5e8a9dc45ac8766b4bf9568b10d49bbecc41187221e31a9cdb6ac5513c0e3f",
+      "checks": [
+        {
+          "text": " saveOperationBindings(",
+          "exists": true
+        },
+        {
+          "text": " toOperationRequests(",
+          "exists": true
+        },
+        {
+          "text": "fillSettingsService.serialize(",
+          "exists": true
+        },
+        {
+          "text": "fillSettingsService.parse(",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "sha256": "e8057ad990bda9be33ae2b91929683629a81cc602943446e7f97481d5b88232a",
+      "checks": [
+        {
+          "text": " build(",
+          "exists": true
+        },
+        {
+          "text": " attachFillSettings(",
+          "exists": true
+        },
+        {
+          "text": "FormFillSettingsService.usesProcess(settings)",
+          "exists": true
+        },
+        {
+          "text": " customForm(",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "sha256": "b8a880d267f7b01086eed5526ca226e9e03cd6380f0f8888a7f09c27112ae09e",
+      "checks": [
+        {
+          "text": " act(",
+          "exists": true
+        },
+        {
+          "text": "snapshots.build(object, order)",
+          "exists": true
+        },
+        {
+          "text": "Isolation.REPEATABLE_READ",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "checks": [
+        {
+          "text": "function persistentFlowGraph(",
+          "exists": true
+        },
+        {
+          "text": "function validateFlowGraphForPublish(",
+          "exists": true
+        },
+        {
+          "text": "function nodeCaption(",
+          "exists": true
+        },
+        {
+          "text": "const addQuickNode",
+          "exists": true
+        },
+        {
+          "text": "const addConditionBranchNode",
+          "exists": true
+        },
+        {
+          "text": "const addNode",
+          "exists": true
+        },
+        {
+          "text": "请选择填报方式",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx",
+      "sha256": "5306c7b71f148390786af31d3c93674eb1c1598297ce929613046237479aa3bd",
+      "checks": [
+        {
+          "text": "FormFillSettingsButton",
+          "exists": true
+        },
+        {
+          "text": "fillMode: 'DIRECT' as const",
+          "exists": true
+        }
+      ]
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx",
+      "sha256": "6996db14f5388c21a936be3ae04595d993e734c4f895a6a103e948032cbdbdf7",
+      "checks": [
+        {
+          "text": "FormFillSettingsButton",
+          "exists": true
+        },
+        {
+          "text": "fillMode: 'DIRECT' as const",
+          "exists": true
+        }
+      ]
+    }
+  ],
+  "runtimeChecksExecuted": [],
+  "trackedFilesModifiedByHelper": [],
+  "formalQualityResult": false,
+  "limitations": [
+    "Read-only helper for evidence/claim consistency; no compilation, build, browser or application tests executed.",
+    "Source checks plus manual call-chain reading cover only named methods and parent paths, not complete file or repository review.",
+    "No full ontology audit and no branch-protection or deployment verification."
+  ],
+  "archiveReceipts": [
+    {
+      "path": "evidence/helpers/edhr-w3-baseline-inventory-metadata.json",
+      "bytes": 5409,
+      "sha256": "2bfe3fbc218eee166fd3823f885cbd9efc0b358920d8bd605a4990cd9c65a124",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/helpers/edhr-w3-environment-readiness.json",
+      "bytes": 5833,
+      "sha256": "911da102818fdc3fa9742514160e28d3ba26be1b10df8d656b214a7d85efb8ae",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/helpers/edhr-w3-frontend-mode-paths.md",
+      "bytes": 17292,
+      "sha256": "3f772f3779e4f4c82df5fd07bae8b7b6c4dfb1f23a14aa106a1f088dcde6eaa3",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/helpers/edhr-w3-frontend-mode-paths-metadata.json",
+      "bytes": 6080,
+      "sha256": "5cb8a5bd28c3278fb1cbbcfad6454c733b6b78e0968d0c60c90d9e28ab861ffe",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/ontology/edhr-w3-mode-ontology-result.yaml",
+      "bytes": 8791,
+      "sha256": "bef2460858305ba881ab39e83eaa7613f9d5c3455c03eb9145b1f16b7a2fc6b2",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/ontology/edhr-w3-mode-ontology-diagnostic.json",
+      "bytes": 2383,
+      "sha256": "df846cc37b268ec5019a65940e42926cfd3ad78fb269f60d888cd9061e11e69f",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/ontology/edhr-w3-mode-ontology-scope.json",
+      "bytes": 8494,
+      "sha256": "9d27890a19205762f03978dc3dcc4fb40973b40dd6308eb03eb37c5c2f3d7066",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/primary/browser/browser-results.json",
+      "bytes": 5899,
+      "sha256": "bb270ebd524388607c219d1cbdc720cdd5844244f6a93d46d06362d880245e77",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/primary/browser/dialog-1440-unconfigured.png",
+      "bytes": 29171,
+      "sha256": "8e753f331a771a6d2bf036c024106af40ba9862e792e7fae0dd25c43e1161263",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/primary/browser/dialog-1440.png",
+      "bytes": 8610,
+      "sha256": "b1255c8ab6601bcacf6179044b9ca82adea6576b87831c5b6e487fb51cc6bd91",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/primary/browser/dialog-390-unconfigured.png",
+      "bytes": 23809,
+      "sha256": "3bcda4de89ae67a43d9721ed111cfa86fee90f9f5d4b8183fc1857c2a45deb94",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/primary/browser/dialog-390.png",
+      "bytes": 5372,
+      "sha256": "b622084d016ed9b54b15566549c470cd963141deb18ad6aa3f396609a3b91b75",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/primary/browser/inline-1440-unconfigured.png",
+      "bytes": 17272,
+      "sha256": "e8f93655b1e9b160b82dd6453e2c15232da17b7db375d481ad611a84f5f9921e",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/primary/browser/inline-1440.png",
+      "bytes": 25744,
+      "sha256": "4a7fb8278880d8f2a68f1bbae6873a64e18f3a8ce37110262f45afb051547acf",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/primary/browser/inline-390-unconfigured.png",
+      "bytes": 13376,
+      "sha256": "10b9ffb0f888fc36bb8e4dd8058ebdd92f37f746ba9e9d05babcf42d2d50f3b7",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/primary/browser/inline-390.png",
+      "bytes": 19764,
+      "sha256": "f66f9542ef8753da5e9d03d561b729463411057fc643e34c078a17457d7f8cc5",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/primary/browser/work-1440-unconfigured.png",
+      "bytes": 63287,
+      "sha256": "5284e8eb1549ed211eb7a6ca3663f76ab70c6a27eb8aef2c886a2d7cd717f896",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/primary/browser/work-1440.png",
+      "bytes": 71349,
+      "sha256": "b458f2ddb121b22301d1a42eb9e46091d9d4b20d5597ac3b7ccd783dc4a04a5e",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/primary/edhr-w3-root-validation-metadata.json",
+      "bytes": 3311,
+      "sha256": "045856a965f219c88afe8a62470ac8ed0629c96eafa4730f02f4b646892b3511",
+      "receiptMatches": true
+    },
+    {
+      "path": "evidence/primary/edhr-w3-root-validation.json",
+      "bytes": 111745,
+      "sha256": "aef1b0a48c616effce776628cac7282d1b2e10e74fa071bb55c2deecacac0523",
+      "receiptMatches": true
+    }
+  ],
+  "primaryReadTimeSourcesMatchCandidate": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "candidateBytes": 80898,
+      "candidateSha256": "ef5c060bcef440931b6c7500114f617940d8155412b32dcdd09474277753dff8",
+      "matchesPrimaryReadTimeBytes": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java",
+      "candidateBytes": 10000,
+      "candidateSha256": "0410663aa7c3709cc9f7965d4f46d7635c45274b13a37572dd1d558940b91caf",
+      "matchesPrimaryReadTimeBytes": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx",
+      "candidateBytes": 14329,
+      "candidateSha256": "a69ba8ab44cd1180f9fc67919d4c7cea0bbf611687095297298b1974fd479c41",
+      "matchesPrimaryReadTimeBytes": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettingsButton.tsx",
+      "candidateBytes": 2366,
+      "candidateSha256": "0d10c152700d28e89b7eb4b16bc20c1aeb13f3d7cb27cb0f170cdf19f60aaf18",
+      "matchesPrimaryReadTimeBytes": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/types.ts",
+      "candidateBytes": 1523,
+      "candidateSha256": "99c283df6c36c2c5a00c5e7876de0cfce95546138ff4f0b48b7d5a0be89d6c4b",
+      "matchesPrimaryReadTimeBytes": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "candidateBytes": 184493,
+      "candidateSha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "matchesPrimaryReadTimeBytes": true
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-explicit-fill-mode.mjs",
+      "candidateBytes": 3912,
+      "candidateSha256": "befc71ee814c4fff21c060378d067e013b01155c3323eeb9243ec66317b1c35a",
+      "matchesPrimaryReadTimeBytes": true
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-work-editor-default-version.mjs",
+      "candidateBytes": 1923,
+      "candidateSha256": "5ce948d598df1834692b0757168e1a777de4277fe2dc90bdc67d227e1757ee99",
+      "matchesPrimaryReadTimeBytes": true
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-permission-summary.mjs",
+      "candidateBytes": 2212,
+      "candidateSha256": "887382cafe416a30b8bc4bdaaca77bd42a2323f7134c69102e5f2ceba5238a62",
+      "matchesPrimaryReadTimeBytes": true
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-explicit-fill-mode-browser.mjs",
+      "candidateBytes": 12262,
+      "candidateSha256": "15f1dcddd0589eb1acc6a348ad2f1d39c897249249667e24733ff3a4775c2be0",
+      "matchesPrimaryReadTimeBytes": true
+    }
+  ],
+  "primarySummaryReportedCountsOnlyNotRerunByHelper": {
+    "java": {
+      "tests": 296,
+      "passed": 293,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3
+    },
+    "javaSuiteCount": 10,
+    "nodeSections": [
+      "baselineReplayRed",
+      "primaryGreen",
+      "primaryFinal",
+      "finalCommand",
+      "excludedSetupDiagnostic"
+    ]
+  }
+}

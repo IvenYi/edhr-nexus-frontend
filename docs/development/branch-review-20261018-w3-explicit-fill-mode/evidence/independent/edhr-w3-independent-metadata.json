@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-10-18T10:44:26.959272+00:00",
+  "baseCommit": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+  "headCommit": "2f8144220d1f7fc5a54b183204777bcae5bbd564",
+  "testedCandidate": "2f8144220d1f7fc5a54b183204777bcae5bbd564",
+  "contractReadCommit": "2f8144220d1f7fc5a54b183204777bcae5bbd564",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "qualityInvariantCheck": "passed",
+  "independence": "Fresh verifier did not modify tracked code/tests/fixtures/config/knowledge or participate in repair. Readonly auxiliary returned FINAL. All started validation sessions ended. No commit/push/merge/deploy/Actions/worktree.",
+  "officialSkillAvailability": "Available to this independent instance at actual script-read time, unlike earlier primary stage. Official script fetched then executed for current base/candidate. Dynamic later skill withdrawal does not erase actual obtained evidence.",
+  "officialResource": "skill://plugins_6a7039f8e9708191bde88207b1919bf4/frontend-design-premium/scripts/audit_project.py",
+  "officialScriptBytes": 37716,
+  "officialScriptSha256": "67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68",
+  "shareWhitelist": [
+    "/tmp/edhr-w3-independent-quality-result.yaml",
+    "/tmp/edhr-w3-independent-review.md",
+    "/tmp/edhr-w3-independent-validation-summary.json",
+    "/tmp/edhr-w3-independent-integrity.json",
+    "/tmp/edhr-w3-independent-premium-base.json",
+    "/tmp/edhr-w3-independent-premium-candidate.json",
+    "/tmp/edhr-w3-independent-premium-comparison.json",
+    "/tmp/edhr-w3-independent-scope-consistency.md",
+    "/tmp/edhr-w3-independent-scope-consistency.json",
+    "/tmp/edhr-w3-independent-browser/browser-results.json",
+    "/tmp/edhr-w3-independent-browser/dialog-1440-unconfigured.png",
+    "/tmp/edhr-w3-independent-browser/dialog-1440.png",
+    "/tmp/edhr-w3-independent-browser/dialog-390-unconfigured.png",
+    "/tmp/edhr-w3-independent-browser/dialog-390.png",
+    "/tmp/edhr-w3-independent-browser/inline-1440-unconfigured.png",
+    "/tmp/edhr-w3-independent-browser/inline-1440.png",
+    "/tmp/edhr-w3-independent-browser/inline-390-unconfigured.png",
+    "/tmp/edhr-w3-independent-browser/inline-390.png",
+    "/tmp/edhr-w3-independent-browser/work-1440-unconfigured.png",
+    "/tmp/edhr-w3-independent-browser/work-1440.png"
+  ],
+  "doNotPublish": [
+    "/tmp/edhr-w3-independent-maven.log",
+    "/tmp/edhr-w3-independent-java-baseline.log",
+    "candidate or archive target/surefire-reports XML and system-out",
+    "/tmp/edhr-w3-independent-integrity-before.json"
+  ],
+  "rawMavenLogSha256": {
+    "/tmp/edhr-w3-independent-maven.log": "1bd4a6c9706aa4de1497d61d62cd856b607bc8402592a8dc524ebe6c91885466",
+    "/tmp/edhr-w3-independent-java-baseline.log": "34c02baf89a776989113741edb0b88cdd58f2f854729ce597e744983840a3fcb"
+  }
+}

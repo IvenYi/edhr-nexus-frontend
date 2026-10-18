@@ -1,0 +1,179 @@
+qualityResult:
+  result: passed
+  baseCommit: 4b25dc7f29c27cfb39c0f570b547869aa0c2f289
+  headCommit: 2f8144220d1f7fc5a54b183204777bcae5bbd564
+  contractBaseline:
+    sourceCommit: 2f8144220d1f7fc5a54b183204777bcae5bbd564
+    targetBranch: edhr-dev
+    targetCommit: 4b25dc7f29c27cfb39c0f570b547869aa0c2f289
+    contractReadCommit: 2f8144220d1f7fc5a54b183204777bcae5bbd564
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.w3-current-candidate-and-contract
+      required: true
+      category: documentation
+      description: 核对实时目标、冻结候选及实际读取的项目/角色/交接契约。
+      method: command
+      command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git status --porcelain; git diff BASE..HEAD -- AGENTS.md docs/agents codeplzreadme.md DESIGN.md
+      outcome: passed
+      evidence:
+        - base=4b25dc7f29c27cfb39c0f570b547869aa0c2f289; head/testedCandidate=2f8144220d1f7fc5a54b183204777bcae5bbd564。开始及结束fetch目标相同，候选与工作树始终clean，契约和DESIGN无差异。
+        - /tmp/edhr-w3-independent-integrity.json
+    - id: check.w3-source-and-policy-boundaries
+      required: true
+      category: requirements
+      description: 逐分支核对严格模式、草稿/发布分层、两套工序写入复制、首次快照、冻结消费者和CUSTOM边界。
+      method: inspection
+      command: git diff BASE..HEAD -- six production paths; read usesProcess/serialize/validate, saveGraph/publish/referenceStatuses, ProductProcessOwnerService/ProductProcessController bindings/copy, ExecutionSnapshotBuilder, existing engine consumers and canonical frontend callers
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w3-independent-review.md
+        - 依据DEC-0067-01/04/05及DEC-0009-01/05，未配置草稿不补值；严格写入/发布/首次快照拒绝缺失模式，PROCESS空引用不旁路；保留精确签署错误、事务审计、活动模式隔离、原冻结与CUSTOM契约。
+        - base=4b25dc7f29c27cfb39c0f570b547869aa0c2f289; head/testedCandidate=2f8144220d1f7fc5a54b183204777bcae5bbd564；6个生产文件、5个Java测试文件及2个Node/browser脚本差异已核对，不声明整文件或全分支审查完成。
+    - id: check.w3-knowledge-sync
+      required: true
+      category: ontology
+      description: 核对本体正式结果、受影响当前定义与原始确认，执行正式知识验证。
+      method: automated-test
+      command: Read DEC-0067/0009, current knowledge README/open-questions/fact/rules/evidence, archived ontologyResult; BusinessKnowledgeModelTest via actual backend Maven run
+      outcome: passed
+      evidence:
+        - BusinessKnowledgeModelTest实际89项通过；knowledge0.3.25/schema1.2.0，单条discrepancy与证据定位同步，规则业务内容及specified/internal未升级。
+        - ontologyResult为updated，无conflicts/questions；不代替本实例质量结论，不声明全库语义审计或DEC-0067全部验收完成。
+        - /tmp/edhr-w3-independent-validation-summary.json
+    - id: check.w3-java-regression
+      required: true
+      category: integration
+      description: 实际运行共享配置、发布草稿、制程、首次START回滚、冻结、签署权限和知识相邻回归。
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -o -C -Dtest=FormFillSettingsServiceTest,WorkTemplateControllerTest,FormFillSettingsControllerTest,ProductProcessOwnerServiceTest,ProductProcessControllerTest,FormFillSnapshotTest,ProductionExecutionIntegrationTest,ProductionExecutionEngineTest,ProductionExecutionFormValuesTest,BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - exit0；10suites/296total，293passed，0failures/errors，3既有条件skipped；未使用exec.skip，真实DHR-print打包执行。
+        - 跳过formRecordsBrowserFixture、firstStartFreezesOneCommittedConfigurationDuringProcessRebinding、browserEvidenceFixture，未计通过。H2 PostgreSQL兼容及MockMvc/JPA/JDBC，不冒称原生PostgreSQL或完整认证浏览器E2E。
+        - /tmp/edhr-w3-independent-validation-summary.json；只公开suite/case/count/hash，不公开原XML/system-out。
+        - base=4b25dc7f29c27cfb39c0f570b547869aa0c2f289; head/testedCandidate=2f8144220d1f7fc5a54b183204777bcae5bbd564
+    - id: check.w3-original-baseline-replay
+      required: true
+      category: regression
+      description: 在临时原基线源码重放新增反例与正对照，区分预期失败和当前候选失败。
+      method: automated-test
+      command: git archive BASE into /tmp/edhr-w3-independent-base; copy only three current test files there; run seven selected new Java tests with actual Maven; W3_BASELINE_COMMIT=BASE node --test scripts/test-explicit-fill-mode.mjs
+      outcome: passed
+      evidence:
+        - Java原始base实际exit1，7项5failed/2passed/0errors/skips；原6项5红1正，新增PROCESS空引用在原base已被拒绝，是第2正对照。未修改共享repo或建立worktree。
+        - Node原始base实际exit1，4项3failed/1passed。以上是期望的原始缺陷复现，不作为候选测试失败。
+        - 主侧PROCESS单项红证来自未提交中间版本，不能概括成原始4b25的第6红；本实例以实际archive结果为准。
+        - /tmp/edhr-w3-independent-validation-summary.json
+    - id: check.w3-node-current
+      required: true
+      category: unit
+      description: 实际helper及编辑器纯函数、既有默认版本与权限概要回归。
+      method: automated-test
+      command: node --test scripts/test-explicit-fill-mode.mjs scripts/test-work-editor-default-version.mjs scripts/test-permission-summary.mjs
+      outcome: passed
+      evidence: [exit0，13tests/13passed/0failed/skipped；实际候选2f8144220d1f7fc5a54b183204777bcae5bbd564, /tmp/edhr-w3-independent-validation-summary.json]
+    - id: check.w3-browser-and-visual
+      required: true
+      category: visual
+      description: 真实Chromium运行共享inline/Dialog及实际WorkTemplateEditor，独立查看截图及键盘/窄屏/console结果。
+      method: browser
+      command: NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium W3_BROWSER_ARTIFACT_DIR=/tmp/edhr-w3-independent-browser node scripts/test-explicit-fill-mode-browser.mjs
+      outcome: passed
+      evidence:
+        - exit0；5cases全passed。inline/Dialog1440与390；Work1440实际页面发布阻断、一次graph PUT与重读。键盘Space选择、PROCESS下拉选中、未配置无选中及Apply禁用、取消不写、休眠引用保留均实测。
+        - 各case pageErrors/consoleErrors为空，horizontal overflow=false；亲自查看本轮10张PNG，窄屏信息/主操作可达，无新截断或遮挡。
+        - /tmp/edhr-w3-independent-browser/browser-results.json及同目录10张PNG；受控API，非浏览器认证后端全E2E，不宣称产品/产品簇整页全部验收。
+    - id: check.w3-build-and-diff
+      required: true
+      category: regression
+      description: 当前类型检查、生产构建及改动空白检查。
+      method: command
+      command: npm run build; git -c core.whitespace=cr-at-eol diff --check BASE..HEAD
+      outcome: passed
+      evidence: [tsc/Vite构建exit0，diff-check exit0；未新增formatter配置, /tmp/edhr-w3-independent-validation-summary.json]
+    - id: check.w3-ui-incremental-audit
+      required: true
+      category: visual
+      description: 比较当前官方strict扫描完整base/candidate findings并审查受影响共享UI差异。
+      method: command
+      command: python3 /tmp/edhr-w3-independent-audit-project.py BASE_ARCHIVE --mode strict --output /tmp/edhr-w3-independent-premium-base.json; same for candidate; compare full findings arrays
+      outcome: passed
+      evidence:
+        - 本实例读取官方脚本exact37716bytes/SHA256 67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68；本轮实际执行，未使用PR15旧报告。
+        - base/candidate完整findings数组（含file/line/message/remediation）完全相同，新增0/消失0；受影响UI沿原canonical组件，没有引入重复native/select/toast/主题机制。
+        - /tmp/edhr-w3-independent-premium-comparison.json；本check仅为增量通过，不将官方全站strict失败改写成通过。
+    - id: check.w3-global-premium-strict-existing-debt
+      required: false
+      category: visual
+      description: 如实记录本轮官方全站strict扫描现有债务。
+      method: command
+      command: python3 /tmp/edhr-w3-independent-audit-project.py PROJECT --mode strict --output REPORT
+      outcome: failed
+      evidence: [base及candidate均exit2，84findings=71violations+13unresolved，完整集合不变, /tmp/edhr-w3-independent-premium-base.json, /tmp/edhr-w3-independent-premium-candidate.json]
+    - id: check.w3-lint-existing-missing-config
+      required: false
+      category: regression
+      description: 如实记录基线和候选ESLint配置缺失，未降低标准或伪称通过。
+      method: command
+      command: npm run lint in original base archive and candidate frontend
+      outcome: failed
+      evidence: [base/candidate均exit2，ESLint8.57.1找不到配置文件，非本批新增；未修改配置, /tmp/edhr-w3-independent-validation-summary.json]
+    - id: check.w3-coverage-and-provenance
+      required: true
+      category: documentation
+      description: 核对固定全量分母、历史保留、方法映射与归档摘要，不把盘点计为审查完成。
+      method: inspection
+      command: Independent readonly helper compares git ls-tree BASE to coverage.csv, 12 historical inventories, 10 protected files, source-map symbols and archived receipt hashes; parent reads returned report
+      outcome: passed
+      evidence:
+        - CSV2062项path/blob精确匹配，全部pending/inventory-only；12历史清单及10保护文件未变，35源码符号/父调用链与声明相符。20归档receipt及10源码摘要匹配，无知识业务政策/成熟度提升。
+        - /tmp/edhr-w3-independent-scope-consistency.md
+        - /tmp/edhr-w3-independent-scope-consistency.json
+        - 只读辅助FINAL已返回并由本实例读取，不代替独立实际测试或本qualityResult；其未参与任何修复。
+    - id: check.w3-final-integrity
+      required: true
+      category: security
+      description: 所有验证进程结束后核对全部tracked文件、工具与目标分支。
+      method: command
+      command: Compare SHA256 of every git ls-files path and two protected cloud tools; git fetch origin edhr-dev; git status --porcelain
+      outcome: passed
+      evidence:
+        - 2094个tracked文件前后完全一致，clean；完整manifest SHA256前后均cfa590005e3851dc35ab6e3e21612ff85e49514f5f3c5d5a38175703e5378e5e。两个受保护工具bytes/hash保持交接值，所有本实例启动exec sessions已结束。
+        - base仍4b25dc7f29c27cfb39c0f570b547869aa0c2f289；head/testedCandidate仍2f8144220d1f7fc5a54b183204777bcae5bbd564；无Actions查询、源代码修复、提交、推送、合并或部署。
+        - /tmp/edhr-w3-independent-integrity.json
+  findings:
+    - id: AUD-H003
+      severity: high
+      scope: explicit-work-and-operation-fill-mode
+      summary: 原缺失模式被默认DIRECT且发布/首次快照存在校验旁路，本批已由独立实例验证修复。
+      reproductionSteps: [在原4b25源码构造缺失模式的合法不完整草稿及已选表单节点, 重放当前严格边界/发布/快照反例]
+      expectedResult: 草稿保持未配置；严格写入/发布/首次快照拒绝缺失模式且失败不写入；显式DIRECT和PROCESS仍按适用配置运行。
+      actualResult: 原基线5项实际失败；候选相关反例及相邻回归通过，首START失败不留下execution/DHR/审计。
+      evidence: [/tmp/edhr-w3-independent-validation-summary.json, /tmp/edhr-w3-independent-review.md]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: 2f8144220d1f7fc5a54b183204777bcae5bbd564
+        - type: command
+          reference: check.w3-java-regression and check.w3-browser-and-visual; /tmp/edhr-w3-independent-validation-summary.json
+  residualRisks:
+    - id: risk.w3-existing-global-engineering-debt
+      description: 全站官方strict扫描84项现有债务及ESLint缺配置均实际失败；本批未修复，也不声称全站premium/lint合规。
+      impact: 不影响本批AUD-H003已验证行为及新增差异，但全站工程门禁仍未完成。
+      mitigation: 保留完整原始扫描JSON与精确对比，后续单独按风险整改；不扩成本批大模块重构、不降低标准。
+    - id: risk.w3-runtime-verification-boundary
+      description: 当前后端为H2 PostgreSQL兼容、浏览器为受控API；3既有条件测试跳过，未实跑原生PostgreSQL或全认证浏览器后端E2E。
+      impact: 不能由本批局部证据推断所有数据库并发组合、管理HTTP复制组合或全站移动端全部通过。
+      mitigation: 保留实际边界与跳过名称，当前以严格helper、事务集成及真实共享/Work页面组合验证；后续对应切片再补针对性证据。
+    - id: risk.w3-explicitly-deferred-scope
+      description: AUD-H004/H009/H010、A12及依赖记录控制变更作废的两项旧DHR high仍保持原open/deferred。
+      impact: 本批不完成完整W2/W3、全库语义审计或全分支整改。
+      mitigation: 继续仓库台账，逐批重读最新edhr-dev，不重开PR5/PR6或擅自改业务政策。
+  blockingConditions: []

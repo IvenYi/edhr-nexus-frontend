@@ -14,14 +14,14 @@
 
 ## 主侧实际验证
 
-原基线新增 Java 6 项为 5 失败、1 正对照通过；Node 4 项为 3 失败、1 正对照通过。PROCESS 空引用发布旁路另有实际 1 项失败反例，均保留明确来源，不用缺夹具的 NPE 或编译失败作为产品反证。
+主侧原基线新增 Java 6 项为 5 失败、1 正对照通过；Node 4 项为 3 失败、1 正对照通过。PROCESS 空引用另有实际 1 项失败反例，来自修复中重排诊断后的未提交中间版本。独立实例对原始4b25的7项Java重放实际为5失败、2正对照通过，PROCESS空引用在原基线已拒绝，不能把中间版本反例算成原基线第6个失败。各原始结果按实际时点保留，不用缺夹具的NPE或编译失败作为产品反证。
 
 当前 10 个 Java suite 共 296 项：293 通过、0 失败、0 错误、3 既有条件跳过，包含 89 项知识检查、发布/草稿、共享模式、首次 START 拒绝且 execution/DHR/审计不写、冻结及原事务回归。产品/产品簇写入与复制经过调用链核对及共享序列化边界测试；没有声称所有管理 HTTP 复制组合均已实测。13 项 Node、5 个真实 Chromium 场景及 tsc/Vite 构建通过。浏览器运行实际共享组件及实际 WorkTemplateEditor，使用受控 API；后端集成为 H2 PostgreSQL 兼容模式，不称原生 PostgreSQL 或浏览器到已认证后端的完整 E2E。
 
-主侧安全摘要与截图在 `evidence/primary/`；只读辅助原件在 `evidence/helpers/`，本体原始结果在 `evidence/ontology/`。[正式本体结果](evidence/ontology/edhr-w3-mode-ontology-result.yaml) 为 updated，无待确认问题，版本与成熟度不升级。这些不替代全新质量实例的正式结果，独立验收尚待完成。
+主侧安全摘要与截图在 `evidence/primary/`；只读辅助原件在 `evidence/helpers/`，本体原始结果在 `evidence/ontology/`。[正式本体结果](evidence/ontology/edhr-w3-mode-ontology-result.yaml) 为 updated，无待确认问题，版本与成熟度不升级。全新实例对 `2f8144220d1f7fc5a54b183204777bcae5bbd564` 正式 [qualityResult: passed](evidence/independent/edhr-w3-independent-quality-result.yaml)，11项必需检查通过。独立实际重跑293 Java通过/3条件跳过、13 Node、5浏览器与构建，21份公开安全原件按原字节归档。AUD-H003已独立核验resolved，建议本切片人工合并，后续仅L0验收与PR链接登记，详见[合并验收](merge-acceptance.md)。
 
 ## 保留边界
 
-ESLint 实际退出 2，原因是既有配置缺失；不新增配置或降低标准来掩盖。本批技能目录在恢复后不可用，主侧没有取得当前官方 premium 审计脚本，故没有声称已运行当前官方扫描，也不拿 PR15 的 84 项替代本轮扫描。受影响 UI 的实际浏览器、源码差异和视觉核对需独立复验；全站旧规范债务保留。
+ESLint实际退出2，原因是既有配置缺失；不新增配置或降低标准来掩盖。主侧时点技能目录不可用、未取得官方premium审计脚本的原记录保持；独立实例随后恢复资源，取得官方37716bytes原脚本并对本轮4b25/2f8144实际strict扫描，两者各84项且完整finding数组精确一致、新增0，均退出2。两份原JSON和对比归档，不拿PR15旧84替代本轮，也不称全站strict通过。受影响UI实际浏览器、源码差异和10张截图已独立复核；全站旧规范债务保留。
 
 AUD-H004/H009/H010 继续待 W3 后续核对，A12、变更/作废和依赖它的两项旧 DHR high 仍按用户决定暂缓。本批不迁移历史模板、恢复数据、合并或部署；完整 W2/W3 与分支整体审查仍未完成。
