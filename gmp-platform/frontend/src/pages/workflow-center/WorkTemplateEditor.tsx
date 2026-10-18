@@ -468,6 +468,7 @@ function validateFlowGraphForPublish(
     outgoing.set(node.id, []);
     if (node.data.kind === "FORM") {
       const formVersionId = node.data.config?.formTemplateVersionId;
+      if (!fillMode(node.data.config ?? {})) addNodeError(node.id, "请选择填报方式");
       if (fillMode(node.data.config ?? {}) === "PROCESS" && !node.data.config?.formProcessVersionId) {
         addNodeError(node.id, "请选择已发布的表单流程");
       }
@@ -632,7 +633,7 @@ function validateFlowGraphForPublish(
   const hasConfigurationError = Object.keys(nodeErrors).some((nodeId) => {
     const message = nodeErrors[nodeId];
     return (
-      message === "请选择生效表单版本" || message === "请配置所有条件分支规则"
+      ["请选择填报方式", "请选择已发布的表单流程", "请选择生效表单版本", "请选择当前生效的表单版本", "请配置所有条件分支规则"].includes(message)
     );
   });
   const message = hasConfigurationError
@@ -776,7 +777,7 @@ const nodeAppearance: Record<
 function nodeCaption(data: WorkNodeData) {
   const config = data.config ?? {};
   if (data.kind === "FORM")
-    return [config.formTemplateName || "选择表单", fillMode(config) === "DIRECT" ? "直接填报" : config.formProcessName || "待选流程"]
+    return [config.formTemplateName || "选择表单", fillMode(config) === "DIRECT" ? "直接填报" : fillMode(config) === "PROCESS" ? config.formProcessName || "待选流程" : "待配置填报方式"]
       .filter(Boolean)
       .join(" · ");
   if (data.kind === "NOTIFICATION") return config.recipients || "设置接收人";

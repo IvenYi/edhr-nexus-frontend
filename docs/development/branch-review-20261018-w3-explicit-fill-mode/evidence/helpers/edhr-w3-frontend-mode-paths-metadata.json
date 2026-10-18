@@ -1,0 +1,149 @@
+{
+  "role": "read-only technical source helper, not independent QA or ontology",
+  "gitBaseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+  "knowledgeModelVersion": "0.3.25",
+  "report": {
+    "path": "/tmp/edhr-w3-frontend-mode-paths.md",
+    "bytes": 17292,
+    "sha256": "3f772f3779e4f4c82df5fd07bae8b7b6c4dfb1f23a14aa106a1f088dcde6eaa3"
+  },
+  "runtimeValidationExecuted": false,
+  "repositoryMutationsByHelper": false,
+  "sourceAnchors": [
+    {
+      "path": "AGENTS.md",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 6813,
+      "sha256": "b60c0ce937bf985b80d276bc9c51a6df32e44d9f8748c4bced32ac9cd7b7b011"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 8575,
+      "sha256": "dc5311c43dd756f66c9d18919bde3288ab35225dbbdf7fe2a7bce029e62feca6"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-fill-settings-confirmed.md",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 6553,
+      "sha256": "f25b4d452e61343a03b454c9a79ae8ba87421cedb5c7ba4693cbd5ca6c7dc2e1"
+    },
+    {
+      "path": "docs/knowledge/rules/form-fill-settings.yaml",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 4194,
+      "sha256": "566fbd5969be1e2d35cdb00d9f96db37f4608bb35d9f2a2e23e3393c257e81c3"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/types.ts",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 1461,
+      "sha256": "554161cf3750222db30ed33d497d30a6ff96fbdc14426924cbaeb627b8c9374a"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 14134,
+      "sha256": "aabe8d929f055c2b9f502760716d99c79806077f8cbee283579c7633b5b3ac9a"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettingsButton.tsx",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 2181,
+      "sha256": "95db69f6740c3b6a47d00698fd75f96cffdcd1eeba86e98248f8a6b505c9fd3a"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 184245,
+      "sha256": "fc38c5494efda78ee81eddadb82c403386932e06c6ff3323eca506365c823284"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 73495,
+      "sha256": "6996db14f5388c21a936be3ae04595d993e734c4f895a6a103e948032cbdbdf7"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 56002,
+      "sha256": "5306c7b71f148390786af31d3c93674eb1c1598297ce929613046237479aa3bd"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProductModelingPage.tsx",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 41892,
+      "sha256": "571d4886dc289aec1d950c77e83193314add7d656322dfc89836bf450af8239b"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 69847,
+      "sha256": "12448b2b8ad2434941e6d7bd05c369b2ce270ebcfd21655a979a6f4482015287"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/product-modeling.ts",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 8253,
+      "sha256": "9532b2f7541a85b54a4d40ab7f99ae291b0b94d31d888c15467bcd7246d1f0b6"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/workflow-work.ts",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 3428,
+      "sha256": "aa918bcec8deab75a5b04cce9f5963ce1efdd22774f4f6aa8d35d0f614d99802"
+    },
+    {
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 11409,
+      "sha256": "8eaf4ff1ad44ce421f4fc68727a168f4f27cbef854e1c5a5eed9c955c13b06b3"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-product-process-reference-browser.mjs",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 16037,
+      "sha256": "818e922db3f4ac157e123df8fdf2a5d7e6af3119056455a9a91f346d91c147a9"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-work-editor-default-version.mjs",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 1923,
+      "sha256": "5ce948d598df1834692b0757168e1a777de4277fe2dc90bdc67d227e1757ee99"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/FormFillSettingsServiceTest.java",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 7607,
+      "sha256": "6ba41c24f6a8254c7dc6ddafe350b352862254cfd412f53fdade40d724cc15d8"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java",
+      "baseline": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+      "bytes": 92433,
+      "sha256": "3a4c824a230f43d17c353685deee332a26aa2bc96718f387e5dd0127f4a33640"
+    }
+  ],
+  "notExecuted": [
+    "tests",
+    "build",
+    "browser",
+    "database",
+    "authentication",
+    "deployment",
+    "GitHub Actions"
+  ]
+}

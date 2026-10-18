@@ -16,7 +16,7 @@ rules:
       historicalDataBackfill: false
       automaticLegacyDataMigration: false
     explanation: user-confirmed；作业表单节点与产品/产品簇工序绑定显式选择并保存填报方式，共用配置组件。最新指令明确当前 MVP 不兼容旧数据、旧数据可重造，取消历史回填、新旧双轨兼容和旧数据自动迁移；不再按旧流程引用推导缺失模式或为旧数据保留开放默认。交接包中的空 all 与 persist-configuration 不是当前 schema 有效结构，本规则用已登记事实和既有结果类型表达相同确认语义。
-    evidenceIds: [evidence.form-fill-settings-confirmed]
+    evidenceIds: [evidence.form-fill-settings-confirmed, evidence.form-fill-explicit-mode-audit-20261018]
   - id: rule.form-fill-settings.direct-configuration
     name: 直接填报的绑定配置和运行校验
     status: specified

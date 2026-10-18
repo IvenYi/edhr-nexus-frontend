@@ -1,0 +1,75 @@
+{
+  "purpose": "schema-driven YAML/ID/ref/path/projection diagnostic; not official Maven/JUnit or full semantic audit",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractReadCommit": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+  "headAtDiagnostic": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+  "yamlFiles": 206,
+  "globalIds": 2524,
+  "checks": {
+    "yaml-and-required-types": "passed",
+    "global-id-uniqueness": "passed",
+    "typed-references": "passed",
+    "evidence-and-source-paths": "passed",
+    "rule-projection-maturity": "passed"
+  },
+  "newEvidenceIds": [
+    "evidence.form-fill-explicit-mode-audit-20261018"
+  ],
+  "semanticScope": [
+    "DEC-0067-01",
+    "DEC-0067-04",
+    "DEC-0067-05",
+    "DEC-0009-01",
+    "DEC-0009-05",
+    "rule.form-fill-explicit-mode",
+    "fact.form-fill-settings.mode",
+    "discrepancy.form-fill-settings-missing-mode-default-and-validation-bypass"
+  ],
+  "artifacts": [
+    {
+      "path": "docs/knowledge/evidence/explicit-fill-mode-audit-2026-10-18.md",
+      "bytes": 8517,
+      "sha256": "17ec9da145df1a575a5fc5008103be353af9e6de177f81e359eabeeba1fc3b95"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-fill-settings.yaml",
+      "bytes": 3784,
+      "sha256": "b88fafe6bd4a75e5b2652da0d87b177729b94363b2b381bba04ae8594bcb5328"
+    },
+    {
+      "path": "docs/knowledge/rules/form-fill-settings.yaml",
+      "bytes": 4243,
+      "sha256": "2240c29d96e2b7bd4c0cc5e7cb0e256aa106cca512eff1d93d938598b202884e"
+    },
+    {
+      "path": "docs/knowledge/facts/form-fill-settings.yaml",
+      "bytes": 1346,
+      "sha256": "b6ed27c5ea282f8ef98606f7ea7bd76d1edc4c76fe3590b0b7666196b72d0c93"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+      "bytes": 6663,
+      "sha256": "2dd74904c246ba98b87134d9b36b455776b86028bcdb46b5e0b8f7dd2273276d"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "bytes": 88375,
+      "sha256": "35fa18a16a6894cdc2b15b26cb899cb1cd1dd48153b092d9dd03489e51980a70"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "bytes": 57776,
+      "sha256": "6172253f57c9b5843e60f1a458a927b91d1a224cec1685e59220eeb43b8277c4"
+    }
+  ],
+  "notExecutedByOntologyRole": [
+    "Maven/JUnit",
+    "Ruby bootstrap",
+    "Node",
+    "browser",
+    "database",
+    "build",
+    "independent quality"
+  ]
+}

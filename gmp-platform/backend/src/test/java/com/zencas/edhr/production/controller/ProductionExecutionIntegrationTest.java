@@ -178,6 +178,18 @@ class ProductionExecutionIntegrationTest {
         jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity,good_quantity,ng_quantity,scrap_quantity,status,created_at,updated_at) VALUES(101,'default',100,'B01','BATCH',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),(102,'default',100,'SN01','SN',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
     }
 
+    @Test void firstStartRejectsUnconfiguredOperationModesWithoutExecutionDhrOrAuditWrites() throws Exception {
+        for (String settings : java.util.Arrays.asList(null, "{}", "{\"formProcessVersionId\":\"999\"}")) {
+            jdbc.update("UPDATE product_process_operation_form_binding SET fill_settings_json=? WHERE id=51", settings);
+            Integer audits = jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class);
+            action(101, "START", 0, "a", Map.of()).andExpect(status().isBadRequest());
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM production_execution WHERE object_id=101", Integer.class)).isZero();
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_instance", Integer.class)).isZero();
+            assertThat(jdbc.queryForObject("SELECT status FROM production_object WHERE id=101", String.class)).isEqualTo("CREATED");
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isEqualTo(audits);
+        }
+    }
+
     @Test void inspectorChoiceOptionsSaveAndSubmitAgainstTheSameFrozenCanonicalValues() throws Exception {
         JsonNode fixture;
         try (var input = Objects.requireNonNull(getClass().getResourceAsStream("/fixtures/shared-choice-options-design.json"))) {
@@ -723,7 +735,7 @@ class ProductionExecutionIntegrationTest {
         jdbc.update("INSERT INTO workflow_definition(id,tenant_id,type,name) VALUES(7,'default','WORK','装配作业')");
         jdbc.update("INSERT INTO workflow_definition_version VALUES(7,7,1,'PUBLISHED',true,?,?)", """
             [{"id":"s","data":{"kind":"START"}},
-             {"id":"f","data":{"kind":"FORM","config":{"formTemplateVersionId":"5"}}},
+             {"id":"f","data":{"kind":"FORM","config":{"formTemplateVersionId":"5","fillMode":"DIRECT"}}},
              {"id":"c","data":{"kind":"CONFIRMATION","label":"确认外观"}},
              {"id":"e","data":{"kind":"END"}}]
             """, """

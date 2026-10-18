@@ -20,6 +20,25 @@ class FormFillSettingsServiceTest {
     final FormTemplateVersionRepository forms = mock(FormTemplateVersionRepository.class);
     final FormFillSettingsService service = new FormFillSettingsService(mapper, versions, definitions, forms);
 
+    @Test void rejectsAbsentSettingsAtEveryStrictBoundary() {
+        assertThatThrownBy(() -> FormFillSettingsService.usesProcess(null)).isInstanceOf(com.zencas.edhr.common.exception.BusinessException.class);
+        assertThatThrownBy(() -> service.validate(null, 1L)).isInstanceOf(com.zencas.edhr.common.exception.BusinessException.class);
+        assertThatThrownBy(() -> service.serialize(null, 1L)).isInstanceOf(com.zencas.edhr.common.exception.BusinessException.class);
+        verifyNoInteractions(forms, versions, definitions);
+    }
+
+    @Test void rejectsUnconfiguredOrNonTextualModesWithoutInferringDormantReferences() throws Exception {
+        for (String json : java.util.List.of("null", "{}", "[]", "{\"fillMode\":null}", "{\"fillMode\":\"\"}",
+                "{\"fillMode\":\" \"}", "{\"fillMode\":false}", "{\"fillMode\":1}", "{\"fillMode\":{}}",
+                "{\"fillMode\":[]}", "{\"fillMode\":\"direct\"}", "{\"formProcessVersionId\":\"2\"}")) {
+            var value = mapper.readTree(json);
+            assertThatThrownBy(() -> FormFillSettingsService.usesProcess(value)).as(json).isInstanceOf(com.zencas.edhr.common.exception.BusinessException.class);
+            assertThatThrownBy(() -> service.validate(value, 1L)).as(json).isInstanceOf(com.zencas.edhr.common.exception.BusinessException.class);
+            assertThatThrownBy(() -> service.serialize(value, 1L)).as(json).isInstanceOf(com.zencas.edhr.common.exception.BusinessException.class);
+        }
+        verifyNoInteractions(forms, versions, definitions);
+    }
+
     ObjectNode direct() throws Exception {
         when(forms.findById(1L)).thenReturn(Optional.of(FormTemplateVersion.builder().id(1L)
                 .modelDesignJson("{\"fields\":[{\"id\":\"f\",\"type\":\"text\"},{\"id\":\"sig\",\"type\":\"signature\"}]}").build()));
@@ -40,10 +59,11 @@ class FormFillSettingsServiceTest {
         verifyNoInteractions(versions, definitions);
     }
 
-    @Test void savesExplicitDefaultWithoutInferringFromDormantReference() throws Exception {
+    @Test void savesExplicitDirectModeWithoutInferringFromDormantReference() throws Exception {
         direct();
-        assertThat(service.parse(service.serialize(null, 1L)).path("fillMode").asText()).isEqualTo("DIRECT");
-        assertThat(FormFillSettingsService.usesProcess(mapper.readTree("{\"formProcessVersionId\":\"2\"}"))).isFalse();
+        var value = mapper.readTree("{\"fillMode\":\"DIRECT\",\"formProcessVersionId\":\"2\"}");
+        assertThat(service.parse(service.serialize(value, 1L)).path("fillMode").asText()).isEqualTo("DIRECT");
+        assertThat(FormFillSettingsService.usesProcess(value)).isFalse();
     }
 
     @Test void disabledSignatureEventDoesNotRequireAFieldBinding() throws Exception {

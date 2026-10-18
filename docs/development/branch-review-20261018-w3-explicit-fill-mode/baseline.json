@@ -1,0 +1,147 @@
+{
+  "artifactType": "primary-baseline-ledger-derived-from-exact-helper-receipt",
+  "generatedAt": "2026-10-18T10:11:29.051596+00:00",
+  "contractBaseline": {
+    "sourceCommit": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+    "contractReadCommit": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "workingBranchObserved": "audit/edhr-dev-w3-explicit-fill-mode-20261018",
+  "headObserved": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+  "baselineTree": "f4ee03ed79bfde6fc47b6024aac505326e76dd88",
+  "pr15": {
+    "approvedDelivery": "b140c079c423bf55e977829f46b300341a5bf86f",
+    "mergeCommit": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+    "approvedTree": "f4ee03ed79bfde6fc47b6024aac505326e76dd88",
+    "treeIdentical": true
+  },
+  "previousAuditBase": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "governanceAndDesignDelta": [],
+  "knowledgeAndArchitectureDelta": [
+    {
+      "status": "M",
+      "path": "docs/architecture/business-knowledge-model.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/README.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml"
+    },
+    {
+      "status": "A",
+      "path": "docs/knowledge/evidence/shared-choice-options-2026-10-18.md"
+    },
+    {
+      "status": "A",
+      "path": "docs/knowledge/evidence/shared-choice-options-2026-10-18.yaml"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/glossary.yaml"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/ontology.yaml"
+    }
+  ],
+  "deltaInterpretation": "Seven knowledge/architecture assets belong to the merged DEC-0080 same-field shared-choice-options slice. No governance, role-contract or DESIGN drift. This is incremental provenance checking, not a fresh semantic audit.",
+  "contractBlobs": [
+    {
+      "path": "AGENTS.md",
+      "sourceBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "previousBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "changed": false
+    },
+    {
+      "path": "codeplzreadme.md",
+      "sourceBlob": "2e7e18097620e602c4408b83f71404fae346f8be",
+      "previousBlob": "2e7e18097620e602c4408b83f71404fae346f8be",
+      "changed": false
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sourceBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "previousBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "changed": false
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "sourceBlob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "previousBlob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "changed": false
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "sourceBlob": "581e647c37daebeb9dd3d6397ae53e30e7822fb3",
+      "previousBlob": "581e647c37daebeb9dd3d6397ae53e30e7822fb3",
+      "changed": false
+    },
+    {
+      "path": "DESIGN.md",
+      "sourceBlob": "29d9e21e96170cef0d371d4867e7b8b5d6f56568",
+      "previousBlob": "29d9e21e96170cef0d371d4867e7b8b5d6f56568",
+      "changed": false
+    }
+  ],
+  "trackedPathCount": 2062,
+  "nonBlobEntries": [],
+  "reviewStatusCounts": {
+    "pending": 2062
+  },
+  "reviewDepthCounts": {
+    "inventory-only": 2062
+  },
+  "encoding": "UTF-8",
+  "bom": false,
+  "lineEnding": "CRLF",
+  "csv": {
+    "path": "coverage.csv",
+    "exists": true,
+    "bytes": 384885,
+    "sha256": "b475671f2ba5d3eec18fe8a0bdbd0f28cbf489a624abf1c203ee6bea5c23837e"
+  },
+  "archivedPriorEvidence": [
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-environment-result.json",
+      "exists": true,
+      "bytes": 9064,
+      "sha256": "1f9dcefd052465e1fbe96eaa57af32919ee555c463a024b33045f6bffc5462b0"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory.csv",
+      "exists": true,
+      "bytes": 356732,
+      "sha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory-metadata.json",
+      "exists": true,
+      "bytes": 1375,
+      "sha256": "a5a85f6a36a24862ab7989e90a7e042330b14bc49a19206cd989b72cb0273cfd"
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory.md",
+      "exists": true,
+      "bytes": 12131,
+      "sha256": "d16614a74ef44070384acc936b27d22a05db8255f5bc1210313bb2badda5e670"
+    }
+  ],
+  "runtimeApplicationChecksExecuted": [],
+  "repositoryEditsByThisHelper": [],
+  "limitations": [
+    "Inventory is not source-review completion or runtime acceptance.",
+    "Read-only technical helper, not independent QA or ontology role.",
+    "Every path is pending; prior batch conclusions remain separately scoped.",
+    "Original archived evidence and earlier coverage files were not modified.",
+    "S04 already has a concrete phased extraction proposal; this helper did not start or redefine a refactor."
+  ],
+  "workingBranch": "audit/edhr-dev-w3-explicit-fill-mode-20261018",
+  "previousReports": "PR15 original failed/passed preserved; PR15 merged; current scope AUD-H003 only"
+}

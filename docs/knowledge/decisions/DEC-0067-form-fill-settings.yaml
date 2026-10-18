@@ -27,7 +27,7 @@ decisions:
         status: specified
         visibility: internal
     supersedes: [DEC-0036]
-    evidenceIds: [evidence.form-fill-settings-confirmed, evidence.form-fill-settings-design]
+    evidenceIds: [evidence.form-fill-settings-confirmed, evidence.form-fill-settings-design, evidence.form-fill-explicit-mode-audit-20261018]
     acceptanceScenarios:
       - id: scenario.form-fill-settings-both-entries
         given: 作业表单节点或产品/产品簇工序绑定表单
@@ -61,15 +61,16 @@ decisions:
         evidenceRequirements: [新执行快照不可变测试, 权限和签署拒绝回归]
     implementationDiscrepancies:
     - id: discrepancy.form-fill-settings-missing-mode-default-and-validation-bypass
-      status: open
+      status: resolved
       severity: high
       visibility: internal
       path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
-      lineHint: 198
-      summary: 'provenance: original-evidence；现行 DEC-0067-01/05 要求显式选择填报方式，并已撤销缺失模式推导和旧数据开放默认。 当前 WorkTemplateController.saveGraph 对 FORM 配置缺失或 null 的 fillMode 自动写入 DIRECT； validatePublishableFormProcessReferences 仅在含 fillMode 或 directFillConfig 时调用填报设置校验，旧式无模式且无流程节点仍有发布路径。 FormFillSettingsService.usesProcess 对空模式返回 false，serialize 补 DIRECT；validate 对整体 settings 为 null/missing 时返回，对缺少模式的对象则按直接模式分支解释而不要求模式必填； saveGraphPersistsExplicitDirectModeWithoutInferringDormantProcess 测试输入缺失模式并断言写入 DIRECT，说明该分支仍被测试固定。 这是已查明的未修实现差异，不能以当前兼容行为推翻最新用户确认；显式新配置的权限、签署和快照实现单独保留。 本次仅核对源码和测试断言，未修改生产行为或执行运行验收。'
+      lineHint: 746
+      summary: 'provenance: original-evidence；AUD-H003于2026-10-18当前工作树整改：FormFillSettingsService严格要求文本DIRECT/PROCESS，serialize不补DIRECT，validate不跳过null/missing；作业草稿保存/GET保留未配置，发布对每个FORM校验显式模式及适用设置，PROCESS空流程引用也明确拒绝。共用UI不把未配置显示或应用为直接模式。当前源码及主侧实际回归支持本项实现差异resolved，原4b25基线缺失默认、旧发布旁路和错误fixture断言保留在本批原始证据；不回写历史审查记录。独立质量另以本批最终qualityResult为准，不把本项状态解释为DEC-0067全切片verified或全W3完成；原权限、签署、新冻结不可变和DEC-0009不完整草稿边界保留。'
       evidenceIds:
       - evidence.form-fill-settings-confirmed
       - evidence.form-fill-settings-design
       - evidence.form-fill-settings-current-mode-validation
       - evidence.form-process-version-upgrade-controller
       - evidence.form-process-version-upgrade-tests
+      - evidence.form-fill-explicit-mode-audit-20261018

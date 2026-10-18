@@ -13,6 +13,17 @@ class FormFillSnapshotTest {
     final JdbcTemplate jdbc = mock(JdbcTemplate.class);
     final ExecutionSnapshotBuilder builder = new ExecutionSnapshotBuilder(jdbc, mapper);
 
+    @Test void rejectsUnconfiguredSnapshotSettingsInsteadOfCreatingAnOpenDirectEntry() throws Exception {
+        for (String json : java.util.List.of("{}", "null", "{\"formProcessVersionId\":\"2\"}", "{\"fillMode\":false}")) {
+            ObjectNode form = mapper.createObjectNode();
+            var settings = mapper.readTree(json);
+            assertThatThrownBy(() -> ReflectionTestUtils.invokeMethod(builder, "attachFillSettings", form, settings))
+                    .isInstanceOf(com.zencas.edhr.common.exception.BusinessException.class);
+            assertThat(form.isEmpty()).isTrue();
+        }
+        verifyNoInteractions(jdbc);
+    }
+
     @Test void directSettingsBecomeSelfContainedEntryAndDoNotReadDormantFlow() throws Exception {
         var settings = (ObjectNode) mapper.readTree("""
             {"fillMode":"DIRECT","formProcessVersionId":"2","directFillConfig":{

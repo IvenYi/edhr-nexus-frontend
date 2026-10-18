@@ -22,8 +22,11 @@ public class FormFillSettingsService {
     private final FormTemplateVersionRepository forms;
 
     public static boolean usesProcess(JsonNode settings) {
-        String mode = settings.path("fillMode").asText("");
-        if (!mode.isBlank() && !Set.of("DIRECT", "PROCESS").contains(mode)) throw invalid("填报方式不受支持");
+        if (settings == null || !settings.isObject()) throw invalid("填报设置格式不正确");
+        JsonNode selected = settings.path("fillMode");
+        if (!selected.isTextual() || selected.asText().isBlank()) throw invalid("请选择填报方式");
+        String mode = selected.asText();
+        if (!Set.of("DIRECT", "PROCESS").contains(mode)) throw invalid("填报方式不受支持");
         return "PROCESS".equals(mode);
     }
 
@@ -58,18 +61,13 @@ public class FormFillSettingsService {
     }
 
     public String serialize(JsonNode settings, Long formVersionId) {
-        ObjectNode normalized;
-        if (settings == null || settings.isNull()) normalized = mapper.createObjectNode();
-        else if (settings.isObject()) normalized = settings.deepCopy();
-        else throw invalid("填报设置格式不正确");
-        if (!normalized.hasNonNull("fillMode")) normalized.put("fillMode", "DIRECT");
+        if (settings == null || !settings.isObject()) throw invalid("填报设置格式不正确");
+        ObjectNode normalized = settings.deepCopy();
         validate(normalized, formVersionId);
         return normalized.toString();
     }
 
     public void validate(JsonNode settings, Long formVersionId) {
-        if (settings == null || settings.isNull() || settings.isMissingNode()) return;
-        if (!settings.isObject()) throw invalid("填报设置格式不正确");
         boolean process = usesProcess(settings);
         JsonNode nodes;
         if (process) nodes = parse(process(settings.path("formProcessVersionId").asText()).getNodesJson());
