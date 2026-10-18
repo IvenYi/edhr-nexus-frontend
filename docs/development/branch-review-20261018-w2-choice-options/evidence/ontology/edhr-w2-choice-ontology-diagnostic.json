@@ -1,0 +1,25 @@
+{
+  "kind": "ontology-python-diagnostic",
+  "baselineCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "knowledgeVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "yamlDocumentsParsed": 206,
+  "globalIdsChecked": 2523,
+  "newRecordsChecked": 7,
+  "checks": [
+    "YAML parse and version",
+    "record required fields and declared field types",
+    "global ID uniqueness and prefixes",
+    "evidence/term/concept/supersedes references",
+    "evidence repository file paths",
+    "new records specified/internal",
+    "schema open-questions and execution registry bytes unchanged"
+  ],
+  "outcome": "passed",
+  "formalMavenRunByThisRole": false,
+  "notProven": [
+    "business runtime tests",
+    "full knowledge semantic audit",
+    "formal Maven/JUnit validation"
+  ]
+}

@@ -1,0 +1,263 @@
+{
+  "kind": "ontology-read-only-scope-and-evidence-receipt",
+  "actualHead": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "baseCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "knowledgeBefore": "0.3.25",
+  "knowledgeAfter": "0.3.25",
+  "workingTreeStatus": "dirty",
+  "statusPorcelainV1": [
+    " M docs/architecture/business-knowledge-model.md",
+    " M docs/development/branch-review-20261015/NEXT.md",
+    " M docs/knowledge/README.md",
+    " M docs/knowledge/glossary.yaml",
+    " M docs/knowledge/ontology.yaml",
+    " M gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+    " M gmp-platform/frontend/scripts/test-designer-save-browser.mjs",
+    " M gmp-platform/frontend/scripts/verify-template-designer-react.mjs",
+    " M gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx",
+    " M gmp-platform/frontend/src/pages/master-data/template-designer-react/components/mock-fill/MockFillDialog.tsx",
+    " M gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+    "?? docs/development/branch-review-20261018-w2-choice-options/README.md",
+    "?? docs/development/branch-review-20261018-w2-choice-options/baseline.json",
+    "?? docs/development/branch-review-20261018-w2-choice-options/coverage.csv",
+    "?? docs/development/branch-review-20261018-w2-choice-options/decision-package.yaml",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-consumers-metadata.json",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-consumers.md",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-environment-result.json",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory-metadata.json",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory.csv",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory.md",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w3-mode-callers.md",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/handoff/HANDOFF.md",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/handoff/START-HERE.md",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/receipts.json",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/README.md",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/browser-results.json",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/java-cases.json",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/node-cases.json",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/choice-inspector-1440.png",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/choice-inspector-390.png",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/choice-runtime-1440.png",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/choice-runtime-390.png",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/column-insertion-1440.png",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/column-insertion-390.png",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/multi-choice-inspector-1440.png",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/multi-choice-inspector-390.png",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/save-in-flight-desktop.png",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/save-in-flight-narrow.png",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/subfield-edit-1440.png",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/screenshots/subfield-edit-390.png",
+    "?? docs/development/branch-review-20261018-w2-choice-options/evidence/primary/verification.json",
+    "?? docs/development/branch-review-20261018-w2-choice-options/findings.md",
+    "?? docs/development/branch-review-20261018-w2-choice-options/source-map.md",
+    "?? docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+    "?? docs/knowledge/evidence/shared-choice-options-2026-10-18.md",
+    "?? docs/knowledge/evidence/shared-choice-options-2026-10-18.yaml",
+    "?? gmp-platform/backend/src/test/resources/fixtures/shared-choice-options-design.json",
+    "?? gmp-platform/frontend/scripts/test-designer-choice-options.mjs",
+    "?? gmp-platform/frontend/src/components/form-renderer/choiceOptions.ts"
+  ],
+  "ownedChangedArtifacts": [
+    {
+      "path": "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+      "bytes": 3431,
+      "sha256": "9b61e114aadf7948d86baa704aae94325449fe6cca0dd825c5b921a22814bd08"
+    },
+    {
+      "path": "docs/knowledge/evidence/shared-choice-options-2026-10-18.yaml",
+      "bytes": 1073,
+      "sha256": "7a23fab99ec4690e5c58712cf7d9269de6717d85c6c16a4863d76fc8510f5dc5"
+    },
+    {
+      "path": "docs/knowledge/evidence/shared-choice-options-2026-10-18.md",
+      "bytes": 7627,
+      "sha256": "9b756a20219f95c404448e5a0512636871eb9ead5eba30cd98357f2691139150"
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "bytes": 66048,
+      "sha256": "4f958050af2b4414ba2a909fbc52019ec9ceb7a5dbba2c32e42f90ce8c0eb40a"
+    },
+    {
+      "path": "docs/knowledge/ontology.yaml",
+      "bytes": 89548,
+      "sha256": "3e32be8c60add6421ab5f84e337809ec4207d89bf1b021e4a63ff18d7e61db48"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "bytes": 87576,
+      "sha256": "bc778e717f06478605a97b76eccd2a8d4c5bf19e4009fb63570153d933cce781"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "bytes": 56932,
+      "sha256": "768c2962de30dbc77f52fb861e9aeddb3aadcbab83a7d5eb96cacad4a4be5a06"
+    }
+  ],
+  "readSourceAndTestScope": [
+    {
+      "path": "gmp-platform/frontend/src/components/form-renderer/choiceOptions.ts",
+      "bytes": 4780,
+      "sha256": "2bd79bcaea5c03b07e35a4437b64d18bd008400977bd19caeae84062eb844ecd"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+      "bytes": 125021,
+      "sha256": "076f7c622e7307e012870b0c21a0ebeda3c0fb0c7c43c2e79bc742c88aab3d7e"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx",
+      "bytes": 78965,
+      "sha256": "487590565f51074b943d900791028bf9a52f53581801e8ea8f7bd869ff624649"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/mock-fill/MockFillDialog.tsx",
+      "bytes": 64064,
+      "sha256": "2ba2fdbeb481ba3ecc658c6b5c4642d5881651fc900e9a7abed9790a673cad72"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/fieldRegistry.ts",
+      "bytes": 7458,
+      "sha256": "2dfef47bafc68d840a973abda8848241aca5697025674bc02b9afdbdc24bca4e"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/types/model.ts",
+      "bytes": 1641,
+      "sha256": "247c71b6fe619b529055f0ec4ecea2004f13f5b336b1169bbfec5acce74f81a6"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-renderer/newSubTableRow.ts",
+      "bytes": 1486,
+      "sha256": "e5526d301a4d7f5073cd12764aa7fd59c76032b44baed13e96d09bab6ddc27fe"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "bytes": 16823,
+      "sha256": "e8057ad990bda9be33ae2b91929683629a81cc602943446e7f97481d5b88232a"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "bytes": 64019,
+      "sha256": "9e7f4b66d43780b5294acac5fdd7f1893ec71073d71104ac634a6e4a8ca50e4a"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+      "bytes": 173281,
+      "sha256": "a123efea6f3173ce377ab7908c534c22da7646fa3b11fa2a28de8cf7e98d11dc"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/resources/fixtures/shared-choice-options-design.json",
+      "bytes": 6343,
+      "sha256": "721d500935aa38b52dae95414e45d1c41c8921b2c50788864ea3554a2ada2b63"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-designer-choice-options.mjs",
+      "bytes": 12838,
+      "sha256": "22c83b66fb5df0686d20405ecd288c3abd0a02b13b1e2d1cafb842bd233ca97b"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-designer-save-browser.mjs",
+      "bytes": 30775,
+      "sha256": "df7f5d2bbfa04253953de68476e91bd7fb7eef650d1f851223505b172a07668f"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/verify-template-designer-react.mjs",
+      "bytes": 361000,
+      "sha256": "b9383964df477a5c718afbadd28bc07afe9d76e5c7afaa28cac8959894669dc6"
+    }
+  ],
+  "readContractScope": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    }
+  ],
+  "inspectedPrimaryEvidence": [
+    {
+      "path": "/tmp/edhr-w2-choice-ontology-diagnostic.py",
+      "bytes": 4785,
+      "sha256": "ab152e771c120e0e4b135d217c652d43a37c45a2dee32e975465883ec765d7d2"
+    },
+    {
+      "path": "/tmp/edhr-w2-choice-ontology-diagnostic.json",
+      "bytes": 775,
+      "sha256": "fba612efef1ac97d37aa4e1aebf5765bc918c20f52ce1d4932b7dcf054e177a7"
+    },
+    {
+      "path": "/tmp/edhr-w2-choice-primary-java.json",
+      "bytes": 26707,
+      "sha256": "1bba81938510b3a6574140e14cfafe3ea48712376a0885d8f7462b5ac4084828"
+    },
+    {
+      "path": "/tmp/edhr-w2-choice-browser-final.json",
+      "bytes": 2682,
+      "sha256": "cfd18218a177fc17cfb45f88da01400b2c64dcbe2ff3eb15160d950281a2182e"
+    },
+    {
+      "path": "/tmp/edhr-w2-choice-node-final.log",
+      "bytes": 12862,
+      "sha256": "3d6d0cd4aa9993f53667bf204286c0034f49ce2d0c2a1ac980ed2fe101b53b67"
+    },
+    {
+      "path": "/tmp/edhr-w2-choice-designer-static-final.log",
+      "bytes": 351,
+      "sha256": "095b68b9c497f1b6259a40ea77f747757afd7c7d33fec30c49923c2546c3790b"
+    },
+    {
+      "path": "/tmp/edhr-w2-choice-build-final.log",
+      "bytes": 9335,
+      "sha256": "00a30aaa3bba14e8cf1440bb686ca557c5a24e96e10f3211ead0f414132d6156"
+    }
+  ],
+  "ownCommands": [
+    "python3 /tmp/edhr-w2-choice-ontology-diagnostic.py",
+    "git diff --check -- docs/knowledge docs/architecture"
+  ],
+  "primaryReportedAndInspectedChecks": {
+    "node": {
+      "tests": 126,
+      "passed": 126,
+      "skipped": 0
+    },
+    "browser": {
+      "tests": 13,
+      "passed": 13,
+      "kind": "actual-shell-and-canvas-with-controlled-save-callback"
+    },
+    "java": {
+      "tests": 189,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3,
+      "passed": 186
+    },
+    "knowledgeMaven": {
+      "tests": 89,
+      "passed": 89,
+      "skipped": 0
+    },
+    "build": "passed",
+    "designerStatic": "passed"
+  },
+  "executedBusinessTestsByOntologyRole": false,
+  "limitations": [
+    "H2 PostgreSQL compatibility mode, not native PostgreSQL",
+    "controlled browser save callback, not full authenticated template save HTTP",
+    "independent quality not yet performed at this receipt",
+    "390px viewport is not full mobile/touch acceptance",
+    "official premium unavailable and not run; old 84 is historical",
+    "ESLint config missing",
+    "Ruby unavailable; bootstrap not run"
+  ]
+}

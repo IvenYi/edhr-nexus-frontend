@@ -1,0 +1,127 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261018-W2-SHARED-CHOICE-OPTIONS
+  scope: W2第六批；同一字段跨画布位置共用选项，并让当前模型、默认行和冻结提交校验使用同一组值。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: b191e054892ae06cb0d8a45f62d034deabbba3e3
+    targetBranch: edhr-dev
+    targetCommit: b191e054892ae06cb0d8a45f62d034deabbba3e3
+    contractReadCommit: b191e054892ae06cb0d8a45f62d034deabbba3e3
+    uncommittedContractPaths: []
+  summary: 用户已确认同一字段所有放置位置必须共用同一组选项。当前widget.optionList仅改该组件，model.options及其他位置不更新，导致新行单选默认丢失且服务端提交不认组件选项。只在当前编辑命令同步，不读时刷新历史。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedDecisions:
+    - id: user-confirmed.shared-choice-options-20261018
+      provenance: user-confirmed
+      userQuote: 必须共用同一组选项（推荐）
+      statement: 同一字段在表单中所有放置位置共用同一组选项。
+      source: 本会话针对组件分别配置与后端仅校验模型选项的明确异步提问答复。
+      decisionReference: docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml#DEC-0080-01
+  existingPolicyReferences: [DEC-0077-12, DEC-0077-22, term.form-template-field, concept.form-template-field]
+  inferred:
+    - id: inference.shared-choice-canonical-model
+      statement: 当前模型保存选项定义，组件编辑同步同字段位置，沿一次完整document历史；组件默认按钮记录对应选项值。
+      rationale: 服务端冻结和校验已消费model.options，共用选项不应只保存在某一控件副本。
+      relatedIds: [user-confirmed.shared-choice-options-20261018]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: current-template-choice-configuration
+        change: 单选及多选组件optionList编辑更新同一字段model选项、所有同身份组件及子列副本；模型编辑反向同步。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts, gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx]
+    transitiveImpacts:
+      - area: row-defaults-and-execution
+        change: 新行单选默认可解析为实际值；保存的model/canvas一致，后端原冻结和SUBMIT校验接受合法选项并拒绝未知值。
+        evidenceReferences: [gmp-platform/frontend/src/components/form-renderer/newSubTableRow.ts, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java]
+    potentialImpacts:
+      - area: option-identity-and-overrides
+        concern: 值保持时保留选项ID/已有元数据，排除其他表同名列，不清除无关组件样式/绑定；仅实际编辑optionList反向更新模型，无关只读/默认/显示配置不得采用旧副本或复活停用值；重复组件的React key须区分node身份，数据身份仍共享。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/types/model.ts]
+    unaffectedAreas:
+      - area: work-mode-and-record-lifecycle
+        reason: W3 AUD-H003已定位并留下一批，未修改fillMode；A12和两项旧DHRhigh继续用户暂缓。
+    compatibilityAndMigration: [仅当前草稿编辑写路径纠错；不批量迁移已保存的不一致模板，不修复或删除历史生产快照/记录。]
+    snapshotImpacts: [新保存的model/canvas沿原使用时复制进入新快照，已有执行读原冻结内容，渲染器不查询最新模板。]
+    auditImpacts: [保留store唯一完整document历史，选项同步属于同一编辑命令，不增加第二次撤销或保存事务。]
+    permissionImpacts: [不降低服务端允许值/必填/只读/签署校验，不把widget选项并集作为绕过校验的运行规则。]
+    testImpacts:
+      - scope: shared-choices-and-identity
+        scenarios: [主字段重复位置/跨页, 子表列及父表隔离, 模型编辑反向同步, 值未变保留ID, 单次undo/redo, serialize/parse, 默认按钮值与新增行, 冻结提交接受合法值/拒绝未知值]
+        evidenceReferences: [gmp-platform/frontend/scripts/test-runtime-row-values.mjs, gmp-platform/frontend/scripts/test-form-document-preview.mjs, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    evidenceGaps: [两入口/复杂工作流/完整W2未由单批证明；新云环境重装依赖后只使用实际本轮结果；官方premium技能当前不可用则诚实记录未运行，不沿用历史84为当前扫描。]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在现有store写命令同步模型与placements，复用原保存/冻结/提交协议；纯选项转换不依赖React或store，不新增后端兼容分支。
+    ownershipBoundaries:
+      - owner: template-designer-store
+        responsibility: 同一当前document模型/组件对齐及唯一history。
+      - owner: choice-options
+        responsibility: 现有label:value表示的纯转换与同字段同步，不承担生产运行授权。
+      - owner: execution-snapshot-and-engine
+        responsibility: 继续从冻结model校验实际值，不按最新模板或widget并集放行。
+  affectedFiles:
+    - path: gmp-platform/frontend/src/components/form-renderer/choiceOptions.ts
+      changeType: create
+      reason: 纯选项转换和当前文档同字段同步。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts
+      changeType: update
+      reason: 原updateNodeBindings/updateField命令内同步；仅新字段创建及主动类型变更写命令生成界面已有预置，registry/旧文档读取不补值。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx
+      changeType: update
+      reason: 选项与默认按钮对应实际值，显示同字段当前配置。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/mock-fill/MockFillDialog.tsx
+      changeType: update
+      reason: 同字段多处显示的React key区分node ID，值仍按同字段/实际行共享。
+    - path: gmp-platform/frontend/scripts/test-designer-choice-options.mjs
+      changeType: create
+      reason: 实际store及新行工厂正反证、身份/历史/保存读取和不自动采用旧副本保护。
+    - path: gmp-platform/frontend/scripts/test-designer-save-browser.mjs
+      changeType: update
+      reason: 增加真实Inspector配置、默认按钮、完整纸面增删行及保存回调载荷，保留旧9场景。
+    - path: gmp-platform/frontend/scripts/verify-template-designer-react.mjs
+      changeType: update
+      reason: 既有静态断言固定存raw optionLabel，改为要求解析实际optionValue并由默认按钮存值；不删除或放宽其他门槛。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+      changeType: update
+      reason: 原始浏览器设计/值夹具经新快照到实际SAVE/SUBMIT及非法值回滚，H2模式不得称原生PG验证。
+    - path: gmp-platform/backend/src/test/resources/fixtures/shared-choice-options-design.json
+      changeType: create
+      reason: 实际Inspector和纸面新行导出的原字节安全合成夹具，连接两侧一致性验证。
+    - path: docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml
+      changeType: create
+      reason: 本体角色记录用户明确共享选项决策。
+    - path: docs/knowledge/evidence/shared-choice-options-2026-10-18.md
+      changeType: create
+      reason: 保留原始问答与工程/实现证据边界。
+    - path: docs/knowledge/evidence/shared-choice-options-2026-10-18.yaml
+      changeType: create
+      reason: 新证据索引及实际来源。
+    - path: docs/knowledge/glossary.yaml
+      changeType: update
+      reason: 同步term.form-template-field当前含义。
+    - path: docs/knowledge/ontology.yaml
+      changeType: update
+      reason: 复用concept.form-template-field增加本次确认依据。
+    - path: docs/knowledge/README.md
+      changeType: update
+      reason: 当前知识增量入口，保持0.3.25/internal。
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      reason: 人员阅读投影同步，未升级成熟度。
+  acceptanceScenarios:
+    - id: scenario.shared-current-options
+      given: 同一单选或多选字段已放置在当前document多处
+      when: 任一位置或模型编辑选项
+      then: 模型及同身份位置使用同组选项，其他字段/父表/历史document不变，单次undo/redo和保存重读完整。
+      evidenceRequirements: [原基线反例, store及序列化回归, 真实Inspector编辑和回显]
+    - id: scenario.valid-choice-values-through-submit
+      given: 用户在真实选项编辑器设置单选选项并选择默认
+      when: 新增实际子表行，保存设计，构建新快照并保存/提交实际值
+      then: 默认值是真实选项值，model/canvas一致；后端沿原规则接受有效值、拒绝未知值，既有快照不重写。
+      evidenceRequirements: [默认行和纸面实际交互, 后端冻结及提交正反证, 当前及独立回归]

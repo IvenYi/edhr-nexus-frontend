@@ -1769,7 +1769,8 @@ if (!singleSelectConfigBlock.includes("readText(widgetConfig.optionSource, 'manu
 if (!singleSelectConfigBlock.includes("['radio', 'checkbox'].includes(singleSelectOptionShape)")) failures.push('DesignerInspector.tsx: single-select 排序方式 must only show for 单选框 or 复选框');
 if (!singleSelectConfigBlock.includes("readText(widgetConfig.optionLayout, 'horizontal')")) failures.push('DesignerInspector.tsx: single-select 排序方式 must default to 横向');
 if (singleSelectConfigBlock.includes('optionListToolbarSx')) failures.push('DesignerInspector.tsx: single-select option add action must align with the 选项列表 header instead of using an internal toolbar row');
-if (!singleSelectConfigBlock.includes('updateBinding({ defaultValue: optionLabel })')) failures.push('DesignerInspector.tsx: single-select option row must be able to set the selected option as default');
+if (!singleSelectConfigBlock.includes('const optionValue = parseChoiceOption(optionLabel, index).value;')
+  || !singleSelectConfigBlock.includes('updateBinding({ defaultValue: optionValue })')) failures.push('DesignerInspector.tsx: single-select default action must store the parsed option value, including label:value options');
 if (!inspector.includes('&:hover [data-option-drag-handle="true"]')) failures.push('DesignerInspector.tsx: single-select option drag handle must appear on row hover');
 if (optionListEditorStyleBlock.includes('border:')) failures.push('DesignerInspector.tsx: single-select option list editor must not render an outer framed container');
 if (!singleSelectConfigBlock.includes('data-option-choice="true"')) failures.push('DesignerInspector.tsx: single-select option rows must render each option as a gray choice block');
@@ -1861,6 +1862,9 @@ if (multiSelectConfigBlock.includes('tagColor') || multiSelectConfigBlock.includ
 if (multiSelectConfigBlock.includes('longLabelHoverPreview') || multiSelectConfigBlock.includes('超长标签 hover 预览')) failures.push('DesignerInspector.tsx: multi-select display must not expose 超长标签 hover 预览');
 if (!inspector.includes('function readMultiDefaultValues')) failures.push('DesignerInspector.tsx: multi-select default values must be read as a reusable array');
 if (!multiSelectConfigBlock.includes('defaultValues.includes(optionLabel)')) failures.push('DesignerInspector.tsx: multi-select option default dot must support selecting multiple options');
+if (!multiSelectConfigBlock.includes('const optionValue = parseChoiceOption(optionLabel, index).value;')
+  || !multiSelectConfigBlock.includes('defaultValues.includes(optionValue)')
+  || !multiSelectConfigBlock.includes('toggleMultiSelectDefaultOption(optionValue)')) failures.push('DesignerInspector.tsx: multi-select defaults and active markers must use parsed option values');
 if (multiSelectConfigBlock.includes('updateBinding({ defaultValue: optionLabel })')) failures.push('DesignerInspector.tsx: multi-select default option action must not replace all defaults like single-select');
 assertIncludes(inspector.match(/const MULTI_SELECT_DISPLAY_OPTIONS = \[[\s\S]*?\];/)?.[0] ?? '', [
   '同展现形态',

@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.shared-choice-options-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/shared-choice-options-2026-10-18.md
+    description: user-confirmed；本会话原始异步问答确认同一字段在表单各放置位置必须共用同组选项。推荐字样属于原答复标签；不扩大为不同字段共享或默认值生命周期政策。原问题、原答复、适用范围及未替代的历史边界分列于同名Markdown。
+    visibility: internal
+  - id: evidence.shared-choice-options-original-source
+    type: document
+    path: docs/knowledge/evidence/shared-choice-options-2026-10-18.md
+    description: original-evidence；在b191e054892ae06cb0d8a45f62d034deabbba3e3原始store、Inspector、ModelFieldOption、newSubTableRow及ProductionExecutionEngine核对选项写入和实际值校验边界；当前修复源码与运行证据按Markdown的时点补录，不把旧行为当政策、源码存在当测试通过，或主侧测试当本体角色亲自执行。
+    visibility: internal

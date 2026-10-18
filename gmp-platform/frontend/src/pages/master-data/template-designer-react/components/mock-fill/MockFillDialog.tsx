@@ -1033,7 +1033,7 @@ export function FormSheetPage({
     const focusedFieldWidth = Math.min(Math.max(fieldContentWidth, fieldCellWidth), 480);
     return (
       <Box
-        key={valueKey}
+        key={`${valueKey}:${node.id}`}
         data-mock-fill-field-cell="true"
         data-mock-fill-field-overflowing={shouldExpandFieldOnFocus ? 'true' : undefined}
         style={{

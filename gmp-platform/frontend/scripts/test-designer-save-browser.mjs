@@ -26,6 +26,7 @@ try {
     import { useTemplateDesignerStore as store } from './src/pages/master-data/template-designer-react/store/useTemplateDesignerStore';
     import { createEmptyTemplateDesignerDocument, serializeTemplateDesignerDocument } from './src/pages/master-data/template-designer-react/utils/document';
     import { SnackbarProvider, useSnackbar } from './src/components/SnackbarProvider';
+    import FormDocumentPreview from './src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview';
     const row = { id: 'qa-template', name: '保存一致性验收' };
     const initial = createEmptyTemplateDesignerDocument({ schema: 'edhr-template-designer-react', version: 1,
       templateId: row.id, versionId: 'qa-version', templateName: row.name, versionLabel: 'V1.0' });
@@ -35,6 +36,9 @@ try {
     function App() {
       const [saving, setSaving] = useState(false);
       const [open, setOpen] = useState(true);
+      const [runtimeDocument, setRuntimeDocument] = useState(null);
+      const [runtimeValues, setRuntimeValues] = useState({});
+      window.__openRuntime = () => { setRuntimeDocument(structuredClone(store.getState().document)); setRuntimeValues({}); window.__runtimeValues = {}; };
       const { showMessage } = useSnackbar();
       const persist = async payload => {
         setSaving(true);
@@ -44,6 +48,10 @@ try {
         } catch (error) { showMessage('设计保存失败', 'error'); throw error; }
         finally { setSaving(false); }
       };
+      if (runtimeDocument) return <div data-runtime-fixture="true"><FormDocumentPreview document={runtimeDocument}
+        runtime={{ values: runtimeValues, onChange: (id, value) => setRuntimeValues(current => {
+          const next = { ...current, [id]: value }; window.__runtimeValues = next; return next;
+        }) }} /></div>;
       return open ? <Shell row={row} version={version} saving={saving} onSave={persist} onAutoSave={persist}
         onClose={() => { window.__closed += 1; setOpen(false); }} /> : <div>设计器已关闭</div>;
     }
@@ -56,7 +64,7 @@ try {
   loader: { '.css': 'css', '.svg': 'dataurl', '.png': 'dataurl', '.woff2': 'file', '.ttf': 'file' },
   define: { 'process.env.NODE_ENV': '"development"' },
   plugins: baseline ? [{ name: 'original-save-owners', setup(plugin) {
-    plugin.onLoad({ filter: /(?:TemplateDesignerReactShell\.tsx|useTemplateDesignerStore\.ts)$/ }, args => ({
+    plugin.onLoad({ filter: /(?:TemplateDesignerReactShell\.tsx|DesignerInspector\.tsx|useTemplateDesignerStore\.ts|fieldRegistry\.ts)$/ }, args => ({
       contents: execFileSync('git', ['show', `${baseline}:${path.relative(root, args.path).split(path.sep).join('/')}`.replace(`${baseline}:src/`, `${baseline}:gmp-platform/frontend/src/`)], { cwd: root, encoding: 'utf8' }),
       loader: args.path.endsWith('.tsx') ? 'tsx' : 'ts', resolveDir: path.dirname(args.path),
     }));
@@ -107,12 +115,14 @@ try {
     const page = await context.newPage();
     page.setDefaultTimeout(15000);
     const errors = []; page.on('pageerror', error => errors.push(error.message));
-    page.on('console', message => { if (message.type() === 'error') console.error(message.text()); });
+    const consoleErrors = [];
+    page.on('console', message => { if (message.type() === 'error') { consoleErrors.push(message.text()); console.error(message.text()); } });
     try {
       await page.goto(`http://127.0.0.1:${server.address().port}`);
       await page.getByRole('button', { name: '关闭侧边栏', exact: true }).click();
       await check(page);
       assert.deepEqual(errors, [], 'no browser runtime errors');
+      assert.deepEqual(consoleErrors, [], 'no browser console errors or React identity warnings');
       results.push({ name, status: 'passed', viewport });
     } catch (error) {
       const state = await page.evaluate(() => {
@@ -285,6 +295,111 @@ try {
       assert.equal(saved.node.bindings.subTableField.name, saved.column.name);
       assert.equal(saved.node.bindings.subTableField.type, 'number');
       assert.equal(saved.node.bindings.subTableFieldId, seeded.fieldId);
+    }, viewport);
+  }
+  for (const viewport of [{ width: 1440, height: 960 }, { width: 390, height: 844 }]) {
+    await run(`choice options share their definition, actual default and new runtime rows at ${viewport.width}px`, async page => {
+      const seeded = await page.evaluate(() => {
+        const state = window.__store.getState();
+        const table = state.addField('subTable', '检验明细');
+        const [field] = state.addSubTableFields(table.id, [{ name: '检验结果', type: 'singleSelect' }]);
+        state.addSubTableRegionFromFieldToRange(table.id, { t: 2, b: 6, l: 2, r: 5 }, { left: 98, top: 36, width: 392, height: 180 });
+        const tableNode = window.__store.getState().document.canvas.pages[0].nodes.find(node => node.type === 'sub-table');
+        state.setSelectedNodeId(tableNode.id);
+        state.updateSelectedSubTableRegion({ repeat: { type: 'dynamic' } });
+        for (const row of [3, 5]) state.addNodeFromSubTableFieldToCell(table.id, field,
+          { range: { t: row, b: row, l: 3, r: 4 }, left: 196, top: (row - 1) * 36, width: 196, height: 36 });
+        const document = window.__store.getState().document;
+        state.setDocument(document); state.markSaved();
+        const selected = document.canvas.pages[0].nodes.find(node => node.bindings?.subTableFieldId === field.id);
+        state.setSelectedNodeId(selected.id); state.setActiveCanvasRail('config');
+        return { tableId: table.id, fieldId: field.id, nodeId: selected.id, before: JSON.stringify(document) };
+      });
+      const rows = page.locator('[data-option-list-editor="true"] [data-option-row="true"]');
+      await rows.first().locator('input').fill('合格:pass');
+      const edited = await page.evaluate(({ tableId, fieldId }) => {
+        const document = window.__store.getState().document;
+        return { options: document.model.fields.find(field => field.id === tableId).typeConfig.columns.find(field => field.id === fieldId).typeConfig.options,
+          lists: document.canvas.pages[0].nodes.filter(node => node.bindings?.subTableFieldId === fieldId).map(node => node.bindings.widgetConfig.optionList) };
+      }, seeded);
+      assert.equal(edited.options[0]?.value, 'pass', 'actual Inspector editing updates the canonical option value');
+      assert.deepEqual(edited.lists, ['合格:pass\n选项2', '合格:pass\n选项2']);
+      await page.getByRole('button', { name: '撤销', exact: true }).click();
+      assert.equal(await page.evaluate(() => JSON.stringify(window.__store.getState().document)), seeded.before);
+      await page.getByRole('button', { name: '重做', exact: true }).click();
+      await page.evaluate(nodeId => {
+        window.__store.getState().setSelectedNodeId(nodeId);
+        window.__store.getState().setActiveCanvasRail('config');
+      }, seeded.nodeId);
+      await rows.nth(1).locator('input').fill('不合格:fail');
+      await rows.first().hover();
+      await rows.first().getByRole('button', { name: '设为默认值', exact: true }).click();
+      assert.equal(await page.evaluate(nodeId => window.__store.getState().document.canvas.pages[0].nodes.find(node => node.id === nodeId).bindings.defaultValue, seeded.nodeId), 'pass');
+      assert.equal(await rows.first().locator('[data-option-default-active="true"]').count(), 1);
+      if (process.env.W2_SCREENSHOT_DIR) {
+        await mkdir(process.env.W2_SCREENSHOT_DIR, { recursive: true });
+        await page.screenshot({ path: path.join(process.env.W2_SCREENSHOT_DIR, `choice-inspector-${viewport.width}.png`), animations: 'disabled' });
+      }
+      await submit(page, 1); await settle(page, 0);
+      const payload = await page.evaluate(() => window.__requests[0].payload);
+      const column = JSON.parse(payload.modelDesignJson).payload.fields.find(field => field.id === seeded.tableId).typeConfig.columns.find(field => field.id === seeded.fieldId);
+      assert.deepEqual(column.typeConfig.options.map(({ label, value }) => ({ label, value })), [{ label: '合格', value: 'pass' }, { label: '不合格', value: 'fail' }]);
+      await page.evaluate(() => window.__openRuntime());
+      await page.locator('[data-runtime-fixture="true"]').waitFor();
+      await page.getByRole('button', { name: '新增行', exact: true }).click();
+      const values = await page.evaluate(() => window.__runtimeValues);
+      assert.equal(values[seeded.tableId].length, 2);
+      assert.ok(values[seeded.tableId].every(row => row[seeded.fieldId] === 'pass'), 'new real runtime rows persist the selected canonical default');
+      assert.notEqual(values[seeded.tableId][0].__rowId, values[seeded.tableId][1].__rowId);
+      assert.ok((await page.locator('[data-runtime-fixture="true"]').innerText()).includes('合格'));
+      assert.equal(await page.locator(`[data-form-preview-field="${seeded.fieldId}"]`).count(), 4, 'two placements of the same field render independently in each of two actual rows');
+      await page.getByRole('button', { name: '删除行', exact: true }).click();
+      assert.equal(await page.locator(`[data-form-preview-field="${seeded.fieldId}"]`).count(), 2);
+      assert.equal(await page.evaluate(tableId => window.__runtimeValues[tableId][0].__rowId, seeded.tableId), values[seeded.tableId][0].__rowId);
+      const firstControl = page.locator(`[data-form-preview-field="${seeded.fieldId}"]`).first();
+      await firstControl.scrollIntoViewIfNeeded();
+      const controlBox = await firstControl.boundingBox();
+      assert.ok(controlBox && controlBox.x >= 0 && controlBox.x + controlBox.width <= viewport.width, 'the selected choice control remains reachable after removing a row');
+      if (process.env.W2_SCREENSHOT_DIR) await page.screenshot({ path: path.join(process.env.W2_SCREENSHOT_DIR, `choice-runtime-${viewport.width}.png`), animations: 'disabled' });
+      if (process.env.W2_CHOICE_DESIGN_PATH) await writeFile(process.env.W2_CHOICE_DESIGN_PATH, JSON.stringify({
+        provenance: 'actual Inspector edit and controlled Shell save callback, followed by actual FormDocumentPreview add-row interaction',
+        design: payload, tableId: seeded.tableId, fieldId: seeded.fieldId, values,
+      }, null, 2) + '\n');
+    }, viewport);
+  }
+  for (const viewport of [{ width: 1440, height: 960 }, { width: 390, height: 844 }]) {
+    await run(`multi-select Inspector defaults toggle parsed values independently at ${viewport.width}px`, async page => {
+      const seeded = await page.evaluate(() => {
+        const state = window.__store.getState();
+        const field = state.addField('multiSelect', '多选结果');
+        state.addNodeFromFieldToCell(field.id, { range: { t: 3, b: 3, l: 3, r: 4 }, left: 196, top: 72, width: 196, height: 36 });
+        const node = window.__store.getState().document.canvas.pages[0].nodes.find(item => item.bindings?.fieldId === field.id);
+        state.setSelectedNodeId(node.id); state.setActiveCanvasRail('config');
+        return { fieldId: field.id, nodeId: node.id };
+      });
+      const rows = page.locator('[data-option-list-editor="true"] [data-option-row="true"]');
+      await rows.first().locator('input').fill('合格:pass');
+      await rows.nth(1).locator('input').fill('不合格:fail');
+      for (const row of [rows.first(), rows.nth(1)]) {
+        await row.hover();
+        await row.getByRole('button', { name: '设为默认值', exact: true }).click();
+      }
+      const defaults = () => page.evaluate(nodeId => window.__store.getState().document.canvas.pages[0].nodes.find(node => node.id === nodeId).bindings.defaultValue, seeded.nodeId);
+      assert.deepEqual(await defaults(), ['pass', 'fail']);
+      assert.equal(await rows.locator('[data-option-default-active="true"]').count(), 2);
+      await rows.first().hover();
+      await rows.first().getByRole('button', { name: '设为默认值', exact: true }).click();
+      assert.deepEqual(await defaults(), ['fail']);
+      assert.equal(await rows.locator('[data-option-default-active="true"]').count(), 1);
+      await submit(page, 1); await settle(page, 0);
+      const saved = await page.evaluate(({ fieldId, nodeId }) => {
+        const payload = window.__requests[0].payload;
+        return { field: JSON.parse(payload.modelDesignJson).payload.fields.find(field => field.id === fieldId),
+          node: JSON.parse(payload.canvasDesignJson).payload.pages[0].nodes.find(node => node.id === nodeId) };
+      }, seeded);
+      assert.deepEqual(saved.field.typeConfig.options.map(option => option.value), ['pass', 'fail']);
+      assert.deepEqual(saved.node.bindings.defaultValue, ['fail']);
+      if (process.env.W2_SCREENSHOT_DIR) await page.screenshot({ path: path.join(process.env.W2_SCREENSHOT_DIR, `multi-choice-inspector-${viewport.width}.png`), animations: 'disabled' });
     }, viewport);
   }
   const result = { kind: 'actual-shell-and-canvas-with-controlled-save-callback', baseline: baseline ?? null, results };

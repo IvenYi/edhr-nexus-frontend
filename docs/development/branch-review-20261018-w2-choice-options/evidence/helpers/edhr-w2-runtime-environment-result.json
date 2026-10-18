@@ -1,0 +1,220 @@
+{
+  "result": "environment-tooling-restored",
+  "scope": "Temporary environment helper only; no repository source/test/config/lock changes, no application suite/build, no commit/push/merge, no Actions query/trigger by this helper.",
+  "completedAt": "2026-10-18T06:15:34.984223+00:00",
+  "runtime": {
+    "node": "v24.19.0",
+    "npm": "11.9.0",
+    "chromium": "154.0.8037.57",
+    "chromiumPath": "/usr/bin/chromium",
+    "jdk": "Temurin 21.0.12.1+1 complete JDK with javac and lib/ct.sym",
+    "maven": "3.9.11",
+    "playwright": "1.58.2"
+  },
+  "verifiedCommands": [
+    {
+      "command": "JDK official Temurin download + pinned SHA256 + extract + javac -version + ct.sym existence",
+      "exitCode": 0,
+      "sha256": "ce79869e1307ed8ee1e2baa86a412b1eb5b75d10a01006d788a6f968bcfaee94"
+    },
+    {
+      "command": "Maven official Apache archive download + official SHA512 + extract",
+      "exitCode": 0,
+      "checksum": "SHA512 verified against archive.apache.org published checksum"
+    },
+    {
+      "command": "npm install --prefix /workspace/.edhr-browser-tools --cache /workspace/.edhr-npm-cache --no-audit --no-fund --save-exact playwright@1.58.2",
+      "exitCode": 0,
+      "packagesAdded": 2,
+      "integrity": "npm package-lock integrity retained; no checksum overrides"
+    },
+    {
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr --version",
+      "exitCode": 0
+    },
+    {
+      "command": "Maven standalone dependency-free environment POM validate before parent probe",
+      "exitCode": 0,
+      "claim": "Maven executable only"
+    },
+    {
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -C -U -f /workspace/.edhr-cloud-tools/environment-validate-pom.xml validate",
+      "exitCode": 0,
+      "claim": "Actual official mirror dependency/plugin resolution and standalone validate with TLS and strict checksums; not app compilation/tests"
+    },
+    {
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -C -o -f /workspace/.edhr-cloud-tools/environment-validate-pom.xml validate",
+      "exitCode": 0,
+      "claim": "Only after exact environment POM dependencies were downloaded; not all application dependencies"
+    },
+    {
+      "command": "NODE_PATH=/workspace/.edhr-browser-tools/node_modules node /workspace/.edhr-cloud-tools/browser-smoke.cjs",
+      "exitCode": 0,
+      "claim": "Actual Chromium launch and synthetic Chinese-button read only"
+    },
+    {
+      "command": "createRequire from the repository browser script location resolves playwright through NODE_PATH",
+      "exitCode": 0,
+      "resolvedVersion": "1.58.2"
+    },
+    {
+      "command": "bash -n cloud-install.sh and mvn-edhr; install helper definitions byte-equal to actual tested helpers",
+      "exitCode": 0
+    }
+  ],
+  "diagnosticsResolved": [
+    {
+      "check": "offline resolution with fresh empty Maven cache",
+      "exitCode": 1,
+      "reason": "org.apache:apache:33 not cached; new bootstrap must resolve online first"
+    },
+    {
+      "check": "online Java direct networking",
+      "exitCode": 1,
+      "reason": "Java did not automatically use existing HTTPS_PROXY; curl official-source access worked"
+    },
+    {
+      "check": "proxy variables interpolated into integer Maven settings port",
+      "exitCode": 1,
+      "reason": "Maven parses port before interpolation; replaced with runtime-generated ephemeral settings"
+    },
+    {
+      "check": "official JDK bundled truststore through existing platform proxy",
+      "exitCode": 1,
+      "reason": "PKIX chain failure; wrapper now reuses existing system Java CA store while preserving an explicit user truststore"
+    }
+  ],
+  "security": {
+    "officialMavenMirror": "https://repo.maven.apache.org/maven2",
+    "localMavenRepository": "/workspace/.pr6-m2",
+    "tlsVerification": "retained",
+    "mavenStrictChecksumProbe": "-C passed",
+    "proxyCredentialsPresent": false,
+    "proxyPolicy": "Use already-configured credential-free HTTPS_PROXY host/port; reject credential-bearing or unsupported proxy formats; no network policy change",
+    "trustPolicy": "Existing /etc/ssl/certs/java/cacerts reused when readable; no downloaded/new CA and no TLS/hostname bypass",
+    "settingsDisclosure": "No full Maven settings/environment values or secrets included"
+  },
+  "bootstrapScript": {
+    "path": "/workspace/.edhr-cloud-tools/cloud-install.sh",
+    "fullScriptExecutedThisHelper": false,
+    "reason": "Frontend npm ci already succeeded in the primary agent; rerunning it concurrently with primary app checks would mutate shared dependencies. All bootstrap tool commands were executed separately; shell syntax and exact embedded helper bytes checked. New-task restoration not tested.",
+    "primaryReportedFrontendInstall": {
+      "command": "npm ci --cache /workspace/.edhr-npm-cache --no-audit --no-fund",
+      "exitCode": 0,
+      "packages": 445,
+      "evidenceOwner": "primary agent, not rerun by this helper"
+    }
+  },
+  "draft": {
+    "draft_id": "6101c6c0-f2ea-4f50-bfc8-d42557e97bf7~cecfgdraft_6ad463b52d44819796335379acca62fc",
+    "revision": 9,
+    "requires_publish": true,
+    "status": "saved-readback-confirmed",
+    "updated_fields": [
+      "install_script",
+      "start_skill"
+    ],
+    "preserved": {
+      "repositories": true,
+      "network_policy": true,
+      "secrets": true,
+      "runtime_requirements": true,
+      "pending_runtime_requirements": true
+    },
+    "exact_saved_field_readback": {
+      "install_script": true,
+      "start_skill": true
+    }
+  },
+  "unverified": [
+    "Full install_script execution in a fresh new task",
+    "Filesystem/cache restoration in a new task",
+    "Current application compilation/backend tests/Java PDF renderer",
+    "Any business workflow/browser E2E/visual/responsive/accessibility validation",
+    "PostgreSQL/Docker availability or integration; optional database not started",
+    "Whole-site premium scanner, ESLint and vendor guard are not environment smoke checks"
+  ],
+  "artifacts": [
+    {
+      "path": "/workspace/.edhr-cloud-tools/mvn-edhr",
+      "bytes": 1898,
+      "sha256": "ebc3436428ffe9d8689b1f4d4f825675c7b49dd7baba02235ee6d0781df73dae"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/settings.xml",
+      "bytes": 198,
+      "sha256": "26bd47ed597f0fd6cc1b609cc3921e9795750d66946687fe8828784b1cae0ff2"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/cloud-install.sh",
+      "bytes": 7323,
+      "sha256": "ef0e0080cdb539e2e35a539c9f550a7f744a8808f029cfde379e61cb04616631"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/cloud-start.md",
+      "bytes": 7194,
+      "sha256": "375636c7252d03093547c9b7b803cea627f83f5a45239a07eb2686174d7b9f83"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/environment-validate-pom.xml",
+      "bytes": 366,
+      "sha256": "169561b1111ccb085413b01ccd4f11b4361ded428ac158852d6d7690e2d331ab"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/browser-smoke.cjs",
+      "bytes": 921,
+      "sha256": "b3df447ff54fb929a7a8c635ab485e2c3546e97b24a17910b77d0d5b7ed6923c"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/jdk-21/bin/java",
+      "bytes": 12328,
+      "sha256": "2a207f5e7d075afa01d97f8048389a64432a44c4a5af0f5e77d6e286ec5f401d"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/jdk-21/bin/javac",
+      "bytes": 12424,
+      "sha256": "55859b80e7a9c4c4736be19ad3addeb35112ca6d17a30c4e0e116afc0a499bdb"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/jdk-21/lib/ct.sym",
+      "bytes": 10715134,
+      "sha256": "1f1ee0b8473cfa1593c935387b3a8dfc88c27a74c858fd5d3a808fb4f0cbf617"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/apache-maven-3.9.11/bin/mvn",
+      "bytes": 6184,
+      "sha256": "f9381d0cb98abaaf9592dae421eddc497e84ed9bfb723b84c111d1350863c3a2"
+    },
+    {
+      "path": "/workspace/.edhr-browser-tools/package.json",
+      "bytes": 55,
+      "sha256": "672e5d39bd385fcb5fac7b1ad822609fa34f04098f89e3794f8cb32b23b4db7c"
+    },
+    {
+      "path": "/workspace/.edhr-browser-tools/package-lock.json",
+      "bytes": 1602,
+      "sha256": "99bcbb8c4c1faff4e7a68e1e251f1f5b41734208cfde32ad2cef2d33afb49f6c"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-downloads/temurin21.tar.gz",
+      "bytes": 207473347,
+      "sha256": "ce79869e1307ed8ee1e2baa86a412b1eb5b75d10a01006d788a6f968bcfaee94"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-downloads/apache-maven-3.9.11-bin.tar.gz",
+      "bytes": 9160848,
+      "sha256": "4b7195b6a4f5c81af4c0212677a32ee8143643401bc6e1e8412e6b06ea82beac"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-downloads/apache-maven-3.9.11-bin.tar.gz.sha512",
+      "bytes": 128,
+      "sha256": "75571bfc053ec9de74c3b752b033317499a193e124ec1c264603fdf6a822a0db"
+    },
+    {
+      "path": "/etc/ssl/certs/java/cacerts",
+      "bytes": 173333,
+      "sha256": "2ea5c8a0420d5a4b4ea3c886cb4984d6e65872428cbaacf5d74b1734005667f3"
+    }
+  ],
+  "safeEvidence": "No secret values, complete Maven configuration, raw application logs, source dumps or JWT-bearing XML."
+}

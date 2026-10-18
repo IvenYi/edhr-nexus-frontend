@@ -178,6 +178,40 @@ class ProductionExecutionIntegrationTest {
         jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity,good_quantity,ng_quantity,scrap_quantity,status,created_at,updated_at) VALUES(101,'default',100,'B01','BATCH',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),(102,'default',100,'SN01','SN',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
     }
 
+    @Test void inspectorChoiceOptionsSaveAndSubmitAgainstTheSameFrozenCanonicalValues() throws Exception {
+        JsonNode fixture;
+        try (var input = Objects.requireNonNull(getClass().getResourceAsStream("/fixtures/shared-choice-options-design.json"))) {
+            fixture = mapper.readTree(input);
+        }
+        String tableId = fixture.path("tableId").asText(), fieldId = fixture.path("fieldId").asText();
+        String model = fixture.at("/design/modelDesignJson").asText(), canvas = fixture.at("/design/canvasDesignJson").asText();
+        JsonNode options = mapper.readTree(model).at("/payload/fields/0/typeConfig/columns/0/typeConfig/options");
+        assertThat(options.get(0).path("value").asText()).isEqualTo("pass");
+        assertThat(options.get(1).path("value").asText()).isEqualTo("fail");
+        assertThat(fixture.path("values").path(tableId).get(0).path(fieldId).asText()).isEqualTo("pass");
+        jdbc.update("UPDATE form_template_version SET model_design_json=?,canvas_design_json=? WHERE id=5", model, canvas);
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        String frozen = jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class);
+        // Subsequent template edits cannot replace this execution's chosen option set.
+        jdbc.update("UPDATE form_template_version SET model_design_json='{\"fields\":[]}',canvas_design_json='{}' WHERE id=5");
+        Map<String, Object> values = mapper.convertValue(fixture.path("values"), new com.fasterxml.jackson.core.type.TypeReference<>() {});
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", values)).andExpect(status().isOk());
+        String saved = jdbc.queryForObject("SELECT values_json FROM form_instance_record WHERE object_id=101", String.class);
+        assertThat(mapper.readTree(saved).path(tableId).get(0).path(fieldId).asText()).isEqualTo("pass");
+        JsonNode forged = fixture.path("values").deepCopy();
+        ((com.fasterxml.jackson.databind.node.ObjectNode) forged.path(tableId).get(0)).put(fieldId, "unknown-option");
+        Integer audits = jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class);
+        action(101, "SUBMIT", 2, "a", Map.of("formId", "form-51", "values", forged)).andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(2);
+        assertThat(jdbc.queryForObject("SELECT values_json FROM form_instance_record WHERE object_id=101", String.class)).isEqualTo(saved);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isEqualTo(audits);
+        action(101, "SUBMIT", 2, "a", Map.of("formId", "form-51", "values", values)).andExpect(status().isOk());
+        // Compare all frozen JSON content; serialization may normalize numeric lexemes such as 1.00.
+        assertThat(mapper.readTree(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class)))
+                .isEqualTo(mapper.readTree(frozen));
+        assertThat(jdbc.queryForObject("SELECT status FROM form_instance_record WHERE object_id=101", String.class)).isEqualTo("COMPLETED");
+    }
+
     @Test void referenceLookupUsesFrozenCanvasAndValidatesCurrentRowAtSave() throws Exception {
         String model = """
             {"fields":[{"id":"lookup","name":"账号","type":"text","status":"enabled"},
