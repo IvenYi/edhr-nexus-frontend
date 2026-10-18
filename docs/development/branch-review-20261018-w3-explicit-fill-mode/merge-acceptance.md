@@ -1,5 +1,7 @@
 # W3 明确填报方式合并验收
 
+[PR16](https://github.com/IvenYi/edhr-nexus-frontend/pull/16) 已创建，目标edhr-dev；创建时head为06f311f307047288c3f1e31d2fdf9f4da76cd698，受测候选仍为下列2f814422，随后只有L0 PR登记。
+
 执行级别 L2；唯一问题 AUD-H003。目标 `edhr-dev@4b25dc7f29c27cfb39c0f570b547869aa0c2f289`，实际独立受测候选 `2f8144220d1f7fc5a54b183204777bcae5bbd564`。该候选直接包含目标提交，未合并额外分支。PR15 已人工合入，不重新收尾旧 PR。
 
 主会完成最小修复与基础测试，本体正式 [updated](evidence/ontology/edhr-w3-mode-ontology-result.yaml)，全新未参与修复实例正式 [passed](evidence/independent/edhr-w3-independent-quality-result.yaml)。13项检查中11项必需检查实际通过，AUD-H003以受测提交和独立运行证据标记resolved，无本批阻断。所有专业实例及其辅助任务、验证进程已结束。
