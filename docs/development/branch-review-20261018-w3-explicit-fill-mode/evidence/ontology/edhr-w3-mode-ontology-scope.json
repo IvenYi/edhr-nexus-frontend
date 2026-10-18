@@ -1,0 +1,272 @@
+{
+  "contractBaseline": {
+    "sourceCommit": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+    "contractReadCommit": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "semanticScope": "AUD-H003 / existing DEC-0067 explicit mode and DEC-0009 incomplete drafts only; not full ontology audit",
+  "changedArtifacts": [
+    {
+      "path": "docs/knowledge/evidence/explicit-fill-mode-audit-2026-10-18.md",
+      "bytes": 8517,
+      "sha256": "17ec9da145df1a575a5fc5008103be353af9e6de177f81e359eabeeba1fc3b95"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-fill-settings.yaml",
+      "bytes": 3784,
+      "sha256": "b88fafe6bd4a75e5b2652da0d87b177729b94363b2b381bba04ae8594bcb5328"
+    },
+    {
+      "path": "docs/knowledge/rules/form-fill-settings.yaml",
+      "bytes": 4243,
+      "sha256": "2240c29d96e2b7bd4c0cc5e7cb0e256aa106cca512eff1d93d938598b202884e"
+    },
+    {
+      "path": "docs/knowledge/facts/form-fill-settings.yaml",
+      "bytes": 1346,
+      "sha256": "b6ed27c5ea282f8ef98606f7ea7bd76d1edc4c76fe3590b0b7666196b72d0c93"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+      "bytes": 6663,
+      "sha256": "2dd74904c246ba98b87134d9b36b455776b86028bcdb46b5e0b8f7dd2273276d"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "bytes": 88375,
+      "sha256": "35fa18a16a6894cdc2b15b26cb899cb1cd1dd48153b092d9dd03489e51980a70"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "bytes": 57776,
+      "sha256": "6172253f57c9b5843e60f1a458a927b91d1a224cec1685e59220eeb43b8277c4"
+    }
+  ],
+  "unchangedOriginalEvidenceAndContracts": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "bytes": 15881,
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "bytes": 13171,
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-fill-settings-confirmed.md",
+      "bytes": 6553,
+      "sha256": "f25b4d452e61343a03b454c9a79ae8ba87421cedb5c7ba4693cbd5ca6c7dc2e1"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml",
+      "bytes": 8575,
+      "sha256": "dc5311c43dd756f66c9d18919bde3288ab35225dbbdf7fe2a7bce029e62feca6"
+    }
+  ],
+  "implementationReadReceipts": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java",
+      "bytes": 10000,
+      "sha256": "0410663aa7c3709cc9f7965d4f46d7635c45274b13a37572dd1d558940b91caf"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "bytes": 80898,
+      "sha256": "ef5c060bcef440931b6c7500114f617940d8155412b32dcdd09474277753dff8"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/types.ts",
+      "bytes": 1523,
+      "sha256": "99c283df6c36c2c5a00c5e7876de0cfce95546138ff4f0b48b7d5a0be89d6c4b"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx",
+      "bytes": 14329,
+      "sha256": "a69ba8ab44cd1180f9fc67919d4c7cea0bbf611687095297298b1974fd479c41"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettingsButton.tsx",
+      "bytes": 2366,
+      "sha256": "0d10c152700d28e89b7eb4b16bc20c1aeb13f3d7cb27cb0f170cdf19f60aaf18"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "bytes": 184493,
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7"
+    }
+  ],
+  "testReadReceipts": [
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/FormFillSettingsServiceTest.java",
+      "bytes": 9214,
+      "sha256": "d7bac8ee51aa21a172d9e9bb2853bf2f9702f60aa3b8f4214563f8916945d656"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java",
+      "bytes": 97671,
+      "sha256": "8268de4f9d4f8e51cbd4ae8e599428dacf84c6ae5d7d14ed57ea66c46da31a84"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormFillSnapshotTest.java",
+      "bytes": 3822,
+      "sha256": "e4d6a6fb8f1bed70b1bf4cf0e09bda4a7d1b7e7d4e8cee3603d4e45f83b6f762"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+      "bytes": 174334,
+      "sha256": "cd9966d61255ee7101fbd81990eca3c23b6fc5599ae4af9ca89dc987a60adbda"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerServiceTest.java",
+      "bytes": 19377,
+      "sha256": "6a93edd9d2b2647a9aaeab082a0558037cefc19b9c6be2b678474c0a3765170b"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-explicit-fill-mode.mjs",
+      "bytes": 3912,
+      "sha256": "befc71ee814c4fff21c060378d067e013b01155c3323eeb9243ec66317b1c35a"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-explicit-fill-mode-browser.mjs",
+      "bytes": 12262,
+      "sha256": "15f1dcddd0589eb1acc6a348ad2f1d39c897249249667e24733ff3a4775c2be0"
+    }
+  ],
+  "primaryJavaMetadataReadByOntologyRole": [
+    {
+      "name": "BusinessKnowledgeModelTest",
+      "tests": 89,
+      "passed": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": []
+    },
+    {
+      "name": "ProductProcessControllerTest",
+      "tests": 14,
+      "passed": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": []
+    },
+    {
+      "name": "ProductProcessOwnerServiceTest",
+      "tests": 7,
+      "passed": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": []
+    },
+    {
+      "name": "ProductionExecutionIntegrationTest",
+      "tests": 71,
+      "passed": 68,
+      "failures": 0,
+      "errors": 0,
+      "skipped": [
+        "formRecordsBrowserFixture",
+        "firstStartFreezesOneCommittedConfigurationDuringProcessRebinding",
+        "browserEvidenceFixture"
+      ]
+    },
+    {
+      "name": "FormFillSnapshotTest",
+      "tests": 3,
+      "passed": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": []
+    },
+    {
+      "name": "ProductionExecutionEngineTest",
+      "tests": 22,
+      "passed": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": []
+    },
+    {
+      "name": "ProductionExecutionFormValuesTest",
+      "tests": 8,
+      "passed": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": []
+    },
+    {
+      "name": "FormFillSettingsControllerTest",
+      "tests": 2,
+      "passed": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": []
+    },
+    {
+      "name": "WorkTemplateControllerTest",
+      "tests": 69,
+      "passed": 69,
+      "failures": 0,
+      "errors": 0,
+      "skipped": []
+    },
+    {
+      "name": "FormFillSettingsServiceTest",
+      "tests": 11,
+      "passed": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": []
+    }
+  ],
+  "primaryBrowserReportReadByOntologyRole": {
+    "path": "/tmp/edhr-w3-browser/browser-results.json",
+    "bytes": 5899,
+    "sha256": "bb270ebd524388607c219d1cbdc720cdd5844244f6a93d46d06362d880245e77",
+    "names": [
+      "inline-1440",
+      "dialog-1440",
+      "inline-390",
+      "dialog-390",
+      "work-1440"
+    ]
+  },
+  "notExecutedByOntologyRole": [
+    "Maven/JUnit",
+    "Node",
+    "browser",
+    "build",
+    "database",
+    "Ruby bootstrap",
+    "independent quality"
+  ],
+  "notClosed": [
+    "AUD-H004",
+    "AUD-H009",
+    "AUD-H010",
+    "A12",
+    "two previously deferred DHR high findings",
+    "full W2/W3 audit"
+  ],
+  "noNewBusinessQuestions": true,
+  "noMaturityOrVersionPromotion": true
+}

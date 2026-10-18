@@ -31,7 +31,7 @@ export type FormFillSettingsValue = {
   fieldPermissions?: FieldPermissions;
   eventBindings?: Record<string, { fieldId?: string }>;
 };
-export const fillMode = (value: FormFillSettingsValue) => value.fillMode ?? 'DIRECT';
+export const fillMode = (value: FormFillSettingsValue) => value.fillMode === 'DIRECT' || value.fillMode === 'PROCESS' ? value.fillMode : undefined;
 export const directFillVersion = (config?: DirectFillConfig) => ({
   nodesJson: JSON.stringify([{ id: 'entry', data: { kind: 'START', label: '填报', config: config ?? {} } }]),
 });

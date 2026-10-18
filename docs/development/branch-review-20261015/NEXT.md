@@ -1,8 +1,8 @@
 # 持续推进台账
 
-当前交付：[PR15 同字段共享选项](https://github.com/IvenYi/edhr-nexus-frontend/pull/15)，独立受测9ac5e0e2正式passed，后续仅L0收尾，待用户人工合并。合并后先拉取最新edhr-dev，核对受影响增量，再推进W3显式填写模式链。
+当前交付：[PR16 明确填报方式](https://github.com/IvenYi/edhr-nexus-frontend/pull/16)，目标edhr-dev，建议人工合并。用户已合并PR15，目标基线为 `4b25dc7f29c27cfb39c0f570b547869aa0c2f289`，合并树精确等于交付b140c079。[W3第一批](../branch-review-20261018-w3-explicit-fill-mode/README.md) AUD-H003本体updated、全新独立实例对 `2f8144220d1f7fc5a54b183204777bcae5bbd564` 正式passed并核验resolved，11项必需检查通过；随后仅L0验收、原件归档和PR链接登记，未自动合并或部署。
 
-PR7至PR14均已由用户人工合入，各批原始验收证据保留。PR14合并b191e054892ae06cb0d8a45f62d034deabbba3e3的树精确等于批准交付1246cda13aca6ae5a5f98c3b7a5bf79f58f4b26e，37bc至b191无契约漂移。当前[W2同字段共享选项](../branch-review-20261018-w2-choice-options/README.md)已完成有限整改：初轮c449正式failed后补齐真实ModelTab子列写入口，全新质量实例对9ac5e0e2正式passed，建议本切片人工合并，完整W2未完成。用户确认记录为DEC-0080，原本体及跟进均updated。后续仅L0验收/PR时点登记，不改写任何原始结果或重收尾旧PR；原子列同步、插列、保存/投影等报告保持各自受测范围。
+PR7至PR15均已由用户人工合入，各批原始验收证据保留。PR14合并b191e054892ae06cb0d8a45f62d034deabbba3e3的树精确等于批准交付1246cda13aca6ae5a5f98c3b7a5bf79f58f4b26e，37bc至b191无契约漂移。[W2同字段共享选项](../branch-review-20261018-w2-choice-options/README.md)初轮c449正式failed、最终9ac5e0e2正式passed保持原样；PR15合入不等于完整W2完成。用户确认记录为DEC-0080，原本体及跟进均updated。本轮只按新基线修AUD-H003，不改写任何原始结果或重收尾旧PR；原子列同步、插列、保存/投影等报告保持各自受测范围。
 
 ## 当前实际状态
 
@@ -27,7 +27,7 @@ PR7至PR14均已由用户人工合入，各批原始验收证据保留。PR14合
 
 ## W2→W7 已定顺序
 
-W2前五批分别随PR10至PR14人工合入，各自独立受测SHA和原结果不改写。第六批9ac5e0e2本体updated、全新独立passed，待本批人工合并后按最新目标继续。优先推进W3 AUD-H003显式填写模式链：保存/serialize缺失值补DIRECT、校验提前接受空模式及发布旧分支绕过须联查，不能仅改usesProcess；DEC-0009允许不完整草稿的边界保留。只读调用报告留在本批辅助证据，不夹带W3修复。随后继续剩余W2消费差异和W3；每批拉取最新edhr-dev、固定分母。完整执行HTTP/JPA/签署、历史不一致模板迁移和旧配置兼容不因本批测试自动获得通过。W1 gap、A12及两旧DHR high保留。H005不重开；H003/4与H009/10仍留W3，无新增合法证据不计已修。
+W2六批分别随PR10至PR15人工合入，各自独立受测SHA和原结果不改写。当前W3固定4b25、2062路径/blob仍全pending；AUD-H003同时修复共享推导、save/serialize补值、validate空值及publish旧旁路，保留DEC-0009不完整草稿。主侧和全新独立分别实际运行同组293 Java通过/3既有条件跳过、13 Node、5真实浏览器及构建，本体updated、独立11项必需检查正式passed。独立原始基线Java7条5红2正；中间修复版本PROCESS单项红证另列。官方脚本本轮实际扫描4b25/2f各84项，完整集合相同新增0、strict仍退出2；ESLint仍缺配置，均不称通过。21份独立安全原件保持原字节，后续仅L0登记。待用户合并本批后先拉取最新edhr-dev，再继续W3 H004/H009/H010及剩余W2消费差异。完整HTTP/JPA/签署、历史模板迁移及旧配置兼容不因本批自动通过；W1 gap、A12及两旧DHR high保留，H005不重开，完整W2/W3仍未完成。
 
 | 工作包 | 主要后续内容 | 本批准备材料 |
 | --- | --- | --- |

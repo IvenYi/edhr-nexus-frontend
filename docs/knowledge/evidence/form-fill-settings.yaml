@@ -1,5 +1,10 @@
 knowledgeModelVersion: 0.3.25
 evidence:
+  - id: evidence.form-fill-explicit-mode-audit-20261018
+    type: document
+    path: docs/knowledge/evidence/explicit-fill-mode-audit-2026-10-18.md
+    description: original-evidence；AUD-H003在4b25dc7f29c27cfb39c0f570b547869aa0c2f289核对缺失模式补DIRECT及发布旁路；复用DEC-0067原确认并保留DEC-0009不完整草稿。当前工程边界、实际实现与验证时点分列，不新增业务政策，不以源码或诊断代替运行与独立质量。
+    visibility: internal
   - id: evidence.form-fill-settings-confirmed
     type: document
     path: docs/knowledge/evidence/form-fill-settings-confirmed.md
@@ -33,5 +38,5 @@ evidence:
   - id: evidence.form-fill-settings-current-mode-validation
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java
-    description: original-evidence；usesProcess 对缺失模式返回 false，serialize 补 DIRECT；validate 对整体 null/missing 设置返回，对无模式对象按直接模式解释且不要求模式必填； 这与 DEC-0067 最新显式模式及撤销兼容确认存在未修差异。directNode、activeBinding 和实际新配置校验另有直接填报实现。 仅为本次源码核对，不表示运行验证或兼容政策获得确认。
+    description: original-evidence；2026-10-18 AUD-H003当前工作树usesProcess严格接受对象内文本DIRECT/PROCESS，serialize不补值，validate不再对null/missing跳过；directNode及activeBinding保留活动配置边界。原4b25基线的缺失返回false、补DIRECT与发布旁路保留在本批证据Markdown，不能作为政策或当前行为。源码核对不代替主侧运行、独立质量或全切片验收；版本和成熟度不提升。
     visibility: internal

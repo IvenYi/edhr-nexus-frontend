@@ -194,9 +194,11 @@ public class WorkTemplateController {
             JsonNode graphNodes = FLOW_GRAPH_OBJECT_MAPPER.valueToTree(payload.getOrDefault("nodes", List.of()));
             for (JsonNode node : graphNodes) {
                 if ("FORM".equals(node.path("data").path("kind").asText())) {
-                    var config = ((com.fasterxml.jackson.databind.node.ObjectNode) node.path("data")).withObject("/config");
-                    if (!config.hasNonNull("fillMode")) config.put("fillMode", "DIRECT");
-                    com.zencas.edhr.workflow.service.FormFillSettingsService.usesProcess(config);
+                    JsonNode config = node.path("data").path("config");
+                    // Incomplete drafts remain unconfigured; never manufacture an active mode.
+                    if (!config.isMissingNode() && !config.isNull() && !config.isObject())
+                        throw new com.zencas.edhr.common.exception.BusinessException(com.zencas.edhr.common.exception.ErrorCode.WF_002, "填报设置格式不正确");
+                    if (config.hasNonNull("fillMode")) com.zencas.edhr.workflow.service.FormFillSettingsService.usesProcess(config);
                 }
             }
             String nodesJson = FLOW_GRAPH_OBJECT_MAPPER.writeValueAsString(graphNodes);
@@ -638,7 +640,8 @@ public class WorkTemplateController {
             for (JsonNode node : nodes) {
                 if (!"FORM".equals(node.path("data").path("kind").asText(""))) continue;
                 JsonNode config = node.path("data").path("config");
-                if (!com.zencas.edhr.workflow.service.FormFillSettingsService.usesProcess(config)) continue;
+                // This read endpoint lists explicit PROCESS references, including incomplete drafts.
+                if (!"PROCESS".equals(config.path("fillMode").asText())) continue;
                 String processVersionId = config.path("formProcessVersionId").asText("").trim();
                 if (processVersionId.isBlank()) continue;
                 Long processVersionIdValue = parseLong(processVersionId);
@@ -745,13 +748,14 @@ public class WorkTemplateController {
             for (JsonNode node : nodes) {
                 if (!"FORM".equals(node.path("data").path("kind").asText())) continue;
                 JsonNode fillSettings = node.path("data").path("config");
-                if (fillSettings.has("fillMode") || fillSettings.has("directFillConfig")) {
+                if (!com.zencas.edhr.workflow.service.FormFillSettingsService.usesProcess(fillSettings)) {
                     fillSettingsService.validate(fillSettings, Long.valueOf(fillSettings.path("formTemplateVersionId").asText()));
-                    if (!com.zencas.edhr.workflow.service.FormFillSettingsService.usesProcess(fillSettings)) continue;
+                    continue;
                 }
                 String processVersionId = fillSettings.path("formProcessVersionId").asText("").trim();
                 if (processVersionId.isBlank()) {
-                    continue;
+                    throw new com.zencas.edhr.common.exception.BusinessException(
+                            com.zencas.edhr.common.exception.ErrorCode.WF_002, "请选择已发布的表单流程");
                 }
                 WorkflowDefinitionVersion processVersion;
                 try {
@@ -774,6 +778,8 @@ public class WorkTemplateController {
                             "表单填写节点只能引用已发布的表单流程版本，当前不能发布");
                 }
                 validateFormProcessFieldPermissions(node, processVersion.getNodesJson());
+                // Retain the node/button-specific diagnostics before complete settings validation.
+                fillSettingsService.validate(fillSettings, Long.valueOf(fillSettings.path("formTemplateVersionId").asText()));
             }
         } catch (JsonProcessingException exception) {
             throw new com.zencas.edhr.common.exception.BusinessException(

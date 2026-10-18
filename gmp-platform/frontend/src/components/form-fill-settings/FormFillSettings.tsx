@@ -83,7 +83,7 @@ export default function FormFillSettings({ value, form, editable, onChange }: {
     })}
   </Stack>;
   const fieldSettingsButton = <Button fullWidth size="small" variant="outlined" startIcon={<TuneOutlined />} onClick={() => setPermissionsOpen(true)}
-    disabled={!form || version.isLoading || version.isError || (mode === 'PROCESS' && !process.data)}>
+    disabled={!mode || !form || version.isLoading || version.isError || (mode === 'PROCESS' && !process.data)}>
     {editable ? '字段权限设置' : '查看字段权限'}
   </Button>;
   const updateDirect = (patch: Partial<typeof direct>) => {
@@ -108,12 +108,13 @@ export default function FormFillSettings({ value, form, editable, onChange }: {
   return <Stack spacing={2} sx={{ minWidth: 0 }}>
     <Box>
       <Typography variant="subtitle2" sx={{ mb: 1 }}>填报方式</Typography>
-      <ToggleButtonGroup exclusive fullWidth size="small" value={mode} disabled={!editable} aria-label="填报方式"
+      <ToggleButtonGroup exclusive fullWidth size="small" value={mode ?? null} disabled={!editable} aria-label="填报方式"
         onChange={(_, next) => { if (next && next !== mode) { onChange({ ...value, fillMode: next }); setTab('people'); } }}
         sx={{ '& .MuiToggleButton-root': { gap: 0.75, py: 1, textTransform: 'none', whiteSpace: 'nowrap' } }}>
         <ToggleButton value="DIRECT"><EditNoteOutlined fontSize="small" />直接填报</ToggleButton>
         <ToggleButton value="PROCESS"><AccountTreeOutlined fontSize="small" />按流程填报</ToggleButton>
       </ToggleButtonGroup>
+      {!mode ? <Alert severity="info">请选择填报方式后配置填报要求。</Alert> : null}
     </Box>
     {mode === 'PROCESS' ? <>
       <Autocomplete size="small" disablePortal options={selected && !options.some(item => item.versionId === selected.versionId) ? [selected, ...options] : options}
@@ -149,10 +150,10 @@ export default function FormFillSettings({ value, form, editable, onChange }: {
         <Tab value="people" label="填报人员" />
         <Tab value="actions" label="按钮与签署" />
         <Tab value="fields" label="字段权限与绑定" />
-      </Tabs> : <Box>
+      </Tabs> : mode === 'PROCESS' ? <Box>
         <Typography variant="subtitle2" sx={{ mb: 0.5 }}>流程配置概要</Typography>
         {permissionRows}
-      </Box>}
+      </Box> : null}
       {tab === 'people' && mode === 'DIRECT' ? <EntryPermissionGroupEditor config={direct} editable={editable} onChange={updateDirect} /> : null}
       {mode === 'DIRECT' && tab === 'fields' ? <>
         {bindingSummary.pending > 0 ? <Alert severity="warning">{bindingSummary.pending} 项签署尚未绑定签名字段</Alert> : null}
@@ -160,7 +161,7 @@ export default function FormFillSettings({ value, form, editable, onChange }: {
       </> : null}
       {mode === 'PROCESS' && !process.data ? <Typography variant="body2" color="text.secondary">{process.isFetching ? '正在加载流程配置…' : '尚未选择可用流程'}</Typography> : null}
       {tab === 'actions' && mode === 'DIRECT' ? <WorkflowActionConfig kind="START" profile="DIRECT_FILL" buttons={direct.buttons} events={direct.buttonEvents} guardMode="BLOCK_ON_INVALID" editable={editable} onChange={updateDirect} /> : null}
-    {mode === 'PROCESS' || tab === 'fields' ? fieldSettingsButton : null}
+    {mode === 'PROCESS' || (mode === 'DIRECT' && tab === 'fields') ? fieldSettingsButton : null}
     {version.isError ? <Alert severity="error">表单字段加载失败</Alert> : null}
     <FormProcessPreviewDialog option={previewProcess} onClose={() => setPreviewProcess(null)} onExited={() => {
       requestAnimationFrame(() => {
@@ -172,6 +173,7 @@ export default function FormFillSettings({ value, form, editable, onChange }: {
     <FormPermissionConfigDialog open={permissionsOpen} subjects={subjects} fields={fields} document={document}
       permissions={active.fieldPermissions} events={events} eventBindings={active.eventBindings ?? {}} editable={editable} loading={version.isLoading}
       onClose={() => setPermissionsOpen(false)} onSave={(fieldPermissions, eventBindings) => {
+        if (!mode) return;
         const validBindings = pruneEventBindings(eventBindings, events, fields);
         if (mode === 'DIRECT') onChange({ ...value, fillMode: mode, directFillConfig: { ...direct, fieldPermissions, eventBindings: validBindings } });
         else onChange({ ...value, fillMode: mode, fieldPermissions, eventBindings: validBindings });

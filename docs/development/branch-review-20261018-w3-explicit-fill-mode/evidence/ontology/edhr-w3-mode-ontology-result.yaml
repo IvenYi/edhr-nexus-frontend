@@ -1,0 +1,118 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 4b25dc7f29c27cfb39c0f570b547869aa0c2f289
+    targetBranch: edhr-dev
+    targetCommit: 4b25dc7f29c27cfb39c0f570b547869aa0c2f289
+    contractReadCommit: 4b25dc7f29c27cfb39c0f570b547869aa0c2f289
+    uncommittedContractPaths: []
+  reason: 复用DEC-0067既有显式模式及取消旧默认确认，并保留DEC-0009不完整草稿；当前源码和主侧实际回归支持AUD-H003同根实现差异resolved。仅同步现行证据和事实定位，全部业务定义仍specified/internal、schema1.2.0；不新增政策、执行契约、试点或全库语义审计，不冒称独立质量完成。
+  changedArtifacts:
+    - path: docs/knowledge/evidence/explicit-fill-mode-audit-2026-10-18.md
+      changeType: create
+      ids: []
+    - path: docs/knowledge/evidence/form-fill-settings.yaml
+      changeType: update
+      ids: [evidence.form-fill-explicit-mode-audit-20261018, evidence.form-fill-settings-current-mode-validation]
+    - path: docs/knowledge/rules/form-fill-settings.yaml
+      changeType: update
+      ids: [rule.form-fill-explicit-mode]
+    - path: docs/knowledge/facts/form-fill-settings.yaml
+      changeType: update
+      ids: [fact.form-fill-settings.mode]
+    - path: docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml
+      changeType: update
+      ids: [DEC-0067, discrepancy.form-fill-settings-missing-mode-default-and-validation-bypass]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: evidence.form-fill-explicit-mode-audit-20261018
+      disposition: updated
+      scope: 新增本批唯一证据ID，分列4b25原始问题、既有原始确认、工程落实、主侧运行与本体只读核对的时点；不是新增DEC或逐字用户确认。
+      sourceReferences: [docs/knowledge/evidence/explicit-fill-mode-audit-2026-10-18.md, docs/knowledge/evidence/form-fill-settings-confirmed.md]
+    - id: evidence.form-fill-settings-current-mode-validation
+      disposition: updated
+      scope: 当前证据改为严格对象/文本模式解析、不补值和不跳过null；旧源码行为保留在本批证据及原提交，不作为现行默认政策。
+      sourceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java, docs/knowledge/evidence/explicit-fill-mode-audit-2026-10-18.md]
+    - id: fact.form-fill-settings.mode
+      disposition: updated
+      scope: 仍仅DIRECT/PROCESS，更新working-tree来源定位、日期及证据；未配置草稿不伪造第三种模式，未注册通用事实装配器或提升成熟度。
+      sourceReferences: [docs/knowledge/facts/form-fill-settings.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java]
+    - id: rule.form-fill-explicit-mode
+      disposition: updated
+      scope: 只增加当前审查证据；保留条件、结果、禁止旧推导和specified/internal，不增加草稿发布同一门槛或新业务政策。
+      sourceReferences: [docs/knowledge/rules/form-fill-settings.yaml, docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml]
+    - id: discrepancy.form-fill-settings-missing-mode-default-and-validation-bypass
+      disposition: updated
+      scope: 沿用AUD-H003唯一同根ID，依当前严格解析、草稿分层、发布两模式完整校验和实际回归更新resolved。PROCESS空引用提前continue已由新增反例真实失败后修复；该状态不替代最终独立qualityResult，不改写原固定提交审查状态或关闭其余W3问题。
+      sourceReferences: [docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml, docs/knowledge/evidence/explicit-fill-mode-audit-2026-10-18.md, gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    - id: DEC-0067-01
+      disposition: retained
+      scope: 既有两入口显式选择政策保持；明确新建命令显式写配置和读取旧缺失推导有别，不额外要求所有新建入口重复点击。
+      sourceReferences: [docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml, docs/knowledge/evidence/form-fill-settings-confirmed.md]
+    - id: DEC-0067-02
+      disposition: retained
+      scope: 直接模式权限、字段例外、按钮和签署继续适用，不因取消开放默认而放宽。
+      sourceReferences: [docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml]
+    - id: DEC-0067-03
+      disposition: retained
+      scope: 显式PROCESS仍必须引用已发布流程，保留活动配置隔离和节点权限/按钮/签署，不采用休眠直接配置。
+      sourceReferences: [docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml]
+    - id: DEC-0067-04
+      disposition: retained
+      scope: 共用组件及保存/发布/运行连续性保持，本批不宣称整个DEC全部验收。
+      sourceReferences: [docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml]
+    - id: DEC-0067-05
+      disposition: retained
+      scope: 不回填、迁移或为旧数据推导开放默认；新快照不可变及原权限签署继续保留，未修改历史冻结或CUSTOM入口。
+      sourceReferences: [docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml, docs/knowledge/evidence/form-fill-settings-confirmed.md]
+    - id: DEC-0009-01
+      disposition: retained
+      scope: 未完成作业草稿仍可保存/GET；缺失/null不补模式，已提供非法枚举作基础格式拒绝是工程落实，不提前执行发布级业务完整性。
+      sourceReferences: [docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml]
+    - id: DEC-0009-05
+      disposition: retained
+      scope: 只有通过完整校验的草稿可发布；已发布只读及草稿不改变当前版本保持。
+      sourceReferences: [docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.w3-mode-yaml-types-and-ids
+      checkType: schema
+      command: python3 /tmp/edhr-w3-mode-ontology-diagnostic.py
+      outcome: passed
+      evidence: [206份YAML解析及schema驱动类型/必填检查通过，2524个ID全局唯一；本批只新增1个证据ID；这是纯诊断，不替代正式Maven/JUnit或全库语义审计。]
+    - id: validation.w3-mode-references-and-paths
+      checkType: reference
+      command: python3 /tmp/edhr-w3-mode-ontology-diagnostic.py
+      outcome: passed
+      evidence: [知识ID类型引用、evidence及文件型source路径检查通过；符号型sourcePath不被误当成本地文件。]
+    - id: validation.w3-mode-internal-projection
+      checkType: projection
+      command: python3 /tmp/edhr-w3-mode-ontology-diagnostic.py
+      outcome: passed
+      evidence: [全部本批定义保持specified/internal，规则条件/结果不变，无新增执行契约；版本0.3.25及schema1.2.0不变。]
+    - id: validation.w3-mode-current-discrepancy-evidence
+      checkType: status-transition
+      command: git diff -- docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml docs/knowledge/facts/form-fill-settings.yaml docs/knowledge/evidence/form-fill-settings.yaml
+      outcome: passed
+      evidence: [当前严格模式解析、保存GET草稿分层、DIRECT及PROCESS完整发布校验源码已只读核对；仅现行同根discrepancy由open更新resolved，不提升业务规则成熟度、不改原历史审查。]
+    - id: validation.w3-mode-primary-actual-report-read
+      checkType: evidence-path
+      command: 只读Python ElementTree解析当前10份Surefire XML的suite/case元数据，并读取/tmp/edhr-w3-browser/browser-results.json
+      outcome: passed
+      evidence:
+        - 主侧Java296总/293实跑通过/0失败错误/3条件跳过；知识89通过，WorkController69、fillservice11、snapshot3及相关集成新首START拒绝场景实际通过。原始日志/XML不归档到知识资产。
+        - 主侧浏览器5场景真实passed，page/console errors为空；1440/390共享inline/dialog及1440 WorkTemplateEditor发布阻断和草稿graph PUT/重读，受控API不冒充真实后端认证E2E。
+        - 本体只读核对，未亲自运行Maven、Node、浏览器、构建、数据库、Ruby或独立质量；正式Maven知识结果来自主侧实际执行，最终独立质量另行完成。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

@@ -57,6 +57,8 @@ class WorkTemplateControllerTest {
 
     @BeforeEach
     void stubsAnEffectiveFormVersionForPublishableFlowFixtures() {
+        org.springframework.test.util.ReflectionTestUtils.setField(controller, "fillSettingsService",
+                new com.zencas.edhr.workflow.service.FormFillSettingsService(jsonObjectMapper, versionRepository, workflowDefinitionRepository, formTemplateVersionRepository));
         lenient().when(formTemplateVersionRepository.findById(702L)).thenReturn(Optional.of(
                 FormTemplateVersion.builder().id(702L).status("DRAFT").build()));
         lenient().when(versionRepository.findById(901L)).thenReturn(Optional.of(
@@ -80,6 +82,68 @@ class WorkTemplateControllerTest {
             assertThat(summary.currentFlowVersionNumber()).isNull();
         });
         verify(workflowDefinitionRepository).findWorkTemplates(org.mockito.ArgumentMatchers.eq("WORK"), org.mockito.ArgumentMatchers.eq(""), any(Pageable.class));
+    }
+
+    @Test
+    void savesUnconfiguredModeAsAnIncompleteDraftWithoutAddingDirect() throws Exception {
+        WorkflowDefinition work = WorkflowDefinition.builder().id(101L).type("WORK").build();
+        WorkflowDefinitionVersion draft = draftVersion(201L, "[]");
+        when(workflowDefinitionRepository.findById(101L)).thenReturn(Optional.of(work));
+        when(versionRepository.findById(201L)).thenReturn(Optional.of(draft));
+        when(versionRepository.save(any(WorkflowDefinitionVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        controller.saveGraph(101L, 201L, Map.of("nodes", List.of(
+                Map.of("id", "start", "data", Map.of("kind", "START")),
+                Map.of("id", "form", "data", Map.of("kind", "FORM")),
+                Map.of("id", "end", "data", Map.of("kind", "END"))), "edges", List.of()));
+        JsonNode node = jsonObjectMapper.readTree(controller.getVersion(101L, 201L).getData().getNodesJson()).get(1);
+        assertThat(node.path("data").path("config").has("fillMode")).isFalse();
+        assertThat(draft.getStatus()).isEqualTo("DRAFT");
+        assertThat(draft.getEdgesJson()).isEqualTo("[]");
+    }
+
+    @Test
+    void rejectsPublishingAFormWithNoModeBeforeWritingAnyVersionOrAudit() {
+        WorkflowDefinition work = WorkflowDefinition.builder().id(101L).type("WORK").build();
+        WorkflowDefinitionVersion draft = draftVersion(201L,
+                "[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"formTemplateVersionId\":\"702\"}}},{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]");
+        when(workflowDefinitionRepository.findById(101L)).thenReturn(Optional.of(work));
+        when(versionRepository.findById(201L)).thenReturn(Optional.of(draft));
+        lenient().when(versionRepository.findByDefinitionIdOrderByVersionNumberDesc(101L)).thenReturn(List.of(draft));
+        lenient().when(versionRepository.save(any(WorkflowDefinitionVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        lenient().when(idGenerator.nextId()).thenReturn(801L, 802L, 803L);
+        assertThatThrownBy(() -> controller.publishVersion(101L, 201L)).hasMessageContaining("填报方式");
+        assertThat(draft.getStatus()).isEqualTo("DRAFT");
+        verify(versionRepository, times(0)).save(any());
+        verify(auditEventRepository, times(0)).save(any());
+    }
+
+    @Test
+    void rejectsPublishingProcessModeWithoutAnExplicitProcessBeforeWritingAnyVersionOrAudit() {
+        for (String processReference : List.of("", ",\"formProcessVersionId\":null", ",\"formProcessVersionId\":\"\"", ",\"formProcessVersionId\":\"   \"")) {
+            WorkflowDefinition work = WorkflowDefinition.builder().id(101L).type("WORK").build();
+            WorkflowDefinitionVersion draft = draftVersion(201L,
+                    "[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"formTemplateVersionId\":\"702\",\"fillMode\":\"PROCESS\"" + processReference + "}}},{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]");
+            when(workflowDefinitionRepository.findById(101L)).thenReturn(Optional.of(work));
+            when(versionRepository.findById(201L)).thenReturn(Optional.of(draft));
+            lenient().when(versionRepository.findByDefinitionIdOrderByVersionNumberDesc(101L)).thenReturn(List.of(draft));
+            lenient().when(versionRepository.save(any(WorkflowDefinitionVersion.class))).thenAnswer(invocation -> invocation.getArgument(0));
+            lenient().when(idGenerator.nextId()).thenReturn(801L, 802L, 803L);
+            assertThatThrownBy(() -> controller.publishVersion(101L, 201L)).hasMessageContaining("请选择已发布的表单流程");
+            assertThat(draft.getStatus()).isEqualTo("DRAFT");
+            verify(versionRepository, times(0)).save(any());
+            verify(auditEventRepository, times(0)).save(any());
+        }
+    }
+
+    @Test
+    void readsIncompleteDraftProcessReferencesWithoutTreatingDormantChoiceAsActive() {
+        WorkflowDefinition work = WorkflowDefinition.builder().id(101L).type("WORK").build();
+        WorkflowDefinitionVersion draft = draftVersion(201L,
+                "[{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"formProcessVersionId\":\"901\"}}}]");
+        when(workflowDefinitionRepository.findById(101L)).thenReturn(Optional.of(work));
+        when(versionRepository.findById(201L)).thenReturn(Optional.of(draft));
+        assertThat(controller.listFormProcessReferences(101L, 201L).getData()).isEmpty();
+        verify(versionRepository, times(0)).findById(901L);
     }
 
     @Test
@@ -272,7 +336,7 @@ class WorkTemplateControllerTest {
     void publishesDraftAndCreatesTheNextInheritedDraft() {
         WorkflowDefinition work = WorkflowDefinition.builder().id(101L).name("清场作业").type("WORK").build();
         WorkflowDefinitionVersion draft = WorkflowDefinitionVersion.builder().id(201L).definitionId(101L).versionNumber(1)
-                .status("DRAFT").isCurrent(false).nodesJson("[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},{\"id\":\"step-1\",\"data\":{\"kind\":\"FORM\",\"config\":{\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\"}}},{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]")
+                .status("DRAFT").isCurrent(false).nodesJson("[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},{\"id\":\"step-1\",\"data\":{\"kind\":\"FORM\",\"config\":{\"fillMode\":\"PROCESS\",\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\"}}},{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]")
                 .edgesJson("[{\"id\":\"start-step-1\",\"source\":\"start\",\"target\":\"step-1\"},{\"id\":\"step-1-end\",\"source\":\"step-1\",\"target\":\"end\"}]").build();
         when(workflowDefinitionRepository.findById(101L)).thenReturn(Optional.of(work));
         when(versionRepository.findById(201L)).thenReturn(Optional.of(draft));
@@ -303,7 +367,7 @@ class WorkTemplateControllerTest {
         WorkflowDefinition work = WorkflowDefinition.builder().id(101L).name("表单作业").type("WORK").build();
         WorkflowDefinitionVersion draft = draftVersion(201L,
                 "[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},"
-                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\"}}},"
+                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"fillMode\":\"PROCESS\",\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\"}}},"
                         + "{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]");
         when(workflowDefinitionRepository.findById(101L)).thenReturn(Optional.of(work));
         when(versionRepository.findById(201L)).thenReturn(Optional.of(draft));
@@ -319,7 +383,7 @@ class WorkTemplateControllerTest {
         WorkflowDefinition work = WorkflowDefinition.builder().id(101L).name("无流程表单作业").type("WORK").build();
         WorkflowDefinitionVersion draft = draftVersion(201L,
                 "[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},"
-                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"formTemplateVersionId\":\"702\"}}},"
+                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"fillMode\":\"DIRECT\",\"formTemplateVersionId\":\"702\"}}},"
                         + "{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]");
         when(workflowDefinitionRepository.findById(101L)).thenReturn(Optional.of(work));
         when(versionRepository.findById(201L)).thenReturn(Optional.of(draft));
@@ -335,7 +399,7 @@ class WorkTemplateControllerTest {
         WorkflowDefinition work = WorkflowDefinition.builder().id(101L).name("签名字段作业").type("WORK").build();
         WorkflowDefinitionVersion draft = draftVersion(201L,
                 "[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},"
-                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\",\"eventBindings\":{}}}},"
+                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"fillMode\":\"PROCESS\",\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\",\"eventBindings\":{}}}},"
                         + "{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]");
         WorkflowDefinitionVersion process = WorkflowDefinitionVersion.builder().id(901L).definitionId(902L)
                 .status("PUBLISHED").isCurrent(true)
@@ -361,7 +425,7 @@ class WorkTemplateControllerTest {
         WorkflowDefinition work = WorkflowDefinition.builder().id(101L).name("签名字段类型作业").type("WORK").build();
         WorkflowDefinitionVersion draft = draftVersion(201L,
                 "[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},"
-                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\",\"eventBindings\":{\"start:event-1\":{\"fieldId\":\"remark\"}}}}},"
+                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"fillMode\":\"PROCESS\",\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\",\"eventBindings\":{\"start:event-1\":{\"fieldId\":\"remark\"}}}}},"
                         + "{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]");
         WorkflowDefinitionVersion process = WorkflowDefinitionVersion.builder().id(901L).definitionId(902L)
                 .status("PUBLISHED").isCurrent(true)
@@ -387,7 +451,7 @@ class WorkTemplateControllerTest {
         WorkflowDefinition work = WorkflowDefinition.builder().id(101L).name("缺失签名字段作业").type("WORK").build();
         WorkflowDefinitionVersion draft = draftVersion(201L,
                 "[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},"
-                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"label\":\"表单填写2123\",\"config\":{\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\",\"eventBindings\":{}}}},"
+                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"label\":\"表单填写2123\",\"config\":{\"fillMode\":\"PROCESS\",\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\",\"eventBindings\":{}}}},"
                         + "{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]");
         WorkflowDefinitionVersion process = WorkflowDefinitionVersion.builder().id(901L).definitionId(902L)
                 .status("PUBLISHED").isCurrent(true)
@@ -415,7 +479,7 @@ class WorkTemplateControllerTest {
         WorkflowDefinition work = WorkflowDefinition.builder().id(101L).name("签名字段目标作业").type("WORK").build();
         WorkflowDefinitionVersion draft = draftVersion(201L,
                 "[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},"
-                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\",\"eventBindings\":{\"start:event-1\":{\"fieldId\":\"signature\"}}}}},"
+                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"fillMode\":\"PROCESS\",\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\",\"eventBindings\":{\"start:event-1\":{\"fieldId\":\"signature\"}}}}},"
                         + "{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]");
         WorkflowDefinitionVersion process = WorkflowDefinitionVersion.builder().id(901L).definitionId(902L)
                 .status("PUBLISHED").isCurrent(true)
@@ -443,7 +507,7 @@ class WorkTemplateControllerTest {
         WorkflowDefinition work = WorkflowDefinition.builder().id(101L).name("历史流程字段作业").type("WORK").build();
         WorkflowDefinitionVersion draft = draftVersion(201L,
                 "[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},"
-                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\"}}},"
+                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"fillMode\":\"PROCESS\",\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\"}}},"
                         + "{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]");
         WorkflowDefinitionVersion process = WorkflowDefinitionVersion.builder().id(901L).definitionId(902L)
                 .status("PUBLISHED").isCurrent(true)
@@ -468,7 +532,7 @@ class WorkTemplateControllerTest {
         WorkflowDefinitionVersion draft = draftVersion(201L,
                 "[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},"
                         + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{"
-                        + "\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\","
+                        + "\"fillMode\":\"PROCESS\",\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\","
                         + "\"fieldPermissions\":{\"approval:node-1:user-1\":{\"defaultPermission\":\"EDIT\",\"readOnlyFieldIds\":[\"missing-field\"]}}}}},"
                         + "{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]");
         when(workflowDefinitionRepository.findById(101L)).thenReturn(Optional.of(work));
@@ -488,7 +552,7 @@ class WorkTemplateControllerTest {
         WorkflowDefinitionVersion draft = draftVersion(201L,
                 "[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},"
                         + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{"
-                        + "\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\","
+                        + "\"fillMode\":\"PROCESS\",\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\","
                         + "\"eventBindings\":{\"start:event-1\":{\"fieldId\":\"signature\"}}}}},"
                         + "{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]");
         WorkflowDefinitionVersion process = WorkflowDefinitionVersion.builder().id(901L).definitionId(902L)
@@ -744,7 +808,7 @@ class WorkTemplateControllerTest {
 
         controller.saveGraph(101L, 201L, Map.of(
                 "nodes", List.of(Map.of("id", "form", "data", Map.of("kind", "FORM",
-                        "config", Map.of("formProcessVersionId", "901"))),
+                        "config", Map.of("fillMode", "DIRECT", "formProcessVersionId", "901"))),
                         Map.of("id", "start", "data", Map.of("kind", "START")),
                         Map.of("id", "end", "data", Map.of("kind", "END"))), "edges", List.of()));
 
@@ -1095,7 +1159,7 @@ class WorkTemplateControllerTest {
         WorkflowDefinition work = WorkflowDefinition.builder().id(101L).name("未连通作业").type("WORK").build();
         WorkflowDefinitionVersion draft = draftVersion(201L,
                 "[{\"id\":\"start\",\"data\":{\"kind\":\"START\"}},"
-                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\"}}},"
+                        + "{\"id\":\"form\",\"data\":{\"kind\":\"FORM\",\"config\":{\"fillMode\":\"PROCESS\",\"formTemplateVersionId\":\"702\",\"formProcessVersionId\":\"901\"}}},"
                         + "{\"id\":\"end\",\"data\":{\"kind\":\"END\"}}]");
         draft.setEdgesJson("[]");
         when(workflowDefinitionRepository.findById(101L)).thenReturn(Optional.of(work));

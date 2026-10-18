@@ -1,5 +1,6 @@
 package com.zencas.edhr.masterdata.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
@@ -243,7 +244,8 @@ class ProductProcessOwnerServiceTest {
                 .operationBindings(List.of(ProductProcessVersionRequest.OperationBindingRequest.builder()
                         .routeNodeKey("OP-ASSEMBLY").sortOrder(10)
                         .forms(List.of(ProductProcessVersionRequest.FormBindingRequest.builder()
-                                .dhrTemplateItemId(601L).formTemplateVersionId(701L).required(true).build()))
+                                .dhrTemplateItemId(601L).formTemplateVersionId(701L).required(true)
+                                .fillSettings(new ObjectMapper().createObjectNode().put("fillMode", "DIRECT")).build()))
                         .documents(List.of(ProductProcessVersionRequest.DocumentBindingRequest.builder()
                                 .documentVersionId(801L).pageStart(2).pageEnd(4).build()))
                         .build()))

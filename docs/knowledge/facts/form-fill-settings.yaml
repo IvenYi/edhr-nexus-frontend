@@ -12,8 +12,8 @@ facts:
     allowedOperators: [equals, in]
     status: specified
     visibility: internal
-    evidenceIds: [evidence.form-fill-settings-confirmed, evidence.form-fill-settings-current-mode-validation, evidence.form-fill-settings-snapshot-baseline]
-    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
-    sourceLocator: "usesProcess/serialize/activeBinding 的 fillMode；DIRECT 对应直接填报、PROCESS 对应按流程填报，业务标签与存储枚举一一映射。显式配置及冻结快照已有读取路径；缺失模式补DIRECT违反最新显式选择要求的差异单独记录，不作为默认政策，也不表示通用事实装配器已注册"
-    capturedAt: '2026-10-12'
+    evidenceIds: [evidence.form-fill-settings-confirmed, evidence.form-fill-settings-current-mode-validation, evidence.form-fill-settings-snapshot-baseline, evidence.form-fill-explicit-mode-audit-20261018]
+    sourceRevision: working-tree
+    sourceLocator: "usesProcess/serialize/validate/activeBinding 的 fillMode；严格接受对象中的文本DIRECT或PROCESS，缺失/null/空白/其他类型不按休眠流程引用推导且不补DIRECT。作业草稿未配置状态不属于该枚举事实；saveGraph保留未配置，发布与新配置快照调用严格解析。实际读取工作树的来源及目标为4b25dc7f29c27cfb39c0f570b547869aa0c2f289，源码摘要和验证层次见本批证据；不表示通用事实装配器已注册或全切片verified"
+    capturedAt: '2026-10-18'
     reviewStatus: reviewed

@@ -1,0 +1,117 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261018-W3-EXPLICIT-FILL-MODE
+  scope: AUD-H003；作业与工序表单缺失模式推导、发布校验旁路及共用配置显示纠错。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 4b25dc7f29c27cfb39c0f570b547869aa0c2f289
+    targetBranch: edhr-dev
+    targetCommit: 4b25dc7f29c27cfb39c0f570b547869aa0c2f289
+    contractReadCommit: 4b25dc7f29c27cfb39c0f570b547869aa0c2f289
+    uncommittedContractPaths: []
+  summary: DEC-0067禁止缺失模式推导及开放默认，DEC-0009保留不完整草稿。当前后端save/serialize补DIRECT、validate空值跳过及publish旧分支绕过；前端也把未配置显示成直接模式。仅修复这些已确认实现差异，不新增业务政策。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  existingPolicyReferences: [DEC-0067-01, DEC-0067-04, DEC-0067-05, DEC-0009-01, DEC-0009-05, rule.form-fill-explicit-mode]
+  inferred:
+    - id: inference.w3-unconfigured-draft-is-not-a-mode
+      statement: 作业草稿可保留未配置状态且不补模式；已提供模式须符合枚举基础格式。发布、工序绑定写入和首次构建配置快照必须显式模式。
+      rationale: 将DEC-0009草稿不完整和DEC-0067不得默认运行分别落实；无模式不被解释成DIRECT或PROCESS。
+      relatedIds: [DEC-0067-01, DEC-0067-05, DEC-0009-01]
+    - id: inference.w3-explicit-new-binding-default-retained
+      statement: 工序新增绑定命令已明确写入DIRECT的创建配置保留；读取旧缺失对象及打开Dialog不得自动补值，用户应用配置须选择模式。
+      rationale: 区分创建命令中的显式新配置与缺失配置读取推导；本批不要求所有新建入口额外强制点击或改业务默认。
+      relatedIds: [DEC-0067-01, DEC-0067-05]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: form-fill-settings-and-work-publish
+        change: 严格解析模式；取消serialize/saveGraph补值和validate空值跳过；每个FORM发布统一校验；共用UI显示未配置并要求明确选择。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java, gmp-platform/frontend/src/components/form-fill-settings/types.ts]
+    transitiveImpacts:
+      - area: operation-bindings-and-first-snapshot
+        change: 产品/产品簇两条持久化及复制入口拒绝无模式绑定；首次快照不得把缺失当开放直接填报；草稿引用状态GET不把未配置解释成活动流程。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
+    potentialImpacts:
+      - area: legacy-tests-and-form-reference-feedback
+        concern: 原测试固化缺失模式默认及旧发布分支；必须用显式模式更新夹具，保留签署/权限/草稿/连通性原断言；mode错误不能冒充表单版本失效。
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java, gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx]
+    unaffectedAreas:
+      - area: record-control-and-other-open-findings
+        reason: A12及两项旧DHR high继续暂缓，AUD-H004/H009/H010不在本批关闭；CUSTOM挂载不经当前配置模式入口，不全局要求其模式。
+    compatibilityAndMigration: [不恢复或重造历史数据，不回填缺失模式，不增加兼容分支；已有冻结执行不重读当前配置。]
+    snapshotImpacts: [新配置按既有构建边界冻结，非法配置首次START应失败且不写execution/DHR/审计；已冻结新结构继续原权限签署及状态执行。]
+    auditImpacts: [保留原保存/发布/工序事务和审计，校验拒绝不能留下发布状态或部分审计。]
+    permissionImpacts: [保留直接及流程权限、字段例外、签署和活动模式隔离，不因模式整改降低校验。]
+    testImpacts:
+      - scope: explicit-mode-and-draft-boundaries
+        scenarios: [缺失null空白错误枚举拒绝, DIRECT及PROCESS正例, 无模式草稿保存重读, 发布旧旁路拒绝, 草稿引用状态GET, 产品及产品簇写入复制, 新快照模式隔离及不可变, 首次START失败不写, 共用UI选择与应用及窄屏]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/FormFillSettingsServiceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormFillSnapshotTest.java]
+    evidenceGaps: [本批聚焦AUD-H003，不宣称完整W3或全分支审查完成；全站UI旧规范债务和ESLint缺配置保留实际结果；浏览器受控API及H2/原生PG层次按实际执行报告。]
+  extensionStrategy:
+    selectedPaths: [configuration, product-core]
+    rationale: 修复共享模式解析与现有保存/发布入口，复用共用组件及当前事务和快照，不造新规则引擎或客户分支。
+    ownershipBoundaries:
+      - owner: FormFillSettingsService
+        responsibility: 显式模式及活动配置校验，工序绑定序列化。
+      - owner: WorkTemplateController
+        responsibility: 草稿基本格式与发布完整性分层，保留事务审计。
+      - owner: shared-form-fill-settings
+        responsibility: 同一未配置/已配置语义、选择和应用显示，复用MUI/AppDialog及现有通知系统。
+      - owner: ExecutionSnapshotBuilder-and-engine
+        responsibility: 新配置冻结与既有冻结消费，不新增运行时默认或历史改写。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java
+      changeType: update
+      reason: 严格模式和取消补值/空跳过。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+      changeType: update
+      reason: 草稿不补值、发布无旁路、GET不误解释未配置。
+    - path: gmp-platform/frontend/src/components/form-fill-settings/types.ts
+      changeType: update
+      reason: 未配置读取不推导DIRECT。
+    - path: gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx
+      changeType: update
+      reason: 共用选择器和配置内容明确未配置状态。
+    - path: gmp-platform/frontend/src/components/form-fill-settings/FormFillSettingsButton.tsx
+      changeType: update
+      reason: 标签/打开/应用不补模式。
+    - path: gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+      changeType: update
+      reason: 发布前模式校验及准确反馈，保留草稿保存。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/FormFillSettingsServiceTest.java
+      changeType: update
+      reason: 模式严格边界及原权限签署正反例。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java
+      changeType: update
+      reason: 草稿保存GET、缺模式及PROCESS空引用发布拒绝、显式原夹具。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormFillSnapshotTest.java
+      changeType: update
+      reason: 未配置不能创建开放DIRECT入口，原两模式冻结正例保留。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+      changeType: update
+      reason: 首次START拒绝且零execution/DHR/审计写入；共用作业种子明确DIRECT不改原断言。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerServiceTest.java
+      changeType: update
+      reason: 原工序审计夹具明确DIRECT，保留原审计断言。
+    - path: gmp-platform/frontend/scripts/test-explicit-fill-mode.mjs
+      changeType: create
+      reason: 实际helper/编辑器发布诊断/草稿/显示红绿回归。
+    - path: gmp-platform/frontend/scripts/test-explicit-fill-mode-browser.mjs
+      changeType: create
+      reason: 实际共用inline/Dialog两视口及WorkTemplateEditor发布阻断保存重读，受控API。
+  acceptanceScenarios:
+    - id: scenario.w3-explicit-publish-and-runtime
+      given: FORM或工序绑定缺少合法模式
+      when: 发布或首次创建配置执行快照
+      then: 拒绝，不能默认DIRECT或留下部分持久化；显式合法配置仍可用。
+      evidenceRequirements: [原基线红证, 单元及集成正反例, 发布及首开工失败回滚]
+    - id: scenario.w3-unconfigured-draft
+      given: 作业表单尚未完成模式或表单/流程引用
+      when: 保存重读和打开配置
+      then: 仍是可编辑未配置草稿，不显示为直接填报，不补模式；明确选择后再发布校验。
+      evidenceRequirements: [草稿保存GET回归, 真实共用UI选择及应用, 已配置两模式相邻回归]
