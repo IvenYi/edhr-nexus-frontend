@@ -1,0 +1,19 @@
+{
+  "name": "node-first-candidate",
+  "command": [
+    "node",
+    "--test",
+    "scripts/test-designer-choice-options.mjs"
+  ],
+  "cwd": "/workspace/edhr-nexus-frontend/gmp-platform/frontend",
+  "environmentOverrides": {
+    "W2_BASELINE_COMMIT": "c4491dde7703e778c0b4ba7dd293dc940d8a262d"
+  },
+  "exitCode": 1,
+  "durationSeconds": 2.244,
+  "finishedAtUtc": "2026-10-18T07:00:22.862064+00:00",
+  "rawLogPrivate": {
+    "bytes": 3608,
+    "sha256": "75f17e7a100430869b182e4719bc56ee4a013c083ff6c90f4016c2f22ee52a43"
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "kind": "independent-current-source-scope-inspection",
+  "baseCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "headCommit": "9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7",
+  "changedSourceTestKnowledgeFiles": {
+    "docs/architecture/business-knowledge-model.md": {
+      "bytes": 56932,
+      "sha256": "768c2962de30dbc77f52fb861e9aeddb3aadcbab83a7d5eb96cacad4a4be5a06"
+    },
+    "docs/knowledge/README.md": {
+      "bytes": 87576,
+      "sha256": "bc778e717f06478605a97b76eccd2a8d4c5bf19e4009fb63570153d933cce781"
+    },
+    "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml": {
+      "bytes": 3431,
+      "sha256": "9b61e114aadf7948d86baa704aae94325449fe6cca0dd825c5b921a22814bd08"
+    },
+    "docs/knowledge/evidence/shared-choice-options-2026-10-18.md": {
+      "bytes": 11381,
+      "sha256": "bbd6694ea84e47c605942044558ee8a69cdc108aa4590e5ec524245cc50b7013"
+    },
+    "docs/knowledge/evidence/shared-choice-options-2026-10-18.yaml": {
+      "bytes": 1073,
+      "sha256": "7a23fab99ec4690e5c58712cf7d9269de6717d85c6c16a4863d76fc8510f5dc5"
+    },
+    "docs/knowledge/glossary.yaml": {
+      "bytes": 66048,
+      "sha256": "4f958050af2b4414ba2a909fbc52019ec9ceb7a5dbba2c32e42f90ce8c0eb40a"
+    },
+    "docs/knowledge/ontology.yaml": {
+      "bytes": 89548,
+      "sha256": "3e32be8c60add6421ab5f84e337809ec4207d89bf1b021e4a63ff18d7e61db48"
+    },
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java": {
+      "bytes": 173281,
+      "sha256": "a123efea6f3173ce377ab7908c534c22da7646fa3b11fa2a28de8cf7e98d11dc"
+    },
+    "gmp-platform/backend/src/test/resources/fixtures/shared-choice-options-design.json": {
+      "bytes": 6343,
+      "sha256": "721d500935aa38b52dae95414e45d1c41c8921b2c50788864ea3554a2ada2b63"
+    },
+    "gmp-platform/frontend/scripts/test-designer-choice-options.mjs": {
+      "bytes": 15033,
+      "sha256": "5ae73660a90d7ed6fd2e181bbfac7f5e4ed042776ea9479715aac9abd8b9ca43"
+    },
+    "gmp-platform/frontend/scripts/test-designer-save-browser.mjs": {
+      "bytes": 36443,
+      "sha256": "0e4560ba89a5bbdf86560e202c762caaa2c58371c86d5c41b766f634ae271cfa"
+    },
+    "gmp-platform/frontend/scripts/verify-template-designer-react.mjs": {
+      "bytes": 361000,
+      "sha256": "b9383964df477a5c718afbadd28bc07afe9d76e5c7afaa28cac8959894669dc6"
+    },
+    "gmp-platform/frontend/src/components/form-renderer/choiceOptions.ts": {
+      "bytes": 4780,
+      "sha256": "2bd79bcaea5c03b07e35a4437b64d18bd008400977bd19caeae84062eb844ecd"
+    },
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx": {
+      "bytes": 78965,
+      "sha256": "487590565f51074b943d900791028bf9a52f53581801e8ea8f7bd869ff624649"
+    },
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/mock-fill/MockFillDialog.tsx": {
+      "bytes": 64064,
+      "sha256": "2ba2fdbeb481ba3ecc658c6b5c4642d5881651fc900e9a7abed9790a673cad72"
+    },
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts": {
+      "bytes": 125856,
+      "sha256": "8e21536a02bc5502ed2c65d70288d38a980b686999d227dc0c687ba72b5d40ab"
+    }
+  },
+  "unchangedCriticalReadAndRuntimePaths": [
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/fieldRegistry.ts",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts",
+    "gmp-platform/frontend/src/components/form-renderer/newSubTableRow.ts",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java"
+  ],
+  "backendProductionChangedPaths": [],
+  "reviewedCalls": [
+    "ModelTab.createSubTableField/handleSaveField/updateSubTableFields -> store.updateField(parent,typeConfig.columns)",
+    "initializeChoiceField only current creation or actual type change",
+    "choiceOptions.syncChoiceOptions optionList change guard/field+parent identity/children/options IDs and metadata",
+    "syncBoundNodesForField canonical projection",
+    "DesignerInspector parsed single and multi defaults",
+    "MockFillDialog key valueKey+node.id keeps original data valueKey",
+    "IntegrationTest full parsed snapshot equality and unknown submit revision/values/audit rollback"
+  ],
+  "productAndKnowledgeWhitespaceDiffCheckExitCode": 0,
+  "wholeRawEvidenceWhitespacePassClaim": false
+}

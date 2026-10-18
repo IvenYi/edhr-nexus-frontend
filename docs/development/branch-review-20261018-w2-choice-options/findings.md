@@ -9,7 +9,7 @@
 | 分类 / 领域 | 代码缺陷；表单设计配置、动态行默认与执行允许值契约 |
 | 严重程度 / 置信度 | medium / confirmed；合法配置会造成默认值丢失和最终提交被原允许值校验拒绝，不是授权旁路 |
 | 负责人 | 主实例修复；本体实例同步已确认语义；另由全新质量实例收尾 |
-| 状态 | `implemented-primary-verified`；独立验收 `pending`，未宣告关闭 |
+| 状态 | `verified-independent`；9ac5e0e2全新实例正式passed，QF-W2-CHOICE-001 resolved，待用户人工合并 |
 | 有效依据 | 本会话用户明确确认“必须共用同一组选项（推荐）”；DEC-0080-01；原冻结执行仅用已选择模型校验值的所有权保持 |
 | 来源分类 | 用户答复为 `user-confirmed`；源码和运行产物为 `original-evidence`；辅助报告是来源索引，不替代运行证据 |
 
@@ -31,7 +31,7 @@
 
 首轮正式 `failed`（medium/open），原始 [qualityResult](evidence/independent-first-failed/quality-result.yaml) 和真实UI [复现](evidence/independent-first-failed/modeltab-child-reproduction.json) 原字节保留。`tabs/model/ModelTab.tsx::createSubTableField` 仍用registry空选项；子列新增及改型走 `updateSubTableFields → updateField(parent,{columns})`，父表类型未变，绕过原初始化。实际新建单选子列的模型为空，Inspector显示预置，未编辑文本直接设默认后真实两行均无该字段值。仅检查快捷工厂不足以覆盖此入口。
 
-修正版仅在父表显式columns写命令中，比较子列稳定ID与旧类型，对新增或实际改型列初始化；同类型旧列保留missing/empty，读工厂不变。后续沿原同步和一次history更新embedded及widgets。新增两条store用例在c449为2失败，原10条全部通过；修后全128 Node通过，真实ModelTab新增/改型/保存/默认/新行两视口通过，构建及静态guard通过。测试最初用全局保存按钮等待child-design自动保存，但该视图没有全局按钮，已改为等待实际document清脏；属测试等待条件修正，不计产品红证。修正版最终状态仍待全新质量实例，未把本条提前标关闭。
+修正版仅在父表显式columns写命令中，比较子列稳定ID与旧类型，对新增或实际改型列初始化；同类型旧列保留missing/empty，读工厂不变。后续沿原同步和一次history更新embedded及widgets。新增两条store用例在c449为2失败，原10条全部通过；修后全128 Node通过，真实ModelTab新增/改型/保存/默认/新行两视口通过，构建及静态guard通过。测试最初用全局保存按钮等待child-design自动保存，但该视图没有全局按钮，已改为等待实际document清脏；属测试等待条件修正，不计产品红证。全新实例对9ac5e0e2正式passed，完整128 Node/15浏览器及189 Java（186通过、3条件跳过）已实际执行，本条resolved，证据见 [最终原始结果](evidence/independent-final/quality-result.yaml)；首轮failed不回写。
 
 ## 历史去重
 

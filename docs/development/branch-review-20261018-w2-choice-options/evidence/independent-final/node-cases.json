@@ -1,0 +1,654 @@
+{
+  "kind": "actual-node-spec-case-index",
+  "counts": {
+    "tests": 128,
+    "suites": 0,
+    "pass": 128,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "cases": [
+    {
+      "number": 1,
+      "name": "catalogue only opens supported cell components",
+      "outcome": "passed"
+    },
+    {
+      "number": 2,
+      "name": "placing each component binds it to the sub-table without adding business fields; undo restores text",
+      "outcome": "passed"
+    },
+    {
+      "number": 3,
+      "name": "replacing a component does not stack nodes, and crossing the sub-table boundary is rejected",
+      "outcome": "passed"
+    },
+    {
+      "number": 4,
+      "name": "ordinary cells keep display components after document serialization and reload",
+      "outcome": "passed"
+    },
+    {
+      "number": 5,
+      "name": "mock dynamic rows render contiguous serials after adding and deleting records",
+      "outcome": "passed"
+    },
+    {
+      "number": 6,
+      "name": "actual runtime rows render derived serials without writing serial values into records",
+      "outcome": "passed"
+    },
+    {
+      "number": 7,
+      "name": "new choice fields persist the same two presets already shown by their controls",
+      "outcome": "passed"
+    },
+    {
+      "number": 8,
+      "name": "reading old choice fields with missing or empty options never creates current write-command presets",
+      "outcome": "passed"
+    },
+    {
+      "number": 9,
+      "name": "ModelTab parent-column creation initializes only new choice columns and preserves an old empty column",
+      "outcome": "passed"
+    },
+    {
+      "number": 10,
+      "name": "ModelTab parent-column type changes initialize choice definitions and embedded placements in one history step",
+      "outcome": "passed"
+    },
+    {
+      "number": 11,
+      "name": "editing either placement shares single and multi options with the canonical field and other placements",
+      "outcome": "passed"
+    },
+    {
+      "number": 12,
+      "name": "subtable options update canonical columns and embedded placements across pages without touching another table",
+      "outcome": "passed"
+    },
+    {
+      "number": 13,
+      "name": "model option edits update every placement while preserving compatible widget configuration",
+      "outcome": "passed"
+    },
+    {
+      "number": 14,
+      "name": "renaming an option label preserves its existing value identity and former immutable document",
+      "outcome": "passed"
+    },
+    {
+      "number": 15,
+      "name": "one choice edit is one complete undo step and round-trips model and canvas consistently",
+      "outcome": "passed"
+    },
+    {
+      "number": 16,
+      "name": "the existing row factory saves a configured single-select default as the actual canonical option value",
+      "outcome": "passed"
+    },
+    {
+      "number": 17,
+      "name": "unrelated binding and widget edits do not adopt a saved inconsistent placement or reactivate disabled options",
+      "outcome": "passed"
+    },
+    {
+      "number": 18,
+      "name": "rebinding a compatible choice control takes its new field options without carrying another field option list",
+      "outcome": "passed"
+    },
+    {
+      "number": 19,
+      "name": "inserting before a bound field shifts the same source with its cell, preserves other pages and round-trips undo/redo",
+      "outcome": "passed"
+    },
+    {
+      "number": 20,
+      "name": "inserting inside a merged field expands it, while insertion after its right edge leaves it unchanged",
+      "outcome": "passed"
+    },
+    {
+      "number": 21,
+      "name": "inserting before a subtable keeps its region, record group and actual field offsets aligned",
+      "outcome": "passed"
+    },
+    {
+      "number": 22,
+      "name": "inserting inside a subtable keeps its region, record group and actual field offsets aligned",
+      "outcome": "passed"
+    },
+    {
+      "number": 23,
+      "name": "nested bound nodes move recursively and free components without a cell anchor keep their position",
+      "outcome": "passed"
+    },
+    {
+      "number": 24,
+      "name": "a successful save acknowledges its submitted document, retaining edits made in flight",
+      "outcome": "passed"
+    },
+    {
+      "number": 25,
+      "name": "a save without further edits becomes clean and the next successful save can acknowledge B",
+      "outcome": "passed"
+    },
+    {
+      "number": 26,
+      "name": "undo and redo compare with the acknowledged document rather than the latest local edit",
+      "outcome": "passed"
+    },
+    {
+      "number": 27,
+      "name": "a late acknowledgement for another template or version cannot replace its saved baseline",
+      "outcome": "passed"
+    },
+    {
+      "number": 28,
+      "name": "source mappings and layout share one document history and survive serialization",
+      "outcome": "passed"
+    },
+    {
+      "number": 29,
+      "name": "renaming or disabling the same model column updates its placed definition without changing identity or inventing visibility policy",
+      "outcome": "passed"
+    },
+    {
+      "number": 30,
+      "name": "a changed column type uses the compatible component and clears only incompatible widget overrides",
+      "outcome": "passed"
+    },
+    {
+      "number": 31,
+      "name": "compatible column edits retain explicit widget overrides and preserve the previous immutable definition",
+      "outcome": "passed"
+    },
+    {
+      "number": 32,
+      "name": "the same parent column updates on other pages and nested nodes without changing unrelated fields",
+      "outcome": "passed"
+    },
+    {
+      "number": 33,
+      "name": "column edit is one complete undo step and serializes consistently without rewriting the former document",
+      "outcome": "passed"
+    },
+    {
+      "number": 34,
+      "name": "mock paper and full runtime paper both render the edited column definition",
+      "outcome": "passed"
+    },
+    {
+      "number": 35,
+      "name": "generic table renderer already reads canonical model columns and remains a separate positive control",
+      "outcome": "passed"
+    },
+    {
+      "number": 36,
+      "name": "new records inherit multi-row heights, colors, borders and merged cells; footer and signature move together",
+      "outcome": "passed"
+    },
+    {
+      "number": 37,
+      "name": "deleting or resetting records shrinks the layout without modifying the template",
+      "outcome": "passed"
+    },
+    {
+      "number": 38,
+      "name": "legacy text beneath a bound component is not repeated over the control",
+      "outcome": "passed"
+    },
+    {
+      "number": 39,
+      "name": "a boundary stored on the following row is inherited by every added record",
+      "outcome": "passed"
+    },
+    {
+      "number": 40,
+      "name": "multiple dynamic tables shift cumulatively, including their anchors and child nodes",
+      "outcome": "passed"
+    },
+    {
+      "number": 41,
+      "name": "side-by-side dynamic tables share the added sheet rows",
+      "outcome": "passed"
+    },
+    {
+      "number": 42,
+      "name": "purpose changes preserve numeric configuration and ordinary selection clears old semantics",
+      "outcome": "passed"
+    },
+    {
+      "number": 43,
+      "name": "top-level and subtable mappings survive save and reload with stable field ids",
+      "outcome": "passed"
+    },
+    {
+      "number": 44,
+      "name": "store merging cannot retain a cleared or changed-type business purpose",
+      "outcome": "passed"
+    },
+    {
+      "number": 45,
+      "name": "legacy fields keep their names and do not acquire inferred purposes",
+      "outcome": "passed"
+    },
+    {
+      "number": 46,
+      "name": "Word-only content renders paragraphs and merged table cells without sheet nodes",
+      "outcome": "passed"
+    },
+    {
+      "number": 47,
+      "name": "imported native Word text and images render at saved dimensions without duplicate paragraphs",
+      "outcome": "passed"
+    },
+    {
+      "number": 48,
+      "name": "Word table field markers render inline and do not leak internal marker text",
+      "outcome": "passed"
+    },
+    {
+      "number": 49,
+      "name": "legacy DOC and Excel grid previews still render their stored cells",
+      "outcome": "passed"
+    },
+    {
+      "number": 50,
+      "name": "explicit field-list layout remains available for Word documents",
+      "outcome": "passed"
+    },
+    {
+      "number": 51,
+      "name": "full-page sheet preview keeps portrait paper and configured margins around the grid",
+      "outcome": "passed"
+    },
+    {
+      "number": 52,
+      "name": "full-page landscape preview retains narrow columns and short rows from the designer",
+      "outcome": "passed"
+    },
+    {
+      "number": 53,
+      "name": "full-page paper grows with oversized content and preserves fields and images",
+      "outcome": "passed"
+    },
+    {
+      "number": 54,
+      "name": "sheet preview draws shared horizontal and vertical borders only once",
+      "outcome": "passed"
+    },
+    {
+      "number": 55,
+      "name": "merged-cell borders use visible neighbor anchors and retain uncovered edges",
+      "outcome": "passed"
+    },
+    {
+      "number": 56,
+      "name": "sheet preview keeps explicit borders when background grid lines are hidden",
+      "outcome": "passed"
+    },
+    {
+      "number": 57,
+      "name": "full-page preview repeats every fixed-table field and serial number, clearing stale placeholders",
+      "outcome": "passed"
+    },
+    {
+      "number": 58,
+      "name": "dynamic tables show the same initial record without preview row-edit actions",
+      "outcome": "passed"
+    },
+    {
+      "number": 59,
+      "name": "preview renders real controls and default values without file inputs or signing dialog",
+      "outcome": "passed"
+    },
+    {
+      "number": 60,
+      "name": "full-page preview stacks every sheet and preserves Word content in mixed documents",
+      "outcome": "passed"
+    },
+    {
+      "number": 61,
+      "name": "full-page preview retains field-list fallback for a template without canvas content",
+      "outcome": "passed"
+    },
+    {
+      "number": 62,
+      "name": "cached form first renders a loading state before any document parsing",
+      "outcome": "passed"
+    },
+    {
+      "number": 63,
+      "name": "readonly source preview highlights only the selected actual row, including its other columns",
+      "outcome": "passed"
+    },
+    {
+      "number": 64,
+      "name": "execution uses the same initial subtable row, serial, placeholders and frame as template preview",
+      "outcome": "passed"
+    },
+    {
+      "number": 65,
+      "name": "runtime renders every persisted record in its template cells, with real values",
+      "outcome": "passed"
+    },
+    {
+      "number": 66,
+      "name": "paper row actions create identities and canvas defaults while preserving existing records",
+      "outcome": "passed"
+    },
+    {
+      "number": 67,
+      "name": "readonly table permissions hide row actions and prevent edits",
+      "outcome": "passed"
+    },
+    {
+      "number": 68,
+      "name": "signature placeholder matches preview while real saved signatures are preserved",
+      "outcome": "passed"
+    },
+    {
+      "number": 69,
+      "name": "signature callbacks carry field and row identity while readonly previews stay inert",
+      "outcome": "passed"
+    },
+    {
+      "number": 70,
+      "name": "runtime keeps references as records and shows their names in the paper controls",
+      "outcome": "passed"
+    },
+    {
+      "number": 71,
+      "name": "production does not seed simulation values or enable disabled choices",
+      "outcome": "passed"
+    },
+    {
+      "number": 72,
+      "name": "unconfigured single and multi fields show the same default choices as the designer",
+      "outcome": "passed"
+    },
+    {
+      "number": 73,
+      "name": "runtime single and multi choices use configured widget options before model options",
+      "outcome": "passed"
+    },
+    {
+      "number": 74,
+      "name": "subtable single and multi dropdowns display labels from their widget options",
+      "outcome": "passed"
+    },
+    {
+      "number": 75,
+      "name": "field binding updates only the chosen record and preserves other values",
+      "outcome": "passed"
+    },
+    {
+      "number": 76,
+      "name": "readonly, disabled, parent-table permissions and signatures never write values",
+      "outcome": "passed"
+    },
+    {
+      "number": 77,
+      "name": "legacy widget settings override fallback model configuration",
+      "outcome": "passed"
+    },
+    {
+      "number": 78,
+      "name": "updating a main reference synchronizes repeated placements without touching other fields",
+      "outcome": "passed"
+    },
+    {
+      "number": 79,
+      "name": "subtable config synchronizes columns and embedded fields, keeping row conditions",
+      "outcome": "passed"
+    },
+    {
+      "number": 80,
+      "name": "mock reference context combines main fields with only the current record",
+      "outcome": "passed"
+    },
+    {
+      "number": 81,
+      "name": "editing and clearing any main-field placement synchronizes reference dependencies across pages",
+      "outcome": "passed"
+    },
+    {
+      "number": 82,
+      "name": "switching panels preserves the selected source, document, dirty state and undo history",
+      "outcome": "passed"
+    },
+    {
+      "number": 83,
+      "name": "projection selection follows fields, subtables and empty canvas without switching panels",
+      "outcome": "passed"
+    },
+    {
+      "number": 84,
+      "name": "source edits share the existing save, undo and redo state across panels",
+      "outcome": "passed"
+    },
+    {
+      "number": 85,
+      "name": "trace source editor shows its assigned meaning without expanding unrelated catalog entries",
+      "outcome": "passed"
+    },
+    {
+      "number": 86,
+      "name": "output source may share one quality field without conflating good and rejected quantities",
+      "outcome": "passed"
+    },
+    {
+      "number": 87,
+      "name": "report roles accept only compatible temporal and person sources, with manually supplied hours",
+      "outcome": "passed"
+    },
+    {
+      "number": 88,
+      "name": "a removed trace definition keeps its original source visible and removable",
+      "outcome": "passed"
+    },
+    {
+      "number": 89,
+      "name": "a removed field keeps its assigned meaning and explicit invalid-source warning",
+      "outcome": "passed"
+    },
+    {
+      "number": 90,
+      "name": "save feedback identifies and marks each required source, including an unfinished usage",
+      "outcome": "passed"
+    },
+    {
+      "number": 91,
+      "name": "repeat quantities identify the source while different models and shared dimensions stay allowed",
+      "outcome": "passed"
+    },
+    {
+      "number": 92,
+      "name": "same field cannot fill two roles inside one business and invalid optional sources remain locatable",
+      "outcome": "passed"
+    },
+    {
+      "number": 93,
+      "name": "collapsed business cards and each trace assignment expose consistent removal icons",
+      "outcome": "passed"
+    },
+    {
+      "number": 94,
+      "name": "main details identify each source role and selected-field participation without changing mappings",
+      "outcome": "passed"
+    },
+    {
+      "number": 95,
+      "name": "main field directly offers statistical purposes without a separate configuration panel",
+      "outcome": "passed"
+    },
+    {
+      "number": 96,
+      "name": "subtable column keeps the whole-table configuration entry instead of inline main statistics",
+      "outcome": "passed"
+    },
+    {
+      "number": 97,
+      "name": "configured subtable preserves multiple existing purposes but defers adding others",
+      "outcome": "passed"
+    },
+    {
+      "number": 98,
+      "name": "configured report fields stay visible while empty optional fields are collapsed, preserving mappings",
+      "outcome": "passed"
+    },
+    {
+      "number": 99,
+      "name": "production instructions describe quantities rather than material lots, and add belongs to the purpose heading",
+      "outcome": "passed"
+    },
+    {
+      "number": 100,
+      "name": "canvas and dropdown candidates share type, region, disabled and occupied-role constraints",
+      "outcome": "passed"
+    },
+    {
+      "number": 101,
+      "name": "business-specific labels count records within each business without changing identities",
+      "outcome": "passed"
+    },
+    {
+      "number": 102,
+      "name": "trace editor offers no additional meaning when every compatible source is already used",
+      "outcome": "passed"
+    },
+    {
+      "number": 103,
+      "name": "trace accepts compatible native sources while statistics and unrelated meanings keep their boundaries",
+      "outcome": "passed"
+    },
+    {
+      "number": 104,
+      "name": "typed custom trace meanings offer only matching number or date sources",
+      "outcome": "passed"
+    },
+    {
+      "number": 105,
+      "name": "whole-table statistics keeps optional sources collapsed without a manual row identity or extra display selector",
+      "outcome": "passed"
+    },
+    {
+      "number": 106,
+      "name": "removing the extra display selector preserves valid saved columns and keeps invalid ones explicitly repairable",
+      "outcome": "passed"
+    },
+    {
+      "number": 107,
+      "name": "creates a named sub-table and binds the selected region in one undoable operation",
+      "outcome": "passed"
+    },
+    {
+      "number": 108,
+      "name": "empty names and a single-cell selection do not create fields or history",
+      "outcome": "passed"
+    },
+    {
+      "number": 109,
+      "name": "duplicate names and overlapping regions do not leave an orphan sub-table field",
+      "outcome": "passed"
+    },
+    {
+      "number": 110,
+      "name": "表单追溯: registered report belongs to the records module",
+      "outcome": "passed"
+    },
+    {
+      "number": 111,
+      "name": "DHR追溯: registered report belongs to the records module",
+      "outcome": "passed"
+    },
+    {
+      "number": 112,
+      "name": "报工记录: registered report belongs to the records module",
+      "outcome": "passed"
+    },
+    {
+      "number": 113,
+      "name": "报废记录: registered report belongs to the records module",
+      "outcome": "passed"
+    },
+    {
+      "number": 114,
+      "name": "消耗记录: registered report belongs to the records module",
+      "outcome": "passed"
+    },
+    {
+      "number": 115,
+      "name": "legacy report entry belongs to records before redirecting to form trace",
+      "outcome": "passed"
+    },
+    {
+      "number": 116,
+      "name": "existing non-report module routes keep their ownership",
+      "outcome": "passed"
+    },
+    {
+      "number": 117,
+      "name": "unknown paths and similar prefixes do not claim another module",
+      "outcome": "passed"
+    },
+    {
+      "number": 118,
+      "name": "new rows have distinct system identities and persist configured defaults using actual option values",
+      "outcome": "passed"
+    },
+    {
+      "number": 119,
+      "name": "canvas defaults override model defaults without rewriting them",
+      "outcome": "passed"
+    },
+    {
+      "number": 120,
+      "name": "copy/paste preserves merged cells, text, styles and borders as an independent snapshot",
+      "outcome": "passed"
+    },
+    {
+      "number": 121,
+      "name": "empty merged cells still paste their structure",
+      "outcome": "passed"
+    },
+    {
+      "number": 122,
+      "name": "fill repeats format and horizontal merges, preserves target text and does not mutate the source",
+      "outcome": "passed"
+    },
+    {
+      "number": 123,
+      "name": "vertical merge patterns fill complete blocks and never exceed the last row",
+      "outcome": "passed"
+    },
+    {
+      "number": 124,
+      "name": "unmerged source removes target merges and obsolete formatting",
+      "outcome": "passed"
+    },
+    {
+      "number": 125,
+      "name": "partial source/target merges and out-of-bounds paste reject atomically",
+      "outcome": "passed"
+    },
+    {
+      "number": 126,
+      "name": "merge changes do not hide or delete bound fields",
+      "outcome": "passed"
+    },
+    {
+      "number": 127,
+      "name": "paste and drag each create one undo step; redo restores the whole operation",
+      "outcome": "passed"
+    },
+    {
+      "number": 128,
+      "name": "external plain text paste keeps its existing TSV behavior",
+      "outcome": "passed"
+    }
+  ]
+}

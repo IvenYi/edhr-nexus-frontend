@@ -1,0 +1,7 @@
+# 当前最终候选的有限视觉核对
+
+实际查看本轮生成的8张截图：单选Inspector、真实运行纸面、多选Inspector、ModelTab创建和改型后Inspector，各1440x960和390x844。实际选项label:value、默认active marker与合法值显示符合本批修复；ModelTab默认预置可见且无需先修改文本。完整15浏览器场景均实际完成，page/console errors分别严格为空。
+
+390截图仍可见既有顶部工具栏部分横向溢出，画布固定纸面需横向滚动；运行纸面的合法值和新增按钮在目标滚动位置可见。hover控件没有经触屏硬件验证。此批没有新增布局、样式或主题，不将有限交互通过写成全站DESIGN、完整移动端或touch验收通过。
+
+真实Shell、Inspector、FormDocumentPreview与受控保存callback相连；不宣称浏览器认证后端HTTP全链。后端新冻结、合法值与非法值回滚由本轮独立Java集成测试验证。

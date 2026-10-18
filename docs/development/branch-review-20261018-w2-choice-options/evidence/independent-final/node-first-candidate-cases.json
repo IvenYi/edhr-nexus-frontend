@@ -1,0 +1,74 @@
+{
+  "kind": "actual-node-spec-case-index",
+  "counts": {
+    "tests": 12,
+    "suites": 0,
+    "pass": 10,
+    "fail": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "cases": [
+    {
+      "number": 1,
+      "name": "new choice fields persist the same two presets already shown by their controls",
+      "outcome": "passed"
+    },
+    {
+      "number": 2,
+      "name": "reading old choice fields with missing or empty options never creates current write-command presets",
+      "outcome": "passed"
+    },
+    {
+      "number": 3,
+      "name": "ModelTab parent-column creation initializes only new choice columns and preserves an old empty column",
+      "outcome": "failed"
+    },
+    {
+      "number": 4,
+      "name": "ModelTab parent-column type changes initialize choice definitions and embedded placements in one history step",
+      "outcome": "failed"
+    },
+    {
+      "number": 5,
+      "name": "editing either placement shares single and multi options with the canonical field and other placements",
+      "outcome": "passed"
+    },
+    {
+      "number": 6,
+      "name": "subtable options update canonical columns and embedded placements across pages without touching another table",
+      "outcome": "passed"
+    },
+    {
+      "number": 7,
+      "name": "model option edits update every placement while preserving compatible widget configuration",
+      "outcome": "passed"
+    },
+    {
+      "number": 8,
+      "name": "renaming an option label preserves its existing value identity and former immutable document",
+      "outcome": "passed"
+    },
+    {
+      "number": 9,
+      "name": "one choice edit is one complete undo step and round-trips model and canvas consistently",
+      "outcome": "passed"
+    },
+    {
+      "number": 10,
+      "name": "the existing row factory saves a configured single-select default as the actual canonical option value",
+      "outcome": "passed"
+    },
+    {
+      "number": 11,
+      "name": "unrelated binding and widget edits do not adopt a saved inconsistent placement or reactivate disabled options",
+      "outcome": "passed"
+    },
+    {
+      "number": 12,
+      "name": "rebinding a compatible choice control takes its new field options without carrying another field option list",
+      "outcome": "passed"
+    }
+  ]
+}
