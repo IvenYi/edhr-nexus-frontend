@@ -402,6 +402,70 @@ try {
       if (process.env.W2_SCREENSHOT_DIR) await page.screenshot({ path: path.join(process.env.W2_SCREENSHOT_DIR, `multi-choice-inspector-${viewport.width}.png`), animations: 'disabled' });
     }, viewport);
   }
+  for (const viewport of [{ width: 1440, height: 960 }, { width: 390, height: 844 }]) {
+    await run(`ModelTab child creation and type conversion persist presets before default selection at ${viewport.width}px`, async page => {
+      await page.getByRole('button', { name: '字段设计', exact: true }).click();
+      const seeded = await page.evaluate(() => {
+        const state = window.__store.getState();
+        const table = state.addField('subTable', '模型入口子表');
+        const [field] = state.addSubTableFields(table.id, [{ name: '待改型子列', type: 'text' }]);
+        return { tableId: table.id, convertedId: field.id };
+      });
+      await page.locator('[data-field-name-with-usage="true"]').filter({ hasText: '模型入口子表' }).hover();
+      await page.getByRole('button', { name: '设计子表', exact: true }).click();
+      await page.getByRole('button', { name: '新增字段', exact: true }).click();
+      const dialog = page.locator('[data-field-create-dialog="true"]');
+      await dialog.getByLabel('字段名称', { exact: true }).fill('实际新增单选');
+      await dialog.getByLabel('字段类型', { exact: true }).click();
+      await page.getByRole('option', { name: '单选', exact: true }).click();
+      await dialog.getByRole('button', { name: '确认', exact: true }).click();
+      await dialog.waitFor({ state: 'hidden' });
+      await page.waitForFunction(() => window.__requests.length === 1);
+      const createdId = await page.evaluate(tableId => {
+        const field = window.__store.getState().document.model.fields.find(item => item.id === tableId).typeConfig.columns.find(item => item.name === '实际新增单选');
+        return field.id;
+      }, seeded.tableId);
+      const savedColumns = await page.evaluate(() => JSON.parse(window.__requests[0].payload.modelDesignJson).payload.fields[0].typeConfig.columns);
+      assert.deepEqual(savedColumns.find(field => field.id === createdId).typeConfig.options.map(option => option.value), ['选项1', '选项2'], 'actual ModelTab creation saves canonical presets before Inspector edits');
+      await page.evaluate(() => window.__requests[0].resolve());
+      // Child-design view has its own header and no global 保存 button.
+      await page.waitForFunction(() => !window.__store.getState().isDirty());
+      const card = page.locator('[data-field-name-with-usage="true"]').filter({ hasText: '待改型子列' }).locator('xpath=ancestor::*[contains(@class,"MuiPaper-root")][1]');
+      await card.hover();
+      await card.getByRole('button', { name: '编辑字段', exact: true }).click();
+      await dialog.getByLabel('字段类型', { exact: true }).click();
+      await page.getByRole('option', { name: '单选', exact: true }).click();
+      await dialog.getByRole('button', { name: '保存修改', exact: true }).click();
+      await dialog.waitFor({ state: 'hidden' });
+      const columns = await page.evaluate(tableId => window.__store.getState().document.model.fields.find(item => item.id === tableId).typeConfig.columns, seeded.tableId);
+      assert.ok(columns.every(field => field.type === 'singleSelect' && field.typeConfig.options.length === 2));
+      assert.ok(columns.some(field => field.id === seeded.convertedId), 'type conversion preserves child identity');
+      await page.getByRole('button', { name: '返回上一层', exact: true }).click();
+      await page.getByRole('button', { name: '表单设计', exact: true }).click();
+      const placements = await page.evaluate(tableId => {
+        const state = window.__store.getState();
+        const table = state.document.model.fields.find(field => field.id === tableId);
+        state.addSubTableRegionFromFieldToRange(table.id, { t: 2, b: 6, l: 2, r: 6 }, { left: 98, top: 36, width: 490, height: 180 });
+        const region = window.__store.getState().document.canvas.pages[0].nodes.find(node => node.type === 'sub-table');
+        state.setSelectedNodeId(region.id); state.updateSelectedSubTableRegion({ repeat: { type: 'dynamic' } });
+        table.typeConfig.columns.forEach((field, index) => state.addNodeFromSubTableFieldToCell(table.id, field,
+          { range: { t: 3 + index * 2, b: 3 + index * 2, l: 3, r: 4 }, left: 196, top: 72 + index * 72, width: 196, height: 36 }));
+        return window.__store.getState().document.canvas.pages[0].nodes.filter(node => node.bindings?.subTableFieldId).map(node => ({ id: node.id, fieldId: node.bindings.subTableFieldId }));
+      }, seeded.tableId);
+      for (const node of placements) {
+        await page.evaluate(id => { window.__store.getState().setSelectedNodeId(id); window.__store.getState().setActiveCanvasRail('config'); }, node.id);
+        const first = page.locator('[data-option-list-editor="true"] [data-option-row="true"]').first();
+        await first.hover(); await first.getByRole('button', { name: '设为默认值', exact: true }).click();
+      }
+      await submit(page, 2); await settle(page, 1);
+      if (process.env.W2_SCREENSHOT_DIR) await page.screenshot({ path: path.join(process.env.W2_SCREENSHOT_DIR, `modeltab-choice-inspector-${viewport.width}.png`), animations: 'disabled' });
+      await page.evaluate(() => window.__openRuntime());
+      await page.getByRole('button', { name: '新增行', exact: true }).click();
+      const values = await page.evaluate(tableId => window.__runtimeValues[tableId], seeded.tableId);
+      assert.equal(values.length, 2);
+      assert.ok(values.every(row => placements.every(node => row[node.fieldId] === '选项1')), 'both actual ModelTab creation and type conversion yield real row defaults without option text edits');
+    }, viewport);
+  }
   const result = { kind: 'actual-shell-and-canvas-with-controlled-save-callback', baseline: baseline ?? null, results };
   if (process.env.W2_RESULT_PATH) await writeFile(process.env.W2_RESULT_PATH, JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify(result, null, 2));

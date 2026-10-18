@@ -142,7 +142,7 @@ function normalizeModelFieldColumns(columns: unknown): ModelField[] {
 
 // Write commands only: registry defaults are also used to read old documents.
 function initializeChoiceField(field: ModelField): ModelField {
-  const options = field.typeConfig.options;
+  const options = field.typeConfig?.options;
   return isChoiceField(field) && (options == null || (Array.isArray(options) && !options.length))
     ? { ...field, typeConfig: { ...field.typeConfig, options: defaultChoiceOptions() } }
     : field;
@@ -2280,6 +2280,18 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
           : { ...field.typeConfig, ...(patch.typeConfig ?? {}) },
       };
       if (typeChanged) updatedField = initializeChoiceField(updatedField);
+      // ModelTab creates/converts child fields by replacing the parent's columns.
+      // Existing same-type columns, including old empty definitions, stay untouched.
+      if (updatedField.type === 'subTable' && Array.isArray(patch.typeConfig?.columns)) {
+        const previousColumns = Array.isArray(field.typeConfig.columns) ? field.typeConfig.columns as ModelField[] : [];
+        updatedField = { ...updatedField, typeConfig: { ...updatedField.typeConfig,
+          columns: (patch.typeConfig.columns as ModelField[]).map(column => {
+            if (!column || typeof column !== 'object') return column;
+            const previous = previousColumns.find(item => item?.id === column.id);
+            return !previous || previous.type !== column.type ? initializeChoiceField(column) : column;
+          }),
+        } };
+      }
       return updatedField;
     });
 

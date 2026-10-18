@@ -1,0 +1,18 @@
+{
+  "name": "node-base",
+  "command": [
+    "node",
+    "--test",
+    "scripts/test-designer-choice-options.mjs"
+  ],
+  "cwd": "gmp-platform/frontend",
+  "environmentOverrides": {
+    "W2_BASELINE_COMMIT": "b191e054892ae06cb0d8a45f62d034deabbba3e3"
+  },
+  "exitCode": 1,
+  "durationSeconds": 1.26,
+  "rawLog": {
+    "bytes": 9941,
+    "sha256": "b86b58de6930fc915e3be461002c69a83adbd40b1d788fe34ff9a7f0808dcc09"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "java",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-o",
+    "-C",
+    "-Dtest=ProductionExecutionIntegrationTest,ProductionExecutionFormValuesTest,ProductionExecutionEngineTest,BusinessKnowledgeModelTest",
+    "test"
+  ],
+  "cwd": "gmp-platform/backend",
+  "environmentOverrides": {},
+  "exitCode": 0,
+  "durationSeconds": 45.578,
+  "rawLog": {
+    "bytes": 3451391,
+    "sha256": "77dfda0850a4a53606e528bcc490952f4e34479107ca5be3caba3fe5ca1adf8a"
+  }
+}

@@ -45,3 +45,15 @@
 本体角色实际读取 `/tmp/edhr-w2-choice-browser-final.json`，主侧最终13个真实Chromium场景全通过：旧9场景保留，新增1440/390视口各自单选共享/默认/新增两行及多选默认选择/取消/保存。浏览器脚本对每场景pageerrors与console errors均断言为空。主侧实际查看1440配置及纸面、390纸面及多选配置截图；窄视口原toolbar溢出与固定纸面横滚仍是既有边界，不能据此声称完整移动端或触摸验收，也不证明多选新行工厂已增加能力。本体角色只读源码、运行报告及原fixture，不冒称亲自运行Maven、Node、浏览器或构建；后续独立质量结果由实际验证实例与本批台账另记。
 
 本体自身完成 YAML、全局 ID/引用、证据路径和内部投影诊断；其通过不替代正式 Maven/JUnit。Ruby bootstrap 因本环境缺 Ruby 未运行，未登记为通过。ESLint仍缺配置、官方premium工具当前不可用未执行，不能把历史84项当成本轮扫描。当前源码与已确认含义未发现冲突，新增定义仍保留 `specified/internal`、`0.3.25`，无新增执行契约或客户/运行投影，不提升为 `verified`、整阶段完成或独立质量已通过。
+
+## 首轮独立失败后的真实入口补漏
+
+2026-10-18 首轮冻结候选 `c4491dde7703e778c0b4ba7dd293dc940d8a262d` 的独立结论是 **failed**，原件保留于 `docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/quality-result.yaml`。`QF-W2-CHOICE-001` 为 medium、当时 open：独立实例通过实际 ModelTab 子列创建对话框确认，新建单选子列仍有 canonical `options=[]`，界面显示选项1/2，默认按钮记录选项1，但实际新增两行均无该列值。主动子列改型遗漏由该轮源码核对，不能冒称当时也完成该对话框运行验收。前述126项Node、13个浏览器、186实跑Java加3跳过及89知识测试是首轮真实通过记录，不覆盖这个额外入口，更不能改写为首轮独立质量已通过；原本体结果原件也保留其生成时点和有限核对范围。
+
+根因映射补正：`tabs/model/ModelTab.tsx::createSubTableField` 从读取也复用的 `definition.defaultField` 创建子列；`handleSaveField` 的子列新增和主动改型经 `updateSubTableFields` 调用 `updateField(parentId, {typeConfig: {columns}})`。首候选只在顶层字段/快捷子列创建和顶层实际改型路径初始化选择预置，未覆盖真实 ModelTab 的父表 columns 写命令。该遗漏是实现和原有限测试覆盖不全，不是 DEC-0080 业务含义发生变化，也不是需要用户重新决定选项政策。
+
+主侧当前补丁在既有 `store.updateField` 父表 columns 写命令内比较上一份同父表、同列ID的定义：只对新出现的子列或实际类型改变的子列调用 `initializeChoiceField`；同ID同类型的旧空/缺失选项保持，不因父表改名、旧文档打开或parse被补两项。后续仍沿原 `syncBoundNodesForField` 对齐同身份位置及原单次 `pushDocumentHistory`，不修改读取字段工厂、运行允许值、服务端授权、默认行工厂或旧冻结快照。用户确认、稳定字段身份、同组选项、使用时冻结及原保存撤销边界全部保持；本次不修改DEC、YAML定义、版本或成熟度。
+
+跟进同步时主侧新回归和实际对话框验证仍在进行，本体角色只读核对这段补丁，不预写通过或将首轮发现标为resolved。最终跟进源码摘要和主侧实际验证时点以本轮跟进结果及交付台账补证，仍须后续全新实例独立验证。首轮独立实例另已实际恢复读取官方premium脚本并对base与该首候选运行扫描，84条完整集合相同、新增0；这与前述主侧当时工具不可用分别属于各自时点，不是本次后续候选的全站通过结论。
+
+跟进源码稳定后，本体角色实际读取主侧最终安全报告/日志及对应测试：Node 128/128通过、0跳过；新增两条父表columns store回归已通过，同一12条选项测试对首候选c449回放为10通过/2失败，新增反证分别对应真实入口的新列和改型漏初始化。新增实际ModelTab创建、改型、原预置默认选择、保存载荷与实际新行值的两个Chromium场景在1440和390视口均通过，报告为 `/tmp/edhr-w2-choice-modeltab-browser.json`；对c449的1440场景在首次保存canonical预置断言失败，390未达到，不能声称两视口均完成反证。当前跟进tsc/Vite构建与原静态guard通过。本体未亲自运行这些业务测试；原186实跑Java加3跳过和13个既有浏览器场景仍属首轮，不预写最终全15浏览器或189项Java已复验，更不把首轮failed改成passed。当前补丁与既有DEC-0080、原冻结/身份/单次历史边界一致；原失败记录中的QF保持其历史open状态，最终解决与质量结论待全新独立实例实际验证。

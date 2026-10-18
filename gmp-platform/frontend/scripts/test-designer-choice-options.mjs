@@ -93,6 +93,41 @@ test('reading old choice fields with missing or empty options never creates curr
   }
 });
 
+test('ModelTab parent-column creation initializes only new choice columns and preserves an old empty column', () => {
+  for (const type of ['singleSelect', 'multiSelect']) {
+    const target = setup(type, true);
+    const document = structuredClone(store.getState().document);
+    const parent = document.model.fields[0];
+    parent.typeConfig.columns[0].typeConfig.options = [];
+    store.getState().setDocument(document);
+    const added = { ...structuredClone(parent.typeConfig.columns[0]), id: 'model-tab-created', name: '新子列', typeConfig: { options: [] } };
+    store.getState().updateField(parent.id, { typeConfig: { ...parent.typeConfig, columns: [...parent.typeConfig.columns, added] } });
+    const columns = store.getState().document.model.fields[0].typeConfig.columns;
+    assert.equal(columns[1].typeConfig.options.length, 2);
+    assert.deepEqual(plain(columns[0].typeConfig.options), []);
+    assert.equal(columns[1].id, added.id);
+    store.getState().updateField(parent.id, { name: '仅改父表名称' });
+    assert.deepEqual(plain(store.getState().document.model.fields[0].typeConfig.columns[0].typeConfig.options), []);
+  }
+});
+
+test('ModelTab parent-column type changes initialize choice definitions and embedded placements in one history step', () => {
+  for (const type of ['singleSelect', 'multiSelect']) {
+    const target = setup('text', true);
+    const before = JSON.stringify(store.getState().document);
+    const parent = store.getState().document.model.fields[0];
+    const converted = { ...parent.typeConfig.columns[0], type, typeConfig: { options: [] } };
+    store.getState().updateField(parent.id, { typeConfig: { ...parent.typeConfig, columns: [converted] } });
+    assert.equal(column(target).typeConfig.options.length, 2);
+    assert.equal(column(target).id, target.field.id);
+    assert.ok(nodes().every(node => node.bindings.subTableField.typeConfig.options.length === 2));
+    assert.ok(nodes().every(node => node.bindings.widgetConfig.optionList === '选项1\n选项2'));
+    assert.equal(store.getState().undoStack.length, 1);
+    store.getState().undoCanvasChange();
+    assert.equal(JSON.stringify(store.getState().document), before);
+  }
+});
+
 test('editing either placement shares single and multi options with the canonical field and other placements', () => {
   for (const type of ['singleSelect', 'multiSelect']) {
     const target = setup(type);

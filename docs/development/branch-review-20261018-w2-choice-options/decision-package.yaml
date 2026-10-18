@@ -71,7 +71,7 @@ decisionPackage:
       reason: 纯选项转换和当前文档同字段同步。
     - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts
       changeType: update
-      reason: 原updateNodeBindings/updateField命令内同步；仅新字段创建及主动类型变更写命令生成界面已有预置，registry/旧文档读取不补值。
+      reason: 原updateNodeBindings/updateField命令内同步；含ModelTab实际父表columns入口，仅新增子列/实际类型变更写命令生成已有预置，同类型旧列及registry/文档读取不补值。
     - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx
       changeType: update
       reason: 选项与默认按钮对应实际值，显示同字段当前配置。

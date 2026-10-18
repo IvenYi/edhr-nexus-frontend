@@ -1,0 +1,90 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: c4491dde7703e778c0b4ba7dd293dc940d8a262d
+    targetBranch: edhr-dev
+    targetCommit: b191e054892ae06cb0d8a45f62d034deabbba3e3
+    contractReadCommit: c4491dde7703e778c0b4ba7dd293dc940d8a262d
+    uncommittedContractPaths: []
+  reason: 针对首轮独立failed发现的ModelTab真实子列新增/主动改型遗漏，只追加原证据Markdown纠错时点和既有政策内工程边界。实际重新核对ModelTab到父表updateField的源码链、当前新增/实际改型列初始化补丁及主侧跟进证据；未改变DEC-0080语义、知识版本或成熟度。当前HEAD为首候选c449，补丁仍dirty，最终源码SHA见本次diagnostic，不把c449当成修复已提交版本。原知识Markdown7627字节完整保留为前缀，206个知识YAML及原本体归档字节未改；首轮failed及QF历史open状态保留，不冒称新独立质量已通过。
+  changedArtifacts:
+    - path: docs/knowledge/evidence/shared-choice-options-2026-10-18.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: evidence.shared-choice-options-original-source
+      disposition: updated
+      scope: 同一原证据Markdown追加首轮独立失败、真实ModelTab父表columns写命令漏初始化的根因和主侧补丁/跟进实测时点；不覆盖原126/13/186加3的首轮真实有限通过记录，也不把新15浏览器/189Java或新独立质量写成已验。
+      sourceReferences: [docs/knowledge/evidence/shared-choice-options-2026-10-18.md, docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/quality-result.yaml, /tmp/edhr-w2-choice-ontology-followup-diagnostic.json]
+    - id: DEC-0080-01
+      disposition: retained
+      scope: 同一字段全部位置共用同组选项不变；本次为原工程实现入口补漏，不是新业务问题、跨字段字典或默认值全生命周期政策。
+      sourceReferences: [docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml]
+    - id: term.form-template-field
+      disposition: retained
+      scope: 稳定字段与父表/列身份保持，新增/改型判断按同父表原列ID与实际type差异；不把同名或同类型的其他字段合并。
+      sourceReferences: [docs/knowledge/glossary.yaml, gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+    - id: DEC-0077-12
+      disposition: retained
+      scope: 读取旧缺失/空选项不补预置，同ID同类型旧列不初始化，旧快照不改写；新增预置只属于当前显式新增或实际改型写命令，后端冻结和允许值生产源码不变。
+      sourceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+    - id: DEC-0077-22
+      disposition: retained
+      scope: 父表columns补丁继续沿原syncBoundNodesForField和单次pushDocumentHistory，不新建保存或撤销事务。
+      sourceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.choice-followup-append-only-and-originals
+      checkType: evidence-path
+      command: python3 /tmp/edhr-w2-choice-ontology-followup-diagnostic.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w2-choice-ontology-followup-diagnostic.json
+        - 原知识Markdown7627字节是当前完整前缀，仅追加3754字节；原本体归档全部与c449逐字节相同。
+        - 首轮qualityResult原件仍failed，QF-W2-CHOICE-001仍medium/open；未改写原件。
+    - id: validation.choice-followup-contract-and-policy
+      checkType: projection
+      command: python3 /tmp/edhr-w2-choice-ontology-followup-diagnostic.py; inspect relevant unchanged decisions and current source
+      outcome: passed
+      evidence:
+        - 206个知识YAML均与c449逐字节相同、版本0.3.25保持；DEC/词典/本体/README/架构及项目/角色/交接契约均未修改。
+        - source与actual HEAD为c4491dde7703e778c0b4ba7dd293dc940d8a262d，origin/edhr-dev为b191e054892ae06cb0d8a45f62d034deabbba3e3；契约相对先前b191无增量。
+        - 无新增事实、规则、执行契约、替代关系或成熟度提升。
+    - id: validation.choice-followup-real-command-mapping
+      checkType: reference
+      command: inspect ModelTab::createSubTableField/handleSaveField/updateSubTableFields and dirty store::updateField/initializeChoiceField
+      outcome: passed
+      evidence:
+        - 实际ModelTab新增和子列改型调用父表updateField(parent,{typeConfig.columns})；原c449只对父字段本身typeChanged初始化，路径遗漏已确认。
+        - 当前父表columns写命令只对不存在原同ID列或原type实际改变的列调用initializeChoiceField；同类型旧空/缺失列保持，原registry工厂与读取路径未改。
+        - current store及两个测试实际读取字节SHA均在followup diagnostic中，包含旧c449之外dirty补丁，不编造修复提交SHA。
+    - id: validation.choice-followup-history-and-snapshot-boundary
+      checkType: status-transition
+      command: inspect current store updateField and compare registry/newSubTableRow/ExecutionSnapshotBuilder/ProductionExecutionEngine against c449
+      outcome: passed
+      evidence:
+        - 继续复用原syncBoundNodesForField与完整document单次pushDocumentHistory；列ID、父表身份、权限、签署和历史所有权未变。
+        - registry、默认行工厂、后端快照构建和提交允许值生产源码与c449原字节相同；无读最新模板或widget选项并集放行。
+    - id: validation.choice-followup-primary-reports-inspected
+      checkType: evidence-path
+      command: python3 /tmp/edhr-w2-choice-ontology-followup-diagnostic.py; inspect two new actual ModelTab browser scenarios and primary build/static logs
+      outcome: passed
+      evidence:
+        - 主侧当前Node128/128通过、0跳过；12条选择字段store测试当前12通过，对首候选c449回放为10通过/2失败，均已读取实际日志。
+        - 主侧新增ModelTab真实新建/改型/默认值/保存及实际新行两个浏览器场景在1440和390均passed；对c449的1440首次保存canonical预置断言失败，390未达到。
+        - 主侧当前tsc/Vite构建和原静态guard通过；本体角色未执行Maven、构建、浏览器或任何业务测试。
+        - 首轮186Java实跑加3跳过、原13浏览器保留其时点；本结果不预写当前全15浏览器、189Java或新独立质量通过，不将历史QF改为resolved。
+    - id: validation.choice-followup-document-whitespace
+      checkType: schema
+      command: git diff --check -- docs/knowledge/evidence/shared-choice-options-2026-10-18.md
+      outcome: passed
+      evidence:
+        - 本体唯一仓库修改为原证据MD追加，whitespace检查退出0。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

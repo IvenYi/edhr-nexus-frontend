@@ -1,0 +1,60 @@
+{
+  "counts": {
+    "tests": 12,
+    "pass": 10,
+    "fail": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "cases": [
+    {
+      "name": "new choice fields persist the same two presets already shown by their controls",
+      "outcome": "passed"
+    },
+    {
+      "name": "reading old choice fields with missing or empty options never creates current write-command presets",
+      "outcome": "passed"
+    },
+    {
+      "name": "ModelTab parent-column creation initializes only new choice columns and preserves an old empty column",
+      "outcome": "failed"
+    },
+    {
+      "name": "ModelTab parent-column type changes initialize choice definitions and embedded placements in one history step",
+      "outcome": "failed"
+    },
+    {
+      "name": "editing either placement shares single and multi options with the canonical field and other placements",
+      "outcome": "passed"
+    },
+    {
+      "name": "subtable options update canonical columns and embedded placements across pages without touching another table",
+      "outcome": "passed"
+    },
+    {
+      "name": "model option edits update every placement while preserving compatible widget configuration",
+      "outcome": "passed"
+    },
+    {
+      "name": "renaming an option label preserves its existing value identity and former immutable document",
+      "outcome": "passed"
+    },
+    {
+      "name": "one choice edit is one complete undo step and round-trips model and canvas consistently",
+      "outcome": "passed"
+    },
+    {
+      "name": "the existing row factory saves a configured single-select default as the actual canonical option value",
+      "outcome": "passed"
+    },
+    {
+      "name": "unrelated binding and widget edits do not adopt a saved inconsistent placement or reactivate disabled options",
+      "outcome": "passed"
+    },
+    {
+      "name": "rebinding a compatible choice control takes its new field options without carrying another field option list",
+      "outcome": "passed"
+    }
+  ]
+}

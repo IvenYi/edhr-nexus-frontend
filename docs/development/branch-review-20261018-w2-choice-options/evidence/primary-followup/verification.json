@@ -1,0 +1,92 @@
+{
+  "kind": "actual-primary-followup-after-independent-failed",
+  "firstCandidate": "c4491dde7703e778c0b4ba7dd293dc940d8a262d",
+  "baseCommit": "b191e054892ae06cb0d8a45f62d034deabbba3e3",
+  "recordedAtUtc": "2026-10-18T06:56:42.264039+00:00",
+  "commands": [
+    {
+      "kind": "candidate128",
+      "exitCode": 0,
+      "counts": {
+        "tests": 128,
+        "pass": 128,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "unpublishedRawLog": "/tmp/edhr-w2-choice-node-followup.log",
+      "bytes": 13085,
+      "sha256": "2f6827c674cb90889b7928439f206f9c08466f78baae826bb72c1c0d91966772"
+    },
+    {
+      "kind": "firstCandidateRed",
+      "exitCode": 1,
+      "counts": {
+        "tests": 12,
+        "pass": 10,
+        "fail": 2,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "unpublishedRawLog": "/tmp/edhr-w2-choice-first-candidate-red.log",
+      "bytes": 3604,
+      "sha256": "3cf1ce688fca3bcee0bc9167d6894b336bfbdb0a07624edd33a131d98027a5c8"
+    }
+  ],
+  "modeltabBrowser": {
+    "exitCode": 0,
+    "passed": 2,
+    "viewports": [
+      1440,
+      390
+    ],
+    "originalJson": {
+      "bytes": 555,
+      "sha256": "652d9b9c927b25b2fd890902c87d9ff6b5a95389f1eb7935947307eb4a0fe8a5"
+    },
+    "pageAndConsoleErrors": "asserted empty"
+  },
+  "firstCandidateBrowserRed": {
+    "exitCode": 1,
+    "assertion": "actual ModelTab creation saves canonical presets before Inspector edits",
+    "viewportsActuallyReached": [
+      1440
+    ],
+    "unpublishedLog": {
+      "bytes": 2619,
+      "sha256": "1fa8f3498ee4e68c66fe22a6aad8d97eac1e9628b92bb35c8a3ad453524a029e"
+    }
+  },
+  "build": {
+    "exitCode": 0,
+    "unpublishedLog": {
+      "bytes": 9335,
+      "sha256": "25c923d783f357baf22aad7d6b1d255eda93ddfa8cbb5189b86466f9fb0e7ff3"
+    }
+  },
+  "staticGuard": {
+    "exitCode": 0,
+    "unpublishedLog": {
+      "bytes": 351,
+      "sha256": "095b68b9c497f1b6259a40ea77f747757afd7c7d33fec30c49923c2546c3790b"
+    }
+  },
+  "modifiedProductAndTestSources": {
+    "gmp-platform/frontend/scripts/test-designer-choice-options.mjs": {
+      "bytes": 15033,
+      "sha256": "5ae73660a90d7ed6fd2e181bbfac7f5e4ed042776ea9479715aac9abd8b9ca43"
+    },
+    "gmp-platform/frontend/scripts/test-designer-save-browser.mjs": {
+      "bytes": 36443,
+      "sha256": "0e4560ba89a5bbdf86560e202c762caaa2c58371c86d5c41b766f634ae271cfa"
+    },
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts": {
+      "bytes": 125856,
+      "sha256": "8e21536a02bc5502ed2c65d70288d38a980b686999d227dc0c687ba72b5d40ab"
+    }
+  },
+  "unchangedBackendEvidence": "Backend production/test/fixture sources unchanged from first independent run; original189 total186pass3skip preserved, fresh independent full rerun pending.",
+  "rawLogsAndXmlPublished": false
+}

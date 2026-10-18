@@ -1,0 +1,258 @@
+qualityResult:
+  result: failed
+  baseCommit: b191e054892ae06cb0d8a45f62d034deabbba3e3
+  headCommit: c4491dde7703e778c0b4ba7dd293dc940d8a262d
+  contractBaseline:
+    sourceCommit: c4491dde7703e778c0b4ba7dd293dc940d8a262d
+    targetBranch: edhr-dev
+    targetCommit: b191e054892ae06cb0d8a45f62d034deabbba3e3
+    contractReadCommit: c4491dde7703e778c0b4ba7dd293dc940d8a262d
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.actual-baseline-and-contract
+      required: true
+      category: documentation
+      description: 独立获取实时目标并读取项目、质量、编码、交接、知识和界面契约。
+      method: command
+      command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git diff base HEAD -- governance paths; gh pr view 14 --json number,state,baseRefName,mergeCommit,mergedAt
+      outcome: passed
+      evidence:
+        - base及实时target均为b191e054892ae06cb0d8a45f62d034deabbba3e3；实际tested candidate为c4491dde7703e778c0b4ba7dd293dc940d8a262d，候选直接包含目标，工作树clean。
+        - PR14确为MERGED，2026-10-18T05:57:19Z；合并树等同批准交付1246cda13aca6ae5a5f98c3b7a5bf79f58f4b26e。
+        - 实际读取AGENTS、codeplzreadme、quality-verifier、agent-handoff-contract、DESIGN、知识README/open-questions、相关架构/DEC-0077与DEC-0080；契约、schema、open-questions、DESIGN相对base无修改。
+        - 未查询Actions、checks、status或分支保护；未声称GitHub强制门禁已启用。
+    - id: check.requirement-source-and-command-ownership
+      required: true
+      category: requirements
+      description: 对照原始用户确认与生产源码核对同字段共享选项和最小写命令整改。
+      method: inspection
+      command: inspect choiceOptions.ts, initializeChoiceField/createModelFieldFromInput/addField/updateField/syncBoundNodesForField/bindFieldToNode/updateNodeBindings, Inspector and MockFillDialog diffs
+      outcome: failed
+      evidence:
+        - 用户明确答复必须共用同一组选项（推荐）；适用同一稳定字段身份，不扩大为跨字段字典或所有位置同默认值。
+        - 只有optionList文本实际改变才反向更新canonical；按父表加field身份隔离并递归全部页/children，模型修改和重绑投射同组选项，保留同value身份、停用元数据和无关widget配置。
+        - 原pushDocumentHistory内一次提交；预置只属于新建及主动类型变更写命令。registry、旧parse路径和newSubTableRow无diff，不对历史缺失/空选项补预置。
+        - 单选及多选默认动作和选中标记使用parsed value；React key包含node身份，数据valueKey仍共享。
+        - 后端生产源码无diff，无widget并集放行、最新模板替换或历史迁移；本批生产/测试/知识路径git diff --check通过。
+        - 最后交叉核对发现ModelTab.tsx:270/:576/:608/:631的真实子列新增/主动改型入口通过updateField(parent,{columns})，绕过initializeChoiceField；本条整体要求未完成，见QF-W2-CHOICE-001及实际浏览器探针。
+        - modeltab-child-reproduction.json
+        - modeltab-child-default.png
+    - id: check.knowledge-and-decision-consistency
+      required: true
+      category: ontology
+      description: 独立核对7项知识增量、正式updated结果及当前知识测试，保持原政策与成熟度边界。
+      method: inspection
+      command: inspect DEC-0080, evidence, glossary, ontology, knowledge README, architecture and archived ontologyResult; BusinessKnowledgeModelTest through actual Maven run
+      outcome: passed
+      evidence:
+        - 原始问答为user-confirmed；canonical与写命令方案为工程选择，DEC-0080/新声明/场景均specified/internal，0.3.25/schema1.2.0保持。
+        - 复用term.form-template-field及concept.form-template-field；不虚构supersedes或新运行规则/事实/契约；DEC-0077-12/22的冻结与完整文档历史范围保留。
+        - 本体正式结果为updated，生成于base的明确dirty阶段；7个知识及14个源码摘要可连接到冻结candidate，不把base误作已修提交。
+        - 当前独立BusinessKnowledgeModelTest实际89通过、0跳过；不是全库语义审计或知识发布/路线成熟度通过。
+        - java-cases.json
+        - readonly-doc-review.md
+    - id: check.fixed-inventory-and-original-evidence
+      required: true
+      category: documentation
+      description: 核对固定覆盖分母、归档原字节、历史去重和具体模块拆分提案。
+      method: inspection
+      command: inspect baseline.json, coverage.csv, source-map.md, findings.md, NEXT.md and receipts; compare baseline ls-tree paths/blobs and original artifacts
+      outcome: passed
+      evidence:
+        - 1931条路径/blob精确等于固定base；全部pending/inventory-only，无全量源码审查完成声明。
+        - 9项helper、3项ontology、14项primary原件及收据匹配；fixture为6343bytes，SHA256 721d500935aa38b52dae95414e45d1c41c8921b2c50788864ea3554a2ada2b63，原UI导出字节保持。
+        - execute旧报告笔误保留原字节，source-map单独纠正ProductionExecutionService.act；S04具备具体职责、输入输出、history/事务边界、回归和逐批回滚方案，未宣称已重构。
+        - PR5/6及PR10至14不重新收尾；W3 H003/4/9/10与A12/两项旧DHR high仍开放或按用户决定暂缓。
+        - readonly-doc-inspection.json
+    - id: check.current-node-regression
+      required: true
+      category: regression
+      description: 实际执行当前15脚本有限回归，含10条新增选项回归及既有身份/行/保存/投影保护。
+      method: automated-test
+      command: see node-cases.json execution.command for all 15 actual Node scripts
+      outcome: passed
+      evidence: [node-cases.json, 126 tests / 126 passed / 0 failed / 0 skipped; exit 0]
+    - id: check.original-node-red-and-controls
+      required: true
+      category: regression
+      description: 用Git原字节替换原store/registry，独立复现真实缺陷并保留两项正对照。
+      method: automated-test
+      command: W2_BASELINE_COMMIT=b191e054892ae06cb0d8a45f62d034deabbba3e3 node --test scripts/test-designer-choice-options.mjs
+      outcome: passed
+      evidence:
+        - node-base-cases.json
+        - 原实现10条实际为8失败/2通过，命令exit1符合反证预期；旧读取不补预置、无关绑定不采信副本两项通过。
+        - 重复主字段使用合法导入typed document；未把早期无效fixture失败当产品反证；本回放不声称全旧树测试。
+    - id: check.current-browser-workflows
+      required: true
+      category: e2e
+      description: 真实Chromium运行旧9场景和本批单选/多选各两个视口场景。
+      method: browser
+      command: NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium W2_SCREENSHOT_DIR=/tmp/edhr-w2-choice-independent/screenshots W2_RESULT_PATH=/tmp/edhr-w2-choice-independent/browser-results.json node scripts/test-designer-save-browser.mjs
+      outcome: passed
+      evidence:
+        - browser-results.json
+        - 13/13 passed，exit0；每场景结束pageerrors及consoleErrors严格空断言，未屏蔽React key错误。
+        - 实际Inspector编辑、单次完整undo/redo、解析默认值/选中标记、保存回调载荷、真实纸面增删行与行UUID保持；多选独立选择/取消/保存实际值。
+        - 真实应用组件及store，目录GET受控、保存回调受控；不是认证浏览器到后端HTTP E2E，也不声称行工厂新增多选默认能力。
+    - id: check.modeltab-real-child-creation
+      required: true
+      category: e2e
+      description: 额外独立探针实际点击ModelTab子列创建对话框，发现已通过13场景未覆盖的真实入口缺陷。
+      method: browser
+      command: NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium node /tmp/edhr-w2-choice-independent/modeltab-probe.mjs
+      outcome: failed
+      evidence:
+        - modeltab-child-reproduction.json
+        - modeltab-child-default.png
+        - 探针exit0表示断言确证缺陷存在，不表示业务验收通过；实际canonical=[]、可见选项1/2、默认=选项1、两条新行均缺少字段值。
+        - 新子列是实际ModelTab对话框创建；已有父表/画布几何用公开store布置，保存回调受控。主动改型入口另由原始源码核对，不冒称已独立执行该UI步骤。
+        - 首次外置探针因MUI Select的locator未命中而中止，修正仅在自己/tmp探针；该次fixture错误不作为产品反证。所有生产、仓库测试和夹具均未改。
+    - id: check.original-browser-red
+      required: true
+      category: e2e
+      description: 原Inspector/store在真实浏览器操作后不能更新canonical option value。
+      method: browser
+      command: W2_BASELINE_COMMIT=b191e054892ae06cb0d8a45f62d034deabbba3e3 W2_CASE_FILTER='choice options share' NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium node scripts/test-designer-save-browser.mjs
+      outcome: passed
+      evidence:
+        - browser-base-summary.json
+        - 1440x960实际Inspector输入后首个canonical option value断言为undefined而非pass，exit1是预期缺陷反证。
+        - 390场景因首个失败未运行，无基线截图，不冒称两个视口均反证。
+    - id: check.visual-inspection
+      required: true
+      category: visual
+      description: 实际查看当前单选1440/390、纸面390、多选390截图，核对新增行为显示与既有界面。
+      method: inspection
+      command: view_image screenshots/choice-inspector-1440.png, choice-inspector-390.png, choice-runtime-390.png, multi-choice-inspector-390.png
+      outcome: passed
+      evidence:
+        - screenshots/choice-inspector-1440.png
+        - screenshots/choice-inspector-390.png
+        - screenshots/choice-runtime-390.png
+        - screenshots/multi-choice-inspector-390.png
+        - 当前选项文本与默认标记正确，纸面同字段两位置显示同值；390既有toolbar溢出与纸面横滚仍在，不声明全站移动、触屏或完整可访问性通过。
+    - id: check.production-build
+      required: true
+      category: regression
+      description: 实际tsc project build及Vite production build，未与Maven打印构建并发。
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence: [build-execution.json, exit 0; package script is tsc -b and vite build --config vite.config.ts]
+    - id: check.designer-static-contract
+      required: true
+      category: regression
+      description: 实际运行现有设计器静态门槛；默认值断言加强为parsed value。
+      method: command
+      command: npm run verify:template-designer-react
+      outcome: passed
+      evidence:
+        - static-execution.json
+        - exit0；单选要求parse及存actual value，多选保留原数组断言并新增parse/按value判选/toggle传value三项；无测试标准降低。
+    - id: check.backend-integration-and-freeze
+      required: true
+      category: integration
+      description: 当前四套Maven聚焦回归、知识和冻结提交正反证，保留全部条件跳过边界。
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -o -C -Dtest=ProductionExecutionIntegrationTest,ProductionExecutionFormValuesTest,ProductionExecutionEngineTest,BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - java-cases.json
+        - exit0，189总项/186实际通过/0失败或错误/3既有条件跳过；BusinessKnowledgeModelTest89、FormValues8、Engine22、Integration67实际通过。
+        - inspectorChoiceOptionsSaveAndSubmitAgainstTheSameFrozenCanonicalValues实际passed；原UI资源到新START冻结，SAVE成功，未知SUBMIT拒绝后revision/values/audit均不变，合法SUBMIT成功且完整解析冻结树不变。
+        - 比较整个JSON语义树，不丢字段；数字词法归一化不当作业务变更。DHR打印Vite构建实际执行且通过，未exec.skip。
+        - H2 PostgreSQL兼容模式/MockMvc/JPA/JDBC/事务；不是原生PG。跳过formRecordsBrowserFixture、firstStartFreezesOneCommittedConfigurationDuringProcessRebinding、browserEvidenceFixture，未称189实跑或零跳过。
+    - id: check.official-premium-no-added-findings
+      required: true
+      category: regression
+      description: 当前官方脚本对同base/candidate严格扫描的完整集合比对，本批无新增静态问题。
+      method: command
+      command: python official audit_project.py git-archive-base --mode strict; python same official audit_project.py git-archive-candidate --mode strict; compare exact full finding multisets
+      outcome: passed
+      evidence:
+        - premium-base.json
+        - premium-candidate.json
+        - premium-comparison.json
+        - 官方skill在本独立实例暂时恢复可读，已取得原字节37716bytes脚本SHA256 67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68并实际运行；不是自写替代scanner或复用历史84。
+        - 两侧84条完整finding multiset逐字段相同；新增0/移除0，候选变更路径0命中。git archive独立目录，无worktree；原始strict exit2事实另列，不声称全站通过。
+    - id: check.no-repository-or-helper-mutation
+      required: true
+      category: security
+      description: 在全部实际运行前后保护完整tracked字节和工具，所有自有运行进程结束。
+      method: command
+      command: compare before/after full git ls-files byte/SHA manifests and two helper fingerprints; git status --porcelain; all session completions and browser/server finally cleanup
+      outcome: passed
+      evidence:
+        - protection-summary.json
+        - 全1974个tracked文件字节/SHA256逐项不变；HEAD c4491dde7703e778c0b4ba7dd293dc940d8a262d及clean状态不变，完整manifest仅保留/tmp不归档。
+        - mvn-edhr1898bytes SHA256 ebc3436428ffe9d8689b1f4d4f825675c7b49dd7baba02235ee6d0781df73dae；settings.xml198bytes SHA256 26bd47ed597f0fd6cc1b609cc3921e9795750d66946687fe8828784b1cae0ff2，前后均不变且未输出配置。
+        - 未改代码/测试/夹具/配置/知识/lock，未commit/push/merge/deploy；自有应用、Maven、浏览器、build与扫描均已结束。
+    - id: check.raw-whole-project-premium
+      required: false
+      category: visual
+      description: 全站strict静态基线检查实际仍失败，属于既有未整改范围；本批验收要求不引入新增项，不能冒称全站合规。
+      method: command
+      command: python official audit_project.py candidate-git-archive --mode strict
+      outcome: failed
+      evidence: [premium-candidate.json, premium-comparison.json, exit 2; 84 errors comprising 71 violations and 13 unresolved; identical to current base]
+    - id: check.repository-eslint
+      required: false
+      category: regression
+      description: 既有仓库缺ESLint配置，不能据此形成全站lint通过；当前逻辑仍由实际类型构建与针对测试验证。
+      method: command
+      command: npm run lint
+      outcome: failed
+      evidence: [lint-execution.json, actual exit 2; ESLint 8.57.1 cannot find configuration; no config or package changes]
+  findings:
+    - id: QF-W2-CHOICE-001
+      severity: medium
+      scope: ModelTab实际子列创建和主动类型变更入口；canonical选项与动态行默认。
+      summary: 子列字段设计对话框绕过新选项初始化，新建单选子列仍保存空canonical选项，点击可见预置默认后真实新行缺失该值。
+      reproductionSteps:
+        - 打开字段设计，已有子表点击设计子表。
+        - 在实际新增字段对话框填写名称，字段类型选单选，确认；不通过store.addSubTableFields快捷入口创建。
+        - 返回表单设计，将该子列放入动态子表；保持可见预置选项1和选项2文本不变，直接点击选项1的设为默认值。
+        - 在实际FormDocumentPreview新增行，检查canonical model options、组件defaultValue及真实行值。
+      expectedResult: 当前新建单选子列canonical模型持久化与界面相同的两个预置，defaultValue选项1能由既有行工厂解析并写入新行。
+      actualResult: 实际ModelTab新增得到type=singleSelect且canonical options=[]；Inspector显示选项1和选项2，点击默认记录选项1，但canonical仍空，实际新增两行均没有该字段值。
+      evidence:
+        - modeltab-child-reproduction.json
+        - modeltab-child-default.png
+        - 原始源码ModelTab.tsx:270 createSubTableField直接definition.defaultField；:576 updateSubTableFields调用父表updateField；:608子列主动改型及:631子列新增均走该路径。
+        - store.updateField:2263仅对父字段自身typeChanged执行initializeChoiceField，父表columns变化时不处理新建/实际改型子列；已有126Node/13浏览器以已修store.addSubTableFields创建，未覆盖真实ModelTab子列对话框。
+        - 主开发已在收到线索后独立读源码确认遗漏；质量实例未修改源码/测试/夹具/配置，未参与修复。
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.existing-ui-static-debt
+      description: 当前官方全站strict仍有84项，完整集合与当前base相同，未经逐项业务整改；不是全站premium合规通过。
+      impact: 现有其他UI的一致性/所有权/可访问性静态问题仍在，不能用本有限切片关闭。
+      mitigation: 本批无新增且变更路径无命中；在整体审查后续独立切片按原始finding定位处理，不扩展本批大改。
+    - id: risk.existing-eslint-configuration
+      description: npm run lint真实退出2，仓库没有ESLint配置。
+      impact: 无法获得全仓ESLint结论；不是本批引入的配置回归。
+      mitigation: 保留失败，后续工程治理单独恢复；当前实际tsc/Vite、静态门槛、126Node、13浏览器与聚焦后端验证通过。
+    - id: risk.native-postgresql-and-full-http
+      description: 后端为H2 PostgreSQL兼容模式；原生PG专属并发用例及两浏览器fixture条件未启用，浏览器保存是受控回调。
+      impact: 本结果不覆盖原生PG MVCC或认证浏览器到真实保存接口的完整E2E。
+      mitigation: 三项条件跳过逐名保留；本批无后端生产或事务改动，现有MockMvc/JPA/JDBC冻结提交正反证实际通过；原生PG/全HTTP另按对应风险验收。
+    - id: risk.existing-narrow-ui-and-touch
+      description: 390px既有toolbar溢出、固定纸面横滚和hover默认按钮交互仍保留；未做触屏/全设备/200%缩放/完整辅助技术矩阵。
+      impact: 不声明完整移动或全站可访问性验收通过。
+      mitigation: 本批只改现有动作值语义，无布局/样式/markup新增；13场景及截图验证修改流程，剩余界面范围后续审查处理。
+    - id: risk.historical-and-unreviewed-scope
+      description: 不迁移旧不一致模板或历史执行；1931清单仍全为pending/inventory-only，W2全量未完成。W3 H003/4/9/10及A12/两项旧high保持原状态。
+      impact: 当前通过只覆盖同字段共享选项切片，不能关闭上述历史/暂缓范围或替代整个分支验收。
+      mitigation: 当前显式编辑写命令对齐，历史不自动修复；交付前L0登记实际候选/质量状态，用户人工合并后按最新edhr-dev继续既定审查。
+    - id: risk.github-required-check-settings-unverified
+      description: 未查询Actions、check/status或branch protection/ruleset。
+      impact: 不能声称GitHub已强制启用质量契约或所有平台required检查已绿。
+      mitigation: 此报告是当前冻结提交本地独立有限验收，是否平台可合并以合法基本PR元数据及用户实际GitHub界面为准；不代用户合并。
+  blockingConditions: []

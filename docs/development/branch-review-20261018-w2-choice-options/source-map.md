@@ -8,6 +8,7 @@
 | `store/useTemplateDesignerStore.ts` `initializeChoiceField:144`、`createModelFieldFromInput:151`、`addField:2165`、`updateField:2263` | 两个既有可见预置只由新字段/主动改型命令物化；主字段和子列新增工厂共享写前初始化。不是文档读取归一化职责。 |
 | 同 store `createBoundNodeFromField:1684`、`createBoundNodeFromSubTableField:1713`、`bindFieldToNode:2615` | 从 canonical 模型生成/重绑组件选项，保持 node/field/subTable 标识和兼容 widget 设置；不沿旧节点继承其他字段选项。 |
 | 同 store `syncBoundNodesForField:1815`、`updateField:2263` | 模型编辑反向投射全部页及递归子节点，复用 PR14 父/子匹配；同一父表列 embedded 与 canonical 同步。 |
+| `tabs/model/ModelTab.tsx` `createSubTableField:270`、`updateSubTableFields:576`、`handleSaveField:593` → store `updateField` | 实际字段设计页子列新增/改型通过父表columns替换，首轮遗漏已获独立真实UI反证。修正版在该写命令比较旧列ID/类型，仅初始化新增/改型列，旧同类型列不补值；ModelTab共享读取normalize和registry保持原边界。 |
 | 同 store `updateNodeBindings:2664`、`pushDocumentHistory:1963` | 原 `syncReferenceConfig` 后执行选项同步，仍只提交一次完整 nextDocument；保留统一 undo/redo 及 50 条历史边界。 |
 | `frontend/src/components/form-renderer/choiceOptions.ts`（新，70 行） | `parseChoiceOption`/`choiceOptionList`/`choiceWidgetConfig` 是现有文本表示转换；`syncChoiceOptions` 仅在选项文本变化时更新 canonical 及同字段位置，父表+子列 ID 隔离，保留同值身份与停用元数据。它不是生产运行授权或迁移器。 |
 | `registry/fieldRegistry.ts` 默认选项；`utils/document.ts` `normalizeModelField:124`、`parse:345`、`serialize:360` | 原 registry 的空 options 仍供旧文档读取 fallback；读取不补当前预置。model/canvas/workflow 三片协议不变；原缺失/空选项不迁移。 |
@@ -29,7 +30,7 @@
 
 ## 大模块具体拆分方案（S04，提案未实施）
 
-读取时当前物理行数：store 3574、Inspector 2272、MockFillDialog 1644；包括空行和注释，只作职责混杂定位，不作为必须改写的门槛。本批只新增 70 行纯转换/同步模块及局部命令接线，不执行大规模拆分。
+首候选读取时物理行数：store 3574、Inspector 2272、MockFillDialog 1644；修正版store实际3586。包括空行和注释，只作职责混杂定位，不作为必须改写的门槛。本批只新增70行纯转换/同步模块及局部命令接线，不执行大规模拆分。
 
 1. **纯坐标与 page 命令。** `store/operations/sheetCoordinates.ts` 拥有范围、坐标和几何位移纯函数；`sheetDocumentCommands.ts` 输入 `page + command`，输出完整 `nextPage + selection`。先以插列、合并格、动态子表边界及来源身份等价性测试固定行为，再单独移动。命令不能自行 set store 或提交 history。收益是隔离几何和文档状态，回滚为单批 revert。
 2. **字段绑定对齐。** `fieldBindings.ts` 输入 `document + fieldId/parentId + patch`，输出完整 `nextDocument`；拥有 model、各页 placement 与 embedded 对齐。既有 `referenceConfig` 与本批 `choiceOptions` 保持各自纯表示转换，不能再建第二个策略所有者。store 保持唯一 document 提交/历史所有者。验收保护父表隔离、字段/节点/投影身份、布局、同值 option ID、停用定义、单次 undo/redo、redo 清空和 50 条上限。
