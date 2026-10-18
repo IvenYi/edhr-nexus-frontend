@@ -1,5 +1,7 @@
 # W3 H004 切片合并验收与任务复核
 
+[PR17](https://github.com/IvenYi/edhr-nexus-frontend/pull/17)已创建，目标edhr-dev。创建head为5a1ae0a7321d46602a41a39ef30b486722d30ae8，实际受测仍为下列a9ecd501，随后仅L0 PR登记。
+
 执行级别L2，仅交付AUD-H004。目标为edhr-dev@ca98ab2897990eba30bf1433134aa8560578f562，最终全新实例受测候选为a9ecd501a9abf354df95df2a1a01e53474a41a2d，tree为fa331993fda482384146074b2b815a4f3ed7f5bb。该候选包含目标；最终质量返回后主审再次显式fetch，目标/相关契约无增量。后续只允许L0报告、原件归档与PR登记，不能把其后提交冒称重新运行过的受测提交。
 
 ## 适用门禁
