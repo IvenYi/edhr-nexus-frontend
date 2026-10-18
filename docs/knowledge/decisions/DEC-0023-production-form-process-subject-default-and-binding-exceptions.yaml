@@ -95,7 +95,7 @@ decisions:
       visibility: internal
       path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java
       lineHint: 110
-      summary: 'provenance: original-evidence；AUD-H004于2026-10-18按DEC-0023-08既有清理或阻止保存及DEC-0035现行组键整改。当前validateDraftBindingReferences仅对上下文已具备的活动模式核对已提供组/字段/按钮事件引用，WorkTemplateController在图及审计写入前阻断失效引用；不要求模式、表单、流程或必需签名配置在草稿完整。共享字段权限弹窗仅在当前真实元数据成功后，按用户明确保存命令同时prune权限例外和事件绑定，保留合法值、默认权限及休眠配置，打开/取消/失败不清理。源码与主侧299实跑通过、3既有条件跳过及6个共享UI浏览器场景支持本同根差异resolved；原ca98反例、独立质量及实际证据层次分别保留，不将本项扩大为全部DEC-0023、W3或分支验收，不改原权限签署和冻结政策。'
+      summary: 'provenance: original-evidence；AUD-H004于2026-10-18按DEC-0023-08既有清理或阻止保存及DEC-0035现行组键整改。有限guard在图及审计写入前核对已提供的活动组/字段/事件引用，保留不完整草稿、合法/default/休眠配置和原完整权限签署；共享UI仅在当前真实元数据成功后按明确保存命令双prune。首轮独立质量正式failed，QF-W3B-001发现已存在流程的合法JSON非数组提前return而写入；该原件及原本体结果保留，不由旧299主侧通过抵销。当前同切片将非数组改为格式拒绝并新增4结构零写测试；ef07原码反例1失败0错误，修复后主侧300实跑通过、3既有条件跳过、0失败错误。resolved仅表达该确定性实现修复，交付仍待全新独立质量passed；未变前端结果属ef07，不冒称覆盖当前工作树，不新增政策或提高知识成熟度。'
       evidenceIds:
       - evidence.production-form-process-permission-default-exception-design-v2
       - evidence.production-form-process-user-confirmed-v4

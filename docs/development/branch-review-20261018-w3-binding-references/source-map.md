@@ -5,7 +5,7 @@
 | 入口 | 核对和所有权 |
 | --- | --- |
 | 后端 `workflow/controller/WorkTemplateController.java` `saveGraph` | 原锁、草稿状态、图边界、写入、引用投影和审计顺序不搬移；在图赋值前接入已提供活动引用检查。原发布精确签署错误先于完整共享校验，不改。 |
-| 后端 `workflow/service/FormFillSettingsService.java` `validateDraftBindingReferences`、`bindingReferences`、`validateConfiguredBindingReferences`、原 `validate` | 共享组/事件/真实字段集合。有限草稿入口仅检查可取得上下文的已提供引用，严格validate仍校验主体/按钮、所有必需签名及可用signature资格；不扩大为草稿发布完整性。 |
+| 后端 `workflow/service/FormFillSettingsService.java` `validateDraftBindingReferences`、`bindingReferences`、`validateConfiguredBindingReferences`、原 `validate` | 共享组/事件/真实字段集合。有限草稿入口仅检查可取得上下文的已提供引用；已存在PUBLISHED流程的非数组节点JSON拒绝，不能当未完成上下文放行。严格validate仍校验主体/按钮、所有必需签名及可用signature资格；不扩大为草稿发布完整性。 |
 | 后端 `masterdata/service/ProductProcessOwnerService.java`、`masterdata/controller/ProductProcessController.java` 写入/复制→serialize→validate | 两个既有工序保存适配不放宽完整校验，共享内部引用提取改变需回归原正反例。未验证所有管理HTTP复制组合。 |
 | 后端 `production/service/ExecutionSnapshotBuilder.java`、`ProductionExecutionService.act` 与原 engine 消费 | 未改生产代码，已有首次START、冻结、权限、签署、事务和CUSTOM测试继续跑；不声称原生PG并发全矩阵已覆盖。 |
 | 前端 `components/form-fill-settings/FormFillSettings.tsx` 元数据queries、字段设置按钮及明确onSave | 两种模式共同纠正入口，当前key元数据success才可提交；确认命令同时prune字段权限及事件，不加自动effect；休眠配置保持。 |

@@ -32,11 +32,11 @@
 3. UI 的纠正放在既有字段权限弹窗的明确保存命令，同时复用 `pruneFieldPermissions` 和 `pruneEventBindings`。仅当当前所选键的真实元数据成功时允许确认；初始打开、切换过程、失败和取消不制造写入，不拿列表摘要当完整流程图。共享组件同时服务作业及产品/产品簇工序入口，父适配、MUI/AppDialog 和现有反馈继续保留。
 4. 原完整严格校验和新快照/冻结消费者不扩改，不迁移或恢复历史数据，不夹带 `AUD-H009/H010`、A12 和两项用户暂缓的旧 DHR high，也不声明整个 W3/W2 或全分支审查完成。
 
-## 实现与验证时点
+## 首轮实现与验证时点
 
 首次同步时主侧实现与测试尚未完成，当时仅记录原始源码问题与既有约束并保留 open，未预写 resolved 或运行通过。当前源码稳定后，本体实际重读三个生产修改文件：
 
-- `FormFillSettingsService::validateDraftBindingReferences` 只在显式模式和已提供引用下读取元数据；缺少表单/必要流程ID、引用记录不存在、流程非PUBLISHED或非FORM_PROCESS等未完成上下文仍允许草稿保留。实际引用集合复用 `BindingReferences`，按 `start:<groupId>`、`start:open`、`approval:<nodeId>` 及节点/事件键检查提供值；合法默认权限和例外保留，未提供的必需签名字段不由草稿强制补齐。仓储异常和损坏JSON不吞成空集合，失败不变更配置；原完整 `validate` 仍要求全部适用事件绑定当前可用签名字段，权限、按钮和签署校验保持。
+- `FormFillSettingsService::validateDraftBindingReferences` 只在显式模式和已提供引用下读取元数据；缺少表单/必要流程ID、引用记录不存在、流程非PUBLISHED或非FORM_PROCESS等未完成上下文仍允许草稿保留。实际引用集合复用 `BindingReferences`，按 `start:<groupId>`、`start:open`、`approval:<nodeId>` 及节点/事件键检查提供值；合法默认权限和例外保留，未提供的必需签名字段不由草稿强制补齐。首轮已检查仓储异常传播，JSON语法错误也会失败；原完整 `validate` 仍要求全部适用事件绑定当前可用签名字段，权限、按钮和签署校验保持。原说明将此泛化为所有损坏JSON均不放行，漏掉合法JSON非数组的分支，按下节独立质量发现纠正。
 - `WorkTemplateController::saveGraph` 在版本节点/连线赋值、版本保存、引用投影重建和审计记录之前调用有限引用检查。缺少模式的草稿保持未配置，与本批之前已经合入的显式模式修复一致；发布继续完整门禁。
 - `FormFillSettings` 以当前表单版本成功且PROCESS详情成功作为确认就绪条件，字段弹窗不可用时不允许纠正。其原明确保存命令同时 `pruneFieldPermissions` 和 `pruneEventBindings`，只更新活动分支；没有增加初始打开effect、流程列表摘要清理或失败/取消写入。产品及产品簇父适配未改，原严格保存/复制仍调用同一个共享service。
 
@@ -48,4 +48,18 @@
 
 相邻显式模式浏览器原件 `/tmp/edhr-w3b-neighbor-browser/browser-results.json`（5899 bytes，SHA-256 `bb270ebd524388607c219d1cbdc720cdd5844244f6a93d46d06362d880245e77`）实际5场passed、page/console errors均为空，包括共用inline/dialog两宽度及真实WorkTemplateEditor在1440的原发布阻断/草稿保存重读。主会另报告Node 13项和前端构建通过；ESLint因既有缺配置退出2，本体未亲自执行这些命令，不把缺配置算作通过。原始产物和安全摘要按本批开发台账归档。
 
-据当前源码与以上实际主侧证据，本体将 `discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions` 更新为resolved，仅关闭AUD-H004同根实现差异；原用户确认、固定历史审查及旧失败证据保持。该状态不提升DEC-0023等现行成熟度、知识版本、schema、P0/in-progress或客户/运行时投影，不新增试点或执行契约。本体自己的结构、引用、状态、投影和路径诊断不等于全库语义审计或产品运行验收，也不替代本批全新独立质量实例的最终 `qualityResult`。
+首轮本体依据当时源码与上述主侧证据曾将 `discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions` 更新为resolved；该记录及原正式ontology结果均保留其时点，不能覆盖随后独立质量发现。原用户确认、固定历史审查及旧失败证据保持。该状态不提升DEC-0023等现行成熟度、知识版本、schema、P0/in-progress或客户/运行时投影，不新增试点或执行契约。本体自己的结构、引用、状态、投影和路径诊断不等于全库语义审计或产品运行验收，也不替代本批全新独立质量实例的最终 `qualityResult`。
+
+## 首轮独立质量失败与同切片确定性补正
+
+本节为同一H004切片的必要增量，不新建政策或扩大审计。实际源码基线为 `ef07ee7c34520c509d91954bd6fff4ca436ecd9d` 加明确工作树修复；目标仍为 `edhr-dev@ca98ab2897990eba30bf1433134aa8560578f562`，项目/本体/交接契约没有相关增量，知识仍 `0.3.25 / schema 1.2.0`。
+
+首轮全新独立质量已正式返回 `failed`，原件为 `docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-quality-result.yaml`（13976 bytes，SHA-256 `3a37692a69888c62956ec54f02f113fb9f574acaefc3db4ae9a5f35fc294fe6c`）。其中 `QF-W3B-001` 为medium：已有PUBLISHED FORM_PROCESS的 `nodesJson` 为 `{}`、JSON null或字符串时，有限guard的 `if (!nodes.isArray()) return` 将结构损坏当作未完成上下文放行，实际图被改写，版本保存、引用投影重建、审计保存各调用一次。独立探针中的数组和语法错误对照均拒绝且零写入。原正式failed与原始探针证据不改写；此前主侧302项及前端通过不能抵销该发现。
+
+根因是在有限草稿检查中用提前return处理已存在记录的非法节点结构，不是业务未决。既有决策包已经规定损坏元数据及查询异常不吞掉、不当空集合放行；本次只将该分支改为与原严格校验一致的“表单流程节点格式不正确”拒绝。新增 `WorkTemplateControllerTest::rejectsMalformedPublishedProcessMetadataBeforeGraphOrAuditWrites` 循环 `{}`、`null`、JSON字符串及语法错误4种结构，断言保存拒绝、原图不变且版本/引用投影/审计零写。缺失ID、记录不存在、未发布/类型不匹配的不完整草稿范围、合法/休眠配置以及原完整权限签署门槛没有变更。
+
+本体只读根侧安全摘要 `/tmp/edhr-w3b-repair-red-summary.json`（405 bytes，SHA-256 `45ca0f9083f1c90ce6a95ede3dd704a152a04627fb0e23d81be9d5496969dc5c`）：新增测试对ef07原生产源码真实1失败、0错误，Maven退出1。随后只读 `/tmp/edhr-w3b-repair-regression-summary.json`（43106 bytes，SHA-256 `4caf6badc79ad227782bbfae281f26c267ad4855fe90c7627809fa2195a9a9a9`）：修复后Maven退出0，原10个suite共303项、300实跑通过、3原有条件跳过、0失败/错误；WorkTemplateControllerTest为73，其余suite数量不变，新增4结构循环测试passed。未归档或展示包含敏感运行内容的raw XML/log，本体未亲自执行Maven。
+
+本体实际核对修复源码SHA-256 `df7a1fc457cf38f9cd5c1c76175990674402af184ad051204ef1dbf572b2e136`，Controller测试SHA-256 `978660d98def059f9e557b8daada393a2b7b999a04e894809de031777224dc91`。当前同根discrepancy据确定性修复及主侧回归维持resolved的实现状态，交付仍须取得全新独立质量的最终passed；首轮failed不可用旧ontology或主侧测试替代。根侧未为此后端修补重跑未变前端，13 Node、6个共享UI、5个相邻UI及构建结果仍属于ef07原候选，不冒称覆盖当前工作树。范围复核、用户PR前整体进度/剩余工作汇报及最终新质量由主会继续完成，本体不提前宣告可合并。
+
+原正式 `/tmp/edhr-w3b-binding-ontology-result.yaml`（8083 bytes，SHA-256 `fe6a5d5a0c437cb8bd46eebc44333696b77e4172c862d3b5a6f39a90e6d31af7`）保持原件，当前增量另出followup结果及诊断。没有新增定义、知识ID、政策、版本或成熟度提升；A12、两项旧DHR high、H009/H010和全分支剩余工作保持原边界。

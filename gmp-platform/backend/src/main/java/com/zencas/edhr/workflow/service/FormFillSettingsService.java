@@ -126,7 +126,7 @@ public class FormFillSettingsService {
             if (definitions.findById(version.getDefinitionId()).filter(definition -> "FORM_PROCESS".equals(definition.getType())).isEmpty()) return;
             nodes = parse(version.getNodesJson());
         } else nodes = mapper.createArrayNode().add(directNode(settings));
-        if (!nodes.isArray()) return;
+        if (!nodes.isArray()) throw invalid("表单流程节点格式不正确");
         try { validateConfiguredBindingReferences(binding, bindingReferences(nodes, form)); }
         catch (BusinessException error) {
             throw invalid("当前绑定配置已失效，请打开字段权限设置重新确认：" + error.getMessage());

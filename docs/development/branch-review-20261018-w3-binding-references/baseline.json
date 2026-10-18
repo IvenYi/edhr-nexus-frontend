@@ -32,14 +32,22 @@
   },
   "currentScope": "AUD-H004 only; H009/H010 read-only preparation, no fix",
   "currentVerificationStatus": {
-    "primary": "299 Java pass / 3 conditional skip; 13 Node; 6 new and 5 neighbor real browser cases; build passed",
-    "ontology": "formal FINAL updated; no conflict/question; version/maturity unchanged",
-    "independentQuality": "not started"
+    "primary": "repair: 303 Java total, 300 pass / 3 existing conditional skip, 0 failures/errors; ef07 frontend 13 Node, 6 new and 5 neighbor browser and build retained only at original scope",
+    "ontology": "original and repair-followup formal FINAL updated; no conflict/question; version/maturity unchanged",
+    "independentQuality": "round1 formal failed on ef07ee7c; QF-W3B-001 medium; original 48 safe artifacts archived; repair primary passed, fresh final verification pending"
   },
   "prePrScopeReview": "required by user; to finalize after independent quality and report before creating PR",
   "limits": [
     "Inventory is not review completion",
     "H2 PostgreSQL-compatible and controlled API browser; not native PG/full authenticated E2E",
     "No merge/deploy/migration/history recovery"
-  ]
+  ],
+  "independentRound1": {
+    "headCommit": "ef07ee7c34520c509d91954bd6fff4ca436ecd9d",
+    "result": "failed",
+    "finding": "QF-W3B-001",
+    "safeArtifactCount": 48,
+    "receiptSha256": "11008c62bb31cb07a3e3ee5510a6411cd59826d9153804f35a6173a6d55cd37d",
+    "path": "evidence/independent-round1/edhr-w3b-independent-quality-result.yaml"
+  }
 }

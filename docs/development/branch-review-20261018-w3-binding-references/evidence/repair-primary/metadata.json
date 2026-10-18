@@ -1,0 +1,30 @@
+{
+  "scope": "QF-W3B-001 primary implementation regression, not independent quality",
+  "parentHead": "ef07ee7c34520c509d91954bd6fff4ca436ecd9d",
+  "targetCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "red": {
+    "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -o -C -Dtest=WorkTemplateControllerTest#rejectsMalformedPublishedProcessMetadataBeforeGraphOrAuditWrites test",
+    "productionSourceSha256": "9061702d512f2e04d336491938ecb78bddc7f63bff8254dd5ece48df80e31628",
+    "exitCode": 1,
+    "counts": {
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "green": {
+    "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -o -C -Dtest=FormFillSettingsServiceTest,WorkTemplateControllerTest,FormFillSettingsControllerTest,ProductProcessOwnerServiceTest,ProductProcessControllerTest,FormFillSnapshotTest,ProductionExecutionIntegrationTest,ProductionExecutionEngineTest,ProductionExecutionFormValuesTest,BusinessKnowledgeModelTest test",
+    "exitCode": 0,
+    "tests": 303,
+    "passed": 300,
+    "skipped": 3,
+    "failures": 0,
+    "errors": 0
+  },
+  "limits": [
+    "Actual H2 PostgreSQL-compatible, not native PG",
+    "Unchanged frontend not rerun by root in this repair phase; ef07 results retained at original scope",
+    "No raw Maven logs or XML included; no policy, migration, merge or deploy"
+  ]
+}

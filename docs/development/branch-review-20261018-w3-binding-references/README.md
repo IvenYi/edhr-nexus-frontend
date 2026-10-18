@@ -17,10 +17,18 @@
 - Node13通过；新增真实浏览器6场景通过（两模式1440/390确认、流程元数据延迟、表单元数据503失败），加原模式相邻5场景通过。故障场景有1条精确预期503网络console，其余正常场景无console错误，全部page errors为空。主会查看实际Dialog窄屏与桌面截图。
 - tsc/Vite构建通过；ESLint实际退出2，既有配置缺失。当前技能目录不可用，主侧未运行本轮官方UI扫描，不把PR16旧84项外推为本轮结果。
 
-浏览器使用切换后输入夹具和受控元数据API验证实际React/MUI组件，不是整页产品绑定切换或认证后端数据库E2E。后端集成为H2 PostgreSQL兼容模式，非本轮原生PG。完整源码与审查范围见[source-map](source-map.md)，根因/去重见[findings](findings.md)。主侧结果不替代独立质量门禁，当前独立验收尚待完成。
+浏览器使用切换后输入夹具和受控元数据API验证实际React/MUI组件，不是整页产品绑定切换或认证后端数据库E2E。后端集成为H2 PostgreSQL兼容模式，非本轮原生PG。完整源码与审查范围见[source-map](source-map.md)，根因/去重见[findings](findings.md)。主侧结果不替代独立质量门禁。
+
+## 首轮独立失败与最小补修
+
+全新实例对ef07ee7c正式[qualityResult: failed](evidence/independent-round1/edhr-w3b-independent-quality-result.yaml)，48份安全原件按原字节保留。独立实际复跑299Java通过/3条件跳过、13Node、新6和相邻5浏览器，并新增2场真实WorkTemplateEditor确认→父适配→graph PUT→reload验证，全部通过；仍不能覆盖QF-W3B-001。该medium问题是已发布流程的非数组节点JSON跳过草稿检查，探针证明三种结构均触发图/版本/投影/审计写入；发布严格门禁仍会拒绝，不称生产越权。
+
+补修只把这处return改为原strict已有的数组结构拒绝，并加1项保存前零写回归。新增测试在补修前实际1失败、0错误；修复后主侧10suite实际303项中300通过、3既有条件跳过，0失败/错误，安全结果在evidence/repair-primary。未变前端未在主侧repair阶段重复运行，原结果仍属ef07。必要知识证据增量[正式updated](evidence/ontology-followup/edhr-w3b-binding-ontology-followup-result.yaml)，无冲突/待决，原结果不改；修复后全新最终质量仍待完成，不得创建交付PR或将首轮failed改绿。
+
+独立当前恢复官方37716bytes原脚本，实际仓库根strict扫描ca98/ef07各84项（13 unresolved、71 violations），完整finding对象含file/line相同，新增/移除0，均exit2。该结果只属于ef07，主侧原“未运行”记录不回写，后续候选须按影响核对，不称全站规范通过。
 
 ## 范围与下一步
 
 2118路径/blob清单全部pending/inventory-only，只是基线分母，不等于全量代码审查完成。H009/H010的只读调用图留作后续，不夹带保存/复制旧结构guard。AUD-H012等原历史清单未完成项仍须在W3逐项核对；A12及依赖记录控制变更/作废的两项旧DHR high继续按用户决定open/deferred。
 
-[正式本体结果](evidence/ontology/edhr-w3b-binding-ontology-result.yaml)已updated，无冲突和业务待决，原规则/版本/成熟度不变。本批还需全新实例独立验收、PR前任务漂移/进度复核及交付。完整W2/W3和分支审查未完成，不自动合并、部署、恢复历史或改变业务政策。
+[原正式本体结果](evidence/ontology/edhr-w3b-binding-ontology-result.yaml)及补修增量均updated，无冲突和业务待决，原规则/版本/成熟度不变。本批还需修复后全新实例独立验收、PR前任务漂移/进度复核及交付。完整W2/W3和分支审查未完成，不自动合并、部署、恢复历史或改变业务政策。

@@ -1,0 +1,33 @@
+{
+  "baseCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "candidateTestCommit": "ef07ee7c34520c509d91954bd6fff4ca436ecd9d",
+  "source": "git archive original ca98; only candidate WorkTemplateControllerTest.java copied; original service/production tests retained. No worktree or tracked edits.",
+  "totals": {
+    "tests": 3,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "cases": [
+    {
+      "name": "savesCurrentBindingReferencesAndDormantSettingsWithoutRequiringCompletedSignatureConfiguration",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "name": "savesUnresolvedBindingContextAsAnIncompleteDraftWithoutCleaningProvidedConfiguration",
+      "failed": false,
+      "error": false,
+      "skipped": false
+    },
+    {
+      "name": "rejectsSavingStaleActiveBindingReferencesBeforeGraphOrAuditWrites",
+      "failed": true,
+      "error": false,
+      "skipped": false
+    }
+  ],
+  "rawXmlSha256": "3b32ab178bea10a174f72884455551210801083f180b0017973f6f31cd605f12",
+  "rawXmlNotPublished": true
+}

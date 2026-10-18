@@ -1,0 +1,46 @@
+{
+  "purpose": "schema-driven YAML/ID/ref/path/projection diagnostic; not official Maven/JUnit or full semantic audit",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractReadCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "targetCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "headAtDiagnostic": "ef07ee7c34520c509d91954bd6fff4ca436ecd9d",
+  "yamlFiles": 206,
+  "globalIds": 2525,
+  "checks": {
+    "yaml-and-required-types": "passed",
+    "global-id-uniqueness": "passed",
+    "typed-references": "passed",
+    "evidence-and-source-paths": "passed",
+    "rule-projection-maturity": "passed",
+    "scoped-status-and-policy-diff": "passed",
+    "historical-originals-unchanged": "passed"
+  },
+  "newEvidenceIds": [],
+  "errors": [],
+  "artifacts": [
+    {
+      "path": "docs/knowledge/evidence/binding-reference-audit-2026-10-18.md",
+      "bytes": 14379,
+      "sha256": "7e50c7c9d87cd74b9f84878b28819bd982b460ebb38325f47a7c2ab2e38c73bc"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "bytes": 89359,
+      "sha256": "9a2f850935ffd95fae6fb3da945bea2338bd1f217f78e40921cf9f825fa43d89"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml",
+      "bytes": 8855,
+      "sha256": "e96d2554e9928f34de37147e7512a8ac57e123d19624c9bf85dbcc9ce23739f9"
+    }
+  ],
+  "notExecutedByOntologyRole": [
+    "Maven/JUnit",
+    "Node",
+    "browser",
+    "database",
+    "build",
+    "independent quality"
+  ]
+}

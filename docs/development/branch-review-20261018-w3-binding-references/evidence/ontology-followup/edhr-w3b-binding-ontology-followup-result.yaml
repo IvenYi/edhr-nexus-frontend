@@ -1,0 +1,100 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: ef07ee7c34520c509d91954bd6fff4ca436ecd9d
+    targetBranch: edhr-dev
+    targetCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    contractReadCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    uncommittedContractPaths: []
+  reason: >-
+    同一AUD-H004切片的QF-W3B-001必要增量。已核对ca98到ef07无项目/角色/交接契约增量，
+    重读本体角色及ontologyResult格式并按原契约重放；来源ef07加明确工作树repair，不编造未提交SHA。
+    首轮独立质量正式failed：已有已发布流程的合法JSON非数组提前return，导致图/版本/投影/审计写入。
+    这违反本批既有损坏元数据不放行工程承诺，无新业务歧义或政策；已同步当前证据纠正此前过宽说明。
+    当前源码明确拒绝非数组，新增4结构零写测试对ef07原码实际1红、修复后主侧10suite303总/300实跑通过/3既有条件跳过，
+    本体只读核对安全摘要和两源码SHA，未执行Maven/browser或独立质量。当前resolved仅指确定性实现修复，
+    仍待全新质量FINAL passed及主会PR前范围/整体进度汇报；旧ontology、首轮failed与未变前端ef07结果不冒称覆盖新候选。
+    原正式结果8083bytes/SHA256 fe6a5d5a0c437cb8bd46eebc44333696b77e4172c862d3b5a6f39a90e6d31af7保持原件。
+    无新ID/定义/政策/版本/成熟度或阶段提升，其余H009/H010、A12、两旧DHR high和全分支剩余工作保持原范围。
+  changedArtifacts:
+    - path: docs/knowledge/evidence/binding-reference-audit-2026-10-18.md
+      changeType: update
+      ids: []
+    - path: docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml
+      changeType: update
+      ids: [discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: evidence.form-fill-binding-reference-audit-20261018
+      disposition: updated
+      scope: 保留首轮302主测及UI的实际候选时点，增量记录首轮正式failed、非数组结构漏检根因、当前repair红绿和仍待全新质量；纠正此前损坏JSON泛化说明，不改原始确认或独立报告。
+      sourceReferences:
+        - docs/knowledge/evidence/binding-reference-audit-2026-10-18.md
+        - docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-quality-result.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java
+    - id: discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions
+      disposition: updated
+      scope: 同根H004损坏已存在流程结构不再提前return，4结构拒绝且零写；resolved仅作当前确定性实现修复状态，首轮failed保留，交付不得由本体结果或主侧300通过替代新的独立passed。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml
+        - docs/knowledge/evidence/binding-reference-audit-2026-10-18.md
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java
+        - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java
+    - id: DEC-0009
+      disposition: retained
+      scope: 未选ID、记录不存在、未发布/类型不匹配的未完成草稿仍可保存；已有上下文损坏及查询异常不属于未完成配置豁免，原完整发布/权限/签署及休眠配置边界保持，没有新增产品政策。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml
+        - docs/development/branch-review-20261018-w3-binding-references/decision-package.yaml
+        - docs/knowledge/evidence/binding-reference-audit-2026-10-18.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.w3b-followup-schema
+      checkType: schema
+      command: python /tmp/edhr-w3b-binding-ontology-followup-diagnostic.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w3b-binding-ontology-followup-diagnostic.json
+        - 实际206 YAML解析与受检schema必填/类型/枚举检查无错误，不是全量语义审计或本体亲跑Maven。
+    - id: validation.w3b-followup-reference
+      checkType: reference
+      command: python /tmp/edhr-w3b-binding-ontology-followup-diagnostic.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w3b-binding-ontology-followup-diagnostic.json
+        - 实际2525 ID保持唯一，新增0；受检证据/替代/术语/概念/锚点引用可解析，无新定义或运行契约。
+    - id: validation.w3b-followup-status
+      checkType: status-transition
+      command: python /tmp/edhr-w3b-binding-ontology-followup-diagnostic.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w3b-binding-ontology-followup-diagnostic.json
+        - DEC0023规范声明/成熟度/visibility与ef07相同，仅同根discrepancy证据时点说明更新；未用首轮failed伪作passed，旧正式ontology及质量原件SHA未改变。
+        - /tmp/edhr-w3b-repair-red-summary.json
+        - /tmp/edhr-w3b-repair-regression-summary.json
+    - id: validation.w3b-followup-projection
+      checkType: projection
+      command: python /tmp/edhr-w3b-binding-ontology-followup-diagnostic.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w3b-binding-ontology-followup-diagnostic.json
+        - 0.3.25/schema1.2.0及specified/internal保持；规则成熟度/投影受检约束无错误，不升级P0或客户/runtime。
+    - id: validation.w3b-followup-path
+      checkType: evidence-path
+      command: python /tmp/edhr-w3b-binding-ontology-followup-diagnostic.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w3b-binding-ontology-followup-diagnostic.json
+        - /tmp/edhr-w3b-binding-ontology-followup-scope.json
+        - 必要本批证据、源码、测试、首轮正式failed路径存在，增量只改3知识文件；原正式ontology/诊断/scope及failed质量原件摘要匹配。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

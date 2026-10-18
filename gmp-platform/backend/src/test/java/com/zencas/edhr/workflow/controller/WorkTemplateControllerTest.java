@@ -109,6 +109,23 @@ class WorkTemplateControllerTest {
     }
 
     @Test
+    void rejectsMalformedPublishedProcessMetadataBeforeGraphOrAuditWrites() throws Exception {
+        for (String nodesJson : List.of("{}", "null", "\"unexpected\"", "not-json")) {
+            var config = bindingReferenceSettings("PROCESS");
+            config.withObject("/fieldPermissions").putObject("start:removed").putArray("editableFieldIds").add("keep");
+            WorkflowDefinitionVersion draft = stubBindingReferenceDraft();
+            versionRepository.findById(901L).orElseThrow().setNodesJson(nodesJson);
+            String before = draft.getNodesJson();
+            assertThatThrownBy(() -> controller.saveGraph(101L, 201L, bindingReferencePayload(config)))
+                    .as(nodesJson).hasMessageContaining("格式不正确");
+            assertThat(draft.getNodesJson()).isEqualTo(before);
+            verify(versionRepository, times(0)).save(any());
+            verify(auditEventRepository, times(0)).save(any());
+            verify(formProcessReferenceService, times(0)).rebuildForWorkVersion(any());
+        }
+    }
+
+    @Test
     void savesCurrentBindingReferencesAndDormantSettingsWithoutRequiringCompletedSignatureConfiguration() throws Exception {
         for (String mode : List.of("DIRECT", "PROCESS")) {
             var config = bindingReferenceSettings(mode);
