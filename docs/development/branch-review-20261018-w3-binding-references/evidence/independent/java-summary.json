@@ -1,0 +1,1630 @@
+{
+  "headCommit": "a9ecd501a9abf354df95df2a1a01e53474a41a2d",
+  "executionExit": 0,
+  "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -o -C -Dtest=FormFillSettingsServiceTest,WorkTemplateControllerTest,FormFillSettingsControllerTest,ProductProcessOwnerServiceTest,ProductProcessControllerTest,FormFillSnapshotTest,ProductionExecutionIntegrationTest,ProductionExecutionEngineTest,ProductionExecutionFormValuesTest,BusinessKnowledgeModelTest test",
+  "scope": "Independently executed current candidate; XML whitelisted suite/case/count/hash only, raw logs/XML excluded due credential-bearing output. H2 PostgreSQL-compatible, not native PostgreSQL.",
+  "totals": {
+    "tests": 303,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3,
+    "passed": 300
+  },
+  "suites": [
+    {
+      "name": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceXmlSha256": "3bfcefe7c76b49ab3eadde75571d32c3eec4bced3633304082a0fb63d27fdb44",
+      "testcases": [
+        {
+          "class": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+          "name": "rejectsUnknownFieldAndRemovedPermissionGroup",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+          "name": "draftWithoutProvidedReferencesDoesNotReadMetadata",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+          "name": "savesExplicitDirectModeWithoutInferringFromDormantReference",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+          "name": "draftReferencesAllowUnfinishedSignatureBindingWhilePublishStillRejectsIt",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+          "name": "rejectsUnconfiguredOrNonTextualModesWithoutInferringDormantReferences",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+          "name": "processModeBindsOnlyExplicitFieldFillEvents",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+          "name": "accountPasswordSignatureWithoutFieldFillDoesNotRequireAFieldBinding",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+          "name": "rejectsAbsentSettingsAtEveryStrictBoundary",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+          "name": "disabledSignatureEventDoesNotRequireAFieldBinding",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+          "name": "roundTripsDirectSettingsAndIgnoresDormantProcessChoice",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+          "name": "draftMetadataFailureIsNotTreatedAsAnEmptyContextAndDoesNotRewriteConfiguration",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+          "name": "processModeRequiresPublishedFormProcessAndUsesOnlyItsSettings",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+          "name": "rejectsDuplicateActionsAndDisablingValidation",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+          "name": "requiresSignatureFieldBindingAndValidSubjects",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+      "tests": 73,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceXmlSha256": "c2d57faba950baf483dd697ca57bdbdf7ed51cea9c1a87c16b99ca1043bd17c3",
+      "testcases": [
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsConditionBranchHandleCollisionsAtPublish",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "returnsNoPersistedVersionsWhenAWorkTemplateHasNoVersions",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "derivesPriorityFromRuleTypeWhenCreatingRule",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "publishesDraftAndCreatesTheNextInheritedDraft",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "allowsSignatureEventWithoutFieldFillToRemainUnbound",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "savesUnconfiguredModeAsAnIncompleteDraftWithoutAddingDirect",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsSavingAGraphWithoutExactlyOneStartAndEndBoundary",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "publishesOrderedDynamicConditionBranchesAndTheirDefaultBranch",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "keepsWorkTemplateAndRuleAuditWritesInTheSameTransaction",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsConditionAstWhenFirstReleaseFieldCatalogIsUnavailable",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsConditionAstWithEmptyGroupsAtPublish",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsANonSignatureFieldAsSignatureTarget",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "exposesUpgradeBlockerWhenLatestProcessBreaksEventBinding",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsPublishingProcessModeWithoutAnExplicitProcessBeforeWritingAnyVersionOrAudit",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsPublishingAFlowWhenTheReferencedFormVersionIsOutsideItsEffectiveWindow",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "savesCurrentBindingReferencesAndDormantSettingsWithoutRequiringCompletedSignatureConfiguration",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "allowsConnectingToAConditionInput",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsConditionAstWithAnUnknownOperatorAtPublish",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "savesDraftGraphAndRecordsTheUpdatedSnapshot",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsPublishingAFlowWithDisconnectedNodes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsPublishingWhenBindingPermissionReferencesUnknownFormField",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsCreatingAnApplicabilityRuleWithoutCurrentPublishedFlow",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsUpdatingAnApplicabilityRuleWhenCurrentPublishedFlowIsMissing",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "copiesPublishedHistoryOverTheCurrentDraft",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsDeletingADraftFlowVersion",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsPublishingAFlowWhenTheReferencedFormVersionDoesNotExist",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsPublishingDynamicConditionBranchesWhenOneBranchIsMissing",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "readsIncompleteDraftProcessReferencesWithoutTreatingDormantChoiceAsActive",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "ignoresClientIdWhenCreatingWorkTemplate",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "listsOnlyRulesAttachedToProductionWorkDefinitions",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "exposesOutdatedFormProcessReferenceForDraft",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "listsOnlyProductionWorkDefinitions",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "atomicallyDeletesUnpublishedDraftBeforeDeletingItsWorkTemplate",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "saveGraphPersistsExplicitDirectModeWithoutInferringDormantProcess",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "allowsPublishingMultipleConditionsUsingTheConfirmedWorkRuntimeFields",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "createsAnEmptyDraftWithoutAnInitialConnection",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsConnectingToAConditionWithoutItsUnifiedInputHandle",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsConditionOperatorsOutsideTheFirstReleaseContract",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsBindingAnEventWithoutExplicitFieldFill",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsCopyingAsNewDraftWhenAnotherRequestCreatedTheDraftFirst",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsCreatingAnotherDraftWhileOneIsAlreadyEditable",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "keepsAnUnconfiguredConditionNodeInDraftButRejectsPublishingIt",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "recomputesPriorityWhenEditingRuleType",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "saveGraphRebuildsFormProcessReferenceProjection",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsAnUnregisteredConditionFieldCatalogVersionAtPublish",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsPublishingAFormWithNoModeBeforeWritingAnyVersionOrAudit",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsTwoOutgoingEdgesFromAnOrdinaryNode",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsLegacyFreeTextConditionAsTheOnlyPublishFact",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsConnectingToAConditionBranchOutlet",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "createsTheNextDraftWhenCopyingPublishedFlowWithoutAnEditableDraft",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "assignsGlobalRuleItsFixedPriority",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "reportsTheExactNodeAndButtonWhenASignatureTargetIsMissing",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "allowsASignatureFieldAsSignatureTarget",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "savesUnresolvedBindingContextAsAnIncompleteDraftWithoutCleaningProvidedConfiguration",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsPublishingAFlowWhenTheReferencedFormVersionIsNotYetEffective",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "allowsDeletingAWorkTemplateThatHasPublishedFlowHistoryWithoutRules",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "allowsConditionNodeToHaveMultipleConfiguredBranchEdges",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "allowsPublishingAFormNodeWithoutAFormProcess",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "savesAnIncompleteDraftWithoutPublishValidation",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsDeletingAPublishedFlowVersion",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "serializesWorkIdsAsStringsToPreserveSnowflakePrecisionInBrowsers",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsDeletingAWorkTemplateThatHasApplicabilityRules",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "allowsPublishingAFlowWithoutConditionNodes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsMalformedPublishedProcessMetadataBeforeGraphOrAuditWrites",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "exposesCurrentPublishedFlowInWorkTemplateSummary",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "doesNotPersistAFlowDraftWhenCreatingWorkTemplate",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "forwardsTrimmedKeywordToWorkTemplateQuery",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "writesAnAuditEventWhenCreatingAWorkTemplate",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsMalformedConditionBranchesInsteadOfFallingBackToLegacyRule",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsSavingStaleActiveBindingReferencesBeforeGraphOrAuditWrites",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsPublishingAFlowWhenAFormVersionIsMissing",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "allowsPublishingLegacyFlowFieldConfigurationWithoutMapping",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+          "name": "rejectsScopeFieldsOnGlobalRule",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.workflow.controller.FormFillSettingsControllerTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceXmlSha256": "cd8d20a67e0a1cb4fc0e39fd08291be96faa7964c43f37bbfca4494f0235d587",
+      "testcases": [
+        {
+          "class": "com.zencas.edhr.workflow.controller.FormFillSettingsControllerTest",
+          "name": "missingEdgesAreAnEmptyArray",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.workflow.controller.FormFillSettingsControllerTest",
+          "name": "previewReturnsTheRequestedVersionsNodesAndEdges",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceXmlSha256": "66d459edc377b29e6aef1303226d2dd5cba74e6e77d35eb8f5b2f1e9745bad45",
+      "testcases": [
+        {
+          "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+          "name": "recordsProductFamilyUpdateAndDeleteAuditsWithOperationConfigurationSnapshots",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+          "name": "createsSeparateOwnerRootsAndRejectsDuplicateLabelsWithinTheSameOwner",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+          "name": "sharedOwnerServiceRejectsBatchToSnProductionForm",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+          "name": "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+          "name": "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+          "name": "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[3]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+          "name": "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[4]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceXmlSha256": "26546bcccff97bbf36c9e1015a171bd9174820d1fd4e503107bf6c1afc350bd0",
+      "testcases": [
+        {
+          "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+          "name": "productModelingRejectsBatchToSnProductionForm",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+          "name": "productModelingAllowsOverlappingWindowsForTheSameModeAndForm",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+          "name": "productModelingRouteOptionsDoNotExposeParentCodesOrExpiredVersions",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+          "name": "productModelingRejectsDuplicateDhrDirectoryFormsInOneOperation",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+          "name": "productModelingDocumentOptionsExposeTheActualDocumentCategoryName",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+          "name": "productModelingFlushesRemovedOperationBindingsBeforeReplacingThemOnUpdate",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+          "name": "productModelingWorkspaceReturnsFutureEffectiveVersionsAsExpired",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+          "name": "productModelingDhrOptionsExcludeExpiredVersions",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+          "name": "processOwnerWorkspaceUsesTheSharedServiceForAProductFamily",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+          "name": "productModelingRejectsUnsupportedProductionMode",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+          "name": "productModelingAllowsAFutureVersionWhoseWindowStartsWhenThePriorVersionEnds",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+          "name": "productModelingCreationAuditIncludesSavedOperationBindings",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+          "name": "productModelingRejectsAProductThatIsNotDerivedFromFinishedOrSemiFinishedMaterial",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+          "name": "productModelingRejectsAFormOutsideTheSelectedDhrDirectory",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.FormFillSnapshotTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceXmlSha256": "18681c2d1b74d8b5ff34e8012b51a076bdce52b9c142b388bb8911b6dcdc2583",
+      "testcases": [
+        {
+          "class": "com.zencas.edhr.production.service.FormFillSnapshotTest",
+          "name": "rejectsUnconfiguredSnapshotSettingsInsteadOfCreatingAnOpenDirectEntry",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.FormFillSnapshotTest",
+          "name": "directSettingsBecomeSelfContainedEntryAndDoNotReadDormantFlow",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.FormFillSnapshotTest",
+          "name": "processSettingsFreezePublishedGraphAndBindingOverrides",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+      "tests": 71,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3,
+      "sourceXmlSha256": "64aea245555ef0689098b40cc8ccf1b5edb2800cd536878692690450adfcd8a4",
+      "testcases": [
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "missingPermissionCannotReadOrExecute",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "formRecordsBrowserFixture",
+          "status": "skipped"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "globalQueryRejectsUnsupportedAndMalformedConditions",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "missingQueryPrincipalCannotAdvanceApprovalOrChangePersistedEvidence",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "globalQueryUsesFrozenMetadataCrossTemplateFiltersAndStablePages",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "productionReferencesSaveTypedIdentityAndNumbersWithoutChangingExecutionOwnership",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "directSigningBlocksMissingExpiredAndCustomerAdminLoginCredentialsWithoutLosingDraft",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "failedSignedActionRollsBackSignatureValuesAndAudit",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "worklistHistoricalNodeFiltersMatchTheSameEventBeforeSelectingTheLatest",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "inlineSignatureHonorsFrozenReadonlyAndNodePermissions",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "worklistFilteringPaginationAndLegacyHistoryDoNotInventParticipation",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "inlineSignatureRollsBackWhenAuditFails",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "executionPersistsSnapshotDraftAndAuditThenCompletesOnlyAfterAllOperations",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "waitingExecutionSeesConcurrentTerminationAfterAcquiringLocks",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "dhrSupplementUsesRealExecutionAndRecordServicesWithoutReopeningProduction",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "worklistExplicitCreationIsIndependentFromFirstSaverAndSystemFirstCopy",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "legacyTextSubtableColumnsUseTheSameStableIdsAsTheUnifiedRenderer",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "previewReferencesRequireDesignPermissionAndDoNotWriteData",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "executionMissingDhrCannotComplete",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "historicalExecutionWithoutDhrCanAttachCustomFormWithoutFabricatingDhr",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "historicalCopyMetadataUsesRecordedSourcesWithoutWritingOrInventingMissingValues",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "inlineSignatureSavesWithoutSubmittingAndContentChangesInvalidateIt",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "dhrFillingProjectsAndFiltersProductionStatusWithoutChangingDhrOrWriteRules",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "inspectorChoiceOptionsSaveAndSubmitAgainstTheSameFrozenCanonicalValues",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "batchAndSnScanAreReadOnlyAndReturnCorrectConfiguration",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "subtableCanvasReadonlyIsEnforcedForNewAndLegacySnapshots",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "failedAuditRollsBackFormInstanceAllocation",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "globalQueryRequiresBothPermissionsAndPreservesOldEntry",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "remarkEditPersistsAuditsAndPreservesSubmittedFormReceipt",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "globalQueryExactDetailsTenantBoundaryAndSourceControls",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "deletingSignedRowsInvalidatesRemainingSignaturesAndRejectsForgery",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "inlineSignatureRejectsUnavailableCertificationAndInvalidTargets",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "legacyCompletedWorkProjectsNextNodeWithoutWritingAndSettlesOnTheNextAuditedAction",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "customTemplatePickerDoesNotTruncateVersions",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "copiesPersistSeparateValuesSumOutputAndRejectStaleOrForeignWrites",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "operationCustomGateAndExplicitScopeValidationCannotBeBypassed",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "concurrentStartCreatesOneExecutionAndOneDhr",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "firstStartRejectsUnconfiguredOperationModesWithoutExecutionDhrOrAuditWrites",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "anOperationWithoutConfiguredFormsCanAttachItsFirstOptionalForm",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "worklistReturnAndResubmitKeepPersonalHistoryAndUseActualApprovalQualification",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "customFormTemplatesSearchAllVersionsWithoutPublicationAndKeepTenantBoundaries",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "returnAndApprovalKeepTheOriginalFormNumber",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "firstStartFreezesOneCommittedConfigurationDuringProcessRebinding",
+          "status": "skipped"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "failedAuditRollsBackObjectStateAndExecutionTogether",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "browserEvidenceFixture",
+          "status": "skipped"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "missingDhrBlocksEarlyTerminationWithoutChangingProduction",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "internalAdminUsesLoginPasswordOnlyForButtonAndUnsignedActionsDoNotImpersonate",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "presenceCountsEditorsAcrossCopiesAndRejectsReadOnlyInstances",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "configuredAndWorkFormsUsingTheSameTemplateRemainIndependent",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "worklistRejectsWrongPermissionsParamsAndFailedActionsCreateNoHistory",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "globalQueryDoesNotGrantAnActiveApprovalNodeAndKeepsPrincipalHistory",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "worklistIncludesUnsavedAndSavedButFilledRequiresActualSubmit",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "copyMetadataPersistsAndSurvivesSaveWithoutChangingItsCreationIdentity",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "automaticWorkAdvanceRollsBackWithItsSubmissionWhenAuditFails",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "optionalCopyCompletionRequiresAcknowledgementAndPersistsUnfinishedState",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "sharedWorkstationUsesSignerPermissionsAndDualIdentityWithoutChangingSession",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "concurrentFirstSavesAllocateDifferentNumbers",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "staleRevisionAndTerminatedObjectsCannotAdvance",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "formInstanceNumbersAreStableSearchableAndUseFrozenSnapshots",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "realApprovalIdentityAndSignaturePasswordPersistAtomically",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "formApprovalTransferMovesPendingTaskWithoutAdvancingTheFlow",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "customFormsFreezeSelectedVersionAndRequireExplicitRequiredChoice",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "firstStartAndDetailKeepSnowflakeDirectoryIdsAsStrings",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "transferProjectionIsNodeScopedAndReassignmentIsClearedByReturn",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "invalidCopyRemarksAndFailedAuditCannotCreateCopies",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "optionalCustomFormCanBeFinishedAfterProductionWithReasonAndFrozenDhrProtection",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "inlineSignaturesCoexistAndSubtableContentInvalidatesAllWithoutDeletingEvidence",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "outputUsesSavedPurposeFieldsAndFrozenMappingWithoutChangingBatchCounters",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+          "name": "referenceLookupUsesFrozenCanvasAndValidatesCurrentRowAtSave",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceXmlSha256": "419576319253da848998e00c225eed340ab12f1948828ab77b2d3ddb4bc83bf1",
+      "testcases": [
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "configuredConfirmationCannotBeSkippedByCompletingOperation",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "routeCyclesAndUnsupportedNotificationsAreVisibleStartBlockers",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "savedDraftDoesNotSatisfyRequiredFormAndReadOnlyValuesCannotBeForged",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "missingRuntimeFactsNeverPassEvenWhenUsedUnderNot",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "approvalAndSignatureAreRequiredBeforeFormCompletion",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "skippedUnboundWorkFormDoesNotBlockCompletedConditionalWork",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "requiredFieldsOwnedByLaterApprovalDoNotBlockEarlierSubmissionButBlockFinalCompletion",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "workFormNeverSatisfiesIndependentRequiredOperationForm",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "supplementCreatesNewCopyWithoutReopeningOrChangingCompletedRecord",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "evaluatesStructuredConditionsWithoutExecutingCode",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "directEntryConfigurationControlsPermissionsButtonsAndSignature",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "rejectsDuplicateStartAndOutOfOrderCompletion",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "transferDoesNotAdvanceOrChangeFormValuesAndRequiresReason",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "supplementCannotBypassSubjectPermissionsOrUnreachedWorkForms",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "validSubmissionPersistsValuesAndUnlocksCompletion",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "enforcesNumericStructurePrecisionAndDateFormat",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "blocksSuccessorUntilEveryParallelPredecessorCompletes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "disabledDirectSignatureEventIsNotExecuted",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "explicitLegacyOrHiddenButtonsDoNotEnableTransfer",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "rejectsUnknownFieldsAndInvalidNumbers",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "activeButtonSignatureFillsActualSignerAndAllowsReporterProjection",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "parallelWorkJoinWaitsForBothConfirmationBranches",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceXmlSha256": "3736fb3aed02c15681c5310b806f89efac30d7654322622cd305e3a3f17afb16",
+      "testcases": [
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+          "name": "draftSaveRejectsDuplicateMalformedIdentityAndUndeclaredColumns",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+          "name": "savedRowsReceiveStableIdentityAcrossReopenReorderAndDeletion",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+          "name": "readonlyValuesFollowRowIdentityAndCannotBeChangedOrRemoved",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+          "name": "signatureEvidenceContainsIdentityBeforeSigningAndForgedSignatureIsRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+          "name": "ambiguousDisabledAndInvalidSelectDefaultsAreNotGuessed",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+          "name": "mainDefaultsArePersistedAndSelectLabelsResolveToStoredOptionValues",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+          "name": "wholeTableReadonlyCannotBeBypassedByValidIdentity",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+          "name": "frozenCanvasDefaultsApplyToMainAndNewRowsWithoutOverwritingInputOrClearedValues",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sourceXmlSha256": "e973631c5d159abca30515fec96ce81960592d2389edfdc3040d1ea589bfaef5",
+      "testcases": [
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "yamlParserErrorsContainTheRepositoryRelativeFilePath(Path)",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "unknownScalarCollectionsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "explicitFactReferencesCannotBeUsedAsPredicateExpectations",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "factCatalogCannotBeBypassedByOmittingProfile",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "conditionGroupsRejectAdditionalFields",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[3]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "repositoryRootCanBeLocatedFromRootBackendAndIdeWorkingDirectories",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "invalidRuleResultTypesAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedCollectionsAreDiscoveredFromSchemaMappings",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "currentKnowledgeModelIsValid",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[3]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "factsRequireProvenanceFields",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaCollectionMappingsMustCoverEveryRecordType",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "verifiedInternalRecordsRequireExecutionContracts",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "stringOperatorsRejectNonStringFacts",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "malformedTopLevelCollectionsReportTheirDocument",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "executionContractReferencesMustResolveEvenForNonVerifiedRules",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "invalidStatusesAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "factCatalogRejectsOperatorNotAllowedByFact",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaRejectsNestedDescriptorMappingMismatch",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "factValueTypesMustComeFromTheControlledVocabulary",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "factNamesInStringsAreNeverImplicitlyDereferenced",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "knownNestedCollectionsCannotAppearOnUndeclaredParentRecordTypes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "invalidConditionOperatorsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[3]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[4]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[5]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[6]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[7]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[8]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "danglingEvidenceIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "verifiedRulesCanReferenceValidRegisteredExecutionContracts",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "invalidCardinalitiesAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "factCatalogRejectsUnknownSemanticAlias",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "conditionNotGroupsRequireOneExpression",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "enumFactsRequireAnExplicitNonEmptyValueSet",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "numericComparisonRejectsStringFactEvenWhenItsOperatorIsListed",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaIdPrefixesMustCoverEveryRecordType",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedDuplicateIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[3]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[4]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[5]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[6]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[7]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[8]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[9]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[10]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "conditionLeavesRejectAdditionalFields",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "absoluteEvidencePathsAreRejectedEvenWhenTheyExist",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "conditionGroupsMustBeNonEmpty",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "unknownEmptyCollectionsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "implementationAnchorsRejectUnknownProvenanceReviewStatus",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "numericOperandsMustBeFinite",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "currentKnowledgeBaselineUsesTheTypedFactSchema",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "factReferenceObjectsMustUseTheExactOperandShape",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "topLevelCollectionsAreDiscoveredFromSchemaMappings",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "danglingTermIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "verifiedRuntimeRecordsRequireEvidence",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaCollectionMappingsRejectDuplicateTargetsDeterministically",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "recordIdsMustUseSchemaPrefixes(String, String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "recordIdsMustUseSchemaPrefixes(String, String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "normalizedEvidencePathsCannotEscapeRepository(Path)",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "duplicateIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "explicitFactOperandsMustHaveCompatibleTypes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "conditionValuesMustUseSchemaValueTypes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaCollectionMappingsRejectUnknownRecordTypes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[3]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[4]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[5]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[6]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "explicitFactOperandsResolveIdsAndAliasesWithoutBeingTreatedAsClauses",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "unknownNestedRecordCollectionsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "unknownTopLevelCollectionsReportTheirDocumentAndSortedAllowedCollections",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "missingEvidencePathsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "explicitFactOperandsRejectUnknownReferences",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "executionContractIdsUseSchemaPrefixes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "realEvidencePathsCannotEscapeRepositoryThroughSymlinks(Path)",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "implementedRecordsCannotEnterCustomerProjection",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "aliasesCannotShadowAnotherFactIdInEitherCollectionOrder",
+          "status": "passed"
+        }
+      ]
+    }
+  ]
+}

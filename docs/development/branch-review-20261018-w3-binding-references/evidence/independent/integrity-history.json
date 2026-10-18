@@ -1,0 +1,991 @@
+{
+  "baseCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "groups": [
+    {
+      "name": "original-review-csv",
+      "count": 19,
+      "records": [
+        {
+          "path": "docs/development/branch-review-20261015-w1-followup/coverage.csv",
+          "bytes": 402180,
+          "sha256": "fa07044c64ab9d3b09283a8a612bcdafcf2bfdb7620038a714917f6d74413b78",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261015-w1-followup/entrypoints.csv",
+          "bytes": 149490,
+          "sha256": "1b3cbe4bf7916a8f8b1e4ac3a04ceac6bf13d8b7a439791f331a22105253910f",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261015-w1-followup/migrations.csv",
+          "bytes": 31944,
+          "sha256": "7a3da4dabcb2d3ebb3e6ad1a2bb6214d40431748a65249df0047df93602a9956",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261015/coverage.csv",
+          "bytes": 387980,
+          "sha256": "8ec8a72328e307fdfc678c284d19fe66056a524213c28288e6dcb199a23b8227",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261015/entrypoints.csv",
+          "bytes": 149490,
+          "sha256": "cbad98498050101593cdf5eb626c69ce09acac6cca4e2bb12ab04c2f6d741f3d",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261015/migrations.csv",
+          "bytes": 31944,
+          "sha256": "3b83b8d4b87b7e70a77293fd1e8e619d782b5ca0761f92bd8f4cece84d7e92b9",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261015/ontology/ontology-coverage.csv",
+          "bytes": 737142,
+          "sha256": "04ac2eaba5962d16e9d5e88e644616acef2d08a17a46b1d430c7d8a3cc4e799c",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261015/ontology/semantic-map.csv",
+          "bytes": 38030,
+          "sha256": "af424543c4f0a40ee1488b7be740d52482cc2e5b1cd9f89bdc287cec4158d1da",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261016-f004/coverage.csv",
+          "bytes": 287895,
+          "sha256": "d44fd50645e143af1c336a31693744eec5a0ba9ff15e64b3a0051a6f1b0fb503",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261016-w1-review-export/coverage.csv",
+          "bytes": 420497,
+          "sha256": "bf31c5b82d9f14ee09782d3001f4210d2470cab5cb9986fc8c47cbc12b3cfc36",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/coverage-first-observed.csv",
+          "bytes": 421127,
+          "sha256": "3f2b6d1e759982a695342e671d8efadaf20a51680331f34d71bd42d6eb5c33f2",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261016-w2-designer-identity/coverage.csv",
+          "bytes": 339677,
+          "sha256": "215bf78a4dc67558d7ed7f06ee8d1608bb8e39beb7f33a01f3b8fdfe566fa035",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261016-w2-form-availability/coverage.csv",
+          "bytes": 326812,
+          "sha256": "3fba547c186632f1a5e5085093e668678baa53b1894c0f0d7242ce47600ddd2d",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261016-w2-form-integrity/coverage.csv",
+          "bytes": 294726,
+          "sha256": "672434c4f18a26f5afb7f47db45ef6df7c039a287af929ffacc0bef9442c47c6",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261016-w2-projection-integrity/coverage.csv",
+          "bytes": 335040,
+          "sha256": "0c815f39c646c2a54958452e318be1d46a122df37144d141adb7bef5adc52650",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261017-w2-subfield-sync/coverage.csv",
+          "bytes": 349383,
+          "sha256": "a0f003c1bb7d9cb37a5a4fae35f8755c3b0f29ff50dd3a0781d0143e47b8a86a",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/coverage.csv",
+          "bytes": 356732,
+          "sha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory.csv",
+          "bytes": 356732,
+          "sha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/coverage.csv",
+          "bytes": 384885,
+          "sha256": "b475671f2ba5d3eec18fe8a0bdbd0f28cbf489a624abf1c203ee6bea5c23837e",
+          "matchesTargetBytes": true
+        }
+      ],
+      "unchangedAgainstTarget": true
+    },
+    {
+      "name": "PR16-records",
+      "count": 53,
+      "records": [
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/README.md",
+          "bytes": 4682,
+          "sha256": "65f8ad2c51d5852e0114103b079ffa8046e63ef117362fc36031aa32421464f7",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/baseline.json",
+          "bytes": 6168,
+          "sha256": "d4dc97c9799fb7d7c2e0069857f33bd602709404f804358714b2dd7419a80d73",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/coverage.csv",
+          "bytes": 384885,
+          "sha256": "b475671f2ba5d3eec18fe8a0bdbd0f28cbf489a624abf1c203ee6bea5c23837e",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/decision-package.yaml",
+          "bytes": 9418,
+          "sha256": "5d019264e9c468b25f14228ba48b4c29a8e9ebcd457f1320cf41de628153554c",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-baseline-inventory-metadata.json",
+          "bytes": 5409,
+          "sha256": "2bfe3fbc218eee166fd3823f885cbd9efc0b358920d8bd605a4990cd9c65a124",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-environment-readiness.json",
+          "bytes": 5833,
+          "sha256": "911da102818fdc3fa9742514160e28d3ba26be1b10df8d656b214a7d85efb8ae",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-frontend-mode-paths-metadata.json",
+          "bytes": 6080,
+          "sha256": "5cb8a5bd28c3278fb1cbbcfad6454c733b6b78e0968d0c60c90d9e28ab861ffe",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-frontend-mode-paths.md",
+          "bytes": 17292,
+          "sha256": "3f772f3779e4f4c82df5fd07bae8b7b6c4dfb1f23a14aa106a1f088dcde6eaa3",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/receipts.json",
+          "bytes": 1210,
+          "sha256": "09d2710d1dca1b1d3b416c7f1dd8330d4321ae65582a4b5f2158e5f63d3e4b73",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/browser-results.json",
+          "bytes": 5899,
+          "sha256": "bb270ebd524388607c219d1cbdc720cdd5844244f6a93d46d06362d880245e77",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-1440-unconfigured.png",
+          "bytes": 29171,
+          "sha256": "8e753f331a771a6d2bf036c024106af40ba9862e792e7fae0dd25c43e1161263",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-1440.png",
+          "bytes": 8610,
+          "sha256": "b1255c8ab6601bcacf6179044b9ca82adea6576b87831c5b6e487fb51cc6bd91",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-390-unconfigured.png",
+          "bytes": 23809,
+          "sha256": "3bcda4de89ae67a43d9721ed111cfa86fee90f9f5d4b8183fc1857c2a45deb94",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-390.png",
+          "bytes": 5372,
+          "sha256": "b622084d016ed9b54b15566549c470cd963141deb18ad6aa3f396609a3b91b75",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-1440-unconfigured.png",
+          "bytes": 17272,
+          "sha256": "e8f93655b1e9b160b82dd6453e2c15232da17b7db375d481ad611a84f5f9921e",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-1440.png",
+          "bytes": 25744,
+          "sha256": "4a7fb8278880d8f2a68f1bbae6873a64e18f3a8ce37110262f45afb051547acf",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-390-unconfigured.png",
+          "bytes": 13376,
+          "sha256": "10b9ffb0f888fc36bb8e4dd8058ebdd92f37f746ba9e9d05babcf42d2d50f3b7",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-390.png",
+          "bytes": 19764,
+          "sha256": "f66f9542ef8753da5e9d03d561b729463411057fc643e34c078a17457d7f8cc5",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/work-1440-unconfigured.png",
+          "bytes": 63288,
+          "sha256": "829f088857f1da64d2dd06ccabe7a498b57cb75f90de32a077a29c1592e283f8",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/work-1440.png",
+          "bytes": 71349,
+          "sha256": "b458f2ddb121b22301d1a42eb9e46091d9d4b20d5597ac3b7ccd783dc4a04a5e",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-integrity.json",
+          "bytes": 1549,
+          "sha256": "bf20bc720b4ca27f0a83f6bfdea4a5ae77d64fc1ad98f85dae1154a23fbafcab",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-metadata.json",
+          "bytes": 2839,
+          "sha256": "39fca59bd56d44752179a7b4b687c0323c51d9f128534757ab8adea0e5b0acbf",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-base.json",
+          "bytes": 34339,
+          "sha256": "2ddfaea495ad19b22d3706e12f824f6f5a04555797514ec988a7f1015b6db9b4",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-candidate.json",
+          "bytes": 34340,
+          "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-comparison.json",
+          "bytes": 1135,
+          "sha256": "644bbd89b5326b300b63756d20b4338143eb053cb34f150ba4cd12343b794a13",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-quality-result.yaml",
+          "bytes": 13898,
+          "sha256": "e2e459bfb286dfc465d3c007bdc5372bd1cb2e126c5269a96802a79203867988",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-review.md",
+          "bytes": 6063,
+          "sha256": "4035981e45c97ffad6090a7fc12eedaab5d573f7981f7b1d73eb0b8a295cb267",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-scope-consistency.json",
+          "bytes": 20532,
+          "sha256": "7b0269c435a7120f2ae9b61d58f1a79ee5a9f1f067cc64584da57c5654701a01",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-scope-consistency.md",
+          "bytes": 4254,
+          "sha256": "05627140ab1934156df331eab79349c9828a1b0019abe3f06b602b942b1249a4",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-validation-summary.json",
+          "bytes": 49660,
+          "sha256": "1c2cb96b099405482b0dc688af18ddadb35bda84ed0f98412861620dff016678",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/original-receipts.json",
+          "bytes": 3923,
+          "sha256": "f6356d63066ef54976da2e9cb09276da79bb851fc8f84613860fcfad2dc0d83a",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+          "bytes": 5672,
+          "sha256": "f936ac5591a2755755aca1ab6f24a5dcd131350263d41da0fc178a2a69529d71",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/edhr-w3-mode-ontology-diagnostic.json",
+          "bytes": 2383,
+          "sha256": "df846cc37b268ec5019a65940e42926cfd3ad78fb269f60d888cd9061e11e69f",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/edhr-w3-mode-ontology-result.yaml",
+          "bytes": 8791,
+          "sha256": "bef2460858305ba881ab39e83eaa7613f9d5c3455c03eb9145b1f16b7a2fc6b2",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/edhr-w3-mode-ontology-scope.json",
+          "bytes": 8494,
+          "sha256": "9d27890a19205762f03978dc3dcc4fb40973b40dd6308eb03eb37c5c2f3d7066",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/receipts.json",
+          "bytes": 705,
+          "sha256": "8c99540ce0e24708611ee3161565b9e312ca774d67ea003b5f3d523a63510841",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/browser-results.json",
+          "bytes": 5899,
+          "sha256": "bb270ebd524388607c219d1cbdc720cdd5844244f6a93d46d06362d880245e77",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-1440-unconfigured.png",
+          "bytes": 29171,
+          "sha256": "8e753f331a771a6d2bf036c024106af40ba9862e792e7fae0dd25c43e1161263",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-1440.png",
+          "bytes": 8610,
+          "sha256": "b1255c8ab6601bcacf6179044b9ca82adea6576b87831c5b6e487fb51cc6bd91",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-390-unconfigured.png",
+          "bytes": 23809,
+          "sha256": "3bcda4de89ae67a43d9721ed111cfa86fee90f9f5d4b8183fc1857c2a45deb94",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-390.png",
+          "bytes": 5372,
+          "sha256": "b622084d016ed9b54b15566549c470cd963141deb18ad6aa3f396609a3b91b75",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-1440-unconfigured.png",
+          "bytes": 17272,
+          "sha256": "e8f93655b1e9b160b82dd6453e2c15232da17b7db375d481ad611a84f5f9921e",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-1440.png",
+          "bytes": 25744,
+          "sha256": "4a7fb8278880d8f2a68f1bbae6873a64e18f3a8ce37110262f45afb051547acf",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-390-unconfigured.png",
+          "bytes": 13376,
+          "sha256": "10b9ffb0f888fc36bb8e4dd8058ebdd92f37f746ba9e9d05babcf42d2d50f3b7",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-390.png",
+          "bytes": 19764,
+          "sha256": "f66f9542ef8753da5e9d03d561b729463411057fc643e34c078a17457d7f8cc5",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/work-1440-unconfigured.png",
+          "bytes": 63287,
+          "sha256": "5284e8eb1549ed211eb7a6ca3663f76ab70c6a27eb8aef2c886a2d7cd717f896",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/work-1440.png",
+          "bytes": 71349,
+          "sha256": "b458f2ddb121b22301d1a42eb9e46091d9d4b20d5597ac3b7ccd783dc4a04a5e",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/edhr-w3-root-validation-metadata.json",
+          "bytes": 3311,
+          "sha256": "045856a965f219c88afe8a62470ac8ed0629c96eafa4730f02f4b646892b3511",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/edhr-w3-root-validation.json",
+          "bytes": 111745,
+          "sha256": "aef1b0a48c616effce776628cac7282d1b2e10e74fa071bb55c2deecacac0523",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+          "bytes": 2239,
+          "sha256": "3aa791145b9feefec0d92b5fad01553ac3203a65b2926d9b2d2d440574167087",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/findings.md",
+          "bytes": 3191,
+          "sha256": "663a4ec8345b4cf3fd868bf4783c65ea220a25809d14f69ccda1b10935a1abce",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/merge-acceptance.md",
+          "bytes": 3548,
+          "sha256": "656ee052f96c380e3fdead731b710f54969958c6cf23e373eb94874a1cd89c98",
+          "matchesTargetBytes": true
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/source-map.md",
+          "bytes": 5438,
+          "sha256": "4161ab1a18da49fbef6bac4b6e9225686f0525e12b11fd285535026767d6e925",
+          "matchesTargetBytes": true
+        }
+      ],
+      "unchangedAgainstTarget": true
+    },
+    {
+      "name": "round1-preserved-artifacts",
+      "count": 49,
+      "records": [
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/W3BindingMetadataProbe.java",
+          "bytes": 5426,
+          "sha256": "f7aee89e4a3bbee419ed32e286b53ceeacc20acf0f3ecca0198760ca4ebf0f5f"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/baseline-browser/browser-results.json",
+          "bytes": 448,
+          "sha256": "dd89e99dc38b7e4ca655d74037545701c044384478c365012755f10535bb09bf"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/baseline-browser/direct-1440-confirm-before-confirm.png",
+          "bytes": 58300,
+          "sha256": "cdfbf579e12df736b4173b7f77643142df4a2c180daa940d5d1eb6f88051248d"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/browser-results.json",
+          "bytes": 11774,
+          "sha256": "10cd65370c2f5f5fdd5af40e9d2a8f474521a63f99c8f101af7b40d7d5c8ef39"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/direct-1440-confirm-before-confirm.png",
+          "bytes": 58300,
+          "sha256": "cdfbf579e12df736b4173b7f77643142df4a2c180daa940d5d1eb6f88051248d"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/direct-1440-confirm.png",
+          "bytes": 25465,
+          "sha256": "bc465d873fd396f0b0ddf4d83db728fa5ac7efbb698a2e9e6675c4db509cd0f9"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/direct-1440-failure.png",
+          "bytes": 28890,
+          "sha256": "a324f14e1814b238b8f7ce939b70766f556f038fe8665eeb1565cf55de9f4b99"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/direct-390-confirm-before-confirm.png",
+          "bytes": 47378,
+          "sha256": "33e80fe90d1ae35000d429b5bb4ab8eff04220e708f0c5ca3db1d3e1b6f5b7f8"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/direct-390-confirm.png",
+          "bytes": 19603,
+          "sha256": "59e7dacb2f80fb0c39c63553478ecb25b3da74eb8bf4c998c48b807a18a654d4"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/process-1440-confirm-before-confirm.png",
+          "bytes": 58300,
+          "sha256": "cdfbf579e12df736b4173b7f77643142df4a2c180daa940d5d1eb6f88051248d"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/process-1440-confirm.png",
+          "bytes": 27146,
+          "sha256": "0b4fd5d807cb7d72e005ba1c4efaaad0e1815dbd389b1cfb5dcbeefa0ca305c6"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/process-1440-delayed-before-confirm.png",
+          "bytes": 58308,
+          "sha256": "71491c430a332c249aa6b182e128d28190c1cfa07e5aca80e22b3ca478d2b579"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/process-1440-delayed.png",
+          "bytes": 27141,
+          "sha256": "05f1a50f7ece64f60bb3624310e4ef9e376046306f28992fc51a44485ce2785c"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/process-390-confirm-before-confirm.png",
+          "bytes": 47378,
+          "sha256": "33e80fe90d1ae35000d429b5bb4ab8eff04220e708f0c5ca3db1d3e1b6f5b7f8"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/process-390-confirm.png",
+          "bytes": 21461,
+          "sha256": "9433402beb98d78e0e02dd614b11b1d87bc881dc4f72e1638aac5008400d6a36"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-audit-project.py",
+          "bytes": 37716,
+          "sha256": "67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-integrity-after.json",
+          "bytes": 438180,
+          "sha256": "0a4c9bd49c1884b06635b39772435c489c4d156165502fb6543933b99dd1268d"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-integrity-before.json",
+          "bytes": 438180,
+          "sha256": "b9d780f01fa935e7ddae542df71b7976f631e5095c9867cd1da6d70ba692d4b8"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-integrity-comparison.json",
+          "bytes": 282,
+          "sha256": "579cc7b5ba90691babe615d66c5a72f33f1424c2342197f71814f03fa6503ace"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-java-baseline-summary.json",
+          "bytes": 1063,
+          "sha256": "867f9dee4cb5746887b0d128580e5c73052ddc79a120b9c96cb043e1b8e9060e"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-java-summary.json",
+          "bytes": 57628,
+          "sha256": "e16f69fe9ec3fb199ed64521facebc051bbd255226208b157a6753fe4a4a7d3c"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-malformed-process-metadata.json",
+          "bytes": 2335,
+          "sha256": "2d5c7ce440af514052806abe5d904a7f243b5c72cc82828ede019c9e390c1dbe"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-quality-result.yaml",
+          "bytes": 13976,
+          "sha256": "3a37692a69888c62956ec54f02f113fb9f574acaefc3db4ae9a5f35fc294fe6c"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-review.md",
+          "bytes": 6608,
+          "sha256": "bbe047ff9d3252c8644ff7d509b5f13844e720c2b334ea49e836ab254c3c582b"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-scope-history-metadata.json",
+          "bytes": 47621,
+          "sha256": "063f9b9a55bed55ac9b0fbe3757e02b93ce49b81bc59ec65e1e3cfe723d8bbbb"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-scope-history.md",
+          "bytes": 5419,
+          "sha256": "a9791ea4a554c9ccb514745da7e65867d335cda02ba0d0842dca81e217234b6e"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-ui-base.json",
+          "bytes": 34344,
+          "sha256": "963098b1f9ef2bc1166da77f6cfbecb56da1b65906646592623a8a5bf4ca1683"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-ui-candidate-root.json",
+          "bytes": 34340,
+          "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-ui-comparison.json",
+          "bytes": 947,
+          "sha256": "16b768217fc8dca4273fe088d5f7b82a47a65f41df56785f77ece5c55a9e20cc"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-validation-metadata.json",
+          "bytes": 4169,
+          "sha256": "ca736628df3f3f301ff1592a8ee8f5d89f00729728d0e76d863cc8f2facede0d"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-validation-summary.json",
+          "bytes": 6496,
+          "sha256": "964af5c6896133b0f6008cc58c6dbb5d910fc38d47fc5900b6f97ca8ac504ebc"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-work-adapter-probe.mjs",
+          "bytes": 15213,
+          "sha256": "cc25d1fce6994a5a48653872dbc2d73b0446c92e441ddaf5f143d84dc5478a52"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/browser-results.json",
+          "bytes": 5899,
+          "sha256": "bb270ebd524388607c219d1cbdc720cdd5844244f6a93d46d06362d880245e77"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/dialog-1440-unconfigured.png",
+          "bytes": 29171,
+          "sha256": "8e753f331a771a6d2bf036c024106af40ba9862e792e7fae0dd25c43e1161263"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/dialog-1440.png",
+          "bytes": 8610,
+          "sha256": "b1255c8ab6601bcacf6179044b9ca82adea6576b87831c5b6e487fb51cc6bd91"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/dialog-390-unconfigured.png",
+          "bytes": 23809,
+          "sha256": "3bcda4de89ae67a43d9721ed111cfa86fee90f9f5d4b8183fc1857c2a45deb94"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/dialog-390.png",
+          "bytes": 5372,
+          "sha256": "b622084d016ed9b54b15566549c470cd963141deb18ad6aa3f396609a3b91b75"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/inline-1440-unconfigured.png",
+          "bytes": 17272,
+          "sha256": "e8f93655b1e9b160b82dd6453e2c15232da17b7db375d481ad611a84f5f9921e"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/inline-1440.png",
+          "bytes": 25744,
+          "sha256": "4a7fb8278880d8f2a68f1bbae6873a64e18f3a8ce37110262f45afb051547acf"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/inline-390-unconfigured.png",
+          "bytes": 13376,
+          "sha256": "10b9ffb0f888fc36bb8e4dd8058ebdd92f37f746ba9e9d05babcf42d2d50f3b7"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/inline-390.png",
+          "bytes": 19764,
+          "sha256": "f66f9542ef8753da5e9d03d561b729463411057fc643e34c078a17457d7f8cc5"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/work-1440-unconfigured.png",
+          "bytes": 63287,
+          "sha256": "5284e8eb1549ed211eb7a6ca3663f76ab70c6a27eb8aef2c886a2d7cd717f896"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/work-1440.png",
+          "bytes": 71349,
+          "sha256": "b458f2ddb121b22301d1a42eb9e46091d9d4b20d5597ac3b7ccd783dc4a04a5e"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/receipts.json",
+          "bytes": 13378,
+          "sha256": "11008c62bb31cb07a3e3ee5510a6411cd59826d9153804f35a6173a6d55cd37d"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/work-adapter-browser/browser-results.json",
+          "bytes": 13805,
+          "sha256": "63b671dce75903eeb5c78e859d24b3ba2f43fd4c2652ba3df75f47f28fad55d7"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/work-adapter-browser/work-DIRECT-1440-before-confirm.png",
+          "bytes": 58300,
+          "sha256": "cdfbf579e12df736b4173b7f77643142df4a2c180daa940d5d1eb6f88051248d"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/work-adapter-browser/work-DIRECT-1440.png",
+          "bytes": 79615,
+          "sha256": "402d3c47989df94d363bc57baab0de7abc599405658747f26e0dc2aaae73fb81"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/work-adapter-browser/work-PROCESS-1440-before-confirm.png",
+          "bytes": 58300,
+          "sha256": "cdfbf579e12df736b4173b7f77643142df4a2c180daa940d5d1eb6f88051248d"
+        },
+        {
+          "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/work-adapter-browser/work-PROCESS-1440.png",
+          "bytes": 72846,
+          "sha256": "c48e369392120881ed4922b10735d0096b6a7c091e01a4879e9affb7d76f0c0f"
+        }
+      ],
+      "scope": "new in candidate; validated against round1 original receipts and helper before/after snapshot"
+    }
+  ],
+  "round1ReceiptValidation": {
+    "count": 48,
+    "allMatch": true,
+    "checks": [
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-quality-result.yaml",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-review.md",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-validation-summary.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-validation-metadata.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-integrity-before.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-integrity-after.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-integrity-comparison.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-java-summary.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-java-baseline-summary.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-ui-base.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-ui-candidate-root.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-ui-comparison.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-scope-history.md",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-scope-history-metadata.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-work-adapter-probe.mjs",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-malformed-process-metadata.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-audit-project.py",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/W3BindingMetadataProbe.java",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/browser-results.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/direct-1440-confirm-before-confirm.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/direct-1440-confirm.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/direct-1440-failure.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/direct-390-confirm-before-confirm.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/direct-390-confirm.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/process-1440-confirm-before-confirm.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/process-1440-confirm.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/process-1440-delayed-before-confirm.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/process-1440-delayed.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/process-390-confirm-before-confirm.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/browser/process-390-confirm.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/browser-results.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/dialog-1440-unconfigured.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/dialog-1440.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/dialog-390-unconfigured.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/dialog-390.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/inline-1440-unconfigured.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/inline-1440.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/inline-390-unconfigured.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/inline-390.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/work-1440-unconfigured.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/neighbor-browser/work-1440.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/work-adapter-browser/browser-results.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/work-adapter-browser/work-DIRECT-1440-before-confirm.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/work-adapter-browser/work-DIRECT-1440.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/work-adapter-browser/work-PROCESS-1440-before-confirm.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/work-adapter-browser/work-PROCESS-1440.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/baseline-browser/browser-results.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/baseline-browser/direct-1440-confirm-before-confirm.png",
+        "matchesReceipt": true
+      }
+    ]
+  },
+  "pr16ReceiptValidation": {
+    "count": 21,
+    "allMatch": true,
+    "checks": [
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-quality-result.yaml",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-review.md",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-validation-summary.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-integrity.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-base.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-candidate.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-comparison.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-scope-consistency.md",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-scope-consistency.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/browser-results.json",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-1440-unconfigured.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-1440.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-390-unconfigured.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-390.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-1440-unconfigured.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-1440.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-390-unconfigured.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-390.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/work-1440-unconfigured.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/work-1440.png",
+        "matchesReceipt": true
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-metadata.json",
+        "matchesReceipt": true
+      }
+    ]
+  }
+}

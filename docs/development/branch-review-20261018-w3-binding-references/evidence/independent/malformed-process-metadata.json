@@ -1,0 +1,65 @@
+{
+  "scope" : "Actual candidate-compiled WorkTemplateController and FormFillSettingsService; repository mocks count persistence/audit/projection commands, no real DB/HTTP; all referenced records exist and process is PUBLISHED FORM_PROCESS.",
+  "headCommit" : "a9ecd501a9abf354df95df2a1a01e53474a41a2d",
+  "results" : [ {
+    "metadata" : "{}",
+    "rejected" : true,
+    "error" : "BusinessException: 表单流程节点格式不正确",
+    "versionSaveCalls" : 0,
+    "auditSaveCalls" : 0,
+    "projectionRebuildCalls" : 0,
+    "graphMutated" : false,
+    "staleGroupInGraph" : false,
+    "expectedRejectBeforeAnyWrite" : true
+  }, {
+    "metadata" : "null",
+    "rejected" : true,
+    "error" : "BusinessException: 表单流程节点格式不正确",
+    "versionSaveCalls" : 0,
+    "auditSaveCalls" : 0,
+    "projectionRebuildCalls" : 0,
+    "graphMutated" : false,
+    "staleGroupInGraph" : false,
+    "expectedRejectBeforeAnyWrite" : true
+  }, {
+    "metadata" : "\"unexpected\"",
+    "rejected" : true,
+    "error" : "BusinessException: 表单流程节点格式不正确",
+    "versionSaveCalls" : 0,
+    "auditSaveCalls" : 0,
+    "projectionRebuildCalls" : 0,
+    "graphMutated" : false,
+    "staleGroupInGraph" : false,
+    "expectedRejectBeforeAnyWrite" : true
+  }, {
+    "metadata" : "[]",
+    "rejected" : true,
+    "error" : "BusinessException: 当前绑定配置已失效，请打开字段权限设置重新确认：字段权限引用的权限组不存在",
+    "versionSaveCalls" : 0,
+    "auditSaveCalls" : 0,
+    "projectionRebuildCalls" : 0,
+    "graphMutated" : false,
+    "staleGroupInGraph" : false,
+    "expectedRejectBeforeAnyWrite" : true
+  }, {
+    "metadata" : "not-json",
+    "rejected" : true,
+    "error" : "BusinessException: 填报设置格式不正确",
+    "versionSaveCalls" : 0,
+    "auditSaveCalls" : 0,
+    "projectionRebuildCalls" : 0,
+    "graphMutated" : false,
+    "staleGroupInGraph" : false,
+    "expectedRejectBeforeAnyWrite" : true
+  }, {
+    "metadata" : "[{\"id\":\"entry\",\"data\":{\"kind\":\"START\",\"config\":{\"permissionGroupRules\":[{\"id\":\"current\"}]}}}]",
+    "rejected" : true,
+    "error" : "BusinessException: 当前绑定配置已失效，请打开字段权限设置重新确认：字段权限引用的权限组不存在",
+    "versionSaveCalls" : 0,
+    "auditSaveCalls" : 0,
+    "projectionRebuildCalls" : 0,
+    "graphMutated" : false,
+    "staleGroupInGraph" : false,
+    "expectedRejectBeforeAnyWrite" : true
+  } ]
+}

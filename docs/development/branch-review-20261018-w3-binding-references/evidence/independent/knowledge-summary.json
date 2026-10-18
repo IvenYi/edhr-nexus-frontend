@@ -1,0 +1,19 @@
+{
+  "headCommit": "a9ecd501a9abf354df95df2a1a01e53474a41a2d",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "yamlFileCount": 206,
+  "idRecords": 2525,
+  "duplicateIds": [],
+  "changedPaths": [
+    "docs/architecture/business-knowledge-model.md",
+    "docs/knowledge/README.md",
+    "docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml",
+    "docs/knowledge/evidence/binding-reference-audit-2026-10-18.md",
+    "docs/knowledge/evidence/form-fill-settings.yaml"
+  ],
+  "method": "All YAML parsed and IDs recursively enumerated independently. Formal schema/reference/projection/path/status assertions executed through BusinessKnowledgeModelTest (89 cases), not inferred from parsing. Affected-policy semantic comparison: DEC0023-08 alternative cleanup or reject remains; DEC0035 group keys; DEC0009 incomplete drafts; DEC0067 active/dormant/new-snapshot boundaries; evidence followup records original failed and pending new final without version/status promotion.",
+  "schemaFiles": 1,
+  "assetYamlFiles": 205,
+  "idEnumeration": "schema.yaml parsed but its schema field descriptors excluded from business asset ID denominator; all other YAML nested record IDs enumerated."
+}

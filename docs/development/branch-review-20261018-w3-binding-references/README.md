@@ -23,12 +23,18 @@
 
 全新实例对ef07ee7c正式[qualityResult: failed](evidence/independent-round1/edhr-w3b-independent-quality-result.yaml)，48份安全原件按原字节保留。独立实际复跑299Java通过/3条件跳过、13Node、新6和相邻5浏览器，并新增2场真实WorkTemplateEditor确认→父适配→graph PUT→reload验证，全部通过；仍不能覆盖QF-W3B-001。该medium问题是已发布流程的非数组节点JSON跳过草稿检查，探针证明三种结构均触发图/版本/投影/审计写入；发布严格门禁仍会拒绝，不称生产越权。
 
-补修只把这处return改为原strict已有的数组结构拒绝，并加1项保存前零写回归。新增测试在补修前实际1失败、0错误；修复后主侧10suite实际303项中300通过、3既有条件跳过，0失败/错误，安全结果在evidence/repair-primary。未变前端未在主侧repair阶段重复运行，原结果仍属ef07。必要知识证据增量[正式updated](evidence/ontology-followup/edhr-w3b-binding-ontology-followup-result.yaml)，无冲突/待决，原结果不改；修复后全新最终质量仍待完成，不得创建交付PR或将首轮failed改绿。
+补修只把这处return改为原strict已有的数组结构拒绝，并加1项保存前零写回归。新增测试在补修前实际1失败、0错误；修复后主侧10suite实际303项中300通过、3既有条件跳过，0失败/错误，安全结果在evidence/repair-primary。未变前端未在主侧repair阶段重复运行，原结果仍属ef07。必要知识证据增量[正式updated](evidence/ontology-followup/edhr-w3b-binding-ontology-followup-result.yaml)，无冲突/待决，原结果不改；修复后全新验收见下节，首轮failed不回写。
 
 独立当前恢复官方37716bytes原脚本，实际仓库根strict扫描ca98/ef07各84项（13 unresolved、71 violations），完整finding对象含file/line相同，新增/移除0，均exit2。该结果只属于ef07，主侧原“未运行”记录不回写，后续候选须按影响核对，不称全站规范通过。
+
+## 修复后最终全新独立验收
+
+另一未参与修复实例对a9ecd501a9abf354df95df2a1a01e53474a41a2d正式[qualityResult: passed](evidence/independent/quality-result.yaml)，14项中12项必需检查全部通过，QF-W3B-001 resolved且无本批阻断。实际重跑303Java中300通过/3既有条件跳过、13Node、新6/相邻5/真实Work父适配2浏览器及构建通过。相同坏元数据探针对ef07独立编译旧service复现三种非数组写入，当前6输入均拒绝且图不变、版本/投影/审计零写；没有把循环输入多算JUnit。51份安全原件按原字节归档，原Maven日志/XML不发布。
+
+本轮官方脚本对ca98/a9ec实际同范围strict仍各84项、完整finding多重集合相同新增0；全站规范未通过。ESLint缺配置仍exit2。真实浏览器使用受控API，后端H2兼容，非原生PG或完整认证数据库E2E。所有本轮专业实例、辅助及子进程已结束；后续只允许L0报告/归档/PR登记，受测代码、测试、知识及契约保持。
 
 ## 范围与下一步
 
 2118路径/blob清单全部pending/inventory-only，只是基线分母，不等于全量代码审查完成。H009/H010的只读调用图留作后续，不夹带保存/复制旧结构guard。AUD-H012等原历史清单未完成项仍须在W3逐项核对；A12及依赖记录控制变更/作废的两项旧DHR high继续按用户决定open/deferred。
 
-[原正式本体结果](evidence/ontology/edhr-w3b-binding-ontology-result.yaml)及补修增量均updated，无冲突和业务待决，原规则/版本/成熟度不变。本批还需修复后全新实例独立验收、PR前任务漂移/进度复核及交付。完整W2/W3和分支审查未完成，不自动合并、部署、恢复历史或改变业务政策。
+[原正式本体结果](evidence/ontology/edhr-w3b-binding-ontology-result.yaml)及补修增量均updated，无冲突和业务待决，原规则/版本/成熟度不变。主审在最终质量返回后完成[PR前正式任务复核](scope-review.md)：本批业务范围一致，整体推进存在执行重心和跨批覆盖总账落后的部分偏移。下一批先恢复当前领域/工作包归属并按path/blob关联旧方法/知识映射，再选择剩余审查入口；不再用另一张全pending清单代替汇总。用户进度汇报和交付动作按该页实际顺序登记。完整W2/W3和分支审查未完成，不自动合并、部署、恢复历史或改变业务政策。

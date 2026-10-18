@@ -1,0 +1,59 @@
+{
+  "sourceCommit": "a9ecd501a9abf354df95df2a1a01e53474a41a2d",
+  "sourceTree": "fa331993fda482384146074b2b815a4f3ed7f5bb",
+  "targetCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "contractReadCommit": "a9ecd501a9abf354df95df2a1a01e53474a41a2d",
+  "uncommittedContractPaths": [],
+  "trackedCountBefore": 2224,
+  "trackedCountAfter": 2224,
+  "trackedDelta": [],
+  "allTrackedByteHashesEqual": true,
+  "headUnchanged": true,
+  "treeUnchanged": true,
+  "targetTrackingUnchanged": true,
+  "cleanBeforeAndAfter": true,
+  "protectedToolHashesEqual": true,
+  "officialScriptHashEqual": true,
+  "actualReadContracts": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "bytesMatchTargetCommit": true
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "bytesMatchTargetCommit": true
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "bytesMatchTargetCommit": true
+    },
+    {
+      "path": "DESIGN.md",
+      "bytes": 12592,
+      "sha256": "23bcefdb3989761c940aab8cd6b15cce6f69107be6c94e304c61308096b49d7d",
+      "bytesMatchTargetCommit": true
+    }
+  ],
+  "readSkillSources": [
+    "skill://plugins_6a7039f8e9708191bde88207b1919bf4/frontend-design/SKILL.md",
+    "skill://plugins_6a7039f8e9708191bde88207b1919bf4/frontend-design-premium/SKILL.md",
+    "skill://plugins_6a7039f8e9708191bde88207b1919bf4/frontend-design-premium/references/canonical-ui-resolution.md",
+    "skill://plugins_6a7039f8e9708191bde88207b1919bf4/frontend-design-premium/references/verification-checklist.md"
+  ],
+  "knowledgeBaselineVersion": "0.3.25 (decision-package); semantic/domain validation remains parent responsibility",
+  "thisHelperSpawnedAgents": 0,
+  "thisHelperBackgroundProcesses": 0,
+  "allHelperCommandsCompleted": true,
+  "notes": [
+    "This helper does not claim the enclosing parent verifier process or unrelated running test processes have ended.",
+    "All helper subprocesses were synchronous; the yielded execution 11449 completed with exit0.",
+    "No worktree, test/source/config edits, Actions/CI calls, or network mutation.",
+    "Only safe metadata/findings/reports produced in /tmp; no settings/credentials/raw test logs copied."
+  ]
+}
