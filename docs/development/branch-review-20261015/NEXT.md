@@ -1,5 +1,7 @@
 # 持续推进台账
 
+当前交付：[PR15 同字段共享选项](https://github.com/IvenYi/edhr-nexus-frontend/pull/15)，独立受测9ac5e0e2正式passed，后续仅L0收尾，待用户人工合并。合并后先拉取最新edhr-dev，核对受影响增量，再推进W3显式填写模式链。
+
 PR7至PR14均已由用户人工合入，各批原始验收证据保留。PR14合并b191e054892ae06cb0d8a45f62d034deabbba3e3的树精确等于批准交付1246cda13aca6ae5a5f98c3b7a5bf79f58f4b26e，37bc至b191无契约漂移。当前[W2同字段共享选项](../branch-review-20261018-w2-choice-options/README.md)已完成有限整改：初轮c449正式failed后补齐真实ModelTab子列写入口，全新质量实例对9ac5e0e2正式passed，建议本切片人工合并，完整W2未完成。用户确认记录为DEC-0080，原本体及跟进均updated。后续仅L0验收/PR时点登记，不改写任何原始结果或重收尾旧PR；原子列同步、插列、保存/投影等报告保持各自受测范围。
 
 ## 当前实际状态

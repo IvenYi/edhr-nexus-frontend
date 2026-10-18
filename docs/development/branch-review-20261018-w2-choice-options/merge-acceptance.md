@@ -1,5 +1,7 @@
 # 本批合并验收
 
+交付 [PR15](https://github.com/IvenYi/edhr-nexus-frontend/pull/15)，目标edhr-dev，建议用户人工合并。本记录及PR链接均为受测候选后的L0收尾。
+
 目标固定为 `b191e054892ae06cb0d8a45f62d034deabbba3e3`，实际独立受测修正版为 `9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7`。首候选c449的正式failed和真实ModelTab反证原字节保留；修复由主实例完成，最终由未参与修复的全新实例验收。
 
 正式 [qualityResult](evidence/independent-final/quality-result.yaml) 为passed，15项必需检查全部通过，QF-W2-CHOICE-001 resolved。128 Node、15实际Chromium场景、tsc/Vite和静态guard通过；Java189总项=186实际通过、0失败/错误、3既有条件跳过，知识89及新增冻结值/SAVE/SUBMIT/非法值回滚场景实际通过。H2 PostgreSQL兼容、受控浏览器保存callback、真实设计夹具→后端JUnit层次分开，不宣称原生PG或全认证浏览器HTTP贯通。Node和浏览器计数不与首轮重复累加。
