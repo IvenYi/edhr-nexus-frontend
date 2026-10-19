@@ -24,9 +24,16 @@ export function acceptsProjectionAttribute(field: ModelField, attribute: Project
   return field.type === 'text' || field.type === 'singleSelect';
 }
 
+export function projectionTableId(id?: string): string {
+  // Match the interpreter's String.isBlank main-table identity; nonblank IDs stay exact.
+  const value = id ?? '';
+  return /^[\u0009-\u000d\u001c-\u0020\u1680\u2000-\u2006\u2008-\u200a\u2028\u2029\u205f\u3000]*$/.test(value) ? '' : value;
+}
+
 export function projectionSources(model: ModelDesignState, binding: Pick<ProjectionBinding, 'tableId'>): ModelField[] {
-  return binding.tableId
-    ? (model.fields.find(field => field.id === binding.tableId)?.typeConfig.columns as ModelField[] | undefined) ?? []
+  const tableId = projectionTableId(binding.tableId);
+  return tableId
+    ? (model.fields.find(field => field.id === tableId)?.typeConfig.columns as ModelField[] | undefined) ?? []
     : model.fields.filter(field => field.type !== 'subTable');
 }
 
@@ -55,9 +62,7 @@ export function projectionSourceCandidates(model: ModelDesignState, binding: Pro
 }
 
 export function traceFieldAssignments(model: ModelDesignState, fieldId: string, tableId?: string) {
-  // Match the interpreter's String.isBlank main-table identity; nonblank IDs stay exact.
-  const region = (id?: string) => /^[\u0009-\u000d\u001c-\u0020\u1680\u2000-\u2006\u2008-\u200a\u2028\u2029\u205f\u3000]*$/.test(id ?? '') ? '' : id;
-  return (model.projection?.bindings ?? []).filter(binding => binding.modelId === 'formTrace' && region(binding.tableId) === region(tableId))
+  return (model.projection?.bindings ?? []).filter(binding => binding.modelId === 'formTrace' && projectionTableId(binding.tableId) === projectionTableId(tableId))
     .flatMap(binding => Object.entries(binding.sources).filter(([, source]) => source === fieldId).map(([attributeId]) => ({ binding, attributeId })));
 }
 
@@ -86,12 +91,13 @@ export function projectionConfigurationProblems(model: ModelDesignState, binding
   const fields = projectionSources(model, binding);
   const issues: ProjectionConfigurationProblem[] = [];
   const name = (id: string) => definition.attributes.find(attribute => attribute.id === id)?.name.replace(/（.*?）/g, '') ?? id;
-  if (binding.tableId) {
-    const table = model.fields.find(field => field.id === binding.tableId && field.type === 'subTable');
+  const tableId = projectionTableId(binding.tableId);
+  if (tableId) {
+    const table = model.fields.find(field => field.id === tableId && field.type === 'subTable');
     if (!table || table.status === 'disabled') issues.push({ message: '子表来源已失效' });
   }
   for (const id of projectionRequiredAttributes(binding.modelId)) {
-    if (!binding.sources[id]) issues.push({ attributeId: id, message: `请选择“${name(id)}”的来源${binding.tableId ? '列' : '字段'}` });
+    if (!binding.sources[id]) issues.push({ attributeId: id, message: `请选择“${name(id)}”的来源${tableId ? '列' : '字段'}` });
   }
   if (binding.modelId === 'production' && !binding.sources.outputQuantity && !binding.sources.goodQuantity && !binding.sources.ngQuantity)
     issues.push(...['outputQuantity', 'goodQuantity', 'ngQuantity'].map(attributeId => ({ attributeId, message: '产出、良品、不良数量至少配置一项来源' })));

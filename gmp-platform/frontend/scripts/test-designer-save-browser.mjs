@@ -184,7 +184,7 @@ try {
         state.addNodeFromFieldToCell(field.id, {range: {t: 3, b: 3, l: 2, r: 4}, left: 98, top: 72, width: 294, height: 36});
         state.setProjectionBindings([
           {id: 'one', modelId: 'formTrace', enabled: true, sources: {lookup_production_batch: field.id}},
-          {id: 'two', modelId: 'formTrace', enabled: false, sources: {lookup_supplier_batch: field.id}},
+          {id: 'two', modelId: 'formTrace', enabled: false, tableId: '\t', sources: {lookup_supplier_batch: field.id}},
           {id: 'reused', modelId: 'formTrace', enabled: true, sources: {lookup_production_batch: other.id}},
         ]);
         const node = window.__store.getState().document.canvas.pages[0].nodes.find(node => node.bindings?.fieldId === field.id);
@@ -198,6 +198,7 @@ try {
       await save(page).click();
       const validation = page.getByRole('dialog').filter({hasText: '完善用途配置'});
       await validation.waitFor();
+      assert.equal(await validation.getByText('已失效子表', {exact: false}).count(), 0, 'blank regions are identified as the main table in validation feedback');
       assert.equal(await page.evaluate(() => window.__requests.length), 0, 'conflict never reaches save callback');
       assert.equal(await validation.getByRole('button', {name: '重新校验并保存'}).isDisabled(), true);
       await validation.getByRole('button', {name: '返回设计'}).click();
@@ -220,6 +221,32 @@ try {
       const saved = await page.evaluate(() => JSON.parse(window.__requests[0].payload.modelDesignJson).payload.projection.bindings);
       assert.deepEqual(saved.map(binding => binding.id), ['one', 'reused'], 'same trace item remains reusable on another field');
       await settle(page, 0);
+    }, viewport);
+    await run(`trace blank-region assignment stays visible, saves and can be removed at ${viewport.width}px`, async page => {
+      await page.route('**/projection-catalog', route => route.fulfill({status: 200, json: {code: 200, data: {
+        version: 'form-projection-v1', models: [{id: 'formTrace', name: '追溯', attributes: [
+          {id: 'lookup_production_batch', name: '生产批次/SN', type: 'text'},
+        ]}], notice: '',
+      }}}));
+      await page.evaluate(() => {
+        const state = window.__store.getState();
+        const field = state.addField('text', '原批号字段');
+        state.addNodeFromFieldToCell(field.id, {range: {t: 3, b: 3, l: 2, r: 4}, left: 98, top: 72, width: 294, height: 36});
+        state.setProjectionBindings([{id: 'one', modelId: 'formTrace', enabled: true, tableId: ' \t\u3000', sources: {lookup_production_batch: field.id}}]);
+        state.setSelectedNodeId(window.__store.getState().document.canvas.pages[0].nodes.find(node => node.bindings?.fieldId === field.id).id);
+      });
+      await page.getByRole('button', {name: '追溯与业务', exact: true}).click();
+      await page.getByRole('button', {name: '移除生产批次/SN关联', exact: true}).waitFor();
+      assert.equal(await page.getByLabel('关联追溯项（可选）', {exact: true}).count(), 0);
+      await submit(page, 1);
+      const saved = await page.evaluate(() => JSON.parse(window.__requests[0].payload.modelDesignJson).payload.projection.bindings);
+      assert.equal(saved[0].tableId, ' \t\u3000', 'saving a legal existing mapping must not rewrite its stored identity');
+      await settle(page, 0);
+      await page.getByRole('button', {name: '移除生产批次/SN关联', exact: true}).click();
+      await page.getByLabel('关联追溯项（可选）', {exact: true}).waitFor();
+      await submit(page, 2);
+      assert.equal(await page.evaluate(() => JSON.parse(window.__requests[1].payload.modelDesignJson).payload.projection.bindings.length), 0);
+      await settle(page, 1);
     }, viewport);
   }
   await run('trace single binding repairs duplicate columns in the whole subtable panel', async page => {

@@ -6,7 +6,7 @@ import ChevronRight from '@mui/icons-material/ChevronRight';
 import { useEffect, useState } from 'react';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ProjectionBinding } from '../types/model';
-import { acceptsProjectionAttribute, projectionConfigurationIssues, projectionConfigurationProblems, projectionRequiredAttributes, projectionSourceCandidates, projectionSources, type ProjectionModel } from '../utils/projectionConfiguration';
+import { acceptsProjectionAttribute, projectionConfigurationIssues, projectionConfigurationProblems, projectionRequiredAttributes, projectionSourceCandidates, projectionSources, projectionTableId, type ProjectionModel } from '../utils/projectionConfiguration';
 import ProjectionRemoveButton from './ProjectionRemoveButton';
 import { useProjectionCanvasPicker } from './ProjectionCanvasPicker';
 
@@ -52,7 +52,7 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
       label={`${isTrace || attribute.id === 'workHours' ? attribute.name : attribute.name.replace(/（.*?）/g, '')}${required.includes(attribute.id) ? ' *' : ''}`} value={binding.sources[attribute.id] ?? ''}
       error={Boolean(errorFor(attribute.id))} helperText={errorFor(attribute.id)}
       onChange={event => selectSource(attribute.id, event.target.value)}>
-      <MenuItem value="">请选择来源{binding.tableId ? '列' : '字段'}</MenuItem>
+      <MenuItem value="">请选择来源{projectionTableId(binding.tableId) ? '列' : '字段'}</MenuItem>
       {!!binding.sources[attribute.id] && !fields.some(field => field.id === binding.sources[attribute.id] && acceptsProjectionAttribute(field, attribute)) &&
         <MenuItem value={binding.sources[attribute.id]}>来源已失效，请重新选择</MenuItem>}
       {projectionSourceCandidates(document.model, binding, attribute)

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Alert, Box, Button, DialogActions, DialogContent, DialogTitle, List, ListItemButton, ListItemText, Stack, Typography } from '@mui/material';
 import FormDialog from '@/components/FormDialog';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
-import { projectionBindingLabel, projectionConfigurationIssues, projectionSourceSummary, useProjectionCatalog } from '../utils/projectionConfiguration';
+import { projectionBindingLabel, projectionConfigurationIssues, projectionSourceSummary, projectionTableId, useProjectionCatalog } from '../utils/projectionConfiguration';
 import ProjectionSourceEditor from './ProjectionSourceEditor';
 import ProjectionRemoveButton from './ProjectionRemoveButton';
 
@@ -40,7 +40,7 @@ export default function ProjectionValidationDialog({ open, onClose, onSave, savi
     return () => cancelAnimationFrame(frame);
   }, [open, selected?.binding.id]);
   if (!document) return null;
-  const regionName = (tableId?: string) => tableId ? document.model.fields.find(field => field.id === tableId)?.name ?? '已失效子表' : '主表';
+  const regionName = (tableId?: string) => projectionTableId(tableId) ? document.model.fields.find(field => field.id === tableId)?.name ?? '已失效子表' : '主表';
   return <FormDialog open={open} onClose={() => { if (!saving) onClose(); }} maxWidth="md" fullWidth>
     <DialogTitle>完善用途配置</DialogTitle>
     <DialogContent dividers>

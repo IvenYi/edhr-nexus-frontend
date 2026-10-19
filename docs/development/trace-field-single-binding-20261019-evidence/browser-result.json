@@ -35,7 +35,23 @@
       }
     },
     {
+      "name": "trace blank-region assignment stays visible, saves and can be removed at 1440px",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
       "name": "trace single binding rejects conflicting input and supports repair at 390px",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "name": "trace blank-region assignment stays visible, saves and can be removed at 390px",
       "status": "passed",
       "viewport": {
         "width": 390,

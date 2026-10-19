@@ -211,6 +211,17 @@ test('blank table regions share the runtime main-table field identity', () => {
   }
 });
 
+test('a valid blank-region trace remains visible and editable as a main-field assignment', () => {
+  for (const tableId of [' ', '\t\n', '\u001c\u3000']) {
+    const binding = {id: 'one', modelId: 'formTrace', enabled: true, tableId, sources: {supplierLot: lot.id}};
+    const current = {...model, projection: {bindings: [binding]}};
+    assert.deepEqual(projectionConfigurationProblems(current, binding, definition), []);
+    const html = renderPanel(current, {models: [definition]}, lot);
+    assert.ok(html.includes('aria-label="移除供应商批号（外部）关联"'));
+    assert.ok(!html.includes('关联追溯项（可选）'));
+  }
+});
+
 test('trace conflicts include same-binding and same-item duplicates without limiting business roles', () => {
   const both = {id: 'both', modelId: 'formTrace', enabled: true, sources: {supplierLot: lot.id, equipment: lot.id}};
   assert.ok(projectionConfigurationProblems({...model, projection: {bindings: [both]}}, both, definition).some(issue => issue.message.includes('最多关联一个追溯项')));

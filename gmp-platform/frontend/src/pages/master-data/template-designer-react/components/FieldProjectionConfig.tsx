@@ -2,7 +2,7 @@ import { Alert, Box, Button, IconButton, MenuItem, Stack, TextField, Tooltip, Ty
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ModelField, ProjectionBinding } from '../types/model';
-import { acceptsProjectionAttribute, useProjectionCatalog } from '../utils/projectionConfiguration';
+import { acceptsProjectionAttribute, projectionTableId, useProjectionCatalog } from '../utils/projectionConfiguration';
 import ProjectionRemoveButton from './ProjectionRemoveButton';
 import StatisticsProjectionConfig from './StatisticsProjectionConfig';
 
@@ -14,7 +14,7 @@ export default function FieldProjectionConfig({ field, tableId, showIdentity = t
   const { data: catalog, isPending, isError, refetch } = useProjectionCatalog();
   if (!document) return null;
   const bindings = document.model.projection?.bindings ?? [];
-  const inRegion = bindings.filter(binding => (binding.tableId ?? '') === (tableId ?? ''));
+  const inRegion = bindings.filter(binding => projectionTableId(binding.tableId) === projectionTableId(tableId));
   const traces = inRegion.filter(binding => binding.modelId === 'formTrace' && Object.values(binding.sources).includes(field.id));
   const traceCount = traces.reduce((count, binding) => count + Object.values(binding.sources).filter(id => id === field.id).length, 0);
   const statistical = inRegion.filter(binding => binding.modelId !== 'formTrace' && Object.values(binding.sources).includes(field.id));
