@@ -1,0 +1,132 @@
+{
+  "baseCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "headCommit": "a9ecd501a9abf354df95df2a1a01e53474a41a2d",
+  "tree": "fa331993fda482384146074b2b815a4f3ed7f5bb",
+  "contractReadCommit": "a9ecd501a9abf354df95df2a1a01e53474a41a2d",
+  "workingTreeStatus": "clean",
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "actualReadPolicyIds": [
+    "DEC-0023",
+    "DEC-0035",
+    "DEC-0009",
+    "DEC-0067"
+  ],
+  "sourceReceipts": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "bytes": 7519,
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "bytes": 31233,
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "DESIGN.md",
+      "bytes": 12592,
+      "sha256": "23bcefdb3989761c940aab8cd6b15cce6f69107be6c94e304c61308096b49d7d"
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "bytes": 13171,
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "bytes": 23878,
+      "sha256": "240025fe24927b141cefef45e641b1f88673bb8352ce59221cf9cbc8bc0b12c4"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java",
+      "bytes": 13132,
+      "sha256": "df7a1fc457cf38f9cd5c1c76175990674402af184ad051204ef1dbf572b2e136"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "bytes": 81036,
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx",
+      "bytes": 14553,
+      "sha256": "047b5c44e773a338cd550ec0eaf782eb11786ea42610d6e56eba9c7f4db2721d"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java",
+      "bytes": 104898,
+      "sha256": "978660d98def059f9e557b8daada393a2b7b999a04e894809de031777224dc91"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/FormFillSettingsServiceTest.java",
+      "bytes": 10509,
+      "sha256": "0bf61d81eedad0015d15f350ddedbc25fad983fcb8c02a0c1d73d78f64b7a954"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-binding-reference-confirmation-browser.mjs",
+      "bytes": 11238,
+      "sha256": "990ec416b4b01dc620ab1d3971119bebaad6bdb74060a25bce80e28ad12c926e"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-explicit-fill-mode-browser.mjs",
+      "bytes": 12262,
+      "sha256": "15f1dcddd0589eb1acc6a348ad2f1d39c897249249667e24733ff3a4775c2be0"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-explicit-fill-mode.mjs",
+      "bytes": 3912,
+      "sha256": "befc71ee814c4fff21c060378d067e013b01155c3323eeb9243ec66317b1c35a"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-work-editor-default-version.mjs",
+      "bytes": 1923,
+      "sha256": "5ce948d598df1834692b0757168e1a777de4277fe2dc90bdc67d227e1757ee99"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-permission-summary.mjs",
+      "bytes": 2212,
+      "sha256": "887382cafe416a30b8bc4bdaaca77bd42a2323f7134c69102e5f2ceba5238a62"
+    }
+  ],
+  "probeReceipts": [
+    {
+      "path": "/tmp/edhr-w3b-independent-work-adapter-probe.mjs",
+      "bytes": 15213,
+      "sha256": "cc25d1fce6994a5a48653872dbc2d73b0446c92e441ddaf5f143d84dc5478a52"
+    },
+    {
+      "path": "/tmp/edhr-w3b-final-independent-probe/W3BindingMetadataProbe.java",
+      "bytes": 5432,
+      "sha256": "a818a1f7c91b781d23d1a65901d189e082d41c5965f857c6626ca05924b27756"
+    },
+    {
+      "path": "/tmp/edhr-w3b-final-independent-before-repair/W3BindingMetadataProbe.java",
+      "bytes": 5428,
+      "sha256": "4f14803dc1730aa1b34dd2f7a9933a6cea5c76c4943eaea87e1d06c0dc6fb169"
+    }
+  ],
+  "protectedToolReceipts": [
+    {
+      "path": "/workspace/.edhr-cloud-tools/mvn-edhr",
+      "bytes": 1898,
+      "sha256": "ebc3436428ffe9d8689b1f4d4f825675c7b49dd7baba02235ee6d0781df73dae"
+    },
+    {
+      "path": "/workspace/.edhr-cloud-tools/settings.xml",
+      "bytes": 198,
+      "sha256": "26bd47ed597f0fd6cc1b609cc3921e9795750d66946687fe8828784b1cae0ff2"
+    }
+  ],
+  "safety": "No tool settings content, credentials, raw Maven log/XML, browser profile, DB or fonts are included in archive whitelist.",
+  "allSubtasksEnded": true,
+  "allExecutionSessionsEnded": true,
+  "trackedEdits": [],
+  "skillReading": "Successfully read upstream/premium SKILL and canonical-ui-resolution/verification-checklist during this final instance before later availability change. No current availability extrapolation.",
+  "originalHandoffReading": "Read all START-HERE34/HANDOFF429; actual-parent-adapter requirement verified separately from component/mode neighbor tests."
+}

@@ -1,0 +1,15 @@
+{
+  "results": [
+    {
+      "name": "direct-1440-confirm",
+      "status": "failed",
+      "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'start:current',\n+   'start:removed'\n  ]\n",
+      "calls": [
+        "/api/v1/workflow/form-fill-settings/processes",
+        "/api/v1/master-data/template-modeling/form-templates/501/versions/702"
+      ],
+      "errors": [],
+      "consoleErrors": []
+    }
+  ]
+}

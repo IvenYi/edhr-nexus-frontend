@@ -1,0 +1,167 @@
+{
+  "role": "temporary-readonly-frontend-helper-not-QA-not-ontology",
+  "contractBaseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "knowledgeModelVersion": "0.3.25",
+  "scope": [
+    "AUD-H004"
+  ],
+  "repositoryMutations": false,
+  "runtimeChecksRun": [],
+  "report": {
+    "path": "/tmp/edhr-w3b-binding-ui-paths.md",
+    "bytes": 18604,
+    "sha256": "b12c294cbc422e5a4cf111e7eed98a4b8426361d57dd1ec2b60faf74178d0831"
+  },
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 25065,
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 3035,
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 8198,
+      "sha256": "c3046f99e1cdebf0e31c097491cf21f5b2708b1348b45625b2f3c4e869581a45"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0035-form-process-permission-groups-and-node-events.yaml",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 5508,
+      "sha256": "813ad1848494d624ce9a4071d282a2f01aa9e2e991d8392bcae77568c6524d09"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 6663,
+      "sha256": "2dd74904c246ba98b87134d9b36b455776b86028bcdb46b5e0b8f7dd2273276d"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-fill-settings-confirmed.md",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 6553,
+      "sha256": "f25b4d452e61343a03b454c9a79ae8ba87421cedb5c7ba4693cbd5ca6c7dc2e1"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 14329,
+      "sha256": "a69ba8ab44cd1180f9fc67919d4c7cea0bbf611687095297298b1974fd479c41"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettingsButton.tsx",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 2366,
+      "sha256": "0d10c152700d28e89b7eb4b16bc20c1aeb13f3d7cb27cb0f170cdf19f60aaf18"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/FormFieldPermissions.tsx",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 31137,
+      "sha256": "b7cd28a47cef62bb62408dfe956b474f85832a4867842efdcf2b4ac6650c0035"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/FormProcessPreviewDialog.tsx",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 6881,
+      "sha256": "47d789c5d500bdf22435077a1774983570362bad68001ad8dd35627893d4b150"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/EntryPermissionGroupEditor.tsx",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 5341,
+      "sha256": "6c9db396268768ced818833d417385b195666da389b6367d27fd059b5105c570"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/form-fill-settings/types.ts",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 1523,
+      "sha256": "99c283df6c36c2c5a00c5e7876de0cfce95546138ff4f0b48b7d5a0be89d6c4b"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 184493,
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 56002,
+      "sha256": "5306c7b71f148390786af31d3c93674eb1c1598297ce929613046237479aa3bd"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 73495,
+      "sha256": "6996db14f5388c21a936be3ae04595d993e734c4f895a6a103e948032cbdbdf7"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProductModelingPage.tsx",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 41892,
+      "sha256": "571d4886dc289aec1d950c77e83193314add7d656322dfc89836bf450af8239b"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 69847,
+      "sha256": "12448b2b8ad2434941e6d7bd05c369b2ce270ebcfd21655a979a6f4482015287"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/product-modeling.ts",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 8253,
+      "sha256": "9532b2f7541a85b54a4d40ab7f99ae291b0b94d31d888c15467bcd7246d1f0b6"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/template-modeling.ts",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 13285,
+      "sha256": "3df16c1a4c8630b9858a30b3b94af1d625e137727a45e4a7173eac6bd64c35ad"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/workflow-work.ts",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 3428,
+      "sha256": "aa918bcec8deab75a5b04cce9f5963ce1efdd22774f4f6aa8d35d0f614d99802"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/FormFillSettingsController.java",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 1870,
+      "sha256": "16f5eaf9bbdec825d2c3a6a0c55e63150be4704413bf1f7947b43a855d90da57"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 80898,
+      "sha256": "ef5c060bcef440931b6c7500114f617940d8155412b32dcdd09474277753dff8"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 10000,
+      "sha256": "0410663aa7c3709cc9f7965d4f46d7635c45274b13a37572dd1d558940b91caf"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-explicit-fill-mode-browser.mjs",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 12262,
+      "sha256": "15f1dcddd0589eb1acc6a348ad2f1d39c897249249667e24733ff3a4775c2be0"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-explicit-fill-mode.mjs",
+      "baseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+      "bytes": 3912,
+      "sha256": "befc71ee814c4fff21c060378d067e013b01155c3323eeb9243ec66317b1c35a"
+    }
+  ]
+}

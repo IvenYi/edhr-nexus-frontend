@@ -1,0 +1,491 @@
+{
+  "results": [
+    {
+      "name": "work-DIRECT-1440",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions"
+        },
+        {
+          "method": "GET",
+          "path": "/master-data/template-modeling/form-templates"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/form-processes"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions/201/form-process-references"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions/201"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/form-fill-settings/processes"
+        },
+        {
+          "method": "GET",
+          "path": "/master-data/template-modeling/form-templates/501/versions/702"
+        },
+        {
+          "method": "PUT",
+          "path": "/workflow/work-templates/101/versions/201/graph"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions/201"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions/201/form-process-references"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions"
+        },
+        {
+          "method": "GET",
+          "path": "/master-data/template-modeling/form-templates"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/form-processes"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions/201/form-process-references"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions/201"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/form-fill-settings/processes"
+        },
+        {
+          "method": "GET",
+          "path": "/master-data/template-modeling/form-templates/501/versions/702"
+        }
+      ],
+      "writes": 1,
+      "graphWrites": [
+        {
+          "nodes": [
+            {
+              "id": "start",
+              "type": "workNode",
+              "position": {
+                "x": 200,
+                "y": 100
+              },
+              "data": {
+                "kind": "START",
+                "label": "开始",
+                "config": {}
+              },
+              "selectable": true,
+              "measured": {
+                "width": 96,
+                "height": 52
+              }
+            },
+            {
+              "id": "form",
+              "type": "workNode",
+              "position": {
+                "x": 200,
+                "y": 270
+              },
+              "data": {
+                "kind": "FORM",
+                "label": "检验",
+                "config": {
+                  "fieldPermissions": {
+                    "dormant:removed": {
+                      "editableFieldIds": [
+                        "removed"
+                      ]
+                    }
+                  },
+                  "eventBindings": {
+                    "dormant:removed": {
+                      "fieldId": "removed"
+                    }
+                  },
+                  "fillMode": "DIRECT",
+                  "directFillConfig": {
+                    "permissionGroupRules": [
+                      {
+                        "id": "current",
+                        "subjects": [
+                          {
+                            "type": "USER",
+                            "id": "1",
+                            "nameSnapshot": "操作员"
+                          }
+                        ],
+                        "defaultPermission": "READ_ONLY"
+                      }
+                    ],
+                    "buttons": [
+                      {
+                        "id": "submit",
+                        "action": "SUBMIT",
+                        "label": "提交"
+                      }
+                    ],
+                    "buttonEvents": [
+                      {
+                        "id": "sign",
+                        "action": "SUBMIT",
+                        "event": "BEFORE",
+                        "builtin": "FILL_SIGN_FIELD",
+                        "signatureMethod": "ACCOUNT_PASSWORD"
+                      }
+                    ],
+                    "fieldPermissions": {
+                      "start:current": {
+                        "defaultPermission": "READ_ONLY",
+                        "editableFieldIds": [
+                          "keep"
+                        ],
+                        "readOnlyFieldIds": [
+                          "read"
+                        ]
+                      }
+                    },
+                    "eventBindings": {
+                      "entry:sign": {
+                        "fieldId": "signature"
+                      }
+                    }
+                  },
+                  "formTemplateVersionId": "702",
+                  "formTemplateName": "检验表"
+                }
+              },
+              "selectable": true,
+              "measured": {
+                "width": 148,
+                "height": 60
+              }
+            },
+            {
+              "id": "end",
+              "type": "workNode",
+              "position": {
+                "x": 200,
+                "y": 440
+              },
+              "data": {
+                "kind": "END",
+                "label": "结束",
+                "config": {}
+              },
+              "selectable": true,
+              "measured": {
+                "width": 96,
+                "height": 52
+              }
+            }
+          ],
+          "edges": [
+            {
+              "type": "smoothstep",
+              "markerEnd": {
+                "type": "arrowclosed",
+                "color": "#8a97a6"
+              },
+              "id": "a",
+              "source": "start",
+              "target": "form"
+            },
+            {
+              "type": "smoothstep",
+              "markerEnd": {
+                "type": "arrowclosed",
+                "color": "#8a97a6"
+              },
+              "id": "b",
+              "source": "form",
+              "target": "end"
+            }
+          ]
+        }
+      ],
+      "errors": [],
+      "consoleErrors": [],
+      "overflow": false
+    },
+    {
+      "name": "work-PROCESS-1440",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions"
+        },
+        {
+          "method": "GET",
+          "path": "/master-data/template-modeling/form-templates"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/form-processes"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions/201/form-process-references"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions/201"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/form-fill-settings/processes"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/form-fill-settings/processes/901"
+        },
+        {
+          "method": "GET",
+          "path": "/master-data/template-modeling/form-templates/501/versions/702"
+        },
+        {
+          "method": "PUT",
+          "path": "/workflow/work-templates/101/versions/201/graph"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions/201"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions/201/form-process-references"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions"
+        },
+        {
+          "method": "GET",
+          "path": "/master-data/template-modeling/form-templates"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/form-processes"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions/201/form-process-references"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/work-templates/101/versions/201"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/form-fill-settings/processes"
+        },
+        {
+          "method": "GET",
+          "path": "/workflow/form-fill-settings/processes/901"
+        },
+        {
+          "method": "GET",
+          "path": "/master-data/template-modeling/form-templates/501/versions/702"
+        }
+      ],
+      "writes": 1,
+      "graphWrites": [
+        {
+          "nodes": [
+            {
+              "id": "start",
+              "type": "workNode",
+              "position": {
+                "x": 200,
+                "y": 100
+              },
+              "data": {
+                "kind": "START",
+                "label": "开始",
+                "config": {}
+              },
+              "selectable": true,
+              "measured": {
+                "width": 96,
+                "height": 52
+              }
+            },
+            {
+              "id": "form",
+              "type": "workNode",
+              "position": {
+                "x": 200,
+                "y": 270
+              },
+              "data": {
+                "kind": "FORM",
+                "label": "检验",
+                "config": {
+                  "permissionGroupRules": [
+                    {
+                      "id": "current",
+                      "subjects": [
+                        {
+                          "type": "USER",
+                          "id": "1",
+                          "nameSnapshot": "操作员"
+                        }
+                      ],
+                      "defaultPermission": "READ_ONLY"
+                    }
+                  ],
+                  "buttons": [
+                    {
+                      "id": "submit",
+                      "action": "SUBMIT",
+                      "label": "提交"
+                    }
+                  ],
+                  "buttonEvents": [
+                    {
+                      "id": "sign",
+                      "action": "SUBMIT",
+                      "event": "BEFORE",
+                      "builtin": "FILL_SIGN_FIELD",
+                      "signatureMethod": "ACCOUNT_PASSWORD"
+                    }
+                  ],
+                  "fieldPermissions": {
+                    "start:current": {
+                      "defaultPermission": "READ_ONLY",
+                      "editableFieldIds": [
+                        "keep"
+                      ],
+                      "readOnlyFieldIds": [
+                        "read"
+                      ]
+                    }
+                  },
+                  "eventBindings": {
+                    "entry:sign": {
+                      "fieldId": "signature"
+                    }
+                  },
+                  "fillMode": "PROCESS",
+                  "formProcessVersionId": "901",
+                  "directFillConfig": {
+                    "fieldPermissions": {
+                      "dormant:removed": {
+                        "editableFieldIds": [
+                          "removed"
+                        ]
+                      }
+                    },
+                    "eventBindings": {
+                      "dormant:removed": {
+                        "fieldId": "removed"
+                      }
+                    }
+                  },
+                  "formTemplateVersionId": "702",
+                  "formTemplateName": "检验表"
+                }
+              },
+              "selectable": true,
+              "measured": {
+                "width": 148,
+                "height": 60
+              }
+            },
+            {
+              "id": "end",
+              "type": "workNode",
+              "position": {
+                "x": 200,
+                "y": 440
+              },
+              "data": {
+                "kind": "END",
+                "label": "结束",
+                "config": {}
+              },
+              "selectable": true,
+              "measured": {
+                "width": 96,
+                "height": 52
+              }
+            }
+          ],
+          "edges": [
+            {
+              "type": "smoothstep",
+              "markerEnd": {
+                "type": "arrowclosed",
+                "color": "#8a97a6"
+              },
+              "id": "a",
+              "source": "start",
+              "target": "form"
+            },
+            {
+              "type": "smoothstep",
+              "markerEnd": {
+                "type": "arrowclosed",
+                "color": "#8a97a6"
+              },
+              "id": "b",
+              "source": "form",
+              "target": "end"
+            }
+          ]
+        }
+      ],
+      "errors": [],
+      "consoleErrors": [],
+      "overflow": false
+    }
+  ]
+}

@@ -39,7 +39,7 @@ decisions:
         status: specified
         visibility: internal
     supersedes: [DEC-0022]
-    evidenceIds: [evidence.production-form-process-user-confirmed-v2, evidence.production-form-process-permission-default-exception-design-v2]
+    evidenceIds: [evidence.production-form-process-user-confirmed-v2, evidence.production-form-process-permission-default-exception-design-v2, evidence.form-fill-binding-reference-audit-20261018]
     acceptanceScenarios:
       - id: scenario.production-form-process-reusable-template
         given: 一个已发布表单流程版本和两个不同表单模板版本
@@ -74,9 +74,9 @@ decisions:
       - id: scenario.production-form-process-binding-switch-cleans-exceptions
         given: 作业流程表单填写节点已保存字段例外
         when: 用户切换表单模板版本或表单流程版本
-        then: 不存在于新表单或不再对应新主体的 fieldId 例外被清理，剩余有效例外继续保留
-        evidenceIds: [evidence.production-form-process-permission-default-exception-design-v2]
-        evidenceRequirements: [绑定切换字段例外清理测试]
+        then: 不存在于新表单或不再对应当前权限配置组的 fieldId 例外被清理或阻止保存，剩余有效例外继续保留
+        evidenceIds: [evidence.production-form-process-permission-default-exception-design-v2, evidence.production-form-process-user-confirmed-v4, evidence.form-fill-binding-reference-audit-20261018]
+        evidenceRequirements: [绑定切换失效引用清理或保存阻断测试, 有效例外与不完整草稿保留测试]
     implementationDiscrepancies:
     - id: discrepancy.production-form-process-runtime-unimplemented-v2
       status: accepted
@@ -90,14 +90,15 @@ decisions:
       - evidence.ai-transaction-runtime-architecture
       - evidence.workflow-task-multi-candidate-runtime-implementation
     - id: discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions
-      status: open
+      status: resolved
       severity: medium
       visibility: internal
-      path: gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx
-      lineHint: 129
-      summary: 'provenance: original-evidence；DEC-0023-08的绑定切换有效性按DEC-0035现行权限组键及真实fieldId解释。当前切换PROCESS版本或作业节点表单只合并引用，直接保存作业草稿仍可保留原失效权限组/字段例外；已有prune未覆盖每次切换后直接草稿保存。显式设置发布时由FormFillSettingsService.validate拒绝无效组/字段，产品制程保存也先验证，这些入口不能证明作业草稿remove-before-save已实现。本次仅据静态调用链登记，未放宽规范、修改代码或执行运行验收。'
+      path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java
+      lineHint: 110
+      summary: 'provenance: original-evidence；AUD-H004于2026-10-18按DEC-0023-08既有清理或阻止保存及DEC-0035现行组键整改。有限guard在图及审计写入前核对已提供的活动组/字段/事件引用，保留不完整草稿、合法/default/休眠配置和原完整权限签署；共享UI仅在当前真实元数据成功后按明确保存命令双prune。首轮独立质量正式failed，QF-W3B-001发现已存在流程的合法JSON非数组提前return而写入；该原件及原本体结果保留，不由旧299主侧通过抵销。当前同切片将非数组改为格式拒绝并新增4结构零写测试；ef07原码反例1失败0错误，修复后主侧300实跑通过、3既有条件跳过、0失败错误。resolved仅表达该确定性实现修复，交付仍待全新独立质量passed；未变前端结果属ef07，不冒称覆盖当前工作树，不新增政策或提高知识成熟度。'
       evidenceIds:
       - evidence.production-form-process-permission-default-exception-design-v2
       - evidence.production-form-process-user-confirmed-v4
       - evidence.production-work-flow-editor-ui
       - evidence.production-work-template-configuration-controller
+      - evidence.form-fill-binding-reference-audit-20261018

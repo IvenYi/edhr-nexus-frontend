@@ -1,0 +1,156 @@
+{
+  "createdAt": "2026-10-18T15:58:06.846326+00:00",
+  "contractBaseline": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "role": "read-only source mapping helper, not QA or ontology",
+  "report": {
+    "path": "/tmp/edhr-w3b-legacy-config-paths.md",
+    "bytes": 14657,
+    "sha256": "631dba3790a3e6d6584439d09b28fde2f7c0cb6b3063c2efe1bdf4366f428935"
+  },
+  "sourceFiles": [
+    {
+      "path": "AGENTS.md",
+      "baselineBytes": 25065,
+      "baselineSha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "baselineGitBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "codeplzreadme.md",
+      "baselineBytes": 3035,
+      "baselineSha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "baselineGitBlob": "2e7e18097620e602c4408b83f71404fae346f8be",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "baselineBytes": 57776,
+      "baselineSha256": "6172253f57c9b5843e60f1a458a927b91d1a224cec1685e59220eeb43b8277c4",
+      "baselineGitBlob": "162093a2354839c8b9cff3c74c67695a33ca11d3",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "baselineBytes": 88375,
+      "baselineSha256": "35fa18a16a6894cdc2b15b26cb899cb1cd1dd48153b092d9dd03489e51980a70",
+      "baselineGitBlob": "60a1c50cef42a9516fe5e8ecda89e64d1d1ae4cf",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "baselineBytes": 23878,
+      "baselineSha256": "240025fe24927b141cefef45e641b1f88673bb8352ce59221cf9cbc8bc0b12c4",
+      "baselineGitBlob": "8b77bd25598fc0aa7e03da2d10f23215b6252e2e",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml",
+      "baselineBytes": 8575,
+      "baselineSha256": "dc5311c43dd756f66c9d18919bde3288ab35225dbbdf7fe2a7bce029e62feca6",
+      "baselineGitBlob": "dc63dc570bfe71bab9e05a3083d88778dea67244",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml",
+      "baselineBytes": 3837,
+      "baselineSha256": "77b64943e93a524747c947c36f4034034a047d6b37e8fb884203a45c49b23a25",
+      "baselineGitBlob": "d8dd2e98192bd8d74bdedd0972c3edfd6eb14161",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml",
+      "baselineBytes": 8930,
+      "baselineSha256": "1eec6abe20670e8f363387d18ff442993ca55be9babf39715778045a70a0292f",
+      "baselineGitBlob": "171a99410dce2e004824c2fd58b3b95ce50b2aac",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "docs/knowledge/evidence/transaction-runtime.yaml",
+      "baselineBytes": 13760,
+      "baselineSha256": "871509d3a4f8e4a1e6a788cc6f46871a0ea0d4df76a2450f4b17aa3c835da3db",
+      "baselineGitBlob": "fdef65586f31d7092d7668733fb3aa0caf2f6123",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "docs/knowledge/rules/transaction-runtime.yaml",
+      "baselineBytes": 81396,
+      "baselineSha256": "da7932bcdf91ef8c1a6a23c090f660a4d8e1e8f3ad33dcea006a4cccc79a2a4c",
+      "baselineGitBlob": "c74f38d123ce9f489435b1a2eceb80249d96a902",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "baselineBytes": 184493,
+      "baselineSha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "baselineGitBlob": "c5eac6674496bcb48b854440edd95eb31dc47918",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/workflow-work.ts",
+      "baselineBytes": 3428,
+      "baselineSha256": "aa918bcec8deab75a5b04cce9f5963ce1efdd22774f4f6aa8d35d0f614d99802",
+      "baselineGitBlob": "1570d595c32c5adb81f00ccbced44f699287c11b",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "baselineBytes": 80898,
+      "baselineSha256": "ef5c060bcef440931b6c7500114f617940d8155412b32dcdd09474277753dff8",
+      "baselineGitBlob": "c5ad99a678a7bc5f5ac7a613926bcdcf57bb5b43",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowDefinitionVersion.java",
+      "baselineBytes": 1422,
+      "baselineSha256": "4d12dfbf78d760f839d2f8961fdd072742f69569a2b8162bf37c816aacadb412",
+      "baselineGitBlob": "0e69ba7b35e20892312dc9d987d7ff34c2675911",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormProcessReferenceService.java",
+      "baselineBytes": 4143,
+      "baselineSha256": "cf0a9945859d618cf113f4fe14fe099a334d4314acc63bf42629c2f66dec8615",
+      "baselineGitBlob": "2a40b03e37c0eb23a5c69b357ca48c94923963cc",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "baselineBytes": 16823,
+      "baselineSha256": "e8057ad990bda9be33ae2b91929683629a81cc602943446e7f97481d5b88232a",
+      "baselineGitBlob": "3c9590c696c4762c94bcc60a6f7ff81e223d829c",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "baselineBytes": 64019,
+      "baselineSha256": "9e7f4b66d43780b5294acac5fdd7f1893ec71073d71104ac634a6e4a8ca50e4a",
+      "baselineGitBlob": "d5764d12acf0d78fb0925a079a9e6a81548ded88",
+      "workingBytesMatchBaseline": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java",
+      "baselineBytes": 97671,
+      "baselineSha256": "8268de4f9d4f8e51cbd4ae8e599428dacf84c6ae5d7d14ed57ea66c46da31a84",
+      "baselineGitBlob": "d04231736212afefeadc6ea435d504a8819062a4",
+      "workingBytesMatchBaseline": true
+    }
+  ],
+  "executed": [
+    "read-only git/source inspection",
+    "artifact hash generation"
+  ],
+  "notExecuted": [
+    "application tests",
+    "build",
+    "browser",
+    "database",
+    "HTTP API",
+    "GitHub Actions"
+  ],
+  "repoMutationsByThisInstance": false,
+  "testPassFailClaim": null,
+  "qualityResult": null,
+  "ontologyResult": null
+}

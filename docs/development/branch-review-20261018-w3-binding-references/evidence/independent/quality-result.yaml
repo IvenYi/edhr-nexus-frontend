@@ -1,0 +1,195 @@
+qualityResult:
+  result: passed
+  baseCommit: ca98ab2897990eba30bf1433134aa8560578f562
+  headCommit: a9ecd501a9abf354df95df2a1a01e53474a41a2d
+  contractBaseline:
+    sourceCommit: a9ecd501a9abf354df95df2a1a01e53474a41a2d
+    targetBranch: edhr-dev
+    targetCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    contractReadCommit: a9ecd501a9abf354df95df2a1a01e53474a41a2d
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.final-baseline-contract
+      required: true
+      category: documentation
+      description: 实际核对来源、最新目标、契约及全新实例独立性
+      method: command
+      command: git fetch origin refs/heads/edhr-dev:refs/remotes/origin/edhr-dev; git rev-parse HEAD HEAD^{tree} origin/edhr-dev; read AGENTS/quality-verifier/agent-handoff-contract
+      outcome: passed
+      evidence:
+        - target/base ca98ab2897990eba30bf1433134aa8560578f562；feature/tested candidate a9ecd501a9abf354df95df2a1a01e53474a41a2d；tree fa331993fda482384146074b2b815a4f3ed7f5bb；开始及结束clean，契约与目标字节相同。
+        - 本实例及只读扫描辅助未参与任何实现、测试夹具或知识修复；不复用首轮failed为当前通过。
+    - id: check.final-requirements-source
+      required: true
+      category: requirements
+      description: 核对AUD-H004实际源码与既有规则，保护不完整草稿、严格校验、休眠与冻结边界
+      method: inspection
+      command: inspect all three production diffs and affected parent/service paths; DEC0023/0035/0009/0067 and original permission/buttons evidence
+      outcome: passed
+      evidence:
+        - edhr-w3b-final-independent-review.md；已有规范允许清理或阻止保存，无新政策、历史恢复、数据库迁移、大模块重构或运行引擎生产修改。
+        - 实际检查validate/validateDraftBindingReferences/bindingReferences/validateConfiguredBindingReferences、saveGraph写入顺序、共享onSave/queries与Work父适配及工序serialize调用。
+    - id: check.final-backend-regression
+      required: true
+      category: integration
+      description: 独立执行当前候选10个受影响Java suite与真实打印构建前置
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -o -C -Dtest=FormFillSettingsServiceTest,WorkTemplateControllerTest,FormFillSettingsControllerTest,ProductProcessOwnerServiceTest,ProductProcessControllerTest,FormFillSnapshotTest,ProductionExecutionIntegrationTest,ProductionExecutionEngineTest,ProductionExecutionFormValuesTest,BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - Maven exit0；303总项、300实跑通过、3既有条件跳过、0失败错误；无exec.skip，build:dhr-print实际执行。
+        - edhr-w3b-final-independent-java-summary.json；H2 PostgreSQL兼容，非原生PG；跳过项未计通过。
+    - id: check.final-qf-metadata-zero-write
+      required: true
+      category: audit
+      description: 独立复现首轮QF并验证最终非法元数据拒绝及写入前保护
+      method: automated-test
+      command: compile and run W3BindingMetadataProbe against candidate classes; independently compile ef07 service into /tmp and rerun identical assertions
+      outcome: passed
+      evidence:
+        - 当前a9ec真实类探针6输入全部拒绝、图不变、版本/投影/审计各0写；包括三种非数组、语法错误和数组反向对照。
+        - 独立ef07原service对照exit1，三种合法JSON非数组各图变且三种写各1次；没有更改断言，输出head/path标签精确对应受测类。
+        - 当前WorkTemplateControllerTest新增4结构循环回归通过；多个循环输入按1项JUnit testcase统计。
+        - edhr-w3b-final-independent-malformed-process-metadata.json；edhr-w3b-final-independent-before-repair-metadata.json。
+    - id: check.final-ontology
+      required: true
+      category: ontology
+      description: 核对必要知识同步与原决策边界、ID和版本成熟度
+      method: automated-test
+      command: BusinessKnowledgeModelTest within the 10-suite execution; independent YAML/ID parse and affected-definition inspection
+      outcome: passed
+      evidence:
+        - 89知识测试全部通过，已包含在303总项；206 YAML实际解析、2525资产ID、重复0，schema字段描述不进入资产分母。
+        - edhr-w3b-final-independent-knowledge-summary.json；5必要知识文件符合既有决定，0.3.25/schema1.2.0及specified/internal/P0状态保持；原failed原件和本体增量的时点没有覆盖。
+    - id: check.final-node-regression
+      required: true
+      category: regression
+      description: 原模式、草稿版本选择及权限摘要纯函数回归
+      method: automated-test
+      command: node --test scripts/test-explicit-fill-mode.mjs scripts/test-work-editor-default-version.mjs scripts/test-permission-summary.mjs
+      outcome: passed
+      evidence: [exit0；13通过、0失败、0跳过；本轮独立实际执行。]
+    - id: check.final-binding-browser
+      required: true
+      category: visual
+      description: 真实共享UI确认及延迟失败取消边界、两模式两视口
+      method: browser
+      command: NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium W3B_BROWSER_ARTIFACT_DIR=/tmp/edhr-w3b-final-independent-browser node scripts/test-binding-reference-confirmation-browser.mjs
+      outcome: passed
+      evidence:
+        - 6场通过，11截图；正常console0，受控503场景精确1网络console，全部page errors0；无页面横向溢出。
+        - 两模式合法例外/default/签名及休眠配置保留；打开取消无onChange；延迟和失败不能提交纠正。实际查看390/1440打开弹窗截图。
+        - 同脚本加载ca98原共享组件首DIRECT场景exit1且残留start:removed，page/console0；其余5未运行，不算失败。
+    - id: check.final-work-parent-adapter
+      required: true
+      category: e2e
+      description: 真实Work父适配确认到图请求并重载，补足共享组件不能替代父页面的证据
+      method: browser
+      command: NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium W3_BROWSER_ARTIFACT_DIR=/tmp/edhr-w3b-final-independent-work-adapter-browser node /tmp/edhr-w3b-independent-work-adapter-probe.mjs
+      outcome: passed
+      evidence:
+        - DIRECT/PROCESS两场均通过；真实WorkTemplateEditor确认→父状态→graph PUT→reload，精确assert活动配置清理及休眠保留、写1次、打开取消dirty不变、重开不重复写。
+        - 4截图、page/console0、无溢出；受控API非认证后端/DB E2E，不把旧模式邻接案例当作本链证据。
+    - id: check.final-neighbor-browser
+      required: true
+      category: regression
+      description: 既有显式模式inline/dialog/Work相邻浏览器回归
+      method: browser
+      command: NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium W3_BROWSER_ARTIFACT_DIR=/tmp/edhr-w3b-final-independent-neighbor-browser node scripts/test-explicit-fill-mode-browser.mjs
+      outcome: passed
+      evidence: [5场通过、10截图、page/console0；原脚本及断言未修改。]
+    - id: check.final-build
+      required: true
+      category: regression
+      description: 当前候选TypeScript与Vite构建
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence: [exit0；本轮实际执行。]
+    - id: check.final-ui-no-new-findings
+      required: true
+      category: visual
+      description: 同一官方auditor对base/candidate仓库根完整finding集合严格比较
+      method: command
+      command: python3 /tmp/edhr-w3b-independent-audit-project.py <exact-base-archive-or-candidate-repository-root> --mode strict --no-write
+      outcome: passed
+      evidence:
+        - 官方原件37716bytes SHA25667fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68；仓库根base/candidate同范围、完整finding多重集合相同，新增0/移除0。
+        - 本轮ui-comparison.json保留完整两个finding集合；不是只比数量，不混frontend子目录分母。
+    - id: check.final-global-ui-compliance
+      required: false
+      category: visual
+      description: 公开保留既存全站strict静态债务，不冒称全站符合
+      method: command
+      command: same official repository-root strict audit on ca98 and a9ec
+      outcome: failed
+      evidence: [均exit2、各84项；71violation、13unresolved；无本批新增，未修改扫描器/标准或全站代码使其转绿。]
+    - id: check.final-lint-existing-limit
+      required: false
+      category: regression
+      description: 实际执行并披露既有ESLint配置缺失
+      method: command
+      command: npm run lint
+      outcome: blocked
+      evidence: [实际exit2；ESLint8.57.1找不到配置，非通过；按原授权有限验收边界保留，不改变业务required标准。]
+    - id: check.final-integrity
+      required: true
+      category: security
+      description: 前后tracked/工具/历史证据完整性与安全输出
+      method: command
+      command: hash all tracked files and protected tools before/after; compare historical CSVs and receipt originals; final git status and head/target check
+      outcome: passed
+      evidence:
+        - 当前2224 tracked前后bytes/SHA完全一致，HEAD/tree/target与clean不变；19原CSV、PR16目录53文件、首轮48原件及PR16独立21原件均匹配。
+        - wrapper/settings仅哈希，不归档内容；raw Maven/XML日志不进白名单，只suite/case/count/hash安全摘要。
+        - 所有本验收子任务、子进程已结束；无修复、提交、推送、PR、merge/deploy、Actions或worktree操作。
+  findings:
+    - id: QF-W3B-001
+      severity: medium
+      scope: AUD-H004 / WorkTemplateController.saveGraph / FormFillSettingsService.validateDraftBindingReferences
+      summary: 首轮已存在PUBLISHED FORM_PROCESS的非数组nodesJson被提前return放行；最终补修经全新实例复验关闭
+      reproductionSteps:
+        - 在隔离/tmp编译ef07原service，与实际controller及repository mocks运行原独立探针。
+        - 表单/流程记录均存在且流程PUBLISHED FORM_PROCESS，活动配置含旧start:removed引用，依次给流程nodesJson对象、JSON null及字符串。
+        - 对最终a9ec编译类重复相同断言，并运行新增4结构controller回归。
+      expectedResult: 已存在记录的损坏结构必须拒绝，图不变，版本/引用投影/审计均无写入；不把缺ID/记录不存在等不完整草稿升级为发布校验。
+      actualResult: ef07三种结构各图变且三写各1次；a9ec六输入均拒绝、图不变及三写各0次，303项适用回归中300通过/3既有跳过。
+      evidence:
+        - evidence/independent-round1/edhr-w3b-independent-quality-result.yaml（原件仍failed，不回写）
+        - edhr-w3b-final-independent-before-repair-metadata.json
+        - edhr-w3b-final-independent-malformed-process-metadata.json
+        - edhr-w3b-final-independent-java-summary.json
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: a9ecd501a9abf354df95df2a1a01e53474a41a2d
+        - type: command
+          reference: 本轮当前真实编译类探针exit0；ef07原service对照exit1；Maven10suite exit0，安全结果见同前缀metadata和validation-summary。
+  residualRisks:
+    - id: risk.final-database-layer
+      description: 后端集成为H2 PostgreSQL兼容模式，类探针repository mocks计数；本轮未跑原生PG并发矩阵。
+      impact: 不等于原生PostgreSQL生产发布验收或所有事务故障组合证明。
+      mitigation: 原事务/冻结/签署集成回归已运行；本批没有schema或事务边界移动，未来相关变更再按风险复验。
+    - id: risk.final-controlled-api-browser
+      description: 真实共享组件及Work父页使用受控API；没有完整认证浏览器到真实DB写入。
+      impact: 不覆盖全部产品/产品簇整页切换、管理HTTP复制及认证部署组合。
+      mitigation: 当前共享行为、真实Work父适配精确请求与真实后端类/集成分层验证，未把这些层次冒称全系统E2E。
+    - id: risk.final-existing-skips
+      description: formRecordsBrowserFixture、firstStartFreezesOneCommittedConfigurationDuringProcessRebinding、browserEvidenceFixture三既有条件跳过。
+      impact: 303不是303实跑通过；相关额外夹具/原生并发未在本轮执行。
+      mitigation: 精确报告300通过/3跳过，保留原断言和条件，不降低测试标准。
+    - id: risk.final-existing-static-debt
+      description: 全站strict84项及ESLint缺配置未解决；base/candidate完整finding相同。
+      impact: 不可宣称全站设计规范或lint通过。
+      mitigation: 公开保留原债务与真实退出码，后续相应工程审查处理；本批无新增finding且不扩改无关代码。
+    - id: risk.final-audit-coverage-and-pre-pr-step
+      description: 本结果只覆盖AUD-H004；全分支/W2/W3尚未完成，主会须在本FINAL后创建PR前实际复核漂移并先向用户汇报。
+      impact: 本切片通过不能替代整体审查结论、完整覆盖率或用户要求的交付步骤。
+      mitigation: 初始2118清单保持pending/inventory-only；保留完整W2/W3及H009/H010/AUD-H012等后续；A12/两旧DHRhigh仍按用户决定暂缓；主会继续按W0→W7台账推进。
+  blockingConditions: []

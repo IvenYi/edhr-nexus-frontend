@@ -1,0 +1,56 @@
+{
+  "baselineCommit": "ef07ee7c34520c509d91954bd6fff4ca436ecd9d",
+  "targetCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "incrementalScope": "QF-W3B-001 non-array published-process metadata rejection; no new policy/ID/maturity",
+  "semanticScope": [
+    "DEC-0023-03",
+    "DEC-0023-04",
+    "DEC-0023-08",
+    "DEC-0035-01",
+    "DEC-0035-02",
+    "DEC-0035-03",
+    "DEC-0035-04",
+    "DEC-0035-05",
+    "DEC-0009-01",
+    "DEC-0009-05",
+    "DEC-0067-04",
+    "DEC-0067-05",
+    "discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions"
+  ],
+  "changedArtifacts": [
+    {
+      "path": "docs/knowledge/evidence/binding-reference-audit-2026-10-18.md",
+      "bytes": 14379,
+      "sha256": "7e50c7c9d87cd74b9f84878b28819bd982b460ebb38325f47a7c2ab2e38c73bc"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "bytes": 89359,
+      "sha256": "9a2f850935ffd95fae6fb3da945bea2338bd1f217f78e40921cf9f825fa43d89"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml",
+      "bytes": 8855,
+      "sha256": "e96d2554e9928f34de37147e7512a8ac57e123d19624c9bf85dbcc9ce23739f9"
+    }
+  ],
+  "retained": [
+    "original user confirmation",
+    "historical audit evidence",
+    "0.3.25/schema1.2.0",
+    "specified/internal",
+    "P0/in-progress"
+  ],
+  "deferred": [
+    "AUD-H009",
+    "AUD-H010",
+    "A12",
+    "two user-deferred old DHR high findings"
+  ],
+  "noClaim": [
+    "full W3/W2 completion",
+    "full branch/source/knowledge audit complete",
+    "native PostgreSQL execution",
+    "independent quality performed by ontology"
+  ]
+}

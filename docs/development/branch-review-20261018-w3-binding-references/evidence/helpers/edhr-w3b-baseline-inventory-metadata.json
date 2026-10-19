@@ -1,0 +1,1130 @@
+{
+  "artifactType": "read-only-technical-inventory-not-qualityResult",
+  "generatedAt": "2026-10-18T15:56:18.796355+00:00",
+  "contractBaseline": {
+    "sourceCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+    "contractReadCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "workingBranchObserved": "audit/edhr-dev-w3-binding-config-boundaries-20261018",
+  "headObserved": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "targetTrackingObserved": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "baselineTree": "37f7ce2645911f08946a921c81dc04db0c774275",
+  "pr16": {
+    "approvedDelivery": "c54abcf259930982e360dd3a6310d4569a997fde",
+    "mergeCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+    "mergedAtUtc": "2026-10-18T13:16:28Z",
+    "deliveryTree": "37f7ce2645911f08946a921c81dc04db0c774275",
+    "treeIdentical": true
+  },
+  "previousAuditBase": "4b25dc7f29c27cfb39c0f570b547869aa0c2f289",
+  "governanceAndDesignDelta": [],
+  "knowledgeAndArchitectureDelta": [
+    {
+      "status": "M",
+      "path": "docs/architecture/business-knowledge-model.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/README.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml"
+    },
+    {
+      "status": "A",
+      "path": "docs/knowledge/evidence/explicit-fill-mode-audit-2026-10-18.md"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/evidence/form-fill-settings.yaml"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/facts/form-fill-settings.yaml"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/rules/form-fill-settings.yaml"
+    }
+  ],
+  "contractBlobs": [
+    {
+      "path": "AGENTS.md",
+      "sourceBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "previousBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "changed": false
+    },
+    {
+      "path": "codeplzreadme.md",
+      "sourceBlob": "2e7e18097620e602c4408b83f71404fae346f8be",
+      "previousBlob": "2e7e18097620e602c4408b83f71404fae346f8be",
+      "changed": false
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sourceBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "previousBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "changed": false
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "sourceBlob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "previousBlob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "changed": false
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "sourceBlob": "581e647c37daebeb9dd3d6397ae53e30e7822fb3",
+      "previousBlob": "581e647c37daebeb9dd3d6397ae53e30e7822fb3",
+      "changed": false
+    },
+    {
+      "path": "DESIGN.md",
+      "sourceBlob": "29d9e21e96170cef0d371d4867e7b8b5d6f56568",
+      "previousBlob": "29d9e21e96170cef0d371d4867e7b8b5d6f56568",
+      "changed": false
+    }
+  ],
+  "deltaInterpretation": "Seven knowledge/architecture assets are the merged AUD-H003 explicit-fill-mode implementation/evidence update using existing DEC-0067 and DEC-0009 boundaries. The existing discrepancy is resolved only for AUD-H003; no new policy/version/schema/maturity or full-W3 completion is implied. This helper compared actual content incrementally and did not conduct a semantic audit.",
+  "remoteFetchNote": "remote.origin.fetch remains main-only. Root refreshed origin/edhr-dev via explicit refspec before this helper; this helper did not fetch or modify refs. A plain fetch of edhr-dev does not automatically refresh its tracking ref under that configuration.",
+  "trackedPathCount": 2118,
+  "nonBlobEntries": [],
+  "reviewStatusCounts": {
+    "pending": 2118
+  },
+  "reviewDepthCounts": {
+    "inventory-only": 2118
+  },
+  "encoding": "UTF-8",
+  "bom": false,
+  "lineEnding": "CRLF",
+  "csv": {
+    "path": "/tmp/edhr-w3b-baseline-inventory.csv",
+    "exists": true,
+    "bytes": 396721,
+    "sha256": "2b8a2f53947fe25ea7dd332a998b12c3726cf70a851ea8db1ef7ac5074dea95d"
+  },
+  "csvValidation": {
+    "parsedRows": 2118,
+    "distinctPaths": 2118,
+    "crlfLines": 2119,
+    "matchesExactGitPathAndBlobOrder": true,
+    "allPending": true,
+    "allInventoryOnly": true
+  },
+  "archivedCoverageInventoryFiles": [
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261015-w1-followup/coverage.csv",
+      "exists": true,
+      "bytes": 402180,
+      "sha256": "fa07044c64ab9d3b09283a8a612bcdafcf2bfdb7620038a714917f6d74413b78",
+      "repositoryPath": "docs/development/branch-review-20261015-w1-followup/coverage.csv",
+      "baselineBlob": "9bb73a01dca3c7bdacba39bbb8769fc24ffeba30",
+      "matchesCurrentCommitBytes": true,
+      "notModifiedByThisHelper": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261015/coverage.csv",
+      "exists": true,
+      "bytes": 387980,
+      "sha256": "8ec8a72328e307fdfc678c284d19fe66056a524213c28288e6dcb199a23b8227",
+      "repositoryPath": "docs/development/branch-review-20261015/coverage.csv",
+      "baselineBlob": "68ceb30cdae46fadac9d1035bb70101394f246dc",
+      "matchesCurrentCommitBytes": true,
+      "notModifiedByThisHelper": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261015/ontology/ontology-coverage.csv",
+      "exists": true,
+      "bytes": 737142,
+      "sha256": "04ac2eaba5962d16e9d5e88e644616acef2d08a17a46b1d430c7d8a3cc4e799c",
+      "repositoryPath": "docs/development/branch-review-20261015/ontology/ontology-coverage.csv",
+      "baselineBlob": "06261f4a0eb9d9a6479e7e22d6bbe509dd153940",
+      "matchesCurrentCommitBytes": true,
+      "notModifiedByThisHelper": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261016-f004/coverage.csv",
+      "exists": true,
+      "bytes": 287895,
+      "sha256": "d44fd50645e143af1c336a31693744eec5a0ba9ff15e64b3a0051a6f1b0fb503",
+      "repositoryPath": "docs/development/branch-review-20261016-f004/coverage.csv",
+      "baselineBlob": "967fabb3ee14e498ff30ca9671ed80ad3f1094d0",
+      "matchesCurrentCommitBytes": true,
+      "notModifiedByThisHelper": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261016-w1-review-export/coverage.csv",
+      "exists": true,
+      "bytes": 420497,
+      "sha256": "bf31c5b82d9f14ee09782d3001f4210d2470cab5cb9986fc8c47cbc12b3cfc36",
+      "repositoryPath": "docs/development/branch-review-20261016-w1-review-export/coverage.csv",
+      "baselineBlob": "1a0bc2c18f863f8a159b7c11f4c703324d5088e9",
+      "matchesCurrentCommitBytes": true,
+      "notModifiedByThisHelper": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/coverage-first-observed.csv",
+      "exists": true,
+      "bytes": 421127,
+      "sha256": "3f2b6d1e759982a695342e671d8efadaf20a51680331f34d71bd42d6eb5c33f2",
+      "repositoryPath": "docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/coverage-first-observed.csv",
+      "baselineBlob": "bfe648f65267d9dc93b5c9d854061fb9aeef8c6e",
+      "matchesCurrentCommitBytes": true,
+      "notModifiedByThisHelper": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261016-w2-designer-identity/coverage.csv",
+      "exists": true,
+      "bytes": 339677,
+      "sha256": "215bf78a4dc67558d7ed7f06ee8d1608bb8e39beb7f33a01f3b8fdfe566fa035",
+      "repositoryPath": "docs/development/branch-review-20261016-w2-designer-identity/coverage.csv",
+      "baselineBlob": "ed81f1e3b46de806b01bf63aa28a846d9795b991",
+      "matchesCurrentCommitBytes": true,
+      "notModifiedByThisHelper": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261016-w2-form-availability/coverage.csv",
+      "exists": true,
+      "bytes": 326812,
+      "sha256": "3fba547c186632f1a5e5085093e668678baa53b1894c0f0d7242ce47600ddd2d",
+      "repositoryPath": "docs/development/branch-review-20261016-w2-form-availability/coverage.csv",
+      "baselineBlob": "dd40d691f0807198d046f7e494f5e44fc5d8fc67",
+      "matchesCurrentCommitBytes": true,
+      "notModifiedByThisHelper": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261016-w2-form-integrity/coverage.csv",
+      "exists": true,
+      "bytes": 294726,
+      "sha256": "672434c4f18a26f5afb7f47db45ef6df7c039a287af929ffacc0bef9442c47c6",
+      "repositoryPath": "docs/development/branch-review-20261016-w2-form-integrity/coverage.csv",
+      "baselineBlob": "c67dbca97ff2b745731fef359e399585a41e37fe",
+      "matchesCurrentCommitBytes": true,
+      "notModifiedByThisHelper": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261016-w2-projection-integrity/coverage.csv",
+      "exists": true,
+      "bytes": 335040,
+      "sha256": "0c815f39c646c2a54958452e318be1d46a122df37144d141adb7bef5adc52650",
+      "repositoryPath": "docs/development/branch-review-20261016-w2-projection-integrity/coverage.csv",
+      "baselineBlob": "55208d2ab9b833de9def2fc852f1e28cc5b59f9e",
+      "matchesCurrentCommitBytes": true,
+      "notModifiedByThisHelper": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261017-w2-subfield-sync/coverage.csv",
+      "exists": true,
+      "bytes": 349383,
+      "sha256": "a0f003c1bb7d9cb37a5a4fae35f8755c3b0f29ff50dd3a0781d0143e47b8a86a",
+      "repositoryPath": "docs/development/branch-review-20261017-w2-subfield-sync/coverage.csv",
+      "baselineBlob": "5838da0a7598df01cabe0b2ed88cbd972a947dd1",
+      "matchesCurrentCommitBytes": true,
+      "notModifiedByThisHelper": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w2-choice-options/coverage.csv",
+      "exists": true,
+      "bytes": 356732,
+      "sha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b",
+      "repositoryPath": "docs/development/branch-review-20261018-w2-choice-options/coverage.csv",
+      "baselineBlob": "39f28119eaac1cac2f7e180c7b841f4db8f97dc3",
+      "matchesCurrentCommitBytes": true,
+      "notModifiedByThisHelper": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory.csv",
+      "exists": true,
+      "bytes": 356732,
+      "sha256": "fd7204343cc4d6a0698976e5327b1aa7f641824dd45de2861a4742ef13541e1b",
+      "repositoryPath": "docs/development/branch-review-20261018-w2-choice-options/evidence/helpers/edhr-w2-runtime-inventory.csv",
+      "baselineBlob": "39f28119eaac1cac2f7e180c7b841f4db8f97dc3",
+      "matchesCurrentCommitBytes": true,
+      "notModifiedByThisHelper": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/coverage.csv",
+      "exists": true,
+      "bytes": 384885,
+      "sha256": "b475671f2ba5d3eec18fe8a0bdbd0f28cbf489a624abf1c203ee6bea5c23837e",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/coverage.csv",
+      "baselineBlob": "bb4a4f485c30f3c8e932db4b835ef161a695cda5",
+      "matchesCurrentCommitBytes": true,
+      "notModifiedByThisHelper": true
+    }
+  ],
+  "archivedCoverageInventoryFilesAllUnchanged": true,
+  "pr16ArchivedBatchFiles": [
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/README.md",
+      "exists": true,
+      "bytes": 4682,
+      "sha256": "65f8ad2c51d5852e0114103b079ffa8046e63ef117362fc36031aa32421464f7",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/README.md",
+      "baselineBlob": "444160a422320af0b32b947762ebf81a38ddafc5",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/baseline.json",
+      "exists": true,
+      "bytes": 6168,
+      "sha256": "d4dc97c9799fb7d7c2e0069857f33bd602709404f804358714b2dd7419a80d73",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/baseline.json",
+      "baselineBlob": "8826bf02fdbd962c8c3e63e551fadc105a9949e8",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/coverage.csv",
+      "exists": true,
+      "bytes": 384885,
+      "sha256": "b475671f2ba5d3eec18fe8a0bdbd0f28cbf489a624abf1c203ee6bea5c23837e",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/coverage.csv",
+      "baselineBlob": "bb4a4f485c30f3c8e932db4b835ef161a695cda5",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/decision-package.yaml",
+      "exists": true,
+      "bytes": 9418,
+      "sha256": "5d019264e9c468b25f14228ba48b4c29a8e9ebcd457f1320cf41de628153554c",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/decision-package.yaml",
+      "baselineBlob": "70692203ee138aa66cefd15b091c7b0f58bc4702",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-baseline-inventory-metadata.json",
+      "exists": true,
+      "bytes": 5409,
+      "sha256": "2bfe3fbc218eee166fd3823f885cbd9efc0b358920d8bd605a4990cd9c65a124",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-baseline-inventory-metadata.json",
+      "baselineBlob": "836a219c26b0eaf3a6e6924c37cc17806fa171ec",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-environment-readiness.json",
+      "exists": true,
+      "bytes": 5833,
+      "sha256": "911da102818fdc3fa9742514160e28d3ba26be1b10df8d656b214a7d85efb8ae",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-environment-readiness.json",
+      "baselineBlob": "964af6f2d99a3acf125d4501fe4ff05408214fdf",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-frontend-mode-paths-metadata.json",
+      "exists": true,
+      "bytes": 6080,
+      "sha256": "5cb8a5bd28c3278fb1cbbcfad6454c733b6b78e0968d0c60c90d9e28ab861ffe",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-frontend-mode-paths-metadata.json",
+      "baselineBlob": "789ca647b75b1f6cb8c5da67b6a73516a664f5fc",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-frontend-mode-paths.md",
+      "exists": true,
+      "bytes": 17292,
+      "sha256": "3f772f3779e4f4c82df5fd07bae8b7b6c4dfb1f23a14aa106a1f088dcde6eaa3",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-frontend-mode-paths.md",
+      "baselineBlob": "55c720759ded49b85ed4daf2716ca4684dd28068",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/receipts.json",
+      "exists": true,
+      "bytes": 1210,
+      "sha256": "09d2710d1dca1b1d3b416c7f1dd8330d4321ae65582a4b5f2158e5f63d3e4b73",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/receipts.json",
+      "baselineBlob": "27d782c9aaeb35d71714a83aab0f64716749c712",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/browser-results.json",
+      "exists": true,
+      "bytes": 5899,
+      "sha256": "bb270ebd524388607c219d1cbdc720cdd5844244f6a93d46d06362d880245e77",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/browser-results.json",
+      "baselineBlob": "603d74fe1eddc936ecb89b269d68b82f04f2feee",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-1440-unconfigured.png",
+      "exists": true,
+      "bytes": 29171,
+      "sha256": "8e753f331a771a6d2bf036c024106af40ba9862e792e7fae0dd25c43e1161263",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-1440-unconfigured.png",
+      "baselineBlob": "77e797810b220301a8698b3ca59e1806906ee304",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-1440.png",
+      "exists": true,
+      "bytes": 8610,
+      "sha256": "b1255c8ab6601bcacf6179044b9ca82adea6576b87831c5b6e487fb51cc6bd91",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-1440.png",
+      "baselineBlob": "1c8efcafd85241d2683549338bf4e239f792931b",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-390-unconfigured.png",
+      "exists": true,
+      "bytes": 23809,
+      "sha256": "3bcda4de89ae67a43d9721ed111cfa86fee90f9f5d4b8183fc1857c2a45deb94",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-390-unconfigured.png",
+      "baselineBlob": "aefdc6e85ed02bf975e59058762143676aa2a604",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-390.png",
+      "exists": true,
+      "bytes": 5372,
+      "sha256": "b622084d016ed9b54b15566549c470cd963141deb18ad6aa3f396609a3b91b75",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-390.png",
+      "baselineBlob": "9edc5f1242f4904ea2c6ba210a2efa0d9e0d603a",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-1440-unconfigured.png",
+      "exists": true,
+      "bytes": 17272,
+      "sha256": "e8f93655b1e9b160b82dd6453e2c15232da17b7db375d481ad611a84f5f9921e",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-1440-unconfigured.png",
+      "baselineBlob": "b92878ef1ea0f2f9aed7038922d941c3465ba97d",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-1440.png",
+      "exists": true,
+      "bytes": 25744,
+      "sha256": "4a7fb8278880d8f2a68f1bbae6873a64e18f3a8ce37110262f45afb051547acf",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-1440.png",
+      "baselineBlob": "728a911238fa2549061ffaec4d01c5a490164634",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-390-unconfigured.png",
+      "exists": true,
+      "bytes": 13376,
+      "sha256": "10b9ffb0f888fc36bb8e4dd8058ebdd92f37f746ba9e9d05babcf42d2d50f3b7",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-390-unconfigured.png",
+      "baselineBlob": "9035000f8ba30683b4d31fba984cccfce81dfa10",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-390.png",
+      "exists": true,
+      "bytes": 19764,
+      "sha256": "f66f9542ef8753da5e9d03d561b729463411057fc643e34c078a17457d7f8cc5",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-390.png",
+      "baselineBlob": "3dfcf1b800a515baf85b125c1e8b7e14db351274",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/work-1440-unconfigured.png",
+      "exists": true,
+      "bytes": 63288,
+      "sha256": "829f088857f1da64d2dd06ccabe7a498b57cb75f90de32a077a29c1592e283f8",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/work-1440-unconfigured.png",
+      "baselineBlob": "f68bc0a8afbb62623b076f7cb53b0157c460bac0",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/work-1440.png",
+      "exists": true,
+      "bytes": 71349,
+      "sha256": "b458f2ddb121b22301d1a42eb9e46091d9d4b20d5597ac3b7ccd783dc4a04a5e",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/work-1440.png",
+      "baselineBlob": "c7dad5c539f56bbfc7e192bd85610ab8921cad7f",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-integrity.json",
+      "exists": true,
+      "bytes": 1549,
+      "sha256": "bf20bc720b4ca27f0a83f6bfdea4a5ae77d64fc1ad98f85dae1154a23fbafcab",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-integrity.json",
+      "baselineBlob": "566d56a82d60035284230cd1c320c124168281ec",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-metadata.json",
+      "exists": true,
+      "bytes": 2839,
+      "sha256": "39fca59bd56d44752179a7b4b687c0323c51d9f128534757ab8adea0e5b0acbf",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-metadata.json",
+      "baselineBlob": "605ff37283213561a210fa28b8a6d34672e8e94c",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-base.json",
+      "exists": true,
+      "bytes": 34339,
+      "sha256": "2ddfaea495ad19b22d3706e12f824f6f5a04555797514ec988a7f1015b6db9b4",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-base.json",
+      "baselineBlob": "f820b8e98197080c9cb38b1d9b7be830ba20ef98",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-candidate.json",
+      "exists": true,
+      "bytes": 34340,
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-candidate.json",
+      "baselineBlob": "5538de851240f9135e7493295f755bf14fd6b272",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-comparison.json",
+      "exists": true,
+      "bytes": 1135,
+      "sha256": "644bbd89b5326b300b63756d20b4338143eb053cb34f150ba4cd12343b794a13",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-comparison.json",
+      "baselineBlob": "4f32f8b15cb8d352845d1dcaa7a279c0df1298f3",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-quality-result.yaml",
+      "exists": true,
+      "bytes": 13898,
+      "sha256": "e2e459bfb286dfc465d3c007bdc5372bd1cb2e126c5269a96802a79203867988",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-quality-result.yaml",
+      "baselineBlob": "38c448a10a0028f72bcc550a517d8603b59f4a77",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-review.md",
+      "exists": true,
+      "bytes": 6063,
+      "sha256": "4035981e45c97ffad6090a7fc12eedaab5d573f7981f7b1d73eb0b8a295cb267",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-review.md",
+      "baselineBlob": "121efc9f79363ec79f103d1ad17b27b45dcfdc26",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-scope-consistency.json",
+      "exists": true,
+      "bytes": 20532,
+      "sha256": "7b0269c435a7120f2ae9b61d58f1a79ee5a9f1f067cc64584da57c5654701a01",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-scope-consistency.json",
+      "baselineBlob": "0bc2b378c987081a48f1ca97f6f9288e31d1ebe8",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-scope-consistency.md",
+      "exists": true,
+      "bytes": 4254,
+      "sha256": "05627140ab1934156df331eab79349c9828a1b0019abe3f06b602b942b1249a4",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-scope-consistency.md",
+      "baselineBlob": "fd598d3a5741fb71649e58baf911e8bc1db094a8",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-validation-summary.json",
+      "exists": true,
+      "bytes": 49660,
+      "sha256": "1c2cb96b099405482b0dc688af18ddadb35bda84ed0f98412861620dff016678",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-validation-summary.json",
+      "baselineBlob": "814f3b1acc924ba15e7b4294685f7fee0db8d979",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/original-receipts.json",
+      "exists": true,
+      "bytes": 3923,
+      "sha256": "f6356d63066ef54976da2e9cb09276da79bb851fc8f84613860fcfad2dc0d83a",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/original-receipts.json",
+      "baselineBlob": "7e534055dfb8b814e5d835d94a9ca33af0544e8e",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "exists": true,
+      "bytes": 5672,
+      "sha256": "f936ac5591a2755755aca1ab6f24a5dcd131350263d41da0fc178a2a69529d71",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "baselineBlob": "899ff77f85fc9aa92cc8e666cc080d599305954e",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/edhr-w3-mode-ontology-diagnostic.json",
+      "exists": true,
+      "bytes": 2383,
+      "sha256": "df846cc37b268ec5019a65940e42926cfd3ad78fb269f60d888cd9061e11e69f",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/edhr-w3-mode-ontology-diagnostic.json",
+      "baselineBlob": "1e74d52bb994e8280d1ee39227889dade6865960",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/edhr-w3-mode-ontology-result.yaml",
+      "exists": true,
+      "bytes": 8791,
+      "sha256": "bef2460858305ba881ab39e83eaa7613f9d5c3455c03eb9145b1f16b7a2fc6b2",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/edhr-w3-mode-ontology-result.yaml",
+      "baselineBlob": "fd3313d2b4572ed5e3d7c88455e8e0bda8014465",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/edhr-w3-mode-ontology-scope.json",
+      "exists": true,
+      "bytes": 8494,
+      "sha256": "9d27890a19205762f03978dc3dcc4fb40973b40dd6308eb03eb37c5c2f3d7066",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/edhr-w3-mode-ontology-scope.json",
+      "baselineBlob": "8f73618526e455c6b9e15821cc5703dc89b32b5b",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/receipts.json",
+      "exists": true,
+      "bytes": 705,
+      "sha256": "8c99540ce0e24708611ee3161565b9e312ca774d67ea003b5f3d523a63510841",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/receipts.json",
+      "baselineBlob": "a41bf4210c736f6f3f78a61866efa1c670d41e97",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/browser-results.json",
+      "exists": true,
+      "bytes": 5899,
+      "sha256": "bb270ebd524388607c219d1cbdc720cdd5844244f6a93d46d06362d880245e77",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/browser-results.json",
+      "baselineBlob": "603d74fe1eddc936ecb89b269d68b82f04f2feee",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-1440-unconfigured.png",
+      "exists": true,
+      "bytes": 29171,
+      "sha256": "8e753f331a771a6d2bf036c024106af40ba9862e792e7fae0dd25c43e1161263",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-1440-unconfigured.png",
+      "baselineBlob": "77e797810b220301a8698b3ca59e1806906ee304",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-1440.png",
+      "exists": true,
+      "bytes": 8610,
+      "sha256": "b1255c8ab6601bcacf6179044b9ca82adea6576b87831c5b6e487fb51cc6bd91",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-1440.png",
+      "baselineBlob": "1c8efcafd85241d2683549338bf4e239f792931b",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-390-unconfigured.png",
+      "exists": true,
+      "bytes": 23809,
+      "sha256": "3bcda4de89ae67a43d9721ed111cfa86fee90f9f5d4b8183fc1857c2a45deb94",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-390-unconfigured.png",
+      "baselineBlob": "aefdc6e85ed02bf975e59058762143676aa2a604",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-390.png",
+      "exists": true,
+      "bytes": 5372,
+      "sha256": "b622084d016ed9b54b15566549c470cd963141deb18ad6aa3f396609a3b91b75",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-390.png",
+      "baselineBlob": "9edc5f1242f4904ea2c6ba210a2efa0d9e0d603a",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-1440-unconfigured.png",
+      "exists": true,
+      "bytes": 17272,
+      "sha256": "e8f93655b1e9b160b82dd6453e2c15232da17b7db375d481ad611a84f5f9921e",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-1440-unconfigured.png",
+      "baselineBlob": "b92878ef1ea0f2f9aed7038922d941c3465ba97d",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-1440.png",
+      "exists": true,
+      "bytes": 25744,
+      "sha256": "4a7fb8278880d8f2a68f1bbae6873a64e18f3a8ce37110262f45afb051547acf",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-1440.png",
+      "baselineBlob": "728a911238fa2549061ffaec4d01c5a490164634",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-390-unconfigured.png",
+      "exists": true,
+      "bytes": 13376,
+      "sha256": "10b9ffb0f888fc36bb8e4dd8058ebdd92f37f746ba9e9d05babcf42d2d50f3b7",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-390-unconfigured.png",
+      "baselineBlob": "9035000f8ba30683b4d31fba984cccfce81dfa10",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-390.png",
+      "exists": true,
+      "bytes": 19764,
+      "sha256": "f66f9542ef8753da5e9d03d561b729463411057fc643e34c078a17457d7f8cc5",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-390.png",
+      "baselineBlob": "3dfcf1b800a515baf85b125c1e8b7e14db351274",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/work-1440-unconfigured.png",
+      "exists": true,
+      "bytes": 63287,
+      "sha256": "5284e8eb1549ed211eb7a6ca3663f76ab70c6a27eb8aef2c886a2d7cd717f896",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/work-1440-unconfigured.png",
+      "baselineBlob": "7bb795cb3d5adc7ab4d6a520daa12c01994c21a6",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/work-1440.png",
+      "exists": true,
+      "bytes": 71349,
+      "sha256": "b458f2ddb121b22301d1a42eb9e46091d9d4b20d5597ac3b7ccd783dc4a04a5e",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/work-1440.png",
+      "baselineBlob": "c7dad5c539f56bbfc7e192bd85610ab8921cad7f",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/edhr-w3-root-validation-metadata.json",
+      "exists": true,
+      "bytes": 3311,
+      "sha256": "045856a965f219c88afe8a62470ac8ed0629c96eafa4730f02f4b646892b3511",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/edhr-w3-root-validation-metadata.json",
+      "baselineBlob": "d6549df42b9e0aad9dd03c25c0678a29187eed04",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/edhr-w3-root-validation.json",
+      "exists": true,
+      "bytes": 111745,
+      "sha256": "aef1b0a48c616effce776628cac7282d1b2e10e74fa071bb55c2deecacac0523",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/edhr-w3-root-validation.json",
+      "baselineBlob": "570440659a0bcedc8c8691e53695e1b873a56c08",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "exists": true,
+      "bytes": 2239,
+      "sha256": "3aa791145b9feefec0d92b5fad01553ac3203a65b2926d9b2d2d440574167087",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "baselineBlob": "33679ba88fb36cfbf6dfe60af0f2ae19b6114919",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/findings.md",
+      "exists": true,
+      "bytes": 3191,
+      "sha256": "663a4ec8345b4cf3fd868bf4783c65ea220a25809d14f69ccda1b10935a1abce",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/findings.md",
+      "baselineBlob": "2df6df41d20c3ba1bc3b09efaa43a11562c21b9e",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/merge-acceptance.md",
+      "exists": true,
+      "bytes": 3548,
+      "sha256": "656ee052f96c380e3fdead731b710f54969958c6cf23e373eb94874a1cd89c98",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/merge-acceptance.md",
+      "baselineBlob": "2ec8fc92d76557de556c7563c56400dd152a397d",
+      "matchesDeliveryCommitBytes": true
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261018-w3-explicit-fill-mode/source-map.md",
+      "exists": true,
+      "bytes": 5438,
+      "sha256": "4161ab1a18da49fbef6bac4b6e9225686f0525e12b11fd285535026767d6e925",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/source-map.md",
+      "baselineBlob": "ce296a7c29d5e74b4ae749376847bbdd49fca302",
+      "matchesDeliveryCommitBytes": true
+    }
+  ],
+  "pr16ArchivedBatchFilesAllMatchDelivery": true,
+  "pr16OriginalReceiptVerification": [
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-baseline-inventory-metadata.json",
+      "bytes": 5409,
+      "sha256": "2bfe3fbc218eee166fd3823f885cbd9efc0b358920d8bd605a4990cd9c65a124",
+      "expectedBytes": 5409,
+      "expectedSha256": "2bfe3fbc218eee166fd3823f885cbd9efc0b358920d8bd605a4990cd9c65a124",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-environment-readiness.json",
+      "bytes": 5833,
+      "sha256": "911da102818fdc3fa9742514160e28d3ba26be1b10df8d656b214a7d85efb8ae",
+      "expectedBytes": 5833,
+      "expectedSha256": "911da102818fdc3fa9742514160e28d3ba26be1b10df8d656b214a7d85efb8ae",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-frontend-mode-paths.md",
+      "bytes": 17292,
+      "sha256": "3f772f3779e4f4c82df5fd07bae8b7b6c4dfb1f23a14aa106a1f088dcde6eaa3",
+      "expectedBytes": 17292,
+      "expectedSha256": "3f772f3779e4f4c82df5fd07bae8b7b6c4dfb1f23a14aa106a1f088dcde6eaa3",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/helpers/edhr-w3-frontend-mode-paths-metadata.json",
+      "bytes": 6080,
+      "sha256": "5cb8a5bd28c3278fb1cbbcfad6454c733b6b78e0968d0c60c90d9e28ab861ffe",
+      "expectedBytes": 6080,
+      "expectedSha256": "5cb8a5bd28c3278fb1cbbcfad6454c733b6b78e0968d0c60c90d9e28ab861ffe",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/edhr-w3-mode-ontology-result.yaml",
+      "bytes": 8791,
+      "sha256": "bef2460858305ba881ab39e83eaa7613f9d5c3455c03eb9145b1f16b7a2fc6b2",
+      "expectedBytes": 8791,
+      "expectedSha256": "bef2460858305ba881ab39e83eaa7613f9d5c3455c03eb9145b1f16b7a2fc6b2",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/edhr-w3-mode-ontology-diagnostic.json",
+      "bytes": 2383,
+      "sha256": "df846cc37b268ec5019a65940e42926cfd3ad78fb269f60d888cd9061e11e69f",
+      "expectedBytes": 2383,
+      "expectedSha256": "df846cc37b268ec5019a65940e42926cfd3ad78fb269f60d888cd9061e11e69f",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/ontology/edhr-w3-mode-ontology-scope.json",
+      "bytes": 8494,
+      "sha256": "9d27890a19205762f03978dc3dcc4fb40973b40dd6308eb03eb37c5c2f3d7066",
+      "expectedBytes": 8494,
+      "expectedSha256": "9d27890a19205762f03978dc3dcc4fb40973b40dd6308eb03eb37c5c2f3d7066",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/browser-results.json",
+      "bytes": 5899,
+      "sha256": "bb270ebd524388607c219d1cbdc720cdd5844244f6a93d46d06362d880245e77",
+      "expectedBytes": 5899,
+      "expectedSha256": "bb270ebd524388607c219d1cbdc720cdd5844244f6a93d46d06362d880245e77",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-1440-unconfigured.png",
+      "bytes": 29171,
+      "sha256": "8e753f331a771a6d2bf036c024106af40ba9862e792e7fae0dd25c43e1161263",
+      "expectedBytes": 29171,
+      "expectedSha256": "8e753f331a771a6d2bf036c024106af40ba9862e792e7fae0dd25c43e1161263",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-1440.png",
+      "bytes": 8610,
+      "sha256": "b1255c8ab6601bcacf6179044b9ca82adea6576b87831c5b6e487fb51cc6bd91",
+      "expectedBytes": 8610,
+      "expectedSha256": "b1255c8ab6601bcacf6179044b9ca82adea6576b87831c5b6e487fb51cc6bd91",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-390-unconfigured.png",
+      "bytes": 23809,
+      "sha256": "3bcda4de89ae67a43d9721ed111cfa86fee90f9f5d4b8183fc1857c2a45deb94",
+      "expectedBytes": 23809,
+      "expectedSha256": "3bcda4de89ae67a43d9721ed111cfa86fee90f9f5d4b8183fc1857c2a45deb94",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/dialog-390.png",
+      "bytes": 5372,
+      "sha256": "b622084d016ed9b54b15566549c470cd963141deb18ad6aa3f396609a3b91b75",
+      "expectedBytes": 5372,
+      "expectedSha256": "b622084d016ed9b54b15566549c470cd963141deb18ad6aa3f396609a3b91b75",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-1440-unconfigured.png",
+      "bytes": 17272,
+      "sha256": "e8f93655b1e9b160b82dd6453e2c15232da17b7db375d481ad611a84f5f9921e",
+      "expectedBytes": 17272,
+      "expectedSha256": "e8f93655b1e9b160b82dd6453e2c15232da17b7db375d481ad611a84f5f9921e",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-1440.png",
+      "bytes": 25744,
+      "sha256": "4a7fb8278880d8f2a68f1bbae6873a64e18f3a8ce37110262f45afb051547acf",
+      "expectedBytes": 25744,
+      "expectedSha256": "4a7fb8278880d8f2a68f1bbae6873a64e18f3a8ce37110262f45afb051547acf",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-390-unconfigured.png",
+      "bytes": 13376,
+      "sha256": "10b9ffb0f888fc36bb8e4dd8058ebdd92f37f746ba9e9d05babcf42d2d50f3b7",
+      "expectedBytes": 13376,
+      "expectedSha256": "10b9ffb0f888fc36bb8e4dd8058ebdd92f37f746ba9e9d05babcf42d2d50f3b7",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/inline-390.png",
+      "bytes": 19764,
+      "sha256": "f66f9542ef8753da5e9d03d561b729463411057fc643e34c078a17457d7f8cc5",
+      "expectedBytes": 19764,
+      "expectedSha256": "f66f9542ef8753da5e9d03d561b729463411057fc643e34c078a17457d7f8cc5",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/work-1440-unconfigured.png",
+      "bytes": 63287,
+      "sha256": "5284e8eb1549ed211eb7a6ca3663f76ab70c6a27eb8aef2c886a2d7cd717f896",
+      "expectedBytes": 63287,
+      "expectedSha256": "5284e8eb1549ed211eb7a6ca3663f76ab70c6a27eb8aef2c886a2d7cd717f896",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/browser/work-1440.png",
+      "bytes": 71349,
+      "sha256": "b458f2ddb121b22301d1a42eb9e46091d9d4b20d5597ac3b7ccd783dc4a04a5e",
+      "expectedBytes": 71349,
+      "expectedSha256": "b458f2ddb121b22301d1a42eb9e46091d9d4b20d5597ac3b7ccd783dc4a04a5e",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/edhr-w3-root-validation-metadata.json",
+      "bytes": 3311,
+      "sha256": "045856a965f219c88afe8a62470ac8ed0629c96eafa4730f02f4b646892b3511",
+      "expectedBytes": 3311,
+      "expectedSha256": "045856a965f219c88afe8a62470ac8ed0629c96eafa4730f02f4b646892b3511",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/primary/edhr-w3-root-validation.json",
+      "bytes": 111745,
+      "sha256": "aef1b0a48c616effce776628cac7282d1b2e10e74fa071bb55c2deecacac0523",
+      "expectedBytes": 111745,
+      "expectedSha256": "aef1b0a48c616effce776628cac7282d1b2e10e74fa071bb55c2deecacac0523",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-quality-result.yaml",
+      "bytes": 13898,
+      "sha256": "e2e459bfb286dfc465d3c007bdc5372bd1cb2e126c5269a96802a79203867988",
+      "expectedBytes": 13898,
+      "expectedSha256": "e2e459bfb286dfc465d3c007bdc5372bd1cb2e126c5269a96802a79203867988",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-review.md",
+      "bytes": 6063,
+      "sha256": "4035981e45c97ffad6090a7fc12eedaab5d573f7981f7b1d73eb0b8a295cb267",
+      "expectedBytes": 6063,
+      "expectedSha256": "4035981e45c97ffad6090a7fc12eedaab5d573f7981f7b1d73eb0b8a295cb267",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-validation-summary.json",
+      "bytes": 49660,
+      "sha256": "1c2cb96b099405482b0dc688af18ddadb35bda84ed0f98412861620dff016678",
+      "expectedBytes": 49660,
+      "expectedSha256": "1c2cb96b099405482b0dc688af18ddadb35bda84ed0f98412861620dff016678",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-integrity.json",
+      "bytes": 1549,
+      "sha256": "bf20bc720b4ca27f0a83f6bfdea4a5ae77d64fc1ad98f85dae1154a23fbafcab",
+      "expectedBytes": 1549,
+      "expectedSha256": "bf20bc720b4ca27f0a83f6bfdea4a5ae77d64fc1ad98f85dae1154a23fbafcab",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-base.json",
+      "bytes": 34339,
+      "sha256": "2ddfaea495ad19b22d3706e12f824f6f5a04555797514ec988a7f1015b6db9b4",
+      "expectedBytes": 34339,
+      "expectedSha256": "2ddfaea495ad19b22d3706e12f824f6f5a04555797514ec988a7f1015b6db9b4",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-candidate.json",
+      "bytes": 34340,
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a",
+      "expectedBytes": 34340,
+      "expectedSha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-premium-comparison.json",
+      "bytes": 1135,
+      "sha256": "644bbd89b5326b300b63756d20b4338143eb053cb34f150ba4cd12343b794a13",
+      "expectedBytes": 1135,
+      "expectedSha256": "644bbd89b5326b300b63756d20b4338143eb053cb34f150ba4cd12343b794a13",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-scope-consistency.md",
+      "bytes": 4254,
+      "sha256": "05627140ab1934156df331eab79349c9828a1b0019abe3f06b602b942b1249a4",
+      "expectedBytes": 4254,
+      "expectedSha256": "05627140ab1934156df331eab79349c9828a1b0019abe3f06b602b942b1249a4",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-scope-consistency.json",
+      "bytes": 20532,
+      "sha256": "7b0269c435a7120f2ae9b61d58f1a79ee5a9f1f067cc64584da57c5654701a01",
+      "expectedBytes": 20532,
+      "expectedSha256": "7b0269c435a7120f2ae9b61d58f1a79ee5a9f1f067cc64584da57c5654701a01",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/browser-results.json",
+      "bytes": 5899,
+      "sha256": "bb270ebd524388607c219d1cbdc720cdd5844244f6a93d46d06362d880245e77",
+      "expectedBytes": 5899,
+      "expectedSha256": "bb270ebd524388607c219d1cbdc720cdd5844244f6a93d46d06362d880245e77",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-1440-unconfigured.png",
+      "bytes": 29171,
+      "sha256": "8e753f331a771a6d2bf036c024106af40ba9862e792e7fae0dd25c43e1161263",
+      "expectedBytes": 29171,
+      "expectedSha256": "8e753f331a771a6d2bf036c024106af40ba9862e792e7fae0dd25c43e1161263",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-1440.png",
+      "bytes": 8610,
+      "sha256": "b1255c8ab6601bcacf6179044b9ca82adea6576b87831c5b6e487fb51cc6bd91",
+      "expectedBytes": 8610,
+      "expectedSha256": "b1255c8ab6601bcacf6179044b9ca82adea6576b87831c5b6e487fb51cc6bd91",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-390-unconfigured.png",
+      "bytes": 23809,
+      "sha256": "3bcda4de89ae67a43d9721ed111cfa86fee90f9f5d4b8183fc1857c2a45deb94",
+      "expectedBytes": 23809,
+      "expectedSha256": "3bcda4de89ae67a43d9721ed111cfa86fee90f9f5d4b8183fc1857c2a45deb94",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/dialog-390.png",
+      "bytes": 5372,
+      "sha256": "b622084d016ed9b54b15566549c470cd963141deb18ad6aa3f396609a3b91b75",
+      "expectedBytes": 5372,
+      "expectedSha256": "b622084d016ed9b54b15566549c470cd963141deb18ad6aa3f396609a3b91b75",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-1440-unconfigured.png",
+      "bytes": 17272,
+      "sha256": "e8f93655b1e9b160b82dd6453e2c15232da17b7db375d481ad611a84f5f9921e",
+      "expectedBytes": 17272,
+      "expectedSha256": "e8f93655b1e9b160b82dd6453e2c15232da17b7db375d481ad611a84f5f9921e",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-1440.png",
+      "bytes": 25744,
+      "sha256": "4a7fb8278880d8f2a68f1bbae6873a64e18f3a8ce37110262f45afb051547acf",
+      "expectedBytes": 25744,
+      "expectedSha256": "4a7fb8278880d8f2a68f1bbae6873a64e18f3a8ce37110262f45afb051547acf",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-390-unconfigured.png",
+      "bytes": 13376,
+      "sha256": "10b9ffb0f888fc36bb8e4dd8058ebdd92f37f746ba9e9d05babcf42d2d50f3b7",
+      "expectedBytes": 13376,
+      "expectedSha256": "10b9ffb0f888fc36bb8e4dd8058ebdd92f37f746ba9e9d05babcf42d2d50f3b7",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/inline-390.png",
+      "bytes": 19764,
+      "sha256": "f66f9542ef8753da5e9d03d561b729463411057fc643e34c078a17457d7f8cc5",
+      "expectedBytes": 19764,
+      "expectedSha256": "f66f9542ef8753da5e9d03d561b729463411057fc643e34c078a17457d7f8cc5",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/work-1440-unconfigured.png",
+      "bytes": 63288,
+      "sha256": "829f088857f1da64d2dd06ccabe7a498b57cb75f90de32a077a29c1592e283f8",
+      "expectedBytes": 63288,
+      "expectedSha256": "829f088857f1da64d2dd06ccabe7a498b57cb75f90de32a077a29c1592e283f8",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/browser/work-1440.png",
+      "bytes": 71349,
+      "sha256": "b458f2ddb121b22301d1a42eb9e46091d9d4b20d5597ac3b7ccd783dc4a04a5e",
+      "expectedBytes": 71349,
+      "expectedSha256": "b458f2ddb121b22301d1a42eb9e46091d9d4b20d5597ac3b7ccd783dc4a04a5e",
+      "matchesOriginalReceipt": true
+    },
+    {
+      "manifest": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/receipts.json",
+      "repositoryPath": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-metadata.json",
+      "bytes": 2839,
+      "sha256": "39fca59bd56d44752179a7b4b687c0323c51d9f128534757ab8adea0e5b0acbf",
+      "expectedBytes": 2839,
+      "expectedSha256": "39fca59bd56d44752179a7b4b687c0323c51d9f128534757ab8adea0e5b0acbf",
+      "matchesOriginalReceipt": true
+    }
+  ],
+  "pr16OriginalReceiptVerificationAllPassed": true,
+  "currentEnvironmentReport": {
+    "path": "/tmp/edhr-w3b-environment-readiness.json",
+    "exists": true,
+    "bytes": 5332,
+    "sha256": "7d616ca49092b116d097ced22624e347c62af5e4e34bcfcdd26e0bf1599af42b"
+  },
+  "runtimeApplicationChecksExecuted": [],
+  "repositoryEditsByThisHelper": [],
+  "limitations": [
+    "Inventory does not establish source-review completion, semantic consistency, or runtime acceptance.",
+    "Readonly technical helper, not independent QA or ontology role; previous acceptance remains tied to its recorded candidate.",
+    "All current paths remain pending/inventory-only; older coverage and original results were preserved.",
+    "No test/build/browser/database/Actions/install/commit/push/merge/deploy/worktree operation was performed."
+  ]
+}

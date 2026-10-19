@@ -39,6 +39,7 @@ export default function FormFillSettings({ value, form, editable, onChange }: {
   const subjects = useMemo(() => processPermissionSubjects(graph), [graph]);
   const events = useMemo(() => processBuiltinEvents(graph), [graph]);
   const fields = useMemo(() => templateFields(version.data), [version.data]);
+  const bindingReferencesReady = version.isSuccess && (mode !== 'PROCESS' || process.isSuccess);
   const document = useMemo(() => form && version.data ? parseReactTemplateDesignerDocument({ id: form.templateId, name: form.name, code: form.code, type: 'FORM_TEMPLATE' }, version.data) : null, [form, version.data]);
   const options = processes.data ?? [];
   const selected = options.find(item => item.versionId === value.formProcessVersionId) ?? process.data ?? null;
@@ -83,7 +84,7 @@ export default function FormFillSettings({ value, form, editable, onChange }: {
     })}
   </Stack>;
   const fieldSettingsButton = <Button fullWidth size="small" variant="outlined" startIcon={<TuneOutlined />} onClick={() => setPermissionsOpen(true)}
-    disabled={!mode || !form || version.isLoading || version.isError || (mode === 'PROCESS' && !process.data)}>
+    disabled={!mode || !form || !bindingReferencesReady}>
     {editable ? '字段权限设置' : '查看字段权限'}
   </Button>;
   const updateDirect = (patch: Partial<typeof direct>) => {
@@ -171,12 +172,13 @@ export default function FormFillSettings({ value, form, editable, onChange }: {
       });
     }} />
     <FormPermissionConfigDialog open={permissionsOpen} subjects={subjects} fields={fields} document={document}
-      permissions={active.fieldPermissions} events={events} eventBindings={active.eventBindings ?? {}} editable={editable} loading={version.isLoading}
+      permissions={active.fieldPermissions} events={events} eventBindings={active.eventBindings ?? {}} editable={editable && bindingReferencesReady} loading={version.isLoading}
       onClose={() => setPermissionsOpen(false)} onSave={(fieldPermissions, eventBindings) => {
-        if (!mode) return;
+        if (!mode || !bindingReferencesReady) return;
+        const validPermissions = pruneFieldPermissions(fieldPermissions, subjects, fields);
         const validBindings = pruneEventBindings(eventBindings, events, fields);
-        if (mode === 'DIRECT') onChange({ ...value, fillMode: mode, directFillConfig: { ...direct, fieldPermissions, eventBindings: validBindings } });
-        else onChange({ ...value, fillMode: mode, fieldPermissions, eventBindings: validBindings });
+        if (mode === 'DIRECT') onChange({ ...value, fillMode: mode, directFillConfig: { ...direct, fieldPermissions: validPermissions, eventBindings: validBindings } });
+        else onChange({ ...value, fillMode: mode, fieldPermissions: validPermissions, eventBindings: validBindings });
         setPermissionsOpen(false);
       }} />
   </Stack>;

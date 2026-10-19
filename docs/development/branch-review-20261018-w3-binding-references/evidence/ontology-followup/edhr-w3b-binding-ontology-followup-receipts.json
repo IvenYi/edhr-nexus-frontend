@@ -1,0 +1,38 @@
+{
+  "artifacts": [
+    {
+      "path": "/tmp/edhr-w3b-binding-ontology-followup-result.yaml",
+      "bytes": 6554,
+      "sha256": "110f624b27946de8daa9f1497dcea4cb6b76c90f2041ea7fada8dde013567e14"
+    },
+    {
+      "path": "/tmp/edhr-w3b-binding-ontology-followup-diagnostic.py",
+      "bytes": 11947,
+      "sha256": "93b0b1a7fbeae275b319d7d195bc406dd0e06a601b7c0a8167845592882aafda"
+    },
+    {
+      "path": "/tmp/edhr-w3b-binding-ontology-followup-diagnostic.json",
+      "bytes": 1527,
+      "sha256": "76c99f308a1b99fafa95b8d3e1ee394647337ba61af43407d5fc83109c830832"
+    },
+    {
+      "path": "/tmp/edhr-w3b-binding-ontology-followup-scope.json",
+      "bytes": 1647,
+      "sha256": "a81fd0d3020927e9c18cbdd3f30d0dad3774c7cb7cbee103771e0f3e84812438"
+    }
+  ],
+  "resultShapeCheck": "passed",
+  "sourceReferencesExist": "passed",
+  "originalOntologyPreserved": {
+    "bytes": 8083,
+    "sha256": "fe6a5d5a0c437cb8bd46eebc44333696b77e4172c862d3b5a6f39a90e6d31af7"
+  },
+  "primaryRepair": {
+    "total": 303,
+    "passed": 300,
+    "skipped": 3,
+    "failed": 0,
+    "errors": 0
+  },
+  "independentQualityStatus": "first FINAL failed preserved; fresh FINAL pending, not claimed passed"
+}

@@ -1,0 +1,417 @@
+{
+  "results": [
+    {
+      "name": "direct-1440-confirm",
+      "mode": "DIRECT",
+      "width": 1440,
+      "scenario": "confirm",
+      "status": "passed",
+      "changes": [
+        {
+          "fieldPermissions": {
+            "dormant:removed": {
+              "editableFieldIds": [
+                "removed"
+              ]
+            }
+          },
+          "eventBindings": {
+            "dormant:removed": {
+              "fieldId": "removed"
+            }
+          },
+          "fillMode": "DIRECT",
+          "directFillConfig": {
+            "permissionGroupRules": [
+              {
+                "id": "current",
+                "subjects": [
+                  {
+                    "type": "USER",
+                    "id": "1",
+                    "nameSnapshot": "操作员"
+                  }
+                ],
+                "defaultPermission": "READ_ONLY"
+              }
+            ],
+            "buttons": [
+              {
+                "id": "submit",
+                "action": "SUBMIT",
+                "label": "提交"
+              }
+            ],
+            "buttonEvents": [
+              {
+                "id": "sign",
+                "action": "SUBMIT",
+                "event": "BEFORE",
+                "builtin": "FILL_SIGN_FIELD",
+                "signatureMethod": "ACCOUNT_PASSWORD"
+              }
+            ],
+            "fieldPermissions": {
+              "start:current": {
+                "defaultPermission": "READ_ONLY",
+                "editableFieldIds": [
+                  "keep"
+                ],
+                "readOnlyFieldIds": [
+                  "read"
+                ]
+              }
+            },
+            "eventBindings": {
+              "entry:sign": {
+                "fieldId": "signature"
+              }
+            }
+          }
+        }
+      ],
+      "calls": [
+        "/api/v1/workflow/form-fill-settings/processes",
+        "/api/v1/master-data/template-modeling/form-templates/501/versions/702"
+      ],
+      "errors": [],
+      "consoleErrors": [],
+      "scope": "Actual shared React/MUI field-configuration confirmation; post-switch input fixture and controlled metadata API; no backend/database write."
+    },
+    {
+      "name": "process-1440-confirm",
+      "mode": "PROCESS",
+      "width": 1440,
+      "scenario": "confirm",
+      "status": "passed",
+      "changes": [
+        {
+          "permissionGroupRules": [
+            {
+              "id": "current",
+              "subjects": [
+                {
+                  "type": "USER",
+                  "id": "1",
+                  "nameSnapshot": "操作员"
+                }
+              ],
+              "defaultPermission": "READ_ONLY"
+            }
+          ],
+          "buttons": [
+            {
+              "id": "submit",
+              "action": "SUBMIT",
+              "label": "提交"
+            }
+          ],
+          "buttonEvents": [
+            {
+              "id": "sign",
+              "action": "SUBMIT",
+              "event": "BEFORE",
+              "builtin": "FILL_SIGN_FIELD",
+              "signatureMethod": "ACCOUNT_PASSWORD"
+            }
+          ],
+          "fieldPermissions": {
+            "start:current": {
+              "defaultPermission": "READ_ONLY",
+              "editableFieldIds": [
+                "keep"
+              ],
+              "readOnlyFieldIds": [
+                "read"
+              ]
+            }
+          },
+          "eventBindings": {
+            "entry:sign": {
+              "fieldId": "signature"
+            }
+          },
+          "fillMode": "PROCESS",
+          "formProcessVersionId": "901",
+          "directFillConfig": {
+            "fieldPermissions": {
+              "dormant:removed": {
+                "editableFieldIds": [
+                  "removed"
+                ]
+              }
+            },
+            "eventBindings": {
+              "dormant:removed": {
+                "fieldId": "removed"
+              }
+            }
+          }
+        }
+      ],
+      "calls": [
+        "/api/v1/workflow/form-fill-settings/processes",
+        "/api/v1/workflow/form-fill-settings/processes/901",
+        "/api/v1/master-data/template-modeling/form-templates/501/versions/702"
+      ],
+      "errors": [],
+      "consoleErrors": [],
+      "scope": "Actual shared React/MUI field-configuration confirmation; post-switch input fixture and controlled metadata API; no backend/database write."
+    },
+    {
+      "name": "direct-390-confirm",
+      "mode": "DIRECT",
+      "width": 390,
+      "scenario": "confirm",
+      "status": "passed",
+      "changes": [
+        {
+          "fieldPermissions": {
+            "dormant:removed": {
+              "editableFieldIds": [
+                "removed"
+              ]
+            }
+          },
+          "eventBindings": {
+            "dormant:removed": {
+              "fieldId": "removed"
+            }
+          },
+          "fillMode": "DIRECT",
+          "directFillConfig": {
+            "permissionGroupRules": [
+              {
+                "id": "current",
+                "subjects": [
+                  {
+                    "type": "USER",
+                    "id": "1",
+                    "nameSnapshot": "操作员"
+                  }
+                ],
+                "defaultPermission": "READ_ONLY"
+              }
+            ],
+            "buttons": [
+              {
+                "id": "submit",
+                "action": "SUBMIT",
+                "label": "提交"
+              }
+            ],
+            "buttonEvents": [
+              {
+                "id": "sign",
+                "action": "SUBMIT",
+                "event": "BEFORE",
+                "builtin": "FILL_SIGN_FIELD",
+                "signatureMethod": "ACCOUNT_PASSWORD"
+              }
+            ],
+            "fieldPermissions": {
+              "start:current": {
+                "defaultPermission": "READ_ONLY",
+                "editableFieldIds": [
+                  "keep"
+                ],
+                "readOnlyFieldIds": [
+                  "read"
+                ]
+              }
+            },
+            "eventBindings": {
+              "entry:sign": {
+                "fieldId": "signature"
+              }
+            }
+          }
+        }
+      ],
+      "calls": [
+        "/api/v1/workflow/form-fill-settings/processes",
+        "/api/v1/master-data/template-modeling/form-templates/501/versions/702"
+      ],
+      "errors": [],
+      "consoleErrors": [],
+      "scope": "Actual shared React/MUI field-configuration confirmation; post-switch input fixture and controlled metadata API; no backend/database write."
+    },
+    {
+      "name": "process-390-confirm",
+      "mode": "PROCESS",
+      "width": 390,
+      "scenario": "confirm",
+      "status": "passed",
+      "changes": [
+        {
+          "permissionGroupRules": [
+            {
+              "id": "current",
+              "subjects": [
+                {
+                  "type": "USER",
+                  "id": "1",
+                  "nameSnapshot": "操作员"
+                }
+              ],
+              "defaultPermission": "READ_ONLY"
+            }
+          ],
+          "buttons": [
+            {
+              "id": "submit",
+              "action": "SUBMIT",
+              "label": "提交"
+            }
+          ],
+          "buttonEvents": [
+            {
+              "id": "sign",
+              "action": "SUBMIT",
+              "event": "BEFORE",
+              "builtin": "FILL_SIGN_FIELD",
+              "signatureMethod": "ACCOUNT_PASSWORD"
+            }
+          ],
+          "fieldPermissions": {
+            "start:current": {
+              "defaultPermission": "READ_ONLY",
+              "editableFieldIds": [
+                "keep"
+              ],
+              "readOnlyFieldIds": [
+                "read"
+              ]
+            }
+          },
+          "eventBindings": {
+            "entry:sign": {
+              "fieldId": "signature"
+            }
+          },
+          "fillMode": "PROCESS",
+          "formProcessVersionId": "901",
+          "directFillConfig": {
+            "fieldPermissions": {
+              "dormant:removed": {
+                "editableFieldIds": [
+                  "removed"
+                ]
+              }
+            },
+            "eventBindings": {
+              "dormant:removed": {
+                "fieldId": "removed"
+              }
+            }
+          }
+        }
+      ],
+      "calls": [
+        "/api/v1/workflow/form-fill-settings/processes",
+        "/api/v1/workflow/form-fill-settings/processes/901",
+        "/api/v1/master-data/template-modeling/form-templates/501/versions/702"
+      ],
+      "errors": [],
+      "consoleErrors": [],
+      "scope": "Actual shared React/MUI field-configuration confirmation; post-switch input fixture and controlled metadata API; no backend/database write."
+    },
+    {
+      "name": "process-1440-delayed",
+      "mode": "PROCESS",
+      "width": 1440,
+      "scenario": "delayed",
+      "status": "passed",
+      "changes": [
+        {
+          "permissionGroupRules": [
+            {
+              "id": "current",
+              "subjects": [
+                {
+                  "type": "USER",
+                  "id": "1",
+                  "nameSnapshot": "操作员"
+                }
+              ],
+              "defaultPermission": "READ_ONLY"
+            }
+          ],
+          "buttons": [
+            {
+              "id": "submit",
+              "action": "SUBMIT",
+              "label": "提交"
+            }
+          ],
+          "buttonEvents": [
+            {
+              "id": "sign",
+              "action": "SUBMIT",
+              "event": "BEFORE",
+              "builtin": "FILL_SIGN_FIELD",
+              "signatureMethod": "ACCOUNT_PASSWORD"
+            }
+          ],
+          "fieldPermissions": {
+            "start:current": {
+              "defaultPermission": "READ_ONLY",
+              "editableFieldIds": [
+                "keep"
+              ],
+              "readOnlyFieldIds": [
+                "read"
+              ]
+            }
+          },
+          "eventBindings": {
+            "entry:sign": {
+              "fieldId": "signature"
+            }
+          },
+          "fillMode": "PROCESS",
+          "formProcessVersionId": "901",
+          "directFillConfig": {
+            "fieldPermissions": {
+              "dormant:removed": {
+                "editableFieldIds": [
+                  "removed"
+                ]
+              }
+            },
+            "eventBindings": {
+              "dormant:removed": {
+                "fieldId": "removed"
+              }
+            }
+          }
+        }
+      ],
+      "calls": [
+        "/api/v1/workflow/form-fill-settings/processes",
+        "/api/v1/workflow/form-fill-settings/processes/901",
+        "/api/v1/master-data/template-modeling/form-templates/501/versions/702"
+      ],
+      "errors": [],
+      "consoleErrors": [],
+      "scope": "Actual shared React/MUI field-configuration confirmation; post-switch input fixture and controlled metadata API; no backend/database write."
+    },
+    {
+      "name": "direct-1440-failure",
+      "mode": "DIRECT",
+      "width": 1440,
+      "scenario": "failure",
+      "status": "passed",
+      "changes": [],
+      "calls": [
+        "/api/v1/workflow/form-fill-settings/processes",
+        "/api/v1/master-data/template-modeling/form-templates/501/versions/702"
+      ],
+      "errors": [],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "scope": "Actual shared React/MUI field-configuration confirmation; post-switch input fixture and controlled metadata API; no backend/database write."
+    }
+  ]
+}

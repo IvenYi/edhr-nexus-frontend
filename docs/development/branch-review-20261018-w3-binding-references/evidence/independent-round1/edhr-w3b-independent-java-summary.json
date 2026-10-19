@@ -1,0 +1,1923 @@
+{
+  "suites": [
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "yamlParserErrorsContainTheRepositoryRelativeFilePath(Path)",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "unknownScalarCollectionsAreRejected",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "explicitFactReferencesCannotBeUsedAsPredicateExpectations",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "factCatalogCannotBeBypassedByOmittingProfile",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "conditionGroupsRejectAdditionalFields",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[1]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[2]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[3]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "repositoryRootCanBeLocatedFromRootBackendAndIdeWorkingDirectories",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "invalidRuleResultTypesAreRejected",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "nestedCollectionsAreDiscoveredFromSchemaMappings",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "currentKnowledgeModelIsValid",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[1]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[2]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[3]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "factsRequireProvenanceFields",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "schemaCollectionMappingsMustCoverEveryRecordType",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "verifiedInternalRecordsRequireExecutionContracts",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "stringOperatorsRejectNonStringFacts",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "malformedTopLevelCollectionsReportTheirDocument",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "executionContractReferencesMustResolveEvenForNonVerifiedRules",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "invalidStatusesAreRejected",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "factCatalogRejectsOperatorNotAllowedByFact",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "schemaRejectsNestedDescriptorMappingMismatch",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "factValueTypesMustComeFromTheControlledVocabulary",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "factNamesInStringsAreNeverImplicitlyDereferenced",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "knownNestedCollectionsCannotAppearOnUndeclaredParentRecordTypes",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "invalidConditionOperatorsAreRejected",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[1]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[2]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[3]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[4]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[5]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[6]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[7]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[8]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "danglingEvidenceIdsAreRejected",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "verifiedRulesCanReferenceValidRegisteredExecutionContracts",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "invalidCardinalitiesAreRejected",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "factCatalogRejectsUnknownSemanticAlias",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "conditionNotGroupsRequireOneExpression",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "enumFactsRequireAnExplicitNonEmptyValueSet",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "numericComparisonRejectsStringFactEvenWhenItsOperatorIsListed",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "schemaIdPrefixesMustCoverEveryRecordType",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "nestedDuplicateIdsAreRejected",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[1]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[2]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[3]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[4]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[5]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[6]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[7]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[8]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[9]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[10]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "conditionLeavesRejectAdditionalFields",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "absoluteEvidencePathsAreRejectedEvenWhenTheyExist",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "conditionGroupsMustBeNonEmpty",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "unknownEmptyCollectionsAreRejected",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "implementationAnchorsRejectUnknownProvenanceReviewStatus",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "numericOperandsMustBeFinite",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "currentKnowledgeBaselineUsesTheTypedFactSchema",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "factReferenceObjectsMustUseTheExactOperandShape",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "topLevelCollectionsAreDiscoveredFromSchemaMappings",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "danglingTermIdsAreRejected",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "verifiedRuntimeRecordsRequireEvidence",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "schemaCollectionMappingsRejectDuplicateTargetsDeterministically",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "recordIdsMustUseSchemaPrefixes(String, String)[1]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "recordIdsMustUseSchemaPrefixes(String, String)[2]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "normalizedEvidencePathsCannotEscapeRepository(Path)",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "duplicateIdsAreRejected",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "explicitFactOperandsMustHaveCompatibleTypes",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "conditionValuesMustUseSchemaValueTypes",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "schemaCollectionMappingsRejectUnknownRecordTypes",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[1]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[2]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[3]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[4]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[5]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[6]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "explicitFactOperandsResolveIdsAndAliasesWithoutBeingTreatedAsClauses",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "unknownNestedRecordCollectionsAreRejected",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "unknownTopLevelCollectionsReportTheirDocumentAndSortedAllowedCollections",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "missingEvidencePathsAreRejected",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "explicitFactOperandsRejectUnknownReferences",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "executionContractIdsUseSchemaPrefixes",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "realEvidencePathsCannotEscapeRepositoryThroughSymlinks(Path)",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "implementedRecordsCannotEnterCustomerProjection",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "aliasesCannotShadowAnotherFactIdInEitherCollectionOrder",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        }
+      ],
+      "rawXmlSha256": "4b2230279a244341016574337c21252a18950612ff6ad6d21bd93fedd31c948f"
+    },
+    {
+      "suite": "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "productModelingRejectsBatchToSnProductionForm",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "productModelingAllowsOverlappingWindowsForTheSameModeAndForm",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "productModelingRouteOptionsDoNotExposeParentCodesOrExpiredVersions",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "productModelingRejectsDuplicateDhrDirectoryFormsInOneOperation",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "productModelingDocumentOptionsExposeTheActualDocumentCategoryName",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "productModelingFlushesRemovedOperationBindingsBeforeReplacingThemOnUpdate",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "productModelingWorkspaceReturnsFutureEffectiveVersionsAsExpired",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "productModelingDhrOptionsExcludeExpiredVersions",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "processOwnerWorkspaceUsesTheSharedServiceForAProductFamily",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "productModelingRejectsUnsupportedProductionMode",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "productModelingAllowsAFutureVersionWhoseWindowStartsWhenThePriorVersionEnds",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "productModelingCreationAuditIncludesSavedOperationBindings",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "productModelingRejectsAProductThatIsNotDerivedFromFinishedOrSemiFinishedMaterial",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "productModelingRejectsAFormOutsideTheSelectedDhrDirectory",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        }
+      ],
+      "rawXmlSha256": "bb7d35fc95f17a86a9988ae552c3e92baadfdd82b55ea0b6dd15b0c79a0c8896"
+    },
+    {
+      "suite": "com.zencas.edhr.masterdata.service.ProductProcessOwnerServiceTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "recordsProductFamilyUpdateAndDeleteAuditsWithOperationConfigurationSnapshots",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "createsSeparateOwnerRootsAndRejectsDuplicateLabelsWithinTheSameOwner",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "sharedOwnerServiceRejectsBatchToSnProductionForm",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[1]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[2]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[3]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsExpiredSavedReferenceIdsForBothOwnerTypes(ProcessOwnerType, boolean)[4]",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        }
+      ],
+      "rawXmlSha256": "142cb5321c30369b3a8875aef08542c1c34b6c201d2dc07e0ed88e058c48951d"
+    },
+    {
+      "suite": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+      "tests": 71,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3,
+      "cases": [
+        {
+          "name": "missingPermissionCannotReadOrExecute",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "formRecordsBrowserFixture",
+          "skipped": true,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "globalQueryRejectsUnsupportedAndMalformedConditions",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "missingQueryPrincipalCannotAdvanceApprovalOrChangePersistedEvidence",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "globalQueryUsesFrozenMetadataCrossTemplateFiltersAndStablePages",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "productionReferencesSaveTypedIdentityAndNumbersWithoutChangingExecutionOwnership",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "directSigningBlocksMissingExpiredAndCustomerAdminLoginCredentialsWithoutLosingDraft",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "failedSignedActionRollsBackSignatureValuesAndAudit",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "worklistHistoricalNodeFiltersMatchTheSameEventBeforeSelectingTheLatest",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "inlineSignatureHonorsFrozenReadonlyAndNodePermissions",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "worklistFilteringPaginationAndLegacyHistoryDoNotInventParticipation",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "inlineSignatureRollsBackWhenAuditFails",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "executionPersistsSnapshotDraftAndAuditThenCompletesOnlyAfterAllOperations",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "waitingExecutionSeesConcurrentTerminationAfterAcquiringLocks",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "dhrSupplementUsesRealExecutionAndRecordServicesWithoutReopeningProduction",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "worklistExplicitCreationIsIndependentFromFirstSaverAndSystemFirstCopy",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "legacyTextSubtableColumnsUseTheSameStableIdsAsTheUnifiedRenderer",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "previewReferencesRequireDesignPermissionAndDoNotWriteData",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "executionMissingDhrCannotComplete",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "historicalExecutionWithoutDhrCanAttachCustomFormWithoutFabricatingDhr",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "historicalCopyMetadataUsesRecordedSourcesWithoutWritingOrInventingMissingValues",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "inlineSignatureSavesWithoutSubmittingAndContentChangesInvalidateIt",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "dhrFillingProjectsAndFiltersProductionStatusWithoutChangingDhrOrWriteRules",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "inspectorChoiceOptionsSaveAndSubmitAgainstTheSameFrozenCanonicalValues",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "batchAndSnScanAreReadOnlyAndReturnCorrectConfiguration",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "subtableCanvasReadonlyIsEnforcedForNewAndLegacySnapshots",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "failedAuditRollsBackFormInstanceAllocation",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "globalQueryRequiresBothPermissionsAndPreservesOldEntry",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "remarkEditPersistsAuditsAndPreservesSubmittedFormReceipt",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "globalQueryExactDetailsTenantBoundaryAndSourceControls",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "deletingSignedRowsInvalidatesRemainingSignaturesAndRejectsForgery",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "inlineSignatureRejectsUnavailableCertificationAndInvalidTargets",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "legacyCompletedWorkProjectsNextNodeWithoutWritingAndSettlesOnTheNextAuditedAction",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "customTemplatePickerDoesNotTruncateVersions",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "copiesPersistSeparateValuesSumOutputAndRejectStaleOrForeignWrites",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "operationCustomGateAndExplicitScopeValidationCannotBeBypassed",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "concurrentStartCreatesOneExecutionAndOneDhr",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "firstStartRejectsUnconfiguredOperationModesWithoutExecutionDhrOrAuditWrites",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "anOperationWithoutConfiguredFormsCanAttachItsFirstOptionalForm",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "worklistReturnAndResubmitKeepPersonalHistoryAndUseActualApprovalQualification",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "customFormTemplatesSearchAllVersionsWithoutPublicationAndKeepTenantBoundaries",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "returnAndApprovalKeepTheOriginalFormNumber",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "firstStartFreezesOneCommittedConfigurationDuringProcessRebinding",
+          "skipped": true,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "failedAuditRollsBackObjectStateAndExecutionTogether",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "browserEvidenceFixture",
+          "skipped": true,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "missingDhrBlocksEarlyTerminationWithoutChangingProduction",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "internalAdminUsesLoginPasswordOnlyForButtonAndUnsignedActionsDoNotImpersonate",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "presenceCountsEditorsAcrossCopiesAndRejectsReadOnlyInstances",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "configuredAndWorkFormsUsingTheSameTemplateRemainIndependent",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "worklistRejectsWrongPermissionsParamsAndFailedActionsCreateNoHistory",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "globalQueryDoesNotGrantAnActiveApprovalNodeAndKeepsPrincipalHistory",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "worklistIncludesUnsavedAndSavedButFilledRequiresActualSubmit",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "copyMetadataPersistsAndSurvivesSaveWithoutChangingItsCreationIdentity",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "automaticWorkAdvanceRollsBackWithItsSubmissionWhenAuditFails",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "optionalCopyCompletionRequiresAcknowledgementAndPersistsUnfinishedState",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "sharedWorkstationUsesSignerPermissionsAndDualIdentityWithoutChangingSession",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "concurrentFirstSavesAllocateDifferentNumbers",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "staleRevisionAndTerminatedObjectsCannotAdvance",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "formInstanceNumbersAreStableSearchableAndUseFrozenSnapshots",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "realApprovalIdentityAndSignaturePasswordPersistAtomically",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "formApprovalTransferMovesPendingTaskWithoutAdvancingTheFlow",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "customFormsFreezeSelectedVersionAndRequireExplicitRequiredChoice",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "firstStartAndDetailKeepSnowflakeDirectoryIdsAsStrings",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "transferProjectionIsNodeScopedAndReassignmentIsClearedByReturn",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "invalidCopyRemarksAndFailedAuditCannotCreateCopies",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "optionalCustomFormCanBeFinishedAfterProductionWithReasonAndFrozenDhrProtection",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "inlineSignaturesCoexistAndSubtableContentInvalidatesAllWithoutDeletingEvidence",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "outputUsesSavedPurposeFieldsAndFrozenMappingWithoutChangingBatchCounters",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "referenceLookupUsesFrozenCanvasAndValidatesCurrentRowAtSave",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        }
+      ],
+      "rawXmlSha256": "72c09a94b7ab74f005ec4414f3a085fcf3c15428b73882b89cf8bf10cb8363f2"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.FormFillSnapshotTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "rejectsUnconfiguredSnapshotSettingsInsteadOfCreatingAnOpenDirectEntry",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "directSettingsBecomeSelfContainedEntryAndDoNotReadDormantFlow",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "processSettingsFreezePublishedGraphAndBindingOverrides",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        }
+      ],
+      "rawXmlSha256": "6ed85c38e04ab849ad0d239e87ce62f159f38a00a045cf808991565892b279fe"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "configuredConfirmationCannotBeSkippedByCompletingOperation",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "routeCyclesAndUnsupportedNotificationsAreVisibleStartBlockers",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "savedDraftDoesNotSatisfyRequiredFormAndReadOnlyValuesCannotBeForged",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "missingRuntimeFactsNeverPassEvenWhenUsedUnderNot",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "approvalAndSignatureAreRequiredBeforeFormCompletion",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "skippedUnboundWorkFormDoesNotBlockCompletedConditionalWork",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "requiredFieldsOwnedByLaterApprovalDoNotBlockEarlierSubmissionButBlockFinalCompletion",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "workFormNeverSatisfiesIndependentRequiredOperationForm",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "supplementCreatesNewCopyWithoutReopeningOrChangingCompletedRecord",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "evaluatesStructuredConditionsWithoutExecutingCode",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "directEntryConfigurationControlsPermissionsButtonsAndSignature",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsDuplicateStartAndOutOfOrderCompletion",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "transferDoesNotAdvanceOrChangeFormValuesAndRequiresReason",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "supplementCannotBypassSubjectPermissionsOrUnreachedWorkForms",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "validSubmissionPersistsValuesAndUnlocksCompletion",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "enforcesNumericStructurePrecisionAndDateFormat",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "blocksSuccessorUntilEveryParallelPredecessorCompletes",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "disabledDirectSignatureEventIsNotExecuted",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "explicitLegacyOrHiddenButtonsDoNotEnableTransfer",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsUnknownFieldsAndInvalidNumbers",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "activeButtonSignatureFillsActualSignerAndAllowsReporterProjection",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "parallelWorkJoinWaitsForBothConfirmationBranches",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        }
+      ],
+      "rawXmlSha256": "1de5c54df4a658696c4b352c3211943ddd604d0f034143d85e5e317d1d0d5e7f"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.ProductionExecutionFormValuesTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "draftSaveRejectsDuplicateMalformedIdentityAndUndeclaredColumns",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "savedRowsReceiveStableIdentityAcrossReopenReorderAndDeletion",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "readonlyValuesFollowRowIdentityAndCannotBeChangedOrRemoved",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "signatureEvidenceContainsIdentityBeforeSigningAndForgedSignatureIsRejected",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "ambiguousDisabledAndInvalidSelectDefaultsAreNotGuessed",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "mainDefaultsArePersistedAndSelectLabelsResolveToStoredOptionValues",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "wholeTableReadonlyCannotBeBypassedByValidIdentity",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "frozenCanvasDefaultsApplyToMainAndNewRowsWithoutOverwritingInputOrClearedValues",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        }
+      ],
+      "rawXmlSha256": "61856fe7df856d1a8040eeb903b499c38d1df4df49087cdfa08fbb2c769c8c5a"
+    },
+    {
+      "suite": "com.zencas.edhr.workflow.controller.FormFillSettingsControllerTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "missingEdgesAreAnEmptyArray",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "previewReturnsTheRequestedVersionsNodesAndEdges",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        }
+      ],
+      "rawXmlSha256": "aa558f6614570702f5fe69b09988e6ebb4b40c54063f45920c9582d4f73e7031"
+    },
+    {
+      "suite": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+      "tests": 72,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "rejectsConditionBranchHandleCollisionsAtPublish",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "returnsNoPersistedVersionsWhenAWorkTemplateHasNoVersions",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "derivesPriorityFromRuleTypeWhenCreatingRule",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "publishesDraftAndCreatesTheNextInheritedDraft",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "allowsSignatureEventWithoutFieldFillToRemainUnbound",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "savesUnconfiguredModeAsAnIncompleteDraftWithoutAddingDirect",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsSavingAGraphWithoutExactlyOneStartAndEndBoundary",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "publishesOrderedDynamicConditionBranchesAndTheirDefaultBranch",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "keepsWorkTemplateAndRuleAuditWritesInTheSameTransaction",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsConditionAstWhenFirstReleaseFieldCatalogIsUnavailable",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsConditionAstWithEmptyGroupsAtPublish",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsANonSignatureFieldAsSignatureTarget",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "exposesUpgradeBlockerWhenLatestProcessBreaksEventBinding",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsPublishingProcessModeWithoutAnExplicitProcessBeforeWritingAnyVersionOrAudit",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsPublishingAFlowWhenTheReferencedFormVersionIsOutsideItsEffectiveWindow",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "savesCurrentBindingReferencesAndDormantSettingsWithoutRequiringCompletedSignatureConfiguration",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "allowsConnectingToAConditionInput",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsConditionAstWithAnUnknownOperatorAtPublish",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "savesDraftGraphAndRecordsTheUpdatedSnapshot",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsPublishingAFlowWithDisconnectedNodes",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsPublishingWhenBindingPermissionReferencesUnknownFormField",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsCreatingAnApplicabilityRuleWithoutCurrentPublishedFlow",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsUpdatingAnApplicabilityRuleWhenCurrentPublishedFlowIsMissing",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "copiesPublishedHistoryOverTheCurrentDraft",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsDeletingADraftFlowVersion",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsPublishingAFlowWhenTheReferencedFormVersionDoesNotExist",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsPublishingDynamicConditionBranchesWhenOneBranchIsMissing",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "readsIncompleteDraftProcessReferencesWithoutTreatingDormantChoiceAsActive",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "ignoresClientIdWhenCreatingWorkTemplate",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "listsOnlyRulesAttachedToProductionWorkDefinitions",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "exposesOutdatedFormProcessReferenceForDraft",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "listsOnlyProductionWorkDefinitions",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "atomicallyDeletesUnpublishedDraftBeforeDeletingItsWorkTemplate",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "saveGraphPersistsExplicitDirectModeWithoutInferringDormantProcess",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "allowsPublishingMultipleConditionsUsingTheConfirmedWorkRuntimeFields",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "createsAnEmptyDraftWithoutAnInitialConnection",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsConnectingToAConditionWithoutItsUnifiedInputHandle",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsConditionOperatorsOutsideTheFirstReleaseContract",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsBindingAnEventWithoutExplicitFieldFill",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsCopyingAsNewDraftWhenAnotherRequestCreatedTheDraftFirst",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsCreatingAnotherDraftWhileOneIsAlreadyEditable",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "keepsAnUnconfiguredConditionNodeInDraftButRejectsPublishingIt",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "recomputesPriorityWhenEditingRuleType",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "saveGraphRebuildsFormProcessReferenceProjection",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsAnUnregisteredConditionFieldCatalogVersionAtPublish",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsPublishingAFormWithNoModeBeforeWritingAnyVersionOrAudit",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsTwoOutgoingEdgesFromAnOrdinaryNode",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsLegacyFreeTextConditionAsTheOnlyPublishFact",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsConnectingToAConditionBranchOutlet",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "createsTheNextDraftWhenCopyingPublishedFlowWithoutAnEditableDraft",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "assignsGlobalRuleItsFixedPriority",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "reportsTheExactNodeAndButtonWhenASignatureTargetIsMissing",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "allowsASignatureFieldAsSignatureTarget",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "savesUnresolvedBindingContextAsAnIncompleteDraftWithoutCleaningProvidedConfiguration",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsPublishingAFlowWhenTheReferencedFormVersionIsNotYetEffective",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "allowsDeletingAWorkTemplateThatHasPublishedFlowHistoryWithoutRules",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "allowsConditionNodeToHaveMultipleConfiguredBranchEdges",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "allowsPublishingAFormNodeWithoutAFormProcess",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "savesAnIncompleteDraftWithoutPublishValidation",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsDeletingAPublishedFlowVersion",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "serializesWorkIdsAsStringsToPreserveSnowflakePrecisionInBrowsers",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsDeletingAWorkTemplateThatHasApplicabilityRules",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "allowsPublishingAFlowWithoutConditionNodes",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "exposesCurrentPublishedFlowInWorkTemplateSummary",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "doesNotPersistAFlowDraftWhenCreatingWorkTemplate",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "forwardsTrimmedKeywordToWorkTemplateQuery",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "writesAnAuditEventWhenCreatingAWorkTemplate",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsMalformedConditionBranchesInsteadOfFallingBackToLegacyRule",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsSavingStaleActiveBindingReferencesBeforeGraphOrAuditWrites",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsPublishingAFlowWhenAFormVersionIsMissing",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "allowsPublishingLegacyFlowFieldConfigurationWithoutMapping",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsScopeFieldsOnGlobalRule",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        }
+      ],
+      "rawXmlSha256": "90050b5db3e76c521cafbbb04f4afe10d3fa142e4fc58e2cd487096d26ff4eab"
+    },
+    {
+      "suite": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "rejectsUnknownFieldAndRemovedPermissionGroup",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "draftWithoutProvidedReferencesDoesNotReadMetadata",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "savesExplicitDirectModeWithoutInferringFromDormantReference",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "draftReferencesAllowUnfinishedSignatureBindingWhilePublishStillRejectsIt",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsUnconfiguredOrNonTextualModesWithoutInferringDormantReferences",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "processModeBindsOnlyExplicitFieldFillEvents",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "accountPasswordSignatureWithoutFieldFillDoesNotRequireAFieldBinding",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsAbsentSettingsAtEveryStrictBoundary",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "disabledSignatureEventDoesNotRequireAFieldBinding",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "roundTripsDirectSettingsAndIgnoresDormantProcessChoice",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "draftMetadataFailureIsNotTreatedAsAnEmptyContextAndDoesNotRewriteConfiguration",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "processModeRequiresPublishedFormProcessAndUsesOnlyItsSettings",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "rejectsDuplicateActionsAndDisablingValidation",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        },
+        {
+          "name": "requiresSignatureFieldBindingAndValidSubjects",
+          "skipped": false,
+          "failed": false,
+          "error": false
+        }
+      ],
+      "rawXmlSha256": "a55733446ca56a92d2a544c48b8bc6955caf756146e2beacc59ed4310139731d"
+    }
+  ],
+  "totals": {
+    "tests": 302,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3
+  },
+  "rawXmlNotPublished": true
+}

@@ -199,6 +199,7 @@ public class WorkTemplateController {
                     if (!config.isMissingNode() && !config.isNull() && !config.isObject())
                         throw new com.zencas.edhr.common.exception.BusinessException(com.zencas.edhr.common.exception.ErrorCode.WF_002, "填报设置格式不正确");
                     if (config.hasNonNull("fillMode")) com.zencas.edhr.workflow.service.FormFillSettingsService.usesProcess(config);
+                    fillSettingsService.validateDraftBindingReferences(config, parseLong(config.path("formTemplateVersionId").asText()));
                 }
             }
             String nodesJson = FLOW_GRAPH_OBJECT_MAPPER.writeValueAsString(graphNodes);

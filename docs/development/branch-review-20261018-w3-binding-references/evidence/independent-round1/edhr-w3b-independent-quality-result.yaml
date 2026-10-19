@@ -1,0 +1,182 @@
+qualityResult:
+  result: failed
+  baseCommit: ca98ab2897990eba30bf1433134aa8560578f562
+  headCommit: ef07ee7c34520c509d91954bd6fff4ca436ecd9d
+  contractBaseline:
+    sourceCommit: ef07ee7c34520c509d91954bd6fff4ca436ecd9d
+    targetBranch: edhr-dev
+    targetCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    contractReadCommit: ef07ee7c34520c509d91954bd6fff4ca436ecd9d
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.w3b-baseline-contract-integrity
+      required: true
+      category: documentation
+      description: Explicit target fetch, candidate/contract reads and before-after tracked/protected-tool integrity.
+      method: command
+      command: git fetch origin refs/heads/edhr-dev:refs/remotes/origin/edhr-dev; independent SHA256 manifests
+      outcome: passed
+      evidence: [/tmp/edhr-w3b-independent-integrity-comparison.json, /tmp/edhr-w3b-independent-integrity-before.json, /tmp/edhr-w3b-independent-integrity-after.json]
+    - id: check.w3b-requirements-ownership-scope
+      required: true
+      category: requirements
+      description: H004-only diff, DEC0023-08 cleanup-or-block policy, DEC0035 keys, DEC0009 draft boundary, DEC0067 isolation, parent adapters and historical progress.
+      method: inspection
+      command: Independent source/decision/impact/role and scoped history review at ca98..ef07
+      outcome: passed
+      evidence: [/tmp/edhr-w3b-independent-review.md, /tmp/edhr-w3b-independent-scope-history.md, /tmp/edhr-w3b-independent-scope-history-metadata.json]
+    - id: check.w3b-ontology
+      required: true
+      category: ontology
+      description: Read actual ontology FINAL and affected knowledge meanings; formal BusinessKnowledgeModelTest at candidate.
+      method: automated-test
+      command: BusinessKnowledgeModelTest within the independent backend test command
+      outcome: passed
+      evidence:
+        - /tmp/edhr-w3b-independent-java-summary.json
+        - docs/development/branch-review-20261018-w3-binding-references/evidence/ontology/edhr-w3b-binding-ontology-result.yaml
+        - 89 knowledge tests passed; 0.3.25/schema1.2.0; original policy statements and maturity unchanged. This structural pass does not invalidate the implementation finding below.
+    - id: check.w3b-backend-regression
+      required: true
+      category: regression
+      description: Actual shared strict/draft validation, work controller, product/family service consumers, snapshot, execution, signatures and audit regression.
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -o -C -Dtest=FormFillSettingsServiceTest,WorkTemplateControllerTest,FormFillSettingsControllerTest,ProductProcessOwnerServiceTest,ProductProcessControllerTest,FormFillSnapshotTest,ProductionExecutionIntegrationTest,ProductionExecutionEngineTest,ProductionExecutionFormValuesTest,BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence: [/tmp/edhr-w3b-independent-java-summary.json, /tmp/edhr-w3b-independent-validation-metadata.json, '302 total, 299 passed, 3 existing conditional skips, 0 failures/errors; real DHR-print Vite build executed.']
+    - id: check.w3b-original-java-counterexample
+      required: true
+      category: regression
+      description: Original ca98 production from git archive with only candidate controller test copied; expected product red and positive controls reproduced.
+      method: automated-test
+      command: Original-source Maven WorkTemplateControllerTest three selected methods, no exec.skip or worktree
+      outcome: passed
+      evidence: [/tmp/edhr-w3b-independent-java-baseline-summary.json, '3 total, 1 expected stale-reference assertion failure, 2 positive controls pass, 0 errors/skips; Maven exit1.']
+    - id: check.w3b-malformed-published-process-metadata
+      required: true
+      category: audit
+      description: Existing published process non-array metadata must reject before draft graph, persistence, reference projection and audit commands.
+      method: automated-test
+      command: Compile and run /tmp/W3BindingMetadataProbe.java against actual candidate target/classes and dependencies
+      outcome: failed
+      evidence: [/tmp/edhr-w3b-independent-malformed-process-metadata.json, /tmp/W3BindingMetadataProbe.java, 'Compile exit0; probe assertion exit1. Object/null/string shapes reach version.save, audit.save and rebuildForWorkVersion once each; array and syntax-invalid JSON controls reject with zero writes.']
+    - id: check.w3b-node
+      required: true
+      category: unit
+      description: Actual mode helpers, page validator, persistent serializer, editor version selection and permission summary.
+      method: automated-test
+      command: node --test scripts/test-explicit-fill-mode.mjs scripts/test-work-editor-default-version.mjs scripts/test-permission-summary.mjs
+      outcome: passed
+      evidence: [/tmp/edhr-w3b-independent-validation-summary.json, '13 passed, 0 failures/skips.']
+    - id: check.w3b-browser-confirmation
+      required: true
+      category: visual
+      description: Actual canonical shared component in two modes/two viewports, cancellation, delayed detail and controlled metadata failure.
+      method: browser
+      command: NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium W3B_BROWSER_ARTIFACT_DIR=/tmp/edhr-w3b-independent-browser node scripts/test-binding-reference-confirmation-browser.mjs
+      outcome: passed
+      evidence: [/tmp/edhr-w3b-independent-browser/browser-results.json, '6 passed; all pageerrors0; five normal consoleErrors0, metadata503 fixture exactly one expected503 console error; 11 PNG personally inspected.']
+    - id: check.w3b-original-browser-counterexample
+      required: true
+      category: regression
+      description: Original ca98 actual shared component leaves removed permission group after explicit confirmation.
+      method: browser
+      command: W3B_BASELINE_COMMIT=ca98ab2897990eba30bf1433134aa8560578f562 test-binding-reference-confirmation-browser.mjs
+      outcome: passed
+      evidence: [/tmp/edhr-w3b-independent-baseline-browser/browser-results.json, 'Expected assertion exit1 at first DIRECT1440 case; remaining five not run, not counted as failures; page/console errors0.']
+    - id: check.w3b-browser-neighbor
+      required: true
+      category: regression
+      description: Actual shared inline/dialog mode behavior plus actual WorkTemplateEditor adjacent publish/draft flow.
+      method: browser
+      command: W3_BROWSER_ARTIFACT_DIR=/tmp/edhr-w3b-independent-neighbor-browser node scripts/test-explicit-fill-mode-browser.mjs with Chromium/Playwright environment
+      outcome: passed
+      evidence: [/tmp/edhr-w3b-independent-neighbor-browser/browser-results.json, '5 passed, page/console errors0; controlled API fixture, not authenticated backend/DB E2E.']
+    - id: check.w3b-work-parent-adapter
+      required: true
+      category: e2e
+      description: Additional independent actual Work page confirmation to parent graph PUT and reload in both modes, including nested pruning/default/dormant preservation.
+      method: browser
+      command: NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium W3_BROWSER_ARTIFACT_DIR=/tmp/edhr-w3b-independent-work-adapter-browser node /tmp/edhr-w3b-independent-work-adapter-probe.mjs
+      outcome: passed
+      evidence: [/tmp/edhr-w3b-independent-work-adapter-probe.mjs, /tmp/edhr-w3b-independent-work-adapter-browser/browser-results.json, '2 passed, one graph PUT per mode and no additional write on reload; valid/default/dormant maps preserved; page/console errors0; 4 PNG personally inspected. Controlled API, not real DB.']
+    - id: check.w3b-build
+      required: true
+      category: regression
+      description: Actual tsc/Vite production build.
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence: [/tmp/edhr-w3b-independent-validation-metadata.json, 'exit0.']
+    - id: check.w3b-ui-static-regression
+      required: true
+      category: visual
+      description: Restored original official auditor, repository-root base/candidate strict runs; exact complete finding objects compared.
+      method: command
+      command: python3 /tmp/edhr-w3b-independent-audit-project.py <base-or-candidate-repository-root> --mode strict --output <tmp-report>
+      outcome: passed
+      evidence: [/tmp/edhr-w3b-independent-ui-base.json, /tmp/edhr-w3b-independent-ui-candidate-root.json, /tmp/edhr-w3b-independent-ui-comparison.json, 'Official script37716bytes/67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68; both strict exit2,84errors=13unresolved+71violations; exact full finding sets identical,0 introduced/removed. This is scoped regression evidence, not all-site compliance.']
+    - id: check.w3b-ui-whole-site-compliance
+      required: false
+      category: visual
+      description: Whole-site strict compliance remains unavailable due pre-existing debt.
+      method: command
+      command: Official audit_project.py candidate repository-root --mode strict
+      outcome: failed
+      evidence: [/tmp/edhr-w3b-independent-ui-candidate-root.json, 'exit2;84 existing errors; no current new static finding.']
+    - id: check.w3b-eslint
+      required: false
+      category: regression
+      description: Existing missing ESLint configuration remains an engineering limitation.
+      method: command
+      command: npm run lint
+      outcome: failed
+      evidence: [/tmp/edhr-w3b-independent-validation-metadata.json, 'Actual exit2, ESLint8.57.1 cannot find configuration; not called passed.']
+  findings:
+    - id: QF-W3B-001
+      severity: medium
+      scope: AUD-H004 work draft active binding references and malformed published process metadata
+      summary: A non-array nodesJson on an existing PUBLISHED FORM_PROCESS bypasses the new reference guard and reaches graph, repository, projection and audit writes.
+      reproductionSteps:
+        - Use candidate actual compiled controller and service with existing form702 and PUBLISHED FORM_PROCESS901 owned by definition902.
+        - Provide active PROCESS settings with form702/process901 and fieldPermissions start:removed referencing valid field keep.
+        - Set process nodesJson to object {}, JSON null, or a JSON string and invoke actual saveGraph(101,201,payload).
+        - Run the independent standalone probe against candidate compiled classes; inspect captured graph mutation and repository invocation counts.
+      expectedResult: Existing malformed published-process metadata rejects before any draft graph mutation, version save, reference projection rebuild or audit save; only genuinely unresolved/incomplete references retain the draft allowance.
+      actualResult: All three non-array values return normally; graph contains start:removed and version.save, rebuildForWorkVersion and audit.save each run once. Array controls and syntax-invalid JSON reject with zero writes.
+      evidence:
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java:129
+        - /tmp/edhr-w3b-independent-malformed-process-metadata.json
+        - /tmp/W3BindingMetadataProbe.java
+        - docs/development/branch-review-20261018-w3-binding-references/decision-package.yaml
+        - docs/knowledge/evidence/binding-reference-audit-2026-10-18.md
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.w3b-validation-depth
+      description: Backend integration uses H2 PostgreSQL compatibility; browser routes are controlled fixtures. No native PostgreSQL concurrency or authenticated UI-to-DB E2E was performed in this batch.
+      impact: This evidence does not establish all database/concurrent/runtime combinations.
+      mitigation: Retain exact scopes; rerun applicable backend and browser regressions after the fix in a fresh L2 verifier.
+    - id: risk.w3b-existing-engineering-debt
+      description: ESLint is unconfigured and the current official whole-repository strict audit still has84 pre-existing findings, fully equal to base.
+      impact: No all-site/lint compliance claim is valid.
+      mitigation: Track debt separately without altering business policy or expanding this H004 fix into a site-wide rewrite.
+    - id: risk.w3b-parent-coverage
+      description: Work parent graph adapter was exercised directly; product workspace/product-family full-page combinations were source-reviewed plus shared-component/service regression, not each run as full-page authenticated E2E.
+      impact: These parent routes must not be described as independently complete E2E coverage.
+      mitigation: Preserve source ownership map and accurately disclose the executed adapter scope.
+    - id: risk.w3b-progress-and-delivery-checkpoint
+      description: Scope review is explicitly preliminary; it still says waiting for ontology on one row although ontology FINAL is updated. User-required final drift review/progress report must occur after final successful QA and before PR creation.
+      impact: This failed candidate cannot be delivered; preliminary documents cannot count as completed PR-preparation review.
+      mitigation: Main agent fixes the deterministic defect, obtains fresh independent passed, then updates L0 progress facts and reports W0-W7/remaining W2-W3 scopes to the user before creating PR.
+    - id: risk.w3b-authorized-deferrals
+      description: H009/H010 and H012/remaining audit items remain pending; A12 and two old DHR high items stay user-deferred.2118 inventory rows remain pending.
+      impact: This slice does not complete W2/W3 or the whole-branch audit.
+      mitigation: Continue the repository ledger and original W0-W7 scope, retaining historical evidence and avoiding old-PR reopening.
+  blockingConditions: []

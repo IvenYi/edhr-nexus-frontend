@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
+import com.zencas.edhr.template.entity.FormTemplateVersion;
 import com.zencas.edhr.template.repository.FormTemplateVersionRepository;
 import com.zencas.edhr.workflow.entity.WorkflowDefinitionVersion;
 import com.zencas.edhr.workflow.repository.WorkflowDefinitionRepository;
@@ -77,7 +78,6 @@ public class FormFillSettingsService {
         }
         if (!nodes.isArray()) throw invalid("表单流程节点格式不正确");
         JsonNode binding = activeBinding(settings);
-        Set<String> subjectKeys = new HashSet<>(), eventKeys = new HashSet<>();
         for (JsonNode node : nodes) {
             String kind = node.path("data").path("kind").asText();
             if (!Set.of("START", "APPROVAL").contains(kind)) continue;
@@ -89,11 +89,6 @@ public class FormFillSettingsService {
                     throw invalid("直接填报提交前必须通过表单校验");
                 validateDirectGroups(config);
             }
-            JsonNode groups = config.path("permissionGroupRules");
-            if ("START".equals(kind)) {
-                if (!groups.isArray() || groups.isEmpty()) subjectKeys.add("start:open");
-                for (int i = 0; i < groups.size(); i++) subjectKeys.add("start:" + groups.get(i).path("id").asText("legacy-" + i));
-            } else subjectKeys.add("approval:" + node.path("id").asText());
             Set<String> actions = new HashSet<>(), buttonIds = new HashSet<>(), eventIds = new HashSet<>();
             for (JsonNode button : config.path("buttons")) {
                 if (!process && (!actions.add(button.path("action").asText()) || !buttonIds.add(button.path("id").asText())))
@@ -103,11 +98,58 @@ public class FormFillSettingsService {
                 if (!event.path("enabled").asBoolean(true)) continue;
                 if (!process && (!eventIds.add(event.path("id").asText())
                         || (!actions.isEmpty() && !actions.contains(event.path("action").asText())))) throw invalid("签署事件引用的按钮不存在或事件标识重复");
-                if ("FILL_SIGN_FIELD".equals(event.path("builtin").asText()))
-                    eventKeys.add(node.path("id").asText() + ":" + event.path("id").asText());
             }
         }
         var form = forms.findById(formVersionId).orElseThrow(() -> invalid("表单模板版本不存在"));
+        BindingReferences references = bindingReferences(nodes, form);
+        validateConfiguredBindingReferences(binding, references);
+        for (String key : references.eventKeys()) if (!references.signatureIds().contains(binding.path("eventBindings").path(key).path("fieldId").asText()))
+            throw invalid("填充签名字段的按钮必须绑定当前表单中可用的签名字段");
+    }
+
+    public void validateDraftBindingReferences(JsonNode settings, Long formVersionId) {
+        // A draft may be incomplete. Only check supplied references against a resolved active binding.
+        if (settings == null || !settings.isObject() || !settings.hasNonNull("fillMode") || formVersionId == null) return;
+        boolean process = usesProcess(settings);
+        JsonNode binding = activeBinding(settings);
+        if (binding.path("fieldPermissions").isEmpty() && binding.path("eventBindings").isEmpty()) return;
+        var form = forms.findById(formVersionId).orElse(null);
+        if (form == null) return;
+        JsonNode nodes;
+        if (process) {
+            String processId = settings.path("formProcessVersionId").asText();
+            if (!processId.matches("[0-9]+")) return;
+            WorkflowDefinitionVersion version;
+            try { version = versions.findById(Long.valueOf(processId)).orElse(null); }
+            catch (NumberFormatException error) { return; }
+            if (version == null || !"PUBLISHED".equals(version.getStatus())) return;
+            if (definitions.findById(version.getDefinitionId()).filter(definition -> "FORM_PROCESS".equals(definition.getType())).isEmpty()) return;
+            nodes = parse(version.getNodesJson());
+        } else nodes = mapper.createArrayNode().add(directNode(settings));
+        if (!nodes.isArray()) throw invalid("表单流程节点格式不正确");
+        try { validateConfiguredBindingReferences(binding, bindingReferences(nodes, form)); }
+        catch (BusinessException error) {
+            throw invalid("当前绑定配置已失效，请打开字段权限设置重新确认：" + error.getMessage());
+        }
+    }
+
+    private record BindingReferences(Set<String> subjectKeys, Set<String> eventKeys, Set<String> fieldIds, Set<String> signatureIds) {}
+
+    private BindingReferences bindingReferences(JsonNode nodes, FormTemplateVersion form) {
+        Set<String> subjectKeys = new HashSet<>(), eventKeys = new HashSet<>();
+        for (JsonNode node : nodes) {
+            String kind = node.path("data").path("kind").asText();
+            if (!Set.of("START", "APPROVAL").contains(kind)) continue;
+            JsonNode config = node.path("data").path("config"), groups = config.path("permissionGroupRules");
+            if ("START".equals(kind)) {
+                if (!groups.isArray() || groups.isEmpty()) subjectKeys.add("start:open");
+                for (int i = 0; i < groups.size(); i++) subjectKeys.add("start:" + groups.get(i).path("id").asText("legacy-" + i));
+            } else subjectKeys.add("approval:" + node.path("id").asText());
+            for (JsonNode event : config.path("buttonEvents")) {
+                if (event.path("enabled").asBoolean(true) && "FILL_SIGN_FIELD".equals(event.path("builtin").asText()))
+                    eventKeys.add(node.path("id").asText() + ":" + event.path("id").asText());
+            }
+        }
         JsonNode model = parse(form.getModelDesignJson());
         JsonNode fields = model.has("payload") ? model.path("payload").path("fields") : model.path("fields");
         Set<String> fieldIds = new HashSet<>(), signatureIds = new HashSet<>();
@@ -116,21 +158,28 @@ public class FormFillSettingsService {
             if ("signature".equals(field.path("type").asText()) && !field.path("readOnly").asBoolean()
                     && !"disabled".equals(field.path("status").asText())) signatureIds.add(field.path("id").asText());
         }
+        return new BindingReferences(subjectKeys, eventKeys, fieldIds, signatureIds);
+    }
+
+    private void validateConfiguredBindingReferences(JsonNode binding, BindingReferences references) {
         JsonNode permissions = binding.path("fieldPermissions");
         if (!permissions.isMissingNode() && !permissions.isObject()) throw invalid("字段权限配置格式不正确");
         permissions.fields().forEachRemaining(entry -> {
-            if (!subjectKeys.contains(entry.getKey()) || !entry.getValue().isObject()) throw invalid("字段权限引用的权限组不存在");
+            if (!references.subjectKeys().contains(entry.getKey()) || !entry.getValue().isObject()) throw invalid("字段权限引用的权限组不存在");
             JsonNode rule = entry.getValue();
             FormNodeConfiguration.validatePermissionValue(rule.path("defaultPermission"));
-            Set<String> editable = fieldSet(rule.path("editableFieldIds"), fieldIds);
-            editable.retainAll(fieldSet(rule.path("readOnlyFieldIds"), fieldIds));
+            Set<String> editable = fieldSet(rule.path("editableFieldIds"), references.fieldIds());
+            editable.retainAll(fieldSet(rule.path("readOnlyFieldIds"), references.fieldIds()));
             if (!editable.isEmpty()) throw invalid("同一字段不能同时配置为可编辑和只读");
         });
         JsonNode bindings = binding.path("eventBindings");
         if (!bindings.isMissingNode() && !bindings.isObject()) throw invalid("签名字段绑定格式不正确");
-        bindings.fieldNames().forEachRemaining(key -> { if (!eventKeys.contains(key)) throw invalid("签名字段引用的按钮事件不存在"); });
-        for (String key : eventKeys) if (!signatureIds.contains(bindings.path(key).path("fieldId").asText()))
-            throw invalid("填充签名字段的按钮必须绑定当前表单中可用的签名字段");
+        bindings.fields().forEachRemaining(entry -> {
+            if (!references.eventKeys().contains(entry.getKey())) throw invalid("签名字段引用的按钮事件不存在");
+            JsonNode fieldId = entry.getValue().path("fieldId");
+            if (!fieldId.isMissingNode() && !fieldId.isNull() && !fieldId.asText().isBlank()
+                    && (!fieldId.isTextual() || !references.fieldIds().contains(fieldId.asText()))) throw invalid("签名字段引用的字段不存在");
+        });
     }
 
     private void validateDirectGroups(JsonNode config) {

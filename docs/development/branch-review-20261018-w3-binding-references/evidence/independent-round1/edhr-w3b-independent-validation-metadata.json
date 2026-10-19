@@ -1,0 +1,116 @@
+{
+  "commands": {
+    "java": {
+      "bytes": 3468458,
+      "sha256": "8d4220066ae82143b49625af2b20a37114cf2935a27dd131358f9f8a1ec03655",
+      "rawNotPublished": true
+    },
+    "node": {
+      "bytes": 1246,
+      "sha256": "c79d76961b8d8147ef0ad3ad04764fcb11acef23a0dd2a4e106e35cffda4bfd1",
+      "rawNotPublished": true
+    },
+    "browser": {
+      "bytes": 11774,
+      "sha256": "10cd65370c2f5f5fdd5af40e9d2a8f474521a63f99c8f101af7b40d7d5c8ef39",
+      "rawNotPublished": true
+    },
+    "neighbor-browser": {
+      "bytes": 6039,
+      "sha256": "62de153bbb3283e7da06c95f0db00e4da9f5b7914a5193db895846b110858728",
+      "rawNotPublished": true
+    },
+    "build": {
+      "bytes": 9335,
+      "sha256": "e74dbe05efa9f4bec6741957a60dd79e06fc14d4354ac3dd1f642494ed820259",
+      "rawNotPublished": true
+    },
+    "lint": {
+      "bytes": 819,
+      "sha256": "ce1ab04f5660d6cb81c2cdf842c1d4dd91f6f5ee6932d4d486e157c45077d8d1",
+      "rawNotPublished": true
+    },
+    "java-baseline": {
+      "bytes": 23039,
+      "sha256": "a931fa51e7958ffba0cc8453ebc379228724b39634a8496d37a365ddf86f0f0d",
+      "rawNotPublished": true
+    },
+    "baseline-browser": {
+      "bytes": 1401,
+      "sha256": "b97d2190e0c411b210b2e08b7080c056e4508b595cd6e538fd712060ad69fe88",
+      "rawNotPublished": true
+    },
+    "work-adapter": {
+      "bytes": 14015,
+      "sha256": "ec70930060fedee37973aa69167587795f776d9adbb29760480168cf11e61787",
+      "rawNotPublished": true
+    },
+    "ui-candidate-root": {
+      "bytes": 34340,
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a",
+      "rawNotPublished": true
+    },
+    "ui-base": {
+      "bytes": 34344,
+      "sha256": "963098b1f9ef2bc1166da77f6cfbecb56da1b65906646592623a8a5bf4ca1683",
+      "rawNotPublished": true
+    },
+    "malformed-process-metadata-compile": {
+      "bytes": 480,
+      "sha256": "32a54b22d3774b3a881105a6d91bf37c8ba167a2677dfdde29530ed62a93cebd",
+      "rawNotPublished": true
+    },
+    "malformed-process-metadata-run": {
+      "bytes": 3145,
+      "sha256": "b5335095ce923a36c93b22a16b6acb7b138237afcfef054b4ebcbfe838ee47b2",
+      "rawNotPublished": true
+    }
+  },
+  "versions": {
+    "node --version": "v24.19.0",
+    "npm --version": "11.9.0",
+    "java --version": "openjdk 21.0.12.1 2026-08-18",
+    "bash /workspace/.edhr-cloud-tools/mvn-edhr -version": "Apache Maven 3.9.11 (3e54c93a704957b63ee3494413a2b544fd3d825b)",
+    "/usr/bin/chromium --version": "Chromium 154.0.8037.57 built on Debian GNU/Linux 13 (trixie)"
+  },
+  "sourceFiles": {
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java": {
+      "bytes": 81036,
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b"
+    },
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java": {
+      "bytes": 13088,
+      "sha256": "9061702d512f2e04d336491938ecb78bddc7f63bff8254dd5ece48df80e31628"
+    },
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java": {
+      "bytes": 103841,
+      "sha256": "43550840fefc52180963533e12de9b20c34b0c7575dc345f1487675bc4bed1f1"
+    },
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/FormFillSettingsServiceTest.java": {
+      "bytes": 10509,
+      "sha256": "0bf61d81eedad0015d15f350ddedbc25fad983fcb8c02a0c1d73d78f64b7a954"
+    },
+    "gmp-platform/frontend/scripts/test-binding-reference-confirmation-browser.mjs": {
+      "bytes": 11238,
+      "sha256": "990ec416b4b01dc620ab1d3971119bebaad6bdb74060a25bce80e28ad12c926e"
+    },
+    "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx": {
+      "bytes": 14553,
+      "sha256": "047b5c44e773a338cd550ec0eaf782eb11786ea42610d6e56eba9c7f4db2721d"
+    }
+  },
+  "whitespaceChecks": {
+    "default": {
+      "exitCode": 2,
+      "diagnosticCount": 2119,
+      "diagnosticPaths": [
+        "docs/development/branch-review-20261018-w3-binding-references/coverage.csv"
+      ]
+    },
+    "csv-aware": {
+      "exitCode": 0,
+      "diagnosticCount": 0,
+      "diagnosticPaths": []
+    }
+  }
+}

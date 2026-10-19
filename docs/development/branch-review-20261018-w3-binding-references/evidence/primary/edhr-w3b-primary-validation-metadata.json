@@ -1,0 +1,93 @@
+{
+  "artifactType": "readonly-helper-primary-summary-metadata-not-qualityResult",
+  "generatedAt": "2026-10-18T16:17:54.260369+00:00",
+  "state": "final-primary-evidence-extraction",
+  "frozen": true,
+  "summary": {
+    "path": "/tmp/edhr-w3b-primary-validation.json",
+    "bytes": 102708,
+    "sha256": "dfbb14c96528eb56d1f3a24ca808ee6416e088097e5d7c52edc4bc8cf0678cf2",
+    "modifiedAtUtc": "2026-10-18T16:17:54.322040+00:00"
+  },
+  "publicArtifactWhitelist": [
+    "/tmp/edhr-w3b-primary-validation.json",
+    "/tmp/edhr-w3b-primary-validation-metadata.json"
+  ],
+  "doNotPublish": [
+    "/tmp/edhr-w3b-java-regression.log",
+    "/tmp/edhr-w3b-java-red.log",
+    "gmp-platform/backend/target/surefire-reports XML and system-out"
+  ],
+  "sourceExtraction": "Only suite/testcase identity, status and counts were read out of XML. File SHA256/mtime provide source provenance. Raw XML/logs are neither copied nor embedded.",
+  "provisionalSections": [],
+  "currentSourceReceipts": {
+    "productionSources": [
+      {
+        "path": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+        "bytes": 81036,
+        "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+        "modifiedAtUtc": "2026-10-18T16:05:27.614655+00:00"
+      },
+      {
+        "path": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java",
+        "bytes": 13088,
+        "sha256": "9061702d512f2e04d336491938ecb78bddc7f63bff8254dd5ece48df80e31628",
+        "modifiedAtUtc": "2026-10-18T16:09:13.820681+00:00"
+      },
+      {
+        "path": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx",
+        "bytes": 14553,
+        "sha256": "047b5c44e773a338cd550ec0eaf782eb11786ea42610d6e56eba9c7f4db2721d",
+        "modifiedAtUtc": "2026-10-18T16:05:27.935715+00:00"
+      }
+    ],
+    "javaTestSources": [
+      {
+        "path": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java",
+        "bytes": 103841,
+        "sha256": "43550840fefc52180963533e12de9b20c34b0c7575dc345f1487675bc4bed1f1",
+        "modifiedAtUtc": "2026-10-18T16:03:47.439667+00:00"
+      },
+      {
+        "path": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/FormFillSettingsServiceTest.java",
+        "bytes": 10509,
+        "sha256": "0bf61d81eedad0015d15f350ddedbc25fad983fcb8c02a0c1d73d78f64b7a954",
+        "modifiedAtUtc": "2026-10-18T16:09:57.932482+00:00"
+      }
+    ],
+    "testScripts": [
+      {
+        "path": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/scripts/test-binding-reference-confirmation-browser.mjs",
+        "bytes": 11238,
+        "sha256": "990ec416b4b01dc620ab1d3971119bebaad6bdb74060a25bce80e28ad12c926e",
+        "modifiedAtUtc": "2026-10-18T16:13:27.484606+00:00"
+      },
+      {
+        "path": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/scripts/test-explicit-fill-mode-browser.mjs",
+        "bytes": 12262,
+        "sha256": "15f1dcddd0589eb1acc6a348ad2f1d39c897249249667e24733ff3a4775c2be0",
+        "modifiedAtUtc": "2026-10-18T10:31:31.528619+00:00"
+      },
+      {
+        "path": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/scripts/test-explicit-fill-mode.mjs",
+        "bytes": 3912,
+        "sha256": "befc71ee814c4fff21c060378d067e013b01155c3323eeb9243ec66317b1c35a",
+        "modifiedAtUtc": "2026-10-18T10:16:42.311409+00:00"
+      },
+      {
+        "path": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/scripts/test-permission-summary.mjs",
+        "bytes": 2212,
+        "sha256": "887382cafe416a30b8bc4bdaaca77bd42a2323f7134c69102e5f2ceba5238a62",
+        "modifiedAtUtc": "2026-10-18T06:03:33.402440+00:00"
+      },
+      {
+        "path": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/scripts/test-work-editor-default-version.mjs",
+        "bytes": 1923,
+        "sha256": "5ce948d598df1834692b0757168e1a777de4277fe2dc90bdc67d227e1757ee99",
+        "modifiedAtUtc": "2026-10-18T06:03:33.402440+00:00"
+      }
+    ]
+  },
+  "applicationChecksExecutedByHelper": [],
+  "repositoryEditsByHelper": []
+}

@@ -1,0 +1,64 @@
+{
+  "baselineCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "semanticScope": [
+    "DEC-0023-03",
+    "DEC-0023-04",
+    "DEC-0023-08",
+    "DEC-0035-01",
+    "DEC-0035-02",
+    "DEC-0035-03",
+    "DEC-0035-04",
+    "DEC-0035-05",
+    "DEC-0009-01",
+    "DEC-0009-05",
+    "DEC-0067-04",
+    "DEC-0067-05",
+    "discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions"
+  ],
+  "changedArtifacts": [
+    {
+      "path": "docs/knowledge/evidence/binding-reference-audit-2026-10-18.md",
+      "bytes": 10626,
+      "sha256": "c21d3d604dbece57243c2a3a2d5450d0eae50cd5e4355eb1a6eae10d173c927e"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-fill-settings.yaml",
+      "bytes": 4301,
+      "sha256": "9022056ed908318e4ddc26bde1d1a657e5418a503614a0c559281c1492cfdce7"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml",
+      "bytes": 8818,
+      "sha256": "c00e8ea3b1a47d75207bfdb481c12a8ede40a8fe0fda0771109b0c15dc4ebc08"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "bytes": 89133,
+      "sha256": "bcc435195a344aeeef250d7bf9d4ad137a5f59a59ac21d5d715202d50cbe8b89"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "bytes": 58316,
+      "sha256": "cd952e25a69def140721ed5a436a29e72d8a66981c7dbf7aa264b7e9020d2fec"
+    }
+  ],
+  "retained": [
+    "original user confirmation",
+    "historical audit evidence",
+    "0.3.25/schema1.2.0",
+    "specified/internal",
+    "P0/in-progress"
+  ],
+  "deferred": [
+    "AUD-H009",
+    "AUD-H010",
+    "A12",
+    "two user-deferred old DHR high findings"
+  ],
+  "noClaim": [
+    "full W3/W2 completion",
+    "full branch/source/knowledge audit complete",
+    "native PostgreSQL execution",
+    "independent quality performed by ontology"
+  ]
+}
