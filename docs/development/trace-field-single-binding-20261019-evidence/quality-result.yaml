@@ -1,0 +1,218 @@
+qualityResult:
+  result: passed
+  baseCommit: "336466d95c3866581e5d7d641544756ba7807946"
+  headCommit: "d7dd56d381b4a9484c2df72a9834b4df587c210e"
+  contractBaseline:
+    sourceCommit: "d7dd56d381b4a9484c2df72a9834b4df587c210e"
+    targetBranch: edhr-dev
+    targetCommit: "336466d95c3866581e5d7d641544756ba7807946"
+    contractReadCommit: "336466d95c3866581e5d7d641544756ba7807946"
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/trace-field-single-binding-20261019-evidence/quality-result.yaml
+    excludedPaths:
+      - gmp-platform/frontend/node_modules
+      - output/trace-single-binding-publish/
+    untrackedPaths:
+      - docs/development/trace-field-single-binding-20261019-evidence/quality-result.yaml
+      - gmp-platform/frontend/node_modules
+      - output/trace-single-binding-publish/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.trace-acceptance.candidate-and-contracts
+      required: true
+      category: documentation
+      description: 全新独立质量实例固定提交范围并核对契约与功能隔离。
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git status --short; git diff --name-only 336466d95c3866581e5d7d641544756ba7807946..HEAD; git diff --quiet 336466d95c3866581e5d7d641544756ba7807946..HEAD -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - 实际测试候选d7dd56d381b4a9484c2df72a9834b4df587c210e，目标跟踪基线336466d95c3866581e5d7d641544756ba7807946；两者项目、质量角色及交接契约无差异，已实际读取。
+        - 独立gh api repos/IvenYi/edhr-nexus-frontend/branches/edhr-dev --jq .commit.sha返回同一336466d95c3866581e5d7d641544756ba7807946；直接Git网络连接超时，使用API只读核对目标，无远端写入。
+        - 候选仅含本次单绑、清理迁移、相关知识与验收资产，没有纳入原dirty工作区的原因目录、统一引用、字典或数量开发。
+        - 验收开始时没有未提交产品、迁移、知识或测试修改，仅依赖链接及运行产物；本实例只新增本质量报告及本地证据，未参与任何修复。
+    - id: check.trace-acceptance.requirements-and-knowledge
+      required: true
+      category: ontology
+      description: 核对当前单绑、配置删除授权与历史保留边界及声明级替代。
+      method: inspection
+      command: 阅读decisionPackage、DEC-0077-42、form-trace-field-binding规则、计数fact、glossary/ontology及对应原始确认和架构差异。
+      outcome: passed
+      evidence:
+        - 知识0.3.25/schema1.2.0；一个真实主字段或子表列最多一项，同项跨字段/表单复用，含停用和重复同项计数，统计合法共用不受限。
+        - 用户后续删除授权明确替代同轮先前保留人工修正；冲突字段全部formTrace来源和空binding删除，合法单绑、字段值和已形成实例/执行/DHR冻结证据保留，当前定义与历史证据分列。
+        - 当前规则保持specified/internal，不因本轮测试提升全项目成熟度；原始竞品研究只定位已查路径，不宣称所有行业没有多绑需要或竞品全局校验。
+        - QF-001区域身份修补统一Java String.isBlank主表解释，不trim合法非空白ID；QF-002只修复合法来源展示与校验，没有新增兼容政策。
+    - id: check.trace-acceptance.entrypoints-and-history
+      required: true
+      category: api
+      description: 设计保存、新配置冻结严格校验，既有解释路径不套新限制。
+      method: inspection
+      command: 检查FormProjectionInterpreter.validateConfiguration、FormLookupCatalogService.prepareDesign、ExecutionSnapshotBuilder及前端Shell保存入口。
+      outcome: passed
+      evidence:
+        - validateConfiguration先沿原校验再按真实区域/来源计数，设计prepareDesign与新执行快照接入，preview仍使用validate；未改历史读取入口。
+        - 主字段和子表列已有单项隐藏新增入口；来源编辑器排除被占用字段但保留当前冲突用于修正；Shell持久化统一阻断跨绑定冲突，没有静默取第一项。
+        - 候选没有修改既有来源授权、签署、生产状态、数量累计或历史表单值。
+    - id: check.trace-acceptance.frontend
+      required: true
+      category: unit
+      description: 前端来源候选、冲突、合法空白主表展示与相邻配置回归。
+      method: automated-test
+      command: cd gmp-platform/frontend && node --test scripts/test-projection-source-editor.mjs
+      outcome: passed
+      evidence:
+        - /tmp/edhr-trace-acceptance-fe.log
+        - 独立执行27项全部通过，失败/跳过0；覆盖合法空白单绑来源可见、无失效子表误报，原有跨绑定/同项重复/停用/不同区域及统计共用边界。
+    - id: check.trace-acceptance.backend
+      required: true
+      category: unit
+      description: 解释器单绑与权限相邻回归。
+      method: automated-test
+      command: cd gmp-platform/backend && mvn --batch-mode --no-transfer-progress -Dtest=FormProjectionInterpreterTest,FormLookupCatalogAuthorizationTest,TemplateProjectionAuthorizationTest test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-trace-acceptance-be.log
+        - 独立执行29项全部通过，失败/错误/跳过0。
+    - id: check.trace-acceptance.postgres
+      required: true
+      category: integration
+      description: 追溯目录、正式投影与历史快照数据库回归。
+      method: automated-test
+      command: cd gmp-platform/backend && PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_form_projection mvn --batch-mode --no-transfer-progress -Dtest=FormLookupCatalogPostgresTest,FormProjectionPostgresTest,FormFillSnapshotTest test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-trace-acceptance-pg.log
+        - 独立执行38项全部通过，失败/错误/跳过0；数据库测试创建并清理独立UUID schema，没有写公共业务记录。
+    - id: check.trace-acceptance.knowledge-tests
+      required: true
+      category: ontology
+      description: 正式知识结构、ID、引用及相邻契约校验。
+      method: automated-test
+      command: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-trace-acceptance-knowledge.log
+        - 独立执行89项全部通过，失败/错误/跳过0；自动结构通过不代替本报告人工语义核对。
+    - id: check.trace-acceptance.migration
+      required: true
+      category: database
+      description: 一次性配置删除范围、补扫、锁版本及幂等性。
+      method: automated-test
+      command: cd gmp-platform/backend && PGHOST=127.0.0.1 PGUSER=edhr PGDATABASE=edhr_form_projection python3 scripts/test-trace-single-binding-migration.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-trace-acceptance-migration.log
+        - 0116+0117在pg_temp影子表事务内验证主表/子表、包装/原始JSON、同项重复和停用、空白区域、全部冲突映射删除、合法复用及统计/证据保留、锁版本与幂等，最终ROLLBACK。
+        - 0116相对已记录首次提交的SHA256保持5ab286296d9cce2152015d8c9643879f0e0e93b481b4e40069137a13c75c8b3c，不改已应用checksum；0117独立纳入主迁移清单。
+        - 两SQL仅更新form_template_version对应配置、锁版本及系统迁移审计信息，不写填写、实例、投影或DHR证据表。
+    - id: check.trace-acceptance.unicode-identity
+      required: true
+      category: regression
+      description: 独立复核001全部Java空白及前后端/SQL区域一致性。
+      method: automated-test
+      command: /tmp/TraceAcceptance.java调用本候选target/classes；Node读取候选projectionTableId的实际regex，PostgreSQL只读查询读取0117实际regex，逐BMP字符比较。
+      outcome: passed
+      evidence:
+        - /tmp/edhr-trace-acceptance-unicode.log
+        - Java25种Character.isWhitespace字符均阻断新多绑、旧preview仍两条且输入不改写，移除一项后的合法单绑通过。
+        - 前端全部BMP码点及SQL全部可编码BMP码点的空白集合与Java25项完全相同；非空白ID保持原值的分支按源码核对，没有trim逻辑。
+    - id: check.trace-acceptance.browser
+      required: true
+      category: e2e
+      description: 实际Shell/Canvas/MUI的保存与单绑交互，重点关闭002。
+      method: browser
+      command: cd gmp-platform/frontend && NODE_PATH=/Users/ivenwang/Documents/edhr-nexus/node_modules CHROME_PATH=/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome W2_SCREENSHOT_DIR=output/trace-single-binding-publish/acceptance-qa node scripts/test-designer-save-browser.mjs
+      outcome: passed
+      evidence:
+        - /tmp/edhr-trace-acceptance-browser.log
+        - 独立20场景全部通过，包含1440/390的合法空白主表单绑显示移除按钮且隐藏新增入口、保存保留原tableId、移除后恢复入口、再次保存空配置。
+        - 两尺寸冲突用例以空白主表别名验证侧栏警告、保存阻断且不误报失效子表、修正/撤销/再修正可保存，同项另一字段保持；整子表列冲突修正通过。
+        - 本候选真实组件配受控API及保存回调，不写实际后端，不冒充3000/8081制造全流程验收。
+    - id: check.trace-acceptance.visual
+      required: true
+      category: visual
+      description: 单绑冲突侧栏提示与移除操作在桌面/窄视口可辨认。
+      method: inspection
+      command: 直接查看本轮浏览器trace-conflict-1440.png及trace-conflict-390.png。
+      outcome: passed
+      evidence:
+        - output/trace-single-binding-publish/acceptance-qa/trace-conflict-1440.png
+        - output/trace-single-binding-publish/acceptance-qa/trace-conflict-390.png
+        - 两尺寸提示、各追溯含义和移除图标清晰可见，沿既有MUI侧栏规范；不将既有整设计器移动布局视为本次全面重设。
+    - id: check.trace-acceptance.runtime-evidence-boundary
+      required: true
+      category: audit
+      description: 只读复核实际库残留并区分旧运行清理证据与当前候选。
+      method: query
+      command: BEGIN READ ONLY按候选0117区域身份扫描public.form_template_version并查询databasechangelog，ROLLBACK。
+      outcome: passed
+      evidence:
+        - /tmp/edhr-trace-acceptance-public-readonly.log
+        - 当前冲突字段0、冲突映射0，0116已应用、0117未应用；本实例没有public清理或实际环境重启。
+        - cleanup-summary.json记录ca98工作树此前实际清理模板版本985004的1字段/2关联及六表计数/摘要不变，并明确来源；没有将旧运行事实冒充当前候选重新执行。
+    - id: check.trace-acceptance.build-and-hygiene
+      required: true
+      category: regression
+      description: TypeScript/Vite构建、设计器静态及候选差异卫生。
+      method: command
+      command: cd gmp-platform/frontend && npm run build && node scripts/verify-template-designer-react.mjs; git diff --check 336466d95c3866581e5d7d641544756ba7807946..HEAD
+      outcome: passed
+      evidence:
+        - /tmp/edhr-trace-acceptance-build.log
+        - 独立构建、设计器静态及差异检查通过；全部检查固定同一d7dd56d3候选，没有未提交业务差异。
+  findings:
+    - id: QF-TRACE-PUBLISH-001
+      severity: medium
+      scope: 追溯单绑计数及空白主表迁移区域身份
+      summary: 首轮原始tableId分组导致同一实际主字段漏计；dd46244c已统一区域身份，当前候选独立复验通过。
+      reproductionSteps:
+        - 同一lot主字段分别由省略tableId和空白tableId两条formTrace使用。
+        - 执行严格配置校验、历史preview与0116+0117临时表迁移。
+      expectedResult: 新配置拒绝多绑，清理全部冲突映射，历史解释保留；非空白子表身份不剪裁。
+      actualResult: 25种Java空白严格拒绝且历史保留，前端与SQL全BMP字符集一致，迁移删除全部冲突并幂等，合法单绑不被删除。
+      evidence:
+        - docs/development/trace-field-single-binding-20261019-evidence/quality-result-first.yaml
+        - /tmp/edhr-trace-acceptance-unicode.log
+        - /tmp/edhr-trace-acceptance-migration.log
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: "dd46244c0b639a71d021a6ca83c02b5335555d3e"
+        - type: command
+          reference: /tmp/edhr-trace-acceptance-unicode.log
+        - type: command
+          reference: /tmp/edhr-trace-acceptance-migration.log
+    - id: QF-TRACE-PUBLISH-002
+      severity: medium
+      scope: 合法空白主表来源的FieldProjectionConfig显示、projectionSources及保存反馈
+      summary: 第二轮合法空白单绑来源隐藏及前端失效子表误报，d7dd56d3已共享区域身份；全新实例实际浏览器复验关闭。
+      reproductionSteps:
+        - 主字段仅有一个tableId为空白字符组合的合法追溯来源。
+        - 在1440和390视口选择字段、打开追溯与业务、保存、解除关联并再次保存。
+      expectedResult: 来源可见且可移除，新增入口隐藏；保存不误报失效子表、不改写合法原存储值；解除后可再次保存。
+      actualResult: 两尺寸均显示已有来源与移除入口，首次保存tableId原样保持；解除后显示添加入口，第二次保存bindings为空，无保存阻断。
+      evidence:
+        - docs/development/trace-field-single-binding-20261019-evidence/quality-result-second.yaml
+        - /tmp/edhr-trace-acceptance-fe.log
+        - /tmp/edhr-trace-acceptance-browser.log
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: "d7dd56d381b4a9484c2df72a9834b4df587c210e"
+        - type: command
+          reference: /tmp/edhr-trace-acceptance-fe.log
+        - type: command
+          reference: /tmp/edhr-trace-acceptance-browser.log
+  residualRisks:
+    - id: risk.trace-acceptance.runtime-scope
+      description: 本候选未部署3000/8081、未重跑制造全流程，0117仅在回滚临时表验证，未应用public。
+      impact: 本报告不代表新候选实际环境完整制造业务或0117部署已经完成；实际1字段/2关联清理属于有来源标记的前轮运行事实。
+      mitigation: 部署后由Liquibase执行0117；当前public只读审计无冲突残留，不重复删除或改旧数据。
+    - id: risk.trace-acceptance.remote-gates
+      description: 未核验远端分支保护、必需CI或ruleset设置。
+      impact: 本地独立质量通过不证明远端已经强制门禁或代码已经推送。
+      mitigation: 主侧推送前核对远端目标及最终文档提交差异，并验证推送结果；不宣称远端强制门禁已启用。
+  blockingConditions: []
