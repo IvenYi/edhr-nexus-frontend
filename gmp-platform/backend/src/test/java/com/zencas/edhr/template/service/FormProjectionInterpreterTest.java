@@ -7,6 +7,47 @@ import static org.assertj.core.api.Assertions.*;
 
 class FormProjectionInterpreterTest {
     private final ObjectMapper mapper = new ObjectMapper();
+    private ObjectNode traceModel() throws Exception {
+        return (ObjectNode) mapper.readTree("""
+          {"fields":[{"id":"lot","name":"批号输入","type":"text"},{"id":"other","type":"text"}],
+           "projection":{"version":"form-projection-v1","bindings":[
+            {"id":"one","modelId":"formTrace","enabled":true,"sources":{"materialLotText":"lot"}},
+            {"id":"two","modelId":"formTrace","enabled":true,"sources":{"equipmentText":"lot"}}]}}
+          """);
+    }
+    @Test void newTraceConfigurationRejectsCrossBindingConflictsWithoutRewritingFrozenInterpretation() throws Exception {
+        var model = traceModel();
+        var before = model.deepCopy();
+        assertThatThrownBy(() -> FormProjectionInterpreter.validateConfiguration(model))
+                .hasMessageContaining("批号输入").hasMessageContaining("最多关联一个追溯项");
+        assertThat(model).isEqualTo(before);
+        var records = FormProjectionInterpreter.preview(model, mapper.readTree("{\"lot\":\"LOT-01\"}"));
+        assertThat(records).hasSize(2);
+        assertThat(records.get(0).path("attributes").path("materialLotText").asText()).isEqualTo("LOT-01");
+        assertThat(records.get(1).path("attributes").path("equipmentText").asText()).isEqualTo("LOT-01");
+        ((ObjectNode) model.path("projection").path("bindings").get(1)).put("enabled", false);
+        assertThatThrownBy(() -> FormProjectionInterpreter.validateConfiguration(model)).hasMessageContaining("最多关联一个追溯项");
+        ((com.fasterxml.jackson.databind.node.ArrayNode) model.path("projection").path("bindings")).remove(1);
+        FormProjectionInterpreter.validateConfiguration(model);
+    }
+    @Test void sameTraceMeaningCanBeReusedAcrossFieldsAndTableRegions() throws Exception {
+        var model = traceModel();
+        var bindings = (com.fasterxml.jackson.databind.node.ArrayNode) model.path("projection").path("bindings");
+        ((ObjectNode) bindings.get(1)).putObject("sources").put("materialLotText", "other");
+        var columns = model.path("fields").deepCopy();
+        ((com.fasterxml.jackson.databind.node.ArrayNode) model.path("fields")).addObject().put("id", "rows").put("type", "subTable").putObject("typeConfig").set("columns", columns);
+        bindings.add(((ObjectNode) bindings.get(0)).deepCopy().put("id", "row").put("tableId", "rows"));
+        FormProjectionInterpreter.validateConfiguration(model);
+        bindings.add(((ObjectNode) bindings.get(2)).deepCopy().put("id", "duplicate-row"));
+        assertThatThrownBy(() -> FormProjectionInterpreter.validateConfiguration(model)).hasMessageContaining("最多关联一个追溯项");
+    }
+    @Test void traceDateAndProductionDateMayUseTheSameBusinessField() throws Exception {
+        var model = reportModel();
+        ((ObjectNode) model.path("projection")).putObject("lookupItems").putObject("lookup_date").put("name", "追溯日期").put("type", "date");
+        var bindings = (com.fasterxml.jackson.databind.node.ArrayNode) model.path("projection").path("bindings");
+        bindings.addObject().put("id", "trace").put("modelId", "formTrace").put("enabled", true).putObject("sources").put("lookup_date", "date");
+        FormProjectionInterpreter.validateConfiguration(model);
+    }
     private ObjectNode reportModel() throws Exception {
         return (ObjectNode) mapper.readTree("""
           {"fields":[{"id":"qty","type":"number"},{"id":"hours","type":"number"},

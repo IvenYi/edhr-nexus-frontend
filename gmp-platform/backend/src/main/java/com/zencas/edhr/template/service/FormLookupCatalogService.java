@@ -255,7 +255,7 @@ public class FormLookupCatalogService {
             for (JsonNode binding : configured.path("projection").path("bindings")) {
                 ((ObjectNode) binding).put("enabled", true).remove("rowKeyFieldId");
             }
-            FormProjectionInterpreter.validate(configured);
+            FormProjectionInterpreter.validateConfiguration(configured);
             if (root.has("payload")) { ((ObjectNode) root).set("payload", configured); return root.toString(); }
             return configured.toString();
         } catch (com.fasterxml.jackson.core.JsonProcessingException ex) { throw invalid("字段模型格式不正确"); }

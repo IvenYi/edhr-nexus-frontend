@@ -16,10 +16,10 @@ export default function FieldProjectionConfig({ field, tableId, showIdentity = t
   const bindings = document.model.projection?.bindings ?? [];
   const inRegion = bindings.filter(binding => (binding.tableId ?? '') === (tableId ?? ''));
   const traces = inRegion.filter(binding => binding.modelId === 'formTrace' && Object.values(binding.sources).includes(field.id));
+  const traceCount = traces.reduce((count, binding) => count + Object.values(binding.sources).filter(id => id === field.id).length, 0);
   const statistical = inRegion.filter(binding => binding.modelId !== 'formTrace' && Object.values(binding.sources).includes(field.id));
   const traceModel = catalog?.models.find(model => model.id === 'formTrace');
-  const candidates = traceModel?.attributes.filter(attribute => acceptsProjectionAttribute(field, attribute)
-    && !traces.some(binding => binding.sources[attribute.id] === field.id)) ?? [];
+  const candidates = traceCount ? [] : traceModel?.attributes.filter(attribute => acceptsProjectionAttribute(field, attribute)) ?? [];
   const update = (next: ProjectionBinding[]) => setBindings(next, catalog?.version);
   const table = document.model.fields.find(item => item.id === tableId);
   return <Stack spacing={2}>
@@ -29,10 +29,11 @@ export default function FieldProjectionConfig({ field, tableId, showIdentity = t
     <Box>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Typography variant="body2" fontWeight={600}>追溯</Typography>
-        <Tooltip title={`关联这个字段记录的信息，可在追溯页面找到原表单${tableId ? '及具体行' : ''}。可关联多个兼容追溯项，填报方式不变。`}>
+        <Tooltip title={`关联这个字段记录的信息，可在追溯页面找到原表单${tableId ? '及具体行' : ''}。每个字段最多关联一个追溯项；同一追溯项可由不同字段或表单复用，业务统计用途不受影响。`}>
           <IconButton size="small" aria-label="字段追溯配置说明"><InfoOutlined fontSize="small" /></IconButton>
         </Tooltip>
       </Stack>
+      {traceCount > 1 && <Alert severity="warning" sx={{ mt: 1 }}>该字段关联了 {traceCount} 个追溯配置，每个字段最多关联一个追溯项，请修正后再保存。</Alert>}
       {traces.flatMap(binding => Object.entries(binding.sources).filter(([, id]) => id === field.id).map(([itemId]) =>
         <Stack key={`${binding.id}/${itemId}`} direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 1 }}>
           <Typography variant="body2">{traceModel?.attributes.find(attribute => attribute.id === itemId)?.name ?? '追溯项已失效'}</Typography>
@@ -42,7 +43,7 @@ export default function FieldProjectionConfig({ field, tableId, showIdentity = t
           }} />
         </Stack>))}
       {!!candidates.length && <TextField select size="small" fullWidth label="关联追溯项（可选）" value="" sx={{ mt: 1.5 }} onChange={event => {
-        if (!event.target.value) return;
+        if (!event.target.value || traceCount) return;
         update([...bindings, { id: crypto.randomUUID(), modelId: 'formTrace', enabled: true,
           ...(tableId ? { tableId } : {}), sources: { [event.target.value]: field.id } }]);
       }}><MenuItem value="">选择字段记录的信息</MenuItem>{candidates.map(attribute => <MenuItem key={attribute.id} value={attribute.id}>{attribute.name}</MenuItem>)}</TextField>}

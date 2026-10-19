@@ -37,7 +37,7 @@ export default function ProjectionSourceEditor({ binding, definition, onChange, 
   const moreAttributes = attributes.filter(attribute => !visibleAttributes.includes(attribute));
   const missingAttributes = Object.keys(binding.sources).filter(id => !definition.attributes.some(attribute => attribute.id === id));
   const traceCandidates = definition.attributes.filter(attribute => !binding.sources[attribute.id]
-    && fields.some(field => acceptsProjectionAttribute(field, attribute) && !Object.values(binding.sources).includes(field.id)));
+    && projectionSourceCandidates(document.model, binding, attribute).length > 0);
   const selectSource = (attributeId: string, fieldId: string) => {
     picker?.cancel();
     const sources = { ...binding.sources };

@@ -1,5 +1,21 @@
 knowledgeModelVersion: 0.3.25
 facts:
+  - id: fact.form-projection.trace-field-binding-count
+    name: 当前真实字段的追溯来源关联数
+    conceptId: concept.form-projection-configuration
+    valueType: integer
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+    aliases: [traceField.assignmentCount]
+    availability: configuration
+    allowedOperators: [greater-than-or-equal]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.trace-field-single-binding-20261019]
+    sourceRevision: working-tree
+    sourceLocator: validateConfiguration按tableId及sources内真实fieldId扫描formTrace，跨配置组累计；不以画布放置次数或业务统计来源计数，包含停用配置及重复同项
+    capturedAt: '2026-10-19'
+    reviewStatus: reviewed
   - id: fact.form-projection.source-configuration
     name: 表单用途来源配置对象
     conceptId: concept.form-projection-configuration

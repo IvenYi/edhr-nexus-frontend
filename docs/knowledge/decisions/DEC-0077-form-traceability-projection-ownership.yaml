@@ -170,9 +170,23 @@ decisions:
         statement: 追溯项管理只有预置项禁止删除，客户后续创建的自定义项应支持新增、查看、修改和删除；自定义项仍被表单配置使用时，必须先解除对应配置关联，才允许删除目录项。操作列提供关联配置弹窗，可查看所有表单配置项，支持逐项勾选或全选后解除；解除只作用于用户选择的追溯项关联，不自动移除其他追溯含义或业务统计用途。用户追加要求关联配置支持表单预览，能看清对应字段在表单中的具体位置；主表字段和子表列应精确定位而不按相似名称猜测。删除目录项和解除模板配置都保留历史填报内容，不改写已经形成的实例、执行或DHR证据。此确认原位纠正此前全目录均无删除入口及自定义删除整体延期的遗漏，不另建旁路DEC；40的九项清单、默认条件、类型与预置保护继续适用。按仍存在模板各版本的实际sources映射而不按残留lookupItems或实例快照列关联、预置可解除字段映射但不可删目录、删除项退出新候选、目录与模板锁版本协同、system.edit及原模板权限共同校验、删除和解除的既有审计路径属于工程inferred。预览首版平铺逐条不分组、以指定当前模板版本版式只读高亮而不读取实际填报/DHR快照、返回保留勾选、关联变化或未放版式明确提示亦为工程选择；无可靠业务频率数据，不宣称一项多处使用经实测很少。本条specified/internal，不冒充用户逐字确认或因源码核对宣称CRUD、预览、并发、快照保留或独立质量已验证；不开放强制级联删除历史或A12运行能力。
         status: specified
         visibility: internal
+      - id: DEC-0077-42
+        statement: 2026-10-19用户要求先研究当前一字段多追溯项的需要，未发现必要场景则收紧为一个字段最多关联一个追溯项；本轮已查冠骋原始类型与采集路径、安速康原始表单，未找到当前MVP必须保留任意多绑的实际场景，按条件授权落实。一个真实主表字段或子表列最多关联一个追溯项，同一项可以在不同表单及同表单不同字段复用；字段身份不由同名或画布放置次数决定。用户随后明确已配好一个字段对应多个追溯项的配置直接删除、无需兼容，替代同轮早先保留旧多绑并人工修正的要求；当前不再承诺旧多绑兼容。按表区域与真实字段扫描全部sources、包含停用及重复同项，一次性删除冲突字段全部formTrace来源映射及空binding而不任选第一项，保留其他字段、合法单绑及业务用途；这是落实删除授权的工程方式。后续导入、设计保存及新使用时配置冻结仍拒绝多绑，不静默保留第一项。授权仅指对应模板配置，不删除填写值、已形成实例、执行或DHR冻结证据，其读取继续沿自身来源解释；备份计数、事务和幂等验证为工程实施要求，不以本声明证明清理已执行。此前10-12保留多绑是工程解释，原话及本轮早先要求作为历史证据保留，不伪造整份DEC替代。20的可复用目录、类型及授权、41的日常选择解除和历史内容保留继续有效，此次明确配置清理按本条局部执行；追溯与业务用途独立，同一日期兼作追溯日期和生产日期及合法统计来源角色复用不受影响。当前研究不证明所有行业不存在别名映射需求，不将同值当实体关系。真实归属、签署及审计不改写；本条specified/internal，迁移、实际库清理、运行及独立质量另取本轮证据。
+        status: specified
+        visibility: internal
     supersedes: []
-    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.form-projection-report-source-visibility-and-reporter-20261013, evidence.form-projection-compact-statistics-sidebar-20261013, evidence.form-projection-report-pages-source-20261013, evidence.form-and-dhr-trace-query-20261013, evidence.form-projection-typed-trace-catalog-20261014, evidence.form-projection-custom-trace-crud-20261014, evidence.form-projection-progressive-query-layout-20261014, evidence.form-projection-trace-date-and-reverse-scope-20261014]
+    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.form-projection-report-source-visibility-and-reporter-20261013, evidence.form-projection-compact-statistics-sidebar-20261013, evidence.form-projection-report-pages-source-20261013, evidence.form-and-dhr-trace-query-20261013, evidence.form-projection-typed-trace-catalog-20261014, evidence.form-projection-custom-trace-crud-20261014, evidence.form-projection-progressive-query-layout-20261014, evidence.form-projection-trace-date-and-reverse-scope-20261014, evidence.trace-field-single-binding-20261019]
     acceptanceScenarios:
+      - id: scenario.form-projection-trace-field-single-binding
+        given: 一个主字段或子表列在同组或不同追溯配置组中已有多个来源关联，包含停用配置或重复同项
+        when: 按本轮授权执行一次性存量模板配置清理，或以后导入、保存多绑配置及为新使用冻结配置
+        then: 存量清理删除冲突字段全部追溯来源映射并移除空binding，不任选保留第一项，其他字段、合法单绑及业务用途保持；后续导入、保存和新配置冻结仍拒绝多绑。不同表区域相同fieldId不混算，不按画布放置次数重复计数；清理前有计数备份、事务及幂等验证，本例不证明实际库清理已执行
+        evidenceIds: [evidence.trace-field-single-binding-20261019]
+      - id: scenario.form-projection-trace-item-reuse-and-old-evidence
+        given: 同一追溯项被不同字段或不同表单使用，另有已形成的多绑冻结实例，字段也可能用于业务统计
+        when: 保存合法新配置或按原授权读取历史表单、投影与DHR证据
+        then: 同项跨字段复用及合法业务统计来源共享不受限，旧多绑实例沿自身冻结来源读取，不套新设计校验、不重写源值与原映射，不按同值建立新的真实归属
+        evidenceIds: [evidence.trace-field-single-binding-20261019]
       - id: scenario.form-projection-custom-trace-delete-protection
         given: 目录有产品预置项、未使用的自定义项和被表单配置关联的自定义项
         when: 管理员尝试删除不同来源的目录项

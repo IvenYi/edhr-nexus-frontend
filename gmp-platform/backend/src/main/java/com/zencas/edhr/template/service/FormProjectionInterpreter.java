@@ -184,6 +184,24 @@ public final class FormProjectionInterpreter {
         }
     }
 
+    /** Design saves and new snapshots enforce cardinality; formed evidence retains its original interpretation. */
+    public static void validateConfiguration(JsonNode model) {
+        validate(model);
+        Map<String, Set<String>> traceFields = new java.util.HashMap<>();
+        for (JsonNode binding : model.path("projection").path("bindings")) {
+            if (!"formTrace".equals(binding.path("modelId").asText())) continue;
+            String tableId = binding.path("tableId").asText("");
+            Set<String> assigned = traceFields.computeIfAbsent(tableId, key -> new HashSet<>());
+            for (JsonNode source : binding.path("sources")) {
+                if (!assigned.add(source.asText())) {
+                    JsonNode fields = tableId.isBlank() ? model.path("fields") : field(model.path("fields"), tableId).path("typeConfig").path("columns");
+                    String name = field(fields, source.asText()).path("name").asText(source.asText());
+                    throw invalid("“" + name + "”关联了多个追溯配置，每个字段最多关联一个追溯项，请手动移除多余关联或更换来源");
+                }
+            }
+        }
+    }
+
     public static ArrayNode preview(JsonNode model, JsonNode values) {
         validate(model);
         if (!values.isObject()) throw invalid("预览填写值必须是对象");

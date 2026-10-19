@@ -48,7 +48,15 @@ export function projectionDetailName(modelId: string) {
 
 export function projectionSourceCandidates(model: ModelDesignState, binding: ProjectionBinding, attribute: ProjectionAttribute) {
   return projectionSources(model, binding).filter(field => acceptsProjectionAttribute(field, attribute)
-    && !Object.entries(binding.sources).some(([id, source]) => id !== attribute.id && source === field.id && !canShareOutputSource(binding.modelId, id, attribute.id)));
+    && (binding.modelId !== 'formTrace' || binding.sources[attribute.id] === field.id
+      || !traceFieldAssignments(model, field.id, binding.tableId).some(item => item.binding.id !== binding.id))
+    && (binding.modelId === 'formTrace' && binding.sources[attribute.id] === field.id
+      || !Object.entries(binding.sources).some(([id, source]) => id !== attribute.id && source === field.id && !canShareOutputSource(binding.modelId, id, attribute.id))));
+}
+
+export function traceFieldAssignments(model: ModelDesignState, fieldId: string, tableId?: string) {
+  return (model.projection?.bindings ?? []).filter(binding => binding.modelId === 'formTrace' && (binding.tableId ?? '') === (tableId ?? ''))
+    .flatMap(binding => Object.entries(binding.sources).filter(([, source]) => source === fieldId).map(([attributeId]) => ({ binding, attributeId })));
 }
 
 function canShareOutputSource(modelId: string, left: string, right: string) {
@@ -91,6 +99,9 @@ export function projectionConfigurationProblems(model: ModelDesignState, binding
     const field = fields.find(item => item.id === fieldId);
     if (!attribute || !field || !acceptsProjectionAttribute(field, attribute))
       issues.push({ attributeId, message: `“${name(attributeId)}”的来源${field ? `“${field.name}”类型不匹配` : '已失效'}，请重新选择` });
+    if (binding.modelId === 'formTrace' && (Object.values(binding.sources).filter(source => source === fieldId).length > 1
+      || traceFieldAssignments(model, fieldId, binding.tableId).some(item => item.binding.id !== binding.id)))
+      issues.push({ attributeId, message: `“${field?.name ?? fieldId}”关联了多个追溯配置，每个字段最多关联一个追溯项，请手动移除多余关联或更换来源` });
     const otherRole = Object.entries(binding.sources).find(([id, source]) => id !== attributeId && source === fieldId && !canShareOutputSource(binding.modelId, id, attributeId));
     if (otherRole) issues.push({ attributeId, message: `“${name(attributeId)}”与“${name(otherRole[0])}”不能使用同一个来源字段` });
     if (attribute?.type === 'number' && (model.projection?.bindings ?? []).some(other => other.id !== binding.id && other.modelId === binding.modelId

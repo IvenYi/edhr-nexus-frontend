@@ -165,6 +165,53 @@ test('collapsed business cards and each trace assignment expose consistent remov
   const traceHtml = renderPanel(model, {models: [traceModel]}, lot);
   assert.ok(traceHtml.includes('aria-label="移除供应商批号（外部）关联"'));
   assert.ok(traceHtml.includes('aria-label="移除设备编号关联"'));
+  assert.ok(traceHtml.includes('每个字段最多') || traceHtml.includes('只保留一个追溯项'));
+  assert.ok(!traceHtml.includes('关联追溯项（可选）'));
+});
+
+test('trace cardinality preserves existing conflicts and requires explicit repair across bindings', () => {
+  const bindings = [
+    {id: 'one', modelId: 'formTrace', enabled: true, sources: {supplierLot: lot.id}},
+    {id: 'two', modelId: 'formTrace', enabled: false, sources: {equipment: lot.id}},
+  ];
+  const current = {...model, projection: {bindings}};
+  const before = JSON.stringify(current);
+  for (const binding of bindings) {
+    assert.ok(projectionConfigurationProblems(current, binding, definition).some(issue => issue.message.includes('最多关联一个追溯项')));
+    const attribute = definition.attributes.find(item => binding.sources[item.id]);
+    assert.ok(projectionSourceCandidates(current, binding, attribute).some(field => field.id === lot.id), 'current conflicting selection remains visible');
+  }
+  assert.equal(JSON.stringify(current), before, 'checking must preserve disabled and active assignments');
+  const repaired = {...current, projection: {bindings: [bindings[0]]}};
+  assert.deepEqual(projectionConfigurationProblems(repaired, bindings[0], definition), []);
+  const second = {...bindings[1], sources: {equipment: 'equipment'}};
+  assert.deepEqual(projectionConfigurationProblems(current, second, definition), [], 'manual source replacement is evaluated against the proposed binding');
+});
+
+test('one trace meaning remains reusable by different fields and table regions', () => {
+  const bindings = [
+    {id: 'one', modelId: 'formTrace', enabled: true, sources: {equipment: lot.id}},
+    {id: 'two', modelId: 'formTrace', enabled: true, sources: {equipment: 'equipment'}},
+    {id: 'rows', modelId: 'formTrace', enabled: true, tableId: 'rows', sources: {equipment: lot.id}},
+  ];
+  const current = {...model, fields: [...model.fields, {id: 'rows', type: 'subTable', typeConfig: {columns: [lot]}}], projection: {bindings}};
+  for (const binding of bindings) assert.deepEqual(projectionConfigurationProblems(current, binding, definition), []);
+  const next = {id: 'new', modelId: 'formTrace', sources: {}};
+  assert.deepEqual(projectionSourceCandidates(current, next, definition.attributes[0]), [], 'another binding cannot take an occupied source');
+});
+
+test('trace conflicts include same-binding and same-item duplicates without limiting business roles', () => {
+  const both = {id: 'both', modelId: 'formTrace', enabled: true, sources: {supplierLot: lot.id, equipment: lot.id}};
+  assert.ok(projectionConfigurationProblems({...model, projection: {bindings: [both]}}, both, definition).some(issue => issue.message.includes('最多关联一个追溯项')));
+  const first = {...both, id: 'one', sources: {supplierLot: lot.id}};
+  const duplicate = {...first, id: 'duplicate'};
+  assert.ok(projectionConfigurationProblems({...model, projection: {bindings: [first, duplicate]}}, first, definition).some(issue => issue.message.includes('最多关联一个追溯项')));
+  const date = {id: 'date', type: 'datetime', typeConfig: {mode: 'date'}};
+  const trace = {id: 't', modelId: 'formTrace', sources: {lookup_date: 'date'}};
+  const report = {id: 'p', modelId: 'production', sources: {productionDate: 'date', goodQuantity: 'qty'}};
+  const current = {fields: [date, {id: 'qty', type: 'number'}], projection: {bindings: [trace, report]}};
+  assert.deepEqual(projectionConfigurationProblems(current, trace, {attributes: [{id: 'lookup_date', type: 'date'}]}), []);
+  assert.deepEqual(projectionConfigurationProblems(current, report, {attributes: [{id: 'productionDate', type: 'date'}, {id: 'goodQuantity', type: 'number'}]}), []);
 });
 
 test('main details identify each source role and selected-field participation without changing mappings', () => {

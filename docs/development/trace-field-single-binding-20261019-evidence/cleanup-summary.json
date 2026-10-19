@@ -1,0 +1,40 @@
+{
+  "database": "edhr_form_projection",
+  "changedVersions": [
+    985004
+  ],
+  "removedAssignments": 2,
+  "remainingConflictingFields": 0,
+  "evidenceUnchanged": {
+    "form_instance_record": {
+      "count": 37,
+      "digest": "6bf2d6fb367af5512d68f67b8f7346d4"
+    },
+    "form_projection_record": {
+      "count": 73,
+      "digest": "61a324cd87089f06a7ed1bb0ca515df4"
+    },
+    "form_projection_batch": {
+      "count": 36,
+      "digest": "7d08abab8496a90e1a334d5720cd735f"
+    },
+    "form_trace_value": {
+      "count": 97,
+      "digest": "ba4f0679428a5586cd20a82854278f60"
+    },
+    "dhr_instance": {
+      "count": 15,
+      "digest": "a51b11e7f18baa4e5e4cf7b1be5dfa16"
+    },
+    "dhr_summary_version": {
+      "count": 5,
+      "digest": "e6d510a4b2af1d13d35dab296a881bda"
+    }
+  },
+  "apiRejectedStatus": 400,
+  "apiRejectedMessage": "“锅次编号”关联了多个追溯配置，每个字段最多关联一个追溯项，请手动移除多余关联或更换来源",
+  "rejectedSaveLeftTemplateUnchanged": true,
+  "migration": "0116-trace-field-single-binding:EXECUTED",
+  "evidenceSourceCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "scopeNote": "Previous development worktree: actual configuration cleanup only, not re-executed on the publish candidate"
+}

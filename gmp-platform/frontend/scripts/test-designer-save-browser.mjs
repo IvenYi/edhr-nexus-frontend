@@ -169,6 +169,85 @@ try {
     await submit(page, 2); await settle(page, 1);
     assert.equal(await dirty(page), false);
   });
+  for (const viewport of [{ width: 1440, height: 960 }, { width: 390, height: 844 }]) {
+    await run(`trace single binding rejects conflicting input and supports repair at ${viewport.width}px`, async page => {
+      await page.route('**/projection-catalog', route => route.fulfill({ status: 200, json: { code: 200, data: {
+        version: 'form-projection-v1', models: [{id: 'formTrace', name: '追溯', attributes: [
+          {id: 'lookup_production_batch', name: '生产批次/SN', type: 'text'},
+          {id: 'lookup_supplier_batch', name: '供应商批号', type: 'text'},
+        ]}], notice: '',
+      } } }));
+      const seeded = await page.evaluate(() => {
+        const state = window.__store.getState();
+        const field = state.addField('text', '原批号字段');
+        const other = state.addField('text', '另一批号字段');
+        state.addNodeFromFieldToCell(field.id, {range: {t: 3, b: 3, l: 2, r: 4}, left: 98, top: 72, width: 294, height: 36});
+        state.setProjectionBindings([
+          {id: 'one', modelId: 'formTrace', enabled: true, sources: {lookup_production_batch: field.id}},
+          {id: 'two', modelId: 'formTrace', enabled: false, sources: {lookup_supplier_batch: field.id}},
+          {id: 'reused', modelId: 'formTrace', enabled: true, sources: {lookup_production_batch: other.id}},
+        ]);
+        const node = window.__store.getState().document.canvas.pages[0].nodes.find(node => node.bindings?.fieldId === field.id);
+        state.setSelectedNodeId(node.id); state.markSaved();
+        return {fieldId: field.id, before: JSON.stringify(window.__store.getState().document)};
+      });
+      await page.getByRole('button', {name: '追溯与业务', exact: true}).click();
+      await page.getByRole('alert').getByText(/该字段关联了 2 个追溯配置/).waitFor();
+      assert.equal(await page.getByLabel('关联追溯项（可选）', {exact: true}).count(), 0);
+      assert.equal(await page.evaluate(() => JSON.stringify(window.__store.getState().document)), seeded.before, 'opening preserves every original mapping and enabled flag');
+      await save(page).click();
+      const validation = page.getByRole('dialog').filter({hasText: '完善用途配置'});
+      await validation.waitFor();
+      assert.equal(await page.evaluate(() => window.__requests.length), 0, 'conflict never reaches save callback');
+      assert.equal(await validation.getByRole('button', {name: '重新校验并保存'}).isDisabled(), true);
+      await validation.getByRole('button', {name: '返回设计'}).click();
+      if (process.env.W2_SCREENSHOT_DIR) {
+        await mkdir(process.env.W2_SCREENSHOT_DIR, {recursive: true});
+        await page.screenshot({path: path.join(process.env.W2_SCREENSHOT_DIR, `trace-conflict-${viewport.width}.png`), animations: 'disabled'});
+      }
+      await page.getByRole('button', {name: '移除供应商批号关联', exact: true}).click();
+      assert.equal(await page.getByRole('alert').filter({hasText: '该字段关联了'}).count(), 0);
+      await page.getByRole('button', {name: '撤销', exact: true}).click();
+      assert.equal(await page.evaluate(() => JSON.stringify(window.__store.getState().document)), seeded.before, 'undo restores all original conflicting assignments');
+      await page.evaluate(fieldId => {
+        const state = window.__store.getState();
+        state.setSelectedNodeId(state.document.canvas.pages[0].nodes.find(node => node.bindings?.fieldId === fieldId).id);
+      }, seeded.fieldId);
+      await page.getByRole('button', {name: '追溯与业务', exact: true}).click();
+      await page.getByRole('alert').getByText(/该字段关联了 2 个追溯配置/).waitFor();
+      await page.getByRole('button', {name: '移除供应商批号关联', exact: true}).click();
+      await submit(page, 1);
+      const saved = await page.evaluate(() => JSON.parse(window.__requests[0].payload.modelDesignJson).payload.projection.bindings);
+      assert.deepEqual(saved.map(binding => binding.id), ['one', 'reused'], 'same trace item remains reusable on another field');
+      await settle(page, 0);
+    }, viewport);
+  }
+  await run('trace single binding repairs duplicate columns in the whole subtable panel', async page => {
+    await page.route('**/projection-catalog', route => route.fulfill({status: 200, json: {code: 200, data: {
+      version: 'form-projection-v1', models: [{id: 'formTrace', name: '追溯', attributes: [
+        {id: 'materialLotText', name: '物料批号', type: 'text'}, {id: 'equipmentText', name: '设备编号', type: 'text'},
+      ]}], notice: '',
+    }}}));
+    await page.evaluate(() => {
+      const state = window.__store.getState();
+      const table = state.addField('subTable', '批号明细');
+      const [column] = state.addSubTableFields(table.id, [{name: '明细批号', type: 'text'}]);
+      state.addSubTableRegionFromFieldToRange(table.id, {t: 2, b: 5, l: 2, r: 5}, {left: 98, top: 36, width: 392, height: 144});
+      state.setProjectionBindings([
+        {id: 'one', modelId: 'formTrace', enabled: true, tableId: table.id, sources: {materialLotText: column.id}},
+        {id: 'two', modelId: 'formTrace', enabled: true, tableId: table.id, sources: {equipmentText: column.id}},
+      ]);
+      const node = window.__store.getState().document.canvas.pages[0].nodes.find(node => node.bindings?.fieldId === table.id);
+      state.setSelectedNodeId(node.id); state.markSaved();
+    });
+    await page.getByRole('button', {name: '追溯与业务', exact: true}).click();
+    await page.getByRole('button', {name: /配置列的追溯信息/}).click();
+    await page.getByRole('alert').filter({hasText: '此列关联了多个追溯配置'}).waitFor();
+    assert.equal(await page.getByLabel('关联追溯项（可选）', {exact: true}).count(), 0);
+    await page.getByRole('button', {name: '移除设备编号关联', exact: true}).click();
+    assert.equal(await page.getByRole('alert').filter({hasText: '此列关联了多个'}).count(), 0);
+    await submit(page, 1); await settle(page, 0);
+  });
   await run('undo and redo retain the correct successful-save boundary', async page => {
     await edit(page, 'A'); await submit(page, 1); await edit(page, 'B'); await settle(page, 0);
     await page.getByRole('button', { name: '撤销', exact: true }).click();

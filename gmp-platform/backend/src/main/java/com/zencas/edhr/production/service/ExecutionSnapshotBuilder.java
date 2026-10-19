@@ -190,7 +190,7 @@ public class ExecutionSnapshotBuilder {
         JsonNode model = json(form.path("model").asText(), mapper.createObjectNode());
         JsonNode payload = model.has("payload") ? model.path("payload") : model;
         if (payload.hasNonNull("projection")) {
-            FormProjectionInterpreter.validate(payload);
+            FormProjectionInterpreter.validateConfiguration(payload);
             form.set("projection", payload.path("projection").deepCopy());
         }
         form.set("fields", payload.path("fields"));

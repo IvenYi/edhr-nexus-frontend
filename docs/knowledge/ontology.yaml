@@ -1,5 +1,11 @@
 knowledgeModelVersion: 0.3.25
 concepts:
+  - id: concept.form-lookup-item
+    termId: term.form-lookup-item
+    kind: business-configuration
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.trace-field-single-binding-20261019]
   - id: concept.production-quality-summary
     termId: term.production-quality-summary
     kind: runtime-fact
@@ -812,6 +818,14 @@ concepts:
     visibility: internal
     evidenceIds: [evidence.equipment-modeling-user-decision, evidence.equipment-instance-entity, evidence.equipment-legacy-schema]
 relations:
+  - id: relation.form-field-associated-trace-item
+    source: concept.form-template-field
+    target: concept.form-lookup-item
+    cardinality: one-to-zero-or-one
+    status: specified
+    visibility: internal
+    description: 当前模板配置中一个真实主字段或子表列最多关联一个追溯项，同项可被同表单不同字段及不同表单复用；不以名称或画布重复放置识别字段。用户最新授权直接删除存量多绑对应配置，无需兼容；一次性移除冲突字段全部追溯映射及空binding，不任选保留一项，其他字段、合法单绑及业务用途保持。后续导入或保存仍拒绝多绑，此配置清理不删除字段值或已形成实例、使用时冻结及DHR证据。
+    evidenceIds: [evidence.trace-field-single-binding-20261019]
   - id: relation.production-quality-derived-from-formal-projection
     source: concept.production-quality-summary
     target: concept.form-business-projection

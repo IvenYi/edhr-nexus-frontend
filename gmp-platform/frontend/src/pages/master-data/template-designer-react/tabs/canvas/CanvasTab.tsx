@@ -22,7 +22,7 @@ const sideRailItems = [
   { id: 'fields', title: '字段管理', tooltip: '字段', icon: <ViewListOutlined fontSize="small" /> },
   { id: 'grid', title: '组件管理', tooltip: '组件', icon: <GridViewOutlined fontSize="small" /> },
   { id: 'config', title: '字段配置', tooltip: '配置', icon: <TuneRounded fontSize="small" /> },
-  { id: 'projection', title: '查找与统计', tooltip: '查找与统计', icon: <ManageSearchOutlined fontSize="small" /> },
+  { id: 'projection', title: '追溯与业务', tooltip: '追溯与业务', icon: <ManageSearchOutlined fontSize="small" /> },
 ] as const;
 
 const defaultPanelMinWidth = 250;

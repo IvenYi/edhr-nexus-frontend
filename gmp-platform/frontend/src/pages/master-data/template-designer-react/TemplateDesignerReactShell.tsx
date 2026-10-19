@@ -14,7 +14,7 @@ import ProjectionDialog from './components/ProjectionDialog';
 import ProjectionValidationDialog from './components/ProjectionValidationDialog';
 import { parseReactTemplateDesignerDocument, serializeTemplateDesignerDocument } from './utils/document';
 import { importTemplateToCanvasPage } from './utils/templateImport';
-import { projectionConfigurationIssues, useProjectionCatalog } from './utils/projectionConfiguration';
+import { projectionConfigurationIssues, traceFieldAssignments, useProjectionCatalog } from './utils/projectionConfiguration';
 import { useSnackbar } from '@/components/SnackbarProvider';
 
 type TemplateDesignerReactShellProps = Pick<TemplateDesignerDialogProps, 'row' | 'version' | 'onClose' | 'onSave' | 'onAutoSave' | 'saving'>;
@@ -102,6 +102,13 @@ export default function TemplateDesignerReactShell({
   const persistCurrentDocument = async (persist: TemplateDesignerDialogProps['onSave']) => {
     const currentDocument = useTemplateDesignerStore.getState().document;
     if (!currentDocument) return;
+    const traceConflict = currentDocument.model.projection?.bindings.some(binding => binding.modelId === 'formTrace'
+      && Object.values(binding.sources).some(fieldId => traceFieldAssignments(currentDocument.model, fieldId, binding.tableId).length > 1));
+    if (traceConflict) {
+      const message = '每个字段最多关联一个追溯项，请在“追溯与业务”中手动修正多余关联后保存';
+      showMessage(message, 'error');
+      throw new Error(message);
+    }
     await persist(serializeTemplateDesignerDocument(currentDocument));
     markSaved(currentDocument);
   };
