@@ -3,7 +3,9 @@ import json
 import subprocess
 from pathlib import Path
 
-migration = (Path(__file__).resolve().parents[1] / 'src/main/resources/db/changelog/0116-trace-field-single-binding.sql').read_text()
+changelog = Path(__file__).resolve().parents[1] / 'src/main/resources/db/changelog'
+migration = (changelog / '0116-trace-field-single-binding.sql').read_text()
+correction = (changelog / '0117-trace-field-blank-region-cleanup.sql').read_text()
 
 
 def trace(identity, sources, table=None, enabled=True):
@@ -19,6 +21,10 @@ models = [
     {'projection': {'bindings': [trace('valid', {'batch': 'lot'}), trace('reuse', {'batch': 'other'})]}},
     {'projection': {'bindings': [trace('a', {'batch': 'lot'}), trace('duplicate', {'batch': 'lot'}, enabled=False)]}},
 ]
+for blank_region in ['', ' ', '\t\n\r', '\u001c', '\u1680', '\u2000', '\u2008', '\u2028\u2029', '\u205f\u3000']:
+    models.append({'projection': {'bindings': [trace('a', {'batch': 'lot', 'order': 'order'}),
+                                               trace('b', {'supplier': 'lot'}, blank_region),
+                                               {'id': 'statistics', 'modelId': 'production', 'sources': {'productionDate': 'lot'}}]}})
 originals = [json.dumps(model, ensure_ascii=False) for model in models]
 rows = ','.join(f"({index + 1},'{text.replace(chr(39), chr(39) * 2)}',7,'before','immutable-evidence')" for index, text in enumerate(originals))
 query = "SELECT json_agg(row_to_json(t) ORDER BY id) FROM form_template_version t;"
@@ -27,8 +33,10 @@ SET LOCAL search_path=pg_temp;
 CREATE TEMP TABLE form_template_version(id BIGINT,model_design_json TEXT,lock_version BIGINT,updated_by TEXT,evidence TEXT,updated_at TIMESTAMP);
 INSERT INTO form_template_version(id,model_design_json,lock_version,updated_by,evidence) VALUES {rows};
 {migration}
+{correction}
 {query}
 {migration}
+{correction}
 {query}
 ROLLBACK;
 """
@@ -40,6 +48,8 @@ assert clean[0]['projection']['bindings'] == [trace('a', {'order': 'order'}), mo
 assert [binding['id'] for binding in clean[1]['payload']['projection']['bindings']] == ['main', 'y', 'other']
 assert first[2]['model_design_json'] == originals[2] and first[2]['lock_version'] == 7, 'valid reused items must remain byte-for-byte unchanged'
 assert clean[3]['projection']['bindings'] == [], 'all conflicting assignments are removed, including duplicate meanings and disabled assignments'
+for index in range(4, len(models)):
+    assert clean[index]['projection']['bindings'] == [trace('a', {'order': 'order'}), models[index]['projection']['bindings'][2]], 'blank regions must share the main-table identity'
 assert all(row['evidence'] == 'immutable-evidence' for row in first)
-assert [row['lock_version'] for row in first] == [8, 8, 7, 8]
-print('passed: main/subtable cleanup, wrapped/plain JSON, complete conflict removal, same-item reuse, statistics/evidence preservation, optimistic version, idempotency')
+assert [row['lock_version'] for row in first] == [8, 8, 7, 8] + [8] * (len(models) - 4)
+print('passed: 0116+0117 main/subtable and blank-region cleanup, wrapped/plain JSON, complete conflict removal, same-item reuse, statistics/evidence preservation, optimistic version, idempotency')

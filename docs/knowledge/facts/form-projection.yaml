@@ -13,7 +13,7 @@ facts:
     visibility: internal
     evidenceIds: [evidence.trace-field-single-binding-20261019]
     sourceRevision: working-tree
-    sourceLocator: validateConfiguration按tableId及sources内真实fieldId扫描formTrace，跨配置组累计；不以画布放置次数或业务统计来源计数，包含停用配置及重复同项
+    sourceLocator: validateConfiguration按运行表区域身份及sources内真实fieldId扫描formTrace，跨配置组累计；tableId省略、空串及Java String.isBlank空白同为主表，非空白ID保留原值；不以画布放置次数或业务统计来源计数，包含停用配置及重复同项
     capturedAt: '2026-10-19'
     reviewStatus: reviewed
   - id: fact.form-projection.source-configuration

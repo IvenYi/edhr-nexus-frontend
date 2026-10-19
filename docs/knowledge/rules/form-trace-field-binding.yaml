@@ -15,7 +15,7 @@ rules:
       rejectInvalidConfiguration: true
       retainFirstAssignment: false
       preservedContracts: [cross-field-trace-item-reuse, business-role-reuse, existing-frozen-evidence]
-    explanation: DEC-0077-42按本轮条件授权收紧配置，一个主表真实字段或子表列最多一个追溯项，同一项仍允许在不同字段及表单复用。用户后续明确直接删除已配好的多绑配置，不再兼容或承诺旧配置人工修正；存量清理按独立一次性清理规则。按表区域和字段身份扫描全部sources，包含停用配置及重复同项；后续导入、设计保存及新的配置冻结拒绝多绑，不静默保留第一项。新设计约束不套已有实例或冻结证据读取，业务统计角色共享、真实归属、来源权限、签署及审计仍按原契约。
+    explanation: DEC-0077-42按本轮条件授权收紧配置，一个主表真实字段或子表列最多一个追溯项，同一项仍允许在不同字段及表单复用。用户后续明确直接删除已配好的多绑配置，不再兼容或承诺旧配置人工修正；存量清理按独立一次性清理规则。按表区域和字段身份扫描全部sources，包含停用配置及重复同项；表区域身份沿既有运行解释，tableId省略、空串或Java String.isBlank判定的空白均为同一主表区域，非空白ID保持原值、不剪裁或猜测子表身份。后续导入、设计保存及新的配置冻结拒绝多绑，不静默保留第一项。新设计约束不套已有实例或冻结证据读取，业务统计角色共享、真实归属、来源权限、签署及审计仍按原契约。
     evidenceIds: [evidence.trace-field-single-binding-20261019]
   - id: rule.form-projection.cleanup-multi-trace-configuration
     name: 一次性删除存量多绑字段的全部追溯配置
@@ -33,5 +33,5 @@ rules:
       removeEmptyBinding: true
       retainFirstAssignment: false
       preserve: [other-fields, valid-single-bindings, business-purpose-mappings, field-values, formed-instances, execution-and-dhr-frozen-evidence]
-    explanation: user-confirmed为直接删除存量多绑对应配置、无需兼容，替代同轮早先保留旧多绑并人工修正的要求。删除冲突真实字段的全部formTrace来源映射及空binding而不任选保留第一项，是主侧确定的工程清理方式。只处理存量模板对应配置，其他字段、合法单绑、业务用途及已形成证据保持；不将配置清理授权扩为删除填写值、实例或冻结DHR证据。清理前计数与备份、事务和幂等验证属于实施要求，当前知识不宣称实际库清理已执行。
+    explanation: user-confirmed为直接删除存量多绑对应配置、无需兼容，替代同轮早先保留旧多绑并人工修正的要求。删除冲突真实字段的全部formTrace来源映射及空binding而不任选保留第一项，是主侧确定的工程清理方式。清理计数同样遵守运行区域身份，省略、空串及Java String.isBlank空白视同主表，非空白ID保持原值；原0116字节保持，0117补扫区域别名导致的残留冲突属于同一政策缺陷修补，不建立兼容或新业务规则。只处理存量模板对应配置，其他字段、合法单绑、业务用途及已形成证据保持；不将配置清理授权扩为删除填写值、实例或冻结DHR证据。清理前计数与备份、事务和幂等验证属于实施要求，当前知识不宣称0117实际库清理已执行。
     evidenceIds: [evidence.trace-field-single-binding-20261019]

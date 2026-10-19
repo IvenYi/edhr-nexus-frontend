@@ -247,3 +247,5 @@ databaseChangeLog:
       file: db/changelog/0114-final-output-operation.sql
   - include:
       file: db/changelog/0116-trace-field-single-binding.sql
+  - include:
+      file: db/changelog/0117-trace-field-blank-region-cleanup.sql

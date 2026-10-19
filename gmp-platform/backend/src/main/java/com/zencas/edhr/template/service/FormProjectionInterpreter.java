@@ -191,6 +191,7 @@ public final class FormProjectionInterpreter {
         for (JsonNode binding : model.path("projection").path("bindings")) {
             if (!"formTrace".equals(binding.path("modelId").asText())) continue;
             String tableId = binding.path("tableId").asText("");
+            if (tableId.isBlank()) tableId = "";
             Set<String> assigned = traceFields.computeIfAbsent(tableId, key -> new HashSet<>());
             for (JsonNode source : binding.path("sources")) {
                 if (!assigned.add(source.asText())) {

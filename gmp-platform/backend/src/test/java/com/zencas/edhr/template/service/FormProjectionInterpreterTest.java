@@ -41,6 +41,15 @@ class FormProjectionInterpreterTest {
         bindings.add(((ObjectNode) bindings.get(2)).deepCopy().put("id", "duplicate-row"));
         assertThatThrownBy(() -> FormProjectionInterpreter.validateConfiguration(model)).hasMessageContaining("最多关联一个追溯项");
     }
+    @Test void blankTableRegionsShareTheRuntimeMainTableFieldIdentity() throws Exception {
+        for (String tableId : new String[]{"", " ", "\t\n\r", "\u001c", "\u1680", "\u2000", "\u2008", "\u2028\u2029", "\u205f\u3000"}) {
+            var model = traceModel();
+            ((ObjectNode) model.path("projection").path("bindings").get(1)).put("tableId", tableId);
+            assertThat(FormProjectionInterpreter.preview(model, mapper.readTree("{\"lot\":\"LOT-01\"}"))).hasSize(2);
+            assertThatThrownBy(() -> FormProjectionInterpreter.validateConfiguration(model))
+                    .hasMessageContaining("批号输入").hasMessageContaining("最多关联一个追溯项");
+        }
+    }
     @Test void traceDateAndProductionDateMayUseTheSameBusinessField() throws Exception {
         var model = reportModel();
         ((ObjectNode) model.path("projection")).putObject("lookupItems").putObject("lookup_date").put("name", "追溯日期").put("type", "date");

@@ -200,6 +200,17 @@ test('one trace meaning remains reusable by different fields and table regions',
   assert.deepEqual(projectionSourceCandidates(current, next, definition.attributes[0]), [], 'another binding cannot take an occupied source');
 });
 
+test('blank table regions share the runtime main-table field identity', () => {
+  const first = {id: 'one', modelId: 'formTrace', enabled: true, sources: {supplierLot: lot.id}};
+  for (const tableId of ['', ' ', '\t\n\r', '\u001c', '\u1680', '\u2000', '\u2008', '\u2028\u2029', '\u205f\u3000']) {
+    const second = {...first, id: 'two', tableId, sources: {equipment: lot.id}};
+    const current = {...model, projection: {bindings: [first, second]}};
+    assert.ok(projectionConfigurationProblems(current, first, definition).some(issue => issue.message.includes('最多关联一个追溯项')));
+    const next = {id: 'new', modelId: 'formTrace', sources: {}};
+    assert.ok(!projectionSourceCandidates(current, next, definition.attributes[0]).some(field => field.id === lot.id));
+  }
+});
+
 test('trace conflicts include same-binding and same-item duplicates without limiting business roles', () => {
   const both = {id: 'both', modelId: 'formTrace', enabled: true, sources: {supplierLot: lot.id, equipment: lot.id}};
   assert.ok(projectionConfigurationProblems({...model, projection: {bindings: [both]}}, both, definition).some(issue => issue.message.includes('最多关联一个追溯项')));

@@ -67,6 +67,7 @@ decisionPackage:
       - 追溯项跨字段复用、报工/报废/不良统计及数值累计不改变。
     compatibilityAndMigration:
       - 0116一次性清除所有存量模板版本冲突字段的全部formTrace映射，空binding删除；单绑和统计保留，受影响版本lock_version递增。
+      - 保持已应用0116原文和checksum；0117按运行时实际表区域补扫空白tableId主表冲突，非空白ID保持原值，其余清理边界不变。
       - 迁移前备份和记录冲突数量；SQL在隔离临时表中测试并检验幂等，不增加运行时兼容分支。
     snapshotImpacts:
       - 已形成的实例、使用时配置和DHR快照不改写；运行preview/validate不添加设计单绑限制。
@@ -92,6 +93,7 @@ decisionPackage:
     - { path: gmp-platform/frontend/src/pages/master-data/template-designer-react, changeType: update, reason: 配置入口及保存反馈 }
     - { path: gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java, changeType: update, reason: 严格设计校验 }
     - { path: gmp-platform/backend/src/main/resources/db/changelog/0116-trace-field-single-binding.sql, changeType: create, reason: 删除存量多绑配置 }
+    - { path: gmp-platform/backend/src/main/resources/db/changelog/0117-trace-field-blank-region-cleanup.sql, changeType: create, reason: 按运行时主表身份补清空白区域标识边界 }
     - { path: docs/knowledge, changeType: update, reason: 同步本轮单绑规则和证据 }
   acceptanceScenarios:
     - id: scenario.trace-existing-conflict-cleanup
@@ -126,6 +128,8 @@ decisionPackage:
 
 目标基线尚无设计层`validateConfiguration`，因此只为本次增加追溯基数严格校验，并将既有设计保存与新执行快照调用接入；未带入其他用途校验。历史解释仍使用原`validate`。侧栏标题统一为“追溯与业务”，与本次提示入口一致。
 
-本候选重新执行前端来源配置25项、后端解释器及模板/追溯权限28项、正式知识89项，TypeScript/Vite构建、设计器静态检查、迁移隔离临时表及幂等检查通过。浏览器通过场景以[提交候选浏览器结果](trace-field-single-binding-20261019-evidence/browser-result.json)为准，包含本次3个主字段/子表场景及原有保存与字段相邻回归；不把前轮43/30/23计数沿用于本候选。
+首轮提交`2c5ca14efdfe79c62841fa421b9946708cd8da1e`执行前端来源配置25项、后端解释器及模板/追溯权限28项、正式知识89项、PostgreSQL服务/历史投影/快照38项。TypeScript/Vite构建、设计器静态检查、迁移隔离临时表及幂等检查通过。浏览器18场景见[提交候选浏览器结果](trace-field-single-binding-20261019-evidence/browser-result.json)，不把前轮43/30/23计数沿用于本候选。
 
-本轮未重复清理实际开发数据库，也未重跑完整制造业务；真实清理仍引用上方开发环境原始结果。最终提交候选独立质量检查另附本目录证据记录，不沿用前轮工作树验收。
+独立质量发现并阻断一个边界缺陷，记录于[首轮质量报告](trace-field-single-binding-20261019-evidence/quality-result-first.yaml)：运行时将省略、空串和Java `String.isBlank`空白标识均解释为主表，基数检查和0116却按原字符串分组。修复统一前后端计数身份，并新增0117补扫；0116字节不变。非空白ID不trim、不合并不同子表，历史解释逻辑保持。修复后主侧重新执行前端26项、后端29项、PostgreSQL38项、构建和0116+0117迁移测试，均通过；迁移覆盖9种空白标识及重复运行幂等。PostgreSQL测试使用独立UUID schema，迁移测试使用临时表事务回滚，不写公共业务数据。
+
+实际开发库本轮只读补查（含空白区域规范）结果为冲突字段0、冲突映射0，没有再次删除配置；0117尚未在该库应用，将随下一次后端部署运行。本轮未重跑完整制造业务，真实清理仍引用上方开发环境1字段/2关联的原始结果。最终修复提交由全新质量实例独立验收，不沿用首轮failed或前轮工作树passed结果。
