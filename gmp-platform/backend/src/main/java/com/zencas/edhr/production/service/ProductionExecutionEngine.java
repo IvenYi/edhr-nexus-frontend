@@ -386,14 +386,15 @@ public class ProductionExecutionEngine {
         TransferContext context = transferContext(snapshot, state, operationId, formId, instanceId, operator);
         if (!transferEnabled(context.controls())) throw invalid("当前表单节点未启用转办");
         var target = access.requireTransferTarget(context.node(), context.formState(), operator, targetUserId);
+        String actualTargetId = target.getId().toString();
         String nodeId = context.node().path("id").asText();
-        context.formState().withObject("/transferAssignees").put(nodeId, targetUserId);
+        context.formState().withObject("/transferAssignees").put(nodeId, actualTargetId);
         history(state, context.operation(), "转办表单审批", operator,
                 context.form().path("name").asText() + " · " + context.copyId() + " · 转办给 " + target.getDisplayName() + " · " + reason.strip())
                 .put("actionCode", "TRANSFER").put("formId", formId).put("copyId", context.copyId()).put("nodeId", nodeId)
                 .put("nodeKind", "APPROVAL").put("nodeName", context.node().path("data").path("label").asText("表单审批"))
                 .put("sourceUserName", operatorName == null || operatorName.isBlank() ? operator : operatorName)
-                .put("targetUserId", targetUserId).put("targetUserName", target.getDisplayName()).put("reason", reason.strip());
+                .put("targetUserId", actualTargetId).put("targetUserName", target.getDisplayName()).put("reason", reason.strip());
     }
 
     private TransferContext transferContext(JsonNode snapshot, ObjectNode state, String operationId, String formId,

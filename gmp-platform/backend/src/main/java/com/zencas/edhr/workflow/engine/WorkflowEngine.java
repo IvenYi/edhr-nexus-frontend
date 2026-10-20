@@ -5,11 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
+import com.zencas.edhr.common.audit.AuditContext;
+import com.zencas.edhr.compliance.entity.AuditEvent;
+import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.identity.dto.SubjectReference;
 import com.zencas.edhr.identity.dto.SubjectResolution;
 import com.zencas.edhr.identity.entity.UserAccount;
 import com.zencas.edhr.identity.service.SubjectResolver;
 import com.zencas.edhr.identity.repository.UserAccountRepository;
+import com.zencas.edhr.identity.service.TenantTransferTargets;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import com.zencas.edhr.workflow.entity.*;
 import com.zencas.edhr.workflow.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +51,8 @@ public class WorkflowEngine {
     private final StateMachineService stateMachineService;
     private final SubjectResolver subjectResolver;
     private final UserAccountRepository userAccountRepository;
+    private final AuditEventRepository auditEventRepository;
+    private final EntityManager entityManager;
 
     /**
      * Create a new workflow instance by matching a business type to a binding rule.
@@ -247,16 +255,14 @@ public class WorkflowEngine {
     private void completeTask(Long taskId, String action, String opinion, String operatorId, Long signatureId, boolean dhrAction) {
         WorkflowTask taskRef = taskRepository.findById(taskId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
-        WorkflowInstance instance = instanceRepository.findByIdForUpdate(taskRef.getInstanceId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
+        WorkflowInstance instance = lockInstance(taskRef.getInstanceId());
         if ("DHR_SUMMARY".equals(instance.getBusinessType()) != dhrAction) {
             throw new BusinessException(ErrorCode.WF_007, "DHR 审核必须通过 DHR 审核入口处理");
         }
         if (!"RUNNING".equals(instance.getStatus())) {
             throw new BusinessException(ErrorCode.WF_007, "流程实例已结束");
         }
-        WorkflowTask task = taskRepository.findByIdForUpdate(taskId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
+        WorkflowTask task = lockTask(taskId);
 
         if (!"PENDING".equals(task.getStatus()) && !"PROCESSING".equals(task.getStatus())) {
             throw new BusinessException(ErrorCode.WF_007);
@@ -651,43 +657,80 @@ public class WorkflowEngine {
         actionLogRepository.save(logEntry);
     }
 
-    /** Transfer a task to a different assignee. */
+    @Transactional(readOnly = true)
+    public List<Map<String, String>> transferTargets(Long taskId, String operatorId, String keyword) {
+        assertNotDhrTask(taskId);
+        WorkflowTask task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
+        WorkflowInstance instance = instanceRepository.findById(task.getInstanceId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
+        if (!"RUNNING".equals(instance.getStatus())
+                || (!"PENDING".equals(task.getStatus()) && !"PROCESSING".equals(task.getStatus()))
+                || !isTaskOperator(task, operatorId)) {
+            throw new BusinessException(ErrorCode.WF_007, "当前用户无权转办此任务");
+        }
+        try {
+            return new TenantTransferTargets(userAccountRepository).search(resolveInstanceTenant(instance), operatorId, keyword);
+        } catch (IllegalArgumentException exception) {
+            throw new BusinessException(ErrorCode.WF_007, exception.getMessage());
+        }
+    }
+
+    /** Transfer the current responsibility while retaining the first available resolution evidence. */
     @Transactional
-    public void transferTask(Long taskId, String newAssigneeId, String operatorId) {
+    public void transferTask(Long taskId, String newAssigneeId, String operatorId, String reason) {
         assertNotDhrTask(taskId);
         WorkflowTask taskRef = taskRepository.findById(taskId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
-        WorkflowInstance instance = instanceRepository.findByIdForUpdate(taskRef.getInstanceId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
+        WorkflowInstance instance = lockInstance(taskRef.getInstanceId());
         if (!"RUNNING".equals(instance.getStatus())) {
             throw new BusinessException(ErrorCode.WF_007, "流程实例已结束");
         }
-        WorkflowTask task = taskRepository.findByIdForUpdate(taskId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
+        WorkflowTask task = lockTask(taskId);
         if (!"PENDING".equals(task.getStatus()) && !"PROCESSING".equals(task.getStatus())) {
             throw new BusinessException(ErrorCode.WF_007);
         }
         if (!isTaskOperator(task, operatorId)) {
             throw new BusinessException(ErrorCode.WF_007, "当前用户不是该任务的待处理人");
         }
-        validateTransferTarget(newAssigneeId, instance);
+        UserAccount target;
+        try {
+            target = new TenantTransferTargets(userAccountRepository).require(resolveInstanceTenant(instance), operatorId, newAssigneeId);
+        } catch (IllegalArgumentException exception) {
+            throw new BusinessException(ErrorCode.WF_007, exception.getMessage());
+        }
+        if (reason == null || reason.isBlank()) throw new BusinessException(ErrorCode.WF_007, "请填写转办原因");
+        if (reason.strip().length() > 500) throw new BusinessException(ErrorCode.WF_007, "转办原因不能超过500个字符");
+        newAssigneeId = target.getId().toString();
+        String nextSnapshot = singleUserSnapshot(newAssigneeId, task);
+        String previousSnapshot = task.getCandidateSnapshot();
+        LocalDateTime transferredAt = LocalDateTime.now();
         String previousAssignee = task.getAssigneeId() == null ? operatorId : task.getAssigneeId();
         task.setOriginalAssigneeId(previousAssignee);
         task.setAssigneeId(newAssigneeId);
-        task.setCandidateSnapshot(singleUserSnapshot(newAssigneeId));
+        task.setCandidateSnapshot(nextSnapshot);
         task.setStatus("PENDING");
         task.setCompletedAt(null);
         taskRepository.save(task);
 
         logAction(task.getInstanceId(), task.getId(), task.getNodeId().toString(),
-                "TASK_TRANSFER", operatorId, "转办: " + previousAssignee + " -> " + newAssigneeId);
+                "TASK_TRANSFER", operatorId, "转办: " + previousAssignee + " -> " + newAssigneeId + "；原因: " + reason.strip());
+        auditEventRepository.save(AuditEvent.builder().id(idGenerator.nextId())
+                .entityType("WORKFLOW_TASK").entityId(taskId.toString()).action("TRANSFER")
+                .contentBefore(objectMapper.createObjectNode().put("assigneeId", previousAssignee).put("candidateSnapshot", previousSnapshot).toString())
+                .contentAfter(objectMapper.createObjectNode().put("instanceId", task.getInstanceId().toString())
+                        .put("nodeId", task.getNodeId().toString()).put("assigneeId", newAssigneeId)
+                        .put("assigneeName", target.getDisplayName()).put("candidateSnapshot", nextSnapshot)
+                        .put("transferredAt", transferredAt.toString()).toString())
+                .operatorId(operatorId).operatorName(AuditContext.getOperatorName()).operatorAccount(AuditContext.getOperatorAccount())
+                .source(AuditContext.getSource()).moduleName("流程中心").menuName("任务处理").functionName("TRANSFER")
+                .reason(reason.strip()).createdAt(transferredAt).build());
     }
 
     /** Terminate a workflow instance (requires intervention). */
     @Transactional
     public void terminateInstance(Long instanceId, String reason, String operatorId, Long signatureId) {
-        WorkflowInstance instance = instanceRepository.findByIdForUpdate(instanceId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
+        WorkflowInstance instance = lockInstance(instanceId);
         if ("DHR_SUMMARY".equals(instance.getBusinessType())) throw new BusinessException(ErrorCode.WF_007, "请通过 DHR 审核退回整理");
         if (!"RUNNING".equals(instance.getStatus())) {
             throw new BusinessException(ErrorCode.WF_007, "流程实例已结束");
@@ -704,6 +747,21 @@ public class WorkflowEngine {
         });
 
         logAction(instanceId, null, "-", "INTERVENE", operatorId, "流程终止: " + reason);
+    }
+
+    private WorkflowInstance lockInstance(Long instanceId) {
+        WorkflowInstance instance = instanceRepository.findByIdForUpdate(instanceId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
+        // A queued command may already hold an older managed object before waiting on this lock.
+        entityManager.refresh(instance, LockModeType.PESSIMISTIC_WRITE);
+        return instance;
+    }
+
+    private WorkflowTask lockTask(Long taskId) {
+        WorkflowTask task = taskRepository.findByIdForUpdate(taskId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
+        entityManager.refresh(task, LockModeType.PESSIMISTIC_WRITE);
+        return task;
     }
 
     private boolean isTaskOperator(WorkflowTask task, String operatorId) {
@@ -724,27 +782,20 @@ public class WorkflowEngine {
         });
     }
 
-    private void validateTransferTarget(String newAssigneeId, WorkflowInstance instance) {
-        if (newAssigneeId == null || newAssigneeId.isBlank()) {
-            throw new BusinessException(ErrorCode.WF_007, "转办目标人不能为空");
-        }
+    private String singleUserSnapshot(String userId, WorkflowTask task) {
         try {
-            UserAccount target = userAccountRepository.findById(Long.valueOf(newAssigneeId))
-                    .orElseThrow(() -> new BusinessException(ErrorCode.WF_007, "转办目标用户不存在"));
-            if (!"ACTIVE".equals(target.getStatus()) || !Objects.equals(target.getTenantId(), resolveInstanceTenant(instance))) {
-                throw new BusinessException(ErrorCode.WF_007, "转办目标用户不可用");
-            }
-        } catch (NumberFormatException e) {
-            throw new BusinessException(ErrorCode.WF_007, "转办目标用户无效");
-        }
-    }
-
-    private String singleUserSnapshot(String userId) {
-        try {
+            String previousSnapshot = task.getCandidateSnapshot();
+            JsonNode previous = previousSnapshot == null || previousSnapshot.isBlank() ? null : objectMapper.readTree(previousSnapshot);
+            boolean captured = previous != null && previous.has("originSnapshot");
+            JsonNode origin = captured ? previous.get("originSnapshot") : null;
+            if (origin != null && !origin.isNull() && !origin.isTextual()) throw new IllegalArgumentException("任务原候选快照格式不正确");
             Map<String, Object> snapshot = new LinkedHashMap<>();
             snapshot.put("userIds", List.of(userId));
             snapshot.put("sources", Map.of(userId, List.of(Map.of("type", "TRANSFER"))));
             snapshot.put("unresolvedSubjects", List.of());
+            snapshot.put("originSnapshot", captured ? origin.isNull() ? null : origin.asText() : previousSnapshot);
+            snapshot.put("originRecordedAfterPriorTransfer", captured
+                    ? previous.path("originRecordedAfterPriorTransfer").asBoolean() : task.getOriginalAssigneeId() != null);
             return objectMapper.writeValueAsString(snapshot);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.WF_007, "无法创建转办任务快照");

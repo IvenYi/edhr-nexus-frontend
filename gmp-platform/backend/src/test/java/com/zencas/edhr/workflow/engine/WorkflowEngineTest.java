@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
+import com.zencas.edhr.compliance.repository.AuditEventRepository;
+import jakarta.persistence.EntityManager;
 import com.zencas.edhr.identity.dto.ResolvedSubjectUser;
 import com.zencas.edhr.identity.dto.SubjectReference;
 import com.zencas.edhr.identity.dto.SubjectResolution;
@@ -45,6 +47,8 @@ class WorkflowEngineTest {
     @Mock private StateMachineService stateMachineService;
     @Mock private SubjectResolver subjectResolver;
     @Mock private UserAccountRepository userAccountRepository;
+    @Mock private AuditEventRepository auditEventRepository;
+    @Mock private EntityManager entityManager;
     @Spy private ObjectMapper objectMapper = new ObjectMapper();
     @InjectMocks private WorkflowEngine workflowEngine;
 
@@ -409,8 +413,10 @@ class WorkflowEngineTest {
     }
 
     @Test
-    void transferKeepsOneLogicalTaskAndUpdatesTargetSnapshot() throws Exception {
+    void transferKeepsOneLogicalTaskAndPreservesOriginalCandidateSnapshot() throws Exception {
         WorkflowTask task = pendingCandidateTask("user-a");
+        String original = "{\"userIds\":[\"user-a\",\"user-b\"],\"sources\":{\"user-a\":[{\"type\":\"ROLE\",\"id\":\"7\"}]},\"unresolvedSubjects\":[{\"type\":\"DEPARTMENT\",\"id\":\"8\"}]}";
+        task.setCandidateSnapshot(original);
         WorkflowInstance instance = WorkflowInstance.builder().id(20L).initiatorId("1").status("RUNNING").build();
         AtomicLong ids = new AtomicLong(50L);
         when(idGenerator.nextId()).thenAnswer(invocation -> ids.getAndIncrement());
@@ -420,13 +426,14 @@ class WorkflowEngineTest {
         when(userAccountRepository.findById(2L)).thenReturn(Optional.of(UserAccount.builder().id(2L).tenantId(9L).status("ACTIVE").build()));
         when(userAccountRepository.findById(1L)).thenReturn(Optional.of(UserAccount.builder().id(1L).tenantId(9L).status("ACTIVE").build()));
 
-        workflowEngine.transferTask(10L, "2", "user-a");
+        workflowEngine.transferTask(10L, "2", "user-a", "交给当班复核员");
 
         verify(taskRepository).save(task);
         assertThat(task.getStatus()).isEqualTo("PENDING");
         assertThat(task.getAssigneeId()).isEqualTo("2");
         assertThat(task.getCandidateSnapshot()).contains("\"2\"");
         assertThat(objectMapper.readTree(task.getCandidateSnapshot()).path("userIds")).hasSize(1);
+        assertThat(objectMapper.readTree(task.getCandidateSnapshot()).path("originSnapshot").asText()).isEqualTo(original);
     }
 
     private WorkflowTask pendingCandidateTask(String... candidates) {

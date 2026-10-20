@@ -68,6 +68,7 @@ export default function ProductionExecutionPage() {
   const [signing, setSigning] = useState<(ExecutionButton & { signatureTarget?: SignatureTarget }) | null>(null);
   const [transferButton, setTransferButton] = useState<ExecutionButton | null>(null);
   const [transferKeyword, setTransferKeyword] = useState('');
+  const [transferInput, setTransferInput] = useState('');
   const [transferTarget, setTransferTarget] = useState<ExecutionTransferTarget | null>(null);
   const [transferReason, setTransferReason] = useState('');
   const [transferTargets, setTransferTargets] = useState<ExecutionTransferTarget[]>([]);
@@ -262,7 +263,9 @@ export default function ProductionExecutionPage() {
     setTransferError('');
     getExecutionTransferTargets(context.objectId, formOperationId, formId, selectedInstanceId, transferKeyword)
       .then((items) => { if (request === transferRequestRef.current) setTransferTargets(items); })
-      .catch((reason) => { if (request === transferRequestRef.current) setTransferError(errorText(reason)); })
+      .catch((reason) => { if (request === transferRequestRef.current) {
+        setTransferTargets([]); setTransferTarget(null); setTransferError(errorText(reason));
+      } })
       .finally(() => { if (request === transferRequestRef.current) setTransferLoading(false); });
     return () => { transferRequestRef.current++; };
   }, [context?.objectId, formId, formOperationId, selectedInstanceId, transferButton, transferKeyword]);
@@ -345,7 +348,7 @@ export default function ProductionExecutionPage() {
       else receive(next);
       setSigning(null); setAccount(''); setPassword(''); setOpinion('');
       if (command.action === 'TRANSFER') {
-        setTransferButton(null); setTransferTarget(null); setTransferKeyword(''); setTransferReason(''); setTransferTargets([]); setTransferError('');
+        setTransferButton(null); setTransferTarget(null); setTransferKeyword(''); setTransferInput(''); setTransferReason(''); setTransferTargets([]); setTransferError('');
       }
       void Promise.all([
         queryClient.invalidateQueries({ queryKey: ['form-management-global-list'] }),
@@ -359,12 +362,16 @@ export default function ProductionExecutionPage() {
       }
       setNotice(command.action === 'COMPLETE' ? next.objectStatus === 'COMPLETED' ? '全部工序已完成，当前生产对象已完工。可扫描下一个条码。' : '工序已完工，执行记录已保存。请选择下一道可执行工序。' : command.action === 'TRANSFER' ? '转办成功，执行记录已保存。' : '操作成功，执行记录已保存。');
       return true;
-    } catch (reason) { setError(errorText(reason)); setPassword(''); return false; }
+    } catch (reason) {
+      setError(errorText(reason));
+      if (command.action === 'TRANSFER') setTransferError(errorText(reason));
+      setPassword(''); return false;
+    }
     finally { busyRef.current = false; setBusy(false); }
   };
   const formAction = (button: ExecutionButton) => {
     if (button.action === 'TRANSFER') {
-      setTransferButton(button); setTransferKeyword(''); setTransferTarget(null); setTransferReason(''); setTransferError('');
+      setTransferButton(button); setTransferKeyword(''); setTransferInput(''); setTransferTarget(null); setTransferReason(''); setTransferError('');
       return;
     }
     if (button.requiresSignature || button.requireOpinion || button.action === 'RETURN') {
@@ -611,10 +618,14 @@ export default function ProductionExecutionPage() {
     <AppDialog open={Boolean(transferButton)} onClose={busy ? undefined : () => { setTransferButton(null); setTransferTarget(null); setTransferReason(''); setTransferKeyword(''); setTransferError(''); }} maxWidth="sm" fullWidth>
       <DialogTitle>转办审批</DialogTitle>
       <DialogContent><Stack spacing={2} sx={{ pt: 1 }}>
-        <Typography variant="body2" color="text.secondary">将当前审批节点转办给其他授权用户。转办不会推进流程，受让人处理后流程才会继续。</Typography>
-        <Autocomplete options={transferTargets} value={transferTarget} loading={transferLoading} getOptionLabel={(option) => `${option.name}（${option.username}）`} isOptionEqualToValue={(option, value) => option.id === value.id}
-          onChange={(_, value) => setTransferTarget(value)} onInputChange={(_, value) => setTransferKeyword(value)} noOptionsText={transferError ? '候选用户加载失败' : transferKeyword.trim() ? '没有找到匹配的可转办用户' : '当前授权范围内没有其他可转办用户'}
-          renderInput={(params) => <TextField {...params} label="转办给" required error={Boolean(transferError)} helperText={transferError || '仅可选择当前审批节点授权范围内的其他启用用户'} />} />
+        <Typography variant="body2" color="text.secondary">将当前审批节点转办给本租户的其他可用用户。原审批候选来源保留，转办不会推进流程，受让人处理后流程才会继续。</Typography>
+        <Autocomplete options={transferTargets} value={transferTarget} inputValue={transferInput} loading={transferLoading} disabled={busy}
+          filterOptions={(options) => options} getOptionLabel={(option) => `${option.name}（${option.username}）`} isOptionEqualToValue={(option, value) => option.id === value.id}
+          onChange={(_, value) => setTransferTarget(value)} onInputChange={(_, value, reason) => {
+            if (reason !== 'reset' || value) setTransferInput(value);
+            if (reason === 'input' || reason === 'clear') { setTransferKeyword(value); setTransferTarget(null); }
+          }} noOptionsText={transferError ? '候选用户加载失败' : transferKeyword.trim() ? '没有找到匹配的可转办用户' : '本租户内没有其他可转办用户'}
+          renderInput={(params) => <TextField {...params} label="转办给" required error={Boolean(transferError)} helperText={transferError || '可选择本租户已启用且未锁定的其他用户，不限原审批候选人'} />} />
         <TextField label="转办原因" required value={transferReason} onChange={(event) => setTransferReason(event.target.value)} multiline minRows={3} inputProps={{ maxLength: 500 }} helperText={`${transferReason.length}/500`} disabled={busy} />
       </Stack></DialogContent>
       <DialogActions><Button disabled={busy} onClick={() => { setTransferButton(null); setTransferTarget(null); setTransferReason(''); setTransferKeyword(''); setTransferError(''); }}>取消</Button><Button variant="contained" disabled={busy || transferLoading || !transferTarget || !transferReason.trim()} onClick={() => { if (transferTarget) void act({ action: 'TRANSFER', formId, instanceId: selectedInstanceId, targetUserId: transferTarget.id, reason: transferReason.trim() }); }}>{busy ? '正在转办…' : '确认转办'}</Button></DialogActions>
