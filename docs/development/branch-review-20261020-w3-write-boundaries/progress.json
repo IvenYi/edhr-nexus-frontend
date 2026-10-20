@@ -1,0 +1,111 @@
+{
+  "schema": "edhr-review-batch-progress/v1",
+  "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "implementationCommit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+  "knowledgeCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+  "ledgerFixedTreeCommit": "df6ea28a6388a89611786116700836c6bf7f4819",
+  "inventory": {
+    "targetPaths": 2444,
+    "coreAndKnowledgePaths": 2453,
+    "fixedEvidenceTreePaths": 2524,
+    "classification": "heuristic, not manual completion"
+  },
+  "sourceReview": {
+    "inheritedScopes": 216,
+    "newHelperScopes": 69,
+    "newPrimaryScopes": 29,
+    "totalScopeRecords": 314,
+    "carryStates": {
+      "needs-delta-review": 93,
+      "retained-scoped-evidence": 221
+    },
+    "overlapPermitted": true,
+    "wholeFilesCompleted": 0
+  },
+  "semanticReview": {
+    "inheritedScopedReviews": 45,
+    "newRoleScopedReviews": 36,
+    "currentDefinitionIds": 2546,
+    "historicalScopedRecords": 81,
+    "evidenceStates": {
+      "retained-scoped-evidence": 55,
+      "needs-delta-review": 26
+    },
+    "wholeAssetsPassed": 0,
+    "oldEvidenceGapsKept": 4
+  },
+  "remediation": {
+    "originalMasterIdsAdjudicated": [
+      "AUD-H009",
+      "AUD-H010",
+      "AUD-H012"
+    ],
+    "newFindingIds": [
+      "W3-TRANSFER-LOCK-001",
+      "W5-AUDIT-HASH-001"
+    ],
+    "state": "four fixed awaiting fresh independent acceptance; W5 preexisting medium open",
+    "historicalFindingRecordsKept": 42,
+    "currentFindingRecords": 44,
+    "userDeferredHighKept": 2,
+    "frozenLedgerStatePreserved": true
+  },
+  "userConfirmedScopeIncrement": {
+    "exactReply": "通用工作流与普通生产表单都允许租户内委托；DHR 保持",
+    "decision": "DEC-0081",
+    "replacementScope": "explicit delegation only; original candidate/source policies and DHR retained"
+  },
+  "actualPrimaryValidation": {
+    "javaDistinctTestsPassed": 292,
+    "nativePostgresAmongJava": 39,
+    "javaSkipped": 0,
+    "knowledgeTestsPassed": 89,
+    "browserScenariosPassed": 36,
+    "browserControlledApi": true,
+    "fullStackEndToEnd": false,
+    "viewports": [
+      [
+        1440,
+        960
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "primaryPersonallyViewedFilledScreenshots": 4,
+    "typecheckAndBuild": "passed",
+    "newMigrationFiles": 0,
+    "actual0060ConstraintsUsed": true,
+    "premiumStrictExit": 2,
+    "premiumBaselineFindings": 82,
+    "premiumCandidateFindings": 82,
+    "allFindingFieldsEqual": true,
+    "newExactPremiumFindings": 0,
+    "eslintExit": 2,
+    "eslintReason": "existing config absent",
+    "failedAuditHashProbe": {
+      "baselineCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "tests": 2,
+      "failures": 2,
+      "notIncludedInPassing292": true
+    },
+    "invalidCleanupAttempt": "compile failed before tests; stale XML explicitly excluded; source byte-restored; fresh Access12 passed separately, not added to292"
+  },
+  "generatorBoundary": {
+    "newSemanticReviewsPerformedByGenerator": 0,
+    "businessTestsExecutedByGenerator": 0,
+    "description": "Inventory generation and preserved report indexing do not execute product/semantic reviews; actual batch work reported separately."
+  },
+  "independentQuality": {
+    "result": "pending",
+    "allProfessionalInstancesFinal": false,
+    "scope": "this batch and listed adjacent regressions only"
+  },
+  "historicalDataRestored": false,
+  "mergePerformed": false,
+  "deploymentPerformed": false,
+  "overallAuditComplete": false,
+  "overallPercent": null,
+  "next": "Fresh independent L2 acceptance; then pre-PR scope/progress review and human merge. Continue remaining W3/W2 and W4–W7 from ledger."
+}
