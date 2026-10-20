@@ -1,0 +1,131 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 12e2bc218b3830c18ea74c44108f296d3e04ee3c
+    targetBranch: edhr-dev
+    targetCommit: 061d7f1ff71d11084667d08293fd7d5fe0d7680d
+    contractReadCommit: 061d7f1ff71d11084667d08293fd7d5fe0d7680d
+    uncommittedContractPaths: []
+  reason: 直接核对保存—新使用冻结—历史消费链，按DEC-0077-42/33/38既定规则补充合法主表区域的实现差异及修复证据。仅5份相关知识文件更新，既有规范、声明替代范围、成熟度及版本保持，不新增政策或本体试点。
+  changedArtifacts:
+    - path: docs/knowledge/evidence/trace-region-consumption-2026-10-20.md
+      changeType: create
+      ids: [evidence.trace-region-consumption-20261020]
+    - path: docs/knowledge/evidence/trace-region-consumption-2026-10-20.yaml
+      changeType: create
+      ids: [evidence.trace-region-consumption-20261020]
+    - path: docs/knowledge/rules/form-trace-field-binding.yaml
+      changeType: update
+      ids: [rule.form-projection.trace-field-single-binding]
+    - path: docs/knowledge/implementation-anchors/form-projection.yaml
+      changeType: update
+      ids: [anchor.form-projection.saved-content-trace]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: evidence.trace-region-consumption-20261020
+      disposition: updated
+      scope: 新增本轮直接源码证据；区分既定政策、基线遗漏消费者、修复工作树、保存索引与冻结历史解释，不代称主侧或独立运行验收。
+      sourceReferences: [docs/knowledge/evidence/trace-region-consumption-2026-10-20.md]
+    - id: rule.form-projection.trace-field-single-binding
+      disposition: updated
+      scope: 仅追加实现消费证据引用；Java空白主表身份、新配置单绑及旧冻结证据边界不变，继续specified/internal。
+      sourceReferences: [docs/knowledge/rules/form-trace-field-binding.yaml, docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]
+    - id: anchor.form-projection.saved-content-trace
+      disposition: updated
+      scope: 仅追加本轮保存索引与DHR提取的增量证据；原来源元数据与implemented/internal成熟度保持。
+      sourceReferences: [docs/knowledge/implementation-anchors/form-projection.yaml, docs/knowledge/evidence/trace-region-consumption-2026-10-20.md]
+    - id: DEC-0077-20
+      disposition: retained
+      scope: 目录复用、字段来源及授权查询路径保留；内容匹配不建立真实生产/DHR归属，不把区域消费修复扩大成目录全生命周期验收。
+      sourceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]
+    - id: DEC-0077-33
+      disposition: retained
+      scope: 已保存过程内容可查、未保存输入不参与、正式统计仍等最终完成；不自动回填既有漏索引。
+      sourceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java]
+    - id: DEC-0077-38
+      disposition: retained
+      scope: 来源定位与已保存内容/正式冻结来源分离；只核对本轮消费者，不提升四类页面完整验收或历史查询政策。
+      sourceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java]
+    - id: DEC-0077-42
+      disposition: retained
+      scope: 同项复用、真实字段单绑、配置删除授权及原始历史保持；新设计限制不套已有冻结读取，不改原字段/映射/快照，也不声称清理迁移已执行。
+      sourceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, docs/knowledge/evidence/trace-field-single-binding-2026-10-19.md]
+    - id: fact.form-projection.trace-field-binding-count
+      disposition: retained
+      scope: 既有配置计数来源与Java空白主表身份一致，包含停用和重复同项；availability、值类型和specified/internal保持。
+      sourceReferences: [docs/knowledge/facts/form-projection.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
+    - id: fact.form-projection.source-configuration
+      disposition: retained
+      scope: 新使用复制当时配置；当前证据不推导已有实例重新读取最新模板。
+      sourceReferences: [docs/knowledge/facts/form-projection.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
+    - id: fact.form-projection.formal-source-snapshot
+      disposition: retained
+      scope: completed保存冻结来源，process只按source_json解释；不改变正式统计/重试政策或成熟度。
+      sourceReferences: [docs/knowledge/facts/form-projection.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java]
+    - id: scenario.form-projection-trace-item-reuse-and-old-evidence
+      disposition: retained
+      scope: 同项跨字段复用和旧冻结多绑沿自身来源解释保持；不把新配置校验套到历史读取。
+      sourceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
+    - id: concept.form-saved-content-trace
+      disposition: retained
+      scope: 已保存内容追溯独立于正式业务投影和真实归属；只补主表区域消费者，不新建同义概念。
+      sourceReferences: [docs/knowledge/ontology.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java]
+    - id: relation.form-field-associated-trace-item
+      disposition: retained
+      scope: 当前模板真实字段基数one-to-zero-or-one保持，不按名称/画布放置计数，不据此重写已形成证据。
+      sourceReferences: [docs/knowledge/ontology.yaml, docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.trace-region.knowledge-schema-reference
+      checkType: schema
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -C --file tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - 本体实例实际exit0，BusinessKnowledgeModelTest 89项，failures/errors/skipped均0；只计89个不同测试，不把两次执行相加。
+        - /tmp/edhr-trace-region-knowledge-summary-final.json
+    - id: validation.trace-region.fixed-record-and-source-evidence
+      checkType: evidence-path
+      command: python3 /tmp/edhr-trace-region-build-semantic.py 12e2bc218b3830c18ea74c44108f296d3e04ee3c
+      outcome: passed
+      evidence:
+        - 12条有限范围语义记录全部定位到真实候选Git记录、JSON pointer、规范摘要与源码blob/SHA，工作树对应来源字节相同。
+        - /tmp/edhr-trace-region-semantic-review.jsonl
+        - /tmp/edhr-trace-region-semantic-source-receipts.json
+    - id: validation.trace-region.maturity-and-scope-preservation
+      checkType: status-transition
+      command: python3 -
+      outcome: passed
+      evidence:
+        - 实际schema-guided Git比较061d7f1f到12e2bc21：2534到2535定义，只新增一个证据ID；原ID无删除，所有既有成熟度/visibility保持。
+        - 仅规则及saved-content锚点的既有记录摘要因追加证据引用变化；5份知识路径在授权范围。
+        - /tmp/edhr-trace-region-knowledge-transition-summary.json
+    - id: validation.trace-region.knowledge-whitespace
+      checkType: evidence-path
+      command: git -c core.whitespace=cr-at-eol diff --check -- docs/knowledge
+      outcome: passed
+      evidence:
+        - 本体修改完成后实际通过，未改业务、测试、迁移、界面或契约；提交由主侧完成。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]
+  scopeSummary:
+    fixedCandidateCommit: 12e2bc218b3830c18ea74c44108f296d3e04ee3c
+    scopedSemanticRecords: 12
+    scopedConclusions: {consistent: 12}
+    wholeAssetSemanticPassClaims: 0
+    businessRuntimeExecutedByOntologyInstance: false
+    schemaVersion: 1.2.0
+    wholeKnowledgeAuditComplete: false
+    sourceListIdCorrection:
+      requestedId: relation.form-field-has-trace-item
+      actualReviewedId: relation.form-field-associated-trace-item
+      meaning: 辅助待审查询字符串笔误；本体已直接读取实际关系记录并核对基数/历史边界，没有知识ID重命名、迁移或政策替代。
+    recordSelectionNote: 12条包括实际关系及亲读saved-content实现锚点；清理规则仅保留不执行边界，未为凑数计作本轮语义通过。
+    preservedBoundaries: [两旧DHR high仍用户暂缓, 四旧知识gap不关闭, A12及未定历史视图保留, 不执行配置清理迁移, 不自动回填旧索引, 不把本体检查称独立质量通过]

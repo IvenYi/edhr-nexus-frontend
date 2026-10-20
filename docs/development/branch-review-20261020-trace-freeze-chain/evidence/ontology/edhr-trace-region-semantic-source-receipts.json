@@ -1,0 +1,110 @@
+{
+  "candidateCommit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+  "baseCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+  "semanticScopeRecords": 12,
+  "wholeAssetPassClaims": 0,
+  "sources": [
+    {
+      "path": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "38c5c35c84d22523852cc9ddd3debebfa4c3c04a",
+      "sha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a"
+    },
+    {
+      "path": "docs/knowledge/evidence/trace-region-consumption-2026-10-20.md",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "bd20582262aaabe403090a7e37cf8b5e5d5bc4b8",
+      "sha256": "fa2908f55fdbc30ad55796fefc4180a8ff4ab1c7ff6acad425cb32c234b2b819"
+    },
+    {
+      "path": "docs/knowledge/facts/form-projection.yaml",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "a9a274b085a9f7d2069796b357afae1d6b3c97b1",
+      "sha256": "fc768f4aa149628a92e974f4da1861a3cfc16bfe6d05b9999440a3025b0282c9"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-projection.yaml",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "93a3a169da3d98a0b3ee960b8a214cd4b2a14cb8",
+      "sha256": "5d65cc341c33fc344acb19dfacb2edfc04c61c332bab1ca39c48a1c4de9d863f"
+    },
+    {
+      "path": "docs/knowledge/ontology.yaml",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "9afe7e64a0770092b57d5226e96982f87a29e27c",
+      "sha256": "edc8d5cb3c6c02c7c7ee826bb804fcf0dc0c97c196cfb42b655a3b7b9b598551"
+    },
+    {
+      "path": "docs/knowledge/rules/form-trace-field-binding.yaml",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "0fece32ce70d09c9f8090bcc51d1ecea5e984ff1",
+      "sha256": "8874846c7a66a7c00a7264e9da122da9fbcf57bf9eac875023f29e6295484f4a"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "sha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "1ddd0700b1e932ba4dae897ad84a791df6de716d",
+      "sha256": "789426609a0691aab29bd2f1a7600f00531017c52a28f7e135a2517b9bdfc340"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "59c16531ec7849ed772ca0299ed1c0c63af95407",
+      "sha256": "84da4305797fc2536359da9ccf933edfba96da95daecb2ea5567e31d36a454e0"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "5a566444bdabdad4f8371730bf153bd73d051ee9",
+      "sha256": "b4f620dd8093972d4abf59204b97374611eb7570513cce936181364811d1b47a"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "09639444c1da640d990d6443a9b65fc654508c95",
+      "sha256": "fecd3763b9a44f4bd73258002d1a01b2b2575f54a093d72b64a809de317ae1f8"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "c11b1810ee0818e911647521e061e9e9e70f3460",
+      "sha256": "854302280036e7ae81b50f80a765c609948927fb1cf124613c5d51cfb44b4039"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "8d859c368035702e9c7c8dd01ff379123a479c62",
+      "sha256": "dc13fd196fed0a49f97ac8c58c313a62c52c562e159ff1120e1e9f51e7d5d065"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "0a8c059375dcefcdaa073002742a01faaf30a27d",
+      "sha256": "110946d1735814bd5de0e45c7a3478598fee06a22b1dd5f1840cfed7f008a48b"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "a790f25a70a57036742e0edcbc7b1588517ed3bd",
+      "sha256": "0cfe6f4e3795eac2aac248aec4feb3088066d4d0363f00653cff8da9bb41c1a2"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "f43bcfc3269e1625ecca1707b4d2873a3f5e62ed",
+      "sha256": "603493e2da46c9df404d991a058527d1de94f0910c80fb075c1cb8ef9a5b0919"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionPreview.ts",
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "blob": "64d6ca6382e05c18d5daf0d67ed7b15c16663dbe",
+      "sha256": "44ee36e7a516a539819ee7491e1bedc8ed85fcccf13add002db88cc52089a034"
+    }
+  ]
+}
