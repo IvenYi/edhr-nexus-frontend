@@ -1,0 +1,76 @@
+{
+  "baselineSourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+  "regressionFixturesCopiedFromCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+  "expectedCounterfactualFailure": true,
+  "exitCode": 1,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.production.service.DhrTraceReportPostgresTest",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "terminatedBlankMainRegionMatchesFrozenEvidenceWithoutRewritingIt",
+          "failureType": "org.opentest4j.AssertionFailedError",
+          "failureMessage": "\nexpected: \"3\"\n but was: \"\""
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.FormTraceIndexPostgresTest",
+      "tests": 1,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "savedBlankMainRegionIsImmediatelyTraceableAndRefreshKeepsFrozenBytes",
+          "failureType": "org.opentest4j.AssertionFailedError",
+          "failureMessage": "\nexpected: 1\n but was: 0"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "tests": 5,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        {
+          "name": "onlyExplicitTraceSourcesAndSavedSupportedValuesAreCollected",
+          "failureType": null,
+          "failureMessage": null
+        },
+        {
+          "name": "systemRowIdentityIsIndependentOfBindingsAndDisplayOrder",
+          "failureType": null,
+          "failureMessage": null
+        },
+        {
+          "name": "legalBlankMainRegionsUseRootValuesWithoutChangingFrozenConfiguration",
+          "failureType": "org.opentest4j.AssertionFailedError",
+          "failureMessage": "[main alias \" \\t　\"] \nExpecting actual:\n  []\nto contain exactly (and in same order):\n  [Value[itemId=materialLotText, fieldId=lot, fieldName=批号, tableId=, rowKey=form, rowIndex=-1, text=MAIN, type=text]]\nbut could not find the following elements:\n  [Value[itemId=materialLotText, fieldId=lot, fieldName=批号, tableId=, rowKey=form, rowIndex=-1, text=MAIN, type=text]]\n"
+        },
+        {
+          "name": "referenceUsesFrozenCodeAndRequiresCompatibleIdentity",
+          "failureType": null,
+          "failureMessage": null
+        },
+        {
+          "name": "nonblankTableIdsKeepExactIdentityAndRemainSeparateFromMainAndOtherRows",
+          "failureType": null,
+          "failureMessage": null
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 7,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0
+  }
+}

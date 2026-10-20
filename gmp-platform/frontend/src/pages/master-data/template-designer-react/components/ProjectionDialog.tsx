@@ -7,7 +7,7 @@ import FormDialogSection from '@/components/FormDialogSection';
 import client from '@/api/client';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { ModelField, ProjectionBinding } from '../types/model';
-import { projectionBindingLabel, projectionConfigurationIssues, projectionSourceSummary, projectionSources, useProjectionCatalog, type ProjectionPreviewRecord } from '../utils/projectionConfiguration';
+import { projectionBindingLabel, projectionConfigurationIssues, projectionSourceSummary, projectionSources, projectionTableId, useProjectionCatalog, type ProjectionPreviewRecord } from '../utils/projectionConfiguration';
 import { buildProjectionPreviewValues, previewSampleKey, projectionPreviewFieldIds } from '../utils/projectionPreview';
 import ProjectionSourceEditor from './ProjectionSourceEditor';
 import FieldProjectionConfig from './FieldProjectionConfig';
@@ -33,14 +33,15 @@ export default function ProjectionDialog({ open, onClose, focusField }: {
   useEffect(() => {
     if (!open) return;
     setTab(0); setError(''); setPreview(null); setExpandedId(null);
-    setRegionId(focusField ? focusField.tableId ?? '' : null); setFieldId(focusField?.id ?? '');
+    setRegionId(focusField ? projectionTableId(focusField.tableId) : null); setFieldId(focusField?.id ?? '');
   }, [open, focusField]);
   useEffect(() => setPreview(null), [document?.model.projection]);
   if (!document) return null;
   const bindings = document.model.projection?.bindings ?? [];
   const regions = [{ id: '', name: '主表字段' }, ...document.model.fields.filter(field => field.type === 'subTable').map(field => ({ id: field.id, name: field.name }))];
   for (const binding of bindings) {
-    if (binding.tableId && !regions.some(region => region.id === binding.tableId)) regions.push({ id: binding.tableId, name: '子表来源已失效' });
+    const tableId = projectionTableId(binding.tableId);
+    if (tableId && !regions.some(region => region.id === tableId)) regions.push({ id: tableId, name: '子表来源已失效' });
   }
   const focusedTable = document.model.fields.find(field => field.id === regionId && field.type === 'subTable');
   const focusedField = projectionSources(document.model, { tableId: regionId ?? undefined } as ProjectionBinding).find(field => field.id === fieldId);
@@ -88,7 +89,7 @@ export default function ProjectionDialog({ open, onClose, focusField }: {
         {tab === 0 ? <>
           <Typography variant="body2" color="text.secondary">核对全表用途；日常配置仍在画布侧栏，修改统一用顶部“保存”。</Typography>
           {regions.map(region => {
-            const items = bindings.filter(binding => (binding.tableId ?? '') === region.id);
+            const items = bindings.filter(binding => projectionTableId(binding.tableId) === region.id);
             const trace = items.filter(binding => binding.modelId === 'formTrace');
             const statistics = items.filter(binding => binding.modelId !== 'formTrace');
             return <FormDialogSection key={region.id} title={region.name}>
@@ -152,7 +153,7 @@ export default function ProjectionDialog({ open, onClose, focusField }: {
               const binding = bindings.find(item => item.id === record.bindingId);
               const definition = catalog?.models.find(model => model.id === binding?.modelId);
               return <Box key={`${record.bindingId}/${record.rowKey}`} sx={{ mt: 1.5, p: 1.5, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-                <Typography variant="body2" fontWeight={600}>{definition?.name} · {regions.find(region => region.id === (binding?.tableId ?? ''))?.name}</Typography>
+                <Typography variant="body2" fontWeight={600}>{definition?.name} · {regions.find(region => region.id === projectionTableId(binding?.tableId))?.name}</Typography>
                 {Object.entries(record.attributes).map(([id, value]) => {
                   const name = definition?.attributes.find(attribute => attribute.id === id)?.name;
                   return <Typography key={id} variant="body2">{binding?.modelId === 'formTrace' ? name ?? '追溯项已失效' : name?.replace(/（.*?）/g, '') ?? '业务信息已失效'}：{typeof value === 'object' && value ? String((value as { name: string }).name) : String(value)}</Typography>;

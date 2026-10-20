@@ -1,0 +1,30 @@
+{
+  "schema": "edhr-review-independent-acceptance/v1",
+  "recordedAt": "2026-10-20T08:01:25.403500+00:00",
+  "targetCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+  "testedCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+  "implementationCommit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+  "qualityResult": "passed",
+  "requiredChecks": 19,
+  "requiredPassed": 19,
+  "qualityResultPath": "evidence/independent/edhr-trace-independent-quality-result.yaml",
+  "qualityResultSha256": "f726b95f3833690b4d9737b94038a500fbdb49c27f27ead8a2ac967d62ae367d",
+  "independentRole": "/root/trace_region_independent_quality",
+  "allProfessionalInstancesFinal": true,
+  "findings": [
+    {
+      "id": "W2-TRACE-REGION-001",
+      "state": "fixed-and-independently-accepted",
+      "resolutionStatus": "resolved"
+    },
+    {
+      "id": "W2-TRACE-REGION-002",
+      "state": "fixed-and-independently-accepted",
+      "resolutionStatus": "resolved"
+    }
+  ],
+  "frozenCatalogAndLedgerUnchanged": true,
+  "historicalIndexBackfill": false,
+  "wholeBranchAccepted": false,
+  "overlayNote": "L0 final acceptance overlay; fixed catalog/ledger retain their pre-QA source state and historical quality reports."
+}

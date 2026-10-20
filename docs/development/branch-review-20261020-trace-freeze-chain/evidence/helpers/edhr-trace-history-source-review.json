@@ -1,0 +1,644 @@
+{
+  "kind": "readonly-source-assistance-not-independent-quality",
+  "baselineCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+    "contractReadCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+    "uncommittedContractPaths": []
+  },
+  "records": [
+    {
+      "id": "trace-history-scope-001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "scope": "act",
+      "lineStart": 153,
+      "lineEnd": 254,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "4ba4f4dd875d520c44c393ed987aaf232c45c418",
+      "sourceSha256": "b8a880d267f7b01086eed5526ca226e9e03cd6380f0f8888a7f09c27112ae09e",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Only missing execution plus START/CREATED builds a snapshot; existing execution parses snapshot_json/state_json. ATTACH_FORM freezes genuinely new configuration.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "scope": "view snapshot selection block",
+      "lineStart": 256,
+      "lineEnd": 268,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "4ba4f4dd875d520c44c393ed987aaf232c45c418",
+      "sourceSha256": "b8a880d267f7b01086eed5526ca226e9e03cd6380f0f8888a7f09c27112ae09e",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Existing execution parses persisted snapshot; current configuration preview only for missing execution.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-003",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "scope": "formActionInternal",
+      "lineStart": 212,
+      "lineEnd": 344,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "d5764d12acf0d78fb0925a079a9e6a81548ded88",
+      "sourceSha256": "9e7f4b66d43780b5294acac5fdd7f1893ec71073d71104ac634a6e4a8ca50e4a",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Action uses form obtained from passed frozen snapshot and current form state; no new trace design cardinality call.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-004",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "scope": "withCanvasBindings",
+      "lineStart": 595,
+      "lineEnd": 607,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "d5764d12acf0d78fb0925a079a9e6a81548ded88",
+      "sourceSha256": "9e7f4b66d43780b5294acac5fdd7f1893ec71073d71104ac634a6e4a8ca50e4a",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Only frozen canvas and fields in a deep copy are consumed.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-005",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java",
+      "scope": "saved",
+      "lineStart": 40,
+      "lineEnd": 95,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "5a566444bdabdad4f8371730bf153bd73d051ee9",
+      "sourceSha256": "b4f620dd8093972d4abf59204b97374611eb7570513cce936181364811d1b47a",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "affected-caller",
+      "observation": "Form from execution snapshot is inserted once; updates keep snapshot_json unchanged; refresh consumes same form and values.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-006",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java",
+      "scope": "row",
+      "lineStart": 148,
+      "lineEnd": 158,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "5a566444bdabdad4f8371730bf153bd73d051ee9",
+      "sourceSha256": "b4f620dd8093972d4abf59204b97374611eb7570513cce936181364811d1b47a",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Detail reads existing snapshot_json and values_json.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-007",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceQueryService.java",
+      "scope": "find/row",
+      "lineStart": 131,
+      "lineEnd": 156,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "0c4ddf25d5291004bee8ffa3540f788694b24b57",
+      "sourceSha256": "c1dce87a2f9dc4d7315248a3e0d47dd13a4f3fa7c634795157e31a7fc28b4464",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Instance lookup and detail use saved instance snapshot and values, without current design lookup.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-008",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java",
+      "scope": "refresh",
+      "lineStart": 30,
+      "lineEnd": 43,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "409d083c3279d1376327cd790abcee043eba6e67",
+      "sourceSha256": "878429f3a4e6c5056a30f91421a27ab7e6c58c092621a77841ae42e4de67353c",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "affected-caller",
+      "observation": "Calls extract before replacing index rows in caller transaction.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-009",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java",
+      "scope": "extract",
+      "lineStart": 46,
+      "lineEnd": 79,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "409d083c3279d1376327cd790abcee043eba6e67",
+      "sourceSha256": "878429f3a4e6c5056a30f91421a27ab7e6c58c092621a77841ae42e4de67353c",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "confirmed-source-defect",
+      "observation": "isEmpty instead of runtime isBlank treats legal blank main-region ids as nonexistent subtables and skips all sources.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-010",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java",
+      "scope": "query implementation",
+      "lineStart": 139,
+      "lineEnd": 207,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "409d083c3279d1376327cd790abcee043eba6e67",
+      "sourceSha256": "878429f3a4e6c5056a30f91421a27ab7e6c58c092621a77841ae42e4de67353c",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "affected-caller",
+      "observation": "Queries saved trace index; lookupItems come from instance snapshot_json. Missing index entries affect reverse search.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-011",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java",
+      "scope": "completed",
+      "lineStart": 19,
+      "lineEnd": 40,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "09639444c1da640d990d6443a9b65fc654508c95",
+      "sourceSha256": "fecd3763b9a44f4bd73258002d1a01b2b2575f54a093d72b64a809de317ae1f8",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Filters trace bindings then preview-validates statistical mappings; source_json freezes supplied form/model/values/context.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-012",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java",
+      "scope": "process",
+      "lineStart": 42,
+      "lineEnd": 57,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "09639444c1da640d990d6443a9b65fc654508c95",
+      "sourceSha256": "fecd3763b9a44f4bd73258002d1a01b2b2575f54a093d72b64a809de317ae1f8",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Uses persisted source_json and rule_version, preview calls legacy validate rather than validateConfiguration.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-013",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java",
+      "scope": "source/instanceSource",
+      "lineStart": 174,
+      "lineEnd": 196,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "5c503d5b99be4f927b35346302903849acc1184f",
+      "sourceSha256": "9a7768be7d41b3a8773b4fb8f0ce4570efa43f7fc28f0b6d11102dd59ab46399",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Batch source and instance snapshot are loaded directly from persisted source/snapshot columns.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-014",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java",
+      "scope": "retry",
+      "lineStart": 219,
+      "lineEnd": 234,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "5c503d5b99be4f927b35346302903849acc1184f",
+      "sourceSha256": "9a7768be7d41b3a8773b4fb8f0ce4570efa43f7fc28f0b6d11102dd59ab46399",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "FAILED-to-PENDING and audit only; does not rewrite frozen source_json.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-015",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java",
+      "scope": "query",
+      "lineStart": 26,
+      "lineEnd": 66,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "1ddd0700b1e932ba4dae897ad84a791df6de716d",
+      "sourceSha256": "789426609a0691aab29bd2f1a7600f00531017c52a28f7e135a2517b9bdfc340",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "affected-caller",
+      "observation": "Ordinary reverse queries narrow by live trace index, then match actual DHR evidence. Terminated evidence bypasses live index narrowing.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-016",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java",
+      "scope": "detail",
+      "lineStart": 72,
+      "lineEnd": 79,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "1ddd0700b1e932ba4dae897ad84a791df6de716d",
+      "sourceSha256": "789426609a0691aab29bd2f1a7600f00531017c52a28f7e135a2517b9bdfc340",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "affected-caller",
+      "observation": "Calls matches on actual DHR detail; reports verified termination/current-saved evidence basis.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-017",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java",
+      "scope": "matches",
+      "lineStart": 87,
+      "lineEnd": 107,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "1ddd0700b1e932ba4dae897ad84a791df6de716d",
+      "sourceSha256": "789426609a0691aab29bd2f1a7600f00531017c52a28f7e135a2517b9bdfc340",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "affected-caller",
+      "observation": "Direct extract(record.snapshot, record.fieldValues) loses legal blank main bindings, including verified frozen termination evidence.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-018",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "scope": "detail",
+      "lineStart": 244,
+      "lineEnd": 318,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "sourceSha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Live detail uses member instance snapshots; EARLY_TERMINATED returns verified persisted termination.dhr snapshot.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-019",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "scope": "evidenceRow",
+      "lineStart": 451,
+      "lineEnd": 466,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "sourceSha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Reads record snapshot_json and values_json and derives origin from its frozen ids.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-020",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "scope": "version frozen response block",
+      "lineStart": 81,
+      "lineEnd": 110,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "sourceSha256": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Loads exact summary version candidates/directories/attachments and verifies frozen evidence before response, without current form values.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-021",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "scope": "candidates",
+      "lineStart": 438,
+      "lineEnd": 444,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "sourceSha256": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Collects real directory/work/custom records already loaded in DHR detail.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-022",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "scope": "submit frozen assembly/persistence block",
+      "lineStart": 295,
+      "lineEnd": 335,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "sourceSha256": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Freezes actual member evidence and source/hash; no trace design cardinality validation.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-023",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "scope": "export frozen source/rendering block",
+      "lineStart": 49,
+      "lineEnd": 150,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "46c2f16d8857d1aaaa42865779f57c85959bd7a6",
+      "sourceSha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Reads exact version candidate/attachment snapshots, verifies integrity, renders those records and exports raw evidence JSON.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-024",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java",
+      "scope": "verify evidence/hash block",
+      "lineStart": 30,
+      "lineEnd": 53,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "9401ccff54412a60fc60b5097f2a5167168d28ca",
+      "sourceSha256": "3dcf8632a2049d9a13e8e178e55ff5c24643f50f496410ba2ef3f8f71c054e66",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Cross-checks exact frozen candidate set against per-record source snapshots/hash.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-025",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java",
+      "scope": "verifyVersionDigest",
+      "lineStart": 56,
+      "lineEnd": 91,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "9401ccff54412a60fc60b5097f2a5167168d28ca",
+      "sourceSha256": "3dcf8632a2049d9a13e8e178e55ff5c24643f50f496410ba2ef3f8f71c054e66",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "consistent-scoped-source",
+      "observation": "Reconstructs and verifies hash from frozen version columns and placements.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-026",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java",
+      "scope": "validate source-region interpretation block",
+      "lineStart": 90,
+      "lineEnd": 116,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "0a8c059375dcefcdaa073002742a01faaf30a27d",
+      "sourceSha256": "110946d1735814bd5de0e45c7a3478598fee06a22b1dd5f1840cfed7f008a48b",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "policy-reference-source",
+      "observation": "Legacy runtime validation treats Java blank tableId as main region.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-027",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java",
+      "scope": "validateConfiguration",
+      "lineStart": 187,
+      "lineEnd": 204,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "0a8c059375dcefcdaa073002742a01faaf30a27d",
+      "sourceSha256": "110946d1735814bd5de0e45c7a3478598fee06a22b1dd5f1840cfed7f008a48b",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "policy-reference-source",
+      "observation": "New configuration cardinality normalizes blank region identity and rejects conflicts without mutating stored source.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "trace-history-scope-028",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java",
+      "scope": "preview region dispatch block",
+      "lineStart": 206,
+      "lineEnd": 227,
+      "reviewedCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "0a8c059375dcefcdaa073002742a01faaf30a27d",
+      "sourceSha256": "110946d1735814bd5de0e45c7a3478598fee06a22b1dd5f1840cfed7f008a48b",
+      "depth": "listed-method-or-code-block-only",
+      "wholeFileReviewComplete": false,
+      "provenance": "original-evidence",
+      "conclusion": "policy-reference-source",
+      "observation": "Legacy preview uses validate and isBlank main dispatch, preserving old multi-binding interpretation.",
+      "runtimeExecuted": false
+    }
+  ],
+  "sourceReceipts": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "blob": "4ba4f4dd875d520c44c393ed987aaf232c45c418",
+      "sha256": "b8a880d267f7b01086eed5526ca226e9e03cd6380f0f8888a7f09c27112ae09e",
+      "bytes": 31806
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "blob": "d5764d12acf0d78fb0925a079a9e6a81548ded88",
+      "sha256": "9e7f4b66d43780b5294acac5fdd7f1893ec71073d71104ac634a6e4a8ca50e4a",
+      "bytes": 64019
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "blob": "5a566444bdabdad4f8371730bf153bd73d051ee9",
+      "sha256": "b4f620dd8093972d4abf59204b97374611eb7570513cce936181364811d1b47a",
+      "bytes": 10913
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceQueryService.java",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "blob": "0c4ddf25d5291004bee8ffa3540f788694b24b57",
+      "sha256": "c1dce87a2f9dc4d7315248a3e0d47dd13a4f3fa7c634795157e31a7fc28b4464",
+      "bytes": 13013
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "blob": "409d083c3279d1376327cd790abcee043eba6e67",
+      "sha256": "878429f3a4e6c5056a30f91421a27ab7e6c58c092621a77841ae42e4de67353c",
+      "bytes": 14923
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "blob": "09639444c1da640d990d6443a9b65fc654508c95",
+      "sha256": "fecd3763b9a44f4bd73258002d1a01b2b2575f54a093d72b64a809de317ae1f8",
+      "bytes": 4219
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormProjectionController.java",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "blob": "5c503d5b99be4f927b35346302903849acc1184f",
+      "sha256": "9a7768be7d41b3a8773b4fb8f0ce4570efa43f7fc28f0b6d11102dd59ab46399",
+      "bytes": 18207
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "blob": "1ddd0700b1e932ba4dae897ad84a791df6de716d",
+      "sha256": "789426609a0691aab29bd2f1a7600f00531017c52a28f7e135a2517b9bdfc340",
+      "bytes": 6900
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "blob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "sha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+      "bytes": 33825
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "blob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "sha256": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+      "bytes": 44291
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "blob": "46c2f16d8857d1aaaa42865779f57c85959bd7a6",
+      "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08",
+      "bytes": 24562
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "blob": "9401ccff54412a60fc60b5097f2a5167168d28ca",
+      "sha256": "3dcf8632a2049d9a13e8e178e55ff5c24643f50f496410ba2ef3f8f71c054e66",
+      "bytes": 6277
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "blob": "0a8c059375dcefcdaa073002742a01faaf30a27d",
+      "sha256": "110946d1735814bd5de0e45c7a3478598fee06a22b1dd5f1840cfed7f008a48b",
+      "bytes": 23890
+    }
+  ],
+  "policyReceipts": [
+    {
+      "path": "docs/knowledge/rules/form-trace-field-binding.yaml",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sha256": "3c9378e5fd3e2d33a285cab2972113582c90e9ecfd8341f1e0c2989b228d9597",
+      "bytes": 3180
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a",
+      "bytes": 74784
+    },
+    {
+      "path": "docs/knowledge/evidence/trace-field-single-binding-2026-10-19.md",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sha256": "d15111f5f3a686e0546f7a0a3e70f124713d9a2808e54d02c3c43ba4656140a5",
+      "bytes": 12808
+    }
+  ],
+  "findings": [
+    {
+      "candidateId": "trace-index-blank-main-region",
+      "confirmedBy": "source-inspection-only",
+      "severitySuggestion": "medium",
+      "newBusinessDecisionRequired": false,
+      "paths": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java"
+      ],
+      "trigger": "Legal Java-blank main-table tableId survives configuration freeze, then saved trace refresh or DHR frozen-evidence matches calls extract.",
+      "expected": "Main field is extracted to canonical empty tableId and original saved/frozen evidence remains unchanged.",
+      "actualFromSource": "isEmpty is false, extract looks for subtable with blank identifier and continues without tracing the main field.",
+      "runtimeReproductionExecuted": false,
+      "minimalFixture": {
+        "fields": [
+          {
+            "id": "lot",
+            "name": "物料批号",
+            "type": "text"
+          }
+        ],
+        "projection": {
+          "version": "form-projection-v1",
+          "bindings": [
+            {
+              "id": "g",
+              "modelId": "formTrace",
+              "enabled": true,
+              "tableId": "　",
+              "sources": {
+                "materialLotText": "lot"
+              }
+            }
+          ]
+        },
+        "values": {
+          "lot": "L1"
+        }
+      },
+      "positiveControl": "Replace tableId by empty string.",
+      "policyReferences": [
+        "DEC-0077-42",
+        "rule.form-projection.trace-field-single-binding",
+        "scenario.form-projection-trace-item-reuse-and-old-evidence"
+      ],
+      "noHistoricalRewriteNeeded": true,
+      "tableIdCodePoints": [
+        "U+3000"
+      ]
+    }
+  ],
+  "runtimeChecksExecuted": [],
+  "dependenciesInstalled": false,
+  "applicationOrDatabaseStarted": false,
+  "trackedFilesModified": false,
+  "testPlan": [
+    "Real extract regression over Java-blank main aliases and exact nonblank subtable ids; preserve legacy multi-binding reads.",
+    "Save-to-index and reverse-query integration with frozen snapshot unchanged.",
+    "DHR current and verified termination evidence matching with source/hash unchanged.",
+    "Run existing interpreter, persisted projection/retry and execution snapshot regressions with actual environment clearly labeled."
+  ],
+  "limitations": [
+    "No executable reproduction or test suite run by this helper.",
+    "Only listed source scopes reviewed; whole-file and whole-system completion not claimed.",
+    "A12 implementation gaps and two user-deferred high items remain outside this repair.",
+    "Existing target/classes was observed but not used as evidence of a current build."
+  ]
+}

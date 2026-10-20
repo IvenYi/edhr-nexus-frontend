@@ -1,8 +1,9 @@
 import type { ModelDesignState, ModelField } from '../types/model';
 import { referenceConditions } from '@/components/form-renderer/referenceConfig';
+import { projectionTableId } from './projectionConfiguration';
 
 export function previewSampleKey(tableId: string | undefined, rowIndex: number, fieldId: string) {
-  return `${tableId ?? ''}/${rowIndex}/${fieldId}`;
+  return `${projectionTableId(tableId)}/${rowIndex}/${fieldId}`;
 }
 
 export function projectionPreviewFieldIds(model: ModelDesignState) {
@@ -18,7 +19,7 @@ export function projectionPreviewFieldIds(model: ModelDesignState) {
     });
   };
   model.projection?.bindings.filter(binding => binding.enabled).forEach(binding => {
-    const region = binding.tableId ?? '';
+    const region = projectionTableId(binding.tableId);
     Object.values(binding.sources).forEach(id => add(region, id));
     binding.detailFieldIds?.forEach(id => add(region, id));
     if (binding.rowKeyFieldId) add(region, binding.rowKeyFieldId);

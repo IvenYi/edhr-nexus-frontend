@@ -11,7 +11,7 @@ const tempDir = await mkdtemp(path.join(os.tmpdir(), 'projection-preview-'));
 const outfile = path.join(tempDir, 'preview.cjs');
 await build({ entryPoints: [fileURLToPath(new URL('../src/pages/master-data/template-designer-react/utils/projectionPreview.ts', import.meta.url))],
   outfile, bundle: true, format: 'cjs', platform: 'node', logLevel: 'silent' });
-const { buildProjectionPreviewValues, previewSampleKey } = createRequire(import.meta.url)(outfile);
+const { buildProjectionPreviewValues, previewSampleKey, projectionPreviewFieldIds } = createRequire(import.meta.url)(outfile);
 await rm(tempDir, { recursive: true, force: true });
 
 const fields = [{ id: 'lot', type: 'text', typeConfig: {} }, { id: 'qty', type: 'number', typeConfig: {} }, { id: 'material', type: 'reference', typeConfig: { sourceType: 'material' } }];
@@ -23,6 +23,30 @@ const model = { fields: [...fields, { id: 'table', type: 'subTable', typeConfig:
     { id: 'draft', enabled: false, modelId: 'formTrace', sources: { equipmentText: 'draft-only' } },
   ] } };
 const sample = (region, row, field, value) => [previewSampleKey(region, row, field), value];
+
+test('legal blank main regions produce root samples and preserve the original binding identity', () => {
+  for (const tableId of [undefined, '', ' ', '\t', '\u001c', '\u3000', ' \t\u2000\u3000']) {
+    const model = { fields, projection: { bindings: [
+      { id: 'trace', enabled: true, modelId: 'formTrace', tableId, sources: { materialLotText: 'lot' } },
+    ] } };
+    const before = JSON.stringify(model);
+    assert.deepEqual([...projectionPreviewFieldIds(model).keys()], ['']);
+    assert.equal(previewSampleKey(tableId, 0, 'lot'), previewSampleKey('', 0, 'lot'));
+    assert.deepEqual(buildProjectionPreviewValues(model, { [previewSampleKey('', 0, 'lot')]: 'MAIN' }, {}), { lot: 'MAIN' });
+    assert.equal(JSON.stringify(model), before, 'simulation must preserve frozen/stored region spelling');
+  }
+});
+
+test('nonblank padded table identities and nonbreaking-space IDs are not trimmed or merged', () => {
+  const ids = ['table', ' table ', '\u00a0'];
+  const model = { fields: [{ id: 'lot', type: 'text' }, ...ids.map(id => ({ id, type: 'subTable', typeConfig: { columns: fields } }))],
+    projection: { bindings: [{ enabled: true, sources: { materialLotText: 'lot' } },
+      ...ids.map(tableId => ({ enabled: true, tableId, sources: { materialLotText: 'lot' } }))] } };
+  const samples = Object.fromEntries([sample('', 0, 'lot', 'MAIN'), ...ids.map((id, index) => sample(id, 0, 'lot', `ROW-${index}`))]);
+  const values = buildProjectionPreviewValues(model, samples, Object.fromEntries(ids.map(id => [id, 1])));
+  assert.equal(values.lot, 'MAIN');
+  ids.forEach((id, index) => assert.equal(values[id][0].lot, `ROW-${index}`));
+});
 
 test('subtable rows and the main form keep independent values, even when several uses share a column', () => {
   const before = JSON.stringify(model);

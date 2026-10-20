@@ -64,7 +64,7 @@ try {
   loader: { '.css': 'css', '.svg': 'dataurl', '.png': 'dataurl', '.woff2': 'file', '.ttf': 'file' },
   define: { 'process.env.NODE_ENV': '"development"' },
   plugins: baseline ? [{ name: 'original-save-owners', setup(plugin) {
-    plugin.onLoad({ filter: /(?:TemplateDesignerReactShell\.tsx|DesignerInspector\.tsx|useTemplateDesignerStore\.ts|fieldRegistry\.ts)$/ }, args => ({
+    plugin.onLoad({ filter: /(?:TemplateDesignerReactShell\.tsx|DesignerInspector\.tsx|useTemplateDesignerStore\.ts|fieldRegistry\.ts|ProjectionDialog\.tsx|projectionPreview\.ts)$/ }, args => ({
       contents: execFileSync('git', ['show', `${baseline}:${path.relative(root, args.path).split(path.sep).join('/')}`.replace(`${baseline}:src/`, `${baseline}:gmp-platform/frontend/src/`)], { cwd: root, encoding: 'utf8' }),
       loader: args.path.endsWith('.tsx') ? 'tsx' : 'ts', resolveDir: path.dirname(args.path),
     }));
@@ -247,6 +247,59 @@ try {
       await submit(page, 2);
       assert.equal(await page.evaluate(() => JSON.parse(window.__requests[1].payload.modelDesignJson).payload.projection.bindings.length), 0);
       await settle(page, 1);
+    }, viewport);
+  }
+  for (const viewport of [{ width: 1440, height: 960 }, { width: 390, height: 844 }]) {
+    await run(`trace region overview and simulation use the main form at ${viewport.width}px`, async page => {
+      await page.route('**/projection-catalog', route => route.fulfill({ status: 200, json: { code: 200, data: {
+        version: 'form-projection-v1', models: [{ id: 'formTrace', name: '追溯', attributes: [
+          { id: 'materialLotText', name: '物料批号', type: 'text' },
+        ] }], notice: '',
+      } } }));
+      const requests = [];
+      await page.route('**/projection-preview', async route => {
+        assert.equal(route.request().method(), 'POST');
+        const body = route.request().postDataJSON(); requests.push(body);
+        await route.fulfill({ status: 200, json: { code: 200, data: [{ bindingId: 'main', modelId: 'formTrace',
+          rowKey: 'form', tableId: '', attributes: { materialLotText: body.values.lot ?? '' }, sources: { materialLotText: 'lot' } }] } });
+      });
+      // Install catalog fixtures before the always-mounted dialog's query starts.
+      await page.reload();
+      await page.getByRole('button', { name: '关闭侧边栏', exact: true }).click();
+      await page.evaluate(() => {
+        const state = window.__store.getState();
+        const document = structuredClone(state.document);
+        document.model.fields = [{ id: 'lot', name: '模拟批号', type: 'text', typeConfig: {} }];
+        document.model.projection = { version: 'form-projection-v1', bindings: [
+          { id: 'main', modelId: 'formTrace', enabled: true, tableId: ' \t\u3000', sources: { materialLotText: 'lot' } },
+        ] };
+        state.setDocument(document); state.markSaved();
+      });
+      const original = await page.evaluate(() => JSON.stringify(window.__store.getState().document));
+      await page.getByRole('button', { name: '用途总览', exact: true }).click();
+      const dialog = page.getByRole('dialog', { name: '追溯与统计总览' });
+      await dialog.getByText('查找与追溯：模拟批号', { exact: true }).waitFor();
+      assert.equal(await dialog.getByText('子表来源已失效', { exact: true }).count(), 0);
+      await dialog.getByRole('tab', { name: '模拟预览', exact: true }).click();
+      await dialog.getByLabel('模拟批号', { exact: true }).fill('MAIN-PREVIEW');
+      await dialog.getByRole('button', { name: '校验并预览', exact: true }).click();
+      await dialog.getByText('物料批号：MAIN-PREVIEW', { exact: true }).waitFor();
+      assert.equal(requests.length, 1);
+      assert.deepEqual(requests[0].values, { lot: 'MAIN-PREVIEW' });
+      assert.equal(requests[0].model.projection.bindings[0].tableId, ' \t\u3000');
+      assert.equal(await page.evaluate(() => JSON.stringify(window.__store.getState().document)), original);
+      assert.equal(await dirty(page), false);
+      assert.equal(await page.evaluate(() => window.__requests.length), 0, 'simulation does not save the template');
+      if (process.env.W2_SCREENSHOT_DIR) {
+        await mkdir(process.env.W2_SCREENSHOT_DIR, { recursive: true });
+        await page.screenshot({ path: path.join(process.env.W2_SCREENSHOT_DIR, `trace-main-region-preview-${viewport.width}.png`), animations: 'disabled' });
+      }
+      const close = dialog.locator('.MuiDialogActions-root').getByRole('button', { name: '关闭', exact: true });
+      const bounds = await close.boundingBox();
+      assert.ok(bounds && bounds.x >= 0 && bounds.x + bounds.width <= viewport.width
+        && bounds.y >= 0 && bounds.y + bounds.height <= viewport.height, 'footer close remains reachable');
+      await close.focus(); await page.keyboard.press('Enter');
+      await dialog.waitFor({ state: 'hidden' });
     }, viewport);
   }
   await run('trace single binding repairs duplicate columns in the whole subtable panel', async page => {

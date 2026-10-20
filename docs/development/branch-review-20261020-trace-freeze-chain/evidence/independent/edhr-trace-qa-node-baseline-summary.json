@@ -1,0 +1,14 @@
+{
+  "baselineCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+  "fixtureCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+  "tests": 6,
+  "passed": 5,
+  "failed": 1,
+  "errors": 0,
+  "skipped": 0,
+  "expectedFailure": true,
+  "failingCase": "legal blank main regions produce root samples and preserve the original binding identity",
+  "assertion": "region keys expected [''], actual [' ']",
+  "nonblankPaddedAndNbspPositiveControl": "passed",
+  "exitCode": 1
+}

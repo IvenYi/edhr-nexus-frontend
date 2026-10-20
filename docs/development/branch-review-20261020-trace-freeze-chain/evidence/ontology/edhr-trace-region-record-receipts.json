@@ -1,0 +1,464 @@
+{
+  "schema": "edhr-fixed-knowledge-record-receipts/v1",
+  "baselineCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "readOnly": true,
+  "semanticReviewPerformed": false,
+  "qualityAcceptanceClaimed": false,
+  "extractionSpecification": {
+    "topLevelCollections": {
+      "terms": "term",
+      "concepts": "concept",
+      "relations": "relation",
+      "rules": "rule",
+      "facts": "fact",
+      "implementationAnchors": "implementationAnchor",
+      "decisions": "decision",
+      "evidence": "evidence",
+      "questions": "openQuestion",
+      "executionContracts": "executionContract"
+    },
+    "nestedCollections": {
+      "decisionStatements": "decisionStatement",
+      "acceptanceScenarios": "acceptanceScenario",
+      "implementationDiscrepancies": "implementationDiscrepancy"
+    },
+    "referenceObjectIdsExcluded": true,
+    "schemaEnumsExcluded": true
+  },
+  "hashSpecification": "SHA256(json.dumps(record,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode('utf-8'))",
+  "records": [
+    {
+      "id": "DEC-0077-20",
+      "found": true,
+      "recordType": "decisionStatement",
+      "sourceLocator": "/decisions/0/decisionStatements/19",
+      "record": {
+        "id": "DEC-0077-20",
+        "statement": "MVP纳入客户维护可复用追溯项目录、普通字段或子表列关联追溯项、表单及DHR反向查询按追溯项提供条件并回查有权限来源表单与命中位置的路径；名称不同的来源字段可以关联同一追溯项。客户管理员定义追溯项，制表人配置字段来源，查询人使用条件；此职责划分不规定每份表单必须由三人依次操作。当前支持文本、数字和日期，数字精确值查询、日期起止范围查询及预置清单按DEC-0077-40；自定义项的引用字段兼容延期，不据此撤销既有预置项合法引用能力。追溯项是内容反向查询配置，不用于定义正向真实关联属性或业务报表固定条件，不等于客户编辑研发本体、定义任意统计口径或据文本建立正式实体关系。保存后过程可查及表单/DHR各自组合范围按现行已确认规则；自定义项CRUD、先解除表单配置再删除及历史填报内容保留按DEC-0077-41，不再将这一范围列为待定。更多类型和操作符、其余目录生命周期、复杂OR和历史处理仍须在对应实现前明确。",
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "sourcePath": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "38c5c35c84d22523852cc9ddd3debebfa4c3c04a",
+      "sourceSha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a",
+      "recordSha256": "3be1378b2467cc2de788618d27d84f10800ad38d329f41cead5af7ecffe5b7ef",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "worktreeComparison": {
+        "relation": "unchanged",
+        "recordSha256": "3be1378b2467cc2de788618d27d84f10800ad38d329f41cead5af7ecffe5b7ef",
+        "fileSha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a",
+        "sourceLocator": "/decisions/0/decisionStatements/19"
+      }
+    },
+    {
+      "id": "DEC-0077-33",
+      "found": true,
+      "recordType": "decisionStatement",
+      "sourceLocator": "/decisions/0/decisionStatements/32",
+      "record": {
+        "id": "DEC-0077-33",
+        "statement": "已成功保存或暂存的最新表单内容即可在授权追溯查询中查到，包含草稿、填报中、审批中及已完成记录，结果显示来源记录状态；未保存输入不参与查询。正式业务统计仍等待最终完成及其投影成功，不把过程查询命中当成正式结果、DHR归属或业务关系，来源授权与真实归属继续适用。本条在保存生效时点、已保存过程内容及可查状态范围内supersedes DEC-0077-17/20/29的独立索引尚未定状态；失效历史与A12视图仍另定，不因本条开放受控修订或作废。2026-10-10已按保存事务维护独立内容索引，并保存过程阶段；2026-10-14正向进一步不依赖索引绑定。检索存储是工程实现而非客户另建业务，原只查完成SUCCEEDED批次属于修正前差距，不再作为当前范围；未引入异步延迟政策。",
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "sourcePath": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "38c5c35c84d22523852cc9ddd3debebfa4c3c04a",
+      "sourceSha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a",
+      "recordSha256": "f4b4a0d90369d6c3c07a900bb710656cfb59d9c0c60ba873572cf35e66f6564e",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "worktreeComparison": {
+        "relation": "unchanged",
+        "recordSha256": "f4b4a0d90369d6c3c07a900bb710656cfb59d9c0c60ba873572cf35e66f6564e",
+        "fileSha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a",
+        "sourceLocator": "/decisions/0/decisionStatements/32"
+      }
+    },
+    {
+      "id": "DEC-0077-38",
+      "found": true,
+      "recordType": "decisionStatement",
+      "sourceLocator": "/decisions/0/decisionStatements/37",
+      "record": {
+        "id": "DEC-0077-38",
+        "statement": "表单追溯、报工记录、报废记录和消耗记录分别提供独立菜单与页面，不要求查询人先进入共用页面再切换业务用途。详情直接展示有权限的来源原表单，并定位和高亮命中字段或相应实际子表行，仍可核对真实执行归属及按原权限回查实际DHR关系。追溯读取最近成功保存内容，正式业务记录读取其最终完成时冻结来源，不用最新模板或当前字段值替换历史证据。本条在四类页面入口及直接来源定位范围内局部supersedes DEC-0077-17/20中结果页面组织尚未确认的解释，Q16只保留其余跨报表组织与历史视图；不改保存后过程可查、最终完成正式统计、真实生产/DHR归属、签名、授权或快照。用户认为冠骋消耗可能是流水并要求核对属于调研判断，原始采集链支持逐笔来源，但部署列表配置与详情参数仍缺失；本轮逐笔业务列表、撤下业务记录/合计二级页签及按稳定rowKey在显示快照中定位属于主智能体工程选择，不提升为独立用户业务确认，不证明完整复制冠骋或运行验收通过。已有按工序用途合计的计算/API保留，不因撤下页面入口而废弃DEC-0077-06/32。",
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "sourcePath": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "38c5c35c84d22523852cc9ddd3debebfa4c3c04a",
+      "sourceSha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a",
+      "recordSha256": "d19aeb8492d68419857f51d252f219f90eedf22b411f46991289b7226907413e",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "worktreeComparison": {
+        "relation": "unchanged",
+        "recordSha256": "d19aeb8492d68419857f51d252f219f90eedf22b411f46991289b7226907413e",
+        "fileSha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a",
+        "sourceLocator": "/decisions/0/decisionStatements/37"
+      }
+    },
+    {
+      "id": "DEC-0077-42",
+      "found": true,
+      "recordType": "decisionStatement",
+      "sourceLocator": "/decisions/0/decisionStatements/41",
+      "record": {
+        "id": "DEC-0077-42",
+        "statement": "2026-10-19用户要求先研究当前一字段多追溯项的需要，未发现必要场景则收紧为一个字段最多关联一个追溯项；本轮已查冠骋原始类型与采集路径、安速康原始表单，未找到当前MVP必须保留任意多绑的实际场景，按条件授权落实。一个真实主表字段或子表列最多关联一个追溯项，同一项可以在不同表单及同表单不同字段复用；字段身份不由同名或画布放置次数决定。用户随后明确已配好一个字段对应多个追溯项的配置直接删除、无需兼容，替代同轮早先保留旧多绑并人工修正的要求；当前不再承诺旧多绑兼容。按表区域与真实字段扫描全部sources、包含停用及重复同项，一次性删除冲突字段全部formTrace来源映射及空binding而不任选第一项，保留其他字段、合法单绑及业务用途；这是落实删除授权的工程方式。后续导入、设计保存及新使用时配置冻结仍拒绝多绑，不静默保留第一项。授权仅指对应模板配置，不删除填写值、已形成实例、执行或DHR冻结证据，其读取继续沿自身来源解释；备份计数、事务和幂等验证为工程实施要求，不以本声明证明清理已执行。此前10-12保留多绑是工程解释，原话及本轮早先要求作为历史证据保留，不伪造整份DEC替代。20的可复用目录、类型及授权、41的日常选择解除和历史内容保留继续有效，此次明确配置清理按本条局部执行；追溯与业务用途独立，同一日期兼作追溯日期和生产日期及合法统计来源角色复用不受影响。当前研究不证明所有行业不存在别名映射需求，不将同值当实体关系。真实归属、签署及审计不改写；本条specified/internal，迁移、实际库清理、运行及独立质量另取本轮证据。",
+        "status": "specified",
+        "visibility": "internal"
+      },
+      "sourcePath": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "38c5c35c84d22523852cc9ddd3debebfa4c3c04a",
+      "sourceSha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a",
+      "recordSha256": "1275384c7516df65112bab4a319f39fa1aaf5b59cc1dbd164922dfddf775efae",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "worktreeComparison": {
+        "relation": "unchanged",
+        "recordSha256": "1275384c7516df65112bab4a319f39fa1aaf5b59cc1dbd164922dfddf775efae",
+        "fileSha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a",
+        "sourceLocator": "/decisions/0/decisionStatements/41"
+      }
+    },
+    {
+      "id": "rule.form-projection.trace-field-single-binding",
+      "found": true,
+      "recordType": "rule",
+      "sourceLocator": "/rules/0",
+      "record": {
+        "id": "rule.form-projection.trace-field-single-binding",
+        "name": "单个真实字段最多关联一个追溯项",
+        "status": "specified",
+        "visibility": "internal",
+        "trigger": "template.trace-configuration.save-or-new-use-freeze",
+        "scope": "template-trace-field-cardinality",
+        "condition": {
+          "fact": "fact.form-projection.trace-field-binding-count",
+          "operator": "greater-than-or-equal",
+          "value": 2
+        },
+        "result": {
+          "type": "block",
+          "rejectInvalidConfiguration": true,
+          "retainFirstAssignment": false,
+          "preservedContracts": [
+            "cross-field-trace-item-reuse",
+            "business-role-reuse",
+            "existing-frozen-evidence"
+          ]
+        },
+        "explanation": "DEC-0077-42按本轮条件授权收紧配置，一个主表真实字段或子表列最多一个追溯项，同一项仍允许在不同字段及表单复用。用户后续明确直接删除已配好的多绑配置，不再兼容或承诺旧配置人工修正；存量清理按独立一次性清理规则。按表区域和字段身份扫描全部sources，包含停用配置及重复同项；表区域身份沿既有运行解释，tableId省略、空串或Java String.isBlank判定的空白均为同一主表区域，非空白ID保持原值、不剪裁或猜测子表身份。后续导入、设计保存及新的配置冻结拒绝多绑，不静默保留第一项。新设计约束不套已有实例或冻结证据读取，业务统计角色共享、真实归属、来源权限、签署及审计仍按原契约。",
+        "evidenceIds": [
+          "evidence.trace-field-single-binding-20261019"
+        ]
+      },
+      "sourcePath": "docs/knowledge/rules/form-trace-field-binding.yaml",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "b2c745d6b29fb03fdd6ad0747e3c233122638c62",
+      "sourceSha256": "3c9378e5fd3e2d33a285cab2972113582c90e9ecfd8341f1e0c2989b228d9597",
+      "recordSha256": "f4a67f03d29fcc1efe7f75b8ffa956a5620be5d7ce49c8eb58019efc68479b62",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "worktreeComparison": {
+        "relation": "unchanged",
+        "recordSha256": "f4a67f03d29fcc1efe7f75b8ffa956a5620be5d7ce49c8eb58019efc68479b62",
+        "fileSha256": "3c9378e5fd3e2d33a285cab2972113582c90e9ecfd8341f1e0c2989b228d9597",
+        "sourceLocator": "/rules/0"
+      }
+    },
+    {
+      "id": "rule.form-projection.cleanup-multi-trace-configuration",
+      "found": true,
+      "recordType": "rule",
+      "sourceLocator": "/rules/1",
+      "record": {
+        "id": "rule.form-projection.cleanup-multi-trace-configuration",
+        "name": "一次性删除存量多绑字段的全部追溯配置",
+        "status": "specified",
+        "visibility": "internal",
+        "trigger": "template.trace-configuration.one-time-cleanup",
+        "scope": "stored-template-trace-configuration",
+        "condition": {
+          "fact": "fact.form-projection.trace-field-binding-count",
+          "operator": "greater-than-or-equal",
+          "value": 2
+        },
+        "result": {
+          "type": "remove-configuration",
+          "removalScope": "all-trace-source-mappings-of-conflicting-field",
+          "removeEmptyBinding": true,
+          "retainFirstAssignment": false,
+          "preserve": [
+            "other-fields",
+            "valid-single-bindings",
+            "business-purpose-mappings",
+            "field-values",
+            "formed-instances",
+            "execution-and-dhr-frozen-evidence"
+          ]
+        },
+        "explanation": "user-confirmed为直接删除存量多绑对应配置、无需兼容，替代同轮早先保留旧多绑并人工修正的要求。删除冲突真实字段的全部formTrace来源映射及空binding而不任选保留第一项，是主侧确定的工程清理方式。清理计数同样遵守运行区域身份，省略、空串及Java String.isBlank空白视同主表，非空白ID保持原值；原0116字节保持，0117补扫区域别名导致的残留冲突属于同一政策缺陷修补，不建立兼容或新业务规则。只处理存量模板对应配置，其他字段、合法单绑、业务用途及已形成证据保持；不将配置清理授权扩为删除填写值、实例或冻结DHR证据。清理前计数与备份、事务和幂等验证属于实施要求，当前知识不宣称0117实际库清理已执行。",
+        "evidenceIds": [
+          "evidence.trace-field-single-binding-20261019"
+        ]
+      },
+      "sourcePath": "docs/knowledge/rules/form-trace-field-binding.yaml",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "b2c745d6b29fb03fdd6ad0747e3c233122638c62",
+      "sourceSha256": "3c9378e5fd3e2d33a285cab2972113582c90e9ecfd8341f1e0c2989b228d9597",
+      "recordSha256": "58fc3d291fadb98073617572ae71d4f87ce985b9cf9616fa72b88d5499cc6193",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "worktreeComparison": {
+        "relation": "unchanged",
+        "recordSha256": "58fc3d291fadb98073617572ae71d4f87ce985b9cf9616fa72b88d5499cc6193",
+        "fileSha256": "3c9378e5fd3e2d33a285cab2972113582c90e9ecfd8341f1e0c2989b228d9597",
+        "sourceLocator": "/rules/1"
+      }
+    },
+    {
+      "id": "fact.form-projection.trace-field-binding-count",
+      "found": true,
+      "recordType": "fact",
+      "sourceLocator": "/facts/0",
+      "record": {
+        "id": "fact.form-projection.trace-field-binding-count",
+        "name": "当前真实字段的追溯来源关联数",
+        "conceptId": "concept.form-projection-configuration",
+        "valueType": "integer",
+        "sourceType": "derived",
+        "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java",
+        "aliases": [
+          "traceField.assignmentCount"
+        ],
+        "availability": "configuration",
+        "allowedOperators": [
+          "greater-than-or-equal"
+        ],
+        "status": "specified",
+        "visibility": "internal",
+        "evidenceIds": [
+          "evidence.trace-field-single-binding-20261019"
+        ],
+        "sourceRevision": "working-tree",
+        "sourceLocator": "validateConfiguration按运行表区域身份及sources内真实fieldId扫描formTrace，跨配置组累计；tableId省略、空串及Java String.isBlank空白同为主表，非空白ID保留原值；不以画布放置次数或业务统计来源计数，包含停用配置及重复同项",
+        "capturedAt": "2026-10-19",
+        "reviewStatus": "reviewed"
+      },
+      "sourcePath": "docs/knowledge/facts/form-projection.yaml",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "a9a274b085a9f7d2069796b357afae1d6b3c97b1",
+      "sourceSha256": "fc768f4aa149628a92e974f4da1861a3cfc16bfe6d05b9999440a3025b0282c9",
+      "recordSha256": "d90289a513d940c7692fa71edf10711a4bd93a8ea10c2875ce96d5e2b2c34188",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "worktreeComparison": {
+        "relation": "unchanged",
+        "recordSha256": "d90289a513d940c7692fa71edf10711a4bd93a8ea10c2875ce96d5e2b2c34188",
+        "fileSha256": "fc768f4aa149628a92e974f4da1861a3cfc16bfe6d05b9999440a3025b0282c9",
+        "sourceLocator": "/facts/0"
+      }
+    },
+    {
+      "id": "fact.form-projection.source-configuration",
+      "found": true,
+      "recordType": "fact",
+      "sourceLocator": "/facts/1",
+      "record": {
+        "id": "fact.form-projection.source-configuration",
+        "name": "表单用途来源配置对象",
+        "conceptId": "concept.form-projection-configuration",
+        "valueType": "object",
+        "sourceType": "configuration",
+        "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+        "aliases": [
+          "form.projection"
+        ],
+        "availability": "configuration-and-runtime",
+        "allowedOperators": [
+          "exists",
+          "persisted"
+        ],
+        "status": "implemented",
+        "visibility": "internal",
+        "evidenceIds": [
+          "evidence.projection-integration-source-boundaries"
+        ],
+        "sourceRevision": "eedc24721d8d5137b29840575867422577386141",
+        "sourceLocator": "ExecutionSnapshotBuilder.form 从模板 model.payload.projection 或 model.projection 复制对象；制程开工及自定义附加使用当时副本，合并树增量另见集成核对",
+        "capturedAt": "2026-10-15",
+        "reviewStatus": "reviewed"
+      },
+      "sourcePath": "docs/knowledge/facts/form-projection.yaml",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "a9a274b085a9f7d2069796b357afae1d6b3c97b1",
+      "sourceSha256": "fc768f4aa149628a92e974f4da1861a3cfc16bfe6d05b9999440a3025b0282c9",
+      "recordSha256": "7d4988e3063438520b8248e366981706bfd9283c079d8170f14dfc8a291e74f0",
+      "originalStatus": "implemented",
+      "originalVisibility": "internal",
+      "worktreeComparison": {
+        "relation": "unchanged",
+        "recordSha256": "7d4988e3063438520b8248e366981706bfd9283c079d8170f14dfc8a291e74f0",
+        "fileSha256": "fc768f4aa149628a92e974f4da1861a3cfc16bfe6d05b9999440a3025b0282c9",
+        "sourceLocator": "/facts/1"
+      }
+    },
+    {
+      "id": "fact.form-projection.formal-source-snapshot",
+      "found": true,
+      "recordType": "fact",
+      "sourceLocator": "/facts/2",
+      "record": {
+        "id": "fact.form-projection.formal-source-snapshot",
+        "name": "正式投影冻结来源对象",
+        "conceptId": "concept.form-business-projection",
+        "valueType": "object",
+        "sourceType": "database",
+        "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java",
+        "aliases": [
+          "formProjectionBatch.source"
+        ],
+        "availability": "runtime",
+        "allowedOperators": [
+          "exists",
+          "persisted"
+        ],
+        "status": "implemented",
+        "visibility": "internal",
+        "evidenceIds": [
+          "evidence.projection-formal-source"
+        ],
+        "sourceRevision": "eedc24721d8d5137b29840575867422577386141",
+        "sourceLocator": "completed 保存 form_projection_batch.source_json 对象，包含form/model/values/context/operationId；process只解释冻结来源，不回读最新模板",
+        "capturedAt": "2026-10-15",
+        "reviewStatus": "reviewed"
+      },
+      "sourcePath": "docs/knowledge/facts/form-projection.yaml",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "a9a274b085a9f7d2069796b357afae1d6b3c97b1",
+      "sourceSha256": "fc768f4aa149628a92e974f4da1861a3cfc16bfe6d05b9999440a3025b0282c9",
+      "recordSha256": "768682d263f695f0b9a42b94e181d05b221aad7ce97052627666344c7c0f77f1",
+      "originalStatus": "implemented",
+      "originalVisibility": "internal",
+      "worktreeComparison": {
+        "relation": "unchanged",
+        "recordSha256": "768682d263f695f0b9a42b94e181d05b221aad7ce97052627666344c7c0f77f1",
+        "fileSha256": "fc768f4aa149628a92e974f4da1861a3cfc16bfe6d05b9999440a3025b0282c9",
+        "sourceLocator": "/facts/2"
+      }
+    },
+    {
+      "id": "scenario.form-projection-trace-item-reuse-and-old-evidence",
+      "found": true,
+      "recordType": "acceptanceScenario",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/1",
+      "record": {
+        "id": "scenario.form-projection-trace-item-reuse-and-old-evidence",
+        "given": "同一追溯项被不同字段或不同表单使用，另有已形成的多绑冻结实例，字段也可能用于业务统计",
+        "when": "保存合法新配置或按原授权读取历史表单、投影与DHR证据",
+        "then": "同项跨字段复用及合法业务统计来源共享不受限，旧多绑实例沿自身冻结来源读取，不套新设计校验、不重写源值与原映射，不按同值建立新的真实归属",
+        "evidenceIds": [
+          "evidence.trace-field-single-binding-20261019"
+        ]
+      },
+      "sourcePath": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "38c5c35c84d22523852cc9ddd3debebfa4c3c04a",
+      "sourceSha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a",
+      "recordSha256": "4c1e371d2976446c1ef1945867cb1287a6a3b94fbf81768b56b691bdf4c04ff9",
+      "originalStatus": null,
+      "originalVisibility": null,
+      "worktreeComparison": {
+        "relation": "unchanged",
+        "recordSha256": "4c1e371d2976446c1ef1945867cb1287a6a3b94fbf81768b56b691bdf4c04ff9",
+        "fileSha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a",
+        "sourceLocator": "/decisions/0/acceptanceScenarios/1"
+      }
+    },
+    {
+      "id": "concept.form-saved-content-trace",
+      "found": true,
+      "recordType": "concept",
+      "sourceLocator": "/concepts/9",
+      "record": {
+        "id": "concept.form-saved-content-trace",
+        "termId": "term.form-saved-content-trace",
+        "kind": "business-concept",
+        "status": "specified",
+        "visibility": "internal",
+        "evidenceIds": [
+          "evidence.form-projection-clarifications-20261010",
+          "evidence.form-and-dhr-trace-query-20261013"
+        ]
+      },
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "9afe7e64a0770092b57d5226e96982f87a29e27c",
+      "sourceSha256": "edc8d5cb3c6c02c7c7ee826bb804fcf0dc0c97c196cfb42b655a3b7b9b598551",
+      "recordSha256": "62533e7e2d24ee3ca701d625f87b9f1a1fe45bbd7256cb3e42fe82eacac3b266",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "worktreeComparison": {
+        "relation": "unchanged",
+        "recordSha256": "62533e7e2d24ee3ca701d625f87b9f1a1fe45bbd7256cb3e42fe82eacac3b266",
+        "fileSha256": "edc8d5cb3c6c02c7c7ee826bb804fcf0dc0c97c196cfb42b655a3b7b9b598551",
+        "sourceLocator": "/concepts/9"
+      }
+    },
+    {
+      "id": "relation.form-field-has-trace-item",
+      "found": false,
+      "notSubstituted": true,
+      "similarCandidateIds": [
+        "relation.form-field-associated-trace-item"
+      ]
+    }
+  ],
+  "similarCandidates": [
+    {
+      "recordType": "relation",
+      "sourceLocator": "/relations/0",
+      "record": {
+        "id": "relation.form-field-associated-trace-item",
+        "source": "concept.form-template-field",
+        "target": "concept.form-lookup-item",
+        "cardinality": "one-to-zero-or-one",
+        "status": "specified",
+        "visibility": "internal",
+        "description": "当前模板配置中一个真实主字段或子表列最多关联一个追溯项，同项可被同表单不同字段及不同表单复用；不以名称或画布重复放置识别字段。用户最新授权直接删除存量多绑对应配置，无需兼容；一次性移除冲突字段全部追溯映射及空binding，不任选保留一项，其他字段、合法单绑及业务用途保持。后续导入或保存仍拒绝多绑，此配置清理不删除字段值或已形成实例、使用时冻结及DHR证据。",
+        "evidenceIds": [
+          "evidence.trace-field-single-binding-20261019"
+        ]
+      },
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "sourceBlob": "9afe7e64a0770092b57d5226e96982f87a29e27c",
+      "sourceSha256": "edc8d5cb3c6c02c7c7ee826bb804fcf0dc0c97c196cfb42b655a3b7b9b598551",
+      "recordSha256": "e109c749d268befeb21f8e342623562c4f5b7856d00f7954c6963468dea5f44c",
+      "originalStatus": "specified",
+      "originalVisibility": "internal",
+      "id": "relation.form-field-associated-trace-item"
+    }
+  ],
+  "summary": {
+    "allCurrentDefinitionIds": 2534,
+    "requested": 12,
+    "found": 11,
+    "notFound": 1,
+    "worktreeRelations": {
+      "unchanged": 11,
+      "record-changed": 0,
+      "missing": 0,
+      "unreadable": 0
+    }
+  }
+}

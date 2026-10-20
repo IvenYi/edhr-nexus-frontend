@@ -1,0 +1,150 @@
+{
+  "checkedAt": "2026-10-20T07:54:40.896218+00:00",
+  "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+  "targetCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+  "coreCommit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+  "workingTreeClean": true,
+  "candidateDescendsFromTarget": true,
+  "targetTreeEqualsPr18Delivery": true,
+  "contractAndUnchangedPolicyBlobs": [
+    {
+      "path": "AGENTS.md",
+      "baseBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "candidateBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "equal": true
+    },
+    {
+      "path": "codeplzreadme.md",
+      "baseBlob": "2e7e18097620e602c4408b83f71404fae346f8be",
+      "candidateBlob": "2e7e18097620e602c4408b83f71404fae346f8be",
+      "equal": true
+    },
+    {
+      "path": "DESIGN.md",
+      "baseBlob": "29d9e21e96170cef0d371d4867e7b8b5d6f56568",
+      "candidateBlob": "29d9e21e96170cef0d371d4867e7b8b5d6f56568",
+      "equal": true
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "baseBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "candidateBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "equal": true
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "baseBlob": "581e647c37daebeb9dd3d6397ae53e30e7822fb3",
+      "candidateBlob": "581e647c37daebeb9dd3d6397ae53e30e7822fb3",
+      "equal": true
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "baseBlob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "candidateBlob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "equal": true
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "baseBlob": "63703d111d8f01fc7ff71e97ff311ee38bbb3a40",
+      "candidateBlob": "63703d111d8f01fc7ff71e97ff311ee38bbb3a40",
+      "equal": true
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "baseBlob": "8b77bd25598fc0aa7e03da2d10f23215b6252e2e",
+      "candidateBlob": "8b77bd25598fc0aa7e03da2d10f23215b6252e2e",
+      "equal": true
+    },
+    {
+      "path": "docs/architecture/form-traceability-projection-design.md",
+      "baseBlob": "fdce6a5d1efc5f84666b3764fbc30cfd1a9033fc",
+      "candidateBlob": "fdce6a5d1efc5f84666b3764fbc30cfd1a9033fc",
+      "equal": true
+    },
+    {
+      "path": "docs/architecture/transaction-traceability-dhr-business-rules.md",
+      "baseBlob": "5d2362e5b4baf592f4687af57f2381dcd3d652e6",
+      "candidateBlob": "5d2362e5b4baf592f4687af57f2381dcd3d652e6",
+      "equal": true
+    }
+  ],
+  "productionChanges": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionPreview.ts"
+  ],
+  "allChangedPaths": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261020-trace-freeze-chain/README.md",
+    "docs/development/branch-review-20261020-trace-freeze-chain/baseline.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/decision-package.yaml",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/helpers/edhr-trace-design-source-review-receipts.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/helpers/edhr-trace-design-source-review.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/helpers/edhr-trace-design-source-review.md",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/helpers/edhr-trace-history-source-review.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/helpers/edhr-trace-history-source-review.md",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/helpers/edhr-trace-preview-source-probe.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/helpers/receipts.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/ledger-reproduction.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/ontology/edhr-trace-region-build-semantic.py",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/ontology/edhr-trace-region-knowledge-summary-final.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/ontology/edhr-trace-region-knowledge-transition-summary.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/ontology/edhr-trace-region-ontology-result.yaml",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/ontology/edhr-trace-region-record-receipts.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/ontology/edhr-trace-region-semantic-review.jsonl",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/ontology/edhr-trace-region-semantic-source-receipts.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/ontology/receipts.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/ontology/source-receipts.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/edhr-trace-main-region-browser-final.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/edhr-trace-main-region-frontend-build.txt",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/edhr-trace-main-region-frontend-lint.txt",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/edhr-trace-main-region-java-green-summary.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/edhr-trace-main-region-java-red-summary.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/edhr-trace-main-region-node-green.txt",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/edhr-trace-migration-isolated.txt",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/edhr-trace-premium-baseline.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/edhr-trace-premium-candidate.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/edhr-trace-premium-comparison.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/edhr-trace-snapshot-lifecycle-summary.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/execution-postgres-summary.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/failing-runs.zip",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/raw-failure-member-receipts.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/receipts.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/trace-main-region-preview-1440.png",
+    "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/trace-main-region-preview-390.png",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/coverage.csv",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/entrypoints.csv",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/finding-aliases.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/findings.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/import-notes.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/inventory-summary.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/knowledge-records.jsonl",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/knowledge-sync-index.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/method-reviews.jsonl",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/migrations.csv",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/quality-report-index.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/receipts.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/semantic-reviews.jsonl",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/source-receipts.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/ledger/summary.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/primary-source-map.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/progress.json",
+    "docs/development/branch-review-20261020-trace-freeze-chain/source-catalog.json",
+    "docs/knowledge/README.md",
+    "docs/knowledge/evidence/trace-region-consumption-2026-10-20.md",
+    "docs/knowledge/evidence/trace-region-consumption-2026-10-20.yaml",
+    "docs/knowledge/implementation-anchors/form-projection.yaml",
+    "docs/knowledge/rules/form-trace-field-binding.yaml",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrTraceReportPostgresTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexServiceTest.java",
+    "gmp-platform/frontend/scripts/test-designer-save-browser.mjs",
+    "gmp-platform/frontend/scripts/test-projection-preview.mjs",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionPreview.ts"
+  ],
+  "noMigrationChanges": true,
+  "remainingGlobalStaticFindings": 84,
+  "newGlobalStaticFindings": 0
+}

@@ -1,0 +1,44 @@
+✔ switching panels preserves the selected source, document, dirty state and undo history (4.895941ms)
+✔ projection selection follows fields, subtables and empty canvas without switching panels (0.605384ms)
+✔ source edits share the existing save, undo and redo state across panels (0.646596ms)
+✔ legal blank main regions produce root samples and preserve the original binding identity (27.64466ms)
+✔ nonblank padded table identities and nonbreaking-space IDs are not trimmed or merged (0.562559ms)
+✔ subtable rows and the main form keep independent values, even when several uses share a column (0.381415ms)
+✔ missing quantities stay null and drafts do not contribute preview values (0.241755ms)
+✔ changing the simulated row count does not merge, duplicate or erase another row (0.280423ms)
+✔ native reference samples retain identity, code and row-local conditions without treating every reference as material (4.646093ms)
+✔ trace source editor shows its assigned meaning without expanding unrelated catalog entries (29.318276ms)
+✔ output source may share one quality field without conflating good and rejected quantities (0.456439ms)
+✔ report roles accept only compatible temporal and person sources, with manually supplied hours (28.766774ms)
+✔ a removed trace definition keeps its original source visible and removable (14.814343ms)
+✔ a removed field keeps its assigned meaning and explicit invalid-source warning (9.298216ms)
+✔ save feedback identifies and marks each required source, including an unfinished usage (6.878874ms)
+✔ repeat quantities identify the source while different models and shared dimensions stay allowed (0.310278ms)
+✔ same field cannot fill two roles inside one business and invalid optional sources remain locatable (0.176557ms)
+✔ collapsed business cards and each trace assignment expose consistent removal icons (21.12574ms)
+✔ trace cardinality preserves existing conflicts and requires explicit repair across bindings (0.571473ms)
+✔ one trace meaning remains reusable by different fields and table regions (0.255505ms)
+✔ blank table regions share the runtime main-table field identity (0.343098ms)
+✔ a valid blank-region trace remains visible and editable as a main-field assignment (23.737383ms)
+✔ trace conflicts include same-binding and same-item duplicates without limiting business roles (0.295737ms)
+✔ main details identify each source role and selected-field participation without changing mappings (27.407061ms)
+✔ main field directly offers statistical purposes without a separate configuration panel (5.06782ms)
+✔ subtable column keeps the whole-table configuration entry instead of inline main statistics (2.131397ms)
+✔ configured subtable preserves multiple existing purposes but defers adding others (6.020628ms)
+✔ configured report fields stay visible while empty optional fields are collapsed, preserving mappings (14.867142ms)
+✔ production instructions describe quantities rather than material lots, and add belongs to the purpose heading (21.585394ms)
+✔ canvas and dropdown candidates share type, region, disabled and occupied-role constraints (0.250638ms)
+✔ business-specific labels count records within each business without changing identities (0.151169ms)
+✔ trace editor offers no additional meaning when every compatible source is already used (5.615306ms)
+✔ trace accepts compatible native sources while statistics and unrelated meanings keep their boundaries (2.555698ms)
+✔ typed custom trace meanings offer only matching number or date sources (8.183102ms)
+✔ whole-table statistics keeps optional sources collapsed without a manual row identity or extra display selector (3.986318ms)
+✔ removing the extra display selector preserves valid saved columns and keeps invalid ones explicitly repairable (23.376618ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2515.260751

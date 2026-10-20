@@ -1,0 +1,252 @@
+{
+  "role": "readonly-independent-quality-source-assistance",
+  "instance": "/root/trace_region_independent_quality/consumer_source_verify",
+  "result": "consistent-in-reviewed-source",
+  "baseCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+  "headCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+  "workingTree": "clean",
+  "contractBaseline": {
+    "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+    "contractReadCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "knowledgeSchemaVersion": "1.2.0",
+  "decisionPackageRead": "DEC-PACKAGE-20261020-TRACE-REGION-CONSUMERS including full impactAnalysis and extensionStrategy",
+  "newFindings": [],
+  "sourceAssessments": [
+    {
+      "id": "W2-TRACE-REGION-001",
+      "severity": "high",
+      "sourceConsistent": true,
+      "before": "Legal Java-blank main tableId was treated as subtable by extract isEmpty checks and skipped when no such table exists.",
+      "after": "Two isBlank checks now select root fields/root values and output existing empty-string/form/-1 identity. Nonblank IDs and real rows remain exact.",
+      "testSourceCausality": "New unit and two PostgreSQL cases expect real main values; old source necessarily omits them. Actual execution belongs to formal QA."
+    },
+    {
+      "id": "W2-TRACE-REGION-002",
+      "severity": "medium",
+      "sourceConsistent": true,
+      "before": "Raw blank tableId creates false missing subtable in overview, raw sample grouping nests root value.",
+      "after": "Existing shared projectionTableId used for open focus, region insertion/filter, response title, sample key and field-set region. Only derived consumer state changes.",
+      "testSourceCausality": "Node case fails old assigned key; final actual-browser fixture against fixed base fails false invalid region count. Existing assertions retained."
+    }
+  ],
+  "boundaryChecks": [
+    "Legal null/omitted/empty/Java-blank main identifiers unify only for comparison and output locator; binding spelling and model bytes remain unchanged.",
+    "Java nonblank padded IDs and nonbreaking-space IDs retain exact identity. Subtable values use original table key and individual row keys; no table trim or row merge.",
+    "Single-field design cardinality remains in validateConfiguration; historical preview still calls validate. No new historical constraint or rewrite.",
+    "Record saving refreshes inside existing caller transaction; formal projection remains COMPLETED-only. No query causes index writes or automatic old-index backfill.",
+    "DHR frozen matching reads actual members returned by verified reader; no latest template lookup or membership derived from content. Existing hash and controller authorization unchanged.",
+    "Frontend controlled preview API returns synthetic values from sent request. Browser fixture proves UI/request/state, not real backend persistence.",
+    "Failure archive has five original members, including two fixture failures. All member SHA-256 and byte counts independently match; final fixture has product assertion red on fixed base.",
+    "Diff contains exactly three production files. No production migration, permission, audit, signing, snapshot writer, model schema, or business policy changed."
+  ],
+  "scopes": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 30,
+      "lineEnd": 78,
+      "scope": "refresh and extract; main/subtable classification, source field, actual row and output identity",
+      "blob": "c11b1810ee0818e911647521e061e9e9e70f3460",
+      "sha256": "854302280036e7ae81b50f80a765c609948927fb1cf124613c5d51cfb44b4039",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 85,
+      "lineEnd": 117,
+      "scope": "add value support and table/row/item/field identity; unchanged neighboring branch",
+      "blob": "c11b1810ee0818e911647521e061e9e9e70f3460",
+      "sha256": "854302280036e7ae81b50f80a765c609948927fb1cf124613c5d51cfb44b4039",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionPreview.ts",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 5,
+      "lineEnd": 49,
+      "scope": "previewSampleKey, projectionPreviewFieldIds, buildProjectionPreviewValues",
+      "blob": "64d6ca6382e05c18d5daf0d67ed7b15c16663dbe",
+      "sha256": "44ee36e7a516a539819ee7491e1bedc8ed85fcccf13add002db88cc52089a034",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 33,
+      "lineEnd": 51,
+      "scope": "open focus, region grouping, derived preview values and field set",
+      "blob": "a790f25a70a57036742e0edcbc7b1588517ed3bd",
+      "sha256": "0cfe6f4e3795eac2aac248aec4feb3088066d4d0363f00653cff8da9bb41c1a2",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 53,
+      "lineEnd": 81,
+      "scope": "controlled preview POST; sample state and field rendering",
+      "blob": "a790f25a70a57036742e0edcbc7b1588517ed3bd",
+      "sha256": "0cfe6f4e3795eac2aac248aec4feb3088066d4d0363f00653cff8da9bb41c1a2",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 88,
+      "lineEnd": 167,
+      "scope": "overview grouping, main simulation fieldset and result region title",
+      "blob": "a790f25a70a57036742e0edcbc7b1588517ed3bd",
+      "sha256": "0cfe6f4e3795eac2aac248aec4feb3088066d4d0363f00653cff8da9bb41c1a2",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 27,
+      "lineEnd": 37,
+      "scope": "existing Java-blank-matching projectionTableId and projectionSources",
+      "blob": "f43bcfc3269e1625ecca1707b4d2873a3f5e62ed",
+      "sha256": "603493e2da46c9df404d991a058527d1de94f0910c80fb075c1cb8ef9a5b0919",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 64,
+      "lineEnd": 67,
+      "scope": "existing normalized traceFieldAssignments identity",
+      "blob": "f43bcfc3269e1625ecca1707b4d2873a3f5e62ed",
+      "sha256": "603493e2da46c9df404d991a058527d1de94f0910c80fb075c1cb8ef9a5b0919",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 91,
+      "lineEnd": 227,
+      "scope": "validate, validateConfiguration and preview; new design cardinality vs old formed evidence interpretation",
+      "blob": "0a8c059375dcefcdaa073002742a01faaf30a27d",
+      "sha256": "110946d1735814bd5de0e45c7a3478598fee06a22b1dd5f1840cfed7f008a48b",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexServiceTest.java",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 11,
+      "lineEnd": 52,
+      "scope": "two new legal-main and exact-subtable unit regressions",
+      "blob": "e093605afea1b31f1d6647820084948deafcc7a5",
+      "sha256": "65b24413025d3c52772ce8ebb1b281a8cf3dcec6d05e5d711efa8186fc3755f5",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 100,
+      "lineEnd": 135,
+      "scope": "explicit transaction helper and whitespace saved-content regression",
+      "blob": "c905b5d8f7b54ed9253951ac788b95d814b37324",
+      "sha256": "8bb2eb8e8a3368193f982bb00db5675378814c30baf98c20b8de82aac0d2301d",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrTraceReportPostgresTest.java",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 108,
+      "lineEnd": 130,
+      "scope": "whitespace frozen-content regression; reader mock boundary",
+      "blob": "592fa4bb23dc91168a55502a1bb948689fb23f7f",
+      "sha256": "c94fba58d8b07e00be98c147d1927e41d1dc6b4a4680ce5d1cce7524da3989f0",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-projection-preview.mjs",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 1,
+      "lineEnd": 104,
+      "scope": "entry point and added legal/nonblank cases; previous four assertions retained",
+      "blob": "90e658991ba8831b695039996615e97977b526a2",
+      "sha256": "97dcedd19b10d912976db1fdf303243d3a4762ab2c9bd12db5988434e31bbc78",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-designer-save-browser.mjs",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 11,
+      "lineEnd": 136,
+      "scope": "actual Shell/MUI/Zustand harness, controlled APIs, baseline production-source substitution, error guard",
+      "blob": "669e43bac9a66dad2bbfaf23acf79b3c6720d54a",
+      "sha256": "056a5c319b9cf3c02a65d24d814eb03b0886e632940d2483f0ee418ec6935b4b",
+      "wholeFileReviewComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-designer-save-browser.mjs",
+      "sourceCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+      "lineStart": 252,
+      "lineEnd": 304,
+      "scope": "new two-viewport main overview/root-preview fixture and no-mutation assertions",
+      "blob": "669e43bac9a66dad2bbfaf23acf79b3c6720d54a",
+      "sha256": "056a5c319b9cf3c02a65d24d814eb03b0886e632940d2483f0ee418ec6935b4b",
+      "wholeFileReviewComplete": false
+    }
+  ],
+  "runtimeExecuted": false,
+  "repoMutations": false,
+  "actionsQueriedOrTriggered": false,
+  "realDatabaseAccessed": false,
+  "inspectedFailureArchive": {
+    "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/failing-runs.zip",
+    "sha256": "32ca7e67d8df6ecef21e8cd181f871bd85a0410376b0bd3e5f2cf5bb3cdf2855",
+    "members": [
+      {
+        "member": "edhr-trace-main-region-browser-baseline-final-fixture.txt",
+        "bytes": 2504,
+        "sha256": "934eb4b5cbe9ef9ddd2d5a6568749a697e3b7a7ee67caf81bc6b2fb146469cba",
+        "independentlyVerified": true
+      },
+      {
+        "member": "edhr-trace-main-region-browser-green-v2.txt",
+        "bytes": 4283,
+        "sha256": "a827cd633ccc7546d45895137a145d39f6200da54ec70e3a337424b8c3a93e50",
+        "independentlyVerified": true
+      },
+      {
+        "member": "edhr-trace-main-region-browser-green.txt",
+        "bytes": 2663,
+        "sha256": "3ba982de7b5ea86d2e09d0607200f5c34a51127816976947d87afa9c70688832",
+        "independentlyVerified": true
+      },
+      {
+        "member": "edhr-trace-main-region-browser-red.txt",
+        "bytes": 2549,
+        "sha256": "939114a664409ed53f26ced7fabe8f36c3d32bd929e3e853bbb4325daa72edde",
+        "independentlyVerified": true
+      },
+      {
+        "member": "edhr-trace-main-region-node-red.txt",
+        "bytes": 1610,
+        "sha256": "695e1c21051ecb5dab3a4e20f0718d9bc970de0e64796272113e50793744cf01",
+        "independentlyVerified": true
+      }
+    ]
+  },
+  "readonlyChild": {
+    "instance": "/root/trace_region_independent_quality/consumer_source_verify/frozen_boundary",
+    "status": "FINAL",
+    "path": "/tmp/edhr-trace-qa-frozen-source-review.md",
+    "sha256": "fcfb86967eb068b8f45ba8419511ee748afef44f187f421603edfd4ef5419a2f",
+    "findings": []
+  },
+  "limitations": [
+    "This helper ran no Maven, Node, build, browser or DB tests; formal fresh runtime gate remains the parent QA responsibility.",
+    "DhrTraceReportPostgresTest uses a Mockito DhrInstanceService reader and does not execute the real hash reader. Four separate controller lifecycle sources provide real freezing/hash generation boundaries but contain no hash-tampering negative assertion.",
+    "Existing missing live indexes are not automatically backfilled; later lawful saves refresh through existing transaction. No historical rewrite or true-database cleanup authorized here.",
+    "Bounded method review does not close global old high findings, A12, four old knowledge gaps, H009/H010/H012, whole files, the whole branch, or full manufacturing/permission lifecycle."
+  ]
+}

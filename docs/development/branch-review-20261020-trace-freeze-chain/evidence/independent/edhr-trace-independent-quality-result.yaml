@@ -1,0 +1,366 @@
+qualityResult:
+  result: passed
+  baseCommit: 061d7f1ff71d11084667d08293fd7d5fe0d7680d
+  headCommit: ba68b03dab051d228c3646a03bbb404f2724f1d4
+  contractBaseline:
+    sourceCommit: ba68b03dab051d228c3646a03bbb404f2724f1d4
+    targetBranch: edhr-dev
+    targetCommit: 061d7f1ff71d11084667d08293fd7d5fe0d7680d
+    contractReadCommit: ba68b03dab051d228c3646a03bbb404f2724f1d4
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: trace.qa.contract-and-candidate
+    required: true
+    category: documentation
+    description: 独立读取当前项目/角色/交接/设计及业务契约，核对实时目标和实际候选。
+    method: command
+    command: git ls-remote origin refs/heads/edhr-dev; git rev-parse HEAD; git status --porcelain=v1 --untracked-files=all;
+      independent Git blob comparison
+    outcome: passed
+    evidence:
+    - 实际目标 base=061d7f1ff71d11084667d08293fd7d5fe0d7680d，功能/被测候选 head=ba68b03dab051d228c3646a03bbb404f2724f1d4，候选已包含目标。
+    - /tmp/edhr-trace-qa-remote-baseline.json
+    - /tmp/edhr-trace-qa-candidate-scope.json
+    - 契约 sourceCommit/contractReadCommit 均为实际亲读 HEAD；6份治理/设计契约与061基线字节一致，working tree clean，目标树等于PR18交付c118。
+  - id: trace.qa.scope-impact-and-policy
+    required: true
+    category: requirements
+    description: 亲读完整L2 impactAnalysis/extensionStrategy并核对最小修复、实际源码和用户授权，未发生任务漂移。
+    method: inspection
+    command: git diff 061d7f1ff71d11084667d08293fd7d5fe0d7680d..ba68b03dab051d228c3646a03bbb404f2724f1d4; read decision-package
+      and DEC-0077-20/33/38/42
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-candidate-scope.json
+    - /tmp/edhr-trace-qa-consumer-source-review.json
+    - /tmp/edhr-trace-qa-frozen-source-review.md
+    - 恰为3个生产文件；extract两处isBlank，前端遗漏消费点复用既有projectionTableId；非空白ID不trim，配置原拼写、旧多绑解释、来源/权限/签署/hash/快照/审计不变。
+    - 未恢复历史、回填旧索引、运行真实库清理、查/触发Actions、合并或部署；本批不扩展到新功能或全系统审查。
+  - id: trace.qa.causal-baseline-counterfactual
+    required: true
+    category: regression
+    description: 实际基线源码加同一当前回归夹具复现两缺陷，正对照保留；预期红结果不能当候选失败。
+    method: automated-test
+    command: git archive 061d7f1ff71d11084667d08293fd7d5fe0d7680d into /tmp; overlay candidate regression fixtures
+      only; focused Maven test + node --test scripts/test-projection-preview.mjs; W2_BASELINE_COMMIT=061d7f1ff71d11084667d08293fd7d5fe0d7680d
+      W2_CASE_FILTER="trace region overview" node scripts/test-designer-save-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-baseline-java-summary.json
+    - /tmp/edhr-trace-qa-node-baseline-summary.json
+    - /tmp/edhr-trace-qa-browser-baseline-summary.json
+    - Java7中恰3个预期失败（空白主表unit、保存索引PG、终止DHR冻结反查PG）；其余4正对照通过。Node6中1个预期失败/5通过。真实1440浏览器看到假失效子表1≠0，首失败后未运行390基线；这些红执行不计入候选通过数。
+  - id: trace.qa.unit-and-interpreter
+    required: true
+    category: unit
+    description: 主表空白集合、精确非空白ID/实际行、旧多绑及既有解释器规则回归。
+    method: automated-test
+    command: PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test bash
+      /workspace/.edhr-cloud-tools/mvn-edhr -C -f gmp-platform/backend/pom.xml -Dexecution.test.driver=org.postgresql.Driver
+      -Dexecution.test.url=jdbc:postgresql://localhost:5432/edhr_execution_trace_test -Dexecution.test.user=edhr
+      -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect '-Dtest=FormTraceIndexServiceTest,FormTraceIndexPostgresTest,DhrTraceReportPostgresTest,FormProjectionInterpreterTest,FormProjectionPostgresTest,FormFillSnapshotTest,TemplateProjectionAuthorizationTest,TraceReportAuthorizationTest,FormProjectionAuthorizationTest,ProductionExecutionIntegrationTest#executionPersistsSnapshotDraftAndAuditThenCompletesOnlyAfterAllOperations+formInstanceNumbersAreStableSearchableAndUseFrozenSnapshots+firstStartFreezesOneCommittedConfigurationDuringProcessRebinding+earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning'
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-test-summary.json
+    - FormTraceIndexServiceTest 5 + FormProjectionInterpreterTest 23 = 28，failure/error/skip均0；是72个Java子集，不额外累计。
+  - id: trace.qa.saved-trace-postgres
+    required: true
+    category: database
+    description: 真实PostgreSQL保存—索引—反查—替换刷新及事务失败回滚。
+    method: automated-test
+    command: PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test bash
+      /workspace/.edhr-cloud-tools/mvn-edhr -C -f gmp-platform/backend/pom.xml -Dexecution.test.driver=org.postgresql.Driver
+      -Dexecution.test.url=jdbc:postgresql://localhost:5432/edhr_execution_trace_test -Dexecution.test.user=edhr
+      -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect '-Dtest=FormTraceIndexServiceTest,FormTraceIndexPostgresTest,DhrTraceReportPostgresTest,FormProjectionInterpreterTest,FormProjectionPostgresTest,FormFillSnapshotTest,TemplateProjectionAuthorizationTest,TraceReportAuthorizationTest,FormProjectionAuthorizationTest,ProductionExecutionIntegrationTest#executionPersistsSnapshotDraftAndAuditThenCompletesOnlyAfterAllOperations+formInstanceNumbersAreStableSearchableAndUseFrozenSnapshots+firstStartFreezesOneCommittedConfigurationDuringProcessRebinding+earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning'
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-test-summary.json
+    - /tmp/edhr-trace-qa-test-environment.json
+    - FormTraceIndexPostgresTest 11项全过：新空白主表保存立即命中、旧值被替换、主/子表实际行不串配、snapshot字节不变且不生成正式统计；现有回滚/租户/阶段/来源用例保留。
+  - id: trace.qa.frozen-dhr-postgres
+    required: true
+    category: database
+    description: 冻结DHR成员的空白主表反查、跨表过滤、分页及冻结原字节保持。
+    method: automated-test
+    command: PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test bash
+      /workspace/.edhr-cloud-tools/mvn-edhr -C -f gmp-platform/backend/pom.xml -Dexecution.test.driver=org.postgresql.Driver
+      -Dexecution.test.url=jdbc:postgresql://localhost:5432/edhr_execution_trace_test -Dexecution.test.user=edhr
+      -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect '-Dtest=FormTraceIndexServiceTest,FormTraceIndexPostgresTest,DhrTraceReportPostgresTest,FormProjectionInterpreterTest,FormProjectionPostgresTest,FormFillSnapshotTest,TemplateProjectionAuthorizationTest,TraceReportAuthorizationTest,FormProjectionAuthorizationTest,ProductionExecutionIntegrationTest#executionPersistsSnapshotDraftAndAuditThenCompletesOnlyAfterAllOperations+formInstanceNumbersAreStableSearchableAndUseFrozenSnapshots+firstStartFreezesOneCommittedConfigurationDuringProcessRebinding+earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning'
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-test-summary.json
+    - /tmp/edhr-trace-qa-frozen-source-review.md
+    - DhrTraceReportPostgresTest 5项全过，真实报告SQL/提取器；reader是Mockito mock，不能声称此用例执行真实hash校验或全DHR生命周期。真实controller边界另项记录。
+  - id: trace.qa.formal-projection-and-snapshots
+    required: true
+    category: integration
+    description: 正式投影持久化、重试/事务/幂等/来源快照，以及流程/直接填写快照相邻回归。
+    method: automated-test
+    command: PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test bash
+      /workspace/.edhr-cloud-tools/mvn-edhr -C -f gmp-platform/backend/pom.xml -Dexecution.test.driver=org.postgresql.Driver
+      -Dexecution.test.url=jdbc:postgresql://localhost:5432/edhr_execution_trace_test -Dexecution.test.user=edhr
+      -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect '-Dtest=FormTraceIndexServiceTest,FormTraceIndexPostgresTest,DhrTraceReportPostgresTest,FormProjectionInterpreterTest,FormProjectionPostgresTest,FormFillSnapshotTest,TemplateProjectionAuthorizationTest,TraceReportAuthorizationTest,FormProjectionAuthorizationTest,ProductionExecutionIntegrationTest#executionPersistsSnapshotDraftAndAuditThenCompletesOnlyAfterAllOperations+formInstanceNumbersAreStableSearchableAndUseFrozenSnapshots+firstStartFreezesOneCommittedConfigurationDuringProcessRebinding+earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning'
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-test-summary.json
+    - FormProjectionPostgresTest 13 + FormFillSnapshotTest 3 =16，全过；保存追溯与最终统计分离，正式完成/失败重试沿自己的冻结来源，不把trace作正式统计。
+  - id: trace.qa.native-postgres-lifecycle
+    required: true
+    category: integration
+    description: 实际controller首次START并发配置冻结、保存审计、实例号/历史读取和提前终止。
+    method: automated-test
+    command: PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test bash
+      /workspace/.edhr-cloud-tools/mvn-edhr -C -f gmp-platform/backend/pom.xml -Dexecution.test.driver=org.postgresql.Driver
+      -Dexecution.test.url=jdbc:postgresql://localhost:5432/edhr_execution_trace_test -Dexecution.test.user=edhr
+      -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect '-Dtest=FormTraceIndexServiceTest,FormTraceIndexPostgresTest,DhrTraceReportPostgresTest,FormProjectionInterpreterTest,FormProjectionPostgresTest,FormFillSnapshotTest,TemplateProjectionAuthorizationTest,TraceReportAuthorizationTest,FormProjectionAuthorizationTest,ProductionExecutionIntegrationTest#executionPersistsSnapshotDraftAndAuditThenCompletesOnlyAfterAllOperations+formInstanceNumbersAreStableSearchableAndUseFrozenSnapshots+firstStartFreezesOneCommittedConfigurationDuringProcessRebinding+earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning'
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-test-summary.json
+    - /tmp/edhr-trace-qa-test-environment.json
+    - ProductionExecutionIntegrationTest指定4项实际PostgreSQL全部passed，首次START并发无skip。实际冻结/hash生成及改live后读取冻结值边界已运行；不含hash篡改负向断言，不外推完整制造/所有DHR状态。
+    - 本次72个不同Java测试中33个使用原生PG（11+5+13+4）；历史H2 3过1skip不累计、不替代本次。
+  - id: trace.qa.source-and-report-authorization
+    required: true
+    category: security
+    description: 保留模板用途写权限、表单/生产/DHR联合权限及来源权限边界。
+    method: automated-test
+    command: PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test bash
+      /workspace/.edhr-cloud-tools/mvn-edhr -C -f gmp-platform/backend/pom.xml -Dexecution.test.driver=org.postgresql.Driver
+      -Dexecution.test.url=jdbc:postgresql://localhost:5432/edhr_execution_trace_test -Dexecution.test.user=edhr
+      -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect '-Dtest=FormTraceIndexServiceTest,FormTraceIndexPostgresTest,DhrTraceReportPostgresTest,FormProjectionInterpreterTest,FormProjectionPostgresTest,FormFillSnapshotTest,TemplateProjectionAuthorizationTest,TraceReportAuthorizationTest,FormProjectionAuthorizationTest,ProductionExecutionIntegrationTest#executionPersistsSnapshotDraftAndAuditThenCompletesOnlyAfterAllOperations+formInstanceNumbersAreStableSearchableAndUseFrozenSnapshots+firstStartFreezesOneCommittedConfigurationDuringProcessRebinding+earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning'
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-test-summary.json
+    - TemplateProjectionAuthorizationTest 1 + TraceReportAuthorizationTest 3 + FormProjectionAuthorizationTest 4
+      =8全过；不声称全角色渗透或生产授权配置已审计。
+  - id: trace.qa.knowledge-schema-and-reference
+    required: true
+    category: ontology
+    description: 当前候选正式知识schema、全局ID、引用、类型及投影约束检查。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-test-summary.json
+    - BusinessKnowledgeModelTest 89项，failure/error/skip均0；知识0.3.25/schema1.2.0，不能将结构校验称为全知识语义或业务运行通过。
+  - id: trace.qa.finite-semantics-and-maturity
+    required: true
+    category: ontology
+    description: 独立核对12条有限语义原件、5份知识差异及全schema定义变化。
+    method: inspection
+    command: python3 /tmp/edhr-trace-qa-ledger-verify.py; inspect original ontologyResult and new knowledge artifacts
+      against Git base/head
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-ledger-verify.json
+    - /tmp/edhr-trace-qa-consumer-source-review.json
+    - 2534→2535只新增evidence.trace-region-consumption-20261020；规则/锚点仅追加证据，原ID/成熟度/visibility/业务政策保留。12条实际ID/记录摘要/Git
+      blob原件一致，wholeRecordSemanticPass和wholeAsset均不升级。
+    - relation.form-field-has-trace-item只是辅助列表笔误，实际亲读relation.form-field-associated-trace-item，无知识ID重命名。四旧gap、两暂缓high及A12保持。
+  - id: trace.qa.frontend-node
+    required: true
+    category: unit
+    description: 前端模拟root值、精确区域身份、绑定/选项/用途编辑及既有侧栏回归。
+    method: automated-test
+    command: cd gmp-platform/frontend && node --test scripts/test-projection-preview.mjs scripts/test-projection-source-editor.mjs
+      scripts/test-projection-panel.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-node.txt
+    - 实际36项passed，fail/cancel/skip/todo均0；原四个preview用例及其断言保持，新空白/非空白正反用例未弱化。
+  - id: trace.qa.frontend-build-and-designer-static
+    required: true
+    category: regression
+    description: TypeScript和生产构建、既有设计器静态约束。
+    method: command
+    command: cd gmp-platform/frontend && npm run build; node scripts/verify-template-designer-react.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-build.txt
+    - /tmp/edhr-trace-qa-designer-static.txt
+    - 两个实际命令exit0；构建既有chunk体积警告保留，不以构建替代ESLint或真实后端持久化。
+  - id: trace.qa.actual-browser-shell
+    required: true
+    category: e2e
+    description: 真实Shell/Canvas/MUI/Zustand完整交互回归与1440/390新总览/预览场景。
+    method: browser
+    command: cd gmp-platform/frontend && NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium
+      W2_RESULT_PATH=/tmp/edhr-trace-qa-browser.json W2_SCREENSHOT_DIR=/tmp/edhr-trace-qa-screenshots node scripts/test-designer-save-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-browser.json
+    - 完整22项passed，包括两新视口；检查无假失效子表、模拟POST根级值、tableId原拼写/整document不变、dirty=false、无save callback及页脚键盘关闭。
+    - 实际浏览器运行了真实产品组件；catalog/preview POST为合成受控API夹具，既有save callback也受控，不冒充全栈浏览器持久化。
+  - id: trace.qa.visual-two-viewports
+    required: true
+    category: visual
+    description: 实际独立截图亲视核对中文内容、主表/结果归属和对话框可达性。
+    method: inspection
+    command: view_image /tmp/edhr-trace-qa-screenshots/trace-main-region-preview-1440.png and trace-main-region-preview-390.png
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-screenshots/trace-main-region-preview-1440.png
+    - /tmp/edhr-trace-qa-screenshots/trace-main-region-preview-390.png
+    - 1440×960和390×844均可读，主表字段和一条追溯主表结果一致，页脚关闭/校验并预览可见。沿原MUI/FormDialog，无新交互体系；只接受所截图场景。
+  - id: trace.qa.original-migrations-isolated
+    required: true
+    category: database
+    description: 0116/0117原字节保持，隔离pg_temp事务回滚脚本兼容回归。
+    method: automated-test
+    command: PATH=/tmp/edhr-trace-test-bin:$PATH python3 gmp-platform/backend/scripts/test-trace-single-binding-migration.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-migration.txt
+    - /tmp/edhr-trace-qa-test-environment.json
+    - /tmp/edhr-trace-qa-ledger-verify.json
+    - 实际exit0，覆盖主/子表与空白主表、wrapped/plain JSON、完整冲突删除、同项复用、统计/证据保持、乐观版本及幂等；126迁移路径未改。只在合成DB pg_temp/ROLLBACK，不是已执行真实配置清理。
+  - id: trace.qa.fixed-ledger-and-coverage
+    required: true
+    category: audit
+    description: 重现固定树台账并独立重算scope、有限语义、父子finding及历史质量原状态。
+    method: command
+    command: python3 scripts/build-branch-review-ledger.py --ref 12e2bc218b3830c18ea74c44108f296d3e04ee3c --catalog
+      docs/development/branch-review-20261020-trace-freeze-chain/source-catalog.json --out docs/development/branch-review-20261020-trace-freeze-chain/ledger
+      --check; python3 /tmp/edhr-trace-qa-ledger-verify.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-ledger-reproduction.json
+    - /tmp/edhr-trace-qa-ledger-verify.json
+    - 完整--check实际exit0。2382路径/216有限重叠scope（162继承+47辅助+7主审，wholeFile0）；45语义（33旧+12新/4旧gap保持）；42父子finding（40原记录+2本批修复等待本次验收）；70历史质量49passed/20failed/1blocked原状态保持。
+    - 台账固定树是12e2bc218b3830c18ea74c44108f296d3e04ee3c，不含自身后续生成物和本正式QA；generator本身执行数0与progress实际72/36/22明确分开。本两项正式验收应L0单独登记，不改受测冻结快照或70历史报告。
+  - id: trace.qa.original-evidence-and-safety
+    required: true
+    category: audit
+    description: 原件/失败ZIP递归SHA、历史保护及独立角色只读边界。
+    method: inspection
+    command: python3 /tmp/edhr-trace-qa-ledger-verify.py; inspect original failure archive and candidate source
+      receipt manifests
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-ledger-verify.json
+    - /tmp/edhr-trace-qa-consumer-source-review.json
+    - 54归档原件及726次Git receipt核验，失败ZIP5成员size/SHA全一致；914历史开发路径字节未变。两次夹具失败保留，修复目录缓存/页脚关闭定位未弱化断言。
+    - 本实例和两个只读辅助及其子辅助均未参与修复/修改仓库；全部辅助已正式FINAL，无Actions或真实库访问。仅/tmp安全白名单可归档，raw Maven/MockMVC/JWT XML/环境/settings不交付。
+  - id: trace.qa.strict-ui-no-new-findings
+    required: true
+    category: regression
+    description: 使用原官方premium脚本独立导出061基线并对比完整strict findings数组。
+    method: command
+    command: python3 /tmp/edhr-trace-premium/audit_project.py /tmp/edhr-trace-qa-premium-base --mode strict --output
+      /tmp/edhr-trace-qa-premium-baseline.json; python3 /tmp/edhr-trace-premium/audit_project.py /workspace/edhr-nexus-frontend
+      --mode strict --output /tmp/edhr-trace-qa-premium-candidate.json; compare full findings arrays
+    outcome: passed
+    evidence:
+    - /tmp/edhr-trace-qa-premium-comparison.json
+    - /tmp/edhr-trace-qa-premium-baseline.json
+    - /tmp/edhr-trace-qa-premium-candidate.json
+    - 实际baseline84/candidate84完整findings数组精确相同，new0/removed0；此项只判本批无新增，全局strict两次实际exit2，另列非必需失败检查和残余，绝不称strict通过。
+  - id: trace.qa.global-premium-strict
+    required: false
+    category: visual
+    description: 全局premium strict原有静态问题仍存在。
+    method: command
+    command: python3 /tmp/edhr-trace-premium/audit_project.py /workspace/edhr-nexus-frontend --mode strict --output
+      /tmp/edhr-trace-qa-premium-candidate.json
+    outcome: failed
+    evidence:
+    - /tmp/edhr-trace-qa-premium-candidate.json
+    - /tmp/edhr-trace-qa-premium-comparison.json
+    - 实际exit2，84 errors（71 violations/13 unresolved）；与061基线完整集合相同。本局部一致性修复不引入新项，也不以局部passed关闭全局限制。
+  - id: trace.qa.global-eslint-configuration
+    required: false
+    category: regression
+    description: 全局ESLint因既有缺少配置不能执行规则检查。
+    method: command
+    command: cd gmp-platform/frontend && npm run lint
+    outcome: failed
+    evidence:
+    - /tmp/edhr-trace-qa-eslint.txt
+    - 实际exit2：ESLint8.57.1未找到配置；基线到候选未新增/删除lint配置或变更依赖。未降标准、未创建跳过配置，不将其称通过。
+  findings:
+  - id: W2-TRACE-REGION-001
+    severity: high
+    scope: saved-trace-index-and-frozen-dhr-main-region-consumer
+    summary: 合法Java空白tableId被extract误当子表，漏保存索引及冻结DHR主表反查；候选按既定主表身份修复。
+    reproductionSteps:
+    - 固定061基线源码，覆盖本候选相同回归夹具。
+    - 运行空白主表unit、savedBlankMainRegionIsImmediatelyTraceableAndRefreshKeepsFrozenBytes和terminatedBlankMainRegionMatchesFrozenEvidenceWithoutRewritingIt。
+    - 再运行本候选完整指定72个Java回归。
+    expectedResult: 合法主表根字段和值可查；主表定位仍空串/form/-1，非空白子表ID、真实行及冻结原件不变。
+    actualResult: 基线7中3预期失败，候选72全过（33PG）；空白提取、保存索引与终止冻结反查新用例全过，snapshot/config字节断言保留。
+    evidence:
+    - /tmp/edhr-trace-qa-baseline-java-summary.json
+    - /tmp/edhr-trace-qa-test-summary.json
+    - /tmp/edhr-trace-qa-consumer-source-review.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 12e2bc218b3830c18ea74c44108f296d3e04ee3c
+    - type: command
+      reference: '/tmp/edhr-trace-qa-test-summary.json: FormTraceIndexServiceTest 5/5, FormTraceIndexPostgresTest
+        11/11, DhrTraceReportPostgresTest 5/5, ProductionExecutionIntegrationTest 4/4'
+    - type: audit-record
+      reference: /tmp/edhr-trace-qa-baseline-java-summary.json
+    - type: document
+      reference: /tmp/edhr-trace-qa-frozen-source-review.md
+  - id: W2-TRACE-REGION-002
+    severity: medium
+    scope: designer-projection-overview-and-simulation-region-consumers
+    summary: 总览/模拟按原始空白tableId造假失效子表并嵌套主表模拟值；候选在消费点复用既有projectionTableId。
+    reproductionSteps:
+    - 对061固定源码运行当前Node六项preview夹具和真实总览浏览器1440场景。
+    - 基线出现区域键空白而非空串、总览失效子表计数1。
+    - 对本候选运行36Node及22真实浏览器回归，并亲视1440/390截图。
+    expectedResult: 合法主表绑定归主表，预览请求值在根对象；原tableId、整document、dirty/save状态及非空白子表身份保持。
+    actualResult: 基线Node6中1预期失败及浏览器1440假失效1≠0；候选36Node/22浏览器全过、两新视口均过，截图符合已定MUI规范。
+    evidence:
+    - /tmp/edhr-trace-qa-node-baseline-summary.json
+    - /tmp/edhr-trace-qa-browser-baseline-summary.json
+    - /tmp/edhr-trace-qa-node.txt
+    - /tmp/edhr-trace-qa-browser.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 12e2bc218b3830c18ea74c44108f296d3e04ee3c
+    - type: command
+      reference: '/tmp/edhr-trace-qa-node.txt: 36 passed, 0 failed/skipped'
+    - type: command
+      reference: '/tmp/edhr-trace-qa-browser.json: 22 passed incl 1440/390 overview/simulation'
+    - type: screenshot
+      reference: /tmp/edhr-trace-qa-screenshots/trace-main-region-preview-1440.png
+    - type: screenshot
+      reference: /tmp/edhr-trace-qa-screenshots/trace-main-region-preview-390.png
+  residualRisks:
+  - id: trace.residual.global-static-ui
+    description: 全局premium strict仍84项且exit2；ESLint仍因缺既有配置exit2。
+    impact: 本批仅证实与061基线完整集合相同、新增0；未取得全局静态质量通过，不得声明全分支可发布或旧限制已关闭。
+    mitigation: 后续按独立既有基线治理安排处理；本批保持实际失败证据，不能扩大业务修复以造绿。
+  - id: trace.residual.historical-live-index
+    description: 旧代码已漏建的实时索引不会因本修复自动补齐。
+    impact: 未再次合法保存的普通已保存记录/依赖live index的候选筛选仍可能漏查；终止冻结反查直接取冻结原件的已测路径已修复。
+    mitigation: 后续合法保存仍原事务refresh；如需全量索引恢复须单独明确范围和数据依据，本批不回填、不恢复历史。
+  - id: trace.residual.deferred-audit-work
+    description: 两项用户暂缓DHR high、四旧知识gap、A12及H009/H010/H012保留；W3-W7和未审范围未完成。
+    impact: 本次passed仅覆盖本两个消费者缺陷及邻接回归，不是完整分支/DHR生命周期/知识全库语义验收。
+    mitigation: 保持原台账状态与历史原件；本链收尾后继续W3新写入口矩阵，真正政策歧义再问用户，不关闭既有暂缓项。
+  - id: trace.residual.fixture-and-runtime-boundaries
+    description: 浏览器preview/catalog POST和save callback受控；DHR报告PG reader为mock；4controller实际生命周期不含空白fixture或hash篡改负向。
+    impact: 已证明真实UI与请求形状、实际保存/索引/PG报告、真实首次START/终止冻结边界，不能据此推断全制造、全HTTP、所有权限或hash攻击场景。
+    mitigation: 按实际范围保留不同证据层级；源码明确真实reader先核原件hash，此次未改该reader，不将未执行场景称通过。
+  - id: trace.residual.integration-head-and-settings
+    description: 本结论固定061目标及ba68候选，未核验GitHub branch protection/ruleset或任何Actions。
+    impact: 后续来源/目标/契约或生产代码变化须增量评估；当前静态契约和本地通过不能证明线上强制门禁已启用。
+    mitigation: 主侧PR前核最新目标；只追加L0验收原件不得改写受测冻结台账，若影响代码/知识含义须按风险重新验证，人工合并/部署仍由用户决定。
+  blockingConditions: []

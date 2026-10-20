@@ -1,0 +1,93 @@
+{
+  "schema": "edhr-review-batch-progress/v1",
+  "targetCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+  "implementationCommit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+  "ledgerFixedTreeCommit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+  "inventory": {
+    "targetPaths": 2352,
+    "implementationPaths": 2382,
+    "classification": "heuristic, not manual completion"
+  },
+  "sourceReview": {
+    "inheritedScopes": 162,
+    "newHelperScopes": 47,
+    "newPrimaryScopes": 7,
+    "totalScopeRecords": 216,
+    "overlapPermitted": true,
+    "wholeFilesCompleted": 0
+  },
+  "semanticReview": {
+    "inheritedScopedReviews": 33,
+    "newRoleScopedReviews": 12,
+    "currentDefinitionIds": 2535,
+    "wholeAssetsPassed": 0,
+    "oldEvidenceGapsKept": 4
+  },
+  "remediation": {
+    "newFindingIds": [
+      "W2-TRACE-REGION-001",
+      "W2-TRACE-REGION-002"
+    ],
+    "state": "fixed-and-independently-accepted",
+    "acceptanceOverlay": "acceptance.json",
+    "frozenLedgerStatePreserved": true,
+    "historicalFindingRecordsKept": 40,
+    "userDeferredHighKept": 2
+  },
+  "actualPrimaryValidation": {
+    "javaDistinctTestsPassed": 72,
+    "nativePostgresAmongJava": 33,
+    "javaSkipped": 0,
+    "knowledgeTestsPassed": 89,
+    "nodeTestsPassed": 36,
+    "browserScenariosPassed": 22,
+    "newBrowserViewports": [
+      [
+        1440,
+        960
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "typecheckAndBuild": "passed",
+    "isolatedMigration": "passed with temp table and rollback",
+    "premiumStrictExit": 2,
+    "premiumBaselineFindings": 84,
+    "premiumCandidateFindings": 84,
+    "newExactPremiumFindings": 0,
+    "eslintExit": 2,
+    "eslintReason": "existing config absent",
+    "h2EarlierRun": {
+      "passed": 3,
+      "conditionalSkip": 1,
+      "retestedOnPostgresAll4Passed": true
+    }
+  },
+  "generatorBoundary": {
+    "description": "ledger summary zeros describe work executed by importer itself; importer runs no semantic review, remediation or business tests. Actual work in this batch is recorded above and in role/runtime originals. The fixed-tree report indexes only reports already present at that tree; later role/QA originals are separate.",
+    "newSemanticReviewsPerformedByGenerator": 0,
+    "businessTestsExecutedByGenerator": 0
+  },
+  "independentQuality": {
+    "result": "passed",
+    "testedCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+    "requiredChecks": 19,
+    "requiredPassed": 19,
+    "allProfessionalInstancesFinal": true,
+    "report": "evidence/independent/edhr-trace-independent-quality-result.yaml",
+    "scope": "this batch and listed adjacent regressions only"
+  },
+  "historicalIndexBackfill": false,
+  "delivery": {
+    "pullRequest": "https://github.com/IvenYi/edhr-nexus-frontend/pull/19",
+    "sourceBranch": "audit/edhr-dev-trace-freeze-chain-20261020",
+    "targetBranch": "edhr-dev",
+    "mergePerformed": false,
+    "postAcceptanceChanges": "L0 archive, acceptance overlay, scope review and PR registration only"
+  },
+  "overallAuditComplete": false,
+  "overallPercent": null,
+  "next": "W3 new-write entry matrix: H009/H010 and separate H012 adjudication"
+}

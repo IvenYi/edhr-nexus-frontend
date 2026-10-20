@@ -1,0 +1,57 @@
+[
+  {
+    "suite": "FormTraceIndexServiceTest",
+    "tests": 5,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "name": "onlyExplicitTraceSourcesAndSavedSupportedValuesAreCollected",
+        "outcome": "passed"
+      },
+      {
+        "name": "systemRowIdentityIsIndependentOfBindingsAndDisplayOrder",
+        "outcome": "passed"
+      },
+      {
+        "name": "legalBlankMainRegionsUseRootValuesWithoutChangingFrozenConfiguration",
+        "outcome": "failed"
+      },
+      {
+        "name": "referenceUsesFrozenCodeAndRequiresCompatibleIdentity",
+        "outcome": "passed"
+      },
+      {
+        "name": "nonblankTableIdsKeepExactIdentityAndRemainSeparateFromMainAndOtherRows",
+        "outcome": "passed"
+      }
+    ]
+  },
+  {
+    "suite": "FormTraceIndexPostgresTest",
+    "tests": 1,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "name": "savedBlankMainRegionIsImmediatelyTraceableAndRefreshKeepsFrozenBytes",
+        "outcome": "failed"
+      }
+    ]
+  },
+  {
+    "suite": "DhrTraceReportPostgresTest",
+    "tests": 1,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "name": "terminatedBlankMainRegionMatchesFrozenEvidenceWithoutRewritingIt",
+        "outcome": "failed"
+      }
+    ]
+  }
+]
