@@ -1,0 +1,1794 @@
+{
+  "role": "fresh independent final quality; no repair participation",
+  "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "testedCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+  "contractReadCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+  "knowledgeVersion": "0.3.25",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dexecution.test.driver=org.postgresql.Driver",
+    "-Dexecution.test.url=jdbc:postgresql://localhost:55432/edhr_w3_execution_test",
+    "-Dexecution.test.user=edhr",
+    "-Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect",
+    "-Dtest=WorkTemplateWriteBoundaryTest,WorkTemplateControllerTest,WorkTemplateWritePostgresTest,WorkflowTransferPostgresTest,WorkflowEngineTest,WorkflowTaskControllerTest,ExecutionAccessTest,ExecutionSubjectScopeTest,ProductionExecutionEngineTest,ProductionExecutionIntegrationTest#formApprovalTransferMovesPendingTaskWithoutAdvancingTheFlow+transferProjectionIsNodeScopedAndReassignmentIsClearedByReturn+tenantDelegationOutsideFrozenCandidatesPreservesSourceAndMovesOnlyCurrentResponsibility+transferRechecksTheSelectedTenantUserWhenTheirAccountBecomesLocked,DhrReviewLifecycleIntegrationTest,DhrReviewServiceTest,AuditEventTest,FormFillSettingsServiceTest,BusinessKnowledgeModelTest",
+    "test"
+  ],
+  "explicitSyntheticDatabaseParameters": {
+    "W3_TEST_DATABASE_URL": "jdbc:postgresql://localhost:55432/edhr_w3_write_test",
+    "W3_TRANSFER_DATABASE_URL": "jdbc:postgresql://localhost:55432/edhr_w3_transfer_test"
+  },
+  "startedEpoch": 1792488954.968543,
+  "finishedEpoch": 1792488997.857481,
+  "exit": 0,
+  "totals": {
+    "tests": 381,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "all15ReportsFresh": true,
+  "nativePostgresTests": 39,
+  "sourceBeforeAfterExact": true,
+  "suites": [
+    {
+      "class": "WorkTemplateWriteBoundaryTest",
+      "suite": {
+        "name": "com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest",
+        "tests": "85",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488993.9110494,
+      "xmlSha256": "f946023c3f05e06b710a6d18d874a18632e71a76637c98621980bdfbcfa2bccb",
+      "cases": [
+        {
+          "name": "incompleteCanonicalConditionStillFailsOnlyWhenPublished",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[9]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[10]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[11]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[12]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[13]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[14]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[15]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[16]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[17]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[18]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[19]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[20]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[21]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[22]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[23]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[24]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[25]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[26]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[27]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[28]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[29]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[30]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[31]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[32]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[33]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[34]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[35]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[36]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[37]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[38]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[39]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[40]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[41]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[42]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[43]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[44]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[45]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[46]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[47]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[48]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[49]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[50]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[51]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[52]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[53]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[54]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[55]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[56]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[57]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[58]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[59]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[60]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[61]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[62]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[63]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[64]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[65]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[66]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[67]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[68]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[69]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[70]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[71]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[72]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[73]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[74]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[75]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "currentFormPublishesAndNextDraftKeepsTheExactGraph",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "class": "WorkTemplateControllerTest",
+      "suite": {
+        "name": "com.zencas.edhr.workflow.controller.WorkTemplateControllerTest",
+        "tests": "73",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488992.1190126,
+      "xmlSha256": "30bdc6d56dfe26675f18e3c6c2b13290f444a819b8a002534df65c71a240940f",
+      "cases": [
+        {
+          "name": "rejectsConditionBranchHandleCollisionsAtPublish",
+          "status": "passed"
+        },
+        {
+          "name": "returnsNoPersistedVersionsWhenAWorkTemplateHasNoVersions",
+          "status": "passed"
+        },
+        {
+          "name": "derivesPriorityFromRuleTypeWhenCreatingRule",
+          "status": "passed"
+        },
+        {
+          "name": "publishesDraftAndCreatesTheNextInheritedDraft",
+          "status": "passed"
+        },
+        {
+          "name": "allowsSignatureEventWithoutFieldFillToRemainUnbound",
+          "status": "passed"
+        },
+        {
+          "name": "savesUnconfiguredModeAsAnIncompleteDraftWithoutAddingDirect",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsSavingAGraphWithoutExactlyOneStartAndEndBoundary",
+          "status": "passed"
+        },
+        {
+          "name": "publishesOrderedDynamicConditionBranchesAndTheirDefaultBranch",
+          "status": "passed"
+        },
+        {
+          "name": "keepsWorkTemplateAndRuleAuditWritesInTheSameTransaction",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsConditionAstWhenFirstReleaseFieldCatalogIsUnavailable",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsConditionAstWithEmptyGroupsAtPublish",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsANonSignatureFieldAsSignatureTarget",
+          "status": "passed"
+        },
+        {
+          "name": "exposesUpgradeBlockerWhenLatestProcessBreaksEventBinding",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsPublishingProcessModeWithoutAnExplicitProcessBeforeWritingAnyVersionOrAudit",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsPublishingAFlowWhenTheReferencedFormVersionIsOutsideItsEffectiveWindow",
+          "status": "passed"
+        },
+        {
+          "name": "savesCurrentBindingReferencesAndDormantSettingsWithoutRequiringCompletedSignatureConfiguration",
+          "status": "passed"
+        },
+        {
+          "name": "allowsConnectingToAConditionInput",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsConditionAstWithAnUnknownOperatorAtPublish",
+          "status": "passed"
+        },
+        {
+          "name": "savesDraftGraphAndRecordsTheUpdatedSnapshot",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsPublishingAFlowWithDisconnectedNodes",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsPublishingWhenBindingPermissionReferencesUnknownFormField",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsCreatingAnApplicabilityRuleWithoutCurrentPublishedFlow",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsUpdatingAnApplicabilityRuleWhenCurrentPublishedFlowIsMissing",
+          "status": "passed"
+        },
+        {
+          "name": "copiesPublishedHistoryOverTheCurrentDraft",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsDeletingADraftFlowVersion",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsPublishingAFlowWhenTheReferencedFormVersionDoesNotExist",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsPublishingDynamicConditionBranchesWhenOneBranchIsMissing",
+          "status": "passed"
+        },
+        {
+          "name": "readsIncompleteDraftProcessReferencesWithoutTreatingDormantChoiceAsActive",
+          "status": "passed"
+        },
+        {
+          "name": "ignoresClientIdWhenCreatingWorkTemplate",
+          "status": "passed"
+        },
+        {
+          "name": "listsOnlyRulesAttachedToProductionWorkDefinitions",
+          "status": "passed"
+        },
+        {
+          "name": "exposesOutdatedFormProcessReferenceForDraft",
+          "status": "passed"
+        },
+        {
+          "name": "listsOnlyProductionWorkDefinitions",
+          "status": "passed"
+        },
+        {
+          "name": "atomicallyDeletesUnpublishedDraftBeforeDeletingItsWorkTemplate",
+          "status": "passed"
+        },
+        {
+          "name": "saveGraphPersistsExplicitDirectModeWithoutInferringDormantProcess",
+          "status": "passed"
+        },
+        {
+          "name": "allowsPublishingMultipleConditionsUsingTheConfirmedWorkRuntimeFields",
+          "status": "passed"
+        },
+        {
+          "name": "createsAnEmptyDraftWithoutAnInitialConnection",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsConnectingToAConditionWithoutItsUnifiedInputHandle",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsConditionOperatorsOutsideTheFirstReleaseContract",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsBindingAnEventWithoutExplicitFieldFill",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsCopyingAsNewDraftWhenAnotherRequestCreatedTheDraftFirst",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsCreatingAnotherDraftWhileOneIsAlreadyEditable",
+          "status": "passed"
+        },
+        {
+          "name": "keepsAnUnconfiguredConditionNodeInDraftButRejectsPublishingIt",
+          "status": "passed"
+        },
+        {
+          "name": "recomputesPriorityWhenEditingRuleType",
+          "status": "passed"
+        },
+        {
+          "name": "saveGraphRebuildsFormProcessReferenceProjection",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsAnUnregisteredConditionFieldCatalogVersionAtPublish",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsPublishingAFormWithNoModeBeforeWritingAnyVersionOrAudit",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsTwoOutgoingEdgesFromAnOrdinaryNode",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsLegacyFreeTextConditionAsTheOnlyPublishFact",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsConnectingToAConditionBranchOutlet",
+          "status": "passed"
+        },
+        {
+          "name": "createsTheNextDraftWhenCopyingPublishedFlowWithoutAnEditableDraft",
+          "status": "passed"
+        },
+        {
+          "name": "assignsGlobalRuleItsFixedPriority",
+          "status": "passed"
+        },
+        {
+          "name": "reportsTheExactNodeAndButtonWhenASignatureTargetIsMissing",
+          "status": "passed"
+        },
+        {
+          "name": "allowsASignatureFieldAsSignatureTarget",
+          "status": "passed"
+        },
+        {
+          "name": "savesUnresolvedBindingContextAsAnIncompleteDraftWithoutCleaningProvidedConfiguration",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsPublishingAFlowWhenTheReferencedFormVersionIsNotYetEffective",
+          "status": "passed"
+        },
+        {
+          "name": "allowsDeletingAWorkTemplateThatHasPublishedFlowHistoryWithoutRules",
+          "status": "passed"
+        },
+        {
+          "name": "allowsConditionNodeToHaveMultipleConfiguredBranchEdges",
+          "status": "passed"
+        },
+        {
+          "name": "allowsPublishingAFormNodeWithoutAFormProcess",
+          "status": "passed"
+        },
+        {
+          "name": "savesAnIncompleteDraftWithoutPublishValidation",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsDeletingAPublishedFlowVersion",
+          "status": "passed"
+        },
+        {
+          "name": "serializesWorkIdsAsStringsToPreserveSnowflakePrecisionInBrowsers",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsDeletingAWorkTemplateThatHasApplicabilityRules",
+          "status": "passed"
+        },
+        {
+          "name": "allowsPublishingAFlowWithoutConditionNodes",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsMalformedPublishedProcessMetadataBeforeGraphOrAuditWrites",
+          "status": "passed"
+        },
+        {
+          "name": "exposesCurrentPublishedFlowInWorkTemplateSummary",
+          "status": "passed"
+        },
+        {
+          "name": "doesNotPersistAFlowDraftWhenCreatingWorkTemplate",
+          "status": "passed"
+        },
+        {
+          "name": "forwardsTrimmedKeywordToWorkTemplateQuery",
+          "status": "passed"
+        },
+        {
+          "name": "writesAnAuditEventWhenCreatingAWorkTemplate",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsMalformedConditionBranchesInsteadOfFallingBackToLegacyRule",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsSavingStaleActiveBindingReferencesBeforeGraphOrAuditWrites",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsPublishingAFlowWhenAFormVersionIsMissing",
+          "status": "passed"
+        },
+        {
+          "name": "allowsPublishingLegacyFlowFieldConfigurationWithoutMapping",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsScopeFieldsOnGlobalRule",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "class": "WorkTemplateWritePostgresTest",
+      "suite": {
+        "name": "com.zencas.edhr.workflow.controller.WorkTemplateWritePostgresTest",
+        "tests": "12",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488993.6710443,
+      "xmlSha256": "cf12bb2433bb9afea48fba942a10c74a57e0e15dd2cff50ccd09ca1d1ff630fe",
+      "cases": [
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[9]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[10]",
+          "status": "passed"
+        },
+        {
+          "name": "legalPublishCreatesOneInheritedDraftAndReferencesInTheRealTransaction",
+          "status": "passed"
+        },
+        {
+          "name": "incompleteDraftsPersistAndReadBackWithRealReferenceRefreshAndAudit",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "class": "WorkflowTransferPostgresTest",
+      "suite": {
+        "name": "com.zencas.edhr.workflow.engine.WorkflowTransferPostgresTest",
+        "tests": "23",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488996.8711138,
+      "xmlSha256": "88c6b0a5ef15d19a9462959c9894d44c6b55acc3ea1c03bbe4f5e0c675785326",
+      "cases": [
+        {
+          "name": "legacyAlreadyTransferredOriginIsMarkedAsPartialRatherThanInvented",
+          "status": "passed"
+        },
+        {
+          "name": "repeatedDelegationPreservesOriginalSourcesAndOnlyCurrentTargetCanComplete",
+          "status": "passed"
+        },
+        {
+          "name": "personnelSearchAndCommandUseTheSameTenantAvailabilityWithRealSql",
+          "status": "passed"
+        },
+        {
+          "name": "concurrentTransfersFromTheSameFormerOperatorAcceptOnlyOneResponsibilityChange",
+          "status": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[9]",
+          "status": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[10]",
+          "status": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[11]",
+          "status": "passed"
+        },
+        {
+          "name": "realAuditInsertFailureRollsBackResponsibilityAndActionLog",
+          "status": "passed"
+        },
+        {
+          "name": "endedTaskRejectsSearchAndTransferWithoutWrites(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "endedTaskRejectsSearchAndTransferWithoutWrites(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "dhrTaskStillCannotUseGenericSearchTransferOrQueue",
+          "status": "passed"
+        },
+        {
+          "name": "formerCandidateWaitingBehindTransferCannotCompleteFromItsCachedSnapshot",
+          "status": "passed"
+        },
+        {
+          "name": "terminatedInstanceRejectsBothEntrypoints",
+          "status": "passed"
+        },
+        {
+          "name": "controllerUsesAuthenticatedActorAndRequiresTheTargetAndReasonInJson",
+          "status": "passed"
+        },
+        {
+          "name": "unrestrictedTaskBecomesTargetOnlyWithoutLosingTheOpenOrigin",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "class": "WorkflowEngineTest",
+      "suite": {
+        "name": "com.zencas.edhr.workflow.engine.WorkflowEngineTest",
+        "tests": "18",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488994.6377761,
+      "xmlSha256": "d1bc699f0fc71110ba8a8b15c83edfd880a5c8485f96f92bc4f66bcb21a85f28",
+      "cases": [
+        {
+          "name": "explicitRecordControlStartRejectsMissingApplicantSignatureAtEngineBoundary",
+          "status": "passed"
+        },
+        {
+          "name": "explicitRecordControlStartIsIdempotentForSameFrozenRequest",
+          "status": "passed"
+        },
+        {
+          "name": "rejectingDeepParallelBranchTerminatesRoundInsteadOfReopeningPreviousApproval",
+          "status": "passed"
+        },
+        {
+          "name": "createsOneLogicalTaskForOneHundredResolvedCandidates",
+          "status": "passed"
+        },
+        {
+          "name": "transferKeepsOneLogicalTaskAndPreservesOriginalCandidateSnapshot",
+          "status": "passed"
+        },
+        {
+          "name": "terminationLocksInstanceAndClosesEveryActiveLogicalTask",
+          "status": "passed"
+        },
+        {
+          "name": "emptyFormProcessStartConfigCreatesUnrestrictedLogicalTask",
+          "status": "passed"
+        },
+        {
+          "name": "parallelBranchesJoinOnlyAfterEveryApprovalCompletes",
+          "status": "passed"
+        },
+        {
+          "name": "dhrUsesFrozenPublishedVersionEvenWhenNoLongerCurrent",
+          "status": "passed"
+        },
+        {
+          "name": "createsOneUnrestrictedTaskWhenFormProcessHasNoSubjects",
+          "status": "passed"
+        },
+        {
+          "name": "rejectingParallelBranchTerminatesOtherPendingBranch",
+          "status": "passed"
+        },
+        {
+          "name": "explicitRecordControlStartRejectsDraftOrMismatchedVersion",
+          "status": "passed"
+        },
+        {
+          "name": "candidateCanCompleteAndActualActorIsPersisted",
+          "status": "passed"
+        },
+        {
+          "name": "explicitlyStartsPublishedRecordControlVersionWithoutStartTaskAndExcludesApplicant",
+          "status": "passed"
+        },
+        {
+          "name": "genericTaskCompletionCannotBypassDhrDomainChecks",
+          "status": "passed"
+        },
+        {
+          "name": "unrestrictedTaskCanBeCompletedByAnyAuthenticatedOperator",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsUserOutsideFrozenCandidateSnapshot",
+          "status": "passed"
+        },
+        {
+          "name": "explicitRecordControlStartRejectsMismatchedIdempotencyReuse",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "class": "WorkflowTaskControllerTest",
+      "suite": {
+        "name": "com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest",
+        "tests": "2",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488992.2390149,
+      "xmlSha256": "fe2cbf519259e715f2819adfe374c065c4ecf793b2e514bcfd850df73891d286",
+      "cases": [
+        {
+          "name": "doneUsesAuthenticatedOperatorInsteadOfRequestParameter",
+          "status": "passed"
+        },
+        {
+          "name": "todoUsesAuthenticatedOperatorAndOneDatabaseLookup",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "class": "ExecutionAccessTest",
+      "suite": {
+        "name": "com.zencas.edhr.production.service.ExecutionAccessTest",
+        "tests": "12",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488990.2218168,
+      "xmlSha256": "74b3984172da12cc0745152d00c8d4edcaf06c7a964876732cbfd993d7d3480f",
+      "cases": [
+        {
+          "name": "referenceSearchAndValidationReachIdsBeyondFirstHundredSameNameRows",
+          "status": "passed"
+        },
+        {
+          "name": "capturesApprovalCandidatesOnceAndDoesNotOpenAnUnresolvedRestrictedGroup",
+          "status": "passed"
+        },
+        {
+          "name": "sopPdfPagePreviewRendersImageAndRejectsOutOfRange(Path)",
+          "status": "passed"
+        },
+        {
+          "name": "onlyInternalAdminUsesLoginPasswordAndSignatureFieldsRemainCurrentUserOnly",
+          "status": "passed"
+        },
+        {
+          "name": "transferPreservesFrozenCandidatesAndAllowsTenantDelegatesWhileOnlyAssigneeCanAct",
+          "status": "passed"
+        },
+        {
+          "name": "transferRejectsCrossTenantTargetsEvenIfAStaleCandidateListContainsThem",
+          "status": "passed"
+        },
+        {
+          "name": "executionAttachmentsCannotBeDeletedThroughGenericFiles",
+          "status": "passed"
+        },
+        {
+          "name": "executionSignaturesCannotBeForgedOverwrittenOrDeletedThroughGenericCrud",
+          "status": "passed"
+        },
+        {
+          "name": "personalSignatureCredentialsCannotBeForgedOrExposedThroughGenericCrud",
+          "status": "passed"
+        },
+        {
+          "name": "unavailableUncertifiedExpiredAndUnsetSignersAreBlocked",
+          "status": "passed"
+        },
+        {
+          "name": "stableFieldOverridesAndReadOnlyConflictWin",
+          "status": "passed"
+        },
+        {
+          "name": "buttonSignatureAuthenticatesNamedSignerAndRetainsSessionWithoutCredentials",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "class": "ExecutionSubjectScopeTest",
+      "suite": {
+        "name": "com.zencas.edhr.production.service.ExecutionSubjectScopeTest",
+        "tests": "10",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488990.734048,
+      "xmlSha256": "3489120fed0ef7c8a9db4e19cb201204f42ad40504018ace6b84341c95073028",
+      "cases": [
+        {
+          "name": "inactiveAndOtherScopeSubjectsDoNotBecomeCandidates",
+          "status": "passed"
+        },
+        {
+          "name": "departmentSelfAndChildrenUseOriginalMembershipRules",
+          "status": "passed"
+        },
+        {
+          "name": "roleMembershipRetainsScopeAndActiveUserFiltering",
+          "status": "passed"
+        },
+        {
+          "name": "trulyUnconfiguredNodeKeepsTheExistingUnrestrictedRule",
+          "status": "passed"
+        },
+        {
+          "name": "missingMalformedOrUnresolvableSessionScopeFailsClosed",
+          "status": "passed"
+        },
+        {
+          "name": "scopeComesFromSessionAccountRatherThanAnotherHardCodedNumber",
+          "status": "passed"
+        },
+        {
+          "name": "capturedCandidatesAreNotRebuiltByTheRepair",
+          "status": "passed"
+        },
+        {
+          "name": "previouslyCapturedEmptySnapshotIsNotSilentlyRepaired",
+          "status": "passed"
+        },
+        {
+          "name": "malformedSubjectDoesNotTurnIntoAnOpenNode",
+          "status": "passed"
+        },
+        {
+          "name": "assignedActiveUserIsCapturedAndOnlyThatUserCanEdit",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "class": "ProductionExecutionEngineTest",
+      "suite": {
+        "name": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+        "tests": "22",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488990.8509865,
+      "xmlSha256": "f2df8a97cfb056e2c892599ee73c09db37d97ab2baf33e0103e3258a2abedd0f",
+      "cases": [
+        {
+          "name": "configuredConfirmationCannotBeSkippedByCompletingOperation",
+          "status": "passed"
+        },
+        {
+          "name": "routeCyclesAndUnsupportedNotificationsAreVisibleStartBlockers",
+          "status": "passed"
+        },
+        {
+          "name": "savedDraftDoesNotSatisfyRequiredFormAndReadOnlyValuesCannotBeForged",
+          "status": "passed"
+        },
+        {
+          "name": "missingRuntimeFactsNeverPassEvenWhenUsedUnderNot",
+          "status": "passed"
+        },
+        {
+          "name": "approvalAndSignatureAreRequiredBeforeFormCompletion",
+          "status": "passed"
+        },
+        {
+          "name": "skippedUnboundWorkFormDoesNotBlockCompletedConditionalWork",
+          "status": "passed"
+        },
+        {
+          "name": "requiredFieldsOwnedByLaterApprovalDoNotBlockEarlierSubmissionButBlockFinalCompletion",
+          "status": "passed"
+        },
+        {
+          "name": "workFormNeverSatisfiesIndependentRequiredOperationForm",
+          "status": "passed"
+        },
+        {
+          "name": "supplementCreatesNewCopyWithoutReopeningOrChangingCompletedRecord",
+          "status": "passed"
+        },
+        {
+          "name": "evaluatesStructuredConditionsWithoutExecutingCode",
+          "status": "passed"
+        },
+        {
+          "name": "directEntryConfigurationControlsPermissionsButtonsAndSignature",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsDuplicateStartAndOutOfOrderCompletion",
+          "status": "passed"
+        },
+        {
+          "name": "transferDoesNotAdvanceOrChangeFormValuesAndRequiresReason",
+          "status": "passed"
+        },
+        {
+          "name": "supplementCannotBypassSubjectPermissionsOrUnreachedWorkForms",
+          "status": "passed"
+        },
+        {
+          "name": "validSubmissionPersistsValuesAndUnlocksCompletion",
+          "status": "passed"
+        },
+        {
+          "name": "enforcesNumericStructurePrecisionAndDateFormat",
+          "status": "passed"
+        },
+        {
+          "name": "blocksSuccessorUntilEveryParallelPredecessorCompletes",
+          "status": "passed"
+        },
+        {
+          "name": "disabledDirectSignatureEventIsNotExecuted",
+          "status": "passed"
+        },
+        {
+          "name": "explicitLegacyOrHiddenButtonsDoNotEnableTransfer",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsUnknownFieldsAndInvalidNumbers",
+          "status": "passed"
+        },
+        {
+          "name": "activeButtonSignatureFillsActualSignerAndAllowsReporterProjection",
+          "status": "passed"
+        },
+        {
+          "name": "parallelWorkJoinWaitsForBothConfirmationBranches",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "class": "ProductionExecutionIntegrationTest",
+      "suite": {
+        "name": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+        "tests": "4",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488983.270825,
+      "xmlSha256": "62f9c88eb7819aa7e0e44a58fb8b33d3ee624d7e1ec56e30ab5d740b779334b7",
+      "cases": [
+        {
+          "name": "transferRechecksTheSelectedTenantUserWhenTheirAccountBecomesLocked",
+          "status": "passed"
+        },
+        {
+          "name": "tenantDelegationOutsideFrozenCandidatesPreservesSourceAndMovesOnlyCurrentResponsibility",
+          "status": "passed"
+        },
+        {
+          "name": "formApprovalTransferMovesPendingTaskWithoutAdvancingTheFlow",
+          "status": "passed"
+        },
+        {
+          "name": "transferProjectionIsNodeScopedAndReassignmentIsClearedByReturn",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "class": "DhrReviewLifecycleIntegrationTest",
+      "suite": {
+        "name": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+        "tests": "5",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488987.9509234,
+      "xmlSha256": "73ef21a0cda2d617c51b1da0930f9287e6ffeb1feb74e5d5c69a593e27be94bb",
+      "cases": [
+        {
+          "name": "incompleteFrozenManualReviewBlocksApprovalButAllowsReturn",
+          "status": "passed"
+        },
+        {
+          "name": "realWorkflowReturnResubmitSignAndApprovedImpactPreserveHistory",
+          "status": "passed"
+        },
+        {
+          "name": "concurrentApprovalCreatesOnlyOneOutcomeAndSignature",
+          "status": "passed"
+        },
+        {
+          "name": "newlyAppearingRecordAndAttachmentBlockApprovalWithoutChangingFrozenVersion",
+          "status": "passed"
+        },
+        {
+          "name": "legacyPendingReviewCannotApproveUnfinishedUnincludedCustomCopyButCanReturn",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "class": "DhrReviewServiceTest",
+      "suite": {
+        "name": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+        "tests": "10",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488989.13895,
+      "xmlSha256": "cec820b5257217947d3f04dfc9f1ee757af3fc63805f2535a3785d44bb0e17c6",
+      "cases": [
+        {
+          "name": "personalListAndDetailCannotLeakAnotherUsersTask",
+          "status": "passed"
+        },
+        {
+          "name": "frozenButtonVisibilityOpinionAndSignatureAreEnforcedOnServer",
+          "status": "passed"
+        },
+        {
+          "name": "approvalRequiresUnchangedEvidenceAndCurrentHashButDoesNotAutoReturn",
+          "status": "passed"
+        },
+        {
+          "name": "approvalSeparatesRuntimeOutcomeFromFrozenEvidenceAndRejectsSecondAction",
+          "status": "passed"
+        },
+        {
+          "name": "signedReviewChecksNamedSignerAndRecordsBothIdentities",
+          "status": "passed"
+        },
+        {
+          "name": "missingFrozenFormOriginalBlocksApprovalButNotReturn",
+          "status": "passed"
+        },
+        {
+          "name": "intermediateApprovalKeepsPendingAndAuditFailureRollsBackOutcome",
+          "status": "passed"
+        },
+        {
+          "name": "humanReturnAllowsChangedEvidenceAndCreatesNextDraftOnlyExplicitly",
+          "status": "passed"
+        },
+        {
+          "name": "missingAndNewRecordsBothAffectCompleteEvidenceScope",
+          "status": "passed"
+        },
+        {
+          "name": "unreadableLiveValuesAreReportedAsImpactAndBlockApproval",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "class": "AuditEventTest",
+      "suite": {
+        "name": "com.zencas.edhr.compliance.entity.AuditEventTest",
+        "tests": "2",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488964.3904066,
+      "xmlSha256": "990d7a9d45f4b5d36f624887a6b97a0485fab270e810a54491e663e8be181bf5",
+      "cases": [
+        {
+          "name": "preventMutationRejectsAuditEventUpdates",
+          "status": "passed"
+        },
+        {
+          "name": "sealSnapshotHashCreatesStableDigestFromOriginalSnapshot",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "class": "FormFillSettingsServiceTest",
+      "suite": {
+        "name": "com.zencas.edhr.workflow.service.FormFillSettingsServiceTest",
+        "tests": "14",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488996.887114,
+      "xmlSha256": "8f0aca9c3823502ca1cb3118a01af50e869f6abcb95c2283133b645d7c2d3b4f",
+      "cases": [
+        {
+          "name": "rejectsUnknownFieldAndRemovedPermissionGroup",
+          "status": "passed"
+        },
+        {
+          "name": "draftWithoutProvidedReferencesDoesNotReadMetadata",
+          "status": "passed"
+        },
+        {
+          "name": "savesExplicitDirectModeWithoutInferringFromDormantReference",
+          "status": "passed"
+        },
+        {
+          "name": "draftReferencesAllowUnfinishedSignatureBindingWhilePublishStillRejectsIt",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsUnconfiguredOrNonTextualModesWithoutInferringDormantReferences",
+          "status": "passed"
+        },
+        {
+          "name": "processModeBindsOnlyExplicitFieldFillEvents",
+          "status": "passed"
+        },
+        {
+          "name": "accountPasswordSignatureWithoutFieldFillDoesNotRequireAFieldBinding",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsAbsentSettingsAtEveryStrictBoundary",
+          "status": "passed"
+        },
+        {
+          "name": "disabledSignatureEventDoesNotRequireAFieldBinding",
+          "status": "passed"
+        },
+        {
+          "name": "roundTripsDirectSettingsAndIgnoresDormantProcessChoice",
+          "status": "passed"
+        },
+        {
+          "name": "draftMetadataFailureIsNotTreatedAsAnEmptyContextAndDoesNotRewriteConfiguration",
+          "status": "passed"
+        },
+        {
+          "name": "processModeRequiresPublishedFormProcessAndUsesOnlyItsSettings",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsDuplicateActionsAndDisablingValidation",
+          "status": "passed"
+        },
+        {
+          "name": "requiresSignatureFieldBindingAndValidSubjects",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "class": "BusinessKnowledgeModelTest",
+      "suite": {
+        "name": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+        "tests": "89",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0"
+      },
+      "fresh": true,
+      "xmlMtimeEpoch": 1792488971.630574,
+      "xmlSha256": "92fe8f1dd24c472da560c3b7d8ac49d3a3c10e587a5a8a9e1b337e6e3a652530",
+      "cases": [
+        {
+          "name": "yamlParserErrorsContainTheRepositoryRelativeFilePath(Path)",
+          "status": "passed"
+        },
+        {
+          "name": "unknownScalarCollectionsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "explicitFactReferencesCannotBeUsedAsPredicateExpectations",
+          "status": "passed"
+        },
+        {
+          "name": "factCatalogCannotBeBypassedByOmittingProfile",
+          "status": "passed"
+        },
+        {
+          "name": "conditionGroupsRejectAdditionalFields",
+          "status": "passed"
+        },
+        {
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "repositoryRootCanBeLocatedFromRootBackendAndIdeWorkingDirectories",
+          "status": "passed"
+        },
+        {
+          "name": "invalidRuleResultTypesAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "nestedCollectionsAreDiscoveredFromSchemaMappings",
+          "status": "passed"
+        },
+        {
+          "name": "currentKnowledgeModelIsValid",
+          "status": "passed"
+        },
+        {
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "factsRequireProvenanceFields",
+          "status": "passed"
+        },
+        {
+          "name": "schemaCollectionMappingsMustCoverEveryRecordType",
+          "status": "passed"
+        },
+        {
+          "name": "verifiedInternalRecordsRequireExecutionContracts",
+          "status": "passed"
+        },
+        {
+          "name": "stringOperatorsRejectNonStringFacts",
+          "status": "passed"
+        },
+        {
+          "name": "malformedTopLevelCollectionsReportTheirDocument",
+          "status": "passed"
+        },
+        {
+          "name": "executionContractReferencesMustResolveEvenForNonVerifiedRules",
+          "status": "passed"
+        },
+        {
+          "name": "invalidStatusesAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "factCatalogRejectsOperatorNotAllowedByFact",
+          "status": "passed"
+        },
+        {
+          "name": "schemaRejectsNestedDescriptorMappingMismatch",
+          "status": "passed"
+        },
+        {
+          "name": "factValueTypesMustComeFromTheControlledVocabulary",
+          "status": "passed"
+        },
+        {
+          "name": "factNamesInStringsAreNeverImplicitlyDereferenced",
+          "status": "passed"
+        },
+        {
+          "name": "knownNestedCollectionsCannotAppearOnUndeclaredParentRecordTypes",
+          "status": "passed"
+        },
+        {
+          "name": "invalidConditionOperatorsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "danglingEvidenceIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "verifiedRulesCanReferenceValidRegisteredExecutionContracts",
+          "status": "passed"
+        },
+        {
+          "name": "invalidCardinalitiesAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "factCatalogRejectsUnknownSemanticAlias",
+          "status": "passed"
+        },
+        {
+          "name": "conditionNotGroupsRequireOneExpression",
+          "status": "passed"
+        },
+        {
+          "name": "enumFactsRequireAnExplicitNonEmptyValueSet",
+          "status": "passed"
+        },
+        {
+          "name": "numericComparisonRejectsStringFactEvenWhenItsOperatorIsListed",
+          "status": "passed"
+        },
+        {
+          "name": "schemaIdPrefixesMustCoverEveryRecordType",
+          "status": "passed"
+        },
+        {
+          "name": "nestedDuplicateIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[9]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[10]",
+          "status": "passed"
+        },
+        {
+          "name": "conditionLeavesRejectAdditionalFields",
+          "status": "passed"
+        },
+        {
+          "name": "absoluteEvidencePathsAreRejectedEvenWhenTheyExist",
+          "status": "passed"
+        },
+        {
+          "name": "conditionGroupsMustBeNonEmpty",
+          "status": "passed"
+        },
+        {
+          "name": "unknownEmptyCollectionsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "implementationAnchorsRejectUnknownProvenanceReviewStatus",
+          "status": "passed"
+        },
+        {
+          "name": "numericOperandsMustBeFinite",
+          "status": "passed"
+        },
+        {
+          "name": "currentKnowledgeBaselineUsesTheTypedFactSchema",
+          "status": "passed"
+        },
+        {
+          "name": "factReferenceObjectsMustUseTheExactOperandShape",
+          "status": "passed"
+        },
+        {
+          "name": "topLevelCollectionsAreDiscoveredFromSchemaMappings",
+          "status": "passed"
+        },
+        {
+          "name": "danglingTermIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "verifiedRuntimeRecordsRequireEvidence",
+          "status": "passed"
+        },
+        {
+          "name": "schemaCollectionMappingsRejectDuplicateTargetsDeterministically",
+          "status": "passed"
+        },
+        {
+          "name": "recordIdsMustUseSchemaPrefixes(String, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "recordIdsMustUseSchemaPrefixes(String, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "normalizedEvidencePathsCannotEscapeRepository(Path)",
+          "status": "passed"
+        },
+        {
+          "name": "duplicateIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "explicitFactOperandsMustHaveCompatibleTypes",
+          "status": "passed"
+        },
+        {
+          "name": "conditionValuesMustUseSchemaValueTypes",
+          "status": "passed"
+        },
+        {
+          "name": "schemaCollectionMappingsRejectUnknownRecordTypes",
+          "status": "passed"
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "explicitFactOperandsResolveIdsAndAliasesWithoutBeingTreatedAsClauses",
+          "status": "passed"
+        },
+        {
+          "name": "unknownNestedRecordCollectionsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "unknownTopLevelCollectionsReportTheirDocumentAndSortedAllowedCollections",
+          "status": "passed"
+        },
+        {
+          "name": "missingEvidencePathsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "explicitFactOperandsRejectUnknownReferences",
+          "status": "passed"
+        },
+        {
+          "name": "executionContractIdsUseSchemaPrefixes",
+          "status": "passed"
+        },
+        {
+          "name": "realEvidencePathsCannotEscapeRepositoryThroughSymlinks(Path)",
+          "status": "passed"
+        },
+        {
+          "name": "implementedRecordsCannotEnterCustomerProjection",
+          "status": "passed"
+        },
+        {
+          "name": "aliasesCannotShadowAnotherFactIdInEitherCollectionOrder",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "excludedRawLog": "/tmp/edhr-w3-final-independent-backend.raw.log",
+  "limits": [
+    "Only synthetic local test databases; no production or historical-data restoration",
+    "DHR lifecycle five tests use existing H2 compatibility mode",
+    "Audit hash roundtrip extra failing probe is not part of this suite",
+    "Original baseline red tests not rerun because no product/test source changed since independently verified first round"
+  ]
+}

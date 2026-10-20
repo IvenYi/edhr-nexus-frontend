@@ -1,0 +1,391 @@
+{
+  "schema": "edhr-safe-ontology-original-manifest/v1",
+  "role": "formal business knowledge ontology",
+  "knowledgeCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+  "implementationCommit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+  "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "contractReadCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+  "knowledgeVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "changedFileCount": 21,
+  "knowledgeInventoryBefore": 2535,
+  "knowledgeInventoryAfter": 2546,
+  "finiteSemanticCount": 36,
+  "businessRuntimeExecutedByOntologyInstance": false,
+  "wholeAssetSemanticAcceptance": false,
+  "ontologyTest": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "replacementScopes": [
+    {
+      "decisionStatementId": "DEC-0081-01",
+      "supersededStatementIds": [
+        "DEC-0031-03",
+        "DEC-0055-02"
+      ],
+      "scope": "显式转办的当前处理资格允许同租户正常可用的非原候选人；普通表单转办目标不再限原候选集合。",
+      "retainedScope": "未转办任务的原候选处理规则、原来源冻结、当前处理权/目标可用性/自转禁止、普通表单原因和节点/数据/结果保持、DHR边界均保留。",
+      "sourceReferences": [
+        "本轮用户对转办范围问题的明确回复",
+        "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+        "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml"
+      ]
+    }
+  ],
+  "originals": [
+    {
+      "path": "/tmp/edhr-w3-tenant-transfer-ontology-result.yaml",
+      "bytes": 21165,
+      "sha256": "43a1f9b8160af50efbbdd400a904cccbc3f147588472518a813c9e393978fb36"
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-transfer-semantic-review.jsonl",
+      "bytes": 166062,
+      "sha256": "87a2d1386abbd091bf6f694cac6c11200e329376a749a20be53dc7043481f23e"
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-transfer-source-receipt-check.json",
+      "bytes": 5360,
+      "sha256": "fdedd59219a2e0f23244b3becfa886562165de2c9476f24bbd79c4059eed13b7"
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-transfer-semantic-summary.json",
+      "bytes": 1960,
+      "sha256": "1777da73509d7a12df3c06c7571906d62bde4284f54070c82b6fb4d254c1b8d9"
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-knowledge-final-summary.json",
+      "bytes": 712,
+      "sha256": "67546243df04cc3e7764c2b239531a03f12d03a19267168b7e1e7ee588acbc82"
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-knowledge-transition-summary.json",
+      "bytes": 3010,
+      "sha256": "bacf6a06a1c4f19e3d6065a59fc0aeee12c3582f1a263bef91db15f160a8947b"
+    },
+    {
+      "path": "/tmp/edhr-w3-transfer-knowledge-index.json",
+      "bytes": 46794,
+      "sha256": "8ea30bf73c729ffb6233a7e57856b8e652dbdb91fb534f0b726cf5cd3f2c575d"
+    },
+    {
+      "path": "/tmp/edhr-w3-transfer-knowledge-index.md",
+      "bytes": 6408,
+      "sha256": "da1b3c249676b3b2d5849b6e8450419f37b9f627450abe862a37de7c9231c7bf"
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-transfer-wording-check.json",
+      "bytes": 24271,
+      "sha256": "3e434864f069c7727be42e25ff52e3bc5bdc38f7218732732025be704fbf7213"
+    },
+    {
+      "path": "/tmp/edhr-w3-build-tenant-semantic.py",
+      "bytes": 11366,
+      "sha256": "09bdc0ecfbbd43ede1329f76badc0a35ce331a0a5394b045e58658cbcb834710"
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-knowledge-transition.py",
+      "bytes": 5318,
+      "sha256": "70f1c4f11988c6b66f79469140f377168fdac08b38b8097f789b816cd1d5d1da"
+    },
+    {
+      "path": "/tmp/edhr-w3-finalize-ontology.py",
+      "bytes": 12947,
+      "sha256": "ccf74fb9df4204b7125fa1afeb68842b8a075a8ffbe71bf02b5dcf02101da31d"
+    }
+  ],
+  "changedKnowledgeFileReceipts": [
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/architecture/business-knowledge-model.md",
+      "blob": "e2bd9385ab043654f984c5ee6d270bed945de3ea",
+      "sha256": "d83e315005b083b5c440be887b9aedf7860c164313b6e19f7a4004b7423f85dd"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/README.md",
+      "blob": "bd1b0fb47085432a3cb0c587841e10ee97797042",
+      "sha256": "14b404332734daa494c80ca69e2bc845c951e0ab799a15b8d5aaf6aab13137c1"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml",
+      "blob": "57095aa378bff8b508431af0d0050f289b1c862e",
+      "sha256": "911bdb38e05be0d05a08a0e624d69e0c1176d07eda1894c81e1fcf771ea19630"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml",
+      "blob": "d3a049cb160d1347cb09b05f29322349b3826739",
+      "sha256": "e00c93731e12f012fe030e8a51728a865f63afd6e9e0636105306873e07bded2"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "blob": "34b99929a91fc22d72fcba1cc0335fb91db35557",
+      "sha256": "c54fdb4f7265382572fe65da61f3a31aa06667f11a6718ecd5d998119ef065d7"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "blob": "2a064c10069a276523292af23607ddf8e3053401",
+      "sha256": "159dc61c2247c42ef3e1327264977b797a253a49e6de4aeece06e9c0e6420a95"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "blob": "2dd0a7c557f3caf44b61ca1328b0a54817a45a0b",
+      "sha256": "db50e6e8040052ff550c4a90faeb622be1f42a13a36d41f2fc2efb0fb917f65e"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/evidence/form-approval-transfer.yaml",
+      "blob": "22ce631423f1922027fd44346825fed00d894aa6",
+      "sha256": "0436c274f0a1ddc644562e9de0992d5dc74df6eb72fb7ea6c0ef309e552d6efc"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/evidence/identity-subject-selector.yaml",
+      "blob": "b45539ee44e2dd22df11c88ec3dbcb8b189ff2a5",
+      "sha256": "cec39b92b81747aeaaedebfeab490e916fa9e4b0e9bd0f4adc17fd997788b79a"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+      "blob": "43d7032c554cd1d1ad17add7209faaa86136faef",
+      "sha256": "fcd6a8879c14fdf5f035177d608c5d8f22d29f79c2b24ec3fb27d5670dc03b1b"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/evidence/tenant-task-delegation-20261020.yaml",
+      "blob": "76d610e01bde4220119cef1dd94663d3d87984a4",
+      "sha256": "b18d1af79a3a39f286513b77f2119683d92ada43170072234dfce0fcabf6bbd9"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/evidence/work-template-write-shape-audit-2026-10-20.md",
+      "blob": "c5b3c0af014022daaa0a466925bc634e140b8737",
+      "sha256": "a3d7569f6874145e6375a15b4f520f756fc482e9042474d8c9868e739c863499"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/facts/core-business.yaml",
+      "blob": "acd0cf64bc22b2ae1ba5b91b4809f0a0b2a8b7e5",
+      "sha256": "1e80d729a6eb62a2b9ce25c717edefa2828fdc6a097c0826d2f47b0386f7a6ac"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/facts/form-approval-transfer.yaml",
+      "blob": "545b81457ce4a8c841492ed418a9e5c598743270",
+      "sha256": "8a3b59c81fed2423d3bb56146af5a7e5693d1ba0c65c85e9d882f38ff591273f"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/glossary.yaml",
+      "blob": "3d87d6ec1dd1b592bf8f862bb73423f8ed68f76a",
+      "sha256": "22bddb284204f93d87409f0357ddbe4d7ad3233efc41d0a497ffd993c5e26791"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/implementation-anchors/form-approval-transfer.yaml",
+      "blob": "502ad0a831445571f6316fc097b6c9e16978b3f6",
+      "sha256": "85a7ce7bd55d3ff3d95211cf722c708e0ba1bb17338888b0b861c6ffa668e094"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/ontology.yaml",
+      "blob": "4803283f2a8065df80df292d0662d4dc9819e9f0",
+      "sha256": "41ab25b713a3635ca41de6654da32b9bd4e785c65dea33a7fae44c7023e0a9de"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/open-questions.yaml",
+      "blob": "a1f2b1140ea93c5daf54067cb4a40d6a6cd1d2b7",
+      "sha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/rules/form-approval-transfer.yaml",
+      "blob": "cb557fd8f496ec8e899868c89c2563160810dd68",
+      "sha256": "d151a3a48dd3f2ca6c12333733e261b4d2f2cc26fa0a27515d07e3d58e470c41"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/rules/identity.yaml",
+      "blob": "985b00dfc3dae84325b14266513416fd74d60193",
+      "sha256": "e57691cad48f3e4c06c21bf5516e9c032c76db3b2e1bf24325427a31efed34ed"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/rules/transaction-runtime.yaml",
+      "blob": "0730468c01d1abd8d1f1412d1ec0834ef61ae04b",
+      "sha256": "6780efb13aa5449aa298582f2f45cca5b83a89b3560ce9b6770e9c9d57cd502a"
+    }
+  ],
+  "sourceEvidenceReceipts": [
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "fa488245686f740745f9eac79d4d4a960eb2b4dc",
+      "sha256": "8fa8fc0c69e815d70c5f3f01e285f1489e151bc97d2d5c2be7ea797376467a67"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateWriteBoundaryTest.java",
+      "blob": "b978cca88341a40fb26cb29b5526942ee88409c0",
+      "sha256": "b0fb823d5d52c464ef2dc04987918e2f9a69338517f2f42f066b0e112ac1889d"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateWritePostgresTest.java",
+      "blob": "86e92fe16be29dcfb3517dbc0ba08ff6d5546a87",
+      "sha256": "23ca6515c8ffb118e485d74b2bb2eec4668f05c606b330078d30f827779ded7f"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/evidence/work-template-write-shape-audit-2026-10-20.md",
+      "blob": "c5b3c0af014022daaa0a466925bc634e140b8737",
+      "sha256": "a3d7569f6874145e6375a15b4f520f756fc482e9042474d8c9868e739c863499"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "blob": "e08ed137713b529c357a9468d7deeda13d52b6a2",
+      "sha256": "f1833e750ed1c6b9b158e6932738f21c32cda35264a7275059a79e6e9ae912fd"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "blob": "bc6bfa0cc70f6d2c25b84829b8b6ff8614ddfa4a",
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "blob": "702a84b0e548c2f9512db20774d886662d309532",
+      "sha256": "d48edb5f3e9e82d642750f156079ae6649ca0938acc811cfc2284cd11c469ca0"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java",
+      "blob": "f5c66e6a4436e453859ad3bbcafce1c4339faadf",
+      "sha256": "947eba5141d04c8c5aa33942af29df2df4ad05cf11d872219b704a888c504ad6"
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+      "blob": "43d7032c554cd1d1ad17add7209faaa86136faef",
+      "sha256": "fcd6a8879c14fdf5f035177d608c5d8f22d29f79c2b24ec3fb27d5670dc03b1b"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "blob": "9cf5ae4908d481f9a82988a5744302e2f47081f7",
+      "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "blob": "3ac817fd787bd4ac7a2faea25623b2cff280a0d5",
+      "sha256": "4411c23f5f89abb69ebd424355020e2569176e5f4b29ee592b6a09bcad49ddcd"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "blob": "4ba4f4dd875d520c44c393ed987aaf232c45c418",
+      "sha256": "b8a880d267f7b01086eed5526ca226e9e03cd6380f0f8888a7f09c27112ae09e"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java",
+      "blob": "63206aea17e83befc2ac639d8c58bb0ab3cef9ae",
+      "sha256": "950324b2cdb5acfedcac7170097c17565c81eb8f3bc096095b048348459174df"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java",
+      "blob": "66fd71864ac7106fc84342b135ad6f7e18c1ae61",
+      "sha256": "5f67adba3c204c55b4d11aef499fff701755d45527e323d28c7dcefb72488599"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+      "blob": "b331a36ba69362acc542bb6d2e03c68859ca4f76",
+      "sha256": "085e33429604bef6051746c795f191b206592866918d4d0cfbd77e1deea49e6b"
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "blob": "04f97eb65bb39a368896432fcf24183e17712ebe",
+      "sha256": "42cf405959931f1ab74b046a32267cf4041723257dfd7a7f4d9a9bbcf30fb932"
+    }
+  ],
+  "originalConfirmationReceipts": [
+    {
+      "path": "docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.md",
+      "bytes": 712,
+      "sha256": "2ed11399abee88a568a8d8c75f6c6f5725aa5b38e1444b0a36d2afb7f4ea982f",
+      "gitBlob": "bfd9b4820ea8012530bf81078acedd6c36c51f53"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-approval-transfer-user-confirmed.md",
+      "bytes": 2296,
+      "sha256": "5d0c42683143430fc52064d290572390436f3044167b10f0f064e9d60b38c369",
+      "gitBlob": "2436d45fac8c65efd71df55376ceaea6bb4ac6f6"
+    }
+  ],
+  "decisionPackageRead": {
+    "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261020-w3-write-boundaries/decision-package.yaml",
+    "bytes": 14951,
+    "sha256": "79dc7da4066019b67f7b097ec99816cdaf76de08e34e3f4e2c3f97efb8630779",
+    "sourceType": "actual uncommitted handoff, no fabricated Git receipt"
+  },
+  "helperStatus": [
+    {
+      "task": "tenant_transfer_knowledge_index",
+      "status": "FINAL",
+      "scope": "readonly index and finite wording check, no business runtime/QA"
+    }
+  ],
+  "parentRuntimeInputs": [
+    {
+      "path": "/tmp/edhr-w3-final-primary-backend-summary.json",
+      "bytes": 53091,
+      "sha256": "e4bdd5d5872fb8e2a544c6ceccdf4595aa7ce52c47ecd72a7d72bb0e74a7b559",
+      "executionOwner": "primary implementation/testing, not ontology"
+    },
+    {
+      "path": "/tmp/edhr-w3-transfer-browser-summary.json",
+      "bytes": 3828,
+      "sha256": "acc206fe5af80a71eb84024d06c0e4d4fba4afc22261530716dda39826a16bba",
+      "executionOwner": "browser implementation/testing, not independent QA"
+    }
+  ],
+  "notIncluded": [
+    "raw Maven output",
+    "JWT/HTTP raw response logs",
+    "Surefire XML contents",
+    "environment/settings/credentials"
+  ],
+  "limitations": [
+    "two old DHR high/four old knowledge gaps/A12 remain",
+    "W5 audit JSONB/time round-trip rehash probe remains separate; no algorithm or historic hash rewrite",
+    "primary invalid intermediate compile attempt is not acceptance; fixed application bytes remain4ce",
+    "no independent qualityResult issued by ontology role"
+  ]
+}

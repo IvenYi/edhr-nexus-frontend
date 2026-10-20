@@ -1,0 +1,169 @@
+{
+  "schema": "edhr-safe-ontology-origin-precision-followup-originals/v1",
+  "sourceCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+  "baselineCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+  "implementationBytesCommit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+  "classification": "record-precision-correction",
+  "newUserPolicy": false,
+  "businessCodeChanged": false,
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "changedFileCount": 5,
+  "changedIds": [
+    "DEC-0081",
+    "DEC-0081-02",
+    "evidence.tenant-task-delegation-20261020",
+    "scenario.tenant-transfer-repeated-origin-preserved",
+    "scenario.tenant-transfer-target-outside-original-candidates"
+  ],
+  "necessaryAdjacentIds": [
+    "DEC-0055-02",
+    "rule.form-approval-transfer",
+    "anchor.form-approval-transfer-runtime",
+    "term.workflow-task-resolution-snapshot"
+  ],
+  "finiteSemanticCount": 9,
+  "knowledgeTests": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "firstRoundOriginalsUnchanged": [
+    {
+      "path": "/tmp/edhr-w3-tenant-transfer-ontology-result.yaml",
+      "sha256": "43a1f9b8160af50efbbdd400a904cccbc3f147588472518a813c9e393978fb36",
+      "untouched": true
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-transfer-semantic-review.jsonl",
+      "sha256": "87a2d1386abbd091bf6f694cac6c11200e329376a749a20be53dc7043481f23e",
+      "untouched": true
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "sha256": "ebf9c9fbca3169268dfede7b9d1154d668c6bfc49c15a11e916ad2d26e7eaf03",
+      "untouched": true
+    }
+  ],
+  "originals": [
+    {
+      "path": "/tmp/edhr-w3-tenant-origin-precision-followup-semantic-review.jsonl",
+      "bytes": 41398,
+      "sha256": "13cc76f31c8210d578d45e64a5fc78e6f16ca2a4933ce3444676bcb82b0ce5f0"
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-origin-precision-followup-validation.json",
+      "bytes": 6945,
+      "sha256": "110a45832ee4b2f7447efcda2c126dce86373b17e5bfc452185357224342e9d2"
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-origin-precision-followup-ontology-result.yaml",
+      "bytes": 6255,
+      "sha256": "331fe3787275498dd9e3632fc55093ad7cc16260ede06de0eb656ce24e0b3387"
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-origin-precision-followup-knowledge-summary.json",
+      "bytes": 730,
+      "sha256": "edd0dc2b3c46fb27fd215d5bdbb4336380569e39d41469f06b87ad4b98708538"
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-origin-precision-followup-scope.json",
+      "bytes": 6031,
+      "sha256": "f90e9bac9aa8a2f87278e2c26c1816b406ede2ca1ba22c4ade0018c5f09d4a52"
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-origin-precision-followup.patch",
+      "bytes": 17693,
+      "sha256": "4d09c60daeb407a843630ac24d08ba59b1cb11ba351085df8fd5e119e35b539c"
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-origin-precision-readonly-followup.json",
+      "bytes": 21013,
+      "sha256": "25d47d6c23e0c79621ebcef5c37fb58dc27913bf400d504e4445fc8627bdaa5b"
+    },
+    {
+      "path": "/tmp/edhr-w3-prepare-origin-precision-followup.py",
+      "bytes": 10566,
+      "sha256": "a9c01ad6505240c3788eff134f05ca9ba12609f2679a087a9fb3f0b90823d8bd"
+    },
+    {
+      "path": "/tmp/edhr-w3-finalize-origin-precision-followup.py",
+      "bytes": 12387,
+      "sha256": "d4ad1df00b4c1f14cf24df0382247d33e6dcd36c3e0be571de28a99e1e16232a"
+    }
+  ],
+  "changedKnowledgeFileReceipts": [
+    {
+      "commit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+      "path": "docs/architecture/business-knowledge-model.md",
+      "blob": "1d239fc82f8d24bdd986b1e23de9188680f25c18",
+      "sha256": "925b987f783d6216061ab25ca2a6710aaa231823ff346b05b2df23d75c90f735"
+    },
+    {
+      "commit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+      "path": "docs/knowledge/README.md",
+      "blob": "4828656b73e0d2fe7c4e3daa98535b87370c1589",
+      "sha256": "83529d2f7168c0fa8a42f5ffdecb1286ee8c350720d1d4f0f4474c4da0703e9f"
+    },
+    {
+      "commit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+      "path": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "blob": "2319ab67c26c6da413a7ade307d340561db66598",
+      "sha256": "c47a0ea204787a4f03cf5e507e71ec002e1e7514ade7cd122d2290049aa0c5da"
+    },
+    {
+      "commit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+      "path": "docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+      "blob": "30c5c102c9b302b8028af60bbe81af3b4b0f927b",
+      "sha256": "0610323c3fad5a8c4052eeb68fdd77aea9f231d1b4119d8442022fdc574f1509"
+    },
+    {
+      "commit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+      "path": "docs/knowledge/evidence/tenant-task-delegation-20261020.yaml",
+      "blob": "5a63cd11eb1775efb06e8f1f49646297f5a22a9f",
+      "sha256": "94244dc0dc682e4c66ee9ec6cbbe20f2a794b6b21188a6aaa3fdd969847d52ce"
+    }
+  ],
+  "sourceEvidence": [
+    {
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "blob": "9cf5ae4908d481f9a82988a5744302e2f47081f7",
+      "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4"
+    },
+    {
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "blob": "59c16531ec7849ed772ca0299ed1c0c63af95407",
+      "sha256": "84da4305797fc2536359da9ccf933edfba96da95daecb2ea5567e31d36a454e0"
+    },
+    {
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "blob": "3ac817fd787bd4ac7a2faea25623b2cff280a0d5",
+      "sha256": "4411c23f5f89abb69ebd424355020e2569176e5f4b29ee592b6a09bcad49ddcd"
+    },
+    {
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796"
+    }
+  ],
+  "helperStatus": [
+    {
+      "task": "tenant_transfer_knowledge_index",
+      "status": "FINAL",
+      "scope": "readonly finite precision check"
+    }
+  ],
+  "replacementDisposition": "仅纠正已有记录精度；DEC0081既有声明级政策替代范围不变，本次不新增替代决策。",
+  "businessRuntimeExecutedByOntologyInstance": false,
+  "wholeAssetSemanticAcceptance": false,
+  "excluded": [
+    "raw Maven/Surefire XML/JWT logs",
+    "settings/environment/credentials",
+    "business-code fix or independent qualityResult"
+  ]
+}

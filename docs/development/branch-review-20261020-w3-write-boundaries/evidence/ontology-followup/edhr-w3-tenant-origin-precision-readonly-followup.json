@@ -1,0 +1,270 @@
+{
+  "schema": "edhr-readonly-tenant-origin-precision-followup/v1",
+  "role": "readonly ontology assistance; no formal ontologyResult or qualityResult",
+  "sourceCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+  "knowledgeBaselineVersion": "0.3.25",
+  "policyUnchanged": "通用工作流与普通生产表单都允许租户内委托；DHR 保持",
+  "sourceScopes": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "9cf5ae4908d481f9a82988a5744302e2f47081f7",
+      "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4",
+      "bytes": 18529,
+      "method": "resolve",
+      "range": [
+        75,
+        86
+      ],
+      "conclusion": "Consumes resolution.users and returns userId set only; user.sources and unresolvedSubjects are not copied into ordinary formState."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "9cf5ae4908d481f9a82988a5744302e2f47081f7",
+      "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4",
+      "bytes": 18529,
+      "method": "captureApprovers",
+      "range": [
+        101,
+        108
+      ],
+      "conclusion": "Captures approvers[nodeId] IDs and restrictedApprovers[nodeId] flag once; no per-user source/unresolved record exists here."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "bytes": 44867,
+      "method": "resolveAssignees",
+      "range": [
+        504,
+        534
+      ],
+      "conclusion": "Generic snapshot includes userIds, sources and unresolvedSubjects."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "bytes": 44867,
+      "method": "singleUserSnapshot",
+      "range": [
+        785,
+        803
+      ],
+      "conclusion": "Preserves first available previousSnapshot as original text in originSnapshot, keeps originRecordedAfterPriorTransfer, while current target IDs remain separate."
+    }
+  ],
+  "knownOverbroadStatement": {
+    "path": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+    "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+    "blob": "2dd0a7c557f3caf44b61ca1328b0a54817a45a0b",
+    "sha256": "db50e6e8040052ff550c4a90faeb622be1f42a13a36d41f2fc2efb0fb917f65e",
+    "bytes": 5130,
+    "id": "DEC-0081-02",
+    "locator": "/decisions/0/decisionStatements/1",
+    "recordSha256": "95dcdacd42381fa9156843cbbd20a00154cd828e832d4ed905580b69a629b8ff",
+    "selectedText": {
+      "statement": "原创建或节点到达时的候选解析结果、主体命中来源及未解析主体作为来源证据保留，不随组织关系变化重算，也不因显式委托被覆盖。当前受让人单独记录；转办成功后仅当前目标具有该任务或审批节点的处理权，原候选人和上一受让人不因存在于来源证据中继续拥有处理权。再次转办仍按同租户正常可用用户范围判断，并保留同一份原来源证据。"
+    },
+    "knownIndependentQaIssue": true,
+    "problem": "Shared statement applies original candidate resolution result, per-user match sources and unresolvedSubjects to both generic workflow and ordinary production form; current ordinary code only persists candidate IDs and restriction flag alongside original node configuration already frozen in production snapshot.",
+    "disposition": "Parent ontology role to narrow current wording only; preserve confirmed target/handling rules.",
+    "minimalCorrection": "State per-path existing evidence: generic preserves first available complete serialized candidate snapshot (userIds/sources/unresolvedSubjects where actually present); ordinary preserves approvers/restrictedApprovers and original frozen node subject configuration, without claiming persisted per-user matches or unresolvedSubjects. Both preserve what actually existed and keep current assignee separate.",
+    "newPolicyOrOrdinaryCaptureRequired": false
+  },
+  "recommendedDocumentClarifications": [
+    {
+      "path": "docs/knowledge/README.md",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "bd1b0fb47085432a3cb0c587841e10ee97797042",
+      "sha256": "14b404332734daa494c80ca69e2bc845c951e0ab799a15b8d5aaf6aab13137c1",
+      "bytes": 92778,
+      "line": 3,
+      "text": "2026-10-20转办范围新增明确确认见[DEC-0081](decisions/DEC-0081-tenant-scoped-task-delegation.yaml)：通用工作流和普通生产表单均允许显式委托给同租户有效未锁定的其他用户，可在原冻结候选集合之外。创建/到达时的候选解析来源保留，当前受让人单独记录；转后仅目标人可处理，再次转办仍按同租户范围，节点、表单数据和审批结果不变，原因及身份/时间可追溯。DHR保留专属审批通过/退回及通用入口防绕过，记录控制运行时与完整多租户隔离未由此实现。新政策精确替代DEC-0031-03的未区分委托例外及DEC-0055-02的原候选内目标限制；两份历史用户确认不改写，普通转办早期遗漏的历史纠偏继续适用。新定义specified/internal，知识版本与既有成熟度不批量提升；[原话、局部替代和工程边界](evidence/tenant-task-delegation-2026-10-20.md)与实际源码/运行及独立质量分列。",
+      "classification": "same-issue clarification, not additional independently false field claim",
+      "recommendation": "Shared phrase 创建/到达时的候选解析来源保留 is broad but does not itself claim ordinary per-user sources/unresolved. Add one per-path qualification consistent with corrected DEC0081-02."
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "e2bd9385ab043654f984c5ee6d270bed945de3ea",
+      "sha256": "d83e315005b083b5c440be887b9aedf7860c164313b6e19f7a4004b7423f85dd",
+      "bytes": 60411,
+      "line": 13,
+      "text": "2026-10-20显式转办按[DEC-0081](../knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml)新增确认：通用工作流和普通生产表单可委托给同租户有效未锁定的其他用户，允许原创建候选集合之外的目标；原解析来源保留而当前受让人单独记录，转后仅目标可处理，节点/数据/审批结果不变并记录原因及身份/时间。只局部替代DEC-0031-03未区分委托的绝对解释及DEC-0055-02原候选内目标限制；原始用户证据和普通转办早期共同遗漏的纠偏历史保持。DHR专属审批/退回、记录控制未实现范围及完整租户隔离未决均不扩展。新政策specified/internal、知识0.3.25与阶段保持；[确认和工程边界](../knowledge/evidence/tenant-task-delegation-2026-10-20.md)不代替运行及独立质量验收。",
+      "classification": "same-issue clarification, not additional independently false field claim",
+      "recommendation": "Shared 原解析来源 phrase can inherit DEC0081 overgeneralization; qualify generic vs ordinary existing evidence, not new collection."
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "e2bd9385ab043654f984c5ee6d270bed945de3ea",
+      "sha256": "d83e315005b083b5c440be887b9aedf7860c164313b6e19f7a4004b7423f85dd",
+      "bytes": 60411,
+      "line": 181,
+      "text": "普通表单流程审批节点支持转办标准动作：流程配置可调整按钮的显示名称、样式和显隐；原因由系统固定必填，不配置审批意见必填或签名字段事件。当前规范按DEC-0081仅当前有处理权者可发起，目标统一为同租户有效且未锁定的其他用户，可在节点到达时冻结的原候选集合之外，且不得转给自己。转办只改变当前责任，不推进节点、不修改表单数据、不产生审批结果；原待办移除、仅目标出现待办，原候选来源保留而当前受让人另存，再次转办仍按同租户范围，退回重建时清除旧转办投影。通用工作流同样区分原创建来源和当前责任，保持一个逻辑任务。普通表单继续复用生产执行事务、结构化历史和不可变审计；新政策的实际实现与独立验收须取本轮证据，不以原实现成熟度或旧测试证明。DHR不开放通用转办，其他字段权限、退回、外层同步及记录控制契约不因此整体闭环。",
+      "classification": "same-issue clarification, not additional independently false field claim",
+      "recommendation": "Ordinary paragraph says 原候选来源保留 while comparing generic; clarify ordinary means IDs/restriction flag and frozen original node config, not a per-user source snapshot."
+    }
+  ],
+  "reviewedNearbyRecords": [
+    {
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "34b99929a91fc22d72fcba1cc0335fb91db35557",
+      "sha256": "c54fdb4f7265382572fe65da61f3a31aa06667f11a6718ecd5d998119ef065d7",
+      "bytes": 7118,
+      "id": "DEC-0031-04",
+      "locator": "/decisions/0/decisionStatements/3",
+      "recordSha256": "5f51d7e344b4c3c9bef6e54cb56139ddf94781f9b251ebeddaaa11ffa7629b4f",
+      "selectedText": {
+        "statement": "provenance: user-confirmed；创建任务时在 workflow_task.candidate_snapshot 保存候选解析结果、每个候选人的主体来源及未解析主体，作为任务审计依据；任务创建后组织或角色关系变化不重算、不改写该任务创建来源。DEC-0081的显式转办只改变单独记录的当前处理责任，不覆盖原解析来源，也不把来源证据等同于转办后的当前处理资格。"
+      },
+      "scopeConclusion": "Correctly generic workflow task candidate_snapshot only; do not weaken legitimate generic source preservation."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "2a064c10069a276523292af23607ddf8e3053401",
+      "sha256": "159dc61c2247c42ef3e1327264977b797a253a49e6de4aeece06e9c0e6420a95",
+      "bytes": 4729,
+      "id": "DEC-0055-02",
+      "locator": "/decisions/0/decisionStatements/1",
+      "recordSha256": "5417ad6f52786c228deb473455668a31d17fadbb3b0d428a9271906bfd898dca",
+      "selectedText": {
+        "statement": "只有当前具有审批处理权的用户可以转办。目标按DEC-0081-01统一为同租户当前有效且未锁定的其他用户，可以在节点到达时冻结的原候选集合之外，不因已配置审批主体而收窄；不得转办给自己。原冻结候选来源保留，当前受让人单独记录，受让人再次转办仍受同租户正常可用用户范围约束。"
+      },
+      "scopeConclusion": "Ordinary original frozen candidate source is generic wording but contains no per-user fields; can clarify IDs/config by same fix."
+    },
+    {
+      "path": "docs/knowledge/rules/identity.yaml",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "985b00dfc3dae84325b14266513416fd74d60193",
+      "sha256": "e57691cad48f3e4c06c21bf5516e9c032c76db3b2e1bf24325427a31efed34ed",
+      "bytes": 6379,
+      "id": "rule.workflow.task-creation-freezes-candidate-resolution",
+      "locator": "/rules/3",
+      "recordSha256": "7d9eb104d7fa0c53b520a7039bd9fbc7691453cd1f2939308c2b8fe9787040bd",
+      "selectedText": {
+        "explanation": "审批节点到达时使用主体解析结果创建一个逻辑工作流任务，并在候选快照中记录去重候选、主体命中来源及未解析主体。candidateMembershipFrozenAfterCreate限定创建来源证据：不因组织或角色关系变化重算，也不能被显式转办覆盖。DEC-0081允许单独改变当前受让人，不把原来源保留解释成原候选继续拥有转办后的处理权。"
+      },
+      "scopeConclusion": "Generic workflow task creation scope; detailed match sources are supported by its own path."
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "3d87d6ec1dd1b592bf8f862bb73423f8ed68f76a",
+      "sha256": "22bddb284204f93d87409f0357ddbe4d7ad3233efc41d0a497ffd993c5e26791",
+      "bytes": 66946,
+      "id": "term.workflow-task-resolution-snapshot",
+      "locator": "/terms/61",
+      "recordSha256": "156eb902ef9c63f754100859733549f9b994a8b1fb52a03494047f18c5d3b08c",
+      "selectedText": {
+        "definition": "工作流任务创建时保存的候选用户集合、主体命中来源及未解析主体的来源证据，不随后续组织关系变化重算，也不因显式转办丢失。当前受让人单独记录；该来源证据不等同于转办后的当前处理资格。"
+      },
+      "scopeConclusion": "Logical WorkflowTask source concept, not ordinary production form captureApprovers; no additional path-wide field claim."
+    },
+    {
+      "path": "docs/knowledge/evidence/form-approval-transfer.yaml",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "22ce631423f1922027fd44346825fed00d894aa6",
+      "sha256": "0436c274f0a1ddc644562e9de0992d5dc74df6eb72fb7ea6c0ef309e552d6efc",
+      "bytes": 3405,
+      "id": "evidence.form-approval-transfer-runtime",
+      "locator": "/evidence/2",
+      "recordSha256": "195d119fed876b8bb7a67341ffb7964d00dc52120e6e7840d8e794e39be5d4e8",
+      "selectedText": {
+        "description": "original-evidence；生产表单流程在同一表单份审批状态中保存transferAssignees，转办不推进节点也不修改表单值，保留原approvers和restrictedApprovers冻结范围并写入结构化history；ExecutionAccess和ProductionExecutionService负责当前处理权、目标资格、原因与审计事务。"
+      },
+      "scopeConclusion": "Explicit approvers/restrictedApprovers preservation; already precise."
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-approval-transfer.yaml",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "502ad0a831445571f6316fc097b6c9e16978b3f6",
+      "sha256": "85a7ce7bd55d3ff3d95211cf722c708e0ba1bb17338888b0b861c6ffa668e094",
+      "bytes": 3221,
+      "id": "anchor.form-approval-transfer-runtime",
+      "locator": "/implementationAnchors/1",
+      "recordSha256": "9b254188a6b8efe4cd1e5e9a04a93013a135d206c07cbaa456376e7f0940664a",
+      "selectedText": {
+        "sourceLocator": "transferAssignees保存当前受让人且原approvers/restrictedApprovers不改；ExecutionAccess与共享TenantTransferTargets统一目标搜索和执行时同租户有效未锁定非本人资格；ProductionExecutionService保留原事务/修订/历史/TRANSFER审计，FormWorklistService按当前处理权投影待办，不把原来源当目标白名单。"
+      },
+      "scopeConclusion": "Explicit approvers/restrictedApprovers separate from transferAssignees; already precise."
+    },
+    {
+      "path": "docs/knowledge/rules/form-approval-transfer.yaml",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "cb557fd8f496ec8e899868c89c2563160810dd68",
+      "sha256": "d151a3a48dd3f2ca6c12333733e261b4d2f2cc26fa0a27515d07e3d58e470c41",
+      "bytes": 2135,
+      "id": "rule.form-approval-transfer",
+      "locator": "/rules/0",
+      "recordSha256": "2b1caf362c66fb9d14a14af0768834d08b14c5fa8fd6f32d9017a4495c6d257d",
+      "selectedText": {
+        "explanation": "普通表单流程转办只改变当前审批节点的处理责任，不产生审批结论。目标按DEC-0081统一为同租户有效且未锁定的其他用户，可在原冻结候选集合外，不因节点已配置审批主体而收窄；不得转给自己。原因固定必填，转办不推进节点、不修改表单数据，原候选来源保留而当前目标单独记录，转后仅目标可处理，再次转办仍按同租户范围，退回重建时清除旧转办人。REVIEW_DONE仍只记录审批或退回结果。本记录保留既有成熟度；新政策实现与独立验收另取本轮证据，不以历史测试替代。"
+      },
+      "scopeConclusion": "preserves original-frozen-candidates is accurate for IDs; does not assert per-user provenance fields."
+    },
+    {
+      "path": "docs/knowledge/evidence/tenant-task-delegation-20261020.yaml",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "76d610e01bde4220119cef1dd94663d3d87984a4",
+      "sha256": "b18d1af79a3a39f286513b77f2119683d92ada43170072234dfce0fcabf6bbd9",
+      "bytes": 1128,
+      "id": "evidence.tenant-task-delegation-20261020",
+      "locator": "/evidence/0",
+      "recordSha256": "c88a82f553f1a4ab6feb9db45378c5feb6d9c58072cbbe67b6ec294c594c21e5",
+      "selectedText": {
+        "description": "user-confirmed与inference分列；保留本轮用户原话“通用工作流与普通生产表单都允许租户内委托；DHR 保持”、问题上下文、DEC-0031-03/DEC-0055-02精确局部替代与保留、原候选来源和当前责任区别。新政策不回填早期确认，不恢复已丢来源，不认证完整多租户隔离、审计摘要重算或业务运行通过。"
+      },
+      "scopeConclusion": "Describes original candidate source vs current responsibility without promising detailed ordinary fields."
+    }
+  ],
+  "newEvidenceImplementationParagraph": {
+    "path": "docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+    "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+    "blob": "43d7032c554cd1d1ad17add7209faaa86136faef",
+    "sha256": "fcd6a8879c14fdf5f035177d608c5d8f22d29f79c2b24ec3fb27d5670dc03b1b",
+    "bytes": 6591,
+    "line": 37,
+    "text": "工程落实（不是用户逐字指定的政策）：复用现有任务、生产表单状态与人员选择器；查询目标与执行时重新验证范围一致。固定源码用共享 `TenantTransferTargets` 验证用户资格；通用 `singleUserSnapshot` 分别保存首次可获得的候选原文本 `originSnapshot` 与当前单人 `userIds`，重复转办保留原文本，`originRecordedAfterPriorTransfer` 标明已经发生过旧转办时的来源限制。字段名、搜索分页/上限、原因长度及具体错误文案属于工程选择。",
+    "scopeConclusion": "Already explicitly identifies generic singleUserSnapshot/originSnapshot; no separate claim that ordinary stores generic provenance object. Add ordinary per-path note only if needed for corrected shared definition."
+  },
+  "historicalOriginals": [
+    {
+      "path": "docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.md",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "bfd9b4820ea8012530bf81078acedd6c36c51f53",
+      "sha256": "2ed11399abee88a568a8d8c75f6c6f5725aa5b38e1444b0a36d2afb7f4ea982f",
+      "bytes": 712,
+      "worktreeMatchesFixedSource": true
+    },
+    {
+      "path": "docs/knowledge/evidence/form-approval-transfer-user-confirmed.md",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "2436d45fac8c65efd71df55376ceaea6bb4ac6f6",
+      "sha256": "5d0c42683143430fc52064d290572390436f3044167b10f0f064e9d60b38c369",
+      "bytes": 2296,
+      "worktreeMatchesFixedSource": true
+    }
+  ],
+  "conclusion": "Only DEC0081-02 explicitly overstates detailed per-user sources/unresolved evidence across both paths in the inspected current slice. Shared README/architecture phrases should be qualified with the same per-path distinction; no other explicit ordinary per-user provenance claim was found in the listed nearby records.",
+  "constraints": [
+    "No repository edits or tests executed.",
+    "No authorization for new ordinary provenance capture, source backfill or historical reconstruction.",
+    "No change to tenant delegation target scope, current handling authority, node/form/result preservation or DHR rules.",
+    "Only listed changed knowledge/current explanatory scopes inspected; no full-knowledge acceptance."
+  ],
+  "counts": {
+    "codeScopes": 4,
+    "knownOverbroadStatements": 1,
+    "documentClarifications": 3,
+    "nearbyRecords": 8,
+    "newIndependentFindingsBeyondKnownQaIssue": 0
+  }
+}

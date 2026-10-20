@@ -1,0 +1,162 @@
+[
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+    "scope": "JSONB/String and timestamp mappings; sealSnapshotHash, preventMutation, computeSnapshotHash, canonicalAuditPayload, appendCanonical",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "52f8cb650e0afdfda19b724aeb50cd70fa791f30",
+    "sha256": "61932bd33d0c0cb8d1886335c5aab0229753e3d5f4022fdeead5f0e075a0ad6e",
+    "baseBlob": "52f8cb650e0afdfda19b724aeb50cd70fa791f30",
+    "unchangedWholeFileFromTarget": true,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/dto/AuditLogItem.java",
+    "scope": "stored snapshotHash DTO field",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "b1aba4ff918fbfac9d0b5959a4ffe32e5a670bf5",
+    "sha256": "b178b0a33c14e93889230d7aab411adcdf4e2dfffb7e5b9094d9837e7f005021",
+    "baseBlob": "b1aba4ff918fbfac9d0b5959a4ffe32e5a670bf5",
+    "unchangedWholeFileFromTarget": true,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java",
+    "scope": "toAuditLogItem 115-143 and getById 307-313, no audit digest recomputation",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "c529a3a2f6e2d30e47a9e4054da062eb9f502204",
+    "sha256": "4ba853d52c1fe59cb86209cb70952f3a19733ed676a57badf3232fc786851154",
+    "baseBlob": "c529a3a2f6e2d30e47a9e4054da062eb9f502204",
+    "unchangedWholeFileFromTarget": true,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+    "scope": "auditsFor/sourceAuditEvents stored hash 212-244; separate sourceSignatures/signaturesFor checks 247-288; attachment content check 141-147",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "46c2f16d8857d1aaaa42865779f57c85959bd7a6",
+    "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08",
+    "baseBlob": "46c2f16d8857d1aaaa42865779f57c85959bd7a6",
+    "unchangedWholeFileFromTarget": true,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java",
+    "scope": "verifyVersionDigest 56-90, independent DHR frozen version hash",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "9401ccff54412a60fc60b5097f2a5167168d28ca",
+    "sha256": "3dcf8632a2049d9a13e8e178e55ff5c24643f50f496410ba2ef3f8f71c054e66",
+    "baseBlob": "9401ccff54412a60fc60b5097f2a5167168d28ca",
+    "unchangedWholeFileFromTarget": true,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+    "scope": "termination snapshot verify at 256-264",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+    "sha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+    "baseBlob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+    "unchangedWholeFileFromTarget": true,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "gmp-platform/frontend/src/pages/system/AuditLogPage.tsx",
+    "scope": "stored fingerprint display at 770-779 and 1084-1090; no runtime/browser claim",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "f565e246a2ce22de1dc26ec9f342b6d2c875d8d0",
+    "sha256": "575e8e3c6b93882e4642eb6b823afea7bae65e5995934c8a2748cfe270ef690d",
+    "baseBlob": "f565e246a2ce22de1dc26ec9f342b6d2c875d8d0",
+    "unchangedWholeFileFromTarget": true,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql",
+    "scope": "audit_event JSONB and TIMESTAMP DDL137-155",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "8203ae2ec4faf9f5e0481c8dc38b067664ad5d6b",
+    "sha256": "316baefe79decf65811419e1de9a96323114ccb42ea1bcd0f627d35c0d979b71",
+    "baseBlob": "8203ae2ec4faf9f5e0481c8dc38b067664ad5d6b",
+    "unchangedWholeFileFromTarget": true,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "gmp-platform/backend/src/main/resources/db/changelog/0023-audit-event-snapshot-hash.sql",
+    "scope": "nullable hash column added without backfill",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "726bcdc5727b1dd970f09c2cf0f4fe35faf26989",
+    "sha256": "5fc776f37ba7d83d66895c07520a477f4745f4259275b201f06133fa6f853dfc",
+    "baseBlob": "726bcdc5727b1dd970f09c2cf0f4fe35faf26989",
+    "unchangedWholeFileFromTarget": true,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql",
+    "scope": "historical baseline SQL audit insert1-58 does not synthesize Java hash",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "66fda1b6777a25ee05e458b5f4574e35a8d53522",
+    "sha256": "a2b3e107a0aee3f04131c46c784778a56a97a8d9822c9d9dc49fc2d5bb934d43",
+    "baseBlob": "66fda1b6777a25ee05e458b5f4574e35a8d53522",
+    "unchangedWholeFileFromTarget": true,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "gmp-platform/backend/src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql",
+    "scope": "SQL MIGRATE audit insert53-69 keeps old records; no new migration run",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "ecb7f18d139a4f7fcedb2fe6a797bf7e7fd65eef",
+    "sha256": "fe82cd435f87cab71924a9d0b9a52e861b0ee874b1ff22829f30751e756761ea",
+    "baseBlob": "ecb7f18d139a4f7fcedb2fe6a797bf7e7fd65eef",
+    "unchangedWholeFileFromTarget": true,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventTest.java",
+    "scope": "seal stability and immutability tests13-49; source inspection only, not database read-back coverage",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "6e43a395c7b1888ed727e71e5bcacde561139719",
+    "sha256": "a9dee9a5c3a7b0fa04a2cee5044b1ded733beb9b10755944d49bcf2862cbd1aa",
+    "baseBlob": "6e43a395c7b1888ed727e71e5bcacde561139719",
+    "unchangedWholeFileFromTarget": true,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+    "scope": "recordAudit/toJson1338-1368 same method bodies despite unrelated new guard",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "fa488245686f740745f9eac79d4d4a960eb2b4dc",
+    "sha256": "8fa8fc0c69e815d70c5f3f01e285f1489e151bc97d2d5c2be7ea797376467a67",
+    "baseBlob": "0dbd457a388025e9deafe81b89feb44954c38253",
+    "unchangedWholeFileFromTarget": false,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+    "scope": "new generic transfer audit builder701-730 uses existing AuditEvent sealing, does not install a rehash policy",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+    "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+    "baseBlob": "7b9eef6be1a1adccb8f2b1354417bba664fec376",
+    "unchangedWholeFileFromTarget": false,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml",
+    "scope": "DEC0015-01..04 original snapshot policy, not digest round-trip certification",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "f4d48d10c7110ef15037ef651525256662b1d1ac",
+    "sha256": "91e56a9f7c80b5334fd85b020522bc03f7dc8aa8ef98e31d2c9a637ac3d484b1",
+    "baseBlob": "f4d48d10c7110ef15037ef651525256662b1d1ac",
+    "unchangedWholeFileFromTarget": true,
+    "wholeFileReviewed": false
+  },
+  {
+    "path": "docs/knowledge/rules/master-data-permission-audit.yaml",
+    "scope": "rule.master-data.write-audit-snapshot fields/snapshot policy, no canonicalization-version contract",
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "blob": "19f625cf148dae4a47d772fd70afd0b771f4a4f0",
+    "sha256": "ced11b7ede0dd8c554b42734cad2159d704aaef3d9f319d9cba1cf07967d4a47",
+    "baseBlob": "19f625cf148dae4a47d772fd70afd0b771f4a4f0",
+    "unchangedWholeFileFromTarget": true,
+    "wholeFileReviewed": false
+  }
+]

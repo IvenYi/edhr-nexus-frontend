@@ -1,0 +1,66 @@
+{
+  "schema": "edhr-safe-independent-ledger-final-manifest/v1",
+  "result": "passed",
+  "headCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+  "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "contractReadCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+  "files": [
+    {
+      "path": "/tmp/edhr-w3-final-independent-ledger-check.py",
+      "bytes": 9763,
+      "sha256": "42e885ee494d56e415ff062146fb8d44947dd85d7834781632ec4f79484ec98c"
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ledger-check-result.json",
+      "bytes": 14886,
+      "sha256": "6d8577694b4f62446d392087bd134bf7b55950710d1b8f5a2ef027f98b57c63d"
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ledger-source-receipts.json",
+      "bytes": 8185,
+      "sha256": "424187cdfef41db158c4ee20677727696570f821b91a2e845892daceb7826c9a"
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ledger-rebuild.json",
+      "bytes": 2387,
+      "sha256": "97440528684189b143920ed1976e91e9b181d0979fdfee98ac28af1d14a5ba4b"
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ledger-review.md",
+      "bytes": 1999,
+      "sha256": "b4025c0e5ac17ea86f208dc92879c6977cfd12b61fb890ebf29eb075641c0c83"
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ledger-review.json",
+      "bytes": 20065,
+      "sha256": "94a1f7e5d6faf6a047db2b5e22f6a743b2ef6eb7bae1d866a06f90dc8e5a6556"
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ledger-hash-review.json",
+      "bytes": 4124,
+      "sha256": "f75e2b3c81988fe4a061047205d3c4c8a07997cf97ec9cb16a10baaad40315ed"
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ledger-hash-source-receipts.json",
+      "bytes": 8599,
+      "sha256": "8bc942968415d968a23759782140fe65a62e7d518f1489b4dfa69a2e2ea0a9e8"
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ledger-hash-review.md",
+      "bytes": 1389,
+      "sha256": "a73dd173db8df41a01ce9f1a6dbb8c515b437928a50bab34aabfb10271630ed5"
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ledger-hash-manifest.json",
+      "bytes": 807,
+      "sha256": "097639e5621af62dd54877c1d3309db87416230c1600929b023e6ca3a6b02c60"
+    }
+  ],
+  "runtimeExecuted": false,
+  "allChildrenFinal": true,
+  "repositoryMutations": [],
+  "excluded": [
+    "Raw Maven/XML/JWT/settings/env",
+    "No product tests run by this subcheck"
+  ]
+}

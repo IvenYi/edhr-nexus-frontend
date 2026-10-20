@@ -1,0 +1,440 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: cb2e9eef6cdb50077283c9707d257dcdd56a9e36
+    targetBranch: edhr-dev
+    targetCommit: a8285be9b91fb76bcb27ccb16a5258bda1fb5077
+    contractReadCommit: 84c5b6d6af15f4f9d684c99e8eb8d110ae039954
+    uncommittedContractPaths: []
+  reason: 本轮新用户确认以DEC0081作声明级局部替代，当前词典/规则/事实/来源/锚点及阅读说明已同步；H009/H010及H012只按固定源码与有限证据更新。原始确认和历史已丢来源边界保留。仅36条有限语义，不宣称整体W3/全库或业务运行通过。
+  changedArtifacts:
+  - path: docs/architecture/business-knowledge-model.md
+    changeType: update
+    ids: []
+  - path: docs/knowledge/README.md
+    changeType: update
+    ids: []
+  - path: docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml
+    changeType: update
+    ids:
+    - DEC-0010
+    - discrepancy.production-work-form-completion-condition-passthrough
+  - path: docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml
+    changeType: update
+    ids:
+    - DEC-0011
+    - discrepancy.production-work-legacy-condition-save-publish-asymmetry
+  - path: docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml
+    changeType: update
+    ids:
+    - DEC-0031
+    - DEC-0031-02
+    - DEC-0031-03
+    - DEC-0031-04
+    - discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot
+    - scenario.workflow-task-any-candidate-completes
+    - scenario.workflow-task-non-candidate-blocked
+  - path: docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml
+    changeType: update
+    ids:
+    - DEC-0055
+    - DEC-0055-02
+    - scenario.form-approval-transfer-current-task
+  - path: docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    changeType: create
+    ids:
+    - DEC-0081
+    - DEC-0081-01
+    - DEC-0081-02
+    - DEC-0081-03
+    - DEC-0081-04
+    - scenario.tenant-transfer-dhr-boundary-kept
+    - scenario.tenant-transfer-repeated-origin-preserved
+    - scenario.tenant-transfer-target-outside-original-candidates
+    - scenario.tenant-transfer-target-rejected
+  - path: docs/knowledge/evidence/form-approval-transfer.yaml
+    changeType: update
+    ids:
+    - evidence.form-approval-transfer-api
+    - evidence.form-approval-transfer-tests
+    - evidence.form-approval-transfer-user-confirmed
+  - path: docs/knowledge/evidence/identity-subject-selector.yaml
+    changeType: update
+    ids:
+    - evidence.workflow-task-multi-candidate-runtime-implementation
+  - path: docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+    changeType: create
+    ids: []
+  - path: docs/knowledge/evidence/tenant-task-delegation-20261020.yaml
+    changeType: create
+    ids:
+    - evidence.tenant-task-delegation-20261020
+    - evidence.work-template-write-shape-audit-20261020
+  - path: docs/knowledge/evidence/work-template-write-shape-audit-2026-10-20.md
+    changeType: create
+    ids: []
+  - path: docs/knowledge/facts/core-business.yaml
+    changeType: update
+    ids:
+    - fact.catalog.task-candidatemembership
+  - path: docs/knowledge/facts/form-approval-transfer.yaml
+    changeType: update
+    ids:
+    - fact.form-approval-transfer.target-authorized
+  - path: docs/knowledge/glossary.yaml
+    changeType: update
+    ids:
+    - term.workflow-task
+    - term.workflow-task-resolution-snapshot
+    - term.workflow-transfer-action
+  - path: docs/knowledge/implementation-anchors/form-approval-transfer.yaml
+    changeType: update
+    ids:
+    - anchor.form-approval-transfer-runtime
+  - path: docs/knowledge/ontology.yaml
+    changeType: update
+    ids:
+    - concept.workflow-task
+    - concept.workflow-task-resolution-snapshot
+    - relation.workflow-task-has-resolution-snapshot
+  - path: docs/knowledge/open-questions.yaml
+    changeType: update
+    ids:
+    - question.multi-tenant-workflow-isolation
+  - path: docs/knowledge/rules/form-approval-transfer.yaml
+    changeType: update
+    ids:
+    - rule.form-approval-transfer
+  - path: docs/knowledge/rules/identity.yaml
+    changeType: update
+    ids:
+    - rule.workflow.task-any-candidate-completes-and-closes-siblings
+    - rule.workflow.task-creation-freezes-candidate-resolution
+  - path: docs/knowledge/rules/transaction-runtime.yaml
+    changeType: update
+    ids:
+    - rule.form-process.approval-any-candidate
+  knowledgeSync:
+  - id: DEC-0010
+    disposition: updated
+    scope: 仅同步H009实现差异和本轮证据；现行取消完成条件政策不变。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml
+    - docs/knowledge/evidence/work-template-write-shape-audit-2026-10-20.md
+  - id: DEC-0011
+    disposition: updated
+    scope: 仅同步H010顶层四旧键新写差异；其他条件/runtime未覆盖。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml
+    - docs/knowledge/evidence/work-template-write-shape-audit-2026-10-20.md
+  - id: DEC-0031
+    disposition: updated
+    scope: 现行解释增加显式委托例外并关闭本轮来源覆盖缺陷；单逻辑任务和创建来源保留不变。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0031-02
+    disposition: updated
+    scope: 未委托任一候选，委托后当前目标独占，单任务终态失权保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0031-03
+    disposition: updated
+    scope: 原候选规则增加显式租户内委托例外，非整份决策废弃。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0031-04
+    disposition: updated
+    scope: 原候选解析/命中/未解析来源与当前办理集合分开，不随组织变更重算。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0055
+    disposition: updated
+    scope: 现行目标边界局部替代，保留原因/数据/节点/结果/审计/历史纠偏。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0055-02
+    disposition: updated
+    scope: 仅替代原候选白名单；同租户正常可用、非本人及当前actor保护保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0081
+    disposition: updated
+    scope: 本轮新用户确认的两路径租户内委托；specified/internal，精确替代DEC0031-03和DEC0055-02，DHR保持。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0081-01
+    disposition: updated
+    scope: 本轮新用户确认两类路径租户内显式委托；不回填历史确认。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0081-02
+    disposition: updated
+    scope: 首次可获得原件与当前受让人分离；重复委托不覆盖原件，不重建旧丢失来源。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0081-03
+    disposition: updated
+    scope: 原因、身份、节点及时间留痕；普通表单原事务/历史/审计/待办和节点/值/结果边界。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0081-04
+    disposition: updated
+    scope: DHR专属动作/防绕过保持；A12、管理员分配和全租户隔离不扩展。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: anchor.form-approval-transfer-runtime
+    disposition: updated
+    scope: 有限核对共享目标资格、transferAssignees、原approvers、原事务/历史/待办路径。
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/form-approval-transfer.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: concept.workflow-task
+    disposition: updated
+    scope: 仅核对所链接任务术语及新增证据与当前资格的归属，不全概念审计。
+    sourceReferences:
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: concept.workflow-task-resolution-snapshot
+    disposition: updated
+    scope: 仅核对所链接来源证据术语与当前资格的区分，不全概念审计。
+    sourceReferences:
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: discrepancy.production-work-form-completion-condition-passthrough
+    disposition: updated
+    scope: H009有限修复，保留历史源/不做清理。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml
+    - docs/knowledge/evidence/work-template-write-shape-audit-2026-10-20.md
+  - id: discrepancy.production-work-legacy-condition-save-publish-asymmetry
+    disposition: updated
+    scope: H010所有既有新写入口有限修复，不关闭其他旧条件差异。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml
+    - docs/knowledge/evidence/work-template-write-shape-audit-2026-10-20.md
+  - id: discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot
+    disposition: updated
+    scope: 仅关闭本轮来源覆盖缺陷；原文本首次可获得保留，历史已丢失来源不恢复。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: evidence.form-approval-transfer-api
+    disposition: updated
+    scope: 当前目标搜索和命令共用同租户有效未锁定资格，当前actor服务端验证。
+    sourceReferences:
+    - docs/knowledge/evidence/form-approval-transfer.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: evidence.form-approval-transfer-tests
+    disposition: updated
+    scope: 测试源码职责与主侧实际运行证据分开，旧候选限制断言已改新政策。
+    sourceReferences:
+    - docs/knowledge/evidence/form-approval-transfer.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: evidence.form-approval-transfer-user-confirmed
+    disposition: updated
+    scope: 仅证据索引说明历史确认的目标限制与本轮新政策区分；原始MD字节不改。
+    sourceReferences:
+    - docs/knowledge/evidence/form-approval-transfer.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: evidence.tenant-task-delegation-20261020
+    disposition: updated
+    scope: 本轮用户确认为新政策；历史原文保留，工程选择及测试执行者分列。
+    sourceReferences:
+    - docs/knowledge/evidence/tenant-task-delegation-20261020.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: evidence.work-template-write-shape-audit-20261020
+    disposition: updated
+    scope: 仅该MD的固定84c源码与主侧实际红绿证据归属。
+    sourceReferences:
+    - docs/knowledge/evidence/tenant-task-delegation-20261020.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: evidence.workflow-task-multi-candidate-runtime-implementation
+    disposition: updated
+    scope: 区分a828来源覆盖事实和本轮来源保留实现，不替历史实现背书。
+    sourceReferences:
+    - docs/knowledge/evidence/identity-subject-selector.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: fact.catalog.task-candidatemembership
+    disposition: updated
+    scope: 当前有效办理集合归属任务概念，稳定alias不等同原创建来源成员。
+    sourceReferences:
+    - docs/knowledge/facts/core-business.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: fact.form-approval-transfer.target-authorized
+    disposition: updated
+    scope: 稳定fact ID保留，alias改targetAuthorized；共享搜索/执行资格，不保留旧白名单语义。
+    sourceReferences:
+    - docs/knowledge/facts/form-approval-transfer.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: question.multi-tenant-workflow-isolation
+    disposition: retained
+    scope: 仍open；局部委托目标租户检查不证明全租户数据隔离。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: relation.workflow-task-has-resolution-snapshot
+    disposition: updated
+    scope: 任务保留原候选来源，关系方向/基数/成熟度不变。
+    sourceReferences:
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: rule.form-approval-transfer
+    disposition: updated
+    scope: 当前actor、可用同租户目标、原因和无节点/数据/结果推进；原来源不授予旧候选继续办理。
+    sourceReferences:
+    - docs/knowledge/rules/form-approval-transfer.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: rule.form-process.approval-any-candidate
+    disposition: updated
+    scope: 任一原候选处理只在显式委托前，转后仅当前目标；无其他表单流程全审。
+    sourceReferences:
+    - docs/knowledge/rules/transaction-runtime.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: rule.workflow.task-any-candidate-completes-and-closes-siblings
+    disposition: updated
+    scope: contains-actor只读当前有效userIds；未委托原候选、委托后当前目标。
+    sourceReferences:
+    - docs/knowledge/rules/identity.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: rule.workflow.task-creation-freezes-candidate-resolution
+    disposition: updated
+    scope: 冻结的是创建解析来源，委托后的当前资格另存；不新增候选解析器。
+    sourceReferences:
+    - docs/knowledge/rules/identity.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: scenario.form-approval-transfer-current-task
+    disposition: updated
+    scope: 目标可来自原候选集合外；仅当前目标继续，原候选来源保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: scenario.tenant-transfer-dhr-boundary-kept
+    disposition: updated
+    scope: 只核对通用入口阻断及专属approve/return映射，不计为全DHR验收。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: scenario.tenant-transfer-repeated-origin-preserved
+    disposition: updated
+    scope: 再次委托保持同一原件，仅新目标待办和完成；单逻辑任务。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: scenario.tenant-transfer-target-outside-original-candidates
+    disposition: updated
+    scope: 集合外目标正向，两路径作用范围，不附带新增政策。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: scenario.tenant-transfer-target-rejected
+    disposition: updated
+    scope: 无权actor/跨租户/停用/锁定/自转/目标或原因缺失，命令拒绝不留部分变更。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: scenario.workflow-task-any-candidate-completes
+    disposition: updated
+    scope: 明确任一原候选处理适用于未显式委托任务。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: scenario.workflow-task-non-candidate-blocked
+    disposition: updated
+    scope: 明确合法显式委托受让人和原开放任务例外，其他非候选阻断。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: term.workflow-task
+    disposition: updated
+    scope: 同一逻辑任务来源/当前责任分离，委托后仅目标处理。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: term.workflow-task-resolution-snapshot
+    disposition: updated
+    scope: 原创建来源证据不等同于当前办理资格。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: term.workflow-transfer-action
+    disposition: updated
+    scope: 当前规范覆盖两路径租户内委托，排除记录控制/DHR。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0031-01
+    disposition: retained
+    scope: 单逻辑任务规范保留，不按候选人数创建多条任务。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml
+  - id: DEC-0055-01
+    disposition: retained
+    scope: 普通审批节点按钮显示/样式/签名边界保留；未扩展记录控制运行时。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml
+  - id: DEC-0055-03
+    disposition: retained
+    scope: 转办目标/原因必填且不推进节点、不改表单值或产生审批结果。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml
+  - id: DEC-0055-04
+    disposition: retained
+    scope: 原生产执行事务、结构化历史、不可变审计及待办投影保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml
+  - id: DEC-0055-05
+    disposition: retained
+    scope: 早期共同遗漏的真实时间线纠偏保留，与本轮新目标范围政策区分。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml
+  - id: evidence.workflow-task-multi-candidate-user-confirmed
+    disposition: historical
+    scope: 原始用户确认MD字节不改，不回填为早已同意本轮委托例外。
+    sourceReferences:
+    - docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.w3-tenant-knowledge-formal
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-tenant-knowledge-final-summary.json
+    - 固定cb2e9eef6cdb50077283c9707d257dcdd56a9e36实际89/89；0fail/0error/0skip；不归为业务运行。
+  - id: validation.w3-tenant-knowledge-transition
+    checkType: status-transition
+    command: python /tmp/edhr-w3-tenant-knowledge-transition.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-tenant-knowledge-transition-summary.json
+    - 2535→2546，新增11；无ID删除、既有成熟度/可见性晋升，三项implementationDiscrepancy有限resolved不等于知识阶段升级。
+  - id: validation.w3-tenant-finite-source-receipts
+    checkType: evidence-path
+    command: python /tmp/edhr-w3-finalize-ontology.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-tenant-transfer-source-receipt-check.json
+    - /tmp/edhr-w3-tenant-transfer-semantic-review.jsonl
+    - 36条真实ID、记录摘要与知识Git blob、实际实现提交源码及已读测试断言逐条核对；非文件存在即可语义通过。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

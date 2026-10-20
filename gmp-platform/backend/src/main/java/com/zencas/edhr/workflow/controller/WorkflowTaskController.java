@@ -150,6 +150,12 @@ public class WorkflowTaskController {
     /**
      * Transfer a task to another assignee (转办).
      */
+    @GetMapping("/{id}/transfer-targets")
+    public ApiResponse<List<Map<String, String>>> transferTargets(
+            @PathVariable Long id, @RequestParam(required = false) String keyword) {
+        return ApiResponse.success(workflowEngine.transferTargets(id, currentOperatorId(), keyword));
+    }
+
     @PostMapping("/{id}/transfer")
     public ApiResponse<Map<String, Object>> transfer(
             @PathVariable Long id,
@@ -157,7 +163,7 @@ public class WorkflowTaskController {
         if (request.getNewAssigneeId() == null || request.getNewAssigneeId().isBlank()) {
             throw new BusinessException(ErrorCode.GENERAL_001, "转办目标人不能为空");
         }
-        workflowEngine.transferTask(id, request.getNewAssigneeId(), currentOperatorId());
+        workflowEngine.transferTask(id, request.getNewAssigneeId(), currentOperatorId(), request.getReason());
         return ApiResponse.success(Map.of(
                 "taskId", id, "action", "TRANSFER",
                 "newAssigneeId", request.getNewAssigneeId(), "result", "ok"));
@@ -206,5 +212,6 @@ public class WorkflowTaskController {
     public static class TransferRequest {
         private String newAssigneeId;
         private String operatorId;
+        private String reason;
     }
 }

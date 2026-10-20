@@ -1708,6 +1708,81 @@ class ProductionExecutionIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT reason FROM audit_event WHERE function_name='TRANSFER'", String.class)).isEqualTo("交由当班复核员");
     }
 
+    @Test void tenantDelegationOutsideFrozenCandidatesPreservesSourceAndMovesOnlyCurrentResponsibility() throws Exception {
+        seedTenantDelegationApproval();
+        String snapshotBefore = jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class);
+        var stateBefore = mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class));
+        String frozenApprovers = stateBefore.at("/operations/a/forms/work-7-f/approvers").toString();
+        assertThat(stateBefore.at("/operations/a/forms/work-7-f/approvers/review")).hasSize(1);
+        mvc.perform(personal(get("/api/v1/production/execution/101/transfer-targets")
+                .param("operationId", "a").param("formId", "work-7-f").param("instanceId", "work-7-f"), "1"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.length()").value(2))
+            .andExpect(jsonPath("$.data[*].id").value(org.hamcrest.Matchers.containsInAnyOrder("2", "3")));
+        for (String invalid : List.of("1", "4", "5", "6", "missing")) {
+            mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                    .content(mapper.writeValueAsString(Map.of("action", "TRANSFER", "revision", 2, "operationId", "a",
+                            "formId", "work-7-f", "instanceId", "work-7-f", "targetUserId", invalid, "reason", "合法委托原因"))), "1"))
+                .andExpect(status().isBadRequest());
+            assertThat(mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class))).isEqualTo(stateBefore);
+        }
+        mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                .content("{\"action\":\"TRANSFER\",\"revision\":2,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"instanceId\":\"work-7-f\",\"targetUserId\":\"02\",\"reason\":\"集合外当班委托\"}"), "1"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.revision").value(3))
+            .andExpect(jsonPath("$.data.state.operations.a.forms['work-7-f'].transferAssignees.review").value("2"))
+            .andExpect(jsonPath("$.data.state.operations.a.forms['work-7-f'].active[0]").value("review"))
+            .andExpect(jsonPath("$.data.state.operations.a.forms['work-7-f'].values.temperature").value(22));
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_PENDING"), "1")).andExpect(jsonPath("$.data.totalElements").value(0));
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_PENDING"), "2")).andExpect(jsonPath("$.data.totalElements").value(1));
+        mvc.perform(personal(get("/api/v1/production/execution/101/transfer-targets")
+                .param("operationId", "a").param("formId", "work-7-f").param("instanceId", "work-7-f"), "1"))
+            .andExpect(status().isBadRequest());
+        mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                .content("{\"action\":\"TRANSFER\",\"revision\":3,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"instanceId\":\"work-7-f\",\"targetUserId\":\"3\",\"reason\":\"再次委托\"}"), "2"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.revision").value(4));
+        var delegated = mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class));
+        assertThat(delegated.at("/operations/a/forms/work-7-f/approvers").toString()).isEqualTo(frozenApprovers);
+        assertThat(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(snapshotBefore);
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_PENDING"), "2")).andExpect(jsonPath("$.data.totalElements").value(0));
+        mvc.perform(personal(get("/api/v1/form-worklists/REVIEW_PENDING"), "3")).andExpect(jsonPath("$.data.totalElements").value(1));
+        for (String oldOperator : List.of("1", "2")) mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                .content("{\"action\":\"APPROVE\",\"revision\":4,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"values\":{}}"), oldOperator))
+            .andExpect(status().isBadRequest());
+        mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                .content("{\"action\":\"APPROVE\",\"revision\":4,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"values\":{}}"), "3"))
+            .andExpect(status().isOk());
+        assertThat(jdbc.queryForList("SELECT reason FROM audit_event WHERE function_name='TRANSFER' ORDER BY created_at,id", String.class))
+                .containsExactly("集合外当班委托", "再次委托");
+    }
+
+    @Test void transferRechecksTheSelectedTenantUserWhenTheirAccountBecomesLocked() throws Exception {
+        seedTenantDelegationApproval();
+        mvc.perform(personal(get("/api/v1/production/execution/101/transfer-targets")
+                .param("operationId", "a").param("formId", "work-7-f").param("instanceId", "work-7-f").param("keyword", "reviewer2"), "1"))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data[0].id").value("2"));
+        jdbc.update("UPDATE user_account SET locked_until=? WHERE id=2", java.time.LocalDateTime.now().plusHours(1));
+        String before = jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class);
+        mvc.perform(personal(post("/api/v1/production/execution/101/actions").contentType("application/json")
+                .content("{\"action\":\"TRANSFER\",\"revision\":2,\"operationId\":\"a\",\"formId\":\"work-7-f\",\"instanceId\":\"work-7-f\",\"targetUserId\":\"2\",\"reason\":\"选择后状态变化\"}"), "1"))
+            .andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(before);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM audit_event WHERE function_name='TRANSFER'", Long.class)).isZero();
+    }
+
+    private void seedTenantDelegationApproval() throws Exception {
+        seedSignedWork();
+        for (int id = 2; id <= 6; id++) jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status,locked_until) VALUES(?,?,?,?,?,?,?)",
+                id, id == 6 ? 99 : 0, "reviewer" + id, "复核员" + id, passwords.encode("test-secret"),
+                id == 4 ? "INACTIVE" : "ACTIVE", id == 5 ? java.time.LocalDateTime.now().plusHours(1) : null);
+        jdbc.update("UPDATE workflow_definition_version SET nodes_json=? WHERE id=8", """
+            [{"id":"s","data":{"kind":"START"}},
+             {"id":"review","data":{"kind":"APPROVAL","label":"现场复核","config":{"approverSubjects":[{"type":"USER","id":"1"}],"defaultPermission":"READ_ONLY","buttons":[
+               {"id":"approve","label":"通过","action":"APPROVE"},{"id":"return","label":"退回","action":"RETURN"},{"id":"transfer","label":"转办","action":"TRANSFER"}]}}},
+             {"id":"e","data":{"kind":"END"}}]
+            """);
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+    }
+
     @Test void transferProjectionIsNodeScopedAndReassignmentIsClearedByReturn() throws Exception {
         seedSignedWork();
         jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(2,0,'reviewer2','复核员2',?,'ACTIVE')", passwords.encode("test-secret"));

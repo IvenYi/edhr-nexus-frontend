@@ -1,0 +1,207 @@
+{
+  "schema": "edhr-source-receipts/v1",
+  "scopes": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+      "scope": "JSONB string fields, PrePersist and raw canonical hash payload",
+      "lines": [
+        26,
+        112
+      ],
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "52f8cb650e0afdfda19b724aeb50cd70fa791f30",
+      "sha256": "61932bd33d0c0cb8d1886335c5aab0229753e3d5f4022fdeead5f0e075a0ad6e",
+      "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "baseSha256": "61932bd33d0c0cb8d1886335c5aab0229753e3d5f4022fdeead5f0e075a0ad6e",
+      "unchangedFromBase": true,
+      "sourceRelation": "unchanged",
+      "wholeFileCertified": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java",
+      "scope": "Stored-hash DTO projection and getById read",
+      "lines": [
+        113,
+        142,
+        307,
+        314
+      ],
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "c529a3a2f6e2d30e47a9e4054da062eb9f502204",
+      "sha256": "4ba853d52c1fe59cb86209cb70952f3a19733ed676a57badf3232fc786851154",
+      "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "baseSha256": "4ba853d52c1fe59cb86209cb70952f3a19733ed676a57badf3232fc786851154",
+      "unchangedFromBase": true,
+      "sourceRelation": "unchanged",
+      "wholeFileCertified": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/AuditEventRepository.java",
+      "scope": "Repository read declarations, no rehash lifecycle hook",
+      "lines": [
+        16,
+        39
+      ],
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "756816a21ecdff6aca7b5410636829cc4de10c5b",
+      "sha256": "1e0006a97a4bb745de780902b689407307d1eab7f9aabf168762dc9f806625bf",
+      "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "baseSha256": "1e0006a97a4bb745de780902b689407307d1eab7f9aabf168762dc9f806625bf",
+      "unchangedFromBase": true,
+      "sourceRelation": "unchanged",
+      "wholeFileCertified": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "scope": "Audit ZIP projections; separate signature/attachment/archive digests",
+      "lines": [
+        143,
+        168,
+        212,
+        287,
+        291,
+        299
+      ],
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "46c2f16d8857d1aaaa42865779f57c85959bd7a6",
+      "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08",
+      "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "baseSha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08",
+      "unchangedFromBase": true,
+      "sourceRelation": "unchanged",
+      "wholeFileCertified": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java",
+      "scope": "Frozen summary-version digest enforcement",
+      "lines": [
+        56,
+        91
+      ],
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "9401ccff54412a60fc60b5097f2a5167168d28ca",
+      "sha256": "3dcf8632a2049d9a13e8e178e55ff5c24643f50f496410ba2ef3f8f71c054e66",
+      "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "baseSha256": "3dcf8632a2049d9a13e8e178e55ff5c24643f50f496410ba2ef3f8f71c054e66",
+      "unchangedFromBase": true,
+      "sourceRelation": "unchanged",
+      "wholeFileCertified": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "scope": "Expected snapshot hash review version identity check",
+      "lines": [
+        94,
+        102
+      ],
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "04f97eb65bb39a368896432fcf24183e17712ebe",
+      "sha256": "42cf405959931f1ab74b046a32267cf4041723257dfd7a7f4d9a9bbcf30fb932",
+      "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "baseSha256": "42cf405959931f1ab74b046a32267cf4041723257dfd7a7f4d9a9bbcf30fb932",
+      "unchangedFromBase": true,
+      "sourceRelation": "unchanged",
+      "wholeFileCertified": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/audit.ts",
+      "scope": "Stored hash DTO and API wrappers",
+      "lines": [
+        1,
+        40
+      ],
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "fa26fc50cd56c4afee1d7037a6014bca911157d8",
+      "sha256": "85bc26559c4cde92a7da4bf2c08d3361f795bc839825de20368e549e2a2538dc",
+      "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "baseSha256": "85bc26559c4cde92a7da4bf2c08d3361f795bc839825de20368e549e2a2538dc",
+      "unchangedFromBase": true,
+      "sourceRelation": "unchanged",
+      "wholeFileCertified": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/system/AuditLogPage.tsx",
+      "scope": "Stored fingerprint visual projection only",
+      "lines": [
+        768,
+        780,
+        1080,
+        1090
+      ],
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "f565e246a2ce22de1dc26ec9f342b6d2c875d8d0",
+      "sha256": "575e8e3c6b93882e4642eb6b823afea7bae65e5995934c8a2748cfe270ef690d",
+      "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "baseSha256": "575e8e3c6b93882e4642eb6b823afea7bae65e5995934c8a2748cfe270ef690d",
+      "unchangedFromBase": true,
+      "sourceRelation": "unchanged",
+      "wholeFileCertified": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql",
+      "scope": "AuditEvent JSONB and timestamp schema",
+      "lines": [
+        137,
+        151
+      ],
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "8203ae2ec4faf9f5e0481c8dc38b067664ad5d6b",
+      "sha256": "316baefe79decf65811419e1de9a96323114ccb42ea1bcd0f627d35c0d979b71",
+      "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "baseSha256": "316baefe79decf65811419e1de9a96323114ccb42ea1bcd0f627d35c0d979b71",
+      "unchangedFromBase": true,
+      "sourceRelation": "unchanged",
+      "wholeFileCertified": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0023-audit-event-snapshot-hash.sql",
+      "scope": "Nullable stored hash column, no verification trigger",
+      "lines": [
+        1,
+        5
+      ],
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "726bcdc5727b1dd970f09c2cf0f4fe35faf26989",
+      "sha256": "5fc776f37ba7d83d66895c07520a477f4745f4259275b201f06133fa6f853dfc",
+      "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "baseSha256": "5fc776f37ba7d83d66895c07520a477f4745f4259275b201f06133fa6f853dfc",
+      "unchangedFromBase": true,
+      "sourceRelation": "unchanged",
+      "wholeFileCertified": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "scope": "New transfer uses shared preexisting AuditEvent sealing",
+      "lines": [
+        705,
+        730
+      ],
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "baseSha256": "c1a2bd001a0a17d7a19ace095ec2de75bcb1f0ad8de1b8677b5e2592072c1264",
+      "unchangedFromBase": false,
+      "sourceRelation": "changed",
+      "wholeFileCertified": false
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java",
+      "scope": "Stored hash/contents and transaction rollback assertions, not rehash certification",
+      "lines": [
+        147,
+        154,
+        266,
+        275
+      ],
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "f5c66e6a4436e453859ad3bbcafce1c4339faadf",
+      "sha256": "947eba5141d04c8c5aa33942af29df2df4ad05cf11d872219b704a888c504ad6",
+      "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "baseSha256": null,
+      "unchangedFromBase": false,
+      "sourceRelation": "new",
+      "wholeFileCertified": false
+    }
+  ]
+}

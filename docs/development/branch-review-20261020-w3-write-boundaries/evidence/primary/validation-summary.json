@@ -1,0 +1,44 @@
+{
+  "sourceCommit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+  "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "backendFinal": {
+    "tests": 292,
+    "passed": 292,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "nativePostgres": 39,
+    "nativeBreakdown": {
+      "workWrites": 12,
+      "genericDelegation": 23,
+      "productionHttp": 4
+    },
+    "dhrLifecycle": "5 H2 compatibility tests, not native PostgreSQL"
+  },
+  "browser": {
+    "tests": 36,
+    "passed": 36,
+    "controlledApi": true,
+    "fullStackEndToEnd": false,
+    "primaryPersonallyViewedFilledScreenshots": 4
+  },
+  "frontendBuild": {
+    "command": "npm run build",
+    "exit": 0,
+    "logSha256": "c5d1836b2f51fc91fc9dfb5d1fe62eee6e759ea2c26bda961f72f39a92425d13",
+    "logBytes": 9335
+  },
+  "scopeLimits": [
+    "No full branch certification",
+    "No audit-hash re-computation claim",
+    "No real historical data or real database touched",
+    "No Actions queried or triggered"
+  ],
+  "disposablePostgres": {
+    "ownedName": "edhr-audit-w3-20261020",
+    "version": "16.15",
+    "loopbackPort": 55432,
+    "syntheticOnly": true,
+    "keptRunningForIndependentQa": true
+  }
+}

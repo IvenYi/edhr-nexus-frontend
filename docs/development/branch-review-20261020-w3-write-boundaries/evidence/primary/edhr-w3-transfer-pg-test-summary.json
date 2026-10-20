@@ -1,0 +1,560 @@
+{
+  "exit": 0,
+  "suites": [
+    {
+      "suite": {
+        "version": "3.0",
+        "name": "com.zencas.edhr.workflow.engine.WorkflowTransferPostgresTest",
+        "time": "3.942",
+        "tests": "23",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      "cases": [
+        {
+          "name": "legacyAlreadyTransferredOriginIsMarkedAsPartialRatherThanInvented",
+          "outcome": "passed"
+        },
+        {
+          "name": "repeatedDelegationPreservesOriginalSourcesAndOnlyCurrentTargetCanComplete",
+          "outcome": "passed"
+        },
+        {
+          "name": "personnelSearchAndCommandUseTheSameTenantAvailabilityWithRealSql",
+          "outcome": "passed"
+        },
+        {
+          "name": "concurrentTransfersFromTheSameFormerOperatorAcceptOnlyOneResponsibilityChange",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[1]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[2]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[3]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[4]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[5]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[6]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[7]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[8]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[9]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[10]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[11]",
+          "outcome": "passed"
+        },
+        {
+          "name": "realAuditInsertFailureRollsBackResponsibilityAndActionLog",
+          "outcome": "passed"
+        },
+        {
+          "name": "endedTaskRejectsSearchAndTransferWithoutWrites(String)[1]",
+          "outcome": "passed"
+        },
+        {
+          "name": "endedTaskRejectsSearchAndTransferWithoutWrites(String)[2]",
+          "outcome": "passed"
+        },
+        {
+          "name": "dhrTaskStillCannotUseGenericSearchTransferOrQueue",
+          "outcome": "passed"
+        },
+        {
+          "name": "formerCandidateWaitingBehindTransferCannotCompleteFromItsCachedSnapshot",
+          "outcome": "passed"
+        },
+        {
+          "name": "terminatedInstanceRejectsBothEntrypoints",
+          "outcome": "passed"
+        },
+        {
+          "name": "controllerUsesAuthenticatedActorAndRequiresTheTargetAndReasonInJson",
+          "outcome": "passed"
+        },
+        {
+          "name": "unrestrictedTaskBecomesTargetOnlyWithoutLosingTheOpenOrigin",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "suite": {
+        "version": "3.0",
+        "name": "com.zencas.edhr.workflow.engine.WorkflowEngineTest",
+        "time": "0.49",
+        "tests": "18",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      "cases": [
+        {
+          "name": "explicitRecordControlStartRejectsMissingApplicantSignatureAtEngineBoundary",
+          "outcome": "passed"
+        },
+        {
+          "name": "explicitRecordControlStartIsIdempotentForSameFrozenRequest",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectingDeepParallelBranchTerminatesRoundInsteadOfReopeningPreviousApproval",
+          "outcome": "passed"
+        },
+        {
+          "name": "createsOneLogicalTaskForOneHundredResolvedCandidates",
+          "outcome": "passed"
+        },
+        {
+          "name": "transferKeepsOneLogicalTaskAndPreservesOriginalCandidateSnapshot",
+          "outcome": "passed"
+        },
+        {
+          "name": "terminationLocksInstanceAndClosesEveryActiveLogicalTask",
+          "outcome": "passed"
+        },
+        {
+          "name": "emptyFormProcessStartConfigCreatesUnrestrictedLogicalTask",
+          "outcome": "passed"
+        },
+        {
+          "name": "parallelBranchesJoinOnlyAfterEveryApprovalCompletes",
+          "outcome": "passed"
+        },
+        {
+          "name": "dhrUsesFrozenPublishedVersionEvenWhenNoLongerCurrent",
+          "outcome": "passed"
+        },
+        {
+          "name": "createsOneUnrestrictedTaskWhenFormProcessHasNoSubjects",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectingParallelBranchTerminatesOtherPendingBranch",
+          "outcome": "passed"
+        },
+        {
+          "name": "explicitRecordControlStartRejectsDraftOrMismatchedVersion",
+          "outcome": "passed"
+        },
+        {
+          "name": "candidateCanCompleteAndActualActorIsPersisted",
+          "outcome": "passed"
+        },
+        {
+          "name": "explicitlyStartsPublishedRecordControlVersionWithoutStartTaskAndExcludesApplicant",
+          "outcome": "passed"
+        },
+        {
+          "name": "genericTaskCompletionCannotBypassDhrDomainChecks",
+          "outcome": "passed"
+        },
+        {
+          "name": "unrestrictedTaskCanBeCompletedByAnyAuthenticatedOperator",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsUserOutsideFrozenCandidateSnapshot",
+          "outcome": "passed"
+        },
+        {
+          "name": "explicitRecordControlStartRejectsMismatchedIdempotencyReuse",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "suite": {
+        "version": "3.0",
+        "name": "com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest",
+        "time": "0.112",
+        "tests": "2",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      "cases": [
+        {
+          "name": "doneUsesAuthenticatedOperatorInsteadOfRequestParameter",
+          "outcome": "passed"
+        },
+        {
+          "name": "todoUsesAuthenticatedOperatorAndOneDatabaseLookup",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "suite": {
+        "version": "3.0",
+        "name": "com.zencas.edhr.production.service.ExecutionAccessTest",
+        "time": "1.669",
+        "tests": "12",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      "cases": [
+        {
+          "name": "referenceSearchAndValidationReachIdsBeyondFirstHundredSameNameRows",
+          "outcome": "passed"
+        },
+        {
+          "name": "capturesApprovalCandidatesOnceAndDoesNotOpenAnUnresolvedRestrictedGroup",
+          "outcome": "passed"
+        },
+        {
+          "name": "sopPdfPagePreviewRendersImageAndRejectsOutOfRange(Path)",
+          "outcome": "passed"
+        },
+        {
+          "name": "onlyInternalAdminUsesLoginPasswordAndSignatureFieldsRemainCurrentUserOnly",
+          "outcome": "passed"
+        },
+        {
+          "name": "transferPreservesFrozenCandidatesAndAllowsTenantDelegatesWhileOnlyAssigneeCanAct",
+          "outcome": "passed"
+        },
+        {
+          "name": "transferRejectsCrossTenantTargetsEvenIfAStaleCandidateListContainsThem",
+          "outcome": "passed"
+        },
+        {
+          "name": "executionAttachmentsCannotBeDeletedThroughGenericFiles",
+          "outcome": "passed"
+        },
+        {
+          "name": "executionSignaturesCannotBeForgedOverwrittenOrDeletedThroughGenericCrud",
+          "outcome": "passed"
+        },
+        {
+          "name": "personalSignatureCredentialsCannotBeForgedOrExposedThroughGenericCrud",
+          "outcome": "passed"
+        },
+        {
+          "name": "unavailableUncertifiedExpiredAndUnsetSignersAreBlocked",
+          "outcome": "passed"
+        },
+        {
+          "name": "stableFieldOverridesAndReadOnlyConflictWin",
+          "outcome": "passed"
+        },
+        {
+          "name": "buttonSignatureAuthenticatesNamedSignerAndRetainsSessionWithoutCredentials",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "suite": {
+        "version": "3.0",
+        "name": "com.zencas.edhr.production.service.ExecutionSubjectScopeTest",
+        "time": "0.346",
+        "tests": "10",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      "cases": [
+        {
+          "name": "inactiveAndOtherScopeSubjectsDoNotBecomeCandidates",
+          "outcome": "passed"
+        },
+        {
+          "name": "departmentSelfAndChildrenUseOriginalMembershipRules",
+          "outcome": "passed"
+        },
+        {
+          "name": "roleMembershipRetainsScopeAndActiveUserFiltering",
+          "outcome": "passed"
+        },
+        {
+          "name": "trulyUnconfiguredNodeKeepsTheExistingUnrestrictedRule",
+          "outcome": "passed"
+        },
+        {
+          "name": "missingMalformedOrUnresolvableSessionScopeFailsClosed",
+          "outcome": "passed"
+        },
+        {
+          "name": "scopeComesFromSessionAccountRatherThanAnotherHardCodedNumber",
+          "outcome": "passed"
+        },
+        {
+          "name": "capturedCandidatesAreNotRebuiltByTheRepair",
+          "outcome": "passed"
+        },
+        {
+          "name": "previouslyCapturedEmptySnapshotIsNotSilentlyRepaired",
+          "outcome": "passed"
+        },
+        {
+          "name": "malformedSubjectDoesNotTurnIntoAnOpenNode",
+          "outcome": "passed"
+        },
+        {
+          "name": "assignedActiveUserIsCapturedAndOnlyThatUserCanEdit",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "suite": {
+        "version": "3.0",
+        "name": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+        "time": "0.152",
+        "tests": "22",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      "cases": [
+        {
+          "name": "configuredConfirmationCannotBeSkippedByCompletingOperation",
+          "outcome": "passed"
+        },
+        {
+          "name": "routeCyclesAndUnsupportedNotificationsAreVisibleStartBlockers",
+          "outcome": "passed"
+        },
+        {
+          "name": "savedDraftDoesNotSatisfyRequiredFormAndReadOnlyValuesCannotBeForged",
+          "outcome": "passed"
+        },
+        {
+          "name": "missingRuntimeFactsNeverPassEvenWhenUsedUnderNot",
+          "outcome": "passed"
+        },
+        {
+          "name": "approvalAndSignatureAreRequiredBeforeFormCompletion",
+          "outcome": "passed"
+        },
+        {
+          "name": "skippedUnboundWorkFormDoesNotBlockCompletedConditionalWork",
+          "outcome": "passed"
+        },
+        {
+          "name": "requiredFieldsOwnedByLaterApprovalDoNotBlockEarlierSubmissionButBlockFinalCompletion",
+          "outcome": "passed"
+        },
+        {
+          "name": "workFormNeverSatisfiesIndependentRequiredOperationForm",
+          "outcome": "passed"
+        },
+        {
+          "name": "supplementCreatesNewCopyWithoutReopeningOrChangingCompletedRecord",
+          "outcome": "passed"
+        },
+        {
+          "name": "evaluatesStructuredConditionsWithoutExecutingCode",
+          "outcome": "passed"
+        },
+        {
+          "name": "directEntryConfigurationControlsPermissionsButtonsAndSignature",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsDuplicateStartAndOutOfOrderCompletion",
+          "outcome": "passed"
+        },
+        {
+          "name": "transferDoesNotAdvanceOrChangeFormValuesAndRequiresReason",
+          "outcome": "passed"
+        },
+        {
+          "name": "supplementCannotBypassSubjectPermissionsOrUnreachedWorkForms",
+          "outcome": "passed"
+        },
+        {
+          "name": "validSubmissionPersistsValuesAndUnlocksCompletion",
+          "outcome": "passed"
+        },
+        {
+          "name": "enforcesNumericStructurePrecisionAndDateFormat",
+          "outcome": "passed"
+        },
+        {
+          "name": "blocksSuccessorUntilEveryParallelPredecessorCompletes",
+          "outcome": "passed"
+        },
+        {
+          "name": "disabledDirectSignatureEventIsNotExecuted",
+          "outcome": "passed"
+        },
+        {
+          "name": "explicitLegacyOrHiddenButtonsDoNotEnableTransfer",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsUnknownFieldsAndInvalidNumbers",
+          "outcome": "passed"
+        },
+        {
+          "name": "activeButtonSignatureFillsActualSignerAndAllowsReporterProjection",
+          "outcome": "passed"
+        },
+        {
+          "name": "parallelWorkJoinWaitsForBothConfirmationBranches",
+          "outcome": "passed"
+        }
+      ]
+    }
+  ],
+  "schema": "edhr-limited-test-implementation-result/v1",
+  "recordedAt": "2026-10-20T08:57:43.251312+00:00",
+  "role": "limited-test-implementation-not-independent-quality",
+  "headCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+  "workingTreeState": "dirty; exact relevant source hashes below",
+  "contractBaseline": {
+    "sourceCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "contractReadCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "distinctTests": 87,
+  "nativePostgresTests": 23,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "database": "owned loopback edhr_w3_transfer_test in edhr-audit-w3-20261020 only",
+  "sourceReceipts": [
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java",
+      "bytes": 28361,
+      "sha256": "947eba5141d04c8c5aa33942af29df2df4ad05cf11d872219b704a888c504ad6"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "bytes": 44867,
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "bytes": 8606,
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "bytes": 3535,
+      "sha256": "f1833e750ed1c6b9b158e6932738f21c32cda35264a7275059a79e6e9ae912fd"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "bytes": 18529,
+      "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "bytes": 64082,
+      "sha256": "4411c23f5f89abb69ebd424355020e2569176e5f4b29ee592b6a09bcad49ddcd"
+    }
+  ],
+  "surefireReceipts": [
+    {
+      "name": "TEST-com.zencas.edhr.workflow.engine.WorkflowTransferPostgresTest.xml",
+      "bytes": 434939,
+      "sha256": "e2d4c0bf52798c762ff3486dc950cad7f292c82bcf5043afbfece7703523c682",
+      "mtimeNs": 1792486600025531550,
+      "contentNotArchived": true
+    },
+    {
+      "name": "TEST-com.zencas.edhr.workflow.engine.WorkflowEngineTest.xml",
+      "bytes": 34856,
+      "sha256": "24e47a925e9099d57b2f92f392e99efaf0a6abffeb940d640a9712932251a3a4",
+      "mtimeNs": 1792486596065468878,
+      "contentNotArchived": true
+    },
+    {
+      "name": "TEST-com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest.xml",
+      "bytes": 32396,
+      "sha256": "d6c27e0037dad569aee482853c85532cc936d0f35f97d6e9f71049caec6b6ecb",
+      "mtimeNs": 1792486595577461983,
+      "contentNotArchived": true
+    },
+    {
+      "name": "TEST-com.zencas.edhr.production.service.ExecutionAccessTest.xml",
+      "bytes": 34764,
+      "sha256": "26a78057920959a7296685d3d751330a03b9bc21a69232436ab7021db8d80931",
+      "mtimeNs": 1792486594985453620,
+      "contentNotArchived": true
+    },
+    {
+      "name": "TEST-com.zencas.edhr.production.service.ExecutionSubjectScopeTest.xml",
+      "bytes": 33651,
+      "sha256": "82e4c7faedf08aaea4027125079f474fe32eb7567da86a2f7387f4a8d90a5f41",
+      "mtimeNs": 1792486595301458084,
+      "contentNotArchived": true
+    },
+    {
+      "name": "TEST-com.zencas.edhr.production.service.ProductionExecutionEngineTest.xml",
+      "bytes": 35744,
+      "sha256": "030feca3f45866ec7f424d57bc678093a39fb4111fcfcbb945d8ee9143ab1fe5",
+      "mtimeNs": 1792486595457460288,
+      "contentNotArchived": true
+    }
+  ],
+  "mockedUnusedDependencies": [
+    "StateMachineService",
+    "SubjectResolver"
+  ],
+  "actualBoundaries": [
+    "real WorkflowEngine/JPA/PostgreSQL task instance user action log audit repositories",
+    "real SQL todo and candidate pending queues",
+    "standalone MockMvc controller JSON/authenticated principal wiring",
+    "real audit insert failure transaction rollback",
+    "controlled same former operator concurrent transfers",
+    "controlled old candidate completion waiting behind transfer"
+  ],
+  "notClaimed": [
+    "actual subject resolution at task creation",
+    "full SecurityFilter/JWT chain",
+    "audit hash recomputation",
+    "production form HTTP flow",
+    "DHR review execution",
+    "formal independent quality acceptance"
+  ],
+  "earlierRuns": [
+    {
+      "path": "/tmp/edhr-w3-transfer-pg-first-summary.json",
+      "result": "21 tests,1 fixture expected-order failure; exact display-name order corrected without relaxing assertion"
+    },
+    {
+      "path": "/tmp/edhr-w3-transfer-pg-second-summary.json",
+      "result": "22 tests,1 real concurrency failure; both transfers accepted [true,true]; root fixed lock-time refresh, assertion retained"
+    }
+  ],
+  "command": "W3_TRANSFER_DATABASE_URL=jdbc:postgresql://localhost:55432/edhr_w3_transfer_test bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f gmp-platform/backend/pom.xml -Dtest=WorkflowTransferPostgresTest,WorkflowEngineTest,WorkflowTaskControllerTest,ExecutionAccessTest,ExecutionSubjectScopeTest,ProductionExecutionEngineTest test",
+  "rawMavenMockMvcXmlEnvironmentAndSettingsExcluded": true,
+  "allChildInstancesFinal": true
+}

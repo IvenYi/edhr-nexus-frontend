@@ -1,0 +1,431 @@
+{
+  "exit": 0,
+  "suites": [
+    {
+      "suite": {
+        "version": "3.0",
+        "name": "com.zencas.edhr.workflow.engine.WorkflowTransferPostgresTest",
+        "time": "3.942",
+        "tests": "23",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      "cases": [
+        {
+          "name": "legacyAlreadyTransferredOriginIsMarkedAsPartialRatherThanInvented",
+          "outcome": "passed"
+        },
+        {
+          "name": "repeatedDelegationPreservesOriginalSourcesAndOnlyCurrentTargetCanComplete",
+          "outcome": "passed"
+        },
+        {
+          "name": "personnelSearchAndCommandUseTheSameTenantAvailabilityWithRealSql",
+          "outcome": "passed"
+        },
+        {
+          "name": "concurrentTransfersFromTheSameFormerOperatorAcceptOnlyOneResponsibilityChange",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[1]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[2]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[3]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[4]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[5]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[6]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[7]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[8]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[9]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[10]",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[11]",
+          "outcome": "passed"
+        },
+        {
+          "name": "realAuditInsertFailureRollsBackResponsibilityAndActionLog",
+          "outcome": "passed"
+        },
+        {
+          "name": "endedTaskRejectsSearchAndTransferWithoutWrites(String)[1]",
+          "outcome": "passed"
+        },
+        {
+          "name": "endedTaskRejectsSearchAndTransferWithoutWrites(String)[2]",
+          "outcome": "passed"
+        },
+        {
+          "name": "dhrTaskStillCannotUseGenericSearchTransferOrQueue",
+          "outcome": "passed"
+        },
+        {
+          "name": "formerCandidateWaitingBehindTransferCannotCompleteFromItsCachedSnapshot",
+          "outcome": "passed"
+        },
+        {
+          "name": "terminatedInstanceRejectsBothEntrypoints",
+          "outcome": "passed"
+        },
+        {
+          "name": "controllerUsesAuthenticatedActorAndRequiresTheTargetAndReasonInJson",
+          "outcome": "passed"
+        },
+        {
+          "name": "unrestrictedTaskBecomesTargetOnlyWithoutLosingTheOpenOrigin",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "suite": {
+        "version": "3.0",
+        "name": "com.zencas.edhr.workflow.engine.WorkflowEngineTest",
+        "time": "0.49",
+        "tests": "18",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      "cases": [
+        {
+          "name": "explicitRecordControlStartRejectsMissingApplicantSignatureAtEngineBoundary",
+          "outcome": "passed"
+        },
+        {
+          "name": "explicitRecordControlStartIsIdempotentForSameFrozenRequest",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectingDeepParallelBranchTerminatesRoundInsteadOfReopeningPreviousApproval",
+          "outcome": "passed"
+        },
+        {
+          "name": "createsOneLogicalTaskForOneHundredResolvedCandidates",
+          "outcome": "passed"
+        },
+        {
+          "name": "transferKeepsOneLogicalTaskAndPreservesOriginalCandidateSnapshot",
+          "outcome": "passed"
+        },
+        {
+          "name": "terminationLocksInstanceAndClosesEveryActiveLogicalTask",
+          "outcome": "passed"
+        },
+        {
+          "name": "emptyFormProcessStartConfigCreatesUnrestrictedLogicalTask",
+          "outcome": "passed"
+        },
+        {
+          "name": "parallelBranchesJoinOnlyAfterEveryApprovalCompletes",
+          "outcome": "passed"
+        },
+        {
+          "name": "dhrUsesFrozenPublishedVersionEvenWhenNoLongerCurrent",
+          "outcome": "passed"
+        },
+        {
+          "name": "createsOneUnrestrictedTaskWhenFormProcessHasNoSubjects",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectingParallelBranchTerminatesOtherPendingBranch",
+          "outcome": "passed"
+        },
+        {
+          "name": "explicitRecordControlStartRejectsDraftOrMismatchedVersion",
+          "outcome": "passed"
+        },
+        {
+          "name": "candidateCanCompleteAndActualActorIsPersisted",
+          "outcome": "passed"
+        },
+        {
+          "name": "explicitlyStartsPublishedRecordControlVersionWithoutStartTaskAndExcludesApplicant",
+          "outcome": "passed"
+        },
+        {
+          "name": "genericTaskCompletionCannotBypassDhrDomainChecks",
+          "outcome": "passed"
+        },
+        {
+          "name": "unrestrictedTaskCanBeCompletedByAnyAuthenticatedOperator",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsUserOutsideFrozenCandidateSnapshot",
+          "outcome": "passed"
+        },
+        {
+          "name": "explicitRecordControlStartRejectsMismatchedIdempotencyReuse",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "suite": {
+        "version": "3.0",
+        "name": "com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest",
+        "time": "0.112",
+        "tests": "2",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      "cases": [
+        {
+          "name": "doneUsesAuthenticatedOperatorInsteadOfRequestParameter",
+          "outcome": "passed"
+        },
+        {
+          "name": "todoUsesAuthenticatedOperatorAndOneDatabaseLookup",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "suite": {
+        "version": "3.0",
+        "name": "com.zencas.edhr.production.service.ExecutionAccessTest",
+        "time": "1.669",
+        "tests": "12",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      "cases": [
+        {
+          "name": "referenceSearchAndValidationReachIdsBeyondFirstHundredSameNameRows",
+          "outcome": "passed"
+        },
+        {
+          "name": "capturesApprovalCandidatesOnceAndDoesNotOpenAnUnresolvedRestrictedGroup",
+          "outcome": "passed"
+        },
+        {
+          "name": "sopPdfPagePreviewRendersImageAndRejectsOutOfRange(Path)",
+          "outcome": "passed"
+        },
+        {
+          "name": "onlyInternalAdminUsesLoginPasswordAndSignatureFieldsRemainCurrentUserOnly",
+          "outcome": "passed"
+        },
+        {
+          "name": "transferPreservesFrozenCandidatesAndAllowsTenantDelegatesWhileOnlyAssigneeCanAct",
+          "outcome": "passed"
+        },
+        {
+          "name": "transferRejectsCrossTenantTargetsEvenIfAStaleCandidateListContainsThem",
+          "outcome": "passed"
+        },
+        {
+          "name": "executionAttachmentsCannotBeDeletedThroughGenericFiles",
+          "outcome": "passed"
+        },
+        {
+          "name": "executionSignaturesCannotBeForgedOverwrittenOrDeletedThroughGenericCrud",
+          "outcome": "passed"
+        },
+        {
+          "name": "personalSignatureCredentialsCannotBeForgedOrExposedThroughGenericCrud",
+          "outcome": "passed"
+        },
+        {
+          "name": "unavailableUncertifiedExpiredAndUnsetSignersAreBlocked",
+          "outcome": "passed"
+        },
+        {
+          "name": "stableFieldOverridesAndReadOnlyConflictWin",
+          "outcome": "passed"
+        },
+        {
+          "name": "buttonSignatureAuthenticatesNamedSignerAndRetainsSessionWithoutCredentials",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "suite": {
+        "version": "3.0",
+        "name": "com.zencas.edhr.production.service.ExecutionSubjectScopeTest",
+        "time": "0.346",
+        "tests": "10",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      "cases": [
+        {
+          "name": "inactiveAndOtherScopeSubjectsDoNotBecomeCandidates",
+          "outcome": "passed"
+        },
+        {
+          "name": "departmentSelfAndChildrenUseOriginalMembershipRules",
+          "outcome": "passed"
+        },
+        {
+          "name": "roleMembershipRetainsScopeAndActiveUserFiltering",
+          "outcome": "passed"
+        },
+        {
+          "name": "trulyUnconfiguredNodeKeepsTheExistingUnrestrictedRule",
+          "outcome": "passed"
+        },
+        {
+          "name": "missingMalformedOrUnresolvableSessionScopeFailsClosed",
+          "outcome": "passed"
+        },
+        {
+          "name": "scopeComesFromSessionAccountRatherThanAnotherHardCodedNumber",
+          "outcome": "passed"
+        },
+        {
+          "name": "capturedCandidatesAreNotRebuiltByTheRepair",
+          "outcome": "passed"
+        },
+        {
+          "name": "previouslyCapturedEmptySnapshotIsNotSilentlyRepaired",
+          "outcome": "passed"
+        },
+        {
+          "name": "malformedSubjectDoesNotTurnIntoAnOpenNode",
+          "outcome": "passed"
+        },
+        {
+          "name": "assignedActiveUserIsCapturedAndOnlyThatUserCanEdit",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "suite": {
+        "version": "3.0",
+        "name": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+        "time": "0.152",
+        "tests": "22",
+        "errors": "0",
+        "skipped": "0",
+        "failures": "0"
+      },
+      "cases": [
+        {
+          "name": "configuredConfirmationCannotBeSkippedByCompletingOperation",
+          "outcome": "passed"
+        },
+        {
+          "name": "routeCyclesAndUnsupportedNotificationsAreVisibleStartBlockers",
+          "outcome": "passed"
+        },
+        {
+          "name": "savedDraftDoesNotSatisfyRequiredFormAndReadOnlyValuesCannotBeForged",
+          "outcome": "passed"
+        },
+        {
+          "name": "missingRuntimeFactsNeverPassEvenWhenUsedUnderNot",
+          "outcome": "passed"
+        },
+        {
+          "name": "approvalAndSignatureAreRequiredBeforeFormCompletion",
+          "outcome": "passed"
+        },
+        {
+          "name": "skippedUnboundWorkFormDoesNotBlockCompletedConditionalWork",
+          "outcome": "passed"
+        },
+        {
+          "name": "requiredFieldsOwnedByLaterApprovalDoNotBlockEarlierSubmissionButBlockFinalCompletion",
+          "outcome": "passed"
+        },
+        {
+          "name": "workFormNeverSatisfiesIndependentRequiredOperationForm",
+          "outcome": "passed"
+        },
+        {
+          "name": "supplementCreatesNewCopyWithoutReopeningOrChangingCompletedRecord",
+          "outcome": "passed"
+        },
+        {
+          "name": "evaluatesStructuredConditionsWithoutExecutingCode",
+          "outcome": "passed"
+        },
+        {
+          "name": "directEntryConfigurationControlsPermissionsButtonsAndSignature",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsDuplicateStartAndOutOfOrderCompletion",
+          "outcome": "passed"
+        },
+        {
+          "name": "transferDoesNotAdvanceOrChangeFormValuesAndRequiresReason",
+          "outcome": "passed"
+        },
+        {
+          "name": "supplementCannotBypassSubjectPermissionsOrUnreachedWorkForms",
+          "outcome": "passed"
+        },
+        {
+          "name": "validSubmissionPersistsValuesAndUnlocksCompletion",
+          "outcome": "passed"
+        },
+        {
+          "name": "enforcesNumericStructurePrecisionAndDateFormat",
+          "outcome": "passed"
+        },
+        {
+          "name": "blocksSuccessorUntilEveryParallelPredecessorCompletes",
+          "outcome": "passed"
+        },
+        {
+          "name": "disabledDirectSignatureEventIsNotExecuted",
+          "outcome": "passed"
+        },
+        {
+          "name": "explicitLegacyOrHiddenButtonsDoNotEnableTransfer",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsUnknownFieldsAndInvalidNumbers",
+          "outcome": "passed"
+        },
+        {
+          "name": "activeButtonSignatureFillsActualSignerAndAllowsReporterProjection",
+          "outcome": "passed"
+        },
+        {
+          "name": "parallelWorkJoinWaitsForBothConfirmationBranches",
+          "outcome": "passed"
+        }
+      ]
+    }
+  ]
+}

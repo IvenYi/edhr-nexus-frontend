@@ -1,0 +1,504 @@
+[
+  {
+    "noteKind": "source-map-qualification",
+    "id": "branch-review-20261015:gap:7",
+    "scope": "| 动作入口 | production/controller/ProductionExecutionController.java；ProductionExecutionService.act:152–248 | production.execution 权限，校验 revision、操作者及对象状态，先锁工单后锁对象；首个 START 才建快照/实例 |",
+    "reason": "Controller file named but controller method not delimited in this row; service act separately recorded.",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/dhr-lifecycle-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "59addffa07b92850b4201055c37e255f1455644df1cd4942de42979c9bd46fec",
+        "locator": "docs/development/branch-review-20261015/dhr-lifecycle-map.md:7"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "branch-review-20261015-w1-followup:gap:11",
+    "scope": "| 修订/作废 | 本次补读的DHR控制器/服务只见重新整理、退回及新汇总版本；不能把这些动作等同完整A12受控修订/作废。 | 继续按全入口清单查通用记录控制消费者及现行DEC原依据。未找到实现前保持范围缺口，不擅自创建新流程或修改政策。 |",
+    "reason": "No concrete source method or implementation established; source-effective change/void remains unresolved/deferred.",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015-w1-followup/remaining-path-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "38b111af630d78de428b51953b554be788be2323c262cbdc83c140da9d82d74c",
+        "locator": "docs/development/branch-review-20261015-w1-followup/remaining-path-map.md:11"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "branch-review-20261016-w1-review-export:gap:12",
+    "scope": "| DhrArchiveService.export→DhrPdfRenderer | 固定tenant+DHR+version，所选ID属于本版；校验候选、placements、排序和集合一致，按同版快照渲染及附原件；校验文件hash，SELECTED明确范围并去原始对象级载荷。ZIP生成或审计失败清理，响应流finally清理临时ZIP。 | DhrAttachmentAndArchiveTest13实际Chromium/PDFBox、ZIP与文件字节；不是整页视觉/HTTP客户端下载取消的全矩阵。未发现合法运行下的新确定缺陷，未为假定异常重构。 |",
+    "reason": "Renderer consumer named, but no renderer method scope given; do not turn runtime archive tests into full renderer source review.",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w1-review-export/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "30ea358cc19dff5bbb1671e1baef8ec2f9057819a18e155b21aec14fbc9d8289",
+        "locator": "docs/development/branch-review-20261016-w1-review-export/source-map.md:12"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "branch-review-20261016-w2-form-availability:gap:14",
+    "scope": "| ProductionOutputValue→quantityText / QuantitySources | 新目标主值按组摘要，弹层分列；SSR与实际浏览器分别验证2组及10根/12件不相加，不以表单状态推断正式计入。 |",
+    "reason": "Consumer line records SSR/browser regression rather than an explicit source-read boundary; preserve as adjacent evidence only.",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w2-form-availability/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "2eec230234b031c2f3a536be41fe0eaaa83263559fddeabcd72aaa784d11a4d7",
+        "locator": "docs/development/branch-review-20261016-w2-form-availability/source-map.md:14"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "branch-review-20261016-w2-projection-integrity:gap:16",
+    "scope": "| DhrManagementPage.DhrEvidenceViewer相邻消费者 | 同一详情的snapshot/fieldValues与traceHits交给共同高亮函数；本批仅映射，不将其计为完整DHR运行验收。 |",
+    "reason": "Explicitly only an adjacent consumer mapping; not a complete DHR source/behavior review.",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w2-projection-integrity/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "0ea0013a957e0fd16c316b8b1b3a1bdf8f528c35fb0e9425e673e931d5dec2fc",
+        "locator": "docs/development/branch-review-20261016-w2-projection-integrity/source-map.md:16"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "branch-review-20261016-w2-designer-identity:gap:17",
+    "scope": "| MockFillDialog、FormDocumentPreview、FormRuntimeField | embedded优先与canonical子列的不同消费者 | 子列快照线索待下一批真实触发，不把单一路径当全局反证 |",
+    "reason": "Consumer distinction was a pending hypothesis awaiting actual trigger in next tranche; preserve candidate rather than method-reviewed completion.",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w2-designer-identity/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "73ad391872c990f38be9872ea19b32f393d7a23cf59783b1f21c03604c35eae7",
+        "locator": "docs/development/branch-review-20261016-w2-designer-identity/source-map.md:17"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "qualification-f236f697b7c1f46da348",
+    "scope": "| backend production/ExecutionSnapshotBuilder.form:187、ProductionExecutionService | 使用时复制当时模板，已有执行读自身 snapshot；不改读取所有权或旧快照。仅源码边界检查。 |",
+    "reason": "ambiguous-method-scope",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261017-w2-subfield-sync/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "3826ab321052f9a64faa1b2a4bcf32a0a664966364fa1af65ec1ac1dd90fdff8",
+        "locator": "docs/development/branch-review-20261017-w2-subfield-sync/source-map.md:19"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "qualification-c9158a0b101adaa3253f",
+    "scope": "| `frontend/scripts/test-designer-choice-options.mjs`、`test-designer-save-browser.mjs` | 实际 store / 保存重读 / 默认工厂、真实 Inspector 和纸面交互；旧实现反证与正对照分开。主字段重复用 typed document，实际 UI 重复用子列。 |",
+    "reason": "test-evidence-without-explicit-source-read",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w2-choice-options/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "f54fdfaa31ec0c2462735e2089a67e7464f5d5ea88a9603d8e4c77b85e4dc5f7",
+        "locator": "docs/development/branch-review-20261018-w2-choice-options/source-map.md:22"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "qualification-538549c960286fdff1c9",
+    "scope": "| `backend/src/test/.../ProductionExecutionIntegrationTest.java` `inspectorChoiceOptionsSaveAndSubmitAgainstTheSameFrozenCanonicalValues:181` | 浏览器导出安全合成 fixture → 新冻结 → SAVE → 未知值 SUBMIT 拒绝且 revision/values/audit 不变 → 合法 SUBMIT 成功；比较完整冻结 JSON 树。H2 PostgreSQL 兼容模式，不是原生 PG。 |",
+    "reason": "test-evidence-without-explicit-source-read",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w2-choice-options/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "f54fdfaa31ec0c2462735e2089a67e7464f5d5ea88a9603d8e4c77b85e4dc5f7",
+        "locator": "docs/development/branch-review-20261018-w2-choice-options/source-map.md:23"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "qualification-c0776fafabb10f986252",
+    "scope": "原始 [运行消费报告](evidence/helpers/edhr-w2-runtime-consumers.md) 和 [W3 调用点追加](evidence/helpers/edhr-w3-mode-callers.md) 保留实际读取基线和“未运行测试”声明。W3 的 `FormFillSettingsService.usesProcess/serialize/validate` 同时连接工序 create/update/copy、作业 save/publish/GET 引用状态和首次 snapshot；只收紧一个枚举方法不能关闭补值及发布旁路。DEC-0009 允许不完整草稿，CUSTOM 挂载不经同一模式入口，后续修复不能全局拒绝缺模式或重解释已冻结执行。本批未改这些方法。",
+    "reason": "secondary-reference-and-ambiguous-shared-callers",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w2-choice-options/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "f54fdfaa31ec0c2462735e2089a67e7464f5d5ea88a9603d8e4c77b85e4dc5f7",
+        "locator": "docs/development/branch-review-20261018-w2-choice-options/source-map.md:27"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "qualification-e295cce8465c04160041",
+    "scope": "| `masterdata/service/ProductProcessOwnerService.java` `saveOperationBindings:295`、`toOperationRequests:386`；`masterdata/controller/ProductProcessController.java` 对应写入/复制/响应映射 | 产品与产品簇两套现存适配路径都调用共享 serialize；复制把 parse 结果带回写入。无模式读取仍不补值，新写入必须严格校验。本批仅源码映射、共享边界与既有两 suite 回归，不称所有管理 HTTP 复制组合已实测。 |",
+    "reason": "ambiguous-method-scope",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4161ab1a18da49fbef6bac4b6e9225686f0525e12b11fd285535026767d6e925",
+        "locator": "docs/development/branch-review-20261018-w3-explicit-fill-mode/source-map.md:9"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "qualification-b9d8ca9688f6d42e9734",
+    "scope": "| `production/service/ProductionExecutionService.java` `act` 及首次 START/审计事务；原 engine 的冻结 entry/flow 消费 | 未改生产实现。新增真实集成测试拒绝 null/空/仅休眠流程配置，execution、DHR、对象状态及审计保持不写；既有冻结/签署/权限/自动推进与回滚正反例继续跑。 |",
+    "reason": "regression-consumer-without-explicit-source-read",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4161ab1a18da49fbef6bac4b6e9225686f0525e12b11fd285535026767d6e925",
+        "locator": "docs/development/branch-review-20261018-w3-explicit-fill-mode/source-map.md:11"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "qualification-498032fab5a6d9743b52",
+    "scope": "| `frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx`、`components/ProductProcessVersionEditorDialog.tsx` 的绑定创建与设置适配 | 原创建命令明确写 DIRECT，保留。workspace 与产品/产品簇完整 Dialog 的父路径复用相同 canonical 设置按钮/组件；未重做整页布局或主题。 |",
+    "reason": "ambiguous-multiple-method-scopes",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4161ab1a18da49fbef6bac4b6e9225686f0525e12b11fd285535026767d6e925",
+        "locator": "docs/development/branch-review-20261018-w3-explicit-fill-mode/source-map.md:15"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "qualification-d176d3bb1e6d1eac412d",
+    "scope": "| `frontend/scripts/test-explicit-fill-mode.mjs`、`test-explicit-fill-mode-browser.mjs` | 实际 helper/编辑器函数和实际 React 页面；浏览器 API 被受控夹具替代，不能据此宣称后端数据库 E2E。 |",
+    "reason": "test-evidence-without-explicit-source-read",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4161ab1a18da49fbef6bac4b6e9225686f0525e12b11fd285535026767d6e925",
+        "locator": "docs/development/branch-review-20261018-w3-explicit-fill-mode/source-map.md:16"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "qualification-4c5fc4a36460f5d53a3f",
+    "scope": "| 后端 `masterdata/service/ProductProcessOwnerService.java`、`masterdata/controller/ProductProcessController.java` 写入/复制→serialize→validate | 两个既有工序保存适配不放宽完整校验，共享内部引用提取改变需回归原正反例。未验证所有管理HTTP复制组合。 |",
+    "reason": "ambiguous-multiple-method-scopes",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "42a59c74c95a14ae4f8f42e43d936e4ca91e6214617803200639801d4ee6aaff",
+        "locator": "docs/development/branch-review-20261018-w3-binding-references/source-map.md:9"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "qualification-78ba46aba00e74a92c75",
+    "scope": "| 后端 `production/service/ExecutionSnapshotBuilder.java`、`ProductionExecutionService.act` 与原 engine 消费 | 未改生产代码，已有首次START、冻结、权限、签署、事务和CUSTOM测试继续跑；不声称原生PG并发全矩阵已覆盖。 |",
+    "reason": "regression-consumer-without-explicit-source-read",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "42a59c74c95a14ae4f8f42e43d936e4ca91e6214617803200639801d4ee6aaff",
+        "locator": "docs/development/branch-review-20261018-w3-binding-references/source-map.md:10"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "qualification-5150d4234237b0fe681e",
+    "scope": "| 前端 `pages/master-data/ProductModelingWorkspacePage.tsx`、`components/ProductProcessVersionEditorDialog.tsx` | workspace及产品/产品簇完整Dialog复用原共享组件，绑定新增显式DIRECT保持，未改页面适配或保存协议。 |",
+    "reason": "ambiguous-multiple-method-scopes",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "42a59c74c95a14ae4f8f42e43d936e4ca91e6214617803200639801d4ee6aaff",
+        "locator": "docs/development/branch-review-20261018-w3-binding-references/source-map.md:14"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "qualification-0f83948f18f47e639da5",
+    "scope": "| `frontend/scripts/test-binding-reference-confirmation-browser.mjs` | 实际canonical React/MUI配置确认，后切换输入夹具+受控GET；两模式/两视口、取消、延迟、503失败、有效/休眠保留，不冒充完整父页HTTP切换。 |",
+    "reason": "test-evidence-without-explicit-source-read",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/source-map.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "42a59c74c95a14ae4f8f42e43d936e4ca91e6214617803200639801d4ee6aaff",
+        "locator": "docs/development/branch-review-20261018-w3-binding-references/source-map.md:15"
+      }
+    ],
+    "preparationArtifact": "evidence/source-preparation/edhr-ledger-method-sources.json"
+  },
+  {
+    "noteKind": "observation-not-confirmed-defect",
+    "id": "W1-TERMINATED-DETAIL-DEPENDENCY",
+    "recordKind": "observation-or-regression-improvement",
+    "originalStatus": "deferred-no-proven-valid-trigger",
+    "currentDisposition": "deferred-no-proven-valid-trigger",
+    "summary": "Dependency exists but no proven valid current trigger; not a confirmed product defect and no code repair authorized by manufactured broken JSON.",
+    "countsAsConfirmedDefect": false,
+    "runtimeExecutedByThisHelper": false,
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015-w1-followup/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "080bb9a651e0f529e735d538a270525b30d60c70d166941650039c8d6c97521f",
+        "locator": "$.findings[1]"
+      }
+    ]
+  },
+  {
+    "noteKind": "observation-not-confirmed-defect",
+    "id": "W2-R001-SAVED-TO-FORMAL-ROW-IDENTITY",
+    "recordKind": "observation-or-regression-improvement",
+    "originalStatus": "independently-verified",
+    "currentDisposition": "independently-verified",
+    "summary": "No new production defect found; two PostgreSQL composed regressions protect stable row identity and rollback/retry paths.",
+    "countsAsConfirmedDefect": false,
+    "runtimeExecutedByThisHelper": false,
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w2-projection-integrity/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "19a417bd6c04a661f5042c63ea559ab65f5d18ec5498d19ed1679aa791129014",
+        "locator": "$.regressionImprovements[0]"
+      }
+    ]
+  },
+  {
+    "noteKind": "observation-not-confirmed-defect",
+    "id": "W2-C001-LEGACY-ROW-KEY",
+    "recordKind": "observation-or-regression-improvement",
+    "originalStatus": "no-legal-current-entry-trigger-confirmed",
+    "currentDisposition": "no-legal-current-entry-trigger-confirmed",
+    "summary": "No legal current-entry trigger confirmed; keep legacy read compatibility uncertainty without modifying or restoring old data.",
+    "countsAsConfirmedDefect": false,
+    "runtimeExecutedByThisHelper": false,
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w2-projection-integrity/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "19a417bd6c04a661f5042c63ea559ab65f5d18ec5498d19ed1679aa791129014",
+        "locator": "$.clues[0]"
+      }
+    ]
+  },
+  {
+    "noteKind": "historical-knowledge-gap",
+    "id": "rule.dhr-summary-freeze-version",
+    "originalStatus": "reviewed",
+    "originalConclusion": "evidence-gap",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "sourcePath": "docs/knowledge/rules/dhr-summary.yaml",
+    "sourceLocator": "/rules/2",
+    "recordSha256": "21964e09f2c59db5aece41ff25183d9daa2cd1b921b20499c261c722b4d61b79",
+    "currentDisposition": "evidence-gap-retained-not-closed",
+    "limitations": [
+      "未完成规则完整的修订UI/导出/旧迁移及授权全链审查；已映射静态子范围不是该整条规则全验收。",
+      "No new semantic conclusion is made by this source-index helper."
+    ],
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/ontology/semantic-review.jsonl",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "715e2a9a67f94c9505ec05ae6738344a7d767c43d8e21ad392f9555b6311b8ed",
+        "locator": "line:29"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w1-review-export/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "02386cab025a31fd0939598076e281d01c5bf02ba3a2afc15cdf2dd8345401e9",
+        "locator": "$.acceptanceBoundary.oldFourKnowledgeEvidenceGapsClosed"
+      }
+    ]
+  },
+  {
+    "noteKind": "historical-knowledge-gap",
+    "id": "fact.dhr-instance.status",
+    "originalStatus": "reviewed",
+    "originalConclusion": "evidence-gap",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "sourcePath": "docs/knowledge/facts/dhr-instance-management.yaml",
+    "sourceLocator": "/facts/0",
+    "recordSha256": "82fa4d4882bef6b443de8a0d4212b1561ec1f9acd6947482bfb671ebe20ec4bd",
+    "currentDisposition": "evidence-gap-retained-not-closed",
+    "limitations": [
+      "不构成已确认代码缺陷或业务歧义；将事实可用性与成熟度的证据边界留待 W1/W5/知识消费核查。",
+      "No new semantic conclusion is made by this source-index helper."
+    ],
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/ontology/semantic-review.jsonl",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "715e2a9a67f94c9505ec05ae6738344a7d767c43d8e21ad392f9555b6311b8ed",
+        "locator": "line:30"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w1-review-export/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "02386cab025a31fd0939598076e281d01c5bf02ba3a2afc15cdf2dd8345401e9",
+        "locator": "$.acceptanceBoundary.oldFourKnowledgeEvidenceGapsClosed"
+      }
+    ]
+  },
+  {
+    "noteKind": "historical-knowledge-gap",
+    "id": "fact.dhr-instance.has-summary-artifacts",
+    "originalStatus": "reviewed",
+    "originalConclusion": "evidence-gap",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "sourcePath": "docs/knowledge/facts/dhr-instance-management.yaml",
+    "sourceLocator": "/facts/1",
+    "recordSha256": "128fb2a2b58302e1aee80769b56858ab3fd9c74cbd0e7bea7602d72b2e0e78e7",
+    "currentDisposition": "evidence-gap-retained-not-closed",
+    "limitations": [
+      "不构成已确认代码缺陷或业务歧义；将事实可用性与成熟度的证据边界留待 W1/W5/知识消费核查。",
+      "No new semantic conclusion is made by this source-index helper."
+    ],
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/ontology/semantic-review.jsonl",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "715e2a9a67f94c9505ec05ae6738344a7d767c43d8e21ad392f9555b6311b8ed",
+        "locator": "line:31"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w1-review-export/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "02386cab025a31fd0939598076e281d01c5bf02ba3a2afc15cdf2dd8345401e9",
+        "locator": "$.acceptanceBoundary.oldFourKnowledgeEvidenceGapsClosed"
+      }
+    ]
+  },
+  {
+    "noteKind": "historical-knowledge-gap",
+    "id": "fact.dhr-instance.count-for-production-object",
+    "originalStatus": "reviewed",
+    "originalConclusion": "evidence-gap",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "sourcePath": "docs/knowledge/facts/dhr-instance-management.yaml",
+    "sourceLocator": "/facts/3",
+    "recordSha256": "c84895928f8521966773f26c887e509700b6247108cbd3088c145906f959b049",
+    "currentDisposition": "evidence-gap-retained-not-closed",
+    "limitations": [
+      "不构成已确认代码缺陷或业务歧义；将事实可用性与成熟度的证据边界留待 W1/W5/知识消费核查。",
+      "No new semantic conclusion is made by this source-index helper."
+    ],
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/ontology/semantic-review.jsonl",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "715e2a9a67f94c9505ec05ae6738344a7d767c43d8e21ad392f9555b6311b8ed",
+        "locator": "line:32"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w1-review-export/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "02386cab025a31fd0939598076e281d01c5bf02ba3a2afc15cdf2dd8345401e9",
+        "locator": "$.acceptanceBoundary.oldFourKnowledgeEvidenceGapsClosed"
+      }
+    ]
+  },
+  {
+    "noteKind": "source-label-erratum",
+    "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/findings.md",
+    "locator": "section:状态及去重",
+    "caveat": "The historical prose calls H009 old transfer config. Authoritative H009 identity is completionCondition passthrough; H012 is generic workflow candidate-origin transfer. Do not merge these on the misleading label.",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/findings.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "663a4ec8345b4cf3fd868bf4783c65ea220a25809d14f69ccda1b10935a1abce",
+        "locator": "section:状态及去重"
+      }
+    ]
+  },
+  {
+    "noteKind": "source-map-qualification",
+    "id": "w3-write-default-branch-extras-unadjudicated",
+    "scope": "defaultBranch extra rule/catalog/snapshot fields during draft save versus publish",
+    "reason": "Source lead only; not runtime adjudicated or closed by top-level reserved-key guard.",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-write-entry-source-map.json",
+        "commit": "df6ea28a6388a89611786116700836c6bf7f4819",
+        "sha256": "abb3dc3a0e5607841f871640aaa4efddd631d43dc9ce6ef6192e51af96332a6a",
+        "locator": "/adjacentUnadjudicated"
+      }
+    ]
+  },
+  {
+    "noteKind": "scope-progress-boundary",
+    "id": "w3-current-slice-is-not-whole-audit",
+    "scope": "W0–W7 whole branch audit",
+    "reason": "Retain two user-deferred DHR highs, four old semantic gaps, A12 and remaining W2/W3/W4–W7 work. No automated inventory, maintenance report or passing subset establishes whole-file/whole-branch completion.",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261020-w3-write-boundaries/README.md",
+        "commit": "df6ea28a6388a89611786116700836c6bf7f4819",
+        "sha256": "007c95447154cdc08c4eccd1828ef07ff509643008538dc62f8ad8ed45d5984b",
+        "locator": "本批发现、实际验证与限制"
+      }
+    ]
+  },
+  {
+    "noteKind": "semantic-history-qualification",
+    "id": "w3-round1-precision-failed-kept",
+    "scope": "DEC0081 broad origin wording and scanner count in round1",
+    "reason": "First81 scoped review originals include a description corrected after independent failed; current nine-record followup distinguishes evidence mechanisms. Old consistent labels describe old role claims, not current accepted semantics. No old report or original record rewritten. No full branch acceptance.",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/independent-round1/edhr-w3-independent-quality-result.yaml",
+        "commit": "05dbc0b2f6fda76e76cd9f7b6a10c224466dcc8a",
+        "sha256": "29ee50ef131a3ea5f588aff0541b297f3d79411f9f525fe0079be7c0051dac15",
+        "locator": "/qualityResult/result"
+      },
+      {
+        "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology-followup/edhr-w3-tenant-origin-precision-followup-semantic-review.jsonl",
+        "commit": "05dbc0b2f6fda76e76cd9f7b6a10c224466dcc8a",
+        "sha256": "13cc76f31c8210d578d45e64a5fc78e6f16ca2a4933ce3444676bcb82b0ce5f0",
+        "locator": "all9"
+      }
+    ]
+  }
+]

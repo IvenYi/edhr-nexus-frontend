@@ -1,0 +1,374 @@
+qualityResult:
+  result: passed
+  baseCommit: a8285be9b91fb76bcb27ccb16a5258bda1fb5077
+  headCommit: b8051583f6c85d52260174e6da191f36bb2c1de8
+  contractBaseline:
+    sourceCommit: b8051583f6c85d52260174e6da191f36bb2c1de8
+    targetBranch: edhr-dev
+    targetCommit: a8285be9b91fb76bcb27ccb16a5258bda1fb5077
+    contractReadCommit: b8051583f6c85d52260174e6da191f36bb2c1de8
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.baseline-contract-integrity
+    required: true
+    category: documentation
+    description: 显式fetch后目标/候选/实际契约及干净工作树一致
+    method: command
+    command: git fetch origin refs/heads/edhr-dev:refs/remotes/origin/edhr-dev; git rev-parse HEAD; git status --porcelain
+    outcome: passed
+    evidence:
+    - base=a8285be9b91fb76bcb27ccb16a5258bda1fb5077; head=testedCandidate=b8051583f6c85d52260174e6da191f36bb2c1de8; contractReadCommit=b8051583f6c85d52260174e6da191f36bb2c1de8
+    - /tmp/edhr-w3-final-independent-integrity-final.json
+  - id: check.confirmed-scope-impact
+    required: true
+    category: requirements
+    description: L2影响分析及DEC0081声明级授权范围与实际修改一致
+    method: inspection
+    command: Inspect decision-package, current policies and scoped code diff
+    outcome: passed
+    evidence:
+    - docs/development/branch-review-20261020-w3-write-boundaries/decision-package.yaml
+    - /tmp/edhr-w3-final-independent-source-review.json
+    - No policy request beyond user-confirmed generic+ordinary tenant delegation; DHR retained.
+  - id: check.origin-precision-correction
+    required: true
+    category: ontology
+    description: 首轮medium已纠正为两类实际来源机制，不新增普通表单来源采集
+    method: inspection
+    command: Inspect cf6 corrective diff, current5documents, actual capture/resolve/frozen flow and9semantic receipts
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-ledger-review.json
+    - QF-W3-TENANT-KNOWLEDGE-001 verified resolved; sourcecf6f1fedb952cd071a645be10dcbc6db20d167f4
+  - id: check.knowledge-policy-history
+    required: true
+    category: ontology
+    description: 当前定义/替代/历史与成熟度保持，既有open范围未伪关闭
+    method: inspection
+    command: Inspect DEC0031/0055/0081, ontology followup and baseline current record comparison
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-ledger-review.json
+    - 2546IDs; only5records changed, no addition/deletion/maturity promotion; 9finite followup reviews, not full semantic
+      audit.
+  - id: check.all-new-write-entry-source
+    required: true
+    category: api
+    description: 全部五类新写命令在副作用前拒绝已取消键，草稿完整性分层保留
+    method: inspection
+    command: Inspect WorkTemplateController save/createDraft/copy overwrite/newDraft/publish and retired guard
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-source-review.json
+    - /tmp/edhr-w3-final-independent-backend-summary.json
+  - id: check.write-command-matrix-85
+    required: true
+    category: unit
+    description: 75拒绝+8不完整正向+2发布控制全部实际通过
+    method: automated-test
+    command: 'Final independent Maven selection: WorkTemplateWriteBoundaryTest'
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-backend-summary.json
+    - 85/85 fresh; no skips.
+  - id: check.existing-work-template-regression
+    required: true
+    category: regression
+    description: 既有控制器73及FormFillSettings14回归实际通过
+    method: automated-test
+    command: 'Final independent Maven selection: WorkTemplateControllerTest,FormFillSettingsServiceTest'
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-backend-summary.json
+    - 73+14 actual tests; no addition to already381 total.
+  - id: check.native-write-persistence-12
+    required: true
+    category: database
+    description: 真实PostgreSQL写保护/引用/审计及合法发布继承
+    method: automated-test
+    command: 'Final independent Maven selection: WorkTemplateWritePostgresTest'
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-backend-summary.json
+    - 12/12; actual0060singleDRAFT/FK constraints; stored hashes only.
+  - id: check.native-generic-transfer-23
+    required: true
+    category: database
+    description: 通用任务来源/当前责任/待办/资格/异常/旧来源/回滚与竞争
+    method: automated-test
+    command: 'Final independent Maven selection: WorkflowTransferPostgresTest'
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-backend-summary.json
+    - 23/23 nativePG; manual synthetic initial task seed, not real resolver creation E2E.
+  - id: check.workflow-and-access-regressions
+    required: true
+    category: regression
+    description: 引擎/任务控制器/权限/主体范围/执行引擎64项回归
+    method: automated-test
+    command: 'Final independent Maven selection: WorkflowEngineTest,WorkflowTaskControllerTest,ExecutionAccessTest,ExecutionSubjectScopeTest,ProductionExecutionEngineTest'
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-backend-summary.json
+    - 18+2+12+10+22=64; no failures/skips.
+  - id: check.native-ordinary-http-4
+    required: true
+    category: api
+    description: 普通表单真实HTTP/JWT/filter连续委托、旧权收敛与账户重验
+    method: automated-test
+    command: 'Final independent Maven selection: four ProductionExecutionIntegrationTest transfer methods'
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-source-review.json
+    - /tmp/edhr-w3-final-independent-backend-summary.json
+    - 4/4 nativePG; original frozen source and current node/values retained; no full HTTP matrix claim.
+  - id: check.dhr-retained-regression
+    required: true
+    category: regression
+    description: DHR专属动作、证据检查及通用入口防绕过保持
+    method: automated-test
+    command: 'Final independent Maven selection: DhrReviewLifecycleIntegrationTest,DhrReviewServiceTest plus native genericDHR
+      refusal'
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-source-review.json
+    - /tmp/edhr-w3-final-independent-backend-summary.json
+    - 5 lifecycle tests use H2 compatibility;10 service tests; native generic rejection belongs to23 and not counted twice.
+  - id: check.transfer-audit-atomicity
+    required: true
+    category: audit
+    description: 转办内容/原因/身份与事务失败回滚；不声称摘要往返重算
+    method: automated-test
+    command: 'Final independent Maven selection: AuditEventTest + native audit failure trigger case'
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-source-review.json
+    - /tmp/edhr-w3-final-independent-backend-summary.json
+    - AuditEventTest2/2; native fault case validates four tables rollback; stored64hash assertions are not rehash proof.
+  - id: check.lock-waiter-concurrency
+    required: true
+    category: integration
+    description: 真实行锁排队后刷新实体并重新核验当前处理权
+    method: automated-test
+    command: WorkflowTransferPostgresTest#concurrentTransfersFromTheSameFormerOperatorAcceptOnlyOneResponsibilityChange+formerCandidateWaitingBehindTransferCannotCompleteFromItsCachedSnapshot
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-source-review.json
+    - /tmp/edhr-w3-final-independent-backend-summary.json
+    - Both actual fresh cases passed inside23; waiter barrier via pg_stat_activity.
+  - id: check.tenant-target-qualification
+    required: true
+    category: security
+    description: 查询与执行同租户有效未锁定他人范围、集合外正向及非法反向
+    method: automated-test
+    command: Native personnel search,11invalid request cases, ordinary outside-candidate and locked-after-selection cases
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-source-review.json
+    - /tmp/edhr-w3-final-independent-backend-summary.json
+    - Full multi-tenant workflow isolation remains unresolved nonMVP; this validates explicit target qualification only.
+  - id: check.authenticated-actor-api-contract
+    required: true
+    category: security
+    description: 转办以真实principal发起并要求target/reason，规范化目标ID
+    method: inspection
+    command: Inspect SecurityConfig/WorkflowTaskController and real native DTO tests
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-source-review.json
+    - /tmp/edhr-w3-final-independent-backend-summary.json
+    - Generic MVC uses authenticated SecurityContext standalone; ordinary HTTP runs real JWT/filter. No client operator trust.
+  - id: check.browser-36
+    required: true
+    category: e2e
+    description: 两个真实页面受控API转办交互36项
+    method: browser
+    command: NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium W3_RESULT_PATH=/tmp/edhr-w3-final-independent-ui-browser.json
+      W3_SCREENSHOT_DIR=/tmp/edhr-w3-final-independent-ui-screenshots node scripts/test-tenant-task-transfer-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-ui-summary.json
+    - /tmp/edhr-w3-final-independent-ui-browser.json
+    - 36/36 actual final candidate run; controlledAPI, not fullstack E2E.
+  - id: check.visual-responsive
+    required: true
+    category: visual
+    description: 实际新截图亲视两页面桌面/窄屏填写及弹层
+    method: inspection
+    command: view_image on8new screenshots recorded by independent UI child
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-ui-summary.json
+    - 1440x960 and390x844;8screens personally viewed by qualified UI child, no repair participation.
+  - id: check.frontend-build
+    required: true
+    category: regression
+    description: TypeScript与Vite最终候选构建实际通过
+    method: command
+    command: npm run build
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-ui-summary.json
+    - exit0; existing unrelated build warnings not suppressed.
+  - id: check.premium-count-correction-and-increment
+    required: true
+    category: documentation
+    description: 84条82种及重复次数完整多重集合一致、原set82原件保持
+    method: command
+    command: Official audit_project.py strict on exact a828 export and current candidate; full-field Counter comparison
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-ui-summary.json
+    - QF-W3-UI-DOC-COUNT-001 resolved;84rows82distinct each, added0 removed0;strict exits remain2.
+  - id: check.migration-compatibility
+    required: true
+    category: database
+    description: 无迁移/依赖/配置变更、实际0060约束且不恢复历史
+    method: inspection
+    command: git diff base head for changelog,pom,package files; inspect native fixtures
+    outcome: passed
+    evidence:
+    - base=a8285be9b91fb76bcb27ccb16a5258bda1fb5077; head=testedCandidate=b8051583f6c85d52260174e6da191f36bb2c1de8; contractReadCommit=b8051583f6c85d52260174e6da191f36bb2c1de8
+    - /tmp/edhr-w3-final-independent-integrity-final.json
+    - /tmp/edhr-w3-final-independent-source-review.json
+    - /tmp/edhr-w3-final-independent-backend-summary.json
+  - id: check.baseline-red-evidence-applicability
+    required: true
+    category: documentation
+    description: 首轮真实旧基线红证按原字节保留且适用于未变化产品/测试
+    method: inspection
+    command: Verify independent-round1 baseline receipts and git diff266..b805 -- gmp-platform scripts
+    outcome: passed
+    evidence:
+    - docs/development/branch-review-20261020-w3-write-boundaries/evidence/independent-round1/edhr-w3-independent-baseline-summary.json
+    - /tmp/edhr-w3-final-independent-integrity-final.json
+    - Prior independent actual85=63red22control,PG12=9red3control; not rerun or counted as current381.
+  - id: check.current-ledger-and-originals
+    required: true
+    category: documentation
+    description: 当前台账逐字节重建、9收据/115归档断言及新旧原件保留
+    method: command
+    command: python3 scripts/build-branch-review-ledger.py --ref 05dbc0b2f6fda76e76cd9f7b6a10c224466dcc8a --catalog docs/development/branch-review-20261020-w3-write-boundaries/recheck/source-catalog.json
+      --out docs/development/branch-review-20261020-w3-write-boundaries/recheck/ledger --check
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-ledger-review.json
+    - 2603paths/314overlapping scopes/90historicalsemantic/46records,93source+57semantic needsdelta,wholeFile0; no full audit
+      percent.
+  - id: check.history-w5-and-scope-boundaries
+    required: true
+    category: audit
+    description: W5既有摘要缺口与旧high/gap/A12保留，未伪称重算或完整分支通过
+    method: inspection
+    command: Inspect actual AuditEvent consumers, failed probe ZIP receipts, open dispositions and scope statements
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-final-independent-ledger-hash-review.json
+    - /tmp/edhr-w3-final-independent-ledger-review.json
+    - W5-AUDIT-HASH-001 remains medium/open; no added algorithm, old hash or historical data rewrite; actual current source/working
+      tree unchanged.
+  - id: check.global-premium-strict-existing
+    required: false
+    category: regression
+    description: 全站strict仍有既有记录，未作为通过或降低标准
+    method: command
+    command: Official audit_project.py --mode strict for base and candidate
+    outcome: failed
+    evidence:
+    - /tmp/edhr-w3-final-independent-ui-summary.json
+    - Both actual exit2,84rows82distinct; optional global backlog outside current incremental delivery.
+  - id: check.global-eslint-existing
+    required: false
+    category: regression
+    description: 既有ESLint缺配置，实际未通过
+    method: command
+    command: npm run lint
+    outcome: failed
+    evidence:
+    - /tmp/edhr-w3-final-independent-ui-summary.json
+    - Actual exit2, configuration absent; no new config/standard downgrade.
+  findings:
+  - id: QF-W3-TENANT-KNOWLEDGE-001
+    severity: medium
+    scope: DEC-0081-02 source evidence grain across generic workflow and ordinary production forms
+    summary: 当前知识把通用工作流的完整候选解析来源与普通表单已有冻结ID/配置概括为相同完整来源留存，超出普通路径真实证据。
+    reproductionSteps:
+    - At fixed 266a1635 read docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml:14 (DEC-0081-02).
+    - 'Read ExecutionAccess.resolve lines 75-87 and captureApprovers lines 103-110: only resolved user IDs and restricted
+      marker are persisted; original subject configuration remains in frozen node configuration.'
+    - Compare WorkflowEngine.singleUserSnapshot originSnapshot, which retains its already-existing JSON sources/unresolved
+      fields.
+    - Read the finite semantic record for DEC-0081-02, currently marked consistent without qualifying the ordinary-form evidence
+      grain.
+    expectedResult: Current knowledge precisely distinguishes preserved generic full resolution evidence from ordinary frozen
+      approver IDs/subject configuration, records the latter limit, and does not invent a user requirement for new ordinary
+      per-user source/unresolved storage.
+    actualResult: DEC-0081-02 says candidate resolution, hit provenance and unresolved subjects are retained under a combined
+      two-path decision, while ordinary capture stores only IDs/restricted marker; knowledge implies fuller ordinary evidence
+      than is present.
+    evidence:
+    - 266a1635cc95870cd7907c574eb676db7f560d4f:docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml:14
+    - 266a1635cc95870cd7907c574eb676db7f560d4f:gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java:75
+    - 266a1635cc95870cd7907c574eb676db7f560d4f:gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java:103
+    - 266a1635cc95870cd7907c574eb676db7f560d4f:gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java:785
+    - /tmp/edhr-w3-independent-ledger-source-receipts.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: cf6f1fedb952cd071a645be10dcbc6db20d167f4
+    - type: commit
+      reference: 550a1ba93d30a74ef30d314e4a9a6d5f71335805
+    - type: document
+      reference: /tmp/edhr-w3-final-independent-ledger-review.json
+  - id: QF-W3-UI-DOC-COUNT-001
+    severity: low
+    scope: W3 documentation, premium finding counting terminology
+    summary: 主侧文档未区分84条finding记录与82种不同完整字段集合，字段名易被理解为原数组长度。
+    reproductionSteps:
+    - Read evidence/primary/edhr-w3-premium-baseline.json and candidate.json; len(findings) is84 in both.
+    - 'Serialize every finding with sorted keys: distinct set length82; Counter including duplicate multiplicity is equal
+      between independent base/head.'
+    - Compare README.md:19 and progress.json:81–82 stating各82/premiumBaselineFindings/premiumCandidateFindings without distinct
+      qualification.
+    expectedResult: 明确“base/head各84条记录、82种完整字段集合；含重复次数逐字段完全相同，新增0”；保留原扫描/原对比证据。
+    actualResult: 初轮set计数82被写入未标distinct的统计字段和说明；并非扫描漏执行，也没有产品新增finding。
+    evidence:
+    - /tmp/edhr-w3-independent-ui-premium-comparison.json
+    - docs/development/branch-review-20261020-w3-write-boundaries/README.md:19
+    - docs/development/branch-review-20261020-w3-write-boundaries/progress.json:81
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: cf6f1fedb952cd071a645be10dcbc6db20d167f4
+    - type: commit
+      reference: 550a1ba93d30a74ef30d314e4a9a6d5f71335805
+    - type: document
+      reference: /tmp/edhr-w3-final-independent-ui-summary.json
+  residualRisks:
+  - id: risk.W5-AUDIT-HASH-001
+    description: 既有medium/open：AuditEvent原JSON/时间文本封存与PG往返归一化后重算不等；a828额外2红探针原件保留，非本轮381通过项。
+    impact: 不能认证AuditEvent摘要读回重算能力；当前AuditEvent读取/导出仅传存储hash，不构成本轮动作的读取阻断。
+    mitigation: W5单独确定稳定payload/version和兼容策略；不改旧摘要或恢复历史，不混同DHR/signature/file校验。
+  - id: risk.global-tooling
+    description: 全站premium strict和ESLint仍实际exit2，完整84条/82种扫描集合无新增。
+    impact: 仅满足本批增量与流程验收，不代表全站静态门禁通过或仓库必需检查强制配置已核验。
+    mitigation: 保留真实失败和独立Counter证据，按后续范围修复，不调整断言、规则或配置让其假绿。
+  - id: risk.full-audit-unfinished
+    description: 两用户暂缓DHR high、四旧知识gap、A12、W2/W3其余及W4–W7仍未完成，当前2603路径分类不是人工全覆盖。
+    impact: 不得把本批passed当完整DHR生命周期、整库语义或全分支验收。
+    mitigation: 用当前recheck总账继续逐条推进；93源码/57语义待增量核对保留，不虚报整体百分比。
+  - id: risk.runtime-limits
+    description: 浏览器真实页面配受控API；generic候选创建以合成任务种子，不是实际resolver创建全栈；DHR lifecycle5使用H2。
+    impact: 不能声称全量HTTP/创建主体解析/所有DHR原生PG/生产部署已验收。
+    mitigation: 分别报告39nativePG、普通HTTP4、genericPG23、图写PG12和实际浏览器36的范围，不与旧结果相加。
+  - id: risk.historical-origins
+    description: 旧代码已丢的候选来源无法由本轮恢复；ordinary原有来源留存与generic完整解析原件粒度不同。
+    impact: 历史已丢来源仍不完整，ordinary没有新增逐用户命中/未解析原件采集。
+    mitigation: 明确partial标记和DEC0081-02两路径既有机制；不猜测回填历史或擅自增加业务采集。
+  blockingConditions: []

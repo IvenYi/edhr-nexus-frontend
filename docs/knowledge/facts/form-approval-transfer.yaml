@@ -65,18 +65,18 @@ facts:
     capturedAt: '2026-09-17'
     reviewStatus: reviewed
   - id: fact.form-approval-transfer.target-authorized
-    name: 转办目标属于当前审批节点授权范围
+    name: 转办目标满足同租户委托资格
     conceptId: concept.form-instance
     valueType: boolean
     sourceType: runtime-context
     sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
-    aliases: [formProcess.transfer.targetWithinFrozenCandidates]
+    aliases: [formProcess.transfer.targetAuthorized]
     availability: runtime
     allowedOperators: [equals]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.form-approval-transfer-runtime, evidence.form-approval-transfer-tests]
-    sourceRevision: working-tree
-    sourceLocator: requireTransferTarget校验非本人、有效未锁定用户及restrictedApprovers冻结范围
-    capturedAt: '2026-09-17'
+    evidenceIds: [evidence.form-approval-transfer-runtime, evidence.form-approval-transfer-tests, evidence.tenant-task-delegation-20261020]
+    sourceRevision: 4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2
+    sourceLocator: ExecutionAccess.requireTransferTarget通过共享TenantTransferTargets.require按当前操作者所属租户核对非本人、同租户、ACTIVE且未锁定目标，transferTargets调用同一资格来源搜索；原approvers冻结来源保留，不作为委托目标白名单。旧alias formProcess.transfer.targetWithinFrozenCandidates只描述原政策，已换为targetAuthorized，稳定fact ID不变；当前处理权由transferContext/canAct在独立边界核验。
+    capturedAt: '2026-10-20'
     reviewStatus: reviewed

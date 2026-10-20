@@ -1,0 +1,20 @@
+{
+  "exit": 1,
+  "reportPresent": true,
+  "suite": {
+    "version": "3.0",
+    "name": "com.zencas.edhr.workflow.engine.WorkflowTransferPostgresTest",
+    "time": "5.128",
+    "tests": "22",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "1"
+  },
+  "failures": [
+    {
+      "case": "concurrentTransfersFromTheSameFormerOperatorAcceptOnlyOneResponsibilityChange",
+      "message": "\nExpecting actual:\n  [true, true]\nto contain exactly in any order:\n  [true, false]\nelements not found:\n  [false]\nand elements not expected:\n  [true]\n",
+      "causes": []
+    }
+  ]
+}

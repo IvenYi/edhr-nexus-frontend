@@ -1,0 +1,264 @@
+{
+  "schema": "edhr-independent-qa-subcheck/v1",
+  "role": "independent readonly ledger/knowledge support",
+  "executionLevel": "L2",
+  "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "headCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+  "contractBaseline": {
+    "sourceCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "contractReadCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+    "uncommittedContractPaths": []
+  },
+  "workingTreeState": "clean",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "result": "failed-for-listed-subcheck",
+  "checks": [
+    {
+      "id": "knowledge-id-transition",
+      "outcome": "passed",
+      "detail": {
+        "before": 2535,
+        "after": 2546,
+        "added": [
+          "DEC-0081",
+          "DEC-0081-01",
+          "DEC-0081-02",
+          "DEC-0081-03",
+          "DEC-0081-04",
+          "evidence.tenant-task-delegation-20261020",
+          "evidence.work-template-write-shape-audit-20261020",
+          "scenario.tenant-transfer-dhr-boundary-kept",
+          "scenario.tenant-transfer-repeated-origin-preserved",
+          "scenario.tenant-transfer-target-outside-original-candidates",
+          "scenario.tenant-transfer-target-rejected"
+        ],
+        "removed": []
+      }
+    },
+    {
+      "id": "no-existing-maturity-or-visibility-changes",
+      "outcome": "passed",
+      "detail": []
+    },
+    {
+      "id": "discrepancy-lifecycle-closure-is-explicit-scoped-fix-only",
+      "outcome": "passed",
+      "detail": [
+        {
+          "id": "discrepancy.production-work-form-completion-condition-passthrough",
+          "recordType": "implementationDiscrepancy",
+          "field": "status",
+          "before": "open",
+          "after": "resolved"
+        },
+        {
+          "id": "discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot",
+          "recordType": "implementationDiscrepancy",
+          "field": "status",
+          "before": "open",
+          "after": "resolved"
+        },
+        {
+          "id": "discrepancy.production-work-legacy-condition-save-publish-asymmetry",
+          "recordType": "implementationDiscrepancy",
+          "field": "status",
+          "before": "open",
+          "after": "resolved"
+        }
+      ]
+    },
+    {
+      "id": "36-finite-semantic-source-record-and-nested-receipts",
+      "outcome": "passed",
+      "detail": {
+        "records": 36,
+        "uniqueReceiptAssertions": 18
+      }
+    },
+    {
+      "id": "ontology-result-shape-and-scope",
+      "outcome": "passed",
+      "detail": {
+        "sync": 49,
+        "baselineBefore": "0.3.25",
+        "baselineAfter": "0.3.25"
+      }
+    },
+    {
+      "id": "inherited-method-and-semantic-records-byte-equivalent",
+      "outcome": "passed",
+      "detail": null
+    },
+    {
+      "id": "catalog-counts",
+      "outcome": "passed",
+      "detail": {
+        "methods": 314,
+        "findings": 44
+      }
+    },
+    {
+      "id": "four-current-fixes-await-independent-acceptance",
+      "outcome": "passed",
+      "detail": {
+        "AUD-H009": "fixed-awaiting-independent-acceptance",
+        "AUD-H010": "fixed-awaiting-independent-acceptance",
+        "AUD-H012": "fixed-awaiting-independent-acceptance",
+        "W3-TRANSFER-LOCK-001": "fixed-awaiting-independent-acceptance"
+      }
+    },
+    {
+      "id": "W5-preexisting-medium-open",
+      "outcome": "passed",
+      "detail": null
+    },
+    {
+      "id": "unrelated-prior-finding-records-retained",
+      "outcome": "passed",
+      "detail": {
+        "unrelatedRecords": 37
+      }
+    },
+    {
+      "id": "W2-TRACE-REGION-001-scoped-prior-independent-acceptance",
+      "outcome": "passed",
+      "detail": {
+        "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+        "primaryEvidence": "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/receipts.json",
+        "fixCommits": [
+          "12e2bc218b3830c18ea74c44108f296d3e04ee3c"
+        ],
+        "testedCommits": [
+          "ba68b03dab051d228c3646a03bbb404f2724f1d4"
+        ],
+        "pullRequests": [
+          19
+        ],
+        "mergeCommits": [
+          "a8285be9b91fb76bcb27ccb16a5258bda1fb5077"
+        ],
+        "deliveryCommit": "3bfe0c6d8af19d5142aaa6edbf37a8e5f18869cc",
+        "integrationStatus": "merged"
+      }
+    },
+    {
+      "id": "W2-TRACE-REGION-002-scoped-prior-independent-acceptance",
+      "outcome": "passed",
+      "detail": {
+        "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+        "primaryEvidence": "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/receipts.json",
+        "fixCommits": [
+          "12e2bc218b3830c18ea74c44108f296d3e04ee3c"
+        ],
+        "testedCommits": [
+          "ba68b03dab051d228c3646a03bbb404f2724f1d4"
+        ],
+        "pullRequests": [
+          19
+        ],
+        "mergeCommits": [
+          "a8285be9b91fb76bcb27ccb16a5258bda1fb5077"
+        ],
+        "deliveryCommit": "3bfe0c6d8af19d5142aaa6edbf37a8e5f18869cc",
+        "integrationStatus": "merged"
+      }
+    },
+    {
+      "id": "old-review-documents-not-overwritten",
+      "outcome": "passed",
+      "detail": null
+    },
+    {
+      "id": "fixed-path-count",
+      "outcome": "passed",
+      "detail": null
+    },
+    {
+      "id": "ledger-delta-states-not-upgraded",
+      "outcome": "passed",
+      "detail": null
+    },
+    {
+      "id": "ledger-no-whole-audit-or-runtime-claim",
+      "outcome": "passed",
+      "detail": null
+    },
+    {
+      "id": "archive-manifests-exact-git-local-bytes-and-zip-members",
+      "outcome": "passed",
+      "detail": {
+        "archiveAssertions": 86,
+        "gitEvidenceAssertions": 101
+      }
+    },
+    {
+      "id": "working-tree-remains-clean",
+      "outcome": "passed",
+      "detail": null
+    },
+    {
+      "id": "ledger-byte-for-byte-rebuild",
+      "outcome": "passed",
+      "evidence": "/tmp/edhr-w3-independent-ledger-rebuild-result.json"
+    },
+    {
+      "id": "ordinary-versus-generic-evidence-grain-knowledge-consistency",
+      "outcome": "failed",
+      "evidence": [
+        "266a1635cc95870cd7907c574eb676db7f560d4f:docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml:14",
+        "266a1635cc95870cd7907c574eb676db7f560d4f:gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java:75",
+        "266a1635cc95870cd7907c574eb676db7f560d4f:gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java:103",
+        "266a1635cc95870cd7907c574eb676db7f560d4f:gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java:785",
+        "/tmp/edhr-w3-independent-ledger-source-receipts.json"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "QF-W3-TENANT-KNOWLEDGE-001",
+      "severity": "medium",
+      "scope": "DEC-0081-02 source evidence grain across generic workflow and ordinary production forms",
+      "summary": "当前知识把通用工作流的完整候选解析来源与普通表单已有冻结ID/配置概括为相同完整来源留存，超出普通路径真实证据。",
+      "reproductionSteps": [
+        "At fixed 266a1635 read docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml:14 (DEC-0081-02).",
+        "Read ExecutionAccess.resolve lines 75-87 and captureApprovers lines 103-110: only resolved user IDs and restricted marker are persisted; original subject configuration remains in frozen node configuration.",
+        "Compare WorkflowEngine.singleUserSnapshot originSnapshot, which retains its already-existing JSON sources/unresolved fields.",
+        "Read the finite semantic record for DEC-0081-02, currently marked consistent without qualifying the ordinary-form evidence grain."
+      ],
+      "expectedResult": "Current knowledge precisely distinguishes preserved generic full resolution evidence from ordinary frozen approver IDs/subject configuration, records the latter limit, and does not invent a user requirement for new ordinary per-user source/unresolved storage.",
+      "actualResult": "DEC-0081-02 says candidate resolution, hit provenance and unresolved subjects are retained under a combined two-path decision, while ordinary capture stores only IDs/restricted marker; knowledge implies fuller ordinary evidence than is present.",
+      "evidence": [
+        "266a1635cc95870cd7907c574eb676db7f560d4f:docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml:14",
+        "266a1635cc95870cd7907c574eb676db7f560d4f:gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java:75",
+        "266a1635cc95870cd7907c574eb676db7f560d4f:gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java:103",
+        "266a1635cc95870cd7907c574eb676db7f560d4f:gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java:785",
+        "/tmp/edhr-w3-independent-ledger-source-receipts.json"
+      ],
+      "resolutionStatus": "open",
+      "resolutionEvidence": []
+    }
+  ],
+  "blockingConditions": [],
+  "sourceEvidence": {
+    "knowledgeRecordReceipts": "/tmp/edhr-w3-independent-ledger-check-result.json",
+    "manualSourceReceipts": "/tmp/edhr-w3-independent-ledger-source-receipts.json",
+    "sourceHashSubcheck": "/tmp/edhr-w3-independent-ledger-hash-review.json"
+  },
+  "residuals": [
+    "W5-AUDIT-HASH-001 preexisting medium open; this instance did not run the old database probe",
+    "Two user-deferred DHR highs, four old knowledge evidence gaps, A12 and remaining W2/W3/W4–W7 retained",
+    "Ordinary form preserved frozen IDs/config versus generic full origin JSON are different evidence grains; no new ordinary per-user sources/unresolved store claimed",
+    "No Maven/database/browser by this sub-instance; parent owns formal qualityResult"
+  ],
+  "children": [
+    {
+      "task": "audit_hash_readonly",
+      "status": "FINAL",
+      "report": "/tmp/edhr-w3-independent-ledger-hash-review.json"
+    }
+  ],
+  "prefinalQualification": "The prefinal local report treated this as a limitation; parent independent source review confirmed medium record precision finding. Prefinal bytes retained; only current final failed result is applicable. No repository mutation or repair by this instance."
+}

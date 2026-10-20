@@ -1,0 +1,28 @@
+{
+  "exit": 1,
+  "suite": {
+    "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd",
+    "version": "3.0",
+    "name": "com.zencas.edhr.workflow.controller.WorkTemplateWritePostgresTest",
+    "time": "3.859",
+    "tests": "12",
+    "errors": "1",
+    "skipped": "0",
+    "failures": "1"
+  },
+  "failures": [
+    {
+      "case": "incompleteDraftsPersistAndReadBackWithRealReferenceRefreshAndSealedAudit",
+      "message": "\nExpecting all elements of:\n  [AuditEvent(id=387910172556660736, tenantId=default, entityType=PRODUCTION_WORK_FLOW_VERSION, entityId=201, action=UPDATE, contentBefore={\"id\": 201, \"edges\": \"[{\\\"source\\\": \\\"start\\\", \\\"target\\\": \\\"step\\\"}, {\\\"source\\\": \\\"step\\\", \\\"target\\\": \\\"end\\\"}]\", \"nodes\": \"[{\\\"id\\\": \\\"start\\\", \\\"data\\\": {\\\"kind\\\": \\\"START\\\"}}, {\\\"id\\\": \\\"step\\\", \\\"data\\\": {\\\"kind\\\": \\\"FORM\\\", \\\"config\\\": {\\\"fillMode\\\": \\\"PROCESS\\\", \\\"formProcessVersionId\\\": \\\"901\\\", \\\"formTemplateVersionId\\\": \\\"702\\\"}}}, {\\\"id\\\": \\\"end\\\", \\\"data\\\": {\\\"kind\\\": \\\"END\\\"}}]\", \"status\": \"DRAFT\", \"createdAt\": \"2026-10-20T08:29:52.143644\", \"isCurrent\": false, \"definitionId\": 101, \"versionNumber\": 2}, contentAfter={\"id\": 201, \"edges\": \"[]\", \"nodes\": \"[{\\\"id\\\":\\\"start\\\",\\\"data\\\":{\\\"kind\\\":\\\"START\\\"}},{\\\"id\\\":\\\"step\\\",\\\"data\\\":{\\\"kind\\\":\\\"FORM\\\",\\\"config\\\":{}}},{\\\"id\\\":\\\"end\\\",\\\"data\\\":{\\\"kind\\\":\\\"END\\\"}}]\", \"status\": \"DRAFT\", \"createdAt\": \"2026-10-20T08:29:52.143644\", \"isCurrent\": false, \"definitionId\": 101, \"versionNumber\": 2}, snapshotHash=cad125b27db60decea80b4e12bb6d367413a20db3f82df2c11079a1b34c843d7, operatorId=7, operatorName=审查测试人, operatorAccount=审查测试人, source=UI, moduleName=生产管理, menuName=生产配置 · 作业模板, functionName=null, dataSummary=null, reason=null, ipAddress=null, createdAt=2026-10-20T08:29",
+      "causes": []
+    },
+    {
+      "case": "legalPublishCreatesOneInheritedDraftAndReferencesInTheRealTransaction",
+      "message": "could not execute batch [Batch entry 0 update workflow_definition_version set created_at=('2026-10-20 08:29:52.239524+00'::timestamp),definition_id=('101'::int8),edges_json=('[{\"source\": \"start\", \"target\": \"step\"}, {\"source\": \"step\", \"target\": \"end\"}]'),is_current=('TRUE'::boolean),nodes_json=('[{\"id\": \"start\", \"data\": {\"kind\": \"START\"}}, {\"id\": \"step\", \"data\": {\"kind\": \"FORM\", \"config\": {\"fillMode\": \"PROCESS\", \"formProcessVersionId\": \"901\", \"formTemplateVersionId\": \"702\"}}}, {\"id\": \"end\", \"data\": {\"kind\": \"END\"}}]'),published_at=('2026-10-20 08:29:52.257665+00'::timestamp),status=('PUBLISHED'),version_number=('2'::int4) where id=('201'::int8) was aborted: ERROR: duplicate key value violates unique constraint \"w3_one_current\"\n  Detail: Key (definition_id)=(101) already exists.  Call getNextException to see other errors in the batch.] [update workflow_definition_version set created_at=?,definition_id=?,edges_json=?,is_current=?,nodes_json=?,published_at=?,status=?,version_number=? where id=?]",
+      "causes": [
+        "Caused by: java.sql.BatchUpdateException: Batch entry 0 update workflow_definition_version set created_at=('2026-10-20 08:29:52.239524+00'::timestamp),definition_id=('101'::int8),edges_json=('[{\"source\": \"start\", \"target\": \"step\"}, {\"source\": \"step\", \"target\": \"end\"}]'),is_current=('TRUE'::boolean),nodes_json=('[{\"id\": \"start\", \"data\": {\"kind\": \"START\"}}, {\"id\": \"step\", \"data\": {\"kind\": \"FORM\", \"config\": {\"fillMode\": \"PROCESS\", \"formProcessVersionId\": \"901\", \"formTemplateVersionId\": \"702\"}}}, {\"",
+        "Caused by: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint \"w3_one_current\""
+      ]
+    }
+  ]
+}

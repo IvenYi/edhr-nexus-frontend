@@ -1,0 +1,24 @@
+{
+  "ownedContainer": "edhr-audit-w3-20261020",
+  "versionRead": "edhr_w3_write_test|16.15 (Debian 16.15-1.pgdg13+2)",
+  "ports": "127.0.0.1:55432",
+  "syntheticDatabaseNames": [
+    "edhr_w3_write_test",
+    "edhr_w3_transfer_test",
+    "edhr_w3_execution_test"
+  ],
+  "query": [
+    "docker",
+    "exec",
+    "edhr-audit-w3-20261020",
+    "psql",
+    "-U",
+    "edhr",
+    "-d",
+    "edhr_w3_write_test",
+    "-Atc",
+    "SELECT current_database(), current_setting('server_version')"
+  ],
+  "containerStoppedByThisInstance": false,
+  "cleanupOwner": "root after final quality; no production/history data touched"
+}

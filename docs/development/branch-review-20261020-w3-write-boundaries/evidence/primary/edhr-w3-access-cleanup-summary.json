@@ -1,0 +1,16 @@
+{
+  "cleanup": "remove now-unused replaced eligibility helper",
+  "suite": {
+    "name": "com.zencas.edhr.production.service.ExecutionAccessTest",
+    "tests": "12",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  "xmlSha256": "274d5643d45b57197a7050a52f870d3871346b837f58dee5dc63245851ef86a1",
+  "exit": 1,
+  "suiteWasStaleNotExecuted": true,
+  "testResultApplicable": false,
+  "cause": "attempted removal of method still used as this::availableForTransfer at delegated approver rendering; compile failed before tests",
+  "disposition": "temporary local deletion fully restored to tested 4ce4fefb bytes; no change committed"
+}

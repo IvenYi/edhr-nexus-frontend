@@ -1,0 +1,241 @@
+{
+  "schema": "edhr-readonly-source-map/v1",
+  "type": "source-assistance-not-quality-acceptance",
+  "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "contractBaseline": {
+    "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "contractReadCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "sourceScopes": [
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+      "blob": "52f8cb650e0afdfda19b724aeb50cd70fa791f30",
+      "sha256": "61932bd33d0c0cb8d1886335c5aab0229753e3d5f4022fdeead5f0e075a0ad6e",
+      "method": "contentBefore/contentAfter/createdAt mappings; sealSnapshotHash; computeSnapshotHash; canonicalAuditPayload; appendCanonical; preventMutation",
+      "ranges": [
+        [
+          25,
+          114
+        ]
+      ],
+      "readDepth": "listed symbols/ranges only; not whole-file or runtime acceptance",
+      "conclusion": "Length-prefix strings are not JSON/time persistence normalization; seal only on @PrePersist; existing mutation rejected.",
+      "applicationTestsExecuted": false,
+      "caveats": [
+        "source assistance only; parent-provided PG failure is not independently rerun"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "recordAudit; toJson",
+      "ranges": [
+        [
+          1311,
+          1340
+        ]
+      ],
+      "readDepth": "listed symbols/ranges only; not whole-file or runtime acceptance",
+      "conclusion": "Normal write constructs mapper JSON strings and LocalDateTime.now before entity persistence. No guard/hash causal change.",
+      "applicationTestsExecuted": false,
+      "caveats": [
+        "source assistance only; parent-provided PG failure is not independently rerun"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql",
+      "blob": "8203ae2ec4faf9f5e0481c8dc38b067664ad5d6b",
+      "sha256": "316baefe79decf65811419e1de9a96323114ccb42ea1bcd0f627d35c0d979b71",
+      "method": "audit_event DDL",
+      "ranges": [
+        [
+          137,
+          155
+        ]
+      ],
+      "readDepth": "listed symbols/ranges only; not whole-file or runtime acceptance",
+      "conclusion": "Actual JSONB before/after, TIMESTAMP created_at.",
+      "applicationTestsExecuted": false,
+      "caveats": [
+        "source assistance only; parent-provided PG failure is not independently rerun"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0023-audit-event-snapshot-hash.sql",
+      "blob": "726bcdc5727b1dd970f09c2cf0f4fe35faf26989",
+      "sha256": "5fc776f37ba7d83d66895c07520a477f4745f4259275b201f06133fa6f853dfc",
+      "method": "complete change set",
+      "ranges": [
+        [
+          1,
+          5
+        ]
+      ],
+      "readDepth": "listed symbols/ranges only; not whole-file or runtime acceptance",
+      "conclusion": "Nullable digest added without historical backfill.",
+      "applicationTestsExecuted": false,
+      "caveats": [
+        "source assistance only; parent-provided PG failure is not independently rerun"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql",
+      "blob": "66fda1b6777a25ee05e458b5f4574e35a8d53522",
+      "sha256": "a2b3e107a0aee3f04131c46c784778a56a97a8d9822c9d9dc49fc2d5bb934d43",
+      "method": "historical baseline INSERT",
+      "ranges": [
+        [
+          1,
+          58
+        ]
+      ],
+      "readDepth": "listed symbols/ranges only; not whole-file or runtime acceptance",
+      "conclusion": "Direct SQL baseline does not pass snapshot_hash; do not infer universal historical seal.",
+      "applicationTestsExecuted": false,
+      "caveats": [
+        "source assistance only; parent-provided PG failure is not independently rerun"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql",
+      "blob": "ecb7f18d139a4f7fcedb2fe6a797bf7e7fd65eef",
+      "sha256": "fe82cd435f87cab71924a9d0b9a52e861b0ee874b1ff22829f30751e756761ea",
+      "method": "original audit protection and migration audit insert",
+      "ranges": [
+        [
+          53,
+          69
+        ]
+      ],
+      "readDepth": "listed symbols/ranges only; not whole-file or runtime acceptance",
+      "conclusion": "Original audits explicitly preserved; direct SQL maintenance event has no hash input.",
+      "applicationTestsExecuted": false,
+      "caveats": [
+        "source assistance only; parent-provided PG failure is not independently rerun"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/AuditEventTest.java",
+      "blob": "6e43a395c7b1888ed727e71e5bcacde561139719",
+      "sha256": "a9dee9a5c3a7b0fa04a2cee5044b1ded733beb9b10755944d49bcf2862cbd1aa",
+      "method": "sealSnapshotHashCreatesStableDigestFromOriginalSnapshot; preventMutationRejectsAuditEventUpdates",
+      "ranges": [
+        [
+          13,
+          49
+        ]
+      ],
+      "readDepth": "listed symbols/ranges only; not whole-file or runtime acceptance",
+      "conclusion": "In-memory tests; no PG round-trip assertion.",
+      "applicationTestsExecuted": false,
+      "caveats": [
+        "source assistance only; parent-provided PG failure is not independently rerun"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java",
+      "blob": "c529a3a2f6e2d30e47a9e4054da062eb9f502204",
+      "sha256": "4ba853d52c1fe59cb86209cb70952f3a19733ed676a57badf3232fc786851154",
+      "method": "toAuditLogItem; getById",
+      "ranges": [
+        [
+          115,
+          143
+        ],
+        [
+          307,
+          313
+        ]
+      ],
+      "readDepth": "listed symbols/ranges only; not whole-file or runtime acceptance",
+      "conclusion": "Stored hash returned, not recalculated or compared.",
+      "applicationTestsExecuted": false,
+      "caveats": [
+        "source assistance only; parent-provided PG failure is not independently rerun"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "blob": "46c2f16d8857d1aaaa42865779f57c85959bd7a6",
+      "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08",
+      "method": "auditsFor; sourceAuditEvents; sourceSignatures; signaturesFor",
+      "ranges": [
+        [
+          212,
+          288
+        ]
+      ],
+      "readDepth": "listed symbols/ranges only; not whole-file or runtime acceptance",
+      "conclusion": "Audit payload/hash exported unchanged; separate signature payload hash check can block.",
+      "applicationTestsExecuted": false,
+      "caveats": [
+        "source assistance only; parent-provided PG failure is not independently rerun"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "blob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "sha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+      "method": "detail termination hash check",
+      "ranges": [
+        [
+          256,
+          264
+        ]
+      ],
+      "readDepth": "listed symbols/ranges only; not whole-file or runtime acceptance",
+      "conclusion": "This SHA validates DHR termination frozen text, not AuditEvent.",
+      "applicationTestsExecuted": false,
+      "caveats": [
+        "source assistance only; parent-provided PG failure is not independently rerun"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml",
+      "blob": "f4d48d10c7110ef15037ef651525256662b1d1ac",
+      "sha256": "91e56a9f7c80b5334fd85b020522bc03f7dc8aa8ef98e31d2c9a637ac3d484b1",
+      "method": "DEC-0015-01..04 and scoped acceptance",
+      "ranges": "ID-level",
+      "readDepth": "listed symbols/ranges only; not whole-file or runtime acceptance",
+      "conclusion": "Real persisted before/after audit snapshots; no cross-JSONB digest protocol claim.",
+      "applicationTestsExecuted": false,
+      "caveats": [
+        "source assistance only; parent-provided PG failure is not independently rerun"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "docs/knowledge/rules/master-data-permission-audit.yaml",
+      "blob": "19f625cf148dae4a47d772fd70afd0b771f4a4f0",
+      "sha256": "ced11b7ede0dd8c554b42734cad2159d704aaef3d9f319d9cba1cf07967d4a47",
+      "method": "rule.master-data.write-audit-snapshot",
+      "ranges": "ID-level",
+      "readDepth": "listed symbols/ranges only; not whole-file or runtime acceptance",
+      "conclusion": "Unified real snapshots and historical JSON unchanged; no runtime hash validation claim.",
+      "applicationTestsExecuted": false,
+      "caveats": [
+        "source assistance only; parent-provided PG failure is not independently rerun"
+      ]
+    }
+  ],
+  "wholeFileCompletion": false,
+  "runtimeExecuted": false,
+  "repositoryMutated": false
+}

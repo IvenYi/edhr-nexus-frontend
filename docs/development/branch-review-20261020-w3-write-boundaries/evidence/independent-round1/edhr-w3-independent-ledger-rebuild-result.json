@@ -1,0 +1,116 @@
+{
+  "command": [
+    "python3",
+    "scripts/build-branch-review-ledger.py",
+    "--ref",
+    "df6ea28a6388a89611786116700836c6bf7f4819",
+    "--catalog",
+    "docs/development/branch-review-20261020-w3-write-boundaries/source-catalog.json",
+    "--out",
+    "docs/development/branch-review-20261020-w3-write-boundaries/ledger",
+    "--check"
+  ],
+  "exit": 0,
+  "elapsedSeconds": 12.33,
+  "stdoutSha256": "35226b7ec09cbfc1e844bc4de582860b52d1c15111c9a49ebfe9aeb3ab6d1907",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "summary": {
+    "schema": "edhr-scoped-audit-ledger/v1",
+    "baselineCommit": "df6ea28a6388a89611786116700836c6bf7f4819",
+    "tree": "1bea554e3a3eb84bddcc8ff63ec6e97a9ffa15e1",
+    "catalogSha256": "8af6ec45ddd7faeb51d838469f5fc44689343e1af30678bd89b561895dce1ede",
+    "generatorSha256": "98a85e3ec3137910742338ad51c0334ed70a09d3db6d15cc4e3ef5758e353050",
+    "inventoryGeneratorSha256": "f77668cbf93108bd9bef10a83f07e6ba8de0433e9fee75448b3dc4934221b9df",
+    "inventory": {
+      "trackedPaths": 2524,
+      "classifiedPaths": 2524,
+      "classificationBasis": "inferred-path-classifier",
+      "workPackages": {
+        "W5": 380,
+        "W4": 202,
+        "W0-W7": 1433,
+        "W1": 132,
+        "W2": 198,
+        "W3": 179
+      },
+      "entrypointCandidates": {
+        "http-annotation": 438,
+        "state-definition-candidate": 8,
+        "background-candidate": 1,
+        "frontend-route-candidate": 191
+      },
+      "migrationFiles": 126
+    },
+    "sourceReview": {
+      "recordedScopes": 314,
+      "carryStates": {
+        "needs-delta-review": 93,
+        "retained-scoped-evidence": 221
+      },
+      "sourceRelations": {
+        "file-changed": 93,
+        "unchanged": 221
+      },
+      "wholeFilesCompleted": 0,
+      "sourceImportQualifications": 19,
+      "scopeRecordsAreNotDistinctMethodsOrACompleteDenominator": true
+    },
+    "knowledgeReview": {
+      "currentIds": 2546,
+      "historicalScopedReviews": 81,
+      "historicalConclusions": {
+        "consistent": 76,
+        "superseded": 1,
+        "evidence-gap": 4
+      },
+      "recordRelations": {
+        "unchanged": 81
+      },
+      "evidenceStates": {
+        "retained-scoped-evidence": 55,
+        "needs-delta-review": 26
+      },
+      "maintenanceReports": 28,
+      "newSemanticReviews": 0,
+      "maintenanceIsNotSemanticAcceptance": true
+    },
+    "remediation": {
+      "findingRecords": 44,
+      "dispositions": {
+        "known-fixed-before-audit": 10,
+        "fixed-and-independently-accepted": 22,
+        "pending-adjudication": 3,
+        "fixed-awaiting-independent-acceptance": 4,
+        "corrected-in-l0-documentation": 1,
+        "corrected-and-independently-accepted-l0": 1,
+        "user-deferred": 2,
+        "preexisting-medium-open": 1
+      },
+      "recordKinds": {
+        "historical-master-record": 21,
+        "product-repair-subfinding": 3,
+        "product-defect": 10,
+        "audit-documentation-defect": 3,
+        "test-harness-defect": 2,
+        "test-fixture-subfinding": 1,
+        "imported-independent-finding": 2,
+        "inherited-dhr-implementation-gap": 2
+      },
+      "recordsAreNotDistinctDefects": true,
+      "newAdjudications": 0
+    },
+    "runtime": {
+      "reportedQualityArtifacts": 71,
+      "reportedResults": {
+        "passed": 50,
+        "failed": 20,
+        "blocked": 1
+      },
+      "businessChecksExecutedInThisBatch": [],
+      "oldResultsAreScopedHistoricalEvidence": true
+    },
+    "overallAuditComplete": false,
+    "overallPercent": null
+  },
+  "error": null
+}

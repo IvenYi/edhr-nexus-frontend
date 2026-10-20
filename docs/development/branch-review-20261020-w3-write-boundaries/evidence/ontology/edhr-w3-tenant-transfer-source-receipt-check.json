@@ -1,0 +1,129 @@
+{
+  "schema": "edhr-finite-ontology-receipt-check/v1",
+  "outcome": "passed",
+  "sourceCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+  "implementationCommit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+  "targetBranch": "edhr-dev",
+  "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "actualContractReadCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+  "uncommittedContractPaths": [],
+  "finiteSemanticRecordsVerified": 36,
+  "governanceComparison": [
+    {
+      "path": "AGENTS.md",
+      "unchangedAcrossActualTargetReadSource": true,
+      "receipts": [
+        {
+          "commit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+          "path": "AGENTS.md",
+          "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+          "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+        },
+        {
+          "commit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+          "path": "AGENTS.md",
+          "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+          "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+        },
+        {
+          "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+          "path": "AGENTS.md",
+          "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+          "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+        }
+      ]
+    },
+    {
+      "path": "codeplzreadme.md",
+      "unchangedAcrossActualTargetReadSource": true,
+      "receipts": [
+        {
+          "commit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+          "path": "codeplzreadme.md",
+          "blob": "2e7e18097620e602c4408b83f71404fae346f8be",
+          "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+        },
+        {
+          "commit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+          "path": "codeplzreadme.md",
+          "blob": "2e7e18097620e602c4408b83f71404fae346f8be",
+          "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+        },
+        {
+          "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+          "path": "codeplzreadme.md",
+          "blob": "2e7e18097620e602c4408b83f71404fae346f8be",
+          "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+        }
+      ]
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "unchangedAcrossActualTargetReadSource": true,
+      "receipts": [
+        {
+          "commit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+          "path": "docs/agents/business-knowledge-modeler.md",
+          "blob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+          "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+        },
+        {
+          "commit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+          "path": "docs/agents/business-knowledge-modeler.md",
+          "blob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+          "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+        },
+        {
+          "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+          "path": "docs/agents/business-knowledge-modeler.md",
+          "blob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+          "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+        }
+      ]
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "unchangedAcrossActualTargetReadSource": true,
+      "receipts": [
+        {
+          "commit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+          "path": "docs/agents/agent-handoff-contract.md",
+          "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+          "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+        },
+        {
+          "commit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+          "path": "docs/agents/agent-handoff-contract.md",
+          "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+          "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+        },
+        {
+          "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+          "path": "docs/agents/agent-handoff-contract.md",
+          "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+          "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+        }
+      ]
+    }
+  ],
+  "knowledgeDefinitionsBefore": 2535,
+  "knowledgeDefinitionsAfter": 2546,
+  "wholeAssetSemanticAcceptance": false,
+  "businessRuntimeExecutedByOntologyInstance": false,
+  "knowledgeWorkingTreeMatchesFixedCommit": true,
+  "originalConfirmationsUnchanged": [
+    {
+      "path": "docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.md",
+      "bytes": 712,
+      "sha256": "2ed11399abee88a568a8d8c75f6c6f5725aa5b38e1444b0a36d2afb7f4ea982f",
+      "gitBlob": "bfd9b4820ea8012530bf81078acedd6c36c51f53"
+    },
+    {
+      "path": "docs/knowledge/evidence/form-approval-transfer-user-confirmed.md",
+      "bytes": 2296,
+      "sha256": "5d0c42683143430fc52064d290572390436f3044167b10f0f064e9d60b38c369",
+      "gitBlob": "2436d45fac8c65efd71df55376ceaea6bb4ac6f6"
+    }
+  ],
+  "note": "Each finite record/path/blob/SHA was checked against real Git objects; this is source/knowledge receipt validation, not business runtime acceptance."
+}

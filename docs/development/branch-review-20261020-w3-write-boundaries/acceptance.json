@@ -1,0 +1,60 @@
+{
+  "schema": "edhr-review-independent-acceptance/v1",
+  "recordedAt": "2026-10-20T09:47:04.229727+00:00",
+  "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "testedCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+  "implementationCommits": [
+    "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+    "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2"
+  ],
+  "knowledgeCorrectionCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+  "qualityResult": "passed",
+  "requiredChecks": 24,
+  "requiredPassed": 24,
+  "qualityResultPath": "evidence/independent-final/edhr-w3-final-independent-quality-result.yaml",
+  "qualityResultSha256": "70fcbe1bdf15ccdb3a1b504ac1f016b67980be8a98cd15cb155475757d5c174e",
+  "independentRole": "/root/w3_corrected_final_quality",
+  "allProfessionalInstancesFinal": true,
+  "findings": [
+    {
+      "id": "AUD-H009",
+      "state": "fixed-and-independently-accepted",
+      "resolutionStatus": "resolved"
+    },
+    {
+      "id": "AUD-H010",
+      "state": "fixed-and-independently-accepted",
+      "resolutionStatus": "resolved"
+    },
+    {
+      "id": "AUD-H012",
+      "state": "fixed-and-independently-accepted",
+      "resolutionStatus": "resolved"
+    },
+    {
+      "id": "W3-TRANSFER-LOCK-001",
+      "state": "fixed-and-independently-accepted",
+      "resolutionStatus": "resolved"
+    },
+    {
+      "id": "QF-W3-TENANT-KNOWLEDGE-001",
+      "state": "fixed-and-independently-accepted",
+      "resolutionStatus": "resolved"
+    },
+    {
+      "id": "QF-W3-UI-DOC-COUNT-001",
+      "state": "fixed-and-independently-accepted",
+      "resolutionStatus": "resolved"
+    }
+  ],
+  "frozenCatalogsAndLedgersUnchanged": true,
+  "firstFailedQualityPreserved": true,
+  "wholeBranchAccepted": false,
+  "remaining": [
+    "W5-AUDIT-HASH-001 medium/open",
+    "two user-deferred DHR highs",
+    "four old knowledge evidence gaps",
+    "A12 source integration and remaining W2/W3/W4–W7"
+  ],
+  "overlayNote": "L0 final state only; original scope catalog, semantics and failed quality remain unchanged."
+}

@@ -22,7 +22,7 @@ public class WorkflowTask {
     private String assigneeId;
     @Column(name = "original_assignee_id")
     private String originalAssigneeId;
-    /** Immutable runtime resolution snapshot for a multi-subject logical task. */
+    /** Current task candidates; explicit delegation retains the first available resolution in originSnapshot. */
     @Column(name = "candidate_snapshot", columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)
     private String candidateSnapshot;

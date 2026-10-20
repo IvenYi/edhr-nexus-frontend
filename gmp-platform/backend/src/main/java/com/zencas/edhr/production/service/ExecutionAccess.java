@@ -11,13 +11,11 @@ import com.zencas.edhr.identity.dto.SubjectReference;
 import com.zencas.edhr.identity.entity.UserAccount;
 import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.identity.service.SubjectResolver;
+import com.zencas.edhr.identity.service.TenantTransferTargets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -129,46 +127,22 @@ public class ExecutionAccess {
     public List<Map<String, String>> transferTargets(JsonNode form, JsonNode node, JsonNode state, String operator, String keyword) {
         if (!"APPROVAL".equals(node.path("data").path("kind").asText()) || !canAct(form, node, state, operator))
             throw invalid("当前用户无权转办此表单节点");
-        String query = keyword == null ? "" : keyword.strip().toLowerCase(Locale.ROOT);
-        List<UserAccount> candidates;
-        if (state.path("restrictedApprovers").path(node.path("id").asText()).asBoolean()) {
-            List<Long> ids = new ArrayList<>();
-            for (JsonNode id : state.path("approvers").path(node.path("id").asText())) {
-                try { ids.add(Long.valueOf(id.asText())); } catch (NumberFormatException ignored) { }
-            }
-            candidates = users.findAllById(ids);
-        } else {
-            Specification<com.zencas.edhr.identity.entity.UserAccount> specification = (root, ignored, cb) -> {
-                var active = cb.equal(root.get("status"), "ACTIVE");
-                if (query.isBlank()) return active;
-                String like = "%" + query + "%";
-                return cb.and(active, cb.or(cb.like(cb.lower(root.get("displayName")), like), cb.like(cb.lower(root.get("username")), like)));
-            };
-            candidates = users.findAll(specification, PageRequest.of(0, 100, Sort.by("displayName").ascending().and(Sort.by("id").ascending()))).getContent();
-        }
-        return candidates.stream()
-                .filter(this::availableForTransfer)
-                .filter(user -> !String.valueOf(user.getId()).equals(operator))
-                .filter(user -> query.isBlank() || user.getDisplayName().toLowerCase(Locale.ROOT).contains(query)
-                        || user.getUsername().toLowerCase(Locale.ROOT).contains(query))
-                .sorted(Comparator.comparing(UserAccount::getDisplayName).thenComparing(UserAccount::getId))
-                .limit(100)
-                .map(user -> Map.of("id", String.valueOf(user.getId()), "name", user.getDisplayName(), "username", user.getUsername()))
-                .toList();
+        try {
+            return new TenantTransferTargets(users).search(transferTenantId(operator), operator, keyword);
+        } catch (IllegalArgumentException error) { throw invalid(error.getMessage()); }
     }
 
     public UserAccount requireTransferTarget(JsonNode node, JsonNode state, String operator, String targetUserId) {
-        if (targetUserId == null || targetUserId.isBlank()) throw invalid("请选择转办人员");
-        if (targetUserId.equals(operator)) throw invalid("不能转办给当前处理人");
-        long id;
-        try { id = Long.parseLong(targetUserId); } catch (NumberFormatException error) { throw invalid("转办人员不存在或已停用"); }
-        var target = users.findById(id).filter(this::availableForTransfer).orElseThrow(() -> invalid("转办人员不存在、已停用或当前被锁定"));
-        if (state.path("restrictedApprovers").path(node.path("id").asText()).asBoolean()) {
-            boolean allowed = false;
-            for (JsonNode candidate : state.path("approvers").path(node.path("id").asText())) if (targetUserId.equals(candidate.asText())) allowed = true;
-            if (!allowed) throw invalid("转办人员不在当前审批节点的授权范围内");
-        }
-        return target;
+        try {
+            return new TenantTransferTargets(users).require(transferTenantId(operator), operator, targetUserId);
+        } catch (IllegalArgumentException error) { throw invalid(error.getMessage()); }
+    }
+
+    private Long transferTenantId(String operator) {
+        try {
+            return users.findById(Long.valueOf(operator)).map(UserAccount::getTenantId)
+                    .orElseThrow(() -> invalid("无法确定转办的租户范围"));
+        } catch (NumberFormatException error) { throw invalid("当前登录用户标识无效"); }
     }
 
     private boolean availableForTransfer(UserAccount user) {

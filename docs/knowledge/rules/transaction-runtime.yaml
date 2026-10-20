@@ -1024,7 +1024,7 @@ rules:
     status: specified
     visibility: internal
     trigger: form-process.approval-task.complete
-    scope: form-process-runtime
+    scope: form-process-runtime-before-explicit-transfer
     condition:
       all:
         - fact: formProcessApproval.candidateCount
@@ -1034,12 +1034,13 @@ rules:
       type: planned-production-work-trigger
       completionStrategy: first-completed-candidate
       sequentialApproval: false
-    explanation: 单审批节点有多个候选人时，任一有权候选完成该节点；需要逐个顺序审批时配置多个节点。当前普通生产表单引擎已按节点冻结候选校验并推进，泛WorkflowEngine也使用单逻辑任务与候选快照；两条路径分别核对。源码及原测试断言存在不代表本次并发或事务验收，保持本记录原指定成熟度。
+    explanation: 本条范围明确限定未显式转办的审批节点：多个有权候选中任一可完成，需要逐个顺序审批时配置多个节点。按DEC-0081显式委托后仅当前受让人处理，不由原候选数量或原来源继续授予他人办理权；普通生产表单与泛WorkflowEngine仍分别核对。源码及历史断言不代表本轮并发或事务验收，指定成熟度保持。
     evidenceIds:
     - evidence.production-form-process-user-confirmed
     - evidence.production-form-process-guancheng-research
     - evidence.production-execution-engine-source
     - evidence.workflow-task-multi-candidate-runtime-implementation
+    - evidence.tenant-task-delegation-20261020
   - id: rule.form-process.approval-return-to-entry
     name: 审批退回固定回到填报阶段
     status: specified

@@ -1,0 +1,82 @@
+{
+  "role": "browser test implementation, not independent quality acceptance",
+  "sourceHead": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+  "currentHead": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+  "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "scriptPath": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/scripts/test-tenant-task-transfer-browser.mjs",
+  "scriptSha256": "10b34ae976e7f536f70f9cd979e41354ff86bc59b32a1539b8bf26ebcf3f3029",
+  "testedSourceSha256": {
+    "src/pages/workflow-center/TaskDetail.tsx": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+    "src/pages/production/ProductionExecutionPage.tsx": "aae289bfedd2384bb2ed56f75155fdd227cfd3a9aa7954fcbce3ca057176b757",
+    "src/App.tsx": "6f11b6185c5322dd7475ba14f0e07b5c610c9bbc2dea18d3e8d868c68add27a6"
+  },
+  "cases": 36,
+  "passed": 36,
+  "failed": 0,
+  "byPage": {
+    "generic": 20,
+    "production": 16
+  },
+  "previousRuns": [
+    {
+      "path": "/tmp/edhr-w3-transfer-browser-first.json",
+      "passed": 2,
+      "failed": 0
+    },
+    {
+      "path": "/tmp/edhr-w3-transfer-browser-full-1.json",
+      "passed": 26,
+      "failed": 0
+    },
+    {
+      "path": "/tmp/edhr-w3-transfer-browser-full-2.json",
+      "passed": 36,
+      "failed": 0
+    }
+  ],
+  "report": "/tmp/edhr-w3-transfer-browser-final.json",
+  "reportSha256": "98ecf542fc4b650e42002cf0c70ace904a6e09c0f3ed0ef822d1d53a0ab1d297",
+  "log": "/tmp/edhr-w3-transfer-browser-final.log",
+  "screenshots": [
+    {
+      "path": "/tmp/edhr-w3-transfer-browser-screenshots-final/generic-required-and-keyboard-cancel-1440-filled.png",
+      "sha256": "b64b72076c323828587a4802738b862c05316c8a47c8d93ee49606f2f5b83b43"
+    },
+    {
+      "path": "/tmp/edhr-w3-transfer-browser-screenshots-final/generic-required-and-keyboard-cancel-1440-popup.png",
+      "sha256": "f4851dd9cc48779c85ec7ed2068af5b240f00b0ec2b068cba874fd8a0acab31a"
+    },
+    {
+      "path": "/tmp/edhr-w3-transfer-browser-screenshots-final/generic-required-and-keyboard-cancel-390-filled.png",
+      "sha256": "ffa4a5867b10eda758efb9f4840935b94dbd31a8228a2e2d4d8ce34113cc855f"
+    },
+    {
+      "path": "/tmp/edhr-w3-transfer-browser-screenshots-final/generic-required-and-keyboard-cancel-390-popup.png",
+      "sha256": "e3ce7a7f49a08b4a02a1dff5c27c3677c9f85b200350e74b21145b324b6743c8"
+    },
+    {
+      "path": "/tmp/edhr-w3-transfer-browser-screenshots-final/production-required-and-keyboard-cancel-1440-filled.png",
+      "sha256": "d201d71fd8ed19beed2b85df42ea39eac462aab546bb64c87ecc3beda47de4b3"
+    },
+    {
+      "path": "/tmp/edhr-w3-transfer-browser-screenshots-final/production-required-and-keyboard-cancel-1440-popup.png",
+      "sha256": "d1e74392ba06858daf09e119277f69d08cf6349caa43980a1e10b9e2a5cb89f2"
+    },
+    {
+      "path": "/tmp/edhr-w3-transfer-browser-screenshots-final/production-required-and-keyboard-cancel-390-filled.png",
+      "sha256": "daf673f710981243e297876e1338535ac9f0a1f3aa0384ea11d55bbb0bc8f9d1"
+    },
+    {
+      "path": "/tmp/edhr-w3-transfer-browser-screenshots-final/production-required-and-keyboard-cancel-390-popup.png",
+      "sha256": "1ec146467e1a8bb0dec10010993d213769e95ab045446829456a871ca59d0713"
+    }
+  ],
+  "visualInspection": "view_image personally checked all four final filled screenshots; earlier matching mobile popup screenshots also checked; Chinese copy, selected names, fields and close/footer controls are readable/reachable",
+  "limits": [
+    "Actual components/theme/router/client with synthetic controlled API only",
+    "No backend/DB/auth-filter integration or DHR behavior proved by this script",
+    "Synthetic returned values/candidates only verify view consumption; not persistence",
+    "No full shell or deployment claim",
+    "No qualityResult issued; fresh independent acceptance required"
+  ]
+}

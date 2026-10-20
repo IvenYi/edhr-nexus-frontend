@@ -1,0 +1,20 @@
+{
+  "exit": 1,
+  "reportPresent": true,
+  "suite": {
+    "version": "3.0",
+    "name": "com.zencas.edhr.workflow.engine.WorkflowTransferPostgresTest",
+    "time": "5.078",
+    "tests": "21",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "1"
+  },
+  "failures": [
+    {
+      "case": "personnelSearchAndCommandUseTheSameTenantAvailabilityWithRealSql",
+      "message": "\nExpecting actual:\n  [\"3\", \"2\"]\nto contain exactly (and in same order):\n  [\"2\", \"3\"]\nbut there were differences at these indexes:\n  - element at index 0: expected \"2\" but was \"3\"\n  - element at index 1: expected \"3\" but was \"2\"\n",
+      "causes": []
+    }
+  ]
+}

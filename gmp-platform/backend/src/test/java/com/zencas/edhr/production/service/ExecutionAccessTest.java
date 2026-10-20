@@ -115,7 +115,7 @@ class ExecutionAccessTest {
         assertThat(access.canAct(mapper.createObjectNode(), node, unresolved, "1")).isFalse();
     }
 
-    @Test void transferKeepsTheFrozenApprovalBoundaryAndOnlyAssigneeCanAct() throws Exception {
+    @Test void transferPreservesFrozenCandidatesAndAllowsTenantDelegatesWhileOnlyAssigneeCanAct() throws Exception {
         var node = mapper.readTree("""
             {"id":"a","data":{"kind":"APPROVAL","config":{}}}
             """);
@@ -123,6 +123,7 @@ class ExecutionAccessTest {
         state.putObject("restrictedApprovers").put("a", true);
         state.putObject("approvers").putArray("a").add("1").add("2").add("4").add("5");
         state.putObject("transferAssignees").put("a", "2");
+        when(users.findById(1L)).thenReturn(Optional.of(UserAccount.builder().id(1L).tenantId(0L).build()));
         when(users.findById(2L)).thenReturn(Optional.of(UserAccount.builder().id(2L).username("reviewer2").displayName("复核员2").status("ACTIVE").build()));
         when(users.findById(3L)).thenReturn(Optional.of(UserAccount.builder().id(3L).username("reviewer3").displayName("复核员3").status("ACTIVE").build()));
         when(users.findById(4L)).thenReturn(Optional.of(UserAccount.builder().id(4L).username("inactive").displayName("已停用").status("INACTIVE").build()));
@@ -132,9 +133,21 @@ class ExecutionAccessTest {
         assertThat(access.canAct(mapper.createObjectNode(), node, state, "2")).isTrue();
         assertThat(access.requireTransferTarget(node, state, "1", "2").getDisplayName()).isEqualTo("复核员2");
         assertThatThrownBy(() -> access.requireTransferTarget(node, state, "1", "1")).hasMessageContaining("当前处理人");
-        assertThatThrownBy(() -> access.requireTransferTarget(node, state, "1", "3")).hasMessageContaining("授权范围");
+        String frozenBefore = state.path("approvers").toString();
+        assertThat(access.requireTransferTarget(node, state, "1", "3").getId()).isEqualTo(3L);
+        assertThat(state.path("approvers").toString()).isEqualTo(frozenBefore);
         assertThatThrownBy(() -> access.requireTransferTarget(node, state, "1", "4")).hasMessageContaining("停用");
         assertThatThrownBy(() -> access.requireTransferTarget(node, state, "1", "5")).hasMessageContaining("锁定");
+    }
+
+    @Test void transferRejectsCrossTenantTargetsEvenIfAStaleCandidateListContainsThem() throws Exception {
+        var node = mapper.readTree("{\"id\":\"a\",\"data\":{\"kind\":\"APPROVAL\",\"config\":{}}}");
+        ObjectNode state = mapper.createObjectNode();
+        state.putObject("restrictedApprovers").put("a", true);
+        state.putObject("approvers").putArray("a").add("1").add("6");
+        when(users.findById(1L)).thenReturn(Optional.of(UserAccount.builder().id(1L).tenantId(9L).build()));
+        when(users.findById(6L)).thenReturn(Optional.of(UserAccount.builder().id(6L).tenantId(10L).status("ACTIVE").build()));
+        assertThatThrownBy(() -> access.requireTransferTarget(node, state, "1", "6")).hasMessageContaining("租户");
     }
 
     @Test void stableFieldOverridesAndReadOnlyConflictWin() throws Exception {

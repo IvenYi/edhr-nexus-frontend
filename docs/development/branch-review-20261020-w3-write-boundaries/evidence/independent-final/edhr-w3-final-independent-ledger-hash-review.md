@@ -1,0 +1,11 @@
+# 审计摘要边界独立只读复核
+
+固定候选b8051583、目标a8285be9，知识0.3.25。本实例未参与修复，仅实际亲读列明源码、比较Git字节和核验归档成员，没有运行Maven、数据库或浏览器。
+
+AuditEvent在PrePersist按原contentBefore/contentAfter字符串及LocalDateTime文本封存。存储类型为JSONB与TIMESTAMP；已有a828探针2红保留，不能宣称按数据库读回值重算已通过。两个ZIP成员的bytes/SHA完全匹配原始收据，额外探针内确有两处computeSnapshotHash断言。
+
+AuditController返回存储snapshotHash，AuditLogPage仅显示快照指纹；DHR归档的audit事件集合亦直接复制stored hash。DHR版本与终止快照、签名payload以及附件字节校验属于不同对象且源码仍主动比较自己的摘要，不得合并解释为AuditEvent校验。
+
+实体、相关消费者、迁移和单元测试在目标到候选间均未变；WorkTemplateController审计方法体也相同。新通用转办新增审计记录但沿用已有封存器，没有安装读时重算门禁。本有限检查未发现本批引入的摘要消费者阻断。
+
+W5-AUDIT-HASH-001继续medium/open；当前审计内容、存储摘要与事务验证不关闭它。不改算法，不回填历史，不推断丢失原始载荷。结论只限16列明范围、2归档成员，不是全W5或整分支认证。

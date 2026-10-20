@@ -1,0 +1,189 @@
+{
+  "schema": "edhr-review-batch-progress/v1",
+  "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "implementationCommit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+  "knowledgeCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+  "ledgerFixedTreeCommit": "05dbc0b2f6fda76e76cd9f7b6a10c224466dcc8a",
+  "inventory": {
+    "targetPaths": 2444,
+    "coreAndKnowledgePaths": 2453,
+    "fixedEvidenceTreePaths": 2603,
+    "classification": "heuristic, not manual completion",
+    "firstFixedEvidenceTreePaths": 2524
+  },
+  "sourceReview": {
+    "inheritedScopes": 216,
+    "newHelperScopes": 69,
+    "newPrimaryScopes": 29,
+    "totalScopeRecords": 314,
+    "carryStates": {
+      "needs-delta-review": 93,
+      "retained-scoped-evidence": 221
+    },
+    "overlapPermitted": true,
+    "wholeFilesCompleted": 0
+  },
+  "semanticReview": {
+    "inheritedScopedReviews": 45,
+    "newRoleScopedReviews": 36,
+    "currentDefinitionIds": 2546,
+    "historicalScopedRecords": 90,
+    "evidenceStates": {
+      "retained-scoped-evidence": 33,
+      "needs-delta-review": 57
+    },
+    "wholeAssetsPassed": 0,
+    "oldEvidenceGapsKept": 4,
+    "newPrecisionFollowupScopedReviews": 9,
+    "recordRelations": {
+      "unchanged": 86,
+      "record-changed": 4
+    },
+    "currentHistoryIsNotDistinctIdCount": true
+  },
+  "remediation": {
+    "originalMasterIdsAdjudicated": [
+      "AUD-H009",
+      "AUD-H010",
+      "AUD-H012"
+    ],
+    "newFindingIds": [
+      "W3-TRANSFER-LOCK-001",
+      "W5-AUDIT-HASH-001"
+    ],
+    "state": "six current-batch findings independently accepted; W5 preexisting medium remains open",
+    "historicalFindingRecordsKept": 42,
+    "currentFindingRecords": 46,
+    "userDeferredHighKept": 2,
+    "frozenLedgerStatePreserved": true,
+    "round1QualityFindingIds": [
+      "QF-W3-TENANT-KNOWLEDGE-001",
+      "QF-W3-UI-DOC-COUNT-001"
+    ],
+    "acceptanceOverlay": "acceptance.json"
+  },
+  "userConfirmedScopeIncrement": {
+    "exactReply": "通用工作流与普通生产表单都允许租户内委托；DHR 保持",
+    "decision": "DEC-0081",
+    "replacementScope": "explicit delegation only; original candidate/source policies and DHR retained"
+  },
+  "actualPrimaryValidation": {
+    "javaDistinctTestsPassed": 292,
+    "nativePostgresAmongJava": 39,
+    "javaSkipped": 0,
+    "knowledgeTestsPassed": 89,
+    "browserScenariosPassed": 36,
+    "browserControlledApi": true,
+    "fullStackEndToEnd": false,
+    "viewports": [
+      [
+        1440,
+        960
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "primaryPersonallyViewedFilledScreenshots": 4,
+    "typecheckAndBuild": "passed",
+    "newMigrationFiles": 0,
+    "actual0060ConstraintsUsed": true,
+    "premiumStrictExit": 2,
+    "premiumBaselineFindings": 84,
+    "premiumCandidateFindings": 84,
+    "allFindingFieldsEqual": true,
+    "newExactPremiumFindings": 0,
+    "eslintExit": 2,
+    "eslintReason": "existing config absent",
+    "failedAuditHashProbe": {
+      "baselineCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "tests": 2,
+      "failures": 2,
+      "notIncludedInPassing292": true
+    },
+    "invalidCleanupAttempt": "compile failed before tests; stale XML explicitly excluded; source byte-restored; fresh Access12 passed separately, not added to292",
+    "premiumDistinctFullFieldFindings": 82,
+    "allFindingFullFieldMultisetsEqual": true,
+    "countClarification": "Original set-based comparison82 retained; actual records84, distinct82, Counter exact duplicates preserved."
+  },
+  "generatorBoundary": {
+    "newSemanticReviewsPerformedByGenerator": 0,
+    "businessTestsExecutedByGenerator": 0,
+    "description": "Inventory generation and preserved report indexing do not execute product/semantic reviews; actual batch work reported separately."
+  },
+  "independentQuality": {
+    "result": "passed",
+    "testedCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "requiredChecks": 24,
+    "requiredPassed": 24,
+    "allProfessionalInstancesFinal": true,
+    "report": "evidence/independent-final/edhr-w3-final-independent-quality-result.yaml",
+    "actualJavaBusinessPassed": 292,
+    "actualKnowledgePassed": 89,
+    "nativePostgresAmongBusiness": 39,
+    "javaSkipped": 0,
+    "actualBrowserPassed": 36,
+    "typecheckAndBuild": "passed",
+    "scope": "this batch and listed regressions only"
+  },
+  "historicalDataRestored": false,
+  "mergePerformed": false,
+  "deploymentPerformed": false,
+  "overallAuditComplete": false,
+  "overallPercent": null,
+  "next": "Human merge this verified batch; fetch latest edhr-dev before further W3 permission/signature/illegal-action coverage, then W4–W7.",
+  "firstLedgerFixedTreeCommit": "df6ea28a6388a89611786116700836c6bf7f4819",
+  "currentCatalog": "recheck/source-catalog.json",
+  "currentLedger": "recheck/ledger",
+  "ontologyFollowup": {
+    "result": "updated",
+    "sourceCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+    "changedFiles": 5,
+    "changedIds": 5,
+    "adjacentReviewedIds": 4,
+    "actualKnowledgeTestsPassed": 89,
+    "newUserPolicy": false,
+    "coreCodeChanged": false,
+    "originalsUnchanged": true,
+    "report": "evidence/ontology-followup/edhr-w3-tenant-origin-precision-followup-ontology-result.yaml"
+  },
+  "independentQualityRound1": {
+    "result": "failed",
+    "testedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+    "requiredChecks": 24,
+    "requiredPassed": 23,
+    "allProfessionalInstancesFinal": true,
+    "report": "evidence/independent-round1/edhr-w3-independent-quality-result.yaml",
+    "newFindingIds": [
+      "QF-W3-TENANT-KNOWLEDGE-001",
+      "QF-W3-UI-DOC-COUNT-001"
+    ],
+    "correctionCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+    "finalFreshRecheck": "pending"
+  },
+  "testEnvironmentCleanup": {
+    "ownedContainerRemoved": true,
+    "receipt": "evidence/primary/edhr-w3-owned-postgres-cleanup.json",
+    "realDatabaseTouched": false
+  },
+  "prePrScopeReview": {
+    "completedAfterAllRolesFinal": true,
+    "userInformedBeforePrCreation": true,
+    "declaredPolicyIncrement": "DEC-0081 per explicit user reply",
+    "overallAuditComplete": false
+  },
+  "delivery": {
+    "pullRequest": "https://github.com/IvenYi/edhr-nexus-frontend/pull/20",
+    "number": 20,
+    "sourceBranch": "audit/edhr-dev-w3-write-boundaries-20261020",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "testedCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "headAtPrCreation": "e22a6b02e6ff49917a453c9119dc182cb2b071d7",
+    "mergePerformed": false,
+    "deploymentPerformed": false,
+    "postAcceptanceChanges": "L0 exact-byte archives, acceptance overlay, scope review, test environment cleanup receipt and PR registration only",
+    "allProfessionalInstancesFinal": true
+  }
+}

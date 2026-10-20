@@ -1,0 +1,498 @@
+{
+  "schema": "edhr-readonly-source-map/v1",
+  "type": "source-assistance-not-quality-acceptance",
+  "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "contractReadCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "uncommittedContractPaths": []
+  },
+  "sourceScopes": [
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "blob": "7b9eef6be1a1adccb8f2b1354417bba664fec376",
+      "sha256": "c1a2bd001a0a17d7a19ace095ec2de75bcb1f0ad8de1b8677b5e2592072c1264",
+      "method": "createInstance",
+      "ranges": [
+        [
+          53,
+          112
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Binding-selected instance reaches task creation for FORM_PROCESS/configured START; conventional START advances.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "blob": "7b9eef6be1a1adccb8f2b1354417bba664fec376",
+      "sha256": "c1a2bd001a0a17d7a19ace095ec2de75bcb1f0ad8de1b8677b5e2592072c1264",
+      "method": "resolveAssignees; resolveInstanceTenant; collectSubjects",
+      "ranges": [
+        [
+          496,
+          539
+        ],
+        [
+          584,
+          597
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Node-arrival resolver output keeps users/sources/unresolved; no-subject unrestricted; no transfer target policy in resolver.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "blob": "7b9eef6be1a1adccb8f2b1354417bba664fec376",
+      "sha256": "c1a2bd001a0a17d7a19ace095ec2de75bcb1f0ad8de1b8677b5e2592072c1264",
+      "method": "createTaskForNode",
+      "ranges": [
+        [
+          394,
+          417
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "One task; first candidate also populates assignee; full candidate snapshot stored.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "blob": "7b9eef6be1a1adccb8f2b1354417bba664fec376",
+      "sha256": "c1a2bd001a0a17d7a19ace095ec2de75bcb1f0ad8de1b8677b5e2592072c1264",
+      "method": "transferTask",
+      "ranges": [
+        [
+          654,
+          684
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Same task receives singleUserSnapshot, losing original resolution sources and unresolved subjects.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "blob": "7b9eef6be1a1adccb8f2b1354417bba664fec376",
+      "sha256": "c1a2bd001a0a17d7a19ace095ec2de75bcb1f0ad8de1b8677b5e2592072c1264",
+      "method": "validateTransferTarget; singleUserSnapshot",
+      "ranges": [
+        [
+          727,
+          752
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Only current implementation allows existing ACTIVE same-tenant target; output current single target snapshot, no original archive.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed",
+        "No authoritative confirmation found for out-of-original-candidate target eligibility."
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "blob": "7b9eef6be1a1adccb8f2b1354417bba664fec376",
+      "sha256": "c1a2bd001a0a17d7a19ace095ec2de75bcb1f0ad8de1b8677b5e2592072c1264",
+      "method": "completeTask; isTaskOperator",
+      "ranges": [
+        [
+          247,
+          300
+        ],
+        [
+          709,
+          715
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Unrestricted/candidate snapshot is current authorization, assignee fallback only if candidate collection empty.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "blob": "7b9eef6be1a1adccb8f2b1354417bba664fec376",
+      "sha256": "c1a2bd001a0a17d7a19ace095ec2de75bcb1f0ad8de1b8677b5e2592072c1264",
+      "method": "logAction",
+      "ranges": [
+        [
+          638,
+          652
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "TASK_CREATE/TRANSFER log text lacks complete original snapshot; entity snapshot column not assigned.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "blob": "7b9eef6be1a1adccb8f2b1354417bba664fec376",
+      "sha256": "c1a2bd001a0a17d7a19ace095ec2de75bcb1f0ad8de1b8677b5e2592072c1264",
+      "method": "assertNotDhrTask; assertNotDhrInstance",
+      "ranges": [
+        [
+          717,
+          725
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Generic transfer refuses DHR; do not extrapolate defect into DHR transfer.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java",
+      "blob": "2936e41020e15ca6ee5080b1bbd98057aedc4d17",
+      "sha256": "7f11251ed736c5b3bbfbd3e2ddb79d52fd014639203eebaf1aa3237d3c6665fa",
+      "method": "candidateSnapshot / assigneeId / originalAssigneeId",
+      "ranges": [
+        [
+          9,
+          38
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Existing single logical task entity calls candidate snapshot immutable.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowActionLog.java",
+      "blob": "bb2e52eed57b4453d99e319408a35257cbabac91",
+      "sha256": "763e3744374c427728ac80cae52903bf8daf243a04d0e50a0a8ca01b75aca144",
+      "method": "snapshot/comment fields",
+      "ranges": [
+        [
+          9,
+          32
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Entity can carry snapshot JSON but transfer path leaves it unset.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "blob": "bc6bfa0cc70f6d2c25b84829b8b6ff8614ddfa4a",
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "method": "findTodoForUser/findDoneForUser/findPendingByCandidateUserId",
+      "ranges": [
+        [
+          21,
+          36
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Todo OR candidate/assignee/unrestricted; assignee is not an override; candidate-only method declaration found without production caller.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "blob": "a04021f6610368f461e3918ab24ca1d8c643cb7b",
+      "sha256": "8c3c0e30ea46a4050513d485fd5db299e4cbbec5ee4bb7878c9e2e1bc5148907",
+      "method": "todo/done/transfer/currentOperatorId",
+      "ranges": [
+        [
+          88,
+          122
+        ],
+        [
+          153,
+          185
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Todo/operator identity comes from principal; API transfer target required, no request operator impersonation.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/SubjectResolver.java",
+      "blob": "0e5ec5d2127556ecb690178c67da75ed5fac0ad4",
+      "sha256": "e150fbc18155a1afd47935145b0ef8b6869d01846945c13a87fc819dd18d38e5",
+      "method": "resolve; resolveDirectUsers; resolveDepartmentUsers; resolveRoleUsers",
+      "ranges": [
+        [
+          42,
+          84
+        ],
+        [
+          108,
+          196
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Current subject relationships resolved and all matches retained per stable user ID; no policy for generic transfer target.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "blob": "d5764d12acf0d78fb0925a079a9e6a81548ded88",
+      "sha256": "9e7f4b66d43780b5294acac5fdd7f1893ec71073d71104ac634a6e4a8ca50e4a",
+      "method": "transferTargets/transferForm",
+      "ranges": [
+        [
+          375,
+          397
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Ordinary production form has separate transferAssignees projection; preserve distinction from generic workflow.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "blob": "6a746b830efc8a693b053ab994eca2f0626eeecf",
+      "sha256": "049b03c2627e839f9e3dfc3c6919c3af50e7a07ec53ba6e076f60cc964579893",
+      "method": "handleAction; transfer button",
+      "ranges": [
+        [
+          16,
+          25
+        ],
+        [
+          78,
+          85
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Current UI transfer lacks newAssigneeId; source-loss reproduction must use explicit-target API/engine, not current UI success.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "blob": "d6e9bdb8217a7db5140191a032d205814024c3f5",
+      "sha256": "96eb39d2845af6852ba0e1b4b8c919f0b016577af471dd70e0610d22be2e1a4e",
+      "method": "createsOneLogicalTaskForOneHundredResolvedCandidates; unrestrictedTaskCanBeCompletedByAnyAuthenticatedOperator; candidateCanCompleteAndActualActorIsPersisted; rejectsUserOutsideFrozenCandidateSnapshot; transferKeepsOneLogicalTaskAndUpdatesTargetSnapshot",
+      "ranges": [
+        [
+          194,
+          218
+        ],
+        [
+          247,
+          263
+        ],
+        [
+          286,
+          300
+        ],
+        [
+          385,
+          397
+        ],
+        [
+          411,
+          438
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Existing tests cover initial candidates/current target shape but do not assert original-source retention or SQL inbox scope.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed",
+        "Test source read; none executed."
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskControllerTest.java",
+      "blob": "b33e75afc2ab357612331e2d187e8b258f26fdf0",
+      "sha256": "57f19c938e0ea99d4a6f15ea79d04cb102666bfe9460e52a3474a3f1f50b1576",
+      "method": "todoUsesAuthenticatedOperatorAndOneDatabaseLookup; doneUsesAuthenticatedOperatorInsteadOfRequestParameter",
+      "ranges": [
+        [
+          25,
+          44
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Mock repository identity test does not execute JSONB native SQL.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed",
+        "Test source read; none executed."
+      ]
+    }
+  ],
+  "knowledgeReferences": [
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "blob": "b47018716a8c1e7b83a5d53ff04688d64028511f",
+      "sha256": "3c7597f5d6d73469b15c21fb4cab0a8a415019c3c8ec612a88b16e9c0212f7e3",
+      "method": "listed decision/evidence/knowledge records",
+      "ranges": [
+        [
+          1,
+          75
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Current creation-candidate and frozen-source contract; transfer discrepancy already open.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.md",
+      "blob": "bfd9b4820ea8012530bf81078acedd6c36c51f53",
+      "sha256": "2ed11399abee88a568a8d8c75f6c6f5725aa5b38e1444b0a36d2afb7f4ea982f",
+      "method": "listed decision/evidence/knowledge records",
+      "ranges": [
+        [
+          1,
+          10
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Original confirmation limits completion to creation candidates and preserves creation resolution for audit; transfer exception unspecified.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "docs/knowledge/decisions/DEC-0030-identity-runtime-subject-resolution.yaml",
+      "blob": "8626ccf316fb534435969170cc224d66f2007562",
+      "sha256": "8596f81f4cdec7699026faf65fe3f7924cd32e3f1939e4bc5f4e7c91caab97b3",
+      "method": "listed decision/evidence/knowledge records",
+      "ranges": [
+        [
+          1,
+          80
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Resolver preserves all source matches, caller owns policy.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "docs/knowledge/evidence/identity-subject-selector.yaml",
+      "blob": "09ae453ed52e532288f69bff577c3284ed0a2670",
+      "sha256": "3c5ab034aa140b5078fcf060c1a4b4079b5a0a713a38e5d658267b6e65b3f795",
+      "method": "listed decision/evidence/knowledge records",
+      "ranges": [
+        [
+          53,
+          92
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Existing implementation evidence explicitly limits generic transfer provenance claim.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "docs/knowledge/ontology.yaml",
+      "blob": "9afe7e64a0770092b57d5226e96982f87a29e27c",
+      "sha256": "edc8d5cb3c6c02c7c7ee826bb804fcf0dc0c97c196cfb42b655a3b7b9b598551",
+      "method": "listed decision/evidence/knowledge records",
+      "ranges": [
+        [
+          334,
+          344
+        ],
+        [
+          1135,
+          1141
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Task and resolution snapshot concepts/relation remain implemented/internal; no maturity change.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "docs/knowledge/open-questions.yaml",
+      "blob": "8b77bd25598fc0aa7e03da2d10f23215b6252e2e",
+      "sha256": "240025fe24927b141cefef45e641b1f88673bb8352ce59221cf9cbc8bc0b12c4",
+      "method": "listed decision/evidence/knowledge records",
+      "ranges": [
+        [
+          101,
+          159
+        ]
+      ],
+      "readDepth": "listed ranges / symbols only; no whole-file completion claim",
+      "conclusion": "Relevant record-control signature and workflow isolation unresolved contexts do not authorize arbitrary generic transfer targets.",
+      "caveats": [
+        "source inspection only; no application/tests/database/browser executed"
+      ]
+    }
+  ],
+  "runtimeChecksExecuted": [],
+  "wholeFileOrBranchAcceptance": false,
+  "repositoryMutations": false,
+  "childFinal": true,
+  "childOriginals": [
+    {
+      "path": "/tmp/edhr-w3-transfer-consumers.md",
+      "bytes": 6049,
+      "sha256": "318787f9f3a8ee06713c07c7b7c93512827496726253325f48f709940df0a57f"
+    },
+    {
+      "path": "/tmp/edhr-w3-transfer-consumers.json",
+      "bytes": 10382,
+      "sha256": "6f19b14fef677dd7d4a52da84ffc419762103635989d270cccfde9754d6eeaa3"
+    }
+  ],
+  "unresolved": [
+    {
+      "id": "question.generic-workflow-transfer-outside-frozen-candidates",
+      "question": "Must a restricted generic workflow transfer target belong to its creation-time frozen candidate set, or is an explicit exception allowed?",
+      "authorityGap": "DEC-0031-03 and original user confirmation prohibit non-creation-candidate completion; no explicit generic transfer exception located."
+    }
+  ]
+}

@@ -1,0 +1,428 @@
+{
+  "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "fixtureCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+  "exit": 1,
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "/tmp/edhr-w3-independent-baseline/gmp-platform/backend/pom.xml",
+    "-Dtest=WorkTemplateWriteBoundaryTest,WorkTemplateWritePostgresTest",
+    "test"
+  ],
+  "allReportsFresh": true,
+  "suites": [
+    {
+      "tests": 85,
+      "failures": 63,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest",
+      "xmlSha256": "945aef8930c17ba5876d192f0937f6f54828168e81ff7c3fc86bca7e3c74cd6a",
+      "cases": [
+        {
+          "name": "incompleteCanonicalConditionStillFailsOnlyWhenPublished",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[1]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[2]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[3]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[4]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[5]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[6]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[7]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[8]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[9]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[10]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[11]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[12]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[13]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[14]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[15]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[16]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[17]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[18]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[19]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[20]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[21]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[22]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[23]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[24]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[25]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[26]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[27]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[28]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[29]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[30]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[31]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[32]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[33]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[34]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[35]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[36]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[37]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[38]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[39]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[40]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[41]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[42]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[43]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[44]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[45]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[46]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[47]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[48]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[49]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[50]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[51]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[52]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[53]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[54]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[55]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[56]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[57]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[58]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[59]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[60]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[61]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[62]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[63]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[64]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[65]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[66]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[67]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[68]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[69]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[70]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[71]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[72]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[73]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[74]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[75]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "currentFormPublishesAndNextDraftKeepsTheExactGraph",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "tests": 12,
+      "failures": 9,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.controller.WorkTemplateWritePostgresTest",
+      "xmlSha256": "9c16c6e85a22708d9cb9d4bca23da247facd5cbe10bbf3ce2777e8316db12af2",
+      "cases": [
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[1]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[2]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[3]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[4]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[5]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[6]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[7]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[8]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[9]",
+          "status": "failed"
+        },
+        {
+          "name": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[10]",
+          "status": "passed"
+        },
+        {
+          "name": "legalPublishCreatesOneInheritedDraftAndReferencesInTheRealTransaction",
+          "status": "passed"
+        },
+        {
+          "name": "incompleteDraftsPersistAndReadBackWithRealReferenceRefreshAndAudit",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "environmentCorrection": "Exported frontend needed installed node_modules symlink for existing build:dhr-print generate-resources; no source or test modified",
+  "firstAttempt": "No tests ran: dhr-print-renderer exec127; original failure summary preserved",
+  "interpretation": "Expected baseline failures prove defect causality; not candidate passing tests"
+}

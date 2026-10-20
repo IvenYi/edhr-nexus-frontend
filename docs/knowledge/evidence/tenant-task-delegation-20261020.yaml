@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.tenant-task-delegation-20261020
+    type: document
+    path: docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+    description: user-confirmed与inference分列；保留本轮用户原话“通用工作流与普通生产表单都允许租户内委托；DHR 保持”、问题上下文、DEC-0031-03/DEC-0055-02精确局部替代与保留、原候选来源和当前责任区别。来源按既有路径分列：通用任务有完整解析原件，普通表单为冻结候选ID/限制标记及冻结节点主体配置，不宣称普通表单已有逐用户命中或未解析主体原件；此处为记录精度纠错，不新增业务政策或采集。新政策不回填早期确认，不恢复已丢来源，不认证完整多租户隔离、审计摘要重算或业务运行通过。
+    visibility: internal
+  - id: evidence.work-template-write-shape-audit-20261020
+    type: document
+    path: docs/knowledge/evidence/work-template-write-shape-audit-2026-10-20.md
+    description: original-evidence有限核对；固定84c新写guard覆盖保存、发布前置、继承及复制，按存在拒绝FORM完成条件和CONDITION顶层四旧字段。不前移发布完整性、不清理历史、不扩大到默认分支或所有未知键；主审运行摘要与本体源码核对分列，正式质量另记。
+    visibility: internal

@@ -1,0 +1,16 @@
+{
+  "kind": "append-only count clarification; original set-based comparison remains untouched",
+  "baselineCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "candidateCodeCommit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+  "baselineFindingRows": 84,
+  "candidateFindingRows": 84,
+  "baselineDistinctFullFieldFindings": 82,
+  "candidateDistinctFullFieldFindings": 82,
+  "fullFieldMultisetsEqual": true,
+  "addedRows": 0,
+  "removedRows": 0,
+  "baselineReportSha256": "6d85e7dd543a8b509931bc3007a57663e974d16961e5f7d7e9f8875174300c17",
+  "candidateReportSha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a",
+  "strictExitBoth": 2,
+  "globalStrictPassed": false
+}

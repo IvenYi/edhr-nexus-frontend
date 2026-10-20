@@ -1,0 +1,43 @@
+{
+  "schema": "edhr-independent-final-verification/v1",
+  "result": "failed",
+  "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "headCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+  "executionLevel": "L2",
+  "requiredChecks": 24,
+  "requiredPassed": 23,
+  "requiredFailed": 1,
+  "checks": 27,
+  "businessJavaPassed": 292,
+  "knowledgePassed": 89,
+  "nativePostgres": 39,
+  "javaSkipped": 0,
+  "browserPassed": 36,
+  "baselineRed": {
+    "unit": {
+      "tests": 85,
+      "failures": 63,
+      "positiveControls": 22
+    },
+    "nativePg": {
+      "tests": 12,
+      "failures": 9,
+      "positiveControls": 3
+    }
+  },
+  "newFindings": [
+    {
+      "id": "QF-W3-TENANT-KNOWLEDGE-001",
+      "severity": "medium"
+    },
+    {
+      "id": "QF-W3-UI-DOC-COUNT-001",
+      "severity": "low"
+    }
+  ],
+  "codeDefectNewlyReproduced": false,
+  "repositoryMutations": [],
+  "allChildrenFinal": true,
+  "wholeBranchAccepted": false,
+  "rawMavenXmlJwtLogsExcluded": true
+}

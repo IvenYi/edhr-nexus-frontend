@@ -1,0 +1,218 @@
+{
+  "sourceCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+  "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "workingTreeStatus": "",
+  "allListedSourceBytesUnchanged": true,
+  "records": [
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "sha256": "d83e315005b083b5c440be887b9aedf7860c164313b6e19f7a4004b7423f85dd",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "sha256": "14b404332734daa494c80ca69e2bc845c951e0ab799a15b8d5aaf6aab13137c1",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml",
+      "sha256": "911bdb38e05be0d05a08a0e624d69e0c1176d07eda1894c81e1fcf771ea19630",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml",
+      "sha256": "e00c93731e12f012fe030e8a51728a865f63afd6e9e0636105306873e07bded2",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sha256": "c54fdb4f7265382572fe65da61f3a31aa06667f11a6718ecd5d998119ef065d7",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "sha256": "159dc61c2247c42ef3e1327264977b797a253a49e6de4aeece06e9c0e6420a95",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sha256": "db50e6e8040052ff550c4a90faeb622be1f42a13a36d41f2fc2efb0fb917f65e",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/evidence/form-approval-transfer.yaml",
+      "sha256": "0436c274f0a1ddc644562e9de0992d5dc74df6eb72fb7ea6c0ef309e552d6efc",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/evidence/identity-subject-selector.yaml",
+      "sha256": "cec39b92b81747aeaaedebfeab490e916fa9e4b0e9bd0f4adc17fd997788b79a",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+      "sha256": "fcd6a8879c14fdf5f035177d608c5d8f22d29f79c2b24ec3fb27d5670dc03b1b",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/evidence/tenant-task-delegation-20261020.yaml",
+      "sha256": "b18d1af79a3a39f286513b77f2119683d92ada43170072234dfce0fcabf6bbd9",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/evidence/work-template-write-shape-audit-2026-10-20.md",
+      "sha256": "a3d7569f6874145e6375a15b4f520f756fc482e9042474d8c9868e739c863499",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/facts/core-business.yaml",
+      "sha256": "1e80d729a6eb62a2b9ce25c717edefa2828fdc6a097c0826d2f47b0386f7a6ac",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/facts/form-approval-transfer.yaml",
+      "sha256": "8a3b59c81fed2423d3bb56146af5a7e5693d1ba0c65c85e9d882f38ff591273f",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "sha256": "22bddb284204f93d87409f0357ddbe4d7ad3233efc41d0a497ffd993c5e26791",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-approval-transfer.yaml",
+      "sha256": "85a7ce7bd55d3ff3d95211cf722c708e0ba1bb17338888b0b861c6ffa668e094",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/ontology.yaml",
+      "sha256": "41ab25b713a3635ca41de6654da32b9bd4e785c65dea33a7fae44c7023e0a9de",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "sha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/rules/form-approval-transfer.yaml",
+      "sha256": "d151a3a48dd3f2ca6c12333733e261b4d2f2cc26fa0a27515d07e3d58e470c41",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/rules/identity.yaml",
+      "sha256": "e57691cad48f3e4c06c21bf5516e9c032c76db3b2e1bf24325427a31efed34ed",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sha256": "6780efb13aa5449aa298582f2f45cca5b83a89b3560ce9b6770e9c9d57cd502a",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "sha256": "f1833e750ed1c6b9b158e6932738f21c32cda35264a7275059a79e6e9ae912fd",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "sha256": "4411c23f5f89abb69ebd424355020e2569176e5f4b29ee592b6a09bcad49ddcd",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "sha256": "8fa8fc0c69e815d70c5f3f01e285f1489e151bc97d2d5c2be7ea797376467a67",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java",
+      "sha256": "82bf492f7a9c9127ce7ed3552f8e5fd326be58a40dc7aa166904d2c114c5f5a6",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+      "sha256": "085e33429604bef6051746c795f191b206592866918d4d0cfbd77e1deea49e6b",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java",
+      "sha256": "5f67adba3c204c55b4d11aef499fff701755d45527e323d28c7dcefb72488599",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateWriteBoundaryTest.java",
+      "sha256": "b0fb823d5d52c464ef2dc04987918e2f9a69338517f2f42f066b0e112ac1889d",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateWritePostgresTest.java",
+      "sha256": "23ca6515c8ffb118e485d74b2bb2eec4668f05c606b330078d30f827779ded7f",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "sha256": "d48edb5f3e9e82d642750f156079ae6649ca0938acc811cfc2284cd11c469ca0",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java",
+      "sha256": "947eba5141d04c8c5aa33942af29df2df4ad05cf11d872219b704a888c504ad6",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-tenant-task-transfer-browser.mjs",
+      "sha256": "10b34ae976e7f536f70f9cd979e41354ff86bc59b32a1539b8bf26ebcf3f3029",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx",
+      "sha256": "aae289bfedd2384bb2ed56f75155fdd227cfd3a9aa7954fcbce3ca057176b757",
+      "matchesBefore": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "sha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "matchesBefore": true
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "matchesBefore": true
+    },
+    {
+      "path": "codeplzreadme.md",
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "matchesBefore": true
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "matchesBefore": true
+    },
+    {
+      "path": "DESIGN.md",
+      "sha256": "23bcefdb3989761c940aab8cd6b15cce6f69107be6c94e304c61308096b49d7d",
+      "matchesBefore": true
+    }
+  ]
+}

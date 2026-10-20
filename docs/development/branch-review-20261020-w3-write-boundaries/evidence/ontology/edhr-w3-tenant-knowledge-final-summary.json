@@ -1,0 +1,25 @@
+{
+  "schema": "edhr-safe-ontology-test-summary/v1",
+  "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f tools/knowledge-model/pom.xml test",
+  "sourceCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+  "exit": 0,
+  "suites": [
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "reportSha256": "b4ef1e26db22edde4c4375f81dd6f27425c823756089a4f915e06e1742fc64a6",
+      "reportMtimeNs": 1792487374084406705
+    }
+  ],
+  "totals": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "rawLogArchived": false,
+  "businessRuntimeExecutedByOntologyInstance": false
+}

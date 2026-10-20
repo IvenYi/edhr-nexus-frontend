@@ -1,0 +1,479 @@
+{
+  "schema": "edhr-primary-finite-source-review/v1",
+  "role": "primary-implementer-not-independent-quality",
+  "sourceCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+  "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "wholeFileReviewComplete": false,
+  "scopeRecords": [
+    {
+      "id": "w3-primary:01",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "scope": "saveGraph retired-shape guard before graph setters/reference/audit",
+      "lineRange": [
+        183,
+        220
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "fa488245686f740745f9eac79d4d4a960eb2b4dc",
+      "sourceSha256": "8fa8fc0c69e815d70c5f3f01e285f1489e151bc97d2d5c2be7ea797376467a67",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:02",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "scope": "createDraftVersion explicit inherited new write",
+      "lineRange": [
+        223,
+        236
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "fa488245686f740745f9eac79d4d4a960eb2b4dc",
+      "sourceSha256": "8fa8fc0c69e815d70c5f3f01e285f1489e151bc97d2d5c2be7ea797376467a67",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:03",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "scope": "publishVersion retired shape before current flags and inherited draft",
+      "lineRange": [
+        240,
+        270
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "fa488245686f740745f9eac79d4d4a960eb2b4dc",
+      "sourceSha256": "8fa8fc0c69e815d70c5f3f01e285f1489e151bc97d2d5c2be7ea797376467a67",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:04",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "scope": "copyPublishedVersionToDraft overwrite and missing-draft branches",
+      "lineRange": [
+        275,
+        319
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "fa488245686f740745f9eac79d4d4a960eb2b4dc",
+      "sourceSha256": "8fa8fc0c69e815d70c5f3f01e285f1489e151bc97d2d5c2be7ea797376467a67",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:05",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "scope": "newDraft supported shape before ID allocation/build",
+      "lineRange": [
+        406,
+        419
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "fa488245686f740745f9eac79d4d4a960eb2b4dc",
+      "sourceSha256": "8fa8fc0c69e815d70c5f3f01e285f1489e151bc97d2d5c2be7ea797376467a67",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:06",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "scope": "validateSupportedNodeConfigurations presence-only retired-key boundary",
+      "lineRange": [
+        421,
+        441
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "fa488245686f740745f9eac79d4d4a960eb2b4dc",
+      "sourceSha256": "8fa8fc0c69e815d70c5f3f01e285f1489e151bc97d2d5c2be7ea797376467a67",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:07",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "scope": "completeTask instance/task lock and current status/operator branch only",
+      "lineRange": [
+        253,
+        291
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sourceSha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:08",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "scope": "resolveInstanceTenant stored initiator account scope",
+      "lineRange": [
+        537,
+        546
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sourceSha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:09",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "scope": "transferTargets active task/current operator and same-tenant search",
+      "lineRange": [
+        660,
+        677
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sourceSha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:10",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "scope": "transferTask current handler/reason/origin/current target/audit transaction",
+      "lineRange": [
+        679,
+        730
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sourceSha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:11",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "scope": "terminateInstance refreshed lock and DHR/status gate",
+      "lineRange": [
+        733,
+        750
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sourceSha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:12",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "scope": "lockInstance and lockTask refresh after pessimistic acquisition",
+      "lineRange": [
+        751,
+        766
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sourceSha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:13",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "scope": "isTaskOperator reads current top-level eligibility, not origin text",
+      "lineRange": [
+        767,
+        784
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sourceSha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:14",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "scope": "singleUserSnapshot preserves first raw origin and partial-history marker",
+      "lineRange": [
+        785,
+        804
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sourceSha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:15",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "scope": "transfer target and POST authenticated identity/DTO reason",
+      "lineRange": [
+        167,
+        193
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sourceSha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:16",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "scope": "search SQL eligibility/sort/limit and postfilter",
+      "lineRange": [
+        18,
+        37
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "e08ed137713b529c357a9468d7deeda13d52b6a2",
+      "sourceSha256": "f1833e750ed1c6b9b158e6932738f21c32cda35264a7275059a79e6e9ae912fd",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:17",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "scope": "require stored target canonical identity/tenant/self/availability",
+      "lineRange": [
+        39,
+        54
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "e08ed137713b529c357a9468d7deeda13d52b6a2",
+      "sourceSha256": "f1833e750ed1c6b9b158e6932738f21c32cda35264a7275059a79e6e9ae912fd",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:18",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "scope": "available ACTIVE/unlocked qualification",
+      "lineRange": [
+        56,
+        59
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "e08ed137713b529c357a9468d7deeda13d52b6a2",
+      "sourceSha256": "f1833e750ed1c6b9b158e6932738f21c32cda35264a7275059a79e6e9ae912fd",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:19",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "scope": "captureApprovers origin frozen and canAct transfer-first eligibility",
+      "lineRange": [
+        103,
+        133
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "9cf5ae4908d481f9a82988a5744302e2f47081f7",
+      "sourceSha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:20",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "scope": "transferTargets/requireTransferTarget and stored operator tenant",
+      "lineRange": [
+        135,
+        156
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "9cf5ae4908d481f9a82988a5744302e2f47081f7",
+      "sourceSha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:21",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "scope": "transferTargets and transferForm accepted canonical target/history without advancing",
+      "lineRange": [
+        375,
+        399
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "3ac817fd787bd4ac7a2faea25623b2cff280a0d5",
+      "sourceSha256": "4411c23f5f89abb69ebd424355020e2569176e5f4b29ee592b6a09bcad49ddcd",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:22",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "scope": "native todo and done current candidates plus DHR exclusion",
+      "lineRange": [
+        20,
+        31
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "bc6bfa0cc70f6d2c25b84829b8b6ff8614ddfa4a",
+      "sourceSha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:23",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "scope": "task ID reset, target GET cancellation and stale-result isolation",
+      "lineRange": [
+        29,
+        52
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sourceSha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:24",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "scope": "openTransfer and submitTransfer target/reason payload, retry/busy/cancel",
+      "lineRange": [
+        54,
+        86
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sourceSha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:25",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "scope": "transfer dialog selection/input state and required controls only",
+      "lineRange": [
+        168,
+        197
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sourceSha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:26",
+      "path": "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx",
+      "scope": "target search keyed to actual object/operation/form/copy and stale-result isolation",
+      "lineRange": [
+        255,
+        272
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "1e71e68d23acfe66cfb6dc02ba3c015796ad3aa0",
+      "sourceSha256": "aae289bfedd2384bb2ed56f75155fdd227cfd3a9aa7954fcbce3ca057176b757",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:27",
+      "path": "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx",
+      "scope": "act transfer success/failure and formAction initialization branches only",
+      "lineRange": [
+        335,
+        377
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "1e71e68d23acfe66cfb6dc02ba3c015796ad3aa0",
+      "sourceSha256": "aae289bfedd2384bb2ed56f75155fdd227cfd3a9aa7954fcbce3ca057176b757",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:28",
+      "path": "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx",
+      "scope": "existing approval dialog new tenant copy/controlled selection/busy/error",
+      "lineRange": [
+        618,
+        632
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "1e71e68d23acfe66cfb6dc02ba3c015796ad3aa0",
+      "sourceSha256": "aae289bfedd2384bb2ed56f75155fdd227cfd3a9aa7954fcbce3ca057176b757",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "fixed-awaiting-independent-QA",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    },
+    {
+      "id": "w3-primary:29",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+      "scope": "seal/hash method and raw JSON/time canonical payload prefix; preexisting W5 gap",
+      "lineRange": [
+        56,
+        103
+      ],
+      "reviewedCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "sourceBlob": "52f8cb650e0afdfda19b724aeb50cd70fa791f30",
+      "sourceSha256": "61932bd33d0c0cb8d1886335c5aab0229753e3d5f4022fdeead5f0e075a0ad6e",
+      "depth": "selected-methods-and-branches",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "preexisting-W5-followup-open",
+      "evidence": "Primary source inspection and actual focused runtime summaries, not full-file certification"
+    }
+  ],
+  "limits": [
+    "Ranges overlap old/helper records; count listed review scopes, not unique methods",
+    "No whole-file completion",
+    "No full W3/W5/branch acceptance",
+    "Audit hash probe remains failed, outside transfer assertions"
+  ]
+}

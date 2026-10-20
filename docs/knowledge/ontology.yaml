@@ -335,13 +335,13 @@ concepts:
     kind: runtime-fact
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.identity-workflow-task-single-assignee, evidence.workflow-task-multi-candidate-runtime-implementation]
+    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.identity-workflow-task-single-assignee, evidence.workflow-task-multi-candidate-runtime-implementation, evidence.tenant-task-delegation-20261020]
   - id: concept.workflow-task-resolution-snapshot
     termId: term.workflow-task-resolution-snapshot
     kind: runtime-fact
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.workflow-task-candidate-persistence, evidence.workflow-task-candidate-migration]
+    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.workflow-task-candidate-persistence, evidence.workflow-task-candidate-migration, evidence.tenant-task-delegation-20261020]
   - id: concept.form-process-subject-selector
     termId: term.form-process-subject-selector
     kind: business-configuration
@@ -1138,7 +1138,7 @@ relations:
     cardinality: one-to-zero-or-one
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.workflow-task-multi-candidate-runtime-implementation]
+    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.workflow-task-multi-candidate-runtime-implementation, evidence.tenant-task-delegation-20261020]
   - id: relation.form-process-flow-version-has-node-buttons
     source: concept.form-process-template-version
     target: concept.form-process-node-button-config
