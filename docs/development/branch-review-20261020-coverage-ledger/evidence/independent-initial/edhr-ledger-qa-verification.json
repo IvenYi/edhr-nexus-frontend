@@ -1,0 +1,35 @@
+{
+  "baseline": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+  "candidate": "319501bca472cac261c8e492c0d4682cf04f17d2",
+  "coveragePaths": 2293,
+  "entrypointCandidates": {
+    "http-annotation": 437,
+    "state-definition-candidate": 8,
+    "background-candidate": 1,
+    "frontend-route-candidate": 191
+  },
+  "migrations": 126,
+  "methodRecords": 162,
+  "methodPaths": 66,
+  "deltaPaths": 12,
+  "carryStates": {
+    "needs-delta-review": 37,
+    "retained-scoped-evidence": 125
+  },
+  "verifiedEvidenceAssertions": 454,
+  "historicalQualityArtifacts": 68,
+  "historicalQualityResults": {
+    "passed": 48,
+    "failed": 19,
+    "blocked": 1
+  },
+  "changedPaths": 29,
+  "changedHistoricalPaths": [
+    "docs/development/branch-review-20261015/NEXT.md"
+  ],
+  "formalFindingsSeparate": [
+    "QF-LEDGER-001",
+    "QF-LEDGER-002"
+  ],
+  "businessTestsExecuted": []
+}

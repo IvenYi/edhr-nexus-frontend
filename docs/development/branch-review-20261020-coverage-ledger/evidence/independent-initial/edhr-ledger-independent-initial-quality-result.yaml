@@ -1,0 +1,195 @@
+qualityResult:
+  result: failed
+  baseCommit: 1185e6daa3425bb1856df7a6db12b2e939b0afad
+  headCommit: 319501bca472cac261c8e492c0d4682cf04f17d2
+  contractBaseline:
+    sourceCommit: 319501bca472cac261c8e492c0d4682cf04f17d2
+    targetBranch: edhr-dev
+    targetCommit: 1185e6daa3425bb1856df7a6db12b2e939b0afad
+    contractReadCommit: 319501bca472cac261c8e492c0d4682cf04f17d2
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.ledger.fixed-tree
+    required: true
+    category: documentation
+    description: 固定1185树、2293路径分类及源码blob、入口候选和126迁移对应真实Git树
+    method: command
+    command: python3 /tmp/edhr-ledger-qa-verify.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-ledger-qa-verification.json：2293路径，437 HTTP/191路由/8状态/1后台候选，126迁移；只对固定基线计数。
+  - id: check.ledger.isolated-regressions
+    required: true
+    category: unit
+    description: 实际独立重跑工具10项隔离Git测试
+    method: automated-test
+    command: python3 scripts/test-branch-review-ledger.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-ledger-qa-unit-tests.txt：Ran 10 tests in 3.421s; OK；无跳过。
+  - id: check.ledger.reproduction
+    required: true
+    category: regression
+    description: 实际完整再生成逐字节一致
+    method: command
+    command: python3 scripts/build-branch-review-ledger.py --ref 1185e6daa3425bb1856df7a6db12b2e939b0afad
+      --catalog docs/development/branch-review-20261020-coverage-ledger/source-catalog.json
+      --out docs/development/branch-review-20261020-coverage-ledger/ledger --check
+    outcome: passed
+    evidence:
+    - /tmp/edhr-ledger-qa-reproduction.json；exit0。相同逻辑重现不替代独立正确性核对，见QF-LEDGER-001/003。
+  - id: check.ledger.method-provenance
+    required: true
+    category: audit
+    description: 162列明范围及454个来源断言独立Git核验，承接范围与delta保守计数
+    method: command
+    command: python3 /tmp/edhr-ledger-qa-verify.py
+    outcome: passed
+    evidence:
+    - 125 retained/37 delta，66唯一路径/12 delta路径；wholeFileReviewComplete均false；18限定说明保留。
+  - id: check.ledger.knowledge-and-findings
+    required: true
+    category: ontology
+    description: schema定义2534摘要、旧33原结论、40父子问题及暂缓来源独立核验
+    method: command
+    command: python3 /tmp/edhr-ledger-qa-knowledge-check.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-ledger-qa-knowledge-findings.json、.md；28 consistent/1 superseded/4
+      evidence-gap原状态；2暂缓high仍open；26维护结果为provenance。SQL依赖完整性单列失败，不用此项掩盖。
+  - id: check.ledger.historical-quality
+    required: true
+    category: audit
+    description: 历史质量报告结果、脏树、受测SHA和失败保留，不当作本批运行
+    method: command
+    command: python3 /tmp/edhr-ledger-qa-verify.py；另扫描全部docs/development YAML根qualityResult
+    outcome: passed
+    evidence:
+    - 68个原字节摘要去重结果：48 passed/19 failed/1 blocked；原字段一致，所有质量根均进入索引；自由命令/日志不再次复制。
+  - id: check.ledger.scope-and-history
+    required: true
+    category: requirements
+    description: 实际修改限定工具和台账，原业务、知识、架构、契约及历史报告不变
+    method: command
+    command: git diff --name-only 1185e6daa3425bb1856df7a6db12b2e939b0afad 319501bca472cac261c8e492c0d4682cf04f17d2；python3
+      /tmp/edhr-ledger-qa-verify.py
+    outcome: passed
+    evidence:
+    - 29个差异路径；旧路径仅NEXT.md；无应用、测试、迁移、知识定义、角色或治理契约变更；完整分支未完成和下一链边界明确。
+  - id: check.ledger.evidence-hygiene
+    required: true
+    category: security
+    description: 三组receipt按字节/SHA核验并对新增受控文件执行高置信私钥/token模式只计数扫描
+    method: command
+    command: python3 /tmp/edhr-ledger-qa-verify.py
+    outcome: passed
+    evidence:
+    - 所有receipt通过；高置信模式命中0；未访问账号、环境、凭据或settings，未复制私密日志。模式扫描不声明全面秘密审计。
+  - id: check.ledger.candidate-and-contract
+    required: true
+    category: documentation
+    description: base/head/候选祖先关系与实际契约读取核对
+    method: command
+    command: git merge-base 1185e6daa3425bb1856df7a6db12b2e939b0afad 319501bca472cac261c8e492c0d4682cf04f17d2；git
+      diff 1185e6daa3425bb1856df7a6db12b2e939b0afad 319501bca472cac261c8e492c0d4682cf04f17d2
+      -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge docs/architecture
+    outcome: passed
+    evidence:
+    - 目标refs/remotes/origin/edhr-dev=1185e6daa3425bb1856df7a6db12b2e939b0afad；candidate=319501bca472cac261c8e492c0d4682cf04f17d2包含目标，merge-base等于目标；实际读取candidate契约与base相同；知识0.3.25/schema1.2.0；工作树clean。
+  - id: check.ledger.whitespace
+    required: true
+    category: documentation
+    description: 候选差异空白检查
+    method: command
+    command: git -c core.whitespace=cr-at-eol diff 1185e6daa3425bb1856df7a6db12b2e939b0afad
+      319501bca472cac261c8e492c0d4682cf04f17d2 --check
+    outcome: passed
+    evidence:
+    - exit0；CSV标准CRLF按cr-at-eol处理，未忽略其他错误。
+  - id: check.ledger.coverage-hash
+    required: true
+    category: audit
+    description: 交付coverage与inventory-summary内嵌摘要一致
+    method: inspection
+    command: 计算SHA256(ledger/coverage.csv)并比较ledger/inventory-summary.json.coverageSha256
+    outcome: failed
+    evidence:
+    - 声明6e64e648a29c84d27d14ab616e581060e92f4382ac16650aedd6fa734938fd02；实际7c588e1830fd7d66aeb3f5f3d715c2607b8b0e1a85064da01141fa7c02277e86。
+  - id: check.ledger.sql-dependency-guard
+    required: true
+    category: regression
+    description: 原列明SQL实现依赖变化时必须降级，不遗漏源码类型
+    method: automated-test
+    command: python3 /tmp/edhr-ledger-qa-sql-dependency-repro.py
+    outcome: failed
+    evidence:
+    - /tmp/edhr-ledger-qa-sql-dependency-repro.json：仅SQL变化，sqlIncluded=false，actual
+      retained-scoped-evidence，expected needs-delta-review；6条真实记录漏列同一0089 SQL。
+  - id: check.ledger.work-package-routing
+    required: true
+    category: documentation
+    description: NEXT剩余问题归属与固定来源一致
+    method: inspection
+    command: 对照NEXT.md:14和ledger/findings.json workPackage
+    outcome: failed
+    evidence:
+    - NEXT将AUD-H006/H007/H008与H012同列于W3剩余；原21主线/当前catalog明确H006/H007/H008是W4，H012才是W3。
+  findings:
+  - id: QF-LEDGER-001
+    severity: medium
+    scope: scripts/build-branch-review-ledger.py; ledger/inventory-summary.json
+    summary: 生成器丰富coverage.csv后保留旧inventory-summary.coverageSha256，交付内嵌摘要错误。
+    reproductionSteps:
+    - 在候选319501bc读取inventory-summary.json.coverageSha256。
+    - 独立计算同目录coverage.csv的SHA256并比较；--check虽通过但重复同一错误。
+    expectedResult: 内嵌coverageSha256定位实际交付的coverage.csv字节，或明确区分临时旧清单摘要与最终摘要。
+    actualResult: 声明6e64e648…38fd02，实际7c588e18…277e86。
+    evidence:
+    - check.ledger.coverage-hash；独立计算结果如上。
+    resolutionStatus: open
+    resolutionEvidence: []
+  - id: QF-LEDGER-002
+    severity: low
+    scope: docs/development/branch-review-20261015/NEXT.md:14
+    summary: 实时入口把W4的H006/H007/H008列为W3剩余，影响下批审查归属。
+    reproductionSteps:
+    - 读取NEXT.md第14行的W3剩余清单。
+    - 对照ledger/findings.json相应三个完整ID的workPackage与原始主线。
+    expectedResult: W3保留H009/H010/H012；H006/H007/H008明确归属W4待裁定。
+    actualResult: H006/H007/H008与H012合列于W3剩余。
+    evidence:
+    - check.ledger.work-package-routing；ledger/findings.json中三个workPackage均W4。
+    resolutionStatus: open
+    resolutionEvidence: []
+  - id: QF-LEDGER-003
+    severity: medium
+    scope: scripts/build-branch-review-ledger.py:DEPENDENCY/reconcile_semantics
+    summary: 依赖提取扩展名白名单遗漏.sql，列明SQL变化后仍可能错误保留历史证据。
+    reproductionSteps:
+    - 执行/tmp/edhr-ledger-qa-sql-dependency-repro.py创建隔离Git历史。
+    - semantic implementationEvidence显式引用SQL，原SQL CREATE TABLE改为DROP TABLE，其他源码/记录不变。
+    - 运行reconcile_semantics，比较sqlIncluded及carryStatus。
+    expectedResult: 列明SQL依赖纳入比较，变化使carryStatus=needs-delta-review。
+    actualResult: sqlIncluded=false，carryStatus=retained-scoped-evidence。真实33条有6条漏列0089
+      SQL，当前该SQL blob未变故26/7计数暂不受影响。
+    evidence:
+    - /tmp/edhr-ledger-qa-sql-dependency-repro.json
+    - /tmp/edhr-ledger-qa-knowledge-findings.json
+    resolutionStatus: open
+    resolutionEvidence: []
+  residualRisks:
+  - id: risk.full-branch-incomplete
+    description: 仅验收L1工具及台账；162范围有重叠、分类启发式、33条为旧语义、旧qualityResult均历史，业务审查未完成。
+    impact: 不得据本结果宣称全分支可发布或当前业务运行通过。
+    mitigation: 保留37 delta/26依赖待核、4 gap/2用户暂缓high，下一批沿最新追溯保存—冻结—历史读取继续。
+  - id: risk.business-runs-not-executed
+    description: 本实例未运行应用、浏览器、数据库、迁移或真实清理；无业务文件改动。
+    impact: 本次工具回归不提供业务运行验收。
+    mitigation: 后续业务切片按风险另行验证；不查询或触发Actions，不合并部署。
+  blockingConditions: []

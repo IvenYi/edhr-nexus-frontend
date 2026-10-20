@@ -1,0 +1,90 @@
+{
+  "independentExtraction": "schema top-level plus typed nested collections, no production generator imported",
+  "currentKnowledgeIds": 2534,
+  "canonicalHashesMatched": 2534,
+  "historicalSemanticRows": 33,
+  "conclusions": {
+    "consistent": 28,
+    "superseded": 1,
+    "evidence-gap": 4
+  },
+  "changedDependencyRecords": 26,
+  "unchangedDependencyRecords": 7,
+  "findingRows": 40,
+  "masterAdditionalDeferred": [
+    21,
+    17,
+    2
+  ],
+  "preservedKnowledgeGaps": 4,
+  "knowledgeSyncProvenanceReports": 26,
+  "claimsNewSemanticPass": false,
+  "dependencyOmissions": [
+    {
+      "id": "DEC-0062-02",
+      "missing": [
+        {
+          "path": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+          "sourceBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+          "currentBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+          "changed": false
+        }
+      ]
+    },
+    {
+      "id": "DEC-0062-06",
+      "missing": [
+        {
+          "path": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+          "sourceBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+          "currentBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+          "changed": false
+        }
+      ]
+    },
+    {
+      "id": "anchor.dhr-instance-query-permission",
+      "missing": [
+        {
+          "path": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+          "sourceBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+          "currentBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+          "changed": false
+        }
+      ]
+    },
+    {
+      "id": "fact.dhr-instance.has-view-permission",
+      "missing": [
+        {
+          "path": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+          "sourceBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+          "currentBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+          "changed": false
+        }
+      ]
+    },
+    {
+      "id": "rule.dhr-instance-query-permission",
+      "missing": [
+        {
+          "path": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+          "sourceBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+          "currentBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+          "changed": false
+        }
+      ]
+    },
+    {
+      "id": "rule.dhr-instance-unique-per-production-object",
+      "missing": [
+        {
+          "path": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+          "sourceBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+          "currentBlob": "811927fe470afc02b1c5f54f2ded5440d386f24f",
+          "changed": false
+        }
+      ]
+    }
+  ]
+}

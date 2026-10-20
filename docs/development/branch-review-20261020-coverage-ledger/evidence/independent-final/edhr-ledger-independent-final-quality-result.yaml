@@ -1,0 +1,210 @@
+qualityResult:
+  result: passed
+  baseCommit: 1185e6daa3425bb1856df7a6db12b2e939b0afad
+  headCommit: cbf83d0eef9df2c18f6296b8426383775e56b430
+  contractBaseline:
+    sourceCommit: cbf83d0eef9df2c18f6296b8426383775e56b430
+    targetBranch: edhr-dev
+    targetCommit: 1185e6daa3425bb1856df7a6db12b2e939b0afad
+    contractReadCommit: 319501bca472cac261c8e492c0d4682cf04f17d2
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.ledger.fixed-tree
+    required: true
+    category: documentation
+    description: 固定1185树、2293路径分类及源码blob、入口候选和126迁移对应真实Git树
+    method: command
+    command: python3 /tmp/edhr-ledger-qa-final-verify.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-ledger-qa-final-verification.json：独立重核2293路径及全部blob/分类字段，437 HTTP/191路由/8状态/1后台候选与126迁移；仅描述固定1185树。
+  - id: check.ledger.isolated-regressions
+    required: true
+    category: unit
+    description: 实际独立重跑工具11项隔离Git测试，包含最终CSV摘要与SQL-only降级回归
+    method: automated-test
+    command: python3 scripts/test-branch-review-ledger.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-ledger-qa-final-unit-tests.txt：Ran 11 tests in 6.926s; OK，无跳过。新增断言未降低标准；初轮红证原样归档。
+  - id: check.ledger.reproduction
+    required: true
+    category: regression
+    description: 实际完整再生成逐字节一致
+    method: command
+    command: python3 scripts/build-branch-review-ledger.py --ref 1185e6daa3425bb1856df7a6db12b2e939b0afad
+      --catalog docs/development/branch-review-20261020-coverage-ledger/source-catalog.json
+      --out docs/development/branch-review-20261020-coverage-ledger/ledger --check
+    outcome: passed
+    evidence:
+    - /tmp/edhr-ledger-qa-final-reproduction.json：完整临时重建逐字节一致，exit0；另执行独立摘要及依赖正确性检查，不以可复现代替正确性。
+  - id: check.ledger.method-provenance
+    required: true
+    category: audit
+    description: 162列明范围及454个来源断言独立Git核验，承接范围与delta保守计数
+    method: command
+    command: python3 /tmp/edhr-ledger-qa-final-verify.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-ledger-qa-final-verification.json：重新核验162范围/454来源断言，125 retained/37
+      delta，66唯一路径/12 delta路径；whole-file均false，18限定保留。
+  - id: check.ledger.knowledge-and-findings
+    required: true
+    category: ontology
+    description: schema定义2534摘要、旧33原结论、40父子问题及暂缓来源独立核验
+    method: command
+    command: python3 /tmp/edhr-ledger-qa-final-knowledge-check.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-ledger-qa-final-knowledge-findings.json和.md：独立重算2534 schema定义摘要、33旧记录与所有列明依赖；遗漏0。原28/1/4、26
+      delta/7 retained、40=21+17+2问题来源、4gap/2暂缓high与26维护provenance保持；不新增语义通过。
+  - id: check.ledger.historical-quality
+    required: true
+    category: audit
+    description: 历史质量报告结果、脏树、受测SHA和失败保留，不当作本批运行
+    method: command
+    command: python3 /tmp/edhr-ledger-qa-final-verify.py；另扫描全部docs/development YAML根qualityResult
+    outcome: passed
+    evidence:
+    - /tmp/edhr-ledger-qa-final-verification.json：重新核验68历史结果48 passed/19 failed/1
+      blocked、受测SHA/脏树原值和元数据；质量索引自身与初轮相同。初轮全量YAML根扫描的无遗漏结论复用，基线仍1185且索引输入未改。
+  - id: check.ledger.scope-and-history
+    required: true
+    category: requirements
+    description: 实际修改限定工具和台账，原业务、知识、架构、契约及历史报告不变
+    method: command
+    command: git diff --name-only 1185e6daa3425bb1856df7a6db12b2e939b0afad cbf83d0eef9df2c18f6296b8426383775e56b430；python3
+      /tmp/edhr-ledger-qa-final-verify.py
+    outcome: passed
+    evidence:
+    - 最终base..head共45个路径，全部为新工具/新批目录/旧NEXT；只有NEXT为base已有路径。未改应用、迁移、知识定义、架构、角色/治理契约；PR5/6不重开，无业务规则变更。初轮failed原件与/tmp原始字节逐项相同。
+  - id: check.ledger.evidence-hygiene
+    required: true
+    category: security
+    description: 三组receipt按字节/SHA核验并对新增受控文件执行高置信私钥/token模式只计数扫描
+    method: command
+    command: python3 /tmp/edhr-ledger-qa-final-verify.py
+    outcome: passed
+    evidence:
+    - 重新核验source-preparation、primary、ledger以及新增independent-initial/primary-followup
+      receipt，摘要和字节一致；对最终45个差异路径高置信私钥/token模式命中0。仅安全Git夹具输出和索引证据，未访问凭据/账号/环境/settings。
+  - id: check.ledger.candidate-and-contract
+    required: true
+    category: documentation
+    description: base/head/候选祖先关系与实际契约读取核对
+    method: command
+    command: git merge-base 1185e6daa3425bb1856df7a6db12b2e939b0afad cbf83d0eef9df2c18f6296b8426383775e56b430；git
+      diff 1185e6daa3425bb1856df7a6db12b2e939b0afad cbf83d0eef9df2c18f6296b8426383775e56b430
+      -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge docs/architecture
+    outcome: passed
+    evidence:
+    - base=1185e6daa3425bb1856df7a6db12b2e939b0afad；head/tested candidate=cbf83d0eef9df2c18f6296b8426383775e56b430；merge-base等于base，目标仍1185，工作树clean。实际契约在319501bc已读取，新候选差异确认契约/知识均无变化，故保留真实contractReadCommit=319501bc；知识0.3.25/schema1.2.0。
+  - id: check.ledger.whitespace
+    required: true
+    category: documentation
+    description: 候选差异空白检查
+    method: command
+    command: git -c core.whitespace=cr-at-eol diff 1185e6daa3425bb1856df7a6db12b2e939b0afad
+      cbf83d0eef9df2c18f6296b8426383775e56b430 --check
+    outcome: passed
+    evidence:
+    - 最终base..cbf83d0e --check exit0；CSV仅以cr-at-eol识别标准CRLF，未忽略其他错误。
+  - id: check.ledger.coverage-hash
+    required: true
+    category: audit
+    description: 交付coverage与inventory-summary内嵌摘要一致
+    method: inspection
+    command: 计算SHA256(ledger/coverage.csv)并比较ledger/inventory-summary.json.coverageSha256
+    outcome: passed
+    evidence:
+    - 实际交付coverage SHA256与inventory-summary.coverageSha256均为7c588e1830fd7d66aeb3f5f3d715c2607b8b0e1a85064da01141fa7c02277e86；新隔离Git断言及所有receipt通过。
+  - id: check.ledger.sql-dependency-guard
+    required: true
+    category: regression
+    description: 原列明SQL实现依赖变化时必须降级，不遗漏源码类型
+    method: automated-test
+    command: python3 /tmp/edhr-ledger-qa-final-sql-dependency-repro.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-ledger-qa-final-sql-dependency-repro.json：原SQL-only隔离反例现sqlIncluded=true且actual
+      needs-delta-review；主测试另覆盖SQL/XML/mjs。真实33条中6条0089 SQL依赖均补齐，blob未变故26/7计数保持。
+  - id: check.ledger.work-package-routing
+    required: true
+    category: documentation
+    description: NEXT剩余问题归属与固定来源一致
+    method: inspection
+    command: 对照NEXT.md:14和ledger/findings.json workPackage
+    outcome: passed
+    evidence:
+    - NEXT:14已明确W3剩余H009/H010/H012，H006/H007/H008属于W4主数据待裁定，与原主线和当前findings workPackage一致。
+  findings:
+  - id: QF-LEDGER-001
+    severity: medium
+    scope: scripts/build-branch-review-ledger.py; ledger/inventory-summary.json
+    summary: 生成器丰富coverage.csv后保留旧inventory-summary.coverageSha256，交付内嵌摘要错误。
+    reproductionSteps:
+    - 在候选319501bc读取inventory-summary.json.coverageSha256。
+    - 独立计算同目录coverage.csv的SHA256并比较；--check虽通过但重复同一错误。
+    expectedResult: 内嵌coverageSha256定位实际交付的coverage.csv字节，或明确区分临时旧清单摘要与最终摘要。
+    actualResult: 声明6e64e648…38fd02，实际7c588e18…277e86。
+    evidence:
+    - check.ledger.coverage-hash；独立计算结果如上。
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: cbf83d0eef9df2c18f6296b8426383775e56b430
+    - type: command
+      reference: check.ledger.coverage-hash；check.ledger.isolated-regressions
+  - id: QF-LEDGER-002
+    severity: low
+    scope: docs/development/branch-review-20261015/NEXT.md:14
+    summary: 实时入口把W4的H006/H007/H008列为W3剩余，影响下批审查归属。
+    reproductionSteps:
+    - 读取NEXT.md第14行的W3剩余清单。
+    - 对照ledger/findings.json相应三个完整ID的workPackage与原始主线。
+    expectedResult: W3保留H009/H010/H012；H006/H007/H008明确归属W4待裁定。
+    actualResult: H006/H007/H008与H012合列于W3剩余。
+    evidence:
+    - check.ledger.work-package-routing；ledger/findings.json中三个workPackage均W4。
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: cbf83d0eef9df2c18f6296b8426383775e56b430
+    - type: command
+      reference: check.ledger.work-package-routing；NEXT.md:14
+  - id: QF-LEDGER-003
+    severity: medium
+    scope: scripts/build-branch-review-ledger.py:DEPENDENCY/reconcile_semantics
+    summary: 依赖提取扩展名白名单遗漏.sql，列明SQL变化后仍可能错误保留历史证据。
+    reproductionSteps:
+    - 执行/tmp/edhr-ledger-qa-sql-dependency-repro.py创建隔离Git历史。
+    - semantic implementationEvidence显式引用SQL，原SQL CREATE TABLE改为DROP TABLE，其他源码/记录不变。
+    - 运行reconcile_semantics，比较sqlIncluded及carryStatus。
+    expectedResult: 列明SQL依赖纳入比较，变化使carryStatus=needs-delta-review。
+    actualResult: sqlIncluded=false，carryStatus=retained-scoped-evidence。真实33条有6条漏列0089
+      SQL，当前该SQL blob未变故26/7计数暂不受影响。
+    evidence:
+    - /tmp/edhr-ledger-qa-sql-dependency-repro.json
+    - /tmp/edhr-ledger-qa-knowledge-findings.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: cbf83d0eef9df2c18f6296b8426383775e56b430
+    - type: command
+      reference: check.ledger.sql-dependency-guard；/tmp/edhr-ledger-qa-final-sql-dependency-repro.json
+  residualRisks:
+  - id: risk.full-branch-incomplete
+    description: 仅验收L1工具及台账；162范围有重叠、分类启发式、33条为旧语义、旧qualityResult均历史，业务审查未完成。
+    impact: 不得据本结果宣称全分支可发布或当前业务运行通过。
+    mitigation: 保留37 delta/26依赖待核、4 gap/2用户暂缓high，下一批沿最新追溯保存—冻结—历史读取继续。
+  - id: risk.business-runs-not-executed
+    description: 本实例未运行应用、浏览器、数据库、迁移或真实清理；无业务文件改动。
+    impact: 本次工具回归不提供业务运行验收。
+    mitigation: 后续业务切片按风险另行验证；不查询或触发Actions，不合并部署。
+  blockingConditions: []

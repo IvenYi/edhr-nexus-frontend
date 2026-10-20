@@ -1,0 +1,57 @@
+# 跨批覆盖总账恢复
+
+本批为 L1 审查工具及台账维护。目标是修复 PR17 前已披露的跨批总账缺口，恢复可续接的审查入口，不修改业务实现、知识政策、数据库或历史数据。全分支 W0→W7 审查仍在进行。
+
+已交付 [PR18](https://github.com/IvenYi/edhr-nexus-frontend/pull/18)，目标 `edhr-dev`，未自动合并。正式独立受测仍为 `cbf83d0e`；后续仅 L0 原件归档、说明及 PR 登记。
+
+## 固定基线与来源
+
+2026-10-20 显式获取 `origin/edhr-dev`，固定提交 `1185e6daa3425bb1856df7a6db12b2e939b0afad`，树 `ffd9dc58be3ea39baa031a0089e7fd9a9607de19`。PR17 已人工合并于 `336466d95c3866581e5d7d641544756ba7807946`，合并树与交付 `6c93b38662ee3b795306129ff093c22fcfd75032` 相同。之后用户新增 `2c5ca14e`、`dd46244c`、`d7dd56d3`、`1185e6da` 四次提交，含追溯单绑、空白区域身份和显示/保存修复及其证据；本批纳入文件差异，不冒充已重新验收这些业务改动。
+
+AGENTS、codeplz、角色/交接契约和 DESIGN 相对 PR17 无变化；知识版本仍为 0.3.25、schema 1.2.0。原 CSV、JSONL、质量报告和失败记录保持原字节，仅更新旧目录的实时入口 NEXT.md。基线清单描述上述固定提交，新增本批工具/台账文件不倒填到该历史树。
+
+来源目录见 [source-catalog.json](source-catalog.json)。三个只读来源整理实例的原始返回及 SHA 存于 [evidence/source-preparation](evidence/source-preparation/receipts.json)，它们是索引准备材料，不是正式独立质量结论。规范目录逐条保留原证据提交、路径、定位、SHA，以及受审源码提交、blob、SHA、方法范围和限定说明。没有通过短 ID 合并不同的 F002/T001；父问题和子问题关系保留，不能把记录数当唯一缺陷数。
+
+## 四种进度分别呈现
+
+| 维度 | 实际结果 | 边界 |
+| --- | --- | --- |
+| 分类盘点 | 2,293 个受控路径；恢复原 14 列及显式源码 blob、证据关联；HTTP 437、前端路由 191、状态定义 8、后台 1 个候选，迁移 126 个文件 | 路径分类及入口为启发式候选，需要源码核对；不是人工逐文件审查完成 |
+| 源码核对 | 汇总 162 条列明范围记录，涉及 66 个唯一源码路径；125 条文件 blob 未变，37 条变化需增量复核，涉及 12 个路径 | 条目可能重叠，非 162 个不同方法，也没有全部方法分母；只承接原范围，整文件完成数为 0 |
+| 知识语义 | schema 声明集合提取 2,534 个唯一 ID；旧 33 条结论保留：28 consistent、1 superseded、4 evidence-gap；其中文本都未变，26 条依赖变化，7 条保留原范围证据 | 26 份维护结果仅作 provenance；未审项、旧 gap 和后续 knowledgeSync 不转为当前一致通过；本批新增语义审查为 0 |
+| 整改与验收 | 40 条父/子/工具/文档/暂缓问题记录；68 个按原字节摘要去重的历史 qualityResult，保留 48 passed、19 failed、1 blocked 原状态 | 不是 40 个唯一缺陷或 68 次不同测试；不重写旧报告、不将历史通过计为本批执行，本批业务运行检查为 0 |
+
+机器汇总见 [ledger/summary.json](ledger/summary.json)。源码范围、知识记录、问题、质量结果分别位于 method-reviews.jsonl、semantic-reviews.jsonl / knowledge-records.jsonl、findings.json、quality-report-index.json。原始自由文本日志和命令不再次复制到验收索引，仅保留 Git 来源定位及受控元数据。
+
+## 承接规则与可复现验证
+
+文件 blob 相同只保留列明范围的历史证据，不声称当前运行通过；文件变化或移除时标为 needs-delta-review，不断言每个方法都变化。缺少来源提交记 evidence-gap，错误提交、源码摘要或证据摘要直接报错，不回退到当前 HEAD。知识记录使用排序键规范 JSON 的 SHA256；定义仅取 schema 的顶层/嵌套集合，不把引用对象的 id 算成定义。知识自身摘要相同仍需比较原记录列明的源码/断言依赖；这是有限依赖列表，不是完整自动依赖图。
+
+使用 Python 3 和 PyYAML（当前 3.12 / 6.0.3），在仓库根目录执行：
+
+```sh
+python3 scripts/test-branch-review-ledger.py
+python3 scripts/build-branch-review-ledger.py --ref 1185e6daa3425bb1856df7a6db12b2e939b0afad --catalog docs/development/branch-review-20261020-coverage-ledger/source-catalog.json --out docs/development/branch-review-20261020-coverage-ledger/ledger --check
+```
+
+普通生成必须使用新的空输出目录；`--check` 在临时目录重建并逐字节比较，不覆盖已有证据。更换目标提交时须先对新变更增量核对来源目录，再使用新目录生成，不把本目录误称最新结果。保留来源整理说明中的 18 条范围/时间限定与原 H009 标签勘误。
+
+## 下一条审查链与剩余任务
+
+总账收尾后先显式 fetch 最新 edhr-dev，在新基线上审查用户新增追溯单绑的 W2→W1 边界：Shell/prepareDesign → 配置 validateConfiguration → ExecutionSnapshotBuilder 的表单快照 → 历史读取。核对空白区域身份、主表显示/保存、旧 preview/validate 消费差异及新旧快照兼容；0116/0117 清理只读源码与隔离验证，不执行真实清理，不恢复历史数据。审查允许得出无缺陷结论；只有证实缺陷才另起最小整改切片。
+
+随后回到 W3：H009 为 completionCondition 透传，H010 为旧条件形状，两者是 source-confirmed/pending，不是本批重新裁定；还须覆盖 saveGraph 之外 newDraft/copy 入口。H012 为通用工作流转移候选来源快照，与 H009 不是同一项。H006/H007/H008/H012 保留待裁定，H003/H004 已合入、H005 不重开。
+
+W1 四个知识 gap 与两项旧 DHR high 保留。后者为完整证据影响比较/主动通知、真实 A12 来源变更/作废生效与消费联调；因记录控制上游尚未实现，依 2026-10-16 用户确认暂缓，仍 open，不计已解决。无依赖的现有写入口、历史读取和权限审查继续。
+
+W4 主数据/生产累计、W5 构建/依赖/迁移/后台幂等、W6 已有七项具体拆分方案的择项验证、W7 遗漏反查和最终集成独立验证均未按工作包完成。已有具体拆分方案保留，不启动大重构。没有可信的全方法/场景分母，不发布整体完成百分比。
+
+主侧初轮 10 项隔离 Git 回归及再生成通过，原件存于 [evidence/primary/receipts.json](evidence/primary/receipts.json)。全新独立实例对 `319501bc` 正式 failed：发现扩展 CSV 后内嵌摘要未刷新（medium）、SQL 依赖提取遗漏（medium）、NEXT 中 W3/W4 归属错误（low）；完整原件见 [evidence/independent-initial/receipts.json](evidence/independent-initial/receipts.json)。可复现不代表正确性，初轮结果不覆盖、不改为 passed。
+
+主侧补充最终 CSV 摘要及仅 SQL 变化回归，对初轮工具实际得到 1 failure / 1 error；修复后 11 项全部通过，SQL/XML/mjs 列明依赖均纳入，真实旧 33 项的 26 delta / 7 retained 计数不变。原受测候选保留于 Git，新候选只更新本批生成物，不覆盖旧批历史 CSV/报告。红绿原件见 [evidence/primary-followup/receipts.json](evidence/primary-followup/receipts.json)。
+
+最终独立实例（未参与修复）对 `cbf83d0eef9df2c18f6296b8426383775e56b430` 正式 **passed**，13 项必需检查全部通过、三项发现 resolved，无本批阻断。实际独立通过 11 项工具测试、完整字节再生成和来源核对；[完整原件及摘要](evidence/independent-final/receipts.json)保留实际受测 SHA。专业及子实例均已正式结束。
+
+主审已在创建 PR 前完成[任务漂移/阶段/后续正式复核](scope-review.md)并实际向用户汇报。随后仅 L0 归档、报告和 PR 登记；不将文档提交称重新运行测试。本批未运行应用测试/数据库/浏览器；不开启 Actions，不合并、不部署、不执行迁移。建议仅按本批工具/台账范围验收。
+
+归档后的 Git 空白检查发现独立原件 `edhr-ledger-qa-final-knowledge-check.py:50` 有一行原始尾随空格。按原字节/SHA 保留该辅助脚本；精确排除此一个原件后的其余差异空白检查通过。没有改写原独立脚本来制造全差异静态通过，该限制不涉及运行时源码。
