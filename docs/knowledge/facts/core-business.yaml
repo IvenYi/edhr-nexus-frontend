@@ -2324,7 +2324,7 @@ facts:
     reviewStatus: unreviewed
   - id: fact.catalog.task-candidatemembership
     name: "规则事实 task.candidateMembership"
-    conceptId: concept.workflow-task-resolution-snapshot
+    conceptId: concept.workflow-task
     valueType: string
     sourceType: derived
     sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java
@@ -2333,10 +2333,10 @@ facts:
     allowedOperators: [contains-actor]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.workflow-task-candidate-persistence, evidence.workflow-task-multi-candidate-runtime-implementation]
-    sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
-    sourceLocator: WorkflowTask.candidateSnapshot 为序列化 JSON 字符串；WorkflowEngine.parseCandidateIds 读取 userIds，contains-actor 需解析该冻结集合。本事实仅定位非 unrestricted 且候选非空分支，不以 SubjectResolver 当前成员重算，也不概括旧 assignee 回退
-    capturedAt: '2026-10-12'
+    evidenceIds: [evidence.workflow-task-candidate-persistence, evidence.workflow-task-multi-candidate-runtime-implementation, evidence.tenant-task-delegation-20261020]
+    sourceRevision: 4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2
+    sourceLocator: WorkflowTask.candidateSnapshot为序列化JSON；WorkflowEngine.parseCandidateIds读取当前有效userIds，contains-actor判断该集合。未转办时为原创建候选，按DEC-0081显式委托后仅当前受让人；另行保留的原创建解析证据不授予处理权。本事实只定位非unrestricted且有效集合非空分支，不以SubjectResolver当前成员重算，也不概括旧assignee回退。
+    capturedAt: '2026-10-20'
     reviewStatus: reviewed
   - id: fact.catalog.voidrequest-approved
     name: "规则事实 voidRequest.approved"

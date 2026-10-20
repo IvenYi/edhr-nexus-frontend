@@ -19,7 +19,7 @@ decisions:
         status: implemented
         visibility: internal
     supersedes: []
-    evidenceIds: [evidence.production-work-form-node-business-document-config, evidence.production-work-flow-editor-ui, evidence.production-work-flow-version-draft-persistence]
+    evidenceIds: [evidence.production-work-form-node-business-document-config, evidence.production-work-flow-editor-ui, evidence.production-work-flow-version-draft-persistence, evidence.work-template-write-shape-audit-20261020]
     acceptanceScenarios:
       - id: scenario.form-node-business-document-label
         given: 用户选中作业流程中的表单填写节点
@@ -35,13 +35,14 @@ decisions:
         evidenceRequirements: [节点配置源码检查, 草稿保存回归, 数据库迁移清单检查]
     implementationDiscrepancies:
     - id: discrepancy.production-work-form-completion-condition-passthrough
-      status: open
+      status: resolved
       severity: medium
       visibility: internal
-      path: gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
-      lineHint: 654
-      summary: 'provenance: original-evidence；DEC-0010-02 要求后续节点保存不写入 completionCondition。当前非 CONDITION 节点 normalizeFlowGraph 保留原 config，persistentFlowGraph 只移除 selected/dragging，后端 WorkTemplateController.saveGraph 序列化输入 nodes；因此载入或直接提供含该字段的 FORM 节点后仍可能在草稿保存中透传。无配置入口、无业务语义读取器不等于字段不落库。确认规范保留，未增加兼容政策；本次只记录查明差异，未修改代码或运行持久化测试。'
+      path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+      lineHint: 406
+      summary: 'provenance: original-evidence；原差异为FORM completionCondition可在载入或直接输入后透传，正常新建UI并不生成该字段。84c5b6d6的局部guard在保存、发布前置、覆盖复制及newDraft继承的新写入前按presence拒绝该字段（含null），不读取其业务值、不剥除键后写入、不修复历史源。主侧85项新矩阵及原73项回归、12项真实PG正反例原件支持有限实现修复；本体仅亲读源码及安全摘要，独立质量仍取本批正式结果，不能将resolved扩大为完整W3或旧数据已清理。'
       evidenceIds:
       - evidence.production-work-form-node-business-document-config
       - evidence.production-work-flow-editor-ui
       - evidence.production-work-template-configuration-controller
+      - evidence.work-template-write-shape-audit-20261020

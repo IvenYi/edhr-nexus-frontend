@@ -1,0 +1,51 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0081
+    title: 通用工作流与普通生产表单的租户内显式委托
+    status: specified
+    visibility: internal
+    context: user-confirmed；2026-10-20整体代码审查在H012中区分了创建时候选来源与转办后当前处理责任。用户理解现有通用工作流、普通生产表单和DHR三条路径后明确选择“通用工作流与普通生产表单都允许租户内委托；DHR 保持”。这是本轮新确认的目标范围政策，不是对2026-09-04或2026-09-17原始确认的回填；只局部替代DEC-0031-03中未区分显式委托的绝对表述，以及DEC-0055-02中已配置审批主体时目标只能来自原候选范围的限制，其他创建、处理、原因、状态和证据边界保留。新政策保持specified/internal，实施及运行验收分别取本轮固定候选与实际证据，不提升知识版本或P0阶段。
+    decisionStatements:
+      - id: DEC-0081-01
+        statement: 通用工作流任务与普通生产表单审批节点允许当前有处理权的用户显式委托给同租户正常可用的其他用户，目标可以在创建或节点到达时冻结的原候选集合之外。有效且未锁定、不得转给自己及当前处理权的保护继续适用；普通生产表单不再因节点已配置审批主体而将转办目标限于原候选集合。
+        status: specified
+        visibility: internal
+      - id: DEC-0081-02
+        statement: 原创建或节点到达时的候选解析结果、主体命中来源及未解析主体作为来源证据保留，不随组织关系变化重算，也不因显式委托被覆盖。当前受让人单独记录；转办成功后仅当前目标具有该任务或审批节点的处理权，原候选人和上一受让人不因存在于来源证据中继续拥有处理权。再次转办仍按同租户正常可用用户范围判断，并保留同一份原来源证据。
+        status: specified
+        visibility: internal
+      - id: DEC-0081-03
+        statement: 显式转办需选择明确目标并记录原因、转出人、目标人、任务或表单份及节点、发生时间；转办只改变当前处理责任，不推进节点、不修改表单内容、不产生审批结果。普通生产表单继续复用原生产执行事务、结构化历史和不可变审计及原待办投影；通用任务继续保持单个逻辑任务。
+        status: specified
+        visibility: internal
+      - id: DEC-0081-04
+        statement: DHR保持当前专属审批通过和退回整理路径，通用任务接口继续禁止对DHR任务转办或绕过其证据检查。本决策不开发记录控制变更或作废的转办运行时，不扩展管理员重新分配、签署例外、审批跳过或完整多租户隔离；没有授权恢复已丢失的历史候选来源。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0031, DEC-0055]
+    evidenceIds: [evidence.tenant-task-delegation-20261020]
+    acceptanceScenarios:
+      - id: scenario.tenant-transfer-target-outside-original-candidates
+        given: 用户具有当前通用任务或普通生产表单审批节点处理权，目标不在原冻结候选集合中但属于同租户且有效未锁定
+        when: 用户显式选择目标并填写原因转办
+        then: 允许委托，目标成为唯一当前处理人；原来源保留，节点、表单内容和审批结果不变
+        evidenceIds: [evidence.tenant-task-delegation-20261020]
+        evidenceRequirements: [集合外同租户目标正向, 待办与完成权限回归, 实际目标选择与原因交互]
+      - id: scenario.tenant-transfer-target-rejected
+        given: 转办请求由无当前处理权用户发起，或目标跨租户、停用、锁定、为自己，或目标与原因缺失
+        when: 系统执行目标查询或转办命令
+        then: 拒绝不合法请求且不留下部分责任、状态、日志或审计变更
+        evidenceIds: [evidence.tenant-task-delegation-20261020]
+        evidenceRequirements: [服务端负向, 原生数据库事务验证, 搜索和执行时同一目标范围]
+      - id: scenario.tenant-transfer-repeated-origin-preserved
+        given: 任务已成功委托且仍可处理，原候选来源已保留
+        when: 当前受让人再次委托给同租户正常可用的另一用户
+        then: 同一原来源完整保留，前任及原候选不再可处理，只有新受让人继续处理，节点及审批结果不变
+        evidenceIds: [evidence.tenant-task-delegation-20261020]
+        evidenceRequirements: [首次与重复转办原件保持, 待办SQL与动作授权一致, 单逻辑任务回归]
+      - id: scenario.tenant-transfer-dhr-boundary-kept
+        given: 任务属于DHR汇总审批
+        when: 用户尝试调用通用转办入口
+        then: 继续拒绝通用转办；DHR审批通过和退回整理及其来源、签署和证据校验保持
+        evidenceIds: [evidence.tenant-task-delegation-20261020]
+        evidenceRequirements: [DHR防绕过回归, DHR专属动作源码核对]

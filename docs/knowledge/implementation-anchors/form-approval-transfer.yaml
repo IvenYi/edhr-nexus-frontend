@@ -18,15 +18,15 @@ implementationAnchors:
   - id: anchor.form-approval-transfer-runtime
     targetId: rule.form-approval-transfer
     targetType: rule
-    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java]
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java]
     apiReferences: ["GET /api/v1/production/execution/{id}/transfer-targets", "POST /api/v1/production/execution/{id}/actions", "GET /api/v1/form-worklists/REVIEW_PENDING"]
     databaseReferences: [production_execution.state_json, audit_event]
     uiReferences: [gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionEngineTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.form-approval-transfer-runtime, evidence.form-approval-transfer-api, evidence.form-approval-transfer-worklist-ui, evidence.form-approval-transfer-tests]
-    sourceRevision: working-tree
-    sourceLocator: transferAssignees运行投影、冻结候选校验、候选接口、表单审批待办转办入口及TRANSFER审计
-    capturedAt: '2026-09-17'
+    evidenceIds: [evidence.form-approval-transfer-runtime, evidence.form-approval-transfer-api, evidence.form-approval-transfer-worklist-ui, evidence.form-approval-transfer-tests, evidence.tenant-task-delegation-20261020]
+    sourceRevision: 4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2
+    sourceLocator: transferAssignees保存当前受让人且原approvers/restrictedApprovers不改；ExecutionAccess与共享TenantTransferTargets统一目标搜索和执行时同租户有效未锁定非本人资格；ProductionExecutionService保留原事务/修订/历史/TRANSFER审计，FormWorklistService按当前处理权投影待办，不把原来源当目标白名单。
+    capturedAt: '2026-10-20'
     reviewStatus: reviewed

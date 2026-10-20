@@ -4,26 +4,26 @@ decisions:
     title: 运行时多候选工作流任务模型
     status: implemented
     visibility: internal
-    context: "provenance: user-confirmed；审批节点到达时按公共主体解析器得到候选用户；本决策确定解析结果如何形成工作流任务及其完成、审计和权限边界。"
+    context: "provenance: user-confirmed；审批节点到达时按公共主体解析器得到候选用户；本决策确定解析结果如何形成工作流任务及其完成、审计和权限边界。2026-10-20的DEC-0081仅为显式租户内委托增加当前处理资格例外，创建解析来源与组织关系不重算规范保留；原始确认不回填为已包含该例外。"
     decisionStatements:
       - id: DEC-0031-01
         statement: "provenance: user-confirmed；每个流程节点只创建一个逻辑 workflow_task，多候选人通过任务上的候选快照关联，不为每个候选人创建独立逻辑任务，也不创建候选人关系行。"
         status: implemented
         visibility: internal
       - id: DEC-0031-02
-        statement: "provenance: user-confirmed；审批策略为任一候选人处理即可完成任务；任一候选完成后，逻辑任务进入终态，其他候选人因逻辑任务终态自然失去处理权。"
+        statement: "provenance: user-confirmed；未显式转办时，审批策略为任一候选人处理即可完成任务；任一候选完成后逻辑任务进入终态，其他候选自然失去处理权。按DEC-0081合法委托后由当前受让人独占处理，单逻辑任务及终态失权规则保留。"
         status: implemented
         visibility: internal
       - id: DEC-0031-03
-        statement: "provenance: user-confirmed；只有任务创建时解析出的候选人可以完成任务，非候选人不得执行完成动作。"
+        statement: "provenance: user-confirmed；未显式转办且非开放任务时，只有任务创建时解析出的候选人可以完成任务，非候选人不得执行完成动作。DEC-0081-01/02新增显式委托例外：同租户正常可用的集合外用户可成为当前受让人，转后仅当前受让人处理；原创建来源保留但不继续授予原候选办理权。"
         status: implemented
         visibility: internal
       - id: DEC-0031-04
-        statement: "provenance: user-confirmed；创建任务时在 workflow_task.candidate_snapshot 保存候选解析结果、每个候选人的主体来源及未解析主体，作为任务审计依据；任务创建后组织或角色关系变化不重算、不改写该任务候选集合。"
+        statement: "provenance: user-confirmed；创建任务时在 workflow_task.candidate_snapshot 保存候选解析结果、每个候选人的主体来源及未解析主体，作为任务审计依据；任务创建后组织或角色关系变化不重算、不改写该任务创建来源。DEC-0081的显式转办只改变单独记录的当前处理责任，不覆盖原解析来源，也不把来源证据等同于转办后的当前处理资格。"
         status: implemented
         visibility: internal
     supersedes: []
-    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.identity-subject-resolver-contract, evidence.identity-workflow-task-single-assignee, evidence.workflow-task-multi-candidate-runtime-implementation, evidence.workflow-task-candidate-persistence, evidence.workflow-task-candidate-migration, evidence.workflow-task-candidate-repository, evidence.workflow-task-candidate-controller]
+    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.identity-subject-resolver-contract, evidence.identity-workflow-task-single-assignee, evidence.workflow-task-multi-candidate-runtime-implementation, evidence.workflow-task-candidate-persistence, evidence.workflow-task-candidate-migration, evidence.workflow-task-candidate-repository, evidence.workflow-task-candidate-controller, evidence.tenant-task-delegation-20261020]
     acceptanceScenarios:
       - id: scenario.workflow-task-one-logical-task
         given: 一个审批节点解析出多个候选用户
@@ -32,16 +32,16 @@ decisions:
         evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed]
         evidenceRequirements: [任务创建集成测试]
       - id: scenario.workflow-task-any-candidate-completes
-        given: 逻辑任务候选快照中存在多个候选用户且任务仍可处理
+        given: 未显式转办的逻辑任务候选快照中存在多个候选用户且任务仍可处理
         when: 任一候选人完成审批
         then: 逻辑任务完成，其他候选人不再拥有该逻辑任务处理权
         evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.production-form-process-user-confirmed-v2]
         evidenceRequirements: [并发完成事务测试, 逻辑任务终态测试]
       - id: scenario.workflow-task-non-candidate-blocked
-        given: 用户不在任务创建时的候选快照集合中
+        given: 用户不在任务创建时的候选快照集合中，且该任务未通过显式委托将其指定为当前处理人，也不属于开放任务
         when: 该用户尝试完成任务
         then: 完成动作被拒绝且任务状态不变
-        evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed]
+        evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.tenant-task-delegation-20261020]
         evidenceRequirements: [任务权限集成测试]
       - id: scenario.workflow-task-resolution-snapshot-frozen
         given: 任务创建时已保存候选解析快照和主体来源
@@ -62,13 +62,14 @@ decisions:
       - evidence.workflow-task-candidate-persistence
       - evidence.workflow-task-candidate-migration
     - id: discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot
-      status: open
+      status: resolved
       severity: medium
       visibility: internal
       path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
-      lineHint: 656
-      summary: 'provenance: original-evidence；DEC-0031-04 将创建时的候选解析快照与来源作为任务审计依据，并要求组织关系变化不改写已有任务候选。 当前泛 WorkflowEngine 创建任务时保存 candidateSnapshot.userIds 与 sources；普通组织变化不触发该任务重算。 但 transferTask 在同一任务上以 singleUserSnapshot(newAssigneeId) 替换整个 candidateSnapshot，原 userIds 与主体命中 sources 不再保留在此任务快照中； transferKeepsOneLogicalTaskAndUpdatesTargetSnapshot 测试明确断言单人目标快照。转办日志记录前后处理人，不足以替代完整原始主体来源快照。 因而原代码证据对“完成、转办和终止均保留解析来源快照”的概括过宽，需要缩限为创建及普通处理范围并登记转办来源留存缺口； 不据此把 DEC-0031 的组织关系冻结规范改为自动重算。普通生产表单 ProductionExecutionEngine.transferForm 另存 transferAssignees 并保留 approvers，属于不同路径。 本次仅查明并登记差异，未修改泛工作流或普通表单转办逻辑，也未执行运行测试。'
+      lineHint: 681
+      summary: 'provenance: original-evidence；a8285be9b91fb76bcb27ccb16a5258bda1fb5077的通用transferTask确以单人目标快照覆盖原候选和主体命中来源，原日志不足以替代完整来源。本轮固定4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2中singleUserSnapshot首次将真实可获得的原candidateSnapshot文本另存originSnapshot，重复转办保持同一原件；当前userIds只包含受让人，待办/完成不因原来源仍保留而继续授权旧候选。对已在旧代码下转过且来源丢失的任务，只留存现有原件并标记originRecordedAfterPriorTransfer，不恢复或猜测历史创建来源。搜索与命令共用同租户有效未锁定非本人资格，新增原因及身份/节点/时间审计。instance→task行锁等待后显式refresh，避免复用旧受控任务使前处理人再次转办/完成；此为当前处理权和事务一致性实现，不新增政策。普通生产表单仍独立保存transferAssignees并保留approvers。本体只关闭本轮来源覆盖缺陷，主侧实际23条原生PG覆盖来源/待办/当前权限/回滚/并发；独立质量另记，不据此认证整个工作流、全租户隔离或审计摘要读回重算。'
       evidenceIds:
       - evidence.workflow-task-multi-candidate-runtime-implementation
       - evidence.workflow-task-multi-candidate-user-confirmed
       - evidence.workflow-task-candidate-persistence
+      - evidence.tenant-task-delegation-20261020

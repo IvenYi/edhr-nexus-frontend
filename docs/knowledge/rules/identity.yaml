@@ -77,8 +77,9 @@ rules:
       persistResolutionSnapshot: true
       persistMatchProvenance: true
       candidateMembershipFrozenAfterCreate: true
-    explanation: 审批节点到达时使用主体解析结果创建一个逻辑工作流任务，并在候选快照中记录去重后的候选用户，同时保存解析结果及主体命中来源快照。任务创建后不因组织或角色关系变化重算既有候选集合。
-    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.identity-subject-resolver-contract, evidence.workflow-task-multi-candidate-runtime-implementation, evidence.workflow-task-candidate-persistence, evidence.workflow-task-candidate-migration]
+      membershipFreezeScope: creation-resolution-evidence
+    explanation: 审批节点到达时使用主体解析结果创建一个逻辑工作流任务，并在候选快照中记录去重候选、主体命中来源及未解析主体。candidateMembershipFrozenAfterCreate限定创建来源证据：不因组织或角色关系变化重算，也不能被显式转办覆盖。DEC-0081允许单独改变当前受让人，不把原来源保留解释成原候选继续拥有转办后的处理权。
+    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.identity-subject-resolver-contract, evidence.workflow-task-multi-candidate-runtime-implementation, evidence.workflow-task-candidate-persistence, evidence.workflow-task-candidate-migration, evidence.tenant-task-delegation-20261020]
   - id: rule.workflow.task-any-candidate-completes-and-closes-siblings
     name: 任一候选完成逻辑任务
     status: implemented
@@ -96,5 +97,5 @@ rules:
     result:
       type: complete-logical-task
       nonCandidateBehavior: block
-    explanation: 对具有非空冻结候选集合且非 unrestricted 的开放任务，仅任务创建时快照中的候选用户可以执行完成动作。开放状态对应 PENDING 或 PROCESSING；任一候选完成后，单条逻辑任务进入终态，其他候选因任务终态自然失去处理权。DEC-0033 的 unrestricted 开放范围与旧 assignee 回退分支由各自授权路径负责，不从本条推导其必须具有候选成员。
-    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.production-form-process-user-confirmed-v2, evidence.workflow-task-multi-candidate-runtime-implementation, evidence.workflow-task-candidate-persistence]
+    explanation: 对具有非空当前有效人员集合且非 unrestricted 的待处理任务，task.candidateMembership判断当前处理资格：未显式转办时为创建候选，按DEC-0081合法委托后仅包含当前受让人，不能以仍保留的原来源给旧候选办理权。PENDING或PROCESSING时当前有权人员可完成单条逻辑任务，终态使其他人自然失权；非当前有效人员仍block。DEC-0033的unrestricted范围及旧assignee回退由各自路径负责，不从本条推导其必须具有候选成员。
+    evidenceIds: [evidence.workflow-task-multi-candidate-user-confirmed, evidence.production-form-process-user-confirmed-v2, evidence.workflow-task-multi-candidate-runtime-implementation, evidence.workflow-task-candidate-persistence, evidence.tenant-task-delegation-20261020]

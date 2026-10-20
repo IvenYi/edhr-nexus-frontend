@@ -3,7 +3,7 @@ evidence:
   - id: evidence.form-approval-transfer-user-confirmed
     type: document
     path: docs/knowledge/evidence/form-approval-transfer-user-confirmed.md
-    description: user-confirmed；普通表单流程审批节点转办的配置、当前处理权、冻结候选边界、原因、待办投影和历史审计规则；同时记录2026-09-17对真实时间线的纠偏：转办是早期业务澄清与实现共同遗漏的既有预期能力，不是后续新增产品方向。
+    description: user-confirmed；保留普通表单转办原始确认及当时的冻结候选目标边界；2026-09-17对转办能力早期共同遗漏的历史纠偏继续适用。本轮DEC-0081依据新的用户确认仅替代目标须属于原候选集合的限制，不回填本原始文档为已包含租户内集合外委托。
     visibility: internal
   - id: evidence.form-approval-transfer-configuration
     type: code
@@ -18,7 +18,7 @@ evidence:
   - id: evidence.form-approval-transfer-api
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java
-    description: original-evidence；生产执行源提供与当前表单份审批节点绑定的候选人查询和TRANSFER动作入口，由服务端按当前处理权与冻结候选范围校验，客户端不能传入任意数据范围绕过授权。
+    description: original-evidence；生产执行源提供与当前表单份审批节点绑定的目标查询和TRANSFER动作入口；当前处理权继续服务端校验，ExecutionAccess通过共享TenantTransferTargets在搜索和命令时校验同租户有效未锁定的非本人用户，允许原候选集合外受让人。原approvers冻结来源不再作为委托目标白名单，客户端不能传入任意数据范围绕过授权。
     visibility: internal
   - id: evidence.form-approval-transfer-worklist-ui
     type: code
@@ -28,5 +28,5 @@ evidence:
   - id: evidence.form-approval-transfer-tests
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
-    description: original-evidence；测试源码覆盖候选查询、转办修订、原待办移除、目标待办出现、原处理人审批被拒、目标审批成功及TRANSFER审计；ExecutionAccessTest、ProductionExecutionEngineTest和FormProcessControllerTest分别覆盖冻结边界、不推进不改值、原因必填和配置校验。测试源码不单独证明测试命令已经通过。
+    description: original-evidence；测试源码覆盖目标查询、修订、原待办移除、目标待办出现、原处理人被拒、目标审批成功及TRANSFER审计。本轮补充原候选集合外同租户委托、重复委托保留approvers与snapshot、跨租户/停用/锁定/自转和搜索后账户锁定的拒绝断言；ExecutionAccessTest、ProductionExecutionEngineTest和FormProcessControllerTest分别定位资格与当前责任、不推进不改值、原因及配置。旧目标白名单断言不代表现行政策；测试源码不单独证明命令已通过。
     visibility: internal

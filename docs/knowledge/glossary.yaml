@@ -242,7 +242,7 @@ terms:
     visibility: internal
   - id: term.workflow-transfer-action
     name: 转办
-    definition: 当前审批任务处理人在授权候选范围内变更该任务处理人的标准动作；不改变当前节点、流程路径或业务结果。中文产品文案不得使用“普通转办”作为并列正式名称。
+    definition: 当前有处理权的用户显式变更任务处理责任的标准动作，不改变当前节点、流程路径或业务结果。通用工作流及普通生产表单按DEC-0081允许委托给同租户正常可用的其他用户，原候选来源保留而当前受让人单独记录，转后仅目标处理；记录控制仍按自身尚未闭环的动作规则，DHR不开放通用转办。中文产品文案不得使用“普通转办”作为并列正式名称。
     aliases: [TRANSFER]
     status: implemented
     visibility: internal
@@ -362,13 +362,13 @@ terms:
     visibility: internal
   - id: term.workflow-task
     name: 逻辑工作流任务
-    definition: 一个流程节点在运行时创建的单个逻辑待办任务；配置主体时多候选用户通过候选快照关联到同一任务，任一候选完成后任务完成；未配置审批主体时仍只创建一条逻辑任务，并由开放操作范围决定已认证用户的处理资格。
+    definition: 一个流程节点在运行时创建的单个逻辑待办任务；未显式转办时，配置主体的多候选用户共享同一任务，任一候选完成后任务完成，未配置主体时沿开放处理范围。按DEC-0081显式委托不新建逻辑任务，原创建来源保留而当前受让人单独记录，转后仅当前目标可处理。
     aliases: [工作流任务, workflow_task]
     status: specified
     visibility: internal
   - id: term.workflow-task-resolution-snapshot
     name: 工作流任务主体解析快照
-    definition: 工作流任务创建时保存的候选用户集合及主体命中来源快照，用于审计并冻结既有任务的候选范围，不随后续组织关系变化重算。
+    definition: 工作流任务创建时保存的候选用户集合、主体命中来源及未解析主体的来源证据，不随后续组织关系变化重算，也不因显式转办丢失。当前受让人单独记录；该来源证据不等同于转办后的当前处理资格。
     aliases: [任务候选快照, 主体解析快照]
     status: specified
     visibility: internal

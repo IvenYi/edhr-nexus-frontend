@@ -4,14 +4,14 @@ decisions:
     title: 普通表单流程审批节点转办遗漏修复
     status: implemented
     visibility: internal
-    context: user-confirmed-provenance-correction；普通表单流程审批转办本来就是审批节点应具备的标准动作。DEC-0024-01和DEC-0024-03在早期业务澄清和实现中共同遗漏了该能力，不代表当时决定不做、后续才新增产品方向。本决策记录的是对遗漏的业务知识补录和运行缺口修复：在既有生产表单状态机和个人审批待办投影中落实转办，不建立第二套流程引擎、任务表或审计日志。2026-09-17的用户确认是对真实历史的当时纠偏，不回写为早期已准确形成的决策记录。
+    context: user-confirmed-provenance-correction；普通表单流程审批转办本来就是审批节点应具备的标准动作。DEC-0024-01和DEC-0024-03在早期业务澄清和实现中共同遗漏了该能力，不代表当时决定不做、后续才新增产品方向。本决策记录的是对遗漏的业务知识补录和运行缺口修复：在既有生产表单状态机和个人审批待办投影中落实转办，不建立第二套流程引擎、任务表或审计日志。2026-09-17的用户确认是对真实历史的当时纠偏，不回写为早期已准确形成的决策记录。2026-10-20的DEC-0081新增租户内委托目标范围，只替代02中“受限节点目标限原候选”的限制；该新政策与早期能力遗漏纠偏分开解释，原始确认保留。
     decisionStatements:
       - id: DEC-0055-01
         statement: 普通表单流程审批节点可配置TRANSFER按钮的显示名称、样式和显隐；转办原因由系统固定必填，不提供审批意见必填配置，也不参与FILL_SIGN_FIELD电子签名事件配置。填报节点不提供转办。
         status: implemented
         visibility: internal
       - id: DEC-0055-02
-        statement: 只有当前具有审批处理权的用户可以转办。已配置审批主体时目标限于节点到达时冻结的候选范围；未配置审批主体时目标限于当前有效且未锁定用户；不得转办给自己。原冻结候选范围保留，受让人再次转办仍受同一范围约束。
+        statement: 只有当前具有审批处理权的用户可以转办。目标按DEC-0081-01统一为同租户当前有效且未锁定的其他用户，可以在节点到达时冻结的原候选集合之外，不因已配置审批主体而收窄；不得转办给自己。原冻结候选来源保留，当前受让人单独记录，受让人再次转办仍受同租户正常可用用户范围约束。
         status: implemented
         visibility: internal
       - id: DEC-0055-03
@@ -27,14 +27,14 @@ decisions:
         status: implemented
         visibility: internal
     supersedes: []
-    evidenceIds: [evidence.form-approval-transfer-user-confirmed, evidence.form-approval-transfer-configuration, evidence.form-approval-transfer-runtime, evidence.form-approval-transfer-api, evidence.form-approval-transfer-worklist-ui, evidence.form-approval-transfer-tests]
+    evidenceIds: [evidence.form-approval-transfer-user-confirmed, evidence.form-approval-transfer-configuration, evidence.form-approval-transfer-runtime, evidence.form-approval-transfer-api, evidence.form-approval-transfer-worklist-ui, evidence.form-approval-transfer-tests, evidence.tenant-task-delegation-20261020]
     acceptanceScenarios:
       - id: scenario.form-approval-transfer-current-task
-        given: 表单到达已启用转办的审批节点，当前用户具有处理权且目标用户符合节点授权范围
+        given: 表单到达已启用转办的审批节点，当前用户具有处理权，目标是同租户有效未锁定的其他用户且可位于原候选集合之外
         when: 当前用户在表单审批待办选择目标并填写原因后确认转办
         then: 表单数据和当前节点保持不变，原用户待办消失、目标用户待办出现，只有目标用户可以继续审批，历史和审计保存完整转办证据
-        evidenceIds: [evidence.form-approval-transfer-runtime, evidence.form-approval-transfer-worklist-ui, evidence.form-approval-transfer-tests]
-        evidenceRequirements: [配置校验测试, 冻结候选权限测试, HTTP集成测试, 审计回归]
+        evidenceIds: [evidence.form-approval-transfer-runtime, evidence.form-approval-transfer-worklist-ui, evidence.form-approval-transfer-tests, evidence.tenant-task-delegation-20261020]
+        evidenceRequirements: [配置校验测试, 租户内委托及原来源保持测试, HTTP集成测试, 审计回归]
       - id: scenario.form-transfer-provenance-correction
         given: 读者查询普通表单审批转办为何在0.3.22进入知识模型并完成实现
         when: 读取DEC-0024、DEC-0055、知识README与用户确认证据

@@ -43,7 +43,7 @@ decisions:
         status: specified
         visibility: internal
     supersedes: [DEC-0008]
-    evidenceIds: [evidence.production-work-condition-branch-model, evidence.production-work-flow-editor-ui, evidence.production-work-condition-rule-builder, evidence.production-work-condition-rule-adapter, evidence.production-work-condition-rule-controller, evidence.production-work-condition-rule-test]
+    evidenceIds: [evidence.production-work-condition-branch-model, evidence.production-work-flow-editor-ui, evidence.production-work-condition-rule-builder, evidence.production-work-condition-rule-adapter, evidence.production-work-condition-rule-controller, evidence.production-work-condition-rule-test, evidence.work-template-write-shape-audit-20261020]
     acceptanceScenarios:
       - id: scenario.production-work-condition-branches-ordered
         given: 条件节点配置两个或多个条件分支及唯一否则分支
@@ -83,13 +83,14 @@ decisions:
         evidenceRequirements: [真实字段来源集成测试, 首个命中求值测试, 默认分支回退测试, 实例快照和推进测试, 执行审计测试]
     implementationDiscrepancies:
     - id: discrepancy.production-work-legacy-condition-save-publish-asymmetry
-      status: open
+      status: resolved
       severity: medium
       visibility: internal
       path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
       lineHint: 183
-      summary: 'provenance: original-evidence；草稿 saveGraph 校验边界/连线及 branch.rule，但 top-level conditionRule 等旧字段只在发布时由 hasLegacyConditionConfiguration 拒绝；canonical branches 与旧顶层字段并存仍可保存，尚未满足“保存或发布均拒绝”的验收。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。'
+      summary: 'provenance: original-evidence；原差异是canonical branches与四个旧顶层字段并存可保存而发布拒绝。84c5b6d6复用hasLegacyConditionConfiguration，在saveGraph、发布前置及继承/复制的新写前按presence拒绝conditionRule、conditionFieldCatalogVersion、conditionFieldSnapshot、conditionExpression，含null；保留不完整草稿，AST/目录/连通性完整性仍由发布负责。主侧85项矩阵、原73项及12项PG安全原件支持该有限实现修复，不代表本体执行业务测试或独立质量已过；默认分支额外字段、所有未知键、条件运行时来源/异常及全W3不在本项关闭范围。'
       evidenceIds:
       - evidence.production-work-condition-branch-model
       - evidence.production-work-template-configuration-controller
       - evidence.production-work-condition-rule-controller
+      - evidence.work-template-write-shape-audit-20261020
