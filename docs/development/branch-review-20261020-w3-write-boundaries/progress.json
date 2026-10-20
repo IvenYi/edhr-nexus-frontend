@@ -3,12 +3,13 @@
   "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
   "implementationCommit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
   "knowledgeCommit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
-  "ledgerFixedTreeCommit": "df6ea28a6388a89611786116700836c6bf7f4819",
+  "ledgerFixedTreeCommit": "05dbc0b2f6fda76e76cd9f7b6a10c224466dcc8a",
   "inventory": {
     "targetPaths": 2444,
     "coreAndKnowledgePaths": 2453,
-    "fixedEvidenceTreePaths": 2524,
-    "classification": "heuristic, not manual completion"
+    "fixedEvidenceTreePaths": 2603,
+    "classification": "heuristic, not manual completion",
+    "firstFixedEvidenceTreePaths": 2524
   },
   "sourceReview": {
     "inheritedScopes": 216,
@@ -26,13 +27,19 @@
     "inheritedScopedReviews": 45,
     "newRoleScopedReviews": 36,
     "currentDefinitionIds": 2546,
-    "historicalScopedRecords": 81,
+    "historicalScopedRecords": 90,
     "evidenceStates": {
-      "retained-scoped-evidence": 55,
-      "needs-delta-review": 26
+      "retained-scoped-evidence": 33,
+      "needs-delta-review": 57
     },
     "wholeAssetsPassed": 0,
-    "oldEvidenceGapsKept": 4
+    "oldEvidenceGapsKept": 4,
+    "newPrecisionFollowupScopedReviews": 9,
+    "recordRelations": {
+      "unchanged": 86,
+      "record-changed": 4
+    },
+    "currentHistoryIsNotDistinctIdCount": true
   },
   "remediation": {
     "originalMasterIdsAdjudicated": [
@@ -44,11 +51,15 @@
       "W3-TRANSFER-LOCK-001",
       "W5-AUDIT-HASH-001"
     ],
-    "state": "four fixed awaiting fresh independent acceptance; W5 preexisting medium open",
+    "state": "four business repairs and two precision corrections awaiting final fresh independent acceptance; W5 preexisting medium open",
     "historicalFindingRecordsKept": 42,
-    "currentFindingRecords": 44,
+    "currentFindingRecords": 46,
     "userDeferredHighKept": 2,
-    "frozenLedgerStatePreserved": true
+    "frozenLedgerStatePreserved": true,
+    "round1QualityFindingIds": [
+      "QF-W3-TENANT-KNOWLEDGE-001",
+      "QF-W3-UI-DOC-COUNT-001"
+    ]
   },
   "userConfirmedScopeIncrement": {
     "exactReply": "通用工作流与普通生产表单都允许租户内委托；DHR 保持",
@@ -101,6 +112,32 @@
     "description": "Inventory generation and preserved report indexing do not execute product/semantic reviews; actual batch work reported separately."
   },
   "independentQuality": {
+    "result": "pending",
+    "scope": "corrected fixed candidate; fresh independent final acceptance",
+    "priorFailedRetained": true
+  },
+  "historicalDataRestored": false,
+  "mergePerformed": false,
+  "deploymentPerformed": false,
+  "overallAuditComplete": false,
+  "overallPercent": null,
+  "next": "Fresh independent final L2 acceptance, then actual pre-PR scope/progress review; no auto merge/deploy.",
+  "firstLedgerFixedTreeCommit": "df6ea28a6388a89611786116700836c6bf7f4819",
+  "currentCatalog": "recheck/source-catalog.json",
+  "currentLedger": "recheck/ledger",
+  "ontologyFollowup": {
+    "result": "updated",
+    "sourceCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+    "changedFiles": 5,
+    "changedIds": 5,
+    "adjacentReviewedIds": 4,
+    "actualKnowledgeTestsPassed": 89,
+    "newUserPolicy": false,
+    "coreCodeChanged": false,
+    "originalsUnchanged": true,
+    "report": "evidence/ontology-followup/edhr-w3-tenant-origin-precision-followup-ontology-result.yaml"
+  },
+  "independentQualityRound1": {
     "result": "failed",
     "testedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
     "requiredChecks": 24,
@@ -113,11 +150,5 @@
     ],
     "correctionCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
     "finalFreshRecheck": "pending"
-  },
-  "historicalDataRestored": false,
-  "mergePerformed": false,
-  "deploymentPerformed": false,
-  "overallAuditComplete": false,
-  "overallPercent": null,
-  "next": "Archive knowledge precision followup; regenerate current recheck ledger preserving round1; new independent L2 acceptance before scope/progress review and PR."
+  }
 }
