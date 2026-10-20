@@ -46,6 +46,8 @@ W4 主数据/生产累计、W5 构建/依赖/迁移/后台幂等、W6 已有七�
 
 主侧初轮 10 项隔离 Git 回归及再生成通过，原件存于 [evidence/primary/receipts.json](evidence/primary/receipts.json)。全新独立实例对 `319501bc` 正式 failed：发现扩展 CSV 后内嵌摘要未刷新（medium）、SQL 依赖提取遗漏（medium）、NEXT 中 W3/W4 归属错误（low）；完整原件见 [evidence/independent-initial/receipts.json](evidence/independent-initial/receipts.json)。可复现不代表正确性，初轮结果不覆盖、不改为 passed。
 
-主侧补充最终 CSV 摘要及仅 SQL 变化回归，对初轮工具实际得到 1 failure / 1 error；修复后 11 项全部通过，SQL/XML/mjs 列明依赖均纳入，真实旧 33 项的 26 delta / 7 retained 计数不变。原受测候选保留于 Git，新候选只更新本批生成物，不覆盖旧批历史 CSV/报告。红绿原件见 [evidence/primary-followup/receipts.json](evidence/primary-followup/receipts.json)。独立复验将在收尾登记；取得正式 passed 前不发布可验收结论。
+主侧补充最终 CSV 摘要及仅 SQL 变化回归，对初轮工具实际得到 1 failure / 1 error；修复后 11 项全部通过，SQL/XML/mjs 列明依赖均纳入，真实旧 33 项的 26 delta / 7 retained 计数不变。原受测候选保留于 Git，新候选只更新本批生成物，不覆盖旧批历史 CSV/报告。红绿原件见 [evidence/primary-followup/receipts.json](evidence/primary-followup/receipts.json)。
 
-本批未运行应用测试/数据库/浏览器；不开启 Actions，不合并、不部署、不执行迁移。
+最终独立实例（未参与修复）对 `cbf83d0eef9df2c18f6296b8426383775e56b430` 正式 **passed**，13 项必需检查全部通过、三项发现 resolved，无本批阻断。实际独立通过 11 项工具测试、完整字节再生成和来源核对；[完整原件及摘要](evidence/independent-final/receipts.json)保留实际受测 SHA。专业及子实例均已正式结束。
+
+主审已在创建 PR 前完成[任务漂移/阶段/后续正式复核](scope-review.md)并实际向用户汇报。随后仅 L0 归档、报告和 PR 登记；不将文档提交称重新运行测试。本批未运行应用测试/数据库/浏览器；不开启 Actions，不合并、不部署、不执行迁移。建议仅按本批工具/台账范围验收。
