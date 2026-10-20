@@ -1,0 +1,120 @@
+{
+  "schema": "edhr-ontology-record-precision-followup-scope/v1",
+  "baselineCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+  "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "classification": "record-precision-correction; no new user policy or business-code change",
+  "finding": "DEC-0081-02 generalized generic full resolution evidence to ordinary production form evidence",
+  "proposedFiles": [
+    {
+      "path": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "sourceBlob": "2dd0a7c557f3caf44b61ca1328b0a54817a45a0b",
+      "beforeSha256": "db50e6e8040052ff550c4a90faeb622be1f42a13a36d41f2fc2efb0fb917f65e",
+      "proposedSha256": "c47a0ea204787a4f03cf5e507e71ec002e1e7514ade7cd122d2290049aa0c5da"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "sourceCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "sourceBlob": "bd1b0fb47085432a3cb0c587841e10ee97797042",
+      "beforeSha256": "14b404332734daa494c80ca69e2bc845c951e0ab799a15b8d5aaf6aab13137c1",
+      "proposedSha256": "83529d2f7168c0fa8a42f5ffdecb1286ee8c350720d1d4f0f4474c4da0703e9f"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "sourceCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "sourceBlob": "e2bd9385ab043654f984c5ee6d270bed945de3ea",
+      "beforeSha256": "d83e315005b083b5c440be887b9aedf7860c164313b6e19f7a4004b7423f85dd",
+      "proposedSha256": "925b987f783d6216061ab25ca2a6710aaa231823ff346b05b2df23d75c90f735"
+    },
+    {
+      "path": "docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+      "sourceCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "sourceBlob": "43d7032c554cd1d1ad17add7209faaa86136faef",
+      "beforeSha256": "fcd6a8879c14fdf5f035177d608c5d8f22d29f79c2b24ec3fb27d5670dc03b1b",
+      "proposedSha256": "0610323c3fad5a8c4052eeb68fdd77aea9f231d1b4119d8442022fdc574f1509"
+    },
+    {
+      "path": "docs/knowledge/evidence/tenant-task-delegation-20261020.yaml",
+      "sourceCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "sourceBlob": "76d610e01bde4220119cef1dd94663d3d87984a4",
+      "beforeSha256": "b18d1af79a3a39f286513b77f2119683d92ada43170072234dfce0fcabf6bbd9",
+      "proposedSha256": "94244dc0dc682e4c66ee9ec6cbbe20f2a794b6b21188a6aaa3fdd969847d52ce"
+    }
+  ],
+  "changedIds": [
+    "DEC-0081",
+    "DEC-0081-02",
+    "scenario.tenant-transfer-target-outside-original-candidates",
+    "scenario.tenant-transfer-repeated-origin-preserved",
+    "evidence.tenant-task-delegation-20261020"
+  ],
+  "necessaryAdjacentIds": [
+    "DEC-0055-02",
+    "rule.form-approval-transfer",
+    "anchor.form-approval-transfer-runtime",
+    "term.workflow-task-resolution-snapshot"
+  ],
+  "sourceEvidence": [
+    {
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "blob": "9cf5ae4908d481f9a82988a5744302e2f47081f7",
+      "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4",
+      "reviewedScope": "resolve only projects resolution.users to IDs; captureApprovers stores approvers/restrictedApprovers"
+    },
+    {
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "blob": "59c16531ec7849ed772ca0299ed1c0c63af95407",
+      "sha256": "84da4305797fc2536359da9ccf933edfba96da95daecb2ea5567e31d36a454e0",
+      "reviewedScope": "attachFillSettings freezes form.flow.nodes/edges and binding configuration"
+    },
+    {
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "blob": "3ac817fd787bd4ac7a2faea25623b2cff280a0d5",
+      "sha256": "4411c23f5f89abb69ebd424355020e2569176e5f4b29ee592b6a09bcad49ddcd",
+      "reviewedScope": "transferForm writes only current transferAssignees plus history; settleForm captures original approvers"
+    },
+    {
+      "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "reviewedScope": "resolveAssignees full userIds/sources/unresolvedSubjects; singleUserSnapshot preserves first available original text"
+    }
+  ],
+  "patch": {
+    "path": "/tmp/edhr-w3-tenant-origin-precision-followup.patch",
+    "sha256": "4d09c60daeb407a843630ac24d08ba59b1cb11ba351085df8fd5e119e35b539c"
+  },
+  "firstRoundOriginals": [
+    {
+      "path": "/tmp/edhr-w3-tenant-transfer-ontology-result.yaml",
+      "sha256": "43a1f9b8160af50efbbdd400a904cccbc3f147588472518a813c9e393978fb36",
+      "untouched": true
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-transfer-semantic-review.jsonl",
+      "sha256": "87a2d1386abbd091bf6f694cac6c11200e329376a749a20be53dc7043481f23e",
+      "untouched": true
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "sha256": "ebf9c9fbca3169268dfede7b9d1154d668c6bfc49c15a11e916ad2d26e7eaf03",
+      "untouched": true
+    }
+  ],
+  "repositoryMutatedByPreparation": false,
+  "preparedOnly": true,
+  "formalOntologyResultIssued": false,
+  "testsExecuted": [],
+  "retainedBoundaries": [
+    "knowledge0.3.25/schema1.2.0 and existing status/visibility unchanged",
+    "original user confirmations unchanged",
+    "no history restoration",
+    "no ordinary per-user provenance new feature",
+    "DHR/A12/W5 and other audit gaps unchanged"
+  ],
+  "nextStep": "Root applies exact patch only after first-round QA FINAL and commits; ontology role then runs actual final89 and emits new finite semantic/ontologyResult/manifest originals against real new commit."
+}

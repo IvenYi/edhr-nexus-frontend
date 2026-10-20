@@ -1,0 +1,428 @@
+qualityResult:
+  result: failed
+  baseCommit: a8285be9b91fb76bcb27ccb16a5258bda1fb5077
+  headCommit: 266a1635cc95870cd7907c574eb676db7f560d4f
+  contractBaseline:
+    sourceCommit: 266a1635cc95870cd7907c574eb676db7f560d4f
+    targetBranch: edhr-dev
+    targetCommit: a8285be9b91fb76bcb27ccb16a5258bda1fb5077
+    contractReadCommit: 266a1635cc95870cd7907c574eb676db7f560d4f
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: baseline-and-contract
+    required: true
+    category: documentation
+    description: Fixed clean candidate, latest target, real contract read and no governance
+      delta
+    method: command
+    command: git status; git fetch origin refs/heads/edhr-dev:refs/remotes/origin/edhr-dev;
+      git diff --name-only a8285be9 266a1635 -- AGENTS.md codeplzreadme.md docs/agents
+      DESIGN.md
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-source-before.json
+    - /tmp/edhr-w3-independent-source-after.json
+    - base=a8285be9b91fb76bcb27ccb16a5258bda1fb5077
+    - head=testedCandidate=266a1635cc95870cd7907c574eb676db7f560d4f
+  - id: l2-impact-authorized-boundaries
+    required: true
+    category: requirements
+    description: Existing-policy graph guards and user-confirmed generic/ordinary
+      delegation match scope; DHR retained
+    method: inspection
+    command: Read decision-package.yaml, DEC-0009/0010/0011/0031/0055/0081 and actual
+      source diff
+    outcome: passed
+    evidence:
+    - docs/development/branch-review-20261020-w3-write-boundaries/decision-package.yaml
+    - /tmp/edhr-w3-independent-source-before.json
+  - id: retired-shapes-five-commands
+    required: true
+    category: api
+    description: Five write commands reject five retired keys including null before
+      state/reference/audit mutation
+    method: automated-test
+    command: WorkTemplateWriteBoundaryTest + WorkTemplateWritePostgresTest
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-backend-summary.json
+    - 85 matrix tests + 12 real PostgreSQL tests; no skips
+  - id: draft-and-publish-controls
+    required: true
+    category: regression
+    description: Incomplete drafts/extensions remain allowed and completeness stays
+      at publish; legal inherited draft and references persist
+    method: automated-test
+    command: WorkTemplateWriteBoundaryTest + WorkTemplateControllerTest + WorkTemplateWritePostgresTest
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-backend-summary.json
+    - Baseline controls remain passing; no legacy stripping or new whitelist
+  - id: baseline-real-red-causality
+    required: true
+    category: regression
+    description: Independent old-source export with identical fixtures reproduces
+      deterministic graph-write defects
+    method: automated-test
+    command: a828 export; byte-identical candidate fixtures; mvn -Dtest=WorkTemplateWriteBoundaryTest,WorkTemplateWritePostgresTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-baseline-summary.json
+    - /tmp/edhr-w3-independent-baseline-fixture-receipts.json
+    - 85:63 failure/22 positive; PostgreSQL12:9 failure/3 positive; no errors/skips
+    - '/tmp/edhr-w3-independent-baseline-first-attempt.json: exec127 before tests;
+      environment-only dependency symlink correction'
+  - id: generic-origin-and-current-responsibility
+    required: true
+    category: integration
+    description: Retain first available full generic resolution JSON and partial legacy
+      marker; current target only, repeated delegation and target completion
+    method: automated-test
+    command: WorkflowTransferPostgresTest + WorkflowEngineTest
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-backend-summary.json
+    - Current top-level candidate set is separate from originSnapshot; SQL todo and
+      completion agree
+  - id: shared-target-qualification
+    required: true
+    category: security
+    description: Tenant, ACTIVE/unlocked, self prohibition, malformed ID, canonical
+      ID and real SQL search checked
+    method: automated-test
+    command: WorkflowTransferPostgresTest + ExecutionAccessTest + ExecutionSubjectScopeTest
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-backend-summary.json
+    - Stored initiator/operator tenant source, not client tenant; no full multitenant-isolation
+      claim
+  - id: ordinary-http-delegation
+    required: true
+    category: api
+    description: Actual HTTP/JWT/filter chain, outside-original targets, two transfers,
+      frozen IDs/config and values, todo/current rights and account-state recheck
+    method: automated-test
+    command: ProductionExecutionIntegrationTest selected four transfer methods on
+      PostgreSQL
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-backend-summary.json
+    - 4 native PostgreSQL HTTP tests; generic standalone MockMvc is a separate boundary
+  - id: generic-authenticated-json
+    required: true
+    category: api
+    description: Target GET and reason/target POST use authenticated operator and
+      reject forged actor
+    method: automated-test
+    command: WorkflowTransferPostgresTest.controllerUsesAuthenticatedActorAndRequiresTheTargetAndReasonInJson
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-backend-summary.json
+  - id: audit-atomic-rollback
+    required: true
+    category: audit
+    description: Transfer audit contents/actor/reason/time and action log are in the
+      same transaction; trigger insertion failure rolls all back
+    method: automated-test
+    command: WorkflowTransferPostgresTest.realAuditInsertFailureRollsBackResponsibilityAndActionLog
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-backend-summary.json
+    - Only stored hash shape and transaction contents asserted; no round-trip rehash
+      certification
+  - id: pessimistic-lock-current-state
+    required: true
+    category: database
+    description: Instance→task lock order, refresh after lock wait, former handler
+      transfer only once and old candidate queued completion rejected
+    method: automated-test
+    command: WorkflowTransferPostgresTest.concurrentTransfersFromTheSameFormerOperatorAcceptOnlyOneResponsibilityChange
+      + formerCandidateWaitingBehindTransferCannotCompleteFromItsCachedSnapshot
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-backend-summary.json
+    - Tests wait for actual PostgreSQL Lock waiters, not timing-only sleeps
+  - id: dhr-boundary-regression
+    required: true
+    category: regression
+    description: DHR generic search/transfer remains blocked; dedicated approval/return
+      lifecycle retained
+    method: automated-test
+    command: WorkflowTransferPostgresTest + DhrReviewLifecycleIntegrationTest + DhrReviewServiceTest
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-backend-summary.json
+    - Generic DHR rejection uses PostgreSQL; dedicated lifecycle5 uses H2 compatibility;
+      service10 unit
+  - id: java-and-knowledge-fresh-results
+    required: true
+    category: unit
+    description: All selected candidate Java and knowledge tests executed with fresh
+      XML, zero conditional skips
+    method: automated-test
+    command: Maven command array recorded in independent-backend-summary.json
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-backend-summary.json
+    - 381=292 business+89 knowledge; 15 fresh reports; 39 native PostgreSQL among
+      business tests
+  - id: knowledge-source-grain-consistency
+    required: true
+    category: ontology
+    description: Current DEC-0081-02 must distinguish generic full resolution provenance
+      from ordinary frozen IDs/config
+    method: inspection
+    command: Read DEC-0081-02 and compare ExecutionAccess.resolve/captureApprovers
+      with WorkflowEngine.singleUserSnapshot
+    outcome: failed
+    evidence:
+    - /tmp/edhr-w3-independent-ledger-review.json
+    - QF-W3-TENANT-KNOWLEDGE-001
+  - id: knowledge-ids-and-semantic-receipts
+    required: true
+    category: ontology
+    description: 2535→2546 IDs, no deletion/maturity/visibility elevation; fixed semantic
+      receipts are genuine but do not override failed natural-language scope check
+    method: command
+    command: Independent ledger knowledge check and canonical record/source/blob hash
+      verification
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-ledger-review.json
+    - 36 finite semantic source records; 49 ontology sync entries; existing implementationDiscrepancy
+      status closure is not maturity elevation
+  - id: ledger-reproducibility-and-history
+    required: true
+    category: documentation
+    description: Fixed2524-path tree,314 overlapping scopes,81 finite semantic records,44
+      parent/child findings; all delta/gap/deferred limitations preserved
+    method: command
+    command: python3 scripts/build-branch-review-ledger.py --ref df6ea28a6388a89611786116700836c6bf7f4819
+      --catalog docs/development/branch-review-20261020-w3-write-boundaries/source-catalog.json
+      --out docs/development/branch-review-20261020-w3-write-boundaries/ledger --check
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-ledger-review.json
+    - /tmp/edhr-w3-independent-ledger-rebuild-result.json
+    - No historical ledger overwritten; four current repairs awaiting independent
+      acceptance
+  - id: byte-exact-originals
+    required: true
+    category: documentation
+    description: Git receipts, original archive assertions and ZIP member bytes are
+      genuine; failed originals are preserved
+    method: command
+    command: Independent manifest/source/ZIP hash verification
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-ledger-review.json
+    - 101 Git evidence assertions; 86 archive assertions
+  - id: migration-compatibility-and-history
+    required: true
+    category: database
+    description: No migration/dependency changes or history repair; native fixture
+      loads actual0060 single-draft/FK constraints
+    method: inspection
+    command: git diff --name-only a8285be9 266a1635 -- gmp-platform/backend/pom.xml
+      gmp-platform/frontend/package.json gmp-platform/frontend/package-lock.json gmp-platform/backend/src/main/resources/db;
+      inspect0060 and test fixture
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-source-before.json
+    - /tmp/edhr-w3-independent-backend-summary.json
+    - No unique-current production constraint invented; no full Liquibase history
+      certification
+  - id: real-page-browser
+    required: true
+    category: e2e
+    description: 36 actual-page controlled-API scenarios for generic20/ordinary16
+      and both sizes
+    method: browser
+    command: NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium
+      W3_RESULT_PATH=/tmp/edhr-w3-independent-ui-browser.json W3_SCREENSHOT_DIR=/tmp/edhr-w3-independent-ui-screenshots
+      node scripts/test-tenant-task-transfer-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-ui-summary.json
+    - /tmp/edhr-w3-independent-ui-browser.json
+    - Controlled API does not prove backend persistence
+  - id: typecheck-and-build
+    required: true
+    category: regression
+    description: Actual TypeScript and Vite build succeeds without source/config changes
+    method: command
+    command: npm run build
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-ui-summary.json
+  - id: visual-two-page-two-size
+    required: true
+    category: visual
+    description: Fresh desktop/narrow filled dialogs and narrow candidate popups personally
+      viewed; text and actions readable/reachable
+    method: browser
+    command: 'view_image: four filled screenshots and two narrow popup screenshots
+      from independent run'
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-ui-summary.json
+    - /tmp/edhr-w3-independent-ui-screenshots/
+  - id: strict-exact-nonregression
+    required: true
+    category: regression
+    description: Independent official scanner complete field multiset including multiplicities
+      is identical between base/head
+    method: command
+    command: Official audit_project.py base/head --mode strict; Counter of every serialized
+      finding
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-ui-premium-comparison.json
+    - /tmp/edhr-w3-independent-ui-summary.json
+    - 84 array records,82 distinct records each; added0,removed0; strict remains exit2
+  - id: audit-hash-existing-scope
+    required: true
+    category: audit
+    description: Known W5 readback-hash issue retained and distinguished from new
+      transfer atomicity; unchanged stored-hash read/export and separate DHR/signature/file
+      digest contracts
+    method: inspection
+    command: Read fixed base/head AuditEvent/API/UI/ZIP consumers and probe original
+      ZIP/source receipts
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-ledger-hash-review.json
+    - W5-AUDIT-HASH-001 remains preexisting medium/open; original2-red probe inspected,
+      not rerun as part of381
+  - id: end-source-integrity
+    required: true
+    category: documentation
+    description: Head/base and 42 listed source hashes unchanged, clean repository
+      and all owned test processes completed
+    method: command
+    command: git status --porcelain; git rev-parse HEAD; exact SHA256 before/after;
+      git -c core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+      diff --check a8285be9 266a1635
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-independent-source-before.json
+    - /tmp/edhr-w3-independent-source-after.json
+    - No repository mutations by this instance or children; disposable PG left running
+      for root cleanup
+  - id: strict-whole-site-existing-limit
+    required: false
+    category: visual
+    description: Full-site strict still reports existing findings
+    method: command
+    command: Official scanner --mode strict on candidate
+    outcome: failed
+    evidence:
+    - /tmp/edhr-w3-independent-ui-summary.json
+    - exit2;84 records/82 distinct; no new entries
+  - id: eslint-existing-limit
+    required: false
+    category: regression
+    description: Existing ESLint configuration remains absent
+    method: command
+    command: npm run lint
+    outcome: failed
+    evidence:
+    - /tmp/edhr-w3-independent-ui-summary.json
+    - exit2; no lint rules/config changed
+  - id: doc-counting-terminology
+    required: false
+    category: documentation
+    description: Current documentation must distinguish raw record count from distinct
+      serialized field set
+    method: inspection
+    command: Compare len(findings),len(set(serialized findings)) and README/progress
+      metric wording
+    outcome: failed
+    evidence:
+    - /tmp/edhr-w3-independent-ui-summary.json
+    - QF-W3-UI-DOC-COUNT-001
+  findings:
+  - id: QF-W3-TENANT-KNOWLEDGE-001
+    severity: medium
+    scope: DEC-0081-02 source evidence grain across generic workflow and ordinary
+      production forms
+    summary: 当前知识把通用工作流的完整候选解析来源与普通表单已有冻结ID/配置概括为相同完整来源留存，超出普通路径真实证据。
+    reproductionSteps:
+    - At fixed 266a1635 read docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml:14
+      (DEC-0081-02).
+    - 'Read ExecutionAccess.resolve lines 75-87 and captureApprovers lines 103-110:
+      only resolved user IDs and restricted marker are persisted; original subject
+      configuration remains in frozen node configuration.'
+    - Compare WorkflowEngine.singleUserSnapshot originSnapshot, which retains its
+      already-existing JSON sources/unresolved fields.
+    - Read the finite semantic record for DEC-0081-02, currently marked consistent
+      without qualifying the ordinary-form evidence grain.
+    expectedResult: Current knowledge precisely distinguishes preserved generic full
+      resolution evidence from ordinary frozen approver IDs/subject configuration,
+      records the latter limit, and does not invent a user requirement for new ordinary
+      per-user source/unresolved storage.
+    actualResult: DEC-0081-02 says candidate resolution, hit provenance and unresolved
+      subjects are retained under a combined two-path decision, while ordinary capture
+      stores only IDs/restricted marker; knowledge implies fuller ordinary evidence
+      than is present.
+    evidence:
+    - 266a1635cc95870cd7907c574eb676db7f560d4f:docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml:14
+    - 266a1635cc95870cd7907c574eb676db7f560d4f:gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java:75
+    - 266a1635cc95870cd7907c574eb676db7f560d4f:gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java:103
+    - 266a1635cc95870cd7907c574eb676db7f560d4f:gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java:785
+    - /tmp/edhr-w3-independent-ledger-source-receipts.json
+    resolutionStatus: open
+    resolutionEvidence: []
+  - id: QF-W3-UI-DOC-COUNT-001
+    severity: low
+    scope: W3 documentation, premium finding counting terminology
+    summary: 主侧文档未区分84条finding记录与82种不同完整字段集合，字段名易被理解为原数组长度。
+    reproductionSteps:
+    - Read evidence/primary/edhr-w3-premium-baseline.json and candidate.json; len(findings)
+      is84 in both.
+    - 'Serialize every finding with sorted keys: distinct set length82; Counter including
+      duplicate multiplicity is equal between independent base/head.'
+    - Compare README.md:19 and progress.json:81–82 stating各82/premiumBaselineFindings/premiumCandidateFindings
+      without distinct qualification.
+    expectedResult: 明确“base/head各84条记录、82种完整字段集合；含重复次数逐字段完全相同，新增0”；保留原扫描/原对比证据。
+    actualResult: 初轮set计数82被写入未标distinct的统计字段和说明；并非扫描漏执行，也没有产品新增finding。
+    evidence:
+    - /tmp/edhr-w3-independent-ui-premium-comparison.json
+    - docs/development/branch-review-20261020-w3-write-boundaries/README.md:19
+    - docs/development/branch-review-20261020-w3-write-boundaries/progress.json:81
+    resolutionStatus: open
+    resolutionEvidence: []
+  residualRisks:
+  - id: residual.scoped-runtime-only
+    description: Native PG transfer fixtures seed initial generic resolution; generic
+      MVC is standalone. DHR lifecycle uses H2 compatibility and browser uses controlled
+      API.
+    impact: This does not certify full resolver creation, all HTTP/tenant/role combinations,
+      full historical migrations or full-stack production UI.
+    mitigation: Keep exact fixture/test boundaries and continue W3/W7 targeted audit.
+  - id: residual.whole-audit-pending
+    description: 93 changed source ranges,26 old semantic dependencies,4 old gaps,2
+      user-deferred DHR highs/A12 and remaining W2/W3/W4–W7 remain.
+    impact: No whole-branch acceptance or completion percentage can be inferred.
+    mitigation: Continue versioned ledger and user-confirmed upstream dependencies.
+  - id: residual.W5-AUDIT-HASH-001
+    description: Preexisting AuditEvent raw JSON/time sealing cannot always rehash
+      PG-normalized readback; source/probe evidence retained, no repair in this slice.
+    impact: Future readback rehash verification requires explicit versioned canonical
+      payload and historical strategy; current read/export does not rehash.
+    mitigation: Separate W5 work; do not rewrite old hashes or claim new stored-hash
+      tests verify round-trip hashing.
+  - id: residual.global-static-limits
+    description: Official strict exit2 and ESLint missing configuration persist; exact
+      scanner multiset has no new records.
+    impact: Project-wide static quality is not green.
+    mitigation: Keep existing limitations in final delivery and schedule separately;
+      do not lower rules.
+  blockingConditions: []

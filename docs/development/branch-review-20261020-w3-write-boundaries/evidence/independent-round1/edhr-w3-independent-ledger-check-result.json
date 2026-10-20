@@ -1,0 +1,1368 @@
+{
+  "schema": "edhr-independent-ledger-knowledge-verification/v1",
+  "role": "fresh independent QA readonly support",
+  "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "headCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+  "contractReadCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "checks": [
+    {
+      "id": "knowledge-id-transition",
+      "outcome": "passed",
+      "detail": {
+        "before": 2535,
+        "after": 2546,
+        "added": [
+          "DEC-0081",
+          "DEC-0081-01",
+          "DEC-0081-02",
+          "DEC-0081-03",
+          "DEC-0081-04",
+          "evidence.tenant-task-delegation-20261020",
+          "evidence.work-template-write-shape-audit-20261020",
+          "scenario.tenant-transfer-dhr-boundary-kept",
+          "scenario.tenant-transfer-repeated-origin-preserved",
+          "scenario.tenant-transfer-target-outside-original-candidates",
+          "scenario.tenant-transfer-target-rejected"
+        ],
+        "removed": []
+      }
+    },
+    {
+      "id": "no-existing-maturity-or-visibility-changes",
+      "outcome": "passed",
+      "detail": []
+    },
+    {
+      "id": "discrepancy-lifecycle-closure-is-explicit-scoped-fix-only",
+      "outcome": "passed",
+      "detail": [
+        {
+          "id": "discrepancy.production-work-form-completion-condition-passthrough",
+          "recordType": "implementationDiscrepancy",
+          "field": "status",
+          "before": "open",
+          "after": "resolved"
+        },
+        {
+          "id": "discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot",
+          "recordType": "implementationDiscrepancy",
+          "field": "status",
+          "before": "open",
+          "after": "resolved"
+        },
+        {
+          "id": "discrepancy.production-work-legacy-condition-save-publish-asymmetry",
+          "recordType": "implementationDiscrepancy",
+          "field": "status",
+          "before": "open",
+          "after": "resolved"
+        }
+      ]
+    },
+    {
+      "id": "36-finite-semantic-source-record-and-nested-receipts",
+      "outcome": "passed",
+      "detail": {
+        "records": 36,
+        "uniqueReceiptAssertions": 18
+      }
+    },
+    {
+      "id": "ontology-result-shape-and-scope",
+      "outcome": "passed",
+      "detail": {
+        "sync": 49,
+        "baselineBefore": "0.3.25",
+        "baselineAfter": "0.3.25"
+      }
+    },
+    {
+      "id": "inherited-method-and-semantic-records-byte-equivalent",
+      "outcome": "passed",
+      "detail": null
+    },
+    {
+      "id": "catalog-counts",
+      "outcome": "passed",
+      "detail": {
+        "methods": 314,
+        "findings": 44
+      }
+    },
+    {
+      "id": "four-current-fixes-await-independent-acceptance",
+      "outcome": "passed",
+      "detail": {
+        "AUD-H009": "fixed-awaiting-independent-acceptance",
+        "AUD-H010": "fixed-awaiting-independent-acceptance",
+        "AUD-H012": "fixed-awaiting-independent-acceptance",
+        "W3-TRANSFER-LOCK-001": "fixed-awaiting-independent-acceptance"
+      }
+    },
+    {
+      "id": "W5-preexisting-medium-open",
+      "outcome": "passed",
+      "detail": null
+    },
+    {
+      "id": "unrelated-prior-finding-records-retained",
+      "outcome": "passed",
+      "detail": {
+        "unrelatedRecords": 37
+      }
+    },
+    {
+      "id": "W2-TRACE-REGION-001-scoped-prior-independent-acceptance",
+      "outcome": "passed",
+      "detail": {
+        "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+        "primaryEvidence": "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/receipts.json",
+        "fixCommits": [
+          "12e2bc218b3830c18ea74c44108f296d3e04ee3c"
+        ],
+        "testedCommits": [
+          "ba68b03dab051d228c3646a03bbb404f2724f1d4"
+        ],
+        "pullRequests": [
+          19
+        ],
+        "mergeCommits": [
+          "a8285be9b91fb76bcb27ccb16a5258bda1fb5077"
+        ],
+        "deliveryCommit": "3bfe0c6d8af19d5142aaa6edbf37a8e5f18869cc",
+        "integrationStatus": "merged"
+      }
+    },
+    {
+      "id": "W2-TRACE-REGION-002-scoped-prior-independent-acceptance",
+      "outcome": "passed",
+      "detail": {
+        "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+        "primaryEvidence": "docs/development/branch-review-20261020-trace-freeze-chain/evidence/primary/receipts.json",
+        "fixCommits": [
+          "12e2bc218b3830c18ea74c44108f296d3e04ee3c"
+        ],
+        "testedCommits": [
+          "ba68b03dab051d228c3646a03bbb404f2724f1d4"
+        ],
+        "pullRequests": [
+          19
+        ],
+        "mergeCommits": [
+          "a8285be9b91fb76bcb27ccb16a5258bda1fb5077"
+        ],
+        "deliveryCommit": "3bfe0c6d8af19d5142aaa6edbf37a8e5f18869cc",
+        "integrationStatus": "merged"
+      }
+    },
+    {
+      "id": "old-review-documents-not-overwritten",
+      "outcome": "passed",
+      "detail": null
+    },
+    {
+      "id": "fixed-path-count",
+      "outcome": "passed",
+      "detail": null
+    },
+    {
+      "id": "ledger-delta-states-not-upgraded",
+      "outcome": "passed",
+      "detail": null
+    },
+    {
+      "id": "ledger-no-whole-audit-or-runtime-claim",
+      "outcome": "passed",
+      "detail": null
+    },
+    {
+      "id": "archive-manifests-exact-git-local-bytes-and-zip-members",
+      "outcome": "passed",
+      "detail": {
+        "archiveAssertions": 86,
+        "gitEvidenceAssertions": 101
+      }
+    },
+    {
+      "id": "working-tree-remains-clean",
+      "outcome": "passed",
+      "detail": null
+    }
+  ],
+  "errors": [],
+  "knowledgeRecordTransition": {
+    "added": [
+      "DEC-0081",
+      "DEC-0081-01",
+      "DEC-0081-02",
+      "DEC-0081-03",
+      "DEC-0081-04",
+      "evidence.tenant-task-delegation-20261020",
+      "evidence.work-template-write-shape-audit-20261020",
+      "scenario.tenant-transfer-dhr-boundary-kept",
+      "scenario.tenant-transfer-repeated-origin-preserved",
+      "scenario.tenant-transfer-target-outside-original-candidates",
+      "scenario.tenant-transfer-target-rejected"
+    ],
+    "removed": [],
+    "maturityVisibilityChanges": [],
+    "discrepancyLifecycleChanges": [
+      {
+        "id": "discrepancy.production-work-form-completion-condition-passthrough",
+        "recordType": "implementationDiscrepancy",
+        "field": "status",
+        "before": "open",
+        "after": "resolved"
+      },
+      {
+        "id": "discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot",
+        "recordType": "implementationDiscrepancy",
+        "field": "status",
+        "before": "open",
+        "after": "resolved"
+      },
+      {
+        "id": "discrepancy.production-work-legacy-condition-save-publish-asymmetry",
+        "recordType": "implementationDiscrepancy",
+        "field": "status",
+        "before": "open",
+        "after": "resolved"
+      }
+    ]
+  },
+  "initialProbeQualification": "Initial generic status check over-counted open-to-resolved implementationDiscrepancy lifecycle as asset maturity; initial result retained. Corrected classification preserves all three lifecycle transitions and still forbids any existing asset maturity/visibility change. No repository/test product modification.",
+  "gitEvidenceReceipts": [
+    {
+      "commit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+      "path": "docs/development/branch-review-20261020-coverage-ledger/source-catalog.json",
+      "sha256": "dff8f6a1b3ba5702bb88fb6973545bf97ea5e2412c512ea2ebdd3a1b1a8cb8d2",
+      "bytes": 433342
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261015-w1-followup/evidence/independent-config/quality-result.yaml",
+      "sha256": "db6dcee6ca61387bb711af630ef144a8f19043a8c754d2663623387b3e7d2e55",
+      "bytes": 16477
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261015-w1-followup/findings.yaml",
+      "sha256": "080bb9a651e0f529e735d538a270525b30d60c70d166941650039c8d6c97521f",
+      "bytes": 2827
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261015-w1-followup/remaining-path-map.md",
+      "sha256": "38b111af630d78de428b51953b554be788be2323c262cbdc83c140da9d82d74c",
+      "bytes": 3119
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261015-w1-followup/review-progress.jsonl",
+      "sha256": "79adfd2bf7b1323a4f287d4c0f7b1dad5b3db6ffe9c5abb42f4bfa2887dd6944",
+      "bytes": 4682
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261015/NEXT.md",
+      "sha256": "4ad213d66b3c73d35ca0ccda715de9ae680c9cc4c628f9f992fef972f8972349",
+      "bytes": 13020
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261015/dhr-lifecycle-map.md",
+      "sha256": "59addffa07b92850b4201055c37e255f1455644df1cd4942de42979c9bd46fec",
+      "bytes": 4356
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261015/evidence/independent-first-failed/quality-result.yaml",
+      "sha256": "5865fb1a5abfdea19bc63fe272fd28c4e26c752eaa7112b09a4c6181f105fee7",
+      "bytes": 10090
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261015/findings.yaml",
+      "sha256": "cde0768c77bcee9f0b9ba252fa70b670b814e847600ed33888f28428bb8673a6",
+      "bytes": 3625
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+      "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+      "bytes": 60851
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261015/ontology/semantic-review.jsonl",
+      "sha256": "715e2a9a67f94c9505ec05ae6738344a7d767c43d8e21ad392f9555b6311b8ed",
+      "bytes": 47691
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261015/quality-result.yaml",
+      "sha256": "59377439cba1a3cd3b93fba97e947929bc93084898bc92d6c4f79042ece8c516",
+      "bytes": 19314
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-f004/README.md",
+      "sha256": "81521584965f382b0ce176123e65c0984f8265343a8e587d99c725c9cdb25b06",
+      "bytes": 4648
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-f004/evidence/independent/qualityResult.yaml",
+      "sha256": "0011cb8d9690dc05567d6516e7aa8c6738959793a4587e7d0af5e5f5d38548c9",
+      "bytes": 14411
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-f004/findings.yaml",
+      "sha256": "dad7722ee05a4fb3609ef797f7a31c50c0e03c337caad162ab14a3fb708a5ee3",
+      "bytes": 3096
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-f004/review-progress.jsonl",
+      "sha256": "e370daddc2d83828205e2fa32db2353ca1d8255d7cb1dd26287317f14a510a00",
+      "bytes": 1687
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/qualityResult.yaml",
+      "sha256": "302404e2549e9fab213bf828d62cee98c81c780dd3996c4310d6b9b8da09d065",
+      "bytes": 11669
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/qualityResult.yaml",
+      "sha256": "af3113fe40ddd73c012a5e8e7ed4fd10df55f278b7e37a56928b514805179eb2",
+      "bytes": 12990
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w1-review-export/findings.yaml",
+      "sha256": "02386cab025a31fd0939598076e281d01c5bf02ba3a2afc15cdf2dd8345401e9",
+      "bytes": 3560
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w1-review-export/followup-20261016-source-dependency.md",
+      "sha256": "0bc690098a658cd2a154a8f2bcd823f38c49b4272aed5cbb1943ca45a1037604",
+      "bytes": 3287
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w1-review-export/review-progress.jsonl",
+      "sha256": "570d0e7a76e44a384b26ce792e1093a0724e046c9cec748505c1cdcaaab079fe",
+      "bytes": 7426
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w1-review-export/source-map.md",
+      "sha256": "30ea358cc19dff5bbb1671e1baef8ec2f9057819a18e155b21aec14fbc9d8289",
+      "bytes": 4298
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-designer-identity/README.md",
+      "sha256": "87af066082df6c6ddf5588ccc2b82b927c69ce0a5412bad4b50817e28f203d3f",
+      "bytes": 5466
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/qualityResult.yaml",
+      "sha256": "898a8231ced49ff5269b98e190b136a559677843a9111193a0709bd9671564a0",
+      "bytes": 18916
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-designer-identity/findings.yaml",
+      "sha256": "82ed627bcbed0933999e5e6c6ef787fd8d8a06d64238ea23877b4a4e83a1f372",
+      "bytes": 2222
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-designer-identity/source-map.md",
+      "sha256": "73ad391872c990f38be9872ea19b32f393d7a23cf59783b1f21c03604c35eae7",
+      "bytes": 2284
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-form-availability/README.md",
+      "sha256": "7309bbc504a3821f3b792142af37de61533660c98e6423768469e174f14a2180",
+      "bytes": 6407
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-form-availability/evidence/independent-first/qualityResult.yaml",
+      "sha256": "e905a4b97244fd7e6c3118791c83ec31d1748736b7cfb66bb9c8bb9fa6340f49",
+      "bytes": 8726
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/qualityResult.yaml",
+      "sha256": "d2e46c951aeb514c1094b2b21c9de23e1c30ef2f8a6244b8afe124c74e6be5d6",
+      "bytes": 19704
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-form-availability/findings.yaml",
+      "sha256": "bee922fc3dab07dfd2ec661fe27c95e4d30e5e89545301e891df0271e2aa4975",
+      "bytes": 1677
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-form-availability/source-map.md",
+      "sha256": "2eec230234b031c2f3a536be41fe0eaaa83263559fddeabcd72aaa784d11a4d7",
+      "bytes": 2879
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-form-integrity/README.md",
+      "sha256": "252827b111f49397fc640a0fc7a35cc0d197d4cc77e5382d741e4870f3964953",
+      "bytes": 4668
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-form-integrity/evidence/independent/qualityResult.yaml",
+      "sha256": "f165440af5c3ef4dc1313342935eaa37a0ddd637036104a0380f83a57a833123",
+      "bytes": 12020
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-form-integrity/findings.yaml",
+      "sha256": "caef2098880176f3dda474c809efca2a55ceceb6cf508d682f9bfee9537fe52b",
+      "bytes": 1660
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-form-integrity/review-progress.jsonl",
+      "sha256": "87029a0bed8be4a587c2bd7b0fab1cd23909ab01fda20c90566c43a3789b9ff3",
+      "bytes": 7187
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-form-integrity/source-map.md",
+      "sha256": "e89beebe0968d6a88c89f9e3013284d1b38a8a0bc9a4be82ed62f8cffb395285",
+      "bytes": 4526
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-projection-integrity/README.md",
+      "sha256": "33420258ea0d36c8cc7343caed0e234497df924770027eefcd4138e0a998b652",
+      "bytes": 5716
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-projection-integrity/evidence/delivery-receipt.json",
+      "sha256": "0dfd9ab617273ea84548efcc34f9eb09f5bd93936bd7208739bb15287d9a20ea",
+      "bytes": 2693
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-projection-integrity/evidence/independent/qualityResult.yaml",
+      "sha256": "c67c07ed76c6539be59517f83085fc58645a54db5899c5800f0b6ebcab6bb4a9",
+      "bytes": 15974
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-projection-integrity/findings.yaml",
+      "sha256": "19a417bd6c04a661f5042c63ea559ab65f5d18ec5498d19ed1679aa791129014",
+      "bytes": 1787
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261016-w2-projection-integrity/source-map.md",
+      "sha256": "0ea0013a957e0fd16c316b8b1b3a1bdf8f528c35fb0e9425e673e931d5dec2fc",
+      "bytes": 3132
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261017-w2-subfield-sync/README.md",
+      "sha256": "6774f86dedbe7c9b6943c7c60d446692e60a524d50869b2bd2559fbaa5cc6dab",
+      "bytes": 5260
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261017-w2-subfield-sync/evidence/independent/l0-document-review.yaml",
+      "sha256": "ee3e7389d4374a7e94985c70184183adbc9fa194c67df1792e89da7fe958eb26",
+      "bytes": 4380
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261017-w2-subfield-sync/evidence/independent/qualityResult.yaml",
+      "sha256": "a0a9e2ef9dcc8c8ad0c0c7d08482e8cff95f94d0740e6161d6bfe0c50bcf9176",
+      "bytes": 17057
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261017-w2-subfield-sync/findings.yaml",
+      "sha256": "87ab33c1655342c70a8470dfd7e52a1d318e7622b33942b783177d0e0a59106c",
+      "bytes": 2253
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261017-w2-subfield-sync/source-map.md",
+      "sha256": "3826ab321052f9a64faa1b2a4bcf32a0a664966364fa1af65ec1ac1dd90fdff8",
+      "bytes": 3829
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w2-choice-options/README.md",
+      "sha256": "0eb7e755806bb9d1ccc3bb61a03cef3feb58eb66481efcb9143c394de5b4538d",
+      "bytes": 5235
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-final/quality-result.yaml",
+      "sha256": "d62ecc92873116de9d15d2af77c34990d7b80fc0189809e4b95496a842e938ea",
+      "bytes": 18628
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/quality-result.yaml",
+      "sha256": "3282222ca70f0e203aa41ffa5b4f9343e54cb95a6b9ae7c1a11591dae0127253",
+      "bytes": 20445
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w2-choice-options/findings.md",
+      "sha256": "1fe26dd5dc595b8a1e2ca711decf61e991157ab875bb00fa0594e7292a911a8a",
+      "bytes": 7813
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w2-choice-options/source-map.md",
+      "sha256": "f54fdfaa31ec0c2462735e2089a67e7464f5d5ea88a9603d8e4c77b85e4dc5f7",
+      "bytes": 8585
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w3-binding-references/README.md",
+      "sha256": "3e60f677eb412828196a87bcf31d4eb2e0a4f9ced9fc9ec4776d6d1a878bd39e",
+      "bytes": 7369
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/helpers/edhr-w3b-legacy-config-paths.md",
+      "sha256": "631dba3790a3e6d6584439d09b28fde2f7c0cb6b3063c2efe1bdf4366f428935",
+      "bytes": 14657
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/helpers/edhr-w3b-task-scope-crosscheck.md",
+      "sha256": "44cdf5b19690d0b26c415ae9017b1656f2e23f684d227fe45afd3dc2191da9a7",
+      "bytes": 11868
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-quality-result.yaml",
+      "sha256": "3a37692a69888c62956ec54f02f113fb9f574acaefc3db4ae9a5f35fc294fe6c",
+      "bytes": 13976
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent/quality-result.yaml",
+      "sha256": "7386678e30b730bb94e502288214c8880d42ca4c47fa00d152784e2c0dbb9c34",
+      "bytes": 13867
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w3-binding-references/findings.md",
+      "sha256": "bafe522f19f09720caf923194dcbead38f9c495088383709d008f6a8fa922a05",
+      "bytes": 4118
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w3-binding-references/source-map.md",
+      "sha256": "42a59c74c95a14ae4f8f42e43d936e4ca91e6214617803200639801d4ee6aaff",
+      "bytes": 4496
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/README.md",
+      "sha256": "65f8ad2c51d5852e0114103b079ffa8046e63ef117362fc36031aa32421464f7",
+      "bytes": 4682
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-quality-result.yaml",
+      "sha256": "e2e459bfb286dfc465d3c007bdc5372bd1cb2e126c5269a96802a79203867988",
+      "bytes": 13898
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/findings.md",
+      "sha256": "663a4ec8345b4cf3fd868bf4783c65ea220a25809d14f69ccda1b10935a1abce",
+      "bytes": 3191
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/source-map.md",
+      "sha256": "4161ab1a18da49fbef6bac4b6e9225686f0525e12b11fd285535026767d6e925",
+      "bytes": 5438
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/trace-field-single-binding-20261019-evidence/quality-result-first.yaml",
+      "sha256": "5d31a60dc3bcfba403cb4e762ff125f62397b91cc9e088e0c43c5831d6e88a56",
+      "bytes": 9279
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/trace-field-single-binding-20261019-evidence/quality-result-second.yaml",
+      "sha256": "a341901449051cec0437249e825ecf1ff5fdcd2943ae23d0171f6f4d8e010d3f",
+      "bytes": 13829
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/trace-field-single-binding-20261019-evidence/quality-result.yaml",
+      "sha256": "0132daf7556d220b61b8a722d915185ce5e33941f34819353985b7575d41f355",
+      "bytes": 15180
+    },
+    {
+      "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+      "path": "docs/development/trace-field-single-binding-20261019.md",
+      "sha256": "4ee764ae991e1d7485528d443260f19f41d3ba84979631bcfbc48204c66ecea7",
+      "bytes": 15244
+    },
+    {
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "path": "docs/development/branch-review-20261020-trace-freeze-chain/README.md",
+      "sha256": "4191630bed2d85bea3ebb0819b181db47d771b660f6a55cd53024fa159f7453e",
+      "bytes": 5422
+    },
+    {
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "path": "docs/development/branch-review-20261020-trace-freeze-chain/evidence/helpers/edhr-trace-design-source-review.json",
+      "sha256": "34096576b58291cb90b55e39de81f9a3815a4722e94a6b8b2f45fba7af14b3ec",
+      "bytes": 18787
+    },
+    {
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "path": "docs/development/branch-review-20261020-trace-freeze-chain/evidence/helpers/edhr-trace-history-source-review.json",
+      "sha256": "878916ec8283d87d434bc0cca2de2ac85c95f4f98df9e5d43fc08eaf7f06a0c3",
+      "bytes": 31334
+    },
+    {
+      "commit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+      "path": "docs/development/branch-review-20261020-trace-freeze-chain/primary-source-map.json",
+      "sha256": "b7bd02a1a621208722e1dae51ab8d847dea2844a939c8880a5c4ab9203171c21",
+      "bytes": 4728
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "sha256": "f1833e750ed1c6b9b158e6932738f21c32cda35264a7275059a79e6e9ae912fd",
+      "bytes": 3535
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "sha256": "42cf405959931f1ab74b046a32267cf4041723257dfd7a7f4d9a9bbcf30fb932",
+      "bytes": 15710
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4",
+      "bytes": 18529
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java",
+      "sha256": "950324b2cdb5acfedcac7170097c17565c81eb8f3bc096095b048348459174df",
+      "bytes": 14570
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "sha256": "4411c23f5f89abb69ebd424355020e2569176e5f4b29ee592b6a09bcad49ddcd",
+      "bytes": 64082
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "sha256": "b8a880d267f7b01086eed5526ca226e9e03cd6380f0f8888a7f09c27112ae09e",
+      "bytes": 31806
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "sha256": "8fa8fc0c69e815d70c5f3f01e285f1489e151bc97d2d5c2be7ea797376467a67",
+      "bytes": 82534
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "bytes": 8606
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "bytes": 44867
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "bytes": 2619
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+      "sha256": "085e33429604bef6051746c795f191b206592866918d4d0cfbd77e1deea49e6b",
+      "bytes": 181838
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java",
+      "sha256": "5f67adba3c204c55b4d11aef499fff701755d45527e323d28c7dcefb72488599",
+      "bytes": 16909
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateWriteBoundaryTest.java",
+      "sha256": "b0fb823d5d52c464ef2dc04987918e2f9a69338517f2f42f066b0e112ac1889d",
+      "bytes": 11678
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateWritePostgresTest.java",
+      "sha256": "23ca6515c8ffb118e485d74b2bb2eec4668f05c606b330078d30f827779ded7f",
+      "bytes": 14881
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "sha256": "d48edb5f3e9e82d642750f156079ae6649ca0938acc811cfc2284cd11c469ca0",
+      "bytes": 29019
+    },
+    {
+      "commit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java",
+      "sha256": "947eba5141d04c8c5aa33942af29df2df4ad05cf11d872219b704a888c504ad6",
+      "bytes": 28361
+    },
+    {
+      "commit": "a41e2b628c4a7bcc8b933c001bb871a2b2134860",
+      "path": "docs/development/branch-review-20261020-trace-freeze-chain/evidence/ontology/edhr-trace-region-semantic-review.jsonl",
+      "sha256": "a334280f7f6efa78cc33c0334fd9854108bdec39c286a2b94c48c975cacb9234",
+      "bytes": 40920
+    },
+    {
+      "commit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "docs/development/branch-review-20261020-trace-freeze-chain/acceptance.json",
+      "sha256": "225ea15fe4ad5ca3261bba8e032c58614987fd0c85c5c0fac87aad896ac75bdc",
+      "bytes": 1204
+    },
+    {
+      "commit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "docs/development/branch-review-20261020-trace-freeze-chain/evidence/independent/edhr-trace-independent-quality-result.yaml",
+      "sha256": "f726b95f3833690b4d9737b94038a500fbdb49c27f27ead8a2ac967d62ae367d",
+      "bytes": 27507
+    },
+    {
+      "commit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "docs/development/branch-review-20261020-trace-freeze-chain/source-catalog.json",
+      "sha256": "1a0f274f9b1963373bc3f07eef8a38846dc573fafc38dd6e6313b7a76f479a4b",
+      "bytes": 497293
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+      "sha256": "fcd6a8879c14fdf5f035177d608c5d8f22d29f79c2b24ec3fb27d5670dc03b1b",
+      "bytes": 6591
+    },
+    {
+      "commit": "cb2e9eef6cdb50077283c9707d257dcdd56a9e36",
+      "path": "docs/knowledge/evidence/work-template-write-shape-audit-2026-10-20.md",
+      "sha256": "a3d7569f6874145e6375a15b4f520f756fc482e9042474d8c9868e739c863499",
+      "bytes": 2594
+    },
+    {
+      "commit": "df6ea28a6388a89611786116700836c6bf7f4819",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/README.md",
+      "sha256": "007c95447154cdc08c4eccd1828ef07ff509643008538dc62f8ad8ed45d5984b",
+      "bytes": 4343
+    },
+    {
+      "commit": "df6ea28a6388a89611786116700836c6bf7f4819",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-audit-hash-source-map.json",
+      "sha256": "4853027c08457fe0d5e329c15a203f10a2ab14b48444bcd34564513cada10a17",
+      "bytes": 10282
+    },
+    {
+      "commit": "df6ea28a6388a89611786116700836c6bf7f4819",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-transfer-source-map.json",
+      "sha256": "8bf390243502c01daafcb3b04dba9405015e4df6bf6f6bfedbb35c6938f69fd7",
+      "bytes": 20092
+    },
+    {
+      "commit": "df6ea28a6388a89611786116700836c6bf7f4819",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-write-entry-source-map.json",
+      "sha256": "abb3dc3a0e5607841f871640aaa4efddd631d43dc9ce6ef6192e51af96332a6a",
+      "bytes": 44639
+    },
+    {
+      "commit": "df6ea28a6388a89611786116700836c6bf7f4819",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-semantic-review.jsonl",
+      "sha256": "87a2d1386abbd091bf6f694cac6c11200e329376a749a20be53dc7043481f23e",
+      "bytes": 166062
+    },
+    {
+      "commit": "df6ea28a6388a89611786116700836c6bf7f4819",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-audit-hash-baseline-probe-summary.json",
+      "sha256": "cafa3d3b08f0f209bbe0112cc2c32b51276bb62cb31f539c9f7486e94c9da04f",
+      "bytes": 932
+    },
+    {
+      "commit": "df6ea28a6388a89611786116700836c6bf7f4819",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-final-primary-backend-summary.json",
+      "sha256": "e4bdd5d5872fb8e2a544c6ceccdf4595aa7ce52c47ecd72a7d72bb0e74a7b559",
+      "bytes": 53091
+    },
+    {
+      "commit": "df6ea28a6388a89611786116700836c6bf7f4819",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-transfer-pg-test-summary.json",
+      "sha256": "2ef7f83e4ffb8b6bc4495cc81edf1152d3392107e5cc033e88cc54b602e4cdb4",
+      "bytes": 18952
+    },
+    {
+      "commit": "df6ea28a6388a89611786116700836c6bf7f4819",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/primary-source-map.json",
+      "sha256": "f6c05a5096c229eb5bcb948c1d521bbc4248f6c0a1286ec1753a83dd5a09b020",
+      "bytes": 22725
+    }
+  ],
+  "archiveAssertions": [
+    {
+      "zip": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/original-reports.zip",
+      "member": "edhr-w3-write-entry-source-review.md",
+      "sha256": "368ea5b2f7f72869202987869baff1f409becaaf2ddf698b30001f6ffd8f8d79",
+      "bytes": 12144
+    },
+    {
+      "zip": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/original-reports.zip",
+      "member": "edhr-w3-write-existing-test-scopes.md",
+      "sha256": "d4f7fb55978c9e6178e49cbf0aff1b930eca3393fc6b7eba710b0f54202ef1c2",
+      "bytes": 11461
+    },
+    {
+      "zip": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/original-reports.zip",
+      "member": "edhr-w3-transfer-source-review.md",
+      "sha256": "a214e31068143437a826862535147cbfa5e4b9edf1de5d162d73b32eb5c0395d",
+      "bytes": 9051
+    },
+    {
+      "zip": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/original-reports.zip",
+      "member": "edhr-w3-transfer-consumers.md",
+      "sha256": "318787f9f3a8ee06713c07c7b7c93512827496726253325f48f709940df0a57f",
+      "bytes": 6049
+    },
+    {
+      "zip": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/original-reports.zip",
+      "member": "edhr-w3-transfer-knowledge-index.md",
+      "sha256": "da1b3c249676b3b2d5849b6e8450419f37b9f627450abe862a37de7c9231c7bf",
+      "bytes": 6408
+    },
+    {
+      "zip": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/original-reports.zip",
+      "member": "edhr-w3-audit-hash-source-review.md",
+      "sha256": "b1f49c3b9d9e9f4f844b2798ef3c01ea25f7ca717a958d78a119a5c9668e2696",
+      "bytes": 6077
+    },
+    {
+      "zip": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/original-reports.zip",
+      "member": "edhr-w3-audit-hash-consumers.md",
+      "sha256": "e8a8512d06ddd5fbd33be16e608eafd2fe5e02e3cfa2c944f30ab3d5e62b8710",
+      "bytes": 7742
+    },
+    {
+      "zip": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/original-reports.zip",
+      "member": "edhr-w3-transfer-seed-source-notes.md",
+      "sha256": "e0503f72e999a217f2f9a0ef4844338b7741eb02d2295df766100212b8b2b24c",
+      "bytes": 7124
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-result.yaml",
+      "sha256": "43a1f9b8160af50efbbdd400a904cccbc3f147588472518a813c9e393978fb36",
+      "bytes": 21165
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-semantic-review.jsonl",
+      "sha256": "87a2d1386abbd091bf6f694cac6c11200e329376a749a20be53dc7043481f23e",
+      "bytes": 166062
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-source-receipt-check.json",
+      "sha256": "fdedd59219a2e0f23244b3becfa886562165de2c9476f24bbd79c4059eed13b7",
+      "bytes": 5360
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-semantic-summary.json",
+      "sha256": "1777da73509d7a12df3c06c7571906d62bde4284f54070c82b6fb4d254c1b8d9",
+      "bytes": 1960
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-knowledge-final-summary.json",
+      "sha256": "67546243df04cc3e7764c2b239531a03f12d03a19267168b7e1e7ee588acbc82",
+      "bytes": 712
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-knowledge-transition-summary.json",
+      "sha256": "bacf6a06a1c4f19e3d6065a59fc0aeee12c3582f1a263bef91db15f160a8947b",
+      "bytes": 3010
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-transfer-knowledge-index.json",
+      "sha256": "8ea30bf73c729ffb6233a7e57856b8e652dbdb91fb534f0b726cf5cd3f2c575d",
+      "bytes": 46794
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-transfer-knowledge-index.md",
+      "sha256": "da1b3c249676b3b2d5849b6e8450419f37b9f627450abe862a37de7c9231c7bf",
+      "bytes": 6408
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-wording-check.json",
+      "sha256": "3e434864f069c7727be42e25ff52e3bc5bdc38f7218732732025be704fbf7213",
+      "bytes": 24271
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-build-tenant-semantic.py",
+      "sha256": "09bdc0ecfbbd43ede1329f76badc0a35ce331a0a5394b045e58658cbcb834710",
+      "bytes": 11366
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-knowledge-transition.py",
+      "sha256": "70f1c4f11988c6b66f79469140f377168fdac08b38b8097f789b816cd1d5d1da",
+      "bytes": 5318
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-finalize-ontology.py",
+      "sha256": "ccf74fb9df4204b7125fa1afeb68842b8a075a8ffbe71bf02b5dcf02101da31d",
+      "bytes": 12947
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-result.yaml",
+      "sha256": "43a1f9b8160af50efbbdd400a904cccbc3f147588472518a813c9e393978fb36",
+      "bytes": 21165
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-semantic-review.jsonl",
+      "sha256": "87a2d1386abbd091bf6f694cac6c11200e329376a749a20be53dc7043481f23e",
+      "bytes": 166062
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-source-receipt-check.json",
+      "sha256": "fdedd59219a2e0f23244b3becfa886562165de2c9476f24bbd79c4059eed13b7",
+      "bytes": 5360
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-semantic-summary.json",
+      "sha256": "1777da73509d7a12df3c06c7571906d62bde4284f54070c82b6fb4d254c1b8d9",
+      "bytes": 1960
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-knowledge-final-summary.json",
+      "sha256": "67546243df04cc3e7764c2b239531a03f12d03a19267168b7e1e7ee588acbc82",
+      "bytes": 712
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-knowledge-transition-summary.json",
+      "sha256": "bacf6a06a1c4f19e3d6065a59fc0aeee12c3582f1a263bef91db15f160a8947b",
+      "bytes": 3010
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-transfer-knowledge-index.json",
+      "sha256": "8ea30bf73c729ffb6233a7e57856b8e652dbdb91fb534f0b726cf5cd3f2c575d",
+      "bytes": 46794
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-transfer-knowledge-index.md",
+      "sha256": "da1b3c249676b3b2d5849b6e8450419f37b9f627450abe862a37de7c9231c7bf",
+      "bytes": 6408
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-wording-check.json",
+      "sha256": "3e434864f069c7727be42e25ff52e3bc5bdc38f7218732732025be704fbf7213",
+      "bytes": 24271
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-build-tenant-semantic.py",
+      "sha256": "09bdc0ecfbbd43ede1329f76badc0a35ce331a0a5394b045e58658cbcb834710",
+      "bytes": 11366
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-knowledge-transition.py",
+      "sha256": "70f1c4f11988c6b66f79469140f377168fdac08b38b8097f789b816cd1d5d1da",
+      "bytes": 5318
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-finalize-ontology.py",
+      "sha256": "ccf74fb9df4204b7125fa1afeb68842b8a075a8ffbe71bf02b5dcf02101da31d",
+      "bytes": 12947
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-transfer-pg-test-receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-transfer-pg-first-summary.json",
+      "sha256": "b931eaa09c03b305b954581e7b844e733204ba8bc24bda6d62ecd94ea50f3341",
+      "bytes": 663
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-transfer-pg-test-receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-transfer-pg-second-summary.json",
+      "sha256": "1a621f795f5753f77c9cbbe1b1bfe4d1aa190104cfaa12922829601b372a579b",
+      "bytes": 582
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-transfer-pg-test-receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-transfer-pg-final-summary.json",
+      "sha256": "8e9269428928fdcb677772a072105d00aa88e194bb0e98d96e4c98fed0752117",
+      "bytes": 13392
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-transfer-pg-test-receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-transfer-pg-test-summary.json",
+      "sha256": "2ef7f83e4ffb8b6bc4495cc81edf1152d3392107e5cc033e88cc54b602e4cdb4",
+      "bytes": 18952
+    },
+    {
+      "zip": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/failed-probe-fixtures.zip",
+      "member": "first-pg-fixture.java",
+      "sha256": "c6c6c8779db975dce89a1d2e39cbb7bfc1c2b176145ee423326abba7976ec0c6",
+      "bytes": 14694
+    },
+    {
+      "zip": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/failed-probe-fixtures.zip",
+      "member": "baseline-audit-hash-probe.java",
+      "sha256": "ece171748417915608b46deff16d1c5a62be91ff3c6465b3afa52713b5d95b13",
+      "bytes": 14911
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-write-entry-source-map.json",
+      "sha256": "abb3dc3a0e5607841f871640aaa4efddd631d43dc9ce6ef6192e51af96332a6a",
+      "bytes": 44639
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-transfer-source-map.json",
+      "sha256": "8bf390243502c01daafcb3b04dba9405015e4df6bf6f6bfedbb35c6938f69fd7",
+      "bytes": 20092
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-audit-hash-source-map.json",
+      "sha256": "4853027c08457fe0d5e329c15a203f10a2ab14b48444bcd34564513cada10a17",
+      "bytes": 10282
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-audit-hash-source-receipts.json",
+      "sha256": "2ca269c778f68ad826a2b9cbecc2af1fa2fec1ce5c2250422962b36583b277f3",
+      "bytes": 494
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-transfer-consumers.json",
+      "sha256": "6f19b14fef677dd7d4a52da84ffc419762103635989d270cccfde9754d6eeaa3",
+      "bytes": 10382
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-transfer-knowledge-index.json",
+      "sha256": "8ea30bf73c729ffb6233a7e57856b8e652dbdb91fb534f0b726cf5cd3f2c575d",
+      "bytes": 46794
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-write-baseline-summary.json",
+      "sha256": "92604bd92470d6f48a1034a3722cb70aa3be2639deb3191bfa68e58fdaa02927",
+      "bytes": 36326
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-write-baseline-final-summary.json",
+      "sha256": "d261f6d4abb88d85ec3e698808d80c1916607b8d2d546f0e4cac3bea4796c4b9",
+      "bytes": 16548
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-write-primary-summary.json",
+      "sha256": "1da6054f8fd097fbf10bba21fa2bb0b0877e4106ab86c491ab6f4c25fc66b3a9",
+      "bytes": 954
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-write-postgres-primary-summary.json",
+      "sha256": "3a5cf2ae65ec8e9843781755673f64e603143d2dfb795342140223b6e315b3df",
+      "bytes": 4054
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-write-postgres-final-summary.json",
+      "sha256": "0025cfeb04ea5fd36a7884b3abca3a6473c925af795844c755dbde2c93ebc4ad",
+      "bytes": 422
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-write-postgres-baseline-final-summary.json",
+      "sha256": "7e9cecc030fac24d0724beed9427cb75754265ee4e03e0b6d240ee4a4e9e4d9f",
+      "bytes": 2666
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-audit-hash-baseline-probe-summary.json",
+      "sha256": "cafa3d3b08f0f209bbe0112cc2c32b51276bb62cb31f539c9f7486e94c9da04f",
+      "bytes": 932
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-final-primary-backend-summary.json",
+      "sha256": "e4bdd5d5872fb8e2a544c6ceccdf4595aa7ce52c47ecd72a7d72bb0e74a7b559",
+      "bytes": 53091
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-access-cleanup-summary.json",
+      "sha256": "40b6d9a3a56c631ad4bf11a57100ff49b5783da98aaf564fcb2e49b952d951dc",
+      "bytes": 646
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-access-restored-summary.json",
+      "sha256": "c7b76985624486b7efaeff7e88a842377f7ead37ea130863afeec5f0f33b3683",
+      "bytes": 361
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-transfer-pg-first-summary.json",
+      "sha256": "b931eaa09c03b305b954581e7b844e733204ba8bc24bda6d62ecd94ea50f3341",
+      "bytes": 663
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-transfer-pg-second-summary.json",
+      "sha256": "1a621f795f5753f77c9cbbe1b1bfe4d1aa190104cfaa12922829601b372a579b",
+      "bytes": 582
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-transfer-pg-final-summary.json",
+      "sha256": "8e9269428928fdcb677772a072105d00aa88e194bb0e98d96e4c98fed0752117",
+      "bytes": 13392
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-transfer-pg-test-summary.json",
+      "sha256": "2ef7f83e4ffb8b6bc4495cc81edf1152d3392107e5cc033e88cc54b602e4cdb4",
+      "bytes": 18952
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-transfer-pg-test-receipts.json",
+      "sha256": "89ed8779d23e205226bf681bb8aa14d2f0b016206ec05f4950ceabb7bc82b2e9",
+      "bytes": 960
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-premium-baseline.json",
+      "sha256": "6d85e7dd543a8b509931bc3007a57663e974d16961e5f7d7e9f8875174300c17",
+      "bytes": 34335
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-premium-candidate.json",
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a",
+      "bytes": 34340
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-premium-comparison.json",
+      "sha256": "58d35a93259ce0e616c4d793a3ca942494b25428094e1f346124f56bcee407f5",
+      "bytes": 856
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-premium-baseline.log",
+      "sha256": "5759dc584dd99ab27d3e84cf2be520158d17d0c23b3d36ff8f4721071b1d523f",
+      "bytes": 105
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-premium-candidate.log",
+      "sha256": "5759dc584dd99ab27d3e84cf2be520158d17d0c23b3d36ff8f4721071b1d523f",
+      "bytes": 105
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-eslint.log",
+      "sha256": "ce1ab04f5660d6cb81c2cdf842c1d4dd91f6f5ee6932d4d486e157c45077d8d1",
+      "bytes": 819
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-official-premium-audit.py",
+      "sha256": "67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68",
+      "bytes": 37716
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/browser/edhr-w3-transfer-browser-summary.json",
+      "sha256": "acc206fe5af80a71eb84024d06c0e4d4fba4afc22261530716dda39826a16bba",
+      "bytes": 3828
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/browser/edhr-w3-transfer-browser-final.json",
+      "sha256": "98ecf542fc4b650e42002cf0c70ace904a6e09c0f3ed0ef822d1d53a0ab1d297",
+      "bytes": 73543
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/browser/edhr-w3-transfer-browser-first.json",
+      "sha256": "8a2b34ecda137fca622d01bd71738a8c9e6534e74bc071c88c3375d7309d8f26",
+      "bytes": 1422
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/browser/edhr-w3-transfer-browser-full-1.json",
+      "sha256": "64b4a0d6134160fccbf0b966bfb0bc55805261b00aa926a2b8f57e070d64f5fa",
+      "bytes": 21823
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/browser/edhr-w3-transfer-browser-full-2.json",
+      "sha256": "01d5882e36251911cd5e7dd9db5d9d81ac32e93f0ddc2416821b971170be9b34",
+      "bytes": 50503
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/browser/edhr-w3-transfer-browser-final.log",
+      "sha256": "afdf5dc873dfbb6ab4da4b703e06eb2f65dff8e9f603748951181a7c5350cd35",
+      "bytes": 46316
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/browser/screenshots/generic-required-and-keyboard-cancel-1440-filled.png",
+      "sha256": "b64b72076c323828587a4802738b862c05316c8a47c8d93ee49606f2f5b83b43",
+      "bytes": 61467
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/browser/screenshots/generic-required-and-keyboard-cancel-1440-popup.png",
+      "sha256": "f4851dd9cc48779c85ec7ed2068af5b240f00b0ec2b068cba874fd8a0acab31a",
+      "bytes": 59198
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/browser/screenshots/generic-required-and-keyboard-cancel-390-filled.png",
+      "sha256": "ffa4a5867b10eda758efb9f4840935b94dbd31a8228a2e2d4d8ce34113cc855f",
+      "bytes": 44215
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/browser/screenshots/generic-required-and-keyboard-cancel-390-popup.png",
+      "sha256": "e3ce7a7f49a08b4a02a1dff5c27c3677c9f85b200350e74b21145b324b6743c8",
+      "bytes": 41896
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/browser/screenshots/production-required-and-keyboard-cancel-1440-filled.png",
+      "sha256": "d201d71fd8ed19beed2b85df42ea39eac462aab546bb64c87ecc3beda47de4b3",
+      "bytes": 95802
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/browser/screenshots/production-required-and-keyboard-cancel-1440-popup.png",
+      "sha256": "d1e74392ba06858daf09e119277f69d08cf6349caa43980a1e10b9e2a5cb89f2",
+      "bytes": 94434
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/browser/screenshots/production-required-and-keyboard-cancel-390-filled.png",
+      "sha256": "daf673f710981243e297876e1338535ac9f0a1f3aa0384ea11d55bbb0bc8f9d1",
+      "bytes": 51004
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/browser/screenshots/production-required-and-keyboard-cancel-390-popup.png",
+      "sha256": "1ec146467e1a8bb0dec10010993d213769e95ab045446829456a871ca59d0713",
+      "bytes": 49339
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/original-reports.zip",
+      "sha256": "ae78fa74a8f087a7646701300d951829bbee20977b4c732d4edfda56c39214ab",
+      "bytes": 35391
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/failed-probe-fixtures.zip",
+      "sha256": "91ad08868d01680912cb304222ac79222a1d4022cdebb791f16f8f8b39ee1059",
+      "bytes": 8332
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/support-receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-catalog-support.json",
+      "sha256": "ec23301866a6c21f5839a43c33476999a3d6f546877c6587dc5fe1de4a62266f",
+      "bytes": 13676
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/support-receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/helpers/edhr-w3-build-catalog-additions.py",
+      "sha256": "1119044b0cbb48fa5c8515b534d9be28abc912cc414bd5deb497b52544a6ac80",
+      "bytes": 15359
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/support-receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-primary-map.py",
+      "sha256": "96da41037c04aae414fd261775fc1202be4b63858c9a2eac34a355dd0d3e63f4",
+      "bytes": 5592
+    },
+    {
+      "manifest": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/support-receipts.json",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/primary/edhr-w3-archive-primary.py",
+      "sha256": "49272f364a8ed3d3eafac4ce84953f850409fffc52bfc7e71860b32e67a7b84e",
+      "bytes": 5340
+    }
+  ],
+  "limits": [
+    "Finite implementation and source-receipt scope, not full knowledge semantic audit",
+    "No Maven/database/browser executed by this sub-instance",
+    "No business/test/knowledge/repository writes",
+    "Formal qualityResult is owned by parent independent QA"
+  ]
+}

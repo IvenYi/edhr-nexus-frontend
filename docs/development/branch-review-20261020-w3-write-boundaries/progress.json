@@ -78,8 +78,8 @@
     "newMigrationFiles": 0,
     "actual0060ConstraintsUsed": true,
     "premiumStrictExit": 2,
-    "premiumBaselineFindings": 82,
-    "premiumCandidateFindings": 82,
+    "premiumBaselineFindings": 84,
+    "premiumCandidateFindings": 84,
     "allFindingFieldsEqual": true,
     "newExactPremiumFindings": 0,
     "eslintExit": 2,
@@ -90,7 +90,10 @@
       "failures": 2,
       "notIncludedInPassing292": true
     },
-    "invalidCleanupAttempt": "compile failed before tests; stale XML explicitly excluded; source byte-restored; fresh Access12 passed separately, not added to292"
+    "invalidCleanupAttempt": "compile failed before tests; stale XML explicitly excluded; source byte-restored; fresh Access12 passed separately, not added to292",
+    "premiumDistinctFullFieldFindings": 82,
+    "allFindingFullFieldMultisetsEqual": true,
+    "countClarification": "Original set-based comparison82 retained; actual records84, distinct82, Counter exact duplicates preserved."
   },
   "generatorBoundary": {
     "newSemanticReviewsPerformedByGenerator": 0,
@@ -98,14 +101,23 @@
     "description": "Inventory generation and preserved report indexing do not execute product/semantic reviews; actual batch work reported separately."
   },
   "independentQuality": {
-    "result": "pending",
-    "allProfessionalInstancesFinal": false,
-    "scope": "this batch and listed adjacent regressions only"
+    "result": "failed",
+    "testedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+    "requiredChecks": 24,
+    "requiredPassed": 23,
+    "allProfessionalInstancesFinal": true,
+    "report": "evidence/independent-round1/edhr-w3-independent-quality-result.yaml",
+    "newFindingIds": [
+      "QF-W3-TENANT-KNOWLEDGE-001",
+      "QF-W3-UI-DOC-COUNT-001"
+    ],
+    "correctionCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+    "finalFreshRecheck": "pending"
   },
   "historicalDataRestored": false,
   "mergePerformed": false,
   "deploymentPerformed": false,
   "overallAuditComplete": false,
   "overallPercent": null,
-  "next": "Fresh independent L2 acceptance; then pre-PR scope/progress review and human merge. Continue remaining W3/W2 and W4–W7 from ledger."
+  "next": "Archive knowledge precision followup; regenerate current recheck ledger preserving round1; new independent L2 acceptance before scope/progress review and PR."
 }

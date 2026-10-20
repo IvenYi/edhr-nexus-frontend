@@ -1,0 +1,99 @@
+{
+  "schema": "edhr-independent-source-subcheck/v1",
+  "role": "independent-quality-readonly-helper",
+  "level": "L2-subcheck",
+  "result": "passed",
+  "scope": "AuditEvent round-trip hash known issue and listed current read/export consumers only",
+  "contractBaseline": {
+    "sourceCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "contractReadCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "workingTreeClean": true,
+  "repositoryMutations": false,
+  "mavenOrDatabaseRuntimeExecuted": false,
+  "runtimeEvidenceQualification": "Archived original probe summary/source receipts checked; this subcheck did not independently execute the probe.",
+  "checks": [
+    {
+      "id": "hash.preexisting-source",
+      "outcome": "passed",
+      "evidence": "AuditEvent, both migrations and scoped API/UI/ZIP consumers are byte-identical at base/head; exact Git hashes in source receipts."
+    },
+    {
+      "id": "hash.read-export-consumers",
+      "outcome": "passed",
+      "evidence": "Main code computeSnapshotHash references are only PrePersist self-call and declaration; scoped API/UI/ZIP audit consumers project stored values without rehash comparisons."
+    },
+    {
+      "id": "hash.distinct-integrity-contracts",
+      "outcome": "passed",
+      "evidence": "DHR frozen version, expected review version, signature payload, attachment and ZIP-entry digests have distinct source checks."
+    },
+    {
+      "id": "hash.probe-original-integrity",
+      "outcome": "passed",
+      "evidence": "Both ZIP members match bytes/SHA, baseline probe retains two rehash assertions and actual0060 load; archived summary explicitly 2 failures/0 errors/0 skips."
+    },
+    {
+      "id": "hash.new-transfer-claims",
+      "outcome": "passed",
+      "evidence": "New transfer uses unchanged shared sealing; test checks stored digest shape, contents and rollback, with no claim of repairing readback rehash."
+    }
+  ],
+  "probeSummary": {
+    "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "tests": 2,
+    "failures": 2,
+    "errors": 0,
+    "skipped": 0,
+    "newRuntimeByThisInstance": false,
+    "sha256": "cafa3d3b08f0f209bbe0112cc2c32b51276bb62cb31f539c9f7486e94c9da04f"
+  },
+  "zipMembers": [
+    {
+      "member": "first-pg-fixture.java",
+      "bytes": 14694,
+      "sha256": "c6c6c8779db975dce89a1d2e39cbb7bfc1c2b176145ee423326abba7976ec0c6",
+      "matchesArchivedReceipt": true
+    },
+    {
+      "member": "baseline-audit-hash-probe.java",
+      "bytes": 14911,
+      "sha256": "ece171748417915608b46deff16d1c5a62be91ff3c6465b3afa52713b5d95b13",
+      "matchesArchivedReceipt": true,
+      "rehashAssertionLines": [
+        150,
+        172
+      ],
+      "loadsActual0060": true,
+      "originalTmpAvailable": true,
+      "originalTmpBytesMatch": true
+    }
+  ],
+  "mainCodeComputeSnapshotHashReferences": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java:60:            snapshotHash = computeSnapshotHash();",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java:69:    public String computeSnapshotHash() {"
+  ],
+  "findings": [],
+  "knownOpenIssues": [
+    {
+      "id": "W5-AUDIT-HASH-001",
+      "severity": "medium",
+      "disposition": "preexisting-medium-open",
+      "sourceCause": "PrePersist hashes raw JSON strings and LocalDateTime text; JSONB normalization and timestamp precision do not preserve the same byte/text payload.",
+      "currentSliceImpact": "No newly introduced current read/export rejection found in listed consumers. This does not certify audit integrity.",
+      "requiredFollowup": "Separately design stable versioned payload/canonicalization and historical compatibility in W5; do not rewrite old stored hashes."
+    }
+  ],
+  "limitations": [
+    "No new Maven, DB, browser, full application or full repository certification by this helper.",
+    "Negative search applies to fixed source and listed consumers only; future consumers need separate review.",
+    "Archived runtime metadata is not fresh independent execution; parent QA owns runtime verdict.",
+    "Stored hash/atomicity checks do not prove readback hash recomputation or all DHR/signature behavior."
+  ],
+  "allChildrenFinal": true
+}

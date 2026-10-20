@@ -1,0 +1,137 @@
+{
+  "sourceCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+  "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "contractReadCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+  "beforeWorkingTree": "clean",
+  "afterWorkingTree": "clean",
+  "paths": [
+    {
+      "path": "AGENTS.md",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "sourceSha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "afterWorkspaceSha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "unchanged": true
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "581e647c37daebeb9dd3d6397ae53e30e7822fb3",
+      "sourceSha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "afterWorkspaceSha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "unchanged": true
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "sourceSha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "afterWorkspaceSha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "unchanged": true
+    },
+    {
+      "path": "DESIGN.md",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "29d9e21e96170cef0d371d4867e7b8b5d6f56568",
+      "sourceSha256": "23bcefdb3989761c940aab8cd6b15cce6f69107be6c94e304c61308096b49d7d",
+      "afterWorkspaceSha256": "23bcefdb3989761c940aab8cd6b15cce6f69107be6c94e304c61308096b49d7d",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "bd1b0fb47085432a3cb0c587841e10ee97797042",
+      "sourceSha256": "14b404332734daa494c80ca69e2bc845c951e0ab799a15b8d5aaf6aab13137c1",
+      "afterWorkspaceSha256": "14b404332734daa494c80ca69e2bc845c951e0ab799a15b8d5aaf6aab13137c1",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "a1f2b1140ea93c5daf54067cb4a40d6a6cd1d2b7",
+      "sourceSha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "afterWorkspaceSha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "unchanged": true
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "2dd0a7c557f3caf44b61ca1328b0a54817a45a0b",
+      "sourceSha256": "db50e6e8040052ff550c4a90faeb622be1f42a13a36d41f2fc2efb0fb917f65e",
+      "afterWorkspaceSha256": "db50e6e8040052ff550c4a90faeb622be1f42a13a36d41f2fc2efb0fb917f65e",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sourceSha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "afterWorkspaceSha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "1e71e68d23acfe66cfb6dc02ba3c015796ad3aa0",
+      "sourceSha256": "aae289bfedd2384bb2ed56f75155fdd227cfd3a9aa7954fcbce3ca057176b757",
+      "afterWorkspaceSha256": "aae289bfedd2384bb2ed56f75155fdd227cfd3a9aa7954fcbce3ca057176b757",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-tenant-task-transfer-browser.mjs",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "f960eddb4ef8c7db6f6ae3f9a24396b3fc350fe1",
+      "sourceSha256": "10b34ae976e7f536f70f9cd979e41354ff86bc59b32a1539b8bf26ebcf3f3029",
+      "afterWorkspaceSha256": "10b34ae976e7f536f70f9cd979e41354ff86bc59b32a1539b8bf26ebcf3f3029",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/AppDialog.tsx",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "cdaf7a7b8b44365b71340920c0bdbc462f91cb36",
+      "sourceSha256": "e0a0b6a22f8cb33f8659eaf3810f20a06fed5338bb8c0980a6e9d871a28a7fac",
+      "afterWorkspaceSha256": "e0a0b6a22f8cb33f8659eaf3810f20a06fed5338bb8c0980a6e9d871a28a7fac",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/FormDialog.tsx",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "83234226d9f9572fa3bba47fc4bdf3be10edbf8b",
+      "sourceSha256": "d4472daf9ac0d111f93d5083986b9766432225ca83345efe175e643e272ac1d6",
+      "afterWorkspaceSha256": "d4472daf9ac0d111f93d5083986b9766432225ca83345efe175e643e272ac1d6",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/SnackbarProvider.tsx",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "df80214c4ead7921b7aee2e03209f390f3a2ca42",
+      "sourceSha256": "24ebd2f0c187d6310975d3e926f5adbe88f9d5e7031744e4ace98ad981133a04",
+      "afterWorkspaceSha256": "24ebd2f0c187d6310975d3e926f5adbe88f9d5e7031744e4ace98ad981133a04",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/App.tsx",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "1e38757ae726ffaef00732636b583506ab38bae7",
+      "sourceSha256": "6f11b6185c5322dd7475ba14f0e07b5c610c9bbc2dea18d3e8d868c68add27a6",
+      "afterWorkspaceSha256": "6f11b6185c5322dd7475ba14f0e07b5c610c9bbc2dea18d3e8d868c68add27a6",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/client.ts",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "4d67bf63a3ec49078ec7a6fe507cc84fa817c776",
+      "sourceSha256": "f5b919fc5059196d41adf259870c24dff3e9b930fdc98ba5846b10334c85ae75",
+      "afterWorkspaceSha256": "f5b919fc5059196d41adf259870c24dff3e9b930fdc98ba5846b10334c85ae75",
+      "unchanged": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/index.css",
+      "fixedCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+      "blob": "29a86baca7078822f09918209eed13123f7c7438",
+      "sourceSha256": "4d19c8cad6f14c13556b530c224ba8cd04daea0815702dac2610a6de65ff0ae3",
+      "afterWorkspaceSha256": "4d19c8cad6f14c13556b530c224ba8cd04daea0815702dac2610a6de65ff0ae3",
+      "unchanged": true
+    }
+  ]
+}
