@@ -1,0 +1,824 @@
+{
+  "schema": "edhr-readonly-transfer-knowledge-index/v1",
+  "role": "readonly-ontology-source-assistance-not-formal-result",
+  "fixedSourceCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+  "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "contractReadCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+    "uncommittedContractPaths": []
+  },
+  "confirmedIncrement": "通用工作流与普通生产表单都允许租户内委托；DHR 保持",
+  "recordDigestRecipe": "SHA256 UTF-8 JSON ensure_ascii=false sort_keys=true separators=(comma,colon) for parsed YAML id record",
+  "records": [
+    {
+      "id": "DEC-0031-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/1",
+      "line": 13,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "b47018716a8c1e7b83a5d53ff04688d64028511f",
+      "sourceSha256": "3c7597f5d6d73469b15c21fb4cab0a8a415019c3c8ec612a88b16e9c0212f7e3",
+      "recordSha256": "b4707cd8588d98aee6c8b75732472267ed36d688771d523b71ce3431284e6c7f",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "statement": "provenance: user-confirmed；审批策略为任一候选人处理即可完成任务；任一候选完成后，逻辑任务进入终态，其他候选人因逻辑任务终态自然失去处理权。"
+      },
+      "proposedDisposition": "updated",
+      "qualification": "任一原候选可处理只适用于未显式转办的任务；转办后当前目标独占处理资格，逻辑任务终态规则保留。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "DEC-0031-03",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/2",
+      "line": 17,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "b47018716a8c1e7b83a5d53ff04688d64028511f",
+      "sourceSha256": "3c7597f5d6d73469b15c21fb4cab0a8a415019c3c8ec612a88b16e9c0212f7e3",
+      "recordSha256": "2d5aada9a16261b46eaf8330cfeb746c6885a6254681d98c39682ce67a68d1d4",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "statement": "provenance: user-confirmed；只有任务创建时解析出的候选人可以完成任务，非候选人不得执行完成动作。"
+      },
+      "proposedDisposition": "updated",
+      "qualification": "新增显式转办例外，不再把原集合外用户一概禁止；未转办候选资格仍按原规则。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "DEC-0031-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/3",
+      "line": 21,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "b47018716a8c1e7b83a5d53ff04688d64028511f",
+      "sourceSha256": "3c7597f5d6d73469b15c21fb4cab0a8a415019c3c8ec612a88b16e9c0212f7e3",
+      "recordSha256": "70133a4053fbddecd590e07c6ffd053f68d38a486c71de7bb9ae251ece92fc34",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "statement": "provenance: user-confirmed；创建任务时在 workflow_task.candidate_snapshot 保存候选解析结果、每个候选人的主体来源及未解析主体，作为任务审计依据；任务创建后组织或角色关系变化不重算、不改写该任务候选集合。"
+      },
+      "proposedDisposition": "retained",
+      "qualification": "创建解析结果/全部主体来源/未解析主体与组织变化不重算保持；当前委托责任不等于改写原来源。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "scenario.workflow-task-any-candidate-completes",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/1",
+      "line": 34,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "b47018716a8c1e7b83a5d53ff04688d64028511f",
+      "sourceSha256": "3c7597f5d6d73469b15c21fb4cab0a8a415019c3c8ec612a88b16e9c0212f7e3",
+      "recordSha256": "9b458ab5f67231edaa19387e1a6f1e150d6f72f9612820e2b267ee7a0d361200",
+      "status": null,
+      "visibility": null,
+      "currentText": {
+        "given": "逻辑任务候选快照中存在多个候选用户且任务仍可处理",
+        "when": "任一候选人完成审批",
+        "then": "逻辑任务完成，其他候选人不再拥有该逻辑任务处理权"
+      },
+      "proposedDisposition": "updated",
+      "qualification": "given补充未转办限定，保留任一完成后逻辑任务终态。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "scenario.workflow-task-non-candidate-blocked",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/2",
+      "line": 40,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "b47018716a8c1e7b83a5d53ff04688d64028511f",
+      "sourceSha256": "3c7597f5d6d73469b15c21fb4cab0a8a415019c3c8ec612a88b16e9c0212f7e3",
+      "recordSha256": "ef5a708fb08ec585347f1b6aed1979c4899416013ecf564d05ed16ab4dc71a06",
+      "status": null,
+      "visibility": null,
+      "currentText": {
+        "given": "用户不在任务创建时的候选快照集合中",
+        "when": "该用户尝试完成任务",
+        "then": "完成动作被拒绝且任务状态不变"
+      },
+      "proposedDisposition": "updated",
+      "qualification": "非候选且未获合法显式委托者仍拒绝；合法受让人可在原集合外。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "scenario.workflow-task-resolution-snapshot-frozen",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/3",
+      "line": 46,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "b47018716a8c1e7b83a5d53ff04688d64028511f",
+      "sourceSha256": "3c7597f5d6d73469b15c21fb4cab0a8a415019c3c8ec612a88b16e9c0212f7e3",
+      "recordSha256": "888198e6a4c41ef0552a755c83d80b5e536f67994f7db4075be36947e387ac10",
+      "status": null,
+      "visibility": null,
+      "currentText": {
+        "given": "任务创建时已保存候选解析快照和主体来源",
+        "when": "创建后组织或角色成员关系发生变化",
+        "then": "既有任务候选快照和审计来源保持不变"
+      },
+      "proposedDisposition": "retained",
+      "qualification": "仍验证组织/角色变化不改原创建来源；建议新场景单独验证转办后原件。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0/implementationDiscrepancies/1",
+      "line": 64,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "b47018716a8c1e7b83a5d53ff04688d64028511f",
+      "sourceSha256": "3c7597f5d6d73469b15c21fb4cab0a8a415019c3c8ec612a88b16e9c0212f7e3",
+      "recordSha256": "58df8d09983b8f13e4359681c6162e2304f99fb56a9c9a419ee26d5c6bb6950b",
+      "status": "open",
+      "visibility": "internal",
+      "currentText": {},
+      "proposedDisposition": "updated",
+      "qualification": "待主侧固定实现后按真实来源留存证据更新，不能从用户确认直接写成已解决。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "DEC-0055-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/1",
+      "line": 13,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "cfbfed1d3dc379067249aaecae6854f3359fc0e7",
+      "sourceSha256": "59af35529ffb49975ca475d53fbde6316d40e70c2e41f5f637a6a35c48da6d4b",
+      "recordSha256": "a13c19bb7425694f3ec1309b0dab07d4a086236d0f0fb06e311c0a931f7e59ed",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "statement": "只有当前具有审批处理权的用户可以转办。已配置审批主体时目标限于节点到达时冻结的候选范围；未配置审批主体时目标限于当前有效且未锁定用户；不得转办给自己。原冻结候选范围保留，受让人再次转办仍受同一范围约束。"
+      },
+      "proposedDisposition": "updated",
+      "qualification": "只替代目标限原冻结候选的范围；当前处理权、禁止自转、有效未锁定、原来源保留及再次转办保护仍适用。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "DEC-0055-03",
+      "sourcePath": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/2",
+      "line": 17,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "cfbfed1d3dc379067249aaecae6854f3359fc0e7",
+      "sourceSha256": "59af35529ffb49975ca475d53fbde6316d40e70c2e41f5f637a6a35c48da6d4b",
+      "recordSha256": "940e67e1aba10ab84cd2fea5257249578a1f6cefc2d680dd5b3cab95e4d24d01",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "statement": "转办只改变当前审批节点的处理责任，不推进节点、不修改表单数据、不产生审批结果。原用户的REVIEW_PENDING待办移除，目标用户出现同一表单份和节点的待办；REVIEW_DONE继续只收录APPROVE和RETURN。"
+      },
+      "proposedDisposition": "retained",
+      "qualification": "同节点同表单份、只改当前责任、仅目标处理和待办迁移保持。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "DEC-0055-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/3",
+      "line": 21,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "cfbfed1d3dc379067249aaecae6854f3359fc0e7",
+      "sourceSha256": "59af35529ffb49975ca475d53fbde6316d40e70c2e41f5f637a6a35c48da6d4b",
+      "recordSha256": "ffe8eee70b87c94bb66989745811449afb327ae8ba192c5ca9c478530190d2d7",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "statement": "转办在原生产执行事务中写入结构化历史和不可变审计，至少记录转出人、目标人、原因、表单份、审批节点和时间；退回并重新初始化表单流程时清除旧转办人投影，不回写或改写已发布流程定义。"
+      },
+      "proposedDisposition": "retained",
+      "qualification": "原因/身份/表单份/节点/时间、原事务审计及退回清除投影保持。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "DEC-0055-05",
+      "sourcePath": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/4",
+      "line": 25,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "cfbfed1d3dc379067249aaecae6854f3359fc0e7",
+      "sourceSha256": "59af35529ffb49975ca475d53fbde6316d40e70c2e41f5f637a6a35c48da6d4b",
+      "recordSha256": "bfba3e7ba826c6b06d1f88f3f1d9999996cbe29753d63896cf232f65f725b510",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "statement": "provenance-correction；普通表单审批转办是早期表单流程审批节点应具备的标准动作。DEC-0024-01和DEC-0024-03的排除表述属于已纠正的共同遗漏，不得用于推导“曾明确不做、后来新增”的产品时间线；0.3.22的知识与实现增量属于遗漏修复。"
+      },
+      "proposedDisposition": "historical",
+      "qualification": "早期遗漏修复的时间线仍正确；本次租户委托是2026-10-20新的范围政策增量，二者不得混写。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "scenario.form-approval-transfer-current-task",
+      "sourcePath": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/0",
+      "line": 32,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "cfbfed1d3dc379067249aaecae6854f3359fc0e7",
+      "sourceSha256": "59af35529ffb49975ca475d53fbde6316d40e70c2e41f5f637a6a35c48da6d4b",
+      "recordSha256": "6b3ab9fe3d6df9d13ccf839e12eb6343b81d9756d93ccb15adeca5b82cd04958",
+      "status": null,
+      "visibility": null,
+      "currentText": {
+        "given": "表单到达已启用转办的审批节点，当前用户具有处理权且目标用户符合节点授权范围",
+        "when": "当前用户在表单审批待办选择目标并填写原因后确认转办",
+        "then": "表单数据和当前节点保持不变，原用户待办消失、目标用户待办出现，只有目标用户可以继续审批，历史和审计保存完整转办证据"
+      },
+      "proposedDisposition": "updated",
+      "qualification": "目标资格从节点原候选范围变为本租户正常可用用户；其余节点/数据/结果/证据期望保留。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "rule.workflow.task-creation-freezes-candidate-resolution",
+      "sourcePath": "docs/knowledge/rules/identity.yaml",
+      "sourceLocator": "/rules/3",
+      "line": 62,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "63b5a2d33367107adabbd2f96f19665311e0a0ee",
+      "sourceSha256": "36ecd3de8f1ffacd8178aeb1c5e1f3f62771b846fb711b91a6c38ebe0575694b",
+      "recordSha256": "9d41c92e4b904493f3c8c6cf00434aab1ef987c6452f11abf990fc3a19d869b9",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "name": "工作流任务创建冻结候选解析快照",
+        "explanation": "审批节点到达时使用主体解析结果创建一个逻辑工作流任务，并在候选快照中记录去重后的候选用户，同时保存解析结果及主体命中来源快照。任务创建后不因组织或角色关系变化重算既有候选集合。",
+        "condition": {
+          "all": [
+            {
+              "fact": "subject.resolution.completed",
+              "operator": "equals",
+              "value": true
+            }
+          ]
+        },
+        "result": {
+          "type": "create-logical-workflow-task",
+          "logicalTaskCount": 1,
+          "candidateSnapshotUserCount": "resolved-user-count",
+          "persistResolutionSnapshot": true,
+          "persistMatchProvenance": true,
+          "candidateMembershipFrozenAfterCreate": true
+        }
+      },
+      "proposedDisposition": "retained",
+      "qualification": "结构化candidateMembershipFrozenAfterCreate及解析来源保存仍成立；可补明确当前委托状态单独记录。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "rule.workflow.task-any-candidate-completes-and-closes-siblings",
+      "sourcePath": "docs/knowledge/rules/identity.yaml",
+      "sourceLocator": "/rules/4",
+      "line": 82,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "63b5a2d33367107adabbd2f96f19665311e0a0ee",
+      "sourceSha256": "36ecd3de8f1ffacd8178aeb1c5e1f3f62771b846fb711b91a6c38ebe0575694b",
+      "recordSha256": "83830d0ed4ad6d7b94960dd1a7a57e999e745f22e10b80dfc24379ccb1870d50",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "name": "任一候选完成逻辑任务",
+        "explanation": "对具有非空冻结候选集合且非 unrestricted 的开放任务，仅任务创建时快照中的候选用户可以执行完成动作。开放状态对应 PENDING 或 PROCESSING；任一候选完成后，单条逻辑任务进入终态，其他候选因任务终态自然失去处理权。DEC-0033 的 unrestricted 开放范围与旧 assignee 回退分支由各自授权路径负责，不从本条推导其必须具有候选成员。",
+        "condition": {
+          "all": [
+            {
+              "fact": "task.candidateMembership",
+              "operator": "contains-actor",
+              "value": true
+            },
+            {
+              "fact": "workflowTask.status",
+              "operator": "in",
+              "value": [
+                "PENDING",
+                "PROCESSING"
+              ]
+            }
+          ]
+        },
+        "result": {
+          "type": "complete-logical-task",
+          "nonCandidateBehavior": "block"
+        }
+      },
+      "proposedDisposition": "updated",
+      "qualification": "条件 task.candidateMembership 与 nonCandidateBehavior:block 不能继续表达无例外原集合；应限定未委托分支或增加合法当前受让人资格解释，不仅改说明。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "fact.catalog.task-candidatemembership",
+      "sourcePath": "docs/knowledge/facts/core-business.yaml",
+      "sourceLocator": "/facts/145",
+      "line": 2325,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "d0bcca9003c0de4f7b99c279446e9615f529cf28",
+      "sourceSha256": "06cd99bb05e0b96a0bd77fd885ebb185fce4a2e453cb92a0f5065905e4d144dc",
+      "recordSha256": "319b3b6236678e566fab839cb60ea4456444291f2a9f1132b65d861a88540c5d",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "name": "规则事实 task.candidateMembership",
+        "sourceLocator": "WorkflowTask.candidateSnapshot 为序列化 JSON 字符串；WorkflowEngine.parseCandidateIds 读取 userIds，contains-actor 需解析该冻结集合。本事实仅定位非 unrestricted 且候选非空分支，不以 SubjectResolver 当前成员重算，也不概括旧 assignee 回退",
+        "aliases": [
+          "task.candidateMembership"
+        ]
+      },
+      "proposedDisposition": "updated",
+      "qualification": "sourceLocator称读取userIds的冻结集合；需与实际实现区分原创建来源和当前有效目标，保留稳定ID及alias时解释精确适用范围。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "rule.form-approval-transfer",
+      "sourcePath": "docs/knowledge/rules/form-approval-transfer.yaml",
+      "sourceLocator": "/rules/0",
+      "line": 3,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "057668f515d9caed8800d9667d5b73a67030fc6f",
+      "sourceSha256": "371a770d017e437af52d00abf16b68c90fcc78fab507af1de1d1e2a77a005b33",
+      "recordSha256": "49194a6964311b36dde0a644d1d5f11817d74da1baeb45795203de7cea4e2218",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "name": "普通表单审批节点转办当前处理责任",
+        "explanation": "普通表单流程转办只改变当前审批节点的处理责任，不产生审批结论。已配置审批主体时目标限于节点到达时冻结的候选范围；开放节点目标限于有效且未锁定用户；不得转给自己。原因固定必填，转办不推进节点、不修改表单数据，原冻结候选范围保留供后续再次转办，退回并重建流程时清除旧转办人。REVIEW_DONE仍只记录审批或退回结果。",
+        "condition": {
+          "all": [
+            {
+              "fact": "fact.form-approval-transfer.current-node-approval",
+              "operator": "equals",
+              "value": true
+            },
+            {
+              "fact": "fact.form-approval-transfer.current-actor-can-act",
+              "operator": "equals",
+              "value": true
+            },
+            {
+              "fact": "fact.form-approval-transfer.button-visible",
+              "operator": "equals",
+              "value": true
+            },
+            {
+              "fact": "fact.form-approval-transfer.reason-present",
+              "operator": "equals",
+              "value": true
+            },
+            {
+              "fact": "fact.form-approval-transfer.target-authorized",
+              "operator": "equals",
+              "value": true
+            }
+          ]
+        },
+        "result": {
+          "type": "update-reference",
+          "target": "formProcess.currentNode.transferAssignee",
+          "valueFrom": "selectedTargetUser.id",
+          "preserves": [
+            "current-node",
+            "form-values",
+            "original-frozen-candidates",
+            "process-path",
+            "business-result"
+          ],
+          "projections": [
+            "remove-source-review-pending",
+            "add-target-review-pending"
+          ],
+          "structuredHistory": [
+            "source-actor",
+            "target-user",
+            "reason",
+            "form-copy",
+            "approval-node",
+            "occurred-at"
+          ],
+          "auditAction": "TRANSFER"
+        }
+      },
+      "proposedDisposition": "updated",
+      "qualification": "target-authorized事实含义及解释同步租户委托；preserves/projections/structuredHistory维持。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "fact.form-approval-transfer.target-authorized",
+      "sourcePath": "docs/knowledge/facts/form-approval-transfer.yaml",
+      "sourceLocator": "/facts/4",
+      "line": 67,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "b0d0ffefe146f7640a82463d7152f7c2604cfa48",
+      "sourceSha256": "b0234edc301d4dad1b407ea5858095e806a297ff279447b0781356dcbf57bffa",
+      "recordSha256": "4d2c37d152a8910f6f0f57c4fcd534612764e90c852b92acf332ece9c6d86245",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "name": "转办目标属于当前审批节点授权范围",
+        "sourceLocator": "requireTransferTarget校验非本人、有效未锁定用户及restrictedApprovers冻结范围",
+        "aliases": [
+          "formProcess.transfer.targetWithinFrozenCandidates"
+        ]
+      },
+      "proposedDisposition": "updated",
+      "qualification": "name、sourceLocator 与 alias targetWithinFrozenCandidates 会误称仍限定原候选；需要处理当前定义和旧alias适用边界，不能只改规则解释。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "fact.form-approval-transfer.current-actor-can-act",
+      "sourcePath": "docs/knowledge/facts/form-approval-transfer.yaml",
+      "sourceLocator": "/facts/1",
+      "line": 19,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "b0d0ffefe146f7640a82463d7152f7c2604cfa48",
+      "sourceSha256": "b0234edc301d4dad1b407ea5858095e806a297ff279447b0781356dcbf57bffa",
+      "recordSha256": "ccd1424a6432e1a840f48a2af39b478d3136595ec2da3015835f3f55e57e39e7",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "name": "当前用户具有表单审批节点处理权",
+        "sourceLocator": "canAct优先校验transferAssignees，否则校验开放范围或冻结approvers",
+        "aliases": [
+          "formProcess.currentActor.canAct"
+        ]
+      },
+      "proposedDisposition": "retained",
+      "qualification": "现有定位已明确先transferAssignees后开放/冻结approvers，区分当前责任与原来源，可保留。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "anchor.form-approval-transfer-runtime",
+      "sourcePath": "docs/knowledge/implementation-anchors/form-approval-transfer.yaml",
+      "sourceLocator": "/implementationAnchors/1",
+      "line": 18,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "1b5a02ad86e221381476a09368d38a87cf94843a",
+      "sourceSha256": "dbe05cf0178f3bc540f0e2123f874691462996997b56b93286c39d284462f134",
+      "recordSha256": "6528653c558b971b40799adb64721d3d1131ae773ff5d2e8f8181edd3fb32346",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "sourceLocator": "transferAssignees运行投影、冻结候选校验、候选接口、表单审批待办转办入口及TRANSFER审计"
+      },
+      "proposedDisposition": "updated",
+      "qualification": "来源定位仍写冻结候选校验，待实现后改为同租户目标校验并更新真实sourceRevision证据。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "term.workflow-transfer-action",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/40",
+      "line": 243,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "f8a84545064365b545cc34b68ee1d504f6d36ba7",
+      "sourceSha256": "db93ee600f872b8cea3862d839b9d22c8d592c91e0ba3f91f71e2cb1ba3f501e",
+      "recordSha256": "85caae2476fbc4b8d5d01cb084e05c8b32d7020f1121ec97e3de3d521ea9c2eb",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {
+        "name": "转办",
+        "definition": "当前审批任务处理人在授权候选范围内变更该任务处理人的标准动作；不改变当前节点、流程路径或业务结果。中文产品文案不得使用“普通转办”作为并列正式名称。",
+        "aliases": [
+          "TRANSFER"
+        ]
+      },
+      "proposedDisposition": "updated",
+      "qualification": "共享术语仍写授权候选范围；只对通用/普通表单补租户委托解释，记录控制既有规则不可隐含放开。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "term.workflow-task",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/60",
+      "line": 363,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "f8a84545064365b545cc34b68ee1d504f6d36ba7",
+      "sourceSha256": "db93ee600f872b8cea3862d839b9d22c8d592c91e0ba3f91f71e2cb1ba3f501e",
+      "recordSha256": "1704324b81850fb12359832c95129191b9ab1ec3411faf7454fe45acd19c7b05",
+      "status": "specified",
+      "visibility": "internal",
+      "currentText": {
+        "name": "逻辑工作流任务",
+        "definition": "一个流程节点在运行时创建的单个逻辑待办任务；配置主体时多候选用户通过候选快照关联到同一任务，任一候选完成后任务完成；未配置审批主体时仍只创建一条逻辑任务，并由开放操作范围决定已认证用户的处理资格。",
+        "aliases": [
+          "工作流任务",
+          "workflow_task"
+        ]
+      },
+      "proposedDisposition": "updated",
+      "qualification": "任一候选完成是未转办处理分支；补当前责任独占不改变单逻辑任务。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "term.workflow-task-resolution-snapshot",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/61",
+      "line": 369,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "f8a84545064365b545cc34b68ee1d504f6d36ba7",
+      "sourceSha256": "db93ee600f872b8cea3862d839b9d22c8d592c91e0ba3f91f71e2cb1ba3f501e",
+      "recordSha256": "ee4908f5a0fa222d71e5ad8276ec458681a8e2a287845c3b49df645bf36c2392",
+      "status": "specified",
+      "visibility": "internal",
+      "currentText": {
+        "name": "工作流任务主体解析快照",
+        "definition": "工作流任务创建时保存的候选用户集合及主体命中来源快照，用于审计并冻结既有任务的候选范围，不随后续组织关系变化重算。",
+        "aliases": [
+          "任务候选快照",
+          "主体解析快照"
+        ]
+      },
+      "proposedDisposition": "retained",
+      "qualification": "原创建候选及主体来源冻结定义仍正确，补与当前委托处理资格区别即可。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "concept.workflow-task",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/55",
+      "line": 333,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "9afe7e64a0770092b57d5226e96982f87a29e27c",
+      "sourceSha256": "edc8d5cb3c6c02c7c7ee826bb804fcf0dc0c97c196cfb42b655a3b7b9b598551",
+      "recordSha256": "6e8efc38d6a73eba3bdb5e3a684fb1b797b6ae1b5b039e125bcf45c7d165a435",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {},
+      "proposedDisposition": "retained",
+      "qualification": "现有概念只引用逻辑任务术语，稳定ID/成熟度保留，关联新证据即可。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "concept.workflow-task-resolution-snapshot",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/56",
+      "line": 339,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "9afe7e64a0770092b57d5226e96982f87a29e27c",
+      "sourceSha256": "edc8d5cb3c6c02c7c7ee826bb804fcf0dc0c97c196cfb42b655a3b7b9b598551",
+      "recordSha256": "029148cc409c77505a8bb21875a0bb3731abb4706e99dc3280abf92b9e0a8462",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {},
+      "proposedDisposition": "retained",
+      "qualification": "原解析证据概念保持；不将当前委托目标误当重新解析的原来源。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "relation.workflow-task-has-resolution-snapshot",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/relations/44",
+      "line": 1135,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "9afe7e64a0770092b57d5226e96982f87a29e27c",
+      "sourceSha256": "edc8d5cb3c6c02c7c7ee826bb804fcf0dc0c97c196cfb42b655a3b7b9b598551",
+      "recordSha256": "f1aabf2ecbbceb6717cd78c7537b0a705832c67570b84e7c95e69d7f54d5dbea",
+      "status": "implemented",
+      "visibility": "internal",
+      "currentText": {},
+      "proposedDisposition": "retained",
+      "qualification": "一任务有来源快照的关联和基数保留，不因当前委托另造逻辑任务。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "rule.form-process.subject-members-resolve-latest-relations",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/32",
+      "line": 835,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "c74f38d123ce9f489435b1a2eceb80249d96a902",
+      "sourceSha256": "da7932bcdf91ef8c1a6a23c090f660a4d8e1e8f3ad33dcea006a4cccc79a2a4c",
+      "recordSha256": "8cee80d1695b155cbc378df280b7b9c772a5ff82b8474d32ecdb3cce12d1a1d4",
+      "status": "specified",
+      "visibility": "internal",
+      "currentText": {
+        "name": "流程主体按最新关系解析成员",
+        "explanation": "部门和角色不在流程发布时固定成员。当前SubjectResolver读取组织/角色关系；审批节点进入时冻结解析候选供后续处理，填报资格在访问/动作校验时解析当前关系，两个时点不可混用。已有冻结及普通权限实现，泛工作流转办原来源留存差异另记，不再泛称运行时解析未实现。",
+        "condition": {
+          "any": [
+            {
+              "fact": "subject.type",
+              "operator": "equals",
+              "value": "DEPARTMENT"
+            },
+            {
+              "fact": "subject.type",
+              "operator": "equals",
+              "value": "ROLE"
+            }
+          ]
+        },
+        "result": {
+          "type": "persist-flow-configuration",
+          "membershipSource": "latest-user-organization-and-role-relations",
+          "resolveAt": "node-arrival",
+          "entryPermissionCheckAt": "user-access",
+          "publishedSnapshot": false
+        }
+      },
+      "proposedDisposition": "retained",
+      "qualification": "审批到达解析与填报当前解析时点不变；修复后仅更新泛转办来源差异的证据描述。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "rule.form-process.approval-any-candidate",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/40",
+      "line": 1022,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "c74f38d123ce9f489435b1a2eceb80249d96a902",
+      "sourceSha256": "da7932bcdf91ef8c1a6a23c090f660a4d8e1e8f3ad33dcea006a4cccc79a2a4c",
+      "recordSha256": "3ee9b0678f363f34402a04e64f8f11d299b7c63f2b6441f8d9769ac991ec5f0e",
+      "status": "specified",
+      "visibility": "internal",
+      "currentText": {
+        "name": "审批候选人任一处理完成节点",
+        "explanation": "单审批节点有多个候选人时，任一有权候选完成该节点；需要逐个顺序审批时配置多个节点。当前普通生产表单引擎已按节点冻结候选校验并推进，泛WorkflowEngine也使用单逻辑任务与候选快照；两条路径分别核对。源码及原测试断言存在不代表本次并发或事务验收，保持本记录原指定成熟度。",
+        "condition": {
+          "all": [
+            {
+              "fact": "formProcessApproval.candidateCount",
+              "operator": "greater-than-or-equal",
+              "value": 1
+            }
+          ]
+        },
+        "result": {
+          "type": "planned-production-work-trigger",
+          "completionStrategy": "first-completed-candidate",
+          "sequentialApproval": false
+        }
+      },
+      "proposedDisposition": "updated",
+      "qualification": "任一候选完成解释须排除显式转办后的非当前处理人；不增加逐个审批或条件引擎能力。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "evidence.workflow-task-multi-candidate-runtime-implementation",
+      "sourcePath": "docs/knowledge/evidence/identity-subject-selector.yaml",
+      "sourceLocator": "/evidence/13",
+      "line": 68,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "09ae453ed52e532288f69bff577c3284ed0a2670",
+      "sourceSha256": "3c5ab034aa140b5078fcf060c1a4b4079b5a0a713a38e5d658267b6e65b3f795",
+      "recordSha256": "7ec70c1d042702d46bde72183ed7fdd9a5e7bf04d25836b9851cef8421f13272",
+      "status": null,
+      "visibility": "internal",
+      "currentText": {
+        "description": "original-evidence；工作流在节点进入时解析主体，创建一个逻辑任务并保存去重候选及全部命中来源；普通组织关系变化不改写该任务快照。 完成与终止按任务状态处理。泛 transferTask 会在同一任务上将 candidateSnapshot 替换为目标用户的单人快照，原始来源未在该字段继续保留； 此差异由 discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot 单独记录，不能用普通生产表单转办的保留实现证明泛工作流来源留存。"
+      },
+      "proposedDisposition": "updated",
+      "qualification": "旧代码描述正确反映来源丢失；只能在固定新代码检查后附新实现范围，不能覆盖成历史一直保留。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "evidence.form-approval-transfer-api",
+      "sourcePath": "docs/knowledge/evidence/form-approval-transfer.yaml",
+      "sourceLocator": "/evidence/3",
+      "line": 18,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "3f299611d6e72bb556bdd544f78a05de1f945dc8",
+      "sourceSha256": "52109aba13fa8e21e0230b9bc07dcd26f7bd7c3fcd3f9af89025b83c7ca0430a",
+      "recordSha256": "d6a906acd3965d8c043129bf8a8e5263e9896aead3992ca9a9782350df268e24",
+      "status": null,
+      "visibility": "internal",
+      "currentText": {
+        "description": "original-evidence；生产执行源提供与当前表单份审批节点绑定的候选人查询和TRANSFER动作入口，由服务端按当前处理权与冻结候选范围校验，客户端不能传入任意数据范围绕过授权。"
+      },
+      "proposedDisposition": "updated",
+      "qualification": "服务端冻结候选校验的当前代码说明需按真实新实现更新，不暗示任意租户人员可过。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "evidence.form-approval-transfer-tests",
+      "sourcePath": "docs/knowledge/evidence/form-approval-transfer.yaml",
+      "sourceLocator": "/evidence/5",
+      "line": 28,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "3f299611d6e72bb556bdd544f78a05de1f945dc8",
+      "sourceSha256": "52109aba13fa8e21e0230b9bc07dcd26f7bd7c3fcd3f9af89025b83c7ca0430a",
+      "recordSha256": "fa1c12f7fe21683a5d8a5b1a159678070a585478272780423d76c9626fcc2f57",
+      "status": null,
+      "visibility": "internal",
+      "currentText": {
+        "description": "original-evidence；测试源码覆盖候选查询、转办修订、原待办移除、目标待办出现、原处理人审批被拒、目标审批成功及TRANSFER审计；ExecutionAccessTest、ProductionExecutionEngineTest和FormProcessControllerTest分别覆盖冻结边界、不推进不改值、原因必填和配置校验。测试源码不单独证明测试命令已经通过。"
+      },
+      "proposedDisposition": "updated",
+      "qualification": "冻结边界旧测试与当前租户委托新回归分时点解释；测试源码存在不代表实际通过。",
+      "semanticAcceptanceClaim": false
+    },
+    {
+      "id": "question.multi-tenant-workflow-isolation",
+      "sourcePath": "docs/knowledge/open-questions.yaml",
+      "sourceLocator": "/questions/18",
+      "line": 152,
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "8b77bd25598fc0aa7e03da2d10f23215b6252e2e",
+      "sourceSha256": "240025fe24927b141cefef45e641b1f88673bb8352ce59221cf9cbc8bc0b12c4",
+      "recordSha256": "36236ae8729a2f56bc7fdb1acef847b73ba65cb86f8b3a4fd73430f55905f6fc",
+      "status": null,
+      "visibility": "internal",
+      "currentText": {},
+      "proposedDisposition": "retained",
+      "qualification": "新增目标同租户资格不等于全工作流多租户隔离闭环；非MVP未决问题保持。",
+      "semanticAcceptanceClaim": false
+    }
+  ],
+  "documentScopes": [
+    {
+      "sourcePath": "docs/knowledge/README.md",
+      "line": 140,
+      "kind": "historical-version-narrative",
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "132452939506dafd8c1e80cf4c737427be99328f",
+      "sourceSha256": "b53f73eb5ae197a5c29e618bd3df18dff67ad6fd4597243f29907a8d8d6adb14",
+      "lineSha256": "4341f4aaac94a3b87e846dcc62b2c1e7dd282369dabb0657cde30ebc5acd5951",
+      "currentText": "`0.3.22` 补录并修复了早期遗漏的普通表单流程审批节点转办（`DEC-0055`），不表示此版本才新增转办产品方向。转办作为可配置标准动作，仅在当前审批待办中按当前处理权和节点到达时的冻结候选范围执行；原因固定必填，不推进节点、不修改表单数据、不产生审批结论，并复用原生产执行事务、结构化历史、审计和个人待办投影。填报责任转交、记录控制审批转办、管理员重新分配、加签和跳过不在该修复切片。知识保持 `implemented/internal`，不把 working-tree 证据解释为已发布能力。",
+      "qualification": "0.3.22原范围说明保留为历史并注明2026-10-20目标范围替代，不继续当现行目标限制。"
+    },
+    {
+      "sourcePath": "docs/knowledge/README.md",
+      "line": 156,
+      "kind": "current-participant-model",
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "132452939506dafd8c1e80cf4c737427be99328f",
+      "sourceSha256": "b53f73eb5ae197a5c29e618bd3df18dff67ad6fd4597243f29907a8d8d6adb14",
+      "lineSha256": "5041f9cf9486c3ca3944a04eef8350c2655842b394d096e353b718a365d401c9",
+      "currentText": "表单流程公共主体选择器第一版统一支持用户、部门和角色三类稳定主体引用。部门默认覆盖本部门及下级，也可切换为仅本部门；审批节点到达时按最新组织或角色关系解析候选人，填报权限在用户访问时按最新关系判断。用户组、部门负责人和业务责任人尚无完整主数据与解析契约，不进入当前配置入口。详见 `DEC-0029`。",
+      "qualification": "审批到达解析候选及来源冻结保留，与当前受让人区分。"
+    },
+    {
+      "sourcePath": "docs/architecture/business-knowledge-model.md",
+      "line": 177,
+      "kind": "current-task-model",
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "16eb4745a4c000168ddc399e67680d64ebfe4a0e",
+      "sourceSha256": "dae241c74677140231f9a5551f2484736cf2b7bcfc53550db8b428737957499e",
+      "lineSha256": "47e510cca5247555f68f4188d37d99dbcba28be510094a06c37a3be92a431e21",
+      "currentText": "表单流程的审批主体和填报权限主体使用同一个公共主体选择模型。第一版只支持系统中已有稳定主数据与成员关系的用户、部门和角色，不提供用户组、部门负责人或业务责任人空壳选项；当前 Role 在产品中承担“岗位角色”语义，不另拆岗位维度。部门主体默认覆盖本部门及下级，也可配置为仅本部门，展示和持久化都必须明确范围。部门和角色不在流程发布或业务启动时冻结人员名单：审批节点到达时按最新关系解析候选人，填报权限在用户访问时按最新关系判断。公共主体解析器及通用工作流多候选任务关系已实现：节点进入时创建一个逻辑任务并冻结候选人与来源，任一候选完成后关闭其他候选。",
+      "qualification": "逻辑任务与到达解析保留，补未转办/转办后的处理分支。"
+    },
+    {
+      "sourcePath": "docs/architecture/business-knowledge-model.md",
+      "line": 179,
+      "kind": "current-form-transfer-model",
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "16eb4745a4c000168ddc399e67680d64ebfe4a0e",
+      "sourceSha256": "dae241c74677140231f9a5551f2484736cf2b7bcfc53550db8b428737957499e",
+      "lineSha256": "3b34066be94445e9f40479289a2cea218b628307c30cdcd7418ad33f578a1037",
+      "currentText": "普通表单流程审批节点支持转办标准动作：流程配置可调整转办按钮的显示名称、样式和显隐；原因由系统固定必填，不配置审批意见必填或签名字段事件。运行时仅当前处理人可发起，受限节点目标必须来自节点到达时的冻结候选范围，开放节点目标必须是有效且未锁定用户，且不得转给自己。转办只改变当前处理责任，不推进节点、不修改表单数据，也不产生审批结果；原待办移除、目标待办出现，原冻结候选范围保留供再次转办，退回重建流程时清除旧转办投影。动作复用生产执行事务、结构化历史和不可变审计。字段权限运行时、退回至填报阶段和外层作业同步推进的其他契约仍按各自实现证据判断，不因转办实现而整体宣称闭环。",
+      "qualification": "直接替换受限节点必须在冻结候选的现行解释为同租户有效未锁定其他用户；原来源保持、委托当前责任单独。"
+    },
+    {
+      "sourcePath": "docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.md",
+      "line": 9,
+      "kind": "historical-original-evidence",
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "bfd9b4820ea8012530bf81078acedd6c36c51f53",
+      "sourceSha256": "2ed11399abee88a568a8d8c75f6c6f5725aa5b38e1444b0a36d2afb7f4ea982f",
+      "lineSha256": "312533b10dfd55037c77bad7fb9af2d4c3f3c693fb9c6b2cf7c3cc022983a222",
+      "currentText": "- 只有创建时解析出的候选人可以完成任务，非候选人不得完成。",
+      "qualification": "保留2026-09-04原始候选确认，不改写为早已允许集合外委托。"
+    },
+    {
+      "sourcePath": "docs/knowledge/evidence/form-approval-transfer-user-confirmed.md",
+      "line": 13,
+      "kind": "historical-original-evidence",
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "2436d45fac8c65efd71df55376ceaea6bb4ac6f6",
+      "sourceSha256": "5d0c42683143430fc52064d290572390436f3044167b10f0f064e9d60b38c369",
+      "lineSha256": "06f1655077b56aa1ad75d04df441b9de58c399bbd2f3027135056f8af6b24c1c",
+      "currentText": "- 只有当前具有处理权的用户可以转办。已配置审批主体时，目标必须来自节点到达时冻结的候选范围；未配置审批主体的开放节点只允许选择当前有效且未锁定的用户；不得转办给自己。",
+      "qualification": "保留2026-09-17原始冻结范围确认，不改写；新增原始用户确认与局部替代声明另存。"
+    },
+    {
+      "sourcePath": "docs/knowledge/evidence/form-approval-transfer-user-confirmed.md",
+      "line": 15,
+      "kind": "historical-original-evidence",
+      "fixedCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "blob": "2436d45fac8c65efd71df55376ceaea6bb4ac6f6",
+      "sourceSha256": "5d0c42683143430fc52064d290572390436f3044167b10f0f064e9d60b38c369",
+      "lineSha256": "d3f9e3916d72c5fdb7ab0e9bb4137be60fa3411b649adfd56615096ae7805556",
+      "currentText": "- 原冻结候选范围保留，受让人后续再次转办时仍受该范围约束。退回到填报阶段并重新初始化表单流程时清除旧节点的转办人投影。",
+      "qualification": "原再次转办范围限制作为历史保留，本轮新政策对当前再次委托也适用同租户范围。"
+    }
+  ],
+  "caveats": [
+    "Only listed fixed-source records inspected; no full-file/full-knowledge acceptance.",
+    "No repository mutations, application tests, browser, database, or Actions executed.",
+    "Preserve original historical confirmations and maturity/visibility; implementation status waits main fixed candidate.",
+    "Current tenant eligibility at explicit transfer does not close question.multi-tenant-workflow-isolation."
+  ],
+  "counts": {
+    "yamlRecords": 31,
+    "documentScopes": 7,
+    "wholeAssetsCompleted": 0,
+    "businessChecksExecuted": 0
+  }
+}

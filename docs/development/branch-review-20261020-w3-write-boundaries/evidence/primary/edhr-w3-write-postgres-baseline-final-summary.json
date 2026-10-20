@@ -1,0 +1,76 @@
+{
+  "exit": 1,
+  "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "suite": {
+    "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd",
+    "version": "3.0",
+    "name": "com.zencas.edhr.workflow.controller.WorkTemplateWritePostgresTest",
+    "time": "4.71",
+    "tests": "12",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "9"
+  },
+  "cases": [
+    {
+      "case": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[1]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "case": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[2]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "case": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[3]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "case": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[4]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "case": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[5]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "case": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[6]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "case": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[7]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "case": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[8]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "case": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[9]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "case": "rejectedCommandsLeaveActualRowsReferencesAndAuditUnchanged(String, String)[10]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "case": "legalPublishCreatesOneInheritedDraftAndReferencesInTheRealTransaction",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "case": "incompleteDraftsPersistAndReadBackWithRealReferenceRefreshAndAudit",
+      "outcome": "passed",
+      "message": ""
+    }
+  ]
+}

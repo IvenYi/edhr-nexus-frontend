@@ -1,0 +1,47 @@
+{
+  "scope": "real UI components and maintained theme with controlled synthetic APIs; no backend/DB acceptance",
+  "baselineCommit": null,
+  "sourceSha256": {
+    "src/pages/workflow-center/TaskDetail.tsx": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+    "src/pages/production/ProductionExecutionPage.tsx": "aae289bfedd2384bb2ed56f75155fdd227cfd3a9aa7954fcbce3ca057176b757",
+    "src/App.tsx": "6f11b6185c5322dd7475ba14f0e07b5c610c9bbc2dea18d3e8d868c68add27a6"
+  },
+  "passed": 2,
+  "failed": 0,
+  "results": [
+    {
+      "name": "generic-required-and-keyboard-cancel-1440",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/tasks/10/transfer-targets",
+          "keyword": ""
+        }
+      ],
+      "mutations": [],
+      "fixtureBoundary": "controlled API responses; no backend persistence claim"
+    },
+    {
+      "name": "generic-required-and-keyboard-cancel-390",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/tasks/10/transfer-targets",
+          "keyword": ""
+        }
+      ],
+      "mutations": [],
+      "fixtureBoundary": "controlled API responses; no backend persistence claim"
+    }
+  ]
+}

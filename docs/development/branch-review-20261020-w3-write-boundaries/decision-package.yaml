@@ -1,0 +1,155 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261020-W3-WRITE-BOUNDARIES
+  scope: edhr-dev整体审查中的W3新写入口链；H009/H010确定性整改，以及用户本轮明确确认的通用工作流/普通生产表单租户内委托和H012来源留存；DHR保持。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: cb2e9eef6cdb50077283c9707d257dcdd56a9e36
+    targetBranch: edhr-dev
+    targetCommit: a8285be9b91fb76bcb27ccb16a5258bda1fb5077
+    contractReadCommit: a8285be9b91fb76bcb27ccb16a5258bda1fb5077
+    uncommittedContractPaths: []
+  summary: PR19人工合入且树与原交付相同。新图写入口拒绝已取消字段，不前移发布完整性。用户回答明确选择“通用工作流与普通生产表单都允许租户内委托；DHR保持”；这是新的局部政策替代，原创建候选来源保留，显式转办后仅目标人处理并记录原因。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  existingPolicyReferences: [DEC-0009-01, DEC-0009-05, DEC-0010-02, DEC-0010-03, DEC-0011-05, scenario.production-work-condition-canonical-configuration, DEC-0031-03, DEC-0031-04]
+  inferred:
+    - id: inference.w3-reserved-shape-write-guard
+      statement: 在现有WorkTemplateController以一个局部无副作用guard拒绝已明确取消的字段；save/publish在实体变化前调用，newDraft和覆盖复制在新写入前调用。
+      rationale: 所有者与旧hasLegacyConditionConfiguration在同一控制器；不增加白名单、兼容归一化、引擎规则或大模块提取。
+      relatedIds: [DEC-0010-02, DEC-0011-05]
+  userConfirmedIncrement:
+    sourceType: user-confirmed
+    date: 2026-10-20
+    exactReply: 通用工作流与普通生产表单都允许租户内委托；DHR 保持
+    questionContext: 明确显式转办允许同租户正常可用用户，保留原候选来源，转后仅目标人处理并记录原因；用户进一步选择同时适用普通生产表单。
+    retainedBoundaries: [当前处理人发起, 不转给自己, 有效且未锁定用户, 原创建/到达候选来源冻结保留, 节点/表单内容/审批结果不变, 再次转办同租户范围, DHR通用入口拒绝及原审批通过/退回保持]
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0081-01
+      supersededStatementIds: [DEC-0031-03, DEC-0055-02]
+      scope: 显式转办的当前处理资格允许同租户正常可用的非原候选人；普通表单转办目标不再限原候选集合。
+      retainedScope: 未转办任务的原候选处理规则、原来源冻结、当前处理权/目标可用性/自转禁止、普通表单原因和节点/数据/结果保持、DHR边界均保留。
+      sourceReferences: [本轮用户对转办范围问题的明确回复, docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml, docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml]
+  deliveryRequirements:
+    - 每次审查先显式fetch实时edhr-dev并核对契约；不重开已合并PR5–PR19。
+    - 新范围按提交/path/blob/SHA和方法登记，历史台账原件不覆盖；未审仍pending，不报虚假整体百分比。
+    - 正式独立验收及所有专业实例FINAL后、创建PR前实际复核任务漂移并向用户汇报进度与后续。
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: production-work-template-new-writes
+        change: 拒绝已取消保留字段的presence，含null；正常不完整草稿及其他未知扩展键保持原行为。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java, docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml, docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml]
+      - area: tenant-scoped-explicit-task-transfer
+        change: 通用工作流保留完整原候选快照并单独保存当前目标，补齐目标选择/原因；普通表单候选搜索和执行校验统一接受同租户有效未锁定用户，原approvers不改。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java, gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx, gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx]
+    transitiveImpacts:
+      - area: reference-projection-and-audit
+        change: 拒绝输入时不得重建引用或追加审计，已有草稿/历史源及当前发布标记不变；成功新写仍沿原事务编排。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormProcessReferenceService.java]
+      - area: serialized-current-task-commands
+        change: 真实PG复现行锁等待者持有旧JPA受管对象，可能让旧处理人重复转办；保持实例先于任务的原锁顺序，获锁后refresh再校验当前状态/处理权，完成和终止复用同一局部锁入口。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java, gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java]
+    potentialImpacts:
+      - area: inherited-published-or-draft-source
+        concern: 既存源可能带不支持字段；仅在显式新写命令拒绝，不剥除字段后复制或恢复历史。没有证据证明真实库存在该源。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowDefinitionVersion.java]
+      - area: generic-task-transfer
+        concern: H012来源留存与转办后处理人必须分开解释；不能删除覆盖后让旧候选继续办，也不能以assignee非空优先破坏新建多候选。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java]
+    unaffectedAreas:
+      - area: condition-runtime-and-production-evidence
+        reason: 不制定未决条件来源/异常政策，不改运行求值器、生产执行状态或DHR动作；A12及用户暂缓两旧high保持。
+    compatibilityAndMigration: [不新增迁移、不清理/修复历史图、不恢复数据；已丢失的候选来源不猜测重建，新转办仅保存首次可获得的原件并明确限制。]
+    snapshotImpacts: [新发布及继承配置仅消费受支持形状；不改生产snapshot_json/source_json；通用转办完整保留第一次转办前候选原件，后续转办不覆盖它，不伪造已丢失的历史来源。]
+    auditImpacts: [保留版本拒绝零写入及原事务；显式转办记录转出/目标/原因/时间/任务，普通表单沿原结构化历史与不可变审计；不修改既有审计摘要算法或旧hash。]
+    permissionImpacts: [保留现有入口权限/任务处理权/租户/DHR阻断；按用户确认放开显式委托目标至本租户正常可用用户，转后仅当前目标可处理，不能通过保留原来源继续给旧候选办。]
+    testImpacts:
+      - scope: all-new-write-commands
+        scenarios: [已取消字段null/字符串/对象逐键拒绝, save/createDraft/overwriteCopy/newCopy/publish副作用前拒绝, 原源和目标内容/状态/当前标记不变, 正常不完整FORM/CONDITION及未知扩展键可保存, 完整合法发布与后继继承, 原生PostgreSQL读回/引用/审计/事务边界]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateWriteBoundaryTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java]
+      - scope: tenant-delegation-and-origin-preservation
+        scenarios: [原候选集合外本租户用户成功, 跨租户/停用/锁定/自己/无目标/无原因拒绝, 原来源及未解析主体保持, 重复转办保留首份原件, 原候选/前目标失去待办和处理权, 当前目标成功继续, 原表单/节点/结果不变, DHR拒绝, 真实选择器/原因/失败状态与窄屏, 同一旧处理人并发转办只成功一次, 等待转办行锁的旧候选完成被拒绝, 审计写失败原子回滚]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    evidenceGaps: [本批不将有限源码/测试称为完整W3或全分支通过；PG探针发现既有AuditEvent的JSONB/时间往返摘要不可重算，独立登记W5，不伪称hash重算通过或改写历史。既有全局静态限制保留。]
+  extensionStrategy:
+    selectedPaths: [product-core, transaction-orchestration]
+    rationale: 在已有图写入所有者共享纯结构guard；状态、锁、持久化、引用、审计顺序保留，不新建客户分支或大模块。
+    ownershipBoundaries:
+      - owner: WorkTemplateController
+        responsibility: WORK版本新写入的保留字段形状边界与原事务编排。
+      - owner: WorkflowEngine
+        responsibility: 通用任务当前处理权和创建候选来源分别保存，转办资格与待办查询一致；不接管DHR动作。
+      - owner: ExecutionAccess
+        responsibility: 普通表单租户内可用人员搜索与执行时重新验证，保留现有转办责任/来源存储及审计编排。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java
+      changeType: update
+      reason: 已有所有新图写入口共享局部guard。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateWriteBoundaryTest.java
+      changeType: create
+      reason: 明确取消字段的写命令矩阵与不完整草稿正对照。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateWritePostgresTest.java
+      changeType: create
+      reason: 原生PG代理控制器/真实引用/0060约束/事务和审计边界。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java
+      changeType: create
+      reason: 两类明确转办共享租户内人员资格搜索与执行验证。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+      changeType: update
+      reason: 原来源留存、当前责任、原因审计与锁等待后刷新校验。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java
+      changeType: update
+      reason: 当前登录处理人目标搜索与显式目标/原因API。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java
+      changeType: update
+      reason: 注释区分当前资格与原始来源证据。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+      changeType: update
+      reason: 用户确认放开普通表单转办目标，原冻结approvers保持。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+      changeType: update
+      reason: 已验证目标ID规范化，避免前导零导致受让人无法处理。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java
+      changeType: create
+      reason: 真实PG连续转办、待办、权限、原来源、回滚和竞争。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java
+      changeType: update
+      reason: 原候选完整来源留存的单元断言。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java
+      changeType: update
+      reason: 新政策同租户集合外正向及跨租户反向。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+      changeType: update
+      reason: 真实HTTP/JWT/filter两次转办和账户锁定重校验。
+    - path: gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx
+      changeType: update
+      reason: 真实目标选择器/原因/失败重试及旧请求隔离。
+    - path: gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx
+      changeType: update
+      reason: 新租户范围解释、输入保留及错误/加载状态。
+    - path: gmp-platform/frontend/scripts/test-tenant-task-transfer-browser.mjs
+      changeType: create
+      reason: 两个真实页面配合受控API的36项交互及两视口验证。
+    - path: docs/knowledge
+      changeType: update
+      reason: 稳定后同步已定规则的实现差异及本轮证据，不提高政策成熟度或知识版本。
+  acceptanceScenarios:
+    - id: scenario.w3-retired-fields-rejected-before-writes
+      given: 当前写命令输入或显式继承的源带已取消字段，值可为null、字符串或对象
+      when: 保存、创建继承草稿、覆盖复制、创建复制或发布
+      then: 写命令拒绝且原图、引用、审计、状态及当前发布标记不变；不解释旧值或修改历史源。
+      evidenceRequirements: [固定旧基线红证, 聚焦命令矩阵, 原生PG持久化读回, 全新独立复验]
+    - id: scenario.w3-incomplete-draft-remains-editable
+      given: 受支持FORM或CONDITION配置尚不完整，且没有已取消保留字段
+      when: 保存或显式复制/继承为新草稿
+      then: 继续允许保存；发布完整性仍由原发布校验负责，未知扩展键不自动禁止。
+      evidenceRequirements: [不完整草稿及完整发布正向, 既有发布/绑定/授权回归]
+    - id: scenario.w3-tenant-delegation-preserves-origin
+      given: 当前用户有通用任务或普通生产表单审批节点的处理权，原候选来源已冻结
+      when: 显式选择同租户有效未锁定的其他用户并填写原因转办
+      then: 目标可来自原集合之外，转后仅目标人继续处理；原候选来源完整保留，节点/表单/审批结果不变，原因/身份/时间可追溯；DHR仍拒绝通用转办。
+      evidenceRequirements: [租户内外正反例, 首次与再次转办来源保持, 待办与完成权限真实PG, 原生产表单HTTP链, 实际用户选择器浏览器两视口, 全新独立验收]

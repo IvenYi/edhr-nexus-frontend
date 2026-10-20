@@ -1,0 +1,205 @@
+{
+  "schema": "edhr-catalog-source-support/v1",
+  "role": "read-only catalog source support; not independent quality acceptance",
+  "contractBaseline": {
+    "sourceCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "contractReadCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "uncommittedContractPaths": [],
+    "note": "HEAD was 84c5 when work began; root committed transfer core 4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2 then knowledge cb2e9eef6cdb50077283c9707d257dcdd56a9e36 during this support task. No source acceptance is inferred from those commits."
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "level": "L0",
+  "levelBasis": "Only inspect existing catalog/generator/white-listed source maps and prepare temporary transformation guidance; no product, policy, repository, test or migration mutation.",
+  "repositoryMutations": [],
+  "productChecksExecuted": [],
+  "formalQualityResultIssued": false,
+  "inheritedCatalog": {
+    "path": "docs/development/branch-review-20261020-trace-freeze-chain/source-catalog.json",
+    "receiptCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "catalogBaselineCommit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+    "methods": 216,
+    "semanticSources": 2,
+    "semanticReviewRecords": 45,
+    "findingRecords": 42,
+    "importNotes": 26,
+    "preservation": [
+      "Copy all 216 original method objects unchanged, retaining original reviewedCommit/sourceBlob/sourceSha256/evidence commit/locator and original outcome.",
+      "Copy the two semanticSources receipts unchanged: 33 historical JSONL records plus 12 prior-batch finite semantic records. Do not change their sourceCommit or canonical knowledge record SHA.",
+      "Copy all 42 finding IDs and aliases/parent links. Only H009/H010/H012 and the two prior TRACE dispositions need a current disposition update; preserve their priorBatchDisposition and original source metadata.",
+      "Preserve all 26 original import notes. Add current source qualifications separately.",
+      "Keep old source-catalog, ledger, reports and failures byte-identical; create a new batch directory and a future separate L0 acceptance overlay."
+    ]
+  },
+  "helperScopeMapping": {
+    "totalScopeRecords": 69,
+    "unionPaths": 30,
+    "scopesAreNotUniqueMethodsOrWholeFiles": true,
+    "sources": [
+      {
+        "temporaryPath": "/tmp/edhr-w3-write-entry-source-map.json",
+        "archiveRelativePath": "evidence/helpers/edhr-w3-write-entry-source-map.json",
+        "collection": "scopeRecords",
+        "records": 40,
+        "paths": 10,
+        "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+        "sha256": "abb3dc3a0e5607841f871640aaa4efddd631d43dc9ce6ef6192e51af96332a6a",
+        "newCatalogIdPattern": "w3-write-entry-source:001..040"
+      },
+      {
+        "temporaryPath": "/tmp/edhr-w3-transfer-source-map.json",
+        "archiveRelativePath": "evidence/helpers/edhr-w3-transfer-source-map.json",
+        "collection": "sourceScopes",
+        "records": 17,
+        "paths": 10,
+        "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+        "sha256": "8bf390243502c01daafcb3b04dba9405015e4df6bf6f6bfedbb35c6938f69fd7",
+        "newCatalogIdPattern": "w3-transfer-source:001..017"
+      },
+      {
+        "temporaryPath": "/tmp/edhr-w3-audit-hash-source-map.json",
+        "archiveRelativePath": "evidence/helpers/edhr-w3-audit-hash-source-map.json",
+        "collection": "sourceScopes",
+        "records": 12,
+        "paths": 12,
+        "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+        "sha256": "4853027c08457fe0d5e329c15a203f10a2ab14b48444bcd34564513cada10a17",
+        "newCatalogIdPattern": "w3-audit-hash-source:001..012",
+        "qualification": "Last two scopes are knowledge decision/rule ID-level source references. Their inclusion is source support only; do not count as formal new semantic acceptance."
+      }
+    ],
+    "fieldMapping": {
+      "path": "row.path",
+      "scope": "row.method, verbatim",
+      "pathScope": "row.range or row.ranges, verbatim including ID-level marker",
+      "reviewedCommit": "row.sourceCommit or row.fixedCommit or map.fixedCommit; resolves to actual Git commit",
+      "sourceBlob": "row.blob, verified with Git",
+      "sourceSha256": "row.sha256, verified over exact Git blob bytes",
+      "evidence.path": "new batch archived helper map",
+      "evidence.commit": "actual --evidence-ref containing archived map",
+      "evidence.sha256": "exact archived Git blob SHA256",
+      "evidence.locator": "/scopeRecords/index or /sourceScopes/index",
+      "depth": "row.readDepth",
+      "wholeFileReviewComplete": false,
+      "recordedOutcome": "row.conclusion, verbatim",
+      "originalCaveats": "row.caveats, preserved",
+      "runtimeExecutedBySourceHelper": false
+    },
+    "mechanicalCheck": "All 69 original source blob and SHA receipts actually verified against their fixed Git commits; no product checks executed.",
+    "primaryPostFixReview": "Root must append its own finite primary-source-map records for actual new code read at the fixed implementation commit. Do not replace historical helper source commits with the later repair commit."
+  },
+  "findingUpdates": [
+    {
+      "id": "AUD-H009",
+      "newDispositionBeforeQA": "fixed-awaiting-independent-acceptance",
+      "fixCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "scope": "FORM completionCondition presence rejected across all actual new-write commands, including inherited/newDraft/copy paths; no draft completeness policy change.",
+      "deduplication": "Retain original historical master ID; do not create a second issue for this guard."
+    },
+    {
+      "id": "AUD-H010",
+      "newDispositionBeforeQA": "fixed-awaiting-independent-acceptance",
+      "fixCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+      "scope": "Four retired top-level CONDITION keys rejected before mutations. Adjacent defaultBranch extra-fields asymmetry remains a source lead, not a closed defect.",
+      "deduplication": "Retain original historical master ID; do not create a second issue for this guard."
+    },
+    {
+      "id": "AUD-H012",
+      "newDispositionBeforeQA": "fixed-awaiting-independent-acceptance",
+      "fixCommitParameter": "--transfer-fix-ref",
+      "scope": "First available original candidate/source evidence retained separately from current handler; repeat transfer preserves it; already lost historical evidence is not reconstructed.",
+      "policyIncrement": "DEC-0081 user-confirmed generic workflow and ordinary form tenant delegation is an explicit scope expansion. DHR remains unchanged.",
+      "deduplication": "Retain original origin-overwrite issue ID; policy expansion is not invented as a historical defect."
+    },
+    {
+      "id": "W3-TRANSFER-LOCK-001",
+      "newRecord": true,
+      "severity": "high",
+      "newDispositionBeforeQA": "fixed-awaiting-independent-acceptance",
+      "scope": "Managed task/instance may remain stale after waiting on a pessimistic row lock; same old handler can otherwise issue two successful transfers. Local lock refresh fix needs independent native concurrency validation.",
+      "evidence": "Root archived README plus edhr-w3-transfer-pg-test-summary.json earlier red and final primary green; do not present implementation helper as independent QA."
+    },
+    {
+      "id": "W5-AUDIT-HASH-001",
+      "newRecord": true,
+      "severity": "medium",
+      "newDispositionBeforeQA": "preexisting-medium-open",
+      "scope": "PrePersist raw JSON/time string digest cannot be recomputed after PostgreSQL JSONB/time normalization. Actual fixed baseline native probe has 2 tests / 2 failures / 0 errors / 0 skips.",
+      "evidence": "edhr-w3-audit-hash-baseline-probe-summary.json plus exact fixed source map.",
+      "limitations": [
+        "Existing application reads/exports stored AuditEvent hash without rehashing; DHR/signature/file hash verification is a different path.",
+        "Stored 64-character digest/content and transaction assertions do not certify round-trip rehash.",
+        "Keep original failed probe. Do not change audit hash algorithm or rewrite historical audit rows in this slice.",
+        "Separate W5 follow-up remains open; this source support cannot independently judge final merge admissibility."
+      ]
+    }
+  ],
+  "priorTraceAcceptance": {
+    "ids": ["W2-TRACE-REGION-001", "W2-TRACE-REGION-002"],
+    "currentDisposition": "fixed-and-independently-accepted",
+    "acceptanceReceiptCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "acceptancePath": "docs/development/branch-review-20261020-trace-freeze-chain/acceptance.json",
+    "implementationCommit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+    "testedCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+    "deliveryCommit": "3bfe0c6d8af19d5142aaa6edbf37a8e5f18869cc",
+    "mergeCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "pullRequest": 19,
+    "checks": "19 / 19 required passed in prior actual independent report; not re-executed here",
+    "qualification": "New catalog updates only current disposition based on prior exact acceptance/manual merge, while prior frozen catalog and ledger remain unchanged."
+  },
+  "remainingScope": {
+    "userDeferredHighIds": [
+      "discrepancy.dhr-review-complete-evidence-impact-gap",
+      "discrepancy.dhr-review-effective-source-integration"
+    ],
+    "oldSemanticGapIds": [
+      "rule.dhr-summary-freeze-version",
+      "fact.dhr-instance.status",
+      "fact.dhr-instance.has-summary-artifacts",
+      "fact.dhr-instance.count-for-production-object"
+    ],
+    "preserved": [
+      "Actual A12 revision/void effect source integration and dependent active notifications/concurrency remain user-deferred.",
+      "Remaining W2/W3 and W4/W5/W6/W7 work packages remain incomplete.",
+      "AUD-H006/H007/H008 master-data leads remain pending adjudication.",
+      "No whole-file completion, whole-knowledge semantic pass, whole-branch completion or trustworthy overall percentage follows from this batch."
+    ]
+  },
+  "script": {
+    "path": "/tmp/edhr-w3-build-catalog-additions.py",
+    "sha256": "1119044b0cbb48fa5c8515b534d9be28abc912cc414bd5deb497b52544a6ac80",
+    "syntaxAndHelpChecked": true,
+    "fullTransformationExecuted": false,
+    "notExecutedReason": "Future final implementation/knowledge and original evidence archive commits were not yet available when the script was prepared.",
+    "requiredArguments": ["--implementation-ref", "--evidence-ref"],
+    "recommendedAdditionalArguments": ["--transfer-fix-ref 4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2", "--ontology-source <committed repository-relative finite semantic JSONL>", "--ontology-ref <semantic archive commit>"],
+    "defaultOutput": "/tmp/edhr-w3-source-catalog-draft.json",
+    "defaultCountsBeforeRootPrimaryScopes": {
+      "methods": 285,
+      "findingRecords": 44,
+      "semanticRecords": "45 + actual supplied new finite JSONL count"
+    },
+    "preconditions": [
+      "Commit final product/test code and final knowledge; --implementation-ref is exactly the fixed tree intended for ledger generation.",
+      "Commit the exact white-listed helper/runtime artifacts and README; --evidence-ref may be later than implementation-ref but must contain all referenced evidence.",
+      "Default helper names are preserved in evidence/helpers; runtime, race and audit probe JSON defaults are in evidence/primary. Override --helpers, --runtime-summary, --race-summary, --audit-probe or --batch-review when actual archive paths differ.",
+      "Formal finite semantic JSONL remains optional in the utility, but current completed batch must supply it after the ontology role returns FINAL.",
+      "Root inspects generated draft, appends only actual fixed-source primary scopes, then writes new batch source-catalog.json.",
+      "Run scripts/build-branch-review-ledger.py --ref <same implementation ref> --catalog <new catalog> --out <new empty ledger directory>, then --check after archive/commit.",
+      "Keep catalog and ledger fixed after QA; final QA result and disposition belong to a separate L0 acceptance overlay."
+    ]
+  },
+  "generatorCautions": [
+    "Catalog baselineCommit must resolve exactly equal to --ref; generator refuses mismatch.",
+    "Evidence receipts must resolve to tracked Git blob at evidence.commit with exact SHA and nonempty locator. File-system presence or a future commit placeholder is insufficient.",
+    "Semantic identity is (id, sourceCommit, recordSha256); generator verifies canonical knowledge records and rejects duplicates.",
+    "An unchanged knowledge record is insufficient for carryover if its named implementation dependency changed.",
+    "The generator conservatively marks file-changed scopes needs-delta-review; this does not assert every method changed.",
+    "New source methods reviewed after fixes must be added as new primary records; original helper outcomes cannot be retroactively rewritten to green.",
+    "Generator's newSemanticReviews=0, newAdjudications=0 and runtime businessChecksExecutedInThisBatch=[] describe importer activity only; real batch work needs separate exact progress and runtime receipts.",
+    "Quality report count is unique artifact SHA at the fixed source tree; later archived QA is not backfilled into that earlier tree and old reports are not new executions.",
+    "CSV standard CRLF must be preserved; cr-at-eol should be recognized without disabling other whitespace checks.",
+    "No full generation or formal acceptance was performed by this helper."
+  ]
+}

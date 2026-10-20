@@ -1,0 +1,295 @@
+{
+  "schema": "edhr-readonly-source-map/v1",
+  "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "knowledgeModelVersion": "0.3.25",
+  "contractBaseline": {
+    "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "contractReadCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "uncommittedContractPaths": []
+  },
+  "runtimeChecksExecuted": [],
+  "wholeFileAcceptance": false,
+  "files": [
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "blob": "bc6bfa0cc70f6d2c25b84829b8b6ff8614ddfa4a",
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "method": "findTodoForUser/findDoneForUser/findPendingByCandidateUserId",
+      "ranges": [
+        [
+          21,
+          36
+        ]
+      ],
+      "readDepth": "listed ranges only; no whole-file or runtime acceptance",
+      "conclusion": "current inbox OR predicates; unused candidate-only declaration",
+      "caveats": [
+        "source inspection only",
+        "no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "blob": "a04021f6610368f461e3918ab24ca1d8c643cb7b",
+      "sha256": "8c3c0e30ea46a4050513d485fd5db299e4cbbec5ee4bb7878c9e2e1bc5148907",
+      "method": "getById/todo/done/transfer/currentOperatorId",
+      "ranges": [
+        [
+          50,
+          55
+        ],
+        [
+          88,
+          122
+        ],
+        [
+          153,
+          185
+        ]
+      ],
+      "readDepth": "listed ranges only; no whole-file or runtime acceptance",
+      "conclusion": "authenticated principal and entity passthrough",
+      "caveats": [
+        "source inspection only",
+        "no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java",
+      "blob": "2936e41020e15ca6ee5080b1bbd98057aedc4d17",
+      "sha256": "7f11251ed736c5b3bbfbd3e2ddb79d52fd014639203eebaf1aa3237d3c6665fa",
+      "method": "candidateSnapshot/assigneeId/originalAssigneeId",
+      "ranges": [
+        [
+          9,
+          38
+        ]
+      ],
+      "readDepth": "listed ranges only; no whole-file or runtime acceptance",
+      "conclusion": "single entity with immutable-origin comment",
+      "caveats": [
+        "source inspection only",
+        "no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "blob": "7b9eef6be1a1adccb8f2b1354417bba664fec376",
+      "sha256": "c1a2bd001a0a17d7a19ace095ec2de75bcb1f0ad8de1b8677b5e2592072c1264",
+      "method": "completeTask/createTaskForNode/transferTask/isTaskOperator/assertNotDhrTask/validateTransferTarget/singleUserSnapshot",
+      "ranges": [
+        [
+          247,
+          290
+        ],
+        [
+          394,
+          417
+        ],
+        [
+          654,
+          752
+        ]
+      ],
+      "readDepth": "listed ranges only; no whole-file or runtime acceptance",
+      "conclusion": "candidate-first authorization and assignee initialization prevent naive fix",
+      "caveats": [
+        "source inspection only",
+        "no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "blob": "04f97eb65bb39a368896432fcf24183e17712ebe",
+      "sha256": "42cf405959931f1ab74b046a32267cf4041723257dfd7a7f4d9a9bbcf30fb932",
+      "method": "SELECT/list/detail/act/eligible/handled",
+      "ranges": [
+        [
+          39,
+          145
+        ],
+        [
+          177,
+          216
+        ]
+      ],
+      "readDepth": "listed ranges only; no whole-file or runtime acceptance",
+      "conclusion": "DHR candidate-first eligibility but generic transfer forbidden",
+      "caveats": [
+        "source inspection only",
+        "no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "blob": "c9bdac66955f4d37b6408a7d5eb6a55b470eb68d",
+      "sha256": "20c917457870ac7ba620937bde4ec01b0e3e1d1d27a4a5015b79706d750ab100",
+      "method": "DashboardTaskList query/render",
+      "ranges": [
+        [
+          27,
+          62
+        ]
+      ],
+      "readDepth": "listed ranges only; no whole-file or runtime acceptance",
+      "conclusion": "actual todo/done HTTP consumer",
+      "caveats": [
+        "source inspection only",
+        "no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "blob": "6a746b830efc8a693b053ab994eca2f0626eeecf",
+      "sha256": "049b03c2627e839f9e3dfc3c6919c3af50e7a07ec53ba6e076f60cc964579893",
+      "method": "handleAction/transfer button",
+      "ranges": [
+        [
+          9,
+          25
+        ],
+        [
+          78,
+          85
+        ]
+      ],
+      "readDepth": "listed ranges only; no whole-file or runtime acceptance",
+      "conclusion": "direct action HTTP but no target in UI transfer payload",
+      "caveats": [
+        "source inspection only",
+        "no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "blob": "12c81470b76a5ecb2ee2e16dc48603033f36d522",
+      "sha256": "8eaf4ff1ad44ce421f4fc68727a168f4f27cbef854e1c5a5eed9c955c13b06b3",
+      "method": "workflow tasks route",
+      "ranges": [
+        [
+          93,
+          103
+        ]
+      ],
+      "readDepth": "listed ranges only; no whole-file or runtime acceptance",
+      "conclusion": "reachable task detail route",
+      "caveats": [
+        "source inspection only",
+        "no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/api/workflow-tasks.ts",
+      "blob": "ea9c0f63771e7bcfa2aa793b8b605e5dee265a6c",
+      "sha256": "7aa5a6623a471ee264000f00d33c45aa3732798fb58523b9988fb6cc78bfeaae",
+      "method": "exported wrappers",
+      "ranges": [
+        [
+          3,
+          9
+        ]
+      ],
+      "readDepth": "listed ranges only; no whole-file or runtime acceptance",
+      "conclusion": "placeholder GET wrappers; no production import found by search",
+      "caveats": [
+        "source inspection only",
+        "no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "blob": "d6e9bdb8217a7db5140191a032d205814024c3f5",
+      "sha256": "96eb39d2845af6852ba0e1b4b8c919f0b016577af471dd70e0610d22be2e1a4e",
+      "method": "unrestricted/candidate/noncandidate/transfer tests",
+      "ranges": [
+        [
+          246,
+          261
+        ],
+        [
+          285,
+          300
+        ],
+        [
+          385,
+          435
+        ]
+      ],
+      "readDepth": "listed ranges only; no whole-file or runtime acceptance",
+      "conclusion": "existing candidate guards and overwrite assertion; not run",
+      "caveats": [
+        "source inspection only",
+        "no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskControllerTest.java",
+      "blob": "b33e75afc2ab357612331e2d187e8b258f26fdf0",
+      "sha256": "57f19c938e0ea99d4a6f15ea79d04cb102666bfe9460e52a3474a3f1f50b1576",
+      "method": "todo/done authenticated operator tests",
+      "ranges": [
+        [
+          25,
+          44
+        ]
+      ],
+      "readDepth": "listed ranges only; no whole-file or runtime acceptance",
+      "conclusion": "Mockito query selection only; not real SQL; not run",
+      "caveats": [
+        "source inspection only",
+        "no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java",
+      "blob": "91aee888eaf8264628a530fc4864869a5868b1a3",
+      "sha256": "4a9dc3a4009edb1bb01f9f6c88e1d311c5b7b916f49c9af261f4467b99e418a6",
+      "method": "signedReviewChecksNamedSignerAndRecordsBothIdentities",
+      "ranges": [
+        [
+          152,
+          178
+        ]
+      ],
+      "readDepth": "listed ranges only; no whole-file or runtime acceptance",
+      "conclusion": "H2 mocked engine signer boundary; not run",
+      "caveats": [
+        "source inspection only",
+        "no application/tests/database/browser executed"
+      ]
+    },
+    {
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "blob": "b47018716a8c1e7b83a5d53ff04688d64028511f",
+      "sha256": "3c7597f5d6d73469b15c21fb4cab0a8a415019c3c8ec612a88b16e9c0212f7e3",
+      "method": "DEC-0031 and H012 discrepancy",
+      "ranges": [
+        [
+          1,
+          74
+        ]
+      ],
+      "readDepth": "listed ranges only; no whole-file or runtime acceptance",
+      "conclusion": "normative origin snapshot and any-candidate contract; open discrepancy",
+      "caveats": [
+        "source inspection only",
+        "no application/tests/database/browser executed"
+      ]
+    }
+  ]
+}

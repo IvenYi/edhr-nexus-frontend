@@ -1,0 +1,457 @@
+{
+  "schema": "edhr-readonly-tenant-transfer-wording-check/v1",
+  "role": "readonly-assistance-not-formal-ontology-or-quality",
+  "headAtRead": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+  "workingTreeState": "dirty; current knowledge changes inspected explicitly by SHA",
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "confirmedPolicy": "通用工作流与普通生产表单都允许租户内委托；DHR 保持",
+  "records": [
+    {
+      "id": "DEC-0031-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/1",
+      "worktreeFileSha256": "dcaa1de08b83cabc110cccd46ed8840833510ad25a4740e94917cdd3057312c9",
+      "recordSha256": "1dc3c12a12901b412c3f4c0083117e6a0c4062c147e4439bec670f8c5c507086",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "DEC-0031-03",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/2",
+      "worktreeFileSha256": "dcaa1de08b83cabc110cccd46ed8840833510ad25a4740e94917cdd3057312c9",
+      "recordSha256": "bf4694b2516b1d9574ef1ae554c7861477e03dbd73e2ff730a0ed1ce85572347",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "DEC-0031-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/3",
+      "worktreeFileSha256": "dcaa1de08b83cabc110cccd46ed8840833510ad25a4740e94917cdd3057312c9",
+      "recordSha256": "5f51d7e344b4c3c9bef6e54cb56139ddf94781f9b251ebeddaaa11ffa7629b4f",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "scenario.workflow-task-any-candidate-completes",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/1",
+      "worktreeFileSha256": "dcaa1de08b83cabc110cccd46ed8840833510ad25a4740e94917cdd3057312c9",
+      "recordSha256": "e71d2353bfeb7bd52964a767cf4132402f7f696810c3340b05dfac791255faf4",
+      "status": null,
+      "visibility": null,
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "scenario.workflow-task-non-candidate-blocked",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/2",
+      "worktreeFileSha256": "dcaa1de08b83cabc110cccd46ed8840833510ad25a4740e94917cdd3057312c9",
+      "recordSha256": "2ce5d0adbc8d90f3f6f1f828abfde45ccd773fa4f4147e6f8e71ba741e6b8c51",
+      "status": null,
+      "visibility": null,
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "scenario.workflow-task-resolution-snapshot-frozen",
+      "sourcePath": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/3",
+      "worktreeFileSha256": "dcaa1de08b83cabc110cccd46ed8840833510ad25a4740e94917cdd3057312c9",
+      "recordSha256": "888198e6a4c41ef0552a755c83d80b5e536f67994f7db4075be36947e387ac10",
+      "status": null,
+      "visibility": null,
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "DEC-0055-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/1",
+      "worktreeFileSha256": "159dc61c2247c42ef3e1327264977b797a253a49e6de4aeece06e9c0e6420a95",
+      "recordSha256": "5417ad6f52786c228deb473455668a31d17fadbb3b0d428a9271906bfd898dca",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "DEC-0055-03",
+      "sourcePath": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/2",
+      "worktreeFileSha256": "159dc61c2247c42ef3e1327264977b797a253a49e6de4aeece06e9c0e6420a95",
+      "recordSha256": "940e67e1aba10ab84cd2fea5257249578a1f6cefc2d680dd5b3cab95e4d24d01",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "DEC-0055-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/3",
+      "worktreeFileSha256": "159dc61c2247c42ef3e1327264977b797a253a49e6de4aeece06e9c0e6420a95",
+      "recordSha256": "ffe8eee70b87c94bb66989745811449afb327ae8ba192c5ca9c478530190d2d7",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "DEC-0055-05",
+      "sourcePath": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/4",
+      "worktreeFileSha256": "159dc61c2247c42ef3e1327264977b797a253a49e6de4aeece06e9c0e6420a95",
+      "recordSha256": "bfba3e7ba826c6b06d1f88f3f1d9999996cbe29753d63896cf232f65f725b510",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "scenario.form-approval-transfer-current-task",
+      "sourcePath": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/0",
+      "worktreeFileSha256": "159dc61c2247c42ef3e1327264977b797a253a49e6de4aeece06e9c0e6420a95",
+      "recordSha256": "9681c35795dc2ef4dd2c3d8b0070461938cfdb7a13745562367b5d89d7a1e8d2",
+      "status": null,
+      "visibility": null,
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "rule.workflow.task-creation-freezes-candidate-resolution",
+      "sourcePath": "docs/knowledge/rules/identity.yaml",
+      "sourceLocator": "/rules/3",
+      "worktreeFileSha256": "e57691cad48f3e4c06c21bf5516e9c032c76db3b2e1bf24325427a31efed34ed",
+      "recordSha256": "7d9eb104d7fa0c53b520a7039bd9fbc7691453cd1f2939308c2b8fe9787040bd",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "rule.workflow.task-any-candidate-completes-and-closes-siblings",
+      "sourcePath": "docs/knowledge/rules/identity.yaml",
+      "sourceLocator": "/rules/4",
+      "worktreeFileSha256": "e57691cad48f3e4c06c21bf5516e9c032c76db3b2e1bf24325427a31efed34ed",
+      "recordSha256": "cbfee70796f149a94302dd3870fe99fd932b26cb47b6bfdb58d7594c0344a033",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "fact.catalog.task-candidatemembership",
+      "sourcePath": "docs/knowledge/facts/core-business.yaml",
+      "sourceLocator": "/facts/145",
+      "worktreeFileSha256": "75f691babdc320441d086db5d2c71c7c4cf7dc6e810709499664446cfb5764db",
+      "recordSha256": "1c61083329b9c384a7bf644bc037ac2b69e8fa2417242b9832a49c761f025cd9",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "rule.form-approval-transfer",
+      "sourcePath": "docs/knowledge/rules/form-approval-transfer.yaml",
+      "sourceLocator": "/rules/0",
+      "worktreeFileSha256": "d151a3a48dd3f2ca6c12333733e261b4d2f2cc26fa0a27515d07e3d58e470c41",
+      "recordSha256": "2b1caf362c66fb9d14a14af0768834d08b14c5fa8fd6f32d9017a4495c6d257d",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "fact.form-approval-transfer.target-authorized",
+      "sourcePath": "docs/knowledge/facts/form-approval-transfer.yaml",
+      "sourceLocator": "/facts/4",
+      "worktreeFileSha256": "6e8f8a88588a4180f4abc8e0eefcfe79892fddffd71dc13e0cfba809126f1929",
+      "recordSha256": "d1e61f77d3dc72f3d7841d6c74a30b95f7ff157eb208d07c06369b24d9b751a1",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "fact.form-approval-transfer.current-actor-can-act",
+      "sourcePath": "docs/knowledge/facts/form-approval-transfer.yaml",
+      "sourceLocator": "/facts/1",
+      "worktreeFileSha256": "6e8f8a88588a4180f4abc8e0eefcfe79892fddffd71dc13e0cfba809126f1929",
+      "recordSha256": "ccd1424a6432e1a840f48a2af39b478d3136595ec2da3015835f3f55e57e39e7",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "term.workflow-transfer-action",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/40",
+      "worktreeFileSha256": "22bddb284204f93d87409f0357ddbe4d7ad3233efc41d0a497ffd993c5e26791",
+      "recordSha256": "376602244b0e13601e3d12bc80ecf8b0e0aa8aca2484635672e5fc4213547e6a",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "term.workflow-task",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/60",
+      "worktreeFileSha256": "22bddb284204f93d87409f0357ddbe4d7ad3233efc41d0a497ffd993c5e26791",
+      "recordSha256": "db5f7ff744b4508947aefc6841a103d0a19eadb7d664346cdf357f989cf160f5",
+      "status": "specified",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "term.workflow-task-resolution-snapshot",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "/terms/61",
+      "worktreeFileSha256": "22bddb284204f93d87409f0357ddbe4d7ad3233efc41d0a497ffd993c5e26791",
+      "recordSha256": "156eb902ef9c63f754100859733549f9b994a8b1fb52a03494047f18c5d3b08c",
+      "status": "specified",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "concept.workflow-task",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/55",
+      "worktreeFileSha256": "41ab25b713a3635ca41de6654da32b9bd4e785c65dea33a7fae44c7023e0a9de",
+      "recordSha256": "20d60658d8b5eeeac3c8504d23778049632fb3574943d50a3b4eba04a3f73ce8",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "concept.workflow-task-resolution-snapshot",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/concepts/56",
+      "worktreeFileSha256": "41ab25b713a3635ca41de6654da32b9bd4e785c65dea33a7fae44c7023e0a9de",
+      "recordSha256": "e069a2432df84626083335383db69419b1478ecebc6b7533cdd7bf9cacea9264",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "relation.workflow-task-has-resolution-snapshot",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "/relations/44",
+      "worktreeFileSha256": "41ab25b713a3635ca41de6654da32b9bd4e785c65dea33a7fae44c7023e0a9de",
+      "recordSha256": "a858f60135d1c2eb1e3affe1011095f242a7a78dd5d211b14a56f4ac58fb267f",
+      "status": "implemented",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "rule.form-process.subject-members-resolve-latest-relations",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/32",
+      "worktreeFileSha256": "6780efb13aa5449aa298582f2f45cca5b83a89b3560ce9b6770e9c9d57cd502a",
+      "recordSha256": "8cee80d1695b155cbc378df280b7b9c772a5ff82b8474d32ecdb3cce12d1a1d4",
+      "status": "specified",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "rule.form-process.approval-any-candidate",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "/rules/40",
+      "worktreeFileSha256": "6780efb13aa5449aa298582f2f45cca5b83a89b3560ce9b6770e9c9d57cd502a",
+      "recordSha256": "1cf2d2c3444b7e1a860821974b54ae2716a6f8d8e5740f019bfcb46ca0252eb0",
+      "status": "specified",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "question.multi-tenant-workflow-isolation",
+      "sourcePath": "docs/knowledge/open-questions.yaml",
+      "sourceLocator": "/questions/18",
+      "worktreeFileSha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "recordSha256": "704e9f36e99664cd53a051cc8c9ccc35fb1ea976afba062374990b5ba696d152",
+      "status": null,
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "DEC-0081-01",
+      "sourcePath": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/0",
+      "worktreeFileSha256": "db50e6e8040052ff550c4a90faeb622be1f42a13a36d41f2fc2efb0fb917f65e",
+      "recordSha256": "1fa5fe74c24516d3f5a6562604ecaec24fb0aa8a1a0280e4fcfe53ed2baac27d",
+      "status": "specified",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "DEC-0081-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/1",
+      "worktreeFileSha256": "db50e6e8040052ff550c4a90faeb622be1f42a13a36d41f2fc2efb0fb917f65e",
+      "recordSha256": "95dcdacd42381fa9156843cbbd20a00154cd828e832d4ed905580b69a629b8ff",
+      "status": "specified",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "DEC-0081-03",
+      "sourcePath": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/2",
+      "worktreeFileSha256": "db50e6e8040052ff550c4a90faeb622be1f42a13a36d41f2fc2efb0fb917f65e",
+      "recordSha256": "5aa35243cea58e1922f4af74abf822897a6322af5830da1bab5b0ad56982a4bb",
+      "status": "specified",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "DEC-0081-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/3",
+      "worktreeFileSha256": "db50e6e8040052ff550c4a90faeb622be1f42a13a36d41f2fc2efb0fb917f65e",
+      "recordSha256": "f436433b50fba07a9ee4e76c84b422f6dcd6a9b6e1618cbea473c8157cc19164",
+      "status": "specified",
+      "visibility": "internal",
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "scenario.tenant-transfer-target-outside-original-candidates",
+      "sourcePath": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/0",
+      "worktreeFileSha256": "db50e6e8040052ff550c4a90faeb622be1f42a13a36d41f2fc2efb0fb917f65e",
+      "recordSha256": "0ba46b4c014ed7333949e78eace02544e1b6277553c26cf5dbdfeea4f0e902da",
+      "status": null,
+      "visibility": null,
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "scenario.tenant-transfer-target-rejected",
+      "sourcePath": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/1",
+      "worktreeFileSha256": "db50e6e8040052ff550c4a90faeb622be1f42a13a36d41f2fc2efb0fb917f65e",
+      "recordSha256": "3fa167ce9e2013379e52f8bdd32f8474227203982f478ea767a97d53abdfa661",
+      "status": null,
+      "visibility": null,
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "scenario.tenant-transfer-repeated-origin-preserved",
+      "sourcePath": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/2",
+      "worktreeFileSha256": "db50e6e8040052ff550c4a90faeb622be1f42a13a36d41f2fc2efb0fb917f65e",
+      "recordSha256": "9ab4fae47ed089a49c513915c5cef585eeb89885a3d55419faa278ee20883840",
+      "status": null,
+      "visibility": null,
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    },
+    {
+      "id": "scenario.tenant-transfer-dhr-boundary-kept",
+      "sourcePath": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceLocator": "/decisions/0/acceptanceScenarios/3",
+      "worktreeFileSha256": "db50e6e8040052ff550c4a90faeb622be1f42a13a36d41f2fc2efb0fb917f65e",
+      "recordSha256": "6871b2ce5bef7633dae04d0d5abedd4b4744bff191c9fd0c811c1600d9471d86",
+      "status": null,
+      "visibility": null,
+      "readScope": "listed current policy statements / fields; excludes known implementation-finalization tails"
+    }
+  ],
+  "documentScopes": [
+    {
+      "path": "docs/knowledge/README.md",
+      "worktreeFileSha256": "14b404332734daa494c80ca69e2bc845c951e0ab799a15b8d5aaf6aab13137c1",
+      "scope": "current delegation policy / historical qualifications / multi-tenant unresolved boundary; excludes new evidence implementation-finalization tail"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "worktreeFileSha256": "d83e315005b083b5c440be887b9aedf7860c164313b6e19f7a4004b7423f85dd",
+      "scope": "current delegation policy / historical qualifications / multi-tenant unresolved boundary; excludes new evidence implementation-finalization tail"
+    },
+    {
+      "path": "docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+      "worktreeFileSha256": "ff1616dff621bae1e8f6f23c79968d92287b1dd6cf74851d81bfe93d1fcdaad7",
+      "scope": "current delegation policy / historical qualifications / multi-tenant unresolved boundary; excludes new evidence implementation-finalization tail"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "worktreeFileSha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "scope": "current delegation policy / historical qualifications / multi-tenant unresolved boundary; excludes new evidence implementation-finalization tail"
+    }
+  ],
+  "historicalOriginals": [
+    {
+      "path": "docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.md",
+      "sha256": "2ed11399abee88a568a8d8c75f6c6f5725aa5b38e1444b0a36d2afb7f4ea982f",
+      "unchangedFromHead": true
+    },
+    {
+      "path": "docs/knowledge/evidence/form-approval-transfer-user-confirmed.md",
+      "sha256": "5d0c42683143430fc52064d290572390436f3044167b10f0f064e9d60b38c369",
+      "unchangedFromHead": true
+    }
+  ],
+  "checks": [
+    {
+      "scope": "DEC0081 vs DEC0031/0055",
+      "conclusion": "Tenant target exception and retained no-transfer candidate model are consistently scoped."
+    },
+    {
+      "scope": "ordinary form rule/fact/alias",
+      "conclusion": "targetAuthorized now means same-tenant usable non-self target; old frozen-only alias is historical."
+    },
+    {
+      "scope": "candidate rules and current membership wording",
+      "conclusion": "Explicit delegation and original-source evidence are textually distinguished; the observed current-membership concept-attribution mismatch was corrected by parent ontology role and re-read as concept.workflow-task."
+    },
+    {
+      "scope": "shared transfer term and DHR/record-control",
+      "conclusion": "Generic/ordinary form policy is explicit; DHR and unimplemented record-control boundaries retained."
+    },
+    {
+      "scope": "README and architecture current vs historical",
+      "conclusion": "Current tenant delegation and original 0.3.22 restricted-target history are separately stated."
+    },
+    {
+      "scope": "original user confirmations",
+      "conclusion": "Both original Markdown files remain exact HEAD bytes."
+    },
+    {
+      "scope": "multi-tenant whole-system question",
+      "conclusion": "Local tenant target qualification does not assert complete multi-tenant isolation."
+    }
+  ],
+  "issues": [],
+  "businessQuestions": [],
+  "knownPendingScopesExcluded": [
+    "anchor.form-approval-transfer-runtime",
+    "discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot",
+    "evidence.form-approval-transfer-api",
+    "evidence.form-approval-transfer-tests",
+    "evidence.workflow-task-multi-candidate-runtime-implementation",
+    "new evidence Markdown implementation/final validation tail"
+  ],
+  "notPerformed": [
+    "repository edits",
+    "code or test execution",
+    "database/browser/Actions",
+    "whole-knowledge semantic review",
+    "implementation-finalization acceptance"
+  ],
+  "wholeAssetsCompleted": 0,
+  "counts": {
+    "yamlRecords": 34,
+    "documentScopes": 4,
+    "wordingNotes": 0,
+    "resolvedWordingObservations": 1
+  },
+  "resolvedObservations": [
+    {
+      "id": "wording.current-membership-concept-attribution",
+      "path": "docs/knowledge/facts/core-business.yaml",
+      "recordId": "fact.catalog.task-candidatemembership",
+      "field": "conceptId",
+      "observedBefore": "concept.workflow-task-resolution-snapshot",
+      "reason": "Current effective processing membership was assigned to a concept explicitly defined as original creation-resolution evidence, not current eligibility.",
+      "reportedToParent": true,
+      "parentDisposition": "Parent ontology role confirmed and changed to existing concept.workflow-task; stable fact ID and alias kept.",
+      "observedAfter": "concept.workflow-task",
+      "currentFileSha256": "75f691babdc320441d086db5d2c71c7c4cf7dc6e810709499664446cfb5764db",
+      "repairExecutedByThisHelper": false,
+      "testsExecutedByThisHelper": false,
+      "evidenceQualification": "Before value observed in the actual working-tree read and acknowledged by parent; no fabricated earlier file digest."
+    }
+  ],
+  "conclusion": "No remaining current policy wording contradiction in the listed 34 records and 4 document scopes after parent correction; known implementation-finalization scopes remain excluded."
+}

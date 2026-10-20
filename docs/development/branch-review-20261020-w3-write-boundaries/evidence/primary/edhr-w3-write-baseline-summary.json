@@ -1,0 +1,440 @@
+{
+  "exit": 1,
+  "suite": {
+    "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd",
+    "version": "3.0",
+    "name": "com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest",
+    "time": "1.573",
+    "tests": "85",
+    "errors": "5",
+    "skipped": "0",
+    "failures": "63"
+  },
+  "cases": [
+    {
+      "name": "incompleteCanonicalConditionStillFailsOnlyWhenPublished",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[1]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[2]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[3]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[4]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[5]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[6]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[7]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[8]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[9]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[10]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[11]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[12]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[13]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[14]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[15]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[16]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[17]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[18]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[19]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[20]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[21]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[22]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[23]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[24]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[25]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[26]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[27]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[28]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[29]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[30]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.createDraftVersion(WorkTemplateController.java:233)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:173)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceEleme"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[31]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[32]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[33]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[34]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[35]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[36]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[37]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[38]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[39]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[40]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[41]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[42]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[43]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[44]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[45]",
+      "outcome": "failed",
+      "message": "\nExpecting code to raise a throwable."
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[46]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[47]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[48]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[49]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[50]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[51]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[52]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[53]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[54]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[55]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[56]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[57]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[58]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[59]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[60]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.copyPublishedVersionToDraft(WorkTemplateController.java:313)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:175)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackT"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[61]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.publishVersion(WorkTemplateController.java:263)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:176)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsD"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[62]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.publishVersion(WorkTemplateController.java:263)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:176)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsD"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[63]",
+      "outcome": "failed",
+      "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.IllegalStateException: 作业模板审计记录保存失败\n at com.zencas.edhr.workflow.controller.WorkTemplateController.recordAudit(WorkTemplateController.java:1330)\n at com.zencas.edhr.workflow.controller.WorkTemplateController.publishVersion(WorkTemplateController.java:263)\n at com.zencas.edhr.workflow.controller.WorkTemplateWriteBoundaryTest.execute(WorkTemplateWriteBoundaryTest.java:176)\n ...(157 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsD"
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[64]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[65]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[66]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[67]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[68]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[69]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[70]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[71]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[72]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[73]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[74]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "rejectsRetiredFieldsBeforeChangingGraphReferencesOrAudit(Command, String, String)[75]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[1]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[2]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[3]",
+      "outcome": "error",
+      "message": "作业模板审计记录保存失败"
+    },
+    {
+      "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[4]",
+      "outcome": "error",
+      "message": "作业模板审计记录保存失败"
+    },
+    {
+      "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[5]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[6]",
+      "outcome": "passed",
+      "message": ""
+    },
+    {
+      "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[7]",
+      "outcome": "error",
+      "message": "作业模板审计记录保存失败"
+    },
+    {
+      "name": "stillWritesIncompleteCurrentShapesAndUnrelatedExtensionKeys(Command, String)[8]",
+      "outcome": "error",
+      "message": "作业模板审计记录保存失败"
+    },
+    {
+      "name": "currentFormPublishesAndNextDraftKeepsTheExactGraph",
+      "outcome": "error",
+      "message": "作业模板审计记录保存失败"
+    }
+  ]
+}

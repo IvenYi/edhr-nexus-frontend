@@ -1,0 +1,20 @@
+{
+  "scanner": {
+    "officialResource": "skill://plugins_6a7039f8e9708191bde88207b1919bf4/frontend-design-premium/scripts/audit_project.py",
+    "sha256": "67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68",
+    "rootSkillReadUnavailable": true,
+    "originalContentsMechanicallyRetrievedBy": "/root/w3_transfer_browser_tests"
+  },
+  "baselineCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "candidateSourceCommit": "4ce4fefbf736a31cbd8e4779d6b9fb7e65a91fb2",
+  "baselineStrictExit": 2,
+  "candidateStrictExit": 2,
+  "baselineFindings": 82,
+  "candidateFindings": 82,
+  "allFindingFieldsEqual": true,
+  "added": [],
+  "removed": [],
+  "initialAttempt": "cached path absent; not a scan; original logs retained",
+  "lintExit": 2,
+  "lintReason": "existing ESLint configuration absent; no configuration introduced or rule downgraded"
+}

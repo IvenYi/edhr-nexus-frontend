@@ -1,0 +1,967 @@
+{
+  "schema": "edhr-readonly-source-review/v1",
+  "role": "readonly-source-assistance-not-quality-verifier",
+  "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "contractReadCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "uncommittedContractPaths": []
+  },
+  "wholeFileReviewComplete": false,
+  "runtimeChecksExecuted": [],
+  "businessPolicyChanges": [],
+  "repositoryMutations": false,
+  "professionalQualityResultIssued": false,
+  "scopeRecords": [
+    {
+      "id": "w3.write-source.001",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "saveGraph",
+      "range": {
+        "startLine": 183,
+        "endLine": 218
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "FORM shape/mode/reference and graph basics precede setters/save/rebuild/audit; reserved FORM and CONDITION top-level keys are not rejected.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.002",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "createDraftVersion",
+      "range": {
+        "startLine": 222,
+        "endLine": 235
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Definition lock and single draft check; previous graph goes through unguarded newDraft, then save/rebuild/CREATE audit.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.003",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "publishVersion",
+      "range": {
+        "startLine": 239,
+        "endLine": 269
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Publish condition/form/connectivity checks precede status/current mutation; FORM completionCondition remains unchecked; nextDraft called only after save/flush/audit/rebuild.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.004",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "copyPublishedVersionToDraft",
+      "range": {
+        "startLine": 273,
+        "endLine": 317
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Both existing-draft direct setters and no-draft newDraft branch bypass saveGraph; source must belong to WORK and be PUBLISHED.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.005",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "lockWorkDefinition",
+      "range": {
+        "startLine": 379,
+        "endLine": 386
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Definition findByIdForUpdate with test-double fallback, filtered WORK type.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.006",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "findVersion",
+      "range": {
+        "startLine": 388,
+        "endLine": 390
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Version ownership matches definition.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.007",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "newDraft",
+      "range": {
+        "startLine": 403,
+        "endLine": 414
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Source graph is inherited verbatim or initial fallback; no unsupported-key guard.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.008",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "validateFlowBoundaries",
+      "range": {
+        "startLine": 416,
+        "endLine": 439
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Array and exactly one START/END only; not publish completeness.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.009",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "validateOrdinaryNodeOutgoingEdges",
+      "range": {
+        "startLine": 447,
+        "endLine": 505
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Basic edge identity/reference/direction and outlet count; does not reject CONDITION top-level legacy keys.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.010",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "conditionHandlesForNode",
+      "range": {
+        "startLine": 507,
+        "endLine": 528
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Canonical branches/default id/name and branch.rule absence; AST completeness remains publish-only.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.011",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "validatePublishableConditionRules",
+      "range": {
+        "startLine": 550,
+        "endLine": 585
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Publish-only legacy top-level guard plus per-branch AST/catalog/snapshot checks.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.012",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "validatePublishableConditionRule",
+      "range": {
+        "startLine": 587,
+        "endLine": 606
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Missing AST/catalog/snapshot publish diagnostics; must not move into draft shape guard.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.013",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "validateConditionDefaultBranch",
+      "range": {
+        "startLine": 608,
+        "endLine": 617
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Publish requires exactly id/name; draft extra-fields asymmetry is adjacent scope only.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.014",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "hasLegacyConditionConfiguration",
+      "range": {
+        "startLine": 619,
+        "endLine": 624
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Presence of four legacy keys includes null; suitable existing pure predicate.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.015",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "versionSnapshot",
+      "range": {
+        "startLine": 1267,
+        "endLine": 1279
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Audit projection includes source nodes/edges/status/current.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.016",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "versionCopySnapshot",
+      "range": {
+        "startLine": 1281,
+        "endLine": 1289
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Copy audit adds source version metadata to target graph snapshot.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.017",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "blob": "0dbd457a388025e9deafe81b89feb44954c38253",
+      "sha256": "a573de12fc11bf6f260460888da0c8423c13a23d261606d3525fb173509c971b",
+      "method": "recordAudit",
+      "range": {
+        "startLine": 1311,
+        "endLine": 1332
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Audit stores before/after and actor context; serialization/repository errors abort via IllegalStateException.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.018",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowDefinitionRepository.java",
+      "blob": "ea3586cd59b4a825e60ca732d2b8520b7f3a86d0",
+      "sha256": "609fb3f73e82596381d980061ef3ebb29a6855d0a8485636e7df52fc7e2fae60",
+      "method": "findByIdForUpdate",
+      "range": {
+        "startLine": 49,
+        "endLine": 51
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "PESSIMISTIC_WRITE annotation and definition id query, no runtime locking claim.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.019",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormProcessReferenceService.java",
+      "blob": "2a40b03e37c0eb23a5c69b357ca48c94923963cc",
+      "sha256": "cf0a9945859d618cf113f4fe14fe099a334d4314acc63bf42629c2f66dec8615",
+      "method": "rebuildForWorkVersion",
+      "range": {
+        "startLine": 27,
+        "endLine": 65
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Deletes old reference projection then extracts FORM process references; never sanitizes graph source.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.020",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowDefinitionVersion.java",
+      "blob": "0e69ba7b35e20892312dc9d987d7ff34c2675911",
+      "sha256": "4d12dfbf78d760f839d2f8961fdd072742f69569a2b8162bf37c816aacadb412",
+      "method": "nodesJson/edgesJson/status/current persisted fields",
+      "range": {
+        "startLine": 13,
+        "endLine": 32
+      },
+      "readDepth": "selected-entity-field-shape",
+      "conclusion": "JSONB string properties have no configuration key whitelist; no policy inferred from entity.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.021",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTemplateController.java",
+      "blob": "971de9f11ef78d19e181459904e01cb3bf86ac58",
+      "sha256": "b82fc36360eee886d8b4ba72504c4c91875236f1738d1fb00d56cc223482e7cf",
+      "method": "findReviewDefinition",
+      "range": {
+        "startLine": 626,
+        "endLine": 630
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "RECORD_CONTROL-only guard prevents treating generic review graph API as WORK write bypass.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.022",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/FormProcessController.java",
+      "blob": "bc144fa69e0f3ee7ea954eff85284e8407ccfe74",
+      "sha256": "7f0220581c15180faad3642ce053e8d0629a9385a5e4f6f50edf43b4a4fa0438",
+      "method": "findDefinition/findVersion",
+      "range": {
+        "startLine": 247,
+        "endLine": 255
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "FORM_PROCESS-only definition and version ownership guard; not WORK graph writer.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.023",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "blob": "c5eac6674496bcb48b854440edd95eb31dc47918",
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "method": "persistentFlowGraph",
+      "range": {
+        "startLine": 366,
+        "endLine": 378
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Only transient selected/dragging removed; config not filtered.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.024",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "blob": "c5eac6674496bcb48b854440edd95eb31dc47918",
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "method": "normalizedConditionConfig",
+      "range": {
+        "startLine": 429,
+        "endLine": 441
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Canonical incomplete branch/default initialization; no old keys generated from empty config.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.025",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "blob": "c5eac6674496bcb48b854440edd95eb31dc47918",
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "method": "normalizeFlowGraph",
+      "range": {
+        "startLine": 655,
+        "endLine": 750
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "FORM config copied; unsupported CONDITION nodes and orphan edges filtered during load; not server command validation.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.026",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "blob": "c5eac6674496bcb48b854440edd95eb31dc47918",
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "method": "add connected/condition-branch nodes selected config construction",
+      "range": {
+        "startLine": 2339,
+        "endLine": 2349
+      },
+      "readDepth": "selected-config-construction-branch",
+      "conclusion": "New FORM uses empty config, new CONDITION canonical initializer.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.027",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "blob": "c5eac6674496bcb48b854440edd95eb31dc47918",
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "method": "addConditionBranchNode selected config construction",
+      "range": {
+        "startLine": 2431,
+        "endLine": 2441
+      },
+      "readDepth": "selected-config-construction-branch",
+      "conclusion": "Conditional quick-add also initializes FORM empty/CONDITION canonical.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.028",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "blob": "c5eac6674496bcb48b854440edd95eb31dc47918",
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "method": "addNode selected config construction",
+      "range": {
+        "startLine": 2776,
+        "endLine": 2795
+      },
+      "readDepth": "selected-config-construction-branch",
+      "conclusion": "Normal add node does not manufacture completionCondition or top-level legacy condition keys.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.029",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "blob": "c5eac6674496bcb48b854440edd95eb31dc47918",
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "method": "saveGraph mutation",
+      "range": {
+        "startLine": 4509,
+        "endLine": 4542
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "PUT through persistentFlowGraph; saved/dirty cleared only on success; error uses existing message channel.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.030",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "blob": "c5eac6674496bcb48b854440edd95eb31dc47918",
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "method": "publish mutation",
+      "range": {
+        "startLine": 4552,
+        "endLine": 4572
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "PUT then POST publish; no cross-request atomicity inferred.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.031",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "blob": "c5eac6674496bcb48b854440edd95eb31dc47918",
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "method": "saveTransientDraft mutation",
+      "range": {
+        "startLine": 4573,
+        "endLine": 4605
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Create server draft then PUT graph; independent requests.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.032",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "blob": "c5eac6674496bcb48b854440edd95eb31dc47918",
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "method": "publishTransientDraft mutation",
+      "range": {
+        "startLine": 4606,
+        "endLine": 4624
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Create then PUT then publish; server gates needed at each command.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.033",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "blob": "c5eac6674496bcb48b854440edd95eb31dc47918",
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "method": "copyToDraft mutation",
+      "range": {
+        "startLine": 4625,
+        "endLine": 4656
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Optional current draft save, then source copy API with createIfMissing choice.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.034",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "blob": "c5eac6674496bcb48b854440edd95eb31dc47918",
+      "sha256": "2aab46024524ba8186b58d15b632ef7dbffe69dbbdd24340533cb35046a719d7",
+      "method": "saveDraft/confirm selected dispatch",
+      "range": {
+        "startLine": 4721,
+        "endLine": 4763
+      },
+      "readDepth": "selected-dispatch-branches",
+      "conclusion": "Draft dispatch chooses persisted/virtual; publish preflight does not replace independently accessible server gate.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.035",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/frontend/src/api/workflow-work.ts",
+      "blob": "1570d595c32c5adb81f00ccbced44f699287c11b",
+      "sha256": "aa918bcec8deab75a5b04cce9f5963ce1efdd22774f4f6aa8d35d0f614d99802",
+      "method": "create/save/publish/copy version API adapters",
+      "range": {
+        "startLine": 33,
+        "endLine": 66
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Dedicated WORK endpoints and createIfMissing copy parameter.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.036",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "blob": "59c16531ec7849ed772ca0299ed1c0c63af95407",
+      "sha256": "84da4305797fc2536359da9ccf933edfba96da95daecb2ea5567e31d36a454e0",
+      "method": "build selected WORK capture",
+      "range": {
+        "startLine": 111,
+        "endLine": 137
+      },
+      "readDepth": "selected-WORK-freeze-branch",
+      "conclusion": "Current PUBLISHED graph copied into execution snapshot with matching rules and FORM attachments.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.037",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "blob": "59c16531ec7849ed772ca0299ed1c0c63af95407",
+      "sha256": "84da4305797fc2536359da9ccf933edfba96da95daecb2ea5567e31d36a454e0",
+      "method": "attachFillSettings",
+      "range": {
+        "startLine": 139,
+        "endLine": 160
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Existing use-time FORM_PROCESS/DIRECT binding capture; should not interpret or rewrite obsolete WORK configuration.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.038",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "blob": "d5764d12acf0d78fb0925a079a9e6a81548ded88",
+      "sha256": "9e7f4b66d43780b5294acac5fdd7f1893ec71073d71104ac634a6e4a8ca50e4a",
+      "method": "advanceWork",
+      "range": {
+        "startLine": 752,
+        "endLine": 774
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Runs frozen work.nodes; no live-template fallback introduced.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.039",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "blob": "d5764d12acf0d78fb0925a079a9e6a81548ded88",
+      "sha256": "9e7f4b66d43780b5294acac5fdd7f1893ec71073d71104ac634a6e4a8ca50e4a",
+      "method": "conditionOutlet",
+      "range": {
+        "startLine": 776,
+        "endLine": 792
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Reads canonical conditionBranches and default branch from own frozen graph.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    },
+    {
+      "id": "w3.write-source.040",
+      "fixedCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "blob": "d5764d12acf0d78fb0925a079a9e6a81548ded88",
+      "sha256": "9e7f4b66d43780b5294acac5fdd7f1893ec71073d71104ac634a6e4a8ca50e4a",
+      "method": "evaluate",
+      "range": {
+        "startLine": 794,
+        "endLine": 816
+      },
+      "readDepth": "selected-method-and-adjacent-source",
+      "conclusion": "Existing restricted string evaluator and errors observed; not a confirmed complete runtime policy.",
+      "runtimeExecuted": false,
+      "wholeFileReviewComplete": false,
+      "caveats": [
+        "source inspection only; no test/browser/database/API runtime result",
+        "fixed baseline source; not a claim about later root changes"
+      ]
+    }
+  ],
+  "policySourceReceipts": [
+    {
+      "path": "AGENTS.md",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "scope": "project/contract applicable sections or current-version governance headers; relevant decisions in full; DESIGN in full",
+      "wholeAssetSemanticReview": false
+    },
+    {
+      "path": "codeplzreadme.md",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "blob": "2e7e18097620e602c4408b83f71404fae346f8be",
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "scope": "project/contract applicable sections or current-version governance headers; relevant decisions in full; DESIGN in full",
+      "wholeAssetSemanticReview": false
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "scope": "project/contract applicable sections or current-version governance headers; relevant decisions in full; DESIGN in full",
+      "wholeAssetSemanticReview": false
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "blob": "132452939506dafd8c1e80cf4c737427be99328f",
+      "sha256": "b53f73eb5ae197a5c29e618bd3df18dff67ad6fd4597243f29907a8d8d6adb14",
+      "scope": "project/contract applicable sections or current-version governance headers; relevant decisions in full; DESIGN in full",
+      "wholeAssetSemanticReview": false
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "blob": "8b77bd25598fc0aa7e03da2d10f23215b6252e2e",
+      "sha256": "240025fe24927b141cefef45e641b1f88673bb8352ce59221cf9cbc8bc0b12c4",
+      "scope": "project/contract applicable sections or current-version governance headers; relevant decisions in full; DESIGN in full",
+      "wholeAssetSemanticReview": false
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "blob": "dc63dc570bfe71bab9e05a3083d88778dea67244",
+      "sha256": "dc5311c43dd756f66c9d18919bde3288ab35225dbbdf7fe2a7bce029e62feca6",
+      "scope": "project/contract applicable sections or current-version governance headers; relevant decisions in full; DESIGN in full",
+      "wholeAssetSemanticReview": false
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "blob": "d8dd2e98192bd8d74bdedd0972c3edfd6eb14161",
+      "sha256": "77b64943e93a524747c947c36f4034034a047d6b37e8fb884203a45c49b23a25",
+      "scope": "project/contract applicable sections or current-version governance headers; relevant decisions in full; DESIGN in full",
+      "wholeAssetSemanticReview": false
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "blob": "171a99410dce2e004824c2fd58b3b95ce50b2aac",
+      "sha256": "1eec6abe20670e8f363387d18ff442993ca55be9babf39715778045a70a0292f",
+      "scope": "project/contract applicable sections or current-version governance headers; relevant decisions in full; DESIGN in full",
+      "wholeAssetSemanticReview": false
+    },
+    {
+      "path": "DESIGN.md",
+      "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "blob": "29d9e21e96170cef0d371d4867e7b8b5d6f56568",
+      "sha256": "23bcefdb3989761c940aab8cd6b15cce6f69107be6c94e304c61308096b49d7d",
+      "scope": "project/contract applicable sections or current-version governance headers; relevant decisions in full; DESIGN in full",
+      "wholeAssetSemanticReview": false
+    }
+  ],
+  "report": {
+    "path": "/tmp/edhr-w3-write-entry-source-review.md",
+    "bytes": 12144,
+    "sha256": "368ea5b2f7f72869202987869baff1f409becaaf2ddf698b30001f6ffd8f8d79"
+  },
+  "readonlyChild": {
+    "path": "/tmp/edhr-w3-write-existing-test-scopes.md",
+    "bytes": 11461,
+    "sha256": "d4f7fb55978c9e6178e49cbf0aff1b930eca3393fc6b7eba710b0f54202ef1c2",
+    "status": "FINAL",
+    "runtimeExecuted": false
+  },
+  "findingsAsSourceConclusions": [
+    {
+      "id": "AUD-H009",
+      "conclusion": "confirmed source mismatch; must execute legal counterexamples before runtime claim"
+    },
+    {
+      "id": "AUD-H010",
+      "conclusion": "confirmed source mismatch; canonical shape and single old top-level key case missing write guard"
+    }
+  ],
+  "businessAmbiguitiesBlockingTheseTwoShapeGuards": [],
+  "adjacentUnadjudicated": [
+    "default branch id/name-only draft check vs exact two keys publish check"
+  ],
+  "residuals": [
+    "no evidence actual business DB contains unsupported prior source",
+    "no current normal UI manufacturing old keys proven",
+    "condition runtime source/evaluation/audit questions retained",
+    "not all W3 or whole branch review"
+  ]
+}

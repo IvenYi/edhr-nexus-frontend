@@ -1,0 +1,29 @@
+{
+  "kind": "known-preexisting-audit-round-trip-probe-not-a-passing-write-boundary-check",
+  "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "exit": 1,
+  "suite": {
+    "{http://www.w3.org/2001/XMLSchema-instance}noNamespaceSchemaLocation": "https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd",
+    "version": "3.0",
+    "name": "com.zencas.edhr.workflow.controller.WorkTemplateWritePostgresTest",
+    "time": "3.552",
+    "tests": "2",
+    "errors": "0",
+    "skipped": "0",
+    "failures": "2"
+  },
+  "cases": [
+    {
+      "name": "legalPublishCreatesOneInheritedDraftAndReferencesInTheRealTransaction",
+      "failure": true,
+      "error": false,
+      "rehashAssertionPresent": true
+    },
+    {
+      "name": "incompleteDraftsPersistAndReadBackWithRealReferenceRefreshAndAudit",
+      "failure": true,
+      "error": false,
+      "rehashAssertionPresent": true
+    }
+  ]
+}
