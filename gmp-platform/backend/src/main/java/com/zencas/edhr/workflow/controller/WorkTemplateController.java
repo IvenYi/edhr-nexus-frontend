@@ -206,6 +206,7 @@ public class WorkTemplateController {
             validateFlowBoundaries(nodesJson);
             String edgesJson = FLOW_GRAPH_OBJECT_MAPPER.writeValueAsString(payload.getOrDefault("edges", List.of()));
             validateOrdinaryNodeOutgoingEdges(nodesJson, edgesJson);
+            validateSupportedNodeConfigurations(nodesJson);
             version.setNodesJson(nodesJson);
             version.setEdgesJson(edgesJson);
         } catch (JsonProcessingException exception) {
@@ -242,6 +243,7 @@ public class WorkTemplateController {
         if (!"DRAFT".equals(version.getStatus())) throw new com.zencas.edhr.common.exception.BusinessException(com.zencas.edhr.common.exception.ErrorCode.WF_002, "仅草稿流程可发布");
         validateFlowBoundaries(version.getNodesJson());
         validateOrdinaryNodeOutgoingEdges(version.getNodesJson(), version.getEdgesJson());
+        validateSupportedNodeConfigurations(version.getNodesJson());
         validatePublishableConditionRules(version.getNodesJson());
         validatePublishableFormReferences(version.getNodesJson());
         validatePublishableFormProcessReferences(version.getNodesJson());
@@ -289,6 +291,7 @@ public class WorkTemplateController {
                         "当前已有编辑中的草稿流程，请刷新后重试");
             }
             WorkflowDefinitionVersion draft = existingDraft.get();
+            validateSupportedNodeConfigurations(source.getNodesJson());
             Map<String, Object> before = versionSnapshot(draft);
             draft.setNodesJson(source.getNodesJson());
             draft.setEdgesJson(source.getEdgesJson());
@@ -401,16 +404,40 @@ public class WorkTemplateController {
     }
 
     private WorkflowDefinitionVersion newDraft(Long definitionId, int versionNumber, WorkflowDefinitionVersion source) {
+        String nodesJson = source == null || source.getNodesJson() == null ? INITIAL_FLOW_NODES : source.getNodesJson();
+        validateSupportedNodeConfigurations(nodesJson);
         return WorkflowDefinitionVersion.builder()
                 .id(idGenerator.nextId())
                 .definitionId(definitionId)
                 .versionNumber(versionNumber)
                 .status("DRAFT")
                 .isCurrent(false)
-                .nodesJson(source == null || source.getNodesJson() == null ? INITIAL_FLOW_NODES : source.getNodesJson())
+                .nodesJson(nodesJson)
                 .edgesJson(source == null || source.getEdgesJson() == null ? INITIAL_FLOW_EDGES : source.getEdgesJson())
                 .createdAt(LocalDateTime.now())
                 .build();
+    }
+
+    private void validateSupportedNodeConfigurations(String nodesJson) {
+        if (nodesJson == null) return;
+        try {
+            JsonNode nodes = FLOW_GRAPH_OBJECT_MAPPER.readTree(nodesJson);
+            if (nodes == null || !nodes.isArray()) return;
+            for (JsonNode node : nodes) {
+                String kind = node.path("data").path("kind").asText();
+                JsonNode config = node.path("data").path("config");
+                // Only reject retired shapes; draft completeness remains a publish concern.
+                if ("FORM".equals(kind) && config.has("completionCondition")) {
+                    throw invalidConditionRule("表单填写节点不支持完成条件配置");
+                }
+                if ("CONDITION".equals(kind) && hasLegacyConditionConfiguration(config)) {
+                    throw invalidConditionRule("条件节点包含不支持的旧配置字段");
+                }
+            }
+        } catch (JsonProcessingException exception) {
+            throw new com.zencas.edhr.common.exception.BusinessException(
+                    com.zencas.edhr.common.exception.ErrorCode.WF_002, "流程节点数据格式不正确");
+        }
     }
 
     private void validateFlowBoundaries(String nodesJson) {
