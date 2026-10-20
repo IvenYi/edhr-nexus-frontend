@@ -2,6 +2,8 @@
 
 本轮从最新 `edhr-dev@061d7f1ff71d11084667d08293fd7d5fe0d7680d` 开始（2,352 个受控路径），PR18 已人工合并且合并树与 c118 交付相同，契约无新增差异。最初为 L1 只读走查；确认保存索引及冻结反查的真实消费差异后升级 L2，最小修复见 decision-package.yaml。没有新业务政策、历史恢复、真实数据清理或大重构。
 
+交付：[PR19](https://github.com/IvenYi/edhr-nexus-frontend/pull/19)，来源 `audit/edhr-dev-trace-freeze-chain-20261020`，目标 `edhr-dev`。核心实现 `12e2bc21`，正式受测候选 `ba68b03d`；此后仅 L0 原件及交付登记。尚未合并，交由用户人工决定。
+
 ## 发现及最小修复
 
 | ID | 级别 | 合法触发与根因 | 修复 |

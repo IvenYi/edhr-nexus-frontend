@@ -80,6 +80,13 @@
     "scope": "this batch and listed adjacent regressions only"
   },
   "historicalIndexBackfill": false,
+  "delivery": {
+    "pullRequest": "https://github.com/IvenYi/edhr-nexus-frontend/pull/19",
+    "sourceBranch": "audit/edhr-dev-trace-freeze-chain-20261020",
+    "targetBranch": "edhr-dev",
+    "mergePerformed": false,
+    "postAcceptanceChanges": "L0 archive, acceptance overlay, scope review and PR registration only"
+  },
   "overallAuditComplete": false,
   "overallPercent": null,
   "next": "W3 new-write entry matrix: H009/H010 and separate H012 adjudication"
