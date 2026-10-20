@@ -1,0 +1,173 @@
+{
+  "schema": "edhr-ontology-record-precision-followup-validation/v1",
+  "outcome": "passed",
+  "sourceCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+  "baselineCommit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+  "contractReadCommit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+  "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "changedKnowledgeFiles": 5,
+  "changedIds": [
+    "DEC-0081",
+    "DEC-0081-02",
+    "evidence.tenant-task-delegation-20261020",
+    "scenario.tenant-transfer-repeated-origin-preserved",
+    "scenario.tenant-transfer-target-outside-original-candidates"
+  ],
+  "necessaryAdjacentIds": [
+    "DEC-0055-02",
+    "rule.form-approval-transfer",
+    "anchor.form-approval-transfer-runtime",
+    "term.workflow-task-resolution-snapshot"
+  ],
+  "semanticRecordsVerified": 9,
+  "definitionsBefore": 2546,
+  "definitionsAfter": 2546,
+  "newIds": [],
+  "removedIds": [],
+  "maturityChanges": [],
+  "visibilityChanges": [],
+  "governanceComparison": [
+    {
+      "path": "AGENTS.md",
+      "unchangedAcrossTargetReadAndFollowupBaselines": true,
+      "receipts": [
+        {
+          "commit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+          "path": "AGENTS.md",
+          "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+          "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+        },
+        {
+          "commit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+          "path": "AGENTS.md",
+          "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+          "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+        },
+        {
+          "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+          "path": "AGENTS.md",
+          "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+          "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+        },
+        {
+          "commit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+          "path": "AGENTS.md",
+          "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+          "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+        }
+      ]
+    },
+    {
+      "path": "codeplzreadme.md",
+      "unchangedAcrossTargetReadAndFollowupBaselines": true,
+      "receipts": [
+        {
+          "commit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+          "path": "codeplzreadme.md",
+          "blob": "2e7e18097620e602c4408b83f71404fae346f8be",
+          "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+        },
+        {
+          "commit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+          "path": "codeplzreadme.md",
+          "blob": "2e7e18097620e602c4408b83f71404fae346f8be",
+          "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+        },
+        {
+          "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+          "path": "codeplzreadme.md",
+          "blob": "2e7e18097620e602c4408b83f71404fae346f8be",
+          "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+        },
+        {
+          "commit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+          "path": "codeplzreadme.md",
+          "blob": "2e7e18097620e602c4408b83f71404fae346f8be",
+          "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+        }
+      ]
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "unchangedAcrossTargetReadAndFollowupBaselines": true,
+      "receipts": [
+        {
+          "commit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+          "path": "docs/agents/business-knowledge-modeler.md",
+          "blob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+          "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+        },
+        {
+          "commit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+          "path": "docs/agents/business-knowledge-modeler.md",
+          "blob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+          "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+        },
+        {
+          "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+          "path": "docs/agents/business-knowledge-modeler.md",
+          "blob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+          "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+        },
+        {
+          "commit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+          "path": "docs/agents/business-knowledge-modeler.md",
+          "blob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+          "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+        }
+      ]
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "unchangedAcrossTargetReadAndFollowupBaselines": true,
+      "receipts": [
+        {
+          "commit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+          "path": "docs/agents/agent-handoff-contract.md",
+          "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+          "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+        },
+        {
+          "commit": "84c5b6d6af15f4f9d684c99e8eb8d110ae039954",
+          "path": "docs/agents/agent-handoff-contract.md",
+          "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+          "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+        },
+        {
+          "commit": "266a1635cc95870cd7907c574eb676db7f560d4f",
+          "path": "docs/agents/agent-handoff-contract.md",
+          "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+          "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+        },
+        {
+          "commit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+          "path": "docs/agents/agent-handoff-contract.md",
+          "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+          "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+        }
+      ]
+    }
+  ],
+  "firstRoundOriginalsUnchanged": [
+    {
+      "path": "/tmp/edhr-w3-tenant-transfer-ontology-result.yaml",
+      "sha256": "43a1f9b8160af50efbbdd400a904cccbc3f147588472518a813c9e393978fb36",
+      "untouched": true
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-transfer-semantic-review.jsonl",
+      "sha256": "87a2d1386abbd091bf6f694cac6c11200e329376a749a20be53dc7043481f23e",
+      "untouched": true
+    },
+    {
+      "path": "/tmp/edhr-w3-tenant-transfer-ontology-safe-originals-manifest.json",
+      "sha256": "ebf9c9fbca3169268dfede7b9d1154d668c6bfc49c15a11e916ad2d26e7eaf03",
+      "untouched": true
+    }
+  ],
+  "originalUserConfirmationFilesUnchanged": true,
+  "coreSourceUnchangedFrom4ceAnd266": true,
+  "knowledgeWorkingTreeMatchesFixedCommit": true,
+  "wholeAssetSemanticAcceptance": false,
+  "businessRuntimeExecutedByOntologyInstance": false
+}

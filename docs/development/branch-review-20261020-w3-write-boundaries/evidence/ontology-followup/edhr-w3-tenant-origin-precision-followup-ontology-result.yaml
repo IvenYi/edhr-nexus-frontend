@@ -1,0 +1,120 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: cf6f1fedb952cd071a645be10dcbc6db20d167f4
+    targetBranch: edhr-dev
+    targetCommit: a8285be9b91fb76bcb27ccb16a5258bda1fb5077
+    contractReadCommit: 84c5b6d6af15f4f9d684c99e8eb8d110ae039954
+    uncommittedContractPaths: []
+  reason: 修正DEC0081-02把generic完整来源原件泛化到ordinary的知识记录精度；用户租户内委托和原候选来源保留规则不变。按两条既有机制同步5文件，仅5变动ID+4必要邻接，不新增采集/恢复历史/业务代码，不覆盖首轮正式原件。
+  changedArtifacts:
+  - path: docs/architecture/business-knowledge-model.md
+    changeType: update
+    ids: []
+  - path: docs/knowledge/README.md
+    changeType: update
+    ids: []
+  - path: docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    changeType: update
+    ids:
+    - DEC-0081
+    - DEC-0081-02
+    - scenario.tenant-transfer-repeated-origin-preserved
+    - scenario.tenant-transfer-target-outside-original-candidates
+  - path: docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+    changeType: update
+    ids: []
+  - path: docs/knowledge/evidence/tenant-task-delegation-20261020.yaml
+    changeType: update
+    ids:
+    - evidence.tenant-task-delegation-20261020
+  knowledgeSync:
+  - id: DEC-0081
+    disposition: updated
+    scope: 只核对02及两项来源保留场景的路径精度修正；其他政策保持，不认证整份决策或整个工作流。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0081-02
+    disposition: updated
+    scope: 记录纠错：generic既有解析原件包含userIds/sources/unresolved；ordinary只有到达时候选ID/restricted与冻结节点主体配置，不新增逐用户来源采集。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: scenario.tenant-transfer-target-outside-original-candidates
+    disposition: updated
+    scope: 集合外委托业务边界不变，来源保持改为DEC0081-02各自既有证据机制，不声称ordinary已有逐来源原件。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: scenario.tenant-transfer-repeated-origin-preserved
+    disposition: updated
+    scope: 重复转办分别核对generic首次原解析文本与ordinary冻结ID/限制标记/节点配置保持，不混用原件内容。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: evidence.tenant-task-delegation-20261020
+    disposition: updated
+    scope: 只核对本轮记录精度纠正段及两路径证据机制，用户原话与旧正式原件保留；不借纠错新增政策。
+    sourceReferences:
+    - docs/knowledge/evidence/tenant-task-delegation-20261020.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: DEC-0055-02
+    disposition: retained
+    scope: 必要邻接保留：ordinary同租户可用目标/自转禁止/原候选来源保持；该来源按其现有ID/限制标记/冻结配置理解。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: rule.form-approval-transfer
+    disposition: retained
+    scope: 必要邻接保留：original-frozen-candidates与单独current目标不变，不将结构性保留扩为新逐用户provenance采集。
+    sourceReferences:
+    - docs/knowledge/rules/form-approval-transfer.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: anchor.form-approval-transfer-runtime
+    disposition: retained
+    scope: 必要邻接保留：现有anchor已准确定位approvers/restricted/current责任及原事务；不声称新增ordinary解析原件。
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/form-approval-transfer.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  - id: term.workflow-task-resolution-snapshot
+    disposition: retained
+    scope: 必要邻接保留：该术语仅对应generic工作流任务解析原件，不泛化为ordinary审批state已经具备相同内容。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.w3-origin-precision-followup-knowledge
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-tenant-origin-precision-followup-knowledge-summary.json
+    - 本体实例在新固定知识候选实际89/89，0fail/0error/0skip；不是业务运行验收。
+  - id: validation.w3-origin-precision-followup-record-transition
+    checkType: status-transition
+    command: python /tmp/edhr-w3-finalize-origin-precision-followup.py cf6f1fedb952cd071a645be10dcbc6db20d167f4
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-tenant-origin-precision-followup-validation.json
+    - 2546→2546，无新增/删除ID或既有成熟度/可见性变化，原始用户确认及首轮正式原件字节保持。
+  - id: validation.w3-origin-precision-followup-source-receipts
+    checkType: evidence-path
+    command: python /tmp/edhr-w3-finalize-origin-precision-followup.py cf6f1fedb952cd071a645be10dcbc6db20d167f4
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3-tenant-origin-precision-followup-validation.json
+    - /tmp/edhr-w3-tenant-origin-precision-followup-semantic-review.jsonl
+    - 9条有限真实记录/path/blob/SHA，分别核对generic来源原件与ordinary ID/限制/冻结配置；不是全库或首轮36重审。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
