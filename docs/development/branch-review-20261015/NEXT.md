@@ -1,5 +1,7 @@
 # 持续推进台账
 
+最新交付：[PR18 跨批覆盖总账恢复](https://github.com/IvenYi/edhr-nexus-frontend/pull/18)，L1工具/台账批次，独立受测cbf83d0e正式passed；仅建议按该范围人工验收，不自动合并。下一条业务审查链及未完成项见下文。
+
 当前检查点：[跨批覆盖总账恢复](../branch-review-20261020-coverage-ledger/README.md)，固定最新edhr-dev@1185e6daa3425bb1856df7a6db12b2e939b0afad。PR17已人工合入，合并336466d9的树与交付6c93b386相同；用户随后四次新增追溯单绑/空白区域及证据提交也已拉取。本批仅L1工具/台账维护，已恢复2293路径分类、历史方法范围/知识/问题/验收来源；正式验收状态见新批目录，不自动merge/deploy。下一条业务审查入口为最新W2追溯配置保存→W1新执行快照→历史读取，再回到W3剩余。完整分支审查未完成。
 
 PR7至PR17均已由用户人工合入，各批原始验收证据保留。[W2同字段共享选项](../branch-review-20261018-w2-choice-options/README.md)初轮c449正式failed、最终9ac正式passed保持原样；PR15合入不等于完整W2完成。[W3第一批H003](../branch-review-20261018-w3-explicit-fill-mode/README.md)原独立受测2f8144，随后仅L0交付，随PR16合入；不回写原技能不可用、原中间版本失败或原扫描结果。H004的a9ecd501正式passed后仅L0归档交付，现已随PR17合入；其他批次保持各自受测范围，不重开PR5/6。
