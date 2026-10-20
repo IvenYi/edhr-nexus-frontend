@@ -1,0 +1,102 @@
+{
+  "schema": "edhr-readonly-independent-hash-boundary/v1",
+  "role": "/root/w3_corrected_final_quality/knowledge_ledger_final_readonly/hash_boundary_readonly",
+  "result": "passed",
+  "scope": "limited source and archived-probe receipts only; not whole branch qualityResult",
+  "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "headCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+  "contractBaseline": {
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "contractReadCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeVersion": "0.3.25",
+  "workingTreeState": "clean",
+  "newFindings": [],
+  "checks": [
+    {
+      "id": "hash.fixed-source",
+      "outcome": "passed",
+      "method": "inspection",
+      "description": "Fixed source, clean worktree, actual Git source and contract receipts; no current algorithm or consumer change in target-to-candidate range."
+    },
+    {
+      "id": "hash.raw-payload",
+      "outcome": "passed",
+      "method": "inspection",
+      "description": "AuditEvent JSON content uses raw String values and timestamp text in length-prefixed payload, sealed PrePersist; no reconstitution/canonicalization-version contract."
+    },
+    {
+      "id": "hash.audit-consumers",
+      "outcome": "passed",
+      "method": "inspection",
+      "description": "AuditController DTO/detail, AuditLogPage and DHR ZIP audit collectors expose stored hash without recomputing AuditEvent payload."
+    },
+    {
+      "id": "hash.distinct-integrity-domains",
+      "outcome": "passed",
+      "method": "inspection",
+      "description": "DHR frozen version/termination payload, signature snapshot_data, and attachment byte validation independently compare their own hashes; not AuditEvent read-back verification."
+    },
+    {
+      "id": "hash.original-probe-receipts",
+      "outcome": "passed",
+      "method": "command",
+      "description": "Two ZIP source members match exact byte counts/SHA; inherited baseline summary retains2failed0error0skip and two explicit rehash assertions. No runtime tests executed by this instance."
+    },
+    {
+      "id": "hash.no-history-repair",
+      "outcome": "passed",
+      "method": "inspection",
+      "description": "No migration/algorithm modification or historical digest repair; old SQL baseline/MIGRATE paths legitimately lack Java sealed digest, not evidence for guessing reconstruction."
+    },
+    {
+      "id": "hash.current-scope",
+      "outcome": "passed",
+      "method": "inspection",
+      "description": "W5 finding remains medium/open. New transfer audit uses existing sealing; no new read-time rehash gate or new consumer failure found within examined scope."
+    }
+  ],
+  "inheritedFinding": {
+    "id": "W5-AUDIT-HASH-001",
+    "severity": "medium",
+    "disposition": "preexisting-medium-open"
+  },
+  "probe": {
+    "sourceCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "tests": 2,
+    "failures": 2,
+    "errors": 0,
+    "skipped": 0,
+    "executedByThisInstance": false,
+    "basis": "exact archived probe summary and member receipts; parent run is separate"
+  },
+  "zipMembers": [
+    {
+      "member": "first-pg-fixture.java",
+      "bytes": 14694,
+      "sha256": "c6c6c8779db975dce89a1d2e39cbb7bfc1c2b176145ee423326abba7976ec0c6",
+      "matchesReceipt": true,
+      "rehashAssertions": null
+    },
+    {
+      "member": "baseline-audit-hash-probe.java",
+      "bytes": 14911,
+      "sha256": "ece171748417915608b46deff16d1c5a62be91ff3c6465b3afa52713b5d95b13",
+      "matchesReceipt": true,
+      "rehashAssertions": 2
+    }
+  ],
+  "sourceScopeCount": 16,
+  "runtimeExecuted": false,
+  "repositoryMutations": false,
+  "subagents": [],
+  "limits": [
+    "No new Maven/PostgreSQL/browser execution or active data access",
+    "Stored-hash presence/transaction atomicity does not certify round-trip rehash",
+    "No proof of full tenant isolation, all audit consumers or complete W5",
+    "No historical rehash or data recovery authorized"
+  ]
+}

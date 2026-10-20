@@ -1,0 +1,103 @@
+from pathlib import Path
+import json,subprocess,hashlib,datetime,yaml,copy
+R=Path('/workspace/edhr-nexus-frontend');P=Path('/tmp');S='edhr-w3-final-independent-'
+B='a8285be9b91fb76bcb27ccb16a5258bda1fb5077';H='b8051583f6c85d52260174e6da191f36bb2c1de8'
+git=lambda *args:subprocess.check_output(['git',*args],cwd=R).decode().strip()
+assert git('rev-parse','HEAD')==H and git('status','--porcelain')=='' and git('rev-parse','refs/remotes/origin/edhr-dev')==B
+back=json.loads((P/(S+'backend-summary.json')).read_text());ui=json.loads((P/(S+'ui-summary.json')).read_text());ledger=json.loads((P/(S+'ledger-review.json')).read_text())
+assert back['exit']==0 and back['totals']=={'tests':381,'failures':0,'errors':0,'skipped':0} and back['all15ReportsFresh'] and back['sourceBeforeAfterExact'] and back['nativePostgresTests']==39
+assert ui['result']==ledger['result']=='passed' and not ui['newFindings'] and not ledger['newFindings']
+bd='docs/development/branch-review-20261020-w3-write-boundaries'
+def file_receipt(path):
+ raw=(R/path).read_bytes();return {'path':path,'sourceCommit':H,'blob':git('rev-parse',H+':'+path),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+source_specs=[
+ ('gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java','saveGraph/createDraftVersion/publishVersion/copyPublishedVersionToDraft/newDraft/validateSupportedNodeConfigurations and existing legacy-key detector','New save/publish guard is before graph/current mutations; overwrite copy guarded before setters; newDraft guards before id/build; only retired-key presence, including null. No historical cleanup or publish-completeness shift.'),
+ ('gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java','search/require/available','Shared SQL specification restricts tenant, ACTIVE, unlocked and target identity; command canonicalizes numeric ID after lookup and forbids self; no original candidate whitelist.'),
+ ('gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java','resolve/captureApprovers/canAct/transferTargets/requireTransferTarget/transferTenantId','Ordinary path retains frozen approvers/restricted flags, stores current transferAssignees separately and consumes only resolver user IDs. Descriptions now accurately exclude unavailable full per-user source/unresolved originals.'),
+ ('gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java','transferTargets/transferForm/transferContext','Target/context/copy/node/current-handler gate retained; canonical actual target goes to current state and structured history without node advancement or result edits.'),
+ ('gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java','completeTask/resolveAssignees/resolveInstanceTenant/transferTargets/transferTask/terminateInstance/lockInstance/lockTask/isTaskOperator/singleUserSnapshot/assertNotDhrTask','Generic first available candidate text preserved once; current single target controls authorization and SQL queue; legacy prior transfer is partial-marked. Existing instance→task lock order retained with refresh before state/operator checks. Audit insertion joins transaction.'),
+ ('gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java','transfer-targets/transfer/currentOperatorId/TransferRequest','Authenticated principal used instead of client operator. Explicit target and reason required; DHR refusal in engine unchanged.'),
+ ('gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java','findTodoForUser/findDoneForUser/findPendingByCandidateUserId/findByIdForUpdate','Native queries read current top-level candidate/assignee, exclude DHR where exposed; never grant from originSnapshot string.'),
+ ('gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java','act prechecks and completeDhrTask call','Service checks eligibility, complete manual review, signatures and frozen evidence before dedicated engine action; inspected caller does not mutate managed WorkflowInstance before engine refresh.'),
+ ('gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java','securityFilterChain authenticated catchall','New workflow task search endpoint not in permitAll list; existing JWT filter/catchall authentication preserved.'),
+ ('gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateWriteBoundaryTest.java','75 retired matrix,8 incomplete positives,2 publish controls','Tests assert original graph/status/current/reference/audit no mutation; incomplete shapes and unknown extension keys remain allowed.'),
+ ('gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateWritePostgresTest.java','actual0060 setup,10 rejection rows,2 positive persistence tests','Spring proxied real repositories/reference service/native PG with original0060 constraints; stored hash/content and atomicity only, never rehash claim.'),
+ ('gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java','23 native cases; repeat/open/partial/source/SQL/invalid/DHR/audit rollback/real lock waiters/DTO identity','Real PG lock waiter barrier uses pg_stat_activity; two transfer responses exactly true,false; old candidate completion after transfer refused; fault trigger verifies all four state/log/audit tables unchanged.'),
+ ('gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java','four selected transfer tests, including two new tenant delegation and account-lock cases','Native real HTTP/JWT/filter requests verify outside-original tenant target, canonical02→2, two sequential responsibilities, old handlers revoked, frozen source/values preserved and target account rechecked.'),
+]
+source={'schema':'edhr-independent-selected-source-review/v1','role':'/root/w3_corrected_final_quality','baseCommit':B,'headCommit':H,'wholeFileReviewComplete':False,'scopes':[dict(file_receipt(path),scope=scope,conclusion=conclusion) for path,scope,conclusion in source_specs],'limits':['Selected methods and branches only; these records are not whole-file completion or extra distinct tests','No business/test/knowledge repair participation','No full tenant isolation, full DHR lifecycle or audit rehash certification']}
+(P/(S+'source-review.json')).write_text(json.dumps(source,ensure_ascii=False,indent=2)+'\n')
+static_paths=['AGENTS.md','codeplzreadme.md','docs/agents','DESIGN.md','gmp-platform/backend/src/main/resources/db/changelog','gmp-platform/backend/pom.xml','gmp-platform/frontend/package.json','gmp-platform/frontend/package-lock.json']
+unchanged={p:git('diff','--name-only',B,H,'--',p).splitlines() for p in static_paths}
+core_delta=git('diff','--name-only','266a1635cc95870cd7907c574eb676db7f560d4f',H,'--','gmp-platform','scripts').splitlines()
+assert not any(unchanged.values()) and not core_delta
+whitespace=subprocess.run(['git','-c','core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol','diff','--check',B,H],cwd=R,capture_output=True,text=True)
+assert whitespace.returncode==0
+integrity={'head':H,'target':B,'workingTree':'clean','contractReadCommit':H,'unchangedFromTarget':unchanged,'productAndToolDeltaAfterFirstRound':core_delta,'whitespaceExit':whitespace.returncode,'wholeBranchAccepted':False,'allChildrenFinal':True}
+(P/(S+'integrity-final.json')).write_text(json.dumps(integrity,indent=2)+'\n')
+checks=[]
+def check(id,category,description,method,command,evidence,required=True,outcome='passed'):
+ checks.append(dict(id=id,required=required,category=category,description=description,method=method,command=command,outcome=outcome,evidence=evidence))
+source_ev=[str(P/(S+'source-review.json')),str(P/(S+'backend-summary.json'))]
+base_ev=[f'base={B}; head=testedCandidate={H}; contractReadCommit={H}',str(P/(S+'integrity-final.json'))]
+check('check.baseline-contract-integrity','documentation','显式fetch后目标/候选/实际契约及干净工作树一致','command','git fetch origin refs/heads/edhr-dev:refs/remotes/origin/edhr-dev; git rev-parse HEAD; git status --porcelain',base_ev)
+check('check.confirmed-scope-impact','requirements','L2影响分析及DEC0081声明级授权范围与实际修改一致','inspection','Inspect decision-package, current policies and scoped code diff',[bd+'/decision-package.yaml',str(P/(S+'source-review.json')),'No policy request beyond user-confirmed generic+ordinary tenant delegation; DHR retained.'])
+check('check.origin-precision-correction','ontology','首轮medium已纠正为两类实际来源机制，不新增普通表单来源采集','inspection','Inspect cf6 corrective diff, current5documents, actual capture/resolve/frozen flow and9semantic receipts',[str(P/(S+'ledger-review.json')),'QF-W3-TENANT-KNOWLEDGE-001 verified resolved; sourcecf6f1fedb952cd071a645be10dcbc6db20d167f4'])
+check('check.knowledge-policy-history','ontology','当前定义/替代/历史与成熟度保持，既有open范围未伪关闭','inspection','Inspect DEC0031/0055/0081, ontology followup and baseline current record comparison',[str(P/(S+'ledger-review.json')),'2546IDs; only5records changed, no addition/deletion/maturity promotion; 9finite followup reviews, not full semantic audit.'])
+check('check.all-new-write-entry-source','api','全部五类新写命令在副作用前拒绝已取消键，草稿完整性分层保留','inspection','Inspect WorkTemplateController save/createDraft/copy overwrite/newDraft/publish and retired guard',source_ev)
+check('check.write-command-matrix-85','unit','75拒绝+8不完整正向+2发布控制全部实际通过','automated-test','Final independent Maven selection: WorkTemplateWriteBoundaryTest',[str(P/(S+'backend-summary.json')),'85/85 fresh; no skips.'])
+check('check.existing-work-template-regression','regression','既有控制器73及FormFillSettings14回归实际通过','automated-test','Final independent Maven selection: WorkTemplateControllerTest,FormFillSettingsServiceTest',[str(P/(S+'backend-summary.json')),'73+14 actual tests; no addition to already381 total.'])
+check('check.native-write-persistence-12','database','真实PostgreSQL写保护/引用/审计及合法发布继承','automated-test','Final independent Maven selection: WorkTemplateWritePostgresTest',[str(P/(S+'backend-summary.json')),'12/12; actual0060singleDRAFT/FK constraints; stored hashes only.'])
+check('check.native-generic-transfer-23','database','通用任务来源/当前责任/待办/资格/异常/旧来源/回滚与竞争','automated-test','Final independent Maven selection: WorkflowTransferPostgresTest',[str(P/(S+'backend-summary.json')),'23/23 nativePG; manual synthetic initial task seed, not real resolver creation E2E.'])
+check('check.workflow-and-access-regressions','regression','引擎/任务控制器/权限/主体范围/执行引擎64项回归','automated-test','Final independent Maven selection: WorkflowEngineTest,WorkflowTaskControllerTest,ExecutionAccessTest,ExecutionSubjectScopeTest,ProductionExecutionEngineTest',[str(P/(S+'backend-summary.json')),'18+2+12+10+22=64; no failures/skips.'])
+check('check.native-ordinary-http-4','api','普通表单真实HTTP/JWT/filter连续委托、旧权收敛与账户重验','automated-test','Final independent Maven selection: four ProductionExecutionIntegrationTest transfer methods',source_ev+['4/4 nativePG; original frozen source and current node/values retained; no full HTTP matrix claim.'])
+check('check.dhr-retained-regression','regression','DHR专属动作、证据检查及通用入口防绕过保持','automated-test','Final independent Maven selection: DhrReviewLifecycleIntegrationTest,DhrReviewServiceTest plus native genericDHR refusal',source_ev+['5 lifecycle tests use H2 compatibility;10 service tests; native generic rejection belongs to23 and not counted twice.'])
+check('check.transfer-audit-atomicity','audit','转办内容/原因/身份与事务失败回滚；不声称摘要往返重算','automated-test','Final independent Maven selection: AuditEventTest + native audit failure trigger case',source_ev+['AuditEventTest2/2; native fault case validates four tables rollback; stored64hash assertions are not rehash proof.'])
+check('check.lock-waiter-concurrency','integration','真实行锁排队后刷新实体并重新核验当前处理权','automated-test','WorkflowTransferPostgresTest#concurrentTransfersFromTheSameFormerOperatorAcceptOnlyOneResponsibilityChange+formerCandidateWaitingBehindTransferCannotCompleteFromItsCachedSnapshot',source_ev+['Both actual fresh cases passed inside23; waiter barrier via pg_stat_activity.'])
+check('check.tenant-target-qualification','security','查询与执行同租户有效未锁定他人范围、集合外正向及非法反向','automated-test','Native personnel search,11invalid request cases, ordinary outside-candidate and locked-after-selection cases',source_ev+['Full multi-tenant workflow isolation remains unresolved nonMVP; this validates explicit target qualification only.'])
+check('check.authenticated-actor-api-contract','security','转办以真实principal发起并要求target/reason，规范化目标ID','inspection','Inspect SecurityConfig/WorkflowTaskController and real native DTO tests',source_ev+['Generic MVC uses authenticated SecurityContext standalone; ordinary HTTP runs real JWT/filter. No client operator trust.'])
+check('check.browser-36','e2e','两个真实页面受控API转办交互36项','browser','NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium W3_RESULT_PATH=/tmp/edhr-w3-final-independent-ui-browser.json W3_SCREENSHOT_DIR=/tmp/edhr-w3-final-independent-ui-screenshots node scripts/test-tenant-task-transfer-browser.mjs',[str(P/(S+'ui-summary.json')),str(P/(S+'ui-browser.json')),'36/36 actual final candidate run; controlledAPI, not fullstack E2E.'])
+check('check.visual-responsive','visual','实际新截图亲视两页面桌面/窄屏填写及弹层','inspection','view_image on8new screenshots recorded by independent UI child',[str(P/(S+'ui-summary.json')),'1440x960 and390x844;8screens personally viewed by qualified UI child, no repair participation.'])
+check('check.frontend-build','regression','TypeScript与Vite最终候选构建实际通过','command','npm run build',[str(P/(S+'ui-summary.json')),'exit0; existing unrelated build warnings not suppressed.'])
+check('check.premium-count-correction-and-increment','documentation','84条82种及重复次数完整多重集合一致、原set82原件保持','command','Official audit_project.py strict on exact a828 export and current candidate; full-field Counter comparison',[str(P/(S+'ui-summary.json')),'QF-W3-UI-DOC-COUNT-001 resolved;84rows82distinct each, added0 removed0;strict exits remain2.'])
+check('check.migration-compatibility','database','无迁移/依赖/配置变更、实际0060约束且不恢复历史','inspection','git diff base head for changelog,pom,package files; inspect native fixtures',base_ev+source_ev)
+check('check.baseline-red-evidence-applicability','documentation','首轮真实旧基线红证按原字节保留且适用于未变化产品/测试','inspection','Verify independent-round1 baseline receipts and git diff266..b805 -- gmp-platform scripts',[bd+'/evidence/independent-round1/edhr-w3-independent-baseline-summary.json',str(P/(S+'integrity-final.json')),'Prior independent actual85=63red22control,PG12=9red3control; not rerun or counted as current381.'])
+check('check.current-ledger-and-originals','documentation','当前台账逐字节重建、9收据/115归档断言及新旧原件保留','command','python3 scripts/build-branch-review-ledger.py --ref 05dbc0b2f6fda76e76cd9f7b6a10c224466dcc8a --catalog '+bd+'/recheck/source-catalog.json --out '+bd+'/recheck/ledger --check',[str(P/(S+'ledger-review.json')),'2603paths/314overlapping scopes/90historicalsemantic/46records,93source+57semantic needsdelta,wholeFile0; no full audit percent.'])
+check('check.history-w5-and-scope-boundaries','audit','W5既有摘要缺口与旧high/gap/A12保留，未伪称重算或完整分支通过','inspection','Inspect actual AuditEvent consumers, failed probe ZIP receipts, open dispositions and scope statements',[str(P/(S+'ledger-hash-review.json')),str(P/(S+'ledger-review.json')),'W5-AUDIT-HASH-001 remains medium/open; no added algorithm, old hash or historical data rewrite; actual current source/working tree unchanged.'])
+check('check.global-premium-strict-existing','regression','全站strict仍有既有记录，未作为通过或降低标准','command','Official audit_project.py --mode strict for base and candidate',[str(P/(S+'ui-summary.json')),'Both actual exit2,84rows82distinct; optional global backlog outside current incremental delivery.'],False,'failed')
+check('check.global-eslint-existing','regression','既有ESLint缺配置，实际未通过','command','npm run lint',[str(P/(S+'ui-summary.json')),'Actual exit2, configuration absent; no new config/standard downgrade.'],False,'failed')
+assert sum(c['required'] for c in checks)==24
+for c in checks:
+ if c['required']:assert c['outcome']=='passed'
+old=yaml.safe_load((R/bd/'evidence/independent-round1/edhr-w3-independent-quality-result.yaml').read_text())['qualityResult'];findings=[]
+for f in old['findings']:
+ x=copy.deepcopy(f);x['resolutionStatus']='resolved';x['resolutionEvidence']=[{'type':'commit','reference':'cf6f1fedb952cd071a645be10dcbc6db20d167f4'},{'type':'commit','reference':'550a1ba93d30a74ef30d314e4a9a6d5f71335805'},{'type':'document','reference':str(P/(S+('ledger-review.json' if 'KNOWLEDGE' in f['id'] else 'ui-summary.json')))}];findings.append(x)
+risks=[
+ {'id':'risk.W5-AUDIT-HASH-001','description':'既有medium/open：AuditEvent原JSON/时间文本封存与PG往返归一化后重算不等；a828额外2红探针原件保留，非本轮381通过项。','impact':'不能认证AuditEvent摘要读回重算能力；当前AuditEvent读取/导出仅传存储hash，不构成本轮动作的读取阻断。','mitigation':'W5单独确定稳定payload/version和兼容策略；不改旧摘要或恢复历史，不混同DHR/signature/file校验。'},
+ {'id':'risk.global-tooling','description':'全站premium strict和ESLint仍实际exit2，完整84条/82种扫描集合无新增。','impact':'仅满足本批增量与流程验收，不代表全站静态门禁通过或仓库必需检查强制配置已核验。','mitigation':'保留真实失败和独立Counter证据，按后续范围修复，不调整断言、规则或配置让其假绿。'},
+ {'id':'risk.full-audit-unfinished','description':'两用户暂缓DHR high、四旧知识gap、A12、W2/W3其余及W4–W7仍未完成，当前2603路径分类不是人工全覆盖。','impact':'不得把本批passed当完整DHR生命周期、整库语义或全分支验收。','mitigation':'用当前recheck总账继续逐条推进；93源码/57语义待增量核对保留，不虚报整体百分比。'},
+ {'id':'risk.runtime-limits','description':'浏览器真实页面配受控API；generic候选创建以合成任务种子，不是实际resolver创建全栈；DHR lifecycle5使用H2。','impact':'不能声称全量HTTP/创建主体解析/所有DHR原生PG/生产部署已验收。','mitigation':'分别报告39nativePG、普通HTTP4、genericPG23、图写PG12和实际浏览器36的范围，不与旧结果相加。'},
+ {'id':'risk.historical-origins','description':'旧代码已丢的候选来源无法由本轮恢复；ordinary原有来源留存与generic完整解析原件粒度不同。','impact':'历史已丢来源仍不完整，ordinary没有新增逐用户命中/未解析原件采集。','mitigation':'明确partial标记和DEC0081-02两路径既有机制；不猜测回填历史或擅自增加业务采集。'},
+]
+q={'result':'passed','baseCommit':B,'headCommit':H,'contractBaseline':{'sourceCommit':H,'targetBranch':'edhr-dev','targetCommit':B,'contractReadCommit':H,'uncommittedContractPaths':[]},'workingTreeState':{'status':'clean','includedPaths':[],'excludedPaths':[],'untrackedPaths':[]},'knowledgeBaselineVersion':'0.3.25','checks':checks,'findings':findings,'residualRisks':risks,'blockingConditions':[]}
+(P/(S+'quality-result.yaml')).write_text(yaml.safe_dump({'qualityResult':q},allow_unicode=True,sort_keys=False,width=120))
+summary={'schema':'edhr-fresh-final-independent-summary/v1','role':'/root/w3_corrected_final_quality','result':'passed','baseCommit':B,'testedCommit':H,'requiredChecks':24,'requiredPassed':24,'optionalGlobalExistingFailed':2,'newFindings':0,'resolvedRound1Findings':[f['id'] for f in findings],'javaBusiness':292,'knowledge':89,'totalFreshJavaAndKnowledge':381,'failures':0,'errors':0,'skips':0,'nativePostgres':39,'browserScenarios':36,'visualScreenshots':8,'frontendBuildExit':0,'premiumRowsEach':84,'premiumDistinctEach':82,'premiumExactMultisetsEqual':True,'premiumStrictExit':2,'eslintExit':2,'allChildrenFinal':True,'sourceUnchangedAfterTests':True,'wholeBranchAccepted':False,'noRepositoryMutations':True,'currentLedgerFixedTreeCommit':'05dbc0b2f6fda76e76cd9f7b6a10c224466dcc8a'}
+(P/(S+'summary.json')).write_text(json.dumps(summary,indent=2)+'\n')
+review=f'''# W3 corrected final independent acceptance
+
+本实例与两名子质量实例及一名只读Hash子实例均未参与任何修复。正式结果passed，24/24必需检查通过；base {B}，head/tested {H}，实际契约读取{H}，工作树干净。知识0.3.25/schema1.2.0。
+
+首轮266的failed报告保持原样；QF-W3-TENANT-KNOWLEDGE-001已按cf6精确区分通用完整解析原件和普通表单冻结ID/限制标记/冻结主体配置，亲读源码并核验9条收据及必要邻接。未新增普通表单来源采集或改变用户规则。QF-W3-UI-DOC-COUNT-001现明确84条记录/82种不同完整字段内容，实际新Counter核对重复次数完全相同。两项均resolved；没有新阻断发现。
+
+本实例实际新运行381项（业务292+知识89），15份XML均为启动后新生成，0失败/错误/跳过，含39原生PG（图写12、generic转办23、普通真实HTTP4）。原生PG16.15loopback合成库；DHR生命周期5使用H2、服务10回归另外列明。语义修正后核心与测试字节不变，仍由本实例实际最终重跑。基线63/85红和9/12PG红是前轮真实独立执行，仅按原字节继承，不宣称本实例重跑，也不累计为381之外的新通过。
+
+新UI子实例实际36浏览器+构建通过，亲视8张新截图，受控API不称fullstack。官方strict base/head均exit2，各84条/82种，新增/移除0；ESLint实际exit2缺配置。两项全局失败仍列为非本批新增的残余限制，不伪称全站通过。无扫描配置/业务规则/测试标准降低。
+
+源代码重读覆盖图新写五入口、租户目标资格、原候选与当前责任、真实行锁等待refresh、审计失败原子回滚、DHR专属入口及认证边界；仅列明方法/分支，没有整文件完成主张。ordinary真实JWT/filter与generic standalone authenticatedMVC的验证层级分别说明。
+
+最新recheck台账实际逐字节重建通过：fixed05dbc，2603路径/314有交叉范围/90历史有限语义/46父子问题记录。115归档断言、9语义收据/recordSHA、ZIP成员及旧failed/首轮36均核对。93源码记录、57语义记录或依赖待核，四gap/两用户暂缓high/A12以及完整W2/W3/W4–W7保留。W5-AUDIT-HASH-001保持既有medium/open，当前API/UI/ZIP只传storedhash；额外a828两红探针不是本轮通过能力，不改变算法/旧数据。
+
+本结果只验收本批可交付修复与列明相邻回归，不是全分支/完整DHR生命周期/完整租户隔离/所有迁移或发布验收。无repo修改、Actions操作、merge/deploy或历史恢复。所有子实例FINAL、测试进程已结束；owned PostgreSQL容器留给主审后续清理。
+'''
+(P/(S+'review.md')).write_text(review)
+print(json.dumps(summary))

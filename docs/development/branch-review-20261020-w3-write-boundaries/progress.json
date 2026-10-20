@@ -51,7 +51,7 @@
       "W3-TRANSFER-LOCK-001",
       "W5-AUDIT-HASH-001"
     ],
-    "state": "four business repairs and two precision corrections awaiting final fresh independent acceptance; W5 preexisting medium open",
+    "state": "six current-batch findings independently accepted; W5 preexisting medium remains open",
     "historicalFindingRecordsKept": 42,
     "currentFindingRecords": 46,
     "userDeferredHighKept": 2,
@@ -59,7 +59,8 @@
     "round1QualityFindingIds": [
       "QF-W3-TENANT-KNOWLEDGE-001",
       "QF-W3-UI-DOC-COUNT-001"
-    ]
+    ],
+    "acceptanceOverlay": "acceptance.json"
   },
   "userConfirmedScopeIncrement": {
     "exactReply": "通用工作流与普通生产表单都允许租户内委托；DHR 保持",
@@ -112,16 +113,26 @@
     "description": "Inventory generation and preserved report indexing do not execute product/semantic reviews; actual batch work reported separately."
   },
   "independentQuality": {
-    "result": "pending",
-    "scope": "corrected fixed candidate; fresh independent final acceptance",
-    "priorFailedRetained": true
+    "result": "passed",
+    "testedCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "requiredChecks": 24,
+    "requiredPassed": 24,
+    "allProfessionalInstancesFinal": true,
+    "report": "evidence/independent-final/edhr-w3-final-independent-quality-result.yaml",
+    "actualJavaBusinessPassed": 292,
+    "actualKnowledgePassed": 89,
+    "nativePostgresAmongBusiness": 39,
+    "javaSkipped": 0,
+    "actualBrowserPassed": 36,
+    "typecheckAndBuild": "passed",
+    "scope": "this batch and listed regressions only"
   },
   "historicalDataRestored": false,
   "mergePerformed": false,
   "deploymentPerformed": false,
   "overallAuditComplete": false,
   "overallPercent": null,
-  "next": "Fresh independent final L2 acceptance, then actual pre-PR scope/progress review; no auto merge/deploy.",
+  "next": "Human merge this verified batch; fetch latest edhr-dev before further W3 permission/signature/illegal-action coverage, then W4–W7.",
   "firstLedgerFixedTreeCommit": "df6ea28a6388a89611786116700836c6bf7f4819",
   "currentCatalog": "recheck/source-catalog.json",
   "currentLedger": "recheck/ledger",
@@ -150,5 +161,16 @@
     ],
     "correctionCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
     "finalFreshRecheck": "pending"
+  },
+  "testEnvironmentCleanup": {
+    "ownedContainerRemoved": true,
+    "receipt": "evidence/primary/edhr-w3-owned-postgres-cleanup.json",
+    "realDatabaseTouched": false
+  },
+  "prePrScopeReview": {
+    "completedAfterAllRolesFinal": true,
+    "userInformedBeforePrCreation": true,
+    "declaredPolicyIncrement": "DEC-0081 per explicit user reply",
+    "overallAuditComplete": false
   }
 }

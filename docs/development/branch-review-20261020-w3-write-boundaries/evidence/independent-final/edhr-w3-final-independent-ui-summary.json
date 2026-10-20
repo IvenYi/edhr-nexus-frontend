@@ -1,0 +1,249 @@
+{
+  "schema": "edhr-independent-ui-check/v1",
+  "role": "/root/w3_corrected_final_quality/ui_final_readonly",
+  "result": "passed",
+  "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "headCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+  "contractBaseline": {
+    "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "contractReadCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "knowledgeSchemaVersion": "1.2.0",
+  "workingTreeState": {
+    "status": "clean",
+    "includedPaths": [],
+    "excludedPaths": [],
+    "untrackedPaths": []
+  },
+  "checks": [
+    {
+      "id": "ui.fixed-source",
+      "required": true,
+      "outcome": "passed",
+      "method": "command",
+      "command": "git status/rev-parse; exact before/after file SHA and 2444 baseline Git blobs",
+      "evidence": [
+        "/tmp/edhr-w3-final-independent-ui-source-before.json",
+        "/tmp/edhr-w3-final-independent-ui-source-after.json"
+      ]
+    },
+    {
+      "id": "ui.page-source-and-fixture-review",
+      "required": true,
+      "outcome": "passed",
+      "method": "inspection",
+      "command": "Read two current page handlers/dialogs, shared FormDialog/AppDialog/client, and complete test script; compare owning routes and exact payload assertions",
+      "evidence": [
+        "/tmp/edhr-w3-final-independent-ui-review.md"
+      ]
+    },
+    {
+      "id": "ui.runtime-browser",
+      "required": true,
+      "outcome": "passed",
+      "method": "browser",
+      "command": "NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chromium W3_RESULT_PATH=/tmp/edhr-w3-final-independent-ui-browser.json W3_SCREENSHOT_DIR=/tmp/edhr-w3-final-independent-ui-screenshots node scripts/test-tenant-task-transfer-browser.mjs",
+      "exit": 0,
+      "tests": 36,
+      "passed": 36,
+      "failed": 0,
+      "evidence": [
+        "/tmp/edhr-w3-final-independent-ui-browser.json"
+      ]
+    },
+    {
+      "id": "ui.production-build",
+      "required": true,
+      "outcome": "passed",
+      "method": "command",
+      "command": "npm run build",
+      "exit": 0,
+      "evidence": [
+        "/tmp/edhr-w3-final-independent-ui-build.log"
+      ]
+    },
+    {
+      "id": "ui.visual-eight-states",
+      "required": true,
+      "outcome": "passed",
+      "method": "inspection",
+      "command": "view_image: both pages, 1440x960/390x844, filled and open personnel-popup states",
+      "evidence": [
+        "/tmp/edhr-w3-final-independent-ui-screenshots/generic-required-and-keyboard-cancel-1440-filled.png",
+        "/tmp/edhr-w3-final-independent-ui-screenshots/generic-required-and-keyboard-cancel-1440-popup.png",
+        "/tmp/edhr-w3-final-independent-ui-screenshots/generic-required-and-keyboard-cancel-390-filled.png",
+        "/tmp/edhr-w3-final-independent-ui-screenshots/generic-required-and-keyboard-cancel-390-popup.png",
+        "/tmp/edhr-w3-final-independent-ui-screenshots/production-required-and-keyboard-cancel-1440-filled.png",
+        "/tmp/edhr-w3-final-independent-ui-screenshots/production-required-and-keyboard-cancel-1440-popup.png",
+        "/tmp/edhr-w3-final-independent-ui-screenshots/production-required-and-keyboard-cancel-390-filled.png",
+        "/tmp/edhr-w3-final-independent-ui-screenshots/production-required-and-keyboard-cancel-390-popup.png"
+      ]
+    },
+    {
+      "id": "ui.premium-no-new-findings",
+      "required": true,
+      "outcome": "passed",
+      "method": "command",
+      "command": "official audit_project.py base/head --mode strict; compare Counter(json.dumps(each full finding,sort_keys=True))",
+      "evidence": [
+        "/tmp/edhr-w3-final-independent-ui-premium-comparison.json"
+      ],
+      "note": "No-new-finding comparison only; global strict remains exit2"
+    },
+    {
+      "id": "ui.count-wording-correction",
+      "required": true,
+      "outcome": "passed",
+      "method": "inspection",
+      "command": "rg current README/verification/progress/recheck for 84 rows /82 distinct, verify Counter result and retain old set82 original",
+      "evidence": [
+        "/tmp/edhr-w3-final-independent-ui-premium-comparison.json",
+        "/tmp/edhr-w3-final-independent-ui-review.md"
+      ]
+    },
+    {
+      "id": "ui.global-premium-strict",
+      "required": false,
+      "outcome": "failed",
+      "method": "command",
+      "command": "python3 /tmp/edhr-w3-official-premium-audit.py base/head --mode strict",
+      "exit": 2,
+      "evidence": [
+        "/tmp/edhr-w3-final-independent-ui-premium-base.json",
+        "/tmp/edhr-w3-final-independent-ui-premium-head.json"
+      ],
+      "note": "84 preexisting records/82 distinct; zero additions and removals"
+    },
+    {
+      "id": "ui.global-eslint",
+      "required": false,
+      "outcome": "failed",
+      "method": "command",
+      "command": "npm run lint",
+      "exit": 2,
+      "evidence": [
+        "/tmp/edhr-w3-final-independent-ui-eslint.log"
+      ],
+      "note": "Existing ESLint config absent; no rules or config modified"
+    }
+  ],
+  "newFindings": [],
+  "resolvedPriorFinding": {
+    "id": "QF-W3-UI-DOC-COUNT-001",
+    "severity": "low",
+    "resolutionStatus": "resolved",
+    "resolutionEvidence": [
+      {
+        "type": "commit",
+        "reference": "cf6f1fedb952cd071a645be10dcbc6db20d167f4"
+      },
+      {
+        "type": "commit",
+        "reference": "550a1ba93d30a74ef30d314e4a9a6d5f71335805"
+      },
+      {
+        "type": "command",
+        "reference": "/tmp/edhr-w3-final-independent-ui-premium-comparison.json"
+      }
+    ]
+  },
+  "browser": {
+    "actualCases": 36,
+    "passed": 36,
+    "failed": 0,
+    "perPage": {
+      "generic": 20,
+      "production": 16
+    },
+    "controlledApi": true,
+    "backendOrDbProved": false
+  },
+  "premium": {
+    "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "headCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "baseRows": 84,
+    "headRows": 84,
+    "baseDistinctFullFieldRows": 82,
+    "headDistinctFullFieldRows": 82,
+    "exactFullFieldMultisetsEqual": true,
+    "addedRows": 0,
+    "removedRows": 0,
+    "baseStrictExit": 2,
+    "headStrictExit": 2,
+    "globalStrictPassed": false,
+    "officialScannerSha256": "67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68",
+    "baseReportSha256": "6d85e7dd543a8b509931bc3007a57663e974d16961e5f7d7e9f8875174300c17",
+    "headReportSha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a"
+  },
+  "screenshots": [
+    {
+      "path": "/tmp/edhr-w3-final-independent-ui-screenshots/generic-required-and-keyboard-cancel-1440-filled.png",
+      "width": 1440,
+      "height": 960,
+      "sha256": "b64b72076c323828587a4802738b862c05316c8a47c8d93ee49606f2f5b83b43",
+      "personallyInspected": true
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ui-screenshots/generic-required-and-keyboard-cancel-1440-popup.png",
+      "width": 1440,
+      "height": 960,
+      "sha256": "ac24787654a959f03291d93a13d67367231ec6d93a5975d979a18d5e1e76bcf7",
+      "personallyInspected": true
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ui-screenshots/generic-required-and-keyboard-cancel-390-filled.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "22428176711386e7c70e320aa236a055ef7e4cba709d4322b88173f937306e96",
+      "personallyInspected": true
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ui-screenshots/generic-required-and-keyboard-cancel-390-popup.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "e3ce7a7f49a08b4a02a1dff5c27c3677c9f85b200350e74b21145b324b6743c8",
+      "personallyInspected": true
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ui-screenshots/production-required-and-keyboard-cancel-1440-filled.png",
+      "width": 1440,
+      "height": 960,
+      "sha256": "d201d71fd8ed19beed2b85df42ea39eac462aab546bb64c87ecc3beda47de4b3",
+      "personallyInspected": true
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ui-screenshots/production-required-and-keyboard-cancel-1440-popup.png",
+      "width": 1440,
+      "height": 960,
+      "sha256": "d1e74392ba06858daf09e119277f69d08cf6349caa43980a1e10b9e2a5cb89f2",
+      "personallyInspected": true
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ui-screenshots/production-required-and-keyboard-cancel-390-filled.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "d6aa495cbfc0b053896807cc9e3a7abaa2b001e23aa42aff55ccb35bcad47ff3",
+      "personallyInspected": true
+    },
+    {
+      "path": "/tmp/edhr-w3-final-independent-ui-screenshots/production-required-and-keyboard-cancel-390-popup.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "fdc72c23c1b0c6750faefa035ca392f0e9e5cc55d517029b6fa501cf20ffc71f",
+      "personallyInspected": true
+    }
+  ],
+  "repositoryMutations": false,
+  "children": [],
+  "limits": [
+    "Controlled API, not fullstack/backend/DB or DHR acceptance",
+    "Global strict and lint remain preexisting failures",
+    "No full-shell, complete assistive-technology/IME/device/200percent/theme matrix",
+    "Only changed workflows and named adjacent primitives inspected; not whole-app certification"
+  ],
+  "acceptanceScope": "Listed UI behavior, build, visual, no-new-findings comparison and count correction only; global strict and lint remain failed"
+}

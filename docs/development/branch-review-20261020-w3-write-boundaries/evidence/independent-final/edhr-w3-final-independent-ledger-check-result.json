@@ -1,0 +1,410 @@
+{
+  "schema": "edhr-independent-ledger-check/v1",
+  "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "headCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+  "contractReadCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+  "knowledgeVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "checks": [
+    {
+      "id": "fixed-candidate",
+      "outcome": "passed",
+      "evidence": {
+        "head": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+        "target": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077"
+      }
+    },
+    {
+      "id": "clean-tree",
+      "outcome": "passed",
+      "evidence": {
+        "status": "clean"
+      }
+    },
+    {
+      "id": "core-tests-unchanged",
+      "outcome": "passed",
+      "evidence": {
+        "compared": [
+          "266a1635cc95870cd7907c574eb676db7f560d4f",
+          "b8051583f6c85d52260174e6da191f36bb2c1de8"
+        ],
+        "paths": [
+          "gmp-platform/**",
+          "scripts/**"
+        ]
+      }
+    },
+    {
+      "id": "no-governance-drift",
+      "outcome": "passed",
+      "evidence": {
+        "contractReadCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8"
+      }
+    },
+    {
+      "id": "exact-five-id-correction",
+      "outcome": "passed",
+      "evidence": {
+        "currentIds": 2546,
+        "changedIds": [
+          "DEC-0081",
+          "DEC-0081-02",
+          "evidence.tenant-task-delegation-20261020",
+          "scenario.tenant-transfer-repeated-origin-preserved",
+          "scenario.tenant-transfer-target-outside-original-candidates"
+        ],
+        "deletedIds": [],
+        "newIds": []
+      }
+    },
+    {
+      "id": "maturity-visibility-stable",
+      "outcome": "passed",
+      "evidence": {
+        "comparedIds": 2546,
+        "statusOrVisibilityPromotions": 0
+      }
+    },
+    {
+      "id": "nine-real-semantic-receipts",
+      "outcome": "passed",
+      "evidence": {
+        "source": {
+          "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology-followup/edhr-w3-tenant-origin-precision-followup-semantic-review.jsonl",
+          "commit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+          "blob": "f4ddd33055f08dca78b3fc7c536f89e214e00c00",
+          "bytes": 41398,
+          "sha256": "13cc76f31c8210d578d45e64a5fc78e6f16ca2a4933ce3444676bcb82b0ce5f0"
+        },
+        "records": [
+          {
+            "id": "DEC-0081",
+            "recordSha256": "249b38dfc1d05f5401b8e571425d0067044f287e279f39e2a5733ce9d96c64d7",
+            "sourceBlob": "2319ab67c26c6da413a7ade307d340561db66598",
+            "sourceCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+            "conclusion": "consistent"
+          },
+          {
+            "id": "DEC-0081-02",
+            "recordSha256": "9fbb0c678580bbde9bb90ddf669418d3e08e73878587b1a67a29ee7f175cd2ae",
+            "sourceBlob": "2319ab67c26c6da413a7ade307d340561db66598",
+            "sourceCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+            "conclusion": "consistent"
+          },
+          {
+            "id": "scenario.tenant-transfer-target-outside-original-candidates",
+            "recordSha256": "24b9b01119e97c498c9ddfa472bbf75a699d3ca48a4313b241a4844a99a0c511",
+            "sourceBlob": "2319ab67c26c6da413a7ade307d340561db66598",
+            "sourceCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+            "conclusion": "consistent"
+          },
+          {
+            "id": "scenario.tenant-transfer-repeated-origin-preserved",
+            "recordSha256": "549677c7cc21352f5e01ae516925c8c0c232ee17146ecdf7a38c62af488a6e64",
+            "sourceBlob": "2319ab67c26c6da413a7ade307d340561db66598",
+            "sourceCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+            "conclusion": "consistent"
+          },
+          {
+            "id": "evidence.tenant-task-delegation-20261020",
+            "recordSha256": "7efffaf412071763d9b2695f991d2d766fa7c301be9aa76f74bc4cc57502df47",
+            "sourceBlob": "5a63cd11eb1775efb06e8f1f49646297f5a22a9f",
+            "sourceCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+            "conclusion": "consistent"
+          },
+          {
+            "id": "DEC-0055-02",
+            "recordSha256": "5417ad6f52786c228deb473455668a31d17fadbb3b0d428a9271906bfd898dca",
+            "sourceBlob": "2a064c10069a276523292af23607ddf8e3053401",
+            "sourceCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+            "conclusion": "consistent"
+          },
+          {
+            "id": "rule.form-approval-transfer",
+            "recordSha256": "2b1caf362c66fb9d14a14af0768834d08b14c5fa8fd6f32d9017a4495c6d257d",
+            "sourceBlob": "cb557fd8f496ec8e899868c89c2563160810dd68",
+            "sourceCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+            "conclusion": "consistent"
+          },
+          {
+            "id": "anchor.form-approval-transfer-runtime",
+            "recordSha256": "9b254188a6b8efe4cd1e5e9a04a93013a135d206c07cbaa456376e7f0940664a",
+            "sourceBlob": "502ad0a831445571f6316fc097b6c9e16978b3f6",
+            "sourceCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+            "conclusion": "consistent"
+          },
+          {
+            "id": "term.workflow-task-resolution-snapshot",
+            "recordSha256": "156eb902ef9c63f754100859733549f9b994a8b1fb52a03494047f18c5d3b08c",
+            "sourceBlob": "3d87d6ec1dd1b592bf8f862bb73423f8ed68f76a",
+            "sourceCommit": "cf6f1fedb952cd071a645be10dcbc6db20d167f4",
+            "conclusion": "consistent"
+          }
+        ],
+        "scope": "five changed plus four adjacent IDs; not whole-asset acceptance"
+      }
+    },
+    {
+      "id": "formal-ontology-followup",
+      "outcome": "passed",
+      "evidence": {
+        "path": {
+          "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology-followup/edhr-w3-tenant-origin-precision-followup-ontology-result.yaml",
+          "commit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+          "blob": "ffabc53a0f3cbb6e17d47a449e2d5f9aa638a530",
+          "bytes": 6255,
+          "sha256": "331fe3787275498dd9e3632fc55093ad7cc16260ede06de0eb656ce24e0b3387"
+        },
+        "result": "updated"
+      }
+    },
+    {
+      "id": "historical-byte-preserved:edhr-w3-tenant-transfer-semantic-review.jsonl",
+      "outcome": "passed",
+      "evidence": {
+        "current": {
+          "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-semantic-review.jsonl",
+          "commit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+          "blob": "8489631a34cc8a7df09d9fc5617ad5eb06002eec",
+          "bytes": 166062,
+          "sha256": "87a2d1386abbd091bf6f694cac6c11200e329376a749a20be53dc7043481f23e"
+        },
+        "firstSha256": "87a2d1386abbd091bf6f694cac6c11200e329376a749a20be53dc7043481f23e"
+      }
+    },
+    {
+      "id": "historical-byte-preserved:edhr-w3-tenant-transfer-ontology-result.yaml",
+      "outcome": "passed",
+      "evidence": {
+        "current": {
+          "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/edhr-w3-tenant-transfer-ontology-result.yaml",
+          "commit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+          "blob": "57d5db9cc3f9051199fb90a8d4e4be2863dd37c7",
+          "bytes": 21165,
+          "sha256": "43a1f9b8160af50efbbdd400a904cccbc3f147588472518a813c9e393978fb36"
+        },
+        "firstSha256": "43a1f9b8160af50efbbdd400a904cccbc3f147588472518a813c9e393978fb36"
+      }
+    },
+    {
+      "id": "historical-byte-preserved:source-catalog.json",
+      "outcome": "passed",
+      "evidence": {
+        "current": {
+          "path": "docs/development/branch-review-20261020-w3-write-boundaries/source-catalog.json",
+          "commit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+          "blob": "9f92d4f10bc7ce9a898333ea3079799259f93b50",
+          "bytes": 651811,
+          "sha256": "0c886dbf9279544404e57d698be27a85f4d328b5b3479f3c72dae6f57f8ff5b1"
+        },
+        "firstSha256": "0c886dbf9279544404e57d698be27a85f4d328b5b3479f3c72dae6f57f8ff5b1"
+      }
+    },
+    {
+      "id": "exact-archive:receipts.json",
+      "outcome": "passed",
+      "evidence": {
+        "receipt": {
+          "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/receipts.json",
+          "commit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+          "blob": "43e16b51c1a17d23f43f4cd449796534e9d077bd",
+          "bytes": 14208,
+          "sha256": "a48379902d961c221ebbcdc3b96fc0992f08c9c0c924d62e80c67fdcef1df1bc"
+        },
+        "entries": 44
+      }
+    },
+    {
+      "id": "exact-archive:support-receipts.json",
+      "outcome": "passed",
+      "evidence": {
+        "receipt": {
+          "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/support-receipts.json",
+          "commit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+          "blob": "1516ed24f4cea7bfe3813278e7cd43aae898deaf",
+          "bytes": 980,
+          "sha256": "6c9c3dba85c00e319907b3a6bc297a705c7cb1840af8151a1611460cf1d9c1c4"
+        },
+        "entries": 4
+      }
+    },
+    {
+      "id": "exact-archive:ontology/receipts.json",
+      "outcome": "passed",
+      "evidence": {
+        "receipt": {
+          "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology/receipts.json",
+          "commit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+          "blob": "308bd6c05fa14e37a793ac6012737971c91c087e",
+          "bytes": 3215,
+          "sha256": "1eff018f61906aadd4dd8e27c1531005ac1aae6b26ffe504ca9153018e2509f2"
+        },
+        "entries": 12
+      }
+    },
+    {
+      "id": "exact-archive:ontology-followup/receipts.json",
+      "outcome": "passed",
+      "evidence": {
+        "receipt": {
+          "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/ontology-followup/receipts.json",
+          "commit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+          "blob": "1b4721925a313303419cc260274355548b6ce82f",
+          "bytes": 3529,
+          "sha256": "09b51597002287cfc420d6c5a76adc85b81d147f59f7ce29c3ee05eb1d39ebdf"
+        },
+        "entries": 9
+      }
+    },
+    {
+      "id": "exact-archive:independent-round1/receipts.json",
+      "outcome": "passed",
+      "evidence": {
+        "receipt": {
+          "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/independent-round1/receipts.json",
+          "commit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+          "blob": "b0dae493c72784e174d510e1c717ef97144b6d4c",
+          "bytes": 16169,
+          "sha256": "670a0f46921712e9ee890c44fe46e706ab69395e726918672a4a28269f38eff4"
+        },
+        "entries": 46
+      }
+    },
+    {
+      "id": "exact-precision-patch",
+      "outcome": "passed",
+      "evidence": {
+        "member": "edhr-w3-tenant-origin-precision-followup.patch",
+        "sha256": "4d09c60daeb407a843630ac24d08ba59b1cb11ba351085df8fd5e119e35b539c",
+        "bytes": 17693
+      }
+    },
+    {
+      "id": "failed-round1-kept",
+      "outcome": "passed",
+      "evidence": {
+        "result": "failed",
+        "head": "266a1635cc95870cd7907c574eb676db7f560d4f",
+        "findings": [
+          "QF-W3-TENANT-KNOWLEDGE-001",
+          "QF-W3-UI-DOC-COUNT-001"
+        ]
+      }
+    },
+    {
+      "id": "current-fixed-denominators",
+      "outcome": "passed",
+      "evidence": {
+        "inventory": {
+          "trackedPaths": 2603,
+          "classifiedPaths": 2603,
+          "classificationBasis": "inferred-path-classifier",
+          "workPackages": {
+            "W5": 380,
+            "W4": 202,
+            "W0-W7": 1512,
+            "W1": 132,
+            "W2": 198,
+            "W3": 179
+          },
+          "entrypointCandidates": {
+            "http-annotation": 438,
+            "state-definition-candidate": 8,
+            "background-candidate": 1,
+            "frontend-route-candidate": 191
+          },
+          "migrationFiles": 126
+        },
+        "sourceReview": {
+          "recordedScopes": 314,
+          "carryStates": {
+            "needs-delta-review": 93,
+            "retained-scoped-evidence": 221
+          },
+          "sourceRelations": {
+            "file-changed": 93,
+            "unchanged": 221
+          },
+          "wholeFilesCompleted": 0,
+          "sourceImportQualifications": 19,
+          "scopeRecordsAreNotDistinctMethodsOrACompleteDenominator": true
+        }
+      }
+    },
+    {
+      "id": "knowledge-not-overclaimed",
+      "outcome": "passed",
+      "evidence": {
+        "knowledgeReview": {
+          "currentIds": 2546,
+          "historicalScopedReviews": 90,
+          "historicalConclusions": {
+            "consistent": 85,
+            "superseded": 1,
+            "evidence-gap": 4
+          },
+          "recordRelations": {
+            "unchanged": 86,
+            "record-changed": 4
+          },
+          "evidenceStates": {
+            "retained-scoped-evidence": 33,
+            "needs-delta-review": 57
+          },
+          "maintenanceReports": 29,
+          "newSemanticReviews": 0,
+          "maintenanceIsNotSemanticAcceptance": true
+        }
+      }
+    },
+    {
+      "id": "finding-dedup-and-boundaries",
+      "outcome": "passed",
+      "evidence": {
+        "findingCount": 46,
+        "dispositions": {
+          "known-fixed-before-audit": 10,
+          "fixed-and-independently-accepted": 22,
+          "pending-adjudication": 3,
+          "fixed-awaiting-independent-acceptance": 6,
+          "corrected-in-l0-documentation": 1,
+          "corrected-and-independently-accepted-l0": 1,
+          "user-deferred": 2,
+          "preexisting-medium-open": 1
+        }
+      }
+    },
+    {
+      "id": "no-false-generator-runtime",
+      "outcome": "passed",
+      "evidence": {
+        "note": "Zero describes generator itself, not the separately executed product/semantic reviews."
+      }
+    },
+    {
+      "id": "84-rows82-distinct-exact-counter",
+      "outcome": "passed",
+      "evidence": {
+        "baselineRows": 84,
+        "candidateRows": 84,
+        "distinct": 82,
+        "multisetsEqual": true,
+        "strictExitBoth": 2,
+        "originalSetReportPreserved": true
+      }
+    },
+    {
+      "id": "rebuild-byte-identical",
+      "outcome": "passed",
+      "evidence": {
+        "command": "python3 scripts/build-branch-review-ledger.py --ref 05dbc0b2f6fda76e76cd9f7b6a10c224466dcc8a --catalog docs/development/branch-review-20261020-w3-write-boundaries/recheck/source-catalog.json --out docs/development/branch-review-20261020-w3-write-boundaries/recheck/ledger --check",
+        "exit": 0,
+        "outputSha256": "97440528684189b143920ed1976e91e9b181d0979fdfee98ac28af1d14a5ba4b"
+      }
+    }
+  ],
+  "archiveEntriesVerified": 115,
+  "runtimeTestsExecuted": false,
+  "wholeBranchAccepted": false
+}

@@ -1,0 +1,131 @@
+{
+  "schema": "edhr-independent-selected-source-review/v1",
+  "role": "/root/w3_corrected_final_quality",
+  "baseCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+  "headCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+  "wholeFileReviewComplete": false,
+  "scopes": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+      "blob": "fa488245686f740745f9eac79d4d4a960eb2b4dc",
+      "bytes": 82534,
+      "sha256": "8fa8fc0c69e815d70c5f3f01e285f1489e151bc97d2d5c2be7ea797376467a67",
+      "scope": "saveGraph/createDraftVersion/publishVersion/copyPublishedVersionToDraft/newDraft/validateSupportedNodeConfigurations and existing legacy-key detector",
+      "conclusion": "New save/publish guard is before graph/current mutations; overwrite copy guarded before setters; newDraft guards before id/build; only retired-key presence, including null. No historical cleanup or publish-completeness shift."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/TenantTransferTargets.java",
+      "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+      "blob": "e08ed137713b529c357a9468d7deeda13d52b6a2",
+      "bytes": 3535,
+      "sha256": "f1833e750ed1c6b9b158e6932738f21c32cda35264a7275059a79e6e9ae912fd",
+      "scope": "search/require/available",
+      "conclusion": "Shared SQL specification restricts tenant, ACTIVE, unlocked and target identity; command canonicalizes numeric ID after lookup and forbids self; no original candidate whitelist."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+      "blob": "9cf5ae4908d481f9a82988a5744302e2f47081f7",
+      "bytes": 18529,
+      "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4",
+      "scope": "resolve/captureApprovers/canAct/transferTargets/requireTransferTarget/transferTenantId",
+      "conclusion": "Ordinary path retains frozen approvers/restricted flags, stores current transferAssignees separately and consumes only resolver user IDs. Descriptions now accurately exclude unavailable full per-user source/unresolved originals."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+      "blob": "3ac817fd787bd4ac7a2faea25623b2cff280a0d5",
+      "bytes": 64082,
+      "sha256": "4411c23f5f89abb69ebd424355020e2569176e5f4b29ee592b6a09bcad49ddcd",
+      "scope": "transferTargets/transferForm/transferContext",
+      "conclusion": "Target/context/copy/node/current-handler gate retained; canonical actual target goes to current state and structured history without node advancement or result edits."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "bytes": 44867,
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "scope": "completeTask/resolveAssignees/resolveInstanceTenant/transferTargets/transferTask/terminateInstance/lockInstance/lockTask/isTaskOperator/singleUserSnapshot/assertNotDhrTask",
+      "conclusion": "Generic first available candidate text preserved once; current single target controls authorization and SQL queue; legacy prior transfer is partial-marked. Existing instance→task lock order retained with refresh before state/operator checks. Audit insertion joins transaction."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "bytes": 8606,
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "scope": "transfer-targets/transfer/currentOperatorId/TransferRequest",
+      "conclusion": "Authenticated principal used instead of client operator. Explicit target and reason required; DHR refusal in engine unchanged."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+      "blob": "bc6bfa0cc70f6d2c25b84829b8b6ff8614ddfa4a",
+      "bytes": 2619,
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "scope": "findTodoForUser/findDoneForUser/findPendingByCandidateUserId/findByIdForUpdate",
+      "conclusion": "Native queries read current top-level candidate/assignee, exclude DHR where exposed; never grant from originSnapshot string."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+      "blob": "04f97eb65bb39a368896432fcf24183e17712ebe",
+      "bytes": 15710,
+      "sha256": "42cf405959931f1ab74b046a32267cf4041723257dfd7a7f4d9a9bbcf30fb932",
+      "scope": "act prechecks and completeDhrTask call",
+      "conclusion": "Service checks eligibility, complete manual review, signatures and frozen evidence before dedicated engine action; inspected caller does not mutate managed WorkflowInstance before engine refresh."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+      "blob": "38d4bf8be331890f0e4fe8a24947be0211ebb1f3",
+      "bytes": 3527,
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c",
+      "scope": "securityFilterChain authenticated catchall",
+      "conclusion": "New workflow task search endpoint not in permitAll list; existing JWT filter/catchall authentication preserved."
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateWriteBoundaryTest.java",
+      "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+      "blob": "b978cca88341a40fb26cb29b5526942ee88409c0",
+      "bytes": 11678,
+      "sha256": "b0fb823d5d52c464ef2dc04987918e2f9a69338517f2f42f066b0e112ac1889d",
+      "scope": "75 retired matrix,8 incomplete positives,2 publish controls",
+      "conclusion": "Tests assert original graph/status/current/reference/audit no mutation; incomplete shapes and unknown extension keys remain allowed."
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateWritePostgresTest.java",
+      "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+      "blob": "86e92fe16be29dcfb3517dbc0ba08ff6d5546a87",
+      "bytes": 14881,
+      "sha256": "23ca6515c8ffb118e485d74b2bb2eec4668f05c606b330078d30f827779ded7f",
+      "scope": "actual0060 setup,10 rejection rows,2 positive persistence tests",
+      "conclusion": "Spring proxied real repositories/reference service/native PG with original0060 constraints; stored hash/content and atomicity only, never rehash claim."
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java",
+      "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+      "blob": "f5c66e6a4436e453859ad3bbcafce1c4339faadf",
+      "bytes": 28361,
+      "sha256": "947eba5141d04c8c5aa33942af29df2df4ad05cf11d872219b704a888c504ad6",
+      "scope": "23 native cases; repeat/open/partial/source/SQL/invalid/DHR/audit rollback/real lock waiters/DTO identity",
+      "conclusion": "Real PG lock waiter barrier uses pg_stat_activity; two transfer responses exactly true,false; old candidate completion after transfer refused; fault trigger verifies all four state/log/audit tables unchanged."
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+      "sourceCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+      "blob": "b331a36ba69362acc542bb6d2e03c68859ca4f76",
+      "bytes": 181838,
+      "sha256": "085e33429604bef6051746c795f191b206592866918d4d0cfbd77e1deea49e6b",
+      "scope": "four selected transfer tests, including two new tenant delegation and account-lock cases",
+      "conclusion": "Native real HTTP/JWT/filter requests verify outside-original tenant target, canonical02→2, two sequential responsibilities, old handlers revoked, frozen source/values preserved and target account rechecked."
+    }
+  ],
+  "limits": [
+    "Selected methods and branches only; these records are not whole-file completion or extra distinct tests",
+    "No business/test/knowledge repair participation",
+    "No full tenant isolation, full DHR lifecycle or audit rehash certification"
+  ]
+}
