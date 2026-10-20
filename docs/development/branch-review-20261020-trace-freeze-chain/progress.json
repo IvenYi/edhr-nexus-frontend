@@ -28,7 +28,9 @@
       "W2-TRACE-REGION-001",
       "W2-TRACE-REGION-002"
     ],
-    "state": "fixed-awaiting-independent-acceptance",
+    "state": "fixed-and-independently-accepted",
+    "acceptanceOverlay": "acceptance.json",
+    "frozenLedgerStatePreserved": true,
     "historicalFindingRecordsKept": 40,
     "userDeferredHighKept": 2
   },
@@ -68,7 +70,15 @@
     "newSemanticReviewsPerformedByGenerator": 0,
     "businessTestsExecutedByGenerator": 0
   },
-  "independentQuality": "pending",
+  "independentQuality": {
+    "result": "passed",
+    "testedCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+    "requiredChecks": 19,
+    "requiredPassed": 19,
+    "allProfessionalInstancesFinal": true,
+    "report": "evidence/independent/edhr-trace-independent-quality-result.yaml",
+    "scope": "this batch and listed adjacent regressions only"
+  },
   "historicalIndexBackfill": false,
   "overallAuditComplete": false,
   "overallPercent": null,

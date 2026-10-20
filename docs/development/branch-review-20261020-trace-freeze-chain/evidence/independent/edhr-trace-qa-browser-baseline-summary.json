@@ -1,0 +1,17 @@
+{
+  "baselineCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+  "candidateRegressionFixtureCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+  "commandExitCode": 1,
+  "expectedFailure": true,
+  "case": "trace region overview and simulation use the main form at 1440px",
+  "assertion": "false invalid-subtable region count expected 0, actual 1",
+  "visibleText": [
+    "主表字段",
+    "查找与追溯：未配置",
+    "子表来源已失效",
+    "查找与追溯：模拟批号"
+  ],
+  "browserErrors": [],
+  "testDoesNotReachNarrowCaseAfterFirstFailure": true,
+  "rawLogSafeSyntheticOnly": true
+}

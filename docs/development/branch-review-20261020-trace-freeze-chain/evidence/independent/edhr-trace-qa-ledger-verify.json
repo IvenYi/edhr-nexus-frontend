@@ -1,0 +1,191 @@
+{
+  "schema": "edhr-independent-read-only-ledger-helper/v1",
+  "scope": "ledger/knowledge provenance only; no application acceptance",
+  "baseCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+  "headCommit": "ba68b03dab051d228c3646a03bbb404f2724f1d4",
+  "ledgerFixedCommit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+  "workingTreeState": "clean",
+  "independentOfRepair": true,
+  "repositoryMutations": false,
+  "result": "passed",
+  "checks": [
+    {
+      "id": "fixed-scope-contracts-and-preserved-history",
+      "outcome": "passed",
+      "details": {
+        "contractsUnchanged": 6,
+        "changedPaths": 69,
+        "historicalEvidenceUnchanged": 914,
+        "migrationPathsUnchanged": 126
+      }
+    },
+    {
+      "id": "deterministic-ledger-check",
+      "outcome": "passed",
+      "details": {
+        "command": "python3 scripts/build-branch-review-ledger.py --ref 12e2bc218b3830c18ea74c44108f296d3e04ee3c --catalog docs/development/branch-review-20261020-trace-freeze-chain/source-catalog.json --out docs/development/branch-review-20261020-trace-freeze-chain/ledger --check",
+        "exitCode": 0,
+        "summaryEqualsCommitted": true
+      }
+    },
+    {
+      "id": "independent-tree-inventory",
+      "outcome": "passed",
+      "details": {
+        "paths": 2382,
+        "workPackages": {
+          "W5": 379,
+          "W4": 202,
+          "W0-W7": 1296,
+          "W1": 132,
+          "W2": 198,
+          "W3": 175
+        },
+        "wholeFilePassClaims": 0,
+        "migrationInventory": 126
+      }
+    },
+    {
+      "id": "recursive-original-receipts-and-failure-zip",
+      "outcome": "passed",
+      "details": {
+        "receiptManifests": 10,
+        "zipMembers": 5,
+        "archivedReceipts": 54,
+        "gitReceipts": 188
+      }
+    },
+    {
+      "id": "independent-method-source-provenance",
+      "outcome": "passed",
+      "details": {
+        "records": 216,
+        "inheritedPreserved": 162,
+        "newHelper": 47,
+        "newPrimary": 7,
+        "carryStates": {
+          "needs-delta-review": 45,
+          "retained-scoped-evidence": 171
+        },
+        "wholeFilePassClaims": 0
+      }
+    },
+    {
+      "id": "schema-defined-knowledge-and-maturity",
+      "outcome": "passed",
+      "details": {
+        "definitionsBefore": 2534,
+        "definitionsAfter": 2535,
+        "addedId": "evidence.trace-region-consumption-20261020",
+        "changedExistingRecords": [
+          "anchor.form-projection.saved-content-trace",
+          "rule.form-projection.trace-field-single-binding"
+        ],
+        "maturityChanges": 0,
+        "visibilityChanges": 0,
+        "wholeAssetPassClaims": 0
+      }
+    },
+    {
+      "id": "finite-semantic-records-and-source-provenance",
+      "outcome": "passed",
+      "details": {
+        "historicalRecords": 33,
+        "newFiniteRoleRecords": 12,
+        "conclusions": {
+          "consistent": 40,
+          "superseded": 1,
+          "evidence-gap": 4
+        },
+        "carryStates": {
+          "needs-delta-review": 26,
+          "retained-scoped-evidence": 19
+        },
+        "newIds": [
+          "DEC-0077-20",
+          "DEC-0077-33",
+          "DEC-0077-38",
+          "DEC-0077-42",
+          "rule.form-projection.trace-field-single-binding",
+          "fact.form-projection.trace-field-binding-count",
+          "fact.form-projection.source-configuration",
+          "fact.form-projection.formal-source-snapshot",
+          "scenario.form-projection-trace-item-reuse-and-old-evidence",
+          "concept.form-saved-content-trace",
+          "relation.form-field-associated-trace-item",
+          "anchor.form-projection.saved-content-trace"
+        ],
+        "wholeRecordPassClaims": 0
+      }
+    },
+    {
+      "id": "finding-hierarchy-history-and-report-boundaries",
+      "outcome": "passed",
+      "details": {
+        "findings": 42,
+        "originalFindingsByteSemanticsPreserved": 40,
+        "userDeferredHigh": 2,
+        "qualityReports": 70,
+        "reportedResults": {
+          "passed": 49,
+          "failed": 20,
+          "blocked": 1
+        },
+        "maintenanceReports": 26,
+        "historicalPending": [
+          "AUD-H009",
+          "AUD-H010",
+          "AUD-H012"
+        ],
+        "importerExecutionZerosSeparateFromPrimaryReportedCounts": true
+      }
+    }
+  ],
+  "statistics": {
+    "changedPaths": 69,
+    "productionFiles": 3,
+    "testFiles": 5,
+    "knowledgeFiles": 5,
+    "fixedTreePaths": 2382,
+    "baseTreePaths": 2352,
+    "unchangedHistoricalDevelopmentPaths": 914,
+    "unchangedMigrationPaths": 126,
+    "tmpOriginalArchiveByteComparisons": 10,
+    "archivedFileReceiptsVerified": 54,
+    "gitReceiptsVerified": 726,
+    "zipMembersVerified": 5,
+    "methodScopeRecords": 216,
+    "inheritedMethodRecords": 162,
+    "newHelperMethodRecords": 47,
+    "newPrimaryMethodRecords": 7,
+    "knowledgeDefinitionsBefore": 2534,
+    "knowledgeDefinitionsAfter": 2535,
+    "newKnowledgeDefinitions": 1,
+    "maturityChanges": 0,
+    "visibilityChanges": 0,
+    "semanticScopeRecords": 45,
+    "newRoleSemanticScopeRecords": 12,
+    "preservedKnowledgeGaps": 4,
+    "findingRecords": 42,
+    "preservedFindingRecords": 40,
+    "userDeferredHigh": 2,
+    "qualityOriginalReports": 70,
+    "maintenanceOriginalReports": 26
+  },
+  "findings": [],
+  "notExecuted": [
+    "Java/Maven/knowledge Maven tests",
+    "Node/build/browser/visual validation",
+    "database or migrations",
+    "GitHub Actions or merge/deployment",
+    "whole-system semantic or code audit"
+  ],
+  "boundaries": [
+    "216 overlapping finite source scopes are not distinct methods or whole files",
+    "45 finite semantic reviews preserve four historical gaps and do not pass all knowledge assets",
+    "42 parent/subfinding rows are not distinct production defects",
+    "70 raw historical quality reports keep their original failed/blocked/dirty outcomes",
+    "actual runtime checks are delegated to the parent independent QA instance",
+    "old missing indexes are not automatically backfilled; snapshots and raw history remain unchanged"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "syntheticOnly": true,
+  "container": "edhr-audit-trace-20261020",
+  "networkAndStorage": "{\"5432/tcp\":[{\"HostIp\":\"127.0.0.1\",\"HostPort\":\"5432\"}]}|{\"/var/lib/postgresql/data\":\"rw\"}",
+  "serverVersion": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+  "databaseNames": [
+    "edhr_projection_integration_test",
+    "edhr_execution_trace_test"
+  ],
+  "businessDatabaseAccessed": false,
+  "migrationsOnlyTempSchemaAndRollback": true,
+  "fixtureSource": "existing parent-created isolated postgres:16 container; QA did not create or stop services",
+  "noSkippedFirstStartConcurrencyTest": true,
+  "readOnlyEvidenceNoRawXml": true
+}

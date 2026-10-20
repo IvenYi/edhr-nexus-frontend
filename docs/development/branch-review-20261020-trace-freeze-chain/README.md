@@ -21,11 +21,23 @@
 - 前端 36 项 Node、TypeScript/Vite 构建和实际 Shell/Canvas/MUI 22 个浏览器场景通过。新增总览模拟在 1440×960 与 390×844 验证根级请求、结果、配置原字节、无保存、键盘关闭及按钮可达；API/保存回调为受控夹具，不称全栈持久化。主审实际查看两尺寸截图，中文及结果可读。
 - 两次新浏览器夹具失败原件保留：首次目录请求已缓存导致标签未命中，第二次关闭按钮匹配到图标/页脚两个目标；分别前置夹具加载、限定页脚语义范围修正，不放宽产品断言，最终完整 22 项通过。
 - 0116+0117 在**本轮独立容器的事务临时表**实际验证主/子表、9 类空白区域、保护范围、锁版本和幂等，事务回滚；原 SQL 及主清单未改。
-- 官方 premium strict 基线及候选均退出 2，完整 84 项集合逐字段相同、新增 0；ESLint 实际退出 2，仍缺既有配置。保留这些全局限制，不修改规则来制造绿灯。独立知识角色的实际结果及独立质量结果收尾登记。
+- 官方 premium strict 基线及候选均退出 2，完整 84 项集合逐字段相同、新增 0；ESLint 实际退出 2，仍缺既有配置。保留这些全局限制，不修改规则来制造绿灯。
 
 安全摘要、受控浏览器原件、截图及 SHA 见 evidence/primary/receipts.json；不提交原始 Maven/MockMvc/JWT/XML 日志。三个生产文件以外仅测试、知识证据和审查台账变更。
 
 正式本体实例已对 `12e2bc21` 返回 updated，89 项知识检查全部通过、无跳过，新增 12 条有限语义核对，未声称整个资产或全库通过。知识 2,534→2,535 仅新增本轮证据 ID，原有成熟度和 visibility 不变；原件见 evidence/ontology/receipts.json。辅助清单曾误写不存在的关系 ID，已对实际 `relation.form-field-associated-trace-item` 核对，未重命名业务 ID；原辅助返回保留。
+
+## 正式验收与交付边界
+
+全新且未参与修复的独立质量实例对干净候选 `ba68b03dab051d228c3646a03bbb404f2724f1d4` 正式返回 **passed，19/19 必需检查通过**。两个本批问题均 resolved，无本批阻断；实际重跑 72 Java（33 原生 PostgreSQL）、89 知识、36 Node、22 浏览器，以及构建、设计器静态、隔离迁移和完整台账复现。独立实例还在固定 061 基线上复现 Java 3 项、Node 1 项及浏览器假失效的预期失败；strict/lint 的全局失败保持，不称通过。所有专业实例与只读子实例均已 FINAL。
+
+正式原件见 [qualityResult](evidence/independent/edhr-trace-independent-quality-result.yaml)、[独立报告](evidence/independent/edhr-trace-independent-review.md) 和 [原件清单](evidence/independent/receipts.json)。30 份白名单原件按字节及 SHA 核对归档；一份带原始尾随空白的合成 Node 失败输出存入 ZIP，未改写原件。raw Maven/MockMvc/JWT XML、环境及 settings 未归档。浏览器为真实 UI 加受控 API；DHR 报告 PG reader 是 mock，四项真实控制器生命周期不含 hash 篡改负向，均保留证据范围限制。
+
+本批两项最终处置单独写入 [acceptance.json](acceptance.json)，不回写受测 source-catalog 或固定 ledger 的验收前状态。后续提交仅 L0 原件归档、任务复核及交付登记；受测实现、测试、知识与冻结台账不变。主审已在正式 FINAL 后、创建 PR 前完成 [范围及进度复核](scope-review.md)，并实际向用户汇报无新增漂移、覆盖限制和后续顺序。没有合并或部署授权扩展。
+
+云环境沿用现有工具，并实际验证独立 PostgreSQL 运行；启动及清理步骤已追加保存到环境配置草稿，仅更新 start_skill，未改安装、网络或 secret。工具返回 requires_publish=true，因此不能声称后续新环境已应用草稿；不阻断本次已实际完成的隔离验收。
+
+全部独立验证结束后，已核对本轮自建容器 ID 及随机测试 schema 清理结果（0 残留），随后仅停止 `edhr-audit-trace-20261020`。`--rm` 自动移除已完成并经 inspect 的 No such object 结果确认，临时 tmpfs 数据一并清除；未触碰其他容器或业务库。记录见 evidence/environment-cleanup.json。
 
 ## 覆盖与下一步
 
@@ -37,4 +49,4 @@ PR18 的历史 162 条范围、33 条旧语义和全部旧问题仍保留；本�
 
 实际本批工作量以 [progress.json](progress.json)、源码原件及角色/测试输出为准。生成器自身不审业务、不执行语义核对/整改/运行测试，其 summary 中相关零值只表示导入工具未执行这些工作；不能把导入工具的零值解释成本批未运行上述实际检查。固定树内 70 份历史质量结果仍限原范围，不含该树之后产生的正式本体/质量报告，也不能当本批运行数。原目录与历史失败均不覆盖。
 
-本链收尾后转入 W3 的实际新写入口矩阵：H009 completionCondition、H010 旧条件形状的 saveGraph/newDraft/copy，并独立裁定 H012 通用工作流转办来源快照。W4–W7 继续保留；不因本批产生修复就缩为 finding 清单或宣布全分支审查完成。正式验收后、创建 PR 前再次复核任务漂移并向用户汇报，不自动合并/部署。
+本链收尾后转入 W3 的实际新写入口矩阵：H009 completionCondition、H010 旧条件形状的 saveGraph/newDraft/copy，并独立裁定 H012 通用工作流转办来源快照。W4–W7 继续保留；不因本批产生修复就缩为 finding 清单或宣布全分支审查完成。不自动合并/部署。
