@@ -1,0 +1,1983 @@
+[
+  {
+    "id": "AUD-H001",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "discrepancy.dhr-template-explicit-version-list-fallback",
+    "relatedKnowledgeId": "discrepancy.dhr-template-explicit-version-list-fallback",
+    "originalStatus": "known-fixed",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+    "workPackage": "W1",
+    "aliases": [
+      "F-003",
+      "F003",
+      "RUNTIME-F003-001",
+      "RUNTIME-F003-002"
+    ],
+    "affectedPaths": [
+      "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+      "gmp-platform/frontend/src/pages/master-data/dhrWorkspaceVersion.ts"
+    ],
+    "originalNextConfirmationAction": "Preserve established regression guards. If W1 changes selection/read/save dependencies, rerun affected resolver, draft and real UI scenarios. This is source preservation verification, not new runtime acceptance.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "3ad7568fbc40f95d95d5e0d747ff064ef1ce3aba",
+        "e0652d0b5579aebbf99a26498bacc7e32dfefa90"
+      ],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "triage of historical lead; not final independent qualityResult",
+    "disposition": "known-fixed-before-audit",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[0]"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H002",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "discrepancy.execution-form-plan-count-and-not-applicable-projection",
+    "relatedKnowledgeId": "discrepancy.execution-form-plan-count-and-not-applicable-projection",
+    "originalStatus": "confirmed-current",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+    "workPackage": "W2",
+    "aliases": [
+      "W2-F002-FORM-AVAILABILITY"
+    ],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "gmp-platform/frontend/src/pages/production/ExecutionFormSelector.tsx"
+    ],
+    "originalNextConfirmationAction": "Under DEC-0047-01, add focused planned-vs-instance and completed/unreached-work projection cases; keep normal configured copies unchanged. Runtime/UI still pending.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "0346f4102cdc1f88515cf2f9d9a34b1b23fcd2a5",
+        "518ac6838b3c418fd16aca0c84c0f216b33d17d8"
+      ],
+      "testedCommits": [
+        "518ac6838b3c418fd16aca0c84c0f216b33d17d8"
+      ],
+      "pullRequests": [
+        11
+      ],
+      "mergeCommits": [
+        "400c2dd2b836aa520f7b671c348ad9e79ac33748"
+      ]
+    },
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/qualityResult.yaml"
+    ],
+    "dispositionQualification": "Later archived independent passed and repository merge ancestry support closure of this scoped issue; not a new run on current base.",
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[1]"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w2-form-availability/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "bee922fc3dab07dfd2ec661fe27c95e4d30e5e89545301e891df0271e2aa4975",
+        "locator": "$.findings[0]"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "d2e46c951aeb514c1094b2b21c9de23e1c30ef2f8a6244b8afe124c74e6be5d6",
+        "locator": "$.qualityResult"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ad213d66b3c73d35ca0ccda715de9ae680c9cc4c628f9f992fef972f8972349",
+        "locator": "section:当前实际状态"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H003",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "discrepancy.form-fill-settings-missing-mode-default-and-validation-bypass",
+    "relatedKnowledgeId": "discrepancy.form-fill-settings-missing-mode-default-and-validation-bypass",
+    "originalStatus": "confirmed-current",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+    "workPackage": "W3",
+    "aliases": [],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java"
+    ],
+    "originalNextConfirmationAction": "Confirmed against DEC-0067-01/05 (current explicit choice/no legacy default). Write failing save/publish/service tests before targeted repair; inspect shared component fillMode helper and actual snapshot consumers; do not migrate existing business data.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "2f8144220d1f7fc5a54b183204777bcae5bbd564"
+      ],
+      "testedCommits": [
+        "2f8144220d1f7fc5a54b183204777bcae5bbd564"
+      ],
+      "pullRequests": [
+        16
+      ],
+      "mergeCommits": [
+        "ca98ab2897990eba30bf1433134aa8560578f562"
+      ]
+    },
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-quality-result.yaml"
+    ],
+    "dispositionQualification": "Later archived independent passed and repository merge ancestry support closure of this scoped issue; not a new run on current base.",
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[2]"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/findings.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "663a4ec8345b4cf3fd868bf4783c65ea220a25809d14f69ccda1b10935a1abce",
+        "locator": "section:状态及去重"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-explicit-fill-mode/evidence/independent/edhr-w3-independent-quality-result.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "e2e459bfb286dfc465d3c007bdc5372bd1cb2e126c5269a96802a79203867988",
+        "locator": "$.qualityResult"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ad213d66b3c73d35ca0ccda715de9ae680c9cc4c628f9f992fef972f8972349",
+        "locator": "section:当前实际状态"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H004",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions",
+    "relatedKnowledgeId": "discrepancy.form-process-binding-switch-draft-retains-invalid-exceptions",
+    "originalStatus": "confirmed-current",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+    "workPackage": "W3",
+    "aliases": [],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx",
+      "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx"
+    ],
+    "originalNextConfirmationAction": "Trace explicit DEC-0023-08 + DEC-0035 permission keys and source current field IDs, then test switch-and-immediate-draft-save; retain server publish rejection and avoid clearing valid exceptions blindly.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "ef07ee7c34520c509d91954bd6fff4ca436ecd9d",
+        "a9ecd501a9abf354df95df2a1a01e53474a41a2d"
+      ],
+      "testedCommits": [
+        "a9ecd501a9abf354df95df2a1a01e53474a41a2d"
+      ],
+      "pullRequests": [
+        17
+      ],
+      "mergeCommits": [
+        "336466d95c3866581e5d7d641544756ba7807946"
+      ]
+    },
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261018-w3-binding-references/evidence/independent/quality-result.yaml"
+    ],
+    "dispositionQualification": "Later archived independent passed and repository merge ancestry support closure of this scoped issue; not a new run on current base.",
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[3]"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/findings.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "bafe522f19f09720caf923194dcbead38f9c495088383709d008f6a8fa922a05",
+        "locator": "section:证据与状态"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent/quality-result.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "7386678e30b730bb94e502288214c8880d42ca4c47fa00d152784e2c0dbb9c34",
+        "locator": "$.qualityResult"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ad213d66b3c73d35ca0ccda715de9ae680c9cc4c628f9f992fef972f8972349",
+        "locator": "section:当前实际状态"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H005",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "discrepancy.form-reference-personal-entry-context-not-forwarded",
+    "relatedKnowledgeId": "discrepancy.form-reference-personal-entry-context-not-forwarded",
+    "originalStatus": "known-fixed",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+    "workPackage": "W2/W3",
+    "aliases": [
+      "F-002",
+      "F002"
+    ],
+    "affectedPaths": [
+      "gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx",
+      "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx"
+    ],
+    "originalNextConfirmationAction": "Reuse accepted PR5/6 scope as historical runtime evidence; rerun only if affected by new change. W2 still reviews full query/source permissions and current trace integration independently.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess.",
+      "Personal-entry dependency forwarding is an old accepted PR5/6 fix, not a current reopened issue; remaining query/source permission audit is separate."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "3ad7568fbc40f95d95d5e0d747ff064ef1ce3aba"
+      ],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "triage of historical lead; not final independent qualityResult",
+    "disposition": "known-fixed-before-audit",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[4]"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H006",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "discrepancy.product-family-transfer-unstarted-object-context",
+    "relatedKnowledgeId": "discrepancy.product-family-transfer-unstarted-object-context",
+    "originalStatus": "confirmed-current",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+    "workPackage": "W4",
+    "aliases": [],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    ],
+    "originalNextConfirmationAction": "Static violation of DEC-0002-10, not runtime-tested here. W4 needs transfer between object creation/START and locked-order subsequent split cases, then minimal explicit-context design preserving old snapshots; no historical backfill authorization.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess."
+    ],
+    "resolution": {
+      "fixCommits": [],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "Original static source observation retained; no later complete main-review adjudication, repair or final independent closure located in the inspected sources.",
+    "disposition": "pending-adjudication",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[5]"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/helpers/edhr-w3b-task-scope-crosscheck.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "44cdf5b19690d0b26c415ae9017b1656f2e23f684d227fe45afd3dc2191da9a7",
+        "locator": "section:顺序、剩余与漂移判断"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ad213d66b3c73d35ca0ccda715de9ae680c9cc4c628f9f992fef972f8972349",
+        "locator": "section:W2→W7 已定顺序"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H007",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "discrepancy.production-object-execution-lifecycle-audit-projection",
+    "relatedKnowledgeId": "discrepancy.production-object-execution-lifecycle-audit-projection",
+    "originalStatus": "confirmed-current",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+    "workPackage": "W4",
+    "aliases": [],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx"
+    ],
+    "originalNextConfirmationAction": "DEC-0019 current object lifecycle UPDATE needs projection/write design plus transaction tests. Audit exists, so do not report complete lack of audit; distinguish new event generation vs historical read projection.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess."
+    ],
+    "resolution": {
+      "fixCommits": [],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "Original static source observation retained; no later complete main-review adjudication, repair or final independent closure located in the inspected sources.",
+    "disposition": "pending-adjudication",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[6]"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/helpers/edhr-w3b-task-scope-crosscheck.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "44cdf5b19690d0b26c415ae9017b1656f2e23f684d227fe45afd3dc2191da9a7",
+        "locator": "section:顺序、剩余与漂移判断"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ad213d66b3c73d35ca0ccda715de9ae680c9cc4c628f9f992fef972f8972349",
+        "locator": "section:W2→W7 已定顺序"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H008",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "discrepancy.production-sn-import-template-extra-remark",
+    "relatedKnowledgeId": "discrepancy.production-sn-import-template-extra-remark",
+    "originalStatus": "confirmed-current",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+    "workPackage": "W4",
+    "aliases": [],
+    "affectedPaths": [
+      "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx"
+    ],
+    "originalNextConfirmationAction": "W4 repair template output against explicit three-column confirmation; decide input rejection only if original rule demands it, do not infer extra destructive import policy. Keep SN=1 and server uniqueness.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess."
+    ],
+    "resolution": {
+      "fixCommits": [],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "Original static source observation retained; no later complete main-review adjudication, repair or final independent closure located in the inspected sources.",
+    "disposition": "pending-adjudication",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[7]"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/helpers/edhr-w3b-task-scope-crosscheck.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "44cdf5b19690d0b26c415ae9017b1656f2e23f684d227fe45afd3dc2191da9a7",
+        "locator": "section:顺序、剩余与漂移判断"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ad213d66b3c73d35ca0ccda715de9ae680c9cc4c628f9f992fef972f8972349",
+        "locator": "section:W2→W7 已定顺序"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H009",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "discrepancy.production-work-form-completion-condition-passthrough",
+    "relatedKnowledgeId": "discrepancy.production-work-form-completion-condition-passthrough",
+    "originalStatus": "confirmed-current",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+    "workPackage": "W3",
+    "aliases": [],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java",
+      "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx"
+    ],
+    "originalNextConfirmationAction": "Use DEC-0010-02: no new writes, no historical read/migrate/cleanup. Prefer rejecting unsupported incoming field where appropriate rather than silently rewriting historical rows; add draft persistence regression.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess.",
+      "Recent ca98 source mapping supports the specific new-write gap, but its helper did not execute the proposed counterexamples.",
+      "saveGraph is not the full write surface: newDraft/copy-to-draft and published-version inheritance need coverage; no historical cleanup, read migration or business-policy change is authorized by this index."
+    ],
+    "resolution": {
+      "fixCommits": [],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "Original static source observation retained; no later complete main-review adjudication, repair or final independent closure located in the inspected sources.",
+    "disposition": "confirmed-pending",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[8]"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/helpers/edhr-w3b-task-scope-crosscheck.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "44cdf5b19690d0b26c415ae9017b1656f2e23f684d227fe45afd3dc2191da9a7",
+        "locator": "section:顺序、剩余与漂移判断"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ad213d66b3c73d35ca0ccda715de9ae680c9cc4c628f9f992fef972f8972349",
+        "locator": "section:W2→W7 已定顺序"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/helpers/edhr-w3b-legacy-config-paths.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "631dba3790a3e6d6584439d09b28fde2f7c0cb6b3063c2efe1bdf4366f428935",
+        "locator": "section:结论与证据等级; H009/H010"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H010",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "discrepancy.production-work-legacy-condition-save-publish-asymmetry",
+    "relatedKnowledgeId": "discrepancy.production-work-legacy-condition-save-publish-asymmetry",
+    "originalStatus": "confirmed-current",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+    "workPackage": "W3",
+    "aliases": [],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    ],
+    "originalNextConfirmationAction": "DEC-0011 canonical save-or-publish acceptance is explicit. Add canonical+legacy simultaneous payload test then ensure save rejects same unsupported structure; incomplete draft AST policy stays separate.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess.",
+      "Recent ca98 source mapping supports the specific new-write gap, but its helper did not execute the proposed counterexamples.",
+      "saveGraph is not the full write surface: newDraft/copy-to-draft and published-version inheritance need coverage; no historical cleanup, read migration or business-policy change is authorized by this index."
+    ],
+    "resolution": {
+      "fixCommits": [],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "Original static source observation retained; no later complete main-review adjudication, repair or final independent closure located in the inspected sources.",
+    "disposition": "confirmed-pending",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[9]"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/helpers/edhr-w3b-task-scope-crosscheck.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "44cdf5b19690d0b26c415ae9017b1656f2e23f684d227fe45afd3dc2191da9a7",
+        "locator": "section:顺序、剩余与漂移判断"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ad213d66b3c73d35ca0ccda715de9ae680c9cc4c628f9f992fef972f8972349",
+        "locator": "section:W2→W7 已定顺序"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/helpers/edhr-w3b-legacy-config-paths.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "631dba3790a3e6d6584439d09b28fde2f7c0cb6b3063c2efe1bdf4366f428935",
+        "locator": "section:结论与证据等级; H009/H010"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H011",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "discrepancy.work-order-close-audit-atomicity",
+    "relatedKnowledgeId": "discrepancy.work-order-close-audit-atomicity",
+    "originalStatus": "pending",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+    "workPackage": "W1",
+    "aliases": [
+      "AUDIT-W1-001"
+    ],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java"
+    ],
+    "originalNextConfirmationAction": "pending_to_root: root owns transaction boundary/source and failure rollback verification for this lead; do not duplicate fix or presume runtime severity based only on annotation.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "292dd8989f4a13860b115d4171d5832022495204",
+        "4e7fd37500157b4fd055e8a54fe8105f1bf03ae2"
+      ],
+      "testedCommits": [
+        "1dac6338c24efb2330fe8702ed018e55a8947711"
+      ],
+      "pullRequests": [
+        7
+      ],
+      "mergeCommits": [
+        "6379bf105127b05a65695992b008b55c142264f9"
+      ]
+    },
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261015/quality-result.yaml"
+    ],
+    "dispositionQualification": "Later archived independent passed and repository merge ancestry support closure of this scoped issue; not a new run on current base.",
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[10]"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "cde0768c77bcee9f0b9ba252fa70b670b814e847600ed33888f28428bb8673a6",
+        "locator": "$.findings[0]"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/quality-result.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "59377439cba1a3cd3b93fba97e947929bc93084898bc92d6c4f79042ece8c516",
+        "locator": "$.qualityResult"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ad213d66b3c73d35ca0ccda715de9ae680c9cc4c628f9f992fef972f8972349",
+        "locator": "section:当前实际状态"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H012",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot",
+    "relatedKnowledgeId": "discrepancy.workflow-transfer-overwrites-candidate-origin-snapshot",
+    "originalStatus": "confirmed-current",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "0d46558234a933a020430ccf6c6a064ecfa05687",
+    "workPackage": "W3",
+    "aliases": [],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java"
+    ],
+    "originalNextConfirmationAction": "W3 inspect applicable transfer policy and original evidence for DEC-0031-04; preserve immutable origin separately from actionable transfer target. Do not conflate this generic workflow path with ProductionExecutionEngine.transferForm.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess.",
+      "Generic WorkflowEngine.transferTask origin snapshot is distinct from actionable reassignment and ProductionExecutionEngine.transferForm; reading a same-named method or passing a shared suite does not close this issue."
+    ],
+    "resolution": {
+      "fixCommits": [],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "Original static source observation retained; no later complete main-review adjudication, repair or final independent closure located in the inspected sources.",
+    "disposition": "pending-adjudication",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[11]"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/helpers/edhr-w3b-task-scope-crosscheck.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "44cdf5b19690d0b26c415ae9017b1656f2e23f684d227fe45afd3dc2191da9a7",
+        "locator": "section:顺序、剩余与漂移判断"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ad213d66b3c73d35ca0ccda715de9ae680c9cc4c628f9f992fef972f8972349",
+        "locator": "section:W2→W7 已定顺序"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H013",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "F-004",
+    "relatedKnowledgeId": null,
+    "originalStatus": "confirmed-current",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "e0652d0b5579aebbf99a26498bacc7e32dfefa90",
+    "workPackage": "W1/W4",
+    "aliases": [
+      "F-004",
+      "F004"
+    ],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java",
+      "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx"
+    ],
+    "originalNextConfirmationAction": "Original lead from e0652d0 report. W1 separate existing-reference display metadata from new-choice eligibility; show verified invalid-state warning; absence from candidates alone cannot mean deleted. List response can still display actual referenced names; no automatic ID replacement or production block.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "58fb346f2d1eb860c09c3f95eed448ef8b813112"
+      ],
+      "testedCommits": [
+        "58fb346f2d1eb860c09c3f95eed448ef8b813112"
+      ],
+      "pullRequests": [
+        9
+      ],
+      "mergeCommits": [
+        "9542cb4cc2071df2c00129cc5dbb4572a245cfa1"
+      ]
+    },
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261016-f004/evidence/independent/qualityResult.yaml"
+    ],
+    "dispositionQualification": "Later archived independent passed and repository merge ancestry support closure of this scoped issue; not a new run on current base.",
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[12]"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-f004/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "dad7722ee05a4fb3609ef797f7a31c50c0e03c337caad162ab14a3fb708a5ee3",
+        "locator": "$.findings[0]"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-f004/evidence/independent/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "0011cb8d9690dc05567d6516e7aa8c6738959793a4587e7d0af5e5f5d38548c9",
+        "locator": "$.qualityResult"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ad213d66b3c73d35ca0ccda715de9ae680c9cc4c628f9f992fef972f8972349",
+        "locator": "section:当前实际状态"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H014",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "F-001",
+    "relatedKnowledgeId": null,
+    "originalStatus": "known-fixed",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "cb863ad83e2aca20caf86f0e78602120e8b4727f",
+    "workPackage": "W3/W5",
+    "aliases": [
+      "F001",
+      "auth cache/session-generation isolation"
+    ],
+    "affectedPaths": [
+      "gmp-platform/frontend/src/api/client.ts",
+      "gmp-platform/frontend/src/utils/queryClient.ts",
+      "gmp-platform/frontend/src/utils/sessionPolicy.ts"
+    ],
+    "originalNextConfirmationAction": "Retain accepted compositional 401 boundary. New W5 may review adjacent auth flows, but historical natural8h E2E not executed remains a limitation, not a new known bug. Re-evaluate if generation/parser/cancellation sequence changes.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "3ad7568fbc40f95d95d5e0d747ff064ef1ce3aba",
+        "d8a8ac5b549c7a869507df24f781c27e4d9fa931"
+      ],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "source-preservation check only; historical acceptance not rerun",
+    "disposition": "known-fixed-before-audit",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[13]"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H015",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "KNOWN-APPROVAL-TENANT-001",
+    "relatedKnowledgeId": null,
+    "originalStatus": "known-fixed",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+    "workPackage": "W3",
+    "aliases": [
+      "configured subjects tenant0 mismatch"
+    ],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java"
+    ],
+    "originalNextConfirmationAction": "W3 preserve configured-candidate source/approval distinctions. Source fix present; current runtime positive/negative replay not run here.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "4601eb4907b146375ed14f6bcb568886457b247c"
+      ],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "source-preservation check only; historical acceptance not rerun",
+    "disposition": "known-fixed-before-audit",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[14]"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H016",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "KNOWN-HOME-IDENTITY-001",
+    "relatedKnowledgeId": null,
+    "originalStatus": "known-fixed",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+    "workPackage": "W3",
+    "aliases": [
+      "home stale display name"
+    ],
+    "affectedPaths": [
+      "gmp-platform/frontend/src/stores/authStore.ts"
+    ],
+    "originalNextConfirmationAction": "Preserve same-identity profile refresh vs real session switch; only rerun relevant regression when touched.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "d8a8ac5b549c7a869507df24f781c27e4d9fa931"
+      ],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "source-preservation check only; historical acceptance not rerun",
+    "disposition": "known-fixed-before-audit",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[15]"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H017",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "PR6 deletion-protection schema mismatch",
+    "relatedKnowledgeId": null,
+    "originalStatus": "known-fixed",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+    "workPackage": "W4/W5",
+    "aliases": [],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionService.java",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionRelations.java"
+    ],
+    "originalNextConfirmationAction": "W4/W5 will verify newly added projection/final-output references as changed scope. Do not reopen old schema defect without current failing relation evidence.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess.",
+      "Do not reopen the old deletion schema defect without a new failing relation; newly added projection/final-output references are changed scope."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "e02a63fdac31567ac1e6b6e053fd30781fad3d3a"
+      ],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "source-preservation check only; historical acceptance not rerun",
+    "disposition": "known-fixed-before-audit",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[16]"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H018",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "PR6 quantity fixture compatibility",
+    "relatedKnowledgeId": null,
+    "originalStatus": "known-fixed",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+    "workPackage": "W4/W5",
+    "aliases": [],
+    "affectedPaths": [
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionIntegrationTest.java"
+    ],
+    "originalNextConfirmationAction": "Reuse historical legacy/fresh QA result only as historical. Relevant test can rerun if deletion fixtures or migrations change; quantity lower-bound policy remains unresolved.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess.",
+      "Quantity fixture compatibility is historically fixed; unresolved quantity lower-bound policy is not closed by that fix."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "070f12a240dca018a52b099e567a7a379a1021aa"
+      ],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "source-preservation check only; historical acceptance not rerun",
+    "disposition": "known-fixed-before-audit",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[17]"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H019",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "PR6 equipment timestamp precision",
+    "relatedKnowledgeId": null,
+    "originalStatus": "known-fixed",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+    "workPackage": "W4",
+    "aliases": [],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java"
+    ],
+    "originalNextConfirmationAction": "Source fix preserved; no current timestamp test execution here. W4 may inspect adjacent audit/diff behavior.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "6528adacf269eeff57f48580caafb9d3fbfc0442"
+      ],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "source-preservation check only; historical acceptance not rerun",
+    "disposition": "known-fixed-before-audit",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[18]"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H020",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "PR6 authorization notice Chinese font",
+    "relatedKnowledgeId": null,
+    "originalStatus": "known-fixed",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+    "workPackage": "W5",
+    "aliases": [],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java"
+    ],
+    "originalNextConfirmationAction": "Deployment font availability remains environment prerequisite. Do not infer current runtime font installation merely from source.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess.",
+      "Deployment font availability remains an environment prerequisite; source fix does not prove current runtime installation."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "e923c59a63a7f239b2fda86b8324499d24abb6ea"
+      ],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "source-preservation check only; historical acceptance not rerun",
+    "disposition": "known-fixed-before-audit",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[19]"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUD-H021",
+    "recordKind": "historical-master-record",
+    "originalSourceId": "PR6 Snowflake auth ID precision",
+    "relatedKnowledgeId": null,
+    "originalStatus": "known-fixed",
+    "originalReviewedCommit": "537bb2402227bfe6369c44c2b1b4686481c50f27",
+    "historicalSourceCommit": "3977329d13c4c74bd862e21abac4ae982e5b8f83",
+    "workPackage": "W3/W5",
+    "aliases": [],
+    "affectedPaths": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "gmp-platform/frontend/src/stores/authStore.ts"
+    ],
+    "originalNextConfirmationAction": "W5 review other current ID paths separately; this source check does not assert all repository IDs are strings.",
+    "limitations": [
+      "Only historical and later recorded source dispositions are indexed; no current source triage, runtime acceptance or tests were executed by this helper.",
+      "A historical fixed result applies to its exact reviewed/tested scope; current blob/change applicability remains for the main ledger to assess."
+    ],
+    "resolution": {
+      "fixCommits": [
+        "e28c9dfda06694e4cdfc4bececf435100103fd78"
+      ],
+      "testedCommits": [],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "dispositionQualification": "source-preservation check only; historical acceptance not rerun",
+    "disposition": "known-fixed-before-audit",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+        "locator": "$.records[20]"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "AUDIT-W1-002",
+    "recordKind": "product-repair-subfinding",
+    "aliases": [
+      "QF-W1-001"
+    ],
+    "parentIssueId": "AUD-H011",
+    "summary": "JPA managed stale entity allowed duplicate concurrent close after outer transaction was introduced; lock is now first read.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261015/evidence/independent-first-failed/quality-result.yaml",
+      "docs/development/branch-review-20261015/quality-result.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "4e7fd37500157b4fd055e8a54fe8105f1bf03ae2"
+      ],
+      "testedCommits": [
+        "1dac6338c24efb2330fe8702ed018e55a8947711"
+      ],
+      "pullRequests": [
+        7
+      ],
+      "mergeCommits": [
+        "6379bf105127b05a65695992b008b55c142264f9"
+      ]
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "cde0768c77bcee9f0b9ba252fa70b670b814e847600ed33888f28428bb8673a6",
+        "locator": "$.findings[1]"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/quality-result.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "59377439cba1a3cd3b93fba97e947929bc93084898bc92d6c4f79042ece8c516",
+        "locator": "$.qualityResult"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/evidence/independent-first-failed/quality-result.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "5865fb1a5abfdea19bc63fe272fd28c4e26c752eaa7112b09a4c6181f105fee7",
+        "locator": "$.qualityResult"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "F004-ASYNC-BINDING-LOSS",
+    "recordKind": "product-defect",
+    "aliases": [],
+    "parentIssueId": "AUD-H013",
+    "summary": "Saving before route graph initialization could send an empty replacement binding list.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261016-f004/evidence/independent/qualityResult.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "58fb346f2d1eb860c09c3f95eed448ef8b813112"
+      ],
+      "testedCommits": [
+        "58fb346f2d1eb860c09c3f95eed448ef8b813112"
+      ],
+      "pullRequests": [
+        9
+      ],
+      "mergeCommits": [
+        "9542cb4cc2071df2c00129cc5dbb4572a245cfa1"
+      ]
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-f004/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "dad7722ee05a4fb3609ef797f7a31c50c0e03c337caad162ab14a3fb708a5ee3",
+        "locator": "$.findings[1]"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-f004/evidence/independent/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "0011cb8d9690dc05567d6516e7aa8c6738959793a4587e7d0af5e5f5d38548c9",
+        "locator": "$.qualityResult"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "QF-TRACE-PUBLISH-001",
+    "recordKind": "imported-independent-finding",
+    "aliases": [],
+    "parentIssueId": null,
+    "parentDeliveryScope": "trace-field-single-binding-20261019",
+    "summary": "Blank tableId variants were counted as different regions even though runtime interpreted them as one main table.",
+    "qualityReportRefs": [
+      "docs/development/trace-field-single-binding-20261019-evidence/quality-result-first.yaml",
+      "docs/development/trace-field-single-binding-20261019-evidence/quality-result.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "dd46244c0b639a71d021a6ca83c02b5335555d3e"
+      ],
+      "testedCommits": [
+        "d7dd56d381b4a9484c2df72a9834b4df587c210e"
+      ],
+      "pullRequests": [],
+      "mergeCommits": [],
+      "integration": "user-submitted ancestor commits on current edhr-dev; no PR identifier asserted"
+    },
+    "limitations": [
+      "All test counts and migration effects here are declarations in archived original reports, not runs in this helper.",
+      "The earlier cleanup-summary belongs to a separate development environment; it does not establish current cloud database migration state.",
+      "No database migration or cleanup is executed or authorized by this index."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/trace-field-single-binding-20261019-evidence/quality-result-first.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "5d31a60dc3bcfba403cb4e762ff125f62397b91cc9e088e0c43c5831d6e88a56",
+        "locator": "$.qualityResult.findings[0]"
+      },
+      {
+        "path": "docs/development/trace-field-single-binding-20261019-evidence/quality-result.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "0132daf7556d220b61b8a722d915185ce5e33941f34819353985b7575d41f355",
+        "locator": "$.qualityResult.findings[0]"
+      },
+      {
+        "path": "docs/development/trace-field-single-binding-20261019.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ee764ae991e1d7485528d443260f19f41d3ba84979631bcfbc48204c66ecea7",
+        "locator": "section:edhr-dev提交候选与验证"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "QF-TRACE-PUBLISH-002",
+    "recordKind": "imported-independent-finding",
+    "aliases": [],
+    "parentIssueId": null,
+    "parentDeliveryScope": "trace-field-single-binding-20261019",
+    "summary": "Legal blank main-table single binding was hidden and incorrectly blocked by source/sidebar/save feedback.",
+    "qualityReportRefs": [
+      "docs/development/trace-field-single-binding-20261019-evidence/quality-result-second.yaml",
+      "docs/development/trace-field-single-binding-20261019-evidence/quality-result.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "d7dd56d381b4a9484c2df72a9834b4df587c210e"
+      ],
+      "testedCommits": [
+        "d7dd56d381b4a9484c2df72a9834b4df587c210e"
+      ],
+      "pullRequests": [],
+      "mergeCommits": [],
+      "integration": "user-submitted ancestor commits on current edhr-dev; no PR identifier asserted"
+    },
+    "limitations": [
+      "All test counts and migration effects here are declarations in archived original reports, not runs in this helper.",
+      "The earlier cleanup-summary belongs to a separate development environment; it does not establish current cloud database migration state.",
+      "No database migration or cleanup is executed or authorized by this index."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/trace-field-single-binding-20261019-evidence/quality-result-second.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "a341901449051cec0437249e825ecf1ff5fdcd2943ae23d0171f6f4d8e010d3f",
+        "locator": "$.qualityResult.findings[1]"
+      },
+      {
+        "path": "docs/development/trace-field-single-binding-20261019-evidence/quality-result.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "0132daf7556d220b61b8a722d915185ce5e33941f34819353985b7575d41f355",
+        "locator": "$.qualityResult.findings[1]"
+      },
+      {
+        "path": "docs/development/trace-field-single-binding-20261019.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ee764ae991e1d7485528d443260f19f41d3ba84979631bcfbc48204c66ecea7",
+        "locator": "section:edhr-dev提交候选与验证"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "QF-W2-AVAILABILITY-001",
+    "recordKind": "test-fixture-subfinding",
+    "aliases": [],
+    "parentIssueId": "AUD-H002",
+    "summary": "Two SN fixture snapshots had a BATCH mock object; valid-object evidence needed repair although assertions were green.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261016-w2-form-availability/evidence/independent-first/qualityResult.yaml",
+      "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/qualityResult.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "518ac6838b3c418fd16aca0c84c0f216b33d17d8"
+      ],
+      "testedCommits": [
+        "518ac6838b3c418fd16aca0c84c0f216b33d17d8"
+      ],
+      "pullRequests": [
+        11
+      ],
+      "mergeCommits": [
+        "400c2dd2b836aa520f7b671c348ad9e79ac33748"
+      ]
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper.",
+      "This is the fixture consistency finding, not a second identifier for the availability projection product bug."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "d2e46c951aeb514c1094b2b21c9de23e1c30ef2f8a6244b8afe124c74e6be5d6",
+        "locator": "$.qualityResult.findings[0]"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "d2e46c951aeb514c1094b2b21c9de23e1c30ef2f8a6244b8afe124c74e6be5d6",
+        "locator": "$.qualityResult"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w2-form-availability/evidence/independent-first/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "e905a4b97244fd7e6c3118791c83ec31d1748736b7cfb66bb9c8bb9fa6340f49",
+        "locator": "$.qualityResult"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "QF-W2-CHOICE-001",
+    "recordKind": "product-repair-subfinding",
+    "aliases": [],
+    "parentIssueId": "W2-F004-SHARED-CHOICE-OPTIONS",
+    "summary": "ModelTab new/type-changed child columns bypassed choice initialization in first repair candidate.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/quality-result.yaml",
+      "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-final/quality-result.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7"
+      ],
+      "testedCommits": [
+        "9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7"
+      ],
+      "pullRequests": [
+        15
+      ],
+      "mergeCommits": [
+        "4b25dc7f29c27cfb39c0f570b547869aa0c2f289"
+      ]
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w2-choice-options/findings.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "1fe26dd5dc595b8a1e2ca711decf61e991157ab875bb00fa0594e7292a911a8a",
+        "locator": "section:首轮独立发现 QF-W2-CHOICE-001"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-final/quality-result.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "d62ecc92873116de9d15d2af77c34990d7b80fc0189809e4b95496a842e938ea",
+        "locator": "$.qualityResult"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-first-failed/quality-result.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "3282222ca70f0e203aa41ffa5b4f9343e54cb95a6b9ae7c1a11591dae0127253",
+        "locator": "$.qualityResult"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "QF-W2-PROJECTION-DOC-001",
+    "recordKind": "audit-documentation-defect",
+    "aliases": [],
+    "parentIssueId": null,
+    "summary": "README incorrectly called Spring method-security coverage MockMvc; original accepted report retained open low status.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261016-w2-projection-integrity/evidence/independent/qualityResult.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "763ccf6444482bf2471f34d15a9efb32b6379dc5"
+      ],
+      "testedCommits": [
+        "3b642ab47ed55e8a26f3531b09f107b7f06188c9"
+      ],
+      "pullRequests": [
+        12
+      ],
+      "mergeCommits": [
+        "8a9cd91f62742e9469c785baee482129eb6ec84e"
+      ]
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper.",
+      "Original quality result remains passed with this low finding open; later primary delivery receipt records correction, not a new independent runtime passed."
+    ],
+    "disposition": "corrected-in-l0-documentation",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w2-projection-integrity/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "19a417bd6c04a661f5042c63ea559ab65f5d18ec5498d19ed1679aa791129014",
+        "locator": "$.documentationFindings[0]"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w2-projection-integrity/evidence/independent/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "c67c07ed76c6539be59517f83085fc58645a54db5899c5800f0b6ebcab6bb4a9",
+        "locator": "$.qualityResult"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w2-projection-integrity/evidence/delivery-receipt.json",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "0dfd9ab617273ea84548efcc34f9eb09f5bd93936bd7208739bb15287d9a20ea",
+        "locator": "$.documentationCorrection"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "QF-W3B-001",
+    "recordKind": "product-repair-subfinding",
+    "aliases": [],
+    "parentIssueId": "AUD-H004",
+    "summary": "Existing published process non-array JSON returned early and bypassed draft active-reference guard.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-quality-result.yaml",
+      "docs/development/branch-review-20261018-w3-binding-references/evidence/independent/quality-result.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "a9ecd501a9abf354df95df2a1a01e53474a41a2d"
+      ],
+      "testedCommits": [
+        "a9ecd501a9abf354df95df2a1a01e53474a41a2d"
+      ],
+      "pullRequests": [
+        17
+      ],
+      "mergeCommits": [
+        "336466d95c3866581e5d7d641544756ba7807946"
+      ]
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/findings.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "bafe522f19f09720caf923194dcbead38f9c495088383709d008f6a8fa922a05",
+        "locator": "section:证据与状态"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent/quality-result.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "7386678e30b730bb94e502288214c8880d42ca4c47fa00d152784e2c0dbb9c34",
+        "locator": "$.qualityResult"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w3-binding-references/evidence/independent-round1/edhr-w3b-independent-quality-result.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "3a37692a69888c62956ec54f02f113fb9f574acaefc3db4ae9a5f35fc294fe6c",
+        "locator": "$.qualityResult"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "W1-START-CONFIGURATION-MIX",
+    "recordKind": "product-defect",
+    "aliases": [],
+    "parentIssueId": null,
+    "summary": "First START mixed route/DHR identity with new form/directory children across committed configuration reads.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261015-w1-followup/evidence/independent-config/quality-result.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "1113fe14f7f7539b9727fc708f49838504287d4f"
+      ],
+      "testedCommits": [
+        "1113fe14f7f7539b9727fc708f49838504287d4f"
+      ],
+      "pullRequests": [
+        8
+      ],
+      "mergeCommits": [
+        "76b214426a271929bba2708cdda9e4d84d1f0679"
+      ]
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261015-w1-followup/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "080bb9a651e0f529e735d538a270525b30d60c70d166941650039c8d6c97521f",
+        "locator": "$.findings[0]"
+      },
+      {
+        "path": "docs/development/branch-review-20261015-w1-followup/evidence/independent-config/quality-result.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "db6dcee6ca61387bb711af630ef144a8f19043a8c754d2663623387b3e7d2e55",
+        "locator": "$.qualityResult"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "W2-F001-SAVE-ACK",
+    "recordKind": "product-defect",
+    "aliases": [],
+    "parentIssueId": null,
+    "summary": "Save acknowledgement for request A marked unsent edited document B clean.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261016-w2-form-integrity/evidence/independent/qualityResult.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "6db50c935d81d9601bf0e8e1212c28f0c4499bfa"
+      ],
+      "testedCommits": [
+        "6db50c935d81d9601bf0e8e1212c28f0c4499bfa"
+      ],
+      "pullRequests": [
+        10
+      ],
+      "mergeCommits": [
+        "41f19bca31a6232ae568dde073ef366c5d894e86"
+      ]
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w2-form-integrity/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "caef2098880176f3dda474c809efca2a55ceceb6cf508d682f9bfee9537fe52b",
+        "locator": "$.findings[0]"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w2-form-integrity/evidence/independent/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "f165440af5c3ef4dc1313342935eaa37a0ddd637036104a0380f83a57a833123",
+        "locator": "$.qualityResult"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "W2-F002-COLUMN-INSERT-NODE-ALIGNMENT",
+    "recordKind": "product-defect",
+    "aliases": [],
+    "parentIssueId": null,
+    "summary": "Column insertion moved cells/merged ranges but omitted placed nodes and subtable geometry.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/qualityResult.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "8450aa781e6d8c602d214392182c0d6a7614dac6"
+      ],
+      "testedCommits": [
+        "8450aa781e6d8c602d214392182c0d6a7614dac6"
+      ],
+      "pullRequests": [
+        13
+      ],
+      "mergeCommits": [
+        "0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d"
+      ]
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper.",
+      "Not an alias of W2-F002-FORM-AVAILABILITY; full IDs identify different issues."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w2-designer-identity/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "82ed627bcbed0933999e5e6c6ef787fd8d8a06d64238ea23877b4a4e83a1f372",
+        "locator": "$.findings[0]"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "898a8231ced49ff5269b98e190b136a559677843a9111193a0709bd9671564a0",
+        "locator": "$.qualityResult"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "W2-F003-SUBFIELD-DEFINITION-SYNC",
+    "recordKind": "product-defect",
+    "aliases": [
+      "W2-C002-SUBFIELD-EMBEDDED-SNAPSHOT"
+    ],
+    "parentIssueId": null,
+    "summary": "Current model child edits did not sync same-identity placed embedded subfield definitions.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261017-w2-subfield-sync/evidence/independent/qualityResult.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "845b3a7f067e6d0fb54f77b73dcc8b3024d94f82"
+      ],
+      "testedCommits": [
+        "845b3a7f067e6d0fb54f77b73dcc8b3024d94f82"
+      ],
+      "pullRequests": [
+        14
+      ],
+      "mergeCommits": [
+        "b191e054892ae06cb0d8a45f62d034deabbba3e3"
+      ]
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261017-w2-subfield-sync/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "87ab33c1655342c70a8470dfd7e52a1d318e7622b33942b783177d0e0a59106c",
+        "locator": "$.findings[0]"
+      },
+      {
+        "path": "docs/development/branch-review-20261017-w2-subfield-sync/evidence/independent/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "a0a9e2ef9dcc8c8ad0c0c7d08482e8cff95f94d0740e6161d6bfe0c50bcf9176",
+        "locator": "$.qualityResult"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "W2-F004-SHARED-CHOICE-OPTIONS",
+    "recordKind": "product-defect",
+    "aliases": [],
+    "parentIssueId": null,
+    "summary": "Same canonical field placements used divergent options/default values and disagreed with frozen server validation.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-final/quality-result.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "c4491dde7703e778c0b4ba7dd293dc940d8a262d",
+        "9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7"
+      ],
+      "testedCommits": [
+        "9ac5e0e2e9adc6662f8a9530d6e2c10c2854c1d7"
+      ],
+      "pullRequests": [
+        15
+      ],
+      "mergeCommits": [
+        "4b25dc7f29c27cfb39c0f570b547869aa0c2f289"
+      ]
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261018-w2-choice-options/findings.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "1fe26dd5dc595b8a1e2ca711decf61e991157ab875bb00fa0594e7292a911a8a",
+        "locator": "section:W2-F004-SHARED-CHOICE-OPTIONS"
+      },
+      {
+        "path": "docs/development/branch-review-20261018-w2-choice-options/evidence/independent-final/quality-result.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "d62ecc92873116de9d15d2af77c34990d7b80fc0189809e4b95496a842e938ea",
+        "locator": "$.qualityResult"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "W2-QF-001",
+    "recordKind": "audit-documentation-defect",
+    "aliases": [],
+    "parentIssueId": null,
+    "summary": "Source-map Shell filename/method line typo corrected after original accepted report kept the low issue open.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261017-w2-subfield-sync/evidence/independent/qualityResult.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "2ae06d4aed42aa8c7d449fbcd86038eb5c8240dd"
+      ],
+      "testedCommits": [
+        "845b3a7f067e6d0fb54f77b73dcc8b3024d94f82"
+      ],
+      "pullRequests": [
+        14
+      ],
+      "mergeCommits": [
+        "b191e054892ae06cb0d8a45f62d034deabbba3e3"
+      ]
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper.",
+      "Original qualityResult still records open low; supplemental L0 review separately passed and did not rerun runtime checks."
+    ],
+    "disposition": "corrected-and-independently-accepted-l0",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261017-w2-subfield-sync/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "87ab33c1655342c70a8470dfd7e52a1d318e7622b33942b783177d0e0a59106c",
+        "locator": "$.documentationDisposition"
+      },
+      {
+        "path": "docs/development/branch-review-20261017-w2-subfield-sync/evidence/independent/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "a0a9e2ef9dcc8c8ad0c0c7d08482e8cff95f94d0740e6161d6bfe0c50bcf9176",
+        "locator": "$.qualityResult"
+      },
+      {
+        "path": "docs/development/branch-review-20261017-w2-subfield-sync/evidence/independent/l0-document-review.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "ee3e7389d4374a7e94985c70184183adbc9fa194c67df1792e89da7fe958eb26",
+        "locator": "$.supplementalReview.findingDispositions[0]"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "W2-T001-CELL-DISPLAY-HARNESS",
+    "recordKind": "test-harness-defect",
+    "aliases": [],
+    "parentIssueId": null,
+    "summary": "Old test injected an obsolete MockFillPage export instead of the real FormSheetPage.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/qualityResult.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "8450aa781e6d8c602d214392182c0d6a7614dac6"
+      ],
+      "testedCommits": [
+        "8450aa781e6d8c602d214392182c0d6a7614dac6"
+      ],
+      "pullRequests": [
+        13
+      ],
+      "mergeCommits": [
+        "0e16363e9fc1ccb876d6ef96a1b15dc1c9cc145d"
+      ]
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper.",
+      "Not an alias of W2-T001-QUANTITY-ASSERTION."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w2-designer-identity/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "82ed627bcbed0933999e5e6c6ef787fd8d8a06d64238ea23877b4a4e83a1f372",
+        "locator": "$.findings[1]"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w2-designer-identity/evidence/independent/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "898a8231ced49ff5269b98e190b136a559677843a9111193a0709bd9671564a0",
+        "locator": "$.qualityResult"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "W2-T001-QUANTITY-ASSERTION",
+    "recordKind": "test-harness-defect",
+    "aliases": [],
+    "parentIssueId": null,
+    "summary": "Outdated SSR main-value assertion after target DEC0079 changed; actual quantity business values/rules were kept.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/qualityResult.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "0346f4102cdc1f88515cf2f9d9a34b1b23fcd2a5"
+      ],
+      "testedCommits": [
+        "518ac6838b3c418fd16aca0c84c0f216b33d17d8"
+      ],
+      "pullRequests": [
+        11
+      ],
+      "mergeCommits": [
+        "400c2dd2b836aa520f7b671c348ad9e79ac33748"
+      ]
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w2-form-availability/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "bee922fc3dab07dfd2ec661fe27c95e4d30e5e89545301e891df0271e2aa4975",
+        "locator": "$.findings[1]"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w2-form-availability/evidence/independent/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "d2e46c951aeb514c1094b2b21c9de23e1c30ef2f8a6244b8afe124c74e6be5d6",
+        "locator": "$.qualityResult"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "audit.coverage-git-quoted-chinese-paths",
+    "recordKind": "audit-documentation-defect",
+    "aliases": [
+      "QF-W1-REVIEW-EXPORT-001"
+    ],
+    "parentIssueId": null,
+    "summary": "Six Git-quoted Chinese CSV paths differed from the actual Git tree despite matching counts.",
+    "qualityReportRefs": [
+      "docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/qualityResult.yaml",
+      "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/qualityResult.yaml"
+    ],
+    "resolution": {
+      "fixCommits": [
+        "571a589394c8c11b6fdb94c1b3fb5eb982a396a6"
+      ],
+      "testedCommits": [
+        "76b214426a271929bba2708cdda9e4d84d1f0679"
+      ],
+      "pullRequests": [],
+      "mergeCommits": []
+    },
+    "limitations": [
+      "Recorded acceptance/source disposition only; no test, build, database, browser or independent validation was executed by this indexing helper.",
+      "The original final report has head/base=76b214 and workingTreeState=dirty with explicitly included batch documents; do not represent that as a clean 76b214 code candidate."
+    ],
+    "disposition": "fixed-and-independently-accepted",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w1-review-export/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "02386cab025a31fd0939598076e281d01c5bf02ba3a2afc15cdf2dd8345401e9",
+        "locator": "$.auditDocumentationCorrections[0]"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w1-review-export/evidence/final-independent/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "302404e2549e9fab213bf828d62cee98c81c780dd3996c4310d6b9b8da09d065",
+        "locator": "$.qualityResult"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w1-review-export/evidence/independent-first-failed/qualityResult.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "af3113fe40ddd73c012a5e8e7ed4fd10df55f278b7e37a56928b514805179eb2",
+        "locator": "$.qualityResult"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "discrepancy.dhr-review-complete-evidence-impact-gap",
+    "recordKind": "inherited-dhr-implementation-gap",
+    "relatedKnowledgeId": "discrepancy.dhr-review-complete-evidence-impact-gap",
+    "originalStatus": "open",
+    "severity": "high",
+    "remainsOpen": true,
+    "blocksWholeDhrLifecycleCompletion": true,
+    "deferredScope": [
+      "真实来源变更作废生效接口、有效修订标识与DHR消费接入。",
+      "依赖该生效入口的主动影响通知和生效与批准并发联调。"
+    ],
+    "resumptionTrigger": "记录控制模块交付可核对的实现分支、正式生效入口及有效修订/事务契约后，重取最新目标并继续真实联调。",
+    "limitations": [
+      "User deferral does not reduce severity or close the item.",
+      "Existing reads/objective checks/manual confirmations and other independent source review may continue."
+    ],
+    "disposition": "user-deferred",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w1-review-export/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "02386cab025a31fd0939598076e281d01c5bf02ba3a2afc15cdf2dd8345401e9",
+        "locator": "$.inheritedOpenItems[0]"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w1-review-export/followup-20261016-source-dependency.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "0bc690098a658cd2a154a8f2bcd823f38c49b4272aed5cbb1943ca45a1037604",
+        "locator": "section:记录控制未实现：后续审查依赖"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ad213d66b3c73d35ca0ccda715de9ae680c9cc4c628f9f992fef972f8972349",
+        "locator": "section:当前实际状态"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  },
+  {
+    "id": "discrepancy.dhr-review-effective-source-integration",
+    "recordKind": "inherited-dhr-implementation-gap",
+    "relatedKnowledgeId": "discrepancy.dhr-review-effective-source-integration",
+    "originalStatus": "open",
+    "severity": "high",
+    "remainsOpen": true,
+    "blocksWholeDhrLifecycleCompletion": true,
+    "deferredScope": [
+      "真实来源变更作废生效接口、有效修订标识与DHR消费接入。",
+      "依赖该生效入口的主动影响通知和生效与批准并发联调。"
+    ],
+    "resumptionTrigger": "记录控制模块交付可核对的实现分支、正式生效入口及有效修订/事务契约后，重取最新目标并继续真实联调。",
+    "limitations": [
+      "User deferral does not reduce severity or close the item.",
+      "Existing reads/objective checks/manual confirmations and other independent source review may continue."
+    ],
+    "disposition": "user-deferred",
+    "evidence": [
+      {
+        "path": "docs/development/branch-review-20261016-w1-review-export/findings.yaml",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "02386cab025a31fd0939598076e281d01c5bf02ba3a2afc15cdf2dd8345401e9",
+        "locator": "$.inheritedOpenItems[1]"
+      },
+      {
+        "path": "docs/development/branch-review-20261016-w1-review-export/followup-20261016-source-dependency.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "0bc690098a658cd2a154a8f2bcd823f38c49b4272aed5cbb1943ca45a1037604",
+        "locator": "section:记录控制未实现：后续审查依赖"
+      },
+      {
+        "path": "docs/development/branch-review-20261015/NEXT.md",
+        "commit": "1185e6daa3425bb1856df7a6db12b2e939b0afad",
+        "sha256": "4ad213d66b3c73d35ca0ccda715de9ae680c9cc4c628f9f992fef972f8972349",
+        "locator": "section:当前实际状态"
+      }
+    ],
+    "newlyAdjudicatedInThisBatch": false,
+    "runtimeReverifiedInThisBatch": false
+  }
+]

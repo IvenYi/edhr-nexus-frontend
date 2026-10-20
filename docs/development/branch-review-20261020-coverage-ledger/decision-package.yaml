@@ -1,0 +1,82 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261020-COVERAGE-LEDGER
+  scope: edhr-dev 固定1185基线的跨批审查总账恢复；不新增业务审查结论或修改产品实现。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 1185e6daa3425bb1856df7a6db12b2e939b0afad
+    targetBranch: edhr-dev
+    targetCommit: 1185e6daa3425bb1856df7a6db12b2e939b0afad
+    contractReadCommit: 1185e6daa3425bb1856df7a6db12b2e939b0afad
+    uncommittedContractPaths: []
+  summary: 校正PR17前已披露的跨批总账维护缺口，保留原始历史并按真实变化选择下一条审查链。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  deliveryRequirements:
+    - 不覆盖原CSV/JSONL/报告，不把旧测试称当前运行，不承接整文件完成。
+    - 分类、源码范围、知识语义、整改与运行验收分别报告，完整ID保留父子及别名来源。
+    - 正式独立验收后、创建PR前实际复核任务漂移并向用户汇报进度和下一步。
+  impactAnalysis:
+    level: L1
+    directImpacts:
+      - area: development-review-ledger
+        change: 固定Git树枚举、证据摘要核验、变化降级和可复现审查索引。
+        evidenceReferences: [scripts/build-branch-review-ledger.py, scripts/test-branch-review-ledger.py]
+    transitiveImpacts: []
+    potentialImpacts:
+      - area: evidence-carry-and-counting
+        concern: 错误承接可能伪造完成度；通过来源断言、保守降级及独立验证控制。
+        evidenceReferences: [docs/development/branch-review-20261020-coverage-ledger/source-catalog.json]
+    unaffectedAreas:
+      - area: application-and-knowledge-policy
+        reason: 不改业务源码/测试、迁移、配置、知识定义、架构或角色契约。
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts: []
+    permissionImpacts: []
+    testImpacts:
+      - scope: isolated-git-history-fixtures-and-fixed-tree-reproduction
+        scenarios: [二进制及中文路径, schema定义与引用区分, 源码变化及移除, 知识依赖变化, 伪造来源拒绝, 未决来源不承接, 完整ID去重, 原失败与脏树状态保留, 防覆盖及逐字节再生成]
+        evidenceReferences: [scripts/test-branch-review-ledger.py]
+    evidenceGaps: [分类与入口为启发式候选，方法范围有重叠且无完整方法分母；总账恢复不替代业务源码审查或当前运行验收。]
+  extensionStrategy:
+    selectedPaths: [project-plugin]
+    rationale: 仓库开发工具沿用scripts中既有inventory生成器，不接入运行时业务。
+    ownershipBoundaries:
+      - owner: scripts/build-branch-review-ledger.py
+        responsibility: 固定基线与来源目录生成独立台账，不覆盖历史证据。
+  affectedFiles:
+    - path: scripts/build-branch-review-ledger.py
+      changeType: create
+      reason: 恢复可复现且保留限定的跨批索引。
+    - path: scripts/test-branch-review-ledger.py
+      changeType: create
+      reason: 验证来源、降级、计数与防覆盖边界。
+    - path: docs/development/branch-review-20261020-coverage-ledger
+      changeType: create
+      reason: 固定来源、生成总账及独立验收原件。
+    - path: docs/development/branch-review-20261015/NEXT.md
+      changeType: update
+      reason: 替换过期实时入口，保留历史批次结论。
+  acceptanceScenarios:
+    - id: scenario.ledger-fixed-baseline-and-history
+      given: 历史范围和验收分散于多个固定提交
+      when: 汇总到1185基线
+      then: 来源可核验、变化明确待核、四维计数分开、旧失败/暂缓不丢失。
+      evidenceRequirements: [隔离Git回归, 完整基线字节再生成, 独立质量核对]
+ontologyResult:
+  result: not-applicable
+  reason: 本批仅恢复开发审查索引与证据来源，不改业务概念/规则/快照语义、知识定义或成熟度，不新增本体试点。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 1185e6daa3425bb1856df7a6db12b2e939b0afad
+    targetBranch: edhr-dev
+    targetCommit: 1185e6daa3425bb1856df7a6db12b2e939b0afad
+    contractReadCommit: 1185e6daa3425bb1856df7a6db12b2e939b0afad
+    uncommittedContractPaths: []
+  knowledgeSync: []
