@@ -1,5 +1,7 @@
 # W3 新写入口与显式租户委托
 
+已创建 [PR20](https://github.com/IvenYi/edhr-nexus-frontend/pull/20)，来源 `audit/edhr-dev-w3-write-boundaries-20261020`，目标 `edhr-dev`，等待用户人工merge。没有自动合并或部署。
+
 最终全新独立对 `b8051583` 正式passed，24/24必需项通过；业务292+知识89、39原生PG及36浏览器和构建通过。两项首轮说明问题已解决，首轮failed保留。最终处置见[acceptance.json](acceptance.json)，当前进度见[progress.json](progress.json)，[PR前范围复核](scope-review.md)已在全部角色FINAL后向用户实际汇报。以下固定清单及原始结果保持各自时点，不改写为最终状态。
 
 本批延续用户授权的 edhr-dev 整体审查，最新目标固定为 `a8285be9b91fb76bcb27ccb16a5258bda1fb5077`。PR19 已人工合入，合并树与原交付相同；PR5–19 不重开。目标树含 2444 路径；本批固定实现及新归档的清单分母另见 ledger，不用路径分类代替人工完成率。

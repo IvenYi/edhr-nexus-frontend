@@ -1,5 +1,7 @@
 # 持续推进台账
 
+已交付 [PR20](https://github.com/IvenYi/edhr-nexus-frontend/pull/20)，来源audit/edhr-dev-w3-write-boundaries-20261020，目标edhr-dev，等待人工合并。实际独立受测b8051583；此后仅L0归档、acceptance overlay、任务复核及PR登记，产品/测试/知识与冻结catalog/ledger保持。下一轮收到人工合入信息先显式fetch，不把已创建PR当作已经合并。
+
 本批最终全新独立对b8051583已正式passed，24/24必需检查通过，业务292+知识89、39原生PG、36浏览器及构建通过，两首轮说明问题resolved，原failed保留。全部专业实例FINAL后已实际完成[PR前范围/进度复核](../branch-review-20261020-w3-write-boundaries/scope-review.md)并向用户汇报；六项本批修复/纠正以acceptance.json单独登记，冻结总账不改。临时PG自建容器已按确切ID移除。当前只做L0归档/PR交付，人工合并后继续显式fetch和W3剩余，再推进W4–W7；不自动merge/deploy。
 
 当前续接总账为[精度纠正后recheck](../branch-review-20261020-w3-write-boundaries/recheck/README.md)，固定05dbc0b2的2603路径/314有交叉源码范围/90历史语义记录/46问题记录；93源码记录及57语义记录或其依赖需各自增量核对，未升级整文件或整库通过。本体跟进已updated，实际89知识及9条有限复核，原首轮81记录和failed保留；仅知识/文档精度纠正、核心/测试未变。最终全新质量实例仍待完成，用户暂缓/旧gap/A12/W5及W4–W7边界不变。

@@ -172,5 +172,18 @@
     "userInformedBeforePrCreation": true,
     "declaredPolicyIncrement": "DEC-0081 per explicit user reply",
     "overallAuditComplete": false
+  },
+  "delivery": {
+    "pullRequest": "https://github.com/IvenYi/edhr-nexus-frontend/pull/20",
+    "number": 20,
+    "sourceBranch": "audit/edhr-dev-w3-write-boundaries-20261020",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+    "testedCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "headAtPrCreation": "e22a6b02e6ff49917a453c9119dc182cb2b071d7",
+    "mergePerformed": false,
+    "deploymentPerformed": false,
+    "postAcceptanceChanges": "L0 exact-byte archives, acceptance overlay, scope review, test environment cleanup receipt and PR registration only",
+    "allProfessionalInstancesFinal": true
   }
 }
