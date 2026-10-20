@@ -90,6 +90,8 @@ class LedgerHistoryTests(unittest.TestCase):
         self.assertEqual(rows[CODE]["whole_file_review_complete"], "false")
         self.assertIn("资源/字段.txt", rows)
         self.assertTrue(all(r["domain"] and r["work_package"] for r in rows.values()))
+        inventory = json.loads((out / "inventory-summary.json").read_text())
+        self.assertEqual(inventory["coverageSha256"], hashlib.sha256((out / "coverage.csv").read_bytes()).hexdigest())
         self.assertEqual(summary["knowledgeReview"]["currentIds"], 2)
         knowledge = [json.loads(s) for s in (out / "knowledge-records.jsonl").read_text().splitlines()]
         self.assertEqual({r["id"] for r in knowledge}, {"rule.example", "scenario.example"})
@@ -118,6 +120,27 @@ class LedgerHistoryTests(unittest.TestCase):
         self.assertEqual(method["sourceRelation"], "removed")
         with (out / "coverage.csv").open(newline="") as stream:
             self.assertNotIn(CODE, [r["path"] for r in csv.DictReader(stream)])
+
+    def test_sql_only_change_invalidates_semantic_evidence_and_other_extensions_are_kept(self):
+        migration = "gmp-platform/backend/src/main/resources/db/changelog/example.sql"
+        config = "gmp-platform/backend/pom.xml"
+        script = "scripts/example.mjs"
+        for path in (migration, config, script):
+            self.write(path, "original\n")
+        reviewed = self.commit()
+        self.review.update(sourceCommit=reviewed, implementationEvidence=[path + ":1" for path in (migration, config, script)])
+        self.write(SEMANTIC, json.dumps(self.review) + "\n")
+        self.baseline = self.commit()
+        self.write(migration, "changed SQL only\n")
+        current = self.commit()
+        out, _ = self.build(self.catalog(current))
+        semantic = json.loads((out / "semantic-reviews.jsonl").read_text())
+        dependencies = {d["path"]: d["relation"] for d in semantic["dependencies"]}
+        self.assertEqual(dependencies[migration], "file-changed")
+        self.assertEqual(dependencies[config], "unchanged")
+        self.assertEqual(dependencies[script], "unchanged")
+        self.assertEqual(semantic["recordRelation"], "unchanged")
+        self.assertEqual(semantic["carryStatus"], "needs-delta-review")
 
     def test_forged_receipt_or_source_hash_cannot_receive_review_credit(self):
         for field in ("evidence", "sourceSha256", "sourceBlob"):

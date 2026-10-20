@@ -1,0 +1,25 @@
+.F.....E...
+======================================================================
+ERROR: test_sql_only_change_invalidates_semantic_evidence_and_other_extensions_are_kept (__main__.LedgerHistoryTests.test_sql_only_change_invalidates_semantic_evidence_and_other_extensions_are_kept)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/edhr-nexus-frontend/scripts/test-branch-review-ledger.py", line 139, in test_sql_only_change_invalidates_semantic_evidence_and_other_extensions_are_kept
+    self.assertEqual(dependencies[migration], "file-changed")
+                     ~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'gmp-platform/backend/src/main/resources/db/changelog/example.sql'
+
+======================================================================
+FAIL: test_fixed_tree_includes_unicode_binary_and_only_schema_declared_ids (__main__.LedgerHistoryTests.test_fixed_tree_includes_unicode_binary_and_only_schema_declared_ids)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/edhr-nexus-frontend/scripts/test-branch-review-ledger.py", line 94, in test_fixed_tree_includes_unicode_binary_and_only_schema_declared_ids
+    self.assertEqual(inventory["coverageSha256"], hashlib.sha256((out / "coverage.csv").read_bytes()).hexdigest())
+AssertionError: 'a67d7ecca6d69a5108ff57958f09055a433aa12709c4966ca734514214857fb4' != '3e41170b702967b6aed6871795c4e99311bd5a796b13b3af3db1b753e86169db'
+- a67d7ecca6d69a5108ff57958f09055a433aa12709c4966ca734514214857fb4
++ 3e41170b702967b6aed6871795c4e99311bd5a796b13b3af3db1b753e86169db
+
+
+----------------------------------------------------------------------
+Ran 11 tests in 3.049s
+
+FAILED (failures=1, errors=1)

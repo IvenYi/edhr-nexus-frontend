@@ -157,7 +157,7 @@ def knowledge_records(git, commit):
     return rows
 
 
-DEPENDENCY = re.compile(r"(?:gmp-platform|docs|tools|scripts)/[^\s;`\"<>]+?\.(?:java|tsx|ts|mjs|md|yaml|yml|json|py)(?=[:\s;,`\"<>]|$)")
+DEPENDENCY = re.compile(r"(?:gmp-platform|docs|tools|scripts)/[^\s;`\"<>]+?\.[A-Za-z0-9]+(?=[:\s;,`\"<>()\[\]{}]|$)")
 
 
 def reconcile_semantics(git, baseline, sources, current):
@@ -271,6 +271,9 @@ def build(git, ref, catalog, out):
         row["source_evidence"] = ";".join(m["evidence"]["path"] + "#" + m["evidence"]["locator"] for m in claims)
         row["notes"] = "Whole file pending. Changed file requires checking listed scopes, not an assertion that every method changed."
     write_csv(out / "coverage.csv", columns, rows)
+    inventory = json.loads((out / "inventory-summary.json").read_text())
+    inventory["coverageSha256"] = digest((out / "coverage.csv").read_bytes())
+    write_json(out / "inventory-summary.json", inventory)
     write_jsonl(out / "method-reviews.jsonl", methods)
     write_jsonl(out / "semantic-reviews.jsonl", semantics)
     knowledge = []
@@ -302,7 +305,6 @@ def build(git, ref, catalog, out):
     for item in all_receipts:
         source_receipts[(item["commit"], item["path"])] = {"path": item["path"], "sourceCommit": item["commit"], "sha256": item["sha256"]}
     write_json(out / "source-receipts.json", [source_receipts[k] for k in sorted(source_receipts)])
-    inventory = json.loads((out / "inventory-summary.json").read_text())
     summary = {"schema": "edhr-scoped-audit-ledger/v1", "baselineCommit": baseline, "tree": git.command("rev-parse", baseline + "^{tree}").decode().strip(),
                "catalogSha256": digest(canonical(catalog)), "generatorSha256": digest(Path(__file__).read_bytes()),
                "inventoryGeneratorSha256": digest(legacy.read_bytes()),

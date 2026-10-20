@@ -44,4 +44,8 @@ W1 四个知识 gap 与两项旧 DHR high 保留。后者为完整证据影响�
 
 W4 主数据/生产累计、W5 构建/依赖/迁移/后台幂等、W6 已有七项具体拆分方案的择项验证、W7 遗漏反查和最终集成独立验证均未按工作包完成。已有具体拆分方案保留，不启动大重构。没有可信的全方法/场景分母，不发布整体完成百分比。
 
-主侧已实际通过 10 项隔离 Git 历史回归，完整 1185 总账临时重建与交付文件逐字节相同；输出及摘要存于 [evidence/primary/receipts.json](evidence/primary/receipts.json)。未运行应用测试/数据库/浏览器，本批未改应用。正式独立结果将在收尾登记；独立角色未给出正式 passed 前不发布可验收结论。不开启 Actions，不合并、不部署、不执行迁移。
+主侧初轮 10 项隔离 Git 回归及再生成通过，原件存于 [evidence/primary/receipts.json](evidence/primary/receipts.json)。全新独立实例对 `319501bc` 正式 failed：发现扩展 CSV 后内嵌摘要未刷新（medium）、SQL 依赖提取遗漏（medium）、NEXT 中 W3/W4 归属错误（low）；完整原件见 [evidence/independent-initial/receipts.json](evidence/independent-initial/receipts.json)。可复现不代表正确性，初轮结果不覆盖、不改为 passed。
+
+主侧补充最终 CSV 摘要及仅 SQL 变化回归，对初轮工具实际得到 1 failure / 1 error；修复后 11 项全部通过，SQL/XML/mjs 列明依赖均纳入，真实旧 33 项的 26 delta / 7 retained 计数不变。原受测候选保留于 Git，新候选只更新本批生成物，不覆盖旧批历史 CSV/报告。红绿原件见 [evidence/primary-followup/receipts.json](evidence/primary-followup/receipts.json)。独立复验将在收尾登记；取得正式 passed 前不发布可验收结论。
+
+本批未运行应用测试/数据库/浏览器；不开启 Actions，不合并、不部署、不执行迁移。

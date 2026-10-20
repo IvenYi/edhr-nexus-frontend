@@ -1,0 +1,23 @@
+{
+  "scenario": "only named SQL implementation dependency changed",
+  "expectedCarryStatus": "needs-delta-review",
+  "actualCarryStatus": "retained-scoped-evidence",
+  "namedSql": "gmp-platform/backend/src/main/resources/db/changelog/example.sql",
+  "sqlIncluded": false,
+  "sqlOldBlob": "b5e6471db6e882c2ef51c13485fceaa918370a06",
+  "sqlCurrentBlob": "9b2f8b16a18fe19f65e6ab455f1e9cc39e226389",
+  "otherDependencies": [
+    {
+      "path": "docs/development/review.md",
+      "sourceBlob": "87e3096e8fa5553ad790a24a1a023190184801c1",
+      "currentBlob": "87e3096e8fa5553ad790a24a1a023190184801c1",
+      "relation": "unchanged"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/Example.java",
+      "sourceBlob": "3c4dd0b1a51756a759267307ad19330b17359831",
+      "currentBlob": "3c4dd0b1a51756a759267307ad19330b17359831",
+      "relation": "unchanged"
+    }
+  ]
+}
