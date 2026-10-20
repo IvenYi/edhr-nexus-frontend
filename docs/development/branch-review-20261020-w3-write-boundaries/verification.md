@@ -28,6 +28,6 @@ NODE_PATH=/workspace/.edhr-browser-tools/node_modules CHROME_PATH=/usr/bin/chrom
 
 审计摘要额外探针故意按a828读取后重算，2项均失败；原件在failed-probe-fixtures.zip。它是W5真实跟进项，不是本轮通过用例，不计入292。现行应用不以AuditEvent重算结果阻断本轮动作。不得删除失败原件或宣称重算已通过；若独立复核发现当前修复引入的审计异常，则正常报告阻断。
 
-官方premium原脚本和精确base/candidate比较见evidence/primary，各82finding完全相同，strict均exit2；lint实际exit2（既有缺配置）。这两项只能给出无新增/既有限制，不能写成全站静态检查通过。没有更改扫描配置或断言。
+官方premium原脚本和精确base/candidate比较见evidence/primary，各84条finding记录、82种不同完整字段内容，含重复次数的多重集合相同，strict均exit2；原set统计82种的comparison保持，计数澄清另存。lint实际exit2（既有缺配置）。这两项只能给出无新增/既有限制，不能写成全站静态检查通过。没有更改扫描配置或断言。
 
 本批没有迁移新增/修改。图写测试加载真实0060的单草稿/FK约束；通用PG夹具自建有限合成表与审计故障trigger，不能据此声称全部Liquibase历史或创建候选解析端到端通过。DHR回归保持原H2兼容模式，通用入口拒绝DHR由真实PG另验。

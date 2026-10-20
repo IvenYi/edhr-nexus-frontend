@@ -34,6 +34,15 @@
 
 ## 工程选择和历史边界
 
+原候选证据按各自既有机制保存，不能把两条路径概括为相同的解析原件：
+
+| 路径 | 实际保留的原候选证据 | 当前责任 |
+| --- | --- | --- |
+| 通用工作流 | `resolveAssignees`创建的`userIds/sources/unresolvedSubjects`解析原件；转办以`originSnapshot`保存首次可获得的原文本并在重复转办时保持。 | 当前单人`userIds/assigneeId`，原件中的旧候选不继续授权。 |
+| 普通生产表单 | `ExecutionAccess.captureApprovers`只保存节点到达时的`approvers`候选ID和`restrictedApprovers`限制标记；`ExecutionSnapshotBuilder.attachFillSettings`将原节点主体配置随`form.flow.nodes`冻结于执行快照。 | `transferAssignees`单独保存受让人，原候选ID及冻结节点配置不因转办改变。 |
+
+普通表单的`resolve`只消费公共解析器返回的用户ID；上述记录不等于已有逐用户命中来源或未解析主体原件。本轮不新增这类采集或回填历史。独立核对指出DEC-0081-02曾把通用解析原件的细节泛化到两条路径，现按实际源码作记录精度纠正；用户的租户内委托、保留原候选来源、当前目标独占处理与DHR保持规则没有改变。首轮本体/语义原件及旧候选QA记录各自保留，新纠正提交由后续原件引用，不覆盖原结果。
+
 工程落实（不是用户逐字指定的政策）：复用现有任务、生产表单状态与人员选择器；查询目标与执行时重新验证范围一致。固定源码用共享 `TenantTransferTargets` 验证用户资格；通用 `singleUserSnapshot` 分别保存首次可获得的候选原文本 `originSnapshot` 与当前单人 `userIds`，重复转办保留原文本，`originRecordedAfterPriorTransfer` 标明已经发生过旧转办时的来源限制。字段名、搜索分页/上限、原因长度及具体错误文案属于工程选择。
 
 转办、完成及终止在原 `instance→task` 锁序下局部刷新 JPA 受控实例，防止等待行锁后仍按旧处理人快照授权。该修复对应真实 PostgreSQL 并发反例及回归，落实现有当前办理权和事务原子性，不形成新的业务政策，也不认证全引擎并发。

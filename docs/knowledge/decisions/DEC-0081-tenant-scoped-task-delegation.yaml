@@ -11,7 +11,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0081-02
-        statement: 原创建或节点到达时的候选解析结果、主体命中来源及未解析主体作为来源证据保留，不随组织关系变化重算，也不因显式委托被覆盖。当前受让人单独记录；转办成功后仅当前目标具有该任务或审批节点的处理权，原候选人和上一受让人不因存在于来源证据中继续拥有处理权。再次转办仍按同租户正常可用用户范围判断，并保留同一份原来源证据。
+        statement: 两条路径按各自已有证据机制保留原候选来源，不随组织关系变化重算已有候选，也不因显式委托被覆盖。通用工作流保留已有候选解析原件，其中包含候选用户、逐用户主体命中来源及未解析主体；普通生产表单保留节点到达时冻结的候选用户ID、审批范围限制标记及执行快照中的原节点主体配置，不将这些记录表述为已保存逐用户主体命中来源或未解析主体原件。本决策不要求本轮新增普通表单来源采集或重建历史缺失。当前受让人单独记录；转办成功后仅当前目标具有该任务或审批节点的处理权，原候选人和上一受让人不因存在于来源证据中继续拥有处理权。再次转办仍按同租户正常可用用户范围判断，并保留同一份原来源证据。
         status: specified
         visibility: internal
       - id: DEC-0081-03
@@ -28,7 +28,7 @@ decisions:
       - id: scenario.tenant-transfer-target-outside-original-candidates
         given: 用户具有当前通用任务或普通生产表单审批节点处理权，目标不在原冻结候选集合中但属于同租户且有效未锁定
         when: 用户显式选择目标并填写原因转办
-        then: 允许委托，目标成为唯一当前处理人；原来源保留，节点、表单内容和审批结果不变
+        then: 允许委托，目标成为唯一当前处理人；按DEC-0081-02各自既有机制保存的原候选证据保持，节点、表单内容和审批结果不变
         evidenceIds: [evidence.tenant-task-delegation-20261020]
         evidenceRequirements: [集合外同租户目标正向, 待办与完成权限回归, 实际目标选择与原因交互]
       - id: scenario.tenant-transfer-target-rejected
@@ -38,11 +38,11 @@ decisions:
         evidenceIds: [evidence.tenant-task-delegation-20261020]
         evidenceRequirements: [服务端负向, 原生数据库事务验证, 搜索和执行时同一目标范围]
       - id: scenario.tenant-transfer-repeated-origin-preserved
-        given: 任务已成功委托且仍可处理，原候选来源已保留
+        given: 通用任务或普通表单审批节点已成功委托且仍可处理，按各自既有机制保存的原候选证据仍可获得
         when: 当前受让人再次委托给同租户正常可用的另一用户
-        then: 同一原来源完整保留，前任及原候选不再可处理，只有新受让人继续处理，节点及审批结果不变
+        then: 重复转办不覆盖通用任务首次保存的原解析原件；普通表单的冻结候选ID、限制标记及冻结节点主体配置保持。前任及原候选不再可处理，只有新受让人继续处理，节点及审批结果不变
         evidenceIds: [evidence.tenant-task-delegation-20261020]
-        evidenceRequirements: [首次与重复转办原件保持, 待办SQL与动作授权一致, 单逻辑任务回归]
+        evidenceRequirements: [通用任务首次与重复转办原解析文本保持, 普通表单候选ID和限制标记及冻结配置保持, 待办SQL与动作授权一致, 单逻辑任务回归]
       - id: scenario.tenant-transfer-dhr-boundary-kept
         given: 任务属于DHR汇总审批
         when: 用户尝试调用通用转办入口
