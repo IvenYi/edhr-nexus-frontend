@@ -111,6 +111,29 @@ class FormTraceIndexPostgresTest {
         return reports.query(new FormProjectionController.Query("formTrace", null, null, filters, 0, 20, null, null)).getData();
     }
 
+    @Test void savedBlankMainRegionIsImmediatelyTraceableAndRefreshKeepsFrozenBytes() throws Exception {
+        ObjectNode configured = form();
+        ((ObjectNode) configured.at("/projection/bindings/0")).put("tableId", " \t\u3000");
+        com.zencas.edhr.template.service.FormProjectionInterpreter.validateConfiguration(configured);
+        String frozen = configured.toString();
+        save(configured, values(), "DRAFT");
+        var found = query(Map.of("lookup_production_batch", "B-CONTENT"));
+        assertThat(found.path("total").asInt()).isEqualTo(1);
+        assertThat(found.at("/records/0/hits/0/tableId").asText()).isEmpty();
+        assertThat(found.at("/records/0/hits/0/rowKey").asText()).isEqualTo("form");
+        assertThat(found.at("/records/0/hits/0/rowIndex").asInt()).isEqualTo(-1);
+        assertThat(jdbc.queryForObject("SELECT snapshot_json FROM form_instance_record WHERE id=1", String.class)).isEqualTo(frozen);
+        ObjectNode changed = values().put("batch", "B-CHANGED");
+        save(configured, changed, "ACTIVE");
+        assertThat(query(Map.of("lookup_production_batch", "B-CONTENT")).path("total").asInt()).isZero();
+        assertThat(query(Map.of("lookup_production_batch", "B-CHANGED")).path("total").asInt()).isEqualTo(1);
+        assertThat(query(Map.of("materialLotText", "L1", "teamText", "B")).path("total").asInt()).isZero();
+        assertThat(jdbc.queryForObject("SELECT snapshot_json FROM form_instance_record WHERE id=1", String.class)).isEqualTo(frozen);
+        assertThat(configured.toString()).isEqualTo(frozen);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM form_projection_batch", Integer.class)).isZero();
+        verifyNoInteractions(projection);
+    }
+
     @Test void forwardTraceFindsUnboundSavedInstancesAndUsesRealFrozenContext() throws Exception {
         var plain = form(); plain.remove("projection");
         save(plain, values(), "DRAFT");

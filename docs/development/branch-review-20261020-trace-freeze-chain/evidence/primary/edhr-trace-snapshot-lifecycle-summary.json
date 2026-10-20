@@ -1,0 +1,28 @@
+{
+  "tests": 4,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 1,
+  "cases": [
+    {
+      "name": "executionPersistsSnapshotDraftAndAuditThenCompletesOnlyAfterAllOperations",
+      "outcome": "passed",
+      "skipReason": null
+    },
+    {
+      "name": "earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning",
+      "outcome": "passed",
+      "skipReason": null
+    },
+    {
+      "name": "firstStartFreezesOneCommittedConfigurationDuringProcessRebinding",
+      "outcome": "skipped",
+      "skipReason": "System property [execution.test.driver] does not exist"
+    },
+    {
+      "name": "formInstanceNumbersAreStableSearchableAndUseFrozenSnapshots",
+      "outcome": "passed",
+      "skipReason": null
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.trace-region-consumption-20261020
+    type: document
+    path: docs/knowledge/evidence/trace-region-consumption-2026-10-20.md
+    description: original-evidence；固定061d7f1f直接核对设计保存、新使用冻结、已保存追溯与DHR终止快照消费以及用途总览/模拟预览。既有Java空白主表身份在索引extract及前端总览/模拟被遗漏，不是快照未保存或新的业务政策。只统一消费者，不重写原tableId、值、快照、归属、签署或审计，不执行配置清理迁移或旧索引回填。规则/事实成熟度及旧暂缓保持；实现、红绿、隔离运行和正式独立验收各限实际证据，不以知识同步代称完成。
+    visibility: internal

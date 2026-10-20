@@ -1,0 +1,13 @@
+{
+  "tests": 4,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "database": "PostgreSQL 16.15 isolated edhr_execution_trace_test",
+  "methods": [
+    "executionPersistsSnapshotDraftAndAuditThenCompletesOnlyAfterAllOperations",
+    "earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning",
+    "firstStartFreezesOneCommittedConfigurationDuringProcessRebinding",
+    "formInstanceNumbersAreStableSearchableAndUseFrozenSnapshots"
+  ]
+}

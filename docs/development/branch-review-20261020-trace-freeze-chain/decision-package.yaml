@@ -1,0 +1,90 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261020-TRACE-REGION-CONSUMERS
+  scope: edhr-dev追溯配置保存—首次冻结—历史读取链审查；修正合法空白主表区域在索引/DHR反查及用途总览/模拟预览的消费差异。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 061d7f1ff71d11084667d08293fd7d5fe0d7680d
+    targetBranch: edhr-dev
+    targetCommit: 061d7f1ff71d11084667d08293fd7d5fe0d7680d
+    contractReadCommit: 061d7f1ff71d11084667d08293fd7d5fe0d7680d
+    uncommittedContractPaths: []
+  summary: PR18已人工合并且树与交付c118相同。按DEC-0077-42已定区域身份，合法空白tableId与省略/空串同属主表；冻结配置原值保留，消费者一致解释，不重新构建或改写历史。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  existingPolicyReferences: [DEC-0077-20, DEC-0077-33, DEC-0077-38, DEC-0077-42, rule.form-projection.trace-field-single-binding]
+  inferred:
+    - id: inference.trace-region-consumer-repair
+      statement: 索引提取以Java isBlank识别主表，输出仍用既有空串/form/-1主表定位；前端总览/模拟复用projectionTableId比较和样本定位，绑定原tableId不重写。
+      rationale: 保存与快照已接受同一主表区域；只修两个遗漏消费者，不改变绑定数、值、子表身份或历史解释政策。
+      relatedIds: [DEC-0077-42, DEC-0077-33, DEC-0077-38]
+  unresolved: []
+  replacementScopes: []
+  deliveryRequirements:
+    - 源码范围按固定提交/path/blob/SHA/方法记录，增量维护覆盖台账，不承接整文件或声称完整分支通过。
+    - 完成后、创建PR前实际复核任务漂移并向用户汇报进度与后续工作。
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: saved-trace-index-and-dhr-matching
+        change: 主表空白别名读取正确字段和值，保持main定位及子表实际行隔离。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java]
+      - area: projection-overview-and-simulation
+        change: 总览归入主表，模拟值放根对象，沿现有shared helper解释身份。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx, gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionPreview.ts]
+    transitiveImpacts:
+      - area: source-save-and-frozen-history
+        change: 同事务refresh及DHR冻结原件反查共享extract，合法值不再被遗漏。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java]
+    potentialImpacts:
+      - area: nonblank-table-identity-and-historical-cardinality
+        concern: 不得trim非空白ID、不合并其他子表/相同行号；不把新设计单绑校验套到旧冻结多绑。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
+    unaffectedAreas:
+      - area: configuration-migration-and-deferred-work
+        reason: 0116/0117仅核对原文和隔离测试，不写真实库；A12、两旧high、H009/H010/H012及未覆盖其他工作包不夹带整改。
+    compatibilityAndMigration: [不新增迁移、不自动回填已有索引、不恢复或清理历史数据；现有实例合法保存时沿原事务刷新索引。]
+    snapshotImpacts: [不改snapshot_json/source_json或hash，旧多绑仍沿旧validate解释；只读历史反查从既有冻结内容提取。]
+    auditImpacts: [不新增或绕过签署/批准，不把只读反查变成写入，不改来源归属及审计事件。]
+    permissionImpacts: [保留控制器授权、租户、实际来源范围及字段权限；不通过内容匹配创建DHR关系。]
+    testImpacts:
+      - scope: legal-main-region-consumer-boundaries
+        scenarios: [旧基线真实红证, Java空白主表别名与普通主表正对照, 非空白子表ID原值及行隔离, 已保存内容立即可查和替换刷新, DHR冻结原件反查及字节不变, 模拟根值及原配置不变, 实际总览两视口/预览请求, 旧多绑历史解释仍可用]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexServiceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrTraceReportPostgresTest.java, gmp-platform/frontend/scripts/test-projection-preview.mjs, gmp-platform/frontend/scripts/test-designer-save-browser.mjs]
+    evidenceGaps: [不外推完整制造业务/全量HTTP/全部DHR生命周期；全局旧静态UI和ESLint限制如实保留。本批新建隔离测试服务不代表真实部署或清理。]
+  extensionStrategy:
+    selectedPaths: [configuration, product-core]
+    rationale: 修现有共享提取器和模拟值所有者，前端复用既有projectionTableId；不新增解析体系、规则引擎或页面私有业务政策。
+    ownershipBoundaries:
+      - owner: FormTraceIndexService.extract
+        responsibility: 保存索引与DHR已冻结内容的统一只读提取。
+      - owner: projectionConfiguration.projectionTableId
+        responsibility: 已定Java空白区域身份的前端共享比较。
+      - owner: ProjectionDialog-and-projectionPreview
+        responsibility: 总览分组与独立模拟输入，不修改模板/真实值。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java
+      changeType: update
+      reason: isBlank主表解释。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionPreview.ts
+      changeType: update
+      reason: 主表样本及值分组复用区域身份。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx
+      changeType: update
+      reason: 总览主表分组，不造假失效子表。
+    - path: docs/knowledge
+      changeType: update
+      reason: 同步本轮已定规则的实现差异/证据与精确审查范围，不新增政策或提高成熟度。
+  acceptanceScenarios:
+    - id: scenario.trace-main-region-save-query-history
+      given: 按当前合法规则保存的主表单绑以空白tableId定位，源值已保存且有冻结依据
+      when: 刷新追溯索引或按权限读取DHR冻结记录
+      then: 与省略/空串主表一致命中，保留来源、原字节和子表隔离。
+      evidenceRequirements: [基线红证, 独立PostgreSQL保存/查询/冻结反查, 新实例独立复验]
+    - id: scenario.trace-main-region-overview-preview
+      given: 同一合法主表绑定在用途总览中打开
+      when: 输入模拟值并预览
+      then: 归入主表并提交根级值，不修改原tableId、模板或真实数据，非空白子表保持独立。
+      evidenceRequirements: [Node红绿, 真实Shell总览两视口及请求断言, 共享解释器回归]

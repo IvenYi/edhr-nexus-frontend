@@ -105,6 +105,29 @@ class DhrTraceReportPostgresTest {
         assertThat(detail.at("/recordsByOrigin/directory/0/fieldValues/value").asText()).isEqualTo("E-OLD");
     }
 
+    @Test void terminatedBlankMainRegionMatchesFrozenEvidenceWithoutRewritingIt() {
+        ObjectNode configured = form("equipmentText");
+        configured.withObject("/projection").put("version", "form-projection-v1");
+        ((ObjectNode) configured.at("/projection/bindings/0")).put("tableId", " \t\u3000");
+        com.zencas.edhr.template.service.FormProjectionInterpreter.validateConfiguration(configured);
+        jdbc.update("INSERT INTO form_instance_record VALUES(31,'default',300,'PRODUCTION_EXECUTION',?,?)",
+                configured.toString(), "{\"value\":\"E-OLD\"}");
+        new FormTraceIndexService(jdbc, mapper).refresh(31, "default", configured, mapper.createObjectNode().put("value", "E-OLD"));
+        terminated = reader.detail(3L).deepCopy().put("status", "EARLY_TERMINATED").put("terminationSnapshotAvailable", true);
+        String frozen = terminated.toString();
+        jdbc.update("UPDATE form_instance_record SET values_json=? WHERE id=31", "{\"value\":\"E-NEW\"}");
+        new FormTraceIndexService(jdbc, mapper).refresh(31, "default", configured, mapper.createObjectNode().put("value", "E-NEW"));
+        assertThat(reports.query(true, Map.of(), Map.of("equipmentText", "E-OLD"), 0, 20).at("/records/0/id").asText()).isEqualTo("3");
+        assertThat(reports.query(true, Map.of(), Map.of("equipmentText", "E-NEW"), 0, 20).path("total").asInt()).isZero();
+        var detail = reports.detail(3, true, Map.of("equipmentText", "E-OLD"));
+        assertThat(detail.path("traceEvidenceBasis").asText()).isEqualTo("TERMINATION_SNAPSHOT");
+        assertThat(detail.path("traceConditionsSatisfied").asBoolean()).isTrue();
+        assertThat(detail.at("/traceHits/0/hits/0/tableId").asText()).isEmpty();
+        assertThat(detail.at("/traceHits/0/hits/0/attributes/equipmentText").asText()).isEqualTo("E-OLD");
+        assertThat(terminated.toString()).isEqualTo(frozen);
+        assertThat(jdbc.queryForObject("SELECT snapshot_json FROM form_instance_record WHERE id=31", String.class)).isEqualTo(configured.toString());
+    }
+
     @Test void forwardFiltersDoNotDependOnAnyContentIndexAndPaginationIsDeduplicated() {
         var page = reports.query(false, Map.of("productCode", "P1", "workOrderNo", "WO1"), Map.of(), 0, 1);
         assertThat(page.path("total").asInt()).isEqualTo(2);

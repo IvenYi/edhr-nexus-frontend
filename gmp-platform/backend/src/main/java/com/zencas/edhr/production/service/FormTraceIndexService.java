@@ -49,7 +49,7 @@ public class FormTraceIndexService {
             if (!"formTrace".equals(binding.path("modelId").asText()) || !binding.path("enabled").asBoolean()) continue;
             String tableId = binding.path("tableId").asText("");
             JsonNode fields = form.path("fields");
-            if (!tableId.isEmpty()) {
+            if (!tableId.isBlank()) {
                 JsonNode table = field(fields, tableId);
                 if (table == null || !"subTable".equals(table.path("type").asText())) continue;
                 fields = table.path("typeConfig").path("columns");
@@ -60,7 +60,7 @@ public class FormTraceIndexService {
                 var source = sources.next();
                 JsonNode definition = field(fields, source.getValue().asText());
                 if (definition == null) continue;
-                if (tableId.isEmpty()) {
+                if (tableId.isBlank()) {
                     add(result, form.path("projection").path("lookupItems"), source.getKey(), definition, "", "form", -1, values.path(source.getValue().asText()));
                 } else {
                     JsonNode rows = values.path(tableId);

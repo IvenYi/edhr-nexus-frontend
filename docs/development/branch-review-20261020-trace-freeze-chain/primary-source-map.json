@@ -1,0 +1,82 @@
+{
+  "baselineCommit": "061d7f1ff71d11084667d08293fd7d5fe0d7680d",
+  "records": [
+    {
+      "id": "trace-primary-scope-01",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java",
+      "scope": "extract / refresh consumer boundary",
+      "sourceSha256": "854302280036e7ae81b50f80a765c609948927fb1cf124613c5d51cfb44b4039",
+      "depth": "listed-functions-and-call-boundaries-only",
+      "wholeFileReviewComplete": false,
+      "currentRuntimeExecuted": false,
+      "recordedOutcome": "source-read-and-minimal-fix-reviewed; runtime checks indexed separately",
+      "reviewBasis": "candidate commit containing this byte receipt; frozen by Git before import"
+    },
+    {
+      "id": "trace-primary-scope-02",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionDialog.tsx",
+      "scope": "ProjectionDialog region grouping / focus / preview response label",
+      "sourceSha256": "0cfe6f4e3795eac2aac248aec4feb3088066d4d0363f00653cff8da9bb41c1a2",
+      "depth": "listed-functions-and-call-boundaries-only",
+      "wholeFileReviewComplete": false,
+      "currentRuntimeExecuted": false,
+      "recordedOutcome": "source-read-and-minimal-fix-reviewed; runtime checks indexed separately",
+      "reviewBasis": "candidate commit containing this byte receipt; frozen by Git before import"
+    },
+    {
+      "id": "trace-primary-scope-03",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionPreview.ts",
+      "scope": "previewSampleKey / projectionPreviewFieldIds / buildProjectionPreviewValues",
+      "sourceSha256": "44ee36e7a516a539819ee7491e1bedc8ed85fcccf13add002db88cc52089a034",
+      "depth": "listed-functions-and-call-boundaries-only",
+      "wholeFileReviewComplete": false,
+      "currentRuntimeExecuted": false,
+      "recordedOutcome": "source-read-and-minimal-fix-reviewed; runtime checks indexed separately",
+      "reviewBasis": "candidate commit containing this byte receipt; frozen by Git before import"
+    },
+    {
+      "id": "trace-primary-scope-04",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java",
+      "scope": "validate / validateConfiguration / preview / append",
+      "sourceSha256": "110946d1735814bd5de0e45c7a3478598fee06a22b1dd5f1840cfed7f008a48b",
+      "depth": "listed-functions-and-call-boundaries-only",
+      "wholeFileReviewComplete": false,
+      "currentRuntimeExecuted": false,
+      "recordedOutcome": "source-read-and-minimal-fix-reviewed; runtime checks indexed separately",
+      "reviewBasis": "candidate commit containing this byte receipt; frozen by Git before import"
+    },
+    {
+      "id": "trace-primary-scope-05",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java",
+      "scope": "withLookupSnapshot / prepareDesign",
+      "sourceSha256": "dc13fd196fed0a49f97ac8c58c313a62c52c562e159ff1120e1e9f51e7d5d065",
+      "depth": "listed-functions-and-call-boundaries-only",
+      "wholeFileReviewComplete": false,
+      "currentRuntimeExecuted": false,
+      "recordedOutcome": "source-read-and-minimal-fix-reviewed; runtime checks indexed separately",
+      "reviewBasis": "candidate commit containing this byte receipt; frozen by Git before import"
+    },
+    {
+      "id": "trace-primary-scope-06",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java",
+      "scope": "saveFormTemplateVersionDesign / projectionPreview",
+      "sourceSha256": "195bb14c7f2aa00f6bc93d4c6b4eaff8476fda6f1d2eee8cfcfaedb5c4eff5a3",
+      "depth": "listed-functions-and-call-boundaries-only",
+      "wholeFileReviewComplete": false,
+      "currentRuntimeExecuted": false,
+      "recordedOutcome": "source-read-and-minimal-fix-reviewed; runtime checks indexed separately",
+      "reviewBasis": "candidate commit containing this byte receipt; frozen by Git before import"
+    },
+    {
+      "id": "trace-primary-scope-07",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "scope": "build / customForm / form / collectBindings",
+      "sourceSha256": "84da4305797fc2536359da9ccf933edfba96da95daecb2ea5567e31d36a454e0",
+      "depth": "listed-functions-and-call-boundaries-only",
+      "wholeFileReviewComplete": false,
+      "currentRuntimeExecuted": false,
+      "recordedOutcome": "source-read-and-minimal-fix-reviewed; runtime checks indexed separately",
+      "reviewBasis": "candidate commit containing this byte receipt; frozen by Git before import"
+    }
+  ]
+}

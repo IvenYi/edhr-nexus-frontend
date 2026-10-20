@@ -16,7 +16,7 @@ rules:
       retainFirstAssignment: false
       preservedContracts: [cross-field-trace-item-reuse, business-role-reuse, existing-frozen-evidence]
     explanation: DEC-0077-42按本轮条件授权收紧配置，一个主表真实字段或子表列最多一个追溯项，同一项仍允许在不同字段及表单复用。用户后续明确直接删除已配好的多绑配置，不再兼容或承诺旧配置人工修正；存量清理按独立一次性清理规则。按表区域和字段身份扫描全部sources，包含停用配置及重复同项；表区域身份沿既有运行解释，tableId省略、空串或Java String.isBlank判定的空白均为同一主表区域，非空白ID保持原值、不剪裁或猜测子表身份。后续导入、设计保存及新的配置冻结拒绝多绑，不静默保留第一项。新设计约束不套已有实例或冻结证据读取，业务统计角色共享、真实归属、来源权限、签署及审计仍按原契约。
-    evidenceIds: [evidence.trace-field-single-binding-20261019]
+    evidenceIds: [evidence.trace-field-single-binding-20261019, evidence.trace-region-consumption-20261020]
   - id: rule.form-projection.cleanup-multi-trace-configuration
     name: 一次性删除存量多绑字段的全部追溯配置
     status: specified
