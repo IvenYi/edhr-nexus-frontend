@@ -1,0 +1,98 @@
+{
+  "schema": "edhr-scoped-audit-ledger/v1",
+  "baselineCommit": "12e2bc218b3830c18ea74c44108f296d3e04ee3c",
+  "tree": "0c52b36d98b58d6394149232f1e8215236c3b04d",
+  "catalogSha256": "40a2004bfb1d37f2f0916a9e65f7d5106eaf30829d99f92a3e4b5e326ff59dad",
+  "generatorSha256": "98a85e3ec3137910742338ad51c0334ed70a09d3db6d15cc4e3ef5758e353050",
+  "inventoryGeneratorSha256": "f77668cbf93108bd9bef10a83f07e6ba8de0433e9fee75448b3dc4934221b9df",
+  "inventory": {
+    "trackedPaths": 2382,
+    "classifiedPaths": 2382,
+    "classificationBasis": "inferred-path-classifier",
+    "workPackages": {
+      "W5": 379,
+      "W4": 202,
+      "W0-W7": 1296,
+      "W1": 132,
+      "W2": 198,
+      "W3": 175
+    },
+    "entrypointCandidates": {
+      "http-annotation": 437,
+      "state-definition-candidate": 8,
+      "background-candidate": 1,
+      "frontend-route-candidate": 191
+    },
+    "migrationFiles": 126
+  },
+  "sourceReview": {
+    "recordedScopes": 216,
+    "carryStates": {
+      "needs-delta-review": 45,
+      "retained-scoped-evidence": 171
+    },
+    "sourceRelations": {
+      "file-changed": 45,
+      "unchanged": 171
+    },
+    "wholeFilesCompleted": 0,
+    "sourceImportQualifications": 18,
+    "scopeRecordsAreNotDistinctMethodsOrACompleteDenominator": true
+  },
+  "knowledgeReview": {
+    "currentIds": 2535,
+    "historicalScopedReviews": 45,
+    "historicalConclusions": {
+      "consistent": 40,
+      "superseded": 1,
+      "evidence-gap": 4
+    },
+    "recordRelations": {
+      "unchanged": 45
+    },
+    "evidenceStates": {
+      "needs-delta-review": 26,
+      "retained-scoped-evidence": 19
+    },
+    "maintenanceReports": 26,
+    "newSemanticReviews": 0,
+    "maintenanceIsNotSemanticAcceptance": true
+  },
+  "remediation": {
+    "findingRecords": 42,
+    "dispositions": {
+      "known-fixed-before-audit": 10,
+      "fixed-and-independently-accepted": 20,
+      "pending-adjudication": 4,
+      "confirmed-pending": 2,
+      "corrected-in-l0-documentation": 1,
+      "corrected-and-independently-accepted-l0": 1,
+      "user-deferred": 2,
+      "fixed-awaiting-independent-acceptance": 2
+    },
+    "recordKinds": {
+      "historical-master-record": 21,
+      "product-repair-subfinding": 3,
+      "product-defect": 8,
+      "audit-documentation-defect": 3,
+      "test-harness-defect": 2,
+      "test-fixture-subfinding": 1,
+      "imported-independent-finding": 2,
+      "inherited-dhr-implementation-gap": 2
+    },
+    "recordsAreNotDistinctDefects": true,
+    "newAdjudications": 0
+  },
+  "runtime": {
+    "reportedQualityArtifacts": 70,
+    "reportedResults": {
+      "passed": 49,
+      "failed": 20,
+      "blocked": 1
+    },
+    "businessChecksExecutedInThisBatch": [],
+    "oldResultsAreScopedHistoricalEvidence": true
+  },
+  "overallAuditComplete": false,
+  "overallPercent": null
+}
