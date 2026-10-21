@@ -1,0 +1,45 @@
+{
+  "author": "/root/w3c_independent_final",
+  "status": "FINAL",
+  "independentNotInvolvedInAnyRepair": true,
+  "baseCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "testedCommit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+  "knowledgeVersion": "0.3.25",
+  "requiredChecks": 16,
+  "requiredPassed": 16,
+  "businessTests": 89,
+  "nativePostgresSubset": 45,
+  "h2DhrLifecycleSubset": 5,
+  "knowledgeTests": 89,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "independentBaseline": {
+    "tests": 22,
+    "expectedPermissionFailures": 9,
+    "passedControls": 13,
+    "errors": 0,
+    "skipped": 0
+  },
+  "initialSnapshotFailure": {
+    "freshTestSuites": 0,
+    "productDefect": false,
+    "reason": "Missing sibling frontend print-build prerequisite; exact-base files restored only in owned temporary snapshot.",
+    "originalPreserved": true
+  },
+  "qualityResult": "passed",
+  "children": [
+    {
+      "author": "/root/w3c_independent_final/ledger_receipts",
+      "status": "FINAL",
+      "checks": 20,
+      "passed": 20,
+      "repositoryMutations": false
+    }
+  ],
+  "allChildInstancesFinal": true,
+  "noNewBlockingConditions": true,
+  "fullBranchAuditComplete": false,
+  "rawLogsXmlTokensExcluded": true,
+  "temporaryPostgresCleanupOwner": "root after final; not performed by QA"
+}

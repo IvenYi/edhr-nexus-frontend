@@ -1,0 +1,251 @@
+qualityResult:
+  result: passed
+  baseCommit: e8ecc103c8e6825c61c61b39b9cbd12b1474700e
+  headCommit: 42cb2820946287d409a2a02394cc85e4067e20bb
+  contractBaseline:
+    sourceCommit: 42cb2820946287d409a2a02394cc85e4067e20bb
+    targetBranch: edhr-dev
+    targetCommit: e8ecc103c8e6825c61c61b39b9cbd12b1474700e
+    contractReadCommit: 42cb2820946287d409a2a02394cc85e4067e20bb
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.fixed-candidate-contract
+    required: true
+    category: requirements
+    description: 独立核对最新目标、实际干净候选及契约无增量。
+    method: command
+    command: git rev-parse; git status --porcelain; git ls-remote origin refs/heads/edhr-dev;
+      git diff base head -- contracts
+    outcome: passed
+    evidence:
+    - base=e8ecc103c8e6825c61c61b39b9cbd12b1474700e
+    - head/testedCandidate=42cb2820946287d409a2a02394cc85e4067e20bb
+    - working tree clean; base is ancestor of head, so head is the actual additive
+      integration candidate
+    - edhr-w3c-qa-source-receipts.json
+  - id: check.minimal-scope-impact
+    required: true
+    category: requirements
+    description: L2影响分析覆盖权限/快照/审计/兼容；实际生产差异仅3声明，没有新政策、权限码、重构或数据处置。
+    method: inspection
+    command: Inspect decisionPackage and complete product diff
+    outcome: passed
+    evidence:
+    - edhr-w3c-qa-source-receipts.json
+    - 'Production diff: one existing controller +3; new authorization fixture +230;
+      no other product change.'
+  - id: check.baseline-independent-red
+    required: true
+    category: security
+    description: 同一fixture在e8ecc隔离源重现9个预期403实际200，13对照通过，0error/skip。
+    method: automated-test
+    command: python3 /tmp/edhr-w3c-qa-baseline-retry.py
+    outcome: passed
+    evidence:
+    - edhr-w3c-qa-baseline-retry-summary.json
+    - First snapshot environment failure is separately retained, not counted as product
+      red. Nine failures stop before later no-write assertion.
+  - id: check.jwt-method-security-no-write
+    required: true
+    category: api
+    description: 新22项使用真实签名JWT和实际过滤链/方法安全/控制器/引擎/JPA代理；九无干预能力请求403且四类持久化原件不变，三匿名401。
+    method: automated-test
+    command: python3 /tmp/edhr-w3c-qa-run.py candidate
+    outcome: passed
+    evidence:
+    - 'edhr-w3c-qa-candidate-summary.json: WorkflowInstanceAuthorizationIntegrationTest22'
+    - Bearer credentials are generated with a synthetic fixture key; no real account/login
+      or socket/browser E2E is claimed.
+  - id: check.authorized-administration
+    required: true
+    category: regression
+    description: 已有干预权限的create/update/delete正向及专用终止保持；只验证已有行为，不认证管理员任意内容治理。
+    method: automated-test
+    command: WorkflowInstanceAuthorizationIntegrationTest administrative and termination
+      controls
+    outcome: passed
+    evidence:
+    - 'edhr-w3c-qa-candidate-summary.json: existingAuthorizedAdministrativeWritesRemainAvailable;
+      authorizedDedicatedTerminationKeepsTaskAndLogChangesTogether'
+  - id: check.dhr-exclusive-guards
+    required: true
+    category: security
+    description: 授权管理员也不能借通用CRUD修改DHR，拒绝前后实例/任务/日志/审计原件保持。
+    method: automated-test
+    command: WorkflowInstanceAuthorizationIntegrationTest DHR parameterized controls
+    outcome: passed
+    evidence:
+    - 'edhr-w3c-qa-candidate-summary.json: interventionAuthorityDoesNotBypassExistingDhrProtection3'
+  - id: check.read-candidate-identity
+    required: true
+    category: security
+    description: 普通读取和真实当前候选完成保持；不因新增管理权限阻止候选，无视伪造operatorId。
+    method: automated-test
+    command: WorkflowInstanceAuthorizationIntegrationTest read and candidate controls
+    outcome: passed
+    evidence:
+    - 'edhr-w3c-qa-candidate-summary.json: ordinaryReaderKeepsExistingReadEndpoints;
+      candidateCanCompleteThroughEngineWithoutAdministrativeWritePermission'
+  - id: check.native-postgres-transfer
+    required: true
+    category: database
+    description: 既有转办PG23覆盖当前处理权、原件、回滚、并发锁等待和终止/完成邻接；新HTTP22与其合计45原生PG。
+    method: automated-test
+    command: mvn -Dtest=WorkflowTransferPostgresTest,WorkflowInstanceAuthorizationIntegrationTest
+      test with owned loopback URLs
+    outcome: passed
+    evidence:
+    - edhr-w3c-qa-candidate-summary.json
+    - Both env URLs point only to owned synthetic PostgreSQL at127.0.0.1:55432; no
+      production tables or historical data. New authorization tables are Hibernate-generated,
+      not a Liquibase migration proof.
+  - id: check.authentication-regression
+    required: true
+    category: unit
+    description: 既有安全配置6和JWT过期2回归通过。
+    method: automated-test
+    command: SecurityConfigTest,SecurityJwtExpirationTest
+    outcome: passed
+    evidence:
+    - 'edhr-w3c-qa-candidate-summary.json: 8 tests'
+  - id: check.workflow-regression
+    required: true
+    category: regression
+    description: 工作流引擎18和任务控制器2回归通过，现有授权/状态/终态路径保持。
+    method: automated-test
+    command: WorkflowEngineTest,WorkflowTaskControllerTest
+    outcome: passed
+    evidence:
+    - 'edhr-w3c-qa-candidate-summary.json: 20 tests'
+  - id: check.dhr-adjacent-regression
+    required: true
+    category: regression
+    description: DHR服务10、生命周期5及Signature实体1通过；DHR5为H2，实体1不冒充签名认证或摘要重算测试。
+    method: automated-test
+    command: DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest,SignatureTest
+    outcome: passed
+    evidence:
+    - 'edhr-w3c-qa-candidate-summary.json: 16 tests'
+  - id: check.formal-knowledge
+    required: true
+    category: ontology
+    description: 正式Maven知识89通过；两个内部实现证据与6条有限语义范围保持现行DEC边界，不新增规范或提升成熟度。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f tools/knowledge-model/pom.xml
+      clean test
+    outcome: passed
+    evidence:
+    - edhr-w3c-qa-knowledge-summary.json
+    - docs/development/branch-review-20261020-w3-task-commands/evidence/ontology/edhr-w3c-final-ontology-result.yaml
+    - DEC-0031/0033/0081 and multi-tenant question manually read; source receipts
+      and ledger-helper exact six identity verification.
+  - id: check.coverage-ledger-reproducibility
+    required: true
+    category: documentation
+    description: 固定bc30d411台账完整字节重建，继承314/90/46只6已验收处置推进；当前392/96/47不冒称唯一覆盖，100/57delta、4gap和整文件0保留。
+    method: command
+    command: python3 scripts/build-branch-review-ledger.py --ref bc30d411ab6a7312099943db8581d0583152a9e0
+      --catalog docs/development/branch-review-20261020-w3-task-commands/source-catalog.json
+      --out docs/development/branch-review-20261020-w3-task-commands/ledger --check
+    outcome: passed
+    evidence:
+    - 'edhr-w3c-qa-ledger-summary.json: 20 independent read-only checks passed; helper
+      FINAL'
+    - edhr-w3c-qa-ledger-rebuild-output.json
+  - id: check.evidence-integrity
+    required: true
+    category: audit
+    description: 原失败、setup错误、红证断言限制及中断身份不确定性均保留，49归档/ZIP断言和源码/语义Git收据通过；不把历史结果伪装本批执行。
+    method: inspection
+    command: Read archived reports and verify SHA/ZIP/finite record receipts
+    outcome: passed
+    evidence:
+    - edhr-w3c-qa-ledger-summary.json
+    - edhr-w3c-qa-baseline-environment.json
+    - No raw Maven/XML/JWT/settings/env artifacts newly tracked.
+  - id: check.applicability-ui-migration
+    required: true
+    category: requirements
+    description: 无前端UI、依赖、schema或迁移变更；浏览器/视觉/完整前端构建及迁移验收不适用，本检查仅验证该边界。
+    method: inspection
+    command: Inspect complete changed paths and Maven generated-resources configuration
+    outcome: passed
+    evidence:
+    - edhr-w3c-qa-source-receipts.json
+    - Backend Maven lifecycle did run its existing build:dhr-print prerequisite; this
+      is not full frontend application build, browser verification, production export
+      or migration acceptance.
+    - Prior premium strict/ESLint limitations remain historical, not marked green.
+  - id: check.whitespace-and-final-state
+    required: true
+    category: documentation
+    description: CRLF合规diff检查通过，全部测试后固定head和工作树保持干净，未查Actions或自动合并部署。
+    method: command
+    command: git -c core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+      diff --check base head; git status --porcelain
+    outcome: passed
+    evidence:
+    - edhr-w3c-qa-ledger-summary.json
+    - edhr-w3c-qa-source-receipts.json
+  findings:
+  - id: W3C-INSTANCE-WRITE-AUTH-001
+    severity: high
+    scope: WorkflowInstanceController direct create/update/delete administrative endpoints
+    summary: 普通登录者直接写流程实例的权限遗漏已由本批3声明纠正并独立复验。
+    reproductionSteps:
+    - At exacte8ecc snapshot, copy the unchanged new fixture only and use owned synthetic
+      PG.
+    - Run WorkflowInstanceAuthorizationIntegrationTest with three ordinary permission
+      sets against three writes.
+    - Repeat same fixture on clean42cb candidate.
+    expectedResult: Ordinary authenticated requests403 with original persisted state
+      unchanged; anonymous401; existing authorized and candidate/read/DHR controls
+      retain prior behavior.
+    actualResult: Baseline22:9 expected403 but actual200,13controls passed,0errors/skips.
+      Fixed candidate22all passed including no-write assertions; entire focused89all
+      passed.
+    evidence:
+    - edhr-w3c-qa-baseline-retry-summary.json
+    - edhr-w3c-qa-candidate-summary.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: fc0980035d717fd1790ac72c907f940390540c4d
+    - type: command
+      reference: 'edhr-w3c-qa-candidate-summary.json: independent clean42cb89business/45PG
+        passed0skip'
+  residualRisks:
+  - id: risk.remaining-full-audit
+    description: Overall W0-W7 audit remains incomplete; inventory and scoped records
+      are not whole-file/branch acceptance.
+    impact: Do not infer fullW2/W3, W4-W7, four old knowledge gaps or A12 completed.
+    mitigation: Continue fixed-target scoped audit and ledger carry-forward after
+      manual merge.
+  - id: risk.adjacent-policy-and-signature
+    description: Administrator rawCRUD content/reason/audit governance, generic action/signature
+      references and full multitenant isolation are outside this correction; Signature
+      JSONB/archive is source-onlyW5 lead.
+    impact: No certification of arbitrary administrative writes, all signature consumers
+      or native digest round trips.
+    mitigation: Keep exact source lead scope, obtain real chain evidence and clarify
+      only actual business ambiguities before policy changes.
+  - id: risk.user-deferred-record-control
+    description: User-deferred record-control change/void integration and twoDHR high/A12
+      remain open.
+    impact: Complete DHR lifecycle is not accepted by this permission slice.
+    mitigation: Resume dependent lifecycle tests only after upstream implemented;
+      retain current high/gap states.
+  - id: risk.runtime-scope
+    description: NativePG uses isolated synthetic/Hibernate tables; no production
+      migration, real account login, browser or socketE2E was executed. DHR lifecycle5usesH2.
+    impact: These passing results establish the specified permission/runtime boundaries,
+      not deployment or complete production data correctness.
+    mitigation: Keep schema/DB/API/browser distinctions and run applicable integration/release
+      checks when those scopes change.
+  blockingConditions: []

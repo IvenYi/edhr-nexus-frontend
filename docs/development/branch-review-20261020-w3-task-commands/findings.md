@@ -4,7 +4,7 @@
 
 隔离PG/真实JWT复现：运行 `WorkflowInstanceAuthorizationIntegrationTest`，普通账号分别持空权限、仅页面权限、仅任务审批权限，对三个入口发有效请求；九项预期403实际200。其余13项匿名、授权管理、DHR防绕过、读取、候选完成及专用终止对照通过。红证的断言在HTTP状态处停止，因此不把这九项的后续零写断言误称已执行；控制器直写源码和真实200响应是当前红证。修复后同一fixture全部22通过，拒绝请求的实例/任务/日志/审计原件回读不变；授权管理操作、候选审批和DHR保护保持。原始摘要与首次夹具失败均保留。
 
-根因是方法安全遗漏，最小修复为三个已有 `@PreAuthorize("hasAuthority('workflow.intervene')")`。核心提交 fc0980035d717fd1790ac72c907f940390540c4d。主侧89相邻测试通过后仍为 fixed-awaiting-independent-acceptance，不能自行升级验收。
+根因是方法安全遗漏，最小修复为三个已有 `@PreAuthorize("hasAuthority('workflow.intervene')")`。核心提交 fc0980035d717fd1790ac72c907f940390540c4d。主侧89相邻测试通过后的冻结台账仍为 fixed-awaiting-independent-acceptance，不能自行升级验收。后续全新独立对42cb2820已正式passed，16/16检查，实际89业务+89知识通过；本问题resolved只登记acceptance.json，不回写旧catalog、原件或旧处置。
 
 历史去重承接PR20六项已验收结果，其余40问题不改。H009/H010/H012及既有锁刷新修复不重开。当前314旧源码范围和90旧语义记录的原始结论保留，文件/依赖发生变化的项目仍待增量核对；新增范围另列，不称整文件完成。
 

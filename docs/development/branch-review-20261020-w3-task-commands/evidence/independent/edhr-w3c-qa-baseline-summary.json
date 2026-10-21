@@ -1,0 +1,25 @@
+{
+  "phase": "baseline",
+  "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "fixtureSha256": "948f893650653528f5fce8fd513cf1d8f9e9774a3ad9241a455c5e3568696da4",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=WorkflowInstanceAuthorizationIntegrationTest",
+    "test"
+  ],
+  "cwd": "/tmp/edhr-w3c-qa-baseline-tree",
+  "exit": 1,
+  "suites": [],
+  "rawLogsAndXmlExcluded": true,
+  "independentAuthor": "/root/w3c_independent_final",
+  "totals": {
+    "tests": 0,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

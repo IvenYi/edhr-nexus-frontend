@@ -1,6 +1,8 @@
 # W3 实例管理写入口权限
 
-延续 edhr-dev 整体审查，执行级别 L2。PR20 已人工合入：最新目标 `e8ecc103c8e6825c61c61b39b9cbd12b1474700e`，合并树与交付 `a23f94c2` 相同。PR5–20 不重开。本批核心提交 `fc0980035d717fd1790ac72c907f940390540c4d`，知识提交 `684db88a` 的正式 ontologyResult 已 updated/FINAL，89知识校验及6条有限语义核对通过；当前等待全新独立验收，尚未创建 PR，不宣称整轮完成。
+延续 edhr-dev 整体审查，执行级别 L2。PR20 已人工合入：最新目标 `e8ecc103c8e6825c61c61b39b9cbd12b1474700e`，合并树与交付 `a23f94c2` 相同。PR5–20 不重开。本批核心提交 `fc0980035d717fd1790ac72c907f940390540c4d`，知识提交 `684db88a` 的正式 ontologyResult 已 updated/FINAL，89知识校验及6条有限语义核对通过。全新独立对干净候选 `42cb2820` 正式 passed，16/16必需检查通过，本轮权限切片已完成，等待PR交付；完整分支审查继续。
+
+最终验收见 [acceptance.json](acceptance.json) 和 [独立qualityResult](evidence/independent/edhr-w3c-qa-qualityResult.yaml)。独立实际89业务+89知识、45原生PG均通过，零跳过；独立旧基线同fixture22为9红13正，与主侧一致。首次独立隔离目录缺前端打印构建资源导致0XML，保留环境失败原件，不计产品红证；补齐相同基线资源后有效复现。全部当前本体/质量实例及质量子实例FINAL后，已实际向用户完成[PR前范围复核](scope-review.md)。后续仅L0归档/登记，不改变产品、测试、知识或冻结catalog/ledger，不把原报告改为后续提交的重跑。
 
 发现 `W3C-INSTANCE-WRITE-AUTH-001`：普通登录者可通过实例 POST、PUT、DELETE 直接调用仓库，绕过相邻 terminate 和任务管理写入口已有的 `workflow.intervene`。修复仅给这三个入口加同一既有权限声明，不新建权限码，不改变管理员裸 CRUD 内容政策、读取、候选审批或 DHR 专属规则。依据和范围见 [decision-package.yaml](decision-package.yaml) 与 [findings.md](findings.md)。
 
@@ -8,4 +10,4 @@
 
 本批不涉及前端、UI、迁移、依赖或配置，未执行浏览器/视觉/前端构建或生产迁移。此前 premium strict 和 ESLint 的限制保持历史状态，不称本批已通过全站门禁。未查看或触发 GitHub Actions，未改历史数据或恢复生产库。
 
-当前固定清单见 [ledger/summary.json](ledger/summary.json)，有限范围、历史及新增语义、整改处置分别记录；正式知识原件见 [ontologyResult](evidence/ontology/edhr-w3c-final-ontology-result.yaml)。下一步由全新实例独立验收。创建 PR 前实际向用户汇报任务有无漂移、当前进度和后续范围。整体审查仍有完整W2/W3、W4–W7、四个历史知识gap和用户暂缓的记录控制/DHR两项high/A12；相邻源码线索不自动计为已修复或已验收。
+当前固定清单见 [ledger/summary.json](ledger/summary.json)，有限范围、历史及新增语义、整改处置分别记录；正式知识原件见 [ontologyResult](evidence/ontology/edhr-w3c-final-ontology-result.yaml)。冻结台账保留验收前的fixed-awaiting-independent-acceptance，最终处置只登记acceptance.json。整体审查仍有完整W2/W3、W4–W7、四个历史知识gap和用户暂缓的记录控制/DHR两项high/A12；相邻源码线索不自动计为已修复或已验收。未自动merge/deploy。
