@@ -1,5 +1,7 @@
 # 持续推进台账
 
+已交付 [PR22](https://github.com/IvenYi/edhr-nexus-frontend/pull/22)，audit/edhr-dev-signature-payload-20261021 → edhr-dev，等待用户人工merge。正式独立受测aaef52a7，随后仅L0档案/验收/范围和PR登记；最新目标仍c3343f45，当前产品/测试/知识/契约及冻结catalog/ledger与受测版本相同。下一批收到合入消息先显式fetch最新edhr-dev，优先复现待办/已办分页边界并推进W3余项；通用动作矩阵等待真实业务答复。不能把PR已创建当已合并，旧历史签名不可恢复及整体W2/W3、W4–W7和用户暂缓保持。
+
 本轮全新独立对aaef52a7已正式passed/FINAL，8/8必需检查，clean104业务（18原生PG）+89知识均0失败/错误/跳过；独立重现旧7例真实红及原件/ledger核验完成。本体及全部子实例FINAL后，已在PR前实际向用户汇报任务无漂移、当前进度和后续。签名high的最终验收见[acceptance](../branch-review-20261021-signature-payload/acceptance.json)，冻结目录不回写；当前仅L0原件归档/PR交付。自建合成PG按确切ID清理，不自动merge/deploy。
 
 当前检查点：[签署原文数据库往返与归档校验](../branch-review-20261021-signature-payload/README.md)。PR21已人工合入最新edhr-dev@c3343f45且树与360b07ad相同，无契约增量。已实际核对W3任务动作/终态与签署消费；真实PG证实JSONB改变原签署字符串、归档原字节SHA校验拒绝，升级L2，核心2ead6de2只改TEXT映射及0118前向迁移、保留JSONB输入校验，不改算法/资格/拒绝或历史摘要。知识c4af50a7正式updated/FINAL，89知识及12有限语义通过。

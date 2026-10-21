@@ -1,5 +1,7 @@
 # 签署原文的数据库往返与归档校验
 
+已交付 [PR22](https://github.com/IvenYi/edhr-nexus-frontend/pull/22)，来源audit/edhr-dev-signature-payload-20261021，目标edhr-dev，等待用户人工合并。PR创建时GitHub报告MERGEABLE/CLEAN；该状态不证明仓库强制门禁配置，未查询或触发Actions。受测后仅L0交付记录，实际受测aaef52a7保持为质量基线，最新交付HEAD以分支Git记录为准。[交付登记](delivery.json)保留创建时来源及目标，不伪造最终提交自引用。
+
 延续edhr-dev整体审查，PR21已人工合入c3343f45bb79f72368937f0d197ae01f989f0390，树与交付360b07ad相同，无契约增量。当前L2仅修签署原文存储；W3任务动作/候选/终态链另有有限源码映射，未据此修改业务政策。PR5–21不重开。
 
 `W3-SIGNATURE-PAYLOAD-001`：现有服务对原JSON字符串UTF8作SHA-256，Signature却以JSONB存储，PG会规范化字符；真实DHR来源及审批签名消费者按读回原字符串重算，合法新签署因此被拒绝。旧归档测试用H2/TEXT，未覆盖该差异。原生PG初组7项有1原文断言失败、3实际归档业务异常及3对照通过；不是夹具setup失败。原件与源码见 [findings.md](findings.md)。
