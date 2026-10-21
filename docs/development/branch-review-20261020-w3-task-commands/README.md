@@ -1,5 +1,7 @@
 # W3 实例管理写入口权限
 
+已创建 [PR21](https://github.com/IvenYi/edhr-nexus-frontend/pull/21)，来源 `audit/edhr-dev-w3-task-command-boundaries-20261020`，目标 `edhr-dev`，等待用户人工合并。没有自动merge/deploy。实际独立受测42cb2820之后仅L0归档/验收/范围及PR登记；产品、测试、知识与冻结catalog/ledger未变。临时自建PG已按确切ID移除，见 [清理记录](evidence/owned-postgres-cleanup.json)。
+
 延续 edhr-dev 整体审查，执行级别 L2。PR20 已人工合入：最新目标 `e8ecc103c8e6825c61c61b39b9cbd12b1474700e`，合并树与交付 `a23f94c2` 相同。PR5–20 不重开。本批核心提交 `fc0980035d717fd1790ac72c907f940390540c4d`，知识提交 `684db88a` 的正式 ontologyResult 已 updated/FINAL，89知识校验及6条有限语义核对通过。全新独立对干净候选 `42cb2820` 正式 passed，16/16必需检查通过，本轮权限切片已完成，等待PR交付；完整分支审查继续。
 
 最终验收见 [acceptance.json](acceptance.json) 和 [独立qualityResult](evidence/independent/edhr-w3c-qa-qualityResult.yaml)。独立实际89业务+89知识、45原生PG均通过，零跳过；独立旧基线同fixture22为9红13正，与主侧一致。首次独立隔离目录缺前端打印构建资源导致0XML，保留环境失败原件，不计产品红证；补齐相同基线资源后有效复现。全部当前本体/质量实例及质量子实例FINAL后，已实际向用户完成[PR前范围复核](scope-review.md)。后续仅L0归档/登记，不改变产品、测试、知识或冻结catalog/ledger，不把原报告改为后续提交的重跑。

@@ -1,5 +1,7 @@
 # 持续推进台账
 
+已交付 [PR21](https://github.com/IvenYi/edhr-nexus-frontend/pull/21)，来源audit/edhr-dev-w3-task-command-boundaries-20261020，目标edhr-dev，等待用户人工merge。实际全新独立受测42cb2820正式passed，16/16必需检查，89业务+89知识及45原生PG通过、0skip；本体updated/FINAL，当前全部质量子实例FINAL。受测后只有L0归档/验收/范围与PR登记，冻结源码/测试/知识/catalog/ledger保持。自建临时PG已按exactID清理；下一轮先显式fetch最新edhr-dev并按W3剩余及台账待核范围继续，不自动合并、部署或恢复数据。
+
 当前检查点：[W3实例管理写入口权限](../branch-review-20261020-w3-task-commands/README.md)。已显式fetch最新edhr-dev@e8ecc103，PR20人工合并树与交付a23f94c2相同，PR5–20不重开。本批L2只给instance POST/PUT/DELETE补既有workflow.intervene，核心fc098003；真实JWT/PG同组22旧基线9红13正、修复22绿。知识684db88a的正式结果updated/FINAL，89知识及6条有限语义通过；全新独立对干净42cb2820正式passed，16/16必需检查，实际89业务+89知识、45原生PG、0skip。当前所有门禁角色及子实例FINAL，已在PR前向用户实际汇报任务无范围漂移、当前进度及后续；仅L0归档和待人工合并PR交付。中断前未返回的正式角色结果没有复用或虚报FINAL，由恢复后实际实例完成门禁。
 
 本批保留管理员内容策略/通用签名引用/非法动作等相邻范围，不开发用户暂缓记录控制。新签名JSONB与DhrArchive读时重算只有源码线索，后续W5须单独原生PG验证；旧W5-AUDIT-HASH-001不因此关闭。当前全分支没有可信完成百分比，完整W2/W3、W4–W7、四旧gap、两项用户暂缓DHR high/A12继续保留。最终台账分母与范围以本批固定catalog/ledger为准，旧314范围/90历史语义/46问题原件保持，只依原验收承接PR20六项处置。
