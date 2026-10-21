@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.workflow-instance-administrative-write-authorization
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java
+    description: original-evidence；fc0980035d717fd1790ac72c907f940390540c4d的create/update/delete三个HTTP实例管理写入口复用相邻terminate和任务管理CRUD已有的workflow.intervene方法权限，纠正仅登录即可直接写仓库的遗漏。该证据只描述管理入口技术边界，不改变候选任务处理或读取授权，不认证管理员裸CRUD内容、原因、审计及签名策略全部合法，不新增业务政策或完整多租户隔离。
+    visibility: internal
+  - id: evidence.workflow-instance-administrative-write-authorization-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowInstanceAuthorizationIntegrationTest.java
+    description: original-evidence；fc0980035d717fd1790ac72c907f940390540c4d的22项测试经过真实JWT过滤链、方法安全、控制器、引擎和JPA事务代理，覆盖三写入口的匿名401、无干预权限403及数据库原件不变、既有授权管理正向、DHR专属保护、普通读取、候选审批及专用终止。可用隔离原生PostgreSQL执行，默认H2兼容模式；测试源码和主侧报告不替代本批固定候选的独立质量验收，也不证明全工作流或摘要重算能力。
+    visibility: internal
