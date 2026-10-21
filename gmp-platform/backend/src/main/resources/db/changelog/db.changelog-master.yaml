@@ -249,3 +249,5 @@ databaseChangeLog:
       file: db/changelog/0116-trace-field-single-binding.sql
   - include:
       file: db/changelog/0117-trace-field-blank-region-cleanup.sql
+  - include:
+      file: db/changelog/0118-signature-payload-text.sql
