@@ -1,0 +1,22 @@
+{
+  "schema": "edhr-audit-pr-delivery/v1",
+  "recordedAt": "2026-10-21T14:55:45.824343+00:00",
+  "pullRequest": "https://github.com/IvenYi/edhr-nexus-frontend/pull/24",
+  "number": 24,
+  "stateObserved": "OPEN",
+  "draftObserved": false,
+  "sourceBranch": "audit/edhr-dev-workflow-read-boundaries-20261021",
+  "sourceHeadAtPrCreation": "a36861d41101515c6b09816a50a3c6ceb3a21285",
+  "targetBranch": "edhr-dev",
+  "targetCommitLastFetched": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+  "qualityTestedCommit": "749c9f9b28d2525261976df070e56736323117be",
+  "githubMergeableObserved": "MERGEABLE",
+  "githubMergeStateStatusObserved": "CLEAN",
+  "githubActionsManuallyReadOrTriggered": false,
+  "branchProtectionEnforcementVerified": false,
+  "postTestChanges": "L0 originals, acceptance, scope/progress, user TaskDetail deferral and PR registration only; protected product/test/knowledge/contract/catalog/ledger unchanged",
+  "userDeferredTaskDetail": "Keep page/signature-password issue for user collaborator; independent audit continues; no implicit resumption on continue or merge",
+  "actualFinalDeliveryHead": "Resolve final branch HEAD from Git; registration cannot self-reference its commit",
+  "mergeOrDeployPerformed": false,
+  "wholeAuditComplete": false
+}

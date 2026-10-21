@@ -1,5 +1,7 @@
 # 持续推进台账
 
+已交付[PR24](https://github.com/IvenYi/edhr-nexus-frontend/pull/24)，来源audit/edhr-dev-workflow-read-boundaries-20261021，目标edhr-dev，等待人工merge；创建时MERGEABLE/CLEAN，实际独立受测749c9f9b，后续只有L0原件/验收/暂缓沟通/PR登记，保护产品/测试/知识/契约/catalog/ledger保持。收到合入信息后先显式fetch最新edhr-dev再继续W2/W3无依赖范围和W4待裁定项，W5–W7按总账推进；TaskDetail页/签名密码已按用户要求暂缓交其协作者检查，不能因“继续”自动恢复该页整改。未自动merge/deploy或恢复历史数据。
+
 当前批次：[实例图、日志数组与长ID读取](../branch-review-20261021-workflow-read-boundaries/README.md)。已显式fetch并核对PR23人工merge720ddd03与9db27dd5整树一致；最新edhr-dev为d405a9af，新增9份开发说明，未改产品/契约/知识，不连接或恢复说明中的Mac现库。核心725127d仅修3项技术读取缺陷；主侧53业务（50原生PG+3H2）、16真实维护页受控API浏览器及构建通过。全新独立对干净749c9f9b正式passed/FINAL、10/10必需检查通过：53业务/89知识结构/16受控浏览器/build及ledger；独立旧28=7红21正、浏览器旧16=12红4正。额外键盘和窄屏滚动2项通过；全局strict84既有提示/增量0、ESLint缺配置保持。本体not-applicable独立确认，无本轮本体实例。全部正式角色FINAL后已实际完成PR前用户范围复核；自建PG确切ID已清理，当前仅L0原件归档/验收/沟通/PR交付。
 
 固定清单870b178f：2965路径/2552知识ID、574有交叉范围（545继承+主29）、六源108历史语义（新增0）、52问题记录；130源码范围及63语义或依赖需增量，四gap/整文件完成0/旧028排除保持。只依真实PR23验收承接分页项，其他旧48问题对象不变；3项新medium已由acceptance overlay登记独立验收，冻结目录不回写。另有已更正复核的low文档项QF-READ-DOC-001仅在acceptance overlay，下轮导入须保留，不反填冻结52。后续W2/W3余项与W4–W7继续；通用动作矩阵及签名密码输入处置仍未决，用户此次要求先解释而非同意隐藏，TaskDetail保持，无依赖工作继续。用户暂缓记录控制/两DHR high/A12、四gap、旧AuditEvent及历史签名限制不变。

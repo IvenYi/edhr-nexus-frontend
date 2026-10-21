@@ -1,5 +1,7 @@
 # 实例图、日志数组与长ID读取
 
+已交付[PR24](https://github.com/IvenYi/edhr-nexus-frontend/pull/24)，audit/edhr-dev-workflow-read-boundaries-20261021 → edhr-dev，等待用户人工merge。创建时GitHub为MERGEABLE/CLEAN，最新目标仍d405a9af；实际独立受测749c9f9b，之后仅L0档案/验收/用户暂缓与PR登记，保护目录保持。交付最新HEAD以Git分支为准，[delivery](delivery.json)记录创建时实际head，避免提交自引用；未核验仓库强制门禁配置、未手动查询/触发Actions，不将可合并状态等同于全分支审查完成。
+
 本批延续edhr-dev整体代码审查W3。PR23已人工合并至720ddd03，与交付9db27dd5整树相同；实时目标d405a9afb4327b859545fa5a12c7eebe1350f418仅再增加9份开发说明，不是当前候选部署证明。已阅读新增环境记录，不连接/恢复用户现库，不更改其DEC0081在途冲突或0117/0118部署状态。
 
 核心725127d仅改5份生产文件和新增2份验证文件：[三项medium与源码根因](findings.md)。保持日志数组和ID原约定，精确匹配完整节点标识，不改权威状态、权限、候选、委托、签名、DHR或快照。执行L2，质量门禁触发；本体门禁具体不适用依据见[决策包](decision-package.yaml)，未派发本轮本体实例/新增语义记录。
