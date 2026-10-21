@@ -1,0 +1,49 @@
+{
+  "schema": "edhr-audit-batch-progress/v1",
+  "level": "L2",
+  "targetBranch": "edhr-dev",
+  "targetCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+  "humanMergedPr23": "720ddd03c8ddc1aaac7aecbf78c95a3099c25079",
+  "coreCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+  "catalogBaseline": "870b178f9bad07548485ff3b167b238d6e037ad7",
+  "stage": "ready-for-clean-candidate-independent-quality",
+  "inventory": {"trackedPaths": 2965, "currentKnowledgeIds": 2552, "classificationIsNotHumanReview": true},
+  "source": {"recordedOverlappingScopes": 574, "inherited": 545, "primaryFiniteScopes": 29, "notDistinctMethodsOrCompleteDenominator": true, "needsDeltaReview": 130, "wholeFilesCompleted": 0, "excludedOriginal028Preserved": true},
+  "semantic": {"historicalScopedRows": 108, "sources": 6, "newFormalRows": 0, "needsDeltaReview": 63, "historicalEvidenceGaps": 4, "notDistinctIds": true, "noNewSemanticAcceptanceClaimed": true},
+  "findings": {
+    "records": 52,
+    "notDistinctProductDefects": true,
+    "onlyPriorPr23Accepted": "W3D-TASK-PAGINATION-001",
+    "currentFixedAwaitingIndependentAcceptance": ["W3-INSTANCE-GRAPH-CURRENT-001", "W3-INSTANCE-LOGS-ARRAY-001", "W3-INSTANCE-READ-ID-PRECISION-001"],
+    "currentIndependentlyAccepted": []
+  },
+  "runtime": {
+    "primaryBusinessTests": 53, "primaryNativePostgresSubset": 50, "primaryH2Subset": 3,
+    "primaryFailures": 0, "primaryErrors": 0, "primarySkipped": 0,
+    "firstOldNativeTests": 28, "firstOldNativeFailures": 9,
+    "firstOldQualification": "7 product graph failures plus2 UTF8 test-fixture decoding failures; original assertions preserved",
+    "correctedOldNativeTests": 28, "correctedOldNativeFailures": 7, "correctedOldNativePositivePasses": 21, "correctedOldNativeErrors": 0, "correctedOldNativeSkipped": 0,
+    "browserControlledApiTests": 16, "browserPassed": 16, "browserSkipped": 0,
+    "browserOldTests": 16, "browserOldFailures": 12, "browserOldPositivePasses": 4,
+    "frontendBuild": "tsc-and-vite-exit0",
+    "independentQuality": "pending-clean-candidate",
+    "fullAppLoginBackendE2E": false,
+    "completeUiAcceptance": false,
+    "migration": "not-applicable-no-schema-change"
+  },
+  "ontology": {"result": "not-applicable", "gateTriggered": false, "author": "/root gate assessment only", "formalRoleDispatched": false, "reason": "Existing read identity/array/current-node projection only; no authoritative state, policy, action, permission, audit, snapshot or knowledge asset change.", "knowledgeVersionBeforeAndAfter": "0.3.25"},
+  "remaining": [
+    "complete W2/W3 review",
+    "generic workflow action/type policy and disposition of unwired signature-password input await user decision",
+    "existing complete detail/log metadata projections, mobile/global UI limitations and full read-policy matrix not certified",
+    "W4 H006/H007/H008 adjudication",
+    "W5-AUDIT-HASH-001 and background/migration review",
+    "W6 concrete scoped extraction and W7 coverage/integration",
+    "four historical knowledge gaps",
+    "user-deferred record control, two DHR high and A12",
+    "legacy signature original bytes already lost remain unrecoverable"
+  ],
+  "overallAuditComplete": false,
+  "overallPercent": null,
+  "mergeOrDeployAuthorized": false
+}

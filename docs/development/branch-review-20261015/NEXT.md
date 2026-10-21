@@ -1,5 +1,11 @@
 # 持续推进台账
 
+当前批次：[实例图、日志数组与长ID读取](../branch-review-20261021-workflow-read-boundaries/README.md)。已显式fetch并核对PR23人工merge720ddd03与9db27dd5整树一致；最新edhr-dev为d405a9af，新增9份开发说明，未改产品/契约/知识，不连接或恢复说明中的Mac现库。核心725127d仅修3项技术读取缺陷；主侧53业务（50原生PG+3H2）、16真实维护页受控API浏览器及构建通过。正式独立已实际重现校正旧28=7红21正和浏览器旧16=12红4正，等待干净候选最终53/89/16/build/ledger验收，当前未创建新PR。
+
+固定清单870b178f：2965路径/2552知识ID、574有交叉范围（545继承+主29）、六源108历史语义（新增0）、52问题记录；130源码范围及63语义或依赖需增量，四gap/整文件完成0/旧028排除保持。只依真实PR23验收承接分页项，其他旧48问题对象不变；3项新medium仍待正式独立验收。本体门禁not-applicable，不新增虚假语义已审。后续W2/W3余项与W4–W7继续；通用动作矩阵及未接入签名密码输入的后续处置待用户答复，无依赖工作继续，用户暂缓记录控制/两DHR high/A12、四gap、旧AuditEvent及历史签名限制不变。
+
+## PR23交付时的历史检查点
+
 已交付 [PR23](https://github.com/IvenYi/edhr-nexus-frontend/pull/23)，audit/edhr-dev-task-pagination-20261021 → edhr-dev，等待用户人工合并。实际独立受测9d826911，之后仅L0归档、验收、范围与PR登记；产品/测试/知识/契约及冻结catalog/ledger保持，最新目标仍13def47d。收到合入信息后先显式fetch，再继续W3剩余入口/权限/签名引用等待核范围及W2/W4–W7；通用动作类型政策需真实业务答复。当前分页整数缺陷已验收，不外推任意参数绑定、全站分页或整体分支完成，不自动merge/deploy。
 
 当前检查点：[待办与已办分页边界](../branch-review-20261021-task-pagination/README.md)。已fetch最新edhr-dev@13def47d，PR22人工合入且整树与1b80df62相同、契约无增量。W3D-TASK-PAGINATION-001已用真实JWT/filter/MockMvc/PG同组28复现22红/6正、0error/skip；核心25e974e0仅修todo/done非正400和long有界下标，不加任意页长上限、不变SQL/身份/候选/DHR隔离/动作/返回数组。主侧clean52（28新+原控制器2+实例授权22，50原生PG）全过；全新独立对干净9d826911正式passed/FINAL，8/8必需检查，clean52及89知识均0失败/错误/跳过，并独立重现旧红和核验原件/ledger。受测后仅L0档案、验收、范围与PR登记；自建PG已按确切ID清理，不自动merge/deploy。
