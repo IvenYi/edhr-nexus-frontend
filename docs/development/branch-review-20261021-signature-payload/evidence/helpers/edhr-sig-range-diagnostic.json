@@ -1,0 +1,185 @@
+{
+  "schema": "edhr-fixed-source-range-diagnostic/v1",
+  "role": "L0 read-only mechanical range diagnosis, not formal QA or ontology",
+  "author": "/root/sig_baseline_support",
+  "status": "FINAL",
+  "fixedEvidenceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+  "diagnosticScope": "Only declared finite-range bounds and exact Git provenance of the excluded original; no runtime or new business/semantic review.",
+  "maps": [
+    {
+      "artifactPath": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-w3d-command-source-map.json",
+      "fixedCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "declaredScopes": 42,
+      "boundedScopes": 42,
+      "outOfBoundsScopes": 0
+    },
+    {
+      "artifactPath": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-w3d-front-action-consumers.json",
+      "fixedCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "declaredScopes": 19,
+      "boundedScopes": 19,
+      "outOfBoundsScopes": 0
+    },
+    {
+      "artifactPath": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-w3d-signature-source-map.json",
+      "fixedCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "declaredScopes": 28,
+      "boundedScopes": 27,
+      "outOfBoundsScopes": 1
+    },
+    {
+      "artifactPath": "docs/development/branch-review-20261021-signature-payload/evidence/primary/source-map.json",
+      "fixedCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "declaredScopes": 5,
+      "boundedScopes": 5,
+      "outOfBoundsScopes": 0
+    }
+  ],
+  "counts": {
+    "newOriginalDeclaredScopes": 94,
+    "newBoundedScopes": 93,
+    "excludedOutOfBoundsScopes": 1,
+    "inheritedMethodsUnchanged": 392
+  },
+  "violations": [
+    {
+      "artifactPath": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-w3d-signature-source-map.json",
+      "artifactCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "artifactSha256": "c6ba94b033f9e41d30a5d9b03ed10052b6c7d75c938aa6f5788292baeb1f2c40",
+      "sourceLocator": "/sourceScopes/27",
+      "originalArtifactRole": "read-only source assistance, not formal ontology or QA",
+      "originalScope": {
+        "id": "w3d-signature-source:028",
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/SignatureTest.java",
+        "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+        "blob": "94b334c93d302a41036c8ad2b936a2ebd71c0d0d",
+        "sha256": "bc5a203cd93bf58813661298a7889b58348cafcdd93fc1cb17bf232ec4ebfc03",
+        "method": "snapshotDataUsesJsonJdbcTypeForPostgresJsonbColumn",
+        "range": [
+          10,
+          22
+        ],
+        "readDepth": "actual finite test-source inspection; test not executed",
+        "conclusion": "Test only reflects SqlTypes.JSON annotation, does not execute PostgreSQL or validate signed raw bytes round trip.",
+        "wholeFileReviewComplete": false,
+        "runtimeExecuted": false
+      },
+      "actualSourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "actualSourcePath": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/SignatureTest.java",
+      "actualSourceBlob": "94b334c93d302a41036c8ad2b936a2ebd71c0d0d",
+      "actualSourceSha256": "bc5a203cd93bf58813661298a7889b58348cafcdd93fc1cb17bf232ec4ebfc03",
+      "sourceBlobMatchesOriginal": true,
+      "sourceSha256MatchesOriginal": true,
+      "actualLineCountByteSplitlines": 20,
+      "actualLineCountUtf8Splitlines": 20,
+      "actualTestAnnotationLine": 11,
+      "actualMethodDeclarationLine": 12,
+      "actualMethodEndLine": 19,
+      "actualClassEndLine": 20,
+      "boundedMethodLocationIsNotAnImportedCorrection": true,
+      "actualSourceLines": [
+        {
+          "line": 1,
+          "text": "package com.zencas.edhr.compliance.entity;"
+        },
+        {
+          "line": 2,
+          "text": ""
+        },
+        {
+          "line": 3,
+          "text": "import org.hibernate.annotations.JdbcTypeCode;"
+        },
+        {
+          "line": 4,
+          "text": "import org.hibernate.type.SqlTypes;"
+        },
+        {
+          "line": 5,
+          "text": "import org.junit.jupiter.api.Test;"
+        },
+        {
+          "line": 6,
+          "text": ""
+        },
+        {
+          "line": 7,
+          "text": "import static org.assertj.core.api.Assertions.assertThat;"
+        },
+        {
+          "line": 8,
+          "text": ""
+        },
+        {
+          "line": 9,
+          "text": "class SignatureTest {"
+        },
+        {
+          "line": 10,
+          "text": ""
+        },
+        {
+          "line": 11,
+          "text": "    @Test"
+        },
+        {
+          "line": 12,
+          "text": "    void snapshotDataUsesJsonJdbcTypeForPostgresJsonbColumn() throws NoSuchFieldException {"
+        },
+        {
+          "line": 13,
+          "text": "        JdbcTypeCode jdbcTypeCode = Signature.class"
+        },
+        {
+          "line": 14,
+          "text": "                .getDeclaredField(\"snapshotData\")"
+        },
+        {
+          "line": 15,
+          "text": "                .getAnnotation(JdbcTypeCode.class);"
+        },
+        {
+          "line": 16,
+          "text": ""
+        },
+        {
+          "line": 17,
+          "text": "        assertThat(jdbcTypeCode).isNotNull();"
+        },
+        {
+          "line": 18,
+          "text": "        assertThat(jdbcTypeCode.value()).isEqualTo(SqlTypes.JSON);"
+        },
+        {
+          "line": 19,
+          "text": "    }"
+        },
+        {
+          "line": 20,
+          "text": "}"
+        }
+      ]
+    }
+  ],
+  "adoptedDisposition": {
+    "excludedScopeIds": [
+      "w3d-signature-source:028"
+    ],
+    "action": "Explicitly exclude this entire original scope from imported reviewed methods; retain original artifact bytes and original scope unchanged. Root will record exclusion in importNotes and a separate receipt.",
+    "silentClipping": false,
+    "replacementReadScopeAdded": false,
+    "newSourceReviewRecorded": false,
+    "originalTestExecutedByThisTask": false
+  },
+  "expectedImporterCountsAfterRootChange": {
+    "methodScopes": 485,
+    "formula": "392 inherited + 93 valid newly declared scopes",
+    "findingRecords": 48,
+    "qualification": "Expected only; this task did not execute the catalog builder or write a catalog."
+  },
+  "runtimeChecksExecuted": [],
+  "newSemanticReviews": 0,
+  "repositoryMutations": false,
+  "builderExecuted": false,
+  "wholeFileOrBranchAcceptance": false
+}

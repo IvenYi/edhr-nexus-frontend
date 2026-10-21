@@ -4,6 +4,8 @@
 
 主侧104unique业务已有有效通过（focused104中103通过、1字体映射fail，随后Auth24通过只替换该suite，不计128），含18原生PG和13实际归档；当前等待干净固定候选的全新独立验收，尚未创建本轮PR。旧7例真实红为1断言失败+3归档业务异常、3对照通过；夹具/环境失败原件分别保留。旧JSONB丢原文仍可能blocked、不补造历史、无损自动回退不成立，未执行生产迁移或部署。generic动作类型矩阵已问用户，未收到答复不改；分页W3D-TASK-PAGINATION-001尚为源码候选留后续独立小批，未混入本次实现。W2/W3余项、W4–W7、四gap、两项暂缓DHR high/A12和旧AuditEvent摘要问题保持。
 
+本批清单固定c062c2f9：2801路径/2552知识ID、485有交叉范围（392继承+88辅助+5主侧）、108历史和当前有限语义（96旧+正式12）、48问题记录；原辅助一条越界范围保留原件但显式排除。101源码范围及57语义或依赖需增量，整文件完成0，不把清单生成或局部测试当全量完成。[当前总账](../branch-review-20261021-signature-payload/ledger/summary.json)与[进度](../branch-review-20261021-signature-payload/progress.json)可续接。
+
 ## PR21交付时的历史检查点
 
 已交付 [PR21](https://github.com/IvenYi/edhr-nexus-frontend/pull/21)，来源audit/edhr-dev-w3-task-command-boundaries-20261020，目标edhr-dev，等待用户人工merge。实际全新独立受测42cb2820正式passed，16/16必需检查，89业务+89知识及45原生PG通过、0skip；本体updated/FINAL，当前全部质量子实例FINAL。受测后只有L0归档/验收/范围与PR登记，冻结源码/测试/知识/catalog/ledger保持。自建临时PG已按exactID清理；下一轮先显式fetch最新edhr-dev并按W3剩余及台账待核范围继续，不自动合并、部署或恢复数据。
