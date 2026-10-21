@@ -1,0 +1,157 @@
+{
+  "baseCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+  "fixtureCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+  "mavenExit": 1,
+  "suites": [
+    {
+      "suite": "com.zencas.edhr.workflow.controller.WorkflowReadBoundaryPostgresTest",
+      "tests": 28,
+      "failures": 7,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "b84874220bbc977c6d5eee4d87974bbcf2a1fd68a25a97d7b43fc39bd1a9ce93",
+      "cases": [
+        {
+          "name": "everyReadStillRequiresAuthentication",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[1]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[2]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[3]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[4]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[5]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[1]",
+          "status": "failed",
+          "failureType": "java.lang.AssertionError"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[2]",
+          "status": "failed",
+          "failureType": "java.lang.AssertionError"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[3]",
+          "status": "failed",
+          "failureType": "java.lang.AssertionError"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[4]",
+          "status": "failed",
+          "failureType": "java.lang.AssertionError"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[5]",
+          "status": "failed",
+          "failureType": "java.lang.AssertionError"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[6]",
+          "status": "failed",
+          "failureType": "java.lang.AssertionError"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[7]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[8]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[9]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[10]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[11]",
+          "status": "failed",
+          "failureType": "java.lang.AssertionError"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[12]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "genericListCountsAndContentExcludeDhrBeforePagination(String, String)[1]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "genericListCountsAndContentExcludeDhrBeforePagination(String, String)[2]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "genericListCountsAndContentExcludeDhrBeforePagination(String, String)[3]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "longInstanceIdsRemainDistinctAcrossReadEndpoints",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[1]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[2]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[3]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[4]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[5]",
+          "status": "passed",
+          "failureType": null
+        },
+        {
+          "name": "instanceLogsUseAnArrayAndOnlyTheRequestedInstanceInChronologicalOrder",
+          "status": "passed",
+          "failureType": null
+        }
+      ]
+    }
+  ]
+}

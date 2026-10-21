@@ -1,0 +1,55 @@
+{
+  "sourceHead": "749c9f9b28d2525261976df070e56736323117be",
+  "selectedBaseline": null,
+  "sourceReceipts": {
+    "src/pages/workflow-center/InstanceLogs.tsx": "f2424b0935f77eb186ba3256fadc2a2602ea3442e1c4361e50c968619510639b",
+    "src/pages/workflow-center/InstanceDetail.tsx": "87f6b29b46625a3bca9281c0344762c8c98cda23e8dace5d75ba97e125a180fd",
+    "src/api/workflow-instances.ts": "7ff1fd011241b10dcdc119be533123bb3e02a84ee0ed20ae8847ccc1f13cecf2",
+    "src/api/workflow-logs.ts": "92f88e6d06d86021c6487d8cba23bce03bef427177cebcc658d5f23f4856dcc5",
+    "src/App.tsx": "6f11b6185c5322dd7475ba14f0e07b5c610c9bbc2dea18d3e8d868c68add27a6",
+    "src/router/index.tsx": "8eaf4ff1ad44ce421f4fc68727a168f4f27cbef854e1c5a5eed9c955c13b06b3"
+  },
+  "qualification": "Actual maintained pages/theme/client with controlled synthetic API arrays; not full app login, backend persistence or complete instance-detail projection acceptance.",
+  "tests": 2,
+  "passed": 2,
+  "failed": 0,
+  "skipped": 0,
+  "results": [
+    {
+      "scenario": "data-pagination",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {}
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-qa-browser-keyboard-images/data-pagination-1440.png"
+      ],
+      "status": "passed"
+    },
+    {
+      "scenario": "data-pagination",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {}
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-qa-browser-keyboard-images/data-pagination-390.png"
+      ],
+      "status": "passed"
+    }
+  ]
+}

@@ -41,7 +41,7 @@ export default function InstanceDetail() {
   const { data: instance, isLoading, isError } = useQuery({
     queryKey: ['workflow-instance', id],
     queryFn: async () => {
-      const res = await getInstance(Number(id));
+      const res = await getInstance(id!);
       return res.data.data as InstanceDetail;
     },
     enabled: !!id,
@@ -50,7 +50,7 @@ export default function InstanceDetail() {
   const { data: logs } = useQuery({
     queryKey: ['workflow-instance-logs', id],
     queryFn: async () => {
-      const res = await getInstanceLogs(Number(id), { size: 100 });
+      const res = await getInstanceLogs(id!, { size: 100 });
       const body = res.data.data as { content: InstanceLog[] } | InstanceLog[];
       return Array.isArray(body) ? body : body.content ?? [];
     },

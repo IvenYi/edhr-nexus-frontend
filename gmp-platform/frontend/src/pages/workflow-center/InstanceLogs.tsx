@@ -2,14 +2,13 @@ import TableStateCell from '@/components/TableStateCell';
 import { ListTableShell } from '@/components/ListTableShell';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box, Typography, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Pagination, CircularProgress,
 } from '@mui/material';
 import { getInstanceLogs } from '@/api/workflow-logs';
 import StatusBadge from '@/components/StatusBadge';
-import type { PageResult } from '@/types/common';
 
 interface InstanceLog {
   id: number;
@@ -30,17 +29,20 @@ const LOG_STATUS_MAP: Record<string, { label: string; color: 'success' | 'error'
 export default function InstanceLogs() {
   const { id } = useParams<{ id: string }>();
   const [page, setPage] = useState(1);
+  const pageSize = 10;
+  useEffect(() => { setPage(1); }, [id]);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['instance-logs', id, page],
+    queryKey: ['instance-logs', id],
     queryFn: async () => {
-      const res = await getInstanceLogs(Number(id), { page, size: 10 });
-      return res.data.data as PageResult<InstanceLog>;
+      const res = await getInstanceLogs(id!);
+      return res.data.data as InstanceLog[];
     },
     enabled: !!id,
   });
 
-  const content = data?.content ?? [];
+  const content = data?.slice((page - 1) * pageSize, page * pageSize) ?? [];
+  const totalPages = Math.ceil((data?.length ?? 0) / pageSize);
 
   return (
     <Box>
@@ -86,9 +88,9 @@ export default function InstanceLogs() {
           </TableBody>
         </Table>
       </ListTableShell>
-      {data && data.totalPages > 1 && (
+      {!isError && totalPages > 1 && (
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-          <Pagination count={data.totalPages} page={page} onChange={(_, p) => setPage(p)} />
+          <Pagination count={totalPages} page={page} onChange={(_, p) => setPage(p)} />
         </Box>
       )}
     </Box>

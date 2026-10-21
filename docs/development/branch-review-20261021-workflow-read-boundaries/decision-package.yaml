@@ -1,0 +1,92 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261021-WORKFLOW-READ-BOUNDARIES
+  scope: edhr-dev整体审查W3实例/任务/日志读取、对象身份及可选签名引用映射；仅整改已实证的读取表示错误。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    targetBranch: edhr-dev
+    targetCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    contractReadCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    uncommittedContractPaths: []
+  summary: PR23已合入720ddd03且与9db27dd5整树相同；最新d405只增加开发环境收敛审计说明，不改产品/契约/知识。核对原始读取链，先复现日志数组消费、长ID精度及当前节点子串匹配，再局部整改。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.workflow-read-existing-contract
+      statement: 已有API按原实例版本返回图、日志返回实例内的时间有序数组；路由ID应保持原字符，当前节点按完整CSV标识匹配。
+      rationale: 读取表示须忠实使用现有对象身份、数据形状及当前节点引用，不能把数组读为空、把Long舍入或把标识子串当身份相等。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: workflow-read-projection
+        change: 实例图完整节点匹配；日志页消费真实数组并本地分页；两个页面与API helper保留字符串ID。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java, gmp-platform/frontend/src/pages/workflow-center/InstanceLogs.tsx, gmp-platform/frontend/src/pages/workflow-center/InstanceDetail.tsx]
+    transitiveImpacts:
+      - area: instance-read-consumers
+        change: 日志首中末页、空/错/加载、换实例及迟到响应保持一致；详情GET不再舍入对象编号。不新增后端分页接口或图页面功能。
+        evidenceReferences: [gmp-platform/frontend/src/api/workflow-instances.ts, gmp-platform/frontend/src/api/workflow-logs.ts]
+    potentialImpacts:
+      - area: other-legacy-consumers
+        concern: 其他Long转Number、实例详情元数据/节点投影不完整及通用参数绑定未在本片全面整改；不据此声称整个页面/工作流完备。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: workflow-policy
+        reason: 不变更实例/任务状态、办理资格、候选/委托、DHR、原读取范围、动作矩阵或签名政策。
+      - area: actual-local-runtime
+        reason: 新d405环境记录不代表当前运行包是新候选；仅用自建隔离合成库和受控浏览器，不连接/恢复edhr_dev或启动旧profile。
+    compatibilityAndMigration: [无schema/迁移或存量回写；原API数组、默认读取、节点/实例身份及旧调用的number兼容保留。]
+    snapshotImpacts: [读取沿用实例自己的versionId；不修改定义版本、实例快照、来源或历史字段。]
+    auditImpacts: [不改审计/日志内容、签名摘要或签名真实性标准，读取前后表快照核验无写入。]
+    permissionImpacts: [真实JWT/DHR专属排除/匿名401和旧错误契约回归；不以本片替代完整读取权限政策或多租户设计。]
+    testImpacts:
+      - scope: actual-http-and-native-postgres
+        scenarios: [完整ID与并行CSV匹配, 旧版本图读取, 长实例ID分别读取, 日志数组与实例隔离/排序, DHR列表/单项保护, 匿名与缺失对象, 数据不变]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java]
+      - scope: actual-browser-page-with-controlled-api
+        scenarios: [真实数组25条分页, 空/错/加载状态, 末页换实例复位, 迟到旧实例响应, 长ID日志和详情请求, 1440与390视口]
+        evidenceReferences: [gmp-platform/frontend/scripts/test-workflow-instance-read-browser.mjs]
+    evidenceGaps: [尚待同组红绿与干净候选独立验收；受控浏览器不是密码登录到真实后端全链E2E，旧运行包不作为本批受测对象。]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在既有读取投影与消费端修正身份和形状，不新建兼容框架、重构模块或修改业务政策。
+    ownershipBoundaries:
+      - owner: workflow-instance-controller
+        responsibility: 从实例已存CSV节点标识作精确读取投影。
+      - owner: workflow-center-read-pages
+        responsibility: 原样传递路由ID、消费既有日志数组、本地分页及稳定读取状态。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java
+      changeType: update
+      reason: 当前节点完整标识匹配。
+    - path: gmp-platform/frontend/src/pages/workflow-center
+      changeType: update
+      reason: 两个读取页的数组适配及路由ID精度。
+    - path: gmp-platform/frontend/src/api
+      changeType: update
+      reason: 两个现有GET helper的ID参数接受string与number，URL不舍入。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java
+      changeType: create
+      reason: 真实JWT/filter/MockMvc/nativePG及只读边界。
+    - path: gmp-platform/frontend/scripts/test-workflow-instance-read-browser.mjs
+      changeType: create
+      reason: 真实维护页面及主题的受控API浏览器红绿与相邻状态回归。
+  acceptanceScenarios:
+    - id: scenario.workflow-read-faithful-existing-data
+      given: 实例具有自己的版本、完整节点标识和有序日志，ID可以超过JS安全整数范围
+      when: 调用真实读取API及原有页面
+      then: 不串节点或舍入实例ID，日志真实显示并正确分页，既有DHR/认证和持久化内容保持。
+      evidenceRequirements: [固定旧基线真实红证, 修复后HTTP/PG与浏览器, 构建, 全新独立质量验收]
+gateAssessment:
+  level: L2
+  qualityGateTriggered: true
+  ontologyGateTriggered: false
+  ontologyResult:
+    result: not-applicable
+    reason: 仅忠实呈现既有ID、日志数组与当前节点引用；不改变权威状态计算、办理动作、业务定义、审计/快照或知识资产。
+  boundariesRetained: [通用动作矩阵待业务答复, 记录控制签名真实性及申请/结果落地延期, 完整读取权限和多租户未据此闭环, 旧AuditEvent/四gap/两DHR high/A12及历史签名不可恢复保持]

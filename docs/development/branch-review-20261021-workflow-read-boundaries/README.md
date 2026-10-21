@@ -1,0 +1,19 @@
+# 实例图、日志数组与长ID读取
+
+已交付[PR24](https://github.com/IvenYi/edhr-nexus-frontend/pull/24)，audit/edhr-dev-workflow-read-boundaries-20261021 → edhr-dev，等待用户人工merge。创建时GitHub为MERGEABLE/CLEAN，最新目标仍d405a9af；实际独立受测749c9f9b，之后仅L0档案/验收/用户暂缓与PR登记，保护目录保持。交付最新HEAD以Git分支为准，[delivery](delivery.json)记录创建时实际head，避免提交自引用；未核验仓库强制门禁配置、未手动查询/触发Actions，不将可合并状态等同于全分支审查完成。
+
+本批延续edhr-dev整体代码审查W3。PR23已人工合并至720ddd03，与交付9db27dd5整树相同；实时目标d405a9afb4327b859545fa5a12c7eebe1350f418仅再增加9份开发说明，不是当前候选部署证明。已阅读新增环境记录，不连接/恢复用户现库，不更改其DEC0081在途冲突或0117/0118部署状态。
+
+核心725127d仅改5份生产文件和新增2份验证文件：[三项medium与源码根因](findings.md)。保持日志数组和ID原约定，精确匹配完整节点标识，不改权威状态、权限、候选、委托、签名、DHR或快照。执行L2，质量门禁触发；本体门禁具体不适用依据见[决策包](decision-package.yaml)，未派发本轮本体实例/新增语义记录。
+
+主侧修复后53业务（50原生PG+3H2）、16受控API浏览器及tsc/Vite构建通过。旧校正夹具28有7真实红/21正；首次9红含2夹具解码错误，原件和校正差异保留。浏览器旧16有12红/4正，修复16绿。主侧运行时HEAD是d405+dirty，核心提交包含相同产品/夹具字节，最终仍须干净候选独立验证，不能把旧运行改写成提交后运行。实际原件及SHA见[evidence/archive-receipts.json](evidence/archive-receipts.json)。
+
+主侧只查看两个分页截图，不以此认证完整UI。现有元数据/节点/日志状态展示缺口、窄屏样式及全局样式规范欠账不由此关闭；受控浏览器不是完整后端登录E2E。通用签名密码未接入的后续处理已问用户，当前不改；动作类型矩阵也未擅自决定。知识结构校验、清单生成、历史承接与本轮有限源码核对分别报告。
+
+本批[目录](source-catalog.json)/[总账](ledger/summary.json)固定870b178f：2965路径/2552知识ID，574有交叉范围=旧545+主29，六源108历史语义行（新增0），52问题记录=旧49+本批3。130源码范围和63语义或列明依赖待增量；四gap/整文件完成0/原028排除保持。文件变化触发的保守carry不是自动认定130处错误；52含父子/文档/夹具记录，不是52个唯一产品缺陷。清单包含证据提交时的所有路径，不冒充之后L0附件新增后的实时分母。
+
+干净749c9f9b28d2525261976df070e56736323117be已由全新未参与修复的独立实例正式[qualityResult passed/FINAL](evidence/independent/edhr-read-qa-qualityResult.yaml)，10/10必需检查通过：53业务（50原生PG+3H2）、89知识结构、16受控浏览器和完整build/ledger；额外键盘和窄屏滚动2项通过、6截图实看。主侧与独立53是同组复验，不累计106。可选全局strict仍84条既有提示/增量0，ESLint缺配置exit2，未降低或伪称通过；完整UI/实际登录后端全链仍未认证。原件61份加manifest原字节归档，原/tmp引用由[收据](evidence/independent/archive-receipts.json)映射。
+
+[acceptance](acceptance.json)独立覆盖本批3项medium；另保存已在870更正并复核的low文档精度QF-READ-DOC-001，冻结52及待验状态不回写。全部正式角色FINAL后、PR创建前已实际完成[用户可见范围复核](scope-review.md)，本批无任务漂移。受测后仅L0档案/验收/沟通/PR登记；产品/测试/知识/契约及冻结catalog/ledger不变，自建PG按确切ID清理。[任务处理页/签名输入问题](signature-question.md)经解释首页待办“处理”跳转后，用户明确要求暂缓交其协作者检查，保持TaskDetail现状；无依赖审查继续。
+
+[进度](progress.json)持续记录。PR5/6不重开，W2/W3及W4–W7整体未完成，没有可信完成百分比。用户暂缓及历史证据限制保持，不自动合并、部署、恢复历史数据或手动查询/触发Actions。

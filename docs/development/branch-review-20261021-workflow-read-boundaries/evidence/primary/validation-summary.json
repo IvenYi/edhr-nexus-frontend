@@ -1,0 +1,126 @@
+{
+  "level": "L2",
+  "targetCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+  "coreCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+  "firstNativeRun": {
+    "tests": 28,
+    "failures": 9,
+    "errors": 0,
+    "skipped": 0
+  },
+  "firstNativeQualification": "Seven real graph failures and two test-only default ISO8859 response-decoding failures; original assertions unchanged after UTF8 fixture correction.",
+  "correctedOldNativeRun": {
+    "tests": 28,
+    "failures": 7,
+    "errors": 0,
+    "skipped": 0
+  },
+  "correctedOldControls": 21,
+  "mainBusinessTests": 53,
+  "nativePostgresSubset": 50,
+  "h2Subset": 3,
+  "businessFailures": 0,
+  "businessErrors": 0,
+  "businessSkipped": 0,
+  "browserOld": {
+    "tests": 16,
+    "failed": 12,
+    "passed": 4,
+    "skipped": 0
+  },
+  "browserFixed": {
+    "tests": 16,
+    "passed": 16,
+    "failed": 0,
+    "skipped": 0
+  },
+  "frontendBuild": {
+    "command": "npm run build",
+    "exit": 0,
+    "logSha256": "30093d9938c6e9de5cbacdf7cde56efa2e6cfd8bda6878f4153a4b0fe14084e3",
+    "rawLogNotArchived": true
+  },
+  "sourceRunQualification": "Primary runtime HEAD remainedd405 with dirty implementation; original summaries are unchanged. Exact final product/test/browser-script bytes committed725127d4, fresh independent clean candidate acceptance still required.",
+  "changedCorePaths": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+    "gmp-platform/frontend/scripts/test-workflow-instance-read-browser.mjs",
+    "gmp-platform/frontend/src/api/workflow-instances.ts",
+    "gmp-platform/frontend/src/api/workflow-logs.ts",
+    "gmp-platform/frontend/src/pages/workflow-center/InstanceDetail.tsx",
+    "gmp-platform/frontend/src/pages/workflow-center/InstanceLogs.tsx"
+  ],
+  "fixedSourceReceipts": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "commit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "sha256": "02fc860c243cfbcdd2cdfdcb77246b22b1bd9330d94d3c562483a1e276459366",
+      "locator": "/"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "commit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "locator": "/"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-workflow-instance-read-browser.mjs",
+      "commit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "sha256": "d37e0f06d54955e6368ae63f17aa5012adb4c9c46ec24b54320823a3419fafbd",
+      "locator": "/"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/workflow-instances.ts",
+      "commit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "sha256": "7ff1fd011241b10dcdc119be533123bb3e02a84ee0ed20ae8847ccc1f13cecf2",
+      "locator": "/"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/workflow-logs.ts",
+      "commit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "sha256": "92f88e6d06d86021c6487d8cba23bce03bef427177cebcc658d5f23f4856dcc5",
+      "locator": "/"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceDetail.tsx",
+      "commit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "sha256": "87f6b29b46625a3bca9281c0344762c8c98cda23e8dace5d75ba97e125a180fd",
+      "locator": "/"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceLogs.tsx",
+      "commit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "sha256": "f2424b0935f77eb186ba3256fadc2a2602ea3442e1c4361e50c968619510639b",
+      "locator": "/"
+    }
+  ],
+  "ontologyGate": "not-applicable existing read representation only; no business knowledge/state/policy/permission/audit/snapshot change",
+  "visualInspection": {
+    "author": "/root",
+    "actualImages": [
+      "browser-fixed/data-pagination-1440.png",
+      "browser-fixed/data-pagination-390.png"
+    ],
+    "scope": "Actual pagination output/contained old table at two viewports only",
+    "limitations": [
+      "No complete UI style acceptance",
+      "Existing missing node/status/metadata projections and narrow-screen styles retained"
+    ]
+  },
+  "database": {
+    "containerId": "aad857ad53018b82a11f337cc5489cf4ae3529043bf0a1782fd473456c3f1122",
+    "name": "edhr-audit-workflow-read-20261021",
+    "loopback": "127.0.0.1:55432",
+    "database": "edhr_w3_command_test",
+    "ownedSyntheticOnly": true,
+    "cleanup": "pending independent FINAL"
+  },
+  "notClaimed": [
+    "new business or signing policy",
+    "full app/login/backend browser E2E",
+    "complete detail/log projection or UI conformity",
+    "production migration/deploy/restoration",
+    "whole W3/W0-W7 acceptance",
+    "GitHub Actions read or trigger"
+  ]
+}

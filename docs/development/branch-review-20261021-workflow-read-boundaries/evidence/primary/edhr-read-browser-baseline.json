@@ -1,0 +1,423 @@
+{
+  "sourceHead": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+  "selectedBaseline": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+  "sourceReceipts": {
+    "src/pages/workflow-center/InstanceLogs.tsx": "e26510d5096f760fff8a60bd5914839e15ab00cedbb8ab0e6ef28e0aca30ef8a",
+    "src/pages/workflow-center/InstanceDetail.tsx": "e7ef0d0d904ad93078e59710732094ba0d1e030bd9b7a9016bcc0239d2b333c7",
+    "src/api/workflow-instances.ts": "cca0331d1e32b05ed95ef7ec5dc71f8b55eececa0df682e1568cff7c9cec3752",
+    "src/api/workflow-logs.ts": "40dc4f171a5c1ded5bc08c02be51b4e66510cce34841733ec7faeb0be5ac2937",
+    "src/App.tsx": "6f11b6185c5322dd7475ba14f0e07b5c610c9bbc2dea18d3e8d868c68add27a6",
+    "src/router/index.tsx": "8eaf4ff1ad44ce421f4fc68727a168f4f27cbef854e1c5a5eed9c955c13b06b3"
+  },
+  "qualification": "Actual maintained pages/theme/client with controlled synthetic API arrays; not full app login, backend persistence or complete instance-detail projection acceptance.",
+  "tests": 16,
+  "passed": 4,
+  "failed": 12,
+  "skipped": 0,
+  "results": [
+    {
+      "scenario": "data-pagination",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/data-pagination-1440.png"
+      ],
+      "status": "failed",
+      "message": "locator.waitFor: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('合成日志-10-01', { exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "scenario": "empty",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/empty-1440.png"
+      ],
+      "status": "passed"
+    },
+    {
+      "scenario": "error",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/error-1440.png"
+      ],
+      "status": "passed"
+    },
+    {
+      "scenario": "loading",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/loading-1440.png"
+      ],
+      "status": "failed",
+      "message": "locator.waitFor: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('合成日志-10-01', { exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "scenario": "route-change",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/route-change-1440.png"
+      ],
+      "status": "failed",
+      "message": "locator.waitFor: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('合成日志-10-01', { exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "scenario": "late-route",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        },
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/20/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/late-route-1440.png"
+      ],
+      "status": "failed",
+      "message": "locator.waitFor: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('合成日志-20-01', { exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "scenario": "long-id-logs",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        },
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/700000000000000000/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/long-id-logs-1440.png"
+      ],
+      "status": "failed",
+      "message": "locator.waitFor: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('合成日志-700000000000000001-01', { exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "scenario": "long-id-detail",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        },
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/700000000000000000",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/700000000000000000/logs",
+          "query": {
+            "size": "100"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/long-id-detail-1440.png"
+      ],
+      "status": "failed",
+      "message": "locator.waitFor: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('合成日志-700000000000000001-01', { exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "scenario": "data-pagination",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/data-pagination-390.png"
+      ],
+      "status": "failed",
+      "message": "locator.waitFor: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('合成日志-10-01', { exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "scenario": "empty",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/empty-390.png"
+      ],
+      "status": "passed"
+    },
+    {
+      "scenario": "error",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/error-390.png"
+      ],
+      "status": "passed"
+    },
+    {
+      "scenario": "loading",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/loading-390.png"
+      ],
+      "status": "failed",
+      "message": "locator.waitFor: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('合成日志-10-01', { exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "scenario": "route-change",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/route-change-390.png"
+      ],
+      "status": "failed",
+      "message": "locator.waitFor: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('合成日志-10-01', { exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "scenario": "late-route",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        },
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/20/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/late-route-390.png"
+      ],
+      "status": "failed",
+      "message": "locator.waitFor: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('合成日志-20-01', { exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "scenario": "long-id-logs",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        },
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/700000000000000000/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/long-id-logs-390.png"
+      ],
+      "status": "failed",
+      "message": "locator.waitFor: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('合成日志-700000000000000001-01', { exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "scenario": "long-id-detail",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "calls": [
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/10/logs",
+          "query": {
+            "page": "1",
+            "size": "10"
+          }
+        },
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/700000000000000000",
+          "query": {}
+        },
+        {
+          "method": "GET",
+          "endpoint": "/api/v1/workflow/instances/700000000000000000/logs",
+          "query": {
+            "size": "100"
+          }
+        }
+      ],
+      "screenshots": [
+        "/tmp/edhr-read-browser-baseline-images/long-id-detail-390.png"
+      ],
+      "status": "failed",
+      "message": "locator.waitFor: Timeout 4000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('合成日志-700000000000000001-01', { exact: true }) to be visible\u001b[22m\n"
+    }
+  ]
+}

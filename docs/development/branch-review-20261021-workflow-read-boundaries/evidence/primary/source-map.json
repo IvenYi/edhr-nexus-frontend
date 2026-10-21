@@ -1,0 +1,472 @@
+{
+  "author": "/root",
+  "sourceScopes": [
+    {
+      "id": "w3-read-primary:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "method": "list",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        45,
+        55
+      ],
+      "blob": "d31a4252081413776896b307d1fbeb86d702ca1c",
+      "sha256": "02fc860c243cfbcdd2cdfdcb77246b22b1bd9330d94d3c562483a1e276459366",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Actual HTTP/PG read scope in primary53; graph exact IDs and selected version, existing read contract and DHR boundary only.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "method": "getById",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        58,
+        63
+      ],
+      "blob": "d31a4252081413776896b307d1fbeb86d702ca1c",
+      "sha256": "02fc860c243cfbcdd2cdfdcb77246b22b1bd9330d94d3c562483a1e276459366",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Actual HTTP/PG read scope in primary53; graph exact IDs and selected version, existing read contract and DHR boundary only.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:003",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "method": "graph",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        96,
+        134
+      ],
+      "blob": "d31a4252081413776896b307d1fbeb86d702ca1c",
+      "sha256": "02fc860c243cfbcdd2cdfdcb77246b22b1bd9330d94d3c562483a1e276459366",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Actual HTTP/PG read scope in primary53; graph exact IDs and selected version, existing read contract and DHR boundary only.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:004",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "method": "logs",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        155,
+        163
+      ],
+      "blob": "d31a4252081413776896b307d1fbeb86d702ca1c",
+      "sha256": "02fc860c243cfbcdd2cdfdcb77246b22b1bd9330d94d3c562483a1e276459366",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Actual HTTP/PG read scope in primary53; graph exact IDs and selected version, existing read contract and DHR boundary only.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:005",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "method": "terminate",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        141,
+        149
+      ],
+      "blob": "d31a4252081413776896b307d1fbeb86d702ca1c",
+      "sha256": "02fc860c243cfbcdd2cdfdcb77246b22b1bd9330d94d3c562483a1e276459366",
+      "readDepth": "primary-finite-source-inspection",
+      "conclusion": "Existing optional signatureId passed to engine; no mandatory or authenticity policy inferred.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3-read-primary:006",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowLogController.java",
+      "method": "list",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "range": [
+        24,
+        34
+      ],
+      "blob": "4c8a71ebd79baa3de8be6969f7b01356b5ea3aac",
+      "sha256": "77e896b5afd9d8f37f5016620fae2bf5d80922c28a70681800ca7dd8e7a54700",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Actual native HTTP list/object DHR exclusion; no broader read-policy acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:007",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowLogController.java",
+      "method": "getById",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "range": [
+        37,
+        42
+      ],
+      "blob": "4c8a71ebd79baa3de8be6969f7b01356b5ea3aac",
+      "sha256": "77e896b5afd9d8f37f5016620fae2bf5d80922c28a70681800ca7dd8e7a54700",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Actual native HTTP list/object DHR exclusion; no broader read-policy acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:008",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowLogController.java",
+      "method": "protect",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "range": [
+        69,
+        72
+      ],
+      "blob": "4c8a71ebd79baa3de8be6969f7b01356b5ea3aac",
+      "sha256": "77e896b5afd9d8f37f5016620fae2bf5d80922c28a70681800ca7dd8e7a54700",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Actual native HTTP list/object DHR exclusion; no broader read-policy acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:009",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "method": "getById",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "range": [
+        51,
+        56
+      ],
+      "blob": "6031d1ca1a459d21ae08e26089c0e0ff114fec1c",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "readDepth": "primary-finite-source-inspection",
+      "conclusion": "Read/source/action signature DTO mapping only; generic action matrix and signing policy remain unresolved, no action runtime claim here.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3-read-primary:010",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "method": "approve",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "range": [
+        136,
+        142
+      ],
+      "blob": "6031d1ca1a459d21ae08e26089c0e0ff114fec1c",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "readDepth": "primary-finite-source-inspection",
+      "conclusion": "Read/source/action signature DTO mapping only; generic action matrix and signing policy remain unresolved, no action runtime claim here.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3-read-primary:011",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "method": "reject",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "range": [
+        148,
+        154
+      ],
+      "blob": "6031d1ca1a459d21ae08e26089c0e0ff114fec1c",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "readDepth": "primary-finite-source-inspection",
+      "conclusion": "Read/source/action signature DTO mapping only; generic action matrix and signing policy remain unresolved, no action runtime claim here.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3-read-primary:012",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "method": "submit",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "range": [
+        182,
+        188
+      ],
+      "blob": "6031d1ca1a459d21ae08e26089c0e0ff114fec1c",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "readDepth": "primary-finite-source-inspection",
+      "conclusion": "Read/source/action signature DTO mapping only; generic action matrix and signing policy remain unresolved, no action runtime claim here.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3-read-primary:013",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "method": "private completeTask signature storage",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "range": [
+        255,
+        305
+      ],
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "readDepth": "primary-finite-source-inspection",
+      "conclusion": "Finite source inspection only; no whole-file or independent acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3-read-primary:014",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "method": "terminateInstance",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "range": [
+        732,
+        750
+      ],
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "readDepth": "primary-finite-source-inspection",
+      "conclusion": "Signature parameter not used in existing termination body; no unified signature requirement inferred.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3-read-primary:015",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "method": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        77,
+        92
+      ],
+      "blob": "b7b0ddec9322d0c752e0c19b7b44285daeedb5a9",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Named actual primary HTTP/JWT/nativePG behavior in clean53; no password login or whole workflow acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:016",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "method": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        95,
+        100
+      ],
+      "blob": "b7b0ddec9322d0c752e0c19b7b44285daeedb5a9",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Named actual primary HTTP/JWT/nativePG behavior in clean53; no password login or whole workflow acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:017",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "method": "genericListCountsAndContentExcludeDhrBeforePagination",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        103,
+        110
+      ],
+      "blob": "b7b0ddec9322d0c752e0c19b7b44285daeedb5a9",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Named actual primary HTTP/JWT/nativePG behavior in clean53; no password login or whole workflow acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:018",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "method": "instanceLogsUseAnArrayAndOnlyTheRequestedInstanceInChronologicalOrder",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        113,
+        121
+      ],
+      "blob": "b7b0ddec9322d0c752e0c19b7b44285daeedb5a9",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Named actual primary HTTP/JWT/nativePG behavior in clean53; no password login or whole workflow acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:019",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "method": "everyReadStillRequiresAuthentication",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        124,
+        130
+      ],
+      "blob": "b7b0ddec9322d0c752e0c19b7b44285daeedb5a9",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Named actual primary HTTP/JWT/nativePG behavior in clean53; no password login or whole workflow acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:020",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "method": "longInstanceIdsRemainDistinctAcrossReadEndpoints",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        133,
+        146
+      ],
+      "blob": "b7b0ddec9322d0c752e0c19b7b44285daeedb5a9",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Named actual primary HTTP/JWT/nativePG behavior in clean53; no password login or whole workflow acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:021",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "method": "missingObjectsKeepExistingErrorContracts",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        149,
+        154
+      ],
+      "blob": "b7b0ddec9322d0c752e0c19b7b44285daeedb5a9",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Named actual primary HTTP/JWT/nativePG behavior in clean53; no password login or whole workflow acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:022",
+      "path": "gmp-platform/frontend/src/api/workflow-instances.ts",
+      "method": "getInstance",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        5,
+        6
+      ],
+      "blob": "a98c7caf281006d3b46c9e656dc024e6061ea2a4",
+      "sha256": "7ff1fd011241b10dcdc119be533123bb3e02a84ee0ed20ae8847ccc1f13cecf2",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Actual browser16 preserves raw route IDs through existing GET URL; no API shape change.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:023",
+      "path": "gmp-platform/frontend/src/api/workflow-logs.ts",
+      "method": "getInstanceLogs",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        3,
+        4
+      ],
+      "blob": "5478c992850704e3a9faabf5d7576b0c3188e37a",
+      "sha256": "92f88e6d06d86021c6487d8cba23bce03bef427177cebcc658d5f23f4856dcc5",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Actual browser16 preserves raw route IDs through existing GET URL; no API shape change.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:024",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceLogs.tsx",
+      "method": "InstanceLogs data/pagination/route state",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        29,
+        98
+      ],
+      "blob": "d1d5de7943b112837b3dca8487769f66a8eb984e",
+      "sha256": "f2424b0935f77eb186ba3256fadc2a2602ea3442e1c4361e50c968619510639b",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Actual maintained page controlled-API browser16; array slicing, route reset, states, long IDs only. Existing metadata/style gaps not accepted as complete UI.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:025",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceDetail.tsx",
+      "method": "instance/detail log queries",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        35,
+        62
+      ],
+      "blob": "2f3a33967be899b00dafc48d8208d7ce8a7c4bca",
+      "sha256": "87f6b29b46625a3bca9281c0344762c8c98cda23e8dace5d75ba97e125a180fd",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Controlled browser long-ID GET identity only; existing complete detail metadata/node projection not accepted.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "w3-read-primary:026",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "method": "handleAction body",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "range": [
+        86,
+        97
+      ],
+      "blob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "readDepth": "primary-finite-source-inspection",
+      "conclusion": "Existing password posted but TaskActionRequest does not consume it; source-only lead, question pending, no new signing policy.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3-read-primary:027",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "method": "unwired password field",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "range": [
+        123,
+        126
+      ],
+      "blob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "readDepth": "primary-finite-source-inspection",
+      "conclusion": "Existing displayed signature-password field; its disposition separately asked, not fixed/accepted in read slice.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3-read-primary:028",
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "method": "instance/log page routes",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "range": [
+        99,
+        103
+      ],
+      "blob": "12c81470b76a5ecb2ee2e16dc48603033f36d522",
+      "sha256": "8eaf4ff1ad44ce421f4fc68727a168f4f27cbef854e1c5a5eed9c955c13b06b3",
+      "readDepth": "primary-finite-source-inspection",
+      "conclusion": "Existing real route mapping; browser harness renders same components through MemoryRouter, not entire app shell.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3-read-primary:029",
+      "path": "gmp-platform/frontend/scripts/test-workflow-instance-read-browser.mjs",
+      "method": "controlled API rendered-page scenarios",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "range": [
+        73,
+        143
+      ],
+      "blob": "c6e256387651abdb6d7696815d1da5ed6c25a89a",
+      "sha256": "d37e0f06d54955e6368ae63f17aa5012adb4c9c46ec24b54320823a3419fafbd",
+      "readDepth": "primary-finite-source-and-runtime",
+      "conclusion": "Actual16 cases/2viewports; unchanged maintained theme/client, synthetic array API, no real backend/login E2E.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    }
+  ],
+  "scopeRecordsAreOverlapping": true,
+  "wholeFileReviewComplete": false,
+  "newSemanticReviewPerformed": false
+}

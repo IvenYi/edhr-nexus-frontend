@@ -18,8 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Workflow instance controller with lifecycle and monitoring endpoints.
@@ -103,13 +106,14 @@ public class WorkflowInstanceController {
         List<WorkflowEdge> edges = edgeRepository.findByVersionId(version.getId());
 
         // Determine current node IDs from instance
-        String currentNodeIds = instance.getCurrentNodeIds();
+        Set<String> currentNodeIds = instance.getCurrentNodeIds() == null ? Set.of()
+                : Arrays.stream(instance.getCurrentNodeIds().split(","))
+                        .map(String::trim).collect(Collectors.toSet());
 
         // Build node data with highlight info
         List<GraphNode> graphNodes = nodes.stream()
                 .map(n -> {
-                    boolean isCurrent = currentNodeIds != null &&
-                            currentNodeIds.contains(n.getId().toString());
+                    boolean isCurrent = currentNodeIds.contains(n.getId().toString());
                     return new GraphNode(
                             n.getId(), n.getVersionId(), n.getNodeType(), n.getName(),
                             n.getPositionX(), n.getPositionY(), n.getProperties(),

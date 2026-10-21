@@ -1,0 +1,742 @@
+{
+  "targetCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+  "headCommit": "749c9f9b28d2525261976df070e56736323117be",
+  "workingTreeClean": true,
+  "coreCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+  "allCoreProductAndTestBytesUnchanged": true,
+  "productionChangedPaths": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+    "gmp-platform/frontend/src/api/workflow-instances.ts",
+    "gmp-platform/frontend/src/api/workflow-logs.ts",
+    "gmp-platform/frontend/src/pages/workflow-center/InstanceDetail.tsx",
+    "gmp-platform/frontend/src/pages/workflow-center/InstanceLogs.tsx"
+  ],
+  "frozenInventoryBaseline": "870b178f9bad07548485ff3b167b238d6e037ad7",
+  "oldScopeRecords": 545,
+  "newScopeRecords": 574,
+  "appendedFiniteScopes": [
+    {
+      "id": "w3-read-primary:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "d31a4252081413776896b307d1fbeb86d702ca1c",
+      "sha256": "02fc860c243cfbcdd2cdfdcb77246b22b1bd9330d94d3c562483a1e276459366",
+      "finiteRange": [
+        45,
+        55
+      ]
+    },
+    {
+      "id": "w3-read-primary:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "d31a4252081413776896b307d1fbeb86d702ca1c",
+      "sha256": "02fc860c243cfbcdd2cdfdcb77246b22b1bd9330d94d3c562483a1e276459366",
+      "finiteRange": [
+        58,
+        63
+      ]
+    },
+    {
+      "id": "w3-read-primary:003",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "d31a4252081413776896b307d1fbeb86d702ca1c",
+      "sha256": "02fc860c243cfbcdd2cdfdcb77246b22b1bd9330d94d3c562483a1e276459366",
+      "finiteRange": [
+        96,
+        134
+      ]
+    },
+    {
+      "id": "w3-read-primary:004",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "d31a4252081413776896b307d1fbeb86d702ca1c",
+      "sha256": "02fc860c243cfbcdd2cdfdcb77246b22b1bd9330d94d3c562483a1e276459366",
+      "finiteRange": [
+        155,
+        163
+      ]
+    },
+    {
+      "id": "w3-read-primary:005",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "d31a4252081413776896b307d1fbeb86d702ca1c",
+      "sha256": "02fc860c243cfbcdd2cdfdcb77246b22b1bd9330d94d3c562483a1e276459366",
+      "finiteRange": [
+        141,
+        149
+      ]
+    },
+    {
+      "id": "w3-read-primary:006",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowLogController.java",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "blob": "4c8a71ebd79baa3de8be6969f7b01356b5ea3aac",
+      "sha256": "77e896b5afd9d8f37f5016620fae2bf5d80922c28a70681800ca7dd8e7a54700",
+      "finiteRange": [
+        24,
+        34
+      ]
+    },
+    {
+      "id": "w3-read-primary:007",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowLogController.java",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "blob": "4c8a71ebd79baa3de8be6969f7b01356b5ea3aac",
+      "sha256": "77e896b5afd9d8f37f5016620fae2bf5d80922c28a70681800ca7dd8e7a54700",
+      "finiteRange": [
+        37,
+        42
+      ]
+    },
+    {
+      "id": "w3-read-primary:008",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowLogController.java",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "blob": "4c8a71ebd79baa3de8be6969f7b01356b5ea3aac",
+      "sha256": "77e896b5afd9d8f37f5016620fae2bf5d80922c28a70681800ca7dd8e7a54700",
+      "finiteRange": [
+        69,
+        72
+      ]
+    },
+    {
+      "id": "w3-read-primary:009",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "blob": "6031d1ca1a459d21ae08e26089c0e0ff114fec1c",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "finiteRange": [
+        51,
+        56
+      ]
+    },
+    {
+      "id": "w3-read-primary:010",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "blob": "6031d1ca1a459d21ae08e26089c0e0ff114fec1c",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "finiteRange": [
+        136,
+        142
+      ]
+    },
+    {
+      "id": "w3-read-primary:011",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "blob": "6031d1ca1a459d21ae08e26089c0e0ff114fec1c",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "finiteRange": [
+        148,
+        154
+      ]
+    },
+    {
+      "id": "w3-read-primary:012",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "blob": "6031d1ca1a459d21ae08e26089c0e0ff114fec1c",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "finiteRange": [
+        182,
+        188
+      ]
+    },
+    {
+      "id": "w3-read-primary:013",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "finiteRange": [
+        255,
+        305
+      ]
+    },
+    {
+      "id": "w3-read-primary:014",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "finiteRange": [
+        732,
+        750
+      ]
+    },
+    {
+      "id": "w3-read-primary:015",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "b7b0ddec9322d0c752e0c19b7b44285daeedb5a9",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "finiteRange": [
+        77,
+        92
+      ]
+    },
+    {
+      "id": "w3-read-primary:016",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "b7b0ddec9322d0c752e0c19b7b44285daeedb5a9",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "finiteRange": [
+        95,
+        100
+      ]
+    },
+    {
+      "id": "w3-read-primary:017",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "b7b0ddec9322d0c752e0c19b7b44285daeedb5a9",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "finiteRange": [
+        103,
+        110
+      ]
+    },
+    {
+      "id": "w3-read-primary:018",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "b7b0ddec9322d0c752e0c19b7b44285daeedb5a9",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "finiteRange": [
+        113,
+        121
+      ]
+    },
+    {
+      "id": "w3-read-primary:019",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "b7b0ddec9322d0c752e0c19b7b44285daeedb5a9",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "finiteRange": [
+        124,
+        130
+      ]
+    },
+    {
+      "id": "w3-read-primary:020",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "b7b0ddec9322d0c752e0c19b7b44285daeedb5a9",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "finiteRange": [
+        133,
+        146
+      ]
+    },
+    {
+      "id": "w3-read-primary:021",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "b7b0ddec9322d0c752e0c19b7b44285daeedb5a9",
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+      "finiteRange": [
+        149,
+        154
+      ]
+    },
+    {
+      "id": "w3-read-primary:022",
+      "path": "gmp-platform/frontend/src/api/workflow-instances.ts",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "a98c7caf281006d3b46c9e656dc024e6061ea2a4",
+      "sha256": "7ff1fd011241b10dcdc119be533123bb3e02a84ee0ed20ae8847ccc1f13cecf2",
+      "finiteRange": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": "w3-read-primary:023",
+      "path": "gmp-platform/frontend/src/api/workflow-logs.ts",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "5478c992850704e3a9faabf5d7576b0c3188e37a",
+      "sha256": "92f88e6d06d86021c6487d8cba23bce03bef427177cebcc658d5f23f4856dcc5",
+      "finiteRange": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": "w3-read-primary:024",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceLogs.tsx",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "d1d5de7943b112837b3dca8487769f66a8eb984e",
+      "sha256": "f2424b0935f77eb186ba3256fadc2a2602ea3442e1c4361e50c968619510639b",
+      "finiteRange": [
+        29,
+        98
+      ]
+    },
+    {
+      "id": "w3-read-primary:025",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceDetail.tsx",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "2f3a33967be899b00dafc48d8208d7ce8a7c4bca",
+      "sha256": "87f6b29b46625a3bca9281c0344762c8c98cda23e8dace5d75ba97e125a180fd",
+      "finiteRange": [
+        35,
+        62
+      ]
+    },
+    {
+      "id": "w3-read-primary:026",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "blob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "finiteRange": [
+        86,
+        97
+      ]
+    },
+    {
+      "id": "w3-read-primary:027",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "blob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "finiteRange": [
+        123,
+        126
+      ]
+    },
+    {
+      "id": "w3-read-primary:028",
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+      "blob": "12c81470b76a5ecb2ee2e16dc48603033f36d522",
+      "sha256": "8eaf4ff1ad44ce421f4fc68727a168f4f27cbef854e1c5a5eed9c955c13b06b3",
+      "finiteRange": [
+        99,
+        103
+      ]
+    },
+    {
+      "id": "w3-read-primary:029",
+      "path": "gmp-platform/frontend/scripts/test-workflow-instance-read-browser.mjs",
+      "sourceCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+      "blob": "c6e256387651abdb6d7696815d1da5ed6c25a89a",
+      "sha256": "d37e0f06d54955e6368ae63f17aa5012adb4c9c46ec24b54320823a3419fafbd",
+      "finiteRange": [
+        73,
+        143
+      ]
+    }
+  ],
+  "semanticSourcesUnchanged": true,
+  "historicalSemanticRows": 108,
+  "onlyPriorFindingAdvanced": [
+    "W3D-TASK-PAGINATION-001"
+  ],
+  "other48FindingsExact": true,
+  "newFindingIds": [
+    "W3-INSTANCE-GRAPH-CURRENT-001",
+    "W3-INSTANCE-LOGS-ARRAY-001",
+    "W3-INSTANCE-READ-ID-PRECISION-001"
+  ],
+  "newFindingRecordsTotal": 52,
+  "originalRejected028StillExcluded": true,
+  "priorPaginationIndependentResult": "passed",
+  "pr23MergeDeliveryEqualTrees": true,
+  "archiveRows": [
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/primary/edhr-read-baseline-summary.json",
+      "sha256": "7bf8aed88a57d80653961f0526b697b3b1c3bd9c29f225d305e422d157f01168",
+      "bytes": 6648,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/primary/edhr-read-baseline-utf8-summary.json",
+      "sha256": "372a2af3cfd531d70bbb75435f57fb96f44d254465e831d7c3a42e3d3ce7559d",
+      "bytes": 6462,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/primary/edhr-read-fixed-summary.json",
+      "sha256": "e2bf8ad2f1dbf721a906d2a5f6a109ea85814258eac36a47b109c0add1d3df65",
+      "bytes": 9374,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/primary/edhr-read-run.py",
+      "sha256": "5e7877b3a9b6d82fed50a9af235db6b9b63eee4ca81fdfed78d91b69648e6cfe",
+      "bytes": 2416,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/primary/edhr-read-browser-baseline.json",
+      "sha256": "83a6215eb7064c9f3c40a0d56543baccd6de6415af28d56a8959382b7396ba26",
+      "bytes": 12006,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/primary/edhr-read-browser-fixed.json",
+      "sha256": "ff28976d2047613df59790018215003ee2ec478e8684c1b1b216c8588d87a3cb",
+      "bytes": 8808,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/primary/edhr-read-evidence.py",
+      "sha256": "189c1745e27fa9cc03606a0b7e774cad13a2aef69e78393dd719c3e3647d5176",
+      "bytes": 15195,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/data-pagination-1440.png",
+      "sha256": "21568036c3d301d415197d0803495f57d807a41d9f2b042c0e05fad801394a8a",
+      "bytes": 15793,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/empty-1440.png",
+      "sha256": "21568036c3d301d415197d0803495f57d807a41d9f2b042c0e05fad801394a8a",
+      "bytes": 15793,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/error-1440.png",
+      "sha256": "2597e2f9105b1c5d6a1558fe7f8b75dca1e54782d302324eb0d57e6ff461f116",
+      "bytes": 16333,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/loading-1440.png",
+      "sha256": "21568036c3d301d415197d0803495f57d807a41d9f2b042c0e05fad801394a8a",
+      "bytes": 15793,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/route-change-1440.png",
+      "sha256": "21568036c3d301d415197d0803495f57d807a41d9f2b042c0e05fad801394a8a",
+      "bytes": 15793,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/late-route-1440.png",
+      "sha256": "585af9a842d81b02fe47c5f8bfe831ccbedf027159a95200e40de123dd425b21",
+      "bytes": 15942,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/long-id-logs-1440.png",
+      "sha256": "655a1ebd132977e1800ea38397e6fc23dcf9ef3771b2405ab4110f888818e0ad",
+      "bytes": 16996,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/long-id-detail-1440.png",
+      "sha256": "76b0fe383221bacf1c21573224f5fafaeb60df625b8c82938bfdd66b109dfe53",
+      "bytes": 10105,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/data-pagination-390.png",
+      "sha256": "c10b0a07c2958067c7e46a066bceafbd6bddbefc40568e3dee9e214a7da546dc",
+      "bytes": 11363,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/empty-390.png",
+      "sha256": "c10b0a07c2958067c7e46a066bceafbd6bddbefc40568e3dee9e214a7da546dc",
+      "bytes": 11363,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/error-390.png",
+      "sha256": "16d0f0d811b698db1897168567a6d08c282fd9d888b8d8dbbb9d76bfe3a10052",
+      "bytes": 11843,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/loading-390.png",
+      "sha256": "c10b0a07c2958067c7e46a066bceafbd6bddbefc40568e3dee9e214a7da546dc",
+      "bytes": 11363,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/route-change-390.png",
+      "sha256": "c10b0a07c2958067c7e46a066bceafbd6bddbefc40568e3dee9e214a7da546dc",
+      "bytes": 11363,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/late-route-390.png",
+      "sha256": "94efabe54c496b2674540565948f8339c03957079a9590e41bf58dc552207936",
+      "bytes": 11500,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/long-id-logs-390.png",
+      "sha256": "95528b2071586878a0166889feb9ad398ed01d905cad88fd90f7e72fb443f996",
+      "bytes": 12463,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-baseline/long-id-detail-390.png",
+      "sha256": "117c57dbb9cd2ec042a08c3a8b0e930a61e74a3a9416f92521c3621e6b813fb1",
+      "bytes": 6442,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/data-pagination-1440.png",
+      "sha256": "5714eb611eec8d5b8c60eb2b51897710fb232e58ef63fad1b57af9a5196de085",
+      "bytes": 49350,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/empty-1440.png",
+      "sha256": "21568036c3d301d415197d0803495f57d807a41d9f2b042c0e05fad801394a8a",
+      "bytes": 15793,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/error-1440.png",
+      "sha256": "2597e2f9105b1c5d6a1558fe7f8b75dca1e54782d302324eb0d57e6ff461f116",
+      "bytes": 16333,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/loading-1440.png",
+      "sha256": "9358d6efe87d5f5cb11c9fe371bbb578b4d5c8108e53cbdf37d542bc01cb6033",
+      "bytes": 83596,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/route-change-1440.png",
+      "sha256": "ef21d9699e900bef268245f0ac81de6e1aac1e4c794a409cfe97510b2ad996b6",
+      "bytes": 28968,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/late-route-1440.png",
+      "sha256": "698f59d8e018ec4f3c6b49e527e832a480c2da74211df05948ca44385de63e56",
+      "bytes": 28967,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/long-id-logs-1440.png",
+      "sha256": "218c332f87a931e03c163e04f3e0caaf9c87630c9609977a76aeffd1664c1612",
+      "bytes": 30808,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/long-id-detail-1440.png",
+      "sha256": "e72d773ca2c495e4394be3ff0d9b0e829b65e9c335c28c4514ddcd1347f3f42a",
+      "bytes": 39912,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/data-pagination-390.png",
+      "sha256": "6e0a5131176c02035f3fdd624485bbeecf8ef7c2005a2df962e35050555c142d",
+      "bytes": 30435,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/empty-390.png",
+      "sha256": "c10b0a07c2958067c7e46a066bceafbd6bddbefc40568e3dee9e214a7da546dc",
+      "bytes": 11363,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/error-390.png",
+      "sha256": "16d0f0d811b698db1897168567a6d08c282fd9d888b8d8dbbb9d76bfe3a10052",
+      "bytes": 11843,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/loading-390.png",
+      "sha256": "0ca793e5107b501a4d61725c4b73d6ffb72d295846d15569f2ca48da496ad293",
+      "bytes": 51542,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/route-change-390.png",
+      "sha256": "a73cbd4d776f6e8406b4276230afa2e3f268e331703991bdad8fd1c55a496305",
+      "bytes": 17197,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/late-route-390.png",
+      "sha256": "067207e913e6a9dd136da388dae3ee2d67a84049af8faa29ebcf50860b318ea3",
+      "bytes": 17198,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/long-id-logs-390.png",
+      "sha256": "3c3b75f15e1f911bacb84c32e400063ef3960c278fa1f39704717795a3406a51",
+      "bytes": 17692,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/browser-fixed/long-id-detail-390.png",
+      "sha256": "7d9da257bff48e261fe3c983d54883c80d0002669cb90c08ddb5d154dadb400d",
+      "bytes": 34241,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    },
+    {
+      "path": "docs/development/branch-review-20261021-workflow-read-boundaries/evidence/primary/edhr-read-evidence-reviewed.py",
+      "sha256": "348699913a43ad0427632b3f63b0e985cd195c88f6c06c9bb210e05ddcc03893",
+      "bytes": 15976,
+      "sourceStillExists": true,
+      "sourceMatchesWhenPresent": true
+    }
+  ],
+  "safeArchiveScanPassed": true,
+  "wholeFileOrOverallPassNotClaimed": true,
+  "ledgerCounts": {
+    "schema": "edhr-scoped-audit-ledger/v1",
+    "baselineCommit": "870b178f9bad07548485ff3b167b238d6e037ad7",
+    "tree": "45e747af4f7644f8d30568cbcd9b77b29db52600",
+    "catalogSha256": "7beb9b8f38d60aa6baa39d05c23916945a66f4bcaaf0ae4e90e7a02720fd4a05",
+    "generatorSha256": "98a85e3ec3137910742338ad51c0334ed70a09d3db6d15cc4e3ef5758e353050",
+    "inventoryGeneratorSha256": "f77668cbf93108bd9bef10a83f07e6ba8de0433e9fee75448b3dc4934221b9df",
+    "inventory": {
+      "trackedPaths": 2965,
+      "classifiedPaths": 2965,
+      "classificationBasis": "inferred-path-classifier",
+      "workPackages": {
+        "W5": 380,
+        "W4": 202,
+        "W0-W7": 1868,
+        "W1": 132,
+        "W2": 198,
+        "W3": 185
+      },
+      "entrypointCandidates": {
+        "http-annotation": 438,
+        "state-definition-candidate": 8,
+        "background-candidate": 1,
+        "frontend-route-candidate": 191
+      },
+      "migrationFiles": 127
+    },
+    "sourceReview": {
+      "recordedScopes": 574,
+      "carryStates": {
+        "needs-delta-review": 130,
+        "retained-scoped-evidence": 444
+      },
+      "sourceRelations": {
+        "file-changed": 130,
+        "unchanged": 444
+      },
+      "wholeFilesCompleted": 0,
+      "sourceImportQualifications": 29,
+      "scopeRecordsAreNotDistinctMethodsOrACompleteDenominator": true
+    },
+    "knowledgeReview": {
+      "currentIds": 2552,
+      "historicalScopedReviews": 108,
+      "historicalConclusions": {
+        "consistent": 103,
+        "superseded": 1,
+        "evidence-gap": 4
+      },
+      "recordRelations": {
+        "unchanged": 104,
+        "record-changed": 4
+      },
+      "evidenceStates": {
+        "retained-scoped-evidence": 45,
+        "needs-delta-review": 63
+      },
+      "maintenanceReports": 32,
+      "newSemanticReviews": 0,
+      "maintenanceIsNotSemanticAcceptance": true
+    },
+    "remediation": {
+      "findingRecords": 52,
+      "dispositions": {
+        "known-fixed-before-audit": 10,
+        "fixed-and-independently-accepted": 31,
+        "pending-adjudication": 3,
+        "corrected-in-l0-documentation": 1,
+        "corrected-and-independently-accepted-l0": 1,
+        "user-deferred": 2,
+        "preexisting-medium-open": 1,
+        "fixed-awaiting-independent-acceptance": 3
+      },
+      "recordKinds": {
+        "historical-master-record": 21,
+        "product-repair-subfinding": 3,
+        "product-defect": 15,
+        "audit-documentation-defect": 5,
+        "test-harness-defect": 2,
+        "test-fixture-subfinding": 1,
+        "imported-independent-finding": 2,
+        "inherited-dhr-implementation-gap": 2,
+        "product-authorization-defect": 1
+      },
+      "recordsAreNotDistinctDefects": true,
+      "newAdjudications": 0
+    },
+    "runtime": {
+      "reportedQualityArtifacts": 77,
+      "reportedResults": {
+        "passed": 55,
+        "failed": 21,
+        "blocked": 1
+      },
+      "businessChecksExecutedInThisBatch": [],
+      "oldResultsAreScopedHistoricalEvidence": true
+    },
+    "overallAuditComplete": false,
+    "overallPercent": null
+  },
+  "priorPaginationRequiredChecks": {
+    "total": 8,
+    "passed": 8,
+    "notTestCaseCount": true
+  }
+}
