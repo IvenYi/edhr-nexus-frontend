@@ -27,6 +27,6 @@ evidence:
     visibility: internal
   - id: evidence.form-worklists-permissions
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0084-form-worklist-permissions.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0084-form-worklist-permissions.sql
     description: original-evidence；working-tree新增两项个人查询权限，只授予ADMIN，不改业务表、不回填猜测历史。源码存在不代表部署数据库已执行。
     visibility: internal

@@ -22,12 +22,12 @@ evidence:
     visibility: internal
   - id: evidence.dhr-summary-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0092-dhr-summary-workspace.sql
     description: original-evidence；working-tree 迁移定义 DHR_SUMMARY 流程分类、制程和 DHR 审核绑定字段、草稿/不可变版本/证据关联表及独立菜单权限；该源码路径本身不证明迁移已在真实 PostgreSQL 实例执行成功。
     visibility: internal
   - id: evidence.dhr-summary-review-binding-constraint
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0093-dhr-summary-version-review-binding.sql
     description: original-evidence；working-tree 增量迁移约束冻结汇总版本的审核模式与流程定义、版本绑定保持一致。
     visibility: internal
   - id: evidence.dhr-summary-ui
@@ -57,7 +57,7 @@ evidence:
     visibility: internal
   - id: evidence.dhr-summary-order-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0100-dhr-summary-evidence-order.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0100-dhr-summary-evidence-order.sql
     description: original-evidence；working-tree 迁移为冻结证据关联增加可空 before_node_key 与 display_order；未核实真实数据库迁移结果。
     visibility: internal
   - id: evidence.dhr-summary-order-ui
@@ -102,7 +102,7 @@ evidence:
     visibility: internal
   - id: evidence.dhr-summary-display-name-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql
     description: original-evidence；working-tree 迁移给 dhr_summary_evidence 增加可空 display_name，兼容既有冻结证据。DhrSummaryDisplayNameMigrationTest 使用 H2 验证迁移；真实 PostgreSQL 迁移尚未据此确认。
     visibility: internal
   - id: evidence.dhr-summary-display-name-test-source
@@ -132,17 +132,17 @@ evidence:
     visibility: internal
   - id: evidence.dhr-summary-complete-evidence-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0102-dhr-summary-complete-evidence.sql
     description: original-evidence；0102 历史迁移源码增加 source_scope_hash、check_result_snapshot，并曾引入 evidence_model_version；attachment_snapshot 由 0103-dhr-controlled-attachments.sql 增加。DEC-0063-09 后续要求转换或清理错误旧汇总，version_no 保留正常修订。原记录所称本机 0104 日志、查询和独立质量通过属于当时验证，本次未取得原现场报告，不能继承为本次迁移通过。
     visibility: internal
   - id: evidence.dhr-summary-attachment-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0103-dhr-controlled-attachments.sql
     description: original-evidence；working-tree 定义受控附件关联元数据与核验状态；仅核对迁移源码，未在真实 PostgreSQL 执行。
     visibility: internal
   - id: evidence.dhr-summary-current-model-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0104-dhr-current-evidence-only.sql
     description: original-evidence；2026-09-28 静态核对0104及changelog注册：旧记录有审批依赖或DHR非正常完成则阻断，NONE无审批的明确旧记录转待核查草稿，当前冻结/草稿优先；保留可用编排，source_scope_hash置空，清理仅限旧版本及其位置，写MIGRATE且不改原审计行；移除evidence_model_version并约束check_result_snapshot非空，version_no保留。本体已直接核对0104成功及后端启动日志、postgres-regression.log四组PASS、前后指纹diff为空，并只读查询edhr_dev确认DHR3为COMPLETED/DRAFT、1草稿恢复作业7位置、旧冻结/位置0、模型列删除及1条MIGRATE；本机迁移已验证。用户再次核查/正式提交未做，本切片独立质量验证已通过。
     visibility: internal
   - id: evidence.dhr-summary-current-model-migration-tests

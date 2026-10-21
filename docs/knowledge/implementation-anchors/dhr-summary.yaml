@@ -5,14 +5,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrSummaryController.java]
     apiReferences: ['GET /api/v1/dhr-instances/{id}/summary', 'PUT /api/v1/dhr-instances/{id}/summary/draft', 'POST /api/v1/dhr-instances/{id}/summary/submit']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql, gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql, gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql]
     uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx, gmp-platform/frontend/src/router/index.tsx, gmp-platform/frontend/src/utils/menuManagement.ts]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryMigrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionControllerAuthorizationTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.dhr-summary-service, evidence.dhr-summary-controller, evidence.dhr-summary-migration, evidence.dhr-summary-ui, evidence.dhr-summary-focused-tests]
     sourceRevision: working-tree
-    sourceLocator: 独立 DHR汇总 页面和控制器以 COMPLETED DHR 为普通整理与提交对象，分离查看、编辑和提交权限；当前工作树已显示实际实例及默认位置，本锚点只证明此门禁和入口，不证明完整核查。
+    sourceLocator: "独立 DHR汇总 页面和控制器以 COMPLETED DHR 为普通整理与提交对象，分离查看、编辑和提交权限；当前工作树已显示实际实例及默认位置，本锚点只证明此门禁和入口，不证明完整核查。；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_summary_draft/version/evidence及ck_dhr_summary_version_review_binding；seed中的records.dhr-summary、dhr.summaries.edit/submit及ADMIN授权。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-19'
     reviewStatus: reviewed
   - id: anchor.dhr-summary-immutable-version
@@ -20,14 +20,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java]
     apiReferences: ['GET /api/v1/dhr-instances/{id}/summary/versions/{versionId}', 'POST /api/v1/dhr-instances/{id}/summary/submit']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql, gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql, gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql, gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql, gmp-platform/backend/src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryMigrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java, gmp-platform/backend/scripts/test-dhr-model-migration.mjs, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAuditReadTest.java]
     status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-compliance-assessment, evidence.dhr-summary-service, evidence.dhr-frozen-evidence-integrity-source, evidence.dhr-summary-migration, evidence.dhr-summary-complete-evidence-migration, evidence.dhr-summary-attachment-migration, evidence.dhr-summary-complete-evidence-tests, evidence.dhr-summary-attachment-archive-tests]
     sourceRevision: working-tree
-    sourceLocator: submit/version 保留version_no和完整冻结及人工确认，无evidence_model_version；reorganize/prepareNextDraft先建DRAFT，submit才分配MAX(version_no)+1，workspace返回草稿和历史版、version按指定版本读取。0104转换及原审计保护的旧切片验证见确认证据；revisionPrintableExport的草稿/历史版切换及只读导出仍待本轮UI/端到端验收，不能复用迁移切片质量结论。目标规则保持specified/internal。
+    sourceLocator: "submit/version 保留version_no和完整冻结及人工确认，无evidence_model_version；reorganize/prepareNextDraft先建DRAFT，submit才分配MAX(version_no)+1，workspace返回草稿和历史版、version按指定版本读取。0104转换及原审计保护的旧切片验证见确认证据；revisionPrintableExport的草稿/历史版切换及只读导出仍待本轮UI/端到端验收，不能复用迁移切片质量结论。目标规则保持specified/internal。；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_summary_version.version_no/check_result_snapshot/attachment_snapshot、dhr_summary_evidence和dhr_summary_draft.source_scope_hash；直接创建最终结构，不执行0104转换，原转换验证保留在历史证据。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-28'
     reviewStatus: reviewed
   - id: anchor.dhr-summary-manual-review-confirmation
@@ -35,14 +35,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java]
     apiReferences: ['POST /api/v1/dhr-instances/{id}/summary/submit']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java]
     status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-complete-evidence-tests]
     sourceRevision: working-tree
-    sourceLocator: submit 拒绝缺少三项人工确认或空说明，checkResult.manualReview 保存三项 true、note、confirmedBy、confirmedAt；聚焦测试仅显式断言缺确认阻断，尚未覆盖逐项、说明长度及冻结字段读回；不标 verified。
+    sourceLocator: "submit 拒绝缺少三项人工确认或空说明，checkResult.manualReview 保存三项 true、note、confirmedBy、confirmedAt；聚焦测试仅显式断言缺确认阻断，尚未覆盖逐项、说明长度及冻结字段读回；不标 verified。；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_summary_version.check_result_snapshot NOT NULL、dhr_summary_draft.source_scope_hash；JSON内部人工确认语义仍由所列服务解释。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-25'
     reviewStatus: reviewed
   - id: anchor.dhr-review-task-frozen-attachment-download
@@ -50,14 +50,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java]
     apiReferences: ['GET /api/v1/dhr-reviews/{id}/attachments/{attachmentId}/download']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrWorkbenchPermissionsTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionControllerAuthorizationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java]
     status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-review-controller, evidence.dhr-review-service, evidence.dhr-summary-attachment-service, evidence.dhr-review-attachment-permission-tests]
     sourceRevision: working-tree
-    sourceLocator: 控制器先取 service.detail 以检查待办候选或本人已办，再按返回 version.id 和 dhr.id 下载；附件服务核对冻结快照 id 与 sha256。已有权限拒绝及冻结包含附件正向读取测试源码，跨版本拒绝及完整任务到文件端到端仍待验收。
+    sourceLocator: "控制器先取 service.detail 以检查待办候选或本人已办，再按返回 version.id 和 dhr.id 下载；附件服务核对冻结快照 id 与 sha256。已有权限拒绝及冻结包含附件正向读取测试源码，跨版本拒绝及完整任务到文件端到端仍待验收。；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_attachment及dhr_summary_version.attachment_snapshot；当前直接创建结构。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-25'
     reviewStatus: reviewed
   - id: anchor.dhr-summary-zip-source-trace
@@ -65,14 +65,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java]
     apiReferences: ['GET /api/v1/dhr-instances/{dhrId}/summary/versions/{versionId}/export']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql, gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotPostgresTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotMigrationPostgresTest.java]
     status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-summary-archive-service, evidence.dhr-summary-attachment-archive-tests, evidence.dhr-summary-user-confirmed, evidence.signature-payload-lossless-storage-source, evidence.signature-payload-lossless-storage-migration, evidence.signature-payload-postgres-roundtrip-test, evidence.signature-payload-postgres-migration-test]
     sourceRevision: working-tree
-    sourceLocator: 2026-09-28revisionPrintableExport初核打印缺口保留于原证据及Git，仅属当时观察，不否定当前已有PDF实现。2026-10-21只追加签名载荷有限核对：Signature改TEXT、0118保留旧可读文本和原摘要，原signTarget/signField算法及归档两类原字节校验不变；旧原文丢失不重建，仍不通过的旧签名继续拒绝。新增PG源码覆盖持久化和签名JDBC消费者及迁移，不代表中文PDF版式、实例附件、版本隔离或完整ZIP/浏览器端到端已验收，原打印缺口不在此关闭。
+    sourceLocator: "2026-09-28revisionPrintableExport初核打印缺口保留于原证据及Git，仅属当时观察，不否定当前已有PDF实现。2026-10-21只追加签名载荷有限核对：Signature改TEXT、0118保留旧可读文本和原摘要，原signTarget/signField算法及归档两类原字节校验不变；旧原文丢失不重建，仍不通过的旧签名继续拒绝。新增PG源码覆盖持久化和签名JDBC消费者及迁移，不代表中文PDF版式、实例附件、版本隔离或完整ZIP/浏览器端到端已验收，原打印缺口不在此关闭。；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_summary_version.check_result_snapshot；signature.snapshot_data TEXT及ck_signature_snapshot_data_json直接创建；0118旧数据转换与其限制仍为历史证据，不在新初始化运行。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-10-21'
     reviewStatus: reviewed
   - id: anchor.dhr-summary-review-binding
@@ -80,14 +80,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
     apiReferences: []
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql, gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx, gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx, gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateList.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerServiceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProductProcessControllerTest.java]
     status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-process-configuration-ui, evidence.dhr-summary-migration, evidence.dhr-summary-review-binding-constraint]
     sourceRevision: working-tree
-    sourceLocator: 产品与产品簇共用制程版本校验并保存 NONE/REQUIRED；REQUIRED 接受已发布 DHR_SUMMARY 版本，开工快照冻结到 DHR 实例；NONE 的法定审核和放行边界属于业务规则，不能仅由配置源码证明。
+    sourceLocator: "产品与产品簇共用制程版本校验并保存 NONE/REQUIRED；REQUIRED 接受已发布 DHR_SUMMARY 版本，开工快照冻结到 DHR 实例；NONE 的法定审核和放行边界属于业务规则，不能仅由配置源码证明。；2026-10-21仅初始化定位维护（d405a9af工作树）：product_process_version/dhr_instance审核绑定列、dhr_summary_version审核绑定列及ck_dhr_summary_version_review_binding。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-19'
     reviewStatus: reviewed
   - id: anchor.dhr-summary-auto-evidence-scope
@@ -95,14 +95,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java]
     apiReferences: ['GET /api/v1/dhr-instances/{id}/summary', 'POST /api/v1/dhr-instances/{id}/summary/submit']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql, gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java]
     status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-summary-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-attachment-service, evidence.dhr-summary-complete-evidence-tests, evidence.dhr-summary-attachment-archive-tests]
     sourceRevision: working-tree
-    sourceLocator: DhrSummaryService.candidates/validatePlacements/submit 与 DhrAttachmentService.snapshot 已形成自动实例及附件范围；未证明完整适用核查和附件原件治理，不能将此锚点提升为 verified。
+    sourceLocator: "DhrSummaryService.candidates/validatePlacements/submit 与 DhrAttachmentService.snapshot 已形成自动实例及附件范围；未证明完整适用核查和附件原件治理，不能将此锚点提升为 verified。；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_summary_draft.source_scope_hash、dhr_summary_version.check_result_snapshot/attachment_snapshot及dhr_attachment。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-25'
     reviewStatus: reviewed
   - id: anchor.dhr-summary-stale-approval
@@ -110,13 +110,13 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java]
     apiReferences: []
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql, gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java]
     status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-evidence-impact-service, evidence.dhr-review-service]
     sourceRevision: working-tree
-    sourceLocator: changes 比较冻结表单、新增关联实例和附件，act 阻断发现变化后的批准；主动生效通知和完整核查结果变化尚无闭环证据。
+    sourceLocator: "changes 比较冻结表单、新增关联实例和附件，act 阻断发现变化后的批准；主动生效通知和完整核查结果变化尚无闭环证据。；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_summary_draft.source_scope_hash、dhr_summary_version.check_result_snapshot/attachment_snapshot及dhr_attachment。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-25'
     reviewStatus: reviewed

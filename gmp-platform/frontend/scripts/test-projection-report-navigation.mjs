@@ -26,8 +26,8 @@ test('legacy saved menus normalize to independent reports including DHR trace wi
   for (const page of PROJECTION_REPORT_PAGES) assert.equal(children.filter(child => child.path === page.path && child.label === page.label).length, 1);
 });
 
-test('all five pages and the legacy URL remain within the report permission boundary', () => {
-  assert.equal(PROJECTION_REPORT_PAGES.length, 5);
+test('all six pages and the legacy URL remain within the report permission boundary', () => {
+  assert.equal(PROJECTION_REPORT_PAGES.length, 6);
   for (const path of [...PROJECTION_REPORT_PAGES.map(page => page.path), '/reports/form-projections']) {
     assert.equal(inferPermissionCode(path), 'form-instances.view');
     assert.equal(isProjectionReportPath(path), true);

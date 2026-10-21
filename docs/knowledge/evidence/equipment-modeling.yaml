@@ -22,7 +22,7 @@ evidence:
     visibility: internal
   - id: evidence.equipment-legacy-schema
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0001-init-schema.sql
     description: original-evidence；初始结构包含 equipment_type 和 equipment，equipment.equipment_type_id 表达设备实例对类型的引用；该文件不证明新分类关系或新页面已经实现。
     visibility: internal
   - id: evidence.equipment-category-entity
@@ -32,7 +32,7 @@ evidence:
     visibility: internal
   - id: evidence.equipment-modeling-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0073-equipment-modeling.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0073-equipment-modeling.sql
     description: original-evidence；新增分类表并初始化生产设备、检验设备和计量器具，为类型添加可空分类引用并保留历史类型，增强新设备写入的类型引用完整性；该源码证据不等同于迁移已在运行数据库执行。
     visibility: internal
   - id: evidence.equipment-modeling-controller
@@ -47,7 +47,7 @@ evidence:
     visibility: internal
   - id: evidence.equipment-system-fields-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0074-equipment-system-fields.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0074-equipment-system-fields.sql
     description: original-evidence；为 equipment_type 和 equipment 增加可空 created_by、updated_by。按相同实体类型、实体标识和租户匹配既有审计，从最早 CREATE 与最新 CREATE 或 UPDATE 取姓名优先账号回填；equipment 沿用当前默认租户，无依据保持空，不改写既有时间或审计。该回填方式属于实现推断，源码不证明迁移已在运行库执行或历史审计完整。
     visibility: internal
   - id: evidence.equipment-modeling-integration-tests
@@ -62,7 +62,7 @@ evidence:
     visibility: internal
   - id: evidence.equipment-brand-purchase-date-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0075-equipment-brand-purchase-date.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0075-equipment-brand-purchase-date.sql
     description: original-evidence；仅为 equipment 增加可空 brand VARCHAR(128) 和 purchase_date DATE，历史记录不回填，设备类型结构不变；回滚仅移除这两个新增列。可空和日期粒度属于实现推断，源码不证明迁移已在运行数据库执行。
     visibility: internal
   - id: evidence.equipment-modeling-menu

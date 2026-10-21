@@ -1,0 +1,30 @@
+### Result
+{
+  "code": 200,
+  "unit": {
+    "id": "unit",
+    "code": "unit",
+    "name": "模拟增补·字典引用单位",
+    "type": "reference",
+    "groupId": "default-group",
+    "sortOrder": 9,
+    "status": "enabled",
+    "description": "",
+    "typeConfig": {
+      "sourceType": "dictionary",
+      "referenceDictionaryId": "387613106676502528",
+      "referenceDisplayFields": [
+        "name",
+        "value"
+      ]
+    }
+  },
+  "canvasUnit": true
+}
+### Ran Playwright code
+```js
+await page.evaluate('async()=>{const r=await fetch("/api/v1/master-data/template-modeling/form-templates/387613107104321536/versions/387613107108515840",{headers:{Authorization:"Bearer "+localStorage.getItem("token")}});const json=await r.json();const model=JSON.parse(json.data.modelDesignJson);const canvas=JSON.parse(json.data.canvasDesignJson);return {code:json.code,unit:model.payload.fields.find(f=>f.id==="unit"),canvasUnit:JSON.stringify(canvas).includes("387613106676502528")};}');
+```
+### Page
+- Page URL: http://localhost:3000/master-data/form-templates
+- Page Title: eDHR - 医疗器械电子设备历史记录系统

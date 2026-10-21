@@ -1,0 +1,6 @@
+### Result
+{"options":["同名字典项[UNIT_A]UNIT_A"],"value":"同名字典项[UNIT_A]"}
+### Ran Playwright code
+```js
+await (async(page)=>{const list=page.getByRole("listbox");await list.waitFor();const options=await list.getByRole("option").allTextContents();if(options.length!==1||!options[0].includes("同名字典项[UNIT_A]")||options[0].includes("SHIFT_A")||options[0].includes("UNIT_X"))throw new Error(JSON.stringify(options));await list.getByRole("option").first().click();const value=await page.getByRole("combobox",{name:"模拟增补·字典引用单位",exact:true}).inputValue();if(value!=="同名字典项[UNIT_A]")throw new Error(value);await page.screenshot({path:"output/playwright/dictionary-correction-20261019/qa-mock-dictionary.png"});await page.getByRole("button",{name:"关闭模拟填报",exact:true}).click();return {options,value};})(page);
+```

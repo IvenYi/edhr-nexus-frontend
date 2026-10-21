@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class DhrInstanceMigrationTest {
     @Test
     void migrationCreatesEmptyRegistryAndGrantsOnlyAdministrator() throws Exception {
-        String master = new String(getClass().getResourceAsStream("/db/changelog/db.changelog-master.yaml").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+        String master = new String(getClass().getResourceAsStream("/db/historical/db.changelog-historical.yaml").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
         assertThat(master).contains("db/changelog/0089-dhr-instance-management.sql");
         assertThat(master).contains("db/changelog/0090-remove-dhr-template-version-snapshot.sql");
         assertThat(master).contains("db/changelog/0091-remove-dhr-template-version-status.sql");

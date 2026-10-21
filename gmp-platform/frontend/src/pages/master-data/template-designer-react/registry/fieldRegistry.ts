@@ -103,7 +103,6 @@ const REFERENCE_TYPE_CONFIG_SCHEMA: PropertySchemaItem[] = [
       { label: '物料', value: 'material' },
       { label: '设备', value: 'equipment' },
       { label: '产品', value: 'product' },
-      { label: '供应商', value: 'supplier' },
       { label: '字典', value: 'dictionary' },
     ],
   },
@@ -233,6 +232,7 @@ export const fieldRegistry: FieldTypeDefinition[] = [
     compatibleComponents: ['userpicker', 'department', 'select', 'readonlycmp'],
     typeConfig: {
       sourceType: 'dictionary',
+      referenceDictionaryId: '',
     },
     typeConfigSchema: REFERENCE_TYPE_CONFIG_SCHEMA,
   }),

@@ -112,7 +112,7 @@ public class ProductionExecutionEngine {
         current.put("status", "IN_PROGRESS").put("startedAt", LocalDateTime.now().toString());
         for (JsonNode form : op.path("forms")) {
             if (form.has("workId")) continue;
-            initializeBindingForm(form, current);
+            initializeBindingForm(snapshot, op, form, current);
         }
         for (JsonNode work : op.path("works")) {
             ObjectNode workState = current.withObject("/works").putObject(work.path("id").asText());
@@ -266,7 +266,8 @@ public class ProductionExecutionEngine {
         }
         if (contentChanged) clearSignatures(form.path("fields"), merged);
         for (JsonNode field : com.zencas.edhr.template.service.FormReferenceConfig.fields(form, mapper)) {
-            access.validateEvidence(field, merged.path(field.path("id").asText()), snapshot.path("context").path("objectId").asText(), merged);
+            access.validateEvidence(field, merged.path(field.path("id").asText()), snapshot.path("context").path("objectId").asText(), merged,
+                    formState.hasNonNull("savedAt") ? previous.path(field.path("id").asText()) : null);
         }
         JsonNode activeBefore = formState.path("active").deepCopy();
         if ("SIGN_FIELD".equals(action)) {
@@ -449,7 +450,7 @@ public class ProductionExecutionEngine {
         if (!CustomFormPolicy.editable(form, value)) throw invalid("工序开工后才可新增表单");
         ObjectNode current = (ObjectNode) value;
         ((ArrayNode) op.path("forms")).add(form);
-        initializeBindingForm(form, current);
+        initializeBindingForm(snapshot, op, form, current);
         ((ObjectNode) current.path("forms").path(form.path("id").asText())).put("explicitCreatorId", operator).put("explicitCreatedAt", LocalDateTime.now().toString());
         history(state, op, "挂载自定义表单", operator, form.path("name").asText() + " · " + form.path("versionId").asText()
                 + " · " + (form.path("required").asBoolean() ? "必填" : "选填") + " · " + form.path("id").asText());
@@ -464,7 +465,7 @@ public class ProductionExecutionEngine {
         ObjectNode current = (ObjectNode) value;
         if (ExecutionFormCopies.ids(current, formId).isEmpty()) throw invalid("只能补录已实际到达的表单，不得绕过作业适用规则");
         ObjectNode copy = mapper.createObjectNode();
-        initializeForm(form, copy);
+        initializeForm(snapshot, op, form, copy);
         if (!formControls(form, copy, operator).path("canAct").asBoolean()) throw invalid("当前用户没有该表单的填写权限");
         String now = LocalDateTime.now().toString();
         copy.put("explicitCreatorId", operator).put("explicitCreatedAt", now);
@@ -486,7 +487,7 @@ public class ProductionExecutionEngine {
         ObjectNode group = ExecutionFormCopies.ensureGroup(current, formId);
         int sequence = group.path("instanceIds").size() + 1;
         String instanceId = formId + ":copy:" + sequence;
-        initializeForm(form, current.withObject("/forms").putObject(instanceId));
+        initializeForm(snapshot, op, form, current.withObject("/forms").putObject(instanceId));
         ((ObjectNode) current.path("forms").path(instanceId)).put("explicitCreatorId", operator).put("explicitCreatedAt", LocalDateTime.now().toString()).put("remark", remark);
         ((ArrayNode) group.path("instanceIds")).add(instanceId);
         history(state, op, "新增表单份", operator, form.path("name").asText() + " · 第 " + sequence + " 份 · " + instanceId + " · " + remark);
@@ -724,13 +725,66 @@ public class ProductionExecutionEngine {
         if (node.isContainerNode()) for (JsonNode child : node) collectDefaultBindings(child, fields);
     }
 
-    private void initializeForm(JsonNode form, ObjectNode state) {
+    private void initializeForm(JsonNode snapshot, JsonNode op, JsonNode form, ObjectNode state) {
         form = withCanvasBindings(form);
-        applyDefaults(form.path("fields"), state.putObject("values")); initializeFormGraph(form, state);
+        ObjectNode values = state.withObject("/values");
+        applyDefaults(form.path("fields"), values);
+        if (!state.path("referenceContextInitialized").asBoolean()) {
+            JsonNode fields = com.zencas.edhr.template.service.FormReferenceConfig.fields(form, mapper);
+            ObjectNode defaults = state.putObject("referenceDefaults");
+            initializeReferenceContext(fields, values, snapshot.path("context"), op,
+                    CustomFormPolicy.batch(form), defaults, state.putObject("referenceContextWarnings"));
+            state.put("referenceContextInitialized", true);
+        }
+        initializeFormGraph(form, state);
     }
-    private void initializeBindingForm(JsonNode form, ObjectNode state) {
+    private void initializeReferenceContext(JsonNode fields, ObjectNode values, JsonNode context, JsonNode op, boolean sharedBatch, ObjectNode defaults, ObjectNode warnings) {
+        initializeReferenceContext(fields, values, mapper.createObjectNode(), context, op, sharedBatch, defaults, warnings);
+    }
+    private void initializeReferenceContext(JsonNode fields, ObjectNode values, ObjectNode parentValues, JsonNode context, JsonNode op, boolean sharedBatch, ObjectNode defaults, ObjectNode warnings) {
+        resolveReferenceContext(fields, values, parentValues, context, op, sharedBatch, defaults, warnings);
+        ObjectNode inherited = parentValues.deepCopy(); inherited.setAll(values);
+        for (JsonNode field : fields) {
+            if (!"subTable".equals(field.path("type").asText()) || "disabled".equals(field.path("status").asText())) continue;
+            JsonNode columns = field.path("typeConfig").path("columns");
+            // New-row defaults use only the parent and an empty row, never another row's entered values.
+            initializeReferenceContext(columns, mapper.createObjectNode(), inherited, context, op, sharedBatch, defaults, warnings);
+            for (JsonNode row : values.path(field.path("id").asText())) if (row instanceof ObjectNode object)
+                initializeReferenceContext(columns, object, inherited, context, op, sharedBatch, mapper.createObjectNode(), mapper.createObjectNode());
+        }
+    }
+    private void resolveReferenceContext(JsonNode fields, ObjectNode values, ObjectNode parentValues, JsonNode context, JsonNode op, boolean sharedBatch, ObjectNode defaults, ObjectNode warnings) {
+        for (int round = 0; round < fields.size(); round++) {
+            int resolved = defaults.size();
+            for (JsonNode field : fields) {
+                String id = field.path("id").asText();
+                JsonNode config = field.path("typeConfig");
+                if ("disabled".equals(field.path("status").asText()) || !"reference".equals(field.path("type").asText())
+                        || !config.path("referenceContextAutofill").asBoolean() || defaults.has(id)) continue;
+                String referenceId = switch (config.path("sourceType").asText()) {
+                    case "productionObject" -> context.path("objectId").asText();
+                    case "productionBatch" -> "BATCH".equals(context.path("objectType").asText()) ? context.path("objectId").asText() : "";
+                    case "serialNumber" -> "SN".equals(context.path("objectType").asText()) ? context.path("objectId").asText() : "";
+                    case "workOrder" -> context.path("workOrderId").asText();
+                    case "product" -> context.path("productId").asText();
+                    case "material" -> "product".equals(config.path("referenceMaterialScope").asText()) ? context.path("productId").asText() : "";
+                    case "operation" -> sharedBatch ? "" : op.path("operationId").asText();
+                    default -> "";
+                };
+                if (referenceId.isBlank()) { warnings.put(id, "没有适配的生产上下文，请手动选择"); continue; }
+                ObjectNode queryValues = parentValues.deepCopy(); queryValues.setAll(values);
+                JsonNode selected = access.contextReference(config, referenceId, queryValues);
+                if (selected == null) { warnings.put(id, "当前生产上下文不符合引用候选条件，请核对后选择"); continue; }
+                defaults.set(id, selected.deepCopy()); warnings.remove(id);
+                JsonNode previous = values.path(id);
+                if (previous.isMissingNode() || previous.isNull() || (previous.isTextual() && previous.asText().isBlank())) values.set(id, selected.deepCopy());
+            }
+            if (defaults.size() == resolved) break;
+        }
+    }
+    private void initializeBindingForm(JsonNode snapshot, JsonNode op, JsonNode form, ObjectNode state) {
         String id = form.path("id").asText();
-        initializeForm(form, state.withObject("/forms").putObject(id));
+        initializeForm(snapshot, op, form, state.withObject("/forms").putObject(id));
         ExecutionFormCopies.ensureGroup(state, id).put("ended", false);
     }
     private void initializeFormGraph(JsonNode form, ObjectNode state) {
@@ -765,7 +819,7 @@ public class ProductionExecutionEngine {
                     for (JsonNode form : op.path("forms")) {
                         if (work.path("id").asText().equals(form.path("workId").asText()) && id.asText().equals(form.path("workNodeId").asText())
                                 && !opState.path("forms").has(form.path("id").asText()))
-                            initializeBindingForm(form, opState);
+                            initializeBindingForm(snapshot, op, form, opState);
                     }
                 } else if (!"CONFIRMATION".equals(kind)) throw invalid("无法执行的作业节点类型：" + kind);
             }

@@ -182,7 +182,7 @@ secondary-reference：下列 2026-09-23 记录保留为历史时点；其“仅�
 | 原始路径与定位 | 本次可支持的观察 |
 | --- | --- |
 | `gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java`：`candidates`、`submit`、`version`、`lockedCompletedDhr` | 读取时三类候选来自 directory/work/custom；submit 冻结目录、候选、关联、哈希和流程引用，REQUIRED 使用 PENDING_REVIEW；既有写门禁阻断对已提交汇总的直接修改。只能作为新切片接入基点，不能证明审核、新版重审及影响检测已完成。 |
-| `gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql`：汇总版本/证据表及状态约束 | 存在 DHR_SUMMARY 分类、汇总版本和实例证据关联结构，来源值为 DIRECTORY/WORK/CUSTOM；读取迁移不等于执行迁移，新状态兼容需由实现验证。 |
+| `gmp-platform/backend/src/test/resources/db/changelog/0092-dhr-summary-workspace.sql`：汇总版本/证据表及状态约束 | 存在 DHR_SUMMARY 分类、汇总版本和实例证据关联结构，来源值为 DIRECTORY/WORK/CUSTOM；读取迁移不等于执行迁移，新状态兼容需由实现验证。 |
 | `gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx`：imports | 当前汇总页引用 ListTableShell、TableStateCell、ConfirmDialog 和共享列表样式；引用存在不等于新页面及交互已验收。 |
 | `docs/frontend/list-page-guidelines.md`、`docs/frontend/list-table-shell.md`、`docs/frontend/dialog-guidelines.md` | 当前共享规范来源：独立列表共用表格壳、表头/正文/固定列/列宽样式、TableStateCell；首列继承普通正文，不另设蓝色链接或特殊字重；普通表单使用 FormDialog、FormDialogSection、FormDialogFieldGrid；预览、确认、签名及内嵌明细按各自适用边界。 |
 | `gmp-platform/backend/src/test/java/com/zencas/edhr/knowledge/BusinessKnowledgeModelTest.java`：`currentKnowledgeModelIsValid`、基线和负向测试 | 正式知识校验入口，可验证 schema、标识、引用及投影约束；不能验证 DHR 业务运行、页面或真实变更作废集成。 |

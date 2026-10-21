@@ -1,0 +1,75 @@
+{
+  "database": "edhr_dev",
+  "backup": {
+    "archive": "/Users/ivenwang/Documents/edhr-nexus-backups/2026-10-21-old-entry-closure/edhr_dev-before-cleanup.dump",
+    "bytes": 1377386,
+    "sha256": "5a2fc7c0fa4f820572c3d8408b045760b672b0ca9675a7863e7bd3f22bacaed0"
+  },
+  "deletedDemoObjects": [
+    {
+      "id": 970018,
+      "object_no": "PROJECTION-DEMO-BATCH",
+      "work_order_id": 970017
+    },
+    {
+      "id": 980018,
+      "object_no": "PROJECTION-DEMO2-BATCH",
+      "work_order_id": 980017
+    },
+    {
+      "id": 991018,
+      "object_no": "PROJECTION-RUNTIME-20261010-BATCH",
+      "work_order_id": 991017
+    },
+    {
+      "id": 992018,
+      "object_no": "PROJECTION-RUNTIME-20261010-V2-BATCH",
+      "work_order_id": 992017
+    }
+  ],
+  "deletedRows": {
+    "form_projection_record": 28,
+    "form_projection_batch": 6,
+    "form_trace_value": 28,
+    "form_instance_record": 7,
+    "dhr_summary_draft": 0,
+    "dhr_termination": 0,
+    "dhr_instance": 4,
+    "production_execution": 4,
+    "deletion_form_reference": 5,
+    "production_object": 4,
+    "work_order": 4
+  },
+  "templateChanges": [
+    {
+      "id": 970012,
+      "removedRetiredMappings": 2,
+      "beforeSha256": "220ea48b023056233f6c16a2c93c98d1ffe14d56b90126387a5aca2de08ca7ac",
+      "afterSha256": "81e416cbf54b458ffbd46e8ef13535e679d474c65c94b4994f3177e5279512ef"
+    },
+    {
+      "id": 980012,
+      "removedRetiredMappings": 2,
+      "beforeSha256": "d39ea8f2444c61bcfff523aca0f21cd00ea80890399b4b6281369977ef258e62",
+      "afterSha256": "89a43db8a5c5ed8c4316c5fd653871fbbc04f04301ce93a8878ce00453591504"
+    },
+    {
+      "id": 991012,
+      "removedRetiredMappings": 1,
+      "beforeSha256": "1586142bdf26142f3ebb9faeb5a9f4130e49e8c2f87d3b3e909ad6c1c634b742",
+      "afterSha256": "895d755ca5714ec4388925539afb2fd5b9de44045ddd4fecd12b51637e961c13"
+    },
+    {
+      "id": 992012,
+      "removedRetiredMappings": 1,
+      "beforeSha256": "1586142bdf26142f3ebb9faeb5a9f4130e49e8c2f87d3b3e909ad6c1c634b742",
+      "afterSha256": "895d755ca5714ec4388925539afb2fd5b9de44045ddd4fecd12b51637e961c13"
+    }
+  ],
+  "unaffectedTableChecks": 98,
+  "unaffectedRowsEqual": true,
+  "unexpectedChangedTables": [],
+  "excludedFromCleanup": "安速康及其他非上述四个虚构演示对象；所有签名、审计、文件与初始化账本保持原样",
+  "oneOffOnly": true,
+  "startupCleanupScriptAdded": false
+}

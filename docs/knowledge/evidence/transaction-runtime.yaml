@@ -87,7 +87,7 @@ evidence:
     visibility: internal
   - id: evidence.production-work-template-configuration-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0059-work-template-audit-baseline.sql
     description: Liquibase 0059 迁移将既有 WORK 适用规则恢复为有效，并为缺少 PRODUCTION_WORK_TEMPLATE 审计事件的既有 WORK 模板写入 SYSTEM/BASELINE 历史审计基线。迁移通过 NOT EXISTS 避免重复写入，且不伪称为用户 CREATE。
     visibility: internal
   - id: evidence.rdo-version-status-resolver

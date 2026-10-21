@@ -1,6 +1,8 @@
 import type { CanvasNode, ModelField, TemplateDesignerDocument } from '@/pages/master-data/template-designer-react/types';
 
-export interface ReferenceValue { id: string; name: string; sourceType?: string; code?: string }
+export interface ReferenceValue { id: string; name: string; sourceType?: string; code?: string; [key: string]: unknown }
+export interface ReferencePageRequest { page: number; size: number }
+export const referenceConfigKeys = ['referenceField', 'referenceQueryConditions', 'referenceDisplayFields', 'referenceSearchFields', 'referenceContextAutofill', 'referenceDictionaryId', 'referenceMaterialScope', 'referenceMaterialTypeIds', 'referenceProductionScope'] as const;
 export interface ReferenceCondition { sourceField: string; operator: string; targetFieldId: string }
 export function referenceConditions(field: ModelField): ReferenceCondition[] {
   const raw = field.typeConfig.referenceQueryConditions;
@@ -12,7 +14,7 @@ export function resolveReferenceField(field: ModelField, node: CanvasNode): Mode
   const widget = node.bindings?.widgetConfig ?? {};
   const config = { ...field.typeConfig };
   if ('referenceSourceType' in widget) config.sourceType = widget.referenceSourceType;
-  for (const key of ['referenceField', 'referenceQueryConditions']) if (key in widget) config[key] = widget[key];
+  for (const key of referenceConfigKeys) if (key in widget) config[key] = widget[key];
   return { ...field, typeConfig: config };
 }
 
@@ -33,7 +35,9 @@ export function syncReferenceConfig(document: TemplateDesignerDocument, nodeId: 
     const match = (item.bindings?.subTableFieldId ?? item.bindings?.fieldId) === id && item.bindings?.subTableId === tableId;
     return { ...item, ...(item.children ? { children: syncNodes(item.children) } : {}), ...(match ? { bindings: { ...item.bindings,
       ...(tableId ? { subTableField: resolved } : {}),
-      widgetConfig: { ...item.bindings?.widgetConfig, referenceSourceType: resolved.typeConfig.sourceType, referenceField: resolved.typeConfig.referenceField ?? '', referenceQueryConditions: resolved.typeConfig.referenceQueryConditions ?? [] },
+      widgetConfig: { ...item.bindings?.widgetConfig, referenceSourceType: resolved.typeConfig.sourceType,
+        ...Object.fromEntries(referenceConfigKeys.filter(key => !['referenceDictionaryId', 'referenceMaterialScope', 'referenceMaterialTypeIds', 'referenceProductionScope'].includes(key) || key in resolved.typeConfig).map(key => [key, resolved.typeConfig[key] ?? (key === 'referenceField' || key === 'referenceDictionaryId' ? '' : key === 'referenceContextAutofill' ? false : [])])),
+      },
     } } : {}) };
   });
   return { ...document, model: { ...document.model, fields }, canvas: { ...document.canvas, pages: document.canvas.pages.map(page => ({ ...page, nodes: syncNodes(page.nodes) })) } };

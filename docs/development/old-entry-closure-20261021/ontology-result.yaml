@@ -1,0 +1,112 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    targetBranch: edhr-dev
+    targetCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    contractReadCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    uncommittedContractPaths: []
+  reason: 本轮核对为既有契约的实现纠错，不新增或替代业务概念、关系、状态、数量、签署、审计或归属规则。用户最新明确旧数据均为无用开发测试数据、不应据此维持兼容写入，落实DEC-0077-27既有MVP范围授权；此前主侧对旧执行保存和新增份数继续写的保留只是工程假设，现已纠正，并非新增业务政策替代。CSV补UTF-8编码标记属于交付格式修复；退役追溯配置不得经新执行、附加来源、旧执行保存、新增份数或投影重试生成新数据。保留GET和preview的只读解释不构成兼容写入。用户要求本体文件及前轮107处失效路径留到下一步，故本轮不修改知识资产。主侧已将本轮功能差异整合原工作区并在8081重建运行，具体双基线与HTTP证据见runtimeIntegration和live-runtime-check.json；本角色仅核对语义及证据范围，不冒称已独立运行部署、清理或接口验收，也不代表知识CI通过。
+  changedArtifacts: []
+  knowledgeSync:
+    - id: DEC-0077-27
+      disposition: retained
+      scope: MVP开发测试历史可按明确范围备份后修复、迁移或作废，无需维持旧格式兼容写入。此次仅定向清除四组纯虚构演示及四模板六处退役映射，不扩展为删除安速康或其他非目标对象、签名、审计、文件或初始化账本，也不将一次性清理加入初始化。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - docs/development/old-entry-closure-20261021/decision-package.yaml
+        - docs/development/old-entry-closure-20261021/data-cleanup-result.json
+    - id: DEC-0077-40
+      disposition: retained
+      scope: 保留当前九项预置与四项退出预置的定义；所有本轮覆盖的持久化生成入口拒绝退役formTrace ID，不将退役ID重新引入目录，也不扩大为禁止业务统计中独立的班组或单据号属性。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+    - id: DEC-0077-25
+      disposition: retained
+      scope: 尚保留的实例、执行及DHR证据在授权只读查看时继续按自身快照解释；validate和preview历史解释不因写入口收紧而改写。MVP开发旧数据处置沿27的明确授权，不再据本条要求旧格式兼容写入。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+    - id: DEC-0077-41
+      disposition: retained
+      scope: 目录解除和删除不静默重解释历史内容；只读GET可保留自身冻结来源，但保存、提交等持久化与新增份数必须通过现行配置合法性校验，旧投影重试也不得继续生成退役含义。本轮不再保留“旧执行可继续保存和新增份数”的工程假设；合法配置的执行生命周期不受影响。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    - id: DEC-0077-42
+      disposition: retained
+      scope: 单字段最多单追溯项、跨字段复用及新配置冻结校验继续保持；不扩大四项退役检查为移除其他合法字段来源或形成后证据。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+    - id: rule.product-process.multiple-classified-documents
+      disposition: retained
+      scope: 工序绑定受控文档版本的既有定义不变；移除不被当前页面使用的轻量文档写口，保留当前DocumentManagementController的版本化新增、编辑和删除及历史GET。
+      sourceReferences:
+        - docs/knowledge/rules/product-process.yaml
+        - docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.old-entry-closure-baseline
+      checkType: reference
+      command: git rev-parse HEAD origin/edhr-dev; 读取项目、角色、交接契约及当前schema和相关决策
+      outcome: passed
+      evidence:
+        - 本角色实际HEAD与origin/edhr-dev均d405a9afb4327b859545fa5a12c7eebe1350f418；knowledgeModelVersion为0.3.25、schemaVersion为1.2.0，未提升成熟度或路线阶段。
+    - id: validation.old-entry-closure-source-paths
+      checkType: reference
+      command: rg核对prepareDesign、validateConfiguration、snapshots.build、customForm、ADD_FORM_COPY及当前页面调用；读取旧文档和版本化文档控制器
+      outcome: passed
+      evidence:
+        - 新设计prepareDesign查现行目录；新执行build和附加模板customForm都经过ExecutionSnapshotBuilder.form，可统一在新使用校验阻止退役配置。
+        - 无执行记录的view也只读构建预览，BusinessException变configurationError；首次START才落新执行，因此页面识别对象和工序开工均需验证明确配置提示。
+        - 已有execution读取parse(snapshotJson)仍可只读解释；ADD_FORM_COPY虽复用冻结表单，现已在ProductionExecutionService分支先执行validateConfiguration，不能据来源冻结免除新份数生成校验。
+        - FormInstanceRecordService.saved在持久化前校验来源form，因此新旧执行SAVE、SUBMIT及其他经过该落库入口的动作均拒绝退役配置；FormProjectionService.process在preview和写投影记录前校验source.model，旧PENDING重试不再成为退役数据生成通道。事务、零写与历史读取回归由主侧及独立质量验证。
+        - 两组旧文档CRUD不被当前router引用；旧DELETE含轻量删除旁路，主侧确认一并停用POST、PUT、DELETE，当前版本化管理CUD和历史GET保留。
+        - 两份演示脚本是直接SQL灌入旧配置的手工入口，不是Liquibase或应用自动初始化；移除工具和本轮另行授权的一次性数据清理分别记录，不混同为启动清理职责。
+    - id: validation.old-entry-closure-decision-package
+      checkType: reference
+      command: 读取docs/development/old-entry-closure-20261021/decision-package.yaml及本轮Java差异
+      outcome: passed
+      evidence:
+        - 已核对DEC-PACKAGE-20261021-OLD-ENTRY-CLOSURE的范围、知识版本、完整contractBaseline、空unresolved与replacementScopes；与主侧交接及用户明确的本体暂缓一致。
+        - 已重读增量决定包：compatibilityAndMigration明确旧快照只读解释、保存及新增份数不再绕过校验；testImpacts包含旧执行保存/新增份数、投影重试阻断及清理非目标数据不变。它纠正此前工程保留，不构成待用户再次确认的新语义问题。
+        - GlobalExceptionHandler对已移除方法与不存在路径分别保留405和404，属于旧入口关闭所需的HTTP错误正确性，不增加业务概念、授权或生命周期政策；运行结果由主侧和质量角色验证。
+    - id: validation.old-entry-closure-cleanup-scope
+      checkType: reference
+      command: 读取data-cleanup-result.json、retired-config-scan.json及本轮FormInstanceRecordService、ProductionExecutionService和FormProjectionService差异
+      outcome: passed
+      evidence:
+        - user-confirmed来源为本轮主侧交接及更新决定包：旧数据是无用开发测试数据，不因旧数据维持兼容写入；原有DEC-0077-27提供MVP范围依据。
+        - original-evidence为实现diff与主侧清理产物：报告列明备份archive和SHA256，四对象970018/980018/991018/992018及对应派生记录、四模板970012/980012/991012/992012的六处退役映射；清理范围不等于删除全部测试库。
+        - data-cleanup-result.json记录98项非目标记录比对相同、unexpectedChangedTables为空，以及签名、审计、文件、初始化账本和安速康非目标范围保持。此处仅核对清理声明与授权边界，没有由本角色重新执行数据库删除、哈希或运行验收。
+        - 本轮最初尚未部署的状态已由主侧后续运行整合记录更新，不再作为当前绝对结论；功能移植与直接部署缺少原因目录功能的干净候选jar须区分。
+    - id: validation.old-entry-closure-runtime-integration-scope
+      checkType: reference
+      command: 读取更新决定包runtimeIntegration、live-runtime-check.json和备份目录runtime-deployment.json元数据字段
+      outcome: passed
+      evidence:
+        - original-evidence为主侧整合与运行产物；本体核对基线继续是d405a9afb4327b859545fa5a12c7eebe1350f418，实际原工作区代码基线为ca98ab2897990eba30bf1433134aa8560578f562加其既有原因/引用WIP和本轮精确移植差异，不能冒充两工作区完整代码相同。
+        - runtimeIntegration明确只移植本轮功能差异，原解释器原因引用校验与退役ID校验并存；原知识及初始化在途内容不被覆盖，preimageBackup定位到root-preimages。
+        - live-runtime-check.json记录原工作区重建后8081进程PID62450、数据库edhr_dev；8081直连及3000代理六项旧CUD均404或405、无文档/版本/审计变动，当前正式文档、追溯目录、投影状态、不良原因和报废原因GET均200。
+        - 原工作区聚焦测试总数169，166项执行通过、3项条件性跳过、0失败、0错误；不能把169全部记为实跑通过。新初始化基线未应用现有运行库，已有Liquibase账本保留。
+        - 本角色没有独立重跑上述HTTP、数据库哈希、部署或业务E2E；这里只更新报告中过时的未部署描述，最终质量结论仍由本轮独立质量实例给出。
+    - id: validation.old-entry-closure-knowledge-unchanged
+      checkType: reference
+      command: git diff --name-only -- docs/knowledge docs/architecture
+      outcome: passed
+      evidence:
+        - 本角色核对时输出为空，本角色只写本轮评估报告，未修改业务代码、测试、迁移、知识或架构。
+        - 前轮知识失效路径的正式校验失败结果仍见docs/development/clean-initialization-baseline-20261021/knowledge-validation-result.json；本轮不伪称已经修复或通过。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

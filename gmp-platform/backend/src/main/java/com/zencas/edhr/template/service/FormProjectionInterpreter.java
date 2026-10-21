@@ -35,12 +35,14 @@ public final class FormProjectionInterpreter {
         ATTRIBUTES.put("reporter", "报工人");
         ATTRIBUTES.put("unit", "单位");
         ATTRIBUTES.put("reason", "原因");
+        ATTRIBUTES.put("reasonNote", "原因补充说明");
         ATTRIBUTES.put("category", "分类");
     }
-    private static final Map<String, String> MODELS = Map.of("formTrace", "按内容查找表单", "production", "生产报工", "scrap", "报废记录", "consumption", "实际物料消耗");
+    private static final Map<String, String> MODELS = Map.of("formTrace", "按内容追溯表单", "production", "生产报工", "defect", "不良明细", "scrap", "报废记录", "consumption", "实际物料消耗");
     private static final Set<String> NUMBERS = Set.of("quantity", "outputQuantity", "goodQuantity", "ngQuantity", "workHours");
     private static final Set<String> TIMES = Set.of("reportStartTime", "reportEndTime");
     private static final Set<String> DICTIONARIES = Set.of("unit", "reason", "category");
+    private static final Set<String> RETIRED_TRACE_IDS = Set.of("serialNumberText", "lookup_related_batch", "teamText", "documentNumberText");
     // Stable preset meanings, independent of display names or administrator-created text items.
     public static java.util.List<String> referenceSources(String attributeId) {
         return switch (attributeId) {
@@ -58,7 +60,8 @@ public final class FormProjectionInterpreter {
         return switch (model) {
             case "formTrace" -> Set.of("materialLotText", "serialNumberText", "equipmentText", "teamText", "documentNumberText");
             case "production" -> Set.of("outputQuantity", "goodQuantity", "ngQuantity", "workHours", "reportStartTime", "reportEndTime", "productionDate", "reporter", "unit", "teamText", "documentNumberText");
-            case "scrap", "consumption" -> Set.of("material", "materialLotText", "quantity", "unit", "reason", "category", "teamText", "documentNumberText");
+            case "defect" -> Set.of("reason", "quantity", "unit", "reasonNote", "teamText", "documentNumberText");
+            case "scrap", "consumption" -> Set.of("material", "materialLotText", "quantity", "unit", "reason", "reasonNote", "category", "teamText", "documentNumberText");
             default -> throw invalid("不支持的统计模型");
         };
     }
@@ -67,15 +70,19 @@ public final class FormProjectionInterpreter {
     public static ObjectNode catalog() {
         ObjectNode result = MAPPER.createObjectNode().put("version", VERSION);
         ArrayNode models = result.putArray("models");
-        for (String id : java.util.List.of("formTrace", "production", "scrap", "consumption")) {
+        for (String id : java.util.List.of("formTrace", "production", "defect", "scrap", "consumption")) {
             ObjectNode model = models.addObject().put("id", id).put("name", MODELS.get(id)).put("version", VERSION);
             ArrayNode attributes = model.putArray("attributes");
             ATTRIBUTES.forEach((key, name) -> {
                 if (!allowed(id).contains(key)) return;
+                if ("scrap".equals(id) && "category".equals(key)) return;
                 ObjectNode attribute = attributes.addObject().put("id", key).put("name", name)
                         .put("type", NUMBERS.contains(key) ? "number" : TIMES.contains(key) ? "datetime"
                                 : "productionDate".equals(key) ? "date" : "material".equals(key) ? "reference" : "text");
-                if (DICTIONARIES.contains(key)) attribute.putArray("referenceSources").add("dictionary");
+                if (Set.of("scrap", "defect").contains(id) && "reason".equals(key)) {
+                    attribute.put("type", "reference").put("name", "defect".equals(id) ? "不良原因" : "报废原因");
+                    attribute.putArray("referenceSources").add("defect".equals(id) ? "defectReason" : "scrapReason");
+                } else if (DICTIONARIES.contains(key)) attribute.putArray("referenceSources").add("dictionary");
                 if ("reporter".equals(key)) attribute.putArray("referenceSources").add("user");
             });
         }
@@ -119,6 +126,8 @@ public final class FormProjectionInterpreter {
             if (!"formTrace".equals(modelId)) {
                 if ("production".equals(modelId)) {
                     if (!sources.hasNonNull("outputQuantity") && !sources.hasNonNull("goodQuantity") && !sources.hasNonNull("ngQuantity")) throw invalid("请配置生产报工数量来源");
+                } else if ("defect".equals(modelId)) {
+                    if (!sources.hasNonNull("quantity") || !sources.hasNonNull("reason")) throw invalid("请配置不良原因及对应数量来源");
                 } else if (!sources.hasNonNull("quantity") || !sources.hasNonNull("material"))
                     throw invalid("请配置物料及数量来源");
             }
@@ -160,15 +169,18 @@ public final class FormProjectionInterpreter {
                 } else if ("reporter".equals(entry.getKey())) {
                     if (!"signature".equals(source.path("type").asText()) && !("reference".equals(source.path("type").asText())
                             && "user".equals(source.path("typeConfig").path("sourceType").asText()))) throw invalid("报工人请选择人员引用或签名字段");
+                } else if ("reason".equals(entry.getKey()) && Set.of("scrap", "defect").contains(modelId)
+                        && "reference".equals(source.path("type").asText()) && ("defect".equals(modelId) ? "defectReason" : "scrapReason").equals(source.path("typeConfig").path("sourceType").asText())) {
+                    // Standard reason identity; legacy snapshots below retain their original text/dictionary meanings.
+                    if (source.path("typeConfig").path("multiple").asBoolean()) throw invalid("原因请选择单选引用字段");
+                } else if ("reason".equals(entry.getKey()) && "defect".equals(modelId)) {
+                    throw invalid("不良原因请选择不良原因目录的单选引用字段");
                 } else if (DICTIONARIES.contains(entry.getKey()) && "reference".equals(source.path("type").asText())
                         && "dictionary".equals(source.path("typeConfig").path("sourceType").asText())) {
                     // Dictionary values are frozen unit codes, not conversion rules.
                 } else if ("formTrace".equals(modelId) && "reference".equals(source.path("type").asText())) {
-                    String sourceType = source.path("typeConfig").path("sourceType").asText();
-                    boolean compatible = false;
-                    for (JsonNode candidate : configuration.path("lookupItems").path(entry.getKey()).path("referenceSources"))
-                        if (sourceType.equals(candidate.asText())) compatible = true;
-                    if (!compatible) throw invalid("引用对象与追溯项不匹配：" + entry.getKey());
+                    if (!acceptsReferenceSources(source.path("typeConfig"), configuration.path("lookupItems").path(entry.getKey()).path("referenceSources")))
+                        throw invalid("引用对象与追溯项不匹配：" + entry.getKey());
                 } else scalar(source);
             }
             if (binding.has("detailFieldIds")) {
@@ -184,21 +196,58 @@ public final class FormProjectionInterpreter {
         }
     }
 
-    /** Design saves and new snapshots enforce cardinality; formed evidence retains its original interpretation. */
+    private static boolean acceptsReferenceSources(JsonNode config, JsonNode allowedSources) {
+        Set<String> allowed = new HashSet<>();
+        allowedSources.forEach(source -> allowed.add(source.asText()));
+        String source = config.path("sourceType").asText();
+        if (allowed.contains(source)) return true;
+        if ("material".equals(source)) return "product".equals(config.path("referenceMaterialScope").asText()) && allowed.contains("product");
+        if (!"productionObject".equals(source)) return false;
+        return switch (config.path("referenceProductionScope").asText("all")) {
+            case "batch" -> allowed.contains("productionBatch");
+            case "sn" -> allowed.contains("serialNumber");
+            case "all" -> allowed.contains("productionBatch") && allowed.contains("serialNumber");
+            default -> false;
+        };
+    }
+
+    /** New configuration is strict; completed/frozen legacy sources keep their own meaning. */
     public static void validateConfiguration(JsonNode model) {
         validate(model);
         Map<String, Set<String>> traceFields = new java.util.HashMap<>();
         for (JsonNode binding : model.path("projection").path("bindings")) {
-            if (!"formTrace".equals(binding.path("modelId").asText())) continue;
-            String tableId = binding.path("tableId").asText("");
-            if (tableId.isBlank()) tableId = "";
-            Set<String> assigned = traceFields.computeIfAbsent(tableId, key -> new HashSet<>());
-            for (JsonNode source : binding.path("sources")) {
-                if (!assigned.add(source.asText())) {
-                    JsonNode fields = tableId.isBlank() ? model.path("fields") : field(model.path("fields"), tableId).path("typeConfig").path("columns");
-                    String name = field(fields, source.asText()).path("name").asText(source.asText());
-                    throw invalid("“" + name + "”关联了多个追溯配置，每个字段最多关联一个追溯项，请手动移除多余关联或更换来源");
+            if ("formTrace".equals(binding.path("modelId").asText())) {
+                var attributes = binding.path("sources").fieldNames();
+                while (attributes.hasNext()) {
+                    String id = attributes.next();
+                    if (RETIRED_TRACE_IDS.contains(id)) {
+                        String name = model.path("projection").path("lookupItems").path(id).path("name")
+                                .asText(ATTRIBUTES.getOrDefault(id, "相关生产批次"));
+                        throw invalid("追溯项已停用（" + name + "），请移除或改用当前追溯项后再使用该表单");
+                    }
                 }
+                String tableId = binding.path("tableId").asText("");
+                if (tableId.isBlank()) tableId = "";
+                Set<String> assigned = traceFields.computeIfAbsent(tableId, key -> new HashSet<>());
+                for (JsonNode source : binding.path("sources")) {
+                    if (!assigned.add(source.asText())) {
+                        JsonNode fields = tableId.isBlank() ? model.path("fields") : field(model.path("fields"), tableId).path("typeConfig").path("columns");
+                        String name = field(fields, source.asText()).path("name").asText(source.asText());
+                        throw invalid("“" + name + "”关联了多个追溯配置，每个字段最多关联一个追溯项，请手动移除多余关联或更换来源");
+                    }
+                }
+            }
+            if (!binding.path("enabled").asBoolean() || !Set.of("scrap", "defect").contains(binding.path("modelId").asText())) continue;
+            boolean defect = "defect".equals(binding.path("modelId").asText());
+            JsonNode sources = binding.path("sources");
+            if (sources.has("category")) throw invalid("报废分类暂未开放，请移除分类用途；历史记录仍保留原内容");
+            if (sources.hasNonNull("reason")) {
+                String tableId = binding.path("tableId").asText();
+                JsonNode fields = tableId.isBlank() ? model.path("fields") : field(model.path("fields"), tableId).path("typeConfig").path("columns");
+                JsonNode reason = field(fields, sources.path("reason").asText());
+                if (!"reference".equals(reason.path("type").asText()) || !(defect ? "defectReason" : "scrapReason").equals(reason.path("typeConfig").path("sourceType").asText())
+                        || reason.path("typeConfig").path("multiple").asBoolean())
+                    throw invalid((defect ? "不良原因请选择不良原因" : "报废原因请选择报废原因") + "目录的单选引用字段；文字可配置为原因补充说明");
             }
         }
     }
@@ -295,6 +344,8 @@ public final class FormProjectionInterpreter {
         if (attributes.has("reportStartTime") && attributes.has("reportEndTime")
                 && java.time.LocalDateTime.parse(attributes.path("reportEndTime").asText()).isBefore(java.time.LocalDateTime.parse(attributes.path("reportStartTime").asText())))
             throw invalid("报工结束时间不能早于开始时间");
+        if ("defect".equals(binding.path("modelId").asText()) && (!attributes.hasNonNull("reasonId") || attributes.path("reason").asText().isBlank()))
+            throw invalid("不良明细请选择不良原因目录中的原因");
         ArrayNode details = record.putArray("details");
         for (JsonNode detailId : binding.path("detailFieldIds")) {
             JsonNode detailField = field(fields, detailId.asText());

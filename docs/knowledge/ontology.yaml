@@ -6,6 +6,18 @@ concepts:
     status: specified
     visibility: internal
     evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.trace-field-single-binding-20261019]
+  - id: concept.standard-reason-entry
+    termId: term.standard-reason-entry
+    kind: business-fact
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.defect-reason-detail-reference-user-confirmed, evidence.defect-reason-reference-implementation]
+  - id: concept.defect-reason-detail
+    termId: term.defect-reason-detail
+    kind: business-concept
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.defect-reason-detail-reference-user-confirmed, evidence.defect-reason-reference-implementation]
   - id: concept.production-quality-summary
     termId: term.production-quality-summary
     kind: runtime-fact
@@ -35,7 +47,7 @@ concepts:
     kind: runtime-fact
     status: specified
     visibility: internal
-    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.projection-formal-source]
+    evidenceIds: [evidence.form-traceability-projection-ownership-user-confirmed, evidence.projection-formal-source, evidence.defect-reason-detail-reference-user-confirmed]
   - id: concept.custom-form-scope
     termId: term.custom-form-scope
     kind: configuration-fact
@@ -107,13 +119,13 @@ concepts:
     kind: business-fact
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.material-entity, evidence.product-process-controller]
+    evidenceIds: [evidence.material-entity, evidence.product-process-controller, evidence.reference-dictionary-correction, evidence.reference-source-unification]
   - id: concept.product
     termId: term.product
     kind: business-concept
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.product-process-entity, evidence.product-process-controller]
+    evidenceIds: [evidence.product-process-entity, evidence.product-process-controller, evidence.reference-dictionary-correction, evidence.reference-source-unification]
   - id: concept.product-family
     termId: term.product-family
     kind: business-concept
@@ -601,7 +613,7 @@ concepts:
     kind: runtime-fact
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-object-entity, evidence.production-object-controller, evidence.production-service, evidence.migration-0062-production-object-and-work-order-lifecycle, evidence.production-service-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect]
+    evidenceIds: [evidence.production-object-entity, evidence.production-object-controller, evidence.production-service, evidence.migration-0062-production-object-and-work-order-lifecycle, evidence.production-service-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.reference-dictionary-correction, evidence.reference-source-unification]
   - id: concept.production-object-early-termination
     termId: term.production-object-early-termination
     kind: runtime-fact
@@ -684,7 +696,7 @@ concepts:
     kind: runtime-fact
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-object-entity, evidence.production-service, evidence.production-service-test]
+    evidenceIds: [evidence.production-object-entity, evidence.production-service, evidence.production-service-test, evidence.reference-dictionary-correction, evidence.reference-source-unification]
   - id: concept.data-audit-action-category
     termId: term.data-audit-action-category
     kind: business-concept

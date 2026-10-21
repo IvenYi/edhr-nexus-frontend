@@ -1,0 +1,11 @@
+### Result
+{"rect":{"x":640,"y":0,"width":560,"height":733,"top":0,"right":1200,"bottom":733,"left":640},"viewport":{"w":1200,"h":733},"header":{"x":640,"y":0,"width":560,"height":107,"top":0,"right":1200,"bottom":107,"left":640}}
+### Ran Playwright code
+```js
+await (async(page)=>{await page.getByRole("cell",{name:"ASK-REASON-20261019-D01",exact:true}).click();await page.waitForTimeout(350);const standard=await page.getByRole("dialog").evaluate(el=>({rect:el.getBoundingClientRect().toJSON(),viewport:{w:innerWidth,h:innerHeight},header:el.firstElementChild.getBoundingClientRect().toJSON()}));await page.screenshot({path:"output/playwright/dictionary-correction-20261019/qa-standard-detail-desktop.png"});await page.getByRole("button",{name:"关闭不良原因详情",exact:true}).click();await page.goto("http://localhost:3000/master-data/form-templates");return standard;})(page);
+```
+### Page
+- Page URL: http://localhost:3000/master-data/form-templates
+- Page Title: eDHR - 医疗器械电子设备历史记录系统
+### Events
+- New console entries: .playwright-cli/console-2026-10-19T12-54-04-666Z.log#L10-L12

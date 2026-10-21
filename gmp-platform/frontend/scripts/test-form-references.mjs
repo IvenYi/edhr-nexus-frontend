@@ -21,6 +21,19 @@ test('legacy widget settings override fallback model configuration', () => {
   assert.equal(ref.typeConfig.sourceType, 'dictionary');
 });
 
+test('dictionary identity synchronizes across placements without inventing a scope for legacy fields', () => {
+  const document = { model: { fields: [ref] }, canvas: { pages: [{ id: 'p', nodes: [
+    { id: 'one', bindings: { fieldId: 'ref', widgetConfig: { referenceDictionaryId: '42' } } },
+    { id: 'two', bindings: { fieldId: 'ref' } },
+  ] }] } };
+  const updated = syncReferenceConfig(document, 'one');
+  assert.equal(updated.model.fields[0].typeConfig.referenceDictionaryId, '42');
+  assert.equal(updated.canvas.pages[0].nodes[1].bindings.widgetConfig.referenceDictionaryId, '42');
+  const legacy = syncReferenceConfig({ ...document, canvas: { pages: [{ id: 'p', nodes: [{ id: 'one', bindings: { fieldId: 'ref' } }] }] } }, 'one');
+  assert.equal('referenceDictionaryId' in legacy.model.fields[0].typeConfig, false);
+  assert.equal('referenceDictionaryId' in legacy.canvas.pages[0].nodes[0].bindings.widgetConfig, false);
+});
+
 test('updating a main reference synchronizes repeated placements without touching other fields', () => {
   const document = { model: { fields: [ref, { id: 'text', type: 'text' }] }, canvas: { pages: [{ id: 'p', nodes: [
     { id: 'one', bindings: { fieldId: 'ref', widgetConfig: { referenceSourceType: 'material', referenceField: 'name' } } },
@@ -31,6 +44,16 @@ test('updating a main reference synchronizes repeated placements without touchin
   assert.equal(updated.canvas.pages[0].nodes[1].bindings.widgetConfig.referenceSourceType, 'material');
   assert.equal(document.model.fields[0].typeConfig.sourceType, 'dictionary');
   assert.equal(updated.model.fields[1], document.model.fields[1]);
+});
+
+test('new candidate scope propagates across placements while absent legacy scope keys remain absent', () => {
+  const nodes = [{ id: 'one', bindings: { fieldId: 'ref', widgetConfig: { referenceSourceType: 'material', referenceMaterialScope: 'types', referenceMaterialTypeIds: ['42'] } } }, { id: 'two', bindings: { fieldId: 'ref' } }];
+  const updated = syncReferenceConfig({ model: { fields: [ref] }, canvas: { pages: [{ id: 'p', nodes }] } }, 'one');
+  assert.deepEqual(plain(updated.model.fields[0].typeConfig.referenceMaterialTypeIds), ['42']);
+  assert.equal(updated.canvas.pages[0].nodes[1].bindings.widgetConfig.referenceMaterialScope, 'types');
+  const legacy = syncReferenceConfig({ model: { fields: [{ ...ref, typeConfig: { sourceType: 'product' } }] }, canvas: { pages: [{ id: 'p', nodes: [{ id: 'one', bindings: { fieldId: 'ref' } }] }] } }, 'one');
+  assert.equal(legacy.model.fields[0].typeConfig.sourceType, 'product');
+  for (const key of ['referenceMaterialScope', 'referenceMaterialTypeIds', 'referenceProductionScope']) assert.equal(key in legacy.canvas.pages[0].nodes[0].bindings.widgetConfig, false);
 });
 
 test('subtable config synchronizes columns and embedded fields, keeping row conditions', () => {
@@ -66,4 +89,17 @@ test('editing and clearing any main-field placement synchronizes reference depen
   const cleared = updateMockFieldValue(document, updated, 'other:third', '');
   assert.deepEqual(plain(mockReferenceValues(document, cleared, {}, 'p:ref')), { code: '' });
   assert.equal(original['p:first'], '');
+});
+
+test('ordered display, search fields and context preference synchronize across placements independently', () => {
+  const config = { referenceSourceType: 'product', referenceDisplayFields: ['code', 'name', 'specification'], referenceSearchFields: ['code'], referenceContextAutofill: true };
+  const document = { model: { fields: [ref] }, canvas: { pages: [{ id: 'p', nodes: [
+    { id: 'one', bindings: { fieldId: 'ref', widgetConfig: config } },
+    { id: 'two', bindings: { fieldId: 'ref' } },
+  ] }] } };
+  const updated = syncReferenceConfig(document, 'one');
+  assert.deepEqual(plain(updated.model.fields[0].typeConfig.referenceDisplayFields), ['code', 'name', 'specification']);
+  assert.deepEqual(plain(updated.canvas.pages[0].nodes[1].bindings.widgetConfig.referenceSearchFields), ['code']);
+  assert.equal(updated.canvas.pages[0].nodes[1].bindings.widgetConfig.referenceContextAutofill, true);
+  assert.equal(document.canvas.pages[0].nodes[1].bindings.widgetConfig, undefined);
 });

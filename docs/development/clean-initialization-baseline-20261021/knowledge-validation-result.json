@@ -1,0 +1,25 @@
+{
+  "command": "mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml test",
+  "result": "failed",
+  "exitCode": 1,
+  "tests": 89,
+  "failures": 18,
+  "errors": 0,
+  "skipped": 0,
+  "scope": "Current candidate with historical SQL moved from main to test; knowledge path correction explicitly deferred by user. Not a passed knowledge baseline.",
+  "testReport": "tools/knowledge-model/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+  "failureExamples": [
+    {
+      "test": "nestedCollectionsAreDiscoveredFromSchemaMappings",
+      "pathFailure": "\"com.zencas.edhr.knowledge.KnowledgeValidationException: Record evidence.dhr-instance-form-record-schema field 'path': repository-relative file does not exist: gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql"
+    },
+    {
+      "test": "currentKnowledgeModelIsValid",
+      "pathFailure": "\"com.zencas.edhr.knowledge.KnowledgeValidationException: Record evidence.dhr-instance-form-record-schema field 'path': repository-relative file does not exist: gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql"
+    },
+    {
+      "test": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[1]",
+      "pathFailure": "\"Record evidence.dhr-instance-form-record-schema field 'path': repository-relative file does not exist: gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql\""
+    }
+  ]
+}

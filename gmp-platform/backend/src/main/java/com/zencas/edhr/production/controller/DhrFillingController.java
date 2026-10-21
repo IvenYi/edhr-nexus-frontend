@@ -39,6 +39,6 @@ public class DhrFillingController {
     public ApiResponse<ObjectNode> supplement(@PathVariable Long id,@RequestBody JsonNode command) { return ApiResponse.success(service.supplement(id,command)); }
     @PostMapping("/{id}/references")
     public ApiResponse<java.util.List<java.util.Map<String,String>>> references(@PathVariable Long id,@RequestBody ProductionExecutionController.ReferenceQuery query) {
-        return ApiResponse.success(executions.references(service.objectId(id),query.operationId(),query.formId(),query.fieldId(),query.keyword(),query.values()));
+        return ApiResponse.success(executions.references(service.objectId(id),query.operationId(),query.formId(),query.fieldId(),query.keyword(),query.values(),query.page(),query.size()));
     }
 }

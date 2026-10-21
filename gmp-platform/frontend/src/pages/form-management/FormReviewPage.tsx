@@ -151,8 +151,8 @@ function ReviewTaskDialog({ view, identity, readOnly, onClose, onChanged }: { vi
     try { return await uploadExecutionFile(identity.productionObjectId, file); }
     finally { setBusy(false); }
   };
-  const references = (fieldId: string, keyword: string, dependencies: ExecutionValues) => identity
-    ? getExecutionReferences(identity.productionObjectId, identity.operationId, identity.formId, fieldId, keyword, dependencies)
+  const references = (fieldId: string, keyword: string, dependencies: ExecutionValues, paging?: { page: number; size: number }) => identity
+    ? getExecutionReferences(identity.productionObjectId, identity.operationId, identity.formId, fieldId, keyword, dependencies, paging)
     : Promise.resolve([]);
   const runAction = async (button: ExecutionButton, signature?: { account: string; password: string; opinion: string }) => {
     if (!identity || !detail || busy) return;
@@ -177,7 +177,7 @@ function ReviewTaskDialog({ view, identity, readOnly, onClose, onChanged }: { vi
           <Box component="section" aria-label="当前审批信息" sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2,minmax(0,1fr))', lg: 'repeat(4,minmax(0,1fr))' }, gap: 2, px: 2.5, py: 1.75, bgcolor: '#fafbfc', borderBottom: '1px solid #e4e7ed' }}><DetailField label="表单实例号" value={detail.instanceNo || '未保存'} /><DetailField label="生产对象" value={`${detail.productionObjectNo || '-'}（${typeLabel(detail.productionObjectType)}）`} /><DetailField label="工单 / 工序" value={`${detail.workOrderNo || '-'} / ${detail.operationName || '-'}`} /><DetailField label="当前审批节点" value={detail.nodeName} /></Box>
           {detail.transferReason ? <Alert severity="info" sx={{ mx: 2.5, mt: 1.5 }}>该任务由 {detail.transferFrom || '其他处理人'} 于 {formatDateTime(detail.transferredAt)} 转办：{detail.transferReason}</Alert> : null}
           {error ? <Alert severity="error" sx={{ mx: 2.5, mt: 1.5 }}>{error}</Alert> : null}
-          <Box component="section" aria-label="表单审批内容" sx={{ flex: 1, minHeight: 0, overflow: 'auto', p: { xs: 1.5, md: 2.5 }, bgcolor: '#fff' }}>{document ? <FormCanvasPreview key={`${identity?.operationId}/${identity?.copyId}/${detail.revision}`} document={document} fullPage fieldPermissions={detail.controls?.permissions} runtime={{ values, upload, references, disabled: busy || !actionable, onChange: (id, value) => { setValues((current) => ({ ...current, [id]: value })); setDirty(true); } }} /> : null}</Box>
+          <Box component="section" aria-label="表单审批内容" sx={{ flex: 1, minHeight: 0, overflow: 'auto', p: { xs: 1.5, md: 2.5 }, bgcolor: '#fff' }}>{document ? <FormCanvasPreview key={`${identity?.operationId}/${identity?.copyId}/${detail.revision}`} document={document} fullPage fieldPermissions={detail.controls?.permissions} runtime={{ values, upload, references, referenceDefaults: detail.referenceDefaults, referenceContextWarnings: detail.referenceContextWarnings, disabled: busy || !actionable, onChange: (id, value) => { setValues((current) => ({ ...current, [id]: value })); setDirty(true); } }} /> : null}</Box>
         </> : null}
       </DialogContent>
       <DialogActions sx={{ minHeight: 64, px: 2.5, py: 1, borderTop: '1px solid #e4e7ed', bgcolor: '#fff' }}><Typography variant="caption" sx={{ mr: 'auto', color: dirty ? '#e6a23c' : '#909399' }}>{dirty ? '有未提交修改' : view === 'REVIEW_DONE' ? `处理结果：${reviewResultLabel(detail?.handledAction)}` : detail?.controls?.nodeName ? `当前节点：${detail.controls.nodeName}` : ''}</Typography><Button onClick={close} disabled={busy}>关闭</Button>{actionable ? <WorkflowActionButtons buttons={detail?.controls.buttons.filter((button) => ['APPROVE', 'RETURN'].includes(button.action))} busy={busy} canAct={actionable} onAction={chooseAction} /> : null}</DialogActions>

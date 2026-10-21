@@ -5,14 +5,14 @@ implementationAnchors:
     targetType: fact
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormLookupCatalogService.java]
     apiReferences: []
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0106-form-projection-freeze.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionInspector.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormProjectionInterpreterTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormLookupCatalogPostgresTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.projection-integration-source-boundaries]
     sourceRevision: eedc24721d8d5137b29840575867422577386141
-    sourceLocator: form与customForm复制用途；0106遗留projection_frozen_json列未被当前复制路径读取，不能以列名推断模板发布冻结或覆盖执行副本
+    sourceLocator: "form与customForm复制用途；0106遗留projection_frozen_json列未被当前复制路径读取，不能以列名推断模板发布冻结或覆盖执行副本；2026-10-21仅初始化定位维护（d405a9af工作树）：form_template_version.projection_frozen_json/lock_version直接建列；保留上文legacy列不作为当前复制冻结依据的边界。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-10-15'
     reviewStatus: reviewed
   - id: anchor.form-projection.formal-source
@@ -20,14 +20,14 @@ implementationAnchors:
     targetType: concept
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionWorker.java]
     apiReferences: [POST /api/v1/reports/form-projections/query]
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormProjectionPostgresTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.projection-formal-source]
     sourceRevision: eedc24721d8d5137b29840575867422577386141
-    sourceLocator: sync成功保存来源后仅COMPLETED进入completed，完成与待处理批次同事务；process按冻结来源幂等生成正式记录，不联动批次或工单产出
+    sourceLocator: "sync成功保存来源后仅COMPLETED进入completed，完成与待处理批次同事务；process按冻结来源幂等生成正式记录，不联动批次或工单产出；2026-10-21仅初始化定位维护（d405a9af工作树）：form_projection_batch/record及来源修订和binding/row唯一约束。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-10-15'
     reviewStatus: reviewed
   - id: anchor.form-projection.saved-content-trace
@@ -35,13 +35,13 @@ implementationAnchors:
     targetType: concept
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormTraceIndexService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrTraceReportService.java]
     apiReferences: [POST /api/v1/reports/trace/forms/query, POST /api/v1/reports/trace/dhrs/query]
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0109-saved-form-trace-index.sql, gmp-platform/backend/src/main/resources/db/changelog/0112-typed-trace-catalog.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql, gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql]
     uiReferences: [gmp-platform/frontend/src/pages/reports/TraceQueryPanel.tsx, gmp-platform/frontend/src/pages/reports/DhrTraceReportPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormTraceIndexPostgresTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrTraceReportPostgresTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/TraceReportAuthorizationTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.projection-saved-content-source, evidence.trace-region-consumption-20261020]
     sourceRevision: eedc24721d8d5137b29840575867422577386141
-    sourceLocator: 保存事务refresh最近显式绑定值；表单同实例/实际行，DHR从真实成员及可核验终止快照匹配；索引不是新归属或正式数量来源
+    sourceLocator: "保存事务refresh最近显式绑定值；表单同实例/实际行，DHR从真实成员及可核验终止快照匹配；索引不是新归属或正式数量来源；2026-10-21仅初始化定位维护（d405a9af工作树）：form_trace_value及value_type类型约束、form_lookup_item.value_type约束；seed直接包含九项当前预置，不执行0112退役项删除或0109旧内容重建。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-10-15'
     reviewStatus: reviewed

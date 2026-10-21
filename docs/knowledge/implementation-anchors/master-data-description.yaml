@@ -11,8 +11,7 @@ implementationAnchors:
       - /api/v1/master-data/product-families
       - /api/v1/master-data/documents
       - /api/v1/master-data/documents/{documentId}/versions
-    databaseReferences:
-      - gmp-platform/backend/src/main/resources/db/changelog/0095-remove-duplicate-remarks.sql
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences:
       - gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx
       - gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx
@@ -25,6 +24,6 @@ implementationAnchors:
     visibility: internal
     evidenceIds: [evidence.master-data-description-migration, evidence.master-data-description-process-controller, evidence.master-data-description-document-controller, evidence.master-data-description-product-family-page, evidence.master-data-description-document-page, evidence.master-data-description-migration-test, evidence.master-data-description-document-controller-test, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test]
     sourceRevision: working-tree
-    sourceLocator: ProcessModelingController product-family CRUD / DocumentManagementController document and version CRUD / migration 0095
+    sourceLocator: "ProcessModelingController product-family CRUD / DocumentManagementController document and version CRUD / migration 0095；2026-10-21仅初始化定位维护（d405a9af工作树）：product_family、sop_document、document_version直接创建且不含remark列，保留description；0095仅为历史删列证据。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-22'
     reviewStatus: reviewed

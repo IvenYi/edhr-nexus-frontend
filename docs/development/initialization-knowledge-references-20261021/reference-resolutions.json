@@ -1,0 +1,1467 @@
+{
+  "scope": "initialization-reference-maintenance",
+  "rows": [
+    {
+      "rowId": 1,
+      "sourcePath": "docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml",
+      "originalLine": 233,
+      "knowledgeId": "discrepancy.production-work-historical-audit-baseline",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0059-work-template-audit-baseline.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 2,
+      "sourcePath": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "originalLine": 69,
+      "knowledgeId": "discrepancy.record-control-stage1-permission-and-concurrency-verification-pending",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0080-record-control-workflow-contract.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0080-record-control-workflow-contract.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 3,
+      "sourcePath": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+      "originalLine": 185,
+      "knowledgeId": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0092-dhr-summary-workspace.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 4,
+      "sourcePath": "docs/knowledge/evidence/dhr-instance-management.yaml",
+      "originalLine": 30,
+      "knowledgeId": "evidence.dhr-instance-form-record-schema",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0082-form-instance-records.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 5,
+      "sourcePath": "docs/knowledge/evidence/dhr-instance-management.yaml",
+      "originalLine": 35,
+      "knowledgeId": "evidence.dhr-instance-form-business-source-schema",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0086-form-instance-business-source.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 6,
+      "sourcePath": "docs/knowledge/evidence/dhr-instance-management.yaml",
+      "originalLine": 50,
+      "knowledgeId": "evidence.dhr-instance-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0089-dhr-instance-management.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 7,
+      "sourcePath": "docs/knowledge/evidence/dhr-summary.yaml",
+      "originalLine": 25,
+      "knowledgeId": "evidence.dhr-summary-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0092-dhr-summary-workspace.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 8,
+      "sourcePath": "docs/knowledge/evidence/dhr-summary.yaml",
+      "originalLine": 30,
+      "knowledgeId": "evidence.dhr-summary-review-binding-constraint",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0093-dhr-summary-version-review-binding.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 9,
+      "sourcePath": "docs/knowledge/evidence/dhr-summary.yaml",
+      "originalLine": 60,
+      "knowledgeId": "evidence.dhr-summary-order-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0100-dhr-summary-evidence-order.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0100-dhr-summary-evidence-order.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 10,
+      "sourcePath": "docs/knowledge/evidence/dhr-summary.yaml",
+      "originalLine": 105,
+      "knowledgeId": "evidence.dhr-summary-display-name-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 11,
+      "sourcePath": "docs/knowledge/evidence/dhr-summary.yaml",
+      "originalLine": 135,
+      "knowledgeId": "evidence.dhr-summary-complete-evidence-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0102-dhr-summary-complete-evidence.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 12,
+      "sourcePath": "docs/knowledge/evidence/dhr-summary.yaml",
+      "originalLine": 140,
+      "knowledgeId": "evidence.dhr-summary-attachment-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0103-dhr-controlled-attachments.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 13,
+      "sourcePath": "docs/knowledge/evidence/dhr-summary.yaml",
+      "originalLine": 145,
+      "knowledgeId": "evidence.dhr-summary-current-model-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0104-dhr-current-evidence-only.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 14,
+      "sourcePath": "docs/knowledge/evidence/equipment-modeling.yaml",
+      "originalLine": 25,
+      "knowledgeId": "evidence.equipment-legacy-schema",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0001-init-schema.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 15,
+      "sourcePath": "docs/knowledge/evidence/equipment-modeling.yaml",
+      "originalLine": 35,
+      "knowledgeId": "evidence.equipment-modeling-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0073-equipment-modeling.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0073-equipment-modeling.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 16,
+      "sourcePath": "docs/knowledge/evidence/equipment-modeling.yaml",
+      "originalLine": 50,
+      "knowledgeId": "evidence.equipment-system-fields-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0074-equipment-system-fields.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0074-equipment-system-fields.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 17,
+      "sourcePath": "docs/knowledge/evidence/equipment-modeling.yaml",
+      "originalLine": 65,
+      "knowledgeId": "evidence.equipment-brand-purchase-date-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0075-equipment-brand-purchase-date.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0075-equipment-brand-purchase-date.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 18,
+      "sourcePath": "docs/knowledge/evidence/form-instance-query.yaml",
+      "originalLine": 20,
+      "knowledgeId": "evidence.form-instance-query-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0083-form-instance-query.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0083-form-instance-query.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 19,
+      "sourcePath": "docs/knowledge/evidence/form-instance-query.yaml",
+      "originalLine": 45,
+      "knowledgeId": "evidence.form-instance-business-source-record-schema",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0086-form-instance-business-source.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 20,
+      "sourcePath": "docs/knowledge/evidence/form-process-version-references.yaml",
+      "originalLine": 15,
+      "knowledgeId": "evidence.form-process-version-reference-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0072-work-form-process-references.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0072-work-form-process-references.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 21,
+      "sourcePath": "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md",
+      "originalLine": 972,
+      "knowledgeId": "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0113-trace-date-preset.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0113-trace-date-preset.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 22,
+      "sourcePath": "docs/knowledge/evidence/form-worklists.yaml",
+      "originalLine": 30,
+      "knowledgeId": "evidence.form-worklists-permissions",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0084-form-worklist-permissions.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0084-form-worklist-permissions.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 23,
+      "sourcePath": "docs/knowledge/evidence/identity-subject-selector.yaml",
+      "originalLine": 80,
+      "knowledgeId": "evidence.workflow-task-candidate-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0071-workflow-task-candidates.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0071-workflow-task-candidates.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 24,
+      "sourcePath": "docs/knowledge/evidence/master-data-description.yaml",
+      "originalLine": 10,
+      "knowledgeId": "evidence.master-data-description-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0095-remove-duplicate-remarks.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0095-remove-duplicate-remarks.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 25,
+      "sourcePath": "docs/knowledge/evidence/material-fields.yaml",
+      "originalLine": 15,
+      "knowledgeId": "evidence.material-fields-brand-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0078-material-brand.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0078-material-brand.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 26,
+      "sourcePath": "docs/knowledge/evidence/material-import.yaml",
+      "originalLine": 25,
+      "knowledgeId": "evidence.material-import-brand-rename",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0081-material-brand-name.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0081-material-brand-name.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 27,
+      "sourcePath": "docs/knowledge/evidence/material-import.yaml",
+      "originalLine": 30,
+      "knowledgeId": "evidence.material-import-type-seed-repair",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0087-restore-standard-material-types.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0087-restore-standard-material-types.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 28,
+      "sourcePath": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "originalLine": 57,
+      "knowledgeId": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0059-work-template-audit-baseline.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 29,
+      "sourcePath": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "originalLine": 97,
+      "knowledgeId": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 30,
+      "sourcePath": "docs/knowledge/evidence/product-process.yaml",
+      "originalLine": 100,
+      "knowledgeId": "evidence.migration-0044-product-process-modeling",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0044-product-process-modeling.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0044-product-process-modeling.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 31,
+      "sourcePath": "docs/knowledge/evidence/product-process.yaml",
+      "originalLine": 105,
+      "knowledgeId": "evidence.migration-0045-document-versions",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0045-document-management-versions.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0045-document-management-versions.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 32,
+      "sourcePath": "docs/knowledge/evidence/product-process.yaml",
+      "originalLine": 110,
+      "knowledgeId": "evidence.migration-0049-dhr-item-binding",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0049-product-process-dhr-item-binding.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0049-product-process-dhr-item-binding.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 33,
+      "sourcePath": "docs/knowledge/evidence/product-process.yaml",
+      "originalLine": 115,
+      "knowledgeId": "evidence.migration-0052-document-pages",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0052-product-process-document-pages.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0052-product-process-document-pages.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 34,
+      "sourcePath": "docs/knowledge/evidence/product-process.yaml",
+      "originalLine": 120,
+      "knowledgeId": "evidence.migration-0053-product-family-process-owner",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0053-product-family-process-owner.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0053-product-family-process-owner.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 35,
+      "sourcePath": "docs/knowledge/evidence/product-process.yaml",
+      "originalLine": 125,
+      "knowledgeId": "evidence.migration-0054-product-family-code-case-insensitive",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0054-product-family-code-case-insensitive.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0054-product-family-code-case-insensitive.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 36,
+      "sourcePath": "docs/knowledge/evidence/production-execution.yaml",
+      "originalLine": 65,
+      "knowledgeId": "evidence.production-execution-migration-source",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0076-production-execution.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0076-production-execution.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 37,
+      "sourcePath": "docs/knowledge/evidence/production.yaml",
+      "originalLine": 45,
+      "knowledgeId": "evidence.migration-0061-work-order",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0061-production-work-order.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0061-production-work-order.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 38,
+      "sourcePath": "docs/knowledge/evidence/production.yaml",
+      "originalLine": 50,
+      "knowledgeId": "evidence.migration-0062-production-object-and-work-order-lifecycle",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 39,
+      "sourcePath": "docs/knowledge/evidence/production.yaml",
+      "originalLine": 55,
+      "knowledgeId": "evidence.migration-0063-production-work-order-permission",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0063-production-work-order-permission.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0063-production-work-order-permission.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 40,
+      "sourcePath": "docs/knowledge/evidence/production.yaml",
+      "originalLine": 60,
+      "knowledgeId": "evidence.migration-0064-production-work-order-fields",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0064-production-work-order-fields.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0064-production-work-order-fields.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 41,
+      "sourcePath": "docs/knowledge/evidence/production.yaml",
+      "originalLine": 120,
+      "knowledgeId": "evidence.work-order-schema-field-boundary",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0061-production-work-order.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0061-production-work-order.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 42,
+      "sourcePath": "docs/knowledge/evidence/production.yaml",
+      "originalLine": 175,
+      "knowledgeId": "evidence.migration-0066-production-object-planned-window",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0066-production-object-planned-window.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0066-production-object-planned-window.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 43,
+      "sourcePath": "docs/knowledge/evidence/production.yaml",
+      "originalLine": 270,
+      "knowledgeId": "evidence.migration-0067-production-batch-management-permission",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0067-production-batch-management-permission.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0067-production-batch-management-permission.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 44,
+      "sourcePath": "docs/knowledge/evidence/record-control-workflow-stage1.yaml",
+      "originalLine": 40,
+      "knowledgeId": "evidence.record-control-workflow-stage1-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0080-record-control-workflow-contract.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0080-record-control-workflow-contract.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 45,
+      "sourcePath": "docs/knowledge/evidence/signature-payload-storage.yaml",
+      "originalLine": 10,
+      "knowledgeId": "evidence.signature-payload-lossless-storage-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0118-signature-payload-text.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 46,
+      "sourcePath": "docs/knowledge/evidence/transaction-runtime.yaml",
+      "originalLine": 90,
+      "knowledgeId": "evidence.production-work-template-configuration-migration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0059-work-template-audit-baseline.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 47,
+      "sourcePath": "docs/knowledge/evidence/workshop.yaml",
+      "originalLine": 15,
+      "knowledgeId": "evidence.workshop-legacy-schema",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0001-init-schema.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 48,
+      "sourcePath": "docs/knowledge/evidence/workshop.yaml",
+      "originalLine": 40,
+      "knowledgeId": "evidence.migration-0061-workshop-management",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0070-workshop-management.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/test/resources/db/changelog/0070-workshop-management.sql"
+      ],
+      "disposition": "historical",
+      "locator": "历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口"
+    },
+    {
+      "rowId": 49,
+      "sourcePath": "docs/knowledge/facts/dhr-instance-management.yaml",
+      "originalLine": 120,
+      "knowledgeId": "fact.dhr-instance.form-record-copy-id",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "form_instance_record.copy_id；uk_form_instance_source (tenant_id, object_id, operation_id, copy_id)"
+    },
+    {
+      "rowId": 50,
+      "sourcePath": "docs/knowledge/facts/dhr-summary.yaml",
+      "originalLine": 88,
+      "knowledgeId": "fact.dhr-summary.review-mode",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "product_process_version.dhr_review_mode、dhr_instance.dhr_review_mode及各自审核绑定CHECK/外键"
+    },
+    {
+      "rowId": 51,
+      "sourcePath": "docs/knowledge/facts/dhr-summary.yaml",
+      "originalLine": 104,
+      "knowledgeId": "fact.dhr-summary.version-frozen",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_version.version_no/check_result_snapshot NOT NULL、dhr_summary_evidence；当前直接建表，无evidence_model_version列或0104转换执行；上文迁移验证为2026-09-27历史记录"
+    },
+    {
+      "rowId": 52,
+      "sourcePath": "docs/knowledge/facts/dhr-summary.yaml",
+      "originalLine": 136,
+      "knowledgeId": "fact.dhr-summary.archive-display-name",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_evidence.display_name可空列；当前直接建列，上文转换/迁移验证为原记录时点"
+    },
+    {
+      "rowId": 53,
+      "sourcePath": "docs/knowledge/facts/form-instance-query.yaml",
+      "originalLine": 8,
+      "knowledgeId": "fact.form-instance.business-source",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "form_instance_record.source_type NOT NULL；0086历史回填仍仅由历史证据解释，新初始化不回填记录"
+    },
+    {
+      "rowId": 54,
+      "sourcePath": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "originalLine": 8,
+      "knowledgeId": "anchor.core.identity-subject-resolution",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0071-workflow-task-candidates.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "workflow_task.candidate_snapshot及idx_workflow_task_candidate_snapshot、uq_workflow_task_active_instance_node"
+    },
+    {
+      "rowId": 55,
+      "sourcePath": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "originalLine": 23,
+      "knowledgeId": "anchor.core.product-process-resolution",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0044-product-process-modeling.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "product_process、product_process_version及product_process_operation_binding等绑定表"
+    },
+    {
+      "rowId": 56,
+      "sourcePath": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "originalLine": 38,
+      "knowledgeId": "anchor.core.production-work-order",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0061-production-work-order.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "work_order及uk_work_order_no、idx_work_order_product、idx_work_order_status"
+    },
+    {
+      "rowId": 57,
+      "sourcePath": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "originalLine": 53,
+      "knowledgeId": "anchor.core.production-object-runtime",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "production_object.object_type/target_quantity、ck_production_object_type/target及work_order_id外键；不重新解释数量下限业务待决"
+    },
+    {
+      "rowId": 58,
+      "sourcePath": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "originalLine": 68,
+      "knowledgeId": "anchor.core.production-work-configuration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "workflow_definition、workflow_binding_rule.is_active和audit_event；新基线不执行0059历史审计补写，原迁移证据保留"
+    },
+    {
+      "rowId": 59,
+      "sourcePath": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "originalLine": 83,
+      "knowledgeId": "anchor.core.workshop-management",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0070-workshop-management.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql"
+      ],
+      "disposition": "updated",
+      "locator": "workshop.tenant_id/description/status、uk_workshop_tenant_code与production_line.workshop_id外键；seed保留master-data.workshops权限"
+    },
+    {
+      "rowId": 60,
+      "sourcePath": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "originalLine": 193,
+      "knowledgeId": "anchor.core.record-control-workflow-integration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0080-record-control-workflow-contract.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql"
+      ],
+      "disposition": "updated",
+      "locator": "workflow_instance.idempotency_key/audit_correlation_id/workflow_snapshot_hash、uk_wf_instance_idempotency_key；seed保留record-control权限目录及ADMIN授权"
+    },
+    {
+      "rowId": 61,
+      "sourcePath": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "originalLine": 213,
+      "knowledgeId": "anchor.core.record-control-explicit-published-workflow-selection",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0080-record-control-workflow-contract.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql"
+      ],
+      "disposition": "updated",
+      "locator": "workflow_instance.idempotency_key/audit_correlation_id/workflow_snapshot_hash、uk_wf_instance_idempotency_key；seed保留record-control权限目录及ADMIN授权"
+    },
+    {
+      "rowId": 62,
+      "sourcePath": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "originalLine": 233,
+      "knowledgeId": "anchor.core.workflow-definition-version-record-control-start",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "workflow_definition_version及uk_wf_def_version"
+    },
+    {
+      "rowId": 63,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "originalLine": 8,
+      "knowledgeId": "anchor.production-batch-dhr-entry",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_instance.production_object_id及uk_dhr_instance_object"
+    },
+    {
+      "rowId": 64,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "originalLine": 23,
+      "knowledgeId": "anchor.dhr-instance-first-start-transaction",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_instance及uk_dhr_instance_object；dhr_template_version直接创建且不含directory_snapshot/status旧列；0089/0090/0091及当时测试为历史说明"
+    },
+    {
+      "rowId": 65,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "originalLine": 23,
+      "knowledgeId": "anchor.dhr-instance-first-start-transaction",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0090-remove-dhr-template-version-snapshot.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_instance及uk_dhr_instance_object；dhr_template_version直接创建且不含directory_snapshot/status旧列；0089/0090/0091及当时测试为历史说明"
+    },
+    {
+      "rowId": 66,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "originalLine": 23,
+      "knowledgeId": "anchor.dhr-instance-first-start-transaction",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0091-remove-dhr-template-version-status.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_instance及uk_dhr_instance_object；dhr_template_version直接创建且不含directory_snapshot/status旧列；0089/0090/0091及当时测试为历史说明"
+    },
+    {
+      "rowId": 67,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "originalLine": 38,
+      "knowledgeId": "anchor.dhr-instance-context-snapshot",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_instance.context_snapshot/directory_snapshot；dhr_template_version不含directory_snapshot/status；新初始化直接创建，不再执行0090/0091删列"
+    },
+    {
+      "rowId": 68,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "originalLine": 53,
+      "knowledgeId": "anchor.dhr-instance-form-evidence-query",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "form_instance_record.object_id/copy_id/source_type与dhr_instance.production_object_id"
+    },
+    {
+      "rowId": 69,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "originalLine": 53,
+      "knowledgeId": "anchor.dhr-instance-form-evidence-query",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "form_instance_record.object_id/copy_id/source_type与dhr_instance.production_object_id"
+    },
+    {
+      "rowId": 70,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "originalLine": 53,
+      "knowledgeId": "anchor.dhr-instance-form-evidence-query",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "form_instance_record.object_id/copy_id/source_type与dhr_instance.production_object_id"
+    },
+    {
+      "rowId": 71,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "originalLine": 68,
+      "knowledgeId": "anchor.dhr-instance-query-permission",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql"
+      ],
+      "disposition": "updated",
+      "locator": "seed中的records.dhr-management、dhr.instances.view及ADMIN角色授权；0089权限创建及测试为原时点记录"
+    },
+    {
+      "rowId": 72,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary-order.yaml",
+      "originalLine": 8,
+      "knowledgeId": "anchor.dhr-summary-optional-placement-order",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0100-dhr-summary-evidence-order.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_evidence.before_node_key/display_order直接创建可空列"
+    },
+    {
+      "rowId": 73,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary-source-group.yaml",
+      "originalLine": 38,
+      "knowledgeId": "anchor.dhr-summary-archive-display-name",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_evidence.display_name直接创建可空列；0101仅为该列的历史迁移来源"
+    },
+    {
+      "rowId": 74,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 8,
+      "knowledgeId": "anchor.dhr-summary-workspace",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_draft/version/evidence及ck_dhr_summary_version_review_binding；seed中的records.dhr-summary、dhr.summaries.edit/submit及ADMIN授权"
+    },
+    {
+      "rowId": 75,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 8,
+      "knowledgeId": "anchor.dhr-summary-workspace",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_draft/version/evidence及ck_dhr_summary_version_review_binding；seed中的records.dhr-summary、dhr.summaries.edit/submit及ADMIN授权"
+    },
+    {
+      "rowId": 76,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 23,
+      "knowledgeId": "anchor.dhr-summary-immutable-version",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_version.version_no/check_result_snapshot/attachment_snapshot、dhr_summary_evidence和dhr_summary_draft.source_scope_hash；直接创建最终结构，不执行0104转换，原转换验证保留在历史证据"
+    },
+    {
+      "rowId": 77,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 23,
+      "knowledgeId": "anchor.dhr-summary-immutable-version",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_version.version_no/check_result_snapshot/attachment_snapshot、dhr_summary_evidence和dhr_summary_draft.source_scope_hash；直接创建最终结构，不执行0104转换，原转换验证保留在历史证据"
+    },
+    {
+      "rowId": 78,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 23,
+      "knowledgeId": "anchor.dhr-summary-immutable-version",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_version.version_no/check_result_snapshot/attachment_snapshot、dhr_summary_evidence和dhr_summary_draft.source_scope_hash；直接创建最终结构，不执行0104转换，原转换验证保留在历史证据"
+    },
+    {
+      "rowId": 79,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 23,
+      "knowledgeId": "anchor.dhr-summary-immutable-version",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_version.version_no/check_result_snapshot/attachment_snapshot、dhr_summary_evidence和dhr_summary_draft.source_scope_hash；直接创建最终结构，不执行0104转换，原转换验证保留在历史证据"
+    },
+    {
+      "rowId": 80,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 23,
+      "knowledgeId": "anchor.dhr-summary-immutable-version",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_version.version_no/check_result_snapshot/attachment_snapshot、dhr_summary_evidence和dhr_summary_draft.source_scope_hash；直接创建最终结构，不执行0104转换，原转换验证保留在历史证据"
+    },
+    {
+      "rowId": 81,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 38,
+      "knowledgeId": "anchor.dhr-summary-manual-review-confirmation",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_version.check_result_snapshot NOT NULL、dhr_summary_draft.source_scope_hash；JSON内部人工确认语义仍由所列服务解释"
+    },
+    {
+      "rowId": 82,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 53,
+      "knowledgeId": "anchor.dhr-review-task-frozen-attachment-download",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_attachment及dhr_summary_version.attachment_snapshot；当前直接创建结构"
+    },
+    {
+      "rowId": 83,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 68,
+      "knowledgeId": "anchor.dhr-summary-zip-source-trace",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_version.check_result_snapshot；signature.snapshot_data TEXT及ck_signature_snapshot_data_json直接创建；0118旧数据转换与其限制仍为历史证据，不在新初始化运行"
+    },
+    {
+      "rowId": 84,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 68,
+      "knowledgeId": "anchor.dhr-summary-zip-source-trace",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_version.check_result_snapshot；signature.snapshot_data TEXT及ck_signature_snapshot_data_json直接创建；0118旧数据转换与其限制仍为历史证据，不在新初始化运行"
+    },
+    {
+      "rowId": 85,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 83,
+      "knowledgeId": "anchor.dhr-summary-review-binding",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "product_process_version/dhr_instance审核绑定列、dhr_summary_version审核绑定列及ck_dhr_summary_version_review_binding"
+    },
+    {
+      "rowId": 86,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 83,
+      "knowledgeId": "anchor.dhr-summary-review-binding",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "product_process_version/dhr_instance审核绑定列、dhr_summary_version审核绑定列及ck_dhr_summary_version_review_binding"
+    },
+    {
+      "rowId": 87,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 98,
+      "knowledgeId": "anchor.dhr-summary-auto-evidence-scope",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_draft.source_scope_hash、dhr_summary_version.check_result_snapshot/attachment_snapshot及dhr_attachment"
+    },
+    {
+      "rowId": 88,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 98,
+      "knowledgeId": "anchor.dhr-summary-auto-evidence-scope",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_draft.source_scope_hash、dhr_summary_version.check_result_snapshot/attachment_snapshot及dhr_attachment"
+    },
+    {
+      "rowId": 89,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 113,
+      "knowledgeId": "anchor.dhr-summary-stale-approval",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_draft.source_scope_hash、dhr_summary_version.check_result_snapshot/attachment_snapshot及dhr_attachment"
+    },
+    {
+      "rowId": 90,
+      "sourcePath": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "originalLine": 113,
+      "knowledgeId": "anchor.dhr-summary-stale-approval",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "dhr_summary_draft.source_scope_hash、dhr_summary_version.check_result_snapshot/attachment_snapshot及dhr_attachment"
+    },
+    {
+      "rowId": 91,
+      "sourcePath": "docs/knowledge/implementation-anchors/form-instance-query.yaml",
+      "originalLine": 8,
+      "knowledgeId": "anchor.form-instance-global-query-persisted-business-source",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "form_instance_record.source_type及来源索引；新初始化不执行历史回填，上文2026-09-16验证仍为原时点记录"
+    },
+    {
+      "rowId": 92,
+      "sourcePath": "docs/knowledge/implementation-anchors/form-instance-query.yaml",
+      "originalLine": 23,
+      "knowledgeId": "anchor.form-instance-global-query-authorization",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0083-form-instance-query.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql"
+      ],
+      "disposition": "updated",
+      "locator": "form_instance_record.tenant_id及查询索引；seed中的form-instances.view与ADMIN授权；0083历史回填不在当前安装执行"
+    },
+    {
+      "rowId": 93,
+      "sourcePath": "docs/knowledge/implementation-anchors/form-process-binding.yaml",
+      "originalLine": 10,
+      "knowledgeId": "anchor.form-process-binding-reference-service",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0072-work-form-process-references.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "work_form_process_reference及uk_work_form_process_reference_node等索引；无旧图配置回填或backfill序列"
+    },
+    {
+      "rowId": 94,
+      "sourcePath": "docs/knowledge/implementation-anchors/form-process-binding.yaml",
+      "originalLine": 66,
+      "knowledgeId": "anchor.form-process-binding-usage-projection",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0072-work-form-process-references.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "work_form_process_reference及form_process_version_id/form_process_definition_id索引；无旧图配置回填"
+    },
+    {
+      "rowId": 95,
+      "sourcePath": "docs/knowledge/implementation-anchors/form-projection.yaml",
+      "originalLine": 8,
+      "knowledgeId": "anchor.form-projection.configuration-snapshot",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0106-form-projection-freeze.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "form_template_version.projection_frozen_json/lock_version直接建列；保留上文legacy列不作为当前复制冻结依据的边界"
+    },
+    {
+      "rowId": 96,
+      "sourcePath": "docs/knowledge/implementation-anchors/form-projection.yaml",
+      "originalLine": 23,
+      "knowledgeId": "anchor.form-projection.formal-source",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "form_projection_batch/record及来源修订和binding/row唯一约束"
+    },
+    {
+      "rowId": 97,
+      "sourcePath": "docs/knowledge/implementation-anchors/form-projection.yaml",
+      "originalLine": 38,
+      "knowledgeId": "anchor.form-projection.saved-content-trace",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0109-saved-form-trace-index.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql"
+      ],
+      "disposition": "updated",
+      "locator": "form_trace_value及value_type类型约束、form_lookup_item.value_type约束；seed直接包含九项当前预置，不执行0112退役项删除或0109旧内容重建"
+    },
+    {
+      "rowId": 98,
+      "sourcePath": "docs/knowledge/implementation-anchors/form-projection.yaml",
+      "originalLine": 38,
+      "knowledgeId": "anchor.form-projection.saved-content-trace",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0112-typed-trace-catalog.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql"
+      ],
+      "disposition": "updated",
+      "locator": "form_trace_value及value_type类型约束、form_lookup_item.value_type约束；seed直接包含九项当前预置，不执行0112退役项删除或0109旧内容重建"
+    },
+    {
+      "rowId": 99,
+      "sourcePath": "docs/knowledge/implementation-anchors/form-worklists.yaml",
+      "originalLine": 8,
+      "knowledgeId": "anchor.form-worklist-personal-qualification",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0084-form-worklist-permissions.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql"
+      ],
+      "disposition": "updated",
+      "locator": "seed中的form-management.filling/review及ADMIN角色授权"
+    },
+    {
+      "rowId": 100,
+      "sourcePath": "docs/knowledge/implementation-anchors/form-worklists.yaml",
+      "originalLine": 23,
+      "knowledgeId": "anchor.form-worklist-current-tasks",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0084-form-worklist-permissions.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql"
+      ],
+      "disposition": "updated",
+      "locator": "seed中的form-management.filling/review及ADMIN角色授权"
+    },
+    {
+      "rowId": 101,
+      "sourcePath": "docs/knowledge/implementation-anchors/form-worklists.yaml",
+      "originalLine": 38,
+      "knowledgeId": "anchor.form-worklist-explicit-creation",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0084-form-worklist-permissions.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql"
+      ],
+      "disposition": "updated",
+      "locator": "seed中的form-management.filling/review及ADMIN角色授权"
+    },
+    {
+      "rowId": 102,
+      "sourcePath": "docs/knowledge/implementation-anchors/form-worklists.yaml",
+      "originalLine": 53,
+      "knowledgeId": "anchor.form-worklist-personal-history",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0084-form-worklist-permissions.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql"
+      ],
+      "disposition": "updated",
+      "locator": "seed中的form-management.filling/review及ADMIN角色授权"
+    },
+    {
+      "rowId": 103,
+      "sourcePath": "docs/knowledge/implementation-anchors/master-data-description.yaml",
+      "originalLine": 15,
+      "knowledgeId": "anchor.master-data-description-field-contract",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0095-remove-duplicate-remarks.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "product_family、sop_document、document_version直接创建且不含remark列，保留description；0095仅为历史删列证据"
+    },
+    {
+      "rowId": 104,
+      "sourcePath": "docs/knowledge/implementation-anchors/material-fields.yaml",
+      "originalLine": 23,
+      "knowledgeId": "anchor.material.optional-brand",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0078-material-brand.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "material.brand_name可空列；0078旧brand列及0081重命名留在历史证据，当前直接使用brand_name"
+    },
+    {
+      "rowId": 105,
+      "sourcePath": "docs/knowledge/implementation-anchors/production-output.yaml",
+      "originalLine": 8,
+      "knowledgeId": "anchor.production-output.configuration",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0114-final-output-operation.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "product_process_operation_binding.final_output及uk_process_version_final_output部分唯一索引；无历史数量回填"
+    },
+    {
+      "rowId": 106,
+      "sourcePath": "docs/knowledge/implementation-anchors/production-output.yaml",
+      "originalLine": 23,
+      "knowledgeId": "anchor.production-output.formal-summary",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "form_projection_batch/record及来源修订和binding/row唯一约束"
+    },
+    {
+      "rowId": 107,
+      "sourcePath": "docs/knowledge/implementation-anchors/production-quality.yaml",
+      "originalLine": 8,
+      "knowledgeId": "anchor.production-quality.formal-summary",
+      "oldReference": "gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql",
+      "newReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "disposition": "updated",
+      "locator": "form_projection_batch/record及attributes/sources原始来源列"
+    }
+  ],
+  "affectedIds": {
+    "docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml": [
+      "discrepancy.production-work-historical-audit-baseline"
+    ],
+    "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml": [
+      "discrepancy.record-control-stage1-permission-and-concurrency-verification-pending"
+    ],
+    "docs/knowledge/evidence/dhr-filling-review-confirmed.md": [
+      "docs/knowledge/evidence/dhr-filling-review-confirmed.md"
+    ],
+    "docs/knowledge/evidence/dhr-instance-management.yaml": [
+      "evidence.dhr-instance-form-business-source-schema",
+      "evidence.dhr-instance-form-record-schema",
+      "evidence.dhr-instance-migration"
+    ],
+    "docs/knowledge/evidence/dhr-summary.yaml": [
+      "evidence.dhr-summary-attachment-migration",
+      "evidence.dhr-summary-complete-evidence-migration",
+      "evidence.dhr-summary-current-model-migration",
+      "evidence.dhr-summary-display-name-migration",
+      "evidence.dhr-summary-migration",
+      "evidence.dhr-summary-order-migration",
+      "evidence.dhr-summary-review-binding-constraint"
+    ],
+    "docs/knowledge/evidence/equipment-modeling.yaml": [
+      "evidence.equipment-brand-purchase-date-migration",
+      "evidence.equipment-legacy-schema",
+      "evidence.equipment-modeling-migration",
+      "evidence.equipment-system-fields-migration"
+    ],
+    "docs/knowledge/evidence/form-instance-query.yaml": [
+      "evidence.form-instance-business-source-record-schema",
+      "evidence.form-instance-query-migration"
+    ],
+    "docs/knowledge/evidence/form-process-version-references.yaml": [
+      "evidence.form-process-version-reference-migration"
+    ],
+    "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md": [
+      "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md"
+    ],
+    "docs/knowledge/evidence/form-worklists.yaml": [
+      "evidence.form-worklists-permissions"
+    ],
+    "docs/knowledge/evidence/identity-subject-selector.yaml": [
+      "evidence.workflow-task-candidate-migration"
+    ],
+    "docs/knowledge/evidence/master-data-description.yaml": [
+      "evidence.master-data-description-migration"
+    ],
+    "docs/knowledge/evidence/material-fields.yaml": [
+      "evidence.material-fields-brand-migration"
+    ],
+    "docs/knowledge/evidence/material-import.yaml": [
+      "evidence.material-import-brand-rename",
+      "evidence.material-import-type-seed-repair"
+    ],
+    "docs/knowledge/evidence/ontology-foundation-fact-types.md": [
+      "docs/knowledge/evidence/ontology-foundation-fact-types.md"
+    ],
+    "docs/knowledge/evidence/product-process.yaml": [
+      "evidence.migration-0044-product-process-modeling",
+      "evidence.migration-0045-document-versions",
+      "evidence.migration-0049-dhr-item-binding",
+      "evidence.migration-0052-document-pages",
+      "evidence.migration-0053-product-family-process-owner",
+      "evidence.migration-0054-product-family-code-case-insensitive"
+    ],
+    "docs/knowledge/evidence/production-execution.yaml": [
+      "evidence.production-execution-migration-source"
+    ],
+    "docs/knowledge/evidence/production.yaml": [
+      "evidence.migration-0061-work-order",
+      "evidence.migration-0062-production-object-and-work-order-lifecycle",
+      "evidence.migration-0063-production-work-order-permission",
+      "evidence.migration-0064-production-work-order-fields",
+      "evidence.migration-0066-production-object-planned-window",
+      "evidence.migration-0067-production-batch-management-permission",
+      "evidence.work-order-schema-field-boundary"
+    ],
+    "docs/knowledge/evidence/record-control-workflow-stage1.yaml": [
+      "evidence.record-control-workflow-stage1-migration"
+    ],
+    "docs/knowledge/evidence/signature-payload-storage.yaml": [
+      "evidence.signature-payload-lossless-storage-migration"
+    ],
+    "docs/knowledge/evidence/transaction-runtime.yaml": [
+      "evidence.production-work-template-configuration-migration"
+    ],
+    "docs/knowledge/evidence/workshop.yaml": [
+      "evidence.migration-0061-workshop-management",
+      "evidence.workshop-legacy-schema"
+    ],
+    "docs/knowledge/facts/dhr-instance-management.yaml": [
+      "fact.dhr-instance.form-record-copy-id"
+    ],
+    "docs/knowledge/facts/dhr-summary.yaml": [
+      "fact.dhr-summary.archive-display-name",
+      "fact.dhr-summary.review-mode",
+      "fact.dhr-summary.version-frozen"
+    ],
+    "docs/knowledge/facts/form-instance-query.yaml": [
+      "fact.form-instance.business-source"
+    ],
+    "docs/knowledge/implementation-anchors/core-business.yaml": [
+      "anchor.core.identity-subject-resolution",
+      "anchor.core.product-process-resolution",
+      "anchor.core.production-object-runtime",
+      "anchor.core.production-work-configuration",
+      "anchor.core.production-work-order",
+      "anchor.core.record-control-explicit-published-workflow-selection",
+      "anchor.core.record-control-workflow-integration",
+      "anchor.core.workflow-definition-version-record-control-start",
+      "anchor.core.workshop-management"
+    ],
+    "docs/knowledge/implementation-anchors/dhr-instance-management.yaml": [
+      "anchor.dhr-instance-context-snapshot",
+      "anchor.dhr-instance-first-start-transaction",
+      "anchor.dhr-instance-form-evidence-query",
+      "anchor.dhr-instance-query-permission",
+      "anchor.production-batch-dhr-entry"
+    ],
+    "docs/knowledge/implementation-anchors/dhr-summary-order.yaml": [
+      "anchor.dhr-summary-optional-placement-order"
+    ],
+    "docs/knowledge/implementation-anchors/dhr-summary-source-group.yaml": [
+      "anchor.dhr-summary-archive-display-name"
+    ],
+    "docs/knowledge/implementation-anchors/dhr-summary.yaml": [
+      "anchor.dhr-review-task-frozen-attachment-download",
+      "anchor.dhr-summary-auto-evidence-scope",
+      "anchor.dhr-summary-immutable-version",
+      "anchor.dhr-summary-manual-review-confirmation",
+      "anchor.dhr-summary-review-binding",
+      "anchor.dhr-summary-stale-approval",
+      "anchor.dhr-summary-workspace",
+      "anchor.dhr-summary-zip-source-trace"
+    ],
+    "docs/knowledge/implementation-anchors/form-instance-query.yaml": [
+      "anchor.form-instance-global-query-authorization",
+      "anchor.form-instance-global-query-persisted-business-source"
+    ],
+    "docs/knowledge/implementation-anchors/form-process-binding.yaml": [
+      "anchor.form-process-binding-reference-service",
+      "anchor.form-process-binding-usage-projection"
+    ],
+    "docs/knowledge/implementation-anchors/form-projection.yaml": [
+      "anchor.form-projection.configuration-snapshot",
+      "anchor.form-projection.formal-source",
+      "anchor.form-projection.saved-content-trace"
+    ],
+    "docs/knowledge/implementation-anchors/form-worklists.yaml": [
+      "anchor.form-worklist-current-tasks",
+      "anchor.form-worklist-explicit-creation",
+      "anchor.form-worklist-personal-history",
+      "anchor.form-worklist-personal-qualification"
+    ],
+    "docs/knowledge/implementation-anchors/master-data-description.yaml": [
+      "anchor.master-data-description-field-contract"
+    ],
+    "docs/knowledge/implementation-anchors/material-fields.yaml": [
+      "anchor.material.optional-brand"
+    ],
+    "docs/knowledge/implementation-anchors/production-output.yaml": [
+      "anchor.production-output.configuration",
+      "anchor.production-output.formal-summary"
+    ],
+    "docs/knowledge/implementation-anchors/production-quality.yaml": [
+      "anchor.production-quality.formal-summary"
+    ]
+  }
+}

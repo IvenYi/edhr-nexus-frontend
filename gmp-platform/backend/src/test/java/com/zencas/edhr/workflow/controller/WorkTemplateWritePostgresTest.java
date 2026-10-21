@@ -74,7 +74,7 @@ class WorkTemplateWritePostgresTest {
 
     @BeforeAll
     void applyActualVersionIntegrityConstraints() throws Exception {
-        jdbc.execute(Files.readString(Path.of("src/main/resources/db/changelog/0060-work-template-version-integrity.sql")));
+        jdbc.execute(Files.readString(Path.of("src/test/resources/db/changelog/0060-work-template-version-integrity.sql")));
     }
 
     @BeforeEach

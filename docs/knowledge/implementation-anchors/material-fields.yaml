@@ -20,13 +20,13 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java]
     apiReferences: []
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0078-material-brand.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.material-fields-controller, evidence.material-fields-brand-migration, evidence.material-fields-page, evidence.material-fields-controller-tests]
     sourceRevision: working-tree
-    sourceLocator: resolveMaterialBrandName / materialSnapshot
+    sourceLocator: "resolveMaterialBrandName / materialSnapshot；2026-10-21仅初始化定位维护（d405a9af工作树）：material.brand_name可空列；0078旧brand列及0081重命名留在历史证据，当前直接使用brand_name。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-15'
     reviewStatus: reviewed

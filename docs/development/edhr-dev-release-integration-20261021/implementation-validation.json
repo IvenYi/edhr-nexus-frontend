@@ -1,0 +1,54 @@
+{
+  "backendFocused": [
+    {
+      "log": "docs/development/edhr-dev-release-integration-20261021/logs/backend-focused.log",
+      "sha256": "8c747bccf232757e940656c347bde3ba6b680df7744c4c9bbcb46d04a1b73704",
+      "total": 217,
+      "passed": 214,
+      "skipped": 3,
+      "note": ""
+    },
+    {
+      "log": "docs/development/edhr-dev-release-integration-20261021/logs/postgres-focused.log",
+      "sha256": "a38086e4d0f80db5692e57418474e2aafe7c334f4ed6537bdd3b244753af1724",
+      "total": 129,
+      "passed": 117,
+      "skipped": 12,
+      "note": "PG批次的12项委托测试未获环境变量；随后专用库实际执行23项全部通过"
+    },
+    {
+      "log": "docs/development/edhr-dev-release-integration-20261021/logs/workflow-transfer-package.log",
+      "sha256": "8d36e35c4ffbb6c98da27a124022a8f8902b335ce3afd4138e7eba74f687f3f8",
+      "total": 23,
+      "passed": 23,
+      "skipped": 0,
+      "note": ""
+    },
+    {
+      "log": "docs/development/edhr-dev-release-integration-20261021/logs/frontend-focused.log",
+      "sha256": "c3e39fc18c11779706c9c18d93bcff1f9f047fd712fbcd8a2cba54420d3652b5",
+      "total": 52,
+      "passed": 52,
+      "skipped": 0,
+      "note": ""
+    }
+  ],
+  "frontendBuild": "passed",
+  "backendPackageIncludingDhrPrint": "passed",
+  "knowledgeTests": {
+    "passed": 89,
+    "skipped": 0
+  },
+  "productionResources": [
+    "baseline/0001-current-schema.sql",
+    "baseline/0002-current-seed.sql",
+    "db.changelog-master.yaml"
+  ],
+  "historicalSqlTestFixtures": 127,
+  "databaseAdoption": "97 tables all equal; all foreign keys re-created and validated; historical signature readable data and original hashes preserved",
+  "testFixtureCorrections": [
+    "数据库失败断言启用autoCommit避免前一预期异常污染后续事务",
+    "trace索引用自定义班组项替换已退役teamText；补齐测试投影版本；统计来源构造合法报工绑定"
+  ],
+  "buildJarSha256": "4ac4614415c861740e85083f23e8aeff294dd6739932ef8a8fed94dc9fe94265"
+}

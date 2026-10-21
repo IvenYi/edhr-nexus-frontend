@@ -8,7 +8,8 @@ export const businessAttributeNames: Record<string, string> = {
 export function businessRecordColumns(model: string) {
   return columns([...context, ...(model === 'production'
     ? [['outputQuantity', '产出数量'], ['goodQuantity', '良品数量'], ['ngQuantity', '不良品数量'], ['unit', '单位'], ...Object.entries(businessAttributeNames)]
-    : [...material, ['quantity', model === 'scrap' ? '报废数量' : '消耗数量'], ['unit', '单位'], ['category', model === 'scrap' ? '报废分类' : '分类'], ['reason', model === 'scrap' ? '报废原因' : '原因']]),
+    : model === 'defect' ? [['reason', '不良原因'], ['quantity', '不良分项数量'], ['unit', '单位'], ['reasonNote', '原因补充说明']]
+    : [...material, ['quantity', model === 'scrap' ? '报废数量' : '消耗数量'], ['unit', '单位'], ...(model === 'scrap' ? [] : [['category', '分类']]), ['reason', model === 'scrap' ? '报废原因' : '原因'], ['reasonNote', '原因补充说明']]),
     ['teamText', '责任班组'], ['documentNumberText', '关联单据号'], ['instanceNo', '来源表单'], ['location', '来源位置'],
     ['createdBy', '表单创建人'], ['createdAt', '表单创建时间'], ['updatedBy', '表单更新人'], ['updatedAt', '表单更新时间']]);
 }
@@ -20,7 +21,8 @@ export function businessTotalColumns(model: string) {
 export function businessFilters(model: string): string[][] {
   return [['workOrderNo', '工单编号'], ['productCode', '生产产品编码'], ['productName', '生产产品名称'], ['unit', '单位'], ['teamText', '责任班组'], ['documentNumberText', '关联单据号'],
     ...(model === 'production' ? [['reporter', '报工人'], ['productionDateFrom', '生产日期自'], ['productionDateTo', '生产日期至']]
-      : [['materialCode', '物料编码'], ['materialName', '物料名称'], ['materialLotText', '物料批号'], ['category', model === 'scrap' ? '报废分类' : '分类'], ['reason', model === 'scrap' ? '报废原因' : '原因']]),
+      : model === 'defect' ? [['reason', '不良原因']]
+      : [['materialCode', '物料编码'], ['materialName', '物料名称'], ['materialLotText', '物料批号'], ...(model === 'scrap' ? [] : [['category', '分类']]), ['reason', model === 'scrap' ? '报废原因' : '原因']]),
     ['createdBy', '表单创建人'], ['createdDateFrom', '表单创建日期自'], ['createdDateTo', '表单创建日期至'],
     ['updatedBy', '表单更新人'], ['updatedDateFrom', '表单更新日期自'], ['updatedDateTo', '表单更新日期至']];
 }

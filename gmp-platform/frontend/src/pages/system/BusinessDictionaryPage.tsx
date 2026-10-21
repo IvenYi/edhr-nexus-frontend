@@ -26,7 +26,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Drawer,
   FormControl,
   IconButton,
   InputAdornment,
@@ -36,24 +35,22 @@ import {
   Select,
   Snackbar,
   Stack,
-  Tab,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Tabs,
   TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import DetailDrawer from '@/components/DetailDrawer';
 import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import FormDialogSection from '@/components/FormDialogSection';
 import {
   Add,
-  Close,
   Delete,
   DragIndicator,
   Edit,
@@ -215,19 +212,6 @@ const emptyTableBodyCellSx = {
 };
 
 const emptyTableRowSx = { height: '100%' };
-
-const appContentDrawerSx = {
-  top: 0,
-  bottom: 0,
-  zIndex: (theme: { zIndex: { drawer: number } }) => theme.zIndex.drawer + 3,
-};
-
-const appContentDrawerPaperSx = {
-  zIndex: (theme: { zIndex: { drawer: number } }) => theme.zIndex.drawer + 3,
-  height: 'auto',
-  transform: 'none !important',
-  transition: 'none !important',
-};
 
 const dictionaryAuditFieldLabels: Record<string, string> = {
   code: '字典编码',
@@ -419,7 +403,7 @@ function DetailField({ label, children }: { label: string; children: ReactNode }
   return (
     <Box sx={{ minWidth: 0 }}>
       <Typography variant="caption" sx={{ color: '#909399', display: 'block', mb: 0.5 }}>{label}</Typography>
-      <Typography variant="body2" sx={{ color: '#303133', wordBreak: 'break-word' }}>{children || '-'}</Typography>
+      <Typography variant="body2" sx={{ color: '#303133', wordBreak: 'break-word' }}>{children === 0 ? 0 : children || '-'}</Typography>
     </Box>
   );
 }
@@ -431,8 +415,8 @@ function AuditFieldBlock({ title, fields }: { title: string; fields: AuditFieldR
       <Stack spacing={0.75}>
         {fields.length === 0 ? (
           <Typography variant="caption" sx={{ color: '#909399' }}>无</Typography>
-        ) : fields.map((field) => (
-          <Box key={field.label} sx={{ display: 'grid', gridTemplateColumns: '92px minmax(0, 1fr)', gap: 1 }}>
+        ) : fields.map((field, index) => (
+          <Box key={`${index}:${field.label}`} sx={{ display: 'grid', gridTemplateColumns: '92px minmax(0, 1fr)', gap: 1 }}>
             <Typography variant="caption" sx={{ color: '#606266' }}>{field.label}</Typography>
             <Typography variant="caption" sx={{ color: '#303133', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{field.value}</Typography>
           </Box>
@@ -1230,22 +1214,11 @@ export default function BusinessDictionaryPage() {
         rowAttr: 'data-item-column-settings-row',
       })}
 
-      <Drawer anchor="right" open={drawerOpen} onClose={() => setDrawerOpen(false)} sx={appContentDrawerSx} slotProps={{ backdrop: { sx: appContentDrawerSx } }} PaperProps={{ sx: appContentDrawerPaperSx }}>
-        <Box sx={{ width: { xs: '100vw', sm: 560 }, p: 2, bgcolor: '#f7f9fc', minHeight: '100%' }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#303133' }}>信息查看</Typography>
-            <IconButton size="small" onClick={() => setDrawerOpen(false)} aria-label="关闭详情"><Close /></IconButton>
-          </Stack>
+      <DetailDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} label="业务字典详情" tab={drawerTab} onTabChange={setDrawerTab}>
           {selectedDetail ? (
             <>
-              <Box sx={{ mt: 1, borderBottom: '1px solid #e4e7ed' }}>
-                <Tabs value={drawerTab} onChange={(_, value: number) => setDrawerTab(value)} aria-label="业务字典详情切换">
-                  <Tab label="数据信息" />
-                  <Tab label="数据审计" />
-                </Tabs>
-              </Box>
               {drawerTab === 0 ? (
-                <Stack spacing={2} sx={{ mt: 2 }}>
+                <>
                   <DetailSection title="基本信息">
                     <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1 }}>
                       {selectedDetail.type === 'dictionary' ? (
@@ -1277,10 +1250,9 @@ export default function BusinessDictionaryPage() {
                       <DetailField label="更新时间">{formatDateTime(selectedDetail.data.updatedAt || selectedDetail.data.createdAt)}</DetailField>
                     </Box>
                   </DetailSection>
-                </Stack>
+                </>
               ) : null}
               {drawerTab === 1 ? (
-                <Stack spacing={2} sx={{ mt: 2 }}>
                   <DetailSection title="审计记录">
                     <Stack spacing={1}>
                       {auditRecords.length === 0 ? (
@@ -1306,12 +1278,10 @@ export default function BusinessDictionaryPage() {
                       ))}
                     </Stack>
                   </DetailSection>
-                </Stack>
               ) : null}
             </>
           ) : null}
-        </Box>
-      </Drawer>
+      </DetailDrawer>
 
       <AppDialog variant="form" open={dictionaryDialogOpen} onClose={() => setDictionaryDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{editingDictionary ? '编辑业务字典' : '新增业务字典'}</DialogTitle>

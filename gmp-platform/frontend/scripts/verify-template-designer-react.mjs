@@ -1798,16 +1798,17 @@ assertIncludes(referenceConfigBlock, [
   '显示内容',
   'referenceSourceType',
   'referenceField',
-  '默认显示内容',
+  'ReferencePresentationConfig',
   '查询条件',
-  '查找条件',
+  '筛选可选记录',
   'referenceQueryConditions',
-  '引用表中的字段',
-  '当前表中的字段',
+  '候选对象属性',
+  '本表单取值字段',
   'REFERENCE_QUERY_OPERATOR_OPTIONS',
   '显示样式',
 ], 'DesignerInspector.tsx: reference field configuration');
-assertIncludes(inspector, ["value: 'productionBatch'", "value: 'serialNumber'", "value: 'workOrder'", "value: 'operation'"], 'DesignerInspector.tsx: controlled production reference sources');
+assertIncludes(inspector, ["value: 'productionObject'", "value: 'material'", "value: 'workOrder'", "value: 'operation'", 'ReferenceScopeConfig'], 'DesignerInspector.tsx: unified production reference entrances');
+assertIncludes(read('../src/pages/master-data/template-designer-react/components/ReferencePresentationConfig.tsx'), ['默认显示内容'], 'ReferencePresentationConfig.tsx: reference display selection');
 assertIncludes(referenceDisplayOptionsBlock, [
   '链接文本',
   '纯文本',

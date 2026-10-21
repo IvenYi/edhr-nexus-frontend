@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DhrSummaryMigrationTest {
     @Test
     void migrationDeclaresIndependentVersionedSummaryWorkspaceAndPermissions() throws Exception {
-        String master = resource("/db/changelog/db.changelog-master.yaml");
+        String master = resource("/db/historical/db.changelog-historical.yaml");
         String migration = resource("/db/changelog/0092-dhr-summary-workspace.sql");
         String correction = resource("/db/changelog/0093-dhr-summary-version-review-binding.sql");
 

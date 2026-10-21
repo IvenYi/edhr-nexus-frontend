@@ -10,13 +10,14 @@ const labels: Record<string, string> = {
   NOT_CONFIGURED: '未配置', NOT_STARTED: '未开工', LEGACY: '未配置（历史）', NO_DATA: '暂无数据', UNSUPPORTED: '未配置',
 };
 
-const attributeLabels: Record<string, string> = { outputQuantity: '产出数量', goodQuantity: '良品数量', ngQuantity: '不良品数量', quantity: '数量', unit: '单位', unitLabel: '单位名称', reason: '原因', reasonLabel: '原因名称', category: '报废分类', categoryLabel: '分类名称', materialLotText: '物料批号', productionDate: '生产日期', reportStartTime: '报工开始时间', reportEndTime: '报工结束时间', workHours: '投入人时', reporterLabel: '报工人', teamText: '班组', documentNumberText: '关联单据号' };
+const attributeLabels: Record<string, string> = { outputQuantity: '产出数量', goodQuantity: '良品数量', ngQuantity: '不良品数量', quantity: '数量', unit: '单位', unitLabel: '单位名称', reason: '原因编号', reasonLabel: '原因名称', reasonNote: '补充说明', category: '历史报废分类', categoryLabel: '历史分类名称', materialLotText: '物料批号', productionDate: '生产日期', reportStartTime: '报工开始时间', reportEndTime: '报工结束时间', workHours: '投入人时', reporterLabel: '报工人', teamText: '班组', documentNumberText: '关联单据号' };
 const display = (value: unknown): string => value == null || value === '' ? '—' : typeof value === 'object' ? String((value as { name?: string; code?: string }).name || (value as { code?: string }).code || '—') : String(value);
 
 const formStatusLabels: Record<string, string> = { COMPLETED: '已完成', IN_PROGRESS: '填报中', RUNNING: '进行中', DRAFT: '草稿', PENDING: '待填报', ACTIVE: '进行中', RETURNED: '已退回' };
 
 function QuantitySources({ output, savedOutput }: { output?: ProductionOutput; savedOutput?: ProductionOutput }) {
   const rows = quantitySourceRows(output, savedOutput);
+  const reasons = quantitySourceRows(output ? { ...output, sources: output.reasonSources } : undefined, savedOutput ? { ...savedOutput, sources: savedOutput.reasonSources } : undefined);
   return <Stack spacing={1.5} sx={{ minHeight: 0 }}>
     {savedOutput ? <Box sx={{ flexShrink: 0 }}>
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', bgcolor: 'action.hover', borderRadius: 1, mb: 0.75 }}>
@@ -42,11 +43,32 @@ function QuantitySources({ output, savedOutput }: { output?: ProductionOutput; s
         {row.effective?.message ? <Typography variant="caption" component="div" color={row.effective.included ? 'text.secondary' : 'warning.dark'}>{row.effective.message}</Typography> : null}
         {row.saved && !row.saved.included ? <Typography variant="caption" component="div" color="warning.dark">填报数据：{row.saved.message}</Typography> : null}
         <Box component="dl" sx={{ m: 0, display: 'grid', gridTemplateColumns: '104px minmax(0, 1fr)', borderTop: '1px solid', borderColor: 'divider', '& dt, & dd': { py: 0.5, px: 1, borderBottom: '1px solid', borderColor: 'divider' }, '& dt': { bgcolor: 'action.hover' } }}>
-          {Object.entries(source.attributes ?? {}).filter(([key]) => attributeLabels[key]).map(([key, value]) => <Box key={key} sx={{ display: 'contents' }}><Typography component="dt" variant="caption" color="text.secondary">{attributeLabels[key]}</Typography><Typography component="dd" variant="caption" sx={{ m: 0, overflowWrap: 'anywhere' }}>{display(value)}</Typography></Box>)}
+          {Object.entries(source.attributes ?? {}).filter(([key]) => attributeLabels[key]).map(([key, value]) => <Box key={key} sx={{ display: 'contents' }}><Typography component="dt" variant="caption" color="text.secondary">{key === 'reason' && !source.attributes?.reasonId ? '历史原因' : attributeLabels[key]}</Typography><Typography component="dd" variant="caption" sx={{ m: 0, overflowWrap: 'anywhere' }}>{display(value)}</Typography></Box>)}
           {source.details?.map((detail, i) => <Box key={i} sx={{ display: 'contents' }}><Typography component="dt" variant="caption" color="text.secondary">{detail.name}</Typography><Typography component="dd" variant="caption" sx={{ m: 0, overflowWrap: 'anywhere' }}>{display(detail.value)}</Typography></Box>)}
         </Box>
         </Stack>
       </Box>; }) : <Typography variant="body2" color="text.secondary">暂无已记录来源</Typography>}
+      {reasons.length ? <Box sx={{ mt: 1.5, borderTop: '1px solid', borderColor: 'divider', pt: 1.5 }}>
+        <Typography variant="subtitle2">不良原因分项</Typography>
+        <Typography variant="caption" color="text.secondary">分项用于解释不良构成，不合计替代上方不良品数量。</Typography>
+        {reasons.map((row, index) => {
+          const source = row.saved || row.effective!;
+          const attributes = source.attributes ?? {};
+          const status = quantitySourceStatus(row);
+          return <Box key={`${source.recordId}:${index}`} sx={{ mt: 1, border: '1px solid', borderColor: 'divider', borderRadius: 1, overflow: 'hidden' }}>
+            <Stack direction="row" justifyContent="space-between" gap={1} sx={{ px: 1.5, py: 1, bgcolor: 'action.hover' }}>
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>{display(attributes.reasonLabel)}{attributes.reason ? ` [${display(attributes.reason)}]` : ''}</Typography>
+              <Typography variant="body2" sx={{ whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' }}>{source.quantity ?? '—'} {source.unit || '单位未填写'}</Typography>
+            </Stack>
+            <Stack spacing={0.5} sx={{ px: 1.5, py: 1 }}>
+              <Typography variant="caption">{source.instanceNo || '已保存表单'} · {source.tableId ? `${source.tableName || '子表明细'} · ${source.rowLabel || source.rowKey}` : '主表'}{source.fieldName ? ` · ${source.fieldName}` : ''}</Typography>
+              <Typography variant="caption" color={status === '已生效' ? 'success.dark' : 'warning.dark'}>表单：{formStatusLabels[source.formStatus ?? ''] || '状态未记录'} · 统计：{status}</Typography>
+              {attributes.reasonNote ? <Typography variant="caption" sx={{ overflowWrap: 'anywhere' }}>补充说明：{display(attributes.reasonNote)}</Typography> : null}
+              {row.saved && row.effective && (row.saved.quantity !== row.effective.quantity || row.saved.attributes?.reasonId !== row.effective.attributes?.reasonId) ? <Typography variant="caption" color="warning.dark">当前填报与生效记录不同；生效原因为 {display(row.effective.attributes?.reasonLabel)}，数量 {row.effective.quantity ?? '—'} {row.effective.unit}</Typography> : null}
+            </Stack>
+          </Box>;
+        })}
+      </Box> : null}
     </Box>
   </Stack>;
 }

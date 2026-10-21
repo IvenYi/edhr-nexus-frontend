@@ -97,32 +97,32 @@ evidence:
     visibility: internal
   - id: evidence.migration-0044-product-process-modeling
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0044-product-process-modeling.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0044-product-process-modeling.sql
     description: 建立产品制程、制程版本和三类初始工序绑定表及数量约束；production_form 继续是非空字符串列，未使用数据库枚举或 CHECK 收窄取值。
     visibility: internal
   - id: evidence.migration-0045-document-versions
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0045-document-management-versions.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0045-document-management-versions.sql
     description: 建立受控文档版本及通用工序文档版本绑定，迁移旧 SOP 引用。
     visibility: internal
   - id: evidence.migration-0049-dhr-item-binding
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0049-product-process-dhr-item-binding.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0049-product-process-dhr-item-binding.sql
     description: 为工序表单绑定增加 dhrTemplateItemId 追溯并调整唯一约束。
     visibility: internal
   - id: evidence.migration-0052-document-pages
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0052-product-process-document-pages.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0052-product-process-document-pages.sql
     description: 为工序文档版本绑定增加 pageStart 和 pageEnd。
     visibility: internal
   - id: evidence.migration-0053-product-family-process-owner
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0053-product-family-process-owner.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0053-product-family-process-owner.sql
     description: 建立产品簇成员表及租户内唯一归属约束；为 product_process 回填并约束 owner_type、owner_id，同时保留历史 product_version_id 兼容性。
     visibility: internal
   - id: evidence.migration-0054-product-family-code-case-insensitive
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0054-product-family-code-case-insensitive.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0054-product-family-code-case-insensitive.sql
     description: 建立产品簇编码在租户内按 LOWER(code) 不区分大小写唯一的数据库约束。
     visibility: internal
   - id: evidence.product-modeling-page

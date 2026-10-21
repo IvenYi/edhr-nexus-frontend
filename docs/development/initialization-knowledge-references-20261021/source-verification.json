@@ -1,0 +1,304 @@
+{
+  "inventoryRows": 107,
+  "affectedFiles": 38,
+  "classifications": {
+    "historical-evidence": 48,
+    "current-database-fact-source": 5,
+    "current-implementation-anchor": 54
+  },
+  "historicalFiles": [
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0001-init-schema.sql",
+      "identicalToHead": true,
+      "sha256": "316baefe79decf65811419e1de9a96323114ccb42ea1bcd0f627d35c0d979b71"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0044-product-process-modeling.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0044-product-process-modeling.sql",
+      "identicalToHead": true,
+      "sha256": "e3176f65e55af10259db2f40f402630172948faebe0837ed84849c6526417c24"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0045-document-management-versions.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0045-document-management-versions.sql",
+      "identicalToHead": true,
+      "sha256": "e861c5a3be2525f88eb5d75f9c2ace2032b762a1985d2252cc5b8dcc51fe9843"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0049-product-process-dhr-item-binding.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0049-product-process-dhr-item-binding.sql",
+      "identicalToHead": true,
+      "sha256": "d5f02a1e8bef837cd5cb6a72a36fd2435bfbfca593b6d08ceeee1b9dfb0bfa4b"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0052-product-process-document-pages.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0052-product-process-document-pages.sql",
+      "identicalToHead": true,
+      "sha256": "615570b8063cf3b2a23236c2ca945a32c2017a0ad1faa514e90304ab0f0bf299"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0053-product-family-process-owner.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0053-product-family-process-owner.sql",
+      "identicalToHead": true,
+      "sha256": "9aef4f78b9c503a41617611c6f6bfe6127dd852d99376d10519bfb23143509ac"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0054-product-family-code-case-insensitive.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0054-product-family-code-case-insensitive.sql",
+      "identicalToHead": true,
+      "sha256": "37b21db877018db4b670243a3607f5d4cbdb4545da5d646f35a05651fa59811f"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0059-work-template-audit-baseline.sql",
+      "identicalToHead": true,
+      "sha256": "a2b3e107a0aee3f04131c46c784778a56a97a8d9822c9d9dc49fc2d5bb934d43"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0061-production-work-order.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0061-production-work-order.sql",
+      "identicalToHead": true,
+      "sha256": "d153e47059537ced594100cadaa672de3a2f027b175f685931ccb0f5bb23e29f"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql",
+      "identicalToHead": true,
+      "sha256": "a713225a7a7dab4c7f519a5ee3de41658b1220c073d5669bd523e9be92bb7355"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0063-production-work-order-permission.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0063-production-work-order-permission.sql",
+      "identicalToHead": true,
+      "sha256": "8a5a618956f91815a05a4763438006bc1e04fcdb91cc0a149af52dfa6b08d93d"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0064-production-work-order-fields.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0064-production-work-order-fields.sql",
+      "identicalToHead": true,
+      "sha256": "be7c980d2b0e2f95ca1a516c5532ec4ac055f0cb3a5c079f7f5f97f7f880ac78"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0066-production-object-planned-window.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0066-production-object-planned-window.sql",
+      "identicalToHead": true,
+      "sha256": "a29d7b6a4dd822cae531bed5e0b1c1af252101456e7388bf59e23cf9566210bb"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0067-production-batch-management-permission.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0067-production-batch-management-permission.sql",
+      "identicalToHead": true,
+      "sha256": "f79bc3d3a0e6432b317f0d92f4180f59cc254dfdb54c214e7ebfdf81f66ff315"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0070-workshop-management.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0070-workshop-management.sql",
+      "identicalToHead": true,
+      "sha256": "b3eb67c20aab5aff160b16f876cc0060088f21a95174cd176ba8f2f28be3cfe1"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0071-workflow-task-candidates.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0071-workflow-task-candidates.sql",
+      "identicalToHead": true,
+      "sha256": "ca1190596550406a2ff702c5e55102520f0b8e11030768beabab3ae791d89424"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0072-work-form-process-references.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0072-work-form-process-references.sql",
+      "identicalToHead": true,
+      "sha256": "ed1b2dbeea8ce0243824cc8f3a24d5e76dae4c056a5cece412e18fd333a98ef8"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0073-equipment-modeling.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0073-equipment-modeling.sql",
+      "identicalToHead": true,
+      "sha256": "e8a0010d2b45af563322c8ca0df88f2d22422d65293e22bba7a36f3b1d99716c"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0074-equipment-system-fields.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0074-equipment-system-fields.sql",
+      "identicalToHead": true,
+      "sha256": "4810bbce50ff8620bf09b3e0be45a46ad0b6ffda748d8065f0038fda26f3af6e"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0075-equipment-brand-purchase-date.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0075-equipment-brand-purchase-date.sql",
+      "identicalToHead": true,
+      "sha256": "1fee5be257f822ffcc6b3234919d1d596fc6822ece64bf2d42ba86e70d325075"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0076-production-execution.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0076-production-execution.sql",
+      "identicalToHead": true,
+      "sha256": "095ec1318496a7bcc003d1791c1c02e704a1f056f4d87a8742a4079e9089455c"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0078-material-brand.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0078-material-brand.sql",
+      "identicalToHead": true,
+      "sha256": "3e361be40cc8db8d961c4ca24946fce44c4b3440817f3a0e2e2c356a8033eece"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0080-record-control-workflow-contract.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0080-record-control-workflow-contract.sql",
+      "identicalToHead": true,
+      "sha256": "b5431bebebc808b51277a9f26e98aa9c764c125f99b84a94480b09eef2f44ec2"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0081-material-brand-name.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0081-material-brand-name.sql",
+      "identicalToHead": true,
+      "sha256": "9680697e9c80f566253a1888147b8ebb4bd24326959bcc9382a9f0bc3ba5282a"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0082-form-instance-records.sql",
+      "identicalToHead": true,
+      "sha256": "1529fc3d3619fcb6fb187ac4306222a63ab017a2b5ebdd64da0bc6ee034ecc22"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0083-form-instance-query.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0083-form-instance-query.sql",
+      "identicalToHead": true,
+      "sha256": "464f8038de263952b8785b94982f71f30a3244c7a49d2c8a24dfaa98755016e6"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0084-form-worklist-permissions.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0084-form-worklist-permissions.sql",
+      "identicalToHead": true,
+      "sha256": "a3fcc4a4d56a85e4c4daca9ba16c1511088284a9066e7fadf2a5c4b1a94761ae"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0086-form-instance-business-source.sql",
+      "identicalToHead": true,
+      "sha256": "67d97fafd0061f74250e99fb3a14e9f564142df1715e7f5bd3eccdac3cc04e8c"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0087-restore-standard-material-types.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0087-restore-standard-material-types.sql",
+      "identicalToHead": true,
+      "sha256": "ed414367573962f47d690a4381d819077ef64e2a095cf7a4adda09d29bdb0ad0"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0089-dhr-instance-management.sql",
+      "identicalToHead": true,
+      "sha256": "cc260fcdb374e670888bf40dfd969bf06aef532d4ccea551350ff2ae624e0595"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0090-remove-dhr-template-version-snapshot.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0090-remove-dhr-template-version-snapshot.sql",
+      "identicalToHead": true,
+      "sha256": "7d9dc07734bb28117f54cc5a6129a0807fb31ee2c1c3c643fc9f159595821eeb"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0091-remove-dhr-template-version-status.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0091-remove-dhr-template-version-status.sql",
+      "identicalToHead": true,
+      "sha256": "9da412887321399200f15af03b917b34e7e1e2715310ea22402e6af1b43855e9"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0092-dhr-summary-workspace.sql",
+      "identicalToHead": true,
+      "sha256": "92b3bb49831e420f7b7b676092268df0a4c7800eae7d2e938590686068d9269c"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0093-dhr-summary-version-review-binding.sql",
+      "identicalToHead": true,
+      "sha256": "79ca761dc4cc0361256ba02dceb4a3a43c02c4235571d144db9fdc952b02e8b2"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0095-remove-duplicate-remarks.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0095-remove-duplicate-remarks.sql",
+      "identicalToHead": true,
+      "sha256": "b4c40c82618cbcd7034b3200e94db911b3a2293c3313bd8c62e54fdadcaa3b19"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0100-dhr-summary-evidence-order.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0100-dhr-summary-evidence-order.sql",
+      "identicalToHead": true,
+      "sha256": "996c007232e85c381de0396cf74b4c7394b38afec8b4a5fcb678061442fca458"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql",
+      "identicalToHead": true,
+      "sha256": "e1daff0385eb4a5bd29e7906471f8555a362ba64e0d87cfdab79c4fa1b7bd26b"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0102-dhr-summary-complete-evidence.sql",
+      "identicalToHead": true,
+      "sha256": "149d388820a200ceaefb94ef807f3dad255789db12148c8604743f7e687da994"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0103-dhr-controlled-attachments.sql",
+      "identicalToHead": true,
+      "sha256": "7a6052f394f19b3763b4b20d2ae03e47f14c6d8adb057055898b4aca03b849ec"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0104-dhr-current-evidence-only.sql",
+      "identicalToHead": true,
+      "sha256": "fe82cd435f87cab71924a9d0b9a52e861b0ee874b1ff22829f30751e756761ea"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0106-form-projection-freeze.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0106-form-projection-freeze.sql",
+      "identicalToHead": true,
+      "sha256": "3cf6d125440cb1749aa86cb58dc8cfd596c97b27bad0d924921987f63408fac9"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0107-form-projection-runtime.sql",
+      "identicalToHead": true,
+      "sha256": "a431864c93d66e9c0258548508234aa4f0b8ce0a3ea03b1dd8dccda055c405d4"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0109-saved-form-trace-index.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0109-saved-form-trace-index.sql",
+      "identicalToHead": true,
+      "sha256": "c712290c977f561e9c61a1750088bb8840ea0b0d81712ac615b02a94a31ef9d5"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0112-typed-trace-catalog.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0112-typed-trace-catalog.sql",
+      "identicalToHead": true,
+      "sha256": "b6a6c624243e4cdf887a304851ba6b9d70845f064421833ebd4a03da8d1a3e06"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0113-trace-date-preset.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0113-trace-date-preset.sql",
+      "identicalToHead": true,
+      "sha256": "df811b8f4c2cf63c2f5ea2b30c0b570b1558ec18e3801446f9761d93b69911d4"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0114-final-output-operation.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0114-final-output-operation.sql",
+      "identicalToHead": true,
+      "sha256": "f31c0a6a5a391a7142106e564d103102d2b6bd0a5fb2bbb83b8ad06637244f21"
+    },
+    {
+      "oldPath": "gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql",
+      "historicalFixture": "gmp-platform/backend/src/test/resources/db/changelog/0118-signature-payload-text.sql",
+      "identicalToHead": true,
+      "sha256": "fdd52e22ba67170ad0be4f397e4da42dbbd9eaa63f3b874cb68557edf35e321a"
+    }
+  ],
+  "retiredToolsAbsent": {
+    "/Users/ivenwang/.codex/worktrees/trace-single-binding-publish/edhr-nexus": {
+      "gmp-platform/backend/scripts/form-projection-demo.py": true,
+      "gmp-platform/backend/scripts/form-projection-runtime-demo.py": true
+    },
+    "/Users/ivenwang/Documents/edhr-nexus": {
+      "gmp-platform/backend/scripts/form-projection-demo.py": true,
+      "gmp-platform/backend/scripts/form-projection-runtime-demo.py": true
+    }
+  },
+  "inventoryContentSha256": "5dd2295902591aaabdfec3c09d645e95dc54e36a3b99120693299c18b8bfb1df"
+}

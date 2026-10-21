@@ -12,7 +12,7 @@ evidence:
     visibility: internal
   - id: evidence.form-process-version-reference-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0072-work-form-process-references.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0072-work-form-process-references.sql
     description: Liquibase 0072 新增表单流程版本引用投影表、查询索引和开发环境既有图配置回填；迁移只派生查询投影，不改变作业流程 nodesJson 中的真实绑定。
     visibility: internal
   - id: evidence.form-process-version-usage-controller

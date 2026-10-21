@@ -6,8 +6,7 @@ implementationAnchors:
     codeReferences:
       - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormProcessReferenceService.java
     apiReferences: []
-    databaseReferences:
-      - gmp-platform/backend/src/main/resources/db/changelog/0072-work-form-process-references.sql
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences:
       - gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
     testReferences:
@@ -16,7 +15,7 @@ implementationAnchors:
     visibility: internal
     evidenceIds: [evidence.form-process-version-reference-implementation, evidence.form-process-version-reference-tests]
     sourceRevision: working-tree
-    sourceLocator: FormProcessReferenceService.java
+    sourceLocator: "FormProcessReferenceService.java；2026-10-21仅初始化定位维护（d405a9af工作树）：work_form_process_reference及uk_work_form_process_reference_node等索引；无旧图配置回填或backfill序列。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-13'
     reviewStatus: reviewed
   - id: anchor.form-process-binding-controller
@@ -62,8 +61,7 @@ implementationAnchors:
       - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/FormProcessController.java
       - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormProcessReferenceService.java
     apiReferences: ["GET /api/v1/workflow/form-processes/{id}/usage"]
-    databaseReferences:
-      - gmp-platform/backend/src/main/resources/db/changelog/0072-work-form-process-references.sql
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences:
       - gmp-platform/frontend/src/pages/workflow-center/FormProcessList.tsx
     testReferences:
@@ -72,7 +70,7 @@ implementationAnchors:
     visibility: internal
     evidenceIds: [evidence.form-process-version-usage-controller, evidence.form-process-version-usage-ui, evidence.form-process-version-reference-tests]
     sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
-    sourceLocator: FormProcessController.java
+    sourceLocator: "FormProcessController.java；2026-10-21仅初始化定位维护（d405a9af工作树）：work_form_process_reference及form_process_version_id/form_process_definition_id索引；无旧图配置回填。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: anchor.form-process-binding-controlled-upgrade

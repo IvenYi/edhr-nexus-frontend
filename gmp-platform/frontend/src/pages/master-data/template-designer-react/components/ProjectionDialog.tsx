@@ -69,7 +69,8 @@ export default function ProjectionDialog({ open, onClose, focusField }: {
       const row = tableId ? (previewValues[tableId] as Record<string, unknown>[])[rowIndex] : previewValues;
       return <RuntimeReference key={key} field={field} disabled={false} runtime={{
         values: row, referenceValues: { ...previewValues, ...row },
-        references: (_id, keyword, values) => getPreviewReferences(field.typeConfig, keyword, values),
+        referenceContextWarnings: field.typeConfig.referenceContextAutofill === true ? { [field.id]: '模拟预览没有生产上下文，请手动选择' } : undefined,
+        references: (_id, keyword, values, paging) => getPreviewReferences(field.typeConfig, keyword, values, paging),
         onChange: (_id, value) => { setPreview(null); setSamples({ ...samples, [key]: value }); },
       }} />;
     }
@@ -77,7 +78,7 @@ export default function ProjectionDialog({ open, onClose, focusField }: {
       value={samples[key] ?? ''} onChange={event => { setPreview(null); setSamples({ ...samples, [key]: event.target.value }); }} />;
   };
   return <FormDialog open={open} onClose={() => { if (!busy) onClose(); }} maxWidth="md" fullWidth>
-    <DialogTitle>追溯与统计总览</DialogTitle>
+    <DialogTitle>追溯与业务总览</DialogTitle>
     <Tabs value={tab} onChange={(_, value: number) => { setTab(value); setError(''); }} sx={{ px: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
       <Tab label="用途配置" /><Tab label="模拟预览" />
     </Tabs>
@@ -96,7 +97,7 @@ export default function ProjectionDialog({ open, onClose, focusField }: {
               <Stack direction="row" justifyContent="flex-end" alignItems="center">
                 <Button size="small" onClick={() => { setRegionId(regionId === region.id ? null : region.id); setFieldId(''); }}>{regionId === region.id ? '收起配置' : region.id ? '配置子表用途' : '选择字段配置'}</Button>
               </Stack>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>查找与追溯：{trace.length ? trace.map(item => projectionSourceSummary(document.model, item)).join('；') : '未配置'}</Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>追溯：{trace.length ? trace.map(item => projectionSourceSummary(document.model, item)).join('；') : '未配置'}</Typography>
               <Typography variant="body2" color="text.secondary">业务统计：{statistics.length ? `${statistics.length} 项用途` : '未配置'}</Typography>
               {items.map(binding => {
                 const definition = catalog?.models.find(model => model.id === binding.modelId);

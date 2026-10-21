@@ -96,7 +96,7 @@ export default function TraceQueryPanel({ dhr = false, size, onSearch }: { dhr?:
     <Stack direction="row" alignItems="center" sx={{ borderBottom: '1px solid #ebeef5' }}><Tabs value={direction} aria-label="追溯方向" onChange={(_, next: TraceRequest['direction']) => {
       setDirection(next); setProperties({}); setFilters({}); setBuiltinDateRanges({}); setConditions([]); setError(''); onSearch({ ...initialTraceRequest, direction: next, size });
     }} sx={{ flex: 1, px: 2, minHeight: 48 }}><Tab value="FORWARD" label="正向追溯" /><Tab value="REVERSE" label="反向追溯" /></Tabs>
-      <Tooltip title={direction === 'FORWARD' ? '按真实关联的工单、产品、生产对象等属性查找；无需配置字段追溯用途。' : dhr ? '按已保存的绑定内容查找。各条件可出现在同一DHR的不同表单中，命中不改变真实归属。' : '按已保存的绑定内容查找。条件在同一表单满足，子表条件须在同一实际行满足。'}><IconButton size="small" sx={{ mr: 2 }} aria-label="追溯方向说明"><InfoOutlined fontSize="small" /></IconButton></Tooltip>
+      <Tooltip title={direction === 'FORWARD' ? '按真实关联的工单、产品、生产对象等属性追溯；无需配置字段追溯用途。' : dhr ? '按已保存的绑定内容追溯。各条件可出现在同一DHR的不同表单中，命中不改变真实归属。' : '按已保存的绑定内容追溯。条件在同一表单满足，子表条件须在同一实际行满足。'}><IconButton size="small" sx={{ mr: 2 }} aria-label="追溯方向说明"><InfoOutlined fontSize="small" /></IconButton></Tooltip>
     </Stack>
     {direction === 'FORWARD' ? <Box component="form" onSubmit={event => { event.preventDefault(); submit(); }} sx={{ p: 2 }}>
       <Box sx={queryGridSx}>

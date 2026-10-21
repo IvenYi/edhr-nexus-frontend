@@ -4,7 +4,6 @@ import com.zencas.edhr.common.dto.ApiResponse;
 import com.zencas.edhr.common.dto.PageResult;
 import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
-import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.masterdata.entity.SopDocument;
 import com.zencas.edhr.masterdata.repository.SopDocumentRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class SopDocumentController {
 
     private final SopDocumentRepository sopDocumentRepository;
-    private final SnowflakeIdGenerator idGenerator;
 
     @GetMapping
     public ApiResponse<PageResult<SopDocument>> list(
@@ -40,24 +38,4 @@ public class SopDocumentController {
                 .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "记录不存在"));
     }
 
-    @PostMapping
-    public ApiResponse<SopDocument> create(@RequestBody SopDocument entity) {
-        if (entity.getId() == null) entity.setId(idGenerator.nextId());
-        return ApiResponse.success(sopDocumentRepository.save(entity));
-    }
-
-    @PutMapping("/{id}")
-    public ApiResponse<SopDocument> update(@PathVariable Long id, @RequestBody SopDocument entity) {
-        if (!sopDocumentRepository.existsById(id))
-            throw new BusinessException(ErrorCode.GENERAL_001, "记录不存在");
-        entity.setId(id);
-        return ApiResponse.success(sopDocumentRepository.save(entity));
-    }
-
-    @DeleteMapping("/{id}")
-    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "sop_document", idArgument = 0)
-    public ApiResponse<Void> delete(@PathVariable Long id) {
-        sopDocumentRepository.deleteById(id);
-        return ApiResponse.success(null);
-    }
 }

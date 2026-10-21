@@ -23,7 +23,7 @@ import TraceQueryPanel, { initialTraceRequest, ProductionObjectInput } from './T
 
 const base = '/reports/form-projections';
 const queryGridSx = { ...formListQueryGridSx, gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(3, minmax(0, 1fr))' } };
-const legacyAttributes = [['materialLotText', '物料批号'], ['serialNumberText', '序列号'], ['equipmentText', '设备编号'], ['teamText', '责任班组'], ['documentNumberText', '单据号'], ['category', '分类'], ['reason', '原因'], ['unit', '单位']];
+const legacyAttributes = [['materialLotText', '物料批号'], ['serialNumberText', '序列号'], ['equipmentText', '设备编号'], ['teamText', '责任班组'], ['documentNumberText', '单据号'], ['category', '历史分类'], ['reason', '原因'], ['reasonNote', '原因补充说明'], ['unit', '单位']];
 const legacyAttributeNames: Record<string, string> = { ...Object.fromEntries([...legacyAttributes, ['material', '物料'], ['quantity', '数量'], ['goodQuantity', '良品数量'], ['ngQuantity', '不良品数量']]), ...businessAttributeNames };
 interface Hit { rowKey: string; rowIndex?: number; tableId?: string; bindingId: string; attributes: Record<string, unknown>; sources: Record<string, string>; details?: { fieldId: string; name: string; value: unknown }[] }
 interface RecordRow extends Hit { id: string; instanceId: string; batchId?: string; context?: Record<string, unknown>; status?: string; savedStage?: string; instanceNo: string; objectNo: string; operationName: string; revision: number; hits?: Hit[]; lookupItems?: Record<string, { name: string }>; createdBy?: string; createdAt?: string; updatedBy?: string; updatedAt?: string }

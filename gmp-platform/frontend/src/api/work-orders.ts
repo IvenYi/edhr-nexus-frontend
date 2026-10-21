@@ -9,6 +9,7 @@ export interface ProductionOutput {
   quality?: Partial<Record<'goodQuantity' | 'ngQuantity' | 'scrapQuantity', ProductionOutput>>;
   operations?: Record<string, ProductionOutput>;
   batches?: ProductionOutput[];
+  reasonSources?: ProductionOutput['sources'];
   sources?: Array<{ recordId: string; instanceId: string; instanceNo: string; copyId?: string; formStatus?: string; projectionStatus?: string; bindingId: string; tableId: string; rowKey: string; fieldId: string; fieldName?: string; tableName?: string; rowLabel?: string; quantity?: string; unit: string; included: boolean; message?: string; operationName?: string; materialName?: string; materialCode?: string; currentMaterialType?: string; attributes?: Record<string, unknown>; details?: Array<{ name: string; value: unknown }> }>;
 }
 

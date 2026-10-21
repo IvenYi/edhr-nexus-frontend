@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.defect-reason-detail-reference-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/defect-reason-detail-reference-2026-10-18.md
+    description: user-confirmed；记录原因明细粒度、独立于NG、引用配置/展示/选择器与首次带入、两套原因目录及分类暂缓和对应单选引用确认。包含菜单权限初始化、独立不良明细用途报表及操作台标准原因解释；历史原话保留，不按同名归并。末节分别标注ca98未提交集成候选源码核对、主开发验证转述和未完成运行验收，不提升verified。
+    visibility: internal
+  - id: evidence.defect-reason-reference-implementation
+    type: document
+    path: docs/knowledge/evidence/defect-reason-detail-reference-2026-10-18.md
+    description: original-evidence；2026-10-19本体读取ca98未提交候选的原因投影源码、首次初始化依赖修复及回归、安速康新批次报表与DHR运行产物和旧对象比对、主开发测试日志。浏览器操作与迁移来自主侧交接，独立质量复验未完成；局部implemented/internal不等于verified或发布。
+    visibility: internal

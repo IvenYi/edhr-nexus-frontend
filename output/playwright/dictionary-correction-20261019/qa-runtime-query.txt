@@ -1,0 +1,75 @@
+### Result
+{
+  "unit": {
+    "code": 200,
+    "message": "success",
+    "data": [
+      {
+        "code": "UNIT_A",
+        "name": "同名字典项",
+        "value": "UNIT_A",
+        "id": "387613106772971520",
+        "sourceType": "dictionary"
+      }
+    ],
+    "timestamp": "2026-10-19T12:55:43.822205Z",
+    "traceId": "7144d305-bc44-4821-bd93-125609d71434"
+  },
+  "shift": {
+    "code": 200,
+    "message": "success",
+    "data": [
+      {
+        "code": "SHIFT_A",
+        "name": "同名字典项",
+        "value": "SHIFT_A",
+        "id": "387613106928160768",
+        "sourceType": "dictionary"
+      }
+    ],
+    "timestamp": "2026-10-19T12:55:43.833615Z",
+    "traceId": "4d3e579c-a09f-4d33-8c28-5b652dc280c8"
+  },
+  "missing": {
+    "code": 400,
+    "message": "请先为引用字段选择具体业务字典",
+    "timestamp": "2026-10-19T12:55:43.844984Z",
+    "traceId": "d74e67b8-4f34-4860-bafa-a1b1131b0984"
+  },
+  "empty": {
+    "code": 400,
+    "message": "请先为引用字段选择具体业务字典",
+    "timestamp": "2026-10-19T12:55:43.851192Z",
+    "traceId": "01e9b7e1-4df4-4ba1-9fde-98680693e898"
+  },
+  "dirs": {
+    "code": 200,
+    "message": "success",
+    "data": [
+      {
+        "id": "387613106676502528",
+        "name": "模拟验收·计量单位",
+        "code": "ASK_DICT_20261019_UNIT",
+        "status": "ACTIVE"
+      },
+      {
+        "id": "387613106877829120",
+        "name": "模拟验收·班次",
+        "code": "ASK_DICT_20261019_SHIFT",
+        "status": "ACTIVE"
+      }
+    ],
+    "timestamp": "2026-10-19T12:55:43.862649Z",
+    "traceId": "ec23f9f0-068c-4b65-b11b-7e1d347b9ff5"
+  },
+  "anonymousStatus": 401
+}
+### Ran Playwright code
+```js
+await page.evaluate('async()=>{const headers={"Authorization":"Bearer "+localStorage.getItem("token"),"Content-Type":"application/json"};const query=async(config)=>(await fetch("/api/v1/master-data/template-modeling/reference-options",{method:"POST",headers,body:JSON.stringify({config,keyword:"",values:{}})})).json();const unit=await query({sourceType:"dictionary",referenceDictionaryId:"387613106676502528"});const shift=await query({sourceType:"dictionary",referenceDictionaryId:"387613106877829120"});const missing=await query({sourceType:"dictionary"});const empty=await query({sourceType:"dictionary",referenceDictionaryId:""});const dirs=await(await fetch("/api/v1/master-data/template-modeling/reference-options/dictionaries?keyword=ASK_DICT_20261019",{headers})).json();const anonymous=await fetch("/api/v1/master-data/template-modeling/reference-options/dictionaries");return {unit,shift,missing,empty,dirs,anonymousStatus:anonymous.status};}');
+```
+### Page
+- Page URL: http://localhost:3000/system/dictionaries
+- Page Title: eDHR - 医疗器械电子设备历史记录系统
+### Events
+- New console entries: .playwright-cli/console-2026-10-19T12-54-04-666Z.log#L4-L6

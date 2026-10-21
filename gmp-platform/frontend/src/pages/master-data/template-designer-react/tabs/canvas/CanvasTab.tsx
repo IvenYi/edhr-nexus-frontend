@@ -42,8 +42,8 @@ export default function CanvasTab() {
   const shouldShowConfigRail = Boolean(selectedNode?.bindings?.fieldId);
   const visibleSideRailItems = shouldShowConfigRail
     ? sideRailItems
-    : sideRailItems.filter((item) => item.id !== 'config');
-  const panelRail = activeRail === 'config' && !shouldShowConfigRail ? 'thumbnails' : activeRail;
+    : sideRailItems.filter((item) => item.id !== 'config' && item.id !== 'projection');
+  const panelRail = (activeRail === 'config' || activeRail === 'projection') && !shouldShowConfigRail ? 'thumbnails' : activeRail;
   const activeRailItem = visibleSideRailItems.find((item) => item.id === panelRail) ?? visibleSideRailItems[0];
   const activePanelTitle = panelRail === 'config' && selectedSubTableGroupNodeId ? '分组配置' : activeRailItem.title;
   const activePanelMinWidth = ['config', 'projection'].includes(panelRail) ? configPanelMinWidth : defaultPanelMinWidth;

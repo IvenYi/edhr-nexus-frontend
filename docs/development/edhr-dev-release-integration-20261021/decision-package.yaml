@@ -1,0 +1,96 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261021-EDHR-DEV-RELEASE-INTEGRATION
+  scope: 原因目录和引用字段在途改造、干净初始化、旧入口关闭及知识引用修复合入edhr-dev并同步3000/8081/edhr_dev
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: c671b23fd9847a7e1cb2d1bad3c3bb138fc5620f
+    targetBranch: edhr-dev
+    targetCommit: c671b23fd9847a7e1cb2d1bad3c3bb138fc5620f
+    contractReadCommit: c671b23fd9847a7e1cb2d1bad3c3bb138fc5620f
+    uncommittedContractPaths: []
+  summary: 保留目标分支委托、签名、工作流读取等修复与原运行工作区原因引用功能，形成单一实际集成候选后验证提交推送；新基线吸收原因DDL和菜单权限
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  knowledgeIdMappings:
+    - source: 原ca98未合入原因工作区的DEC-0081及01至16声明
+      target: DEC-0082及01至16声明
+      reason: 与已合入目标分支的租户委托DEC-0081碰撞；只重编号原因，业务含义与声明后缀保持
+      preservedTargetId: DEC-0081
+      evidence: docs/knowledge/evidence/release-integration-2026-10-21.md
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: references-and-quality-reasons
+        change: 集成已确认目录CRUD、对应目录单选原因用途、不良独立明细、报表及操作台、引用选择/显示/筛选/上下文带入和合并引用入口
+        evidenceReferences: [docs/development/reference-reason-upgrade-20261018.md, docs/development/reference-source-unification-20261019.md, docs/development/reference-dictionary-correction-20261019.md]
+      - area: initialization-and-retired-writers
+        change: 当前schema与seed直接创建最终模型，补齐原因目录及权限；移除旧CUD及灌数工具，阻断退役追溯配置生成入口
+        evidenceReferences: [docs/development/clean-initialization-baseline-20261021/README.md, docs/development/old-entry-closure-20261021/README.md]
+      - area: knowledge-integration
+        change: 合并两工作区知识、107处初始化引用修正，并解除原因DEC0081与已合入委托DEC0081的ID冲突
+        evidenceReferences: [docs/development/initialization-knowledge-references-20261021/README.md]
+    transitiveImpacts:
+      - area: runtime-and-reports
+        change: 同时保留远端委托资格与签名TEXT正确性、工作流读边界、单绑与区域追溯修复，避免旧工作区回退已发布行为
+        evidenceReferences: [docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml]
+    potentialImpacts:
+      - area: database-adoption
+        concern: 当前edhr_dev为旧Liquibase账本，不能直接套空库基线；先备份并在隔离库验证新结构与现有数据承接，再切换
+        evidenceReferences: [docs/development/clean-initialization-baseline-20261021/README.md]
+    unaffectedAreas:
+      - area: product-policy
+        reason: 不新增原因分类、不将原因分项求和替代NG、不改变最终工序累计和DHR归属，不扩展既有延期能力
+        evidenceReferences: [docs/development/reference-reason-upgrade-20261018.md]
+    compatibilityAndMigration:
+      - area: developer-database
+        change: 用户已授权测试数据处置；优先保留当前安速康及配置数据，原库完整备份，承接动作只作为开发环境操作而非生产兼容脚本
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: form-and-dhr
+        change: 保留原引用身份和冻结证据，不因合并或环境同步重算历史表单与DHR
+        evidenceReferences: [docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]
+    auditImpacts:
+      - area: signatures-and-audit
+        change: 保留目标Signature TEXT及原摘要规则，不伪造旧签名可验或改写历史审计
+        evidenceReferences: [docs/knowledge/evidence/signature-payload-storage.yaml]
+    permissionImpacts:
+      - area: reasons-and-workflow
+        change: 原因菜单权限与初始化对应，后端类型授权不丢；保留远端显式委托目标资格与工作流管理权限
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/QualityReasonController.java]
+    testImpacts:
+      - scope: integrated-candidate
+        scenarios: [知识89项, 原因和引用后端聚焦与PostgreSQL, 旧入口回归, 委托及读取边界邻接回归, 前端聚焦与构建, 空库初始化及数据承接, 3000实际交互与8081接口, 安速康数量和报表核对, 独立质量验证]
+        evidenceReferences: []
+    evidenceGaps: []
+  extensionStrategy:
+    selectedPaths: [configuration, product-core]
+    rationale: 按既有产品模块合并已确认能力，初始化只表达当前最终模型，不增加客户特例或生产兼容路径
+    ownershipBoundaries:
+      - owner: primary-agent
+        responsibility: 源码冲突、初始化整合、测试、提交推送和环境同步
+      - owner: business-knowledge-modeler
+        responsibility: 知识/架构冲突、唯一ID及声明级对齐、当前初始化知识定位
+  affectedFiles:
+    - path: gmp-platform
+      changeType: update
+      reason: 集成原因引用与初始化和旧入口改动
+    - path: docs/knowledge
+      changeType: update
+      reason: 合并已确认知识并保留远端语义
+  acceptanceScenarios:
+    - id: scenario.integration-preserves-both-sources
+      given: 两工作区在途改动和远端后续修复
+      when: 整合候选并运行针对性回归
+      then: 原因引用及原有委托签名读边界均保留，无ID冲突或旧配置写入旁路
+      evidenceRequirements: [源差异清单, 聚焦测试, 知识校验, 独立质量]
+    - id: scenario.clean-install-and-runtime-sync
+      given: 干净初始化基线和现有开发库
+      when: 隔离安装与承接验证通过后同步运行环境
+      then: 原因权限及九项追溯预置齐全，3000/8081运行提交候选且只使用edhr_dev，不启动3007/8087
+      evidenceRequirements: [备份和数据库核对, 安装测试, 实际API与页面验收, 进程及版本证据]

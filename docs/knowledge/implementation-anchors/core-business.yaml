@@ -5,14 +5,14 @@ implementationAnchors:
     targetType: concept
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/identity/service/SubjectResolver.java]
     apiReferences: []
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0071-workflow-task-candidates.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: []
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/identity/service/SubjectResolverTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.identity-subject-resolver-implementation, evidence.identity-subject-resolver-tests]
     sourceRevision: working-tree
-    sourceLocator: SubjectResolver
+    sourceLocator: "SubjectResolver；2026-10-21仅初始化定位维护（d405a9af工作树）：workflow_task.candidate_snapshot及idx_workflow_task_candidate_snapshot、uq_workflow_task_active_instance_node。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-13'
     reviewStatus: reviewed
   - id: anchor.core.product-process-resolution
@@ -20,14 +20,14 @@ implementationAnchors:
     targetType: concept
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java]
     apiReferences: []
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0044-product-process-modeling.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionServiceTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.product-process-resolution-service, evidence.product-process-resolution-service-test]
     sourceRevision: working-tree
-    sourceLocator: ProductProcessResolutionService
+    sourceLocator: "ProductProcessResolutionService；2026-10-21仅初始化定位维护（d405a9af工作树）：product_process、product_process_version及product_process_operation_binding等绑定表。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-13'
     reviewStatus: reviewed
   - id: anchor.core.production-work-order
@@ -35,14 +35,14 @@ implementationAnchors:
     targetType: concept
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java]
     apiReferences: [POST /api/v1/production/work-orders]
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0061-production-work-order.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderControllerTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.work-order-controller, evidence.work-order-audit-snapshot-controller-test]
     sourceRevision: working-tree
-    sourceLocator: WorkOrderController
+    sourceLocator: "WorkOrderController；2026-10-21仅初始化定位维护（d405a9af工作树）：work_order及uk_work_order_no、idx_work_order_product、idx_work_order_status。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-13'
     reviewStatus: reviewed
   - id: anchor.core.production-object-runtime
@@ -50,14 +50,14 @@ implementationAnchors:
     targetType: concept
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java]
     apiReferences: []
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionServiceTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-service, evidence.production-service-test]
     sourceRevision: working-tree
-    sourceLocator: ProductionService
+    sourceLocator: "ProductionService；2026-10-21仅初始化定位维护（d405a9af工作树）：production_object.object_type/target_quantity、ck_production_object_type/target及work_order_id外键；不重新解释数量下限业务待决。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-13'
     reviewStatus: reviewed
   - id: anchor.core.production-work-configuration
@@ -65,14 +65,14 @@ implementationAnchors:
     targetType: concept
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java]
     apiReferences: ['POST /api/v1/workflow/work-templates/{id}/versions/{versionId}/publish']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateControllerTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-work-template-configuration-controller, evidence.production-work-template-configuration-test]
     sourceRevision: working-tree
-    sourceLocator: WorkTemplateController
+    sourceLocator: "WorkTemplateController；2026-10-21仅初始化定位维护（d405a9af工作树）：workflow_definition、workflow_binding_rule.is_active和audit_event；新基线不执行0059历史审计补写，原迁移证据保留。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-13'
     reviewStatus: reviewed
   - id: anchor.core.workshop-management
@@ -80,14 +80,14 @@ implementationAnchors:
     targetType: concept
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/WorkshopController.java]
     apiReferences: [GET /api/v1/master-data/workshops]
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0070-workshop-management.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql, gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql]
     uiReferences: [gmp-platform/frontend/src/pages/master-data/WorkshopManagementPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/WorkshopControllerTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.workshop-controller, evidence.workshop-controller-test, evidence.master-data-workshop-shared-shell-guidelines, evidence.master-data-workshop-shared-shell-page, evidence.master-data-workshop-shared-shell-verification]
     sourceRevision: working-tree
-    sourceLocator: WorkshopController
+    sourceLocator: "WorkshopController；2026-10-21仅初始化定位维护（d405a9af工作树）：workshop.tenant_id/description/status、uk_workshop_tenant_code与production_line.workshop_id外键；seed保留master-data.workshops权限。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-13'
     reviewStatus: reviewed
   - id: anchor.core.record-control-review-template
@@ -190,7 +190,7 @@ implementationAnchors:
       - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java
       - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
     apiReferences: ['GET /api/v1/workflow/record-control/candidates']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0080-record-control-workflow-contract.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql, gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql]
     uiReferences: []
     testReferences:
       - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/RecordControlWorkflowServiceTest.java
@@ -200,7 +200,7 @@ implementationAnchors:
     visibility: internal
     evidenceIds: [evidence.record-control-workflow-stage1-contract-types, evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-withdrawal-port, evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-candidate-api, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-migration, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-workflow-stage1-service-tests, evidence.record-control-workflow-stage1-api-tests, evidence.record-control-workflow-stage1-local-validation]
     sourceRevision: working-tree
-    sourceLocator: 'RecordControlWorkflowPort / RecordControlWorkflowService / WorkflowEngine.createRecordControlInstance'
+    sourceLocator: "RecordControlWorkflowPort / RecordControlWorkflowService / WorkflowEngine.createRecordControlInstance；2026-10-21仅初始化定位维护（d405a9af工作树）：workflow_instance.idempotency_key/audit_correlation_id/workflow_snapshot_hash、uk_wf_instance_idempotency_key；seed保留record-control权限目录及ADMIN授权。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-15'
     reviewStatus: reviewed
   - id: anchor.core.record-control-explicit-published-workflow-selection
@@ -210,7 +210,7 @@ implementationAnchors:
       - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java
       - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
     apiReferences: ['GET /api/v1/workflow/record-control/candidates']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0080-record-control-workflow-contract.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql, gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql]
     uiReferences: []
     testReferences:
       - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/RecordControlWorkflowServiceTest.java
@@ -220,7 +220,7 @@ implementationAnchors:
     visibility: internal
     evidenceIds: [evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-candidate-api, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-migration, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-workflow-stage1-service-tests, evidence.record-control-workflow-stage1-api-tests]
     sourceRevision: working-tree
-    sourceLocator: 'RecordControlWorkflowService.listPublishedCandidates/start / WorkflowEngine.createRecordControlInstance'
+    sourceLocator: "RecordControlWorkflowService.listPublishedCandidates/start / WorkflowEngine.createRecordControlInstance；2026-10-21仅初始化定位维护（d405a9af工作树）：workflow_instance.idempotency_key/audit_correlation_id/workflow_snapshot_hash、uk_wf_instance_idempotency_key；seed保留record-control权限目录及ADMIN授权。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-15'
     reviewStatus: reviewed
   - id: anchor.core.workflow-definition-version-record-control-start
@@ -230,7 +230,7 @@ implementationAnchors:
       - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowDefinitionVersion.java
       - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
     apiReferences: ['GET /api/v1/workflow/record-control/candidates']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: []
     testReferences:
       - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/service/RecordControlWorkflowServiceTest.java
@@ -239,7 +239,7 @@ implementationAnchors:
     visibility: internal
     evidenceIds: [evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-workflow-stage1-service-tests]
     sourceRevision: working-tree
-    sourceLocator: 'WorkflowDefinitionVersion / WorkflowEngine.createRecordControlInstance'
+    sourceLocator: "WorkflowDefinitionVersion / WorkflowEngine.createRecordControlInstance；2026-10-21仅初始化定位维护（d405a9af工作树）：workflow_definition_version及uk_wf_def_version。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-15'
     reviewStatus: reviewed
   - id: anchor.core.production-execution-form-action-projection

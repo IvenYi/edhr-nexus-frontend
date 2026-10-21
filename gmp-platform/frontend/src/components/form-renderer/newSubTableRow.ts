@@ -1,9 +1,10 @@
 import type { CanvasNode, ModelField } from '@/pages/master-data/template-designer-react/types';
 
 /** Defaults become real input data when a user creates a row. Existing rows are never overwritten. */
-export function newSubTableRow(columns: ModelField[], nodes: CanvasNode[]) {
+export function newSubTableRow(columns: ModelField[], nodes: CanvasNode[], referenceDefaults: Record<string, unknown> = {}) {
   const row: Record<string, unknown> = { __rowId: crypto.randomUUID() };
   for (const field of columns) {
+    if (field.status !== 'disabled' && field.type === 'reference' && field.typeConfig.referenceContextAutofill === true && referenceDefaults[field.id] != null) row[field.id] = structuredClone(referenceDefaults[field.id]);
     const configured = nodes.find(node => node.bindings?.subTableFieldId === field.id)?.bindings?.defaultValue ?? field.typeConfig.defaultValue;
     if (configured == null || field.status === 'disabled') continue;
     if (field.type === 'text' && typeof configured === 'string') row[field.id] = configured;

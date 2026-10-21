@@ -1,6 +1,7 @@
 import client from './client';
 import type { ProductionOutput } from './work-orders';
 import type { ModelField } from '@/pages/master-data/template-designer-react/types';
+import type { ReferenceValue, ReferencePageRequest } from '@/components/form-renderer/referenceConfig';
 
 export type ExecutionValues = Record<string, unknown>;
 export interface ExecutionButton { action: string; label: string; visible?: boolean; style?: 'PRIMARY' | 'DEFAULT' | 'DANGER'; requiresSignature?: boolean; requireOpinion?: boolean }
@@ -20,7 +21,7 @@ export interface ExecutionOperation {
   forms: ExecutionForm[]; works: ExecutionWork[];
   documents: Array<{ id: string; name: string; version: string; code: string; fileId?: string; pageStart?: string; pageEnd?: string }>;
 }
-export interface ExecutionFormState { status: string; values: ExecutionValues; instanceNo?: string; savedAt?: string; active?: string[]; remark?: string; createdByName?: string; createdAt?: string }
+export interface ExecutionFormState { status: string; values: ExecutionValues; instanceNo?: string; savedAt?: string; active?: string[]; remark?: string; createdByName?: string; createdAt?: string; referenceDefaults?: Record<string, ReferenceValue>; referenceContextWarnings?: Record<string, string> }
 export interface ExecutionFormControls { canAct?: boolean; buttons: ExecutionButton[]; permissions: Record<string, 'EDIT' | 'READ_ONLY'>; signaturePermissions?: Record<string, 'EDIT' | 'READ_ONLY'>; nodeId?: string; nodeName?: string; nodeKind?: string }
 export interface ExecutionFormCopies {
   instanceIds: string[]; status: string; ended: boolean; required: boolean; canAdd: boolean; canEnd: boolean; canEditRemark?: boolean;
@@ -68,8 +69,8 @@ export const updateExecutionEditor = async (id: string, operationId: string, com
 export const scanProduction = async (barcode: string): Promise<ExecutionView> => (await client.get('/production/execution/scan', { params: { barcode } })).data.data;
 export const getProductionExecution = async (id: string): Promise<ExecutionView> => (await client.get(`/production/execution/${id}`)).data.data;
 export const executeProduction = async (id: string, command: ExecutionCommand): Promise<ExecutionView> => (await client.post(`/production/execution/${id}/actions`, command)).data.data;
-export const getExecutionReferences = async (id: string, operationId: string, formId: string, fieldId: string, keyword: string, values: Record<string, unknown> = {}): Promise<Array<{ id: string; name: string }>> =>
-  (await client.post(`/production/execution/${id}/references`, { operationId, formId, fieldId, keyword, values })).data.data;
+export const getExecutionReferences = async (id: string, operationId: string, formId: string, fieldId: string, keyword: string, values: Record<string, unknown> = {}, paging?: ReferencePageRequest): Promise<ReferenceValue[]> =>
+  (await client.post(`/production/execution/${id}/references`, { operationId, formId, fieldId, keyword, values, ...paging })).data.data;
 export const getExecutionTransferTargets = async (id: string, operationId: string, formId: string, instanceId: string, keyword: string): Promise<ExecutionTransferTarget[]> =>
   (await client.get(`/production/execution/${id}/transfer-targets`, { params: { operationId, formId, instanceId, keyword } })).data.data;
 export const uploadExecutionFile = async (id: string, file: File): Promise<{ fileId: string; originalName: string }> => {

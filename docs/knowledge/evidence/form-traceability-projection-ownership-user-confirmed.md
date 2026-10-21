@@ -969,6 +969,6 @@ Q12当前首次完成工程选择现已收敛：直接源码确认完成保存�
 
 实现及验收边界：计划迁移`0113-trace-date-preset.sql`增加`lookup_trace_date/date/builtin`；共享`TraceQueryPanel`按日期类型提供固定起止输入并进入dateRanges，反向不展示归属属性；模板来源兼容复用既有date字段规则。迁移重放、预置删除保护、实际日期绑定与保存后命中、创建日期不补值、正向不变及反向展开列表可见须由本轮实现与独立质量确认。知识声明继续specified/internal，不沿用旧知识或质量测试证明本轮运行已经通过。
 
-`original-evidence`（本体本轮只读源码核对）：新增`gmp-platform/backend/src/main/resources/db/changelog/0113-trace-date-preset.sql`使用稳定ID`lookup_trace_date`、`date`类型、`builtin=true`及冲突不重复插入；`TraceQueryPanel.tsx`使用`builtinDateRanges`保存固定日期范围、合并到`dateRanges`，反向提交`properties: {}`。以上仅确认开发工作树结构，不证明数据库已执行、实际命中正确或布局验收通过。
+`original-evidence`（本体本轮只读源码核对）：新增`gmp-platform/backend/src/test/resources/db/changelog/0113-trace-date-preset.sql`使用稳定ID`lookup_trace_date`、`date`类型、`builtin=true`及冲突不重复插入；`TraceQueryPanel.tsx`使用`builtinDateRanges`保存固定日期范围、合并到`dateRanges`，反向提交`properties: {}`。以上仅确认开发工作树结构，不证明数据库已执行、实际命中正确或布局验收通过。
 
 `validation-evidence`（本体本轮实际执行）：183份知识YAML解析通过，README既有Ruby bootstrap输出`Bootstrap knowledge validation: passed`，覆盖ID、引用、证据路径及投影边界；本轮九项预置、日期来源、两向范围、验收场景及新证据锚点人工核对通过。未并发写后端共享target，正式BusinessKnowledgeModelTest由主开发执行；本体校验不代替迁移、页面或独立质量结果。

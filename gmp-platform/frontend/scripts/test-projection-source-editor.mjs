@@ -46,6 +46,33 @@ const definition = { id: 'formTrace', name: '追溯', attributes: [
   { id: 'order', name: '工单编号', type: 'text' },
 ] };
 
+test('unified production reference scopes fit all existing permitted object types without widening purposes', () => {
+  const attribute = sources => ({ id: 'lookup_subject', name: '既有追溯项', type: 'text', referenceSources: sources });
+  const field = scope => ({ id: 'ref', name: '批次/SN', type: 'reference', typeConfig: { sourceType: 'productionObject', referenceProductionScope: scope } });
+  for (const scope of ['all', 'batch', 'sn']) {
+    assert.equal(acceptsProjectionAttribute(field(scope), attribute(['productionBatch', 'serialNumber'])), true);
+    assert.equal(acceptsProjectionAttribute(field(scope), attribute(['productionBatch'])), scope === 'batch');
+    assert.equal(acceptsProjectionAttribute(field(scope), attribute(['serialNumber'])), scope === 'sn');
+    assert.equal(acceptsProjectionAttribute(field(scope), attribute(['workOrder'])), false);
+    assert.equal(acceptsProjectionAttribute(field(scope), attribute([])), false);
+  }
+  assert.equal(acceptsProjectionAttribute(field(undefined), attribute(['productionBatch', 'serialNumber'])), true);
+  assert.equal(acceptsProjectionAttribute(field('unexpected'), attribute(['productionBatch', 'serialNumber'])), false);
+});
+
+test('unified material is a product source only with explicit product scope and retains material purposes', () => {
+  const product = { id: 'lookup_product_code', name: '产品编号', type: 'text', referenceSources: ['product'] };
+  const material = { id: 'material', name: '物料', type: 'reference' };
+  for (const scope of [undefined, 'all', 'product', 'types']) {
+    const field = { id: 'ref', name: '物料', type: 'reference', typeConfig: { sourceType: 'material', referenceMaterialScope: scope, referenceMaterialTypeIds: ['1'] } };
+    assert.equal(acceptsProjectionAttribute(field, product), scope === 'product');
+    assert.equal(acceptsProjectionAttribute(field, material), true);
+    assert.equal(acceptsProjectionAttribute({ ...field, typeConfig: { ...field.typeConfig, multiple: true } }, material), false);
+  }
+  assert.equal(acceptsProjectionAttribute({ type: 'reference', typeConfig: { sourceType: 'product' } }, product), true);
+  assert.equal(acceptsProjectionAttribute({ type: 'reference', typeConfig: { sourceType: 'product' } }, material), false);
+});
+
 test('trace source editor shows its assigned meaning without expanding unrelated catalog entries', () => {
   const { html, changes } = renderEditor(model, { id: 'trace', modelId: 'formTrace', enabled: true, sources: { supplierLot: 'lot' } }, definition);
   assert.ok(html.includes('供应商批号（外部）'));

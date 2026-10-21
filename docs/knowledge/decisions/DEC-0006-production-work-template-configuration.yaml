@@ -230,7 +230,7 @@ decisions:
         status: resolved
         severity: high
         visibility: internal
-        path: gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql
+        path: gmp-platform/backend/src/test/resources/db/changelog/0059-work-template-audit-baseline.sql
         lineHint: 6
         summary: 0059 迁移已为缺少审计事件的既有 WORK 作业模板写入 SYSTEM/BASELINE 历史基线事件，并通过 NOT EXISTS 保证不将基线事件伪称为用户 CREATE 或重复写入。
         evidenceIds: [evidence.production-work-template-configuration-migration, evidence.production-work-template-configuration-controller]

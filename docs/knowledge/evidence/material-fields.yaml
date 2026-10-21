@@ -12,7 +12,7 @@ evidence:
     visibility: internal
   - id: evidence.material-fields-brand-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0078-material-brand.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0078-material-brand.sql
     description: original-evidence；品牌迁移为物料增加可空列，历史空值不自动回填。该兼容策略不定义额外业务规则，迁移源码不能证明运行数据库已升级。
     visibility: internal
   - id: evidence.material-fields-page

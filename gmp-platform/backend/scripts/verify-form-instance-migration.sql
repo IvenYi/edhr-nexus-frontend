@@ -15,7 +15,7 @@ INSERT INTO production_execution VALUES(101,
     '{"operations":{"a":{"formGroups":{"f":{"instanceIds":["f","f:copy:2","f:copy:3"]}},"forms":{"f":{"savedAt":"2026-09-14T10:00:00","status":"COMPLETED","values":{"v":1}},"f:copy:2":{"savedAt":"2026-09-14T11:00:00","status":"ACTIVE","values":{"v":2}},"f:copy:3":{"status":"ACTIVE","values":{}}}}}}');
 INSERT INTO production_execution SELECT 102,snapshot_json,state_json FROM production_execution WHERE object_id=101;
 CREATE TEMP TABLE original_execution AS SELECT * FROM production_execution;
-\ir ../src/main/resources/db/changelog/0082-form-instance-records.sql
+\ir ../src/test/resources/db/changelog/0082-form-instance-records.sql
 DO $$ BEGIN
     IF (SELECT count(*) FROM form_instance_record) <> 4 THEN RAISE EXCEPTION 'saved copies were not migrated exactly once'; END IF;
     IF (SELECT count(DISTINCT instance_no) FROM form_instance_record) <> 4 THEN RAISE EXCEPTION 'duplicate numbers'; END IF;

@@ -1,0 +1,86 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261021-INITIALIZATION-KNOWLEDGE-REFERENCES
+  scope: 修正初始化整理导致的107处知识引用及必要定位说明，消除旧工具触发说明的歧义；不恢复旧工具或执行旧灌数
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    targetBranch: edhr-dev
+    targetCommit: c671b23fd9847a7e1cb2d1bad3c3bb138fc5620f
+    contractReadCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    uncommittedContractPaths: []
+  summary: 当前事实与实现锚点指向直接创建最终结构/预置的新基线，历史迁移证据指向原字节测试夹具；保持业务定义、成熟度和历史验收原意
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: knowledge-references
+        change: 固定清单38文件107处引用逐条核对，其中54当前实现锚点、5数据库事实来源、48历史证据；引用位置和必要说明纠正，不新增业务政策
+        evidenceReferences: [docs/development/clean-initialization-baseline-20261021/knowledge-path-followups.csv]
+      - area: developer-documentation
+        change: 将旧灌数工具标题改为已删除，去掉可执行命令块，明确无需用户操作
+        evidenceReferences: [docs/development/clean-initialization-baseline-20261021/remaining-writers.md]
+    transitiveImpacts:
+      - area: knowledge-validation
+        change: 修复仓库路径校验与依赖该校验的正式Maven测试；不得放宽校验器或删除合法证据逃避错误
+        evidenceReferences: [tools/knowledge-model/pom.xml]
+    potentialImpacts:
+      - area: current-anchor-descriptions
+        concern: 部分定位文本把历史迁移描述成当前初始化，需要区分原时点观察与新的直接建表事实
+        evidenceReferences: [docs/knowledge/implementation-anchors/dhr-summary.yaml]
+    unaffectedAreas:
+      - area: product-behavior
+        reason: 不修改页面、API、运行代码、数据库、签名或现有执行数据
+        evidenceReferences: []
+      - area: branch-integration
+        reason: 新获取目标c671b23f仅增加工作流读取边界修复及开发审计证据；契约、docs/knowledge和docs/architecture与d405a9af无差异，本切片不进行两工作区完整集成
+        evidenceReferences: []
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts:
+      - area: provenance
+        change: 历史证据保留原始来源和结论，不反填新基线在过去已运行；当前定位复核仅声明本次验证的范围
+        evidenceReferences: [docs/agents/business-knowledge-modeler.md]
+    permissionImpacts: []
+    testImpacts:
+      - scope: knowledge-reference-repair
+        scenarios: [107处闭环, 原脚本与历史夹具字节一致, 当前表列约束与预置定位, YAML和完整知识Maven校验, 业务定义和成熟度不变, 独立质量复核]
+        evidenceReferences: []
+    evidenceGaps: []
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 维护产品内部知识来源与现行初始化基线的一致性，不添加客户配置或兼容执行逻辑
+    ownershipBoundaries:
+      - owner: business-knowledge-modeler
+        responsibility: docs/knowledge下107处引用及必要说明、知识README与核对结果
+      - owner: primary-agent
+        responsibility: 开发清单文案、交接、正式校验、差异审阅与交付说明
+  affectedFiles:
+    - path: docs/knowledge
+      changeType: update
+      reason: 修正已列出的失效初始化引用并保持历史证据含义
+    - path: docs/development
+      changeType: update
+      reason: 明确已完成的工具清理状态，记录引用修复的实际证据
+  acceptanceScenarios:
+    - id: scenario.current-initialization-source
+      given: 当前事实或锚点引用已从生产master移除的SQL
+      when: 定位现行表列约束或预置
+      then: 引用可解析到对应新schema或seed，定位文本准确且无重复路径
+      evidenceRequirements: [逐处映射清单, 原始SQL核对, 正式知识校验]
+    - id: scenario.historical-migration-evidence
+      given: 历史证据说明旧迁移和旧验证
+      when: 修改文件位置引用
+      then: 指向原字节测试夹具，保留原时点政策、状态、来源和验收边界，不冒充当前安装过程
+      evidenceRequirements: [历史文件摘要一致, 语义差异核对]
+    - id: scenario.no-obsolete-tool-execution
+      given: 用户把触发说明误认为待执行操作
+      when: 阅读修正后的旧入口清单
+      then: 明确工具已删除，无待运行命令，不恢复旧库或8087
+      evidenceRequirements: [开发说明复核]

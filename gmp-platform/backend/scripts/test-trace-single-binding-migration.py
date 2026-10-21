@@ -3,7 +3,7 @@ import json
 import subprocess
 from pathlib import Path
 
-changelog = Path(__file__).resolve().parents[1] / 'src/main/resources/db/changelog'
+changelog = Path(__file__).resolve().parents[1] / 'src/test/resources/db/changelog'
 migration = (changelog / '0116-trace-field-single-binding.sql').read_text()
 correction = (changelog / '0117-trace-field-blank-region-cleanup.sql').read_text()
 

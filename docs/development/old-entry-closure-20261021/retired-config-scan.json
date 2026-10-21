@@ -1,0 +1,47 @@
+{
+  "database": "edhr_dev",
+  "retiredTraceIds": [
+    "documentNumberText",
+    "lookup_related_batch",
+    "serialNumberText",
+    "teamText"
+  ],
+  "targets": [
+    {
+      "table": "form_template_version",
+      "key": "id",
+      "column": "model_design_json",
+      "scannedRows": 40,
+      "affected": []
+    },
+    {
+      "table": "workflow_definition_version",
+      "key": "id",
+      "column": "nodes_json",
+      "scannedRows": 0,
+      "affected": []
+    },
+    {
+      "table": "production_execution",
+      "key": "object_id",
+      "column": "snapshot_json",
+      "scannedRows": 11,
+      "affected": []
+    },
+    {
+      "table": "form_instance_record",
+      "key": "id",
+      "column": "snapshot_json",
+      "scannedRows": 30,
+      "affected": []
+    },
+    {
+      "table": "form_projection_batch",
+      "key": "id",
+      "column": "source_json",
+      "scannedRows": 30,
+      "affected": []
+    }
+  ],
+  "invalidJson": []
+}

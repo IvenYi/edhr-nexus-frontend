@@ -12,15 +12,29 @@ export function useProjectionCatalog() {
     (await client.get('/master-data/template-modeling/projection-catalog')).data.data as ProjectionCatalog, staleTime: 0 });
 }
 
+function acceptsReferenceSources(config: ModelField['typeConfig'], allowed: string[]) {
+  const source = String(config.sourceType);
+  if (allowed.includes(source)) return true;
+  if (source === 'material') return config.referenceMaterialScope === 'product' && allowed.includes('product');
+  if (source !== 'productionObject') return false;
+  switch (config.referenceProductionScope ?? 'all') {
+    case 'batch': return allowed.includes('productionBatch');
+    case 'sn': return allowed.includes('serialNumber');
+    case 'all': return allowed.includes('productionBatch') && allowed.includes('serialNumber');
+    default: return false;
+  }
+}
+
 export function acceptsProjectionAttribute(field: ModelField, attribute: ProjectionAttribute) {
   if (field.status === 'disabled') return false;
   if (attribute.id === 'reporter') return field.type === 'signature' || field.type === 'reference' && field.typeConfig.sourceType === 'user';
   if (attribute.type === 'number') return field.type === 'number';
   if (attribute.type === 'date' || attribute.type === 'datetime') return field.type === 'datetime'
     && (field.typeConfig.mode ?? 'datetime') === attribute.type;
-  if (attribute.type === 'reference') return field.type === 'reference' && field.typeConfig.sourceType === 'material';
+  if (attribute.type === 'reference') return field.type === 'reference' && field.typeConfig.multiple !== true
+    && acceptsReferenceSources(field.typeConfig, attribute.referenceSources ?? ['material']);
   if (field.type === 'reference') return (attribute.id === 'unit' && field.typeConfig.sourceType === 'dictionary')
-    || (attribute.referenceSources?.includes(String(field.typeConfig.sourceType)) ?? false);
+    || acceptsReferenceSources(field.typeConfig, attribute.referenceSources ?? []);
   return field.type === 'text' || field.type === 'singleSelect';
 }
 
@@ -50,7 +64,7 @@ export function projectionBindingLabel(model: ModelDesignState, binding: Project
 }
 
 export function projectionDetailName(modelId: string) {
-  return ({ consumption: '消耗明细', scrap: '报废明细', production: '报工记录' } as Record<string, string>)[modelId] ?? '业务明细';
+  return ({ consumption: '消耗明细', scrap: '报废明细', production: '报工记录', defect: '不良明细' } as Record<string, string>)[modelId] ?? '业务明细';
 }
 
 export function projectionSourceCandidates(model: ModelDesignState, binding: ProjectionBinding, attribute: ProjectionAttribute) {
@@ -81,7 +95,7 @@ export function projectionSourceRoles(model: ModelDesignState, binding: Projecti
 }
 
 export function projectionRequiredAttributes(modelId: string) {
-  return modelId === 'production' || modelId === 'formTrace' ? [] : ['material', 'quantity'];
+  return modelId === 'production' || modelId === 'formTrace' ? [] : modelId === 'defect' ? ['reason', 'quantity'] : ['material', 'quantity'];
 }
 
 export interface ProjectionConfigurationProblem { attributeId?: string; message: string }

@@ -154,6 +154,8 @@ public class FormWorklistService {
                         if (detail || count >= (long) filter.page * filter.size && result.size() < filter.size) {
                             if (detail) {
                                 row.set("snapshot", form); row.set("fieldValues", copy.path("values")); row.set("myEvents", events);
+                                row.set("referenceDefaults", copy.path("referenceDefaults").isObject() ? copy.path("referenceDefaults") : mapper.createObjectNode());
+                                row.set("referenceContextWarnings", copy.path("referenceContextWarnings").isObject() ? copy.path("referenceContextWarnings") : mapper.createObjectNode());
                                 ObjectNode projected = pending && controls.isObject() ? ((ObjectNode) controls).deepCopy() : mapper.createObjectNode();
                                 if (!pending || !projected.has("canAct")) projected.put("canAct", false);
                                 if (!projected.has("buttons")) projected.putArray("buttons");

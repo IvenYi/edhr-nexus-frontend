@@ -1,0 +1,649 @@
+{
+  "base": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+  "sqlFiles": 126,
+  "masterFiles": 1,
+  "allFixtureBytesIdentical": true,
+  "jarMatchesProductionSource": true,
+  "packagedResources": [
+    "BOOT-INF/classes/db/changelog/baseline/0001-current-schema.sql",
+    "BOOT-INF/classes/db/changelog/baseline/0002-current-seed.sql",
+    "BOOT-INF/classes/db/changelog/db.changelog-master.yaml"
+  ],
+  "fixtures": [
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0001-init-schema.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0002-seed-data.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0002-seed-data.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0003-system-icon-settings.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0003-system-icon-settings.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0004-builtin-icons.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0004-builtin-icons.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0005-normalize-builtin-icon-group.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0005-normalize-builtin-icon-group.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0006-icon-group-builtin-flag.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0006-icon-group-builtin-flag.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0007-system-logo-size-settings.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0007-system-logo-size-settings.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0008-audit-log-context-fields.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0008-audit-log-context-fields.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0009-login-log.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0009-login-log.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0010-remove-numbering-rule.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0010-remove-numbering-rule.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0011-login-log-permission.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0011-login-log-permission.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0012-process-modeling-master-data.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0012-process-modeling-master-data.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0013-login-branding-settings.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0013-login-branding-settings.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0014-process-modeling-permissions.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0014-process-modeling-permissions.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0015-business-dictionary.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0015-business-dictionary.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0015-material-versioning.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0015-material-versioning.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0016-remove-material-type-page-permission.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0016-remove-material-type-page-permission.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0017-business-dictionary-item-foreign-key.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0017-business-dictionary-item-foreign-key.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0018-user-profile-settings.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0018-user-profile-settings.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0019-signature-created-at.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0019-signature-created-at.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0020-user-profile-extra-fields.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0020-user-profile-extra-fields.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0021-security-settings-policy.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0021-security-settings-policy.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0022-mail-settings.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0022-mail-settings.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0022-signature-certification-metadata.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0022-signature-certification-metadata.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0023-audit-event-snapshot-hash.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0023-audit-event-snapshot-hash.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0024-signature-password-hash.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0024-signature-password-hash.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0025-material-version-display-fields.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0025-material-version-display-fields.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0026-signature-policy-cycle-default.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0026-signature-policy-cycle-default.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0027-process-operation-standard-fields.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0027-process-operation-standard-fields.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0028-process-operation-categories.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0028-process-operation-categories.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0029-route-template-version-graph.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0029-route-template-version-graph.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0030-route-version-description.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0030-route-version-description.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0031-operation-category-sort-order.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0031-operation-category-sort-order.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0032-route-relation-handles.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0032-route-relation-handles.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0033-template-modeling-management.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0033-template-modeling-management.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0034-template-version-source-file-id.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0034-template-version-source-file-id.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0035-dhr-template-workspace.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0035-dhr-template-workspace.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0036-dhr-workspace-audit-columns.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0036-dhr-workspace-audit-columns.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0037-dhr-template-current-version-constraint.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0037-dhr-template-current-version-constraint.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0038-backfill-dhr-template-versions.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0038-backfill-dhr-template-versions.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0039-dhr-template-version-description.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0039-dhr-template-version-description.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0040-dhr-template-item-directory-form-unique.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0040-dhr-template-item-directory-form-unique.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0041-template-version-uniqueness.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0041-template-version-uniqueness.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0042-dhr-template-item-display-name.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0042-dhr-template-item-display-name.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0043-dhr-template-version-metadata.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0043-dhr-template-version-metadata.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0044-product-process-modeling.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0044-product-process-modeling.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0045-document-management-versions.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0045-document-management-versions.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0046-remove-product-process-release-form.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0046-remove-product-process-release-form.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0047-remove-rdo-current-version-fields.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0047-remove-rdo-current-version-fields.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0048-document-categories.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0048-document-categories.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0049-product-process-dhr-item-binding.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0049-product-process-dhr-item-binding.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0050-route-version-code.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0050-route-version-code.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0051-document-version-code.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0051-document-version-code.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0052-product-process-document-pages.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0052-product-process-document-pages.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0053-product-family-process-owner.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0053-product-family-process-owner.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0054-product-family-code-case-insensitive.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0054-product-family-code-case-insensitive.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0055-rename-transaction-template-to-work.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0055-rename-transaction-template-to-work.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0056-workflow-definition-work-type.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0056-workflow-definition-work-type.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0057-production-work-template-configuration.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0057-production-work-template-configuration.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0058-work-applicability-priority.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0058-work-applicability-priority.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0059-work-template-audit-baseline.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0060-work-template-version-integrity.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0060-work-template-version-integrity.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0060a-work-order-legacy-table-preparation.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0060a-work-order-legacy-table-preparation.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0061-production-work-order.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0061-production-work-order.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0063-production-work-order-permission.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0063-production-work-order-permission.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0064-production-work-order-fields.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0064-production-work-order-fields.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0065-remove-work-order-released-status.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0065-remove-work-order-released-status.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0066-production-object-planned-window.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0066-production-object-planned-window.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0067-production-batch-management-permission.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0067-production-batch-management-permission.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0068-production-object-early-termination.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0068-production-object-early-termination.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0069-form-process-permission.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0069-form-process-permission.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0069-work-order-legacy-column-constraints.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0069-work-order-legacy-column-constraints.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0070-workshop-management.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0070-workshop-management.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0071-workflow-task-candidates.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0071-workflow-task-candidates.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0072-global-menu-configuration.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0072-global-menu-configuration.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0072-work-form-process-references.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0072-work-form-process-references.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0073-equipment-modeling.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0073-equipment-modeling.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0074-equipment-system-fields.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0074-equipment-system-fields.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0075-equipment-brand-purchase-date.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0075-equipment-brand-purchase-date.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0076-production-execution.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0076-production-execution.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0077-work-order-legacy-product-reference.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0077-work-order-legacy-product-reference.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0078-material-brand.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0078-material-brand.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0078-workflow-node-edge-created-at.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0078-workflow-node-edge-created-at.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0079-record-control-definition-status.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0079-record-control-definition-status.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0080-record-control-workflow-contract.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0080-record-control-workflow-contract.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0081-material-brand-name.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0081-material-brand-name.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0082-form-instance-records.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0083-form-instance-query.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0083-form-instance-query.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0084-form-worklist-permissions.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0084-form-worklist-permissions.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0085-record-form-management-menu.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0085-record-form-management-menu.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0086-form-instance-business-source.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0086-master-data-deletion-protection.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0086-master-data-deletion-protection.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0087-restore-standard-material-types.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0087-restore-standard-material-types.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0088-workflow-definition-business-type.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0088-workflow-definition-business-type.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0088a-dhr-instance-legacy-table-preparation.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0088a-dhr-instance-legacy-table-preparation.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0089-dhr-instance-management.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0090-remove-dhr-template-version-snapshot.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0090-remove-dhr-template-version-snapshot.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0091-remove-dhr-template-version-status.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0091-remove-dhr-template-version-status.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0092-dhr-summary-workspace.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0093-dhr-summary-version-review-binding.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0093-dhr-summary-version-review-binding.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0094-created-at-schema-compatibility.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0094-created-at-schema-compatibility.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0094-equipment-description.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0094-equipment-description.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0095-remove-duplicate-remarks.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0095-remove-duplicate-remarks.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0096-form-fill-settings.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0096-form-fill-settings.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0097-dhr-review-workbench.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0097-dhr-review-workbench.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0098-dhr-early-termination.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0098-dhr-early-termination.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0099-dhr-approval-display-name.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0099-dhr-approval-display-name.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0100-dhr-summary-evidence-order.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0100-dhr-summary-evidence-order.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0102-dhr-summary-complete-evidence.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0103-dhr-controlled-attachments.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0103-dhr-controlled-attachments.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0104-dhr-current-evidence-only.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0105-dhr-office-attachments.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0105-dhr-office-attachments.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0106-form-projection-freeze.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0106-form-projection-freeze.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0107-form-projection-runtime.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0108-form-lookup-items.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0108-form-lookup-items.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0109-saved-form-trace-index.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0109-saved-form-trace-index.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0110-projection-detail-display.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0110-projection-detail-display.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0111-form-instance-saved-stage.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0111-form-instance-saved-stage.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0112-typed-trace-catalog.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0112-typed-trace-catalog.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0113-trace-date-preset.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0113-trace-date-preset.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0114-final-output-operation.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0114-final-output-operation.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0116-trace-field-single-binding.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0116-trace-field-single-binding.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0117-trace-field-blank-region-cleanup.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0117-trace-field-blank-region-cleanup.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql",
+      "fixture": "gmp-platform/backend/src/test/resources/db/changelog/0118-signature-payload-text.sql",
+      "sameBytes": true
+    },
+    {
+      "source": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "fixture": "gmp-platform/backend/src/test/resources/db/historical/db.changelog-historical.yaml",
+      "sameBytes": true
+    }
+  ]
+}

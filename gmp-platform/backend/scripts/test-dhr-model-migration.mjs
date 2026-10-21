@@ -17,7 +17,7 @@ function run(command, args, input, success = true) {
   return r.stdout;
 }
 const sql = (text, success = true) => run('psql', ['-X', '-w', '-v', 'ON_ERROR_STOP=1', '-At', '-d', database], text, success);
-const migration = readFileSync(new URL('../src/main/resources/db/changelog/0104-dhr-current-evidence-only.sql', import.meta.url), 'utf8');
+const migration = readFileSync(new URL('../src/test/resources/db/changelog/0104-dhr-current-evidence-only.sql', import.meta.url), 'utf8');
 const assertion = `CREATE FUNCTION pg_temp.verify(ok boolean, message text) RETURNS void LANGUAGE plpgsql AS $$ BEGIN IF ok IS DISTINCT FROM TRUE THEN RAISE EXCEPTION '%',message; END IF; END $$;`;
 const protectedTables = ['form_instance_record', 'production_object', 'production_execution', 'signature', 'dhr_attachment', 'audit_event'];
 const fingerprints = () => protectedTables.map(table => sql(`SELECT md5(COALESCE(jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)::text)::text,'[]')) FROM ${table} t;`).trim());

@@ -1,0 +1,140 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0082
+    title: 不良原因明细数量边界与引用字段配置改造
+    status: specified
+    visibility: internal
+    context: user-confirmed；同一原因建模切片先确认一原因明细一数量、防默认加总替代NG、引用配置职责及追溯称谓，后续接受有序字段组合、上下文带入范围与生命周期及引用选择器改造并授权开发。原因方案进一步确认先做不良原因和报废原因两套目录，分类暂缓，标准原因用途强制对应目录单选引用、文本仅作补充。成熟度按各声明和实现证据分别记录；DEC-0082-12已据2026-10-19新批次产物局部implemented/internal，整体不提升verified。DEC-0060/0077/0079的授权、用途、快照及累计契约继续适用；同包新确认原位收敛此前待决表述，原始讨论证据保留。目标分支DEC-0080用于同字段共享选项，本切片不替代其字段身份契约。2026-10-21集成时发现原未合入工作区的原因DEC-0081与目标分支已合入的租户委托DEC-0081编号碰撞，仅将原因决策及01至16声明重编号为DEC-0082，语义不变；租户委托原ID和引用保持，映射见release-integration-2026-10-21证据。
+    decisionStatements:
+      - id: DEC-0082-01
+        statement: 一条不良原因业务明细对应一个原因和一个明确的数字数量；多个原因分别记录，不把一个数量同时分配给一条明细中的多个原因。同一原因可在不同表单或业务明细重复出现，此约束不是原因目录项全局只能对应一个数量，也不以同名自动合并来源记录。
+        status: specified
+        visibility: internal
+      - id: DEC-0082-02
+        statement: 原因明细用于解释不良构成，不能默认把各原因数量相加替代工序或批次的不良件数。一明细一原因一数量本身不能证明原因间互斥；若未来由原因明细生成不良总量，须另行明确不可重复计件或缺陷次数等口径。在该口径确认前保持DEC-0079按对应报工用途累计当前工序及冻结最终工序的批次NG，不由原因明细自动重算。
+        status: specified
+        visibility: internal
+      - id: DEC-0082-03
+        statement: 引用对象来源、搜索筛选、选择及展示配置属于引用字段配置职责；追溯与业务负责显式声明追溯或统计用途，不在该处再维护一套引用选择配置。当前客户文案统一称追溯与业务、追溯项和追溯；真正的引用候选查询或普通搜索不因此改称追溯。展示字段与搜索配置独立，不因引用值存在就自动赋予业务用途或改变真实执行归属；本轮带入生命周期按DEC-0082-07执行。
+        status: specified
+        visibility: internal
+      - id: DEC-0082-04
+        statement: 生产上下文自动带入仅适用于批次/SN、工单、产品和具有明确实际归属的当前工序，引用字段选择适配模型后才显示选项，并按实际对象类型匹配；设备、通用物料和人员不提供该能力，不以产品默认替代通用物料。当前工序来自表单实际归属，批次级共享表单不能按用户正在浏览的工序赋值；带入不改变实际生产或DHR归属。
+        status: specified
+        visibility: internal
+      - id: DEC-0082-05
+        statement: 引用展示采用模型开放属性的有序多选配置，不要求用户编写表达式。按所选顺序将第一个有效字段直接展示，后续有效字段分别以方括号拼接；空值跳过，0和false不作为空值，单字段不额外加括号。过长文本省略且可hover查看完整值。展示配置不改变引用身份、业务用途、实际归属或独立搜索配置，不按拼接文本重建身份。
+        status: specified
+        visibility: internal
+      - id: DEC-0082-06
+        statement: 批次/SN、工单、设备、产品和物料引用使用选择框与表格选择弹窗，便于识别对象；人员引用复用公用人员选择器的仅人员模式，不允许把角色或组织作为人员引用选中，部门仍可辅助筛选人员。弹窗遵循既有UI规范，不另建冲突样式；新选择器沿用现有来源授权、冻结配置与有效性校验，不因展示更多属性扩大可访问对象范围。
+        status: specified
+        visibility: internal
+      - id: DEC-0082-07
+        statement: 上下文自动带入必须由制表人显式开启且默认关闭；只在新表单首次空值初始化时执行，重开或刷新不覆盖已有记录值，也不因用户清空而持续补回。缺少适配上下文时明确提示且不猜测或取候选首项；带入后是否可编辑沿用字段权限。该能力覆盖适用的模拟与正式填报、主表与子表配置，仍保留原保存、签名、审计及START/ATTACH_FORM使用时冻结边界，不回写历史执行快照；具体初始化技术标识与事务实现由工程落实，不能反向改变此业务时机。
+        status: specified
+        visibility: internal
+      - id: DEC-0082-08
+        statement: 本轮分别维护不良原因目录和报废原因目录，分类暂缓，不要求先建分类才能配置原因。两类原因按各自目录身份区分，不因名称相同互认；此范围不删除已有表单中独立填写的分类内容，也不把发生阶段、物料类别或处置方式自动解释为原因分类。
+        status: specified
+        visibility: internal
+      - id: DEC-0082-09
+        statement: 新建或编辑标准不良原因、报废原因用途配置时，必须绑定对应原因目录的单选引用；普通文本仅作补充说明，不作为标准原因身份。保留旧历史文本记录及其当时冻结配置，不按同名自动归并为目录原因，不回写历史快照或正式投影。目录引用与业务用途仍需显式配置，配置目录本身不自动产生统计记录。
+        status: specified
+        visibility: internal
+      - id: DEC-0082-10
+        statement: 原因报表沿实际来源展示对应目录身份及该次记录的编号、名称快照，不能按当前目录名称或拼接显示文本重建历史身份；文本历史保留原值且不伪称目录引用。原因明细保持一个原因对应一个数量且独立于工序或批次NG累计，标准化原因身份不意味着原因互斥，也不自动确定件数或缺陷次数口径。
+        status: specified
+        visibility: internal
+      - id: DEC-0082-11
+        statement: 不良原因和报废原因目录分别位于数据→原因建模→不良原因/报废原因，须配套菜单权限及初始化脚本，不仅增加页面路由。分类暂缓对应本轮不良和报废原因分类的新配置及报表入口不开放；历史冻结分类证据保留，不能机械删除原料、半成品、包材等物料类别或推定消耗用途分类同义。
+        status: specified
+        visibility: internal
+      - id: DEC-0082-12
+        statement: 新增独立不良明细业务用途及记录→报表→不良明细页面，每笔记录绑定一个不良原因和一个数字数量，并保留来源表单、字段及适用实际行。reason必须是defectReason目录单选引用，quantity必须是数字来源；unit和reasonNote可选。支持主表分散来源配对及同一实际子表行，不跨行拼接原因与数量。它是既有表单业务投影的独立用途，不新增原始填报事实类型；沿首次最终完成及成功投影的正式生效契约逐笔展示，不配置原因分类，也不合计替代报工、工序或批次NG累计。
+        status: implemented
+        visibility: internal
+      - id: DEC-0082-13
+        statement: 生产操作台的不良原因明细及报废明细展示标准原因目录编号和来源名称快照，补充说明可选；不良明细仅解释原因分项，当前工序NG仍取production.ngQuantity正式报工累计，不从defect.quantity反推或替换。沿既有已生效与已填报来源状态区分明细；报废物料类别仍用于辨认原料、半成品、包材等对象，不能与暂缓的报废原因分类混同。旧文本原因与冻结分类保留原证据，不伪称新目录身份，也不重新归并历史数量。
+        status: specified
+        visibility: internal
+      - id: DEC-0082-14
+        statement: 字典引用应由制表人显式选择具体业务字典，填报候选及引用有效性校验限定在该字典的有效字典项中，不能因只选择字典来源而混合不同字典的项。具体范围属于引用字段配置，字典名称及字典项显示文本不替代其身份；不据此改变既有草稿、来源授权、使用时冻结或历史解释契约。
+        status: specified
+        visibility: internal
+      - id: DEC-0082-15
+        statement: 引用配置将物料与产品统一为物料入口，默认覆盖各类有效物料，可按需限定产品子集或指定物料类型；产品仍是产成品和半成品物料的生产用途视图，沿原物料身份。生产批次与生产SN统一为生产批次/SN入口，默认允许两种实际类型，可按需限定批次或SN，候选须能辨认类型；统一入口不合并BATCH与SN的业务含义、数量规则或真实生产对象身份。自动带入当前产品仅对限定产品范围的物料引用开放，普通物料不带入；批次/SN沿真实上下文及适配范围带入，DEC-0082-04/07的白名单、首次空值时机和不覆盖规则不变。旧配置、值和冻结记录保持原解释，不自动迁移。此声明替代2026-10-19上一纠正切片将物料/产品、批次/SN分别作为配置入口的当前说明，不替代其共模型事实、具体字典范围、原因目录、用途或历史证据；统一入口不扩展既有用途可接受的实际对象集合。
+        status: specified
+        visibility: internal
+      - id: DEC-0082-16
+        statement: 切换引用来源或候选范围后，保留原查询条件并明确标出不适用项，须由制表人修正或移除后才能保存配置；不得静默清除条件或忽略条件而放宽候选。此边界仅针对当前配置编辑，不回写旧冻结表单或生产记录，也不增加其余未完成草稿的完整性门禁。完全空的条件行仍不构成规则；原四种比较方式、同时满足组合及当前表单右值取值方式保持，不把引用候选筛选改为报表查询、追溯查询或按原始ID比较。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.defect-reason-detail-reference-user-confirmed, evidence.defect-reason-reference-implementation, evidence.reference-dictionary-correction, evidence.reference-source-unification]
+    acceptanceScenarios:
+      - id: scenario.reference-unified-source-candidate-scope
+        given: 新配置物料和生产批次/SN引用，候选包含产品、原材料、包材以及BATCH和SN；另有旧product、productionBatch、serialNumber冻结配置
+        when: 保持默认范围、显式限定产品或指定物料类型、限定批次或SN，并查询或提交选值
+        then: 只接受所选有效范围内真实对象且保留身份与实际类型；通用物料不带入当前产品，产品范围可显式开启带入；不放宽原用途可接受对象，旧冻结配置和值不迁移
+        evidenceIds: [evidence.reference-source-unification]
+      - id: scenario.reference-invalid-condition-preserved
+        given: 引用字段已有筛选条件，切换来源或候选范围使其中属性或依赖字段不适用
+        when: 查看条件并尝试保存设计，随后修正或明确移除条件
+        then: 原条件保留且错误可见，修正或移除前保存失败且设计与审计无写入；处理后可正常保存，不静默放宽候选，旧冻结内容保持
+        evidenceIds: [evidence.reference-source-unification]
+      - id: scenario.reference-dictionary-explicit-scope
+        given: 新字典引用选择字典A，字典B有同名但身份不同的字典项；另有未选具体字典的未完成配置及无新增范围键的旧冻结配置
+        when: 搜索引用候选、验证所选项并重新读取配置
+        then: 新配置只返回A的有效项，不能提交B的项；未完成范围明确提示且不默认首项，仍可保存不完整草稿。旧冻结配置沿原解释且不被回写，不自动猜测其所属字典
+        evidenceIds: [evidence.reference-dictionary-correction]
+      - id: scenario.workbench-standard-reason-and-ng-separation
+        given: 当前工序有报工NG3，另有可能重叠的不良原因分项和不同物料报废记录
+        when: 查看操作台不良及报废明细
+        then: 标准原因显示来源编号名称及可选说明，来源状态明确；NG仍为报工累计3，不被原因分项和替代。物料类别保留，不恢复原因分类新入口，历史文本不自动变成目录引用
+        evidenceIds: [evidence.defect-reason-detail-reference-user-confirmed]
+      - id: scenario.defect-reason-detail-source-granularity
+        given: 表单A需记录划伤3和尺寸超差2，表单B也记录划伤4
+        when: 配置并解释原因明细
+        then: 每条明细各自提供一个原因和一个数量并保留来源，不把一个数量分配给多个原因；同原因可跨真实记录重复，不能默认以明细和替代工序或批次NG
+        evidenceIds: [evidence.defect-reason-detail-reference-user-confirmed]
+      - id: scenario.reference-configuration-and-usage-separation
+        given: 制表人需优化引用字段的搜索、选择或展示方式
+        when: 配置引用字段并另行声明业务用途
+        then: 引用能力由字段配置负责，追溯与业务管理显式用途；引用候选搜索仍按搜索含义命名。模拟和正式填报读取各自适用配置，不因显示字段改变搜索或引用身份
+        evidenceIds: [evidence.defect-reason-detail-reference-user-confirmed]
+      - id: scenario.reference-context-option-and-display-identity
+        given: 制表人选择设备或适配生产上下文的引用模型，并设置常用引用展示组合
+        when: 配置带入选项或更改引用显示方式
+        then: 设备不提供生产上下文带入选项，适配模型才展示默认关闭的选项；显示组合不改变已选身份，批次共享表单不按浏览工序带入
+        evidenceIds: [evidence.defect-reason-detail-reference-user-confirmed]
+      - id: scenario.reference-display-ordered-fields
+        given: 配置编号、名称、型号顺序，记录为EQ-001、超声清洗机、UC-200；另有属性值为0、false或空值
+        when: 展示引用值并更换字段顺序
+        then: 按顺序显示EQ-001[超声清洗机][UC-200]；空值跳过但0和false保留，长值可hover完整查看；顺序变化只改变显示，不改变身份或搜索配置
+        evidenceIds: [evidence.defect-reason-detail-reference-user-confirmed]
+      - id: scenario.reference-context-initialization-no-overwrite
+        given: 新表单启用适配引用的上下文带入，字段为空；另有已保存值或缺上下文的表单
+        when: 首次初始化、保存后重开、刷新或用户清空字段
+        then: 仅首次适配空值按真实上下文初始化，重开和刷新不覆盖或持续补回；缺上下文提示且不取候选首项，编辑权限及历史冻结保持
+        evidenceIds: [evidence.defect-reason-detail-reference-user-confirmed]
+      - id: scenario.reference-person-only-selector
+        given: 人员引用字段使用公用人员选择器，其他功能仍使用原选择器能力
+        when: 打开人员引用并按部门筛选
+        then: 只能选中人员，不能选角色或组织作为引用值；部门筛选可用，其他功能的选择器模式不被全局删去
+        evidenceIds: [evidence.defect-reason-detail-reference-user-confirmed]
+      - id: scenario.standard-reason-source-and-history
+        given: 新配置不良或报废原因用途，另有同名文本历史记录和已冻结目录引用
+        when: 保存配置并按来源展示原因报表，随后修改目录名称
+        then: 新配置只接受对应目录单选引用，文本只作说明；旧文本及旧引用快照保留，不同名或同名均不自动改绑。报表以真实目录身份和来源编号名称快照解释，不替代NG累计，不要求配置原因分类
+        evidenceIds: [evidence.defect-reason-detail-reference-user-confirmed]
+      - id: scenario.defect-detail-independent-projection
+        given: 同一表单记录报工NG3，另有主表不良明细或子表两行原因数量，行内数量可能涉及相同产品
+        when: 按显式不良明细用途最终完成投影并打开不良明细报表
+        then: 逐笔展示对应defectReason单选身份、该笔数字数量及来源位置，单位和说明可空；不跨行配对、不生成原因分类，不以明细合计覆盖NG3；可回查原表单和对应实际行
+        evidenceIds: [evidence.defect-reason-detail-reference-user-confirmed]
+      - id: scenario.reason-modeling-menu-initialization
+        given: 使用初始化脚本建立新环境并分配原因目录菜单权限
+        when: 从数据进入原因建模或从记录进入报表
+        then: 在授权范围可见不良原因、报废原因目录及独立不良明细报表；原因分类入口不开放，既有物料类别及历史分类证据不被删除
+        evidenceIds: [evidence.defect-reason-detail-reference-user-confirmed]

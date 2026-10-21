@@ -1,0 +1,591 @@
+{
+  "tables": 97,
+  "allEqual": true,
+  "signatureComparison": "snapshot_data JSONB original readable value compared canonically; original stored hash preserved; no reconstruction of lost original bytes",
+  "excludedRetiredSequence": "work_form_process_reference_backfill_seq",
+  "foreignKeysRecreatedAndValidated": true,
+  "details": [
+    {
+      "table": "audit_event",
+      "original": "438:6cb15dc940555c229feb2e1b32c8767a",
+      "candidate": "438:6cb15dc940555c229feb2e1b32c8767a",
+      "equal": true
+    },
+    {
+      "table": "batch",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "business_dictionary",
+      "original": "4:10c26b91b9c73f8fca5efd7087851a2c",
+      "candidate": "4:10c26b91b9c73f8fca5efd7087851a2c",
+      "equal": true
+    },
+    {
+      "table": "business_dictionary_item",
+      "original": "5:2648758ac7479e64a2d3b2eccdda208b",
+      "candidate": "5:2648758ac7479e64a2d3b2eccdda208b",
+      "equal": true
+    },
+    {
+      "table": "controlled_reason",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "data_scope_policy",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "deletion_form_reference",
+      "original": "27:c17d4ff91e77230a5864f38864790dbd",
+      "candidate": "27:c17d4ff91e77230a5864f38864790dbd",
+      "equal": true
+    },
+    {
+      "table": "department",
+      "original": "1:518ebc97fc9fe4a5bbb65f67f033e264",
+      "candidate": "1:518ebc97fc9fe4a5bbb65f67f033e264",
+      "equal": true
+    },
+    {
+      "table": "dhr_attachment",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "dhr_directory",
+      "original": "10:11d7fde19928192c0502f66999ed2242",
+      "candidate": "10:11d7fde19928192c0502f66999ed2242",
+      "equal": true
+    },
+    {
+      "table": "dhr_instance",
+      "original": "11:3ea9485117c35a96e6133457e95f95d7",
+      "candidate": "11:3ea9485117c35a96e6133457e95f95d7",
+      "equal": true
+    },
+    {
+      "table": "dhr_summary_draft",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "dhr_summary_evidence",
+      "original": "20:a4f8686b55599193758652c764ddde21",
+      "candidate": "20:a4f8686b55599193758652c764ddde21",
+      "equal": true
+    },
+    {
+      "table": "dhr_summary_review",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "dhr_summary_version",
+      "original": "5:3e0aa5606372614eb782d628838d536e",
+      "candidate": "5:3e0aa5606372614eb782d628838d536e",
+      "equal": true
+    },
+    {
+      "table": "dhr_template",
+      "original": "9:dd364bee977ea5211e34a5da0feab1f8",
+      "candidate": "9:dd364bee977ea5211e34a5da0feab1f8",
+      "equal": true
+    },
+    {
+      "table": "dhr_template_item",
+      "original": "18:ae2305574ab6876f87ad13a2a509700c",
+      "candidate": "18:ae2305574ab6876f87ad13a2a509700c",
+      "equal": true
+    },
+    {
+      "table": "dhr_template_version",
+      "original": "10:8486a87cf51b662524a919b84693dd07",
+      "candidate": "10:8486a87cf51b662524a919b84693dd07",
+      "equal": true
+    },
+    {
+      "table": "dhr_termination",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "document_category",
+      "original": "2:86b7a2157792c2bd6baaeaee6d589f87",
+      "candidate": "2:86b7a2157792c2bd6baaeaee6d589f87",
+      "equal": true
+    },
+    {
+      "table": "document_version",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "equipment",
+      "original": "1:c0117c6729916ea25207604cd83e2111",
+      "candidate": "1:c0117c6729916ea25207604cd83e2111",
+      "equal": true
+    },
+    {
+      "table": "equipment_category",
+      "original": "4:bfe3ed4102a256adc557ff5c6af55141",
+      "candidate": "4:bfe3ed4102a256adc557ff5c6af55141",
+      "equal": true
+    },
+    {
+      "table": "equipment_type",
+      "original": "1:edd19f4a45f6ca940eb690353c5b35b5",
+      "candidate": "1:edd19f4a45f6ca940eb690353c5b35b5",
+      "equal": true
+    },
+    {
+      "table": "field_permission_policy",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "file_object",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "form_field",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "form_instance_record",
+      "original": "30:6464cd0f1c4eee832179cacb8e2fe149",
+      "candidate": "30:6464cd0f1c4eee832179cacb8e2fe149",
+      "equal": true
+    },
+    {
+      "table": "form_lookup_item",
+      "original": "19:1f9069d938869ba0bff51a1ad63c2627",
+      "candidate": "19:1f9069d938869ba0bff51a1ad63c2627",
+      "equal": true
+    },
+    {
+      "table": "form_projection_batch",
+      "original": "30:6468eb2c9bb00886e1d2751f38323834",
+      "candidate": "30:6468eb2c9bb00886e1d2751f38323834",
+      "equal": true
+    },
+    {
+      "table": "form_projection_record",
+      "original": "45:d405413ee3e15a1dfa8f2581f75af64d",
+      "candidate": "45:d405413ee3e15a1dfa8f2581f75af64d",
+      "equal": true
+    },
+    {
+      "table": "form_review_block",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "form_section",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "form_signature_block",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "form_table",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "form_template",
+      "original": "37:8516ed10778cfdcec74d28aa235d5001",
+      "candidate": "37:8516ed10778cfdcec74d28aa235d5001",
+      "equal": true
+    },
+    {
+      "table": "form_template_version",
+      "original": "40:61eed5666104001cba85175946afefca",
+      "candidate": "40:61eed5666104001cba85175946afefca",
+      "equal": true
+    },
+    {
+      "table": "form_trace_value",
+      "original": "69:617854b27f2d9572aaedd8ad1dee219a",
+      "candidate": "69:617854b27f2d9572aaedd8ad1dee219a",
+      "equal": true
+    },
+    {
+      "table": "form_validation_rule",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "icon_asset",
+      "original": "84:296b2159f3f1ecf4873e20a79ce1d26f",
+      "candidate": "84:296b2159f3f1ecf4873e20a79ce1d26f",
+      "equal": true
+    },
+    {
+      "table": "icon_group",
+      "original": "1:95223932eefcc4a7f9d8636d6ffa9cf3",
+      "candidate": "1:95223932eefcc4a7f9d8636d6ffa9cf3",
+      "equal": true
+    },
+    {
+      "table": "login_log",
+      "original": "355:10ff83af15bdfc324a9926ca34c48434",
+      "candidate": "355:10ff83af15bdfc324a9926ca34c48434",
+      "equal": true
+    },
+    {
+      "table": "material",
+      "original": "23:118fcf30d5ec543b688e615aaadacdc0",
+      "candidate": "23:118fcf30d5ec543b688e615aaadacdc0",
+      "equal": true
+    },
+    {
+      "table": "material_type",
+      "original": "5:760caf076565635bec7e668e4a659841",
+      "candidate": "5:760caf076565635bec7e668e4a659841",
+      "equal": true
+    },
+    {
+      "table": "operation",
+      "original": "12:2ce01c51efc8207c30389fbef307918a",
+      "candidate": "12:2ce01c51efc8207c30389fbef307918a",
+      "equal": true
+    },
+    {
+      "table": "operation_category",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "permission",
+      "original": "73:06e467e7320db49eb0dd29a49942c5e5",
+      "candidate": "73:06e467e7320db49eb0dd29a49942c5e5",
+      "equal": true
+    },
+    {
+      "table": "process_definition",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "process_definition_version",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "process_route_binding",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "product",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "product_family",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "product_family_member",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "product_process",
+      "original": "10:1683bad55c8302b47410d90307480739",
+      "candidate": "10:1683bad55c8302b47410d90307480739",
+      "equal": true
+    },
+    {
+      "table": "product_process_operation_binding",
+      "original": "21:0b3ce754448b448a06affd65719cf393",
+      "candidate": "21:0b3ce754448b448a06affd65719cf393",
+      "equal": true
+    },
+    {
+      "table": "product_process_operation_document_binding",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "product_process_operation_form_binding",
+      "original": "21:a677b378d3d04bdaf5873e953e8d77c1",
+      "candidate": "21:a677b378d3d04bdaf5873e953e8d77c1",
+      "equal": true
+    },
+    {
+      "table": "product_process_operation_sop_binding",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "product_process_version",
+      "original": "11:77a75262b37129db028096ba5d99a92e",
+      "candidate": "11:77a75262b37129db028096ba5d99a92e",
+      "equal": true
+    },
+    {
+      "table": "product_version",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "production_execution",
+      "original": "11:5b3994a2dff6a775acc08bfa0482ade3",
+      "candidate": "11:5b3994a2dff6a775acc08bfa0482ade3",
+      "equal": true
+    },
+    {
+      "table": "production_line",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "production_object",
+      "original": "11:4a11bf6ccdd3f909d0d1663e6b4fac7b",
+      "candidate": "11:4a11bf6ccdd3f909d0d1663e6b4fac7b",
+      "equal": true
+    },
+    {
+      "table": "quality_reason",
+      "original": "8:3def438add5518693bb186eedc21ab39",
+      "candidate": "8:3def438add5518693bb186eedc21ab39",
+      "equal": true
+    },
+    {
+      "table": "release_form_template",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "role",
+      "original": "4:79a01a39909389cc64110b8fb00cf9a4",
+      "candidate": "4:79a01a39909389cc64110b8fb00cf9a4",
+      "equal": true
+    },
+    {
+      "table": "role_permission",
+      "original": "72:176e29c87f72cd8118f416d9de5c95af",
+      "candidate": "72:176e29c87f72cd8118f416d9de5c95af",
+      "equal": true
+    },
+    {
+      "table": "route",
+      "original": "9:eb64b89980f6d55dcaed48cb656eba5e",
+      "candidate": "9:eb64b89980f6d55dcaed48cb656eba5e",
+      "equal": true
+    },
+    {
+      "table": "route_node",
+      "original": "19:d399482399080207971d1afa8625dbae",
+      "candidate": "19:d399482399080207971d1afa8625dbae",
+      "equal": true
+    },
+    {
+      "table": "route_operation",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "route_relation",
+      "original": "8:82cfd19a6aa5ce74e95ad04b6bbc3414",
+      "candidate": "8:82cfd19a6aa5ce74e95ad04b6bbc3414",
+      "equal": true
+    },
+    {
+      "table": "route_version",
+      "original": "9:422bd362e3128a4c0c6101cdd14817a9",
+      "candidate": "9:422bd362e3128a4c0c6101cdd14817a9",
+      "equal": true
+    },
+    {
+      "table": "serial_number",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "signature",
+      "original": "11:a0b5eb96cd416f142a8e3f33ab6fc43f",
+      "candidate": "11:a0b5eb96cd416f142a8e3f33ab6fc43f",
+      "equal": true
+    },
+    {
+      "table": "site",
+      "original": "1:fea54db712096cbedca7dd6434f75022",
+      "candidate": "1:fea54db712096cbedca7dd6434f75022",
+      "equal": true
+    },
+    {
+      "table": "sop_document",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "system_menu_configuration",
+      "original": "1:f962e760083c5d9ff454d666bd498f51",
+      "candidate": "1:f962e760083c5d9ff454d666bd498f51",
+      "equal": true
+    },
+    {
+      "table": "system_setting",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "template_category",
+      "original": "2:0ec682813cbf0841fa61ffe753950f00",
+      "candidate": "2:0ec682813cbf0841fa61ffe753950f00",
+      "equal": true
+    },
+    {
+      "table": "tenant",
+      "original": "1:16b376c8d778dd446be8afaf09c069ee",
+      "candidate": "1:16b376c8d778dd446be8afaf09c069ee",
+      "equal": true
+    },
+    {
+      "table": "traveler_template",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "unit_of_measure",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "user_account",
+      "original": "3:5863a6616b5d4d12949d88fe1ccdeefa",
+      "candidate": "3:5863a6616b5d4d12949d88fe1ccdeefa",
+      "equal": true
+    },
+    {
+      "table": "user_department",
+      "original": "1:7f0398e788b35086393cd8cafd49d74e",
+      "candidate": "1:7f0398e788b35086393cd8cafd49d74e",
+      "equal": true
+    },
+    {
+      "table": "user_role",
+      "original": "1:c7f9c8430caa71d754edc6475a6216e7",
+      "candidate": "1:c7f9c8430caa71d754edc6475a6216e7",
+      "equal": true
+    },
+    {
+      "table": "work_form_process_reference",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "work_order",
+      "original": "8:c3b86a86d98e32d1489df3c52614c66a",
+      "candidate": "8:c3b86a86d98e32d1489df3c52614c66a",
+      "equal": true
+    },
+    {
+      "table": "workflow_action_log",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "workflow_binding_rule",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "workflow_definition",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "workflow_definition_version",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "workflow_edge",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "workflow_instance",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "workflow_intervention",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "workflow_node",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "workflow_task",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    },
+    {
+      "table": "workshop",
+      "original": "0:empty",
+      "candidate": "0:empty",
+      "equal": true
+    }
+  ]
+}

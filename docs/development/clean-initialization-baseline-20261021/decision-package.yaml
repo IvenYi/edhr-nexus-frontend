@@ -1,0 +1,87 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261021-CLEAN-INITIALIZATION
+  scope: 首版空库初始化资产整理；不改运行时业务写口、不改本体定义或路径、不承接现有开发库
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    targetBranch: edhr-dev
+    targetCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    contractReadCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    uncommittedContractPaths: []
+  summary: 将累计开发迁移从运行包移为历史测试夹具，新安装只创建当前结构与当前必要预置
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: initialization
+        change: 126份旧SQL移出main资源；147变更集改为2个当前基线变更集
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml]
+    transitiveImpacts:
+      - area: tests
+        change: 原迁移测试继续使用同字节test夹具；当前基线增加真实PostgreSQL验收
+        evidenceReferences: [gmp-platform/backend/src/test/resources/db/historical/db.changelog-historical.yaml]
+    potentialImpacts:
+      - area: dirty-original-workspace
+        concern: 原工作区还有未合入0115原因目录及引用字段等功能，不用本候选覆盖在途改动或运行环境
+        evidenceReferences: [docs/development/dev-environment-consolidation-20261021/initialization-audit.md]
+    unaffectedAreas:
+      - area: business
+        reason: 不变更报工、质量、追溯、签署、DHR及权限判定规则
+        evidenceReferences: []
+    compatibilityAndMigration:
+      - area: existing-test-database
+        change: 不自动转换或删除存量；基线在非空业务schema上HALT，现有edhr_dev和8081不切换
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java]
+    snapshotImpacts:
+      - area: signed-evidence
+        change: 空库直接TEXT存签署原文并检查JSON合法性，不重算或重写旧摘要
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
+    auditImpacts:
+      - area: initialization
+        change: 不对新库伪造历史BASELINE审计；真实审计表、约束和当前维护触发器保留
+        evidenceReferences: [baseline-equivalence.json]
+    permissionImpacts:
+      - area: default-seed
+        change: 保留70权限、69管理员授权，与旧链空库结果逐值比对
+        evidenceReferences: [baseline-equivalence.json]
+    testImpacts:
+      - scope: current-baseline
+        scenarios: [首次安装, 重复安装, 非空库拒绝且不改业务, 当前预置, 外键阻断, 签名原文, 包内无历史脚本, 旧链最终结构等价]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java]
+    evidenceGaps:
+      - 用户明确将本体路径修正留到下一步；107处引用待修，知识校验因旧路径失效未通过
+      - 两组旧文档写API、旧模板新冻结退役追溯含义和两份手工demo仍可产生旧格式；本步仅列清单
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 初始化是统一产品资源；不增加客户条件分支、运行时双轨或自动清理任务
+    ownershipBoundaries:
+      - owner: database-initialization
+        responsibility: main资源只创建当前schema与必要seed；历史转换仅供测试
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/resources/db/changelog
+      changeType: update
+      reason: 首版直接建模与预置
+    - path: gmp-platform/backend/src/test
+      changeType: update
+      reason: 保留原回归夹具并验证当前基线
+    - path: docs/knowledge
+      changeType: read-only
+      reason: 用户明确本步不修正，仅输出失效路径清单
+  acceptanceScenarios:
+    - id: scenario.clean-baseline-empty-install
+      given: 空PostgreSQL数据库
+      when: 运行实际生产master两次
+      then: 只执行2个变更集，96业务表、当前预置与必要保护完整，第二次无改写
+      evidenceRequirements: [PostgreSQL测试, schema与seed等价, jar资源列表]
+    - id: scenario.clean-baseline-nonempty-refusal
+      given: 非空业务schema
+      when: 未经承接直接运行新基线
+      then: 明确拒绝，保留已有数据，不猜旧结构或擦除内容
+      evidenceRequirements: [PostgreSQL负向测试]

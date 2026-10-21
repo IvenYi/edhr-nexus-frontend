@@ -76,6 +76,7 @@ final class ProductionQualitySummary {
             }
         }
         ArrayNode grouped = result.putArray("groups"); groups.values().forEach(grouped::add);
+        if (role.equals("ngQuantity")) result.set("reasonSources", reasonSources(mapper, batches, operationId, saved));
         if (groups.size() == 1) { var group = groups.values().iterator().next(); result.put("quantity", group.path("quantity").asText()).put("unit", group.path("unit").asText()); }
         String status = !configured ? "NOT_CONFIGURED" : rejected > 0 ? "UNIT_REVIEW" : failed > 0 ? "FAILED" : pending > 0 ? "PENDING" : groups.isEmpty() ? "NO_DATA" : "READY";
         return result.put("status", status).put("pending", pending).put("failed", failed).put("rejected", rejected).put("message", switch (status) {
@@ -89,6 +90,32 @@ final class ProductionQualitySummary {
     }
 
     static String model(String role) { return role.equals("scrapQuantity") ? "scrap" : "production"; }
+    // Cause quantities explain defects; they never participate in the NG measure above.
+    private static ArrayNode reasonSources(ObjectMapper mapper, JsonNode batches, String operationId, boolean saved) {
+        ArrayNode sources = mapper.createArrayNode();
+        for (JsonNode batch : batches) {
+            if (operationId != null && (!operationId.equals(batch.path("operationId").asText()) || CustomFormPolicy.batch(batch.path("form")))) continue;
+            boolean success = "SUCCEEDED".equals(batch.path("status").asText());
+            JsonNode records = success ? batch.path("records") : FormProjectionInterpreter.preview(batch.path("model"), batch.path("values"));
+            for (JsonNode record : records) {
+                if (!"defect".equals(record.path("modelId").asText())) continue;
+                JsonNode attributes = record.path("attributes");
+                ObjectNode source = sources.addObject().put("recordId", record.path("id").asText(batch.path("instanceId").asText() + ":" + record.path("bindingId").asText() + ":" + record.path("rowKey").asText()))
+                        .put("instanceId", batch.path("instanceId").asText()).put("instanceNo", batch.path("instanceNo").asText())
+                        .put("copyId", batch.path("copyId").asText()).put("formStatus", batch.path("formStatus").asText())
+                        .put("projectionStatus", saved ? "" : batch.path("status").asText())
+                        .put("operationId", batch.path("operationId").asText()).put("operationName", batch.path("operationName").asText())
+                        .put("bindingId", record.path("bindingId").asText()).put("rowKey", record.path("rowKey").asText())
+                        .put("tableId", record.path("tableId").asText()).put("fieldId", record.path("sources").path("quantity").asText())
+                        .put("unit", attributes.path("unit").asText()).put("included", success);
+                source.set("attributes", attributes.deepCopy());
+                BigDecimal quantity = number(attributes.path("quantity"));
+                if (quantity != null) source.put("quantity", quantity.toPlainString());
+                sourcePosition(source, batch, record);
+            }
+        }
+        return sources;
+    }
     private static void sourcePosition(ObjectNode source, JsonNode batch, JsonNode record) {
         JsonNode fields = batch.path("model").path("fields");
         String tableId = record.path("tableId").asText();

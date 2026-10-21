@@ -1,0 +1,114 @@
+qualityResult:
+  result: passed
+  baseCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+  headCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+  contractBaseline:
+    sourceCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    targetBranch: edhr-dev
+    targetCommit: c671b23fd9847a7e1cb2d1bad3c3bb138fc5620f
+    contractReadCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml
+      - docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml
+      - docs/knowledge/evidence内原清单20个文件的46处历史引用（与上述两决策合计48处；完整逐行范围见reference-resolutions.json）
+      - docs/knowledge/facts内清单3个文件的5处数据库来源
+      - docs/knowledge/implementation-anchors内清单13个文件的54处数据库引用
+      - docs/knowledge/evidence/initialization-reference-maintenance-2026-10-21.md
+      - docs/development/initialization-knowledge-references-20261021
+      - docs/development/clean-initialization-baseline-20261021/remaining-writers.md
+      - docs/development/clean-initialization-baseline-20261021/README.md
+      - docs/development/clean-initialization-baseline-20261021/knowledge-path-followups-readable.md
+    excludedPaths:
+      - 前两阶段初始化与旧入口代码差异仅作原始来源，本轮不重做其全部功能或数据库验收
+      - 原运行工作区在途原因目录与引用字段改造及两工作区完整集成
+      - gmp-platform/frontend/node_modules
+      - output/trace-single-binding-publish
+    untrackedPaths:
+      - docs/knowledge/evidence/initialization-reference-maintenance-2026-10-21.md
+      - docs/development/initialization-knowledge-references-20261021
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.initialization-reference-contract-and-scope
+      required: true
+      category: requirements
+      description: 独立核对需求范围、契约及实际候选
+      method: inspection
+      command: 读取AGENTS、角色及交接契约、README/open-questions、decisionPackage；git rev-parse与契约/知识目录差异
+      outcome: passed
+      evidence:
+        - 本实例是未参与任何修复的全新质量角色，仅生成QA结果，没有修改实现、知识或测试。
+        - 实测HEAD为d405a9af完整哈希，origin/edhr-dev为c671b23f完整哈希；二者AGENTS/codeplzreadme/docs/agents/docs/knowledge/docs/architecture无提交差异。
+        - 本次验证对象为HEAD加未提交引用维护及其已存在初始化候选，不是已完成合并或推送的提交。
+        - L2影响分析区分当前来源、历史证据、权限预置与无运行变更，product-core所有权和验收范围与实际差异一致。
+    - id: check.initialization-reference-completeness
+      required: true
+      category: ontology
+      description: 107处原始清单与修正结果逐行闭环
+      method: command
+      command: Python按CSV原文件/行号/旧路径核对reference-resolutions；Ruby解析YAML和数据库引用去重
+      outcome: passed
+      evidence:
+        - 独立核对107行、38文件，旧路径均已消除，新路径存在且被对应文件引用；不存在缺项或行号/原路径错配。
+        - 59处当前引用对应45个知识记录，48处历史引用保留原证据用途；YAML解析及databaseReferences无重复检查通过。
+        - quality-reference-verification.json记录逐文件SHA256、原始夹具摘要及实际检查。
+    - id: check.initialization-reference-historical-fidelity
+      required: true
+      category: audit
+      description: 历史来源保真与业务元数据不变
+      method: command
+      command: git show HEAD原文件与历史夹具字节比较；逐文件去除许可定位差异后比较
+      outcome: passed
+      evidence:
+        - 107条清单涉及47份不同旧SQL，全部与HEAD生产目录原文件逐字一致；其中48条历史引用使用40份不同旧SQL。
+        - 22个历史文件严格只有main到test路径变化；16个当前事实/锚点文件仅sourcePath/databaseReferences/sourceLocator变化，业务定义、ID、sourceRevision、capturedAt、status、visibility、reviewStatus等均未改变。
+        - 明确保留0104转换和0118签名迁移的原验证含义；新日期定位说明未把新基线写成过去执行过的迁移，也未宣称旧签名已可复验。
+    - id: check.initialization-reference-current-locators
+      required: true
+      category: database
+      description: 核对当前定位与实际最终DDL/seed相符
+      method: inspection
+      command: 读取schema对应CREATE TABLE/索引/约束；解析seed权限及ADMIN授权
+      outcome: passed
+      evidence:
+        - 已核对45个当前记录新增定位涉及表、列与约束，包括DHR审核绑定、冻结检查结果、来源类型、可空别名/排序、生产对象、工单、表单引用、投影和追溯值类型。
+        - 12个命名索引/约束均存在；9个涉及权限码及对应ADMIN角色授权逐条确认，追溯预置正好9项。
+        - 0059审计补写、0095删列、0072回填序列、0112退役删除未被描述为当前初始化动作；当前最终表结构与seed定位分别处理。
+        - form_template_version.projection_frozen_json仍存在的事实和其不证明当前复制冻结契约的限制保留；material.brand_name当前列与旧重命名证据区分。
+        - 本项是原始SQL核对，不宣称本实例运行数据库迁移或验证业务流程。
+    - id: check.initialization-reference-formal-validation
+      required: true
+      category: regression
+      description: 独立复跑正式知识检查，不修改校验器
+      method: automated-test
+      command: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml clean test
+      outcome: passed
+      evidence:
+        - 本质量实例实际执行89项全部通过，0失败、0错误、0跳过；日志/tmp/edhr-initialization-knowledge-qa.log，SHA256见quality-reference-verification.json。
+        - tools/knowledge-model及backend知识测试目录相对HEAD无修改；未通过放宽校验或跳过测试获得通过。
+        - git diff --check实际执行通过。
+    - id: check.initialization-reference-delivery-boundary
+      required: true
+      category: documentation
+      description: 旧工具无待执行操作及历史/当前交付边界清楚
+      method: inspection
+      command: 检查两工作区脚本不存在、remaining-writers和阶段README及本体结果
+      outcome: passed
+      evidence:
+        - 两份旧灌数脚本在候选与原工作区均不存在，清单明确已删除、无需恢复旧库或8087，无可执行旧工具命令块。
+        - 原CSV与中文盘点仍作为历史记录；前阶段README保留当时失败/暂缓状态并指向本轮结果，不伪造过去已完成。
+        - ontologyResult为updated、知识基线保持0.3.25；明确本次非全仓语义审计，不升级P0或资产成熟度。
+        - 未执行UI、业务E2E或数据库操作：本轮仅知识引用与说明维护，无新增运行行为需重复验收。
+  findings: []
+  residualRisks:
+    - id: risk.initialization-reference-unintegrated-candidate
+      description: 新初始化基线及本次知识修正仍在独立未提交候选，原运行工作区还有其他在途功能。
+      impact: 本结果不能作为完整edhr-dev集成、推送或3000/8081新基线部署验收。
+      mitigation: 完整集成时核对原因目录等新增初始化资产和知识差异，对真实合并候选重新评估适用检查；不直接向现有库套用空库基线。
+    - id: risk.initialization-reference-limited-semantic-scope
+      description: 本次只关闭初始化路径与必要定位说明，不重审其他历史业务结论或关闭既有开放问题。
+      impact: 正式89项通过不等于全仓业务语义或全部运行场景已验证，也不证明GitHub必需检查已强制启用。
+      mitigation: 保留原成熟度、历史证据和开放问题，后续按实际功能/集成范围验证。
+  blockingConditions: []

@@ -1,0 +1,34 @@
+{
+  "backend": "http://localhost:8081",
+  "frontend": "http://localhost:3000",
+  "database": "edhr_dev",
+  "postgresPort": 5432,
+  "dhrVersion": {
+    "code": 200,
+    "id": "387303409192337408",
+    "status": "FORMALIZED"
+  },
+  "baselineChangeSets": 2,
+  "builtinTraceItems": 9,
+  "foreignKeysValidated": 95,
+  "liveChangesSinceInitialAdoption": [
+    "login_log: 1 added row copied with identical-ID collision check"
+  ],
+  "snapshotAdoptionEvidence": "data-adoption-checks.json",
+  "databaseBackup": "/Users/ivenwang/Documents/edhr-nexus-backups/2026-10-21-release-integration/edhr_dev-before-switch.dump",
+  "removedTemporaryDatabases": [
+    "edhr_baseline_test_release",
+    "edhr_dev_pre_release",
+    "edhr_projection_integration_test",
+    "edhr_signature_test",
+    "edhr_w3_command_test",
+    "edhr_w3_transfer_test"
+  ],
+  "removedTemporaryPorts": [
+    13000,
+    18081
+  ],
+  "backupSha256": "857c00511b078bd4aeacbcb1f5f7a3c36f72eda2e42484685153c8d24242552c",
+  "singleEdhrDatabase": true,
+  "unrelatedDatabasePreserved": "gxp_sys_check_dev"
+}

@@ -5,14 +5,14 @@ implementationAnchors:
     targetType: concept
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionQualitySummary.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionBatchController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java]
     apiReferences: [GET /api/v1/production/batches, 'GET /api/v1/production/work-orders/{id}/objects', 'GET /api/v1/production/execution/{objectId}']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/components/ProductionOutput.tsx, gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx, gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx, gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionQualitySummaryTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.batch-quality-linkage-confirmed, evidence.batch-quality-linkage-runtime-source, evidence.batch-quality-linkage-main-validation]
     sourceRevision: 6379bf105127b05a65695992b008b55c142264f9
-    sourceLocator: 本轮未提交候选ProductionOutputService.summarize/read及ProductionQualitySummary.metric；按完整来源独立派生、可空scalar、来源全保留，不回写旧三列；主侧源码/聚焦测试已复核，3000与独立质量另验。
+    sourceLocator: "本轮未提交候选ProductionOutputService.summarize/read及ProductionQualitySummary.metric；按完整来源独立派生、可空scalar、来源全保留，不回写旧三列；主侧源码/聚焦测试已复核，3000与独立质量另验。；2026-10-21仅初始化定位维护（d405a9af工作树）：form_projection_batch/record及attributes/sources原始来源列。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-10-15'
     reviewStatus: reviewed
   - id: anchor.production-quality.saved-reference

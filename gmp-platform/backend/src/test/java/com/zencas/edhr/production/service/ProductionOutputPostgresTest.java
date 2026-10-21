@@ -1,6 +1,7 @@
 package com.zencas.edhr.production.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
@@ -100,6 +101,29 @@ class ProductionOutputPostgresTest {
         assertThat(output.path("sources")).hasSize(3);
         assertThat(output.path("sources").findValues("included")).extracting(node -> node.asBoolean()).containsExactly(true,false,false);
         assertThat(outputs.object(2).path("quantity").isNull()).isTrue();
+    }
+
+    @Test void independentDefectReasonsReachTheWorkbenchWithoutInflatingNgOrOutput() throws Exception {
+        var form = form();
+        var fields = (ArrayNode) form.path("fields");
+        fields.addObject().put("id", "ng").put("type", "number");
+        fields.addObject().put("id", "detailQty").put("type", "number");
+        fields.addObject().put("id", "reason").put("type", "reference").putObject("typeConfig").put("sourceType", "defectReason");
+        ((ObjectNode) form.at("/projection/bindings/0/sources")).put("ngQuantity", "ng");
+        var detail = ((ArrayNode) form.at("/projection/bindings")).addObject().put("id", "defect").put("modelId", "defect").put("enabled", true);
+        detail.putObject("sources").put("reason", "reason").put("quantity", "detailQty").put("unit", "unit");
+        var values = mapper.createObjectNode().put("qty", 18).put("ng", 2).put("detailQty", 6).put("unit", "件");
+        values.putObject("reason").put("id", "42").put("sourceType", "defectReason").put("code", "D01").put("name", "划伤");
+        jdbc.update("INSERT INTO form_instance_record(id,tenant_id,source_type,object_id,instance_no,copy_id,status) VALUES (1,'default','PRODUCTION_EXECUTION',1,'FR-1','copy-1','COMPLETED')");
+        tx.executeWithoutResult(status -> projections.completed(1L, "default", form, values, mapper.createObjectNode(), "last"));
+        process(jdbc.queryForObject("SELECT id FROM form_projection_batch WHERE form_instance_id=1", Long.class));
+        var output = outputs.object(1);
+        assertThat(output.path("quantity").asText()).isEqualTo("18");
+        var ng = output.path("quality").path("ngQuantity");
+        assertThat(ng.path("quantity").asText()).isEqualTo("2");
+        assertThat(ng.path("reasonSources")).hasSize(1);
+        assertThat(ng.at("/reasonSources/0/quantity").asText()).isEqualTo("6");
+        assertThat(ng.at("/reasonSources/0/attributes/reasonId").asText()).isEqualTo("42");
     }
 
     @Test void pendingFailedAndRetryNeverEraseOrDoubleKnownOutput() throws Exception {

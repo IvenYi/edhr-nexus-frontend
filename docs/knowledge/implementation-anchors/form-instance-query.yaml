@@ -5,14 +5,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceQueryService.java]
     apiReferences: [docs/development/form-instance-query-api.md]
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormInstanceQueryMigrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-instance-business-source-record-service, evidence.form-instance-business-source-query-service, evidence.form-instance-business-source-record-schema, evidence.form-instance-business-source-integration-test, evidence.form-instance-business-source-migration-test]
     sourceRevision: working-tree
-    sourceLocator: source_type 的保存、历史回填、列表/详情过滤及 source.sourceType 投影；2026-09-16 聚焦迁移和生产执行集成测试通过，未作为发布级或独立质量验证证据
+    sourceLocator: "source_type 的保存、历史回填、列表/详情过滤及 source.sourceType 投影；2026-09-16 聚焦迁移和生产执行集成测试通过，未作为发布级或独立质量验证证据；2026-10-21仅初始化定位维护（d405a9af工作树）：form_instance_record.source_type及来源索引；新初始化不执行历史回填，上文2026-09-16验证仍为原时点记录。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-16'
     reviewStatus: reviewed
   - id: anchor.form-instance-global-query-authorization
@@ -20,14 +20,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormInstanceQueryController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceQueryService.java]
     apiReferences: [docs/development/form-instance-query-api.md]
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0083-form-instance-query.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql, gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql]
     uiReferences: []
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormInstanceQueryMigrationTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-instance-query-controller, evidence.form-instance-query-service, evidence.form-instance-query-migration, evidence.form-instance-query-integration-test, evidence.form-instance-query-migration-test]
     sourceRevision: working-tree
-    sourceLocator: 类级 PreAuthorize、list/find 的 tenant_id 过滤、0083 专门权限初始化；基于 e5772f81184e708a6b023f5112700be6820cb1be，权限矩阵、冻结查询与迁移测试已登记
+    sourceLocator: "类级 PreAuthorize、list/find 的 tenant_id 过滤、0083 专门权限初始化；基于 e5772f81184e708a6b023f5112700be6820cb1be，权限矩阵、冻结查询与迁移测试已登记；2026-10-21仅初始化定位维护（d405a9af工作树）：form_instance_record.tenant_id及查询索引；seed中的form-instances.view与ADMIN授权；0083历史回填不在当前安装执行。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-16'
     reviewStatus: reviewed
   - id: anchor.form-instance-global-query-source-actions

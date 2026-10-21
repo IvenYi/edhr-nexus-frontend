@@ -1,6 +1,7 @@
 import client from './client';
 import type { DhrAuditEvent, DhrInstancePage, DhrInstanceSummary, DhrSummaryVersionDetail, DhrInstanceDetail } from './dhr-instances';
 import type { ExecutionButton, ExecutionCommand, ExecutionView } from './production-execution';
+import type { ReferenceValue, ReferencePageRequest } from '@/components/form-renderer/referenceConfig';
 
 export interface DhrReviewTask {
   id: string; dhrId: string; versionId: string; dhrNo: string; versionNo: number; objectNo: string;
@@ -30,5 +31,5 @@ export const getDhrFillingAudit = async (id: string, page: number): Promise<{ pa
   (await client.get(`/dhr-filling/${encodeURIComponent(id)}/audit`, { params: { page } })).data.data;
 export const actDhrFilling = async (id: string, command: ExecutionCommand): Promise<DhrFillingView> => (await client.post(`/dhr-filling/${id}/actions`, command)).data.data;
 export const createDhrSupplement = async (id: string, command: { revision: number; operationId: string; formId: string; reason: string; occurredAt: string }): Promise<DhrFillingView & { createdCopyId: string }> => (await client.post(`/dhr-filling/${id}/supplements`, command)).data.data;
-export const dhrReferences = async (id: string, operationId: string, formId: string, fieldId: string, keyword: string, values: Record<string, unknown>): Promise<Array<{ id: string; name: string }>> => (await client.post(`/dhr-filling/${id}/references`, { operationId, formId, fieldId, keyword, values })).data.data;
+export const dhrReferences = async (id: string, operationId: string, formId: string, fieldId: string, keyword: string, values: Record<string, unknown>, paging?: ReferencePageRequest): Promise<ReferenceValue[]> => (await client.post(`/dhr-filling/${id}/references`, { operationId, formId, fieldId, keyword, values, ...paging })).data.data;
 export const reorganizeDhr = async (id: string, expectedVersionId: string, reason: string) => (await client.post(`/dhr-instances/${id}/summary/reorganize`, { expectedVersionId, reason })).data.data;

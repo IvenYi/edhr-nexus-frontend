@@ -1,0 +1,21 @@
+{
+  "database": "edhr_baseline_candidate_20261021",
+  "temporaryServerPort": 52923,
+  "login": {
+    "http": 200,
+    "code": 200
+  },
+  "checks": [
+    {
+      "path": "/form-lookup-items",
+      "http": 200,
+      "code": 200
+    },
+    {
+      "path": "/reports/form-projections/status",
+      "http": 200,
+      "code": 200
+    }
+  ],
+  "production3000and8081Unchanged": true
+}

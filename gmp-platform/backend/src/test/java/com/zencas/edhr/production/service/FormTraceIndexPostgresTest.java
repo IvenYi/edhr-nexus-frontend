@@ -68,8 +68,8 @@ class FormTraceIndexPostgresTest {
         projection = mock(FormProjectionService.class);
         records = new FormInstanceRecordService(jdbc, mapper, projection);
         var catalog = mock(FormLookupCatalogService.class);
-        when(catalog.contains(anyString())).thenAnswer(invocation -> java.util.Set.of("materialLotText", "teamText", "equipmentText", "lookup_production_batch").contains(invocation.getArgument(0)));
-        when(catalog.list()).thenReturn(java.util.stream.Stream.of("materialLotText", "teamText", "equipmentText", "lookup_production_batch")
+        when(catalog.contains(anyString())).thenAnswer(invocation -> java.util.Set.of("materialLotText", "lookup_test_team", "equipmentText", "lookup_production_batch").contains(invocation.getArgument(0)));
+        when(catalog.list()).thenReturn(java.util.stream.Stream.of("materialLotText", "lookup_test_team", "equipmentText", "lookup_production_batch")
                 .map(id -> new FormLookupCatalogService.Item(id, id, "", "text", true, 1, null, null, null, null)).toList());
         reports = new FormProjectionController(jdbc, mapper, mock(AuditEventRepository.class), mock(SnowflakeIdGenerator.class), catalog);
     }
@@ -82,11 +82,11 @@ class FormTraceIndexPostgresTest {
                 "fields":[{"id":"batch","name":"登记的批次","type":"text"},{"id":"equipment","name":"设备编号","type":"text"},
                 {"id":"details","name":"上料明细","type":"subTable","typeConfig":{"columns":[
                 {"id":"lot","name":"物料批号","type":"text"},{"id":"team","name":"班组","type":"text"}]}}],
-                "projection":{"version":"form-projection-v1","lookupItems":{"lookup_production_batch":{"name":"生产批次/SN","type":"text","revision":1}},"bindings":[
+                "projection":{"version":"form-projection-v1","lookupItems":{"lookup_test_team":{"name":"班组","type":"text","revision":1},"lookup_production_batch":{"name":"生产批次/SN","type":"text","revision":1}},"bindings":[
                 {"id":"head1","modelId":"formTrace","enabled":true,"sources":{"lookup_production_batch":"batch"}},
                 {"id":"head2","modelId":"formTrace","enabled":true,"sources":{"equipmentText":"equipment"}},
                 {"id":"detail1","modelId":"formTrace","enabled":true,"tableId":"details","sources":{"materialLotText":"lot"}},
-                {"id":"detail2","modelId":"formTrace","enabled":true,"tableId":"details","sources":{"teamText":"team"}}]}}
+                {"id":"detail2","modelId":"formTrace","enabled":true,"tableId":"details","sources":{"lookup_test_team":"team"}}]}}
                 """);
     }
 
@@ -127,7 +127,7 @@ class FormTraceIndexPostgresTest {
         save(configured, changed, "ACTIVE");
         assertThat(query(Map.of("lookup_production_batch", "B-CONTENT")).path("total").asInt()).isZero();
         assertThat(query(Map.of("lookup_production_batch", "B-CHANGED")).path("total").asInt()).isEqualTo(1);
-        assertThat(query(Map.of("materialLotText", "L1", "teamText", "B")).path("total").asInt()).isZero();
+        assertThat(query(Map.of("materialLotText", "L1", "lookup_test_team", "B")).path("total").asInt()).isZero();
         assertThat(jdbc.queryForObject("SELECT snapshot_json FROM form_instance_record WHERE id=1", String.class)).isEqualTo(frozen);
         assertThat(configured.toString()).isEqualTo(frozen);
         assertThat(jdbc.queryForObject("SELECT count(*) FROM form_projection_batch", Integer.class)).isZero();
@@ -178,7 +178,7 @@ class FormTraceIndexPostgresTest {
         ObjectNode frozenForm = (ObjectNode) mapper.readTree("""
                 {"id":"form","versionId":"20","version":"V1","code":"F1","name":"设备记录",
                  "fields":[{"id":"equipment","name":"设备编号","type":"text"}],
-                 "projection":{"bindings":[{"id":"trace","modelId":"formTrace","enabled":true,"sources":{"equipmentText":"equipment"}}]},
+                 "projection":{"version":"form-projection-v1","bindings":[{"id":"trace","modelId":"formTrace","enabled":true,"sources":{"equipmentText":"equipment"}}]},
                  "flow":{"nodes":[{"id":"entry","data":{"kind":"START"}},
                           {"id":"approval","data":{"kind":"APPROVAL"}},{"id":"end","data":{"kind":"END"}}],
                          "edges":[{"source":"entry","target":"approval"},{"source":"approval","target":"end"}]}}
@@ -229,9 +229,9 @@ class FormTraceIndexPostgresTest {
     @Test void mainConditionsCombineAcrossBindingsAndDetailConditionsMustShareActualRow() throws Exception {
         save(form(), values(), "ACTIVE");
         assertThat(query(Map.of("lookup_production_batch", "B-CONTENT", "equipmentText", "E1")).path("total").asInt()).isEqualTo(1);
-        assertThat(query(Map.of("materialLotText", "L1", "teamText", "A")).path("total").asInt()).isEqualTo(1);
-        assertThat(query(Map.of("materialLotText", "L1", "teamText", "B")).path("total").asInt()).isZero();
-        ObjectNode matched = query(Map.of("equipmentText", "E1", "materialLotText", "L1", "teamText", "A"));
+        assertThat(query(Map.of("materialLotText", "L1", "lookup_test_team", "A")).path("total").asInt()).isEqualTo(1);
+        assertThat(query(Map.of("materialLotText", "L1", "lookup_test_team", "B")).path("total").asInt()).isZero();
+        ObjectNode matched = query(Map.of("equipmentText", "E1", "materialLotText", "L1", "lookup_test_team", "A"));
         assertThat(matched.path("total").asInt()).isEqualTo(1);
         assertThat(matched.path("records").get(0).path("hits")).hasSize(3);
         assertThat(matched.path("records").get(0).path("hits").findValuesAsText("rowKey")).doesNotContain("row-two");
@@ -240,7 +240,7 @@ class FormTraceIndexPostgresTest {
         java.util.List<com.fasterxml.jackson.databind.JsonNode> ordered = new java.util.ArrayList<>(); bindings.forEach(ordered::add);
         java.util.Collections.reverse(ordered); bindings.removeAll(); ordered.forEach(bindings::add);
         save(reversed, values(), "ACTIVE");
-        var reordered = query(Map.of("equipmentText", "E1", "materialLotText", "L1", "teamText", "A"));
+        var reordered = query(Map.of("equipmentText", "E1", "materialLotText", "L1", "lookup_test_team", "A"));
         assertThat(reordered.path("total").asInt()).isEqualTo(1);
         assertThat(reordered.path("records").get(0).path("hits")).isEqualTo(matched.path("records").get(0).path("hits"));
     }
@@ -283,7 +283,11 @@ class FormTraceIndexPostgresTest {
 
     @Test void unconfiguredStatisticalSourcesAreExcludedAndMigrationUsesFrozenSavedMappings() throws Exception {
         ObjectNode configured = form();
-        ((ObjectNode) configured.path("projection").path("bindings").get(0)).put("modelId", "consumption");
+        ((com.fasterxml.jackson.databind.node.ArrayNode) configured.path("fields")).addObject()
+                .put("id", "quantity").put("name", "产出数量").put("type", "number");
+        ObjectNode statistics = (ObjectNode) configured.path("projection").path("bindings").get(0);
+        statistics.put("modelId", "production");
+        statistics.putObject("sources").put("outputQuantity", "quantity");
         save(configured, values(), "ACTIVE");
         assertThat(query(Map.of("lookup_production_batch", "B-CONTENT")).path("total").asInt()).isZero();
         jdbc.update("DELETE FROM form_trace_value");
@@ -291,8 +295,8 @@ class FormTraceIndexPostgresTest {
         String migration = new ClassPathResource("db/changelog/0109-saved-form-trace-index.sql").getContentAsString(java.nio.charset.StandardCharsets.UTF_8);
         jdbc.execute(migration.substring(migration.indexOf("WITH bindings AS")));
         assertThat(query(Map.of("lookup_production_batch", "B-CONTENT")).path("total").asInt()).isZero();
-        assertThat(query(Map.of("materialLotText", "L1", "teamText", "A")).path("total").asInt()).isEqualTo(1);
-        assertThat(query(Map.of("materialLotText", "L1", "teamText", "B")).path("total").asInt()).isZero();
+        assertThat(query(Map.of("materialLotText", "L1", "lookup_test_team", "A")).path("total").asInt()).isEqualTo(1);
+        assertThat(query(Map.of("materialLotText", "L1", "lookup_test_team", "B")).path("total").asInt()).isZero();
     }
 
     @Test void realEngineRowsKeepTheirIdentityFromSavedTraceThroughCompletionAndFailedProjectionRetry() throws Exception {

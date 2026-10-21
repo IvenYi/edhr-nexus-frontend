@@ -455,9 +455,10 @@ function resolveCellTextSx(cell?: CanvasSheetCell | null): CSSProperties {
 function MockReferenceControl({ field, node, valueKey, values, referenceValues, onValueChange }: RenderMockFillControlParams & { field: ModelField }) {
   const resolved = resolveReferenceField(field, node);
   const config = JSON.stringify(resolved.typeConfig);
-  const references = useCallback((_id: string, keyword: string, context: Record<string, unknown>) => getPreviewReferences(JSON.parse(config), keyword, context), [config]);
+  const references = useCallback((_id: string, keyword: string, context: Record<string, unknown>, paging?: { page: number; size: number }) => getPreviewReferences(JSON.parse(config), keyword, context, paging), [config]);
   return <RuntimeReference field={resolved} canvas disabled={Boolean(node.bindings?.readonly)} runtime={{
     values: { [field.id]: values[valueKey] }, referenceValues, references,
+    referenceContextWarnings: resolved.typeConfig.referenceContextAutofill === true ? { [field.id]: '模拟填报没有生产上下文，请手动选择' } : undefined,
     onChange: (_id, value) => onValueChange(valueKey, value as ReferenceValue ?? ''),
   }} />;
 }

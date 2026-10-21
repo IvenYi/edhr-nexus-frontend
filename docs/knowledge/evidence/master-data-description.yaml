@@ -7,7 +7,7 @@ evidence:
     visibility: internal
   - id: evidence.master-data-description-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0095-remove-duplicate-remarks.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0095-remove-duplicate-remarks.sql
     description: 删除 product_family、sop_document 和 document_version 三张表的 remark 列；重复执行使用 IF EXISTS，回滚只恢复空结构列，既有 remark 值按已确认范围丢弃。
     visibility: internal
   - id: evidence.master-data-description-process-controller

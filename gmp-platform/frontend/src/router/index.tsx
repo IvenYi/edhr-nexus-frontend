@@ -39,6 +39,7 @@ const DocumentManagementPage = lazy(() => import('@/pages/master-data/DocumentMa
 const TemplateModelingPage = lazy(() => import('@/pages/master-data/TemplateModelingPage'));
 const WorkshopManagementPage = lazy(() => import('@/pages/master-data/WorkshopManagementPage'));
 const EquipmentPage = lazy(() => import('@/pages/master-data/EquipmentPage'));
+const QualityReasonPage = lazy(() => import('@/pages/master-data/QualityReasonPage'));
 
 const OrganizationPage = lazy(() => import('@/pages/system/OrganizationPage'));
 const UserPage = lazy(() => import('@/pages/system/UserPage'));
@@ -135,6 +136,8 @@ const AppRouter = () => {
           <Route path="workshops" element={<Suspense fallback={<Loading />}><WorkshopManagementPage /></Suspense>} />
           <Route path="equipment-types" element={<Suspense fallback={<Loading />}><EquipmentPage key="types" pageKey="types" /></Suspense>} />
           <Route path="equipment" element={<Suspense fallback={<Loading />}><EquipmentPage key="equipment" pageKey="equipment" /></Suspense>} />
+          <Route path="defect-reasons" element={<Suspense fallback={<Loading />}><QualityReasonPage key="DEFECT" type="DEFECT" /></Suspense>} />
+          <Route path="scrap-reasons" element={<Suspense fallback={<Loading />}><QualityReasonPage key="SCRAP" type="SCRAP" /></Suspense>} />
         </Route>
         <Route path="system">
           <Route path="organization" element={<Suspense fallback={<Loading />}><OrganizationPage /></Suspense>} />

@@ -5,14 +5,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrInstanceController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java]
     apiReferences: ['GET /api/v1/dhr-instances/by-production-object/{productionObjectId}', 'GET /api/v1/dhr-instances/{id}']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx, gmp-platform/frontend/src/api/dhr-instances.ts, gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx, gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrInstanceLookupTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-dhr-lookup-test, evidence.dhr-instance-controller, evidence.dhr-instance-service, evidence.dhr-instance-frontend-api, evidence.dhr-instance-management-page]
     sourceRevision: working-tree
-    sourceLocator: BatchManagementPage 每行 DHR 图标及 openDhr；DhrInstanceController.byProductionObject；DhrInstanceService.findByProductionObjectId；DhrArchiveViewer 的 viewOnly 分支。浏览器交互未验收
+    sourceLocator: "BatchManagementPage 每行 DHR 图标及 openDhr；DhrInstanceController.byProductionObject；DhrInstanceService.findByProductionObjectId；DhrArchiveViewer 的 viewOnly 分支。浏览器交互未验收；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_instance.production_object_id及uk_dhr_instance_object。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-28'
     reviewStatus: reviewed
   - id: anchor.dhr-instance-first-start-transaction
@@ -20,14 +20,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java]
     apiReferences: []
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql, gmp-platform/backend/src/main/resources/db/changelog/0090-remove-dhr-template-version-snapshot.sql, gmp-platform/backend/src/main/resources/db/changelog/0091-remove-dhr-template-version-status.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: []
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrInstanceMigrationTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source, evidence.dhr-instance-service, evidence.dhr-instance-migration, evidence.dhr-instance-integration-test, evidence.dhr-instance-migration-test]
     sourceRevision: working-tree
-    sourceLocator: ProductionExecutionService.act 的首次 START 分支在同一事务调用 DhrInstanceService.createAtFirstStart；0089 以租户与生产对象唯一约束闭环，聚焦集成与迁移测试已在 working tree 通过，不表示已发布
+    sourceLocator: "ProductionExecutionService.act 的首次 START 分支在同一事务调用 DhrInstanceService.createAtFirstStart；0089 以租户与生产对象唯一约束闭环，聚焦集成与迁移测试已在 working tree 通过，不表示已发布；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_instance及uk_dhr_instance_object；dhr_template_version直接创建且不含directory_snapshot/status旧列；0089/0090/0091及当时测试为历史说明。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-17'
     reviewStatus: reviewed
   - id: anchor.dhr-instance-context-snapshot
@@ -35,14 +35,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java]
     apiReferences: []
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: []
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-snapshot-source, evidence.dhr-instance-service, evidence.dhr-instance-migration, evidence.dhr-instance-integration-test]
     sourceRevision: working-tree
-    sourceLocator: ExecutionSnapshotBuilder 提供首次 START 的冻结上下文；DhrInstanceService 从已绑定模板版本的目录和表单引用构建目录快照，并持久化到 0089 定义的独立实例字段；0090/0091 已移除模板版本旧快照与旧状态列，working-tree 集成测试已覆盖无模板版本隐藏生命周期字段时的创建与读取
+    sourceLocator: "ExecutionSnapshotBuilder 提供首次 START 的冻结上下文；DhrInstanceService 从已绑定模板版本的目录和表单引用构建目录快照，并持久化到 0089 定义的独立实例字段；0090/0091 已移除模板版本旧快照与旧状态列，working-tree 集成测试已覆盖无模板版本隐藏生命周期字段时的创建与读取；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_instance.context_snapshot/directory_snapshot；dhr_template_version不含directory_snapshot/status；新初始化直接创建，不再执行0090/0091删列。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-17'
     reviewStatus: reviewed
   - id: anchor.dhr-instance-form-evidence-query
@@ -50,14 +50,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrInstanceController.java]
     apiReferences: ['GET /api/v1/dhr-instances', 'GET /api/v1/dhr-instances/{id}']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql, gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql, gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/api/dhr-instances.ts, gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-form-record-source, evidence.dhr-instance-form-record-schema, evidence.dhr-instance-form-business-source-schema, evidence.dhr-instance-service, evidence.dhr-instance-controller, evidence.dhr-instance-integration-test, evidence.dhr-instance-frontend-api, evidence.dhr-instance-management-page]
     sourceRevision: 7bf87c00a4a1158d6fbb4085eb9fb632918bcb50
-    sourceLocator: DhrInstanceService.detail 按生产对象查询 PRODUCTION_EXECUTION 来源记录，按冻结 dhrItemId 归入目录项并保留每条 copyId。此锚点覆盖列表/只读基础详情；当前页面还可按 DEC-0063/0068 发起汇总修订。所列集成测试有聚合和权限断言，本次未重跑业务测试
+    sourceLocator: "DhrInstanceService.detail 按生产对象查询 PRODUCTION_EXECUTION 来源记录，按冻结 dhrItemId 归入目录项并保留每条 copyId。此锚点覆盖列表/只读基础详情；当前页面还可按 DEC-0063/0068 发起汇总修订。所列集成测试有聚合和权限断言，本次未重跑业务测试；2026-10-21仅初始化定位维护（d405a9af工作树）：form_instance_record.object_id/copy_id/source_type与dhr_instance.production_object_id。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-10-12'
     reviewStatus: reviewed
   - id: anchor.dhr-instance-query-permission
@@ -65,13 +65,13 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrInstanceController.java]
     apiReferences: ['GET /api/v1/dhr-instances', 'GET /api/v1/dhr-instances/{id}']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql]
     uiReferences: [gmp-platform/frontend/src/router/index.tsx, gmp-platform/frontend/src/utils/constants.ts, gmp-platform/frontend/src/utils/menuManagement.ts, gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrInstanceMigrationTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-controller, evidence.dhr-instance-migration, evidence.dhr-instance-integration-test, evidence.dhr-instance-migration-test, evidence.dhr-instance-management-page]
     sourceRevision: working-tree
-    sourceLocator: DhrInstanceController 要求 dhr.instances.view；0089 创建菜单/操作权限并仅为 ADMIN 默认授权；前端注册 /dhr-management/list 与权限映射，working-tree 集成与迁移测试已覆盖拒绝访问和默认授权
+    sourceLocator: "DhrInstanceController 要求 dhr.instances.view；0089 创建菜单/操作权限并仅为 ADMIN 默认授权；前端注册 /dhr-management/list 与权限映射，working-tree 集成与迁移测试已覆盖拒绝访问和默认授权；2026-10-21仅初始化定位维护（d405a9af工作树）：seed中的records.dhr-management、dhr.instances.view及ADMIN角色授权；0089权限创建及测试为原时点记录。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-17'
     reviewStatus: reviewed

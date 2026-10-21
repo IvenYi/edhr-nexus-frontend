@@ -1,0 +1,344 @@
+### Page
+- Page URL: http://localhost:3000/reports/defect-records
+- Page Title: eDHR - 医疗器械电子设备历史记录系统
+- Console: 0 errors, 2 warnings
+### Snapshot
+```yaml
+- generic [ref=f3e1]:
+  - generic [ref=f3e3]:
+    - generic [ref=f3e4]:
+      - generic [ref=f3e5]:
+        - generic [ref=f3e6]:
+          - button [ref=f3e361] [cursor=pointer]
+          - generic [ref=f3e362]:
+            - generic [ref=f3e12]: 记录
+            - generic [ref=f3e20]: 报表
+            - generic [ref=f3e28]: 不良明细
+        - generic [ref=f3e34]:
+          - button [ref=f3e363] [cursor=pointer]
+          - button [ref=f3e364] [cursor=pointer]
+          - button [ref=f3e365] [cursor=pointer]:
+            - generic [ref=f3e42]: "4"
+          - button [ref=f3e366] [cursor=pointer]
+          - button [ref=f3e367] [cursor=pointer]
+          - button [ref=f3e368] [cursor=pointer]
+          - button [ref=f3e369] [cursor=pointer]
+          - button [ref=f3e370] [cursor=pointer]:
+            - generic [ref=f3e63]: 系
+            - generic [ref=f3e64]: 系统管理员
+      - generic [ref=f3e67]:
+        - generic [ref=f3e68]:
+          - button [ref=f3e371] [cursor=pointer]:
+            - generic [ref=f3e72]: 首页
+          - button [ref=f3e372] [cursor=pointer]:
+            - generic [ref=f3e75]: 不良明细
+            - button [ref=f3e373]
+        - button [ref=f3e374] [cursor=pointer]
+    - generic [ref=f3e82]:
+      - button [ref=f3e375] [cursor=pointer]:
+        - paragraph [ref=f3e90]: 首页
+      - button [ref=f3e376] [cursor=pointer]:
+        - paragraph [ref=f3e95]: 数据
+      - button [ref=f3e377] [cursor=pointer]:
+        - paragraph [ref=f3e100]: 生产
+      - button [ref=f3e378] [cursor=pointer]:
+        - paragraph [ref=f3e105]: 记录
+      - button [ref=f3e379] [cursor=pointer]:
+        - paragraph [ref=f3e110]: 系统
+      - paragraph [ref=f3e111]: v2.1
+    - generic [ref=f3e113]:
+      - generic [ref=f3e114]: eDHR 系统
+      - paragraph [ref=f3e116]: 记录
+      - list [ref=f3e117]:
+        - paragraph [ref=f3e122]: 表单管理
+        - button [ref=f3e380] [cursor=pointer]:
+          - generic [ref=f3e125]: 表单列表
+        - button [ref=f3e382] [cursor=pointer]:
+          - generic [ref=f3e129]: 表单填报
+        - button [ref=f3e384] [cursor=pointer]:
+          - generic [ref=f3e133]: 表单审批
+        - paragraph [ref=f3e139]: DHR管理
+        - button [ref=f3e386] [cursor=pointer]:
+          - generic [ref=f3e142]: DHR列表
+        - button [ref=f3e388] [cursor=pointer]:
+          - generic [ref=f3e146]: DHR填报
+        - button [ref=f3e390] [cursor=pointer]:
+          - generic [ref=f3e150]: DHR汇总
+        - button [ref=f3e392] [cursor=pointer]:
+          - generic [ref=f3e154]: DHR审批
+        - paragraph [ref=f3e160]: 报表
+        - button [ref=f3e394] [cursor=pointer]:
+          - generic [ref=f3e163]: 表单追溯
+        - button [ref=f3e396] [cursor=pointer]:
+          - generic [ref=f3e167]: DHR追溯
+        - button [ref=f3e398] [cursor=pointer]:
+          - generic [ref=f3e171]: 报工记录
+        - button [ref=f3e400] [cursor=pointer]:
+          - generic [ref=f3e175]: 不良明细
+        - button [ref=f3e402] [cursor=pointer]:
+          - generic [ref=f3e179]: 报废记录
+        - button [ref=f3e404] [cursor=pointer]:
+          - generic [ref=f3e183]: 消耗记录
+    - main [ref=f3e185]:
+      - generic [ref=f3e190]:
+        - generic [ref=f3e192]:
+          - generic [ref=f3e194]:
+            - generic: 所属生产批次/SN
+            - generic [ref=f3e195]:
+              - combobox [ref=f3e406]
+              - group [aria-hidden]:
+                - generic: 所属生产批次/SN
+          - generic [ref=f3e197]:
+            - generic: 工单编号
+            - generic [ref=f3e198]:
+              - textbox [ref=f3e407]:
+                - /placeholder: 请输入工单编号
+              - group [aria-hidden]:
+                - generic: 工单编号
+          - generic [ref=f3e200]:
+            - button [ref=f3e408] [cursor=pointer]: 重置
+            - button [ref=f3e409] [cursor=pointer]: 查询
+            - button [ref=f3e410] [cursor=pointer]: 展开
+        - generic [ref=f3e213]:
+          - generic [ref=f3e214]:
+            - button [ref=f3e411] [cursor=pointer]
+            - generic [ref=f3e412]: 一行是一笔业务记录，不合并多次填报；点击查看来源表单。
+            - button [ref=f3e413] [cursor=pointer]
+          - table [ref=f3e225]:
+            - rowgroup [ref=f3e245]:
+              - row [ref=f3e414]:
+                - columnheader [ref=f3e415]: 工单编号
+                - columnheader [ref=f3e417]: 所属生产批次/SN
+                - columnheader [ref=f3e419]: 生产产品编码
+                - columnheader [ref=f3e421]: 生产产品名称
+                - columnheader [ref=f3e423]: 工序
+                - columnheader [ref=f3e425]: 不良原因
+                - columnheader [ref=f3e427]: 不良分项数量
+                - columnheader [ref=f3e429]: 单位
+                - columnheader [ref=f3e431]: 原因补充说明
+                - columnheader [ref=f3e433]: 责任班组
+                - columnheader [ref=f3e435]: 关联单据号
+                - columnheader [ref=f3e437]: 来源表单
+                - columnheader [ref=f3e439]: 来源位置
+                - columnheader [ref=f3e441]: 表单创建人
+                - columnheader [ref=f3e443]: 表单创建时间
+                - columnheader [ref=f3e445]: 表单更新人
+                - columnheader [ref=f3e447]: 表单更新时间
+                - columnheader [ref=f3e449]: 操作
+            - rowgroup [ref=f3e282]:
+              - row [ref=f3e450] [cursor=pointer]:
+                - cell [ref=f3e451]: ASK-REASON-20261019-R2-WO
+                - cell [ref=f3e452]: ASK-REASON-20261019-R2-B
+                - cell [ref=f3e453]: ASK-REASON-20261019-R2-P
+                - cell [ref=f3e454]: 安速康原因模拟·刀头
+                - cell [ref=f3e455]: 安速康原因模拟·末道清洁
+                - cell [ref=f3e456]: 模拟·清洁后残留（ASK-REASON-20261019-R2-D02）
+                - cell [ref=f3e457]: "3"
+                - cell [ref=f3e458]: 件
+                - cell [ref=f3e459]: 第二次报工不良原因分项3，不替代本次NG1
+                - cell [ref=f3e460]: —
+                - cell [ref=f3e461]: —
+                - cell [ref=f3e462]: FR-20261019-000037
+                - cell [ref=f3e463]: 子表第 1 行
+                - cell [ref=f3e464]: 系统管理员
+                - cell [ref=f3e465]: 2026-10-19 00:17:55.576572
+                - cell [ref=f3e466]: 系统管理员
+                - cell [ref=f3e467]: 2026-10-19 00:17:55.745103
+                - cell [ref=f3e468]:
+                  - button [ref=f3e469]
+              - row [ref=f3e470] [cursor=pointer]:
+                - cell [ref=f3e471]: ASK-REASON-20261019-R2-WO
+                - cell [ref=f3e472]: ASK-REASON-20261019-R2-B
+                - cell [ref=f3e473]: ASK-REASON-20261019-R2-P
+                - cell [ref=f3e474]: 安速康原因模拟·刀头
+                - cell [ref=f3e475]: 安速康原因模拟·末道清洁
+                - cell [ref=f3e476]: 模拟·清洁后残留（ASK-REASON-20261019-R2-D02）
+                - cell [ref=f3e477]: "1"
+                - cell [ref=f3e478]: 件
+                - cell [ref=f3e479]: 模拟残留分项，可能与其他分项重叠
+                - cell [ref=f3e480]: —
+                - cell [ref=f3e481]: —
+                - cell [ref=f3e482]: FR-20261019-000036
+                - cell [ref=f3e483]: 子表第 2 行
+                - cell [ref=f3e484]: 系统管理员
+                - cell [ref=f3e485]: 2026-10-19 00:13:58.59358
+                - cell [ref=f3e486]: 系统管理员
+                - cell [ref=f3e487]: 2026-10-19 00:15:58.385629
+                - cell [ref=f3e488]:
+                  - button [ref=f3e489]
+              - row [ref=f3e490] [cursor=pointer]:
+                - cell [ref=f3e491]: ASK-REASON-20261019-R2-WO
+                - cell [ref=f3e492]: ASK-REASON-20261019-R2-B
+                - cell [ref=f3e493]: ASK-REASON-20261019-R2-P
+                - cell [ref=f3e494]: 安速康原因模拟·刀头
+                - cell [ref=f3e495]: 安速康原因模拟·末道清洁
+                - cell [ref=f3e496]: 模拟·刀头表面划伤（ASK-REASON-20261019-R2-D01）
+                - cell [ref=f3e497]: "2"
+                - cell [ref=f3e498]: 件
+                - cell [ref=f3e499]: 模拟划伤分项，不替代NG
+                - cell [ref=f3e500]: —
+                - cell [ref=f3e501]: —
+                - cell [ref=f3e502]: FR-20261019-000036
+                - cell [ref=f3e503]: 子表第 1 行
+                - cell [ref=f3e504]: 系统管理员
+                - cell [ref=f3e505]: 2026-10-19 00:13:58.59358
+                - cell [ref=f3e506]: 系统管理员
+                - cell [ref=f3e507]: 2026-10-19 00:15:58.385629
+                - cell [ref=f3e508]:
+                  - button [ref=f3e509]
+          - generic [ref=f3e349]:
+            - paragraph [ref=f3e350]: 共 3 条数据
+            - generic [ref=f3e351]:
+              - navigation [ref=f3e510]:
+                - list [ref=f3e353]:
+                  - listitem [ref=f3e354]:
+                    - button [disabled]
+                  - listitem [ref=f3e355]:
+                    - button [ref=f3e511] [cursor=pointer]: "1"
+                  - listitem [ref=f3e357]:
+                    - button [disabled]
+              - generic [ref=f3e359]:
+                - combobox [ref=f3e512] [cursor=pointer]: 20 条/页
+                - textbox [aria-hidden]: "20"
+                - group [aria-hidden]
+  - dialog "来源详情" [active] [ref=f3e514]:
+    - generic [ref=f3e515]:
+      - generic [ref=f3e516]:
+        - heading "信息查看" [level=6] [ref=f3e517]
+        - button "关闭来源详情" [ref=f3e518] [cursor=pointer]
+      - tablist "来源详情切换" [ref=f3e523]:
+        - tab "数据信息" [selected] [ref=f3e524] [cursor=pointer]
+        - tab "数据审计" [ref=f3e525] [cursor=pointer]
+    - generic [ref=f3e527]:
+      - generic [ref=f3e528]:
+        - paragraph [ref=f3e529]: 生产来源
+        - generic [ref=f3e531]:
+          - generic [ref=f3e532]:
+            - generic [ref=f3e533]: 来源表单
+            - generic [ref=f3e534]: FR-20261019-000036
+          - generic [ref=f3e535]:
+            - generic [ref=f3e536]: 所属生产批次/SN
+            - generic [ref=f3e537]: ASK-REASON-20261019-R2-B
+          - generic [ref=f3e538]:
+            - generic [ref=f3e539]: 工序
+            - generic [ref=f3e540]: 安速康原因模拟·末道清洁
+          - generic [ref=f3e541]:
+            - generic [ref=f3e542]: 表单状态
+            - generic [ref=f3e543]: 已完成
+      - generic [ref=f3e548]:
+        - generic [ref=f3e549]:
+          - heading "安速康原因模拟·末道清洁 · 子表第 1 行" [level=6] [ref=f3e550]
+          - button "来源说明" [ref=f3e551] [cursor=pointer]
+        - generic [ref=f3e556]:
+          - generic [ref=f3e559]:
+            - generic [ref=f3e560]: 记录编号：CX11-ZYJ11-06-JL01
+            - generic [ref=f3e564]: 版本/修订号：A/0
+            - generic [ref=f3e567]: 刀头生产记录-末道清洁
+            - generic [ref=f3e570]: 产品信息
+            - generic [ref=f3e573]: 工单号
+            - generic [ref=f3e577]: 批号
+            - generic [ref=f3e581]: 数量
+            - generic [ref=f3e585]: 产品料号
+            - generic [ref=f3e589]: 产品型号
+            - generic [ref=f3e606]: 过程
+            - generic [ref=f3e608]: 质量控制点/ 结果 / 签字 / 日期
+            - generic [ref=f3e611]: 末道清洁
+            - generic [ref=f3e613]: 1.1用无尘布蘸取75%的乙醇消毒液对已组装好的的刀头外管表面进行一次擦拭，并做记录； 无尘布在擦拭100把刀头外管后需更换，并将耗尽使用次数的无尘布放置在相应的物料回收盒。
+            - generic [ref=f3e615]: 合格数量
+            - generic [ref=f3e623]: 不合格数量
+            - generic [ref=f3e631]: 所使用酒精批号
+            - generic [ref=f3e638]: 更换无尘布数量
+            - generic [ref=f3e645]: 操作员签名
+            - generic [ref=f3e653]: 确认人签名
+            - generic [ref=f3e661]: 日期
+            - generic [ref=f3e669]: NCR编号
+            - generic [ref=f3e677]: 设备及量具编号
+            - generic [ref=f3e679]: 无
+            - generic [ref=f3e697]: 复核：下方签名表明该 DHR 已通过完整性和准确性审核
+            - generic [ref=f3e704]: 生产复核人签字
+            - generic [ref=f3e709]: 日期
+            - generic [ref=f3e898]:
+              - textbox "工单号" [ref=f3e899]: ASK-REASON-20261019-R2-WO[安速康原因模拟·刀头]
+              - group [aria-hidden]
+            - generic [ref=f3e905]:
+              - textbox "生产批号" [ref=f3e906]: ASK-REASON-20261019-R2-B[ASK-REASON-20261019-R2-P][安速康原因模拟·刀头]
+              - group [aria-hidden]
+            - generic [ref=f3e912]:
+              - textbox "产品料号" [ref=f3e913]: ASK-REASON-20261019-R2-P[安速康原因模拟·刀头]
+              - group [aria-hidden]
+            - generic [ref=f3e919]:
+              - textbox "合格数量" [ref=f3e920]: "10"
+              - group [aria-hidden]
+            - generic [ref=f3e926]:
+              - textbox "不合格数量" [ref=f3e927]: "1"
+              - group [aria-hidden]
+            - generic [ref=f3e933]:
+              - textbox "酒精批号" [ref=f3e934]: ASK-REASON-20261019-R2-ALC
+              - group [aria-hidden]
+            - generic "系统管理员" [ref=f3e938]
+            - generic [ref=f3e945] [cursor=pointer]:
+              - textbox [ref=f3e946]: 2026-10-19
+              - group [aria-hidden]
+          - generic [ref=f3e952]:
+            - generic [ref=f3e953]: 模拟增补：引用字段和不良原因明细，仅本轮验证
+            - generic [ref=f3e969]: 模拟增补·报工单位
+            - generic [ref=f3e990]: 模拟增补·当前工序
+            - generic [ref=f3e1011]: 模拟增补·使用设备
+            - generic [ref=f3e1032]: 模拟增补·核对人员
+            - generic [ref=f3e1053]: 模拟增补·清洗物料
+            - generic [ref=f3e1074]: 不良原因
+            - generic [ref=f3e1076]: 不良分项数量
+            - generic [ref=f3e1078]: 单位
+            - generic [ref=f3e1080]: 补充说明
+            - generic [ref=f3e1082]: 当前工序
+            - generic [ref=f3e1354]:
+              - textbox "模拟增补·报工单位" [ref=f3e1355]: 件
+              - group [aria-hidden]
+            - generic [ref=f3e1361]:
+              - textbox "模拟增补·当前工序" [ref=f3e1362]: ASK-REASON-20261019-R2-OP3[安速康原因模拟·末道清洁]
+              - group [aria-hidden]
+            - generic [ref=f3e1368]:
+              - textbox "模拟增补·使用设备" [ref=f3e1369]: ASK-REASON-20261019-R2-EQ[模拟超声清洗机]
+              - group [aria-hidden]
+            - generic [ref=f3e1375]:
+              - textbox "模拟增补·核对人员" [ref=f3e1376]: 系统管理员[admin]
+              - group [aria-hidden]
+            - generic [ref=f3e1382]:
+              - textbox "模拟增补·清洗物料" [ref=f3e1383]: ASK-REASON-20261019-R2-R[安速康原因模拟·清洗原料][kg]
+              - group [aria-hidden]
+            - generic [ref=f3e1384]:
+              - generic "模拟增补·不良原因明细"
+            - generic [ref=f3e1390]:
+              - textbox "不良原因" [ref=f3e1391]: ASK-REASON-20261019-R2-D01[模拟·刀头表面划伤]
+              - group [aria-hidden]
+            - generic [ref=f3e1397]:
+              - textbox "不良分项数量" [ref=f3e1398]: "2"
+              - group [aria-hidden]
+            - generic [ref=f3e1404]:
+              - textbox "单位" [ref=f3e1405]: 件
+              - group [aria-hidden]
+            - generic [ref=f3e1411]:
+              - textbox "补充说明" [ref=f3e1412]: 模拟划伤分项，不替代NG
+              - group [aria-hidden]
+            - generic [ref=f3e1418]:
+              - textbox "当前工序" [ref=f3e1419]: ASK-REASON-20261019-R2-OP3[安速康原因模拟·末道清洁]
+              - group [aria-hidden]
+            - generic [ref=f3e1425]:
+              - textbox "不良原因" [ref=f3e1426]: ASK-REASON-20261019-R2-D02[模拟·清洁后残留]
+              - group [aria-hidden]
+            - generic [ref=f3e1432]:
+              - textbox "不良分项数量" [ref=f3e1433]: "1"
+              - group [aria-hidden]
+            - generic [ref=f3e1439]:
+              - textbox "单位" [ref=f3e1440]: 件
+              - group [aria-hidden]
+            - generic [ref=f3e1446]:
+              - textbox "补充说明" [ref=f3e1447]: 模拟残留分项，可能与其他分项重叠
+              - group [aria-hidden]
+            - generic [ref=f3e1453]:
+              - textbox "当前工序" [ref=f3e1454]: ASK-REASON-20261019-R2-OP3[安速康原因模拟·末道清洁]
+              - group [aria-hidden]
+      - button [ref=f3e1456] [cursor=pointer]:
+        - paragraph [ref=f3e1458]: 本笔业务取值
+      - button "查看实际关联 DHR" [ref=f3e1462] [cursor=pointer]
+```

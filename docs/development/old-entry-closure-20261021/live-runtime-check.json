@@ -1,0 +1,149 @@
+{
+  "verifiedAt": "2026-10-21T23:17:53.644785",
+  "database": "edhr_dev",
+  "checks": [
+    {
+      "port": 8081,
+      "method": "POST",
+      "path": "/api/v1/master-data/sop-documents",
+      "status": 405
+    },
+    {
+      "port": 8081,
+      "method": "PUT",
+      "path": "/api/v1/master-data/sop-documents/999999999999999999",
+      "status": 405
+    },
+    {
+      "port": 8081,
+      "method": "DELETE",
+      "path": "/api/v1/master-data/sop-documents/999999999999999999",
+      "status": 405
+    },
+    {
+      "port": 8081,
+      "method": "POST",
+      "path": "/api/v1/master-data/process-modeling/documents",
+      "status": 405
+    },
+    {
+      "port": 8081,
+      "method": "PUT",
+      "path": "/api/v1/master-data/process-modeling/documents/999999999999999999",
+      "status": 404
+    },
+    {
+      "port": 8081,
+      "method": "DELETE",
+      "path": "/api/v1/master-data/process-modeling/documents/999999999999999999",
+      "status": 404
+    },
+    {
+      "port": 8081,
+      "method": "GET",
+      "path": "/api/v1/master-data/documents",
+      "status": 200
+    },
+    {
+      "port": 8081,
+      "method": "GET",
+      "path": "/api/v1/form-lookup-items",
+      "status": 200
+    },
+    {
+      "port": 8081,
+      "method": "GET",
+      "path": "/api/v1/reports/form-projections/status",
+      "status": 200
+    },
+    {
+      "port": 8081,
+      "method": "GET",
+      "path": "/api/v1/master-data/quality-reasons/DEFECT",
+      "status": 200
+    },
+    {
+      "port": 8081,
+      "method": "GET",
+      "path": "/api/v1/master-data/quality-reasons/SCRAP",
+      "status": 200
+    },
+    {
+      "port": 3000,
+      "method": "POST",
+      "path": "/api/v1/master-data/sop-documents",
+      "status": 405
+    },
+    {
+      "port": 3000,
+      "method": "PUT",
+      "path": "/api/v1/master-data/sop-documents/999999999999999999",
+      "status": 405
+    },
+    {
+      "port": 3000,
+      "method": "DELETE",
+      "path": "/api/v1/master-data/sop-documents/999999999999999999",
+      "status": 405
+    },
+    {
+      "port": 3000,
+      "method": "POST",
+      "path": "/api/v1/master-data/process-modeling/documents",
+      "status": 405
+    },
+    {
+      "port": 3000,
+      "method": "PUT",
+      "path": "/api/v1/master-data/process-modeling/documents/999999999999999999",
+      "status": 404
+    },
+    {
+      "port": 3000,
+      "method": "DELETE",
+      "path": "/api/v1/master-data/process-modeling/documents/999999999999999999",
+      "status": 404
+    },
+    {
+      "port": 3000,
+      "method": "GET",
+      "path": "/api/v1/master-data/documents",
+      "status": 200
+    },
+    {
+      "port": 3000,
+      "method": "GET",
+      "path": "/api/v1/form-lookup-items",
+      "status": 200
+    },
+    {
+      "port": 3000,
+      "method": "GET",
+      "path": "/api/v1/reports/form-projections/status",
+      "status": 200
+    },
+    {
+      "port": 3000,
+      "method": "GET",
+      "path": "/api/v1/master-data/quality-reasons/DEFECT",
+      "status": 200
+    },
+    {
+      "port": 3000,
+      "method": "GET",
+      "path": "/api/v1/master-data/quality-reasons/SCRAP",
+      "status": 200
+    }
+  ],
+  "oldWritesNoDocumentVersionAuditMutation": true,
+  "newRuntimePid": 62450,
+  "rootFocusedTests": {
+    "tests": 169,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3
+  },
+  "productionFrontendPidUnchanged": 47683,
+  "newInitializationBaselineAppliedToLiveDatabase": false,
+  "note": "Vite3000 listens localhost IPv6; direct127.0.0.1:3000 is unavailable by existing binding"
+}

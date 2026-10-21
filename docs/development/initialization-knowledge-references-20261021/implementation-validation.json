@@ -1,0 +1,20 @@
+{
+  "result": "passed",
+  "resolvedRows": 107,
+  "historicalFilesPathOnly": 22,
+  "currentFilesOnlySourceAndLocatorsChanged": 16,
+  "errors": [],
+  "maven": {
+    "command": "mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml clean test",
+    "exitCode": 0,
+    "counts": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "log": "/tmp/edhr-initialization-knowledge-main.log",
+    "logSha256": "465a3e1dc9e4eb4c1e5ae5446432f4639912badbd67849a481537893cede90b9"
+  },
+  "scope": "107 initialization references only; not whole-project semantic or runtime acceptance"
+}

@@ -1,0 +1,138 @@
+qualityResult:
+  result: passed
+  baseCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+  headCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+  contractBaseline:
+    sourceCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    targetBranch: edhr-dev
+    targetCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    contractReadCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/backend/src/main/resources/db/changelog
+      - gmp-platform/backend/src/test/resources/db
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselineTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/DatabaseChangelogTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/repository/ProductFamilyMemberRepositoryTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrInstanceMigrationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryMigrationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotMigrationPostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkTemplateWritePostgresTest.java
+      - gmp-platform/backend/scripts/test-trace-single-binding-migration.py
+      - gmp-platform/backend/scripts/test-dhr-office-migration.mjs
+      - gmp-platform/backend/scripts/test-dhr-model-migration.mjs
+      - gmp-platform/backend/scripts/verify-form-instance-migration.sql
+      - docs/development/clean-initialization-baseline-20261021
+    excludedPaths:
+      - gmp-platform/frontend/node_modules
+      - output/trace-single-binding-publish
+      - 原共享工作区未合入的原因目录与引用字段在途修改
+      - 当前运行中3000/8081与edhr_dev数据库承接
+    untrackedPaths:
+      - gmp-platform/frontend/node_modules
+      - output/trace-single-binding-publish
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.clean-baseline-scope
+      required: true
+      category: requirements
+      description: 仅验收用户收窄后的初始化与配套测试，不把本体暂缓或旧功能写口冒称修复
+      method: inspection
+      command: 阅读最新用户请求、decision-package、README、remaining-writers；git diff --name-only -- docs/knowledge docs/architecture gmp-platform/backend/src/main/java gmp-platform/frontend/src
+      outcome: passed
+      evidence:
+        - 来源、目标及实际读取契约均为d405a9afb4327b859545fa5a12c7eebe1350f418；候选为该提交上的未提交差异，非已提交或已集成版本。
+        - 业务Java、前端、docs/knowledge及architecture差异为空；旧写入口与知识路径修正明确延后，未重新定义业务规则。
+    - id: check.clean-baseline-fixtures-and-packaging
+      required: true
+      category: regression
+      description: 全部历史夹具保留原字节，运行包不再携带历史迁移
+      method: command
+      command: git ls-tree/cat-file逐个比较d405原126 SQL及master；zipfile读取实际应用jar并与main资源逐字节比较
+      outcome: passed
+      evidence:
+        - quality-fixture-verification.json记录126份SQL＋1份历史master全部相同字节。
+        - jar内db资源恰为新schema、新seed、生产master三文件，字节与当前生产source一致，历史夹具不在jar。
+    - id: check.clean-baseline-independent-empty-install
+      required: true
+      category: database
+      description: 独立空库实际安装与重复安装新master
+      method: command
+      command: native PostgreSQL16上创建隔离edhr_baseline_qa_20261021，使用实际main资源Liquibase更新两次
+      outcome: passed
+      evidence:
+        - /tmp/edhr-clean-baseline-independent-install.log首装2个变更集成功。
+        - /tmp/edhr-clean-baseline-repeat-qa.log第二次Run 0、Previously run 2，无额外兼容或清理变更集。
+    - id: check.clean-baseline-schema-and-seed
+      required: true
+      category: database
+      description: 独立重新导出参考库与QA新库，验证结构、函数、触发器、索引、序列、全部预置
+      method: query
+      command: pg_dump --schema-only＋逐表to_jsonb规范化比较；查询pg_constraint、pg_proc、pg_trigger、pg_indexes及序列值
+      outcome: passed
+      evidence:
+        - quality-equivalence.json记录96非Liquibase表、252预置逐值相同；仅忽略安装时间字段。
+        - 规范化只排除pg_dump会话/注释、等价常量数组cast，以及明确移除的回填序列和NOT VALID标志；其余完整DDL相同，规范化SHA256均acab573498829218b847d49e7fca54a45b9c310d79f744bc72e8d669bde7a6b1。
+        - 95外键全部validated，0未验证约束，2函数、2触发器、246索引；6个当前序列及last_value/is_called与参考相同。
+    - id: check.clean-baseline-guards-and-history-regression
+      required: true
+      category: integration
+      description: 实跑当前基线负向保护、签署原文及历史迁移回归
+      method: automated-test
+      command: PGUSER=edhr BASELINE_TEST_DATABASE_URL=jdbc:postgresql://127.0.0.1:5432/edhr_baseline_test_20261021 mvn -q -Dexec.skip=true -Dtest='CurrentDatabaseBaselineTest,CurrentDatabaseBaselinePostgresTest,*MigrationTest,DatabaseChangelogTest,DevProfileLiquibaseConfigTest' test
+      outcome: passed
+      evidence:
+        - quality-tests.json记录48项中39实跑通过、9旧原生PG条件跳过，0失败、0错误；未将跳过计为通过。
+        - 当前真实PG用例验证首次/重复安装、非空业务schema拒绝且保留原记录、9追溯预置、5物料类型、管理员授权、原文TEXT及JSON拒绝、外键拒绝。
+        - 本轮未执行完整业务E2E或浏览器交互；无UI改动。
+    - id: check.clean-baseline-live-reference-trigger
+      required: true
+      category: database
+      description: 新基线保留当前引用维护与删除保护行为，不误删触发器中的必要DELETE
+      method: query
+      command: QA隔离库事务插入表单版本与引用作业图，验证生成引用、删除阻断、更新解除、无效引用拒绝，最后ROLLBACK
+      outcome: passed
+      evidence:
+        - /tmp/edhr-clean-baseline-trigger-qa.log全部SQL与DO断言成功；引用解除后可删除版本，原业务行事务回滚。
+    - id: check.clean-baseline-runtime
+      required: true
+      category: api
+      description: 实际新jar能在隔离库启动并读取当前初始化结果
+      method: command
+      command: 独立访问主侧临时52923应用的admin登录、form-lookup-items、reports/form-projections/status
+      outcome: passed
+      evidence:
+        - quality-runtime.json独立HTTP校验三项均HTTP200/code200；不保存token或密码。
+        - 未操作生产3000/8081，未执行旧写口、demo或当前edhr_dev迁移。
+    - id: check.clean-baseline-knowledge-deferred
+      required: false
+      category: ontology
+      description: 用户明确只列失效本体路径、下一步再修，本步不宣称知识CI通过
+      method: inspection
+      command: 核对knowledge-path-followups.csv、knowledge-validation-result.json、正式校验器validateEvidencePaths与原文件差异
+      outcome: failed
+      evidence:
+        - 正式知识验证既有本轮结果为89测试18失败，旧main资源引用不存在；107处引用清单已提供，knowledge/architecture未改。
+        - 该已接受暂缓不纳入本步初始化子范围通过判定；当前组合不具备完整知识CI或发布资格。
+  findings: []
+  residualRisks:
+    - id: risk.clean-baseline-knowledge-paths
+      description: 用户明确暂缓的38文件107处本体路径仍失效，正式知识CI尚未通过
+      impact: 不能把本次初始化子范围passed解释为全仓、知识基线或可发布候选通过
+      mitigation: 下一步逐项修正当前实现锚点与历史证据路径并重新执行正式知识验证
+    - id: risk.clean-baseline-existing-dev-adoption
+      description: 本候选只支持空库，当前edhr_dev旧变更账本与在途0115原因资产未承接
+      impact: 不可直接以本候选覆盖当前环境后重启；会明确HALT而非自动清理
+      mitigation: 后续整合在途代码与数据库资产，按独立承接方案及备份验证执行，本轮保持运行环境不动
+    - id: risk.clean-baseline-old-writers
+      description: remaining-writers.md列明两组旧文档写API、旧模板新冻结退役含义和手工旧demo仍存在
+      impact: 清理初始化不等于全系统已禁止旧格式写入
+      mitigation: 下一步按页面调用与API保留用途审查后处理，本步不添加周期回填掩盖入口
+    - id: risk.clean-baseline-focused-test-boundary
+      description: 9项旧PG环境条件测试跳过，未执行完整业务E2E与浏览器回归
+      impact: 本轮通过仅覆盖已执行的初始化和相邻历史回归
+      mitigation: 使用本轮真实空库、结构/seed等价、负向约束及临时应用证据限定结论；后续实际集成按影响重验
+  blockingConditions: []

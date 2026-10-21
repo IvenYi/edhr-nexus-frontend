@@ -854,61 +854,6 @@ public class ProcessModelingController {
                 documentSpec(keyword, status), pageable(page, size, sort, order)), page, size));
     }
 
-    @PostMapping("/documents")
-    @PreAuthorize("hasAuthority('master-data.documents')")
-    @Transactional
-    public ApiResponse<SopDocument> createDocument(@RequestBody MasterDataDescriptionRequest request) {
-        LocalDateTime now = LocalDateTime.now();
-        SopDocument entity = SopDocument.builder()
-                .id(idGenerator.nextId())
-                .tenantId(TENANT_ID)
-                .code(generateCode("DOC"))
-                .title(requireName(request))
-                .version(trimToNull(request.getVersion()))
-                .fileReference(trimToNull(request.getFileReference()))
-                .description(trimToNull(request.getDescription()))
-                .status(resolveStatus(request, "DRAFT"))
-                .createdBy(currentOperatorName())
-                .createdAt(now)
-                .updatedBy(currentOperatorName())
-                .updatedAt(now)
-                .build();
-        SopDocument saved = sopDocumentRepository.save(entity);
-        writeAudit("PROCESS_DOCUMENT", saved.getId(), "CREATE", "文档管理", "新增文档", Map.of(), documentSnapshot(saved));
-        return ApiResponse.success(saved);
-    }
-
-    @PutMapping("/documents/{id}")
-    @PreAuthorize("hasAuthority('master-data.documents')")
-    @Transactional
-    public ApiResponse<SopDocument> updateDocument(@PathVariable Long id, @RequestBody MasterDataDescriptionRequest request) {
-        SopDocument existing = sopDocumentRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MD_009));
-        Map<String, Object> before = documentSnapshot(existing);
-        existing.setTitle(requireName(request));
-        existing.setVersion(trimToNull(request.getVersion()));
-        existing.setFileReference(trimToNull(request.getFileReference()));
-        existing.setDescription(trimToNull(request.getDescription()));
-        existing.setStatus(resolveStatus(request, existing.getStatus()));
-        existing.setUpdatedBy(currentOperatorName());
-        existing.setUpdatedAt(LocalDateTime.now());
-        SopDocument saved = sopDocumentRepository.save(existing);
-        writeChangedAudit("PROCESS_DOCUMENT", saved.getId(), "文档管理", "编辑文档", before, documentSnapshot(saved));
-        return ApiResponse.success(saved);
-    }
-
-    @DeleteMapping("/documents/{id}")
-    @PreAuthorize("hasAuthority('master-data.documents')")
-    @com.zencas.edhr.masterdata.deletion.ProtectDeletion(table = "sop_document", idArgument = 0)
-    @Transactional
-    public ApiResponse<Void> deleteDocument(@PathVariable Long id) {
-        SopDocument existing = sopDocumentRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MD_009));
-        sopDocumentRepository.deleteById(id);
-        writeAudit("PROCESS_DOCUMENT", id, "DELETE", "文档管理", "删除文档", documentSnapshot(existing), Map.of());
-        return ApiResponse.success(null);
-    }
-
     private <T> PageResult<T> toResult(Page<T> result, int page, int size) {
         return PageResult.of(result.getContent(), page, size, result.getTotalElements());
     }
@@ -1757,15 +1702,6 @@ public class ProcessModelingController {
         snapshot.put("createdAt", entity.getCreatedAt() == null ? null : entity.getCreatedAt().toString());
         snapshot.put("updatedBy", entity.getUpdatedBy());
         snapshot.put("updatedAt", entity.getUpdatedAt() == null ? null : entity.getUpdatedAt().toString());
-        return snapshot;
-    }
-
-    private Map<String, Object> documentSnapshot(SopDocument entity) {
-        Map<String, Object> snapshot = commonSnapshot(entity.getId(), entity.getCode(), entity.getTitle(), entity.getStatus(),
-                entity.getCreatedBy(), entity.getCreatedAt(), entity.getUpdatedBy(), entity.getUpdatedAt());
-        snapshot.put("version", entity.getVersion());
-        snapshot.put("fileReference", entity.getFileReference());
-        snapshot.put("description", entity.getDescription());
         return snapshot;
     }
 

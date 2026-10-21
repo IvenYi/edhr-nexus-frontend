@@ -117,7 +117,7 @@ facts:
     conceptId: concept.form-instance
     valueType: string
     sourceType: database
-    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql
+    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
     aliases: [formInstance.copyId]
     availability: runtime
     allowedOperators: [is-present]
@@ -125,7 +125,7 @@ facts:
     visibility: internal
     evidenceIds: [evidence.dhr-instance-form-record-schema]
     sourceRevision: 343ee1910d82b945841b0c132d2c3912a886b250
-    sourceLocator: form_instance_record.copy_id 及 tenant_id/object_id/operation_id/copy_id 唯一约束
+    sourceLocator: "form_instance_record.copy_id 及 tenant_id/object_id/operation_id/copy_id 唯一约束；2026-10-21仅初始化定位维护（d405a9af工作树）：form_instance_record.copy_id；uk_form_instance_source (tenant_id, object_id, operation_id, copy_id)。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-17'
     reviewStatus: reviewed
   - id: fact.dhr-instance.has-view-permission

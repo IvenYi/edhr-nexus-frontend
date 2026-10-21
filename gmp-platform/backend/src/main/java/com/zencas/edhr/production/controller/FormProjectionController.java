@@ -49,7 +49,7 @@ public class FormProjectionController {
     @PostMapping("/query")
     @Transactional(readOnly = true, isolation = org.springframework.transaction.annotation.Isolation.REPEATABLE_READ)
     public ApiResponse<ObjectNode> query(@RequestBody Query query) {
-        if (query.modelId() == null || !Set.of("formTrace", "production", "scrap", "consumption").contains(query.modelId()) || query.page() < 0 || query.size() < 1 || query.size() > 200)
+        if (query.modelId() == null || !Set.of("formTrace", "production", "defect", "scrap", "consumption").contains(query.modelId()) || query.page() < 0 || query.size() < 1 || query.size() > 200)
             throw invalid("请选择可用报表及合法页码");
         boolean trace = "formTrace".equals(query.modelId());
         if (trace) {
@@ -68,7 +68,10 @@ public class FormProjectionController {
         if (query.filters() != null) for (var filter : query.filters().entrySet()) {
             String key = filter.getKey();
             boolean common = Set.of("workOrderNo", "productCode", "productName", "unit", "teamText", "documentNumberText", "createdBy", "updatedBy", "createdDateFrom", "createdDateTo", "updatedDateFrom", "updatedDateTo").contains(key);
-            boolean specific = ("production".equals(query.modelId()) ? Set.of("reporter", "productionDateFrom", "productionDateTo") : Set.of("materialCode", "materialName", "materialLotText", "category", "reason")).contains(key);
+            boolean specific = ("production".equals(query.modelId()) ? Set.of("reporter", "productionDateFrom", "productionDateTo")
+                    : "defect".equals(query.modelId()) ? Set.of("reason", "reasonId")
+                    : "scrap".equals(query.modelId()) ? Set.of("materialCode", "materialName", "materialLotText", "reason", "reasonId")
+                    : Set.of("materialCode", "materialName", "materialLotText", "category", "reason")).contains(key);
             if (!common && !specific) throw invalid("筛选属性不适用于此业务报表");
             if (filter.getValue() == null || filter.getValue().isBlank() || filter.getValue().length() > 512) throw invalid("筛选属性或值不受支持");
             String value = filter.getValue().trim();
@@ -90,6 +93,8 @@ public class FormProjectionController {
                 }
             } else if (Set.of("createdBy", "updatedBy").contains(key)) {
                 where.append("createdBy".equals(key) ? " AND f.created_by=?" : " AND f.updated_by=?"); args.add(value);
+            } else if ("reasonId".equals(key)) {
+                where.append(" AND r.attributes->>'reasonId'=?"); args.add(value);
             } else if (Set.of("materialLotText", "teamText", "documentNumberText", "unit", "reason", "category", "reporter").contains(key)) {
                 if ("reporter".equals(key) && !"production".equals(query.modelId())) throw invalid("报工人仅用于报工记录");
                 where.append(" AND (r.attributes ->> ? = ? OR r.attributes ->> ? = ?)");
@@ -144,6 +149,11 @@ public class FormProjectionController {
             }
             return record;
         }, pageArgs.toArray())));
+        if ("defect".equals(query.modelId())) {
+            result.putArray("totals");
+            result.put("totalsTruncated", false);
+            return ApiResponse.success(result);
+        }
         // Aggregation is over facts, never over DHR joins; preserve object, operation, material, lot and unit.
         result.set("totals", mapper.valueToTree(jdbc.queryForList("""
                 SELECT f.object_id::text AS "objectId",f.object_no AS "objectNo",f.operation_id AS "operationId",

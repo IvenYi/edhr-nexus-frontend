@@ -1,0 +1,161 @@
+qualityResult:
+  result: passed
+  baseCommit: c671b23fd9847a7e1cb2d1bad3c3bb138fc5620f
+  headCommit: c671b23fd9847a7e1cb2d1bad3c3bb138fc5620f
+  contractBaseline:
+    sourceCommit: c671b23fd9847a7e1cb2d1bad3c3bb138fc5620f
+    targetBranch: edhr-dev
+    targetCommit: c671b23fd9847a7e1cb2d1bad3c3bb138fc5620f
+    contractReadCommit: c671b23fd9847a7e1cb2d1bad3c3bb138fc5620f
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/backend
+      - gmp-platform/frontend/src
+      - gmp-platform/frontend/scripts
+      - docs/architecture
+      - docs/knowledge
+      - docs/development/edhr-dev-release-integration-20261021
+      - docs/development/clean-initialization-baseline-20261021
+      - docs/development/old-entry-closure-20261021
+      - docs/development/initialization-knowledge-references-20261021
+    excludedPaths:
+      - gmp-platform/frontend/node_modules
+      - 未修改的全仓业务与其他工作区在途内容
+      - 旧质量结果仅历史证据，不替代本次候选验收
+    untrackedPaths:
+      - 本目录qa开头的验收产物及logs/qa开头的独立日志
+      - output/playwright/edhr-dev-release-integration-20261021/qa-*.png
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.release-contract-and-candidate
+      required: true
+      category: requirements
+      description: 独立读取项目、角色、交接、知识、未决问题、DEC0082和当前决策包，核对实际目标与工作树范围。
+      method: inspection
+      command: git rev-parse HEAD origin/edhr-dev; git diff HEAD; git diff --cached --check
+      outcome: passed
+      evidence:
+        - HEAD和已获取目标均为c671b23，实际被测为该提交加当前集成工作树；qa-reviewed-files.json记录286项实现及知识路径的实际字节摘要。
+        - 目标分支委托、签名及读取边界实现未被原因功能覆盖；FormProjectionInterpreter保留较新的空白主区域规范化。
+        - decision-package.yaml覆盖数据承接、签名、审计、权限和相邻回归；不改变已确认NG及报废累计口径。
+        - 主侧修正开发说明尾部多余空行后，cached diff检查通过；本角色未参与任何修复。
+    - id: check.release-backend-focused
+      required: true
+      category: integration
+      description: 独立运行原因CRUD授权与保护、标准原因投影、引用范围与上下文、旧写入入口和退役投影重试、基线静态检查。
+      method: automated-test
+      command: mvn --batch-mode --no-transfer-progress -Dexec.skip=true -Dtest=QualityReasonControllerIntegrationTest,ReferenceContextInitializationTest,StandardReasonProjectionTest,UnifiedReferenceProjectionCompatibilityTest,FormReferenceConfigTest,FormReferenceLookupTest,FormProjectionInterpreterTest,RetiredDocumentWriteEndpointsTest,RetiredProjectionRetryTest,CurrentDatabaseBaselineTest test
+      outcome: passed
+      evidence:
+        - logs/qa-backend-focused.log
+        - 76项通过，0失败、0错误、0跳过。
+    - id: check.release-reference-frontend
+      required: true
+      category: unit
+      description: 独立运行引用配置、展示身份、筛选校验、投影绑定、行值和报表导航回归。
+      method: automated-test
+      command: node --test scripts/test-form-references.mjs scripts/test-reference-presentation.mjs scripts/test-reference-validation.mjs scripts/test-projection-source-editor.mjs scripts/test-runtime-row-values.mjs scripts/test-projection-report-navigation.mjs
+      outcome: passed
+      evidence:
+        - logs/qa-frontend-focused.log
+        - 52项全部通过，无跳过。
+        - 原因用途对应目录单选、产品/物料及批次/SN统一入口而候选范围独立、显示字段有序拼接且不改变引用身份。
+    - id: check.release-clean-database
+      required: true
+      category: database
+      description: 独立在专用可销毁库验证空库安装、重复运行、非空库拒绝、九项预置、原因目录及ADMIN权限、约束与签名原文。
+      method: automated-test
+      command: BASELINE_TEST_DATABASE_URL=jdbc:postgresql://127.0.0.1:5432/edhr_baseline_test_release PGUSER=edhr mvn --batch-mode --no-transfer-progress -Dexec.skip=true -Dtest=CurrentDatabaseBaselinePostgresTest test
+      outcome: passed
+      evidence:
+        - logs/qa-baseline.log
+        - 2项通过，0跳过。
+        - logs/qa-stage-database.txt记录97张业务表、2个当前changeSet、0未验证约束、9预置、3原因ADMIN授权及signature TEXT。
+        - unzip实查运行jar只有master与2份baseline SQL，历史SQL未被打包。
+    - id: check.release-stage-crud-security-audit
+      required: true
+      category: api
+      description: 在18081隔离候选实际执行两目录新增/读取/更新/删除，检查审计、重复编码、跨目录访问及匿名保护；旧CUD入口不可写入。
+      method: command
+      command: Python urllib API requests and read-only psql checks against edhr_release_stage
+      outcome: passed
+      evidence:
+        - qa-stage-api-checks.json
+        - DEFECT与SCRAP各一个QA-RELEASE-20261022临时原因均完成CRUD并删除，CREATE/UPDATE/DELETE审计保留；重复编码和跨目录读取拒绝，匿名返回401。
+        - sop-documents和process-modeling/documents的POST/PUT/DELETE六个入口均为404或405。
+        - 字典未指定具体目录明确拒绝，material/product范围只返回模拟产品，不混入原材料及包材。
+    - id: check.release-knowledge
+      required: true
+      category: ontology
+      description: 独立运行正式知识检查，并核对原因ID碰撞解除、当前/历史路径分离及原始证据语义。
+      method: automated-test
+      command: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - logs/qa-knowledge.log
+        - 89项通过，0跳过；知识版本保持0.3.25，不声称全仓语义审计。
+        - DEC0082明确记录原原因DEC0081重编号，既有租户委托DEC0081保留；原历史证据未伪造成当前验收。
+        - ontology-result.yaml及ontology-integration-checks.json记录107处引用与47份历史SQL对应；初始化0115只在历史测试夹具，当前原因DDL及权限直接入基线。
+    - id: check.release-integrated-regression-evidence
+      required: true
+      category: regression
+      description: 独立复核主侧在实际候选运行的PG、委托、构建及数据承接证据，区分自主执行与复核日志。
+      method: inspection
+      command: Read implementation-validation.json and logs; compare packaged and running jar sha256
+      outcome: passed
+      evidence:
+        - 主侧后端217中214通过3跳过；PG批次129中117通过，12委托项因变量缺失跳过后另用专库实际执行23项全部通过。
+        - logs/workflow-transfer-package.log包含实际23项通过和完整打包成功；前端build成功。
+        - data-adoption-checks.json逐项记录97业务表内容/数量一致；95外键重新验证；原signature可读内容与hash保留，不宣称恢复历史丢失原文。
+        - package jar与8081运行jar SHA256均为4ac4614415c861740e85083f23e8aeff294dd6739932ef8a8fed94dc9fe94265。
+    - id: check.release-final-runtime-api
+      required: true
+      category: e2e
+      description: 环境切换后独立复验8081/edhr_dev的原因、安速康业务报表、数量及DHR读取。
+      method: command
+      command: Python urllib login/read requests against localhost:8081; psql edhr_dev
+      outcome: passed
+      evidence:
+        - qa-final-api-checks.json
+        - ASK-REASON-20261019-R2-B报工2条、不良明细3条、报废4条、消耗2条；最终产出18件、良品18件、NG2件，原因3行不替代NG。
+        - DHR15可读取；报废登记单位缺失仍为UNIT_REVIEW；原料/包材保留各自物料单位。
+        - 正式库只有2个baseline changeSet、9预置、signature TEXT、无QA临时原因残留。
+    - id: check.release-final-browser
+      required: true
+      category: visual
+      description: 独立真实浏览器登录3000，验证原因菜单和详情审计、不良报表侧栏、来源表单与工序数量明细。
+      method: browser
+      command: Playwright CLI session release-qa at localhost:3000
+      outcome: passed
+      evidence:
+        - output/playwright/edhr-dev-release-integration-20261021/qa-reason-detail.png
+        - output/playwright/edhr-dev-release-integration-20261021/qa-defect-report.png
+        - output/playwright/edhr-dev-release-integration-20261021/qa-ansukang-source.png
+        - output/playwright/edhr-dev-release-integration-20261021/qa-workbench-ng.png
+        - logs/qa-reason-audit-snapshot.txt、logs/qa-source-snapshot.txt、logs/qa-ng-popover.txt
+        - 原因页归数据/原因建模，不良明细归记录/报表；抽屉完整显示停用状态及审计，业务源表保留原原因名称和字段有序方括号展示。
+        - 工序末道清洁显示18件产出、18件良品、2件不良；hover明细显示两笔NG来源和3/1/2件原因分项，明确不替代NG；内部滚动不挤占表单区。
+        - 当前功能页面无浏览器错误；仅登录页favicon404和React Router既有future警告，未影响本范围功能。
+    - id: check.release-single-runtime
+      required: true
+      category: database
+      description: 核对当前端口、运行制品和临时资源清理，保留开发数据备份。
+      method: query
+      command: lsof -nP -iTCP:3000 -iTCP:8081 -sTCP:LISTEN; psql postgres database inventory; shasum -a 256
+      outcome: passed
+      evidence:
+        - 3000由candidate Vite提供，8081由已验证jar提供；PostgreSQL5432，当前edhr_数据库仅edhr_dev。
+        - final-runtime-checks.json记录临时库及13000/18081清理、原库完整dump及摘要，无关gxp数据库保留。
+  findings: []
+  residualRisks:
+    - id: risk.release-post-push-sync
+      description: 本结果针对c671b23加实际已stage候选，验证发生于最终commit/push前；主侧随后只进行提交推送及原工作区同内容同步。
+      impact: 不能把本结果表述为已核验远端分支保护或已完成推送；源码若变化需重新评估。
+      mitigation: 主侧在推送和3000切回原工作区后核对提交、源码字节和端口；纯路径切换无需重复业务全量回归。
+    - id: risk.release-history-and-scope
+      description: 本轮为集成回归，使用已有安速康完成记录进行读取和明细验证，未重新发起完整生产签署或重新形成DHR。
+      impact: 不替代全系统新流程E2E，不修复旧JSONB曾丢失的签名原文字节，也不是全仓历史知识语义审计。
+      mitigation: 保留原历史验证证据，当前原因/引用与投影规则按本次独立测试及实际候选页面/接口核验。
+  blockingConditions: []

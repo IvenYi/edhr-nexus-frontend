@@ -1,0 +1,213 @@
+qualityResult:
+  result: passed
+  baseCommit: ca98ab2897990eba30bf1433134aa8560578f562
+  headCommit: ca98ab2897990eba30bf1433134aa8560578f562
+  contractBaseline:
+    sourceCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    targetBranch: edhr-dev
+    targetCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    contractReadCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/business-knowledge-model.md
+      - docs/architecture/form-traceability-projection-brief.md
+      - docs/architecture/form-traceability-projection-design.md
+      - docs/development/reference-reason-upgrade-20261018.md
+      - docs/knowledge/README.md
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/ontology.yaml
+      - docs/knowledge/open-questions.yaml
+      - docs/knowledge/decisions/DEC-0081-defect-reason-detail-and-reference-ownership.yaml
+      - docs/knowledge/evidence/defect-reason-detail-reference-2026-10-18.md
+      - docs/knowledge/evidence/defect-reason-detail-reference-2026-10-18.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/
+      - gmp-platform/backend/src/main/resources/db/changelog/
+      - gmp-platform/backend/src/test/
+      - gmp-platform/frontend/src/
+      - gmp-platform/frontend/scripts/
+      - output/playwright/ansukang-reference-reasons-20261019/
+    excludedPaths:
+      - output中本轮目录以外的历史运行产物
+      - gmp-platform/frontend/output/
+    untrackedPaths:
+      - 本轮QualityReasonController、QualityReasonUsageService、0115迁移与对应测试
+      - 本轮ReferenceContextInitializationTest、StandardReasonProjectionTest
+      - 本轮ReferencePickerDialog、referencePresentation、ReferencePresentationConfig
+      - 本轮QualityReasonPage、qualityReasons API及引用展示测试
+      - 本轮DEC0081、确认证据、开发说明及安速康验收产物
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.contract-and-scope
+      required: true
+      category: requirements
+      description: 独立读取契约、DEC0081/0079/0080及L2影响范围，固定ca98上的未提交候选
+      method: inspection
+      command: git rev-parse HEAD；git diff --check HEAD；git diff --cached --check；读取角色和知识契约
+      outcome: passed
+      evidence:
+        - HEAD保持ca98，项目及角色契约没有未提交改动
+        - staged与working-tree差异检查均退出0
+        - 当前候选包括本轮功能；未提交、未推送、未发布
+    - id: check.focused-backend
+      required: true
+      category: integration
+      description: 上下文依赖解析、原因投影、目录CRUD及权限审计、引用校验、质量来源
+      method: automated-test
+      command: mvn -Dtest=ReferenceContextInitializationTest,StandardReasonProjectionTest,QualityReasonControllerIntegrationTest,ProductionQualitySummaryTest,FormReferenceLookupTest,FormReferenceConfigTest,ExecutionAccessTest test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-acceptance-quality-be.log
+        - 55项实际通过，零失败、错误及跳过
+        - 包含QF-REF-002的真实H2多轮依赖初始化回归
+    - id: check.postgresql
+      required: true
+      category: database
+      description: 真实隔离PostgreSQL投影、原因身份筛选、历史兼容和数量联动
+      method: automated-test
+      command: PROJECTION_TEST_DATABASE_URL=jdbc:postgresql://localhost:5432/edhr_projection_integration_test mvn -Dtest=ProductionOutputPostgresTest,FormProjectionPostgresTest test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-acceptance-quality-pg.log
+        - 27项实际通过，无跳过；使用临时schema
+    - id: check.frontend-regression
+      required: true
+      category: regression
+      description: 引用展示、配置同步、新行、用途、导航与上游集成；UI提示修复后聚焦复验
+      method: automated-test
+      command: node --test 本轮9个聚焦脚本；修复后复跑引用展示、引用配置、新行及用途4个脚本
+      outcome: passed
+      evidence:
+        - /tmp/edhr-acceptance-quality-fe.log
+        - 首轮89项全部通过，无跳过
+        - /tmp/edhr-acceptance-quality-medium-fe.log
+        - 提示修复后34项全部通过；与首轮存在重叠，不按123个独立测试相加
+    - id: check.build
+      required: true
+      category: regression
+      description: 独立完整TypeScript及Vite构建，覆盖QF-REF-001修复和两个模拟入口提示
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence:
+        - /tmp/edhr-acceptance-quality-build.log
+        - /tmp/edhr-acceptance-quality-medium-build.log
+        - 独立构建均通过，后者包含两个模拟runtime提示行
+        - /tmp/edhr-reference-reason-frontend-build.log为主侧最终恢复相同提示后的补充通过证据
+    - id: check.knowledge
+      required: true
+      category: ontology
+      description: 结构校验及受影响当前原因、分类、NG边界语义核对
+      method: automated-test
+      command: mvn --file tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-acceptance-quality-knowledge.log
+        - 89项实际通过，无跳过
+        - 当前错误分类示例已替换，历史段明确为历史；独立不良分项不替代production.ngQuantity
+        - 计数聚合及重叠语义继续开放，不以代码或基础测试冒充已确认或运行知识发布
+        - 预置追溯项的兼容引用来源与自定义引用追溯项暂缓已明确区分
+    - id: check.migration-permissions-audit
+      required: true
+      category: audit
+      description: 真实运行库初始化权限及审计只读核对
+      method: query
+      command: PostgreSQL BEGIN READ ONLY查询databasechangelog、permission、role_permission、audit_event
+      outcome: passed
+      evidence:
+        - 0115-quality-reasons为EXECUTED；原因建模及两目录父子权限正确，ADMIN拥有3项授权
+        - 真实DEFECT_REASON创建修改及SCRAP_REASON创建审计存在
+        - 独立H2/JWT集成另覆盖两目录权限隔离与审计写入失败的事务回滚
+    - id: check.ansukang-live-readback
+      required: true
+      category: e2e
+      description: 已完成R2业务、报表及DHR的独立只读复验，旧执行与原证据比较
+      method: query
+      command: 独立登录读取execution、四类reports、DHR15和4份旧execution
+      outcome: passed
+      evidence:
+        - ASK-REASON-20261019-R2-B产出18、良品18、NG2；不良原因3条数量2/1/3且defect totals为空
+        - production2条、defect3条、scrap4条、consumption2条
+        - 批次产品报废仅1件计入，另1件缺单位待核对；原料2kg、包材2张不混入产品报废
+        - DHR15为FORMALIZED并含7个完成来源
+        - 4份旧ASK-FINAL A/B及R2 A/B的snapshot、state、revision与各原基线JSON逐项相同
+    - id: check.workbench-reports-browser
+      required: true
+      category: visual
+      description: 独立会话检查数量来源、标准原因、物料分组和实际行高亮
+      method: browser
+      command: acceptance-quality独立Playwright会话
+      outcome: passed
+      evidence:
+        - output/playwright/ansukang-reference-reasons-20261019/final-qa-ng-popover.png
+        - output/playwright/ansukang-reference-reasons-20261019/final-qa-scrap-popover.png
+        - output/playwright/ansukang-reference-reasons-20261019/final-qa-defect-row2-source.png
+        - output/playwright/ansukang-reference-reasons-20261019/final-qa-scrap-source.png
+        - NG主值2，浮层3条标准原因有数量、来源份次、实际行和生效状态
+        - 报废浮层产成品/原料/包材按单位3组，缺单位来源仍可见并标待核对
+        - 不良第二实际行仅row=1的5个字段高亮；pack报废主表7个来源字段高亮
+        - 报表保留更名前来源名称；新原因分类列未开放
+    - id: check.reference-menu-and-person-browser
+      required: true
+      category: e2e
+      description: 原因菜单与弹窗、显示配置、设备表格、人员单选及现场部门筛选
+      method: browser
+      command: 独立浏览器只读查看及不保存的模拟选择
+      outcome: passed
+      evidence:
+        - output/playwright/ansukang-reference-reasons-20261019/final-qa-reference-config.png
+        - output/playwright/ansukang-reference-reasons-20261019/final-qa-person-only.png
+        - output/playwright/ansukang-reference-reasons-20261019/final-qa-person-department-filter.png
+        - 数据→原因建模→两目录正确；编辑使用既有两列表单，取消未写入
+        - R2批次配置回显有序字段、独立搜索字段及带入开关；设备弹窗按条件仅返回R2设备
+        - 人员弹窗无角色/组织选中入口；全部可见admin及甲乙3人，质量组仅甲，回全部按账号仅乙
+    - id: check.missing-context-final
+      required: true
+      category: requirements
+      description: QF-REF-004修复后两个模拟入口实际空值提示、手选隐藏与值保留
+      method: browser
+      command: R2 CLEAN模拟填报工单；R2 PREVIEW副本用途总览→模拟预览批次
+      outcome: passed
+      evidence:
+        - output/playwright/ansukang-reference-reasons-20261019/final-qa-mock-context-warning.png
+        - output/playwright/ansukang-reference-reasons-20261019/final-qa-projection-context-warning.png
+        - output/playwright/ansukang-reference-reasons-20261019/final-qa-projection-context-selected.png
+        - MockFill空工单hover显示模拟填报没有生产上下文，请手动选择；手选R2工单后tooltip为空且值保留
+        - PREVIEW副本batch显式绑定合法预置lookup_production_batch；空值hover显示模拟预览没有生产上下文，请手动选择
+        - 手选R2批次后tooltip为空且显示所选code/productCode/productName，未自动猜候选或写入正式记录
+  findings:
+    - id: QF-REF-004
+      severity: medium
+      scope: reference-mock-context
+      summary: 已修复模拟缺上下文提示缺失
+      reproductionSteps:
+        - 对已开启带入的空工单或批次引用打开对应模拟入口并hover
+        - 手动选择合法候选后再次hover
+      expectedResult: 空值明确提示没有生产上下文；手选后提示隐藏和值保留，不自动回填
+      actualResult: 两个入口均符合预期，未产生模板保存或生产写入
+      evidence:
+        - MockFillDialog.tsx:461
+        - ProjectionDialog.tsx:71
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: screenshot
+          reference: output/playwright/ansukang-reference-reasons-20261019/final-qa-mock-context-warning.png
+        - type: screenshot
+          reference: output/playwright/ansukang-reference-reasons-20261019/final-qa-projection-context-warning.png
+        - type: screenshot
+          reference: output/playwright/ansukang-reference-reasons-20261019/final-qa-projection-context-selected.png
+        - type: command
+          reference: /tmp/edhr-acceptance-quality-medium-build.log
+  residualRisks:
+    - id: risk.existing-console-warnings
+      description: 原因编辑弹窗有既有Emotion表单布局nth-child SSR警告，React Router有future警告
+      impact: 本轮实际浏览器交互及构建通过，未发现业务异常
+      mitigation: 不扩大本轮修复范围，不把开发控制台警告描述为全部清零
+    - id: risk.verification-boundary
+      description: 本次独立检查针对本轮候选及新模拟；未验证远端分支保护或正式发布环境
+      impact: 不代表全系统回归、远端强制门禁、合规认证或已发布
+      mitigation: 保持提交、推送及发布状态与实际事实分别报告
+  blockingConditions: []

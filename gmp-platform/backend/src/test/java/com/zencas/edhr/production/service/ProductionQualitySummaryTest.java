@@ -55,6 +55,20 @@ class ProductionQualitySummaryTest {
         assertThat(ProductionQualitySummary.metric(mapper, batches, "goodQuantity", "final", "件", null, true, false).path("quantity").asText()).isEqualTo("0");
     }
 
+    @Test void defectReasonsExplainNgWithoutAddingToItsQuantityAndStayInTheirOperation() {
+        var batches = mapper.createArrayNode();
+        batch(batches, "final", "production", "ngQuantity", 2, "件", null);
+        var reason = batch(batches, "final", "defect", "quantity", 3, "件", null);
+        ((ObjectNode) reason.path("records").get(0).path("attributes")).put("reasonId", "r1").put("reason", "D01").put("reasonLabel", "表面划伤").put("reasonNote", "模拟说明");
+        batch(batches, "first", "defect", "quantity", 10, "根", null);
+        var result = ProductionQualitySummary.metric(mapper, batches, "ngQuantity", "final", "件", null, true, false);
+        assertThat(result.path("quantity").asText()).isEqualTo("2");
+        assertThat(result.path("sources")).hasSize(1);
+        assertThat(result.path("reasonSources")).hasSize(1);
+        assertThat(result.path("reasonSources").get(0).path("quantity").asText()).isEqualTo("3");
+        assertThat(result.path("reasonSources").get(0).path("attributes").path("reasonId").asText()).isEqualTo("r1");
+    }
+
     @Test void sourceMetadataDistinguishesFormCompletionFromProjectionFailure() throws Exception {
         var batches = mapper.createArrayNode();
         var batch = batch(batches, "op", "production", "goodQuantity", 30, "件", null);
@@ -113,5 +127,22 @@ class ProductionQualitySummaryTest {
         saved = ExecutionQualitySummary.project(mapper, operation, state);
         assertThat(saved.path("goodQuantity").path("status").asText()).isEqualTo("UNIT_REVIEW");
         assertThat(saved.path("goodQuantity").path("sources").get(0).path("quantity").asText()).isEqualTo("8");
+    }
+
+    @Test void savedDefectReasonRetainsIdentityAndDoesNotInventNgCount() throws Exception {
+        var operation = mapper.readTree("""
+          {"id":"op","forms":[{"id":"f","name":"不良记录","projection":{"bindings":[
+            {"id":"d","enabled":true,"modelId":"defect","sources":{"reason":"r","quantity":"q","unit":"u","reasonNote":"n"}}]}}]}
+          """);
+        var state = mapper.readTree("""
+          {"forms":{"f":{"status":"IN_PROGRESS","values":{"r":{"id":"42","sourceType":"defectReason","code":"D01","name":"划伤"},"q":3,"u":"件","n":"模拟说明"}}}}
+          """);
+        var metric = ExecutionQualitySummary.project(mapper, operation, state).path("ngQuantity");
+        assertThat(metric.path("quantity").isNull()).isTrue();
+        var reason = metric.path("reasonSources").get(0);
+        assertThat(reason.path("projectionStatus").asText()).isEmpty();
+        assertThat(reason.path("formStatus").asText()).isEqualTo("IN_PROGRESS");
+        assertThat(reason.path("attributes").path("reasonId").asText()).isEqualTo("42");
+        assertThat(reason.path("attributes").path("reasonLabel").asText()).isEqualTo("划伤");
     }
 }

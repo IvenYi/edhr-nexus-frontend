@@ -10,6 +10,7 @@ export const PROJECTION_REPORT_PAGES = [
   { modelId: 'formTrace', label: '表单追溯', path: '/reports/form-trace' },
   { modelId: 'dhrTrace', label: 'DHR追溯', path: '/reports/dhr-trace' },
   { modelId: 'production', label: '报工记录', path: '/reports/production-records' },
+  { modelId: 'defect', label: '不良明细', path: '/reports/defect-records' },
   { modelId: 'scrap', label: '报废记录', path: '/reports/scrap-records' },
   { modelId: 'consumption', label: '消耗记录', path: '/reports/consumption-records' },
 ] as const;
@@ -68,6 +69,15 @@ const REQUIRED_EQUIPMENT_MODELING_MENU: SidebarMenu = {
   children: [
     { label: '设备类型', path: '/master-data/equipment-types' },
     { label: '设备列表', path: '/master-data/equipment' },
+  ],
+};
+
+const REQUIRED_REASON_MODELING_MENU: SidebarMenu = {
+  label: '原因建模',
+  icon: 'Rule',
+  children: [
+    { label: '不良原因', path: '/master-data/defect-reasons' },
+    { label: '报废原因', path: '/master-data/scrap-reasons' },
   ],
 };
 
@@ -138,6 +148,7 @@ const PROCESS_MODELING_PATHS = new Set(REQUIRED_PROCESS_MODELING_MENU.children?.
 const TEMPLATE_MODELING_PATHS = new Set(REQUIRED_TEMPLATE_MODELING_MENU.children?.map((child) => child.path) ?? []);
 const FACTORY_MODELING_PATHS = new Set(REQUIRED_FACTORY_MODELING_MENU.children?.map((child) => child.path) ?? []);
 const EQUIPMENT_MODELING_PATHS = new Set(REQUIRED_EQUIPMENT_MODELING_MENU.children?.map((child) => child.path) ?? []);
+const REASON_MODELING_PATHS = new Set(REQUIRED_REASON_MODELING_MENU.children?.map((child) => child.path) ?? []);
 const PRODUCTION_MANAGED_PATHS = new Set([
   '/workflow/review-templates',
   '/workflow/form-processes',
@@ -332,15 +343,15 @@ function ensureRequiredProcessModeling(modules: SidebarModule[]) {
   dataModule.menus = dataModule.menus
     .map((menu) => {
       if (menu.children) {
-        menu.children = menu.children.filter((child) => !PROCESS_MODELING_PATHS.has(child.path) && !TEMPLATE_MODELING_PATHS.has(child.path) && !FACTORY_MODELING_PATHS.has(child.path) && !EQUIPMENT_MODELING_PATHS.has(child.path) && !REMOVED_MASTER_DATA_MENU_PATHS.has(child.path));
+        menu.children = menu.children.filter((child) => !PROCESS_MODELING_PATHS.has(child.path) && !TEMPLATE_MODELING_PATHS.has(child.path) && !FACTORY_MODELING_PATHS.has(child.path) && !EQUIPMENT_MODELING_PATHS.has(child.path) && !REASON_MODELING_PATHS.has(child.path) && !REMOVED_MASTER_DATA_MENU_PATHS.has(child.path));
       }
-      if (menu.path && (PROCESS_MODELING_PATHS.has(menu.path) || TEMPLATE_MODELING_PATHS.has(menu.path) || FACTORY_MODELING_PATHS.has(menu.path) || EQUIPMENT_MODELING_PATHS.has(menu.path) || REMOVED_MASTER_DATA_MENU_PATHS.has(menu.path))) return null;
-      if (menu.label === '基础主数据' || menu.label === '工艺建模' || menu.label === '模板建模' || menu.label === '工厂建模' || menu.label === '设备建模') return null;
+      if (menu.path && (PROCESS_MODELING_PATHS.has(menu.path) || TEMPLATE_MODELING_PATHS.has(menu.path) || FACTORY_MODELING_PATHS.has(menu.path) || EQUIPMENT_MODELING_PATHS.has(menu.path) || REASON_MODELING_PATHS.has(menu.path) || REMOVED_MASTER_DATA_MENU_PATHS.has(menu.path))) return null;
+      if (menu.label === '基础主数据' || menu.label === '工艺建模' || menu.label === '模板建模' || menu.label === '工厂建模' || menu.label === '设备建模' || menu.label === '原因建模') return null;
       if (menu.children && menu.children.length === 0) return null;
       return menu;
     })
     .filter((menu): menu is SidebarMenu => menu !== null);
-  dataModule.menus.unshift(...cloneSidebarModules([{ id: 'data', label: '数据', icon: 'Storage', menus: [REQUIRED_PROCESS_MODELING_MENU, REQUIRED_TEMPLATE_MODELING_MENU, REQUIRED_FACTORY_MODELING_MENU, REQUIRED_EQUIPMENT_MODELING_MENU] }])[0].menus);
+  dataModule.menus.unshift(...cloneSidebarModules([{ id: 'data', label: '数据', icon: 'Storage', menus: [REQUIRED_PROCESS_MODELING_MENU, REQUIRED_TEMPLATE_MODELING_MENU, REQUIRED_FACTORY_MODELING_MENU, REQUIRED_EQUIPMENT_MODELING_MENU, REQUIRED_REASON_MODELING_MENU] }])[0].menus);
 }
 
 function ensureRequiredProductionMenus(modules: SidebarModule[]) {

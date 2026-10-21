@@ -182,7 +182,7 @@ export default function ProductionExecutionPage() {
     parsed.model.fields = form.fields.map((field, index) => ({ ...field, typeConfig: field.typeConfig ?? {}, status: field.status ?? 'enabled', sortOrder: field.sortOrder ?? index }));
     return parsed;
   }, [form]);
-  const references = useCallback((fieldId: string, keyword: string, referenceValues: Record<string, unknown>) => context ? getExecutionReferences(context.objectId, formOperationId, formId, fieldId, keyword, referenceValues) : Promise.resolve([]), [context?.objectId, formOperationId, formId]);
+  const references = useCallback((fieldId: string, keyword: string, referenceValues: Record<string, unknown>, paging?: { page: number; size: number }) => context ? getExecutionReferences(context.objectId, formOperationId, formId, fieldId, keyword, referenceValues, paging) : Promise.resolve([]), [context?.objectId, formOperationId, formId]);
   const upload = async (file: File) => {
     if (!context || busyRef.current) throw new Error('当前无法上传');
     busyRef.current = true; setBusy(true); setDirty(true);
@@ -190,6 +190,7 @@ export default function ProductionExecutionPage() {
     finally { busyRef.current = false; setBusy(false); }
   };
   const formRuntime: FormRuntime = { values, upload, references, disabled: busy || !controls?.canAct,
+    referenceDefaults: formState?.referenceDefaults, referenceContextWarnings: formState?.referenceContextWarnings,
     signaturePermissions: controls?.signaturePermissions,
     signaturesInvalidated: Boolean(form && signatureContent(form.fields, values) !== signatureContent(form.fields, formState?.values ?? {})),
     onSignatureRequest: (target) => {

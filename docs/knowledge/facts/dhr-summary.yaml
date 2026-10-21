@@ -85,7 +85,7 @@ facts:
     conceptId: concept.dhr-instance
     valueType: string
     sourceType: database
-    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql
+    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
     aliases: [dhrSummary.reviewMode]
     availability: configuration-and-runtime
     allowedOperators: [equals, in]
@@ -93,7 +93,7 @@ facts:
     visibility: internal
     evidenceIds: [evidence.dhr-summary-migration, evidence.dhr-summary-process-configuration-ui]
     sourceRevision: working-tree
-    sourceLocator: product_process_version 与 dhr_instance 的 dhr_review_mode 及流程定义/版本外键
+    sourceLocator: "product_process_version 与 dhr_instance 的 dhr_review_mode 及流程定义/版本外键；2026-10-21仅初始化定位维护（d405a9af工作树）：product_process_version.dhr_review_mode、dhr_instance.dhr_review_mode及各自审核绑定CHECK/外键。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-19'
     reviewStatus: reviewed
   - id: fact.dhr-summary.version-frozen
@@ -101,7 +101,7 @@ facts:
     conceptId: concept.dhr-instance
     valueType: boolean
     sourceType: database
-    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/0092-dhr-summary-workspace.sql
+    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
     aliases: [dhrSummary.versionFrozen]
     availability: runtime
     allowedOperators: [equals]
@@ -109,7 +109,7 @@ facts:
     visibility: internal
     evidenceIds: [evidence.dhr-summary-service, evidence.dhr-summary-migration]
     sourceRevision: working-tree
-    sourceLocator: dhr_summary_version 与 dhr_summary_evidence 保存业务冻结及位置，version_no 标识正常修订；正常冻结不可编辑。行存在或 FORMALIZED 不证明核查完成，缺 checkResult 的错误旧汇总按 DEC-0063-09 转换为待核查草稿或清理，不能直接改标记追认；本机0104迁移已由原始日志及只读查询验证，DHR3已转草稿但未重新核查提交
+    sourceLocator: "dhr_summary_version 与 dhr_summary_evidence 保存业务冻结及位置，version_no 标识正常修订；正常冻结不可编辑。行存在或 FORMALIZED 不证明核查完成，缺 checkResult 的错误旧汇总按 DEC-0063-09 转换为待核查草稿或清理，不能直接改标记追认；本机0104迁移已由原始日志及只读查询验证，DHR3已转草稿但未重新核查提交；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_summary_version.version_no/check_result_snapshot NOT NULL、dhr_summary_evidence；当前直接建表，无evidence_model_version列或0104转换执行；上文迁移验证为2026-09-27历史记录。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-27'
     reviewStatus: reviewed
   - id: fact.dhr-summary.source-definition-key
@@ -133,7 +133,7 @@ facts:
     conceptId: concept.dhr-summary-archive-display-name
     valueType: string
     sourceType: database
-    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql
+    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
     aliases: [dhrSummary.placementDisplayName]
     availability: runtime
     allowedOperators: [is-present]
@@ -141,7 +141,7 @@ facts:
     visibility: internal
     evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-display-name-migration]
     sourceRevision: working-tree
-    sourceLocator: dhr_summary_evidence.display_name 可空且不按来源拆字段；validatePlacements 的 DIRECTORY 分支只合入 displayName，固定目标且禁止排序覆盖；prepareNextDraft 查询包括有别名的 DIRECTORY。空别名显示来源名称是当前可选展示规则，不是旧模型兼容；DEC-0063-09 要求转换保留可用别名与位置，本机迁移及作业7位置恢复已验证；用户重新核查提交和独立质量尚未完成
+    sourceLocator: "dhr_summary_evidence.display_name 可空且不按来源拆字段；validatePlacements 的 DIRECTORY 分支只合入 displayName，固定目标且禁止排序覆盖；prepareNextDraft 查询包括有别名的 DIRECTORY。空别名显示来源名称是当前可选展示规则，不是旧模型兼容；DEC-0063-09 要求转换保留可用别名与位置，本机迁移及作业7位置恢复已验证；用户重新核查提交和独立质量尚未完成；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_summary_evidence.display_name可空列；当前直接建列，上文转换/迁移验证为原记录时点。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-24'
     reviewStatus: reviewed
   - id: fact.dhr-summary.evidence-scope

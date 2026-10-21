@@ -319,6 +319,69 @@ class TemplateModelingControllerTest {
     }
 
     @Test
+    void invalidReferenceConditionsRejectDesignBeforeMutatingVersionSavingOrAuditing() {
+        FormTemplate template = FormTemplate.builder().id(101L).tenantId("default").code("FT-001").name("原设计").build();
+        String beforeModel = "{\"fields\":[]}";
+        String beforeCanvas = "{\"pages\":[]}";
+        FormTemplateVersion version = FormTemplateVersion.builder().id(202L).tenantId("default").templateId(101L)
+                .version("V1.0").modelDesignJson(beforeModel).canvasDesignJson(beforeCanvas).workflowDesignJson("{}").build();
+        when(formTemplateRepository.findById(101L)).thenReturn(Optional.of(template));
+        when(formTemplateVersionRepository.findByIdAndTemplateId(202L, 101L)).thenReturn(Optional.of(version));
+        var request = TemplateModelingRequest.builder().modelDesignJson("""
+                {"fields":[{"id":"ref","type":"reference","typeConfig":{"sourceType":"equipment","referenceQueryConditions":[{"sourceField":"workOrderNo","operator":"eq","targetFieldId":"missing"}]}}]}
+                """).canvasDesignJson("{\"pages\":[{\"id\":\"new\"}]}").workflowDesignJson("{\"new\":true}").build();
+        assertThatThrownBy(() -> controller.saveFormTemplateVersionDesign(101L, 202L, request)).hasMessageContaining("不适用");
+        assertThat(version.getModelDesignJson()).isEqualTo(beforeModel);
+        assertThat(version.getCanvasDesignJson()).isEqualTo(beforeCanvas);
+        assertThat(version.getWorkflowDesignJson()).isEqualTo("{}");
+        verify(formTemplateVersionRepository, never()).save(any());
+        verify(auditEventRepository, never()).save(any());
+        verify(formLookupCatalogService, never()).prepareDesign(any());
+    }
+
+    @Test
+    void invalidCanvasOnlyReferenceConditionCannotBypassDesignSaveGuard() {
+        FormTemplate template = FormTemplate.builder().id(101L).tenantId("default").build();
+        String model = """
+                {"payload":{"fields":[{"id":"value","type":"text","status":"enabled"},{"id":"ref","type":"reference","typeConfig":{"sourceType":"material"}}]}}
+                """;
+        String canvas = "{\"pages\":[]}";
+        FormTemplateVersion version = FormTemplateVersion.builder().id(202L).tenantId("default").templateId(101L).version("V1.0")
+                .modelDesignJson(model).canvasDesignJson(canvas).build();
+        when(formTemplateRepository.findById(101L)).thenReturn(Optional.of(template));
+        when(formTemplateVersionRepository.findByIdAndTemplateId(202L, 101L)).thenReturn(Optional.of(version));
+        var request = TemplateModelingRequest.builder().canvasDesignJson("""
+                {"pages":[{"nodes":[{"bindings":{"fieldId":"ref","widgetConfig":{"referenceQueryConditions":[{"sourceField":"code","operator":"eq","targetFieldId":"removed"}]}}}]}]}
+                """).build();
+        assertThatThrownBy(() -> controller.saveFormTemplateVersionDesign(101L, 202L, request)).hasMessageContaining("已失效");
+        assertThat(version.getModelDesignJson()).isEqualTo(model);
+        assertThat(version.getCanvasDesignJson()).isEqualTo(canvas);
+        verify(formTemplateVersionRepository, never()).save(any());
+        verify(auditEventRepository, never()).save(any());
+    }
+
+    @Test
+    void multipleReferenceAndSelectDependenciesCannotBeSavedOrAudited() {
+        FormTemplate template = FormTemplate.builder().id(101L).tenantId("default").build();
+        FormTemplateVersion version = FormTemplateVersion.builder().id(202L).tenantId("default").templateId(101L).version("V1.0")
+                .modelDesignJson("{\"fields\":[]}").canvasDesignJson("{\"pages\":[]}").build();
+        when(formTemplateRepository.findById(101L)).thenReturn(Optional.of(template));
+        when(formTemplateVersionRepository.findByIdAndTemplateId(202L, 101L)).thenReturn(Optional.of(version));
+        for (String type : List.of("reference", "singleSelect")) {
+            var request = TemplateModelingRequest.builder().modelDesignJson("""
+                    {"fields":[{"id":"dep","type":"%s","status":"enabled","typeConfig":{"multiple":true}},
+                     {"id":"ref","type":"reference","status":"enabled","typeConfig":{"sourceType":"material","referenceQueryConditions":[{"sourceField":"code","operator":"eq","targetFieldId":"dep"}]}}]}
+                    """.formatted(type)).build();
+            assertThatThrownBy(() -> controller.saveFormTemplateVersionDesign(101L, 202L, request)).hasMessageContaining("单值");
+        }
+        assertThat(version.getModelDesignJson()).isEqualTo("{\"fields\":[]}");
+        assertThat(version.getCanvasDesignJson()).isEqualTo("{\"pages\":[]}");
+        verify(formTemplateVersionRepository, never()).save(any());
+        verify(auditEventRepository, never()).save(any());
+        verify(formLookupCatalogService, never()).prepareDesign(any());
+    }
+
+    @Test
     void createFormTemplateVersionRejectsEndBeforeStart() {
         FormTemplate template = FormTemplate.builder()
                 .id(101L)

@@ -87,7 +87,7 @@ class SignatureSnapshotMigrationPostgresTest {
                         full.update(new Contexts(), new LabelExpression());
                         var fresh = new JdbcTemplate(new SingleConnectionDataSource(master, true));
                         assertThat(fresh.queryForObject("SELECT data_type FROM information_schema.columns WHERE table_schema='public' AND table_name='signature' AND column_name='snapshot_data'", String.class)).isEqualTo("text");
-                        assertThat(fresh.queryForObject("SELECT COUNT(*) FROM databasechangelog WHERE id='0118-signature-payload-text'", Integer.class)).isEqualTo(1);
+                        assertThat(fresh.queryForObject("SELECT COUNT(*) FROM databasechangelog WHERE id='1.0-current-schema'", Integer.class)).isEqualTo(1);
                     }
                 }
             } finally { admin.createStatement().execute("DROP DATABASE " + databaseName); }

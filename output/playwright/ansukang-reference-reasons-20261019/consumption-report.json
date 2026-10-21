@@ -1,0 +1,175 @@
+{
+  "total": 2,
+  "records": [
+    {
+      "id": "64",
+      "batchId": "30",
+      "instanceId": "31",
+      "instanceNo": "FR-20261019-000031",
+      "objectId": "387301168280567808",
+      "objectNo": "ASK-REASON-20261019-R2-B",
+      "operationId": "op1",
+      "operationName": "安速康原因模拟·标签领用",
+      "bindingId": "manual-use",
+      "rowKey": "form",
+      "revision": 1,
+      "createdBy": "系统管理员",
+      "createdAt": "2026-10-19 00:09:54.427795",
+      "updatedBy": "系统管理员",
+      "updatedAt": "2026-10-19 00:09:54.427795",
+      "attributes": {
+        "material": {
+          "id": "387301167441707008",
+          "code": "ASK-REASON-20261019-R2-K",
+          "name": "安速康原因模拟·刀头包材",
+          "unit": "张",
+          "status": "ACTIVE",
+          "sourceType": "material",
+          "specification": ""
+        },
+        "quantity": 20
+      },
+      "sources": {
+        "material": "manual_material",
+        "quantity": "manual_used"
+      },
+      "details": [],
+      "hits": [],
+      "lookupItems": {
+        "lookup_trace_date": {
+          "name": "追溯日期",
+          "type": "date",
+          "revision": 1,
+          "referenceSources": []
+        }
+      },
+      "context": {
+        "unit": "件",
+        "dhrCode": null,
+        "dhrName": "安速康原因模拟·刀头DHR",
+        "objectId": "387301168280567808",
+        "objectNo": "ASK-REASON-20261019-R2-B",
+        "productId": "387301167341043712",
+        "routeCode": null,
+        "routeName": "安速康原因模拟·验证路线",
+        "dhrVersion": "V1.0",
+        "objectType": "BATCH",
+        "productCode": "ASK-REASON-20261019-R2-P",
+        "productName": "安速康原因模拟·刀头",
+        "workOrderId": "387301168234430464",
+        "workOrderNo": "ASK-REASON-20261019-R2-WO",
+        "routeVersion": "V1.0",
+        "dhrReviewMode": "NONE",
+        "dhrTemplateId": "387301168003743744",
+        "specification": null,
+        "processVersion": "V1.0",
+        "productionForm": "批次",
+        "productionMode": "量产",
+        "routeVersionId": "387301167890497536",
+        "targetQuantity": 20.0,
+        "processVersionId": "387301168146350080",
+        "dhrTemplateVersionId": "387301168007938048",
+        "dhrReviewWorkflowCode": null,
+        "dhrReviewWorkflowName": null,
+        "dhrReviewWorkflowVersion": null,
+        "dhrReviewWorkflowVersionId": null,
+        "dhrReviewWorkflowDefinitionId": null
+      }
+    },
+    {
+      "id": "63",
+      "batchId": "30",
+      "instanceId": "31",
+      "instanceNo": "FR-20261019-000031",
+      "objectId": "387301168280567808",
+      "objectNo": "ASK-REASON-20261019-R2-B",
+      "operationId": "op1",
+      "operationName": "安速康原因模拟·标签领用",
+      "bindingId": "label-use",
+      "rowKey": "form",
+      "revision": 1,
+      "createdBy": "系统管理员",
+      "createdAt": "2026-10-19 00:09:54.427795",
+      "updatedBy": "系统管理员",
+      "updatedAt": "2026-10-19 00:09:54.427795",
+      "attributes": {
+        "material": {
+          "id": "387301167441707008",
+          "code": "ASK-REASON-20261019-R2-K",
+          "name": "安速康原因模拟·刀头包材",
+          "unit": "张",
+          "status": "ACTIVE",
+          "sourceType": "material",
+          "specification": ""
+        },
+        "quantity": 20
+      },
+      "sources": {
+        "material": "label_material",
+        "quantity": "label_used"
+      },
+      "details": [],
+      "hits": [],
+      "lookupItems": {
+        "lookup_trace_date": {
+          "name": "追溯日期",
+          "type": "date",
+          "revision": 1,
+          "referenceSources": []
+        }
+      },
+      "context": {
+        "unit": "件",
+        "dhrCode": null,
+        "dhrName": "安速康原因模拟·刀头DHR",
+        "objectId": "387301168280567808",
+        "objectNo": "ASK-REASON-20261019-R2-B",
+        "productId": "387301167341043712",
+        "routeCode": null,
+        "routeName": "安速康原因模拟·验证路线",
+        "dhrVersion": "V1.0",
+        "objectType": "BATCH",
+        "productCode": "ASK-REASON-20261019-R2-P",
+        "productName": "安速康原因模拟·刀头",
+        "workOrderId": "387301168234430464",
+        "workOrderNo": "ASK-REASON-20261019-R2-WO",
+        "routeVersion": "V1.0",
+        "dhrReviewMode": "NONE",
+        "dhrTemplateId": "387301168003743744",
+        "specification": null,
+        "processVersion": "V1.0",
+        "productionForm": "批次",
+        "productionMode": "量产",
+        "routeVersionId": "387301167890497536",
+        "targetQuantity": 20.0,
+        "processVersionId": "387301168146350080",
+        "dhrTemplateVersionId": "387301168007938048",
+        "dhrReviewWorkflowCode": null,
+        "dhrReviewWorkflowName": null,
+        "dhrReviewWorkflowVersion": null,
+        "dhrReviewWorkflowVersionId": null,
+        "dhrReviewWorkflowDefinitionId": null
+      }
+    }
+  ],
+  "totals": [
+    {
+      "objectId": "387301168280567808",
+      "objectNo": "ASK-REASON-20261019-R2-B",
+      "operationId": "op1",
+      "operationName": "安速康原因模拟·标签领用",
+      "materialId": "387301167441707008",
+      "materialName": "安速康原因模拟·刀头包材",
+      "materialLot": null,
+      "unit": null,
+      "unitLabel": null,
+      "quantity": 40.0,
+      "outputQuantity": null,
+      "goodQuantity": null,
+      "workHours": null,
+      "ngQuantity": null,
+      "recordCount": 2
+    }
+  ],
+  "totalsTruncated": false
+}

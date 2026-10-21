@@ -16,6 +16,7 @@ import { parseReactTemplateDesignerDocument, serializeTemplateDesignerDocument }
 import { importTemplateToCanvasPage } from './utils/templateImport';
 import { projectionConfigurationIssues, traceFieldAssignments, useProjectionCatalog } from './utils/projectionConfiguration';
 import { useSnackbar } from '@/components/SnackbarProvider';
+import { referenceConfigurationIssues } from '@/components/form-renderer/referenceValidation';
 
 type TemplateDesignerReactShellProps = Pick<TemplateDesignerDialogProps, 'row' | 'version' | 'onClose' | 'onSave' | 'onAutoSave' | 'saving'>;
 
@@ -108,6 +109,11 @@ export default function TemplateDesignerReactShell({
       const message = '每个字段最多关联一个追溯项，请在“追溯与业务”中手动修正多余关联后保存';
       showMessage(message, 'error');
       throw new Error(message);
+    }
+    const referenceIssues = referenceConfigurationIssues(currentDocument);
+    if (referenceIssues.length) {
+      showMessage(referenceIssues[0], 'error');
+      throw new Error(referenceIssues[0]);
     }
     await persist(serializeTemplateDesignerDocument(currentDocument));
     markSaved(currentDocument);

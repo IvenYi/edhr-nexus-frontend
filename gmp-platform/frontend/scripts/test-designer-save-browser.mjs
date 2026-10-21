@@ -110,6 +110,13 @@ try {
     const context = await browser.newContext({ viewport });
     await context.route('**/api/v1/**', async route => {
       assert.equal(route.request().method(), 'GET', 'catalog fixtures cannot write business data');
+      if (route.request().url().endsWith('/reference-options/material-types')) {
+        await route.fulfill({ status: 200, json: { code: 200, data: [
+          { id: '101', code: 'MT-FINISHED', name: '产成品' }, { id: '102', code: 'MT-SEMI', name: '半成品' },
+          { id: '103', code: 'MT-RAW', name: '原材料' }, { id: '104', code: 'MT-PACKAGING', name: '包材' },
+        ] } });
+        return;
+      }
       await route.fulfill({ status: 200, json: { code: 200, data: { version: 'form-projection-v1', models: [], notice: '' } } });
     });
     const page = await context.newPage();
@@ -154,6 +161,136 @@ try {
     await page.getByRole('button', { name: '关闭', exact: true }).click();
     assert.equal(await page.evaluate(() => window.__closed), 1);
   });
+  await run('unified reference entrances retain invalid conditions, block saving and allow explicit repair', async page => {
+    const seeded = await page.evaluate(() => {
+      const state = window.__store.getState();
+      const order = state.addField('text', '关联工单');
+      const field = state.addField('reference', '引用对象验收');
+      state.updateField(field.id, { typeConfig: { sourceType: 'productionBatch', referenceQueryConditions: [{ sourceField: 'workOrderNo', operator: 'eq', targetFieldId: order.id }] } });
+      state.addNodeFromFieldToCell(field.id, { range: { t: 3, b: 3, l: 3, r: 4 }, left: 196, top: 72, width: 196, height: 36 });
+      const node = window.__store.getState().document.canvas.pages[0].nodes.find(item => item.bindings?.fieldId === field.id);
+      state.setSelectedNodeId(node.id); state.setActiveCanvasRail('config');
+      return { fieldId: field.id, nodeId: node.id, orderId: order.id };
+    });
+    const config = () => page.evaluate(id => window.__store.getState().document.model.fields.find(field => field.id === id).typeConfig, seeded.fieldId);
+    assert.equal((await config()).sourceType, 'productionBatch', 'opening the unified editor never migrates a legacy alias');
+    await page.getByLabel('候选范围', { exact: true }).click();
+    await page.getByRole('option', { name: '批次和SN', exact: true }).click();
+    assert.equal((await config()).sourceType, 'productionObject');
+    assert.equal((await config()).referenceProductionScope, 'all');
+    const source = page.getByRole('combobox').filter({ hasText: '生产批次/SN' }).first();
+    await source.click();
+    assert.equal(await page.getByRole('option', { name: '产品', exact: true }).count(), 0);
+    assert.equal(await page.getByRole('option', { name: '生产批次', exact: true }).count(), 0);
+    await page.getByRole('option', { name: '设备', exact: true }).click();
+    assert.deepEqual((await config()).referenceQueryConditions, [{ sourceField: 'workOrderNo', operator: 'eq', targetFieldId: seeded.orderId }]);
+    await page.getByText('不适用：workOrderNo', { exact: true }).waitFor();
+    await save(page).click();
+    await page.getByRole('alert').filter({ hasText: '不适用' }).waitFor();
+    assert.equal(await page.evaluate(() => window.__requests.length), 0, 'invalid retained rules never invoke save');
+    await page.getByRole('button', { name: '删除条件', exact: true }).click();
+    await submit(page, 1); await settle(page, 0);
+    assert.equal((await config()).referenceQueryConditions.length, 0);
+    if (process.env.W2_SCREENSHOT_DIR) {
+      await mkdir(process.env.W2_SCREENSHOT_DIR, { recursive: true });
+      await page.screenshot({ path: path.join(process.env.W2_SCREENSHOT_DIR, 'unified-reference-conditions.png'), animations: 'disabled' });
+    }
+  });
+  await run('reference query conditions explain the candidate attribute and current form value without changing matching rules', async page => {
+    const seeded = await page.evaluate(() => {
+      const state = window.__store.getState();
+      const dep = state.addField('text', '填写的设备编号');
+      const ref = state.addField('reference', '使用设备');
+      state.updateField(ref.id, { typeConfig: { sourceType: 'equipment' } });
+      state.addNodeFromFieldToCell(ref.id, { range: { t: 3, b: 3, l: 3, r: 4 }, left: 196, top: 72, width: 196, height: 36 });
+      const node = window.__store.getState().document.canvas.pages[0].nodes.find(item => item.bindings?.fieldId === ref.id);
+      state.setSelectedNodeId(node.id); state.setActiveCanvasRail('config');
+      return { fieldId: ref.id, dependencyId: dep.id };
+    });
+    await page.getByText('未添加条件，显示所选类型范围内的全部记录。', { exact: true }).waitFor();
+    assert.equal(await page.getByRole('group', { name: '筛选条件1', exact: true }).count(), 0);
+    await page.getByRole('button', { name: '添加筛选条件', exact: true }).click();
+    const group = page.getByRole('group', { name: '筛选条件1', exact: true });
+    await group.getByRole('combobox', { name: /候选对象属性/ }).click();
+    await page.getByRole('option', { name: '编码', exact: true }).click();
+    await group.getByRole('combobox', { name: /本表单取值字段/ }).click();
+    await page.getByRole('option', { name: '主表 · 填写的设备编号', exact: true }).click();
+    await group.getByText('仅显示“编码”等于“主表 · 填写的设备编号”取值的记录。', { exact: true }).waitFor();
+    await group.getByRole('combobox', { name: /比较方式/ }).click();
+    for (const name of ['等于', '不等于', '包含', '不包含']) assert.equal(await page.getByRole('option', { name, exact: true }).count(), 1);
+    await page.getByRole('option', { name: '包含', exact: true }).click();
+    await submit(page, 1); await settle(page, 0);
+    const field = await page.evaluate(id => JSON.parse(window.__requests[0].payload.modelDesignJson).payload.fields.find(field => field.id === id), seeded.fieldId);
+    assert.deepEqual(field.typeConfig.referenceQueryConditions, [{ sourceField: 'code', operator: 'contains', targetFieldId: seeded.dependencyId }]);
+    if (process.env.W2_SCREENSHOT_DIR) {
+      await mkdir(process.env.W2_SCREENSHOT_DIR, { recursive: true });
+      await page.screenshot({ path: path.join(process.env.W2_SCREENSHOT_DIR, 'reference-query-readable.png'), animations: 'disabled' });
+    }
+    await page.getByRole('button', { name: '删除条件', exact: true }).click();
+    await page.getByText('未添加条件，显示所选类型范围内的全部记录。', { exact: true }).waitFor();
+  });
+  for (const viewport of [{ width: 1440, height: 960 }, { width: 390, height: 844 }]) {
+    await run(`reference material types support continuous checkbox selection and explicit all scope at ${viewport.width}px`, async page => {
+      const seeded = await page.evaluate(() => {
+        const state = window.__store.getState();
+        const ref = state.addField('reference', '产品物料');
+        state.updateField(ref.id, { typeConfig: { sourceType: 'product', referenceContextAutofill: true } });
+        state.addNodeFromFieldToCell(ref.id, { range: { t: 3, b: 3, l: 3, r: 4 }, left: 196, top: 72, width: 196, height: 36 });
+        const node = window.__store.getState().document.canvas.pages[0].nodes.find(item => item.bindings?.fieldId === ref.id);
+        state.setSelectedNodeId(node.id); state.setActiveCanvasRail('config');
+        return { fieldId: ref.id };
+      });
+      const config = () => page.evaluate(id => window.__store.getState().document.model.fields.find(field => field.id === id).typeConfig, seeded.fieldId);
+      assert.equal((await config()).sourceType, 'product', 'opening a legacy product field retains its original identity');
+      await page.getByRole('checkbox', { name: '自动带入当前生产上下文', exact: true }).waitFor();
+      await page.getByRole('combobox', { name: /允许选择的物料/ }).click();
+      await page.getByRole('option', { name: '指定物料类型', exact: true }).click();
+      const input = page.getByRole('combobox', { name: '物料类型', exact: true });
+      await input.click();
+      await page.getByRole('option', { name: /产成品 \[MT-FINISHED\]/ }).click();
+      await page.getByRole('listbox', { name: '物料类型', exact: true }).waitFor({ state: 'visible' });
+      assert.equal(await input.getAttribute('aria-expanded'), 'true', 'the popup stays open after the first choice');
+      await page.getByRole('option', { name: /半成品 \[MT-SEMI\]/ }).click();
+      await page.getByRole('listbox', { name: '物料类型', exact: true }).waitFor({ state: 'visible' });
+      assert.equal(await input.getAttribute('aria-expanded'), 'true', 'the second choice does not close the popup');
+      assert.deepEqual((await config()).referenceMaterialTypeIds, ['101', '102']);
+      assert.equal((await config()).referenceMaterialScope, 'types', 'explicit IDs never silently acquire product-family or all semantics');
+      assert.equal(await page.getByRole('listbox', { name: '物料类型', exact: true }).getByRole('option', { selected: true }).count(), 2);
+      await input.fill('没有这个类型');
+      await page.getByText('没有匹配的物料类型', { exact: true }).waitFor();
+      assert.deepEqual((await config()).referenceMaterialTypeIds, ['101', '102']);
+      await input.fill(''); await input.press('Escape');
+      assert.equal(await save(page).isVisible(), true, 'Escape closes the popup and keeps the designer open');
+      assert.equal(await page.getByRole('checkbox', { name: '全选当前类型', exact: true }).getAttribute('data-indeterminate'), 'true');
+      assert.equal(await page.getByRole('checkbox', { name: '全选当前类型', exact: true }).getAttribute('aria-checked'), 'mixed');
+      await page.getByRole('button', { name: '清空', exact: true }).click();
+      await page.getByText('请至少选择一种物料类型。', { exact: true }).waitFor();
+      await save(page).click();
+      await page.getByRole('alert').filter({ hasText: '请选择物料类型' }).waitFor();
+      assert.equal(await page.evaluate(() => window.__requests.length), 0);
+      await page.getByRole('checkbox', { name: '全选当前类型', exact: true }).check();
+      assert.equal((await config()).referenceMaterialTypeIds.length, 4);
+      assert.equal((await config()).referenceMaterialScope, 'types');
+      await submit(page, 1); await settle(page, 0);
+      const saved = await page.evaluate(id => JSON.parse(window.__requests[0].payload.modelDesignJson).payload.fields.find(field => field.id === id).typeConfig, seeded.fieldId);
+      assert.equal(saved.referenceMaterialScope, 'types');
+      assert.equal(saved.referenceMaterialTypeIds.length, 4);
+      if (process.env.W2_SCREENSHOT_DIR) {
+        await mkdir(process.env.W2_SCREENSHOT_DIR, { recursive: true });
+        await input.click();
+        await page.screenshot({ path: path.join(process.env.W2_SCREENSHOT_DIR, `reference-material-types-${viewport.width}.png`), animations: 'disabled' });
+        await input.press('Escape');
+      }
+      await page.getByRole('combobox', { name: /允许选择的物料/ }).click();
+      await page.getByRole('option', { name: '全部物料（不限类型）', exact: true }).click();
+      assert.equal((await config()).referenceMaterialScope, 'all');
+      await page.getByText('包含所有有效物料，以后新增的物料类型也会包含。', { exact: true }).waitFor();
+      await page.getByRole('combobox', { name: /允许选择的物料/ }).click();
+      await page.getByRole('option', { name: '仅产品（产成品、半成品）', exact: true }).click();
+      assert.equal((await config()).referenceMaterialScope, 'product');
+      assert.equal(await page.getByRole('checkbox', { name: '自动带入当前生产上下文', exact: true }).isVisible(), true);
+    }, viewport);
+  }
   await run('successful save without later edits allows closing', async page => {
     await edit(page, '本次已保存'); await submit(page, 1); await settle(page, 0);
     assert.equal(await dirty(page), false);
@@ -334,6 +471,127 @@ try {
     assert.equal(await dirty(page), false);
     await page.getByRole('button', { name: '重做', exact: true }).click();
     assert.equal(await dirty(page), true);
+  });
+  for (const viewport of [{ width: 1440, height: 960 }, { width: 390, height: 844 }]) {
+    await run(`trace single binding rejects conflicting input and supports repair at ${viewport.width}px`, async page => {
+      await page.route('**/projection-catalog', route => route.fulfill({ status: 200, json: { code: 200, data: {
+        version: 'form-projection-v1', models: [{id: 'formTrace', name: '追溯', attributes: [
+          {id: 'lookup_production_batch', name: '生产批次/SN', type: 'text'},
+          {id: 'lookup_supplier_batch', name: '供应商批号', type: 'text'},
+        ]}], notice: '',
+      } } }));
+      const seeded = await page.evaluate(() => {
+        const state = window.__store.getState();
+        const field = state.addField('text', '原批号字段');
+        const other = state.addField('text', '另一批号字段');
+        state.addNodeFromFieldToCell(field.id, {range: {t: 3, b: 3, l: 2, r: 4}, left: 98, top: 72, width: 294, height: 36});
+        state.setProjectionBindings([
+          {id: 'one', modelId: 'formTrace', enabled: true, sources: {lookup_production_batch: field.id}},
+          {id: 'two', modelId: 'formTrace', enabled: false, sources: {lookup_supplier_batch: field.id}},
+          {id: 'reused', modelId: 'formTrace', enabled: true, sources: {lookup_production_batch: other.id}},
+        ]);
+        const node = window.__store.getState().document.canvas.pages[0].nodes.find(node => node.bindings?.fieldId === field.id);
+        state.setSelectedNodeId(node.id); state.markSaved();
+        return {fieldId: field.id, before: JSON.stringify(window.__store.getState().document)};
+      });
+      await page.getByRole('button', {name: '追溯与业务', exact: true}).click();
+      await page.getByRole('alert').getByText(/该字段关联了 2 个追溯配置/).waitFor();
+      assert.equal(await page.getByLabel('关联追溯项（可选）', {exact: true}).count(), 0);
+      assert.equal(await page.evaluate(() => JSON.stringify(window.__store.getState().document)), seeded.before, 'opening preserves every original mapping and enabled flag');
+      await save(page).click();
+      const validation = page.getByRole('dialog').filter({hasText: '完善用途配置'});
+      await validation.waitFor();
+      assert.equal(await page.evaluate(() => window.__requests.length), 0, 'conflict never reaches save callback');
+      assert.equal(await validation.getByRole('button', {name: '重新校验并保存'}).isDisabled(), true);
+      await validation.getByRole('button', {name: '返回设计'}).click();
+      if (process.env.W2_SCREENSHOT_DIR) {
+        await mkdir(process.env.W2_SCREENSHOT_DIR, {recursive: true});
+        await page.screenshot({path: path.join(process.env.W2_SCREENSHOT_DIR, `trace-conflict-${viewport.width}.png`), animations: 'disabled'});
+      }
+      await page.getByRole('button', {name: '移除供应商批号关联', exact: true}).click();
+      assert.equal(await page.getByRole('alert').filter({hasText: '该字段关联了'}).count(), 0);
+      await page.getByRole('button', {name: '撤销', exact: true}).click();
+      assert.equal(await page.evaluate(() => JSON.stringify(window.__store.getState().document)), seeded.before, 'undo restores all original conflicting assignments');
+      await page.evaluate(fieldId => {
+        const state = window.__store.getState();
+        state.setSelectedNodeId(state.document.canvas.pages[0].nodes.find(node => node.bindings?.fieldId === fieldId).id);
+      }, seeded.fieldId);
+      await page.getByRole('button', {name: '追溯与业务', exact: true}).click();
+      await page.getByRole('alert').getByText(/该字段关联了 2 个追溯配置/).waitFor();
+      await page.getByRole('button', {name: '移除供应商批号关联', exact: true}).click();
+      await submit(page, 1);
+      const saved = await page.evaluate(() => JSON.parse(window.__requests[0].payload.modelDesignJson).payload.projection.bindings);
+      assert.deepEqual(saved.map(binding => binding.id), ['one', 'reused'], 'same trace item remains reusable on another field');
+      await settle(page, 0);
+    }, viewport);
+  }
+  await run('trace single binding repairs duplicate columns in the whole subtable panel', async page => {
+    await page.route('**/projection-catalog', route => route.fulfill({status: 200, json: {code: 200, data: {
+      version: 'form-projection-v1', models: [{id: 'formTrace', name: '追溯', attributes: [
+        {id: 'materialLotText', name: '物料批号', type: 'text'}, {id: 'equipmentText', name: '设备编号', type: 'text'},
+      ]}], notice: '',
+    }}}));
+    await page.evaluate(() => {
+      const state = window.__store.getState();
+      const table = state.addField('subTable', '批号明细');
+      const [column] = state.addSubTableFields(table.id, [{name: '明细批号', type: 'text'}]);
+      state.addSubTableRegionFromFieldToRange(table.id, {t: 2, b: 5, l: 2, r: 5}, {left: 98, top: 36, width: 392, height: 144});
+      state.setProjectionBindings([
+        {id: 'one', modelId: 'formTrace', enabled: true, tableId: table.id, sources: {materialLotText: column.id}},
+        {id: 'two', modelId: 'formTrace', enabled: true, tableId: table.id, sources: {equipmentText: column.id}},
+      ]);
+      const node = window.__store.getState().document.canvas.pages[0].nodes.find(node => node.bindings?.fieldId === table.id);
+      state.setSelectedNodeId(node.id); state.markSaved();
+    });
+    await page.getByRole('button', {name: '追溯与业务', exact: true}).click();
+    await page.getByRole('button', {name: /配置列的追溯信息/}).click();
+    await page.getByRole('alert').filter({hasText: '此列关联了多个追溯配置'}).waitFor();
+    assert.equal(await page.getByLabel('关联追溯项（可选）', {exact: true}).count(), 0);
+    await page.getByRole('button', {name: '移除设备编号关联', exact: true}).click();
+    assert.equal(await page.getByRole('alert').filter({hasText: '此列关联了多个'}).count(), 0);
+    await submit(page, 1); await settle(page, 0);
+  });
+  await run('projection rail follows field configuration when selection becomes invalid', async page => {
+    const configRail = page.getByRole('button', { name: '字段配置', exact: true });
+    const projectionRail = page.getByRole('button', { name: '追溯与业务', exact: true });
+    assert.equal(await configRail.count(), 0);
+    assert.equal(await projectionRail.count(), 0, 'trace and business has the same field selection requirement');
+    const seeded = await page.evaluate(() => {
+      const state = window.__store.getState();
+      const field = state.addField('text', '选择状态回归字段');
+      state.addNodeFromFieldToCell(field.id, { range: { t: 2, b: 2, l: 3, r: 3 }, left: 196, top: 36, width: 98, height: 36 });
+      const document = window.__store.getState().document;
+      const node = document.canvas.pages[0].nodes.find(item => item.bindings?.fieldId === field.id);
+      const second = structuredClone(document.canvas.pages[0]);
+      second.id = 'selection-empty-page'; second.name = '无字段分页'; second.nodes = [];
+      state.setDocument({ ...document, canvas: { ...document.canvas, pages: [...document.canvas.pages, second] } });
+      state.setSelectedNodeId(node.id);
+      return { nodeId: node.id, pageId: document.canvas.pages[0].id, secondPageId: second.id };
+    });
+    await configRail.waitFor({ state: 'visible' });
+    await projectionRail.click();
+    await page.locator('[data-projection-source-context="true"]').waitFor();
+    await page.locator('[data-projection-canvas="true"] [data-sheet-cell-row="5"][data-sheet-cell-col="5"]').first().click();
+    await projectionRail.waitFor({ state: 'hidden' });
+    assert.equal(await configRail.count(), 0);
+    assert.equal(await page.locator('[data-projection-source-context="true"]').count(), 0, 'clearing selection unmounts the previous field configuration');
+    assert.equal(await page.getByRole('button', { name: '分页缩略图', exact: true }).getAttribute('aria-pressed'), 'true');
+    await page.evaluate(nodeId => window.__store.getState().setSelectedNodeId(nodeId), seeded.nodeId);
+    await projectionRail.click();
+    await page.evaluate(nodeId => window.__store.getState().removeNode(nodeId), seeded.nodeId);
+    await projectionRail.waitFor({ state: 'hidden' });
+    assert.equal(await page.locator('[data-projection-source-context="true"]').count(), 0);
+    await page.getByRole('button', { name: '撤销', exact: true }).click();
+    assert.equal(await projectionRail.count(), 0, 'undo restores the node, but does not create a selection');
+    assert.equal(await page.evaluate(nodeId => window.__store.getState().getCurrentPage().nodes.some(node => node.id === nodeId), seeded.nodeId), true);
+    await page.evaluate(nodeId => window.__store.getState().setSelectedNodeId(nodeId), seeded.nodeId);
+    await projectionRail.click();
+    await page.evaluate(pageId => window.__store.getState().setCurrentPageId(pageId), seeded.secondPageId);
+    await projectionRail.waitFor({ state: 'hidden' });
+    assert.equal(await configRail.count(), 0);
+    assert.equal(await page.locator('[data-projection-source-context="true"]').count(), 0, 'changing pages does not retain the former page field panel');
+    await page.evaluate(pageId => window.__store.getState().setCurrentPageId(pageId), seeded.pageId);
+    assert.equal(await projectionRail.count(), 0, 'returning to the page also requires selecting its field');
   });
   await run('narrow viewport retains keyboard access to the unsaved warning', async page => {
     await edit(page, 'A'); await submit(page, 1); await edit(page, 'B'); await settle(page, 0);

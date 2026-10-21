@@ -1,0 +1,140 @@
+{
+  "verifiedAt": "2026-10-21T23:19:22.040748",
+  "liveChecks": [
+    {
+      "base": "http://127.0.0.1:8081",
+      "method": "POST",
+      "path": "/api/v1/master-data/sop-documents",
+      "status": 405
+    },
+    {
+      "base": "http://127.0.0.1:8081",
+      "method": "PUT",
+      "path": "/api/v1/master-data/sop-documents/1",
+      "status": 405
+    },
+    {
+      "base": "http://127.0.0.1:8081",
+      "method": "DELETE",
+      "path": "/api/v1/master-data/sop-documents/1",
+      "status": 405
+    },
+    {
+      "base": "http://127.0.0.1:8081",
+      "method": "POST",
+      "path": "/api/v1/master-data/process-modeling/documents",
+      "status": 405
+    },
+    {
+      "base": "http://127.0.0.1:8081",
+      "method": "PUT",
+      "path": "/api/v1/master-data/process-modeling/documents/1",
+      "status": 404
+    },
+    {
+      "base": "http://127.0.0.1:8081",
+      "method": "DELETE",
+      "path": "/api/v1/master-data/process-modeling/documents/1",
+      "status": 404
+    },
+    {
+      "base": "http://127.0.0.1:8081",
+      "method": "GET",
+      "path": "/api/v1/master-data/documents",
+      "status": 200
+    },
+    {
+      "base": "http://127.0.0.1:8081",
+      "method": "GET",
+      "path": "/api/v1/form-lookup-items",
+      "status": 200
+    },
+    {
+      "base": "http://127.0.0.1:8081",
+      "method": "GET",
+      "path": "/api/v1/reports/form-projections/status",
+      "status": 200
+    },
+    {
+      "base": "http://127.0.0.1:8081",
+      "method": "GET",
+      "path": "/api/v1/master-data/quality-reasons/DEFECT",
+      "status": 200
+    },
+    {
+      "base": "http://127.0.0.1:8081",
+      "method": "GET",
+      "path": "/api/v1/master-data/quality-reasons/SCRAP",
+      "status": 200
+    },
+    {
+      "base": "http://localhost:3000",
+      "method": "POST",
+      "path": "/api/v1/master-data/sop-documents",
+      "status": 405
+    },
+    {
+      "base": "http://localhost:3000",
+      "method": "PUT",
+      "path": "/api/v1/master-data/sop-documents/1",
+      "status": 405
+    },
+    {
+      "base": "http://localhost:3000",
+      "method": "DELETE",
+      "path": "/api/v1/master-data/sop-documents/1",
+      "status": 405
+    },
+    {
+      "base": "http://localhost:3000",
+      "method": "POST",
+      "path": "/api/v1/master-data/process-modeling/documents",
+      "status": 405
+    },
+    {
+      "base": "http://localhost:3000",
+      "method": "PUT",
+      "path": "/api/v1/master-data/process-modeling/documents/1",
+      "status": 404
+    },
+    {
+      "base": "http://localhost:3000",
+      "method": "DELETE",
+      "path": "/api/v1/master-data/process-modeling/documents/1",
+      "status": 404
+    },
+    {
+      "base": "http://localhost:3000",
+      "method": "GET",
+      "path": "/api/v1/master-data/documents",
+      "status": 200
+    },
+    {
+      "base": "http://localhost:3000",
+      "method": "GET",
+      "path": "/api/v1/form-lookup-items",
+      "status": 200
+    },
+    {
+      "base": "http://localhost:3000",
+      "method": "GET",
+      "path": "/api/v1/reports/form-projections/status",
+      "status": 200
+    },
+    {
+      "base": "http://localhost:3000",
+      "method": "GET",
+      "path": "/api/v1/master-data/quality-reasons/DEFECT",
+      "status": 200
+    },
+    {
+      "base": "http://localhost:3000",
+      "method": "GET",
+      "path": "/api/v1/master-data/quality-reasons/SCRAP",
+      "status": 200
+    }
+  ],
+  "oldRequestsDidNotChangeDocumentVersionAuditCounts": true,
+  "isolatedVersionedMasterAndVersionCrudAndHistoricalRead": true,
+  "permanentDatabaseWrites": "登录日志与账号最后登录正常更新；无业务测试数据新增"
+}

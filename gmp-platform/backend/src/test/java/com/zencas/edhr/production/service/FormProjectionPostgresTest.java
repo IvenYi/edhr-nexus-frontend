@@ -107,12 +107,14 @@ class FormProjectionPostgresTest {
         assertThat(empty.path("totals")).isEmpty();
     }
 
-    @Test void scrapCauseLabelsFilterWholeRecordsWithoutChangingGrouping() throws Exception {
+    @Test void legacyScrapReasonsRemainQueryableAndCategoryEvidenceSurvivesWithoutANewCategoryFilter() throws Exception {
         enqueue(form()); tx.executeWithoutResult(status -> projection.process(batchId()));
         jdbc.update("INSERT INTO form_projection_record(batch_id,binding_id,row_key,model_id,attributes,sources,table_id) VALUES (?,'scrap1','form','scrap','{\"material\":{\"id\":\"1\",\"code\":\"M-1\",\"name\":\"螺丝\"},\"quantity\":2,\"reason\":\"scratch\",\"reasonLabel\":\"划伤\",\"category\":\"appearance\",\"categoryLabel\":\"外观\"}','{}','')", batchId());
         jdbc.update("INSERT INTO form_projection_record(batch_id,binding_id,row_key,model_id,attributes,sources,table_id) VALUES (?,'scrap2','form','scrap','{\"material\":{\"id\":\"1\",\"code\":\"M-1\",\"name\":\"螺丝\"},\"quantity\":3,\"reason\":\"dirty\",\"reasonLabel\":\"污染\",\"category\":\"appearance\",\"categoryLabel\":\"外观\"}','{}','')", batchId());
-        var all = reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("scrap", null, null, java.util.Map.of("materialCode", "M-1", "category", "外观"), 0, 20, null, null)).getData();
+        var all = reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("scrap", null, null, java.util.Map.of("materialCode", "M-1"), 0, 20, null, null)).getData();
         assertThat(all.path("records")).hasSize(2); assertThat(all.path("totals")).hasSize(1);
+        assertThat(all.path("records").get(0).path("attributes").path("categoryLabel").asText()).isEqualTo("外观");
+        assertThatThrownBy(() -> reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("scrap", null, null, java.util.Map.of("category", "外观"), 0, 20, null, null))).hasMessageContaining("不适用于");
         assertThat(all.path("totals").get(0).path("quantity").asInt()).isEqualTo(5);
         assertThat(all.path("totals").get(0).has("reason")).isFalse();
         var filtered = reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("scrap", null, null, java.util.Map.of("reason", "划伤"), 0, 20, null, null)).getData();
@@ -274,6 +276,33 @@ class FormProjectionPostgresTest {
                 mapper.createObjectNode().put("lot", "x".repeat(1024)), mapper.createObjectNode(), "a"))).doesNotThrowAnyException();
         assertThat(jdbc.queryForObject("SELECT count(*) FROM form_projection_batch", Integer.class)).isZero();
         assertThat(jdbc.queryForObject("SELECT count(*) FROM form_projection_record", Integer.class)).isZero();
+    }
+
+    @Test void defectDetailsKeepReasonSnapshotsAndSourceRowsWithoutGeneratingNgTotals() throws Exception {
+        var form = (ObjectNode) mapper.readTree("""
+            {"fields":[{"id":"ng","type":"number"},{"id":"rows","type":"subTable","typeConfig":{"columns":[
+            {"id":"reason","type":"reference","typeConfig":{"sourceType":"defectReason"}},{"id":"qty","type":"number"}]}}],
+            "projection":{"version":"form-projection-v1","bindings":[
+            {"id":"report","enabled":true,"modelId":"production","sources":{"ngQuantity":"ng"}},
+            {"id":"defects","enabled":true,"modelId":"defect","tableId":"rows","sources":{"reason":"reason","quantity":"qty"}}]}}
+            """);
+        var values = mapper.createObjectNode().put("ng", 2);
+        var rows = values.putArray("rows");
+        rows.addObject().put("__rowId", "scratch").put("qty", 2).putObject("reason").put("id", "81").put("sourceType", "defectReason").put("code", "D01").put("name", "划伤");
+        rows.addObject().put("__rowId", "dimension").put("qty", 1).putObject("reason").put("id", "82").put("sourceType", "defectReason").put("code", "D02").put("name", "尺寸超差");
+        tx.executeWithoutResult(status -> projection.completed(1, "default", form, values, mapper.createObjectNode(), "a"));
+        ((ObjectNode) rows.get(0).path("reason")).put("name", "后改名称");
+        tx.executeWithoutResult(status -> projection.process(batchId()));
+        var result = reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("defect", null, null, java.util.Map.of("reasonId", "81"), 0, 20, null, null)).getData();
+        assertThat(result.path("total").asInt()).isEqualTo(1);
+        assertThat(result.path("totals")).isEmpty();
+        var hit = result.path("records").get(0);
+        assertThat(hit.path("attributes").path("reasonLabel").asText()).isEqualTo("划伤");
+        assertThat(hit.path("rowIndex").asInt()).isZero();
+        assertThat(hit.path("sources").path("reason").asText()).isEqualTo("reason");
+        assertThat(jdbc.queryForObject("SELECT attributes->>'ngQuantity' FROM form_projection_record WHERE model_id='production'", String.class)).isEqualTo("2");
+        assertThatThrownBy(() -> reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("scrap", null, null, java.util.Map.of("category", "外观"), 0, 20, null, null))).hasMessageContaining("不适用于");
+        assertThatThrownBy(() -> reports().query(new com.zencas.edhr.production.controller.FormProjectionController.Query("defect", null, null, java.util.Map.of("category", "外观"), 0, 20, null, null))).hasMessageContaining("不适用于");
     }
 
     @Test void finalProjectionPublishesOnlyStatisticalFactsWhenTraceAndStatisticsAreBothConfigured() throws Exception {

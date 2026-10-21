@@ -12,6 +12,11 @@ import { isCellDisplayNode } from '../registry/commonComponentRegistry';
 import { parseChoiceOption } from '@/components/form-renderer/choiceOptions';
 import { useTemplateDesignerStore } from '../store/useTemplateDesignerStore';
 import type { FieldTypeIconKey, ModelField } from '../types';
+import ReferencePresentationConfig from './ReferencePresentationConfig';
+import ReferenceDictionaryConfig from './ReferenceDictionaryConfig';
+import ReferenceScopeConfig from './ReferenceScopeConfig';
+import { referenceFields, referenceEditorSource } from '@/components/form-renderer/referencePresentation';
+import { referenceConditionIssue, referenceConditionSourceFields } from '@/components/form-renderer/referenceValidation';
 
 type FillLimitKey = 'required' | 'readonly' | 'hidden';
 
@@ -117,12 +122,11 @@ const REFERENCE_FUNCTION_DATA_OPTIONS = [
   { label: '部门', value: 'department' },
   { label: '物料', value: 'material' },
   { label: '设备', value: 'equipment' },
-  { label: '产品', value: 'product' },
-  { label: '生产批次', value: 'productionBatch' },
-  { label: '产品SN', value: 'serialNumber' },
+  { label: '生产批次/SN', value: 'productionObject' },
   { label: '工单', value: 'workOrder' },
   { label: '工序', value: 'operation' },
-  { label: '供应商（暂不可用）', value: 'supplier', disabled: true },
+  { label: '不良原因', value: 'defectReason' },
+  { label: '报废原因', value: 'scrapReason' },
   { label: '字典', value: 'dictionary' },
 ];
 
@@ -153,49 +157,6 @@ const SUB_TABLE_ADD_ENTRY_OPTIONS = [
   { label: '右键菜单', value: 'contextMenu' },
   { label: '两者', value: 'both' },
 ];
-
-const REFERENCE_QUERY_SOURCE_FIELDS: Record<string, Array<{ label: string; value: string }>> = {
-  user: [
-    { label: '账号', value: 'username' },
-    { label: '姓名', value: 'displayName' },
-    { label: '手机号', value: 'phone' },
-    { label: '邮箱', value: 'email' },
-  ],
-  department: [
-    { label: '编码', value: 'code' },
-    { label: '名称', value: 'name' },
-    { label: '上级部门', value: 'parentName' },
-  ],
-  material: [
-    { label: '编码', value: 'code' },
-    { label: '名称', value: 'name' },
-    { label: '规格', value: 'specification' },
-  ],
-  equipment: [
-    { label: '编码', value: 'code' },
-    { label: '名称', value: 'name' },
-    { label: '型号', value: 'model' },
-  ],
-  product: [
-    { label: '编码', value: 'code' },
-    { label: '名称', value: 'name' },
-    { label: '规格', value: 'specification' },
-  ],
-  productionBatch: [{ label: '批次号', value: 'code' }, { label: '工单号', value: 'workOrderNo' }],
-  serialNumber: [{ label: 'SN', value: 'code' }, { label: '工单号', value: 'workOrderNo' }],
-  workOrder: [{ label: '工单号', value: 'code' }],
-  operation: [{ label: '编码', value: 'code' }, { label: '名称', value: 'name' }],
-  supplier: [
-    { label: '编码', value: 'code' },
-    { label: '名称', value: 'name' },
-    { label: '简称', value: 'shortName' },
-  ],
-  dictionary: [
-    { label: '编码', value: 'code' },
-    { label: '名称', value: 'name' },
-    { label: '值', value: 'value' },
-  ],
-};
 
 const SINGLE_SELECT_SHAPE_OPTIONS = [
   { label: '下拉框', value: 'select' },
@@ -679,10 +640,16 @@ function CompactSelect({
   value,
   options,
   onChange,
+  error,
+  helperText,
+  label,
 }: {
   value: string;
   options: Array<{ label: string; value: string; disabled?: boolean }>;
   onChange: (value: string) => void;
+  error?: boolean;
+  helperText?: string;
+  label?: string;
 }) {
   return (
     <TextField
@@ -690,6 +657,10 @@ function CompactSelect({
       fullWidth
       size="small"
       value={value}
+      error={error}
+      helperText={helperText}
+      label={label}
+      InputLabelProps={label ? { shrink: true } : undefined}
       onChange={(event) => onChange(event.target.value)}
       SelectProps={{ displayEmpty: true }}
       sx={compactSelectSx}
@@ -1656,35 +1627,33 @@ export default function DesignerInspector() {
 
   const renderReferenceSections = () => {
     const rawReferenceSourceType = readText(widgetConfig.referenceSourceType, readText(boundField?.typeConfig?.sourceType, 'dictionary'));
-    const referenceSourceType = REFERENCE_FUNCTION_DATA_OPTIONS.some((option) => option.value === rawReferenceSourceType)
-      ? rawReferenceSourceType
-      : 'dictionary';
+    const editorSource = referenceEditorSource(rawReferenceSourceType);
+    const referenceSourceType = REFERENCE_FUNCTION_DATA_OPTIONS.some((option) => option.value === editorSource)
+      ? editorSource
+      : '';
+    const referenceConfig = { ...boundField?.typeConfig, ...widgetConfig, sourceType: rawReferenceSourceType };
     const referenceField = readText(widgetConfig.referenceField, readText(boundField?.typeConfig.referenceField));
     const referenceDisplayMode = displayMode === 'link' ? 'link' : 'text';
-    const referenceSourceFieldOptions = REFERENCE_QUERY_SOURCE_FIELDS[referenceSourceType] ?? REFERENCE_QUERY_SOURCE_FIELDS.dictionary;
-    const referenceFieldOptions = [
-      { label: '默认显示内容', value: '' },
-      ...referenceSourceFieldOptions,
-    ];
+    const displayFields = referenceFields(referenceConfig);
+    const referenceSourceFieldOptions = referenceConditionSourceFields(referenceConfig).map(value => ({ value, label: displayFields.find(item => item.value === value)?.label ?? ({ status: '状态', name: '名称', specification: '规格', objectType: '对象类型', departmentIds: '部门ID' } as Record<string, string>)[value] ?? value }));
     const referenceSourceFieldSelectOptions = [
-      { label: '引用表中的字段', value: '' },
+      { label: '请选择候选对象属性', value: '' },
       ...referenceSourceFieldOptions,
     ];
     const mainFields = document?.model.fields ?? [];
     const table = mainFields.find(field => field.id === bindings.subTableId);
     const columns = Array.isArray(table?.typeConfig.columns) ? table.typeConfig.columns as ModelField[] : [];
     const referenceTargetFieldOptions = [...mainFields, ...columns]
-      .filter((field) => field.status === 'enabled' && field.id !== (bindings.subTableFieldId ?? boundFieldId) && ['text', 'number', 'datetime', 'singleSelect', 'reference'].includes(field.type))
+      .filter((field) => field.status === 'enabled' && field.id !== (bindings.subTableFieldId ?? boundFieldId) && field.typeConfig.multiple !== true && ['text', 'number', 'datetime', 'singleSelect', 'reference'].includes(field.type))
       .map((field) => ({
-        label: field.name || field.code || field.id,
+        label: `${columns.some(column => column.id === field.id) ? '当前明细' : '主表'} · ${field.name || field.code || field.id}`,
         value: field.id,
       }));
     const referenceTargetFieldSelectOptions = referenceTargetFieldOptions.length
-      ? [{ label: '当前表中的字段', value: '' }, ...referenceTargetFieldOptions]
+      ? [{ label: '请选择本表单取值字段', value: '' }, ...referenceTargetFieldOptions]
       : [{ label: '暂无字段', value: '' }];
     const referenceConditions = readReferenceQueryConditions(widgetConfig.referenceQueryConditions ?? boundField?.typeConfig.referenceQueryConditions);
-    const editableConditions = referenceConditions.length ? referenceConditions : [createReferenceQueryCondition()];
-    const normalizedReferenceField = referenceFieldOptions.some((option) => option.value === referenceField) ? referenceField : '';
+    const editableConditions = referenceConditions;
     const updateReferenceConditions = (rows: Array<{ sourceField: string; operator: string; targetFieldId: string }>) => {
       updateWidgetConfig({ referenceQueryConditions: rows });
     };
@@ -1724,84 +1693,73 @@ export default function DesignerInspector() {
                 updateWidgetConfig({
                   referenceSourceType: value,
                   referenceField: '',
-                  referenceQueryConditions: [createReferenceQueryCondition()],
+                  referenceDisplayFields: [],
+                  referenceSearchFields: [],
+                  referenceContextAutofill: false,
+                  referenceDictionaryId: '',
+                  ...(value === 'material' ? { referenceMaterialScope: 'all' } : {}),
+                  ...(value === 'productionObject' ? { referenceProductionScope: 'all' } : {}),
                 })
               }
             />
           </FieldConfigRow>
-          <FieldConfigRow label="显示内容" layout="vertical">
-            <CompactSelect
-              value={normalizedReferenceField}
-              options={referenceFieldOptions}
-              onChange={(value) => updateWidgetConfig({ referenceField: value })}
-            />
-          </FieldConfigRow>
+          <ReferenceScopeConfig config={referenceConfig} onChange={updateWidgetConfig} />
+          {referenceSourceType === 'dictionary' && <ReferenceDictionaryConfig
+            value={readText(widgetConfig.referenceDictionaryId, readText(boundField?.typeConfig.referenceDictionaryId))}
+            onChange={referenceDictionaryId => updateWidgetConfig({ referenceDictionaryId })} />}
+          <ReferencePresentationConfig source={rawReferenceSourceType} config={{ ...referenceConfig, referenceField }} fields={displayFields} onChange={updateWidgetConfig} />
           <Typography variant="caption" color="text.secondary">保存选中对象的身份；显示内容只决定填报时看到什么，追溯使用对象编号。</Typography>
         </FieldConfigSection>
 
         <Divider />
 
         <FieldConfigSection title="查询条件" marker="reference-query">
-          <Box sx={optionListHeaderSx}>
-            <Typography sx={verticalLabelSx}>查找条件</Typography>
-            <Tooltip title="新增条件" arrow>
-              <IconButton
-                size="small"
-                aria-label="新增条件"
-                sx={optionIconButtonSx}
-                onClick={() => updateReferenceConditions([...editableConditions, createReferenceQueryCondition()])}
-              >
-                <AddOutlined sx={{ fontSize: 18 }} />
-              </IconButton>
-            </Tooltip>
-          </Box>
-          <Stack spacing={0.75}>
+          <Typography variant="body2" color="text.secondary">筛选可选记录：填报时，只显示同时满足以下条件的记录。</Typography>
+          {!editableConditions.length && <Typography variant="caption" color="text.secondary">未添加条件，显示所选类型范围内的全部记录。</Typography>}
+          <Stack spacing={1.5}>
             {editableConditions.map((condition, index) => (
               <Box
                 key={`${index}-${editableConditions.length}`}
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'minmax(0, 1fr) 18px',
-                  alignItems: 'center',
-                  rowGap: 0.5,
-                  gap: 0.75,
-                }}
+                role="group"
+                aria-label={`筛选条件${index + 1}`}
+                sx={{ border: 1, borderColor: 'divider', borderRadius: 1, p: 1.25, minWidth: 0 }}
               >
-                <CompactSelect
-                  value={referenceSourceFieldOptions.some((option) => option.value === condition.sourceField) ? condition.sourceField : ''}
-                  options={referenceSourceFieldSelectOptions}
-                  onChange={(value) => updateReferenceCondition(index, { sourceField: value })}
-                />
-                <Tooltip title="删除条件" arrow>
-                  <span>
-                    <IconButton
-                      size="small"
-                      aria-label="删除条件"
-                      disabled={editableConditions.length <= 1}
-                      sx={optionRowIconButtonSx}
-                      onClick={() => updateReferenceConditions(editableConditions.filter((_, conditionIndex) => conditionIndex !== index))}
-                    >
-                      <RemoveOutlined sx={{ fontSize: 14 }} />
-                    </IconButton>
-                  </span>
-                </Tooltip>
-                <Box sx={{ gridColumn: '1 / 3', minWidth: 0 }}>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.25 }}>
+                  <Typography variant="caption" fontWeight={600}>条件 {index + 1}{index ? ' · 并且满足' : ''}</Typography>
+                  <Tooltip title="删除条件" arrow><IconButton size="small" aria-label="删除条件" onClick={() => updateReferenceConditions(editableConditions.filter((_, conditionIndex) => conditionIndex !== index))}><RemoveOutlined sx={{ fontSize: 16 }} /></IconButton></Tooltip>
+                </Stack>
+                <Stack spacing={1.5}>
                   <CompactSelect
+                    label="候选对象属性"
+                    value={condition.sourceField}
+                    options={condition.sourceField && !referenceSourceFieldOptions.some(option => option.value === condition.sourceField) ? [...referenceSourceFieldSelectOptions, { value: condition.sourceField, label: `不适用：${condition.sourceField}` }] : referenceSourceFieldSelectOptions}
+                    error={Boolean(condition.sourceField) && !referenceSourceFieldOptions.some(option => option.value === condition.sourceField)}
+                    onChange={(value) => updateReferenceCondition(index, { sourceField: value })}
+                  />
+                  <CompactSelect
+                    label="比较方式"
                     value={condition.operator}
-                    options={REFERENCE_QUERY_OPERATOR_OPTIONS}
+                    options={REFERENCE_QUERY_OPERATOR_OPTIONS.some(option => option.value === condition.operator) ? REFERENCE_QUERY_OPERATOR_OPTIONS : [...REFERENCE_QUERY_OPERATOR_OPTIONS, { value: condition.operator, label: `不适用：${condition.operator}` }]}
+                    error={!REFERENCE_QUERY_OPERATOR_OPTIONS.some(option => option.value === condition.operator)}
                     onChange={(value) => updateReferenceCondition(index, { operator: value })}
                   />
-                </Box>
-                <Box sx={{ gridColumn: '1 / 3', minWidth: 0 }}>
                   <CompactSelect
-                    value={referenceTargetFieldOptions.some((option) => option.value === condition.targetFieldId) ? condition.targetFieldId : ''}
-                    options={referenceTargetFieldSelectOptions}
+                    label="本表单取值字段"
+                    value={condition.targetFieldId}
+                    options={condition.targetFieldId && !referenceTargetFieldOptions.some(option => option.value === condition.targetFieldId) ? [...referenceTargetFieldSelectOptions, { value: condition.targetFieldId, label: `不适用：${condition.targetFieldId}` }] : referenceTargetFieldSelectOptions}
+                    error={Boolean(referenceConditionIssue(referenceConfig, bindings.subTableFieldId ?? boundFieldId ?? '', [...mainFields, ...columns], condition))}
+                    helperText={referenceConditionIssue(referenceConfig, bindings.subTableFieldId ?? boundFieldId ?? '', [...mainFields, ...columns], condition)}
                     onChange={(value) => updateReferenceCondition(index, { targetFieldId: value })}
                   />
-                </Box>
+                  {condition.sourceField && condition.targetFieldId && !referenceConditionIssue(referenceConfig, bindings.subTableFieldId ?? boundFieldId ?? '', [...mainFields, ...columns], condition) && <Typography variant="caption" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>
+                    仅显示“{referenceSourceFieldOptions.find(option => option.value === condition.sourceField)?.label}”{REFERENCE_QUERY_OPERATOR_OPTIONS.find(option => option.value === condition.operator)?.label}“{referenceTargetFieldOptions.find(option => option.value === condition.targetFieldId)?.label}”取值的记录。
+                  </Typography>}
+                </Stack>
               </Box>
             ))}
           </Stack>
+          <Button size="small" startIcon={<AddOutlined />} sx={{ alignSelf: 'flex-start' }} onClick={() => updateReferenceConditions([...editableConditions, createReferenceQueryCondition()])}>添加筛选条件</Button>
+          {editableConditions.length > 0 && <Typography variant="caption" color="text.secondary">先填写关联字段，才会有可选记录。引用字段按对象属性取值，不使用方括号拼接后的展示文字。</Typography>}
         </FieldConfigSection>
 
         <Divider />

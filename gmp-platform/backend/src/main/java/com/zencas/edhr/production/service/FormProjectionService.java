@@ -45,6 +45,7 @@ public class FormProjectionService {
         if (rows.isEmpty()) return;
         if (!FormProjectionInterpreter.VERSION.equals(rows.getFirst().get("rule_version"))) throw invalid("投影规则版本不可用");
         JsonNode source = parse(rows.getFirst().get("source").toString());
+        FormProjectionInterpreter.validateConfiguration(source.path("model"));
         var records = FormProjectionInterpreter.preview(source.path("model"), source.path("values"));
         for (JsonNode record : records) jdbc.update("""
             INSERT INTO form_projection_record(batch_id,binding_id,row_key,model_id,attributes,sources,table_id,details)

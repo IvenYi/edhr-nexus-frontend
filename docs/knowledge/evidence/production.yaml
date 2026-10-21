@@ -42,22 +42,22 @@ evidence:
     visibility: internal
   - id: evidence.migration-0061-work-order
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0061-production-work-order.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0061-production-work-order.sql
     description: 建立工单表及其产品、计划数量和状态等持久化字段。
     visibility: internal
   - id: evidence.migration-0062-production-object-and-work-order-lifecycle
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql
     description: 增加可空工单制程草稿字段、生产对象表、对象数量结果字段和生命周期数据约束，并将历史 PLANNED 规范化为 CREATED。
     visibility: internal
   - id: evidence.migration-0063-production-work-order-permission
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0063-production-work-order-permission.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0063-production-work-order-permission.sql
     description: 建立 production 与 production.work-orders 页面权限，并为 ADMIN 角色授予工单管理权限。
     visibility: internal
   - id: evidence.migration-0064-production-work-order-fields
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0064-production-work-order-fields.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0064-production-work-order-fields.sql
     description: 为工单表增加订单编号、计划开始时间和计划结束时间字段，支持工单创建和编辑字段契约。
     visibility: internal
   - id: evidence.production-frontend-menu-permission
@@ -117,7 +117,7 @@ evidence:
     visibility: internal
   - id: evidence.work-order-schema-field-boundary
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0061-production-work-order.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0061-production-work-order.sql
     description: 初始 work_order 表持久化工单编号、产品、可空制程版本、生产模式、生产形态、计划数量、状态、备注和审计时间字段；订单编号及计划起止时间由 0064 迁移追加。
     visibility: internal
   - id: evidence.work-order-page-row-detail-boundary
@@ -172,7 +172,7 @@ evidence:
     visibility: internal
   - id: evidence.migration-0066-production-object-planned-window
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0066-production-object-planned-window.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0066-production-object-planned-window.sql
     description: 为 production_object 增加 planned_start_at 和 planned_end_at 字段，支持生产批次计划起止时间持久化。
     visibility: internal
   - id: evidence.production-service-batch-split
@@ -267,7 +267,7 @@ evidence:
     visibility: internal
   - id: evidence.migration-0067-production-batch-management-permission
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0067-production-batch-management-permission.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0067-production-batch-management-permission.sql
     description: 新增生产准备下的 production.batches 页面权限并授予 ADMIN；迁移不创建批次表或批次状态字段。
     visibility: internal
   - id: evidence.production-batch-management-authorization-test

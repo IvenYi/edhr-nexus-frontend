@@ -1,5 +1,17 @@
 knowledgeModelVersion: 0.3.25
 terms:
+  - id: term.standard-reason-entry
+    name: 标准原因项
+    definition: 不良原因或报废原因目录中具有稳定身份及编号、名称的可引用条目；两套目录分别维护，本轮分类暂缓。新建或编辑对应标准原因用途必须选择本目录单选引用，文本只作补充；历史文本不按同名归并，已记录引用保留来源编号名称快照。标准原因身份不证明各原因数量互斥，也不替代不良件数累计口径。
+    aliases: [原因目录项]
+    status: implemented
+    visibility: internal
+  - id: term.defect-reason-detail
+    name: 不良原因明细
+    definition: 表单业务投影中独立不良明细用途形成的一条来源记录，对应一个不良原因目录单选引用和一个数字数量，单位及说明可选；支持主表分散配对或同实际子表行，逐笔报表及操作台明细保留来源表单、位置和原因编号名称快照，不新增原始事实类型。同原因可跨来源重复，分类暂缓，件数或缺陷次数及原因重叠口径仍须另定；它解释原因构成，不能默认相加替代来自production.ngQuantity的工序或批次NG。已有局部实现及新批次运行产物，独立质量最终验收另记。
+    aliases: [不良原因分项记录, 不良明细]
+    status: implemented
+    visibility: internal
   - id: term.production-quality-summary
     name: 正式质量累计
     definition: 从真实归属内成功正式报工或报废来源分别计算的良品、NG和报废登记量及其完整性。批次良品与NG只取冻结最终工序；产品报废取全流程本批产品，其他物料不混入。工序面板只取当前工序并按原单位及适用物料分别展示，正式累计显示为已生效数量，已保存过程参考显示为已填报数量；后者包含前者，不是待生效量，不相加，同指标浮层中分别解释。表单状态不等于统计计入状态。未采集不是0，缺失或不符单位待核对并保留来源，NG不是待处置库存、报废登记不是自动销毁；质量三项不加减明确产出，不改生命周期或旧证据。
@@ -26,7 +38,7 @@ terms:
     visibility: internal
   - id: term.form-business-projection
     name: 正式业务投影
-    definition: 表单最终完成时在同事务留下待处理批次，再由确定性解释器按该次冻结来源生成的报工、报废或消耗记录；保存及审批中内容只参与过程追溯，不提前计入正式统计。每条保留来源实例、用途、字段及实际行身份，投影不是原表单或DHR的替代记录；正式产出另按DEC-0078的显式产出来源、冻结最终节点及产品单位解释，不能仅凭成功投影就把全部报工数量相加为批次产出。
+    definition: 表单最终完成时在同事务留下待处理批次，再由确定性解释器按该次冻结来源生成的报工、报废、消耗或独立不良明细记录；不良明细增量按DEC-0082-12定义，其局部实现及新批次证据不等于整套投影或本轮集成验收通过。保存及审批中内容只参与过程追溯，不提前计入正式统计。每条保留来源实例、用途、字段及实际行身份，投影不是原表单或DHR的替代记录；正式产出另按DEC-0078的显式产出来源、冻结最终节点及产品单位解释，不能仅凭成功投影就把全部报工数量相加为批次产出，不良明细也不默认加总替代NG。
     aliases: [正式统计来源记录]
     status: specified
     visibility: internal
@@ -104,13 +116,13 @@ terms:
     visibility: internal
   - id: term.material
     name: 物料
-    definition: 物料管理维护的主数据；类型为产品（产成品）或半成品时可以派生为产品。
+    definition: 物料管理维护的主数据，包含原材料、半成品、产成品及包材等类型。产品是其中产成品与半成品的生产用途视图，不另建重复主数据；当前新引用配置统一使用物料入口，默认覆盖各类有效物料，可按需限定产品子集或指定物料类型，身份不因范围改变。旧物料及产品引用配置按自身冻结范围解释，不自动迁移。
     aliases: [物料主数据]
     status: implemented
     visibility: internal
   - id: term.product
     name: 产品
-    definition: 从产品或半成品物料派生的生产对象，不独立维护重复的产品主数据。
+    definition: 从产成品或半成品物料派生的生产用途主数据视图，沿用原物料身份，不独立维护重复产品主数据。新引用配置在物料入口限定产品范围，不再另列产品入口；只有该产品范围可以显式开启当前产品自动带入，普通物料不带入。它与工单拆分后用于执行的批次或SN生产对象不是同一概念，旧产品引用保持原解释。
     aliases: [父产品, 产品物料]
     status: implemented
     visibility: internal
@@ -608,7 +620,7 @@ terms:
     visibility: internal
   - id: term.production-object
     name: 生产对象
-    definition: 工单拆分后实际管理的批次或 SN 对象，保存对象编号、生产形态、锁定制程版本、目标数量、计划起止时间、备注和生命周期状态。BATCH的正式产出与质量累计分别按DEC-0078/0079从真实冻结来源解释，不以旧实体良品、NG、报废兼容列的默认0作为真实质量证据，也不据本轮BATCH算法推定SN质量算法已实现。
+    definition: 工单拆分后实际管理的批次或 SN 对象，保存对象编号、生产形态、锁定制程版本、目标数量、计划起止时间、备注和生命周期状态。批次与SN共用production_object模型，以object_type的BATCH和SN区分；新引用配置统一生产批次/SN入口，默认允许两种类型并能辨认，可按需限定批次或SN，保留真实对象身份与类型。BATCH的正式产出与质量累计分别按DEC-0078/0079从真实冻结来源解释，不以旧实体良品、NG、报废兼容列的默认0作为真实质量证据，也不据本轮BATCH算法推定SN质量算法已实现；旧引用与冻结记录不自动迁移。
     aliases: [批次对象, SN 对象, 工单对象]
     status: implemented
     visibility: internal
@@ -686,8 +698,8 @@ terms:
     visibility: internal
   - id: term.serial-number
     name: SN
-    definition: 生产形态为 SN 的单件生产对象；首版要求每个 SN 对象的目标数量必须为 1。
-    aliases: [序列号, 序号对象]
+    definition: 生产形态为 SN 的单件生产对象；首版要求每个 SN 对象的目标数量必须为 1。与批次共用生产对象模型，新引用从统一生产批次/SN入口选择，可限定SN范围，旧SN引用仍只选SN类型；它不是产品主数据的另一套编号目录，入口统一不改变单件数量规则。
+    aliases: [序列号, 序号对象, 生产SN]
     status: implemented
     visibility: internal
   - id: term.data-audit-action-category

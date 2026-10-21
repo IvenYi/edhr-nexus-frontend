@@ -119,7 +119,11 @@ class ProductionExecutionIntegrationTest {
         var stageMigration = new String(getClass().getResourceAsStream("/db/changelog/0111-form-instance-saved-stage.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
         for (String sql : stageMigration.split(";")) if (sql.contains("ALTER")) jdbc.execute(sql);
         for (String ddl : List.of(
-            "material(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),code VARCHAR(64),name VARCHAR(128),specification VARCHAR(128),unit VARCHAR(16))",
+            "material(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),code VARCHAR(64),name VARCHAR(128),specification VARCHAR(128),unit VARCHAR(16),status VARCHAR(16) DEFAULT 'ACTIVE',material_type_id BIGINT DEFAULT 1)",
+            "material_type(id BIGINT PRIMARY KEY,name VARCHAR(128))",
+            "operation(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),code VARCHAR(64),name VARCHAR(128))",
+            "department(id BIGINT PRIMARY KEY,name VARCHAR(128))",
+            "user_department(user_id BIGINT,department_id BIGINT)",
             "product_process_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),version_label VARCHAR(64),production_mode VARCHAR(64),production_form VARCHAR(64),route_version_id BIGINT,dhr_template_version_id BIGINT,dhr_review_mode VARCHAR(16) DEFAULT 'NONE',dhr_review_workflow_definition_id BIGINT,dhr_review_workflow_version_id BIGINT)",
             "route(id BIGINT PRIMARY KEY,name VARCHAR(128),code VARCHAR(64))",
             "route_version(id BIGINT PRIMARY KEY,route_id BIGINT,version VARCHAR(64))",
@@ -159,7 +163,9 @@ class ProductionExecutionIntegrationTest {
         jdbc.update("DELETE FROM production_execution"); jdbc.update("DELETE FROM production_object"); jdbc.update("DELETE FROM work_order"); jdbc.update("DELETE FROM audit_event");
         jdbc.update("DELETE FROM signature"); jdbc.update("DELETE FROM user_account");
         jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(1,0,'operator','测试操作员',?,'ACTIVE')", passwords.encode("test-secret"));
-        jdbc.update("INSERT INTO material VALUES(1,'default','P01','导管','规格A','件')");
+        jdbc.update("INSERT INTO material(id,tenant_id,code,name,specification,unit) VALUES(1,'default','P01','导管','规格A','件')");
+        jdbc.update("INSERT INTO material_type VALUES(1,'产成品')");
+        jdbc.update("INSERT INTO operation VALUES(11,'default','O01','装配'),(12,'default','O02','检验')");
         jdbc.update("INSERT INTO product_process_version(id,tenant_id,version_label,production_mode,production_form,route_version_id,dhr_template_version_id,dhr_review_mode) VALUES(2,'default','配置V1','量产','批次',3,4,'NONE')");
         jdbc.update("INSERT INTO route VALUES(3,'导管装配','R01')"); jdbc.update("INSERT INTO route_version VALUES(3,3,'V1')");
         jdbc.update("INSERT INTO dhr_template VALUES(4,'导管生产记录','D01')");
@@ -176,6 +182,70 @@ class ProductionExecutionIntegrationTest {
         jdbc.update("INSERT INTO product_process_operation_form_binding VALUES(51,11,5,50,true,1,'{\"fillMode\":\"DIRECT\"}')");
         jdbc.update("INSERT INTO work_order(id,tenant_id,order_no,product_id,planned_quantity,status,created_at,updated_at) VALUES(100,'default','WO01',1,2,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
         jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity,good_quantity,ng_quantity,scrap_quantity,status,created_at,updated_at) VALUES(101,'default',100,'B01','BATCH',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),(102,'default',100,'SN01','SN',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
+    }
+
+    private String retiredTraceModel(String id) {
+        var model = mapper.createObjectNode();
+        model.putArray("fields").addObject().put("id", "value").put("name", "历史字段").put("type", "text").put("status", "enabled");
+        var projection = model.putObject("projection").put("version", "form-projection-v1");
+        projection.putObject("lookupItems").putObject(id).put("name", "退役含义").put("type", "text");
+        projection.putArray("bindings").addObject().put("id", "old-trace").put("modelId", "formTrace").put("enabled", true)
+            .putObject("sources").put(id, "value");
+        return model.toString();
+    }
+
+    @Test void retiredTraceTemplateCannotCreateNewExecutionOrDhrAndScanExplainsTheConfigurationError() throws Exception {
+        org.mockito.Mockito.when(materials.findByTenantIdAndId("default", 1L)).thenReturn(java.util.Optional.of(
+            com.zencas.edhr.masterdata.entity.Material.builder().id(1L).tenantId("default").code("P01").name("导管").build()));
+        for (String id : new String[]{"serialNumberText", "lookup_related_batch", "teamText", "documentNumberText"}) {
+            jdbc.update("UPDATE form_template_version SET model_design_json=?,canvas_design_json='{}' WHERE id=5", retiredTraceModel(id));
+            Integer audits = jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class);
+            mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.configurationError").value(org.hamcrest.Matchers.containsString("追溯项已停用")));
+            action(101, "START", 0, "a", Map.of()).andExpect(status().isBadRequest());
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM production_execution WHERE object_id=101", Integer.class)).isZero();
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_instance", Integer.class)).isZero();
+            assertThat(jdbc.queryForObject("SELECT status FROM production_object WHERE id=101", String.class)).isEqualTo("CREATED");
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isEqualTo(audits);
+        }
+    }
+
+    @Test void retiredTemplateCannotBeAttachedButExistingFrozenExecutionRemainsReadable() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        String frozen = jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class);
+        Integer audits = jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class);
+        for (String id : new String[]{"serialNumberText", "lookup_related_batch", "teamText", "documentNumberText"}) {
+            jdbc.update("UPDATE form_template_version SET model_design_json=?,canvas_design_json='{}' WHERE id=5", retiredTraceModel(id));
+            mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.configurationError").doesNotExist())
+                .andExpect(jsonPath("$.data.snapshot.operations[0].forms[0].fields[0].id").value("temperature"));
+            action(101, "ATTACH_FORM", 1, "a", Map.of("templateVersionId", "5", "required", false))
+                .andExpect(status().isBadRequest());
+            assertThat(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(frozen);
+            assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(1L);
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isEqualTo(audits);
+        }
+    }
+
+    @Test void obsoleteTestSnapshotsCannotCreateNewCopiesOrPersistMoreRetiredTraceRecords() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        var frozen = (com.fasterxml.jackson.databind.node.ObjectNode) mapper.readTree(
+            jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class));
+        var oldModel = mapper.readTree(retiredTraceModel("teamText"));
+        var form = (com.fasterxml.jackson.databind.node.ObjectNode) frozen.at("/operations/0/forms/0");
+        form.set("fields", oldModel.path("fields")); form.set("projection", oldModel.path("projection"));
+        jdbc.update("UPDATE production_execution SET snapshot_json=? WHERE object_id=101", frozen.toString());
+        String state = jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class);
+        Integer audits = jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class);
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk());
+        action(101, "ADD_FORM_COPY", 1, "a", Map.of("formId", "form-51", "remark", "旧测试记录不能再增份"))
+            .andExpect(status().isBadRequest());
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("value", "旧班组")))
+            .andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM form_instance_record WHERE object_id=101", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(1L);
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(state);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isEqualTo(audits);
     }
 
     @Test void firstStartRejectsUnconfiguredOperationModesWithoutExecutionDhrOrAuditWrites() throws Exception {
@@ -302,6 +372,75 @@ class ProductionExecutionIntegrationTest {
         action(101, "SAVE", 2, "a", Map.of("formId", "form-51", "values", forged)).andExpect(status().isBadRequest());
         assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(2);
         assertThat(jdbc.queryForObject("SELECT values_json FROM form_instance_record WHERE object_id=101", String.class)).contains("B02");
+    }
+
+    @Test void contextualReferencesPersistOnceAndUseFrozenConfigurationAcrossReopenAndNewCopies() throws Exception {
+        String model = """
+            {"fields":[
+             {"id":"batch","name":"批次","type":"reference","typeConfig":{"sourceType":"productionBatch","referenceContextAutofill":true,"referenceDisplayFields":["code","productName"]}},
+             {"id":"product","name":"产品","type":"reference","typeConfig":{"sourceType":"product","referenceContextAutofill":true,"referenceDisplayFields":["code","name","specification"]}},
+             {"id":"op","name":"工序","type":"reference","typeConfig":{"sourceType":"operation","referenceContextAutofill":true}},
+             {"id":"sn","name":"SN","type":"reference","typeConfig":{"sourceType":"serialNumber","referenceContextAutofill":true}}
+            ]}
+            """;
+        jdbc.update("UPDATE form_template_version SET model_design_json=?,canvas_design_json='{}' WHERE id=5", model);
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.forms.form-51.values.batch.id").value("101"))
+            .andExpect(jsonPath("$.data.state.operations.a.forms.form-51.values.product.name").value("导管"))
+            .andExpect(jsonPath("$.data.state.operations.a.forms.form-51.values.op.id").value("11"))
+            .andExpect(jsonPath("$.data.state.operations.a.forms.form-51.referenceContextWarnings.sn").exists());
+        String initialized = jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class);
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk());
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(initialized);
+        jdbc.update("UPDATE form_template_version SET model_design_json='{\"fields\":[]}' WHERE id=5");
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of())).andExpect(status().isOk());
+        assertThat(jdbc.queryForObject("SELECT values_json FROM form_instance_record WHERE object_id=101", String.class)).contains("导管", "productionBatch");
+        action(101, "ADD_FORM_COPY", 2, "a", Map.of("formId", "form-51", "remark", "重复报工")).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.forms['form-51:copy:2'].values.product.code").value("P01"));
+    }
+
+    @Test void paginatedReferenceApiUsesConfiguredSearchFieldsWithoutChangingDisplayOrWriting() throws Exception {
+        String model = """
+            {"fields":[{"id":"ref","type":"reference","typeConfig":{"sourceType":"material","referenceDisplayFields":["code","name"],"referenceSearchFields":["specification"]}}]}
+            """;
+        jdbc.update("UPDATE form_template_version SET model_design_json=?,canvas_design_json='{}' WHERE id=5", model);
+        for (int i = 2; i <= 125; i++) jdbc.update("INSERT INTO material(id,tenant_id,code,name,specification,unit) VALUES(?,'default',?,'同名物料','SPEC-X','件')", i, "M-" + i);
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        String before = jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class);
+        String endpoint = "/api/v1/production/execution/101/references";
+        mvc.perform(auth(post(endpoint).contentType("application/json").content("{\"operationId\":\"a\",\"formId\":\"form-51\",\"fieldId\":\"ref\",\"keyword\":\"SPEC-X\",\"page\":5,\"size\":20}")))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.length()").value(21))
+            .andExpect(jsonPath("$.data[0].id").value("102"))
+            .andExpect(jsonPath("$.data[0].name").value("同名物料"));
+        mvc.perform(auth(post(endpoint).contentType("application/json").content("{\"operationId\":\"a\",\"formId\":\"form-51\",\"fieldId\":\"ref\",\"keyword\":\"M-125\",\"page\":0,\"size\":20}")))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.data.length()").value(0));
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(before);
+    }
+
+    @Test void inactiveReasonCanOnlyRemainUnchangedInItsPreviouslySavedSourceRow() throws Exception {
+        jdbc.execute("CREATE TABLE IF NOT EXISTS quality_reason(id BIGINT PRIMARY KEY,tenant_id VARCHAR,reason_type VARCHAR,code VARCHAR,name VARCHAR,description VARCHAR,status VARCHAR)");
+        jdbc.update("DELETE FROM quality_reason");
+        jdbc.update("INSERT INTO quality_reason VALUES(501,'default','DEFECT','D01','划伤','外观不良','INACTIVE')");
+        String model = """
+            {"fields":[{"id":"rows","name":"不良明细","type":"subTable","typeConfig":{"columns":[
+             {"id":"reason","name":"原因","type":"reference","typeConfig":{"sourceType":"defectReason","referenceDisplayFields":["code","name"]}},
+             {"id":"quantity","name":"数量","type":"number"}]}}]}
+            """;
+        jdbc.update("UPDATE form_template_version SET model_design_json=?,canvas_design_json='{}' WHERE id=5", model);
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        Map<String, String> selected = Map.of("id", "501", "sourceType", "defectReason", "code", "D01", "name", "划伤");
+        Map<String, Object> row = Map.of("reason", selected, "quantity", 2);
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("rows", List.of(row)))).andExpect(status().isBadRequest());
+        jdbc.update("UPDATE quality_reason SET status='ACTIVE' WHERE id=501");
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("rows", List.of(row)))).andExpect(status().isOk());
+        JsonNode saved = mapper.readTree(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).at("/operations/a/forms/form-51/values/rows");
+        jdbc.update("UPDATE quality_reason SET status='INACTIVE',name='更名原因' WHERE id=501");
+        action(101, "SAVE", 2, "a", Map.of("formId", "form-51", "values", Map.of("rows", saved))).andExpect(status().isOk());
+        var appended = saved.deepCopy();
+        ((com.fasterxml.jackson.databind.node.ArrayNode) appended).add(mapper.valueToTree(row));
+        action(101, "SAVE", 3, "a", Map.of("formId", "form-51", "values", Map.of("rows", appended))).andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(3);
+        assertThat(jdbc.queryForObject("SELECT values_json FROM form_instance_record WHERE object_id=101", String.class)).contains("划伤").doesNotContain("更名原因");
     }
 
     @Test void batchAndSnScanAreReadOnlyAndReturnCorrectConfiguration() throws Exception {

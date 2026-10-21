@@ -24,7 +24,7 @@ final class ExecutionQualitySummary {
                 batch.set("form", form); batch.set("model", form); batch.set("values", values); ArrayNode records = batch.putArray("records");
                 boolean modern = false;
                 for (JsonNode binding : form.path("projection").path("bindings")) {
-                    if (!binding.path("enabled").asBoolean() || !java.util.Set.of("production", "scrap").contains(binding.path("modelId").asText())) continue;
+                    if (!binding.path("enabled").asBoolean() || !java.util.Set.of("production", "scrap", "defect").contains(binding.path("modelId").asText())) continue;
                     modern = true;
                     String table = binding.path("tableId").asText();
                     if (table.isBlank()) append(records, binding, values, "form", "");
@@ -49,7 +49,10 @@ final class ExecutionQualitySummary {
         binding.path("sources").fields().forEachRemaining(source -> {
             JsonNode raw = values.path(source.getValue().asText());
             if (raw.isMissingNode() || raw.isNull()) return;
-            if (raw.isObject() && !source.getKey().equals("material")) attributes.put(source.getKey(), raw.path("code").asText(raw.path("name").asText()));
+            if (raw.isObject() && !source.getKey().equals("material")) {
+                attributes.put(source.getKey(), raw.path("code").asText(raw.path("name").asText()));
+                if (source.getKey().equals("reason")) attributes.put("reasonId", raw.path("id").asText()).put("reasonLabel", raw.path("name").asText());
+            }
             else attributes.set(source.getKey(), raw);
         });
     }

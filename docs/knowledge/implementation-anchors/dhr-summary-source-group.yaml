@@ -35,13 +35,13 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrSummaryController.java]
     apiReferences: ['GET /api/v1/dhr-instances/{id}/summary', 'PUT /api/v1/dhr-instances/{id}/summary/draft', 'POST /api/v1/dhr-instances/{id}/summary/submit']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryDisplayNameMigrationTest.java]
     status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-controller, evidence.dhr-summary-ui, evidence.dhr-summary-display-name-migration, evidence.dhr-summary-display-name-test-source]
     sourceRevision: working-tree
-    sourceLocator: DhrSummaryPage.openRename/saveRename 及 formRowActions 支持全来源已有证据的展示别名；DhrSummaryService.validatePlacements 固定 DIRECTORY 目标、合入别名并在 prepareNextDraft 继承，0101 可空列复用。完整自动范围上的别名交互仍需浏览器和持久化收尾验收。
+    sourceLocator: "DhrSummaryPage.openRename/saveRename 及 formRowActions 支持全来源已有证据的展示别名；DhrSummaryService.validatePlacements 固定 DIRECTORY 目标、合入别名并在 prepareNextDraft 继承，0101 可空列复用。完整自动范围上的别名交互仍需浏览器和持久化收尾验收。；2026-10-21仅初始化定位维护（d405a9af工作树）：dhr_summary_evidence.display_name直接创建可空列；0101仅为该列的历史迁移来源。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-25'
     reviewStatus: reviewed

@@ -1,0 +1,7 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.reference-dictionary-correction
+    type: document
+    path: docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.md
+    description: user-confirmed与original-evidence分列；2026-10-19用户要求澄清物料/产品、批次/SN引用及修复未选具体字典和详情问题。本体核对原始主数据、生产对象和引用查询源码，共表而不同候选范围不等于新增模型；新字典范围及其兼容为当前未提交实现，不冒称已运行验证或发布。供应商仅移除禁用配置占位，不删除业务数据。
+    visibility: internal

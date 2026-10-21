@@ -103,6 +103,11 @@ public class ProductionExecutionService {
 
     @Transactional(readOnly = true)
     public List<java.util.Map<String, String>> references(Long id, String operationId, String formId, String fieldId, String keyword, JsonNode values) {
+        return references(id, operationId, formId, fieldId, keyword, values, null, null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<java.util.Map<String, String>> references(Long id, String operationId, String formId, String fieldId, String keyword, JsonNode values, Integer page, Integer size) {
         if (fieldId == null || fieldId.isBlank() || formId == null || operationId == null) throw invalid("请指定工序、表单和引用字段");
         ObjectNode view = get(id);
         JsonNode op = engine.find(view.path("snapshot").path("operations"), operationId);
@@ -110,7 +115,7 @@ public class ProductionExecutionService {
         JsonNode field = findField(com.zencas.edhr.template.service.FormReferenceConfig.fields(form, mapper), fieldId);
         if (field == null) throw invalid("执行配置中不存在该字段");
         if (!"reference".equals(field.path("type").asText())) throw invalid("此字段不是引用字段");
-        return access.references(field, keyword, values);
+        return access.references(field, keyword, values, page, size);
     }
 
     private JsonNode findField(JsonNode fields, String id) {
@@ -208,7 +213,10 @@ public class ProductionExecutionService {
             }
             case "START" -> engine.start(snapshot, state, command.operationId(), operator);
             case "COMPLETE" -> engine.complete(snapshot, state, command.operationId(), operator, Boolean.TRUE.equals(command.acknowledgeIncomplete()));
-            case "ADD_FORM_COPY" -> engine.addFormCopy(snapshot, state, command.operationId(), command.formId(), operator, command.remark());
+            case "ADD_FORM_COPY" -> {
+                com.zencas.edhr.template.service.FormProjectionInterpreter.validateConfiguration(targetForm);
+                engine.addFormCopy(snapshot, state, command.operationId(), command.formId(), operator, command.remark());
+            }
             case "UPDATE_FORM_COPY_REMARK" -> engine.updateFormCopyRemark(snapshot, state, command.operationId(), command.formId(), command.instanceId(), operator, command.remark());
             case "END_FORM" -> engine.endForm(snapshot, state, command.operationId(), command.formId(), Boolean.TRUE.equals(command.acknowledgeIncomplete()), operator);
             case "CONFIRM" -> engine.confirm(snapshot, state, command.operationId(), command.workId(), command.nodeId(), operator);

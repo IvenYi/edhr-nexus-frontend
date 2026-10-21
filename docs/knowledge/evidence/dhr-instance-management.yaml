@@ -27,12 +27,12 @@ evidence:
     visibility: internal
   - id: evidence.dhr-instance-form-record-schema
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0082-form-instance-records.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0082-form-instance-records.sql
     description: original-evidence；表单实例记录表提供生产对象、工序、表单、copyId、冻结快照和值等持久化字段及对象/工序/份唯一约束，是 DHR 证据聚合的数据库来源。
     visibility: internal
   - id: evidence.dhr-instance-form-business-source-schema
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0086-form-instance-business-source.sql
     description: original-evidence；表单实例记录持久化业务来源，当前生产执行来源值为 PRODUCTION_EXECUTION。DHR 第一阶段只消费该来源，不把其他未来来源写成已支持。
     visibility: internal
   - id: evidence.dhr-instance-service
@@ -47,7 +47,7 @@ evidence:
     visibility: internal
   - id: evidence.dhr-instance-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0089-dhr-instance-management.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0089-dhr-instance-management.sql
     description: original-evidence；0089 建立 dhr_instance 表、状态和对象类型约束、tenant_id 与 production_object_id 唯一约束及必要外键；0090/0091 删除从未启用的 dhr_template_version.directory_snapshot 与 status 列。0089 同时创建 records.dhr-management 与 dhr.instances.view 并只为 ADMIN 默认授权。
     visibility: internal
   - id: evidence.dhr-instance-integration-test

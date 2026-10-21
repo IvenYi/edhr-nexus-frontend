@@ -77,7 +77,7 @@ evidence:
     visibility: internal
   - id: evidence.workflow-task-candidate-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0071-workflow-task-candidates.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0071-workflow-task-candidates.sql
     description: 数据库变更为 workflow_task 增加 candidate_snapshot JSONB 字段及候选用户查询索引。
     visibility: internal
   - id: evidence.workflow-task-candidate-repository

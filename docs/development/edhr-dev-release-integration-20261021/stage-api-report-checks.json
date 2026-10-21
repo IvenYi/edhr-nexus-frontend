@@ -1,0 +1,258 @@
+{
+  "environment": "localhost:13000 -> 18081 -> edhr_release_stage",
+  "objectNo": "ASK-REASON-20261019-R2-B",
+  "reports": {
+    "production": {
+      "total": 2,
+      "records": [
+        {
+          "id": "72",
+          "modelId": null,
+          "attributes": {
+            "unit": "件",
+            "reporter": "1",
+            "ngQuantity": 1,
+            "reporterId": "1",
+            "goodQuantity": 8,
+            "reporterLabel": "系统管理员",
+            "outputQuantity": 8,
+            "productionDate": "2026-10-19"
+          }
+        },
+        {
+          "id": "69",
+          "modelId": null,
+          "attributes": {
+            "unit": "件",
+            "reporter": "1",
+            "ngQuantity": 1,
+            "reporterId": "1",
+            "goodQuantity": 10,
+            "reporterLabel": "系统管理员",
+            "outputQuantity": 10,
+            "productionDate": "2026-10-19"
+          }
+        }
+      ]
+    },
+    "defect": {
+      "total": 3,
+      "records": [
+        {
+          "id": "73",
+          "modelId": null,
+          "attributes": {
+            "unit": "件",
+            "reason": "ASK-REASON-20261019-R2-D02",
+            "quantity": 3,
+            "reasonId": "387301167252963328",
+            "reasonNote": "第二次报工不良原因分项3，不替代本次NG1",
+            "reasonLabel": "模拟·清洁后残留"
+          }
+        },
+        {
+          "id": "71",
+          "modelId": null,
+          "attributes": {
+            "unit": "件",
+            "reason": "ASK-REASON-20261019-R2-D02",
+            "quantity": 1,
+            "reasonId": "387301167252963328",
+            "reasonNote": "模拟残留分项，可能与其他分项重叠",
+            "reasonLabel": "模拟·清洁后残留"
+          }
+        },
+        {
+          "id": "70",
+          "modelId": null,
+          "attributes": {
+            "unit": "件",
+            "reason": "ASK-REASON-20261019-R2-D01",
+            "quantity": 2,
+            "reasonId": "387301167223603200",
+            "reasonNote": "模拟划伤分项，不替代NG",
+            "reasonLabel": "模拟·刀头表面划伤"
+          }
+        }
+      ]
+    },
+    "scrap": {
+      "total": 4,
+      "records": [
+        {
+          "id": "68",
+          "modelId": null,
+          "attributes": {
+            "reason": "ASK-REASON-20261019-R2-S01",
+            "material": {
+              "id": "387301167341043712",
+              "code": "ASK-REASON-20261019-R2-P",
+              "name": "安速康原因模拟·刀头",
+              "unit": "件",
+              "status": "ACTIVE",
+              "sourceType": "material",
+              "specification": ""
+            },
+            "quantity": 1,
+            "reasonId": "387301167273934848",
+            "reasonNote": "本轮虚构验证：product单位缺失应待核对",
+            "reasonLabel": "模拟·外观损伤报废",
+            "materialLotText": "ASK-REASON-20261019-R2-PRODUCT",
+            "documentNumberText": "ASK-REASON-20261019-R2-S4"
+          }
+        },
+        {
+          "id": "67",
+          "modelId": null,
+          "attributes": {
+            "unit": "张",
+            "reason": "ASK-REASON-20261019-R2-S02",
+            "material": {
+              "id": "387301167441707008",
+              "code": "ASK-REASON-20261019-R2-K",
+              "name": "安速康原因模拟·刀头包材",
+              "unit": "张",
+              "status": "ACTIVE",
+              "sourceType": "material",
+              "specification": ""
+            },
+            "quantity": 2,
+            "reasonId": "387301167303294976",
+            "reasonNote": "本轮虚构验证：pack按实际物料和单位独立记录",
+            "reasonLabel": "模拟·领用破损报废",
+            "materialLotText": "ASK-REASON-20261019-R2-PACK",
+            "documentNumberText": "ASK-REASON-20261019-R2-S3"
+          }
+        },
+        {
+          "id": "66",
+          "modelId": null,
+          "attributes": {
+            "unit": "kg",
+            "reason": "ASK-REASON-20261019-R2-S02",
+            "material": {
+              "id": "387301167395569664",
+              "code": "ASK-REASON-20261019-R2-R",
+              "name": "安速康原因模拟·清洗原料",
+              "unit": "kg",
+              "status": "ACTIVE",
+              "sourceType": "material",
+              "specification": ""
+            },
+            "quantity": 2,
+            "reasonId": "387301167303294976",
+            "reasonNote": "本轮虚构验证：raw按实际物料和单位独立记录",
+            "reasonLabel": "模拟·领用破损报废",
+            "materialLotText": "ASK-REASON-20261019-R2-RAW",
+            "documentNumberText": "ASK-REASON-20261019-R2-S2"
+          }
+        },
+        {
+          "id": "65",
+          "modelId": null,
+          "attributes": {
+            "unit": "件",
+            "reason": "ASK-REASON-20261019-R2-S01",
+            "material": {
+              "id": "387301167341043712",
+              "code": "ASK-REASON-20261019-R2-P",
+              "name": "安速康原因模拟·刀头",
+              "unit": "件",
+              "status": "ACTIVE",
+              "sourceType": "material",
+              "specification": ""
+            },
+            "quantity": 1,
+            "reasonId": "387301167273934848",
+            "reasonNote": "本轮虚构验证：product按实际物料和单位独立记录",
+            "reasonLabel": "模拟·外观损伤报废",
+            "materialLotText": "ASK-REASON-20261019-R2-PRODUCT",
+            "documentNumberText": "ASK-REASON-20261019-R2-S1"
+          }
+        }
+      ]
+    },
+    "consumption": {
+      "total": 2,
+      "records": [
+        {
+          "id": "64",
+          "modelId": null,
+          "attributes": {
+            "material": {
+              "id": "387301167441707008",
+              "code": "ASK-REASON-20261019-R2-K",
+              "name": "安速康原因模拟·刀头包材",
+              "unit": "张",
+              "status": "ACTIVE",
+              "sourceType": "material",
+              "specification": ""
+            },
+            "quantity": 20
+          }
+        },
+        {
+          "id": "63",
+          "modelId": null,
+          "attributes": {
+            "material": {
+              "id": "387301167441707008",
+              "code": "ASK-REASON-20261019-R2-K",
+              "name": "安速康原因模拟·刀头包材",
+              "unit": "张",
+              "status": "ACTIVE",
+              "sourceType": "material",
+              "specification": ""
+            },
+            "quantity": 20
+          }
+        }
+      ]
+    }
+  },
+  "formalOutput": {
+    "status": "READY",
+    "quantity": "18",
+    "unit": "件"
+  },
+  "finalOperationQuality": {
+    "goodQuantity": {
+      "quantity": "18",
+      "unit": "件",
+      "status": "READY"
+    },
+    "ngQuantity": {
+      "quantity": "2",
+      "unit": "件",
+      "status": "READY"
+    },
+    "scrapQuantity": {
+      "quantity": null,
+      "unit": null,
+      "status": "NOT_CONFIGURED"
+    }
+  },
+  "scrapGroups": [
+    {
+      "quantity": "2",
+      "unit": "张",
+      "materialId": "387301167441707008",
+      "materialName": "安速康原因模拟·刀头包材",
+      "materialCode": "ASK-REASON-20261019-R2-K"
+    },
+    {
+      "quantity": "2",
+      "unit": "kg",
+      "materialId": "387301167395569664",
+      "materialName": "安速康原因模拟·清洗原料",
+      "materialCode": "ASK-REASON-20261019-R2-R"
+    },
+    {
+      "quantity": "1",
+      "unit": "件",
+      "materialId": "387301167341043712",
+      "materialName": "安速康原因模拟·刀头",
+      "materialCode": "ASK-REASON-20261019-R2-P"
+    }
+  ]
+}

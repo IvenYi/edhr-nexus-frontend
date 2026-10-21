@@ -54,7 +54,7 @@
 | `batch.generateCount`、`split.batchCount` | `integer` | `WorkOrderPage.addPendingBatch` 对对象数量使用 `Math.floor`／`Math.ceil` 并按整数长度创建候选数组；与每个对象的目标数量分开。 |
 | `workOrder.productionObjectCount` | `integer` | `ProductionService.objects` 的对象集合及首次拆分 `existing.isEmpty()` 判断。 |
 | `productionWorkApplicabilityRule.count` | `integer` | `WorkTemplateController.delete` 查询绑定规则集合并检查是否为空。 |
-| `productionWorkDefinition.auditEventCount` | `integer` | [0059-work-template-audit-baseline.sql](../../../gmp-platform/backend/src/main/resources/db/changelog/0059-work-template-audit-baseline.sql) 用 `NOT EXISTS` 查找无审计的作业；对应规则定义审计记录数为零的条件。 |
+| `productionWorkDefinition.auditEventCount` | `integer` | [0059-work-template-audit-baseline.sql](../../../gmp-platform/backend/src/test/resources/db/changelog/0059-work-template-audit-baseline.sql) 用 `NOT EXISTS` 查找无审计的作业；对应规则定义审计记录数为零的条件。 |
 | `workshop.referenceCount` | `integer` | `rule.workshop-reference-lock` 定义引用数量；当前 `WorkshopController.isReferenced` 用产线引用存在性完成阻断，不声称已有通用完整引用计数器。 |
 | `formProcessApproval.candidateCount` | `integer` | `rule.form-process.approval-any-candidate` 与 DEC-0023 的候选人数定义；保持 `specified` / `not-available`。 |
 | `split.targetQuantity` | `decimal` | `ProductionService.split` 接收 `BigDecimal targetQuantity`，数值可以有小数；SN 场景另行限制为 1。 |
@@ -94,7 +94,7 @@
 
 [DEC-0012](../decisions/DEC-0012-production-work-order-and-production-object.yaml) 的 `DEC-0012-03` 确认 SN 等于 1 与总量边界；[DEC-0014](../decisions/DEC-0014-production-batch-staged-bulk-submission.yaml) 的 `DEC-0014-03/-09/-12` 确认数量必填、按批次数／每批数量分配及末批承接余数。这些声明没有明确确认 BATCH 必须 `>= 1`，也没有充分确认 `0 < q < 1` 的业务资格，原声明及验收场景保持不变。
 
-**原始实现证据：**`WorkOrderPage.addPendingObject/addPendingBatch` 的页面校验、`ProductionService.split` 的 `BigDecimal.signum()` 检查，以及 [0062 数据库约束](../../../gmp-platform/backend/src/main/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql) 的 `CHECK(target_quantity > 0)` 按正数量处理；存储精度为 `DECIMAL(15,4)`。这些证据支持保留两个事实的 `decimal` 类型、实际来源与现有校验定位；它们不单独授权把该下限写成产品政策。
+**原始实现证据：**`WorkOrderPage.addPendingObject/addPendingBatch` 的页面校验、`ProductionService.split` 的 `BigDecimal.signum()` 检查，以及 [0062 数据库约束](../../../gmp-platform/backend/src/test/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql) 的 `CHECK(target_quantity > 0)` 按正数量处理；存储精度为 `DECIMAL(15,4)`。这些证据支持保留两个事实的 `decimal` 类型、实际来源与现有校验定位；它们不单独授权把该下限写成产品政策。
 
 **保留为推断：**较早词条及规则中文解释中的正数量表述，与上述实现共同支持“旧 `>= 1` 可能混同数量与对象个数”的判断。但这仍不足以作为无需用户确认的规范纠错，也不能反向认定旧 `>= 1` 一定正确。用户此前要求先核对代码，不等于授权代码覆盖业务决定。
 

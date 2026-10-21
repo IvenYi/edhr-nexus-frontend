@@ -12,7 +12,7 @@ evidence:
     visibility: internal
   - id: evidence.workshop-legacy-schema
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0001-init-schema.sql
     description: 初始数据库结构证明旧 workshop.site_id 强制归属、按工厂的编码唯一索引，以及 production_line.workshop_id 对车间的非空引用。
     visibility: internal
   - id: evidence.workshop-entity
@@ -37,7 +37,7 @@ evidence:
     visibility: internal
   - id: evidence.migration-0061-workshop-management
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0070-workshop-management.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0070-workshop-management.sql
     description: 将旧车间按 site 归属和唯一的结构迁移为租户级车间，回填 tenant_id，增加 description 和 ACTIVE/INACTIVE status，建立租户内 LOWER(code) 唯一索引，删除 site_id，并新增车间页面权限与管理员授权。
     visibility: internal
   - id: evidence.workshop-controller

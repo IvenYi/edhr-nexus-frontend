@@ -5,14 +5,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/ProductProcessOperationBinding.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java]
     apiReferences: ['POST /api/v1/master-data/product-modeling/process-owners/{ownerType}/{ownerId}/versions', 'PUT /api/v1/master-data/product-modeling/process-owners/{ownerType}/{ownerId}/versions/{versionId}']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0114-final-output-operation.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx, gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx, gmp-platform/frontend/src/pages/master-data/components/FinalOutputOperationControl.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/ProductProcessOwnerServiceTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProductProcessControllerTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-configuration-source, evidence.final-output-linkage-main-validation, evidence.final-output-linkage-postgres-test]
     sourceRevision: 4b236d7d53e7792ad5831d77220b037f30b69e1a
-    sourceLocator: 本轮未提交差异saveOperationBindings/toOperationRequests与build及两现存配置入口；配置/控制器聚焦回归、数据库唯一性和主侧真实API复制/冻结、旧工作区浏览器保存回读有证据，不以首次QA failed代最终通过
+    sourceLocator: "本轮未提交差异saveOperationBindings/toOperationRequests与build及两现存配置入口；配置/控制器聚焦回归、数据库唯一性和主侧真实API复制/冻结、旧工作区浏览器保存回读有证据，不以首次QA failed代最终通过；2026-10-21仅初始化定位维护（d405a9af工作树）：product_process_operation_binding.final_output及uk_process_version_final_output部分唯一索引；无历史数量回填。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-10-15'
     reviewStatus: reviewed
   - id: anchor.production-output.formal-summary
@@ -20,13 +20,13 @@ implementationAnchors:
     targetType: concept
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionBatchController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
     apiReferences: [GET /api/v1/production/batches, GET /api/v1/production/work-orders]
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0107-form-projection-runtime.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx, gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx, gmp-platform/frontend/src/pages/production/ExecutionOperationDrawer.tsx, gmp-platform/frontend/src/components/ProductionOutput.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionOutputPostgresTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormProjectionInterpreterTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/FormProjectionPostgresTest.java, gmp-platform/frontend/scripts/test-production-output.mjs]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.final-output-linkage-confirmed, evidence.final-output-linkage-runtime-source, evidence.final-output-linkage-main-validation, evidence.final-output-linkage-postgres-test, evidence.operation-output-empty-unit-correction]
     sourceRevision: 6379bf105127b05a65695992b008b55c142264f9
-    sourceLocator: 原2026-10-15证据为ProductionOutputService.object/order/read及隔离PG9项，历史来源保留。2026-10-16另核对6379bf1未提交候选operation.valid增加非空单位要求；普通工序expectedUnit=null仍按原有效单位分组，但空单位不计入、原值保留UNIT_REVIEW，落实已有空单位待核对规则。新增PG测试实际断言正式产出与正式good不计入空单位、有效0根计入，未直接断言processQuality；新来源见evidence.operation-output-empty-unit-correction，不以旧验证代新L2最终质量。
+    sourceLocator: "原2026-10-15证据为ProductionOutputService.object/order/read及隔离PG9项，历史来源保留。2026-10-16另核对6379bf1未提交候选operation.valid增加非空单位要求；普通工序expectedUnit=null仍按原有效单位分组，但空单位不计入、原值保留UNIT_REVIEW，落实已有空单位待核对规则。新增PG测试实际断言正式产出与正式good不计入空单位、有效0根计入，未直接断言processQuality；新来源见evidence.operation-output-empty-unit-correction，不以旧验证代新L2最终质量。；2026-10-21仅初始化定位维护（d405a9af工作树）：form_projection_batch/record及来源修订和binding/row唯一约束。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-10-16'
     reviewStatus: reviewed

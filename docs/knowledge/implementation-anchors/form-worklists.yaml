@@ -5,14 +5,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormWorklistController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java]
     apiReferences: [docs/development/form-worklists-api.md]
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0084-form-worklist-permissions.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql]
     uiReferences: []
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-worklists-query, evidence.form-worklists-source-history, evidence.form-worklists-permissions]
     sourceRevision: working-tree
-    sourceLocator: FormWorklistService.authorize/query/detail与ProductionExecutionEngine.formAction/attach/addFormCopy；代码已核对，未发布工作树
+    sourceLocator: "FormWorklistService.authorize/query/detail与ProductionExecutionEngine.formAction/attach/addFormCopy；代码已核对，未发布工作树；2026-10-21仅初始化定位维护（d405a9af工作树）：seed中的form-management.filling/review及ADMIN角色授权。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-16'
     reviewStatus: reviewed
   - id: anchor.form-worklist-current-tasks
@@ -20,14 +20,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormWorklistController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java]
     apiReferences: [docs/development/form-worklists-api.md]
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0084-form-worklist-permissions.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql]
     uiReferences: []
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-worklists-query, evidence.form-worklists-source-history, evidence.form-worklists-permissions]
     sourceRevision: working-tree
-    sourceLocator: FormWorklistService.authorize/query/detail与ProductionExecutionEngine.formAction/attach/addFormCopy；代码已核对，未发布工作树
+    sourceLocator: "FormWorklistService.authorize/query/detail与ProductionExecutionEngine.formAction/attach/addFormCopy；代码已核对，未发布工作树；2026-10-21仅初始化定位维护（d405a9af工作树）：seed中的form-management.filling/review及ADMIN角色授权。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-16'
     reviewStatus: reviewed
   - id: anchor.form-worklist-explicit-creation
@@ -35,14 +35,14 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormWorklistController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java]
     apiReferences: [docs/development/form-worklists-api.md]
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0084-form-worklist-permissions.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql]
     uiReferences: []
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-worklists-query, evidence.form-worklists-source-history, evidence.form-worklists-permissions]
     sourceRevision: working-tree
-    sourceLocator: FormWorklistService.authorize/query/detail与ProductionExecutionEngine.formAction/attach/addFormCopy；代码已核对，未发布工作树
+    sourceLocator: "FormWorklistService.authorize/query/detail与ProductionExecutionEngine.formAction/attach/addFormCopy；代码已核对，未发布工作树；2026-10-21仅初始化定位维护（d405a9af工作树）：seed中的form-management.filling/review及ADMIN角色授权。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-16'
     reviewStatus: reviewed
   - id: anchor.form-worklist-personal-history
@@ -50,13 +50,13 @@ implementationAnchors:
     targetType: rule
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormWorklistController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java]
     apiReferences: [docs/development/form-worklists-api.md]
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0084-form-worklist-permissions.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql]
     uiReferences: []
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.form-worklists-query, evidence.form-worklists-source-history, evidence.form-worklists-permissions]
     sourceRevision: working-tree
-    sourceLocator: FormWorklistService.authorize/query/detail与ProductionExecutionEngine.formAction/attach/addFormCopy；代码已核对，未发布工作树
+    sourceLocator: "FormWorklistService.authorize/query/detail与ProductionExecutionEngine.formAction/attach/addFormCopy；代码已核对，未发布工作树；2026-10-21仅初始化定位维护（d405a9af工作树）：seed中的form-management.filling/review及ADMIN角色授权。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-16'
     reviewStatus: reviewed

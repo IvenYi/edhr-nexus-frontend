@@ -7,6 +7,32 @@ import static org.assertj.core.api.Assertions.*;
 
 class FormProjectionInterpreterTest {
     private final ObjectMapper mapper = new ObjectMapper();
+    @Test void retiredTraceMeaningsCannotBeFrozenAgainButHistoricalEvidenceStillInterprets() throws Exception {
+        for (String id : new String[]{"serialNumberText", "lookup_related_batch", "teamText", "documentNumberText"}) {
+            var model = mapper.createObjectNode();
+            model.putArray("fields").addObject().put("id", "value").put("type", "text");
+            var config = model.putObject("projection").put("version", FormProjectionInterpreter.VERSION);
+            config.putObject("lookupItems").putObject(id).put("name", "退役含义").put("type", "text");
+            var binding = config.putArray("bindings").addObject().put("id", "old").put("modelId", "formTrace").put("enabled", true);
+            binding.putObject("sources").put(id, "value");
+            var before = model.deepCopy();
+            assertThatThrownBy(() -> FormProjectionInterpreter.validateConfiguration(model)).hasMessageContaining("追溯项已停用");
+            assertThat(model).isEqualTo(before);
+            assertThat(FormProjectionInterpreter.preview(model, mapper.createObjectNode().put("value", "历史记录")))
+                .singleElement().satisfies(row -> assertThat(row.path("attributes").path(id).asText()).isEqualTo("历史记录"));
+            binding.put("enabled", false);
+            assertThatThrownBy(() -> FormProjectionInterpreter.validateConfiguration(model)).hasMessageContaining("追溯项已停用");
+        }
+    }
+
+    @Test void businessTeamAndDocumentRolesAreIndependentOfRetiredTraceCatalogMeanings() throws Exception {
+        var model = reportModel();
+        ((com.fasterxml.jackson.databind.node.ArrayNode) model.path("fields")).addObject().put("id", "team").put("type", "text");
+        ((com.fasterxml.jackson.databind.node.ArrayNode) model.path("fields")).addObject().put("id", "document").put("type", "text");
+        ((ObjectNode) model.at("/projection/bindings/0/sources")).put("teamText", "team").put("documentNumberText", "document");
+        FormProjectionInterpreter.validateConfiguration(model);
+    }
+
     private ObjectNode traceModel() throws Exception {
         return (ObjectNode) mapper.readTree("""
           {"fields":[{"id":"lot","name":"批号输入","type":"text"},{"id":"other","type":"text"}],

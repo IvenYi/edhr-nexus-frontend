@@ -33,3 +33,20 @@ test('canvas defaults override model defaults without rewriting them', () => {
   assert.equal(row.unit, 'PCS');
   assert.equal(columns[0].typeConfig.defaultValue, '旧单位');
 });
+
+test('new rows copy only explicitly enabled context references and never share mutable snapshots', () => {
+  const columns = [
+    { id: 'product', type: 'reference', typeConfig: { referenceContextAutofill: true } },
+    { id: 'manual', type: 'reference', typeConfig: {} },
+    { id: 'disabled', type: 'reference', status: 'disabled', typeConfig: { referenceContextAutofill: true } },
+  ];
+  const value = { id: '7', code: 'P01', name: '生产产品', sourceType: 'product' };
+  const defaults = { product: value, manual: value, disabled: value };
+  const first = newSubTableRow(columns, [], defaults), second = newSubTableRow(columns, [], defaults);
+  assert.deepEqual(first.product, value);
+  assert.equal(first.manual, undefined);
+  assert.equal(first.disabled, undefined);
+  first.product.name = '本行编辑';
+  assert.equal(second.product.name, '生产产品');
+  assert.equal(defaults.product.name, '生产产品');
+});

@@ -32,6 +32,7 @@ import com.zencas.edhr.template.repository.TemplateCategoryRepository;
 import com.zencas.edhr.template.service.TemplateLegacyWordImportService;
 import com.zencas.edhr.template.service.FormProjectionInterpreter;
 import com.zencas.edhr.template.service.FormLookupCatalogService;
+import com.zencas.edhr.template.service.FormReferenceConfig;
 import com.zencas.edhr.template.support.DhrTemplateVersionStatusResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -236,6 +237,9 @@ public class TemplateModelingController {
         FormTemplateVersion version = findVersion(id, versionId);
         Map<String, Object> before = versionSnapshot(version);
         if (request != null) {
+            FormReferenceConfig.validateDesignConditions(
+                    request.getModelDesignJson() == null ? version.getModelDesignJson() : request.getModelDesignJson(),
+                    request.getCanvasDesignJson() == null ? version.getCanvasDesignJson() : request.getCanvasDesignJson(), AUDIT_OBJECT_MAPPER);
             if (request.getModelDesignJson() != null) {
                 version.setModelDesignJson(formLookupCatalogService.prepareDesign(trimToNull(request.getModelDesignJson())));
             }

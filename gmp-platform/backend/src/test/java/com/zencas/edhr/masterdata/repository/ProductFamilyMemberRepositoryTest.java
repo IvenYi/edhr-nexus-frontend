@@ -119,7 +119,7 @@ class ProductFamilyMemberRepositoryTest {
 
     @Test
     void migrationDefinesMemberForeignKeysAndCompatibleOwnerConstraints() throws IOException {
-        String master = readResource("db/changelog/db.changelog-master.yaml");
+        String master = readResource("db/historical/db.changelog-historical.yaml");
         String migration = readResource("db/changelog/0053-product-family-process-owner.sql");
         String normalizedMigration = migration.replaceAll("\\s+", " ");
 

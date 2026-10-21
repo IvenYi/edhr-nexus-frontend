@@ -7,7 +7,7 @@ evidence:
     visibility: internal
   - id: evidence.signature-payload-lossless-storage-migration
     type: database
-    path: gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql
+    path: gmp-platform/backend/src/test/resources/db/changelog/0118-signature-payload-text.sql
     description: original-evidence；0118将signature.snapshot_data从JSONB转为其当前可读文本，并用CHECK保留原JSONB可接受的JSON形状及解析限制，校验不回写规范化文本，不新增对象或键唯一限制。保持旧可读字符串、原摘要及其他列，不重算旧摘要或补造已经丢失的原始字符。迁移为前向纠正，TEXT重新转JSONB会损失新签署原文，不提供静默有损自动回退。源码存在不证明生产迁移或旧档案已恢复可验。
     visibility: internal
   - id: evidence.signature-payload-postgres-roundtrip-test

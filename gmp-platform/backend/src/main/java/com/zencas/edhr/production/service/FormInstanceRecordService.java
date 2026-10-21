@@ -49,6 +49,7 @@ public class FormInstanceRecordService {
         String copyId = requestedCopyId == null || requestedCopyId.isBlank() ? formId : requestedCopyId;
         JsonNode formState = state.path("operations").path(operationId).path("forms").path(copyId);
         if (form == null || !formState.has("savedAt")) throw invalid("表单记录来源不完整");
+        com.zencas.edhr.template.service.FormProjectionInterpreter.validateConfiguration(form);
         if (formState.path("supplement").isObject()) {
             ObjectNode withSupplement = form.deepCopy();
             withSupplement.set("supplement", formState.path("supplement").deepCopy());

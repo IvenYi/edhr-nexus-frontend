@@ -10,7 +10,7 @@ function run(command, args, input) {
   return result.stdout.trim();
 }
 const sql = text => run('psql', ['-X', '-w', '-v', 'ON_ERROR_STOP=1', '-At', '-d', database], text);
-const migration = readFileSync(new URL('../src/main/resources/db/changelog/0105-dhr-office-attachments.sql', import.meta.url), 'utf8');
+const migration = readFileSync(new URL('../src/test/resources/db/changelog/0105-dhr-office-attachments.sql', import.meta.url), 'utf8');
 run('createdb', ['-w', database]);
 try {
   sql(`CREATE TABLE dhr_attachment(id BIGINT PRIMARY KEY, original_name VARCHAR(255), mime_type VARCHAR(64) NOT NULL, sha256 VARCHAR(64));

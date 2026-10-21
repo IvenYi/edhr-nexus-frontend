@@ -1,0 +1,41 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    targetBranch: edhr-dev
+    targetCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    contractReadCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    uncommittedContractPaths: []
+  reason: 用户后续明确本步只整理初始化脚本；当前业务概念、关系、规则、数量、签署、审计和快照契约不变，不新增本体决策或提升成熟度。知识路径修正由用户明确暂缓，本角色仅记录失效引用和旧格式写入口，不修改docs/knowledge或architecture。not-applicable只表示业务语义门禁不适用，不表示当前知识路径校验通过，也不表示旧业务writer已修复。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.clean-baseline-knowledge-unchanged
+      checkType: reference
+      command: git diff --name-only -- docs/knowledge docs/architecture
+      outcome: passed
+      evidence:
+        - 本角色检查时命令输出为空；两次路径更新apply_patch均在验证阶段失败且未落盘，用户收紧范围后未继续写入。
+        - docs/development/clean-initialization-baseline-20261021/remaining-writers.md仅为只读核对记录，不是知识资产或业务修复。
+    - id: validation.clean-baseline-knowledge-path-followups
+      checkType: evidence-path
+      command: 扫描docs/knowledge的yaml、yml、md中的完整main/resources/db/changelog/*.sql引用
+      outcome: passed
+      evidence:
+        - knowledge-path-followups.csv含107处引用、38文件；54个当前实现锚点引用、5个当前数据库事实来源引用、48个历史证据引用，全部为后续待修正项。
+    - id: validation.clean-baseline-knowledge-model
+      checkType: schema
+      command: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml test
+      outcome: failed
+      evidence:
+        - knowledge-validation-result.json记录实际退出1，89 tests、18 failures、0 errors、0 skipped；旧main/0082路径失效导致正式知识验证失败，与用户明确暂缓范围一致。
+        - 未改校验器、跳过测试或创建伪路径；本结果不得作为知识CI passed或完整发布候选通过。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

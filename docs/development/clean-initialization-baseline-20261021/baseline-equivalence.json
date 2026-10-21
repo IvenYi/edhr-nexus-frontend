@@ -1,0 +1,503 @@
+{
+  "sourceCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+  "historicalChangesets": 147,
+  "currentChangesets": 2,
+  "tableCount": 96,
+  "seedRows": 252,
+  "schemaEqualExceptExplicitChangesAndEquivalentArrayCasts": true,
+  "normalizations": [
+    "ignore pg_dump comments/session settings",
+    "canonicalize constant varchar-array to text-array deparser representation"
+  ],
+  "intentionalSchemaChanges": [
+    "all 63 previously NOT VALID foreign keys are validated on empty creation",
+    "remove migration-only work_form_process_reference_backfill_seq"
+  ],
+  "sourceSchemaSha256": "acab573498829218b847d49e7fca54a45b9c310d79f744bc72e8d669bde7a6b1",
+  "candidateSchemaSha256": "acab573498829218b847d49e7fca54a45b9c310d79f744bc72e8d669bde7a6b1",
+  "seedComparison": [
+    {
+      "table": "audit_event",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "batch",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "business_dictionary",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "business_dictionary_item",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "controlled_reason",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "data_scope_policy",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "deletion_form_reference",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "department",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "dhr_attachment",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "dhr_directory",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "dhr_instance",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "dhr_summary_draft",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "dhr_summary_evidence",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "dhr_summary_review",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "dhr_summary_version",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "dhr_template",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "dhr_template_item",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "dhr_template_version",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "dhr_termination",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "document_category",
+      "rows": 2,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "document_version",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "equipment",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "equipment_category",
+      "rows": 3,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "equipment_type",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "field_permission_policy",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "file_object",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "form_field",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "form_instance_record",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "form_lookup_item",
+      "rows": 9,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "form_projection_batch",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "form_projection_record",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "form_review_block",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "form_section",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "form_signature_block",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "form_table",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "form_template",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "form_template_version",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "form_trace_value",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "form_validation_rule",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "icon_asset",
+      "rows": 84,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "icon_group",
+      "rows": 1,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "login_log",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "material",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "material_type",
+      "rows": 5,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "operation",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "operation_category",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "permission",
+      "rows": 70,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "process_definition",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "process_definition_version",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "process_route_binding",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "product",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "product_family",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "product_family_member",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "product_process",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "product_process_operation_binding",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "product_process_operation_document_binding",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "product_process_operation_form_binding",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "product_process_operation_sop_binding",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "product_process_version",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "product_version",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "production_execution",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "production_line",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "production_object",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "release_form_template",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "role",
+      "rows": 4,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "role_permission",
+      "rows": 69,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "route",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "route_node",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "route_operation",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "route_relation",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "route_version",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "serial_number",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "signature",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "site",
+      "rows": 1,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "sop_document",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "system_menu_configuration",
+      "rows": 1,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "system_setting",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "template_category",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "tenant",
+      "rows": 1,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "traveler_template",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "unit_of_measure",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "user_account",
+      "rows": 1,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "user_department",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "user_role",
+      "rows": 1,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "work_form_process_reference",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "work_order",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "workflow_action_log",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "workflow_binding_rule",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "workflow_definition",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "workflow_definition_version",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "workflow_edge",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "workflow_instance",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "workflow_intervention",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "workflow_node",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "workflow_task",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    },
+    {
+      "table": "workshop",
+      "rows": 0,
+      "equalIgnoringInstallationTimestamps": true
+    }
+  ],
+  "allSeedDataEqual": true,
+  "currentForeignKeys": 95,
+  "unvalidatedConstraints": 0
+}

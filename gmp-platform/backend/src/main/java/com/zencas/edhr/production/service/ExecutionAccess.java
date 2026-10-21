@@ -40,7 +40,16 @@ public class ExecutionAccess {
     }
 
     public List<Map<String, String>> references(JsonNode field, String keyword, JsonNode values) {
-        return new com.zencas.edhr.template.service.FormReferenceLookup(jdbc).search(field.path("typeConfig"), keyword, values);
+        return references(field, keyword, values, null, null);
+    }
+
+    public List<Map<String, String>> references(JsonNode field, String keyword, JsonNode values, Integer page, Integer size) {
+        return new com.zencas.edhr.template.service.FormReferenceLookup(jdbc).search(field.path("typeConfig"), keyword, values, page, size);
+    }
+
+    public JsonNode contextReference(JsonNode config, String id, JsonNode values) {
+        Map<String, String> found = new com.zencas.edhr.template.service.FormReferenceLookup(jdbc).find(config, id, values);
+        return found == null ? null : mapper.valueToTree(found);
     }
 
     public void validateEvidence(JsonNode field, JsonNode value, String objectId) {
@@ -48,18 +57,24 @@ public class ExecutionAccess {
     }
 
     public void validateEvidence(JsonNode field, JsonNode value, String objectId, JsonNode values) {
+        validateEvidence(field, value, objectId, values, null);
+    }
+
+    public void validateEvidence(JsonNode field, JsonNode value, String objectId, JsonNode values, JsonNode previous) {
         if (value.isNull() || value.isMissingNode() || (value.isTextual() && value.asText().isBlank())) return;
         String type = field.path("type").asText();
         if ("subTable".equals(type) && value.isArray()) {
+            int index = 0;
             for (JsonNode row : value) {
                 ObjectNode context = values.isObject() ? ((ObjectNode) values).deepCopy() : mapper.createObjectNode();
                 if (row.isObject()) context.setAll((ObjectNode) row);
+                JsonNode oldRow = previousRow(previous, row, index++);
                 for (JsonNode column : field.path("typeConfig").path("columns"))
-                    validateEvidence(column, row.path(column.path("id").asText()), objectId, context);
+                    validateEvidence(column, row.path(column.path("id").asText()), objectId, context, oldRow.path(column.path("id").asText()));
             }
         }
         if ("reference".equals(type)) {
-            new com.zencas.edhr.template.service.FormReferenceLookup(jdbc).validate(field.path("typeConfig"), value, values);
+            new com.zencas.edhr.template.service.FormReferenceLookup(jdbc).validate(field.path("typeConfig"), value, values, previous);
         }
         if (Set.of("attachment", "image").contains(type)) {
             if (!value.isArray()) throw invalid("附件字段必须使用上传文件记录");
@@ -70,6 +85,14 @@ public class ExecutionAccess {
                 if (names.isEmpty() || !names.get(0).equals(file.path("originalName").asText())) throw invalid("文件不属于当前生产对象或已不存在");
             }
         }
+    }
+
+    private JsonNode previousRow(JsonNode previous, JsonNode row, int index) {
+        if (previous == null || !previous.isArray()) return com.fasterxml.jackson.databind.node.MissingNode.getInstance();
+        String id = row.path("__rowId").asText();
+        if (!id.isBlank()) for (JsonNode candidate : previous) if (id.equals(candidate.path("__rowId").asText())) return candidate;
+        JsonNode legacy = previous.path(index);
+        return legacy.isObject() && !legacy.has("__rowId") ? legacy : com.fasterxml.jackson.databind.node.MissingNode.getInstance();
     }
 
     public Set<String> resolve(JsonNode configured) {

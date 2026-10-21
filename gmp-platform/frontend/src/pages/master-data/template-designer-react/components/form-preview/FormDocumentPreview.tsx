@@ -2,7 +2,8 @@ import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
 import { FormRuntimeContext, FormRuntimeField, type FormRuntime } from '@/components/form-renderer/FormRuntimeField';
 import SignatureDisplay from '@/components/form-renderer/SignatureDisplay';
-import { resolveReferenceField } from '@/components/form-renderer/referenceConfig';
+import { resolveReferenceField, type ReferenceValue } from '@/components/form-renderer/referenceConfig';
+import { referenceDisplayText } from '@/components/form-renderer/referencePresentation';
 import { readSignaturePresentation } from '@/components/form-renderer/signaturePresentation';
 import { newSubTableRow } from '@/components/form-renderer/newSubTableRow';
 import type { CanvasNode, ModelField, TemplateDesignerDocument } from '../../types';
@@ -61,7 +62,7 @@ export default function FormDocumentPreview({ document, runtime, fieldPermission
     const rawColumns = document.model.fields.find(field => field.id === fieldId)?.typeConfig.columns;
     const columns = Array.isArray(rawColumns) ? rawColumns as ModelField[] : [];
     const fieldNodes = allNodes.filter(entry => entry.bindings?.subTableId === fieldId);
-    runtime.onChange(fieldId, Array.from({ length: Math.max(1, count + delta) }, (_, index) => current[index] ?? newSubTableRow(columns, fieldNodes)));
+    runtime.onChange(fieldId, Array.from({ length: Math.max(1, count + delta) }, (_, index) => current[index] ?? newSubTableRow(columns, fieldNodes, runtime.referenceDefaults)));
   };
   const renderField = (node: CanvasNode, suppliedField: ModelField | null, recordIndex = 0): ReactNode => {
     if (node.bindings?.hidden) return null;
@@ -70,7 +71,8 @@ export default function FormDocumentPreview({ document, runtime, fieldPermission
     const binding = runtime && field ? bindFormPreviewField({ ...runtime, disabled: runtime.disabled || Boolean(table?.bindings?.readonly) }, node, field, recordIndex, fieldPermissions) : undefined;
     const value = binding && field ? binding.values[field.id] : undefined;
     const readOnly = !binding || binding.disabled || (field?.type === 'signature' && (!binding.onSignatureRequest || binding.signaturePermissions?.[node.bindings?.subTableId || field.id] !== 'EDIT'));
-    const displayValue = field?.type === 'reference' && value && typeof value === 'object' && 'name' in value ? value.name : value;
+    const displayValue = field?.type === 'reference' && value && typeof value === 'object' && 'id' in value
+      ? referenceDisplayText(value as ReferenceValue, resolveReferenceField(field, node).typeConfig) : value;
     const configuredOptions = node.bindings?.widgetConfig?.optionList;
     const rawOptions = typeof configuredOptions === 'string' && configuredOptions.trim() ? configuredOptions : field?.typeConfig.options;
     const hasConfiguredOptions = Array.isArray(rawOptions) ? rawOptions.length > 0 : String(rawOptions ?? '').trim().length > 0;

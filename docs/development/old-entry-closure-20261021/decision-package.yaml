@@ -1,0 +1,115 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261021-OLD-ENTRY-CLOSURE
+  scope: 修复清单编码与旧格式写入入口；定向清理废弃开发数据；仅将功能修复同步原工作区8081，不修改本体文件、不将新初始化基线直接套用已有库
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    targetBranch: edhr-dev
+    targetCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    contractReadCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    uncommittedContractPaths: []
+  summary: 停用两组旧轻量文档写口，阻止退役追溯含义形成新执行来源，移除过时手工灌数工具，并修正CSV编码与触发说明
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: obsolete-document-api
+        change: 移除两组POST/PUT/DELETE；保留GET，正式版本化文档入口保留
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/SopDocumentController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java]
+      - area: new-execution-basis
+        change: 新配置和新冻结拒绝四项退役追溯ID；仅formTrace，不误禁业务统计班组和单据号
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java]
+      - area: delivery-format
+        change: CSV补UTF8 BOM且107条内容不变；增加可读Markdown
+        evidenceReferences: [docs/development/clean-initialization-baseline-20261021/knowledge-path-followups.csv]
+    transitiveImpacts:
+      - area: http-status
+        change: 移除的写口返回405或404，不被泛化异常处理误报500
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java]
+    potentialImpacts:
+      - area: external-api-callers
+        concern: 直接调用旧接口的外部调用方将被拒绝，改用当前版本化文档接口
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: in-flight-features
+        reason: 原工作区包含原因目录与引用改造等未合入功能，只追加七个Java文件的关闭旧入口改动、对应测试和两份旧工具删除，不覆盖其他改动
+        evidenceReferences: []
+    compatibilityAndMigration:
+      - area: historical-execution
+        change: 用户明确旧数据均为无用开发测试数据；备份后定向删除四组旧演示对象及派生记录，清除四模板六处退役映射；旧快照仅解释读取，新增份数和保存不再绕过当前校验
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java]
+    snapshotImpacts:
+      - area: start-and-attach
+        change: 退役模板阻断发生在持久化新快照、执行、DHR和审计之前
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    auditImpacts:
+      - area: obsolete-deletion
+        change: 关闭旧删除旁路；当前版本化文档审计保留；拒绝新冻结不新增业务审计
+        evidenceReferences: []
+    permissionImpacts:
+      - area: retired-routes
+        change: 有旧权限也不能执行已移除映射；不增加权限、不放宽现有授权
+        evidenceReferences: []
+    testImpacts:
+      - scope: obsolete-writers
+        scenarios: [两组旧CUD拒绝且无持久化, 历史GET, 当前文档版本与审计, 新执行阻断, 新附加模板阻断, 旧执行新增份数和保存阻断, 旧投影重试阻断, 旧快照读取, 历史投影解释, CSV往返一致, 清理范围与非目标数据不变]
+        evidenceReferences: []
+    evidenceGaps:
+      - 用户已要求107处本体路径引用下一步修正；正式知识校验仍未通过，本轮不修改或绕过门禁
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 对既有正式入口统一校验，清除废弃旁路；不增加运行时清理任务或客户条件分支
+    ownershipBoundaries:
+      - owner: document-management
+        responsibility: 版本化文档接口拥有写入与删除职责
+      - owner: form-projection
+        responsibility: 新使用校验与历史解释分离，旧证据保持自身定义
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java
+      changeType: update
+      reason: 关闭旧写入口并保留准确HTTP错误
+    - path: gmp-platform/backend/src/test/java
+      changeType: update
+      reason: 负向事务和历史行为回归
+    - path: gmp-platform/backend/scripts/form-projection-demo.py
+      changeType: delete
+      reason: 已撤销环境使用的退役配置直接灌数工具
+    - path: gmp-platform/backend/scripts/form-projection-runtime-demo.py
+      changeType: delete
+      reason: 已撤销环境使用的退役配置直接灌数工具
+    - path: docs/knowledge
+      changeType: read-only
+      reason: 用户明确仅记录影响，后续修正
+    - path: edhr_dev开发数据库
+      changeType: update
+      reason: 用户明确授权清除废弃开发测试数据；一次性清理，不增加初始化兼容脚本
+  runtimeIntegration:
+    workspace: /Users/ivenwang/Documents/edhr-nexus
+    headCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    candidateCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    strategy: 仅移植本次功能差异；解释器退役ID校验与原工作区原因引用校验并存；不覆盖原有知识和初始化在途变更
+    preimageBackup: /Users/ivenwang/Documents/edhr-nexus-backups/2026-10-21-old-entry-closure/root-preimages
+    verification: 原工作区同组169项测试，166执行通过、3条件性跳过；运行端口8081、3000代理复验另行记录
+  acceptanceScenarios:
+    - id: scenario.old-document-writes-closed
+      given: 认证账号直接调用旧轻量文档接口
+      when: 新增、编辑或删除
+      then: 返回404或405，不保存或删除文档，正式版本化接口继续工作
+      evidenceRequirements: [MVC测试, 隔离应用HTTP与数据库记录]
+    - id: scenario.retired-trace-new-execution
+      given: 来源模板仍包含四项退役追溯含义之一
+      when: 扫码预览、首次开工或附加该来源模板
+      then: 提示配置错误且不形成新的执行来源；既有冻结执行和历史预览不被改写
+      evidenceRequirements: [执行集成测试, 历史预览回归]
+    - id: scenario.csv-encoding
+      given: 原107条UTF8清单无BOM
+      when: 补UTF8编码标记并重新读取
+      then: 中文有效且全部单元格内容保持一致
+      evidenceRequirements: [CSV往返与内容摘要, 可读清单]

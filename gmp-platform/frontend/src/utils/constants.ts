@@ -161,6 +161,14 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
           { label: '设备列表', path: '/master-data/equipment' },
         ],
       },
+      {
+        label: '原因建模',
+        icon: 'Rule',
+        children: [
+          { label: '不良原因', path: '/master-data/defect-reasons' },
+          { label: '报废原因', path: '/master-data/scrap-reasons' },
+        ],
+      },
     ],
   },
   {

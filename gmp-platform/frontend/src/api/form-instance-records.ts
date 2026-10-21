@@ -116,6 +116,8 @@ export interface FormWorklistPage {
 }
 export interface FormWorklistDetail extends FormWorklistRow {
   snapshot: ExecutionForm; fieldValues: Record<string, unknown>; controls: ExecutionFormControls;
+  referenceDefaults?: Record<string, import('@/components/form-renderer/referenceConfig').ReferenceValue>;
+  referenceContextWarnings?: Record<string, string>;
   myEvents: Array<{
     at: string; operator: string; operationId: string; actionCode: 'SUBMIT' | 'APPROVE' | 'RETURN';
     formId: string; copyId: string; nodeId: string; nodeKind: 'START' | 'APPROVAL'; nodeName: string;

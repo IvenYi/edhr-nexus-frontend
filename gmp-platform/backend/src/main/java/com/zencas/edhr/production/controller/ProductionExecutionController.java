@@ -65,9 +65,9 @@ public class ProductionExecutionController {
         }
     }
 
-    public record ReferenceQuery(String operationId, String formId, String fieldId, String keyword, com.fasterxml.jackson.databind.JsonNode values) {}
+    public record ReferenceQuery(String operationId, String formId, String fieldId, String keyword, com.fasterxml.jackson.databind.JsonNode values, Integer page, Integer size) {}
     @PostMapping("/{id}/references")
     public ApiResponse<java.util.List<java.util.Map<String, String>>> references(@PathVariable Long id, @RequestBody ReferenceQuery query) {
-        return ApiResponse.success(service.references(id, query.operationId(), query.formId(), query.fieldId(), query.keyword(), query.values()));
+        return ApiResponse.success(service.references(id, query.operationId(), query.formId(), query.fieldId(), query.keyword(), query.values(), query.page(), query.size()));
     }
 }

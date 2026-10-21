@@ -254,6 +254,7 @@ class DatabaseChangelogTest {
     }
 
     private String readResource(String path) throws IOException {
+        path = path.replace("db/changelog/db.changelog-master.yaml", "db/historical/db.changelog-historical.yaml");
         return new String(new ClassPathResource(path).getInputStream().readAllBytes(), StandardCharsets.UTF_8);
     }
 }

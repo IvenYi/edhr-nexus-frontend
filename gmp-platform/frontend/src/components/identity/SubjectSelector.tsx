@@ -48,7 +48,8 @@ export type SubjectRef = {
   departmentScope?: DepartmentScope;
 };
 
-type UserOption = { id: string; name: string; username?: string };
+export type PersonSelectorOption = { id: string; name: string; username?: string; searchText?: string; departmentIds: string[] };
+type UserOption = PersonSelectorOption;
 type RoleOption = { id: string; name: string; code?: string };
 type DepartmentOption = { id: string; name: string; path: string[] };
 type DepartmentNode = { id: string | number; name: string; children?: DepartmentNode[] };
@@ -235,12 +236,24 @@ export function SubjectSelector({
   disabled = false,
   label = '选择主体',
   placeholder = '请选择用户、部门或角色',
+  onlyUsers = false,
+  single = false,
+  userOptionsLoader,
+  userOptionsKey = '',
+  selectedLabel,
+  compact = false,
 }: {
   value: SubjectRef[];
   onChange: (value: SubjectRef[]) => void;
   disabled?: boolean;
   label?: string;
   placeholder?: string;
+  onlyUsers?: boolean;
+  single?: boolean;
+  userOptionsLoader?: () => Promise<PersonSelectorOption[]>;
+  userOptionsKey?: string;
+  selectedLabel?: string;
+  compact?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<SubjectType>('USER');
@@ -249,8 +262,8 @@ export function SubjectSelector({
   const [draft, setDraft] = useState<SubjectRef[]>(value);
   const [candidatePage, setCandidatePage] = useState(1);
   const missingName = (type: SubjectType) => value.some(item => item.type === type && !item.nameSnapshot?.trim());
-  const users = useQuery({ queryKey: ['subject-selector', 'users'], queryFn: fetchUsers, enabled: open || missingName('USER') });
-  const roles = useQuery({ queryKey: ['subject-selector', 'roles'], queryFn: fetchRoles, enabled: open || missingName('ROLE') });
+  const users = useQuery({ queryKey: ['subject-selector', 'users', userOptionsLoader ? userOptionsKey : 'identity'], queryFn: userOptionsLoader ?? fetchUsers, enabled: open || missingName('USER') });
+  const roles = useQuery({ queryKey: ['subject-selector', 'roles'], queryFn: fetchRoles, enabled: !onlyUsers && (open || missingName('ROLE')) });
   const departments = useQuery({ queryKey: ['subject-selector', 'departments'], queryFn: fetchDepartments, enabled: open || missingName('DEPARTMENT') });
   const subjectName = (subject: SubjectRef) => {
     const candidates = subject.type === 'USER' ? users.data : subject.type === 'ROLE' ? roles.data : subject.type === 'DEPARTMENT' ? departments.data?.options : [];
@@ -259,8 +272,8 @@ export function SubjectSelector({
 
   const departmentData = departments.data;
   useEffect(() => {
-    if (!selectedDepartmentId && departmentData?.tree?.[0]) setSelectedDepartmentId(String(departmentData.tree[0].id));
-  }, [departmentData?.tree, selectedDepartmentId]);
+    if (!onlyUsers && !selectedDepartmentId && departmentData?.tree?.[0]) setSelectedDepartmentId(String(departmentData.tree[0].id));
+  }, [departmentData?.tree, selectedDepartmentId, onlyUsers]);
   useEffect(() => {
     setCandidatePage(1);
   }, [tab, search, selectedDepartmentId]);
@@ -274,7 +287,7 @@ export function SubjectSelector({
       const selectedDepartments = selectedDepartmentId && departmentData?.tree
         ? getDepartmentDescendantIds(departmentData.tree, selectedDepartmentId)
         : [];
-      return (users.data ?? []).filter((item) => (!selectedDepartments.length || item.departmentIds.some((id) => selectedDepartments.includes(id))) && (!keyword || `${item.name}${item.username ?? ''}`.toLowerCase().includes(keyword)));
+      return (users.data ?? []).filter((item) => (!selectedDepartments.length || item.departmentIds.some((id) => selectedDepartments.includes(id))) && (!keyword || (item.searchText ?? `${item.name}${item.username ?? ''}`).toLowerCase().includes(keyword)));
     }
     if (tab === 'ROLE') return (roles.data ?? []).filter((item) => !keyword || `${item.name}${item.code ?? ''}`.toLowerCase().includes(keyword));
     return (departmentData?.options ?? []).filter((item) => !keyword || item.path.join('/').toLowerCase().includes(keyword));
@@ -289,7 +302,7 @@ export function SubjectSelector({
   const openDialog = () => {
     setDraft(value);
     setSearch('');
-    if (!selectedDepartmentId && departmentData?.tree?.[0]) setSelectedDepartmentId(String(departmentData.tree[0].id));
+    if (!onlyUsers && !selectedDepartmentId && departmentData?.tree?.[0]) setSelectedDepartmentId(String(departmentData.tree[0].id));
     setOpen(true);
   };
   const toggle = (option: UserOption | RoleOption | DepartmentOption) => {
@@ -301,42 +314,42 @@ export function SubjectSelector({
     };
     setDraft((current) => current.some((item) => subjectKey(item) === subjectKey(subject))
       ? current.filter((item) => subjectKey(item) !== subjectKey(subject))
-      : [...current, subject]);
+      : single ? [subject] : [...current, subject]);
   };
   const selected = new Set(draft.map(subjectKey));
   const toggleDepartment = (id: string) => toggle({ id, name: departmentData?.options.find((item) => item.id === id)?.name ?? id, path: [] });
 
   return (
     <>
-      <Box>
-        <Button variant="outlined" size="small" fullWidth disabled={disabled} onClick={openDialog} sx={{ justifyContent: 'flex-start', textTransform: 'none', minHeight: 40 }}>
-          {value.length ? `已选择 ${value.length} 个主体` : placeholder}
+      <Box sx={compact ? { height: '100%', minWidth: 0 } : undefined}>
+        <Button variant="outlined" size="small" fullWidth disabled={disabled} onClick={openDialog} title={selectedLabel} sx={{ justifyContent: 'flex-start', textTransform: 'none', minWidth: 0, minHeight: compact ? 0 : 40, ...(compact ? { height: '100%', px: 0.75, py: 0, fontSize: 12 } : {}) }}>
+          <Box component="span" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{value.length ? selectedLabel ?? (onlyUsers ? subjectName(value[0]) : `已选择 ${value.length} 个主体`) : placeholder}</Box>
         </Button>
-        {value.length ? (
+        {value.length && !onlyUsers ? (
           <Stack direction="row" flexWrap="wrap" gap={0.5} sx={{ mt: 0.75 }}>
             {value.map((subject) => (
               <Chip key={subjectKey(subject)} size="small" label={`${subjectName(subject)}${subject.type === 'DEPARTMENT' ? (subject.departmentScope === 'SELF_ONLY' ? '（本部门）' : '（含下级）') : subject.type === 'LEGACY' ? '（历史配置）' : ''}`} onDelete={disabled ? undefined : () => onChange(value.filter((item) => subjectKey(item) !== subjectKey(subject)))} />
             ))}
           </Stack>
         ) : null}
-        <Typography variant="caption" color="text.secondary">{label}可选择用户、部门或角色</Typography>
+        {!onlyUsers && <Typography variant="caption" color="text.secondary">{label}可选择用户、部门或角色</Typography>}
       </Box>
       <AppDialog open={open} onClose={() => setOpen(false)} maxWidth={false} PaperProps={{ sx: { width: 'min(1180px, calc(100vw - 48px))', height: 'min(720px, calc(100vh - 72px))', maxHeight: 'calc(100vh - 72px)', borderRadius: 1.5, overflow: 'hidden', display: 'flex', flexDirection: 'column', '@media (max-width: 760px)': { width: 'calc(100vw - 24px)', height: 'calc(100vh - 24px)', maxHeight: 'calc(100vh - 24px)' } } }}>
         <DialogTitle sx={{ px: 3, py: 2.25, borderBottom: '1px solid #e5e7eb', color: '#303133', fontSize: 18, lineHeight: 1.3, fontWeight: 600 }}>{label}</DialogTitle>
         <DialogContent sx={{ p: 0, overflow: 'hidden', flex: 1 }}>
           <Box sx={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 460px', height: '100%', minHeight: 0, width: '100%', '@media (max-width: 1024px)': { gridTemplateColumns: 'minmax(0, 1fr) minmax(360px, 40%)' }, '@media (max-width: 760px)': { gridTemplateColumns: '1fr', gridTemplateRows: 'minmax(420px, 1fr) auto', overflow: 'auto' } }}>
             <Box sx={{ minWidth: 0, minHeight: 0, p: 2.5, pr: 1.75, display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-              <Tabs value={tab} onChange={(_, next) => { setTab(next); setSearch(''); }} sx={{ minHeight: 44, borderBottom: '1px solid #e8ebef', '& .MuiTab-root': { minHeight: 44, px: 2, color: '#606266', textTransform: 'none', fontWeight: 600 }, '& .Mui-selected': { color: '#1677ff' }, '& .MuiTabs-indicator': { height: 2, borderRadius: 2 } }}>
+              {!onlyUsers && <Tabs value={tab} onChange={(_, next) => { setTab(next); setSearch(''); }} sx={{ minHeight: 44, borderBottom: '1px solid #e8ebef', '& .MuiTab-root': { minHeight: 44, px: 2, color: '#606266', textTransform: 'none', fontWeight: 600 }, '& .Mui-selected': { color: '#1677ff' }, '& .MuiTabs-indicator': { height: 2, borderRadius: 2 } }}>
                 <Tab value="USER" icon={<Person fontSize="small" />} iconPosition="start" label="用户" />
                 <Tab value="DEPARTMENT" icon={<Apartment fontSize="small" />} iconPosition="start" label="部门" />
                 <Tab value="ROLE" icon={<Group fontSize="small" />} iconPosition="start" label="角色" />
-              </Tabs>
+              </Tabs>}
               <TextField size="small" fullWidth value={search} onChange={(event) => setSearch(event.target.value)} placeholder={tab === 'USER' ? '搜索姓名或账号' : tab === 'DEPARTMENT' ? '搜索部门' : '搜索角色'} sx={{ mt: 2, '& .MuiOutlinedInput-root': { bgcolor: '#fff', borderRadius: 0.75 } }} InputProps={{ startAdornment: <InputAdornment position="start"><Search fontSize="small" sx={{ color: '#909399' }} /></InputAdornment> }} />
               {tab === 'USER' ? (
                 <Box sx={{ display: 'grid', gridTemplateColumns: 'minmax(224px, 0.72fr) minmax(0, 1.28fr)', border: '1px solid #e4e7ed', borderRadius: 0.75, mt: 1.5, flex: 1, minHeight: 0, overflow: 'hidden', bgcolor: '#fff', '@media (max-width: 900px)': { gridTemplateColumns: 'minmax(204px, 0.72fr) minmax(0, 1.28fr)' }, '@media (max-width: 560px)': { gridTemplateColumns: '1fr', gridTemplateRows: 'minmax(160px, 0.7fr) minmax(240px, 1.3fr)' } }}>
                   <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 0, minHeight: 0, overflow: 'hidden', borderRight: '1px solid #e4e7ed', bgcolor: '#f8fafc', '@media (max-width: 560px)': { borderRight: 0, borderBottom: '1px solid #e4e7ed' } }}>
                     <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 1.25, py: 1, minHeight: 40, borderBottom: '1px solid #e4e7ed' }}>
-                      <Typography variant="caption" sx={{ color: '#606266', fontWeight: 600 }}>组织架构</Typography>
+                      {onlyUsers ? <Button size="small" onClick={() => setSelectedDepartmentId(null)} sx={{ minWidth: 0 }}>全部人员</Button> : <Typography variant="caption" sx={{ color: '#606266', fontWeight: 600 }}>组织架构</Typography>}
                       <Typography variant="caption" sx={{ color: '#909399' }}>{departmentData?.options.length ?? 0} 个部门</Typography>
                     </Stack>
                     <Box sx={{ flex: 1, minHeight: 0, overflow: 'auto', p: 1 }}>
@@ -349,7 +362,7 @@ export function SubjectSelector({
                       <Typography variant="caption" sx={{ color: '#909399' }}>{options.length} 人</Typography>
                     </Stack>
                     <List dense sx={{ flex: 1, minHeight: 0, overflow: 'auto', p: 0.75 }}>
-                      {users.isLoading ? <CandidateLoadingState /> : users.isError ? <Alert severity="error" sx={{ m: 1, fontSize: 12, py: 0.5 }}>用户列表加载失败</Alert> : visibleOptions.length ? visibleOptions.map((option) => {
+                      {users.isLoading ? <CandidateLoadingState /> : users.isError ? <Alert severity="error" action={<Button onClick={() => void users.refetch()}>重试</Button>} sx={{ m: 1, fontSize: 12, py: 0.5 }}>用户列表加载失败</Alert> : visibleOptions.length ? visibleOptions.map((option) => {
                         const checked = selected.has(`USER:${option.id}`);
                         return <ListItemButton key={option.id} selected={checked} onClick={() => toggle(option)} sx={{ minHeight: 40, borderRadius: 0.75, mb: 0.25, px: 0.75, transition: 'background-color 140ms ease', '&:hover': { bgcolor: '#f3f7fc' }, '&.Mui-selected': { bgcolor: '#eaf3ff' }, '&.Mui-selected:hover': { bgcolor: '#eaf3ff' } }}><Checkbox edge="start" checked={checked} tabIndex={-1} disableRipple /><ListItemText primary={(option as UserOption).username ? `${option.name} · ${(option as UserOption).username}` : option.name} primaryTypographyProps={{ noWrap: true, sx: { overflow: 'hidden', textOverflow: 'ellipsis' } }} /></ListItemButton>;
                       }) : <Typography color="text.secondary" variant="body2" sx={{ p: 2, textAlign: 'center' }}>{search.trim() ? '暂无匹配用户' : '该部门暂无成员'}</Typography>}
@@ -410,7 +423,7 @@ export function SubjectSelector({
                     </Box>
                   );
                 })}
-                {!draft.length ? <Box sx={{ height: '100%', minHeight: 180, display: 'grid', placeItems: 'center', textAlign: 'center', px: 3 }}><Typography variant="body2" color="text.secondary">从左侧勾选用户、部门或角色</Typography></Box> : null}
+                {!draft.length ? <Box sx={{ height: '100%', minHeight: 180, display: 'grid', placeItems: 'center', textAlign: 'center', px: 3 }}><Typography variant="body2" color="text.secondary">{onlyUsers ? '从左侧选择人员' : '从左侧勾选用户、部门或角色'}</Typography></Box> : null}
               </Box>
             </Box>
           </Box>

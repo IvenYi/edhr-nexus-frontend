@@ -1,0 +1,176 @@
+qualityResult:
+  result: passed
+  baseCommit: ca98ab2897990eba30bf1433134aa8560578f562
+  headCommit: ca98ab2897990eba30bf1433134aa8560578f562
+  contractBaseline:
+    sourceCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    targetBranch: edhr-dev
+    targetCommit: 336466d95c3866581e5d7d641544756ba7807946
+    contractReadCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/reference-dictionary-correction-20261019.md
+      - docs/knowledge/README.md
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/ontology.yaml
+      - docs/knowledge/rules/form-reference-runtime.yaml
+      - docs/knowledge/decisions/DEC-0081-defect-reason-detail-and-reference-ownership.yaml
+      - docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.md
+      - docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/FormReferenceController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceConfig.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceConfigTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceLookupTest.java
+      - gmp-platform/frontend/src/api/form-references.ts
+      - gmp-platform/frontend/src/components/form-renderer/referenceConfig.ts
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ReferenceDictionaryConfig.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/fieldRegistry.ts
+      - gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx
+      - gmp-platform/frontend/scripts/test-form-references.mjs
+      - gmp-platform/frontend/scripts/verify-business-dictionary-page.mjs
+    excludedPaths:
+      - 上一原因与引用改造切片的其他未提交业务代码、测试及知识差异不重新作完整验收
+      - 原有output及其他未跟踪产物不清理、不修改
+      - 目标336466提交未合并，本结果不构成合并候选或发布验收
+    untrackedPaths:
+      - docs/development/reference-dictionary-correction-20261019.md
+      - docs/knowledge/decisions/DEC-0081-defect-reason-detail-and-reference-ownership.yaml
+      - docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.md
+      - docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.yaml
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ReferenceDictionaryConfig.tsx
+      - output/playwright/dictionary-correction-20261019/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.dictionary-contract-scope
+      required: true
+      category: requirements
+      description: 独立读取项目、质量角色、交接、知识及决策包，核对L1最小范围及配置/内核所有权；原始产品与生产对象代码确认共表而不同引用范围，未合并身份或增加供应商业务能力。
+      method: inspection
+      command: git rev-parse HEAD origin/edhr-dev; git diff ca98ab2897990eba30bf1433134aa8560578f562..336466d95c3866581e5d7d641544756ba7807946 -- AGENTS.md codeplzreadme.md docs/agents/quality-verifier.md docs/agents/agent-handoff-contract.md
+      outcome: passed
+      evidence:
+        - 实际HEAD ca98、目标origin/edhr-dev 336466；上述契约无增量，未提交契约为空
+        - docs/development/reference-dictionary-correction-20261019.md
+        - 原始FormReferenceLookup.source、ProductProcessController与ProductionObject；产品为物料产成品/半成品视图，批次/SN按object_type区分
+        - DesignerInspector与fieldRegistry无supplier选项；既有来源键与身份保留
+    - id: check.dictionary-backend-scope
+      required: true
+      category: unit
+      description: 独立执行17项后端聚焦测试，覆盖具体字典限定、查询/查找/选值一致、跨字典拒绝、停用项/字典、注入、旧无范围键兼容及冻结配置不回写。
+      method: automated-test
+      command: mvn --batch-mode --no-transfer-progress -Dtest=FormReferenceConfigTest,FormReferenceLookupTest test
+      outcome: passed
+      evidence:
+        - /tmp/qa-dictionary-backend-tests.log
+        - 17项，0失败、0错误、0跳过；实际未提交工作树运行
+    - id: check.dictionary-frontend-sync
+      required: true
+      category: unit
+      description: 独立执行7项引用配置及3项运行行值回归；具体字典ID随同字段重复放置同步，旧无键不伪造空范围，不改变当前行与默认值边界。
+      method: automated-test
+      command: node --test scripts/test-form-references.mjs; node --test scripts/test-runtime-row-values.mjs
+      outcome: passed
+      evidence:
+        - /tmp/qa-dictionary-frontend-tests.log
+        - /tmp/qa-dictionary-row-tests.log
+        - 10项全部通过，无跳过
+    - id: check.dictionary-api-security
+      required: true
+      category: api
+      description: 在实际3000/8081环境独立调用候选查询；两模拟字典有同名项仍只返回各自启用条目；未配置明确拒绝，匿名目录查询401；目录读取沿现有模板设计权限。
+      method: browser
+      command: 独立Playwright会话dictionary-qa内，登录后发起只读查询POST与目录GET
+      outcome: passed
+      evidence:
+        - output/playwright/dictionary-correction-20261019/qa-runtime-query.txt
+        - 单位仅UNIT_A、班次仅SHIFT_A；未提供及显式空referenceDictionaryId均提示先选择具体业务字典
+        - FormReferenceController类级hasAnyAuthority未扩大；匿名GET实际401
+    - id: check.dictionary-real-template
+      required: true
+      category: e2e
+      description: 主侧真实界面保存后，质量角色独立读取新安速康副本配置及画布并打开模拟填报，选项数断言为1且选择成功；不修改模板配置或生产数据。
+      method: browser
+      command: Playwright dictionary-qa只读打开ASK-DICT-20261019-CLEAN并执行模拟选择
+      outcome: passed
+      evidence:
+        - output/playwright/dictionary-correction-20261019/qa-template-readback.txt
+        - output/playwright/dictionary-correction-20261019/qa-mock-scope.txt
+        - output/playwright/dictionary-correction-20261019/qa-mock-dictionary.png
+        - 模型及画布均保留字典387613106676502528；模拟仅同名字典项[UNIT_A]，选择后输入值相同，无SHIFT_A或UNIT_X
+    - id: check.dictionary-drawer
+      required: true
+      category: visual
+      description: 实际字典/项抽屉桌面、短窗和窄屏；同视口与不良原因公共DetailDrawer对照；标题页签固定，内容独立滚动，字典项数0和排序0保留，关闭换对象及两页签正常。
+      method: browser
+      command: Playwright dictionary-qa，1200x733、1200x420与390x660，等待滑入动画完成后测量
+      outcome: passed
+      evidence:
+        - output/playwright/dictionary-correction-20261019/qa-dictionary-detail-desktop.png
+        - output/playwright/dictionary-correction-20261019/qa-dictionary-short.png
+        - output/playwright/dictionary-correction-20261019/qa-dictionary-narrow.png
+        - output/playwright/dictionary-correction-20261019/qa-dictionary-item.png
+        - output/playwright/dictionary-correction-20261019/qa-drawer-measurements.txt
+        - output/playwright/dictionary-correction-20261019/qa-standard-drawer-measurements.txt
+        - output/playwright/dictionary-correction-20261019/qa-standard-detail-desktop.png
+        - 桌面两个公共抽屉均560x733、top0、头部107；短窗560x420，内容scrollTop160后头部top仍0；窄屏390x660无内部横向溢出
+    - id: check.dictionary-audit
+      required: true
+      category: audit
+      description: 真实字典和字典项审计展开显示原始新增前后字段；排序0及所属字典信息保留，仅渲染key去重，不改变审计转换。
+      method: browser
+      command: 打开字典/项详情，切数据审计并展开新增记录；核对当前源码转换未变
+      outcome: passed
+      evidence:
+        - output/playwright/dictionary-correction-20261019/qa-dictionary-audit.png
+        - output/playwright/dictionary-correction-20261019/qa-drawer-measurements.txt
+        - 字典及项均有新增审计；变更后名称/编号/值/状态/时间/创建人/排序/所属字典可见
+    - id: check.dictionary-knowledge
+      required: true
+      category: ontology
+      description: 核对DEC0081-14及词条纠正的适用/保留范围，无键旧冻结解释、身份和历史证据保留；独立运行知识校验。
+      method: automated-test
+      command: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - /tmp/qa-dictionary-knowledge-tests.log
+        - 89项，0失败、0错误、0跳过；0.3.25保持，不提升为verified或整体本体验收
+        - docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.md
+    - id: check.dictionary-static-build
+      required: true
+      category: regression
+      description: 独立执行字典静态verify与两处diff检查；复核主侧最新完整构建成功日志及两处最终辅助文案，未使用旧切片通过结论。
+      method: command
+      command: node scripts/verify-business-dictionary-page.mjs; git diff --check; git diff --cached --check
+      outcome: passed
+      evidence:
+        - 独立verify-business-dictionary及两处diff检查exit0
+        - /tmp/edhr-dictionary-correction-build.log，主侧最新构建成功，质量角色读取日志而非声称再次执行构建
+        - /tmp/edhr-dictionary-ui-static-audit.json中全仓138条既有诊断单列，非本切片要求的全仓整改；未据此宣称全仓UI审计通过
+    - id: check.dictionary-final-evidence-documents
+      required: true
+      category: documentation
+      description: 同包最终文档续核，只读开发记录及本体证据的最终文字；原始待补时点与随后取得的实际验收分列，主侧构建和独立检查分工准确，不冒称发布、目标集成或知识verified。
+      method: inspection
+      command: 读取两份最终文档、确认相对质量报告链接及六份引用产物存在，git diff --check与git diff --cached --check
+      outcome: passed
+      evidence:
+        - docs/development/reference-dictionary-correction-20261019.md
+        - docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.md
+        - 相对链接../../../output/playwright/dictionary-correction-20261019/quality-result.yaml解析正确；六份所列原始产物实际存在
+        - HEAD仍ca98、origin/edhr-dev仍336466；本次仅证据文档续核，未重跑功能、浏览器或构建，也未改业务代码或数据
+        - 两处diff检查exit0；DEC0081-14仍specified/internal，保留未集成及旧冻结兼容边界
+  findings: []
+  residualRisks:
+    - id: risk.dictionary-not-integrated
+      description: 目标336466已fetch且契约增量核对，但未合并；本轮验证仅ca98加当前未提交切片，不包含目标绑定审查实现。
+      impact: 不构成集成、提交或发布验收。
+      mitigation: 后续实际集成时按变化重评受影响检查。
+    - id: risk.dictionary-scope-legacy
+      description: 无referenceDictionaryId键的旧冻结配置按明确兼容边界保留原混合候选解释，不自动猜测或迁移；本轮未发起新生产签署或修改既有安速康实例。
+      impact: 不能把新配置具体字典能力说成已批量修复所有历史实例。
+      mitigation: 新/重选引用对象配置显式选字典；旧数据迁移另立范围。
+  blockingConditions: []

@@ -70,8 +70,8 @@ mustInclude(pageContent, 'beginColumnResize', 'table columns should support drag
 mustInclude(pageContent, '<Table stickyHeader size="small"', 'tables should follow compact sticky standard');
 mustInclude(pageContent, 'TABLE_DATA_ROW_HEIGHT = 40', 'table rows should keep the 40px standard');
 mustInclude(pageContent, 'calc(100vh - 150px)', 'page should fill the app shell workspace');
-mustInclude(pageContent, '<Tab label="数据信息" />', 'detail drawer should include data info tab');
-mustInclude(pageContent, '<Tab label="数据审计" />', 'detail drawer should include data audit tab');
+mustInclude(pageContent, '<DetailDrawer open={drawerOpen}', 'detail should use the shared full-height drawer with fixed information and audit tabs');
+mustInclude(pageContent, 'onTabChange={setDrawerTab}', 'shared drawer should retain the page audit tab state');
 mustInclude(pageContent, 'Accordion', 'audit records should use accordion rows');
 mustInclude(pageContent, '暂无审计记录', 'audit tab should use standard empty wording');
 mustInclude(pageContent, 'getAuditLogs', 'drawer should query backend audit logs');

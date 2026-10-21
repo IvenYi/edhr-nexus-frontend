@@ -1,0 +1,1257 @@
+---
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: c671b23fd9847a7e1cb2d1bad3c3bb138fc5620f
+    targetBranch: edhr-dev
+    targetCommit: c671b23fd9847a7e1cb2d1bad3c3bb138fc5620f
+    contractReadCommit: c671b23fd9847a7e1cb2d1bad3c3bb138fc5620f
+    uncommittedContractPaths: []
+  reason: 已将原因/引用在途定义及107处初始化引用整合到实际目标候选；原因DEC0082消歧，保留目标委托、共享字段、单绑区域和签名契约。知识版本和成熟度不提升；正式89项及107处引用/47份历史SQL校验通过，业务运行和独立质量由主侧另行完成。
+  changedArtifacts:
+  - path: docs/architecture/business-knowledge-model.md
+    changeType: update
+    ids: []
+  - path: docs/architecture/form-traceability-projection-brief.md
+    changeType: update
+    ids: []
+  - path: docs/architecture/form-traceability-projection-design.md
+    changeType: update
+    ids: []
+  - path: docs/knowledge/README.md
+    changeType: update
+    ids: []
+  - path: docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml
+    changeType: update
+    ids:
+    - DEC-0006
+    - discrepancy.production-work-historical-audit-baseline
+  - path: docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml
+    changeType: update
+    ids:
+    - DEC-0042
+    - discrepancy.record-control-stage1-permission-and-concurrency-verification-pending
+  - path: docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    changeType: add
+    ids:
+    - DEC-0082
+    - DEC-0082-01
+    - DEC-0082-02
+    - DEC-0082-03
+    - DEC-0082-04
+    - DEC-0082-05
+    - DEC-0082-06
+    - DEC-0082-07
+    - DEC-0082-08
+    - DEC-0082-09
+    - DEC-0082-10
+    - DEC-0082-11
+    - DEC-0082-12
+    - DEC-0082-13
+    - DEC-0082-14
+    - DEC-0082-15
+    - DEC-0082-16
+    - scenario.reference-unified-source-candidate-scope
+    - scenario.reference-invalid-condition-preserved
+    - scenario.reference-dictionary-explicit-scope
+    - scenario.workbench-standard-reason-and-ng-separation
+    - scenario.defect-reason-detail-source-granularity
+    - scenario.reference-configuration-and-usage-separation
+    - scenario.reference-context-option-and-display-identity
+    - scenario.reference-display-ordered-fields
+    - scenario.reference-context-initialization-no-overwrite
+    - scenario.reference-person-only-selector
+    - scenario.standard-reason-source-and-history
+    - scenario.defect-detail-independent-projection
+    - scenario.reason-modeling-menu-initialization
+  - path: docs/knowledge/evidence/defect-reason-detail-reference-2026-10-18.md
+    changeType: add
+    ids: []
+  - path: docs/knowledge/evidence/defect-reason-detail-reference-2026-10-18.yaml
+    changeType: add
+    ids:
+    - evidence.defect-reason-detail-reference-user-confirmed
+    - evidence.defect-reason-reference-implementation
+  - path: docs/knowledge/evidence/dhr-filling-review-confirmed.md
+    changeType: update
+    ids:
+    - docs/knowledge/evidence/dhr-filling-review-confirmed.md
+  - path: docs/knowledge/evidence/dhr-instance-management.yaml
+    changeType: update
+    ids:
+    - evidence.dhr-instance-form-record-schema
+    - evidence.dhr-instance-form-business-source-schema
+    - evidence.dhr-instance-migration
+  - path: docs/knowledge/evidence/dhr-summary.yaml
+    changeType: update
+    ids:
+    - evidence.dhr-summary-migration
+    - evidence.dhr-summary-review-binding-constraint
+    - evidence.dhr-summary-order-migration
+    - evidence.dhr-summary-display-name-migration
+    - evidence.dhr-summary-complete-evidence-migration
+    - evidence.dhr-summary-attachment-migration
+    - evidence.dhr-summary-current-model-migration
+  - path: docs/knowledge/evidence/equipment-modeling.yaml
+    changeType: update
+    ids:
+    - evidence.equipment-legacy-schema
+    - evidence.equipment-modeling-migration
+    - evidence.equipment-system-fields-migration
+    - evidence.equipment-brand-purchase-date-migration
+  - path: docs/knowledge/evidence/form-instance-query.yaml
+    changeType: update
+    ids:
+    - evidence.form-instance-query-migration
+    - evidence.form-instance-business-source-record-schema
+  - path: docs/knowledge/evidence/form-process-version-references.yaml
+    changeType: update
+    ids:
+    - evidence.form-process-version-reference-migration
+  - path: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+    changeType: update
+    ids:
+    - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+  - path: docs/knowledge/evidence/form-worklists.yaml
+    changeType: update
+    ids:
+    - evidence.form-worklists-permissions
+  - path: docs/knowledge/evidence/identity-subject-selector.yaml
+    changeType: update
+    ids:
+    - evidence.workflow-task-candidate-migration
+  - path: docs/knowledge/evidence/initialization-reference-maintenance-2026-10-21.md
+    changeType: add
+    ids: []
+  - path: docs/knowledge/evidence/master-data-description.yaml
+    changeType: update
+    ids:
+    - evidence.master-data-description-migration
+  - path: docs/knowledge/evidence/material-fields.yaml
+    changeType: update
+    ids:
+    - evidence.material-fields-brand-migration
+  - path: docs/knowledge/evidence/material-import.yaml
+    changeType: update
+    ids:
+    - evidence.material-import-brand-rename
+    - evidence.material-import-type-seed-repair
+  - path: docs/knowledge/evidence/ontology-foundation-fact-types.md
+    changeType: update
+    ids:
+    - docs/knowledge/evidence/ontology-foundation-fact-types.md
+  - path: docs/knowledge/evidence/product-process.yaml
+    changeType: update
+    ids:
+    - evidence.migration-0044-product-process-modeling
+    - evidence.migration-0045-document-versions
+    - evidence.migration-0049-dhr-item-binding
+    - evidence.migration-0052-document-pages
+    - evidence.migration-0053-product-family-process-owner
+    - evidence.migration-0054-product-family-code-case-insensitive
+  - path: docs/knowledge/evidence/production-execution.yaml
+    changeType: update
+    ids:
+    - evidence.production-execution-migration-source
+  - path: docs/knowledge/evidence/production.yaml
+    changeType: update
+    ids:
+    - evidence.migration-0061-work-order
+    - evidence.migration-0062-production-object-and-work-order-lifecycle
+    - evidence.migration-0063-production-work-order-permission
+    - evidence.migration-0064-production-work-order-fields
+    - evidence.work-order-schema-field-boundary
+    - evidence.migration-0066-production-object-planned-window
+    - evidence.migration-0067-production-batch-management-permission
+  - path: docs/knowledge/evidence/record-control-workflow-stage1.yaml
+    changeType: update
+    ids:
+    - evidence.record-control-workflow-stage1-migration
+  - path: docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.md
+    changeType: add
+    ids: []
+  - path: docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.yaml
+    changeType: add
+    ids:
+    - evidence.reference-dictionary-correction
+  - path: docs/knowledge/evidence/reference-source-unification-2026-10-19.md
+    changeType: add
+    ids: []
+  - path: docs/knowledge/evidence/reference-source-unification-2026-10-19.yaml
+    changeType: add
+    ids:
+    - evidence.reference-source-unification
+  - path: docs/knowledge/evidence/release-integration-2026-10-21.md
+    changeType: add
+    ids: []
+  - path: docs/knowledge/evidence/signature-payload-storage.yaml
+    changeType: update
+    ids:
+    - evidence.signature-payload-lossless-storage-migration
+  - path: docs/knowledge/evidence/transaction-runtime.yaml
+    changeType: update
+    ids:
+    - evidence.production-work-template-configuration-migration
+  - path: docs/knowledge/evidence/workshop.yaml
+    changeType: update
+    ids:
+    - evidence.workshop-legacy-schema
+    - evidence.migration-0061-workshop-management
+  - path: docs/knowledge/facts/dhr-instance-management.yaml
+    changeType: update
+    ids:
+    - fact.dhr-instance.form-record-copy-id
+  - path: docs/knowledge/facts/dhr-summary.yaml
+    changeType: update
+    ids:
+    - fact.dhr-summary.review-mode
+    - fact.dhr-summary.version-frozen
+    - fact.dhr-summary.archive-display-name
+  - path: docs/knowledge/facts/form-instance-query.yaml
+    changeType: update
+    ids:
+    - fact.form-instance.business-source
+  - path: docs/knowledge/glossary.yaml
+    changeType: update
+    ids:
+    - term.standard-reason-entry
+    - term.defect-reason-detail
+    - term.form-business-projection
+    - term.material
+    - term.product
+    - term.production-object
+    - term.serial-number
+  - path: docs/knowledge/implementation-anchors/core-business.yaml
+    changeType: update
+    ids:
+    - anchor.core.identity-subject-resolution
+    - anchor.core.product-process-resolution
+    - anchor.core.production-work-order
+    - anchor.core.production-object-runtime
+    - anchor.core.production-work-configuration
+    - anchor.core.workshop-management
+    - anchor.core.record-control-workflow-integration
+    - anchor.core.record-control-explicit-published-workflow-selection
+    - anchor.core.workflow-definition-version-record-control-start
+  - path: docs/knowledge/implementation-anchors/dhr-instance-management.yaml
+    changeType: update
+    ids:
+    - anchor.production-batch-dhr-entry
+    - anchor.dhr-instance-first-start-transaction
+    - anchor.dhr-instance-context-snapshot
+    - anchor.dhr-instance-form-evidence-query
+    - anchor.dhr-instance-query-permission
+  - path: docs/knowledge/implementation-anchors/dhr-summary-order.yaml
+    changeType: update
+    ids:
+    - anchor.dhr-summary-optional-placement-order
+  - path: docs/knowledge/implementation-anchors/dhr-summary-source-group.yaml
+    changeType: update
+    ids:
+    - anchor.dhr-summary-archive-display-name
+  - path: docs/knowledge/implementation-anchors/dhr-summary.yaml
+    changeType: update
+    ids:
+    - anchor.dhr-summary-workspace
+    - anchor.dhr-summary-immutable-version
+    - anchor.dhr-summary-manual-review-confirmation
+    - anchor.dhr-review-task-frozen-attachment-download
+    - anchor.dhr-summary-zip-source-trace
+    - anchor.dhr-summary-review-binding
+    - anchor.dhr-summary-auto-evidence-scope
+    - anchor.dhr-summary-stale-approval
+  - path: docs/knowledge/implementation-anchors/form-instance-query.yaml
+    changeType: update
+    ids:
+    - anchor.form-instance-global-query-persisted-business-source
+    - anchor.form-instance-global-query-authorization
+  - path: docs/knowledge/implementation-anchors/form-process-binding.yaml
+    changeType: update
+    ids:
+    - anchor.form-process-binding-reference-service
+    - anchor.form-process-binding-usage-projection
+  - path: docs/knowledge/implementation-anchors/form-projection.yaml
+    changeType: update
+    ids:
+    - anchor.form-projection.configuration-snapshot
+    - anchor.form-projection.formal-source
+    - anchor.form-projection.saved-content-trace
+  - path: docs/knowledge/implementation-anchors/form-worklists.yaml
+    changeType: update
+    ids:
+    - anchor.form-worklist-personal-qualification
+    - anchor.form-worklist-current-tasks
+    - anchor.form-worklist-explicit-creation
+    - anchor.form-worklist-personal-history
+  - path: docs/knowledge/implementation-anchors/master-data-description.yaml
+    changeType: update
+    ids:
+    - anchor.master-data-description-field-contract
+  - path: docs/knowledge/implementation-anchors/material-fields.yaml
+    changeType: update
+    ids:
+    - anchor.material.optional-brand
+  - path: docs/knowledge/implementation-anchors/production-output.yaml
+    changeType: update
+    ids:
+    - anchor.production-output.configuration
+    - anchor.production-output.formal-summary
+  - path: docs/knowledge/implementation-anchors/production-quality.yaml
+    changeType: update
+    ids:
+    - anchor.production-quality.formal-summary
+  - path: docs/knowledge/ontology.yaml
+    changeType: update
+    ids:
+    - concept.standard-reason-entry
+    - concept.defect-reason-detail
+    - concept.form-business-projection
+    - concept.material
+    - concept.product
+    - concept.production-object
+    - concept.serial-number
+  - path: docs/knowledge/open-questions.yaml
+    changeType: update
+    ids:
+    - question.form-projection-defect-count-semantics
+    - question.form-projection-context-prefill-lifecycle
+  - path: docs/knowledge/rules/form-reference-runtime.yaml
+    changeType: update
+    ids:
+    - rule.form-reference-runtime
+  knowledgeSync:
+  - id: discrepancy.production-work-historical-audit-baseline
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0059-work-template-audit-baseline.sql
+  - id: discrepancy.record-control-stage1-permission-and-concurrency-verification-pending
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0080-record-control-workflow-contract.sql
+  - id: docs/knowledge/evidence/dhr-filling-review-confirmed.md
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/dhr-filling-review-confirmed.md
+    - gmp-platform/backend/src/test/resources/db/changelog/0092-dhr-summary-workspace.sql
+  - id: evidence.dhr-instance-form-record-schema
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/dhr-instance-management.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0082-form-instance-records.sql
+  - id: evidence.dhr-instance-form-business-source-schema
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/dhr-instance-management.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0086-form-instance-business-source.sql
+  - id: evidence.dhr-instance-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/dhr-instance-management.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0089-dhr-instance-management.sql
+  - id: evidence.dhr-summary-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/dhr-summary.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0092-dhr-summary-workspace.sql
+  - id: evidence.dhr-summary-review-binding-constraint
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/dhr-summary.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0093-dhr-summary-version-review-binding.sql
+  - id: evidence.dhr-summary-order-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/dhr-summary.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0100-dhr-summary-evidence-order.sql
+  - id: evidence.dhr-summary-display-name-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/dhr-summary.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0101-dhr-summary-evidence-display-name.sql
+  - id: evidence.dhr-summary-complete-evidence-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/dhr-summary.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0102-dhr-summary-complete-evidence.sql
+  - id: evidence.dhr-summary-attachment-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/dhr-summary.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0103-dhr-controlled-attachments.sql
+  - id: evidence.dhr-summary-current-model-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/dhr-summary.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0104-dhr-current-evidence-only.sql
+  - id: evidence.equipment-legacy-schema
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/equipment-modeling.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0001-init-schema.sql
+  - id: evidence.equipment-modeling-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/equipment-modeling.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0073-equipment-modeling.sql
+  - id: evidence.equipment-system-fields-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/equipment-modeling.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0074-equipment-system-fields.sql
+  - id: evidence.equipment-brand-purchase-date-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/equipment-modeling.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0075-equipment-brand-purchase-date.sql
+  - id: evidence.form-instance-query-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/form-instance-query.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0083-form-instance-query.sql
+  - id: evidence.form-instance-business-source-record-schema
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/form-instance-query.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0086-form-instance-business-source.sql
+  - id: evidence.form-process-version-reference-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/form-process-version-references.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0072-work-form-process-references.sql
+  - id: docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md
+    - gmp-platform/backend/src/test/resources/db/changelog/0113-trace-date-preset.sql
+  - id: evidence.form-worklists-permissions
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/form-worklists.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0084-form-worklist-permissions.sql
+  - id: evidence.workflow-task-candidate-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/identity-subject-selector.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0071-workflow-task-candidates.sql
+  - id: evidence.master-data-description-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/master-data-description.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0095-remove-duplicate-remarks.sql
+  - id: evidence.material-fields-brand-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/material-fields.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0078-material-brand.sql
+  - id: evidence.material-import-brand-rename
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/material-import.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0081-material-brand-name.sql
+  - id: evidence.material-import-type-seed-repair
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/material-import.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0087-restore-standard-material-types.sql
+  - id: docs/knowledge/evidence/ontology-foundation-fact-types.md
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/ontology-foundation-fact-types.md
+    - gmp-platform/backend/src/test/resources/db/changelog/0059-work-template-audit-baseline.sql
+  - id: evidence.migration-0044-product-process-modeling
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/product-process.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0044-product-process-modeling.sql
+  - id: evidence.migration-0045-document-versions
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/product-process.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0045-document-management-versions.sql
+  - id: evidence.migration-0049-dhr-item-binding
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/product-process.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0049-product-process-dhr-item-binding.sql
+  - id: evidence.migration-0052-document-pages
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/product-process.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0052-product-process-document-pages.sql
+  - id: evidence.migration-0053-product-family-process-owner
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/product-process.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0053-product-family-process-owner.sql
+  - id: evidence.migration-0054-product-family-code-case-insensitive
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/product-process.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0054-product-family-code-case-insensitive.sql
+  - id: evidence.production-execution-migration-source
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/production-execution.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0076-production-execution.sql
+  - id: evidence.migration-0061-work-order
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/production.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0061-production-work-order.sql
+  - id: evidence.migration-0062-production-object-and-work-order-lifecycle
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/production.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0062-production-object-and-work-order-lifecycle.sql
+  - id: evidence.migration-0063-production-work-order-permission
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/production.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0063-production-work-order-permission.sql
+  - id: evidence.migration-0064-production-work-order-fields
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/production.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0064-production-work-order-fields.sql
+  - id: evidence.work-order-schema-field-boundary
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/production.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0061-production-work-order.sql
+  - id: evidence.migration-0066-production-object-planned-window
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/production.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0066-production-object-planned-window.sql
+  - id: evidence.migration-0067-production-batch-management-permission
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/production.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0067-production-batch-management-permission.sql
+  - id: evidence.record-control-workflow-stage1-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/record-control-workflow-stage1.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0080-record-control-workflow-contract.sql
+  - id: evidence.signature-payload-lossless-storage-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/signature-payload-storage.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0118-signature-payload-text.sql
+  - id: evidence.production-work-template-configuration-migration
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/transaction-runtime.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0059-work-template-audit-baseline.sql
+  - id: evidence.workshop-legacy-schema
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/workshop.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0001-init-schema.sql
+  - id: evidence.migration-0061-workshop-management
+    disposition: historical
+    scope: 历史证据原义和原验证时点保留；原SQL字节迁至测试夹具，不作为当前初始化执行入口
+    sourceReferences:
+    - docs/knowledge/evidence/workshop.yaml
+    - gmp-platform/backend/src/test/resources/db/changelog/0070-workshop-management.sql
+  - id: fact.dhr-instance.form-record-copy-id
+    disposition: updated
+    scope: form_instance_record.copy_id；uk_form_instance_source (tenant_id, object_id,
+      operation_id, copy_id)
+    sourceReferences:
+    - docs/knowledge/facts/dhr-instance-management.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: fact.dhr-summary.review-mode
+    disposition: updated
+    scope: product_process_version.dhr_review_mode、dhr_instance.dhr_review_mode及各自审核绑定CHECK/外键
+    sourceReferences:
+    - docs/knowledge/facts/dhr-summary.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: fact.dhr-summary.version-frozen
+    disposition: updated
+    scope: dhr_summary_version.version_no/check_result_snapshot NOT NULL、dhr_summary_evidence；当前直接建表，无evidence_model_version列或0104转换执行；上文迁移验证为2026-09-27历史记录
+    sourceReferences:
+    - docs/knowledge/facts/dhr-summary.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: fact.dhr-summary.archive-display-name
+    disposition: updated
+    scope: dhr_summary_evidence.display_name可空列；当前直接建列，上文转换/迁移验证为原记录时点
+    sourceReferences:
+    - docs/knowledge/facts/dhr-summary.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: fact.form-instance.business-source
+    disposition: updated
+    scope: form_instance_record.source_type NOT NULL；0086历史回填仍仅由历史证据解释，新初始化不回填记录
+    sourceReferences:
+    - docs/knowledge/facts/form-instance-query.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.core.identity-subject-resolution
+    disposition: updated
+    scope: workflow_task.candidate_snapshot及idx_workflow_task_candidate_snapshot、uq_workflow_task_active_instance_node
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/core-business.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.core.product-process-resolution
+    disposition: updated
+    scope: product_process、product_process_version及product_process_operation_binding等绑定表
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/core-business.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.core.production-work-order
+    disposition: updated
+    scope: work_order及uk_work_order_no、idx_work_order_product、idx_work_order_status
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/core-business.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.core.production-object-runtime
+    disposition: updated
+    scope: production_object.object_type/target_quantity、ck_production_object_type/target及work_order_id外键；不重新解释数量下限业务待决
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/core-business.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.core.production-work-configuration
+    disposition: updated
+    scope: workflow_definition、workflow_binding_rule.is_active和audit_event；新基线不执行0059历史审计补写，原迁移证据保留
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/core-business.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.core.workshop-management
+    disposition: updated
+    scope: workshop.tenant_id/description/status、uk_workshop_tenant_code与production_line.workshop_id外键；seed保留master-data.workshops权限
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/core-business.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql
+  - id: anchor.core.record-control-workflow-integration
+    disposition: updated
+    scope: workflow_instance.idempotency_key/audit_correlation_id/workflow_snapshot_hash、uk_wf_instance_idempotency_key；seed保留record-control权限目录及ADMIN授权
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/core-business.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql
+  - id: anchor.core.record-control-explicit-published-workflow-selection
+    disposition: updated
+    scope: workflow_instance.idempotency_key/audit_correlation_id/workflow_snapshot_hash、uk_wf_instance_idempotency_key；seed保留record-control权限目录及ADMIN授权
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/core-business.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql
+  - id: anchor.core.workflow-definition-version-record-control-start
+    disposition: updated
+    scope: workflow_definition_version及uk_wf_def_version
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/core-business.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.production-batch-dhr-entry
+    disposition: updated
+    scope: dhr_instance.production_object_id及uk_dhr_instance_object
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-instance-management.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.dhr-instance-first-start-transaction
+    disposition: updated
+    scope: dhr_instance及uk_dhr_instance_object；dhr_template_version直接创建且不含directory_snapshot/status旧列；0089/0090/0091及当时测试为历史说明
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-instance-management.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.dhr-instance-context-snapshot
+    disposition: updated
+    scope: dhr_instance.context_snapshot/directory_snapshot；dhr_template_version不含directory_snapshot/status；新初始化直接创建，不再执行0090/0091删列
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-instance-management.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.dhr-instance-form-evidence-query
+    disposition: updated
+    scope: form_instance_record.object_id/copy_id/source_type与dhr_instance.production_object_id
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-instance-management.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.dhr-instance-query-permission
+    disposition: updated
+    scope: seed中的records.dhr-management、dhr.instances.view及ADMIN角色授权；0089权限创建及测试为原时点记录
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-instance-management.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql
+  - id: anchor.dhr-summary-optional-placement-order
+    disposition: updated
+    scope: dhr_summary_evidence.before_node_key/display_order直接创建可空列
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-summary-order.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.dhr-summary-archive-display-name
+    disposition: updated
+    scope: dhr_summary_evidence.display_name直接创建可空列；0101仅为该列的历史迁移来源
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-summary-source-group.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.dhr-summary-workspace
+    disposition: updated
+    scope: dhr_summary_draft/version/evidence及ck_dhr_summary_version_review_binding；seed中的records.dhr-summary、dhr.summaries.edit/submit及ADMIN授权
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-summary.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql
+  - id: anchor.dhr-summary-immutable-version
+    disposition: updated
+    scope: dhr_summary_version.version_no/check_result_snapshot/attachment_snapshot、dhr_summary_evidence和dhr_summary_draft.source_scope_hash；直接创建最终结构，不执行0104转换，原转换验证保留在历史证据
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-summary.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.dhr-summary-manual-review-confirmation
+    disposition: updated
+    scope: dhr_summary_version.check_result_snapshot NOT NULL、dhr_summary_draft.source_scope_hash；JSON内部人工确认语义仍由所列服务解释
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-summary.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.dhr-review-task-frozen-attachment-download
+    disposition: updated
+    scope: dhr_attachment及dhr_summary_version.attachment_snapshot；当前直接创建结构
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-summary.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.dhr-summary-zip-source-trace
+    disposition: updated
+    scope: dhr_summary_version.check_result_snapshot；signature.snapshot_data TEXT及ck_signature_snapshot_data_json直接创建；0118旧数据转换与其限制仍为历史证据，不在新初始化运行
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-summary.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.dhr-summary-review-binding
+    disposition: updated
+    scope: product_process_version/dhr_instance审核绑定列、dhr_summary_version审核绑定列及ck_dhr_summary_version_review_binding
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-summary.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.dhr-summary-auto-evidence-scope
+    disposition: updated
+    scope: dhr_summary_draft.source_scope_hash、dhr_summary_version.check_result_snapshot/attachment_snapshot及dhr_attachment
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-summary.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.dhr-summary-stale-approval
+    disposition: updated
+    scope: dhr_summary_draft.source_scope_hash、dhr_summary_version.check_result_snapshot/attachment_snapshot及dhr_attachment
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-summary.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.form-instance-global-query-persisted-business-source
+    disposition: updated
+    scope: form_instance_record.source_type及来源索引；新初始化不执行历史回填，上文2026-09-16验证仍为原时点记录
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/form-instance-query.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.form-instance-global-query-authorization
+    disposition: updated
+    scope: form_instance_record.tenant_id及查询索引；seed中的form-instances.view与ADMIN授权；0083历史回填不在当前安装执行
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/form-instance-query.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql
+  - id: anchor.form-process-binding-reference-service
+    disposition: updated
+    scope: work_form_process_reference及uk_work_form_process_reference_node等索引；无旧图配置回填或backfill序列
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/form-process-binding.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.form-process-binding-usage-projection
+    disposition: updated
+    scope: work_form_process_reference及form_process_version_id/form_process_definition_id索引；无旧图配置回填
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/form-process-binding.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.form-projection.configuration-snapshot
+    disposition: updated
+    scope: form_template_version.projection_frozen_json/lock_version直接建列；保留上文legacy列不作为当前复制冻结依据的边界
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/form-projection.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.form-projection.formal-source
+    disposition: updated
+    scope: form_projection_batch/record及来源修订和binding/row唯一约束
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/form-projection.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.form-projection.saved-content-trace
+    disposition: updated
+    scope: form_trace_value及value_type类型约束、form_lookup_item.value_type约束；seed直接包含九项当前预置，不执行0112退役项删除或0109旧内容重建
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/form-projection.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql
+  - id: anchor.form-worklist-personal-qualification
+    disposition: updated
+    scope: seed中的form-management.filling/review及ADMIN角色授权
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/form-worklists.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql
+  - id: anchor.form-worklist-current-tasks
+    disposition: updated
+    scope: seed中的form-management.filling/review及ADMIN角色授权
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/form-worklists.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql
+  - id: anchor.form-worklist-explicit-creation
+    disposition: updated
+    scope: seed中的form-management.filling/review及ADMIN角色授权
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/form-worklists.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql
+  - id: anchor.form-worklist-personal-history
+    disposition: updated
+    scope: seed中的form-management.filling/review及ADMIN角色授权
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/form-worklists.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0002-current-seed.sql
+  - id: anchor.master-data-description-field-contract
+    disposition: updated
+    scope: product_family、sop_document、document_version直接创建且不含remark列，保留description；0095仅为历史删列证据
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/master-data-description.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.material.optional-brand
+    disposition: updated
+    scope: material.brand_name可空列；0078旧brand列及0081重命名留在历史证据，当前直接使用brand_name
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/material-fields.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.production-output.configuration
+    disposition: updated
+    scope: product_process_operation_binding.final_output及uk_process_version_final_output部分唯一索引；无历史数量回填
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/production-output.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.production-output.formal-summary
+    disposition: updated
+    scope: form_projection_batch/record及来源修订和binding/row唯一约束
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/production-output.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: anchor.production-quality.formal-summary
+    disposition: updated
+    scope: form_projection_batch/record及attributes/sources原始来源列
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/production-quality.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  - id: evidence.reference-source-unification
+    disposition: updated
+    scope: 承接本切片原始确认、源码和历史运行证据，原因编号引用同步DEC-0082；原采集时点和适用范围保留，不以旧通过覆盖当前候选。
+    sourceReferences:
+    - docs/knowledge/evidence/reference-source-unification-2026-10-19.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: evidence.defect-reason-detail-reference-user-confirmed
+    disposition: updated
+    scope: 承接本切片原始确认、源码和历史运行证据，原因编号引用同步DEC-0082；原采集时点和适用范围保留，不以旧通过覆盖当前候选。
+    sourceReferences:
+    - docs/knowledge/evidence/defect-reason-detail-reference-2026-10-18.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: evidence.defect-reason-reference-implementation
+    disposition: updated
+    scope: 承接本切片原始确认、源码和历史运行证据，原因编号引用同步DEC-0082；原采集时点和适用范围保留，不以旧通过覆盖当前候选。
+    sourceReferences:
+    - docs/knowledge/evidence/defect-reason-detail-reference-2026-10-18.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: evidence.reference-dictionary-correction
+    disposition: updated
+    scope: 承接本切片原始确认、源码和历史运行证据，原因编号引用同步DEC-0082；原采集时点和适用范围保留，不以旧通过覆盖当前候选。
+    sourceReferences:
+    - docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: term.standard-reason-entry
+    disposition: updated
+    scope: 同步标准原因/独立不良明细或合并引用入口说明；共模型真实身份、引用范围、来源快照、NG数量边界及已有成熟度保持，不把入口统一解释为业务对象合并。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: term.defect-reason-detail
+    disposition: updated
+    scope: 同步标准原因/独立不良明细或合并引用入口说明；共模型真实身份、引用范围、来源快照、NG数量边界及已有成熟度保持，不把入口统一解释为业务对象合并。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: term.form-business-projection
+    disposition: updated
+    scope: 同步标准原因/独立不良明细或合并引用入口说明；共模型真实身份、引用范围、来源快照、NG数量边界及已有成熟度保持，不把入口统一解释为业务对象合并。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: term.material
+    disposition: updated
+    scope: 同步标准原因/独立不良明细或合并引用入口说明；共模型真实身份、引用范围、来源快照、NG数量边界及已有成熟度保持，不把入口统一解释为业务对象合并。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: term.product
+    disposition: updated
+    scope: 同步标准原因/独立不良明细或合并引用入口说明；共模型真实身份、引用范围、来源快照、NG数量边界及已有成熟度保持，不把入口统一解释为业务对象合并。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: term.production-object
+    disposition: updated
+    scope: 同步标准原因/独立不良明细或合并引用入口说明；共模型真实身份、引用范围、来源快照、NG数量边界及已有成熟度保持，不把入口统一解释为业务对象合并。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: term.serial-number
+    disposition: updated
+    scope: 同步标准原因/独立不良明细或合并引用入口说明；共模型真实身份、引用范围、来源快照、NG数量边界及已有成熟度保持，不把入口统一解释为业务对象合并。
+    sourceReferences:
+    - docs/knowledge/glossary.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: concept.standard-reason-entry
+    disposition: updated
+    scope: 同步标准原因/独立不良明细或合并引用入口说明；共模型真实身份、引用范围、来源快照、NG数量边界及已有成熟度保持，不把入口统一解释为业务对象合并。
+    sourceReferences:
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: concept.defect-reason-detail
+    disposition: updated
+    scope: 同步标准原因/独立不良明细或合并引用入口说明；共模型真实身份、引用范围、来源快照、NG数量边界及已有成熟度保持，不把入口统一解释为业务对象合并。
+    sourceReferences:
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: concept.form-business-projection
+    disposition: updated
+    scope: 同步标准原因/独立不良明细或合并引用入口说明；共模型真实身份、引用范围、来源快照、NG数量边界及已有成熟度保持，不把入口统一解释为业务对象合并。
+    sourceReferences:
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: concept.material
+    disposition: updated
+    scope: 同步标准原因/独立不良明细或合并引用入口说明；共模型真实身份、引用范围、来源快照、NG数量边界及已有成熟度保持，不把入口统一解释为业务对象合并。
+    sourceReferences:
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: concept.product
+    disposition: updated
+    scope: 同步标准原因/独立不良明细或合并引用入口说明；共模型真实身份、引用范围、来源快照、NG数量边界及已有成熟度保持，不把入口统一解释为业务对象合并。
+    sourceReferences:
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: concept.production-object
+    disposition: updated
+    scope: 同步标准原因/独立不良明细或合并引用入口说明；共模型真实身份、引用范围、来源快照、NG数量边界及已有成熟度保持，不把入口统一解释为业务对象合并。
+    sourceReferences:
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: concept.serial-number
+    disposition: updated
+    scope: 同步标准原因/独立不良明细或合并引用入口说明；共模型真实身份、引用范围、来源快照、NG数量边界及已有成熟度保持，不把入口统一解释为业务对象合并。
+    sourceReferences:
+    - docs/knowledge/ontology.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0042
+    disposition: updated
+    scope: 仅初始化定位维护或本次原因引用整合；其余定义和成熟度保持。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0006
+    disposition: updated
+    scope: 仅初始化定位维护或本次原因引用整合；其余定义和成熟度保持。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-01
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-02
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-03
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-04
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-05
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-06
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-07
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-08
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-09
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-10
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-11
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-12
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-13
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-14
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-15
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0082-16
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: scenario.reference-unified-source-candidate-scope
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: scenario.reference-invalid-condition-preserved
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: scenario.reference-dictionary-explicit-scope
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: scenario.workbench-standard-reason-and-ng-separation
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: scenario.defect-reason-detail-source-granularity
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: scenario.reference-configuration-and-usage-separation
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: scenario.reference-context-option-and-display-identity
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: scenario.reference-display-ordered-fields
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: scenario.reference-context-initialization-no-overwrite
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: scenario.reference-person-only-selector
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: scenario.standard-reason-source-and-history
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: scenario.defect-detail-independent-projection
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: scenario.reason-modeling-menu-initialization
+    disposition: updated
+    scope: 承接原未合入原因DEC-0081及对应后缀；重编号为DEC-0082以消除与目标租户委托ID碰撞，业务含义、声明成熟度和验收边界保持。原因分项不替代NG、分类暂缓、对应单选引用、上下文与合并入口边界按已确认声明保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: question.form-projection-defect-count-semantics
+    disposition: updated
+    scope: 同步原因决策新ID及已确认范围；保留原因件数/缺陷次数与白名单外带入未决，不重开已经确认的粒度和防覆盖要求。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: question.form-projection-context-prefill-lifecycle
+    disposition: updated
+    scope: 同步原因决策新ID及已确认范围；保留原因件数/缺陷次数与白名单外带入未决，不重开已经确认的粒度和防覆盖要求。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: rule.form-reference-runtime
+    disposition: updated
+    scope: 按DEC-0082引用新声明，保留明确字典、适用候选范围、失效筛选保留阻断、原引用查询/提交有效性和首次带入边界；不新增运行契约或提升成熟度。
+    sourceReferences:
+    - docs/knowledge/rules/form-reference-runtime.yaml
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: DEC-0081
+    disposition: retained
+    scope: 目标租户委托决策及原ID不变，原件与HEAD字节相同；原因旧局部ID独立映射0082，不机械全局替换。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+  - id: DEC-0080
+    disposition: retained
+    scope: 目标同字段共享语义不由原因/引用改造替代；实际文件名称见目标决策目录，当前整合保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml
+  - id: fact.form-projection.trace-field-binding-count
+    disposition: retained
+    scope: 采用目标较新合法主表区域及真实fieldId计数说明，整文件与HEAD字节相同；不回退旧工作区解释。
+    sourceReferences:
+    - docs/knowledge/facts/form-projection.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.release-integration-knowledge
+    checkType: schema
+    command: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml
+      clean test；文档整合后再次mvn test
+    outcome: passed
+    evidence:
+    - 89 tests; failures 0; errors 0; skipped 0
+    - "/tmp/edhr-release-integration-ontology-tests.log"
+    - "/tmp/edhr-release-integration-ontology-tests-final.log"
+  - id: validation.release-integration-paths
+    checkType: evidence-path
+    command: 逐条核对reference-resolutions.json的新旧路径、47份历史SQL与HEAD原始SQL字节及两份目标语义资产
+    outcome: passed
+    evidence:
+    - docs/development/edhr-dev-release-integration-20261021/ontology-integration-checks.json
+    - 107条/38文件全部通过，59当前与48历史；47份历史SQL字节一致；目标委托及单绑计数事实未被回退
+  - id: validation.release-integration-id-and-diff
+    checkType: reference
+    command: 正式知识引用/唯一ID测试；rg合并标记；git diff --check -- docs/knowledge docs/architecture
+    outcome: passed
+    evidence:
+    - 原因DEC0082及01至16声明唯一；目标DEC0081引用保留；知识与架构无合并标记
+    - docs/knowledge/evidence/release-integration-2026-10-21.md
+  - id: validation.release-integration-current-baseline
+    checkType: projection
+    command: 读取生产master、两份baseline SQL、0115历史fixture及QualityReasonController/FormProjectionInterpreter/FormReferenceLookup/FormReferenceConfig/ProductionExecutionEngine
+    outcome: passed
+    evidence:
+    - 生产master只含schema与seed；quality_reason、两类权限及ADMIN关联存在；0115不在生产master
+    - 源码保持对应原因单选、defect独立数量、引用范围与首次初始化；本体仅核对契约，不宣称实际业务运行通过
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

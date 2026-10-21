@@ -7,7 +7,9 @@ import { isCellDisplayNode } from '@/pages/master-data/template-designer-react/r
 import { readNodeCellRange } from '@/pages/master-data/template-designer-react/utils/subTableRegion';
 import SignatureDisplay from './SignatureDisplay';
 import { readSignaturePresentation } from './signaturePresentation';
-import { referenceConditions, referenceDependencyValues, type ReferenceValue } from './referenceConfig';
+import { referenceConditions, referenceDependencyValues, type ReferenceValue, type ReferencePageRequest } from './referenceConfig';
+import { referenceDisplayText, tableReferenceSources } from './referencePresentation';
+import ReferencePickerDialog, { ReferencePersonSelector } from './ReferencePickerDialog';
 import { newSubTableRow } from './newSubTableRow';
 
 export interface SignatureTarget { fieldId: string; tableId?: string; rowIndex?: number }
@@ -20,7 +22,9 @@ export interface FormRuntime {
   signaturesInvalidated?: boolean;
   upload?: (file: File) => Promise<{ fileId: string; originalName: string }>;
   referenceValues?: Record<string, unknown>;
-  references?: (fieldId: string, keyword: string, values: Record<string, unknown>) => Promise<ReferenceValue[]>;
+  referenceDefaults?: Record<string, ReferenceValue>;
+  referenceContextWarnings?: Record<string, string>;
+  references?: (fieldId: string, keyword: string, values: Record<string, unknown>, paging?: ReferencePageRequest) => Promise<ReferenceValue[]>;
 }
 export const FormRuntimeContext = createContext<FormRuntime | undefined>(undefined);
 export const SignatureDisplayModeContext = createContext<Record<string, unknown>>({});
@@ -77,7 +81,7 @@ function RuntimeSubTable({ field, disabled, runtime }: { field: ModelField; disa
       onSignatureRequest: runtime.onSignatureRequest ? () => runtime.onSignatureRequest?.({ fieldId: column.id, tableId: field.id, rowIndex: index }) : undefined,
       onChange: (id, value) => runtime.onChange(field.id, rows.map((item, i) => i === index ? { ...item, [id]: value } : item)) }}><FormRuntimeField field={column} readOnly={disabled || Boolean((column as ModelField & { readOnly?: boolean }).readOnly || column.typeConfig.readonly)} /></FormRuntimeContext.Provider> : null}</TableCell>)}
       <TableCell><IconButton size="small" aria-label={`删除第 ${index + 1} 行`} disabled={disabled} onClick={() => runtime.onChange(field.id, rows.filter((_, i) => i !== index))}><DeleteOutlineRounded /></IconButton></TableCell></TableRow>)}
-  </TableBody></Table><Button startIcon={<AddRounded />} size="small" disabled={disabled} onClick={() => runtime.onChange(field.id, [...rows, newSubTableRow(columns, templateNodes)])}>添加记录</Button></Box>;
+  </TableBody></Table><Button startIcon={<AddRounded />} size="small" disabled={disabled} onClick={() => runtime.onChange(field.id, [...rows, newSubTableRow(columns, templateNodes, runtime.referenceDefaults)])}>添加记录</Button></Box>;
 }
 
 function RuntimeFiles({ field, disabled, runtime }: { field: ModelField; disabled: boolean; runtime: FormRuntime }) {
@@ -94,6 +98,14 @@ function RuntimeFiles({ field, disabled, runtime }: { field: ModelField; disable
 }
 
 export function RuntimeReference({ field, disabled, runtime, canvas = false }: { field: ModelField; disabled: boolean; runtime: FormRuntime; canvas?: boolean }) {
+  const warning = !(runtime.values[field.id] as ReferenceValue | undefined)?.id && runtime.referenceContextWarnings?.[field.id];
+  const control = field.typeConfig.sourceType === 'user' ? <ReferencePersonSelector field={field} disabled={disabled} runtime={runtime} canvas={canvas} />
+    : tableReferenceSources.includes(String(field.typeConfig.sourceType)) ? <ReferencePickerDialog field={field} disabled={disabled} runtime={runtime} canvas={canvas} />
+      : <ReferenceAutocomplete field={field} disabled={disabled} runtime={runtime} canvas={canvas} />;
+  return warning && !disabled ? <Tooltip title={warning} arrow><Box sx={{ width: '100%', height: canvas ? '100%' : undefined }}>{control}</Box></Tooltip> : control;
+}
+
+function ReferenceAutocomplete({ field, disabled, runtime, canvas = false }: { field: ModelField; disabled: boolean; runtime: FormRuntime; canvas?: boolean }) {
   const [options, setOptions] = useState<ReferenceValue[]>([]); const [error, setError] = useState('');
   const [keyword, setKeyword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -125,9 +137,9 @@ export function RuntimeReference({ field, disabled, runtime, canvas = false }: {
     openText={error ? '查看引用数据加载异常' : '展开选项'} closeText="收起选项"
     slotProps={{ popupIndicator: { sx: error ? { '&.MuiAutocomplete-popupIndicatorOpen': { transform: 'none' } } : undefined }, popper: { sx: { minWidth: 280, maxWidth: 'calc(100vw - 32px)', '& .MuiAutocomplete-noOptions, & .MuiAutocomplete-loading': { p: 1.5, fontSize: 12, lineHeight: 1.6 }, ...(error ? { '& .MuiAutocomplete-paper': { border: '1px solid #e5eaf0', borderRadius: '6px', boxShadow: '0 6px 20px #2432471a' } } : {}) } } }}
     sx={canvas ? { height: '100%', '& .MuiTextField-root, & .MuiInputBase-root': { height: '100%', minHeight: 0 }, '& .MuiInputBase-root': { fontSize: 12, py: 0 }, '&& .MuiAutocomplete-input': { py: 0, px: 0.75, minWidth: 0 }, '& .MuiAutocomplete-endAdornment': { top: '50%', transform: 'translateY(-50%)' } } : undefined}
-    getOptionLabel={(item) => item.name} isOptionEqualToValue={(item, selected) => item.id === selected.id} filterOptions={(items) => items}
+    getOptionLabel={(item) => referenceDisplayText(item, field.typeConfig)} isOptionEqualToValue={(item, selected) => item.id === selected.id} filterOptions={(items) => items}
     noOptionsText={error ? <Box role="status"><Typography sx={{ fontSize: 13, fontWeight: 600, color: '#344256', mb: 0.5 }}>引用数据加载失败</Typography><Typography sx={{ fontSize: 12, lineHeight: 1.6, color: '#718096' }}>{error}</Typography><Button size="small" startIcon={<RefreshRounded />} onMouseDown={(event) => event.preventDefault()} onClick={() => setRetry((value) => value + 1)} sx={{ mt: 1, px: 0.75, minWidth: 0, fontSize: 12 }}>重新加载</Button></Box> : <Box><Typography sx={{ fontSize: 12, color: '#526277' }}>{missing ? '请先填写查询条件关联的字段' : '未找到匹配记录'}</Typography>{!missing && <Typography sx={{ fontSize: 12, color: '#718096' }}>请尝试其他名称或记录编号</Typography>}</Box>} loadingText="正在查询…" onInputChange={(_, text, reason) => { if (reason === 'input' || reason === 'clear') setKeyword(text); }}
     onChange={(_, selected) => runtime.onChange(field.id, selected)}
-    renderOption={(props, item) => <li {...props} key={item.id}><Box><Typography variant="body2">{item.name}</Typography>{item.code && item.code !== item.name && <Typography variant="caption" color="text.secondary">{item.code}</Typography>}</Box></li>}
+    renderOption={(props, item) => <li {...props} key={item.id}><Box><Typography variant="body2">{referenceDisplayText(item, field.typeConfig)}</Typography>{item.code && item.code !== item.name && <Typography variant="caption" color="text.secondary">{item.code}</Typography>}</Box></li>}
     renderInput={(params) => <TextField {...params} label={canvas ? undefined : field.name} placeholder={canvas ? field.name : undefined} inputProps={{ ...params.inputProps, 'aria-label': field.name }} helperText={!canvas && !disabled ? '输入名称或记录编号搜索' : undefined} />} />;
 }

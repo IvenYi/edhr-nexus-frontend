@@ -254,8 +254,8 @@ function FormWorklistFillDialog({ identity, onClose, onChanged }: { identity: Fo
     try { return await uploadExecutionFile(identity.productionObjectId, file); }
     finally { setBusy(false); }
   };
-  const references = (fieldId: string, keyword: string, dependencies: ExecutionValues) => identity
-    ? getExecutionReferences(identity.productionObjectId, identity.operationId, identity.formId, fieldId, keyword, dependencies)
+  const references = (fieldId: string, keyword: string, dependencies: ExecutionValues, paging?: { page: number; size: number }) => identity
+    ? getExecutionReferences(identity.productionObjectId, identity.operationId, identity.formId, fieldId, keyword, dependencies, paging)
     : Promise.resolve([]);
   const runAction = async (button: ExecutionButton, signature?: { account: string; password: string; opinion: string }) => {
     if (!identity || !detail || busy) return;
@@ -313,7 +313,7 @@ function FormWorklistFillDialog({ identity, onClose, onChanged }: { identity: Fo
             <DetailField label="当前节点" value={detail.nodeName || '-'} />
           </Box>
           {!detail.controls?.canAct ? <Alert severity="warning" sx={{ mx: 2.5, mt: 2 }}>当前任务已不可处理，请关闭弹窗并刷新列表。</Alert> : null}
-          <Box component="section" aria-label="表单填报内容" sx={{ flex: 1, minHeight: 0, overflow: 'auto', p: { xs: 1.5, md: 2.5 }, bgcolor: '#fff' }}>{document ? <FormCanvasPreview key={`${identity?.operationId}/${identity?.copyId}/${detail.revision}`} document={document} fullPage fieldPermissions={detail.controls?.permissions} runtime={{ values, upload, references, disabled: busy || !detail.controls?.canAct, onChange: (id, value) => { setValues((current) => ({ ...current, [id]: value })); setDirty(true); } }} /> : null}</Box>
+          <Box component="section" aria-label="表单填报内容" sx={{ flex: 1, minHeight: 0, overflow: 'auto', p: { xs: 1.5, md: 2.5 }, bgcolor: '#fff' }}>{document ? <FormCanvasPreview key={`${identity?.operationId}/${identity?.copyId}/${detail.revision}`} document={document} fullPage fieldPermissions={detail.controls?.permissions} runtime={{ values, upload, references, referenceDefaults: detail.referenceDefaults, referenceContextWarnings: detail.referenceContextWarnings, disabled: busy || !detail.controls?.canAct, onChange: (id, value) => { setValues((current) => ({ ...current, [id]: value })); setDirty(true); } }} /> : null}</Box>
         </> : null}
       </DialogContent>
       <DialogActions sx={{ minHeight: 64, px: 2.5, py: 1, bgcolor: '#fff', borderTop: '1px solid #e4e7ed', justifyContent: 'space-between' }}>

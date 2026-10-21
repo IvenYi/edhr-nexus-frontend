@@ -67,7 +67,7 @@ public class ProductionOutputService {
                   'modelId',r.model_id,'attributes',r.attributes,'sources',r.sources,'details',r.details,
                   'currentMaterialType',(SELECT t.name FROM material m JOIN material_type t ON t.id=m.material_type_id
                     WHERE m.id::text=r.attributes->'material'->>'id')))
-                  FROM form_projection_record r WHERE r.batch_id=b.id AND r.model_id IN ('production','scrap')),'[]'::jsonb)))
+                  FROM form_projection_record r WHERE r.batch_id=b.id AND r.model_id IN ('production','scrap','defect')),'[]'::jsonb)))
                 FROM form_projection_batch b JOIN form_instance_record f ON f.id=b.form_instance_id
                 WHERE f.object_id=o.id AND f.tenant_id=o.tenant_id AND b.tenant_id=o.tenant_id
                   AND f.source_type='PRODUCTION_EXECUTION' AND b.status<>'INVALIDATED'),'[]'::jsonb)::text AS batches

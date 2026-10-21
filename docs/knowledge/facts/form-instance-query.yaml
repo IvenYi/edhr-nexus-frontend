@@ -5,7 +5,7 @@ facts:
     conceptId: concept.form-instance-business-source
     valueType: string
     sourceType: database
-    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/0086-form-instance-business-source.sql
+    sourcePath: gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
     aliases: [formInstance.businessSource, formInstance.source.sourceType]
     availability: runtime
     allowedOperators: [equals]
@@ -13,7 +13,7 @@ facts:
     visibility: internal
     evidenceIds: [evidence.form-instance-business-source-user-confirmed, evidence.form-instance-business-source-record-service, evidence.form-instance-business-source-query-service, evidence.form-instance-business-source-record-schema, evidence.form-instance-business-source-integration-test, evidence.form-instance-business-source-migration-test]
     sourceRevision: working-tree
-    sourceLocator: form_instance_record.source_type；0086 为生产执行历史行回填 PRODUCTION_EXECUTION，保存服务写入、查询服务读取；2026-09-16 聚焦迁移和生产执行集成测试通过，独立质量验证待完成
+    sourceLocator: "form_instance_record.source_type；0086 为生产执行历史行回填 PRODUCTION_EXECUTION，保存服务写入、查询服务读取；2026-09-16 聚焦迁移和生产执行集成测试通过，独立质量验证待完成；2026-10-21仅初始化定位维护（d405a9af工作树）：form_instance_record.source_type NOT NULL；0086历史回填仍仅由历史证据解释，新初始化不回填记录。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
     capturedAt: '2026-09-16'
     reviewStatus: reviewed
   - id: fact.form-instance-query.has-dedicated-view-permission

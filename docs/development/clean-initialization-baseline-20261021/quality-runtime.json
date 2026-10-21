@@ -1,0 +1,20 @@
+{
+  "temporaryPort": 52923,
+  "checks": [
+    {
+      "path": "/auth/login",
+      "http": 200,
+      "code": 200
+    },
+    {
+      "path": "/form-lookup-items",
+      "http": 200,
+      "code": 200
+    },
+    {
+      "path": "/reports/form-projections/status",
+      "http": 200,
+      "code": 200
+    }
+  ]
+}

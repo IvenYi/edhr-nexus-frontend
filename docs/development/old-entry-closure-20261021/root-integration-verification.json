@@ -1,0 +1,100 @@
+{
+  "workspace": "/Users/ivenwang/Documents/edhr-nexus",
+  "headCommit": "ca98ab2897990eba30bf1433134aa8560578f562",
+  "candidateCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+  "suites": [
+    {
+      "suite": "RetiredDocumentWriteEndpointsTest",
+      "tests": 2,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "RetiredProjectionRetryTest",
+      "tests": 1,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "FormProjectionInterpreterTest",
+      "tests": 24,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProcessModelingControllerTest",
+      "tests": 52,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentManagementControllerTest",
+      "tests": 11,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "GlobalExceptionHandlerTest",
+      "tests": 2,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProductionExecutionIntegrationTest",
+      "tests": 77,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 3
+    }
+  ],
+  "totals": {
+    "tests": 169,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 3
+  },
+  "functionalFiles": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "beforeSha256": "7455539529c5809d43f1a80ef92515df7a8b9c894429e10353e349c180ccaae9",
+      "afterSha256": "348df01fc0861a5f0a01e0b91ba5f3890f219f3942823586eeb3301031fab337"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "beforeSha256": "95e7d6ad3ef2ec2e79163d19a03d4e2f1396df8cc99d1a14b5e6c7aaf63044ea",
+      "afterSha256": "7bad7cc2b899cd30b783bb0b1b8686a840db9af16fe946616d6e45cb6412a491"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/SopDocumentController.java",
+      "beforeSha256": "efb3d56326541f09a1e3e387f572aa0d0834848f39c21b84da85e90a2516bc43",
+      "afterSha256": "a28b49c966094982e7000e1d40e55c7192d7f036a9f087454d1dfd0177e93674"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java",
+      "beforeSha256": "b4f620dd8093972d4abf59204b97374611eb7570513cce936181364811d1b47a",
+      "afterSha256": "26d86a47185bf3fbf6f0b289e3060516086b8d3260e382660d6552f956c31a51"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java",
+      "beforeSha256": "fecd3763b9a44f4bd73258002d1a01b2b2575f54a093d72b64a809de317ae1f8",
+      "afterSha256": "0486e59dc56e16492204bdbe4f37210c827f0d2924243dd0768fbc26cd44421d"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "beforeSha256": "f1785ab4b9f8855db1a0e066934a0f1fa62120a39797d7238bc475f478eb00d0",
+      "afterSha256": "688aede82c2faf2358158d30233a26bd8c4d586e8c46948e430a529e60b470fd"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java",
+      "beforeSha256": "4a1c88a1a02c49f13e7ff76ac14c1dcf992a6e80588dced5791722c58337e343",
+      "afterSha256": "412ede711bcd57e97560e10fe296638a92f2e0429903e194663a9a81f390ad64"
+    }
+  ],
+  "scope": "Only the seven main Java functional deltas, matching tests, and two deleted obsolete tools; all other preexisting changes preserved"
+}

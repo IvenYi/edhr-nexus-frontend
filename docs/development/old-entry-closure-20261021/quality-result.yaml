@@ -1,0 +1,134 @@
+qualityResult:
+  result: passed
+  baseCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+  headCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+  contractBaseline:
+    sourceCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    targetBranch: edhr-dev
+    targetCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    contractReadCommit: d405a9afb4327b859545fa5a12c7eebe1350f418
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/SopDocumentController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormProjectionInterpreter.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/RetiredDocumentWriteEndpointsTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/RetiredProjectionRetryTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormProjectionInterpreterTest.java
+      - gmp-platform/backend/scripts/form-projection-demo.py
+      - gmp-platform/backend/scripts/form-projection-runtime-demo.py
+      - docs/development/old-entry-closure-20261021
+      - docs/development/clean-initialization-baseline-20261021/knowledge-path-followups.csv
+      - docs/development/clean-initialization-baseline-20261021/knowledge-path-followups-readable.md
+      - docs/development/clean-initialization-baseline-20261021/remaining-writers.md
+    excludedPaths:
+      - 前一初始化基线整理的其余差异已由该阶段质量实例验收，本轮不重复宣称全量初始化验收
+      - 原工作区原因与引用功能的既有在途差异；本轮仅核验新增修复没有覆盖它们
+      - gmp-platform/frontend/node_modules
+      - output/trace-single-binding-publish
+    untrackedPaths:
+      - docs/development/old-entry-closure-20261021
+      - docs/development/clean-initialization-baseline-20261021/knowledge-path-followups-readable.md
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/RetiredDocumentWriteEndpointsTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/RetiredProjectionRetryTest.java
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.scope-contract-and-source
+      required: true
+      category: requirements
+      description: 核对本轮L2需求、现行契约、DEC0077相关声明及最小影响范围
+      method: inspection
+      command: 读取AGENTS、交接和质量角色契约、knowledge README/open-questions、DEC0077、decisionPackage及Java差异
+      outcome: passed
+      evidence:
+        - 候选HEAD与origin/edhr-dev均为d405a9afb4327b859545fa5a12c7eebe1350f418，工作树含明确列出的未提交修复；不是已提交或已推送候选。
+        - 原运行工作区HEAD为ca98ab2897990eba30bf1433134aa8560578f562；两工作区AGENTS、codeplzreadme、交接和质量契约逐字相同，未提交契约差异为空。
+        - DEC-0077-27允许MVP开发测试历史处置；40的退役目录与42单字段单绑不变；25只读解释未被改写。没有新增本体定义，用户明确将107处知识路径留后续处理。
+    - id: check.closed-writers-and-transaction-guards
+      required: true
+      category: integration
+      description: 独立复跑旧写口、开工、附加来源、旧执行保存与新增份数、投影重试及相邻正式文档回归
+      method: automated-test
+      command: mvn -q -Dexec.skip=true -Dtest=RetiredDocumentWriteEndpointsTest,RetiredProjectionRetryTest,FormProjectionInterpreterTest,ProcessModelingControllerTest,DocumentManagementControllerTest,GlobalExceptionHandlerTest,ProductionExecutionIntegrationTest test
+      outcome: passed
+      evidence:
+        - 本质量实例在候选后端执行退出0；169项中166执行通过、3条件性跳过、0失败、0错误。详见quality-tests.json；日志/tmp/edhr-old-entry-qa-tests.log。
+        - 拒绝四个退役formTrace ID覆盖启用和停用绑定；开工拒绝不新建执行/DHR/业务审计，附加失败不改快照，旧SAVE和ADD_FORM_COPY失败不增修订/表单记录/审计。
+        - validate与preview历史解释保留；业务统计自己的teamText/documentNumberText不被追溯退役校验误禁。
+        - FormInstanceRecordService在序号分配与写入前校验；外层REPEATABLE_READ事务覆盖引擎动作和签名副作用，失败整体回滚；旧投影重试在任何INSERT/状态更新前拒绝。
+    - id: check.original-workspace-port
+      required: true
+      category: regression
+      description: 独立核对功能移植的精确差异及原因、引用改造的相邻回归
+      method: automated-test
+      command: 对比root-preimages与原工作区七文件；mvn -q -Dexec.skip=true -Dtest=QualityReasonControllerIntegrationTest,ReferenceContextInitializationTest,UnifiedReferenceProjectionCompatibilityTest,FormReferenceConfigTest,FormReferenceLookupTest test
+      outcome: passed
+      evidence:
+        - 七主文件的preimage SHA与备份manifest相符；新增差异只有移除旧CUD/孤儿helper、增加404/405处理、退役追溯校验及三个生成入口守卫。
+        - 原解释器自己的原因目录单选引用和分类暂缓校验保持，ProductionExecutionService原有上下文初始化等在途代码保留，未用独立候选整文件覆盖两处不同实现。
+        - 本质量实例在原工作区执行5组相邻原因/引用测试42项，全部通过、0跳过、0失败；详见quality-root-adjacent-tests.json；日志/tmp/edhr-old-entry-qa-root-adjacent-tests.log。
+        - 原工作区本轮7组聚焦测试169项的主侧报告为166执行通过、3条件性跳过，独立核对Surefire报告；不冒称由本实例再次执行了这169项。
+    - id: check.database-backup-and-targeted-cleanup
+      required: true
+      category: database
+      description: 独立恢复清理前备份，逐表重算非目标记录摘要并验证实际删除和模板清理范围
+      method: query
+      command: pg_restore --exit-on-error至独立QA临时库；psql只读查询备份库与edhr_dev的98表；核对目标ID及四模板JSON
+      outcome: passed
+      evidence:
+        - 备份SHA256为5a2fc7c0fa4f820572c3d8408b045760b672b0ca9675a7863e7bd3f22bacaed0，真实恢复成功；临时库edhr_old_entry_qa_restore_20261021已删除。
+        - 从真实备份按目标关系重新导出工单、表单、投影与DHR ID；98表的非目标摘要全部与记录的清理前和清理后相等。实际库在随后登录发生前后的差异仅login_log/user_account；其余96表非目标记录仍与备份精确一致。
+        - 四旧演示对象、工单、执行、DHR及其7表单记录/6投影批/28投影/28追溯索引均已不存在；四模板只清6处退役映射及其无来源空绑定和目录元信息，其余JSON结构与备份一致。
+        - 安速康等非目标对象、11条签名、业务审计、文件及初始化账本未被清理改写；这证明范围保护，不宣称已验证历史签名摘要的既有正确性。
+        - quality-data-encoding.json保存逐表独立比对。一次性SQL在仓库外备份目录，不作为初始化或应用启动清理任务。
+    - id: check.runtime-native-api
+      required: true
+      category: api
+      description: 独立验证当前8081与3000代理的关闭结果，及隔离应用正式版本化文档CRUD
+      method: command
+      command: Python urllib直连8081和localhost3000；隔离49955候选HTTP CRUD；只读数据库前后比对
+      outcome: passed
+      evidence:
+        - 真实PID62450运行原工作区构建包/tmp/edhr-old-entry-closure-runtime.jar，SHA256独立核对为2e057186f057121858cdc72ec3dbfbb79c1a91cae0143f99dabf696a27689e21，参数仍8081/5432/edhr_dev。
+        - 8081和3000每侧旧6个CUD均404/405；当前文档GET、追溯目录、投影状态、DEFECT/SCRAP原因目录共22项检查通过；旧拒绝请求前后文档、版本、业务审计数量不变。
+        - 隔离候选验证文档创建/编辑、版本创建/编辑/删除、文档删除及历史SOP GET，全部通过；验证文档与版本已删除，未在永久库新增业务测试记录。
+        - quality-runtime.json；新初始化master没有套用永久库，3000进程保留，8081从原工作区重建以保留其在途功能。
+    - id: check.csv-and-trigger-delivery
+      required: true
+      category: documentation
+      description: 独立验证CSV编码与全部原内容不变，以及触发方式和部署说明可读
+      method: command
+      command: Python读取UTF8 BOM并csv解析/摘要；读取中文清单与remaining-writers；git diff --check
+      outcome: passed
+      evidence:
+        - CSV实际以EFBBBF开头，107行数据且每行6列，无替换字符；去BOM原内容SHA256仍5dd2295902591aaabdfec3c09d645e95dc54e36a3b99120693299c18b8bfb1df。
+        - 可读Markdown包含38文件分组；清单明确旧接口HTTP方法/请求体、当前页面是否可达、旧模板开工/附加/份数/保存步骤及已删除工具的手工触发方式。
+        - 当前说明已反映8081实际更新及双工作区基线；git diff --check通过。没有应用UI变更，未做Excel界面、浏览器视觉或完整安速康新一轮执行，不据编码解析声称这些场景通过。
+    - id: check.ontology-scope
+      required: true
+      category: ontology
+      description: 核对本体未被本轮修改及路径整改明确暂缓
+      method: inspection
+      command: git diff --name-only -- docs/knowledge docs/architecture；读取ontology-result和知识路径清单
+      outcome: passed
+      evidence:
+        - 独立候选的docs/knowledge与docs/architecture差异为空；本体结果not-applicable保持0.3.25，未新增定义或提高成熟度。
+        - 原工作区既有本体在途差异不在本轮功能移植中改写；107条初始化来源路径依用户要求暂缓，完整知识CI未通过不作为本次功能门禁通过证据。
+  findings: []
+  residualRisks:
+    - id: risk.deferred-knowledge-paths
+      description: 前一初始化基线移动来源后107处知识路径仍待后续逐项修正，当前全仓知识检查尚非通过。
+      impact: 不能据本轮功能通过宣称全仓本体引用或初始化整合候选已完整集成发布。
+      mitigation: 用户已明确留到下一步，保留原CSV和中文清单；本轮不绕过检查、不修改本体文件。
+    - id: risk.uncommitted-and-separate-baselines
+      description: 独立干净初始化候选与原工作区在途功能仍是两份未提交组合；本次只部署原工作区的功能修复。
+      impact: 原工作区尚未获得独立候选的新初始化基线，不能宣称双方已经完成全量代码集成或推送。
+      mitigation: 本轮报告双HEAD、包SHA和精确功能移植；后续集成再处理初始化和在途功能的真实差异，不直接在已有库套新master。
+  blockingConditions: []
