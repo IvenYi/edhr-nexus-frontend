@@ -1,5 +1,17 @@
 # 持续推进台账
 
+已交付 [PR22](https://github.com/IvenYi/edhr-nexus-frontend/pull/22)，audit/edhr-dev-signature-payload-20261021 → edhr-dev，等待用户人工merge。正式独立受测aaef52a7，随后仅L0档案/验收/范围和PR登记；最新目标仍c3343f45，当前产品/测试/知识/契约及冻结catalog/ledger与受测版本相同。下一批收到合入消息先显式fetch最新edhr-dev，优先复现待办/已办分页边界并推进W3余项；通用动作矩阵等待真实业务答复。不能把PR已创建当已合并，旧历史签名不可恢复及整体W2/W3、W4–W7和用户暂缓保持。
+
+本轮全新独立对aaef52a7已正式passed/FINAL，8/8必需检查，clean104业务（18原生PG）+89知识均0失败/错误/跳过；独立重现旧7例真实红及原件/ledger核验完成。本体及全部子实例FINAL后，已在PR前实际向用户汇报任务无漂移、当前进度和后续。签名high的最终验收见[acceptance](../branch-review-20261021-signature-payload/acceptance.json)，冻结目录不回写；当前仅L0原件归档/PR交付。自建合成PG按确切ID清理，不自动merge/deploy。
+
+当前检查点：[签署原文数据库往返与归档校验](../branch-review-20261021-signature-payload/README.md)。PR21已人工合入最新edhr-dev@c3343f45且树与360b07ad相同，无契约增量。已实际核对W3任务动作/终态与签署消费；真实PG证实JSONB改变原签署字符串、归档原字节SHA校验拒绝，升级L2，核心2ead6de2只改TEXT映射及0118前向迁移、保留JSONB输入校验，不改算法/资格/拒绝或历史摘要。知识c4af50a7正式updated/FINAL，89知识及12有限语义通过。
+
+主侧独立验收前的104unique业务已有有效通过（focused104中103通过、1字体映射fail，随后Auth24通过只替换该suite，不计128），含18原生PG和13实际归档；当前正式独立结果见上段，不把主侧历史运行改写为一次104全过。旧7例真实红为1断言失败+3归档业务异常、3对照通过；夹具/环境失败原件分别保留。旧JSONB丢原文仍可能blocked、不补造历史、无损自动回退不成立，未执行生产迁移或部署。generic动作类型矩阵已问用户，未收到答复不改；分页W3D-TASK-PAGINATION-001尚为源码候选留后续独立小批，未混入本次实现。W2/W3余项、W4–W7、四gap、两项暂缓DHR high/A12和旧AuditEvent摘要问题保持。
+
+本批清单固定c062c2f9：2801路径/2552知识ID、485有交叉范围（392继承+88辅助+5主侧）、108历史和当前有限语义（96旧+正式12）、48问题记录；原辅助一条越界范围保留原件但显式排除。101源码范围及57语义或依赖需增量，整文件完成0，不把清单生成或局部测试当全量完成。[当前总账](../branch-review-20261021-signature-payload/ledger/summary.json)与[进度](../branch-review-20261021-signature-payload/progress.json)可续接。
+
+## PR21交付时的历史检查点
+
 已交付 [PR21](https://github.com/IvenYi/edhr-nexus-frontend/pull/21)，来源audit/edhr-dev-w3-task-command-boundaries-20261020，目标edhr-dev，等待用户人工merge。实际全新独立受测42cb2820正式passed，16/16必需检查，89业务+89知识及45原生PG通过、0skip；本体updated/FINAL，当前全部质量子实例FINAL。受测后只有L0归档/验收/范围与PR登记，冻结源码/测试/知识/catalog/ledger保持。自建临时PG已按exactID清理；下一轮先显式fetch最新edhr-dev并按W3剩余及台账待核范围继续，不自动合并、部署或恢复数据。
 
 当前检查点：[W3实例管理写入口权限](../branch-review-20261020-w3-task-commands/README.md)。已显式fetch最新edhr-dev@e8ecc103，PR20人工合并树与交付a23f94c2相同，PR5–20不重开。本批L2只给instance POST/PUT/DELETE补既有workflow.intervene，核心fc098003；真实JWT/PG同组22旧基线9红13正、修复22绿。知识684db88a的正式结果updated/FINAL，89知识及6条有限语义通过；全新独立对干净42cb2820正式passed，16/16必需检查，实际89业务+89知识、45原生PG、0skip。当前所有门禁角色及子实例FINAL，已在PR前向用户实际汇报任务无范围漂移、当前进度及后续；仅L0归档和待人工合并PR交付。中断前未返回的正式角色结果没有复用或虚报FINAL，由恢复后实际实例完成门禁。

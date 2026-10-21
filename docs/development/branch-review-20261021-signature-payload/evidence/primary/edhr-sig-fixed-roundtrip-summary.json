@@ -1,0 +1,71 @@
+{
+  "phase": "fixed-roundtrip",
+  "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=SignatureSnapshotPostgresTest,SignatureTest",
+    "test"
+  ],
+  "exit": 0,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.compliance.entity.SignatureTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "c8c3c0803402394bb9142ebe304b062b278dea97482f52d5477070e7df349b0b",
+      "cases": [
+        {
+          "name": "signedPayloadUsesLosslessTextInsteadOfJsonNormalization",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "610095813e3aad65befb2533d319843aa0e0cf5eeffaa7944b583ed13e80c7f9",
+      "cases": [
+        {
+          "name": "fieldSignatureUsesSameLosslessPersistence",
+          "status": "passed"
+        },
+        {
+          "name": "nativeJsonbControlHasEqualJsonButDifferentSignedBytes",
+          "status": "passed"
+        },
+        {
+          "name": "profileSnapshotKeepsExactWhitespaceOrderAndUnicode",
+          "status": "passed"
+        },
+        {
+          "name": "tamperedDigestStillStopsArchive(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "tamperedDigestStillStopsArchive(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "existingSignerServiceSurvivesNativePersistenceAndArchiveVerification(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "existingSignerServiceSurvivesNativePersistenceAndArchiveVerification(String)[2]",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "rawLogAndXmlExcluded": true
+}

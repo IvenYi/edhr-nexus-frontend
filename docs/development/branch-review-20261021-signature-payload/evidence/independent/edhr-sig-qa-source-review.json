@@ -1,0 +1,414 @@
+{
+  "schema": "edhr-independent-finite-source-review/v1",
+  "author": "/root/signature_payload_independent/source_semantic_review",
+  "role": "read-only independent QA source auxiliary",
+  "sourceKind": "original-evidence",
+  "baseCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "headCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+  "contractBaseline": {
+    "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "contractReadCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "runtimeExecuted": false,
+  "mavenExecuted": false,
+  "repositoryModifiedByThisInstance": false,
+  "testOrFixtureOrConfigurationModified": false,
+  "children": [],
+  "scopeQualification": "Finite source and exact byte comparisons only. Shared worktree later acquired main-authored untracked catalog/ledger material, excluded from this c062-only review; final candidate acceptance belongs to parent QA after runtime and artifact checks.",
+  "checks": [
+    {
+      "id": "source.minimal-production-diff",
+      "outcome": "passed",
+      "conclusion": "Only Signature entity, new0118 and append-only master changed in production. Existing producer, certification/authentication and archive consumer files are byte-identical to base.",
+      "evidence": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "766a83f018bc8391f3bc7afa7d50b835deb0bf33",
+          "sha256": "d0e3e5050949c990656e2e1df915d42885ab2cfeda63aa9612dd3ef44ae48608",
+          "rangesRead": [
+            [
+              1,
+              51
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        },
+        {
+          "path": "gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "a72a4818313f7f29c2df973a7fbe20959abb32c0",
+          "sha256": "fdd52e22ba67170ad0be4f397e4da42dbbd9eaa63f3b874cb68557edf35e321a",
+          "rangesRead": [
+            [
+              1,
+              15
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        },
+        {
+          "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "057c03d6d846a897d239f28b7a498728c9a575d6",
+          "sha256": "b23dda825f38febb12dfeb4143a096228647106f2adf5aa3de0acfaeeb895b60",
+          "rangesRead": [
+            [
+              249,
+              253
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        }
+      ]
+    },
+    {
+      "id": "source.original-string-digest-contract",
+      "outcome": "passed",
+      "conclusion": "signTarget/signField serialize once, hash that string UTF8 SHA256 and persist that string. AuthController follows same sequence; image consumers parse JSON text. No hash, payload structure, identity or eligibility algorithm changed.",
+      "evidence": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "9cf5ae4908d481f9a82988a5744302e2f47081f7",
+          "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4",
+          "rangesRead": [
+            [
+              200,
+              283
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "d6c03a7e95dbd6934f00c7efc821b839bacbf3e0",
+          "sha256": "94adac4633eafd8dfed9d69824bde687e2d7e18c7c905cbbd9cc27cf9128bf26",
+          "rangesRead": [
+            [
+              309,
+              383
+            ],
+            [
+              1078,
+              1089
+            ],
+            [
+              1101,
+              1120
+            ],
+            [
+              1252,
+              1265
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        }
+      ]
+    },
+    {
+      "id": "source.real-archive-digest-consumption",
+      "outcome": "passed",
+      "conclusion": "Both JDBC signature consumers hash the actual read-back string and reject mismatches. Source consumer runs for FULL or a selected form set; review consumer always runs before SELECTED strips raw payload from manifest. TEXT corrects future native persistence without weakening these guards.",
+      "evidence": [
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "46c2f16d8857d1aaaa42865779f57c85959bd7a6",
+          "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08",
+          "rangesRead": [
+            [
+              154,
+              170
+            ],
+            [
+              247,
+              289
+            ],
+            [
+              317,
+              319
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        }
+      ]
+    },
+    {
+      "id": "source.migration-input-and-history-boundary",
+      "outcome": "passed",
+      "conclusion": "ALTER only snapshot_data USING its prior JSONB::TEXT readable form. No UPDATE/hash recomputation or inverse rollback supplied. CHECK accepts SQL NULL or a value castable to JSONB without assigning the normalized result, preserving syntax/numeric and JSON shape acceptance. Existing JSONB information loss remains unrecoverable.",
+      "evidence": [
+        {
+          "path": "gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "a72a4818313f7f29c2df973a7fbe20959abb32c0",
+          "sha256": "fdd52e22ba67170ad0be4f397e4da42dbbd9eaa63f3b874cb68557edf35e321a",
+          "rangesRead": [
+            [
+              1,
+              15
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        },
+        {
+          "path": "gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "8203ae2ec4faf9f5e0481c8dc38b067664ad5d6b",
+          "sha256": "316baefe79decf65811419e1de9a96323114ccb42ea1bcd0f627d35c0d979b71",
+          "rangesRead": [
+            [
+              157,
+              172
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        }
+      ],
+      "oldSqlMigrationCountComparedByteForByte": 125
+    },
+    {
+      "id": "source.behavioral-test-replacement",
+      "outcome": "passed",
+      "conclusion": "Deleted sole reflection test merely pinned JSON JDBC annotation. Replacement source has9 native roundtrip cases and9 native migration cases, including corruption negatives, byte identity after commit/clear, real JDBC consumers, actual Liquibase and full-master fresh DB, repeated apply, previous JSONB rejection compatibility, legacy mismatch preservation and rejected lossy rollback. This auxiliary inspected but did not run those cases.",
+      "evidence": [
+        {
+          "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/SignatureTest.java",
+          "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+          "blob": "94b334c93d302a41036c8ad2b936a2ebd71c0d0d",
+          "sha256": "bc5a203cd93bf58813661298a7889b58348cafcdd93fc1cb17bf232ec4ebfc03",
+          "rangesRead": [
+            [
+              1,
+              20
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        },
+        {
+          "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotPostgresTest.java",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "74bd3755a749d2b551c72ea0d0beee74198290cd",
+          "sha256": "fbd9fe432e8a237bbebebeab5efbc80dc6962904476bf06a3f00dcbfb1f0b656",
+          "rangesRead": [
+            [
+              1,
+              175
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        },
+        {
+          "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotMigrationPostgresTest.java",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "f17d95d352d004b094f2f67e503b129163bc70e0",
+          "sha256": "cc4be0ce6bc6920b4bade9476e63bb7418ad9a0e2b77264f41109c5faaaf7886",
+          "rangesRead": [
+            [
+              1,
+              170
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        }
+      ]
+    },
+    {
+      "id": "source.knowledge-sync-policy-preservation",
+      "outcome": "passed",
+      "conclusion": "Four internal implementation evidence IDs, one existing DHR anchor augmented, README/navigation and explanation only. No DEC/rule/role/permission/lifecycle rewrite or knowledge maturity/version elevation; history limitations and source/runtime/QA evidence boundaries explicit.",
+      "newEvidenceIds": [
+        "evidence.signature-payload-lossless-storage-source",
+        "evidence.signature-payload-lossless-storage-migration",
+        "evidence.signature-payload-postgres-roundtrip-test",
+        "evidence.signature-payload-postgres-migration-test"
+      ],
+      "evidence": [
+        {
+          "path": "docs/knowledge/evidence/signature-payload-storage.yaml",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "0e29b118f417e765144816fe1846ce91e5be7460",
+          "sha256": "376c5ba99449c80dd551e2d6b571615a1cd2c003e6a10b7efb166ceadb27773a",
+          "rangesRead": [
+            [
+              1,
+              22
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        },
+        {
+          "path": "docs/knowledge/evidence/signature-payload-storage-2026-10-21.md",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "6b191f3e246f36a9177f88361b81f04d7760a52a",
+          "sha256": "5912d58b09fb607e5f71e7b6150911df16bf82eae4114fa79e3fa7ef74120f8f",
+          "rangesRead": [
+            [
+              1,
+              23
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        },
+        {
+          "path": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "2579d0dd525db528a9cbe3de5543ef1cc8eaf7c9",
+          "sha256": "95f3c1039f81bbb524d081a73e243b46fea3a60b0b29353aef664d0aaa82bc00",
+          "rangesRead": [
+            [
+              63,
+              79
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        },
+        {
+          "path": "docs/knowledge/README.md",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "bfc6b4a979d6289a7e41771bf30f5a55293174c8",
+          "sha256": "adf29cc7a04fb86b2a0352723e433b3aa3dfb93c400cf7b357dadd886958f313",
+          "rangesRead": [
+            [
+              1,
+              22
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        },
+        {
+          "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "864c6ec676bcd8b9a9351a3c7326350a6d260217",
+          "sha256": "28b3ec4bfd08d19691f9a3dbb34ba056ffd8e0230a67804f81b73220fb9710a7",
+          "rangesRead": [
+            [
+              1,
+              70
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        },
+        {
+          "path": "docs/knowledge/rules/dhr-summary.yaml",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "c2c1989649eaddaa78fcf236c92bb4619cbce832",
+          "sha256": "7fc2b4b15bf79624a142721b6f3f2eb7b0dadae6f2a662c627bee836facf6154",
+          "rangesRead": [
+            [
+              205,
+              236
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        },
+        {
+          "path": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "9cd069c4b2984125eca2be6ca6e1023dde26579a",
+          "sha256": "09d6cb083c1350f3c64a2abb8583ca9a4eb1a7b3a837cdd67b9f6dc28d9e2d3f",
+          "rangesRead": [
+            [
+              1,
+              68
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        },
+        {
+          "path": "docs/knowledge/decisions/DEC-0058-production-field-signature.yaml",
+          "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+          "blob": "243dd56bacd8f6d8968ff20832e5b991b8ed903f",
+          "sha256": "1f0a8b0516bd0b758fba4bcfea15745b99bab8a863c6ec90f41ec08ca69412be",
+          "rangesRead": [
+            [
+              1,
+              38
+            ]
+          ],
+          "wholeBranchAcceptance": false
+        }
+      ]
+    }
+  ],
+  "findings": [],
+  "residualRisks": [
+    {
+      "id": "legacy.signature-original-bytes-lost",
+      "description": "Prior JSONB normalization cannot be reversed; mismatched stored historical signatures still block archives. This repair does not restore old evidence or change old hashes."
+    },
+    {
+      "id": "deployment.application-migration-pairing",
+      "description": "An old JSONB-mapping application may normalize a newly written payload even against TEXT. Mixed-version/app-only rollback compatibility is not established; deployment must pair app and migration. No production migration or deployment performed here."
+    },
+    {
+      "id": "validation.runtime-belongs-parent",
+      "description": "No runtime checks performed by this child; parent must obtain actual clean-candidate native18, regression and knowledge results. Synthetic signer and entity-only USER_PROFILE tests do not prove complete HTTP/account-login E2E."
+    },
+    {
+      "id": "audit.unclosed-adjacent-scopes",
+      "description": "Separate AuditEvent W5, deferred record control/DHR high/A12, four old gaps and generic action policy/pagination leads remain outside the source repair."
+    }
+  ],
+  "contractReceipts": [
+    {
+      "path": "AGENTS.md",
+      "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "rangesRead": [
+        [
+          1,
+          225
+        ]
+      ],
+      "wholeBranchAcceptance": false
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "blob": "581e647c37daebeb9dd3d6397ae53e30e7822fb3",
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "rangesRead": [
+        [
+          1,
+          89
+        ]
+      ],
+      "wholeBranchAcceptance": false
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "rangesRead": [
+        [
+          1,
+          502
+        ]
+      ],
+      "wholeBranchAcceptance": false
+    }
+  ],
+  "decisionPackageReceipt": {
+    "path": "docs/development/branch-review-20261021-signature-payload/decision-package.yaml",
+    "sourceCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+    "blob": "ea512c301addbc08372016501bf3da61a51f8284",
+    "sha256": "6d5544bc7f436c7591d256b46a4fbcca232540ac01cb540eb41cac624124c86f",
+    "rangesRead": [
+      [
+        1,
+        97
+      ]
+    ],
+    "wholeBranchAcceptance": false
+  },
+  "result": "no-new-source-defect-found-in-listed-scopes-not-formal-runtime-acceptance"
+}

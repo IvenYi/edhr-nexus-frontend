@@ -1,0 +1,343 @@
+{
+  "schema": "edhr-readonly-source-map/v1",
+  "role": "read-only frontend command-call assistance, not formal quality or ontology",
+  "fixedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "contractReadCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "uncommittedContractPaths": []
+  },
+  "sourceScopes": [
+    {
+      "id": "w3d-front-action:001",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "method": "component state and transfer target effect",
+      "range": [
+        13,
+        55
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "No task detail retrieval/state for taskType,nodeType,status,candidate is defined in this inspected initialization; transfer-targets GET is the API read.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:002",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "method": "submitTransfer",
+      "range": [
+        57,
+        84
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "Explicit target+reason POST uses generic tasks transfer; success only updates local transferredTo flag.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:003",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "method": "handleAction",
+      "range": [
+        86,
+        96
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "Direct generic task POST sends opinion/password for arbitrary action string supplied by the local buttons; no task state/type payload is fetched here.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:004",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "method": "details placeholder and credentials fields",
+      "range": [
+        110,
+        126
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "Task information is placeholder text; signature password input exists but this source alone does not establish a required-signature backend policy.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:005",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "method": "task action button cluster",
+      "range": [
+        130,
+        165
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "Approve,reject,transfer,submit all appear together; disabled only for loading or local transferredTo. No taskType/nodeType/status/candidate-conditioned rendering.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:006",
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "12c81470b76a5ecb2ee2e16dc48603033f36d522",
+      "sha256": "8eaf4ff1ad44ce421f4fc68727a168f4f27cbef854e1c5a5eed9c955c13b06b3",
+      "method": "workflow task route",
+      "range": [
+        93,
+        104
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "Actual routed tasks/:id mounts TaskDetail; source mounting is not a deployed runtime check.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:007",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "c9bdac66955f4d37b6408a7d5eb6a55b470eb68d",
+      "sha256": "20c917457870ac7ba620937bde4ec01b0e3e1d1d27a4a5015b79706d750ab100",
+      "method": "task query",
+      "range": [
+        27,
+        38
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "Actual dashboard todo/done queries /workflow/tasks/{kind}; no spoofed assigneeId is sent.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:008",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "c9bdac66955f4d37b6408a7d5eb6a55b470eb68d",
+      "sha256": "20c917457870ac7ba620937bde4ec01b0e3e1d1d27a4a5015b79706d750ab100",
+      "method": "task row and processing link",
+      "range": [
+        48,
+        60
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "Dashboard displays taskType/status but every todo row links to the same generic TaskDetail route.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:009",
+      "path": "gmp-platform/frontend/src/api/workflow-tasks.ts",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "ea9c0f63771e7bcfa2aa793b8b605e5dee265a6c",
+      "sha256": "7aa5a6623a471ee264000f00d33c45aa3732798fb58523b9988fb6cc78bfeaae",
+      "method": "exported wrappers",
+      "range": [
+        3,
+        9
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "All wrappers are placeholder GET /workflow/tasks; no named import found by limited exact module-name search under src, so not treated as actual command callers.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:010",
+      "path": "gmp-platform/frontend/src/api/production-execution.ts",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "47ac235e065ac0474689eccfedadaaa92907c5a5",
+      "sha256": "6d44a038f5d7f715f46a233e19945ae7025bfc4fd5dc0f957a357b5dc8f892ef",
+      "method": "ExecutionCommand and executeProduction",
+      "range": [
+        48,
+        74
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "Ordinary production uses /production/execution/{id}/actions with revision/operation/form/copy identity, not generic tasks endpoints.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:011",
+      "path": "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "1e71e68d23acfe66cfb6dc02ba3c015796ad3aa0",
+      "sha256": "aae289bfedd2384bb2ed56f75155fdd227cfd3a9aa7954fcbce3ca057176b757",
+      "method": "act/formAction",
+      "range": [
+        337,
+        380
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "Production actual caller forwards frozen/current execution revision and identity; action comes from controls button; configured signature/opinion routes to credentials.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:012",
+      "path": "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "1e71e68d23acfe66cfb6dc02ba3c015796ad3aa0",
+      "sha256": "aae289bfedd2384bb2ed56f75155fdd227cfd3a9aa7954fcbce3ca057176b757",
+      "method": "form controls render",
+      "range": [
+        576,
+        585
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "Production renders server controls buttons/canAct via shared component rather than generic four-buttons cluster.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:013",
+      "path": "gmp-platform/frontend/src/api/dhr-workbenches.ts",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "6e8008f72536f2b176b9c47e66df73cadaea10f6",
+      "sha256": "8e37a7893860dd1b7383498f3771c97d6fbcaff97f58eb6a882c7c4f3b0040ee",
+      "method": "DHR action wrappers",
+      "range": [
+        14,
+        31
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "DHR review uses /dhr-reviews/{id}/actions and expectedSnapshotHash; DHR filling uses /dhr-filling/{id}/actions. They remain distinct from generic tasks.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:014",
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "a9aa299bd0f515c6be943e5e92ce3173fdb7f1bb",
+      "sha256": "651c4e34f0ddee5bc3db718e484d3cf1135352ca5974a16a2023370ad7f127d6",
+      "method": "approve callback",
+      "range": [
+        66,
+        78
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "DHR review actual callback sends action/credentials and expected frozen snapshot hash through actDhrReview.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:015",
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "a9aa299bd0f515c6be943e5e92ce3173fdb7f1bb",
+      "sha256": "651c4e34f0ddee5bc3db718e484d3cf1135352ca5974a16a2023370ad7f127d6",
+      "method": "DHR review controls",
+      "range": [
+        105,
+        105
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "DHR controls come from detail.buttons, canAct and evidence-change/missing-review filters; source frontend conditions are not backend authorization proof.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:016",
+      "path": "gmp-platform/frontend/src/components/workflow/WorkflowActionButtons.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "6f8ca0c148c370b60c44ec6076cdfab41ddbc891",
+      "sha256": "e9c1243214008a8cbfd5a79ecb37021ea00316555bfa95953089deb2f86caaee",
+      "method": "shared render",
+      "range": [
+        30,
+        40
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "Shared renderer filters visible and uses canAct/configured account signing; generic TaskDetail does not use this component.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:017",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "26076537400f1fc353aac8b588949c16732da489",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "method": "runAction/chooseAction",
+      "range": [
+        157,
+        170
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "Ordinary form review worklist calls executeProduction with revision and production/form/copy identity, not generic task endpoints.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:018",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "26076537400f1fc353aac8b588949c16732da489",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "method": "submitTransfer",
+      "range": [
+        235,
+        243
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "Ordinary form review transfer also calls executeProduction with targetUserId and reason.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-front-action:019",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "9d5193a6fb10531c7692472d0acf6b1bf639d20d",
+      "sha256": "babf7d1e039cef91c7d2c3b2b16711934be0d3f43cefa2ffcfdff8d0f9654c2b",
+      "method": "runAction request construction",
+      "range": [
+        260,
+        272
+      ],
+      "readDepth": "selected finite source ranges and explicitly listed callsite search; not whole-file review",
+      "conclusion": "Inspected request construction for ordinary form filling calls executeProduction with revision and form/copy identity; this finite range is not complete function review.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    }
+  ],
+  "searches": [
+    {
+      "command": "rg -n workflow/tasks|approveTask|rejectTask|submitTask|transferTask ... under gmp-platform/frontend/src",
+      "scope": "frontend src static text imports and literal/template request paths only",
+      "result": "Actual generic direct action caller TaskDetail; dashboard todo/done and route references found."
+    },
+    {
+      "command": "rg -n workflow-tasks|api/workflow-tasks gmp-platform/frontend/src",
+      "scope": "exact module-name import-text search, not dynamic or external consumers",
+      "exit": 1,
+      "result": "No named module consumer found; wrappers retained as unused source-only placeholders."
+    }
+  ],
+  "runtimeChecksExecuted": [],
+  "repositoryMutations": false,
+  "wholeFileOrBranchAcceptance": false,
+  "limits": [
+    "No browser/API/server tests or deployment inspection executed.",
+    "UI code does not authorize changing backend task action or mandatory-signature policy.",
+    "Literal static searches do not prove absence of dynamic/external clients.",
+    "Ordinary production/DHR inspected action callsites are separate; not full subsystem certification."
+  ],
+  "children": []
+}

@@ -1,0 +1,546 @@
+{
+  "schema": "edhr-readonly-source-map/v1",
+  "role": "read-only source assistance, not formal ontology or QA",
+  "fixedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "contractBaseline": {
+    "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "contractReadCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "sourceScopes": [
+    {
+      "id": "w3d-signature-source:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "9cf5ae4908d481f9a82988a5744302e2f47081f7",
+      "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4",
+      "method": "authenticateButtonSigner",
+      "range": [
+        202,
+        221
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Button signer authenticates active/unlocked account, independent signature password/current profile certification; strict username admin exception uses login password. This is not field-signature policy.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "9cf5ae4908d481f9a82988a5744302e2f47081f7",
+      "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4",
+      "method": "sign",
+      "range": [
+        223,
+        225
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Production button signer delegates to signTarget with PRODUCTION_EXECUTION target.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:003",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "9cf5ae4908d481f9a82988a5744302e2f47081f7",
+      "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4",
+      "method": "signTarget",
+      "range": [
+        227,
+        246
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Raw mapper JSON string is hashed as UTF8 SHA256, then stored as Signature.snapshotData; no canonicalization or preserved raw-text field in this method.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:004",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "9cf5ae4908d481f9a82988a5744302e2f47081f7",
+      "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4",
+      "method": "signField",
+      "range": [
+        248,
+        283
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Current-session field signer validates current certification/password/image and embeds exact content evidence; raw mapper JSON string is hashed and saved under PRODUCTION_EXECUTION.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:005",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "51f78808272ecf92676bb30782b6412233b0fe46",
+      "sha256": "d249c060f51f8f8eeb7a0e137fde084d649fe89d400aa0e06393ee228ca6d117",
+      "method": "snapshotHash/snapshotData mapping",
+      "range": [
+        10,
+        35
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Signature snapshot_data is JSONB and mapped using JdbcTypeCode(SqlTypes.JSON), while snapshotHash is stored independently.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:006",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "0e8e37f67423d5f7bc07ac136a9c10cab168f89c",
+      "sha256": "4d40cb12acd393aaeef966aaecd6918ba86d3135ed8435b94e2a55c3646bf59a",
+      "method": "class method authority and act",
+      "range": [
+        13,
+        16
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Production execution controller has existing production.execution method authority.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:007",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "0e8e37f67423d5f7bc07ac136a9c10cab168f89c",
+      "sha256": "4d40cb12acd393aaeef966aaecd6918ba86d3135ed8435b94e2a55c3646bf59a",
+      "method": "act",
+      "range": [
+        53,
+        66
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Real production action endpoint invokes transactional execution service; no test-only or dead writer port is needed to reach the producer.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:008",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4ba4f4dd875d520c44c393ed987aaf232c45c418",
+      "sha256": "b8a880d267f7b01086eed5526ca226e9e03cd6380f0f8888a7f09c27112ae09e",
+      "method": "act",
+      "range": [
+        154,
+        253
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Existing transactional action routes SAVE/SUBMIT/APPROVE/RETURN/SIGN_FIELD to real engine, persists execution and audit in the same service transaction.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:009",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "3ac817fd787bd4ac7a2faea25623b2cff280a0d5",
+      "sha256": "4411c23f5f89abb69ebd424355020e2569176e5f4b29ee592b6a09bcad49ddcd",
+      "method": "formAction wrappers",
+      "range": [
+        196,
+        210
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Actual formAction delegates to formActionInternal; supplement wrapper is separate.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:010",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "3ac817fd787bd4ac7a2faea25623b2cff280a0d5",
+      "sha256": "4411c23f5f89abb69ebd424355020e2569176e5f4b29ee592b6a09bcad49ddcd",
+      "method": "formActionInternal guards/signing-identity prefix",
+      "range": [
+        212,
+        245
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Existing form-instance/node/allowed-button and signer handling guards precede signing; only this finite prefix is reviewed, not entire engine.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:011",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "3ac817fd787bd4ac7a2faea25623b2cff280a0d5",
+      "sha256": "4411c23f5f89abb69ebd424355020e2569176e5f4b29ee592b6a09bcad49ddcd",
+      "method": "formActionInternal signing branches",
+      "range": [
+        272,
+        315
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Real SIGN_FIELD calls access.signField and ordinary signed buttons call access.sign, recording signature IDs into form state. This finite branch is not a complete form-action acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:012",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "940a34fb0845aefa2a07f89d032fede122916399",
+      "sha256": "37f6af83e063e1593e15ac28e021ec719888c21fe45d314916c9f20975e2417e",
+      "method": "class existing authority",
+      "range": [
+        18,
+        23
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "DHR review remains a dedicated permission-scoped controller.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:013",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "940a34fb0845aefa2a07f89d032fede122916399",
+      "sha256": "37f6af83e063e1593e15ac28e021ec719888c21fe45d314916c9f20975e2417e",
+      "method": "act",
+      "range": [
+        54,
+        56
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Actual DHR approval HTTP endpoint requires review menu and dhr.reviews.act then invokes DhrReviewService.act.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:014",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "04f97eb65bb39a368896432fcf24183e17712ebe",
+      "sha256": "42cf405959931f1ab74b046a32267cf4041723257dfd7a7f4d9a9bbcf30fb932",
+      "method": "act",
+      "range": [
+        86,
+        151
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "DHR approval validates current task/actor/frozen evidence and configured signature requirement, then signTarget(DHR_SUMMARY) and completeDhrTask with its signature ID.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:015",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "b5ea4f01221407c6adce28e3de55451b1663310c",
+      "sha256": "61d4e871153607b9af9bdc26882418d77fe8599e93b04c5e09be546872bd9108",
+      "method": "export",
+      "range": [
+        22,
+        40
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Actual export HTTP endpoint requires dhr.instances.view and dhr.summaries.export and invokes archive service before streaming ZIP.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:016",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "46c2f16d8857d1aaaa42865779f57c85959bd7a6",
+      "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08",
+      "method": "export",
+      "range": [
+        49,
+        205
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Frozen explicit version export reaches source/review signature consumers before SELECTED payload removal. Source calls only FULL or selected form records; review calls always. Failure deletes temp ZIP and propagates, so normal export can be blocked.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:017",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "46c2f16d8857d1aaaa42865779f57c85959bd7a6",
+      "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08",
+      "method": "auditsFor/sourceAuditEvents",
+      "range": [
+        212,
+        245
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Inspected audit export branches project stored digest and payload metadata without rehashing; distinct from signature verification.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:018",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "46c2f16d8857d1aaaa42865779f57c85959bd7a6",
+      "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08",
+      "method": "sourceSignatures",
+      "range": [
+        247,
+        265
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Reads JDBC snapshot_data string and rehashes raw UTF8; mismatch stops source signature export for object-scoped signatures up to submit cutoff.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:019",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "46c2f16d8857d1aaaa42865779f57c85959bd7a6",
+      "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08",
+      "method": "signaturesFor",
+      "range": [
+        267,
+        289
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Reads joined workflow task signature data and rehashes JDBC string as raw UTF8; mismatch stops review signature export.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:020",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "d6c03a7e95dbd6934f00c7efc821b839bacbf3e0",
+      "sha256": "94adac4633eafd8dfed9d69824bde687e2d7e18c7c905cbbd9cc27cf9128bf26",
+      "method": "createPersonalSignature",
+      "range": [
+        309,
+        396
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Own-profile certification verifies login password/evidence files, hashes raw JSON snapshotData, stores USER_PROFILE signature and returns its hash. USER_PROFILE is not selected by DhrArchive sourceSignatures.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:021",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "d6c03a7e95dbd6934f00c7efc821b839bacbf3e0",
+      "sha256": "94adac4633eafd8dfed9d69824bde687e2d7e18c7c905cbbd9cc27cf9128bf26",
+      "method": "verifyCurrentUserSignature",
+      "range": [
+        399,
+        434
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Inspected own-profile verification checks expiry/signature password/image reference; it does not raw-rehash snapshotData in this method.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:022",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "d6c03a7e95dbd6934f00c7efc821b839bacbf3e0",
+      "sha256": "94adac4633eafd8dfed9d69824bde687e2d7e18c7c905cbbd9cc27cf9128bf26",
+      "method": "signatureSnapshot body",
+      "range": [
+        1040,
+        1066
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Certification evidence contains profile metadata and image/ID-card file snapshots; finite body only.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:023",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "d6c03a7e95dbd6934f00c7efc821b839bacbf3e0",
+      "sha256": "94adac4633eafd8dfed9d69824bde687e2d7e18c7c905cbbd9cc27cf9128bf26",
+      "method": "extractSignatureImageFileId",
+      "range": [
+        1078,
+        1090
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Profile consumer parses JSON tree to obtain signature image reference; semantic JSON read differs from raw-byte rehash.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:024",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "c78a92fecd70c559fdfe951cf172b6d5098218ae",
+      "sha256": "05871610ed74f0be15b8b5a260cf99e29e60728ec7c77752e47f384ea700a5b3",
+      "method": "list/getById",
+      "range": [
+        23,
+        45
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Generic read excludes or rejects DHR evidence; no wider read-privacy policy is adjudicated by this scope.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:025",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "c78a92fecd70c559fdfe951cf172b6d5098218ae",
+      "sha256": "05871610ed74f0be15b8b5a260cf99e29e60728ec7c77752e47f384ea700a5b3",
+      "method": "create/update/delete and protectExecutionSignature",
+      "range": [
+        47,
+        80
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Generic writes block both incoming and existing protected target types DHR_SUMMARY, PRODUCTION_EXECUTION and USER_PROFILE. No claim arbitrary generic signatureId satisfies domain signing.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:026",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/SignatureRepository.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "ae84cf030b19444cfa90d78dc5080eb52b5087ca",
+      "sha256": "60f6ef2d8af2210ddf9e208088b2500e7253318a339dc64f4a586130d7cad185",
+      "method": "findNonDhr/latest certification",
+      "range": [
+        13,
+        16
+      ],
+      "readDepth": "actual selected source method or explicitly finite branch inspection; not whole-file acceptance",
+      "conclusion": "Repository methods support DHR exclusion and per-target latest certification lookup; only finite declarations reviewed.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:027",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "8203ae2ec4faf9f5e0481c8dc38b067664ad5d6b",
+      "sha256": "316baefe79decf65811419e1de9a96323114ccb42ea1bcd0f627d35c0d979b71",
+      "method": "initial signature table columns",
+      "range": [
+        157,
+        172
+      ],
+      "readDepth": "actual finite DDL inspection; not migration execution",
+      "conclusion": "Initial schema stores signature.snapshot_data as JSONB and snapshot_hash separately; no raw original JSON string column in this table definition.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-source:028",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/SignatureTest.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "94b334c93d302a41036c8ad2b936a2ebd71c0d0d",
+      "sha256": "bc5a203cd93bf58813661298a7889b58348cafcdd93fc1cb17bf232ec4ebfc03",
+      "method": "snapshotDataUsesJsonJdbcTypeForPostgresJsonbColumn",
+      "range": [
+        10,
+        22
+      ],
+      "readDepth": "actual finite test-source inspection; test not executed",
+      "conclusion": "Test only reflects SqlTypes.JSON annotation, does not execute PostgreSQL or validate signed raw bytes round trip.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    }
+  ],
+  "findingCandidates": [
+    {
+      "id": "candidate.signature-jsonb-archive-digest",
+      "status": "source-control-flow-confirmed-native-pg-reproduction-pending",
+      "potentialImpact": "Untampered production or DHR approval signatures may block real DHR ZIP export after JSONB text normalization. Severity and native runtime proof left to primary.",
+      "producer": "ExecutionAccess.signTarget/signField",
+      "storage": "Signature.snapshotData JSONB",
+      "consumer": "DhrArchiveService.sourceSignatures/signaturesFor raw JDBC UTF8 SHA256",
+      "notClosedBy": "W5-AUDIT-HASH-001 is AuditEvent-specific; inspected audit export does not rehash."
+    }
+  ],
+  "runtimeChecksExecuted": [],
+  "repositoryMutations": [],
+  "wholeFileOrBranchAcceptance": false,
+  "childFinal": true,
+  "childOriginals": [
+    {
+      "path": "/tmp/edhr-w3d-signature-policy-tests.json",
+      "bytes": 13614,
+      "sha256": "3bf992638b3f24057a62120bc2631b83e8ef69c9c5e05802d2a591fe7aa4ad90",
+      "author": "/root/w3d_signature_consumers/signature_policy_tests",
+      "status": "FINAL"
+    },
+    {
+      "path": "/tmp/edhr-w3d-signature-policy-tests.md",
+      "bytes": 2126,
+      "sha256": "01f5430218cbf9f22acd3ed492a635c4746c3598f7191a5f4dedf64b532ecd08",
+      "author": "/root/w3d_signature_consumers/signature_policy_tests",
+      "status": "FINAL"
+    }
+  ],
+  "limitations": [
+    "No Maven, PG, API, browser, migration or digest runtime check was executed by this source helper or its child.",
+    "Old generic signatureId reference is not a blanket mandatory-signature policy and does not bypass real production/DHR writers.",
+    "SOURCE signatures are object-scoped up to submit cutoff; SELECTED attachments-only skips source signatures, while review signatures are still checked.",
+    "No raw data/hash algorithm was changed and no historical raw bytes were reconstructed.",
+    "Finite code scopes may overlap and are not distinct whole methods, files, or a complete branch denominator."
+  ],
+  "governanceAndKnowledgeReceipts": [
+    {
+      "path": "AGENTS.md",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "qualification": "Governance or relevant knowledge baseline/selected sections; not whole-knowledge semantic acceptance"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "qualification": "Governance or relevant knowledge baseline/selected sections; not whole-knowledge semantic acceptance"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "1d239fc82f8d24bdd986b1e23de9188680f25c18",
+      "sha256": "925b987f783d6216061ab25ca2a6710aaa231823ff346b05b2df23d75c90f735",
+      "qualification": "Governance or relevant knowledge baseline/selected sections; not whole-knowledge semantic acceptance"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "8a23c50057340be057a67fad8731648c2aa36f30",
+      "sha256": "addbf3eb7dc2c059d8672eb699199e4d0fa355143617bc4192fe420d26266184",
+      "qualification": "Governance or relevant knowledge baseline/selected sections; not whole-knowledge semantic acceptance"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "a1f2b1140ea93c5daf54067cb4a40d6a6cd1d2b7",
+      "sha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "qualification": "Governance or relevant knowledge baseline/selected sections; not whole-knowledge semantic acceptance"
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "63703d111d8f01fc7ff71e97ff311ee38bbb3a40",
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84",
+      "qualification": "Governance or relevant knowledge baseline/selected sections; not whole-knowledge semantic acceptance"
+    }
+  ]
+}

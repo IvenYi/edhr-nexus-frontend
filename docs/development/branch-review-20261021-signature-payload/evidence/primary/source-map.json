@@ -1,0 +1,86 @@
+{
+  "fixedCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+  "sourceScopes": [
+    {
+      "id": "sig-primary:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java",
+      "sourceCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "blob": "766a83f018bc8391f3bc7afa7d50b835deb0bf33",
+      "sha256": "d0e3e5050949c990656e2e1df915d42885ab2cfeda63aa9612dd3ef44ae48608",
+      "method": "signed-payload mapping and hash fields",
+      "range": [
+        24,
+        33
+      ],
+      "readDepth": "primary implementation and finite source verification; runtime separately evidenced, not independent QA",
+      "conclusion": "TEXT preserves the original string; no new digest fields or lifecycle/authentication changes.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "sig-primary:002",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql",
+      "sourceCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "blob": "a72a4818313f7f29c2df973a7fbe20959abb32c0",
+      "sha256": "fdd52e22ba67170ad0be4f397e4da42dbbd9eaa63f3b874cb68557edf35e321a",
+      "method": "forward migration and input-compatibility guard",
+      "range": [
+        1,
+        15
+      ],
+      "readDepth": "primary implementation and finite source verification; runtime separately evidenced, not independent QA",
+      "conclusion": "JSONB::TEXT retains current old readable data; CHECK validates old input parse compatibility without storing normalized output. No lossy automatic inverse.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "sig-primary:003",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "sourceCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "blob": "057c03d6d846a897d239f28b7a498728c9a575d6",
+      "sha256": "b23dda825f38febb12dfeb4143a096228647106f2adf5aa3de0acfaeeb895b60",
+      "method": "final migration includes",
+      "range": [
+        250,
+        253
+      ],
+      "readDepth": "primary implementation and finite source verification; runtime separately evidenced, not independent QA",
+      "conclusion": "Only append0118; do not alter earlier applied migration bytes.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "sig-primary:004",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotPostgresTest.java",
+      "sourceCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "blob": "74bd3755a749d2b551c72ea0d0beee74198290cd",
+      "sha256": "fbd9fe432e8a237bbebebeab5efbc80dc6962904476bf06a3f00dcbfb1f0b656",
+      "method": "roundtrip, identity and corruption test methods",
+      "range": [
+        83,
+        154
+      ],
+      "readDepth": "primary implementation and finite source verification; runtime separately evidenced, not independent QA",
+      "conclusion": "Actual9 native cases test signed bytes and archive JDBC consumers; synthetic signer and entity profile case, not full HTTP/login E2E.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "sig-primary:005",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotMigrationPostgresTest.java",
+      "sourceCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "blob": "f17d95d352d004b094f2f67e503b129163bc70e0",
+      "sha256": "cc4be0ce6bc6920b4bade9476e63bb7418ad9a0e2b77264f41109c5faaaf7886",
+      "method": "migration and compatibility test methods",
+      "range": [
+        67,
+        149
+      ],
+      "readDepth": "primary implementation and finite source verification; runtime separately evidenced, not independent QA",
+      "conclusion": "Actual9 native cases cover legacy values, fresh full master, duplicate apply, old rejection, JSON input shapes and safe rollback rejection.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    }
+  ],
+  "wholeFileOrBranchAcceptance": false
+}

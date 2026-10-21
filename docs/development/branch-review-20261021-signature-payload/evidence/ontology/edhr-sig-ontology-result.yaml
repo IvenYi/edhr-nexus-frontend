@@ -1,0 +1,141 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: c4af50a7d34bafb523992f00b169ee5efb7a8a1e
+    targetBranch: edhr-dev
+    targetCommit: c3343f45bb79f72368937f0d197ae01f989f0390
+    contractReadCommit: c3343f45bb79f72368937f0d197ae01f989f0390
+    uncommittedContractPaths: []
+  reason: Four internal implementation evidence IDs and existing exact ZIP trace anchor were synchronized.
+    Normative decisions/rules and maturity preserved; lossless physical storage remains an inferred engineering
+    correction. Legacy lost bytes may remain blocked.
+  changedArtifacts:
+  - path: docs/knowledge/evidence/signature-payload-storage.yaml
+    changeType: create
+    ids:
+    - evidence.signature-payload-lossless-storage-source
+    - evidence.signature-payload-lossless-storage-migration
+    - evidence.signature-payload-postgres-roundtrip-test
+    - evidence.signature-payload-postgres-migration-test
+  - path: docs/knowledge/implementation-anchors/dhr-summary.yaml
+    changeType: update
+    ids:
+    - anchor.dhr-summary-zip-source-trace
+  - path: docs/knowledge/evidence/signature-payload-storage-2026-10-21.md
+    changeType: create
+    ids: []
+  - path: docs/knowledge/README.md
+    changeType: update
+    ids: []
+  knowledgeSync:
+  - id: evidence.signature-payload-lossless-storage-source
+    disposition: updated
+    scope: Only the entity lossless TEXT mapping; no inference promoted to user policy, signature qualification
+      or digest algorithm change.
+    sourceReferences:
+    - docs/knowledge/evidence/signature-payload-storage.yaml
+    - docs/knowledge/evidence/signature-payload-storage-2026-10-21.md
+  - id: evidence.signature-payload-lossless-storage-migration
+    disposition: updated
+    scope: Forward migration/current readable legacy text and original hashes, original JSONB input parse
+      compatibility, no missing-byte reconstruction or silent lossy rollback.
+    sourceReferences:
+    - docs/knowledge/evidence/signature-payload-storage.yaml
+    - docs/knowledge/evidence/signature-payload-storage-2026-10-21.md
+  - id: evidence.signature-payload-postgres-roundtrip-test
+    disposition: updated
+    scope: Only actual native roundtrip test source boundaries; synthetic authenticated signer and USER_PROFILE
+      entity distinguished from full API/login/ZIP execution.
+    sourceReferences:
+    - docs/knowledge/evidence/signature-payload-storage.yaml
+    - docs/knowledge/evidence/signature-payload-storage-2026-10-21.md
+  - id: evidence.signature-payload-postgres-migration-test
+    disposition: updated
+    scope: Only migration test source and owned schema/database assertions; code existence does not certify
+      production migration or successful runtime.
+    sourceReferences:
+    - docs/knowledge/evidence/signature-payload-storage.yaml
+    - docs/knowledge/evidence/signature-payload-storage-2026-10-21.md
+  - id: anchor.dhr-summary-zip-source-trace
+    disposition: updated
+    scope: Existing anchor adds signature entity/migration/tests/evidence; old print observations retain
+      historical date context, specified/internal maturity retained.
+    sourceReferences:
+    - docs/knowledge/implementation-anchors/dhr-summary.yaml
+    - docs/knowledge/evidence/signature-payload-storage-2026-10-21.md
+  - id: rule.dhr-summary-zip-source-trace
+    disposition: retained
+    scope: Only same frozen source/review signature traceability and FULL/SELECTED representation; no
+      whole rule/runtime verification or release claim.
+    sourceReferences:
+    - docs/knowledge/rules/dhr-summary.yaml
+    - docs/knowledge/evidence/signature-payload-storage-2026-10-21.md
+  - id: DEC-0063-05
+    disposition: retained
+    scope: Frozen version evidence basis retained; storage correction does not replace source with current
+      draft/live values or rewrite old frozen evidence.
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    - docs/knowledge/evidence/signature-payload-storage-2026-10-21.md
+  - id: DEC-0063-11
+    disposition: retained
+    scope: Only same-version trace data/explicit scope and non-omission boundary retained; complete PDF/ZIP
+      layout and attachments not accepted here.
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    - docs/knowledge/evidence/signature-payload-storage-2026-10-21.md
+  - id: DEC-0063-15
+    disposition: retained
+    scope: Source/review signatures remain traceable; selected content does not change approval scope;
+      missing original bytes are not fabricated.
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml
+    - docs/knowledge/evidence/signature-payload-storage-2026-10-21.md
+  - id: DEC-0074-04
+    disposition: retained
+    scope: Existing current-user SIGN_FIELD qualification and history preserved; no propagation of cross-account
+      button/admin exception.
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml
+    - docs/knowledge/evidence/signature-payload-storage-2026-10-21.md
+  - id: DEC-0058-02
+    disposition: retained
+    scope: Existing content-change invalidation and historical signature retention kept; migration does
+      not recompute old signature digests.
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0058-production-field-signature.yaml
+    - docs/knowledge/evidence/signature-payload-storage-2026-10-21.md
+  - id: evidence.dhr-summary-attachment-archive-tests
+    disposition: retained
+    scope: Existing H2/TEXT source assertions remain finite and are not reused as native JSONB roundtrip
+      proof.
+    sourceReferences:
+    - docs/knowledge/evidence/dhr-summary.yaml
+    - docs/knowledge/evidence/signature-payload-storage-2026-10-21.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.signature-payload-formal-knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f tools/knowledge-model/pom.xml clean test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-sig-ontology-validation.json
+    - 89 passed,0failures,0errors,0skipped at c4af50a7d34bafb523992f00b169ee5efb7a8a1e
+  - id: validation.signature-payload-finite-id-provenance
+    checkType: evidence-path
+    command: python3 /tmp/edhr-sig-ontology-build.py c4af50a7d34bafb523992f00b169ee5efb7a8a1e
+    outcome: passed
+    evidence:
+    - /tmp/edhr-sig-ontology-semantic-review.jsonl
+    - Exact record/source/blob/SHA;4 evidence additions and1 anchor changed; no normative/maturity delta.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

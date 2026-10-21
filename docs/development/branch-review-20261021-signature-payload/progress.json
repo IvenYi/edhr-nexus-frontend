@@ -1,0 +1,97 @@
+{
+  "schema": "edhr-audit-batch-progress/v1",
+  "level": "L2",
+  "targetBranch": "edhr-dev",
+  "targetCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "coreCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+  "knowledgeCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+  "catalogBaseline": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+  "stage": "awaiting-human-merge",
+  "inventory": {
+    "trackedPaths": 2801,
+    "currentKnowledgeIds": 2552,
+    "classificationIsNotHumanReview": true
+  },
+  "source": {
+    "recordedOverlappingScopes": 485,
+    "inherited": 392,
+    "newAuxiliaryFiniteScopes": 88,
+    "primaryFiniteScopes": 5,
+    "originalOutOfBoundsClaimExcluded": "w3d-signature-source:028",
+    "needsDeltaReview": 101,
+    "wholeFilesCompleted": 0
+  },
+  "semantic": {
+    "historicalAndCurrentScopedRows": 108,
+    "priorRows": 96,
+    "currentFormalFiniteRows": 12,
+    "notDistinctIds": true,
+    "needsDeltaReview": 57,
+    "historicalEvidenceGaps": 4,
+    "structureValidationIsNotFullSemanticReview": true
+  },
+  "findings": {
+    "records": 48,
+    "notDistinctProductDefects": true,
+    "pr21AcceptedByOriginalAcceptance": "W3C-INSTANCE-WRITE-AUTH-001",
+    "currentFixedAwaitingIndependentAcceptance": [],
+    "currentIndependentlyAccepted": [
+      "W3-SIGNATURE-PAYLOAD-001"
+    ]
+  },
+  "runtime": {
+    "primaryUniqueBusinessTestsWithPassingEvidence": 104,
+    "primaryNativePostgresSubset": 18,
+    "primaryFocusedRun": "103 passed, 1 font identity assertion failure; Auth24 rerun passed and replaces that suite, not added as unique tests",
+    "originalBaselineSeven": "1 failure, 3 real archive BusinessException errors, 3 passing controls; not fixture setup errors",
+    "formalKnowledgeTests": 89,
+    "formalKnowledgeFailures": 0,
+    "formalKnowledgeSkipped": 0,
+    "repeatRunsNotAdded": true,
+    "dhrLifecycleUsesH2": true,
+    "dhrArchivePdfZip": "13 regression cases include actual system Chromium154 output; not frontend UI E2E",
+    "browserUiVisualFullFrontendBuild": "not-applicable-no-frontend-change",
+    "independentQuality": "passed",
+    "migration": "18 native roundtrip/migration cases include fresh full master, legacy preservation, input compatibility and rejected lossy rollback",
+    "independentBusinessTests": 104,
+    "independentKnowledgeTests": 89,
+    "independentNativePostgresSubset": 18,
+    "independentFailures": 0,
+    "independentErrors": 0,
+    "independentSkipped": 0,
+    "independentRequiredChecks": 8
+  },
+  "ontology": {
+    "result": "updated",
+    "author": "/root/signature_payload_ontology",
+    "status": "FINAL",
+    "childInstances": [
+      {
+        "name": "/root/signature_payload_ontology/existing_signature_evidence",
+        "status": "FINAL"
+      }
+    ],
+    "knowledgeVersionBeforeAndAfter": "0.3.25",
+    "newInternalEvidenceIds": 4,
+    "currentAnchorUpdated": "anchor.dhr-summary-zip-source-trace",
+    "policyAndMaturityChanged": false
+  },
+  "remaining": [
+    "complete W2/W3 audit",
+    "W3D-TASK-PAGINATION-001 source-only lead needs real authenticated reproduction and separate batch",
+    "generic action/type matrix awaits user policy clarification; no dependency for signature repair",
+    "W4 H006/H007/H008 adjudication",
+    "W5-AUDIT-HASH-001 remains open; background/migration review remains",
+    "W6 scoped extraction and W7 coverage/integration",
+    "four historical knowledge evidence gaps",
+    "user-deferred record-control integration, two DHR high and A12",
+    "legacy signature original bytes already lost by JSONB cannot be reconstructed by this migration"
+  ],
+  "overallAuditComplete": false,
+  "overallPercent": null,
+  "mergeOrDeployAuthorized": false,
+  "qualityTestedCommit": "aaef52a782327e68da736faf83a249a3217b7228",
+  "acceptance": "acceptance.json",
+  "temporaryOwnedPostgres": "removed-after-formal-final",
+  "pullRequest": "https://github.com/IvenYi/edhr-nexus-frontend/pull/22"
+}

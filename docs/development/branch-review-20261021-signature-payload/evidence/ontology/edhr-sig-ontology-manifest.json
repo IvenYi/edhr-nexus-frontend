@@ -1,0 +1,60 @@
+{
+  "author": "/root/signature_payload_ontology",
+  "status": "FINAL",
+  "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+  "files": [
+    {
+      "path": "/tmp/edhr-sig-ontology-result.yaml",
+      "bytes": 6763,
+      "sha256": "b397ac944e07b465a3cabe0a9bff5410e1abc945a19ba3e0c6ad14807235c11a"
+    },
+    {
+      "path": "/tmp/edhr-sig-ontology-semantic-review.jsonl",
+      "bytes": 92717,
+      "sha256": "a96dd6249923e68532cf9692bce4370166697fab49101be79300493fefe43698"
+    },
+    {
+      "path": "/tmp/edhr-sig-ontology-validation.json",
+      "bytes": 3133,
+      "sha256": "e42765b229b15a8a0242f1f9a773eb4e66cbd050ddc7016da71533c062fc3130"
+    },
+    {
+      "path": "/tmp/edhr-sig-ontology-formal-test-summary.json",
+      "bytes": 1124,
+      "sha256": "31215557d4c5df31059b91860b66903e45f383f2faab3cd81286b3a201282a1c"
+    },
+    {
+      "path": "/tmp/edhr-sig-ontology-read-receipts.json",
+      "bytes": 10231,
+      "sha256": "51fc79c6a3ccadd6c5e958b83f19219c8143403e7ad4c52354a0872e7e15efd8"
+    },
+    {
+      "path": "/tmp/edhr-sig-ontology-build.py",
+      "bytes": 14289,
+      "sha256": "74583bbb6438bd3bd97448da3f7ad6d53a07816470dd4bd776e998e77fe610ff"
+    },
+    {
+      "path": "/tmp/edhr-sig-ontology-run-formal.py",
+      "bytes": 1915,
+      "sha256": "f405c10c9dfeb1b33c9b1513aa9716f4969513827b4e70b9039dc9db81b05025"
+    },
+    {
+      "path": "/tmp/edhr-sig-ontology-existing-evidence.json",
+      "bytes": 42984,
+      "sha256": "6e50fdf665b5fc183533892db7f6dc07b2cea0752fb734878f3ab739479fd076"
+    }
+  ],
+  "children": [
+    {
+      "author": "/root/signature_payload_ontology/existing_signature_evidence",
+      "status": "FINAL"
+    }
+  ],
+  "allChildInstancesFinal": true,
+  "excluded": [
+    "raw Maven log",
+    "Surefire XML",
+    "credentials or env"
+  ],
+  "businessTestsExecuted": []
+}

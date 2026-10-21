@@ -1,0 +1,97 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261021-SIGNATURE-PAYLOAD
+  scope: edhr-dev整体审查W3签署消费链及其DHR归档的原生数据库往返；不改任务动作政策或历史摘要。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: c3343f45bb79f72368937f0d197ae01f989f0390
+    targetBranch: edhr-dev
+    targetCommit: c3343f45bb79f72368937f0d197ae01f989f0390
+    contractReadCommit: c3343f45bb79f72368937f0d197ae01f989f0390
+    uncommittedContractPaths: []
+  summary: PR21人工合入且树与交付360b07ad相同；回到源码核对W3任务动作和签署。已真实PG证实原字符串摘要与JSONB读回规范化导致DHR归档拒绝，核心2ead6de2仅纠正无损原文存储；旧算法、拒绝和历史摘要保持。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  existingPolicyReferences:
+    - docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml:DEC-0063-15
+    - docs/knowledge/rules/dhr-summary.yaml:rule.dhr-summary-zip-source-trace
+    - docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml
+    - docs/knowledge/decisions/DEC-0058-production-field-signature.yaml
+  inferred:
+    - id: inference.signature-payload-lossless-storage
+      statement: 现有算法对原JSON字符串UTF8作SHA256，签署原文须按原字符无损持久化；TEXT属于工程落实，不改变签署资格、摘要算法或有效性政策。
+      rationale: JSONB会改变空白与键序；归档校验原字节不能从语义相等反推摘要一致，不能删除或放宽校验。
+      relatedIds: [rule.dhr-summary-zip-source-trace]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: signature-persistence
+        change: 已以真实签署服务/JPA/PG写入和归档消费复现；仅将snapshot_data映射及前向迁移改为无损TEXT并保留旧JSONB输入校验。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java]
+    transitiveImpacts:
+      - area: dhr-source-and-review-signatures
+        change: 来源按钮/字段及DHR审批签署保持原封存字符串和SHA256，归档原字节校验不改。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java]
+      - area: signature-certification
+        change: USER_PROFILE同表存储，现有JSON解析读取与认证资格保持；不改变认证及过期策略。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java]
+    potentialImpacts:
+      - area: current-task-command-matrix
+        concern: 泛型动作与节点类型规则、管理内容治理须有独立现行依据；普通生产和DHR专属规则不能直接套到generic。另发现todo/done分页参数及int溢出线索，留后续独立小批，不混入签名存储。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java]
+    unaffectedAreas:
+      - area: authorization-and-runtime-policy
+        reason: 不改正常候选/委托/读取、生产和DHR终态、签署资格、原权限、记录控制延期或完整多租户边界。
+    compatibilityAndMigration:
+      - TEXT列保留原JSONB可接受性校验，以CHECK解析JSONB但不存其规范化结果；不放宽为任意无效文本，也不新增重复键或对象类型政策。
+      - 只在隔离合成库验证前向迁移，JSONB转换为其原有读回文本；逐字保留既有可读取字符串、摘要和其他元数据，不重算或补造历史原件，不修改已应用迁移校验和。
+      - 已被JSONB丢失的历史原始字符不能恢复，原本不可复验的旧签名仍可能阻断归档，必须如实保留。不能改摘要让它通过。
+      - TEXT回退JSONB会损失新签署原文；不提供会静默损坏新原件的自动回退，实际回退限制与隔离验证单独记录。
+      - 应用与迁移配套；旧JSONB映射继续写入新库有再次规范化风险，不宣称旧应用混跑或应用回退已验证兼容。
+    snapshotImpacts: [新签署原文无损，JSON内容/算法/摘要不改；旧冻结证据与历史摘要不改。]
+    auditImpacts: [不修改AuditEvent既有算法或旧W5问题；签名归档继续拒绝载荷/摘要篡改。]
+    permissionImpacts: [不改真实签署身份/资格、密码处理、受保护签名CRUD或归档权限。]
+    testImpacts:
+      - scope: native-pg-signature-roundtrip-and-migration
+        scenarios: [真实signTarget生产及DHR目标往返, 字段签署往返, 真实归档签名消费者, 原文字符及SHA完全一致, 篡改继续拒绝, 旧JSONB前后可读字节和元数据不变, 重复前向迁移, JSON读取兼容, 原认证及归档相邻回归]
+        evidenceReferences: []
+    evidenceGaps: [初拟时只有源码线索，现旧7例1失败及3业务异常、3对照通过已复现；修复后18原生PG通过，尚待全新独立验收。全分支未完成，用户暂缓DHR high/A12和四旧知识gap保留。]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 原有签署封存算法与消费不变，仅纠正载荷持久化表示，避免新摘要算法、重复载荷列或大模块重构。
+    ownershipBoundaries:
+      - owner: compliance-signature
+        responsibility: 既有签名载荷的无损存储。
+      - owner: dhr-archive
+        responsibility: 保留原摘要重算和错误阻断，不在读取时猜历史材料。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java
+      changeType: update
+      reason: 原生PG已证实字节变化，将JSONB专用类型改为无损文本映射。
+    - path: gmp-platform/backend/src/main/resources/db/changelog
+      changeType: update
+      reason: 仅新增前向迁移及master登记，不改旧迁移。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotPostgresTest.java
+      changeType: create
+      reason: 真实JPA与归档签名读取回归，避免H2 TEXT掩盖问题。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/SignatureTest.java
+      changeType: delete
+      reason: 原测试只反射断言JSONB注解，已由真实原生PG往返/迁移/篡改18项行为测试替代，不把错误存储类型改成另一个字面量镜像测试。
+    - path: docs/development/branch-review-20261021-signature-payload
+      changeType: create
+      reason: 新基线、有限源码/知识、原件、迁移边界、验收及进度。
+  acceptanceScenarios:
+    - id: scenario.signature-original-payload-roundtrip
+      given: 合法已认证签署通过现有服务产生原文及摘要
+      when: 在原生PG持久化后清理上下文并交由DHR归档签名消费者读取
+      then: 字符及摘要完全一致，正常签署不因JSON规范化误拒；篡改继续拒绝。
+      evidenceRequirements: [固定旧基线红证, 修复后原生PG, 原签署资格及归档回归, 全新独立验收]
+    - id: scenario.signature-legacy-not-reconstructed
+      given: 已有JSONB记录及其原存摘要
+      when: 执行新增前向迁移并重复核对
+      then: 迁移前可读文本/摘要及元数据保持；不恢复已丢原文，不降低历史验签条件。
+      evidenceRequirements: [真实PG迁移/重复执行与内容对比, 历史摘要拒绝负向, 回退限制]

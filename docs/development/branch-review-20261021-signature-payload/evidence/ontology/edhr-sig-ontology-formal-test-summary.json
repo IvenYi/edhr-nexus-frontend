@@ -1,0 +1,34 @@
+{
+  "author": "/root/signature_payload_ontology",
+  "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+  "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f tools/knowledge-model/pom.xml clean test",
+  "commandExit": 0,
+  "startedUnixNs": 1792556856889428735,
+  "finishedUnixNs": 1792556869744795500,
+  "counts": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "freshReportsOnly": true,
+  "xmlReports": [
+    {
+      "path": "/workspace/edhr-nexus-frontend/tools/knowledge-model/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "sha256": "b45ae3724fd0cfb206d3c2680e8faf5884f49b1028467afed2e670de342a35eb",
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "counts": {
+        "tests": 89,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    }
+  ],
+  "rawLog": {
+    "path": "/tmp/edhr-sig-ontology-knowledge.raw.log",
+    "sha256": "7a9cc6a3e79a99099b4bd03ede881e2f6aadf32c1ecc30ab8d6f7f79cccaa32c",
+    "excludedFromDeliveryManifest": true
+  },
+  "businessTestsExecuted": []
+}

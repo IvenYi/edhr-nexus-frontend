@@ -1,0 +1,22 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.signature-payload-lossless-storage-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java
+    description: original-evidence；Signature.snapshotData改为TEXT并移除JSON JDBC类型，保留ExecutionAccess.signTarget/signField及AuthController对原JSON字符串UTF8计算SHA-256的既有算法、载荷和摘要字段。此为无损存储工程纠漏，不新增签署政策、认证方式或完整多租户隔离，也不把原签署资格及归档流程整体认证为已验收。
+    visibility: internal
+  - id: evidence.signature-payload-lossless-storage-migration
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql
+    description: original-evidence；0118将signature.snapshot_data从JSONB转为其当前可读文本，并用CHECK保留原JSONB可接受的JSON形状及解析限制，校验不回写规范化文本，不新增对象或键唯一限制。保持旧可读字符串、原摘要及其他列，不重算旧摘要或补造已经丢失的原始字符。迁移为前向纠正，TEXT重新转JSONB会损失新签署原文，不提供静默有损自动回退。源码存在不证明生产迁移或旧档案已恢复可验。
+    visibility: internal
+  - id: evidence.signature-payload-postgres-roundtrip-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotPostgresTest.java
+    description: original-evidence；测试源码覆盖真实signTarget生产/DHR目标、signField、JPA事务提交与清上下文、原生PG读回及归档签名JDBC消费者的原文和摘要核对；另含USER_PROFILE实体原文往返、摘要篡改拒绝及JSONB语义相同但字节不同对照。signTarget使用合成已认证签署人，个人快照用例不是AuthController认证API；这些测试不等于完整HTTP授权、PDF/ZIP或浏览器E2E。主侧运行与最终独立质量须分别记录。
+    visibility: internal
+  - id: evidence.signature-payload-postgres-migration-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotMigrationPostgresTest.java
+    description: original-evidence；测试源码仅在自建隔离PG schema及临时数据库读取原0001签名DDL并执行真实0118 Liquibase，覆盖旧可读文本/摘要/元数据保留、重复执行、完整master新库、旧丢失原文仍拒绝验签、有损自动回退拒绝及原JSONB输入解析兼容。只描述断言范围，不把代码存在或主侧结果当本体亲自运行，不代表生产库迁移、备份恢复或发布验收。
+    visibility: internal

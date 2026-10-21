@@ -1,0 +1,255 @@
+{
+  "schema": "edhr-readonly-policy-test-source-assistance/v1",
+  "role": "read-only source assistance, not formal ontology or independent QA",
+  "fixedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "contractReadCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "uncommittedContractPaths": []
+  },
+  "sourceScopes": [
+    {
+      "id": "w3d-signature-policy-test:001",
+      "path": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "method": "DEC-0074 normative declarations and precise replacement",
+      "range": [
+        1,
+        68
+      ],
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "9cd069c4b2984125eca2be6ca6e1023dde26579a",
+      "sha256": "09d6cb083c1350f3c64a2abb8583ca9a4eb1a7b3a837cdd67b9f6dc28d9e2d3f",
+      "readDepth": "actual selected source/declaration/assertion read only",
+      "conclusion": "Ordinary buttons use actual signer signature password and personal certification; exact username admin exception; cross-account and admin exception do not apply to SIGN_FIELD.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-policy-test:002",
+      "path": "docs/knowledge/decisions/DEC-0058-production-field-signature.yaml",
+      "method": "DEC-0058 field-signing declarations",
+      "range": [
+        1,
+        38
+      ],
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "243dd56bacd8f6d8968ff20832e5b991b8ed903f",
+      "sha256": "1f0a8b0516bd0b758fba4bcfea15745b99bab8a863c6ec90f41ec08ca69412be",
+      "readDepth": "actual selected source/declaration/assertion read only",
+      "conclusion": "Current-session field signature remains independent of submit; edited same-copy content invalidates current field signatures while preserving history.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-policy-test:003",
+      "path": "docs/knowledge/rules/dhr-summary.yaml",
+      "method": "rule.dhr-summary-zip-source-trace",
+      "range": [
+        205,
+        236
+      ],
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "c2c1989649eaddaa78fcf236c92bb4619cbce832",
+      "sha256": "7fc2b4b15bf79624a142721b6f3f2eb7b0dadae6f2a662c627bee836facf6154",
+      "readDepth": "actual selected source/declaration/assertion read only",
+      "conclusion": "FULL and SELECTED ZIP carry same-frozen-version source execution audit/signatures and review signatures; selection does not change approval scope or replace frozen data.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-policy-test:004",
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "method": "DEC-0063-05/11/15 and adjacent declared boundaries",
+      "range": [
+        13,
+        70
+      ],
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "864c6ec676bcd8b9a9351a3c7326350a6d260217",
+      "sha256": "28b3ec4bfd08d19691f9a3dbb34ba056ffd8e0230a67804f81b73220fb9710a7",
+      "readDepth": "actual selected source/declaration/assertion read only",
+      "conclusion": "Same frozen evidence base for approval/detail/export; explicit FULL/SELECTED traceability. Exact trace-signature declaration is DEC-0063-15, not -14.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-policy-test:005",
+      "path": "docs/knowledge/open-questions.yaml",
+      "method": "Extra termination and managerial reassignment signature questions",
+      "range": [
+        99,
+        114
+      ],
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "a1f2b1140ea93c5daf54067cb4a40d6a6cd1d2b7",
+      "sha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "readDepth": "actual selected source/declaration/assertion read only",
+      "conclusion": "Extra SOP termination signature and record-control managerial reassignment signature remain their own unresolved/non-MVP boundaries; no inferred blanket generic required-signature rule.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-policy-test:006",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/entity/SignatureTest.java",
+      "method": "snapshotDataUsesJsonJdbcTypeForPostgresJsonbColumn",
+      "range": [
+        1,
+        20
+      ],
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "94b334c93d302a41036c8ad2b936a2ebd71c0d0d",
+      "sha256": "bc5a203cd93bf58813661298a7889b58348cafcdd93fc1cb17bf232ec4ebfc03",
+      "readDepth": "actual selected source/declaration/assertion read only",
+      "conclusion": "Reflection checks @JdbcTypeCode(SqlTypes.JSON) only; no database round trip or hash verification.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-policy-test:007",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java",
+      "method": "setup",
+      "range": [
+        31,
+        48
+      ],
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "5148f3414118a4c36664910d0334388c949961ba",
+      "sha256": "0c97af7b8707ebe68b0bfe4c442cdd3d433fe811b8aa3e087b3aaf695bb0dd73",
+      "readDepth": "actual selected source/declaration/assertion read only",
+      "conclusion": "Actual fixture is H2 MODE=PostgreSQL with mocked audit/file repositories and actual DhrArchiveService; this is not native PostgreSQL.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-policy-test:008",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java",
+      "method": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment",
+      "range": [
+        76,
+        218
+      ],
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "5148f3414118a4c36664910d0334388c949961ba",
+      "sha256": "0c97af7b8707ebe68b0bfe4c442cdd3d433fe811b8aa3e087b3aaf695bb0dd73",
+      "readDepth": "actual selected source/declaration/assertion read only",
+      "conclusion": "Seven format parameters use manually created signature.snapshot_data TEXT and raw-string SHA-256. FULL source/review payloads, SELECTED hash and omitted raw data, and corrupted review hash export rejection are asserted; no JSONB lexical transformation occurs in this fixture.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-policy-test:009",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java",
+      "method": "buttonSignatureAuthenticatesNamedSignerAndRetainsSessionWithoutCredentials and auth controls",
+      "range": [
+        30,
+        107
+      ],
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "66fd71864ac7106fc84342b135ad6f7e18c1ae61",
+      "sha256": "5f67adba3c204c55b4d11aef499fff701755d45527e323d28c7dcefb72488599",
+      "readDepth": "actual selected source/declaration/assertion read only",
+      "conclusion": "Mockito SignatureRepository captures signer/auth method/reference, no credentials in snapshot, and hash length64; no persistence round trip. Exact admin/current-session field separation is asserted.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-policy-test:010",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java",
+      "method": "executionSignaturesCannotBeForgedOverwrittenOrDeletedThroughGenericCrud and personal certification CRUD protection",
+      "range": [
+        170,
+        201
+      ],
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "66fd71864ac7106fc84342b135ad6f7e18c1ae61",
+      "sha256": "5f67adba3c204c55b4d11aef499fff701755d45527e323d28c7dcefb72488599",
+      "readDepth": "actual selected source/declaration/assertion read only",
+      "conclusion": "Mocked repository/controller guard checks protected production and USER_PROFILE credentials cannot be saved/deleted through generic CRUD; this is not export digest coverage.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-policy-test:011",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+      "method": "SpringBootTest database configuration",
+      "range": [
+        31,
+        38
+      ],
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "aa489654fda6f2b7ab49e2c6d0f0f338921fc8d9",
+      "sha256": "1ed4a3e7d28f94c8d78b5ba151faf780d1f437632c8679a02dfe4d2b8a4b812d",
+      "readDepth": "actual selected source/declaration/assertion read only",
+      "conclusion": "Real service workflow/signature chain explicitly uses H2 PostgreSQL compatibility mode, not native PostgreSQL.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-policy-test:012",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+      "method": "realWorkflowReturnResubmitSignAndApprovedImpactPreserveHistory",
+      "range": [
+        105,
+        134
+      ],
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "aa489654fda6f2b7ab49e2c6d0f0f338921fc8d9",
+      "sha256": "1ed4a3e7d28f94c8d78b5ba151faf780d1f437632c8679a02dfe4d2b8a4b812d",
+      "readDepth": "actual selected source/declaration/assertion read only",
+      "conclusion": "Real approval creates DHR_SUMMARY signature and checks stored snapshot_data contains frozen hash; preserves frozen version after later change. Does not call DhrArchiveService or verify readback raw-string snapshot digest.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-signature-policy-test:013",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrArchiveLayoutReaderTest.java",
+      "method": "layout projection tests",
+      "range": [
+        1,
+        48
+      ],
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "994a5d6d2f5d1aa09d6462d6989888853c2aae9f",
+      "sha256": "776455608257d250dbc86920d92ac7fa660981383894070f4b10d89c0e9cf465",
+      "readDepth": "actual selected source/declaration/assertion read only",
+      "conclusion": "H2 layout reader tests do not exercise signature persistence or export digest reconstruction.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    }
+  ],
+  "historicalDedup": {
+    "kind": "limited current47 finding-record text and object inspection, not full-history semantic dedup",
+    "catalogPath": "docs/development/branch-review-20261020-w3-task-commands/source-catalog.json",
+    "catalogCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "catalogSha256": "9ba4a3da262d6d3ac0edb28b7c73f7ea2f14c8448db27def4caa8c8224bd4696",
+    "findingRecords": 47,
+    "matches": [
+      {
+        "id": "W5-AUDIT-HASH-001",
+        "disposition": "preexisting-medium-open",
+        "description": "AuditEvent在PrePersist按原JSON/时间字符串封存hash，PostgreSQL JSONB/时间往返归一化后computeSnapshotHash不能还原原hash；基线a828两条原生PG探针均失败。",
+        "limitations": [
+          "Existing application AuditEvent read/export does not rehash; distinct DHR/signature/file hash checks must not be conflated.",
+          "Not introduced or repaired by this delegation/write-guard slice; no new hash algorithm or historical audit rewrite authorized.",
+          "Future separate W5 review must define stable canonical payload/version and historical compatibility; current stored-hash/atomicity tests do not certify round-trip rehash."
+        ]
+      }
+    ],
+    "signatureArchiveIssueAdjudicatedHere": false
+  },
+  "mainConclusions": [
+    "Native PostgreSQL JSONB signature-payload normalization is not covered by the inspected existing archive signature checks; existing H2/TEXT and Mockito tests can preserve input lexical bytes.",
+    "DEC-0063-15 and rule.dhr-summary-zip-source-trace provide current confirmed traceability obligations; implementation hash algorithm is engineering, not a new business policy.",
+    "The current47 finding records only expose related W5-AUDIT-HASH-001; its explicit limitation distinguishes AuditEvent non-rehashing read/export from separate signature checks. This limited lookup does not certify the entire history.",
+    "Any actual Signature JSONB/export runtime failure still needs a real fixed-source native-PG probe by primary; this source helper executed no tests and does not adjudicate severity or merge blocking."
+  ],
+  "runtimeChecksExecuted": [],
+  "repositoryMutations": false,
+  "wholeFileOrBranchAcceptance": false,
+  "childInstances": [],
+  "status": "FINAL"
+}

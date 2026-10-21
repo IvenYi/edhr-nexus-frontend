@@ -1,0 +1,1170 @@
+{
+  "author": "/root/signature_payload_independent",
+  "baseCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "headCommit": "aaef52a782327e68da736faf83a249a3217b7228",
+  "catalogBaseline": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+  "originalArchiveFilesChecked": [
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/edhr-sig-baseline-summary.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "3dd5dbfcd4e7ce39bdfdde6b1dfedfc255f158dce835e27e9a3f4dd7add2863e"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/edhr-sig-fixed-roundtrip-summary.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "8914c418f7bbb9654c4cdfb153be324b1baf0d320969ecd4b88af61ff41853f2"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/edhr-sig-migration-and-roundtrip-summary.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "f2b83712f855d226e26d84fef057eafcb82db5913d986963996668d54bfcb3d2"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/edhr-sig-migration-checked-summary.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "cc54de332c766cc1b013097a70465f4fcabbcb4d1a78e383f7f69533011aa503"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/edhr-sig-full-native-regression-summary.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "0324dbf2306fb94df6dc3a21740c0270df34eda3d1a63bb9622c0ad0a8730c54"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/edhr-sig-focused-final-summary.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "cb8ce21ceaf94794821a8a60d4cd5a469effc9af359449f601dfcea1d5004327"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/edhr-sig-native-final-summary.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "d5489cd16b28adafb4d4d7f11c070d8a37281699cd62b9c6f359eda2d4412a6f"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/edhr-sig-font-identity-final-summary.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "ec03e84efea280af78297c3a9ceb2298b1cc680d7f3d454d63c9c951af760688"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/edhr-sig-run.py",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "9a663b993352e541108278e86c4f77763c0a404de9f75a245129c36ff48f4cce"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/edhr-sig-font-environment.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "d7123b6095bc5b1aad25769bc35e34ae0d7835932b3a54270378c617172b2eb8"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/edhr-sig-font-identity-environment.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "185cb970ad58c9051200de5f3c7a0f73784a8f632d8e98f5091d45ce1b7c2f3c"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/edhr-sig-print-env-summary.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "843856f69a3a1984900b7841303054d6b7179847fa5cc28e85dc8addc2eaee95"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/edhr-sig-print-env-probe.py",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "80db291c8de321fdb3f3e5de4eca65adb8d7835c6db735472b680ac778e1533e"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/edhr-sig-archive.py",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "1b83ade79221960e72bfd3e1469cb78988390aad08ac257105541389dfe26ec2"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/primary/EdhrPlaywrightProbe.java",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "68fc7c766acbdb7aa1947b568326198e06bfa2acb2184e2e6c1eef275ed570ae"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-w3d-command-source-map.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "ec25bc87f431964ce072879f28f9554265d84cb648b0fbcd571b2e90984bdbf6"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-w3d-command-source-review.md",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "1b90b7a877c6d18faa908b9bb2a5c1671e6540c79992e3ee79794ee712ff0db7"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-w3d-front-action-consumers.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "f3fe6107918d01de5395b73485f348f7df4c85f6c9e167a2c8c95f738d608add"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-w3d-front-action-consumers.md",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "15cf3b51e14fe3f77819f11e41debf024b357668afbd549c1e480206a17da9fc"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-w3d-signature-source-map.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "c6ba94b033f9e41d30a5d9b03ed10052b6c7d75c938aa6f5788292baeb1f2c40"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-w3d-signature-review.md",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "34e792d353c792557514218113edfe31b8657277c79c184f694ff6a163a6ef55"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-w3d-signature-build.py",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "56ac9651c283f269998e3845986f6f3a909ecaf739df379c92acbaee93a24526"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-w3d-signature-policy-tests.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "3bf992638b3f24057a62120bc2631b83e8ef69c9c5e05802d2a591fe7aa4ad90"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-w3d-signature-policy-tests.md",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "01f5430218cbf9f22acd3ed492a635c4746c3598f7191a5f4dedf64b532ecd08"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-sig-baseline-build.py",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "b7d55ff2193bba0bcad8f2cd6026ae95a7ea11cb03c05bf06da6828211f6847f"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-sig-baseline-draft-catalog.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "54b23573fe6700051e85f811aec8ecdfe60395b51d3f0b74a1e9e053f2c4f04c"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-sig-baseline-support.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "5f866d633d19b3588fc7cfbbcada9388b65d722d6345824ca7b17ee333b1c448"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/helpers/edhr-sig-baseline-receipts.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "cca9ea9f8a57c9c39c2f73c4cdd6c45080e9be9b2ce8cd8d03de172ded9a372b"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/ontology/edhr-sig-ontology-result.yaml",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "b397ac944e07b465a3cabe0a9bff5410e1abc945a19ba3e0c6ad14807235c11a"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/ontology/edhr-sig-ontology-semantic-review.jsonl",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "a96dd6249923e68532cf9692bce4370166697fab49101be79300493fefe43698"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/ontology/edhr-sig-ontology-validation.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "e42765b229b15a8a0242f1f9a773eb4e66cbd050ddc7016da71533c062fc3130"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/ontology/edhr-sig-ontology-formal-test-summary.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "31215557d4c5df31059b91860b66903e45f383f2faab3cd81286b3a201282a1c"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/ontology/edhr-sig-ontology-read-receipts.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "51fc79c6a3ccadd6c5e958b83f19219c8143403e7ad4c52354a0872e7e15efd8"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/ontology/edhr-sig-ontology-build.py",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "74583bbb6438bd3bd97448da3f7ad6d53a07816470dd4bd776e998e77fe610ff"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/ontology/edhr-sig-ontology-run-formal.py",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "f405c10c9dfeb1b33c9b1513aa9716f4969513827b4e70b9039dc9db81b05025"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/ontology/edhr-sig-ontology-existing-evidence.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "6e50fdf665b5fc183533892db7f6dc07b2cea0752fb734878f3ab739479fd076"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-signature-payload/evidence/ontology/edhr-sig-ontology-manifest.json",
+      "commit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "b7e6b16220e0f3e0c9a2ccf5b85ae866d1b5a55e3544081916484817ecb9968e"
+    }
+  ],
+  "inheritedScopeRowsPreserved": 392,
+  "newFiniteBoundedScopeReceipts": [
+    {
+      "id": "w3d-command-source:001",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "range": [
+        86,
+        103
+      ]
+    },
+    {
+      "id": "w3d-command-source:002",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "range": [
+        105,
+        124
+      ]
+    },
+    {
+      "id": "w3d-command-source:003",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "range": [
+        128,
+        136
+      ]
+    },
+    {
+      "id": "w3d-command-source:004",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "range": [
+        140,
+        148
+      ]
+    },
+    {
+      "id": "w3d-command-source:005",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "range": [
+        153,
+        170
+      ]
+    },
+    {
+      "id": "w3d-command-source:006",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "range": [
+        173,
+        182
+      ]
+    },
+    {
+      "id": "w3d-command-source:007",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "range": [
+        186,
+        217
+      ]
+    },
+    {
+      "id": "w3d-command-source:008",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        59,
+        116
+      ]
+    },
+    {
+      "id": "w3d-command-source:009",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        244,
+        305
+      ]
+    },
+    {
+      "id": "w3d-command-source:010",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        309,
+        371
+      ]
+    },
+    {
+      "id": "w3d-command-source:011",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        374,
+        398
+      ]
+    },
+    {
+      "id": "w3d-command-source:012",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        400,
+        421
+      ]
+    },
+    {
+      "id": "w3d-command-source:013",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        424,
+        432
+      ]
+    },
+    {
+      "id": "w3d-command-source:014",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        434,
+        462
+      ]
+    },
+    {
+      "id": "w3d-command-source:015",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        464,
+        487
+      ]
+    },
+    {
+      "id": "w3d-command-source:016",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        502,
+        535
+      ]
+    },
+    {
+      "id": "w3d-command-source:017",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        537,
+        545
+      ]
+    },
+    {
+      "id": "w3d-command-source:018",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        547,
+        577
+      ]
+    },
+    {
+      "id": "w3d-command-source:019",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        579,
+        617
+      ]
+    },
+    {
+      "id": "w3d-command-source:020",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        622,
+        640
+      ]
+    },
+    {
+      "id": "w3d-command-source:021",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        661,
+        678
+      ]
+    },
+    {
+      "id": "w3d-command-source:022",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        682,
+        728
+      ]
+    },
+    {
+      "id": "w3d-command-source:023",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        732,
+        750
+      ]
+    },
+    {
+      "id": "w3d-command-source:024",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "range": [
+        752,
+        783
+      ]
+    },
+    {
+      "id": "w3d-command-source:025",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "range": [
+        20,
+        36
+      ]
+    },
+    {
+      "id": "w3d-command-source:026",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "range": [
+        38,
+        40
+      ]
+    },
+    {
+      "id": "w3d-command-source:027",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "range": [
+        80,
+        88
+      ]
+    },
+    {
+      "id": "w3d-command-source:028",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "range": [
+        212,
+        251
+      ]
+    },
+    {
+      "id": "w3d-command-source:029",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "range": [
+        117,
+        150
+      ]
+    },
+    {
+      "id": "w3d-command-source:030",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java",
+      "range": [
+        48,
+        71
+      ]
+    },
+    {
+      "id": "w3d-command-source:031",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java",
+      "range": [
+        27,
+        42
+      ]
+    },
+    {
+      "id": "w3d-command-source:032",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "range": [
+        9,
+        25
+      ]
+    },
+    {
+      "id": "w3d-command-source:033",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "docs/knowledge/decisions/DEC-0033-form-process-optional-subjects-and-open-operation-scope.yaml",
+      "range": [
+        9,
+        25
+      ]
+    },
+    {
+      "id": "w3d-command-source:034",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "range": [
+        9,
+        25
+      ]
+    },
+    {
+      "id": "w3d-command-source:035",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "range": [
+        21,
+        24
+      ]
+    },
+    {
+      "id": "w3d-command-source:036",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "docs/knowledge/rules/transaction-runtime.yaml",
+      "range": [
+        1044,
+        1062
+      ]
+    },
+    {
+      "id": "w3d-command-source:037",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "docs/knowledge/rules/transaction-runtime.yaml",
+      "range": [
+        1080,
+        1129
+      ]
+    },
+    {
+      "id": "w3d-command-source:038",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "docs/knowledge/open-questions.yaml",
+      "range": [
+        107,
+        115
+      ]
+    },
+    {
+      "id": "w3d-command-source:039",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "docs/knowledge/open-questions.yaml",
+      "range": [
+        152,
+        159
+      ]
+    },
+    {
+      "id": "w3d-command-source:040",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskControllerTest.java",
+      "range": [
+        26,
+        45
+      ]
+    },
+    {
+      "id": "w3d-command-source:041",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "range": [
+        289,
+        303
+      ]
+    },
+    {
+      "id": "w3d-command-source:042",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "range": [
+        307,
+        386
+      ]
+    },
+    {
+      "id": "w3d-front-action:001",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "range": [
+        13,
+        55
+      ]
+    },
+    {
+      "id": "w3d-front-action:002",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "range": [
+        57,
+        84
+      ]
+    },
+    {
+      "id": "w3d-front-action:003",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "range": [
+        86,
+        96
+      ]
+    },
+    {
+      "id": "w3d-front-action:004",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "range": [
+        110,
+        126
+      ]
+    },
+    {
+      "id": "w3d-front-action:005",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "range": [
+        130,
+        165
+      ]
+    },
+    {
+      "id": "w3d-front-action:006",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "range": [
+        93,
+        104
+      ]
+    },
+    {
+      "id": "w3d-front-action:007",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "range": [
+        27,
+        38
+      ]
+    },
+    {
+      "id": "w3d-front-action:008",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "range": [
+        48,
+        60
+      ]
+    },
+    {
+      "id": "w3d-front-action:009",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/api/workflow-tasks.ts",
+      "range": [
+        3,
+        9
+      ]
+    },
+    {
+      "id": "w3d-front-action:010",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/api/production-execution.ts",
+      "range": [
+        48,
+        74
+      ]
+    },
+    {
+      "id": "w3d-front-action:011",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx",
+      "range": [
+        337,
+        380
+      ]
+    },
+    {
+      "id": "w3d-front-action:012",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx",
+      "range": [
+        576,
+        585
+      ]
+    },
+    {
+      "id": "w3d-front-action:013",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/api/dhr-workbenches.ts",
+      "range": [
+        14,
+        31
+      ]
+    },
+    {
+      "id": "w3d-front-action:014",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "range": [
+        66,
+        78
+      ]
+    },
+    {
+      "id": "w3d-front-action:015",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "range": [
+        105,
+        105
+      ]
+    },
+    {
+      "id": "w3d-front-action:016",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/components/workflow/WorkflowActionButtons.tsx",
+      "range": [
+        30,
+        40
+      ]
+    },
+    {
+      "id": "w3d-front-action:017",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "range": [
+        157,
+        170
+      ]
+    },
+    {
+      "id": "w3d-front-action:018",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "range": [
+        235,
+        243
+      ]
+    },
+    {
+      "id": "w3d-front-action:019",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx",
+      "range": [
+        260,
+        272
+      ]
+    },
+    {
+      "id": "w3d-signature-source:001",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "range": [
+        202,
+        221
+      ]
+    },
+    {
+      "id": "w3d-signature-source:002",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "range": [
+        223,
+        225
+      ]
+    },
+    {
+      "id": "w3d-signature-source:003",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "range": [
+        227,
+        246
+      ]
+    },
+    {
+      "id": "w3d-signature-source:004",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "range": [
+        248,
+        283
+      ]
+    },
+    {
+      "id": "w3d-signature-source:005",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java",
+      "range": [
+        10,
+        35
+      ]
+    },
+    {
+      "id": "w3d-signature-source:006",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java",
+      "range": [
+        13,
+        16
+      ]
+    },
+    {
+      "id": "w3d-signature-source:007",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java",
+      "range": [
+        53,
+        66
+      ]
+    },
+    {
+      "id": "w3d-signature-source:008",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "range": [
+        154,
+        253
+      ]
+    },
+    {
+      "id": "w3d-signature-source:009",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "range": [
+        196,
+        210
+      ]
+    },
+    {
+      "id": "w3d-signature-source:010",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "range": [
+        212,
+        245
+      ]
+    },
+    {
+      "id": "w3d-signature-source:011",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "range": [
+        272,
+        315
+      ]
+    },
+    {
+      "id": "w3d-signature-source:012",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "range": [
+        18,
+        23
+      ]
+    },
+    {
+      "id": "w3d-signature-source:013",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "range": [
+        54,
+        56
+      ]
+    },
+    {
+      "id": "w3d-signature-source:014",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "range": [
+        86,
+        151
+      ]
+    },
+    {
+      "id": "w3d-signature-source:015",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "range": [
+        22,
+        40
+      ]
+    },
+    {
+      "id": "w3d-signature-source:016",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "range": [
+        49,
+        205
+      ]
+    },
+    {
+      "id": "w3d-signature-source:017",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "range": [
+        212,
+        245
+      ]
+    },
+    {
+      "id": "w3d-signature-source:018",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "range": [
+        247,
+        265
+      ]
+    },
+    {
+      "id": "w3d-signature-source:019",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "range": [
+        267,
+        289
+      ]
+    },
+    {
+      "id": "w3d-signature-source:020",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "range": [
+        309,
+        396
+      ]
+    },
+    {
+      "id": "w3d-signature-source:021",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "range": [
+        399,
+        434
+      ]
+    },
+    {
+      "id": "w3d-signature-source:022",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "range": [
+        1040,
+        1066
+      ]
+    },
+    {
+      "id": "w3d-signature-source:023",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "range": [
+        1078,
+        1090
+      ]
+    },
+    {
+      "id": "w3d-signature-source:024",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java",
+      "range": [
+        23,
+        45
+      ]
+    },
+    {
+      "id": "w3d-signature-source:025",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java",
+      "range": [
+        47,
+        80
+      ]
+    },
+    {
+      "id": "w3d-signature-source:026",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/SignatureRepository.java",
+      "range": [
+        13,
+        16
+      ]
+    },
+    {
+      "id": "w3d-signature-source:027",
+      "reviewedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0001-init-schema.sql",
+      "range": [
+        157,
+        172
+      ]
+    },
+    {
+      "id": "sig-primary:001",
+      "reviewedCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java",
+      "range": [
+        24,
+        33
+      ]
+    },
+    {
+      "id": "sig-primary:002",
+      "reviewedCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql",
+      "range": [
+        1,
+        15
+      ]
+    },
+    {
+      "id": "sig-primary:003",
+      "reviewedCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "range": [
+        250,
+        253
+      ]
+    },
+    {
+      "id": "sig-primary:004",
+      "reviewedCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotPostgresTest.java",
+      "range": [
+        83,
+        154
+      ]
+    },
+    {
+      "id": "sig-primary:005",
+      "reviewedCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotMigrationPostgresTest.java",
+      "range": [
+        67,
+        149
+      ]
+    }
+  ],
+  "excludedOriginalScopeRetainedUnchanged": "w3d-signature-source:028",
+  "inheritedFindingsPreserved": 47,
+  "priorAcceptanceCarryAdvancedOnly": [
+    "W3C-INSTANCE-WRITE-AUTH-001"
+  ],
+  "newFormalFiniteRowsValidated": [
+    {
+      "id": "evidence.signature-payload-lossless-storage-source",
+      "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "sourceLocator": "/evidence/0",
+      "recordSha256": "fcb0c9819389ccb49c9d55af71ffcab07ed8ad200424343a5f79ab81c27106b1",
+      "reviewedScope": "Only the entity lossless TEXT mapping; no inference promoted to user policy, signature qualification or digest algorithm change."
+    },
+    {
+      "id": "evidence.signature-payload-lossless-storage-migration",
+      "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "sourceLocator": "/evidence/1",
+      "recordSha256": "3687104336ab0c324537eabadb989a0031287f40f9bcabc65a5e6f2747e828f8",
+      "reviewedScope": "Forward migration/current readable legacy text and original hashes, original JSONB input parse compatibility, no missing-byte reconstruction or silent lossy rollback."
+    },
+    {
+      "id": "evidence.signature-payload-postgres-roundtrip-test",
+      "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "sourceLocator": "/evidence/2",
+      "recordSha256": "8a50f7ba9ba4ce0335117570fc1d7254a93de2dd2837b52a797502b6c0130ede",
+      "reviewedScope": "Only actual native roundtrip test source boundaries; synthetic authenticated signer and USER_PROFILE entity distinguished from full API/login/ZIP execution."
+    },
+    {
+      "id": "evidence.signature-payload-postgres-migration-test",
+      "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "sourceLocator": "/evidence/3",
+      "recordSha256": "ea097b9656a06502aca5196fa67e1c1b4d31c14398478097f5e27f1092daa0a7",
+      "reviewedScope": "Only migration test source and owned schema/database assertions; code existence does not certify production migration or successful runtime."
+    },
+    {
+      "id": "anchor.dhr-summary-zip-source-trace",
+      "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "sourceLocator": "/implementationAnchors/4",
+      "recordSha256": "4922b5b6562c05eeaadfe1fc20521025baf6ea849acf8f4626faa5adf262fc16",
+      "reviewedScope": "Existing anchor adds signature entity/migration/tests/evidence; old print observations retain historical date context, specified/internal maturity retained."
+    },
+    {
+      "id": "rule.dhr-summary-zip-source-trace",
+      "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "sourceLocator": "/rules/12",
+      "recordSha256": "06b45aa60a5b472a4b5f4b84c259ff8a19e8fa5b2d7b91c27b9933cc533200b1",
+      "reviewedScope": "Only same frozen source/review signature traceability and FULL/SELECTED representation; no whole rule/runtime verification or release claim."
+    },
+    {
+      "id": "DEC-0063-05",
+      "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "sourceLocator": "/decisions/0/decisionStatements/4",
+      "recordSha256": "cc9ed4a6b9e3cf942d95dba5d3864435f1e0b2c48076fe6ddf81aeeecd50b151",
+      "reviewedScope": "Frozen version evidence basis retained; storage correction does not replace source with current draft/live values or rewrite old frozen evidence."
+    },
+    {
+      "id": "DEC-0063-11",
+      "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "sourceLocator": "/decisions/0/decisionStatements/10",
+      "recordSha256": "5a23c5e690bb443c3535331cf6a709bee92b18ddc40b35fd22723cb77f3ab294",
+      "reviewedScope": "Only same-version trace data/explicit scope and non-omission boundary retained; complete PDF/ZIP layout and attachments not accepted here."
+    },
+    {
+      "id": "DEC-0063-15",
+      "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "sourceLocator": "/decisions/0/decisionStatements/14",
+      "recordSha256": "021bf679c44b9a5d3eaf355bc7849decb21118a42880a19cffd36193408869e0",
+      "reviewedScope": "Source/review signatures remain traceable; selected content does not change approval scope; missing original bytes are not fabricated."
+    },
+    {
+      "id": "DEC-0074-04",
+      "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "sourceLocator": "/decisions/0/decisionStatements/3",
+      "recordSha256": "150707590ae4db8793d099bf71c261eadb336bdee557acd16c70e1c1c843e9bc",
+      "reviewedScope": "Existing current-user SIGN_FIELD qualification and history preserved; no propagation of cross-account button/admin exception."
+    },
+    {
+      "id": "DEC-0058-02",
+      "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "sourceLocator": "/decisions/0/decisionStatements/1",
+      "recordSha256": "a6ed449b8b8a5e1f5a0c35ab782bb43f66544ef59f729c2cd10266fc8febbad1",
+      "reviewedScope": "Existing content-change invalidation and historical signature retention kept; migration does not recompute old signature digests."
+    },
+    {
+      "id": "evidence.dhr-summary-attachment-archive-tests",
+      "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "sourceLocator": "/evidence/36",
+      "recordSha256": "294969864492e9f7d74d18dfa5f3821a802a8734cf4bd6109ac73b3f82775a27",
+      "reviewedScope": "Existing H2/TEXT source assertions remain finite and are not reused as native JSONB roundtrip proof."
+    }
+  ],
+  "primaryUnique104SelectionReconciled": true,
+  "primary104SingleRunAllPassClaimed": false,
+  "frozenInventory": {
+    "trackedPaths": 2801,
+    "knowledgeIds": 2552,
+    "sourceScopeRows": 485,
+    "semanticRows": 108,
+    "findingRecords": 48,
+    "sourceNeedsDelta": 101,
+    "semanticNeedsDelta": 57,
+    "historicalEvidenceGaps": 4
+  },
+  "wholeBranchAccepted": false,
+  "contractReceipts": [
+    {
+      "path": "AGENTS.md",
+      "contractReadCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "unchangedAcrossTargetAndCandidate": true
+    },
+    {
+      "path": "codeplzreadme.md",
+      "contractReadCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "unchangedAcrossTargetAndCandidate": true
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "contractReadCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "unchangedAcrossTargetAndCandidate": true
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "contractReadCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "unchangedAcrossTargetAndCandidate": true
+    }
+  ],
+  "sourceHelper": {
+    "path": "/tmp/edhr-sig-qa-source-review.json",
+    "sha256": "1d46982a727e551871d4c033b0c52d84d84ea2e2c9f84fe03417529912b6c40e",
+    "status": "FINAL",
+    "children": []
+  },
+  "repositoryMutations": false
+}

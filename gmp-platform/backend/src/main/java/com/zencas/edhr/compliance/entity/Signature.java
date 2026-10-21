@@ -2,8 +2,6 @@ package com.zencas.edhr.compliance.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
@@ -29,8 +27,7 @@ public class Signature {
     private String authEventRef;
     @Column(name = "snapshot_hash")
     private String snapshotHash;
-    @Column(name = "snapshot_data", columnDefinition = "jsonb")
-    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "snapshot_data", columnDefinition = "TEXT")
     private String snapshotData;
     @Column(name = "signed_at")
     private LocalDateTime signedAt;

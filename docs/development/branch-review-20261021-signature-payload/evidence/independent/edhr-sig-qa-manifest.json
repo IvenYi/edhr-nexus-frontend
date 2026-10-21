@@ -1,0 +1,76 @@
+{
+  "author": "/root/signature_payload_independent",
+  "status": "FINAL",
+  "baseCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "headCommit": "aaef52a782327e68da736faf83a249a3217b7228",
+  "allChildInstancesFinal": true,
+  "files": [
+    {
+      "path": "/tmp/edhr-sig-qa-qualityResult.yaml",
+      "bytes": 12642,
+      "sha256": "f5bd81909e8cd585763b01f73d64f3df64319f464f5654bdc6e77c3b5a569f85"
+    },
+    {
+      "path": "/tmp/edhr-sig-qa-validation.json",
+      "bytes": 2079,
+      "sha256": "fc06d58765fb36b6d81d157a836c919cd09d5789533adc088a41ceadf9327805"
+    },
+    {
+      "path": "/tmp/edhr-sig-qa-candidate-business-summary.json",
+      "bytes": 26069,
+      "sha256": "7fd063afbdfc42830e68338edb6eb686fd671890613fed887e8d6edf87379586"
+    },
+    {
+      "path": "/tmp/edhr-sig-qa-candidate-knowledge-summary.json",
+      "bytes": 19433,
+      "sha256": "8f31fd1e96127d6b040a6a41b24f2f282bbc68965660208ae938d9fbea6c42e1"
+    },
+    {
+      "path": "/tmp/edhr-sig-qa-baseline-red-summary.json",
+      "bytes": 3416,
+      "sha256": "9e7b73da4340e6f1ea2f51db16e607fb2724db06a053d8726cdfeffa4e6265b6"
+    },
+    {
+      "path": "/tmp/edhr-sig-qa-baseline-export.json",
+      "bytes": 507,
+      "sha256": "dfbb49a09a1b2fa6820df270362155275875e7c7f92ae337bcddfdfcc374fee2"
+    },
+    {
+      "path": "/tmp/edhr-sig-qa-evidence-inspection.json",
+      "bytes": 42885,
+      "sha256": "08862fd728052bfc50aa122428ceb06b6c3370a16ba83751c70355bc792e90ef"
+    },
+    {
+      "path": "/tmp/edhr-sig-qa-source-review.json",
+      "bytes": 16434,
+      "sha256": "1d46982a727e551871d4c033b0c52d84d84ea2e2c9f84fe03417529912b6c40e"
+    },
+    {
+      "path": "/tmp/edhr-sig-qa-run.py",
+      "bytes": 3766,
+      "sha256": "bd0f4bd75236bd8f099dddcdb170e4159854b84c6f0e23dc82d6dd0cd85603b8"
+    },
+    {
+      "path": "/tmp/edhr-sig-qa-export-baseline.py",
+      "bytes": 1659,
+      "sha256": "a4157a49c28045e8579013ed179e06ea1ce8ea0f9025c35fdd0f2a3d6300665d"
+    },
+    {
+      "path": "/tmp/edhr-sig-qa-inspect-evidence.py",
+      "bytes": 7666,
+      "sha256": "dfd5d2740d9a334c6b531b3ebb09c22975a1b51b9d5f4c16596d2be365d99f3b"
+    },
+    {
+      "path": "/tmp/edhr-sig-qa-write-result.py",
+      "bytes": 15457,
+      "sha256": "d1e89209de46ee684956db2be6da0790f0e9e51332279d02d6bed45b229fb5cc"
+    }
+  ],
+  "excluded": [
+    "private logs",
+    "Surefire XML",
+    "credentials",
+    "exported full baseline source",
+    "font/browser binaries"
+  ]
+}

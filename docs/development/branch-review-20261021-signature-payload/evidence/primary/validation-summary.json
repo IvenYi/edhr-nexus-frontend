@@ -1,0 +1,142 @@
+{
+  "level": "L2",
+  "coreCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+  "knowledgeCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+  "targetCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "mainUniqueBusinessTests": 104,
+  "nativePostgresSubset": 18,
+  "h2DhrLifecycleSubset": 5,
+  "selectedSuites": [
+    {
+      "name": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "f4d374580064643533dd69914c730b055d98a9e7de993ad4657ce4705f82b2b0"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "06eaa2859ad81105058cf4a1ebf254565ee990be8543d036061ec4831846edab"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "0982ef9d4c10be117428194883ae4266cc0d7f6cbd71b037a5fee5b75bbe1ec4"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ExecutionAccessTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "eed5d077cd6ba1bba9c4120a40ceb1d8d7b9f44b6f2889ca12d8f54aeb9574e6"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "d287e6b73e3ec0adb01ed651d0d4136a9f1974c7a1f409a260d159db9510868a"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "580a638982efaeff43e63d3a043961e9488951a01caa8d8f7c473be1f55d6cd6"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "5987588b3ed25061c81e504dce19a1b9b4f404694e77d42253e11dd97317572c"
+    },
+    {
+      "name": "com.zencas.edhr.identity.controller.AuthControllerTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "6436bc48454bc5711e2f82a94329c34b4f8195fd08738533646538d392baef17"
+    }
+  ],
+  "selectionQualification": "focused-final104 had103 pass and one font identity assertion failure; corrected test font produced AuthControllerTest24 pass, replacing that suite only. Union is104 unique tests, never128. No product or assertion changed for environment fixes.",
+  "baseline": {
+    "tests": 7,
+    "failures": 1,
+    "businessErrors": 3,
+    "passedControls": 3,
+    "skipped": 0,
+    "productGapConfirmed": true
+  },
+  "intermediateFailures": [
+    "Migration rollback fixture inserted uncommitted seed; actual Liquibase rollback discarded it. Corrected commit timing only; original retained.",
+    "Full-master first attempted custom schema; old0077 explicitly uses public. Complete chain retested in owned temporary separate DB, no old migration changed.",
+    "First full regression: missing authorization TrueType font and Playwright attempted read-only home cache; original failures retained.",
+    "Next regression: one Noto cmap radical alias broke expected extracted Han characters. Local test font identity corrected; assertion unchanged."
+  ],
+  "fixedSourceReceipts": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java",
+      "commit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "sha256": "d0e3e5050949c990656e2e1df915d42885ab2cfeda63aa9612dd3ef44ae48608"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql",
+      "commit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "sha256": "fdd52e22ba67170ad0be4f397e4da42dbbd9eaa63f3b874cb68557edf35e321a"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "commit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "sha256": "b23dda825f38febb12dfeb4143a096228647106f2adf5aa3de0acfaeeb895b60"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotPostgresTest.java",
+      "commit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "sha256": "fbd9fe432e8a237bbebebeab5efbc80dc6962904476bf06a3f00dcbfb1f0b656"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotMigrationPostgresTest.java",
+      "commit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+      "sha256": "cc4be0ce6bc6920b4bade9476e63bb7418ad9a0e2b77264f41109c5faaaf7886"
+    }
+  ],
+  "runHeadQualification": "Primary runner reports HEAD c334 at run time with implementation then uncommitted; no runner HEAD is relabeled. Same product/test/migration bytes were committed as core. Final independent QA must test a clean fixed candidate.",
+  "historicalBoundary": "Legacy readable strings/hashes/metadata preserved; lost original bytes are not reconstructed; old unverifiable signatures remain rejected. Same JSONB input parse checks retained without normalized storage.",
+  "automaticRollback": "Not supplied because text-to-JSONB destroys new signed original bytes; actual rollback rejection and row preservation tested.",
+  "environment": "Owned synthetic PG16 only; system Chromium154 via controlled default cache and prepared test TrueType font. Not bundled Chromium145 or browser UI E2E.",
+  "database": {
+    "containerId": "5dd0ccd19fbbd6b367e59c380257cada10e2ed408fe43dab77b97f437ce65858",
+    "loopback": "127.0.0.1:55432",
+    "database": "edhr_signature_test",
+    "cleanup": "pending independent QA FINAL"
+  },
+  "notClaimed": [
+    "production migration/deploy",
+    "old signature recovery",
+    "all Signature/API/authentication/ZIP flows accepted",
+    "whole W3/W0-W7 completion",
+    "GitHub Actions inspected or triggered"
+  ]
+}

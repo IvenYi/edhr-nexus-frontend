@@ -63,17 +63,17 @@ implementationAnchors:
   - id: anchor.dhr-summary-zip-source-trace
     targetId: rule.dhr-summary-zip-source-trace
     targetType: rule
-    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java]
+    codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java]
     apiReferences: ['GET /api/v1/dhr-instances/{dhrId}/summary/versions/{versionId}/export']
-    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql]
+    databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql, gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql]
     uiReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx]
-    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java]
+    testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotPostgresTest.java, gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotMigrationPostgresTest.java]
     status: specified
     visibility: internal
-    evidenceIds: [evidence.dhr-summary-archive-service, evidence.dhr-summary-attachment-archive-tests, evidence.dhr-summary-user-confirmed]
+    evidenceIds: [evidence.dhr-summary-archive-service, evidence.dhr-summary-attachment-archive-tests, evidence.dhr-summary-user-confirmed, evidence.signature-payload-lossless-storage-source, evidence.signature-payload-lossless-storage-migration, evidence.signature-payload-postgres-roundtrip-test, evidence.signature-payload-postgres-migration-test]
     sourceRevision: working-tree
-    sourceLocator: revisionPrintableExport初核export仍输出forms JSON/字段表HTML及汇总附件原件，尚未有总PDF/来源单表PDF/字段原件链；已有manifest.sourceAuditEvents/sourceSignatures按提交时点截取、auditEvents/reviewSignatures和两类签名payload摘要校验。现有测试源码不证明本轮中文目录、PDF版式、实例附件、版本隔离或真实ZIP端到端通过；打印运行链由主开发并行实现，规则保持specified/internal。
-    capturedAt: '2026-09-28'
+    sourceLocator: 2026-09-28revisionPrintableExport初核打印缺口保留于原证据及Git，仅属当时观察，不否定当前已有PDF实现。2026-10-21只追加签名载荷有限核对：Signature改TEXT、0118保留旧可读文本和原摘要，原signTarget/signField算法及归档两类原字节校验不变；旧原文丢失不重建，仍不通过的旧签名继续拒绝。新增PG源码覆盖持久化和签名JDBC消费者及迁移，不代表中文PDF版式、实例附件、版本隔离或完整ZIP/浏览器端到端已验收，原打印缺口不在此关闭。
+    capturedAt: '2026-10-21'
     reviewStatus: reviewed
   - id: anchor.dhr-summary-review-binding
     targetId: rule.dhr-summary-review-binding

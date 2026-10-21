@@ -1,0 +1,13 @@
+# 本批问题与保留范围
+
+`W3-SIGNATURE-PAYLOAD-001`，high，W3签署消费链/相邻W1归档与W5持久化。源签署原文经JSONB规范化后，现有原字节SHA-256无法按JDBC读回值复验。
+
+真实调用：生产操作事务经ProductionExecutionEngine到ExecutionAccess.sign/signField；DHR审批经DhrReviewService核对资格/冻结证据后signTarget(DHR_SUMMARY)并把签名ID给专属任务完成。DhrArchiveService.sourceSignatures/signaturesFor实际核对读回原文摘要并抛业务异常。来源校验只在FULL或选有表单的SELECTED读取；仅汇总附件子集不读来源签名，但审批签名仍读取，移除子集payload在校验之后。不能把所有子集或独立AuditEvent算法混为一谈。
+
+固定c334产品+最初7例新fixture，实际PG/JPA提交后清上下文：两种signTarget和signField被真实归档JDBC消费者拒绝，USER_PROFILE实体原文断言也失败；2篡改摘要拒绝和1语义相同字节不同对照通过。实际报告是1failure+3业务error+3passed+0skip，不能把业务异常说成环境setup错误或称全组0error。保留该7例源；后续加入2载荷篡改用例，最终roundtrip9，迁移9，共18原生PG通过。
+
+根因在持久化表示，核心2ead6de2ed149f9c10a7786a555b0235c86b3186将实体载荷改为TEXT，并通过新0118将旧JSONB转换成原先可读文本。CHECK使用JSONB解析只保留原输入约束，不把解析结果回写。没有新摘要算法、重复载荷列、校验放宽或历史重算。原SignatureTest只反射固定错误JSONB注解，已由18项真实数据库/篡改/兼容/迁移检查替代。
+
+主侧最终104个不同业务测试通过口径见validation-summary；当前fixed-awaiting-independent-acceptance。正式本体updated/FINAL，实际89及12有限语义不是全库一致。待全新独立验收后只另置acceptance，不回写冻结catalog或原报告。
+
+保留：历史丢原文的签名仍不可自动复验，不在禁止恢复历史数据的范围里重造；旧AuditEvent摘要问题独立open。当前修复不改变DEC-0063/0074/0058和候选/委托/DHR专属规则。W3D-TASK-PAGINATION-001有明确整数算术/HTTP500源码候选但尚未运行，留后续独立小批；generic未知action默认完成只有内部线索，三HTTP常量与类型混用有客户端入口但无独立规范矩阵，已问用户，不移植普通生产表单政策。

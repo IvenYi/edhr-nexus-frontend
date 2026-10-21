@@ -1,0 +1,60 @@
+{
+  "phase": "baseline",
+  "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=SignatureSnapshotPostgresTest",
+    "test"
+  ],
+  "exit": 1,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+      "tests": 7,
+      "failures": 1,
+      "errors": 3,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "7dc7c2453ba7b3e1e27a6277c2316888c4773c8913470d405cf45b39c23259cb",
+      "cases": [
+        {
+          "name": "fieldSignatureUsesSameLosslessPersistence",
+          "status": "error",
+          "message": "来源签署证据摘要不一致，导出已停止：388207645011488768"
+        },
+        {
+          "name": "nativeJsonbControlHasEqualJsonButDifferentSignedBytes",
+          "status": "passed"
+        },
+        {
+          "name": "profileSnapshotKeepsExactWhitespaceOrderAndUnicode",
+          "status": "failed",
+          "message": "\nexpected: \"{ \"z\" : 1.00, \"a\" : [\"中文\", \" 空格 \"], \"signatureImage\" : {\"fileId\":\"501\"} }\"\n but was: \"{\"a\": [\"中文\", \" 空格 \"], \"z\": 1.00, \"signatureImage\": {\"fileId\": \"501\"}}\""
+        },
+        {
+          "name": "tamperedDigestStillStopsArchive(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "tamperedDigestStillStopsArchive(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "existingSignerServiceSurvivesNativePersistenceAndArchiveVerification(String)[1]",
+          "status": "error",
+          "message": "来源签署证据摘要不一致，导出已停止：388207645875515392"
+        },
+        {
+          "name": "existingSignerServiceSurvivesNativePersistenceAndArchiveVerification(String)[2]",
+          "status": "error",
+          "message": "DHR 审批签署证据摘要不一致，导出已停止：388207645959401472"
+        }
+      ]
+    }
+  ],
+  "rawLogAndXmlExcluded": true
+}

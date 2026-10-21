@@ -1,0 +1,90 @@
+{
+  "level": "L0",
+  "role": "environment assistance, not product or independent quality verification",
+  "contractReadCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "repositoryMutations": false,
+  "productTestsExecuted": [],
+  "rootCause": {
+    "observed": "Playwright.create attempted automatic browser installation under missing /home/agent/.cache/ms-playwright and failed with ENOENT, then wrapped the failure as Failed to create driver.",
+    "originalSyntheticProbeExit": 1,
+    "notProductFailure": true
+  },
+  "runtimeEnvironment": {
+    "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": "1",
+    "PLAYWRIGHT_BROWSERS_PATH": "/tmp/edhr-sig-playwright-cache"
+  },
+  "cacheLinks": [
+    {
+      "path": "/tmp/edhr-sig-playwright-cache/chromium_headless_shell-1208/chrome-headless-shell-linux64/chrome-headless-shell",
+      "symlinkTo": "/usr/bin/chromium"
+    },
+    {
+      "path": "/tmp/edhr-sig-playwright-cache/chromium-1208/chrome-linux64/chrome",
+      "symlinkTo": "/usr/bin/chromium"
+    }
+  ],
+  "browserVersion": "Chromium 154.0.8037.57 built on Debian GNU/Linux 13 (trixie)",
+  "driverBrowserMetadata": [
+    {
+      "name": "chromium",
+      "revision": "1208",
+      "installByDefault": true,
+      "browserVersion": "145.0.7632.6",
+      "title": "Chrome for Testing"
+    },
+    {
+      "name": "chromium-headless-shell",
+      "revision": "1208",
+      "installByDefault": true,
+      "browserVersion": "145.0.7632.6",
+      "title": "Chrome Headless Shell"
+    }
+  ],
+  "defaultLaunchProbe": {
+    "exit": 0,
+    "playwrightCreate": true,
+    "explicitExecutablePathUsed": false,
+    "browserLaunch": "chromium().launch(headless=true)",
+    "pdfPath": "/tmp/edhr-sig-playwright-probe.pdf",
+    "pdfBytes": 38251,
+    "pdfSha256": "081e89ff7adffea1f437f5e9572a4f45ed9540d23b5bf83fd874361a777e7860",
+    "chineseTextExtracted": true,
+    "syntheticOnly": true,
+    "isProductOrVisualAcceptance": false
+  },
+  "files": [
+    {
+      "path": "/workspace/.pr6-m2/com/microsoft/playwright/playwright/1.58.0/playwright-1.58.0.jar",
+      "sha256": "83ad22bfcfde28a19fa6cc658ed16be203c1089f6adc7cfa4557f26a5b28c46d",
+      "bytes": 600431
+    },
+    {
+      "path": "/workspace/.pr6-m2/com/microsoft/playwright/driver/1.58.0/driver-1.58.0.jar",
+      "sha256": "bfd0989f9c4b2a95d51ae50b21b0157360677c8f1b1c1752da3a31291f2b7685",
+      "bytes": 6869
+    },
+    {
+      "path": "/workspace/.pr6-m2/com/microsoft/playwright/driver-bundle/1.58.0/driver-bundle-1.58.0.jar",
+      "sha256": "c524d6d1c80b8e200ae21d3355baa90e3ea532f29e69c8d8e57a3503416f4648",
+      "bytes": 210309856
+    },
+    {
+      "path": "/workspace/.pr6-m2/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar",
+      "sha256": "4241c14a7727c34feea6507ec801318a3d4a90f070e4525681079fb94ee4c593",
+      "bytes": 283367
+    },
+    {
+      "path": "/tmp/EdhrPlaywrightProbe.java",
+      "sha256": "68fc7c766acbdb7aa1947b568326198e06bfa2acb2184e2e6c1eef275ed570ae",
+      "bytes": 856
+    }
+  ],
+  "downloads": [],
+  "limitations": [
+    "System Chromium is used via documented local cache symlinks; the bundled browser version is not claimed installed.",
+    "This standalone driver/default-launch/PDF smoke test does not replace parent regression, actual DHR renderer or visual acceptance.",
+    "Authorization-notice TrueType font setup is handled separately by root and was not validated here."
+  ],
+  "rawLogQualification": "Local standalone probe logs contain only synthetic HTML and library exceptions; no Maven logs, XML, settings, environment dumps or tokens were copied.",
+  "status": "FINAL"
+}

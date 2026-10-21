@@ -1,0 +1,103 @@
+{
+  "phase": "migration-checked",
+  "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=SignatureSnapshotPostgresTest,SignatureSnapshotMigrationPostgresTest,SignatureTest",
+    "test"
+  ],
+  "exit": 1,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.compliance.entity.SignatureTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "95e2b9cf70c816d34cceea75bf4ff272ca902bdc251c9bb763978f1aaa101482",
+      "cases": [
+        {
+          "name": "signedPayloadUsesLosslessTextInsteadOfJsonNormalization",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 1,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "4d503277b547961b4cb9f977eb9b5de4e48ed8a46be6e0e72d8d157ebb221351",
+      "cases": [
+        {
+          "name": "fullMasterBuildsFreshDatabaseWithLosslessSignatureStorage",
+          "status": "error",
+          "message": "liquibase.exception.LiquibaseException: liquibase.exception.MigrationFailedException: Migration failed for changeset db/changelog/0077-work-order-legacy-product-reference.sql::0077-work-order-legacy-product-reference::edhr:\n     Reason: liquibase.exception.DatabaseException: ERROR: relation \"public.work_order\" does not exist\n  Where: PL/pgSQL function inline_code_block line 5 at FOR over SELECT rows [Failed SQL: (0) DO $$\nDECLARE\n    legacy_const"
+        },
+        {
+          "name": "forwardMigrationPreservesEveryExistingReadableValueHashAndMetadata",
+          "status": "passed"
+        },
+        {
+          "name": "repeatedLiquibaseAndForwardDdlLeaveRowsAndSingleChangeSetUnchanged",
+          "status": "passed"
+        },
+        {
+          "name": "lossyAutomaticRollbackIsRejectedBeforeChangingNewSignedPayload",
+          "status": "passed"
+        },
+        {
+          "name": "migrationDoesNotInventMissingOriginalBytesOrRelaxLegacyVerification",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "cfdf442bec96831c8f0114fbd862a93800f53d7652d7b929c2459bc20765eab2",
+      "cases": [
+        {
+          "name": "fieldSignatureUsesSameLosslessPersistence",
+          "status": "passed"
+        },
+        {
+          "name": "nativeJsonbControlHasEqualJsonButDifferentSignedBytes",
+          "status": "passed"
+        },
+        {
+          "name": "profileSnapshotKeepsExactWhitespaceOrderAndUnicode",
+          "status": "passed"
+        },
+        {
+          "name": "tamperedDigestStillStopsArchive(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "tamperedDigestStillStopsArchive(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "existingSignerServiceSurvivesNativePersistenceAndArchiveVerification(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "existingSignerServiceSurvivesNativePersistenceAndArchiveVerification(String)[2]",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "rawLogAndXmlExcluded": true
+}

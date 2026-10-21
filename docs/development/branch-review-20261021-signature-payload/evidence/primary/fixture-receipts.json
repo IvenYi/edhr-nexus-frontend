@@ -1,0 +1,20 @@
+{
+  "members": [
+    {
+      "member": "edhr-sig-baseline-seven-fixture.java",
+      "sha256": "c472a785b250334b5159cf01ebf0496f4131ef34480c68ec96075d84f8dfd242",
+      "bytes": 10942
+    },
+    {
+      "member": "edhr-sig-migration-before-commit-fixture.java",
+      "sha256": "d7de74ee03d981be2957b188aca99442ba7ff67497bde90afa84dc068f843d8c",
+      "bytes": 8849
+    },
+    {
+      "member": "edhr-sig-migration-before-master-fixture.java",
+      "sha256": "752bacaf60b15ddcb8faed70e2e9fe9bdb32fe0b8b90a1de3752f3d3e90ec6b2",
+      "bytes": 10601
+    }
+  ],
+  "qualification": "Baseline seven-case fixture kept unchanged until later two payload-corruption cases were appended. Migration pre-correction snapshots are retained at correction time; before-commit copy includes the fresh-master case added after the first four-case run, so it is not relabeled as an exact launch-time full-file snapshot. The failing rollback method itself is unchanged there. Environment and fixture failures are not extra product defects."
+}

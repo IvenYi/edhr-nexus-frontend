@@ -1,0 +1,87 @@
+{
+  "author": "/root/signature_payload_independent",
+  "phase": "baseline-red",
+  "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=SignatureSnapshotPostgresTest",
+    "clean",
+    "test"
+  ],
+  "commandExit": 1,
+  "startedUnixNs": 1792557496543711167,
+  "finishedUnixNs": 1792557536939441216,
+  "counts": {
+    "tests": 7,
+    "failures": 1,
+    "errors": 3,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "name": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+      "counts": {
+        "tests": 7,
+        "failures": 1,
+        "errors": 3,
+        "skipped": 0
+      },
+      "xmlSha256": "e7ea1bdada997c8f70bc51a0410b68a2a798d4b2bdf4ff2c4b01cb5b1c1c3cb4",
+      "fresh": true,
+      "cases": [
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "fieldSignatureUsesSameLosslessPersistence",
+          "status": "error",
+          "problemType": "com.zencas.edhr.common.exception.BusinessException",
+          "message": "来源签署证据摘要不一致，导出已停止：388214445274312704"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "nativeJsonbControlHasEqualJsonButDifferentSignedBytes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "profileSnapshotKeepsExactWhitespaceOrderAndUnicode",
+          "status": "failed",
+          "problemType": "org.opentest4j.AssertionFailedError",
+          "message": "\nexpected: \"{ \"z\" : 1.00, \"a\" : [\"中文\", \" 空格 \"], \"signatureImage\" : {\"fileId\":\"501\"} }\"\n but was: \"{\"a\": [\"中文\", \" 空格 \"], \"z\": 1.00, \"signatureImage\": {\"fileId\": \"501\"}}\""
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "tamperedDigestStillStopsArchive(String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "tamperedDigestStillStopsArchive(String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "existingSignerServiceSurvivesNativePersistenceAndArchiveVerification(String)[1]",
+          "status": "error",
+          "problemType": "com.zencas.edhr.common.exception.BusinessException",
+          "message": "来源签署证据摘要不一致，导出已停止：388214446540992512"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "existingSignerServiceSurvivesNativePersistenceAndArchiveVerification(String)[2]",
+          "status": "error",
+          "problemType": "com.zencas.edhr.common.exception.BusinessException",
+          "message": "DHR 审批签署证据摘要不一致，导出已停止：388214446599712768"
+        }
+      ]
+    }
+  ],
+  "cleanAtStart": null,
+  "after": null,
+  "privateLogSha256": "de119c42a7f3dce6ddf2661d409ce55dc15a010b0ae875989eafb59b6ddbbb72",
+  "rawLogAndXmlExcluded": true,
+  "freshReportsOnly": true
+}
