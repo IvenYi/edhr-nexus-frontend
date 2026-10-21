@@ -1,5 +1,7 @@
 # 持续推进台账
 
+已交付 [PR23](https://github.com/IvenYi/edhr-nexus-frontend/pull/23)，audit/edhr-dev-task-pagination-20261021 → edhr-dev，等待用户人工合并。实际独立受测9d826911，之后仅L0归档、验收、范围与PR登记；产品/测试/知识/契约及冻结catalog/ledger保持，最新目标仍13def47d。收到合入信息后先显式fetch，再继续W3剩余入口/权限/签名引用等待核范围及W2/W4–W7；通用动作类型政策需真实业务答复。当前分页整数缺陷已验收，不外推任意参数绑定、全站分页或整体分支完成，不自动merge/deploy。
+
 当前检查点：[待办与已办分页边界](../branch-review-20261021-task-pagination/README.md)。已fetch最新edhr-dev@13def47d，PR22人工合入且整树与1b80df62相同、契约无增量。W3D-TASK-PAGINATION-001已用真实JWT/filter/MockMvc/PG同组28复现22红/6正、0error/skip；核心25e974e0仅修todo/done非正400和long有界下标，不加任意页长上限、不变SQL/身份/候选/DHR隔离/动作/返回数组。主侧clean52（28新+原控制器2+实例授权22，50原生PG）全过；全新独立对干净9d826911正式passed/FINAL，8/8必需检查，clean52及89知识均0失败/错误/跳过，并独立重现旧红和核验原件/ledger。受测后仅L0档案、验收、范围与PR登记；自建PG已按确切ID清理，不自动merge/deploy。
 
 本批知识业务定义和资产未变，本体门禁not-applicable，依据在决策包并经独立核对；不新增虚假语义已审记录。PR22真实passed8/8只用于承接已验签名项，其余47原问题保持；2839路径/2552ID为合并时点初始分母，当前冻结清单见下段。W2/W3余项、W4–W7、四gap、记录控制/两项DHR high/A12暂缓、历史签名不可恢复及旧AuditEvent问题保持；generic动作类型政策仍待用户答复。已在全部角色FINAL后、PR创建前实际向用户完成范围/进度复核，无任务漂移。

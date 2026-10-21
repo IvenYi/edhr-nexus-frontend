@@ -1,5 +1,7 @@
 # 待办与已办分页边界
 
+已交付 [PR23](https://github.com/IvenYi/edhr-nexus-frontend/pull/23)，来源audit/edhr-dev-task-pagination-20261021，目标edhr-dev，等待用户人工merge。创建时GitHub为MERGEABLE/CLEAN；未据此声称仓库强制门禁已配置，也未查询/触发Actions。实际独立受测9d826911，后续仅L0档案/验收/范围与PR登记；最新交付HEAD以Git分支为准。[交付登记](delivery.json)保留实际创建时head和target，不伪造提交自引用。
+
 延续edhr-dev整体代码审查。PR22已人工合入13def47d4def51237d1393eaa7bf2651e98a0cbd，与1b80df62交付整树一致；契约无增量，不重开旧PR。核心25e974e03813f6403618ce8a9efc735cafd429a2仅修改WorkflowTaskController.todo/done及新增真实JWT/MockMvc/PG回归。
 
 W3D-TASK-PAGINATION-001（medium）：未校验非正page/size及int下标计算，可导致HTTP500、错误200空数组或超大正页回绕到第一页。当前正page/size校验使用既有GENERAL_001/400，偏移及结尾用long、有界后转List下标；无任意页长上限，不改SQL、身份来源、候选/开放候选、排序、DHR排除、动作或返回数组。独立表单/DHR审批的零基分页不属于同一接口，保持原约定。
