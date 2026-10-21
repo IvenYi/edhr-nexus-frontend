@@ -1,0 +1,57 @@
+{
+  "schema": "edhr-audit-batch-acceptance/v1",
+  "level": "L2",
+  "recordedAt": "2026-10-21T21:35:52.654363+08:00",
+  "baseCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+  "testedCommit": "9d8269114d8d4645be34b48bf0d0d88b5d245ba1",
+  "coreCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+  "qualityResult": {
+    "result": "passed",
+    "author": "/root/pagination_independent",
+    "status": "FINAL",
+    "path": "evidence/independent/edhr-page-qa-qualityResult.yaml",
+    "sha256": "0d8017b9d0544e259b670a5b958fe8bd312dd0a8294ae69f97b6d2b01c3d18a5",
+    "requiredChecks": 8,
+    "allChildInstancesFinal": true
+  },
+  "ontologyResult": {
+    "result": "not-applicable",
+    "formalRoleDispatched": false,
+    "reason": "Technical integer input/index correction only; no business knowledge/policy/action/permission/audit/snapshot change; applicability independently confirmed."
+  },
+  "findings": [
+    {
+      "id": "W3D-TASK-PAGINATION-001",
+      "severity": "medium",
+      "disposition": "fixed-and-independently-accepted"
+    }
+  ],
+  "independentBusinessTests": {
+    "tests": 52,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "nativePostgresSubset": 50,
+    "mockitoSubset": 2
+  },
+  "independentKnowledgeTests": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "originalPendingCatalogAndLedgerPreserved": true,
+  "acceptanceOverlayDoesNotRerunProductOrSemanticChecks": true,
+  "scopeReview": {
+    "completedAfterAllProfessionalFinal": true,
+    "communicatedBeforePr": true,
+    "path": "scope-review.md"
+  },
+  "wholeBranchAccepted": false,
+  "mergeOrDeployPerformed": false,
+  "remaining": [
+    "非整数/超int请求绑定、其他控制器分页及全局异常策略未由此片修复或验收。",
+    "合成JWT/MockMvc与原生PG验证不包含真实密码登录、浏览器UI、完整多租户或全工作流生命周期。",
+    "记录控制/两项DHR high/A12暂缓、四知识gap、W5-AUDIT-HASH-001及历史签名原文不可恢复继续保留。"
+  ]
+}

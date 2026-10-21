@@ -1,0 +1,794 @@
+{
+  "author": "/root/pagination_independent",
+  "headCommit": "9d8269114d8d4645be34b48bf0d0d88b5d245ba1",
+  "targetCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+  "contractReadCommit": "080ce5075a902979928d4bc65b133d9a8097c231",
+  "contracts": [
+    {
+      "path": "AGENTS.md",
+      "readCommit": "080ce5075a902979928d4bc65b133d9a8097c231",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "targetAndFinalIdentical": true
+    },
+    {
+      "path": "codeplzreadme.md",
+      "readCommit": "080ce5075a902979928d4bc65b133d9a8097c231",
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "targetAndFinalIdentical": true
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "readCommit": "080ce5075a902979928d4bc65b133d9a8097c231",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "targetAndFinalIdentical": true
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "readCommit": "080ce5075a902979928d4bc65b133d9a8097c231",
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "targetAndFinalIdentical": true
+    }
+  ],
+  "workingTreeBeforeInspection": "clean",
+  "actualProductChanges": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java"
+  ],
+  "postEvidenceProtectedDelta": [],
+  "verifiedOriginals": [
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/helpers/edhr-page-baseline-build.py",
+      "sha256": "0207e35c6c160a0116e8fbb97de19bc7684ee6cd9a8bd184a37d7f8ac4a5ee14"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/helpers/edhr-page-baseline-draft-catalog.json",
+      "sha256": "1e45436637b16e2ef96dc6a536b9f78616d0ac4153f9f22092439044f1d2ace8"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/helpers/edhr-page-baseline-receipts.json",
+      "sha256": "b0c51298247942c1ec43b3f6e9634fb39cb8254b5615cfb3c767c6ef26ce3da8"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/helpers/edhr-page-baseline-support.json",
+      "sha256": "9fc905c647c32fb5c8a1f71b863878f649506303e4fd7e0ccc583f510e9a9ab4"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/helpers/edhr-page-baseline-manifest.json",
+      "sha256": "48ad7c89b9384f2a3e33e66d351704e67a7083509d85557af7c8876a55b23f1e"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/helpers/edhr-page-source-map.json",
+      "sha256": "af7eadb225df4c9c21c212992423603b8d4333daaeb446e807f66bf99a2b6ff1"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/helpers/edhr-page-source-review.md",
+      "sha256": "0c1641723f23e260743ad3271e2bf06a9594e6ce24b18f177e39faf630130161"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/helpers/edhr-page-source-build.py",
+      "sha256": "f922017df5d8282b05c154ea51dd67ef5449a74ee51a7e518c281f7dd2de6f8f"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/helpers/edhr-page-front-consumers.json",
+      "sha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/helpers/edhr-page-front-consumers.md",
+      "sha256": "0ff813e9c50b271dd2b76e24e4d57c540317cb8cc3a2adf79f4160eb2c6396f5"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/helpers/edhr-page-source-manifest.json",
+      "sha256": "acda70cecbd11fea494c9fe5bf68b3a76e94f511710f212d56aaeba97280829b"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/helpers/edhr-page-catalog-build.py",
+      "sha256": "aa50fccb92319079fb867bb36e1e4c1358e7a2fcc34ccdfbc145f62f952db9f0"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/primary/edhr-page-baseline-summary.json",
+      "sha256": "adfcb2023479d44f5c1851ac59166a07315c08cdd7ec65f021828d9bebb8e191"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/primary/edhr-page-fixed-summary.json",
+      "sha256": "77fe4acc3b2d082ee27237f9ea8c051043a702c3be073a7aca8518d5a4bb6c6d"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/primary/edhr-page-run.py",
+      "sha256": "3da9d6fa97d8121e1b5c0fe8c7e574322ee1a48024eff06368d9b3e5b47c2010"
+    },
+    {
+      "path": "docs/development/branch-review-20261021-task-pagination/evidence/primary/edhr-page-archive.py",
+      "sha256": "2f57433e4bc28105dd9c5157734092553f30dda501f784df6e1cfa62de91ea07"
+    }
+  ],
+  "originalCount": 16,
+  "inheritedMethodsUnchanged": 485,
+  "inheritedSemanticSourcesUnchanged": 6,
+  "historicalSemanticRows": 108,
+  "newSemanticReviews": 0,
+  "priorFindingObjectsUnchangedExcept": [
+    "W3-SIGNATURE-PAYLOAD-001"
+  ],
+  "priorQualityRequiredPassed": 8,
+  "newFiniteRanges": [
+    {
+      "id": "w3-page-backend:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "range": [
+        27,
+        33
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "range": [
+        88,
+        103
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:003",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "range": [
+        108,
+        122
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:004",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "range": [
+        186,
+        192
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:005",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "range": [
+        21,
+        26
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:006",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "range": [
+        28,
+        31
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:007",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "range": [
+        29,
+        37
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "7455539529c5809d43f1a80ef92515df7a8b9c894429e10353e349c180ccaae9",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:008",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "range": [
+        80,
+        87
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "7455539529c5809d43f1a80ef92515df7a8b9c894429e10353e349c180ccaae9",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:009",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "range": [
+        39,
+        60
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:010",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "range": [
+        62,
+        69
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:011",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java",
+      "range": [
+        26,
+        54
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "4ed2eb9458b68717b8bf5873dedc7fa1d0fbf92d6e5efb9eebebe9d82b074ed4",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:012",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/dto/ApiResponse.java",
+      "range": [
+        26,
+        34
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "f8c98fe5426042dac438d3275300a980721be72fae75f6e1985e6121617b92b2",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:013",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/dto/ApiResponse.java",
+      "range": [
+        46,
+        54
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "f8c98fe5426042dac438d3275300a980721be72fae75f6e1985e6121617b92b2",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:014",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/BusinessException.java",
+      "range": [
+        11,
+        19
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "6b60983555c7f93de022fbcb6910c88c2b7e1d1b52bb16a938a4701ec2ee93f1",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:015",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/BusinessException.java",
+      "range": [
+        26,
+        32
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "6b60983555c7f93de022fbcb6910c88c2b7e1d1b52bb16a938a4701ec2ee93f1",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-backend:016",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/ErrorCode.java",
+      "range": [
+        75,
+        78
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "1343e494f6f86fb0451948acb46f1f76eb9957d754dff4f10de080f1ff30e7e1",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-bootstrap-html:range01",
+      "path": "gmp-platform/frontend/index.html",
+      "range": [
+        9,
+        12
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "2ec49ded6e8aee045427d3ee9912032b71ab00511516bbacf3e914fe32073add",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-bootstrap-main:range01",
+      "path": "gmp-platform/frontend/src/main.tsx",
+      "range": [
+        1,
+        10
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "2ed12a1457cd60b31c0f44f3ea59b8bbc2ddd4a49add3165228d093878fb7c24",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-bootstrap-app:range01",
+      "path": "gmp-platform/frontend/src/App.tsx",
+      "range": [
+        1,
+        9
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "6f11b6185c5322dd7475ba14f0e07b5c610c9bbc2dea18d3e8d868c68add27a6",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-bootstrap-app:range02",
+      "path": "gmp-platform/frontend/src/App.tsx",
+      "range": [
+        242,
+        259
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "6f11b6185c5322dd7475ba14f0e07b5c610c9bbc2dea18d3e8d868c68add27a6",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-layout-outlet:range01",
+      "path": "gmp-platform/frontend/src/components/shared/AppLayout.tsx",
+      "range": [
+        1,
+        4
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "61289d0cb45f772a2604840430764c42ead20060fe8a5c1d263572645719ca88",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-layout-outlet:range02",
+      "path": "gmp-platform/frontend/src/components/shared/AppLayout.tsx",
+      "range": [
+        1414,
+        1425
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "61289d0cb45f772a2604840430764c42ead20060fe8a5c1d263572645719ca88",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-active-routes:range01",
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "range": [
+        9,
+        33
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "8eaf4ff1ad44ce421f4fc68727a168f4f27cbef854e1c5a5eed9c955c13b06b3",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-active-routes:range02",
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "range": [
+        61,
+        116
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "8eaf4ff1ad44ce421f4fc68727a168f4f27cbef854e1c5a5eed9c955c13b06b3",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-dashboard-tabs:range01",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardPage.tsx",
+      "range": [
+        1,
+        9
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "bffdf8309fac299eaed8059a6250f264d14517dd80179865caf35b607d96765c",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-dashboard-tabs:range02",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardPage.tsx",
+      "range": [
+        18,
+        25
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "bffdf8309fac299eaed8059a6250f264d14517dd80179865caf35b607d96765c",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-dashboard-tabs:range03",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardPage.tsx",
+      "range": [
+        60,
+        69
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "bffdf8309fac299eaed8059a6250f264d14517dd80179865caf35b607d96765c",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-todo-wrapper:range01",
+      "path": "gmp-platform/frontend/src/pages/dashboard/TodoList.tsx",
+      "range": [
+        1,
+        7
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "a6559945182d2b7d1ff36246e2268f4cc8ddd65668237969961640b82334376e",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-done-wrapper:range01",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DoneList.tsx",
+      "range": [
+        1,
+        7
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "fd5384b7502acc6207b236479489b155784d072e0b163de5ba29dda4ae3f6850",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-dashboard-consumer:range01",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "range": [
+        1,
+        9
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "20c917457870ac7ba620937bde4ec01b0e3e1d1d27a4a5015b79706d750ab100",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-dashboard-consumer:range02",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "range": [
+        11,
+        22
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "20c917457870ac7ba620937bde4ec01b0e3e1d1d27a4a5015b79706d750ab100",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-dashboard-consumer:range03",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "range": [
+        27,
+        39
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "20c917457870ac7ba620937bde4ec01b0e3e1d1d27a4a5015b79706d750ab100",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-dashboard-consumer:range04",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "range": [
+        47,
+        61
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "20c917457870ac7ba620937bde4ec01b0e3e1d1d27a4a5015b79706d750ab100",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-client:range01",
+      "path": "gmp-platform/frontend/src/api/client.ts",
+      "range": [
+        14,
+        20
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "f5b919fc5059196d41adf259870c24dff3e9b930fdc98ba5846b10334c85ae75",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-client:range02",
+      "path": "gmp-platform/frontend/src/api/client.ts",
+      "range": [
+        36,
+        50
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "f5b919fc5059196d41adf259870c24dff3e9b930fdc98ba5846b10334c85ae75",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-client:range03",
+      "path": "gmp-platform/frontend/src/api/client.ts",
+      "range": [
+        66,
+        66
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "f5b919fc5059196d41adf259870c24dff3e9b930fdc98ba5846b10334c85ae75",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-common-shapes:range01",
+      "path": "gmp-platform/frontend/src/types/common.ts",
+      "range": [
+        1,
+        24
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "f7aa611902bf635c8624749d23a0edbcf76e7f813efb31cd03fa65067453189c",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-helper-definitions:range01",
+      "path": "gmp-platform/frontend/src/api/workflow-tasks.ts",
+      "range": [
+        1,
+        9
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "7aa5a6623a471ee264000f00d33c45aa3732798fb58523b9988fb6cc78bfeaae",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-form-review-consumer:range01",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "range": [
+        19,
+        22
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-form-review-consumer:range02",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "range": [
+        73,
+        76
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-form-review-consumer:range03",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "range": [
+        121,
+        130
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-form-review-consumer:range04",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "range": [
+        190,
+        215
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-form-review-consumer:range05",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "range": [
+        226,
+        231
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-form-review-consumer:range06",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "range": [
+        275,
+        285
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-form-worklist-api:range01",
+      "path": "gmp-platform/frontend/src/api/form-instance-records.ts",
+      "range": [
+        79,
+        82
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "6fcdaf7d6edd525e225da1373cf53ee3742f994fc338c7c7e7d9b227694637d2",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-form-worklist-api:range02",
+      "path": "gmp-platform/frontend/src/api/form-instance-records.ts",
+      "range": [
+        101,
+        116
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "6fcdaf7d6edd525e225da1373cf53ee3742f994fc338c7c7e7d9b227694637d2",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-form-worklist-api:range03",
+      "path": "gmp-platform/frontend/src/api/form-instance-records.ts",
+      "range": [
+        124,
+        135
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "6fcdaf7d6edd525e225da1373cf53ee3742f994fc338c7c7e7d9b227694637d2",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-dhr-review-consumer:range01",
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "range": [
+        1,
+        18
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "651c4e34f0ddee5bc3db718e484d3cf1135352ca5974a16a2023370ad7f127d6",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-dhr-review-consumer:range02",
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "range": [
+        118,
+        130
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "651c4e34f0ddee5bc3db718e484d3cf1135352ca5974a16a2023370ad7f127d6",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-dhr-worklist-api:range01",
+      "path": "gmp-platform/frontend/src/api/dhr-workbenches.ts",
+      "range": [
+        1,
+        17
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "8e37a7893860dd1b7383498f3771c97d6fbcaff97f58eb6a882c7c4f3b0040ee",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-dhr-table-pagination:range01",
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrWorklistTable.tsx",
+      "range": [
+        1,
+        17
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "0c2116a4085d2608234467a52313e96b910da8ded95f1beb5e47129ec2003332",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-dhr-table-pagination:range02",
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrWorklistTable.tsx",
+      "range": [
+        33,
+        46
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "0c2116a4085d2608234467a52313e96b910da8ded95f1beb5e47129ec2003332",
+      "reportedRuntime": false
+    },
+    {
+      "id": "w3-page-front-shared-zero-based-pagination:range01",
+      "path": "gmp-platform/frontend/src/pages/form-management/formManagementListStyles.tsx",
+      "range": [
+        45,
+        76
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "sha256": "f97782404d82962523306180142a435587c2738c3426b09b802527a7423542e6",
+      "reportedRuntime": false
+    },
+    {
+      "id": "page-primary:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "range": [
+        89,
+        106
+      ],
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "reportedRuntime": true
+    },
+    {
+      "id": "page-primary:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "range": [
+        112,
+        128
+      ],
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "reportedRuntime": true
+    },
+    {
+      "id": "page-primary:003",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java",
+      "range": [
+        86,
+        91
+      ],
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "sha256": "9848c9b17b8f6d046c1b4801acbe055883d01d2e15ab3f8b4a944e9b2d43ff90",
+      "reportedRuntime": true
+    },
+    {
+      "id": "page-primary:004",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java",
+      "range": [
+        101,
+        105
+      ],
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "sha256": "9848c9b17b8f6d046c1b4801acbe055883d01d2e15ab3f8b4a944e9b2d43ff90",
+      "reportedRuntime": true
+    },
+    {
+      "id": "page-primary:005",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java",
+      "range": [
+        108,
+        119
+      ],
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "sha256": "9848c9b17b8f6d046c1b4801acbe055883d01d2e15ab3f8b4a944e9b2d43ff90",
+      "reportedRuntime": true
+    },
+    {
+      "id": "page-primary:006",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java",
+      "range": [
+        122,
+        129
+      ],
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "sha256": "9848c9b17b8f6d046c1b4801acbe055883d01d2e15ab3f8b4a944e9b2d43ff90",
+      "reportedRuntime": true
+    },
+    {
+      "id": "page-primary:007",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java",
+      "range": [
+        132,
+        138
+      ],
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "sha256": "9848c9b17b8f6d046c1b4801acbe055883d01d2e15ab3f8b4a944e9b2d43ff90",
+      "reportedRuntime": true
+    }
+  ],
+  "newFiniteRangeCount": 60,
+  "newUniqueRangeIds": 60,
+  "findingRecords": 49,
+  "counts": {
+    "trackedPaths": 2864,
+    "knowledgeIds": 2552,
+    "sourceScopes": 545,
+    "sourceNeedsDelta": 123,
+    "sourceRetained": 422,
+    "semanticNeedsDelta": 63,
+    "semanticRetained": 45,
+    "historicalEvidenceGaps": 4,
+    "wholeFilesCompleted": 0
+  },
+  "primaryRuntimeQualificationVerified": true,
+  "ontologyNotApplicableConsistentWithUnchangedAssetsAndTechnicalScope": true,
+  "overallAuditComplete": false,
+  "runtimeExecutedByThisInspection": false,
+  "repositoryMutations": false
+}

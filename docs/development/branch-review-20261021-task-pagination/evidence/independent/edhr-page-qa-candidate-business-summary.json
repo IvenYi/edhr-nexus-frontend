@@ -1,0 +1,270 @@
+{
+  "mode": "candidate-business",
+  "cwd": "/workspace/edhr-nexus-frontend",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=WorkflowTaskPaginationPostgresTest,WorkflowTaskControllerTest,WorkflowInstanceAuthorizationIntegrationTest",
+    "clean",
+    "test"
+  ],
+  "exit": 0,
+  "observerHead": "9d8269114d8d4645be34b48bf0d0d88b5d245ba1",
+  "observerWorkingTree": [],
+  "elapsedSeconds": 47.406,
+  "nativeDatabase": "owned PostgreSQL16 loopback55432/edhr_w3_command_test",
+  "suites": [
+    {
+      "tests": 28,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.controller.WorkflowTaskPaginationPostgresTest",
+      "fresh": true,
+      "xmlSha256": "94d6a168fa1d0a0f77ba853dea0aed54c58f4aab8ada35367ad256f0b4d035e2",
+      "cases": [
+        {
+          "name": "normalPagesPreserveOrderOperatorScopeDhrExclusionAndArrayContract(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "normalPagesPreserveOrderOperatorScopeDhrExclusionAndArrayContract(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "paginationDoesNotBypassAuthentication(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "paginationDoesNotBypassAuthentication(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "emptyQueuesKeepValidEmptyResponsesAndStillRejectInvalidPagination(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "emptyQueuesKeepValidEmptyResponsesAndStillRejectInvalidPagination(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[9]",
+          "status": "passed"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[10]",
+          "status": "passed"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[9]",
+          "status": "passed"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[10]",
+          "status": "passed"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[11]",
+          "status": "passed"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[12]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest",
+      "fresh": true,
+      "xmlSha256": "34b80ae87b35192a1c13eebcb93b71b4bb42ea01cda2f114afffcbeb51211b31",
+      "cases": [
+        {
+          "name": "doneUsesAuthenticatedOperatorInsteadOfRequestParameter",
+          "status": "passed"
+        },
+        {
+          "name": "todoUsesAuthenticatedOperatorAndOneDatabaseLookup",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.controller.WorkflowInstanceAuthorizationIntegrationTest",
+      "fresh": true,
+      "xmlSha256": "598c13c4665d0dcdba9c738fb734fedca77727fc32036c09cc1a15137a54641c",
+      "cases": [
+        {
+          "name": "authorizedDedicatedTerminationKeepsTaskAndLogChangesTogether",
+          "status": "passed"
+        },
+        {
+          "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "taskAdministrativeWritesAndTerminationAlreadyRequireInterventionAuthority",
+          "status": "passed"
+        },
+        {
+          "name": "ordinaryReaderKeepsExistingReadEndpoints",
+          "status": "passed"
+        },
+        {
+          "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[9]",
+          "status": "passed"
+        },
+        {
+          "name": "candidateCanCompleteThroughEngineWithoutAdministrativeWritePermission",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 52,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "observerHeadAfter": "9d8269114d8d4645be34b48bf0d0d88b5d245ba1",
+  "observerWorkingTreeAfter": []
+}

@@ -1,0 +1,81 @@
+{
+  "author": "/root/pagination_independent",
+  "status": "FINAL",
+  "baseCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+  "headCommit": "9d8269114d8d4645be34b48bf0d0d88b5d245ba1",
+  "allChildInstancesFinal": true,
+  "files": [
+    {
+      "path": "/tmp/edhr-page-qa-qualityResult.yaml",
+      "bytes": 11528,
+      "sha256": "0d8017b9d0544e259b670a5b958fe8bd312dd0a8294ae69f97b6d2b01c3d18a5"
+    },
+    {
+      "path": "/tmp/edhr-page-qa-validation.json",
+      "bytes": 2037,
+      "sha256": "6e641d03fe50176ef55774494e3248c19881832b531b53bedbbb66c6bd5532fe"
+    },
+    {
+      "path": "/tmp/edhr-page-qa-candidate-business-summary.json",
+      "bytes": 9213,
+      "sha256": "3759c333626dfb3498d0a0c6d191c1b05160e2fba3c6bb55d7271a8b03ebab57"
+    },
+    {
+      "path": "/tmp/edhr-page-qa-candidate-knowledge-summary.json",
+      "bytes": 12636,
+      "sha256": "6fca9117f55bd48a0d465bb6c63b4dc2f8587eb5659295611458b34d52f40192"
+    },
+    {
+      "path": "/tmp/edhr-page-qa-baseline-red-summary.json",
+      "bytes": 7808,
+      "sha256": "d14f38f498e5cd7d48d28fd35eb8c437c2b94e1a2c376965eb6dbc0eaed23b89"
+    },
+    {
+      "path": "/tmp/edhr-page-qa-baseline-export.json",
+      "bytes": 657,
+      "sha256": "9654cd3f5faf156f88eb06e0e50a0d99ed86a6316d74a47c0a16f5cc3b648a83"
+    },
+    {
+      "path": "/tmp/edhr-page-qa-ledger-check-summary.json",
+      "bytes": 3456,
+      "sha256": "4cf92fcfbda211ca9fcdce2b72b8f195f892f9d135fab112cfdbfbcf9a553a4c"
+    },
+    {
+      "path": "/tmp/edhr-page-qa-evidence-inspection.json",
+      "bytes": 28574,
+      "sha256": "b243b115490c82fd9498d2b3ef9f92cc96d56d3d70f51aadb68a486f14016c87"
+    },
+    {
+      "path": "/tmp/edhr-page-qa-source-review.json",
+      "bytes": 12839,
+      "sha256": "611c7202493906fbcbf3c2f724229e3fe82b002076ed4253bef23e9051c78e4a"
+    },
+    {
+      "path": "/tmp/edhr-page-qa-run.py",
+      "bytes": 2995,
+      "sha256": "c49b8774447db09ca660e1e802a3d96e7b0c6e4c6d7b916c305d3cbe8db37772"
+    },
+    {
+      "path": "/tmp/edhr-page-qa-export-baseline.py",
+      "bytes": 1298,
+      "sha256": "833777ac0ef58d9754c47dca2bc9d8a97dd8520b6df6d39ee0850639e32ec4af"
+    },
+    {
+      "path": "/tmp/edhr-page-qa-inspect-evidence.py",
+      "bytes": 7735,
+      "sha256": "e0d4bd935f47bef9bcbc5f3b2f27921f9c59f3722d51e6e22962c7e14cb683f8"
+    },
+    {
+      "path": "/tmp/edhr-page-qa-write-result.py",
+      "bytes": 14744,
+      "sha256": "7880ac31bcc4ba011eae8c84da05ae9c1c69fb54221ee92047747422d7be51df"
+    }
+  ],
+  "excluded": [
+    "private logs",
+    "Surefire XML",
+    "JWTs/credentials",
+    "exported full baseline source",
+    "node_modules caches"
+  ]
+}
