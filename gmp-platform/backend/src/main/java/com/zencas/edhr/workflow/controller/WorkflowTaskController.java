@@ -93,13 +93,16 @@ public class WorkflowTaskController {
         // The queue belongs to the authenticated operator.  Keep the legacy
         // parameter optional for client compatibility, but never trust it.
         assigneeId = currentOperatorId();
+        if (page < 1 || size < 1) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "页码和每页条数必须大于0");
+        }
         List<WorkflowTask> tasks = workflowTaskRepository.findTodoForUser(assigneeId, "[\"" + assigneeId + "\"]");
-        int start = (page - 1) * size;
-        int end = Math.min(start + size, tasks.size());
+        long start = (long) (page - 1) * size;
         if (start >= tasks.size()) {
             return ApiResponse.success(List.of());
         }
-        return ApiResponse.success(tasks.subList(start, end));
+        int end = (int) Math.min(start + size, tasks.size());
+        return ApiResponse.success(tasks.subList((int) start, end));
     }
 
     /**
@@ -111,14 +114,17 @@ public class WorkflowTaskController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "50") int size) {
         assigneeId = currentOperatorId();
+        if (page < 1 || size < 1) {
+            throw new BusinessException(ErrorCode.GENERAL_001, "页码和每页条数必须大于0");
+        }
         List<WorkflowTask> doneTasks = workflowTaskRepository.findDoneForUser(assigneeId);
 
-        int start = (page - 1) * size;
-        int end = Math.min(start + size, doneTasks.size());
+        long start = (long) (page - 1) * size;
         if (start >= doneTasks.size()) {
             return ApiResponse.success(List.of());
         }
-        return ApiResponse.success(doneTasks.subList(start, end));
+        int end = (int) Math.min(start + size, doneTasks.size());
+        return ApiResponse.success(doneTasks.subList((int) start, end));
     }
 
     // ======================== Task Actions ========================
