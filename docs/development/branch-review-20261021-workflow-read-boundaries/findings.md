@@ -8,11 +8,11 @@
 
 ## W3-INSTANCE-LOGS-ARRAY-001
 
-真实GET /workflow/instances/{id}/logs返回有序日志数组；InstanceLogs按PageResult读取records/total，正常日志被显示为空。修复消费原数组并在页面按10条切片；换实例回第一页，错误时隐藏分页，保留加载/空/异常/迟到响应隔离。真实HTTP原生库证明数组契约和实例范围；真实维护组件的受控API浏览器验证25条的10/10/5页，不新增后端分页或改日志内容。
+真实GET /workflow/instances/{id}/logs返回有序日志数组；InstanceLogs按PageResult读取content/totalPages，正常日志被显示为空。修复消费原数组并在页面按10条切片；换实例回第一页，错误时隐藏分页，保留加载/空/异常/迟到响应隔离。真实HTTP原生库证明数组契约和实例范围；真实维护组件的受控API浏览器验证25条的10/10/5页，不新增后端分页或改日志内容。
 
 ## W3-INSTANCE-READ-ID-PRECISION-001
 
-InstanceDetail/InstanceLogs把路由字符串id传给Number，Long超过JS安全整数可舍入到另一个合法实例。修复原样传字符串，两个GET helper接受string|number兼容已有调用；不改API协议、实体或ID生成。浏览器验证9007199254740993请求保持原样；后端证明相邻长实例ID在日志/详情中彼此独立。不是全仓所有Number(id)整改。
+InstanceDetail/InstanceLogs把路由字符串id传给Number，Long超过JS安全整数可舍入到另一个合法实例。修复原样传字符串，两个GET helper接受string|number兼容已有调用；不改API协议、实体或ID生成。浏览器验证700000000000000001请求保持原样；后端证明相邻长实例ID在日志/详情中彼此独立。不是全仓所有Number(id)整改。
 
 ## 实际证据与限制
 
