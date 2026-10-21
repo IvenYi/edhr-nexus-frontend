@@ -1,0 +1,32 @@
+[
+  {
+    "path": "/reports/form-projections/status",
+    "http": 200,
+    "code": 200,
+    "dataType": "list"
+  },
+  {
+    "path": "/form-lookup-items",
+    "http": 200,
+    "code": 200,
+    "dataType": "list"
+  },
+  {
+    "path": "/master-data/quality-reasons/DEFECT",
+    "http": 200,
+    "code": 200,
+    "dataType": "dict"
+  },
+  {
+    "path": "/master-data/quality-reasons/SCRAP",
+    "http": 200,
+    "code": 200,
+    "dataType": "dict"
+  },
+  {
+    "path": "/production/execution/scan?barcode=ASK-FINAL-20261015-R2-B",
+    "http": 200,
+    "code": 200,
+    "dataType": "dict"
+  }
+]

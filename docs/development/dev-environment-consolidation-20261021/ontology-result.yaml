@@ -1,0 +1,57 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    targetBranch: edhr-dev
+    targetCommit: 13def47d4def51237d1393eaa7bf2651e98a0cbd
+    contractReadCommit: ca98ab2897990eba30bf1433134aa8560578f562
+    uncommittedContractPaths: []
+  reason: 本轮只读核对初始化及开发迁移原始资产，并解释已有数据与证据边界；不改变业务概念、规则、执行快照或知识资产。环境整库复制不要求新增领域本体。初始化重整尚未获实施授权，建议与空库分支推定不写成新政策。
+  changedArtifacts: []
+  knowledgeSync:
+    - id: DEC-0077-27
+      disposition: retained
+      scope: MVP开发历史可按明确范围修复或清理，不要求为旧开发数据维持永久兼容层；未来正确快照与真实生产证据保护继续有效。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+    - id: DEC-0077-42
+      disposition: retained
+      scope: 0116和0117是一字段多绑存量配置清理的同一明确授权与区域身份修补，不是客户旧版本双模型兼容；不扩展到删除已形成实例或DHR证据。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+        - docs/knowledge/rules/form-trace-field-binding.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.dev-db-init.baseline-contracts
+      checkType: reference
+      command: git diff --quiet ca98ab2897990eba30bf1433134aa8560578f562..13def47d4def51237d1393eaa7bf2651e98a0cbd -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - 退出码0；两基线契约无差异，已按本体角色读取项目、角色与交接契约。
+        - 最新目标README明确knowledge0.3.25/schema1.2.0，单绑规则及签署无损存储边界已重新读取。
+    - id: validation.dev-db-init.full-entrypoint-inventory
+      checkType: evidence-path
+      command: python3 /tmp/edhr-init-audit-inventory.py
+      outcome: passed
+      evidence:
+        - 远端master126个唯一SQL include全部读取，3858行；按Git blob校核，未用未提交0115冒充远端资产。
+        - /tmp/edhr-init-audit-13def47d/inventory.csv
+        - /tmp/edhr-init-audit-13def47d/inventory.json
+        - /tmp/edhr-init-audit-13def47d/marker-counts.json
+    - id: validation.dev-db-init.original-source-review
+      checkType: reference
+      command: 直接读取application/Docker/StateMachineRegistry及旧结构适配、回填、0104清理、0116/0117和0118原始源码。
+      outcome: passed
+      evidence:
+        - /tmp/edhr-init-audit-13def47d/report.md
+        - 原始入口没有自动安速康或虚构业务灌数；演示工具不在启动master链。
+        - 已区分DDL/预置、一次性历史回填、明确清理、NOT VALID、checksum白名单和当前签名类型纠错；计数重叠且不代表全语义验收。
+        - 未执行SQL迁移、空库安装或业务E2E；未修改公共数据或原工作树，主侧恢复与独立质量另验。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

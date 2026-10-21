@@ -1,0 +1,170 @@
+qualityResult:
+  result: passed
+  baseCommit: "13def47d4def51237d1393eaa7bf2651e98a0cbd"
+  headCommit: "720ddd03c8ddc1aaac7aecbf78c95a3099c25079"
+  contractBaseline:
+    sourceCommit: "720ddd03c8ddc1aaac7aecbf78c95a3099c25079"
+    targetBranch: edhr-dev
+    targetCommit: "720ddd03c8ddc1aaac7aecbf78c95a3099c25079"
+    contractReadCommit: "13def47d4def51237d1393eaa7bf2651e98a0cbd"
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/form-traceability-projection-running.md
+      - docs/development/dev-environment-consolidation-20261021/README.md
+      - docs/development/dev-environment-consolidation-20261021/restore-verification.json
+      - docs/development/dev-environment-consolidation-20261021/consolidation-result.json
+      - docs/development/dev-environment-consolidation-20261021/runtime-check.json
+      - docs/development/dev-environment-consolidation-20261021/initialization-audit.md
+      - docs/development/dev-environment-consolidation-20261021/initialization-inventory.csv
+      - docs/development/dev-environment-consolidation-20261021/ontology-result.yaml
+      - docs/development/dev-environment-consolidation-20261021/quality-result.yaml
+    excludedPaths:
+      - gmp-platform/frontend/node_modules
+      - output/trace-single-binding-publish/
+      - /Users/ivenwang/Documents/edhr-nexus
+    untrackedPaths:
+      - docs/development/dev-environment-consolidation-20261021/
+      - gmp-platform/frontend/node_modules
+      - output/trace-single-binding-publish/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.dev-db.scope-and-contracts
+      required: true
+      category: requirements
+      description: 固定文档候选及实际运行边界，区分用户数据覆盖授权与尚未执行的全部代码同步。
+      method: inspection
+      command: 读取AGENTS、质量及交接契约、当前知识入口/未决问题、决策摘要和本轮文档；核对git HEAD/status及契约差异。
+      outcome: passed
+      evidence:
+        - 初始基线13def47d4def51237d1393eaa7bf2651e98a0cbd，最终文档候选HEAD/目标均720ddd03c8ddc1aaac7aecbf78c95a3099c25079；本轮未提交范围仅列明文档和证据，没有业务代码、初始化SQL、契约或知识定义改动。
+        - 原实际运行工作区HEAD仍ca98ab2897990eba30bf1433134aa8560578f562且含在途功能；文档没有将其称为最新13def代码部署，亦明确DEC-0081同ID异义待后续功能集成处理。
+        - ca98至13def项目、编码、角色及交接契约diff退出0；本实例实际读取13def契约和知识0.3.25/schema1.2.0。
+        - 独立检查13def至720ddd的65文件增量，为WorkflowTaskController分页修复、对应Postgres测试和另一审查记录；项目/编码/角色契约、当前知识、backend资源与Vite配置diff退出0，本轮备份/恢复、初始化清单和运行实例均不受影响，复用既有数据库与API结果；未声称该分页修复已部署或由本轮测试验收。
+        - 本轮独立验收仅覆盖开发库整包恢复/连接/清理及初始化盘点解释，不宣称完整制造业务、空库安装或所有代码已同步。
+    - id: check.dev-db.backup-archives
+      required: true
+      category: database
+      description: 独立验证三个原库归档可读取、内容摘要及备份权限。
+      method: command
+      command: PGPASSWORD通过环境提供，python3 /tmp/edhr-dev-consolidation-qa/verify_database.py读取manifest、计算SHA256并执行pg_restore --list。
+      outcome: passed
+      evidence:
+        - /tmp/edhr-dev-consolidation-qa/database-verification.json
+        - 三个custom-format归档的实际字节数和SHA256均匹配manifest，TOC均可读取；备份目录0700，三份dump均0600。
+        - 归档保存在仓库外，不纳入Git候选；原运行包备份也可读取且摘要一致。
+    - id: check.dev-db.archive-to-live-data
+      required: true
+      category: database
+      description: 不仅依赖主侧指纹，直接从源归档解出COPY内容并独立逐表对比当前目标库。
+      method: query
+      command: pg_restore --data-only --file=-源归档，在内存解析99个COPY表块；对edhr_dev执行BEGIN READ ONLY和COPY TO STDOUT，逐表无序逐行比较后ROLLBACK。
+      outcome: passed
+      evidence:
+        - /tmp/edhr-dev-consolidation-qa/database-verification.json
+        - 99张表均逐项比较；97表COPY原始行内容逐字一致，只有login_log和user_account包含正常验收登录产生的变化。
+        - 表单配置、实例/执行、正式投影/追溯索引、DHR及签名和原审计等证据表全部与源归档一致，不是仅比较表数或选定样本。
+        - 源归档7个setval序列逐项查询last_value与is_called，全部相同。
+        - 主侧恢复边界快照记录99表1860行全摘要一致；独立复查未将验收登录后的总行数变化冒充恢复丢失或改写业务。
+    - id: check.dev-db.schema-preservation
+      required: true
+      category: database
+      description: 独立对比源归档schema与当前库schema，核对字段、约束、索引、函数及触发器未遗漏。
+      method: command
+      command: 比较源pg_restore --schema-only与目标pg_dump --schema-only输出，均no-owner/no-privileges/no-comments；仅规范化无语义dump文本及等价常量数组类型转换。
+      outcome: passed
+      evidence:
+        - /tmp/edhr-dev-consolidation-qa/schema-verification.json
+        - 两边1961条非空可执行行保持顺序后完全一致；忽略注释/空行和随机restrict令牌，并将21处常量varchar数组到text[]转换规范为等价逐元素text转换，未删掉约束或其他SQL。
+        - pg_dump恢复压缩已删除列的物理ordinal空洞属于原生行为；当前可见列顺序、定义及可执行schema没有逻辑差异。
+    - id: check.dev-db.foreign-keys-and-existing-evidence
+      required: true
+      category: audit
+      description: 核对引用完整性及已知旧签名问题保持原状，没有伪造有效证据。
+      method: query
+      command: 对95条public FK逐一读取实际列映射并NOT EXISTS反查非空子键；只读核对signature文本SHA256及迁移记录。
+      outcome: passed
+      evidence:
+        - /tmp/edhr-dev-consolidation-qa/database-verification.json
+        - 95条FK实际反查0孤儿；63条既有NOT VALID标记保留，未将0孤儿解释为约束已正式VALIDATE。
+        - 11份旧JSONB签名存储文本与原snapshot_hash均不匹配，签名整表与源归档逐行相同；没有重算摘要、补造原始字节或将它们宣称为有效签名。
+        - 当前库有0115及0116，没有0117/0118；报告准确说明新分支签名修复尚未部署，而非单独改schema配旧运行包。
+    - id: check.dev-db.single-database-and-runtime
+      required: true
+      category: integration
+      description: 验证当前仅剩单一eDHR应用库与正确运行连接，端口不变。
+      method: query
+      command: 查询pg_database/pg_stat_activity；lsof监听端口；ps核对Vite及Java参数，计算运行jar与原备份SHA256。
+      outcome: passed
+      evidence:
+        - /tmp/edhr-dev-consolidation-qa/database-verification.json
+        - eDHR数据库列表仅edhr_dev，两个旧库不存在；所有PostgreSQL JDBC Driver连接均为edhr_dev。
+        - 实际监听为Vite PID47683端口3000、Java PID49620端口8081和PostgreSQL5432。
+        - Java参数显式连接127.0.0.1:5432/edhr_dev，仍运行原jar；SHA256为37119a3475e48bd10d38039a5d376c8c51990b566d18ef5c9457afb14e706af8，与备份和manifest完全相同，没有冒称换成13def新包。
+    - id: check.dev-db.frontend-proxy-api
+      required: true
+      category: api
+      description: 通过真实3000前端代理登录并读取迁移后核心样本，避免只测端口存活。
+      method: query
+      command: 禁用localhost环境代理，经3000登录，Bearer令牌仅在内存；读取报表状态、追溯项、DEFECT/SCRAP目录和安速康R2扫描接口。
+      outcome: passed
+      evidence:
+        - /tmp/edhr-dev-consolidation-qa/api-verification.json
+        - 生产执行前端HTML返回200；代理登录成功；五项API均HTTP200且业务code200，九项内置追溯项保留。
+        - 三个安速康R2生产对象仍可查询且均COMPLETED；file_object为0，无本轮外部附件搬迁依赖。
+        - 这是实际HTTP/API检查，没有浏览器UI操作、新增制造数据或重跑完整业务流程，不把HTML200称为视觉验收。
+    - id: check.dev-db.initialization-inventory
+      required: true
+      category: documentation
+      description: 独立核对整条启动迁移清单及分类证据，不将盘点扩大为全部迁移语义或空库运行通过。
+      method: command
+      command: 对master包含路径与CSV逐一比对，按实际文件字节计算Git blob和行数；重新扫描去注释后的DELETE/DROP/NOT VALID及checksum标记。
+      outcome: passed
+      evidence:
+        - /tmp/edhr-dev-consolidation-qa/initialization-inventory-verification.json
+        - 126包含/126唯一文件/126CSV记录完全对应，全部Git blob匹配13def基线，共3858行；未提交0115没有混成远端已提交资产。
+        - 独立标记结果为5份前向DELETE、8份前向DROP表列、7份旧checksum白名单和2份NOT VALID，与报告一致；SQL清理还包含0116/0117的JSON更新，报告未只按DELETE漏报。
+        - application/Docker入口沿同一Liquibase master，ddl-auto:none；main Java没有ApplicationRunner/CommandLineRunner灌数，唯一PostConstruct为状态机内存注册。
+    - id: check.dev-db.initialization-explanations
+      required: true
+      category: ontology
+      description: 核对兼容、清理、当前必需结构与第一版整理建议的准确边界。
+      method: inspection
+      command: 直接读取0060a、0104、0112、0118等原始SQL及当前DEC-0077/签名证据和审查报告。
+      outcome: passed
+      evidence:
+        - 0060a确实补旧工单字段并按旧code/quantity回填；0104明确开发模型纠正且清旧汇总前有依赖阻断、原审计保留和维护记录。
+        - 0112退役四项旧预置但保留快照；0116/0117属于明确授权存量配置清理，不是客户旧新模型双轨支持。
+        - 0118为当前签名存储正确性修复，首发baseline应直接取得TEXT及JSON合法性约束，不能简单删除后保留JSONB缺陷；不能恢复已丢字节的限制已明示。
+        - 本体结果not-applicable有具体理由；未把首版建议、空库源码推定或本轮环境操作写为新的已确认领域政策。
+    - id: check.dev-db.documentation-hygiene
+      required: true
+      category: documentation
+      description: 交付文档范围、当前入口、保密和差异卫生检查。
+      method: command
+      command: git diff --check；核对候选文件和Git状态、旧running文档顶部当前入口、报告本地相对引用及未提交业务路径。
+      outcome: passed
+      evidence:
+        - 差异卫生检查通过；候选只包含本轮开发环境说明和去原始业务内容的结果/清单，本实例仅新增本质量报告。
+        - running.md顶部已明确旧分支建库命令和8087/3007为历史，不要求重新创建已删除调试库。
+        - 原始dump、签名快照、令牌与登录凭据没有写入本报告或提交候选；完整备份仍留仓库外。
+  findings: []
+  residualRisks:
+    - id: risk.dev-db.code-not-integrated
+      description: 代码、主工作区和运行包尚未与最新edhr-dev完全同步；原在途原因/引用与远端委托政策还存在DEC-0081同ID异义。
+      impact: 本轮质量通过只证明开发库复制保留及当前连接/审查报告准确，不能作为所有功能已推送、已部署或完整制造流程健康的证明。
+      mitigation: 后续隔离集成在途功能、重编号知识引用、合并最新已审查修复并重新构建验收后再部署；不得直接覆盖整个dirty工作区。
+    - id: risk.dev-db.existing-test-signatures
+      description: 源库既有11份JSONB测试签名原摘要不匹配，当前旧包尚未包含0118/TEXT映射修复。
+      impact: 这些旧测试签名不能当作有效不可变证明，新签名存储问题也未由数据库搬迁修复。
+      mitigation: 保留源事实与备份，不重算原摘要或伪造原始字节；部署新代码前纳入签名正确性验收，旧测试记录后续按明确范围处置。
+    - id: risk.dev-db.first-release-baseline
+      description: 已盘点126个启动SQL及重点迁移语义，但未运行全空库安装或整理首发baseline，旧projection profile和手工演示脚本仍保留历史默认入口。
+      impact: 本报告不是首版安装/升级发布验收；继续使用旧profile/脚本可能访问已删除库或旧端口。
+      mitigation: 当前使用dev profile与edhr_dev；首发整理另建受测候选并比较完整结构/预置，保留旧开发记录但不直接改已应用checksum。
+    - id: risk.dev-db.remote-enforcement
+      description: 未核验分支保护、必需CI或ruleset；当前验收候选仍含未提交文档。
+      impact: 本地质量通过不代表远端强制门禁或本次说明已提交推送。
+      mitigation: 主侧收尾核对最终文档差异和远端提交，不宣称未执行的推送或自动强制门禁。
+  blockingConditions: []
