@@ -1,0 +1,314 @@
+{
+  "author": "/root/pagination_independent/source_boundary_review",
+  "status": "FINAL",
+  "baseCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+  "coreCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+  "contractReadCommit": "080ce5075a902979928d4bc65b133d9a8097c231",
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "scope": "Independent finite source-only assistance; parent performs actual runtime and final candidate review.",
+  "changedCorePaths": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java"
+  ],
+  "sourceEvidence": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "6031d1ca1a459d21ae08e26089c0e0ff114fec1c",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "actualReadRanges": [
+        [
+          89,
+          106
+        ],
+        [
+          112,
+          128
+        ],
+        [
+          192,
+          198
+        ]
+      ],
+      "description": "Only todo/done arithmetic and technical validation; currentOperatorId remains identical.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "bc6bfa0cc70f6d2c25b84829b8b6ff8614ddfa4a",
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "actualReadRanges": [
+        [
+          20,
+          32
+        ]
+      ],
+      "description": "Unchanged native todo/done user/candidate/unrestricted, status, DHR exclusion and ordering.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/BusinessException.java",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "0be32aa1505415f4ce35b18833638470f0cb8e6c",
+      "sha256": "6b60983555c7f93de022fbcb6910c88c2b7e1d1b52bb16a938a4701ec2ee93f1",
+      "actualReadRanges": [
+        [
+          16,
+          29
+        ]
+      ],
+      "description": "Existing GENERAL_001 detail constructor and HTTP mapping getter.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "eca66f3bcc48f7bb4e5757858cfc87e3a01b2f9f",
+      "sha256": "7455539529c5809d43f1a80ef92515df7a8b9c894429e10353e349c180ccaae9",
+      "actualReadRanges": [
+        [
+          29,
+          37
+        ]
+      ],
+      "description": "Existing BusinessException→HTTP status handler, not changed.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/ErrorCode.java",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "5c512bb791c2c2d08a3f862d7776737fd0d68006",
+      "sha256": "1343e494f6f86fb0451948acb46f1f76eb9957d754dff4f10de080f1ff30e7e1",
+      "actualReadRanges": [
+        [
+          75,
+          79
+        ]
+      ],
+      "description": "Existing GENERAL_001 uses HTTP400.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/dto/ApiResponse.java",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "5d81e714a8159d41f2e6be37f361b41f9928b17d",
+      "sha256": "f8c98fe5426042dac438d3275300a980721be72fae75f6e1985e6121617b92b2",
+      "actualReadRanges": [
+        [
+          17,
+          35
+        ]
+      ],
+      "description": "Existing success200/data payload wrapper remains unchanged.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "38d4bf8be331890f0e4fe8a24947be0211ebb1f3",
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c",
+      "actualReadRanges": [
+        [
+          39,
+          63
+        ]
+      ],
+      "description": "Real product stateless authenticated chain imports JWT filter before username/password filter.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "794aabaef8904d9daf15476cdcc6291fc9861104",
+      "sha256": "4ed2eb9458b68717b8bf5873dedc7fa1d0fbf92d6e5efb9eebebe9d82b074ed4",
+      "actualReadRanges": [
+        [
+          27,
+          58
+        ]
+      ],
+      "description": "Real signed JWT validation/principal population/AuditContext cleanup.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "60dce108abf250c1cb6f02ccafba270f75faa985",
+      "sha256": "9848c9b17b8f6d046c1b4801acbe055883d01d2e15ab3f8b4a944e9b2d43ff90",
+      "actualReadRanges": [
+        [
+          35,
+          81
+        ],
+        [
+          84,
+          172
+        ]
+      ],
+      "description": "Actual source read: exact owned native DB guard, inherited integration config, seed, 28 parameterized cases and response/rows helpers.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowInstanceAuthorizationIntegrationTest.java",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "949e6145ffa7db606b61096769078c8d66fb890d",
+      "sha256": "948f893650653528f5fce8fd513cf1d8f9e9774a3ad9241a455c5e3568696da4",
+      "actualReadRanges": [
+        [
+          56,
+          87
+        ],
+        [
+          213,
+          230
+        ]
+      ],
+      "description": "Existing SpringBoot/MockMvc, dynamic PG URL and real JPA/security/controller engine imports; state/subject dependencies mocked.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    }
+  ],
+  "knowledgeEvidence": [
+    {
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "34b99929a91fc22d72fcba1cc0335fb91db35557",
+      "sha256": "c54fdb4f7265382572fe65da61f3a31aa06667f11a6718ecd5d998119ef065d7",
+      "actualReadRanges": [
+        [
+          1,
+          75
+        ]
+      ],
+      "description": "Read selected existing definition; unchanged, not a new semantic acceptance claim.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0033-form-process-optional-subjects-and-open-operation-scope.yaml",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "41568fd27705801e7413ef0fda3f7e22c9f19951",
+      "sha256": "1d8d32284b138707d7b6df0e106d0f5183d2d44770bb6e78be7f9047795bfc6e",
+      "actualReadRanges": [
+        [
+          1,
+          54
+        ]
+      ],
+      "description": "Read selected existing definition; unchanged, not a new semantic acceptance claim.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "2319ab67c26c6da413a7ade307d340561db66598",
+      "sha256": "c47a0ea204787a4f03cf5e507e71ec002e1e7514ade7cd122d2290049aa0c5da",
+      "actualReadRanges": [
+        [
+          1,
+          51
+        ]
+      ],
+      "description": "Read selected existing definition; unchanged, not a new semantic acceptance claim.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "a1f2b1140ea93c5daf54067cb4a40d6a6cd1d2b7",
+      "sha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "actualReadRanges": [
+        [
+          1,
+          159
+        ]
+      ],
+      "description": "Read all open questions including unresolved full multi-tenant boundary.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "blob": "bfc6b4a979d6289a7e41771bf30f5a55293174c8",
+      "sha256": "adf29cc7a04fb86b2a0352723e433b3aa3dfb93c400cf7b357dadd886958f313",
+      "actualReadRanges": [
+        [
+          1,
+          19
+        ],
+        [
+          160,
+          179
+        ]
+      ],
+      "description": "Selected current baseline and existing identity/open-operation/delegation/record-control explanations; no whole README read claimed.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    }
+  ],
+  "arithmeticModelOnly": {
+    "maxPositiveInt": 2147483647,
+    "maxOffset": 4611686011984936962,
+    "maxEnd": 4611686014132420609,
+    "signedLongMax": 9223372036854775807,
+    "productRuntimeExecuted": false
+  },
+  "checks": [
+    {
+      "id": "source.minimal-production-delta",
+      "outcome": "passed",
+      "reason": "Only controller plus new fixture changed in core; controller outside todo/done methods byte-identical. All protected knowledge, governance, architecture and scripts unchanged."
+    },
+    {
+      "id": "source.integer-boundaries",
+      "outcome": "passed",
+      "reason": "page/size positive validation precedes repository access, and conversion to long precedes multiplication. Positive ints make page-1 safe; max end fits signed long. start is below List.size before int cast; end is min with List.size and is at least start."
+    },
+    {
+      "id": "source.membership-and-auth-kept",
+      "outcome": "passed",
+      "reason": "Repository source unchanged. Authenticated operator overrides compatibility assigneeId before validation/query. Same native candidates/unrestricted/status/owner/DHR predicates/order; no new permission or task/action behavior."
+    },
+    {
+      "id": "source.http-contract-kept",
+      "outcome": "passed",
+      "reason": "Both queue endpoints retain defaults1/50 and ApiResponse<List>; positive out-of-range returns empty, legitimate max-int page size remains accepted. Existing GENERAL_001 maps nonpositive technical input to400. Noninteger/over-int binding and other zero-based APIs are outside this change."
+    },
+    {
+      "id": "source.fixture-risk-coverage",
+      "outcome": "passed",
+      "reason": "New28 = invalid12 + distant10 + normal2 + empty2 + auth2. Actual HTTP MockMvc imports product JWT filter/security/JPA and native repository. Synthetic signed token is not a password login, and mocked state-machine/subject services are inherited setup rather than full workflow acceptance. All original tests unchanged; no assertion or skip relaxation."
+    },
+    {
+      "id": "source.ontology-applicability",
+      "outcome": "passed",
+      "reason": "No business knowledge asset, candidate/action/lifecycle/audit/frozen semantics changed. Local technical integer pagination repair needs no new DEC or knowledge policy; not-applicable gate assessment is consistent with the scoped diff and existing definitions."
+    }
+  ],
+  "findings": [],
+  "limitations": [
+    "No Maven, HTTP, database, browser, migration or product runtime executed by this instance.",
+    "Parent must verify actual final candidate, native run counts/zero skip and independent red/green.",
+    "Not full workflow, tenant isolation, UI, record control, DHR lifecycle or full-branch acceptance.",
+    "Existing generic action-type policy and historical deferred/gap items remain outside this repair."
+  ],
+  "repositoryMutations": false,
+  "testOrConfigurationRepairs": false,
+  "runtimeExecuted": false,
+  "wholeFileReviewComplete": false,
+  "childInstances": []
+}

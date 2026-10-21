@@ -1,0 +1,17 @@
+# 待办与已办分页边界
+
+已交付 [PR23](https://github.com/IvenYi/edhr-nexus-frontend/pull/23)，来源audit/edhr-dev-task-pagination-20261021，目标edhr-dev，等待用户人工merge。创建时GitHub为MERGEABLE/CLEAN；未据此声称仓库强制门禁已配置，也未查询/触发Actions。实际独立受测9d826911，后续仅L0档案/验收/范围与PR登记；最新交付HEAD以Git分支为准。[交付登记](delivery.json)保留实际创建时head和target，不伪造提交自引用。
+
+延续edhr-dev整体代码审查。PR22已人工合入13def47d4def51237d1393eaa7bf2651e98a0cbd，与1b80df62交付整树一致；契约无增量，不重开旧PR。核心25e974e03813f6403618ce8a9efc735cafd429a2仅修改WorkflowTaskController.todo/done及新增真实JWT/MockMvc/PG回归。
+
+W3D-TASK-PAGINATION-001（medium）：未校验非正page/size及int下标计算，可导致HTTP500、错误200空数组或超大正页回绕到第一页。当前正page/size校验使用既有GENERAL_001/400，偏移及结尾用long、有界后转List下标；无任意页长上限，不改SQL、身份来源、候选/开放候选、排序、DHR排除、动作或返回数组。独立表单/DHR审批的零基分页不属于同一接口，保持原约定。
+
+主侧实际旧基线28例为22断言失败/6正向通过、0错误/跳过；修复后同组28及原控制器2、实例授权22合计52一次clean通过，含50原生PG，0失败/错误/跳过。用例覆盖非正及INT_MIN、负偏移、正向乘法回绕、正start加法溢出、INT_MAX合法页长、默认/首中末空页、空队列、匿名401、伪造assignee不改队列、DHR/其他用户排除及任务/实例/日志/审计不变。签发合成JWT经过真实产品filter，不冒称密码登录/完整浏览器E2E。原始输出只归档安全计数/案例和哈希，不提交日志/XML/JWT。
+
+执行级别L2，全新未参与修复的独立实例对干净9d8269114d8d4645be34b48bf0d0d88b5d245ba1正式[qualityResult passed](evidence/independent/edhr-page-qa-qualityResult.yaml)，8/8必需检查通过：一次clean52业务（50原生PG、2Mockito）及89知识均0失败/错误/跳过；独立旧28同样22红/6正，ledger字节重建、16原件和60新增有限范围核对通过。主侧与独立的52是同组复验，不累计成104不同覆盖。全部正式实例/子实例FINAL；受测后仅L0归档/验收/范围/PR登记，产品/测试/知识/契约及冻结目录保持。[acceptance.json](acceptance.json)单独登记medium已验收，冻结目录原待验状态不回写。原/tmp路径通过[归档收据](evidence/independent/archive-receipts.json)定位同名原字节。
+
+知识业务语义、知识资产、规则/动作/权限、审计或快照未变，本体门禁not-applicable，主侧依据见[决策包](decision-package.yaml)且已由独立质量核对；未派发本轮本体实例、不新增语义已审记录。清单生成和89知识结构校验不等于本轮全盘知识审计。
+
+[目录](source-catalog.json)/[总账](ledger/summary.json)固定080ce507：2864路径、2552知识ID，545有交叉范围=旧485+辅助53（后端16+前端离散37）+主侧7，6源108历史语义和49含父子/文档/夹具的问题记录。前端子原件已在主辅助地图中，不重复导入；原越界028仍明确排除。当前源码123条、语义或依赖63条需增量，四gap及整文件完成0保持。相比合并时101/57增加是文件/依赖变化触发的保守承接状态，不是自动认定所有方法错误；新列明范围不升级整文件完成。生成器本身不跑产品或新语义审查，实际52主侧测试单独记录，详情见[进度](progress.json)。
+
+当前仅此技术整数分页切片；非整数或超出int绑定等通用异常映射、其他控制器分页未纳入，不修改全局异常策略或SQL分页方式。W3动作类型政策仍等用户答复；完整W2/W3、W4–W7、W5-AUDIT-HASH-001、四知识gap、用户暂缓记录控制/两项DHR high/A12及历史签名原文不可恢复保持。全部正式实例FINAL后、PR创建前已实际向用户完成[范围/进度复核](scope-review.md)，本批无任务漂移；自建临时PG按exactID清理。未执行合并、部署或历史数据恢复。

@@ -1,0 +1,93 @@
+{
+  "schema": "edhr-audit-batch-progress/v1",
+  "level": "L2",
+  "targetBranch": "edhr-dev",
+  "targetCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+  "coreCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+  "catalogBaseline": "080ce5075a902979928d4bc65b133d9a8097c231",
+  "stage": "awaiting-human-merge",
+  "inventory": {
+    "trackedPaths": 2864,
+    "currentKnowledgeIds": 2552,
+    "classificationIsNotHumanReview": true
+  },
+  "source": {
+    "recordedOverlappingScopes": 545,
+    "inherited": 485,
+    "auxiliaryFiniteRanges": 53,
+    "primaryFiniteMethods": 7,
+    "notDistinctMethodsOrCompleteDenominator": true,
+    "needsDeltaReview": 123,
+    "wholeFilesCompleted": 0,
+    "excludedOriginal028Preserved": true
+  },
+  "semantic": {
+    "historicalScopedRows": 108,
+    "sources": 6,
+    "newFormalRows": 0,
+    "needsDeltaReview": 63,
+    "historicalEvidenceGaps": 4,
+    "notDistinctIds": true,
+    "noNewSemanticAcceptanceClaimed": true
+  },
+  "findings": {
+    "records": 49,
+    "notDistinctProductDefects": true,
+    "onlyPriorPr22Accepted": "W3-SIGNATURE-PAYLOAD-001",
+    "currentFixedAwaitingIndependentAcceptance": [],
+    "currentIndependentlyAccepted": [
+      "W3D-TASK-PAGINATION-001"
+    ]
+  },
+  "runtime": {
+    "primaryBusinessTests": 52,
+    "primaryNativePostgresSubset": 50,
+    "primaryMockitoSubset": 2,
+    "primaryFailures": 0,
+    "primaryErrors": 0,
+    "primarySkipped": 0,
+    "oldBaselineTests": 28,
+    "oldBaselineFailures": 22,
+    "oldBaselineErrors": 0,
+    "oldBaselineSkipped": 0,
+    "oldBaselinePositivePasses": 6,
+    "independentQuality": "passed",
+    "browserVisual": "not-applicable-no-UI-change",
+    "migration": "not-applicable-no-schema-change",
+    "allArbitraryRequestBindingAccepted": false,
+    "independentBusinessTests": 52,
+    "independentKnowledgeTests": 89,
+    "independentNativePostgresSubset": 50,
+    "independentMockitoSubset": 2,
+    "independentFailures": 0,
+    "independentErrors": 0,
+    "independentSkipped": 0,
+    "independentRequiredChecks": 8
+  },
+  "ontology": {
+    "result": "not-applicable",
+    "gateTriggered": false,
+    "author": "/root gate assessment only",
+    "formalRoleDispatched": false,
+    "reason": "Technical integer pagination parameters and bounded list offsets only; no business definition/policy/action/permission/audit/snapshot/knowledge asset change.",
+    "knowledgeVersionBeforeAndAfter": "0.3.25"
+  },
+  "remaining": [
+    "complete W2/W3 review",
+    "generic workflow action/type question awaits user decision",
+    "noninteger/outside-int binding and global error strategy not changed by this finite slice",
+    "W4 H006/H007/H008 adjudication",
+    "W5-AUDIT-HASH-001 and background/migration review",
+    "W6 concrete scoped extraction and W7 coverage/integration",
+    "four historical knowledge gaps",
+    "user-deferred record control, two DHR high and A12",
+    "legacy signature original bytes already lost remain unrecoverable"
+  ],
+  "overallAuditComplete": false,
+  "overallPercent": null,
+  "mergeOrDeployAuthorized": false,
+  "qualityTestedCommit": "9d8269114d8d4645be34b48bf0d0d88b5d245ba1",
+  "acceptance": "acceptance.json",
+  "temporaryOwnedPostgres": "removed-after-formal-final",
+  "pullRequest": "https://github.com/IvenYi/edhr-nexus-frontend/pull/23"
+}

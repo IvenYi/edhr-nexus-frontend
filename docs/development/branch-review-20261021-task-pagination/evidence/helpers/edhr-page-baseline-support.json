@@ -1,0 +1,44 @@
+{
+  "schema": "edhr-l0-baseline-support/v1",
+  "author": "/root/pagination_baseline_support",
+  "status": "FINAL",
+  "baselineCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+  "mergeParents": [
+    "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "1b80df6298a819efaada9d6ad92ebfbea25a992f"
+  ],
+  "mergeTree": "1cb4eb63bd9e40e607fefe5e28bdb0a309fb13c7",
+  "deliveryCommit": "1b80df6298a819efaada9d6ad92ebfbea25a992f",
+  "deliveryTree": "1cb4eb63bd9e40e607fefe5e28bdb0a309fb13c7",
+  "treeEqual": true,
+  "protectedTestedCommit": "aaef52a782327e68da736faf83a249a3217b7228",
+  "changedProtectedPaths": [],
+  "trackedPaths": 2839,
+  "currentKnowledgeIds": 2552,
+  "sourceScopes": 485,
+  "sourceCarryStates": {
+    "needs-delta-review": 101,
+    "retained-scoped-evidence": 384
+  },
+  "semanticSources": 6,
+  "historicalScopedSemanticRows": 108,
+  "semanticCarryStates": {
+    "retained-scoped-evidence": 51,
+    "needs-delta-review": 57
+  },
+  "historicalEvidenceGaps": 4,
+  "findingRecords": 48,
+  "onlyFindingAdvanced": "W3-SIGNATURE-PAYLOAD-001",
+  "otherFindingObjectsUnchanged": 47,
+  "excluded028Retained": true,
+  "newPaginationFindingAdded": false,
+  "actualPriorRequiredChecks": 8,
+  "newRuntimeExecuted": false,
+  "newSemanticReviews": 0,
+  "newSourceReview": false,
+  "wholeFilesCompleted": 0,
+  "overallAuditComplete": false,
+  "overallPercent": null,
+  "repositoryWrites": false,
+  "qualification": "Fixed Git reconciliation and genuine prior acceptance carry only; original unresolved/deferred/open limitations remain. Counts are overlapping scopes and historical rows, not unique methods, IDs or defects."
+}

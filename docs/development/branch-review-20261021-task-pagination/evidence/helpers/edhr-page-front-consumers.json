@@ -1,0 +1,544 @@
+{
+  "artifactType": "read-only frontend interface-consumer source trace",
+  "repository": "/workspace/edhr-nexus-frontend",
+  "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+  "sourceHeadObserved": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+  "sourceBasis": "git show/rev-parse/grep at the fixed commit; working-tree source not used as substantive evidence",
+  "wholeFileReviewComplete": false,
+  "runtimeExecuted": false,
+  "scope": "Declared frontend route reachability and todo/done API consumption; no UI/design audit, browser, build, product tests, or backend contract assertion.",
+  "exclusions": [
+    "No repository/test/config/knowledge changes",
+    "No build or browser or product tests executed",
+    "No page defect assertion or browser execution conclusion",
+    "Backend endpoint defaults/response implementations outside this subtask"
+  ],
+  "entries": [
+    {
+      "id": "FRONT-BOOTSTRAP-HTML",
+      "path": "gmp-platform/frontend/index.html",
+      "method": "HTML module entry",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "af1bf78ec2ae0249d5159d9c80468b4c8c98a57d",
+      "sha256": "2ec49ded6e8aee045427d3ee9912032b71ab00511516bbacf3e914fe32073add",
+      "fileLineCount": 13,
+      "readRanges": [
+        {
+          "startLine": 9,
+          "endLine": 12
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "HTML module entry loads /src/main.tsx into #root."
+    },
+    {
+      "id": "FRONT-BOOTSTRAP-MAIN",
+      "path": "gmp-platform/frontend/src/main.tsx",
+      "method": "ReactDOM.createRoot/render",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "9aa52ffd1f3c20df29c8074ce111522fd1cb4897",
+      "sha256": "2ed12a1457cd60b31c0f44f3ea59b8bbc2ddd4a49add3165228d093878fb7c24",
+      "fileLineCount": 10,
+      "readRanges": [
+        {
+          "startLine": 1,
+          "endLine": 10
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "main imports and renders App. This is source reachability only; no application was run."
+    },
+    {
+      "id": "FRONT-BOOTSTRAP-APP",
+      "path": "gmp-platform/frontend/src/App.tsx",
+      "method": "App/BrowserRouter/AppRouter",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "1e38757ae726ffaef00732636b583506ab38bae7",
+      "sha256": "6f11b6185c5322dd7475ba14f0e07b5c610c9bbc2dea18d3e8d868c68add27a6",
+      "fileLineCount": 259,
+      "readRanges": [
+        {
+          "startLine": 1,
+          "endLine": 9
+        },
+        {
+          "startLine": 242,
+          "endLine": 259
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "App imports AppRouter and mounts it within BrowserRouter and QueryClientProvider."
+    },
+    {
+      "id": "FRONT-LAYOUT-OUTLET",
+      "path": "gmp-platform/frontend/src/components/shared/AppLayout.tsx",
+      "method": "AppLayout/Outlet",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "35b91453659bdc8e517d1d54c8f7bf7eead1da73",
+      "sha256": "61289d0cb45f772a2604840430764c42ead20060fe8a5c1d263572645719ca88",
+      "fileLineCount": 1425,
+      "readRanges": [
+        {
+          "startLine": 1,
+          "endLine": 4
+        },
+        {
+          "startLine": 1414,
+          "endLine": 1425
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The protected layout renders Outlet, providing the source path to nested routes."
+    },
+    {
+      "id": "FRONT-ACTIVE-ROUTES",
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "method": "AppRouter route declarations",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "12c81470b76a5ecb2ee2e16dc48603033f36d522",
+      "sha256": "8eaf4ff1ad44ce421f4fc68727a168f4f27cbef854e1c5a5eed9c955c13b06b3",
+      "fileLineCount": 158,
+      "readRanges": [
+        {
+          "startLine": 9,
+          "endLine": 33
+        },
+        {
+          "startLine": 61,
+          "endLine": 116
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The protected / index renders DashboardPage; /workflow/tasks/:id renders TaskDetail; /form-management/review renders FormReviewPage; /dhr-management/review renders DhrReviewPage. This establishes declared source routing, not browser execution."
+    },
+    {
+      "id": "FRONT-DASHBOARD-TABS",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardPage.tsx",
+      "method": "DashboardPage",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "4beaccb334e0cf414280606cc39190f884b20994",
+      "sha256": "bffdf8309fac299eaed8059a6250f264d14517dd80179865caf35b607d96765c",
+      "fileLineCount": 86,
+      "readRanges": [
+        {
+          "startLine": 1,
+          "endLine": 9
+        },
+        {
+          "startLine": 18,
+          "endLine": 25
+        },
+        {
+          "startLine": 60,
+          "endLine": 69
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Dashboard imports TodoList and DoneList and conditionally renders TodoList for tab 0 or DoneList otherwise; tab 0 is initial state."
+    },
+    {
+      "id": "FRONT-TODO-WRAPPER",
+      "path": "gmp-platform/frontend/src/pages/dashboard/TodoList.tsx",
+      "method": "TodoList",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "e34e5df8d001978f1ec1c10c4a1e9ad72ec86012",
+      "sha256": "a6559945182d2b7d1ff36246e2268f4cc8ddd65668237969961640b82334376e",
+      "fileLineCount": 7,
+      "readRanges": [
+        {
+          "startLine": 1,
+          "endLine": 7
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "TodoList passes kind=todo and the current auth user id to DashboardTaskList."
+    },
+    {
+      "id": "FRONT-DONE-WRAPPER",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DoneList.tsx",
+      "method": "DoneList",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "7f281f030e23d9d258656f4b32a0f900f1dca11a",
+      "sha256": "fd5384b7502acc6207b236479489b155784d072e0b163de5ba29dda4ae3f6850",
+      "fileLineCount": 7,
+      "readRanges": [
+        {
+          "startLine": 1,
+          "endLine": 7
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "DoneList passes kind=done and the current auth user id to DashboardTaskList."
+    },
+    {
+      "id": "FRONT-DASHBOARD-CONSUMER",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "method": "DashboardTaskList / HTTP GET",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "c9bdac66955f4d37b6408a7d5eb6a55b470eb68d",
+      "sha256": "20c917457870ac7ba620937bde4ec01b0e3e1d1d27a4a5015b79706d750ab100",
+      "fileLineCount": 63,
+      "readRanges": [
+        {
+          "startLine": 1,
+          "endLine": 9
+        },
+        {
+          "startLine": 11,
+          "endLine": 22
+        },
+        {
+          "startLine": 27,
+          "endLine": 39
+        },
+        {
+          "startLine": 47,
+          "endLine": 61
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The routed dashboard consumer calls client.get(/workflow/tasks/ + kind), yielding GET /api/v1/workflow/tasks/todo or /api/v1/workflow/tasks/done. It sends page with initial value 1 and explicit size 5; it does not send assigneeId. The query is enabled only when assigneeId exists. It returns res.data.data as Task[], uses tasks.length and tasks.map, and does not read PageResult.content or totals. Previous/next decrement/increment page; next is disabled for tasks.length < 5. These are caller-side source facts only."
+    },
+    {
+      "id": "FRONT-CLIENT",
+      "path": "gmp-platform/frontend/src/api/client.ts",
+      "method": "axios.create / response interceptor",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "4d67bf63a3ec49078ec7a6fe507cc84fa817c776",
+      "sha256": "f5b919fc5059196d41adf259870c24dff3e9b930fdc98ba5846b10334c85ae75",
+      "fileLineCount": 66,
+      "readRanges": [
+        {
+          "startLine": 14,
+          "endLine": 20
+        },
+        {
+          "startLine": 36,
+          "endLine": 50
+        },
+        {
+          "startLine": 66,
+          "endLine": 66
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The client baseURL is /api/v1. The response interceptor checks body.code and returns the Axios response itself; the inspected interceptor does not flatten data, convert list/page shapes, or translate page indices."
+    },
+    {
+      "id": "FRONT-COMMON-SHAPES",
+      "path": "gmp-platform/frontend/src/types/common.ts",
+      "method": "ApiResponse<T> / PageResult<T> / PageQuery",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "04e698a17cb9b5cead7454627effe7b35d69be76",
+      "sha256": "f7aa611902bf635c8624749d23a0edbcf76e7f813efb31cd03fa65067453189c",
+      "fileLineCount": 36,
+      "readRanges": [
+        {
+          "startLine": 1,
+          "endLine": 24
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Common types distinguish ApiResponse.data from PageResult.content/page/size/totalElements/totalPages. DashboardTaskList consumes the former data as an array, not the latter page structure."
+    },
+    {
+      "id": "FRONT-HELPER-DEFINITIONS",
+      "path": "gmp-platform/frontend/src/api/workflow-tasks.ts",
+      "method": "getTodo / getDone / helper module",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "ea9c0f63771e7bcfa2aa793b8b605e5dee265a6c",
+      "sha256": "7aa5a6623a471ee264000f00d33c45aa3732798fb58523b9988fb6cc78bfeaae",
+      "fileLineCount": 9,
+      "readRanges": [
+        {
+          "startLine": 1,
+          "endLine": 9
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "getTodo and getDone are exported helpers that both GET /workflow/tasks with optional pass-through params; they define neither a default page nor a default size. They are not imported by the traced dashboard chain. Fixed-commit textual symbol/module search over frontend/src found only the definitions of getTodo/getDone and no workflow-tasks module reference; this is bounded static reference evidence, not proof about dynamic runtime loading."
+    },
+    {
+      "id": "FRONT-FORM-REVIEW-CONSUMER",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "method": "FormReviewPage / listFormWorklist",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "26076537400f1fc353aac8b588949c16732da489",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "fileLineCount": 374,
+      "readRanges": [
+        {
+          "startLine": 19,
+          "endLine": 22
+        },
+        {
+          "startLine": 73,
+          "endLine": 76
+        },
+        {
+          "startLine": 121,
+          "endLine": 130
+        },
+        {
+          "startLine": 190,
+          "endLine": 215
+        },
+        {
+          "startLine": 226,
+          "endLine": 231
+        },
+        {
+          "startLine": 275,
+          "endLine": 285
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The separately routed form-review screen has My Todo/My Done views REVIEW_PENDING/REVIEW_DONE. It calls listFormWorklist(view,queryParams), starts page=0 and size=20, passes those values unchanged through toQuery, consumes query.data.content and totalElements/totalPages, and resets page to 0 when changing view or page size."
+    },
+    {
+      "id": "FRONT-FORM-WORKLIST-API",
+      "path": "gmp-platform/frontend/src/api/form-instance-records.ts",
+      "method": "listFormWorklist / HTTP GET",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "7a3fcdbaa3c37ff16f6205f4c3cc0648734b70c9",
+      "sha256": "6fcdaf7d6edd525e225da1373cf53ee3742f994fc338c7c7e7d9b227694637d2",
+      "fileLineCount": 135,
+      "readRanges": [
+        {
+          "startLine": 79,
+          "endLine": 82
+        },
+        {
+          "startLine": 101,
+          "endLine": 116
+        },
+        {
+          "startLine": 124,
+          "endLine": 135
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "listFormWorklist GETs /api/v1/form-worklists/{encoded view}, so the reviewed screen uses /form-worklists/REVIEW_PENDING and /form-worklists/REVIEW_DONE. It serializes supplied query values with URLSearchParams and returns res.data.data as FormWorklistPage (content/page/size/totalElements/totalPages plus historyCoverage). The helper query default is {}, with no page/size value inserted by this helper."
+    },
+    {
+      "id": "FRONT-DHR-REVIEW-CONSUMER",
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "method": "DhrReviewPage / listDhrReviewTasks",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "a9aa299bd0f515c6be943e5e92ce3173fdb7f1bb",
+      "sha256": "651c4e34f0ddee5bc3db718e484d3cf1135352ca5974a16a2023370ad7f127d6",
+      "fileLineCount": 130,
+      "readRanges": [
+        {
+          "startLine": 1,
+          "endLine": 18
+        },
+        {
+          "startLine": 118,
+          "endLine": 130
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The separately routed DHR review screen uses PENDING/DONE views (labels My Pending Review/My Reviewed), starts page=0 and size=20, calls listDhrReviewTasks({view,keyword,page,size}), and passes content/totals to DhrWorklistTable. This is a distinct endpoint family from workflow/tasks."
+    },
+    {
+      "id": "FRONT-DHR-WORKLIST-API",
+      "path": "gmp-platform/frontend/src/api/dhr-workbenches.ts",
+      "method": "listDhrReviewTasks / HTTP GET",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "6e8008f72536f2b176b9c47e66df73cadaea10f6",
+      "sha256": "8e37a7893860dd1b7383498f3771c97d6fbcaff97f58eb6a882c7c4f3b0040ee",
+      "fileLineCount": 34,
+      "readRanges": [
+        {
+          "startLine": 1,
+          "endLine": 17
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "listDhrReviewTasks GETs /api/v1/dhr-reviews with view, keyword, page and size; its declared response is content plus totalElements/totalPages, not a bare task array. It supplies no additional default page/size."
+    },
+    {
+      "id": "FRONT-DHR-TABLE-PAGINATION",
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrWorklistTable.tsx",
+      "method": "DhrWorklistTable / FormListPagination",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "dcd41acfa198acf0e41415b83e94f74b1df1fa41",
+      "sha256": "0c2116a4085d2608234467a52313e96b910da8ded95f1beb5e47129ec2003332",
+      "fileLineCount": 46,
+      "readRanges": [
+        {
+          "startLine": 1,
+          "endLine": 17
+        },
+        {
+          "startLine": 33,
+          "endLine": 46
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "DhrWorklistTable renders rows and passes its page/size/totals through to the shared FormListPagination component."
+    },
+    {
+      "id": "FRONT-SHARED-ZERO-BASED-PAGINATION",
+      "path": "gmp-platform/frontend/src/pages/form-management/formManagementListStyles.tsx",
+      "method": "FormListPagination",
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "gitBlobSha": "6c74625588d43258790b867d051b1002d88820aa",
+      "sha256": "f97782404d82962523306180142a435587c2738c3426b09b802527a7423542e6",
+      "fileLineCount": 76,
+      "readRanges": [
+        {
+          "startLine": 45,
+          "endLine": 76
+        }
+      ],
+      "readDepth": "bounded-source-trace",
+      "evidenceType": "original-evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The shared paginator presents page+1 to MUI Pagination and converts selected UI page back with value-1, so the inspected form/DHR review consumers maintain zero-based request page state. It does not alter the dashboard paginator."
+    }
+  ],
+  "referenceSearch": {
+    "id": "FRONT-HELPER-REFERENCE-SEARCH",
+    "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+    "method": "git grep -n -E",
+    "pattern": "workflow-tasks|getTodo|getDone",
+    "scope": "gmp-platform/frontend/src/",
+    "matchCount": 2,
+    "matches": [
+      "13def47d4def51237d1393eaa7bf2651e98a0cbd:gmp-platform/frontend/src/api/workflow-tasks.ts:3:export const getTodo = (params?: Record<string, unknown>) => client.get('/workflow/tasks', { params });",
+      "13def47d4def51237d1393eaa7bf2651e98a0cbd:gmp-platform/frontend/src/api/workflow-tasks.ts:4:export const getDone = (params?: Record<string, unknown>) => client.get('/workflow/tasks', { params });"
+    ],
+    "conclusion": "The fixed-commit src search finds only getTodo and getDone definitions; no textual import/re-export/module reference to workflow-tasks is found in this scope. Do not attribute active dashboard behavior to the helper file.",
+    "runtimeExecuted": false,
+    "wholeFileReviewComplete": false
+  },
+  "consumerSummary": [
+    {
+      "route": "/ (dashboard index)",
+      "kinds": [
+        "todo",
+        "done"
+      ],
+      "method": "GET",
+      "requestPaths": [
+        "/api/v1/workflow/tasks/todo",
+        "/api/v1/workflow/tasks/done"
+      ],
+      "initialRequestPage": 1,
+      "callerPageBasis": "one-based state",
+      "callerSize": 5,
+      "sizeSource": "explicit request literal, not backend default",
+      "consumedPayload": "ApiResponse.data interpreted as Task[]",
+      "evidenceIds": [
+        "FRONT-ACTIVE-ROUTES",
+        "FRONT-DASHBOARD-TABS",
+        "FRONT-TODO-WRAPPER",
+        "FRONT-DONE-WRAPPER",
+        "FRONT-DASHBOARD-CONSUMER",
+        "FRONT-CLIENT"
+      ]
+    },
+    {
+      "route": "/form-management/review",
+      "kinds": [
+        "REVIEW_PENDING",
+        "REVIEW_DONE"
+      ],
+      "method": "GET",
+      "requestPaths": [
+        "/api/v1/form-worklists/REVIEW_PENDING",
+        "/api/v1/form-worklists/REVIEW_DONE"
+      ],
+      "initialRequestPage": 0,
+      "callerPageBasis": "zero-based state",
+      "callerSize": 20,
+      "sizeSource": "UI state initial value",
+      "consumedPayload": "ApiResponse.data as FormWorklistPage; content/totals consumed",
+      "evidenceIds": [
+        "FRONT-ACTIVE-ROUTES",
+        "FRONT-FORM-REVIEW-CONSUMER",
+        "FRONT-FORM-WORKLIST-API",
+        "FRONT-SHARED-ZERO-BASED-PAGINATION"
+      ]
+    },
+    {
+      "route": "/dhr-management/review",
+      "kinds": [
+        "PENDING",
+        "DONE"
+      ],
+      "method": "GET",
+      "requestPaths": [
+        "/api/v1/dhr-reviews"
+      ],
+      "initialRequestPage": 0,
+      "callerPageBasis": "zero-based state",
+      "callerSize": 20,
+      "sizeSource": "UI state initial value",
+      "consumedPayload": "ApiResponse.data with content/totalElements/totalPages",
+      "evidenceIds": [
+        "FRONT-ACTIVE-ROUTES",
+        "FRONT-DHR-REVIEW-CONSUMER",
+        "FRONT-DHR-WORKLIST-API",
+        "FRONT-DHR-TABLE-PAGINATION",
+        "FRONT-SHARED-ZERO-BASED-PAGINATION"
+      ]
+    }
+  ],
+  "findings": [],
+  "overallConclusion": "At the fixed source commit, the declared dashboard route reaches a direct /workflow/tasks/todo|done GET consumer with page=1,size=5 and array consumption. The same-named getTodo/getDone helper module is not the source path used by that route. Separate form/DHR review route consumers use page=0,size=20 and page-shaped content/totals. Source facts alone do not establish runtime response compatibility or a page defect."
+}

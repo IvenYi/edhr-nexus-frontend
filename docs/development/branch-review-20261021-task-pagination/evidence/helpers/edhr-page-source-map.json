@@ -1,0 +1,1152 @@
+{
+  "schema": "edhr-finite-source-map/v1",
+  "fixedCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+  "author": "/root/pagination_source_support",
+  "status": "FINAL",
+  "recordedAt": "2026-10-21T21:22:22.157535+08:00",
+  "sourceScopes": [
+    {
+      "id": "w3-page-backend:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "method": "controller route and dependencies",
+      "range": [
+        27,
+        33
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The two named queues share /api/v1/workflow/tasks and the real task repository/engine dependencies; this is not the base administrative list endpoint."
+    },
+    {
+      "id": "w3-page-backend:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "method": "todo",
+      "range": [
+        88,
+        103
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "page defaults to1,size50; assigneeId is replaced by currentOperatorId; native query runs before int start/end slicing; return type remains ApiResponse<List<WorkflowTask>>."
+    },
+    {
+      "id": "w3-page-backend:003",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "method": "done",
+      "range": [
+        108,
+        122
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "page defaults to1,size50; authenticated operator supplies owner; int start/end are computed before range guard; beyond-list start returns an empty array."
+    },
+    {
+      "id": "w3-page-backend:004",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "method": "currentOperatorId",
+      "range": [
+        186,
+        192
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Missing, unauthenticated or anonymous principal is rejected with AUTH_004; authenticated principal string supplies the queue identity."
+    },
+    {
+      "id": "w3-page-backend:005",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "method": "findTodoForUser native query",
+      "range": [
+        21,
+        26
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "bc6bfa0cc70f6d2c25b84829b8b6ff8614ddfa4a",
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Read query limits status to PENDING/PROCESSING, excludes DHR_SUMMARY instances and retains existing assignee/candidate/unrestricted predicates; created_at descending order. No claim that all adjacent delegation-display policy is adjudicated."
+    },
+    {
+      "id": "w3-page-backend:006",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "method": "findDoneForUser native query",
+      "range": [
+        28,
+        31
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "bc6bfa0cc70f6d2c25b84829b8b6ff8614ddfa4a",
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Read query uses assignee equality, COMPLETED/REJECTED/TRANSFERRED statuses and DHR exclusion; completed_at descending nulls-last order."
+    },
+    {
+      "id": "w3-page-backend:007",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "method": "handleBusinessException",
+      "range": [
+        29,
+        37
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "eca66f3bcc48f7bb4e5757858cfc87e3a01b2f9f",
+      "sha256": "7455539529c5809d43f1a80ef92515df7a8b9c894429e10353e349c180ccaae9",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "A BusinessException is translated to its HTTP status and ApiResponse.error using that numeric HTTP status; GENERAL_001 therefore produces HTTP400 and body code400."
+    },
+    {
+      "id": "w3-page-backend:008",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "method": "handleGenericException",
+      "range": [
+        80,
+        87
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "eca66f3bcc48f7bb4e5757858cfc87e3a01b2f9f",
+      "sha256": "7455539529c5809d43f1a80ef92515df7a8b9c894429e10353e349c180ccaae9",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Uncaught negative/reversed subList bounds exceptions match generic Exception and are translated to HTTP500/body code500; source-derived path only, not executed here."
+    },
+    {
+      "id": "w3-page-backend:009",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "method": "securityFilterChain",
+      "range": [
+        39,
+        60
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "38d4bf8be331890f0e4fe8a24947be0211ebb1f3",
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "These workflow queues are absent from public matchers; anyRequest requires authentication and JWT filter runs before UsernamePasswordAuthenticationFilter."
+    },
+    {
+      "id": "w3-page-backend:010",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "method": "writeErrorResponse",
+      "range": [
+        62,
+        69
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "38d4bf8be331890f0e4fe8a24947be0211ebb1f3",
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Security authentication entry point uses numeric HTTP status with the same JSON API envelope."
+    },
+    {
+      "id": "w3-page-backend:011",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java",
+      "method": "doFilterInternal",
+      "range": [
+        26,
+        54
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "794aabaef8904d9daf15476cdcc6291fc9861104",
+      "sha256": "4ed2eb9458b68717b8bf5873dedc7fa1d0fbf92d6e5efb9eebebe9d82b074ed4",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Validated JWT userId becomes the Authentication principal consumed by currentOperatorId; JWT permissions become authorities; filter clears AuditContext afterward."
+    },
+    {
+      "id": "w3-page-backend:012",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/dto/ApiResponse.java",
+      "method": "success(T)",
+      "range": [
+        26,
+        34
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "5d81e714a8159d41f2e6be37f361b41f9928b17d",
+      "sha256": "f8c98fe5426042dac438d3275300a980721be72fae75f6e1985e6121617b92b2",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Successful queue data is the supplied List under data with code200, message, timestamp and traceId; paging does not introduce PageResult metadata here."
+    },
+    {
+      "id": "w3-page-backend:013",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/dto/ApiResponse.java",
+      "method": "error(int,String)",
+      "range": [
+        46,
+        54
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "5d81e714a8159d41f2e6be37f361b41f9928b17d",
+      "sha256": "f8c98fe5426042dac438d3275300a980721be72fae75f6e1985e6121617b92b2",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Error response carries status code/message and null data; the class-level NON_NULL setting remains outside any pagination repair."
+    },
+    {
+      "id": "w3-page-backend:014",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/BusinessException.java",
+      "method": "constructors with ErrorCode/detail",
+      "range": [
+        11,
+        19
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "0be32aa1505415f4ce35b18833638470f0cb8e6c",
+      "sha256": "6b60983555c7f93de022fbcb6910c88c2b7e1d1b52bb16a938a4701ec2ee93f1",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Existing GENERAL_001 plus a concrete pagination-parameter detail can express invalid input without changing global exception policy."
+    },
+    {
+      "id": "w3-page-backend:015",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/BusinessException.java",
+      "method": "getHttpStatus/getCode",
+      "range": [
+        26,
+        32
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "0be32aa1505415f4ce35b18833638470f0cb8e6c",
+      "sha256": "6b60983555c7f93de022fbcb6910c88c2b7e1d1b52bb16a938a4701ec2ee93f1",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "HTTP status derives from existing ErrorCode; domain code is independently available for logging."
+    },
+    {
+      "id": "w3-page-backend:016",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/ErrorCode.java",
+      "method": "existing GENERAL error declarations",
+      "range": [
+        75,
+        78
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "5c512bb791c2c2d08a3f862d7776737fd0d68006",
+      "sha256": "1343e494f6f86fb0451948acb46f1f76eb9957d754dff4f10de080f1ff30e7e1",
+      "readDepth": "actual finite source inspection",
+      "reviewer": "/root/pagination_source_support",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "GENERAL_001 is already the HTTP400 request-parameter validation error, not a new business decision or lifecycle rule."
+    },
+    {
+      "id": "w3-page-front-bootstrap-html:range01",
+      "path": "gmp-platform/frontend/index.html",
+      "method": "HTML module entry (original finite read segment 1)",
+      "range": [
+        9,
+        12
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "af1bf78ec2ae0249d5159d9c80468b4c8c98a57d",
+      "sha256": "2ec49ded6e8aee045427d3ee9912032b71ab00511516bbacf3e914fe32073add",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-BOOTSTRAP-HTML",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "HTML module entry loads /src/main.tsx into #root."
+    },
+    {
+      "id": "w3-page-front-bootstrap-main:range01",
+      "path": "gmp-platform/frontend/src/main.tsx",
+      "method": "ReactDOM.createRoot/render (original finite read segment 1)",
+      "range": [
+        1,
+        10
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "9aa52ffd1f3c20df29c8074ce111522fd1cb4897",
+      "sha256": "2ed12a1457cd60b31c0f44f3ea59b8bbc2ddd4a49add3165228d093878fb7c24",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-BOOTSTRAP-MAIN",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "main imports and renders App. This is source reachability only; no application was run."
+    },
+    {
+      "id": "w3-page-front-bootstrap-app:range01",
+      "path": "gmp-platform/frontend/src/App.tsx",
+      "method": "App/BrowserRouter/AppRouter (original finite read segment 1)",
+      "range": [
+        1,
+        9
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "1e38757ae726ffaef00732636b583506ab38bae7",
+      "sha256": "6f11b6185c5322dd7475ba14f0e07b5c610c9bbc2dea18d3e8d868c68add27a6",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-BOOTSTRAP-APP",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "App imports AppRouter and mounts it within BrowserRouter and QueryClientProvider."
+    },
+    {
+      "id": "w3-page-front-bootstrap-app:range02",
+      "path": "gmp-platform/frontend/src/App.tsx",
+      "method": "App/BrowserRouter/AppRouter (original finite read segment 2)",
+      "range": [
+        242,
+        259
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "1e38757ae726ffaef00732636b583506ab38bae7",
+      "sha256": "6f11b6185c5322dd7475ba14f0e07b5c610c9bbc2dea18d3e8d868c68add27a6",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-BOOTSTRAP-APP",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "App imports AppRouter and mounts it within BrowserRouter and QueryClientProvider."
+    },
+    {
+      "id": "w3-page-front-layout-outlet:range01",
+      "path": "gmp-platform/frontend/src/components/shared/AppLayout.tsx",
+      "method": "AppLayout/Outlet (original finite read segment 1)",
+      "range": [
+        1,
+        4
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "35b91453659bdc8e517d1d54c8f7bf7eead1da73",
+      "sha256": "61289d0cb45f772a2604840430764c42ead20060fe8a5c1d263572645719ca88",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-LAYOUT-OUTLET",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The protected layout renders Outlet, providing the source path to nested routes."
+    },
+    {
+      "id": "w3-page-front-layout-outlet:range02",
+      "path": "gmp-platform/frontend/src/components/shared/AppLayout.tsx",
+      "method": "AppLayout/Outlet (original finite read segment 2)",
+      "range": [
+        1414,
+        1425
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "35b91453659bdc8e517d1d54c8f7bf7eead1da73",
+      "sha256": "61289d0cb45f772a2604840430764c42ead20060fe8a5c1d263572645719ca88",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-LAYOUT-OUTLET",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The protected layout renders Outlet, providing the source path to nested routes."
+    },
+    {
+      "id": "w3-page-front-active-routes:range01",
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "method": "AppRouter route declarations (original finite read segment 1)",
+      "range": [
+        9,
+        33
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "12c81470b76a5ecb2ee2e16dc48603033f36d522",
+      "sha256": "8eaf4ff1ad44ce421f4fc68727a168f4f27cbef854e1c5a5eed9c955c13b06b3",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-ACTIVE-ROUTES",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The protected / index renders DashboardPage; /workflow/tasks/:id renders TaskDetail; /form-management/review renders FormReviewPage; /dhr-management/review renders DhrReviewPage. This establishes declared source routing, not browser execution."
+    },
+    {
+      "id": "w3-page-front-active-routes:range02",
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "method": "AppRouter route declarations (original finite read segment 2)",
+      "range": [
+        61,
+        116
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "12c81470b76a5ecb2ee2e16dc48603033f36d522",
+      "sha256": "8eaf4ff1ad44ce421f4fc68727a168f4f27cbef854e1c5a5eed9c955c13b06b3",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-ACTIVE-ROUTES",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The protected / index renders DashboardPage; /workflow/tasks/:id renders TaskDetail; /form-management/review renders FormReviewPage; /dhr-management/review renders DhrReviewPage. This establishes declared source routing, not browser execution."
+    },
+    {
+      "id": "w3-page-front-dashboard-tabs:range01",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardPage.tsx",
+      "method": "DashboardPage (original finite read segment 1)",
+      "range": [
+        1,
+        9
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "4beaccb334e0cf414280606cc39190f884b20994",
+      "sha256": "bffdf8309fac299eaed8059a6250f264d14517dd80179865caf35b607d96765c",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-DASHBOARD-TABS",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Dashboard imports TodoList and DoneList and conditionally renders TodoList for tab 0 or DoneList otherwise; tab 0 is initial state."
+    },
+    {
+      "id": "w3-page-front-dashboard-tabs:range02",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardPage.tsx",
+      "method": "DashboardPage (original finite read segment 2)",
+      "range": [
+        18,
+        25
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "4beaccb334e0cf414280606cc39190f884b20994",
+      "sha256": "bffdf8309fac299eaed8059a6250f264d14517dd80179865caf35b607d96765c",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-DASHBOARD-TABS",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Dashboard imports TodoList and DoneList and conditionally renders TodoList for tab 0 or DoneList otherwise; tab 0 is initial state."
+    },
+    {
+      "id": "w3-page-front-dashboard-tabs:range03",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardPage.tsx",
+      "method": "DashboardPage (original finite read segment 3)",
+      "range": [
+        60,
+        69
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "4beaccb334e0cf414280606cc39190f884b20994",
+      "sha256": "bffdf8309fac299eaed8059a6250f264d14517dd80179865caf35b607d96765c",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-DASHBOARD-TABS",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Dashboard imports TodoList and DoneList and conditionally renders TodoList for tab 0 or DoneList otherwise; tab 0 is initial state."
+    },
+    {
+      "id": "w3-page-front-todo-wrapper:range01",
+      "path": "gmp-platform/frontend/src/pages/dashboard/TodoList.tsx",
+      "method": "TodoList (original finite read segment 1)",
+      "range": [
+        1,
+        7
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "e34e5df8d001978f1ec1c10c4a1e9ad72ec86012",
+      "sha256": "a6559945182d2b7d1ff36246e2268f4cc8ddd65668237969961640b82334376e",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-TODO-WRAPPER",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "TodoList passes kind=todo and the current auth user id to DashboardTaskList."
+    },
+    {
+      "id": "w3-page-front-done-wrapper:range01",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DoneList.tsx",
+      "method": "DoneList (original finite read segment 1)",
+      "range": [
+        1,
+        7
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "7f281f030e23d9d258656f4b32a0f900f1dca11a",
+      "sha256": "fd5384b7502acc6207b236479489b155784d072e0b163de5ba29dda4ae3f6850",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-DONE-WRAPPER",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "DoneList passes kind=done and the current auth user id to DashboardTaskList."
+    },
+    {
+      "id": "w3-page-front-dashboard-consumer:range01",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "method": "DashboardTaskList / HTTP GET (original finite read segment 1)",
+      "range": [
+        1,
+        9
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "c9bdac66955f4d37b6408a7d5eb6a55b470eb68d",
+      "sha256": "20c917457870ac7ba620937bde4ec01b0e3e1d1d27a4a5015b79706d750ab100",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-DASHBOARD-CONSUMER",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The routed dashboard consumer calls client.get(/workflow/tasks/ + kind), yielding GET /api/v1/workflow/tasks/todo or /api/v1/workflow/tasks/done. It sends page with initial value 1 and explicit size 5; it does not send assigneeId. The query is enabled only when assigneeId exists. It returns res.data.data as Task[], uses tasks.length and tasks.map, and does not read PageResult.content or totals. Previous/next decrement/increment page; next is disabled for tasks.length < 5. These are caller-side source facts only."
+    },
+    {
+      "id": "w3-page-front-dashboard-consumer:range02",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "method": "DashboardTaskList / HTTP GET (original finite read segment 2)",
+      "range": [
+        11,
+        22
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "c9bdac66955f4d37b6408a7d5eb6a55b470eb68d",
+      "sha256": "20c917457870ac7ba620937bde4ec01b0e3e1d1d27a4a5015b79706d750ab100",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-DASHBOARD-CONSUMER",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The routed dashboard consumer calls client.get(/workflow/tasks/ + kind), yielding GET /api/v1/workflow/tasks/todo or /api/v1/workflow/tasks/done. It sends page with initial value 1 and explicit size 5; it does not send assigneeId. The query is enabled only when assigneeId exists. It returns res.data.data as Task[], uses tasks.length and tasks.map, and does not read PageResult.content or totals. Previous/next decrement/increment page; next is disabled for tasks.length < 5. These are caller-side source facts only."
+    },
+    {
+      "id": "w3-page-front-dashboard-consumer:range03",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "method": "DashboardTaskList / HTTP GET (original finite read segment 3)",
+      "range": [
+        27,
+        39
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "c9bdac66955f4d37b6408a7d5eb6a55b470eb68d",
+      "sha256": "20c917457870ac7ba620937bde4ec01b0e3e1d1d27a4a5015b79706d750ab100",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-DASHBOARD-CONSUMER",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The routed dashboard consumer calls client.get(/workflow/tasks/ + kind), yielding GET /api/v1/workflow/tasks/todo or /api/v1/workflow/tasks/done. It sends page with initial value 1 and explicit size 5; it does not send assigneeId. The query is enabled only when assigneeId exists. It returns res.data.data as Task[], uses tasks.length and tasks.map, and does not read PageResult.content or totals. Previous/next decrement/increment page; next is disabled for tasks.length < 5. These are caller-side source facts only."
+    },
+    {
+      "id": "w3-page-front-dashboard-consumer:range04",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "method": "DashboardTaskList / HTTP GET (original finite read segment 4)",
+      "range": [
+        47,
+        61
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "c9bdac66955f4d37b6408a7d5eb6a55b470eb68d",
+      "sha256": "20c917457870ac7ba620937bde4ec01b0e3e1d1d27a4a5015b79706d750ab100",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-DASHBOARD-CONSUMER",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The routed dashboard consumer calls client.get(/workflow/tasks/ + kind), yielding GET /api/v1/workflow/tasks/todo or /api/v1/workflow/tasks/done. It sends page with initial value 1 and explicit size 5; it does not send assigneeId. The query is enabled only when assigneeId exists. It returns res.data.data as Task[], uses tasks.length and tasks.map, and does not read PageResult.content or totals. Previous/next decrement/increment page; next is disabled for tasks.length < 5. These are caller-side source facts only."
+    },
+    {
+      "id": "w3-page-front-client:range01",
+      "path": "gmp-platform/frontend/src/api/client.ts",
+      "method": "axios.create / response interceptor (original finite read segment 1)",
+      "range": [
+        14,
+        20
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "4d67bf63a3ec49078ec7a6fe507cc84fa817c776",
+      "sha256": "f5b919fc5059196d41adf259870c24dff3e9b930fdc98ba5846b10334c85ae75",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-CLIENT",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The client baseURL is /api/v1. The response interceptor checks body.code and returns the Axios response itself; the inspected interceptor does not flatten data, convert list/page shapes, or translate page indices."
+    },
+    {
+      "id": "w3-page-front-client:range02",
+      "path": "gmp-platform/frontend/src/api/client.ts",
+      "method": "axios.create / response interceptor (original finite read segment 2)",
+      "range": [
+        36,
+        50
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "4d67bf63a3ec49078ec7a6fe507cc84fa817c776",
+      "sha256": "f5b919fc5059196d41adf259870c24dff3e9b930fdc98ba5846b10334c85ae75",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-CLIENT",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The client baseURL is /api/v1. The response interceptor checks body.code and returns the Axios response itself; the inspected interceptor does not flatten data, convert list/page shapes, or translate page indices."
+    },
+    {
+      "id": "w3-page-front-client:range03",
+      "path": "gmp-platform/frontend/src/api/client.ts",
+      "method": "axios.create / response interceptor (original finite read segment 3)",
+      "range": [
+        66,
+        66
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "4d67bf63a3ec49078ec7a6fe507cc84fa817c776",
+      "sha256": "f5b919fc5059196d41adf259870c24dff3e9b930fdc98ba5846b10334c85ae75",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-CLIENT",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The client baseURL is /api/v1. The response interceptor checks body.code and returns the Axios response itself; the inspected interceptor does not flatten data, convert list/page shapes, or translate page indices."
+    },
+    {
+      "id": "w3-page-front-common-shapes:range01",
+      "path": "gmp-platform/frontend/src/types/common.ts",
+      "method": "ApiResponse<T> / PageResult<T> / PageQuery (original finite read segment 1)",
+      "range": [
+        1,
+        24
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "04e698a17cb9b5cead7454627effe7b35d69be76",
+      "sha256": "f7aa611902bf635c8624749d23a0edbcf76e7f813efb31cd03fa65067453189c",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-COMMON-SHAPES",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "Common types distinguish ApiResponse.data from PageResult.content/page/size/totalElements/totalPages. DashboardTaskList consumes the former data as an array, not the latter page structure."
+    },
+    {
+      "id": "w3-page-front-helper-definitions:range01",
+      "path": "gmp-platform/frontend/src/api/workflow-tasks.ts",
+      "method": "getTodo / getDone / helper module (original finite read segment 1)",
+      "range": [
+        1,
+        9
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "ea9c0f63771e7bcfa2aa793b8b605e5dee265a6c",
+      "sha256": "7aa5a6623a471ee264000f00d33c45aa3732798fb58523b9988fb6cc78bfeaae",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-HELPER-DEFINITIONS",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "getTodo and getDone are exported helpers that both GET /workflow/tasks with optional pass-through params; they define neither a default page nor a default size. They are not imported by the traced dashboard chain. Fixed-commit textual symbol/module search over frontend/src found only the definitions of getTodo/getDone and no workflow-tasks module reference; this is bounded static reference evidence, not proof about dynamic runtime loading."
+    },
+    {
+      "id": "w3-page-front-form-review-consumer:range01",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "method": "FormReviewPage / listFormWorklist (original finite read segment 1)",
+      "range": [
+        19,
+        22
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "26076537400f1fc353aac8b588949c16732da489",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-FORM-REVIEW-CONSUMER",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The separately routed form-review screen has My Todo/My Done views REVIEW_PENDING/REVIEW_DONE. It calls listFormWorklist(view,queryParams), starts page=0 and size=20, passes those values unchanged through toQuery, consumes query.data.content and totalElements/totalPages, and resets page to 0 when changing view or page size."
+    },
+    {
+      "id": "w3-page-front-form-review-consumer:range02",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "method": "FormReviewPage / listFormWorklist (original finite read segment 2)",
+      "range": [
+        73,
+        76
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "26076537400f1fc353aac8b588949c16732da489",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-FORM-REVIEW-CONSUMER",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The separately routed form-review screen has My Todo/My Done views REVIEW_PENDING/REVIEW_DONE. It calls listFormWorklist(view,queryParams), starts page=0 and size=20, passes those values unchanged through toQuery, consumes query.data.content and totalElements/totalPages, and resets page to 0 when changing view or page size."
+    },
+    {
+      "id": "w3-page-front-form-review-consumer:range03",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "method": "FormReviewPage / listFormWorklist (original finite read segment 3)",
+      "range": [
+        121,
+        130
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "26076537400f1fc353aac8b588949c16732da489",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-FORM-REVIEW-CONSUMER",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The separately routed form-review screen has My Todo/My Done views REVIEW_PENDING/REVIEW_DONE. It calls listFormWorklist(view,queryParams), starts page=0 and size=20, passes those values unchanged through toQuery, consumes query.data.content and totalElements/totalPages, and resets page to 0 when changing view or page size."
+    },
+    {
+      "id": "w3-page-front-form-review-consumer:range04",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "method": "FormReviewPage / listFormWorklist (original finite read segment 4)",
+      "range": [
+        190,
+        215
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "26076537400f1fc353aac8b588949c16732da489",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-FORM-REVIEW-CONSUMER",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The separately routed form-review screen has My Todo/My Done views REVIEW_PENDING/REVIEW_DONE. It calls listFormWorklist(view,queryParams), starts page=0 and size=20, passes those values unchanged through toQuery, consumes query.data.content and totalElements/totalPages, and resets page to 0 when changing view or page size."
+    },
+    {
+      "id": "w3-page-front-form-review-consumer:range05",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "method": "FormReviewPage / listFormWorklist (original finite read segment 5)",
+      "range": [
+        226,
+        231
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "26076537400f1fc353aac8b588949c16732da489",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-FORM-REVIEW-CONSUMER",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The separately routed form-review screen has My Todo/My Done views REVIEW_PENDING/REVIEW_DONE. It calls listFormWorklist(view,queryParams), starts page=0 and size=20, passes those values unchanged through toQuery, consumes query.data.content and totalElements/totalPages, and resets page to 0 when changing view or page size."
+    },
+    {
+      "id": "w3-page-front-form-review-consumer:range06",
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "method": "FormReviewPage / listFormWorklist (original finite read segment 6)",
+      "range": [
+        275,
+        285
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "26076537400f1fc353aac8b588949c16732da489",
+      "sha256": "3c1dbed9f84cf748349b1febbf23c60fdb79d27e25fa29321d41ea475f7cd581",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-FORM-REVIEW-CONSUMER",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The separately routed form-review screen has My Todo/My Done views REVIEW_PENDING/REVIEW_DONE. It calls listFormWorklist(view,queryParams), starts page=0 and size=20, passes those values unchanged through toQuery, consumes query.data.content and totalElements/totalPages, and resets page to 0 when changing view or page size."
+    },
+    {
+      "id": "w3-page-front-form-worklist-api:range01",
+      "path": "gmp-platform/frontend/src/api/form-instance-records.ts",
+      "method": "listFormWorklist / HTTP GET (original finite read segment 1)",
+      "range": [
+        79,
+        82
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "7a3fcdbaa3c37ff16f6205f4c3cc0648734b70c9",
+      "sha256": "6fcdaf7d6edd525e225da1373cf53ee3742f994fc338c7c7e7d9b227694637d2",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-FORM-WORKLIST-API",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "listFormWorklist GETs /api/v1/form-worklists/{encoded view}, so the reviewed screen uses /form-worklists/REVIEW_PENDING and /form-worklists/REVIEW_DONE. It serializes supplied query values with URLSearchParams and returns res.data.data as FormWorklistPage (content/page/size/totalElements/totalPages plus historyCoverage). The helper query default is {}, with no page/size value inserted by this helper."
+    },
+    {
+      "id": "w3-page-front-form-worklist-api:range02",
+      "path": "gmp-platform/frontend/src/api/form-instance-records.ts",
+      "method": "listFormWorklist / HTTP GET (original finite read segment 2)",
+      "range": [
+        101,
+        116
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "7a3fcdbaa3c37ff16f6205f4c3cc0648734b70c9",
+      "sha256": "6fcdaf7d6edd525e225da1373cf53ee3742f994fc338c7c7e7d9b227694637d2",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-FORM-WORKLIST-API",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "listFormWorklist GETs /api/v1/form-worklists/{encoded view}, so the reviewed screen uses /form-worklists/REVIEW_PENDING and /form-worklists/REVIEW_DONE. It serializes supplied query values with URLSearchParams and returns res.data.data as FormWorklistPage (content/page/size/totalElements/totalPages plus historyCoverage). The helper query default is {}, with no page/size value inserted by this helper."
+    },
+    {
+      "id": "w3-page-front-form-worklist-api:range03",
+      "path": "gmp-platform/frontend/src/api/form-instance-records.ts",
+      "method": "listFormWorklist / HTTP GET (original finite read segment 3)",
+      "range": [
+        124,
+        135
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "7a3fcdbaa3c37ff16f6205f4c3cc0648734b70c9",
+      "sha256": "6fcdaf7d6edd525e225da1373cf53ee3742f994fc338c7c7e7d9b227694637d2",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-FORM-WORKLIST-API",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "listFormWorklist GETs /api/v1/form-worklists/{encoded view}, so the reviewed screen uses /form-worklists/REVIEW_PENDING and /form-worklists/REVIEW_DONE. It serializes supplied query values with URLSearchParams and returns res.data.data as FormWorklistPage (content/page/size/totalElements/totalPages plus historyCoverage). The helper query default is {}, with no page/size value inserted by this helper."
+    },
+    {
+      "id": "w3-page-front-dhr-review-consumer:range01",
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "method": "DhrReviewPage / listDhrReviewTasks (original finite read segment 1)",
+      "range": [
+        1,
+        18
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "a9aa299bd0f515c6be943e5e92ce3173fdb7f1bb",
+      "sha256": "651c4e34f0ddee5bc3db718e484d3cf1135352ca5974a16a2023370ad7f127d6",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-DHR-REVIEW-CONSUMER",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The separately routed DHR review screen uses PENDING/DONE views (labels My Pending Review/My Reviewed), starts page=0 and size=20, calls listDhrReviewTasks({view,keyword,page,size}), and passes content/totals to DhrWorklistTable. This is a distinct endpoint family from workflow/tasks."
+    },
+    {
+      "id": "w3-page-front-dhr-review-consumer:range02",
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "method": "DhrReviewPage / listDhrReviewTasks (original finite read segment 2)",
+      "range": [
+        118,
+        130
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "a9aa299bd0f515c6be943e5e92ce3173fdb7f1bb",
+      "sha256": "651c4e34f0ddee5bc3db718e484d3cf1135352ca5974a16a2023370ad7f127d6",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-DHR-REVIEW-CONSUMER",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The separately routed DHR review screen uses PENDING/DONE views (labels My Pending Review/My Reviewed), starts page=0 and size=20, calls listDhrReviewTasks({view,keyword,page,size}), and passes content/totals to DhrWorklistTable. This is a distinct endpoint family from workflow/tasks."
+    },
+    {
+      "id": "w3-page-front-dhr-worklist-api:range01",
+      "path": "gmp-platform/frontend/src/api/dhr-workbenches.ts",
+      "method": "listDhrReviewTasks / HTTP GET (original finite read segment 1)",
+      "range": [
+        1,
+        17
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "6e8008f72536f2b176b9c47e66df73cadaea10f6",
+      "sha256": "8e37a7893860dd1b7383498f3771c97d6fbcaff97f58eb6a882c7c4f3b0040ee",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-DHR-WORKLIST-API",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "listDhrReviewTasks GETs /api/v1/dhr-reviews with view, keyword, page and size; its declared response is content plus totalElements/totalPages, not a bare task array. It supplies no additional default page/size."
+    },
+    {
+      "id": "w3-page-front-dhr-table-pagination:range01",
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrWorklistTable.tsx",
+      "method": "DhrWorklistTable / FormListPagination (original finite read segment 1)",
+      "range": [
+        1,
+        17
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "dcd41acfa198acf0e41415b83e94f74b1df1fa41",
+      "sha256": "0c2116a4085d2608234467a52313e96b910da8ded95f1beb5e47129ec2003332",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-DHR-TABLE-PAGINATION",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "DhrWorklistTable renders rows and passes its page/size/totals through to the shared FormListPagination component."
+    },
+    {
+      "id": "w3-page-front-dhr-table-pagination:range02",
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrWorklistTable.tsx",
+      "method": "DhrWorklistTable / FormListPagination (original finite read segment 2)",
+      "range": [
+        33,
+        46
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "dcd41acfa198acf0e41415b83e94f74b1df1fa41",
+      "sha256": "0c2116a4085d2608234467a52313e96b910da8ded95f1beb5e47129ec2003332",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-DHR-TABLE-PAGINATION",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "DhrWorklistTable renders rows and passes its page/size/totals through to the shared FormListPagination component."
+    },
+    {
+      "id": "w3-page-front-shared-zero-based-pagination:range01",
+      "path": "gmp-platform/frontend/src/pages/form-management/formManagementListStyles.tsx",
+      "method": "FormListPagination (original finite read segment 1)",
+      "range": [
+        45,
+        76
+      ],
+      "sourceCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+      "blob": "6c74625588d43258790b867d051b1002d88820aa",
+      "sha256": "f97782404d82962523306180142a435587c2738c3426b09b802527a7423542e6",
+      "readDepth": "bounded-source-trace",
+      "reviewer": "/root/pagination_source_support/frontend_consumer",
+      "originalClaimId": "FRONT-SHARED-ZERO-BASED-PAGINATION",
+      "originalArtifactSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false,
+      "conclusion": "The shared paginator presents page+1 to MUI Pagination and converts selected UI page back with value-1, so the inspected form/DHR review consumers maintain zero-based request page state. It does not alter the dashboard paginator."
+    }
+  ],
+  "arithmeticExamples": [
+    {
+      "page": 0,
+      "size": 50,
+      "queueLengthForArithmetic": 5,
+      "startInt32": -50,
+      "endInt32ForFive": 0,
+      "unboundedOffset": -50,
+      "derivedCurrentBehavior": "start=-50 leads to negative subList bound for empty or nonempty queues",
+      "expectedAfterProposedMinimalFix": "HTTP400",
+      "actualProductRuntimeExecuted": false,
+      "requiresProductReproduction": true
+    },
+    {
+      "page": -1,
+      "size": 2,
+      "queueLengthForArithmetic": 5,
+      "startInt32": -4,
+      "endInt32ForFive": -2,
+      "unboundedOffset": -4,
+      "derivedCurrentBehavior": "start=-4 leads to negative subList bound",
+      "expectedAfterProposedMinimalFix": "HTTP400",
+      "actualProductRuntimeExecuted": false,
+      "requiresProductReproduction": true
+    },
+    {
+      "page": 1,
+      "size": 0,
+      "queueLengthForArithmetic": 5,
+      "startInt32": 0,
+      "endInt32ForFive": 0,
+      "unboundedOffset": 0,
+      "derivedCurrentBehavior": "start=end=0 returns a successful empty array rather than rejecting zero size",
+      "expectedAfterProposedMinimalFix": "HTTP400",
+      "actualProductRuntimeExecuted": false,
+      "requiresProductReproduction": true
+    },
+    {
+      "page": 1,
+      "size": -1,
+      "queueLengthForArithmetic": 5,
+      "startInt32": 0,
+      "endInt32ForFive": -1,
+      "unboundedOffset": 0,
+      "derivedCurrentBehavior": "start=0,end=-1 yields reversed subList bounds for nonempty queues",
+      "expectedAfterProposedMinimalFix": "HTTP400",
+      "actualProductRuntimeExecuted": false,
+      "requiresProductReproduction": true
+    },
+    {
+      "page": -2147483648,
+      "size": 1,
+      "queueLengthForArithmetic": 5,
+      "startInt32": 2147483647,
+      "endInt32ForFive": -2147483648,
+      "unboundedOffset": -2147483649,
+      "derivedCurrentBehavior": "page-1 itself overflows to MAX; small queues return successful empty array",
+      "expectedAfterProposedMinimalFix": "HTTP400",
+      "actualProductRuntimeExecuted": false,
+      "requiresProductReproduction": true
+    },
+    {
+      "page": 2147483647,
+      "size": 2,
+      "queueLengthForArithmetic": 5,
+      "startInt32": -4,
+      "endInt32ForFive": -2,
+      "unboundedOffset": 4294967292,
+      "derivedCurrentBehavior": "multiplication wraps start to-4; subList bound is negative",
+      "expectedAfterProposedMinimalFix": "successful empty array",
+      "actualProductRuntimeExecuted": false,
+      "requiresProductReproduction": true
+    },
+    {
+      "page": 65537,
+      "size": 65536,
+      "queueLengthForArithmetic": 5,
+      "startInt32": 0,
+      "endInt32ForFive": 5,
+      "unboundedOffset": 4294967296,
+      "derivedCurrentBehavior": "multiplication wraps start to0; five-item queue silently returns its first five items",
+      "expectedAfterProposedMinimalFix": "successful empty array",
+      "actualProductRuntimeExecuted": false,
+      "requiresProductReproduction": true
+    },
+    {
+      "page": 2147483646,
+      "size": 2147483647,
+      "queueLengthForArithmetic": 5,
+      "startInt32": 3,
+      "endInt32ForFive": -2147483646,
+      "unboundedOffset": 4611686009837453315,
+      "derivedCurrentBehavior": "multiplication wraps start to3; addition wraps end negative; a five-item queue reaches reversed bounds",
+      "expectedAfterProposedMinimalFix": "successful empty array",
+      "actualProductRuntimeExecuted": false,
+      "requiresProductReproduction": true
+    },
+    {
+      "page": 2147483647,
+      "size": 2147483647,
+      "queueLengthForArithmetic": 5,
+      "startInt32": -2147483646,
+      "endInt32ForFive": 1,
+      "unboundedOffset": 4611686011984936962,
+      "derivedCurrentBehavior": "multiplication wraps start to-2147483646; negative subList bound",
+      "expectedAfterProposedMinimalFix": "successful empty array",
+      "actualProductRuntimeExecuted": false,
+      "requiresProductReproduction": true
+    },
+    {
+      "page": 1,
+      "size": 2147483647,
+      "queueLengthForArithmetic": 5,
+      "startInt32": 0,
+      "endInt32ForFive": 5,
+      "unboundedOffset": 0,
+      "derivedCurrentBehavior": "start0/end5 for a five-item queue; currently accepted positive large size",
+      "expectedAfterProposedMinimalFix": "same full five-item array, without an invented maximum size",
+      "actualProductRuntimeExecuted": false,
+      "requiresProductReproduction": true
+    },
+    {
+      "page": 2,
+      "size": 2147483647,
+      "queueLengthForArithmetic": 5,
+      "startInt32": 2147483647,
+      "endInt32ForFive": -2,
+      "unboundedOffset": 2147483647,
+      "derivedCurrentBehavior": "startMAX is beyond five-item queue, so range guard returns empty despite unused negative end",
+      "expectedAfterProposedMinimalFix": "same successful empty array",
+      "actualProductRuntimeExecuted": false,
+      "requiresProductReproduction": true
+    }
+  ],
+  "arithmeticQualification": "Python int32 arithmetic models the inspected Java expressions only; no HTTP/database/browser product tests or Maven ran in this instance.",
+  "safePositiveIntUpperBounds": {
+    "offset": 4611686011984936962,
+    "offsetPlusSize": 4611686014132420609,
+    "fitsSignedLong": true
+  },
+  "businessSemanticsAssessment": "A repair limited to positive integer pagination parameters and safe slicing preserves list shape, original owner/candidate/status/DHR predicates, ordering, lifecycle/actions, persisted rows and audit meaning. It requires no new task policy. This is a finite source assessment, not final QA acceptance.",
+  "nonGoalsAndUnresolved": [
+    "generic action/type matrix remains unanswered",
+    "no whole-workflow tenant isolation or delegation-display policy acceptance",
+    "record-control/DHR high/A12 deferred boundaries remain",
+    "W5-AUDIT-HASH-001 and historical signature recovery remain separate",
+    "no global pagination refactor or invented maximum page size"
+  ],
+  "runtimeExecuted": false,
+  "repositoryMutations": false,
+  "wholeFileOrBranchAcceptance": false,
+  "childInstances": [
+    {
+      "name": "/root/pagination_source_support/frontend_consumer",
+      "status": "FINAL",
+      "runtimeExecuted": false,
+      "repositoryMutations": false
+    }
+  ],
+  "frontendQualification": {
+    "originalClaimEntries": 18,
+    "explicitDisjointReadSegments": 37,
+    "mechanicalRangeSplitIsNotNewRead": true,
+    "wholeFileOrDistinctMethodCounting": false,
+    "originalPath": "/tmp/edhr-page-front-consumers.json",
+    "originalSha256": "55ae7413ddf55bb2bce703913caac434d80ae32e75eaedde8fb1ae125ff57055",
+    "summary": "Actual routed dashboard source uses page1,size5 and task arrays. Separate form/DHR review source uses page0,size20 and content/totals at distinct endpoints; do not change those request conventions. Same-named workflow-tasks API helpers have only definitions in fixed-src textual reference search and are not the routed dashboard consumer."
+  }
+}
