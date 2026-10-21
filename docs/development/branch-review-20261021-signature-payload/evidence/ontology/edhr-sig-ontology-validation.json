@@ -1,0 +1,83 @@
+{
+  "author": "/root/signature_payload_ontology",
+  "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+  "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f tools/knowledge-model/pom.xml clean test",
+  "commandExit": 0,
+  "startedUnixNs": 1792556856889428735,
+  "finishedUnixNs": 1792556869744795500,
+  "counts": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "freshReportsOnly": true,
+  "xmlReports": [
+    {
+      "path": "/workspace/edhr-nexus-frontend/tools/knowledge-model/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "sha256": "b45ae3724fd0cfb206d3c2680e8faf5884f49b1028467afed2e670de342a35eb",
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "counts": {
+        "tests": 89,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    }
+  ],
+  "rawLog": {
+    "path": "/tmp/edhr-sig-ontology-knowledge.raw.log",
+    "sha256": "7a9cc6a3e79a99099b4bd03ede881e2f6aadf32c1ecc30ab8d6f7f79cccaa32c",
+    "excludedFromDeliveryManifest": true
+  },
+  "businessTestsExecuted": [],
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "targetCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "contractBaseline": {
+    "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "contractReadCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "uncommittedContractPaths": []
+  },
+  "allCurrentKnowledgeFilesEqualFixedCommit": true,
+  "yamlDocumentsParsed": 213,
+  "inventoryOnly": {
+    "priorKnowledgeIds": 2548,
+    "currentKnowledgeIds": 2552,
+    "addedEvidenceIds": [
+      "evidence.signature-payload-lossless-storage-migration",
+      "evidence.signature-payload-lossless-storage-source",
+      "evidence.signature-payload-postgres-migration-test",
+      "evidence.signature-payload-postgres-roundtrip-test"
+    ],
+    "changedExistingRecordIds": [
+      "anchor.dhr-summary-zip-source-trace"
+    ],
+    "notSemanticCoverage": true
+  },
+  "semanticReviews": {
+    "actualFiniteIdCount": 12,
+    "conclusions": {
+      "consistent": 12
+    },
+    "notWholeRecordOrFileAcceptance": true
+  },
+  "existingLedgerReconcilerCompatibility": {
+    "function": "scripts/build-branch-review-ledger.py:reconcile_semantics",
+    "finiteRows": 12,
+    "carryStatuses": {
+      "retained-scoped-evidence": 12
+    },
+    "input": "transient JSONL stream; all referenced knowledge/source data read from fixed real Git commit",
+    "committedSemanticEvidenceClaimed": false
+  },
+  "existingAlgorithmsAndConsumersByteUnchanged": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java"
+  ],
+  "businessTestsExecutedByOntology": false
+}

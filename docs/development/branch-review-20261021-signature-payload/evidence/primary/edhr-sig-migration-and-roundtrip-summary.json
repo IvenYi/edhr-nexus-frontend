@@ -1,0 +1,99 @@
+{
+  "phase": "migration-and-roundtrip",
+  "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=SignatureSnapshotPostgresTest,SignatureSnapshotMigrationPostgresTest,SignatureTest",
+    "test"
+  ],
+  "exit": 1,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.compliance.entity.SignatureTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "dce9db1d893f90273b66cd5c4e0bd9c5c3ded6e2459dc54ffb570bef6d712807",
+      "cases": [
+        {
+          "name": "signedPayloadUsesLosslessTextInsteadOfJsonNormalization",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+      "tests": 4,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "0bd1e08129eeaaf0a99d4bf9ec0bc793cfe0314aa36271c961ffdac83e9ea2ab",
+      "cases": [
+        {
+          "name": "forwardMigrationPreservesEveryExistingReadableValueHashAndMetadata",
+          "status": "passed"
+        },
+        {
+          "name": "repeatedLiquibaseAndForwardDdlLeaveRowsAndSingleChangeSetUnchanged",
+          "status": "passed"
+        },
+        {
+          "name": "lossyAutomaticRollbackIsRejectedBeforeChangingNewSignedPayload",
+          "status": "failed",
+          "message": "\nexpected: [{\"auth_event_ref\"=null, \"auth_method\"=\"PASSWORD\", \"id\"=9L, \"meaning\"=\"APPROVE\", \"signature_password_hash\"=null, \"signed_at\"=2026-10-21T04:15:14.676 (java.sql.Timestamp), \"signer_id\"=\"1\", \"signer_name\"=\"合成签署人\", \"snapshot_data\"=\"{ \"z\" : 1, \"a\" : \"签署原文\" }\", \"snapshot_hash\"=\"ece3d4ba4b4b1df252c4cfa83e05d5624aa188e67e1396610905e80a43e1cdfc\", \"target_id\"=\"99\", \"target_type\"=\"PRODUCTION_EXECUTION\", \"tenant_id\"=\"default\"}]\n but was: []"
+        },
+        {
+          "name": "migrationDoesNotInventMissingOriginalBytesOrRelaxLegacyVerification",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "b5692c87809e3d180d308ffddb0036009909c13cc8bf22e0ad47fa9838da4173",
+      "cases": [
+        {
+          "name": "fieldSignatureUsesSameLosslessPersistence",
+          "status": "passed"
+        },
+        {
+          "name": "nativeJsonbControlHasEqualJsonButDifferentSignedBytes",
+          "status": "passed"
+        },
+        {
+          "name": "profileSnapshotKeepsExactWhitespaceOrderAndUnicode",
+          "status": "passed"
+        },
+        {
+          "name": "tamperedDigestStillStopsArchive(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "tamperedDigestStillStopsArchive(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "existingSignerServiceSurvivesNativePersistenceAndArchiveVerification(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "existingSignerServiceSurvivesNativePersistenceAndArchiveVerification(String)[2]",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "rawLogAndXmlExcluded": true
+}

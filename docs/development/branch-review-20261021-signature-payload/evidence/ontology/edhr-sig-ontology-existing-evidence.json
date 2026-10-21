@@ -1,0 +1,642 @@
+{
+  "schema": "edhr-readonly-knowledge-evidence-assistance/v1",
+  "role": "L0 existing-evidence lookup supporting formal ontology; not a new formal gate",
+  "status": "FINAL",
+  "author": "/root/signature_payload_ontology/existing_signature_evidence",
+  "fixedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "sourceFiles": [
+    {
+      "path": "docs/knowledge/evidence/production-execution.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "38c68cff48fdc406d4abdfdafa78d0cb592ba3c6",
+      "sha256": "37006edb6ca2ff539568d5e95831343f31bde913553d6db5695bf866298e6f1d",
+      "readScope": "selected signature-related records, or schema enum/reference fields; not whole-file semantic acceptance"
+    },
+    {
+      "path": "docs/knowledge/evidence/button-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "42ce5ad07cea5559a6c23e04e318c0a1949ec80a",
+      "sha256": "18b32345e87897bf007dcce8535a72843c36cf65f0c6526ad4eb3c3e806a8d0e",
+      "readScope": "selected signature-related records, or schema enum/reference fields; not whole-file semantic acceptance"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "af20c8ee00e36f7d9e849be3e14020e8d3b68568",
+      "sha256": "fd50baedcacdb3aa8c37bdec87e8fd70cc104eae5388a81aad1a486d609ef564",
+      "readScope": "selected signature-related records, or schema enum/reference fields; not whole-file semantic acceptance"
+    },
+    {
+      "path": "docs/knowledge/evidence/production-field-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "053e63a65d7543d029470922ee11648799e5808e",
+      "sha256": "2588a962a8b4aa6c8a293ec83e1140bb6d94cb75b88df68279971a5ee1a8629a",
+      "readScope": "selected signature-related records, or schema enum/reference fields; not whole-file semantic acceptance"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "5588ebdb77d3b4a596c8c59a3871b0126d6d0300",
+      "sha256": "61b8cbda593b5177df0b5597dbab796f78325fede5d116a2c418fb39ec87fe90",
+      "readScope": "selected signature-related records, or schema enum/reference fields; not whole-file semantic acceptance"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "f9ef1ed80a11e1807826f2dbb45af0fe2ece153b",
+      "sha256": "247d86850b218f545b8622bd59267c96c9a0ae4ccca9c93d7fd9fcd39468d2d8",
+      "readScope": "selected signature-related records, or schema enum/reference fields; not whole-file semantic acceptance"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "864c6ec676bcd8b9a9351a3c7326350a6d260217",
+      "sha256": "28b3ec4bfd08d19691f9a3dbb34ba056ffd8e0230a67804f81b73220fb9710a7",
+      "readScope": "selected signature-related records, or schema enum/reference fields; not whole-file semantic acceptance"
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "63703d111d8f01fc7ff71e97ff311ee38bbb3a40",
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84",
+      "readScope": "selected signature-related records, or schema enum/reference fields; not whole-file semantic acceptance"
+    }
+  ],
+  "selectedRecordCount": 29,
+  "selectedRecords": [
+    {
+      "id": "evidence.production-execution-access-source",
+      "path": "docs/knowledge/evidence/production-execution.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/16",
+      "recordSha256": "bdd5067e6f03227ce3963dc3c0febb0c0a910c4501c8eff35e9745e38a4f5cb9",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.production-execution-access-source",
+        "type": "code",
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+        "description": "original-evidence；ExecutionAccess 使用真实主体解析，按权限组及稳定fieldId处理默认和例外，候选在节点到达冻结，已配置但解析空不放开为所有人。按DEC-0074，按钮签署认证指定实际签署人的独立签名密码并保留会话操作者双身份，仅用户名admin使用登录密码例外；SIGN_FIELD仍仅当前用户个人认证、签名密码和图片，不随按钮扩展。权限与签署值快照校验、SHA-256及无凭据保存分别保留，引用字段回查真实来源、附件核对对象归属。本次只读源码和已有断言，不声明完整认证运行回归通过。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.production-execution-signature-protection-source",
+      "path": "docs/knowledge/evidence/production-execution.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/17",
+      "recordSha256": "c574fd31fdd8379cc4629068e3cec9fc7652b1bc33132fbd09deb0cad32cc0bc",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.production-execution-signature-protection-source",
+        "type": "code",
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java",
+        "description": "original-evidence；通用签名CRUD禁止创建、改写或删除PRODUCTION_EXECUTION签署记录，避免绕过执行认证与证据链。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.production-execution-engine-tests",
+      "path": "docs/knowledge/evidence/production-execution.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/20",
+      "recordSha256": "f143b71ff9b4a64b22e4bf55e0660e9a686f1738039a7254a74075ed0573af69",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.production-execution-engine-tests",
+        "type": "test",
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionExecutionEngineTest.java",
+        "description": "original-evidence；测试源覆盖顺序/并行前置、重复与乱序动作、草稿不满足必填表单、只读和未知字段、数值精度/日期、人工确认阻断、缺来源在not中不放行、路线回路与通知阻断、条件分支跳过表单不能满足必填eDHR、结构化条件及审批/签名调用约束。测试源码不单独证明测试通过。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.production-execution-access-tests",
+      "path": "docs/knowledge/evidence/production-execution.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/21",
+      "recordSha256": "2143646ef18ebd640ddece148ca8c20d446772b7a78865ff9ae4ab3a3595e034",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.production-execution-access-tests",
+        "type": "test",
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java",
+        "description": "original-evidence；测试源覆盖真实BCrypt密码校验与签名快照不含凭据、审批名单仅捕获一次、受限空候选不开放、字段只读冲突、通用CRUD不能伪造改删执行签名或删除附件、引用搜索回查超过100条同名记录，以及PDF页预览生成PNG并拒绝越界页码。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.production-execution-integration-tests",
+      "path": "docs/knowledge/evidence/production-execution.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/22",
+      "recordSha256": "06b4d2d3c37fa77d95911fb5fdee3572c5b255a60ac40ba8aaae63fb5a57d3e7",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.production-execution-integration-tests",
+        "type": "test",
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+        "description": "original-evidence；使用真实ExecutionAccess、SubjectResolver、BCrypt和JPA持久化的聚焦集成测试，覆盖批次/SN只读扫描、冻结快照、草稿回读、完整工序完成、权限、陈旧修订、并发唯一开工、等待锁后并发终态、审计失败原子回滚、作业与eDHR及确认动作、审批身份和密码签署落库。本批新增首次START与合法配置提交交错的冻结一致性断言，具体范围见evidence.production-execution-start-configuration-consistency-tests；该专项仅在PostgreSQL driver条件满足时执行，H2条件跳过不能替代必须实际执行的PostgreSQL专项，源码断言不单独证明本轮执行通过。原浏览器夹具仍为显式opt-in，实际执行/跳过须分别报告，跳过不计业务验收通过。该测试的受控上下文不等于全应用生产环境。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.button-signature-confirmed",
+      "path": "docs/knowledge/evidence/button-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/0",
+      "recordSha256": "405e6df78f8be66cfdd7a77498350f26ff25af45b15efa86416686450c4a29b1",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.button-signature-confirmed",
+        "type": "document",
+        "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+        "description": "user-confirmed；普通按钮独立签名密码、A登录B本人签署、未认证或过期就地阻断、仅用户名admin登录密码例外及SIGN_FIELD完全不变；同时明确局部替代、工程推断和验证缺口。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.button-signature-decision-package",
+      "path": "docs/knowledge/evidence/button-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/1",
+      "recordSha256": "a9ce42d5eebff58daa04f27a3c7c45114c47e83bec42a387cadb3963346d2288",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.button-signature-decision-package",
+        "type": "document",
+        "path": "docs/development/button-signature-decision-package.yaml",
+        "description": "secondary-reference；主智能体交接包 DEC-PACKAGE-20260926-BUTTON-SIGNATURE，基线0.3.24；confirmed已与本次用户指令核对，inferred及影响分析仅按其来源类别保留，不独自证明实现或验收。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.button-signature-auth-source",
+      "path": "docs/knowledge/evidence/button-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/2",
+      "recordSha256": "55f9b36854ab09502436b443ff3599fa3247c4ab7274d58f1fcd10bca8b8fb9e",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.button-signature-auth-source",
+        "type": "code",
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+        "description": "original-evidence；最终源码通过authenticateButtonSigner/ButtonSigner验证实际账号；普通用户SIGNATURE_PASSWORD及认证id写入authEventRef，内部例外ADMIN_LOGIN_PASSWORD且认证引用为空。signTarget快照保存sessionOperatorId/Name/Account及signerId/Name/Account，签名实体归实际签署人。2026-09-27已收紧为admin精确equals匹配并关闭源码差异；signField逐字未改，本角色未执行运行测试。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.button-signature-execution-source",
+      "path": "docs/knowledge/evidence/button-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/3",
+      "recordSha256": "d1fcd0643ab597d5d40b393cd6e7ea07ccaf97ddd941b5c9a35b770b3f227f39",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.button-signature-execution-source",
+        "type": "code",
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+        "description": "original-evidence；formControls从BEFORE/ACCOUNT_PASSWORD投影requiresSignature；formActionInternal对实际签署B重算节点和字段权限，按钮history.operator为B并附sessionOperatorId、signerName/Account及signatureId，字段填充和后续表单收尾亦传actionOperator。SIGN_FIELD分支逐字未改；身份贯通及周边流程只读核对，未由本角色运行验证。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.button-signature-dhr-caller-source",
+      "path": "docs/knowledge/evidence/button-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/4",
+      "recordSha256": "c1b4bc30ffae542256a64f777e67af0fc6fc81420d9dfafae27fe5965f1594e8",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.button-signature-dhr-caller-source",
+        "type": "code",
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+        "description": "original-evidence；act保持会话A的eligible任务门禁，需签署动作另经authenticateButtonSigner并检查B eligible，completeDhrTask使用B；AuditEvent.operator仍为A，contentAfter附sessionOperatorId及signerId/Name/Account、signatureId。此为现有共享调用实现边界，不意味着任意A/B组合可访问任务，不修改其他DHR知识。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.button-signature-regression-source",
+      "path": "docs/knowledge/evidence/button-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/5",
+      "recordSha256": "88da00d4b79886f3fb6ad6f117c8aecf5bd99deb41e2f25483a174c9a5e42035",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.button-signature-regression-source",
+        "type": "test",
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+        "description": "original-evidence；已有SIGN_FIELD签名密码、图片、内容失效、过期和审计回滚测试；当前新增共享终端签署人权限与双身份、签署失败回滚、缺失/过期认证及客户管理员、内部admin例外等测试源码。本角色未运行测试，文件与断言存在不代表通过，正式结果和独立质量结论由主智能体提供。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.button-signature-ui-source",
+      "path": "docs/knowledge/evidence/button-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/6",
+      "recordSha256": "08a71c7c1cf3731035cd708fe0a26af0141461a12f9ff32f1d22a24077cdc668",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.button-signature-ui-source",
+        "type": "code",
+        "path": "gmp-platform/frontend/src/components/workflow/ButtonSignatureCredentials.tsx",
+        "description": "original-evidence；组件显示签署人用户名与电子签名密码，切换账号清空密码；2026-09-27已改为account.trim() === 'admin'精确判断密码标签，不再大小写折叠。本角色未浏览器验证，不能据此断言错误提示与输入保留已经通过。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.button-signature-session-audit-source",
+      "path": "docs/knowledge/evidence/button-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/7",
+      "recordSha256": "90d2f47a4db28f5c0fc13dbeb0c167e37dbb3e33ac1289024e422c9eb4f5840f",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.button-signature-session-audit-source",
+        "type": "code",
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+        "description": "original-evidence；act读取AuditContext的会话A作为operator，顶层PRODUCTION_EXECUTION AuditEvent的operatorId/Name/Account仍来自A；contentAfter保存包含B动作历史和sessionOperatorId的执行状态。没有把签署人替换为登录会话，源码核对不等于审计持久化或事务测试通过。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.button-signature-admin-case-regression-source",
+      "path": "docs/knowledge/evidence/button-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/8",
+      "recordSha256": "db110d9b2b198291ca02517813e00e6b2e5476a6e7d63e48a69e2294307d5a4d",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.button-signature-admin-case-regression-source",
+        "type": "test",
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java",
+        "description": "original-evidence；onlyInternalAdminUsesLoginPasswordAndSignatureFieldsRemainCurrentUserOnly新增用户名ADMIN的登录密码拒绝断言，保留小写admin成功、客户管理员不豁免及SIGN_FIELD无例外断言。本角色仅核对源码，新增断言待后续质量回归，不引用此前报告证明其通过。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.button-signature-test-run-record",
+      "path": "docs/knowledge/evidence/button-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/9",
+      "recordSha256": "3a4764b818ba4e62fc46e19256289d4bbbfce43f0ef2ff8305c284c3fa9d5d5c",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.button-signature-test-run-record",
+        "type": "document",
+        "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+        "description": "original-evidence与secondary-reference分层；已解析现有Surefire知识测试报告59项零失败并记录时点与摘要；主智能体报告此前六套件163项含2跳过通过。生产集成报告已由后续单用例覆盖，不拼接各时点报告，不宣称新增断言、最终知识编辑或独立质量验收已被此前运行覆盖。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.dhr-summary-user-confirmed",
+      "path": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/0",
+      "recordSha256": "e492cc812624abfce442c4f88b60ef2c85c43b97ee109a4bc6e52e486c09ea99",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.dhr-summary-user-confirmed",
+        "type": "document",
+        "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+        "description": "user-confirmed；完整证据自动归集、人工核查冻结、目录仅展示及审批/附件/ZIP边界保留；同包原位补正四工作区双视图、附件右侧主内容、冻结成员混选ZIP和正常发起修订。revisionPrintableExport 确认列表纯图标与弹窗直接修订，先建草稿再提交生成下一冻结版，草稿及历史版通过版本选择可达；中文ZIP含档案顺序总PDF、来源分类单实例原模板版式PDF、实例附件、根级汇总附件及追溯JSON，附件内容不合入总PDF仅索引，Office不转换，同版输出且部分包不冒充完整。技术选型/字段文件识别/默认联选留作inference；竞品源码和ZIP条目直接证据与平台合并、非空附件证据缺口分开。旧汇总转换保留可用编排和正常version_no，不覆盖当前冻结/草稿、不伪造核查、不删除源表单/生产/签署/审计/终止快照；迁移与Office各时点证据独立保留，旧通过记录不证明本轮PDF及修订入口已验收。0.3.24及specified/internal不变，不新增替代DEC或宣称整体合规。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.dhr-summary-service",
+      "path": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/2",
+      "recordSha256": "65513a1a4cc35f9dd1bb97c18eddd599469ceca53f0de957f23b03bcf0df9d34",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.dhr-summary-service",
+        "type": "code",
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+        "description": "original-evidence；working-tree 服务已给全部实际表单实例默认位置，提交时重核实例及附件范围并逐实例冻结；submit 强制三项人工确认及说明，在 checkResult 存确认人、时间和说明，qualityConclusionAutomaticallyInterpreted=false。2026-09-28静态核对workspace同时返回草稿与历史版本；reorganize校验最新定版和原因后prepareNextDraft创建DRAFT，submit才分配下一version_no，旧版仍由version按ID读取。源码指纹及读取时点见确认证据，不证明入口或端到端验收；质量结论、异常处置和签署有效性自动闭环仍需证据，旧手选/完成过滤仅属Git历史。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.dhr-review-service",
+      "path": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/22",
+      "recordSha256": "d03de24b46ad84bce86f4aded28e7f417790515dfb414e8fb2585f9ec93db83a",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.dhr-review-service",
+        "type": "code",
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+        "description": "original-evidence；2026-09-25 静态读取 act/detail，已有审批、签署、人工退回及版本引用，不证明新完整证据和附件核查已闭环。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.dhr-summary-current-model-migration-tests",
+      "path": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/29",
+      "recordSha256": "efab84888c63b44b12b049f1e08de0b08413fbfe0f163a96ceedcb3ef2cf24ab",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.dhr-summary-current-model-migration-tests",
+        "type": "test",
+        "path": "gmp-platform/backend/scripts/test-dhr-model-migration.mjs",
+        "description": "original-evidence；脚本读取备份恢复到独立临时PG数据库，断言布局恢复、源表单/生产/签署/附件/原审计保留、当前草稿/冻结优先、审批与生命周期阻断、迟发约束失败回滚及空汇总迁移，结束仅清理自建库。本体已直接读取postgres-regression.log四组PASS，并核对本机执行日志、前后指纹及只读查询；未亲自运行脚本，未执行用户再次核查提交，本切片独立质量验证已通过。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.dhr-summary-archive-service",
+      "path": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/31",
+      "recordSha256": "1a486419fdcfbed791e7535a82752e4c06582d5bf4d9368c5d6a9fc1f6dc7591",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.dhr-summary-archive-service",
+        "type": "code",
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+        "description": "original-evidence；2026-09-28 revisionPrintableExport 初核时表单仍为 JSON/HTML；本次静态复核的 working-tree 已见 DhrArchiveService 从显式冻结版本的 candidate_snapshot、attachment_snapshot 生成 FULL/SELECTED ZIP，调用 DhrFormFiles 读取实例文件，输出来源分类单表 PDF、总 PDF、原件及追溯清单。冻结目录或附件清单不完整、汇总附件摘要不符时导出停止；这仅是源码观察，PDF 版式、实例附件真实运行、浏览器和发布验收尚未由本体角色验证，早期观察保留于确认证据。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.dhr-summary-attachment-archive-tests",
+      "path": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/36",
+      "recordSha256": "294969864492e9f7d74d18dfa5f3821a802a8734cf4bd6109ac73b3f82775a27",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.dhr-summary-attachment-archive-tests",
+        "type": "test",
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java",
+        "description": "original-evidence；working-tree H2 测试源码覆盖附件核验、解除关联历史、完整及选定 ZIP、已解除关联但版本包含附件的正向读取，并断言源签名及审批签名 payload 写入清单；审批签名 snapshot_hash 错误时 FULL ZIP 阻断，恢复摘要后继续原测试。2026-09-28初核已加入DOC/DOCX/XLS/XLSX参数化原件上传核验下载及ZIP、50MiB含边界/超一字节和伪造损坏加密宏拒绝用例；本体只读源码，未运行这些业务测试，不表示Office增量通过。尚未见跨版本附件拒绝的直接断言；非真实 PostgreSQL 或发布验收。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.production-field-signature-confirmed",
+      "path": "docs/knowledge/evidence/production-field-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/0",
+      "recordSha256": "9257c00d587b26801e0318a9fc66c8cd7e0d12fd87d4b059bf80468c4d01a9f0",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.production-field-signature-confirmed",
+        "type": "document",
+        "path": "docs/knowledge/evidence/production-field-signature-confirmed.md",
+        "description": "user-confirmed；正式填报点击字段签名，使用个人电子签名密码和已认证图片，保存签名及审计并回显，提交独立；本份内容修改使本份已有签名失效并要求重签，原签名及内容快照保留。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.production-field-signature-design",
+      "path": "docs/knowledge/evidence/production-field-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/1",
+      "recordSha256": "66015c6572760968d68c581f32b80cf4f493fd7ab51babd0873ba4d7769bacfa",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.production-field-signature-design",
+        "type": "document",
+        "path": "docs/knowledge/evidence/production-field-signature-confirmed.md",
+        "description": "inference；复用生产执行资格、冻结版本、修订和事务，结构化签名值、保存实例号和子表定位属于工程方案，不是额外用户规则；未据此宣称实现和发布验证完成。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.production-field-signature-personal-auth-source",
+      "path": "docs/knowledge/evidence/production-field-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/2",
+      "recordSha256": "a973693e2f8671974b121656ab555aa8f121fbb718fd022e217a0dc2c9ebb4ae",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.production-field-signature-personal-auth-source",
+        "type": "code",
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+        "description": "original-evidence；verifyCurrentUserSignature 已验证当前用户个人认证的电子签名密码、有效期及图片引用并返回展示信息；此原有个人验证接口不能独自证明正式生产字段签署持久化已接通。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "evidence.production-field-signature-original-runtime-boundary",
+      "path": "docs/knowledge/evidence/production-field-signature.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/evidence/3",
+      "recordSha256": "b6c6cf07308dea965489e655af0132d1c5b6de6cc301b3e15e02abd52aaffca1",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": null,
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "evidence.production-field-signature-original-runtime-boundary",
+        "type": "code",
+        "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/form-preview/FormDocumentPreview.tsx",
+        "description": "original-evidence；2026-09-17 修复前正式纸张填报签名字段受只读约束且没有有效签名回调；该定位仅说明缺陷起点，不作为新能力实现证据。",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "anchor.dhr-summary-zip-source-trace",
+      "path": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/implementationAnchors/4",
+      "recordSha256": "9181511236074048fcc14e033605ae9f55ab2b3c770e8b285015c40e4903eee5",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": "specified",
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "anchor.dhr-summary-zip-source-trace",
+        "targetId": "rule.dhr-summary-zip-source-trace",
+        "targetType": "rule",
+        "codeReferences": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java"
+        ],
+        "apiReferences": [
+          "GET /api/v1/dhr-instances/{dhrId}/summary/versions/{versionId}/export"
+        ],
+        "databaseReferences": [
+          "gmp-platform/backend/src/main/resources/db/changelog/0102-dhr-summary-complete-evidence.sql"
+        ],
+        "uiReferences": [
+          "gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx"
+        ],
+        "testReferences": [
+          "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java"
+        ],
+        "status": "specified",
+        "visibility": "internal",
+        "evidenceIds": [
+          "evidence.dhr-summary-archive-service",
+          "evidence.dhr-summary-attachment-archive-tests",
+          "evidence.dhr-summary-user-confirmed"
+        ],
+        "sourceRevision": "working-tree",
+        "sourceLocator": "revisionPrintableExport初核export仍输出forms JSON/字段表HTML及汇总附件原件，尚未有总PDF/来源单表PDF/字段原件链；已有manifest.sourceAuditEvents/sourceSignatures按提交时点截取、auditEvents/reviewSignatures和两类签名payload摘要校验。现有测试源码不证明本轮中文目录、PDF版式、实例附件、版本隔离或真实ZIP端到端通过；打印运行链由主开发并行实现，规则保持specified/internal。",
+        "capturedAt": "2026-09-28",
+        "reviewStatus": "reviewed"
+      }
+    },
+    {
+      "id": "DEC-0063-05",
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/decisions/0/decisionStatements/4",
+      "recordSha256": "cc9ed4a6b9e3cf942d95dba5d3864435f1e0b2c48076fe6ddf81aeeecd50b151",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": "specified",
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "DEC-0063-05",
+        "statement": "user-confirmed；自动收集持续发生，但普通整理/提交仍限生产正常完成。提交时重核集合和来源版本并阻断陈旧提交，冻结全部实际关联证据及来源版本、状态、内容快照/哈希、附件引用、检查结果、基础及展示目录、逐实例位置/别名和审批绑定。审批、版本详情与导出读取同一冻结证据基准；来源导航报错修复只读取当前冻结版本 candidates，不以实时实例或草稿补齐冻结成员；后续变化不改写旧版，实时视图须明确区分。",
+        "status": "specified",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "DEC-0063-11",
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/decisions/0/decisionStatements/10",
+      "recordSha256": "5a23c5e690bb443c3535331cf6a709bee92b18ddc40b35fd22723cb77f3ab294",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": "specified",
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "DEC-0063-11",
+        "statement": "user-confirmed；冻结版本通过统一入口选择完整 ZIP 或自定义 ZIP；选择器按当前冻结档案目录、顺序与别名展示，支持目录、组及实例勾选，并可混选本版附件，切换版本清空选择。ZIP 使用中文目录，包含按冻结档案顺序汇成的可打印总 DHR PDF，以及按批记录模板、作业表单、自定义表单来源分类的单实例原模板版式 PDF；档案位置不改来源身份，也不重复计算同一实例。表单内上传文件是该实例的原证据，放在对应实例的附件目录；汇总整理附件放在与来源目录同级的汇总附件目录。实例原件缺失或内容损坏时不得省略附件后输出“完整档案”，包含该实例的选定范围导出也须阻断。附件内容不并入总 PDF，只在 PDF 中列附件索引，并在 ZIP 中保留原文件；Office 不预览、编辑或转换。JSON 及机器清单保留于追溯资料，服务冻结数据、摘要、审计及签署追溯，不作为用户打印正文。总 PDF、单表 PDF、附件引用及追溯资料均绑定同一显式冻结版本，不以当前草稿或当前表单值替代；范围及版本须明确标识，选定范围不得冒充完整 DHR，总 PDF 也不能替代含附件原件的完整 ZIP。本轮提供可下载打印的 PDF，不新增在线打印流程；具体打印引擎、文件防护及命名去重算法仍属工程方案，不表示已实现或已验证。",
+        "status": "specified",
+        "visibility": "internal"
+      }
+    },
+    {
+      "id": "DEC-0063-15",
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sourceLocator": "/decisions/0/decisionStatements/14",
+      "recordSha256": "021bf679c44b9a5d3eaf355bc7849decb21118a42880a19cffd36193408869e0",
+      "scope": "selected record description/reference/status fields only",
+      "statusUnchanged": "specified",
+      "visibility": "internal",
+      "selectedOriginal": {
+        "id": "DEC-0063-15",
+        "statement": "user-confirmed；整份与选定范围 ZIP 均应携带与该冻结版本关联的来源生产执行审计及签名，连同 DHR 审计和审批签署保持可追溯；选定范围仅改变导出内容，不改变冻结证据或审批对象。导出和审批统一当前模型，不保留旧模型特例；错误旧汇总按 DEC-0063-09 转换或清理，不能靠翻模型标记或补造 checkResult 获得完整档案或合规结论。",
+        "status": "specified",
+        "visibility": "internal"
+      }
+    }
+  ],
+  "conclusions": [
+    {
+      "kind": "source-observation",
+      "statement": "No selected existing signature record specifies physical snapshotData JSONB as business policy. Limited YAML search JSONB hit belongs to workflow candidate_snapshot, not Signature."
+    },
+    {
+      "kind": "retained-scope",
+      "ids": [
+        "evidence.production-execution-access-source",
+        "evidence.button-signature-auth-source",
+        "evidence.production-field-signature-personal-auth-source"
+      ],
+      "statement": "These source records describe authentication, identities, SHA256 or display verification, not physical payload datatype; no redefinition is needed for the lossless-storage correction."
+    },
+    {
+      "kind": "existing-anchor",
+      "id": "anchor.dhr-summary-zip-source-trace",
+      "path": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "statement": "Already points to rule.dhr-summary-zip-source-trace and DhrArchiveService. Prefer a bounded reference update to this anchor rather than inventing a same-purpose unrelated anchor. Preserve specified/internal."
+    },
+    {
+      "kind": "historical-boundary",
+      "statement": "The existing anchor sourceLocator is an explicit 2026-09-28 print-export checkpoint with PDF gaps. Preserve its historical context if current signature-only metadata is added; do not claim a full PDF/ZIP recheck."
+    }
+  ],
+  "minimalSyncSuggestion": {
+    "newEvidenceCandidates": [
+      {
+        "purpose": "physical Signature.snapshotData lossless text mapping",
+        "type": "code",
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java"
+      },
+      {
+        "purpose": "new forward-only type migration, retaining current legacy text/hash/metadata and no historical raw reconstruction",
+        "type": "database",
+        "path": "gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql"
+      },
+      {
+        "purpose": "new actual native PostgreSQL signed-payload and archive-consumer tests; source existence is separate from run results",
+        "type": "test",
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotPostgresTest.java"
+      }
+    ],
+    "anchorUpdate": "Append only current entity/0118/new PG test and new evidence references to anchor.dhr-summary-zip-source-trace; keep target/status/visibility and all unrelated rule statements. Record current signature-only scope separately from historical broad sourceLocator.",
+    "humanExplanation": "README navigation and a small internal evidence note can state raw string SHA algorithm unchanged, no weakened verification, lossy historical raw bytes not recreated, prior DHR/A12/knowledge gaps and AuditEvent issue untouched.",
+    "normativeChangesRequired": false,
+    "newDecisionOrPolicyRequired": false,
+    "maturityOrRoadmapChangeRequired": false
+  },
+  "limitations": [
+    "This helper inspected fixed-Git knowledge source records only; no current production patch or test execution accepted here.",
+    "No product tests, Maven, PostgreSQL, migrations, browser, full semantic audit or independent QA executed.",
+    "The parent formal ontology role must validate exact changed IDs and candidate commit, run formal knowledge tests, and return its own result."
+  ],
+  "repositoryMutations": false,
+  "productTestsExecuted": [],
+  "childInstances": [],
+  "wholeFileOrKnowledgeAcceptance": false
+}

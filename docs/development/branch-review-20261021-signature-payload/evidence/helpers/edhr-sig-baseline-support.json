@@ -1,0 +1,193 @@
+{
+  "schema": "edhr-readonly-baseline-catalog-support/v1",
+  "role": "L0 read-only mechanical acceptance carry-forward, not formal QA or ontology",
+  "contractBaseline": {
+    "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "contractReadCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "sourceCatalog": {
+    "path": "docs/development/branch-review-20261020-w3-task-commands/source-catalog.json",
+    "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "sha256": "9ba4a3da262d6d3ac0edb28b7c73f7ea2f14c8448db27def4caa8c8224bd4696",
+    "locator": "/"
+  },
+  "mergeProof": {
+    "kind": "git-commit-and-tree-mechanical-comparison",
+    "mergeCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "mergeParents": [
+      "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "360b07adb82e907b4a634db66695350d9e38f765"
+    ],
+    "mergeSubject": "Merge pull request #21 from IvenYi/audit/edhr-dev-w3-task-command-boundaries-20261020",
+    "deliveryCommit": "360b07adb82e907b4a634db66695350d9e38f765",
+    "mergeTree": "7bfd480ab86f6788030c12364da3220b36169528",
+    "deliveryTree": "7bfd480ab86f6788030c12364da3220b36169528",
+    "treeEqual": true,
+    "testedCommit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+    "protectedComparedToTested": [
+      "gmp-platform",
+      "scripts",
+      "docs/knowledge",
+      "docs/architecture",
+      "docs/agents",
+      "AGENTS.md",
+      "codeplzreadme.md",
+      "DESIGN.md",
+      "docs/development/branch-review-20261020-w3-task-commands/source-catalog.json",
+      "docs/development/branch-review-20261020-w3-task-commands/ledger"
+    ],
+    "changedProtectedPaths": [],
+    "mergeIsNotNewRuntimeAcceptance": true
+  },
+  "inventory": {
+    "trackedPaths": 2748,
+    "currentKnowledgeIds": 2548,
+    "classificationIsNotHumanReview": true
+  },
+  "inherited": {
+    "methods": 392,
+    "semanticSources": 5,
+    "historicalSemanticRecords": 96,
+    "findingRecords": 47,
+    "methodsExact": true,
+    "semanticSourcesExact": true,
+    "other46FindingsExact": true,
+    "sourceCarryStates": {
+      "needs-delta-review": 100,
+      "retained-scoped-evidence": 292
+    },
+    "semanticCarryStates": {
+      "retained-scoped-evidence": 39,
+      "needs-delta-review": 57
+    },
+    "semanticRecordRelations": {
+      "unchanged": 92,
+      "record-changed": 4
+    },
+    "historicalSemanticConclusions": {
+      "consistent": 91,
+      "superseded": 1,
+      "evidence-gap": 4
+    },
+    "wholeFilesCompleted": 0
+  },
+  "dispositions": {
+    "known-fixed-before-audit": 10,
+    "fixed-and-independently-accepted": 29,
+    "pending-adjudication": 3,
+    "corrected-in-l0-documentation": 1,
+    "corrected-and-independently-accepted-l0": 1,
+    "user-deferred": 2,
+    "preexisting-medium-open": 1
+  },
+  "qualityReportIndex": {
+    "artifacts": 74,
+    "reportedHistoricalResults": {
+      "passed": 52,
+      "failed": 21,
+      "blocked": 1
+    },
+    "ontologyMaintenanceArtifacts": 30,
+    "currentRuntimeExecutedByThisTask": false
+  },
+  "acceptedPriorFindings": [
+    "W3C-INSTANCE-WRITE-AUTH-001"
+  ],
+  "draft": {
+    "path": "/tmp/edhr-sig-baseline-draft-catalog.json",
+    "bytes": 806538,
+    "sha256": "54b23573fe6700051e85f811aec8ecdfe60395b51d3f0b74a1e9e053f2c4f04c"
+  },
+  "generator": {
+    "path": "scripts/build-branch-review-ledger.py",
+    "sha256": "98a85e3ec3137910742338ad51c0334ed70a09d3db6d15cc4e3ef5758e353050",
+    "fixedTemporaryCopy": "/tmp/edhr-sig-baseline-fixed-ledger-generator.py"
+  },
+  "sourceReceipts": [
+    {
+      "path": "docs/development/branch-review-20261020-w3-task-commands/source-catalog.json",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sha256": "9ba4a3da262d6d3ac0edb28b7c73f7ea2f14c8448db27def4caa8c8224bd4696",
+      "locator": "/"
+    },
+    {
+      "path": "docs/development/branch-review-20261020-w3-task-commands/acceptance.json",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sha256": "5216a642c31bb61baca3f0e8e64f556bd32ab12cf8d3dafc9c2364bf7392f0c9",
+      "locator": "/"
+    },
+    {
+      "path": "docs/development/branch-review-20261020-w3-task-commands/evidence/independent/edhr-w3c-qa-qualityResult.yaml",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sha256": "f1157d1f05ce9d491e4b99d81be898c885eb9f57843f4e97e25b689e7f655f83",
+      "locator": "/"
+    },
+    {
+      "path": "docs/development/branch-review-20261020-w3-task-commands/delivery.json",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sha256": "aa3613a202338daa575c6751f0bbfe9ae15671e1dea424fa34811bdf8a1624a2",
+      "locator": "/"
+    },
+    {
+      "path": "scripts/build-branch-review-ledger.py",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sha256": "98a85e3ec3137910742338ad51c0334ed70a09d3db6d15cc4e3ef5758e353050",
+      "locator": "/"
+    },
+    {
+      "path": "scripts/build-branch-review-inventory.py",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sha256": "f77668cbf93108bd9bef10a83f07e6ba8de0433e9fee75448b3dc4934221b9df",
+      "locator": "/"
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84",
+      "locator": "/"
+    },
+    {
+      "path": "AGENTS.md",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "locator": "/"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "locator": "/"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "locator": "/"
+    }
+  ],
+  "productTestsExecuted": [],
+  "newSemanticReviewsPerformed": 0,
+  "newSourceReviewsPerformed": 0,
+  "newFindingAdjudications": [],
+  "repositoryMutations": false,
+  "wholeBranchAccepted": false,
+  "wholeW3Accepted": false,
+  "retainedBoundaries": [
+    "remaining W2/W3/W4-W7",
+    "two user-deferred DHR highs/A12",
+    "four old knowledge evidence gaps",
+    "W5-AUDIT-HASH-001 medium/open",
+    "new signature source lead needs its own native PG evidence; not adjudicated here"
+  ],
+  "limitations": [
+    "Fixed Git only; current mutable signature test/decisionPackage ignored.",
+    "Historical96 scoped rows are not96 distinct current IDs or a complete semantic coverage denominator.",
+    "392 overlapping source scopes are not392 distinct methods or completed files; changed files/dependencies retain delta-review states.",
+    "Future ledger ref must equal explicitly updated catalog baselineCommit; no current-tree fallback."
+  ]
+}

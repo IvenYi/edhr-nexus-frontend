@@ -1,0 +1,9 @@
+{
+  "sourceFont": "/workspace/.edhr-cloud-tools/fonts/NotoSansSC-Regular.ttf",
+  "sourceSha256": "f3abbc6110346f00430f0169e8822479440b483a3fe2def31e8c24139e425b3d",
+  "output": "/workspace/.edhr-cloud-tools/fonts/EdhrTestCJK-Regular.ttf",
+  "sha256": "34fe3b59a729e29ae8a63fbe4f9316d3b72c8645168fd7e2b8531e95e17d011e",
+  "change": "Remove lower-codepoint radical cmap aliases only when they share an existing unified Han glyph; preserve glyph shapes and unified Han mapping so PDFBox ToUnicode preserves character identity. Rename local test font.",
+  "removedAliasCount": 275,
+  "productAndAssertionsUnchanged": true
+}

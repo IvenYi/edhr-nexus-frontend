@@ -1,0 +1,742 @@
+{
+  "schema": "edhr-readonly-source-map/v1",
+  "role": "source-assistance-not-formal-ontology-or-quality",
+  "fixedCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "contractBaseline": {
+    "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "contractReadCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "sourceScopes": [
+    {
+      "id": "w3d-command-source:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "todo",
+      "range": [
+        86,
+        103
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Authenticated operator replaces legacy request parameter; raw int pagination has no positive/range-overflow validation.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "done",
+      "range": [
+        105,
+        124
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Authenticated operator replaces legacy request parameter; same unchecked int pagination.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:003",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "approve",
+      "range": [
+        128,
+        136
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "HTTP action is constant APPROVE; actor is authenticated principal; request signatureId forwarded.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:004",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "reject",
+      "range": [
+        140,
+        148
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "HTTP action is constant REJECT, not arbitrary caller-supplied action string.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:005",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "transferTargets/transfer",
+      "range": [
+        153,
+        170
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Explicit target and reason route to existing current-operator and tenant target checks; no new policy proposed.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:006",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "submit",
+      "range": [
+        173,
+        182
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "HTTP action is constant SUBMIT; no task/node type check at controller.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:007",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "currentOperatorId/DTOs",
+      "range": [
+        186,
+        217
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Authenticated principal is authoritative; DTO operatorId is not consumed. No password field exists in backend action DTO.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:008",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "createInstance",
+      "range": [
+        59,
+        116
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Generic binding-based start implementation; fixed main/java search found no production caller to this method outside its declaration.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:009",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "completeTask/completeDhrTask",
+      "range": [
+        244,
+        305
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "RUNNING and PENDING/PROCESSING, current candidate/open/assignee checks and instance-first refreshed locks precede mutation; DHR requires dedicated boolean path. No common action-by-task/node-type validation.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:010",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "progressFromNode",
+      "range": [
+        309,
+        371
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Normal graph progression and structural parallel activation; not runtime tested.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:011",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "activateStructuralNode/parallelJoinReady",
+      "range": [
+        374,
+        398
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Structural nodes are automatic; join readiness is based on completed node tasks. No new record-control implementation certification.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:012",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "createTaskForNode",
+      "range": [
+        400,
+        421
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "One logical pending task per reached node; task type derives from node type and candidates freeze resolver result.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:013",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "completeInstance",
+      "range": [
+        424,
+        432
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Completion sets instance terminal and clears active nodes; completeTask subsequent calls reject non-RUNNING instance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:014",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "handleRejection",
+      "range": [
+        434,
+        462
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Other pending/processing tasks are terminated; DHR or parallel ancestor terminates round, ordinary sequential generic rejection selects first incoming previous node. Does not establish ordinary production RETURN policy.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:015",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "hasParallelSplitAncestor/terminateInstance-private",
+      "range": [
+        464,
+        487
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Parallel ancestry detection and terminal fallback exist; previous source suspicion of stale sibling after reject is contradicted by actual cleanup.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:016",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "resolveAssignees",
+      "range": [
+        502,
+        535
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Configured subject references freeze resolved userIds/sources/unresolved; empty references mark unrestricted. Record-control initiator exclusion is source implementation only, not full application runtime.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:017",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "resolveInstanceTenant",
+      "range": [
+        537,
+        545
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Tenant for current delegation derives from initiator user; full multitenant isolation remains explicitly outside MVP.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:018",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "hasConfiguredSubjects/type predicates",
+      "range": [
+        547,
+        577
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Generic FORM_PROCESS and CHANGE/OBSOLETE predicates are distinct; do not transfer a domain rule solely by common workflow class.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:019",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "isUnrestrictedSnapshot/collectSubjects/parseCandidateIds",
+      "range": [
+        579,
+        617
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Snapshot parse failures are rejected; current top-level candidates grant eligibility, retained originSnapshot does not grant former candidates.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:020",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "resolveTaskStatus/determineTaskType",
+      "range": [
+        622,
+        640
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "APPROVE/SUBMIT map completed; unknown action also defaults completed. Task types are APPROVAL/FORM_FILL/STATUS_CONFIRM/TODO; current external generic HTTP actions are three constants, so unknown-action exploit is not established.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:021",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "transferTargets",
+      "range": [
+        661,
+        678
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Current instance/task status and handling eligibility precede same-tenant target lookup.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:022",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "transferTask",
+      "range": [
+        682,
+        728
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Instance/task lock order plus refresh, current eligibility, target validity and required reason preserved; only responsibility changes, raw origin is retained, runtime/audit records written. PR20 findings not reopened.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:023",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "terminateInstance-public",
+      "range": [
+        732,
+        750
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Existing running and DHR-exclusive checks and active task cleanup; optional signature argument is not evidence of a blanket required-signature policy.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:024",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "lockInstance/lockTask/isTaskOperator/DHR guards",
+      "range": [
+        752,
+        783
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Refresh after pessimistic locks retained; eligibility uses current top-level snapshot and excludes no-longer-current origin source. Dedicated DHR guard preserved.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:025",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "bc6bfa0cc70f6d2c25b84829b8b6ff8614ddfa4a",
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "method": "findTodoForUser/findDoneForUser/findPendingByCandidateUserId",
+      "range": [
+        20,
+        36
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Todo filters active task status and current assignee/candidates/open marker; done uses actual assignee and terminal statuses. DHR excluded from generic todo/done. No SQL pagination: controller slices materialized list.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:026",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "bc6bfa0cc70f6d2c25b84829b8b6ff8614ddfa4a",
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "method": "findByIdForUpdate",
+      "range": [
+        38,
+        40
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Pessimistic repository lock used by shared engine.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:027",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "eca66f3bcc48f7bb4e5757858cfc87e3a01b2f9f",
+      "sha256": "7455539529c5809d43f1a80ef92515df7a8b9c894429e10353e349c180ccaae9",
+      "method": "handleGenericException",
+      "range": [
+        80,
+        88
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Unhandled IndexOutOfBounds/IllegalArgument from list slicing reach HTTP500 generic handler; no dedicated page parameter exception branch read.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:028",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "3ac817fd787bd4ac7a2faea25623b2cff280a0d5",
+      "sha256": "4411c23f5f89abb69ebd424355020e2569176e5f4b29ee592b6a09bcad49ddcd",
+      "method": "formActionInternal action and eligibility preconditions",
+      "range": [
+        212,
+        251
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Actual ordinary production forms derive allowed buttons from controls and reject absent action before effects; separate embedded execution path from generic task API.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:029",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "04f97eb65bb39a368896432fcf24183e17712ebe",
+      "sha256": "42cf405959931f1ab74b046a32267cf4041723257dfd7a7f4d9a9bbcf30fb932",
+      "method": "signed review action and completeDhrTask call",
+      "range": [
+        117,
+        150
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "DHR selected button signing and actor eligibility precede dedicated completeDhrTask; generic task APIs cannot be treated as this signing consumer.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:030",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "b49987ecd5a2b94aaea0164445fbc72fbdf7e642",
+      "sha256": "f6ee03b424e5ebee0d69787af0a02e11d69554366791abc8817218c6fb61012a",
+      "method": "start",
+      "range": [
+        48,
+        71
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Explicit record-control start port delegates to dedicated engine creation; no completed application actions/result consumption claimed.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:031",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "029429fe375d7367db8e4f438eae432f9c2bb3ce",
+      "sha256": "9f3aa9ef86ccb67bcb91ebe534dcbe7c63ccaaa80c8166c8e3c94ab0168c705d",
+      "method": "listCandidates/parseBusinessType",
+      "range": [
+        27,
+        42
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Only GET candidate public endpoint found in this controller; no actual application confirm/start HTTP is introduced.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:032",
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "34b99929a91fc22d72fcba1cc0335fb91db35557",
+      "sha256": "c54fdb4f7265382572fe65da61f3a31aa06667f11a6718ecd5d998119ef065d7",
+      "method": "DEC-0031-01 through 04",
+      "range": [
+        9,
+        25
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "One task, frozen source and original candidates except explicit delegation; terminal task loses eligibility.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:033",
+      "path": "docs/knowledge/decisions/DEC-0033-form-process-optional-subjects-and-open-operation-scope.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "41568fd27705801e7413ef0fda3f7e22c9f19951",
+      "sha256": "1d8d32284b138707d7b6df0e106d0f5183d2d44770bb6e78be7f9047795bfc6e",
+      "method": "DEC-0033-01 through 04",
+      "range": [
+        9,
+        25
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Open operation without configured subjects remains bounded by instance/node/task states; no button seed permission promoted to new global policy.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:034",
+      "path": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "2319ab67c26c6da413a7ade307d340561db66598",
+      "sha256": "c47a0ea204787a4f03cf5e507e71ec002e1e7514ade7cd122d2290049aa0c5da",
+      "method": "DEC-0081-01 through 04",
+      "range": [
+        9,
+        25
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Current target exclusively handles after explicit same-tenant delegation; domain-specific source evidence retained and DHR unchanged.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:035",
+      "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "72d334eb227b62e99a01ab4ed25e97d16b7fc1c8",
+      "sha256": "38f92ea22f53ea90166a49809683774434fd731c1f7eb1f64563cd13db1d96ee",
+      "method": "DEC-0042-04",
+      "range": [
+        21,
+        24
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Declared command/result interfaces are not implemented application action lifecycle; user-deferred path cannot establish current production reachability.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:036",
+      "path": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "0730468c01d1abd8d1f1412d1ec0834ef61ae04b",
+      "sha256": "6780efb13aa5449aa298582f2f45cca5b83a89b3560ce9b6770e9c9d57cd502a",
+      "method": "approval-return and node-button domain boundary",
+      "range": [
+        1044,
+        1062
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Return-to-entry normative rule explicitly belongs to form-process-runtime; ordinary ProductionExecutionEngine is cited, not a generic admin workflow policy.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:037",
+      "path": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "0730468c01d1abd8d1f1412d1ec0834ef61ae04b",
+      "sha256": "6780efb13aa5449aa298582f2f45cca5b83a89b3560ce9b6770e9c9d57cd502a",
+      "method": "node-button-configuration-v1",
+      "range": [
+        1080,
+        1129
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "START save/submit and APPROVAL approve/return/transfer whitelist has scope form-process-configuration; do not apply wholesale to generic placeholder UI without independent authority.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:038",
+      "path": "docs/knowledge/open-questions.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "a1f2b1140ea93c5daf54067cb4a40d6a6cd1d2b7",
+      "sha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "method": "manager reassignment signature",
+      "range": [
+        107,
+        115
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Record-control optional signature requirement remains question for unimplemented manager reassignment, not permission to add generic required signatures.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:039",
+      "path": "docs/knowledge/open-questions.yaml",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "a1f2b1140ea93c5daf54067cb4a40d6a6cd1d2b7",
+      "sha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "method": "multi-tenant workflow isolation",
+      "range": [
+        152,
+        159
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "MVP current single tenant; DEC81 target eligibility does not complete full tenant isolation.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:040",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskControllerTest.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "b33e75afc2ab357612331e2d187e8b258f26fdf0",
+      "sha256": "57f19c938e0ea99d4a6f15ea79d04cb102666bfe9460e52a3474a3f1f50b1576",
+      "method": "todo/done authenticated identity tests",
+      "range": [
+        26,
+        45
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Existing two tests inspect actor substitution and one repository lookup; no invalid/overflow pagination assertions. Tests read, not executed.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:041",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "702a84b0e548c2f9512db20774d886662d309532",
+      "sha256": "d48edb5f3e9e82d642750f156079ae6649ca0938acc811cfc2284cd11c469ca0",
+      "method": "candidate completes/rejects",
+      "range": [
+        289,
+        303
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Existing source assertion records actual actor and rejected task; source read is not current runtime proof.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3d-command-source:042",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "702a84b0e548c2f9512db20774d886662d309532",
+      "sha256": "d48edb5f3e9e82d642750f156079ae6649ca0938acc811cfc2284cd11c469ca0",
+      "method": "parallel join/rejection tests",
+      "range": [
+        307,
+        386
+      ],
+      "readDepth": "finite selected source/declaration/assertion inspection; not whole-file or independent runtime verification",
+      "conclusion": "Existing tests cover all-branch join and terminal sibling cleanup including deep parallel rejection; not executed by this source assistant.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    }
+  ],
+  "runtimeChecksExecuted": [],
+  "repositoryMutations": false,
+  "wholeFileOrBranchAcceptance": false,
+  "findingsConfirmedByRuntime": [],
+  "sourceConfirmedCandidates": [
+    {
+      "id": "W3D-TASK-PAGINATION-001",
+      "kind": "API-input-and-integer-boundary-source-candidate",
+      "scope": "WorkflowTaskController.todo/done",
+      "actualSource": "page0,size50 -> start-50; page2147483647,size2 -> intstart-4/end-2. With nonempty queue subList raises and generic handler returns500.",
+      "qualification": "Arithmetic/control-flow source proof only; no HTTP run. Recommend real authenticated controller test before repair/adjudication. Positive page/size and long arithmetic can be local engineering correction, without invented max-size policy."
+    }
+  ],
+  "unadjudicated": [
+    {
+      "id": "lead.generic-task-action-by-type",
+      "conclusion": "Actual generic UI exposes all three completion actions, and backend has no action/taskType/nodeType matrix. A distinct generic normative mapping and actual integrated caller semantics remain unproven; ordinary production button rules cannot alone authorize generic policy change."
+    },
+    {
+      "id": "lead.generic-unknown-action-default",
+      "conclusion": "resolveTaskStatus defaults unknown actions to COMPLETED, but fixed main/java completeTask external callsites only pass three known constants; no arbitrary HTTP action input found. Already source lead in prior batch, not a new adjudicated finding."
+    },
+    {
+      "id": "lead.generic-node-active-check",
+      "conclusion": "completeTask does not explicitly test currentNodeIds/node-version match. Actual normal creation/progression/rejection and terminal guards were inspected; arbitrary administrator mutation is separate content-policy boundary. No normal legal chain demonstrated reaching a live stale-node task."
+    }
+  ],
+  "historicalDedupScope": {
+    "catalog": "docs/development/branch-review-20261020-w3-task-commands/source-catalog.json",
+    "findingRecords": 47,
+    "method": "limited exact description/summary key-term inspection and prior source outcome lookup",
+    "samePaginationFindingFound": false,
+    "wholeHistorySemanticDedupPerformed": false
+  },
+  "searches": [
+    {
+      "command": "rg -n 'completeTask\\(|createInstance\\(' gmp-platform/backend/src/main/java --glob '*.java'",
+      "scope": "fixed main/java source tree",
+      "result": "createInstance only declaration; completeTask external callsites only controller APPROVE/REJECT/SUBMIT, plus dedicated DHR wrapper internal private call. Dynamic/external/reflection not covered."
+    }
+  ],
+  "childFinal": true,
+  "childOriginals": [
+    {
+      "path": "/tmp/edhr-w3d-front-action-consumers.json",
+      "sha256": "f3fe6107918d01de5395b73485f348f7df4c85f6c9e167a2c8c95f738d608add",
+      "bytes": 16307
+    },
+    {
+      "path": "/tmp/edhr-w3d-front-action-consumers.md",
+      "sha256": "15cf3b51e14fe3f77819f11e41debf024b357668afbd549c1e480206a17da9fc",
+      "bytes": 2395
+    }
+  ]
+}

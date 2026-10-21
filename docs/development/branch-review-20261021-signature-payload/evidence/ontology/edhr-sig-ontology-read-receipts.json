@@ -1,0 +1,177 @@
+{
+  "contractBaseline": {
+    "sourceCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "contractReadCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "uncommittedContractPaths": []
+  },
+  "completeRequiredReadFiles": [
+    "AGENTS.md",
+    "docs/agents/business-knowledge-modeler.md",
+    "docs/agents/agent-handoff-contract.md",
+    "docs/architecture/business-knowledge-model.md",
+    "docs/knowledge/README.md",
+    "docs/knowledge/open-questions.yaml"
+  ],
+  "startupGitReceipts": [
+    {
+      "path": "AGENTS.md",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "locator": "required startup file read; no whole semantic acceptance",
+      "reviewedScope": "required startup file read; no whole semantic acceptance"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae",
+      "locator": "required startup file read; no whole semantic acceptance",
+      "reviewedScope": "required startup file read; no whole semantic acceptance"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "locator": "required startup file read; no whole semantic acceptance",
+      "reviewedScope": "required startup file read; no whole semantic acceptance"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "1d239fc82f8d24bdd986b1e23de9188680f25c18",
+      "sha256": "925b987f783d6216061ab25ca2a6710aaa231823ff346b05b2df23d75c90f735",
+      "locator": "required startup file read; no whole semantic acceptance",
+      "reviewedScope": "required startup file read; no whole semantic acceptance"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "8a23c50057340be057a67fad8731648c2aa36f30",
+      "sha256": "addbf3eb7dc2c059d8672eb699199e4d0fa355143617bc4192fe420d26266184",
+      "locator": "required startup file read; no whole semantic acceptance",
+      "reviewedScope": "required startup file read; no whole semantic acceptance"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "commit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+      "blob": "a1f2b1140ea93c5daf54067cb4a40d6a6cd1d2b7",
+      "sha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "locator": "required startup file read; no whole semantic acceptance",
+      "reviewedScope": "required startup file read; no whole semantic acceptance"
+    }
+  ],
+  "implementationScopes": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java",
+      "commit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "blob": "766a83f018bc8391f3bc7afa7d50b835deb0bf33",
+      "sha256": "d0e3e5050949c990656e2e1df915d42885ab2cfeda63aa9612dd3ef44ae48608",
+      "locator": "snapshotData TEXT mapping and unchanged surrounding signature fields",
+      "reviewedScope": "snapshotData TEXT mapping and unchanged surrounding signature fields"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0118-signature-payload-text.sql",
+      "commit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "blob": "a72a4818313f7f29c2df973a7fbe20959abb32c0",
+      "sha256": "fdd52e22ba67170ad0be4f397e4da42dbbd9eaa63f3b874cb68557edf35e321a",
+      "locator": "complete forward migration and JSON parse CHECK; no digest rewrite or lossy rollback",
+      "reviewedScope": "complete forward migration and JSON parse CHECK; no digest rewrite or lossy rollback"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "commit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "blob": "9cf5ae4908d481f9a82988a5744302e2f47081f7",
+      "sha256": "a8443271cde87cc5a16d55e6870cb1332ad0b625856d6bd06979950aeeee43b4",
+      "locator": "sign/signTarget/signField:222-281; existing original-string SHA256 and protected identities only",
+      "reviewedScope": "sign/signTarget/signField:222-281; existing original-string SHA256 and protected identities only"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "commit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "blob": "46c2f16d8857d1aaaa42865779f57c85959bd7a6",
+      "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08",
+      "locator": "export trace branch:155-171; sourceSignatures/signaturesFor:247-288 raw JDBC payload validation; no full archive acceptance",
+      "reviewedScope": "export trace branch:155-171; sourceSignatures/signaturesFor:247-288 raw JDBC payload validation; no full archive acceptance"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "commit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "blob": "d6c03a7e95dbd6934f00c7efc821b839bacbf3e0",
+      "sha256": "94adac4633eafd8dfed9d69824bde687e2d7e18c7c905cbbd9cc27cf9128bf26",
+      "locator": "personal certification original JSON and hash/write:330-383, not whole auth or runtime API verification",
+      "reviewedScope": "personal certification original JSON and hash/write:330-383, not whole auth or runtime API verification"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java",
+      "commit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "blob": "c78a92fecd70c559fdfe951cf172b6d5098218ae",
+      "sha256": "05871610ed74f0be15b8b5a260cf99e29e60728ec7c77752e47f384ea700a5b3",
+      "locator": "protected three target types in create/update/delete; source inspected only",
+      "reviewedScope": "protected three target types in create/update/delete; source inspected only"
+    }
+  ],
+  "testAssertionScopes": [
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotPostgresTest.java",
+      "commit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "blob": "74bd3755a749d2b551c72ea0d0beee74198290cd",
+      "sha256": "fbd9fe432e8a237bbebebeab5efbc80dc6962904476bf06a3f00dcbfb1f0b656",
+      "locator": "declared native JPA/signature/archive-consumer cases and conditional owned database boundary; synthetic ButtonSigner/profile entity, not API or full ZIP E2E",
+      "reviewedScope": "declared native JPA/signature/archive-consumer cases and conditional owned database boundary; synthetic ButtonSigner/profile entity, not API or full ZIP E2E"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/SignatureSnapshotMigrationPostgresTest.java",
+      "commit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "blob": "f17d95d352d004b094f2f67e503b129163bc70e0",
+      "sha256": "cc4be0ce6bc6920b4bade9476e63bb7418ad9a0e2b77264f41109c5faaaf7886",
+      "locator": "declared legacy preservation/repeat/full master/JSON parse compatibility/missing-original rejection/rollback-refusal cases; source read only",
+      "reviewedScope": "declared legacy preservation/repeat/full master/JSON parse compatibility/missing-original rejection/rollback-refusal cases; source read only"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrAttachmentAndArchiveTest.java",
+      "commit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "blob": "5148f3414118a4c36664910d0334388c949961ba",
+      "sha256": "0c97af7b8707ebe68b0bfe4c442cdd3d433fe811b8aa3e087b3aaf695bb0dd73",
+      "locator": "existing H2 with snapshot_data TEXT and FULL/SELECTED signatures/corrupt digest assertions; not native PG proof",
+      "reviewedScope": "existing H2 with snapshot_data TEXT and FULL/SELECTED signatures/corrupt digest assertions; not native PG proof"
+    }
+  ],
+  "currentKnowledgeReads": [
+    {
+      "path": "docs/knowledge/evidence/signature-payload-storage.yaml",
+      "commit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "blob": "0e29b118f417e765144816fe1846ce91e5be7460",
+      "sha256": "376c5ba99449c80dd551e2d6b571615a1cd2c003e6a10b7efb166ceadb27773a",
+      "locator": "changed evidence/anchor/readable explanation only",
+      "reviewedScope": "changed evidence/anchor/readable explanation only"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "commit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "blob": "2579d0dd525db528a9cbe3de5543ef1cc8eaf7c9",
+      "sha256": "95f3c1039f81bbb524d081a73e243b46fea3a60b0b29353aef664d0aaa82bc00",
+      "locator": "changed evidence/anchor/readable explanation only",
+      "reviewedScope": "changed evidence/anchor/readable explanation only"
+    },
+    {
+      "path": "docs/knowledge/evidence/signature-payload-storage-2026-10-21.md",
+      "commit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+      "blob": "6b191f3e246f36a9177f88361b81f04d7760a52a",
+      "sha256": "5912d58b09fb607e5f71e7b6150911df16bf82eae4114fa79e3fa7ef74120f8f",
+      "locator": "changed evidence/anchor/readable explanation only",
+      "reviewedScope": "changed evidence/anchor/readable explanation only"
+    }
+  ],
+  "businessTestsExecuted": [],
+  "child": {
+    "author": "/root/signature_payload_ontology/existing_signature_evidence",
+    "status": "FINAL",
+    "scope": "limited29 existing knowledge record lookup; not12 formal review rows or a new quality gate",
+    "path": "/tmp/edhr-sig-ontology-existing-evidence.json",
+    "sha256": "6e50fdf665b5fc183533892db7f6dc07b2cea0752fb734878f3ab739479fd076"
+  }
+}

@@ -1,0 +1,13 @@
+# 签名规则与既有测试的有限源码核对
+
+固定来源/目标/契约 `c3343f45bb79f72368937f0d197ae01f989f0390`，知识0.3.25/schema1.2.0。只读来源辅助，非正式本体或QA；未运行测试、数据库、API、浏览器或迁移，也未写仓库。
+
+DEC-0074保留普通按钮独立签名密码/有效个人认证、本人跨账号处理资格与严格用户名admin例外；DEC-0058字段签名仍按当前会话和本份内容失效/历史保留，不继承按钮例外。不能从generic signatureId推导全局必签政策。
+
+DHR同版追溯约束明确：DEC-0063-05/11/15（携带来源/审批签署的精确声明为-15，不是-14）、rule.dhr-summary-zip-source-trace要求FULL/SELECTED读取同一显式冻结版本并携带来源执行审计及签名和DHR审批签署；选择范围不改变审批对象。算法实现和存储字节稳定性是工程核对，不需要为此新增用户政策。
+
+最相关既有测试 DhrAttachmentAndArchiveTest.fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment 是H2兼容模式、手建signature.snapshot_data TEXT，直接对signedPayload原字符串求SHA256后插入，覆盖FULL payload、SELECTED hash及删去payload、篡改review hash阻断。它没有JSONB入库存储格式变化，不能证明PostgreSQL往返。SignatureTest只是反射SqlTypes.JSON注解；ExecutionAccessTest用mock repository捕获签名和64位摘要；DhrReviewLifecycleIntegrationTest是H2真实链，读回只断言snapshot_data含冻结hash，不调用archive或重算签名摘要。DhrArchiveLayoutReaderTest仅布局投影。
+
+限定检索当前47发现，仅命中W5-AUDIT-HASH-001，原记录明确AuditEvent读取/导出不重算，并要求不要混同独立DHR/Signature/File检查。因此不能据该旧问题直接关闭或证明Signature导出线索。是否当前生产链可触发、实际PG错误与严重度仍由主侧实际探针裁定，本辅助未声称复现。
+
+实际有限范围、完整文件Git blob/SHA和限定去重结果见同名JSON；不宣称整文件、全W3或全分支通过。无子实例，本实例FINAL。

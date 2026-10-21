@@ -1,0 +1,124 @@
+{
+  "phase": "font-identity-final",
+  "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=AuthControllerTest",
+    "test"
+  ],
+  "exit": 0,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.identity.controller.AuthControllerTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "6436bc48454bc5711e2f82a94329c34b4f8195fd08738533646538d392baef17",
+      "cases": [
+        {
+          "name": "changeCurrentUserPasswordRejectsWrongCurrentPasswordAndMismatchedConfirmation",
+          "status": "passed"
+        },
+        {
+          "name": "updateProfileStoresEditableEmailPhoneAndBirthdayForCurrentUser",
+          "status": "passed"
+        },
+        {
+          "name": "createPersonalSignatureDoesNotUseIdCardOcrValidation",
+          "status": "passed"
+        },
+        {
+          "name": "updateProfileRejectsInvalidEmailAndPhone",
+          "status": "passed"
+        },
+        {
+          "name": "loginKeepsJwtSmallButReturnsPermissionsInUserPayload",
+          "status": "passed"
+        },
+        {
+          "name": "createPersonalSignatureReauthenticatesStoresSignatureAndWritesAudit",
+          "status": "passed"
+        },
+        {
+          "name": "verifyCurrentUserSignatureRejectsWrongPassword",
+          "status": "passed"
+        },
+        {
+          "name": "loginLocksAccountAfterConfiguredFailedPasswordAttempts",
+          "status": "passed"
+        },
+        {
+          "name": "loginMeAndProfileResponsesSerializeSnowflakeUserIdAsExactString",
+          "status": "passed"
+        },
+        {
+          "name": "createPersonalSignatureUsesSecuritySettingsDefaultCycleWhenNoSettingsPersisted",
+          "status": "passed"
+        },
+        {
+          "name": "verifyCurrentUserSignatureRequiresPersonalSignatureCertification",
+          "status": "passed"
+        },
+        {
+          "name": "loginRejectsLockedAccountUntilLockWindowExpires",
+          "status": "passed"
+        },
+        {
+          "name": "meReturnsCurrentRoleIdsAndLatestPermissions",
+          "status": "passed"
+        },
+        {
+          "name": "meDoesNotReturnRawRoleIdAsRoleNameWhenRoleIsUnmapped",
+          "status": "passed"
+        },
+        {
+          "name": "loginUsesConfiguredTokenValidityAndReturnsRequiredSecurityActions",
+          "status": "passed"
+        },
+        {
+          "name": "loginRecordsWhoAccountTimeActionMethodClientBrowserAndIp",
+          "status": "passed"
+        },
+        {
+          "name": "changeCurrentUserPasswordRequiresCurrentPasswordAndStoresEncodedNewPassword",
+          "status": "passed"
+        },
+        {
+          "name": "logoutRecordsCurrentUserClientBrowserAndIp",
+          "status": "passed"
+        },
+        {
+          "name": "verifyCurrentUserSignatureReturnsAuthorizedSignatureImageAfterPasswordAuth",
+          "status": "passed"
+        },
+        {
+          "name": "changeCurrentUserPasswordRejectsPasswordBelowConfiguredComplexity",
+          "status": "passed"
+        },
+        {
+          "name": "uploadAvatarStoresFileReferenceAndReturnsUpdatedCurrentUser",
+          "status": "passed"
+        },
+        {
+          "name": "meReturnsAvatarBirthdayAndLatestElectronicSignatureEvidence",
+          "status": "passed"
+        },
+        {
+          "name": "loginDoesNotReturnRawRoleIdAsRoleNameWhenRoleIsUnmapped",
+          "status": "passed"
+        },
+        {
+          "name": "createPersonalSignatureRejectsWrongPassword",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "rawLogAndXmlExcluded": true
+}

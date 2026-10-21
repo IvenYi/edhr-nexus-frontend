@@ -1,0 +1,522 @@
+{
+  "phase": "focused-final",
+  "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=SignatureSnapshotPostgresTest,SignatureSnapshotMigrationPostgresTest,ExecutionAccessTest,AuthControllerTest,ProductionExecutionEngineTest,DhrAttachmentAndArchiveTest,DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest",
+    "test"
+  ],
+  "exit": 1,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.identity.controller.AuthControllerTest",
+      "tests": 24,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "1ce022999a30a73ea0f9c9339b8ba376bc450e253d3e0bf29678aee732154d2c",
+      "cases": [
+        {
+          "name": "changeCurrentUserPasswordRejectsWrongCurrentPasswordAndMismatchedConfirmation",
+          "status": "passed"
+        },
+        {
+          "name": "updateProfileStoresEditableEmailPhoneAndBirthdayForCurrentUser",
+          "status": "passed"
+        },
+        {
+          "name": "createPersonalSignatureDoesNotUseIdCardOcrValidation",
+          "status": "passed"
+        },
+        {
+          "name": "updateProfileRejectsInvalidEmailAndPhone",
+          "status": "passed"
+        },
+        {
+          "name": "loginKeepsJwtSmallButReturnsPermissionsInUserPayload",
+          "status": "passed"
+        },
+        {
+          "name": "createPersonalSignatureReauthenticatesStoresSignatureAndWritesAudit",
+          "status": "failed",
+          "message": "\nExpecting actual:\n  \"授权通知书\n授权⼈姓名 系统管理员 授权⼈系统账号 admin\n授权认证时间 2026-10-21 04:23:42 授权截⽌时间 2026-10-28 04:23:42\n授权告知\n已勾选 1、账号由本⼈专属持有\n已勾选 2、授权⽤于合规操作\n已勾选 3、本⼈承担签署责任\n授权⼈⾝份证正⾯ 授权⼈⾝份证反⾯\n授权⼈签字\n授权认证时间戳 1792556622000\n授权截⽌时间戳 1793161422000\n快照指纹 3b4e399675bad0d42672142a09cab2b6d119e2e110a4193050b9ea53cc44e22c\n\"\nto contain:\n  \"授权人姓名\" "
+        },
+        {
+          "name": "verifyCurrentUserSignatureRejectsWrongPassword",
+          "status": "passed"
+        },
+        {
+          "name": "loginLocksAccountAfterConfiguredFailedPasswordAttempts",
+          "status": "passed"
+        },
+        {
+          "name": "loginMeAndProfileResponsesSerializeSnowflakeUserIdAsExactString",
+          "status": "passed"
+        },
+        {
+          "name": "createPersonalSignatureUsesSecuritySettingsDefaultCycleWhenNoSettingsPersisted",
+          "status": "passed"
+        },
+        {
+          "name": "verifyCurrentUserSignatureRequiresPersonalSignatureCertification",
+          "status": "passed"
+        },
+        {
+          "name": "loginRejectsLockedAccountUntilLockWindowExpires",
+          "status": "passed"
+        },
+        {
+          "name": "meReturnsCurrentRoleIdsAndLatestPermissions",
+          "status": "passed"
+        },
+        {
+          "name": "meDoesNotReturnRawRoleIdAsRoleNameWhenRoleIsUnmapped",
+          "status": "passed"
+        },
+        {
+          "name": "loginUsesConfiguredTokenValidityAndReturnsRequiredSecurityActions",
+          "status": "passed"
+        },
+        {
+          "name": "loginRecordsWhoAccountTimeActionMethodClientBrowserAndIp",
+          "status": "passed"
+        },
+        {
+          "name": "changeCurrentUserPasswordRequiresCurrentPasswordAndStoresEncodedNewPassword",
+          "status": "passed"
+        },
+        {
+          "name": "logoutRecordsCurrentUserClientBrowserAndIp",
+          "status": "passed"
+        },
+        {
+          "name": "verifyCurrentUserSignatureReturnsAuthorizedSignatureImageAfterPasswordAuth",
+          "status": "passed"
+        },
+        {
+          "name": "changeCurrentUserPasswordRejectsPasswordBelowConfiguredComplexity",
+          "status": "passed"
+        },
+        {
+          "name": "uploadAvatarStoresFileReferenceAndReturnsUpdatedCurrentUser",
+          "status": "passed"
+        },
+        {
+          "name": "meReturnsAvatarBirthdayAndLatestElectronicSignatureEvidence",
+          "status": "passed"
+        },
+        {
+          "name": "loginDoesNotReturnRawRoleIdAsRoleNameWhenRoleIsUnmapped",
+          "status": "passed"
+        },
+        {
+          "name": "createPersonalSignatureRejectsWrongPassword",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "f4d374580064643533dd69914c730b055d98a9e7de993ad4657ce4705f82b2b0",
+      "cases": [
+        {
+          "name": "rejectsRenamedOfficeTemplatesAndTruncatedZipDirectory(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsRenamedOfficeTemplatesAndTruncatedZipDirectory(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsExcessiveOfficeZipExpansionBeforeParsing",
+          "status": "passed"
+        },
+        {
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "acceptsExactly50MiBButRejectsOneByteOverBeforeReading",
+          "status": "passed"
+        },
+        {
+          "name": "officeRejectsDisguisedUnsupportedCorruptEncryptedAndMacroFiles",
+          "status": "passed"
+        },
+        {
+          "name": "attachmentRequiresReadableBytesAndPreservesUnlinkedHistory",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "06eaa2859ad81105058cf4a1ebf254565ee990be8543d036061ec4831846edab",
+      "cases": [
+        {
+          "name": "incompleteFrozenManualReviewBlocksApprovalButAllowsReturn",
+          "status": "passed"
+        },
+        {
+          "name": "realWorkflowReturnResubmitSignAndApprovedImpactPreserveHistory",
+          "status": "passed"
+        },
+        {
+          "name": "concurrentApprovalCreatesOnlyOneOutcomeAndSignature",
+          "status": "passed"
+        },
+        {
+          "name": "newlyAppearingRecordAndAttachmentBlockApprovalWithoutChangingFrozenVersion",
+          "status": "passed"
+        },
+        {
+          "name": "legacyPendingReviewCannotApproveUnfinishedUnincludedCustomCopyButCanReturn",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "0982ef9d4c10be117428194883ae4266cc0d7f6cbd71b037a5fee5b75bbe1ec4",
+      "cases": [
+        {
+          "name": "personalListAndDetailCannotLeakAnotherUsersTask",
+          "status": "passed"
+        },
+        {
+          "name": "frozenButtonVisibilityOpinionAndSignatureAreEnforcedOnServer",
+          "status": "passed"
+        },
+        {
+          "name": "approvalRequiresUnchangedEvidenceAndCurrentHashButDoesNotAutoReturn",
+          "status": "passed"
+        },
+        {
+          "name": "approvalSeparatesRuntimeOutcomeFromFrozenEvidenceAndRejectsSecondAction",
+          "status": "passed"
+        },
+        {
+          "name": "signedReviewChecksNamedSignerAndRecordsBothIdentities",
+          "status": "passed"
+        },
+        {
+          "name": "missingFrozenFormOriginalBlocksApprovalButNotReturn",
+          "status": "passed"
+        },
+        {
+          "name": "intermediateApprovalKeepsPendingAndAuditFailureRollsBackOutcome",
+          "status": "passed"
+        },
+        {
+          "name": "humanReturnAllowsChangedEvidenceAndCreatesNextDraftOnlyExplicitly",
+          "status": "passed"
+        },
+        {
+          "name": "missingAndNewRecordsBothAffectCompleteEvidenceScope",
+          "status": "passed"
+        },
+        {
+          "name": "unreadableLiveValuesAreReportedAsImpactAndBlockApproval",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ExecutionAccessTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "eed5d077cd6ba1bba9c4120a40ceb1d8d7b9f44b6f2889ca12d8f54aeb9574e6",
+      "cases": [
+        {
+          "name": "referenceSearchAndValidationReachIdsBeyondFirstHundredSameNameRows",
+          "status": "passed"
+        },
+        {
+          "name": "capturesApprovalCandidatesOnceAndDoesNotOpenAnUnresolvedRestrictedGroup",
+          "status": "passed"
+        },
+        {
+          "name": "sopPdfPagePreviewRendersImageAndRejectsOutOfRange(Path)",
+          "status": "passed"
+        },
+        {
+          "name": "onlyInternalAdminUsesLoginPasswordAndSignatureFieldsRemainCurrentUserOnly",
+          "status": "passed"
+        },
+        {
+          "name": "transferPreservesFrozenCandidatesAndAllowsTenantDelegatesWhileOnlyAssigneeCanAct",
+          "status": "passed"
+        },
+        {
+          "name": "transferRejectsCrossTenantTargetsEvenIfAStaleCandidateListContainsThem",
+          "status": "passed"
+        },
+        {
+          "name": "executionAttachmentsCannotBeDeletedThroughGenericFiles",
+          "status": "passed"
+        },
+        {
+          "name": "executionSignaturesCannotBeForgedOverwrittenOrDeletedThroughGenericCrud",
+          "status": "passed"
+        },
+        {
+          "name": "personalSignatureCredentialsCannotBeForgedOrExposedThroughGenericCrud",
+          "status": "passed"
+        },
+        {
+          "name": "unavailableUncertifiedExpiredAndUnsetSignersAreBlocked",
+          "status": "passed"
+        },
+        {
+          "name": "stableFieldOverridesAndReadOnlyConflictWin",
+          "status": "passed"
+        },
+        {
+          "name": "buttonSignatureAuthenticatesNamedSignerAndRetainsSessionWithoutCredentials",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "d287e6b73e3ec0adb01ed651d0d4136a9f1974c7a1f409a260d159db9510868a",
+      "cases": [
+        {
+          "name": "configuredConfirmationCannotBeSkippedByCompletingOperation",
+          "status": "passed"
+        },
+        {
+          "name": "routeCyclesAndUnsupportedNotificationsAreVisibleStartBlockers",
+          "status": "passed"
+        },
+        {
+          "name": "savedDraftDoesNotSatisfyRequiredFormAndReadOnlyValuesCannotBeForged",
+          "status": "passed"
+        },
+        {
+          "name": "missingRuntimeFactsNeverPassEvenWhenUsedUnderNot",
+          "status": "passed"
+        },
+        {
+          "name": "approvalAndSignatureAreRequiredBeforeFormCompletion",
+          "status": "passed"
+        },
+        {
+          "name": "skippedUnboundWorkFormDoesNotBlockCompletedConditionalWork",
+          "status": "passed"
+        },
+        {
+          "name": "requiredFieldsOwnedByLaterApprovalDoNotBlockEarlierSubmissionButBlockFinalCompletion",
+          "status": "passed"
+        },
+        {
+          "name": "workFormNeverSatisfiesIndependentRequiredOperationForm",
+          "status": "passed"
+        },
+        {
+          "name": "supplementCreatesNewCopyWithoutReopeningOrChangingCompletedRecord",
+          "status": "passed"
+        },
+        {
+          "name": "evaluatesStructuredConditionsWithoutExecutingCode",
+          "status": "passed"
+        },
+        {
+          "name": "directEntryConfigurationControlsPermissionsButtonsAndSignature",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsDuplicateStartAndOutOfOrderCompletion",
+          "status": "passed"
+        },
+        {
+          "name": "transferDoesNotAdvanceOrChangeFormValuesAndRequiresReason",
+          "status": "passed"
+        },
+        {
+          "name": "supplementCannotBypassSubjectPermissionsOrUnreachedWorkForms",
+          "status": "passed"
+        },
+        {
+          "name": "validSubmissionPersistsValuesAndUnlocksCompletion",
+          "status": "passed"
+        },
+        {
+          "name": "enforcesNumericStructurePrecisionAndDateFormat",
+          "status": "passed"
+        },
+        {
+          "name": "blocksSuccessorUntilEveryParallelPredecessorCompletes",
+          "status": "passed"
+        },
+        {
+          "name": "disabledDirectSignatureEventIsNotExecuted",
+          "status": "passed"
+        },
+        {
+          "name": "explicitLegacyOrHiddenButtonsDoNotEnableTransfer",
+          "status": "passed"
+        },
+        {
+          "name": "rejectsUnknownFieldsAndInvalidNumbers",
+          "status": "passed"
+        },
+        {
+          "name": "activeButtonSignatureFillsActualSignerAndAllowsReporterProjection",
+          "status": "passed"
+        },
+        {
+          "name": "parallelWorkJoinWaitsForBothConfirmationBranches",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "580a638982efaeff43e63d3a043961e9488951a01caa8d8f7c473be1f55d6cd6",
+      "cases": [
+        {
+          "name": "fullMasterBuildsFreshDatabaseWithLosslessSignatureStorage",
+          "status": "passed"
+        },
+        {
+          "name": "forwardMigrationPreservesEveryExistingReadableValueHashAndMetadata",
+          "status": "passed"
+        },
+        {
+          "name": "repeatedLiquibaseAndForwardDdlLeaveRowsAndSingleChangeSetUnchanged",
+          "status": "passed"
+        },
+        {
+          "name": "lossyAutomaticRollbackIsRejectedBeforeChangingNewSignedPayload",
+          "status": "passed"
+        },
+        {
+          "name": "migrationDoesNotInventMissingOriginalBytesOrRelaxLegacyVerification",
+          "status": "passed"
+        },
+        {
+          "name": "migrationKeepsExistingJsonShapesWithoutNormalizingTheirOriginalText",
+          "status": "passed"
+        },
+        {
+          "name": "migrationKeepsPreviousJsonbInputRejections(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "migrationKeepsPreviousJsonbInputRejections(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "migrationKeepsPreviousJsonbInputRejections(String)[3]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "freshReport": true,
+      "xmlSha256": "5987588b3ed25061c81e504dce19a1b9b4f404694e77d42253e11dd97317572c",
+      "cases": [
+        {
+          "name": "tamperedPayloadStillStopsArchive(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "tamperedPayloadStillStopsArchive(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "fieldSignatureUsesSameLosslessPersistence",
+          "status": "passed"
+        },
+        {
+          "name": "nativeJsonbControlHasEqualJsonButDifferentSignedBytes",
+          "status": "passed"
+        },
+        {
+          "name": "profileSnapshotKeepsExactWhitespaceOrderAndUnicode",
+          "status": "passed"
+        },
+        {
+          "name": "tamperedDigestStillStopsArchive(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "tamperedDigestStillStopsArchive(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "existingSignerServiceSurvivesNativePersistenceAndArchiveVerification(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "existingSignerServiceSurvivesNativePersistenceAndArchiveVerification(String)[2]",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "rawLogAndXmlExcluded": true
+}

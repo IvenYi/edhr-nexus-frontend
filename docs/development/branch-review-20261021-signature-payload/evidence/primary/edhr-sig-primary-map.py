@@ -1,0 +1,11 @@
+from pathlib import Path
+import hashlib,json,subprocess
+repo=Path('/workspace/edhr-nexus-frontend');ref='2ead6de2ed149f9c10a7786a555b0235c86b3186'
+def git(*a):return subprocess.check_output(['git',*a],cwd=repo)
+prefix='gmp-platform/backend/'
+items=[('src/main/java/com/zencas/edhr/compliance/entity/Signature.java','signed-payload mapping and hash fields',24,33,'TEXT preserves the original string; no new digest fields or lifecycle/authentication changes.'),('src/main/resources/db/changelog/0118-signature-payload-text.sql','forward migration and input-compatibility guard',1,15,'JSONB::TEXT retains current old readable data; CHECK validates old input parse compatibility without storing normalized output. No lossy automatic inverse.'),('src/main/resources/db/changelog/db.changelog-master.yaml','final migration includes',250,253,'Only append0118; do not alter earlier applied migration bytes.'),('src/test/java/com/zencas/edhr/production/service/SignatureSnapshotPostgresTest.java','roundtrip, identity and corruption test methods',83,154,'Actual9 native cases test signed bytes and archive JDBC consumers; synthetic signer and entity profile case, not full HTTP/login E2E.'),('src/test/java/com/zencas/edhr/production/service/SignatureSnapshotMigrationPostgresTest.java','migration and compatibility test methods',67,149,'Actual9 native cases cover legacy values, fresh full master, duplicate apply, old rejection, JSON input shapes and safe rollback rejection.')]
+out=[]
+for i,(p,m,a,b,c) in enumerate(items,1):
+ p=prefix+p;raw=git('show',ref+':'+p);assert b<=len(raw.splitlines())
+ out.append({'id':'sig-primary:%03d'%i,'path':p,'sourceCommit':ref,'blob':git('rev-parse',ref+':'+p).decode().strip(),'sha256':hashlib.sha256(raw).hexdigest(),'method':m,'range':[a,b],'readDepth':'primary implementation and finite source verification; runtime separately evidenced, not independent QA','conclusion':c,'wholeFileReviewComplete':False,'runtimeExecuted':False})
+p=repo/'docs/development/branch-review-20261021-signature-payload/evidence/primary/source-map.json';p.write_text(json.dumps({'fixedCommit':ref,'sourceScopes':out,'wholeFileOrBranchAcceptance':False},ensure_ascii=False,indent=2)+'\n');print({'primaryFiniteScopes':len(out)})
