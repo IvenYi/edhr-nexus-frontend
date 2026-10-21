@@ -1,0 +1,28 @@
+{
+  "firstFixtureSha256": "5b1a963d7af0240b1118dfcdc0f75dc956786b5f82d2a28e0ab2879d1eb405f2",
+  "finalFixtureCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+  "finalFixturePath": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+  "finalFixtureSha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96",
+  "onlyFixtureCorrection": "Explicit UTF8 decoding of MockMvc response; original assertions unchanged. Initial9 failures =7 product graph +2 fixture decoding. Corrected old28=7 product failures/21controls.",
+  "diffToFinal": [
+    "--- first-fixture\n",
+    "+++ final-fixture\n",
+    "@@ -3,6 +3,7 @@\n",
+    " import com.fasterxml.jackson.databind.JsonNode;",
+    " import com.fasterxml.jackson.databind.ObjectMapper;",
+    " import com.zencas.edhr.identity.security.JwtTokenProvider;",
+    "+import java.nio.charset.StandardCharsets;",
+    " import java.util.ArrayList;",
+    " import java.util.LinkedHashMap;",
+    " import java.util.List;",
+    "@@ -155,7 +156,7 @@\n",
+    "     private JsonNode read(String path) throws Exception {",
+    "         var result = mvc.perform(get(\"/api/v1/workflow\" + path).header(\"Authorization\", bearer()))",
+    "                 .andExpect(status().isOk()).andReturn();",
+    "-        return mapper.readTree(result.getResponse().getContentAsString()).path(\"data\");",
+    "+        return mapper.readTree(result.getResponse().getContentAsString(StandardCharsets.UTF_8)).path(\"data\");",
+    "     }",
+    "     private String bearer() { return \"Bearer \" + tokens.generateToken(\"33\", \"fixture-reader\", \"合成读取人\", 5, List.of()); }",
+    "     private List<Long> ids(JsonNode array) { List<Long> result = new ArrayList<>(); array.forEach(row -> result.add(row.path(\"id\").asLong())); return result; }"
+  ]
+}

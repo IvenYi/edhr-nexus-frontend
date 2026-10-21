@@ -1,0 +1,167 @@
+{
+  "phase": "baseline-utf8",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=WorkflowReadBoundaryPostgresTest",
+    "clean",
+    "test"
+  ],
+  "exit": 1,
+  "sourceCommitAtRun": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+  "workingTreeState": [
+    "?? docs/development/branch-review-20261021-workflow-read-boundaries/",
+    "?? gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+    "?? gmp-platform/frontend/scripts/test-workflow-instance-read-browser.mjs"
+  ],
+  "database": "owned PG16/edhr_w3_command_test loopback55432",
+  "elapsedSeconds": 27.89,
+  "suites": [
+    {
+      "tests": 28,
+      "failures": 7,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.controller.WorkflowReadBoundaryPostgresTest",
+      "freshReport": true,
+      "xmlSha256": "0d338b1cb0a7fca22e752b04bdffbd0ac3e413c0337bd40dbfded9c76c91017c",
+      "cases": [
+        {
+          "name": "everyReadStillRequiresAuthentication",
+          "status": "passed"
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[1]",
+          "status": "failure",
+          "message": "\nExpecting actual:\n  [1L, 10L, 101L]\nto contain exactly in any order:\n  [101L]\nbut the following elements were unexpected:\n  [1L, 10L]\n",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[2]",
+          "status": "failure",
+          "message": "\nExpecting actual:\n  [1L, 10L, 101L, 1101L]\nto contain exactly in any order:\n  [1101L]\nbut the following elements were unexpected:\n  [1L, 10L, 101L]\n",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[3]",
+          "status": "failure",
+          "message": "\nExpecting actual:\n  [1L, 10L, 101L, 2L, 22L]\nto contain exactly in any order:\n  [101L, 22L]\nbut the following elements were unexpected:\n  [1L, 10L, 2L]\n",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[4]",
+          "status": "failure",
+          "message": "\nExpecting actual:\n  [1L, 10L, 101L, 1101L, 2L, 22L]\nto contain exactly in any order:\n  [1101L, 22L]\nbut the following elements were unexpected:\n  [1L, 10L, 101L, 2L]\n",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[5]",
+          "status": "failure",
+          "message": "\nExpecting actual:\n  [2L, 22L]\nto contain exactly in any order:\n  [22L]\nbut the following elements were unexpected:\n  [2L]\n",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[6]",
+          "status": "failure",
+          "message": "\nExpecting actual:\n  [1L, 10L]\nto contain exactly in any order:\n  [10L]\nbut the following elements were unexpected:\n  [1L]\n",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[9]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[10]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[11]",
+          "status": "failure",
+          "message": "\nExpecting actual:\n  [1L, 10L, 101L, 2L, 22L]\nto contain exactly in any order:\n  [101L, 22L]\nbut the following elements were unexpected:\n  [1L, 10L, 2L]\n",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[12]",
+          "status": "passed"
+        },
+        {
+          "name": "genericListCountsAndContentExcludeDhrBeforePagination(String, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "genericListCountsAndContentExcludeDhrBeforePagination(String, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "genericListCountsAndContentExcludeDhrBeforePagination(String, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "longInstanceIdsRemainDistinctAcrossReadEndpoints",
+          "status": "passed"
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "instanceLogsUseAnArrayAndOnlyTheRequestedInstanceInChronologicalOrder",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 28,
+    "failures": 7,
+    "errors": 0,
+    "skipped": 0
+  }
+}
