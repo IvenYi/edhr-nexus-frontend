@@ -1,0 +1,89 @@
+{
+  "schema": "edhr-independent-quality-validation/v1",
+  "author": "/root/workflow_read_independent",
+  "role": "new independent quality verifier; no product/test/config/knowledge repairs and no child delegation",
+  "recordedAt": "2026-10-21T14:48:28.058751+00:00",
+  "level": "L2",
+  "baseCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+  "headCommit": "749c9f9b28d2525261976df070e56736323117be",
+  "contractReadCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
+  "contractKnowledgeDesignBlobsUnchangedToHead": true,
+  "workingTreeClean": true,
+  "qualityResult": "passed",
+  "requiredChecks": 10,
+  "allRequiredPassed": true,
+  "optionalChecks": [
+    {
+      "id": "check.keyboard-narrow-scroll",
+      "outcome": "passed"
+    },
+    {
+      "id": "check.premium-static-global",
+      "outcome": "failed"
+    },
+    {
+      "id": "check.eslint-configuration",
+      "outcome": "blocked"
+    }
+  ],
+  "business": {
+    "tests": 53,
+    "nativePostgres": 50,
+    "h2": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "freshXml": true
+  },
+  "knowledge": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "structureNotFullSemantic": true,
+    "independentOutputDirectory": true
+  },
+  "nativeBaseline": {
+    "tests": 28,
+    "expectedFailures": 7,
+    "positivePasses": 21,
+    "errors": 0,
+    "skipped": 0,
+    "all2910TargetBlobsUnchanged": true
+  },
+  "browser": {
+    "tests": 16,
+    "passed": 16,
+    "skipped": 0,
+    "oldExpectedFailures": 12,
+    "oldPositivePasses": 4,
+    "controlledApiOnly": true,
+    "extraKeyboardAndNarrowScrollCases": 2,
+    "extraPassed": 2,
+    "actuallyViewedScreenshots": 6
+  },
+  "frontendBuildExit": 0,
+  "ledgerCheckExit": 0,
+  "sourceRecords": 574,
+  "historicalSemanticRows": 108,
+  "newSemanticRows": 0,
+  "findingRecords": 52,
+  "other48PriorFindingsExact": true,
+  "sourceNeedsDelta": 130,
+  "semanticNeedsDelta": 63,
+  "ontologyGate": {
+    "result": "not-applicable",
+    "independentlyConfirmed": true,
+    "formalOntologyInstanceDispatched": false
+  },
+  "blockingConditions": [],
+  "overallAuditComplete": false,
+  "overallPercent": null,
+  "mergeOrDeployPerformed": false,
+  "actionsQueriedOrTriggered": false,
+  "userDatabaseConnected": false,
+  "dataRestorePerformed": false,
+  "browserServersExited": true,
+  "postgresReadyForParentExactIdCleanup": true,
+  "privateLogsOrXmlArchived": false
+}

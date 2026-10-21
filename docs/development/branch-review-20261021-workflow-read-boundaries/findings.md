@@ -1,6 +1,6 @@
 # W3 实例读取边界
 
-原始基线 d405a9afb4327b859545fa5a12c7eebe1350f418；核心修复725127d46ca1ae758f7fddeeaf94af1079afe432。以下三项为不同触发/根因的medium技术缺陷；不把父子台账记录数当唯一缺陷数。正式验收尚待干净候选的全新独立结果。
+原始基线 d405a9afb4327b859545fa5a12c7eebe1350f418；核心修复725127d46ca1ae758f7fddeeaf94af1079afe432。以下三项为不同触发/根因的medium技术缺陷；不把父子台账记录数当唯一缺陷数。开发证据和原待验目录保留；最终由全新独立对干净749c9f9b正式passed/FINAL，验收见acceptance.json。
 
 ## W3-INSTANCE-GRAPH-CURRENT-001
 

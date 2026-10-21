@@ -1,0 +1,272 @@
+{
+  "phase": "business",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=WorkflowReadBoundaryPostgresTest,WorkflowInstanceAuthorizationIntegrationTest,DhrGenericAccessTest",
+    "clean",
+    "test"
+  ],
+  "exit": 0,
+  "sourceCommitAtRun": "749c9f9b28d2525261976df070e56736323117be",
+  "workingTreeStateAtRun": [],
+  "startedAt": "2026-10-21T14:39:33.441496+00:00",
+  "elapsedSeconds": 41.08,
+  "privateLogSha256": "91ccf126bb501e10a63947ab94d8ff198d7081563c111977e206f5dceee9a1b4",
+  "suites": [
+    {
+      "name": "com.zencas.edhr.production.controller.DhrGenericAccessTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "eee5344c1fe08db92e0d2eb7e813ea6a91775e9eb46c9d76b14d3b64ff7da8c0",
+      "cases": [
+        {
+          "name": "allGenericSingleObjectReadsRejectDhrBeforeReturningEvidence",
+          "status": "passed"
+        },
+        {
+          "name": "cannotForgeReparentOverwriteOrDeleteDhrAuditLogs",
+          "status": "passed"
+        },
+        {
+          "name": "databasePaginationExcludesDhrBeforeComputingCounts",
+          "status": "passed"
+        }
+      ],
+      "freshReport": true
+    },
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowInstanceAuthorizationIntegrationTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "1ec82c0564fd815ee95a79d55821eb5cf7a53cae1ee935e92bb8b02d0fbb5a21",
+      "cases": [
+        {
+          "name": "authorizedDedicatedTerminationKeepsTaskAndLogChangesTogether",
+          "status": "passed"
+        },
+        {
+          "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "taskAdministrativeWritesAndTerminationAlreadyRequireInterventionAuthority",
+          "status": "passed"
+        },
+        {
+          "name": "ordinaryReaderKeepsExistingReadEndpoints",
+          "status": "passed"
+        },
+        {
+          "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[9]",
+          "status": "passed"
+        },
+        {
+          "name": "candidateCanCompleteThroughEngineWithoutAdministrativeWritePermission",
+          "status": "passed"
+        }
+      ],
+      "freshReport": true
+    },
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowReadBoundaryPostgresTest",
+      "tests": 28,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "e4d54d28c8eb2ab0c4d3562caab082aa465cdd4eea2d6af9ad0172ef41e25e7c",
+      "cases": [
+        {
+          "name": "everyReadStillRequiresAuthentication",
+          "status": "passed"
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "missingObjectsKeepExistingErrorContracts(String, int)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[9]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[10]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[11]",
+          "status": "passed"
+        },
+        {
+          "name": "graphMarksOnlyWholeCurrentIdsInTheInstanceVersion(String, List)[12]",
+          "status": "passed"
+        },
+        {
+          "name": "genericListCountsAndContentExcludeDhrBeforePagination(String, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "genericListCountsAndContentExcludeDhrBeforePagination(String, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "genericListCountsAndContentExcludeDhrBeforePagination(String, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "longInstanceIdsRemainDistinctAcrossReadEndpoints",
+          "status": "passed"
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "dhrEvidenceCannotBeReadThroughGenericObjectEndpoints(String)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "instanceLogsUseAnArrayAndOnlyTheRequestedInstanceInChronologicalOrder",
+          "status": "passed"
+        }
+      ],
+      "freshReport": true
+    }
+  ],
+  "totals": {
+    "tests": 53,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

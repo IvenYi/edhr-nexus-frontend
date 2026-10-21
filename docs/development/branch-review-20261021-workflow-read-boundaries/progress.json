@@ -6,7 +6,11 @@
   "humanMergedPr23": "720ddd03c8ddc1aaac7aecbf78c95a3099c25079",
   "coreCommit": "725127d46ca1ae758f7fddeeaf94af1079afe432",
   "catalogBaseline": "870b178f9bad07548485ff3b167b238d6e037ad7",
-  "stage": "ready-for-clean-candidate-independent-quality",
+  "stage": "independently-accepted-ready-for-pr",
+  "qualityTestedCommit": "749c9f9b28d2525261976df070e56736323117be",
+  "acceptance": "acceptance.json",
+  "temporaryOwnedPostgres": "removed-after-formal-final",
+  "prePrScopeReviewCompletedAfterAllFinal": true,
   "inventory": {"trackedPaths": 2965, "currentKnowledgeIds": 2552, "classificationIsNotHumanReview": true},
   "source": {"recordedOverlappingScopes": 574, "inherited": 545, "primaryFiniteScopes": 29, "notDistinctMethodsOrCompleteDenominator": true, "needsDeltaReview": 130, "wholeFilesCompleted": 0, "excludedOriginal028Preserved": true},
   "semantic": {"historicalScopedRows": 108, "sources": 6, "newFormalRows": 0, "needsDeltaReview": 63, "historicalEvidenceGaps": 4, "notDistinctIds": true, "noNewSemanticAcceptanceClaimed": true},
@@ -14,8 +18,9 @@
     "records": 52,
     "notDistinctProductDefects": true,
     "onlyPriorPr23Accepted": "W3D-TASK-PAGINATION-001",
-    "currentFixedAwaitingIndependentAcceptance": ["W3-INSTANCE-GRAPH-CURRENT-001", "W3-INSTANCE-LOGS-ARRAY-001", "W3-INSTANCE-READ-ID-PRECISION-001"],
-    "currentIndependentlyAccepted": []
+    "currentFixedAwaitingIndependentAcceptance": [],
+    "currentIndependentlyAccepted": ["W3-INSTANCE-GRAPH-CURRENT-001", "W3-INSTANCE-LOGS-ARRAY-001", "W3-INSTANCE-READ-ID-PRECISION-001"],
+    "additionalIndependentLowInAcceptanceOverlayOnly": "QF-READ-DOC-001 corrected-and-independently-accepted-l0"
   },
   "runtime": {
     "primaryBusinessTests": 53, "primaryNativePostgresSubset": 50, "primaryH2Subset": 3,
@@ -26,7 +31,13 @@
     "browserControlledApiTests": 16, "browserPassed": 16, "browserSkipped": 0,
     "browserOldTests": 16, "browserOldFailures": 12, "browserOldPositivePasses": 4,
     "frontendBuild": "tsc-and-vite-exit0",
-    "independentQuality": "pending-clean-candidate",
+    "independentQuality": "passed-FINAL",
+    "independentBusinessTests": 53, "independentNativePostgresSubset": 50, "independentH2Subset": 3,
+    "independentKnowledgeTests": 89, "independentBrowserTests": 16, "extraIndependentKeyboardScrollProbe": 2,
+    "independentFailures": 0, "independentErrors": 0, "independentSkipped": 0,
+    "independentRequiredChecks": 10,
+    "optionalGlobalStatic": "failed84 existing hints, exact delta0",
+    "optionalEslint": "blocked-no-project-config",
     "fullAppLoginBackendE2E": false,
     "completeUiAcceptance": false,
     "migration": "not-applicable-no-schema-change"
@@ -34,7 +45,7 @@
   "ontology": {"result": "not-applicable", "gateTriggered": false, "author": "/root gate assessment only", "formalRoleDispatched": false, "reason": "Existing read identity/array/current-node projection only; no authoritative state, policy, action, permission, audit, snapshot or knowledge asset change.", "knowledgeVersionBeforeAndAfter": "0.3.25"},
   "remaining": [
     "complete W2/W3 review",
-    "generic workflow action/type policy and disposition of unwired signature-password input await user decision",
+    "TaskDetail page/signature-password issue user-deferred for collaborator review; generic workflow action/type policy remains undecided; no dependent implementation",
     "existing complete detail/log metadata projections, mobile/global UI limitations and full read-policy matrix not certified",
     "W4 H006/H007/H008 adjudication",
     "W5-AUDIT-HASH-001 and background/migration review",

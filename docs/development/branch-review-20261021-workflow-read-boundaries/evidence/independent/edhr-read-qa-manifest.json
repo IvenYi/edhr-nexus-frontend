@@ -1,0 +1,375 @@
+{
+  "schema": "edhr-independent-quality-safe-manifest/v1",
+  "author": "/root/workflow_read_independent",
+  "baseCommit": "d405a9afb4327b859545fa5a12c7eebe1350f418",
+  "testedCommit": "749c9f9b28d2525261976df070e56736323117be",
+  "excludedPrivateRawEvidence": "Maven logs/XML/MockMvc failures and all *.private.log retained in /tmp only; not for repository archive",
+  "files": [
+    {
+      "sourcePath": "/tmp/edhr-read-qa-qualityResult.yaml",
+      "archiveRelativePath": "edhr-read-qa-qualityResult.yaml",
+      "bytes": 19266,
+      "sha256": "23e8904f675b148b4c8fa778aafb19c3b5a4ac10ee2ebad6c0bcad2404de8b14"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-validation.json",
+      "archiveRelativePath": "edhr-read-qa-validation.json",
+      "bytes": 2399,
+      "sha256": "37cdf528ad19b0e40ec22041bad5a1b524f2c9304bd0e9b56f9bd6e8c8c0ffbb"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-run.py",
+      "archiveRelativePath": "edhr-read-qa-run.py",
+      "bytes": 1898,
+      "sha256": "de2570e918ea73d6975a112ade61f4de381286dd1056c2309367e6de1152fe2c"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-check-provenance.py",
+      "archiveRelativePath": "edhr-read-qa-check-provenance.py",
+      "bytes": 5353,
+      "sha256": "15b4843e7e0f2be6493950c0f0513ffb5e9e47ecef666c9da6bfda83385cf84e"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-write-result.py",
+      "archiveRelativePath": "edhr-read-qa-write-result.py",
+      "bytes": 23936,
+      "sha256": "484c477f9ecc0af4bbf76cfc4283b47dcbed786075792da2622cc8403cd53afb"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-baseline-summary.json",
+      "archiveRelativePath": "edhr-read-qa-baseline-summary.json",
+      "bytes": 5249,
+      "sha256": "9a5e11b8d0a9492f20139bc1a07218bd86e17d0612af402f8e2385edceffe85c"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-baseline-export-manifest.json",
+      "archiveRelativePath": "edhr-read-qa-baseline-export-manifest.json",
+      "bytes": 520104,
+      "sha256": "d29a76eddd11b6815ae57444a77eae182665417b1042e94ea5ad033e530fd4da"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-business-summary.json",
+      "archiveRelativePath": "edhr-read-qa-business-summary.json",
+      "bytes": 8799,
+      "sha256": "565b6a6f098cd248464bfb21c35da37527ff471552c471103c692d574d89bd24"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-knowledge-summary.json",
+      "archiveRelativePath": "edhr-read-qa-knowledge-summary.json",
+      "bytes": 12518,
+      "sha256": "a12e7336bbdaa8908440be1c25904e95ec5d3cd6bedc900cfdb0b0e5c9a19d0a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-build-summary.json",
+      "archiveRelativePath": "edhr-read-qa-build-summary.json",
+      "bytes": 312,
+      "sha256": "b38fbdadb534c97f3fb1af250dfc94fdb7d7e157a036d44b713a99fbae254720"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline.json",
+      "archiveRelativePath": "edhr-read-qa-browser-baseline.json",
+      "bytes": 12054,
+      "sha256": "c29356c4bf9284f9349cd0e717b175bdad488d03797a92575c901d8940f2f098"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-fixed.json",
+      "archiveRelativePath": "edhr-read-qa-browser-fixed.json",
+      "bytes": 8760,
+      "sha256": "798cd226712071f9339d907a56220df54a8cf73bc7dbdfd532fbe51eb656db32"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-keyboard-scroll.json",
+      "archiveRelativePath": "edhr-read-qa-browser-keyboard-scroll.json",
+      "bytes": 1962,
+      "sha256": "671236a6ebe657eb920d7486356d670b98da72e5901457e72a15e1da319e7af0"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-keyboard-scroll-probe.mjs",
+      "archiveRelativePath": "edhr-read-qa-keyboard-scroll-probe.mjs",
+      "bytes": 14082,
+      "sha256": "fc5d7193132552c8c87996feb2719466f30718f7ac779577a436f00ba9fa39f5"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-keyboard-probe.mjs",
+      "archiveRelativePath": "edhr-read-qa-keyboard-probe.mjs",
+      "bytes": 13235,
+      "sha256": "c69b16fd5c5dd1b0f042e4c6fbcd5521efefe13bc34b057b6b670871ab0e76b6"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-keyboard.json",
+      "archiveRelativePath": "edhr-read-qa-browser-keyboard.json",
+      "bytes": 1834,
+      "sha256": "a808c83d9a463f9ac2ecffba01310d34b82d65d298af59c2ca70a0369f44e6e5"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-cleanup.json",
+      "archiveRelativePath": "edhr-read-qa-browser-cleanup.json",
+      "bytes": 221,
+      "sha256": "97c03aa3cb8c79d7a7f1851de8ea061ea0579971de0ddf0057c94ecc10002ea2"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-ledger-check.json",
+      "archiveRelativePath": "edhr-read-qa-ledger-check.json",
+      "bytes": 2427,
+      "sha256": "5f9bb4a43dd2c630bd93e0fe86ee3ac25faeeee8829705297759e100301293a2"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-provenance.json",
+      "archiveRelativePath": "edhr-read-qa-provenance.json",
+      "bytes": 29414,
+      "sha256": "cf656d79ef946f3d07e42cf4e63b9f99d3c8c31a31fb64ed210c51bc7b4f5f35"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-source-receipts.json",
+      "archiveRelativePath": "edhr-read-qa-source-receipts.json",
+      "bytes": 2750,
+      "sha256": "f8f1ae6d72dc4987874ba4eeafd8175216fff58317753207d431a8ba67888610"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-db-environment.json",
+      "archiveRelativePath": "edhr-read-qa-db-environment.json",
+      "bytes": 347,
+      "sha256": "a22f6114bd7203f6dd48c90ce709f30cbed7c4f06a33fc00abf572b2a62f5f73"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-ui-static-baseline.json",
+      "archiveRelativePath": "edhr-read-qa-ui-static-baseline.json",
+      "bytes": 34336,
+      "sha256": "74724110d689a9a0526fd70fe9a6bb88e63c1650d540b9273442cf490ba1486c"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-ui-static-final.json",
+      "archiveRelativePath": "edhr-read-qa-ui-static-final.json",
+      "bytes": 34340,
+      "sha256": "97c0789535e973426080a657d8b6add8b9887b0072e4cef010d8bf25b2631c2a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-ui-checks-summary.json",
+      "archiveRelativePath": "edhr-read-qa-ui-checks-summary.json",
+      "bytes": 594,
+      "sha256": "ef83a97a538cf2391f168cc5494fa88ea8d4285e41c72a8f15ab5335ab7d9b79"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-audit_project.py",
+      "archiveRelativePath": "edhr-read-qa-audit_project.py",
+      "bytes": 37716,
+      "sha256": "67fd35597c85a2f37dd3c566f0bd79768cbe059114edcf28074fc5afa3e0ce68"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/data-pagination-1440.png",
+      "archiveRelativePath": "browser-baseline/data-pagination-1440.png",
+      "bytes": 15793,
+      "sha256": "21568036c3d301d415197d0803495f57d807a41d9f2b042c0e05fad801394a8a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/data-pagination-390.png",
+      "archiveRelativePath": "browser-baseline/data-pagination-390.png",
+      "bytes": 11363,
+      "sha256": "c10b0a07c2958067c7e46a066bceafbd6bddbefc40568e3dee9e214a7da546dc"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/empty-1440.png",
+      "archiveRelativePath": "browser-baseline/empty-1440.png",
+      "bytes": 15793,
+      "sha256": "21568036c3d301d415197d0803495f57d807a41d9f2b042c0e05fad801394a8a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/empty-390.png",
+      "archiveRelativePath": "browser-baseline/empty-390.png",
+      "bytes": 11363,
+      "sha256": "c10b0a07c2958067c7e46a066bceafbd6bddbefc40568e3dee9e214a7da546dc"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/error-1440.png",
+      "archiveRelativePath": "browser-baseline/error-1440.png",
+      "bytes": 16333,
+      "sha256": "2597e2f9105b1c5d6a1558fe7f8b75dca1e54782d302324eb0d57e6ff461f116"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/error-390.png",
+      "archiveRelativePath": "browser-baseline/error-390.png",
+      "bytes": 11843,
+      "sha256": "16d0f0d811b698db1897168567a6d08c282fd9d888b8d8dbbb9d76bfe3a10052"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/late-route-1440.png",
+      "archiveRelativePath": "browser-baseline/late-route-1440.png",
+      "bytes": 15942,
+      "sha256": "585af9a842d81b02fe47c5f8bfe831ccbedf027159a95200e40de123dd425b21"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/late-route-390.png",
+      "archiveRelativePath": "browser-baseline/late-route-390.png",
+      "bytes": 11500,
+      "sha256": "94efabe54c496b2674540565948f8339c03957079a9590e41bf58dc552207936"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/loading-1440.png",
+      "archiveRelativePath": "browser-baseline/loading-1440.png",
+      "bytes": 15793,
+      "sha256": "21568036c3d301d415197d0803495f57d807a41d9f2b042c0e05fad801394a8a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/loading-390.png",
+      "archiveRelativePath": "browser-baseline/loading-390.png",
+      "bytes": 11363,
+      "sha256": "c10b0a07c2958067c7e46a066bceafbd6bddbefc40568e3dee9e214a7da546dc"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/long-id-detail-1440.png",
+      "archiveRelativePath": "browser-baseline/long-id-detail-1440.png",
+      "bytes": 10105,
+      "sha256": "76b0fe383221bacf1c21573224f5fafaeb60df625b8c82938bfdd66b109dfe53"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/long-id-detail-390.png",
+      "archiveRelativePath": "browser-baseline/long-id-detail-390.png",
+      "bytes": 6442,
+      "sha256": "117c57dbb9cd2ec042a08c3a8b0e930a61e74a3a9416f92521c3621e6b813fb1"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/long-id-logs-1440.png",
+      "archiveRelativePath": "browser-baseline/long-id-logs-1440.png",
+      "bytes": 16996,
+      "sha256": "655a1ebd132977e1800ea38397e6fc23dcf9ef3771b2405ab4110f888818e0ad"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/long-id-logs-390.png",
+      "archiveRelativePath": "browser-baseline/long-id-logs-390.png",
+      "bytes": 12463,
+      "sha256": "95528b2071586878a0166889feb9ad398ed01d905cad88fd90f7e72fb443f996"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/route-change-1440.png",
+      "archiveRelativePath": "browser-baseline/route-change-1440.png",
+      "bytes": 15793,
+      "sha256": "21568036c3d301d415197d0803495f57d807a41d9f2b042c0e05fad801394a8a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-baseline-images/route-change-390.png",
+      "archiveRelativePath": "browser-baseline/route-change-390.png",
+      "bytes": 11363,
+      "sha256": "c10b0a07c2958067c7e46a066bceafbd6bddbefc40568e3dee9e214a7da546dc"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/data-pagination-1440.png",
+      "archiveRelativePath": "browser-fixed/data-pagination-1440.png",
+      "bytes": 49775,
+      "sha256": "e7dda69b25b9125a46867f74a2a34b95d953799a9c4d8e847e67982a382c1343"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/data-pagination-390.png",
+      "archiveRelativePath": "browser-fixed/data-pagination-390.png",
+      "bytes": 30793,
+      "sha256": "ade6921cc4024f9f4e4a11dc42e9ce2a2936dedb1223d3babf8131ebaf631853"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/empty-1440.png",
+      "archiveRelativePath": "browser-fixed/empty-1440.png",
+      "bytes": 15793,
+      "sha256": "21568036c3d301d415197d0803495f57d807a41d9f2b042c0e05fad801394a8a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/empty-390.png",
+      "archiveRelativePath": "browser-fixed/empty-390.png",
+      "bytes": 11363,
+      "sha256": "c10b0a07c2958067c7e46a066bceafbd6bddbefc40568e3dee9e214a7da546dc"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/error-1440.png",
+      "archiveRelativePath": "browser-fixed/error-1440.png",
+      "bytes": 16333,
+      "sha256": "2597e2f9105b1c5d6a1558fe7f8b75dca1e54782d302324eb0d57e6ff461f116"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/error-390.png",
+      "archiveRelativePath": "browser-fixed/error-390.png",
+      "bytes": 11843,
+      "sha256": "16d0f0d811b698db1897168567a6d08c282fd9d888b8d8dbbb9d76bfe3a10052"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/late-route-1440.png",
+      "archiveRelativePath": "browser-fixed/late-route-1440.png",
+      "bytes": 28967,
+      "sha256": "698f59d8e018ec4f3c6b49e527e832a480c2da74211df05948ca44385de63e56"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/late-route-390.png",
+      "archiveRelativePath": "browser-fixed/late-route-390.png",
+      "bytes": 17198,
+      "sha256": "067207e913e6a9dd136da388dae3ee2d67a84049af8faa29ebcf50860b318ea3"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/loading-1440.png",
+      "archiveRelativePath": "browser-fixed/loading-1440.png",
+      "bytes": 83596,
+      "sha256": "9358d6efe87d5f5cb11c9fe371bbb578b4d5c8108e53cbdf37d542bc01cb6033"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/loading-390.png",
+      "archiveRelativePath": "browser-fixed/loading-390.png",
+      "bytes": 51542,
+      "sha256": "0ca793e5107b501a4d61725c4b73d6ffb72d295846d15569f2ca48da496ad293"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/long-id-detail-1440.png",
+      "archiveRelativePath": "browser-fixed/long-id-detail-1440.png",
+      "bytes": 39912,
+      "sha256": "e72d773ca2c495e4394be3ff0d9b0e829b65e9c335c28c4514ddcd1347f3f42a"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/long-id-detail-390.png",
+      "archiveRelativePath": "browser-fixed/long-id-detail-390.png",
+      "bytes": 34241,
+      "sha256": "7d9da257bff48e261fe3c983d54883c80d0002669cb90c08ddb5d154dadb400d"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/long-id-logs-1440.png",
+      "archiveRelativePath": "browser-fixed/long-id-logs-1440.png",
+      "bytes": 30818,
+      "sha256": "902d1947dbf1c9ae5dc85002e88de18a3fef1d1ce3873945fcb0f8d8faf3caf5"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/long-id-logs-390.png",
+      "archiveRelativePath": "browser-fixed/long-id-logs-390.png",
+      "bytes": 17692,
+      "sha256": "3c3b75f15e1f911bacb84c32e400063ef3960c278fa1f39704717795a3406a51"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/route-change-1440.png",
+      "archiveRelativePath": "browser-fixed/route-change-1440.png",
+      "bytes": 28958,
+      "sha256": "08f9f4a105dcef85cdb88d74126945e4ec578492a1e579ec3b0cf1637a32d5d9"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-images/route-change-390.png",
+      "archiveRelativePath": "browser-fixed/route-change-390.png",
+      "bytes": 17197,
+      "sha256": "a83a5f4e17dd3faf0169ab5e36a280903bcfefdaec81eb5da70d82f5d163e24e"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-keyboard-scroll-images/data-pagination-1440.png",
+      "archiveRelativePath": "browser-keyboard-scroll/data-pagination-1440.png",
+      "bytes": 49338,
+      "sha256": "ce1107dd9754117ef0eca79ed68418771d102ec4cf7237d268de0aad3fbe3d14"
+    },
+    {
+      "sourcePath": "/tmp/edhr-read-qa-browser-keyboard-scroll-images/data-pagination-390.png",
+      "archiveRelativePath": "browser-keyboard-scroll/data-pagination-390.png",
+      "bytes": 36189,
+      "sha256": "63da7efb8e941ad1d23f540603155e9fd6842779d51747aa0fdaf7eb6cd9333b"
+    },
+    {
+      "sourcePath": "/workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowReadBoundaryPostgresTest.java",
+      "archiveRelativePath": "WorkflowReadBoundaryPostgresTest.java",
+      "bytes": 11299,
+      "sha256": "150fd40be6128edc6ca52bd2810789cdd6253501280e8847ea37ea5463185e96"
+    },
+    {
+      "sourcePath": "/workspace/edhr-nexus-frontend/gmp-platform/frontend/scripts/test-workflow-instance-read-browser.mjs",
+      "archiveRelativePath": "test-workflow-instance-read-browser.mjs",
+      "bytes": 13163,
+      "sha256": "d37e0f06d54955e6368ae63f17aa5012adb4c9c46ec24b54320823a3419fafbd"
+    }
+  ]
+}

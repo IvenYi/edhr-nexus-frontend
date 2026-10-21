@@ -1,0 +1,17 @@
+{
+  "id": "aad857ad53018b82a11f337cc5489cf4ae3529043bf0a1782fd473456c3f1122",
+  "name": "/edhr-audit-workflow-read-20261021",
+  "image": "postgres:16",
+  "state": "running",
+  "ports": {
+    "5432/tcp": [
+      {
+        "HostIp": "127.0.0.1",
+        "HostPort": "55432"
+      }
+    ]
+  },
+  "tmpfs": {
+    "/var/lib/postgresql/data": "rw"
+  }
+}
