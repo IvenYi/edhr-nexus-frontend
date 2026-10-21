@@ -1,0 +1,107 @@
+{
+  "contractBaseline": {
+    "sourceCommit": "684db88a5a25168cc7df301b947fd7528285ad46",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "contractReadCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+    "uncommittedContractPaths": []
+  },
+  "readPaths": [
+    {
+      "path": "AGENTS.md",
+      "commit": "684db88a5a25168cc7df301b947fd7528285ad46",
+      "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "reviewedScope": "mandatory role/context read"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "commit": "684db88a5a25168cc7df301b947fd7528285ad46",
+      "blob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae",
+      "reviewedScope": "mandatory role/context read"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "commit": "684db88a5a25168cc7df301b947fd7528285ad46",
+      "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "reviewedScope": "mandatory role/context read"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "commit": "684db88a5a25168cc7df301b947fd7528285ad46",
+      "blob": "1d239fc82f8d24bdd986b1e23de9188680f25c18",
+      "sha256": "925b987f783d6216061ab25ca2a6710aaa231823ff346b05b2df23d75c90f735",
+      "reviewedScope": "mandatory role/context read"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "commit": "684db88a5a25168cc7df301b947fd7528285ad46",
+      "blob": "8a23c50057340be057a67fad8731648c2aa36f30",
+      "sha256": "addbf3eb7dc2c059d8672eb699199e4d0fa355143617bc4192fe420d26266184",
+      "reviewedScope": "mandatory role/context read"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "commit": "684db88a5a25168cc7df301b947fd7528285ad46",
+      "blob": "a1f2b1140ea93c5daf54067cb4a40d6a6cd1d2b7",
+      "sha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "reviewedScope": "mandatory role/context read"
+    }
+  ],
+  "selectedDomainSources": [
+    {
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "commit": "684db88a5a25168cc7df301b947fd7528285ad46",
+      "blob": "34b99929a91fc22d72fcba1cc0335fb91db35557",
+      "sha256": "c54fdb4f7265382572fe65da61f3a31aa06667f11a6718ecd5d998119ef065d7",
+      "reviewedScope": "finite related definitions/source assertions"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0033-form-process-optional-subjects-and-open-operation-scope.yaml",
+      "commit": "684db88a5a25168cc7df301b947fd7528285ad46",
+      "blob": "41568fd27705801e7413ef0fda3f7e22c9f19951",
+      "sha256": "1d8d32284b138707d7b6df0e106d0f5183d2d44770bb6e78be7f9047795bfc6e",
+      "reviewedScope": "finite related definitions/source assertions"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "commit": "684db88a5a25168cc7df301b947fd7528285ad46",
+      "blob": "2319ab67c26c6da413a7ade307d340561db66598",
+      "sha256": "c47a0ea204787a4f03cf5e507e71ec002e1e7514ade7cd122d2290049aa0c5da",
+      "reviewedScope": "finite related definitions/source assertions"
+    },
+    {
+      "path": "docs/knowledge/rules/identity.yaml",
+      "commit": "684db88a5a25168cc7df301b947fd7528285ad46",
+      "blob": "985b00dfc3dae84325b14266513416fd74d60193",
+      "sha256": "e57691cad48f3e4c06c21bf5516e9c032c76db3b2e1bf24325427a31efed34ed",
+      "reviewedScope": "finite related definitions/source assertions"
+    },
+    {
+      "path": "docs/knowledge/evidence/identity-subject-selector.yaml",
+      "commit": "684db88a5a25168cc7df301b947fd7528285ad46",
+      "blob": "b45539ee44e2dd22df11c88ec3dbcb8b189ff2a5",
+      "sha256": "cec39b92b81747aeaaedebfeab490e916fa9e4b0e9bd0f4adc17fd997788b79a",
+      "reviewedScope": "finite related definitions/source assertions"
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.md",
+      "commit": "684db88a5a25168cc7df301b947fd7528285ad46",
+      "blob": "bfd9b4820ea8012530bf81078acedd6c36c51f53",
+      "sha256": "2ed11399abee88a568a8d8c75f6c6f5725aa5b38e1444b0a36d2afb7f4ea982f",
+      "reviewedScope": "finite related definitions/source assertions"
+    },
+    {
+      "path": "docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+      "commit": "684db88a5a25168cc7df301b947fd7528285ad46",
+      "blob": "30c5c102c9b302b8028af60bbe81af3b4b0f927b",
+      "sha256": "0610323c3fad5a8c4052eeb68fdd77aea9f231d1b4119d8442022fdc574f1509",
+      "reviewedScope": "finite related definitions/source assertions"
+    }
+  ],
+  "formalBusinessTestsRun": false,
+  "childrenDispatched": [],
+  "allChildrenFinal": true
+}

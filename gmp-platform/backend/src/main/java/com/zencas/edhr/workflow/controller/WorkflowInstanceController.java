@@ -60,12 +60,14 @@ public class WorkflowInstanceController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<WorkflowInstance> create(@RequestBody WorkflowInstance entity) {
         protectDhr(entity);
         return ApiResponse.success(workflowInstanceRepository.save(entity));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<WorkflowInstance> update(@PathVariable Long id, @RequestBody WorkflowInstance entity) {
         workflowEngine.assertNotDhrInstance(id);
         protectDhr(entity);
@@ -74,6 +76,7 @@ public class WorkflowInstanceController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<Void> delete(@PathVariable Long id) {
         workflowEngine.assertNotDhrInstance(id);
         workflowInstanceRepository.deleteById(id);

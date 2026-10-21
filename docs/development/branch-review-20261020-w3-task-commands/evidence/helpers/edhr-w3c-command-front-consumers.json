@@ -1,0 +1,334 @@
+{
+  "schema": "edhr-readonly-command-consumer-source-map/v1",
+  "role": "readonly source assistance; not quality or implementation",
+  "fixedCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "contractReadCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "uncommittedContractPaths": []
+  },
+  "sourceScopes": [
+    {
+      "id": "w3c-command-front:01",
+      "path": "gmp-platform/frontend/src/api/workflow-instances.ts",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "2f65079a71feeb192286e74e25472dee76ac47bf",
+      "sha256": "cca0331d1e32b05ed95ef7ec5dc71f8b55eececa0df682e1568cff7c9cec3752",
+      "method": "Read wrappers active",
+      "range": [
+        1,
+        10
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Read wrappers active; raw create POST and bodyless terminate POST wrappers exported; no tracked-src use beyond definitions found.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:02",
+      "path": "gmp-platform/frontend/src/api/workflow-tasks.ts",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "ea9c0f63771e7bcfa2aa793b8b605e5dee265a6c",
+      "sha256": "7aa5a6623a471ee264000f00d33c45aa3732798fb58523b9988fb6cc78bfeaae",
+      "method": "Every named task wrapper is GET /workflow/tasks",
+      "range": [
+        1,
+        9
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Every named task wrapper is GET /workflow/tasks; no tracked-src imports of this module found. Active TaskDetail uses direct client instead.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:03",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "method": "Target GET keyword",
+      "range": [
+        36,
+        97
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Target GET keyword; transfer POST target/reason; other actions POST opinion/password and no operatorId/signatureId.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:04",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "method": "Approve/reject/transfer/submit controls",
+      "range": [
+        124,
+        166
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Approve/reject/transfer/submit controls; only loading and transferredTo disable in this slice. No visual/runtime conclusion.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:05",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "ef9e1328209375436c8cca0c3f1dd40d23739612",
+      "sha256": "f4bc2c741ce5946079e9432311bd58749ae4adaf905fc3b8c8395c7698bb382d",
+      "method": "List read query only.",
+      "range": [
+        30,
+        39
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "List read query only.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:06",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "ef9e1328209375436c8cca0c3f1dd40d23739612",
+      "sha256": "f4bc2c741ce5946079e9432311bd58749ae4adaf905fc3b8c8395c7698bb382d",
+      "method": "Detail and log navigation only",
+      "range": [
+        79,
+        87
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Detail and log navigation only; full file read shows no mutation control.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:07",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceDetail.tsx",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "2d4972d60ca4221ef4da5b8ab410fd304af3db7a",
+      "sha256": "e7ef0d0d904ad93078e59710732094ba0d1e030bd9b7a9016bcc0239d2b333c7",
+      "method": "Instance and action log read queries",
+      "range": [
+        39,
+        61
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Instance and action log read queries; full file read shows no mutation control.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:08",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "c9bdac66955f4d37b6408a7d5eb6a55b470eb68d",
+      "sha256": "20c917457870ac7ba620937bde4ec01b0e3e1d1d27a4a5015b79706d750ab100",
+      "method": "Todo/done GET with page,size",
+      "range": [
+        27,
+        59
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Todo/done GET with page,size; supplied actor only gates readiness/query key, not HTTP actor argument; task navigation.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:09",
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "12c81470b76a5ecb2ee2e16dc48603033f36d522",
+      "sha256": "8eaf4ff1ad44ce421f4fc68727a168f4f27cbef854e1c5a5eed9c955c13b06b3",
+      "method": "ProtectedRoute checks token presence only, not server permission.",
+      "range": [
+        61,
+        79
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "ProtectedRoute checks token presence only, not server permission.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:10",
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "12c81470b76a5ecb2ee2e16dc48603033f36d522",
+      "sha256": "8eaf4ff1ad44ce421f4fc68727a168f4f27cbef854e1c5a5eed9c955c13b06b3",
+      "method": "Workflow instance/detail/log/task routes lack additional permission wrapper in this slice.",
+      "range": [
+        93,
+        104
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Workflow instance/detail/log/task routes lack additional permission wrapper in this slice.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:11",
+      "path": "gmp-platform/frontend/src/api/record-control-workflow.ts",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "84c915ad01da72b9e3e3c69c3edb8a523eb6157d",
+      "sha256": "8d4bcfa6be9e8911ed1c35b40e41174a57be7582c8ecbdfe7c14729b34891d0c",
+      "method": "Only typed candidates GET businessType",
+      "range": [
+        15,
+        25
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Only typed candidates GET businessType; no start command in this file.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:12",
+      "path": "gmp-platform/frontend/src/api/client.ts",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4d67bf63a3ec49078ec7a6fe507cc84fa817c776",
+      "sha256": "f5b919fc5059196d41adf259870c24dff3e9b930fdc98ba5846b10334c85ae75",
+      "method": "Base URL /api/v1 and Authorization token attachment",
+      "range": [
+        14,
+        34
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Base URL /api/v1 and Authorization token attachment; no actual tokens printed.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:13",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskControllerTest.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "b33e75afc2ab357612331e2d187e8b258f26fdf0",
+      "sha256": "57f19c938e0ea99d4a6f15ea79d04cb102666bfe9460e52a3474a3f1f50b1576",
+      "method": "Two todo/done actor spoof tests",
+      "range": [
+        25,
+        44
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Two todo/done actor spoof tests; full file read contains no command/raw CRUD permission tests; not executed.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:14",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrGenericAccessTest.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "43142308d2835c778f47d99db1f958ef8282c58f",
+      "sha256": "87d4a875600305c6ea246601fe0aad3ee5fa03a49267f65d17d271984ff773af",
+      "method": "H2 DHR pagination/read and log write guards, not ordinary generic instance write authorization",
+      "range": [
+        50,
+        78
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "H2 DHR pagination/read and log write guards, not ordinary generic instance write authorization; not executed.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:15",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "f5c66e6a4436e453859ad3bbcafce1c4339faadf",
+      "sha256": "947eba5141d04c8c5aa33942af29df2df4ad05cf11d872219b704a888c504ad6",
+      "method": "Standalone MockMvc setup explicitly disclaims full JWT/filter validation",
+      "range": [
+        107,
+        110
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Standalone MockMvc setup explicitly disclaims full JWT/filter validation; not executed.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:16",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "f5c66e6a4436e453859ad3bbcafce1c4339faadf",
+      "sha256": "947eba5141d04c8c5aa33942af29df2df4ad05cf11d872219b704a888c504ad6",
+      "method": "Transfer ignores spoofed operator, requires target/reason, previous actor loses rights",
+      "range": [
+        366,
+        395
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Transfer ignores spoofed operator, requires target/reason, previous actor loses rights; no raw CRUD here; not executed.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:17",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowControllerTest.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "df76b672ff0d57b2874084a111723b45464f8a89",
+      "sha256": "5568788cf319e19c282bdf9aba595a0adca1fb871f2b7097ac0f4c0cd327c8e4",
+      "method": "Reflective create permission annotation plus candidate mapping/type rejection",
+      "range": [
+        25,
+        56
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Reflective create permission annotation plus candidate mapping/type rejection; no generic instance raw writes; not executed.",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-front:18",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/BackendReadinessIntegrationTest.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "b9cd7746e7f277082d61fb280f93890f3bdef264",
+      "sha256": "6344544856abab39936080d67a9181c7a91efd36127eb6d51ee305dba43535cc",
+      "method": "Authenticated readiness list GET requests",
+      "range": [
+        42,
+        59
+      ],
+      "readDepth": "selected-statements-or-methods",
+      "wholeFileReviewComplete": false,
+      "conclusion": "Authenticated readiness list GET requests; no mutation authorization; not executed.",
+      "runtimeExecuted": false
+    }
+  ],
+  "searchScope": {
+    "roots": [
+      "gmp-platform/frontend/src",
+      "gmp-platform/frontend/scripts",
+      "gmp-platform/backend/src/test"
+    ],
+    "queries": [
+      "workflow/(tasks|instances)",
+      "createInstance|terminateInstance|api/workflow-instances|api/workflow-tasks|workflow.intervene",
+      "record-control|recordControl|workflow.*start"
+    ],
+    "negativeEvidence": "No tracked-src consumers beyond definitions found for createInstance/terminateInstance; no root task/instance PUT/DELETE consumer found in stated string searches. No frontend start command found.",
+    "qualification": "This does not prove absence of dynamic/generated URLs, backend/external clients or all historical consumers. Do not delete endpoints solely from this negative evidence."
+  },
+  "historyDedup": {
+    "catalogPath": "docs/development/branch-review-20261020-w3-write-boundaries/recheck/source-catalog.json",
+    "findingRecordsRead": 46,
+    "controllerOrRawCrudStringMatches": [],
+    "existingFiniteScopes": "Prior catalog has controller DHR read/write isolation scopes, not ordinary generic raw CRUD authorization acceptance. H012 remains resolved."
+  },
+  "runtimeChecksExecuted": [],
+  "repositoryMutations": [],
+  "wholeFileOrBranchAcceptance": false,
+  "businessPolicyChanged": false,
+  "limits": [
+    "No tests/browser/API/database executed",
+    "No UI design or visual review",
+    "No conclusion about intended administrator raw CRUD powers",
+    "No full file/branch or signature-policy acceptance"
+  ]
+}

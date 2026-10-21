@@ -1,0 +1,1287 @@
+{
+  "schema": "edhr-resumed-source-artifact-verification/v1",
+  "role": "read-only source evidence assistance, not formal QA or ontology",
+  "fixedCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "contractReadCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "uncommittedContractPaths": []
+  },
+  "originalArtifacts": [
+    {
+      "path": "/tmp/edhr-w3c-command-source-map.json",
+      "bytes": 37844,
+      "sha256": "71798d741350166786df7a43a42fc097d5c6e6b9b4e7257d6fe561de20ad9125"
+    },
+    {
+      "path": "/tmp/edhr-w3c-command-source-review.md",
+      "bytes": 6878,
+      "sha256": "931dce986bbba7fedf5fa5fd07992865b4a00284c8fd709208665668b641491b"
+    },
+    {
+      "path": "/tmp/edhr-w3c-command-front-consumers.json",
+      "bytes": 14837,
+      "sha256": "65b31d0e162d3fcfa7a616e968cee6c48f72818f6edafd8a2eacacb0a29c4d4f"
+    },
+    {
+      "path": "/tmp/edhr-w3c-command-front-consumers.md",
+      "bytes": 2287,
+      "sha256": "6d4b74c1f5af09bbef77da02866c8c7522889588f106b1125ab8400dc9a4544f"
+    },
+    {
+      "path": "/tmp/edhr-w3c-command-front-consumers-receipts.json",
+      "bytes": 479,
+      "sha256": "cafc5c5daa178a97497700dcce5d7d49c0871c2f60040a2de914ca923ac0cda8"
+    }
+  ],
+  "mechanicalScopeChecks": [
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        61,
+        66
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        67,
+        74
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:003",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        75,
+        81
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:004",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        132,
+        142
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:005",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        217,
+        222
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:006",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        222,
+        231
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:007",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        58,
+        64
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:008",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        66,
+        73
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:009",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        75,
+        81
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:010",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        128,
+        136
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:011",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        140,
+        148
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:012",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        174,
+        182
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:013",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        158,
+        170
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:014",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        152,
+        157
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:015",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        184,
+        192
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:016",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        59,
+        117
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:017",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        122,
+        203
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:018",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        242,
+        246
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:019",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        253,
+        305
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:020",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        730,
+        750
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:021",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        750,
+        758
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:022",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        758,
+        765
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:023",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        765,
+        773
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:024",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        773,
+        777
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:025",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        777,
+        783
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:026",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        620,
+        629
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:027",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        38,
+        60
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:028",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        25,
+        54
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:029",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        49,
+        72
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:030",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        29,
+        33
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:031",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowInstance.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        10,
+        40
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:032",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        10,
+        39
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:033",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowInstanceRepository.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        14,
+        25
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:034",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        13,
+        40
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:035",
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        9,
+        24
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:036",
+      "path": "docs/knowledge/decisions/DEC-0033-form-process-optional-subjects-and-open-operation-scope.yaml",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        7,
+        25
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:037",
+      "path": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        24,
+        28
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:038",
+      "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        7,
+        24
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:039",
+      "path": "docs/knowledge/rules/production.yaml",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        247,
+        286
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:040",
+      "path": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        1063,
+        1080
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:041",
+      "path": "docs/development/record-control-work-allocation-and-integration-contract.md",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        48,
+        85
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:042",
+      "path": "docs/knowledge/open-questions.yaml",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        99,
+        115
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:043",
+      "path": "docs/knowledge/open-questions.yaml",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        152,
+        159
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:044",
+      "path": "docs/knowledge/README.md",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        1,
+        27
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:045",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0002-seed-data.sql",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        26,
+        52
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:046",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskControllerTest.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        24,
+        45
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:047",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        145,
+        195
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:048",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        289,
+        400
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-source-map.json",
+      "id": "w3c-command-source:049",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        401,
+        437
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:01",
+      "path": "gmp-platform/frontend/src/api/workflow-instances.ts",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        1,
+        10
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:02",
+      "path": "gmp-platform/frontend/src/api/workflow-tasks.ts",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        1,
+        9
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:03",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        36,
+        97
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:04",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        124,
+        166
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:05",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        30,
+        39
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:06",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        79,
+        87
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:07",
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceDetail.tsx",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        39,
+        61
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:08",
+      "path": "gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        27,
+        59
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:09",
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        61,
+        79
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:10",
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        93,
+        104
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:11",
+      "path": "gmp-platform/frontend/src/api/record-control-workflow.ts",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        15,
+        25
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:12",
+      "path": "gmp-platform/frontend/src/api/client.ts",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        14,
+        34
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:13",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskControllerTest.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        25,
+        44
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:14",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrGenericAccessTest.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        50,
+        78
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:15",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        107,
+        110
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:16",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        366,
+        395
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:17",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowControllerTest.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        25,
+        56
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    },
+    {
+      "artifact": "edhr-w3c-command-front-consumers.json",
+      "id": "w3c-command-front:18",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/BackendReadinessIntegrationTest.java",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "rangeWithinBlob": true,
+      "declaredRange": [
+        42,
+        59
+      ],
+      "verificationDepth": "mechanical blob/hash/range validation only; not independent semantic reread of this scope"
+    }
+  ],
+  "contractReceiptChecks": [
+    {
+      "path": "AGENTS.md",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "workingCopyEqualsFixedBlobAtCheck": true
+    },
+    {
+      "path": "codeplzreadme.md",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "workingCopyEqualsFixedBlobAtCheck": true
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sourceCommitMatches": true,
+      "blobMatches": true,
+      "sha256Matches": true,
+      "workingCopyEqualsFixedBlobAtCheck": true
+    }
+  ],
+  "exactDeliveryReceiptChecks": [
+    {
+      "path": "/tmp/edhr-w3c-command-front-consumers.json",
+      "bytesMatch": true,
+      "sha256Matches": true
+    },
+    {
+      "path": "/tmp/edhr-w3c-command-front-consumers.md",
+      "bytesMatch": true,
+      "sha256Matches": true
+    },
+    {
+      "path": "/tmp/edhr-w3c-command-front-consumers-receipts.json",
+      "bytesMatch": true,
+      "sha256Matches": true
+    }
+  ],
+  "actualSemanticReads": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "3552a8d6ed3ccb6891b4501c68c63036934b871b",
+      "sha256": "6a2ff9f35f1a5cdddc2bdddd321c58ff5676db0dc373414a3a336cc82b5c1ad1",
+      "ranges": [
+        [
+          24,
+          85
+        ],
+        [
+          128,
+          143
+        ],
+        [
+          210,
+          232
+        ]
+      ],
+      "readDepth": "selected class annotations, complete raw CRUD and terminate methods, complete DHR/principal helpers",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "38d4bf8be331890f0e4fe8a24947be0211ebb1f3",
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c",
+      "ranges": [
+        [
+          24,
+          62
+        ]
+      ],
+      "readDepth": "selected complete filter-chain method and method-security class annotations",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "ranges": [
+        [
+          53,
+          82
+        ]
+      ],
+      "readDepth": "selected complete raw task CRUD and annotations",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "794aabaef8904d9daf15476cdcc6291fc9861104",
+      "sha256": "4ed2eb9458b68717b8bf5873dedc7fa1d0fbf92d6e5efb9eebebe9d82b074ed4",
+      "ranges": [
+        [
+          25,
+          54
+        ]
+      ],
+      "readDepth": "selected complete authentication filter method",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "ranges": [
+        [
+          242,
+          305
+        ],
+        [
+          730,
+          750
+        ]
+      ],
+      "readDepth": "selected complete generic/DHR completion wrapper, private completion method, and termination method",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/workflow-instances.ts",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "2f65079a71feeb192286e74e25472dee76ac47bf",
+      "sha256": "cca0331d1e32b05ed95ef7ec5dc71f8b55eececa0df682e1568cff7c9cec3752",
+      "ranges": [
+        [
+          1,
+          10
+        ]
+      ],
+      "readDepth": "all current statements, no runtime",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/workflow-tasks.ts",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "ea9c0f63771e7bcfa2aa793b8b605e5dee265a6c",
+      "sha256": "7aa5a6623a471ee264000f00d33c45aa3732798fb58523b9988fb6cc78bfeaae",
+      "ranges": [
+        [
+          1,
+          9
+        ]
+      ],
+      "readDepth": "all current statements, no runtime",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "c82ca44fd4d0aed073e144992c1a4d94cecbb715",
+      "sha256": "3c73d31895678da50d6178eb249dba96fad33e270c80dcb4e5ae5e5e57c981fe",
+      "ranges": [
+        [
+          36,
+          97
+        ],
+        [
+          124,
+          166
+        ]
+      ],
+      "readDepth": "selected transfer search/post, command post handler, and action controls",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4828656b73e0d2fe7c4e3daa98535b87370c1589",
+      "sha256": "83529d2f7168c0fa8a42f5ffdecb1286ee8c350720d1d4f0f4474c4da0703e9f",
+      "ranges": [
+        [
+          15,
+          28
+        ]
+      ],
+      "readDepth": "selected knowledge version and evidence boundary statements",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    }
+  ],
+  "governanceReads": [
+    {
+      "path": "AGENTS.md",
+      "ranges": [
+        [
+          1,
+          105
+        ]
+      ],
+      "readDepth": "current working-file selected common source-evidence rules; fixed blob equality independently checked"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "ranges": [
+        [
+          1,
+          66
+        ]
+      ],
+      "readDepth": "current working-file full coding guidelines; fixed blob equality independently checked"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "ranges": [
+        [
+          1,
+          35
+        ]
+      ],
+      "readDepth": "current working-file baseline definitions; fixed blob equality independently checked"
+    }
+  ],
+  "fixedGitSearches": [
+    {
+      "root": "gmp-platform/frontend/src",
+      "pattern": "createInstance|terminateInstance|api/workflow-instances|api/workflow-tasks",
+      "matchCount": 4,
+      "matches": [
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/api/workflow-instances.ts:7:export const createInstance = (body: Record<string, unknown>) =>",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/api/workflow-instances.ts:9:export const terminateInstance = (id: number) =>",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/pages/workflow-center/InstanceDetail.tsx:6:import { getInstance } from '@/api/workflow-instances';",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx:12:import { listInstances } from '@/api/workflow-instances';"
+      ]
+    },
+    {
+      "root": "gmp-platform/frontend/src",
+      "pattern": "workflow/(tasks|instances)",
+      "matchCount": 26,
+      "matches": [
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/api/workflow-instances.ts:4:  client.get('/workflow/instances', { params });",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/api/workflow-instances.ts:6:  client.get(`/workflow/instances/${id}`);",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/api/workflow-instances.ts:8:  client.post('/workflow/instances', body);",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/api/workflow-instances.ts:10:  client.post(`/workflow/instances/${id}/terminate`);",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/api/workflow-logs.ts:4:  client.get(`/workflow/instances/${instanceId}/logs`, { params });",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/api/workflow-tasks.ts:3:export const getTodo = (params?: Record<string, unknown>) => client.get('/workflow/tasks', { params });",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/api/workflow-tasks.ts:4:export const getDone = (params?: Record<string, unknown>) => client.get('/workflow/tasks', { params });",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/api/workflow-tasks.ts:5:export const getTask = (params?: Record<string, unknown>) => client.get('/workflow/tasks', { params });",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/api/workflow-tasks.ts:6:export const approve = (params?: Record<string, unknown>) => client.get('/workflow/tasks', { params });",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/api/workflow-tasks.ts:7:export const reject = (params?: Record<string, unknown>) => client.get('/workflow/tasks', { params });",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/api/workflow-tasks.ts:8:export const transfer = (params?: Record<string, unknown>) => client.get('/workflow/tasks', { params });",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/api/workflow-tasks.ts:9:export const submit = (params?: Record<string, unknown>) => client.get('/workflow/tasks', { params });",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx:34:      const res = await client.get('/workflow/tasks/' + kind, { params: { page, size: 5 } });",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx:54:            <p>{task.instanceId ? <Link to={'/workflow/instances/' + task.instanceId}>{task.instanceName || '流程实例 #' + task.instanceId}</Link> : '任务 #' + task.id}</p>",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/pages/dashboard/DashboardTaskList.tsx:58:          {isTodo && <Button component={Link} to={'/workflow/tasks/' + task.id} size=\"small\" variant=\"outlined\" endIcon={<ArrowForwardRounded />}>处理</Button>}",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/pages/dashboard/GettingStartedGuide.tsx:81:    links: [{ label: '流程实例', path: '/workflow/instances' }],",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/pages/dashboard/GettingStartedGuide.tsx:88:    links: [{ label: '批次管理', path: '/production/batches' }, { label: '表单列表', path: '/form-management/list' }, { label: '流程实例', path: '/workflow/instances' }],",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx:83:                    <Tooltip title=\"详情\"><IconButton size=\"small\" aria-label=\"详情\" onClick={() => navigate(`/workflow/instances/${item.id}`)}><VisibilityOutlined fontSize=\"small\" /></IconButton></Tooltip>",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx:84:                    <Tooltip title=\"日志\"><IconButton size=\"small\" aria-label=\"日志\" onClick={() => navigate(`/workflow/instances/${item.id}/logs`)}><HistoryOutlined fontSize=\"small\" /></IconButton></Tooltip>",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx:43:    void client.get<ApiResponse<TransferTarget[]>>(`/workflow/tasks/${id}/transfer-targets`, {",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx:74:      await client.post(`/workflow/tasks/${id}/transfer`, {",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx:89:      await client.post(`/workflow/tasks/${id}/${action}`, { opinion, password });",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/pages/workflow-center/TaskDetail.tsx:105:          { label: '流程实例', path: '/workflow/instances' },",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/utils/constants.ts:192:          { label: '流程实例', path: '/workflow/instances' },",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/utils/menuManagement.ts:80:    { label: '流程实例', path: '/workflow/instances' },",
+        "e8ecc103c8e6825c61c61b39b9cbd12b1474700e:gmp-platform/frontend/src/utils/menuManagement.ts:144:  '/workflow/instances',"
+      ]
+    }
+  ],
+  "limitedHistoricalDedup": {
+    "path": "docs/development/branch-review-20261020-w3-write-boundaries/recheck/source-catalog.json",
+    "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "sha256": "e9ec0398f810a6bc3869dc1af5b6c7c977aadcc4f3f5e9798557ecc4d7203052",
+    "findingCount": 46,
+    "pattern": "WorkflowInstanceController|ordinary.{0,30}raw.{0,30}(write|CRUD)|INSTANCE-WRITE-AUTH",
+    "matchingFindingRecords": [],
+    "limit": "Mechanical exact catalog scan only; not independent review of every historical finding, original source or closure evidence."
+  },
+  "confirmedSourceConclusions": [
+    "At fixed e8ecc, generic instance POST/PUT/DELETE lack method authorization and directly write repository; adjacent terminate and task raw CRUD have workflow.intervene.",
+    "SecurityConfig enables method security and defaults non-public paths to authenticated; JWT filter loads permission authorities, with no instance write path-specific rule in inspected method.",
+    "Inspected generic completion stores supplied signatureId; inspected generic terminate does not consume signatureId. This source fact does not create a generic mandatory-signature policy.",
+    "Inspected frontend wrapper and TaskDetail statements match original limited call map. Repeated fixed-Git string searches show no named createInstance/terminateInstance consumers beyond definitions and no imports of workflow-tasks API; no claim about dynamic or external callers."
+  ],
+  "originalAuthorFinalBoundary": {
+    "originalMapChildFinalSelfAssertion": true,
+    "originalReportSaysChildFinal": true,
+    "exactChildArtifactsMatchStoredReceipts": true,
+    "originalAuthorFinalMessageProvenByThisResumedAgent": false,
+    "reason": "Self-assertions and exact artifact receipt bytes do not prove original author terminal messages. This resumed child has no live original-author session/FINAL message evidence."
+  },
+  "unverified": [
+    "Original-author and original-child terminal FINAL messages after interruption.",
+    "Independent semantic reread of all 67 original sourceScopes, all policy/history statements or complete files.",
+    "Runtime authorization, persistence behavior, JWT/API/PG, browser/visual behavior or parent repair candidate.",
+    "Absence of dynamic/generated/backend/external clients or every historic duplicate.",
+    "Business acceptance, qualityResult or full branch/W3 completion."
+  ],
+  "runtimeChecksExecuted": [],
+  "repositoryMutations": [],
+  "originalArtifactsMutated": false,
+  "qualityResultProduced": false,
+  "wholeFileOrBranchAcceptance": false,
+  "result": "All 67 original finite scope sourceCommit/blob/SHA/range metadata checks match fixed Git; selected substantive claims reread and consistent. Source-only receipt, not runtime or independent acceptance."
+}

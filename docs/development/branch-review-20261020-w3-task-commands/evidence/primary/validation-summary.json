@@ -1,0 +1,70 @@
+{
+  "level": "L2",
+  "coreCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+  "targetCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "productScope": "three existing workflow.intervene method guards only",
+  "runtime": {
+    "uniqueTestsInLastGroup": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "nativePostgresTests": 45,
+    "nativePostgresSuites": [
+      "WorkflowInstanceAuthorizationIntegrationTest:22",
+      "WorkflowTransferPostgresTest:23"
+    ],
+    "h2CompatibilitySuites": [
+      "DhrReviewLifecycleIntegrationTest:5"
+    ],
+    "countsDoNotAddRepeatedRuns": true
+  },
+  "runBaselineQualification": "Runner sourceCommit is HEAD at execution time (e8ecc); fixed runs had the three permission annotations in the working tree, then committed unchanged as coreCommit. Independent QA will test a clean fixed candidate. No source HEAD is relabeled.",
+  "actualFixedSourceReceipts": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "fixedCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+      "blob": "d8dc413db77107ca01c51cb9e3415a6bcdcda696",
+      "sha256": "45ef4f345a1f29b430013e8cea3a5887d04267de17e15c2520c19303a16fada5",
+      "currentBytesEqualFixedCommit": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowInstanceAuthorizationIntegrationTest.java",
+      "fixedCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+      "blob": "949e6145ffa7db606b61096769078c8d66fb890d",
+      "sha256": "948f893650653528f5fce8fd513cf1d8f9e9774a3ad9241a455c5e3568696da4",
+      "currentBytesEqualFixedCommit": true
+    }
+  ],
+  "baselineValid": {
+    "tests": 22,
+    "failedUnauthorizedExpected403Actual200": 9,
+    "passedControls": 13,
+    "errors": 0,
+    "skipped": 0
+  },
+  "firstFixtureErrors": {
+    "tests": 22,
+    "errors": 22,
+    "productFailure": false,
+    "originalRetained": true
+  },
+  "notExecuted": [
+    "browser/visual/frontend build: no UI/frontend changes",
+    "migration: no migration/schema changes",
+    "whole-branch or full semantic acceptance",
+    "GitHub Actions lookup or execution",
+    "Signature JSONB/archive native PG reproduction"
+  ],
+  "temporaryDatabase": {
+    "containerId": "b08c0fd89d8764b7f9809668b6d0e7bbb1b52bf56f2d38e0071c0471909e595e",
+    "publish": "127.0.0.1:55432",
+    "syntheticOnly": true,
+    "cleanup": "pending independent QA FINAL"
+  },
+  "excluded": [
+    "raw Maven log",
+    "Surefire XML",
+    "JWT output",
+    "settings/env/secrets"
+  ]
+}

@@ -1,0 +1,850 @@
+{
+  "schema": "edhr-readonly-source-map/v1",
+  "role": "source-assistance-not-quality-verifier",
+  "fixedCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "contractBaseline": {
+    "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "contractReadCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "sourceScopes": [
+    {
+      "id": "w3c-command-source:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "3552a8d6ed3ccb6891b4501c68c63036934b871b",
+      "sha256": "6a2ff9f35f1a5cdddc2bdddd321c58ff5676db0dc373414a3a336cc82b5c1ad1",
+      "method": "create(",
+      "range": [
+        61,
+        66
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "create: no method authorization, direct JpaRepository write; DHR-specific guard only",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "3552a8d6ed3ccb6891b4501c68c63036934b871b",
+      "sha256": "6a2ff9f35f1a5cdddc2bdddd321c58ff5676db0dc373414a3a336cc82b5c1ad1",
+      "method": "update(",
+      "range": [
+        67,
+        74
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "update: no method authorization, direct JpaRepository write; DHR-specific guard only",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:003",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "3552a8d6ed3ccb6891b4501c68c63036934b871b",
+      "sha256": "6a2ff9f35f1a5cdddc2bdddd321c58ff5676db0dc373414a3a336cc82b5c1ad1",
+      "method": "delete(",
+      "range": [
+        75,
+        81
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "delete: no method authorization, direct JpaRepository write; DHR-specific guard only",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:004",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "3552a8d6ed3ccb6891b4501c68c63036934b871b",
+      "sha256": "6a2ff9f35f1a5cdddc2bdddd321c58ff5676db0dc373414a3a336cc82b5c1ad1",
+      "method": "terminate(",
+      "range": [
+        132,
+        142
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "Existing workflow.intervene and authenticated operator protect dedicated command",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:005",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "3552a8d6ed3ccb6891b4501c68c63036934b871b",
+      "sha256": "6a2ff9f35f1a5cdddc2bdddd321c58ff5676db0dc373414a3a336cc82b5c1ad1",
+      "method": "protectDhr(",
+      "range": [
+        217,
+        222
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "DHR identity/type checks are not ordinary instance role authorization",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:006",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "3552a8d6ed3ccb6891b4501c68c63036934b871b",
+      "sha256": "6a2ff9f35f1a5cdddc2bdddd321c58ff5676db0dc373414a3a336cc82b5c1ad1",
+      "method": "currentOperatorId(",
+      "range": [
+        222,
+        231
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "Reject anonymous and use authentication principal",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:007",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "create(",
+      "range": [
+        58,
+        64
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "create: existing workflow.intervene plus DHR owner/target checks; administrator field policy not adjudicated",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:008",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "update(",
+      "range": [
+        66,
+        73
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "update: existing workflow.intervene plus DHR owner/target checks; administrator field policy not adjudicated",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:009",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "delete(",
+      "range": [
+        75,
+        81
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "delete: existing workflow.intervene plus DHR owner/target checks; administrator field policy not adjudicated",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:010",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "approve(",
+      "range": [
+        128,
+        136
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "approve: authenticated operator forwarded; request operatorId not trusted",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:011",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "reject(",
+      "range": [
+        140,
+        148
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "reject: authenticated operator forwarded; request operatorId not trusted",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:012",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "submit(",
+      "range": [
+        174,
+        182
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "submit: authenticated operator forwarded; request operatorId not trusted",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:013",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "transfer(",
+      "range": [
+        158,
+        170
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "transfer: authenticated operator forwarded; request operatorId not trusted",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:014",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "transferTargets(",
+      "range": [
+        152,
+        157
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "transferTargets: authenticated operator forwarded; request operatorId not trusted",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:015",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "method": "currentOperatorId(",
+      "range": [
+        184,
+        192
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "Authentication principal used for current task commands",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:016",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "public WorkflowInstance createInstance(",
+      "range": [
+        59,
+        117
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "Legacy generic binding/version/start/task orchestration; no production main/java caller found",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:017",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "public WorkflowInstance createRecordControlInstance(",
+      "range": [
+        122,
+        203
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "Explicit start engine boundary; missing application integration remains",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:018",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "public void completeTask(",
+      "range": [
+        242,
+        246
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "Generic entry forwards with DHR=false",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:019",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "private void completeTask(",
+      "range": [
+        253,
+        305
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "Lock/refresh, RUNNING and active task plus current eligibility before mutation; separate node/action/signature matrix not certified",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:020",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "public void terminateInstance(",
+      "range": [
+        730,
+        750
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "RUNNING and DHR gate, active tasks close and runtime log; record-control type boundary remains an adjacent lead",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:021",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "private WorkflowInstance lockInstance(",
+      "range": [
+        750,
+        758
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "Existing instance pessimistic lock and refresh retained",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:022",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "private WorkflowTask lockTask(",
+      "range": [
+        758,
+        765
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "Existing task pessimistic lock and refresh retained",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:023",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "private boolean isTaskOperator(",
+      "range": [
+        765,
+        773
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "Current candidate/unrestricted/assignee qualification; origin is not authorization",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:024",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "public void assertNotDhrTask(",
+      "range": [
+        773,
+        777
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "DHR boundary only",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:025",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "public void assertNotDhrInstance(",
+      "range": [
+        777,
+        783
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "DHR boundary only",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:026",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "method": "private String resolveTaskStatus(",
+      "range": [
+        620,
+        629
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "Known mapping; default COMPLETED is adjacent source-only action-validation lead",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:027",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "38d4bf8be331890f0e4fe8a24947be0211ebb1f3",
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c",
+      "method": "public SecurityFilterChain securityFilterChain(",
+      "range": [
+        38,
+        60
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "URL chain only requires authentication; method security enabled on class",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:028",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "794aabaef8904d9daf15476cdcc6291fc9861104",
+      "sha256": "4ed2eb9458b68717b8bf5873dedc7fa1d0fbf92d6e5efb9eebebe9d82b074ed4",
+      "method": "protected void doFilterInternal(",
+      "range": [
+        25,
+        54
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "Validated token permissions become authorities; no path-specific instance write authorization",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:029",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/RecordControlWorkflowService.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "b49987ecd5a2b94aaea0164445fbc72fbdf7e642",
+      "sha256": "f6ee03b424e5ebee0d69787af0a02e11d69554366791abc8817218c6fb61012a",
+      "method": "public StartResult start(",
+      "range": [
+        49,
+        72
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "Internal start implementation, not a controller route or found request-domain caller",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:030",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "029429fe375d7367db8e4f438eae432f9c2bb3ce",
+      "sha256": "9f3aa9ef86ccb67bcb91ebe534dcbe7c63ccaaa80c8166c8e3c94ab0168c705d",
+      "method": "public ApiResponse<List<PublishedCandidate>> listCandidates(",
+      "range": [
+        29,
+        33
+      ],
+      "readDepth": "selected-complete-method-and-adjacent-authorization-annotations",
+      "conclusion": "Action-specific permission only on candidates GET; no start HTTP endpoint",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:031",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowInstance.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "2445bc81428e11fbdc6ffcf8392150159ab2109b",
+      "sha256": "04f80798267bd9f15b66bc6f77744408fe6c76241574134fedfba7ae7a450f2d",
+      "method": "mutable request-bound instance lifecycle/version/context fields",
+      "range": [
+        10,
+        40
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Raw entity binding can replace lifecycle/version/context fields; administrator field allowlist not settled",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:032",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "34013296ab7b1e1193a3612bb74fd1cd6e0aee3b",
+      "sha256": "82bf492f7a9c9127ce7ed3552f8e5fd326be58a40dc7aa166904d2c114c5f5a6",
+      "method": "mutable request-bound task/candidate/signature fields",
+      "range": [
+        10,
+        39
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Raw administrator maintenance can replace candidate/terminal fields; separate policy not adjudicated",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:033",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowInstanceRepository.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "d8ea365f0e98f610b2680078d514e0baa87a339e",
+      "sha256": "6fd415dc88148f3a49899f1bc35b9e807ee015604d784afcf36cdd6eccc34e75",
+      "method": "JpaRepository default writes and row lock",
+      "range": [
+        14,
+        25
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "No separate repository raw-write authorization",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:034",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "bc6bfa0cc70f6d2c25b84829b8b6ff8614ddfa4a",
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "method": "JpaRepository, current todo and row lock",
+      "range": [
+        13,
+        40
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Current-candidate queries and locks retained; not full SQL/tenant certification",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:035",
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "34b99929a91fc22d72fcba1cc0335fb91db35557",
+      "sha256": "c54fdb4f7265382572fe65da61f3a31aa06667f11a6718ecd5d998119ef065d7",
+      "method": "DEC0031 current task qualification and origin",
+      "range": [
+        9,
+        24
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Existing candidate/current responsibility policy with DEC0081 exception retained",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:036",
+      "path": "docs/knowledge/decisions/DEC-0033-form-process-optional-subjects-and-open-operation-scope.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "41568fd27705801e7413ef0fda3f7e22c9f19951",
+      "sha256": "1d8d32284b138707d7b6df0e106d0f5183d2d44770bb6e78be7f9047795bfc6e",
+      "method": "DEC0033 empty-subject open boundary",
+      "range": [
+        7,
+        25
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Configured candidates or authenticated open-task authority, subject to instance/task state",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:037",
+      "path": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "ed84ad9836b4a36e4c0092623cdb6c19e0e78189",
+      "sha256": "25d8f09d2b1886e7803f69680a4156fceb6e1365d46c0020127c5b1b83830377",
+      "method": "DEC0037-05",
+      "range": [
+        24,
+        28
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Record-control P0 forbids terminate/jump/skip/addsign/admin approve",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:038",
+      "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "72d334eb227b62e99a01ab4ed25e97d16b7fc1c8",
+      "sha256": "38f92ea22f53ea90166a49809683774434fd731c1f7eb1f64563cd13db1d96ee",
+      "method": "DEC0042 ownership/runtime stage1 boundaries",
+      "range": [
+        7,
+        24
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Candidate/start implementation is not complete application/action/result lifecycle",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:039",
+      "path": "docs/knowledge/rules/production.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "2bbcaab0dc9edb206bbee60578d3bd0cf53ab12b",
+      "sha256": "e9b2989392b5c78d72f2bf8e599abb83b5010b8d45abdcbc621d4597afe99b38",
+      "method": "record-control intervention and P0 exclusion",
+      "range": [
+        247,
+        286
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Record-control specific, not an invented generic administrator field policy",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:040",
+      "path": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "0730468c01d1abd8d1f1412d1ec0834ef61ae04b",
+      "sha256": "6780efb13aa5449aa298582f2f45cca5b83a89b3560ce9b6770e9c9d57cd502a",
+      "method": "rule.form-process.termination-cascades-to-outer-work",
+      "range": [
+        1063,
+        1080
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "FORM_PROCESS termination cascade is specified; ordinary button TERMINATE excluded and chain lacks complete evidence",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:041",
+      "path": "docs/development/record-control-work-allocation-and-integration-contract.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "0ec6e1392c0d6e62c8b1b6bb36154dfcc0dbb618",
+      "sha256": "ac11a5a12529aba7e146b3ed1c20511054b28a0af001c97db6a894197e3539f9",
+      "method": "authority and record-control P0 scope",
+      "range": [
+        48,
+        85
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Legacy generic placeholders cannot become record-control product promises",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:042",
+      "path": "docs/knowledge/open-questions.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "a1f2b1140ea93c5daf54067cb4a40d6a6cd1d2b7",
+      "sha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "method": "record-control reassignment signature question",
+      "range": [
+        99,
+        115
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Do not force signature from optional signatureId",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:043",
+      "path": "docs/knowledge/open-questions.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "a1f2b1140ea93c5daf54067cb4a40d6a6cd1d2b7",
+      "sha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "method": "question.multi-tenant-workflow-isolation",
+      "range": [
+        152,
+        159
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Whole workflow tenant isolation deferred; DEC0081 target qualification only",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:044",
+      "path": "docs/knowledge/README.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4828656b73e0d2fe7c4e3daa98535b87370c1589",
+      "sha256": "83529d2f7168c0fa8a42f5ffdecb1286ee8c350720d1d4f0f4474c4da0703e9f",
+      "method": "current baseline and DEC0081 scope header",
+      "range": [
+        1,
+        27
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "0.3.25/schema1.2.0 and two evidence mechanisms retained; no whole historical knowledge read certification",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:045",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0002-seed-data.sql",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "843638c7dd6bab1252aa1b2e608d2a97cc7248f2",
+      "sha256": "b3236428547aeef3eb38a98ed193058985e1bb1ad2db114748fd00377e367f32",
+      "method": "workflow administrator role and permission names",
+      "range": [
+        26,
+        52
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "workflow.intervene existing process intervention; button codes alone are not a new policy",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:046",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskControllerTest.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "b33e75afc2ab357612331e2d187e8b258f26fdf0",
+      "sha256": "57f19c938e0ea99d4a6f15ea79d04cb102666bfe9460e52a3474a3f1f50b1576",
+      "method": "own todo/done identity assertions",
+      "range": [
+        24,
+        45
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Two read identity assertions, no ordinary raw instance CRUD permission test; not executed",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:047",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "702a84b0e548c2f9512db20774d886662d309532",
+      "sha256": "d48edb5f3e9e82d642750f156079ae6649ca0938acc811cfc2284cd11c469ca0",
+      "method": "DHR generic boundary and explicit start negatives",
+      "range": [
+        145,
+        195
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Assertions source read only, not executed",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:048",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "702a84b0e548c2f9512db20774d886662d309532",
+      "sha256": "d48edb5f3e9e82d642750f156079ae6649ca0938acc811cfc2284cd11c469ca0",
+      "method": "candidate/parallel/rejection assertions",
+      "range": [
+        289,
+        400
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Assertions source read only, not executed",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-command-source:049",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "702a84b0e548c2f9512db20774d886662d309532",
+      "sha256": "d48edb5f3e9e82d642750f156079ae6649ca0938acc811cfc2284cd11c469ca0",
+      "method": "termination lock and transfer origin assertions",
+      "range": [
+        401,
+        437
+      ],
+      "readDepth": "selected-fields-policy-statements-or-test-assertions",
+      "conclusion": "Assertions source read only, not executed",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    }
+  ],
+  "contractReceipts": [
+    {
+      "path": "AGENTS.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "2e7e18097620e602c4408b83f71404fae346f8be",
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    }
+  ],
+  "runtimeChecksExecuted": [],
+  "repositoryMutations": false,
+  "wholeFileOrBranchAcceptance": false,
+  "findingCandidates": [
+    {
+      "id": "W3C-INSTANCE-WRITE-AUTH-001",
+      "status": "source-confirmed-runtime-not-executed-by-this-instance",
+      "scope": "ordinary generic workflow-instance raw POST/PUT/DELETE",
+      "severityCandidate": "high",
+      "existingPermission": "workflow.intervene",
+      "minimumChangeCandidate": "same existing method permission on three methods; preserve authorized administrator semantics and DHR guards"
+    }
+  ],
+  "unadjudicated": [
+    "administrator raw entity content/lifecycle/audit boundaries",
+    "button permission codes versus current-candidate/open-task policy",
+    "record-control P0 generic terminate before application integration",
+    "FORM_PROCESS outer-work termination cascade before real integration",
+    "generic node/action/signature runtime matrix outside current narrow repair",
+    "whole workflow tenant isolation"
+  ],
+  "childFinal": true,
+  "childOriginals": [
+    {
+      "path": "/tmp/edhr-w3c-command-front-consumers-receipts.json",
+      "bytes": 479,
+      "sha256": "cafc5c5daa178a97497700dcce5d7d49c0871c2f60040a2de914ca923ac0cda8"
+    }
+  ],
+  "historicalDedupScope": "Current46-record catalog plus limited original history searches, no identical ordinary instance raw-write authorization finding found; no DHR/H012/PR20 lock/W5 reopening"
+}

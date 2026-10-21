@@ -1,0 +1,32 @@
+{
+  "schema": "edhr-scoped-audit-acceptance/v1",
+  "level": "L2",
+  "targetCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "testedCommit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+  "coreCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+  "knowledgeCommit": "684db88a5a25168cc7df301b947fd7528285ad46",
+  "catalogBaselineCommit": "bc30d411ab6a7312099943db8581d0583152a9e0",
+  "qualityResult": "passed",
+  "qualityResultPath": "evidence/independent/edhr-w3c-qa-qualityResult.yaml",
+  "qualityResultSha256": "f1157d1f05ce9d491e4b99d81be898c885eb9f57843f4e97e25b689e7f655f83",
+  "requiredChecks": 16,
+  "requiredPassed": 16,
+  "ontologyResult": "updated",
+  "currentRequiredProfessionalInstancesFinal": true,
+  "interruptedPreviousSessionsClaimedFinal": false,
+  "findings": [
+    {
+      "id": "W3C-INSTANCE-WRITE-AUTH-001",
+      "severity": "high",
+      "resolutionStatus": "resolved",
+      "scope": "Only three instance management method authorization omissions",
+      "fixCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+      "testedCommit": "42cb2820946287d409a2a02394cc85e4067e20bb"
+    }
+  ],
+  "runtimeQualification": "Primary and independent groups each89 business and89 knowledge, not178 unique business tests. Native PG subset45; DHR lifecycle5 uses H2. Baseline22 has9 expected403/actual200 and13 controls; initial primary fixture22 setup errors and independent baseline environment failure retained separately.",
+  "frozenCatalogAndLedgerNotRewritten": true,
+  "postAcceptanceChanges": "L0 original-result archive, scope/progress/PR registration and exact-owned synthetic PG cleanup only; no product/test/knowledge or frozen catalog/ledger delta.",
+  "overallAuditComplete": false,
+  "automaticMergeOrDeploy": false
+}

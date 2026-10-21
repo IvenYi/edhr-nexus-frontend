@@ -1,0 +1,91 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 684db88a5a25168cc7df301b947fd7528285ad46
+    targetBranch: edhr-dev
+    targetCommit: e8ecc103c8e6825c61c61b39b9cbd12b1474700e
+    contractReadCommit: fc0980035d717fd1790ac72c907f940390540c4d
+    uncommittedContractPaths: []
+  reason: Only two implementation evidence IDs and precise human-readable engineering
+    boundary/nav were added. Existing normative records are byte-equivalent; inferred
+    permission omission correction is not promoted to new user policy. No unnecessary
+    anchor to a different concept was created.
+  changedArtifacts:
+  - path: docs/knowledge/evidence/workflow-instance-write-authorization.yaml
+    changeType: create
+    ids:
+    - evidence.workflow-instance-administrative-write-authorization
+    - evidence.workflow-instance-administrative-write-authorization-test
+  - path: docs/knowledge/evidence/workflow-instance-write-authorization-2026-10-21.md
+    changeType: create
+    ids: []
+  - path: docs/knowledge/README.md
+    changeType: update
+    ids: []
+  knowledgeSync:
+  - id: evidence.workflow-instance-administrative-write-authorization
+    disposition: updated
+    scope: 实现证据只登记三HTTP管理入口复用已有权限的技术纠漏；不把inferred工程选择变成新用户政策，不认证管理员裸CRUD内容治理。
+    sourceReferences:
+    - docs/knowledge/evidence/workflow-instance-write-authorization.yaml
+    - docs/knowledge/evidence/workflow-instance-write-authorization-2026-10-21.md
+  - id: evidence.workflow-instance-administrative-write-authorization-test
+    disposition: updated
+    scope: 只核对22测试源码的实际过滤链/方法安全/持久化和正反对照描述；原生PG与默认H2分开，主侧报告不替代独立验收。
+    sourceReferences:
+    - docs/knowledge/evidence/workflow-instance-write-authorization.yaml
+    - docs/knowledge/evidence/workflow-instance-write-authorization-2026-10-21.md
+  - id: DEC-0031-03
+    disposition: retained
+    scope: 保留未委托候选范围与DEC-0081当前受让人例外；本次三管理入口注解未给正常候选完成另加全局干预权限。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml
+    - docs/knowledge/evidence/workflow-instance-write-authorization-2026-10-21.md
+  - id: DEC-0033-02
+    disposition: retained
+    scope: 仅核对开放审批的既有规范被本批边界保留，未扩大管理CRUD到普通认证用户，也未把管理权限前移到开放任务处理。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0033-form-process-optional-subjects-and-open-operation-scope.yaml
+    - docs/knowledge/evidence/workflow-instance-write-authorization-2026-10-21.md
+  - id: DEC-0081-04
+    disposition: retained
+    scope: 只核对DHR通用防绕过及记录控制/管理员重新分配/完整隔离不在本次实现范围，未声称整个转办和签署链复验通过。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - docs/knowledge/evidence/workflow-instance-write-authorization-2026-10-21.md
+  - id: question.multi-tenant-workflow-isolation
+    disposition: retained
+    scope: 保留非MVP完整隔离未决；既有workflow.intervene授权不被宣传为全域多租户隔离已完成。
+    sourceReferences:
+    - docs/knowledge/open-questions.yaml
+    - docs/knowledge/evidence/workflow-instance-write-authorization-2026-10-21.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.w3c-formal-knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f tools/knowledge-model/pom.xml
+      clean test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3c-final-ontology-validation.json
+    - 89 passed,0 failures,0 errors,0 skipped; fixed 684db88a5a25168cc7df301b947fd7528285ad46
+  - id: validation.w3c-fixed-id-and-source-receipts
+    checkType: evidence-path
+    command: python3 /tmp/edhr-w3c-final-ontology-build.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w3c-final-ontology-semantic-review.jsonl
+    - Actual6 finite IDs with exact recordSha256/sourceCommit/blob/source receipts;
+      current knowledge files equal fixed Git bytes. Existing2546 records unchanged;
+      only2 evidence IDs added.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

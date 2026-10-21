@@ -1,0 +1,476 @@
+{
+  "schema": "edhr-independent-qa-ledger-support/v1",
+  "role": "read-only delegated independent QA ledger/receipt assistance, not product test execution",
+  "status": "FINAL",
+  "headCommit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+  "baseCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "contractReadCommit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+  "knowledgeVersion": "0.3.25",
+  "checks": [
+    {
+      "id": "fixed-head-clean",
+      "outcome": "passed",
+      "details": {
+        "head": "42cb2820946287d409a2a02394cc85e4067e20bb",
+        "workingTreeState": "clean"
+      }
+    },
+    {
+      "id": "target-local-matches",
+      "outcome": "passed",
+      "details": {
+        "targetCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e"
+      }
+    },
+    {
+      "id": "contract-delta-none",
+      "outcome": "passed",
+      "details": {
+        "contractReadCommit": "42cb2820946287d409a2a02394cc85e4067e20bb"
+      }
+    },
+    {
+      "id": "inherited-methods-exact",
+      "outcome": "passed",
+      "details": {
+        "priorFiniteScopes": 314
+      }
+    },
+    {
+      "id": "inherited-semantic-sources-exact",
+      "outcome": "passed",
+      "details": {
+        "priorSources": 4,
+        "priorRows": 90
+      }
+    },
+    {
+      "id": "only-six-prior-findings-advanced",
+      "outcome": "passed",
+      "details": {
+        "changedIds": [
+          "AUD-H009",
+          "AUD-H010",
+          "AUD-H012",
+          "QF-W3-TENANT-KNOWLEDGE-001",
+          "QF-W3-UI-DOC-COUNT-001",
+          "W3-TRANSFER-LOCK-001"
+        ],
+        "otherOriginalObjectsEqual": 40
+      }
+    },
+    {
+      "id": "pr20-actual-acceptance",
+      "outcome": "passed",
+      "details": {
+        "required": 24,
+        "qualityPath": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/independent-final/edhr-w3-final-independent-quality-result.yaml",
+        "qualitySha256": "70fcbe1bdf15ccdb3a1b504ac1f016b67980be8a98cd15cb155475757d5c174e",
+        "historicalOnly": true
+      }
+    },
+    {
+      "id": "pr20-human-merge-tree-proof",
+      "outcome": "passed",
+      "details": {
+        "mergeCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+        "delivery": "a23f94c2617f35ba7147b070b341a63a65a23541"
+      }
+    },
+    {
+      "id": "six-dispositions-preserve-priors",
+      "outcome": "passed",
+      "details": {
+        "ids": [
+          "AUD-H009",
+          "AUD-H010",
+          "AUD-H012",
+          "QF-W3-TENANT-KNOWLEDGE-001",
+          "QF-W3-UI-DOC-COUNT-001",
+          "W3-TRANSFER-LOCK-001"
+        ],
+        "oldEvidenceAndOriginalDispositionPreserved": true
+      }
+    },
+    {
+      "id": "one-current-finding-only",
+      "outcome": "passed",
+      "details": {
+        "total": 47,
+        "prior": 46,
+        "currentFindingNotPreaccepted": true
+      }
+    },
+    {
+      "id": "coverage-counts-qualified",
+      "outcome": "passed",
+      "details": {
+        "inventory": 2711,
+        "scopes": 392,
+        "sourceDelta": 100,
+        "semanticRows": 96,
+        "semanticDelta": 57,
+        "gaps": 4,
+        "findingRecords": 47,
+        "wholeFilesCompleted": 0
+      }
+    },
+    {
+      "id": "no-premature-global-or-final-claim",
+      "outcome": "passed",
+      "details": {
+        "pendingQAAndInterruptedStatusQualificationPreserved": true
+      }
+    },
+    {
+      "id": "archive-receipts-and-zip-exact",
+      "outcome": "passed",
+      "details": {
+        "receiptAssertions": 49,
+        "originalFixtureSetupErrorRetained": true
+      }
+    },
+    {
+      "id": "only-two-knowledge-evidence-ids-added",
+      "outcome": "passed",
+      "details": {
+        "before": 2546,
+        "after": 2548,
+        "added": [
+          "evidence.workflow-instance-administrative-write-authorization",
+          "evidence.workflow-instance-administrative-write-authorization-test"
+        ],
+        "existingRecordHashesUnchanged": true
+      }
+    },
+    {
+      "id": "formal-six-id-identity-and-source-sha",
+      "outcome": "passed",
+      "details": {
+        "rows": 6,
+        "sourceReceiptAssertions": 46,
+        "finiteIds": [
+          {
+            "id": "evidence.workflow-instance-administrative-write-authorization",
+            "recordSha256": "d9866273abd28921bc9acb27c015054c299be133a2f25a155268351783af07bb"
+          },
+          {
+            "id": "evidence.workflow-instance-administrative-write-authorization-test",
+            "recordSha256": "40107759f7883e83c29dbf27e65ae8ec3e0ef19d3939fa5e47e6989842ed7c9b"
+          },
+          {
+            "id": "DEC-0031-03",
+            "recordSha256": "bf4694b2516b1d9574ef1ae554c7861477e03dbd73e2ff730a0ed1ce85572347"
+          },
+          {
+            "id": "DEC-0033-02",
+            "recordSha256": "f01cb9c89cf830c4a7d7f81c7609e43baa902af9e4ea21acdb42711f4fd99963"
+          },
+          {
+            "id": "DEC-0081-04",
+            "recordSha256": "f436433b50fba07a9ee4e76c84b422f6dcd6a9b6e1618cbea473c8157cc19164"
+          },
+          {
+            "id": "question.multi-tenant-workflow-isolation",
+            "recordSha256": "704e9f36e99664cd53a051cc8c9ccc35fb1ea976afba062374990b5ba696d152"
+          }
+        ],
+        "notFullKnowledgeAcceptance": true
+      }
+    },
+    {
+      "id": "ontology-result-invariants",
+      "outcome": "passed",
+      "details": {
+        "knowledgeVersion": "0.3.25",
+        "stageNotPromoted": true
+      }
+    },
+    {
+      "id": "no-raw-log-xml-settings-or-token-artifact",
+      "outcome": "passed",
+      "details": {
+        "forbiddenArtifactCount": 0,
+        "jwtPatternArtifactCount": 0,
+        "scope": "current batch files only; synthetic fixture source retained in zip"
+      }
+    },
+    {
+      "id": "crlf-aware-diff-check",
+      "outcome": "passed",
+      "details": {
+        "exit": 0,
+        "ignoredWhitespaceClasses": []
+      }
+    },
+    {
+      "id": "full-ledger-byte-rebuild",
+      "outcome": "passed",
+      "details": {
+        "command": "python3 scripts/build-branch-review-ledger.py --ref bc30d411ab6a7312099943db8581d0583152a9e0 --catalog docs/development/branch-review-20261020-w3-task-commands/source-catalog.json --out docs/development/branch-review-20261020-w3-task-commands/ledger --check",
+        "exit": 0,
+        "actualFullByteComparison": true
+      }
+    },
+    {
+      "id": "fixed-head-still-clean",
+      "outcome": "passed",
+      "details": {
+        "head": "42cb2820946287d409a2a02394cc85e4067e20bb",
+        "workingTreeState": "clean"
+      }
+    }
+  ],
+  "receiptAssertions": [
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/helpers/edhr-w3c-archive-helpers.py",
+      "sha256": "04c83550edfb2b93cb392cacec525f91f82e9c6b07d4ddd5b829f2024c86b40c"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/helpers/edhr-w3c-baseline-receipts.json",
+      "sha256": "864755a6b37760cc9faf508e40a6d55476c6a59939ccab56d36d5ce1987d04e0"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/helpers/edhr-w3c-baseline-support.json",
+      "sha256": "a6108ff112f16372a4d6f128f72f4dbeac688aacde2c6845584d2e60e8682908"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/helpers/edhr-w3c-command-front-consumers-receipts.json",
+      "sha256": "cafc5c5daa178a97497700dcce5d7d49c0871c2f60040a2de914ca923ac0cda8"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/helpers/edhr-w3c-command-front-consumers.json",
+      "sha256": "65b31d0e162d3fcfa7a616e968cee6c48f72818f6edafd8a2eacacb0a29c4d4f"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/helpers/edhr-w3c-command-source-map.json",
+      "sha256": "71798d741350166786df7a43a42fc097d5c6e6b9b4e7257d6fe561de20ad9125"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/helpers/edhr-w3c-final-catalog-build.py",
+      "sha256": "f0025d4222e0de674894b679ab5bda5bfd29aaac5594a6e0e3cd25cc1fc217d3"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/helpers/edhr-w3c-prepare-baseline-catalog.py",
+      "sha256": "398bc1a7114177886e3871cd6188ce317776f29f46a328bec65fbfce90d95fa7"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/helpers/edhr-w3c-resumed-command-verification.json",
+      "sha256": "461710fbbf3b33fd44e52db0cef8c8e38b20349cccf192bac9ae9b827973535e"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/helpers/edhr-w3c-signature-policy-history.json",
+      "sha256": "a9eaa06ae56b5b40a6193c50528366ef296dd72df446e75f6426d303da351f80"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/helpers/original-helper-notes.zip",
+      "sha256": "fa303f72d29b1ece9ef66db6c757ef70f89a07c22cd18bcbf2dabe69ad8ccd40"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/helpers/receipts.json",
+      "sha256": "45d774fa760ae74eff4f53f3e0b6d10901f8f72bb64cc36d7ed6204843897310"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/primary/edhr-w3c-archive-primary.py",
+      "sha256": "1caf59d44e440d95ce3fb6b1fec2c14da5c10cf07dd3696ec51d460b1c101784"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/primary/edhr-w3c-auth-first-fixture-summary.json",
+      "sha256": "1e493e2345ef6d85e1d98d773ba04af175266a38242c61dfa6e8e237bdbbdbe1"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/primary/edhr-w3c-baseline-valid-summary.json",
+      "sha256": "44ff8638ba147bd0bef89c74a9a62b90bbcedecec9be7572d649c1c54d12aba7"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/primary/edhr-w3c-fixed-authorization-summary.json",
+      "sha256": "af431f0ae56acdbb7b0c5e2d7e61e5534528367a0650671be8938ca710cf3e5f"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/primary/edhr-w3c-focused-regression-summary.json",
+      "sha256": "3588359e7747810807654beb518c722051caa54a25cc06559aace1052c2d5089"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/primary/edhr-w3c-primary-map.py",
+      "sha256": "77003d05b61f35d16965dd49e878d9269afea5631aa0bd40264c82db6302be77"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/primary/edhr-w3c-run-tests.py",
+      "sha256": "e0bd0460dbbcd38063e4771633b321eefdb2bb4079aaf59d11948fb9e3b2b423"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/primary/first-fixture-member.json",
+      "sha256": "087358a06d38454f8f483777559be04114897b760a795d564007f42bc21e0483"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/primary/first-fixture.zip",
+      "sha256": "3d77616ee2464cb8055362cfcf6705be802eb050007fb4e6e46f175a59112ab9"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/primary/receipts.json",
+      "sha256": "7ce006d05b3aeeadc892a00baa272f59d8e5f4edf1d4dd0e74b3297faec0a8fc"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/primary/source-map.json",
+      "sha256": "4fdbc7256c9bc7998761fab0842ee5b246ebf62e08c32d1a7f5ed7fe0769f664"
+    },
+    {
+      "manifest": "evidence/source-and-runtime-receipts.json",
+      "path": "evidence/primary/validation-summary.json",
+      "sha256": "458b149794306282be464f56a3db9be87ffa6858cbf4c8f88c4b964a28b4f2b3"
+    },
+    {
+      "manifest": "evidence/helpers/receipts.json",
+      "path": "evidence/helpers/edhr-w3c-command-source-map.json",
+      "sha256": "71798d741350166786df7a43a42fc097d5c6e6b9b4e7257d6fe561de20ad9125"
+    },
+    {
+      "manifest": "evidence/helpers/receipts.json",
+      "path": "evidence/helpers/edhr-w3c-command-front-consumers.json",
+      "sha256": "65b31d0e162d3fcfa7a616e968cee6c48f72818f6edafd8a2eacacb0a29c4d4f"
+    },
+    {
+      "manifest": "evidence/helpers/receipts.json",
+      "path": "evidence/helpers/edhr-w3c-command-front-consumers-receipts.json",
+      "sha256": "cafc5c5daa178a97497700dcce5d7d49c0871c2f60040a2de914ca923ac0cda8"
+    },
+    {
+      "manifest": "evidence/helpers/receipts.json",
+      "path": "evidence/helpers/edhr-w3c-signature-policy-history.json",
+      "sha256": "a9eaa06ae56b5b40a6193c50528366ef296dd72df446e75f6426d303da351f80"
+    },
+    {
+      "manifest": "evidence/helpers/receipts.json",
+      "path": "evidence/helpers/edhr-w3c-resumed-command-verification.json",
+      "sha256": "461710fbbf3b33fd44e52db0cef8c8e38b20349cccf192bac9ae9b827973535e"
+    },
+    {
+      "manifest": "evidence/helpers/receipts.json",
+      "path": "evidence/helpers/edhr-w3c-baseline-support.json",
+      "sha256": "a6108ff112f16372a4d6f128f72f4dbeac688aacde2c6845584d2e60e8682908"
+    },
+    {
+      "manifest": "evidence/helpers/receipts.json",
+      "path": "evidence/helpers/edhr-w3c-baseline-receipts.json",
+      "sha256": "864755a6b37760cc9faf508e40a6d55476c6a59939ccab56d36d5ce1987d04e0"
+    },
+    {
+      "manifest": "evidence/helpers/receipts.json",
+      "path": "evidence/helpers/edhr-w3c-prepare-baseline-catalog.py",
+      "sha256": "398bc1a7114177886e3871cd6188ce317776f29f46a328bec65fbfce90d95fa7"
+    },
+    {
+      "manifest": "evidence/primary/receipts.json",
+      "path": "evidence/primary/edhr-w3c-baseline-valid-summary.json",
+      "sha256": "44ff8638ba147bd0bef89c74a9a62b90bbcedecec9be7572d649c1c54d12aba7"
+    },
+    {
+      "manifest": "evidence/primary/receipts.json",
+      "path": "evidence/primary/edhr-w3c-fixed-authorization-summary.json",
+      "sha256": "af431f0ae56acdbb7b0c5e2d7e61e5534528367a0650671be8938ca710cf3e5f"
+    },
+    {
+      "manifest": "evidence/primary/receipts.json",
+      "path": "evidence/primary/edhr-w3c-focused-regression-summary.json",
+      "sha256": "3588359e7747810807654beb518c722051caa54a25cc06559aace1052c2d5089"
+    },
+    {
+      "manifest": "evidence/primary/receipts.json",
+      "path": "evidence/primary/edhr-w3c-auth-first-fixture-summary.json",
+      "sha256": "1e493e2345ef6d85e1d98d773ba04af175266a38242c61dfa6e8e237bdbbdbe1"
+    },
+    {
+      "manifest": "evidence/primary/receipts.json",
+      "path": "evidence/primary/edhr-w3c-run-tests.py",
+      "sha256": "e0bd0460dbbcd38063e4771633b321eefdb2bb4079aaf59d11948fb9e3b2b423"
+    },
+    {
+      "manifest": "evidence/primary/receipts.json",
+      "path": "evidence/primary/edhr-w3c-archive-primary.py",
+      "sha256": "1caf59d44e440d95ce3fb6b1fec2c14da5c10cf07dd3696ec51d460b1c101784"
+    },
+    {
+      "manifest": "evidence/ontology/archive-receipts.json",
+      "path": "evidence/ontology/edhr-w3c-final-ontology-result.yaml",
+      "sha256": "c6a29c73def4e6be36fecbe3e6d2dc89adcf3c376e3623905cb440a8a85d1d11"
+    },
+    {
+      "manifest": "evidence/ontology/archive-receipts.json",
+      "path": "evidence/ontology/edhr-w3c-final-ontology-semantic-review.jsonl",
+      "sha256": "a292603e79101e077bb06ce35ec3099f5dfe2fc0048396aed5ee13624043527e"
+    },
+    {
+      "manifest": "evidence/ontology/archive-receipts.json",
+      "path": "evidence/ontology/edhr-w3c-final-ontology-validation.json",
+      "sha256": "9aef1e36858089cf3ef3a6ec48b51b923ddaf101d2965a69671ec268f0957f92"
+    },
+    {
+      "manifest": "evidence/ontology/archive-receipts.json",
+      "path": "evidence/ontology/edhr-w3c-final-ontology-read-receipts.json",
+      "sha256": "a8703be875700146a2933f569d9c97a3e90a3cc91b5c06e950f1d97987271ba9"
+    },
+    {
+      "manifest": "evidence/ontology/archive-receipts.json",
+      "path": "evidence/ontology/edhr-w3c-final-ontology-build.py",
+      "sha256": "c7de2faafe788f311e1418fbda12025d2fcc0e2fb6e228987ab8ec6b0ca50045"
+    },
+    {
+      "manifest": "evidence/ontology/archive-receipts.json",
+      "path": "evidence/ontology/edhr-w3c-final-ontology-manifest.json",
+      "sha256": "1a420cb027c71a3d405b109df141eeac2037b2ac606c66946fb886d9f4e45253"
+    },
+    {
+      "zip": "original-helper-notes.zip",
+      "member": "edhr-w3c-command-source-review.md",
+      "sha256": "931dce986bbba7fedf5fa5fd07992865b4a00284c8fd709208665668b641491b"
+    },
+    {
+      "zip": "original-helper-notes.zip",
+      "member": "edhr-w3c-command-front-consumers.md",
+      "sha256": "6d4b74c1f5af09bbef77da02866c8c7522889588f106b1125ab8400dc9a4544f"
+    },
+    {
+      "zip": "original-helper-notes.zip",
+      "member": "edhr-w3c-signature-policy-history.md",
+      "sha256": "e4ec480168a5bb39fab1ed4d8fef7c414a58cd36b4d87dd3b0c9946fc5fbd8d1"
+    },
+    {
+      "zip": "original-helper-notes.zip",
+      "member": "edhr-w3c-resumed-command-verification.md",
+      "sha256": "70cce98299046bb01718f2d619da90636051b421af652375a0329ec538d0861b"
+    },
+    {
+      "zip": "first-fixture.zip",
+      "member": "WorkflowInstanceAuthorizationIntegrationTest.first-fixture.java",
+      "sha256": "113eb452c37fb1d5972a3d71e7c91dfbdfee14e191f04b55091a4b2d10205b4a"
+    }
+  ],
+  "findings": [],
+  "productTestsExecuted": [],
+  "repositoryMutations": false,
+  "wholeBranchAccepted": false,
+  "noChildInstances": true
+}

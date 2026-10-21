@@ -1,0 +1,185 @@
+{
+  "schema": "edhr-readonly-source-map/v1",
+  "role": "primary developer finite source inspection, not independent quality acceptance",
+  "fixedCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+  "sourceScopes": [
+    {
+      "id": "w3c-primary-source:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "method": "create",
+      "range": [
+        62,
+        67
+      ],
+      "sourceCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+      "blob": "d8dc413db77107ca01c51cb9e3415a6bcdcda696",
+      "sha256": "45ef4f345a1f29b430013e8cea3a5887d04267de17e15c2520c19303a16fada5",
+      "readDepth": "actual finite primary source inspection, not whole-file or branch completion",
+      "conclusion": "Added existing intervene authority before unchanged direct save and DHR protection.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-primary-source:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "method": "update",
+      "range": [
+        69,
+        76
+      ],
+      "sourceCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+      "blob": "d8dc413db77107ca01c51cb9e3415a6bcdcda696",
+      "sha256": "45ef4f345a1f29b430013e8cea3a5887d04267de17e15c2520c19303a16fada5",
+      "readDepth": "actual finite primary source inspection, not whole-file or branch completion",
+      "conclusion": "Added existing intervene authority before unchanged existing-instance and target DHR guards/direct save.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-primary-source:003",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "method": "delete",
+      "range": [
+        78,
+        84
+      ],
+      "sourceCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+      "blob": "d8dc413db77107ca01c51cb9e3415a6bcdcda696",
+      "sha256": "45ef4f345a1f29b430013e8cea3a5887d04267de17e15c2520c19303a16fada5",
+      "readDepth": "actual finite primary source inspection, not whole-file or branch completion",
+      "conclusion": "Added existing intervene authority before unchanged DHR guard/direct delete.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-primary-source:004",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "method": "terminate",
+      "range": [
+        135,
+        145
+      ],
+      "sourceCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+      "blob": "d8dc413db77107ca01c51cb9e3415a6bcdcda696",
+      "sha256": "45ef4f345a1f29b430013e8cea3a5887d04267de17e15c2520c19303a16fada5",
+      "readDepth": "actual finite primary source inspection, not whole-file or branch completion",
+      "conclusion": "Existing intervention authorization and authenticated operator preserved; no new generic signature policy.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-primary-source:005",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "method": "protectDhr/currentOperatorId",
+      "range": [
+        222,
+        234
+      ],
+      "sourceCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+      "blob": "d8dc413db77107ca01c51cb9e3415a6bcdcda696",
+      "sha256": "45ef4f345a1f29b430013e8cea3a5887d04267de17e15c2520c19303a16fada5",
+      "readDepth": "actual finite primary source inspection, not whole-file or branch completion",
+      "conclusion": "Current and target DHR guards and authenticated principal handling retained.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-primary-source:006",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "method": "create/update/delete",
+      "range": [
+        57,
+        83
+      ],
+      "sourceCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "readDepth": "actual finite primary source inspection, not whole-file or branch completion",
+      "conclusion": "Adjacent task management writes already use the same existing authority; content policy not certified.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-primary-source:007",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "method": "securityFilterChain",
+      "range": [
+        39,
+        60
+      ],
+      "sourceCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+      "blob": "38d4bf8be331890f0e4fe8a24947be0211ebb1f3",
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c",
+      "readDepth": "actual finite primary source inspection, not whole-file or branch completion",
+      "conclusion": "Method security is enabled at class level; global chain otherwise requires authentication and installs real JWT filter.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-primary-source:008",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "method": "completeTask",
+      "range": [
+        244,
+        313
+      ],
+      "sourceCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "readDepth": "actual finite primary source inspection, not whole-file or branch completion",
+      "conclusion": "Existing instance/task locks, runtime and candidate checks and DHR-exclusive completion remain; no blanket approval permission added.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-primary-source:009",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "method": "terminateInstance",
+      "range": [
+        732,
+        750
+      ],
+      "sourceCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "readDepth": "actual finite primary source inspection, not whole-file or branch completion",
+      "conclusion": "Existing running and DHR boundary with task termination/logging preserved; signature parameter does not prove mandatory policy.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-primary-source:010",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "method": "lockInstance/lockTask",
+      "range": [
+        752,
+        765
+      ],
+      "sourceCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "readDepth": "actual finite primary source inspection, not whole-file or branch completion",
+      "conclusion": "Existing instance-first locking and refresh preserved, no concurrency refactor.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "w3c-primary-source:011",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "method": "assertNotDhrTask/assertNotDhrInstance",
+      "range": [
+        775,
+        784
+      ],
+      "sourceCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "readDepth": "actual finite primary source inspection, not whole-file or branch completion",
+      "conclusion": "Existing DHR exclusive boundary retained.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    }
+  ],
+  "runtimeEvidenceSeparate": "validation-summary.json",
+  "wholeFileOrBranchAcceptance": false
+}

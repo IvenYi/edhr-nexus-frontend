@@ -1,0 +1,189 @@
+{
+  "baseCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "headCommit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+  "targetObservedByLsRemote": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "contractReadCommit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+  "contractDelta": [],
+  "productDiff": [
+    "3\t0\tgmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+    "230\t0\tgmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowInstanceAuthorizationIntegrationTest.java"
+  ],
+  "readFiles": [
+    {
+      "path": "AGENTS.md",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "codeplzreadme.md",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "2e7e18097620e602c4408b83f71404fae346f8be",
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "581e647c37daebeb9dd3d6397ae53e30e7822fb3",
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "8a23c50057340be057a67fad8731648c2aa36f30",
+      "sha256": "addbf3eb7dc2c059d8672eb699199e4d0fa355143617bc4192fe420d26266184",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "a1f2b1140ea93c5daf54067cb4a40d6a6cd1d2b7",
+      "sha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "1d239fc82f8d24bdd986b1e23de9188680f25c18",
+      "sha256": "925b987f783d6216061ab25ca2a6710aaa231823ff346b05b2df23d75c90f735",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "34b99929a91fc22d72fcba1cc0335fb91db35557",
+      "sha256": "c54fdb4f7265382572fe65da61f3a31aa06667f11a6718ecd5d998119ef065d7",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0033-form-process-optional-subjects-and-open-operation-scope.yaml",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "41568fd27705801e7413ef0fda3f7e22c9f19951",
+      "sha256": "1d8d32284b138707d7b6df0e106d0f5183d2d44770bb6e78be7f9047795bfc6e",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "2319ab67c26c6da413a7ade307d340561db66598",
+      "sha256": "c47a0ea204787a4f03cf5e507e71ec002e1e7514ade7cd122d2290049aa0c5da",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-instance-write-authorization.yaml",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "b7399fc4aba8a9bc68f73ad340b978adc34ad574",
+      "sha256": "884ed1212b7e3e6e950efd8e10afd9fd8bb5c887bf57c528d688818f4a74b732",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-instance-write-authorization-2026-10-21.md",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "09e413e145a5b8b04af1c728eaedba4d7960bd7e",
+      "sha256": "3d648c94eb5000e535d5ed38a556473f6be06b44398536a3f2f1b0157c36ca8a",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/development/branch-review-20261020-w3-task-commands/decision-package.yaml",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "d6797b393b433477b4cafe081a60c214b69e89c6",
+      "sha256": "fc6d20456ca46cbca65b6fc94277184e405279c078b3ae79caee6ee72520d653",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/development/branch-review-20261020-w3-task-commands/README.md",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "c3a129976a8a30c038ac3a58c1d83de9b84b01a3",
+      "sha256": "e18cb7dff885bbc5468f1ef199bf3d568e40804b38bd94bb6fa65d688b2b0b2a",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/development/branch-review-20261020-w3-task-commands/findings.md",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "77e141169ae239997bbfe64672765d9242f9c61f",
+      "sha256": "ea8e5e758ed0d24f741c3221f67dbc9c1ca730b1dd6e7f2809ad7b0d93bd5bc8",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/development/branch-review-20261020-w3-task-commands/progress.json",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "8234442c1d9d89f58c1684a02fd87a5376a66625",
+      "sha256": "595cd0d717a74a8275e74472e314d52d8b17cf0cb7247e4ed917784e6b6c79a4",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "docs/development/branch-review-20261020-w3-task-commands/scope-review.md",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "26c334f33be07d376424fcd9c00b2af23d3813a7",
+      "sha256": "3adab1083afba7a034d066d03acd624d18e1f4f509f21fa2341c4ea307fb2fa7",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "38d4bf8be331890f0e4fe8a24947be0211ebb1f3",
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "794aabaef8904d9daf15476cdcc6291fc9861104",
+      "sha256": "4ed2eb9458b68717b8bf5873dedc7fa1d0fbf92d6e5efb9eebebe9d82b074ed4",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "d8dc413db77107ca01c51cb9e3415a6bcdcda696",
+      "sha256": "45ef4f345a1f29b430013e8cea3a5887d04267de17e15c2520c19303a16fada5",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "d65355e369b61e6c1267e329c5b513af43c80220",
+      "sha256": "29d0bdb919fef75176ff67e1f3e558de8fd5cda341e2b1a86c73173d178ee96e",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0002-seed-data.sql",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "843638c7dd6bab1252aa1b2e608d2a97cc7248f2",
+      "sha256": "b3236428547aeef3eb38a98ed193058985e1bb1ad2db114748fd00377e367f32",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowInstanceAuthorizationIntegrationTest.java",
+      "commit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+      "blob": "949e6145ffa7db606b61096769078c8d66fb890d",
+      "sha256": "948f893650653528f5fce8fd513cf1d8f9e9774a3ad9241a455c5e3568696da4",
+      "readQualification": "Governance/knowledge context and specified finite implementation scopes; full blob hash is provenance, not whole-file or whole-branch acceptance."
+    }
+  ],
+  "finiteImplementationScopes": [
+    "WorkflowInstanceController create/update/delete/terminate/read/protectDhr/currentOperatorId",
+    "WorkflowTaskController CRUD and approve/reject/transfer actions",
+    "SecurityConfig and JWT authentication filter",
+    "WorkflowEngine completeTask, terminateInstance, lockInstance/lockTask and DHR guards",
+    "new authorization integration fixture, request/assertion and DB config chain"
+  ],
+  "notWholeFilesOrBranchAccepted": true
+}

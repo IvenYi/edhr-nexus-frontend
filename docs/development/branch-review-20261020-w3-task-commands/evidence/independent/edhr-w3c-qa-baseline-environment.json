@@ -1,0 +1,10 @@
+{
+  "originalRun": "edhr-w3c-qa-baseline-summary.json",
+  "originalFreshXmlSuites": 0,
+  "productFailure": false,
+  "cause": "Backend generate-resources npm build:dhr-print needs sibling frontend/package.json omitted by backend-only Git archive; npm ENOENT before tests.",
+  "environmentOnlyCorrection": "Added exact base Git frontend sources to isolated snapshot; linked existing node_modules, no product/test changes or installs.",
+  "base": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "candidate": "42cb2820946287d409a2a02394cc85e4067e20bb",
+  "rawLogExcluded": true
+}

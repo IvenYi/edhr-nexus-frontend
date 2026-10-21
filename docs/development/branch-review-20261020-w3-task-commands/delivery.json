@@ -1,0 +1,18 @@
+{
+  "pullRequest": "https://github.com/IvenYi/edhr-nexus-frontend/pull/21",
+  "number": 21,
+  "sourceBranch": "audit/edhr-dev-w3-task-command-boundaries-20261020",
+  "targetBranch": "edhr-dev",
+  "targetCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "testedCommit": "42cb2820946287d409a2a02394cc85e4067e20bb",
+  "prCreatedAtHead": "3f8ee4d393c64600b8c686b894727431683f981d",
+  "qualityResult": "passed",
+  "ontologyResult": "updated",
+  "requiredChecks": 16,
+  "requiredPassed": 16,
+  "postAcceptanceChanges": "L0 originals archive, scope/progress/PR registration and exact-owned PG cleanup only. Product/test/knowledge and frozen source-catalog/ledger bytes unchanged from testedCommit. Final delivery hash is the Git branch/PR head, not a fabricated self-reference.",
+  "humanMergePending": true,
+  "merged": false,
+  "deployed": false,
+  "overallAuditComplete": false
+}
