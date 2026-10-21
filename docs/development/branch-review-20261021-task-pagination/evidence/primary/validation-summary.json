@@ -1,0 +1,43 @@
+{
+  "level": "L2",
+  "targetCommit": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+  "coreCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+  "baseline": {
+    "tests": 28,
+    "failures": 22,
+    "errors": 0,
+    "skipped": 0
+  },
+  "fixed": {
+    "tests": 52,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "primaryUniqueBusinessTests": 52,
+  "nativePostgresSubset": 50,
+  "mockControllerSubset": 2,
+  "fixturePath": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java",
+  "fixtureCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+  "fixtureSha256": "9848c9b17b8f6d046c1b4801acbe055883d01d2e15ab3f8b4a944e9b2d43ff90",
+  "fixtureUnchangedBetweenRedAndGreen": true,
+  "sourceRunQualification": "Actual runner HEAD remained13def with new fixture and later production changes uncommitted. Exact test unchanged between runs; identical final controller/test bytes committed25e974e0. Original summaries are not relabeled as committed runs. Fresh independent QA still required.",
+  "existingSemanticsChanged": false,
+  "ontologyGate": "not-applicable technical integer input/index only; no knowledge assets changed",
+  "database": {
+    "containerId": "38dd46d85414bf0bc8a7387379d5fcc8cf564ca022a6d9d249cf880c8642fc09",
+    "name": "edhr-audit-pagination-20261021",
+    "version": "PostgreSQL16",
+    "loopback": "127.0.0.1:55432",
+    "database": "edhr_w3_command_test",
+    "syntheticOnly": true,
+    "cleanup": "pending independent FINAL"
+  },
+  "notClaimed": [
+    "full HTTP password login/browser UI E2E",
+    "all request binding/global exception mapping",
+    "whole W3 or branch acceptance",
+    "new business policy or formal ontology role execution",
+    "GitHub Actions read/trigger, production migration, merge or deploy"
+  ]
+}

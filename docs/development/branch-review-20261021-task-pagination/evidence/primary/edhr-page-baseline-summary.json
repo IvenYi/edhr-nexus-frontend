@@ -1,0 +1,196 @@
+{
+  "phase": "baseline",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=WorkflowTaskPaginationPostgresTest",
+    "clean",
+    "test"
+  ],
+  "exit": 1,
+  "sourceCommitAtRun": "13def47d4def51237d1393eaa7bf2651e98a0cbd",
+  "workingTreeState": [
+    "?? docs/development/branch-review-20261021-task-pagination/",
+    "?? gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java"
+  ],
+  "database": "owned PG16/edhr_w3_command_test loopback55432",
+  "elapsedSeconds": 37.87,
+  "suites": [
+    {
+      "tests": 28,
+      "failures": 22,
+      "errors": 0,
+      "skipped": 0,
+      "name": "com.zencas.edhr.workflow.controller.WorkflowTaskPaginationPostgresTest",
+      "freshReport": true,
+      "xmlSha256": "2e41489e879b70f5359936699827fd9600399867f9ab3105a2eb4886b4fb2e2d",
+      "cases": [
+        {
+          "name": "normalPagesPreserveOrderOperatorScopeDhrExclusionAndArrayContract(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "normalPagesPreserveOrderOperatorScopeDhrExclusionAndArrayContract(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "paginationDoesNotBypassAuthentication(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "paginationDoesNotBypassAuthentication(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "emptyQueuesKeepValidEmptyResponsesAndStillRejectInvalidPagination(String)[1]",
+          "status": "failure",
+          "message": "Status expected:<200> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "emptyQueuesKeepValidEmptyResponsesAndStillRejectInvalidPagination(String)[2]",
+          "status": "failure",
+          "message": "Status expected:<200> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[1]",
+          "status": "failure",
+          "message": "Status expected:<200> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[2]",
+          "status": "failure",
+          "message": "\nExpecting empty but was: [101L, 102L, 103L, 104L, 105L]",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[3]",
+          "status": "failure",
+          "message": "Status expected:<200> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[4]",
+          "status": "failure",
+          "message": "Status expected:<200> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[6]",
+          "status": "failure",
+          "message": "Status expected:<200> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[7]",
+          "status": "failure",
+          "message": "\nExpecting empty but was: [201L, 202L, 203L, 204L, 205L]",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[8]",
+          "status": "failure",
+          "message": "Status expected:<200> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[9]",
+          "status": "failure",
+          "message": "Status expected:<200> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage(String, int, int)[10]",
+          "status": "passed"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[1]",
+          "status": "failure",
+          "message": "Status expected:<400> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[2]",
+          "status": "failure",
+          "message": "Status expected:<400> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[3]",
+          "status": "failure",
+          "message": "Status expected:<400> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[4]",
+          "status": "failure",
+          "message": "Status expected:<400> but was:<200>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[5]",
+          "status": "failure",
+          "message": "Status expected:<400> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[6]",
+          "status": "failure",
+          "message": "Status expected:<400> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[7]",
+          "status": "failure",
+          "message": "Status expected:<400> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[8]",
+          "status": "failure",
+          "message": "Status expected:<400> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[9]",
+          "status": "failure",
+          "message": "Status expected:<400> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[10]",
+          "status": "failure",
+          "message": "Status expected:<400> but was:<200>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[11]",
+          "status": "failure",
+          "message": "Status expected:<400> but was:<500>",
+          "type": "java.lang.AssertionError"
+        },
+        {
+          "name": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows(String, int, int)[12]",
+          "status": "failure",
+          "message": "Status expected:<400> but was:<500>",
+          "type": "java.lang.AssertionError"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 28,
+    "failures": 22,
+    "errors": 0,
+    "skipped": 0
+  }
+}

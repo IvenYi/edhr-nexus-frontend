@@ -1,0 +1,81 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261021-TASK-PAGINATION
+  scope: edhr-dev整体审查W3待办/已办读取的分页输入及整数溢出；不改变候选、排序、DHR边界或动作政策。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 13def47d4def51237d1393eaa7bf2651e98a0cbd
+    targetBranch: edhr-dev
+    targetCommit: 13def47d4def51237d1393eaa7bf2651e98a0cbd
+    contractReadCommit: 13def47d4def51237d1393eaa7bf2651e98a0cbd
+    uncommittedContractPaths: []
+  summary: PR22人工合入且整树与1b80df62相同。继续核对todo/done，先以真实JWT/MockMvc/PG验证非正参数和int溢出，再作最小局部修复。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.task-pagination-positive-safe-offset
+      statement: page/size沿用既有1基分页约定；非正值应为参数错误，正值超出实际队列应返回空数组，不能因int回绕返回第一页或500。
+      rationale: 已有前端及默认page=1/size=50、现有超出队列空数组分支；属于技术输入与算术修复，不制定新的业务规则或最大页长。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: workflow-task-queue-http
+        change: 仅todo/done校验正page/size，以long计算偏移和结尾，并在有界后转换为List下标。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java]
+    transitiveImpacts:
+      - area: existing-task-list-consumers
+        change: 成功响应仍为ApiResponse列表、既有默认分页及正常大size保持；错误参数用现有GENERAL_001/HTTP400。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java]
+    potentialImpacts:
+      - area: other-list-controllers
+        concern: 未审计的其他分页入口可能有相邻问题，当前不据此全站重构或修改通用异常策略。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: workflow-policy-and-membership
+        reason: 认证用户来源、候选/开放候选、当前责任、DHR专属排除、SQL排序、动作和管理员写规则保持。
+      - area: knowledge-business-semantics
+        reason: 不新增或替代业务概念、状态、权限、审计、冻结或生命周期政策；分页技术约束不写为新DEC。
+    compatibilityAndMigration: [无数据库结构或存量数据变更；正常1基页码和超出队列空数组保持，非正参数由不稳定500/200空改为400。]
+    snapshotImpacts: [读取不会修改冻结快照、任务、实例、日志或审计记录。]
+    auditImpacts: [原审计写入与历史摘要不改；通过真实行快照核对读取前后无变化。]
+    permissionImpacts: [匿名仍401；伪造assigneeId不改变真实JWT用户队列，DHR及其他用户任务仍排除。]
+    testImpacts:
+      - scope: actual-jwt-http-and-native-postgres
+        scenarios: [非正及INT_MIN页码页长, 负偏移溢出, 正向回绕错页, 正start加法溢出, INT_MAX合法第一页, 正常分页及末页, 默认参数, 空队列, 身份伪造与匿名, DHR及其他用户排除, 数据不变]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java]
+    evidenceGaps: [初始只有源码线索，等待真实红绿及独立质量验收；完整W2/W3及W4-W7并未完成。]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在已有两个队列读取入口修正输入与下标，无新分页框架、客户端分支、任意最大页长或数据库查询重构。
+    ownershipBoundaries:
+      - owner: workflow-task-controller
+        responsibility: 既有列表读取的技术参数及安全下标。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java
+      changeType: update
+      reason: 只修todo/done的非法分页及int回绕。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java
+      changeType: create
+      reason: 复用既有真实JWT安全和JPA配置，以真实PG查询验证端到端HTTP行为及持久化不变。
+    - path: docs/development/branch-review-20261021-task-pagination
+      changeType: create
+      reason: 新固定基线、原件、范围、进度和独立验收。
+  acceptanceScenarios:
+    - id: scenario.task-queue-safe-pagination
+      given: 同一认证用户有合法有序队列，并有其他用户及DHR干扰数据
+      when: 请求正常、非正或会发生int回绕的正page/size
+      then: 正常分页和原身份边界保持，非正400、正超范围空数组，原任务/实例/日志/审计不变。
+      evidenceRequirements: [同组旧基线红证, 修复后真实JWT/MockMvc/PG, 既有授权及控制器回归, 全新独立验收]
+gateAssessment:
+  level: L2
+  qualityGateTriggered: true
+  ontologyGateTriggered: false
+  ontologyResult:
+    result: not-applicable
+    reason: 只修读取接口技术分页参数和整数运算，不变更任何业务知识定义、规则、执行动作、审计或快照语义；不新增知识资产或业务政策。
+  upgradeConditions: [若发现需改候选/权限/状态/审计写入或业务政策，将暂停依赖项并补相应本体门禁和影响分析；当前无此授权推断。]

@@ -1,0 +1,120 @@
+{
+  "author": "/root",
+  "fixedCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+  "sourceScopes": [
+    {
+      "id": "page-primary:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "method": "todo",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "range": [
+        89,
+        106
+      ],
+      "blob": "6031d1ca1a459d21ae08e26089c0e0ff114fec1c",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "readDepth": "primary-authored-and-executed-finite-method",
+      "conclusion": "positive page/size, safe long offset and bounded slice; actual main52 pass",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "page-primary:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "method": "done",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "range": [
+        112,
+        128
+      ],
+      "blob": "6031d1ca1a459d21ae08e26089c0e0ff114fec1c",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "readDepth": "primary-authored-and-executed-finite-method",
+      "conclusion": "same done queue boundaries and unchanged selection/order; actual main52 pass",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "page-primary:003",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java",
+      "method": "nonPositivePageOrSizeReturnsBadRequestWithoutChangingRows",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "range": [
+        86,
+        91
+      ],
+      "blob": "60dce108abf250c1cb6f02ccafba270f75faa985",
+      "sha256": "9848c9b17b8f6d046c1b4801acbe055883d01d2e15ab3f8b4a944e9b2d43ff90",
+      "readDepth": "primary-authored-and-executed-finite-method",
+      "conclusion": "Actual named parameterized HTTP/nativePG behavior from primary clean52; not whole-file or independent acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "page-primary:004",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java",
+      "method": "positiveDistantPagesReturnEmptyWithoutOverflowOrWrappingToFirstPage",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "range": [
+        101,
+        105
+      ],
+      "blob": "60dce108abf250c1cb6f02ccafba270f75faa985",
+      "sha256": "9848c9b17b8f6d046c1b4801acbe055883d01d2e15ab3f8b4a944e9b2d43ff90",
+      "readDepth": "primary-authored-and-executed-finite-method",
+      "conclusion": "Actual named parameterized HTTP/nativePG behavior from primary clean52; not whole-file or independent acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "page-primary:005",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java",
+      "method": "normalPagesPreserveOrderOperatorScopeDhrExclusionAndArrayContract",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "range": [
+        108,
+        119
+      ],
+      "blob": "60dce108abf250c1cb6f02ccafba270f75faa985",
+      "sha256": "9848c9b17b8f6d046c1b4801acbe055883d01d2e15ab3f8b4a944e9b2d43ff90",
+      "readDepth": "primary-authored-and-executed-finite-method",
+      "conclusion": "Actual named parameterized HTTP/nativePG behavior from primary clean52; not whole-file or independent acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "page-primary:006",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java",
+      "method": "emptyQueuesKeepValidEmptyResponsesAndStillRejectInvalidPagination",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "range": [
+        122,
+        129
+      ],
+      "blob": "60dce108abf250c1cb6f02ccafba270f75faa985",
+      "sha256": "9848c9b17b8f6d046c1b4801acbe055883d01d2e15ab3f8b4a944e9b2d43ff90",
+      "readDepth": "primary-authored-and-executed-finite-method",
+      "conclusion": "Actual named parameterized HTTP/nativePG behavior from primary clean52; not whole-file or independent acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "page-primary:007",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskPaginationPostgresTest.java",
+      "method": "paginationDoesNotBypassAuthentication",
+      "sourceCommit": "25e974e03813f6403618ce8a9efc735cafd429a2",
+      "range": [
+        132,
+        138
+      ],
+      "blob": "60dce108abf250c1cb6f02ccafba270f75faa985",
+      "sha256": "9848c9b17b8f6d046c1b4801acbe055883d01d2e15ab3f8b4a944e9b2d43ff90",
+      "readDepth": "primary-authored-and-executed-finite-method",
+      "conclusion": "Actual named parameterized HTTP/nativePG behavior from primary clean52; not whole-file or independent acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    }
+  ],
+  "wholeFileReviewComplete": false,
+  "runtimeQualification": "Primary actual28 red and52 green; run-time HEAD target with dirty implementation, later core exact bytes. Not independent acceptance."
+}

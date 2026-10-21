@@ -1,5 +1,11 @@
 # 持续推进台账
 
+当前检查点：[待办与已办分页边界](../branch-review-20261021-task-pagination/README.md)。已fetch最新edhr-dev@13def47d，PR22人工合入且整树与1b80df62相同、契约无增量。W3D-TASK-PAGINATION-001已用真实JWT/filter/MockMvc/PG同组28复现22红/6正、0error/skip；核心25e974e0仅修todo/done非正400和long有界下标，不加任意页长上限、不变SQL/身份/候选/DHR隔离/动作/返回数组。主侧clean52（28新+原控制器2+实例授权22，50原生PG）全过，0失败/错误/跳过；当前等待干净固定候选的全新独立验收，未创建新PR。
+
+本批知识业务定义和资产未变，本体门禁not-applicable，依据在决策包；不新增虚假语义已审记录。PR22真实passed8/8只用于承接已验签名项，其余47原问题保持；2839路径/2552ID为合并时点初始分母，当前冻结新清单仍待生成。W2/W3余项、W4–W7、四gap、记录控制/两项DHR high/A12暂缓、历史签名不可恢复及旧AuditEvent问题保持；generic动作类型政策仍待用户答复。PR前在全部角色FINAL后实际做范围/进度复核，不自动merge/deploy。
+
+## PR22交付时的历史检查点
+
 已交付 [PR22](https://github.com/IvenYi/edhr-nexus-frontend/pull/22)，audit/edhr-dev-signature-payload-20261021 → edhr-dev，等待用户人工merge。正式独立受测aaef52a7，随后仅L0档案/验收/范围和PR登记；最新目标仍c3343f45，当前产品/测试/知识/契约及冻结catalog/ledger与受测版本相同。下一批收到合入消息先显式fetch最新edhr-dev，优先复现待办/已办分页边界并推进W3余项；通用动作矩阵等待真实业务答复。不能把PR已创建当已合并，旧历史签名不可恢复及整体W2/W3、W4–W7和用户暂缓保持。
 
 本轮全新独立对aaef52a7已正式passed/FINAL，8/8必需检查，clean104业务（18原生PG）+89知识均0失败/错误/跳过；独立重现旧7例真实红及原件/ledger核验完成。本体及全部子实例FINAL后，已在PR前实际向用户汇报任务无漂移、当前进度和后续。签名high的最终验收见[acceptance](../branch-review-20261021-signature-payload/acceptance.json)，冻结目录不回写；当前仅L0原件归档/PR交付。自建合成PG按确切ID清理，不自动merge/deploy。
