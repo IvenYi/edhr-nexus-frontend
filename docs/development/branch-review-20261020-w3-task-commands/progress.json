@@ -1,0 +1,21 @@
+{
+  "schema": "edhr-audit-batch-progress/v1",
+  "level": "L2",
+  "targetBranch": "edhr-dev",
+  "targetCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "coreCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+  "knowledgeCommit": "684db88a5a25168cc7df301b947fd7528285ad46",
+  "catalogBaseline": "bc30d411ab6a7312099943db8581d0583152a9e0",
+  "stage": "awaiting-fresh-independent-acceptance",
+  "inventory": {"trackedPaths": 2711, "currentKnowledgeIds": 2548, "classificationIsNotHumanReview": true},
+  "source": {"recordedOverlappingScopes": 392, "inherited": 314, "historicalAuxiliaryClaims": 67, "primaryFiniteScopes": 11, "needsDeltaReview": 100, "wholeFilesCompleted": 0, "interruptedHelperFinalNotInvented": true},
+  "semantic": {"historicalAndCurrentScopedRows": 96, "priorRows": 90, "currentFormalFiniteRows": 6, "notDistinctIds": true, "needsDeltaReview": 57, "historicalEvidenceGaps": 4, "structureValidationIsNotFullSemanticReview": true},
+  "findings": {"records": 47, "notDistinctProductDefects": true, "currentFixedAwaitingIndependentAcceptance": ["W3C-INSTANCE-WRITE-AUTH-001"], "priorSixAcceptedByPr20Originals": true},
+  "runtime": {"primaryLastBusinessGroup": 89, "primaryNativePostgresSubset": 45, "primaryFailures": 0, "primaryErrors": 0, "primarySkipped": 0, "formalKnowledgeTests": 89, "formalKnowledgeFailures": 0, "formalKnowledgeSkipped": 0, "repeatRunsNotAdded": true, "dhrLifecycleUsesH2": true, "independentQuality": "pending", "browserVisualBuild": "not-applicable-no-frontend-change", "migration": "not-applicable-no-schema-change"},
+  "ontology": {"result": "updated", "author": "/root/w3c_ontology_final", "status": "FINAL", "childInstances": [], "knowledgeVersionBeforeAndAfter": "0.3.25", "onlyTwoEvidenceIdsAdded": true},
+  "interruptedProfessionalResults": {"reusedAsFinal": false, "qualification": "Lost sessions had no final ontology/quality artifacts; required gates are completed by actual resumed fresh instances, not a claimed terminal status for absent sessions."},
+  "remaining": ["complete W2/W3 audit", "W4 H006/H007/H008 adjudication", "W5 digest/native database and migration/background review", "W6 scoped extraction and W7 coverage/integration", "four historical knowledge evidence gaps", "user-deferred record-control integration, two DHR high and A12"],
+  "overallAuditComplete": false,
+  "overallPercent": null,
+  "mergeOrDeployAuthorized": false
+}
