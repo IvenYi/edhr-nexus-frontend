@@ -1,0 +1,128 @@
+{
+  "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "phase": "new test on unchanged product baseline",
+  "exit": 1,
+  "freshReport": true,
+  "database": "owned synthetic loopback PostgreSQL",
+  "fixtureSha256": "113eb452c37fb1d5972a3d71e7c91dfbdfee14e191f04b55091a4b2d10205b4a",
+  "suite": {
+    "name": "com.zencas.edhr.workflow.controller.WorkflowInstanceAuthorizationIntegrationTest",
+    "tests": "22",
+    "failures": "0",
+    "errors": "22",
+    "skipped": "0"
+  },
+  "cases": [
+    {
+      "name": "authorizedDedicatedTerminationKeepsTaskAndLogChangesTogether",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[1]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[2]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[3]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[1]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[2]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[3]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "taskAdministrativeWritesAndTerminationAlreadyRequireInterventionAuthority",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "ordinaryReaderKeepsExistingReadEndpoints",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[1]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[2]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[3]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[1]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[2]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[3]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[4]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[5]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[6]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[7]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[8]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[9]",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    },
+    {
+      "name": "candidateCanCompleteThroughEngineWithoutAdministrativeWritePermission",
+      "status": "error",
+      "message": "No EntityManager with actual transaction available for current thread - cannot reliably process 'merge' call"
+    }
+  ],
+  "xmlSha256": "6679073a1b9667dd54dc9cb2e39d83a71654c376e8d5a72c1bd4795136b40bb2"
+}

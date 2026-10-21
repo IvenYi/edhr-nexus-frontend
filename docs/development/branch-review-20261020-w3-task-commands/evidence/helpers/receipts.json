@@ -1,0 +1,75 @@
+{
+  "files": [
+    {
+      "path": "evidence/helpers/edhr-w3c-command-source-map.json",
+      "source": "/tmp/edhr-w3c-command-source-map.json",
+      "sha256": "71798d741350166786df7a43a42fc097d5c6e6b9b4e7257d6fe561de20ad9125",
+      "bytes": 37844
+    },
+    {
+      "path": "evidence/helpers/edhr-w3c-command-front-consumers.json",
+      "source": "/tmp/edhr-w3c-command-front-consumers.json",
+      "sha256": "65b31d0e162d3fcfa7a616e968cee6c48f72818f6edafd8a2eacacb0a29c4d4f",
+      "bytes": 14837
+    },
+    {
+      "path": "evidence/helpers/edhr-w3c-command-front-consumers-receipts.json",
+      "source": "/tmp/edhr-w3c-command-front-consumers-receipts.json",
+      "sha256": "cafc5c5daa178a97497700dcce5d7d49c0871c2f60040a2de914ca923ac0cda8",
+      "bytes": 479
+    },
+    {
+      "path": "evidence/helpers/edhr-w3c-signature-policy-history.json",
+      "source": "/tmp/edhr-w3c-signature-policy-history.json",
+      "sha256": "a9eaa06ae56b5b40a6193c50528366ef296dd72df446e75f6426d303da351f80",
+      "bytes": 22097
+    },
+    {
+      "path": "evidence/helpers/edhr-w3c-resumed-command-verification.json",
+      "source": "/tmp/edhr-w3c-resumed-command-verification.json",
+      "sha256": "461710fbbf3b33fd44e52db0cef8c8e38b20349cccf192bac9ae9b827973535e",
+      "bytes": 51472
+    },
+    {
+      "path": "evidence/helpers/edhr-w3c-baseline-support.json",
+      "source": "/tmp/edhr-w3c-baseline-support.json",
+      "sha256": "a6108ff112f16372a4d6f128f72f4dbeac688aacde2c6845584d2e60e8682908",
+      "bytes": 7702
+    },
+    {
+      "path": "evidence/helpers/edhr-w3c-baseline-receipts.json",
+      "source": "/tmp/edhr-w3c-baseline-receipts.json",
+      "sha256": "864755a6b37760cc9faf508e40a6d55476c6a59939ccab56d36d5ce1987d04e0",
+      "bytes": 787
+    },
+    {
+      "path": "evidence/helpers/edhr-w3c-prepare-baseline-catalog.py",
+      "source": "/tmp/edhr-w3c-prepare-baseline-catalog.py",
+      "sha256": "398bc1a7114177886e3871cd6188ce317776f29f46a328bec65fbfce90d95fa7",
+      "bytes": 14965
+    }
+  ],
+  "zipMembers": [
+    {
+      "member": "edhr-w3c-command-source-review.md",
+      "sha256": "931dce986bbba7fedf5fa5fd07992865b4a00284c8fd709208665668b641491b",
+      "bytes": 6878
+    },
+    {
+      "member": "edhr-w3c-command-front-consumers.md",
+      "sha256": "6d4b74c1f5af09bbef77da02866c8c7522889588f106b1125ab8400dc9a4544f",
+      "bytes": 2287
+    },
+    {
+      "member": "edhr-w3c-signature-policy-history.md",
+      "sha256": "e4ec480168a5bb39fab1ed4d8fef7c414a58cd36b4d87dd3b0c9946fc5fbd8d1",
+      "bytes": 4503
+    },
+    {
+      "member": "edhr-w3c-resumed-command-verification.md",
+      "sha256": "70cce98299046bb01718f2d619da90636051b421af652375a0329ec538d0861b",
+      "bytes": 2257
+    }
+  ],
+  "qualification": "Original read-only source assistance and mechanical carry-forward, not formal ontology or QA. Original command/front artifacts and interrupted signature-policy artifacts are retained as historical scoped claims. Resumed verification distinguishes mechanical checks from actual rereads. RuntimeExecuted=false; wholeFileOrBranchAcceptance=false. Original in-progress instances were lost on interruption; no absent FINAL or gate result is invented. New formal ontology/QA results are required separately."
+}

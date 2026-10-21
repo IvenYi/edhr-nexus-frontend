@@ -1,0 +1,84 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261020-W3-TASK-COMMANDS
+  scope: edhr-dev整体审查W3通用任务与实例命令边界；本批整改普通账号可绕过流程干预权限直接写实例的缺口。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: e8ecc103c8e6825c61c61b39b9cbd12b1474700e
+    targetBranch: edhr-dev
+    targetCommit: e8ecc103c8e6825c61c61b39b9cbd12b1474700e
+    contractReadCommit: e8ecc103c8e6825c61c61b39b9cbd12b1474700e
+    uncommittedContractPaths: []
+  summary: PR20人工合入且树与交付a23f94c2相同。普通登录者可通过instance裸CRUD直接覆盖运行状态/节点/版本/上下文，绕过已有terminate及task管理入口的workflow.intervene；先真实HTTP/PG复现，再共享既有权限声明补齐三入口。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  existingImplementationEvidence:
+    - gmp-platform/backend/src/main/resources/db/changelog/0002-seed-data.sql:workflow.intervene流程干预权限
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java:terminate
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java:create/update/delete
+    - docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml
+    - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+  inferred:
+    - id: inference.w3c-instance-write-authority
+      statement: 三个直接实例管理写入口复用已有workflow.intervene，堵住普通登录者绕过受控流程命令的替代写路径。
+      rationale: 现有权限码与同一实例terminate、任务管理写入口已使用同一能力；本批是局部权限遗漏纠正，不增加角色或权限模型。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: workflow-instance-administrative-write
+        change: POST/PUT/DELETE在调用控制器主体前要求workflow.intervene；未授权401/403且持久化原件不变。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java]
+    transitiveImpacts:
+      - area: task-and-instance-consistency
+        change: 普通账号不能直接覆盖实例状态/当前节点使任务和实例脱节；正常候选完成/转办与专用终止路径继续按原引擎执行。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java]
+    potentialImpacts:
+      - area: managed-instance-raw-crud-and-signature-reference
+        concern: 管理员裸CRUD内容约束、记录控制P0禁止干预及optional签名引用需按各自契约/延期范围核对，不由本次权限补漏推定全部合规。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml, docs/knowledge/open-questions.yaml]
+    unaffectedAreas:
+      - area: production-and-dhr
+        reason: 不改普通生产表单或DHR专属状态/签署规则，不扩展完整多租户隔离，不开发用户暂缓记录控制。
+    compatibilityAndMigration: [不新增迁移/依赖/权限码，不恢复历史或修改既有实例；原授权管理操作保持原行为，不把原管理员能力据此认证为全部合法。]
+    snapshotImpacts: [未授权请求不能改写版本/上下文/摘要引用；不重算或补写已有快照。]
+    auditImpacts: [无权请求零持久化写入，不造成实例状态和已有日志/任务部分改变；不修改W5既有摘要算法或声明重算通过。]
+    permissionImpacts: [三写入口复用workflow.intervene；读取与候选任务处理不追加新权限；客户端伪造operator或页面权限不能替代真实签名JWT权限。]
+    testImpacts:
+      - scope: actual-jwt-filter-method-security-and-persistence
+        scenarios: [未登录401, 无权限/仅页面/审批权限403, 三写请求及实例原状态/任务/日志不变, 有流程干预权限正向管理操作, 已授权DHR防绕过保持, 普通读取及当前候选动作保持, 既有转办/终止和签署回归]
+        evidenceReferences: []
+    evidenceGaps: [全量分支审查未完成；仅静态源线索不能替代运行实证，完整管理者重分配签名和多租户隔离等未决不由本批补齐。]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用现有Spring方法权限与已有权限码，只补三处声明，不引入第二套授权或引擎重构。
+    ownershipBoundaries:
+      - owner: WorkflowInstanceController
+        responsibility: HTTP直接实例管理写的权限入口。
+      - owner: WorkflowEngine
+        responsibility: 保持已有候选处理、锁、状态与DHR专属防绕过。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java
+      changeType: update
+      reason: 三个管理写入口权限补漏。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowInstanceAuthorizationIntegrationTest.java
+      changeType: create
+      reason: 真实认证过滤链、方法权限及数据库零写/正向回读，避免仅检查注解存在。
+    - path: docs/development/branch-review-20261020-w3-task-commands
+      changeType: create
+      reason: 新固定基线/方法范围/原件/验收持续记录，不覆盖PR20台账。
+  acceptanceScenarios:
+    - id: scenario.w3c-instance-management-requires-intervention-authority
+      given: 普通已登录用户没有workflow.intervene，已存在运行实例及任务和日志
+      when: 尝试新建、覆盖状态/上下文或删除实例，包括伪造operator和仅页面/审批权限
+      then: 请求403，实例/任务/日志均不变；未登录401。
+      evidenceRequirements: [固定旧基线真实HTTP红证, 修复后原生PG回读, 授权操作正向, 全新独立验收]
+    - id: scenario.w3c-existing-runtime-boundaries-retained
+      given: 具有流程干预权限的操作人或正常任务候选人
+      when: 沿各自原有允许入口执行，或尝试通过通用写入口改DHR
+      then: 原允许行为保持；DHR专属保护继续拒绝，读取不新增权限，不替未决签名或延期记录控制建立新政策。
+      evidenceRequirements: [管理员及候选正向, DHR防绕过, 相邻回归]

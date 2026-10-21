@@ -1,5 +1,11 @@
 # 持续推进台账
 
+当前检查点：[W3实例管理写入口权限](../branch-review-20261020-w3-task-commands/README.md)。已显式fetch最新edhr-dev@e8ecc103，PR20人工合并树与交付a23f94c2相同，PR5–20不重开。本批L2只给instance POST/PUT/DELETE补既有workflow.intervene，核心fc098003；真实JWT/PG同组22旧基线9红13正、修复22绿，主侧最后89Java全通过0skip，含45原生PG。当前知识同步及全新独立复验待完成，尚未创建PR，不提前计为已验收。中断前未返回的正式角色结果没有复用，由恢复后的实际实例重新完成门禁。
+
+本批保留管理员内容策略/通用签名引用/非法动作等相邻范围，不开发用户暂缓记录控制。新签名JSONB与DhrArchive读时重算只有源码线索，后续W5须单独原生PG验证；旧W5-AUDIT-HASH-001不因此关闭。当前全分支没有可信完成百分比，完整W2/W3、W4–W7、四旧gap、两项用户暂缓DHR high/A12继续保留。最终台账分母与范围以本批固定catalog/ledger为准，旧314范围/90历史语义/46问题原件保持，只依原验收承接PR20六项处置。
+
+## PR20交付时的历史检查点
+
 已交付 [PR20](https://github.com/IvenYi/edhr-nexus-frontend/pull/20)，来源audit/edhr-dev-w3-write-boundaries-20261020，目标edhr-dev，等待人工合并。实际独立受测b8051583；此后仅L0归档、acceptance overlay、任务复核及PR登记，产品/测试/知识与冻结catalog/ledger保持。下一轮收到人工合入信息先显式fetch，不把已创建PR当作已经合并。
 
 本批最终全新独立对b8051583已正式passed，24/24必需检查通过，业务292+知识89、39原生PG、36浏览器及构建通过，两首轮说明问题resolved，原failed保留。全部专业实例FINAL后已实际完成[PR前范围/进度复核](../branch-review-20261020-w3-write-boundaries/scope-review.md)并向用户汇报；六项本批修复/纠正以acceptance.json单独登记，冻结总账不改。临时PG自建容器已按确切ID移除。当前只做L0归档/PR交付，人工合并后继续显式fetch和W3剩余，再推进W4–W7；不自动merge/deploy。

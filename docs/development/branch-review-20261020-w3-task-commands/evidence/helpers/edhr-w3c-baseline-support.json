@@ -1,0 +1,206 @@
+{
+  "schema": "edhr-readonly-baseline-catalog-support/v1",
+  "role": "L0 readonly maintenance support, not quality acceptance",
+  "contractBaseline": {
+    "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "contractReadCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "sourceCatalog": {
+    "path": "docs/development/branch-review-20261020-w3-write-boundaries/recheck/source-catalog.json",
+    "commit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "sha256": "e9ec0398f810a6bc3869dc1af5b6c7c977aadcc4f3f5e9798557ecc4d7203052",
+    "locator": "/"
+  },
+  "mergeProof": {
+    "kind": "git-commit-and-tree-mechanical-comparison",
+    "mergeCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "mergeParents": [
+      "a8285be9b91fb76bcb27ccb16a5258bda1fb5077",
+      "a23f94c2617f35ba7147b070b341a63a65a23541"
+    ],
+    "mergeSubject": "Merge pull request #20 from IvenYi/audit/edhr-dev-w3-write-boundaries-20261020",
+    "deliveryCommit": "a23f94c2617f35ba7147b070b341a63a65a23541",
+    "mergeTree": "5c88285b63083b57aaf42c1c7d6707126c66225f",
+    "deliveryTree": "5c88285b63083b57aaf42c1c7d6707126c66225f",
+    "treeEqual": true,
+    "testedCommit": "b8051583f6c85d52260174e6da191f36bb2c1de8",
+    "unchangedComparedToTestedPaths": [
+      "gmp-platform",
+      "scripts",
+      "docs/knowledge",
+      "docs/architecture",
+      "docs/agents",
+      "AGENTS.md",
+      "codeplzreadme.md",
+      "DESIGN.md",
+      "docs/development/branch-review-20261020-w3-write-boundaries/recheck/source-catalog.json",
+      "docs/development/branch-review-20261020-w3-write-boundaries/recheck/ledger",
+      "docs/development/branch-review-20261020-w3-write-boundaries/source-catalog.json",
+      "docs/development/branch-review-20261020-w3-write-boundaries/ledger"
+    ],
+    "changedProtectedPathsComparedToTested": [],
+    "mergeIsNotNewRuntimeAcceptance": true
+  },
+  "inventory": {
+    "trackedPaths": 2671,
+    "currentKnowledgeIds": 2546
+  },
+  "inherited": {
+    "methods": 314,
+    "semanticSources": 4,
+    "historicalSemanticRecords": 90,
+    "findingRecords": 46,
+    "methodsExact": true,
+    "semanticSourcesExact": true,
+    "other40FindingsExact": true,
+    "sourceCarryStates": {
+      "needs-delta-review": 93,
+      "retained-scoped-evidence": 221
+    },
+    "semanticCarryStates": {
+      "retained-scoped-evidence": 33,
+      "needs-delta-review": 57
+    },
+    "semanticRecordRelations": {
+      "unchanged": 86,
+      "record-changed": 4
+    },
+    "historicalSemanticConclusions": {
+      "consistent": 85,
+      "superseded": 1,
+      "evidence-gap": 4
+    },
+    "wholeFilesCompleted": 0
+  },
+  "dispositions": {
+    "known-fixed-before-audit": 10,
+    "fixed-and-independently-accepted": 28,
+    "pending-adjudication": 3,
+    "corrected-in-l0-documentation": 1,
+    "corrected-and-independently-accepted-l0": 1,
+    "user-deferred": 2,
+    "preexisting-medium-open": 1
+  },
+  "qualityReportIndex": {
+    "artifacts": 73,
+    "reportedHistoricalResults": {
+      "passed": 51,
+      "failed": 21,
+      "blocked": 1
+    },
+    "ontologyMaintenanceArtifacts": 29,
+    "currentRuntimeExecutedByThisTask": false
+  },
+  "acceptedPriorFindings": [
+    "AUD-H009",
+    "AUD-H010",
+    "AUD-H012",
+    "QF-W3-TENANT-KNOWLEDGE-001",
+    "QF-W3-UI-DOC-COUNT-001",
+    "W3-TRANSFER-LOCK-001"
+  ],
+  "draft": {
+    "path": "/tmp/edhr-w3c-baseline-catalog-draft.json",
+    "bytes": 691756,
+    "sha256": "b5f6dd9633ad8b3e66c214a3a3f27c2ef6564db9d9694bf87a9b49ca3b0a41a4"
+  },
+  "generator": {
+    "path": "scripts/build-branch-review-ledger.py",
+    "sha256": "98a85e3ec3137910742338ad51c0334ed70a09d3db6d15cc4e3ef5758e353050",
+    "fixedTemporaryCopy": "/tmp/edhr-w3c-baseline-fixed-ledger-generator.py"
+  },
+  "productTestsExecuted": [],
+  "newSemanticReviewsPerformed": 0,
+  "repositoryMutations": false,
+  "wholeBranchAccepted": false,
+  "retainedBoundaries": [
+    "W4 H006/H007/H008 pending adjudication",
+    "two user-deferred DHR highs",
+    "four old knowledge evidence gaps",
+    "A12",
+    "W5-AUDIT-HASH-001 medium/open",
+    "remaining W2/W3/W4–W7"
+  ],
+  "generationCommandAfterRootReview": [
+    "python3",
+    "scripts/build-branch-review-ledger.py",
+    "--ref",
+    "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "--catalog",
+    "docs/development/branch-review-20261020-w3-task-commands/source-catalog.json",
+    "--out",
+    "docs/development/branch-review-20261020-w3-task-commands/ledger"
+  ],
+  "limitations": [
+    "Current baseline draft has no new task-command source scopes or defect adjudications; root must add actual current work before final candidate generation.",
+    "Catalog baselineCommit must equal the selected fixed ledger --ref; later implementation commits require an explicit baseline update and re-evaluation, not a silent current-tree fallback.",
+    "Generated inventories and carried histories are not complete source/semantic/runtime acceptance; failed reports remain indexed as historical originals."
+  ],
+  "sourceReceipts": [
+    {
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/recheck/source-catalog.json",
+      "commit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "sha256": "e9ec0398f810a6bc3869dc1af5b6c7c977aadcc4f3f5e9798557ecc4d7203052",
+      "locator": "/"
+    },
+    {
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/acceptance.json",
+      "commit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "sha256": "b261196e4517a00d882b0070198ffbd2f38670aa4ec0f6f14f3f668278ea3b29",
+      "locator": "/"
+    },
+    {
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/evidence/independent-final/edhr-w3-final-independent-quality-result.yaml",
+      "commit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "sha256": "70fcbe1bdf15ccdb3a1b504ac1f016b67980be8a98cd15cb155475757d5c174e",
+      "locator": "/"
+    },
+    {
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/delivery.json",
+      "commit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "sha256": "dfc0382fead3bf310b2bbea2a3f2cc77f1d24d69b95f9c2b90d8b6477fd8e44e",
+      "locator": "/"
+    },
+    {
+      "path": "scripts/build-branch-review-ledger.py",
+      "commit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "sha256": "98a85e3ec3137910742338ad51c0334ed70a09d3db6d15cc4e3ef5758e353050",
+      "locator": "/"
+    },
+    {
+      "path": "scripts/build-branch-review-inventory.py",
+      "commit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "sha256": "f77668cbf93108bd9bef10a83f07e6ba8de0433e9fee75448b3dc4934221b9df",
+      "locator": "/"
+    },
+    {
+      "path": "AGENTS.md",
+      "commit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "locator": "/"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "commit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "locator": "/"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "commit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "locator": "/"
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "commit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84",
+      "locator": "/"
+    }
+  ]
+}

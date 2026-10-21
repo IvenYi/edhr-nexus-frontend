@@ -1,0 +1,44 @@
+{
+  "sourceCommit": "684db88a5a25168cc7df301b947fd7528285ad46",
+  "targetCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "contractBaseline": {
+    "sourceCommit": "684db88a5a25168cc7df301b947fd7528285ad46",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "contractReadCommit": "fc0980035d717fd1790ac72c907f940390540c4d",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "formalCommand": "bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f tools/knowledge-model/pom.xml clean test",
+  "commandExit": 0,
+  "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+  "counts": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "xmlSha256": "07c7eb000bb0a481fcd50318bd125e881c0c66a7dfcb30e03f088920569803db",
+  "rawLogAndXmlExcluded": true,
+  "yamlDocumentsParsed": 212,
+  "allCurrentKnowledgeFilesEqualFixedCommit": true,
+  "inventoryOnly": {
+    "priorKnowledgeIds": 2546,
+    "currentKnowledgeIds": 2548,
+    "addedEvidenceIds": [
+      "evidence.workflow-instance-administrative-write-authorization",
+      "evidence.workflow-instance-administrative-write-authorization-test"
+    ],
+    "changedExistingRecords": 0,
+    "notSemanticCoverage": true
+  },
+  "semanticReviews": {
+    "actualFiniteIdCount": 6,
+    "conclusions": {
+      "consistent": 6
+    },
+    "scope": "new2 evidence IDs and retained4 adjacent exact declarations/question; not whole records/files"
+  },
+  "workingTreeQualification": "Parent development ledger edits/untracked artifacts excluded; all knowledge and product bytes fixed. No working-tree Git commit is invented."
+}

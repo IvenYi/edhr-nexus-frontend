@@ -1,0 +1,499 @@
+{
+  "schema": "edhr-readonly-policy-history-support/v1",
+  "role": "read-only policy/history subhelper; not independent QA or ontologyResult",
+  "fixedCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+  "knowledgeModelVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "contractReadCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+    "uncommittedContractPaths": []
+  },
+  "references": [
+    {
+      "id": "policy-source-01",
+      "path": "AGENTS.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "lineRanges": [
+        [
+          1,
+          223
+        ]
+      ],
+      "sourceLineCount": 225,
+      "scope": "Read project governance and source/QA/ontology boundaries",
+      "readDepth": "selected-ids/lines",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-02",
+      "path": "codeplzreadme.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "2e7e18097620e602c4408b83f71404fae346f8be",
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2",
+      "lineRanges": null,
+      "sourceLineCount": 73,
+      "scope": "Read coding/source preservation principles",
+      "readDepth": "listed-policy-document",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-03",
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "lineRanges": [
+        [
+          1,
+          75
+        ]
+      ],
+      "sourceLineCount": 502,
+      "scope": "Read fixed Git baseline and decision-package provenance fields; not formal role output",
+      "readDepth": "selected-ids/lines",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-04",
+      "path": "docs/knowledge/decisions/DEC-0028-production-form-process-button-electronic-signature.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "a21c342245934186a5369395f2bd8cf4b5dbea77",
+      "sha256": "7865fe4d190bb25619ddca3907e432a932afce330e1e65982f3fdf695dd4b77c",
+      "lineRanges": null,
+      "sourceLineCount": 52,
+      "scope": "DEC0028 button-before-action event configuration, narrowly scoped",
+      "readDepth": "listed-policy-document",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-05",
+      "path": "docs/knowledge/decisions/DEC-0058-production-field-signature.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "243dd56bacd8f6d8968ff20832e5b991b8ed903f",
+      "sha256": "1f0a8b0516bd0b758fba4bcfea15745b99bab8a863c6ec90f41ec08ca69412be",
+      "lineRanges": null,
+      "sourceLineCount": 38,
+      "scope": "DEC0058 SIGN_FIELD personal authentication and per-copy invalidation",
+      "readDepth": "listed-policy-document",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-06",
+      "path": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "9cd069c4b2984125eca2be6ca6e1023dde26579a",
+      "sha256": "09d6cb083c1350f3c64a2abb8583ca9a4eb1a7b3a837cdd67b9f6dc28d9e2d3f",
+      "lineRanges": null,
+      "sourceLineCount": 68,
+      "scope": "DEC0074 only replaces button authentication mode; field signing retained",
+      "readDepth": "listed-policy-document",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-07",
+      "path": "docs/knowledge/decisions/DEC-0040-record-control-review-template-fixed-actions.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "ca8f32de47491dfb6db5dd1c3a713e44e0d73808",
+      "sha256": "b05c6c287bf30995f7bdca5d3a81837bbfb0f028577298a265662d0b561c53cc",
+      "lineRanges": null,
+      "sourceLineCount": 52,
+      "scope": "Historical deprecated decision fully superseded by DEC0041",
+      "readDepth": "listed-policy-document",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-08",
+      "path": "docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "dc35dd52a818f126c97e62c811d6124250a70043",
+      "sha256": "6504a9ff86aa6718d585097b27e23ab303f06186e40a99db8f74dad2d5c4fb39",
+      "lineRanges": null,
+      "sourceLineCount": 84,
+      "scope": "Confirmed record-control application signature/approval config; runtime boundary retained",
+      "readDepth": "listed-policy-document",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-09",
+      "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "72d334eb227b62e99a01ab4ed25e97d16b7fc1c8",
+      "sha256": "38f92ea22f53ea90166a49809683774434fd731c1f7eb1f64563cd13db1d96ee",
+      "lineRanges": null,
+      "sourceLineCount": 72,
+      "scope": "Stage1 requires signature reference/frozen idempotency but not closed application/authenticity workflow",
+      "readDepth": "listed-policy-document",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-10",
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "34b99929a91fc22d72fcba1cc0335fb91db35557",
+      "sha256": "c54fdb4f7265382572fe65da61f3a31aa06667f11a6718ecd5d998119ef065d7",
+      "lineRanges": null,
+      "sourceLineCount": 75,
+      "scope": "Candidate handling/frozen origin rule does not state universal generic signature requirement",
+      "readDepth": "listed-policy-document",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-11",
+      "path": "docs/knowledge/open-questions.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "a1f2b1140ea93c5daf54067cb4a40d6a6cd1d2b7",
+      "sha256": "de39e22befb4727e2a0bbc1c0f34837e5fe567c3a0d82a3671432e7271d57216",
+      "lineRanges": [
+        [
+          99,
+          114
+        ]
+      ],
+      "sourceLineCount": 159,
+      "scope": "Termination SOP and managerial-reassignment signature are open/scoped questions",
+      "readDepth": "selected-ids/lines",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-12",
+      "path": "docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "bfd9b4820ea8012530bf81078acedd6c36c51f53",
+      "sha256": "2ed11399abee88a568a8d8c75f6c6f5725aa5b38e1444b0a36d2afb7f4ea982f",
+      "lineRanges": null,
+      "sourceLineCount": 10,
+      "scope": "Original four user-confirmed task/candidate statements",
+      "readDepth": "listed-policy-document",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-13",
+      "path": "docs/knowledge/evidence/record-control-start-entry-user-confirmed.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "f4a9232c5278421bd1b5f534c42c9dcafcb293dc",
+      "sha256": "66330e41b5cd5322e6cb0257816e812013b99840a4c2a40151f31035f5785c74",
+      "lineRanges": null,
+      "sourceLineCount": 19,
+      "scope": "Original application signature and no START task confirmation; no implemented authenticity claim",
+      "readDepth": "listed-policy-document",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-14",
+      "path": "docs/knowledge/evidence/production-field-signature-confirmed.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "730959022fafb0a440e25a4625ecb3879d8935ce",
+      "sha256": "e7ee4c0f678ce82b614493cfdba17961876d9ae57a4cf14e0ad56e9cb9a8e116",
+      "lineRanges": null,
+      "sourceLineCount": 23,
+      "scope": "Original user confirmation and preexisting execution Signature CRUD protection",
+      "readDepth": "listed-policy-document",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-15",
+      "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "4c0433d173eafc124bf8c75abce82caf133481c4",
+      "sha256": "6e8a7ef08b2c76c854d2d66bf257e611e75f545cbdc75bacad2ef4039d67dff8",
+      "lineRanges": [
+        [
+          1,
+          22
+        ],
+        [
+          41,
+          65
+        ]
+      ],
+      "sourceLineCount": 96,
+      "scope": "Confirmed narrow button replacement and final source scope; older reports not current runtime",
+      "readDepth": "selected-ids/lines",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-16",
+      "path": "docs/knowledge/evidence/record-correction-void-design.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "ac8c37a909da830f1dc59ff4c40fc46f4d6069fe",
+      "sha256": "121d6637898997f4edb409d8c37b2a38b11a541deadb250303fec9e8a185d1d6",
+      "lineRanges": null,
+      "sourceLineCount": 32,
+      "scope": "Source pointers and explicit design/implementation maturity distinction",
+      "readDepth": "listed-policy-document",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-17",
+      "path": "docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "f0e61b7f86487ba762304b7f1c76bcb86c1c839f",
+      "sha256": "2a92e375a5e190639ac1a176882b3fcfa00d0eb95059ef11c68324022f9ae090",
+      "lineRanges": [
+        [
+          300,
+          314
+        ],
+        [
+          403,
+          436
+        ]
+      ],
+      "sourceLineCount": 481,
+      "scope": "P0 ownership/actions/logs/managerial-reassignment and no-termination boundaries",
+      "readDepth": "selected-ids/lines",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-18",
+      "path": "docs/development/record-control-work-allocation-and-integration-contract.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "0ec6e1392c0d6e62c8b1b6bb36154dfcc0dbb618",
+      "sha256": "ac11a5a12529aba7e146b3ed1c20511054b28a0af001c97db6a894197e3539f9",
+      "lineRanges": [
+        [
+          85,
+          128
+        ],
+        [
+          153,
+          175
+        ],
+        [
+          190,
+          201
+        ],
+        [
+          444,
+          474
+        ]
+      ],
+      "sourceLineCount": 856,
+      "scope": "Current integration scope: must validate required signatures and forbid raw CRUD modification/deletion; stage1/future phases separated",
+      "readDepth": "selected-ids/lines",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-19",
+      "path": "docs/knowledge/impact-analysis/record-control-workflow-stage1-contract.md",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "f9dfdc33a27bc2821c82396cda437c40861e87e0",
+      "sha256": "f8205982ae2f1e392c19c590d059ad0cc598f862a1677cb517a08431ffb97d1e",
+      "lineRanges": null,
+      "sourceLineCount": 46,
+      "scope": "Stage1 port owner explicitly defers application signature authenticity and future actions",
+      "readDepth": "listed-policy-document",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-20",
+      "path": "docs/knowledge/evidence/record-control-workflow-stage1.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "ebf2d3ddc9c735ca875a39d8cc664dfeba50b7fc",
+      "sha256": "3bee7986829362c75429f838f9a7aa00ca6f74e011fd4db5d1a813ce23ce4c57",
+      "lineRanges": [
+        [
+          11,
+          27
+        ],
+        [
+          31,
+          42
+        ]
+      ],
+      "sourceLineCount": 67,
+      "scope": "Stage1 requires nonempty signature reference and freezes it; no application verification claim",
+      "readDepth": "selected-ids/lines",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-21",
+      "path": "docs/knowledge/evidence/production-execution.yaml",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "38c68cff48fdc406d4abdfdafa78d0cb592ba3c6",
+      "sha256": "37006edb6ca2ff539568d5e95831343f31bde913553d6db5695bf866298e6f1d",
+      "lineRanges": [
+        [
+          85,
+          115
+        ]
+      ],
+      "sourceLineCount": 127,
+      "scope": "Existing authentic execution signing/CRUD protections and test-source claims",
+      "readDepth": "selected-ids/lines",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-22",
+      "path": "docs/development/branch-review-20261020-w3-write-boundaries/recheck/source-catalog.json",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "a0fd2642c92da8e7e725fb02d850591254e896b1",
+      "sha256": "e9ec0398f810a6bc3869dc1af5b6c7c977aadcc4f3f5e9798557ecc4d7203052",
+      "lineRanges": null,
+      "sourceLineCount": 11461,
+      "scope": "Read only all AUD-H001..21 metadata and signature-related entries via JSON; not full catalog review",
+      "readDepth": "selected-ids/lines",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-23",
+      "path": "docs/development/branch-review-20261015/history/history-dedup.json",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "0b621715fc3b381aa492fafe38b7db1278eab46a",
+      "sha256": "8b8a8eeb5a5adb973b4e83a18d76a1dd80126f0947587b08deb320fce99d6f62",
+      "lineRanges": null,
+      "sourceLineCount": 1078,
+      "scope": "Searched signature mentions and original source pointer; not whole semantic review",
+      "readDepth": "selected-ids/lines",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-24",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/Signature.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "51f78808272ecf92676bb30782b6412233b0fe46",
+      "sha256": "d249c060f51f8f8eeb7a0e137fde084d649fe89d400aa0e06393ee228ca6d117",
+      "lineRanges": null,
+      "sourceLineCount": 54,
+      "scope": "Source observation only: no global PreUpdate/PreRemove immutable guard; does not establish policy for unknown target types",
+      "readDepth": "listed-policy-document",
+      "wholeKnowledgeAuditComplete": false
+    },
+    {
+      "id": "policy-source-25",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java",
+      "sourceCommit": "e8ecc103c8e6825c61c61b39b9cbd12b1474700e",
+      "blob": "c78a92fecd70c559fdfe951cf172b6d5098218ae",
+      "sha256": "05871610ed74f0be15b8b5a260cf99e29e60728ec7c77752e47f384ea700a5b3",
+      "lineRanges": [
+        [
+          48,
+          80
+        ]
+      ],
+      "sourceLineCount": 80,
+      "scope": "Actual generic CRUD preexisting DHR_SUMMARY/PRODUCTION_EXECUTION/USER_PROFILE guards; no runtime check",
+      "readDepth": "selected-CRUD-guards",
+      "wholeKnowledgeAuditComplete": false
+    }
+  ],
+  "conclusions": [
+    {
+      "id": "policy.button-signature-scope",
+      "classification": "confirmed",
+      "conclusion": "DEC0028/0074 require actual signer authentication for configured ordinary production form button events, before the action. Cross-account signer must have current business rights; exact username admin only uses login-password exception. This is not evidence that every generic workflow task always requires a signature.",
+      "references": [
+        "policy-source-04",
+        "policy-source-06",
+        "policy-source-15"
+      ]
+    },
+    {
+      "id": "policy.field-signature-distinct",
+      "classification": "confirmed",
+      "conclusion": "SIGN_FIELD remains current-session-user personal electronic-signature password, valid certification and certified image. Button cross-account/admin exception does not extend to it; per-copy content changes invalidate current signatures while preserving original evidence. Existing production execution/profile/DHR authentic-signature protections must remain.",
+      "references": [
+        "policy-source-05",
+        "policy-source-06",
+        "policy-source-14",
+        "policy-source-21"
+      ]
+    },
+    {
+      "id": "policy.record-control-stage1-signature-reference",
+      "classification": "confirmed-boundary",
+      "conclusion": "DEC0042 stage1 freezes applicant signatureId/nonempty reference and rejects idempotency conflicts; authentic applicant signature verification is owned by the future record-control application confirmation transaction. Approval-button signature runtime and results are not implemented merely because DTO/configuration exists. DEC0040 is historical; DEC0041/42 govern current scope.",
+      "references": [
+        "policy-source-07",
+        "policy-source-08",
+        "policy-source-09",
+        "policy-source-13",
+        "policy-source-19",
+        "policy-source-20"
+      ]
+    },
+    {
+      "id": "policy.record-control-required-signature-validation",
+      "classification": "confirmed-design-not-runtime-acceptance",
+      "conclusion": "Integration contract lines195-201/452-456 explicitly requires configured signatures to be checked for current actor/action/business and actor from authentication; this is record-control integration semantics, not universal generic signature mandate. Root should check whether current callable runtime falsely claims/consumes such signed decisions, not silently invent a new generic auth mode.",
+      "references": [
+        "policy-source-18",
+        "policy-source-09"
+      ]
+    },
+    {
+      "id": "policy.managerial-reassignment-signature-open",
+      "classification": "unresolved",
+      "conclusion": "Whether managerial reassignment needs extra signature remains an explicit open question. Permission, valid target, reason and immutable audit are already specified; cannot silently require or silently omit an electronic-signature blocker by interpreting optional signatureId as a decided policy.",
+      "references": [
+        "policy-source-11",
+        "policy-source-18",
+        "policy-source-19"
+      ]
+    },
+    {
+      "id": "policy.raw-runtime-crud-and-termination",
+      "classification": "confirmed-design-boundary-source-lead",
+      "conclusion": "Integration contract195-201 forbids client generic CRUD modification/deletion of runtime logs/tasks/instances. Original P0 design314/420/422/426 forbids record-control/form-process termination, skipping/forcing/direct admin approval; reassign changes current responsibility only. This is a narrow existing rule worth checking against actual callable commands. It does not prove all unrelated generic workflow business types forbid termination. No runtime verification by this helper.",
+      "references": [
+        "policy-source-17",
+        "policy-source-18"
+      ]
+    },
+    {
+      "id": "policy.unknown-signature-target-types",
+      "classification": "evidence-gap",
+      "conclusion": "Reviewed authorities do not define an exhaustive permitted targetType list for all generic signatures or a universal auth protocol for every generic task. Existing three concrete authentic producer types cannot by themselves justify a new blanket whitelist/business rule. Source/consumer tracing remains required before calling unknown-type CRUD a business bypass.",
+      "references": [
+        "policy-source-04",
+        "policy-source-05",
+        "policy-source-06",
+        "policy-source-24",
+        "policy-source-25"
+      ]
+    }
+  ],
+  "historicalDedup": [
+    {
+      "id": "AUD-H015",
+      "conclusion": "KNOWN-APPROVAL-TENANT-001 / configured-subject tenant0 mismatch; affected ExecutionAccess; fix4601eb4907b146375ed14f6bcb568886457b247c; known-fixed-before-audit. Not an old universal generic-signature validation issue.",
+      "references": [
+        "policy-source-22"
+      ]
+    },
+    {
+      "id": "DEC0074-resolved-discrepancies",
+      "conclusion": "Admin equalsIgnoreCase bug and prior button verification-pending are resolved historical slices, with scope-boundary evidence in current DEC0074. Preserve exact admin matching and real signer rights; do not reopen unchanged historical issue or claim old tests were run now.",
+      "references": [
+        "policy-source-06",
+        "policy-source-15"
+      ]
+    },
+    {
+      "id": "execution-signature-crud-protection",
+      "conclusion": "Original field-signature and production evidence already describe generic CRUD rejection of PRODUCTION_EXECUTION signatures. Root should preserve/recheck real controller predicates and consumers rather than report total absence of protection.",
+      "references": [
+        "policy-source-14",
+        "policy-source-21",
+        "policy-source-25"
+      ]
+    },
+    {
+      "id": "AUD-H009/H010/H012",
+      "conclusion": "Frozen recheck catalog predates final acceptance and still says awaiting QA, but parent handoff says these were accepted and PR20 merged. Do not infer current pending state or reopen these from frozen metadata.",
+      "references": [
+        "policy-source-22"
+      ]
+    }
+  ],
+  "runtimeChecksExecuted": [],
+  "repositoryMutations": [],
+  "businessPolicyChanges": [],
+  "wholeKnowledgeAuditComplete": false,
+  "newRuntimeDefectsAdjudicated": false
+}
