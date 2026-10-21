@@ -1,0 +1,62 @@
+{
+  "schema": "edhr-audit-batch-acceptance/v1",
+  "level": "L2",
+  "recordedAt": "2026-10-21T12:44:46.547253+08:00",
+  "baseCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "testedCommit": "aaef52a782327e68da736faf83a249a3217b7228",
+  "coreCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
+  "knowledgeCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
+  "qualityResult": {
+    "result": "passed",
+    "author": "/root/signature_payload_independent",
+    "status": "FINAL",
+    "path": "evidence/independent/edhr-sig-qa-qualityResult.yaml",
+    "sha256": "f5bd81909e8cd585763b01f73d64f3df64319f464f5654bdc6e77c3b5a569f85",
+    "requiredChecks": 8,
+    "allChildInstancesFinal": true
+  },
+  "ontologyResult": {
+    "result": "updated",
+    "author": "/root/signature_payload_ontology",
+    "status": "FINAL",
+    "path": "evidence/ontology/edhr-sig-ontology-result.yaml",
+    "allChildInstancesFinal": true
+  },
+  "findings": [
+    {
+      "id": "W3-SIGNATURE-PAYLOAD-001",
+      "severity": "high",
+      "disposition": "fixed-and-independently-accepted"
+    }
+  ],
+  "independentBusinessTests": {
+    "tests": 104,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "nativePostgresSubset": 18
+  },
+  "independentKnowledgeTests": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "frozenCatalogBaseline": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+  "originalPendingCatalogAndLedgerPreserved": true,
+  "acceptanceOverlayDoesNotRerunProductOrSemanticChecks": true,
+  "scopeReview": {
+    "completedAfterAllProfessionalFinal": true,
+    "communicatedBeforePr": true,
+    "path": "scope-review.md"
+  },
+  "remaining": [
+    "legacy original bytes already lost cannot be reconstructed",
+    "application and migration must be paired; automatic lossy rollback refused",
+    "W2/W3 remainder, W4-W7, W5-AUDIT-HASH-001 and four knowledge gaps",
+    "user-deferred record control, two DHR high and A12",
+    "generic action policy unanswered and task pagination source lead remain separate"
+  ],
+  "wholeBranchAccepted": false,
+  "mergeOrDeployPerformed": false
+}

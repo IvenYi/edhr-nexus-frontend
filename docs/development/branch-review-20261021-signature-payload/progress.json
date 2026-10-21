@@ -6,7 +6,7 @@
   "coreCommit": "2ead6de2ed149f9c10a7786a555b0235c86b3186",
   "knowledgeCommit": "c4af50a7d34bafb523992f00b169ee5efb7a8a1e",
   "catalogBaseline": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
-  "stage": "awaiting-fresh-independent-quality",
+  "stage": "independently-accepted-awaiting-pr-delivery",
   "inventory": {
     "trackedPaths": 2801,
     "currentKnowledgeIds": 2552,
@@ -34,8 +34,10 @@
     "records": 48,
     "notDistinctProductDefects": true,
     "pr21AcceptedByOriginalAcceptance": "W3C-INSTANCE-WRITE-AUTH-001",
-    "currentFixedAwaitingIndependentAcceptance": ["W3-SIGNATURE-PAYLOAD-001"],
-    "currentIndependentlyAccepted": []
+    "currentFixedAwaitingIndependentAcceptance": [],
+    "currentIndependentlyAccepted": [
+      "W3-SIGNATURE-PAYLOAD-001"
+    ]
   },
   "runtime": {
     "primaryUniqueBusinessTestsWithPassingEvidence": 104,
@@ -49,14 +51,26 @@
     "dhrLifecycleUsesH2": true,
     "dhrArchivePdfZip": "13 regression cases include actual system Chromium154 output; not frontend UI E2E",
     "browserUiVisualFullFrontendBuild": "not-applicable-no-frontend-change",
-    "independentQuality": "pending",
-    "migration": "18 native roundtrip/migration cases include fresh full master, legacy preservation, input compatibility and rejected lossy rollback"
+    "independentQuality": "passed",
+    "migration": "18 native roundtrip/migration cases include fresh full master, legacy preservation, input compatibility and rejected lossy rollback",
+    "independentBusinessTests": 104,
+    "independentKnowledgeTests": 89,
+    "independentNativePostgresSubset": 18,
+    "independentFailures": 0,
+    "independentErrors": 0,
+    "independentSkipped": 0,
+    "independentRequiredChecks": 8
   },
   "ontology": {
     "result": "updated",
     "author": "/root/signature_payload_ontology",
     "status": "FINAL",
-    "childInstances": [{"name": "/root/signature_payload_ontology/existing_signature_evidence", "status": "FINAL"}],
+    "childInstances": [
+      {
+        "name": "/root/signature_payload_ontology/existing_signature_evidence",
+        "status": "FINAL"
+      }
+    ],
     "knowledgeVersionBeforeAndAfter": "0.3.25",
     "newInternalEvidenceIds": 4,
     "currentAnchorUpdated": "anchor.dhr-summary-zip-source-trace",
@@ -75,5 +89,8 @@
   ],
   "overallAuditComplete": false,
   "overallPercent": null,
-  "mergeOrDeployAuthorized": false
+  "mergeOrDeployAuthorized": false,
+  "qualityTestedCommit": "aaef52a782327e68da736faf83a249a3217b7228",
+  "acceptance": "acceptance.json",
+  "temporaryOwnedPostgres": "removed-after-formal-final"
 }

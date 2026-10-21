@@ -1,0 +1,491 @@
+{
+  "author": "/root/signature_payload_independent",
+  "phase": "candidate-knowledge",
+  "sourceCommit": "aaef52a782327e68da736faf83a249a3217b7228",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "tools/knowledge-model/pom.xml",
+    "clean",
+    "test"
+  ],
+  "commandExit": 0,
+  "startedUnixNs": 1792557563410525567,
+  "finishedUnixNs": 1792557585082558950,
+  "counts": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "name": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "counts": {
+        "tests": 89,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "xmlSha256": "f27239625e74b2f0b2b0e8096ba74d4ab1055ef8bff8d083608c0c7b46fdf301",
+      "fresh": true,
+      "cases": [
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "yamlParserErrorsContainTheRepositoryRelativeFilePath(Path)",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "unknownScalarCollectionsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "explicitFactReferencesCannotBeUsedAsPredicateExpectations",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "factCatalogCannotBeBypassedByOmittingProfile",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "conditionGroupsRejectAdditionalFields",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[3]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "repositoryRootCanBeLocatedFromRootBackendAndIdeWorkingDirectories",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "invalidRuleResultTypesAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedCollectionsAreDiscoveredFromSchemaMappings",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "currentKnowledgeModelIsValid",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[3]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "factsRequireProvenanceFields",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaCollectionMappingsMustCoverEveryRecordType",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "verifiedInternalRecordsRequireExecutionContracts",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "stringOperatorsRejectNonStringFacts",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "malformedTopLevelCollectionsReportTheirDocument",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "executionContractReferencesMustResolveEvenForNonVerifiedRules",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "invalidStatusesAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "factCatalogRejectsOperatorNotAllowedByFact",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaRejectsNestedDescriptorMappingMismatch",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "factValueTypesMustComeFromTheControlledVocabulary",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "factNamesInStringsAreNeverImplicitlyDereferenced",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "knownNestedCollectionsCannotAppearOnUndeclaredParentRecordTypes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "invalidConditionOperatorsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[3]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[4]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[5]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[6]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[7]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[8]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "danglingEvidenceIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "verifiedRulesCanReferenceValidRegisteredExecutionContracts",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "invalidCardinalitiesAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "factCatalogRejectsUnknownSemanticAlias",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "conditionNotGroupsRequireOneExpression",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "enumFactsRequireAnExplicitNonEmptyValueSet",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "numericComparisonRejectsStringFactEvenWhenItsOperatorIsListed",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaIdPrefixesMustCoverEveryRecordType",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedDuplicateIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[3]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[4]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[5]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[6]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[7]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[8]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[9]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[10]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "conditionLeavesRejectAdditionalFields",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "absoluteEvidencePathsAreRejectedEvenWhenTheyExist",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "conditionGroupsMustBeNonEmpty",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "unknownEmptyCollectionsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "implementationAnchorsRejectUnknownProvenanceReviewStatus",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "numericOperandsMustBeFinite",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "currentKnowledgeBaselineUsesTheTypedFactSchema",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "factReferenceObjectsMustUseTheExactOperandShape",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "topLevelCollectionsAreDiscoveredFromSchemaMappings",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "danglingTermIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "verifiedRuntimeRecordsRequireEvidence",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaCollectionMappingsRejectDuplicateTargetsDeterministically",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "recordIdsMustUseSchemaPrefixes(String, String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "recordIdsMustUseSchemaPrefixes(String, String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "normalizedEvidencePathsCannotEscapeRepository(Path)",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "duplicateIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "explicitFactOperandsMustHaveCompatibleTypes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "conditionValuesMustUseSchemaValueTypes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "schemaCollectionMappingsRejectUnknownRecordTypes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[3]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[4]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[5]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[6]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "explicitFactOperandsResolveIdsAndAliasesWithoutBeingTreatedAsClauses",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "unknownNestedRecordCollectionsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "unknownTopLevelCollectionsReportTheirDocumentAndSortedAllowedCollections",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "missingEvidencePathsAreRejected",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "explicitFactOperandsRejectUnknownReferences",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "executionContractIdsUseSchemaPrefixes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "realEvidencePathsCannotEscapeRepositoryThroughSymlinks(Path)",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "implementedRecordsCannotEnterCustomerProjection",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+          "name": "aliasesCannotShadowAnotherFactIdInEitherCollectionOrder",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "cleanAtStart": true,
+  "after": {
+    "commit": "aaef52a782327e68da736faf83a249a3217b7228",
+    "status": ""
+  },
+  "privateLogSha256": "8216e89e54037fc8e60b12c30179c787c9c933690d16376dd54f5d66d6ced606",
+  "rawLogAndXmlExcluded": true,
+  "freshReportsOnly": true
+}

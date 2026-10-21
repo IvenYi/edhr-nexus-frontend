@@ -1,8 +1,10 @@
 # 持续推进台账
 
+本轮全新独立对aaef52a7已正式passed/FINAL，8/8必需检查，clean104业务（18原生PG）+89知识均0失败/错误/跳过；独立重现旧7例真实红及原件/ledger核验完成。本体及全部子实例FINAL后，已在PR前实际向用户汇报任务无漂移、当前进度和后续。签名high的最终验收见[acceptance](../branch-review-20261021-signature-payload/acceptance.json)，冻结目录不回写；当前仅L0原件归档/PR交付。自建合成PG按确切ID清理，不自动merge/deploy。
+
 当前检查点：[签署原文数据库往返与归档校验](../branch-review-20261021-signature-payload/README.md)。PR21已人工合入最新edhr-dev@c3343f45且树与360b07ad相同，无契约增量。已实际核对W3任务动作/终态与签署消费；真实PG证实JSONB改变原签署字符串、归档原字节SHA校验拒绝，升级L2，核心2ead6de2只改TEXT映射及0118前向迁移、保留JSONB输入校验，不改算法/资格/拒绝或历史摘要。知识c4af50a7正式updated/FINAL，89知识及12有限语义通过。
 
-主侧104unique业务已有有效通过（focused104中103通过、1字体映射fail，随后Auth24通过只替换该suite，不计128），含18原生PG和13实际归档；当前等待干净固定候选的全新独立验收，尚未创建本轮PR。旧7例真实红为1断言失败+3归档业务异常、3对照通过；夹具/环境失败原件分别保留。旧JSONB丢原文仍可能blocked、不补造历史、无损自动回退不成立，未执行生产迁移或部署。generic动作类型矩阵已问用户，未收到答复不改；分页W3D-TASK-PAGINATION-001尚为源码候选留后续独立小批，未混入本次实现。W2/W3余项、W4–W7、四gap、两项暂缓DHR high/A12和旧AuditEvent摘要问题保持。
+主侧独立验收前的104unique业务已有有效通过（focused104中103通过、1字体映射fail，随后Auth24通过只替换该suite，不计128），含18原生PG和13实际归档；当前正式独立结果见上段，不把主侧历史运行改写为一次104全过。旧7例真实红为1断言失败+3归档业务异常、3对照通过；夹具/环境失败原件分别保留。旧JSONB丢原文仍可能blocked、不补造历史、无损自动回退不成立，未执行生产迁移或部署。generic动作类型矩阵已问用户，未收到答复不改；分页W3D-TASK-PAGINATION-001尚为源码候选留后续独立小批，未混入本次实现。W2/W3余项、W4–W7、四gap、两项暂缓DHR high/A12和旧AuditEvent摘要问题保持。
 
 本批清单固定c062c2f9：2801路径/2552知识ID、485有交叉范围（392继承+88辅助+5主侧）、108历史和当前有限语义（96旧+正式12）、48问题记录；原辅助一条越界范围保留原件但显式排除。101源码范围及57语义或依赖需增量，整文件完成0，不把清单生成或局部测试当全量完成。[当前总账](../branch-review-20261021-signature-payload/ledger/summary.json)与[进度](../branch-review-20261021-signature-payload/progress.json)可续接。
 

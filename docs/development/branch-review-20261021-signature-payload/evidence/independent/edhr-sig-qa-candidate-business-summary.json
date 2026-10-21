@@ -1,0 +1,658 @@
+{
+  "author": "/root/signature_payload_independent",
+  "phase": "candidate-business",
+  "sourceCommit": "aaef52a782327e68da736faf83a249a3217b7228",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=SignatureSnapshotPostgresTest,SignatureSnapshotMigrationPostgresTest,ExecutionAccessTest,AuthControllerTest,ProductionExecutionEngineTest,DhrAttachmentAndArchiveTest,DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest",
+    "clean",
+    "test"
+  ],
+  "commandExit": 0,
+  "startedUnixNs": 1792557562124453929,
+  "finishedUnixNs": 1792557684505463830,
+  "counts": {
+    "tests": 104,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "name": "com.zencas.edhr.identity.controller.AuthControllerTest",
+      "counts": {
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "xmlSha256": "e225e36d8eb16208dd7a8b94f6f2d7c294d5341553ab5b02d3c279c804f97c72",
+      "fresh": true,
+      "cases": [
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "changeCurrentUserPasswordRejectsWrongCurrentPasswordAndMismatchedConfirmation",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "updateProfileStoresEditableEmailPhoneAndBirthdayForCurrentUser",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "createPersonalSignatureDoesNotUseIdCardOcrValidation",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "updateProfileRejectsInvalidEmailAndPhone",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "loginKeepsJwtSmallButReturnsPermissionsInUserPayload",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "createPersonalSignatureReauthenticatesStoresSignatureAndWritesAudit",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "verifyCurrentUserSignatureRejectsWrongPassword",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "loginLocksAccountAfterConfiguredFailedPasswordAttempts",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "loginMeAndProfileResponsesSerializeSnowflakeUserIdAsExactString",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "createPersonalSignatureUsesSecuritySettingsDefaultCycleWhenNoSettingsPersisted",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "verifyCurrentUserSignatureRequiresPersonalSignatureCertification",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "loginRejectsLockedAccountUntilLockWindowExpires",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "meReturnsCurrentRoleIdsAndLatestPermissions",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "meDoesNotReturnRawRoleIdAsRoleNameWhenRoleIsUnmapped",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "loginUsesConfiguredTokenValidityAndReturnsRequiredSecurityActions",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "loginRecordsWhoAccountTimeActionMethodClientBrowserAndIp",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "changeCurrentUserPasswordRequiresCurrentPasswordAndStoresEncodedNewPassword",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "logoutRecordsCurrentUserClientBrowserAndIp",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "verifyCurrentUserSignatureReturnsAuthorizedSignatureImageAfterPasswordAuth",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "changeCurrentUserPasswordRejectsPasswordBelowConfiguredComplexity",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "uploadAvatarStoresFileReferenceAndReturnsUpdatedCurrentUser",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "meReturnsAvatarBirthdayAndLatestElectronicSignatureEvidence",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "loginDoesNotReturnRawRoleIdAsRoleNameWhenRoleIsUnmapped",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.identity.controller.AuthControllerTest",
+          "name": "createPersonalSignatureRejectsWrongPassword",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+      "counts": {
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "xmlSha256": "ce723549b4019f2e8caeadd72d0624cc54872beb4add2de7609f46b1312ba3d9",
+      "fresh": true,
+      "cases": [
+        {
+          "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+          "name": "rejectsRenamedOfficeTemplatesAndTruncatedZipDirectory(String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+          "name": "rejectsRenamedOfficeTemplatesAndTruncatedZipDirectory(String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+          "name": "rejectsExcessiveOfficeZipExpansionBeforeParsing",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[3]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[4]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[5]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[6]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+          "name": "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[7]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+          "name": "acceptsExactly50MiBButRejectsOneByteOverBeforeReading",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+          "name": "officeRejectsDisguisedUnsupportedCorruptEncryptedAndMacroFiles",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+          "name": "attachmentRequiresReadableBytesAndPreservesUnlinkedHistory",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+      "counts": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "xmlSha256": "3d02558c22c00d6daee06da93c1989f49005f2adca2b07e4e6f881b72eba7cf4",
+      "fresh": true,
+      "cases": [
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+          "name": "incompleteFrozenManualReviewBlocksApprovalButAllowsReturn",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+          "name": "realWorkflowReturnResubmitSignAndApprovedImpactPreserveHistory",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+          "name": "concurrentApprovalCreatesOnlyOneOutcomeAndSignature",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+          "name": "newlyAppearingRecordAndAttachmentBlockApprovalWithoutChangingFrozenVersion",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+          "name": "legacyPendingReviewCannotApproveUnfinishedUnincludedCustomCopyButCanReturn",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "counts": {
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "xmlSha256": "c9236ce7e7a76ef0c6ae783af1c4c3e5d6b372d9d6cc1139a9e2c71b30771ef7",
+      "fresh": true,
+      "cases": [
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+          "name": "personalListAndDetailCannotLeakAnotherUsersTask",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+          "name": "frozenButtonVisibilityOpinionAndSignatureAreEnforcedOnServer",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+          "name": "approvalRequiresUnchangedEvidenceAndCurrentHashButDoesNotAutoReturn",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+          "name": "approvalSeparatesRuntimeOutcomeFromFrozenEvidenceAndRejectsSecondAction",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+          "name": "signedReviewChecksNamedSignerAndRecordsBothIdentities",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+          "name": "missingFrozenFormOriginalBlocksApprovalButNotReturn",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+          "name": "intermediateApprovalKeepsPendingAndAuditFailureRollsBackOutcome",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+          "name": "humanReturnAllowsChangedEvidenceAndCreatesNextDraftOnlyExplicitly",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+          "name": "missingAndNewRecordsBothAffectCompleteEvidenceScope",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+          "name": "unreadableLiveValuesAreReportedAsImpactAndBlockApproval",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ExecutionAccessTest",
+      "counts": {
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "xmlSha256": "430c2ee4feda69cf0d717b0821efb664351934c07359fbc56a4f6d2aed9e7823",
+      "fresh": true,
+      "cases": [
+        {
+          "class": "com.zencas.edhr.production.service.ExecutionAccessTest",
+          "name": "referenceSearchAndValidationReachIdsBeyondFirstHundredSameNameRows",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ExecutionAccessTest",
+          "name": "capturesApprovalCandidatesOnceAndDoesNotOpenAnUnresolvedRestrictedGroup",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ExecutionAccessTest",
+          "name": "sopPdfPagePreviewRendersImageAndRejectsOutOfRange(Path)",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ExecutionAccessTest",
+          "name": "onlyInternalAdminUsesLoginPasswordAndSignatureFieldsRemainCurrentUserOnly",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ExecutionAccessTest",
+          "name": "transferPreservesFrozenCandidatesAndAllowsTenantDelegatesWhileOnlyAssigneeCanAct",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ExecutionAccessTest",
+          "name": "transferRejectsCrossTenantTargetsEvenIfAStaleCandidateListContainsThem",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ExecutionAccessTest",
+          "name": "executionAttachmentsCannotBeDeletedThroughGenericFiles",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ExecutionAccessTest",
+          "name": "executionSignaturesCannotBeForgedOverwrittenOrDeletedThroughGenericCrud",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ExecutionAccessTest",
+          "name": "personalSignatureCredentialsCannotBeForgedOrExposedThroughGenericCrud",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ExecutionAccessTest",
+          "name": "unavailableUncertifiedExpiredAndUnsetSignersAreBlocked",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ExecutionAccessTest",
+          "name": "stableFieldOverridesAndReadOnlyConflictWin",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ExecutionAccessTest",
+          "name": "buttonSignatureAuthenticatesNamedSignerAndRetainsSessionWithoutCredentials",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+      "counts": {
+        "tests": 22,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "xmlSha256": "b0b805eb2bc990a062fe135674af7862cc0cb44ee4cb38a83d8763ed22061a59",
+      "fresh": true,
+      "cases": [
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "configuredConfirmationCannotBeSkippedByCompletingOperation",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "routeCyclesAndUnsupportedNotificationsAreVisibleStartBlockers",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "savedDraftDoesNotSatisfyRequiredFormAndReadOnlyValuesCannotBeForged",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "missingRuntimeFactsNeverPassEvenWhenUsedUnderNot",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "approvalAndSignatureAreRequiredBeforeFormCompletion",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "skippedUnboundWorkFormDoesNotBlockCompletedConditionalWork",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "requiredFieldsOwnedByLaterApprovalDoNotBlockEarlierSubmissionButBlockFinalCompletion",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "workFormNeverSatisfiesIndependentRequiredOperationForm",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "supplementCreatesNewCopyWithoutReopeningOrChangingCompletedRecord",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "evaluatesStructuredConditionsWithoutExecutingCode",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "directEntryConfigurationControlsPermissionsButtonsAndSignature",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "rejectsDuplicateStartAndOutOfOrderCompletion",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "transferDoesNotAdvanceOrChangeFormValuesAndRequiresReason",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "supplementCannotBypassSubjectPermissionsOrUnreachedWorkForms",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "validSubmissionPersistsValuesAndUnlocksCompletion",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "enforcesNumericStructurePrecisionAndDateFormat",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "blocksSuccessorUntilEveryParallelPredecessorCompletes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "disabledDirectSignatureEventIsNotExecuted",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "explicitLegacyOrHiddenButtonsDoNotEnableTransfer",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "rejectsUnknownFieldsAndInvalidNumbers",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "activeButtonSignatureFillsActualSignerAndAllowsReporterProjection",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+          "name": "parallelWorkJoinWaitsForBothConfirmationBranches",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+      "counts": {
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "xmlSha256": "a2523fd03fa6b8619276e9935151176ccc9ca52aad06a671d97b9a7c856cdd11",
+      "fresh": true,
+      "cases": [
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+          "name": "fullMasterBuildsFreshDatabaseWithLosslessSignatureStorage",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+          "name": "forwardMigrationPreservesEveryExistingReadableValueHashAndMetadata",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+          "name": "repeatedLiquibaseAndForwardDdlLeaveRowsAndSingleChangeSetUnchanged",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+          "name": "lossyAutomaticRollbackIsRejectedBeforeChangingNewSignedPayload",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+          "name": "migrationDoesNotInventMissingOriginalBytesOrRelaxLegacyVerification",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+          "name": "migrationKeepsExistingJsonShapesWithoutNormalizingTheirOriginalText",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+          "name": "migrationKeepsPreviousJsonbInputRejections(String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+          "name": "migrationKeepsPreviousJsonbInputRejections(String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+          "name": "migrationKeepsPreviousJsonbInputRejections(String)[3]",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+      "counts": {
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "xmlSha256": "97322b7161c43c83f59408fb6e69e754ec04e8a2c3ba68379614c49a47287cf5",
+      "fresh": true,
+      "cases": [
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "tamperedPayloadStillStopsArchive(String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "tamperedPayloadStillStopsArchive(String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "fieldSignatureUsesSameLosslessPersistence",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "nativeJsonbControlHasEqualJsonButDifferentSignedBytes",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "profileSnapshotKeepsExactWhitespaceOrderAndUnicode",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "tamperedDigestStillStopsArchive(String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "tamperedDigestStillStopsArchive(String)[2]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "existingSignerServiceSurvivesNativePersistenceAndArchiveVerification(String)[1]",
+          "status": "passed"
+        },
+        {
+          "class": "com.zencas.edhr.production.service.SignatureSnapshotPostgresTest",
+          "name": "existingSignerServiceSurvivesNativePersistenceAndArchiveVerification(String)[2]",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "cleanAtStart": true,
+  "after": {
+    "commit": "aaef52a782327e68da736faf83a249a3217b7228",
+    "status": ""
+  },
+  "privateLogSha256": "8668ff67229d7d58cbd062728460d045b35488625c96edfc29fdb567d64da5c6",
+  "rawLogAndXmlExcluded": true,
+  "freshReportsOnly": true
+}

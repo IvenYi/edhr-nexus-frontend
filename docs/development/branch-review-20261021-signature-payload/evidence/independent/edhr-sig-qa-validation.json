@@ -1,0 +1,68 @@
+{
+  "author": "/root/signature_payload_independent",
+  "status": "FINAL",
+  "recordedAt": "2026-10-21T12:43:43.651142+08:00",
+  "level": "L2",
+  "baseCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+  "headCommit": "aaef52a782327e68da736faf83a249a3217b7228",
+  "contractReadCommit": "c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49",
+  "qualityResult": "passed",
+  "independentBusinessTests": {
+    "tests": 104,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "nativePostgresSubset": 18,
+  "h2DhrLifecycleSubset": 5,
+  "actualDhrPdfZipRegression": 13,
+  "independentKnowledgeTests": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "baselineRed": {
+    "sourceCommit": "c3343f45bb79f72368937f0d197ae01f989f0390",
+    "tests": 7,
+    "failures": 1,
+    "errors": 3,
+    "skipped": 0,
+    "businessErrors": 3,
+    "passingControls": 3
+  },
+  "ledgerCheck": {
+    "command": "python3 scripts/build-branch-review-ledger.py --ref c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49 --catalog docs/development/branch-review-20261021-signature-payload/source-catalog.json --out docs/development/branch-review-20261021-signature-payload/ledger --check",
+    "exit": 0,
+    "mechanicalOnly": true
+  },
+  "ownedDatabase": {
+    "containerId": "5dd0ccd19fbbd6b367e59c380257cada10e2ed408fe43dab77b97f437ce65858",
+    "loopback": "127.0.0.1:55432",
+    "database": "edhr_signature_test",
+    "leftoverOwnedMigrationSchemas": 0,
+    "leftoverOwnedMasterDatabases": 0,
+    "containerCleanup": "retained for parent after FINAL"
+  },
+  "children": [
+    {
+      "name": "/root/signature_payload_independent/source_semantic_review",
+      "status": "FINAL",
+      "findings": [],
+      "runtimeExecuted": false,
+      "repositoryMutations": false
+    }
+  ],
+  "allChildInstancesFinal": true,
+  "freshAfterImplementation": true,
+  "participatedInFix": false,
+  "repositoryMutations": false,
+  "wholeBranchAccepted": false,
+  "excluded": [
+    "private logs",
+    "Surefire XML",
+    "credentials",
+    "exported full baseline source",
+    "font/browser binaries"
+  ]
+}

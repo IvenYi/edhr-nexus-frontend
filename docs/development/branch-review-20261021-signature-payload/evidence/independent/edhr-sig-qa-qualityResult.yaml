@@ -1,0 +1,183 @@
+qualityResult:
+  result: passed
+  baseCommit: c3343f45bb79f72368937f0d197ae01f989f0390
+  headCommit: aaef52a782327e68da736faf83a249a3217b7228
+  contractBaseline:
+    sourceCommit: aaef52a782327e68da736faf83a249a3217b7228
+    targetBranch: edhr-dev
+    targetCommit: c3343f45bb79f72368937f0d197ae01f989f0390
+    contractReadCommit: c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.signature-clean-integrated-candidate
+    required: true
+    category: requirements
+    description: 独立获取edhr-dev并核对实际目标、受测候选与契约，L2范围及最小修复与决策包一致。
+    method: inspection
+    command: git fetch origin edhr-dev; git diff c3343f45..aaef52a7; git status --porcelain
+    outcome: passed
+    evidence:
+    - Actual base c3343f45bb79f72368937f0d197ae01f989f0390, functional/tested candidate aaef52a782327e68da736faf83a249a3217b7228,
+      clean before and after both fresh runs; base is an ancestor and target remains unchanged.
+    - Contract read at c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49; AGENTS/quality/unified/codeplz bytes identical
+      in target and final candidate. c062→aaef only frozen L0 audit inventory/documentation.
+    - /tmp/edhr-sig-qa-evidence-inspection.json
+  - id: check.signature-independent-native-red
+    required: true
+    category: database
+    description: 在隔离Git导出中独立复现旧JSONB导致的原文和归档摘要错误，保留真实红证。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f gmp-platform/backend/pom.xml -Dtest=SignatureSnapshotPostgresTest
+      clean test
+    outcome: passed
+    evidence:
+    - Exported immutable c3343f45bb79f72368937f0d197ae01f989f0390 to /tmp/edhr-sig-qa-baseline-source; only retained
+      unchanged seven-case fixture added; shared repository source and tests not modified.
+    - Expected Maven exit1:7 tests,1 original-text assertion failure,3 actual archive BusinessException errors,3
+      passing controls,0 skipped. Product errors are not fixture setup failures.
+    - /tmp/edhr-sig-qa-baseline-export.json
+    - /tmp/edhr-sig-qa-baseline-red-summary.json
+  - id: check.signature-fresh-clean104
+    required: true
+    category: regression
+    description: 对干净固定候选独立完整clean运行八套件104例，排除陈旧编译及旧注解镜像测试。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f gmp-platform/backend/pom.xml -Dtest=SignatureSnapshotPostgresTest,SignatureSnapshotMigrationPostgresTest,ExecutionAccessTest,AuthControllerTest,ProductionExecutionEngineTest,DhrAttachmentAndArchiveTest,DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest
+      clean test
+    outcome: passed
+    evidence:
+    - Fresh at aaef52a782327e68da736faf83a249a3217b7228:104 tests,0 failures,0 errors,0 skipped; one complete independent
+      run, not a union of retries.
+    - Auth24; ExecutionAccess12; ProductionExecutionEngine22; DhrReviewService10; DhrReviewLifecycleIntegration5(H2);
+      DhrAttachmentAndArchive13; native JPA roundtrip9; native Liquibase migration9.
+    - /tmp/edhr-sig-qa-candidate-business-summary.json
+  - id: check.signature-native-migration-and-negative
+    required: true
+    category: database
+    description: 原生PG18实跑覆盖合法签署往返、原文及SHA、两归档消费者、输入边界、历史保留及有损回退拒绝。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f gmp-platform/backend/pom.xml -Dtest=SignatureSnapshotPostgresTest,SignatureSnapshotMigrationPostgresTest,ExecutionAccessTest,AuthControllerTest,ProductionExecutionEngineTest,DhrAttachmentAndArchiveTest,DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest
+      clean test
+    outcome: passed
+    evidence:
+    - Owned PG16 loopback127.0.0.1:55432, database edhr_signature_test; all18 native cases actually ran,0 skipped.
+    - Real ExecutionAccess.signTarget production/DHR targets and signField→JPA committed/cleared→JDBC archive consumers;
+      USER_PROFILE is entity-only raw-text roundtrip; synthetic authenticated ButtonSigner, not HTTP login E2E.
+    - Original0001 signatureDDL→actual0118 Liquibase; full master in a fresh separately owned temporary DB/public
+      schema; legacy readable text/hashes/metadata unchanged; repeated Liquibase/rawDDL; JSON syntax/range refusals
+      and accepted scalar/array/null/duplicate-key text; historical missing bytes still rejected; digest and payload
+      corruption both rejected; automatic lossy rollback refused with committed new payload unchanged.
+    - Post-run queries:signature_payload_* schemas0; edhr_signature_master_* databases0. Long-lived owned test container
+      retained for parent cleanup after this FINAL.
+    - /tmp/edhr-sig-qa-candidate-business-summary.json
+  - id: check.signature-auth-hash-and-audit-boundaries
+    required: true
+    category: audit
+    description: 有限源码复核确认生产者、资格、摘要算法和归档拒绝未改，不重写历史或AuditEvent。
+    method: inspection
+    command: git diff c3343f45..aaef52a7 -- gmp-platform/backend/src/main docs/knowledge; exact Git blob comparison
+    outcome: passed
+    evidence:
+    - /tmp/edhr-sig-qa-source-review.json:source-only child FINAL; no child instances; six finite checks,125 prior
+      SQL resources byte-unchanged.
+    - Production changes confined to Signature TEXT mapping, new0118 and master append; producer signTarget/signField/AuthController
+      and both consumers unchanged. CHECK parses but does not replace stored text. No history reconstruction, hash
+      rewrite, new policy, role, permission, UI or broad refactor.
+    - Former single reflection test only pinned JSONB annotation; removed rather than rewritten as TEXT mirror;18
+      native behavioral cases now independently pass.
+  - id: check.signature-dhr-pdf-zip-regression
+    required: true
+    category: integration
+    description: 既有DHR归档13例实际生成PDF/ZIP并核对相关输出，保留运行环境边界。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f gmp-platform/backend/pom.xml -Dtest=SignatureSnapshotPostgresTest,SignatureSnapshotMigrationPostgresTest,ExecutionAccessTest,AuthControllerTest,ProductionExecutionEngineTest,DhrAttachmentAndArchiveTest,DhrReviewServiceTest,DhrReviewLifecycleIntegrationTest
+      clean test
+    outcome: passed
+    evidence:
+    - DhrAttachmentAndArchiveTest13/13 passed in the same clean104 run using default Playwright cache symlinks to
+      actual system Chromium154.0.8037.57; not bundled Chromium145.
+    - Authorization PDF font path points to EdhrTestCJK-Regular.ttf SHA25634fe3b59a729e29ae8a63fbe4f9316d3b72c8645168fd7e2b8531e95e17d011e.
+      Test source/assertions unchanged; no fresh environment workaround applied by QA.
+    - No frontend UI code changed; no new full frontend build, browser UI E2E, PDF manual visual acceptance or production
+      environment claim.
+    - /tmp/edhr-sig-qa-candidate-business-summary.json
+  - id: check.signature-knowledge89-and-finite-semantics
+    required: true
+    category: ontology
+    description: 独立知识正式校验和有限语义核对确认4内部证据/既有锚点与规范、实现和历史边界一致。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f tools/knowledge-model/pom.xml clean test
+    outcome: passed
+    evidence:
+    - Fresh at aaef52a782327e68da736faf83a249a3217b7228:BusinessKnowledgeModelTest89/89,0 failures/errors/skipped;0.3.25/schema1.2.0
+      unchanged.
+    - Actual ontologyResult updated/FINAL at c4af50a7; child FINAL; original result retained. Independently verified
+      all12 finite ID/source locator/recordSHA/sourceSHA/Gitblob claims and read affected definitions; no new rules/DEC
+      or verified/runtime/stage upgrade.
+    - /tmp/edhr-sig-qa-candidate-knowledge-summary.json
+    - /tmp/edhr-sig-qa-evidence-inspection.json
+  - id: check.signature-inventory-provenance-and-honest-progress
+    required: true
+    category: documentation
+    description: 独立ledger字节检查和额外原件/继承/范围核对，不用目录计数冒充全盘验收。
+    method: command
+    command: python3 scripts/build-branch-review-ledger.py --ref c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49 --catalog
+      docs/development/branch-review-20261021-signature-payload/source-catalog.json --out docs/development/branch-review-20261021-signature-payload/ledger
+      --check
+    outcome: passed
+    evidence:
+    - Actual --check exited0 with fixed c062c2f99e143e7fd06b410c7ffdf4d47cf8bd49 catalog baseline; not a new runtime
+      or semantic review by generator.
+    - Fixed inventory2801 tracked paths/2552 knowledge IDs;485 overlapping source rows=392 preserved+88 helper+5
+      primary;108 historical/current semantic rows=96+12;48 finding records, not distinct product defects.
+    - 37 exact original archive receipts verified; prior392 source and5 semantic source objects preserved;47 prior
+      findings preserved from acceptance carry draft, only genuine prior PR21 item advanced; out-of-bounds original
+      w3d-signature-source:028(10–22 of20 lines) retained unchanged and explicitly excluded, never clipped or counted.
+    - 101 source rows/57 semantic rows still need delta review;4 historical evidence gaps remain. No whole-file
+      or branch completion/percentage; old W5, record-control,2 deferred DHR high/A12 and generic action policy/pagination
+      leads remain separate.
+    - Primary104 selection independently reconciled:focused103passed+1font failure followed byAuth24 replacing that
+      suite; originals remain, no false primary single-run104 pass or128 unique count.
+    - /tmp/edhr-sig-qa-evidence-inspection.json
+  findings:
+  - id: W3-SIGNATURE-PAYLOAD-001
+    severity: high
+    scope: W3 signing original payload persistence and W1/W5 DHR archive consumers
+    summary: 旧Signature JSONB规范化签署原文，导致合法签署归档摘要不一致；当前候选已独立复验修复。
+    reproductionSteps:
+    - Export c3343f45 immutable source; add retained byte-identical seven-case fixture only in /tmp.
+    - Run native SignatureSnapshotPostgresTest against owned PG16 with old JSONB mapping.
+    - Run final clean104 and native18 on aaef52a782327e68da736faf83a249a3217b7228.
+    expectedResult: 原字符串UTF8 SHA与持久化读回相同，合法签署通过归档校验，篡改及原已不可验历史继续拒绝。
+    actualResult: 旧7例1原文失败+3归档BusinessException、3对照过；最终候选104/104通过，其中原生PG18/18，无失败、错误或跳过。
+    evidence:
+    - /tmp/edhr-sig-qa-baseline-red-summary.json
+    - /tmp/edhr-sig-qa-candidate-business-summary.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 2ead6de2ed149f9c10a7786a555b0235c86b3186
+    - type: command
+      reference: /tmp/edhr-sig-qa-candidate-business-summary.json at aaef52a782327e68da736faf83a249a3217b7228
+    - type: document
+      reference: /tmp/edhr-sig-qa-source-review.json
+  residualRisks:
+  - id: risk.legacy-signature-original-bytes-unrecoverable
+    description: JSONB已丢失的历史原文无法由0118恢复；旧摘要不重算，部分旧签名仍可能阻断归档。
+    impact: 本批修复后续无损持久化，不能宣称所有旧档案已恢复可验。
+    mitigation: 保留旧可读文本、摘要和元数据并继续拒绝不一致；未来历史处置需独立真实依据和授权。
+  - id: risk.application-migration-pairing
+    description: TEXT转回JSONB会破坏新签署字节；旧JSONB映射应用继续写TEXT库也可能再次规范化。
+    impact: 不能将本批视为旧应用混跑、应用回退或生产迁移验收。
+    mitigation: 应用与前向迁移配套；有损自动rollback明确拒绝；生产发布/备份恢复及运维实施另行安排。
+  - id: risk.scope-remains-finite
+    description: UI/完整HTTP认证到归档链、生产迁移及全W0–W7尚未验收；当前native签署人部分为合成认证上下文。
+    impact: 独立passed仅覆盖此固定候选的列明存储、迁移、负向及相邻回归。
+    mitigation: 保留W2/W3余项、W4裁决、W5-AUDIT-HASH-001、W6/W7、4gap、2延期DHR high/A12和记录控制延期；后续小批另验证，不伪造完整覆盖。
+  blockingConditions: []
