@@ -1,0 +1,32 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.route-graph-save-connectivity-confirmed
+    type: document
+    path: docs/knowledge/evidence/route-graph-save-connectivity-20261025.md
+    description: user-confirmed；用户要求路线箭头快速添加工序并质疑开始结束未连通，明确选择保存时强制校验。原话、原始源码行为、正常骨架及返工隔离等工程边界与验证范围分列，不将代码缺少校验解释成已确认允许断开政策。
+    visibility: internal
+  - id: evidence.route-graph-save-connectivity-controller
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    description: original-evidence；saveRouteGraph是本次图保存完整性入口，版本元数据创建入口保持独立；本轮实现须在删除关系或节点之前调用校验。基线96ea563仅基础格式校验，无连通门禁；当前实现及验证以本切片实际差异为准。
+    visibility: internal
+  - id: evidence.route-graph-save-connectivity-validator
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java
+    description: original-evidence；本切片路线图保存校验器的实现定位，覆盖基础结构及排除返工后的开始至结束正常骨架；路径登记不代替源码、聚焦测试与独立质量核验，不赋予生产运行执行资格。
+    visibility: internal
+  - id: evidence.route-graph-save-connectivity-editor
+    type: code
+    path: gmp-platform/frontend/src/components/route-graph/routeGraph.ts
+    description: original-evidence；本切片前端路线图适配、快捷添加及保存完整性检查的实现定位。页面保存应在元数据请求前消费错误并标识节点；不合并领域存储、版本或执行引擎。
+    visibility: internal
+  - id: evidence.route-graph-save-connectivity-validator-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/RouteGraphValidatorTest.java
+    description: original-evidence；连通校验聚焦正反例，包括边界未连、孤立和死路工序、节点键与关系端点、开始结束方向、并行及返工隔离和空骨架直连。本体角色读取主侧Surefire原件，核对时5项零失败；运行结果不替代独立质量或生产数据库联调。
+    visibility: internal
+  - id: evidence.route-graph-save-connectivity-controller-test
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java
+    description: original-evidence；路线图保存接口回归包含拒绝非法图时不删除或写入旧图。本体角色读取主侧Surefire原件，核对时控制器53项零失败；此数量是整个聚焦控制器测试类，不冒充53项新增连通性场景。
+    visibility: internal

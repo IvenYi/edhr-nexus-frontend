@@ -1,0 +1,199 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261024-FLOW-CANVAS-UNIFICATION
+  scope: 工艺路线与产品制程图及公共编辑能力统一，补齐工序快捷添加与已确认的图保存连通校验
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    targetBranch: edhr-dev
+    targetCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    contractReadCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    uncommittedContractPaths: []
+  summary: 共用路线呈现和已有编辑基础，保留业务、存储、接口、版本、执行与审计边界
+  continuation:
+    date: 2026-10-25
+    source: user-confirmed
+    requirement: 以现有通用审批流程为视觉与交互基准，路线及产品图直接复用节点、连接点、画布工具和编辑器容器；保留领域配置和业务机制
+    previousGap: 前一轮仅统一路线与产品图，未统一路线和通用流程的节点及工具栏，不能作为视觉交互统一的验收证据
+    successCriteria:
+      - 路线与通用流程使用 StandardFlowNode、FlowCanvasControls、FullScreenFlowDesigner
+      - 相同节点角色的配色、选择态、连接点和画布工具位置一致
+      - 工序库添加、拖动、连线、并行返工、产品只读点选及保存协议保持
+      - 增加路线编辑历史并验证撤销重做与加载重置，完成并排实际组件浏览器验收
+  quickAddContinuation:
+    source: user-confirmed
+    requirement: 路线接入公共快捷箭头，以工序为添加目标，设计可搜索分类且名称可读的工序面板；核实开始与结束连通校验缺口
+    knownGap: RouteGraphNode仍显式禁用了quickActions；现有保存只做节点与关系基础校验，执行检查循环与前置但不证明开始至结束连通
+    confirmedPolicy: 用户明确选择保存时强制校验；正常生产骨架必须从开始覆盖全部生产工序且均能达结束，编辑可断开，返工、版本、引用和执行机制保持
+  topologyContinuation:
+    source: user-confirmed
+    requirement: 2026-10-25用户要求先暂停推送，修复同一对节点重复连线和普通生产循环，并检查其他不合理连线；重复工序的已有节点候选须可区分；返工连线须明确标记。
+    implementationBoundary: 所有节点禁止自连及同向节点对重复边（不按端口或关系类型区分）；正常生产骨架禁止环，保留并行及合流。既有显式REWORK配置与执行阻断保留，返工线明确文字及样式，不新增返工执行能力。手动连线、重连、快捷连接、并行补线及类型切换均核对拓扑，保存前后端兜底；重复工序采用全图一致的节点序号，不更改nodeKey或operationId。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: rule.route-graph.save-connectivity
+        name: 工艺路线图保存时校验正常生产路径连通
+        status: specified
+        trigger: route.graph.save
+        condition:
+          all:
+            - fact: fact.route-graph.save-valid
+              operator: equals
+              value: false
+        result:
+          type: block
+          action: route.graph.save
+        sourceReferences:
+          - docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml
+    executionContracts: []
+  inferred:
+    - id: inference.flow-canvas-shared-rendering
+      statement: 路线编辑与产品预览复用路线适配和节点，通用流程复用既有编辑历史等基础能力
+      rationale: 当前共用 React Flow，但路线呈现及图历史存在重复实现；采用局部提取降低后续维护成本
+      relatedIds: []
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0084-01
+      supersededStatementIds: [DEC-0083-02]
+      scope: 仅替代原声明中不新增生产环路保存限制的工程边界；用户现已明确要求普通生产路径禁止循环，新增连线入口及保存校验落实该约束。
+      retainedScope: 保留并行、显式返工配置及执行阻断、版本元数据先建、空骨架直连、旧图可读且不自动迁移、产品引用资格和历史快照边界；不统一存储、版本或执行引擎。
+      sourceReferences: [docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml]
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: route-save-validation-and-quick-add
+        change: 接入公共快捷箭头与可搜索工序面板，添加节点和连线一步撤销；统一各连线入口防止重复边、自连、非法边界方向和生产循环；前端元数据写入前和后端图删除写入前同步阻断非法路线，重复工序显示与画布一致的节点序号，返工线显式标记
+        evidenceReferences:
+          - gmp-platform/frontend/src/components/route-graph/RouteQuickAddPanel.tsx
+          - gmp-platform/frontend/src/components/route-graph/routeGraph.ts
+          - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java
+          - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+      - area: frontend-route-and-product-modeling
+        change: 共用路线图转换、节点、连线和预览，保持路线编辑能力与产品工序点选联动
+        evidenceReferences:
+          - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx
+          - gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx
+          - gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
+      - area: frontend-flow-editor
+        change: 路线与三个流程编辑器共用标准节点、画布工具、历史与全屏容器，领域校验与保存仍归各自页面
+        evidenceReferences:
+          - gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx
+          - gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+          - gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx
+          - gmp-platform/frontend/src/pages/workflow-center/FormProcessEditor.tsx
+    transitiveImpacts:
+      - area: product-family-modeling
+        concern: 产品簇与产品管理共用制程配置弹窗，须保持同一预览与配置能力
+        evidenceReferences:
+          - gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx
+    potentialImpacts:
+      - area: editor-state
+        concern: 抽取时不得改变拖动历史、撤销重做、版本切换重置、草稿保存选中项与未保存状态
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: execution-and-versioning
+        reason: 本轮仅增加后端图保存校验，不修改数据模型、版本生命周期、权限、签名、审计内容或生产执行机制
+        evidenceReferences:
+          - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+          - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    compatibilityAndMigration:
+      - area: route-graph-save-policy
+        policy: 先前可保存的断开、重复边、自连或生产循环图必须修正后才能再次保存；既存图可读取，不自动补线或迁移；版本元数据仍可先创建，START直连END的空骨架可保存；显式返工配置和执行阻断保留
+        evidenceReferences:
+          - docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml
+      - area: route-graph-api
+        policy: 沿用 nodes/relations 协议及节点键、工序身份、既存位置、显式端口、关系类型、条件和顺序；统一节点尺寸，新增避让及缺省端口按当前几何适配；不迁移数据库
+        evidenceReferences:
+          - gmp-platform/frontend/src/api/master-data.ts
+    snapshotImpacts:
+      - area: production-snapshot
+        policy: 不改写历史快照，不改变首次开工与附加表单的冻结机制
+        evidenceReferences:
+          - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+    auditImpacts:
+      - area: existing-audit
+        policy: 沿用现有保存调用和审计内容；不增加图渲染触发的业务写入
+        evidenceReferences: []
+    permissionImpacts:
+      - area: product-route-preview
+        policy: 结构只读、按已有回调选择工序；不开放拖动、连接、删除或改变现有绑定编辑资格
+        evidenceReferences: []
+    testImpacts:
+      - scope: route-quick-add-and-save-connectivity
+        scenarios: [四向添加与端口方向, 已有节点连接, 搜索分类长名称和空失败态, 面板键盘与窄屏, 单步撤销, 断开边界和孤立工序阻断, 前后端拒绝零写, 并行返工正反例]
+        evidenceReferences: []
+      - scope: route-rendering
+        scenarios: [边界节点, 四向端口, 并行与返工标记, 保存回读无损, 产品点选与高亮, 空图与窄屏]
+        evidenceReferences: []
+      - scope: shared-editing
+        scenarios: [历史上限, 撤销重做, 新编辑清空重做, 版本切换重置, 只读版本, 三类编辑器回归]
+        evidenceReferences: []
+    evidenceGaps:
+      - 2026-10-25 继续任务已成功 fetch origin edhr-dev；合并前仍需按实际目标提交复核
+      - 不读取或修改真实生产数据库，浏览器验收优先使用实际组件与隔离 HTTP 样例
+  extensionStrategy:
+    selectedPaths: [product-core, configuration]
+    rationale: 公共图基础归前端产品核心；路线及各流程的领域呈现、校验、序列化与保存留在原领域，不新增客户分支或通用执行平台
+    ownershipBoundaries:
+      - owner: components/flow-designer
+        responsibility: 与业务无关的既有图编辑基础和公共呈现组件
+      - owner: components/route-graph
+        responsibility: 路线专用图适配、节点、关系标记与只读呈现
+      - owner: master-data-and-workflow-pages
+        responsibility: 保留业务配置、版本选择、领域校验、保存、发布和用户权限
+      - owner: masterdata-service
+        responsibility: 保存接口的正常生产骨架连通和拓扑校验，保留原图写入事务与审计
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata
+      changeType: update
+      reason: 图保存前执行已确认的连通、去重、自连及正常骨架无环校验
+    - path: docs/knowledge
+      changeType: update
+      reason: 同步新确认的保存门禁及范围边界，不提高运行成熟度
+    - path: gmp-platform/frontend/src/components/route-graph
+      changeType: create
+      reason: 提取现有路线呈现与转换并用于产品预览
+    - path: gmp-platform/frontend/src/components/flow-designer
+      changeType: update
+      reason: 复用已有公共交互能力
+    - path: gmp-platform/frontend/src/pages/master-data
+      changeType: update
+      reason: 路线编辑与产品及产品簇共用的制程图接入
+    - path: gmp-platform/frontend/src/pages/workflow-center
+      changeType: update
+      reason: 三类编辑器接入公共编辑基础
+    - path: gmp-platform/frontend/scripts
+      changeType: update
+      reason: 跟随提取保留既有静态检查并补充行为验证
+  acceptanceScenarios:
+    - id: scenario.route-topology-and-occurrence-selection
+      given: 路线中存在不同端口的同向边、普通工序回路或同一工序的多个节点
+      when: 手动连线、快捷连接、重连、并行补线、切换工序类型或保存
+      then: 禁止重复边、自连、非法边界方向及正常生产回路；非法重连保留旧线且不增加撤销，保存前后端均零图写入；重复工序的全图节点序号在画布和候选一致，保存仍使用原nodeKey；选中连线或拖线时快捷箭头不遮挡线端
+      evidenceRequirements: [前后端拓扑正反例, 控制器零写断言, 实际拖线与重连浏览器, 候选与画布序号截图]
+    - id: scenario.route-rework-display-boundary
+      given: 既有显式REWORK节点或REWORK关系配置
+      when: 呈现路线或尝试把返工改为会成环的普通生产节点
+      then: 返工线显示文字及红色虚线；关系类型不豁免普通生产无环校验；成环类型转换拒绝，保留既有返工普通开工阻断，不新增执行能力
+      evidenceRequirements: [呈现单测与浏览器, 类型切换反例, 执行源码范围核对]
+    - id: scenario.route-quick-add-and-validation
+      given: 含正常生产节点、并行及返工的路线
+      when: 使用快捷箭头添加或连接工序并保存
+      then: 面板可搜索分类并展示完整名称，添加及连线一步撤销；断开或孤立生产路径在前后端保存均被拒且无图写入，返工和并行保留
+      evidenceRequirements: [单元测试, 控制器零写断言, 实际组件浏览器与面板截图]
+    - id: scenario.route-consistent-preview
+      given: 含开始结束、四向端口、并行及返工的路线
+      when: 在路线编辑与两个产品制程入口呈现
+      then: 使用相同路线适配与节点，连接端口和标记一致；产品图仅按原能力点选配置
+      evidenceRequirements: [实际组件浏览器检查, 图转换与字段回归]
+    - id: scenario.shared-history-preservation
+      given: 三类流程编辑器及已发布只读版本
+      when: 修改、拖动、撤销、重做、新编辑及切换版本
+      then: 历史上限和重置行为保持，领域验证与保存数据不变，只读版本不能编辑
+      evidenceRequirements: [聚焦单元检查, 浏览器编辑回归]
+    - id: scenario.no-business-contract-change
+      given: 现有产品绑定、版本、快照与后端契约
+      when: 完成本次前端重构
+      then: 除已确认新增的路线图连通与拓扑门禁外，制程绑定、最终产出、字段权限、版本和执行机制保持；无数据库迁移
+      evidenceRequirements: [变更范围核对, 本体边界核对, 独立质量复核]

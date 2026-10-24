@@ -1,0 +1,115 @@
+{
+  "baseCommit": "96ea56338ef1438938a546382368eb1d7d400938",
+  "targetCommit": "96ea56338ef1438938a546382368eb1d7d400938",
+  "workingTree": "dirty",
+  "files": [
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "sha256": "0143d2ce79352b0dbfa0e0d56ee50b4f86d069e5c88c1d12067cb6551b37ce96"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "sha256": "f261161e61de0eecdc6655dd33dbe24532de9db75eed2f002aae87a14bf62446"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml",
+      "sha256": "a882ed9bd1e076a65811b798fffda8d8b1eb27d95d1d1634ee4501cbad901213"
+    },
+    {
+      "path": "docs/knowledge/evidence/route-graph-save-connectivity-20261025.md",
+      "sha256": "73fcd3c0c8909a432860029702508ef84f23f046e056e640294df41e27f460d8"
+    },
+    {
+      "path": "docs/knowledge/evidence/route-graph-save-connectivity-20261025.yaml",
+      "sha256": "436c664ea717169f6c7fe1ee33091f9d5dc1917586c7ca03fa56205736f3516f"
+    },
+    {
+      "path": "docs/knowledge/facts/route-graph.yaml",
+      "sha256": "4ccfb9109bd093e0bcc2909400bd81a0da8f42e1c1e015fa2d43e22ba6cc5abf"
+    },
+    {
+      "path": "docs/knowledge/rules/route-graph.yaml",
+      "sha256": "fb978f0f40d207bf5f1bdc0a1d221d987694f2e5a04afb837617cb694dd6ae8e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "sha256": "cf2a6616c713ce884740eed6fd89941dbef6077f26a019eeb888c33abbfc6032"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java",
+      "sha256": "9bd52099425285791c3be416c8a9981c1e53db26c52a784ce16619d612b85098"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java",
+      "sha256": "4a7abbc2981c6ce4adacc6bc7de496b6abc42d249e5d08d20b682700c6b30dac"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/RouteGraphValidatorTest.java",
+      "sha256": "88fed2548e1f03b77a313584bd0378b359aa8d8757eb65d89d55457a67d3160a"
+    },
+    {
+      "path": "gmp-platform/frontend/package.json",
+      "sha256": "3de9d24e5b0be2ac541c5f3561f76a51ba6dc3e8bc00d011e21908e11424071c"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs",
+      "sha256": "3700e41d11f0733229620b24ba5725b8299c6d5e43df850df1e5c7948b43147a"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-flow-canvas.mjs",
+      "sha256": "881da0d86e34ae40cdbb236ce8eadbe5439a50a6a679aed6dfe267ae3e53c6c9"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/verify-process-modeling-pages.mjs",
+      "sha256": "0e37bf04b5daf43f81878b1de5b857168e6b3005573272aa056003433213e68d"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx",
+      "sha256": "252c26e0f68ab163169b38f0258f179a8c32c07a1b3df49287ce7bc1996e7a90"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/flow-designer/useFlowHistory.ts",
+      "sha256": "686bbae15239e8ebcd37101a6a8b1e6aed56ac16f036055f953d0a7b626d608a"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/route-graph/RouteGraphNode.tsx",
+      "sha256": "0cb7d42daff307d7ce7cdfceed478e13c2d27f7272c7449959ed21587d8192bb"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx",
+      "sha256": "88af64e516593bb51b8e9f3b88ca7ae9314b38de0cb44fb472034a933bc86fd3"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/route-graph/RouteQuickAddPanel.tsx",
+      "sha256": "21b9c564204feb20c2985e743a7ef3ef6a566778be9d59a214bcd60f363d57eb"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/route-graph/routeGraph.ts",
+      "sha256": "0185f77a009e952c682033fcdad941896ffef7d35e7a84ecc24764fec55bd063"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+      "sha256": "a91360c09d7314dafd6ae067621a980ad47e3057d467fe790e8a91316388ee52"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx",
+      "sha256": "af7436a454ab00dcf8348a7dae31f8be1bbd1b7ac7bf7237747c4ced920abf24"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx",
+      "sha256": "f79dfbf41bd03ad04860e0926eb0ba8b9f49f188b513cb04c9f29acd8ad09ee4"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/FormProcessEditor.tsx",
+      "sha256": "632c5451869e984ac5793a5afcc12f49854f2b0f462e706e700a02886be580dd"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx",
+      "sha256": "cf2016df6a53c02cb40eb50b747d33af032ac7a6780ffacb9559418af741e5dd"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx",
+      "sha256": "80fcf334a345becdec0c092237efa9813a71f40dbc1b15b56caa822487740f9a"
+    }
+  ]
+}

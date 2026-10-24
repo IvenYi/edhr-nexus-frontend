@@ -1,0 +1,203 @@
+qualityResult:
+  result: failed
+  baseCommit: 96ea56338ef1438938a546382368eb1d7d400938
+  headCommit: 96ea56338ef1438938a546382368eb1d7d400938
+  contractBaseline:
+    sourceCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    targetBranch: edhr-dev
+    targetCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    contractReadCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/business-knowledge-model.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml
+      - docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml
+      - docs/knowledge/evidence/route-graph-save-connectivity-20261025.md
+      - docs/knowledge/evidence/route-graph-save-connectivity-20261025.yaml
+      - docs/knowledge/evidence/route-graph-topology-20261025.md
+      - docs/knowledge/evidence/route-graph-topology-20261025.yaml
+      - docs/knowledge/facts/route-graph.yaml
+      - docs/knowledge/rules/route-graph.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/RouteGraphValidatorTest.java
+      - gmp-platform/frontend/package.json
+      - gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs
+      - gmp-platform/frontend/scripts/test-flow-canvas.mjs
+      - gmp-platform/frontend/scripts/verify-process-modeling-pages.mjs
+      - gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx
+      - gmp-platform/frontend/src/components/flow-designer/useFlowHistory.ts
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphNode.tsx
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx
+      - gmp-platform/frontend/src/components/route-graph/RouteQuickAddPanel.tsx
+      - gmp-platform/frontend/src/components/route-graph/routeGraph.ts
+      - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx
+      - gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/FormProcessEditor.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+      - docs/development/flow-canvas-unification-20261024/decision-package.yaml
+      - docs/development/flow-canvas-unification-20261024/ontology-result-topology.yaml
+      - docs/development/flow-canvas-unification-20261024/README.md
+      - docs/development/flow-canvas-unification-20261024/quality-result-topology.yaml
+      - output/route-topology-quality-20261025/
+    excludedPaths:
+      - 其余无关历史output及数据库dump；完整暂存160路径清单见本实例verification.json，其中历史阶段证据不作为当前测试通过依据
+    untrackedPaths:
+      - docs/development/flow-canvas-unification-20261024/quality-result-topology.yaml
+      - output/route-topology-quality-20261025/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.topology-candidate-fingerprints
+      required: true
+      category: integration
+      description: 独立核对来源、目标、契约、冻结30文件及暂存候选范围
+      method: command
+      command: 比较candidate-manifest.json内30项SHA256与工作树及git show :path；git rev-parse HEAD origin/edhr-dev；git diff --cached --name-only
+      outcome: passed
+      evidence:
+        - source、target和读取契约均为96ea56338ef1438938a546382368eb1d7d400938；未提交契约路径为空
+        - 测试对象是该HEAD叠加30个源代码和知识文件及交付文档，不存在虚构候选提交
+        - 暂存候选tree为36be9f42ea482d2809e2afd6344251efc1e3e742；验证对象类型为tree，暂存160个路径
+        - 30项工作树及index指纹全部一致；完整30指纹位于output/route-topology-quality-20261025/candidate-manifest.json
+        - manifest SHA256为6e9e65b11a17f0d7820aba29cbd22fb8fe515f7d9447c47464f022857f9bf098
+        - output/route-topology-quality-20261025/verification.json
+    - id: check.topology-implementation-boundaries
+      required: true
+      category: requirements
+      description: 核对重复、自连、边界方向、普通生产DAG及各入口和保存写入顺序
+      method: inspection
+      command: 原始源码核对ProcessModelingPage、routeGraph、RouteGraphValidator及ProcessModelingController
+      outcome: passed
+      evidence:
+        - 按真实nodeKey禁止全图同向重复边及自连；端口及关系类型不豁免；仅REWORK节点关联边从普通骨架排除
+        - 手动连接、重连排除旧边、快捷候选过滤及handler复查、并行补线和返工转普通均消费拓扑校验
+        - 前端submitForm在元数据mutation前校验；后端RouteGraphValidator.validate位于delete、saveAll和writeAudit之前
+        - 非法重连保留原边及历史；编辑中可断开、并行合流及START直连END保持；旧图不自动修正
+        - 无版本、快照、权限、执行源码或数据库迁移变更；普通开工REWORK阻断仍保留
+    - id: check.topology-unit
+      required: true
+      category: unit
+      description: 路线转换、拓扑、重复节点序号和编辑历史聚焦单元测试
+      method: automated-test
+      command: npm run test:flow-canvas
+      outcome: passed
+      evidence:
+        - 本实例实际运行13项，零失败零跳过，退出0
+        - output/route-topology-quality-20261025/unit.log
+    - id: check.topology-browser
+      required: true
+      category: e2e
+      description: 实际组件与隔离HTTP的29场景，包含各类编辑器和产品入口回归
+      method: browser
+      command: CHROME_PATH=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome npm run test:flow-canvas-browser
+      outcome: passed
+      evidence:
+        - 本实例实际运行29项全部通过，进程退出0；原22回归加新增7项
+        - 手动换端口重复、循环、自连，快捷候选过滤，实际点选连线端点重连拒绝且保留原线与撤销，三类非法保存零HTTP写入，返工样式及成环类型转换拒绝均通过
+        - output/route-topology-quality-20261025/browser.log
+        - output/route-topology-quality-20261025/browser-results.json
+        - 截图独立复制且排除调试遗留failed图片；不把此隔离HTTP运行声明成真实后端或数据库联调
+    - id: check.topology-backend
+      required: true
+      category: api
+      description: 保存拓扑校验及控制器零写和既有后端回归
+      method: automated-test
+      command: mvn --batch-mode --no-transfer-progress -Dtest=RouteGraphValidatorTest,ProcessModelingControllerTest test
+      outcome: passed
+      evidence:
+        - 本实例实际运行控制器54项及校验器7项，共61项，零失败零错误零跳过，退出0
+        - output/route-topology-quality-20261025/backend.log
+        - 使用repository mock，不宣称真实数据库事务联调通过
+    - id: check.topology-build
+      required: true
+      category: integration
+      description: 当前实际候选TypeScript及Vite构建
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence:
+        - 本实例实际运行tsc -b与vite build，进程退出0
+        - output/route-topology-quality-20261025/build.log
+    - id: check.topology-knowledge
+      required: true
+      category: ontology
+      description: 正式知识校验及本轮声明级局部替代一致性
+      method: automated-test
+      command: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml clean test
+      outcome: passed
+      evidence:
+        - 本实例独立实际运行89项，零失败零错误零跳过，退出0
+        - output/route-topology-quality-20261025/knowledge.log
+        - 人工核对DEC0084-01仅局部替代DEC0083-02生产环路豁免，历史决策及其他连通、返工隔离、引用资格、快照和版本边界保留
+        - rule/fact及两处说明同步；保持0.3.25、specified/internal、P0/in-progress，未把本体更新当成运行资格
+    - id: check.topology-visual
+      required: true
+      category: visual
+      description: 目视重复工序节点与候选区分、窄屏面板及返工连线
+      method: inspection
+      command: 目视本实例29浏览器运行产生的四张截图
+      outcome: passed
+      evidence:
+        - output/route-topology-quality-20261025/quick-existing-production-occurrences.png
+        - output/route-topology-quality-20261025/quick-existing-rework-occurrences.png
+        - output/route-topology-quality-20261025/quick-operation-panel-narrow.png
+        - output/route-topology-quality-20261025/route-rework-lines-are-explicitly-marked.png
+        - 画布及面板节点1/2/3一致，生产/返工类型和返工编号可区分；390px新增面板可读；返工边红色虚线并含明确文字
+    - id: check.topology-rework-roundtrip
+      required: true
+      category: regression
+      description: 显式REWORK关系在合法生产分支图保存回读后仍保留返工标记
+      method: automated-test
+      command: esbuild加载实际routeGraph.ts后，在内存中执行fromRouteGraphResponse、presentRouteGraph、toRouteGraphPayload、再次回读及呈现
+      outcome: failed
+      evidence:
+        - output/route-topology-quality-20261025/rework-roundtrip-probe.json
+        - 合法START到A，A到B为REWORK关系且B为普通工序，A到C为SEQUENTIAL，B及C到END；连通及拓扑校验返回空错误
+        - 保存前A到B显示返工文字及6 4虚线；序列化强制改为PARALLEL，回读后无返工文字或虚线
+    - id: check.topology-diff-hygiene
+      required: true
+      category: documentation
+      description: 源码文档差异卫生与无契约修改核验
+      method: command
+      command: git diff --cached --check -- docs gmp-platform；git diff --cached -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - 两项退出0，无未提交契约；原始运行日志保留，不清洗日志中的尾空格
+  findings:
+    - id: QF-TOPOLOGY-001
+      severity: medium
+      scope: route-graph-save-roundtrip
+      summary: 普通生产分支源的显式REWORK关系被保存为PARALLEL，回读后返工标记消失
+      reproductionSteps:
+        - 准备普通节点A、B、C及START/END，连接START到A、A到B、A到C、B到END、C到END；A到B关系类型为REWORK，其余为SEQUENTIAL
+        - 调用getRouteConnectivityErrors确认路线合法，并用presentRouteGraph查看A到B为红色虚线返工边
+        - 调用toRouteGraphPayload保存再以fromRouteGraphResponse回读，重新调用presentRouteGraph
+      expectedResult: 显式REWORK关系类型及其返工文字和虚线在保存回读后保持，不增加返工执行资格
+      actualResult: toRouteGraphPayload因A有多个普通生产后继将A到B类型改为PARALLEL，普通端点不提供返工标记，回读后显示普通流转线
+      evidence:
+        - gmp-platform/frontend/src/components/route-graph/routeGraph.ts:782
+        - gmp-platform/frontend/src/components/route-graph/routeGraph.ts:575
+        - docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml 的DEC-0084-04
+        - output/route-topology-quality-20261025/rework-roundtrip-probe.json
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.topology-no-real-database
+      description: 浏览器使用实际组件和隔离HTTP，后端使用repository mock；未执行真实数据库或生产执行联调
+      impact: 不证明真实持久化事务、生产环境部署及完整返工运行能力
+      mitigation: 本次无迁移及执行机制变更，保留限制并按后续发布范围补适用联调
+    - id: risk.topology-existing-tool-baselines
+      description: 原verify-process-modeling迁移路径、ESLint配置缺失及Premium历史告警不在本次修复范围，本实例未重跑这些既有失败入口
+      impact: 不能声称全系统静态工具或全仓视觉规范全部通过
+      mitigation: 使用本轮聚焦构建、行为与知识检查，沿用已有明确披露且无新迁移或依赖变更
+    - id: risk.topology-gate-enforcement
+      description: 未核验远端分支保护或必需CI配置
+      impact: 本地契约和测试通过不能等同远端强制门禁
+      mitigation: 主侧提交推送前核对实际候选及远端变化，不冒称远端已启用强制检查
+  blockingConditions: []

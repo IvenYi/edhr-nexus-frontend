@@ -17,6 +17,7 @@ import com.zencas.edhr.masterdata.dto.ProcessModelingRequest;
 import com.zencas.edhr.masterdata.dto.ProductFamilyMemberResponse;
 import com.zencas.edhr.masterdata.dto.RouteGraphRequest;
 import com.zencas.edhr.masterdata.dto.RouteGraphResponse;
+import com.zencas.edhr.masterdata.service.RouteGraphValidator;
 import com.zencas.edhr.masterdata.entity.Material;
 import com.zencas.edhr.masterdata.entity.MaterialType;
 import com.zencas.edhr.masterdata.entity.Operation;
@@ -816,10 +817,6 @@ public class ProcessModelingController {
             @PathVariable Long versionId,
             @RequestBody RouteGraphRequest request) {
         requireRouteVersion(routeId, versionId);
-        routeRelationRepository.deleteByRouteVersionId(versionId);
-        routeRelationRepository.flush();
-        routeNodeRepository.deleteByRouteVersionId(versionId);
-        routeNodeRepository.flush();
         List<RouteNode> nodes = (request == null || request.getNodes() == null ? List.<RouteGraphRequest.NodePayload>of() : request.getNodes())
                 .stream()
                 .map(node -> toRouteNode(versionId, node))
@@ -828,6 +825,11 @@ public class ProcessModelingController {
                 .stream()
                 .map(relation -> toRouteRelation(versionId, relation))
                 .toList();
+        RouteGraphValidator.validate(nodes, relations);
+        routeRelationRepository.deleteByRouteVersionId(versionId);
+        routeRelationRepository.flush();
+        routeNodeRepository.deleteByRouteVersionId(versionId);
+        routeNodeRepository.flush();
         List<RouteNode> savedNodes = routeNodeRepository.saveAll(nodes);
         List<RouteRelation> savedRelations = routeRelationRepository.saveAll(relations);
         writeAudit("ROUTE_GRAPH", versionId, "UPDATE", "工艺路线", "配置工艺路线图", Map.of(), Map.of(

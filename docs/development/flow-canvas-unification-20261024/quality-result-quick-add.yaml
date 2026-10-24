@@ -1,0 +1,222 @@
+qualityResult:
+  result: failed
+  baseCommit: 96ea56338ef1438938a546382368eb1d7d400938
+  headCommit: 96ea56338ef1438938a546382368eb1d7d400938
+  contractBaseline:
+    sourceCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    targetBranch: edhr-dev
+    targetCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    contractReadCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/business-knowledge-model.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml
+      - docs/knowledge/evidence/route-graph-save-connectivity-20261025.md
+      - docs/knowledge/evidence/route-graph-save-connectivity-20261025.yaml
+      - docs/knowledge/facts/route-graph.yaml
+      - docs/knowledge/rules/route-graph.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/RouteGraphValidatorTest.java
+      - gmp-platform/frontend/package.json
+      - gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs
+      - gmp-platform/frontend/scripts/test-flow-canvas.mjs
+      - gmp-platform/frontend/scripts/verify-process-modeling-pages.mjs
+      - gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx
+      - gmp-platform/frontend/src/components/flow-designer/useFlowHistory.ts
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphNode.tsx
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx
+      - gmp-platform/frontend/src/components/route-graph/RouteQuickAddPanel.tsx
+      - gmp-platform/frontend/src/components/route-graph/routeGraph.ts
+      - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx
+      - gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/FormProcessEditor.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+      - docs/development/flow-canvas-unification-20261024/decision-package.yaml
+      - docs/development/flow-canvas-unification-20261024/ontology-result-quick-add.yaml
+      - docs/development/flow-canvas-unification-20261024/README.md
+    excludedPaths:
+      - output/** unrelated historical assets
+      - gmp-platform/frontend/output/**
+    untrackedPaths:
+      - docs/development/flow-canvas-unification-20261024/
+      - docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml
+      - docs/knowledge/evidence/route-graph-save-connectivity-20261025.md
+      - docs/knowledge/evidence/route-graph-save-connectivity-20261025.yaml
+      - docs/knowledge/facts/route-graph.yaml
+      - docs/knowledge/rules/route-graph.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/RouteGraphValidatorTest.java
+      - gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs
+      - gmp-platform/frontend/scripts/test-flow-canvas.mjs
+      - gmp-platform/frontend/src/components/flow-designer/useFlowHistory.ts
+      - gmp-platform/frontend/src/components/route-graph/
+      - output/route-quick-add-quality-20261025/ (quality evidence only)
+      - output/playwright/route-quick-add-ambiguity-20261025/ (quality evidence only)
+      - output/playwright/route-quick-add-independent-verified-20261025/ (quality evidence only)
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.route-quick-add-scope-and-contract
+      required: true
+      category: requirements
+      description: 独立核对契约、确认政策、影响分析与冻结工作树候选
+      method: inspection
+      command: git rev-parse HEAD origin/edhr-dev; git diff -- AGENTS.md codeplzreadme.md docs/agents; SHA-256 comparison of candidate-manifest.json
+      outcome: passed
+      evidence:
+        - original-evidence：本实例读取AGENTS、编码准则、quality-verifier、agent-handoff-contract、决策包与相关架构/UI规范；HEAD与origin均为96ea56338ef1438938a546382368eb1d7d400938，适用契约无工作树差异。
+        - output/route-quick-add-quality-20261025/manifest-check.json：独立核对27个运行/测试/知识文件，changedAfterSnapshot为空；候选是所列HEAD叠加记录的工作树，不虚构合并提交。
+        - user-confirmed：用户明确要求工序快捷添加并选择保存时强制连通校验；既有保留MVP版本、引用与执行机制的边界继续适用。
+        - 质量实例未修改任何业务实现或仓库测试文件；额外浏览器探针在内存中组合实际组件及隔离fixture，仅写质量证据和本结果。
+    - id: check.route-quick-add-knowledge-policy
+      required: true
+      category: ontology
+      description: 核对DEC-0083、派生事实、实现边界与本体结果
+      method: inspection
+      command: inspect DEC-0083, route-graph rules/facts/evidence, decision-package.yaml, ontology-result-quick-add.yaml and frontend/backend validators
+      outcome: passed
+      evidence:
+        - original-evidence：前后端均验证唯一键、唯一START/END、真实端点、START无入/END无出、START覆盖全部OPERATION且各OPERATION可达END；REWORK端点相关边排除，保留并行且没有新增DAG或普通节点单出口保存门禁。
+        - 版本元数据入口未增加图校验；START直连END的空骨架允许，既存图读取、产品引用资格和冻结执行快照没有改写。
+        - 本体结果updated；新增知识保持specified/internal和0.3.25，不以同步或本次保存校验声明运行可执行资格、发布或阶段升级。
+        - product-core/configuration所有权与L2影响分析符合本次真实变化；不合并存储、版本或执行引擎。
+    - id: check.route-quick-add-knowledge-validator
+      required: true
+      category: ontology
+      description: 本实例独立重跑正式知识校验
+      method: automated-test
+      command: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - 本实例实际执行89项，失败0、错误0、跳过0。
+        - tools/knowledge-model/target/surefire-reports/com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.txt
+    - id: check.route-quick-add-backend-save
+      required: true
+      category: integration
+      description: 独立运行保存连通校验及原控制器相邻回归
+      method: automated-test
+      command: mvn --batch-mode --no-transfer-progress -Dtest=RouteGraphValidatorTest,ProcessModelingControllerTest test
+      outcome: passed
+      evidence:
+        - 本实例实际执行58项通过，即53项整个控制器类回归及5项校验器测试，不将53项称作新增连通场景。
+        - gmp-platform/backend/target/surefire-reports/com.zencas.edhr.masterdata.controller.ProcessModelingControllerTest.txt
+        - gmp-platform/backend/target/surefire-reports/com.zencas.edhr.masterdata.service.RouteGraphValidatorTest.txt
+        - original-evidence：非法断开图对节点、关系和审计Repository均零交互；实际控制器先完成节点/关系映射与校验，再删除、flush和保存图；原权限与@Transactional保留。
+        - 测试使用控制器及Repository mocks，不宣称真实数据库事务集成已通过。
+    - id: check.route-quick-add-units-and-regression
+      required: true
+      category: unit
+      description: 独立运行图/历史/连通/方向与既有流程回归
+      method: automated-test
+      command: npm run test:flow-canvas; node --test scripts/test-work-editor-default-version.mjs scripts/test-review-batch-01.mjs; npm run qa:process-route-delete
+      outcome: passed
+      evidence:
+        - 本实例实跑10项图相关单元及32项既有测试全部通过，路线删除QA通过。
+        - 覆盖身份/位置/显式端口、返工并行呈现、连通反例、返工不能替代正常路径、空骨架、四向快捷连线及避让、50步历史和隔离。
+    - id: check.route-quick-add-actual-components
+      required: true
+      category: e2e
+      description: 独立复跑完整画布实际组件浏览器场景
+      method: browser
+      command: CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' npm run test:flow-canvas-browser
+      outcome: passed
+      evidence:
+        - 本实例独立运行19项全部通过，无pageerror；固定副本output/route-quick-add-quality-20261025/independent-browser-results.json。
+        - 新场景覆盖搜索分类/长名称/无匹配、快捷新增及连线一步撤销/重做、已有节点补线、断开保存时元数据和图均零写、修复后保存、加载失败重试、Escape焦点恢复及键盘添加、390px浮层边界。
+        - 原场景覆盖产品只读点选、两个产品保存身份与最终产出、三类流程属性/拖动历史/只读/版本重置、路线旧库新增/真实手柄拖线/保存/重开历史。
+        - 使用实际React组件和隔离HTTP，不覆盖真实后端、数据库或生产执行。
+    - id: check.route-quick-add-generic-arrows-and-handles
+      required: true
+      category: regression
+      description: 额外独立核验公共箭头响应区没有遮挡原连接点且三类编辑器仍能快捷添加
+      method: browser
+      command: in-memory Playwright probes using the actual component harness; no repository source or test edits
+      outcome: passed
+      evidence:
+        - output/playwright/route-quick-add-independent-verified-20261025/results.json：三类表单/审批/作业编辑器探针均通过。
+        - 对开始至普通节点已连接、普通节点尚无出边的草稿，elementFromPoint确认源/目标手柄仍直接可点；右箭头打开菜单并添加节点及连线，撤销恢复，无业务写入。
+        - 探针最初误把已有出边的完整图当作仍可添加普通出边、以及误用产品options作为表单候选；已按既有单出口规则与正确场景重新构造内存fixture，并等待连线测量完成。失败探索不作为产品缺陷，也未降低仓库测试断言或修改实现。
+    - id: check.route-quick-add-product-reference
+      required: true
+      category: regression
+      description: 独立回归产品版本引用及图加载异常边界
+      method: browser
+      command: CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' node scripts/test-product-process-reference-browser.mjs
+      outcome: passed
+      evidence:
+        - 本实例实际运行12项全部通过。
+        - 覆盖既有引用显示、缺元数据仍保留身份、复制、空候选、保存ID、慢图/失败重试不清绑定、加载/失败阻止错误提交和窄屏。
+    - id: check.route-quick-add-build-and-whitespace
+      required: true
+      category: regression
+      description: 独立类型、生产构建与差异卫生检查
+      method: command
+      command: npm run build; npx tsc --noEmit; git diff --check
+      outcome: passed
+      evidence:
+        - 本实例三项实际退出码均0，build执行tsc -b及Vite并转换12188模块。
+    - id: check.route-quick-add-panel-visual-and-identity
+      required: true
+      category: visual
+      description: 检查桌面/窄屏面板、错误提示及已有节点候选身份可辨识性
+      method: browser
+      command: view_image quick-operation-panel-open.png, quick-operation-panel-narrow.png, route-connectivity-errors.png; actual-component ambiguity reproduction
+      outcome: failed
+      evidence:
+        - 已目视实际组件桌面和390px浮层，长名称可折行、分类与搜索可见、浮层处于视口内；问题节点红框与文字可见。
+        - output/playwright/route-quick-add-ambiguity-20261025/ambiguous-targets.json
+        - output/playwright/route-quick-add-ambiguity-20261025/qa-ambiguous-production-rework-target.png
+        - 真实右键复制返工后，连接已有节点面板同时显示两个名称/编码/可访问名称均为装配ASM的候选，未展示生产/返工区别；对应QF-ROUTE-QUICK-001。
+    - id: check.route-quick-add-existing-tooling-boundary
+      required: true
+      category: documentation
+      description: 区分现存静态验证工具缺口与当前交付证据
+      method: command
+      command: execute HEAD and working-tree verify-process-modeling-pages.mjs in memory with original import.meta.url; inspect README and primary static-delta.json
+      outcome: passed
+      evidence:
+        - 本实例独立执行HEAD和工作树正式静态脚本，两者均在0014-process-modeling-permissions.sql缺失路径报同一ENOENT；没有将该静态脚本标成通过。
+        - secondary-reference：主侧static-delta.json内存路径映射诊断同为5条旧迁移断言失败、无新增；旧Premium审计138项告警及ESLint配置缺失不冒充通过，也未混入本次修复。
+        - 当前README区分新增政策与旧阶段记录，并明确没有真实DB、生产执行或发布验收；本次质量结果为failed，不能沿用旧阶段passed。
+  findings:
+    - id: QF-ROUTE-QUICK-001
+      severity: medium
+      scope: 工艺路线快捷添加面板的连接已有节点列表
+      summary: 同一工序的正常生产与返工副本候选完全同名，列表无法辨认目标类型
+      reproductionSteps:
+        - 打开含装配工序a的路线编辑器，右键装配并选择复制为返工工序。
+        - 点击结束节点的上方快捷箭头，切换连接已有节点。
+        - 查看列表中的两个装配ASM按钮，分别对应OPERATION的a与REWORK的a-copy节点。
+      expectedResult: 保留原名称和编码，使用清晰可见及可访问的生产/返工标识、返工编号或其他稳定区分信息，让用户能够确定所连节点。
+      actualResult: 两行只显示相同的label和operationCode，名称、编码及可访问名称完全相同；错误选择返工目标不会补全正常生产路径。
+      evidence:
+        - gmp-platform/frontend/src/components/route-graph/RouteQuickAddPanel.tsx existing.map只渲染label与operationCode
+        - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx copyRouteContextSelection对REWORK副本保留原label
+        - output/playwright/route-quick-add-ambiguity-20261025/ambiguous-targets.json
+        - output/playwright/route-quick-add-ambiguity-20261025/qa-ambiguous-production-rework-target.png
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.route-quick-add-real-database
+      description: 后端验证采用纯校验器及控制器Repository mock，浏览器采用隔离HTTP，没有真实数据库或生产执行验收。
+      impact: 不覆盖真实约束、事务回滚、网络失败与版本元数据/图跨请求的所有并发窗口；现有版本元数据与图仍是分开保存。
+      mitigation: 不将测试声明扩大到真实DB或发布；涉及真实持久化或执行调整时补相应集成检查。
+    - id: risk.route-quick-add-save-vs-runtime
+      description: 本门禁仅证明正常骨架连通，不新增生产环路禁止、返工运行或引用资格规则。
+      impact: 通过图保存不意味着既有生产运行检查或配置条件已经全部满足。
+      mitigation: 保留原执行入口、快照与运行阻断，向用户描述本次仅是图保存完整性。
+    - id: risk.route-quick-add-legacy-tools
+      description: 旧process-modeling验证依赖不存在的main历史迁移，ESLint配置缺失；全仓Premium审计仍有既有告警。
+      impact: 不具有这些全仓工具全绿的证据。
+      mitigation: 如实保留基线差异及聚焦检查，单独维护旧工具，不降低当前业务断言。
+    - id: risk.route-quick-add-candidate-freshness
+      description: 本结果仅针对manifest核对时的27个冻结候选文件；尚未提交、合并、推送或核验分支保护。
+      impact: 修复QF-ROUTE-QUICK-001后，旧候选结果不能覆盖新代码。
+      mitigation: 由主智能体修复；依L2角色契约另派全新质量实例，对新manifest候选回归问题及邻接功能并取得passed。
+  blockingConditions: []

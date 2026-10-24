@@ -1,0 +1,18 @@
+knowledgeModelVersion: 0.3.25
+rules:
+  - id: rule.route-graph.save-connectivity
+    name: 路线图保存必须通过正常生产路径完整性及拓扑校验
+    status: specified
+    visibility: internal
+    trigger: route.graph.save
+    scope: route-version-graph
+    condition:
+      fact: fact.route-graph.save-valid
+      operator: equals
+      value: false
+    result:
+      type: block
+      action: route.graph.save
+      reason: 正常生产路径不完整、存在循环，或图节点及连线结构不合法
+    explanation: 编辑中可临时断开，图保存时须由开始覆盖全部OPERATION且每个OPERATION都能到达结束，开始也须到达结束。按DEC-0084-01局部替代DEC-0083-02的旧环路边界，正常骨架排除显式REWORK节点及相关边后必须无环，保留并行及合流，不新增普通节点单出口，不定义返工运行；普通节点之间的REWORK关系类型不能提供绕过。全图禁止自连及同向节点对重复边，不因端口或关系类型不同而例外，按nodeKey判断而非operationId。入口同时校验节点键唯一、节点类型仅START/END/OPERATION/REWORK、恰一个START及END、关系端点存在、START无入边和END无出边；START直接连END的空骨架仍可保存。各编辑连线入口及节点类型转换遵循相同拓扑约束。版本元数据可先创建；图保存不合格时前端在元数据请求前提示，服务端在任何图删除或写入前拒绝。旧图、引用资格和已冻结快照不回写，不把作业草稿政策外推路线。
+    evidenceIds: [evidence.route-graph-save-connectivity-confirmed, evidence.route-graph-topology-confirmed, evidence.route-graph-save-connectivity-controller, evidence.route-graph-save-connectivity-validator, evidence.route-graph-save-connectivity-editor, evidence.route-graph-save-connectivity-validator-test, evidence.route-graph-save-connectivity-controller-test, evidence.route-graph-topology-browser-tests]

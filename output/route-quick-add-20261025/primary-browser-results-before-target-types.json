@@ -1,0 +1,223 @@
+{
+  "scope": "actual components with isolated HTTP; no real backend or database integration",
+  "results": [
+    {
+      "name": "preview-desktop",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": []
+    },
+    {
+      "name": "preview-narrow",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "writes": []
+    },
+    {
+      "name": "product-selection-and-save",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": []
+    },
+    {
+      "name": "workspace-selection-and-save",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": [
+        {
+          "method": "PUT",
+          "pathname": "/api/v1/master-data/product-modeling/products/101/versions/701"
+        }
+      ]
+    },
+    {
+      "name": "form-history-and-save",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": [
+        {
+          "method": "PUT",
+          "pathname": "/api/v1/workflow/form-processes/101/versions/601/graph"
+        }
+      ]
+    },
+    {
+      "name": "form-published-readonly",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": []
+    },
+    {
+      "name": "form-version-history-reset",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": []
+    },
+    {
+      "name": "review-history-and-save",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": [
+        {
+          "method": "PUT",
+          "pathname": "/api/v1/workflow/review-templates/101/versions/601/graph"
+        }
+      ]
+    },
+    {
+      "name": "review-published-readonly",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": []
+    },
+    {
+      "name": "review-version-history-reset",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": []
+    },
+    {
+      "name": "work-history-and-save",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": [
+        {
+          "method": "PUT",
+          "pathname": "/api/v1/workflow/work-templates/101/versions/601/graph"
+        }
+      ]
+    },
+    {
+      "name": "work-published-readonly",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": []
+    },
+    {
+      "name": "work-version-history-reset",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": []
+    },
+    {
+      "name": "route-edit-save",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": [
+        {
+          "method": "PUT",
+          "pathname": "/api/v1/master-data/process-modeling/routes/201/versions/301"
+        },
+        {
+          "method": "PUT",
+          "pathname": "/api/v1/master-data/process-modeling/routes/201/versions/301/graph"
+        }
+      ]
+    },
+    {
+      "name": "route-reopen-history-reset",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": []
+    },
+    {
+      "name": "route-quick-panel-add-connect-save",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": [
+        {
+          "method": "PUT",
+          "pathname": "/api/v1/master-data/process-modeling/routes/201/versions/301"
+        },
+        {
+          "method": "PUT",
+          "pathname": "/api/v1/master-data/process-modeling/routes/201/versions/301/graph"
+        }
+      ]
+    },
+    {
+      "name": "route-disconnected-save-block-and-repair",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": [
+        {
+          "method": "PUT",
+          "pathname": "/api/v1/master-data/process-modeling/routes/201/versions/301"
+        },
+        {
+          "method": "PUT",
+          "pathname": "/api/v1/master-data/process-modeling/routes/201/versions/301/graph"
+        }
+      ]
+    },
+    {
+      "name": "route-quick-panel-retry-keyboard",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": []
+    },
+    {
+      "name": "route-quick-panel-narrow",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "writes": []
+    }
+  ]
+}

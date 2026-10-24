@@ -1,0 +1,43 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------< com.zencas:edhr-knowledge-model-validation >-------------
+[INFO] Building eDHR knowledge model validation 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ edhr-knowledge-model-validation ---
+[INFO] Deleting /Users/ivenwang/Documents/edhr-nexus/tools/knowledge-model/target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ edhr-knowledge-model-validation ---
+[INFO] skip non existing resourceDirectory /Users/ivenwang/Documents/edhr-nexus/tools/knowledge-model/src/main/resources
+[INFO] skip non existing resourceDirectory /Users/ivenwang/Documents/edhr-nexus/tools/knowledge-model/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ edhr-knowledge-model-validation ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ edhr-knowledge-model-validation ---
+[INFO] skip non existing resourceDirectory /Users/ivenwang/Documents/edhr-nexus/tools/knowledge-model/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ edhr-knowledge-model-validation ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 5 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ edhr-knowledge-model-validation ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.zencas.edhr.knowledge.BusinessKnowledgeModelTest
+[INFO] Tests run: 89, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.110 s -- in com.zencas.edhr.knowledge.BusinessKnowledgeModelTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 89, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.303 s
+[INFO] Finished at: 2026-10-25T02:30:05+08:00
+[INFO] ------------------------------------------------------------------------

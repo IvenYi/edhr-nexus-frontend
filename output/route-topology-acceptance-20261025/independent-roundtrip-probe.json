@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "records": [
+    {
+      "relationType": "REWORK",
+      "connectivity": "valid",
+      "explicitSavedType": "REWORK",
+      "ruleExpression": "rule-REWORK",
+      "normalSequentialSiblingSavedType": "PARALLEL",
+      "reworkEndpointSavedType": "SEQUENTIAL",
+      "roundtripPayloadIdentical": true,
+      "reworkVisual": {
+        "label": "返工",
+        "dash": "6 4"
+      }
+    },
+    {
+      "relationType": "OPTIONAL",
+      "connectivity": "valid",
+      "explicitSavedType": "OPTIONAL",
+      "ruleExpression": "rule-OPTIONAL",
+      "normalSequentialSiblingSavedType": "PARALLEL",
+      "reworkEndpointSavedType": "SEQUENTIAL",
+      "roundtripPayloadIdentical": true
+    },
+    {
+      "relationType": "ALTERNATIVE",
+      "connectivity": "valid",
+      "explicitSavedType": "ALTERNATIVE",
+      "ruleExpression": "rule-ALTERNATIVE",
+      "normalSequentialSiblingSavedType": "PARALLEL",
+      "reworkEndpointSavedType": "SEQUENTIAL",
+      "roundtripPayloadIdentical": true
+    },
+    {
+      "relationType": "PARALLEL",
+      "connectivity": "valid",
+      "explicitSavedType": "PARALLEL",
+      "ruleExpression": "rule-PARALLEL",
+      "normalSequentialSiblingSavedType": "PARALLEL",
+      "reworkEndpointSavedType": "SEQUENTIAL",
+      "roundtripPayloadIdentical": true
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+knowledgeModelVersion: 0.3.25
+facts:
+  - id: fact.route-graph.save-valid
+    name: 路线图通过正常生产路径连通与拓扑保存校验
+    conceptId: concept.route-version
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java
+    aliases: [routeGraph.saveValid]
+    availability: configuration
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.route-graph-save-connectivity-confirmed, evidence.route-graph-topology-confirmed, evidence.route-graph-save-connectivity-validator]
+    sourceRevision: working-tree
+    sourceLocator: RouteGraphValidator.validate对当前请求nodes和relations的基础结构、全图自连/重复边、正常骨架无环及开始至结束连通校验是否通过；不是持久化状态或生产运行可执行资格，REWORK节点关联边从正常骨架排除但不豁免自连或重复边。运行和独立质量结果分别取本切片实际证据
+    capturedAt: '2026-10-25'
+    reviewStatus: reviewed

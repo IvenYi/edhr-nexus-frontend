@@ -1,0 +1,122 @@
+{
+  "findingId": "QF-TOPOLOGY-STATIC-001",
+  "sourceSha256": "56cc9fe91d04344d2d3a9637cb06d6f60984ebadd7e96a52a6a763be8eabe1a2",
+  "source": "gmp-platform/frontend/src/components/route-graph/routeGraph.ts",
+  "sourceLine": 782,
+  "method": "Original source inspection and in-memory pure-function probe; no browser, HTTP, database or full application build",
+  "command": "node --input-type=module with esbuild write:false bundle of routeGraph.ts; fromRouteGraphResponse(fixture) -> presentRouteGraph -> toRouteGraphPayload -> fromRouteGraphResponse -> presentRouteGraph",
+  "reproduce": "Use fixture below in gmp-platform/frontend/scripts/test-flow-canvas.mjs imports; assert toRouteGraphPayload(fromRouteGraphResponse(fixture)).relations A->B remains REWORK and after-roundtrip presentation remains dashed with 返工 label.",
+  "fixture": {
+    "nodes": [
+      {
+        "nodeKey": "__route_start__",
+        "nodeType": "START"
+      },
+      {
+        "nodeKey": "a",
+        "nodeType": "OPERATION",
+        "operationId": 1
+      },
+      {
+        "nodeKey": "b",
+        "nodeType": "OPERATION",
+        "operationId": 2
+      },
+      {
+        "nodeKey": "c",
+        "nodeType": "OPERATION",
+        "operationId": 3
+      },
+      {
+        "nodeKey": "__route_end__",
+        "nodeType": "END"
+      }
+    ],
+    "relations": [
+      {
+        "sourceNodeKey": "__route_start__",
+        "targetNodeKey": "a"
+      },
+      {
+        "sourceNodeKey": "a",
+        "targetNodeKey": "b",
+        "relationType": "REWORK"
+      },
+      {
+        "sourceNodeKey": "a",
+        "targetNodeKey": "c"
+      },
+      {
+        "sourceNodeKey": "b",
+        "targetNodeKey": "__route_end__"
+      },
+      {
+        "sourceNodeKey": "c",
+        "targetNodeKey": "__route_end__"
+      }
+    ]
+  },
+  "validationErrors": {},
+  "before": {
+    "id": "a-b-1",
+    "source": "a",
+    "target": "b",
+    "sourceHandle": "route-handle-right",
+    "targetHandle": "route-handle-left",
+    "type": "smoothstep",
+    "markerEnd": {
+      "type": "arrowclosed",
+      "width": 14,
+      "height": 14,
+      "color": "#f56c6c"
+    },
+    "style": {
+      "stroke": "#f56c6c",
+      "strokeWidth": 2,
+      "strokeDasharray": "6 4"
+    },
+    "label": "返工",
+    "data": {
+      "relationType": "REWORK",
+      "label": "返工回流",
+      "ruleExpression": null
+    },
+    "labelStyle": {
+      "fill": "#f56c6c",
+      "fontSize": 12
+    }
+  },
+  "saved": {
+    "sourceNodeKey": "a",
+    "targetNodeKey": "b",
+    "sourceHandle": "route-handle-right",
+    "targetHandle": "route-handle-left",
+    "relationType": "PARALLEL",
+    "label": "返工回流",
+    "ruleExpression": null,
+    "priority": 2
+  },
+  "after": {
+    "id": "a-b-1",
+    "source": "a",
+    "target": "b",
+    "sourceHandle": "route-handle-right",
+    "targetHandle": "route-handle-left",
+    "type": "smoothstep",
+    "markerEnd": {
+      "type": "arrowclosed",
+      "width": 14,
+      "height": 14,
+      "color": "#8a97a6"
+    },
+    "style": {
+      "stroke": "#8a97a6",
+      "strokeWidth": 1
+    },
+    "data": {
+      "relationType": "PARALLEL",
+      "label": "返工回流",
+      "ruleExpression": null
+    }
+  }
+}

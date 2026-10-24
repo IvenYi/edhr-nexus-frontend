@@ -1,0 +1,221 @@
+qualityResult:
+  result: passed
+  baseCommit: 96ea56338ef1438938a546382368eb1d7d400938
+  headCommit: 96ea56338ef1438938a546382368eb1d7d400938
+  contractBaseline:
+    sourceCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    targetBranch: edhr-dev
+    targetCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    contractReadCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/business-knowledge-model.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml
+      - docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml
+      - docs/knowledge/evidence/route-graph-save-connectivity-20261025.md
+      - docs/knowledge/evidence/route-graph-save-connectivity-20261025.yaml
+      - docs/knowledge/evidence/route-graph-topology-20261025.md
+      - docs/knowledge/evidence/route-graph-topology-20261025.yaml
+      - docs/knowledge/facts/route-graph.yaml
+      - docs/knowledge/rules/route-graph.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/RouteGraphValidatorTest.java
+      - gmp-platform/frontend/package.json
+      - gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs
+      - gmp-platform/frontend/scripts/test-flow-canvas.mjs
+      - gmp-platform/frontend/scripts/verify-process-modeling-pages.mjs
+      - gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx
+      - gmp-platform/frontend/src/components/flow-designer/useFlowHistory.ts
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphNode.tsx
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx
+      - gmp-platform/frontend/src/components/route-graph/RouteQuickAddPanel.tsx
+      - gmp-platform/frontend/src/components/route-graph/routeGraph.ts
+      - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx
+      - gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/FormProcessEditor.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+      - docs/development/flow-canvas-unification-20261024/decision-package.yaml
+      - docs/development/flow-canvas-unification-20261024/ontology-result-topology.yaml
+      - docs/development/flow-canvas-unification-20261024/README.md
+      - docs/development/flow-canvas-unification-20261024/quality-result-topology-acceptance.yaml
+      - output/route-topology-acceptance-20261025/
+    excludedPaths:
+      - 其余无关历史output及数据库dump；暂存210路径的实际清单见本实例verification.json，历史阶段失败报告及证据不作为当前通过依据
+    untrackedPaths:
+      - docs/development/flow-canvas-unification-20261024/quality-result-topology-acceptance.yaml
+      - output/route-topology-acceptance-20261025/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.topology-acceptance-candidate
+      required: true
+      category: integration
+      description: 全新质量实例独立核对契约、实际候选及上轮证据适用范围
+      method: command
+      command: 比较冻结manifest的30项SHA256与工作树、git show :path和前质量manifest；git rev-parse HEAD origin/edhr-dev；git diff --cached --name-only
+      outcome: passed
+      evidence:
+        - source、target、feature HEAD和实际读取契约均为96ea56338ef1438938a546382368eb1d7d400938，无未提交契约修改
+        - 当前无新功能提交；测试对象为该HEAD叠加冻结30个源代码、测试和知识文件，不虚构候选commit
+        - 检查开始时index候选tree为099f594c01b099611d581a16dce998346f1e572a；tree不是commit，暂存210路径含本切片历史交付证据
+        - 30项工作树、index和冻结指纹一致；相对上轮独立质量仅routeGraph.ts、test-flow-canvas.mjs、test-flow-canvas-browser.mjs三项变化
+        - 后端4文件和知识10文件指纹与上轮独立质量原始运行一致，按此次改动影响复用61项后端及89项知识检查，不声称本实例重新运行它们
+        - output/route-topology-acceptance-20261025/candidate-manifest.json
+        - output/route-topology-acceptance-20261025/verification.json
+    - id: check.topology-acceptance-requirements
+      required: true
+      category: requirements
+      description: 当前拓扑入口、保存顺序、真实节点身份及返工边界与已确认范围一致
+      method: inspection
+      command: 核对routeGraph、ProcessModelingPage、RouteQuickAddPanel、RouteGraphNode、RouteGraphValidator、ProcessModelingController及ProductionExecutionEngine相关原始源码和聚焦测试
+      outcome: passed
+      evidence:
+        - 全图按真实nodeKey禁止自连及同向重复边，端口和关系类型不提供豁免；同一operationId的不同nodeKey仍可合法连接
+        - 普通生产DAG仅排除REWORK节点及相关边；普通节点间的REWORK关系不能绕过无环检查，合法并行、合流及START直连END保持
+        - 手动、快捷、排除原边后的重连、并行补线、节点类型转换均检查拓扑；非法重连在rememberRouteGraph前返回，保留原边和历史
+        - 编辑可以临时断开；submitForm在元数据mutation前检查，服务端validate在图delete、saveAll和writeAudit前执行
+        - 候选与画布复用全图节点序号，并保留生产/返工类型和返N；视图编号不改变nodeKey、operationId或序列化身份
+        - 返工节点关联边及显式REWORK关系显示返工文字和虚线，普通开工对REWORK的既有阻断保持；无执行、版本、引用、快照或迁移源码变更
+    - id: check.topology-acceptance-unit
+      required: true
+      category: unit
+      description: 最新转换、拓扑、重复节点序号和编辑历史聚焦单元测试
+      method: automated-test
+      command: npm run test:flow-canvas
+      outcome: passed
+      evidence:
+        - 本全新实例实际运行14项，零失败、零跳过，退出0
+        - output/route-topology-acceptance-20261025/unit.log
+    - id: check.topology-acceptance-browser
+      required: true
+      category: e2e
+      description: 当前实际编辑组件和隔离HTTP的全部30个浏览器场景
+      method: browser
+      command: CHROME_PATH=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome npm run test:flow-canvas-browser
+      outcome: passed
+      evidence:
+        - 本全新实例实际运行30项全部通过，进程退出0；结果结束后立即复制固定，未用过滤运行替代完整结果
+        - 包含手动重复/自连/成环、快捷过滤、实际端点重连拒绝且保留原边与历史、三类非法保存零HTTP写入、返工类型转换拒绝和保存再开返工标记保持
+        - 包含产品两个入口点选与保存、三类通用编辑器历史/只读/版本重置及已有快捷添加回归
+        - output/route-topology-acceptance-20261025/browser.log
+        - output/route-topology-acceptance-20261025/browser-results.json
+        - 使用实际组件和隔离HTTP存储请求再读回，不声明真实后端或数据库联调
+    - id: check.topology-acceptance-roundtrip
+      required: true
+      category: regression
+      description: 独立附加探针复核显式关系及条件无损并关闭QF-TOPOLOGY-001
+      method: automated-test
+      command: esbuild加载实际routeGraph.ts，分别构造REWORK、OPTIONAL、ALTERNATIVE、PARALLEL分支，执行连通检查、保存、回读、呈现和再次保存断言
+      outcome: passed
+      evidence:
+        - 四类显式关系在合法普通生产分支图上保持原relationType、ruleExpression、sourceHandle、targetHandle和真实端点
+        - 普通SEQUENTIAL兄弟分支仍按既有规则推导PARALLEL；REWORK节点关联的SEQUENTIAL不被改型，其原条件保持
+        - 保存再呈现再保存载荷相同；显式REWORK关系和REWORK节点关联边保持返工文字及6 4虚线
+        - 浏览器route-branch-save-reload-preserves-explicit-rework真实点击保存、获取PUT载荷、重新打开并断言红虚线和文字保持
+        - output/route-topology-acceptance-20261025/independent-roundtrip-probe.json
+        - output/route-topology-acceptance-20261025/route-branch-save-reload-preserves-explicit-rework.png
+    - id: check.topology-acceptance-build
+      required: true
+      category: integration
+      description: 最新实际候选TypeScript及Vite构建
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence:
+        - 本全新实例实际运行tsc -b及vite build，退出0
+        - output/route-topology-acceptance-20261025/build.log
+    - id: check.topology-acceptance-backend
+      required: true
+      category: api
+      description: 按未变后端指纹复用上一独立质量61项保存校验及控制器回归
+      method: inspection
+      command: 核对前质量backend.log及30项manifest差异，对应mvn --batch-mode --no-transfer-progress -Dtest=RouteGraphValidatorTest,ProcessModelingControllerTest test
+      outcome: passed
+      evidence:
+        - 前质量实际运行控制器54项及校验器7项，共61项零失败、零错误、零跳过，BUILD SUCCESS；本实例核对原始日志及未变的后端实现/测试SHA256
+        - 新修复仅前端序列化及其前端测试，不改变后端校验和控制器写入顺序，复用范围有明确依据
+        - output/route-topology-quality-20261025/backend.log
+        - output/route-topology-quality-20261025/candidate-manifest.json
+        - output/route-topology-acceptance-20261025/verification.json
+    - id: check.topology-acceptance-knowledge
+      required: true
+      category: ontology
+      description: 核对本体updated及局部替代语义，按未变知识指纹复用89项正式检查
+      method: inspection
+      command: 核对DEC0083/0084、route rule/fact/evidence、decisionPackage及ontologyResult，并核对前质量knowledge.log和manifest
+      outcome: passed
+      evidence:
+        - DEC0084-01仅替代DEC0083-02的生产环路豁免，历史及其他并行、返工配置、连通、版本、引用和快照边界保留
+        - 本体结果updated，知识0.3.25和specified/internal、P0/in-progress保持；未决问题不阻塞本轮确认范围
+        - 前质量实际运行89项零失败、零错误、零跳过且BUILD SUCCESS；知识10文件与该次运行指纹一致，本实例未重新运行知识Maven
+        - output/route-topology-quality-20261025/knowledge.log
+        - docs/development/flow-canvas-unification-20261024/ontology-result-topology.yaml
+        - output/route-topology-acceptance-20261025/verification.json
+    - id: check.topology-acceptance-visual
+      required: true
+      category: visual
+      description: 目视最新回读返工线、重复生产候选和窄屏面板
+      method: inspection
+      command: 本实例view_image查看三个本轮30场景实际产出的截图，并复用未改呈现源码的既有返工候选检查
+      outcome: passed
+      evidence:
+        - 保存重新打开后返工相关边仍有红色虚线及返工文字
+        - 两个重复生产节点在画布及候选均显示节点1/2，与生产工序类型区分同时可见
+        - 390px面板分类、搜索、长名称和关闭按钮可读，面板没有超出屏幕
+        - output/route-topology-acceptance-20261025/route-branch-save-reload-preserves-explicit-rework.png
+        - output/route-topology-acceptance-20261025/quick-existing-production-occurrences.png
+        - output/route-topology-acceptance-20261025/quick-operation-panel-narrow.png
+    - id: check.topology-acceptance-diff-hygiene
+      required: true
+      category: documentation
+      description: 源码和文档差异卫生、契约及候选指纹终检
+      method: command
+      command: git diff --cached --check -- docs gmp-platform；git diff --cached -- AGENTS.md codeplzreadme.md docs/agents；git diff -- AGENTS.md codeplzreadme.md docs/agents；对30项重新计算SHA256
+      outcome: passed
+      evidence:
+        - 差异检查退出0，无未提交契约；原始日志保留，不清洗日志尾空格
+        - 验证完成后30项运行/测试/知识文件仍与冻结manifest及index一致
+        - output/route-topology-acceptance-20261025/verification.json
+  findings:
+    - id: QF-TOPOLOGY-001
+      severity: medium
+      scope: route-graph-save-roundtrip
+      summary: 普通生产分支源的显式REWORK关系曾被保存为PARALLEL导致回读返工标记消失，本轮已独立复核关闭
+      reproductionSteps:
+        - 准备START到A、A到B、A到C、B和C各到END的合法图，A到B显式REWORK，其余SEQUENTIAL
+        - 保存并回读实际图，再核对关系类型、条件、端口和返工线呈现
+      expectedResult: 显式REWORK关系及返工文字和虚线在保存回读后保持，普通SEQUENTIAL分支的既有并行推导保持
+      actualResult: 修复后REWORK、OPTIONAL、ALTERNATIVE、PARALLEL显式类型和条件均保持；普通SEQUENTIAL兄弟推导PARALLEL，回读REWORK显示返工文字及6 4虚线
+      evidence:
+        - docs/development/flow-canvas-unification-20261024/quality-result-topology.yaml
+        - output/route-topology-quality-20261025/rework-roundtrip-probe.json
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: document
+          reference: output/route-topology-acceptance-20261025/candidate-manifest.json
+        - type: command
+          reference: output/route-topology-acceptance-20261025/independent-roundtrip-probe.json
+        - type: command
+          reference: output/route-topology-acceptance-20261025/browser-results.json的route-branch-save-reload-preserves-explicit-rework
+        - type: screenshot
+          reference: output/route-topology-acceptance-20261025/route-branch-save-reload-preserves-explicit-rework.png
+  residualRisks:
+    - id: risk.topology-acceptance-no-real-database
+      description: 浏览器是实际组件加隔离HTTP，后端既有独立运行使用repository mock，未执行真实数据库或生产执行联调
+      impact: 不证明真实部署事务及完整返工执行可用
+      mitigation: 本次无迁移及执行机制变更，保留普通开工REWORK阻断，后续发布按实际范围补适用联调
+    - id: risk.topology-acceptance-tool-baselines
+      description: verify-process-modeling旧迁移路径、ESLint配置缺失及Premium历史告警不在本切片修复范围，本实例未重跑这些已知失败入口
+      impact: 不能声称全仓静态工具和全系统视觉全部通过
+      mitigation: 使用本轮聚焦行为、构建、知识证据并保留历史工具限制
+    - id: risk.topology-acceptance-pending-commit-and-remote-gates
+      description: 本轮核验时仍为未提交候选，未核验远端分支保护或必需CI配置
+      impact: 当前通过不能替代变动后候选验收，也不表示远端已启用强制门禁或已经推送
+      mitigation: 主侧提交前核对30项与commit tree，远端若变化重新评估并运行适用检查；仅README、质量报告和证据汇总不改变运行候选时可沿用指纹证据
+  blockingConditions: []

@@ -1,0 +1,184 @@
+qualityResult:
+  result: passed
+  baseCommit: 96ea56338ef1438938a546382368eb1d7d400938
+  headCommit: 96ea56338ef1438938a546382368eb1d7d400938
+  contractBaseline:
+    sourceCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    targetBranch: edhr-dev
+    targetCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    contractReadCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/frontend/package.json
+      - gmp-platform/frontend/scripts/verify-process-modeling-pages.mjs
+      - gmp-platform/frontend/scripts/test-flow-canvas.mjs
+      - gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs
+      - gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx
+      - gmp-platform/frontend/src/components/flow-designer/useFlowHistory.ts
+      - gmp-platform/frontend/src/components/route-graph/routeGraph.ts
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphNode.tsx
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx
+      - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx
+      - gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/FormProcessEditor.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+      - docs/development/flow-canvas-unification-20261024/decision-package.yaml
+      - docs/development/flow-canvas-unification-20261024/ontology-result.yaml
+      - docs/development/flow-canvas-unification-20261024/README.md
+      - docs/development/flow-canvas-unification-20261024/quality-result.yaml
+    excludedPaths:
+      - output/** unrelated to flow-canvas-unification-20261024
+      - gmp-platform/frontend/output/**
+    untrackedPaths:
+      - gmp-platform/frontend/scripts/test-flow-canvas.mjs
+      - gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs
+      - gmp-platform/frontend/src/components/flow-designer/useFlowHistory.ts
+      - gmp-platform/frontend/src/components/route-graph/routeGraph.ts
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphNode.tsx
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx
+      - docs/development/flow-canvas-unification-20261024/
+      - output/flow-canvas-unification-20261024/ (evidence only)
+      - output/playwright/flow-canvas-unification-20261024/ (evidence only)
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.flow-canvas-contract-and-scope
+      required: true
+      category: requirements
+      description: 独立核对实际契约、已确认范围及未提交候选
+      method: inspection
+      command: git rev-parse HEAD origin/edhr-dev; git diff -- AGENTS.md codeplzreadme.md docs/agents; inspect decision-package.yaml and all 15 frontend candidate files
+      outcome: passed
+      evidence:
+        - original-evidence：HEAD、缓存origin/edhr-dev及实际读取契约均为96ea56338ef1438938a546382368eb1d7d400938；适用契约无未提交变更。
+        - tested candidate为该HEAD叠加includedPaths内未提交实现；独立重算output/flow-canvas-unification-20261024/code-manifest.json的15个前端文件SHA-256，全部一致，无不匹配。
+        - user-confirmed：仅统一路线呈现与逐步抽离现有公共编辑基础，保留业务、存储、版本、执行机制；不合并后端引擎。
+        - 已读取项目、编码通则、质量角色、统一交接契约、知识README/open-questions、相关架构/界面规范、DEC-0001/0002/0006/0078及product-process规则。
+        - 专业质量实例没有修改任何业务实现或测试；唯一仓库写入为本结果文件。
+    - id: check.flow-canvas-ontology-and-boundaries
+      required: true
+      category: ontology
+      description: 核对本体结论、影响分析及领域所有权保持
+      method: inspection
+      command: inspect ontology-result.yaml, decision-package.yaml, routeGraph.ts, useFlowHistory.ts and page diffs
+      outcome: passed
+      evidence:
+        - ontologyResult.result为not-applicable，未新增或替代业务概念、规则、执行契约及知识成熟度，基线保持0.3.25。
+        - L2影响分析覆盖直接/传递/潜在影响、兼容、快照、审计、权限、测试及证据缺口，和实际改动相符；没有需用户补充的真实业务歧义。
+        - product-core/configuration路径归属清晰：路线适配及呈现归route-graph，历史栈归flow-designer，各页保留领域校验、版本与保存发布策略；未新增通用执行或插件平台。
+        - 产品与产品簇多版本、routeNodeKey绑定、具体制程的最终产出标记及既有作业出边/发布规则均保留。
+    - id: check.flow-canvas-source-equivalence
+      required: true
+      category: regression
+      description: 使用TypeScript AST独立比较关键原函数及改动范围
+      method: command
+      command: node inline TypeScript Compiler API comparison of HEAD and working-tree functions; git diff --name-only -- gmp-platform/backend docs/knowledge docs/architecture gmp-platform/frontend/src/api
+      outcome: passed
+      evidence:
+        - original-evidence：routeGraph.ts的37个提取函数体与HEAD原页面逐字相同，唯一新增函数presentRouteGraph合并原两个呈现useMemo。
+        - 原RouteDesignerNode函数体逐字相同；原页面16个handleRoute处理器逐字相同，包括新增、拖动、连接和重连。
+        - 两个产品入口的toPayload与toOperationDrafts函数体均逐字相同；只替换重复呈现并保留原加载/空态、节点选择回调和业务配置。
+        - 后端、API、架构及知识目录没有差异，无数据库迁移、历史快照改写或服务端权限改变。
+        - 双击工序库新增后END向下避让是原handleRouteOperationDoubleClick行为，不是本次回归。
+    - id: check.flow-canvas-unit-and-adjacent-regression
+      required: true
+      category: unit
+      description: 独立运行图转换、呈现、历史及既有相邻回归
+      method: automated-test
+      command: node --test scripts/test-flow-canvas.mjs scripts/test-work-editor-default-version.mjs scripts/test-review-batch-01.mjs
+      outcome: passed
+      evidence:
+        - 本实例实跑37项全部通过，无跳过：新增5项及既有32项。
+        - 图测试覆盖稳定节点键、字符串工序身份、坐标、四向端口、返工/并行标记、条件与序列化保持，以及呈现不修改保存数据。
+        - 历史测试覆盖深拷贝隔离、50步上限、撤销重做对称、新编辑清重做、reset及编辑器间隔离。
+    - id: check.flow-canvas-types-build-and-whitespace
+      required: true
+      category: regression
+      description: 独立运行类型检查、生产构建与差异卫生检查
+      method: command
+      command: npx tsc --noEmit; npm run build; git diff --check
+      outcome: passed
+      evidence:
+        - 本实例分别运行三项命令并核对退出码均为0。
+        - build实际执行tsc -b及Vite生产打包，通过12187模块转换。
+    - id: check.flow-canvas-browser
+      required: true
+      category: e2e
+      description: 实际React组件的Chromium交互回归，使用隔离HTTP样例
+      method: browser
+      command: CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' node scripts/test-flow-canvas-browser.mjs
+      outcome: passed
+      evidence:
+        - 本质量实例独立完整运行14场景，全部通过；结果为output/playwright/flow-canvas-unification-20261024/results.json。
+        - 覆盖路线打开/工序库双击新增/保存及原坐标端口保留、两产品入口选择及保存身份/最终产出标记保持。
+        - 覆盖三类流程属性编辑和拖动的撤销重做/保存、已发布只读、dirty切换版本确认并清空历史。
+        - 覆盖产品预览点选高亮、禁拖动与删除、无业务写入及390宽度呈现；所有场景未捕获pageerror。
+        - 运行真实前端组件，HTTP请求被隔离fixture接管，不是后端或数据库集成验收。
+    - id: check.flow-canvas-existing-product-reference-regression
+      required: true
+      category: regression
+      description: 回归已有产品绑定引用及路线删除检查
+      method: automated-test
+      command: npm run qa:process-route-delete; CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' node scripts/test-product-process-reference-browser.mjs
+      outcome: passed
+      evidence:
+        - 本实例实跑路线删除QA通过，既有产品引用Chromium12场景全通过。
+        - 覆盖历史引用显示、无候选与缺显示元数据、复制引用、保存身份保持、慢图/失败重试不覆盖绑定、加载及失败禁止错误提交和窄屏。
+        - 既有浏览器脚本同样使用fixture及隔离HTTP，不宣称真实后端/数据库往返。
+    - id: check.flow-canvas-visual
+      required: true
+      category: visual
+      description: 抽查共用节点、连线、标记与产品配置布局
+      method: inspection
+      command: view_image product-selection-and-save.png, preview-narrow.png and stable-visual/route-editor-open.png
+      outcome: passed
+      evidence:
+        - 产品配置与390宽预览实际截图可见开始/结束边界、并1/合1/返1标记和对应端口连线，产品当前工序与选中项一致。
+        - 产品桌面配置画布、属性与最终产出控件未发现本次引入的重叠/丢失；共享renderer与原路线renderer逐字相同。
+        - 初次route-editor-open.png抓在既有弹窗转场内；已独立目视主侧补充的output/playwright/flow-canvas-unification-20261024-stable-visual/route-editor-open.png，最终桌面弹窗中版本信息、工序库、画布及底部操作布局正常，与产品图共用同一节点、端口和标记。
+        - 稳定截图由主侧在内存脚本副本中等待原弹窗opacity=1并禁用截图动画获得，未修改被冻结源码或测试；本质量实例实际目视该补充图片，路线交互仍以本实例14场景独立运行结果为依据。
+    - id: check.flow-canvas-static-baseline-differentiation
+      required: true
+      category: regression
+      description: 区分现存检查工具缺口与本次提取的断言适配
+      method: inspection
+      command: execute HEAD verify-process-modeling-pages.mjs in memory with original import.meta.url; npm run lint; inspect verify script diff and static-delta.json
+      outcome: passed
+      evidence:
+        - 本实例独立执行HEAD原静态脚本，同样因main/resources/db/changelog/0014-process-modeling-permissions.sql不存在而ENOENT；完整静态检查未通过且不记为通过。
+        - verify脚本本次只合并提取文件供原断言扫描、同步两个局部变量token，未删除业务断言或更改后端初始化资产。
+        - secondary-reference：主侧内存映射诊断static-delta.json显示HEAD与本次同为5条旧迁移字符串失败，新增0；此诊断不替代正式脚本通过。
+        - 本实例运行npm run lint确认缺ESLint配置，不能把lint记为已通过；本次未改ESLint配置及依赖版本。
+    - id: check.flow-canvas-delivery-documentation
+      required: true
+      category: documentation
+      description: 核对收尾说明与实际改动、执行证据及限制一致
+      method: inspection
+      command: inspect docs/development/flow-canvas-unification-20261024/README.md; Ruby YAML parse of quality-result.yaml
+      outcome: passed
+      evidence:
+        - README明确仅完成路线共用呈现、历史栈与网格提取，没有宣称统一后端引擎或完成全部公共编辑器。
+        - 类型/构建/聚焦测试、隔离HTTP浏览器、静态工具基线缺口及未执行真实数据库/发布的陈述与实际证据一致。
+        - Ruby YAML解析成功，并检查result为passed、所有required检查为passed、findings和blockingConditions为空。
+  findings: []
+  residualRisks:
+    - id: risk.flow-canvas-remote-freshness
+      description: 目标提交来自本地缓存origin/edhr-dev；主侧fetch网络超时，未核验远端是否已有新提交。
+      impact: 本通过仅覆盖96ea563叠加记录的未提交候选，不能用于后续未知合并候选。
+      mitigation: 集成前重新获取目标、核对契约及候选增量并重跑适用检查；本次未宣称远端分支保护或CI强制门禁已启用。
+    - id: risk.flow-canvas-real-backend
+      description: 浏览器验收使用真实组件和隔离HTTP，未操作真实后端、数据库或生产实例。
+      impact: 不覆盖真实存量数据全量、后端事务、生产执行或数据库运行；本次相关代码/API/迁移均无改动。
+      mitigation: 后续涉及后端、存储、版本或执行机制的需求另立切片并运行相应真实集成检查，不沿用本前端报告证明通过。
+    - id: risk.flow-canvas-existing-tooling
+      description: 项目缺ESLint配置且既有process-modeling静态脚本仍依赖已移除的main历史迁移，完整两项检查不可通过。
+      impact: 当前候选不具备全仓lint或旧静态脚本全绿证据；未发现这些工具缺口由本次引入。
+      mitigation: 保留原断言与差异诊断，依赖本次类型/构建/聚焦单元/实际组件回归；工具链与旧初始化引用修复另行处理。
+    - id: risk.flow-canvas-remaining-shared-editing
+      description: 本批公共编辑能力抽离到历史栈与网格，其他领域交互、校验、保存和发布仍由原页面持有。
+      impact: 不表示所有编辑器已合为同一完整设计器，也不证明全部历史特殊图或后续编辑能力已回归。
+      mitigation: 继续按用户确认的逐步方案，在有重复维护需求时抽离已有能力，并保持各领域业务规则及相应回归。
+  blockingConditions: []

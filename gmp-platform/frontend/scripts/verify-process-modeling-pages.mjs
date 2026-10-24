@@ -5,7 +5,12 @@ const routerContent = readFileSync(new URL('../src/router/index.tsx', import.met
 const apiContent = readFileSync(new URL('../src/api/master-data.ts', import.meta.url), 'utf8');
 const packageContent = readFileSync(new URL('../package.json', import.meta.url), 'utf8');
 const standardContent = readFileSync(new URL('../../../docs/design-audit/organization-management-ui-standard.md', import.meta.url), 'utf8');
-const pageContent = readFileSync(new URL('../src/pages/master-data/ProcessModelingPage.tsx', import.meta.url), 'utf8');
+const pageContent = [
+  '../src/pages/master-data/ProcessModelingPage.tsx',
+  '../src/components/route-graph/routeGraph.ts',
+  '../src/components/route-graph/RouteGraphNode.tsx',
+].map(path => readFileSync(new URL(path, import.meta.url), 'utf8')).join('\n');
+const flowDesignerContent = readFileSync(new URL('../src/components/flow-designer/FlowDesigner.tsx', import.meta.url), 'utf8');
 const documentPageContent = readFileSync(new URL('../src/pages/master-data/DocumentManagementPage.tsx', import.meta.url), 'utf8');
 const productModelingPageContent = readFileSync(new URL('../src/pages/master-data/ProductModelingPage.tsx', import.meta.url), 'utf8');
 const productProcessEditorContent = readFileSync(new URL('../src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx', import.meta.url), 'utf8');
@@ -324,9 +329,24 @@ mustInclude(pageContent, "deleteProcessRouteVersion(routeId, deleteTarget.row.id
 mustInclude(pageContent, "renderRouteVersionActions(route, versionRow, getRouteVersionCount(route) > 1)", 'route version child table should show delete only when the route has multiple versions');
 mustInclude(pageContent, "'routeVersion'", 'route delete scope should include child route versions');
 mustInclude(pageContent, 'ReactFlowProvider', 'route designer should provide React Flow context');
+mustInclude(pageContent, 'fitViewOptions={STANDARD_FLOW_FIT_VIEW_OPTIONS}', 'route should fit on open using the common readable zoom limits');
+mustInclude(pageContent, '<StandardFlowNode', 'route should use the common node renderer');
+mustInclude(pageContent, 'FLOW_NODE_APPEARANCE', 'route should use the common node colors');
+mustInclude(pageContent, "targetDirections={end ? ['top', 'right', 'left'] : undefined}", 'route END should retain its original inbound directions');
+mustInclude(pageContent, "sourceDirections={start ? ['right', 'bottom', 'left'] : undefined}", 'route START should retain its original outbound directions');
+mustInclude(pageContent, 'handleIds={{ top: ROUTE_DESIGNER_HANDLE_IDS.TOP', 'common handles should retain persisted route port IDs');
+mustInclude(flowDesignerContent, '!start', 'shared START should not have inbound ports');
+mustInclude(flowDesignerContent, '!end', 'shared END should not have outbound ports');
+mustInclude(flowDesignerContent, 'width: 9', 'route and generic editors should share the same visible handle size');
+mustInclude(flowDesignerContent, 'id={handleIds?.[direction] ?? `target-${direction}`}', 'shared target handles should support unchanged domain IDs');
+mustInclude(flowDesignerContent, 'id={handleIds?.[direction] ?? `source-${direction}`}', 'shared source handles should support unchanged domain IDs');
+mustInclude(pageContent, '<FlowCanvasControls', 'route should use common canvas controls');
+mustInclude(flowDesignerContent, '<Controls position="bottom-left"', 'common controls should stay at bottom left');
+mustInclude(pageContent, '<FullScreenFlowDesigner', 'route should share the common fullscreen editor container');
+mustInclude(pageContent, '<FlowHistoryControls', 'route should share undo and redo controls');
+mustInclude(pageContent, 'useFlowHistory', 'route should share the bounded editor history');
+
 mustInclude(pageContent, '<ReactFlow', 'route designer should render a React Flow canvas');
-mustInclude(pageContent, 'defaultViewport={{ x: 0, y: 0, zoom: 1 }}', 'route canvas should default to 100 percent zoom');
-mustNotInclude(pageContent, '\n              fitView\n', 'route canvas should not auto-fit single dropped nodes to 200 percent');
 mustInclude(pageContent, "const ROUTE_START_NODE_KEY = '__route_start__';", 'route designer should define a stable virtual start node key');
 mustInclude(pageContent, "const ROUTE_END_NODE_KEY = '__route_end__';", 'route designer should define a stable virtual end node key');
 mustInclude(pageContent, 'ensureRouteBoundaryNodes', 'route designer should auto-generate virtual start and end nodes');
@@ -336,11 +356,6 @@ mustInclude(pageContent, 'deletable: false', 'route virtual boundary nodes shoul
 mustInclude(pageContent, 'draggable: true', 'route virtual boundary nodes should be draggable for manual layout adjustment');
 mustInclude(pageContent, 'function RouteDesignerNode', 'route designer should render custom nodes so virtual boundary handles can be controlled');
 mustInclude(pageContent, 'nodeTypes={routeDesignerNodeTypes}', 'route canvas should use the custom route designer node renderer');
-mustInclude(pageContent, "data.nodeType !== 'START'", 'route start node should not render a target handle above the node');
-mustInclude(pageContent, "data.nodeType !== 'END'", 'route end node should not render a source handle below the node');
-mustInclude(pageContent, 'const ROUTE_DESIGNER_HANDLE_STYLE', 'route designer should enlarge connection handles for easier dragging');
-mustInclude(pageContent, 'width: 10', 'route designer connection handles should render at the requested 10px size');
-mustInclude(pageContent, 'height: 10', 'route designer connection handles should render at the requested 10px size');
 mustInclude(pageContent, 'snapRouteNodeToPeers', 'route designer should support node-to-node magnetic alignment while dragging');
 mustInclude(pageContent, 'ROUTE_DESIGNER_ALIGNMENT_THRESHOLD', 'route designer should define an alignment snap threshold');
 mustInclude(pageContent, 'onNodeDrag={handleRouteNodeDrag}', 'route canvas should apply magnetic alignment during node drag');
@@ -353,9 +368,8 @@ mustInclude(pageContent, 'height: ROUTE_DESIGNER_EDGE_MARKER_SIZE', 'route desig
 mustInclude(pageContent, 'markerEnd: ROUTE_DESIGNER_EDGE_MARKER', 'route canvas edges should use the larger arrow marker');
 mustInclude(pageContent, 'usedRouteOperationIds', 'route operation library should track operations already dropped onto the canvas');
 mustInclude(pageContent, '!usedRouteOperationIds.has(String(operation.id))', 'route operation library should hide operations already used by canvas nodes');
-mustInclude(pageContent, 'const ROUTE_DESIGNER_CONNECTED_COLOR', 'route designer should define a blue color for connected lines and handles');
-mustInclude(pageContent, 'ROUTE_DESIGNER_CONNECTED_HANDLE_STYLE', 'route designer should render connected handles in blue');
-mustInclude(pageContent, 'ROUTE_DESIGNER_CONNECTED_EDGE_STYLE', 'route designer should render connected edges in blue');
+mustInclude(pageContent, 'const ROUTE_DESIGNER_CONNECTED_COLOR', 'route designer should retain its ordinary edge presentation token');
+mustInclude(pageContent, 'ROUTE_DESIGNER_CONNECTED_EDGE_STYLE', 'route designer should render ordinary edges with the unified neutral style');
 mustInclude(pageContent, 'sourceConnected', 'route designer should color every source handle that participates in a connected edge');
 mustInclude(pageContent, 'targetConnected', 'route designer should color every target handle that participates in a connected edge');
 mustInclude(pageContent, 'routeNodesWithConnectionState', 'route designer should derive handle color state from all current edges');
@@ -391,29 +405,10 @@ mustInclude(pageContent, 'parallelBadges: routeParallelBadges.parallel.get(node.
 mustInclude(pageContent, 'mergeBadges: routeParallelBadges.merge.get(node.id) ?? []', 'route designer should attach merge badges to rendered nodes');
 mustInclude(pageContent, 'getRouteEdgePresentation', 'route designer should resolve blue edge style for connected edges');
 mustNotInclude(pageContent, 'sourceNodeKey === ROUTE_START_NODE_KEY || targetNodeKey === ROUTE_END_NODE_KEY', 'route edge color should not be limited to start/end closure edges');
-mustNotInclude(pageContent, 'isStartNode ? ROUTE_DESIGNER_BOUNDARY_HANDLE_STYLE : ROUTE_DESIGNER_HANDLE_STYLE', 'route start handle should not be blue unless it is connected');
-mustNotInclude(pageContent, 'isEndNode ? ROUTE_DESIGNER_BOUNDARY_HANDLE_STYLE : ROUTE_DESIGNER_HANDLE_STYLE', 'route end handle should not be blue unless it is connected');
 mustNotInclude(pageContent, '\n      label,\n      markerEnd: { type: MarkerType.ArrowClosed },', 'route canvas edges should not render visible text labels');
 mustInclude(pageContent, 'ROUTE_DESIGNER_HANDLE_IDS', 'route designer should define named handles for each node side');
-mustInclude(pageContent, 'ROUTE_DESIGNER_HANDLE_POSITIONS', 'route designer should render handles on top, right, bottom, and left');
-mustInclude(pageContent, 'PROCESS_ROUTE_VISIBLE_HANDLE_CLASS', 'route designer should mark visible handles with a stable class');
-mustInclude(pageContent, 'PROCESS_ROUTE_FORCE_VISIBLE_HANDLE_CLASS', 'route designer should force connected and active handles visible with a stable class');
 mustInclude(pageContent, 'showConnectableHandles?: boolean', 'route designer node data should support revealing handles while connecting to a target node');
-mustInclude(pageContent, 'getRouteVisibleHandleStyle', 'route designer should resolve visible handle state consistently for every dialog mode');
-mustInclude(pageContent, 'const shouldRenderInteractiveTargetHandle = !isVirtualNode || isEndNode;', 'route operation target handles should use the same interactive handle style without showing by default');
-mustInclude(pageContent, 'const shouldForceShowHandle = (handleId: string) => selected || data.showConnectableHandles || connectedHandleIds.has(handleId);', 'route operation handles should be forced visible only when selected, connection-hovered, or connected');
-mustInclude(pageContent, 'const getRouteHandleClassName = (handleId: string, enabled = true) =>', 'route operation handles should derive visibility classes from interaction state');
-mustInclude(pageContent, 'shouldForceShowHandle(handleId) ? PROCESS_ROUTE_FORCE_VISIBLE_HANDLE_CLASS : null', 'route operation handles should apply the force-visible class only when needed');
-mustInclude(pageContent, "[`& .${PROCESS_ROUTE_VISIBLE_HANDLE_CLASS}`]: { opacity: 0", 'route operation nodes should hide unconnected handle dots by class so hover can reveal them');
-mustInclude(pageContent, "[`& .${PROCESS_ROUTE_FORCE_VISIBLE_HANDLE_CLASS}`]: { opacity: '1 !important' }", 'route operation handles should force connected and active handles visible');
-mustInclude(pageContent, 'className={getRouteHandleClassName(handleId, shouldRenderInteractiveTargetHandle)}', 'route operation target handles should share the visible handle class');
-mustInclude(pageContent, 'className={getRouteHandleClassName(handleId)}', 'route operation source handles should share the visible handle class');
-mustInclude(pageContent, 'style={shouldRenderInteractiveTargetHandle ? getRouteVisibleHandleStyle(handleId) : ROUTE_DESIGNER_INVISIBLE_HANDLE_STYLE}', 'route operation target handles should be hidden by opacity rather than removed from interaction');
 mustNotInclude(pageContent, 'shouldAlwaysShowOperationHandles', 'route operation nodes should not show four black handles by default');
-mustInclude(pageContent, "`&:hover .${PROCESS_ROUTE_VISIBLE_HANDLE_CLASS}`", 'route designer node hover should reveal route handles');
-mustInclude(pageContent, "`.react-flow__node:hover & .${PROCESS_ROUTE_VISIBLE_HANDLE_CLASS}`", 'route designer should reveal handles when the React Flow node wrapper is hovered');
-mustInclude(pageContent, "`.react-flow__node.selected & .${PROCESS_ROUTE_VISIBLE_HANDLE_CLASS}`", 'route designer should reveal handles when the React Flow node wrapper is selected');
-mustInclude(pageContent, "id={handleId}", 'route designer handles should persist a stable handle id');
 mustInclude(pageContent, 'connectedHandleIds?: string[]', 'route designer node data should track connected handle ids per side');
 mustInclude(pageContent, 'getRouteFallbackSourceHandleId', 'route designer should keep legacy/default source handles compatible');
 mustInclude(pageContent, 'getRouteFallbackTargetHandleId', 'route designer should keep legacy/default target handles compatible');
@@ -423,10 +418,7 @@ mustInclude(pageContent, 'sourceHandle: relation.sourceHandle || fallbackHandles
 mustInclude(pageContent, 'targetHandle: relation.targetHandle || fallbackHandles.targetHandle', 'route graph loader should restore or infer target handle positions');
 mustInclude(pageContent, 'sourceHandle: edge.sourceHandle || fallbackHandles.sourceHandle', 'route graph payload should persist or infer source handle positions');
 mustInclude(pageContent, 'targetHandle: edge.targetHandle || fallbackHandles.targetHandle', 'route graph payload should persist or infer target handle positions');
-mustInclude(pageContent, 'data-process-route-canvas-toolbar', 'route canvas should render the custom top-right toolbar');
 mustInclude(pageContent, 'routeDesignerInteractionMode', 'route canvas toolbar should keep a mouse/hand interaction mode');
-mustInclude(pageContent, 'data-process-route-interaction-select', 'route canvas toolbar should expose the mouse selection mode button for QA');
-mustInclude(pageContent, 'data-process-route-interaction-pan', 'route canvas toolbar should expose the hand pan mode button for QA');
 mustInclude(pageContent, "panOnDrag={routeDesignerInteractionMode === 'pan'}", 'route canvas should pan only in hand mode');
 mustInclude(pageContent, "selectionOnDrag={routeDesignerInteractionMode === 'select'}", 'route canvas should box-select only in mouse mode');
 mustInclude(pageContent, 'RouteCanvasContextMenuState', 'route canvas should keep right-click menu state for selected nodes and edges');
@@ -450,7 +442,7 @@ mustInclude(pageContent, 'getRouteReworkBadgeMaps', 'route designer should deriv
 mustInclude(pageContent, '`返${index + 1}`', 'route designer should number rework operation badges as 返1/返2');
 mustInclude(pageContent, 'data-process-route-rework-badge', 'route designer should render visible rework badges on rework nodes');
 mustInclude(pageContent, 'routeEdgesWithPresentation', 'route designer should derive edge style from current node status');
-mustInclude(pageContent, 'const routeNodeKindById = new Map(routeNodes.map((node) => [node.id, getRouteOperationKind(node)]));', 'route designer should pass source and target operation status into edge presentation');
+mustInclude(pageContent, 'const routeNodeKindById = new Map(nodes.map((node) => [node.id, getRouteOperationKind(node)]));', 'route designer should pass source and target operation status into edge presentation');
 mustInclude(pageContent, 'getRouteEdgePresentation(edge, routeNodeKindById)', 'route designer should style edges with source and target node status');
 mustInclude(pageContent, "const isReworkEdge = sourceKind === 'REWORK' || targetKind === 'REWORK';", 'route designer should still render lines connected to rework nodes as rework lines');
 mustNotInclude(pageContent, "const isReworkReturnEdge = sourceKind === 'REWORK' && targetKind === 'PRODUCTION';", 'route designer should not special-case rework-to-production lines with a label');
@@ -504,7 +496,6 @@ mustInclude(pageContent, 'handleRouteConnectStart', 'route canvas should reveal 
 mustInclude(pageContent, 'handleRouteConnectEnd', 'route canvas should hide candidate handles when connection dragging ends');
 mustInclude(pageContent, 'handleRouteNodeMouseEnter', 'route canvas should reveal handles on the node currently under the dragged connection line');
 mustInclude(pageContent, 'handleRouteNodeMouseLeave', 'route canvas should hide candidate handles after leaving the hovered node');
-mustInclude(pageContent, "showConnectableHandles: routeConnectionDragging && routeConnectionHoverNodeId === node.id && node.data.nodeType !== 'START'", 'route canvas should only reveal connectable handles on the hovered target node');
 mustInclude(pageContent, 'onConnectStart={handleRouteConnectStart}', 'route canvas should listen for connection drag start');
 mustInclude(pageContent, 'onConnectEnd={handleRouteConnectEnd}', 'route canvas should listen for connection drag end');
 mustInclude(pageContent, 'onNodeMouseEnter={handleRouteNodeMouseEnter}', 'route canvas should detect the target node during connection dragging');
@@ -512,30 +503,20 @@ mustInclude(pageContent, 'onNodeMouseLeave={handleRouteNodeMouseLeave}', 'route 
 mustInclude(pageContent, 'routeDesignerZoomPercent', 'route canvas toolbar should display the current zoom percent');
 mustInclude(pageContent, 'routeDesignerZoomInput', 'route canvas toolbar should render the zoom percent as an editable input');
 mustInclude(pageContent, 'data-process-route-zoom-input', 'route canvas toolbar should expose the zoom input for QA');
-mustInclude(pageContent, 'data-process-route-toolbar-divider', 'route canvas toolbar should render a divider after the zoom-out action');
-mustAppearInOrder(pageContent, [
-  'title="框选"',
-  'title="拖动画布"',
-  'title="放大"',
-  'data-process-route-zoom-input',
-  'title="缩小"',
-  'data-process-route-toolbar-divider',
-  'title="适配画布"',
-], 'route canvas toolbar should order controls as select, pan, plus, percent input, minus, divider, fit view');
+mustAppearInOrder(pageContent, ['<FlowCanvasControls', '<FlowHistoryControls', '<FlowMiniMapControl'], 'route should use the common canvas toolbar action order');
 mustNotInclude(pageContent, 'title="展开工具"', 'route canvas toolbar should remove the left-side expand control');
 mustNotInclude(pageContent, 'title="工序列表"', 'route canvas toolbar should remove the left-side list control');
 mustNotInclude(pageContent, 'title="画布视图"', 'route canvas toolbar should remove the left-side viewport control');
 mustNotInclude(pageContent, '<KeyboardArrowRightRounded', 'route canvas toolbar should not render the left-side expand icon');
 mustNotInclude(pageContent, '<DesktopWindowsRounded', 'route canvas toolbar should not render the left-side canvas icon');
 mustNotInclude(pageContent, 'minWidth: 28', 'route canvas toolbar should not render the page number block');
-mustNotInclude(pageContent, '<MiniMap', 'route canvas should hide the default minimap control');
-mustNotInclude(pageContent, '<Controls', 'route canvas should hide the default bottom-left controls');
+mustInclude(pageContent, '<FlowMiniMap />', 'route should offer the shared minimap');
 mustInclude(pageContent, 'onDragStart={(event) => handleRouteOperationDragStart(event, operation)}', 'route designer should support dragging operations onto the canvas');
 mustInclude(pageContent, 'onDragEnd={handleRouteOperationDragEnd}', 'route operation dragging should clear the canvas drop preview when drag ends');
 mustInclude(pageContent, 'onDrop={handleRouteCanvasDrop}', 'route designer should support dropping operation nodes onto the canvas');
 mustInclude(pageContent, 'onDragLeave={handleRouteCanvasDragLeave}', 'route designer should clear the operation drop preview when leaving the canvas');
-mustInclude(pageContent, 'const ROUTE_DESIGNER_OPERATION_NODE_WIDTH = 128', 'route designer operation node width should be centralized for drop positioning and preview');
-mustInclude(pageContent, 'const ROUTE_DESIGNER_OPERATION_NODE_HEIGHT = 38', 'route designer operation node height should be centralized for drop positioning and preview');
+mustInclude(pageContent, 'const ROUTE_DESIGNER_OPERATION_NODE_WIDTH = 148', 'route node width should match common nodes and stay centralized for drop positioning');
+mustInclude(pageContent, 'const ROUTE_DESIGNER_OPERATION_NODE_HEIGHT = 60', 'route node height should match common nodes and stay centralized for drop positioning');
 mustInclude(pageContent, 'getRouteCanvasDropPosition', 'route canvas drops should use a shared centered coordinate helper');
 mustInclude(pageContent, 'x: position.x - ROUTE_DESIGNER_OPERATION_NODE_WIDTH / 2', 'route canvas drops should place the dragged operation around the cursor instead of using the cursor as the top-left corner');
 mustInclude(pageContent, 'routeCanvasDropPreview', 'route canvas should keep a live drop preview while dragging operations');

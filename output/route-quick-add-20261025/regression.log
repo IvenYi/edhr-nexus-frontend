@@ -1,0 +1,40 @@
+✔ F-001: logout removes queries, mutations and authentication storage (58.292833ms)
+✔ F-001: a late A query cannot repopulate the cache used by B (3.409125ms)
+✔ F-001: LoginPage clears stale cache before installing the successful identity (23.579208ms)
+✔ F-001: old HTTP successes and old 401 responses cannot affect the new session (3.440209ms)
+✔ HOME-IDENTITY: A to B to A updates memory and announces the installed identity (1.951792ms)
+✔ HOME-IDENTITY: shared clear path removes memory identity as well as storage (2.189458ms)
+✔ HOME-IDENTITY: string Snowflake identities survive login and same-session refresh exactly (2.035959ms)
+✔ HOME-IDENTITY: profile refresh uses the existing event without clearing session work (1.971209ms)
+✔ HOME-IDENTITY: malformed display cache cannot preserve the previous identity (1.989958ms)
+✔ HOME-IDENTITY: failed LoginPage authentication does not install a requested user (5.620084ms)
+✔ HOME-IDENTITY: forcePasswordChange sends the new session to account security (4.988667ms)
+✔ HOME-IDENTITY: forceSignatureVerification sends the new session to account security (4.372708ms)
+✔ F-001: same-session requests and signature verification preserve cached work (2.006167ms)
+✔ F-001: a request binds its identity before an immediate session switch (1.548708ms)
+✔ F-002: FormFillingPage forwards each row's dependencies unchanged and handles no identity (9.004166ms)
+✔ F-002: FormReviewPage forwards each row's dependencies unchanged and handles no identity (4.756208ms)
+✔ F-003: resolution distinguishes pending, missing, empty, explicit and default selection (0.107584ms)
+✔ F-003: missing target never reads a fallback and refuses saving an old draft (60.673208ms)
+✔ F-003: valid target reads and saves only itself; mismatched draft is rejected (67.259708ms)
+✔ F-003: pending/error/empty version lists cannot write cached composition (78.386584ms)
+✔ F-003: target changes and close/reopen create a distinct workspace state boundary (26.584667ms)
+✔ F-003 defensive boundary: empty versions without an explicit target is not loading or empty design (70.6275ms)
+✔ F-003 recovery: a fresh workspace cache still revalidates on opening (26.565709ms)
+✔ F-003 recovery: missing cached target is checking, not confirmed missing, until revalidation finishes (45.307083ms)
+✔ F-003 recovery: background error and retry preserve the dirty target and close confirmation (65.306083ms)
+✔ F-003 recovery: saves wait for revalidation, but expired existing targets remain editable (63.934709ms)
+✔ F-003 recovery: version creation/copy/edit invalidates only its owning workspace (6.758375ms)
+✔ F-003 recovery: deleting a DHR version invalidates its workspace, not form-template caches (5.477458ms)
+✔ configuration defaults to the existing draft before the current publication (0.520083ms)
+✔ explicit historical and current selections retain priority (0.046667ms)
+✔ without a persisted draft use current publication, otherwise the initial virtual draft (0.045833ms)
+✔ stale selection falls back to the draft (0.034958ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 849.5115

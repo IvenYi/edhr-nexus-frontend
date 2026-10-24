@@ -1,3 +1,39 @@
+import { useFlowHistory } from '@/components/flow-designer/useFlowHistory';
+import { FlowCanvasBackground, FlowCanvasControls, FlowHistoryControls, FlowMiniMap, FlowMiniMapControl, FullScreenFlowDesigner, STANDARD_FLOW_FIT_VIEW_OPTIONS, type FlowDirection } from '@/components/flow-designer/FlowDesigner';
+import {
+  presentRouteGraph,
+  getRouteConnectivityErrors,
+  getRouteConnectionError,
+  getRouteTopologyErrors,
+  createRouteQuickConnection,
+  getRouteAnchoredAddPosition,
+  type RouteFlowNode,
+  type RouteFlowEdge,
+  ROUTE_END_NODE_KEY,
+  ROUTE_DESIGNER_OPERATION_NODE_WIDTH,
+  ROUTE_DESIGNER_OPERATION_NODE_HEIGHT,
+  ROUTE_DESIGNER_QUICK_ADD_VERTICAL_GAP,
+  getRouteRelationLabel,
+  getRouteParallelBoundaryNodeId,
+  createRouteParallelEdge,
+  getRouteOperationKind,
+  hasRouteProductionConflict,
+  hasRouteReworkConflict,
+  getNextRouteCopyLabel,
+  createRouteCopiedNode,
+  getRouteQuickAddPosition,
+  getRouteEdgePresentation,
+  getRouteFallbackSourceHandleId,
+  getRouteFallbackTargetHandleId,
+  normalizeRouteConnectionHandles,
+  getRouteNodeSize,
+  ensureRouteBoundaryNodes,
+  fromRouteGraphResponse,
+  toRouteGraphPayload,
+  type RouteOperationKind,
+} from '@/components/route-graph/routeGraph';
+import { routeDesignerNodeTypes, RouteGraphEditorContext } from '@/components/route-graph/RouteGraphNode';
+import RouteQuickAddPanel from '@/components/route-graph/RouteQuickAddPanel';
 import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocation';
 import TableStateCell from '@/components/TableStateCell';
 import { listTableHeaderCellSx, listTablePrimaryTextSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
@@ -19,20 +55,14 @@ import { useMutation,
   useQuery,
   useQueryClient } from '@tanstack/react-query';
 import {
-  Background,
-  Handle,
-  MarkerType,
-  Position,
   ReactFlow,
   ReactFlowProvider,
+  Panel,
   addEdge,
   reconnectEdge,
   useEdgesState,
   useNodesState,
   type Connection,
-  type Edge,
-  type Node,
-  type NodeProps,
   type OnReconnect,
   type OnNodeDrag,
   type ReactFlowInstance,
@@ -81,7 +111,6 @@ import OperationImportActions from './components/OperationImportActions';
 import {
   Add,
   CallSplit,
-  CenterFocusStrongRounded,
   Close,
   ContentCopy,
   Delete,
@@ -89,10 +118,7 @@ import {
   Edit,
   ExpandLess,
   ExpandMore,
-  MouseOutlined,
-  PanToolOutlined,
   PlaylistAdd,
-  RemoveRounded,
   RestartAlt,
   Search,
   TuneRounded,
@@ -142,11 +168,7 @@ import {
   type ProcessModelingPayload,
   type ProcessModelingQuery,
   type ProcessModelingRecord,
-  type RouteGraphPayload,
-  type RouteGraphResponse,
-  type RouteNodeRecord,
   type RouteRecord,
-  type RouteRelationRecord,
   type RouteVersionRecord,
   reorderProcessOperationCategories,
   saveProcessRouteGraph,
@@ -301,33 +323,7 @@ interface OperationCategoryDialogState {
   name: string;
 }
 
-interface RouteFlowNodeData extends Record<string, unknown> {
-  label: string;
-  operationId?: string | number | null;
-  operationCode?: string | null;
-  operationName?: string | null;
-  nodeType?: string | null;
-  routeOperationKind?: RouteOperationKind;
-  virtual?: boolean;
-  sourceConnected?: boolean;
-  targetConnected?: boolean;
-  connectedHandleIds?: string[];
-  showConnectableHandles?: boolean;
-  parallelBadges?: string[];
-  mergeBadges?: string[];
-  reworkBadges?: string[];
-}
-
-interface RouteFlowEdgeData extends Record<string, unknown> {
-  relationType: string;
-  label: string;
-  ruleExpression?: string | null;
-}
-
-type RouteFlowNode = Node<RouteFlowNodeData>;
-type RouteFlowEdge = Edge<RouteFlowEdgeData>;
 type RouteDesignerInteractionMode = 'pan' | 'select';
-type RouteOperationKind = 'PRODUCTION' | 'REWORK';
 
 interface RouteCanvasDropPreview {
   left: number;
@@ -363,73 +359,7 @@ const QUERY_BUTTON_SX = { height: 40, width: 80, minWidth: 80 };
 const ROUTE_DESIGNER_LIBRARY_DEFAULT_WIDTH = 360;
 const ROUTE_DESIGNER_LIBRARY_MIN_WIDTH = 240;
 const ROUTE_DESIGNER_LIBRARY_MAX_WIDTH = 460;
-const ROUTE_START_NODE_KEY = '__route_start__';
-const ROUTE_END_NODE_KEY = '__route_end__';
-const ROUTE_VIRTUAL_NODE_LABELS = {
-  START: '开始',
-  END: '结束',
-} as const;
 const ROUTE_DESIGNER_ALIGNMENT_THRESHOLD = 8;
-const ROUTE_DESIGNER_OPERATION_NODE_WIDTH = 128;
-const ROUTE_DESIGNER_OPERATION_NODE_HEIGHT = 38;
-const ROUTE_DESIGNER_QUICK_ADD_VERTICAL_GAP = 56;
-const ROUTE_DESIGNER_EDGE_MARKER_SIZE = 14;
-const ROUTE_DESIGNER_CONNECTED_COLOR = '#1890ff';
-const ROUTE_DESIGNER_REWORK_COLOR = '#f56c6c';
-const ROUTE_DESIGNER_HANDLE_IDS = {
-  TOP: 'route-handle-top',
-  RIGHT: 'route-handle-right',
-  BOTTOM: 'route-handle-bottom',
-  LEFT: 'route-handle-left',
-} as const;
-const PROCESS_ROUTE_VISIBLE_HANDLE_CLASS = 'process-route-visible-handle';
-const PROCESS_ROUTE_FORCE_VISIBLE_HANDLE_CLASS = 'process-route-force-visible-handle';
-const ROUTE_DESIGNER_HANDLE_POSITIONS = [
-  { id: ROUTE_DESIGNER_HANDLE_IDS.TOP, position: Position.Top },
-  { id: ROUTE_DESIGNER_HANDLE_IDS.RIGHT, position: Position.Right },
-  { id: ROUTE_DESIGNER_HANDLE_IDS.BOTTOM, position: Position.Bottom },
-  { id: ROUTE_DESIGNER_HANDLE_IDS.LEFT, position: Position.Left },
-] as const;
-const routeDesignerNodeTypes = {
-  routeDesigner: RouteDesignerNode,
-};
-const ROUTE_DESIGNER_HANDLE_STYLE = {
-  width: 10,
-  height: 10,
-  background: '#1f2937',
-  border: '2px solid #fff',
-  boxShadow: '0 1px 4px rgba(31, 41, 55, 0.28)',
-} as const;
-const ROUTE_DESIGNER_CONNECTED_HANDLE_STYLE = {
-  ...ROUTE_DESIGNER_HANDLE_STYLE,
-  background: ROUTE_DESIGNER_CONNECTED_COLOR,
-  boxShadow: '0 1px 4px rgba(24, 144, 255, 0.32)',
-} as const;
-const ROUTE_DESIGNER_INVISIBLE_HANDLE_STYLE = {
-  ...ROUTE_DESIGNER_HANDLE_STYLE,
-  opacity: 0,
-} as const;
-const ROUTE_DESIGNER_EDGE_MARKER = {
-  type: MarkerType.ArrowClosed,
-  width: ROUTE_DESIGNER_EDGE_MARKER_SIZE,
-  height: ROUTE_DESIGNER_EDGE_MARKER_SIZE,
-  color: ROUTE_DESIGNER_CONNECTED_COLOR,
-} as const;
-const ROUTE_DESIGNER_REWORK_EDGE_MARKER = {
-  type: MarkerType.ArrowClosed,
-  width: ROUTE_DESIGNER_EDGE_MARKER_SIZE,
-  height: ROUTE_DESIGNER_EDGE_MARKER_SIZE,
-  color: ROUTE_DESIGNER_REWORK_COLOR,
-} as const;
-const ROUTE_DESIGNER_CONNECTED_EDGE_STYLE = {
-  stroke: ROUTE_DESIGNER_CONNECTED_COLOR,
-  strokeWidth: 2,
-} as const;
-const ROUTE_DESIGNER_REWORK_EDGE_STYLE = {
-  stroke: ROUTE_DESIGNER_REWORK_COLOR,
-  strokeWidth: 2,
-  strokeDasharray: '6 4',
-} as const;
 const MATERIAL_BASE_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['name', 'code', 'specification', 'materialTypeId', 'unit', 'materialPurpose', 'brandName'];
 const MATERIAL_VERSION_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['version', 'effectiveDate', 'expiryDate', 'description'];
 const ROUTE_BASE_FIELD_IDS: Array<keyof ProcessModelingPayload> = ['name', 'description'];
@@ -445,120 +375,6 @@ const fieldSx = {
   '& .MuiInputBase-root': { height: 40 },
   '& .MuiInputBase-input': { boxSizing: 'border-box' },
 };
-
-function RouteDesignerNode({ id, data, selected, isConnectable }: NodeProps<RouteFlowNode>) {
-  const isStartNode = data.nodeType === 'START';
-  const isEndNode = data.nodeType === 'END';
-  const isVirtualNode = isStartNode || isEndNode || data.virtual;
-  const shouldRenderInteractiveTargetHandle = !isVirtualNode || isEndNode;
-  const nodeLabel = data.label || '';
-  const routeBadges = [...(data.parallelBadges ?? []), ...(data.mergeBadges ?? []), ...(data.reworkBadges ?? [])];
-  const connectedHandleIds = new Set(data.connectedHandleIds ?? []);
-  const getVisibleHandleStyle = (handleId: string) => (
-    connectedHandleIds.has(handleId) ? ROUTE_DESIGNER_CONNECTED_HANDLE_STYLE : ROUTE_DESIGNER_HANDLE_STYLE
-  );
-  const shouldForceShowHandle = (handleId: string) => selected || data.showConnectableHandles || connectedHandleIds.has(handleId);
-  const getRouteHandleClassName = (handleId: string, enabled = true) => (
-    enabled
-      ? [PROCESS_ROUTE_VISIBLE_HANDLE_CLASS, shouldForceShowHandle(handleId) ? PROCESS_ROUTE_FORCE_VISIBLE_HANDLE_CLASS : null].filter(Boolean).join(' ')
-      : undefined
-  );
-  const getRouteVisibleHandleStyle = (handleId: string) => getVisibleHandleStyle(handleId);
-  const targetHandlePositions = ROUTE_DESIGNER_HANDLE_POSITIONS.filter(({ id }) => data.nodeType !== 'START' && !(isEndNode && id === ROUTE_DESIGNER_HANDLE_IDS.BOTTOM));
-  const sourceHandlePositions = ROUTE_DESIGNER_HANDLE_POSITIONS.filter(({ id }) => data.nodeType !== 'END' && !(isStartNode && id === ROUTE_DESIGNER_HANDLE_IDS.TOP));
-
-  return (
-    <Box
-      data-process-route-node
-      data-record-id={id}
-      data-process-route-node-type={data.nodeType ?? 'OPERATION'}
-      sx={{
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        boxSizing: 'border-box',
-        width: isVirtualNode ? '100%' : 'auto',
-        height: isVirtualNode ? '100%' : 'auto',
-        minWidth: isVirtualNode ? undefined : ROUTE_DESIGNER_OPERATION_NODE_WIDTH,
-        minHeight: isVirtualNode ? undefined : ROUTE_DESIGNER_OPERATION_NODE_HEIGHT,
-        px: isVirtualNode ? 1 : 1.5,
-        py: isVirtualNode ? 0 : 1,
-        borderRadius: isVirtualNode ? 'inherit' : 1,
-        border: isVirtualNode ? 'none' : selected ? '1px solid #1890ff' : '1px solid #dcdfe6',
-        bgcolor: isVirtualNode ? 'transparent' : '#fff',
-        color: 'inherit',
-        boxShadow: !isVirtualNode && selected ? '0 0 0 2px rgba(24, 144, 255, 0.12)' : 'none',
-        transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
-        [`& .${PROCESS_ROUTE_VISIBLE_HANDLE_CLASS}`]: { opacity: 0, transition: 'opacity 0.12s ease' },
-        [`& .${PROCESS_ROUTE_FORCE_VISIBLE_HANDLE_CLASS}`]: { opacity: '1 !important' },
-        [`&:hover .${PROCESS_ROUTE_VISIBLE_HANDLE_CLASS}`]: { opacity: '1 !important' },
-        [`.react-flow__node:hover & .${PROCESS_ROUTE_VISIBLE_HANDLE_CLASS}`]: { opacity: '1 !important' },
-        [`.react-flow__node.selected & .${PROCESS_ROUTE_VISIBLE_HANDLE_CLASS}`]: { opacity: '1 !important' },
-      }}
-    >
-      {targetHandlePositions.map(({ id: handleId, position }) => (
-        <Handle
-          key={`target-${handleId}`}
-          id={handleId}
-          type="target"
-          position={position}
-          isConnectable={isConnectable}
-          className={getRouteHandleClassName(handleId, shouldRenderInteractiveTargetHandle)}
-          style={shouldRenderInteractiveTargetHandle ? getRouteVisibleHandleStyle(handleId) : ROUTE_DESIGNER_INVISIBLE_HANDLE_STYLE}
-        />
-      ))}
-      {sourceHandlePositions.map(({ id: handleId, position }) => (
-        <Handle
-          key={`source-${handleId}`}
-          id={handleId}
-          type="source"
-          position={position}
-          isConnectable={isConnectable}
-          className={getRouteHandleClassName(handleId)}
-          style={getRouteVisibleHandleStyle(handleId)}
-        />
-      ))}
-      {routeBadges.length > 0 ? (
-        <Stack direction="row" spacing={0.5} sx={{ position: 'absolute', top: -12, right: -10, zIndex: 2, pointerEvents: 'none' }}>
-          {routeBadges.map((badge) => {
-            const isMergeBadge = badge.startsWith('合');
-            const isReworkBadge = badge.startsWith('返');
-            return (
-              <Box
-                key={badge}
-                data-process-route-parallel-badge={!isMergeBadge && !isReworkBadge ? true : undefined}
-                data-process-route-merge-badge={isMergeBadge ? true : undefined}
-                data-process-route-rework-badge={isReworkBadge ? true : undefined}
-                sx={{
-                  minWidth: 30,
-                  height: 18,
-                  px: 0.75,
-                  borderRadius: 9,
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 11,
-                  fontWeight: 700,
-                  lineHeight: 1,
-                  color: isReworkBadge ? '#c45656' : isMergeBadge ? '#7a4d00' : '#075985',
-                  border: isReworkBadge ? '1px solid #f56c6c' : isMergeBadge ? '1px solid #f5c56b' : '1px solid #7dd3fc',
-                  bgcolor: isReworkBadge ? '#fef0f0' : isMergeBadge ? '#fff7e6' : '#e0f2fe',
-                  boxShadow: '0 2px 6px rgba(15, 23, 42, 0.12)',
-                }}
-              >
-                {badge}
-              </Box>
-            );
-          })}
-        </Stack>
-      ) : null}
-      <Typography variant="body2" sx={{ color: 'inherit', fontWeight: isVirtualNode ? 600 : 500, lineHeight: 1.2, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-        {nodeLabel}
-      </Typography>
-    </Box>
-  );
-}
 
 const tableHeaderCellSx = listTableHeaderCellSx;
 
@@ -621,15 +437,6 @@ const STANDARD_MATERIAL_TYPE_OPTIONS = ['原材料', '半成品', '产成品', '
 const MATERIAL_PURPOSE_OPTIONS = ['试验物料', '生产物料'].map((name) => ({ id: name, name }));
 const PROCESS_OPERATION_TYPES = ['普通工序', '关键工序', '特殊过程', '检验工序', '外协工序'] as const;
 const DEFAULT_ROUTE_RELATION_TYPE = 'SEQUENTIAL';
-const ROUTE_RELATION_LABELS: Record<string, string> = {
-  SEQUENTIAL: '串行',
-  PARALLEL: '并行',
-  OPTIONAL: '可选分支',
-  REWORK: '返工回流',
-  JUMP: '跳转规则',
-  ALTERNATIVE: '替代工序',
-};
-
 const MATERIAL_VERSION_COLUMNS: ProcessColumn[] = (['version', 'status', 'effectiveDate', 'expiryDate', 'description', 'createdBy', 'createdAt', 'updatedBy', 'updatedAt', 'actions'] as const).map((id) => ({
   id,
   label: id === 'version' ? '物料版本号' : id === 'status' ? '版本状态' : id === 'effectiveDate' ? '生效日期' : id === 'expiryDate' ? '失效日期' : id === 'description' ? '版本说明' : id === 'createdBy' ? '创建人' : id === 'createdAt' ? '创建时间' : id === 'updatedBy' ? '更新人' : id === 'updatedAt' ? '更新时间' : '操作',
@@ -1008,479 +815,6 @@ function getTodayDateTimeInput() {
   return formatDateTimeInput(date.toISOString());
 }
 
-function getRouteRelationLabel(type?: string | null) {
-  return type ? ROUTE_RELATION_LABELS[type] ?? type : '串行';
-}
-
-interface RouteEdgeMaps {
-  outgoing: Map<string, string[]>;
-  incoming: Map<string, string[]>;
-}
-
-interface RouteParallelGroup {
-  source: string;
-  index: string;
-  branchStartIds: string[];
-  branchNodeIds: Set<string>;
-  mergeNodeId?: string;
-}
-
-function appendRouteBadge(map: Map<string, string[]>, nodeId: string, badge: string) {
-  const current = map.get(nodeId) ?? [];
-  if (!current.includes(badge)) {
-    map.set(nodeId, [...current, badge]);
-  }
-}
-
-function getRouteEdgeMaps(edges: RouteFlowEdge[]): RouteEdgeMaps {
-  const outgoing = new Map<string, string[]>();
-  const incoming = new Map<string, string[]>();
-  edges.forEach((edge) => {
-    if (!edge.source || !edge.target || edge.source === edge.target) return;
-    const sourceTargets = outgoing.get(edge.source) ?? [];
-    if (!sourceTargets.includes(edge.target)) {
-      outgoing.set(edge.source, [...sourceTargets, edge.target]);
-    }
-    const targetSources = incoming.get(edge.target) ?? [];
-    if (!targetSources.includes(edge.source)) {
-      incoming.set(edge.target, [...targetSources, edge.source]);
-    }
-  });
-  return { outgoing, incoming };
-}
-
-function getRouteNodeDepths(nodes: RouteFlowNode[], edgeMaps: RouteEdgeMaps) {
-  const nodeIds = new Set(nodes.map((node) => node.id));
-  const startIds = nodeIds.has(ROUTE_START_NODE_KEY)
-    ? [ROUTE_START_NODE_KEY]
-    : nodes.filter((node) => (edgeMaps.incoming.get(node.id) ?? []).length === 0).map((node) => node.id);
-  const depths = new Map<string, number>();
-  const queue = startIds.map((id) => ({ id, depth: 0 }));
-  queue.forEach(({ id, depth }) => depths.set(id, depth));
-  while (queue.length > 0) {
-    const current = queue.shift();
-    if (!current) continue;
-    (edgeMaps.outgoing.get(current.id) ?? []).forEach((targetId) => {
-      const nextDepth = current.depth + 1;
-      if (!depths.has(targetId) || nextDepth < (depths.get(targetId) ?? Number.MAX_SAFE_INTEGER)) {
-        depths.set(targetId, nextDepth);
-        queue.push({ id: targetId, depth: nextDepth });
-      }
-    });
-  }
-  return depths;
-}
-
-function getRouteReachableDistances(startNodeId: string, outgoing: Map<string, string[]>) {
-  const distances = new Map<string, number>();
-  const queue = [{ id: startNodeId, distance: 0 }];
-  distances.set(startNodeId, 0);
-  while (queue.length > 0) {
-    const current = queue.shift();
-    if (!current) continue;
-    (outgoing.get(current.id) ?? []).forEach((targetId) => {
-      if (distances.has(targetId)) return;
-      const distance = current.distance + 1;
-      distances.set(targetId, distance);
-      queue.push({ id: targetId, distance });
-    });
-  }
-  return distances;
-}
-
-function getRouteParallelMergeNode(sourceNodeId: string, branchStartIds: string[], outgoing: Map<string, string[]>) {
-  const branchDistances = branchStartIds.map((branchStartId) => getRouteReachableDistances(branchStartId, outgoing));
-  if (branchDistances.length < 2) return undefined;
-  const blockedNodeIds = new Set([sourceNodeId, ...branchStartIds]);
-  const commonNodeIds = [...branchDistances[0].keys()].filter((nodeId) => (
-    !blockedNodeIds.has(nodeId) && branchDistances.every((distances) => distances.has(nodeId))
-  ));
-  commonNodeIds.sort((left, right) => {
-    const leftDistances = branchDistances.map((distances) => distances.get(left) ?? Number.MAX_SAFE_INTEGER);
-    const rightDistances = branchDistances.map((distances) => distances.get(right) ?? Number.MAX_SAFE_INTEGER);
-    const leftMax = Math.max(...leftDistances);
-    const rightMax = Math.max(...rightDistances);
-    if (leftMax !== rightMax) return leftMax - rightMax;
-    const leftTotal = leftDistances.reduce((sum, distance) => sum + distance, 0);
-    const rightTotal = rightDistances.reduce((sum, distance) => sum + distance, 0);
-    return leftTotal === rightTotal ? left.localeCompare(right) : leftTotal - rightTotal;
-  });
-  return commonNodeIds[0];
-}
-
-function getRouteParallelBranchNodeIds(branchStartIds: string[], outgoing: Map<string, string[]>, mergeNodeId?: string) {
-  const branchNodeIds = new Set<string>();
-  branchStartIds.forEach((branchStartId) => {
-    const visitedNodeIds = new Set<string>();
-    const queue = [branchStartId];
-    while (queue.length > 0) {
-      const nodeId = queue.shift();
-      if (!nodeId || visitedNodeIds.has(nodeId) || nodeId === mergeNodeId) continue;
-      visitedNodeIds.add(nodeId);
-      branchNodeIds.add(nodeId);
-      (outgoing.get(nodeId) ?? []).forEach((targetId) => {
-        if (targetId !== mergeNodeId) {
-          queue.push(targetId);
-        }
-      });
-    }
-  });
-  return branchNodeIds;
-}
-
-function getRouteProductionBranchTargets(targetIds: string[], nodeById: Map<string, RouteFlowNode>) {
-  return targetIds.filter((targetId) => {
-    const targetNode = nodeById.get(targetId);
-    return targetNode && !targetNode.data.virtual && getRouteOperationKind(targetNode) === 'PRODUCTION';
-  });
-}
-
-function getRouteParallelGroups(nodes: RouteFlowNode[], edges: RouteFlowEdge[]): RouteParallelGroup[] {
-  const edgeMaps = getRouteEdgeMaps(edges);
-  const nodeById = new Map(nodes.map((node) => [node.id, node]));
-  const nodeDepths = getRouteNodeDepths(nodes, edgeMaps);
-  const forkSourceIds = nodes
-    .map((node) => node.id)
-    .filter((nodeId) => {
-      const outgoing = edgeMaps.outgoing.get(nodeId) ?? [];
-      const productionOutgoing = getRouteProductionBranchTargets(outgoing, nodeById);
-      return productionOutgoing.length >= 2;
-    })
-    .sort((left, right) => {
-      const leftNode = nodeById.get(left);
-      const rightNode = nodeById.get(right);
-      const depthDelta = (nodeDepths.get(left) ?? Number.MAX_SAFE_INTEGER) - (nodeDepths.get(right) ?? Number.MAX_SAFE_INTEGER);
-      if (depthDelta !== 0) return depthDelta;
-      const yDelta = (leftNode?.position.y ?? 0) - (rightNode?.position.y ?? 0);
-      if (yDelta !== 0) return yDelta;
-      return (leftNode?.position.x ?? 0) - (rightNode?.position.x ?? 0);
-    });
-  const groups: RouteParallelGroup[] = [];
-  const childGroupCounters = new Map<string, number>();
-  let topLevelGroupIndex = 0;
-  forkSourceIds.forEach((source) => {
-    const outgoing = getRouteProductionBranchTargets(edgeMaps.outgoing.get(source) ?? [], nodeById);
-    if (outgoing.length < 2) return;
-    const parentGroup = [...groups].reverse().find((group) => group.branchNodeIds.has(source));
-    let index: string;
-    if (parentGroup) {
-      const localIndex = (childGroupCounters.get(parentGroup.index) ?? 0) + 1;
-      childGroupCounters.set(parentGroup.index, localIndex);
-      index = `${parentGroup.index}-${localIndex}`;
-    } else {
-      topLevelGroupIndex += 1;
-      index = String(topLevelGroupIndex);
-    }
-    const mergeNodeId = getRouteParallelMergeNode(source, outgoing, edgeMaps.outgoing);
-    groups.push({
-      source,
-      index,
-      branchStartIds: outgoing,
-      branchNodeIds: getRouteParallelBranchNodeIds(outgoing, edgeMaps.outgoing, mergeNodeId),
-      mergeNodeId,
-    });
-  });
-  return groups;
-}
-
-function getRouteParallelBadgeMaps(groups: RouteParallelGroup[]) {
-  const parallel = new Map<string, string[]>();
-  const merge = new Map<string, string[]>();
-  groups.forEach((group) => {
-    group.branchStartIds.forEach((nodeId) => appendRouteBadge(parallel, nodeId, `并${group.index}`));
-    if (group.mergeNodeId) {
-      appendRouteBadge(merge, group.mergeNodeId, `合${group.index}`);
-    }
-  });
-  return { parallel, merge };
-}
-
-function getRouteReworkBadgeMaps(nodes: RouteFlowNode[]) {
-  const rework = new Map<string, string[]>();
-  nodes
-    .filter((node) => getRouteOperationKind(node) === 'REWORK')
-    .sort((left, right) => {
-      const yDelta = left.position.y - right.position.y;
-      return yDelta === 0 ? left.position.x - right.position.x : yDelta;
-    })
-    .forEach((node, index) => appendRouteBadge(rework, node.id, `返${index + 1}`));
-  return { rework };
-}
-
-function getRouteParallelSourceIds(nodes: RouteFlowNode[], edges: RouteFlowEdge[]) {
-  const { outgoing } = getRouteEdgeMaps(edges);
-  const nodeById = new Map(nodes.map((node) => [node.id, node]));
-  return new Set([...outgoing.entries()]
-    .filter(([, targets]) => getRouteProductionBranchTargets(targets, nodeById).length >= 2)
-    .map(([source]) => source));
-}
-
-function getRouteNodeCenter(node: RouteFlowNode) {
-  const size = getRouteNodeSize(node);
-  return {
-    x: node.position.x + size.width / 2,
-    y: node.position.y + size.height / 2,
-  };
-}
-
-function getRouteParallelBoundaryNodeId(nodes: RouteFlowNode[], edges: RouteFlowEdge[], selectedNodeIds: string[], direction: 'upstream' | 'downstream') {
-  const selectedNodeIdSet = new Set(selectedNodeIds);
-  const selectedNodes = nodes.filter((node) => selectedNodeIdSet.has(node.id));
-  if (selectedNodes.length === 0) return undefined;
-  const selectedCenters = selectedNodes.map(getRouteNodeCenter);
-  const selectedAverageX = selectedCenters.reduce((sum, center) => sum + center.x, 0) / selectedCenters.length;
-  const selectedMinY = Math.min(...selectedCenters.map((center) => center.y));
-  const selectedMaxY = Math.max(...selectedCenters.map((center) => center.y));
-  const existingBoundaryIds = direction === 'upstream'
-    ? [...new Set(edges.filter((edge) => selectedNodeIdSet.has(edge.target) && !selectedNodeIdSet.has(edge.source)).map((edge) => edge.source))]
-    : [...new Set(edges.filter((edge) => selectedNodeIdSet.has(edge.source) && !selectedNodeIdSet.has(edge.target)).map((edge) => edge.target))];
-  if (existingBoundaryIds.length === 1) return existingBoundaryIds[0];
-  const candidates = nodes
-    .filter((node) => !selectedNodeIdSet.has(node.id))
-    .map((node) => ({ node, center: getRouteNodeCenter(node) }))
-    .filter(({ center }) => (direction === 'upstream' ? center.y < selectedMinY : center.y > selectedMaxY));
-  candidates.sort((left, right) => {
-    const leftYDistance = direction === 'upstream' ? selectedMinY - left.center.y : left.center.y - selectedMaxY;
-    const rightYDistance = direction === 'upstream' ? selectedMinY - right.center.y : right.center.y - selectedMaxY;
-    if (leftYDistance !== rightYDistance) return leftYDistance - rightYDistance;
-    return Math.abs(left.center.x - selectedAverageX) - Math.abs(right.center.x - selectedAverageX);
-  });
-  return candidates[0]?.node.id;
-}
-
-function createRouteParallelEdge(source: string, target: string): RouteFlowEdge {
-  const edgePresentation = getRouteEdgePresentation();
-  return {
-    id: `edge-${source}-${target}-${Date.now()}-${Math.round(Math.random() * 10000)}`,
-    source,
-    target,
-    sourceHandle: getRouteFallbackSourceHandleId(source),
-    targetHandle: getRouteFallbackTargetHandleId(target),
-    type: 'smoothstep',
-    ...edgePresentation,
-    data: {
-      relationType: 'PARALLEL',
-      label: getRouteRelationLabel('PARALLEL'),
-    },
-  };
-}
-
-function getRouteOperationKind(node: RouteFlowNode): RouteOperationKind {
-  return node.data.routeOperationKind === 'REWORK' || node.data.nodeType === 'REWORK' ? 'REWORK' : 'PRODUCTION';
-}
-
-function getRouteOperationIdentity(node: RouteFlowNode) {
-  if (node.data.virtual) return '';
-  if (node.data.operationId !== null && node.data.operationId !== undefined) return `id:${node.data.operationId}`;
-  const operationCode = String(node.data.operationCode ?? '').trim();
-  if (operationCode) return `code:${operationCode}`;
-  const operationName = String(node.data.operationName || node.data.label || '').trim();
-  return operationName ? `name:${operationName}` : '';
-}
-
-function hasRouteProductionConflict(nodes: RouteFlowNode[], selectedNodeIds: string[]) {
-  const selectedNodeIdSet = new Set(selectedNodeIds);
-  const selectedReworkOperationIds = new Set(nodes
-    .filter((node) => selectedNodeIdSet.has(node.id) && !node.data.virtual && getRouteOperationKind(node) === 'REWORK')
-    .map(getRouteOperationIdentity)
-    .filter(Boolean));
-  if (selectedReworkOperationIds.size === 0) return false;
-  return nodes.some((node) => (
-    !node.data.virtual
-    && getRouteOperationKind(node) === 'PRODUCTION'
-    && selectedReworkOperationIds.has(getRouteOperationIdentity(node))
-  ));
-}
-
-function hasRouteReworkConflict(nodes: RouteFlowNode[], selectedNodeIds: string[]) {
-  const selectedNodeIdSet = new Set(selectedNodeIds);
-  const selectedProductionOperationIds = new Set(nodes
-    .filter((node) => selectedNodeIdSet.has(node.id) && !node.data.virtual && getRouteOperationKind(node) === 'PRODUCTION')
-    .map(getRouteOperationIdentity)
-    .filter(Boolean));
-  if (selectedProductionOperationIds.size === 0) return false;
-  return nodes.some((node) => (
-    !node.data.virtual
-    && getRouteOperationKind(node) === 'REWORK'
-    && selectedProductionOperationIds.has(getRouteOperationIdentity(node))
-  ));
-}
-
-function getRouteCopyBaseLabel(label?: string | null, routeOperationKind: RouteOperationKind = 'PRODUCTION') {
-  const normalizedLabel = label?.trim() || '工序';
-  const baseLabel = normalizedLabel.replace(/\s+\d+$/, '').replace(/\s*返工$/, '').trim() || normalizedLabel;
-  return routeOperationKind === 'REWORK' ? `${baseLabel} 返工` : baseLabel;
-}
-
-function getNextRouteCopyLabel(nodes: RouteFlowNode[], sourceLabel?: string | null, routeOperationKind: RouteOperationKind = 'PRODUCTION') {
-  const baseLabel = getRouteCopyBaseLabel(sourceLabel, routeOperationKind);
-  const initialIndex = routeOperationKind === 'REWORK' ? 0 : 1;
-  const maxIndex = nodes.reduce((currentMax, node) => {
-    const nodeLabel = String(node.data.label || node.data.operationName || '').trim();
-    if (nodeLabel === baseLabel) return Math.max(currentMax, 1);
-    if (!nodeLabel.startsWith(`${baseLabel} `)) return currentMax;
-    const suffix = nodeLabel.slice(baseLabel.length).trim();
-    return /^\d+$/.test(suffix) ? Math.max(currentMax, Number(suffix)) : currentMax;
-  }, initialIndex);
-  return `${baseLabel} ${maxIndex + 1}`;
-}
-
-function createRouteCopiedNode(node: RouteFlowNode, label: string, offsetIndex: number, routeOperationKind: RouteOperationKind): RouteFlowNode {
-  return {
-    ...node,
-    id: `${node.id}-copy-${Date.now()}-${Math.round(Math.random() * 10000)}`,
-    position: {
-      x: node.position.x + ROUTE_DESIGNER_OPERATION_NODE_WIDTH + 72,
-      y: node.position.y + offsetIndex * (ROUTE_DESIGNER_OPERATION_NODE_HEIGHT + 18),
-    },
-    selected: true,
-    data: {
-      ...node.data,
-      label,
-      operationName: label,
-      nodeType: routeOperationKind === 'REWORK' ? 'REWORK' : 'OPERATION',
-      routeOperationKind,
-      sourceConnected: false,
-      targetConnected: false,
-      parallelBadges: [],
-      mergeBadges: [],
-    },
-  };
-}
-
-function createRouteFlowNode(operation: OperationRecord, position: { x: number; y: number }): RouteFlowNode {
-  const operationName = getDisplayName(operation);
-  return {
-    id: `operation-${operation.id}-${Date.now()}-${Math.round(Math.random() * 10000)}`,
-    type: 'routeDesigner',
-    position,
-    data: {
-      label: operationName,
-      operationId: operation.id,
-      operationCode: operation.code,
-      operationName,
-      nodeType: 'OPERATION',
-      routeOperationKind: 'PRODUCTION',
-    },
-  };
-}
-
-function getRouteQuickAddPosition(nodes: RouteFlowNode[]) {
-  const selectableNodes = nodes.filter((node) => !node.data.virtual);
-  const selectedNode = selectableNodes.find((node) => node.selected);
-  const anchor = selectedNode ?? selectableNodes.reduce<RouteFlowNode | null>((latest, node) => (
-    latest === null || node.position.y > latest.position.y ? node : latest
-  ), null) ?? nodes.find((node) => getRouteBoundaryNodeType(node.id, node.data.nodeType) === 'START') ?? null;
-  const anchorSize = anchor ? getRouteNodeSize(anchor) : { width: ROUTE_DESIGNER_OPERATION_NODE_WIDTH, height: ROUTE_DESIGNER_OPERATION_NODE_HEIGHT };
-  const position = {
-    x: anchor?.position.x ?? 360,
-    y: (anchor?.position.y ?? 40) + anchorSize.height + ROUTE_DESIGNER_QUICK_ADD_VERTICAL_GAP,
-  };
-  const occupiedNodes = nodes.filter((node) => !node.data.virtual);
-  while (occupiedNodes.some((node) => (
-    Math.abs(node.position.x - position.x) < ROUTE_DESIGNER_OPERATION_NODE_WIDTH
-      && Math.abs(node.position.y - position.y) < ROUTE_DESIGNER_OPERATION_NODE_HEIGHT + ROUTE_DESIGNER_QUICK_ADD_VERTICAL_GAP
-  ))) {
-    position.y += ROUTE_DESIGNER_OPERATION_NODE_HEIGHT + ROUTE_DESIGNER_QUICK_ADD_VERTICAL_GAP;
-  }
-  return position;
-}
-
-function getRouteBoundaryNodeType(nodeKey?: string | null, nodeType?: string | null): keyof typeof ROUTE_VIRTUAL_NODE_LABELS | null {
-  const normalizedType = nodeType?.trim().toUpperCase();
-  if (normalizedType === 'START' || nodeKey === ROUTE_START_NODE_KEY) return 'START';
-  if (normalizedType === 'END' || nodeKey === ROUTE_END_NODE_KEY) return 'END';
-  return null;
-}
-
-function getRouteEdgePresentation(edge?: Pick<RouteFlowEdge, 'source' | 'target'>, routeNodeKindById = new Map<string, RouteOperationKind>()) {
-  const sourceKind = edge ? routeNodeKindById.get(edge.source) : undefined;
-  const targetKind = edge ? routeNodeKindById.get(edge.target) : undefined;
-  const isReworkEdge = sourceKind === 'REWORK' || targetKind === 'REWORK';
-  if (!isReworkEdge) {
-    return {
-      markerEnd: ROUTE_DESIGNER_EDGE_MARKER,
-      style: ROUTE_DESIGNER_CONNECTED_EDGE_STYLE,
-    };
-  }
-  return {
-    markerEnd: ROUTE_DESIGNER_REWORK_EDGE_MARKER,
-    style: ROUTE_DESIGNER_REWORK_EDGE_STYLE,
-  };
-}
-
-function getRouteFallbackSourceHandleId(nodeId?: string | null) {
-  return nodeId === ROUTE_END_NODE_KEY ? ROUTE_DESIGNER_HANDLE_IDS.TOP : ROUTE_DESIGNER_HANDLE_IDS.BOTTOM;
-}
-
-function getRouteFallbackTargetHandleId(nodeId?: string | null) {
-  return nodeId === ROUTE_START_NODE_KEY ? ROUTE_DESIGNER_HANDLE_IDS.BOTTOM : ROUTE_DESIGNER_HANDLE_IDS.TOP;
-}
-
-function getRouteFallbackHandlePair(sourceNodeKey?: string | null, targetNodeKey?: string | null, nodeById = new Map<string, RouteFlowNode>()) {
-  const fallbackHandles = {
-    sourceHandle: getRouteFallbackSourceHandleId(sourceNodeKey),
-    targetHandle: getRouteFallbackTargetHandleId(targetNodeKey),
-  };
-  if (!sourceNodeKey || !targetNodeKey) return fallbackHandles;
-  const sourceNode = nodeById.get(sourceNodeKey);
-  const targetNode = nodeById.get(targetNodeKey);
-  if (!sourceNode || !targetNode) return fallbackHandles;
-  const sourceCenter = getRouteNodeCenter(sourceNode);
-  const targetCenter = getRouteNodeCenter(targetNode);
-  const deltaX = targetCenter.x - sourceCenter.x;
-  const deltaY = targetCenter.y - sourceCenter.y;
-  if (Math.abs(deltaX) >= Math.abs(deltaY)) {
-    return {
-      sourceHandle: deltaX >= 0 ? ROUTE_DESIGNER_HANDLE_IDS.RIGHT : ROUTE_DESIGNER_HANDLE_IDS.LEFT,
-      targetHandle: deltaX >= 0 ? ROUTE_DESIGNER_HANDLE_IDS.LEFT : ROUTE_DESIGNER_HANDLE_IDS.RIGHT,
-    };
-  }
-  return {
-    sourceHandle: deltaY >= 0 ? ROUTE_DESIGNER_HANDLE_IDS.BOTTOM : ROUTE_DESIGNER_HANDLE_IDS.TOP,
-    targetHandle: deltaY >= 0 ? ROUTE_DESIGNER_HANDLE_IDS.TOP : ROUTE_DESIGNER_HANDLE_IDS.BOTTOM,
-  };
-}
-
-function normalizeRouteConnectionHandles(connection: Connection): Connection {
-  return {
-    ...connection,
-    sourceHandle: connection.sourceHandle || getRouteFallbackSourceHandleId(connection.source),
-    targetHandle: connection.targetHandle || getRouteFallbackTargetHandleId(connection.target),
-  };
-}
-
-function getRouteVirtualNodeStyle(nodeType: keyof typeof ROUTE_VIRTUAL_NODE_LABELS) {
-  return {
-    width: 92,
-    height: 36,
-    borderRadius: 18,
-    border: nodeType === 'START' ? '1px solid #67c23a' : '1px solid #f56c6c',
-    background: nodeType === 'START' ? '#f0f9eb' : '#fef0f0',
-    color: nodeType === 'START' ? '#529b2e' : '#c45656',
-    fontWeight: 600,
-  };
-}
-
-function getRouteNodeNumericValue(value: unknown, fallback: number) {
-  if (typeof value === 'number' && Number.isFinite(value)) return value;
-  if (typeof value === 'string') {
-    const parsed = Number.parseFloat(value);
-    if (Number.isFinite(parsed)) return parsed;
-  }
-  return fallback;
-}
-
-function getRouteNodeSize(node: RouteFlowNode) {
-  const renderedNode = node as RouteFlowNode & { measured?: { width?: number; height?: number }; width?: number; height?: number };
-  const fallbackWidth = node.data.virtual ? 92 : ROUTE_DESIGNER_OPERATION_NODE_WIDTH;
-  const fallbackHeight = node.data.virtual ? 36 : ROUTE_DESIGNER_OPERATION_NODE_HEIGHT;
-  return {
-    width: getRouteNodeNumericValue(renderedNode.width ?? renderedNode.measured?.width ?? node.style?.width, fallbackWidth),
-    height: getRouteNodeNumericValue(renderedNode.height ?? renderedNode.measured?.height ?? node.style?.height, fallbackHeight),
-  };
-}
-
 function snapRouteAxis(position: number, draggedOffsets: number[], peerPosition: number, peerOffsets: number[]) {
   let nextPosition = position;
   let bestDistance = ROUTE_DESIGNER_ALIGNMENT_THRESHOLD + 1;
@@ -1511,146 +845,20 @@ function snapRouteNodeToPeers(node: RouteFlowNode, nodes: RouteFlowNode[]) {
   }, node.position);
 }
 
-function createRouteVirtualNode(nodeType: keyof typeof ROUTE_VIRTUAL_NODE_LABELS, position?: { x: number; y: number }): RouteFlowNode {
-  const isStart = nodeType === 'START';
-  const label = ROUTE_VIRTUAL_NODE_LABELS[nodeType];
-  const data: RouteFlowNodeData = isStart ? {
-    label,
-    operationId: null,
-    operationCode: null,
-    operationName: label,
-    nodeType: 'START',
-    virtual: true,
-  } : {
-    label,
-    operationId: null,
-    operationCode: null,
-    operationName: label,
-    nodeType: 'END',
-    virtual: true,
-  };
+function createRouteFlowNode(operation: OperationRecord, position: { x: number; y: number }): RouteFlowNode {
+  const operationName = getDisplayName(operation);
   return {
-    id: isStart ? ROUTE_START_NODE_KEY : ROUTE_END_NODE_KEY,
+    id: `operation-${operation.id}-${Date.now()}-${Math.round(Math.random() * 10000)}`,
     type: 'routeDesigner',
-    position: position ?? { x: 360, y: isStart ? 40 : 520 },
-    data,
-    draggable: true,
-    selectable: true,
-    deletable: false,
-    style: getRouteVirtualNodeStyle(nodeType),
-  };
-}
-
-function normalizeRouteBoundaryNode(node: RouteFlowNode): RouteFlowNode {
-  const nodeType = getRouteBoundaryNodeType(node.id, node.data.nodeType);
-  if (!nodeType) return node;
-  const label = ROUTE_VIRTUAL_NODE_LABELS[nodeType];
-  return {
-    ...node,
-    id: nodeType === 'START' ? ROUTE_START_NODE_KEY : ROUTE_END_NODE_KEY,
-    type: 'routeDesigner',
+    position,
     data: {
-      ...node.data,
-      label,
-      operationId: null,
-      operationCode: null,
-      operationName: label,
-      nodeType,
-      virtual: true,
+      label: operationName,
+      operationId: operation.id,
+      operationCode: operation.code,
+      operationName,
+      nodeType: 'OPERATION',
+      routeOperationKind: 'PRODUCTION',
     },
-    draggable: true,
-    selectable: true,
-    deletable: false,
-    style: getRouteVirtualNodeStyle(nodeType),
-  };
-}
-
-function ensureRouteBoundaryNodes(nodes: RouteFlowNode[]): RouteFlowNode[] {
-  const normalizedNodes = nodes.map(normalizeRouteBoundaryNode);
-  const hasStart = normalizedNodes.some((node) => getRouteBoundaryNodeType(node.id, node.data.nodeType) === 'START');
-  const hasEnd = normalizedNodes.some((node) => getRouteBoundaryNodeType(node.id, node.data.nodeType) === 'END');
-  return [
-    ...(hasStart ? [] : [createRouteVirtualNode('START')]),
-    ...normalizedNodes,
-    ...(hasEnd ? [] : [createRouteVirtualNode('END')]),
-  ];
-}
-
-function fromRouteGraphResponse(graph?: RouteGraphResponse | null): { nodes: RouteFlowNode[]; edges: RouteFlowEdge[] } {
-  const nodes = ensureRouteBoundaryNodes((graph?.nodes ?? []).map<RouteFlowNode>((node, index) => {
-    const boundaryNodeType = getRouteBoundaryNodeType(node.nodeKey, node.nodeType);
-    return {
-      id: node.nodeKey,
-      type: 'routeDesigner',
-      position: {
-        x: node.positionX ?? (boundaryNodeType ? 360 : 80 + index * 180),
-        y: node.positionY ?? (boundaryNodeType === 'START' ? 40 : boundaryNodeType === 'END' ? 520 : 120),
-      },
-      data: {
-        label: boundaryNodeType ? ROUTE_VIRTUAL_NODE_LABELS[boundaryNodeType] : node.operationName || node.operationCode || node.nodeKey,
-        operationId: boundaryNodeType ? null : node.operationId ?? null,
-        operationCode: boundaryNodeType ? null : node.operationCode ?? null,
-        operationName: boundaryNodeType ? ROUTE_VIRTUAL_NODE_LABELS[boundaryNodeType] : node.operationName ?? null,
-        nodeType: boundaryNodeType ?? node.nodeType ?? 'OPERATION',
-        routeOperationKind: node.nodeType === 'REWORK' ? 'REWORK' : 'PRODUCTION',
-        virtual: Boolean(boundaryNodeType),
-      },
-    };
-  }));
-  const nodeById = new Map(nodes.map((node) => [node.id, node]));
-  const edges = (graph?.relations ?? []).map<RouteFlowEdge>((relation, index) => {
-    const label = relation.label || getRouteRelationLabel(relation.relationType);
-    const edgePresentation = getRouteEdgePresentation();
-    const fallbackHandles = getRouteFallbackHandlePair(relation.sourceNodeKey, relation.targetNodeKey, nodeById);
-    return {
-      id: `${relation.sourceNodeKey}-${relation.targetNodeKey}-${index}`,
-      source: relation.sourceNodeKey,
-      target: relation.targetNodeKey,
-      sourceHandle: relation.sourceHandle || fallbackHandles.sourceHandle,
-      targetHandle: relation.targetHandle || fallbackHandles.targetHandle,
-      type: 'smoothstep',
-      ...edgePresentation,
-      data: {
-        relationType: relation.relationType || 'SEQUENTIAL',
-        label,
-        ruleExpression: relation.ruleExpression ?? null,
-      },
-    };
-  });
-  return { nodes, edges };
-}
-
-function toRouteGraphPayload(nodes: RouteFlowNode[], edges: RouteFlowEdge[]): RouteGraphPayload {
-  const graphNodes = ensureRouteBoundaryNodes(nodes);
-  const nodeById = new Map(graphNodes.map((node) => [node.id, node]));
-  const parallelSourceIds = getRouteParallelSourceIds(graphNodes, edges);
-  return {
-    nodes: graphNodes.map<RouteNodeRecord>((node, index) => ({
-      nodeKey: node.id,
-      operationId: node.data.virtual ? null : node.data.operationId ?? null,
-      operationCode: node.data.virtual ? null : node.data.operationCode ?? null,
-      operationName: node.data.operationName ?? node.data.label,
-      nodeType: node.data.nodeType === 'START' ? 'START' : node.data.nodeType === 'END' ? 'END' : node.data.routeOperationKind === 'REWORK' ? 'REWORK' : 'OPERATION',
-      positionX: Math.round(node.position.x),
-      positionY: Math.round(node.position.y),
-      sortOrder: index + 1,
-    })),
-    relations: edges
-      .filter((edge) => edge.source && edge.target)
-      .map<RouteRelationRecord>((edge, index) => {
-        const relationType = parallelSourceIds.has(edge.source) ? 'PARALLEL' : edge.data?.relationType || 'SEQUENTIAL';
-        const fallbackHandles = getRouteFallbackHandlePair(edge.source, edge.target, nodeById);
-        return {
-          sourceNodeKey: edge.source,
-          targetNodeKey: edge.target,
-          sourceHandle: edge.sourceHandle || fallbackHandles.sourceHandle,
-          targetHandle: edge.targetHandle || fallbackHandles.targetHandle,
-          relationType,
-          label: edge.data?.label || getRouteRelationLabel(relationType),
-          ruleExpression: edge.data?.ruleExpression ?? null,
-          priority: index + 1,
-        };
-      }),
   };
 }
 
@@ -1922,6 +1130,35 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   const [routeConnectionHoverNodeId, setRouteConnectionHoverNodeId] = useState<string | null>(null);
   const [routeNodes, setRouteNodes, onRouteNodesChange] = useNodesState<RouteFlowNode>([]);
   const [routeEdges, setRouteEdges, onRouteEdgesChange] = useEdgesState<RouteFlowEdge>([]);
+  const [routeQuickAdd, setRouteQuickAdd] = useState<{ nodeId: string; direction: FlowDirection; anchor: HTMLElement } | null>(null);
+  const [routeValidationVisible, setRouteValidationVisible] = useState(false);
+  const routeConnectivityErrors = useMemo(() => getRouteConnectivityErrors(routeNodes, routeEdges), [routeNodes, routeEdges]);
+  const routeQuickAddNode = routeNodes.find((node) => node.id === routeQuickAdd?.nodeId);
+  const [showRouteMiniMap, setShowRouteMiniMap] = useState(false);
+  const { history: routeHistory, record: recordRouteHistory, reset: resetRouteHistory, undo: undoRoute, redo: redoRoute } = useFlowHistory({
+    read: () => ({ nodes: routeNodes, edges: routeEdges }),
+    apply: (graph) => { setRouteNodes(graph.nodes); setRouteEdges(graph.edges); setRouteCanvasContextMenu(null); setRouteQuickAdd(null); },
+    editable: dialogOpen && pageKey === 'routes',
+  });
+  const rememberRouteGraph = () => recordRouteHistory({ nodes: routeNodes, edges: routeEdges });
+
+  useEffect(() => {
+    if (!dialogOpen || pageKey !== 'routes') return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement;
+      if (event.isComposing || target.closest('input, textarea, select, [contenteditable="true"]')) return;
+      if (!(event.ctrlKey || event.metaKey)) return;
+      if (event.key.toLowerCase() === 'z') {
+        event.preventDefault();
+        if (event.shiftKey) redoRoute(); else undoRoute();
+      } else if (event.key.toLowerCase() === 'y') {
+        event.preventDefault(); redoRoute();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [dialogOpen, pageKey, undoRoute, redoRoute]);
+
 
   useEffect(() => {
     setColumnWidths(loadColumnWidths(columnWidthStorageKey));
@@ -2085,48 +1322,10 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       return isUnusedOperation && matchesCategory && matchesKeyword;
     });
   }, [routeOperationLibraryCategory, routeOperationLibraryKeyword, routeOperations, usedRouteOperationIds]);
-  const routeNodesWithConnectionState = useMemo<RouteFlowNode[]>(() => {
-    const connectedSourceNodeIds = new Set<string>();
-    const connectedTargetNodeIds = new Set<string>();
-    const connectedHandleIdsByNode = new Map<string, Set<string>>();
-    const addConnectedHandleId = (nodeId: string, handleId: string) => {
-      const current = connectedHandleIdsByNode.get(nodeId) ?? new Set<string>();
-      current.add(handleId);
-      connectedHandleIdsByNode.set(nodeId, current);
-    };
-    const routeParallelBadges = getRouteParallelBadgeMaps(getRouteParallelGroups(routeNodes, routeEdges));
-    const routeReworkBadges = getRouteReworkBadgeMaps(routeNodes);
-    routeEdges.forEach((edge) => {
-      if (edge.source) {
-        connectedSourceNodeIds.add(edge.source);
-        addConnectedHandleId(edge.source, edge.sourceHandle || getRouteFallbackSourceHandleId(edge.source));
-      }
-      if (edge.target) {
-        connectedTargetNodeIds.add(edge.target);
-        addConnectedHandleId(edge.target, edge.targetHandle || getRouteFallbackTargetHandleId(edge.target));
-      }
-    });
-    return routeNodes.map((node) => ({
-      ...node,
-      data: {
-        ...node.data,
-        sourceConnected: connectedSourceNodeIds.has(node.id),
-        targetConnected: connectedTargetNodeIds.has(node.id),
-        connectedHandleIds: [...(connectedHandleIdsByNode.get(node.id) ?? [])],
-        showConnectableHandles: routeConnectionDragging && routeConnectionHoverNodeId === node.id && node.data.nodeType !== 'START',
-        parallelBadges: routeParallelBadges.parallel.get(node.id) ?? [],
-        mergeBadges: routeParallelBadges.merge.get(node.id) ?? [],
-        reworkBadges: routeReworkBadges.rework.get(node.id) ?? [],
-      },
-    }));
-  }, [routeConnectionDragging, routeConnectionHoverNodeId, routeEdges, routeNodes]);
-  const routeEdgesWithPresentation = useMemo<RouteFlowEdge[]>(() => {
-    const routeNodeKindById = new Map(routeNodes.map((node) => [node.id, getRouteOperationKind(node)]));
-    return routeEdges.map((edge) => ({
-      ...edge,
-      ...getRouteEdgePresentation(edge, routeNodeKindById),
-    }));
-  }, [routeEdges, routeNodes]);
+  const { nodes: routeNodesWithConnectionState, edges: routeEdgesWithPresentation } = useMemo(
+    () => presentRouteGraph(routeNodes, routeEdges, routeConnectionDragging, routeConnectionHoverNodeId),
+    [routeConnectionDragging, routeConnectionHoverNodeId, routeEdges, routeNodes],
+  );
   const routeGraphQuery = useQuery({
     queryKey: ['process-route-graph', selectedRouteId, selectedRouteVersionId],
     enabled: pageKey === 'routes' && dialogOpen && (editingRow !== null || creatingRouteVersionFrom !== null || editingRouteVersionFrom !== null) && selectedRouteId !== null && selectedRouteVersionId !== null,
@@ -2196,6 +1395,9 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
 
   useEffect(() => {
     if (pageKey !== 'routes') return;
+    setRouteQuickAdd(null);
+    setRouteValidationVisible(false);
+    resetRouteHistory();
     if (!dialogOpen) {
       setRouteNodes([]);
       setRouteEdges([]);
@@ -2214,7 +1416,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     const graph = fromRouteGraphResponse(routeGraphQuery.data);
     setRouteNodes(graph.nodes.map((node) => ({ ...node, selected: node.id === readRecordLocation().node })));
     setRouteEdges(graph.edges);
-  }, [creatingRouteVersionFrom, dialogOpen, editingRouteVersionFrom, editingRow, pageKey, routeGraphQuery.data, selectedRouteVersionId, setRouteEdges, setRouteNodes]);
+  }, [creatingRouteVersionFrom, dialogOpen, editingRouteVersionFrom, editingRow, pageKey, routeGraphQuery.data, selectedRouteVersionId, setRouteEdges, setRouteNodes, resetRouteHistory]);
 
   const showSnackbar = (message: string, severity: 'success' | 'error') => {
     setSnackbar({ open: true, message, severity });
@@ -2449,6 +1651,8 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       const routeId = target?.routeId ?? selectedRouteId;
       const versionId = target?.versionId ?? selectedRouteVersionId;
       if (!routeId || !versionId) throw new Error('请先选择工艺路线模板和版本');
+      const error = Object.values(getRouteConnectivityErrors(routeNodes, routeEdges))[0];
+      if (error) throw new Error(error);
       return saveProcessRouteGraph(routeId, versionId, toRouteGraphPayload(routeNodes, routeEdges));
     },
     onSuccess: async (_response, target) => {
@@ -2731,6 +1935,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   };
 
   const handleRouteOperationDoubleClick = (operation: OperationRecord) => {
+    rememberRouteGraph();
     setRouteNodes((current) => {
       const position = getRouteQuickAddPosition(current);
       const addedNode = { ...createRouteFlowNode(operation, position), selected: true };
@@ -2747,6 +1952,27 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         return { ...node, selected: false };
       }).concat(addedNode);
     });
+  };
+
+  const addRouteOperationFromArrow = (operation: OperationRecord) => {
+    if (!routeQuickAdd || !routeQuickAddNode || usedRouteOperationIds.has(String(operation.id))) return;
+    const added = { ...createRouteFlowNode(operation, getRouteAnchoredAddPosition(routeQuickAddNode, routeNodes, routeQuickAdd.direction)), selected: true };
+    const edge = createRouteQuickConnection(routeQuickAddNode, added, routeQuickAdd.direction);
+    rememberRouteGraph();
+    setRouteNodes((current) => [...current.map((node) => ({ ...node, selected: false })), added]);
+    setRouteEdges((current) => addEdge(edge, current));
+    setRouteQuickAdd(null);
+    requestAnimationFrame(() => { void reactFlowInstance?.setCenter(added.position.x + ROUTE_DESIGNER_OPERATION_NODE_WIDTH / 2, added.position.y + ROUTE_DESIGNER_OPERATION_NODE_HEIGHT / 2, { zoom: reactFlowInstance.getZoom(), duration: 160 }); });
+  };
+
+  const connectRouteNodeFromArrow = (other: RouteFlowNode) => {
+    if (!routeQuickAdd || !routeQuickAddNode) return;
+    const edge = createRouteQuickConnection(routeQuickAddNode, other, routeQuickAdd.direction);
+    const error = getRouteConnectionError(routeNodes, routeEdges, edge);
+    if (error) { showSnackbar(error, 'error'); return; }
+    rememberRouteGraph();
+    setRouteEdges((current) => addEdge(edge, current));
+    setRouteQuickAdd(null);
   };
 
   const getRouteCanvasDropPosition = (event: ReactDragEvent) => {
@@ -2803,6 +2029,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       clearDragState();
       return;
     }
+    rememberRouteGraph();
     setRouteNodes((current) => [...current, createRouteFlowNode(operation, position)]);
     clearDragState();
   };
@@ -2811,6 +2038,8 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     const label = getRouteRelationLabel(DEFAULT_ROUTE_RELATION_TYPE);
     const edgePresentation = getRouteEdgePresentation();
     const normalizedConnection = normalizeRouteConnectionHandles(connection);
+    const error = getRouteConnectionError(routeNodes, routeEdges, normalizedConnection);
+    if (error) { showSnackbar(error, 'error'); return; }
     const edge: RouteFlowEdge = {
       ...normalizedConnection,
       id: `edge-${normalizedConnection.source}-${normalizedConnection.target}-${Date.now()}`,
@@ -2823,6 +2052,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         label,
       },
     };
+    rememberRouteGraph();
     setRouteEdges((current) => addEdge(edge, current));
   };
 
@@ -2850,6 +2080,9 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
 
   const handleRouteReconnect: OnReconnect<RouteFlowEdge> = (oldEdge, newConnection) => {
     const normalizedConnection = normalizeRouteConnectionHandles(newConnection);
+    const error = getRouteConnectionError(routeNodes, routeEdges.filter((edge) => edge.id !== oldEdge.id), normalizedConnection);
+    if (error) { showSnackbar(error, 'error'); return; }
+    rememberRouteGraph();
     setRouteEdges((current) => reconnectEdge(oldEdge, normalizedConnection, current, { shouldReplaceId: false }));
   };
 
@@ -2907,7 +2140,8 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       return;
     }
     const selectedNodeIdSet = new Set(selectedNodeIds);
-    setRouteEdges((current) => {
+    const nextEdges = (() => {
+      const current = routeEdges;
       const requiredPairs = selectedNodeIds.flatMap((nodeId) => [[sourceNodeId, nodeId], [nodeId, mergeNodeId]] as const);
       const requiredPairKeys = new Set(requiredPairs.map(([source, target]) => `${source}->${target}`));
       const existingPairKeys = new Set<string>();
@@ -2936,7 +2170,11 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         }
       });
       return nextEdges;
-    });
+    })();
+    const error = Object.values(getRouteTopologyErrors(routeNodes, nextEdges))[0];
+    if (error) { showSnackbar(error, 'error'); return; }
+    rememberRouteGraph();
+    setRouteEdges(nextEdges);
     showSnackbar('并行分支已自动补全', 'success');
   };
 
@@ -2948,6 +2186,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       return;
     }
     const selectedNodeIdSet = new Set(selectedNodeIds);
+    rememberRouteGraph();
     setRouteNodes((current) => {
       const nodesToCopy = current.filter((node) => selectedNodeIdSet.has(node.id) && !node.data.virtual);
       if (nodesToCopy.length === 0) return current;
@@ -2984,7 +2223,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       showSnackbar('该工序已存在生产工序，不能重复设为生产工序', 'error');
       return;
     }
-    setRouteNodes((current) => current.map((node) => {
+    const nextNodes: RouteFlowNode[] = routeNodes.map((node) => {
       if (!selectedNodeIdSet.has(node.id) || node.data.virtual) return node;
       return {
         ...node,
@@ -2994,7 +2233,11 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
           routeOperationKind: nextRouteOperationKind,
         },
       };
-    }));
+    });
+    const error = Object.values(getRouteTopologyErrors(nextNodes, routeEdges))[0];
+    if (error) { showSnackbar(error, 'error'); return; }
+    rememberRouteGraph();
+    setRouteNodes(nextNodes);
     showSnackbar(nextRouteOperationKind === 'REWORK' ? '已设为返工工序' : '已设为生产工序', 'success');
   };
 
@@ -3002,6 +2245,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     const selectedNodeIdSet = new Set(routeCanvasContextMenu?.selectedNodeIds ?? []);
     const selectedEdgeIdSet = new Set(routeCanvasContextMenu?.selectedEdgeIds ?? []);
     closeRouteCanvasContextMenu();
+    rememberRouteGraph();
     if (selectedNodeIdSet.size > 0) {
       setRouteNodes((current) => current.filter((node) => node.data.virtual || !selectedNodeIdSet.has(node.id)));
     }
@@ -3026,24 +2270,6 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     const nextPercent = Math.round(instance.getZoom() * 100);
     setRouteDesignerZoomPercent(nextPercent);
     setRouteDesignerZoomInput(String(nextPercent));
-  };
-
-  const zoomRouteDesignerIn = () => {
-    if (!reactFlowInstance) return;
-    reactFlowInstance.zoomIn();
-    window.setTimeout(() => syncRouteDesignerZoom(), 0);
-  };
-
-  const zoomRouteDesignerOut = () => {
-    if (!reactFlowInstance) return;
-    reactFlowInstance.zoomOut();
-    window.setTimeout(() => syncRouteDesignerZoom(), 0);
-  };
-
-  const fitRouteDesignerView = () => {
-    if (!reactFlowInstance) return;
-    reactFlowInstance.fitView();
-    window.setTimeout(() => syncRouteDesignerZoom(), 0);
   };
 
   const applyRouteDesignerZoomInput = () => {
@@ -3378,6 +2604,15 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     if (pageKey === 'routes' && isExpiryBeforeEffective(form.effectiveDate, form.expiryDate)) {
       setSnackbar({ open: true, message: '失效时间不能早于生效时间', severity: 'error' });
       return;
+    }
+    if (isRouteFullScreenDialog) {
+      const errors = getRouteConnectivityErrors(routeNodes, routeEdges);
+      setRouteValidationVisible(true);
+      if (Object.keys(errors).length) {
+        showSnackbar(Object.values(errors)[0], 'error');
+        void reactFlowInstance?.fitView({ nodes: routeNodes.filter((node) => errors[node.id]), padding: 0.4, maxZoom: 1, duration: 160 });
+        return;
+      }
     }
     const payload = pageKey === 'materials' ? normalizeMaterialPayload(form) : pageKey === 'routes' ? normalizeRoutePayload(form) : normalizePayload(form);
     if (isCreatingRouteVersion) {
@@ -4173,77 +3408,26 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     );
   };
 
-  const renderRouteCanvasToolbar = () => {
-    const toolbarButtonSx = { width: 26, height: 26, color: '#303133', borderRadius: 1, '&:hover': { bgcolor: '#edf2ff', color: '#4c6fff' } };
-    const routeInteractionButtonSx = (active: boolean) => ({
-      ...toolbarButtonSx,
-      color: active ? '#1890ff' : '#303133',
-      bgcolor: active ? '#e8f4ff' : 'transparent',
-      '&:hover': { bgcolor: active ? '#d1e9ff' : '#edf2ff', color: '#1890ff' },
-    });
-    return (
-      <Stack
-        data-process-route-canvas-toolbar
-        direction="row"
-        spacing={0.5}
-        alignItems="center"
-        onMouseDown={(event) => event.stopPropagation()}
-        sx={{ position: 'absolute', top: 10, right: 10, zIndex: 8, height: 38, px: 0.75, borderRadius: 1.5, bgcolor: 'rgba(255, 255, 255, .92)', border: '1px solid #e4e7ed', boxShadow: '0 8px 24px rgba(15, 23, 42, .12)', backdropFilter: 'blur(8px)' }}
-      >
-        <Tooltip title="框选" arrow>
-          <IconButton
-            data-process-route-interaction-select
-            size="small"
-            aria-label="框选模式"
-            sx={routeInteractionButtonSx(routeDesignerInteractionMode === 'select')}
-            onClick={() => setRouteDesignerInteractionMode('select')}
-          >
-            <MouseOutlined fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="拖动画布" arrow>
-          <IconButton
-            data-process-route-interaction-pan
-            size="small"
-            aria-label="拖动画布模式"
-            sx={routeInteractionButtonSx(routeDesignerInteractionMode === 'pan')}
-            onClick={() => setRouteDesignerInteractionMode('pan')}
-          >
-            <PanToolOutlined fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="放大" arrow>
-          <IconButton size="small" sx={toolbarButtonSx} onClick={zoomRouteDesignerIn}>
-            <Add fontSize="small" />
-          </IconButton>
-        </Tooltip>
+  const renderRouteCanvasToolbar = () => (
+    <>
+      <FlowCanvasControls editable mode={routeDesignerInteractionMode} onModeChange={setRouteDesignerInteractionMode}>
+        <FlowHistoryControls history={routeHistory} undo={undoRoute} redo={redoRoute} />
+        <FlowMiniMapControl show={showRouteMiniMap} onToggle={() => setShowRouteMiniMap((value) => !value)} />
+      </FlowCanvasControls>
+      {showRouteMiniMap ? <FlowMiniMap /> : null}
+      <Panel position="bottom-left" style={{ left: 44 }}>
         <TextField
-          type="number"
-          size="small"
-          value={routeDesignerZoomInput}
+          type="number" size="small" value={routeDesignerZoomInput}
           onChange={(event) => setRouteDesignerZoomInput(event.target.value)}
           onBlur={applyRouteDesignerZoomInput}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') applyRouteDesignerZoomInput();
-          }}
-          inputProps={{ 'data-process-route-zoom-input': true, min: 10, max: 400, style: { textAlign: 'center', padding: '6px 0 6px 8px' } }}
+          onKeyDown={(event) => { if (event.key === 'Enter') applyRouteDesignerZoomInput(); }}
+          inputProps={{ 'data-process-route-zoom-input': true, 'aria-label': '缩放比例', min: 10, max: 400, style: { textAlign: 'center', padding: '6px 0 6px 8px' } }}
           InputProps={{ endAdornment: <InputAdornment position="end">%</InputAdornment> }}
-          sx={{ width: 74, '& .MuiOutlinedInput-root': { height: 30, bgcolor: '#fff', borderRadius: 1.25, fontSize: 13 }, '& input[type=number]': { MozAppearance: 'textfield' }, '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button': { WebkitAppearance: 'none', m: 0 } }}
+          sx={{ width: 74, '& .MuiOutlinedInput-root': { height: 30, bgcolor: '#fff', fontSize: 13 } }}
         />
-        <Tooltip title="缩小" arrow>
-          <IconButton size="small" sx={toolbarButtonSx} onClick={zoomRouteDesignerOut}>
-            <RemoveRounded fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Box data-process-route-toolbar-divider sx={{ width: '1px', height: 20, bgcolor: '#dcdfe6', mx: 0.5 }} />
-        <Tooltip title="适配画布" arrow>
-          <IconButton size="small" sx={toolbarButtonSx} onClick={fitRouteDesignerView}>
-            <CenterFocusStrongRounded fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      </Stack>
-    );
-  };
+      </Panel>
+    </>
+  );
 
   const renderRouteCanvasDropPreview = () => {
     if (!routeCanvasDropPreview) return null;
@@ -4401,6 +3585,11 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
           {routeGraphQuery.isLoading ? (
             <Box sx={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', color: '#909399' }}>路线图加载中</Box>
           ) : null}
+          <RouteGraphEditorContext.Provider value={{
+            errors: routeValidationVisible ? routeConnectivityErrors : {},
+            quickAddEnabled: !routeConnectionDragging && !routeEdges.some((edge) => edge.selected),
+            onQuickAdd: (nodeId, direction, anchor) => { setRouteCanvasContextMenu(null); setRouteQuickAdd({ nodeId, direction, anchor }); },
+          }}>
           <ReactFlowProvider>
             <ReactFlow
               nodes={routeNodesWithConnectionState}
@@ -4408,6 +3597,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
               nodeTypes={routeDesignerNodeTypes}
               onNodesChange={onRouteNodesChange}
               onEdgesChange={onRouteEdgesChange}
+              onBeforeDelete={async () => { rememberRouteGraph(); return true; }}
               onConnect={handleRouteConnect}
               onConnectStart={handleRouteConnectStart}
               onConnectEnd={handleRouteConnectEnd}
@@ -4418,6 +3608,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
               onPaneContextMenu={handleRoutePaneContextMenu}
               onSelectionContextMenu={handleRouteSelectionContextMenu}
               onPaneClick={closeRouteCanvasContextMenu}
+              onNodeDragStart={rememberRouteGraph}
               onNodeDrag={handleRouteNodeDrag}
               onNodeDragStop={handleRouteNodeDrag}
               onInit={(instance) => {
@@ -4430,18 +3621,24 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
                 setRouteDesignerZoomInput(String(nextPercent));
               }}
               proOptions={{ hideAttribution: true }}
-              defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+              fitView
+              fitViewOptions={STANDARD_FLOW_FIT_VIEW_OPTIONS}
               panOnDrag={routeDesignerInteractionMode === 'pan'}
               selectionOnDrag={routeDesignerInteractionMode === 'select'}
               multiSelectionKeyCode={['Meta', 'Shift']}
+              deleteKeyCode={['Delete', 'Backspace']}
               edgesReconnectable
               reconnectRadius={16}
             >
-              <Background />
+              <FlowCanvasBackground />
+              {renderRouteCanvasToolbar()}
             </ReactFlow>
           </ReactFlowProvider>
+          </RouteGraphEditorContext.Provider>
+          {routeValidationVisible && Object.keys(routeConnectivityErrors).length > 0 ? <Alert severity="error" sx={{ position: 'absolute', top: 8, left: 8, right: 8, zIndex: 5 }}>
+            路线校验未通过，请修正红框节点后保存。{routeConnectivityErrors.__graph__}
+          </Alert> : null}
           {renderRouteCanvasDropPreview()}
-          {renderRouteCanvasToolbar()}
           {renderRouteCanvasContextMenu()}
         </Box>
       </Box>
@@ -4980,10 +4177,37 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
         </Box>
       </Drawer>
 
+      {dialogOpen && isRouteFullScreenDialog ? (
+        <FullScreenFlowDesigner
+          title={isEditingRouteVersion ? '编辑子版本工艺路线' : isCreatingRouteVersion ? '新增子版本' : editingRow ? `编辑${config.title}` : `新增${config.title}`}
+          onClose={() => resetDialogState()}
+          actions={<>
+            <Button onClick={() => resetDialogState()}>取消</Button>
+            <Button variant="contained" onClick={submitForm} disabled={createMutation.isPending || updateMutation.isPending || createRouteVersionMutation.isPending || updateRouteVersionMutation.isPending || saveRouteGraphMutation.isPending}>{createMutation.isPending || updateMutation.isPending || createRouteVersionMutation.isPending || updateRouteVersionMutation.isPending || saveRouteGraphMutation.isPending ? '保存中...' : '保存'}</Button>
+          </>}
+        >
+          {renderRouteDialogContent()}
+          {routeQuickAdd && routeQuickAddNode ? <RouteQuickAddPanel
+            key={`${routeQuickAdd.nodeId}-${routeQuickAdd.direction}`}
+            anchorEl={routeQuickAdd.anchor} node={routeQuickAddNode} direction={routeQuickAdd.direction}
+            operations={routeOperations.filter((operation) => !usedRouteOperationIds.has(String(operation.id)))}
+            existingNodes={routeNodesWithConnectionState.filter((node) => {
+              if (node.id === routeQuickAdd.nodeId) return false;
+              const before = routeQuickAddNode.data.nodeType === 'END' || routeQuickAdd.direction === 'top';
+              if (node.data.nodeType === (before ? 'END' : 'START')) return false;
+              const edge = createRouteQuickConnection(routeQuickAddNode, node, routeQuickAdd.direction);
+              return !getRouteConnectionError(routeNodes, routeEdges, edge);
+            })}
+            loading={routeOperationLibraryQuery.isLoading} failed={routeOperationLibraryQuery.isError}
+            onRetry={() => { void routeOperationLibraryQuery.refetch(); }}
+            onAdd={addRouteOperationFromArrow} onConnect={connectRouteNodeFromArrow} onClose={() => setRouteQuickAdd(null)}
+          /> : null}
+        </FullScreenFlowDesigner>
+      ) : null}
       <AppDialog
         variant="form"
         hideCloseButton={isRouteFullScreenDialog}
-        open={dialogOpen}
+        open={dialogOpen && !isRouteFullScreenDialog}
         onClose={() => resetDialogState()}
         maxWidth={isRouteFullScreenDialog ? 'xl' : 'sm'}
         fullScreen={isRouteFullScreenDialog}

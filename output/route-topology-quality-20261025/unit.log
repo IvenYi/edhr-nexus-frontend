@@ -1,0 +1,25 @@
+
+> edhr-frontend@0.0.1 test:flow-canvas
+> node --test scripts/test-flow-canvas.mjs
+
+✔ route conversion preserves occurrence keys, string identities, coordinates and four-way ports (1.645917ms)
+✔ shared presentation computes parallel/merge/rework markers without changing saved graph data (6.091959ms)
+✔ missing ports keep the existing geometry fallback and boundary nodes remain protected (0.123875ms)
+✔ route save checks all production paths while preserving parallel and rework (0.388875ms)
+✔ rework cannot stand in for the production path, but an empty connected skeleton is allowed (0.111792ms)
+✔ route save rejects ambiguous keys, dangling references and invalid boundary directions (0.151917ms)
+✔ quick connections retain domain port IDs and before/after direction without rewriting existing edges (0.14475ms)
+✔ connection guards reject self links and duplicate node pairs regardless of ports (0.141541ms)
+✔ repeated operations have matching occurrence numbers from the whole graph without changing payloads (0.250542ms)
+✔ normal production rejects two-node and longer cycles while retaining explicit rework and parallel paths (0.189834ms)
+✔ quick add positions avoid existing nodes in every direction and preserve existing coordinates (0.171125ms)
+✔ history snapshots are isolated, undo/redo are symmetric, and a new edit clears redo (0.095208ms)
+✔ history retains the existing 50-entry limit, resets at version boundaries and isolates editors (0.134958ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 114.843875

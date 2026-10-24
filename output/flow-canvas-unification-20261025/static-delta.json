@@ -1,0 +1,18 @@
+{
+  "diagnosticOnly": "Old missing main migration reads mapped to existing test migrations in memory; production verifier still has baseline ENOENT.",
+  "before": [
+    "- missing \"0025-material-version-display-fields.sql\" (material version display fields should have a database migration)",
+    "- missing \"0027-process-operation-standard-fields.sql\" (process operation standard fields should have a database migration)",
+    "- missing \"0028-process-operation-categories.sql\" (process operation categories should have a database migration)",
+    "- missing \"0052-product-process-document-pages.sql\" (operation document page ranges should have a database migration)",
+    "- missing \"0029-route-template-version-graph.sql\" (route template version and graph tables should have a database migration)"
+  ],
+  "after": [
+    "- missing \"0025-material-version-display-fields.sql\" (material version display fields should have a database migration)",
+    "- missing \"0027-process-operation-standard-fields.sql\" (process operation standard fields should have a database migration)",
+    "- missing \"0028-process-operation-categories.sql\" (process operation categories should have a database migration)",
+    "- missing \"0052-product-process-document-pages.sql\" (operation document page ranges should have a database migration)",
+    "- missing \"0029-route-template-version-graph.sql\" (route template version and graph tables should have a database migration)"
+  ],
+  "newFailures": []
+}

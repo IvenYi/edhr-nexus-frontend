@@ -1,0 +1,27 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.route-graph-topology-confirmed
+    type: document
+    path: docs/knowledge/evidence/route-graph-topology-20261025.md
+    description: user-confirmed；用户截图指出同对节点重复连线及普通生产回路，要求暂停推送修复并区分重复工序；用户询问现有返工及要求返工连线明确标记。原话、原始源码、局部替代和工程边界分列，既有配置不冒称完整返工执行。
+    visibility: internal
+  - id: evidence.route-graph-topology-picker
+    type: code
+    path: gmp-platform/frontend/src/components/route-graph/RouteQuickAddPanel.tsx
+    description: original-evidence；连接已有节点的候选区分及目标选择实现定位，与画布共享节点视图信息；编号不改变nodeKey或operationId。具体运行及独立验收须取本轮实际候选证据。
+    visibility: internal
+  - id: evidence.route-graph-rework-configuration
+    type: code
+    path: gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx
+    description: original-evidence；现有copyRouteContextSelection和setRouteContextSelectionOperationKind支持显式REWORK节点配置，证明已有配置入口，不证明返工生产运行已经接通；各连线及类型转换入口在本切片统一核对拓扑。
+    visibility: internal
+  - id: evidence.route-graph-rework-execution-boundary
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    description: original-evidence；startIssues显式对REWORK增加普通开工阻断，validateRoute及collectPredecessors跳过返工节点。此次不修改执行引擎，不把图配置与文字样式同步表述成完整返工执行契约已交付。
+    visibility: internal
+  - id: evidence.route-graph-topology-browser-tests
+    type: test
+    path: gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs
+    description: original-evidence；实际组件浏览器测试的拓扑、重复节点候选及返工线呈现定位。文件存在或测试定义本身不证明运行通过，实际运行与独立质量由本切片交付证据记录。
+    visibility: internal

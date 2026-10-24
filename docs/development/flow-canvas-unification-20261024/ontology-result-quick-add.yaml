@@ -1,0 +1,81 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    targetBranch: edhr-dev
+    targetCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    contractReadCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    uncommittedContractPaths: []
+  reason: 主侧保存route_quick_add_ontology最终交接摘要。用户已确认保存强制校验，新增知识保持specified/internal；不提升版本、阶段或运行资格，不合并存储、版本和执行引擎。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml
+      changeType: create
+      ids: [DEC-0083, DEC-0083-01, DEC-0083-02, scenario.route-graph-save-rejects-disconnected-boundaries, scenario.route-graph-save-allows-parallel-and-rework-boundary, scenario.route-graph-save-empty-skeleton-and-version-metadata]
+    - path: docs/knowledge/rules/route-graph.yaml
+      changeType: create
+      ids: [rule.route-graph.save-connectivity]
+    - path: docs/knowledge/facts/route-graph.yaml
+      changeType: create
+      ids: [fact.route-graph.save-valid]
+    - path: docs/knowledge/evidence/route-graph-save-connectivity-20261025.yaml
+      changeType: create
+      ids: [evidence.route-graph-save-connectivity-confirmed, evidence.route-graph-save-connectivity-controller, evidence.route-graph-save-connectivity-validator, evidence.route-graph-save-connectivity-editor, evidence.route-graph-save-connectivity-validator-test, evidence.route-graph-save-connectivity-controller-test]
+    - path: docs/knowledge/evidence/route-graph-save-connectivity-20261025.md
+      changeType: create
+      ids: []
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: DEC-0083-01
+      disposition: updated
+      scope: 编辑可断开，图保存须由开始覆盖全部生产工序且均可达结束，不满足即阻断。
+      sourceReferences: [docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml]
+    - id: DEC-0083-02
+      disposition: updated
+      scope: 正常骨架排除REWORK节点相关边，保留并行、不新增单出口或环路保存禁令，旧图、引用和快照不回写。
+      sourceReferences: [docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml]
+    - id: rule.route-graph.save-connectivity
+      disposition: updated
+      scope: 前端元数据请求前和服务端图删除写入前阻断；版本元数据可先创建，START直连END空骨架允许。
+      sourceReferences: [docs/knowledge/rules/route-graph.yaml]
+    - id: fact.route-graph.save-valid
+      disposition: updated
+      scope: 当前请求校验的boolean派生事实，不新增持久化状态或生产资格。
+      sourceReferences: [docs/knowledge/facts/route-graph.yaml]
+    - id: rule.product-process.bind-route-and-dhr-versions
+      disposition: retained
+      scope: 版本引用资格保持，不扩大图保存校验为引用门禁。
+      sourceReferences: [docs/knowledge/rules/product-process.yaml]
+    - id: rule.product-process.operation-from-bound-route
+      disposition: retained
+      scope: 绑定仍按路线节点归属，不扩大REWORK绑定候选。
+      sourceReferences: [docs/knowledge/rules/product-process.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.route-graph-knowledge-model
+      checkType: schema
+      command: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml clean test
+      outcome: passed
+      evidence: [本体实例独立执行89项通过, /tmp/edhr-route-ontology-validation-20261025.log, tools/knowledge-model/target/surefire-reports]
+    - id: validation.route-graph-policy-implementation
+      checkType: projection
+      command: inspection
+      outcome: passed
+      evidence: [已核对前后端连通函数及保存顺序，排除返工但不扩大为单出口或DAG门禁]
+    - id: validation.route-graph-tests
+      checkType: evidence-path
+      command: inspection
+      outcome: passed
+      evidence: [本体实例读取主侧Surefire原件及源码，校验器5项与整个控制器类53项零失败，不声称自行执行后端或浏览器]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

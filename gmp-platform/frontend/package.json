@@ -14,6 +14,8 @@
     "verify:business-dictionary": "node scripts/verify-business-dictionary-page.mjs",
     "verify:menu-management": "node scripts/verify-menu-management.mjs",
     "test:generic-ui": "node --test scripts/test-generic-ui.mjs",
+    "test:flow-canvas": "node --test scripts/test-flow-canvas.mjs",
+    "test:flow-canvas-browser": "node scripts/test-flow-canvas-browser.mjs",
     "test:review-batch-01": "node --test scripts/test-review-batch-01.mjs",
     "test:equipment-modeling": "node --test scripts/test-equipment-modeling.mjs",
     "verify:audit-log-page": "node scripts/verify-audit-log-page.mjs",

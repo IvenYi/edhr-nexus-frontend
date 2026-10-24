@@ -1,0 +1,75 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    targetBranch: edhr-dev
+    targetCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    contractReadCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    uncommittedContractPaths: []
+  reason: >-
+    本结果针对2026-10-25继续改动的实际未提交工作树，独立于前一轮结果。
+    路线及产品图现直接复用StandardFlowNode，路线和三类通用流程共用画布工具、背景和历史基础，
+    路线全屏编辑共用FullScreenFlowDesigner；公共组件不接管领域规则、版本、保存、发布或执行。
+    路线的节点键、工序身份、并行和返工判断及产品绑定所有权未改变，不形成新的业务政策或知识声明。
+    节点尺寸统一会改变新增节点避让坐标和无显式端口时的几何方向推断；这些是呈现变化，
+    不是路线拓扑、前置条件或执行规则变化，不能笼统表述为全部几何或端口字节不变。
+    显式保存端口仍优先保留，已存且未移动节点坐标不因加载而改写。无需维持另一套旧几何算法。
+    本次不更新知识资产、不新增DEC、不提升成熟度；本结论不代替浏览器、数据库或独立质量验收。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.flow-visual-20261025-baseline
+      checkType: reference
+      command: git rev-parse HEAD origin/edhr-dev; git diff HEAD origin/edhr-dev -- AGENTS.md docs/agents/business-knowledge-modeler.md docs/agents/agent-handoff-contract.md
+      outcome: passed
+      evidence:
+        - original-evidence：实际HEAD与origin/edhr-dev均为96ea56338ef1438938a546382368eb1d7d400938，适用契约无提交增量或未提交差异；主侧本轮成功fetch，未沿用前轮超时结论。
+        - original-evidence：schema.yaml、ontology.yaml、glossary.yaml及相关规则头为knowledgeModelVersion 0.3.25，schemaVersion为1.2.0。
+        - 已读取项目契约、codeplzreadme、业务知识本体角色、统一交接、知识模型、知识README、open-questions及相关领域定义。
+    - id: validation.flow-visual-20261025-boundaries
+      checkType: reference
+      command: inspection of decision-package.yaml, DEC-0001, DEC-0011, DEC-0078, product-process.yaml, production-output anchors and ontology
+      outcome: passed
+      evidence:
+        - user-confirmed：以既有通用流程统一视觉和公共编辑能力，保留业务规则、版本和执行机制；不实施存储、版本及执行引擎统一。
+        - secondary-reference：DEC-0001-02/04/05及rule.product-process.operation-from-bound-route仍定义并行制程版本、一个路线版本和稳定路线节点绑定，本轮未替代。
+        - secondary-reference：DEC-0078-01及rule.product-process.final-output-at-most-one仍将可选最终产出标记归属具体制程版本节点绑定，不迁移到路线或全局工序。
+        - secondary-reference：DEC-0011-04的作业普通节点单出口及条件分支语义仍归作业流程，不套用于路线并行和返工；现有条件运行未决问题未被关闭。
+        - inferred：界面共同使用渲染器和工具不表示已建立共同业务图协议、发布政策、执行能力或新的本体试点。
+    - id: validation.flow-visual-20261025-domain-preservation
+      checkType: evidence-path
+      command: node inline TypeScript Compiler API function-body comparison against HEAD; inspection of current route adapter and product/workflow diffs
+      outcome: passed
+      evidence:
+        - original-evidence：fromRouteGraphResponse、toRouteGraphPayload、normalizeRouteConnectionHandles、getRouteFallbackHandlePair、并行分组及生产/返工冲突判断保持HEAD原函数体；样式与尺寸常量改变，不能沿用前轮全部函数和节点渲染器逐字相同的结论。
+        - original-evidence：RouteGraphNode直接使用StandardFlowNode，同时保留route-handle-*标识、START无入/排除top出端、END无出/排除bottom入端及并行/汇合/返工徽标。
+        - original-evidence：产品两个入口的差异仅为路线图呈现接入；toOperationDrafts/toPayload等原函数体未改变，routeNodeKey选择与最终产出/表单/文档绑定保存仍属原页面。
+        - original-evidence：RouteGraphPreview继续显式禁止结构拖动、连接、边重连及删除；只读预览保留节点点选回调。
+        - original-evidence：三类流程diff保留领域校验、保存、发布和权限条件；useFlowHistory仅维护50条编辑快照、撤销重做及重置，不拥有业务版本或持久化。
+    - id: validation.flow-visual-20261025-geometry-ownership
+      checkType: evidence-path
+      command: inspection of routeGraph.ts getRouteNodeSize/getRouteFallbackHandlePair, ExecutionSnapshotBuilder.java:56-64 and ProductionExecutionEngine.java:34-85
+      outcome: passed
+      evidence:
+        - original-evidence：路线节点统一为普通148x60、边界96x52；缺省端口计算使用当前节点中心，极端斜角可能与旧尺寸选择不同边。
+        - original-evidence：fromRouteGraphResponse/toRouteGraphPayload先使用已存sourceHandle/targetHandle，缺省时才计算；坐标仍按节点position保存，不因样式加载自动重排。
+        - original-evidence：ExecutionSnapshotBuilder的routeEdges查询只冻结source/target/type/rule，不读取sourceHandle/targetHandle。
+        - original-evidence：ProductionExecutionEngine的路线环路和前置工序判断按routeEdges的source/target及REWORK类型执行；同文件的sourceHandle分支判断属于作业/表单流程图，不能混为路线端口执行语义。
+        - inference：保留新的几何适配符合本轮视觉统一；另保留旧几何无业务必要，反而让缺省走线与实际新节点尺寸脱节。该判断不授权改写显式端口、路线拓扑或历史执行快照。
+    - id: validation.flow-visual-20261025-scope-and-evidence
+      checkType: evidence-path
+      command: git status --short -- AGENTS.md docs/agents docs/knowledge docs/architecture gmp-platform/backend gmp-platform/frontend/src/api; inspection of current browser result artifacts
+      outcome: passed
+      evidence:
+        - original-evidence：本角色核对时上述契约、权威知识、架构、后端及API目录无变更；无数据库迁移或执行快照修改。
+        - original-evidence：output/playwright/flow-canvas-unification-20261025/results.json记录主侧14场景passed，visual-comparison.json记录审批和路线相同角色节点尺寸/配色/连接点计算样式及公共工具位置一致；本角色只读取报告，未独立执行浏览器。
+        - 本角色未读取真实数据库、未执行生产业务或独立质量回归；实际交互结果与质量门禁须由主侧和全新质量实例分别提供。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

@@ -1530,7 +1530,10 @@ class ProcessModelingControllerTest {
                                 .positionX(320)
                                 .positionY(120)
                                 .sortOrder(2)
-                                .build()))
+                                .build(),
+                        RouteGraphRequest.NodePayload.builder().nodeKey("sterilize-rework").operationId(101L).operationName("灭菌返工").nodeType("REWORK").build(),
+                        RouteGraphRequest.NodePayload.builder().nodeKey("start").nodeType("START").build(),
+                        RouteGraphRequest.NodePayload.builder().nodeKey("end").nodeType("END").build()))
                 .relations(List.of(
                         RouteGraphRequest.RelationPayload.builder()
                                 .sourceNodeKey("sterilize")
@@ -1543,20 +1546,22 @@ class ProcessModelingControllerTest {
                                 .build(),
                         RouteGraphRequest.RelationPayload.builder()
                                 .sourceNodeKey("fill")
-                                .targetNodeKey("sterilize")
+                                .targetNodeKey("sterilize-rework")
                                 .sourceHandle("route-handle-bottom")
                                 .targetHandle("route-handle-right")
                                 .relationType("REWORK")
                                 .label("返工回流")
                                 .ruleExpression("qc_failed == true")
                                 .priority(2)
-                                .build()))
+                                .build(),
+                        RouteGraphRequest.RelationPayload.builder().sourceNodeKey("start").targetNodeKey("sterilize").build(),
+                        RouteGraphRequest.RelationPayload.builder().sourceNodeKey("fill").targetNodeKey("end").build()))
                 .build();
 
         var response = controller.saveRouteGraph(83001L, 83011L, request);
 
-        assertThat(response.getData().getNodes()).hasSize(2);
-        assertThat(response.getData().getRelations()).hasSize(2);
+        assertThat(response.getData().getNodes()).hasSize(5);
+        assertThat(response.getData().getRelations()).hasSize(4);
         ArgumentCaptor<List<RouteNode>> nodeCaptor = ArgumentCaptor.forClass(List.class);
         ArgumentCaptor<List<RouteRelation>> relationCaptor = ArgumentCaptor.forClass(List.class);
         verify(routeNodeRepository).deleteByRouteVersionId(83011L);
@@ -1570,10 +1575,46 @@ class ProcessModelingControllerTest {
         graphWriteOrder.verify(routeNodeRepository).flush();
         graphWriteOrder.verify(routeNodeRepository).saveAll(any());
         graphWriteOrder.verify(routeRelationRepository).saveAll(any());
-        assertThat(nodeCaptor.getValue()).extracting(RouteNode::getNodeKey).containsExactly("sterilize", "fill");
-        assertThat(relationCaptor.getValue()).extracting(RouteRelation::getRelationType).containsExactly("SEQUENTIAL", "REWORK");
-        assertThat(relationCaptor.getValue()).extracting(RouteRelation::getSourceHandle).containsExactly("route-handle-right", "route-handle-bottom");
-        assertThat(relationCaptor.getValue()).extracting(RouteRelation::getTargetHandle).containsExactly("route-handle-left", "route-handle-right");
+        assertThat(nodeCaptor.getValue()).extracting(RouteNode::getNodeKey).containsExactly("sterilize", "fill", "sterilize-rework", "start", "end");
+        assertThat(relationCaptor.getValue()).extracting(RouteRelation::getRelationType).containsExactly("SEQUENTIAL", "REWORK", "SEQUENTIAL", "SEQUENTIAL");
+        assertThat(relationCaptor.getValue()).extracting(RouteRelation::getSourceHandle).containsExactly("route-handle-right", "route-handle-bottom", null, null);
+        assertThat(relationCaptor.getValue()).extracting(RouteRelation::getTargetHandle).containsExactly("route-handle-left", "route-handle-right", null, null);
+    }
+
+    @Test
+    void rejectsDisconnectedRouteBeforeDeletingOrAuditingTheSavedGraph() {
+        when(routeRepository.findById(83001L)).thenReturn(Optional.of(Route.builder().id(83001L).build()));
+        when(routeVersionRepository.findByRouteIdAndId(83001L, 83011L)).thenReturn(Optional.of(RouteVersion.builder().id(83011L).routeId(83001L).build()));
+        var request = RouteGraphRequest.builder().nodes(List.of(
+                RouteGraphRequest.NodePayload.builder().nodeKey("start").nodeType("START").build(),
+                RouteGraphRequest.NodePayload.builder().nodeKey("end").nodeType("END").build())).relations(List.of()).build();
+        assertThatThrownBy(() -> controller.saveRouteGraph(83001L, 83011L, request)).isInstanceOf(BusinessException.class).hasMessageContaining("开始节点必须连通");
+        verifyNoInteractions(routeNodeRepository, routeRelationRepository, auditEventRepository);
+    }
+
+    @Test
+    void rejectsInvalidTopologyBeforeDeletingOrAuditingTheSavedGraph() {
+        when(routeRepository.findById(83001L)).thenReturn(Optional.of(Route.builder().id(83001L).build()));
+        when(routeVersionRepository.findByRouteIdAndId(83001L, 83011L)).thenReturn(Optional.of(RouteVersion.builder().id(83011L).routeId(83001L).build()));
+        var nodes = List.of(
+                RouteGraphRequest.NodePayload.builder().nodeKey("start").nodeType("START").build(),
+                RouteGraphRequest.NodePayload.builder().nodeKey("a").nodeType("OPERATION").build(),
+                RouteGraphRequest.NodePayload.builder().nodeKey("b").nodeType("OPERATION").build(),
+                RouteGraphRequest.NodePayload.builder().nodeKey("end").nodeType("END").build());
+        var valid = List.of(
+                RouteGraphRequest.RelationPayload.builder().sourceNodeKey("start").targetNodeKey("a").build(),
+                RouteGraphRequest.RelationPayload.builder().sourceNodeKey("a").targetNodeKey("b").build(),
+                RouteGraphRequest.RelationPayload.builder().sourceNodeKey("b").targetNodeKey("end").build());
+        for (var invalid : List.of(
+                RouteGraphRequest.RelationPayload.builder().sourceNodeKey("a").targetNodeKey("b").sourceHandle("other-port").relationType("PARALLEL").build(),
+                RouteGraphRequest.RelationPayload.builder().sourceNodeKey("b").targetNodeKey("a").build(),
+                RouteGraphRequest.RelationPayload.builder().sourceNodeKey("a").targetNodeKey("a").build())) {
+            var relations = new java.util.ArrayList<>(valid);
+            relations.add(invalid);
+            var request = RouteGraphRequest.builder().nodes(nodes).relations(relations).build();
+            assertThatThrownBy(() -> controller.saveRouteGraph(83001L, 83011L, request)).isInstanceOf(BusinessException.class);
+        }
+        verifyNoInteractions(routeNodeRepository, routeRelationRepository, auditEventRepository);
     }
 
     private Stream<String> mappingValues(Method method) {

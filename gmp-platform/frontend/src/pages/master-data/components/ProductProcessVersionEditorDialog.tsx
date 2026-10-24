@@ -1,8 +1,7 @@
+import SharedRouteGraphPreview from '@/components/route-graph/RouteGraphPreview';
 import { readRecordLocation } from '@/utils/recordLocation';
 import { useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Background, MarkerType, ReactFlow, ReactFlowProvider, type Edge, type Node } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
 import {
   Box,
   Button,
@@ -651,55 +650,10 @@ function RouteGraph({ graph, selectedNodeKey, onSelectNode }: {
   selectedNodeKey?: string;
   onSelectNode?: (nodeKey: string) => void;
 }) {
-  const nodes = useMemo<Node[]>(() => (graph?.nodes ?? []).map((node, index) => ({
-    id: node.nodeKey,
-    position: {
-      x: node.positionX ?? 56 + (index % 3) * 180,
-      y: node.positionY ?? 50 + Math.floor(index / 3) * 105,
-    },
-    data: { label: node.operationName || node.nodeKey },
-    style: {
-      width: 138,
-      minHeight: 42,
-      borderRadius: 4,
-      border: selectedNodeKey === node.nodeKey ? '2px solid #1677c8' : '1px solid #b8c6d5',
-      background: selectedNodeKey === node.nodeKey ? '#e8f4ff' : '#fff',
-      boxShadow: selectedNodeKey === node.nodeKey ? '0 0 0 3px rgba(22,119,200,.1)' : 'none',
-      color: '#303133',
-      fontSize: 13,
-      padding: 9,
-      textAlign: 'center' as const,
-    },
-  })), [graph?.nodes, selectedNodeKey]);
-  const edges = useMemo<Edge[]>(() => (graph?.relations ?? []).map((relation, index) => ({
-    id: String(relation.id ?? `${relation.sourceNodeKey}-${relation.targetNodeKey}-${index}`),
-    source: relation.sourceNodeKey,
-    target: relation.targetNodeKey,
-    label: relation.label || undefined,
-    markerEnd: { type: MarkerType.ArrowClosed, color: '#8a97a6' },
-    style: { stroke: '#8a97a6', strokeWidth: 1.5 },
-  })), [graph?.relations]);
-
   if (!graph) return <Box sx={{ height: '100%', minHeight: { xs: 240, lg: 0 }, display: 'grid', placeItems: 'center', color: '#909399' }}><CircularProgress size={24} /></Box>;
-  if (nodes.length === 0) return <Box sx={{ height: '100%', minHeight: { xs: 240, lg: 0 }, display: 'grid', placeItems: 'center', color: '#909399' }}>当前工艺路线暂无节点</Box>;
-  return <Box sx={{ height: '100%', minHeight: { xs: 240, lg: 0 }, minWidth: 0, bgcolor: '#fafcff', backgroundImage: 'linear-gradient(#f0f3f7 1px, transparent 1px), linear-gradient(90deg, #f0f3f7 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
-    <ReactFlowProvider>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        fitView
-        fitViewOptions={{ padding: 0.22 }}
-        nodesDraggable={false}
-        nodesConnectable={false}
-        elementsSelectable={Boolean(onSelectNode)}
-        panOnDrag
-        zoomOnDoubleClick={false}
-        onNodeClick={(_, node) => onSelectNode?.(node.id)}
-        proOptions={{ hideAttribution: true }}
-      >
-        <Background color="#e6ebf0" gap={20} size={1} />
-      </ReactFlow>
-    </ReactFlowProvider>
+  if (graph.nodes.length === 0) return <Box sx={{ height: '100%', minHeight: { xs: 240, lg: 0 }, display: 'grid', placeItems: 'center', color: '#909399' }}>当前工艺路线暂无节点</Box>;
+  return <Box sx={{ height: '100%', minHeight: { xs: 240, lg: 0 }, minWidth: 0, bgcolor: '#fafcff' }}>
+    <SharedRouteGraphPreview graph={graph} selectedNodeKey={selectedNodeKey} onSelectNode={onSelectNode} />
   </Box>;
 }
 

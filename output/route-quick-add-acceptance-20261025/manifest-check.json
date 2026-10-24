@@ -1,0 +1,39 @@
+{
+  "independentReviewer": "route_quick_add_acceptance",
+  "baseCommit": "96ea56338ef1438938a546382368eb1d7d400938",
+  "targetCommit": "96ea56338ef1438938a546382368eb1d7d400938",
+  "files": 27,
+  "manifestMismatches": [],
+  "changedFromPriorQualityCandidate": [
+    "gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs",
+    "gmp-platform/frontend/src/components/route-graph/RouteQuickAddPanel.tsx",
+    "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx"
+  ],
+  "unchangedFromPriorQualityCandidate": [
+    "docs/architecture/business-knowledge-model.md",
+    "docs/knowledge/README.md",
+    "docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml",
+    "docs/knowledge/evidence/route-graph-save-connectivity-20261025.md",
+    "docs/knowledge/evidence/route-graph-save-connectivity-20261025.yaml",
+    "docs/knowledge/facts/route-graph.yaml",
+    "docs/knowledge/rules/route-graph.yaml",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/service/RouteGraphValidatorTest.java",
+    "gmp-platform/frontend/package.json",
+    "gmp-platform/frontend/scripts/test-flow-canvas.mjs",
+    "gmp-platform/frontend/scripts/verify-process-modeling-pages.mjs",
+    "gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx",
+    "gmp-platform/frontend/src/components/flow-designer/useFlowHistory.ts",
+    "gmp-platform/frontend/src/components/route-graph/RouteGraphNode.tsx",
+    "gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx",
+    "gmp-platform/frontend/src/components/route-graph/routeGraph.ts",
+    "gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx",
+    "gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx",
+    "gmp-platform/frontend/src/pages/workflow-center/FormProcessEditor.tsx",
+    "gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx",
+    "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx"
+  ],
+  "contractDiff": ""
+}

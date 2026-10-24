@@ -1,0 +1,97 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    targetBranch: edhr-dev
+    targetCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    contractReadCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    uncommittedContractPaths: []
+  reason: 当前路线连通规则已按本轮确认补充普通生产无环、全图自连及同向重复边禁止，重复节点候选区分及返工明确呈现；DEC-0084-01只替代DEC-0083-02的旧环路豁免，保留历史原文与其余版本、引用、快照和执行边界。实际核对同HEAD及目标基线，知识保持specified/internal、0.3.25及P0/in-progress，不宣称完整返工运行或独立质量通过。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml
+      changeType: create
+      ids: [DEC-0084, DEC-0084-01, DEC-0084-02, DEC-0084-03, DEC-0084-04, scenario.route-graph-rejects-self-and-duplicate-connections, scenario.route-graph-normal-production-remains-acyclic, scenario.route-graph-repeated-operation-selection-is-distinguishable, scenario.route-graph-rework-is-explicit-and-execution-boundary-kept]
+    - path: docs/knowledge/evidence/route-graph-topology-20261025.yaml
+      changeType: create
+      ids: [evidence.route-graph-topology-confirmed, evidence.route-graph-topology-picker, evidence.route-graph-rework-configuration, evidence.route-graph-rework-execution-boundary, evidence.route-graph-topology-browser-tests]
+    - path: docs/knowledge/evidence/route-graph-topology-20261025.md
+      changeType: create
+      ids: []
+    - path: docs/knowledge/rules/route-graph.yaml
+      changeType: update
+      ids: [rule.route-graph.save-connectivity]
+    - path: docs/knowledge/facts/route-graph.yaml
+      changeType: update
+      ids: [fact.route-graph.save-valid]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      ids: []
+  knowledgeSync:
+    - id: DEC-0084-01
+      disposition: updated
+      scope: 正常生产骨架禁止有向循环，保留并行和合流；只替代DEC-0083-02中不新增生产环路保存限制的部分，与主侧replacementScopes一致。
+      sourceReferences: [docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml, docs/development/flow-canvas-unification-20261024/decision-package.yaml]
+    - id: DEC-0083-02
+      disposition: historical
+      scope: 原文及原时点证据保留，只有环路保存豁免被局部替代；返工隔离、不新增单出口或返工运行、既有配置和版本执行机制、旧图及引用快照保护仍有效。
+      sourceReferences: [docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml, docs/knowledge/evidence/route-graph-save-connectivity-20261025.md, docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml]
+    - id: DEC-0083-01
+      disposition: retained
+      scope: 编辑可临时断开，保存时开始覆盖全部普通工序且均可到结束，版本元数据先建和START直连END空骨架边界不变。
+      sourceReferences: [docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml]
+    - id: DEC-0084-02
+      disposition: updated
+      scope: 全图禁止自连及同源目标重复边，不因端口或关系类型豁免；身份按nodeKey、节点类型限现有四种，各编辑入口及类型转换统一拓扑，未知节点类型不能绕过。
+      sourceReferences: [docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml]
+    - id: DEC-0084-03
+      disposition: updated
+      scope: 同工序多节点在画布和已有候选保持一致视图区分序号，保留类型及返工编号，不改nodeKey、operationId或保存载荷。
+      sourceReferences: [docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml]
+    - id: DEC-0084-04
+      disposition: updated
+      scope: REWORK节点关联边及REWORK关系类型均明确返工文字与虚线，既有配置及普通开工阻断保持；不将配置或关系标签冒称完整返工运行，关系类型不能绕过普通骨架无环。
+      sourceReferences: [docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml, docs/knowledge/evidence/route-graph-topology-20261025.md]
+    - id: rule.route-graph.save-connectivity
+      disposition: updated
+      scope: 在既有保存完整性中加入普通骨架无环、全图自连/同向重复禁止及类型白名单；前端元数据请求前与服务端图删除写入前阻断，旧图不自动迁移。
+      sourceReferences: [docs/knowledge/rules/route-graph.yaml]
+    - id: fact.route-graph.save-valid
+      disposition: updated
+      scope: 继续为当前请求的boolean派生校验事实，包含新拓扑检查，不创建持久化生命周期状态或生产运行资格。
+      sourceReferences: [docs/knowledge/facts/route-graph.yaml]
+    - id: rule.product-process.bind-route-and-dhr-versions
+      disposition: retained
+      scope: 路线版本引用资格不改，不把图保存拓扑校验扩展为产品引用门禁。
+      sourceReferences: [docs/knowledge/rules/product-process.yaml]
+    - id: rule.product-process.operation-from-bound-route
+      disposition: retained
+      scope: 工序绑定仍按真实路线节点归属，不因视图序号或返工标记改变工序身份或绑定范围。
+      sourceReferences: [docs/knowledge/rules/product-process.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.route-topology-knowledge-model
+      checkType: schema
+      command: mvn --batch-mode --no-transfer-progress --file tools/knowledge-model/pom.xml clean test
+      outcome: passed
+      evidence: [本体实例独立执行89项零失败零错误零跳过, /tmp/edhr-route-topology-ontology-validation-20261025.log, tools/knowledge-model/target/surefire-reports]
+    - id: validation.route-topology-statement-replacement
+      checkType: reference
+      command: inspection
+      outcome: passed
+      evidence: [DEC0084标识未占用, 新声明01精确替代DEC0083-02的环路豁免并与主侧replacementScopes一致, 旧决策及原始证据原文保留且当前rule/fact及两处人员说明已同步]
+    - id: validation.route-topology-implementation-boundary
+      checkType: projection
+      command: inspection
+      outcome: passed
+      evidence: [核对RouteGraphValidator及前端getRouteConnectionError/getRouteTopologyErrors/getRouteConnectivityErrors, 核对页面保存前置顺序及重连/类型转换消费检查, 核对presentRouteGraph视图区分序号及getRouteEdgePresentation按返工节点或关系类型呈现文字虚线, 普通节点间REWORK关系无环豁免反例及控制器成功夹具改为独立返工节点, ProductionExecutionEngine普通开工阻断保持且未修改执行源码, 不将源码核对冒称业务后端/浏览器/数据库独立运行验收]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

@@ -1,0 +1,72 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    targetBranch: edhr-dev
+    targetCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    contractReadCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    uncommittedContractPaths: []
+  reason: >-
+    已按实际工作树核对路线适配、节点、产品只读预览及三类流程的编辑历史提取。
+    本次只复用既有呈现与编辑基础，不新增或替代业务概念、关系、规则、状态、事件、执行契约或客户业务解释。
+    路线加载、序列化和既有路线规则函数保持原函数体，产品的节点绑定与保存负载保持；
+    公共历史不承载领域校验、版本政策、保存或运行执行。
+    因此不新增业务决策、不改知识成熟度，知识基线保持0.3.25。
+    本结论是当前前端改动的语义边界核对，不代替浏览器、运行、数据库或独立质量验收。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.flow-unification-contract-baseline
+      checkType: reference
+      command: git rev-parse HEAD origin/edhr-dev; git diff -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - original-evidence：HEAD与缓存origin/edhr-dev均为96ea56338ef1438938a546382368eb1d7d400938，适用契约无未提交修改。
+        - 已读取AGENTS.md、codeplzreadme.md、业务知识本体角色、统一交接契约、业务知识模型、知识README及open-questions。
+        - 目标分支最新性沿主侧已报告的fetch超时保留证据缺口；本结果不宣称已核验远端新提交。
+    - id: validation.flow-unification-confirmed-boundaries
+      checkType: reference
+      command: inspection of decision-package.yaml, DEC-0001, DEC-0002, DEC-0006, DEC-0078, product-process rules and ontology
+      outcome: passed
+      evidence:
+        - user-confirmed：统一路线和产品图呈现，逐步提取公共编辑基础；明确排除存储、版本和执行引擎统一，保留现有功能与业务规则。
+        - secondary-reference：DEC-0001-02/04/05与DEC-0002-03/04/12定义并行制程版本、独立路线版本、稳定路线节点绑定和产品簇共用编辑器；本次保持。
+        - secondary-reference：DEC-0078-01的最终产出标记仍归具体制程版本绑定，不写入共享路线或全局工序，不改已用实例快照。
+        - secondary-reference：DEC-0006及现行架构投影中的作业草稿/发布和出边限制仍由作业页面独立承载，未把路线并行规则带入通用流程。
+        - 已读取相关规则和本体定义；未新增决策、声明级替代、开放问题或试点，不改变现有成熟度。
+    - id: validation.flow-unification-extracted-functions
+      checkType: evidence-path
+      command: node inline inspection with TypeScript Compiler API comparing HEAD ProcessModelingPage.tsx and working-tree routeGraph.ts / RouteGraphNode.tsx
+      outcome: passed
+      evidence:
+        - original-evidence：routeGraph.ts中37个从原页面提取的函数体逐字一致，changedFunctions为空，唯一新增函数是从原useMemo整合的presentRouteGraph。
+        - original-evidence：fromRouteGraphResponse和toRouteGraphPayload函数体逐字一致；节点key、工序身份、位置、端口、关系类型、条件、sortOrder与priority沿原逻辑处理。
+        - original-evidence：RouteGraphNode.tsx的RouteDesignerNode函数体与原页面逐字一致，开始/结束、并行/汇合/返工和四向端口沿既有呈现。
+        - original-evidence：原路线页保留的顶层函数中，只有ProcessModelingPage因组件接入改变，其他函数体均逐字一致。
+    - id: validation.flow-unification-product-ownership
+      checkType: evidence-path
+      command: inspection of both product page diffs and RouteGraphPreview.tsx; node inline AST comparison of toOperationDrafts / toPayload
+      outcome: passed
+      evidence:
+        - original-evidence：ProductModelingWorkspacePage.tsx和ProductProcessVersionEditorDialog.tsx的toOperationDrafts、toPayload函数体均与HEAD逐字一致。
+        - original-evidence：两个产品入口只将重复渲染替换为SharedRouteGraphPreview；routeNodeKey选择回调、表单/文档/最终产出配置和保存仍留在原页面。
+        - original-evidence：共享预览显式禁用节点拖动、连接、边重连与删除，只保留原onSelectNode点选联动；产品簇继续复用同一制程弹窗。
+        - inference：从路线现有适配器读取端口和标记是呈现一致性修复，不构成并行/返工等生产执行能力新增。
+    - id: validation.flow-unification-history-and-scope
+      checkType: evidence-path
+      command: inspection of useFlowHistory.ts and three workflow editor diffs; git diff --name-only -- gmp-platform/backend docs/knowledge docs/architecture gmp-platform/frontend/src/api
+      outcome: passed
+      evidence:
+        - original-evidence：公共历史维持50个撤销快照、新编辑清空重做、editable限制和版本切换reset；各页面apply、dirty、校验清除仍由原页面负责。
+        - original-evidence：三个编辑器的领域节点、连线校验、保存、发布与权限条件未因历史提取而合并。
+        - original-evidence：所核对工作树在后端、API、知识及架构目录无差异；无数据库迁移或历史快照改写。
+        - 本角色未读取真实数据库，未执行浏览器或生产流程；实际交互与运行回归由主侧及独立质量角色另行提供证据。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

@@ -1,0 +1,37 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0083
+    title: 工艺路线图保存时校验正常生产路径连通
+    status: specified
+    visibility: internal
+    context: user-confirmed；2026-10-25用户指出路线快捷添加和开始、结束断开问题，并明确选择“保存时强制校验（推荐）”。此前代码仅校验节点键与关系类型等基础格式，缺少连通校验；这不是已确认的允许断开政策。此次只增加路线图保存完整性，不合并路线与通用流程的存储、版本或执行引擎，也不将作业流程草稿及单出口规则套用路线。正常骨架与返工隔离、入口基础结构及空骨架边界是本次产品核心校验的工程落实，原话、实现基线及验收边界分列于证据。保持specified/internal，不以知识同步声明运行或独立质量已经通过。
+    decisionStatements:
+      - id: DEC-0083-01
+        statement: 工艺路线在编辑过程中允许临时断开，但保存路线图时必须校验正常生产路径完整：开始节点能到达全部生产工序，每个生产工序都能到达结束节点，且开始节点能到达结束节点；不满足时阻止本次图保存并说明问题。
+        status: specified
+        visibility: internal
+      - id: DEC-0083-02
+        statement: 本次完整性校验只作用于当前路线图保存入口。正常生产骨架排除返工节点及其相关边，保留既有并行和返工配置、版本与执行机制，不新增返工连通或返工运行规则，不新增普通节点单出口或生产环路保存限制。既有路线、产品引用和已冻结生产快照不因本规则自动改写或迁移。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.route-graph-save-connectivity-confirmed, evidence.route-graph-save-connectivity-controller, evidence.route-graph-save-connectivity-validator, evidence.route-graph-save-connectivity-editor, evidence.route-graph-save-connectivity-validator-test, evidence.route-graph-save-connectivity-controller-test]
+    acceptanceScenarios:
+      - id: scenario.route-graph-save-rejects-disconnected-boundaries
+        given: 路线图的开始或结束节点与正常生产路径断开，或存在未从开始可达、不能到结束的生产工序
+        when: 用户保存路线图或直接调用路线图保存接口
+        then: 前端在元数据写入前展示问题并标识相关节点；服务端在删除或写入图数据前拒绝请求，原图保持
+        evidenceIds: [evidence.route-graph-save-connectivity-confirmed, evidence.route-graph-save-connectivity-controller, evidence.route-graph-save-connectivity-validator, evidence.route-graph-save-connectivity-editor, evidence.route-graph-save-connectivity-validator-test, evidence.route-graph-save-connectivity-controller-test]
+        evidenceRequirements: [断开路径正反例, 前端保存零写, 服务端拒绝零写, 错误节点呈现]
+      - id: scenario.route-graph-save-allows-parallel-and-rework-boundary
+        given: 开始至结束的正常骨架覆盖全部生产工序，且包含并行路径或独立返工配置
+        when: 保存路线图
+        then: 并行路径不受单出口限制，返工节点及其相关边不参与本次正常骨架连通判断；不因此声明返工运行已经可用
+        evidenceIds: [evidence.route-graph-save-connectivity-confirmed, evidence.route-graph-save-connectivity-validator, evidence.route-graph-save-connectivity-editor, evidence.route-graph-save-connectivity-validator-test]
+        evidenceRequirements: [并行与合流正例, 返工隔离正反例, 既存关系类型回归]
+      - id: scenario.route-graph-save-empty-skeleton-and-version-metadata
+        given: 路线版本元数据尚无图，或路线图只有开始和结束节点
+        when: 创建版本元数据或保存该图
+        then: 版本元数据仍可先创建；图保存要求唯一节点键、恰一个开始和结束、存在的关系端点、开始无入边且结束无出边。开始直接连结束的空骨架可保存，未连接的两边界不能保存，不增加至少一个生产工序限制
+        evidenceIds: [evidence.route-graph-save-connectivity-confirmed, evidence.route-graph-save-connectivity-controller, evidence.route-graph-save-connectivity-validator, evidence.route-graph-save-connectivity-validator-test]
+        evidenceRequirements: [元数据先创建回归, 空骨架直连正例, 断开和基础结构反例]

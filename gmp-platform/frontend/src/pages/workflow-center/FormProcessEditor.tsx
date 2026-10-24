@@ -1,3 +1,4 @@
+import { useFlowHistory } from "@/components/flow-designer/useFlowHistory";
 import {
   useEffect,
   useMemo,
@@ -11,17 +12,12 @@ import {
   Add,
   AutoFixHigh,
   Delete,
-  MapOutlined,
   Publish,
-  Redo,
   Save,
-  Undo,
 } from "@mui/icons-material";
 import {
   addEdge,
-  Background,
   ControlButton,
-  Controls,
   MarkerType,
   ReactFlow,
   ReactFlowProvider,
@@ -68,8 +64,12 @@ import {
   type FormProcessId,
 } from "@/api/form-processes";
 import {
+  FlowCanvasBackground,
   FlowVersionPicker,
-  FlowInteractionModeControls,
+  FlowCanvasControls,
+  FlowHistoryControls,
+  FlowMiniMapControl,
+  FLOW_NODE_APPEARANCE,
   FlowMiniMap,
   FullScreenFlowDesigner,
   StandardFlowNode,
@@ -167,9 +167,9 @@ const initialNodes: FlowNode[] = [
   },
 ];
 const appearance = {
-  START: { color: "#1677c8", background: "#e8f4ff" },
-  APPROVAL: { color: "#1677c8", background: "#edf6ff" },
-  END: { color: "#677386", background: "#eef1f5" },
+  START: FLOW_NODE_APPEARANCE.START,
+  APPROVAL: FLOW_NODE_APPEARANCE.OPERATION,
+  END: FLOW_NODE_APPEARANCE.END,
 };
 const formProcessNodeSize = (node: FlowNode) =>
   node.data.kind === "START" || node.data.kind === "END"
@@ -343,8 +343,6 @@ export default function FormProcessEditor() {
   const edgesRef = useRef(edges);
   nodesRef.current = nodes;
   edgesRef.current = edges;
-  const undoRef = useRef<Graph[]>([]);
-  const redoRef = useRef<Graph[]>([]);
   const skipGraphResetRef = useRef<{
     id: string;
     nodesJson?: string | null;
@@ -352,7 +350,6 @@ export default function FormProcessEditor() {
   } | null>(null);
   const dragRef = useRef<Graph | null>(null);
   const initialVersionAttempted = useRef(false);
-  const [history, setHistory] = useState({ undo: 0, redo: 0 });
   const definition = useQuery({
     queryKey: ["form-process", processId],
     queryFn: async () =>
@@ -388,6 +385,11 @@ export default function FormProcessEditor() {
   });
   const selectedVersion = versionQuery.data ?? selectedSummary;
   const editable = selectedVersion?.status === "DRAFT";
+  const { history, record, reset: resetHistory, undo, redo } = useFlowHistory<Graph>({
+    read: () => graph(),
+    apply: (next) => apply(next),
+    editable,
+  });
   useEffect(() => {
     if (
       versions.isSuccess &&
@@ -430,44 +432,24 @@ export default function FormProcessEditor() {
         : "start",
     );
     setDirty(false);
-    undoRef.current = [];
-    redoRef.current = [];
-    setHistory({ undo: 0, redo: 0 });
+    resetHistory();
   }, [
     selectedVersion?.id,
     selectedVersion?.nodesJson,
     selectedVersion?.edgesJson,
     setNodes,
     setEdges,
+    resetHistory,
   ]);
   const graph = (): Graph => ({
     nodes: clone(nodesRef.current),
     edges: clone(edgesRef.current),
   });
-  const record = (before: Graph) => {
-    undoRef.current = [...undoRef.current.slice(-49), clone(before)];
-    redoRef.current = [];
-    setHistory({ undo: undoRef.current.length, redo: 0 });
-  };
   const apply = (next: Graph, before?: Graph) => {
     if (before) record(before);
     setNodes(clone(next.nodes));
     setEdges(clone(next.edges));
     setDirty(true);
-  };
-  const undo = () => {
-    if (!editable || !undoRef.current.length) return;
-    const previous = undoRef.current.pop()!;
-    redoRef.current.push(graph());
-    apply(previous);
-    setHistory({ undo: undoRef.current.length, redo: redoRef.current.length });
-  };
-  const redo = () => {
-    if (!editable || !redoRef.current.length) return;
-    const next = redoRef.current.pop()!;
-    undoRef.current.push(graph());
-    apply(next);
-    setHistory({ undo: undoRef.current.length, redo: redoRef.current.length });
   };
   const updateNodeData = (
     nodeId: string,
@@ -1144,28 +1126,9 @@ export default function FormProcessEditor() {
                 fitViewOptions={STANDARD_FLOW_FIT_VIEW_OPTIONS}
                 proOptions={{ hideAttribution: true }}
               >
-                <Background color="#dfe4ea" gap={20} size={1} />
-                <Controls position="bottom-left">
-                  {editable ? (
-                    <FlowInteractionModeControls
-                      mode={interactionMode}
-                      onChange={setInteractionMode}
-                    />
-                  ) : null}
-                  <ControlButton
-                    aria-label="撤销"
-                    onClick={undo}
-                    disabled={!history.undo}
-                  >
-                    <Undo fontSize="small" />
-                  </ControlButton>
-                  <ControlButton
-                    aria-label="重做"
-                    onClick={redo}
-                    disabled={!history.redo}
-                  >
-                    <Redo fontSize="small" />
-                  </ControlButton>
+                <FlowCanvasBackground />
+                <FlowCanvasControls editable={editable} mode={interactionMode} onModeChange={setInteractionMode}>
+                  <FlowHistoryControls history={history} undo={undo} redo={redo} />
                   {editable ? (
                     <ControlButton
                       aria-label="一键整理布局"
@@ -1174,21 +1137,8 @@ export default function FormProcessEditor() {
                       <AutoFixHigh fontSize="small" />
                     </ControlButton>
                   ) : null}
-                  <Tooltip
-                    title={showMiniMap ? "隐藏缩略地图" : "显示缩略地图"}
-                    placement="right"
-                    arrow
-                  >
-                    <span>
-                      <ControlButton
-                        aria-label={showMiniMap ? "隐藏缩略地图" : "显示缩略地图"}
-                        onClick={() => setShowMiniMap((value) => !value)}
-                      >
-                        <MapOutlined fontSize="small" />
-                      </ControlButton>
-                    </span>
-                  </Tooltip>
-                </Controls>
+                  <FlowMiniMapControl show={showMiniMap} onToggle={() => setShowMiniMap((value) => !value)} />
+                </FlowCanvasControls>
                 {showMiniMap ? <FlowMiniMap /> : null}
               </ReactFlow>
             </Box>

@@ -1,0 +1,160 @@
+qualityResult:
+  result: passed
+  baseCommit: 96ea56338ef1438938a546382368eb1d7d400938
+  headCommit: 96ea56338ef1438938a546382368eb1d7d400938
+  contractBaseline:
+    sourceCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    targetBranch: edhr-dev
+    targetCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    contractReadCommit: 96ea56338ef1438938a546382368eb1d7d400938
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/frontend/package.json
+      - gmp-platform/frontend/scripts/verify-process-modeling-pages.mjs
+      - gmp-platform/frontend/scripts/test-flow-canvas.mjs
+      - gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs
+      - gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx
+      - gmp-platform/frontend/src/components/flow-designer/useFlowHistory.ts
+      - gmp-platform/frontend/src/components/route-graph/routeGraph.ts
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphNode.tsx
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx
+      - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx
+      - gmp-platform/frontend/src/pages/master-data/components/ProductProcessVersionEditorDialog.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/FormProcessEditor.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkTemplateEditor.tsx
+      - docs/development/flow-canvas-unification-20261024/decision-package.yaml
+      - docs/development/flow-canvas-unification-20261024/ontology-result-20261025.yaml
+    excludedPaths:
+      - output/** unrelated pre-existing evidence
+      - docs/development/** unrelated pre-existing artifacts
+    untrackedPaths:
+      - gmp-platform/frontend/scripts/test-flow-canvas.mjs
+      - gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs
+      - gmp-platform/frontend/src/components/flow-designer/useFlowHistory.ts
+      - gmp-platform/frontend/src/components/route-graph/routeGraph.ts
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphNode.tsx
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx
+      - docs/development/flow-canvas-unification-20261024/decision-package.yaml
+      - docs/development/flow-canvas-unification-20261024/ontology-result-20261025.yaml
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.flow-visual-current-baseline
+      required: true
+      category: documentation
+      description: 独立核对当前 HEAD、目标提交、契约与知识基线
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git diff HEAD origin/edhr-dev -- AGENTS.md codeplzreadme.md docs/agents; rg knowledgeModelVersion docs/knowledge
+      outcome: passed
+      evidence:
+        - original-evidence：HEAD和origin/edhr-dev均为96ea56338ef1438938a546382368eb1d7d400938，来源、目标及实际读取契约无差异，契约目录无未提交更改。
+        - original-evidence：已读取AGENTS、质量角色、统一交接、知识README/open-questions、相关DEC-0001/0002/0039/0040/0078及product-process规则、DESIGN和本轮continuation决策包；schema/ontology/glossary和规则头为0.3.25，schema1.2.0。
+        - 本结果针对上述提交加所列实际dirty候选；未构造新提交，未核验分支保护或必需CI设置。
+    - id: check.flow-visual-shared-components-and-domain-boundary
+      required: true
+      category: requirements
+      description: 检查实际组件复用、业务边界和原始提取逻辑保持
+      method: inspection
+      command: git diff; TypeScript Compiler API function-body comparison against HEAD; inspection of current adapters and editors
+      outcome: passed
+      evidence:
+        - user-confirmed：统一视觉和公共编辑能力；保留业务规则、版本及执行机制，不实施存储/版本/引擎统一。
+        - original-evidence：路线与产品图通过RouteGraphNode直接复用StandardFlowNode；路线及三类通用编辑器直接复用FlowCanvasControls/FlowHistoryControls/FlowMiniMapControl；路线接入FullScreenFlowDesigner。
+        - original-evidence：37个提取的route函数中35个与HEAD打印AST一致，仅getRouteVirtualNodeStyle/getRouteNodeSize随共同尺寸改变；presentRouteGraph为原呈现计算的提取。
+        - original-evidence：四向route-handle标识、START/END端口限制、并行/汇合/返工徽标、生产/返工冲突判断及领域右键动作保留。
+        - original-evidence：三类流程业务校验/保存/发布和权限未转入公共基础；useFlowHistory仅负责50条编辑快照，与业务版本分离。
+        - original-evidence：后端、API、知识规则、数据库和架构目录无本轮diff；产品绑定转换和最终产出归属未改变。
+        - original-evidence：已核对ExecutionSnapshotBuilder路线边仅冻结source/target/type/rule，路线执行按拓扑和类型判断，未将路线呈现端口误认作作业条件出口。
+    - id: check.flow-visual-types-and-format
+      required: true
+      category: regression
+      description: 独立类型检查与差异卫生
+      method: command
+      command: npx tsc --noEmit; git diff --check
+      outcome: passed
+      evidence:
+        - 两项命令独立运行，退出码均为0。
+    - id: check.flow-visual-unit-regression
+      required: true
+      category: unit
+      description: 独立运行图转换、呈现、编辑历史与既有聚焦测试
+      method: automated-test
+      command: npm run test:flow-canvas; npm run qa:process-route-delete; node --test scripts/test-work-editor-default-version.mjs scripts/test-review-batch-01.mjs
+      outcome: passed
+      evidence:
+        - 独立运行5项flow-canvas单元全过：稳定节点/字符串身份/坐标/显式端口、呈现不改变保存数据、缺省端口、撤销重做隔离、50条上限与重置。
+        - route-delete静态检查通过，32项既有聚焦检查全过。
+    - id: check.flow-visual-actual-components-browser
+      required: true
+      category: e2e
+      description: 独立真实Chromium运行实际组件，HTTP数据隔离
+      method: browser
+      command: CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' npm run test:flow-canvas-browser; FLOW_CASE_FILTER=route-reopen-history-reset CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' npm run test:flow-canvas-browser
+      outcome: passed
+      evidence:
+        - 独立全量运行时14场景全过；主侧随后增加唯一重开场景，本角色独立filter复跑1场景passed，总计15个不同场景。
+        - 覆盖产品结构只读/点选和两入口保存绑定、390px预览，三类流程属性编辑/拖动/撤销重做/保存、已发布只读、版本切换重置。
+        - 路线覆盖工序添加、拖动、工具切换、缩略图、按钮和键盘撤销重做、删除恢复、真实端口连线撤销及保存；重开恢复6节点且历史清零。
+        - 原始证据目录output/playwright/flow-canvas-unification-20261025；同目录results.json由主侧最终15项全跑汇总，不以旧结果代替当前验收。
+    - id: check.flow-visual-independent-domain-probe
+      required: true
+      category: regression
+      description: 在内存追加独立浏览器探针验证领域操作和历史边界
+      method: browser
+      command: node --input-type=module inline QA probe using actual route-edit-save harness, isolated output directory, no source/test-file edits
+      outcome: passed
+      evidence:
+        - output/playwright/flow-canvas-independent-quality-20261025/results.json
+        - 开始节点选中后Delete未删除开始/结束；右键复制为返工产生新节点和徽标，撤销完整恢复；设为返工改变类型/徽标，撤销恢复；最终保存保持原显式端口和原有节点坐标。
+        - 探针仅在内存扩展既有运行代码，没有修改业务代码或测试文件，没有参与修复。
+    - id: check.flow-visual-parallel-visual-acceptance
+      required: true
+      category: visual
+      description: 比较实际路线与审批编辑器计算样式并目视验收稳定截图
+      method: inspection
+      command: inspection of route-editor-open.png, approval-editor-open.png and visual-comparison.json
+      outcome: passed
+      evidence:
+        - output/playwright/flow-canvas-unification-20261025/route-editor-open.png
+        - output/playwright/flow-canvas-unification-20261025/approval-editor-open.png
+        - output/playwright/flow-canvas-unification-20261025/visual-comparison.json
+        - 独立浏览器生成的START/普通节点/END计算宽高、背景、圆角、字体、连接点完全相同，工具均为左下公共控制组；目视确认没有上一轮绿色/红色边界及右上工具的差异。
+        - 工序库/版本信息与审批属性面板、路线领域徽标及审批专属整理布局仍按业务职责保留，不把共享组件解释成相同业务功能。
+    - id: check.flow-visual-product-reference-regression
+      required: true
+      category: regression
+      description: 独立运行产品制程引用与异常加载回归
+      method: browser
+      command: CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' node scripts/test-product-process-reference-browser.mjs
+      outcome: passed
+      evidence:
+        - 独立12项全过，覆盖保存引用身份/缺元数据/复制/空候选、提交绑定、慢图与失败重试、选项加载阻断、窄屏展示。
+    - id: check.flow-visual-static-verifier-baseline
+      required: false
+      category: regression
+      description: 核对已存在的process-modeling静态验证器迁移路径问题
+      method: inspection
+      command: inspection of output/flow-canvas-unification-20261025/static-delta.json and changed verifier assertions
+      outcome: blocked
+      evidence:
+        - 正式verify:process-modeling仍受HEAD既有缺失主迁移0014路径阻断；本角色未将该验证器记为通过。
+        - 主侧诊断仅在内存映射到测试迁移，before/after均为5个旧迁移清单断言，newFailures为空；此诊断不是正式验证器通过证明。
+        - 已检查本轮静态断言变更仅跟随明确替代的节点/工具实现，没有借此跳过业务校验；迁移清单修复不在本轮授权范围。
+  findings: []
+  residualRisks:
+    - id: risk.flow-visual-no-real-backend-database
+      description: 本轮实际组件使用隔离HTTP样例，未对真实后端或数据库执行集成操作。
+      impact: 不能宣称真实数据库持久化或生产执行端到端验收通过。
+      mitigation: 本轮后端/API/迁移未改，保留原保存调用并核对请求字段；进入发布候选时按部署环境补齐真实联调。
+    - id: risk.flow-visual-geometry-change
+      description: 节点统一尺寸会影响新节点避让及缺少显式端口时的几何方向推断。
+      impact: 少量旧图的缺省走线外观可能变化；不是路线拓扑或业务执行变更。
+      mitigation: 显式端口和未移动的既有坐标保留；已核对路线执行不消费这些呈现端口，新增END避让由实际浏览器断言覆盖。
+    - id: risk.flow-visual-existing-static-verifier
+      description: process-modeling全量静态验证器存在独立于本轮的旧迁移路径及清单故障。
+      impact: 不能将该命令或主侧内存诊断标记为完整通过。
+      mitigation: 本轮采用图转换、独立实际组件浏览器、产品引用回归和源代码边界核对；旧清单问题单独修复。
+  blockingConditions: []

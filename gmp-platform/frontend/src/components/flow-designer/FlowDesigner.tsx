@@ -13,6 +13,9 @@ import {
   ContentCopyOutlined,
   PanToolAltOutlined,
   SelectAllOutlined,
+  UndoOutlined,
+  RedoOutlined,
+  MapOutlined,
 } from "@mui/icons-material";
 import {
   Box,
@@ -28,7 +31,9 @@ import {
   Typography,
 } from "@mui/material";
 import {
+  Background,
   ControlButton,
+  Controls,
   Handle,
   MiniMap,
   Position,
@@ -38,6 +43,47 @@ import AppDialog from "@/components/AppDialog";
 
 export type FlowDirection = "top" | "right" | "bottom" | "left";
 export type FlowInteractionMode = "pan" | "select";
+
+export const FLOW_NODE_APPEARANCE = {
+  START: { color: "#1677c8", background: "#e8f4ff" },
+  END: { color: "#677386", background: "#eef1f5" },
+  OPERATION: { color: "#1677c8", background: "#edf6ff" },
+} as const;
+
+export function FlowCanvasControls({
+  editable, mode, onModeChange, children,
+}: {
+  editable: boolean;
+  mode: FlowInteractionMode;
+  onModeChange: (mode: FlowInteractionMode) => void;
+  children?: ReactNode;
+}) {
+  return (
+    <Controls position="bottom-left" className="flow-canvas-controls">
+      {editable ? <FlowInteractionModeControls mode={mode} onChange={onModeChange} /> : null}
+      {children}
+    </Controls>
+  );
+}
+
+export function FlowHistoryControls({ undo, redo, history }: {
+  undo: () => void;
+  redo: () => void;
+  history: { undo: number; redo: number };
+}) {
+  return <>
+    <ControlButton aria-label="撤销" title="撤销（Ctrl/Cmd+Z）" onClick={undo} disabled={!history.undo}><UndoOutlined fontSize="small" /></ControlButton>
+    <ControlButton aria-label="重做" title="重做（Ctrl/Cmd+Shift+Z）" onClick={redo} disabled={!history.redo}><RedoOutlined fontSize="small" /></ControlButton>
+  </>;
+}
+
+export function FlowMiniMapControl({ show, onToggle }: { show: boolean; onToggle: () => void }) {
+  return <ControlButton aria-label={show ? "隐藏缩略地图" : "显示缩略地图"} title={show ? "隐藏缩略地图" : "显示缩略地图"} onClick={onToggle}><MapOutlined fontSize="small" /></ControlButton>;
+}
+
+export function FlowCanvasBackground() {
+  return <Background color="#dfe4ea" gap={20} size={1} />;
+}
 
 export function FlowInteractionModeControls({
   mode,
@@ -109,6 +155,8 @@ const FLOW_MINIMAP_NODE_COLORS: Record<string, string> = {
   END: "#cbd5e1",
   FORM: "#91caff",
   APPROVAL: "#91caff",
+  OPERATION: "#91caff",
+  REWORK: "#f5aaaa",
   NOTIFICATION: "#ffd591",
   CONFIRMATION: "#95de64",
   CONDITION: "#c9b8e8",
@@ -116,7 +164,7 @@ const FLOW_MINIMAP_NODE_COLORS: Record<string, string> = {
 
 function flowMiniMapNodeColor(node: Node) {
   const kind = String(
-    (node.data as { kind?: unknown } | undefined)?.kind ?? "",
+    node.data?.kind ?? node.data?.nodeType ?? "",
   );
   return FLOW_MINIMAP_NODE_COLORS[kind] ?? "#cbd5e1";
 }
@@ -395,31 +443,31 @@ function quickHitAreaStyle(direction: FlowDirection) {
     return {
       ...common,
       left: "calc(50% - 15px)",
-      top: -40,
+      top: -44,
       width: 30,
-      height: 40,
+      height: 36,
     };
   if (direction === "right")
     return {
       ...common,
-      left: "100%",
+      left: "calc(100% + 8px)",
       top: "calc(50% - 14px)",
-      width: 40,
+      width: 36,
       height: 28,
     };
   if (direction === "bottom")
     return {
       ...common,
       left: "calc(50% - 15px)",
-      top: "100%",
+      top: "calc(100% + 8px)",
       width: 30,
-      height: 40,
+      height: 36,
     };
   return {
     ...common,
-    right: "100%",
+    right: "calc(100% + 8px)",
     top: "calc(50% - 14px)",
-    width: 40,
+    width: 36,
     height: 28,
   };
 }
@@ -533,6 +581,7 @@ export function StandardFlowNode({
   targetDirections = STANDARD_FLOW_DIRECTIONS,
   sourceDirections = STANDARD_FLOW_DIRECTIONS,
   handlesConnectable = true,
+  handleIds,
 }: {
   id: string;
   label: string;
@@ -552,11 +601,13 @@ export function StandardFlowNode({
   quickMenuDirection?: FlowDirection | null;
   quickActions: FlowQuickAction[];
   canUseQuickAction: boolean;
-  onOpenQuickMenu: (direction: FlowDirection) => void;
+  onOpenQuickMenu: (direction: FlowDirection, anchor?: HTMLElement) => void;
   onQuickAdd: (direction: FlowDirection, actionId: string) => void;
   targetDirections?: FlowDirection[];
   sourceDirections?: FlowDirection[];
   handlesConnectable?: boolean;
+  /** Domain adapters retain persisted port IDs without changing shared handles. */
+  handleIds?: Partial<Record<FlowDirection, string>>;
 }) {
   const [bodyHovered, setBodyHovered] = useState(false);
   const [hoveredDirection, setHoveredDirection] =
@@ -571,6 +622,7 @@ export function StandardFlowNode({
   return (
     <Box
       className={`flow-node-shell${selected ? " flow-node-selected" : ""}${quickMenuDirection ? " flow-node-menu-open" : ""}`}
+      data-flow-standard-node
       sx={{
         position: "relative",
         boxSizing: "border-box",
@@ -607,7 +659,7 @@ export function StandardFlowNode({
         ? targetDirections.map((direction) => (
             <Handle
               key={`target-${direction}`}
-              id={`target-${direction}`}
+              id={handleIds?.[direction] ?? `target-${direction}`}
               type="target"
               position={flowDirectionPosition[direction]}
               isConnectable={editable && handlesConnectable}
@@ -682,7 +734,7 @@ export function StandardFlowNode({
         ? sourceDirections.map((direction) => (
             <Handle
               key={`source-${direction}`}
-              id={`source-${direction}`}
+              id={handleIds?.[direction] ?? `source-${direction}`}
               type="source"
               position={flowDirectionPosition[direction]}
               isConnectable={editable && handlesConnectable}
@@ -724,7 +776,7 @@ export function StandardFlowNode({
                   onMouseDown={stopNodeEvent}
                   onClick={(event) => {
                     stopNodeEvent(event);
-                    onOpenQuickMenu(direction);
+                    onOpenQuickMenu(direction, event.currentTarget);
                   }}
                   sx={{ ...quickButtonStyle(direction), opacity: 1 }}
                 >

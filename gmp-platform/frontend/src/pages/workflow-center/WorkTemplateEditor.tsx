@@ -1,3 +1,4 @@
+import { useFlowHistory } from "@/components/flow-designer/useFlowHistory";
 import {
   Fragment,
   createContext,
@@ -27,22 +28,17 @@ import {
   ExpandMore,
   FactCheckOutlined,
   FolderOutlined,
-  MapOutlined,
   NotificationsOutlined,
   PublishOutlined,
   SaveOutlined,
   SchemaOutlined,
   AutoFixHighOutlined,
-  RedoOutlined,
   Search,
-  UndoOutlined,
   VisibilityOutlined,
 } from "@mui/icons-material";
 import {
   addEdge,
-  Background,
   ControlButton,
-  Controls,
   Handle,
   MarkerType,
   Position,
@@ -119,8 +115,12 @@ import {
   listFormProcesses,
 } from "@/api/form-processes";
 import {
+  FlowCanvasBackground,
   FlowVersionPicker,
-  FlowInteractionModeControls,
+  FlowCanvasControls,
+  FlowHistoryControls,
+  FlowMiniMapControl,
+  FLOW_NODE_APPEARANCE,
   FlowMiniMap,
   FullScreenFlowDesigner,
   FlowQuickTooltip,
@@ -228,7 +228,6 @@ function isEffectiveFormVersion(status: string | null | undefined) {
   );
 }
 
-const HISTORY_LIMIT = 50;
 
 const nodeDimensions = {
   boundary: { width: 96, height: 52 },
@@ -766,8 +765,8 @@ const nodeAppearance: Record<
   WorkNodeKind,
   { label: string; color: string; background: string }
 > = {
-  START: { label: "开始", color: "#1677c8", background: "#e8f4ff" },
-  END: { label: "结束", color: "#677386", background: "#eef1f5" },
+  START: { label: "开始", ...FLOW_NODE_APPEARANCE.START },
+  END: { label: "结束", ...FLOW_NODE_APPEARANCE.END },
   FORM: { label: "表单填写", color: "#1677c8", background: "#f2f8ff" },
   NOTIFICATION: { label: "消息通知", color: "#8a5a00", background: "#fff8e8" },
   CONFIRMATION: { label: "人工确认", color: "#217a4b", background: "#effaf3" },
@@ -1738,7 +1737,11 @@ const FlowWorkspace = forwardRef<
       vertical: number | null;
       horizontal: number | null;
     }>({ vertical: null, horizontal: null });
-    const [historyState, setHistoryState] = useState({ undo: 0, redo: 0 });
+    const { history: historyState, record: pushHistory, reset: resetHistory, undo, redo } = useFlowHistory<FlowGraph>({
+      read: () => currentGraph(),
+      apply: (graph) => applyHistoryGraph(graph),
+      editable,
+    });
     const flowInstanceRef = useRef<ReactFlowInstance<FlowNode, Edge> | null>(
       null,
     );
@@ -1747,8 +1750,6 @@ const FlowWorkspace = forwardRef<
     const dirtyRef = useRef(false);
     const nodesRef = useRef(nodes);
     const edgesRef = useRef(edges);
-    const undoStackRef = useRef<FlowGraph[]>([]);
-    const redoStackRef = useRef<FlowGraph[]>([]);
     const dragStartGraphRef = useRef<FlowGraph | null>(null);
     nodesRef.current = nodes;
     edgesRef.current = edges;
@@ -1901,19 +1902,9 @@ const FlowWorkspace = forwardRef<
         conditionHandleForBranch(branchId),
         edgesRef.current,
       );
-    const updateHistoryCounts = () =>
-      setHistoryState({
-        undo: undoStackRef.current.length,
-        redo: redoStackRef.current.length,
-      });
     const recordHistory = (before = currentGraph()) => {
       if (!editable) return;
-      undoStackRef.current = [
-        ...undoStackRef.current.slice(-(HISTORY_LIMIT - 1)),
-        cloneGraph(before),
-      ];
-      redoStackRef.current = [];
-      updateHistoryCounts();
+      pushHistory(before);
     };
     const applyHistoryGraph = (graph: FlowGraph) => {
       setNodes(cloneGraph(graph).nodes);
@@ -1923,20 +1914,6 @@ const FlowWorkspace = forwardRef<
       setQuickMenu(null);
       setBranchMenu(null);
       markDirty();
-    };
-    const undo = () => {
-      if (!editable || undoStackRef.current.length === 0) return;
-      const previous = undoStackRef.current.pop()!;
-      redoStackRef.current.push(cloneGraph(currentGraph()));
-      applyHistoryGraph(previous);
-      updateHistoryCounts();
-    };
-    const redo = () => {
-      if (!editable || redoStackRef.current.length === 0) return;
-      const next = redoStackRef.current.pop()!;
-      undoStackRef.current.push(cloneGraph(currentGraph()));
-      applyHistoryGraph(next);
-      updateHistoryCounts();
     };
     const markDirty = () => {
       setValidationError(null);
@@ -2545,9 +2522,7 @@ const FlowWorkspace = forwardRef<
           ]),
         ),
       );
-      undoStackRef.current = [];
-      redoStackRef.current = [];
-      updateHistoryCounts();
+      resetHistory();
       dirtyRef.current = false;
       onDirtyChange(false);
     }, [
@@ -2557,6 +2532,7 @@ const FlowWorkspace = forwardRef<
       setNodes,
       setEdges,
       onDirtyChange,
+      resetHistory,
     ]);
 
     const formOptions = useMemo(
@@ -3530,48 +3506,9 @@ const FlowWorkspace = forwardRef<
                 fitViewOptions={STANDARD_FLOW_FIT_VIEW_OPTIONS}
                 proOptions={{ hideAttribution: true }}
               >
-                <Background color="#dfe4ea" gap={20} size={1} />
-                <Controls position="bottom-left">
-                  {editable ? (
-                    <FlowInteractionModeControls
-                      mode={interactionMode}
-                      onChange={setInteractionMode}
-                    />
-                  ) : null}
-                  {editable ? (
-                    <>
-                      <Tooltip
-                        title="撤销（Ctrl/Cmd+Z）"
-                        placement="right"
-                        arrow
-                      >
-                        <span>
-                          <ControlButton
-                            aria-label="撤销"
-                            onClick={undo}
-                            disabled={historyState.undo === 0}
-                          >
-                            <UndoOutlined fontSize="small" />
-                          </ControlButton>
-                        </span>
-                      </Tooltip>
-                      <Tooltip
-                        title="重做（Ctrl/Cmd+Shift+Z）"
-                        placement="right"
-                        arrow
-                      >
-                        <span>
-                          <ControlButton
-                            aria-label="重做"
-                            onClick={redo}
-                            disabled={historyState.redo === 0}
-                          >
-                            <RedoOutlined fontSize="small" />
-                          </ControlButton>
-                        </span>
-                      </Tooltip>
-                    </>
-                  ) : null}
+                <FlowCanvasBackground />
+                <FlowCanvasControls editable={editable} mode={interactionMode} onModeChange={setInteractionMode}>
+                  {editable ? <FlowHistoryControls history={historyState} undo={undo} redo={redo} /> : null}
                   {editable ? (
                     <Tooltip title="一键整理布局" placement="right" arrow>
                       <span>
@@ -3584,21 +3521,8 @@ const FlowWorkspace = forwardRef<
                       </span>
                     </Tooltip>
                   ) : null}
-                  <Tooltip
-                    title={showMiniMap ? "隐藏缩略地图" : "显示缩略地图"}
-                    placement="right"
-                    arrow
-                  >
-                    <span>
-                      <ControlButton
-                        aria-label={showMiniMap ? "隐藏缩略地图" : "显示缩略地图"}
-                        onClick={() => setShowMiniMap((value) => !value)}
-                      >
-                        <MapOutlined fontSize="small" />
-                      </ControlButton>
-                    </span>
-                  </Tooltip>
-                </Controls>
+                  <FlowMiniMapControl show={showMiniMap} onToggle={() => setShowMiniMap((value) => !value)} />
+                </FlowCanvasControls>
                 {showMiniMap ? <FlowMiniMap /> : null}
               </ReactFlow>
               <AlignmentGuides guides={guides} />

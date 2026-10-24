@@ -1,0 +1,51 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0084
+    title: 路线图禁止重复连线和普通生产循环并区分重复工序节点
+    status: specified
+    visibility: internal
+    context: user-confirmed；2026-10-25用户以截图指出同一普通工序到另一工序存在重复连线和回路，要求先暂停推送、修复后再推，检查其他不合理连线，并区分已有节点候选中的重复工序。用户随后询问当前是否已有返工，并要求返工连线明确标记。源码核对发现配置端已有REWORK节点和转换入口，普通开工仍显式阻断REWORK；本次保留该配置与阻断，不将配置能力解释成完整返工执行已交付。声明01只替代DEC-0083-02中不新增生产环路保存限制的工程边界，其他连通、并行、版本、引用和快照含义保持。自连、节点类型白名单及各入口一致性是为落实确认而收敛的产品核心结构校验；来源与实现选择分列于证据。知识保持specified/internal和0.3.25，不以本体同步宣称运行或独立质量通过。
+    decisionStatements:
+      - id: DEC-0084-01
+        statement: 普通生产骨架不得形成有向循环；该骨架继续排除显式REWORK节点及其关联边，允许合法并行和合流，不增加普通节点单出口限制。新增连线及图保存须落实此约束。此声明仅替代DEC-0083-02中“不新增生产环路保存限制”的部分，原声明其余范围保留，原决策与时点证据原文不改写。
+        status: specified
+        visibility: internal
+      - id: DEC-0084-02
+        statement: 全图包括返工配置均禁止节点自连，以及相同源节点到相同目标节点的重复连线；不能以不同连接点或不同关系类型创建同向重复边。节点身份按nodeKey判断，不按工序名称或operationId判断，不同路线节点引用同一工序仍可形成合法生产先后关系。节点类型只接受START、END、OPERATION和REWORK，开始无入边、结束无出边及端点真实存在的约束保持。手动连线、重连、快捷连接、并行补线及节点类型转换须与图保存的拓扑约束一致；不阻止编辑中临时断开的图。
+        status: specified
+        visibility: internal
+      - id: DEC-0084-03
+        statement: 同一路线引用同一工序形成多个节点时，画布与连接已有节点候选须显示一致的区分信息，结合生产或返工类型及节点序号识别所选节点；返工已有编号继续可见。序号属于视图，不能修改nodeKey、operationId、保存载荷或既有业务身份，实际连接须使用选中节点的真实标识。
+        status: specified
+        visibility: internal
+      - id: DEC-0084-04
+        statement: 既有显式REWORK配置及普通生产开工对其的阻断保持，不能宣称完整返工执行已经可用。REWORK节点关联连线及关系类型明确为REWORK的连线均应有明确返工文字与区别于普通流转的虚线样式；关系类型只是既有关系的标识与呈现，普通生产节点之间的边即使标为REWORK，也不能据此绕过普通生产骨架的无环校验或获得返工执行资格。此处不新增返工启动、回流次数、连通要求或运行生命周期契约。
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0083]
+    evidenceIds: [evidence.route-graph-topology-confirmed, evidence.route-graph-save-connectivity-validator, evidence.route-graph-save-connectivity-editor, evidence.route-graph-topology-picker, evidence.route-graph-rework-configuration, evidence.route-graph-rework-execution-boundary, evidence.route-graph-save-connectivity-validator-test, evidence.route-graph-save-connectivity-controller-test, evidence.route-graph-topology-browser-tests]
+    acceptanceScenarios:
+      - id: scenario.route-graph-rejects-self-and-duplicate-connections
+        given: 路线已有A到B连线，或用户尝试从节点连接到自身
+        when: 从不同连接点、不同关系类型、手动连线、重连、快捷连接或其他补线入口创建连线，或直接提交非法图
+        then: 拒绝自连和同向节点对重复边，原连线与历史保持；保存接口在删除和写入前拒绝，不能通过端口或关系类型绕过
+        evidenceIds: [evidence.route-graph-topology-confirmed, evidence.route-graph-save-connectivity-editor, evidence.route-graph-save-connectivity-validator, evidence.route-graph-save-connectivity-validator-test, evidence.route-graph-save-connectivity-controller-test, evidence.route-graph-topology-browser-tests]
+        evidenceRequirements: [不同端口重复边反例, 不同关系类型重复边反例, 自连反例, 重连失败保留原边, 图保存拒绝零写]
+      - id: scenario.route-graph-normal-production-remains-acyclic
+        given: 普通生产骨架存在A到B或更长路径，或图带有并行与合流
+        when: 尝试连接后继回到前序、把返工节点转换为普通节点，或保存包含循环或未知节点类型的图
+        then: 拒绝普通生产有向循环及未知节点类型，合法并行和合流继续允许；仅REWORK节点关联边从正常骨架排除，关系类型不能提供绕过
+        evidenceIds: [evidence.route-graph-topology-confirmed, evidence.route-graph-save-connectivity-validator, evidence.route-graph-save-connectivity-editor, evidence.route-graph-save-connectivity-validator-test, evidence.route-graph-topology-browser-tests]
+        evidenceRequirements: [双节点及多节点环反例, 孤立环保存反例, 关系类型防绕过, 类型转换反例, 并行与合流正例, 未知节点类型反例]
+      - id: scenario.route-graph-repeated-operation-selection-is-distinguishable
+        given: 同一路线多个生产或返工节点引用同一工序且可能同名同编码
+        when: 查看画布并从快捷面板连接已有节点
+        then: 候选显示与画布一致的节点区分序号及生产返工类型，返工原编号可见，选中项连接到对应nodeKey；不同nodeKey引用同一operationId的合法连接不被按工序去重拒绝
+        evidenceIds: [evidence.route-graph-topology-confirmed, evidence.route-graph-topology-picker, evidence.route-graph-save-connectivity-editor, evidence.route-graph-topology-browser-tests]
+        evidenceRequirements: [重复生产节点视觉区分, 重复返工节点视觉区分, 画布与面板序号一致, 选中目标标识断言, 同工序不同节点合法连接]
+      - id: scenario.route-graph-rework-is-explicit-and-execution-boundary-kept
+        given: 路线包含既有显式REWORK节点配置或关系类型REWORK
+        when: 在编辑器及产品路线预览查看返工相关连线，或普通生产入口尝试对返工节点开工
+        then: 返工节点关联或REWORK关系类型的连线均具有明确返工文字及虚线样式，普通生产入口继续阻断REWORK；关系类型不提供普通骨架环路豁免，不因图配置或视觉完善宣称已有完整返工运行
+        evidenceIds: [evidence.route-graph-topology-confirmed, evidence.route-graph-save-connectivity-editor, evidence.route-graph-rework-configuration, evidence.route-graph-rework-execution-boundary, evidence.route-graph-topology-browser-tests]
+        evidenceRequirements: [返工连线文字及虚线, 编辑及只读预览一致, 原普通开工阻断源码保持, 无新增执行或快照改写]
