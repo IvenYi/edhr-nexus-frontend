@@ -1,0 +1,132 @@
+{
+  "decisionPackage": {
+    "id": "DEC-PACKAGE-20261026-GROWTH-TOPOLOGY",
+    "scope": "edhr-dev W4/W5有限审查与测量，不修改业务政策",
+    "knowledgeBaselineVersion": "0.3.25",
+    "contractBaseline": {
+      "sourceCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "targetBranch": "edhr-dev",
+      "targetCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "contractReadCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "uncommittedContractPaths": []
+    },
+    "summary": "用户继续授权整体审计：宽JSON内存测量、后端路线DEC0083/0084有限核对、初始化基线验证；不实施新的性能方案",
+    "confirmed": {
+      "concepts": [],
+      "relationships": [],
+      "rules": [],
+      "executionContracts": []
+    },
+    "inferred": [],
+    "unresolved": [],
+    "replacementScopes": [],
+    "impactAnalysis": {
+      "level": "L2",
+      "directImpacts": [
+        {
+          "area": "DHR",
+          "change": "仅测量真实服务/JDBC宽JSON驻留",
+          "evidenceReferences": [
+            "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java"
+          ]
+        },
+        {
+          "area": "route-graph",
+          "change": "核对保存校验与DEC0083/0084有效声明及历史替代",
+          "evidenceReferences": [
+            "docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml",
+            "docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml"
+          ]
+        },
+        {
+          "area": "initialization",
+          "change": "隔离fresh master和历史测试资源边界",
+          "evidenceReferences": [
+            "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml"
+          ]
+        },
+        {
+          "area": "route-persistence",
+          "change": "实际Spring Data saveAll/Hibernate/PG测量预分配ID引起的逐实体存在性SELECT，不修改写入实现",
+          "evidenceReferences": [
+            "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+            "docs/development/branch-review-20261026-growth-topology/RouteSaveAllProbe.java"
+          ]
+        }
+      ],
+      "transitiveImpacts": [],
+      "potentialImpacts": [],
+      "unaffectedAreas": [
+        {
+          "area": "deferred",
+          "change": "TaskDetail和记录变更作废仍暂缓",
+          "evidenceReferences": []
+        }
+      ],
+      "compatibilityAndMigration": [
+        {
+          "area": "DB",
+          "change": "只用隔离新建数据库，不运行真实数据迁移",
+          "evidenceReferences": []
+        }
+      ],
+      "snapshotImpacts": [],
+      "auditImpacts": [],
+      "permissionImpacts": [],
+      "testImpacts": [
+        {
+          "scope": "route/baseline/heap",
+          "scenarios": [
+            "路线正反例",
+            "原生PG初始化",
+            "固定JVM宽记录驻留"
+          ],
+          "evidenceReferences": []
+        }
+      ],
+      "evidenceGaps": [
+        "实际客户数据量/宽度/并发和SLA未知",
+        "本批不覆盖前端视觉"
+      ]
+    },
+    "extensionStrategy": {
+      "selectedPaths": [
+        "product-core"
+      ],
+      "rationale": "本批只审查既有产品内核与初始化资产、记录性能证据和提取建议，没有实现变更或新扩展点",
+      "ownershipBoundaries": [
+        {
+          "owner": "masterdata",
+          "responsibility": "路线保存/拓扑验证原职责的源码核对"
+        },
+        {
+          "owner": "production",
+          "responsibility": "既有DHR证据比较的有限容量测量"
+        },
+        {
+          "owner": "audit",
+          "responsibility": "固定证据、差异及未审范围"
+        }
+      ]
+    },
+    "affectedFiles": [
+      {
+        "path": "docs/development/branch-review-20261026-growth-topology",
+        "changeType": "create",
+        "reason": "审计证据和台账"
+      }
+    ],
+    "acceptanceScenarios": [
+      {
+        "id": "growth.measured",
+        "given": "固定提交与固定JVM/隔离PG",
+        "when": "不同F和宽度运行真实changes",
+        "then": "报告实际测量、机制和局限，未审项仍pending",
+        "evidenceRequirements": [
+          "测量源码和结果",
+          "独立复验"
+        ]
+      }
+    ]
+  }
+}

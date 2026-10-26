@@ -1,0 +1,11 @@
+# 当前路线保存职责的具体拆分候选
+
+现状：ProcessModelingController混合多类主数据接口；本批实际核对的graph读取/替换入口、payload转换、版本归属和图审计是一个局部职责。RouteGraphValidator已独立为纯拓扑校验，保留该现有抽取，不再把它列作未实施项；前端routeGraph.ts和预览组件已有抽取，本批未重新评估UI结构。
+
+候选是新增RouteGraphService，不拆全控制器：get(routeId,versionId)与replace(routeId,versionId,RouteGraphRequest,operator)返回RouteGraphResponse。Controller保留HTTP映射和权限检查；Service拥有版本归属核对、payload归一化、调用既有validator、关系删除flush→节点删除flush→节点写入→关系写入→审计的单事务。ID分配和审计依赖明确注入；不是通过服务返回待执行SQL，也不把事务分到多个组件。
+
+payload转换先作为Service私有函数；只在出现第二个实际消费者时再提独立mapper，避免为少量方法建立通用框架。RouteGraphValidator继续无仓储/认证/审计依赖，不将实体存储类型变成新业务规则。route版本CRUD/删除保护与其他主数据仍留原所有者，本轮不移动。
+
+预期收益：隔离图替换事务测试，今后调整assigned-ID写入策略只影响该服务；控制器单测不再承载全部持久化顺序。但现有代码并无必须立即拆分才能修的功能缺陷，收益和迁移风险需在W6实际选择时核对，当前仅候选。
+
+保护条件：现有54控制器/7validator回归保留；新增原生PG图替换成功、非法图零写、唯一冲突和审计失败全回滚、关系先删/后写以及权限HTTP集成。比较真实响应、审计字段和冻结执行读取，不能只测新方法被调用。回滚仅恢复原入口内编排，无schema或业务数据迁移。不得顺带合并所有路线/工作流引擎或改变版本政策。

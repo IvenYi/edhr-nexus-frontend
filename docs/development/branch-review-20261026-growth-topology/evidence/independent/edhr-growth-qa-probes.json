@@ -1,0 +1,16 @@
+[
+  {
+    "probe": "BaselineProbe",
+    "exit": 0,
+    "sourceSha256": "56a8cdad9d02e88058fa2f77415ae3b27eba62a2ff5d2bdff3dbe4291a9adae0",
+    "privateLogSha256": "d796c810a7512d5e1c1d55f7ced617de71666bee6bd3c6ea4221398955310a62",
+    "output": "/tmp/edhr-growth-qa-baseline.json"
+  },
+  {
+    "probe": "RouteSaveAllProbe",
+    "exit": 0,
+    "sourceSha256": "e69740275d3bc6e7bf98cda0e2ce2b0bb606c508bba4932e606e3607b35d395d",
+    "privateLogSha256": "817cdd28471e698f3fcf0330824bfb33f0b0924c7ee10876e147f349c8e262a8",
+    "output": "/tmp/edhr-growth-qa-route.jsonl"
+  }
+]

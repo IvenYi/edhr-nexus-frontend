@@ -1,0 +1,33 @@
+{
+  "suites": [
+    {
+      "name": "com.zencas.edhr.masterdata.service.RouteGraphValidatorTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "xmlSha256": "901d4bfea4364510bfb4c5520d6b53941c5cd7ac6cb7a75de3daaf4faf79dd30"
+    },
+    {
+      "name": "com.zencas.edhr.masterdata.controller.ProcessModelingControllerTest",
+      "tests": "54",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "xmlSha256": "f35fc6ac98985903ef16decf6c2805769853753c6568dc83b3796d19a56ae43b"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.SignatureSnapshotMigrationPostgresTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "8",
+      "skipped": "0",
+      "xmlSha256": "3533495e341c59bde362dfc5a9149bf782e88c5cb433728acd6aa509571569aa"
+    }
+  ],
+  "cause": "stale historical SQL remained in target/classes after earlier resource relocation; duplicate current test resource rejected by Liquibase",
+  "staleFileExists": true,
+  "mainSourceExists": false,
+  "staleMatchesTestResource": true,
+  "remedy": "clean test; do not relax duplicateFileMode"
+}

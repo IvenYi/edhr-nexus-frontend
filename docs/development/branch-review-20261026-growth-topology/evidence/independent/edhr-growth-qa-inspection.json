@@ -1,0 +1,37 @@
+{
+  "baseCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+  "headCommit": "2cef901f00e4349cd533928faa78c98552e61411",
+  "changedPaths": [
+    "docs/development/branch-review-20261026-growth-topology/BaselineProbe.java",
+    "docs/development/branch-review-20261026-growth-topology/DhrWideRecordProbe.java",
+    "docs/development/branch-review-20261026-growth-topology/README.md",
+    "docs/development/branch-review-20261026-growth-topology/RouteSaveAllProbe.java",
+    "docs/development/branch-review-20261026-growth-topology/decision-package.yaml",
+    "docs/development/branch-review-20261026-growth-topology/evidence/archive-receipts.json",
+    "docs/development/branch-review-20261026-growth-topology/evidence/edhr-growth-baseline-first.json",
+    "docs/development/branch-review-20261026-growth-topology/evidence/edhr-growth-baseline.json",
+    "docs/development/branch-review-20261026-growth-topology/evidence/edhr-growth-first-regression.json",
+    "docs/development/branch-review-20261026-growth-topology/evidence/edhr-growth-ontology-build.py",
+    "docs/development/branch-review-20261026-growth-topology/evidence/edhr-growth-ontology-review.json",
+    "docs/development/branch-review-20261026-growth-topology/evidence/edhr-growth-ontology.yaml",
+    "docs/development/branch-review-20261026-growth-topology/evidence/edhr-growth-primary.jsonl",
+    "docs/development/branch-review-20261026-growth-topology/evidence/edhr-growth-primary.summary.json",
+    "docs/development/branch-review-20261026-growth-topology/evidence/edhr-growth-route.jsonl",
+    "docs/development/branch-review-20261026-growth-topology/evidence/primary-regression.json",
+    "docs/development/branch-review-20261026-growth-topology/findings.md",
+    "docs/development/branch-review-20261026-growth-topology/progress.json",
+    "docs/development/branch-review-20261026-growth-topology/run-growth.py",
+    "docs/development/branch-review-20261026-growth-topology/source-review.json",
+    "docs/development/branch-review-20261026-growth-topology/structure-plan.md"
+  ],
+  "productTestKnowledgeContractChanges": false,
+  "archiveReceiptsVerified": 9,
+  "finiteSourceScopesVerified": 13,
+  "ontologyResult": "not-applicable",
+  "UIStatementPending": true,
+  "scopeNotes": [
+    "Independent quality pass can certify audit evidence only, not product capacity or whole audit completion",
+    "Structure plan identifies concrete service interface, transaction ownership, tests and rollback; not implemented",
+    "No user approval to implement bounded DHR reads at this checkpoint"
+  ]
+}

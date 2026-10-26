@@ -1,0 +1,483 @@
+{
+  "role": "business-knowledge-modeler",
+  "status": "FINAL",
+  "baseCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+  "knowledgeBaselineVersion": "0.3.25",
+  "records": [
+    {
+      "id": "DEC-0083-01",
+      "recordType": "decision-statement",
+      "path": "docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "8010f6c018821050c9cf731910a426b8fbaa4c62",
+      "sha256": "a882ed9bd1e076a65811b798fffda8d8b1eb27d95d1d1634ee4501cbad901213",
+      "sourceLocator": "DEC-0083-01",
+      "originalMaturity": "specified",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "后端图保存的START→全部OPERATION→END连通；旧图读取或前端交互不据此认证。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java"
+      ],
+      "excluded": [
+        "前端编辑/提示/保存前元数据调用"
+      ],
+      "recordSha256": "57875ae4f362291daae8f049d875526c6012ad1c1b14bd67d4e8872efdc64811",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "DEC-0083-02",
+      "recordType": "decision-statement",
+      "path": "docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "8010f6c018821050c9cf731910a426b8fbaa4c62",
+      "sha256": "a882ed9bd1e076a65811b798fffda8d8b1eb27d95d1d1634ee4501cbad901213",
+      "sourceLocator": "DEC-0083-02",
+      "originalMaturity": "specified",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "历史声明中不新增生产环路限制仅被DEC-0084-01替代；返工节点隔离、并行、多出口、版本/冻结保护保留。",
+      "evidenceReferences": [
+        "docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java"
+      ],
+      "excluded": [
+        "整个DEC0083未被废弃",
+        "不重测历史快照迁移"
+      ],
+      "recordSha256": "87ce83ef8e6a81c5f0780dc947786c43efebb0574827b8612e30f669c162a137",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "DEC-0084-01",
+      "recordType": "decision-statement",
+      "path": "docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "a564d25275179f6bc4ec834d6d3393f561ebaaf6",
+      "sha256": "b8bf9cf032ce0c95e79b98a3931b600ae28a6ad6d29b98c53c405f135afd0fe2",
+      "sourceLocator": "DEC-0084-01",
+      "originalMaturity": "specified",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "后端普通骨架有向无环；排除显式REWORK节点关联边，不限制正常节点单出口。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java"
+      ],
+      "excluded": [],
+      "recordSha256": "4780468d3ede71d753a737ea4bc3adf36eca7747562db35eb0ac33e79efea294",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "DEC-0084-02",
+      "recordType": "decision-statement",
+      "path": "docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "a564d25275179f6bc4ec834d6d3393f561ebaaf6",
+      "sha256": "b8bf9cf032ce0c95e79b98a3931b600ae28a6ad6d29b98c53c405f135afd0fe2",
+      "sourceLocator": "DEC-0084-02",
+      "originalMaturity": "specified",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "后端全图自连/同向对重复边和未知类型拒绝；nodeKey为身份，不按operationId/端口/关系类型去重。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java"
+      ],
+      "excluded": [
+        "前端连线/重连/快捷/转换入口未审"
+      ],
+      "recordSha256": "9ddcf9ef6342d11fcc61507ae441d35cc718a9e17b0d30d55f45576fe9216a4f",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "DEC-0084-03",
+      "recordType": "decision-statement",
+      "path": "docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "a564d25275179f6bc4ec834d6d3393f561ebaaf6",
+      "sha256": "b8bf9cf032ce0c95e79b98a3931b600ae28a6ad6d29b98c53c405f135afd0fe2",
+      "sourceLocator": "DEC-0084-03",
+      "originalMaturity": "specified",
+      "reviewStatus": "pending",
+      "conclusion": "pending",
+      "scope": "仅支持性核对后端保留nodeKey及operationId；核心画布与候选区分未纳入本批，完整声明保留pending。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java"
+      ],
+      "excluded": [
+        "画布及候选视觉/交互",
+        "编号呈现与选中目标运行"
+      ],
+      "recordSha256": "f1f9a6666206ddd7a522250ada408403f0dd1d5a3590df90e114bd682fb788b5",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "DEC-0084-04",
+      "recordType": "decision-statement",
+      "path": "docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "a564d25275179f6bc4ec834d6d3393f561ebaaf6",
+      "sha256": "b8bf9cf032ce0c95e79b98a3931b600ae28a6ad6d29b98c53c405f135afd0fe2",
+      "sourceLocator": "DEC-0084-04",
+      "originalMaturity": "specified",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "后端普通开工显式REWORK阻断保持；普通节点之间REWORK关系类型不绕过无环。不推断完整返工执行。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java"
+      ],
+      "excluded": [
+        "返工文字/虚线/预览UI未审"
+      ],
+      "recordSha256": "ef38d08b1f8c4357d255744d937fc969a20d332ee44ef4e6a64d5f2bc0f66d68",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "rule.route-graph.save-connectivity",
+      "recordType": "rule",
+      "path": "docs/knowledge/rules/route-graph.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "f53baaf307a48fd58d4057a5d4040122e5a55954",
+      "sha256": "5ef81778bb141533cc9ebe48560932cd1a155e05c713af742e8860b6f8397ed3",
+      "sourceLocator": "rule.route-graph.save-connectivity",
+      "originalMaturity": "specified",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "有效后端保存规则整合DEC83与84精确替代，不把草稿WORK策略迁入路线。",
+      "evidenceReferences": [
+        "docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml",
+        "docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java"
+      ],
+      "excluded": [
+        "前端行为部分未审"
+      ],
+      "recordSha256": "70e8ded29727d312fd57174d51cd8da87fd7a925cd302cbd54cfc44953e87c17",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "fact.route-graph.save-valid",
+      "recordType": "fact",
+      "path": "docs/knowledge/facts/route-graph.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "e537a7545fbbdcbc2229616864d9202c2d485ed9",
+      "sha256": "9ff58bd76cf6dd638c30ded4f60dfc417227b7277481af287f0ec05a45f3f736",
+      "sourceLocator": "fact.route-graph.save-valid",
+      "originalMaturity": "specified",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "配置请求派生校验事实，只说明validate当前请求，不提升到持久化状态或生产执行资格。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java"
+      ],
+      "excluded": [],
+      "recordSha256": "abd01b7f7c0e2dda25bec6fe88efb16f3ff701fff48292d95366a1f511e2a173",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "document.initialization-reference-maintenance-2026-10-21",
+      "recordType": "document",
+      "path": "docs/knowledge/evidence/initialization-reference-maintenance-2026-10-21.md",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "5fdf5f0e1084ce154d5d6660d8ce13b1219ef92d",
+      "sha256": "9798bd781f1b3379ab59a9a6f634786a524225a26d319eae57c4ee6094e68b78",
+      "sourceLocator": "当前master/历史SQL/代表列边界",
+      "originalMaturity": null,
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "当前master只含schema/seed；历史0104/0118等只作test资源；签名TEXT、projection_frozen_json存在、material.brand_name可空三项代表结构与说明一致。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql"
+      ],
+      "excluded": [
+        "107处全量引用逐项重审",
+        "完整schema等价",
+        "实际DB/迁移执行由主侧及质量角色负责"
+      ],
+      "recordSha256": "9798bd781f1b3379ab59a9a6f634786a524225a26d319eae57c4ee6094e68b78",
+      "runtimeExecuted": false
+    }
+  ],
+  "sourceMap": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "225eef64068ea99f345dd715c0555addb94d6174",
+      "sha256": "cf2a6616c713ce884740eed6fd89941dbef6077f26a019eeb888c33abbfc6032",
+      "symbol": "saveRouteGraph",
+      "startLine": 812,
+      "endLine": 844,
+      "scope": "归一化和拓扑校验先于删除、保存及审计；原权限和事务注解。",
+      "depth": "source-inspected",
+      "runtimeExecuted": false,
+      "rangeSha256": "c43d8cc0d5fffb2616ebc98c86d8dfeaa0af120130aa8f698c2a506f7b5c40a8"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "225eef64068ea99f345dd715c0555addb94d6174",
+      "sha256": "cf2a6616c713ce884740eed6fd89941dbef6077f26a019eeb888c33abbfc6032",
+      "symbol": "toRouteNode",
+      "startLine": 1000,
+      "endLine": 1018,
+      "scope": "拒绝null/空键，空类型归一OPERATION，nodeKey和operationId分别保留。",
+      "depth": "source-inspected",
+      "runtimeExecuted": false,
+      "rangeSha256": "c0021fcf76cb3a1d2e9fe7d84d88ead6d4138396185597f78fa571b51b5b31c4"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "225eef64068ea99f345dd715c0555addb94d6174",
+      "sha256": "cf2a6616c713ce884740eed6fd89941dbef6077f26a019eeb888c33abbfc6032",
+      "symbol": "toRouteRelation",
+      "startLine": 1020,
+      "endLine": 1042,
+      "scope": "null/空端点拒绝、类型白名单和端点trim；端口不构成边身份。",
+      "depth": "source-inspected",
+      "runtimeExecuted": false,
+      "rangeSha256": "10efa8671c2c5fe3a9c2e3583c3b80b8e1287703fff50e1a3523e968af89ba7d"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "06eac37f5648746f5faff24f02ed713dd5d7d7f7",
+      "sha256": "af8b0f1998a5973a096cd731da14a3f83d5c195db4ce515e30f14ebff7485fc3",
+      "symbol": "validate:structure",
+      "startLine": 14,
+      "endLine": 35,
+      "scope": "唯一key、唯一边界、全图自连/重复边拒绝和REWORK端点骨架排除。",
+      "depth": "source-inspected",
+      "runtimeExecuted": false,
+      "rangeSha256": "c7338cc2378d95bb72d137af1af3131001ea402373fc6122e3546d98715b6aa1"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "06eac37f5648746f5faff24f02ed713dd5d7d7f7",
+      "sha256": "af8b0f1998a5973a096cd731da14a3f83d5c195db4ce515e30f14ebff7485fc3",
+      "symbol": "validate:topology/connectivity",
+      "startLine": 36,
+      "endLine": 62,
+      "scope": "非REWORK骨架拓扑排序和正反可达性；允许并行/合流/空骨架直连。",
+      "depth": "source-inspected",
+      "runtimeExecuted": false,
+      "rangeSha256": "51474e0d894a1c7e1d1cce60ad4e59f2f0d11c53cf0650463379000222de0694"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "06eac37f5648746f5faff24f02ed713dd5d7d7f7",
+      "sha256": "af8b0f1998a5973a096cd731da14a3f83d5c195db4ce515e30f14ebff7485fc3",
+      "symbol": "reachable",
+      "startLine": 65,
+      "endLine": 75,
+      "scope": "迭代可达性含seen集合，不按operationId合并节点。",
+      "depth": "source-inspected",
+      "runtimeExecuted": false,
+      "rangeSha256": "67c6d3f2429fc29ab0d09c13c8db9856d6643bd799e5db0278342fadf728854d"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "a8469a6b2b01fda2ac28d0ebb0ea8d417e822119",
+      "sha256": "3eba55403ebd112ed04e7d8b01d477e4a8361d08d58775e1111939e1ab2ed8d1",
+      "symbol": "startIssues",
+      "startLine": 33,
+      "endLine": 61,
+      "scope": "普通开工拒绝REWORK；现有条件边执行阻断保留。",
+      "depth": "source-inspected",
+      "runtimeExecuted": false,
+      "rangeSha256": "827302121db794fa55743b77b3ef79ed863e4ef0fdc561e314396a52a05020d9"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "a8469a6b2b01fda2ac28d0ebb0ea8d417e822119",
+      "sha256": "3eba55403ebd112ed04e7d8b01d477e4a8361d08d58775e1111939e1ab2ed8d1",
+      "symbol": "validateRoute",
+      "startLine": 63,
+      "endLine": 69,
+      "scope": "递归循环校验跳过REWORK节点，不按relationType跳过。",
+      "depth": "source-inspected",
+      "runtimeExecuted": false,
+      "rangeSha256": "b72d9e61a17c71bbc8290155bc412f6194963fd2f25009670c0ac211aea4c244"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "a8469a6b2b01fda2ac28d0ebb0ea8d417e822119",
+      "sha256": "3eba55403ebd112ed04e7d8b01d477e4a8361d08d58775e1111939e1ab2ed8d1",
+      "symbol": "collectPredecessors",
+      "startLine": 71,
+      "endLine": 82,
+      "scope": "跳过REWORK节点，不发明返工运行资格。",
+      "depth": "source-inspected",
+      "runtimeExecuted": false,
+      "rangeSha256": "af677f2378b4a088eae181942fd344775871f99d5ff7267e6a809954332692c7"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "c338c116930773b8d16544d6d8248dbbf67cc489",
+      "sha256": "0e06cad2f497af3e1c3b38cfe04bdd1b155262a8a0992baf7e847ee25f07b821",
+      "symbol": "databaseChangeLog",
+      "startLine": 1,
+      "endLine": 5,
+      "scope": "当前初始化仅schema+seed，不加载历史迁移。",
+      "depth": "source-inspected",
+      "runtimeExecuted": false,
+      "rangeSha256": "0e06cad2f497af3e1c3b38cfe04bdd1b155262a8a0992baf7e847ee25f07b821"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "1e07c52fb8fe9bd81a5e6010cdcfc04c534b1ad7",
+      "sha256": "fbe410de8dc8bbe313db982d485ef3b77d42038ebcdd5fc57215cfbd90e92531",
+      "symbol": "form_template_version tail",
+      "startLine": 640,
+      "endLine": 657,
+      "scope": "projection_frozen_json列存在，仅结构事实，不推断运行消费。",
+      "depth": "source-inspected",
+      "runtimeExecuted": false,
+      "rangeSha256": "7241a0af0557b402357c412c4a3fb3710977648971b93d1a1f7821fd0df7ede1"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "1e07c52fb8fe9bd81a5e6010cdcfc04c534b1ad7",
+      "sha256": "fbe410de8dc8bbe313db982d485ef3b77d42038ebcdd5fc57215cfbd90e92531",
+      "symbol": "material",
+      "startLine": 733,
+      "endLine": 752,
+      "scope": "brand_name可空当前最终列。",
+      "depth": "source-inspected",
+      "runtimeExecuted": false,
+      "rangeSha256": "dddbd616262409a889a1cb8f60d469604110f740957cead8597ee09b20f75ceb"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "1e07c52fb8fe9bd81a5e6010cdcfc04c534b1ad7",
+      "sha256": "fbe410de8dc8bbe313db982d485ef3b77d42038ebcdd5fc57215cfbd90e92531",
+      "symbol": "signature",
+      "startLine": 1133,
+      "endLine": 1155,
+      "scope": "snapshot_data text+JSON合法性CHECK；不等同历史摘要恢复。",
+      "depth": "source-inspected",
+      "runtimeExecuted": false,
+      "rangeSha256": "b9b6653d1759b5dabf07536c00985fa215aba8fa4f1609b61152f08ddd890b71"
+    }
+  ],
+  "readAssetHashes": [
+    {
+      "path": "AGENTS.md",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "9751dd1566faaa63039cd72cd790a06b0253e15c",
+      "sha256": "ba95611259b35782726eab7ff5daa9ff45a6839cb70f770face439eaf53410e3"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "0becc4c7d860dce4a775e28f9583416ccf4de354",
+      "sha256": "67d7aa7c3be6a216d4aa9e652fc5449f153bae1e636d7e5642c25482496ae66b"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "c3cb81ea3f171cc897827be5e1c21eff95d9ee45",
+      "sha256": "f15c764a45d86fc4a3507a6c8202a6ec71838d2bf7bab6fefd92d98188802d73"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "8010f6c018821050c9cf731910a426b8fbaa4c62",
+      "sha256": "a882ed9bd1e076a65811b798fffda8d8b1eb27d95d1d1634ee4501cbad901213"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "a564d25275179f6bc4ec834d6d3393f561ebaaf6",
+      "sha256": "b8bf9cf032ce0c95e79b98a3931b600ae28a6ad6d29b98c53c405f135afd0fe2"
+    },
+    {
+      "path": "docs/knowledge/rules/route-graph.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "f53baaf307a48fd58d4057a5d4040122e5a55954",
+      "sha256": "5ef81778bb141533cc9ebe48560932cd1a155e05c713af742e8860b6f8397ed3"
+    },
+    {
+      "path": "docs/knowledge/facts/route-graph.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "e537a7545fbbdcbc2229616864d9202c2d485ed9",
+      "sha256": "9ff58bd76cf6dd638c30ded4f60dfc417227b7277481af287f0ec05a45f3f736"
+    },
+    {
+      "path": "docs/knowledge/evidence/initialization-reference-maintenance-2026-10-21.md",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "5fdf5f0e1084ce154d5d6660d8ce13b1219ef92d",
+      "sha256": "9798bd781f1b3379ab59a9a6f634786a524225a26d319eae57c4ee6094e68b78"
+    },
+    {
+      "path": "docs/knowledge/evidence/route-graph-save-connectivity-20261025.md",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "f30db25a9737620f23a5dfe62a4dd46e536ab169",
+      "sha256": "73fcd3c0c8909a432860029702508ef84f23f046e056e640294df41e27f460d8"
+    },
+    {
+      "path": "docs/knowledge/evidence/route-graph-topology-20261025.md",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "b32cf882fa3372f6f61ce2efcd72171acef190c2",
+      "sha256": "c4b8cd965165723338e4fe644c9cabf0226c07007028c59f29fed33178fadff8"
+    },
+    {
+      "path": "docs/knowledge/evidence/route-graph-topology-20261025.yaml",
+      "gitCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "b034f87ba5c40204f97f94e7080fe132aef648dc",
+      "sha256": "e3856d6c3911dc53d65792f727c6b787e1a2258ae8785b440632081f86d4e011"
+    }
+  ],
+  "counts": {
+    "semanticRows": 9,
+    "reviewedScopedRows": 8,
+    "pendingRows": 1,
+    "sourceScopes": 13,
+    "runtimeTests": 0,
+    "knowledgeEdits": 0
+  },
+  "exclusions": [
+    "No frontend UI/visual review",
+    "No business/JDBC/Maven execution",
+    "No whole-audit completion",
+    "No definition maturity upgrade",
+    "No live database or historical data changes"
+  ],
+  "observations": [
+    "Null type validator NPE is not shown HTTP-reachable: controller rejects null payload and defaults empty type before validator.",
+    "Engine validateRoute scans routeEdges recursively; performance/growth belongs primary measurement, not a semantic policy defect."
+  ]
+}

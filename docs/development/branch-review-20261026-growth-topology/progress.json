@@ -1,0 +1,37 @@
+{
+  "baseCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+  "priorDeliveryTreeMatches": true,
+  "baselineTrackedPaths": 3542,
+  "currentBatch": "W4/W5 finite route backend, initialization and capacity evidence",
+  "sourceScopes": 13,
+  "sourceScopesOverlapOntology": true,
+  "ontologyScope": "7 structured finite statements plus 1 Markdown initialization note; DEC0084-03 UI pending",
+  "productChanges": 0,
+  "tests": 70,
+  "performanceMeasurements": {
+    "wideRecordRuns": 16,
+    "routeAssignedIdScales": 3,
+    "freshBaselineProbe": true
+  },
+  "findings": [
+    {
+      "id": "PERF-DHR-EVIDENCE-RETAINED-001",
+      "status": "pending-discussion",
+      "relation": "quantifies residual risk of merged PR27; not reopening resolved query count fix"
+    },
+    {
+      "id": "PERF-ROUTE-GRAPH-EXISTENCE-001",
+      "status": "pending-discussion",
+      "runtimeScope": "actual saveAll segment only"
+    }
+  ],
+  "independentAcceptance": "pending",
+  "wholeAuditComplete": false,
+  "globalLedger": "Prior frozen catalog/ledger retained; new finite scope overlay only, no whole-file completion inferred",
+  "next": [
+    "Await user decision on bounded DHR reads after explanation",
+    "Continue unreviewed W2/W3 consumers and W4 masterdata/production boundaries",
+    "Route full HTTP/concurrent write and frontend semantics remain pending",
+    "W5 query/resource/security sweep; W6 selected extraction; W7 coverage and integrated acceptance"
+  ]
+}

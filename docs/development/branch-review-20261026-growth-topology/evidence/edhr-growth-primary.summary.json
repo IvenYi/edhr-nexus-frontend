@@ -1,0 +1,145 @@
+{
+  "head": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+  "legacySourceRef": "a192a1d83be3644524ef6e2516619bdf81866678",
+  "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+  "legacySourceSha256": "0694633a8747b47d70674ff12c824621b481efeb4781bcb47df01dbe3599b7f4",
+  "currentSourceSha256": "f7480ed96318e7a29e45e0319b765714aace4bebe02f35468cab7f202755817a",
+  "probeSha256": "e56a1ac4f907241cdccfb499be5633eda561c4038efd8d1536e61dd3626c6355",
+  "jvm": [
+    "-Xms64m",
+    "-Xmx512m",
+    "-XX:+UseSerialGC"
+  ],
+  "runs": [
+    {
+      "repeat": 1,
+      "records": 100,
+      "payloadChars": 1024,
+      "mode": "legacy",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 1,
+      "records": 100,
+      "payloadChars": 1024,
+      "mode": "current",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 1,
+      "records": 1000,
+      "payloadChars": 1024,
+      "mode": "legacy",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 1,
+      "records": 1000,
+      "payloadChars": 1024,
+      "mode": "current",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 1,
+      "records": 100,
+      "payloadChars": 32768,
+      "mode": "legacy",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 1,
+      "records": 100,
+      "payloadChars": 32768,
+      "mode": "current",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 1,
+      "records": 1000,
+      "payloadChars": 32768,
+      "mode": "legacy",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 1,
+      "records": 1000,
+      "payloadChars": 32768,
+      "mode": "current",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 2,
+      "records": 100,
+      "payloadChars": 1024,
+      "mode": "legacy",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 2,
+      "records": 100,
+      "payloadChars": 1024,
+      "mode": "current",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 2,
+      "records": 1000,
+      "payloadChars": 1024,
+      "mode": "legacy",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 2,
+      "records": 1000,
+      "payloadChars": 1024,
+      "mode": "current",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 2,
+      "records": 100,
+      "payloadChars": 32768,
+      "mode": "legacy",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 2,
+      "records": 100,
+      "payloadChars": 32768,
+      "mode": "current",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 2,
+      "records": 1000,
+      "payloadChars": 32768,
+      "mode": "legacy",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    },
+    {
+      "repeat": 2,
+      "records": 1000,
+      "payloadChars": 32768,
+      "mode": "current",
+      "exit": 0,
+      "privateLogSha256": "32c02e848ad501a26ad4b5bb1c904a56bfb771599cc80035d00ce86bbe1ebdfd"
+    }
+  ],
+  "observations": "/tmp/edhr-growth-primary.jsonl",
+  "complete": true
+}

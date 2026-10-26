@@ -1,0 +1,19 @@
+{
+  "result": "passed",
+  "requiredChecks": 9,
+  "passedChecks": 9,
+  "testedCandidate": "2cef901f00e4349cd533928faa78c98552e61411",
+  "targetCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+  "independentTests": 70,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "independentWideRecordRuns": 16,
+  "additionalUserScaleRuns": 2,
+  "routeSaveAllScales": 3,
+  "ontologyResult": "not-applicable",
+  "productChanges": 0,
+  "overallAuditComplete": false,
+  "postFinalChanges": "L0 evidence, wording precision, current progress, user scale assumption, PR registration; frozen originals remain unchanged",
+  "remaining": "Performance decisions pending. User volume assumption <=300 is not a hard business constraint. Recommend defer chunk implementation under modest width/concurrency."
+}

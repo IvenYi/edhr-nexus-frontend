@@ -1,5 +1,11 @@
 # 持续推进台账
 
+已交付[PR28 宽记录/路线/初始化审查报告](https://github.com/IvenYi/edhr-nexus-frontend/pull/28)，创建时MERGEABLE/CLEAN，等待人工合并；纯审计证据，没有产品代码修改。实际独立受测2cef901f，后续只有L0归档及300张假设说明。下一轮先fetch核对真实合并和新提交，报告合并不授权性能实施。
+
+最新：[宽记录、路线后端及初始化审查](../branch-review-20261026-growth-topology/README.md)，基线34f7c9d7已包含人工合并的PR26/27，树与交付组合一致。本批无产品/测试/知识修改；全新独立对2cef901f正式passed、9/9检查，70回归和16宽记录/3图规模/fresh与非空保护探针通过。13主审有限范围与本体7结构化＋1Markdown/13源码范围有交叉，不累加为全文件覆盖；旧全量账本保持。本批scope-review列出真实进度与未审项。
+
+用户尚未批准分块，要求解释后提出DHR可能<=300张。独立补测300×32KiB额外约9.71MiB、300×128KiB约38.53MiB；建议在通常<=300、单张小/低并发假设下暂缓分块、优先其他审计。不得写成硬上限或视为性能方案授权。PERF-ROUTE-GRAPH-EXISTENCE-001实际saveAll存在性查询风险也待讨论。下一步继续W2/W3遗漏和W4主数据/生产、W5其他增长入口，W6候选提取、W7覆盖闭环；路线完整HTTP并发和前端语义仍pending，TaskDetail及记录变更作废依赖仍暂缓。
+
 已分别交付[PR26 工作流分页](https://github.com/IvenYi/edhr-nexus-frontend/pull/26)与[PR27 DHR批量读取](https://github.com/IvenYi/edhr-nexus-frontend/pull/27)，等待人工合并。两PR均基于a192，产品文件不重叠；创建时均MERGEABLE/CLEAN。交付登记之后未修改产品/测试/知识，未自动合并或部署。下一轮不能把PR创建当已经合并。
 
 最新：用户于2026-10-26明确同意执行两项性能整改。PR25已人工合并，目标a192a1d8无新增产品差异。本批[容量整改](../branch-review-20261026-capacity-fixes/README.md)拆为独立队列Q=3c32730a与DHR D=630c8c67候选；全新独立分别7/7、8/8检查，59/58测试均通过；主侧组合C=8e9cefe4的117通过，不冒称独立运行组合C。正式验收原件、有限范围和剩余风险见本批acceptance及scope-review，后续仅L0交付登记。

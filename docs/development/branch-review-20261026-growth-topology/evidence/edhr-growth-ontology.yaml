@@ -1,0 +1,93 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 34f7c9d736ac62961330343c64bc610fab41ad1c
+    targetBranch: edhr-dev
+    targetCommit: 34f7c9d736ac62961330343c64bc610fab41ad1c
+    contractReadCommit: 34f7c9d736ac62961330343c64bc610fab41ad1c
+    uncommittedContractPaths: []
+  reason: 本批为有限存量语义审查与只读测量，已核对范围没有确认需要修改的业务定义或知识记录；保留specified/internal。not-applicable仅表示无需知识变更，不表示全库无需审查。9记录中8有限范围reviewed/consistent，DEC0084-03核心UI仍pending；所有涉及UI的其他声明仅认证所列后端子范围。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: DEC-0083-01
+    disposition: retained
+    scope: 后端图保存的START→全部OPERATION→END连通；旧图读取或前端交互不据此认证。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java
+  - id: DEC-0083-02
+    disposition: retained
+    scope: 历史声明中不新增生产环路限制仅被DEC-0084-01替代；返工节点隔离、并行、多出口、版本/冻结保护保留。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+  - id: DEC-0084-01
+    disposition: retained
+    scope: 后端普通骨架有向无环；排除显式REWORK节点关联边，不限制正常节点单出口。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java
+  - id: DEC-0084-02
+    disposition: retained
+    scope: 后端全图自连/同向对重复边和未知类型拒绝；nodeKey为身份，不按operationId/端口/关系类型去重。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java
+  - id: DEC-0084-03
+    disposition: deferred
+    scope: 仅支持性核对后端保留nodeKey及operationId；核心画布与候选区分未纳入本批，完整声明保留pending。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+  - id: DEC-0084-04
+    disposition: retained
+    scope: 后端普通开工显式REWORK阻断保持；普通节点之间REWORK关系类型不绕过无环。不推断完整返工执行。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java
+  - id: rule.route-graph.save-connectivity
+    disposition: retained
+    scope: 有效后端保存规则整合DEC83与84精确替代，不把草稿WORK策略迁入路线。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml
+    - docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java
+  - id: fact.route-graph.save-valid
+    disposition: retained
+    scope: 配置请求派生校验事实，只说明validate当前请求，不提升到持久化状态或生产执行资格。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java
+  - id: document.initialization-reference-maintenance-2026-10-21
+    disposition: retained
+    scope: 当前master只含schema/seed；历史0104/0118等只作test资源；签名TEXT、projection_frozen_json存在、material.brand_name可空三项代表结构与说明一致。
+    sourceReferences:
+    - gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml
+    - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: growth.scope-source-inspection
+    checkType: evidence-path
+    command: 读取固定34f7c9d7原始声明、确认Markdown及13个源码范围；/tmp/edhr-growth-ontology-build.py验证source
+      blob、SHA及行范围
+    outcome: passed
+    evidence:
+    - /tmp/edhr-growth-ontology-review.json
+    - 13 source-inspected scopes; no runtime execution
+  - id: growth.statement-scope
+    checkType: reference
+    command: Python yaml.safe_load解析当前DEC0083/0084、rule/fact；按ID定位；核对DEC0084-01对DEC0083-02的局部替代
+    outcome: passed
+    evidence:
+    - 8 reviewed finite semantic rows; 1 pending UI statement; 0 knowledge edits
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
