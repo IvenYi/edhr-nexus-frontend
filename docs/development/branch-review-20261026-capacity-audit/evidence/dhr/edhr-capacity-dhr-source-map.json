@@ -1,0 +1,507 @@
+{
+  "author": "/root/capacity_dhr_source",
+  "role": "read-only finite source auxiliary, not final QA",
+  "fixedCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "f1a20247e2d49077eac457912d4ac396ee221182",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+    "contractReadCommit": "f1a20247e2d49077eac457912d4ac396ee221182",
+    "uncommittedContractPaths": []
+  },
+  "sourceScopes": [
+    {
+      "id": "capacity-dhr-source:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrInstanceController.java",
+      "method": "list/by-production-object/detail HTTP delegation",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        22,
+        43
+      ],
+      "blob": "84c4c7a644e7345e426c35463ae2da163e88e6e4",
+      "sha256": "3574c2f8e30d7200458cd6fc52370cbf46b036677a5a40d902b87832d99f4537",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Existing authorized actual HTTP entrypoints only; no runtime or whole controller certification.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrFillingController.java",
+      "method": "list/detail/audit HTTP delegation",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        21,
+        33
+      ],
+      "blob": "b8db950d34c982bcab1ab0adbbf88e5cd70adcee",
+      "sha256": "fcc3253ccb722ec7abb9099bc1393dc386e306ab86fd60d8ed4fca2817162be5",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Existing filling readers route to instance/detail/audit services; no action or UI acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:003",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrSummaryController.java",
+      "method": "summary list/workspace/detail/version/audit HTTP delegation",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        28,
+        55
+      ],
+      "blob": "048d7c0fb045827b41f167d6f9b4776f00325e34",
+      "sha256": "5ce62999330203581417a182a68621658ade5a8f5f264293d9e810e394c8292f",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Explicit frozen version and current evidence routes are separate; no runtime execution.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:004",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "method": "authorized review detail and audit delegation",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        19,
+        40
+      ],
+      "blob": "940a34fb0845aefa2a07f89d032fede122916399",
+      "sha256": "37f6af83e063e1593e15ac28e021ec719888c21fe45d314916c9f20975e2417e",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Review and audit call service.detail, which resolves task authorization before evidence reads; no bypass suggestion.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:005",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "method": "authorized attachment-download detail prefix",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        42,
+        52
+      ],
+      "blob": "940a34fb0845aefa2a07f89d032fede122916399",
+      "sha256": "37f6af83e063e1593e15ac28e021ec719888c21fe45d314916c9f20975e2417e",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Attachment download also calls service.detail for task/version scope; entire download pipeline not audited.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:006",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "method": "list SQL bounded page",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        184,
+        227
+      ],
+      "blob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "sha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "COUNT plus LIMIT/OFFSET, size1..200; mapper has no per-row JDBC. Correlated subqueries are not application N+1; query plans unmeasured.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:007",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "method": "findByProductionObjectId/header",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        229,
+        241
+      ],
+      "blob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "sha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Single object/header query with scalar SQL subqueries; version reader uses header rather than live detail.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:008",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "method": "detail current complete evidence assembly",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        243,
+        318
+      ],
+      "blob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "sha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "One bulk object evidence query, no JDBC inside record mapping/grouping; full snapshots/values and serialization scale with F and bytes, no measurements.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:009",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "method": "production/display/termination scalar SQL expressions",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        320,
+        339
+      ],
+      "blob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "sha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Correlated scalar expressions emitted within SQL; do not count each expression as client network query; EXPLAIN pending.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:010",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "method": "summary ResultSet projection",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        400,
+        420
+      ],
+      "blob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "sha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Summary row mapper does not issue JDBC. SELECT* still selects wide context/directory columns not consumed by summary; width impact unmeasured.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:011",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "method": "detailRow snapshot projection",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        422,
+        433
+      ],
+      "blob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "sha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Current context/directory JSON parsed for detail only, not used to replace frozen summary body.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:012",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "method": "evidenceRow",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        451,
+        467
+      ],
+      "blob": "6551ada1b5f92d2f9d90987ba213f1c0a2d1ed0e",
+      "sha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Each evidence row parses snapshot and values, without another DB call; complete instance identities retained.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:013",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveLayoutReader.java",
+      "method": "read metadata branches",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        13,
+        45
+      ],
+      "blob": "5027221a2b77374092e1103cbb891a4ab6095891",
+      "sha256": "5a64a5bee5a61701c1e51cf1660b23d95f838eb111af54db21b4e823634b1ee2",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "State-dependent bounded count of metadata/bulk-reference queries; not one query per evidence row; full placements/ref arrays scale with membership.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:014",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "method": "workspace current candidates/version metadata",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        43,
+        78
+      ],
+      "blob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "sha256": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Bulk version/review metadata, detail and candidates reused as JsonNode references; no claim that workspace body is bounded by list page.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:015",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "method": "version explicit frozen read and changes",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        80,
+        126
+      ],
+      "blob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "sha256": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "After valid frozen verification, impacts.changes is unconditional. Fixed version direct JDBC call model F+10, not runtime query count; placement and historical identity preserved.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:016",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "method": "versionHeader",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        128,
+        139
+      ],
+      "blob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "sha256": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Response header uses selected frozen baseDirectory and preserves current lifecycle metadata; cannot feed projected response into raw digest verification.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:017",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "method": "audit current detail preflight",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        141,
+        154
+      ],
+      "blob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "sha256": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Audit page preflight calls full current detail; necessary auth/integrity purpose must be checked before any replacement. Capacity followup, no new finding in this slice.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:018",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "method": "versionAudit/auditPage bounded event query",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        156,
+        185
+      ],
+      "blob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "sha256": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "COUNT plus LIMIT50/OFFSET for events does not prove upstream preflight cost bounded; no runtime plan measured.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:019",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "method": "candidates reference aggregation",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        438,
+        444
+      ],
+      "blob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "sha256": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Adds existing by-origin JsonNodes; no DB and no per-candidate deepCopy in this helper.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:020",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java",
+      "method": "verify complete candidate/source-row consistency",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        26,
+        54
+      ],
+      "blob": "9401ccff54412a60fc60b5097f2a5167168d28ca",
+      "sha256": "3dcf8632a2049d9a13e8e178e55ff5c24643f50f496410ba2ef3f8f71c054e66",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "One bulk evidence query and in-memory per-member hash/JSON compare; loop is not JDBC N+1; complete membership checks cannot be dropped for speed.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:021",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java",
+      "method": "verifyVersionDigest",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        56,
+        91
+      ],
+      "blob": "9401ccff54412a60fc60b5097f2a5167168d28ca",
+      "sha256": "3dcf8632a2049d9a13e8e178e55ff5c24643f50f496410ba2ef3f8f71c054e66",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Second version query plus complete digest construction; linear full-content integrity work, not removable correctness overhead.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:022",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "method": "changes direct JDBC/attachment comparison",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        25,
+        76
+      ],
+      "blob": "cca0dcd90d06b4184647b7b19a983572dbcb4999",
+      "sha256": "0694633a8747b47d70674ff12c824621b481efeb4781bcb47df01dbe3599b7f4",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Valid-version direct JdbcTemplate model F+4; per-record current query, nested attachment lookup and whole-file readAllBytes hashing. Static confirmed path, runtime pending.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:023",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "method": "detail repeated read-only impact projection",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        74,
+        84
+      ],
+      "blob": "04f97eb65bb39a368896432fcf24183e17712ebe",
+      "sha256": "42cf405959931f1ab74b046a32267cf4041723257dfd7a7f4d9a9bbcf30fb932",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Authorized detail calls summaries.version (which computes changes) then evidenceChanges again and overwrites same field; two impact computations on valid read branch.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:024",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "method": "evidenceChanges delegate",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        148,
+        151
+      ],
+      "blob": "04f97eb65bb39a368896432fcf24183e17712ebe",
+      "sha256": "42cf405959931f1ab74b046a32267cf4041723257dfd7a7f4d9a9bbcf30fb932",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Direct impacts.changes delegate; no method/request cache observed in these call sites.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:025",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "method": "act locked fresh-comparison prefix",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        86,
+        119
+      ],
+      "blob": "04f97eb65bb39a368896432fcf24183e17712ebe",
+      "sha256": "42cf405959931f1ab74b046a32267cf4041723257dfd7a7f4d9a9bbcf30fb932",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Only action prefix read: workflow/object/DHR locks, eligibility and fresh lock=true comparison retained as optimization constraint; no full action/matrix acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-dhr-source:026",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "method": "dhr_instance context/directory column definitions",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        205,
+        245
+      ],
+      "blob": "1e07c52fb8fe9bd81a5e6010cdcfc04c534b1ad7",
+      "sha256": "fbe410de8dc8bbe313db982d485ef3b77d42038ebcdd5fc57215cfbd90e92531",
+      "readDepth": "auxiliary-source-only-capacity-inspection",
+      "conclusion": "Current text snapshot columns substantiate wide-row dimension. No migration/index/execution-plan validation performed.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    }
+  ],
+  "normativeEvidence": [
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        13,
+        26
+      ],
+      "blob": "864c6ec676bcd8b9a9351a3c7326350a6d260217",
+      "sha256": "28b3ec4bfd08d19691f9a3dbb34ba056ffd8e0230a67804f81b73220fb9710a7",
+      "claim": "Existing complete actual evidence, shared identity and explicit frozen-version baseline; normative constraint only, no new semantic review.",
+      "newFormalSemanticReview": false
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        45,
+        50
+      ],
+      "blob": "864c6ec676bcd8b9a9351a3c7326350a6d260217",
+      "sha256": "28b3ec4bfd08d19691f9a3dbb34ba056ffd8e0230a67804f81b73220fb9710a7",
+      "claim": "Existing single attachment50MiB and complete/partial versioned archive boundaries; total-request capacity not specified.",
+      "newFormalSemanticReview": false
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-summary.yaml",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        27,
+        44
+      ],
+      "blob": "c2c1989649eaddaa78fcf236c92bb4619cbce832",
+      "sha256": "7fc2b4b15bf79624a142721b6f3f2eb7b0dadae6f2a662c627bee836facf6154",
+      "claim": "Existing immutable whole-version snapshot/membership and history-access constraints; raw digest verification retained.",
+      "newFormalSemanticReview": false
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-instance-management-user-confirmed.md",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        5,
+        11
+      ],
+      "blob": "d3522fbc555b7fe270dafbb02cc066d08b515072",
+      "sha256": "469fb252c4b7b0173b080716fae9b3469469a045a4efae387481183bfbfa3fc7",
+      "claim": "User-confirmed first-START context freeze and all real instance identity retained; source evidence not new acceptance.",
+      "newFormalSemanticReview": false
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        13,
+        19
+      ],
+      "blob": "2625731535c1997c9435d7c9d69497241a79854c",
+      "sha256": "51dc528c6fe38671023cec25cfbe6bf1f0a8dcf2fc088f7894524a2d5f035642",
+      "claim": "User-confirmed explicit version, complete/selected archive and preserved attachments; not runtime evidence from this agent.",
+      "newFormalSemanticReview": false
+    }
+  ],
+  "sourceScopeRecordsMayOverlap": true,
+  "newSemanticRows": 0,
+  "runtimeTestsExecuted": 0,
+  "queryModelQualification": "Application JdbcTemplate call expressions on valid branches only, not measured SQL counts, optimizer internal subplans, latency, customer scale/SLA or peak heap.",
+  "riskIds": [
+    "PERF-DHR-EVIDENCE-NPLUS1-001",
+    "PERF-DHR-REVIEW-REPEAT-001"
+  ],
+  "riskDisposition": "pending-discussion; no remediation implemented",
+  "wholeFileReviewComplete": false,
+  "wholeDhrAccepted": false,
+  "repoWrites": [],
+  "subagents": []
+}

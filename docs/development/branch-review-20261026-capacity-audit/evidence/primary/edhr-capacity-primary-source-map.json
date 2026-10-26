@@ -1,0 +1,271 @@
+{
+  "author": "/root",
+  "fixedCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+  "sourceScopes": [
+    {
+      "id": "capacity-primary-source:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java",
+      "method": "source and configured source fields",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        18,
+        54
+      ],
+      "blob": "665f6bfdbe5dc7c28aefdee968c744c53ad038e5",
+      "sha256": "a948ffb74213574ec1e714bc079bb1db7427fa99bf7b585d84c616e6193b4c39",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "Existing whitelisted source SQL; user department subqueries are in one statement, not proof of application N+1.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java",
+      "method": "query predicate construction",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        56,
+        111
+      ],
+      "blob": "665f6bfdbe5dc7c28aefdee968c744c53ad038e5",
+      "sha256": "a948ffb74213574ec1e714bc079bb1db7427fa99bf7b585d84c616e6193b4c39",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "Bound parameters/whitelisted columns and dependent condition lookup inspected; no SQL timing/plan measured.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:003",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java",
+      "method": "appendScope",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        113,
+        143
+      ],
+      "blob": "665f6bfdbe5dc7c28aefdee968c744c53ad038e5",
+      "sha256": "a948ffb74213574ec1e714bc079bb1db7427fa99bf7b585d84c616e6193b4c39",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "Material-type validation is a deliberate extra query; scope/tenant qualifications must survive optimization.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:004",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java",
+      "method": "conditionValue",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        145,
+        156
+      ],
+      "blob": "665f6bfdbe5dc7c28aefdee968c744c53ad038e5",
+      "sha256": "a948ffb74213574ec1e714bc079bb1db7427fa99bf7b585d84c616e6193b4c39",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "Reference attributes are resolved server-side; client context metadata is not automatically trusted or sufficiently fresh.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:005",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java",
+      "method": "search",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        181,
+        205
+      ],
+      "blob": "665f6bfdbe5dc7c28aefdee968c744c53ad038e5",
+      "sha256": "a948ffb74213574ec1e714bc079bb1db7427fa99bf7b585d84c616e6193b4c39",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "Counterevidence: SQL LIMIT100 or bounded pageSize<=100 plus1 with OFFSET. Candidate application results are bounded; LIKE/offset database scan cost not measured.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:006",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java",
+      "method": "find",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        207,
+        213
+      ],
+      "blob": "665f6bfdbe5dc7c28aefdee968c744c53ad038e5",
+      "sha256": "a948ffb74213574ec1e714bc079bb1db7427fa99bf7b585d84c616e6193b4c39",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "Lookup depends on config/source/range/condition values, not ID alone. No claim ID-only caching is correct.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:007",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java",
+      "method": "validate",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        241,
+        268
+      ],
+      "blob": "665f6bfdbe5dc7c28aefdee968c744c53ad038e5",
+      "sha256": "a948ffb74213574ec1e714bc079bb1db7427fa99bf7b585d84c616e6193b4c39",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "Metadata/source/current qualification and reason FOR UPDATE are meaningful checks; not removed for fewer queries.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:008",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/FormReferenceController.java",
+      "method": "template reference HTTP query",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        12,
+        32
+      ],
+      "blob": "e10589bc395e2585915622dc217e783717f0cd85",
+      "sha256": "c3b475900b648b586f16c9fd11ea6ca05cec6303461b57e39434938759512b63",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "Authorized template query delegates bounded search with explicit dictionary scope; backend source inspection only.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:009",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java",
+      "method": "execution reference routes",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        40,
+        43
+      ],
+      "blob": "e7db7e3b7720999595d14c982fdf6906deeae02e",
+      "sha256": "21d65878aef4248f1931b551c31e9d8d1c929ffa23f4fe5937ef77a015166775",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "GET actual route to execution context resolution; no browser/backend run.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:010",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionExecutionController.java",
+      "method": "paged reference POST",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        68,
+        72
+      ],
+      "blob": "e7db7e3b7720999595d14c982fdf6906deeae02e",
+      "sha256": "21d65878aef4248f1931b551c31e9d8d1c929ffa23f4fe5937ef77a015166775",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "POST forwards values/page/size to execution service; no new API or pagination implementation.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:011",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "method": "references and contextReference",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        38,
+        52
+      ],
+      "blob": "43676b8de524bb9cf84871beee927feb0fff0838",
+      "sha256": "4cc08bef2602a87812713e43e94001485ad47f287899dd336e5e74872a3b273d",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "Same lookup used for frozen runtime candidates; only scoped context reuse can be evaluated.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:012",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "method": "references overloads",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        99,
+        119
+      ],
+      "blob": "02b619de81a8ec0aae7779a98a4d759018518d4b",
+      "sha256": "688aede82c2faf2358158d30233a26bd8c4d586e8c46948e430a529e60b470fd",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "Each execution reference request calls full get(id) before selecting the frozen field and bounded candidate query.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:013",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "method": "get execution view",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        137,
+        141
+      ],
+      "blob": "02b619de81a8ec0aae7779a98a4d759018518d4b",
+      "sha256": "688aede82c2faf2358158d30233a26bd8c4d586e8c46948e430a529e60b470fd",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "Loads object/order/execution then constructs complete view; source-only growth analysis.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:014",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "method": "view full projection",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        264,
+        356
+      ],
+      "blob": "02b619de81a8ec0aae7779a98a4d759018518d4b",
+      "sha256": "688aede82c2faf2358158d30233a26bd8c4d586e8c46948e430a529e60b470fd",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "Full snapshot/state, creation metadata, creator-name map cache, formal output, operation and form-copy controls are computed. Creator map is explicit reuse counterevidence; no per-request elapsed/heap measured.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:015",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java",
+      "method": "object formal output",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        23,
+        26
+      ],
+      "blob": "edfe37d40f6e06dede14a39250123d2816ac118c",
+      "sha256": "0839f36fbaafee3689a7f6b919f5f3b0c5005900f9482ddfb990b3bad9d0f4d8",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "Object-level formal summary delegates full committed source read; no aggregate cache assumption.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-primary-source:016",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java",
+      "method": "read full formal source",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        56,
+        79
+      ],
+      "blob": "edfe37d40f6e06dede14a39250123d2816ac118c",
+      "sha256": "0839f36fbaafee3689a7f6b919f5f3b0c5005900f9482ddfb990b3bad9d0f4d8",
+      "readDepth": "primary-finite-source-capacity-inspection",
+      "conclusion": "One JDBC statement aggregates source batches and records/JSON. Single statement is not zero cost and not client N+1; no plan/scale measurement.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    }
+  ],
+  "sourceScopeRecordsMayOverlap": true,
+  "newSemanticRows": 0,
+  "runtimeTestsExecuted": 0,
+  "wholeFileReviewComplete": false,
+  "riskIds": [
+    "PERF-EXECUTION-REFERENCE-VIEW-001"
+  ],
+  "riskDisposition": "pending-discussion",
+  "sourceOnly": true
+}

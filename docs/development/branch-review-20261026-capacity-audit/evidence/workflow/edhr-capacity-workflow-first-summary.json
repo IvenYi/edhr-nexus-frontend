@@ -1,0 +1,74 @@
+{
+  "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+  "exportPath": "/tmp/edhr-capacity-workflow-source",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "/tmp/edhr-capacity-workflow-source/gmp-platform/backend/pom.xml",
+    "-Dtest=WorkflowQueueCapacityObservationTest",
+    "-Dcapacity.observation.out=/tmp/edhr-capacity-workflow-observations.jsonl",
+    "clean",
+    "test"
+  ],
+  "startedAt": "2026-10-26T01:56:35.176600+00:00",
+  "elapsedSeconds": 43.019,
+  "exit": 0,
+  "nativePostgres": "owned PG16 loopback55432/edhr_w3_command_test",
+  "runtimeQualification": "Actual synthetic signed JWT/filter/MockMvc/native PG/JPA through unchanged product; no password-login/browser E2E or client SLA benchmark.",
+  "privateLogSha256": "bbc2e01098952b7f3330625e67313f289cb92276acafd76cd59ca4023efb4fb5",
+  "rawLogsXmlNotForArchive": true,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowQueueCapacityObservationTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "f84a9b71b2996fa152d81e037329bc03d91b824f9c323a59f94762b471318828",
+      "fresh": true,
+      "cases": [
+        {
+          "name": "authenticationAndInvalidPageGuardsIssueNoTaskSelectAndDoNotWrite(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "authenticationAndInvalidPageGuardsIssueNoTaskSelectAndDoNotWrite(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "smallHttpPageStillMaterializesAllMatchingTaskEntities(String, int)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "smallHttpPageStillMaterializesAllMatchingTaskEntities(String, int)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "smallHttpPageStillMaterializesAllMatchingTaskEntities(String, int)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "smallHttpPageStillMaterializesAllMatchingTaskEntities(String, int)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "smallHttpPageStillMaterializesAllMatchingTaskEntities(String, int)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "smallHttpPageStillMaterializesAllMatchingTaskEntities(String, int)[6]",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "observations": "/tmp/edhr-capacity-workflow-observations.jsonl"
+}

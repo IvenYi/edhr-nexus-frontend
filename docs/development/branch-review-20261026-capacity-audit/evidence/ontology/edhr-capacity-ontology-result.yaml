@@ -1,0 +1,93 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: f1a20247e2d49077eac457912d4ac396ee221182
+    targetBranch: edhr-dev
+    targetCommit: 5259791fcbc5d1fddf04cd62a02d6593d00fe2e6
+    contractReadCommit: f1a20247e2d49077eac457912d4ac396ee221182
+    uncommittedContractPaths: []
+  reason: Read-only finite audit of DEC0082-03/04/07/14/15/16 and named source/assertion ranges found no contradiction in the declared scopes
+    and requires no knowledge/business definition change. Six semantic rows are real source/decision reviews; this result does not exempt or complete
+    whole2618-ID audit, runtime or performance acceptance.
+  changedArtifacts: []
+  knowledgeSync:
+  - id: DEC-0082-03
+    disposition: retained
+    scope: Reference source/search/condition/display configuration remains field/placement configuration; backend preview/production share lookup
+      and source identities. Inspection does not accept every UI wording, source authorization or projected business use.
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/defect-reason-detail-reference-2026-10-18.md
+  - id: DEC-0082-04
+    disposition: retained
+    scope: Production initialization uses actual snapshot object/work-order/product and owned operation. Equipment/general material/personnel
+      unsupported; shared-batch form never takes viewed operation. Does not certify all context creation or whole production permission flow.
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/defect-reason-detail-reference-2026-10-18.md
+  - id: DEC-0082-07
+    disposition: retained
+    scope: Explicit autofill flag defaults false; referenceContextInitialized limits initialization; current nonempty values preserved, absent
+      or unsuitable context yields warning/no first candidate. Field dependency ordering/cycles and row default scope checked in source only;
+      mock simulation/UI editing, all copy/resume paths and transaction runtime are not certified.
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/defect-reason-detail-reference-2026-10-18.md
+  - id: DEC-0082-14
+    disposition: retained
+    scope: New preview dictionary config requires concrete dictionary; query applies dictionary and item ACTIVE plus exact dictionary ID shared
+      by search/find/validate. Key-absent frozen legacy interpretation remains, not auto-migrated. Scope identity is not a name match; no full
+      lifecycle/auth runtime claim.
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.md
+  - id: DEC-0082-15
+    disposition: retained
+    scope: Unified material/productionObject editor aliases retain canonical material/production object IDs and actual BATCH/SN scopes. SQL scope
+      is shared across selection and validation; only material product subset can autofill product. Legacy aliases kept; backend and pure config
+      inspection do not certify every business-purpose compatibility or all UI scenes.
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/reference-source-unification-2026-10-19.md
+  - id: DEC-0082-16
+    disposition: retained
+    scope: Source/scope patch handlers preserve query conditions. Invalid property/dependency/operator remains marked and combined design is rejected
+      before setters/save/audit. Empty rows ignored and four operators/AND/raw-attribute behavior remain; no whole designer/visual/runtime acceptance.
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml
+    - docs/knowledge/evidence/reference-source-unification-2026-10-19.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.capacity-ontology-fixed-records
+    checkType: reference
+    command: 'python /tmp/edhr-capacity-ontology-write.py: fixed Git/schema-driven declared-ID extraction and canonical SHA matching'
+    outcome: passed
+    evidence:
+    - /tmp/edhr-capacity-ontology-validation.json
+    - 2618 declared IDs inventoried mechanically; only6 selected finite clauses manually reviewed.
+  - id: validation.capacity-ontology-source-receipts
+    checkType: evidence-path
+    command: Fixed Git show/rev-parse plus explicit range/hash checks and selected source/test-assertion inspection
+    outcome: passed
+    evidence:
+    - /tmp/edhr-capacity-ontology-source-map.json
+    - /tmp/edhr-capacity-ontology-semantic-review.jsonl
+    - No Maven/JUnit/business/browser/performance run by this ontology instance.
+  - id: validation.capacity-ontology-unchanged-protected-baseline
+    checkType: evidence-path
+    command: git diff --name-only 5259791f..f1a20247 and 5259791f..HEAD on product/knowledge/role/architecture paths
+    outcome: passed
+    evidence:
+    - /tmp/edhr-capacity-ontology-validation.json
+    - Only parent audit-development documents are in flight; this role wrote no repository files.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

@@ -1,0 +1,40 @@
+{
+  "author": "/root/capacity_ontology_delta",
+  "status": "FINAL",
+  "baseCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+  "sourceReadCommit": "f1a20247e2d49077eac457912d4ac396ee221182",
+  "noChildInstances": true,
+  "files": [
+    {
+      "path": "/tmp/edhr-capacity-ontology-result.yaml",
+      "bytes": 5470,
+      "sha256": "fe387cb8bbac61216ca4a14f289d65315727d1f3b4cc5c0ff04f325e3356783f"
+    },
+    {
+      "path": "/tmp/edhr-capacity-ontology-semantic-review.jsonl",
+      "bytes": 53135,
+      "sha256": "521f493bc6a293f86856dfad31d56eec0cf75a7cb8b4ad34cb235a42d40d65bd"
+    },
+    {
+      "path": "/tmp/edhr-capacity-ontology-source-map.json",
+      "bytes": 24034,
+      "sha256": "ea028739a28274f507329b918d17c6e2b8bf9d47182f7834fe6a648bc9247349"
+    },
+    {
+      "path": "/tmp/edhr-capacity-ontology-validation.json",
+      "bytes": 4892,
+      "sha256": "bba4ae5f4dc44361cef7a11706c05fa1409ac26897020e80cec53f8b9b566276"
+    },
+    {
+      "path": "/tmp/edhr-capacity-ontology-write.py",
+      "bytes": 23005,
+      "sha256": "a29519fdabfb3be30a959574960916080d4e19d943ab9334136e8019d0859e56"
+    }
+  ],
+  "excluded": [
+    "No raw logs/XML/JWT generated or archived",
+    "No full knowledge/source export",
+    "No runtime tests or schema/migration/database operations"
+  ],
+  "actualRepoWrites": []
+}

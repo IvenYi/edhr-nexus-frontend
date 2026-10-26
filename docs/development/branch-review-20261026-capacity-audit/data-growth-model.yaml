@@ -1,0 +1,62 @@
+schema: edhr-audit-data-growth-model/v1
+baseCommit: 5259791fcbc5d1fddf04cd62a02d6593d00fe2e6
+classification: engineering-capacity-assumptions-not-business-policy
+customerActualVolumeKnown: false
+customerSlaKnown: false
+testSizesAreNotCapacityLimits: true
+modules:
+  - id: growth.workflow-queues
+    growth: 每次流程节点/审批及委托产生任务，已办历史持续累积；待办也可能因积压增大。
+    variables: [当前人可处理任务N, 当前人已办H, 候选范围, 单任务行宽B, 并发请求C]
+    exposure: 首页待办/已办小页；实体全量加载后切片会按N或H而非页长p占用内存。
+    model: 单请求实体材料化可能O(N*B)；并发约放大C倍，实际堆与时延需要测量。
+    scenarios: [N为100/1000/10000且p为5的合成对照]
+    status: selected-current-batch
+  - id: growth.dhr-evidence
+    growth: 每个生产对象形成DHR，含目录/作业/补录表单、多份、修订版本、受控附件及比较来源。
+    variables: [DHR数量D, 单DHR表单F, 冻结版本V, 附件A, 附件字节B, 并发C]
+    exposure: 列表与单DHR详情/历史/审核/完整性比较成本必须分开；页长有界不能约束单DHR证据集合。
+    model: 全部证据比较至少触达相应成员，逐实例查询可能随F增长，重复比较/全量文件缓冲另有CPU/IO/内存放大。
+    scenarios: [F与A逐级增加的模型；本轮静态核对，不冒称已跑规模测试]
+    status: selected-current-batch
+  - id: growth.reference-and-context
+    growth: 物料/人员/字典/生产对象持续增长；表单字段和动态行、引用条件、每次搜索分页增加调用次数。
+    variables: [来源候选M, 条件K, 表单字段F, 动态行R, 工序O, 每工序份数I, 搜索请求S]
+    exposure: 候选SQL分页本身、深OFFSET/包含匹配、条件重查，以及每次搜索是否重建完整执行视图分别检查。
+    model: 不能把LIMIT候选搜索误判全量应用加载；但有界结果不保证扫描/完整上下文计算有界。
+    scenarios: [先确认SQL上限与源码调用；后续EXPLAIN及窄上下文对照，尚未执行]
+    status: selected-current-batch
+  - id: growth.forms-and-designer
+    growth: 表单模板/版本、画布单元格、字段、子表行、文档节点和历史撤销快照增长。
+    variables: [单元格G, 字段F, 动态行R, 文档字节B, 历史步数H]
+    exposure: 编辑命令deepCopy/序列化、渲染、撤销和保存、长文档预览。
+    model: 避免把H上限当单文档大小限制，关注G/F/R乘积与全量文档复制。
+    status: pending-domain-review
+  - id: growth.trace-and-projection
+    growth: 每次保存刷新追溯索引，最终完成生成来源批次及正式明细，动态行使明细数放大。
+    variables: [实例数F, 每实例行R, 每行用途K, 保存频率S, 历史批次V]
+    exposure: 索引刷新/查询交集、正式记录聚合、跨实例报表、来源回查/高亮。
+    model: O(F*R*K)是规模建模候选；必须核实际删除/更新/幂等和索引，不据公式认定缺陷。
+    status: pending-domain-review
+  - id: growth.audit-and-workflow-logs
+    growth: 每次动作/修改/签署/审批产生历史记录，通常随运行时间累积。
+    variables: [对象N, 每对象动作E, 历史年限T, 单条载荷B]
+    exposure: 日志列表、审计查询、归档导出、实例内全量数组及宽JSON字段。
+    model: 约N*E随业务增长；是否有归档/保留策略必须核源码与要求，不能假设历史会自动删除。
+    status: pending-cross-domain-review
+  - id: growth.master-data-and-production
+    growth: 物料/产品/工艺版本和绑定、工单拆分、批次/SN和多工序报工持续增长。
+    variables: [主数据M, 版本V, 工单W, 拆分对象N, 每对象工序O, 份数F]
+    exposure: 下拉候选/搜索、用途和删除保护、工单质量/产出汇总、快照构建与批量生成。
+    model: 主数据不能一律当小表；版本及绑定、SN大量生成和按工单汇总应分别建规模。
+    status: pending-W4-review
+  - id: growth.files-import-export-background
+    growth: 表单附件、受控附件、签署/预览档案、PDF/ZIP、批量导入及后台积压。
+    variables: [文件数A, 总字节B, 单文件峰值P, 并发C, 积压Q]
+    exposure: readAllBytes/全量缓冲、临时空间、进程、连接、重试并发/批次和取消清理。
+    model: IO/堆/磁盘与并发分别核对；流式化不能改变原件hash/证据成员授权。
+    status: pending-W5-review
+measurements:
+  requiredDistinctions: [返回行与加载行, SQL条数与数据库内部子计划, 真实测量与静态模型, 合成规模与客户实际, 每请求与并发, 应用耗时与客户SLA]
+  evidenceFields: [fixedCommit, entry, datasetShape, actualRows, pageSize, queryOrEntityLoadCount, elapsedIfMeasured, environment, sourceRanges, counterEvidence, unmeasuredConsequences]
+  remediationState: pending-discussion-until-user-tradeoffs-are-clear

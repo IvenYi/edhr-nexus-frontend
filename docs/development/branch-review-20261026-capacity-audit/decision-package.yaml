@@ -1,0 +1,98 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261026-AUDIT-CAPACITY-001
+  scope: edhr-dev整体审计防漂移范围补齐、增量基线协议、规模风险建模与首批任务队列/DHR/引用读取审查；本批不整改产品性能。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: f1a20247e2d49077eac457912d4ac396ee221182
+    targetBranch: edhr-dev
+    targetCommit: 5259791fcbc5d1fddf04cd62a02d6593d00fe2e6
+    contractReadCommit: f1a20247e2d49077eac457912d4ac396ee221182
+    uncommittedContractPaths: []
+  summary: 用户要求审计覆盖功能、规则、结构、健壮性及性能，不限已举问题；新增提交及时增量核对；先分析可能增长的数据与规模，性能风险给证据和方案共同讨论，可先不修改。本轮先形成详细任务契约，实际核对三条高增长读取链及相关引用语义，保持业务实现不变。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.audit-capacity-growth
+      statement: 累积任务、DHR/表单证据、引用候选及审计等数据具有不同增长维度，需从合法数据规模评估查询及内存危险。
+      rationale: 评估依据实际源码、数据生命周期与标明假设的合成规模，不把假设当客户真实容量或SLA。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: audit-process-and-evidence
+        change: 补充审查矩阵、数据增长模型、增量协议、退出证据；实际审查工作流队列、DHR列表/详情、引用搜索/上下文。
+        evidenceReferences: [docs/development/branch-review-20261026-progress/README.md]
+    transitiveImpacts:
+      - area: historical-coverage-carry
+        change: 保留旧574范围/108语义及原质量结果，按5259791f增量归属；不能把报告完整等同于产品性能通过。
+        evidenceReferences: [docs/development/branch-review-20261026-progress/snapshot.json]
+    potentialImpacts:
+      - area: performance-remediation
+        concern: 数据库分页、批量查询、只读DTO和上下文复用可能触及权限、排序、冻结、事务与返回契约；本批仅给方案/风险，不实施。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: product-behavior
+        reason: 本批不修改产品、schema、迁移、查询、业务规则、权限、签署、日志、快照及用户暂缓TaskDetail页面。
+      - area: live-databases
+        reason: 仅可使用本轮自建tmpfs/loopback合成PG；不连接或恢复用户现库，不部署。
+    compatibilityAndMigration: [没有schema迁移或历史回写；保留所有旧审计/测试原件及原声明成熟度。]
+    snapshotImpacts: [评估优化时标出使用时冻结/历史解释约束，本批不改快照。]
+    auditImpacts: [不为减少SQL省略逐动作审计或吞失败；原日志/XML/JWT不归档。]
+    permissionImpacts: [不以性能理由删候选/DHR/租户/来源资格过滤或锁内重查。]
+    testImpacts:
+      - scope: synthetic-native-capacity-observation
+        scenarios: [小页请求与全量实体加载的规模对照, 原权限/返回/排序保护, 源码与真实SQL或ORM统计证据]
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java]
+      - scope: source-and-semantic-inspection
+        scenarios: [DHR嵌套查询与集合增长, 引用全量查询和上下文读取, 最新DEC0082相关声明与实现一致性]
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java]
+    evidenceGaps: [无客户实际数据量/SLA，合成规模不能宣称生产容量；整仓未审和暂缓项保留；实际验证与源码线索分级记录。]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 本批只审查标准产品实现和任务记录，不增加产品扩展点或统一性能框架。
+    ownershipBoundaries:
+      - owner: root-audit
+        responsibility: 范围、台账、原始源码、规模模型、风险汇报与最终技术判断。
+      - owner: ontology-audit
+        responsibility: 最新引用/原因有限声明与原始业务依据核对，记录实际覆盖，不改业务政策。
+      - owner: independent-quality
+        responsibility: 对干净候选核对范围、原件与实际规模证据，区分审计交付通过和产品风险开放。
+  affectedFiles:
+    - path: docs/development/branch-review-20261026-capacity-audit
+      changeType: create
+      reason: 详细审查契约、数据规模、首批真实审查与原件。
+    - path: docs/development/branch-review-20261015/NEXT.md
+      changeType: update
+      reason: 持续进度与下一步入口。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow
+      changeType: read-only
+      reason: 队列SQL及实体加载规模。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production
+      changeType: read-only
+      reason: DHR列表/详情证据集合与查询放大。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/template
+      changeType: read-only
+      reason: 引用搜索及上下文复用。
+  acceptanceScenarios:
+    - id: scenario.audit-scope-durable
+      given: 审计不只找功能bug且目标持续有新提交
+      when: 开始或恢复每批审查
+      then: 明确范围/基线/增量/规模与证据状态，未审不记通过，性能风险保留讨论，不静默改业务。
+      evidenceRequirements: [详细审查维度矩阵, 数据增长模型, 实际有限源码与规模证据, 干净候选独立质量]
+gateAssessment:
+  level: L2
+  qualityGateTriggered: true
+  ontologyGateTriggered: false
+  ontologyResult:
+    result: not-applicable
+    reason: 本批不改业务定义或运行规则；另派正式本体角色完成全量审计中有限增量的语义核对，不能把本批NA解释为整体本体审计不做。
+auditConstraints:
+  performanceDisposition: 提出风险与可评估选项，pending-discussion；不擅自改产品或设客户容量/SLA。
+  deferred: [TaskDetail任务处理页和签名密码, 用户暂缓记录控制/两DHR high/A12]
+  noActionsQueriesOrManualTriggers: true
+  noMergeDeployRestore: true
