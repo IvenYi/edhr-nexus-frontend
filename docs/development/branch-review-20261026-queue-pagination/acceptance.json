@@ -1,0 +1,23 @@
+{
+  "result": "passed",
+  "testedCandidate": "3c32730af3236f183be40141edabd43b7c3867ac",
+  "targetCommit": "a192a1d83be3644524ef6e2516619bdf81866678",
+  "tests": 59,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "independent": true,
+  "ontology": "not-applicable",
+  "postFinalChanges": "L0 archives/progress only; no product/test/schema/knowledge changes",
+  "overallAuditComplete": false,
+  "remainingRisks": [
+    "DHR repeated comparison",
+    "execution reference full view",
+    "additional DHR current JSON memory",
+    "deep offset and large page requests"
+  ],
+  "deferred": [
+    "TaskDetail signature page",
+    "record change/void dependencies"
+  ]
+}
