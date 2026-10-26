@@ -1,0 +1,30 @@
+{
+  "status": "FINAL",
+  "scope": "finite followup only; no new semantic row count",
+  "capturedAt": "2026-10-26T03:08:13.494203+00:00",
+  "runtimeExecuted": false,
+  "newKnowledgeChanges": 0,
+  "files": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "sha256": "305a8d1caece1bcb7cf9796161c0624a18b9c0cfcf027be4ca974ac1ab0956cf"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowQueuePaginationPostgresTest.java",
+      "sha256": "186de035b4a04f6e88e81500f001e1d99b24cc29c8f1b431aa1c536f93d21830"
+    },
+    {
+      "path": "docs/development/branch-review-20261026-capacity-fixes/decision-package.yaml",
+      "sha256": "834cb89b73c13e21e2b34efa635c9c964b3165e33a6285f757e0b255074c7af4"
+    }
+  ],
+  "originalsPreserved": {
+    "/tmp/edhr-capacity-fixes-ontology.yaml": "78c07d87feaa97c386b5c18ad18cbe363f4502534e29d097bf6c5790cd156fce",
+    "/tmp/edhr-capacity-fixes-ontology-review.json": "a54a3c35456462c128c21abae8a479e3ef4461dba6be54ef7919e3142a2cad40"
+  },
+  "limits": [
+    "No full decisionPackage schema acceptance; final changed files should be reconciled again.",
+    "No statement that OFFSET prevents changes across requests during concurrent writes.",
+    "Same timestamp primary priority unchanged; ID tie order is engineering choice, not user-confirmed business priority."
+  ]
+}

@@ -1,0 +1,39 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: a192a1d83be3644524ef6e2516619bdf81866678
+    targetBranch: edhr-dev
+    targetCommit: a192a1d83be3644524ef6e2516619bdf81866678
+    contractReadCommit: a192a1d83be3644524ef6e2516619bdf81866678
+    uncommittedContractPaths: []
+  reason: >-
+    对首轮之后的有限增量复核：todo 的 created_at DESC 与 done 的 completed_at DESC NULLS LAST
+    主排序保持，仅在相同时间内增加唯一任务 ID DESC 次级排序。原相同时间记录相对顺序未定义，
+    此项属于使有限 SQL 分页结果稳定的工程选择，不改变候选处理责任、状态、资格或 DHR 范围，
+    无需改写既有业务知识。只在数据集合静止时提供确定页边界，不承诺并发插入、删除或状态变化期间的跨请求快照。
+    首轮 ontologyResult 及语义核对原件保留；本补核不重计5条语义范围，也不声称测试运行通过。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: capacity-ontology-followup-tiebreaker
+      checkType: evidence-path
+      command: git diff -- gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java; inspect WorkflowQueuePaginationPostgresTest.equalTimestampsHaveStableDisjointPages
+      outcome: passed
+      evidence:
+        - /tmp/edhr-capacity-fixes-ontology-followup-review.json
+        - 已静态核对 todo 相同时间及 done NULL 完成时间的两页合并精确ID断言；未执行测试。
+    - id: capacity-ontology-followup-package
+      checkType: evidence-path
+      command: inspect docs/development/branch-review-20261026-capacity-fixes/decision-package.yaml
+      outcome: passed
+      evidence:
+        - 原字符串影响项已改为对象，workflow源码和该时点两类新增测试及签名适配测试已列明；该结论是有限文档补核，不是完整包schema认证。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

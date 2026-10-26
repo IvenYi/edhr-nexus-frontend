@@ -1,5 +1,11 @@
 # 持续推进台账
 
+已分别交付[PR26 工作流分页](https://github.com/IvenYi/edhr-nexus-frontend/pull/26)与[PR27 DHR批量读取](https://github.com/IvenYi/edhr-nexus-frontend/pull/27)，等待人工合并。两PR均基于a192，产品文件不重叠；创建时均MERGEABLE/CLEAN。交付登记之后未修改产品/测试/知识，未自动合并或部署。下一轮不能把PR创建当已经合并。
+
+最新：用户于2026-10-26明确同意执行两项性能整改。PR25已人工合并，目标a192a1d8无新增产品差异。本批[容量整改](../branch-review-20261026-capacity-fixes/README.md)拆为独立队列Q=3c32730a与DHR D=630c8c67候选；全新独立分别7/7、8/8检查，59/58测试均通过；主侧组合C=8e9cefe4的117通过，不冒称独立运行组合C。正式验收原件、有限范围和剩余风险见本批acceptance及scope-review，后续仅L0交付登记。
+
+剩余：DHR重复比较、引用全视图成本已有实际调用观察，继续待讨论；DHR新增批量map额外持有F份当前JSON，需讨论分块及大JSON堆测量，不将10k小JSON通过当宽记录容量结论。下一轮先fetch并核对两PR真实合并及新提交增量，再按scope-review中的W2/W3剩余、W4、路线拓扑/初始化基线增量与W5–W7推进。TaskDetail签名页面和记录变更/作废依赖仍暂缓，无自动merge/deploy/恢复。下文PR25检查点为历史，不再把已明确授权的本轮两项写作待授权。
+
 已交付[PR25](https://github.com/IvenYi/edhr-nexus-frontend/pull/25)，本批为审查范围补齐与首批容量审计报告，未改产品；实际独立受测1081c4d8、9/9必需检查passed，后续仅L0档案/导航/澄清/交付。每次继续先fetch最新edhr-dev并读[审查契约](../branch-review-20261026-capacity-audit/audit-charter.md)和[risk-register](../branch-review-20261026-capacity-audit/risk-register.yaml)，按22维度/增长模型/入口矩阵持续增量；不能将报告merge或用户说继续当作性能方案实施批准。四性能风险pending-discussion，TaskDetail及原记录控制相关暂缓保持，无依赖领域继续审查，不自动合并/部署/恢复。
 
 2026-10-26后续范围补齐与实际容量审查：[详细审计契约](../branch-review-20261026-capacity-audit/audit-charter.md)、[增长模型](../branch-review-20261026-capacity-audit/data-growth-model.yaml)、[入口矩阵](../branch-review-20261026-capacity-audit/entry-matrix.yaml)。用户要求审计覆盖不止bug/举例，性能先分析潜在规模并提出讨论不直接改；22维度已落盘，活跃检查点fetch/影响分类/历史承接/候选重验写明。产品基线仍5259791f，本批无产品/知识/schema/UI修改。首批实际任务队列、DHR和引用读取证据见[风险汇总](../branch-review-20261026-capacity-audit/findings.md)：工作流合法PG8项观测证明小页全量实体加载（非该路径N+1），两DHR比较和执行引用重型view为静态风险，四项pending-discussion；DHR列表/引用候选已有数据库分页的反证保留。正式本体六条DEC0082有限核对无冲突、NA/FINAL；辅助全部FINAL，独立最终质量待干净候选，不冒称全仓或性能已通过。

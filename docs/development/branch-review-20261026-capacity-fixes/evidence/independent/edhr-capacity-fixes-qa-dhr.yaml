@@ -1,0 +1,153 @@
+{
+  "qualityResult": {
+    "result": "passed",
+    "baseCommit": "a192a1d83be3644524ef6e2516619bdf81866678",
+    "headCommit": "630c8c6786437d144cdb3d90fb1e7e95f478e7f4",
+    "contractBaseline": {
+      "sourceCommit": "630c8c6786437d144cdb3d90fb1e7e95f478e7f4",
+      "targetBranch": "edhr-dev",
+      "targetCommit": "a192a1d83be3644524ef6e2516619bdf81866678",
+      "contractReadCommit": "a192a1d83be3644524ef6e2516619bdf81866678",
+      "uncommittedContractPaths": []
+    },
+    "workingTreeState": {
+      "status": "clean",
+      "includedPaths": [],
+      "excludedPaths": [],
+      "untrackedPaths": []
+    },
+    "knowledgeBaselineVersion": "0.3.25",
+    "checks": [
+      {
+        "id": "candidate-baseline",
+        "required": true,
+        "category": "documentation",
+        "description": "目标、候选、契约、分支拆分及干净源文件核对",
+        "method": "command",
+        "command": "git fetch origin edhr-dev; git diff --check; git merge-tree --write-tree Q D",
+        "outcome": "passed",
+        "evidence": [
+          "/tmp/edhr-capacity-fixes-qa-inspection.json",
+          "实际目标 a192a1d83be3644524ef6e2516619bdf81866678；本独立受测候选 630c8c6786437d144cdb3d90fb1e7e95f478e7f4；两候选合并树与主侧C一致，C运行仅为主侧证据。"
+        ]
+      },
+      {
+        "id": "scope-and-authorization",
+        "required": true,
+        "category": "requirements",
+        "description": "用户已同意先修两项、另两项仅测量；小批独立交付，不扩大业务范围",
+        "method": "inspection",
+        "command": "inspect decision-package and actual diffs",
+        "outcome": "passed",
+        "evidence": [
+          "docs/development/branch-review-20261026-capacity-fixes/decision-package.yaml",
+          "/tmp/edhr-capacity-fixes-qa-inspection.json"
+        ]
+      },
+      {
+        "id": "knowledge-boundaries",
+        "required": true,
+        "category": "ontology",
+        "description": "有限核对已有候选委托与DHR完整证据/冻结/陈旧批准规则，不提升全库覆盖",
+        "method": "inspection",
+        "command": "inspect DEC0081 and dhr-summary rules, ontology originals",
+        "outcome": "passed",
+        "evidence": [
+          "/tmp/edhr-capacity-fixes-qa-inspection.json",
+          "docs/development/branch-review-20261026-capacity-fixes/evidence/edhr-capacity-fixes-ontology-followup.yaml"
+        ]
+      },
+      {
+        "id": "native-and-regression",
+        "required": true,
+        "category": "regression",
+        "description": "实际独立运行本候选适用测试，无失败错误跳过",
+        "method": "automated-test",
+        "command": "W3_COMMAND_DATABASE_URL=jdbc:postgresql://localhost:55432/edhr_w3_command_test W3_TRANSFER_DATABASE_URL=jdbc:postgresql://localhost:55432/edhr_w3_transfer_test bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f /tmp/edhr-capacity-qa-dhr/gmp-platform/backend/pom.xml -Dtest=DhrEvidenceBatchPostgresTest,DhrReviewLifecycleIntegrationTest,DhrReviewServiceTest,DhrSummaryPersistenceTest,DhrSummaryServiceTest,ProductionReferenceCapacityObservationTest test",
+        "outcome": "passed",
+        "evidence": [
+          "/tmp/edhr-capacity-fixes-qa-dhr-summary.json"
+        ]
+      },
+      {
+        "id": "product-code",
+        "required": true,
+        "category": "database",
+        "description": "批量读取缺失/tenant/状态/版本/JSON差异与加锁顺序保持",
+        "method": "inspection",
+        "command": "inspect fixed candidate source and real runtime assertions",
+        "outcome": "passed",
+        "evidence": [
+          "/tmp/edhr-capacity-fixes-qa-inspection.json"
+        ]
+      },
+      {
+        "id": "evidence-integrity",
+        "required": true,
+        "category": "documentation",
+        "description": "7份主侧原件归档SHA核对，原失败不覆盖；仅沿各自有限证据范围",
+        "method": "command",
+        "command": "verify archive-receipts SHA256 and source blobs",
+        "outcome": "passed",
+        "evidence": [
+          "docs/development/branch-review-20261026-capacity-fixes/evidence/archive-receipts.json",
+          "/tmp/edhr-capacity-fixes-qa-inspection.json"
+        ]
+      },
+      {
+        "id": "deferred-boundaries",
+        "required": true,
+        "category": "requirements",
+        "description": "剩余性能/历史与用户暂缓事项保留，未偷改页面、迁移或业务政策",
+        "method": "inspection",
+        "command": "inspect diff and open-risk explanations",
+        "outcome": "passed",
+        "evidence": [
+          "docs/development/branch-review-20261026-capacity-fixes/README.md",
+          "/tmp/edhr-capacity-fixes-qa-inspection.json"
+        ]
+      },
+      {
+        "id": "outer-transaction-locks",
+        "required": true,
+        "category": "database",
+        "description": "额外PG探针确认锁顺序、等待后新值、外层事务持锁与提交释放",
+        "method": "automated-test",
+        "command": "javac/java /tmp/DhrCapacityLockProbe.java against exported D classes and unchanged fixture",
+        "outcome": "passed",
+        "evidence": [
+          "/tmp/DhrCapacityLockProbe.java",
+          "/tmp/edhr-capacity-fixes-qa-lock.json"
+        ]
+      }
+    ],
+    "findings": [],
+    "residualRisks": [
+      {
+        "id": "capacity-not-sla",
+        "description": "合成小JSON规模与调用次数，不证明客户并发、峰值堆、完整迁移或全分支审计已完成。",
+        "impact": "客户容量仍需真实规模与负载验证",
+        "mitigation": "沿审计增长模型继续量化，保留pending范围。"
+      },
+      {
+        "id": "remaining-performance",
+        "description": "DHR详情重复比较、附件读取与引用全view风险保持open；本轮新增运行观察不代表已优化。",
+        "impact": "其他读路径仍有可增长成本",
+        "mitigation": "与用户讨论一致性/配置来源后单独处理。"
+      },
+      {
+        "id": "inherited-deferred",
+        "description": "TaskDetail签名与记录变更作废相关DHR high/A12仍按用户要求暂缓。",
+        "impact": "本批通过不是完整生命周期验收",
+        "mitigation": "独立保留原问题和依赖。"
+      },
+      {
+        "id": "batch-memory",
+        "description": "新 currentById 额外同时保留 F 份当前记录 JSON；旧实现仅逐条保留当前记录，而冻结 evidence 本身已保留 F 份来源快照。因此这是新增的峰值内存权衡，不仅是原有成本。10k 小 JSON 合成尚未验证宽记录/并发峰值；非锁查询为单语句快照，不代表整个请求一致视图。",
+        "impact": "数据库往返减少已证实，但宽记录的峰值内存可能增长；没有实际容量失败证据，作为明确剩余风险，不将本批通过解释为容量全面达标。",
+        "mitigation": "下一步讨论分块读取与大 JSON 堆测量，保留完整比较、缺失判定和审批锁顺序/事务持锁，不据风险自动扩大本次修改。"
+      }
+    ],
+    "blockingConditions": []
+  }
+}

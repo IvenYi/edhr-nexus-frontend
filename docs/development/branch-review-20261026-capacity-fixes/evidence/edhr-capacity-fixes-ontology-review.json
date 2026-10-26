@@ -1,0 +1,171 @@
+{
+  "role": "formal ontology modeler",
+  "status": "FINAL",
+  "capturedAt": "2026-10-26T03:03:19.370633+00:00",
+  "sourceCommit": "a192a1d83be3644524ef6e2516619bdf81866678",
+  "targetCommit": "a192a1d83be3644524ef6e2516619bdf81866678",
+  "workingTreeState": "dirty; three product edits are captured by exact hashes; no product/test/knowledge edits by this role",
+  "semanticReviews": [
+    {
+      "id": "DEC-0081-02",
+      "sourcePath": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "status": "reviewed",
+      "conclusion": "consistent",
+      "scope": "查询当前candidate_snapshot/assignee，未改显式委托后责任或原候选来源；SQL分页不重算候选。",
+      "originalMaturity": "specified",
+      "recordSha256": "9fbb0c678580bbde9bb90ddf669418d3e08e73878587b1a67a29ee7f175cd2ae",
+      "sourceScopeIndices": [
+        0,
+        1,
+        2
+      ],
+      "proofDepth": "source-only",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "DEC-0081-04",
+      "sourcePath": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "status": "reviewed",
+      "conclusion": "consistent",
+      "scope": "普通队列DHR_SUMMARY排除条件保持，未开通DHR通用动作。",
+      "originalMaturity": "specified",
+      "recordSha256": "f436433b50fba07a9ee4e76c84b422f6dcd6a9b6e1618cbea473c8157cc19164",
+      "sourceScopeIndices": [
+        0,
+        2
+      ],
+      "proofDepth": "source-only",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "rule.dhr-summary-freeze-version",
+      "sourcePath": "docs/knowledge/rules/dhr-summary.yaml",
+      "status": "reviewed",
+      "conclusion": "consistent",
+      "scope": "冻结成员、正文和摘要不改写；当前值只用于差异投影，历史响应仍经冻结完整性校验。",
+      "originalMaturity": "specified",
+      "recordSha256": "21964e09f2c59db5aece41ff25183d9daa2cd1b921b20499c261c722b4d61b79",
+      "sourceScopeIndices": [
+        3,
+        5,
+        6
+      ],
+      "proofDepth": "source-only",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "rule.dhr-summary-auto-evidence-scope",
+      "sourcePath": "docs/knowledge/rules/dhr-summary.yaml",
+      "status": "reviewed",
+      "conclusion": "consistent",
+      "scope": "按相同version/default tenant读取全部冻结成员；当前记录缺失仍逐个报告；新增实际成员及附件比较保留。",
+      "originalMaturity": "specified",
+      "recordSha256": "59d473bf5d0980261d7c7fe456672692d424d84715294accddeb92f49663721d",
+      "sourceScopeIndices": [
+        3
+      ],
+      "proofDepth": "source-only",
+      "runtimeExecuted": false
+    },
+    {
+      "id": "rule.dhr-summary-block-stale-approval",
+      "sourcePath": "docs/knowledge/rules/dhr-summary.yaml",
+      "status": "reviewed",
+      "conclusion": "consistent",
+      "scope": "独立审批changes(true)保留，非空变化阻断APPROVE；原历史及人工处置保持。FOR UPDATE查询形状改变，锁后新鲜值须PG运行另验。",
+      "originalMaturity": "specified",
+      "recordSha256": "7c9cc84986e71ab70407a6b5f1dfe5e32cb9e2b766428f31ad89fbb28617621a",
+      "sourceScopeIndices": [
+        3,
+        4
+      ],
+      "proofDepth": "source-only",
+      "runtimeExecuted": false
+    }
+  ],
+  "sourceScopes": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "startLine": 20,
+      "endLine": 32,
+      "scope": "todo/done filters retained; SQL LIMIT/OFFSET added",
+      "sha256": "931e0c074858de866b28076b749c9ab397bec01be501d18855572edeb3355d32",
+      "gitBlob": "302963d5838b80a1ffbd5e51786367d868b68ed0",
+      "proofDepth": "source-only",
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "startLine": 89,
+      "endLine": 117,
+      "scope": "authenticated actor, positive paging and long offset retained",
+      "sha256": "0a87d1726cead5cbf8915e0faaab07fdf4cc215ea3e31f815681a72169cc24a9",
+      "gitBlob": "20902dc1485daac506f24a0405680b3b8df25260",
+      "proofDepth": "source-only",
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "startLine": 679,
+      "endLine": 716,
+      "scope": "transfer current assignee/candidate snapshot unchanged; source evidence mechanism unchanged",
+      "sha256": "6897ee2b009ea4122206a121ab7507faf50d2d8d06105ae2b41ac0d16e7a3796",
+      "gitBlob": "4d5161718b73e31b952552df2e7e7c0db224f6c9",
+      "proofDepth": "source-only",
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "startLine": 26,
+      "endLine": 87,
+      "scope": "batch map then same ordered frozen comparison; missing live row reports change; new records and attachments remain separately compared",
+      "sha256": "f7480ed96318e7a29e45e0319b765714aace4bebe02f35468cab7f202755817a",
+      "gitBlob": "921cb84cc84f4081698e7101b1502a14358750da",
+      "proofDepth": "source-only",
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "startLine": 75,
+      "endLine": 151,
+      "scope": "detail authorization and fresh locking act path remain; workflow then object then DHR locks; stale APPROVE blocks before completion/audit",
+      "sha256": "42cf405959931f1ab74b046a32267cf4041723257dfd7a7f4d9a9bbcf30fb932",
+      "gitBlob": "04f97eb65bb39a368896432fcf24183e17712ebe",
+      "proofDepth": "source-only",
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "startLine": 81,
+      "endLine": 117,
+      "scope": "frozen integrity remains before comparison; live data not substituted into frozen response",
+      "sha256": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+      "gitBlob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "proofDepth": "source-only",
+      "runtimeExecuted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "startLine": 310,
+      "endLine": 350,
+      "scope": "frozen membership inserted at submit; no new update path",
+      "sha256": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+      "gitBlob": "3307bdf7f2891f1218f1fc7051da5abbafca66e1",
+      "proofDepth": "source-only",
+      "runtimeExecuted": false
+    }
+  ],
+  "limits": [
+    "Five limited semantic scopes, not complete rule/lifecycle/whole ontology audit.",
+    "No Maven, PostgreSQL, browser, load, migration or independent quality tests executed by this role.",
+    "Batch map still materializes current JSON proportional to frozen evidence count; no memory bound claim.",
+    "Nonlocking batch reads one statement snapshot rather than sequential per-record snapshots; no whole request consistent view claim.",
+    "FOR UPDATE lock wait freshness/order and exact queue rows require primary tests and fresh independent quality.",
+    "TaskDetail signature page, A12/record change and void, two old DHR high and other ontology gaps remain deferred/open.",
+    "Full multi-tenant workflow isolation remains unresolved non-MVP question; default tenant predicates do not prove full isolation."
+  ],
+  "handoffCorrections": [
+    "decisionPackage affectedFiles must include workflow and tests at final candidate",
+    "impactAnalysis structured list items should match unified handoff contract before final quality"
+  ]
+}

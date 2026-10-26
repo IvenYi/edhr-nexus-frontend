@@ -1,0 +1,307 @@
+{
+  "testedCommit": "630c8c6786437d144cdb3d90fb1e7e95f478e7f4",
+  "exportPath": "/tmp/edhr-capacity-qa-dhr",
+  "exitCode": 0,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.production.service.DhrEvidenceBatchPostgresTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "26e3d150d7c2c5e0abb37f04f3a5bd323cd410f6190616343162a33ff3164a68",
+      "cases": [
+        {
+          "name": "comparisonQueryCountIsConstantForGrowingEvidence(int)[1]",
+          "passed": true
+        },
+        {
+          "name": "comparisonQueryCountIsConstantForGrowingEvidence(int)[2]",
+          "passed": true
+        },
+        {
+          "name": "comparisonQueryCountIsConstantForGrowingEvidence(int)[3]",
+          "passed": true
+        },
+        {
+          "name": "comparisonQueryCountIsConstantForGrowingEvidence(int)[4]",
+          "passed": true
+        },
+        {
+          "name": "emptyFrozenSetStillReportsNewMembersAndInvalidVersionKeepsExistingBehavior",
+          "passed": true
+        },
+        {
+          "name": "missingForeignChangedAndNewMembersRemainVisibleInOriginalOrder",
+          "passed": true
+        },
+        {
+          "name": "lockedComparisonWaitsForWriterAndUsesCommittedValues",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "69e4faa3f90af29db5ed99f3388894ef0ae568a14065b0937b067fca4d9b25bc",
+      "cases": [
+        {
+          "name": "incompleteFrozenManualReviewBlocksApprovalButAllowsReturn",
+          "passed": true
+        },
+        {
+          "name": "realWorkflowReturnResubmitSignAndApprovedImpactPreserveHistory",
+          "passed": true
+        },
+        {
+          "name": "concurrentApprovalCreatesOnlyOneOutcomeAndSignature",
+          "passed": true
+        },
+        {
+          "name": "reviewDetailCurrentlyComparesTheSameFrozenVersionTwice",
+          "passed": true
+        },
+        {
+          "name": "newlyAppearingRecordAndAttachmentBlockApprovalWithoutChangingFrozenVersion",
+          "passed": true
+        },
+        {
+          "name": "legacyPendingReviewCannotApproveUnfinishedUnincludedCustomCopyButCanReturn",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "83b18e99eb782846e2be71352b1ba7f216c5cb5a5d66a3f0c6cfaef2d8407371",
+      "cases": [
+        {
+          "name": "personalListAndDetailCannotLeakAnotherUsersTask",
+          "passed": true
+        },
+        {
+          "name": "frozenButtonVisibilityOpinionAndSignatureAreEnforcedOnServer",
+          "passed": true
+        },
+        {
+          "name": "approvalRequiresUnchangedEvidenceAndCurrentHashButDoesNotAutoReturn",
+          "passed": true
+        },
+        {
+          "name": "approvalSeparatesRuntimeOutcomeFromFrozenEvidenceAndRejectsSecondAction",
+          "passed": true
+        },
+        {
+          "name": "signedReviewChecksNamedSignerAndRecordsBothIdentities",
+          "passed": true
+        },
+        {
+          "name": "missingFrozenFormOriginalBlocksApprovalButNotReturn",
+          "passed": true
+        },
+        {
+          "name": "intermediateApprovalKeepsPendingAndAuditFailureRollsBackOutcome",
+          "passed": true
+        },
+        {
+          "name": "humanReturnAllowsChangedEvidenceAndCreatesNextDraftOnlyExplicitly",
+          "passed": true
+        },
+        {
+          "name": "missingAndNewRecordsBothAffectCompleteEvidenceScope",
+          "passed": true
+        },
+        {
+          "name": "unreadableLiveValuesAreReportedAsImpactAndBlockApproval",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "7d76550dbfdf0e105d2de3f97f3af47f9b08a7ab023e27d8a0b9c91383c5909c",
+      "cases": [
+        {
+          "name": "auditFailureRollsBackDraftAndStatus",
+          "passed": true
+        },
+        {
+          "name": "unnumberedOptionalCustomCopyBlocksSummaryEvenWhenNotPlaced",
+          "passed": true
+        },
+        {
+          "name": "partialDisplayPlacementStillFreezesAllActualEvidence",
+          "passed": true
+        },
+        {
+          "name": "missingFormOriginalBlocksSubmitWithoutDiscardingDraft",
+          "passed": true
+        },
+        {
+          "name": "recoveredDraftRequiresFreshScopeSaveAndManualCheckBeforeFreezing",
+          "passed": true
+        },
+        {
+          "name": "failedSubmitRetainsSavedRevisionAndSuccessfulRetryFreezesEvidence",
+          "passed": true
+        },
+        {
+          "name": "directoryProjectionKeepsLongIdsExactWithoutMutatingFrozenData",
+          "passed": true
+        },
+        {
+          "name": "explicitReorganizationPreservesOriginalEvidenceAndChecksVersionAndReason",
+          "passed": true
+        },
+        {
+          "name": "historicalVersionDoesNotRequireReadableLiveFormValues",
+          "passed": true
+        },
+        {
+          "name": "savesRecordBeforeAndAfterAndRejectStaleRevisionWithoutChangingData",
+          "passed": true
+        },
+        {
+          "name": "historicalVersionDoesNotReturnLiveFormValuesOutsideFrozenCandidates",
+          "passed": true
+        },
+        {
+          "name": "sourceCopiesMayFreezeAtSeparateDirectoriesOrInterleavedPositions",
+          "passed": true
+        },
+        {
+          "name": "changedFrozenAttachmentListBlocksHistoricalVersionRead",
+          "passed": true
+        },
+        {
+          "name": "summaryDisplayNameRejectsBlankAndOversizedValues",
+          "passed": true
+        },
+        {
+          "name": "requiredReviewUsesFrozenBindingAndFailedWorkflowRollsBackSubmission",
+          "passed": true
+        },
+        {
+          "name": "changedFrozenCandidateCannotBypassOriginalFileCheck",
+          "passed": true
+        },
+        {
+          "name": "newSourceRecordAfterDraftRequiresFreshCheckAndIsNeverSilentlyOmitted",
+          "passed": true
+        },
+        {
+          "name": "submitRequiresAuditableManualCheckBeforeFreezing",
+          "passed": true
+        },
+        {
+          "name": "directoryDisplayNameSurvivesDraftFreezeAndReorganizationWithoutChangingBase",
+          "passed": true
+        },
+        {
+          "name": "summaryDisplayNameIsFrozenWithoutChangingSourceAndSurvivesReorganization",
+          "passed": true
+        },
+        {
+          "name": "optionalInstanceOrderSurvivesDraftFreezeReadAndReorganization",
+          "passed": true
+        },
+        {
+          "name": "directoryRenameCannotMoveReorderDuplicateOrUseInvalidNames",
+          "passed": true
+        },
+        {
+          "name": "submitAuditFailureRollsBackVersionEvidenceAndDraftDeletion",
+          "passed": true
+        },
+        {
+          "name": "staleScopeAndIncompleteSupplementBlockSubmission",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrSummaryServiceTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "95e292fbb94eb8dc099cd49a7280d94335ad62aaf9292f643b488125eade4f20",
+      "cases": [
+        {
+          "name": "placementsAutoIncludeEveryActualInstanceWithoutManualSelection",
+          "passed": true
+        },
+        {
+          "name": "sameInstanceCannotBePlacedTwiceAndIncompleteEvidenceRemainsVisible",
+          "passed": true
+        },
+        {
+          "name": "requiredBaseDirectoryItemMustContainACompletedDirectInstance",
+          "passed": true
+        },
+        {
+          "name": "submitRequiresTheExactSavedDraftRevision",
+          "passed": true
+        },
+        {
+          "name": "overlaySupportsArbitraryDepthButRejectsCycles",
+          "passed": true
+        },
+        {
+          "name": "existingDraftRequiresExplicitMatchingRevision",
+          "passed": true
+        },
+        {
+          "name": "sourceGroupingDoesNotRestrictIndividualPlacementOrOrder",
+          "passed": true
+        },
+        {
+          "name": "placementOrderIsPreservedAndInsertionAnchorMustBelongToTargetDirectory",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionReferenceCapacityObservationTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "941bdea1612d93b6bfc9a156cc589cd28c22ded676530463c1e3929e61b5cce9",
+      "cases": [
+        {
+          "name": "referenceLookupCurrentlyBuildsControlsForEveryConfiguredForm(int)[1]",
+          "passed": true
+        },
+        {
+          "name": "referenceLookupCurrentlyBuildsControlsForEveryConfiguredForm(int)[2]",
+          "passed": true
+        },
+        {
+          "name": "referenceLookupCurrentlyBuildsControlsForEveryConfiguredForm(int)[3]",
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 58,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "privateLogSha256": "455c5d16736632fb909cd770fd078fa29fceccb2fbb04a92f380236e4e982470",
+  "rawLogsAndXmlArchived": false
+}

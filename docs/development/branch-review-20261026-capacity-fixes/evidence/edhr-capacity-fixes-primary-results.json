@@ -1,0 +1,589 @@
+{
+  "suites": [
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowQueuePaginationPostgresTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "30f144958974e2cde4bc0a84698d4f57ffad1025ddf39051c87df12de451ea60",
+      "reportMtime": 1792984080.5671916,
+      "cases": [
+        {
+          "name": "smallHttpPageOnlyMaterializesRequestedTaskEntities(String, int)[1]",
+          "passed": true
+        },
+        {
+          "name": "smallHttpPageOnlyMaterializesRequestedTaskEntities(String, int)[2]",
+          "passed": true
+        },
+        {
+          "name": "smallHttpPageOnlyMaterializesRequestedTaskEntities(String, int)[3]",
+          "passed": true
+        },
+        {
+          "name": "smallHttpPageOnlyMaterializesRequestedTaskEntities(String, int)[4]",
+          "passed": true
+        },
+        {
+          "name": "smallHttpPageOnlyMaterializesRequestedTaskEntities(String, int)[5]",
+          "passed": true
+        },
+        {
+          "name": "smallHttpPageOnlyMaterializesRequestedTaskEntities(String, int)[6]",
+          "passed": true
+        },
+        {
+          "name": "authenticationAndInvalidPageGuardsIssueNoTaskSelectAndDoNotWrite(String)[1]",
+          "passed": true
+        },
+        {
+          "name": "authenticationAndInvalidPageGuardsIssueNoTaskSelectAndDoNotWrite(String)[2]",
+          "passed": true
+        },
+        {
+          "name": "equalTimestampsHaveStableDisjointPages(String)[1]",
+          "passed": true
+        },
+        {
+          "name": "equalTimestampsHaveStableDisjointPages(String)[2]",
+          "passed": true
+        },
+        {
+          "name": "subsequentFinalEmptyAndLargeOffsetPagesStayBounded(String)[1]",
+          "passed": true
+        },
+        {
+          "name": "subsequentFinalEmptyAndLargeOffsetPagesStayBounded(String)[2]",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "d9cd0f633b81686cc9eea03fe41a372490648391d7e139c1e944c175849205d3",
+      "reportMtime": 1792984077.4592378,
+      "cases": [
+        {
+          "name": "doneUsesAuthenticatedOperatorInsteadOfRequestParameter",
+          "passed": true
+        },
+        {
+          "name": "todoUsesAuthenticatedOperatorAndOneDatabaseLookup",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowInstanceAuthorizationIntegrationTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "6e713702c8c12e7326d5bb9bd2e47f1ec91f5a1dc0932d1114e60615abfe3ec6",
+      "reportMtime": 1792984077.0952432,
+      "cases": [
+        {
+          "name": "authorizedDedicatedTerminationKeepsTaskAndLogChangesTogether",
+          "passed": true
+        },
+        {
+          "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[1]",
+          "passed": true
+        },
+        {
+          "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[2]",
+          "passed": true
+        },
+        {
+          "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[3]",
+          "passed": true
+        },
+        {
+          "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[1]",
+          "passed": true
+        },
+        {
+          "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[2]",
+          "passed": true
+        },
+        {
+          "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[3]",
+          "passed": true
+        },
+        {
+          "name": "taskAdministrativeWritesAndTerminationAlreadyRequireInterventionAuthority",
+          "passed": true
+        },
+        {
+          "name": "ordinaryReaderKeepsExistingReadEndpoints",
+          "passed": true
+        },
+        {
+          "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[1]",
+          "passed": true
+        },
+        {
+          "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[2]",
+          "passed": true
+        },
+        {
+          "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[3]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[1]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[2]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[3]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[4]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[5]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[6]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[7]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[8]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[9]",
+          "passed": true
+        },
+        {
+          "name": "candidateCanCompleteThroughEngineWithoutAdministrativeWritePermission",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.workflow.engine.WorkflowTransferPostgresTest",
+      "tests": 23,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "a09d26ca82a77046bc15b18a0b59cabba9c52557dc20e9e7b5c7f87220670582",
+      "reportMtime": 1792984082.427164,
+      "cases": [
+        {
+          "name": "legacyAlreadyTransferredOriginIsMarkedAsPartialRatherThanInvented",
+          "passed": true
+        },
+        {
+          "name": "repeatedDelegationPreservesOriginalSourcesAndOnlyCurrentTargetCanComplete",
+          "passed": true
+        },
+        {
+          "name": "personnelSearchAndCommandUseTheSameTenantAvailabilityWithRealSql",
+          "passed": true
+        },
+        {
+          "name": "concurrentTransfersFromTheSameFormerOperatorAcceptOnlyOneResponsibilityChange",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[1]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[2]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[3]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[4]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[5]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[6]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[7]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[8]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[9]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[10]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[11]",
+          "passed": true
+        },
+        {
+          "name": "realAuditInsertFailureRollsBackResponsibilityAndActionLog",
+          "passed": true
+        },
+        {
+          "name": "endedTaskRejectsSearchAndTransferWithoutWrites(String)[1]",
+          "passed": true
+        },
+        {
+          "name": "endedTaskRejectsSearchAndTransferWithoutWrites(String)[2]",
+          "passed": true
+        },
+        {
+          "name": "dhrTaskStillCannotUseGenericSearchTransferOrQueue",
+          "passed": true
+        },
+        {
+          "name": "formerCandidateWaitingBehindTransferCannotCompleteFromItsCachedSnapshot",
+          "passed": true
+        },
+        {
+          "name": "terminatedInstanceRejectsBothEntrypoints",
+          "passed": true
+        },
+        {
+          "name": "controllerUsesAuthenticatedActorAndRequiresTheTargetAndReasonInJson",
+          "passed": true
+        },
+        {
+          "name": "unrestrictedTaskBecomesTargetOnlyWithoutLosingTheOpenOrigin",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrEvidenceBatchPostgresTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "1a4999809bf7d1abaa70aad8a6fdfa50f85125cdfe2d9d6ef1ee51416ed983cf",
+      "reportMtime": 1792983999.0604005,
+      "cases": [
+        {
+          "name": "comparisonQueryCountIsConstantForGrowingEvidence(int)[1]",
+          "passed": true
+        },
+        {
+          "name": "comparisonQueryCountIsConstantForGrowingEvidence(int)[2]",
+          "passed": true
+        },
+        {
+          "name": "comparisonQueryCountIsConstantForGrowingEvidence(int)[3]",
+          "passed": true
+        },
+        {
+          "name": "comparisonQueryCountIsConstantForGrowingEvidence(int)[4]",
+          "passed": true
+        },
+        {
+          "name": "emptyFrozenSetStillReportsNewMembersAndInvalidVersionKeepsExistingBehavior",
+          "passed": true
+        },
+        {
+          "name": "missingForeignChangedAndNewMembersRemainVisibleInOriginalOrder",
+          "passed": true
+        },
+        {
+          "name": "lockedComparisonWaitsForWriterAndUsesCommittedValues",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "c6c2891f0b1ff5b73778726ca87390c940ae9381cd858e330060a567e43142f5",
+      "reportMtime": 1792983995.0444605,
+      "cases": [
+        {
+          "name": "personalListAndDetailCannotLeakAnotherUsersTask",
+          "passed": true
+        },
+        {
+          "name": "frozenButtonVisibilityOpinionAndSignatureAreEnforcedOnServer",
+          "passed": true
+        },
+        {
+          "name": "approvalRequiresUnchangedEvidenceAndCurrentHashButDoesNotAutoReturn",
+          "passed": true
+        },
+        {
+          "name": "approvalSeparatesRuntimeOutcomeFromFrozenEvidenceAndRejectsSecondAction",
+          "passed": true
+        },
+        {
+          "name": "signedReviewChecksNamedSignerAndRecordsBothIdentities",
+          "passed": true
+        },
+        {
+          "name": "missingFrozenFormOriginalBlocksApprovalButNotReturn",
+          "passed": true
+        },
+        {
+          "name": "intermediateApprovalKeepsPendingAndAuditFailureRollsBackOutcome",
+          "passed": true
+        },
+        {
+          "name": "humanReturnAllowsChangedEvidenceAndCreatesNextDraftOnlyExplicitly",
+          "passed": true
+        },
+        {
+          "name": "missingAndNewRecordsBothAffectCompleteEvidenceScope",
+          "passed": true
+        },
+        {
+          "name": "unreadableLiveValuesAreReportedAsImpactAndBlockApproval",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "22f8ef1a3e395c7e7e6c8b59de9430e53b365badbbc4e0b1249bcd6a446dc3dc",
+      "reportMtime": 1792983994.1524737,
+      "cases": [
+        {
+          "name": "incompleteFrozenManualReviewBlocksApprovalButAllowsReturn",
+          "passed": true
+        },
+        {
+          "name": "realWorkflowReturnResubmitSignAndApprovedImpactPreserveHistory",
+          "passed": true
+        },
+        {
+          "name": "concurrentApprovalCreatesOnlyOneOutcomeAndSignature",
+          "passed": true
+        },
+        {
+          "name": "reviewDetailCurrentlyComparesTheSameFrozenVersionTwice",
+          "passed": true
+        },
+        {
+          "name": "newlyAppearingRecordAndAttachmentBlockApprovalWithoutChangingFrozenVersion",
+          "passed": true
+        },
+        {
+          "name": "legacyPendingReviewCannotApproveUnfinishedUnincludedCustomCopyButCanReturn",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "8b4c8488ed6ad33edf23a5f8fea634faf5d7971c32d3e6aba01293cfdcc5405c",
+      "reportMtime": 1792983995.6844509,
+      "cases": [
+        {
+          "name": "auditFailureRollsBackDraftAndStatus",
+          "passed": true
+        },
+        {
+          "name": "unnumberedOptionalCustomCopyBlocksSummaryEvenWhenNotPlaced",
+          "passed": true
+        },
+        {
+          "name": "partialDisplayPlacementStillFreezesAllActualEvidence",
+          "passed": true
+        },
+        {
+          "name": "missingFormOriginalBlocksSubmitWithoutDiscardingDraft",
+          "passed": true
+        },
+        {
+          "name": "recoveredDraftRequiresFreshScopeSaveAndManualCheckBeforeFreezing",
+          "passed": true
+        },
+        {
+          "name": "failedSubmitRetainsSavedRevisionAndSuccessfulRetryFreezesEvidence",
+          "passed": true
+        },
+        {
+          "name": "directoryProjectionKeepsLongIdsExactWithoutMutatingFrozenData",
+          "passed": true
+        },
+        {
+          "name": "explicitReorganizationPreservesOriginalEvidenceAndChecksVersionAndReason",
+          "passed": true
+        },
+        {
+          "name": "historicalVersionDoesNotRequireReadableLiveFormValues",
+          "passed": true
+        },
+        {
+          "name": "savesRecordBeforeAndAfterAndRejectStaleRevisionWithoutChangingData",
+          "passed": true
+        },
+        {
+          "name": "historicalVersionDoesNotReturnLiveFormValuesOutsideFrozenCandidates",
+          "passed": true
+        },
+        {
+          "name": "sourceCopiesMayFreezeAtSeparateDirectoriesOrInterleavedPositions",
+          "passed": true
+        },
+        {
+          "name": "changedFrozenAttachmentListBlocksHistoricalVersionRead",
+          "passed": true
+        },
+        {
+          "name": "summaryDisplayNameRejectsBlankAndOversizedValues",
+          "passed": true
+        },
+        {
+          "name": "requiredReviewUsesFrozenBindingAndFailedWorkflowRollsBackSubmission",
+          "passed": true
+        },
+        {
+          "name": "changedFrozenCandidateCannotBypassOriginalFileCheck",
+          "passed": true
+        },
+        {
+          "name": "newSourceRecordAfterDraftRequiresFreshCheckAndIsNeverSilentlyOmitted",
+          "passed": true
+        },
+        {
+          "name": "submitRequiresAuditableManualCheckBeforeFreezing",
+          "passed": true
+        },
+        {
+          "name": "directoryDisplayNameSurvivesDraftFreezeAndReorganizationWithoutChangingBase",
+          "passed": true
+        },
+        {
+          "name": "summaryDisplayNameIsFrozenWithoutChangingSourceAndSurvivesReorganization",
+          "passed": true
+        },
+        {
+          "name": "optionalInstanceOrderSurvivesDraftFreezeReadAndReorganization",
+          "passed": true
+        },
+        {
+          "name": "directoryRenameCannotMoveReorderDuplicateOrUseInvalidNames",
+          "passed": true
+        },
+        {
+          "name": "submitAuditFailureRollsBackVersionEvidenceAndDraftDeletion",
+          "passed": true
+        },
+        {
+          "name": "staleScopeAndIncompleteSupplementBlockSubmission",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrSummaryServiceTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "0a1d3cd12504e2f71d9307ddb2c491fc035d6e52d14abc49f8163b6b8458898f",
+      "reportMtime": 1792983996.0244458,
+      "cases": [
+        {
+          "name": "placementsAutoIncludeEveryActualInstanceWithoutManualSelection",
+          "passed": true
+        },
+        {
+          "name": "sameInstanceCannotBePlacedTwiceAndIncompleteEvidenceRemainsVisible",
+          "passed": true
+        },
+        {
+          "name": "requiredBaseDirectoryItemMustContainACompletedDirectInstance",
+          "passed": true
+        },
+        {
+          "name": "submitRequiresTheExactSavedDraftRevision",
+          "passed": true
+        },
+        {
+          "name": "overlaySupportsArbitraryDepthButRejectsCycles",
+          "passed": true
+        },
+        {
+          "name": "existingDraftRequiresExplicitMatchingRevision",
+          "passed": true
+        },
+        {
+          "name": "sourceGroupingDoesNotRestrictIndividualPlacementOrOrder",
+          "passed": true
+        },
+        {
+          "name": "placementOrderIsPreservedAndInsertionAnchorMustBelongToTargetDirectory",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionReferenceCapacityObservationTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "193ff9333a3640728a55ec019062819891e29cd1b1e7e4314096dd7b6454e68a",
+      "reportMtime": 1792983997.0044312,
+      "cases": [
+        {
+          "name": "referenceLookupCurrentlyBuildsControlsForEveryConfiguredForm(int)[1]",
+          "passed": true
+        },
+        {
+          "name": "referenceLookupCurrentlyBuildsControlsForEveryConfiguredForm(int)[2]",
+          "passed": true
+        },
+        {
+          "name": "referenceLookupCurrentlyBuildsControlsForEveryConfiguredForm(int)[3]",
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 117,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "qualification": "Native PostgreSQL: workflow pagination/authorization/delegation and DHR batch. Existing DHR lifecycle/persistence suites use H2; reference observation uses real view/engine with mocked repositories. No browser, full migration or customer SLA claim."
+}
