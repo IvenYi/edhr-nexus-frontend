@@ -1,0 +1,133 @@
+{
+  "baseCommit": "a192a1d83be3644524ef6e2516619bdf81866678",
+  "combinedPrimaryTestedCommit": "8e9cefe45a6d8b2e2e40722d7af6984e6fc866aa",
+  "independentTestedCommits": {
+    "queue": "3c32730af3236f183be40141edabd43b7c3867ac",
+    "dhr": "630c8c6786437d144cdb3d90fb1e7e95f478e7f4"
+  },
+  "mergeTree": "db9b579599040edd2dae49b7f0421c0f1cea5272",
+  "combinedTree": "db9b579599040edd2dae49b7f0421c0f1cea5272",
+  "targetAfterFinalFetch": "a192a1d83be3644524ef6e2516619bdf81866678",
+  "workingTreesClean": true,
+  "changedPaths": {
+    "queue": [
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowQueuePaginationPostgresTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskControllerTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java"
+    ],
+    "dhr": [
+      "docs/development/branch-review-20261026-capacity-fixes/README.md",
+      "docs/development/branch-review-20261026-capacity-fixes/collect-results.py",
+      "docs/development/branch-review-20261026-capacity-fixes/decision-package.yaml",
+      "docs/development/branch-review-20261026-capacity-fixes/evidence/archive-receipts.json",
+      "docs/development/branch-review-20261026-capacity-fixes/evidence/edhr-capacity-fixes-first-summary.json",
+      "docs/development/branch-review-20261026-capacity-fixes/evidence/edhr-capacity-fixes-ontology-followup-review.json",
+      "docs/development/branch-review-20261026-capacity-fixes/evidence/edhr-capacity-fixes-ontology-followup.yaml",
+      "docs/development/branch-review-20261026-capacity-fixes/evidence/edhr-capacity-fixes-ontology-review.json",
+      "docs/development/branch-review-20261026-capacity-fixes/evidence/edhr-capacity-fixes-ontology.yaml",
+      "docs/development/branch-review-20261026-capacity-fixes/evidence/edhr-capacity-fixes-primary-results.json",
+      "docs/development/branch-review-20261026-capacity-fixes/evidence/edhr-capacity-fixes-ties-observations.jsonl",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrEvidenceBatchPostgresTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionReferenceCapacityObservationTest.java"
+    ]
+  },
+  "sourceProofs": [
+    {
+      "candidate": "3c32730af3236f183be40141edabd43b7c3867ac",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sha256": "0a87d1726cead5cbf8915e0faaab07fdf4cc215ea3e31f815681a72169cc24a9",
+      "blob": "20902dc1485daac506f24a0405680b3b8df25260",
+      "exportUnmodified": true
+    },
+    {
+      "candidate": "3c32730af3236f183be40141edabd43b7c3867ac",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "sha256": "305a8d1caece1bcb7cf9796161c0624a18b9c0cfcf027be4ca974ac1ab0956cf",
+      "blob": "5c00ebe61c1b021ddb5ffa2ea707137475b966e5",
+      "exportUnmodified": true
+    },
+    {
+      "candidate": "3c32730af3236f183be40141edabd43b7c3867ac",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowQueuePaginationPostgresTest.java",
+      "sha256": "186de035b4a04f6e88e81500f001e1d99b24cc29c8f1b431aa1c536f93d21830",
+      "blob": "f5279712cd4b4a1647eab5beab4642331db91bd6",
+      "exportUnmodified": true
+    },
+    {
+      "candidate": "3c32730af3236f183be40141edabd43b7c3867ac",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskControllerTest.java",
+      "sha256": "aa6c3af4ed2fea79c37d92c2e7ea0977f9547a8bd0e43a18db84c9052fa700e3",
+      "blob": "390f1ca31c320ecb681655f78c3feabc196a2402",
+      "exportUnmodified": true
+    },
+    {
+      "candidate": "3c32730af3236f183be40141edabd43b7c3867ac",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java",
+      "sha256": "e1eec50df9c931fd2671c31ec22c5e8aca241e8151a9302543d838f1884999c5",
+      "blob": "25953775cbb758aa6b50235595137f5e47f46228",
+      "exportUnmodified": true
+    },
+    {
+      "candidate": "630c8c6786437d144cdb3d90fb1e7e95f478e7f4",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "sha256": "f7480ed96318e7a29e45e0319b765714aace4bebe02f35468cab7f202755817a",
+      "blob": "921cb84cc84f4081698e7101b1502a14358750da",
+      "exportUnmodified": true
+    },
+    {
+      "candidate": "630c8c6786437d144cdb3d90fb1e7e95f478e7f4",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrEvidenceBatchPostgresTest.java",
+      "sha256": "7234a43424265b3f3376da6ed0d1064db32a558b370346644f3d8d6fcf122a64",
+      "blob": "0e0d544397935818cf70a71d7c4f20b98721704f",
+      "exportUnmodified": true
+    },
+    {
+      "candidate": "630c8c6786437d144cdb3d90fb1e7e95f478e7f4",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+      "sha256": "b0156e4671d0f7a60ff7400f4fabf180ce0cbe544c02c515a7dc29f6c21ecbfb",
+      "blob": "a4c150c33782aba28e88d625cabd50d6592a35e5",
+      "exportUnmodified": true
+    },
+    {
+      "candidate": "630c8c6786437d144cdb3d90fb1e7e95f478e7f4",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionReferenceCapacityObservationTest.java",
+      "sha256": "ffa0f511c6629bed7b677d7920e7fa3f96ddf76cac81103892adea69bd7e07db",
+      "blob": "18e3ce002bad986294cee6a17cd63460a8079838",
+      "exportUnmodified": true
+    }
+  ],
+  "reviewScopes": [
+    "WorkflowTaskController.todo/done authentication, positive bounds, long offset, array response",
+    "WorkflowTaskRepository.todo/done original filtering, native bound LIMIT/OFFSET, ID tie-break and NULL order",
+    "DhrEvidenceImpactService.changes immutable membership, tenant bound current lookup, missing record difference, ordered lock and retained attachments/new members",
+    "DhrReviewService.detail/act and DhrSummaryService.version distinct read vs lock-time comparison",
+    "ProductionExecutionService.references/get/view full-view work and actual observation test boundaries"
+  ],
+  "knowledgeReview": [
+    "DEC-0081-02/04",
+    "rule.dhr-summary-freeze-version",
+    "rule.dhr-summary-auto-evidence-scope",
+    "rule.dhr-summary-block-stale-approval"
+  ],
+  "knowledgeUnchanged": true,
+  "qualityIndependence": {
+    "productEdits": false,
+    "testEdits": false,
+    "subagents": false,
+    "scratchProbeOnly": true
+  },
+  "runtimeQualification": {
+    "nativePostgresTests": 64,
+    "h2DhrTests": 48,
+    "mockRepositoryTests": 5,
+    "additionalPgTransactionProbe": 1,
+    "browserExecuted": false,
+    "fullMigrationExecuted": false,
+    "customerSlaOrPeakHeapMeasured": false,
+    "combinedCandidateRuntime": "Primary117; independent runs are separate Q59 and D58, not independent integrated runtime."
+  }
+}

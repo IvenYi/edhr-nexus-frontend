@@ -412,7 +412,7 @@ class WorkflowTransferPostgresTest {
     }
 
     private String taskSnapshot() { return jdbc.queryForObject("SELECT candidate_snapshot::text FROM workflow_task WHERE id=10", String.class); }
-    private List<Long> todo(String actor) { return tasks.findTodoForUser(actor, "[\"" + actor + "\"]").stream().map(WorkflowTask::getId).toList(); }
+    private List<Long> todo(String actor) { return tasks.findTodoForUser(actor, "[\"" + actor + "\"]", Integer.MAX_VALUE, 0L).stream().map(WorkflowTask::getId).toList(); }
     private String row(String table) { return jdbc.queryForObject("SELECT coalesce(jsonb_agg(to_jsonb(t) ORDER BY id)::text,'[]') FROM " + table + " t", String.class); }
     private Map<String, String> state() {
         Map<String, String> rows = new LinkedHashMap<>();

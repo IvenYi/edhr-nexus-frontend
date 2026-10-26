@@ -96,13 +96,8 @@ public class WorkflowTaskController {
         if (page < 1 || size < 1) {
             throw new BusinessException(ErrorCode.GENERAL_001, "页码和每页条数必须大于0");
         }
-        List<WorkflowTask> tasks = workflowTaskRepository.findTodoForUser(assigneeId, "[\"" + assigneeId + "\"]");
-        long start = (long) (page - 1) * size;
-        if (start >= tasks.size()) {
-            return ApiResponse.success(List.of());
-        }
-        int end = (int) Math.min(start + size, tasks.size());
-        return ApiResponse.success(tasks.subList((int) start, end));
+        return ApiResponse.success(workflowTaskRepository.findTodoForUser(
+                assigneeId, "[\"" + assigneeId + "\"]", size, (long) (page - 1) * size));
     }
 
     /**
@@ -117,14 +112,8 @@ public class WorkflowTaskController {
         if (page < 1 || size < 1) {
             throw new BusinessException(ErrorCode.GENERAL_001, "页码和每页条数必须大于0");
         }
-        List<WorkflowTask> doneTasks = workflowTaskRepository.findDoneForUser(assigneeId);
-
-        long start = (long) (page - 1) * size;
-        if (start >= doneTasks.size()) {
-            return ApiResponse.success(List.of());
-        }
-        int end = (int) Math.min(start + size, doneTasks.size());
-        return ApiResponse.success(doneTasks.subList((int) start, end));
+        return ApiResponse.success(workflowTaskRepository.findDoneForUser(
+                assigneeId, size, (long) (page - 1) * size));
     }
 
     // ======================== Task Actions ========================

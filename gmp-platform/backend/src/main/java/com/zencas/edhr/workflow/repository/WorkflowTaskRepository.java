@@ -22,13 +22,14 @@ public interface WorkflowTaskRepository extends JpaRepository<WorkflowTask, Long
             + "and not exists (select 1 from workflow_instance i where i.id=t.instance_id and i.business_type='DHR_SUMMARY') "
             + "and (t.assignee_id = :userId or (t.candidate_snapshot -> 'userIds') @> cast(:userIdJson as jsonb) "
             + "or t.candidate_snapshot ->> 'unrestricted' = 'true') "
-            + "order by t.created_at desc", nativeQuery = true)
-    List<WorkflowTask> findTodoForUser(@Param("userId") String userId, @Param("userIdJson") String userIdJson);
+            + "order by t.created_at desc, t.id desc limit :limit offset :offset", nativeQuery = true)
+    List<WorkflowTask> findTodoForUser(@Param("userId") String userId, @Param("userIdJson") String userIdJson,
+            @Param("limit") int limit, @Param("offset") long offset);
 
     @Query(value = "select * from workflow_task t where t.assignee_id = :userId "
             + "and not exists (select 1 from workflow_instance i where i.id=t.instance_id and i.business_type='DHR_SUMMARY') "
-            + "and t.status in ('COMPLETED','REJECTED','TRANSFERRED') order by t.completed_at desc nulls last", nativeQuery = true)
-    List<WorkflowTask> findDoneForUser(@Param("userId") String userId);
+            + "and t.status in ('COMPLETED','REJECTED','TRANSFERRED') order by t.completed_at desc nulls last, t.id desc limit :limit offset :offset", nativeQuery = true)
+    List<WorkflowTask> findDoneForUser(@Param("userId") String userId, @Param("limit") int limit, @Param("offset") long offset);
 
     @Query(value = "select * from workflow_task t where t.status in ('PENDING', 'PROCESSING') "
             + "and ((t.candidate_snapshot -> 'userIds') @> cast(:userIdJson as jsonb) "
