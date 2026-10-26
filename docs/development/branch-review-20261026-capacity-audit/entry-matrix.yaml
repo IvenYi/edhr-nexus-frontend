@@ -7,7 +7,7 @@ wholeFilesCompleted: 0
 entries:
   - id: entry.workflow-todo-done
     workPackage: W3/W5
-    routes: [GET /api/v1/workflow/tasks/todo, GET /api/v1/workflow/tasks/done]
+    routes: ["GET /api/v1/workflow/tasks/todo", "GET /api/v1/workflow/tasks/done"]
     sourceMap: evidence/workflow/edhr-capacity-workflow-source-map.json
     observedDimensions: {A03: runtime-observed, A06: runtime-observed, A09: runtime-observed, A10: runtime-observed, A21: runtime-observed}
     qualification: 仅两队列小页/实体加载、排序、真实主体伪造参数、他人/DHR排除、匿名/非正页和读前后不变八项，不认证整个权限或任务生命周期。
@@ -16,7 +16,7 @@ entries:
     next: 与用户讨论数据库分页/DTO方案后，按同资格与顺序对照及实际索引/规模验证；当前不改。
   - id: entry.dhr-instance-list
     workPackage: W1/W5
-    routes: [GET /api/v1/dhr-instances]
+    routes: ["GET /api/v1/dhr-instances"]
     sourceMap: evidence/dhr/edhr-capacity-dhr-source-map.json
     observedDimensions: {A09: source-inspected, A10: source-inspected}
     qualification: COUNT+LIMIT/OFFSET及行映射无逐行读取的反证；不是本批实际PG执行计划或宽行测量。
@@ -25,7 +25,7 @@ entries:
     next: 量化COUNT/深页、宽JSON字段及实际索引；不把源码有分页等同容量通过。
   - id: entry.dhr-current-detail
     workPackage: W1/W5
-    routes: [GET /api/v1/dhr-instances/{id}]
+    routes: ["GET /api/v1/dhr-instances/{id}"]
     sourceMap: evidence/dhr/edhr-capacity-dhr-source-map.json
     observedDimensions: {A01: source-inspected, A09: source-inspected, A12: source-inspected}
     qualification: 仅当前证据集合一次批量读取与完整可见性来源，未认证全部DHR规则或内存/响应体容量。
@@ -34,7 +34,7 @@ entries:
     next: 单DHR表单份/动态行/字节增长测量，保留完整来源不可随意裁剪。
   - id: entry.dhr-frozen-version
     workPackage: W1/W5
-    routes: [GET /api/v1/dhr-instances/{id}/summary/versions/{versionId}]
+    routes: ["GET /api/v1/dhr-instances/{id}/summary/versions/{versionId}"]
     sourceMap: evidence/dhr/edhr-capacity-dhr-source-map.json
     observedDimensions: {A01: source-inspected, A09: source-inspected, A11: source-inspected, A12: source-inspected, A13: source-inspected}
     qualification: 仅完整性校验及changes直接JDBC调用/附件IO的合法路径静态模型，不是查询次数/IO/时延实测。
@@ -43,7 +43,7 @@ entries:
     next: 合成合法冻结版本的查询计数和批量加载对照方案，先讨论不改。
   - id: entry.dhr-review-detail
     workPackage: W1/W5
-    routes: [GET /api/v1/dhr-reviews/{taskId}]
+    routes: ["GET /api/v1/dhr-reviews/{taskId}"]
     sourceMap: evidence/dhr/edhr-capacity-dhr-source-map.json
     observedDimensions: {A06: source-inspected, A09: source-inspected, A11: source-inspected, A13: source-inspected}
     qualification: 只读展示比较重复与审批锁内重查界限；不改审批政策或暂缓的生命周期能力。
@@ -52,7 +52,7 @@ entries:
     next: 讨论同请求比较时点和文件流式验证；执行合法请求计数/IO对照，保留act锁内新鲜性。
   - id: entry.reference-candidate-query
     workPackage: W2/W5
-    routes: [POST /api/v1/master-data/template-modeling/reference-options]
+    routes: ["POST /api/v1/master-data/template-modeling/reference-options"]
     sourceMap: evidence/primary/edhr-capacity-primary-source-map.json
     semanticEvidence: evidence/ontology/edhr-capacity-ontology-semantic-review.jsonl
     observedDimensions: {A01: source-inspected, A07: source-inspected, A09: source-inspected, A10: source-inspected, A11: source-inspected}
@@ -62,7 +62,7 @@ entries:
     next: 深OFFSET/包含搜索执行计划和大候选数据量验证，保留资格与字典类型范围。
   - id: entry.execution-reference-context
     workPackage: W2/W4/W5
-    routes: [GET /api/v1/production/execution/{id}/references, POST /api/v1/production/execution/{id}/references]
+    routes: ["GET /api/v1/production/execution/{id}/references", "POST /api/v1/production/execution/{id}/references"]
     sourceMap: evidence/primary/edhr-capacity-primary-source-map.json
     observedDimensions: {A09: source-inspected, A10: source-inspected, A11: source-inspected, A12: source-inspected, A19: source-inspected}
     qualification: references→get→view完整详情路径及创建人map复用反证；窄读取仅为方案，不称已提取或优化通过。

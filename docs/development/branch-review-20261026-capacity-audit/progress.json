@@ -1,0 +1,126 @@
+{
+  "schema": "edhr-audit-batch-progress/v1",
+  "level": "L2",
+  "targetBranch": "edhr-dev",
+  "productCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+  "catalogBaseline": "98e874306cb1aeef8e73f1066bfe5afa24dcdff2",
+  "stage": "ready-for-clean-independent-audit-quality",
+  "charterDimensions": 22,
+  "dimensionListingIsNotReviewCompletion": true,
+  "selectedEntryGroups": 7,
+  "inventory": {
+    "trackedPaths": 3458,
+    "classifiedPaths": 3458,
+    "classificationBasis": "inferred-path-classifier",
+    "workPackages": {
+      "W5": 611,
+      "W4": 223,
+      "W0-W7": 2084,
+      "W1": 136,
+      "W2": 216,
+      "W3": 188
+    },
+    "entrypointCandidates": {
+      "http-annotation": 440,
+      "state-definition-candidate": 8,
+      "background-candidate": 1,
+      "frontend-route-candidate": 198
+    },
+    "migrationFiles": 130
+  },
+  "source": {
+    "recordedScopes": 656,
+    "carryStates": {
+      "needs-delta-review": 252,
+      "retained-scoped-evidence": 404
+    },
+    "sourceRelations": {
+      "file-changed": 245,
+      "unchanged": 404,
+      "removed": 7
+    },
+    "wholeFilesCompleted": 0,
+    "sourceImportQualifications": 29,
+    "scopeRecordsAreNotDistinctMethodsOrACompleteDenominator": true
+  },
+  "newSourceScopes": 82,
+  "sourceSplit": {
+    "workflow": 9,
+    "dhr": 26,
+    "primaryReference": 16,
+    "ontology": 31
+  },
+  "semantic": {
+    "currentIds": 2618,
+    "historicalScopedReviews": 114,
+    "historicalConclusions": {
+      "consistent": 109,
+      "superseded": 1,
+      "evidence-gap": 4
+    },
+    "recordRelations": {
+      "unchanged": 102,
+      "record-changed": 12
+    },
+    "evidenceStates": {
+      "needs-delta-review": 101,
+      "retained-scoped-evidence": 13
+    },
+    "maintenanceReports": 41,
+    "newSemanticReviews": 0,
+    "maintenanceIsNotSemanticAcceptance": true
+  },
+  "formalSemanticRowsThisBatch": 6,
+  "formalNewSemanticReviewAuthor": "/root/capacity_ontology_delta",
+  "semanticGeneratorNewReviewZeroMeansNoReviewExecutedByGenerator": true,
+  "findingRecords": 57,
+  "recordsAreNotDistinctDefects": true,
+  "newProductFixes": 0,
+  "performanceRisks": {
+    "records": 4,
+    "state": "pending-discussion",
+    "runtimeObserved": 1,
+    "staticPathConfirmedRuntimePending": 3
+  },
+  "capacityObservation": {
+    "tests": 8,
+    "nativePostgres": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "pageSize": 5,
+    "dataSizes": [
+      100,
+      1000,
+      10000
+    ],
+    "loadedEntitiesEqualsWholeMatchingSet": true,
+    "queriesPerSuccessfulRequest": 1,
+    "notNPlusOneOnQueuePath": true,
+    "scope": "Synthetic JWT/MockMvc/PG through unchanged product; create-drop plus explicit target partial unique; not full baseline or client capacity benchmark",
+    "earlierFixtureIterationsExcluded": 2
+  },
+  "ontology": {
+    "result": "not-applicable",
+    "formalRoleStatus": "FINAL",
+    "knowledgeChanged": false,
+    "wholeKnowledgeAccepted": false
+  },
+  "independentQuality": "pending",
+  "temporaryOwnedPostgres": {
+    "id": "374a59d827c8624aa631a920732ccbd6e194b12edd72786008b5105aaa4b6a2e",
+    "state": "retained-for-final-QA"
+  },
+  "remaining": [
+    "User discussion before performance changes; no capacity limit/SLA invented",
+    "Remaining W2/W3/W4 and full W5/W6/W7 coverage",
+    "Latest route DEC0083/0084 and initialization delta",
+    "252 historical source scopes and101 semantic/named-dependency carry rows need delta",
+    "TaskDetail and record-control/two DHR high/A12 user-deferred",
+    "Four knowledge gaps, old AuditEvent hash and lost historical signature bytes"
+  ],
+  "overallAuditComplete": false,
+  "overallPercent": null,
+  "productKnowledgeSchemaUiChanged": false,
+  "mergeDeployRestorePerformed": false
+}
