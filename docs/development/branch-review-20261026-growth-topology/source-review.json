@@ -1,0 +1,136 @@
+{
+  "baseCommit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+  "scopes": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "sourceLocator": "getRouteGraph",
+      "scope": "parent/version lookup and two ordered list reads",
+      "commit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "225eef64068ea99f345dd715c0555addb94d6174",
+      "sha256": "cf2a6616c713ce884740eed6fd89941dbef6077f26a019eeb888c33abbfc6032",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "sourceLocator": "saveRouteGraph",
+      "scope": "normalize/validate before write; relation-first delete/flush; assigned-ID saveAll and audit",
+      "commit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "225eef64068ea99f345dd715c0555addb94d6174",
+      "sha256": "cf2a6616c713ce884740eed6fd89941dbef6077f26a019eeb888c33abbfc6032",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "sourceLocator": "toRouteNode / toRouteRelation",
+      "scope": "null input guard, defaults, IDs and relation type whitelist",
+      "commit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "225eef64068ea99f345dd715c0555addb94d6174",
+      "sha256": "cf2a6616c713ce884740eed6fd89941dbef6077f26a019eeb888c33abbfc6032",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "sourceLocator": "requireRouteVersion",
+      "scope": "route parent lookup and routeId/versionId membership",
+      "commit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "225eef64068ea99f345dd715c0555addb94d6174",
+      "sha256": "cf2a6616c713ce884740eed6fd89941dbef6077f26a019eeb888c33abbfc6032",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java",
+      "sourceLocator": "validate",
+      "scope": "normal-skeleton acyclic and reachability; global duplicate/self/boundary checks",
+      "commit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "06eac37f5648746f5faff24f02ed713dd5d7d7f7",
+      "sha256": "af8b0f1998a5973a096cd731da14a3f83d5c195db4ce515e30f14ebff7485fc3",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/RouteGraphValidator.java",
+      "sourceLocator": "reachable",
+      "scope": "iterative graph traversal O(V+E)",
+      "commit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "06eac37f5648746f5faff24f02ed713dd5d7d7f7",
+      "sha256": "af8b0f1998a5973a096cd731da14a3f83d5c195db4ce515e30f14ebff7485fc3",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/RouteNodeRepository.java",
+      "sourceLocator": "JpaRepository and declared read/delete methods",
+      "scope": "saveAll inherited, ordered read, derived delete",
+      "commit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "6c09c7d8020786718639fc0cd3f90a0579ba6663",
+      "sha256": "c74c76f9aa34faf6f57d66c070f01f2e98dad8c4d7d3a9f5800f839897fd753c",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/RouteRelationRepository.java",
+      "sourceLocator": "JpaRepository and declared read/delete methods",
+      "scope": "saveAll inherited, ordered read, derived delete",
+      "commit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "59141227fb8c4d2f302616b0fc5d06460c05d94e",
+      "sha256": "0cfd28a5e4cbaf9bb810cdc48fe94ba4df4b78405325358c3ada2b7c537e5805",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/RouteNode.java",
+      "sourceLocator": "ID and lifecycle metadata",
+      "scope": "assigned ID; no Version/Persistable; prePersist timestamp",
+      "commit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "a38a3a5284eda08612f2f40ab64e8f7e8a5e2153",
+      "sha256": "b47f525b3171ebd4949bd463ff47a3e4892655b90b2250b8b6cb204071d4e88a",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/RouteRelation.java",
+      "sourceLocator": "ID and lifecycle metadata",
+      "scope": "assigned ID; no Version/Persistable; prePersist timestamp",
+      "commit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "47eb2c390e72c89ada5f13daadb0b151a513d194",
+      "sha256": "1c59b141be42f18fef7c4584ed0d996b712d5edfce24d3797eea825c4dbb3dfd",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "sourceLocator": "changes currentById and evidence loop",
+      "scope": "current full batch retained alongside frozen evidence; no product edits",
+      "commit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "921cb84cc84f4081698e7101b1502a14358750da",
+      "sha256": "f7480ed96318e7a29e45e0319b765714aace4bebe02f35468cab7f202755817a",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "sourceLocator": "includes",
+      "scope": "current schema and seed only",
+      "commit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "c338c116930773b8d16544d6d8248dbbf67cc489",
+      "sha256": "0e06cad2f497af3e1c3b38cfe04bdd1b155262a8a0992baf7e847ee25f07b821",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "sourceLocator": "preconditions; route/route_node/route_relation/route_version definitions and relevant indexes/FKs",
+      "scope": "fresh-only guard and selected route storage consistency; not every schema object deep review",
+      "commit": "34f7c9d736ac62961330343c64bc610fab41ad1c",
+      "gitBlob": "1e07c52fb8fe9bd81a5e6010cdcfc04c534b1ad7",
+      "sha256": "fbe410de8dc8bbe313db982d485ef3b77d42038ebcdd5fc57215cfbd90e92531",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    }
+  ],
+  "qualification": "13 finite source scopes; overlaps ontology scope; do not sum as unique full-file coverage"
+}
