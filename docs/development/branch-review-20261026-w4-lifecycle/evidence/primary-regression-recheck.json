@@ -1,0 +1,63 @@
+{
+  "label": "primary-regression-after-fixture-fix",
+  "codeAndTestCommit": "fd89fa808459d3267b51bb314ac9dd4ddd2027ad",
+  "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -q -Dtest=ProductionExecutionIntegrationTest,ProductionServiceTest,ProductionObjectControllerTest,ProductionControllerAuthorizationTest,AuditControllerTest -Dexecution.test.url=jdbc:postgresql://127.0.0.1:55432/edhr_w4_test -Dexecution.test.driver=org.postgresql.Driver -Dexecution.test.user=edhr -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect test",
+  "suites": [
+    {
+      "name": "ProductionExecutionIntegrationTest",
+      "counts": {
+        "tests": 85,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2
+      },
+      "rawXmlSha256": "bb9b62d2c78639fd214d84a72130643ad0f2907c66d2c80d68bf91da9cd9a1f0"
+    },
+    {
+      "name": "ProductionServiceTest",
+      "counts": {
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "rawXmlSha256": "4743dadc06880d2976ca0739c2e1e37db4a9f0819d2b806459436b295b579085"
+    },
+    {
+      "name": "ProductionObjectControllerTest",
+      "counts": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "rawXmlSha256": "48bdc7d4a89eeee44e65a01941b0446646b879e6f8fc072ded35d9d39e6c11c7"
+    },
+    {
+      "name": "ProductionControllerAuthorizationTest",
+      "counts": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "rawXmlSha256": "93562f04b4ac1617b816190fa3086762bdbf4afaf5ce88f0864dd3a4c5ff6b9f"
+    },
+    {
+      "name": "AuditControllerTest",
+      "counts": {
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "rawXmlSha256": "20d32167f5b9bbe502cfb8c902cb596553b3b7454f9ee152c787b4fb5d89e8ab"
+    }
+  ],
+  "totals": {
+    "tests": 121,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2
+  }
+}

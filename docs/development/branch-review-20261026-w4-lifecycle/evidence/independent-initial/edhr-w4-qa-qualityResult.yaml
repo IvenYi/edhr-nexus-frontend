@@ -1,0 +1,196 @@
+qualityResult:
+  result: failed
+  baseCommit: c49c0c7f98ca5c66eb59eb6876c78af03a07d28b
+  headCommit: a970f654a07d3bbf2c803fe812e322d332889603
+  contractBaseline:
+    sourceCommit: a970f654a07d3bbf2c803fe812e322d332889603
+    targetBranch: edhr-dev
+    targetCommit: c49c0c7f98ca5c66eb59eb6876c78af03a07d28b
+    contractReadCommit: a970f654a07d3bbf2c803fe812e322d332889603
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: w4.baseline-contract
+    required: true
+    category: documentation
+    description: 独立核对目标、候选与契约版本
+    method: command
+    command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git diff
+    outcome: passed
+    evidence:
+    - c49c0c7f98ca5c66eb59eb6876c78af03a07d28b
+    - a970f654a07d3bbf2c803fe812e322d332889603
+    - /tmp/edhr-w4-qa-inspection.json
+  - id: w4.requirements-source
+    required: true
+    category: requirements
+    description: 对象审计身份、状态差异及本批边界
+    method: inspection
+    command: DEC0019-02/04 -> act -> startObject/completeObject -> object audit query
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w4-qa-inspection.json
+  - id: w4.atomicity-regression
+    required: true
+    category: integration
+    description: 真实认证HTTP/事务/PG状态与审计回滚、SUBMIT完工
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -q -f gmp-platform/backend/pom.xml
+      -Dtest=ProductionExecutionIntegrationTest,ProductionServiceTest,ProductionObjectControllerTest,ProductionControllerAuthorizationTest,AuditControllerTest
+      -Dexecution.test.url=jdbc:postgresql://127.0.0.1:55432/edhr_w4_qa_test -Dexecution.test.driver=org.postgresql.Driver
+      -Dexecution.test.user=edhr -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect
+      clean test
+    outcome: passed
+    evidence:
+    - 'ProductionExecutionIntegrationTest: 85 discovered, 83 passed, 2 original browser
+      fixtures skipped, 0 failures/errors'
+    - /tmp/edhr-w4-qa-regression.json
+  - id: w4.neighbor-regression
+    required: true
+    category: regression
+    description: 控制器、状态服务、权限注解与审计投影相邻回归
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -q -f gmp-platform/backend/pom.xml
+      -Dtest=ProductionExecutionIntegrationTest,ProductionServiceTest,ProductionObjectControllerTest,ProductionControllerAuthorizationTest,AuditControllerTest
+      -Dexecution.test.url=jdbc:postgresql://127.0.0.1:55432/edhr_w4_qa_test -Dexecution.test.driver=org.postgresql.Driver
+      -Dexecution.test.user=edhr -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect
+      clean test
+    outcome: passed
+    evidence:
+    - 36 adjacent tests passed; total unique121 discovered/119passed/2skipped
+    - /tmp/edhr-w4-qa-regression.json
+  - id: w4.red-proof
+    required: true
+    category: regression
+    description: 旧产品配同六测试真实失败，候选修复有效
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -q -f gmp-platform/backend/pom.xml
+      -Dtest=ProductionExecutionIntegrationTest#lifecycleAudit* -Dexecution.test.url=jdbc:postgresql://127.0.0.1:55432/edhr_w4_qa_red
+      -Dexecution.test.driver=org.postgresql.Driver -Dexecution.test.user=edhr -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect
+      clean test
+    outcome: passed
+    evidence:
+    - 'old base: 6 assertion failures/0error/skip; same candidate test bytes copied
+      unchanged'
+    - /tmp/edhr-w4-qa-red.json
+  - id: w4.knowledge-validation
+    required: true
+    category: ontology
+    description: 知识结构、引用及有限语义同步不提升认证范围
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -q -f tools/knowledge-model/pom.xml
+      clean test
+    outcome: passed
+    evidence:
+    - 89/89 passed, 0failure/error/skip
+    - DEC statements and rule AST/maturity unchanged; 15 finite semantic records with
+      5 H006 needs-fix retained
+    - /tmp/edhr-w4-qa-inspection.json
+  - id: w4.evidence-scope
+    required: true
+    category: documentation
+    description: 原始摘要、有限源码范围与台账不冒充全量完成
+    method: inspection
+    command: Verify source-review/ontology file hashes, receipts, progress/README/scope-review
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w4-qa-inspection.json
+    - 14 root source scopes overlap ontology9; no addition as full-file coverage
+  - id: w4.diff-safety
+    required: true
+    category: audit
+    description: 无历史回填、schema、UI或业务政策漂移
+    method: command
+    command: git diff --check c49c0c7f HEAD; git diff --name-only c49c0c7f HEAD
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w4-qa-inspection.json
+    - One product file + one test file; three knowledge files; remaining audit documentation
+  - id: w4.performance-structure
+    required: true
+    category: documentation
+    description: 性能风险与提取方案保留讨论与实测边界
+    method: inspection
+    command: Source compare AuditController.list, ProductionService.splitBatch and
+      structure-plan
+    outcome: passed
+    evidence:
+    - Source-confirmed only; no performance implementation approval inferred
+    - /tmp/edhr-w4-qa-inspection.json
+  - id: w4.default-h2-compatibility
+    required: true
+    category: regression
+    description: 候选新增审计断言兼容仓库默认H2集成测试配置
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -q -f gmp-platform/backend/pom.xml
+      -Dtest='ProductionExecutionIntegrationTest#lifecycleAudit*+batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch'
+      test
+    outcome: failed
+    evidence:
+    - 7 tests, 7 JsonParseException errors, 0 assertion failures/skips
+    - /tmp/edhr-w4-qa-h2.json
+  findings:
+  - id: AUD-H007
+    severity: medium
+    scope: ProductionExecutionService.act object status audit
+    summary: 执行引发对象生命周期变化在对象审计查询中缺失；本轮补齐同事务status差异事件
+    reproductionSteps:
+    - On old c49c0c7f import unchanged candidate ProductionExecutionIntegrationTest
+      fixture
+    - Run lifecycleAudit* on isolated PostgreSQL16
+    expectedResult: 真实状态变化记录一条PRODUCTION_OBJECT UPDATE，失败整体回滚且可重试
+    actualResult: 旧代码同6例全部失败；候选全部通过，含最终SUBMIT路径既有测试补断言
+    evidence:
+    - /tmp/edhr-w4-qa-red.json
+    - /tmp/edhr-w4-qa-regression.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 3281863b0974dc1e4e7b4c343ca9d42a7a4103ac
+    - type: document
+      reference: /tmp/edhr-w4-qa-regression.json
+  - id: W4-TEST-AUDIT-JSON-001
+    severity: medium
+    scope: ProductionExecutionIntegrationTest.assertObjectStatusAudits
+    summary: 新增审计JSON断言把JDBC byte[]调用toString，导致默认H2同6例及新增SUBMIT断言7项错误
+    reproductionSteps:
+    - Checkout candidate a970f654 in clean worktree
+    - Run default H2 lifecycleAudit* plus batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch
+      without execution.test.* overrides
+    expectedResult: 新增断言能读取默认H2和PG返回的JSON，仍完整比较status前后内容，测试正常通过
+    actualResult: '7项均JsonParseException: unrecognized token B；H2 queryForList JSON返回byte[]，Object.toString得到[B@...而非JSON'
+    evidence:
+    - /tmp/edhr-w4-qa-h2.json
+    - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java:259
+    resolutionStatus: open
+    resolutionEvidence: []
+  residualRisks:
+  - id: remaining.whole-audit
+    description: 本次只验收H007有限切片；H006/H008、W2-W7遗漏及旧知识gap继续
+    impact: 不能宣称全分支审计完成
+    mitigation: 按NEXT和scope-review继续固定新基线审查
+  - id: remaining.capacity
+    description: 审计日志全量内存分页、批量拆分重复扫描仅源码风险；旧性能风险继续
+    impact: 未认证容量、SQL次数、堆峰值或SLA
+    mitigation: 先隔离多规模测量，再按用户要求讨论实施
+  - id: remaining.old-evidence
+    description: 历史缺失对象事件不回填；旧AuditEvent hash往返缺口不在本次修复
+    impact: 历史完整性/摘要认证不可由本批推导
+    mitigation: 保留原始证据和独立追踪
+  - id: remaining.test-boundary
+    description: 真实PG集成保留原主数据/状态机/产出mock，2原浏览器驻留夹具跳过；未运行UI/完整应用/迁移
+    impact: 只证明列明后端事务和API范围
+    mitigation: 完整领域与W7另取适用独立证据
+  - id: remaining.user-deferred
+    description: TaskDetail签名页面、记录变更作废及依赖DHR high/A12保持用户暂缓
+    impact: 不属于本次H007合并阻断，但仍未完成整体能力
+    mitigation: 待用户明确恢复与上游实现后继续
+  blockingConditions: []
+  completionState: FINAL
+  independence: Fresh verifier; no fixes to product/tests/knowledge; no child agents;
+    candidate clean and tested directly.

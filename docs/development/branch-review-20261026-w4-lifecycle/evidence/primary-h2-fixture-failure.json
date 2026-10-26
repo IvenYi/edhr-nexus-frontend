@@ -1,0 +1,22 @@
+{
+  "headCommit": "a970f654a07d3bbf2c803fe812e322d332889603",
+  "label": "primary-h2-fixture-failure",
+  "counts": {
+    "tests": 7,
+    "failures": 0,
+    "errors": 7,
+    "skipped": 0
+  },
+  "cases": [
+    "lifecycleAuditFailureRollsBackFinalCompletion(String)[1]",
+    "lifecycleAuditFailureRollsBackFinalCompletion(String)[2]",
+    "lifecycleAuditDoesNotRecordOrdinarySavesAsObjectChanges",
+    "lifecycleAuditFailureRollsBackFirstStart(String)[1]",
+    "lifecycleAuditFailureRollsBackFirstStart(String)[2]",
+    "batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch",
+    "lifecycleAuditRecordsOnlyRealObjectChangesForBatchAndSn"
+  ],
+  "rootCause": "assertObjectStatusAudits uses JSON Object.toString(); H2 returns byte[] while PG returns PGobject. Jackson sees [B identity string, not JSON. New test helper defect, not product status behavior.",
+  "rawXmlSha256": "1939950d58db6a5bcd20d21cab88f190d718d805f524c2a2921a8ecf464ba971",
+  "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -q -Dtest='ProductionExecutionIntegrationTest#lifecycleAudit*+batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch' test"
+}

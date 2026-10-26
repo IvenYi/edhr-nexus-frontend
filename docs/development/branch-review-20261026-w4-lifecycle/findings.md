@@ -1,5 +1,9 @@
 # 本批发现、去重与未决
 
+## W4-TEST-AUDIT-JSON-001：新增断言的H2 JSON夹具兼容
+
+medium / test-fixture。初始a970f654主侧及首轮独立追加默认H2同7例均为7error，Object.toString()把JSON byte[]变成`[B...`。PG数据返回PGobject而未暴露此问题。fd89fa80只让辅助方法对byte[]用ObjectMapper.readTree(bytes)，其他类型保留字符串解析；不改产品、断言或数据库标准，不跳过H2。主侧H2同7全绿、PG121再次119通过/2原条件夹具跳过。首轮failed原件保留，最终独立结果另记。
+
 ## AUD-H007：执行导致的生产对象状态审计缺口
 
 沿原唯一ID与 discrepancy.production-object-execution-lifecycle-audit-projection，medium / functional-defect。不是新增第一个“完全无审计”问题：原执行日志已经有状态信息，缺的是DEC-0019对象审计投影。

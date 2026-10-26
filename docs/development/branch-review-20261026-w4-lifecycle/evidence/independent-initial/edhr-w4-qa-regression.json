@@ -1,0 +1,570 @@
+{
+  "headCommit": "a970f654a07d3bbf2c803fe812e322d332889603",
+  "baseCommit": "c49c0c7f98ca5c66eb59eb6876c78af03a07d28b",
+  "suites": [
+    {
+      "name": "ProductionExecutionIntegrationTest",
+      "counts": {
+        "tests": 85,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2
+      },
+      "rawXmlSha256": "012ceb6fba59a5527e33f244e67971c074531527084fa1cb28e7f4a6f75ed017",
+      "cases": [
+        {
+          "name": "missingPermissionCannotReadOrExecute",
+          "outcome": "passed"
+        },
+        {
+          "name": "formRecordsBrowserFixture",
+          "outcome": "skipped"
+        },
+        {
+          "name": "globalQueryRejectsUnsupportedAndMalformedConditions",
+          "outcome": "passed"
+        },
+        {
+          "name": "missingQueryPrincipalCannotAdvanceApprovalOrChangePersistedEvidence",
+          "outcome": "passed"
+        },
+        {
+          "name": "globalQueryUsesFrozenMetadataCrossTemplateFiltersAndStablePages",
+          "outcome": "passed"
+        },
+        {
+          "name": "transferRechecksTheSelectedTenantUserWhenTheirAccountBecomesLocked",
+          "outcome": "passed"
+        },
+        {
+          "name": "productionReferencesSaveTypedIdentityAndNumbersWithoutChangingExecutionOwnership",
+          "outcome": "passed"
+        },
+        {
+          "name": "directSigningBlocksMissingExpiredAndCustomerAdminLoginCredentialsWithoutLosingDraft",
+          "outcome": "passed"
+        },
+        {
+          "name": "failedSignedActionRollsBackSignatureValuesAndAudit",
+          "outcome": "passed"
+        },
+        {
+          "name": "worklistHistoricalNodeFiltersMatchTheSameEventBeforeSelectingTheLatest",
+          "outcome": "passed"
+        },
+        {
+          "name": "inlineSignatureHonorsFrozenReadonlyAndNodePermissions",
+          "outcome": "passed"
+        },
+        {
+          "name": "worklistFilteringPaginationAndLegacyHistoryDoNotInventParticipation",
+          "outcome": "passed"
+        },
+        {
+          "name": "inlineSignatureRollsBackWhenAuditFails",
+          "outcome": "passed"
+        },
+        {
+          "name": "executionPersistsSnapshotDraftAndAuditThenCompletesOnlyAfterAllOperations",
+          "outcome": "passed"
+        },
+        {
+          "name": "waitingExecutionSeesConcurrentTerminationAfterAcquiringLocks",
+          "outcome": "passed"
+        },
+        {
+          "name": "dhrSupplementUsesRealExecutionAndRecordServicesWithoutReopeningProduction",
+          "outcome": "passed"
+        },
+        {
+          "name": "worklistExplicitCreationIsIndependentFromFirstSaverAndSystemFirstCopy",
+          "outcome": "passed"
+        },
+        {
+          "name": "lifecycleAuditFailureRollsBackFinalCompletion(String)[1]",
+          "outcome": "passed"
+        },
+        {
+          "name": "lifecycleAuditFailureRollsBackFinalCompletion(String)[2]",
+          "outcome": "passed"
+        },
+        {
+          "name": "legacyTextSubtableColumnsUseTheSameStableIdsAsTheUnifiedRenderer",
+          "outcome": "passed"
+        },
+        {
+          "name": "previewReferencesRequireDesignPermissionAndDoNotWriteData",
+          "outcome": "passed"
+        },
+        {
+          "name": "executionMissingDhrCannotComplete",
+          "outcome": "passed"
+        },
+        {
+          "name": "historicalExecutionWithoutDhrCanAttachCustomFormWithoutFabricatingDhr",
+          "outcome": "passed"
+        },
+        {
+          "name": "historicalCopyMetadataUsesRecordedSourcesWithoutWritingOrInventingMissingValues",
+          "outcome": "passed"
+        },
+        {
+          "name": "inlineSignatureSavesWithoutSubmittingAndContentChangesInvalidateIt",
+          "outcome": "passed"
+        },
+        {
+          "name": "dhrFillingProjectsAndFiltersProductionStatusWithoutChangingDhrOrWriteRules",
+          "outcome": "passed"
+        },
+        {
+          "name": "inactiveReasonCanOnlyRemainUnchangedInItsPreviouslySavedSourceRow",
+          "outcome": "passed"
+        },
+        {
+          "name": "retiredTemplateCannotBeAttachedButExistingFrozenExecutionRemainsReadable",
+          "outcome": "passed"
+        },
+        {
+          "name": "inspectorChoiceOptionsSaveAndSubmitAgainstTheSameFrozenCanonicalValues",
+          "outcome": "passed"
+        },
+        {
+          "name": "paginatedReferenceApiUsesConfiguredSearchFieldsWithoutChangingDisplayOrWriting",
+          "outcome": "passed"
+        },
+        {
+          "name": "batchAndSnScanAreReadOnlyAndReturnCorrectConfiguration",
+          "outcome": "passed"
+        },
+        {
+          "name": "subtableCanvasReadonlyIsEnforcedForNewAndLegacySnapshots",
+          "outcome": "passed"
+        },
+        {
+          "name": "lifecycleAuditDoesNotRecordOrdinarySavesAsObjectChanges",
+          "outcome": "passed"
+        },
+        {
+          "name": "failedAuditRollsBackFormInstanceAllocation",
+          "outcome": "passed"
+        },
+        {
+          "name": "globalQueryRequiresBothPermissionsAndPreservesOldEntry",
+          "outcome": "passed"
+        },
+        {
+          "name": "remarkEditPersistsAuditsAndPreservesSubmittedFormReceipt",
+          "outcome": "passed"
+        },
+        {
+          "name": "lifecycleAuditFailureRollsBackFirstStart(String)[1]",
+          "outcome": "passed"
+        },
+        {
+          "name": "lifecycleAuditFailureRollsBackFirstStart(String)[2]",
+          "outcome": "passed"
+        },
+        {
+          "name": "globalQueryExactDetailsTenantBoundaryAndSourceControls",
+          "outcome": "passed"
+        },
+        {
+          "name": "deletingSignedRowsInvalidatesRemainingSignaturesAndRejectsForgery",
+          "outcome": "passed"
+        },
+        {
+          "name": "inlineSignatureRejectsUnavailableCertificationAndInvalidTargets",
+          "outcome": "passed"
+        },
+        {
+          "name": "legacyCompletedWorkProjectsNextNodeWithoutWritingAndSettlesOnTheNextAuditedAction",
+          "outcome": "passed"
+        },
+        {
+          "name": "obsoleteTestSnapshotsCannotCreateNewCopiesOrPersistMoreRetiredTraceRecords",
+          "outcome": "passed"
+        },
+        {
+          "name": "earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning",
+          "outcome": "passed"
+        },
+        {
+          "name": "customTemplatePickerDoesNotTruncateVersions",
+          "outcome": "passed"
+        },
+        {
+          "name": "copiesPersistSeparateValuesSumOutputAndRejectStaleOrForeignWrites",
+          "outcome": "passed"
+        },
+        {
+          "name": "operationCustomGateAndExplicitScopeValidationCannotBeBypassed",
+          "outcome": "passed"
+        },
+        {
+          "name": "retiredTraceTemplateCannotCreateNewExecutionOrDhrAndScanExplainsTheConfigurationError",
+          "outcome": "passed"
+        },
+        {
+          "name": "batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch",
+          "outcome": "passed"
+        },
+        {
+          "name": "concurrentStartCreatesOneExecutionAndOneDhr",
+          "outcome": "passed"
+        },
+        {
+          "name": "firstStartRejectsUnconfiguredOperationModesWithoutExecutionDhrOrAuditWrites",
+          "outcome": "passed"
+        },
+        {
+          "name": "anOperationWithoutConfiguredFormsCanAttachItsFirstOptionalForm",
+          "outcome": "passed"
+        },
+        {
+          "name": "worklistReturnAndResubmitKeepPersonalHistoryAndUseActualApprovalQualification",
+          "outcome": "passed"
+        },
+        {
+          "name": "customFormTemplatesSearchAllVersionsWithoutPublicationAndKeepTenantBoundaries",
+          "outcome": "passed"
+        },
+        {
+          "name": "returnAndApprovalKeepTheOriginalFormNumber",
+          "outcome": "passed"
+        },
+        {
+          "name": "firstStartFreezesOneCommittedConfigurationDuringProcessRebinding",
+          "outcome": "passed"
+        },
+        {
+          "name": "failedAuditRollsBackObjectStateAndExecutionTogether",
+          "outcome": "passed"
+        },
+        {
+          "name": "browserEvidenceFixture",
+          "outcome": "skipped"
+        },
+        {
+          "name": "missingDhrBlocksEarlyTerminationWithoutChangingProduction",
+          "outcome": "passed"
+        },
+        {
+          "name": "tenantDelegationOutsideFrozenCandidatesPreservesSourceAndMovesOnlyCurrentResponsibility",
+          "outcome": "passed"
+        },
+        {
+          "name": "internalAdminUsesLoginPasswordOnlyForButtonAndUnsignedActionsDoNotImpersonate",
+          "outcome": "passed"
+        },
+        {
+          "name": "presenceCountsEditorsAcrossCopiesAndRejectsReadOnlyInstances",
+          "outcome": "passed"
+        },
+        {
+          "name": "configuredAndWorkFormsUsingTheSameTemplateRemainIndependent",
+          "outcome": "passed"
+        },
+        {
+          "name": "worklistRejectsWrongPermissionsParamsAndFailedActionsCreateNoHistory",
+          "outcome": "passed"
+        },
+        {
+          "name": "globalQueryDoesNotGrantAnActiveApprovalNodeAndKeepsPrincipalHistory",
+          "outcome": "passed"
+        },
+        {
+          "name": "worklistIncludesUnsavedAndSavedButFilledRequiresActualSubmit",
+          "outcome": "passed"
+        },
+        {
+          "name": "copyMetadataPersistsAndSurvivesSaveWithoutChangingItsCreationIdentity",
+          "outcome": "passed"
+        },
+        {
+          "name": "automaticWorkAdvanceRollsBackWithItsSubmissionWhenAuditFails",
+          "outcome": "passed"
+        },
+        {
+          "name": "optionalCopyCompletionRequiresAcknowledgementAndPersistsUnfinishedState",
+          "outcome": "passed"
+        },
+        {
+          "name": "sharedWorkstationUsesSignerPermissionsAndDualIdentityWithoutChangingSession",
+          "outcome": "passed"
+        },
+        {
+          "name": "concurrentFirstSavesAllocateDifferentNumbers",
+          "outcome": "passed"
+        },
+        {
+          "name": "staleRevisionAndTerminatedObjectsCannotAdvance",
+          "outcome": "passed"
+        },
+        {
+          "name": "formInstanceNumbersAreStableSearchableAndUseFrozenSnapshots",
+          "outcome": "passed"
+        },
+        {
+          "name": "realApprovalIdentityAndSignaturePasswordPersistAtomically",
+          "outcome": "passed"
+        },
+        {
+          "name": "formApprovalTransferMovesPendingTaskWithoutAdvancingTheFlow",
+          "outcome": "passed"
+        },
+        {
+          "name": "customFormsFreezeSelectedVersionAndRequireExplicitRequiredChoice",
+          "outcome": "passed"
+        },
+        {
+          "name": "contextualReferencesPersistOnceAndUseFrozenConfigurationAcrossReopenAndNewCopies",
+          "outcome": "passed"
+        },
+        {
+          "name": "lifecycleAuditRecordsOnlyRealObjectChangesForBatchAndSn",
+          "outcome": "passed"
+        },
+        {
+          "name": "firstStartAndDetailKeepSnowflakeDirectoryIdsAsStrings",
+          "outcome": "passed"
+        },
+        {
+          "name": "transferProjectionIsNodeScopedAndReassignmentIsClearedByReturn",
+          "outcome": "passed"
+        },
+        {
+          "name": "invalidCopyRemarksAndFailedAuditCannotCreateCopies",
+          "outcome": "passed"
+        },
+        {
+          "name": "optionalCustomFormCanBeFinishedAfterProductionWithReasonAndFrozenDhrProtection",
+          "outcome": "passed"
+        },
+        {
+          "name": "inlineSignaturesCoexistAndSubtableContentInvalidatesAllWithoutDeletingEvidence",
+          "outcome": "passed"
+        },
+        {
+          "name": "outputUsesSavedPurposeFieldsAndFrozenMappingWithoutChangingBatchCounters",
+          "outcome": "passed"
+        },
+        {
+          "name": "referenceLookupUsesFrozenCanvasAndValidatesCurrentRowAtSave",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "name": "ProductionServiceTest",
+      "counts": {
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "rawXmlSha256": "43b55189a5c712a2285c313b955c1c44ffbc389bd0999befe009b5746c84d312",
+      "cases": [
+        {
+          "name": "normalizesConfiguredBatchLabelsToTheProductionObjectType",
+          "outcome": "passed"
+        },
+        {
+          "name": "createsSnObjectWithUnitQuantityAndConfiguredNumber",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsUnsupportedProductionForms",
+          "outcome": "passed"
+        },
+        {
+          "name": "allowsResplittingTheQuantityOfACancelledUnstartedObject",
+          "outcome": "passed"
+        },
+        {
+          "name": "usesTheConfirmedLightweightWorkOrderLifecycle",
+          "outcome": "passed"
+        },
+        {
+          "name": "keepsCreatedOrderAvailableWhenItsOnlyObjectIsCancelled",
+          "outcome": "passed"
+        },
+        {
+          "name": "blocksFirstSplitUntilTheWorkOrderHasAProcessVersion",
+          "outcome": "passed"
+        },
+        {
+          "name": "cancelsUnsplitCreatedOrderThroughTheStateMachine",
+          "outcome": "passed"
+        },
+        {
+          "name": "splitsCreatedWorkOrderWithoutReleaseStep",
+          "outcome": "passed"
+        },
+        {
+          "name": "completesInProcessOrderWhenRemainingObjectsAreCompletedOrCancelled",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsChangingTheLockedProcessVersion",
+          "outcome": "passed"
+        },
+        {
+          "name": "blocksObjectStartWhenItsWorkOrderIsAlreadyTerminal",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsObjectTargetsBeyondTheWorkOrderPlan",
+          "outcome": "passed"
+        },
+        {
+          "name": "endsInProgressObjectWithRequiredReason",
+          "outcome": "passed"
+        },
+        {
+          "name": "splitsInProcessWorkOrderWithItsLockedProcessVersion",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsSnObjectQuantityOtherThanOne",
+          "outcome": "passed"
+        },
+        {
+          "name": "rejectsInvalidProductionObjectPlannedWindow",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "name": "ProductionObjectControllerTest",
+      "counts": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "rawXmlSha256": "657878c8ba9ca6c691a7fc8f4dd41823a3a0fed7a3b92c806973241b30e5fab1",
+      "cases": [
+        {
+          "name": "listPreservesObjectsWhenProductHasBeenDeleted",
+          "outcome": "passed"
+        },
+        {
+          "name": "cancelWritesOnlyChangedStatusSnapshot",
+          "outcome": "passed"
+        },
+        {
+          "name": "splitWritesCompleteCreateSnapshotWithWorkOrderOrigin",
+          "outcome": "passed"
+        },
+        {
+          "name": "batchSplitWritesOneCreateAuditPerProductionObject",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "name": "ProductionControllerAuthorizationTest",
+      "counts": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "rawXmlSha256": "e7d5101d6f5404f82a26a1fdfa257bf3799ccd854c0973009291d0786d5d8de0",
+      "cases": [
+        {
+          "name": "everyWorkOrderApiMethodRequiresProductionPermission",
+          "outcome": "passed"
+        },
+        {
+          "name": "everyProductionObjectApiMethodRequiresProductionPermission",
+          "outcome": "passed"
+        },
+        {
+          "name": "dhrSummarySeparatesViewEditAndSubmitPermissions",
+          "outcome": "passed"
+        },
+        {
+          "name": "batchManagementApiRequiresBatchPermission",
+          "outcome": "passed"
+        },
+        {
+          "name": "dhrReviewAttachmentDownloadUsesReviewPermissionAndTaskScopedEndpoint",
+          "outcome": "passed"
+        }
+      ]
+    },
+    {
+      "name": "AuditControllerTest",
+      "counts": {
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "rawXmlSha256": "fd0d0a50efa47bccdec4a04bd01a334f873cdbf36483371e95b1d793a933238a",
+      "cases": [
+        {
+          "name": "listPassesAuditFiltersToRepositorySearch",
+          "outcome": "passed"
+        },
+        {
+          "name": "listResolvesFunctionModuleToLeftSidebarModuleName",
+          "outcome": "passed"
+        },
+        {
+          "name": "listMyProfileAuditLogsOnlyReturnsCurrentUserTargetRows",
+          "outcome": "passed"
+        },
+        {
+          "name": "listFiltersAgainstResolvedDisplayFieldsForLegacyAuditRows",
+          "outcome": "passed"
+        },
+        {
+          "name": "listKeepsFunctionNameAsSpecificFunctionWithoutMenuPrefix",
+          "outcome": "passed"
+        },
+        {
+          "name": "listResolvesMenuNameToFirstAndSecondLevelPath",
+          "outcome": "passed"
+        },
+        {
+          "name": "listNormalizesBlankAuditFiltersToEmptyStrings",
+          "outcome": "passed"
+        },
+        {
+          "name": "listTranslatesSystemAndIconAuditActions",
+          "outcome": "passed"
+        },
+        {
+          "name": "projectsProductionAuditActionsToCreateOrUpdate",
+          "outcome": "passed"
+        },
+        {
+          "name": "auditLogsDoNotExposeMutationEndpoints",
+          "outcome": "passed"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 121,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2
+  },
+  "knowledge": {
+    "counts": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "rawXmlSha256": "d768ac2902d91b3f955e1483456cee61ff59370e8f5e9f8fcbeefe009b1fd029"
+  },
+  "cleanBuild": true,
+  "database": "PostgreSQL16 edhr_w4_qa_test on owned loopback55432; integration synthetic schema and existing mocks retained",
+  "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -q -f gmp-platform/backend/pom.xml -Dtest=ProductionExecutionIntegrationTest,ProductionServiceTest,ProductionObjectControllerTest,ProductionControllerAuthorizationTest,AuditControllerTest -Dexecution.test.url=jdbc:postgresql://127.0.0.1:55432/edhr_w4_qa_test -Dexecution.test.driver=org.postgresql.Driver -Dexecution.test.user=edhr -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect clean test",
+  "knowledgeCommand": "bash /workspace/.edhr-cloud-tools/mvn-edhr -q -f tools/knowledge-model/pom.xml clean test",
+  "qualification": "JWT/MockMvc API, real service transaction and PG persistence; no browser or full production application claim. Two original browser fixture conditions skipped."
+}

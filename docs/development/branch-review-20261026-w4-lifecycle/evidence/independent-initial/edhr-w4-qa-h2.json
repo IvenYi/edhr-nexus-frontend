@@ -1,0 +1,58 @@
+{
+  "headCommit": "a970f654a07d3bbf2c803fe812e322d332889603",
+  "database": "default H2 PostgreSQL-mode integration fixture",
+  "counts": {
+    "tests": 7,
+    "failures": 0,
+    "errors": 7,
+    "skipped": 0
+  },
+  "cases": [
+    {
+      "name": "lifecycleAuditFailureRollsBackFinalCompletion(String)[1]",
+      "outcome": "error",
+      "errorType": "com.fasterxml.jackson.core.JsonParseException",
+      "safeError": "JsonParseException: unrecognized token B when parsing JDBC byte[] Object.toString output"
+    },
+    {
+      "name": "lifecycleAuditFailureRollsBackFinalCompletion(String)[2]",
+      "outcome": "error",
+      "errorType": "com.fasterxml.jackson.core.JsonParseException",
+      "safeError": "JsonParseException: unrecognized token B when parsing JDBC byte[] Object.toString output"
+    },
+    {
+      "name": "lifecycleAuditDoesNotRecordOrdinarySavesAsObjectChanges",
+      "outcome": "error",
+      "errorType": "com.fasterxml.jackson.core.JsonParseException",
+      "safeError": "JsonParseException: unrecognized token B when parsing JDBC byte[] Object.toString output"
+    },
+    {
+      "name": "lifecycleAuditFailureRollsBackFirstStart(String)[1]",
+      "outcome": "error",
+      "errorType": "com.fasterxml.jackson.core.JsonParseException",
+      "safeError": "JsonParseException: unrecognized token B when parsing JDBC byte[] Object.toString output"
+    },
+    {
+      "name": "lifecycleAuditFailureRollsBackFirstStart(String)[2]",
+      "outcome": "error",
+      "errorType": "com.fasterxml.jackson.core.JsonParseException",
+      "safeError": "JsonParseException: unrecognized token B when parsing JDBC byte[] Object.toString output"
+    },
+    {
+      "name": "batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch",
+      "outcome": "error",
+      "errorType": "com.fasterxml.jackson.core.JsonParseException",
+      "safeError": "JsonParseException: unrecognized token B when parsing JDBC byte[] Object.toString output"
+    },
+    {
+      "name": "lifecycleAuditRecordsOnlyRealObjectChangesForBatchAndSn",
+      "outcome": "error",
+      "errorType": "com.fasterxml.jackson.core.JsonParseException",
+      "safeError": "JsonParseException: unrecognized token B when parsing JDBC byte[] Object.toString output"
+    }
+  ],
+  "rawXmlSha256": "6a5888030bc777db79b14fdaa41a6d476782bf7879df7d1bae7bafb7ce13f213",
+  "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -q -f gmp-platform/backend/pom.xml -Dtest='ProductionExecutionIntegrationTest#lifecycleAudit*+batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch' test",
+  "source": "Independent verifier rerun on unchanged candidate, no fixes or skipped assertions",
+  "finding": "W4-TEST-AUDIT-JSON-001"
+}

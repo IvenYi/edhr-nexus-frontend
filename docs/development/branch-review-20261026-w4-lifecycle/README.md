@@ -6,6 +6,8 @@
 
 不新增状态或接口、不改资格/锁顺序/DHR/质量产出规则，不补造历史审计。新增写入复用当前锁内对象及前状态，没有附加业务查询。审计失败必须整体回滚。
 
+首轮独立对a970f654正式failed：PG和知识回归通过，但默认H2下新增断言把JSON byte[]当普通对象字符串解析，7项报错（W4-TEST-AUDIT-JSON-001）。原报告原样保留在evidence/independent-initial。fd89fa80仅修测试辅助方法按字节解析，断言和产品代码不变；主侧H2同7项全绿、PG121回归再次119通过/2原夹具跳过，等待全新实例验收修正候选。原progress.json为首轮候选准备快照，不覆盖这里的失败与补修记录。
+
 主侧原生 PostgreSQL 同组6例：旧代码6失败、修复6通过；相邻回归121项中119通过、2个原有浏览器驻留夹具按原条件跳过，0失败/错误。83项为真实JWT/MockMvc/事务服务及隔离PG，主数据部分仓储/状态机/产出服务仍为原测试mock，非完整应用全链。另36项为控制器/授权/单元测试。不把6与121累加成独立覆盖。独立验收另见收尾 acceptance，不把主侧结果冒称独立通过。
 
 继续保留 AUD-H006 两段已知差异，H008尚待本轮后续实际核对。新登记审计列表全量读取与批量拆分重复扫描的性能风险，均未实施。详见 [findings](findings.md)、[structure-plan](structure-plan.md)、[source-review](source-review.json) 和 [scope-review](scope-review.md)。
