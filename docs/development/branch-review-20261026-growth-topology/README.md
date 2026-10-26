@@ -8,6 +8,8 @@
 
 初步反证：RouteGraphValidator内部对null类型的候选NPE并非当前HTTP可达缺陷，toRouteNode先拒绝null/空键并将空类型归一为OPERATION；toRouteRelation拒绝null端点并校验关系类型。仅内部函数非法调用不能直接登记产品缺陷。
 
-主侧已完成：70项回归通过（61单元/控制器mock＋9原生PG），16次DHR宽JSON对照、3种图规模的实际saveAll查询观察，以及隔离fresh/非空库保护探针。无产品代码修改；正式独立验收尚待完成。结果见findings.md、source-review.json与evidence/；结构提取候选见structure-plan.md。
+主侧及全新独立已分别完成同组70项回归（61单元/控制器mock＋9原生PG），16次DHR宽JSON对照、3种图规模的实际saveAll查询观察，以及隔离fresh/非空库保护探针。正式独立对2cef901f给出passed、9/9必需检查通过，无产品代码修改；后续仅L0归档和进度。原件见evidence/independent，验收见acceptance.json；结果与结构提取候选见findings.md、source-review.json、structure-plan.md。
 
 用户在看到分块选项后要求先通俗解释、理解后再决定；已解释逐条/全量/分块的查询与内存差异。分块实现仍pending-discussion，128仅候选工程批量，未获实施确认。新增路线saveAll风险也仅登记，未自动整改。
+
+用户随后提出单份DHR可能在300张以内的规模假设。独立顺序补测300×32KiB额外驻留9.71MiB、300×128KiB为38.53MiB，均5查询且比较完成；不是业务上限、峰值或生产容量保证。主侧建议在通常<=300、单张内容不大且低并发的假设下暂缓分块，继续其他审计；并未实施分块或新增300张限制。固定候选progress.json保留当时pending时点，当前验收及假设以本README/acceptance/scope-review为overlay。

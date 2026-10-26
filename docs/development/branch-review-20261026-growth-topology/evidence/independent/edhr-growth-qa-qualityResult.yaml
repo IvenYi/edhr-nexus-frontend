@@ -1,0 +1,142 @@
+qualityResult:
+  result: passed
+  baseCommit: 34f7c9d736ac62961330343c64bc610fab41ad1c
+  headCommit: 2cef901f00e4349cd533928faa78c98552e61411
+  contractBaseline:
+    sourceCommit: 2cef901f00e4349cd533928faa78c98552e61411
+    targetBranch: edhr-dev
+    targetCommit: 34f7c9d736ac62961330343c64bc610fab41ad1c
+    contractReadCommit: 2cef901f00e4349cd533928faa78c98552e61411
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: scope-and-baseline
+    required: true
+    category: requirements
+    description: 固定候选仅21份审计资产；产品、测试、知识、契约未改，用户未批准分块实施
+    method: inspection
+    command: git diff --name-only 34f7c9d736ac62961330343c64bc610fab41ad1c 2cef901f00e4349cd533928faa78c98552e61411
+    outcome: passed
+    evidence:
+    - /tmp/edhr-growth-qa-inspection.json
+    - actual tested candidate 2cef901f00e4349cd533928faa78c98552e61411; actual target
+      34f7c9d736ac62961330343c64bc610fab41ad1c
+  - id: finite-ontology
+    required: true
+    category: ontology
+    description: DEC83/84局部替代及后端规则与源码一致；7结构化有限+1Markdown，UI声明pending
+    method: inspection
+    command: Read ontology originals, current decisions/rule/fact and backend save/validator
+    outcome: passed
+    evidence:
+    - docs/development/branch-review-20261026-growth-topology/evidence/edhr-growth-ontology.yaml
+    - No knowledge changes or maturity promotion; no whole audit consistency claim
+  - id: source-and-provenance
+    required: true
+    category: documentation
+    description: 13有限源码范围blob/SHA与9份原件归档一致；保留主侧失败，结构方案有接口/事务/测试/回滚边界
+    method: inspection
+    command: Validate source-review.json and evidence/archive-receipts.json; read
+      structure-plan.md
+    outcome: passed
+    evidence:
+    - /tmp/edhr-growth-qa-inspection.json
+    - Overlapping scopes are not summed as unique full-file coverage
+  - id: regression-70
+    required: true
+    category: regression
+    description: clean回归70通过，61单元/mock控制器+9原生PG迁移
+    method: automated-test
+    command: SIGNATURE_TEST_DATABASE_URL=<owned loopback edhr_signature_test> bash
+      /workspace/.edhr-cloud-tools/mvn-edhr -C -f gmp-platform/backend/pom.xml -Dtest=RouteGraphValidatorTest,ProcessModelingControllerTest,SignatureSnapshotMigrationPostgresTest
+      clean test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-growth-qa-regression.json
+    - No failure/error/skip; no raw XML/log archive
+  - id: wide-record-16
+    required: true
+    category: database
+    description: 16独立JVM真实服务/JDBC/PG宽JSON驻留对照复现
+    method: command
+    command: GROWTH_DATABASE_URL=jdbc:postgresql://localhost:55432/edhr_growth_test
+      python3 docs/development/branch-review-20261026-growth-topology/run-growth.py
+      --classpath /tmp/edhr-growth-qa-classpath.txt --out /tmp/edhr-growth-qa.jsonl
+      --scratch /tmp/edhr-growth-qa-runs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-growth-qa.jsonl
+    - /tmp/edhr-growth-qa.summary.json
+    - 1000x32KiB current retained delta 32.76/32.77MiB; legacy first-row delta about0.105MiB;
+      not peak
+  - id: user-scale-300
+    required: true
+    category: database
+    description: 补充用户300张假设的32/128KiB宽度敏感性，未改原16次
+    method: command
+    command: java -Xms64m -Xmx512m -XX:+UseSerialGC -cp <QA classes+deps> com.zencas.edhr.production.service.DhrWideRecordProbe
+      current 300 <32768|131072> /tmp/edhr-growth-qa-300.jsonl
+    outcome: passed
+    evidence:
+    - /tmp/edhr-growth-qa-300.jsonl
+    - /tmp/edhr-growth-qa-300-summary.json
+    - Added retained about9.71MiB /38.53MiB; hypothetical scale, not production limit
+      or guarantee
+  - id: fresh-baseline
+    required: true
+    category: database
+    description: 当前master fresh与非空库保护、重复update验证
+    method: command
+    command: GROWTH_BASELINE_PREFIX=jdbc:postgresql://localhost:55432/edhr_growth_
+      java -cp <QA classes+deps> audit.BaselineProbe /tmp/edhr-growth-qa-baseline.json
+    outcome: passed
+    evidence:
+    - /tmp/edhr-growth-qa-baseline.json
+    - 2 changesets;95 validatedFK;0 invalidFK;9 lookup;selected business rows0;sentinel
+      preserved
+  - id: route-saveall
+    required: true
+    category: database
+    description: 真实实体/Spring Data saveAll/Hibernate/PG复现预分配ID存在性SELECT
+    method: command
+    command: GROWTH_DATABASE_URL=jdbc:postgresql://localhost:55432/edhr_growth_test
+      java -cp <QA classes+deps> audit.RouteSaveAllProbe /tmp/edhr-growth-qa-route.jsonl
+    outcome: passed
+    evidence:
+    - /tmp/edhr-growth-qa-route.jsonl
+    - /tmp/edhr-growth-qa-probes.json
+    - 10/100/1000nodes yield19/199/1999SELECT; not full HTTP/deletion/audit or latency
+      claim
+  - id: final-clean-target
+    required: true
+    category: documentation
+    description: 最终fetch目标未变；QA worktree源码干净，探针schema已清理，自有PG留主侧清理
+    method: command
+    command: git fetch origin edhr-dev; git status --porcelain; git rev-parse HEAD
+      origin/edhr-dev
+    outcome: passed
+    evidence:
+    - 2cef901f00e4349cd533928faa78c98552e61411
+    - 34f7c9d736ac62961330343c64bc610fab41ad1c
+    - Only created node_modules symlink removed; no product/test edits; container
+      remains parent-owned
+  findings: []
+  residualRisks:
+  - id: PERF-DHR-EVIDENCE-RETAINED-001
+    description: 批量读取额外同时驻留F份当前JSON；300张假设下32KiB约9.71MiB、128KiB约38.53MiB，仍受宽度/并发影响。
+    impact: 测量不证明OOM或生产容量失败，也不保证300张总安全。
+    mitigation: 保留风险与用户讨论；当前无分块实施确认，128仅工程候选。
+  - id: PERF-ROUTE-GRAPH-EXISTENCE-001
+    description: assigned-ID saveAll仍逐实体SELECT；实际保存段风险已复现，完整HTTP/事务保存规模未测。
+    impact: 大图查询次数随节点/边数增长，无客户SLA失败证据。
+    mitigation: 讨论局部persist方案前补完整图替换/审计失败/回滚与权限回归，不全局改isNew。
+  - id: audit-remaining-scope
+    description: 本批非全分支审计完成；UI、完整路线并发/HTTP、宽记录并发、其他W0–W7及用户暂缓保持。
+    impact: 通过仅认证本批审查/测量交付准确性。
+    mitigation: 按台账继续有限范围和新提交增量；原TaskDetail/记录变更作废依赖不恢复。
+  blockingConditions: []
