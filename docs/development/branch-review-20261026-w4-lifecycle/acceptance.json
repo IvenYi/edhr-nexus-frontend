@@ -1,0 +1,18 @@
+{
+  "level": "L2",
+  "targetCommit": "c49c0c7f98ca5c66eb59eb6876c78af03a07d28b",
+  "coreFixCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+  "fixtureFixCommit": "fd89fa808459d3267b51bb314ac9dd4ddd2027ad",
+  "initialTestedCommit": "a970f654a07d3bbf2c803fe812e322d332889603",
+  "initialQuality": {"result": "failed", "reason": "W4-TEST-AUDIT-JSON-001", "original": "evidence/independent-initial/edhr-w4-qa-qualityResult.yaml", "sha256": "46a2f274ee8e2559ba245caf9d8197b70f74dadf8d111462c3d5b4cc10ca882b"},
+  "testedCandidateCommit": "b880440512bc11610ad4b397848438bff09c4ad7",
+  "quality": {"result": "passed", "completionState": "FINAL", "independentInstance": "/root/w4_lifecycle_quality_final", "requiredChecksPassed": 10, "requiredChecks": 10, "original": "evidence/independent-final/edhr-w4-final-qualityResult.yaml", "sha256": "968fab17e5e122971d31be1cdf1700c4b863a991dce618844a2d687dac9cce7b", "regression": {"tests": 121, "passed": 119, "skipped": 2, "failures": 0, "errors": 0}, "h2Focused": {"tests": 7, "passed": 7}, "knowledge": {"tests": 89, "passed": 89}},
+  "ontology": {"result": "updated", "completionState": "FINAL", "original": "evidence/ontology/edhr-w4-ontology-result.yaml", "sha256": "90007f90d6b9e046dd34cf026127586c5fccbd87572faf1a8e09fecf4d619c03", "semanticsAfterResult": "Only test JDBC decoding changed; policy/source implementation and three knowledge assets unchanged, checked by final QA"},
+  "resolvedInThisBatch": ["AUD-H007", "W4-TEST-AUDIT-JSON-001"],
+  "addedKnowledgeIds": ["evidence.production-object-execution-status-audit-source", "evidence.production-object-execution-status-audit-tests"],
+  "remaining": ["AUD-H006", "AUD-H008", "PERF-AUDIT-LIST-MATERIALIZATION-001", "PERF-PRODUCTION-SPLIT-REPEATED-SCAN-001", "Existing W2/W3/W4/W5/W6/W7 gaps and deferred scopes retained"],
+  "scopeReview": "After all three professional instances FINAL, root reviewed scope and reported it to user before PR creation. No policy, UI, schema, performance implementation or historical restoration expansion.",
+  "postTestedChanges": "L0 evidence archive, acceptance/progress/navigation/delivery only; product, tests, knowledge and contracts must remain equal to tested candidate",
+  "mergeDeployment": "No automatic merge/deploy; user reviews PR",
+  "qualification": "Counts are scoped checks, not whole-branch completion or sum of unique root+QA coverage; two original browser fixtures skipped, no browser acceptance claimed"
+}

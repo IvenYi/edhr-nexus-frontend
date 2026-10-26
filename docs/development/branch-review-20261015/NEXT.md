@@ -1,5 +1,7 @@
 # 持续推进台账
 
+最新正式验收：[W4生命周期审计](../branch-review-20261026-w4-lifecycle/README.md)全新独立对b8804405 **passed/FINAL、10/10**，PG119通过/2原浏览器夹具跳过、H2同7与知识89通过；本体updated/FINAL，初轮failed保留。AUD-H007及测试夹具W4-TEST-AUDIT-JSON-001已由acceptance关闭，源码核心3281863b、测试补修fd89fa80；全部正式角色FINAL后已在PR前向用户复核任务无漂移。当前仅L0归档/交付，原冻结progress/catalog/ledger保持；自建PG已按确切ID停止。下一轮fetch核对人工合并及新增提交，然后推进H006跨时点边界、H008和W4剩余，容量风险先讨论，原暂缓不恢复。
+
 本轮补充：首轮a970f654独立正式failed，W4-TEST-AUDIT-JSON-001为新增测试helper未兼容默认H2的JSON byte[]。fd89fa80仅修夹具解析、保留断言，主侧同7H2全绿及PG121回归再次119通过/2原夹具跳过；原失败在本批evidence/independent-initial保持，等待全新独立修正候选验收，不将首轮PG通过当整体通过。
 
 2026-10-26继续：PR28已人工合入最新`edhr-dev@c49c0c7f`，树等于交付744e804b，无额外产品/契约增量。本轮[W4生命周期审计](../branch-review-20261026-w4-lifecycle/README.md)核心3281863b仅修AUD-H007：真实对象状态变化同事务补PRODUCTION_OBJECT UPDATE，旧执行事件保留；主侧原生PG6红→6绿、相邻121项119通过/2原条件浏览器夹具跳过。知识updated/FINAL、89校验通过，当前等待干净候选独立QA，后续正式结果见acceptance，不拿主侧结果代替独立验收。
