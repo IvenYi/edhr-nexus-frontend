@@ -1,0 +1,71 @@
+{
+  "author": "/root/capacity_independent_final",
+  "headCommit": "1081c4d8b15eb9e3ac7e64b04397bd10c0abffda",
+  "productCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+  "kind": "Focused independent source inspection plus separate mechanical82-map validation; not whole-file/whole-domain acceptance",
+  "checks": [
+    {
+      "id": "queue-materialization",
+      "paths": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java:89-129",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java:21-31"
+      ],
+      "conclusion": "Repository native queries return complete List, then controller slices bounded int indices. Independent8 confirms one native query/loadN/return5. Existing current actor, candidate/unrestricted and DHR exclusion retained; no SQL LIMIT/OFFSET."
+    },
+    {
+      "id": "dhr-changes-per-evidence",
+      "paths": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java:25-79",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java:81-125"
+      ],
+      "conclusion": "Valid existing frozen version obligatorily calls changes. One evidence list +F current row selects +version/current-members/attachments3 =F+4 application JdbcTemplate invocations in that branch. Static model only; full endpoint has other reads. No runtime DHR count/latency/IO claim."
+    },
+    {
+      "id": "review-repeat",
+      "paths": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java:73-83",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java:149-150"
+      ],
+      "conclusion": "Authorized detail obtains summaries.version, which already computes changes, then recomputes evidenceChanges and replaces value. Comparison component2*(F+4), not total endpoint count. changes attachment matching/readAllBytes/hash may repeat; no measured OOM/IO claim. Write action locked freshness must remain."
+    },
+    {
+      "id": "dhr-bounded-counterevidence",
+      "paths": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java:185-227",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java:268-280",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java:400-420"
+      ],
+      "conclusion": "List COUNT+LIMIT/OFFSET with1..200 cap and pure mapper, not memory pagination/network N+1. Current detail reads form evidence in one query. Database internal subplan cost and full response bytes remain unmeasured."
+    },
+    {
+      "id": "reference-heavy-view",
+      "paths": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java:99-119",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java:137-141",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java:264-355"
+      ],
+      "conclusion": "A single field reference request invokes get and full view, including formal output and all-operation/form-copy controls before bounded lookup. creatorNames map already deduplicates actor names. Static growth risk; no measured CPU/heap/query-count for this path or suggestion to remove required qualification."
+    },
+    {
+      "id": "reference-bounds-and-semantics",
+      "paths": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java:60-143",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java:186-213",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java:245-268",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java:728-784",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceConfig.java:12-92",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java:228-257"
+      ],
+      "conclusion": "Existing SQL LIMIT100 or clamped100+1, source/dictionary/type predicates shared by search/find/validate, first explicit empty initialization and no overwrite. Condition validation precedes mutations/save/audit. Context reuse cannot use ID alone or trust display metadata. Selected UI patch handlers only inspected for condition preservation, no visual/layout acceptance."
+    }
+  ],
+  "performanceRiskStates": "All four remain pending discussion; no product repairs or risk resolution claims",
+  "ontologyReviewQualification": "Six formal source/decision rows independently provenance-checked and sampled against exact normative clauses and core source; 89 structural tests do not accept all2618 IDs",
+  "sourceInspectionDidNotExecuteDhrOrReferenceScaleQueries": true,
+  "newSemanticRowsAuthoredByQa": 0,
+  "noUiConformanceOrFullAppE2eClaim": true,
+  "optionalL0NavigationSuggestions": [
+    "Clarify A01-A22 checklist namespace differs from historical business-deferred A12; current table scope is already explicit and not blocking.",
+    "Separate future risk-to-source navigation from frozen catalog; direct associations proposed by root match these source paths."
+  ]
+}

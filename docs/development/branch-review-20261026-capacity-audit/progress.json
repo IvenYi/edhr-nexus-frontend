@@ -4,7 +4,7 @@
   "targetBranch": "edhr-dev",
   "productCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
   "catalogBaseline": "98e874306cb1aeef8e73f1066bfe5afa24dcdff2",
-  "stage": "ready-for-clean-independent-audit-quality",
+  "stage": "audit-delivery-accepted-performance-risks-pending-discussion",
   "charterDimensions": 22,
   "dimensionListingIsNotReviewCompletion": true,
   "selectedEntryGroups": 7,
@@ -106,10 +106,10 @@
     "knowledgeChanged": false,
     "wholeKnowledgeAccepted": false
   },
-  "independentQuality": "pending",
+  "independentQuality": "passed-FINAL",
   "temporaryOwnedPostgres": {
     "id": "374a59d827c8624aa631a920732ccbd6e194b12edd72786008b5105aaa4b6a2e",
-    "state": "retained-for-final-QA"
+    "state": "exact-ID-removed-after-formal-FINAL"
   },
   "remaining": [
     "User discussion before performance changes; no capacity limit/SLA invented",
@@ -122,5 +122,12 @@
   "overallAuditComplete": false,
   "overallPercent": null,
   "productKnowledgeSchemaUiChanged": false,
-  "mergeDeployRestorePerformed": false
+  "mergeDeployRestorePerformed": false,
+  "qualityTestedCommit": "1081c4d8b15eb9e3ac7e64b04397bd10c0abffda",
+  "independentRequiredChecks": 9,
+  "independentCapacityObservationTests": 8,
+  "independentKnowledgeStructureTests": 89,
+  "acceptance": "acceptance.json",
+  "riskRegister": "risk-register.yaml",
+  "prePrScopeReviewCompletedAfterAllFinal": true
 }

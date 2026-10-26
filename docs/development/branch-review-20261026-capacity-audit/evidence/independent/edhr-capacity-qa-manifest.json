@@ -1,0 +1,77 @@
+{
+  "schema": "edhr-independent-safe-originals-manifest/v1",
+  "author": "/root/capacity_independent_final",
+  "status": "FINAL",
+  "baseCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+  "headCommit": "1081c4d8b15eb9e3ac7e64b04397bd10c0abffda",
+  "childInstances": 0,
+  "files": [
+    {
+      "path": "/tmp/edhr-capacity-qa-qualityResult.yaml",
+      "bytes": 12209,
+      "sha256": "a5ef5544877d5ce6ecce63c3d256b280a4e4f892728280bc6465e8843ad56be2"
+    },
+    {
+      "path": "/tmp/edhr-capacity-qa-validation.json",
+      "bytes": 1776,
+      "sha256": "7aaca20cc9b6c23f9417dc9b81c20b78c8e674f9e9671bdfcc6dac6f566aa127"
+    },
+    {
+      "path": "/tmp/edhr-capacity-qa-export.json",
+      "bytes": 834,
+      "sha256": "f0dd277ef17d32bba6d9a0aa0016f2d29c38ae572dc94cac0175374cb9be8383"
+    },
+    {
+      "path": "/tmp/edhr-capacity-qa-capacity-summary.json",
+      "bytes": 2263,
+      "sha256": "2ae1d6faddeadeec7489ffb7743c9283f45652e153d450ddb522b8acbf80fa9a"
+    },
+    {
+      "path": "/tmp/edhr-capacity-qa-knowledge-summary.json",
+      "bytes": 12628,
+      "sha256": "eb45e664132ce955a6ac3056106a6d434bd44676a16a1a36286f910d7954ce49"
+    },
+    {
+      "path": "/tmp/edhr-capacity-qa-observations.jsonl",
+      "bytes": 7798,
+      "sha256": "851f3cd86df4b68add45bf9580c4f2a4a2f3a6c03dd69ff98cfa99feaf596eb7"
+    },
+    {
+      "path": "/tmp/edhr-capacity-qa-ledger-check.json",
+      "bytes": 3686,
+      "sha256": "2ad0955dba3e36b483a49430371f88165d5b519832919480eda56ea280689a74"
+    },
+    {
+      "path": "/tmp/edhr-capacity-qa-inspection.json",
+      "bytes": 7836,
+      "sha256": "8d50007bb19561e5047c778e811b2fe7fd3cf2079ffbb99b0a4e387a21b0ecb1"
+    },
+    {
+      "path": "/tmp/edhr-capacity-qa-source-review.json",
+      "bytes": 5507,
+      "sha256": "2958b3d5f79a242c56e9b3884b2110849f4514d3dfa65546e94b89364eec4980"
+    },
+    {
+      "path": "/tmp/edhr-capacity-qa-run.py",
+      "bytes": 2010,
+      "sha256": "0ccf5add05bd17b9fd79455282d7df90a311cf1a1007ecbfa9dad7fb9aeb67ea"
+    },
+    {
+      "path": "/tmp/edhr-capacity-qa-inspect.py",
+      "bytes": 10310,
+      "sha256": "c46c50f78e0d8030f9fe839718520cb6e97e468f20eee8719f2716c81625e546"
+    },
+    {
+      "path": "/tmp/edhr-capacity-qa-write-result.py",
+      "bytes": 20513,
+      "sha256": "aa2e2284c6f62b8abc51db8d6adf25c9b7b02c54844cd97bb096b953c972d648"
+    }
+  ],
+  "excluded": [
+    "*.private.log",
+    "Surefire XML/MockMvc raw errors/JWTs",
+    "full exported Git tree",
+    "node_modules/cache",
+    "actual credentials/live database data"
+  ]
+}

@@ -1,0 +1,171 @@
+qualityResult:
+  result: passed
+  baseCommit: 5259791fcbc5d1fddf04cd62a02d6593d00fe2e6
+  headCommit: 1081c4d8b15eb9e3ac7e64b04397bd10c0abffda
+  contractBaseline:
+    sourceCommit: 1081c4d8b15eb9e3ac7e64b04397bd10c0abffda
+    targetBranch: edhr-dev
+    targetCommit: 5259791fcbc5d1fddf04cd62a02d6593d00fe2e6
+    contractReadCommit: 1081c4d8b15eb9e3ac7e64b04397bd10c0abffda
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.capacity-clean-current-candidate
+    required: true
+    category: requirements
+    description: 核对真实基线、干净候选、契约/决策包与仅审计交付范围。
+    method: inspection
+    command: git fetch origin refs/heads/edhr-dev; git status --porcelain; git diff 5259791fcbc5d1fddf04cd62a02d6593d00fe2e6..1081c4d8b15eb9e3ac7e64b04397bd10c0abffda
+    outcome: passed
+    evidence:
+    - Target 5259791fcbc5d1fddf04cd62a02d6593d00fe2e6 is ancestor and current origin/edhr-dev; actual feature/tested candidate 1081c4d8b15eb9e3ac7e64b04397bd10c0abffda
+      clean before and after independent work.
+    - Actual project/role/handoff reading performed at 1081c4d8b15eb9e3ac7e64b04397bd10c0abffda; protected product/knowledge/schema/tests/scripts/roles/design/architecture
+      bytes equal target. Changes only development audit documentation and evidence.
+    - /tmp/edhr-capacity-qa-inspection.json; /tmp/edhr-capacity-qa-export.json
+  - id: check.capacity-charter-growth-and-delta
+    required: true
+    category: documentation
+    description: 详细审计范围、增长模型、增量时点、默认pending和讨论边界完整且不夸大完成。
+    method: inspection
+    command: Read audit-charter.md, data-growth-model.yaml, entry-matrix.yaml, decision-package.yaml and typed YAML/JSON parse
+    outcome: passed
+    evidence:
+    - 22 dimensions,8 data-growth categories,7 selected entry groups; unknown dimensions defaultpending. File/ID inventory and scopes explicitly not whole
+      audit or performance pass.
+    - Start/resume/domain/candidate checkpoints fetch and classify add/modify/remove/rename + necessary transitive impact; explicit no unattended continuous-listener
+      claim. User deferrals and no performance modification before discussion preserved.
+    - /tmp/edhr-capacity-qa-inspection.json
+  - id: check.capacity-native-eight
+    required: true
+    category: integration
+    description: 独立原字节探针经真实JWT/filter/MockMvc/PG复现小页全量物化与保护对照。
+    method: automated-test
+    command: W3_COMMAND_DATABASE_URL=jdbc:postgresql://localhost:55432/edhr_w3_command_test python3 /tmp/edhr-capacity-qa-run.py capacity bash /workspace/.edhr-cloud-tools/mvn-edhr
+      -C -f /tmp/edhr-capacity-qa-source/gmp-platform/backend/pom.xml -Dtest=WorkflowQueueCapacityObservationTest -Dcapacity.observation.out=/tmp/edhr-capacity-qa-observations.jsonl
+      clean test
+    outcome: passed
+    evidence:
+    - Actual fresh8/8,exit0,0fail/error/skip, on Git export of 1081c4d8b15eb9e3ac7e64b04397bd10c0abffda; all3478 tracked blob bytes checked before adding
+      only unchanged archived observation class and frontend cache symlink.
+    - For todo and done, N100/1000/10000, page1,size5 returns5, loadsN WorkflowTask entities and executes1 prepared/query statement, no LIMIT/OFFSET. This
+      is materialization risk, not queue N+1.
+    - Final fixture uses distinct instances, linked definition/version/node, explicit active(instance,node) partial unique index and zero duplicate/missing
+      references; DHR/foreign exclusion, spoofed assignee, order, anonymous401, nonpositive400 and unchanged row fingerprints pass.
+    - create-drop plus selected constraint is not full baseline migration or lifecycle creation/password-login/browser E2E; timings diagnostic only, no
+      SLA/OOM/production-capacity claim. Earlier two insufficient fixtures remain excluded,8 not24 unique cases; auxiliary8 and independent8 are same cases.
+    - /tmp/edhr-capacity-qa-capacity-summary.json; /tmp/edhr-capacity-qa-observations.jsonl
+  - id: check.capacity-static-risk-and-counterevidence
+    required: true
+    category: database
+    description: 独立核对DHR与执行引用路径、计数模型及正面反证，区分静态与运行。
+    method: inspection
+    command: Focused fixed Git source inspection of queue/DHR/production/reference paths
+    outcome: passed
+    evidence:
+    - Confirmed static changes F+4 and review comparison-only2*(F+4), obligatory valid branches and attachment IO mechanisms; no DHR SQL/heap/latency test
+      was performed.
+    - Confirmed full execution view before bounded reference search and creator-name map reuse; DHR list COUNT+LIMIT/OFFSET/size1..200, current detail batch
+      load and reference SQL LIMIT100/page<=100+1 retained as counterevidence.
+    - All four risk records remain medium/pending-discussion; suggestions preserve auth/tenant/source/snapshots/raw-integrity/hash and locked action freshness;
+      no performance repair.
+    - /tmp/edhr-capacity-qa-source-review.json
+  - id: check.capacity-ontology-six-and-baseline
+    required: true
+    category: ontology
+    description: 核对六条本体有限语义原件、原始来源与源码边界，不认证全库语义。
+    method: inspection
+    command: Schema-driven canonical ID/hash matching; DEC0082-03/04/07/14/15/16 normative/original-evidence and core implementation inspection
+    outcome: passed
+    evidence:
+    - Six current declared rows have exact canonical hashes and all original receipts/Git ranges valid; selected meanings, first-empty-only/no-overwrite,
+      shared source/dictionary/type scope and condition preservation supported.
+    - Formal ontology result not-applicable means no knowledge-definition change in this read-only slice, not no audit. No maturity/version promotion, no
+      new business decision. Existing0.3.25/schema1.2.0 and whole2618-ID/Markdown pending scope preserved.
+    - /tmp/edhr-capacity-qa-inspection.json; /tmp/edhr-capacity-qa-source-review.json
+  - id: check.capacity-knowledge89
+    required: true
+    category: ontology
+    description: 独立知识模块结构回归，单列与业务语义/容量区别。
+    method: automated-test
+    command: python3 /tmp/edhr-capacity-qa-run.py knowledge bash /workspace/.edhr-cloud-tools/mvn-edhr -C -f /tmp/edhr-capacity-qa-source/tools/knowledge-model/pom.xml
+      clean test
+    outcome: passed
+    evidence:
+    - Actual fresh89/89,exit0,0fail/error/skip in separate knowledge-model target; not all2618 semantic rules accepted.
+    - /tmp/edhr-capacity-qa-knowledge-summary.json
+  - id: check.capacity-original-provenance
+    required: true
+    category: audit
+    description: 原件等字节、有限源码范围、历史继承与夹具资格真实。
+    method: inspection
+    command: python3 /tmp/edhr-capacity-qa-inspect.py
+    outcome: passed
+    evidence:
+    - 29 archive receipts match SHA,size and extant original/tmp bytes;82 finite source scopes have exact Git/blob/SHA/range and explicit runtime qualification;
+      no whole-file completion.
+    - Old574 methods/six semantic sources exact; other49 old finding objects exact; three genuine PR24 read acceptances plus resolved low QF-READ-DOC-001
+      overlay carried; same-tree human merge verified.4 current performance risk records stay open for discussion.
+    - Earlier fixture passes and correction diffs preserved/excluded appropriately; initial YAML route quoting failure corrected before tested candidate.
+      No raw Maven logs/XML/literal JWT/Bearer token in batch.
+    - /tmp/edhr-capacity-qa-inspection.json
+  - id: check.capacity-ledger-reproduction
+    required: true
+    category: documentation
+    description: 固定完整目录逐字节可重建，未审和历史差异保留。
+    method: command
+    command: python3 scripts/build-branch-review-ledger.py --ref 98e874306cb1aeef8e73f1066bfe5afa24dcdff2 --catalog docs/development/branch-review-20261026-capacity-audit/source-catalog.json
+      --out docs/development/branch-review-20261026-capacity-audit/ledger --check
+    outcome: passed
+    evidence:
+    - Actual exit0 on 1081c4d8b15eb9e3ac7e64b04397bd10c0abffda. Fixed inventory98e87430 has3458 tracked paths/2618 IDs; candidate export has3478 paths due
+      subsequent audit documents, different snapshots explicitly not a completion denominator.
+    - 656 overlapping ranges=574old+82new;7 sources/114 historical-current semantic rows=108old+6new;57 mixed finding records.252 source and101 semantic/named-dependency
+      rows needdelta; four gaps, zero whole files, excluded028, whole auditfalse/percentnull retained.
+    - Generator executes no new code/semantic/performance acceptance; actual six formal reviews and8 observations are separate original artifacts.
+    - /tmp/edhr-capacity-qa-ledger-check.json; /tmp/edhr-capacity-qa-inspection.json
+  - id: check.capacity-final-clean-owned-runtime
+    required: true
+    category: security
+    description: 最终clean/hash和运行所有权核对，保留实际未执行边界。
+    method: inspection
+    command: git status --porcelain; git rev-parse HEAD; docker exact-ID inspected; source hash comparisons
+    outcome: passed
+    evidence:
+    - Final HEAD 1081c4d8b15eb9e3ac7e64b04397bd10c0abffda clean; no shared repository modifications/repairs by this role, no child instances. No user edhr_dev
+      connection, data restore/deploy/merge/Actions query/manual trigger.
+    - Only owned PG16 id374a59d827c8624aa631a920732ccbd6e194b12edd72786008b5105aaa4b6a2e loopback55432/tmpfs synthetic edhr_w3_command_test used. Both Maven
+      processes exited; no browser/server started. PG remains solely for parent exact-ID cleanup after FINAL.
+    - 'No UI behavior/layout/design change: browser/full frontend build not applicable to this audit-only delivery; no new conformance claim or unrelated
+      global static scan.'
+    - /tmp/edhr-capacity-qa-export.json; /tmp/edhr-capacity-qa-inspection.json
+  findings: []
+  residualRisks:
+  - id: risk.open-performance-discussion
+    description: Four documented medium performance risks remain pending discussion; queue materialization independently observed, other3 mechanisms source-confirmed
+      only.
+    impact: Passing audit delivery does not mean performance repaired, client capacity or SLA accepted; overlapping DHR risks are not additive independent
+      defects.
+    mitigation: Retain registry and source/evidence links; agree tradeoffs then measure/implement separately, preserve evidence/auth/lock/snapshot semantics.
+  - id: risk.synthetic-observation-scope
+    description: Synthetic signed JWT/MockMvc/PG uses Hibernate create-drop and selected target partial index/references, not full current-baseline migration
+      or real workflow lifecycle creation.
+    impact: Not live login/browser E2E, full schema/performance/tenant certification, concurrency/p95/OOM or actual client volumes.
+    mitigation: Keep exact fixture qualification and original iterations; use approved future realistic dataset/constraints/representative workloads where
+      needed.
+  - id: risk.overall-audit-incomplete
+    description: Whole W0-W7/current2618-ID/Markdown audit incomplete;252 historical source and101 semantic/dependency carry rows needdelta; four gaps and
+      original deferred items remain.
+    impact: 22-dimension plan and finite82/6 scope cannot establish global completeness or a completion percentage.
+    mitigation: Continue charter/entry matrix incrementally, fetch at active checkpoints; pending/deferred do not count passed.
+  - id: risk.future-evidence-reuse
+    description: Source-only DHR/reference models and actual queue observations have different proof depth; named dependency map is not complete.
+    impact: Later code/schema/authorization/knowledge changes may invalidate conclusions despite unchanged version0.3.25.
+    mitigation: Keep fixed Git/hash/range and raw-original receipts; update risk-to-source navigation and re-evaluate directly/indirectly affected paths
+      before acceptance.
+  blockingConditions: []

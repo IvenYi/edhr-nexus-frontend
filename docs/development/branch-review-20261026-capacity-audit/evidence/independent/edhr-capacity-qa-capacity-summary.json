@@ -1,0 +1,73 @@
+{
+  "author": "/root/capacity_independent_final",
+  "phase": "capacity",
+  "headCommit": "1081c4d8b15eb9e3ac7e64b04397bd10c0abffda",
+  "export": "/tmp/edhr-capacity-qa-source",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "/tmp/edhr-capacity-qa-source/gmp-platform/backend/pom.xml",
+    "-Dtest=WorkflowQueueCapacityObservationTest",
+    "-Dcapacity.observation.out=/tmp/edhr-capacity-qa-observations.jsonl",
+    "clean",
+    "test"
+  ],
+  "startedAt": "2026-10-26T02:16:44.638582+00:00",
+  "elapsedSeconds": 57.68,
+  "exit": 0,
+  "privateLogSha256": "4e792308846f185a3e90876b10b227dd33872b2c7451af3021968d283ea4e0f3",
+  "rawLogsXmlNotArchived": true,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowQueueCapacityObservationTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "fresh": true,
+      "xmlSha256": "5f51e5fb9b97ab57bc6f5b2d36f66af3e62638753f5ecf6e95cab764a1337062",
+      "cases": [
+        {
+          "name": "authenticationAndInvalidPageGuardsIssueNoTaskSelectAndDoNotWrite(String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "authenticationAndInvalidPageGuardsIssueNoTaskSelectAndDoNotWrite(String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "smallHttpPageStillMaterializesAllMatchingTaskEntities(String, int)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "smallHttpPageStillMaterializesAllMatchingTaskEntities(String, int)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "smallHttpPageStillMaterializesAllMatchingTaskEntities(String, int)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "smallHttpPageStillMaterializesAllMatchingTaskEntities(String, int)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "smallHttpPageStillMaterializesAllMatchingTaskEntities(String, int)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "smallHttpPageStillMaterializesAllMatchingTaskEntities(String, int)[6]",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

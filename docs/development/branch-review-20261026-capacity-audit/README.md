@@ -9,3 +9,9 @@
 实际继续审了三条高增长读取链及引用相关业务声明：[四项性能风险](findings.md)保持medium/pending-discussion，其中工作流全量实体加载有真实PG8项观察，另外DHR比较与执行引用为静态路径证据。正面反证同时记录，DHR列表及引用候选本身已SQL分页。当前不是全仓容量结论，不擅改业务或提出任意页长/数据保留政策。
 
 本体实例正式FINAL、not-applicable：六条DEC0082声明有实际源码/原始确认核对，无需修改知识。现有辅助均FINAL；全新独立质量尚待干净候选核对，当前不能据辅助通过宣称最终质量门禁完成。完整目录/台账将固定证据提交生成，保留旧结论和本批新增范围，最终状态在acceptance单独登记。
+
+上述准备阶段记录保持。当前已由全新独立质量对干净1081c4d8b15eb9e3ac7e64b04397bd10c0abffda正式[passed/FINAL](evidence/independent/edhr-capacity-qa-qualityResult.yaml)，9/9必需检查通过：8/8原生PG观察、89/89知识结构、29原件/82有限范围/6语义和ledger字节复现均通过。辅助8与独立8是同组复验，不计16不同覆盖；质量通过仅认证审计交付，四性能风险仍开放，不能称性能已修复/生产容量通过。所有正式角色及辅助已FINAL，临时PG按exactID清理。
+
+[固定目录](source-catalog.json)/[台账](ledger/summary.json)的98e87430快照：3458路径/2618知识ID、656有交叉源码范围（旧574+本批82）、七源114历史/当前语义行（旧108+本体实际6）、57混合问题记录（含4开放性能风险）。252源码及101语义或列明依赖仍需增量，四gap/整文件完成0/旧028排除保持；不把清单/记录数当唯一缺陷/方法分母。生成器自身newSemanticReviews=0表示它不执行语义审查，本批实际6行的来源是正式本体原件。
+
+最终[acceptance](acceptance.json)与[范围复核](scope-review.md)单独记录，冻结目录不回写。受测后仅L0归档/验收/PR登记、A维度命名空间澄清和[risk-register](risk-register.yaml)直接路径导航；直接关联已由独立实例确认，传递依赖只是后续影响候选。产品/知识/tests/契约及冻结目录保持，所有风险pending-discussion；不能因本PR合入或用户说继续自动实施性能方案/恢复TaskDetail暂缓。

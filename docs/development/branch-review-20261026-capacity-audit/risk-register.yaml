@@ -1,0 +1,56 @@
+schema: edhr-audit-risk-delta-register/v1
+productCommit: 5259791fcbc5d1fddf04cd62a02d6593d00fe2e6
+kind: L0-navigation-overlay-for-existing-reviewed-risks
+qualification: 固定catalog/ledger原件不回写；本表补充4项既有风险的直接变更关联，须结合入口矩阵/源码地图/知识与schema传递影响核对，不能当完整自动依赖图。
+defaultDisposition: pending-discussion
+discussionOwner: /root
+reopenOnAffectedChange: true
+newProductFixes: 0
+relatedDependencies:
+  qualification: 以下是未来增量影响候选，不代表本批完整审过这些文件或业务领域；直接路径与传递依赖均须按实际差异核对。
+  groups:
+    - riskIds: [PERF-WORKFLOW-QUEUE-001]
+      candidates: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java, gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
+      reason: 实体宽度/字段类型、查询索引和有效任务约束会影响载荷与计划。
+    - riskIds: [PERF-DHR-EVIDENCE-NPLUS1-001, PERF-DHR-REVIEW-REPEAT-001]
+      candidates: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFrozenEvidenceIntegrity.java, gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
+      reason: 冻结完整性/附件存储和来源成员schema变化需要沿路径增量，不能省略文件校验或审批锁。
+    - riskIds: [PERF-EXECUTION-REFERENCE-VIEW-001]
+      candidates: [gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceConfig.java, docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml]
+      reason: 冻结字段配置、条件、范围、首次带入和资格语义会改变允许复用的上下文边界。
+risks:
+  - id: PERF-WORKFLOW-QUEUE-001
+    state: pending-discussion
+    evidenceLevel: runtime-observed
+    affectedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java
+    entryId: entry.workflow-todo-done
+    discussion: 数据库分页/窄DTO及原候选和排序保护；不预先设容量或改API。
+  - id: PERF-DHR-EVIDENCE-NPLUS1-001
+    state: pending-discussion
+    evidenceLevel: static-path-confirmed-runtime-pending
+    affectedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+    entryId: entry.dhr-frozen-version
+    discussion: 按完整成员ID批量/分块加载，保留摘要、缺失/新增、tenant及锁内当前性。
+  - id: PERF-DHR-REVIEW-REPEAT-001
+    state: pending-discussion
+    evidenceLevel: static-path-confirmed-runtime-pending
+    affectedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java
+    entryId: entry.dhr-review-detail
+    discussion: 单请求比较时点/结果复用、附件ID映射与流式hash；保留审批写锁内fresh检查。
+  - id: PERF-EXECUTION-REFERENCE-VIEW-001
+    state: pending-discussion
+    evidenceLevel: static-path-confirmed-runtime-pending
+    affectedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java
+    entryId: entry.execution-reference-context
+    discussion: 窄可信引用上下文及单请求复用，保留来源/字段条件与真实冻结版本；须复核运行时派生/结算后表单配置的必要计算，不能直接以持久化原JSON替代完整view；不依赖前端展示属性替代资格。

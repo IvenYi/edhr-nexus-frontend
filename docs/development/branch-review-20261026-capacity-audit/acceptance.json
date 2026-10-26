@@ -1,0 +1,96 @@
+{
+  "schema": "edhr-audit-batch-acceptance/v1",
+  "kind": "audit-delivery-not-product-capacity-approval",
+  "recordedAt": "2026-10-26T10:30:56.941112+08:00",
+  "level": "L2",
+  "baseCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+  "testedCommit": "1081c4d8b15eb9e3ac7e64b04397bd10c0abffda",
+  "qualityResult": {
+    "result": "passed",
+    "author": "/root/capacity_independent_final",
+    "status": "FINAL",
+    "path": "evidence/independent/edhr-capacity-qa-qualityResult.yaml",
+    "sha256": "a5ef5544877d5ce6ecce63c3d256b280a4e4f892728280bc6465e8843ad56be2",
+    "requiredChecks": 9,
+    "childInstances": 0
+  },
+  "ontologyResult": {
+    "result": "not-applicable",
+    "author": "/root/capacity_ontology_delta",
+    "status": "FINAL",
+    "knowledgeChanged": false,
+    "actualLimitedSemanticRows": 6,
+    "path": "evidence/ontology/edhr-capacity-ontology-result.yaml",
+    "sha256": "fe387cb8bbac61216ca4a14f289d65315727d1f3b4cc5c0ff04f325e3356783f",
+    "wholeKnowledgeAccepted": false
+  },
+  "independentCapacityObservation": {
+    "tests": 8,
+    "nativePostgres": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "freshXml": true,
+    "returns5LoadsN": [
+      100,
+      1000,
+      10000
+    ],
+    "queriesPerSuccessfulRequest": 1,
+    "notQueueNPlusOne": true
+  },
+  "independentKnowledgeStructure": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "freshXml": true,
+    "structureNotFullSemantic": true
+  },
+  "auditEvidence": {
+    "finiteSourceRanges": 82,
+    "originalArchiveReceipts": 29,
+    "newFormalSemanticRows": 6,
+    "frozenLedgerReproduced": true
+  },
+  "openPerformanceRisks": [
+    {
+      "id": "PERF-WORKFLOW-QUEUE-001",
+      "severity": "medium",
+      "disposition": "pending-discussion",
+      "evidenceLevel": "runtime-observed"
+    },
+    {
+      "id": "PERF-DHR-EVIDENCE-NPLUS1-001",
+      "severity": "medium",
+      "disposition": "pending-discussion",
+      "evidenceLevel": "static-path-confirmed-runtime-pending"
+    },
+    {
+      "id": "PERF-DHR-REVIEW-REPEAT-001",
+      "severity": "medium",
+      "disposition": "pending-discussion",
+      "evidenceLevel": "static-path-confirmed-runtime-pending"
+    },
+    {
+      "id": "PERF-EXECUTION-REFERENCE-VIEW-001",
+      "severity": "medium",
+      "disposition": "pending-discussion",
+      "evidenceLevel": "static-path-confirmed-runtime-pending"
+    }
+  ],
+  "newProductFixes": 0,
+  "performanceProductAccepted": false,
+  "productionCapacityOrSlaCertified": false,
+  "frozenCatalogLedgerPreserved": true,
+  "postTestChanges": "L0 exact archives, acceptance/progress/PR registration, risk navigation and A12 namespace clarification only; product/knowledge/tests/contracts/frozen catalog-ledger unchanged",
+  "scopeReview": {
+    "afterAllFormalFinal": true,
+    "communicatedBeforePr": true,
+    "path": "scope-review.md"
+  },
+  "ownedRuntimeCleanup": "evidence/owned-runtime-cleanup.json",
+  "wholeAuditComplete": false,
+  "overallPercent": null,
+  "mergeDeployRestorePerformed": false
+}

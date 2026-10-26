@@ -2,6 +2,8 @@
 
 2026-10-26后续范围补齐与实际容量审查：[详细审计契约](../branch-review-20261026-capacity-audit/audit-charter.md)、[增长模型](../branch-review-20261026-capacity-audit/data-growth-model.yaml)、[入口矩阵](../branch-review-20261026-capacity-audit/entry-matrix.yaml)。用户要求审计覆盖不止bug/举例，性能先分析潜在规模并提出讨论不直接改；22维度已落盘，活跃检查点fetch/影响分类/历史承接/候选重验写明。产品基线仍5259791f，本批无产品/知识/schema/UI修改。首批实际任务队列、DHR和引用读取证据见[风险汇总](../branch-review-20261026-capacity-audit/findings.md)：工作流合法PG8项观测证明小页全量实体加载（非该路径N+1），两DHR比较和执行引用重型view为静态风险，四项pending-discussion；DHR列表/引用候选已有数据库分页的反证保留。正式本体六条DEC0082有限核对无冲突、NA/FINAL；辅助全部FINAL，独立最终质量待干净候选，不冒称全仓或性能已通过。
 
+最终独立质量已对干净1081c4d8正式passed/FINAL，9/9必需检查、PG8/知识89、原件82范围/6语义/ledger复现通过；所有角色FINAL后已实际完成PR前范围复核。固定98e87430总账3458路径/2618ID、656范围/114语义/57记录，252源码/101语义或依赖待增量及四gap保持。自建PG已按exactID清理；当前仅L0归档/验收/风险直接路径导航/命名澄清/PR登记，产品和冻结catalog/ledger不变。四性能风险仍pending-discussion，参见[risk-register](../branch-review-20261026-capacity-audit/risk-register.yaml)；本批qualitypassed不是性能修复或容量认证，不能因继续/merge默认实施方案。按charter继续最新路线/初始化增量和其他无依赖入口，TaskDetail等用户暂缓保持。
+
 2026-10-26进度核对：[整体审计与健壮性专项安排](../branch-review-20261026-progress/README.md)。已fetch最新edhr-dev@5259791f；PR24已人工合入c671b23f，整树与423b17a6相同，之后有原因引用/初始化和路线画布等新增提交。普通L0机械对齐：当前3419跟踪路径/2618知识ID；旧574有交叉源码范围中252、六源108历史语义行（96不同ID）中101因知识或列明依赖变化需增量，非确认缺陷数/非完成率。旧130/63仅是870b冻结历史，不回写。未运行新业务/性能检查，未把新提交自身报告自动计为整体审计通过。
 
 本轮明确补足之前W5泛称“性能”的细项：N+1、全量读取/内存分页、循环内查写SQL、已有上下文重复加载/解析、大查询索引、批量/内存/资源边界。从下一轮W2/W3/W4入口核对同时登记候选，W5用隔离PG查询次数/加载量/规模和执行计划等证据系统收束，W6按最新根因做必要方法/函数/组件提取，W7覆盖与集成复验。七项旧结构方案已存在但并非全模块已审；最新路线codec/共享history等提取须增量对照。TaskDetail页/签名密码仍按用户要求暂缓交其协作者检查，其他无依赖审查继续；记录控制/两DHR high/A12、四gap和旧AuditEvent/历史签名限制保持。
