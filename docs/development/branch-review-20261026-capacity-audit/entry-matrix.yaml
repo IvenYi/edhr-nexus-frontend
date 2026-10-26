@@ -1,0 +1,78 @@
+schema: edhr-audit-entry-dimensions/v1
+productCommit: 5259791fcbc5d1fddf04cd62a02d6593d00fe2e6
+charter: audit-charter.md
+unknownDimensionsDefault: pending
+markersAreScopedObservationsNotWholeDimensionAcceptance: true
+wholeFilesCompleted: 0
+entries:
+  - id: entry.workflow-todo-done
+    workPackage: W3/W5
+    routes: [GET /api/v1/workflow/tasks/todo, GET /api/v1/workflow/tasks/done]
+    sourceMap: evidence/workflow/edhr-capacity-workflow-source-map.json
+    observedDimensions: {A03: runtime-observed, A06: runtime-observed, A09: runtime-observed, A10: runtime-observed, A21: runtime-observed}
+    qualification: 仅两队列小页/实体加载、排序、真实主体伪造参数、他人/DHR排除、匿名/非正页和读前后不变八项，不认证整个权限或任务生命周期。
+    growthModel: growth.workflow-queues
+    riskIds: [PERF-WORKFLOW-QUEUE-001]
+    next: 与用户讨论数据库分页/DTO方案后，按同资格与顺序对照及实际索引/规模验证；当前不改。
+  - id: entry.dhr-instance-list
+    workPackage: W1/W5
+    routes: [GET /api/v1/dhr-instances]
+    sourceMap: evidence/dhr/edhr-capacity-dhr-source-map.json
+    observedDimensions: {A09: source-inspected, A10: source-inspected}
+    qualification: COUNT+LIMIT/OFFSET及行映射无逐行读取的反证；不是本批实际PG执行计划或宽行测量。
+    growthModel: growth.dhr-evidence
+    riskIds: []
+    next: 量化COUNT/深页、宽JSON字段及实际索引；不把源码有分页等同容量通过。
+  - id: entry.dhr-current-detail
+    workPackage: W1/W5
+    routes: [GET /api/v1/dhr-instances/{id}]
+    sourceMap: evidence/dhr/edhr-capacity-dhr-source-map.json
+    observedDimensions: {A01: source-inspected, A09: source-inspected, A12: source-inspected}
+    qualification: 仅当前证据集合一次批量读取与完整可见性来源，未认证全部DHR规则或内存/响应体容量。
+    growthModel: growth.dhr-evidence
+    riskIds: []
+    next: 单DHR表单份/动态行/字节增长测量，保留完整来源不可随意裁剪。
+  - id: entry.dhr-frozen-version
+    workPackage: W1/W5
+    routes: [GET /api/v1/dhr-instances/{id}/summary/versions/{versionId}]
+    sourceMap: evidence/dhr/edhr-capacity-dhr-source-map.json
+    observedDimensions: {A01: source-inspected, A09: source-inspected, A11: source-inspected, A12: source-inspected, A13: source-inspected}
+    qualification: 仅完整性校验及changes直接JDBC调用/附件IO的合法路径静态模型，不是查询次数/IO/时延实测。
+    growthModel: growth.dhr-evidence
+    riskIds: [PERF-DHR-EVIDENCE-NPLUS1-001]
+    next: 合成合法冻结版本的查询计数和批量加载对照方案，先讨论不改。
+  - id: entry.dhr-review-detail
+    workPackage: W1/W5
+    routes: [GET /api/v1/dhr-reviews/{taskId}]
+    sourceMap: evidence/dhr/edhr-capacity-dhr-source-map.json
+    observedDimensions: {A06: source-inspected, A09: source-inspected, A11: source-inspected, A13: source-inspected}
+    qualification: 只读展示比较重复与审批锁内重查界限；不改审批政策或暂缓的生命周期能力。
+    growthModel: growth.dhr-evidence
+    riskIds: [PERF-DHR-REVIEW-REPEAT-001]
+    next: 讨论同请求比较时点和文件流式验证；执行合法请求计数/IO对照，保留act锁内新鲜性。
+  - id: entry.reference-candidate-query
+    workPackage: W2/W5
+    routes: [POST /api/v1/master-data/template-modeling/reference-options]
+    sourceMap: evidence/primary/edhr-capacity-primary-source-map.json
+    semanticEvidence: evidence/ontology/edhr-capacity-ontology-semantic-review.jsonl
+    observedDimensions: {A01: source-inspected, A07: source-inspected, A09: source-inspected, A10: source-inspected, A11: source-inspected}
+    qualification: 六条DEC0082有限语义及SQL限量/参数范围/条件可信性；无浏览器或数据库查询计划测量。
+    growthModel: growth.reference-and-context
+    riskIds: []
+    next: 深OFFSET/包含搜索执行计划和大候选数据量验证，保留资格与字典类型范围。
+  - id: entry.execution-reference-context
+    workPackage: W2/W4/W5
+    routes: [GET /api/v1/production/execution/{id}/references, POST /api/v1/production/execution/{id}/references]
+    sourceMap: evidence/primary/edhr-capacity-primary-source-map.json
+    observedDimensions: {A09: source-inspected, A10: source-inspected, A11: source-inspected, A12: source-inspected, A19: source-inspected}
+    qualification: references→get→view完整详情路径及创建人map复用反证；窄读取仅为方案，不称已提取或优化通过。
+    growthModel: growth.reference-and-context
+    riskIds: [PERF-EXECUTION-REFERENCE-VIEW-001]
+    next: 讨论窄上下文接口边界及真实来源/字段资格保护，构造多工序/多份/正式来源规模观测。
+pendingBeyondThisSlice:
+  - 更新latest全域入口中每条A维度适用性与真实覆盖，不从分类盘点自动标记通过。
+  - 最新DEC0083/0084路线政策及初始化baseline变化按W4/W5进行增量，而非套用旧passed。
+  - 其他主数据/生产列表、projection/trace查询与批量写、文件导出、后台积压、前端大文档及22维度未选项继续pending。
+  - 整体知识2618ID及Markdown来源仍按原全量范围逐条推进，六声明不是全库完成。
+  - W6按最新结构与实证根因选择小提取；W7全分支覆盖与独立集成尚未完成。
+userDeferred: [TaskDetail任务处理页和签名密码, 记录控制变更作废及依赖的两DHRhigh/A12]
