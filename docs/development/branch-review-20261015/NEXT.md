@@ -1,5 +1,7 @@
 # 持续推进台账
 
+已交付 [PR29：执行引发的对象状态审计](https://github.com/IvenYi/edhr-nexus-frontend/pull/29)，创建时OPEN/MERGEABLE/CLEAN，等待人工合并。实际独立受测b8804405，后续只有L0档案/验收/导航/交付登记，产品、测试、知识、契约均相同。下一轮先fetch核对PR29真实合并与新增提交，再按下方W4剩余顺序推进；无自动merge/deploy。
+
 最新正式验收：[W4生命周期审计](../branch-review-20261026-w4-lifecycle/README.md)全新独立对b8804405 **passed/FINAL、10/10**，PG119通过/2原浏览器夹具跳过、H2同7与知识89通过；本体updated/FINAL，初轮failed保留。AUD-H007及测试夹具W4-TEST-AUDIT-JSON-001已由acceptance关闭，源码核心3281863b、测试补修fd89fa80；全部正式角色FINAL后已在PR前向用户复核任务无漂移。当前仅L0归档/交付，原冻结progress/catalog/ledger保持；自建PG已按确切ID停止。下一轮fetch核对人工合并及新增提交，然后推进H006跨时点边界、H008和W4剩余，容量风险先讨论，原暂缓不恢复。
 
 本轮补充：首轮a970f654独立正式failed，W4-TEST-AUDIT-JSON-001为新增测试helper未兼容默认H2的JSON byte[]。fd89fa80仅修夹具解析、保留断言，主侧同7H2全绿及PG121回归再次119通过/2原夹具跳过；原失败在本批evidence/independent-initial保持，等待全新独立修正候选验收，不将首轮PG通过当整体通过。
