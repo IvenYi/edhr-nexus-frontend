@@ -1,0 +1,76 @@
+{
+  "label": "primary-regression",
+  "suites": [
+    {
+      "name": "ProductionExecutionIntegrationTest",
+      "counts": {
+        "tests": 85,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 2
+      },
+      "rawXmlSha256": "efbb5df55049e45d63a073aeb07e73d382094c72376dc015ea4eb11612df1712",
+      "skippedCases": [
+        "formRecordsBrowserFixture",
+        "browserEvidenceFixture"
+      ]
+    },
+    {
+      "name": "ProductionServiceTest",
+      "counts": {
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "rawXmlSha256": "f53a4d3578d89d63329692d64f773a74d007202ed9a1ac54041e3e71d62cbae9",
+      "skippedCases": []
+    },
+    {
+      "name": "ProductionObjectControllerTest",
+      "counts": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "rawXmlSha256": "1e5cd1bd517b6a7f0daf73e8112439b282c1aa4c2fdd8630092381cbfdef7a87",
+      "skippedCases": []
+    },
+    {
+      "name": "ProductionControllerAuthorizationTest",
+      "counts": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "rawXmlSha256": "88742780a544c7c5537bb7963b787111577d3dd82cab8503b9a5f7b65daa43c7",
+      "skippedCases": []
+    },
+    {
+      "name": "AuditControllerTest",
+      "counts": {
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "rawXmlSha256": "5f4351b50f1c6d18190ffe2865f4cf0568e7793376df9f480dff0acc8c61e815",
+      "skippedCases": []
+    }
+  ],
+  "totals": {
+    "tests": 121,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2
+  },
+  "database": "ProductionExecutionIntegrationTest on isolated PostgreSQL16; other suites mocks/unit/MVC test contexts",
+  "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -q -Dtest=ProductionExecutionIntegrationTest,ProductionServiceTest,ProductionObjectControllerTest,ProductionControllerAuthorizationTest,AuditControllerTest -Dexecution.test.url=jdbc:postgresql://127.0.0.1:55432/edhr_w4_test -Dexecution.test.driver=org.postgresql.Driver -Dexecution.test.user=edhr -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect test",
+  "notes": [
+    "Original optional browser/manual/concurrency methods retain their original conditions; no skip flags added",
+    "Initial regression invocation at repository root exited1 missing pom before any tests; corrected cwd to gmp-platform/backend",
+    "No raw XML/log or JWT archived"
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "decisionPackage": {
+    "id": "DEC-PACKAGE-20261026-W4-LIFECYCLE-AUDIT",
+    "scope": "edhr-dev整体审计W4有限切片：H007生产对象状态审计修复；H006创建后成员转移及生产批量分配成本仅核对",
+    "knowledgeBaselineVersion": "0.3.25",
+    "contractBaseline": {
+      "sourceCommit": "c49c0c7f98ca5c66eb59eb6876c78af03a07d28b",
+      "targetBranch": "edhr-dev",
+      "targetCommit": "c49c0c7f98ca5c66eb59eb6876c78af03a07d28b",
+      "contractReadCommit": "c49c0c7f98ca5c66eb59eb6876c78af03a07d28b",
+      "uncommittedContractPaths": []
+    },
+    "summary": "按DEC-0019-02/04在真实执行START/最终完成发生对象状态变化时补PRODUCTION_OBJECT UPDATE，保留执行审计与历史原件。",
+    "confirmed": {
+      "concepts": [],
+      "relationships": [],
+      "rules": [
+        {
+          "id": "DEC-0019-04",
+          "name": "对象生命周期变化字段审计",
+          "status": "implemented",
+          "trigger": "生产对象生命周期事务成功",
+          "condition": {
+            "statusChanged": true
+          },
+          "result": {
+            "entityType": "PRODUCTION_OBJECT",
+            "action": "UPDATE",
+            "fields": "实际变化字段"
+          },
+          "sourceReferences": [
+            "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml"
+          ]
+        }
+      ],
+      "executionContracts": []
+    },
+    "inferred": [
+      {
+        "id": "engineering.w4.object-audit-location",
+        "statement": "在ProductionExecutionService已持锁的act中从previousObjectStatus与实际对象状态生成状态差异审计，同现有执行审计同事务。",
+        "rationale": "复用已加载的对象及状态，无须新增查询/表/接口，不把完整执行状态映射进对象业务字段。",
+        "relatedIds": [
+          "DEC-0019-02",
+          "DEC-0019-04"
+        ]
+      }
+    ],
+    "unresolved": [],
+    "replacementScopes": [],
+    "impactAnalysis": {
+      "level": "L2",
+      "directImpacts": [
+        {
+          "area": "production-execution",
+          "change": "仅真实状态变化增加对象UPDATE事件",
+          "evidenceReferences": [
+            "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java"
+          ]
+        }
+      ],
+      "transitiveImpacts": [
+        {
+          "area": "object-audit-query",
+          "change": "既有对象审计查询可读取新START/COMPLETE状态事件",
+          "evidenceReferences": [
+            "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java"
+          ]
+        }
+      ],
+      "potentialImpacts": [],
+      "unaffectedAreas": [
+        "TaskDetail签名页面",
+        "生命周期规则、资格、DHR冻结、质量/产出算法",
+        "H006/H008在本轮先核对、不混入本次修复"
+      ],
+      "compatibilityAndMigration": [
+        "无schema迁移；不回填旧审计"
+      ],
+      "snapshotImpacts": [
+        "保留PRODUCTION_EXECUTION快照事件"
+      ],
+      "auditImpacts": [
+        "每次状态确实变化追加一条UPDATE，包含状态前后值和真实操作者"
+      ],
+      "permissionImpacts": [
+        "沿原认证及执行资格，不加新旁路"
+      ],
+      "testImpacts": [
+        {
+          "scope": "actual act transaction",
+          "scenarios": [
+            "START对象状态审计",
+            "最终COMPLETE状态审计",
+            "无状态变化不重复",
+            "对象审计或执行审计失败整体回滚",
+            "旧revision拒绝无新增",
+            "对象审计API可查询"
+          ],
+          "evidenceReferences": []
+        }
+      ],
+      "evidenceGaps": [
+        "本轮非全生产流程/全UI认证，H006需继续核对跨时点语义"
+      ]
+    },
+    "extensionStrategy": {
+      "selectedPaths": [
+        "product-core",
+        "transaction-orchestration"
+      ],
+      "rationale": "在既有生产动作事务中补明确审计职责，不新建通用框架",
+      "ownershipBoundaries": [
+        {
+          "owner": "ProductionExecutionService.act",
+          "responsibility": "执行事务的对象状态差异及执行事件"
+        }
+      ]
+    },
+    "affectedFiles": [
+      {
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+        "changeType": "update",
+        "reason": "补缺失对象审计"
+      },
+      {
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+        "changeType": "update",
+        "reason": "验证真实入口及事务回滚"
+      },
+      {
+        "path": "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+        "changeType": "update",
+        "reason": "据修复/实际证据同步既有差异"
+      }
+    ],
+    "acceptanceScenarios": [
+      {
+        "id": "w4.lifecycle-audit",
+        "given": "生产对象CREATED且配置合法",
+        "when": "经认证执行START并最终完成",
+        "then": "各真实状态变化恰有一条对象UPDATE，执行审计保持，失败原子回滚",
+        "evidenceRequirements": [
+          "真实数据库和认证HTTP测试",
+          "独立复核"
+        ]
+      }
+    ]
+  }
+}

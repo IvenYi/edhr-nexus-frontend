@@ -1,0 +1,40 @@
+{
+  "label": "primary-focused-green",
+  "counts": {
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "database": "isolated PostgreSQL16",
+  "cases": [
+    {
+      "name": "lifecycleAuditFailureRollsBackFinalCompletion(String)[1]",
+      "outcome": "passed"
+    },
+    {
+      "name": "lifecycleAuditFailureRollsBackFinalCompletion(String)[2]",
+      "outcome": "passed"
+    },
+    {
+      "name": "lifecycleAuditDoesNotRecordOrdinarySavesAsObjectChanges",
+      "outcome": "passed"
+    },
+    {
+      "name": "lifecycleAuditFailureRollsBackFirstStart(String)[1]",
+      "outcome": "passed"
+    },
+    {
+      "name": "lifecycleAuditFailureRollsBackFirstStart(String)[2]",
+      "outcome": "passed"
+    },
+    {
+      "name": "lifecycleAuditRecordsOnlyRealObjectChangesForBatchAndSn",
+      "outcome": "passed"
+    }
+  ],
+  "rawXmlSha256": "266e73f91e164b6f5ea574112be85776e7bb9ae2438996e4650dfe6f8bcb6c3d",
+  "notes": [
+    "同旧红6例通过；随后仅在已有批次自定义表单完成测试追加状态审计断言，纳入下一轮回归"
+  ]
+}

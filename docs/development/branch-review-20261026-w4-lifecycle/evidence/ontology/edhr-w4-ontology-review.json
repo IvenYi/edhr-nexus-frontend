@@ -1,0 +1,456 @@
+{
+  "role": "business-knowledge-modeler",
+  "status": "FINAL",
+  "baseCommit": "c49c0c7f98ca5c66eb59eb6876c78af03a07d28b",
+  "sourceCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+  "knowledgeBaselineVersion": "0.3.25",
+  "records": [
+    {
+      "id": "DEC-0019-02",
+      "recordType": "decision-statement",
+      "path": "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "6393b3237e617dea1f84b81dd168485d3b052337",
+      "workingTreeSha256": "faec4655201870b6c0d43d36e45899b07e95b7e44fd9c81217e08af72e7317cc",
+      "matchesCommit": false,
+      "sourceLocator": "DEC-0019-02",
+      "originalMaturity": "implemented",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "仅核对PRODUCTION_OBJECT查询身份及新增/修改动作；新状态事件使用既有查询，不认证整页视觉交互。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java"
+      ],
+      "recordSha256": "77fd2a4a78b61ee8eac38e08480f6436b00a7adc13357ac04e7c90dad1f184ac",
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "id": "DEC-0019-04",
+      "recordType": "decision-statement",
+      "path": "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "6393b3237e617dea1f84b81dd168485d3b052337",
+      "workingTreeSha256": "faec4655201870b6c0d43d36e45899b07e95b7e44fd9c81217e08af72e7317cc",
+      "matchesCommit": false,
+      "sourceLocator": "DEC-0019-04",
+      "originalMaturity": "implemented",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "对象生命周期UPDATE只记录真实字段变化；act当前对象仅status变化，创建/批量创建原控制器语义保留。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java"
+      ],
+      "recordSha256": "097149e543cd9ed3c87a736349e1abafe69b2efa03e39b5e3d54af0a7aa8c52e",
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "id": "rule.production.batch-management-row-detail-and-audit-entry",
+      "recordType": "rule",
+      "path": "docs/knowledge/rules/production.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "2bbcaab0dc9edb206bbee60578d3bd0cf53ab12b",
+      "workingTreeSha256": "a159b013ab661edd9934e68f91d8acef5ca9c7882946a1c953cdfae83c8b663c",
+      "matchesCommit": false,
+      "sourceLocator": "rule.production.batch-management-row-detail-and-audit-entry",
+      "originalMaturity": "implemented",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "现行解释同步执行服务状态事件及控制器创建/取消/提前结束职责，PRODUCTION_OBJECT读取协议保持。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java"
+      ],
+      "recordSha256": "66054c027962dec0f3c53632ba435f3d98d25e441d8ade947c62286ac11b0809",
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "id": "rule.production.production-object-audit-change-snapshot",
+      "recordType": "rule",
+      "path": "docs/knowledge/rules/production.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "2bbcaab0dc9edb206bbee60578d3bd0cf53ab12b",
+      "workingTreeSha256": "a159b013ab661edd9934e68f91d8acef5ca9c7882946a1c953cdfae83c8b663c",
+      "matchesCommit": false,
+      "sourceLocator": "rule.production.production-object-audit-change-snapshot",
+      "originalMaturity": "implemented",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "状态差异写入与执行事件并存；同事务、无变化无对象事件、不回填；规则AST未改。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java"
+      ],
+      "recordSha256": "d47aa8a21f409c7473c561cd97a2b00f130edababdd3b75ca25e6d615bc0fa57",
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "id": "discrepancy.production-object-execution-lifecycle-audit-projection",
+      "recordType": "implementation-discrepancy",
+      "path": "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "6393b3237e617dea1f84b81dd168485d3b052337",
+      "workingTreeSha256": "faec4655201870b6c0d43d36e45899b07e95b7e44fd9c81217e08af72e7317cc",
+      "matchesCommit": false,
+      "sourceLocator": "discrepancy.production-object-execution-lifecycle-audit-projection",
+      "originalMaturity": "resolved",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "仅关闭H007的缺失对象状态事件；根侧6红/6绿和119通过/2原夹具跳过是主侧证据，独立质量另记。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+        "docs/development/branch-review-20261026-w4-lifecycle/evidence/primary-red.json",
+        "docs/development/branch-review-20261026-w4-lifecycle/evidence/primary-focused-green.json",
+        "docs/development/branch-review-20261026-w4-lifecycle/evidence/primary-regression.json"
+      ],
+      "recordSha256": "2fbd543b588f0cdc8f3614ce38f9d1910b6d6d4b85aceb5e3378130feb33d8c2",
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "id": "execution.production-object-audit-snapshot",
+      "recordType": "execution-contract",
+      "path": "docs/knowledge/execution-contracts.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "92950c983315b3323e19389b54a11b0c87116687",
+      "workingTreeSha256": "5a093311cbd564dada065c193544998e229ced73f2f54f7121a8abe18d8aeac6",
+      "matchesCommit": true,
+      "sourceLocator": "execution.production-object-audit-snapshot",
+      "originalMaturity": "verified",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "保留历史verified/runtime的ProductionObjectController.writeAudit范围；未把新act补丁纳入该旧认证。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+        "docs/knowledge/rules/production.yaml"
+      ],
+      "recordSha256": "d7b4fa36324b330a3d33e2fe792e4504a1f7279b710448460ec436ca55aeeab9",
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "id": "relation.production-batch-management-opens-row-audit",
+      "recordType": "relationship",
+      "path": "docs/knowledge/ontology.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "8d11dd233caf1a81bd297f75c8c31a5d7c89844a",
+      "workingTreeSha256": "08034e914568bd38c2a703472ad5232bd5f2690974b06bda428ba4e33d7a83b3",
+      "matchesCommit": true,
+      "sourceLocator": "relation.production-batch-management-opens-row-audit",
+      "originalMaturity": "implemented",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "一对零或多审计事件及对象查询身份保持；新增真实状态事件不新增关系定义。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java"
+      ],
+      "recordSha256": "6d3c7d74c87ace3d0841677e620e3da0b3848d8f445fef7f8b05303084dadbad",
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "id": "concept.audit-change-snapshot",
+      "recordType": "concept",
+      "path": "docs/knowledge/ontology.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "8d11dd233caf1a81bd297f75c8c31a5d7c89844a",
+      "workingTreeSha256": "08034e914568bd38c2a703472ad5232bd5f2690974b06bda428ba4e33d7a83b3",
+      "matchesCommit": true,
+      "sourceLocator": "concept.audit-change-snapshot",
+      "originalMaturity": "implemented",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "业务前后值证据概念保持，不将完整执行JSON混进对象变化字段。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java"
+      ],
+      "recordSha256": "4ad0dc039d680cc6ea50a7239f2f4f93fa426905f0364d00d387f257b7016f9f",
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "id": "DEC-0002-10",
+      "recordType": "decision-statement",
+      "path": "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "1ed5840fd8426ed333c412fd0b889900ab9fe290",
+      "workingTreeSha256": "a7bcb797305df0306cbd5459b32d0a3c0c5afce5c0b7405fbbac7ddd8e0962d6",
+      "matchesCommit": true,
+      "sourceLocator": "DEC-0002-10",
+      "originalMaturity": "specified",
+      "reviewStatus": "reviewed",
+      "conclusion": "needs-fix",
+      "scope": "已存在对象不因成员转移重算身份是明确规范；当前未开工对象首次START仍读当前成员关系。本轮只核对未修复，不用后来的START冻结覆盖旧身份保护。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+        "docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml"
+      ],
+      "recordSha256": "8ab0261e66fbd8e3170d9f69f0f8333f02050b89ad6f65850adcce7868e3bb7e",
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "id": "rule.product-family.member-transfer-future-only",
+      "recordType": "rule",
+      "path": "docs/knowledge/rules/product-process.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "b91054dcb751f79f5bdb483aff4a232c4f33ec13",
+      "workingTreeSha256": "24a4995bbdf1b0d46d5ae89765f17b5f5faf5ae929eefe5c95377ce04f219f51",
+      "matchesCommit": true,
+      "sourceLocator": "rule.product-family.member-transfer-future-only",
+      "originalMaturity": "specified",
+      "reviewStatus": "reviewed",
+      "conclusion": "needs-fix",
+      "scope": "保留existingProductionObjectsUnchanged；创建时未存独立产品簇身份，跨时点实现差异仍开放。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java"
+      ],
+      "recordSha256": "7e35e5ca55ac070f06d8f2152b0186a560f06c7097887a5637d0755a1c893430",
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "id": "rule.product-process.freeze-batch-execution-snapshot",
+      "recordType": "rule",
+      "path": "docs/knowledge/rules/product-process.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "b91054dcb751f79f5bdb483aff4a232c4f33ec13",
+      "workingTreeSha256": "24a4995bbdf1b0d46d5ae89765f17b5f5faf5ae929eefe5c95377ce04f219f51",
+      "matchesCommit": true,
+      "sourceLocator": "rule.product-process.freeze-batch-execution-snapshot",
+      "originalMaturity": "specified",
+      "reviewStatus": "reviewed",
+      "conclusion": "needs-fix",
+      "scope": "配置在START冻结与创建对象身份保护须区分；不推断已有独立productFamilyId，也不提前整体配置冻结或补造历史。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java"
+      ],
+      "recordSha256": "c9f1d32aea8f05a161502a6bd86d030142bd7647ac52e3e028b411aae4af5dea",
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "id": "DEC-0012-02",
+      "recordType": "decision-statement",
+      "path": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "fb46dca8e2721f2e4372df85a9d3cf3fa82342eb",
+      "workingTreeSha256": "fb9c31b7fe521c624a9de32581631e67abb435a8ada2104f4cb9da976892211c",
+      "matchesCommit": true,
+      "sourceLocator": "DEC-0012-02",
+      "originalMaturity": "implemented",
+      "reviewStatus": "reviewed",
+      "conclusion": "needs-fix",
+      "scope": "仅复核CREATED/IN_PROCESS旧工单在余量内继续拆分并沿用锁定制程；当前成员转移可使锁定版归属校验拒绝，其他状态分支非本轮语义覆盖。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+      ],
+      "recordSha256": "ad2d16048f75a22133bd24ab997230f2872a359df55f01cff1833cb32f6b6641",
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "id": "DEC-0012-04",
+      "recordType": "decision-statement",
+      "path": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "fb46dca8e2721f2e4372df85a9d3cf3fa82342eb",
+      "workingTreeSha256": "fb9c31b7fe521c624a9de32581631e67abb435a8ada2104f4cb9da976892211c",
+      "matchesCommit": true,
+      "sourceLocator": "DEC-0012-04",
+      "originalMaturity": "implemented",
+      "reviewStatus": "reviewed",
+      "conclusion": "needs-fix",
+      "scope": "首次拆分锁定后不得更换版本；findVersionForProduct重查当前簇关系可阻断旧锁定工单。转移后新对象身份与旧制程组合需方案显式说明，不反推制程owner就是对象独立成员身份。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java",
+        "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml"
+      ],
+      "recordSha256": "5e92fc6f4490239ba8c4410ed3eadbc72966a20b803cd2c718c7827097dfbc2f",
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "id": "DEC-0062-01",
+      "recordType": "decision-statement",
+      "path": "docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "da08120e9917f838a62e60a3eddbe8ca9c55f5d9",
+      "workingTreeSha256": "c7543c60d2a7bb5e8c2d82c1941d255232310faa69b8c137b23dee1b37b1ed84",
+      "matchesCommit": true,
+      "sourceLocator": "DEC-0062-01",
+      "originalMaturity": "specified",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "仅核对首次合法START同事务创建DHR与生产启动的调用位置；新增审计不提前创建DHR。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+      ],
+      "recordSha256": "624a3a8cec34c71834b79022f6ee8196e2e83ade036b9bdf570c7cdac414e6de",
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "id": "DEC-0062-03",
+      "recordType": "decision-statement",
+      "path": "docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "da08120e9917f838a62e60a3eddbe8ca9c55f5d9",
+      "workingTreeSha256": "c7543c60d2a7bb5e8c2d82c1941d255232310faa69b8c137b23dee1b37b1ed84",
+      "matchesCommit": true,
+      "sourceLocator": "DEC-0062-03",
+      "originalMaturity": "specified",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "仅核对DHR创建时冻结契约没有声明替代既有对象的产品簇身份保护；本轮不重验完整DHR快照。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+        "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml"
+      ],
+      "recordSha256": "78149b7c71c00ff5e16daaa03a359e8bfe7bd34ccd07f7b67d3f608e50458fc7",
+      "runtimeExecutedByOntology": false
+    }
+  ],
+  "sourceReview": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "8fd0e7d81885b2eada3c282f48339c5f25b6656b",
+      "workingTreeSha256": "df969632b46fa97bb169be97f5ac3e9213ebd7814539c93f76856ebff5de838d",
+      "matchesCommit": true,
+      "sourceLocator": "act: previousObjectStatus capture, lifecycle transitions, saveAndFlush, auditObjectStatusChange, PRODUCTION_EXECUTION save",
+      "scope": "状态变化及事件事务边界",
+      "wholeFileCompleted": false,
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "8fd0e7d81885b2eada3c282f48339c5f25b6656b",
+      "workingTreeSha256": "df969632b46fa97bb169be97f5ac3e9213ebd7814539c93f76856ebff5de838d",
+      "matchesCommit": true,
+      "sourceLocator": "auditObjectStatusChange",
+      "scope": "完整新方法：差异、租户/对象/真实操作者、reason及时间",
+      "wholeFileCompleted": false,
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "5b4324105d322c728187c69ab0a0ab50e2876f14",
+      "workingTreeSha256": "2550b1ac9b6ecb68b2333b624436f6ca3384003a8a7fbdd6a20284b445ea7fb4",
+      "matchesCommit": true,
+      "sourceLocator": "split / requireProcessVersion / processOptions / startObject / completeObject",
+      "scope": "创建引用、锁定版本校验及状态服务返回；非整个服务",
+      "wholeFileCompleted": false,
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "59c16531ec7849ed772ca0299ed1c0c63af95407",
+      "workingTreeSha256": "84da4305797fc2536359da9ccf933edfba96da95daecb2ea5567e31d36a454e0",
+      "matchesCommit": true,
+      "sourceLocator": "build: current product_family_member read and rules matching",
+      "scope": "当前成员身份与作业匹配范围",
+      "wholeFileCompleted": false,
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "0314a5c043be17df54cf6ec8e4a2b81af5bc64a4",
+      "workingTreeSha256": "197ad4cbae518f1510c34d4674a5e14ba1e5ccb2bffe5928c4b31f6907389d3d",
+      "matchesCommit": true,
+      "sourceLocator": "findVersionForProduct",
+      "scope": "所选版本产品/当前产品簇归属判断；非resolve全场景",
+      "wholeFileCompleted": false,
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "a7933f706b7dd97cebde5f5fb81d11930f9f66f4",
+      "workingTreeSha256": "d53e575f4fdbc3e2c4ef70d1fb2bb86b506109a2d631697a1daa24e1504117b4",
+      "matchesCommit": true,
+      "sourceLocator": "split / splitBatch / start / complete / writeChangedAudit / writeAudit",
+      "scope": "对象创建、旁路阻断及差异审计写入职责",
+      "wholeFileCompleted": false,
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "c529a3a2f6e2d30e47a9e4054da062eb9f502204",
+      "workingTreeSha256": "4ba853d52c1fe59cb86209cb70952f3a19733ed676a57badf3232fc786851154",
+      "matchesCommit": true,
+      "sourceLocator": "list / resolveProjectedAction / resolveActionLabel",
+      "scope": "对象实体筛选及CREATE/UPDATE投影；同时观察全量读取风险但不据源码冒称性能实测",
+      "wholeFileCompleted": false,
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "d9f7d47c85b4ceb80564b46f2187ca04a1b8da2e",
+      "workingTreeSha256": "9f404efaaea4ac70b12880ca4055326fc5acdfe5be4e2eb6bf226d0bc36928e7",
+      "matchesCommit": true,
+      "sourceLocator": "lifecycleAudit* / assertObjectStatusAudits / batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch",
+      "scope": "测试源及主侧安全摘要核对；本体不执行业务测试",
+      "wholeFileCompleted": false,
+      "runtimeExecutedByOntology": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductFamilyMembershipService.java",
+      "gitCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlobAtCommit": "656ffde64c80eb739927944c2de4ecacf7cb987a",
+      "workingTreeSha256": "7022cfe3002b51705452a1d63890693f999d1e94c1ef1487923753db51e6e41e",
+      "matchesCommit": true,
+      "sourceLocator": "transferMember",
+      "scope": "成员删除/新建/三方审计；未验证并发与数据库执行",
+      "wholeFileCompleted": false,
+      "runtimeExecutedByOntology": false
+    }
+  ],
+  "knowledgeValidation": {
+    "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -q -f tools/knowledge-model/pom.xml test",
+    "exitCode": 0,
+    "counts": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "rawXmlSha256": "45fa906ab221271d1c433fb86ecc83307ed8696d0358c7329a8804b8469eda9a",
+    "attempts": [
+      {
+        "command": "/workspace/.edhr-cloud-tools/mvn-edhr -q -f tools/knowledge-model/pom.xml test",
+        "exitCode": 126,
+        "result": "wrapper lacks executable bit; no tests executed; preserved private log"
+      },
+      {
+        "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -q -f tools/knowledge-model/pom.xml test",
+        "exitCode": 0,
+        "result": "89 passed, 0 failures/errors/skips; no wrapper edit"
+      }
+    ]
+  },
+  "counts": {
+    "finiteSemanticRecords": 15,
+    "finiteSourceScopes": 9,
+    "wholeFilesCertified": 0,
+    "businessTestsExecutedByOntology": 0
+  },
+  "remaining": [
+    "H006保持needs-fix，旧对象不能补造历史簇身份；新对象与旧工单锁定制程组合在下一切片设计中显式说明",
+    "H008未纳入本轮重新裁定",
+    "TaskDetail、记录控制变更/作废与其依赖保持用户暂缓",
+    "完整分支/全知识/浏览器及性能容量认证未完成"
+  ]
+}

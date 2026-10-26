@@ -1,0 +1,45 @@
+{
+  "label": "primary-red",
+  "productBase": "c49c0c7f98ca5c66eb59eb6876c78af03a07d28b",
+  "database": "isolated PostgreSQL16",
+  "testSourceSha256": "2855d1ebadcd28142f6d0a1d97a9edab2c053c1ffebca85b1ce9326ba3207878",
+  "counts": {
+    "tests": 6,
+    "failures": 6,
+    "errors": 0,
+    "skipped": 0
+  },
+  "cases": [
+    {
+      "name": "lifecycleAuditFailureRollsBackFinalCompletion(String)[1]",
+      "outcome": "failed"
+    },
+    {
+      "name": "lifecycleAuditFailureRollsBackFinalCompletion(String)[2]",
+      "outcome": "failed"
+    },
+    {
+      "name": "lifecycleAuditDoesNotRecordOrdinarySavesAsObjectChanges",
+      "outcome": "failed"
+    },
+    {
+      "name": "lifecycleAuditFailureRollsBackFirstStart(String)[1]",
+      "outcome": "failed"
+    },
+    {
+      "name": "lifecycleAuditFailureRollsBackFirstStart(String)[2]",
+      "outcome": "failed"
+    },
+    {
+      "name": "lifecycleAuditRecordsOnlyRealObjectChangesForBatchAndSn",
+      "outcome": "failed"
+    }
+  ],
+  "rawXmlSha256": "f2041d33547055630b62c99e2419fee367f19c7275ef0e3b2c0d6db53890bfad",
+  "scope": "JWT/MockMvc真实act及事务，配置为合成表；未跑全应用/浏览器",
+  "notes": [
+    "旧代码两类对象状态审计皆缺失；对象审计失败注入未命中故请求返回200",
+    "执行审计失败能回滚，但成功重试仍没有对象事件，故断言红",
+    "首次直接调用mvn-edhr因无执行位exit126；改bash调用后才运行测试，无修改脚本"
+  ]
+}

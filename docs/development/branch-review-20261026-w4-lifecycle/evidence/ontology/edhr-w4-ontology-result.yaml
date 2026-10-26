@@ -1,0 +1,117 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 3281863b0974dc1e4e7b4c343ca9d42a7a4103ac
+    targetBranch: edhr-dev
+    targetCommit: c49c0c7f98ca5c66eb59eb6876c78af03a07d28b
+    contractReadCommit: c49c0c7f98ca5c66eb59eb6876c78af03a07d28b
+    uncommittedContractPaths: []
+  reason: 按DEC0019既有对象状态差异审计规范同步H007修复及有限证据，未改变业务政策、规则AST、概念/关系或知识成熟度；H006仅只读核对继续开放，不构成本次H007交付阻塞。
+  changedArtifacts:
+  - path: docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml
+    changeType: update
+    ids:
+    - DEC-0019
+    - discrepancy.production-object-execution-lifecycle-audit-projection
+    - scenario.production-object-update-audit-diff
+  - path: docs/knowledge/evidence/production.yaml
+    changeType: update
+    ids:
+    - evidence.production-object-execution-status-audit-source
+    - evidence.production-object-execution-status-audit-tests
+  - path: docs/knowledge/rules/production.yaml
+    changeType: update
+    ids:
+    - rule.production.batch-management-row-detail-and-audit-entry
+    - rule.production.production-object-audit-change-snapshot
+  knowledgeSync:
+  - id: DEC-0019-04
+    disposition: retained
+    scope: 对象UPDATE只记实际变化字段，未新增政策
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml
+  - id: discrepancy.production-object-execution-lifecycle-audit-projection
+    disposition: updated
+    scope: 新对象状态事件由act同事务补齐，旧执行事件保留；历史事件不补造
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+  - id: rule.production.batch-management-row-detail-and-audit-entry
+    disposition: updated
+    scope: 解释控制器与执行服务各自事件写入职责，查询身份保持
+    sourceReferences:
+    - docs/knowledge/rules/production.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java
+  - id: rule.production.production-object-audit-change-snapshot
+    disposition: updated
+    scope: 精确说明status比较、非命令名判定及旧verified契约范围
+    sourceReferences:
+    - docs/knowledge/rules/production.yaml
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+  - id: execution.production-object-audit-snapshot
+    disposition: retained
+    scope: 旧verified/runtime只保留controller handler范围，不扩认证到新服务
+    sourceReferences:
+    - docs/knowledge/execution-contracts.yaml
+  - id: discrepancy.product-family-transfer-unstarted-object-context
+    disposition: retained
+    scope: 两个跨时点实现差异仍开放；本轮未修复，创建时身份与START配置冻结不混同
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml
+    - docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml
+    - docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: w4.knowledge-schema-reference
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -q -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - 'BusinessKnowledgeModelTest: 89 tests, 0 failures/errors/skips'
+    - 45fa906ab221271d1c433fb86ecc83307ed8696d0358c7329a8804b8469eda9a
+  - id: w4.finite-semantic-review
+    checkType: evidence-path
+    command: 源码、决策、规则、执行契约和主侧安全摘要人工核对
+    outcome: passed
+    evidence:
+    - /tmp/edhr-w4-ontology-review.json
+    - 15有限语义范围，9源码范围，0全文件完成；H006五条范围needs-fix不是一致通过
+  - id: w4.knowledge-diff
+    checkType: projection
+    command: git diff --check; git diff -- docs/knowledge
+    outcome: passed
+    evidence:
+    - 仅3知识文件解释/证据变更；未改规则AST、概念、关系、execution handler或任何status/visibility成熟度（实现差异open→resolved除外）
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
+  workingTreeState:
+    status: dirty
+    includedPaths:
+    - path: docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml
+      gitCommit: 3281863b0974dc1e4e7b4c343ca9d42a7a4103ac
+      gitBlobAtCommit: 6393b3237e617dea1f84b81dd168485d3b052337
+      workingTreeSha256: faec4655201870b6c0d43d36e45899b07e95b7e44fd9c81217e08af72e7317cc
+      matchesCommit: false
+    - path: docs/knowledge/evidence/production.yaml
+      gitCommit: 3281863b0974dc1e4e7b4c343ca9d42a7a4103ac
+      gitBlobAtCommit: b7ad5fdfb908ff3a7d7f6143ce62b49ab5701037
+      workingTreeSha256: ec392ba80e85b7fb6cc3b2acc9928885b5045a737d538861335330a1bf4d5761
+      matchesCommit: false
+    - path: docs/knowledge/rules/production.yaml
+      gitCommit: 3281863b0974dc1e4e7b4c343ca9d42a7a4103ac
+      gitBlobAtCommit: 2bbcaab0dc9edb206bbee60578d3bd0cf53ab12b
+      workingTreeSha256: a159b013ab661edd9934e68f91d8acef5ca9c7882946a1c953cdfae83c8b663c
+      matchesCommit: false
+    excludedPaths:
+    - root-owned docs/development/branch-review-20261026-w4-lifecycle/
+  completionState: FINAL

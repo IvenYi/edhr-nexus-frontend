@@ -636,8 +636,8 @@ rules:
       auditPlacement: production-object.detail.audit-tab
       auditEntityType: PRODUCTION_OBJECT
       auditActionProjection: [CREATE, UPDATE]
-    explanation: 批次管理列表整行点击打开既有生产对象详情，详情中的数据审计页签读取该对象的 PRODUCTION_OBJECT 审计记录并沿用新增/修改动作投影；不额外提供重复的查看或独立批次审计动作。新产生的生产对象审计由控制器显式写入真实业务快照，AuditAspect 继续只负责通用元数据。
-    evidenceIds: [evidence.production-batch-management-page, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect]
+    explanation: 批次管理列表整行点击打开既有生产对象详情，详情中的数据审计页签读取该对象的 PRODUCTION_OBJECT 审计记录并沿用新增/修改动作投影；不额外提供重复的查看或独立批次审计动作。对象控制器显式写入创建、取消和提前结束的业务快照；生产执行服务在合法执行导致对象状态实际变化时追加对象 UPDATE，原 PRODUCTION_EXECUTION 事件仍保存执行细节。AuditAspect 继续只负责通用元数据，不回填历史缺失事件。
+    evidenceIds: [evidence.production-batch-management-page, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.production-object-execution-status-audit-source, evidence.production-object-execution-status-audit-tests, evidence.audit-aspect]
   - id: rule.production.batch-management-action-entry-boundary
     name: 批次管理操作栏按状态提供业务动作入口
     status: specified
@@ -1169,7 +1169,7 @@ rules:
       batchSplitOwnership: one-record-per-production-object
       batchSummaryAction: false
       actionProjection: [CREATE, UPDATE]
-    explanation: 单条或批量拆分成功时，每个生产对象分别写入一条 CREATE 审计；创建前快照为空对象，创建后快照包含来源工单、产品、制程版本、对象编号、生产形态、数量、计划时间、状态和备注等创建字段。开工、完成、取消和提前结束写入 UPDATE 审计，前后快照仅保存实际变化字段。批量拆分不新增汇总动作，历史空快照不回填。 当前合法 START/COMPLETE 通过 ProductionExecutionService 写 PRODUCTION_EXECUTION 审计，首条CREATE、后续UPDATE，包含对象状态；旧对象控制器 start/complete 拒绝直接调用，StateMachineService 仅日志不补写对象事件。批次详情只查 PRODUCTION_OBJECT，因而对象详情生命周期可见性与本规范仍有 discrepancy.production-object-execution-lifecycle-audit-projection；不能据存在执行审计声称对象查询已覆盖，也不能概括为完全无审计。
+    explanation: 单条或批量拆分成功时，每个生产对象分别写入一条 CREATE 审计；创建前快照为空对象，创建后快照包含来源工单、产品、制程版本、对象编号、生产形态、数量、计划时间、状态和备注等创建字段。开工、完成、取消和提前结束写入 UPDATE 审计，前后快照仅保存实际变化字段。批量拆分不新增汇总动作，历史空快照或缺失事件不回填。当前 ProductionExecutionService.act 比较已持锁对象的动作前后状态，仅在真实状态变化时同事务追加 PRODUCTION_OBJECT UPDATE，前后内容只含 status；判定不限定命令名，因此也覆盖最后必填批次表单提交触发的对象完成，无状态变化的工序推进或表单保存不新增对象事件。原 PRODUCTION_EXECUTION 首条 CREATE、后续 UPDATE 的完整执行证据保持，旧对象控制器 start/complete 继续拒绝旁路。既有 execution.production-object-audit-snapshot 的 handler 仍只表示控制器范围，不把该历史 verified/runtime 标记自动扩展到本次执行服务修复；本次实际运行及独立验收分别记录。
     evidenceIds:
     - evidence.production-object-audit-snapshot-controller
     - evidence.production-object-audit-snapshot-controller-test
@@ -1177,6 +1177,8 @@ rules:
     - evidence.audit-controller-test
     - evidence.audit-aspect
     - evidence.production-execution-service-source
+    - evidence.production-object-execution-status-audit-source
+    - evidence.production-object-execution-status-audit-tests
     executionContractId: execution.production-object-audit-snapshot
   - id: rule.production.audit-field-localized-display
     name: 生产审计字段统一中文展示

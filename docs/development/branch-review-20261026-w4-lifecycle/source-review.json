@@ -1,0 +1,146 @@
+{
+  "baseCommit": "c49c0c7f98ca5c66eb59eb6876c78af03a07d28b",
+  "scopes": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "sourceLocator": "act; auditObjectStatusChange",
+      "scope": "锁顺序、revision、真实前后状态、两个审计、错误同事务回滚",
+      "commit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlob": "8fd0e7d81885b2eada3c282f48339c5f25b6656b",
+      "sha256": "df969632b46fa97bb169be97f5ac3e9213ebd7814539c93f76856ebff5de838d",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "sourceLocator": "view; get",
+      "scope": "执行存在时读冻结snapshot，未创建时build；仅相邻来源和错误回退，非完整视图审核",
+      "commit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlob": "8fd0e7d81885b2eada3c282f48339c5f25b6656b",
+      "sha256": "df969632b46fa97bb169be97f5ac3e9213ebd7814539c93f76856ebff5de838d",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+      "sourceLocator": "startObject; completeObject; updateOrderWhenObjectsTerminal",
+      "scope": "对象/工单状态更新与锁、终态扫描",
+      "commit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlob": "5b4324105d322c728187c69ab0a0ab50e2876f14",
+      "sha256": "2550b1ac9b6ecb68b2333b624436f6ca3384003a8a7fbdd6a20284b445ea7fb4",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+      "sourceLocator": "split; splitBatch; objects",
+      "scope": "数量/形态/制程锁定、逐请求重复加载候选",
+      "commit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlob": "5b4324105d322c728187c69ab0a0ab50e2876f14",
+      "sha256": "2550b1ac9b6ecb68b2333b624436f6ca3384003a8a7fbdd6a20284b445ea7fb4",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+      "sourceLocator": "requireProcessVersion; processOptions",
+      "scope": "已锁定工单仍重查当前成员关系",
+      "commit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlob": "5b4324105d322c728187c69ab0a0ab50e2876f14",
+      "sha256": "2550b1ac9b6ecb68b2333b624436f6ca3384003a8a7fbdd6a20284b445ea7fb4",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "sourceLocator": "build",
+      "scope": "配置读取与当前family匹配；未声称完整form/settings实现审核",
+      "commit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlob": "59c16531ec7849ed772ca0299ed1c0c63af95407",
+      "sha256": "84da4305797fc2536359da9ccf933edfba96da95daecb2ea5567e31d36a454e0",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java",
+      "sourceLocator": "resolve; findVersionForProduct; availableVersions",
+      "scope": "当前成员兜底与已选版本归属、有效时间差异",
+      "commit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlob": "0314a5c043be17df54cf6ec8e4a2b81af5bc64a4",
+      "sha256": "197ad4cbae518f1510c34d4674a5e14ba1e5ccb2bffe5928c4b31f6907389d3d",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+      "sourceLocator": "list; split; splitBatch; start; complete",
+      "scope": "事务、响应和逐对象审计、拒绝旁路",
+      "commit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlob": "a7933f706b7dd97cebde5f5fb81d11930f9f66f4",
+      "sha256": "d53e575f4fdbc3e2c4ef70d1fb2bb86b506109a2d631697a1daa24e1504117b4",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+      "sourceLocator": "cancel; end; productionObjectSnapshot; writeChangedAudit; writeAudit; toResponse; toOption",
+      "scope": "已有差异审计、关联读取与响应重复查询候选",
+      "commit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlob": "a7933f706b7dd97cebde5f5fb81d11930f9f66f4",
+      "sha256": "d53e575f4fdbc3e2c4ef70d1fb2bb86b506109a2d631697a1daa24e1504117b4",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/repository/ProductionObjectRepository.java",
+      "sourceLocator": "findByTenantIdAndWorkOrderIdOrderByCreatedAtAsc; findByTenantIdAndIdForUpdate",
+      "scope": "全列表及锁读取",
+      "commit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlob": "6e2b1c1342ea6622e2ed3b69e7f3895e1634292e",
+      "sha256": "20910bb5e447a30af8b9f8254e152dec334c814b03c9c1712a6abb1ca28e87f7",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/AuditController.java",
+      "sourceLocator": "list; listMyProfileLogs; toAuditLogItem; resolveOperatorDisplayName; resolveOperatorAccount; resolveProjectedAction",
+      "scope": "全量映射后过滤分页；逐条账号查名；已有展示派生边界",
+      "commit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlob": "c529a3a2f6e2d30e47a9e4054da062eb9f502204",
+      "sha256": "4ba853d52c1fe59cb86209cb70952f3a19733ed676a57badf3232fc786851154",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/AuditEventRepository.java",
+      "sourceLocator": "search",
+      "scope": "基础过滤和Pageable，字段过滤为数据库原始值",
+      "commit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlob": "756816a21ecdff6aca7b5410636829cc4de10c5b",
+      "sha256": "1e0006a97a4bb745de780902b689407307d1eab7f9aabf168762dc9f806625bf",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/AuditEvent.java",
+      "sourceLocator": "sealSnapshotHash; preventMutation; computeSnapshotHash",
+      "scope": "现有不可变性/hash仅旁证，不修复旧原文往返缺口",
+      "commit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlob": "52f8cb650e0afdfda19b724aeb50cd70fa791f30",
+      "sha256": "61932bd33d0c0cb8d1886335c5aab0229753e3d5f4022fdeead5f0e075a0ad6e",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserAccountRepository.java",
+      "sourceLocator": "findByUsername",
+      "scope": "派生查询，实际SQL次数待观察",
+      "commit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+      "gitBlob": "8f0fe7a1ea3bcd3c1556ede0ff51f070d7db5187",
+      "sha256": "ca698ac0df61e4dbfa94dac8693e8b975b64b3b99be25718b05ce798091fe4be",
+      "status": "source-inspected",
+      "wholeFileCompleted": false
+    }
+  ],
+  "qualification": "14 finite source scopes, overlaps ontology9; no full-file or percentage claim"
+}
