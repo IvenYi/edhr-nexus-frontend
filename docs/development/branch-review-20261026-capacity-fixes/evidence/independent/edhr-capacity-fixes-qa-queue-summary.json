@@ -1,0 +1,291 @@
+{
+  "testedCommit": "3c32730af3236f183be40141edabd43b7c3867ac",
+  "exportPath": "/tmp/edhr-capacity-qa-queue",
+  "exitCode": 0,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowInstanceAuthorizationIntegrationTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "467f042fd1ba8c2232039424cfc69f990780b3baa2834f463597428ec1a421b2",
+      "cases": [
+        {
+          "name": "authorizedDedicatedTerminationKeepsTaskAndLogChangesTogether",
+          "passed": true
+        },
+        {
+          "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[1]",
+          "passed": true
+        },
+        {
+          "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[2]",
+          "passed": true
+        },
+        {
+          "name": "existingAuthorizedAdministrativeWritesRemainAvailable(String)[3]",
+          "passed": true
+        },
+        {
+          "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[1]",
+          "passed": true
+        },
+        {
+          "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[2]",
+          "passed": true
+        },
+        {
+          "name": "interventionAuthorityDoesNotBypassExistingDhrProtection(String)[3]",
+          "passed": true
+        },
+        {
+          "name": "taskAdministrativeWritesAndTerminationAlreadyRequireInterventionAuthority",
+          "passed": true
+        },
+        {
+          "name": "ordinaryReaderKeepsExistingReadEndpoints",
+          "passed": true
+        },
+        {
+          "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[1]",
+          "passed": true
+        },
+        {
+          "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[2]",
+          "passed": true
+        },
+        {
+          "name": "anonymousAdministrativeWritesRemainUnauthorized(String)[3]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[1]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[2]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[3]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[4]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[5]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[6]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[7]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[8]",
+          "passed": true
+        },
+        {
+          "name": "ordinarySignedAccountsCannotReplaceControlledCommands(String, List)[9]",
+          "passed": true
+        },
+        {
+          "name": "candidateCanCompleteThroughEngineWithoutAdministrativeWritePermission",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowQueuePaginationPostgresTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "f2e7e6347b6790eda68b0d265e53dd668e5d205fe9dc12a1f74bb34f10cdc1f4",
+      "cases": [
+        {
+          "name": "smallHttpPageOnlyMaterializesRequestedTaskEntities(String, int)[1]",
+          "passed": true
+        },
+        {
+          "name": "smallHttpPageOnlyMaterializesRequestedTaskEntities(String, int)[2]",
+          "passed": true
+        },
+        {
+          "name": "smallHttpPageOnlyMaterializesRequestedTaskEntities(String, int)[3]",
+          "passed": true
+        },
+        {
+          "name": "smallHttpPageOnlyMaterializesRequestedTaskEntities(String, int)[4]",
+          "passed": true
+        },
+        {
+          "name": "smallHttpPageOnlyMaterializesRequestedTaskEntities(String, int)[5]",
+          "passed": true
+        },
+        {
+          "name": "smallHttpPageOnlyMaterializesRequestedTaskEntities(String, int)[6]",
+          "passed": true
+        },
+        {
+          "name": "authenticationAndInvalidPageGuardsIssueNoTaskSelectAndDoNotWrite(String)[1]",
+          "passed": true
+        },
+        {
+          "name": "authenticationAndInvalidPageGuardsIssueNoTaskSelectAndDoNotWrite(String)[2]",
+          "passed": true
+        },
+        {
+          "name": "equalTimestampsHaveStableDisjointPages(String)[1]",
+          "passed": true
+        },
+        {
+          "name": "equalTimestampsHaveStableDisjointPages(String)[2]",
+          "passed": true
+        },
+        {
+          "name": "subsequentFinalEmptyAndLargeOffsetPagesStayBounded(String)[1]",
+          "passed": true
+        },
+        {
+          "name": "subsequentFinalEmptyAndLargeOffsetPagesStayBounded(String)[2]",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "549e9f09c4842ecb23cb6428a83e220145614e8493700db56c498a4757e64db8",
+      "cases": [
+        {
+          "name": "doneUsesAuthenticatedOperatorInsteadOfRequestParameter",
+          "passed": true
+        },
+        {
+          "name": "todoUsesAuthenticatedOperatorAndOneDatabaseLookup",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.workflow.engine.WorkflowTransferPostgresTest",
+      "tests": 23,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "xmlSha256": "e53b12f108a47a441d425475ab6b48d1bc7194087ee20f3fe07cfe9eb7740a1c",
+      "cases": [
+        {
+          "name": "legacyAlreadyTransferredOriginIsMarkedAsPartialRatherThanInvented",
+          "passed": true
+        },
+        {
+          "name": "repeatedDelegationPreservesOriginalSourcesAndOnlyCurrentTargetCanComplete",
+          "passed": true
+        },
+        {
+          "name": "personnelSearchAndCommandUseTheSameTenantAvailabilityWithRealSql",
+          "passed": true
+        },
+        {
+          "name": "concurrentTransfersFromTheSameFormerOperatorAcceptOnlyOneResponsibilityChange",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[1]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[2]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[3]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[4]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[5]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[6]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[7]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[8]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[9]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[10]",
+          "passed": true
+        },
+        {
+          "name": "invalidTransferDoesNotMutateTaskInstanceLogOrAudit(String, String, String, String)[11]",
+          "passed": true
+        },
+        {
+          "name": "realAuditInsertFailureRollsBackResponsibilityAndActionLog",
+          "passed": true
+        },
+        {
+          "name": "endedTaskRejectsSearchAndTransferWithoutWrites(String)[1]",
+          "passed": true
+        },
+        {
+          "name": "endedTaskRejectsSearchAndTransferWithoutWrites(String)[2]",
+          "passed": true
+        },
+        {
+          "name": "dhrTaskStillCannotUseGenericSearchTransferOrQueue",
+          "passed": true
+        },
+        {
+          "name": "formerCandidateWaitingBehindTransferCannotCompleteFromItsCachedSnapshot",
+          "passed": true
+        },
+        {
+          "name": "terminatedInstanceRejectsBothEntrypoints",
+          "passed": true
+        },
+        {
+          "name": "controllerUsesAuthenticatedActorAndRequiresTheTargetAndReasonInJson",
+          "passed": true
+        },
+        {
+          "name": "unrestrictedTaskBecomesTargetOnlyWithoutLosingTheOpenOrigin",
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 59,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "privateLogSha256": "76921d7411e66a238a42d2e5db06e2575230b651ef4628e57d8cac9fa8beb0a7",
+  "rawLogsAndXmlArchived": false
+}
