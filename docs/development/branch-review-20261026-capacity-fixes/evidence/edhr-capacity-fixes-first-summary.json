@@ -1,0 +1,77 @@
+{
+  "suites": [
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowInstanceAuthorizationIntegrationTest",
+      "tests": "22",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "xmlSha256": "a97188f19cda899ec4f2ef9db89cb9c640ee4737fda4e6c7c16cce42a059c461"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+      "tests": "24",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "xmlSha256": "4aef902f58a47399477d898bf26fd8b252d410e67cf348e43d21c6da6d4a32af"
+    },
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowQueuePaginationPostgresTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "xmlSha256": "8d887897259db1588b88b8136fd7f14384bf89adc30d653ba9ca1769ffb487bf"
+    },
+    {
+      "name": "com.zencas.edhr.workflow.engine.WorkflowTransferPostgresTest",
+      "tests": "23",
+      "failures": "0",
+      "errors": "23",
+      "skipped": "0",
+      "xmlSha256": "25e6cc91adda92ad4342098b33629c134772d67ecd5a5b28be702c8715c83f33"
+    },
+    {
+      "name": "com.zencas.edhr.workflow.controller.WorkflowTaskControllerTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "xmlSha256": "c7db0c09e6128c58d4d9f22f95d95c9c46f4aa4fb350dd526b09192acdc1b266"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "xmlSha256": "a6457b352c35efbe91e08c04147c78865e356f0e7069585a1927f2ae95f6c5df"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "xmlSha256": "4f7491331c8cc260812d706cee195bbe6ca8c0e1989fa00c25a01ada8dc299c7"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrEvidenceBatchPostgresTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "xmlSha256": "ef564e4d409837c0c9d0ebb5e37cbd50afdbf32507b777555326bc559c910496"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrSummaryServiceTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "xmlSha256": "da48f6310868ac139ea80696eb607a9c6749b159a832125cfeb6a115397dccd0"
+    }
+  ],
+  "qualification": "Transfer suite errored because main run supplied command database name, correctly rejected by its existing DB safety guard. Other suites passed. Correct separate transfer database will be used; no test guard change."
+}

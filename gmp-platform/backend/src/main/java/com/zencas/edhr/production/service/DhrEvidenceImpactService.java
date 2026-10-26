@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.nio.file.Files;
@@ -26,13 +27,19 @@ public class DhrEvidenceImpactService {
         ArrayNode result = mapper.createArrayNode();
         var evidence = jdbc.queryForList("SELECT source_record_id,source_snapshot FROM dhr_summary_evidence WHERE tenant_id='default' AND summary_version_id=? ORDER BY source_record_id", versionId);
         Set<String> frozenRecordIds = new HashSet<>();
+        // Frozen membership is immutable. Read only its current records, retaining
+        // the same ascending ID lock order as the former per-evidence lookups.
+        Map<String, Map<String, Object>> currentById = new HashMap<>();
+        if (!evidence.isEmpty()) {
+            var currentRecords = jdbc.queryForList("SELECT id,snapshot_json,values_json,status,version_id FROM form_instance_record WHERE tenant_id='default' AND id IN (SELECT source_record_id FROM dhr_summary_evidence WHERE tenant_id='default' AND summary_version_id=?) ORDER BY id" + (lock ? " FOR UPDATE" : ""), versionId);
+            for (var record : currentRecords) currentById.put(text(record, "id"), record);
+        }
         for (var item : evidence) {
             frozenRecordIds.add(item.get("source_record_id").toString());
             JsonNode frozen = json(text(item, "source_snapshot"));
-            var current = jdbc.queryForList("SELECT snapshot_json,values_json,status,version_id FROM form_instance_record WHERE tenant_id='default' AND id=?" + (lock ? " FOR UPDATE" : ""), item.get("source_record_id"));
-            boolean changed = current.isEmpty();
+            var record = currentById.get(text(item, "source_record_id"));
+            boolean changed = record == null;
             if (!changed) {
-                var record = current.getFirst();
                 JsonNode currentSnapshot = liveJson(text(record, "snapshot_json"));
                 JsonNode currentValues = liveJson(text(record, "values_json"));
                 changed = currentSnapshot == null || currentValues == null

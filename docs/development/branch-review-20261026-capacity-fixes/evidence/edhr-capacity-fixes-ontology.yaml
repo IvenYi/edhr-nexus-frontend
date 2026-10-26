@@ -1,0 +1,38 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: a192a1d83be3644524ef6e2516619bdf81866678
+    targetBranch: edhr-dev
+    targetCommit: a192a1d83be3644524ef6e2516619bdf81866678
+    contractReadCommit: a192a1d83be3644524ef6e2516619bdf81866678
+    uncommittedContractPaths: []
+  reason: >-
+    本批在用户已批准的工程优化范围内，把相同工作流队列过滤后的内存切片移至 SQL，
+    并批量读取同一冻结证据成员的当前记录；未改变概念、生命周期、候选处理责任、DHR完整证据范围、
+    陈旧审批阻断或冻结历史政策。有限源码语义核对未发现需要新增或替代的知识声明，知识资产未修改。
+    本结果只证明本次所列定义无须同步，不是运行验收或整个业务/全量审计通过。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: capacity-ontology-definition-source-check
+      checkType: evidence-path
+      command: git diff -- gmp-platform/backend/src/main/java; scoped source inspection of DhrEvidenceImpactService, DhrReviewService, DhrSummaryService, WorkflowTaskController, WorkflowTaskRepository and WorkflowEngine
+      outcome: passed
+      evidence:
+        - /tmp/edhr-capacity-fixes-ontology-review.json
+        - DEC-0081-02/04 and rule.dhr-summary-freeze-version/auto-evidence-scope/block-stale-approval were checked within the listed scopes only.
+    - id: capacity-ontology-baseline-unchanged
+      checkType: evidence-path
+      command: git diff --name-only HEAD -- docs/knowledge AGENTS.md docs/agents docs/architecture
+      outcome: passed
+      evidence:
+        - Command returned no changed paths at inspection time; knowledge remains 0.3.25/schema1.2.0.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

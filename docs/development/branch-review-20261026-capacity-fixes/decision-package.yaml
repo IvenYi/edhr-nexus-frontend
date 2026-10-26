@@ -1,0 +1,225 @@
+{
+  "decisionPackage": {
+    "id": "DEC-PACKAGE-20261026-CAPACITY-FIXES",
+    "scope": "edhr-dev有限容量整改，非全量审计完成",
+    "knowledgeBaselineVersion": "0.3.25",
+    "contractBaseline": {
+      "sourceCommit": "a192a1d83be3644524ef6e2516619bdf81866678",
+      "targetBranch": "edhr-dev",
+      "targetCommit": "a192a1d83be3644524ef6e2516619bdf81866678",
+      "contractReadCommit": "a192a1d83be3644524ef6e2516619bdf81866678",
+      "uncommittedContractPaths": []
+    },
+    "summary": "用户明确同意先修队列SQL分页及DHR证据批量读取，另外两项补测量",
+    "confirmed": {
+      "concepts": [],
+      "relationships": [],
+      "rules": [],
+      "executionContracts": []
+    },
+    "inferred": [],
+    "unresolved": [],
+    "replacementScopes": [],
+    "impactAnalysis": {
+      "level": "L2",
+      "directImpacts": [
+        {
+          "area": "workflow",
+          "change": "原查询附加LIMIT/OFFSET保留过滤排序数组及long offset；同时间ID降序工程性确定次序，非并发跨请求快照",
+          "evidenceReferences": [
+            "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java"
+          ]
+        },
+        {
+          "area": "DHR",
+          "change": "冻结证据对应当前记录一次IN子查询读取，按id排序，lock分支保留FOR UPDATE；逐条比较含缺失判定",
+          "evidenceReferences": [
+            "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java"
+          ]
+        }
+      ],
+      "transitiveImpacts": [
+        {
+          "area": "capacity-fixes",
+          "change": "DHR历史版本和审阅详情、审批新鲜证据核对",
+          "evidenceReferences": [
+            "docs/development/branch-review-20261026-capacity-fixes/README.md"
+          ]
+        }
+      ],
+      "potentialImpacts": [
+        {
+          "area": "capacity-fixes",
+          "change": "批量查询对并发锁等待后新鲜值需原生PG验证",
+          "evidenceReferences": [
+            "docs/development/branch-review-20261026-capacity-fixes/README.md"
+          ]
+        }
+      ],
+      "unaffectedAreas": [
+        {
+          "area": "capacity-fixes",
+          "change": "TaskDetail页面",
+          "evidenceReferences": [
+            "docs/development/branch-review-20261026-capacity-fixes/README.md"
+          ]
+        },
+        {
+          "area": "capacity-fixes",
+          "change": "记录变更作废",
+          "evidenceReferences": [
+            "docs/development/branch-review-20261026-capacity-fixes/README.md"
+          ]
+        },
+        {
+          "area": "capacity-fixes",
+          "change": "完整多租户政策",
+          "evidenceReferences": [
+            "docs/development/branch-review-20261026-capacity-fixes/README.md"
+          ]
+        }
+      ],
+      "compatibilityAndMigration": [
+        {
+          "area": "capacity-fixes",
+          "change": "无DDL无历史数据修改；API形状保持",
+          "evidenceReferences": [
+            "docs/development/branch-review-20261026-capacity-fixes/README.md"
+          ]
+        }
+      ],
+      "snapshotImpacts": [
+        {
+          "area": "capacity-fixes",
+          "change": "冻结证据只读，无摘要或内容重写",
+          "evidenceReferences": [
+            "docs/development/branch-review-20261026-capacity-fixes/README.md"
+          ]
+        }
+      ],
+      "auditImpacts": [
+        {
+          "area": "capacity-fixes",
+          "change": "查询不写审计；审批事务保留",
+          "evidenceReferences": [
+            "docs/development/branch-review-20261026-capacity-fixes/README.md"
+          ]
+        }
+      ],
+      "permissionImpacts": [
+        {
+          "area": "capacity-fixes",
+          "change": "保留认证用户过滤、DHR排除、default tenant",
+          "evidenceReferences": [
+            "docs/development/branch-review-20261026-capacity-fixes/README.md"
+          ]
+        }
+      ],
+      "testImpacts": [
+        {
+          "scope": "capacity-fixes",
+          "scenarios": [
+            "PG分页规模及边界"
+          ],
+          "evidenceReferences": []
+        },
+        {
+          "scope": "capacity-fixes",
+          "scenarios": [
+            "DHR差异等价/缺失/跨tenant/锁后新鲜值"
+          ],
+          "evidenceReferences": []
+        },
+        {
+          "scope": "capacity-fixes",
+          "scenarios": [
+            "原工作流及DHR回归"
+          ],
+          "evidenceReferences": []
+        }
+      ],
+      "evidenceGaps": [
+        "无客户容量/SLA数据，额外两项尚无运行测量"
+      ]
+    },
+    "extensionStrategy": {
+      "selectedPaths": [
+        "product-core"
+      ],
+      "rationale": "局部查询实现优化",
+      "ownershipBoundaries": [
+        {
+          "owner": "workflow/production",
+          "responsibility": "原接口和证据比较"
+        }
+      ]
+    },
+    "affectedFiles": [
+      {
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+        "changeType": "update",
+        "reason": "减少查询次数"
+      },
+      {
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+        "changeType": "update",
+        "reason": "SQL分页"
+      },
+      {
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+        "changeType": "update",
+        "reason": "移除内存分页"
+      },
+      {
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowQueuePaginationPostgresTest.java",
+        "changeType": "create",
+        "reason": "原生PG性能和行为回归或查询签名适配"
+      },
+      {
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrEvidenceBatchPostgresTest.java",
+        "changeType": "create",
+        "reason": "原生PG性能和行为回归或查询签名适配"
+      },
+      {
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowTaskControllerTest.java",
+        "changeType": "update",
+        "reason": "原生PG性能和行为回归或查询签名适配"
+      },
+      {
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowTransferPostgresTest.java",
+        "changeType": "update",
+        "reason": "原生PG性能和行为回归或查询签名适配"
+      },
+      {
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+        "changeType": "update",
+        "reason": "剩余风险实际调用次数观察"
+      },
+      {
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionReferenceCapacityObservationTest.java",
+        "changeType": "create",
+        "reason": "剩余风险实际调用次数观察"
+      }
+    ],
+    "acceptanceScenarios": [
+      {
+        "id": "capacity.queue",
+        "given": "10000条匹配任务",
+        "when": "请求5条",
+        "then": "仅加载5实体且保持原授权排序",
+        "evidenceRequirements": [
+          "PG SQL和实体计数"
+        ]
+      },
+      {
+        "id": "capacity.dhr",
+        "given": "多条冻结证据含缺失或变化",
+        "when": "批量比较",
+        "then": "结果与原逐条比较一致，加锁后读取最新值",
+        "evidenceRequirements": [
+          "PG等价和并发测试"
+        ]
+      }
+    ]
+  }
+}
