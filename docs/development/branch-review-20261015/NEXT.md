@@ -1,5 +1,7 @@
 # 持续推进台账
 
+已分别交付[PR26 工作流分页](https://github.com/IvenYi/edhr-nexus-frontend/pull/26)与[PR27 DHR批量读取](https://github.com/IvenYi/edhr-nexus-frontend/pull/27)，等待人工合并。两PR均基于a192，产品文件不重叠；创建时均MERGEABLE/CLEAN。交付登记之后未修改产品/测试/知识，未自动合并或部署。下一轮不能把PR创建当已经合并。
+
 最新：用户于2026-10-26明确同意执行两项性能整改。PR25已人工合并，目标a192a1d8无新增产品差异。本批[容量整改](../branch-review-20261026-capacity-fixes/README.md)拆为独立队列Q=3c32730a与DHR D=630c8c67候选；全新独立分别7/7、8/8检查，59/58测试均通过；主侧组合C=8e9cefe4的117通过，不冒称独立运行组合C。正式验收原件、有限范围和剩余风险见本批acceptance及scope-review，后续仅L0交付登记。
 
 剩余：DHR重复比较、引用全视图成本已有实际调用观察，继续待讨论；DHR新增批量map额外持有F份当前JSON，需讨论分块及大JSON堆测量，不将10k小JSON通过当宽记录容量结论。下一轮先fetch并核对两PR真实合并及新提交增量，再按scope-review中的W2/W3剩余、W4、路线拓扑/初始化基线增量与W5–W7推进。TaskDetail签名页面和记录变更/作废依赖仍暂缓，无自动merge/deploy/恢复。下文PR25检查点为历史，不再把已明确授权的本轮两项写作待授权。
