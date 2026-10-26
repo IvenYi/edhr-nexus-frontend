@@ -256,12 +256,16 @@ class ProductionExecutionIntegrationTest {
         assertThat(events).hasSize(before.size());
         for (int index = 0; index < events.size(); index++) {
             var event = events.get(index);
-            assertThat(mapper.readTree(event.get("content_before").toString())).isEqualTo(mapper.createObjectNode().put("status", before.get(index)));
-            assertThat(mapper.readTree(event.get("content_after").toString())).isEqualTo(mapper.createObjectNode().put("status", after.get(index)));
+            assertThat(auditJson(event.get("content_before"))).isEqualTo(mapper.createObjectNode().put("status", before.get(index)));
+            assertThat(auditJson(event.get("content_after"))).isEqualTo(mapper.createObjectNode().put("status", after.get(index)));
             assertThat(event).containsEntry("action", "UPDATE").containsEntry("tenant_id", "default")
                     .containsEntry("operator_id", "1").containsEntry("operator_account", "operator");
             assertThat(event.get("created_at")).isNotNull();
         }
+    }
+
+    private JsonNode auditJson(Object value) throws Exception {
+        return value instanceof byte[] bytes ? mapper.readTree(bytes) : mapper.readTree(value.toString());
     }
 
     private String retiredTraceModel(String id) {
