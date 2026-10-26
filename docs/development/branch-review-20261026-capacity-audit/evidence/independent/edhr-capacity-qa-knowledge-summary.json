@@ -1,0 +1,395 @@
+{
+  "author": "/root/capacity_independent_final",
+  "phase": "knowledge",
+  "headCommit": "1081c4d8b15eb9e3ac7e64b04397bd10c0abffda",
+  "export": "/tmp/edhr-capacity-qa-source",
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-C",
+    "-f",
+    "/tmp/edhr-capacity-qa-source/tools/knowledge-model/pom.xml",
+    "clean",
+    "test"
+  ],
+  "startedAt": "2026-10-26T02:16:44.648466+00:00",
+  "elapsedSeconds": 25.27,
+  "exit": 0,
+  "privateLogSha256": "d3a07d1f1a19838d4e4f7655fa4fa3819efb68bfc98a896696d8f2d410f232e8",
+  "rawLogsXmlNotArchived": true,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "fresh": true,
+      "xmlSha256": "c9659fd81736a7eb74c1e862a6cdc9f426f0550468857fa84f8e1aaf1a81f614",
+      "cases": [
+        {
+          "name": "yamlParserErrorsContainTheRepositoryRelativeFilePath(Path)",
+          "status": "passed"
+        },
+        {
+          "name": "unknownScalarCollectionsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "explicitFactReferencesCannotBeUsedAsPredicateExpectations",
+          "status": "passed"
+        },
+        {
+          "name": "factCatalogCannotBeBypassedByOmittingProfile",
+          "status": "passed"
+        },
+        {
+          "name": "conditionGroupsRejectAdditionalFields",
+          "status": "passed"
+        },
+        {
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "repositoryRootCanBeLocatedFromRootBackendAndIdeWorkingDirectories",
+          "status": "passed"
+        },
+        {
+          "name": "invalidRuleResultTypesAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "nestedCollectionsAreDiscoveredFromSchemaMappings",
+          "status": "passed"
+        },
+        {
+          "name": "currentKnowledgeModelIsValid",
+          "status": "passed"
+        },
+        {
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "factsRequireProvenanceFields",
+          "status": "passed"
+        },
+        {
+          "name": "schemaCollectionMappingsMustCoverEveryRecordType",
+          "status": "passed"
+        },
+        {
+          "name": "verifiedInternalRecordsRequireExecutionContracts",
+          "status": "passed"
+        },
+        {
+          "name": "stringOperatorsRejectNonStringFacts",
+          "status": "passed"
+        },
+        {
+          "name": "malformedTopLevelCollectionsReportTheirDocument",
+          "status": "passed"
+        },
+        {
+          "name": "executionContractReferencesMustResolveEvenForNonVerifiedRules",
+          "status": "passed"
+        },
+        {
+          "name": "invalidStatusesAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "factCatalogRejectsOperatorNotAllowedByFact",
+          "status": "passed"
+        },
+        {
+          "name": "schemaRejectsNestedDescriptorMappingMismatch",
+          "status": "passed"
+        },
+        {
+          "name": "factValueTypesMustComeFromTheControlledVocabulary",
+          "status": "passed"
+        },
+        {
+          "name": "factNamesInStringsAreNeverImplicitlyDereferenced",
+          "status": "passed"
+        },
+        {
+          "name": "knownNestedCollectionsCannotAppearOnUndeclaredParentRecordTypes",
+          "status": "passed"
+        },
+        {
+          "name": "invalidConditionOperatorsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "danglingEvidenceIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "verifiedRulesCanReferenceValidRegisteredExecutionContracts",
+          "status": "passed"
+        },
+        {
+          "name": "invalidCardinalitiesAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "factCatalogRejectsUnknownSemanticAlias",
+          "status": "passed"
+        },
+        {
+          "name": "conditionNotGroupsRequireOneExpression",
+          "status": "passed"
+        },
+        {
+          "name": "enumFactsRequireAnExplicitNonEmptyValueSet",
+          "status": "passed"
+        },
+        {
+          "name": "numericComparisonRejectsStringFactEvenWhenItsOperatorIsListed",
+          "status": "passed"
+        },
+        {
+          "name": "schemaIdPrefixesMustCoverEveryRecordType",
+          "status": "passed"
+        },
+        {
+          "name": "nestedDuplicateIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[7]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[8]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[9]",
+          "status": "passed"
+        },
+        {
+          "name": "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[10]",
+          "status": "passed"
+        },
+        {
+          "name": "conditionLeavesRejectAdditionalFields",
+          "status": "passed"
+        },
+        {
+          "name": "absoluteEvidencePathsAreRejectedEvenWhenTheyExist",
+          "status": "passed"
+        },
+        {
+          "name": "conditionGroupsMustBeNonEmpty",
+          "status": "passed"
+        },
+        {
+          "name": "unknownEmptyCollectionsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "implementationAnchorsRejectUnknownProvenanceReviewStatus",
+          "status": "passed"
+        },
+        {
+          "name": "numericOperandsMustBeFinite",
+          "status": "passed"
+        },
+        {
+          "name": "currentKnowledgeBaselineUsesTheTypedFactSchema",
+          "status": "passed"
+        },
+        {
+          "name": "factReferenceObjectsMustUseTheExactOperandShape",
+          "status": "passed"
+        },
+        {
+          "name": "topLevelCollectionsAreDiscoveredFromSchemaMappings",
+          "status": "passed"
+        },
+        {
+          "name": "danglingTermIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "verifiedRuntimeRecordsRequireEvidence",
+          "status": "passed"
+        },
+        {
+          "name": "schemaCollectionMappingsRejectDuplicateTargetsDeterministically",
+          "status": "passed"
+        },
+        {
+          "name": "recordIdsMustUseSchemaPrefixes(String, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "recordIdsMustUseSchemaPrefixes(String, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "normalizedEvidencePathsCannotEscapeRepository(Path)",
+          "status": "passed"
+        },
+        {
+          "name": "duplicateIdsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "explicitFactOperandsMustHaveCompatibleTypes",
+          "status": "passed"
+        },
+        {
+          "name": "conditionValuesMustUseSchemaValueTypes",
+          "status": "passed"
+        },
+        {
+          "name": "schemaCollectionMappingsRejectUnknownRecordTypes",
+          "status": "passed"
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[1]",
+          "status": "passed"
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[2]",
+          "status": "passed"
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[3]",
+          "status": "passed"
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[4]",
+          "status": "passed"
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[5]",
+          "status": "passed"
+        },
+        {
+          "name": "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[6]",
+          "status": "passed"
+        },
+        {
+          "name": "explicitFactOperandsResolveIdsAndAliasesWithoutBeingTreatedAsClauses",
+          "status": "passed"
+        },
+        {
+          "name": "unknownNestedRecordCollectionsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "unknownTopLevelCollectionsReportTheirDocumentAndSortedAllowedCollections",
+          "status": "passed"
+        },
+        {
+          "name": "missingEvidencePathsAreRejected",
+          "status": "passed"
+        },
+        {
+          "name": "explicitFactOperandsRejectUnknownReferences",
+          "status": "passed"
+        },
+        {
+          "name": "executionContractIdsUseSchemaPrefixes",
+          "status": "passed"
+        },
+        {
+          "name": "realEvidencePathsCannotEscapeRepositoryThroughSymlinks(Path)",
+          "status": "passed"
+        },
+        {
+          "name": "implementedRecordsCannotEnterCustomerProjection",
+          "status": "passed"
+        },
+        {
+          "name": "aliasesCannotShadowAnotherFactIdInEitherCollectionOrder",
+          "status": "passed"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

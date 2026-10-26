@@ -1,0 +1,88 @@
+{
+  "author": "/root/capacity_ontology_delta",
+  "status": "FINAL",
+  "recordedAt": "2026-10-26T02:05:25.907011+00:00",
+  "targetCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+  "contractBaseline": {
+    "sourceCommit": "f1a20247e2d49077eac457912d4ac396ee221182",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+    "contractReadCommit": "f1a20247e2d49077eac457912d4ac396ee221182",
+    "uncommittedContractPaths": []
+  },
+  "requiredAssetsRead": [
+    {
+      "path": "AGENTS.md",
+      "commit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "8e62c2aee54a78468861bb01cfad4d7f77b11665",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc",
+      "locator": "full document read for current role/context; not whole business semantic acceptance",
+      "reviewedScope": "full document read for current role/context; not whole business semantic acceptance"
+    },
+    {
+      "path": "docs/agents/business-knowledge-modeler.md",
+      "commit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "4832fd1f67d9125e9e24697add9c198d9eb8e0eb",
+      "sha256": "9806c900f98e1cbcf4f8d68a998a07a5449369df037183c75ec08cd666bf56ae",
+      "locator": "full document read for current role/context; not whole business semantic acceptance",
+      "reviewedScope": "full document read for current role/context; not whole business semantic acceptance"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "commit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "9b54a3610a5b5f835c95e2dcd31c3a60ac4886d4",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12",
+      "locator": "full document read for current role/context; not whole business semantic acceptance",
+      "reviewedScope": "full document read for current role/context; not whole business semantic acceptance"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "commit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "9751dd1566faaa63039cd72cd790a06b0253e15c",
+      "sha256": "ba95611259b35782726eab7ff5daa9ff45a6839cb70f770face439eaf53410e3",
+      "locator": "full document read for current role/context; not whole business semantic acceptance",
+      "reviewedScope": "full document read for current role/context; not whole business semantic acceptance"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "commit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "0becc4c7d860dce4a775e28f9583416ccf4de354",
+      "sha256": "67d7aa7c3be6a216d4aa9e652fc5449f153bae1e636d7e5642c25482496ae66b",
+      "locator": "full document read for current role/context; not whole business semantic acceptance",
+      "reviewedScope": "full document read for current role/context; not whole business semantic acceptance"
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "commit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "c3cb81ea3f171cc897827be5e1c21eff95d9ee45",
+      "sha256": "f15c764a45d86fc4a3507a6c8202a6ec71838d2bf7bab6fefd92d98188802d73",
+      "locator": "full document read for current role/context; not whole business semantic acceptance",
+      "reviewedScope": "full document read for current role/context; not whole business semantic acceptance"
+    }
+  ],
+  "currentKnowledgeIds": 2618,
+  "currentKnowledgeMarkdownFiles": 72,
+  "finiteSemanticRows": 6,
+  "finiteSourceScopes": 31,
+  "allSelectedDeclaredIdsUniqueAndCanonicalHashesMatched": true,
+  "allSourceGitBlobsAndRangesValidated": true,
+  "protectedProductKnowledgeContractsSameAs525AtReadAndFinish": true,
+  "businessTestsExecuted": 0,
+  "knowledgeJUnitExecuted": 0,
+  "browserTestsExecuted": 0,
+  "performanceTestsExecuted": 0,
+  "actualKnowledgeChanges": [],
+  "actualRepositoryWritesByThisRole": [],
+  "newQuestions": [],
+  "newConflicts": [],
+  "ontologyResult": "not-applicable",
+  "ontologyNotApplicableMeaning": "No knowledge-definition/business-rule change in this read-only slice; six actual scoped semantic reviews were performed; full audit still applies.",
+  "performanceConstraints": [
+    "Do not drop dictionary/source/type/current-validity filters or row-dependent conditions to reduce queries.",
+    "Cache or batch keys require frozen field config, target identity, parent/current-row values and correct validity/transaction scope; ID alone is insufficient.",
+    "Reference search currently has SQL LIMIT100 or bounded pageSize+1; not an unbounded-result example. Repeated dependency lookups/initialization rounds require separate scale measurement.",
+    "Do not skip lock-bound validity or source permission checks, change first-empty-only initialization or overwrite existing/historical state."
+  ],
+  "overallAuditComplete": false,
+  "remainingGlobalSemanticAssetsNotAcceptedByThisSlice": true
+}

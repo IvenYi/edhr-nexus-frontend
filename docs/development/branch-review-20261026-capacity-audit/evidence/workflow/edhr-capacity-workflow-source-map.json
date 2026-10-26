@@ -1,0 +1,155 @@
+{
+  "author": "/root/capacity_workflow_evidence",
+  "kind": "auxiliary source/runtime evidence, not independent final QA",
+  "fixedCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+  "sourceScopes": [
+    {
+      "id": "capacity-workflow:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "method": "todo full-list then bounded subList",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        89,
+        106
+      ],
+      "blob": "6031d1ca1a459d21ae08e26089c0e0ff114fec1c",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "readDepth": "finite-source-and-native-http-capacity-observation",
+      "conclusion": "Actual native JWT/MockMvc N100/1000/10000 requests page1,size5 return5 while loading N tasks, one query. Existing candidate/DHR/operator/order behavior retained; no repair or complete action audit.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "capacity-workflow:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "method": "done full-list then bounded subList",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        112,
+        128
+      ],
+      "blob": "6031d1ca1a459d21ae08e26089c0e0ff114fec1c",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "readDepth": "finite-source-and-native-http-capacity-observation",
+      "conclusion": "Actual native JWT/MockMvc N100/1000/10000 completed rows load N while returning5; one query, same order and principal. No production/SLA/heap conclusion.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "capacity-workflow:003",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "method": "currentOperatorId principal identity",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        192,
+        198
+      ],
+      "blob": "6031d1ca1a459d21ae08e26089c0e0ff114fec1c",
+      "sha256": "c0c9f3b23f046ea75a14d5a542906507786f7505a831ea7d670b79c9799d0a19",
+      "readDepth": "finite-source-and-native-http-capacity-observation",
+      "conclusion": "Same actual signed principal wins over spoofed optional assignee; anonymous401 and invalid-page400 produce no task select in two queue controls.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "capacity-workflow:004",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "method": "findTodoForUser native SQL",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        21,
+        26
+      ],
+      "blob": "bc6bfa0cc70f6d2c25b84829b8b6ff8614ddfa4a",
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "readDepth": "finite-source-and-native-http-capacity-observation",
+      "conclusion": "Actual StatementInspector captures unchanged no-LIMIT native SQL; one prepare/query at all3 scales, N task entities; not an N+1 finding. Candidate/unrestricted/DHR predicates must survive any later pagination option.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "capacity-workflow:005",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+      "method": "findDoneForUser native SQL",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        28,
+        31
+      ],
+      "blob": "bc6bfa0cc70f6d2c25b84829b8b6ff8614ddfa4a",
+      "sha256": "4c1400c46633775a8db3b33e4b47b9515f444e21144c2f93414f515cd8a20a03",
+      "readDepth": "finite-source-and-native-http-capacity-observation",
+      "conclusion": "Actual SQL no LIMIT/OFFSET; same assignee/status/nonDHR scope and completed_at desc nulls last. Unbounded history materialization risk, not proven latency/OOM.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "capacity-workflow:006",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java",
+      "method": "scalar task payload fields including JSONB and text",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        12,
+        37
+      ],
+      "blob": "34013296ab7b1e1193a3612bb74fd1cd6e0aee3b",
+      "sha256": "82bf492f7a9c9127ce7ed3552f8e5fd326be58a40dc7aa166904d2c114c5f5a6",
+      "readDepth": "finite-source-and-native-http-capacity-observation",
+      "conclusion": "Actual ORM task entity hydration counted; candidate_snapshot is scalar JSONB and opinion TEXT, no mapped association causing N+1 in this slice. Heavy-payload bytes/heap not measured.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    },
+    {
+      "id": "capacity-workflow:007",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "method": "current baseline workflow_task declared columns",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        1449,
+        1463
+      ],
+      "blob": "1e07c52fb8fe9bd81a5e6010cdcfc04c534b1ad7",
+      "sha256": "fbe410de8dc8bbe313db982d485ef3b77d42038ebcdd5fc57215cfbd90e92531",
+      "readDepth": "finite-source-inspection-only",
+      "conclusion": "Source-only current baseline table has required IDs/status/type, JSONB candidate and TEXT opinion. Runtime probe uses Hibernate create-drop, not this migration; fixture references corrected without changing assertions.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-workflow:008",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "method": "existing task assignee/instance/status indexes",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        1925,
+        1929
+      ],
+      "blob": "1e07c52fb8fe9bd81a5e6010cdcfc04c534b1ad7",
+      "sha256": "fbe410de8dc8bbe313db982d485ef3b77d42038ebcdd5fc57215cfbd90e92531",
+      "readDepth": "finite-source-inspection-only",
+      "conclusion": "Existing indexes are present in production baseline source; no claim they were applied/tested in Hibernate probe, no missing-index finding or EXPLAIN/SLA claim.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-workflow:009",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "method": "active logical task uniqueness",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "range": [
+        2081,
+        2081
+      ],
+      "blob": "1e07c52fb8fe9bd81a5e6010cdcfc04c534b1ad7",
+      "sha256": "fbe410de8dc8bbe313db982d485ef3b77d42038ebcdd5fc57215cfbd90e92531",
+      "readDepth": "finite-source-and-native-http-capacity-observation",
+      "conclusion": "Final probe explicitly installs equivalent partial unique index for active(instance_id,node_id), uses N distinct instances and checks zero duplicate active keys and zero missing workflow definition/version/node targets. This targeted constraint simulation is not full baseline migration acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": true
+    }
+  ],
+  "scopeRecordsAreOverlapping": true,
+  "wholeFileReviewComplete": false,
+  "newSemanticReviewPerformed": false,
+  "runtimeQualification": "8 actual native PG observation/control scenarios in fixed Git export; only selected query/projection portions, no product fix."
+}

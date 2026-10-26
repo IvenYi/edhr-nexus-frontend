@@ -1,0 +1,54 @@
+{
+  "schema": "edhr-audit-progress-readonly-reconciliation/v1",
+  "recordedAt": "2026-10-26T01:38:31.270044+00:00",
+  "author": "/root",
+  "targetBranch": "edhr-dev",
+  "targetCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+  "lastIndependentTestedCommit": "749c9f9b28d2525261976df070e56736323117be",
+  "pr24": {
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/24",
+    "state": "MERGED",
+    "mergeCommit": "c671b23fd9847a7e1cb2d1bad3c3bb138fc5620f",
+    "sourceDeliveryCommit": "423b17a6361d89661cd4774adb23b2d1f6497efd",
+    "mergeDeliveryTreesEqual": true
+  },
+  "currentTrackedPaths": 3419,
+  "currentKnowledgeIds": 2618,
+  "inheritedCatalog": {
+    "path": "docs/development/branch-review-20261021-workflow-read-boundaries/source-catalog.json",
+    "sha256": "bfa1638a514d2eea12e3908392f1ddb1a74211b314db615bf40cf9cf07ae2a25",
+    "inventoryBaseline": "870b178f9bad07548485ff3b167b238d6e037ad7",
+    "trackedPaths": 2965,
+    "knowledgeIds": 2552
+  },
+  "source": {
+    "historicalOverlappingScopes": 574,
+    "carryStates": {
+      "needs-delta-review": 252,
+      "retained-scoped-evidence": 322
+    },
+    "wholeFilesCompletedByThisReconciliation": 0,
+    "freshSourceReviewExecuted": false
+  },
+  "semantic": {
+    "historicalRows": 108,
+    "historicalUniqueIds": 96,
+    "sourceArtifacts": 6,
+    "carryStates": {
+      "needs-delta-review": 101,
+      "retained-scoped-evidence": 7
+    },
+    "newSemanticReviews": 0,
+    "freshSemanticConsistencyAccepted": false,
+    "dependencyGraphQualification": "Only original named paths; conservative file/blob relation, not complete dependency analysis or present semantic adjudication."
+  },
+  "governanceChangedPaths": [],
+  "newBusinessTestsRun": 0,
+  "newBrowserTestsRun": 0,
+  "newPerformanceTestsRun": 0,
+  "latestContributorsWorkAutomaticallyAcceptedByThisReconciliation": false,
+  "overallAuditComplete": false,
+  "overallPercent": null,
+  "userDeferredTaskDetailRetained": true,
+  "userDeferredRecordControlDhrA12Retained": true
+}

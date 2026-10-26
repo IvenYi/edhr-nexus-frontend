@@ -1,0 +1,506 @@
+{
+  "author": "/root/capacity_ontology_delta",
+  "fixedCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+  "contractReadCommit": "f1a20247e2d49077eac457912d4ac396ee221182",
+  "sourceScopes": [
+    {
+      "id": "capacity-ontology:001",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceConfig.java",
+      "method": "fields/resolveFields frozen self-config",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "d7d7ce1326e3d0e4921fbdf24ac86951d27332fb",
+      "sha256": "84b5f599b315fb2e393672968ca8f6b29776f0440dc6fdf67db3653b8af809fd",
+      "range": [
+        12,
+        46
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Deep copy frozen form fields; resolve canvas overrides from same form, reject conflicting placements; never fetch current template.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:002",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceConfig.java",
+      "method": "validateDesignConditions/validateConditions",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "d7d7ce1326e3d0e4921fbdf24ac86951d27332fb",
+      "sha256": "84b5f599b315fb2e393672968ca8f6b29776f0440dc6fdf67db3653b8af809fd",
+      "range": [
+        49,
+        92
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Validate combined candidate before persistence; invalid property/dependency/operator or multi-value rejected, empty condition ignored, disabled source skipped; no condition deletion.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:003",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java",
+      "method": "source maps/query",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "665f6bfdbe5dc7c28aefdee968c744c53ad038e5",
+      "sha256": "a948ffb74213574ec1e714bc079bb1db7427fa99bf7b585d84c616e6193b4c39",
+      "range": [
+        18,
+        111
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Canonical source IDs and whitelisted SQL attributes; active dictionary/item scope and parameterized exact dictionary ID; all conditions AND and absent dependency no candidates. No full auth acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:004",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java",
+      "method": "appendScope",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "665f6bfdbe5dc7c28aefdee968c744c53ad038e5",
+      "sha256": "a948ffb74213574ec1e714bc079bb1db7427fa99bf7b585d84c616e6193b4c39",
+      "range": [
+        113,
+        143
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "material all/product/types and productionObject all/batch/sn scopes shared by search/find/validate; material type IDs checked, no source identity merge.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:005",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java",
+      "method": "search paged SQL",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "665f6bfdbe5dc7c28aefdee968c744c53ad038e5",
+      "sha256": "a948ffb74213574ec1e714bc079bb1db7427fa99bf7b585d84c616e6193b4c39",
+      "range": [
+        186,
+        205
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Search SQL is bounded by LIMIT100 or pageSize<=100 plus1; a counterexample to claiming unbounded candidate materialization. No timing or production capacity acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:006",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java",
+      "method": "find context candidate",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "665f6bfdbe5dc7c28aefdee968c744c53ad038e5",
+      "sha256": "a948ffb74213574ec1e714bc079bb1db7427fa99bf7b585d84c616e6193b4c39",
+      "range": [
+        207,
+        213
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Uses same query/config/values and exact ID, not first search candidate; result depends on config and dependency values, not ID alone.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:007",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/service/FormReferenceLookup.java",
+      "method": "validate current reference",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "665f6bfdbe5dc7c28aefdee968c744c53ad038e5",
+      "sha256": "a948ffb74213574ec1e714bc079bb1db7427fa99bf7b585d84c616e6193b4c39",
+      "range": [
+        245,
+        268
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Shared scope and source identity/metadata checks; retained-reason exception is separate existing rule; no general validation/caching waiver.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:008",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java",
+      "method": "references/contextReference adapter",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "43676b8de524bb9cf84871beee927feb0fff0838",
+      "sha256": "4cc08bef2602a87812713e43e94001485ad47f287899dd336e5e74872a3b273d",
+      "range": [
+        38,
+        53
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Forward frozen field typeConfig and values to shared lookup; no second candidate or automatic ownership system.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:009",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "method": "initializeForm first reference context",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "a8469a6b2b01fda2ac28d0ebb0ea8d417e822119",
+      "sha256": "3eba55403ebd112ed04e7d8b01d477e4a8361d08d58775e1111939e1ab2ed8d1",
+      "range": [
+        728,
+        740
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "referenceContextInitialized guard, explicit per-field flag and later empty-value-only assignment; original signature/audit/snapshot mechanisms not modified.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:010",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "method": "initializeReferenceContext recursion",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "a8469a6b2b01fda2ac28d0ebb0ea8d417e822119",
+      "sha256": "3eba55403ebd112ed04e7d8b01d477e4a8361d08d58775e1111939e1ab2ed8d1",
+      "range": [
+        741,
+        755
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Parent values and each actual row scoped separately; empty-row defaults not copied from another entered row.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:011",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "method": "resolveReferenceContext",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "a8469a6b2b01fda2ac28d0ebb0ea8d417e822119",
+      "sha256": "3eba55403ebd112ed04e7d8b01d477e4a8361d08d58775e1111939e1ab2ed8d1",
+      "range": [
+        756,
+        784
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Actual object/workOrder/product/explicit owner operation whitelist; shared-batch operation excluded; missing contexts warn/no guessing; nonempty values not overwritten; bounded dependency rounds stop when no progress.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:012",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java",
+      "method": "saveFormTemplateVersionDesign validation before writes",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "c70526ab32280750227a6d79fbd545b0dba41499",
+      "sha256": "0533382eaf92b25035d0913966567ccb0894926441cceedac2fb9fbfde19b318",
+      "range": [
+        228,
+        257
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Combined new/existing model/canvas validated before entity setters, repository save and audit. No broader controller or transaction runtime acceptance.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:013",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/FormReferenceController.java",
+      "method": "preview reference options scope and class authority",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "e10589bc395e2585915622dc217e783717f0cd85",
+      "sha256": "c3b475900b648b586f16c9fd11ea6ca05cec6303461b57e39434938759512b63",
+      "range": [
+        10,
+        33
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Existing design authority; new dictionary option explicitly rejects missing concrete dictionary; original lookup scope maintained. No full permission runtime proof.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:014",
+      "path": "gmp-platform/frontend/src/components/form-renderer/referenceConfig.ts",
+      "method": "resolveReferenceField/syncReferenceConfig",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "afc7d4fd8960ef4de9dd8ce653ff898e2f6fadeb",
+      "sha256": "cb26b3522a1c7827920dfb0a76109a99adaa1c6e547d09a22bdfbca71719cf5e",
+      "range": [
+        12,
+        44
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Reference settings remain field/placement configuration keyed by actual field and subtable; no projection-use creation; query conditions retained across patch merging.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:015",
+      "path": "gmp-platform/frontend/src/components/form-renderer/referenceValidation.ts",
+      "method": "referenceConditionIssue/referenceConfigurationIssues",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "3e166b5b89c39e47cdf32cd1fcec91a1bad9b1aa",
+      "sha256": "77370c389d216393e2f9c3218676b43c2be4269f010ed1b1297db03e01bb9cbd",
+      "range": [
+        16,
+        55
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Returns specific invalid-property/dependency/operator issues using effective field/widget config; no silent omission at save validation.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:016",
+      "path": "gmp-platform/frontend/src/components/form-renderer/referencePresentation.ts",
+      "method": "supportsReferenceContext and legacy editor aliases",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "e6cd677c960a3bfcab6759e3ed4a5ea5cbbdafa4",
+      "sha256": "d2dfc9bc51562ce1fb2eefd6dce8b51a0bf9156f5cad816827e865f53d07b32b",
+      "range": [
+        29,
+        45
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Whitelist excludes equipment/general material/personnel; legacy product/BATCH/SN grouped for editor without rewriting stored config.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:017",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerInspector.tsx",
+      "method": "source switch and condition errors",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "bc3f8627c7b4b4a6f60144b1084935fcfdc35933",
+      "sha256": "edce1d05b9d613deb970a72c8ee31b68a6e0f53fad3200f96d80b7ab8ff843ad",
+      "range": [
+        1688,
+        1755
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Source switch resets display/search/autofill keys but leaves queryConditions; invalid condition options remain visible with error labels. No browser or visual conformance claim.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:018",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ReferenceScopeConfig.tsx",
+      "method": "scope patch commands",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "b3ce14f427459e14d594a41f2f96ba437b741c4c",
+      "sha256": "de550368d57f30c4225b11c5b0e474e36515493ae6ec4b7267a86629f2c153cb",
+      "range": [
+        5,
+        25
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Scope patches preserve query conditions; nonproduct material disables autofill. Source-only semantic event inspection, not UI verification.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:019",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx",
+      "method": "persistCurrentDocument reference guard",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "8cb1e55ecc8a501a9d3bebc10dff2e27f4badeb9",
+      "sha256": "38a99aa09cfb7dc608ab547af1a7d27d600e15bbb98af920e6271ce1b8d3a4a0",
+      "range": [
+        104,
+        122
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Reference configuration issues block serialization/persist before markSaved. Source-only, not browser completion.",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:020",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ReferenceContextInitializationTest.java",
+      "method": "createsReferencesFromActualContextAndKeepsDefaultsForNewRowsAndCopies",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "461a987add6a8ae9b2381f0ccfdf0e9fa3e0bb36",
+      "sha256": "36559a9c3d7fa624a24adb8ee23fe0d7a693c937b1eb8c840811a87d747a18af",
+      "range": [
+        21,
+        42
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Finite semantic source inspection only; no runtime or whole-file acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:021",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ReferenceContextInitializationTest.java",
+      "method": "sharedBatchFormsNeverAcquireViewedOperationAndMissingCandidatesStayEmpty",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "461a987add6a8ae9b2381f0ccfdf0e9fa3e0bb36",
+      "sha256": "36559a9c3d7fa624a24adb8ee23fe0d7a693c937b1eb8c840811a87d747a18af",
+      "range": [
+        44,
+        53
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Finite semantic source inspection only; no runtime or whole-file acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:022",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ReferenceContextInitializationTest.java",
+      "method": "initializationLeavesManualValuesAndDoesNotRefreshExistingCopy",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "461a987add6a8ae9b2381f0ccfdf0e9fa3e0bb36",
+      "sha256": "36559a9c3d7fa624a24adb8ee23fe0d7a693c937b1eb8c840811a87d747a18af",
+      "range": [
+        55,
+        70
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Finite semantic source inspection only; no runtime or whole-file acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:023",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ReferenceContextInitializationTest.java",
+      "method": "dependentContextReferencesResolveInEitherFieldOrderWithoutRefreshingExistingCopies",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "461a987add6a8ae9b2381f0ccfdf0e9fa3e0bb36",
+      "sha256": "36559a9c3d7fa624a24adb8ee23fe0d7a693c937b1eb8c840811a87d747a18af",
+      "range": [
+        72,
+        103
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Finite semantic source inspection only; no runtime or whole-file acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:024",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ReferenceContextInitializationTest.java",
+      "method": "cyclicContextDependenciesRemainEmptyWithoutGuessingOrUnboundedRetries",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "461a987add6a8ae9b2381f0ccfdf0e9fa3e0bb36",
+      "sha256": "36559a9c3d7fa624a24adb8ee23fe0d7a693c937b1eb8c840811a87d747a18af",
+      "range": [
+        105,
+        125
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Finite semantic source inspection only; no runtime or whole-file acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:025",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ReferenceContextInitializationTest.java",
+      "method": "rowDefaultsResolveTheirOwnDependenciesWhileActualRowsKeepTheirOwnValuesAndConditions",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "461a987add6a8ae9b2381f0ccfdf0e9fa3e0bb36",
+      "sha256": "36559a9c3d7fa624a24adb8ee23fe0d7a693c937b1eb8c840811a87d747a18af",
+      "range": [
+        127,
+        162
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Finite semantic source inspection only; no runtime or whole-file acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:026",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ReferenceContextInitializationTest.java",
+      "method": "unifiedReferencesUseActualObjectScopeAndOnlyExplicitProductScopeCanAutofill",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "461a987add6a8ae9b2381f0ccfdf0e9fa3e0bb36",
+      "sha256": "36559a9c3d7fa624a24adb8ee23fe0d7a693c937b1eb8c840811a87d747a18af",
+      "range": [
+        164,
+        219
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Finite semantic source inspection only; no runtime or whole-file acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:027",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceLookupTest.java",
+      "method": "unifiedMaterialsShareIdentityAndApplyEveryConfiguredScopeToSearchFindAndValidation",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "5abcb5e64723a4a9cf59c434c3485540c6066779",
+      "sha256": "e3ee36b3ea4e0adb6565317c527bd2c0abacb1aa921dc4b38c75ce45633ad141",
+      "range": [
+        71,
+        98
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Finite semantic source inspection only; no runtime or whole-file acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:028",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceLookupTest.java",
+      "method": "unifiedProductionObjectsRetainActualTypeWithoutWideningScopeOrAcceptingForgedMetadata",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "5abcb5e64723a4a9cf59c434c3485540c6066779",
+      "sha256": "e3ee36b3ea4e0adb6565317c527bd2c0abacb1aa921dc4b38c75ce45633ad141",
+      "range": [
+        100,
+        119
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Finite semantic source inspection only; no runtime or whole-file acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:029",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceLookupTest.java",
+      "method": "explicitDictionaryScopeIsSharedBySearchFindAndValidation",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "5abcb5e64723a4a9cf59c434c3485540c6066779",
+      "sha256": "e3ee36b3ea4e0adb6565317c527bd2c0abacb1aa921dc4b38c75ce45633ad141",
+      "range": [
+        121,
+        141
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Finite semantic source inspection only; no runtime or whole-file acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:030",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/template/service/FormReferenceConfigTest.java",
+      "method": "conditionSaveValidationUsesRealEnabledSingleValueFieldsAndCurrentSourceWhitelist",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "00c5bd28d4bbc13a85a07ba2fa06698b82ee4de4",
+      "sha256": "48c74bfc3f093f816143ca221053cf7a900aab413610feee4e2146f42046cbf4",
+      "range": [
+        70,
+        89
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Finite semantic source inspection only; no runtime or whole-file acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    },
+    {
+      "id": "capacity-ontology:031",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/template/controller/TemplateModelingControllerTest.java",
+      "method": "invalidReferenceConditionsRejectDesignBeforeMutatingVersionSavingOrAuditing",
+      "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+      "blob": "f5c6a17cdf5ef4824cfe0f522049fadafc8eab04",
+      "sha256": "b5e42e17deed70418233396c2abb792363fc37058cbabda148346838e1f6413f",
+      "range": [
+        322,
+        340
+      ],
+      "readDepth": "ontology-finite-source-inspection",
+      "conclusion": "Finite semantic source inspection only; no runtime or whole-file acceptance",
+      "wholeFileReviewComplete": false,
+      "runtimeExecuted": false
+    }
+  ],
+  "scopeRecordsAreOverlapping": true,
+  "wholeFileReviewComplete": false,
+  "runtimeExecuted": false
+}

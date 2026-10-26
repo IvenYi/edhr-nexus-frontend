@@ -1,0 +1,167 @@
+{
+  "author": "/root/capacity_workflow_evidence",
+  "status": "FINAL",
+  "role": "auxiliary finite source and actual capacity observation; not formal final quality",
+  "recordedAt": "2026-10-26T02:05:40.228978+00:00",
+  "level": "L2",
+  "sourceCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+  "contractBaseline": {
+    "sourceCommit": "f1a20247e2d49077eac457912d4ac396ee221182",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "5259791fcbc5d1fddf04cd62a02d6593d00fe2e6",
+    "contractReadCommit": "f1a20247e2d49077eac457912d4ac396ee221182",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "relatedKnowledgeActuallyRead": [
+    "DEC-0031-01..04",
+    "DEC-0033-01..04",
+    "DEC-0081-01..04"
+  ],
+  "productChanges": [],
+  "sharedRepositoryChanges": [],
+  "fixedExportVerifiedTrackedBlobs": 3419,
+  "onlyExportSourceAddition": "gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/controller/WorkflowQueueCapacityObservationTest.java",
+  "runtime": {
+    "observationalTests": 8,
+    "passed": 8,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "nativePostgres": 8,
+    "mainCapacityCases": 6,
+    "guards": 2,
+    "firstProbeAlsoPassed": 8,
+    "observations": [
+      {
+        "queue": "todo",
+        "matchingRows": 100,
+        "returnedRows": 5,
+        "loadedWorkflowTaskEntities": 100,
+        "preparedStatements": 1,
+        "executedOrmQueries": 1,
+        "collectionFetches": 0
+      },
+      {
+        "queue": "todo",
+        "matchingRows": 1000,
+        "returnedRows": 5,
+        "loadedWorkflowTaskEntities": 1000,
+        "preparedStatements": 1,
+        "executedOrmQueries": 1,
+        "collectionFetches": 0
+      },
+      {
+        "queue": "todo",
+        "matchingRows": 10000,
+        "returnedRows": 5,
+        "loadedWorkflowTaskEntities": 10000,
+        "preparedStatements": 1,
+        "executedOrmQueries": 1,
+        "collectionFetches": 0
+      },
+      {
+        "queue": "done",
+        "matchingRows": 100,
+        "returnedRows": 5,
+        "loadedWorkflowTaskEntities": 100,
+        "preparedStatements": 1,
+        "executedOrmQueries": 1,
+        "collectionFetches": 0
+      },
+      {
+        "queue": "done",
+        "matchingRows": 1000,
+        "returnedRows": 5,
+        "loadedWorkflowTaskEntities": 1000,
+        "preparedStatements": 1,
+        "executedOrmQueries": 1,
+        "collectionFetches": 0
+      },
+      {
+        "queue": "done",
+        "matchingRows": 10000,
+        "returnedRows": 5,
+        "loadedWorkflowTaskEntities": 10000,
+        "preparedStatements": 1,
+        "executedOrmQueries": 1,
+        "collectionFetches": 0
+      }
+    ],
+    "secondProbeAlsoPassed": 8,
+    "sameTestsNot24DistinctCases": true,
+    "finalFixture": {
+      "distinctInstancePerMainTask": true,
+      "targetActiveUniquePartialIndexApplied": true,
+      "duplicateActiveKeys": 0,
+      "missingWorkflowReferences": 0
+    }
+  },
+  "findings": [
+    {
+      "id": "PERF-WORKFLOW-QUEUE-001",
+      "recordKind": "capacity-risk",
+      "severity": "medium",
+      "confidence": "confirmed full-materialization behavior; capacity impact requires workload evidence",
+      "status": "pending-discussion",
+      "affectedPaths": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowTask.java"
+      ],
+      "trigger": "GET /api/v1/workflow/tasks/todo or done, page1,size5, while the principal has N matching tasks; pending/open-candidate backlog or accumulated completed history can grow independently of page size.",
+      "expectedEngineeringProperty": "Evaluate whether a small page should bound task entity materialization; no customer budget/SLA or arbitrary cap is assumed.",
+      "actual": "At matching N100/1000/10000 each queue returns5 but loads100/1000/10000 WorkflowTask entities. Exactly1 prepared statement and1 native ORM query in all six cases; captured SQL has no database pagination.",
+      "counterEvidence": [
+        "No N+1 in this measured slice: query count remains1 at all scales.",
+        "Current controller guards page/size with long bounded arithmetic; no reproduction of old overflow defect.",
+        "DHR/foreign higher-rank rows excluded, spoofed assignee ignored, candidate/unrestricted todo membership preserved, order and no-write fingerprints pass.",
+        "Baseline source already defines assignee, instance and status indexes; do not invent missing-index diagnosis.",
+        "Final growth fixture respects active(instance,node) uniqueness; two earlier incomplete fixture runs are retained and explicitly superseded, not used as final valid-capacity evidence."
+      ],
+      "growthModel": {
+        "done": "Accumulated completed/rejected/transferred tasks per assignee can grow with operating time; no retention policy was certified.",
+        "todo": "Outstanding and unrestricted/candidate tasks can grow with backlog and broad candidate scopes; not asserted to reach these counts in the actual customer.",
+        "cost": "Database transfer plus ORM materialization grows with all N matches despite fixed returned page P. Full JSONB snapshot/TEXT opinion fields are selected.",
+        "scenarioSizes": [
+          100,
+          1000,
+          10000
+        ],
+        "sizesAreAssumptionsNotCustomerForecast": true
+      },
+      "optionsForDiscussion": [
+        {
+          "option": "Push existing pagination into the same repository query, preserving List/array response and avoiding an unnecessary count query.",
+          "benefit": "Bound returned/materialized task entities to requested page.",
+          "risks": [
+            "Preserve existing principal/candidate/unrestricted and nonDHR selection, status filters, order and null placement.",
+            "Keep positive page/size/long distant-page compatibility and current default page1,size50; do not silently set arbitrary maximum size.",
+            "Timestamp ties need an explicit deterministic pagination choice and regression evidence; adding an id tie-breaker is a behavioral detail to assess.",
+            "Database pagination bounds entity materialization but may still scan/sort many rows; inspect actual production-equivalent PostgreSQL plan/index selectivity before claiming overall performance fixed."
+          ]
+        },
+        {
+          "option": "Later evaluate lighter query DTOs and endpoint/index changes only if workload justifies them.",
+          "benefit": "Potentially avoid carrying large unused scalar snapshots/opinions or improve scans.",
+          "risks": [
+            "Response compatibility and caller inventory required before DTO/protocol changes.",
+            "Existing separate indexes and JSONB OR membership mean new indexes require EXPLAIN on representative synthetic current-schema data; no DDL proposed as approved now."
+          ]
+        }
+      ],
+      "disposition": "Report actual evidence and discuss with user first; no implementation, schema/index change, policy cap or protocol change performed."
+    }
+  ],
+  "limitations": [
+    "Synthetic JWT/filter/MockMvc and native PG/JPA, not password-login/browser/live backend end-to-end.",
+    "Probe uses Hibernate create-drop plus the exact active(instance,node) unique partial-index predicate from current baseline; N main tasks have distinct instances and existing workflow references. It does not apply the whole baseline, other production indexes/constraints or migrations; no full current-schema validation.",
+    "Numbers prove materialization cardinality in selected requests, not actual peak heap, p95, throughput, OOM or customer capacity. Per-request elapsed nanos are diagnostic only.",
+    "Synthetic payloads are small; production JSON/text widths and retention/workload remain unknown.",
+    "Only two queues and measured contexts; not a global no-N+1, full workflow or full read/tenant-policy certification.",
+    "No server/app deployment, Actions, user database connection, migration or historical restoration.",
+    "Owned PostgreSQL left running for root/final QA, not cleaned by auxiliary."
+  ],
+  "nextAction": "Root reviews exact evidence, registers pending-discussion risk and final independent QA can reproduce unchanged eight scenarios on owned PG.",
+  "fixtureQualification": "First8 passed under create-drop but instances omitted baseline required definition/version references. Second8 added references but repeated active tasks at same(instance,node), which current baseline unique index disallows. Parent identified that fixture weakness before auxiliary FINAL. Final8 uses N distinct instances sharing one valid definition/version/node, explicitly installs equivalent current active unique partial index and asserts zero duplicate active keys / missing workflow references. Original capacity/auth assertions unchanged, validity guards strengthened. Earlier two runs are retained history, not valid current-constraint capacity acceptance or24 distinct cases. No full baseline migration/index/constraint acceptance."
+}
