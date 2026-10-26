@@ -4,7 +4,7 @@ decisions:
     title: 批次管理页面复用生产对象列表并提供行级审计入口
     status: implemented
     visibility: internal
-    context: "provenance: user-confirmed；批次管理页面放在生产 -> 生产准备，复用 ProductionObject 的 BATCH 列表；用户可整行打开详情，并通过行级入口查看该生产对象的数据审计。本决策不新增独立批次实体、状态、拆分动作或生命周期规则。DEC-0014-08 所称‘批次列表独立审计’按本决策修订为不提供独立批次审计列表，但允许行级复用既有 PRODUCTION_OBJECT 审计查询。生产对象控制器现已显式写入创建及生命周期修改的业务快照；该修复只影响新产生的审计事件，不回填历史空快照。"
+    context: "provenance: user-confirmed；批次管理页面放在生产 -> 生产准备，复用 ProductionObject 的 BATCH 列表；用户可整行打开详情，并通过行级入口查看该生产对象的数据审计。本决策不新增独立批次实体、状态、拆分动作或生命周期规则。DEC-0014-08 所称‘批次列表独立审计’按本决策修订为不提供独立批次审计列表，但允许行级复用既有 PRODUCTION_OBJECT 审计查询。original-evidence；生产对象控制器显式写入创建、取消和提前结束的业务快照；生产执行服务补齐合法执行中真实对象状态变化的 UPDATE，保留原执行事件。仅影响新产生的审计事件，不回填历史空快照或缺失事件；该实现纠错不构成新政策或发布认证。"
     decisionStatements:
       - id: DEC-0019-01
         statement: "provenance: user-confirmed；批次管理页面归属生产 -> 生产准备，列表数据仅来自 ProductionObject 的 BATCH 生产对象。"
@@ -54,7 +54,7 @@ decisions:
         given: 生产对象状态发生合法变化
         when: 生命周期事务成功
         then: 该对象产生一条 UPDATE 审计，contentBefore 和 contentAfter 仅保存实际变化字段
-        evidenceIds: [evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test]
+        evidenceIds: [evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.production-object-execution-status-audit-source, evidence.production-object-execution-status-audit-tests]
     implementationDiscrepancies:
     - id: discrepancy.production-batch-management-audit-snapshot-gap
       status: resolved
@@ -69,13 +69,15 @@ decisions:
       - evidence.production-object-audit-snapshot-controller-test
       - evidence.audit-aspect
     - id: discrepancy.production-object-execution-lifecycle-audit-projection
-      status: open
+      status: resolved
       severity: medium
       visibility: internal
       path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
-      lineHint: 236
-      summary: 'provenance: original-evidence；合法首次START及最终COMPLETE由生产执行服务写PRODUCTION_EXECUTION审计，分别为首条CREATE及后续UPDATE，包含执行状态快照；不另写PRODUCTION_OBJECT UPDATE，批次详情又只查询PRODUCTION_OBJECT。现有对象生命周期UPDATE规范与对象页可见审计尚有投影差异，不能解释为完全无审计。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。'
+      lineHint: 249
+      summary: 'provenance: original-evidence；2026-10-26在c49c0c7f基线上的修复保留PRODUCTION_EXECUTION事件，并在act中比较已持锁对象动作前后status；真实变化时同事务追加一条PRODUCTION_OBJECT UPDATE，前后只保存status。首次开工、最终工序完成和最后必填批次表单提交引发的对象完成使用同一判定，无状态变化不重复写对象事件。主侧原生PG六项新用例在旧代码全红、修复后同组六项全绿；原件在branch-review-20261026-w4-lifecycle，源码及测试证据分列。此处resolved只关闭缺失对象状态事件的实现差异，不认证完整生产审计、浏览器或历史回填；独立质量结果另记。'
       evidenceIds:
       - evidence.production-execution-service-source
       - evidence.production-object-controller
       - evidence.production-object-entity
+      - evidence.production-object-execution-status-audit-source
+      - evidence.production-object-execution-status-audit-tests

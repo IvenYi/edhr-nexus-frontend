@@ -1,0 +1,48 @@
+{
+  "baseCommit": "c49c0c7f98ca5c66eb59eb6876c78af03a07d28b",
+  "candidateCommit": "a970f654a07d3bbf2c803fe812e322d332889603",
+  "testCopiedUnchangedFromCandidate": true,
+  "testSha256": "9f404efaaea4ac70b12880ca4055326fc5acdfe5be4e2eb6bf226d0bc36928e7",
+  "rawXmlSha256": "38e21f33329a89efb49609d2fbb23f9cf1565835fb54a395c976ffff33b971a2",
+  "counts": {
+    "tests": 6,
+    "failures": 6,
+    "errors": 0,
+    "skipped": 0
+  },
+  "cases": [
+    {
+      "name": "lifecycleAuditFailureRollsBackFinalCompletion(String)[1]",
+      "outcome": "failed",
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "name": "lifecycleAuditFailureRollsBackFinalCompletion(String)[2]",
+      "outcome": "failed",
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "name": "lifecycleAuditDoesNotRecordOrdinarySavesAsObjectChanges",
+      "outcome": "failed",
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "name": "lifecycleAuditFailureRollsBackFirstStart(String)[1]",
+      "outcome": "failed",
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "name": "lifecycleAuditFailureRollsBackFirstStart(String)[2]",
+      "outcome": "failed",
+      "failureType": "java.lang.AssertionError"
+    },
+    {
+      "name": "lifecycleAuditRecordsOnlyRealObjectChangesForBatchAndSn",
+      "outcome": "failed",
+      "failureType": "java.lang.AssertionError"
+    }
+  ],
+  "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -q -f gmp-platform/backend/pom.xml -Dtest=ProductionExecutionIntegrationTest#lifecycleAudit* -Dexecution.test.url=jdbc:postgresql://127.0.0.1:55432/edhr_w4_qa_red -Dexecution.test.driver=org.postgresql.Driver -Dexecution.test.user=edhr -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect clean test",
+  "result": "expected-red",
+  "qualification": "Product sources fixed at old base, only unchanged candidate test fixture imported; primary-red test file differs solely by later unrelated existing SUBMIT assertion. Selected six cases unchanged."
+}

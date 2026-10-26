@@ -285,6 +285,16 @@ evidence:
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionObjectControllerTest.java
     description: 生产对象控制器测试覆盖单条拆分 CREATE 的空前快照和完整创建后快照、批量拆分逐对象独立 CREATE 审计，以及取消动作通过共享差异写入逻辑只保存 status 实际变化字段。
     visibility: internal
+  - id: evidence.production-object-execution-status-audit-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+    description: original-evidence；2026-10-26对c49c0c7f基线的修复中，act调用auditObjectStatusChange复用已持锁对象及previousObjectStatus，仅在状态确实变化时追加PRODUCTION_OBJECT UPDATE，前后只含status并记录真实会话操作者及来源；与执行、DHR、对象状态及既有PRODUCTION_EXECUTION事件同事务。不是按START或COMPLETE命令名无条件写入，因此可覆盖表单提交引发最终完成，不把普通SAVE或非最终工序推进当对象状态变化。无新表、查询或历史回填，源码不单独证明运行通过。
+    visibility: internal
+  - id: evidence.production-object-execution-status-audit-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    description: original-evidence；lifecycleAudit系列测试通过真实认证HTTP、生产执行事务与JPA审计仓储核对BATCH/SN首次开工及最终完成状态前后值、无变化不重复、陈旧revision拒绝、既有对象审计API可查询，以及分别在对象审计或执行审计失败时整体回滚并可重试；batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch补充最后必填批次表单SUBMIT的状态审计断言。受控集成上下文保留其既有mock边界，实际原生PG执行结果与独立质量由branch-review-20261026-w4-lifecycle交付记录分别承接，不称完整应用或浏览器验收。
+    visibility: internal
   - id: evidence.production-audit-localized-formatter
     type: code
     path: gmp-platform/frontend/src/utils/productionAudit.ts

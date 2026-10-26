@@ -1,0 +1,21 @@
+{
+  "label": "primary-h2-fixture-green",
+  "counts": {
+    "tests": 7,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "cases": [
+    "lifecycleAuditFailureRollsBackFinalCompletion(String)[1]",
+    "lifecycleAuditFailureRollsBackFinalCompletion(String)[2]",
+    "lifecycleAuditDoesNotRecordOrdinarySavesAsObjectChanges",
+    "lifecycleAuditFailureRollsBackFirstStart(String)[1]",
+    "lifecycleAuditFailureRollsBackFirstStart(String)[2]",
+    "batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch",
+    "lifecycleAuditRecordsOnlyRealObjectChangesForBatchAndSn"
+  ],
+  "rawXmlSha256": "42ae30d66e50dff9fe5be252e1f15a64ee16f331ebca3e38678c68f05c188cc9",
+  "testSourceSha256": "915d0918aa171a6945074fe1598afa27ede5bdd3526285f56b005e635bd75d19",
+  "change": "Only decode JDBC JSON byte[] with ObjectMapper.readTree(bytes), preserve PGobject/string branch and every assertion."
+}

@@ -1,0 +1,111 @@
+{
+  "headCommit": "b880440512bc11610ad4b397848438bff09c4ad7",
+  "targetCommit": "c49c0c7f98ca5c66eb59eb6876c78af03a07d28b",
+  "contractReadCommit": "b880440512bc11610ad4b397848438bff09c4ad7",
+  "knowledgeBaseline": "0.3.25",
+  "changedPaths": [
+    "docs/development/branch-review-20261015/NEXT.md",
+    "docs/development/branch-review-20261026-w4-lifecycle/README.md",
+    "docs/development/branch-review-20261026-w4-lifecycle/decision-package.yaml",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/edhr-w4-qa-h2.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/edhr-w4-qa-inspection.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/edhr-w4-qa-manifest.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/edhr-w4-qa-qualityResult.yaml",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/edhr-w4-qa-red.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/edhr-w4-qa-regression.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/edhr-w4-qa-report-build.py",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/receipt.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/ontology/edhr-w4-ontology-build.py",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/ontology/edhr-w4-ontology-result.yaml",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/ontology/edhr-w4-ontology-review.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/ontology/receipt.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/primary-focused-green.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/primary-h2-fixture-failure.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/primary-h2-fixture-green.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/primary-red.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/primary-regression-recheck.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/evidence/primary-regression.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/findings.md",
+    "docs/development/branch-review-20261026-w4-lifecycle/progress.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/scope-review.md",
+    "docs/development/branch-review-20261026-w4-lifecycle/source-review.json",
+    "docs/development/branch-review-20261026-w4-lifecycle/structure-plan.md",
+    "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+    "docs/knowledge/evidence/production.yaml",
+    "docs/knowledge/rules/production.yaml",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java"
+  ],
+  "protectedPathsDelta": [],
+  "sourceScopeHashesChecked": 14,
+  "receiptFiles": [
+    {
+      "path": "docs/development/branch-review-20261026-w4-lifecycle/evidence/ontology/edhr-w4-ontology-result.yaml",
+      "sha256": "90007f90d6b9e046dd34cf026127586c5fccbd87572faf1a8e09fecf4d619c03",
+      "matchesReceipt": true
+    },
+    {
+      "path": "docs/development/branch-review-20261026-w4-lifecycle/evidence/ontology/edhr-w4-ontology-review.json",
+      "sha256": "9b2aaa3374296f1d6eda31afed816bae33e1c0ba1aafd3f0065b9b2387a4ab31",
+      "matchesReceipt": true
+    },
+    {
+      "path": "docs/development/branch-review-20261026-w4-lifecycle/evidence/ontology/edhr-w4-ontology-build.py",
+      "sha256": "85e0ec69291adbaad3ed6dabbb6d43a651c5703eea894e679f16e17c96bd2cf7",
+      "matchesReceipt": true
+    },
+    {
+      "path": "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/edhr-w4-qa-qualityResult.yaml",
+      "sha256": "46a2f274ee8e2559ba245caf9d8197b70f74dadf8d111462c3d5b4cc10ca882b",
+      "matchesReceipt": true
+    },
+    {
+      "path": "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/edhr-w4-qa-inspection.json",
+      "sha256": "87068905e7ee7f96eb2b63539fda9911a6aa60389b0100cf3a60988a8f2cd60a",
+      "matchesReceipt": true
+    },
+    {
+      "path": "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/edhr-w4-qa-regression.json",
+      "sha256": "ac642ab8f388c78c12f5052c7f28f44444a240f9ed311c3139df528b1d23f5a3",
+      "matchesReceipt": true
+    },
+    {
+      "path": "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/edhr-w4-qa-red.json",
+      "sha256": "0268dacd9f06dae8494b692909079aaa077abb9977b252725fdc22a2f541ba4a",
+      "matchesReceipt": true
+    },
+    {
+      "path": "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/edhr-w4-qa-h2.json",
+      "sha256": "f098eeabdc7f1721086cf37b545b56e84c613b8617b33574af93a2c50eeebe74",
+      "matchesReceipt": true
+    },
+    {
+      "path": "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/edhr-w4-qa-report-build.py",
+      "sha256": "a64253d0fa4bcacea78de8bbc4efd8d8c0131ede7f5165fd8bef1de65d018f4c",
+      "matchesReceipt": true
+    },
+    {
+      "path": "docs/development/branch-review-20261026-w4-lifecycle/evidence/independent-initial/edhr-w4-qa-manifest.json",
+      "sha256": "f322e76b5b8d7d1fcf70935acf3ad91aeb9adbff042256e53a1b54b42bfdaa3a",
+      "matchesReceipt": true
+    }
+  ],
+  "initialQualityResultSha256": "46a2f274ee8e2559ba245caf9d8197b70f74dadf8d111462c3d5b4cc10ca882b",
+  "inspection": [
+    "Product delta only 14 added lines in ProductionExecutionService; helper uses held managed object and before status. No query, schema, interface, permission or business-state transition changes.",
+    "Object event and original execution event share REPEATABLE_READ act transaction; service start/complete join required transaction; no new REQUIRES_NEW or swallowed exception.",
+    "Comparing actual status rather than command name includes last required batch form SUBMIT completion; unchanged status and stale revision do not add object event.",
+    "fd89fa80 changes only test decoding: byte[] read as JSON bytes, other JDBC types preserve string decoding; all assertions retained.",
+    "DEC0019-02/04 and production rule explanations preserve policy, lifecycle UPDATE diff semantics and no historical backfill; only implementation discrepancy closed. Original verified/runtime controller execution contract unchanged.",
+    "H006 source-only unresolved implementation differences remain open; H008 current source pending; performance risks explicitly source-confirmed, not measured N+1 or throughput; proposals not implemented.",
+    "Source14 and ontology15/9 have overlap and no full-file/full-branch percentage claim; original ledgers remain unchanged. Structure proposals specify responsibilities, inputs, tests and rollback.",
+    "No UI change and no browser execution claimed; production integration mocks/ synthetic schema retained and disclosed. Two browser fixtures remain originally conditional.",
+    "Initial independent failed result and safe originals match archived receipts; prior PG old6-red is reused historical evidence, not rerun by this final instance."
+  ],
+  "workingTreeDuringExecution": {
+    "trackedSources": "clean matching candidate",
+    "excludedEnvironmentPaths": [
+      "gmp-platform/frontend/node_modules symlink to existing tool dependency directory"
+    ]
+  }
+}

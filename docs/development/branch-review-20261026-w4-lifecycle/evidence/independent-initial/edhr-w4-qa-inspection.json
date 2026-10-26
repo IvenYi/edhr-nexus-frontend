@@ -1,0 +1,87 @@
+{
+  "baseCommit": "c49c0c7f98ca5c66eb59eb6876c78af03a07d28b",
+  "headCommit": "a970f654a07d3bbf2c803fe812e322d332889603",
+  "testedCandidate": "a970f654a07d3bbf2c803fe812e322d332889603",
+  "workingTreeClean": true,
+  "contractBaseline": {
+    "sourceCommit": "a970f654a07d3bbf2c803fe812e322d332889603",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "c49c0c7f98ca5c66eb59eb6876c78af03a07d28b",
+    "contractReadCommit": "a970f654a07d3bbf2c803fe812e322d332889603",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "scope": "L2 AUD-H007 product fix and W4/W5 finite review delivery; not whole branch acceptance",
+  "checks": [
+    {
+      "scope": "baseline and contracts",
+      "outcome": "passed",
+      "evidence": "Independent fetch still c49c0c7f; candidate descends target; five project/role/handoff contract files byte-identical to target; previous PR28 delivery tree identical to target."
+    },
+    {
+      "scope": "act and auditObjectStatusChange",
+      "outcome": "passed",
+      "evidence": "14 added product lines; previous status taken under order/object locks before engine mutations; helper runs in existing REPEATABLE_READ act transaction after execution flush, before original execution audit; status equal -> no event."
+    },
+    {
+      "scope": "ProductionService.startObject/completeObject",
+      "outcome": "passed",
+      "evidence": "Both join current transaction and operate managed production object; only status is changed as business field on these paths. Work order and DHR updates retain existing orchestration."
+    },
+    {
+      "scope": "metadata and audit query",
+      "outcome": "passed",
+      "evidence": "Object tenant/id/status diff and AuditContext actor/account/source/IP copied; PRODUCTION_EXECUTION unchanged; native-PG tests retrieve new object events through real AuditController. Full global audit authorization and UI rendering not certified."
+    },
+    {
+      "scope": "knowledge consistency",
+      "outcome": "passed",
+      "evidence": "DEC0019-02/04 unchanged; production rule condition/result/status/visibility/executionContractId unchanged; only explanations, discrepancy resolution and evidence added. Old verified execution contract not widened."
+    },
+    {
+      "scope": "finite coverage and original evidence",
+      "outcome": "passed",
+      "evidence": "All 14 source-review commit/blob/SHA values match candidate; all 15 ontology record working-tree file hashes match final candidate; 9 ontology source scopes overlap root. Receipt three original artifact hashes match archives; 3579 baseline paths verified."
+    },
+    {
+      "scope": "H006 residual and performance observations",
+      "outcome": "passed",
+      "evidence": "Source still uses current member for build and locked-version ownership lookup; H006 remains open. Audit list full materialization and splitBatch repeated reads are source-confirmed, not measured SQL/heap/SLA. No performance implementation or hard DHR 300 limit."
+    },
+    {
+      "scope": "structure and boundary",
+      "outcome": "passed",
+      "evidence": "Private audit helper reuses context; split/AuditLogQueryService proposals specify ownership, validation, risks and rollback. No UI/schema/migration/contract changes; TaskDetail and record-control deferrals retained."
+    }
+  ],
+  "sourceScopeCount": 14,
+  "ontologySemanticCount": 15,
+  "ontologySourceCount": 9,
+  "ontologyConclusionCounts": {
+    "consistent": 10,
+    "needs-fix": 5
+  },
+  "unexecuted": [
+    "browser/visual verification",
+    "full production application/complete masterdata repositories",
+    "full schema migration/fresh baseline",
+    "load, memory, latency and concurrency capacity benchmark",
+    "H006 runtime reproduction",
+    "whole W0-W7 coverage"
+  ],
+  "resources": {
+    "container": "219ceeb887856959527d0bbbcc1f0588724fb9b6fb399b01ca2d093ec3208358",
+    "ownedQaDatabases": [
+      "edhr_w4_qa_test",
+      "edhr_w4_qa_red"
+    ],
+    "qaDatabasesDropped": true,
+    "containerCleanupOwner": "root",
+    "candidateWorktree": "/tmp/edhr-w4-qa-source",
+    "legacyWorktree": "/tmp/edhr-w4-qa-red-source",
+    "nodeModulesSymlinksRemoved": true,
+    "productFilesModifiedByQa": false,
+    "testFixesByQa": false,
+    "legacyFixture": "unchanged candidate test imported onto old product in isolated worktree only"
+  }
+}

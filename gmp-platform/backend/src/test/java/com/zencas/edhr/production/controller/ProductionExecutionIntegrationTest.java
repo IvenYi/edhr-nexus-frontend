@@ -184,6 +184,90 @@ class ProductionExecutionIntegrationTest {
         jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity,good_quantity,ng_quantity,scrap_quantity,status,created_at,updated_at) VALUES(101,'default',100,'B01','BATCH',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),(102,'default',100,'SN01','SN',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
     }
 
+    @Test void lifecycleAuditRecordsOnlyRealObjectChangesForBatchAndSn() throws Exception {
+        jdbc.update("DELETE FROM product_process_operation_form_binding");
+        for (long id : List.of(101L, 102L)) {
+            action(id, "START", 0, "a", Map.of()).andExpect(status().isOk());
+            assertObjectStatusAudits(id, List.of("CREATED"), List.of("IN_PROGRESS"));
+            action(id, "START", 0, "a", Map.of()).andExpect(status().isBadRequest());
+            action(id, "COMPLETE", 1, "a", Map.of()).andExpect(status().isOk());
+            action(id, "START", 2, "b", Map.of()).andExpect(status().isOk());
+            assertObjectStatusAudits(id, List.of("CREATED"), List.of("IN_PROGRESS"));
+            action(id, "COMPLETE", 3, "b", Map.of()).andExpect(status().isOk());
+            assertObjectStatusAudits(id, List.of("CREATED", "IN_PROGRESS"), List.of("IN_PROGRESS", "COMPLETED"));
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE entity_type='PRODUCTION_EXECUTION' AND entity_id=?", Integer.class, String.valueOf(id))).isEqualTo(4);
+            mvc.perform(auth(get("/api/v1/audit/logs").param("entityType", "PRODUCTION_OBJECT").param("entityId", String.valueOf(id))))
+                    .andExpect(status().isOk()).andExpect(jsonPath("$.data.totalElements").value(2))
+                    .andExpect(jsonPath("$.data.content[0].action").value("UPDATE"));
+        }
+    }
+
+    @Test void lifecycleAuditDoesNotRecordOrdinarySavesAsObjectChanges() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 20))).andExpect(status().isOk());
+        action(101, "SAVE", 2, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 21))).andExpect(status().isOk());
+        assertObjectStatusAudits(101, List.of("CREATED"), List.of("IN_PROGRESS"));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event WHERE entity_type='PRODUCTION_EXECUTION' AND entity_id='101'", Integer.class)).isEqualTo(3);
+    }
+
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings = {"PRODUCTION_OBJECT", "PRODUCTION_EXECUTION"})
+    void lifecycleAuditFailureRollsBackFirstStart(String failedType) throws Exception {
+        doThrow(new IllegalStateException("synthetic audit failure")).when(audits).save(argThat(event -> event != null && failedType.equals(event.getEntityType())));
+        try {
+            action(101, "START", 0, "a", Map.of()).andExpect(status().is5xxServerError());
+        } finally { reset(audits); }
+        assertThat(jdbc.queryForObject("SELECT status FROM production_object WHERE id=101", String.class)).isEqualTo("CREATED");
+        assertThat(jdbc.queryForObject("SELECT status FROM work_order WHERE id=100", String.class)).isEqualTo("CREATED");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM production_execution", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_instance", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isZero();
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        assertObjectStatusAudits(101, List.of("CREATED"), List.of("IN_PROGRESS"));
+    }
+
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(strings = {"PRODUCTION_OBJECT", "PRODUCTION_EXECUTION"})
+    void lifecycleAuditFailureRollsBackFinalCompletion(String failedType) throws Exception {
+        jdbc.update("DELETE FROM product_process_operation_form_binding");
+        jdbc.update("DELETE FROM production_object WHERE id=102");
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "COMPLETE", 1, "a", Map.of()).andExpect(status().isOk());
+        action(101, "START", 2, "b", Map.of()).andExpect(status().isOk());
+        String state = jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class);
+        int auditCount = jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class);
+        doThrow(new IllegalStateException("synthetic audit failure")).when(audits).save(argThat(event -> event != null && failedType.equals(event.getEntityType())));
+        try {
+            action(101, "COMPLETE", 3, "b", Map.of()).andExpect(status().is5xxServerError());
+        } finally { reset(audits); }
+        assertThat(jdbc.queryForObject("SELECT status FROM production_object WHERE id=101", String.class)).isEqualTo("IN_PROGRESS");
+        assertThat(jdbc.queryForObject("SELECT status FROM work_order WHERE id=100", String.class)).isEqualTo("IN_PROCESS");
+        assertThat(jdbc.queryForObject("SELECT status FROM dhr_instance WHERE production_object_id=101", String.class)).isEqualTo("IN_PROGRESS");
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(state);
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(3L);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isEqualTo(auditCount);
+        action(101, "COMPLETE", 3, "b", Map.of()).andExpect(status().isOk());
+        assertObjectStatusAudits(101, List.of("CREATED", "IN_PROGRESS"), List.of("IN_PROGRESS", "COMPLETED"));
+        assertThat(jdbc.queryForObject("SELECT status FROM work_order WHERE id=100", String.class)).isEqualTo("COMPLETED");
+    }
+
+    private void assertObjectStatusAudits(long id, List<String> before, List<String> after) throws Exception {
+        var events = jdbc.queryForList("SELECT * FROM audit_event WHERE entity_type='PRODUCTION_OBJECT' AND entity_id=? ORDER BY id", String.valueOf(id));
+        assertThat(events).hasSize(before.size());
+        for (int index = 0; index < events.size(); index++) {
+            var event = events.get(index);
+            assertThat(auditJson(event.get("content_before"))).isEqualTo(mapper.createObjectNode().put("status", before.get(index)));
+            assertThat(auditJson(event.get("content_after"))).isEqualTo(mapper.createObjectNode().put("status", after.get(index)));
+            assertThat(event).containsEntry("action", "UPDATE").containsEntry("tenant_id", "default")
+                    .containsEntry("operator_id", "1").containsEntry("operator_account", "operator");
+            assertThat(event.get("created_at")).isNotNull();
+        }
+    }
+
+    private JsonNode auditJson(Object value) throws Exception {
+        return value instanceof byte[] bytes ? mapper.readTree(bytes) : mapper.readTree(value.toString());
+    }
+
     private String retiredTraceModel(String id) {
         var model = mapper.createObjectNode();
         model.putArray("fields").addObject().put("id", "value").put("name", "历史字段").put("type", "text").put("status", "enabled");
@@ -1321,6 +1405,7 @@ class ProductionExecutionIntegrationTest {
                 .andExpect(jsonPath("$.data.recordCompleteness").value("COMPLETE"));
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM form_instance_record WHERE form_id=?", Integer.class, form)).isEqualTo(1);
         assertThat(jdbc.queryForObject("SELECT operation_name FROM form_instance_record WHERE form_id=?", String.class, form)).isEqualTo("批次补充记录");
+        assertObjectStatusAudits(101, List.of("CREATED", "IN_PROGRESS"), List.of("IN_PROGRESS", "COMPLETED"));
     }
 
     @Test void optionalCustomFormCanBeFinishedAfterProductionWithReasonAndFrozenDhrProtection() throws Exception {
@@ -2043,7 +2128,8 @@ class ProductionExecutionIntegrationTest {
     @EnableAutoConfiguration(exclude = JpaRepositoriesAutoConfiguration.class)
     @Import({DhrFillingController.class, DhrFillingService.class, FormWorklistController.class, FormWorklistService.class, FormInstanceQueryController.class, FormInstanceQueryService.class, FormInstanceRecordController.class, FormInstanceRecordService.class, FormProjectionService.class, DhrInstanceController.class, DhrInstanceService.class, ProductionExecutionController.class, ProductionExecutionService.class, ProductionExecutionEngine.class, ExecutionSnapshotBuilder.class, ExecutionPresenceRegistry.class,
         ProductionService.class, ExecutionAccess.class, SubjectResolver.class, FileController.class, GlobalExceptionHandler.class, SecurityConfig.class, JwtAuthenticationFilter.class,
-        com.zencas.edhr.template.controller.FormReferenceController.class, com.zencas.edhr.template.service.FormReferenceLookup.class})
+        com.zencas.edhr.template.controller.FormReferenceController.class, com.zencas.edhr.template.service.FormReferenceLookup.class,
+        com.zencas.edhr.compliance.controller.AuditController.class})
     static class Config {
         @Bean
         @org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(name = "form.records.browser", havingValue = "true")

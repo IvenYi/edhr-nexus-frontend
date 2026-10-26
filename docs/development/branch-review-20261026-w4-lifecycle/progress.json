@@ -1,0 +1,24 @@
+{
+  "baseCommit": "c49c0c7f98ca5c66eb59eb6876c78af03a07d28b",
+  "coreCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac",
+  "level": "L2",
+  "baseline": {"pr28": "merged", "treeEqualsPreviousDelivery": "744e804b5404141db9775958ea507e1c1fc9c4b5", "targetTrackedPaths": 3579, "meaning": "路径盘点，非源码审查分母；旧冻结总账未改写"},
+  "sourceScopes": 14,
+  "ontologySemanticScopes": 15,
+  "ontologySourceScopes": 9,
+  "overlapQualification": "范围交叉，不累计为唯一文件或完成率；语义中H006五项needs-fix",
+  "findings": [
+    {"id": "AUD-H007", "state": "implemented-awaiting-independent-verification", "coreCommit": "3281863b0974dc1e4e7b4c343ca9d42a7a4103ac"},
+    {"id": "AUD-H006", "state": "source-confirmed-open", "runtimeExecuted": false},
+    {"id": "AUD-H008", "state": "pending-current-source-review", "runtimeExecuted": false},
+    {"id": "PERF-AUDIT-LIST-MATERIALIZATION-001", "state": "source-confirmed-pending-discussion", "runtimeExecuted": false},
+    {"id": "PERF-PRODUCTION-SPLIT-REPEATED-SCAN-001", "state": "source-confirmed-pending-discussion", "runtimeExecuted": false}
+  ],
+  "verification": {"primaryRed": {"tests": 6, "failures": 6, "errors": 0, "skipped": 0}, "primaryGreen": {"tests": 6, "failures": 0, "errors": 0, "skipped": 0}, "regression": {"tests": 121, "passed": 119, "skipped": 2, "failures": 0, "errors": 0}, "ontology": "updated-FINAL", "independentQuality": "pending-clean-candidate"},
+  "qualification": "冻结候选准备时点，最终质量/交付以acceptance overlay为准；不将主侧运行称为独立",
+  "remaining": ["H006跨时点最小设计和验证", "H008最新模板核对", "W2/W3消费差异和剩余入口", "W4主数据删除保护与产出质量", "W5日志/批量/后台/资源/安全容量", "W6选择性提取", "W7覆盖反查与集成验收"],
+  "userDeferred": ["TaskDetail及未生效签名密码", "记录变更作废及其DHR high/A12"],
+  "unchangedOpen": ["四知识gap", "AuditEvent旧hash往返", "历史签名证据限制", "此前未批准性能方案"],
+  "automaticallyMerged": false,
+  "deployed": false
+}
