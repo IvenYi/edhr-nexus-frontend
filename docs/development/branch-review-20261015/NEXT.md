@@ -1,5 +1,7 @@
 # 持续推进台账
 
+已交付[PR25](https://github.com/IvenYi/edhr-nexus-frontend/pull/25)，本批为审查范围补齐与首批容量审计报告，未改产品；实际独立受测1081c4d8、9/9必需检查passed，后续仅L0档案/导航/澄清/交付。每次继续先fetch最新edhr-dev并读[审查契约](../branch-review-20261026-capacity-audit/audit-charter.md)和[risk-register](../branch-review-20261026-capacity-audit/risk-register.yaml)，按22维度/增长模型/入口矩阵持续增量；不能将报告merge或用户说继续当作性能方案实施批准。四性能风险pending-discussion，TaskDetail及原记录控制相关暂缓保持，无依赖领域继续审查，不自动合并/部署/恢复。
+
 2026-10-26后续范围补齐与实际容量审查：[详细审计契约](../branch-review-20261026-capacity-audit/audit-charter.md)、[增长模型](../branch-review-20261026-capacity-audit/data-growth-model.yaml)、[入口矩阵](../branch-review-20261026-capacity-audit/entry-matrix.yaml)。用户要求审计覆盖不止bug/举例，性能先分析潜在规模并提出讨论不直接改；22维度已落盘，活跃检查点fetch/影响分类/历史承接/候选重验写明。产品基线仍5259791f，本批无产品/知识/schema/UI修改。首批实际任务队列、DHR和引用读取证据见[风险汇总](../branch-review-20261026-capacity-audit/findings.md)：工作流合法PG8项观测证明小页全量实体加载（非该路径N+1），两DHR比较和执行引用重型view为静态风险，四项pending-discussion；DHR列表/引用候选已有数据库分页的反证保留。正式本体六条DEC0082有限核对无冲突、NA/FINAL；辅助全部FINAL，独立最终质量待干净候选，不冒称全仓或性能已通过。
 
 最终独立质量已对干净1081c4d8正式passed/FINAL，9/9必需检查、PG8/知识89、原件82范围/6语义/ledger复现通过；所有角色FINAL后已实际完成PR前范围复核。固定98e87430总账3458路径/2618ID、656范围/114语义/57记录，252源码/101语义或依赖待增量及四gap保持。自建PG已按exactID清理；当前仅L0归档/验收/风险直接路径导航/命名澄清/PR登记，产品和冻结catalog/ledger不变。四性能风险仍pending-discussion，参见[risk-register](../branch-review-20261026-capacity-audit/risk-register.yaml)；本批qualitypassed不是性能修复或容量认证，不能因继续/merge默认实施方案。按charter继续最新路线/初始化增量和其他无依赖入口，TaskDetail等用户暂缓保持。
