@@ -246,6 +246,7 @@ public class ProductionExecutionService {
         execution.setSnapshotJson(snapshot.toString()); execution.setStateJson(state.toString());
         execution.setRevision(execution.getRevision() + 1); execution.setUpdatedAt(LocalDateTime.now());
         executions.saveAndFlush(execution);
+        auditObjectStatusChange(object, previousObjectStatus, command.reason());
         ObjectNode auditBefore = mapper.createObjectNode().put("objectStatus", previousObjectStatus); auditBefore.set("execution", before);
         ObjectNode auditAfter = mapper.createObjectNode().put("objectStatus", object.getStatus()); auditAfter.set("execution", state);
         if (snapshotBefore != null) { auditBefore.set("snapshot", snapshotBefore); auditAfter.set("snapshot", snapshot); }
@@ -259,6 +260,19 @@ public class ProductionExecutionService {
         ObjectNode result = view(object, order, execution);
         if (attachedFormId != null) result.put("attachedFormId", attachedFormId);
         return result;
+    }
+
+    private void auditObjectStatusChange(ProductionObject object, String previousStatus, String reason) {
+        if (java.util.Objects.equals(previousStatus, object.getStatus())) return;
+        audits.save(AuditEvent.builder().id(ids.nextId()).tenantId(object.getTenantId())
+                .entityType("PRODUCTION_OBJECT").entityId(object.getId().toString()).action("UPDATE")
+                .contentBefore(mapper.createObjectNode().put("status", previousStatus).toString())
+                .contentAfter(mapper.createObjectNode().put("status", object.getStatus()).toString())
+                .operatorId(AuditContext.getOperatorId()).operatorName(AuditContext.getOperatorName())
+                .operatorAccount(AuditContext.getOperatorAccount()).source(AuditContext.getSource())
+                .moduleName("生产").menuName("生产执行").functionName("生产对象状态变更")
+                .reason(reason == null ? null : reason.strip()).dataSummary(object.getObjectNo())
+                .ipAddress(AuditContext.getIpAddress()).createdAt(LocalDateTime.now()).build());
     }
 
     ObjectNode view(ProductionObject object, WorkOrder order, ProductionExecution execution) {
