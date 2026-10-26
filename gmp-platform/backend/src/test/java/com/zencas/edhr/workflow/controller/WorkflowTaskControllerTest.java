@@ -26,10 +26,10 @@ class WorkflowTaskControllerTest {
     void todoUsesAuthenticatedOperatorAndOneDatabaseLookup() {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("user-a", null, List.of()));
         WorkflowTask task = WorkflowTask.builder().id(1L).status("PENDING").build();
-        when(workflowTaskRepository.findTodoForUser("user-a", "[\"user-a\"]")).thenReturn(List.of(task));
+        when(workflowTaskRepository.findTodoForUser("user-a", "[\"user-a\"]", 50, 0L)).thenReturn(List.of(task));
         var response = controller.todo("user-b", 1, 50);
         assertThat(response.getData()).containsExactly(task);
-        verify(workflowTaskRepository).findTodoForUser("user-a", "[\"user-a\"]");
+        verify(workflowTaskRepository).findTodoForUser("user-a", "[\"user-a\"]", 50, 0L);
         verifyNoMoreInteractions(workflowTaskRepository);
     }
 
@@ -37,9 +37,9 @@ class WorkflowTaskControllerTest {
     void doneUsesAuthenticatedOperatorInsteadOfRequestParameter() {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("user-a", null, List.of()));
         WorkflowTask task = WorkflowTask.builder().id(1L).status("COMPLETED").assigneeId("user-a").build();
-        when(workflowTaskRepository.findDoneForUser("user-a")).thenReturn(List.of(task));
+        when(workflowTaskRepository.findDoneForUser("user-a", 50, 0L)).thenReturn(List.of(task));
         var response = controller.done("user-b", 1, 50);
         assertThat(response.getData()).containsExactly(task);
-        verify(workflowTaskRepository).findDoneForUser("user-a");
+        verify(workflowTaskRepository).findDoneForUser("user-a", 50, 0L);
     }
 }
