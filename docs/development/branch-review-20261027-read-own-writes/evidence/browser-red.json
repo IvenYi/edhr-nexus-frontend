@@ -1,0 +1,18 @@
+{
+  "baseline": null,
+  "boundary": "real components, CanvasTab and Zustand in Chromium; fixture document, no backend writes",
+  "results": [
+    {
+      "name": "workflow",
+      "result": "failed",
+      "message": "decorative workflow previews must not advertise a button action\n\n2 !== 0\n",
+      "pageErrors": []
+    },
+    {
+      "name": "designer",
+      "result": "failed",
+      "message": "Expected values to be strictly equal:\n\n'BUTTON' !== 'SPAN'\n",
+      "pageErrors": []
+    }
+  ]
+}

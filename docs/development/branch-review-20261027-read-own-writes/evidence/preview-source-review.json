@@ -1,0 +1,77 @@
+{
+  "role": "read-only-source-review-helper",
+  "formalQualityResult": false,
+  "baseline": "26796235085b9759295f3dfff8e078ded3cd5ed8",
+  "scope": "Two decorative preview sites; directly necessary MUI Button/ButtonBase, sidebar pointer handlers, store setup and existing browser harness entry points only",
+  "executed": [
+    "Read source and MUI installed implementation",
+    "Read existing browser harness and store/canvas setup"
+  ],
+  "notExecuted": [
+    "Browser",
+    "Maven",
+    "Build",
+    "Screen reader",
+    "Any source/test mutation"
+  ],
+  "findings": [
+    {
+      "id": "ui.preview-enabled-button-semantics.workflow-action",
+      "path": "gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx",
+      "locator": "WorkflowActionConfig visibleButtons map around line126",
+      "actual": "Decorative user-operation preview renders enabled MUI Button with pointerEvents:none, default native button and tabIndex0, no action handler. Text/variant/color derive actual config; real editing controls below use onChange and must remain interactive.",
+      "severity": "low",
+      "depth": "source-inspected; no runtime verification"
+    },
+    {
+      "id": "ui.preview-enabled-button-semantics.sidebar-pointer-ghost",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx",
+      "locator": "pointerDrag.active preview around line387",
+      "actual": "Active pointer-drag ghost renders enabled MUI Button with pointerEvents:none, default native button/tabIndex0. Real field card and document pointermove/up handlers own dragging; those must remain unchanged.",
+      "severity": "low",
+      "depth": "source-inspected; no runtime verification"
+    }
+  ],
+  "minimalCandidateAssessment": {
+    "candidate": "Button component=\"span\" role=\"presentation\" tabIndex={-1}",
+    "supportedBySource": true,
+    "muiSources": [
+      "gmp-platform/frontend/node_modules/@mui/material/Button/Button.js:234-280",
+      "gmp-platform/frontend/node_modules/@mui/material/ButtonBase/ButtonBase.js:97-121",
+      "gmp-platform/frontend/node_modules/@mui/material/ButtonBase/ButtonBase.js:253-309"
+    ],
+    "propOrder": "Button forwards component and other props to ButtonBase. ButtonBase assigns non-native role=button into buttonProps, then spreads other after buttonProps; explicit presentation role overrides it. tabIndex=-1 is forwarded as disabled ? -1 : tabIndex.",
+    "style": "Variant/color/size and sx remain in Button ownerState and styling classes. Component substitution changes DOM tag without setting disabled, preserving configured visual preview and text.",
+    "accessibilityScope": "Removes native button and exposed button role and ordinary sequential Tab stop. It is not an absolute inert guarantee: tabindex=-1 elements can still receive intentional programmatic focus.",
+    "avoid": [
+      "Only component=span still receives role=button by ButtonBase",
+      "disabled changes preview to disabled visual colors",
+      "aria-hidden alone would not remove tab stop",
+      "Do not change actual editing controls or actual field cards"
+    ]
+  },
+  "adjacentCautions": [
+    {
+      "path": "DesignerSidebar.tsx#handleFieldDragStart",
+      "observation": "Legacy clone-based drag preview helper exists but has no call site in this component; current visible cards use draggable=false and onPointerDown. Do not expand this fix into dead-code cleanup."
+    },
+    {
+      "path": "DesignerSidebar.tsx#real-field-card",
+      "observation": "Real card currently has onPointerDown only, not onClick/onKeyDown; cannot claim Enter/Space inserts a field from this source review. Broader non-drag alternative needs separate audit; this patch should test pointer drag remains usable."
+    }
+  ],
+  "recommendedBrowserHarness": {
+    "workflow": "Mount real WorkflowActionConfig in a small React state wrapper under real MUI ThemeProvider. kind=START, editable=true, initial defaultWorkflowButtons. Count/store actual onChange patches; update display name and style using real TextField/Select controls and verify preview updates. Scope preview via nearby user-operation-preview label or dedicated nonsemantic test marker.",
+    "sidebar": "Mount real CanvasTab (tabs/canvas/CanvasTab.tsx) with real Zustand store, QueryClientProvider, SnackbarProvider, ThemeProvider. Seed real createEmptyTemplateDesignerDocument via store.setDocument, store.addField(text,label), store.setActiveCanvasRail(fields). This includes actual DesignerSidebar and CanvasSheetWorkspace drop listener, rather than a fake drop implementation.",
+    "ghost": "Use real mouse pointer down on data-canvas-field-card, move at least4px while held, inspect data-canvas-field-drag-preview=true. Baseline should show BUTTON/tabIndex0; candidate SPAN/presentation/-1 with same label and CSS. Then move to actual data-sheet-cell-row/data-sheet-cell-col target and release; assert real store document contains field binding and source card availability reflects placement.",
+    "minimumAssertions": [
+      "Baseline preview produces real native focusable button",
+      "Candidate preview has span/presentation/-1, visible text/style preserved and no ordinary tab stop",
+      "Workflow display-name/style onChange still occurs",
+      "Pointer ghost appears, moves and disappears on drop/cancel",
+      "Actual pointer drop produces expected field binding without replacing component logic"
+    ],
+    "existingReference": "gmp-platform/frontend/scripts/test-designer-save-browser.mjs demonstrates real Shell/CanvasTab/Zustand/MUI harness and store.addField seeding; use actual script patterns without pretending fixture API is backend persistence."
+  },
+  "repoMutations": []
+}

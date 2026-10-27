@@ -1,0 +1,34 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 26796235085b9759295f3dfff8e078ded3cd5ed8
+    targetBranch: edhr-dev
+    targetCommit: 26796235085b9759295f3dfff8e078ded3cd5ed8
+    contractReadCommit: 26796235085b9759295f3dfff8e078ded3cd5ed8
+    uncommittedContractPaths: []
+  reason: 本批审前8条有限来源/当前适用性/合理性核对无政策冲突。POST/GET对同一新对象的产出元数据一致属于既有实现解释的一致性；同事务flush若用于JDBC读到自身新增对象，不改变产出口径、事务提交、审计或生命周期规则。无需改知识、政策或成熟度；实际缺陷与修复须由主侧及独立运行验收确认。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.bounded-source-and-provenance
+    checkType: evidence-path
+    command: Read current DEC-0078, DEC-0014, production rules and final-output evidence;
+      verify 8 IDs and inspect controller/service/source paths
+    outcome: passed
+    evidence:
+    - /tmp/edhr-own-writes-rule-review.json
+    - 8 referenced IDs exist; current user-confirmed and engineering interpretation
+      separated
+    - No Maven, PostgreSQL or browser validation executed by this role
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

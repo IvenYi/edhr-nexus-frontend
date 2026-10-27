@@ -221,6 +221,45 @@ class BatchProcessIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT count(*) FROM product_process_version WHERE id=?",Integer.class,b+2)).isEqualTo(1);
     }
 
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.CsvSource({"BATCH,false", "BATCH,true", "SN,false", "SN,true"})
+    void creationOutputMatchesSubsequentReadForSingleAndBulk(String form, boolean bulk) throws Exception {
+        long version = "SN".equals(form) ? b+4 : b+2;
+        String path = "/api/v1/production/work-orders/"+order+"/objects";
+        JsonNode created = ok(post(path+(bulk ? "/batch" : "")), bulk
+                ? Map.of("items",List.of(batchBody(version,"1"),batchBody(version,"1"),batchBody(version,"1")))
+                : batchBody(version,"1"));
+        List<JsonNode> responses = new ArrayList<>();
+        if (bulk) created.forEach(responses::add); else responses.add(created);
+        JsonNode saved = ok(get(path),Map.of());
+        assertThat(saved).hasSize(bulk ? 3 : 1);
+        for (JsonNode response : responses) {
+            JsonNode persisted = java.util.stream.StreamSupport.stream(saved.spliterator(),false)
+                    .filter(item -> item.path("id").equals(response.path("id"))).findFirst().orElseThrow();
+            assertThat(response.path("output")).as("POST must describe the same newly created object as GET")
+                    .isEqualTo(persisted.path("output"));
+            assertThat(response.path("output").path("status").asText())
+                    .isEqualTo("SN".equals(form) ? "UNSUPPORTED" : "NOT_STARTED");
+            assertThat(response.path("output").hasNonNull("quantity")).isFalse();
+        }
+    }
+
+    @org.junit.jupiter.params.ParameterizedTest
+    @org.junit.jupiter.params.provider.ValueSource(booleans = {false,true})
+    void creationAuditFailureRollsBackBeforeResponseIsPublished(boolean bulk) throws Exception {
+        String function = bulk ? "批量添加生产对象" : "拆分生产对象";
+        doThrow(new IllegalStateException("creation audit unavailable")).when(audits)
+                .save(argThat(event -> event != null && function.equals(event.getFunctionName())));
+        try {
+            assertThat(send(post("/api/v1/production/work-orders/"+order+"/objects"+(bulk ? "/batch" : "")),
+                    bulk ? Map.of("items",List.of(batchBody(b+2,"1"),batchBody(b+2,"1"))) : batchBody(b+2,"1")))
+                    .isEqualTo(500);
+        } finally { reset(audits); }
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM production_object WHERE work_order_id=?",Integer.class,Long.valueOf(order))).isZero();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM audit_event WHERE entity_type='PRODUCTION_OBJECT' AND content_after::jsonb->>'workOrderId'=?",Integer.class,order)).isZero();
+        assertThat(ok(get("/api/v1/production/work-orders/"+order),Map.of()).path("allocatedQuantity").decimalValue()).isEqualByComparingTo("0");
+    }
+
     @Test void outOfRangeWorkOrderPagesReturnEmptyInsteadOfOverflowing() throws Exception {
         for (int[] paging : List.of(new int[]{Integer.MAX_VALUE,20}, new int[]{2,Integer.MAX_VALUE}, new int[]{Integer.MAX_VALUE,Integer.MAX_VALUE})) {
             JsonNode page = ok(get("/api/v1/production/work-orders").param("keyword","WO-"+b)

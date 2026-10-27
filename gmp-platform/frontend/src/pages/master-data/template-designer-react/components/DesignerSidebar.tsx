@@ -386,6 +386,9 @@ export default function DesignerSidebar() {
       {pointerDrag?.active && pointerDragField ? (
         <Button
           data-canvas-field-drag-preview="true"
+          component="span"
+          role="presentation"
+          tabIndex={-1}
           variant="text"
           sx={{
             position: 'fixed',
