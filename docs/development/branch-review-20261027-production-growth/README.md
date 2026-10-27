@@ -2,6 +2,14 @@
 
 本轮L2审计基线 `edhr-dev@33f033383ae165d10d0006395dd17e5f0df89136`。PR30已人工合入，树与18bf0f39一致，无额外产品或契约增量；新分支 `audit/edhr-dev-production-growth-20261027`。旧冻结清单及原件保持，本批只补有限范围；整体审计仍未完成。
 
+## 正式验收
+
+全新独立实例对干净候选 `54daa6d7cef654a272a9821a767a1323babd4125` 正式 **passed/FINAL，13/13**。真实新PG库44/44通过、知识89/89通过，均零失败/错误/跳过；浏览器候选3/3，基线SN两例红/BATCH对照绿独立重现，TypeScript及生产构建通过。13条有限语义无阻断，六组查询观察独立重现。本体updated/FINAL。两项本批功能缺陷据此关闭，性能风险仍待讨论。
+
+原件：[quality-result](evidence/quality-result.yaml)、[独立说明](evidence/quality-review.md)、[独立安全证据](evidence/independent-evidence.json)。原件中的/tmp文件与本目录同名档案映射，归档保持原字节。候选之后仅L0验收原件、范围与PR登记，产品、测试、知识内容保持；没有把归档提交称为重新受测。精确ID自建PG已停止并自动移除，用户业务库未连接。
+
+strict仍有既存27项及lint缺配置；独立390px截图复现基线已有弹窗横向裁切，功能路径通过不代表完整窄屏合规。下一步及防漂移复核见[scope-review](scope-review.md)，原暂缓不自动恢复。
+
 ## 两项确定整改
 
 - `W4-WORKORDER-PAGINATION-OVERFLOW-001`：合法int范围的极大page/size使int偏移溢出，真实JWT/MockMvc/PG请求返回500（fromIndex=-40）。仅将from/to计算改long后夹到实际结果数，保留原非正参数clamp、过滤、排序及响应，不借此实施数据库分页或页长政策。新增用例覆盖三组极值及0参数原语义。
@@ -45,4 +53,4 @@
 
 前端构建通过（包含TypeScript）。官方premium严格扫描基线/候选均27项（13 unresolved/14 violations），完整finding多重集合无新增或移除，均exit2；不是全站严格通过。扫描目标为frontend/src，不将不同历史范围的84项当本批分母。既有问题与无ESLint配置限制保留，未为本次修复扩大重构范围。
 
-正式本体/独立质量结果在收尾归档。未取得结果前不宣称本批签收。TaskDetail签名、记录控制变更/作废关联DHR high/A12、DHR分块及知识gap保持原暂缓；不自动合并、部署或恢复历史数据。
+前述主侧执行记录保留其原时点，正式本体/独立结果见顶部验收。TaskDetail签名、记录控制变更/作废关联DHR high/A12、DHR分块及知识gap保持原暂缓；不自动合并、部署或恢复历史数据。

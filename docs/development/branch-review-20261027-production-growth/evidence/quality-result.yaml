@@ -1,0 +1,193 @@
+qualityResult:
+  result: passed
+  baseCommit: 33f033383ae165d10d0006395dd17e5f0df89136
+  headCommit: 54daa6d7cef654a272a9821a767a1323babd4125
+  contractBaseline:
+    sourceCommit: 54daa6d7cef654a272a9821a767a1323babd4125
+    targetBranch: edhr-dev
+    targetCommit: 33f033383ae165d10d0006395dd17e5f0df89136
+    contractReadCommit: 54daa6d7cef654a272a9821a767a1323babd4125
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.baseline-contract
+    required: true
+    category: documentation
+    description: 独立确认契约、来源目标与干净受测候选
+    method: command
+    command: git rev-parse HEAD; git status --short; git ls-remote origin refs/heads/edhr-dev;
+      read AGENTS and quality/handoff contracts
+    outcome: passed
+    evidence:
+    - base=33f033383ae165d10d0006395dd17e5f0df89136; head=tested=54daa6d7cef654a272a9821a767a1323babd4125;
+      clean
+    - 目标仍33f03338，契约无变化
+  - id: check.minimal-product-diff
+    required: true
+    category: requirements
+    description: 核对分页边界及H008最小范围，无性能实现或政策变化
+    method: inspection
+    command: git diff base..HEAD; inspect WorkOrderController and WorkOrderPage
+    outcome: passed
+    evidence:
+    - 后端仅两行long有界偏移，保留非正参数clamp与过滤/响应
+    - SN仅headers/example/A3三处；BATCH及历史备注解析保留
+  - id: check.backend-focused-pg
+    required: true
+    category: integration
+    description: 在全新隔离PostgreSQL库复跑4套目标测试
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=BatchProcessIntegrationTest,WorkOrderControllerTest,ProductionServiceTest,ProductionObjectControllerTest
+      -Dproduction.growth.observe=true -Dbatch.test.url=jdbc:postgresql://127.0.0.1:55432/edhr_batch_process_growth_independent
+      -Dbatch.test.user=postgres test
+    outcome: passed
+    evidence:
+    - 44/44通过，零失败/错误/跳过；Batch15+Object4+Order3+Service22
+    - 全新Liquibase基线、真实HTTP/JWT/JPA/JDBC及pg_stat_statements；实际数据库记录核验
+  - id: check.paging-contract
+    required: true
+    category: api
+    description: 极端参数不溢出且原0参数语义保留
+    method: inspection
+    command: Read outOfRangeWorkOrderPagesReturnEmptyInsteadOfOverflowing and execute
+      PG suite
+    outcome: passed
+    evidence:
+    - 三组MAX参数均200/空列表且总数和page/size保持；0参数仍归一为1
+    - 主侧旧代码真实fromIndex=-40失败原件保留；独立核对旧int与新long计算，不声称本次独立运行旧后端
+  - id: check.growth-evidence
+    required: true
+    category: database
+    description: 独立量化查询调用与结果行，核实增长公式及边界
+    method: query
+    command: Execute production.growth.observe=true; inspect pg_stat_statements classifier
+    outcome: passed
+    evidence:
+    - 全部工单26/66/116返回5条，选定族105/265/465调用独立重现
+    - 追加SN10/50/100，对象读取40/200/400次、90/2450/9900结果行独立重现
+    - 计数来自真实数据库；不是物理扫描/总SQL/SLA；两测量用例显式启用且本轮实跑
+  - id: check.batch-atomic-audit
+    required: true
+    category: audit
+    description: 保留批量成功对象/审计数量和失败整批回滚
+    method: automated-test
+    command: Execute bulkSplitObservesRepeatedReadsAndKeepsAtomicFailure
+    outcome: passed
+    evidence:
+    - 10/50/100对象数和CREATE审计数精确相等
+    - 重复编号批次返回400，目标工单对象及对象CREATE审计均0；未改事务或校验
+  - id: check.browser-current
+    required: true
+    category: e2e
+    description: 真实Chromium下载/导入与旧备注兼容
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium W4_BROWSER_ARTIFACTS=/tmp/edhr-growth-independent-browser
+      node scripts/test-work-order-template-browser.mjs
+    outcome: passed
+    evidence:
+    - SN1440/BATCH1440/SN390三组通过
+    - 键盘下载并解析真实XLSX列、示例、帮助；重复编号、SN数量、日期/额度拒绝；旧备注CSV导入且提交payload保留
+    - HTTP夹具，不能外推后台持久化；没有完整响应式合规声明
+  - id: check.browser-baseline-red
+    required: true
+    category: regression
+    description: 独立对原基线复现SN多列并保留BATCH对照
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium W4_BASELINE_COMMIT=33f033383ae165d10d0006395dd17e5f0df89136
+      W4_BROWSER_ARTIFACTS=/tmp/edhr-growth-independent-browser-baseline node scripts/test-work-order-template-browser.mjs
+    outcome: passed
+    evidence:
+    - 预期exit1：SN1440/SN390因实际下载备注第四列失败，BATCH通过；不是夹具/页面错误
+  - id: check.ontology-sync
+    required: true
+    category: ontology
+    description: 复核现行规则、知识2文件与13条有限语义记录
+    method: inspection
+    command: Read DEC0016, production rules/evidence, ontology-result and semantic-review;
+      independently resolve IDs
+    outcome: passed
+    evidence:
+    - DEC0016-04及sn-import-required-fields三列政策不变，旧发现与候选修复证据均保留
+    - 13个ID在各原资产唯一存在；没有提升成熟度或借新规则撤销H008
+    - 本体updated/FINAL，独立核对实现及浏览器证据支持关闭本批H008差异
+  - id: check.knowledge-tests
+    required: true
+    category: regression
+    description: 知识结构、引用、类型与投影目标检查
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - 89/89通过，零跳过；不替代全库语义审查
+  - id: check.frontend-build
+    required: true
+    category: regression
+    description: 独立前端类型检查与生产构建
+    method: command
+    command: npm run build
+    outcome: passed
+    evidence:
+    - tsc -b和vite构建退出0；实际独立日志含构建完成标识，不外推性能
+  - id: check.static-no-new-findings
+    required: true
+    category: documentation
+    description: 严格扫描存量限制与完整finding集合无回归
+    method: command
+    command: python3 /tmp/edhr-growth-audit-project.py frontend --mode strict; same
+      baseline scan
+    outcome: passed
+    evidence:
+    - 基线/候选均27项：13 unresolved、14 violations，strict均exit2
+    - 去除行号后完整finding多重集合一致，新增/移除0；基线页面字节与目标git blob一致
+    - 本项只验证无新增，不宣称全站strict通过
+  - id: check.evidence-integrity
+    required: true
+    category: documentation
+    description: 历史失败、运行摘要和范围披露不混用
+    method: inspection
+    command: Read primary-postgres.json, browser red/green, README, diffs and git
+      diff --check
+    outcome: passed
+    evidence:
+    - 保留初始真实溢出红及复用库前缀夹具失败，最终唯一前缀/新库18通过未降断言
+    - 主侧与独立结果分列，旧PR/旧规则/原暂缓不恢复；git diff --check通过
+    - 390px原弹窗横向裁切基线与候选均见，报告不认证完整响应式
+  - id: check.existing-lint-limitation
+    required: false
+    category: regression
+    description: 既有ESLint配置缺失限制保持披露
+    method: inspection
+    command: Inspect /tmp/edhr-production-growth-lint.log and repository lint configuration
+    outcome: failed
+    evidence:
+    - 主侧npm run lint实际exit2：缺少配置；候选无lint配置改动，未写lint通过
+  findings: []
+  residualRisks:
+  - id: PERF-WORKORDER-LIST-MATERIALIZATION-001
+    description: 工单列表全量加载并逐行读取产品/对象/产出，已实测仍存在
+    impact: 随工单存量、每单对象及JSON宽度增长放大；无真实生产SLA测量
+    mitigation: 按报告讨论数据库先过滤分页及页内批量组装；保持当前语义
+  - id: PERF-PRODUCTION-SPLIT-REPEATED-SCAN-001
+    description: 批量拆分重复对象读取已实测N(N-1)结果行，尚未优化
+    impact: SN大批导入有查询/内存放大；不是新业务失败
+    mitigation: 先讨论事务内分配上下文复用，保留唯一/形态/额度/逐对象审计与全批回滚
+  - id: risk.preexisting-ui-lint
+    description: strict27既有项及lint缺配置仍未通过；390px弹窗原有横向裁切
+    impact: 本批不构成全站UI、lint或完整响应式合规证明
+    mitigation: 按总账另行治理；本次只确认模板路径可达且无新增静态问题
+  - id: risk.partial-audit-and-deferrals
+    description: 完整W2/W3/W4、W5-W7与原TaskDetail/记录控制/DHR分块/知识gap未完成
+    impact: 本批passed不能视为整体审计完成
+    mitigation: 保持原暂缓及有限覆盖，按最新远端继续审计
+  - id: risk.synthetic-measurement
+    description: 选定SQL语句族计数为合成场景，宽JSON/并发/p95/堆峰值未测；输出读取N-1的可见性另留线索
+    impact: 不得从本次计数推生产容量或正式产出丢失结论
+    mitigation: 按真实数据假设逐项扩大观测，并独立核对JPA/JDBC可见性而不混入本批修复
+  blockingConditions: []
