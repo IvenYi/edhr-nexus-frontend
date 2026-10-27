@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AccountTreeOutlined,
   Add,
@@ -818,7 +818,7 @@ export default function FormProcessList() {
   const [detailTarget, setDetailTarget] = useState<Process | null>(null);
   const [usageTarget, setUsageTarget] = useState<Process | null>(null);
   const [form, setForm] = useState({ name: "", code: "", description: "" });
-  const query = useQuery({
+  const query = useQuery({ placeholderData: keepPreviousData,
     queryKey: ["form-processes", page, pageSize, submitted],
     queryFn: async () =>
       (await listFormProcesses({ page, size: pageSize, keyword: submitted })).data
@@ -826,9 +826,10 @@ export default function FormProcessList() {
     refetchOnMount: 'always',
   });
   useEffect(() => {
+    if (!query.isSuccess || query.isPlaceholderData || query.isFetching) return;
     const lastPage = Math.max(query.data?.totalPages ?? 0, 1);
     if (page > lastPage) setPage(lastPage);
-  }, [page, query.data?.totalPages]);
+  }, [page, query.data?.totalPages, query.isSuccess, query.isPlaceholderData, query.isFetching]);
   useEffect(() => {
     localStorage.setItem(columnSettingsStorageKey, JSON.stringify(columnSettings));
   }, [columnSettings, columnSettingsStorageKey]);
@@ -1174,8 +1175,8 @@ export default function FormProcessList() {
           <Stack direction="row" spacing={1.5} alignItems="center">
             <Pagination
               size="small"
-              count={Math.max(query.data?.totalPages ?? 0, 1)}
-              page={Math.min(page, Math.max(query.data?.totalPages ?? 0, 1))}
+              count={Math.max(query.data?.totalPages ?? page, 1)}
+              page={page}
               onChange={(_, value) => setPage(value)}
             />
             <TextField

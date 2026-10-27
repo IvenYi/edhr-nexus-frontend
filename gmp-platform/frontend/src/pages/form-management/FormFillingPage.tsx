@@ -382,7 +382,7 @@ export default function FormFillingPage() {
   const [previewIdentity, setPreviewIdentity] = useState<FormWorklistIdentity | null>(null);
   const [fillIdentity, setFillIdentity] = useState<FormWorklistIdentity | null>(null);
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
-  const query = useQuery({ queryKey: ['form-filling-worklist', view, page, pageSize, filters], queryFn: () => listFormWorklist(view, toQuery(filters, page, pageSize)), refetchOnMount: 'always' });
+  const query = useQuery({ placeholderData: (previous, previousQuery) => previousQuery?.queryKey[1] === view ? previous : undefined, queryKey: ['form-filling-worklist', view, page, pageSize, filters], queryFn: () => listFormWorklist(view, toQuery(filters, page, pageSize)), refetchOnMount: 'always' });
   const rows = query.data?.content ?? [];
   const activeView = views.find((item) => item.id === view)!;
   const visibleColumns = useMemo(() => [
@@ -446,7 +446,7 @@ export default function FormFillingPage() {
           {visibleColumns.map((column) => renderCell(row, column.id))}
         </TableRow>)}</TableBody>
       </Table></ListTableShell>
-      <FormListPagination totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(value) => { setPageSize(value); setPage(0); }} />
+      <FormListPagination dataReady={query.isSuccess && !query.isFetching && !query.isPlaceholderData} totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(value) => { setPageSize(value); setPage(0); }} />
     </Box>
     <FormWorklistDetailDrawer view={view} identity={identity} onClose={() => setIdentity(null)} onOpenExecution={(row) => { setIdentity(null); openFill(row); }} onOpenPreview={() => { setIdentity(null); setPreviewIdentity(identity); }} />
     <FormWorklistPreviewDialog view={view} identity={previewIdentity} onClose={() => setPreviewIdentity(null)} />

@@ -1,0 +1,478 @@
+{
+  "base": "33f033383ae165d10d0006395dd17e5f0df89136",
+  "runs": [
+    {
+      "name": "red",
+      "buildSuccess": false,
+      "suites": [
+        {
+          "tests": 3,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0,
+          "name": "com.zencas.edhr.production.controller.BatchProcessIntegrationTest"
+        }
+      ],
+      "observations": [
+        {
+          "scenario": "bulk-split",
+          "callsAndResultRows": {
+            "material-reads": [
+              10,
+              10
+            ],
+            "object-reads": [
+              40,
+              90
+            ],
+            "order-reads": [
+              11,
+              11
+            ],
+            "output-reads": [
+              10,
+              9
+            ]
+          },
+          "dimensions": {
+            "requested": 10,
+            "created": 10
+          }
+        },
+        {
+          "scenario": "bulk-split",
+          "callsAndResultRows": {
+            "material-reads": [
+              50,
+              50
+            ],
+            "object-reads": [
+              200,
+              2450
+            ],
+            "order-reads": [
+              51,
+              51
+            ],
+            "output-reads": [
+              50,
+              49
+            ]
+          },
+          "dimensions": {
+            "requested": 50,
+            "created": 50
+          }
+        },
+        {
+          "scenario": "bulk-split",
+          "callsAndResultRows": {
+            "material-reads": [
+              100,
+              100
+            ],
+            "object-reads": [
+              400,
+              9900
+            ],
+            "order-reads": [
+              101,
+              101
+            ],
+            "output-reads": [
+              100,
+              99
+            ]
+          },
+          "dimensions": {
+            "requested": 100,
+            "created": 100
+          }
+        },
+        {
+          "scenario": "work-order-page",
+          "callsAndResultRows": {
+            "material-reads": [
+              16,
+              16
+            ],
+            "object-reads": [
+              32,
+              340
+            ],
+            "order-reads": [
+              1,
+              16
+            ],
+            "output-reads": [
+              16,
+              170
+            ]
+          },
+          "dimensions": {
+            "matchingOrders": 10,
+            "returned": 5,
+            "allOrders": 16
+          }
+        },
+        {
+          "scenario": "work-order-page",
+          "callsAndResultRows": {
+            "material-reads": [
+              56,
+              56
+            ],
+            "object-reads": [
+              112,
+              420
+            ],
+            "order-reads": [
+              1,
+              56
+            ],
+            "output-reads": [
+              56,
+              210
+            ]
+          },
+          "dimensions": {
+            "matchingOrders": 50,
+            "returned": 5,
+            "allOrders": 56
+          }
+        },
+        {
+          "scenario": "work-order-page",
+          "callsAndResultRows": {
+            "material-reads": [
+              106,
+              106
+            ],
+            "object-reads": [
+              212,
+              520
+            ],
+            "order-reads": [
+              1,
+              106
+            ],
+            "output-reads": [
+              106,
+              260
+            ]
+          },
+          "dimensions": {
+            "matchingOrders": 100,
+            "returned": 5,
+            "allOrders": 106
+          }
+        }
+      ],
+      "logSha256": "f98e668a8db3080da9f7c1a4d5dfabd3ec86c3220996b3ec4437b3769e47edec",
+      "failureMeaning": "old int overflow: fromIndex=-40, one actual HTTP assertion failure"
+    },
+    {
+      "name": "green",
+      "buildSuccess": false,
+      "suites": [
+        {
+          "tests": 15,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0,
+          "name": "com.zencas.edhr.production.controller.BatchProcessIntegrationTest"
+        },
+        {
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "name": "com.zencas.edhr.production.controller.WorkOrderControllerTest"
+        }
+      ],
+      "observations": [
+        {
+          "scenario": "bulk-split",
+          "dimensions": {
+            "requested": 10,
+            "created": 10
+          },
+          "callsAndResultRows": {
+            "material-reads": [
+              10,
+              10
+            ],
+            "object-reads": [
+              40,
+              90
+            ],
+            "order-reads": [
+              11,
+              11
+            ],
+            "output-reads": [
+              10,
+              9
+            ]
+          }
+        },
+        {
+          "scenario": "bulk-split",
+          "dimensions": {
+            "requested": 50,
+            "created": 50
+          },
+          "callsAndResultRows": {
+            "material-reads": [
+              50,
+              50
+            ],
+            "object-reads": [
+              200,
+              2450
+            ],
+            "order-reads": [
+              51,
+              51
+            ],
+            "output-reads": [
+              50,
+              49
+            ]
+          }
+        },
+        {
+          "scenario": "bulk-split",
+          "dimensions": {
+            "requested": 100,
+            "created": 100
+          },
+          "callsAndResultRows": {
+            "material-reads": [
+              100,
+              100
+            ],
+            "object-reads": [
+              400,
+              9900
+            ],
+            "order-reads": [
+              101,
+              101
+            ],
+            "output-reads": [
+              100,
+              99
+            ]
+          }
+        },
+        {
+          "scenario": "work-order-page",
+          "dimensions": {
+            "returned": 5,
+            "matchingOrders": 10,
+            "allOrders": 132
+          },
+          "callsAndResultRows": {
+            "material-reads": [
+              132,
+              132
+            ],
+            "object-reads": [
+              264,
+              888
+            ],
+            "order-reads": [
+              1,
+              132
+            ],
+            "output-reads": [
+              132,
+              444
+            ]
+          }
+        }
+      ],
+      "logSha256": "ca038387d2984b7e0f4c021491635ee2c18bcc96ed3e4cbecb9e91665312e06c",
+      "failureMeaning": "fixture run on reused DB matched previous generic prefix; total expected10 but110; preserved; production offset fix passed"
+    },
+    {
+      "name": "final",
+      "buildSuccess": true,
+      "suites": [
+        {
+          "tests": 15,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "name": "com.zencas.edhr.production.controller.BatchProcessIntegrationTest"
+        },
+        {
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "name": "com.zencas.edhr.production.controller.WorkOrderControllerTest"
+        }
+      ],
+      "observations": [
+        {
+          "dimensions": {
+            "created": 10,
+            "requested": 10
+          },
+          "callsAndResultRows": {
+            "material-reads": [
+              10,
+              10
+            ],
+            "object-reads": [
+              40,
+              90
+            ],
+            "order-reads": [
+              11,
+              11
+            ],
+            "output-reads": [
+              10,
+              9
+            ]
+          },
+          "scenario": "bulk-split"
+        },
+        {
+          "dimensions": {
+            "created": 50,
+            "requested": 50
+          },
+          "callsAndResultRows": {
+            "material-reads": [
+              50,
+              50
+            ],
+            "object-reads": [
+              200,
+              2450
+            ],
+            "order-reads": [
+              51,
+              51
+            ],
+            "output-reads": [
+              50,
+              49
+            ]
+          },
+          "scenario": "bulk-split"
+        },
+        {
+          "dimensions": {
+            "created": 100,
+            "requested": 100
+          },
+          "callsAndResultRows": {
+            "material-reads": [
+              100,
+              100
+            ],
+            "object-reads": [
+              400,
+              9900
+            ],
+            "order-reads": [
+              101,
+              101
+            ],
+            "output-reads": [
+              100,
+              99
+            ]
+          },
+          "scenario": "bulk-split"
+        },
+        {
+          "dimensions": {
+            "allOrders": 26,
+            "returned": 5,
+            "matchingOrders": 10
+          },
+          "callsAndResultRows": {
+            "material-reads": [
+              26,
+              26
+            ],
+            "object-reads": [
+              52,
+              368
+            ],
+            "order-reads": [
+              1,
+              26
+            ],
+            "output-reads": [
+              26,
+              184
+            ]
+          },
+          "scenario": "work-order-page"
+        },
+        {
+          "dimensions": {
+            "allOrders": 66,
+            "returned": 5,
+            "matchingOrders": 50
+          },
+          "callsAndResultRows": {
+            "material-reads": [
+              66,
+              66
+            ],
+            "object-reads": [
+              132,
+              448
+            ],
+            "order-reads": [
+              1,
+              66
+            ],
+            "output-reads": [
+              66,
+              224
+            ]
+          },
+          "scenario": "work-order-page"
+        },
+        {
+          "dimensions": {
+            "allOrders": 116,
+            "returned": 5,
+            "matchingOrders": 100
+          },
+          "callsAndResultRows": {
+            "material-reads": [
+              116,
+              116
+            ],
+            "object-reads": [
+              232,
+              548
+            ],
+            "order-reads": [
+              1,
+              116
+            ],
+            "output-reads": [
+              116,
+              274
+            ]
+          },
+          "scenario": "work-order-page"
+        }
+      ],
+      "logSha256": "acc52b246b5f6c2a8902a76e6aaab86465affe0b5121845e8e00544100e743c3",
+      "failureMeaning": "unique keyword per test fixture; fresh DB; unchanged assertions, all18 passed"
+    }
+  ],
+  "measurement": "pg_stat_statements per current database after reset; selected statement groups only; rows are returned rows, not physical scans; no timings/SLA"
+}

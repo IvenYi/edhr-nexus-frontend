@@ -12,7 +12,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
   Box,
   Button,
@@ -748,6 +748,7 @@ export default function AuditLogPage() {
   }, []);
 
   const { data, isLoading, isError } = useQuery({
+    placeholderData: keepPreviousData,
     queryKey: ['audit-logs', page, rowsPerPage, filters],
     queryFn: async () => {
       const params: Record<string, unknown> = { page, size: rowsPerPage };
@@ -765,7 +766,7 @@ export default function AuditLogPage() {
     return data?.content ?? [];
   }, [data?.content]);
 
-  const pageCount = data?.totalPages ?? Math.max(1, Math.ceil(rows.length / rowsPerPage));
+  const pageCount = data?.totalPages ?? (data ? Math.max(1, Math.ceil(rows.length / rowsPerPage)) : page);
   const totalElements = data?.totalElements ?? rows.length;
   const isAuditTableEmptyState = isLoading || isError || rows.length === 0;
   const beforeRows = useMemo(() => formatAuditRows(selectedAudit?.contentBefore), [selectedAudit?.contentBefore]);

@@ -637,7 +637,7 @@ rules:
       auditPlacement: production-object.detail.audit-tab
       auditEntityType: PRODUCTION_OBJECT
       auditActionProjection: [CREATE, UPDATE]
-    explanation: 批次详情中的数据审计读取该对象PRODUCTION_OBJECT事件，涉及制程的条目显示归属及版本，首次START保存的冻结配置提供{}详情。未开工引用和已冻结配置须明确区分；应有的历史原件缺失不按当前主数据补造。普通UPDATE保持真实差量，不要求每条重复制程身份或配置；新增/修改动作投影不变，PRODUCTION_EXECUTION继续保存完整执行证据。
+    explanation: 批次详情中的数据审计读取该对象PRODUCTION_OBJECT事件，涉及制程的条目显示归属及版本，首次START保存的冻结配置在对应制程旁提供{}详情。未开工引用和已冻结配置须明确区分；应有的历史原件缺失不按当前主数据补造。普通UPDATE保持真实差量，不要求每条重复制程身份或配置；标题动作仍只显示新增/修改，真实保存首次冻结快照的条目可另附“开工”次要说明以辨识记录，该说明不是新的动作类别。PRODUCTION_EXECUTION继续保存完整执行证据。
     evidenceIds: [evidence.production-batch-management-page, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.production-object-execution-status-audit-source, evidence.production-object-execution-status-audit-tests, evidence.audit-aspect, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.batch-management-action-entry-boundary
     name: 批次管理操作栏按状态提供业务动作入口
@@ -1128,8 +1128,8 @@ rules:
       normalizedAction:
         CANCEL: UPDATE
         STATUS_CHANGE: UPDATE
-    explanation: 工单及生产对象的数据审计在所有页面统一只投影“新增”和“修改”两类动作；生命周期取消、开工、完成、关闭等内部动作统一归入“修改”，不得向客户展示 CANCEL 或 STATUS_CHANGE 等额外动作类别。
-    evidenceIds: [evidence.audit-controller-action-projection, evidence.production-audit-annotations, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.audit-controller-test, evidence.work-order-page]
+    explanation: 工单及生产对象的数据审计在所有页面统一只投影“新增”和“修改”两类动作；生命周期取消、开工、完成、关闭等内部动作统一归入“修改”，不得向客户展示 CANCEL 或 STATUS_CHANGE 等额外动作类别。批次审计可在真实保存首次冻结快照的记录标题中附“开工”次要说明以辨识记录，但不得替代“修改”动作标签或新增筛选类别；说明和详情均沿该条历史审计原件。
+    evidenceIds: [evidence.audit-controller-action-projection, evidence.production-audit-annotations, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.audit-controller-test, evidence.work-order-page, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.work-order-audit-change-snapshot
     name: 工单审计保留变更前后业务快照
     status: specified

@@ -1,5 +1,5 @@
 import { readRecordLocation } from '@/utils/recordLocation';
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   useEffect,
   useMemo,
@@ -816,7 +816,7 @@ export default function WorkTemplateList() {
   const [confirmDelete, setConfirmDelete] = useState<WorkTemplate | null>(null);
   const [detailTarget, setDetailTarget] = useState<WorkTemplate | null>(null);
   const [form, setForm] = useState({ name: "", code: "", description: "" });
-  const query = useQuery({
+  const query = useQuery({ placeholderData: keepPreviousData,
     queryKey: ["work-templates", page, pageSize, submittedKeyword],
     queryFn: async () =>
       (
@@ -829,9 +829,10 @@ export default function WorkTemplateList() {
     refetchOnMount: 'always',
   });
   useEffect(() => {
+    if (!query.isSuccess || query.isPlaceholderData || query.isFetching) return;
     const lastPage = Math.max(query.data?.totalPages ?? 0, 1);
     if (page > lastPage) setPage(lastPage);
-  }, [page, query.data?.totalPages]);
+  }, [page, query.data?.totalPages, query.isSuccess, query.isPlaceholderData, query.isFetching]);
   const applicabilityQuery = useQuery({
     queryKey: ["work-applicability-rules"],
     queryFn: async () =>
@@ -1436,8 +1437,8 @@ export default function WorkTemplateList() {
                 <Stack direction="row" spacing={1.5} alignItems="center">
                   <Pagination
                     size="small"
-                    count={Math.max(query.data?.totalPages ?? 0, 1)}
-                    page={Math.min(page, Math.max(query.data?.totalPages ?? 0, 1))}
+                    count={Math.max(query.data?.totalPages ?? page, 1)}
+                    page={page}
                     onChange={(_, value) => setPage(value)}
                   />
                   <TextField

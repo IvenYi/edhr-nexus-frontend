@@ -3,7 +3,7 @@ import { ProductionOutputDetails, ProductionOutputValue } from '@/components/Pro
 import TableStateCell from '@/components/TableStateCell';
 import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode, type PointerEvent as ReactPointerEvent } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Accordion,
   AccordionDetails,
@@ -396,12 +396,13 @@ export default function WorkOrderPage() {
     window.addEventListener('pointerup', onUp);
   };
 
-  const orders = useQuery({ queryKey: ['work-orders', page, pageSize, submittedKeyword, status], queryFn: async () => (await listWorkOrders({ page, size: pageSize, keyword: submittedKeyword, status })).data.data as PageResult<WorkOrder> });
+  const orders = useQuery({ queryKey: ['work-orders', page, pageSize, submittedKeyword, status], queryFn: async () => (await listWorkOrders({ page, size: pageSize, keyword: submittedKeyword, status })).data.data as PageResult<WorkOrder>, placeholderData: keepPreviousData });
   useEffect(() => {
+    if (!orders.isSuccess || orders.isPlaceholderData || orders.isFetching) return;
     const totalPages = orders.data?.totalPages ?? 0;
     const lastPage = Math.max(totalPages, 1);
     if (page > lastPage) setPage(lastPage);
-  }, [orders.data?.totalPages, page]);
+  }, [orders.data?.totalPages, orders.isSuccess, orders.isPlaceholderData, orders.isFetching, page]);
   const products = useQuery({ queryKey: ['work-order-products'], queryFn: async () => (await getProductModelingProducts({ page: 1, size: 500, status: 'ACTIVE' })).data.data as PageResult<ProductModelSource> });
   const objects = useQuery({ queryKey: ['production-objects', objectOrder?.id], enabled: Boolean(objectOrder), queryFn: async () => (await listProductionObjects(objectOrder!.id)).data.data });
   const processOptions = useQuery({ queryKey: ['production-process-options', objectOrder?.id], enabled: Boolean(objectOrder), queryFn: async () => (await listProcessOptions(objectOrder!.id)).data.data });
@@ -565,8 +566,8 @@ export default function WorkOrderPage() {
     const serial = isSnProduction;
     const sheetName = serial ? 'SN导入模板' : '批次导入模板';
     const filename = serial ? '生产SN导入模板.xlsx' : '生产批次导入模板.xlsx';
-    const headers = serial ? ['SN编号', '计划开始时间', '计划结束时间', '备注'] : ['批次号', '数量', '计划开始时间', '计划结束时间', '备注'];
-    const example = serial ? ['SN-001', '2026-08-29 08:00', '2026-08-29 18:00', '可为空'] : ['BATCH-001', 1, '2026-08-29 08:00', '2026-08-29 18:00', '可为空'];
+    const headers = serial ? ['SN编号', '计划开始时间', '计划结束时间'] : ['批次号', '数量', '计划开始时间', '计划结束时间', '备注'];
+    const example = serial ? ['SN-001', '2026-08-29 08:00', '2026-08-29 18:00'] : ['BATCH-001', 1, '2026-08-29 08:00', '2026-08-29 18:00', '可为空'];
     const requiredColumns = new Set(serial ? ['SN编号'] : ['批次号', '数量']);
     const workbook = new ExcelJS.Workbook();
     workbook.creator = 'eDHR';
@@ -578,7 +579,7 @@ export default function WorkOrderPage() {
     worksheet.mergeCells(2, 1, 2, headers.length);
     worksheet.getCell('A2').value = `请按列填写${serial ? ' SN 编号' : '批次号、数量'}；红色表头为必填字段，示例数据请删除后再导入。`;
     worksheet.mergeCells(3, 1, 3, headers.length);
-    worksheet.getCell('A3').value = `示例：${serial ? 'SN编号=SN-001；计划开始时间=2026-08-29 08:00；计划结束时间=2026-08-29 18:00；备注=可为空' : '批次号=BATCH-001；数量=1；计划开始时间=2026-08-29 08:00；计划结束时间=2026-08-29 18:00；备注=可为空'}`;
+    worksheet.getCell('A3').value = `示例：${serial ? 'SN编号=SN-001；计划开始时间=2026-08-29 08:00；计划结束时间=2026-08-29 18:00' : '批次号=BATCH-001；数量=1；计划开始时间=2026-08-29 08:00；计划结束时间=2026-08-29 18:00；备注=可为空'}`;
     headers.forEach((header, index) => {
       worksheet.getCell(5, index + 1).value = header;
       worksheet.getCell(6, index + 1).value = example[index];
@@ -679,7 +680,7 @@ export default function WorkOrderPage() {
           </TableCell>
         </TableRow>)}</TableBody>
       </Table></ListTableShell>
-      <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}><Typography variant="body2" sx={{ color: '#606266', whiteSpace: 'nowrap' }}>共 {orders.data?.totalElements ?? 0} 条数据</Typography><Stack direction="row" spacing={1.5} alignItems="center" sx={{ marginLeft: 'auto' }}><Pagination size="small" count={Math.max(orders.data?.totalPages ?? 0, 1)} page={Math.min(page, Math.max(orders.data?.totalPages ?? 0, 1))} onChange={(_, value) => setPage(value)} /><TextField select size="small" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number]); setPage(1); }} sx={{ width: 112 }} inputProps={{ 'aria-label': '每页条数' }}>{PAGE_SIZE_OPTIONS.map((option) => <MenuItem key={option} value={option}>{option} 条/页</MenuItem>)}</TextField></Stack></Box>
+      <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}><Typography variant="body2" sx={{ color: '#606266', whiteSpace: 'nowrap' }}>共 {orders.data?.totalElements ?? 0} 条数据</Typography><Stack direction="row" spacing={1.5} alignItems="center" sx={{ marginLeft: 'auto' }}><Pagination size="small" count={Math.max(orders.data?.totalPages ?? page, 1)} page={page} onChange={(_, value) => setPage(value)} /><TextField select size="small" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number]); setPage(1); }} sx={{ width: 112 }} inputProps={{ 'aria-label': '每页条数' }}>{PAGE_SIZE_OPTIONS.map((option) => <MenuItem key={option} value={option}>{option} 条/页</MenuItem>)}</TextField></Stack></Box>
     </Box>
 
     <AppDialog variant="form" open={dialogOpen} onClose={save.isPending ? undefined : () => setDialogOpen(false)} maxWidth="md" fullWidth>

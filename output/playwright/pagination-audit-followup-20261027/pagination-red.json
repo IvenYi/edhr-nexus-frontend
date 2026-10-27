@@ -1,0 +1,42 @@
+{
+  "baseline": null,
+  "boundary": "real Chromium pages with delayed fixture HTTP; no backend writes",
+  "results": [
+    {
+      "kind": "batches",
+      "result": "failed",
+      "message": "Uncached page must remain selected while HTTP is pending\n\n'1' !== '2'\n",
+      "requests": [
+        {
+          "page": 1,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 2,
+          "keyword": "",
+          "size": "20"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "kind": "orders",
+      "result": "failed",
+      "message": "Uncached page must remain selected while HTTP is pending\n\n'1' !== '2'\n",
+      "requests": [
+        {
+          "page": 1,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 2,
+          "keyword": "",
+          "size": "20"
+        }
+      ],
+      "errors": []
+    }
+  ]
+}

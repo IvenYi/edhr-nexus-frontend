@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import TableStateCell from '@/components/TableStateCell';
 import { listColumnResizeHandleSx, listTableHeaderCellSx, listTablePrimaryTextSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode, type PointerEvent as ReactPointerEvent } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Accordion,
   AccordionDetails,
@@ -222,9 +222,8 @@ function BatchDetailDrawer({ detail, tab, onTabChange, auditRows, auditLoading, 
           <DetailSection title="累计产出"><ProductionOutputDetails output={detail.output} /></DetailSection>
           <DetailSection title="备注"><Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', color: detail.remark ? '#303133' : '#909399' }}>{detail.remark || '暂无备注'}</Typography></DetailSection>
         </Stack> : <Stack spacing={1} sx={{ mt: 2 }}>
-          <Typography variant="caption" color="text.secondary">未开工时仅记录制程引用；实际冻结配置请展开首次开工记录，点击 {'{}'} 查看。</Typography>
           {auditLoading ? <Box sx={{ py: 8, display: 'grid', placeItems: 'center' }}><CircularProgress size={24} /></Box> : auditError ? <Box sx={{ py: 8, textAlign: 'center', color: '#c62828' }}>数据审计加载失败</Box> : auditRows.length === 0 ? <Box sx={{ py: 8, textAlign: 'center', color: '#909399' }}>暂无数据审计记录</Box> : auditRows.map((item) => <Accordion key={item.id} disableGutters elevation={0} sx={{ border: '1px solid #e4e7ed', borderRadius: '4px !important', overflow: 'hidden', '&::before': { display: 'none' }, '&.Mui-expanded': { m: 0 } }}>
-            <AccordionSummary expandIcon={<ExpandMore fontSize="small" />} sx={{ minHeight: 44, px: 1.5, '&.Mui-expanded': { minHeight: 44 }, '& .MuiAccordionSummary-content': { my: 0, minWidth: 0 }, '& .MuiAccordionSummary-content.Mui-expanded': { my: 0 } }}><Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.25fr', columnGap: 1, width: '100%', minWidth: 0 }}><Typography variant="body2" noWrap>{item.operatorDisplayName || item.operatorAccount || '-'}</Typography><Typography variant="body2" noWrap>{auditActionLabel(item)}</Typography><Typography variant="body2" noWrap sx={{ color: '#606266' }}>{formatDateTime(item.operationTime || item.createdAt)}</Typography></Box></AccordionSummary>
+            <AccordionSummary expandIcon={<ExpandMore fontSize="small" />} sx={{ minHeight: 44, px: 1.5, '&.Mui-expanded': { minHeight: 44 }, '& .MuiAccordionSummary-content': { my: 0, minWidth: 0 }, '& .MuiAccordionSummary-content.Mui-expanded': { my: 0 } }}><Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.25fr', columnGap: 1, width: '100%', minWidth: 0 }}><Typography variant="body2" noWrap>{item.operatorDisplayName || item.operatorAccount || '-'}</Typography><Typography variant="body2" noWrap>{auditActionLabel(item)}{item.action !== 'CREATE' && toProductionAuditFields(item.contentAfter).some(field => field.details != null) && <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 1 }}>开工</Typography>}</Typography><Typography variant="body2" noWrap sx={{ color: '#606266' }}>{formatDateTime(item.operationTime || item.createdAt)}</Typography></Box></AccordionSummary>
             <AccordionDetails sx={{ pt: 0, pb: 1.5 }}><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}><AuditFieldBlock title="变更前" fields={toProductionAuditFields(item.contentBefore, { objectNo: '批次号' })} /><AuditFieldBlock title="变更后" fields={toProductionAuditFields(item.contentAfter, { objectNo: '批次号' })} /></Box></AccordionDetails>
           </Accordion>)}
         </Stack>}
@@ -260,12 +259,14 @@ export default function BatchManagementPage() {
   const batches = useQuery({
     queryKey: ['production-batches', page, pageSize, submittedKeyword, status],
     queryFn: async () => (await listBatches({ page, size: pageSize, keyword: submittedKeyword, status })).data.data as PageResult<BatchRecord>,
+    placeholderData: keepPreviousData,
   });
   useEffect(() => {
+    if (!batches.isSuccess || batches.isPlaceholderData || batches.isFetching) return;
     const totalPages = batches.data?.totalPages ?? 0;
     const lastPage = Math.max(totalPages, 1);
     if (page > lastPage) setPage(lastPage);
-  }, [batches.data?.totalPages, page]);
+  }, [batches.data?.totalPages, batches.isSuccess, batches.isPlaceholderData, batches.isFetching, page]);
   const audit = useQuery({
     queryKey: ['production-batch-audit', detail?.id],
     enabled: Boolean(detail && detailTab === 1),
@@ -417,7 +418,7 @@ export default function BatchManagementPage() {
         <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
           <Typography variant="body2" sx={{ color: '#606266', whiteSpace: 'nowrap' }}>共 {batches.data?.totalElements ?? 0} 条数据</Typography>
           <Stack direction="row" spacing={1.5} alignItems="center" sx={{ marginLeft: 'auto' }}>
-            <Pagination size="small" count={Math.max(batches.data?.totalPages ?? 0, 1)} page={Math.min(page, Math.max(batches.data?.totalPages ?? 0, 1))} onChange={(_, value) => setPage(value)} />
+            <Pagination size="small" count={Math.max(batches.data?.totalPages ?? page, 1)} page={page} onChange={(_, value) => setPage(value)} />
             <TextField select size="small" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number]); setPage(1); }} sx={{ width: 112 }} inputProps={{ 'aria-label': '每页条数' }}>{PAGE_SIZE_OPTIONS.map((option) => <MenuItem key={option} value={option}>{option} 条/页</MenuItem>)}</TextField>
           </Stack>
         </Box>

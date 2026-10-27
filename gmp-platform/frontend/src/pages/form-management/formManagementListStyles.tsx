@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Box, FormControl, MenuItem, Pagination, Select, Stack, Typography } from '@mui/material';
 import { listTableBodyCellSx, listTableHeaderCellSx } from '@/components/listTableStyles';
 
@@ -43,6 +44,7 @@ export const formListFilterActionsSx = {
 };
 
 export function FormListPagination({
+  dataReady,
   totalElements,
   totalPages,
   page,
@@ -50,6 +52,7 @@ export function FormListPagination({
   onPageChange,
   onPageSizeChange,
 }: {
+  dataReady: boolean;
   totalElements: number;
   totalPages: number;
   page: number;
@@ -57,8 +60,13 @@ export function FormListPagination({
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
 }) {
-  const pageCount = Math.max(totalPages, 1);
-  const currentPage = Math.min(Math.max(page + 1, 1), pageCount);
+  const currentPage = Math.max(page + 1, 1);
+  const pageCount = Math.max(totalPages, currentPage);
+  useEffect(() => {
+    if (!dataReady) return;
+    const lastPage = Math.max(totalPages - 1, 0);
+    if (page > lastPage) onPageChange(lastPage);
+  }, [dataReady, totalPages, page, onPageChange]);
 
   return (
     <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>

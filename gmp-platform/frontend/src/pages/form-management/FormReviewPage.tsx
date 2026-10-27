@@ -211,7 +211,7 @@ export default function FormReviewPage() {
   const [transferBusy, setTransferBusy] = useState(false);
   const [transferError, setTransferError] = useState('');
   const queryParams = useMemo(() => toQuery(filters, view, page, size), [filters, view, page, size]);
-  const query = useQuery({ queryKey: ['form-review-worklist', view, queryParams], queryFn: () => listFormWorklist(view, queryParams), retry: false, refetchOnMount: 'always' });
+  const query = useQuery({ placeholderData: (previous, previousQuery) => previousQuery?.queryKey[1] === view ? previous : undefined, queryKey: ['form-review-worklist', view, queryParams], queryFn: () => listFormWorklist(view, queryParams), retry: false, refetchOnMount: 'always' });
   const detailQuery = useQuery({ queryKey: ['form-review-detail', view, detailIdentity], queryFn: () => getFormWorklistDetail(view, detailIdentity!), enabled: Boolean(detailIdentity), retry: false });
   const auditQuery = useQuery({ queryKey: ['form-review-audit', detailIdentity], queryFn: () => loadProductionAuditLogs(detailIdentity!.productionObjectId, detailIdentity!.operationId), enabled: Boolean(detailIdentity && detailTab === 1), retry: false });
   const transferTargetsQuery = useQuery({
@@ -282,7 +282,7 @@ export default function FormReviewPage() {
       })}</TableRow></TableHead><TableBody>
         {query.isFetching ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>正在加载审批任务…</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#c62828' }}>表单审批列表加载失败：{errorText(query.error)}</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>{view === 'REVIEW_PENDING' ? '暂无待处理的表单审批任务' : '暂无已办表单审批记录'}</TableStateCell></TableRow> : rows.map((row) => <TableRow key={`${row.productionObjectId}/${row.operationId}/${row.copyId}`} hover tabIndex={0} aria-label={`查看${row.templateName || '表单'}审批详情`} onClick={() => openDetail(row)} onKeyDown={(event) => { if (event.key === 'Enter') openDetail(row); }} sx={{ cursor: 'pointer', '& .MuiTableCell-root': bodyCellSx }}>{visibleColumns.map((column) => renderCell(row, column.id))}</TableRow>)}
       </TableBody></Table></ListTableShell>
-      <FormListPagination totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={size} onPageChange={setPage} onPageSizeChange={(value) => { setSize(value); setPage(0); }} />
+      <FormListPagination dataReady={query.isSuccess && !query.isFetching && !query.isPlaceholderData} totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={size} onPageChange={setPage} onPageSizeChange={(value) => { setSize(value); setPage(0); }} />
     </Box>
     <Drawer anchor="right" open={Boolean(detailIdentity)} onClose={() => setDetailIdentity(null)} sx={drawerRootSx} slotProps={{ backdrop: { sx: drawerBackdropSx } }} PaperProps={{ sx: drawerPaperSx }}>
       <Box sx={{ minHeight: '100%', overflow: 'auto', bgcolor: '#f7f9fc', p: 2 }}>

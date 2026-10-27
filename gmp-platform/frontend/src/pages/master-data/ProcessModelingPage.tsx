@@ -51,7 +51,7 @@ import {
   useRef,
   useState,
   } from 'react';
-import { useMutation,
+import { keepPreviousData, useMutation,
   useQuery,
   useQueryClient } from '@tanstack/react-query';
 import {
@@ -1181,6 +1181,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   };
 
   const { data, isLoading, isError } = useQuery({
+    placeholderData: (previousData, previousQuery) => previousQuery?.queryKey[0] === config.listQueryKey ? keepPreviousData(previousData) : undefined,
     queryKey: [config.listQueryKey, page, rowsPerPage, filters],
     queryFn: async () => {
       const res = await config.list({
@@ -1246,7 +1247,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
   }, [materialGroupRows]);
   const routeRecords = useMemo(() => (pageKey === 'routes' ? rows as RouteRecord[] : []), [pageKey, rows]);
   const displayRows = pageKey === 'materials' ? materialGroupRows : pageKey === 'routes' ? routeRecords : rows;
-  const pageCount = Math.max(1, data?.totalPages ?? 1);
+  const pageCount = Math.max(1, data?.totalPages ?? page);
   const totalElements = data?.totalElements ?? 0;
   const displayTotalElements = totalElements;
   const operationCategories = operationCategoriesQuery.data ?? [];

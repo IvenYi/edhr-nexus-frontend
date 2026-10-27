@@ -45,6 +45,22 @@
       },
       "extensionStrategy": { "selectedPaths": ["product-core"], "rationale": "修复已有生产准备界面，继续使用MUI与公共表单网格", "ownershipBoundaries": ["production页面及共享ProductionObjectEditDialog", "本地开发服务与现行数据库基线"] }
     },
+    "integrationAndFollowup": {
+      "level": "L2",
+      "contractBaseline": { "sourceCommit": "a32d8d761293661cc3209342512050e96bba3ba7", "targetBranch": "edhr-dev", "targetCommit": "2c4b79e1641be4886fd5361b48df076e57abd768", "contractReadCommit": "2c4b79e1641be4886fd5361b48df076e57abd768", "uncommittedContractPaths": [] },
+      "confirmed": ["用户暂停后续提交及推送，先修复批次翻页偶发回到第一页，并要求全项目所有分页入口检查和修复同类问题", "删除批次审计顶部说明，在对应制程旁提供真实冻结快照详情，使开工记录可辨识", "保留远端已合并的SN三列下载模板及其他修复"],
+      "inferred": ["批次和工单页同一缺失页数归零逻辑一起修复，等待请求时不判定页码越界", "仅实际成功响应可收缩页码；筛选、每页条数变化仍主动回到第一页", "带首次开工快照的审计保持修改类别，另附开工次要说明，详情取该条审计原件，不读取当前主数据重建"],
+      "unresolved": [],
+      "impactAnalysis": {
+        "directImpacts": ["10个列表页异步请求期间的页码重置", "FormListPagination与11个异步入口的页码显示及数据就绪边界", "9文件11个服务查询的分页按钮收缩", "批次审计保留新增/修改分类，真实冻结记录附开工次要说明及制程行详情入口", "合并远端production.yaml证据及SN模板浏览器测试定位"],
+        "transitiveImpacts": ["生产审计字段投影共享工具", "翻页失败、快速翻页、页数减少与查询筛选", "设备/制程/模板等共用页面及表单、DHR、追溯列表", "父对象或业务视图切换时不保留其他上下文的可操作行"],
+        "potentialImpacts": [], "unaffectedAreas": ["后端分页、批次分配和生命周期", "冻结时点、审计写入内容及历史记录"],
+        "compatibilityAndMigration": ["不新增数据迁移或旧模型兼容"], "snapshotImpacts": ["详情使用所选历史审计中的processSnapshot，未开工引用不冒充快照"],
+        "auditImpacts": ["只调整既有审计内容的呈现，保留新增/修改分类，不改事件或冻结证据"], "permissionImpacts": ["保持既有审计读取权限"],
+        "testImpacts": ["全量分页源码分类与受影响查询逐项核对", "真实浏览器未缓存/缓存/延迟/失败/快速切页/总页数收缩与筛选", "共用分页、图标及设备页的延迟/失败/真实缩页", "图标分组切换延迟/失败时不保留上一组可操作数据，不能把旧组图标排序到新组", "未开工不出现快照入口，开工制程旁详情与历史内容一致，保持修改分类", "合并后的SN三列/BATCH五列下载、导入与提交"], "evidenceGaps": ["逐页源码覆盖不等于全系统逐页CRUD/E2E通过；采用三类分页机制的代表性真实浏览器回归，范围详见pagination-audit-verification.md"]
+      },
+      "extensionStrategy": { "selectedPaths": ["product-core"], "rationale": "修正既有列表请求状态和审计投影，不改变业务政策", "ownershipBoundaries": ["各既有分页列表及FormListPagination/DhrWorklistTable", "productionAudit字段投影"] }
+    },
     "confirmed": {
       "concepts": [],
       "relationships": [],

@@ -1,0 +1,43 @@
+{
+  "boundary": "real shared component and pages; delayed fixture HTTP, no backend writes",
+  "results": [
+    {
+      "kind": "shared",
+      "result": "passed",
+      "requests": [
+        1,
+        2,
+        3,
+        2,
+        1
+      ],
+      "checks": "delayed/failed/cached pagination; successful shrink on shared and equipment; icon group isolation during delay/failure and no cross-group reorder"
+    },
+    {
+      "kind": "icons",
+      "result": "passed",
+      "requests": [
+        1,
+        2,
+        3,
+        2,
+        1,
+        1,
+        1
+      ],
+      "checks": "delayed/failed/cached pagination; successful shrink on shared and equipment; icon group isolation during delay/failure and no cross-group reorder"
+    },
+    {
+      "kind": "equipment",
+      "result": "passed",
+      "requests": [
+        1,
+        2,
+        3,
+        2,
+        1
+      ],
+      "checks": "delayed/failed/cached pagination; successful shrink on shared and equipment; icon group isolation during delay/failure and no cross-group reorder"
+    }
+  ]
+}

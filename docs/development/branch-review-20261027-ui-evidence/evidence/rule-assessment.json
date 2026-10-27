@@ -1,0 +1,105 @@
+{
+  "role": "business-knowledge-modeler",
+  "baseCommit": "52dcf9d27a41f8243ed59d0a05605da011e32f83",
+  "knowledgeBaselineVersion": "0.3.25",
+  "scope": "Finite source and reasonableness review for production object dialog; not whole ontology or runtime assurance",
+  "assessmentMethod": ["Identify user policy versus implementation/evidence", "Check current applicability and precise supersession", "Evaluate operational rationale and counterexamples", "Inspect frontend and server enforcement", "Escalate real business ambiguity only"],
+  "count": 9,
+  "records": [
+    {
+      "id": "DEC-0012-04", "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml", "sourceLocator": "decisionStatements[id=DEC-0012-04]",
+      "sourceAuthority": "Current versioned user-confirmed policy, supported by batch-process-2026-10-27.md; current user explicitly adopted new remote rules",
+      "currentApplicability": "current; old work-order lock policy replaced in this claim only",
+      "reasonableness": "reasonable-within-current-product-scope",
+      "reason": "One object can explicitly identify the process that will run. Separating new candidates from existing references avoids silently switching configuration, while product-first/family-fallback supports shared and product-specific process ownership. It is a user product choice, not inferred from existing code or generic manufacturing rules.",
+      "implementationEvidence": ["ProductionService.requireProcessVersion/processOptions", "ProductProcessResolutionService.resolve", "WorkOrderPage selectedProcess and per-pending-item processVersionId"],
+      "semanticReview": "reviewed", "conclusion": "consistent", "businessQuestion": null
+    },
+    {
+      "id": "DEC-0012-01", "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml", "sourceLocator": "decisionStatements[id=DEC-0012-01]",
+      "sourceAuthority": "Current versioned user-confirmed MVP scope",
+      "currentApplicability": "current; new independent process versions still require one production form per order",
+      "reasonableness": "reasonable-within-current-product-scope",
+      "reason": "A single BATCH/SN form keeps allocation and object quantity semantics coherent in this MVP. Mixed forms can be legitimate in other products, so the rule must not be elevated to an industry-wide invariant. Current feature scope contains no approved mixed-form flow.",
+      "implementationEvidence": ["ProductionService.split existing objectType checks", "ProductionService.processOptions(order) form filter", "WorkOrderPage fixedProductionForm and disabled incompatible options"],
+      "semanticReview": "reviewed", "conclusion": "consistent", "businessQuestion": null
+    },
+    {
+      "id": "DEC-0012-03", "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml", "sourceLocator": "decisionStatements[id=DEC-0012-03]",
+      "sourceAuthority": "Current versioned user-confirmed quantity policy; batch-process evidence explicitly records positive fractions allowed",
+      "currentApplicability": "current; quantity lower-bound question was explicitly resolved, not left at historical >=1",
+      "reasonableness": "reasonable",
+      "reason": "Positive quantity prevents empty/negative allocations; SN=1 matches individual serial identity; non-cancelled targets bounded by the plan prevent over-allocation. Planned and achieved quantities remain distinct, so scrap or early end does not silently create extra allocation. Four decimal places are a storage/engineering limit, not quoted user policy.",
+      "implementationEvidence": ["ProductionService.split and updateObject", "WorkOrderPage availableRemaining, validBatchInput, importPendingObjects"],
+      "semanticReview": "reviewed", "conclusion": "consistent", "businessQuestion": null
+    },
+    {
+      "id": "DEC-0016-04", "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml", "sourceLocator": "decisionStatements[id=DEC-0016-04]",
+      "sourceAuthority": "Versioned user-confirmed screenshot field contract; historical raw screenshot not retrieved in this review",
+      "currentApplicability": "current; later batch-process correction did not replace this field contract; merged H008 matches it",
+      "reasonableness": "reasonable-user-interface-policy-not-universal-necessity",
+      "reason": "For one serial per object the quantity is redundant. A minimal canonical template with serial number and optional dates is internally consistent and can reduce incorrect quantity input. An optional remarks column could also be reasonable in another approved UX; three columns are correct here because of the current explicit user choice, not because four columns are inherently unsafe.",
+      "implementationEvidence": ["WorkOrderPage.downloadImportTemplate headers/example/A3", "ProductionService.split SN targetQuantity guard", "rule.production.sn-import-required-fields"],
+      "evidenceLimits": ["No claim of re-reading the historical screenshot or external Guancheng runtime", "Canonical download format is distinct from tolerant input parsing"],
+      "semanticReview": "reviewed", "conclusion": "consistent", "businessQuestion": null
+    },
+    {
+      "id": "assessment.ui.existing-remark-input", "recordType": "engineering-boundary",
+      "sourcePath": "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx", "sourceLocator": "importPendingObjects parsedRows remark and downloadImportTemplate",
+      "relatedKnowledgeIds": ["DEC-0016-04", "DEC-0014-03"],
+      "sourceAuthority": "Original implementation evidence and narrowly scoped repair compatibility; not a new user-confirmed permanent-compatibility policy",
+      "currentApplicability": "current accepted implementation boundary; unchanged by this layout work",
+      "reasonableness": "reasonable-preservation-of-existing-legal-input",
+      "reason": "Keeping the existing optional remark parser does not contradict the three-column canonical download. It prevents an unrelated input capability from being removed while fixing layout/template output. It does not authorize every extra column or require indefinite compatibility with all old files; imported SN quantities other than one still fail validation.",
+      "implementationEvidence": ["WorkOrderPage.importPendingObjects remark mapping and invalidSnQuantityRows", "ProductionService.split optional remark persistence"],
+      "semanticReview": "reviewed", "conclusion": "consistent", "businessQuestion": null
+    },
+    {
+      "id": "DEC-0014-02", "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml", "sourceLocator": "decisionStatements[id=DEC-0014-02]",
+      "sourceAuthority": "Current versioned user-confirmed staging workflow",
+      "currentApplicability": "current for manual, generated and imported candidates",
+      "reasonableness": "reasonable",
+      "reason": "A reviewable pending list lets users correct or remove candidates before allocations and audit history are created. It makes the final submit the clear persistence boundary, reducing accidental partial imports. Pending is UI state and does not invent a database lifecycle state.",
+      "implementationEvidence": ["WorkOrderPage.addPendingObject/addPendingBatch/importPendingObjects", "WorkOrderPage split mutation and onSuccess pendingObjects reset"],
+      "semanticReview": "reviewed", "conclusion": "consistent", "businessQuestion": null
+    },
+    {
+      "id": "DEC-0014-04", "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml", "sourceLocator": "decisionStatements[id=DEC-0014-04]",
+      "sourceAuthority": "Current versioned user-confirmed atomic batch save",
+      "currentApplicability": "current; applies to runtime writes and audit records, not merely a visual batch",
+      "reasonableness": "reasonable",
+      "reason": "An all-or-nothing batch prevents users having to infer which allocations succeeded after a failed file or repeated submit. It also keeps creation audits aligned with saved objects. It has an expected large-batch cost, but performance work must preserve the accepted atomicity unless the user changes the workflow.",
+      "implementationEvidence": ["ProductionObjectController.splitBatch @Transactional and responses.forEach(writeAudit)", "ProductionService.splitBatch @Transactional"],
+      "semanticReview": "reviewed", "conclusion": "consistent", "businessQuestion": null
+    },
+    {
+      "id": "DEC-0014-06", "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml", "sourceLocator": "decisionStatements[id=DEC-0014-06]",
+      "sourceAuthority": "Current versioned user-confirmed preview and independent selection scope",
+      "currentApplicability": "current; replaces the old work-order-locked selection interpretation",
+      "reasonableness": "reasonable",
+      "reason": "A read-only preview explains the selected configuration without editing master data. Keeping selection separate allows creating a new object with another permitted version. Treating all controls as read-only because the preview is read-only would conflate two distinct responsibilities.",
+      "implementationEvidence": ["WorkOrderPage selectedProcess/processPreviewQuery", "WorkOrderPage 本次添加使用的制程 and 预览当前配置 controls"],
+      "semanticReview": "reviewed", "conclusion": "consistent", "businessQuestion": null
+    },
+    {
+      "id": "DEC-0012-10", "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml", "sourceLocator": "decisionStatements[id=DEC-0012-10]",
+      "sourceAuthority": "Current versioned user-confirmed first-start freeze boundary, also supported by user's current adoption of remote policy",
+      "currentApplicability": "current; not the withdrawn creation-time family freeze interpretation",
+      "reasonableness": "reasonable",
+      "reason": "Editable unstarted allocations remain flexible, while prohibiting mutation after execution begins preserves the relation between actual production and its evidence. Checking execution existence as well as status protects against status-only bypass. Layout changes must not turn hidden controls into a new lifecycle permission.",
+      "implementationEvidence": ["ProductionService.updateObject status/execution/parent checks", "ProductionExecutionService.act created START branch and requireApplicableProcess"],
+      "semanticReview": "reviewed", "conclusion": "consistent", "businessQuestion": null
+    }
+  ],
+  "conclusion": "No policy or knowledge change needed for the proposed local layout repair. Nine finite records assessed; no blocking real business ambiguity found.",
+  "notPerformed": ["Maven", "Database execution", "Browser or real-device validation", "Historical screenshot retrieval", "Full ontology audit"],
+  "repositoryChanges": []
+}

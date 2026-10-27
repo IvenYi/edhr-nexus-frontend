@@ -1,0 +1,88 @@
+decisionPackage:
+  id: DEC-PACKAGE-READ-OWN-WRITES-20261027
+  scope: 整体审计W4创建响应读取一致性及W2装饰预览语义
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 26796235085b9759295f3dfff8e078ded3cd5ed8
+    targetBranch: edhr-dev
+    targetCommit: 26796235085b9759295f3dfff8e078ded3cd5ed8
+    contractReadCommit: 26796235085b9759295f3dfff8e078ded3cd5ed8
+    uncommittedContractPaths: []
+  summary: PR32合并树相同；生产管理弹窗样式继续暂缓，核对原JPA/JDBC可见性线索与静态预览控件真实语义。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: production-create-response
+        change: 真实PG核对POST响应与提交后GET的产出状态，确认是否因JPA未flush使JDBC漏读新增对象。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java]
+      - area: decorative-preview
+        change: 核对设计器装饰预览的无动作按钮/焦点语义，保留实际编辑和动作配置。
+        evidenceReferences: [docs/development/branch-review-20261027-ui-evidence/evidence/static-triage.json]
+    transitiveImpacts:
+      - area: audit-atomicity
+        concern: 若新增flush只是事务内落库，不得提交、改变审计失败回滚或锁顺序。
+    potentialImpacts:
+      - area: performance
+        concern: 保留既有性能风险，不引入未经讨论的批量查询改造。
+    unaffectedAreas:
+      - area: production-management-dialog
+        reason: 用户暂缓重新设计，不改该页布局和其测试脚本。
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts:
+      - area: creation
+        change: 必须保留整批保存与逐对象审计同事务回滚。
+    permissionImpacts: []
+    testImpacts:
+      - scope: native-pg
+        scenarios: [单条及批量POST与GET一致, 审计故障回滚]
+        evidenceReferences: []
+      - scope: preview-browser
+        scenarios: [预览非交互, 实际配置控件仍可用]
+        evidenceReferences: []
+    evidenceGaps: [未复现的线索不计缺陷；规则先核实来源、适用性及合理性]
+  extensionStrategy:
+    selectedPaths: [product-core, transaction-orchestration]
+    rationale: 在现有事务响应组装和预览组件做确定性最小修复，不重构大模块。
+    ownershipBoundaries:
+      - owner: primary
+        responsibility: 复现、定位、代码和测试。
+      - owner: ontology
+        responsibility: 先评估当前产出/创建/审计依据合理性，不改政策。
+      - owner: source-helper
+        responsibility: 只读核对预览缺口与现有测试入口。
+      - owner: quality
+        responsibility: 收尾独立验证实际候选。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java
+      changeType: update
+      reason: 原生PG证明批量最后对象未flush导致响应与GET不同；批量完成后同事务flush一次，不提交、不改循环查询方案。
+    - path: gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx
+      changeType: update
+      reason: 纯装饰预览移除按钮/普通Tab语义，保留原文字和Button样式。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx
+      changeType: update
+      reason: 只调整拖动ghost语义，不改真实字段卡与指针拖放逻辑。
+    - path: gmp-platform/frontend/scripts/test-decorative-preview-browser.mjs
+      changeType: create
+      reason: 真实配置编辑与CanvasTab/Zustand拖放回归，独立于生产管理弹窗。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java
+      changeType: read-only
+      reason: 先复现响应一致性，明确后最小整改。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/BatchProcessIntegrationTest.java
+      changeType: update
+      reason: 新增真实HTTP/PG一致性与失败回滚场景。
+  acceptanceScenarios:
+    - id: create-read-consistency
+      given: 合法BATCH/SN工单与制程
+      when: 单条或批量创建对象，然后GET读取
+      then: POST产出状态与提交后GET一致；审计失败时对象与审计全回滚
+      evidenceRequirements: [原生PG红绿, 不改事务提交边界]

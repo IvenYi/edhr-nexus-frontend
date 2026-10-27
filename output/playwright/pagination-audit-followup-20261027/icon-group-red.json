@@ -1,0 +1,43 @@
+{
+  "boundary": "real shared component and pages; delayed fixture HTTP, no backend writes",
+  "results": [
+    {
+      "kind": "shared",
+      "result": "passed",
+      "requests": [
+        1,
+        2,
+        3,
+        2,
+        1
+      ],
+      "checks": "delayed/failed/cached pagination; successful shrink on shared and equipment; icon group isolation during delay/failure and no cross-group reorder"
+    },
+    {
+      "kind": "icons",
+      "result": "failed",
+      "message": "Changing group must not reorder old icons into the new group\n+ actual - expected\n\n+ [\n+   {\n+     body: {\n+       groupId: '102',\n+       ids: [\n+         '202',\n+         '201'\n+       ]\n+     },\n+     path: '/api/v1/system/icons/order'\n+   }\n+ ]\n- []\n",
+      "requests": [
+        1,
+        2,
+        3,
+        2,
+        1,
+        1
+      ],
+      "errors": []
+    },
+    {
+      "kind": "equipment",
+      "result": "passed",
+      "requests": [
+        1,
+        2,
+        3,
+        2,
+        1
+      ],
+      "checks": "delayed/failed/cached pagination; successful shrink on shared and equipment; icon group isolation during delay/failure and no cross-group reorder"
+    }
+  ]
+}

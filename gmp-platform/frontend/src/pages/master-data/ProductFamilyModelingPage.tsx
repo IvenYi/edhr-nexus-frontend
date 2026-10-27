@@ -4,7 +4,7 @@ import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx, l
 import { ListTableShell, resolveListColumnWidths } from '@/components/ListTableShell';
 import { usePersistedListColumnWidths } from '@/components/usePersistedListColumnWidths';
 import { Fragment, useEffect, useMemo, useState, type PointerEventHandler, type ReactNode } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Box,
   Button,
@@ -380,7 +380,7 @@ export default function ProductFamilyModelingPage() {
     },
   );
 
-  const listQuery = useQuery({
+  const listQuery = useQuery({ placeholderData: keepPreviousData,
     queryKey: ["product-family-modeling", page, pageSize, submittedKeyword],
     queryFn: async () =>
       (
@@ -392,9 +392,10 @@ export default function ProductFamilyModelingPage() {
       ).data.data,
   });
   useEffect(() => {
+    if (!listQuery.isSuccess || listQuery.isPlaceholderData || listQuery.isFetching) return;
     const lastPage = Math.max(listQuery.data?.totalPages ?? 0, 1);
     if (page > lastPage) setPage(lastPage);
-  }, [listQuery.data?.totalPages, page]);
+  }, [listQuery.data?.totalPages, page, listQuery.isSuccess, listQuery.isPlaceholderData, listQuery.isFetching]);
   const rows = listQuery.data?.content ?? [];
   useRecordLocationAction((location) => {
     if (location.type !== 'product_family_member') return false;
@@ -830,8 +831,8 @@ export default function ProductFamilyModelingPage() {
           <Stack direction="row" spacing={1.5} alignItems="center">
             <Pagination
               size="small"
-              count={Math.max(listQuery.data?.totalPages ?? 0, 1)}
-              page={Math.min(page, Math.max(listQuery.data?.totalPages ?? 0, 1))}
+              count={Math.max(listQuery.data?.totalPages ?? page, 1)}
+              page={page}
               onChange={(_, value) => setPage(value)}
             />
             <TextField

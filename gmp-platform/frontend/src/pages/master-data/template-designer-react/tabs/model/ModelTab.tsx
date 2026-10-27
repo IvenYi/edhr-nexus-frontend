@@ -1,5 +1,5 @@
 import TableStateCell from '@/components/TableStateCell';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import ContentCopyRounded from '@mui/icons-material/ContentCopyRounded';
 import { listFormInstanceRecords, type FormInstanceRecord } from '@/api/form-instance-records';
 import FormInstanceDetailDrawer from './FormInstanceDetailDrawer';
@@ -400,6 +400,7 @@ export default function ModelTab({
 
   const document = useTemplateDesignerStore((state) => state.document);
   const reportQuery = useQuery({
+    placeholderData: (previousData, previousQuery) => previousQuery?.queryKey[1] === document?.meta.templateId ? keepPreviousData(previousData) : undefined,
     queryKey: ['form-instance-records', document?.meta.templateId, reportFilters, reportPage, reportRowsPerPage, reportQueryRevision],
     queryFn: () => listFormInstanceRecords({ templateId: String(document!.meta.templateId), ...reportFilters, page: reportPage - 1, size: reportRowsPerPage }),
     enabled: Boolean(document?.meta.templateId && /^\d+$/.test(String(document.meta.templateId))),
@@ -479,7 +480,7 @@ export default function ModelTab({
   }, [currentFields, keyword, statusFilter, typeFilter]);
 
   const selectedField = currentFields.find((field) => field.id === selectedFieldId) ?? filteredFields[0] ?? null;
-  const reportPageCount = Math.max(1, Math.ceil(reportTotal / reportRowsPerPage));
+  const reportPageCount = Math.max(1, reportQuery.data ? Math.ceil(reportTotal / reportRowsPerPage) : reportPage);
   const pagedReportRows = activeSubTableDesignField ? reportRows.flatMap((row) => {
     const values = row.fieldValues[activeSubTableDesignField.id];
     return Array.isArray(values) ? values.map((value) => ({ ...row, fieldValues: value as Record<string, unknown> })) : [];

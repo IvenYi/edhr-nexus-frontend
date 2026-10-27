@@ -1,0 +1,128 @@
+qualityResult:
+  result: passed
+  baseCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+  headCommit: 66d00d15ba3613201e0face1cf811013ae081d64
+  contractBaseline:
+    sourceCommit: 66d00d15ba3613201e0face1cf811013ae081d64
+    targetBranch: edhr-dev
+    targetCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+    contractReadCommit: 66d00d15ba3613201e0face1cf811013ae081d64
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.baseline-and-contract
+    required: true
+    category: documentation
+    description: 核对来源、目标、契约及实际干净受测候选
+    method: command
+    command: git status --short; git rev-parse HEAD; git ls-remote origin refs/heads/edhr-dev;
+      read AGENTS and role/handoff contracts
+    outcome: passed
+    evidence:
+    - base=3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176; head=tested=66d00d15ba3613201e0face1cf811013ae081d64;
+      clean
+    - 目标仍为3aebfd49；本批无契约改动
+  - id: check.scope-and-old-candidate
+    required: true
+    category: requirements
+    description: 新规则承接、旧候选退出与有限交付边界
+    method: inspection
+    command: git diff target..HEAD; read decision-package and scope reports
+    outcome: passed
+    evidence:
+    - 运行代码仅一行Javadoc改变；未恢复旧锁版候选；41个归档文件存在
+    - 不将128路径盘点或旧报告当新业务完整认证；TaskDetail/记录控制等暂缓继续
+  - id: check.inventory
+    required: true
+    category: documentation
+    description: 独立重建128项增量路径、状态与blob
+    method: command
+    command: Python compare delta-inventory.json with git diff --name-status and git
+      rev-parse target:path
+    outcome: passed
+    evidence:
+    - 128/128路径状态和blob吻合，全部pending保留；不是全仓完成率
+  - id: check.current-semantic-boundaries
+    required: true
+    category: ontology
+    description: 独立核对16条有限本体记录、当前定义及源码边界
+    method: inspection
+    command: Parse referenced YAML IDs; inspect ProductionService, ExecutionSnapshotBuilder,
+      ProductionExecutionService, DhrInstanceService and controllers
+    outcome: passed
+    evidence:
+    - 16个ID均唯一存在，已核对独立选版/有效期/首次冻结/作业实时匹配和实例保留/旧H006替代
+    - 本体not-applicable原因成立；无知识改动、无成熟度提升
+  - id: check.native-pg
+    required: true
+    category: integration
+    description: 在两个新建隔离PostgreSQL数据库重跑当前候选
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=BatchProcessIntegrationTest,ProductionExecutionIntegrationTest -Dbatch.test.url=jdbc:postgresql://127.0.0.1:55432/edhr_batch_process_independent
+      -Dbatch.test.user=postgres -Dexecution.test.url=jdbc:postgresql://127.0.0.1:55432/edhr_execution_independent
+      -Dexecution.test.driver=org.postgresql.Driver -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect
+      -Dexecution.test.user=postgres test
+    outcome: passed
+    evidence:
+    - 'BatchProcessIntegrationTest: 12 passed,0 skipped'
+    - 'ProductionExecutionIntegrationTest: 92 total,90 passed,2 existing opt-in fixtures
+      skipped,0 failure/error'
+    - 合计104 total/102 passed/2 skipped；见/tmp/edhr-incremental-independent-evidence.json
+  - id: check.preview-observation
+    required: true
+    category: database
+    description: 独立核对真实JDBC规则查询/返回行计数及不落库断言
+    method: inspection
+    command: Read new growingPendingWorkPreviewRemainsReadOnly and independently execute
+      with PG suite
+    outcome: passed
+    evidence:
+    - 2/10/50工序=>规则查询2/10/50，行回调80/400/2000，簇查询3/11/51
+    - spy委托真实JdbcTemplate；只计snapshotBuilder匹配查询，不冒充全请求SQL/物理扫描/SLA
+    - 查询数只输出，测试不锁死旧成本；执行/DHR/审计零行断言通过，finally恢复jdbc
+  - id: check.knowledge-tests
+    required: true
+    category: regression
+    description: 结构、引用、类型与投影知识校验
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - 89 tests passed,0 failures/errors/skips；结构校验不代替全库语义审计
+  - id: check.comment-and-evidence-integrity
+    required: true
+    category: documentation
+    description: 确认注释修正与原件/结论边界、空白检查
+    method: command
+    command: git diff --check target..HEAD; inspect report summaries and source diff
+    outcome: passed
+    evidence:
+    - 只改过时工单锁版注释，方法体不变
+    - 主侧103基线与新增单项分列，未混称同一次104；风险与待讨论保留
+    - 未执行UI/视觉，无前端变更；原始敏感日志留/tmp，安全摘要带hash
+  findings: []
+  residualRisks:
+  - id: risk.partial-chain-only
+    description: 本批只验有限链与审计报告，完整W4/W1-W7、全部管理HTTP并发及H008尚未完成
+    impact: 不能把本批passed用作全分支完工结论
+    mitigation: 按台账继续增量覆盖，目标更新后复核受影响范围
+  - id: PERF-WORK-MATCH-REPEATED-CONTEXT-001
+    description: 待开工工序重复读取当前簇及活动规则已实际量化；工单列表/批量拆分风险仍有待量化
+    impact: 随工序、规则、工单和对象规模增长可能增加查询与加载成本；无生产SLA测量
+    mitigation: 先讨论请求内上下文复用和数据库分页方案，保持START实时校验和原事务/审计
+  - id: risk.runtime-test-boundaries
+    description: Execution测试部分外围服务mock；2项浏览器开发服务夹具按原条件跳过；本批无浏览器测试
+    impact: 不能外推完整生产栈或视觉通过
+    mitigation: 后续涉及UI或全栈改动时执行相应真实交互与端到端检查
+  - id: risk.existing-deferrals
+    description: TaskDetail签名、记录控制变更/作废相关high/A12、DHR分块及原知识gap继续暂缓
+    impact: 本批不关闭这些问题
+    mitigation: 各自按协作者修复/明确业务授权与原始证据复验
+  blockingConditions: []

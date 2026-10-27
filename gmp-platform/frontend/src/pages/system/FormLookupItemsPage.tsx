@@ -65,7 +65,7 @@ export default function FormLookupItemsPage() {
   const [settings, setSettings] = useState(() => loadListColumnSettings(storageKey, columns, 1));
   const { getColumnWidth, getResizeHandleProps } = usePersistedListColumnWidths(columns, 'form-lookup-items-widths-');
   const audit = useQuery({
-    queryKey: ['form-lookup-item-audit', selected?.id, auditPage, auditSize],
+    placeholderData: (previous, previousQuery) => previousQuery?.queryKey[1] === selected?.id ? previous : undefined, queryKey: ['form-lookup-item-audit', selected?.id, auditPage, auditSize],
     enabled: canEdit && Boolean(selected) && detailTab === 1,
     queryFn: async () => {
       const response = await getAuditLogs({ entityType: 'FORM_LOOKUP_ITEM', entityId: selected?.id, page: auditPage + 1, size: auditSize, sort: 'createdAt', order: 'desc' });
@@ -119,7 +119,7 @@ export default function FormLookupItemsPage() {
           </TableRow>)}</TableBody>
         </Table>;
       }}</ListTableShell>
-      <FormListPagination totalElements={rows.length} totalPages={Math.ceil(rows.length / size)} page={page} pageSize={size} onPageChange={setPage} onPageSizeChange={next => { setSize(next); setPage(0); }} />
+      <FormListPagination dataReady={catalog.isSuccess && !catalog.isFetching} totalElements={rows.length} totalPages={Math.ceil(rows.length / size)} page={page} pageSize={size} onPageChange={setPage} onPageSizeChange={next => { setSize(next); setPage(0); }} />
     </Box>
     <ListColumnSettingsPopover anchorEl={anchor} columns={columns} settings={settings} onClose={() => setAnchor(null)} onToggle={id => setSettings(current => ({ ...current, hidden: current.hidden.includes(id) ? current.hidden.filter(item => item !== id) : [...current.hidden, id] }))} onReorder={(from, to) => setSettings(current => reorderListColumns(columns, current, from, to))} />
     <FormDialog open={opened} onClose={() => { if (!save.isPending) setOpened(false); }} fullWidth maxWidth="sm" PaperProps={{ component: 'form', onSubmit: (event: FormEvent) => { event.preventDefault(); if (!save.isPending) save.mutate(); } }}>
@@ -141,7 +141,7 @@ export default function FormLookupItemsPage() {
       onCancel={() => setDeleteTarget(undefined)} onConfirm={() => { if (deleteTarget) remove.mutate(deleteTarget); }} />
     {bindingItem && <FormLookupBindingsDialog key={bindingItem.id} item={bindingItem} onClose={() => setBindingItem(undefined)} />}
     <DetailDrawer open={Boolean(selected)} onClose={() => setSelected(undefined)} label="追溯项详情" tab={detailTab} onTabChange={setDetailTab}
-      footer={detailTab === 1 && <FormListPagination totalElements={audit.data?.totalElements ?? 0} totalPages={audit.data?.totalPages ?? 0} page={auditPage} pageSize={auditSize} onPageChange={setAuditPage} onPageSizeChange={next => { setAuditSize(next); setAuditPage(0); }} />}>
+      footer={detailTab === 1 && <FormListPagination dataReady={audit.isSuccess && !audit.isFetching && !audit.isPlaceholderData} totalElements={audit.data?.totalElements ?? 0} totalPages={audit.data?.totalPages ?? 0} page={auditPage} pageSize={auditSize} onPageChange={setAuditPage} onPageSizeChange={next => { setAuditSize(next); setAuditPage(0); }} />}>
       {detailTab === 0 ? <>{selected && <>
         <FormDialogSection title="基本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>{columns.slice(0, 4).map(column => <Box key={column.id} sx={column.id === 'description' ? { gridColumn: '1 / -1' } : undefined}><DetailField label={column.label}>{valueOf(selected, column.id)}</DetailField></Box>)}</Box></FormDialogSection>
         <FormDialogSection title="系统信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>{columns.slice(4).map(column => <DetailField key={column.id} label={column.label}>{valueOf(selected, column.id)}</DetailField>)}</Box></FormDialogSection>

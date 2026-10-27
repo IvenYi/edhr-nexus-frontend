@@ -1,0 +1,90 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: a32d8d761293661cc3209342512050e96bba3ba7
+    targetBranch: edhr-dev
+    targetCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    contractReadCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    uncommittedContractPaths: []
+  reason: >-
+    在HEAD=a32d8d761293661cc3209342512050e96bba3ba7与
+    MERGE_HEAD=2c4b79e1641be4886fd5361b48df076e57abd768的未提交合并候选中，
+    精确合并唯一导入证据描述冲突。保留已确认的内联简短说明和远端按既有DEC-0016-04
+    修正的SN三列下载模板，同时保留2026-10-12原始差异及远端2026-10-27运行证据边界。
+    这是不同声明范围的证据合并，不新增政策、并行规则、知识版本或成熟度。
+    本实例实际重读现行契约、核对两侧原文及合并源码，并在候选上重新执行89项知识检查。
+    旧本体和质量报告不改写，不以其历史通过替代本合并候选的独立质量与运行验收。
+  changedArtifacts:
+    - path: docs/knowledge/evidence/production.yaml
+      changeType: update
+      ids: [evidence.production-work-order-batch-import-template-ui]
+  knowledgeSync:
+    - id: evidence.production-work-order-batch-import-template-ui
+      disposition: updated
+      scope: 合并当前选择文件按钮和内联说明、SN三列模板及远端修复证据；保留历史四列发现、旧备注文件解析和HTTP夹具不验证真实后端持久化的边界。仅消解此一描述冲突，不改其他证据或历史报告。
+      sourceReferences:
+        - docs/knowledge/evidence/production.yaml
+        - docs/knowledge/evidence/batch-process-2026-10-27.md
+        - docs/development/branch-review-20261027-production-growth/evidence/browser-green.json
+        - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+    - id: DEC-0014-09
+      disposition: retained
+      scope: 当前选择文件按钮及内联简短说明继续有效，数量必填和导入业务约束不变；不恢复远端证据中的旧标题旁和Info hover呈现描述。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml
+        - docs/development/batch-process-20261027/decision-package.yaml
+        - docs/knowledge/evidence/batch-process-2026-10-27.md
+    - id: DEC-0016-04
+      disposition: retained
+      scope: SN下载模板仍只含编号、计划开始、计划结束三列，SN数量隐含为1；BATCH五列和对象备注不受替代，内联展示重排不改变下载模板字段。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml
+        - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+    - id: discrepancy.production-sn-import-template-extra-remark
+      disposition: retained
+      scope: 保留远端resolved处置及其2026-10-12历史发现和2026-10-27修复证据。当前合并源码的下载表头、示例和工作簿帮助符合三列；旧CSV备注解析保持。远端浏览器通过记录属于其原候选，不外推为此次合并运行验收。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml
+        - docs/development/branch-review-20261027-production-growth/evidence/ontology-result.yaml
+        - docs/development/branch-review-20261027-production-growth/evidence/browser-green.json
+        - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.batch-ui-repair-integration-contract
+      checkType: reference
+      command: git rev-parse HEAD MERGE_HEAD origin/edhr-dev; git diff --name-only HEAD MERGE_HEAD -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - 本实例实际读取HEAD为a32d8d761293661cc3209342512050e96bba3ba7，MERGE_HEAD和origin/edhr-dev均为2c4b79e1641be4886fd5361b48df076e57abd768；未为未提交合并候选编造提交。
+        - 两侧项目、编码、角色和交接契约无增量；已重读现行项目、本体和统一交接契约，知识基线仍0.3.25。
+    - id: validation.batch-ui-repair-integration-semantic-scope
+      checkType: reference
+      command: git show HEAD及MERGE_HEAD的production.yaml；阅读DEC-0014-09、DEC-0016-04、差异处置及合并后的WorkOrderPage.tsx
+      outcome: passed
+      evidence:
+        - 两侧变更分别处理呈现说明和SN下载模板实现差异，业务含义可同时成立；冲突按原确认及源码核对消解，不按文件时间选择覆盖。
+        - 实际合并源码headers、example和工作簿A3帮助均为SN三列；选择文件按钮和内联提示保留，importPendingObjects仍读取备注且SN默认数量为1。
+        - 远端browser-green.json实际记录SN1440、SN390、BATCH1440三例通过，边界是Chromium加隔离HTTP夹具；本体仅阅读原记录，未重复执行浏览器或真实后端。
+    - id: validation.batch-ui-repair-integration-knowledge-suite
+      checkType: schema
+      command: mvn -q -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - 本实例在冲突消解后的实际合并工作树重新执行，退出码0；surefire XML汇总89 tests、0 failures、0 errors、0 skipped。
+        - 原始日志/tmp/batch-ui-repair-ontology-integration-20261027.log；报告tools/knowledge-model/target/surefire-reports。
+        - 知识结构与引用检查通过不等于生产运行、浏览器、合并质量或全库语义审计通过。
+    - id: validation.batch-ui-repair-integration-structure
+      checkType: evidence-path
+      command: Ruby YAML解析、基线/ID/路径/合并语义检查；git diff --check -- docs/knowledge/evidence/production.yaml及本结果文件
+      outcome: passed
+      evidence:
+        - production.yaml基线0.3.25、证据ID唯一及源码路径存在；已包含内联说明、SN三列、历史发现、旧备注解析和持久化验收边界，无残留Info hover当前约定或冲突标记。
+        - 本结果完整字段、唯一knowledgeSync ID及全部sourceReferences路径检查通过，受影响文件无空白错误。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

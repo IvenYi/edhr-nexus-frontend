@@ -4,7 +4,7 @@ import { ListTableShell } from '@/components/ListTableShell';
 import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx, listTablePrimaryTextSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import { usePersistedListColumnWidths } from '@/components/usePersistedListColumnWidths';
 import { type MouseEvent, type ReactNode, useEffect, useMemo, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Alert,
   Box,
@@ -192,7 +192,7 @@ export default function WorkshopManagementPage() {
     severity: 'success',
   });
 
-  const workshopsQuery = useQuery({
+  const workshopsQuery = useQuery({ placeholderData: keepPreviousData,
     queryKey: ['workshops', appliedFilters, page, pageSize],
     queryFn: () => getWorkshops({
       keyword: appliedFilters.keyword.trim() || undefined,
@@ -239,10 +239,11 @@ export default function WorkshopManagementPage() {
     onError: (error) => setSnackbar({ open: true, message: errorMessage(error), severity: 'error' }),
   });
 
-  const totalPages = Math.max(workshopsQuery.data?.totalPages ?? 0, 1);
+  const totalPages = Math.max(workshopsQuery.data?.totalPages ?? page, 1);
   useEffect(() => {
+    if (!workshopsQuery.isSuccess || workshopsQuery.isPlaceholderData || workshopsQuery.isFetching) return;
     if (page > totalPages) setPage(totalPages);
-  }, [page, totalPages]);
+  }, [page, totalPages, workshopsQuery.isSuccess, workshopsQuery.isPlaceholderData, workshopsQuery.isFetching]);
   const canSave = form.code.trim().length > 0 && form.name.trim().length > 0 && !saveMutation.isPending;
   const auditEvents = useMemo(() => auditQuery.data ?? [], [auditQuery.data]);
 

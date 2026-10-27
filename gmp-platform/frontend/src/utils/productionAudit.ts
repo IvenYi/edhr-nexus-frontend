@@ -122,13 +122,16 @@ export function toProductionAuditFields(
   const parsed = parseSnapshot(value);
   if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return [];
 
+  const record = parsed as Record<string, unknown>;
+  const snapshotAtReference = record.processReference != null && record.processSnapshot != null;
   const orderByField = new Map(fieldOrder.map((field, index) => [field, index]));
-  return Object.entries(parsed as Record<string, unknown>)
+  return Object.entries(record)
+    .filter(([key]) => !(snapshotAtReference && key === 'processSnapshot'))
     .sort(([left], [right]) => (orderByField.get(left) ?? fieldOrder.length) - (orderByField.get(right) ?? fieldOrder.length))
     .map(([key, fieldValue]) => ({
       key,
       label: labelOverrides[key] || fieldLabels[key] || key,
       value: formatValue(key, fieldValue),
-      details: key === 'processSnapshot' ? fieldValue : undefined,
+      details: key === 'processReference' && snapshotAtReference ? record.processSnapshot : key === 'processSnapshot' ? fieldValue : undefined,
     }));
 }

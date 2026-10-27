@@ -1,0 +1,90 @@
+{
+  "boundary": "real Chromium UI, fixture HTTP; no real backend writes",
+  "baseline": null,
+  "results": [
+    {
+      "name": "SN-1440",
+      "result": "passed",
+      "layoutChecks": [
+        {
+          "stage": "empty",
+          "horizontalOverflow": 0
+        },
+        {
+          "stage": "staged",
+          "horizontalOverflow": 0
+        },
+        {
+          "stage": "saved",
+          "horizontalOverflow": 0
+        }
+      ],
+      "checks": "dialog geometry; keyboard download/local table scroll; XLSX columns/example/help; import; negative validations; staged submit; console"
+    },
+    {
+      "name": "BATCH-1440",
+      "result": "passed",
+      "layoutChecks": [
+        {
+          "stage": "empty",
+          "horizontalOverflow": 0
+        },
+        {
+          "stage": "staged",
+          "horizontalOverflow": 0
+        },
+        {
+          "stage": "saved",
+          "horizontalOverflow": 0
+        }
+      ],
+      "checks": "dialog geometry; keyboard download/local table scroll; XLSX columns/example/help; import; negative validations; staged submit; console"
+    },
+    {
+      "name": "SN-390",
+      "result": "passed",
+      "layoutChecks": [
+        {
+          "stage": "empty",
+          "horizontalOverflow": 0
+        },
+        {
+          "stage": "staged",
+          "horizontalOverflow": 0
+        },
+        {
+          "stage": "saved",
+          "horizontalOverflow": 0
+        },
+        {
+          "stage": "table-keyboard-scroll",
+          "horizontalOverflow": 0
+        }
+      ],
+      "checks": "dialog geometry; keyboard download/local table scroll; XLSX columns/example/help; import; negative validations; staged submit; console"
+    },
+    {
+      "name": "BATCH-390",
+      "result": "passed",
+      "layoutChecks": [
+        {
+          "stage": "empty",
+          "horizontalOverflow": 0
+        },
+        {
+          "stage": "staged",
+          "horizontalOverflow": 0
+        },
+        {
+          "stage": "saved",
+          "horizontalOverflow": 0
+        },
+        {
+          "stage": "table-keyboard-scroll",
+          "horizontalOverflow": 0
+        }
+      ],
+      "checks": "dialog geometry; keyboard download/local table scroll; XLSX columns/example/help; import; negative validations; staged submit; console"
+    }
+  ]
+}

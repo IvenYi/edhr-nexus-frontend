@@ -390,14 +390,15 @@ export default function DocumentManagementPage() {
   const resizeCleanupRef = useRef<(() => void) | null>(null);
   useEffect(() => () => resizeCleanupRef.current?.(), []);
 
-  const query = useQuery({
+  const query = useQuery({ placeholderData: (previous, previousQuery) => previousQuery?.queryKey[1] === selectedCategory ? previous : undefined,
     queryKey: ['managed-documents', selectedCategory, page, pageSize, submittedKeyword],
     queryFn: async () => (await getDocuments({ page, size: pageSize, keyword: submittedKeyword || undefined, categoryId: selectedCategory })).data.data,
   });
   useEffect(() => {
+    if (!query.isSuccess || query.isPlaceholderData || query.isFetching) return;
     const lastPage = Math.max(query.data?.totalPages ?? 0, 1);
     if (page > lastPage) setPage(lastPage);
-  }, [page, query.data?.totalPages]);
+  }, [page, query.data?.totalPages, query.isSuccess, query.isPlaceholderData, query.isFetching]);
   const documents = query.data?.content ?? [];
   const documentCategoriesQuery = useQuery({
     queryKey: ['managed-document-categories'],
@@ -743,7 +744,7 @@ export default function DocumentManagementPage() {
         <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
           <Typography variant="body2" sx={{ color: '#606266', whiteSpace: 'nowrap' }}>共 {query.data?.totalElements ?? 0} 条数据</Typography>
           <Stack direction="row" spacing={1.5} alignItems="center">
-            <Pagination size="small" page={Math.min(page, Math.max(query.data?.totalPages ?? 0, 1))} count={Math.max(query.data?.totalPages ?? 0, 1)} onChange={(_, next) => setPage(next)} />
+            <Pagination size="small" page={page} count={Math.max(query.data?.totalPages ?? page, 1)} onChange={(_, next) => setPage(next)} />
             <FormControl size="small" sx={{ minWidth: 104 }}><Select value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value)); setPage(1); }}>{[20, 50, 100, 200].map((size) => <MenuItem key={size} value={size}>{size} 条/页</MenuItem>)}</Select></FormControl>
           </Stack>
         </Box>

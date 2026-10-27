@@ -3,7 +3,7 @@ import {
   useEffect,
   useMemo,
   useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
   Alert,
   Box,
@@ -252,7 +252,7 @@ function IconSelectorField({
             <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end">
               <Pagination
                 count={Math.max(pageCount, 1)}
-                page={Math.min(page, Math.max(pageCount, 1))}
+                page={page}
                 onChange={(_, nextPage) => onPageChange(nextPage)}
                 size="small"
                 color="primary"
@@ -351,6 +351,7 @@ export default function MenuManagementPage() {
   }, [reloadKey]);
 
   const iconsQuery = useQuery({
+    placeholderData: (previousData, previousQuery) => previousQuery?.queryKey[2] === selectedIconGroupId ? keepPreviousData(previousData) : undefined,
     queryKey: ['system', 'menu-icon-picker', selectedIconGroupId, iconKeyword, iconPickerPage, iconPickerPageSize],
     queryFn: () => getIconPage({ groupId: selectedIconGroupId, keyword: iconKeyword.trim(), page: iconPickerPage, size: iconPickerPageSize }),
   });
@@ -640,7 +641,7 @@ export default function MenuManagementPage() {
                     groupId={selectedIconGroupId}
                     keyword={iconKeyword}
                     page={iconPickerPage}
-                    pageCount={iconsQuery.data?.totalPages ?? 1}
+                    pageCount={iconsQuery.data?.totalPages ?? iconPickerPage}
                     totalElements={iconsQuery.data?.totalElements ?? 0}
                     pageSize={iconPickerPageSize}
                     onGroupChange={handleIconGroupChange}
@@ -678,7 +679,7 @@ export default function MenuManagementPage() {
                             groupId={selectedIconGroupId}
                             keyword={iconKeyword}
                             page={iconPickerPage}
-                            pageCount={iconsQuery.data?.totalPages ?? 1}
+                            pageCount={iconsQuery.data?.totalPages ?? iconPickerPage}
                             totalElements={iconsQuery.data?.totalElements ?? 0}
                             pageSize={iconPickerPageSize}
                             onGroupChange={handleIconGroupChange}

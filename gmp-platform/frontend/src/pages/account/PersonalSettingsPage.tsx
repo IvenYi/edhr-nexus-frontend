@@ -10,7 +10,7 @@ import {
   useMemo,
   useRef,
   useState } from 'react';
-import { useMutation,
+import { keepPreviousData, useMutation,
   useQuery,
   useQueryClient } from '@tanstack/react-query';
 import {
@@ -861,6 +861,7 @@ export default function PersonalSettingsPage() {
   });
 
   const auditLogsQuery = useQuery<PageResult<AuditLogItem>>({
+    placeholderData: keepPreviousData,
     queryKey: ['personal-settings-audit-logs', auditPage, auditPageSize],
     queryFn: () => getMyAuditLogs({
       page: auditPage,
@@ -872,6 +873,7 @@ export default function PersonalSettingsPage() {
   });
 
   const loginLogsQuery = useQuery<PageResult<LoginLogItem>>({
+    placeholderData: keepPreviousData,
     queryKey: ['personal-settings-login-logs', loginPage, loginPageSize, loginEventType],
     queryFn: () => getMyLoginLogs({
       page: loginPage,
@@ -1402,7 +1404,7 @@ export default function PersonalSettingsPage() {
       error={auditLogsQuery.isError}
       page={auditPage}
       pageSize={auditPageSize}
-      totalPages={auditLogsQuery.data?.totalPages ?? 0}
+      totalPages={auditLogsQuery.data?.totalPages ?? auditPage}
       totalElements={auditLogsQuery.data?.totalElements ?? 0}
       onPageChange={setAuditPage}
       onPageSizeChange={(nextSize) => {
@@ -1435,7 +1437,7 @@ export default function PersonalSettingsPage() {
       error={loginLogsQuery.isError}
       page={loginPage}
       pageSize={loginPageSize}
-      totalPages={loginLogsQuery.data?.totalPages ?? 0}
+      totalPages={loginLogsQuery.data?.totalPages ?? loginPage}
       totalElements={loginLogsQuery.data?.totalElements ?? 0}
       onPageChange={setLoginPage}
       onPageSizeChange={(nextSize) => {

@@ -188,7 +188,7 @@ evidence:
   - id: evidence.production-work-order-page-pending-list
     type: code
     path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
-    description: pendingObjects保存单条、按批次数/每批量生成和CSV/XLS/XLSX导入候选；每条有processVersionId，最终一次batch提交。BATCH正数量允许小于1，末批正余数保留；SN单件1。已拆分表新增未开工修改/取消并复用批次页API，待提交仍只移除/提交。SN模板额外备注列历史差异由DEC-0016保留，本轮不以源码替代既有确认；真实导入/视觉验证另记。
+    description: pendingObjects保存单条、按批次数/每批量生成和CSV/XLS/XLSX导入候选；每条有processVersionId，最终一次batch提交。BATCH正数量允许小于1，末批正余数保留；SN单件1。已拆分表新增未开工修改/取消并复用批次页API，待提交仍只移除/提交。SN模板额外备注列的历史发现由DEC-0016保留，2026-10-27已按原三列确认修正下载模板，旧文件备注解析与待提交传输保持；实际浏览器证据和独立验收分别记录，不以此声明完整页面或后端均已验收。
     visibility: internal
   - id: evidence.production-work-order-process-lock-preview-ui
     type: code
@@ -198,7 +198,7 @@ evidence:
   - id: evidence.production-work-order-batch-import-template-ui
     type: code
     path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
-    description: 生产对象导入区域提供“选择文件”按钮，以内联简短说明展示导入要求；BATCH 下载模板包含批次号、数量、计划开始时间、计划结束时间和备注五列，SN 下载模板只包含 SN 编号、计划开始时间和计划结束时间三列；文件选择器接受 CSV、XLS、XLSX。 2026-10-12 源码复核：SN下载模板实际含编号、计划开始、计划结束、备注四列，解析也接受备注；这与DEC-0016-04确认三列存在 discrepancy.production-sn-import-template-extra-remark，不能用当前实现撤销确认。SN每件数量仍隐含为1；本次未运行导入验收。
+    description: 生产对象导入区域提供“选择文件”按钮，以内联简短说明展示导入要求；BATCH 下载模板包含批次号、数量、计划开始时间、计划结束时间和备注五列，SN 下载模板只包含 SN 编号、计划开始时间和计划结束时间三列；文件选择器接受 CSV、XLS、XLSX。历史发现：2026-10-12源码复核曾确认SN下载有备注第四列，与DEC-0016-04存在差异，当时未运行导入验收；不改写该历史。2026-10-27下载模板表头、示例与帮助已修正为三列，SN数量仍隐含为1。test-work-order-template-browser.mjs的主侧真实Chromium/隔离HTTP夹具红绿记录覆盖实际XLSX列、示例及帮助、导入与待提交，SN1440/390及BATCH1440修复后三例通过；旧备注CSV导入与提交payload保持。浏览器夹具不验证真实后端持久化，独立质量结果另列。
     visibility: internal
   - id: evidence.production-object-start-side-effects-current
     type: code

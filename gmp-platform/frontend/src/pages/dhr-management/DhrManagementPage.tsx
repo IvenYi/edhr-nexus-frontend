@@ -6,7 +6,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -336,7 +336,7 @@ export default function DhrManagementPage() {
   }, [columnWidthStorageKey, columnWidths]);
 
   const query = useQuery({
-    queryKey: ['dhr-instances', keyword, objectType, status, page, size],
+    placeholderData: keepPreviousData, queryKey: ['dhr-instances', keyword, objectType, status, page, size],
     queryFn: () => listDhrInstances({ keyword, objectType, displayStatus: status, page, size }),
   });
   const queryErrorMessage = query.error instanceof Error ? query.error.message : '';
@@ -648,7 +648,7 @@ export default function DhrManagementPage() {
           </Table>
         </ListTableShell>
 
-        <FormListPagination
+        <FormListPagination dataReady={query.isSuccess && !query.isFetching && !query.isPlaceholderData}
           totalElements={query.data?.totalElements ?? 0}
           totalPages={query.data?.totalPages ?? 0}
           page={page}

@@ -1,0 +1,49 @@
+{
+  "base": "26796235085b9759295f3dfff8e078ded3cd5ed8",
+  "runs": [
+    {
+      "stage": "red",
+      "suites": [
+        {
+          "tests": 6,
+          "failures": 2,
+          "errors": 0,
+          "skipped": 0,
+          "name": "com.zencas.edhr.production.controller.BatchProcessIntegrationTest"
+        }
+      ],
+      "buildSuccess": false,
+      "logSha256": "3f2ceaee40edf054ff7263c6480d0c0e5eba99629bb3b87d2e0bf6d61970e5e7"
+    },
+    {
+      "stage": "green",
+      "suites": [
+        {
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 2,
+          "name": "com.zencas.edhr.production.controller.BatchProcessIntegrationTest"
+        },
+        {
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "name": "com.zencas.edhr.production.controller.ProductionObjectControllerTest"
+        },
+        {
+          "tests": 22,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "name": "com.zencas.edhr.production.service.ProductionServiceTest"
+        }
+      ],
+      "buildSuccess": true,
+      "logSha256": "1f2cbcb7f518b0d341323a156d227cc80fcf667824ee8acce1b8779c61c67553"
+    }
+  ],
+  "redInterpretation": "6 runs: bulk BATCH/SN failed with NO_DATA versus GET; single controls and audit rollback passed",
+  "greenInterpretation": "45 executed passed, 2 opt-in performance observations skipped; no schema/policy change"
+}

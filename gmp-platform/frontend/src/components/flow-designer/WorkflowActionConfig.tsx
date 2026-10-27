@@ -111,7 +111,7 @@ export function WorkflowActionConfig({
         <Typography variant="caption" color="text.secondary">
           {recordControl
             ? "审批动作及显隐由系统固定；可配置显示名称、按钮样式和电子签名，审批与退回可设置意见必填。"
-            : kind === "APPROVAL" ? "配置审批、退回和转办动作；转办始终要求填写原因，并受当前节点审批主体范围约束。" : "设置用户在此节点可以看到和执行的操作。"}
+            : kind === "APPROVAL" ? "配置审批、退回和转办动作；可转办给同租户正常可用的其他用户，转办必须填写原因。" : "设置用户在此节点可以看到和执行的操作。"}
         </Typography>
       </Stack>
 
@@ -123,7 +123,7 @@ export function WorkflowActionConfig({
         <Stack direction="row" spacing={0.75} useFlexGap flexWrap="wrap">
           {visibleButtons.length ? visibleButtons.map((button) => {
             const style = button.style ?? (button.action === "RETURN" ? "DANGER" : "DEFAULT");
-            return <Button key={button.id} size="small" variant={style === "DEFAULT" ? "outlined" : "contained"} color={style === "DANGER" ? "error" : "primary"} sx={{ pointerEvents: "none", textTransform: "none", maxWidth: "100%", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{button.label || actionLabels[button.action]}</Button>;
+            return <Button key={button.id} component="span" role="presentation" tabIndex={-1} size="small" variant={style === "DEFAULT" ? "outlined" : "contained"} color={style === "DANGER" ? "error" : "primary"} sx={{ pointerEvents: "none", textTransform: "none", maxWidth: "100%", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{button.label || actionLabels[button.action]}</Button>;
           }) : <Typography variant="caption" color="text.secondary">暂无可用按钮</Typography>}
         </Stack>
       </Box>

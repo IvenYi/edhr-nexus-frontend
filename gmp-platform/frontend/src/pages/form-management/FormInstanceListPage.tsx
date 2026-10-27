@@ -1,6 +1,6 @@
 import { readRecordLocation } from '@/utils/recordLocation';
 import { Fragment, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
   Accordion,
   AccordionDetails,
@@ -247,7 +247,7 @@ export default function FormInstanceListPage() {
   const [dragging, setDragging] = useState<ColumnId | null>(null);
   const resizeRef = useRef<{ id: ColumnId; startX: number; startWidth: number } | null>(null);
   const query = useQuery({
-    queryKey: ['form-management-global-list', page, pageSize, filters],
+    placeholderData: keepPreviousData, queryKey: ['form-management-global-list', page, pageSize, filters],
     queryFn: async () => {
       const queryParams: GlobalFormInstanceQuery = { page, size: pageSize, ...filters, productionObjectType: (filters.productionObjectType || undefined) as 'BATCH' | 'SN' | undefined, recordStatus: filters.recordStatus ? [filters.recordStatus as 'ACTIVE' | 'COMPLETED'] : undefined };
       Object.keys(queryParams).forEach((key) => { const typedKey = key as keyof GlobalFormInstanceQuery; if (queryParams[typedKey] === '') delete queryParams[typedKey]; });
@@ -337,7 +337,7 @@ export default function FormInstanceListPage() {
         <TableHead><TableRow sx={{ '& .MuiTableCell-root': headerCellSx }}>{visibleColumns.map((column) => <TableCell key={column.id} sx={{ width: columnWidth(column), minWidth: column.minWidth, position: 'sticky', top: 0, zIndex: 2, userSelect: 'none', ...frozenColumnSx(column.id, 'head', frozenStatusWidth, columnWidth(column)) }}>{column.label}<Box aria-label={`调整${column.label}列宽`} onPointerDown={(event) => beginColumnResize(event, column)} onPointerMove={(event) => { const start = resizeRef.current; if (start?.id === column.id) setSettings((current) => ({ ...current, widths: { ...current.widths, [column.id]: Math.max(column.minWidth, start.startWidth + event.clientX - start.startX) } })); }} onPointerUp={() => { resizeRef.current = null; }} onPointerCancel={() => { resizeRef.current = null; }} onLostPointerCapture={() => { resizeRef.current = null; }} sx={listColumnResizeHandleSx} /></TableCell>)}</TableRow></TableHead>
         <TableBody>{query.isLoading ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow> : query.isError ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#c62828' }}>{query.error instanceof Error ? query.error.message : '表单列表加载失败'}</TableStateCell></TableRow> : rows.length === 0 ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length} sx={{ height: '100%', color: '#909399' }}>暂无数据</TableStateCell></TableRow> : rows.map((row) => <TableRow data-record-id={row.formInstanceId} key={row.formInstanceId} hover tabIndex={0} onClick={() => openDetail(row.formInstanceId)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openDetail(row.formInstanceId); } }} sx={{ cursor: 'pointer', '& > .MuiTableCell-root': bodyCellSx }} aria-label={`查看表单实例号 ${row.instanceNo}`}>{visibleColumns.map((column) => <Fragment key={column.id}>{renderCell(row, column)}</Fragment>)}</TableRow>)}</TableBody>
       </Table></ListTableShell>
-      <FormListPagination totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(value) => { setPageSize(value); setPage(0); }} />
+      <FormListPagination dataReady={query.isSuccess && !query.isFetching && !query.isPlaceholderData} totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={pageSize} onPageChange={setPage} onPageSizeChange={(value) => { setPageSize(value); setPage(0); }} />
     </Box>
     <FormInstanceDetailDrawer recordId={recordId} tab={detailTab} onTabChange={setDetailTab} onClose={() => setRecordId(null)} />
   </Box>;

@@ -122,17 +122,18 @@ public class AuthController {
     private String storagePath;
 
     @PostMapping("/login")
+    @Transactional(dontRollbackOn = FailedLoginException.class)
     public ApiResponse<Map<String, Object>> login(@RequestBody LoginRequest request,
                                                   HttpServletRequest servletRequest) {
         SecurityPolicy policy = currentSecurityPolicy();
-        UserAccount user = userAccountRepository.findByUsername(request.getUsername())
+        UserAccount user = userAccountRepository.findByUsernameForUpdate(request.getUsername())
                 .orElseThrow(() -> new BusinessException(ErrorCode.AUTH_001));
 
         ensureLoginAllowed(user);
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             handleFailedLogin(user, policy);
-            throw new BusinessException(ErrorCode.AUTH_001);
+            throw new FailedLoginException();
         }
 
         if ("DISABLED".equals(user.getStatus()) || "LOCKED".equals(user.getStatus())) {
@@ -1307,6 +1308,11 @@ public class AuthController {
     public static class LoginRequest {
         private String username;
         private String password;
+    }
+
+    /** A rejected password must commit its attempt counter; technical failures still roll back. */
+    private static final class FailedLoginException extends BusinessException {
+        private FailedLoginException() { super(ErrorCode.AUTH_001); }
     }
 
     @Data

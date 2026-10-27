@@ -12,7 +12,7 @@ import {
   useRef,
   useState,
   } from 'react';
-import { useMutation,
+import { keepPreviousData, useMutation,
   useQuery,
   useQueryClient } from '@tanstack/react-query';
 import {
@@ -490,6 +490,7 @@ export default function BusinessDictionaryPage() {
   };
 
   const dictionariesQuery = useQuery({
+    placeholderData: keepPreviousData,
     queryKey: ['business-dictionaries', dictionaryPage, dictionaryPageSize, dictionaryFilters],
     queryFn: () => getBusinessDictionaries({
       page: dictionaryPage,
@@ -513,6 +514,7 @@ export default function BusinessDictionaryPage() {
   }, [dictionaries, selectedDictionaryId]);
 
   const itemsQuery = useQuery({
+    placeholderData: (previousData, previousQuery) => previousQuery?.queryKey[1] === selectedDictionary?.id ? keepPreviousData(previousData) : undefined,
     queryKey: ['business-dictionary-items', selectedDictionary?.id, itemPage, itemPageSize, itemFilters],
     enabled: Boolean(selectedDictionary?.id),
     queryFn: () => getBusinessDictionaryItems(selectedDictionary?.id ?? '', {
@@ -554,8 +556,8 @@ export default function BusinessDictionaryPage() {
   const itemTotalTableWidth = visibleItemColumns.reduce((sum, column) => sum + itemResolvedWidths[column.id], 0);
   const dictionaryEmptyState = dictionariesQuery.isLoading || dictionariesQuery.isError || dictionaries.length === 0;
   const itemEmptyState = itemsQuery.isLoading || itemsQuery.isError || items.length === 0;
-  const dictionaryPageCount = Math.max(1, dictionariesQuery.data?.totalPages ?? 1);
-  const itemPageCount = Math.max(1, itemsQuery.data?.totalPages ?? 1);
+  const dictionaryPageCount = Math.max(1, dictionariesQuery.data?.totalPages ?? dictionaryPage);
+  const itemPageCount = Math.max(1, itemsQuery.data?.totalPages ?? itemPage);
   const itemTotalElements = itemsQuery.data?.totalElements ?? 0;
   const canReorderCurrentItems = Boolean(selectedDictionary) && itemTotalElements > 0 && itemTotalElements === items.length;
 

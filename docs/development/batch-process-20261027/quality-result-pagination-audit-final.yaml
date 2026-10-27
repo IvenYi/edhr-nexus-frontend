@@ -1,0 +1,291 @@
+{
+  "qualityResult": {
+    "result": "passed",
+    "baseCommit": "2c4b79e1641be4886fd5361b48df076e57abd768",
+    "headCommit": "a32d8d761293661cc3209342512050e96bba3ba7",
+    "contractBaseline": {
+      "sourceCommit": "a32d8d761293661cc3209342512050e96bba3ba7",
+      "targetBranch": "edhr-dev",
+      "targetCommit": "2c4b79e1641be4886fd5361b48df076e57abd768",
+      "contractReadCommit": "2c4b79e1641be4886fd5361b48df076e57abd768",
+      "uncommittedContractPaths": []
+    },
+    "workingTreeState": {
+      "status": "dirty",
+      "includedPaths": [
+        "docs/development/batch-process-20261027/decision-package.yaml",
+        "docs/development/batch-process-20261027/ontology-result-pagination-audit.yaml",
+        "docs/development/batch-process-20261027/ontology-result-ui-repair-integration.yaml",
+        "docs/development/batch-process-20261027/pagination-audit-verification.md",
+        "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+        "docs/knowledge/evidence/batch-process-2026-10-27.md",
+        "docs/knowledge/evidence/production.yaml",
+        "docs/knowledge/rules/production.yaml",
+        "gmp-platform/frontend/scripts/test-production-audit.mjs",
+        "gmp-platform/frontend/scripts/test-production-pagination-browser.mjs",
+        "gmp-platform/frontend/scripts/test-shared-pagination-browser.mjs",
+        "gmp-platform/frontend/scripts/test-work-order-template-browser.mjs",
+        "gmp-platform/frontend/src/pages/account/PersonalSettingsPage.tsx",
+        "gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx",
+        "gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx",
+        "gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+        "gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx",
+        "gmp-platform/frontend/src/pages/dhr-management/DhrWorklistTable.tsx",
+        "gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx",
+        "gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx",
+        "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+        "gmp-platform/frontend/src/pages/form-management/formManagementListStyles.tsx",
+        "gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx",
+        "gmp-platform/frontend/src/pages/master-data/EquipmentPage.tsx",
+        "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+        "gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx",
+        "gmp-platform/frontend/src/pages/master-data/ProductModelingPage.tsx",
+        "gmp-platform/frontend/src/pages/master-data/QualityReasonPage.tsx",
+        "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx",
+        "gmp-platform/frontend/src/pages/master-data/WorkshopManagementPage.tsx",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx",
+        "gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx",
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx",
+        "gmp-platform/frontend/src/pages/reports/DhrTraceReportPage.tsx",
+        "gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx",
+        "gmp-platform/frontend/src/pages/system/AuditLogPage.tsx",
+        "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx",
+        "gmp-platform/frontend/src/pages/system/FormLookupItemsPage.tsx",
+        "gmp-platform/frontend/src/pages/system/IconManagementPage.tsx",
+        "gmp-platform/frontend/src/pages/system/MenuManagementPage.tsx",
+        "gmp-platform/frontend/src/pages/workflow-center/FormProcessList.tsx",
+        "gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateList.tsx",
+        "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateList.tsx",
+        "gmp-platform/frontend/src/utils/productionAudit.ts"
+      ],
+      "excludedPaths": [
+        "远端合入但与本轮分页、批次审计及SN模板集成无关的认证、委托、设计器源码和历史审查报告",
+        "output/其他历史证据；未对全系统CRUD、后端写入和部署重新验收"
+      ],
+      "untrackedPaths": [
+        "gmp-platform/frontend/scripts/test-production-audit.mjs",
+        "gmp-platform/frontend/scripts/test-production-pagination-browser.mjs",
+        "gmp-platform/frontend/scripts/test-shared-pagination-browser.mjs",
+        "docs/development/batch-process-20261027/pagination-audit-verification.md",
+        "docs/development/batch-process-20261027/ontology-result-pagination-audit.yaml",
+        "docs/development/batch-process-20261027/ontology-result-ui-repair-integration.yaml",
+        "docs/development/batch-process-20261027/quality-result-pagination-audit.yaml",
+        "docs/development/batch-process-20261027/quality-result-pagination-audit-final.yaml",
+        "output/playwright/pagination-audit-final-independent-20261027/"
+      ]
+    },
+    "knowledgeBaselineVersion": "0.3.25",
+    "checks": [
+      {
+        "id": "check.final.contract-and-candidate",
+        "required": true,
+        "category": "documentation",
+        "description": "全新实例独立核对契约、候选及范围，不修改实现或测试",
+        "method": "command",
+        "command": "git rev-parse HEAD MERGE_HEAD origin/edhr-dev; git diff --name-only HEAD MERGE_HEAD -- AGENTS.md codeplzreadme.md docs/agents; git diff --check; git diff --cached --check",
+        "outcome": "passed",
+        "evidence": [
+          "output/playwright/pagination-audit-final-independent-20261027/review-state.json",
+          "HEAD=a32d8d761293661cc3209342512050e96bba3ba7，MERGE_HEAD=origin/edhr-dev=2c4b79e1641be4886fd5361b48df076e57abd768；tested candidate为两者合并后未提交工作树，44个相关文件SHA256见review-state.json。",
+          "契约无增量，冲突路径为空，两份diff检查通过；本实例未参与修复，未暂存、提交、推送。"
+        ]
+      },
+      {
+        "id": "check.final.pagination-source-scope",
+        "required": true,
+        "category": "regression",
+        "description": "复核全项目分页分类及受影响查询、越界校正和占位数据上下文",
+        "method": "inspection",
+        "command": "rg分页JSX/Math.min/totalPages/setPage/queryKey/placeholderData；阅读当前差异及相关原始实现",
+        "outcome": "passed",
+        "evidence": [
+          "原始检索直接分页TSX为45个，加DHR两个转接入口；自定义ReferencePickerDialog、DashboardTaskList、DhrAuditTrail的页码与busy边界另核对。",
+          "10页旧重置路径现在仅接受isSuccess且非isFetching/isPlaceholderData；目标页受状态控制。FormListPagination显式dataReady，11异步入口及DHR转接均提供真实就绪状态。",
+          "图标管理与菜单选择器均按queryKey[2]当前分组隔离；字典父ID、模板/制程类型、设备类型、表单及DHR视图、原因类型及审计对象、报表模型、设计器模板身份均按实际所有权核对。其他查询仅改变同一列表的页码/筛选。",
+          "未发现仍将异步缺失总页数直接归零的遗漏；本地分页与无重置的隐藏分页保留，源码覆盖不等于逐页E2E。",
+          "docs/development/batch-process-20261027/pagination-audit-verification.md"
+        ]
+      },
+      {
+        "id": "check.final.unit",
+        "required": true,
+        "category": "unit",
+        "description": "独立重跑批次编辑与审计字段投影10项回归",
+        "method": "automated-test",
+        "command": "cd gmp-platform/frontend && node --test scripts/test-production-audit.mjs scripts/test-production-object-edit.mjs",
+        "outcome": "passed",
+        "evidence": [
+          "output/playwright/pagination-audit-final-independent-20261027/unit.log",
+          "10 tests, 10 pass, 0 fail；包括未开工无伪快照、同版本不同历史原件、制程身份、数量有效性及陈旧数据阻断。"
+        ]
+      },
+      {
+        "id": "check.final.production-browser",
+        "required": true,
+        "category": "e2e",
+        "description": "实际批次与工单组件的异步分页及批次历史审计入口",
+        "method": "browser",
+        "command": "CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' node scripts/test-production-pagination-browser.mjs",
+        "outcome": "passed",
+        "evidence": [
+          "output/playwright/pagination-audit-final-independent-20261027/production-browser.json",
+          "output/playwright/pagination-audit-final-independent-20261027/batches.png",
+          "output/playwright/pagination-audit-final-independent-20261027/orders.png",
+          "两例通过：未缓存、缓存、延迟、乱序、503、真实缩页、筛选、每页条数；批次要求修改类别并附开工文字，{}位于制程同行、内容为历史FROZEN标记，新增记录无冻结入口。",
+          "全部HTTP为隔离夹具，不向真实服务/数据库写入；截图实际查看，未见顶部冗余文案或入口遮挡。"
+        ]
+      },
+      {
+        "id": "check.final.shared-and-icon-context-browser",
+        "required": true,
+        "category": "regression",
+        "description": "独立复验共用分页、设备分页及图标分组串组high问题",
+        "method": "browser",
+        "command": "CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' node scripts/test-shared-pagination-browser.mjs",
+        "outcome": "passed",
+        "evidence": [
+          "output/playwright/pagination-audit-final-independent-20261027/shared-browser.json",
+          "output/playwright/pagination-audit-final-independent-20261027/icons.png",
+          "output/playwright/pagination-audit-final-independent-20261027/equipment.png",
+          "三例通过；延迟/失败/缓存页码保持，共用与设备页真实响应缩页有效。",
+          "图标A→B等待时旧组图标数量为0，不产生旧图标配新组ID的排序请求；失败组等待及失败后也不恢复旧组记录。测试的错误排序尝试及无写断言均保留，未改测试/夹具以达成通过。"
+        ]
+      },
+      {
+        "id": "check.final.audit-and-ontology",
+        "required": true,
+        "category": "ontology",
+        "description": "核对新增/修改分类、开工次要说明、历史快照来源与当前本体",
+        "method": "inspection",
+        "command": "阅读BatchManagementPage、productionAudit、ProductionExecutionService.auditObjectStatusChange、production规则和当前本体结果",
+        "outcome": "passed",
+        "evidence": [
+          "rule.production.audit-action-projection保留allowedActions=[CREATE,UPDATE]、新增/修改标签及原归一化映射；batch-management-row-detail-and-audit-entry保持原来源和分类。",
+          "auditActionLabel只返回新增/修改；独立caption说明开工依据该条真实快照，而不是依据当前批次状态。后端原始代码首次开工将processReference/processSnapshot/processFrozenAt写入UPDATE；详情使用所选审计原件，不请求当前主数据或补造历史。",
+          "ontology-result-pagination-audit.yaml为updated，两个规则声明级同步及首轮遗漏纠错明确；没有新事件类型或业务政策。"
+        ]
+      },
+      {
+        "id": "check.final.knowledge-validation",
+        "required": true,
+        "category": "ontology",
+        "description": "修正后当前知识基线正式校验",
+        "method": "command",
+        "command": "mvn -q -f tools/knowledge-model/pom.xml test",
+        "outcome": "passed",
+        "evidence": [
+          "output/playwright/pagination-audit-final-independent-20261027/knowledge.log",
+          "output/playwright/pagination-audit-final-independent-20261027/review-state.json",
+          "本实例实际运行89 tests、0 failures、0 errors、0 skipped；未将schema检查等同于全库语义或业务运行验收。"
+        ]
+      },
+      {
+        "id": "check.final.frontend-build",
+        "required": true,
+        "category": "integration",
+        "description": "当前合并候选完整前端类型检查及构建",
+        "method": "command",
+        "command": "cd gmp-platform/frontend && npm run build",
+        "outcome": "passed",
+        "evidence": [
+          "output/playwright/pagination-audit-final-independent-20261027/build.log",
+          "本实例实际执行退出码0，TypeScript和Vite构建通过。"
+        ]
+      },
+      {
+        "id": "check.final.sn-template-integration-boundary",
+        "required": true,
+        "category": "integration",
+        "description": "核对远端SN模板与本轮拆分界面的集成保留",
+        "method": "inspection",
+        "command": "git diff -- scripts/test-work-order-template-browser.mjs；阅读当前WorkOrderPage与SN决策/证据及已有集成结果",
+        "outcome": "passed",
+        "evidence": [
+          "当前测试只补完整processReference及新控件名称；SN三列/BATCH五列、XLSX解析、导入负例与提交payload断言未削弱。",
+          "output/playwright/batch-ui-repair-integration-20261027/browser-green.json为主侧当前合并候选已执行的三例证据，本实例未重复执行该脚本；后续修复只影响分页等待与批次审计/图标组，没有改导入、模板或提交逻辑。",
+          "本条为源码及既有运行证据核对，不能表述为本实例重新运行SN三例。"
+        ]
+      }
+    ],
+    "findings": [
+      {
+        "id": "QF-PAG-001",
+        "severity": "high",
+        "scope": "system.icon-management.pagination-group-context",
+        "summary": "原图标切组占位数据导致新组ID配旧图标ID的错误排序已修复并独立复验",
+        "reproductionSteps": [
+          "组A存在两个自定义图标，切到未缓存且延迟响应的组B。",
+          "修复前旧图标仍可拖拽，排序请求携带组B ID和组A图标ID。"
+        ],
+        "expectedResult": "跨组切换不保留旧组可操作图标，不能产生错误归组排序。",
+        "actualResult": "当前延迟及失败场景均不显示旧组图标，未产生跨组排序请求；同组分页仍保持目标页。",
+        "evidence": [
+          "output/playwright/pagination-audit-independent-20261027/icon-context-repro.json",
+          "output/playwright/pagination-audit-followup-20261027/icon-group-red.json"
+        ],
+        "resolutionStatus": "resolved",
+        "resolutionEvidence": [
+          {
+            "type": "command",
+            "reference": "output/playwright/pagination-audit-final-independent-20261027/shared-browser.json"
+          },
+          {
+            "type": "document",
+            "reference": "output/playwright/pagination-audit-final-independent-20261027/review-state.json"
+          }
+        ]
+      },
+      {
+        "id": "QF-PAG-002",
+        "severity": "medium",
+        "scope": "production.batch-audit.action-projection",
+        "summary": "原开工动作标签与两类投影规则冲突已修复并独立复验",
+        "reproductionSteps": [
+          "读取含首次processSnapshot的批次UPDATE审计。",
+          "修复前标题直接以开工替换修改，与现行两类动作约束冲突。"
+        ],
+        "expectedResult": "保留修改类别，可附次要开工说明，并提供所选历史快照详情。",
+        "actualResult": "当前标题显示修改和次要开工说明，{}在对应制程旁，当前本体与源码及浏览器结果一致。",
+        "evidence": [
+          "docs/development/batch-process-20261027/quality-result-pagination-audit.yaml"
+        ],
+        "resolutionStatus": "resolved",
+        "resolutionEvidence": [
+          {
+            "type": "command",
+            "reference": "output/playwright/pagination-audit-final-independent-20261027/production-browser.json"
+          },
+          {
+            "type": "screenshot",
+            "reference": "output/playwright/pagination-audit-final-independent-20261027/batches.png"
+          },
+          {
+            "type": "document",
+            "reference": "docs/knowledge/rules/production.yaml"
+          }
+        ]
+      }
+    ],
+    "residualRisks": [
+      {
+        "id": "risk.fixture-runtime-boundary",
+        "description": "新浏览器验收使用隔离HTTP，不重新验证服务端持久化或真实生产开工。",
+        "impact": "不能据此声称后端全系统、迁移或全部CRUD通过；本轮未改变相应写入实现。",
+        "mitigation": "保留先前真实服务证据时点，当前结论限定分页、审计呈现及相关契约。"
+      },
+      {
+        "id": "risk.page-coverage-boundary",
+        "description": "所有分页入口经源码分类核对，运行测试按三类机制及高风险切组代表性覆盖。",
+        "impact": "没有逐页跑完所有业务数据和交互组合。",
+        "mitigation": "明确区分源码覆盖与5组实际浏览器场景，保留完整盘点与回归脚本。"
+      },
+      {
+        "id": "risk.uncommitted-candidate",
+        "description": "当前结果绑定未提交合并工作树，不代表未来提交或远端CI结果。",
+        "impact": "后续源代码或目标提交变化须增量重评验证。",
+        "mitigation": "review-state.json记录基线与文件摘要；用户恢复提交后仍核对候选，当前禁止提交推送。"
+      }
+    ],
+    "blockingConditions": []
+  }
+}

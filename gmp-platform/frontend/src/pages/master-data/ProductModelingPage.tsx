@@ -4,7 +4,7 @@ import { listColumnResizeHandleSx, listTableBodyCellSx, listTableHeaderCellSx, l
 import { ListTableShell, resolveListColumnWidths } from '@/components/ListTableShell';
 import { usePersistedListColumnWidths } from '@/components/usePersistedListColumnWidths';
 import { Fragment, useEffect, useMemo, useState, type PointerEventHandler, type ReactNode } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Accordion,
   AccordionDetails,
@@ -236,14 +236,15 @@ export default function ProductModelingPage() {
   });
 
   useEffect(() => { localStorage.setItem(COLUMN_STORAGE_KEY, JSON.stringify(hiddenColumns)); }, [hiddenColumns]);
-  const query = useQuery({
+  const query = useQuery({ placeholderData: keepPreviousData,
     queryKey: ['product-modeling-products', page, pageSize, submittedKeyword],
     queryFn: async () => (await getProductModelingProducts({ page, size: pageSize, keyword: submittedKeyword, status: 'ALL' })).data.data,
   });
   useEffect(() => {
+    if (!query.isSuccess || query.isPlaceholderData || query.isFetching) return;
     const lastPage = Math.max(query.data?.totalPages ?? 0, 1);
     if (page > lastPage) setPage(lastPage);
-  }, [page, query.data?.totalPages]);
+  }, [page, query.data?.totalPages, query.isSuccess, query.isPlaceholderData, query.isFetching]);
   const rows = query.data?.content ?? [];
   const visibleColumns = useMemo(() => PARENT_COLUMNS.filter((column) => !hiddenColumns.includes(column.id)), [hiddenColumns]);
   const parentTableWidth = visibleColumns.reduce((total, column) => total + getParentColumnWidth(column), 0);
@@ -392,7 +393,7 @@ export default function ProductModelingPage() {
         </Table>;
         }}
       </ListTableShell>
-      <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}><Typography variant="body2" sx={{ color: '#606266' }}>共 {query.data?.totalElements ?? 0} 条数据</Typography><Stack direction="row" spacing={1.5} alignItems="center"><Pagination size="small" count={Math.max(query.data?.totalPages ?? 0, 1)} page={Math.min(page, Math.max(query.data?.totalPages ?? 0, 1))} onChange={(_, value) => setPage(value)} /><TextField select size="small" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number]); setPage(1); }} SelectProps={{ native: true }} sx={{ width: 112 }} inputProps={{ 'aria-label': '每页条数' }}>{PAGE_SIZE_OPTIONS.map((option) => <option key={option} value={option}>{option} 条/页</option>)}</TextField></Stack></Box>
+      <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}><Typography variant="body2" sx={{ color: '#606266' }}>共 {query.data?.totalElements ?? 0} 条数据</Typography><Stack direction="row" spacing={1.5} alignItems="center"><Pagination size="small" count={Math.max(query.data?.totalPages ?? page, 1)} page={page} onChange={(_, value) => setPage(value)} /><TextField select size="small" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number]); setPage(1); }} SelectProps={{ native: true }} sx={{ width: 112 }} inputProps={{ 'aria-label': '每页条数' }}>{PAGE_SIZE_OPTIONS.map((option) => <option key={option} value={option}>{option} 条/页</option>)}</TextField></Stack></Box>
     </Box>
 
     <Popover open={Boolean(columnAnchor)} anchorEl={columnAnchor} onClose={() => setColumnAnchor(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }} PaperProps={{ sx: { width: 220, p: 1.25 } }}>

@@ -1,0 +1,71 @@
+decisionPackage:
+  id: DEC-PACKAGE-UI-EVIDENCE-20261027
+  scope: 整体审计W2/W4/W5界面证据复核，静态提示核实及生产对象弹窗窄屏可用性
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 52dcf9d27a41f8243ed59d0a05605da011e32f83
+    targetBranch: edhr-dev
+    targetCommit: 52dcf9d27a41f8243ed59d0a05605da011e32f83
+    contractReadCommit: 52dcf9d27a41f8243ed59d0a05605da011e32f83
+    uncommittedContractPaths: []
+  summary: 用户要求说明静态/窄屏问题并继续审计，规则须先评估合理性再作为代码修复依据。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: production-object-dialog
+        change: 复现390px横向裁切并局部修复，保留显式选版、数量、导入和提交语义。
+        evidenceReferences: [gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx]
+      - area: static-evidence
+        change: 27条扫描提示逐项核对，区分误报、证据不足和真实缺陷，不为扫描绿色修改业务。
+        evidenceReferences: [docs/development/branch-review-20261027-production-growth/evidence/ui-current.json]
+    transitiveImpacts:
+      - area: shared-dialog
+        concern: 优先局部布局修复，不将单页宽度设置传播到共享AppDialog或其他页面。
+    potentialImpacts:
+      - area: accessibility
+        concern: 可点击控件与文件入口必须可见可达，宽表保留局部横向滚动。
+    unaffectedAreas:
+      - area: business-policy
+        reason: 不改变模板列、旧备注兼容、开工冻结、作业匹配、数量、权限和签名政策。
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts: []
+    permissionImpacts: []
+    testImpacts:
+      - scope: browser
+        scenarios: [390px与桌面几何, 键盘下载, 导入与提交, 基线红绿]
+        evidenceReferences: [gmp-platform/frontend/scripts/test-work-order-template-browser.mjs]
+    evidenceGaps: [扫描提示不等于运行缺陷，用户原始截图及真实设备覆盖不足时显式记录]
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在既有生产页面修正布局约束，复用TableContainer及AppDialog，不新增配置框架。
+    ownershipBoundaries:
+      - owner: primary
+        responsibility: 复现、局部布局修复、浏览器验证与持续台账。
+      - owner: source-review-helper
+        responsibility: 只读核对静态线索的实际源码及证据，不参与修复。
+      - owner: ontology
+        responsibility: 只读评估相关规则来源、适用性与合理性，不盲信知识或改业务政策。
+      - owner: quality
+        responsibility: 收尾独立复核实际候选，不参与修复。
+  affectedFiles:
+    - path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+      changeType: update
+      reason: 未开工生产对象管理弹窗局部响应式布局。
+    - path: gmp-platform/frontend/scripts/test-work-order-template-browser.mjs
+      changeType: update
+      reason: 保留下载导入断言，补几何可见性与局部滚动回归。
+  acceptanceScenarios:
+    - id: dialog-visible-controls
+      given: 390px及1440px宽度的生产对象管理弹窗
+      when: 显式选择制程、下载导入并暂存提交
+      then: 表单和控件不被横向裁切；宽表在自身区域横向滚动；业务payload保持
+      evidenceRequirements: [基线几何失败, 候选真实浏览器通过, 受控API边界披露]

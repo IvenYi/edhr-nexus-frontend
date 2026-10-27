@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Alert, Box } from '@mui/material';
 import client from '@/api/client';
 import type { DhrInstanceSummary } from '@/api/dhr-instances';
@@ -20,7 +20,7 @@ export default function DhrTraceReportPage() {
   const [request, setRequest] = useState(initialTraceRequest);
   const [revision, setRevision] = useState(0);
   const [selected, setSelected] = useState<Row | null>(null);
-  const data = useQuery({ queryKey: ['dhr-trace-report', request, revision], queryFn: async () =>
+  const data = useQuery({ placeholderData: keepPreviousData, queryKey: ['dhr-trace-report', request, revision], queryFn: async () =>
     (await client.post('/reports/trace/dhrs/query', request)).data.data as { total: number; records: Row[] } });
   const reverse = request.direction === 'REVERSE';
   return <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0, gap: 1.5 }}>
@@ -32,7 +32,7 @@ export default function DhrTraceReportPage() {
       rows={(data.data?.records ?? []).map(row => ({ ...row, objectTypeLabel: dhrObjectTypeLabel[row.objectType], statusLabel: dhrStatusMeta(row.displayStatus).label,
         hitForms: row.hits?.map(hit => `${hit.templateName}（${hit.instanceNo}）`).join('；') }))}
       loading={data.isFetching} failed={data.isError} onSource={index => setSelected(data.data!.records[index])}
-      footer={<FormListPagination totalElements={data.data?.total ?? 0} totalPages={Math.ceil((data.data?.total ?? 0) / request.size)} page={request.page} pageSize={request.size}
+      footer={<FormListPagination dataReady={data.isSuccess && !data.isFetching && !data.isPlaceholderData} totalElements={data.data?.total ?? 0} totalPages={Math.ceil((data.data?.total ?? 0) / request.size)} page={request.page} pageSize={request.size}
         onPageChange={page => setRequest({ ...request, page })} onPageSizeChange={size => setRequest({ ...request, size, page: 0 })} />} />
     {selected && <DhrEvidenceViewer selected={selected} traceRequest={request} onClose={() => setSelected(null)} />}
   </Box>;

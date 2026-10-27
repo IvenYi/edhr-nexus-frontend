@@ -1,0 +1,113 @@
+qualityResult:
+  result: passed
+  baseCommit: 588f46d0c7a6845d64319942e48f28c73d8bd91e
+  headCommit: bdcf7330506779256d5098132e3cd97595e6c487
+  contractBaseline:
+    sourceCommit: bdcf7330506779256d5098132e3cd97595e6c487
+    targetBranch: edhr-dev
+    targetCommit: 52dcf9d27a41f8243ed59d0a05605da011e32f83
+    contractReadCommit: bdcf7330506779256d5098132e3cd97595e6c487
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: withdrawal.baseline
+      required: true
+      category: documentation
+      description: 独立核对实际候选、工作树和实时目标
+      method: command
+      command: git status --porcelain; git rev-parse HEAD origin/edhr-dev; git ls-remote origin refs/heads/edhr-dev
+      outcome: passed
+      evidence:
+        - actual tested candidate=bdcf7330506779256d5098132e3cd97595e6c487; clean
+        - live target=52dcf9d27a41f8243ed59d0a05605da011e32f83
+    - id: withdrawal.two-files-exact
+      required: true
+      category: regression
+      description: 两个被撤回文件逐字节恢复目标原件
+      method: command
+      command: Python compare git show target:path bytes with working files
+      outcome: passed
+      evidence:
+        - WorkOrderPage.tsx SHA256=fe242bfd161ef5bc7db625efa0639e6ad9ada39b62faf2d57f011d3e09ada351; byte-equal target
+        - test-work-order-template-browser.mjs SHA256=00df1530a0b344455447fe5c81a346789439b0829a9317ec504f8297a3d44772; byte-equal target
+    - id: withdrawal.no-product-or-knowledge-diff
+      required: true
+      category: requirements
+      description: 产品、测试、工具及知识相对目标无差异，PR31既有修复保留
+      method: command
+      command: git diff --name-only target HEAD -- gmp-platform tools docs/knowledge
+      outcome: passed
+      evidence:
+        - 返回为空；不存在附带产品、测试、业务政策或迁移修改
+        - 当前WorkOrderPage及后端与包含PR31的目标原件一致
+    - id: withdrawal.audit-material-preserved
+      required: true
+      category: documentation
+      description: 静态核实、规则评估及原历史证据保留
+      method: command
+      command: Python compare every original evidence file at 588f46d0 with current bytes
+      outcome: passed
+      evidence:
+        - 原evidence目录17文件全部逐字节保持
+        - 27条静态记录及23/3/1分类保持；9条有限合理性评估保持
+    - id: withdrawal.charter-preserved
+      required: true
+      category: requirements
+      description: 规则合理性审前要求未被弹窗撤回附带删除
+      method: command
+      command: Compare audit-charter.md bytes at 588f46d0 and current
+      outcome: passed
+      evidence:
+        - audit-charter.md与撤回前逐字节一致，用户要求保留
+    - id: withdrawal.current-status
+      required: true
+      category: documentation
+      description: 当前状态与旧通过证据明确分离
+      method: inspection
+      command: Read README top, NEXT top, scope-review notice, withdrawal.md and withdrawal decision package
+      outcome: passed
+      evidence:
+        - 当前UI-PRODUCTION-OBJECT-DIALOG-OVERFLOW-001为user-deferred，不计已修复
+        - cbf139a2的四组/零溢出结果明确标为已撤回历史；后续等待用户重新设计
+        - 当前撤回范围不要求被用户退出交付的几何断言，不是降低仍交付范围测试标准
+    - id: withdrawal.retained-test-evidence
+      required: true
+      category: regression
+      description: 核对原业务测试及主侧实际结果的声明边界
+      method: inspection
+      command: Read restored browser script and evidence/withdrawal-browser.json
+      outcome: passed
+      evidence:
+        - 原下载/XLSX/导入错误/旧备注payload和暂存提交断言保持，脚本与目标完全相同
+        - 主侧原3组通过原件明确只覆盖下载导入回归，不声称当前窄屏样式已修复
+        - 本独立实例未重复浏览器/构建/数据库运行，以恢复原件的精确比较验收撤回
+    - id: withdrawal.diff-hygiene
+      required: true
+      category: documentation
+      description: 撤回候选差异卫生及本体不适用依据
+      method: command
+      command: git diff --check 588f46d0..HEAD; inspect withdrawal packet
+      outcome: passed
+      evidence:
+        - 空白检查通过
+        - ontology not-applicable成立：未改变业务概念、数据或生命周期，只恢复展示与测试原件
+  findings: []
+  residualRisks:
+    - id: risk.withdrawn-narrow-layout
+      description: 原窄屏裁切恢复为既有状态，用户明确暂缓以重新设计
+      impact: 当前不提供窄屏布局修复认证
+      mitigation: 保持user-deferred，不自动继续该弹窗设计；后续基于用户设计另验收
+    - id: risk.retained-static-and-audit-scope
+      description: 原静态低风险缺口、登录校验证据不足及其他整体审计未完成项保持
+      impact: 本次passed仅适用于精确撤回与保留资料，不代表全站通过
+      mitigation: 按剩余台账继续无依赖审计，不复用旧布局passed
+    - id: risk.pr-metadata-followup
+      description: 本实例只验仓库候选，PR32外部标题和正文由主审同步为文档范围
+      impact: 同步前旧标题可能仍描述已撤回样式修复
+      mitigation: 主审完成推送及PR元数据更新后再向用户报告收尾
+  blockingConditions: []

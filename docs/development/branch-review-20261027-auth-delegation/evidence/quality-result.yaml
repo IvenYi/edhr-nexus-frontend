@@ -1,0 +1,285 @@
+qualityResult:
+  result: passed
+  baseCommit: 00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c
+  headCommit: 810e73f585608e2e86d8bb8c51f6cb41f8deb5f4
+  contractBaseline:
+    sourceCommit: 810e73f585608e2e86d8bb8c51f6cb41f8deb5f4
+    targetBranch: edhr-dev
+    targetCommit: 00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c
+    contractReadCommit: 810e73f585608e2e86d8bb8c51f6cb41f8deb5f4
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.fixed-candidate-and-contracts
+    required: true
+    category: requirements
+    description: 实时目标、实际候选和契约/知识基线独立核对
+    method: command
+    command: git fetch origin refs/heads/edhr-dev:refs/remotes/origin/edhr-dev; git rev-parse HEAD origin/edhr-dev; git diff
+      base HEAD -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge
+    outcome: passed
+    evidence:
+    - target/base=00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c; candidate/tested/head=810e73f585608e2e86d8bb8c51f6cb41f8deb5f4;
+      working tree clean; contractRead=810e73f585608e2e86d8bb8c51f6cb41f8deb5f4
+    - 契约及知识字节与目标一致；知识0.3.25；PR33目标树等于b1eaac8c交付树
+  - id: check.account-lock-and-exception-scope
+    required: true
+    category: security
+    description: 账号行锁、事务及窄失败异常分类源码审查
+    method: inspection
+    command: git diff base HEAD -- AuthController.java UserAccountRepository.java; inspect login/helpers/JWT filter/BusinessException
+    outcome: passed
+    evidence:
+    - 新增锁查询仅login调用；原普通读取保留
+    - 仅FailedLoginException豁免回滚；不是BusinessException全部豁免；技术异常默认回滚
+    - 阈值/时长/禁用锁定/JWT/成功清零算法未改变；原JWT filter不预载UserAccount
+  - id: check.native-login-race-and-rollback
+    required: true
+    category: integration
+    description: 真实PG并发计数、账号间独立、锁定/过期/成功清零、禁用与技术故障回滚
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=AuthLoginConcurrencyPostgresTest,AuthControllerTest,JwtAuthenticationFilterTest,LoginLogControllerTest
+      -Dauth.audit.url=jdbc:postgresql://127.0.0.1:55432/edhr_auth_audit_independent -Dauth.audit.user=postgres -Dedhr.authorization-notice.font=/workspace/.edhr-cloud-tools/fonts/EdhrTestCJK-Regular.ttf
+      test
+    outcome: passed
+    evidence:
+    - AuthLoginConcurrencyPostgresTest:4 tests,0 failures/errors/skips
+    - 阈值upsert且assert2；并发两次失败最终2且锁定；其他账号可完成；正确密码在锁定时403
+    - 顺序失败持久化；过期锁后成功200并清零；日志技术故障500时计数1及lastLogin不变；所有断言实际通过
+    - /tmp/edhr-auth-independent-evidence.json#/backend
+  - id: check.adjacent-auth-regression
+    required: true
+    category: unit
+    description: 已有认证/个人签名PDF、JWT过滤及登录日志回归
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=AuthLoginConcurrencyPostgresTest,AuthControllerTest,JwtAuthenticationFilterTest,LoginLogControllerTest
+      -Dauth.audit.url=jdbc:postgresql://127.0.0.1:55432/edhr_auth_audit_independent -Dauth.audit.user=postgres -Dedhr.authorization-notice.font=/workspace/.edhr-cloud-tools/fonts/EdhrTestCJK-Regular.ttf
+      test
+    outcome: passed
+    evidence:
+    - AuthControllerTest24 + JwtAuthenticationFilterTest1 + LoginLogControllerTest1 =26全部通过，无skip
+    - AuthControllerTest仅七处查询stub改名，完整旧断言字节保持；字体参数来自已有测试环境，没有改产品PDF或断言
+  - id: check.fresh-schema-and-persisted-config
+    required: true
+    category: database
+    description: 独立空库初始化及配置真实持久化
+    method: query
+    command: docker exec <isolated-container-id> createdb -U postgres edhr_auth_audit_independent; native suite; psql aggregate
+      config/schema query
+    outcome: passed
+    evidence:
+    - 全新独立库创建退出0，Liquibase最终schema/seed两changeset，hibernate validate通过
+    - 'liquibase_changesets=2
+
+      threshold=2,minutes=30'
+    - 仅自建隔离容器；未读取或恢复用户库
+  - id: check.browser-eight-desktop
+    required: true
+    category: e2e
+    description: 真实React/MUI/router/client/auth store的八个受控HTTP场景
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium AUTH_UI_ARTIFACTS=/tmp/edhr-auth-independent-ui AUTH_UI_WIDTH=1280 node scripts/test-login-delegation-browser.mjs
+    outcome: passed
+    evidence:
+    - 1280px:8/8；空值不请求，401无重载、保留用户名/错误且按钮可重试；正常/两种安全动作导航；branding恢复；两种profile
+    - 受控HTTP及假token，不称真实浏览器到后端认证端到端
+    - /tmp/edhr-auth-independent-ui.log
+  - id: check.browser-eight-narrow
+    required: true
+    category: visual
+    description: 390px同组交互与实际截图检查
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium AUTH_UI_ARTIFACTS=/tmp/edhr-auth-independent-ui-narrow AUTH_UI_WIDTH=390 node scripts/test-login-delegation-browser.mjs
+    outcome: passed
+    evidence:
+    - 390px同8场景8/8，不计为16个不同业务场景
+    - 实际查看窄屏错误态与普通配置帮助截图：错误可见、输入/按钮未裁切；未重设计登录或生产管理弹窗
+    - /tmp/edhr-auth-independent-ui-narrow.log
+  - id: check.browser-baseline-counterexamples
+    required: true
+    category: regression
+    description: 原目标两处UI反例独立复现
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium AUTH_UI_BASELINE_COMMIT=00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c AUTH_UI_ARTIFACTS=/tmp/edhr-auth-independent-ui-red
+      AUTH_UI_WIDTH=1280 node scripts/test-login-delegation-browser.mjs
+    outcome: passed
+    evidence:
+    - baseline8:2失败6通过，命令exit1（预期反例）
+    - credential-error:bundleLoads2而非1；ordinary-delegation仍旧文案，定位正确文字超时
+    - candidate同断言通过；不把基线反例命令标为绿
+    - /tmp/edhr-auth-independent-ui-red.log
+  - id: check.delegation-knowledge-profile
+    required: true
+    category: ontology
+    description: DEC0081及profile调用与本体NA结果核对
+    method: inspection
+    command: Inspect DEC-0081, original evidence, FormProcessEditor/ReviewTemplateEditor callers and WorkflowActionConfig
+    outcome: passed
+    evidence:
+    - DEC0081-01/03授权普通表单租户内有效其他用户及原因，当前帮助符合；RECORD_CONTROL先行分支未改，DHR运行未改
+    - 本体8条审前评估NA/FINAL只针对列明声明/实现边界；登录设置不是伪造的用户逐字决策
+    - 知识无修改，无新政策/阶段提升
+  - id: check.frontend-build
+    required: true
+    category: regression
+    description: TypeScript与生产构建
+    method: command
+    command: npm run build
+    outcome: passed
+    evidence:
+    - exit0; tsc -b与Vite完成
+    - /tmp/edhr-auth-independent-build.log
+  - id: check.knowledge-structure
+    required: true
+    category: ontology
+    description: 知识结构/引用等既有校验
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - 89 tests,0 failures/errors/skips；非全量业务语义审计替代
+    - /tmp/edhr-auth-independent-knowledge.log
+  - id: check.protected-scope-and-assertions
+    required: true
+    category: regression
+    description: 全局401、生产管理弹窗和原标准保持
+    method: command
+    command: git diff --exit-code base HEAD -- docs/knowledge src/api/client.ts WorkOrderPage.tsx test-work-order-template-browser.mjs;
+      compare old test stub substitutions
+    outcome: passed
+    evidence:
+    - 列明路径与目标字节相同；只公开login request opt-out
+    - 生产管理弹窗及原脚本均未更改；未恢复其他暂缓；没有迁移或历史修补
+    - 原native required保留；未为扫描加noValidate或删校验
+  - id: check.audit-evidence-boundaries
+    required: true
+    category: documentation
+    description: 失败原件、有限覆盖、性能与全量后续边界核实
+    method: inspection
+    command: Inspect README/decision-package/source-review/NEXT/primary-evidence and read-only claims helper
+    outcome: passed
+    evidence:
+    - 初轮UPDATE0行/default5、缺字体、Noto人/⼈映射、缺Vite未运行测试，均分开保留；纠正阈值基线4项2红的主侧结果未冒称本QA执行
+    - 10源码/8规则/10非拖动辅助范围不混计，设计器runtime pending；没有全文件/全分支完成声明
+    - 部门逐级读取max20仅源码性能候选，未量化/实施；无吞吐SLA；原性能讨论/TaskDetail/DHR等暂缓保持
+    - /tmp/edhr-auth-independent-claims.json
+  - id: check.strict-known-baseline
+    required: false
+    category: visual
+    description: 官方strict扫描已知完整集合比较
+    method: command
+    command: python3 /tmp/edhr-auth-audit-project.py gmp-platform/frontend --mode strict (base scratch and candidate)
+    outcome: failed
+    evidence:
+    - base与candidate各27，完整findings集合相同，新增0；两命令实际exit2，不称strict通过
+    - /tmp/edhr-auth-independent-strict.json
+    - /tmp/edhr-auth-independent-strict-baseline.json
+  - id: check.lint-known-environment
+    required: false
+    category: regression
+    description: 既有lint配置缺口确认
+    method: command
+    command: npm run lint
+    outcome: failed
+    evidence:
+    - 实际exit2，ESLint找不到配置；未修改或伪称lint通过
+    - /tmp/edhr-auth-independent-lint.log
+  findings:
+  - id: AUTH-CONCURRENCY-001
+    severity: high
+    scope: login-failure-accounting
+    summary: 同账号并发错误密码丢失失败计数
+    reproductionSteps:
+    - 隔离PG设置阈值2并断言生效；密码检查处持住首请求，启动第二错误请求和不同账号对照
+    - 释放后查询失败计数、lockedUntil并以正确密码重试
+    expectedResult: 计数2、锁定，正确密码403；其他账号独立完成
+    actualResult: 原目标正确夹具主侧红计数1；候选本独立PG计数2/锁定/不同账号断言全部通过
+    evidence:
+    - check.native-login-race-and-rollback
+    - check.account-lock-and-exception-scope
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 810e73f585608e2e86d8bb8c51f6cb41f8deb5f4
+    - type: command
+      reference: /tmp/edhr-auth-independent-evidence.json#/backend
+  - id: AUTH-ATOMICITY-001
+    severity: medium
+    scope: login-transaction
+    summary: 日志写失败时成功登录状态先行提交
+    reproductionSteps:
+    - 已有失败计数1，正确密码，注入LoginLogRepository.save技术异常
+    - 检查返回和事务后计数/lastLogin/日志
+    expectedResult: 500；先前计数与lastLogin不变且无成功日志
+    actualResult: 原目标主侧红计数0；候选独立返回500，保持1/lastLogin空/日志0
+    evidence:
+    - check.native-login-race-and-rollback
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 810e73f585608e2e86d8bb8c51f6cb41f8deb5f4
+    - type: command
+      reference: /tmp/edhr-auth-independent-evidence.json#/backend
+  - id: LOGIN-RECOVERY-001
+    severity: medium
+    scope: login-page
+    summary: 登录401整页重载丢失错误和用户名
+    reproductionSteps:
+    - 真实LoginPage输入有效非空fixture值，受控HTTP返回401
+    - 检查模块加载次数、用户名、错误和重试按钮
+    expectedResult: 不重载、用户名保留、错误可见，可重试
+    actualResult: 独立目标反例模块加载2；候选1280/390模块1且其余断言通过
+    evidence:
+    - check.browser-eight-desktop
+    - check.browser-eight-narrow
+    - check.browser-baseline-counterexamples
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 810e73f585608e2e86d8bb8c51f6cb41f8deb5f4
+    - type: command
+      reference: /tmp/edhr-auth-independent-evidence.json#/browser
+  - id: DELEGATION-COPY-001
+    severity: low
+    scope: ordinary-form-help
+    summary: 普通表单转办说明仍限制原节点候选
+    reproductionSteps:
+    - 渲染FORM_PROCESS审批配置帮助，并对照DEC0081及RECORD_CONTROL配置
+    expectedResult: 普通表单允许同租户正常可用其他用户及原因；记录控制保留原固定说明
+    actualResult: 目标独立反例旧文案；候选两profile断言通过
+    evidence:
+    - check.delegation-knowledge-profile
+    - check.browser-eight-desktop
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 810e73f585608e2e86d8bb8c51f6cb41f8deb5f4
+    - type: command
+      reference: /tmp/edhr-auth-independent-evidence.json#/browser
+  residualRisks:
+  - id: risk.existing-strict-and-lint
+    description: strict27与基线相同且lint缺配置仍失败
+    impact: 不能声称全站静态/无障碍或lint通过
+    mitigation: 保留原结果，后续逐项有依据审查；不为扫描取消校验
+  - id: risk.fixture-browser-boundary
+    description: 浏览器使用真实组件及受控HTTP；真实PG使用MockMvc
+    impact: 本批没有完整真实浏览器→运行后端认证端到端
+    mitigation: 分别报告两条实际验证边界，不混称完整E2E
+  - id: risk.auth-security-not-complete
+    description: 畸形API输入、全部账户管理并发、令牌生命周期/撤销和安全矩阵未全覆盖
+    impact: 不构成完整身份域或分支审计完成
+    mitigation: 按整体台账后续有限入口增量审查
+  - id: risk.auth-department-candidate
+    description: 部门祖先max20轮回查和角色/权限量仅源码增长候选，未量化
+    impact: 不能给出吞吐、锁持有时间或容量保证
+    mitigation: 先测SQL/锁/负载，性能方案另讨论，不直接实施
+  - id: risk.original-deferrals
+    description: 设计器普通字段非拖动runtime待验证，生产管理弹窗、TaskDetail朋友修复、记录变更作废/DHR high/A12及原知识gap/性能方案保留
+    impact: 整体W0-W7仍未完成；本批通过不关闭这些事项
+    mitigation: 继续按台账逐项推进，用户暂缓不恢复
+  blockingConditions: []

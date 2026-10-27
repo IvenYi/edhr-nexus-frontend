@@ -82,3 +82,13 @@
 独立质量复核指出 `DEC-0014-09` 及 `evidence.production-work-order-batch-import-template-ui` 仍保留旧呈现描述。用户本轮明确允许“展现形式你都可以直接改变”（user-confirmed）；在该授权内，当前定义直接修正为导入区提供“选择文件”按钮、以内联简短说明展示导入要求，按钮具体位置与内联呈现是工程落实（inference）。修正范围仅覆盖旧的“标题旁”位置及“说明收纳至 Info hover”要求，不建立并行规则；数量必填、模板字段、文件格式、待提交清单及原子提交规则继续保持，SN 模板备注列的历史差异亦不在本次修正范围。
 
 历史来源保留：提交 `3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176` 中 `docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml` 的 `DEC-0014-09` 原文为“provenance: user-confirmed；拆分弹窗中的数量与批量添加数量标记为必填；导入区使用标题旁‘选择文件’按钮，说明收纳至 Info hover。”该引文只解释修正前记录，不作为当前呈现约束。当前源码 `WorkOrderPage.tsx` 已提供选择文件按钮及内联导入提示（original-evidence）；本体角色直接复核该源码，并阅读主侧 `docs/development/batch-process-20261027/ui-repair-verification.md` 中日常服务、浏览器、数据库和审计的实际验收记录。后者是主侧验收来源，本体未重复执行这些运行检查，不改写此前历史通过结果，独立质量结果继续单列。
+
+## 分页修复与批次开工审计呈现续核
+
+用户暂停提交推送后，要求排查全项目分页入口的同类异步归零问题，并删除批次审计顶部说明、将 `{}` 放在对应制程旁，同时要求能找到开工记录（user-confirmed，见同一决策包 `integrationAndFollowup` 及本轮交接）。此次读取的是功能提交 `a32d8d761293661cc3209342512050e96bba3ba7` 与目标 `2c4b79e1641be4886fd5361b48df076e57abd768` 的未提交合并工作树；契约无增量，前述已提交与集成验收报告保留各自时点，不用于代替此次新增范围的验证。
+
+本体角色直接复核 `ProductionExecutionService.auditObjectStatusChange`（original-evidence）：首次合法开工在 `PRODUCTION_OBJECT` 的 `UPDATE` 审计中保存 `processReference`、实际 `processSnapshot` 和 `processFrozenAt`，不是缺少开工记录。当前呈现继续沿 `rule.production.audit-action-projection`、`rule.production.batch-management-row-detail-and-audit-entry` 和 `DEC-0019-02` 的“新增／修改”两类动作；真实保存首次冻结快照的记录在同一标题区域另附“开工”次要说明，不能用它替代“修改”或形成第三种动作类别。`AuditFieldBlock` 和 `utils/productionAudit.ts` 将该条审计的快照详情附在对应制程行；未开工只记录引用的条目不提供冻结快照入口，详情不请求当前主数据重建。次要说明和入口位置是满足用户辨识要求的工程落实（inference），不改变首次冻结、真实差量、审计写入、生命周期或读取权限。
+
+本轮质量续核纠正：上一轮实现及本段说明曾将有快照的记录直接显示为“开工”动作，遗漏现行两类动作投影约束。这里直接修正当前说明，并在上述两条规则的解释中明确动作类别与次要说明的区别，结构化动作集合和标签保持原值；这不是用户要求新增动作类别，也不是一次业务政策替代。本体已复读修正后的源码：`auditActionLabel` 只返回“新增／修改”，非创建且实际存在快照详情的条目另用 `caption` 次要文字显示“开工”（original-evidence）。已提交和集成报告保持原历史，修正后的交互由本轮独立质量复验。
+
+分页问题按前端请求状态处理：未得到本次请求的有效成功响应时，不把缺失页数当作零而重置页码；筛选或每页条数变化的主动回到首页与成功响应后校正越界页码分别保留（inference）。本体直接核对了批次页对 `isSuccess`、`isPlaceholderData` 和 `isFetching` 的判断；用户要求的全项目入口盘点、其他实现覆盖及真实交互验收由主侧和独立质量记录提供，本段不据单页源码宣称全项目已完成。该修复不重新定义列表数据、后端分页、排序、查询范围或权限，无需新增本体政策。知识基线仍为 `0.3.25`，此证据续核不代表本轮浏览器、数据库或独立质量验收已通过。

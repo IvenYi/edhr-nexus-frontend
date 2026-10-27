@@ -1,0 +1,82 @@
+decisionPackage:
+  id: DEC-PACKAGE-PRODUCTION-GROWTH-AUDIT-20261027
+  scope: 整体审计W4/W5工单列表与批量拆分容量，H008当前规则复核
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 33f033383ae165d10d0006395dd17e5f0df89136
+    targetBranch: edhr-dev
+    targetCommit: 33f033383ae165d10d0006395dd17e5f0df89136
+    contractReadCommit: 33f033383ae165d10d0006395dd17e5f0df89136
+    uncommittedContractPaths: []
+  summary: PR30已人工合入且树相同；按现行规则审查和量化，不实施未经讨论的性能改造。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: work-order-list
+        change: 量化小页请求的实际工单、对象及产出读取规模，核对分页边界。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java]
+      - area: production-split
+        change: 量化批量拆分重复上下文读取，保留逐对象约束、审计及整批回滚。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java]
+    transitiveImpacts:
+      - area: formal-output
+        concern: 列表汇总读取冻结执行及正式投影JSON，单页返回规模不等于读取规模。
+    potentialImpacts:
+      - area: robustness
+        concern: int分页偏移溢出需真实参数验证；功能缺陷与性能方案分别处置。
+    unaffectedAreas:
+      - area: production-policy
+        reason: 不修改独立选版、首次START冻结、作业实时匹配、数量与权限规则。
+    compatibilityAndMigration:
+      - area: database
+        change: 只在自建隔离PostgreSQL观察，不改业务schema或用户数据。
+    snapshotImpacts: []
+    auditImpacts:
+      - area: split
+        change: 观察创建及审计总量，失败批次须整批回滚。
+    permissionImpacts: []
+    testImpacts:
+      - scope: isolated-pg
+        scenarios: [工单小页多规模, 批量拆分多规模, 超范围页边界]
+        evidenceReferences: []
+    evidenceGaps: [生产存量和SLA未知，不把合成实验宣称为生产容量上限]
+  extensionStrategy:
+    selectedPaths: [product-core, transaction-orchestration]
+    rationale: 观察既有生产核心，不以性能审计新增通用框架。
+    ownershipBoundaries:
+      - owner: primary
+        responsibility: 实际查询观测、真实缺陷修复、测试与台账。
+      - owner: ontology
+        responsibility: H008及工单/对象现行规则的有限核对，不改政策。
+      - owner: quality
+        responsibility: 收尾独立复核候选、原件、测试和结论。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
+      changeType: update
+      reason: 真实HTTP红例证明int页偏移溢出返回500，仅改为long有界下标，保留原非正参数clamp和业务查询。
+    - path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+      changeType: update
+      reason: H008按DEC0016-04改SN下载模板为3列，保留BATCH5列、手动备注和旧文件备注导入。
+    - path: gmp-platform/frontend/scripts/test-work-order-template-browser.mjs
+      changeType: create
+      reason: 针对新版显式选版的真实浏览器下载/XLSX解析/导入/校验与提交覆盖。
+    - path: docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml
+      changeType: update
+      reason: 本体角色按实际修复证据同步既有差异状态，保留原发现历史和当前政策。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/BatchProcessIntegrationTest.java
+      changeType: update
+      reason: 复用真实HTTP与干净基线进行有边界的观测及回归。
+  acceptanceScenarios:
+    - id: scenario.production-growth
+      given: 合法产品、工单及生产对象
+      when: 增加工单数或单次拆分数量
+      then: 记录真实数据库查询/结果行数，保持返回及写入数量与审计原子性，不锁死旧性能数字
+      evidenceRequirements: [真实PostgreSQL观察, 源码及知识核对]

@@ -1,6 +1,6 @@
 import { readRecordLocation } from '@/utils/recordLocation';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Alert, Autocomplete, Box, Button, CircularProgress, DialogActions, DialogContent,
   DialogTitle, IconButton, MenuItem, Pagination, Popover, Snackbar, Stack, Table, TableBody,
@@ -156,6 +156,7 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
   });
   const typesQuery = useQuery({ queryKey: ['equipment-type-options'], queryFn: getAllEquipmentTypes, enabled: !isTypes });
   const listQuery = useQuery({
+    placeholderData: (previousData, previousQuery) => previousQuery?.queryKey[1] === pageKey ? keepPreviousData(previousData) : undefined,
     queryKey: ['equipment-modeling', pageKey, page, size, search, categoryId, equipmentTypeId],
     queryFn: async () => {
       const params = { page, size, keyword: search, ...(isTypes ? { categoryId: categoryId || undefined } : { equipmentTypeId: equipmentTypeId || undefined }) };
@@ -166,8 +167,9 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
   const typeOptions = typesQuery.data ?? [];
   const data = listQuery.data;
   useEffect(() => {
+    if (!listQuery.isSuccess || listQuery.isPlaceholderData || listQuery.isFetching) return;
     if (data && page > Math.max(1, data.totalPages)) setPage(Math.max(1, data.totalPages));
-  }, [data, page]);
+  }, [data, page, listQuery.isSuccess, listQuery.isPlaceholderData, listQuery.isFetching]);
 
   const invalidate = () => Promise.all([
     queryClient.invalidateQueries({ queryKey: ['equipment-modeling'] }),
@@ -317,7 +319,7 @@ export default function EquipmentPage({ pageKey = 'equipment' }: { pageKey?: 'ty
             <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" useFlexGap gap={1} sx={{ minHeight: 56, px: 2, borderTop: '1px solid #e4e7ed', flexShrink: 0 }}>
               <Typography variant="body2" sx={{ color: '#909399' }}>共 {data?.totalElements ?? 0} 条数据</Typography>
               <Stack direction="row" spacing={1.5} alignItems="center">
-                <Pagination size="small" color="primary" count={Math.max(1, data?.totalPages ?? 1)} page={page} onChange={(_, value) => setPage(value)} />
+                <Pagination size="small" color="primary" count={Math.max(1, data?.totalPages ?? page)} page={page} onChange={(_, value) => setPage(value)} />
                 <TextField select size="small" sx={{ minWidth: 116, '& .MuiInputBase-root': { height: 32 } }} value={size} onChange={(event) => { setSize(Number(event.target.value)); setPage(1); }} inputProps={{ 'aria-label': '每页条数' }}>{[20, 50, 100, 200].map((value) => <MenuItem key={value} value={value}>{value} 条/页</MenuItem>)}</TextField>
               </Stack>
             </Stack>

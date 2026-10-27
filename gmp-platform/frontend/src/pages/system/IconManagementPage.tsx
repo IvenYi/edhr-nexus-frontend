@@ -7,7 +7,7 @@ import {
   useMemo,
   useRef,
   useState } from 'react';
-import { useMutation,
+import { keepPreviousData, useMutation,
   useQuery,
   useQueryClient } from '@tanstack/react-query';
 import {
@@ -188,6 +188,7 @@ export default function IconManagementPage() {
     queryFn: getIconGroups,
   });
   const iconsQuery = useQuery({
+    placeholderData: (previousData, previousQuery) => previousQuery?.queryKey[2] === selectedGroupId ? keepPreviousData(previousData) : undefined,
     queryKey: ['system', 'icons', selectedGroupId, keyword, page, pageSize],
     queryFn: () => getIconPage({ groupId: selectedGroupId, keyword: keyword.trim(), page, size: pageSize }),
   });
@@ -709,8 +710,8 @@ export default function IconManagementPage() {
           </Typography>
           <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="flex-end">
             <Pagination
-              count={Math.max(iconsPage?.totalPages ?? 1, 1)}
-              page={Math.min(page, Math.max(iconsPage?.totalPages ?? 1, 1))}
+              count={Math.max(iconsPage?.totalPages ?? page, 1)}
+              page={page}
               onChange={(_, nextPage) => setPage(nextPage)}
               size="small"
               color="primary"

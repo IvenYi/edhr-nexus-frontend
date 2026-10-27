@@ -1,0 +1,206 @@
+qualityResult:
+  result: failed
+  baseCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+  headCommit: a32d8d761293661cc3209342512050e96bba3ba7
+  contractBaseline:
+    sourceCommit: a32d8d761293661cc3209342512050e96bba3ba7
+    targetBranch: edhr-dev
+    targetCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    contractReadCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/frontend/src/pages/account/PersonalSettingsPage.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/DhrWorklistTable.tsx
+      - gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx
+      - gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx
+      - gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx
+      - gmp-platform/frontend/src/pages/form-management/formManagementListStyles.tsx
+      - gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/EquipmentPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/ProductModelingPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/QualityReasonPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/WorkshopManagementPage.tsx
+      - gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx
+      - gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx
+      - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+      - gmp-platform/frontend/src/pages/reports/DhrTraceReportPage.tsx
+      - gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx
+      - gmp-platform/frontend/src/pages/system/AuditLogPage.tsx
+      - gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx
+      - gmp-platform/frontend/src/pages/system/FormLookupItemsPage.tsx
+      - gmp-platform/frontend/src/pages/system/IconManagementPage.tsx
+      - gmp-platform/frontend/src/pages/system/MenuManagementPage.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/FormProcessList.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateList.tsx
+      - gmp-platform/frontend/src/pages/workflow-center/WorkTemplateList.tsx
+      - gmp-platform/frontend/src/utils/productionAudit.ts
+      - gmp-platform/frontend/scripts/test-production-audit.mjs
+      - gmp-platform/frontend/scripts/test-production-pagination-browser.mjs
+      - gmp-platform/frontend/scripts/test-shared-pagination-browser.mjs
+      - gmp-platform/frontend/scripts/test-work-order-template-browser.mjs
+      - docs/knowledge/evidence/production.yaml
+      - docs/knowledge/evidence/batch-process-2026-10-27.md
+      - docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml
+      - docs/development/batch-process-20261027/decision-package.yaml
+      - docs/development/batch-process-20261027/pagination-audit-verification.md
+      - docs/development/batch-process-20261027/ontology-result-pagination-audit.yaml
+      - docs/development/batch-process-20261027/ontology-result-ui-repair-integration.yaml
+    excludedPaths:
+      - docs/development/branch-review-20261027-*/
+      - 远端合入但与本切片无关的认证、委托、设计器等源码，不据旧报告声明本实例重跑
+      - output/ 下其他历史运行证据
+    untrackedPaths:
+      - gmp-platform/frontend/scripts/test-production-pagination-browser.mjs
+      - gmp-platform/frontend/scripts/test-shared-pagination-browser.mjs
+      - docs/development/batch-process-20261027/pagination-audit-verification.md
+      - docs/development/batch-process-20261027/ontology-result-pagination-audit.yaml
+      - docs/development/batch-process-20261027/ontology-result-ui-repair-integration.yaml
+      - docs/development/batch-process-20261027/quality-result-pagination-audit.yaml
+      - output/playwright/pagination-audit-independent-20261027/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.pagination.contract-and-candidate
+      required: true
+      category: documentation
+      description: 独立确认来源、目标、实际合并工作树及契约基线
+      method: command
+      command: git rev-parse HEAD MERGE_HEAD origin/edhr-dev; git diff HEAD MERGE_HEAD -- AGENTS.md codeplzreadme.md docs/agents/agent-handoff-contract.md docs/agents/quality-verifier.md; git ls-files -u; git diff --check; git diff --cached --check
+      outcome: passed
+      evidence:
+        - 实际HEAD为a32d8d761293661cc3209342512050e96bba3ba7；MERGE_HEAD及origin/edhr-dev均为2c4b79e1641be4886fd5361b48df076e57abd768；契约文件无增量，已复读项目、质量与交接契约。
+        - 候选尚无提交哈希，是目标合并入来源后的工作树加32个前端源码续修；无未解索引冲突，工作树及索引diff检查通过。禁止将HEAD单独视为已测试候选。
+        - output/playwright/pagination-audit-independent-20261027/review-state.json 记录所审32个源码文件SHA256。
+        - 本实例未修改源码或测试、未操作真实业务数据、未执行add/commit/push。后续修复不被本次结果覆盖。
+    - id: check.pagination.inventory-and-context
+      required: true
+      category: regression
+      description: 全项目分页入口检索、32文件差异及相邻业务上下文切换检查
+      method: inspection
+      command: rg 检索src下Pagination/TablePagination/FormListPagination、页码setter、queryKey和totalPages，检查全部受影响diff及未改入口
+      outcome: failed
+      evidence:
+        - A类真实重置页加入成功/非placeholder/非fetching边界，B类共享组件明确dataReady，C类保持受控目标页；九个请求中隐藏控件的旧实现没有归零effect，本地分页不因翻页切换queryKey。
+        - Document/Review类别、QualityReason类型及审计对象、DHR Summary选项卡、表单视图、字典父对象、模板/设备类型的placeholder边界已存在。
+        - 发现IconManagementPage遗漏selectedGroupId边界，既有排序动作把旧组图标ID和新组ID组合；QF-PAG-001实际浏览器复现。
+        - 按45直接JSX加2DHR转接及3自定义入口核对范围；这是源码覆盖，非逐入口CRUD运行通过。
+    - id: check.pagination.unit
+      required: true
+      category: unit
+      description: 独立运行生产编辑约束与审计快照字段测试
+      method: automated-test
+      command: node --test scripts/test-production-audit.mjs scripts/test-production-object-edit.mjs
+      outcome: passed
+      evidence:
+        - 10 tests passed，0 failed；output/playwright/pagination-audit-independent-20261027/unit.log。
+        - 覆盖未开工引用不造快照、详情归制程行、同V1不同配置、无独立引用仍可读原件、数量NaN和陈旧分配保护、引用身份与SN数量等。
+    - id: check.pagination.production-browser
+      required: true
+      category: e2e
+      description: 独立运行实际批次及工单组件的延迟、失败、乱序、缓存与缩页回归
+      method: automated-test
+      command: CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' PAGINATION_ARTIFACTS=output/playwright/pagination-audit-independent-20261027 node scripts/test-production-pagination-browser.mjs
+      outcome: passed
+      evidence:
+        - 两页面均通过；output/playwright/pagination-audit-independent-20261027/production-browser.json及batches.png/orders.png。
+        - 包含未缓存450ms请求保持目标页、缓存、2到3乱序、503保持目标4、成功缩页回1、筛选与每页数量重置。
+        - 批次实际审计交互验证详情在制程同行、历史标记JSON、CREATE无冻结入口和顶部提示移除；此运行通过不解决QF-PAG-002的规则矛盾。
+        - 所有HTTP为隔离夹具，无真实服务/数据库写入，不认证后端持久化。
+    - id: check.pagination.shared-browser
+      required: true
+      category: e2e
+      description: 独立运行共享分页、图标页与设备页的代表性回归
+      method: automated-test
+      command: CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' PAGINATION_ARTIFACTS=output/playwright/pagination-audit-independent-20261027 node scripts/test-shared-pagination-browser.mjs
+      outcome: passed
+      evidence:
+        - shared、icons、equipment三例通过；output/playwright/pagination-audit-independent-20261027/shared-browser.json及对应截图。
+        - 覆盖400ms延迟、503、缓存，shared/equipment包含真实缩页；既有脚本图标场景没有切组，不能覆盖QF-PAG-001。
+    - id: check.pagination.icon-context-repro
+      required: true
+      category: integration
+      description: 独立增量验证图标分组切换期间可操作数据是否属于当前组
+      method: browser
+      command: node output/playwright/pagination-audit-independent-20261027/icon-context-repro.mjs
+      outcome: failed
+      evidence:
+        - output/playwright/pagination-audit-independent-20261027/icon-context-repro.json记录staleVisible=true，错误请求groupId=102、ids=[202,201]，两ID源自101组。
+        - 实际React/ReactQuery/Chromium，所有GET/PUT拦截；无真实后端或数据库写入。
+        - output/playwright/pagination-audit-independent-20261027/icon-context-repro.png
+    - id: check.pagination.audit-and-knowledge
+      required: true
+      category: ontology
+      description: 核对首次开工快照原件、客户显示语义与当前规则
+      method: inspection
+      command: 阅读ProductionExecutionService.auditObjectStatusChange、productionAudit字段投影、BatchManagementPage、production.yaml及ontology-result-pagination-audit.yaml
+      outcome: failed
+      evidence:
+        - 快照详情仅采用历史processSnapshot，无当前主数据查询/重建；后端首次START仍写PRODUCTION_OBJECT UPDATE、processReference、processSnapshot、processFrozenAt。
+        - 当前rule.production.audit-action-projection仍要求所有页面只显示新增/修改，并明确开工归修改；UI却直接显示开工，新增证据不足以替代当前规则。见QF-PAG-002。
+        - 本体报告声称保留所有动作规则，知识检查89项通过为本体实例实跑的复用证据，并不证明该自然语言矛盾不存在。
+    - id: check.pagination.merge-preservation
+      required: true
+      category: requirements
+      description: 核对本地重设计与远端SN三列改动未互相覆盖
+      method: inspection
+      command: 阅读WorkOrderPage导入下载生成与内联说明、production.yaml已消解行及DEC-0016差异状态
+      outcome: passed
+      evidence:
+        - 当前SN下载headers为SN编号/计划开始时间/计划结束时间，BATCH仍五列；本地内联说明布局保留，不回退旧布局。
+        - 合并后的production.yaml同时保留当前内联说明和远端三列修正事实；旧决策/历史原报告没有由本实例改写。
+        - 主侧output/playwright/batch-ui-repair-integration-20261027/browser-green.json为当前合并布局的SN1440/BATCH1440/SN390运行证据，本实例只检查源代码与记录，不冒称独立重跑。
+  findings:
+    - id: QF-PAG-001
+      severity: high
+      scope: 图标管理分组切换与图标排序
+      summary: 无条件placeholder保留上一分组图标，切组加载时排序会把上一组图标误移到当前组
+      reproductionSteps:
+        - 自定义组101包含图标201和202，组102为空；令组102的GET响应延迟2500ms。
+        - 打开图标管理并选择组101，待数据返回后选择组102。
+        - 组102等待期间仍显示组101两项且可拖动；将201拖到202上。
+        - 运行独立icon-context-repro.mjs可在隔离HTTP下稳定复现错误PUT。
+      expectedResult: 切换父分组时不显示可操作的其他组记录；仅同组翻页可保留上一页数据。
+      actualResult: 请求PUT /api/v1/system/icons/order携带groupId=102和旧组IDs [202,201]；后端reorderIcons逐条setGroupId(request.groupId())，会真实改变两图标归组。
+      evidence:
+        - gmp-platform/frontend/src/pages/system/IconManagementPage.tsx:191
+        - gmp-platform/frontend/src/pages/system/IconManagementPage.tsx:455
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/IconManagementController.java:319
+        - output/playwright/pagination-audit-independent-20261027/icon-context-repro.json
+        - output/playwright/pagination-audit-independent-20261027/icon-context-repro.png
+      resolutionStatus: open
+      resolutionEvidence: []
+    - id: QF-PAG-002
+      severity: medium
+      scope: 批次审计动作显示与当前知识规则
+      summary: 开工事件标签替换修改，与仍有效的统一新增/修改动作投影定义冲突
+      reproductionSteps:
+        - 打开含processSnapshot的批次首次START审计事件，界面显示开工。
+        - 对照rule.production.audit-action-projection的actionLabels.UPDATE=修改及所有页面只显示新增/修改的解释。
+        - 对照同文件batch审计规则仍写新增/修改动作投影不变，以及本轮本体结果仅追加证据、不改规则。
+      expectedResult: 保留统一动作类别同时提供可辨识开工说明，或按已确认范围完整修正当前有效定义；实现与知识不得并存相反陈述。
+      actualResult: BatchManagementPage直接将含冻结详情的UPDATE标签替换为开工，但当前规则仍明确开工归修改，报告却声称未改变客户动作显示语义。
+      evidence:
+        - gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx:168
+        - docs/knowledge/rules/production.yaml:640
+        - docs/knowledge/rules/production.yaml:1131
+        - docs/development/batch-process-20261027/ontology-result-pagination-audit.yaml
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.runtime-coverage
+      description: 全量源码分页盘点并不等于所有入口均做浏览器CRUD；运行覆盖五个代表性场景及新增图标切组复现。
+      impact: 未运行入口的独有交互仍依代码审查与共享机制证据。
+      mitigation: 修复当前两项后由全新质量实例回归失败路径及受影响邻接，不使用本failed结果满足最终门禁。
+    - id: risk.integration-boundary
+      description: 本实例未重跑后端持久化、全部远端合入功能、全量构建或知识89测试；主侧/本体实际结果仅作已注明来源的补充。
+      impact: 本次结论只覆盖声明范围，不认证全系统、CI必需检查、部署或生产数据库。
+      mitigation: 保留原报告时点；本轮无新的后端快照写入和迁移改动，最终按实际候选补足适用验证。
+  blockingConditions: []

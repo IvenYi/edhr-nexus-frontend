@@ -1,0 +1,116 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: a32d8d761293661cc3209342512050e96bba3ba7
+    targetBranch: edhr-dev
+    targetCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    contractReadCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    uncommittedContractPaths: []
+  reason: >-
+    同一功能切片在暂停提交推送后继续修复分页与批次审计呈现，更新现有证据和两条相邻规则解释。
+    开工记录原已作为PRODUCTION_OBJECT的UPDATE保存首次冻结原件；动作分类继续只用新增/修改，
+    真实开工快照记录在同标题另附开工次要说明，详情放在对应制程旁。
+    本轮质量发现并纠正了前一轮将开工直接作为动作标签的遗漏，不改变结构化动作集合、冻结时点或写入内容。
+    未开工引用不展示冻结快照，不读取当前主数据重建历史。分页请求状态处理不改变业务
+    数据、查询范围或权限，语义建模不适用；全项目入口覆盖与运行验收仍由实现和质量记录证明。
+    无新规则、事件类型、知识版本或未决问题，不改已提交和集成报告历史；仍暂停提交推送。
+  changedArtifacts:
+    - path: docs/knowledge/evidence/batch-process-2026-10-27.md
+      changeType: update
+      ids: [evidence.batch-process-direct-correction-confirmed]
+    - path: docs/knowledge/rules/production.yaml
+      changeType: update
+      ids: [rule.production.audit-action-projection, rule.production.batch-management-row-detail-and-audit-entry]
+  knowledgeSync:
+    - id: evidence.batch-process-direct-correction-confirmed
+      disposition: updated
+      scope: 追加用户要求的全项目分页问题排查及批次审计入口调整，记录开工UPDATE真实写入来源、两类动作及次要说明和快照详情位置；纠正首轮遗漏动作投影约束的表述，明确源码核对与全项目运行覆盖边界，保留已提交和集成历史结果。
+      sourceReferences:
+        - docs/development/batch-process-20261027/decision-package.yaml
+        - docs/knowledge/evidence/batch-process-2026-10-27.md
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+        - gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx
+        - gmp-platform/frontend/src/utils/productionAudit.ts
+    - id: rule.production.process-snapshot-audit-detail
+      disposition: retained
+      scope: 涉及制程的审计显示身份，真实保存processSnapshot的条目提供详情；开工次要说明与制程行入口只改善呈现，不替代新增/修改动作标签。详情仍读取所选审计原件，未开工引用和普通差量事件不补造冻结快照。写入、状态、权限和历史原件规则保持。
+      sourceReferences:
+        - docs/knowledge/rules/batch-process.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+        - gmp-platform/frontend/src/utils/productionAudit.ts
+    - id: rule.production.audit-action-projection
+      disposition: updated
+      scope: 仅补充解释以区分两类动作和开工次要说明；allowedActions、CREATE/UPDATE标签及CANCEL/STATUS_CHANGE归入UPDATE全部保留，不新增动作或筛选类别。说明必须沿该条真实冻结原件，不从当前状态推定历史开工。
+      sourceReferences:
+        - docs/knowledge/rules/production.yaml
+        - docs/knowledge/evidence/batch-process-2026-10-27.md
+        - gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx
+    - id: rule.production.batch-management-row-detail-and-audit-entry
+      disposition: updated
+      scope: 仅在解释明确对应制程旁详情及标题中的开工次要说明；行级详情、审计页签、PRODUCTION_OBJECT来源和CREATE/UPDATE投影保持，普通差量、未开工无快照及完整执行证据边界不变。
+      sourceReferences:
+        - docs/knowledge/rules/production.yaml
+        - docs/knowledge/evidence/batch-process-2026-10-27.md
+        - gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx
+    - id: DEC-0014-08
+      disposition: retained
+      scope: 批次审计提供制程身份和实际冻结配置详情；顶部说明删除和详情移至制程旁不扩大其他快照入口范围，不改变历史来源。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml
+        - docs/knowledge/evidence/batch-process-2026-10-27.md
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.pagination-audit-contract
+      checkType: reference
+      command: git rev-parse HEAD MERGE_HEAD origin/edhr-dev; git diff --name-only HEAD MERGE_HEAD -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - 实际功能提交a32d8d761293661cc3209342512050e96bba3ba7，MERGE_HEAD和origin/edhr-dev为2c4b79e1641be4886fd5361b48df076e57abd768，合并尚未提交。
+        - 项目与角色契约无增量；已复读自身角色、统一交接、当前知识基线、相关决策和未决问题，没有本轮依赖的业务歧义。
+    - id: validation.pagination-audit-source-boundary
+      checkType: reference
+      command: 阅读ProductionExecutionService.auditObjectStatusChange、BatchManagementPage审计/分页、productionAudit字段投影及rule.production.process-snapshot-audit-detail
+      outcome: passed
+      evidence:
+        - 首次合法开工已有PRODUCTION_OBJECT UPDATE，after保存processReference、processSnapshot、processFrozenAt；前端展示标签不创建新的持久化事件类型。
+        - 当前快照详情直接采用该条审计内容，存在制程身份时附在该字段旁；引用单独存在不产生快照详情，无当前主数据重建调用。
+        - 批次页只有成功且非占位、非请求中的数据才校正越界页码；全项目其他入口不以此单页核对替代，运行和独立质量另验。
+    - id: validation.pagination-audit-knowledge-suite
+      checkType: schema
+      command: mvn -q -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - 本实例追加证据后实际执行，退出码0；surefire XML汇总89 tests、0 failures、0 errors、0 skipped。
+        - 日志/tmp/batch-pagination-audit-ontology-20261027.log；报告tools/knowledge-model/target/surefire-reports。
+        - 不以知识检查声明分页交互、真实开工审计、数据库或独立质量已经验收。
+    - id: validation.pagination-audit-artifact-structure
+      checkType: evidence-path
+      command: Ruby YAML解析、结果字段/知识ID/来源路径检查；git diff --check -- 本轮证据与本结果
+      outcome: passed
+      evidence:
+        - 结果必填字段齐全、knowledgeSync ID唯一、全部sourceReferences存在，证据ID沿用既有记录。
+        - 证据只追加本轮说明，不改前序已提交和集成结果；受影响文件无空白错误。
+    - id: validation.pagination-audit-action-projection-correction
+      checkType: reference
+      command: 复读两条production规则、DEC-0019-02及修正后的BatchManagementPage；Ruby对比HEAD与当前规则除explanation/evidenceIds以外的字段
+      outcome: passed
+      evidence:
+        - rule.production.audit-action-projection与rule.production.batch-management-row-detail-and-audit-entry的结构化内容、状态和投影动作均与HEAD相同，仅补充解释及必要证据引用。
+        - auditActionLabel实际只返回新增/修改；同标题在非CREATE且历史after存在快照详情时显示独立caption次要文字开工，不替代动作标签。
+        - 已复读主侧同步后的integrationAndFollowup，inferred、直接影响、审计影响与验收范围均保留修改分类及开工次要说明；图标切组隔离的实际交互另由主侧和质量验证。
+        - 前轮未覆盖两条投影约束的遗漏已明确记录并纠正；本检查不替代修复后的独立交互回归。
+    - id: validation.pagination-audit-knowledge-suite-after-projection-correction
+      checkType: schema
+      command: mvn -q -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - 两条规则解释修正后本实例重新执行，退出码0；surefire XML汇总89 tests、0 failures、0 errors、0 skipped。
+        - 日志/tmp/batch-pagination-audit-projection-ontology-20261027.log；原先知识检查记录保留，不将其误作本次修正验证。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

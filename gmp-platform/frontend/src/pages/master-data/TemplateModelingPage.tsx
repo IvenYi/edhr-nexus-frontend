@@ -60,7 +60,7 @@ import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Fragment,
   Suspense,
@@ -755,6 +755,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const categories = categoryQuery.data ?? [];
 
   const listQuery = useQuery({
+    placeholderData: (previousData, previousQuery) => previousQuery?.queryKey[0] === config.queryKey ? keepPreviousData(previousData) : undefined,
     queryKey: [config.queryKey, page, pageSize, nameKeyword, codeKeyword, status, categoryId],
     queryFn: async () => {
       const res = await config.listAction({
@@ -821,7 +822,7 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
   const totalTemplateVersionTableWidth = visibleTemplateVersionColumns.reduce((sum, column) => sum + resolvedTemplateVersionColumnWidths[column.id], 0);
   const sharedTableMinWidth = Math.max(totalTableWidth, totalTemplateVersionTableWidth);
   const mainTableColSpan = visibleColumns.length;
-  const pageCount = Math.max(1, listQuery.data?.totalPages ?? Math.ceil((listQuery.data?.totalElements ?? 0) / pageSize));
+  const pageCount = Math.max(1, listQuery.data?.totalPages ?? (listQuery.data ? Math.ceil(listQuery.data.totalElements / pageSize) : page));
   const totalElements = listQuery.data?.totalElements ?? 0;
   const templateCategoryOptions = useMemo<TemplateCategoryOption[]>(() => {
     const virtualCounts = new Map(categories

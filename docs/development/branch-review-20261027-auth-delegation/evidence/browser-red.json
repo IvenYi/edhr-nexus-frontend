@@ -1,0 +1,48 @@
+{
+  "baseline": null,
+  "boundary": "Real React/MUI/router/auth store/client; fixture HTTP, no real authentication or backend writes",
+  "results": [
+    {
+      "name": "native-empty",
+      "result": "passed",
+      "loginCalls": 0
+    },
+    {
+      "name": "credential-error",
+      "result": "failed",
+      "message": "401 must remain on the current login page\n\n2 !== 1\n",
+      "pageErrors": []
+    },
+    {
+      "name": "normal-success",
+      "result": "passed",
+      "loginCalls": 1
+    },
+    {
+      "name": "password-action",
+      "result": "passed",
+      "loginCalls": 1
+    },
+    {
+      "name": "signature-action",
+      "result": "passed",
+      "loginCalls": 1
+    },
+    {
+      "name": "branding-retry",
+      "result": "passed",
+      "loginCalls": 0
+    },
+    {
+      "name": "ordinary-delegation",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText(/同租户正常可用/) to be visible\u001b[22m\n",
+      "pageErrors": []
+    },
+    {
+      "name": "record-control-boundary",
+      "result": "passed",
+      "loginCalls": 0
+    }
+  ]
+}

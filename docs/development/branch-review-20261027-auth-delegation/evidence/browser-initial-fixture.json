@@ -1,0 +1,53 @@
+{
+  "baseline": null,
+  "boundary": "Real React/MUI/router/auth store/client; fixture HTTP, no real authentication or backend writes",
+  "results": [
+    {
+      "name": "native-empty",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('用户名', { exact: true }) to be visible\u001b[22m\n",
+      "pageErrors": []
+    },
+    {
+      "name": "credential-error",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('用户名', { exact: true }) to be visible\u001b[22m\n",
+      "pageErrors": []
+    },
+    {
+      "name": "normal-success",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('用户名', { exact: true }) to be visible\u001b[22m\n",
+      "pageErrors": []
+    },
+    {
+      "name": "password-action",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('用户名', { exact: true }) to be visible\u001b[22m\n",
+      "pageErrors": []
+    },
+    {
+      "name": "signature-action",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('用户名', { exact: true }) to be visible\u001b[22m\n",
+      "pageErrors": []
+    },
+    {
+      "name": "branding-retry",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('用户名', { exact: true }) to be visible\u001b[22m\n",
+      "pageErrors": []
+    },
+    {
+      "name": "ordinary-delegation",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText(/同租户正常可用/) to be visible\u001b[22m\n",
+      "pageErrors": []
+    },
+    {
+      "name": "record-control-boundary",
+      "result": "passed",
+      "loginCalls": 0
+    }
+  ]
+}

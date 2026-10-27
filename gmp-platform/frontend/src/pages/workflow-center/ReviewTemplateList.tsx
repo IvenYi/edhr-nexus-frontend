@@ -192,16 +192,17 @@ export default function ReviewTemplateList() {
   const [columnSettings, setColumnSettings] = useState<TemplateColumnSettings>(() => loadColumnSettings(columnSettingsStorageKey));
   const [columnWidths, setColumnWidths] = useState<TemplateColumnWidths>(() => loadColumnWidths(columnWidthStorageKey));
   const selected = categories.find((item) => item.value === category)!;
-  const query = useQuery({
+  const query = useQuery({ placeholderData: (previous, previousQuery) => previousQuery?.queryKey[1] === category ? previous : undefined,
     queryKey: ['review-templates', category, page, pageSize, submittedKeyword],
     queryFn: async () => (await listTemplates({ page, size: pageSize, businessType: category, keyword: submittedKeyword })).data.data as PageResult<Template>,
     enabled: canAccess,
     refetchOnMount: 'always',
   });
   useEffect(() => {
+    if (!query.isSuccess || query.isPlaceholderData || query.isFetching) return;
     const lastPage = Math.max(query.data?.totalPages ?? 0, 1);
     if (page > lastPage) setPage(lastPage);
-  }, [page, query.data?.totalPages]);
+  }, [page, query.data?.totalPages, query.isSuccess, query.isPlaceholderData, query.isFetching]);
   const columnSettingsItems = useMemo(() => getColumnSettingsItems(columnSettings), [columnSettings]);
   const visibleColumns = useMemo(() => getVisibleColumns(columnSettings), [columnSettings]);
   const visibleConfigurableColumnCount = columnSettings.order.length - columnSettings.hidden.length;
@@ -421,7 +422,7 @@ export default function ReviewTemplateList() {
           <Box sx={{ flex: '0 0 auto', minHeight: 56, px: 2, borderTop: '1px solid #ebeef5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
             <Typography variant="body2" sx={{ color: '#606266', whiteSpace: 'nowrap' }}>共 {query.data?.totalElements ?? 0} 条数据</Typography>
             <Stack direction="row" spacing={1.5} alignItems="center">
-              <Pagination size="small" count={Math.max(query.data?.totalPages ?? 0, 1)} page={Math.min(page, Math.max(query.data?.totalPages ?? 0, 1))} onChange={(_, value) => setPage(value)} />
+              <Pagination size="small" count={Math.max(query.data?.totalPages ?? page, 1)} page={page} onChange={(_, value) => setPage(value)} />
               <TextField select size="small" value={pageSize} onChange={(event) => { setPageSize(Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number]); setPage(1); }} SelectProps={{ native: true }} sx={{ width: 112 }} inputProps={{ 'aria-label': '每页条数' }}>{PAGE_SIZE_OPTIONS.map((option) => <option key={option} value={option}>{option} 条/页</option>)}</TextField>
             </Stack>
           </Box>

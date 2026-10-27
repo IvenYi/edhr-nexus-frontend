@@ -1,0 +1,23 @@
+{
+  "boundary": "real Chromium UI, fixture HTTP; no real backend writes",
+  "baseline": null,
+  "results": [
+    {
+      "name": "SN-1440",
+      "result": "failed",
+      "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'SN编号',\n    '计划开始时间',\n    '计划结束时间',\n+   '备注'\n  ]\n",
+      "pageErrors": []
+    },
+    {
+      "name": "BATCH-1440",
+      "result": "passed",
+      "checks": "keyboard download; XLSX columns/example/help; import; negative validations; staged submit; console"
+    },
+    {
+      "name": "SN-390",
+      "result": "failed",
+      "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n    'SN编号',\n    '计划开始时间',\n    '计划结束时间',\n+   '备注'\n  ]\n",
+      "pageErrors": []
+    }
+  ]
+}

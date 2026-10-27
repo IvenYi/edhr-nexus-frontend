@@ -1186,7 +1186,7 @@ export default function DhrSummaryPage() {
   useEffect(() => { localStorage.setItem(columnWidthStorageKey, JSON.stringify(columnWidths)); }, [columnWidthStorageKey, columnWidths]);
 
   const query = useQuery({
-    queryKey: ['dhr-instances', 'summary', keyword, tab, page, size],
+    placeholderData: (previous, previousQuery) => previousQuery?.queryKey[3] === tab ? previous : undefined, queryKey: ['dhr-instances', 'summary', keyword, tab, page, size],
     queryFn: () => listDhrSummaryInstances({ keyword, summaryStatus: tab === 'submitted' ? 'SUBMITTED_GROUP' : 'PENDING_GROUP', page, size }),
   });
   const rows = (query.data?.content ?? []).filter((row) => tab === 'pending'
@@ -1269,7 +1269,7 @@ export default function DhrSummaryPage() {
           <TableBody>{query.isLoading || query.isError || !rows.length ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={visibleColumns.length + 2} sx={{ height: '100%' }}><Stack alignItems="center" spacing={1.5}>{query.isLoading ? <CircularProgress size={28} /> : query.isError ? <><Typography fontWeight={700}>DHR 汇总列表加载失败</Typography><Button size="small" startIcon={<RefreshRounded />} onClick={() => query.refetch()}>重新加载</Button></> : <Typography color="text.secondary" sx={{ maxWidth: 360, textAlign: 'center' }}>{emptyMessage}</Typography>}</Stack></TableStateCell></TableRow> : rows.map((row) => <TableRow key={row.id} hover {...dhrRowDetailProps(row, setDetailRow)} sx={dhrDetailRowSx}>{visibleColumns.map((columnId) => renderCell(columnId, row))}<TableCell sx={stickyStatusSx}><StatusBadge label={summaryLabels[row.summaryStatus]} color={row.summaryStatus === 'FORMALIZED' ? 'success' : row.summaryStatus === 'PENDING_REVIEW' ? 'warning' : 'primary'} /></TableCell><TableCell onClick={event => event.stopPropagation()} onKeyDown={event => event.stopPropagation()} sx={stickyActionSx}><Tooltip title={tab === 'pending' ? '进入汇总' : '查看冻结版本'}><IconButton size="small" aria-label={tab === 'pending' ? `进入汇总 ${row.dhrNo}` : `查看冻结版本 ${row.dhrNo}`} onClick={() => setSelected(row)} sx={{ color: '#606266', '&:hover': { color: '#1890ff', bgcolor: '#e8f4ff' } }}><PreviewOutlined fontSize="small" /></IconButton></Tooltip></TableCell></TableRow>)}</TableBody>
         </Table>
       </ListTableShell>
-      <FormListPagination totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={size} onPageChange={setPage} onPageSizeChange={(next) => { setSize(next); setPage(0); }} />
+      <FormListPagination dataReady={query.isSuccess && !query.isFetching && !query.isPlaceholderData} totalElements={query.data?.totalElements ?? 0} totalPages={query.data?.totalPages ?? 0} page={page} pageSize={size} onPageChange={setPage} onPageSizeChange={(next) => { setSize(next); setPage(0); }} />
     </Box>
     {detailRow && <DhrDetailDrawer key={detailRow.id} source="summary" id={detailRow.id} dhrNo={detailRow.dhrNo} onClose={() => setDetailRow(null)} />}
     {selected && <SummaryWorkspace dhr={selected} onClose={() => setSelected(null)} />}

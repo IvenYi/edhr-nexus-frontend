@@ -1,0 +1,45 @@
+{
+  "result": "reproduced",
+  "staleVisible": true,
+  "writes": [
+    {
+      "path": "/api/v1/system/icons/order",
+      "body": {
+        "groupId": "102",
+        "ids": [
+          "202",
+          "201"
+        ]
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/v1/system/icon-groups",
+      "group": null,
+      "method": "GET"
+    },
+    {
+      "path": "/api/v1/system/icons",
+      "group": null,
+      "method": "GET"
+    },
+    {
+      "path": "/api/v1/system/icons",
+      "group": "101",
+      "method": "GET"
+    },
+    {
+      "path": "/api/v1/system/icons",
+      "group": "102",
+      "method": "GET"
+    },
+    {
+      "path": "/api/v1/system/icons/order",
+      "group": null,
+      "method": "PUT"
+    }
+  ],
+  "errors": [],
+  "boundary": "All HTTP intercepted. No backend or database write."
+}
