@@ -4,6 +4,8 @@
 
 ## 正式验收
 
+已创建 [PR32](https://github.com/IvenYi/edhr-nexus-frontend/pull/32)，来源 `audit/edhr-dev-ui-evidence-20261027`，目标 `edhr-dev`，等待用户人工合并。下轮先fetch，不将创建PR视为已合并。
+
 全新独立实例对干净候选`cbf139a2e85fc37b5e00a9a9c7956fda25e88a98`正式passed/FINAL，12/12必需检查通过。候选浏览器4/4，基线两桌面通过、两窄屏各322px溢出失败独立复现；实际查看桌面/窄屏截图，控件边界、提交及表内键盘滚动通过。TypeScript、构建和89项知识检查通过。27提示分类和9条有限评估经独立核实。
 
 原件见[evidence/quality-result.yaml](evidence/quality-result.yaml)、[独立说明](evidence/quality-review.md)、[安全运行证据](evidence/quality-evidence.json)，其中/tmp路径对应本目录同名归档映射。未修改角色原件。UI-PRODUCTION-OBJECT-DIALOG-OVERFLOW-001在本批有限范围关闭；静态3处低风险缺口和登录证据不足、strict/lint限制保持。全部专业实例FINAL后已向用户作PR前范围与整体进度复核，见[scope-review](scope-review.md)。受测后仅L0归档/验收/交付登记，产品、测试、知识不变。
