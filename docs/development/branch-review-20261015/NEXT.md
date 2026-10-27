@@ -2,6 +2,8 @@
 
 ## PR35继续：用户已确认跨标签两层保护
 
+已将[PR35](https://github.com/IvenYi/edhr-nexus-frontend/pull/35)转为待审，OPEN/MERGEABLE/CLEAN，建议用户人工合并。实际受测4b45fb88，之后仅L0原件/范围/PR登记，产品、测试、知识保持。隔离PG确切ID停止并自动移除；临时扫描导出已清理。下一轮先fetch核对真实合入和新提交，再按范围复核继续整体审计；不再把本项写作待用户确认或未修复，不自动merge/deploy/恢复。
+
 正式全新独立对4b45fb88 passed/FINAL，14/14必需检查；40 Node、56后端（PG17）、89知识、1280/390同12浏览器、原登录8及构建通过，旧基线4红1正独立复现。AUD-H014-XTAB-001按acceptance resolved；39f初轮failed原件不改。主审已在转待审前向用户复核范围无漂移，后续仅L0证据/台账/PR说明。当前新状态覆盖下方当时“待独立”检查点，不外推全分支完成。
 
 用户标注方案并明确“我觉得这样ok，可以按这个来”，已按DEC0085落实停止旧操作/提示及发出前检查，仅当前页回登录、不清新凭据、不补交。目标fetch仍2c4b79e1；初轮39f292d8 failed原件不改。当前主侧40 Node、同12浏览器场景1280/390各通过、原登录8及构建通过；知识updated/FINAL、89校验通过。strict仍27完整集合相同、lint缺配置保留。详见[整改检查点](../branch-review-20261027-input-session/cross-tab-remediation/README.md)。

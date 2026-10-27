@@ -1,5 +1,7 @@
 # 跨标签会话保护整改
 
+PR35已转待审，读取时OPEN/MERGEABLE/CLEAN，等待用户人工合并。标题及正文已按最终输入/跨标签整改重写；高风险新实例正式验收之后只有L0归档与交付，未自动合并、部署或恢复数据。隔离PG及临时扫描导出已清理。
+
 全新独立对 `4b45fb88679c8eddaec29f92ae7a36dcee9f5d68` 正式 **passed/FINAL，14/14必需检查通过**。AUD-H014-XTAB-001按本次明确范围resolved；输入两个既有整改也通过最终候选回归。正式[质量原件](evidence/quality-result.yaml)、[报告](evidence/quality-review.md)、[安全证据](evidence/quality-evidence.json)及[验收状态](acceptance.json)分别保存；39f292d8的failed不回写。
 
 用户已标注并接受两层保护，来源为DEC-0085及本轮原始确认。共享会话变化时停止旧页面并提示重新登录；保存/提交发出前再检查，拒绝不一致请求，仅当前标签回登录，不清新凭据、不补交或恢复旧表单。不是较早未确认的自动进入B方案。目标仍2c4b79e1，同一PR35继续，不恢复原暂缓。
