@@ -1,0 +1,174 @@
+qualityResult:
+  result: passed
+  baseCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+  headCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+    targetBranch: edhr-dev
+    targetCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+    contractReadCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - gmp-platform/frontend/src/components/ProductionObjectEditDialog.tsx
+      - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+      - gmp-platform/frontend/scripts/test-production-object-edit.mjs
+      - docs/development/batch-process-20261027/decision-package.yaml
+      - docs/development/batch-process-20261027/ontology-result-ui-repair.yaml
+      - docs/development/batch-process-20261027/ui-repair-verification.md
+      - docs/knowledge/evidence/batch-process-2026-10-27.md
+      - docs/knowledge/evidence/batch-process.yaml
+    excludedPaths:
+      - output 下与 batch-ui-repair-20261027 无关的既有未跟踪验收产物
+      - gmp-platform/frontend/output 下与本轮无关的既有验收产物
+    untrackedPaths:
+      - docs/development/batch-process-20261027/ontology-result-ui-repair.yaml
+      - docs/development/batch-process-20261027/ui-repair-verification.md
+      - docs/development/batch-process-20261027/quality-result-ui-repair.yaml
+      - gmp-platform/frontend/scripts/test-production-object-edit.mjs
+      - output/playwright/batch-ui-repair-20261027/
+  checks:
+    - id: QA-UI-REPAIR-BASELINE
+      required: true
+      category: requirements
+      description: 独立核对本轮L2连续修复范围、原始截图、契约及影响分析。
+      method: inspection
+      command: git rev-parse HEAD origin/edhr-dev; git diff --name-only -- AGENTS.md codeplzreadme.md docs/agents; 阅读本轮uiRepairContinuation
+      outcome: passed
+      evidence:
+        - HEAD与origin/edhr-dev均为3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176，契约无未提交改动；验证对象为该提交加本报告列明工作树，不编造新候选提交。
+        - 实际读取AGENTS、quality-verifier、统一交接契约、知识README/open-questions、batch-process规则、DEC-0014及普通弹窗规范。
+        - 源码修复限于数据就绪保护、当前配置预览、拆分排版及产品字段布局；未改变首次开工冻结、服务端数量约束、对象身份、权限或既有审计政策。
+        - ProductionObjectEditDialog.tsx SHA256 f2db8e2551e12b216f3ba28e799dd34df3dd697ba6e38c30528aa6ca2f34c4c8
+        - WorkOrderPage.tsx SHA256 3d83189375ad736633eb6561715e03d50d8e0f70d5c84e7c0d540e29a85c7a7e
+        - test-production-object-edit.mjs SHA256 c5fb73238857fcf8e6ddd4f79f7970e257fabf5e148c923c73d32beff8a68fcf
+    - id: QA-UI-REPAIR-ONTOLOGY
+      required: true
+      category: ontology
+      description: 核对规则、证据和影响范围；区分运行同步与业务政策变化。
+      method: inspection
+      command: 阅读ontology-result-ui-repair.yaml、两份本体证据、batch-process规则及DEC-0014
+      outcome: passed
+      evidence:
+        - 本体result=updated，知识0.3.25不变；89项知识检查为本体角色实际运行，本质量实例未重复执行或冒领。
+        - 当前引用预览不等于已开工冻结，缺失额度不解释为零或无限，待提交仍为非持久化清单，与实际源码相符。
+        - 旧服务及结构同步的事实在证据中明确由主侧取得，质量实例另以当前真实页面和数据库核对修复结果。
+        - QF-UI-REPAIR-001仅为旧展示约定的低风险文档残留，不影响本轮业务约束及交付行为。
+    - id: QA-UI-REPAIR-UNIT
+      required: true
+      category: unit
+      description: 独立运行真实批次编辑组件的数据和保存边界测试。
+      method: automated-test
+      command: cd gmp-platform/frontend && node --test scripts/test-production-object-edit.mjs
+      outcome: passed
+      evidence:
+        - 本实例实际运行6项，6通过、0失败、0跳过；覆盖缺额度/身份、失败/刷新、数量上限、正小数、SN固定及既有引用保留。
+        - 已检查测试使用实际组件编译结果，hooks和UI边界桩不代替浏览器验收。
+    - id: QA-UI-REPAIR-BUILD
+      required: true
+      category: regression
+      description: 核对主侧本轮TypeScript/Vite构建并独立检查差异格式。
+      method: command
+      command: 阅读/tmp/batch-ui-repair-build.log; git diff --check
+      outcome: passed
+      evidence:
+        - 主侧原始日志显示tsc -b及Vite完成，12189模块、built in 6.26s；本实例复用该记录，没有声称重复执行构建。
+        - 本实例git diff --check通过。
+    - id: QA-UI-REPAIR-PREVIEW-QUANTITY
+      required: true
+      category: e2e
+      description: 在独立浏览器会话验证用户原有工单的预览、身份和数量提示。
+      method: browser
+      command: playwright-cli -s=ui-repair-quality; http://127.0.0.1:3000/production/work-orders → 8081
+      outcome: passed
+      evidence:
+        - 工单222选择V1.0，实际预览返回工艺路线、DHR模板及3项工序配置，无加载失败。
+        - 111-181编辑显示V1.0和安速康原因模拟·刀头，最大82；83禁保存，0.5允许保存；随后取消，没有写入该批次。
+        - output/playwright/batch-ui-repair-20261027/quality-preview-1440.png
+        - output/playwright/batch-ui-repair-20261027/quality-edit-max82.png
+    - id: QA-UI-REPAIR-FAILURE-RECOVERY
+      required: true
+      category: e2e
+      description: 独立拦截读取响应验证缺字段和失败时阻断以及重试恢复。
+      method: browser
+      command: 独立浏览器route删除工单响应allocatedQuantity；另一次返回503；移除拦截后点击重试
+      outcome: passed
+      evidence:
+        - 缺allocatedQuantity时显示数据不完整、没有NaN、保存禁用；真实接口恢复后重试重新显示最大82并允许保存。
+        - 工单读取503时显示加载失败、没有NaN、保存禁用，移除503拦截后重试成功。
+        - 首次503探针命中既有新鲜缓存而未发请求，等待超时；刷新页面清空内存缓存后重跑并实际命中503。前一次超时不作为产品失败或成功证据。
+        - 仅拦截质量会话的GET，无服务端变更；已移除所有路由并关闭独立会话。
+        - output/playwright/batch-ui-repair-20261027/quality-missing-allocation.png
+        - output/playwright/batch-ui-repair-20261027/quality-failed-order-read.png
+    - id: QA-UI-REPAIR-VISUAL
+      required: true
+      category: visual
+      description: 独立查看桌面和窄屏实际截图及DOM尺寸，核对工单产品满行。
+      method: browser
+      command: 独立Chromium设置1440/1024/390×1000视口，截图后目视复核并读取dialog/content尺寸
+      outcome: passed
+      evidence:
+        - 弹窗宽/scrollWidth分别1280/1280、960/960、326/326；内容也无整体横向溢出，窄屏表格在自身容器横滚。
+        - 桌面为摘要、紧凑横向添加表单、全宽清单；窄屏输入退为单列，关闭及提交底栏可见。
+        - 工单产品字段宽818、网格宽818、gridColumn=1/-1，已跨满一行。
+        - output/playwright/batch-ui-repair-20261027/quality-split-1440.png
+        - output/playwright/batch-ui-repair-20261027/quality-split-1024.png
+        - output/playwright/batch-ui-repair-20261027/quality-split-390-top.png
+        - output/playwright/batch-ui-repair-20261027/quality-workorder-fullrow-final.png
+        - 早期quality-workorder-fullrow.png抓到过渡动画，未用作最终视觉依据；最终截图等待动画完成后取得。
+    - id: QA-UI-REPAIR-PENDING
+      required: true
+      category: e2e
+      description: 独立核对新清单页签不丢失待提交内容。
+      method: browser
+      command: 在主侧QA工单创建仅浏览器内0.025草稿，切至已拆分再切回，关闭而不提交
+      outcome: passed
+      evidence:
+        - QA-READONLY-PENDING批次号和0.025数量完整保留；已拆分显示原有3项，最终关闭未提交，未修改主侧测试工单或用户批次。
+        - output/playwright/batch-ui-repair-20261027/quality-pending-preserved.png
+        - 主侧批量、手动、CSV三种添加及实际统一提交另见ui-repair-verification.md，质量实例未将主侧交互写为自身执行。
+    - id: QA-UI-REPAIR-DATABASE-AUDIT
+      required: true
+      category: database
+      description: 独立只读核对日常库结构同步、实际保存数量及审计结果。
+      method: query
+      command: psql -d edhr_dev 查询information_schema.columns、databasechangelog、work_order、production_object和audit_event；检查备份文件
+      outcome: passed
+      evidence:
+        - work_order已无process_version_id；termination_reason为varchar(500)，termination_at为timestamp without time zone。
+        - schema checksum=9:2b872f09ed4a9725481873bd3ba3a1bd；seed checksum=9:8a272ef565cf33f93cd0d7e76fa3f999，完整备份/tmp/edhr-dev-before-batch-ui-repair-20261027.dump存在。
+        - QA-UI-REPAIR-20261027计划0.5000，UI-001/IMP/MAN数量0.2500/0.1500/0.0500；合计0.45，与主侧实际保存记录相符。
+        - 三项CREATE均带processReference；UI-MAN UPDATE无重复processReference、targetQuantity=0.05，符合差量审计。
+        - 本实例只核对此次受影响结构和真实记录；全应用表列/约束/索引逐项对照及首次硬调整由主侧实施并在ui-repair-verification.md记录，不冒称独立重复全库比对。
+  findings:
+    - id: QF-UI-REPAIR-001
+      severity: low
+      scope: docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml / DEC-0014-09
+      summary: 当前知识仍保留导入说明收纳至Info-hover的旧展示约定。
+      reproductionSteps:
+        - 读取DEC-0014-09的当前statement。
+        - 打开重排后的生产对象管理导入批次页签。
+      expectedResult: 当前展示说明与用户已授权重排后的内联简明说明一致，并保留旧来源。
+      actualResult: 界面已使用内联说明，当前DEC-0014-09仍描述Info hover。本轮用户明确授权改变展现形式，因此该旧展示句不构成业务违规或功能阻断。
+      evidence:
+        - docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml
+        - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx:749
+        - 已向主侧反馈；仅需本体呈现说明同步，不需改变代码、数量规则或审计。
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: R-UI-REPAIR-SCOPE
+      description: 本轮验证限于五张截图对应修复及相邻路径，没有重复执行全系统或前序132项后端测试。
+      impact: 本报告不代表全部生产生命周期或所有冻结详情入口的新一轮认证。
+      mitigation: 后端源码、基线和业务规则未在本轮修改；其他冻结详情入口继续沿既定暂缓范围，风险扩大时另行验证。
+    - id: R-UI-REPAIR-CONSOLE
+      description: 复用公共FormDialogFieldGrid后仍可见既有Emotion nth-child SSR提示和React Router future flag提示。
+      impact: 当前客户端渲染的实际交互未受影响；不是新的API失败。
+      mitigation: 本轮不修改共享网格或路由配置；本报告的503日志明确来自独立失败注入。
+    - id: R-UI-REPAIR-KNOWLEDGE-COPY
+      description: QF-UI-REPAIR-001为非阻断的旧展示约定残留。
+      impact: 可能误导后续按旧布局说明实现的开发者，但不改变当前已确认业务行为。
+      mitigation: 本体角色同步现行展示说明并保留此前原始来源；无需要求用户重新确认已授权的重排。
+  blockingConditions: []

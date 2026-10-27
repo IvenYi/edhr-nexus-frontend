@@ -1,0 +1,113 @@
+qualityResult:
+  result: passed
+  baseCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+  headCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+    targetBranch: edhr-dev
+    targetCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+    contractReadCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml
+      - docs/knowledge/evidence/production.yaml
+      - docs/knowledge/evidence/batch-process-2026-10-27.md
+      - docs/knowledge/evidence/batch-process.yaml
+      - docs/development/batch-process-20261027/decision-package.yaml
+      - docs/development/batch-process-20261027/ontology-result-ui-repair.yaml
+      - docs/development/batch-process-20261027/ui-repair-verification.md
+      - docs/development/batch-process-20261027/quality-result-ui-repair.yaml
+      - gmp-platform/frontend/src/components/ProductionObjectEditDialog.tsx
+      - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+      - gmp-platform/frontend/scripts/test-production-object-edit.mjs
+    excludedPaths:
+      - 与本轮批次界面修复无关的既有未跟踪验收产物
+    untrackedPaths:
+      - docs/development/batch-process-20261027/ontology-result-ui-repair.yaml
+      - docs/development/batch-process-20261027/ui-repair-verification.md
+      - docs/development/batch-process-20261027/quality-result-ui-repair.yaml
+      - docs/development/batch-process-20261027/quality-result-ui-repair-final.yaml
+      - gmp-platform/frontend/scripts/test-production-object-edit.mjs
+      - output/playwright/batch-ui-repair-20261027/
+  checks:
+    - id: QA-UI-REPAIR-FINAL-BASELINE
+      required: true
+      category: requirements
+      description: 全新且未参与修复的质量实例独立核对契约、知识及同一工作树范围。
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git diff --name-only -- AGENTS.md codeplzreadme.md docs/agents; 阅读质量角色和统一交接契约
+      outcome: passed
+      evidence:
+        - 本实例实际核对HEAD和origin/edhr-dev均为3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176，契约无未提交增量。
+        - 实际读取AGENTS、codeplzreadme、quality-verifier、agent-handoff-contract、知识README/open-questions及DEC-0014相关资产；知识0.3.25保持。
+        - 验证对象为上述基线加列明工作树；本实例没有修改业务代码、测试、知识定义或业务数据，只新增本报告。
+    - id: QA-UI-REPAIR-FINAL-PRESENTATION
+      required: true
+      category: ontology
+      description: 关闭旧导入展示约定，确认当前定义、原始源码、授权和历史来源一致。
+      method: inspection
+      command: git diff -- DEC-0014及production.yaml导入证据; 阅读WorkOrderPage.tsx导入区域和batch-process-2026-10-27.md
+      outcome: passed
+      evidence:
+        - DEC-0014-09现直接描述选择文件按钮和内联简短说明，与WorkOrderPage.tsx的实际按钮及Typography内联导入提示一致。
+        - 用户允许重新组织展现为user-confirmed；按钮位置和内联说明为inference工程落实，没有把具体布局伪写为用户逐字要求。
+        - 对照Git基线解析全部decisionStatements，仅DEC-0014-09发生变化；数量必填、字段/格式、待提交和整批事务语义保持。
+        - evidence.production-work-order-batch-import-template-ui仅同步呈现片段，保留SN备注列历史差异及其当时未运行的证据边界。
+        - 旧原文和真实Git来源保留在batch-process-2026-10-27.md，已明确不作为当前约束；无并行规则或新版本政策。
+        - decisionPackage.uiRepairContinuation增量记录同一DEC-0014-09的replacementScopes和retainedScope，directImpacts包含知识描述；已完成运行证据缺口为[]。
+    - id: QA-UI-REPAIR-FINAL-STRUCTURE
+      required: true
+      category: documentation
+      description: 检查修正后结构、引用路径及本体最终结果，不以结构检查替代业务验收。
+      method: command
+      command: Ruby YAML解析6份相关文件并比较声明差异和13条sourceReferences; git diff --check; 读取知识检查surefire XML
+      outcome: passed
+      evidence:
+        - 6份YAML均成功解析；ontologyResult为updated，questions和conflicts为空，13条去重sourceReferences路径全部存在。
+        - git diff --check通过；本体实际在呈现同步后重跑知识检查，XML汇总89 tests、0 failures、0 errors、0 skipped。
+        - 本实例读取原始XML和/tmp/batch-ui-repair-ontology-qa-fix-20261027.log所对应报告，不声称自身重新运行89项Maven检查。
+    - id: QA-UI-REPAIR-FINAL-UNCHANGED-IMPLEMENTATION
+      required: true
+      category: regression
+      description: 核对首轮独立验收后实现及测试完全不变，复用同一候选已有业务证据。
+      method: command
+      command: shasum -a 256 ProductionObjectEditDialog.tsx WorkOrderPage.tsx test-production-object-edit.mjs; 阅读quality-result-ui-repair.yaml及ui-repair-verification.md
+      outcome: passed
+      evidence:
+        - ProductionObjectEditDialog.tsx SHA256 f2db8e2551e12b216f3ba28e799dd34df3dd697ba6e38c30528aa6ca2f34c4c8，与首轮报告相同。
+        - WorkOrderPage.tsx SHA256 3d83189375ad736633eb6561715e03d50d8e0f70d5c84e7c0d540e29a85c7a7e，与首轮报告相同。
+        - test-production-object-edit.mjs SHA256 c5fb73238857fcf8e6ddd4f79f7970e257fabf5e148c923c73d32beff8a68fcf，与首轮报告相同。
+        - 首轮quality-result-ui-repair.yaml为passed，9项检查全部通过；本轮只修正文档呈现，未改变接口、数据、业务状态、审计、快照或用户交互实现。
+        - 复用首轮相同实现的6项组件测试、实际预览/数量/503及缺字段重试、清单保留、产品满行和1440/1024/390布局、数据库审计结果；主侧三种添加及保存证据仍明确归属主侧。
+        - 本实例没有重跑浏览器、数据库查询、构建或业务测试；上述业务通过来自本轮首个独立质量实例与主侧记录，不冒称新的执行覆盖。
+  findings:
+    - id: QF-UI-REPAIR-001
+      severity: low
+      scope: DEC-0014-09 / evidence.production-work-order-batch-import-template-ui
+      summary: 首轮发现的旧Info-hover展示约定已与当前内联简短说明同步。
+      reproductionSteps:
+        - 对照基线提交DEC-0014-09和本轮首个质量报告中的旧描述。
+        - 读取修正后的DEC-0014-09、对应代码证据、历史来源及WorkOrderPage.tsx导入区域。
+      expectedResult: 当前定义表达选择文件按钮及内联简短说明，保留原始来源且不更改业务约束。
+      actualResult: 当前定义和源码一致，旧原文仅作历史来源保留；数量必填、导入格式、字段及待提交/原子事务规则未改变。
+      evidence:
+        - docs/development/batch-process-20261027/quality-result-ui-repair.yaml
+        - docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml
+        - docs/knowledge/evidence/production.yaml
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: document
+          reference: docs/knowledge/evidence/batch-process-2026-10-27.md
+        - type: document
+          reference: docs/development/batch-process-20261027/ontology-result-ui-repair.yaml
+        - type: document
+          reference: docs/development/batch-process-20261027/quality-result-ui-repair-final.yaml#QA-UI-REPAIR-FINAL-PRESENTATION
+  residualRisks:
+    - id: R-UI-REPAIR-FINAL-SCOPE
+      description: 本实例只执行呈现知识修正的最终复核，并在实现指纹一致时复用首轮实际业务验证。
+      impact: 不构成全系统回归、其他冻结详情入口验收、远端CI或生产部署验证。
+      mitigation: 同一候选的完整本轮业务范围见quality-result-ui-repair.yaml和ui-repair-verification.md；后续实现或契约变化须重新评估受影响范围。
+  blockingConditions: []

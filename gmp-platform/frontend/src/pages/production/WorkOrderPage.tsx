@@ -8,6 +8,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Alert,
   Box,
   Button,
   CircularProgress,
@@ -22,6 +23,7 @@ import {
   Pagination,
   Radio,
   RadioGroup,
+  Skeleton,
   Stack,
   Tab,
   Table,
@@ -49,10 +51,8 @@ import {
   Search,
   ViewList,
   UploadFile,
-  PlaylistAdd,
   DeleteOutline,
   Visibility,
-  InfoOutlined,
   TuneRounded,
   ViewColumnRounded,
 } from '@mui/icons-material';
@@ -60,6 +60,7 @@ import * as XLSX from 'xlsx';
 import ExcelJS from 'exceljs';
 import AppDialog from '@/components/AppDialog';
 import ProductionObjectEditDialog from '@/components/ProductionObjectEditDialog';
+import FormDialogFieldGrid from '@/components/FormDialogFieldGrid';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { ListTableShell } from '@/components/ListTableShell';
 import StatusBadge from '@/components/StatusBadge';
@@ -79,7 +80,6 @@ import {
   splitProductionObjectsBatch,
   startProductionObject,
   updateWorkOrder,
-  type ProcessOption,
   type ProductionObject,
   type WorkOrder,
 } from '@/api/work-orders';
@@ -294,21 +294,18 @@ function WorkOrderDetailDrawer({ open, order, tab, onTabChange, auditRecords, au
   </Drawer>;
 }
 
-function ProcessVersionOption({ version }: { version: ProductProcessVersion | ProcessOption }) {
-  return <Box sx={{ py: 0.25 }}><Typography variant="body2" sx={{ color: '#303133' }}>{version.version}</Typography><Typography variant="caption" display="block" sx={{ color: '#909399' }}>工艺路线版本：{version.routeVersion || '-'}</Typography><Typography variant="caption" display="block" sx={{ color: '#909399' }}>DHR模板版本：{version.dhrTemplateVersion || '-'}</Typography></Box>;
-}
-
-function ProcessVersionPreviewDialog({ open, version, loading, error, onClose }: {
+function ProcessVersionPreviewDialog({ open, version, loading, error, onClose, onRetry }: {
   open: boolean;
   version?: ProductProcessVersion;
   loading: boolean;
   error: boolean;
   onClose: () => void;
+  onRetry: () => void;
 }) {
   return <AppDialog open={open} onClose={onClose} maxWidth="md" fullWidth>
     <DialogTitle>{version?.version ? `制程版本预览 - ${version.version}` : '制程版本预览'}</DialogTitle>
     <DialogContent dividers sx={{ p: { xs: 1.5, sm: 2.5 }, bgcolor: '#f6f8f9' }}>
-      {loading ? <Box sx={{ py: 8, display: 'grid', placeItems: 'center' }}><CircularProgress size={24} /></Box> : error || !version ? <Box sx={{ py: 8, textAlign: 'center', color: '#c62828' }}>制程版本详情加载失败</Box> : <Stack spacing={1.5}>
+      {loading ? <Stack spacing={2} sx={{ py: 2 }}><Skeleton variant="rounded" height={120} /><Skeleton variant="rounded" height={160} /></Stack> : error || !version ? <Alert severity="error" action={<Button onClick={onRetry}>重试</Button>}>制程版本详情加载失败，请重试。</Alert> : <Stack spacing={1.5}>
         <FormSection title="版本信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
           <DetailField label="制程版本">{version.version}</DetailField><DetailField label="版本状态">{version.status || '-'}</DetailField>
           <DetailField label="生产模式">{version.productionMode}</DetailField><DetailField label="生产形态">{version.productionForm}</DetailField>
@@ -356,6 +353,7 @@ export default function WorkOrderPage() {
   const [form, setForm] = useState<WorkOrderForm>(emptyForm);
   const [splitForm, setSplitForm] = useState({ processVersionId: '', targetQuantity: '', objectNo: '', remark: '', plannedStartAt: '', plannedEndAt: '' });
   const [splitTab, setSplitTab] = useState(0);
+  const [objectListTab, setObjectListTab] = useState(0);
   const [batchAddType, setBatchAddType] = useState<'count' | 'quantity'>('count');
   const [processPreviewOpen, setProcessPreviewOpen] = useState(false);
   const [pendingObjects, setPendingObjects] = useState<Array<{ processVersionId: string; targetQuantity: string; objectNo: string; remark: string; plannedStartAt: string; plannedEndAt: string }>>([]);
@@ -439,7 +437,7 @@ export default function WorkOrderPage() {
   });
   const split = useMutation({
     mutationFn: () => splitProductionObjectsBatch(objectOrder!.id, pendingObjects.map((item) => ({ processVersionId: item.processVersionId || null, targetQuantity: Number(item.targetQuantity), objectNo: item.objectNo.trim() || undefined, remark: item.remark.trim() || undefined, plannedStartAt: item.plannedStartAt || null, plannedEndAt: item.plannedEndAt || null }))),
-    onSuccess: (response) => { const created = response.data.data[0]; setObjectOrder((current) => current ? { ...current, hasObjects: true, productionForm: created.objectType } : current); void client.invalidateQueries({ queryKey: ['production-objects', objectOrder?.id] }); void client.invalidateQueries({ queryKey: ['work-orders'] }); setPendingObjects([]); setSplitForm((current) => ({ ...current, processVersionId: created.processVersionId, targetQuantity: '', objectNo: '', remark: '', plannedStartAt: '', plannedEndAt: '' })); showMessage(`已添加 ${response.data.data.length} 个生产对象`); },
+    onSuccess: (response) => { const created = response.data.data[0]; setObjectOrder((current) => current ? { ...current, hasObjects: true, productionForm: created.objectType } : current); void client.invalidateQueries({ queryKey: ['production-objects', objectOrder?.id] }); void client.invalidateQueries({ queryKey: ['work-orders'] }); setPendingObjects([]); setObjectListTab(1); setSplitForm((current) => ({ ...current, processVersionId: created.processVersionId, targetQuantity: '', objectNo: '', remark: '', plannedStartAt: '', plannedEndAt: '' })); showMessage(`已添加 ${response.data.data.length} 个生产对象`); },
     onError: (error: unknown) => showMessage(error instanceof Error ? error.message : '生产对象创建失败', 'error'),
   });
   const objectAction = useMutation({
@@ -475,7 +473,7 @@ export default function WorkOrderPage() {
     setObjectOrder(order);
     return true;
   });
-  const openObjects = (item: WorkOrder) => { setObjectOrder(item); setProcessPreviewOpen(false); setSplitTab(0); setBatchAddType('count'); setPendingObjects([]); setSplitForm({ processVersionId: '', targetQuantity: '', objectNo: '', remark: '', plannedStartAt: '', plannedEndAt: '' }); };
+  const openObjects = (item: WorkOrder) => { setObjectOrder(item); setObjectListTab(0); setProcessPreviewOpen(false); setSplitTab(0); setBatchAddType('count'); setPendingObjects([]); setSplitForm({ processVersionId: '', targetQuantity: '', objectNo: '', remark: '', plannedStartAt: '', plannedEndAt: '' }); };
   const selectedProductionMode = selectedProcess?.productionMode || objectOrder?.productionMode || '';
   const selectedProductionForm = selectedProcess?.productionForm || objectOrder?.productionForm || '';
   const isMassNonSn = selectedProductionMode === '量产' && ['BATCH', '批次'].includes(selectedProductionForm);
@@ -487,9 +485,12 @@ export default function WorkOrderPage() {
       ? Number.isInteger(batchInput) && batchInput <= (isSnProduction ? availableRemaining : Math.round(availableRemaining * 10000))
       : Number(batchInput.toFixed(4)) === batchInput);
   const previewVersion = processPreviewQuery.data?.model?.versions.find((version) => version.id === splitForm.processVersionId);
+  const incompleteProcessOptions = (processOptions.data ?? []).some(option => !option.processReference?.ownerName || !option.processReference?.ownerId);
+  const splitDataReady = objects.isSuccess && !objects.isFetching && processOptions.isSuccess && !processOptions.isFetching && !incompleteProcessOptions;
   const addPendingObject = () => {
     const targetQuantity = isSnProduction ? 1 : Number(splitForm.targetQuantity);
-    if (!splitForm.processVersionId || targetQuantity <= 0 || targetQuantity > availableRemaining) return;
+    if (!splitDataReady || !splitForm.processVersionId || !Number.isFinite(targetQuantity) || targetQuantity <= 0 || targetQuantity > availableRemaining) return;
+    setObjectListTab(0);
     if (isSnProduction && !splitForm.objectNo.trim()) { showMessage('请输入SN编号', 'error'); return; }
     if (splitForm.plannedStartAt && splitForm.plannedEndAt && splitForm.plannedEndAt < splitForm.plannedStartAt) { showMessage('计划结束时间不能早于计划开始时间', 'error'); return; }
     if (splitForm.objectNo.trim() && (pendingObjects.some((item) => item.objectNo.trim() === splitForm.objectNo.trim()) || objectRows.some((item) => item.objectNo.trim() === splitForm.objectNo.trim()))) { showMessage('待添加清单或已拆分清单中存在重复的SN/批次号', 'error'); return; }
@@ -498,7 +499,8 @@ export default function WorkOrderPage() {
   };
   const addPendingBatch = () => {
     const input = Number(splitForm.targetQuantity);
-    if (!splitForm.processVersionId || !validBatchInput) return;
+    if (!splitDataReady || !splitForm.processVersionId || !validBatchInput) return;
+    setObjectListTab(0);
     const count = isSnProduction || batchAddType === 'count' ? input : Math.ceil(Math.round(availableRemaining * 10000) / Math.round(input * 10000));
     const baseQuantity = batchAddType === 'quantity' && !isSnProduction ? input : Math.floor(Math.round(availableRemaining * 10000) / count) / 10000;
     const next = Array.from({ length: count }, (_, index) => ({
@@ -556,6 +558,7 @@ export default function WorkOrderPage() {
       setPendingObjects((current) => [...current, ...imported]);
       setSplitTab(1);
       showMessage(`已导入 ${imported.length} 条待添加记录`);
+      setObjectListTab(0);
     } catch (error) { showMessage(error instanceof Error ? error.message : '批次导入失败', 'error'); }
   };
   const downloadImportTemplate = async () => {
@@ -631,7 +634,7 @@ export default function WorkOrderPage() {
     }, 0);
   };
   const processVersionFor = (id: string) => (processOptions.data ?? []).find((option) => option.id === id)?.version || '-';
-  const pendingTable = <TableContainer sx={{ maxHeight: { xs: 260, lg: 330 }, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ minWidth: 610 }}><TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{[isSnProduction ? 'SN编号' : '批次号', '制程版本', '数量', '计划时间', '备注', '操作'].map((label) => <TableCell key={label} align={label === '操作' ? 'center' : undefined} sx={label === '操作' ? { width: PENDING_OBJECT_ACTION_COLUMN_WIDTH, minWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH, maxWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH } : undefined}>{label}</TableCell>)}</TableRow></TableHead><TableBody>{pendingObjects.length === 0 ? <TableRow><TableStateCell colSpan={6} align="center" sx={{ height: 120, color: '#909399' }}>暂无待提交{isSnProduction ? 'SN' : '批次'}</TableStateCell></TableRow> : pendingObjects.map((item, index) => <TableRow key={`${item.objectNo}-${index}`} sx={{ ...tableRowSx, bgcolor: '#fffaf0' }}><TableCell>{item.objectNo || '系统生成'}</TableCell><TableCell>{processVersionFor(item.processVersionId)}</TableCell><TableCell>{item.targetQuantity}</TableCell><TableCell sx={{ whiteSpace: 'nowrap', fontSize: 12 }}><Box>{item.plannedStartAt ? formatDateTime(item.plannedStartAt) : '未设开始'}</Box><Box sx={{ color: 'text.secondary' }}>{item.plannedEndAt ? formatDateTime(item.plannedEndAt) : '未设结束'}</Box></TableCell><TableCell sx={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.remark || '-'}</TableCell><TableCell align="center" sx={{ width: PENDING_OBJECT_ACTION_COLUMN_WIDTH, minWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH, maxWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH }}><Tooltip title="移除" arrow><IconButton size="small" aria-label="移除待添加批次" onClick={() => setPendingObjects((current) => current.filter((_, rowIndex) => rowIndex !== index))}><DeleteOutline fontSize="small" /></IconButton></Tooltip></TableCell></TableRow>)}</TableBody></Table></TableContainer>;
+  const pendingTable = <TableContainer sx={{ maxHeight: { xs: 260, lg: 330 }, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ minWidth: 610 }}><TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{[isSnProduction ? 'SN编号' : '批次号', '制程版本', '数量', '计划时间', '备注', '操作'].map((label) => <TableCell key={label} align={label === '操作' ? 'center' : undefined} sx={label === '操作' ? { width: PENDING_OBJECT_ACTION_COLUMN_WIDTH, minWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH, maxWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH } : undefined}>{label}</TableCell>)}</TableRow></TableHead><TableBody>{pendingObjects.length === 0 ? <TableRow><TableStateCell colSpan={6} align="center" sx={{ height: 120, color: '#909399' }}>从上方添加{isSnProduction ? ' SN' : '批次'}，确认清单后统一提交</TableStateCell></TableRow> : pendingObjects.map((item, index) => <TableRow key={`${item.objectNo}-${index}`} sx={tableRowSx}><TableCell>{item.objectNo || '系统生成'}</TableCell><TableCell>{processVersionFor(item.processVersionId)}</TableCell><TableCell>{item.targetQuantity}</TableCell><TableCell sx={{ whiteSpace: 'nowrap', fontSize: 12 }}><Box>{item.plannedStartAt ? formatDateTime(item.plannedStartAt) : '未设开始'}</Box><Box sx={{ color: 'text.secondary' }}>{item.plannedEndAt ? formatDateTime(item.plannedEndAt) : '未设结束'}</Box></TableCell><TableCell sx={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.remark || '-'}</TableCell><TableCell align="center" sx={{ width: PENDING_OBJECT_ACTION_COLUMN_WIDTH, minWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH, maxWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH }}><Tooltip title="移除" arrow><IconButton size="small" aria-label="移除待添加批次" onClick={() => setPendingObjects((current) => current.filter((_, rowIndex) => rowIndex !== index))}><DeleteOutline fontSize="small" /></IconButton></Tooltip></TableCell></TableRow>)}</TableBody></Table></TableContainer>;
   const objectTable = <TableContainer sx={{ maxHeight: { xs: 360, lg: 460 }, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ minWidth: 1060 }}><TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{[isSnProduction ? 'SN编号' : '批次号', '状态', '制程版本', '数量', '累计产出', '良品', 'NG', '产品报废登记', '计划开始', '计划结束', '备注', '操作'].map((label) => <TableCell key={label}>{label}</TableCell>)}</TableRow></TableHead><TableBody>{objects.isLoading ? <TableRow><TableStateCell colSpan={12} align="center" sx={{ height: 160 }}><CircularProgress size={24} /></TableStateCell></TableRow> : objects.isError ? <TableRow><TableStateCell colSpan={11} align="center" sx={{ height: 160, color: '#c62828' }}>生产对象加载失败</TableStateCell></TableRow> : objectRows.length === 0 ? <TableRow><TableStateCell colSpan={11} align="center" sx={{ height: 160, color: '#909399' }}>暂无已拆分{isSnProduction ? 'SN' : '批次'}</TableStateCell></TableRow> : objectRows.map((item) => <TableRow data-record-id={item.id} key={item.id} sx={tableRowSx}><TableCell>{item.objectNo}</TableCell><TableCell>{statusBadge(item.status, objectStatusLabels)}</TableCell><TableCell>{item.processVersion}</TableCell><TableCell>{item.targetQuantity}</TableCell><TableCell><ProductionOutputValue output={item.output} /></TableCell><TableCell><ProductionOutputValue output={item.output?.quality?.goodQuantity} label="批次良品" /></TableCell><TableCell><ProductionOutputValue output={item.output?.quality?.ngQuantity} label="批次不良品" /></TableCell><TableCell><ProductionOutputValue output={item.output?.quality?.scrapQuantity} label="产品报废登记" /></TableCell><TableCell>{item.plannedStartAt ? formatDateTime(item.plannedStartAt) : '-'}</TableCell><TableCell>{item.plannedEndAt ? formatDateTime(item.plannedEndAt) : '-'}</TableCell><TableCell sx={{ maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.remark || '-'}</TableCell><TableCell>{canSplit && item.status === 'CREATED' && <Stack direction="row"><Tooltip title="修改批次配置"><IconButton size="small" aria-label={`修改批次 ${item.objectNo}`} onClick={() => setEditObject(item)}><Edit fontSize="small" /></IconButton></Tooltip><Tooltip title="取消批次"><IconButton size="small" aria-label={`取消批次 ${item.objectNo}`} onClick={() => setCancelObject(item)}><Cancel fontSize="small" /></IconButton></Tooltip></Stack>}</TableCell></TableRow>)}</TableBody></Table></TableContainer>;
   const selectProduct = (productId: string) => setForm((current) => ({ ...current, productId }));
   const submitSearch = () => { setPage(1); setSubmittedKeyword(keyword.trim()); };
@@ -684,14 +687,13 @@ export default function WorkOrderPage() {
       <DialogContent dividers>
         <Stack spacing={1.5}>
           <FormSection title="基础信息">
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
+            <FormDialogFieldGrid>
               <TextField autoFocus={!editing} required fullWidth size="small" label="工单编号" disabled={Boolean(editing?.hasObjects)} value={form.orderNo} onChange={(event) => setForm({ ...form, orderNo: event.target.value })} />
               <TextField fullWidth size="small" label="订单编号" value={form.orderNumber} onChange={(event) => setForm({ ...form, orderNumber: event.target.value })} />
               <TextField select required fullWidth size="small" label="产品" disabled={Boolean(editing?.hasObjects)} value={form.productId} onChange={(event) => selectProduct(event.target.value)} SelectProps={{ renderValue: () => selectedProduct ? `${selectedProduct.name}（${selectedProduct.code}）` : '' }} className={form.productId ? 'has-value' : undefined} sx={clearableSelectSx} InputProps={{ endAdornment: form.productId && !editing?.hasObjects ? <InputAdornment position="end" className="select-clear-adornment"><Tooltip title="清除产品" arrow><IconButton className="select-clear-button" size="small" aria-label="清除产品" onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); selectProduct(''); }}><Clear fontSize="small" /></IconButton></Tooltip></InputAdornment> : undefined }}>
                 {(products.data?.content ?? []).map((product) => <MenuItem key={product.id} value={String(product.id)}>{product.name}（{product.code}）</MenuItem>)}
               </TextField>
-
-            </Box>
+            </FormDialogFieldGrid>
           </FormSection>
           <FormSection title="计划信息">
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
@@ -708,55 +710,69 @@ export default function WorkOrderPage() {
       <DialogActions sx={{ px: 3, py: 1.5 }}><Button onClick={() => setDialogOpen(false)} disabled={save.isPending}>取消</Button><Button variant="contained" onClick={() => save.mutate()} disabled={!canSave}>{save.isPending ? '保存中...' : '保存'}</Button></DialogActions>
     </AppDialog>
 
-    <AppDialog open={objectOrder !== null} onClose={() => setObjectOrder(null)} maxWidth="xl" fullWidth PaperProps={{ sx: { maxWidth: 1360, maxHeight: '94dvh' } }}>
+    <AppDialog open={objectOrder !== null} onClose={split.isPending ? undefined : () => setObjectOrder(null)} maxWidth="xl" fullWidth PaperProps={{ sx: { maxWidth: 1280, maxHeight: '94dvh' } }}>
       <DialogTitle>{canSplit ? '生产对象管理' : '生产对象查看'}</DialogTitle>
-      <DialogContent dividers sx={{ p: { xs: 1.5, sm: 2.5 }, bgcolor: '#fff' }}>{objectOrder && <Stack spacing={2}>
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 1fr) auto' }, gap: 3, alignItems: 'center', pb: 2, borderBottom: '1px solid #e4e7ed' }}>
-          <Box><Typography variant="h6" sx={{ fontWeight: 600 }}>{objectOrder.orderNo}</Typography><Typography variant="body2" color="text.secondary">{objectOrder.productName} · {objectOrder.productCode} · {formLabels[objectOrder.productionForm || ''] || '首次拆分确定生产形态'}</Typography></Box>
-          <Stack direction="row" spacing={4} sx={{ fontVariantNumeric: 'tabular-nums' }}>{[['计划数量', objectOrder.plannedQuantity], ['已分配', allocated], ['待提交', pendingAllocated], ['还可分配', availableRemaining]].map(([label, value]) => <Box key={label}><Typography variant="caption" color="text.secondary">{label}</Typography><Typography sx={{ fontSize: 22, fontWeight: 600, color: label === '还可分配' ? 'primary.main' : 'text.primary' }}>{value}</Typography></Box>)}</Stack>
+      <DialogContent dividers sx={{ p: { xs: 2, sm: 3 }, bgcolor: 'background.paper' }}>{objectOrder && <Stack spacing={2.5}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 1fr) auto' }, gap: 2, alignItems: 'center' }}>
+          <Box sx={{ minWidth: 0 }}><Typography sx={{ fontSize: 18, fontWeight: 600 }}>{objectOrder.orderNo}</Typography><Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, overflowWrap: 'anywhere' }}>{objectOrder.productName}（{objectOrder.productCode}）</Typography></Box>
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: { xs: 1, sm: 3 }, fontVariantNumeric: 'tabular-nums' }}>{[['计划数量', objectOrder.plannedQuantity], ['已分配', allocated], ['待提交', pendingAllocated], ['还可分配', availableRemaining]].map(([label, value]) => <Box key={label}><Typography variant="caption" color="text.secondary">{label}</Typography><Typography sx={{ fontSize: 22, fontWeight: 600, color: label === '还可分配' ? 'primary.main' : 'text.primary' }}>{objects.isSuccess ? value : '-'}</Typography></Box>)}</Box>
         </Box>
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: 'minmax(360px, 0.85fr) minmax(0, 1.5fr)' }, gap: 1.5, alignItems: 'start' }}>
-        {canSplit && <Box sx={{ p: 1.5, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, order: { xs: 2, lg: 2 } }}><Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}><Typography variant="subtitle2" sx={{ color: '#303133', fontWeight: 600 }}>待添加批次（{pendingObjects.length}）</Typography><Typography variant="caption" sx={{ color: '#909399' }}>提交后进入下方已拆分批次</Typography></Stack>{pendingTable}</Box>}
-        {canSplit && <Box sx={{ p: 1.5, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, order: { xs: 1, lg: 1 } }}>
-          <Typography variant="subtitle2" sx={{ mb: 1.25, color: '#303133', fontWeight: 600 }}>新增{isSnProduction ? ' SN' : '批次'}生产对象</Typography>
-          {<Box sx={{ mb: 1.5, p: 1.5, bgcolor: '#f8fafc', border: '1px solid #e4e7ed', borderRadius: 1 }}><TextField select fullWidth size="small" label="本次添加使用的制程" InputLabelProps={{ shrink: true }} value={splitForm.processVersionId} disabled={!canSplit || processOptions.isLoading} onChange={(event) => setSplitForm({ ...splitForm, processVersionId: event.target.value })} SelectProps={{ displayEmpty: true, renderValue: (value) => { const selected = (processOptions.data ?? []).find((option) => option.id === String(value)); return selected ? <ProcessVersionOption version={selected} /> : <Typography variant="body2" sx={{ color: '#909399' }}>请选择制程版本</Typography>; } }}>
-            <MenuItem value=""><Typography variant="body2" sx={{ color: '#909399' }}>请选择制程版本</Typography></MenuItem>{(processOptions.data ?? []).filter((option) => option.productionMode === '量产').map((option) => <MenuItem key={option.id} value={option.id} disabled={Boolean(fixedProductionForm) && (option.productionForm === 'SN') !== (fixedProductionForm === 'SN')}><ProcessVersionOption version={option} /></MenuItem>)}
-          </TextField>
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>每个批次保存各自的制程引用，开工时冻结配置。已加入清单的选择不会随此处切换。</Typography>
-            {selectedProcess?.processReference && <Typography variant="caption" sx={{ display: 'block', mt: 0.5 }}>{selectedProcess.processReference.ownerType === 'PRODUCT_FAMILY' ? '产品簇兜底' : '产品制程'} · {selectedProcess.processReference.ownerName}</Typography>}
-            {selectedProcess && <Button size="small" onClick={() => setProcessPreviewOpen(true)}>预览当前配置</Button>}
-            {processOptions.isError && <Typography color="error" variant="body2" sx={{ mt: 1 }}>{processOptions.error.message}<Button size="small" onClick={() => void processOptions.refetch()}>重试</Button></Typography>}
-            {!processOptions.isLoading && !processOptions.isError && !processOptions.data?.length && <Typography color="text.secondary" variant="body2" sx={{ mt: 1 }}>当前没有可选择的相同生产形态制程</Typography>}
-          </Box>}
-          <Tabs value={splitTab} onChange={(_, value) => setSplitTab(value)} variant="scrollable" allowScrollButtonsMobile sx={{ minHeight: 40, mb: 1.25, borderBottom: '1px solid #ebeef5', '& .MuiTabs-indicator': { height: 2 } }}><Tab sx={{ minHeight: 40, py: 0.5, px: 1.25 }} icon={<PlaylistAdd fontSize="small" />} iconPosition="start" label="批量添加" /><Tab sx={{ minHeight: 40, py: 0.5, px: 1.25 }} icon={<UploadFile fontSize="small" />} iconPosition="start" label="导入批次" /><Tab sx={{ minHeight: 40, py: 0.5, px: 1.25 }} icon={<PlaylistAdd fontSize="small" />} iconPosition="start" label="手动添加" /></Tabs>
-          {splitTab === 1 ? <Box sx={{ p: 1.5, bgcolor: '#fbfdff', border: '1px dashed #b8c7d9', borderRadius: 1 }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 0.5 }}><Stack direction="row" spacing={0.75} alignItems="center"><Typography variant="body2" sx={{ color: '#303133', fontWeight: 600 }}>按模板导入{isSnProduction ? ' SN' : '批次'}</Typography><Tooltip title={`${isSnProduction ? 'SN编号必填，数量由 SN 形态固定为 1' : '批次号、数量必填'}；计划开始时间、计划结束时间和备注可选。上传后会直接加入右侧待添加清单，确认无误后再提交。`} arrow><InfoOutlined sx={{ fontSize: 16, color: '#909399', cursor: 'help' }} /></Tooltip></Stack><Stack direction="row" spacing={0.75} alignItems="center"><Button size="small" onClick={downloadImportTemplate} disabled={!canSplit}>下载导入模板</Button><Button component="label" size="small" variant="contained" startIcon={<UploadFile />} disabled={!canSplit || !splitForm.processVersionId}>选择文件<input hidden type="file" accept=".csv,.xlsx,.xls" onChange={(event) => { void importPendingObjects(event.target.files?.[0]); event.currentTarget.value = ''; }} /></Button></Stack></Stack>
-            <Typography variant="caption" sx={{ display: 'block', color: '#909399', mb: 1 }}>示例：{isSnProduction ? 'SN编号=SN-001；计划开始时间=2026-08-29 08:00；计划结束时间=2026-08-29 18:00；备注=可为空' : '批次号=BATCH-001；数量=1；计划开始时间=2026-08-29 08:00；计划结束时间=2026-08-29 18:00；备注=可为空'}</Typography>
-            <Table size="small" sx={{ mb: 1.25, bgcolor: '#fff' }}><TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{['字段', '是否必填', '示例'].map((label) => <TableCell key={label}>{label}</TableCell>)}</TableRow></TableHead><TableBody><TableRow><TableCell>{isSnProduction ? 'SN编号' : '批次号'}</TableCell><TableCell>必填</TableCell><TableCell>{isSnProduction ? 'SN-001' : 'BATCH-001'}</TableCell></TableRow>{!isSnProduction && <TableRow><TableCell>数量</TableCell><TableCell>必填</TableCell><TableCell>1</TableCell></TableRow>}<TableRow><TableCell>计划开始时间</TableCell><TableCell>非必填</TableCell><TableCell>2026-08-29 08:00</TableCell></TableRow><TableRow><TableCell>计划结束时间</TableCell><TableCell>非必填</TableCell><TableCell>2026-08-29 18:00</TableCell></TableRow><TableRow><TableCell>备注</TableCell><TableCell>非必填</TableCell><TableCell>可为空</TableCell></TableRow></TableBody></Table>
-          </Box> : <>
-            {splitTab === 0 && !isSnProduction && <RadioGroup row value={batchAddType} onChange={(event) => setBatchAddType(event.target.value as 'count' | 'quantity')} sx={{ mb: 0.75 }}><FormControlLabel value="count" control={<Radio size="small" />} label="按批次数" /><FormControlLabel value="quantity" control={<Radio size="small" />} label="按每批数量" /></RadioGroup>}
-            <Typography variant="caption" sx={{ display: 'block', mb: 1, color: '#909399' }}>{splitTab === 0 ? (isSnProduction ? '输入 SN 数量后，系统会按每个 SN 生成一条数量为 1 的生产对象；填写 SN 前缀后自动生成“前缀-001、前缀-002……”格式的编号。' : batchAddType === 'count' ? '输入批次数后，系统会将当前可分配数量平均分配；不能整除时，最后一批承接余数。' : '输入每批数量后，系统会按该数量生成批次，最后一批自动承接剩余数量。') : splitTab === 2 ? `填写一个${isSnProduction ? 'SN' : '批次'}的${isSnProduction ? '编号' : '数量和编号'}，可选填计划时间与备注后加入待添加清单。` : ''}</Typography>
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.25 }}>
-              {(splitTab !== 2 || !isSnProduction) && <TextField required size="small" label={splitTab === 0 ? (isSnProduction ? 'SN数量' : batchAddType === 'count' ? '批次数' : '每批数量') : '数量'} type="number" inputProps={{ min: 0, step: splitTab === 0 && (isSnProduction || batchAddType === 'count') ? 1 : 'any' }} value={splitForm.targetQuantity} onChange={(event) => setSplitForm({ ...splitForm, targetQuantity: event.target.value })} disabled={!canSplit} />}
-              <TextField required={isSnProduction && splitTab === 2} size="small" label={isSnProduction ? 'SN编号' : '批次号（可选）'} placeholder={splitTab === 0 ? `${isSnProduction ? 'SN' : '批次'}前缀，可选` : (isSnProduction ? '请输入SN编号' : '手动输入，可选')} value={splitForm.objectNo} onChange={(event) => setSplitForm({ ...splitForm, objectNo: event.target.value })} disabled={!canSplit} />
-              <TextField size="small" label="计划开始时间" type="datetime-local" InputLabelProps={{ shrink: true }} value={splitForm.plannedStartAt} onChange={(event) => setSplitForm({ ...splitForm, plannedStartAt: event.target.value })} disabled={!canSplit} />
-              <TextField size="small" label="计划结束时间" type="datetime-local" InputLabelProps={{ shrink: true }} value={splitForm.plannedEndAt} onChange={(event) => setSplitForm({ ...splitForm, plannedEndAt: event.target.value })} disabled={!canSplit} />
-              <TextField size="small" label="备注" multiline minRows={2} value={splitForm.remark} onChange={(event) => setSplitForm({ ...splitForm, remark: event.target.value })} disabled={!canSplit} sx={{ gridColumn: { sm: '1 / -1' } }} />
+
+        {canSplit && <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, overflow: 'hidden' }}>
+          <Box sx={{ px: 2, bgcolor: '#f8fafc', borderBottom: '1px solid', borderColor: 'divider', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
+            <Tabs value={splitTab} onChange={(_, value) => setSplitTab(value)} aria-label="添加方式" sx={{ minHeight: 44, '& .MuiTab-root': { minHeight: 44, px: 1.5, py: 1 } }}>
+              <Tab label="批量添加" /><Tab label={isSnProduction ? '导入 SN' : '导入批次'} /><Tab label="手动添加" />
+            </Tabs>
+            {splitTab === 0 && !isSnProduction && <RadioGroup row value={batchAddType} onChange={event => setBatchAddType(event.target.value as 'count' | 'quantity')} sx={{ '& .MuiFormControlLabel-label': { fontSize: 13 } }}><FormControlLabel value="count" control={<Radio size="small" />} label="按批次数" /><FormControlLabel value="quantity" control={<Radio size="small" />} label="按每批数量" /></RadioGroup>}
+          </Box>
+          <Stack spacing={1.5} sx={{ p: 2 }}>
+            {(processOptions.isError || objects.isError || incompleteProcessOptions) && <Alert severity="error" action={<Button onClick={() => { void processOptions.refetch(); void objects.refetch(); }}>重试</Button>}>{incompleteProcessOptions ? '制程数据不完整，请确认服务已更新后重试。' : '制程或批次数量加载失败，暂时无法添加。'}</Alert>}
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', md: 'repeat(4, minmax(0, 1fr))' }, gap: 1.5, alignItems: 'start' }}>
+              <Box sx={{ gridColumn: { sm: '1 / -1', md: 'span 2' }, minWidth: 0 }}>
+                <TextField select fullWidth size="small" label="制程版本" InputLabelProps={{ shrink: true }} value={splitForm.processVersionId} disabled={!splitDataReady || split.isPending} onChange={event => setSplitForm({ ...splitForm, processVersionId: event.target.value })} SelectProps={{ displayEmpty: true, renderValue: value => { const selected = (processOptions.data ?? []).find(option => option.id === String(value)); return selected ? [selected.version, selected.processReference?.ownerName].filter(Boolean).join(' · ') : '请选择制程版本'; } }}>
+                  <MenuItem value="">请选择制程版本</MenuItem>
+                  {(processOptions.data ?? []).filter(option => option.productionMode === '量产').map(option => <MenuItem key={option.id} value={option.id} disabled={Boolean(fixedProductionForm) && (option.productionForm === 'SN') !== (fixedProductionForm === 'SN')}><Box><Typography variant="body2">{option.version} · {option.processReference?.ownerName}</Typography><Typography variant="caption" color="text.secondary">{option.processReference?.ownerType === 'PRODUCT_FAMILY' ? '产品簇兜底' : '产品制程'}，{formLabels[option.productionForm] || option.productionForm}</Typography></Box></MenuItem>)}
+                </TextField>
+              </Box>
+              {splitTab !== 1 && <>
+                {(splitTab !== 2 || !isSnProduction) && <TextField required size="small" label={splitTab === 0 ? (isSnProduction ? 'SN数量' : batchAddType === 'count' ? '批次数' : '每批数量') : '数量'} type="number" inputProps={{ min: 0, step: splitTab === 0 && (isSnProduction || batchAddType === 'count') ? 1 : 'any' }} value={splitForm.targetQuantity} onChange={event => setSplitForm({ ...splitForm, targetQuantity: event.target.value })} disabled={!splitDataReady || split.isPending} />}
+                <TextField required={isSnProduction && splitTab === 2} size="small" label={splitTab === 0 ? (isSnProduction ? 'SN编号前缀' : '批次号前缀') : (isSnProduction ? 'SN编号' : '批次号（可选）')} value={splitForm.objectNo} onChange={event => setSplitForm({ ...splitForm, objectNo: event.target.value })} disabled={!splitDataReady || split.isPending} />
+                <TextField size="small" label="计划开始时间" type="datetime-local" InputLabelProps={{ shrink: true }} value={splitForm.plannedStartAt} onChange={event => setSplitForm({ ...splitForm, plannedStartAt: event.target.value })} disabled={split.isPending} />
+                <TextField size="small" label="计划结束时间" type="datetime-local" InputLabelProps={{ shrink: true }} value={splitForm.plannedEndAt} onChange={event => setSplitForm({ ...splitForm, plannedEndAt: event.target.value })} disabled={split.isPending} />
+                <TextField size="small" label="备注" value={splitForm.remark} onChange={event => setSplitForm({ ...splitForm, remark: event.target.value })} disabled={split.isPending} sx={{ gridColumn: { sm: '1 / -1', md: 'span 2' } }} />
+              </>}
+              {splitTab === 1 && <Stack direction="row" spacing={1} sx={{ gridColumn: { sm: '1 / -1', md: 'span 2' }, justifyContent: { xs: 'flex-start', md: 'flex-end' } }}><Button onClick={downloadImportTemplate}>下载导入模板</Button><Button component="label" variant="contained" startIcon={<UploadFile />} disabled={!splitDataReady || !splitForm.processVersionId || split.isPending}>选择文件<input hidden type="file" accept=".csv,.xlsx,.xls" onChange={event => { void importPendingObjects(event.target.files?.[0]); event.currentTarget.value = ''; }} /></Button></Stack>}
             </Box>
-            <Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ mt: 1.5 }}>
-              {splitTab === 2 && <Button variant="contained" startIcon={<Add />} onClick={addPendingObject} disabled={!canSplit || !splitForm.processVersionId || (isSnProduction ? !splitForm.objectNo.trim() : Number(splitForm.targetQuantity) <= 0 || Number(splitForm.targetQuantity) > availableRemaining)}>加入清单</Button>}
-              {splitTab === 0 && <Button variant="contained" startIcon={<PlaylistAdd />} onClick={addPendingBatch} disabled={!canSplit || !splitForm.processVersionId || !validBatchInput}>批量加入</Button>}
+            <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'stretch', sm: 'center' }} justifyContent="space-between" spacing={1}>
+              <Box sx={{ minWidth: 0 }}>
+                {selectedProcess && <Stack direction="row" flexWrap="wrap" alignItems="center" columnGap={1}><Typography variant="caption" color="text.secondary">工艺路线 {selectedProcess.routeVersion || '-'} / DHR 模板 {selectedProcess.dhrTemplateVersion || '-'}</Typography><Button size="small" startIcon={<Visibility fontSize="small" />} disabled={!splitDataReady} onClick={() => setProcessPreviewOpen(true)}>预览当前配置</Button></Stack>}
+                <Typography variant="caption" color="text.secondary">{splitTab === 1 ? `${isSnProduction ? 'SN编号必填，数量固定为1' : '批次号和数量必填'}。支持 Excel / CSV；计划时间、备注可选。` : splitTab === 0 ? (isSnProduction ? '每个 SN 数量固定为1；编号按前缀依次生成。' : batchAddType === 'count' ? '按剩余数量平均分配，最后一批承接余数。' : '按每批数量生成，最后一批承接余数。') : '加入清单后可继续选择其他制程，再统一提交。'}</Typography>
+                {!processOptions.isLoading && !processOptions.isError && !processOptions.data?.length && <Typography color="text.secondary" variant="body2">当前没有可选择的相同生产形态制程</Typography>}
+              </Box>
+              {splitTab !== 1 && <Button variant="outlined" startIcon={<Add />} sx={{ flexShrink: 0, whiteSpace: 'nowrap' }} onClick={splitTab === 0 ? addPendingBatch : addPendingObject} disabled={!splitDataReady || split.isPending || !splitForm.processVersionId || (splitTab === 0 ? !validBatchInput : isSnProduction ? !splitForm.objectNo.trim() || availableRemaining < 1 : !Number.isFinite(batchInput) || batchInput <= 0 || batchInput > availableRemaining)}>{splitTab === 0 ? '批量加入清单' : '加入清单'}</Button>}
             </Stack>
-          </>}
+          </Stack>
         </Box>}
+
+        <Box sx={{ minWidth: 0 }}>
+          <Tabs value={canSplit ? objectListTab : 1} onChange={(_, value) => setObjectListTab(value)} aria-label="生产对象清单" sx={{ minHeight: 44, borderBottom: '1px solid', borderColor: 'divider', mb: 1.5, '& .MuiTab-root': { minHeight: 44, px: 2, py: 1 } }}>
+            {canSplit && <Tab value={0} label={`待提交（${pendingObjects.length}）`} />}
+            <Tab value={1} label={`已拆分（${objectRows.length}）`} />
+          </Tabs>
+          {canSplit && objectListTab === 0 ? pendingTable : objectTable}
         </Box>
-        <Box sx={{ p: 1.5, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1 }}><Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}><Typography variant="subtitle2" sx={{ color: '#303133', fontWeight: 600 }}>已拆分批次（{objectRows.length}）</Typography><Typography variant="caption" sx={{ color: '#909399' }}>未开工批次可修改制程与数量</Typography></Stack>{objectTable}</Box>
-      </Stack>}</DialogContent><DialogActions sx={{ px: 3, py: 1.5 }}><Button onClick={() => setObjectOrder(null)}>关闭</Button>{canSplit && <Button variant="contained" onClick={() => split.mutate()} disabled={pendingObjects.length === 0 || split.isPending}>{split.isPending ? '提交中...' : `提交待添加（${pendingObjects.length}）`}</Button>}</DialogActions></AppDialog>
+      </Stack>}</DialogContent>
+      <DialogActions sx={{ px: { xs: 2, sm: 3 }, py: 1.5, gap: 1 }}>
+        <Typography variant="caption" color="text.secondary" sx={{ mr: 'auto', display: { xs: 'none', sm: 'block' } }}>每批独立保存制程引用，开工时冻结配置。</Typography>
+        <Button onClick={() => setObjectOrder(null)} disabled={split.isPending}>关闭</Button>
+        {canSplit && <Button variant="contained" onClick={() => split.mutate()} disabled={!splitDataReady || pendingObjects.length === 0 || split.isPending} sx={{ whiteSpace: 'nowrap' }}>{split.isPending ? '提交中...' : `提交批次（${pendingObjects.length}）`}</Button>}
+      </DialogActions>
+    </AppDialog>
 
     {editObject && <ProductionObjectEditDialog key={editObject.id} object={editObject} onClose={() => setEditObject(null)} />}
     <AppDialog open={endTarget !== null} onClose={() => setEndTarget(null)} maxWidth="sm" fullWidth><DialogTitle>提前结束工单 · {endTarget?.orderNo}</DialogTitle><DialogContent dividers><Stack spacing={2}><Typography variant="body2">请先取消未开工批次，并完成或提前结束生产中的批次。结束工单后不能继续拆分，计划数量与已有记录保留。</Typography><TextField autoFocus required label="结束原因" multiline minRows={3} value={endReason} inputProps={{ maxLength: 500 }} onChange={e => setEndReason(e.target.value)} />{endOrder.isError && <Typography color="error">{endOrder.error.message}</Typography>}</Stack></DialogContent><DialogActions><Button onClick={() => setEndTarget(null)}>取消</Button><Button color="warning" variant="contained" disabled={!endReason.trim() || endOrder.isPending} onClick={() => endOrder.mutate()}>确认提前结束</Button></DialogActions></AppDialog>
     <WorkOrderDetailDrawer open={detailOrder !== null} order={detailOrder} tab={detailTab} onTabChange={setDetailTab} auditRecords={auditRecords} auditLoading={auditQuery.isLoading} auditError={auditQuery.isError} onClose={() => setDetailOrder(null)} />
-    <ProcessVersionPreviewDialog open={processPreviewOpen} version={previewVersion} loading={processPreviewQuery.isLoading} error={processPreviewQuery.isError} onClose={() => setProcessPreviewOpen(false)} />
+    <ProcessVersionPreviewDialog open={processPreviewOpen} version={previewVersion} loading={processPreviewQuery.isFetching} error={processPreviewQuery.isError} onClose={() => setProcessPreviewOpen(false)} onRetry={() => void processPreviewQuery.refetch()} />
     <ConfirmDialog open={cancelTarget !== null} title="取消工单" message={cancelTarget ? `确定取消工单「${cancelTarget.orderNo}」吗？取消后将不能继续拆分生产对象。` : ''} confirmText="取消工单" destructive loading={cancel.isPending} onCancel={() => setCancelTarget(null)} onConfirm={() => cancelTarget && cancel.mutate(cancelTarget.id)} />
     <ConfirmDialog open={closeTarget !== null} title="关闭工单" message={closeTarget ? `确定关闭工单「${closeTarget.orderNo}」吗？关闭后将不能继续进行生产操作。` : ''} confirmText="关闭工单" loading={close.isPending} onCancel={() => setCloseTarget(null)} onConfirm={() => closeTarget && close.mutate(closeTarget.id)} />
     <ConfirmDialog open={cancelObject !== null} title="取消生产对象" message={cancelObject ? `确定取消生产对象「${cancelObject.objectNo}」吗？` : ''} confirmText="取消对象" destructive loading={objectAction.isPending} onCancel={() => setCancelObject(null)} onConfirm={() => cancelObject && objectAction.mutate({ action: 'cancel', id: cancelObject.id })} />

@@ -1,0 +1,147 @@
+{
+  "plannedQuantity": 0.5,
+  "allocatedQuantity": 0.45,
+  "objects": [
+    {
+      "objectNo": "UI-001",
+      "targetQuantity": 0.25,
+      "processVersionId": "387300859458158592",
+      "status": "CREATED"
+    },
+    {
+      "objectNo": "UI-IMP",
+      "targetQuantity": 0.15,
+      "processVersionId": "387300859458158592",
+      "status": "CREATED"
+    },
+    {
+      "objectNo": "UI-MAN",
+      "targetQuantity": 0.05,
+      "processVersionId": "387300859458158592",
+      "status": "CREATED"
+    }
+  ],
+  "audit": [
+    {
+      "action": "CREATE",
+      "functionName": "批量添加生产对象",
+      "before": {},
+      "after": {
+        "remark": null,
+        "status": "CREATED",
+        "objectNo": "UI-001",
+        "productId": "387300416594182144",
+        "ngQuantity": null,
+        "objectType": "BATCH",
+        "orderNumber": null,
+        "productCode": "ASK-REASON-20261019-P",
+        "productName": "安速康原因模拟·刀头",
+        "workOrderId": "390385939210883072",
+        "workOrderNo": "QA-UI-REPAIR-20261027",
+        "goodQuantity": null,
+        "plannedEndAt": null,
+        "scrapQuantity": null,
+        "terminationAt": null,
+        "plannedStartAt": null,
+        "processVersion": "V1.0",
+        "targetQuantity": 0.25,
+        "processReference": {
+          "ownerId": "387300416594182144",
+          "ownerName": "安速康原因模拟·刀头",
+          "ownerType": "PRODUCT",
+          "processId": "387300859445575680",
+          "effectiveTo": null,
+          "effectiveFrom": "2026-10-19 00:00:00",
+          "processVersion": "V1.0",
+          "processVersionId": "387300859458158592"
+        },
+        "processVersionId": "387300859458158592",
+        "terminationReason": null
+      }
+    },
+    {
+      "action": "CREATE",
+      "functionName": "批量添加生产对象",
+      "before": {},
+      "after": {
+        "remark": null,
+        "status": "CREATED",
+        "objectNo": "UI-MAN",
+        "productId": "387300416594182144",
+        "ngQuantity": null,
+        "objectType": "BATCH",
+        "orderNumber": null,
+        "productCode": "ASK-REASON-20261019-P",
+        "productName": "安速康原因模拟·刀头",
+        "workOrderId": "390385939210883072",
+        "workOrderNo": "QA-UI-REPAIR-20261027",
+        "goodQuantity": null,
+        "plannedEndAt": null,
+        "scrapQuantity": null,
+        "terminationAt": null,
+        "plannedStartAt": null,
+        "processVersion": "V1.0",
+        "targetQuantity": 0.1,
+        "processReference": {
+          "ownerId": "387300416594182144",
+          "ownerName": "安速康原因模拟·刀头",
+          "ownerType": "PRODUCT",
+          "processId": "387300859445575680",
+          "effectiveTo": null,
+          "effectiveFrom": "2026-10-19 00:00:00",
+          "processVersion": "V1.0",
+          "processVersionId": "387300859458158592"
+        },
+        "processVersionId": "387300859458158592",
+        "terminationReason": null
+      }
+    },
+    {
+      "action": "CREATE",
+      "functionName": "批量添加生产对象",
+      "before": {},
+      "after": {
+        "remark": "导入验收",
+        "status": "CREATED",
+        "objectNo": "UI-IMP",
+        "productId": "387300416594182144",
+        "ngQuantity": null,
+        "objectType": "BATCH",
+        "orderNumber": null,
+        "productCode": "ASK-REASON-20261019-P",
+        "productName": "安速康原因模拟·刀头",
+        "workOrderId": "390385939210883072",
+        "workOrderNo": "QA-UI-REPAIR-20261027",
+        "goodQuantity": null,
+        "plannedEndAt": null,
+        "scrapQuantity": null,
+        "terminationAt": null,
+        "plannedStartAt": null,
+        "processVersion": "V1.0",
+        "targetQuantity": 0.15,
+        "processReference": {
+          "ownerId": "387300416594182144",
+          "ownerName": "安速康原因模拟·刀头",
+          "ownerType": "PRODUCT",
+          "processId": "387300859445575680",
+          "effectiveTo": null,
+          "effectiveFrom": "2026-10-19 00:00:00",
+          "processVersion": "V1.0",
+          "processVersionId": "387300859458158592"
+        },
+        "processVersionId": "387300859458158592",
+        "terminationReason": null
+      }
+    },
+    {
+      "action": "UPDATE",
+      "functionName": "修改批次配置",
+      "before": {
+        "targetQuantity": 0.1
+      },
+      "after": {
+        "targetQuantity": 0.05
+      }
+    }
+  ]
+}

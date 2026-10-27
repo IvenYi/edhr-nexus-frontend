@@ -39,7 +39,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0014-09
-        statement: "provenance: user-confirmed；拆分弹窗中的数量与批量添加数量标记为必填；导入区使用标题旁‘选择文件’按钮，说明收纳至 Info hover。"
+        statement: "provenance: user-confirmed + inference；拆分弹窗中的数量与批量添加数量标记为必填；导入区提供‘选择文件’按钮并以内联简短说明展示导入要求。用户授权重新组织展示，按钮位置和内联呈现属于工程落实；仅修正呈现约定，导入字段、格式和待提交语义保持。"
         status: implemented
         visibility: internal
       - id: DEC-0014-10

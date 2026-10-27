@@ -3,7 +3,7 @@ evidence:
   - id: evidence.batch-process-direct-correction-confirmed
     type: document
     path: docs/knowledge/evidence/batch-process-2026-10-27.md
-    description: 2026-10-26/27用户确认的批次制程归属、同形态换版、首次START冻结、数量与工单结束、审计详情及直接本体纠正；明确user-confirmed、旧源码original-evidence和工程inference，不以本文件代替运行验收。
+    description: 2026-10-26/27用户确认的批次制程归属、同形态换版、首次START冻结、数量与工单结束、审计详情及直接本体纠正；同日补充日常旧服务与当前接口错配及UI修复的证据边界。明确user-confirmed、源码/接口original-evidence和工程inference，不以本文件代替运行验收，不将前端缺失值解释为零分配或新业务政策。
     visibility: internal
   - id: evidence.batch-process-clean-initialization
     type: database

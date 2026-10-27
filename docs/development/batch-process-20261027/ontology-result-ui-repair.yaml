@@ -1,0 +1,164 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+    targetBranch: edhr-dev
+    targetCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+    contractReadCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+    uncommittedContractPaths: []
+  reason: >-
+    同一批次制程切片的界面与日常运行修复，更新既有证据及其索引描述，
+    并直接修正DEC-0014-09及对应证据中的导入按钮位置和说明呈现约定。
+    缺失数据阻止提交落实原数量和身份约束，不引入新业务政策；预览仍为当前引用配置，
+    不代替已开工冻结原件。拆分布局和普通表单产品跨行不改变对象身份、待提交语义、
+    批量事务、编辑资格或审计。当前导入说明为简明内联呈现，旧描述只作为真实历史来源保留；
+    不新建ID或并行规则，不改变导入字段和格式，无新增未决问题，现有成熟度保持。
+    运行服务错配证据由主侧实际取得并明确归属，本实例直接核对当前源码与知识定义，
+    实际执行89项知识检查。此结果不代替修复后的业务运行、浏览器或独立质量验收。
+  changedArtifacts:
+    - path: docs/knowledge/evidence/batch-process-2026-10-27.md
+      changeType: update
+      ids: [evidence.batch-process-direct-correction-confirmed]
+    - path: docs/knowledge/evidence/batch-process.yaml
+      changeType: update
+      ids: [evidence.batch-process-direct-correction-confirmed]
+    - path: docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml
+      changeType: update
+      ids: [DEC-0014-09]
+    - path: docs/knowledge/evidence/production.yaml
+      changeType: update
+      ids: [evidence.production-work-order-batch-import-template-ui]
+  knowledgeSync:
+    - id: evidence.batch-process-direct-correction-confirmed
+      disposition: updated
+      scope: 追加五张截图的修复要求、日常旧服务与当前接口错配、源码复核及实现选择边界；保留原始业务确认和历史验证时点，明确导入呈现的局部修正及旧原文来源；主侧运行验收只以其记录归属，不冒称本体独立执行。
+      sourceReferences:
+        - docs/development/batch-process-20261027/decision-package.yaml
+        - docs/knowledge/evidence/batch-process-2026-10-27.md
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java
+    - id: rule.production.unstarted-object-edit
+      disposition: retained
+      scope: CREATED且无执行实例、父工单活动、同形态与正数量/剩余分配约束不变；前端不能用缺失数量绕过现有校验，服务端仍是保存时的权威判断。
+      sourceReferences:
+        - docs/knowledge/rules/batch-process.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java
+    - id: rule.production.work-order-edit-field-boundary
+      disposition: retained
+      scope: 产品字段跨行只落实公共表单规范，曾拆分后锁产品和工单编号、生产中禁止工单编辑的规则保持。
+      sourceReferences:
+        - docs/knowledge/rules/batch-process.yaml
+        - docs/frontend/dialog-guidelines.md
+        - gmp-platform/frontend/src/components/FormDialogFieldGrid.tsx
+    - id: rule.production.process-snapshot-audit-detail
+      disposition: retained
+      scope: 当前配置预览与首次START冻结原件继续区分；不以补齐候选归属或修复预览为由重建历史快照或审计事件。
+      sourceReferences:
+        - docs/knowledge/rules/batch-process.yaml
+        - docs/knowledge/evidence/batch-process-2026-10-27.md
+    - id: DEC-0014-01
+      disposition: retained
+      scope: 待提交/已拆分页签不是新的持久化对象状态。
+      sourceReferences: [docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml]
+    - id: DEC-0014-02
+      disposition: retained
+      scope: 手动、批量和导入仍先进入同一未持久化候选清单，由用户最终一次提交。
+      sourceReferences: [docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml]
+    - id: DEC-0014-03
+      disposition: retained
+      scope: 候选逐条携带明确版本、数量及计划/备注；正数量、SN=1、时间顺序及总量限制不变。
+      sourceReferences: [docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml]
+    - id: DEC-0014-04
+      disposition: retained
+      scope: 最终批量提交仍需单一事务，任一记录失败整批回滚；布局切换不拆成逐条保存。
+      sourceReferences: [docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml]
+    - id: DEC-0014-06
+      disposition: retained
+      scope: 同形态显式选版与只读预览保持，已保存引用不等于开工快照。
+      sourceReferences: [docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml]
+    - id: DEC-0014-09
+      disposition: updated
+      scope: 按用户允许重排展示的授权，直接将标题旁按钮和Info hover约定修正为选择文件按钮及简明内联说明；数量必填和导入业务约束保留，不建立并行规则。旧原文与Git来源仅在本轮证据保留。
+      sourceReferences:
+        - docs/development/batch-process-20261027/decision-package.yaml
+        - docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml
+        - docs/knowledge/evidence/batch-process-2026-10-27.md
+        - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+    - id: evidence.production-work-order-batch-import-template-ui
+      disposition: updated
+      scope: 仅同步导入按钮及内联说明的当前呈现证据；保留原模板字段/格式说明及2026-10-12的SN备注列差异和当时未运行验收的历史记录。
+      sourceReferences:
+        - docs/knowledge/evidence/production.yaml
+        - docs/knowledge/evidence/batch-process-2026-10-27.md
+        - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+    - id: DEC-0014-10
+      disposition: retained
+      scope: 两个未开工编辑入口继续复用同一API和组件，取消或已开工对象不能通过编辑恢复。
+      sourceReferences: [docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml]
+    - id: DEC-0014-12
+      disposition: retained
+      scope: 按批次数及按每批数量两种生成方式、剩余量和末批余数语义保持，呈现调整不新增拆分模式。
+      sourceReferences: [docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml]
+    - id: evidence.batch-process-clean-initialization
+      disposition: retained
+      scope: 现行基线直接移除退役工单制程列及约束，MVP本地库可硬调整；这不授予修改未来合法冻结原件的权限，不新增兼容读取或增量迁移链。
+      sourceReferences:
+        - docs/knowledge/evidence/batch-process.yaml
+        - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.batch-ui-repair-contract
+      checkType: reference
+      command: git rev-parse HEAD origin/edhr-dev; git diff --name-only -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - HEAD和本地origin/edhr-dev均为3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176，契约没有未提交改动；本实例实际读取项目/角色/交接契约。
+        - 主侧本轮fetch确认远端基线，本实例没有以知识版本号代替Git基线，也未为未提交修复编造提交。
+    - id: validation.batch-ui-repair-rule-boundaries
+      checkType: reference
+      command: 阅读rules/batch-process.yaml、facts/batch-process.yaml、DEC-0014、三个生产控制器/服务源码和公共表单网格
+      outcome: passed
+      evidence:
+        - 服务源码使用锁内已分配减原目标加新目标校验计划量；工单DTO与候选DTO提供allocatedQuantity/hasObjects和processReference。
+        - 现有定义已覆盖对象级引用、未开工资格和数量约束；没有绑定左右布局，不需新增政策或改写原确认。
+        - 现有开放问题不包含此次已明确的数量/制程/跨行需求；未关闭无关条件运行或签名问题。
+    - id: validation.batch-ui-repair-evidence-structure
+      checkType: evidence-path
+      command: Ruby YAML读取两个受影响知识文件，检查0.3.25、evidence ID唯一及文件路径存在；git diff --check -- 两个知识证据文件
+      outcome: passed
+      evidence:
+        - 知识版本、既有证据ID及路径检查通过；Markdown增量与YAML索引无空白错误。
+        - 日常接口和JVM事实明确归属于主开发原始输出，本体没有冒称独立运行这两个服务。
+    - id: validation.batch-ui-repair-knowledge-model
+      checkType: schema
+      command: mvn -q -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - 本实例本轮实际执行，退出码0；surefire XML统计89 tests、0 failures、0 errors、0 skipped。
+        - 原始日志/tmp/batch-ui-repair-ontology-20261027.log；工具报告tools/knowledge-model/target/surefire-reports。
+        - 本检查验证知识结构及规则引用，不替代生产API、数据库、浏览器或独立质量门禁。
+    - id: validation.batch-ui-repair-inline-presentation-sync
+      checkType: reference
+      command: 复核DEC-0014-09、production.yaml导入证据、WorkOrderPage导入按钮/内联提示及ui-repair-verification.md；Ruby YAML结构/ID/路径检查；git diff --check
+      outcome: passed
+      evidence:
+        - 当前声明和实现统一为选择文件按钮及简明内联说明；用户允许重排展示是授权来源，具体布局明确标为工程落实。
+        - 仅修正原标题旁位置和Info hover呈现约定；旧原文与3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176来源保留为历史，数量、模板、格式及事务规则未改写。
+        - 四份YAML解析、完整结果字段、knowledgeSync唯一ID及修改资产路径检查通过；受影响文件git diff --check通过。
+        - 已阅读主侧真实运行验收记录，不将其声明为本体独立浏览器或数据库验证。
+    - id: validation.batch-ui-repair-knowledge-model-after-presentation-sync
+      checkType: schema
+      command: mvn -q -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - 本实例在呈现约定修正后重新执行，退出码0；surefire XML统计89 tests、0 failures、0 errors、0 skipped。
+        - 原始日志/tmp/batch-ui-repair-ontology-qa-fix-20261027.log；工具报告tools/knowledge-model/target/surefire-reports。
+        - 既有首次检查结果保留；本次结构检查不替代全新质量实例对修正后的独立核验。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

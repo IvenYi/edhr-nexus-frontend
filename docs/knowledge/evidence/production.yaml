@@ -198,7 +198,7 @@ evidence:
   - id: evidence.production-work-order-batch-import-template-ui
     type: code
     path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
-    description: 生产对象导入区域在标题旁提供“选择文件”按钮，Info hover 承载导入说明；BATCH 下载模板包含批次号、数量、计划开始时间、计划结束时间和备注五列，SN 下载模板只包含 SN 编号、计划开始时间和计划结束时间三列；文件选择器接受 CSV、XLS、XLSX。 2026-10-12 源码复核：SN下载模板实际含编号、计划开始、计划结束、备注四列，解析也接受备注；这与DEC-0016-04确认三列存在 discrepancy.production-sn-import-template-extra-remark，不能用当前实现撤销确认。SN每件数量仍隐含为1；本次未运行导入验收。
+    description: 生产对象导入区域提供“选择文件”按钮，以内联简短说明展示导入要求；BATCH 下载模板包含批次号、数量、计划开始时间、计划结束时间和备注五列，SN 下载模板只包含 SN 编号、计划开始时间和计划结束时间三列；文件选择器接受 CSV、XLS、XLSX。 2026-10-12 源码复核：SN下载模板实际含编号、计划开始、计划结束、备注四列，解析也接受备注；这与DEC-0016-04确认三列存在 discrepancy.production-sn-import-template-extra-remark，不能用当前实现撤销确认。SN每件数量仍隐含为1；本次未运行导入验收。
     visibility: internal
   - id: evidence.production-object-start-side-effects-current
     type: code

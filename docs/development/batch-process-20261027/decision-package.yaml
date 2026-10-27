@@ -11,6 +11,40 @@
       "uncommittedContractPaths": []
     },
     "summary": "直接修正批次制程归属、引用/冻结、数量及工单结束规则，增加审计快照详情并重排拆分弹窗。保留前序作业实时匹配改动。",
+    "uiRepairContinuation": {
+      "level": "L2",
+      "contractBaseline": {
+        "sourceCommit": "3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176",
+        "targetBranch": "edhr-dev",
+        "targetCommit": "3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176",
+        "contractReadCommit": "3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176",
+        "uncommittedContractPaths": []
+      },
+      "confirmed": ["修复制程预览失败、编辑制程身份缺失和数量NaN", "拆分弹窗允许重新组织展现，工单产品字段按公共表单规范跨行", "沿用已确认业务规则及MVP直接调整开发库原则"],
+      "originalEvidence": ["用户2026-10-27五张截图", "8081日常服务仍运行10月25日代码，工单222响应缺allocatedQuantity/hasObjects，制程候选缺processReference；8082新版专用服务字段完整", "WorkOrderPage基础信息使用自写grid，未复用FormDialogFieldGrid奇数末项跨列规则"],
+      "inferred": ["采用上下分区：摘要、添加表单、全宽待提交/已拆分清单", "关键候选和数量数据未就绪时阻止操作并提供明确重试提示"],
+      "unresolved": [],
+      "replacementScopes": [{
+        "decisionStatementId": "DEC-0014-09",
+        "supersededStatementIds": ["DEC-0014-09"],
+        "scope": "仅直接修正导入区的呈现约定：原标题旁按钮与Info hover说明，改为当前选择文件按钮及简明内联说明；同步对应代码证据描述。",
+        "retainedScope": "数量必填、导入字段及格式、待提交清单和原子提交约束不变；旧原文与Git来源保留在本轮证据，不建立并行规则。",
+        "sourceReferences": ["user-confirmed: 2026-10-27 用户允许重新组织拆分弹窗展现", "docs/knowledge/evidence/batch-process-2026-10-27.md"]
+      }],
+      "impactAnalysis": {
+        "directImpacts": ["批次编辑数据就绪检查、制程身份展示、预览反馈", "拆分添加/导入/待提交/已拆分的布局与滚动", "普通工单产品字段布局", "日常开发后端及work_order结构同步", "DEC-0014-09及对应代码证据的现行呈现说明"],
+        "transitiveImpacts": ["两个批次编辑入口共用组件", "保持刷新后工单分配量和保存按钮一致"],
+        "potentialImpacts": [],
+        "unaffectedAreas": ["既定数量占用、生命周期、实时作业规则", "已开工冻结及历史审计语义"],
+        "compatibilityAndMigration": ["仅按现行基线硬调整本地开发库并重启服务；不新增旧版兼容代码或迁移链"],
+        "snapshotImpacts": ["预览读取当前配置，不代替开工冻结；不重建已有快照"],
+        "auditImpacts": ["编辑和拆分仍通过已有审计写接口"],
+        "permissionImpacts": ["保持现有读取及写入权限"],
+        "testImpacts": ["缺失/失败响应禁保存，最大数量和候选显示", "实际页面预览、编辑、超量阻止、批量/手动/导入和响应式布局"],
+        "evidenceGaps": []
+      },
+      "extensionStrategy": { "selectedPaths": ["product-core"], "rationale": "修复已有生产准备界面，继续使用MUI与公共表单网格", "ownershipBoundaries": ["production页面及共享ProductionObjectEditDialog", "本地开发服务与现行数据库基线"] }
+    },
     "confirmed": {
       "concepts": [],
       "relationships": [],
