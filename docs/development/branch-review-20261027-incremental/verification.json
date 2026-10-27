@@ -1,0 +1,35 @@
+{
+  "target": "3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176",
+  "type": "primary-existing-focused-tests",
+  "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=ProductionServiceTest,WorkOrderControllerTest,ProductionObjectControllerTest test",
+  "exitCode": 0,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.production.service.ProductionServiceTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.zencas.edhr.production.controller.WorkOrderControllerTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.zencas.edhr.production.controller.ProductionObjectControllerTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "logSha256": "6be8ba67be46c86d3f1593db94c618573a7385306796bbf36823de24b5d840e6",
+  "limitations": [
+    "Not independent QA",
+    "No native PostgreSQL, browser or concurrency verification in this run",
+    "No entire-branch acceptance"
+  ]
+}

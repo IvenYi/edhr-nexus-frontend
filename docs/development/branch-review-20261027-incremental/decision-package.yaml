@@ -1,0 +1,102 @@
+decisionPackage:
+  id: DEC-PACKAGE-INCREMENTAL-START-AUDIT-20261027
+  scope: edhr-dev整体审计的W4/W1有限增量；批次编辑、首次开工、后续作业与历史读取
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+    targetBranch: edhr-dev
+    targetCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+    contractReadCommit: 3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176
+    uncommittedContractPaths: []
+  summary: 用户明确以远端新规则为准继续整体审计；核对现有业务规则及实现，不恢复旧工单锁版或创建时产品簇规则。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: production-object
+        change: 只读审查及隔离运行当前未开工编辑、独立制程引用、首次开工冻结规则，不产生新政策。
+        evidenceReferences: [docs/knowledge/evidence/batch-process-2026-10-27.md, docs/knowledge/rules/batch-process.yaml]
+      - area: work-applicability
+        change: 核对当前归属动态匹配、已建实例保留和后续工序范围。
+        evidenceReferences: [docs/knowledge/evidence/work-live-matching-2026-10-26.md]
+    transitiveImpacts:
+      - area: dhr
+        concern: 首次目录和历史证据不能被后续作业动态匹配重建。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java]
+    potentialImpacts:
+      - area: performance
+        concern: 工单全量汇总、逐工序匹配与批量拆分重复扫描；仅提出证据和候选方案，未经讨论不优化。
+        evidenceReferences: [docs/development/branch-review-20261027-incremental/README.md]
+    unaffectedAreas:
+      - area: workflow-task-signature
+        reason: 用户交由协作者修复，保持暂缓；无依赖审查继续。
+    compatibilityAndMigration:
+      - area: test-database
+        change: 只在自行创建的隔离PostgreSQL上验证当前干净初始化，不迁移或恢复用户旧库。
+    snapshotImpacts:
+      - area: first-start
+        change: 核对配置一致视图、批次数量与版本一致冻结及历史读取。
+    auditImpacts:
+      - area: production-audit
+        change: 核对真实差量、首次冻结身份与内容、失败回滚；不重建历史原件。
+    permissionImpacts:
+      - area: production
+        change: 核对批次权限与工单修改权限分离，沿用当前政策。
+    testImpacts:
+      - scope: isolated-postgresql
+        scenarios: [BatchProcessIntegrationTest, ProductionExecutionIntegrationTest]
+        evidenceReferences: []
+    evidenceGaps:
+      - 本批不覆盖全部管理HTTP并发矩阵或完整W4，SQL次数与容量仍需后续量化。
+  extensionStrategy:
+    selectedPaths: [product-core, transaction-orchestration]
+    rationale: 既有生产内核与事务边界审查，本批尚无产品实现变更。
+    ownershipBoundaries:
+      - owner: primary-auditor
+        responsibility: 源码核对、隔离测试、真实缺陷定位与审计台账。
+      - owner: business-knowledge-modeler
+        responsibility: 只读核对本批当前知识与实现，报告精确ID与替代范围；不擅自恢复旧规则。
+      - owner: quality-verifier
+        responsibility: 收尾独立核验实际证据及有限结论，不参与修复。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java
+      changeType: update
+      reason: 仅纠正遗留工单锁版注释，说明归属解析与调用方有效期校验的职责；不改变逻辑。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+      changeType: update
+      reason: 增加2/10/50工序的只读不落库回归，旁路记录真实JDBC规则查询和行数，不固定性能数字作为测试标准。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java
+      changeType: read-only
+      reason: 分配、未开工编辑和生命周期。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      changeType: read-only
+      reason: 首次START与后续工序事务链。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+      changeType: read-only
+      reason: 制程冻结与动态作业候选。
+    - path: docs/development/branch-review-20261027-incremental
+      changeType: update
+      reason: 保存实际审查与未完成范围。
+  acceptanceScenarios:
+    - id: audit-start-edit
+      given: 同一未开工批次可编辑版本及数量
+      when: 修改与首次开工竞争
+      then: 最终对象和冻结版本、数量一致；开工后禁止编辑
+      evidenceRequirements: [真实PostgreSQL测试, 源码锁顺序核对]
+    - id: audit-work-retention
+      given: 作业适用范围或配置在后续工序开工前变化
+      when: 查询与合法START
+      then: 查询不持久化实例；待开工工序重匹配，已有实例保留，已过站不补做
+      evidenceRequirements: [真实PostgreSQL测试, 当前知识ID核对]
+    - id: audit-preview-growth
+      given: 2/10/50个待开工工序和40条不适用作业规则
+      when: 实际GET执行工作台
+      then: 返回全部预览工序且不创建执行、DHR或审计记录；单列规则查询/读取行数，不宣称SLA或容量上限
+      evidenceRequirements: [原生PostgreSQL观察, 行回调计数, 只读数据库断言]

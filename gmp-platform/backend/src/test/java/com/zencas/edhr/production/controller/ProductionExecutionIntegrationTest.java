@@ -1108,6 +1108,53 @@ action(object, "SAVE", 1, "a", Map.of("formId", object == 101 ? "form-51" : "for
         assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(5);
     }
 
+    @Test void growingPendingWorkPreviewRemainsReadOnly() throws Exception {
+        seedConfirmationWork();
+        jdbc.update("UPDATE workflow_binding_rule SET product_id=999 WHERE id=7");
+        for (int i = 1; i < 40; i++) {
+            jdbc.update("INSERT INTO workflow_binding_rule VALUES(?,'default',7,'SCOPED',true,999,NULL,NULL)", 100 + i);
+        }
+        JdbcTemplate observedJdbc = spy(jdbc);
+        var ruleQueries = new java.util.concurrent.atomic.AtomicInteger();
+        var ruleRows = new java.util.concurrent.atomic.AtomicInteger();
+        var membershipQueries = new java.util.concurrent.atomic.AtomicInteger();
+        doAnswer(invocation -> {
+            String sql = invocation.getArgument(0);
+            boolean ruleQuery = sql.contains("FROM workflow_binding_rule");
+            if (ruleQuery) ruleQueries.incrementAndGet();
+            if (sql.contains("FROM product_family_member")) membershipQueries.incrementAndGet();
+            org.springframework.jdbc.core.RowCallbackHandler callback = invocation.getArgument(1);
+            jdbc.query(sql, (org.springframework.jdbc.core.RowCallbackHandler) row -> {
+                if (ruleQuery) ruleRows.incrementAndGet();
+                callback.processRow(row);
+            }, (Object[]) invocation.getRawArguments()[2]);
+            return null;
+        }).when(observedJdbc).query(anyString(), any(org.springframework.jdbc.core.RowCallbackHandler.class), any(Object[].class));
+        org.springframework.test.util.ReflectionTestUtils.setField(snapshotBuilder, "jdbc", observedJdbc);
+        try {
+            int existing = 2;
+            for (int operationCount : List.of(2, 10, 50)) {
+                for (int i = existing; i < operationCount; i++) {
+                    jdbc.update("INSERT INTO route_node VALUES(?,3,?,?,?,'容量观察工序','OPERATION','{}',?)",
+                            100 + i, "capacity-" + i, 100 + i, "CAP-" + i, i + 1);
+                }
+                existing = operationCount;
+                ruleQueries.set(0); ruleRows.set(0); membershipQueries.set(0);
+                mvc.perform(auth(get("/api/v1/production/execution/101")))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.data.snapshot.operations.length()").value(operationCount));
+                // Capacity observations are not fixed query-count requirements for future implementations.
+                System.out.printf("WORK_MATCH_OBSERVATION operations=%d rules=40 ruleQueries=%d ruleRows=%d membershipQueries=%d%n",
+                        operationCount, ruleQueries.get(), ruleRows.get(), membershipQueries.get());
+                assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM production_execution", Integer.class)).isZero();
+                assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM dhr_instance", Integer.class)).isZero();
+                assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isZero();
+            }
+        } finally {
+            org.springframework.test.util.ReflectionTestUtils.setField(snapshotBuilder, "jdbc", jdbc);
+        }
+    }
+
     private void seedConfirmationWork() {
         jdbc.update("INSERT INTO workflow_definition(id,tenant_id,type,name) VALUES(7,'default','WORK','装配作业')");
         jdbc.update("INSERT INTO workflow_definition_version VALUES(7,7,1,'PUBLISHED',true,?,?)", """

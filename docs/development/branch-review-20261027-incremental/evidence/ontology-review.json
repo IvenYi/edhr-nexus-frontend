@@ -1,0 +1,298 @@
+{
+  "role": "business-knowledge-modeler",
+  "baseline": "3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176",
+  "knowledgeModelVersion": "0.3.25",
+  "scope": "Read-only finite semantic audit; no entire-domain completion",
+  "records": [
+    {
+      "id": "DEC-0012-04",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+      "sourceLocator": "line:21",
+      "originalMaturity": "implemented",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "Each object stores an explicitly selected process; order has no processVersionId; same form enforced in processOptions(order).",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split,requireProcessVersion,processOptions",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/entity/WorkOrder.java"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "rule.product-process.explicit-execution-selection",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/product-process.yaml",
+      "sourceLocator": "line:408",
+      "originalMaturity": "specified",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "Each object stores an explicitly selected process; order has no processVersionId; same form enforced in processOptions(order).",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split,requireProcessVersion,processOptions",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/entity/WorkOrder.java"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0012-06",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+      "sourceLocator": "line:29",
+      "originalMaturity": "specified",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "Existing reference ownership/time/form is rechecked at first START; product new-candidate priority does not reject an otherwise valid existing family reference.",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#requireApplicableProcess",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java#act",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java#resolve,findVersionForProduct"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0002-10",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+      "sourceLocator": "line:45",
+      "originalMaturity": "specified",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "Existing reference ownership/time/form is rechecked at first START; product new-candidate priority does not reject an otherwise valid existing family reference.",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#requireApplicableProcess",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java#act",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java#resolve,findVersionForProduct"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "rule.product-family.member-transfer-future-only",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/product-process.yaml",
+      "sourceLocator": "line:516",
+      "originalMaturity": "specified",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "Existing reference ownership/time/form is rechecked at first START; product new-candidate priority does not reject an otherwise valid existing family reference.",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#requireApplicableProcess",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java#act",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java#resolve,findVersionForProduct"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0012-10",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+      "sourceLocator": "line:45",
+      "originalMaturity": "specified",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "CREATED object, no execution and CREATED/IN_PROCESS order gates; form/quantity constraints precede mutation, with order then object locks.",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#updateObject",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java#update"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "rule.production.unstarted-object-edit",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/batch-process.yaml",
+      "sourceLocator": "line:3",
+      "originalMaturity": "specified",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "CREATED object, no execution and CREATED/IN_PROCESS order gates; form/quantity constraints precede mutation, with order then object locks.",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#updateObject",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java#update"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0012-09",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+      "sourceLocator": "line:41",
+      "originalMaturity": "specified",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "CREATED order gate and ever-had objects identity check; allocated total bounds plan; cancelled rows keep identity lock.",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java#update",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#allocatedQuantity"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "rule.production.work-order-edit-field-boundary",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/batch-process.yaml",
+      "sourceLocator": "line:27",
+      "originalMaturity": "specified",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "CREATED order gate and ever-had objects identity check; allocated total bounds plan; cancelled rows keep identity lock.",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java#update",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#allocatedQuantity"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0007-03",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+      "sourceLocator": "line:17",
+      "originalMaturity": "specified",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "PENDING-only current membership/rules projection; view does not save it; START refreshes inside REPEATABLE_READ action transaction.",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java#refreshWorks",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java#view,act"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "rule.production-work.instance-auto-matches-applicability",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "line:112",
+      "originalMaturity": "specified",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "PENDING-only current membership/rules projection; view does not save it; START refreshes inside REPEATABLE_READ action transaction.",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java#refreshWorks",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java#view,act"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0007-04",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+      "sourceLocator": "line:21",
+      "originalMaturity": "specified",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "State works membership identifies instances; retained work/forms preserved; engine skips existing works; new work freezes published graph and matchContext.",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java#refreshWorks",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java#start"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "rule.production-work.instance-freezes-work-and-rule-snapshot",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sourceLocator": "line:147",
+      "originalMaturity": "specified",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "State works membership identifies instances; retained work/forms preserved; engine skips existing works; new work freezes published graph and matchContext.",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java#refreshWorks",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java#start"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "rule.product-process.freeze-batch-execution-snapshot",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/product-process.yaml",
+      "sourceLocator": "line:560",
+      "originalMaturity": "specified",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "First START builds process snapshot and DHR context/directory; process audit excludes subsequent dynamic works; history readers use stored snapshots.",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java#build",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java#act,auditObjectStatusChange",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java#createAtFirstStart,detailRow,directoryForResponse"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "rule.production.process-snapshot-audit-detail",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/batch-process.yaml",
+      "sourceLocator": "line:48",
+      "originalMaturity": "specified",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "First START builds process snapshot and DHR context/directory; process audit excludes subsequent dynamic works; history readers use stored snapshots.",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java#build",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java#act,auditObjectStatusChange",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java#createAtFirstStart,detailRow,directoryForResponse"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    },
+    {
+      "id": "discrepancy.product-family-transfer-unstarted-object-context",
+      "recordType": "implementation-discrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+      "sourceLocator": "line:132",
+      "originalMaturity": "resolved",
+      "auditScope": "bounded-first-start-and-work-retention",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "Old H006 policy premise is replaced by current DEC-0002-10 and DEC-0012-04/06/10; prior resolved status is not this run independent acceptance.",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#requireApplicableProcess",
+        "docs/knowledge/evidence/batch-process-2026-10-27.md",
+        "docs/knowledge/evidence/work-live-matching-2026-10-26.md"
+      ],
+      "verificationDepth": "source-inspected; tests read only; no runtime execution by this role"
+    }
+  ],
+  "counts": {
+    "reviewed": 16,
+    "consistent": 16,
+    "businessNeedsFix": 0
+  },
+  "sourceFindings": [
+    {
+      "id": "AUD-INC-RESOLVER-COMMENT-001",
+      "severity": "low",
+      "scope": "source-comment",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java",
+      "locator": "findVersionForProduct Javadoc",
+      "summary": "Comment still describes order frozen version continuing after expiry; current order owns no version and first START rechecks dates.",
+      "impact": "Misleading maintenance explanation; not demonstrated runtime defect.",
+      "resolutionStatus": "resolved",
+      "resolutionEvidence": "Primary changed Javadoc to require caller effective-date validation; role reread actual working-tree diff, method body unchanged."
+    }
+  ],
+  "limitations": [
+    "No Maven, native database, browser or concurrency tests executed by this role",
+    "No all-knowledge consistency claim; parsing the ID index is not semantic review",
+    "Shared condition runtime open questions remain outside slice",
+    "No assertion of valid performance capacity"
+  ],
+  "workingTreeReadPaths": [
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+  ],
+  "maturityChange": "none"
+}
