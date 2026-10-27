@@ -1,0 +1,208 @@
+qualityResult:
+  result: passed
+  baseCommit: 52dcf9d27a41f8243ed59d0a05605da011e32f83
+  headCommit: cbf139a2e85fc37b5e00a9a9c7956fda25e88a98
+  contractBaseline:
+    sourceCommit: cbf139a2e85fc37b5e00a9a9c7956fda25e88a98
+    targetBranch: edhr-dev
+    targetCommit: 52dcf9d27a41f8243ed59d0a05605da011e32f83
+    contractReadCommit: cbf139a2e85fc37b5e00a9a9c7956fda25e88a98
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.baseline-contract
+    required: true
+    category: documentation
+    description: 独立核对来源、目标、工作树与适用契约
+    method: command
+    command: git status --short; git rev-parse HEAD; git ls-remote origin refs/heads/edhr-dev;
+      read AGENTS and role/handoff contracts
+    outcome: passed
+    evidence:
+    - base=52dcf9d27a41f8243ed59d0a05605da011e32f83; head=tested=cbf139a2e85fc37b5e00a9a9c7956fda25e88a98;
+      working tree clean
+    - 实际读取契约提交为head；目标仍52dcf9d2，契约本身无增量
+  - id: check.local-diff-scope
+    required: true
+    category: requirements
+    description: 布局修复范围及业务约束保持
+    method: inspection
+    command: git diff base..head; inspect WorkOrderPage and browser script
+    outcome: passed
+    evidence:
+    - 产品仅WorkOrderPage局部网格/导入头部/TableContainer及可聚焦区域；未修改共享AppDialog、后台或业务知识
+    - 业务字段、下载模板列、旧备注、数量、权限、首START及作业规则未变；脚本旧断言保留
+  - id: check.rules-reasonableness
+    required: true
+    category: ontology
+    description: 核对9条有限合理性评估与当前规则来源
+    method: inspection
+    command: Read ontology result and rule assessment; verify 8 versioned decision
+      statement IDs and necessary source
+    outcome: passed
+    evidence:
+    - 9条=8条现行业务声明+1条既有工程兼容边界；均给来源、适用范围与理由
+    - not-applicable成立；不将截图约定说成普适法规，不将未重取历史图说成已复验，不提高成熟度
+  - id: check.static-triage
+    required: true
+    category: documentation
+    description: 逐条核对27个静态线索的源码及分类
+    method: inspection
+    command: Read every reported source locator and necessary imports/handlers; compare
+      classifications
+    outcome: passed
+    evidence:
+    - 13个MUI Select、4导航、3label输入、1指针处理、2日期比较误解析，共23误报
+    - 3处低风险源码缺口归并2根因，1登录原生校验证据不足；未做这些专门运行验证，未宣称已修
+    - 27记录/24路径/8原因组；辅助报告不是正式质量验收
+  - id: check.current-browser
+    required: true
+    category: e2e
+    description: 候选四组实际浏览器流程
+    method: automated-test
+    command: CHROME_PATH=/usr/bin/chromium W4_BROWSER_ARTIFACTS=/tmp/edhr-ui-independent-candidate
+      node scripts/test-work-order-template-browser.mjs
+    outcome: passed
+    evidence:
+    - SN/BATCH x 1440/390共4/4通过
+    - 空/暂存/提交后主内容横向overflow=0；下载按钮边界通过；窄屏ArrowRight局部滚动通过
+    - 键盘下载、实际XLSX列/示例/帮助、错误导入、旧备注payload及暂存提交断言保持；HTTP为夹具
+  - id: check.baseline-red
+    required: true
+    category: regression
+    description: 独立复现旧窄屏问题与桌面对照
+    method: automated-test
+    command: CHROME_PATH=/usr/bin/chromium W4_BASELINE_COMMIT=52dcf9d27a41f8243ed59d0a05605da011e32f83
+      W4_BROWSER_ARTIFACTS=/tmp/edhr-ui-independent-baseline node scripts/test-work-order-template-browser.mjs
+    outcome: passed
+    evidence:
+    - 基线2桌面通过，SN390/BATCH390均因322px主内容溢出失败，命令exit1为预期红例
+    - 同脚本仅替换真实页面源码，不降低几何断言
+  - id: check.visual
+    required: true
+    category: visual
+    description: 实际查看桌面与窄屏候选截图
+    method: inspection
+    command: view_image candidate SN-390-download.png, SN-390-saved.png, SN-1440-saved.png
+    outcome: passed
+    evidence:
+    - 下载及选择文件控件可见；窄屏宽表在自身区域滚动，外层弹窗不被撑开
+    - 已保存截图有键盘焦点边框/局部滚动；桌面表格及两栏仍可读；不外推其他设备
+  - id: check.build
+    required: true
+    category: regression
+    description: 独立TypeScript及生产构建
+    method: automated-test
+    command: npm run build
+    outcome: passed
+    evidence:
+    - 命令exit0，tsc -b与vite build通过；构建耗时不作为容量结论
+  - id: check.knowledge
+    required: true
+    category: regression
+    description: 独立知识结构/引用/投影检查
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - 89 tests passed，0 failure/error/skip；不代替全库语义审计
+  - id: check.static-boundaries
+    required: true
+    category: documentation
+    description: 核对扫描及lint实际限制，避免虚报绿色
+    method: command
+    command: audit_project.py baseline/current --mode strict; npm run lint
+    outcome: passed
+    evidence:
+    - 严格扫描两边27项（13 unresolved/14 violations），完整多重集合增减0，均exit2
+    - npm run lint实际exit2：缺少ESLint配置；未称lint或全站严格规范通过
+  - id: check.audit-charter
+    required: true
+    category: requirements
+    description: 用户审前合理性要求的记录及授权边界
+    method: inspection
+    command: Read audit-charter addition and decision-package
+    outcome: passed
+    evidence:
+    - 新增要求与当前用户批注一致：来源/当前适用/合理性先核，真实政策歧义问用户，无依赖审查继续
+    - 没有把AI偏好变成业务政策，也未默认授权性能改造、合并或部署
+  - id: check.evidence-integrity
+    required: true
+    category: documentation
+    description: 证据、限制及仓库不变性
+    method: command
+    command: git diff --check base..head; verify JSON counts and source/contract fingerprints;
+      git status --short
+    outcome: passed
+    evidence:
+    - 本批原件分类与实际观察一致；未修改任何仓库文件，工作树仍干净
+    - 后端未变因此未跑无关数据库全套；原暂缓、低风险、证据缺口仍披露
+  findings:
+  - id: UI-PRODUCTION-OBJECT-DIALOG-OVERFLOW-001
+    severity: medium
+    scope: WorkOrderPage production-object dialog
+    summary: 390px父级横向裁切已局部修复
+    reproductionSteps:
+    - 基线在390px进入生产对象管理并选版、切导入
+    - 读取DialogContent.scrollWidth-clientWidth并查看下载操作
+    expectedResult: 父级不溢出，表格局部滚动且操作可达
+    actualResult: 基线322px溢出；候选四组各已测阶段overflow0，窄屏键盘局部滚动通过
+    evidence:
+    - /tmp/edhr-ui-independent-baseline.log
+    - /tmp/edhr-ui-independent-candidate.log
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: cbf139a2e85fc37b5e00a9a9c7956fda25e88a98
+    - type: command
+      reference: /tmp/edhr-ui-quality-evidence.json
+  - id: UI-PREVIEW-ENABLED-BUTTON-SEMANTICS-001
+    severity: low
+    scope: WorkflowActionConfig.tsx:126 and DesignerSidebar.tsx:387
+    summary: 两处装饰预览仍保留可聚焦按钮语义，源码确认，专门运行核验未做
+    reproductionSteps:
+    - 源码查看pointerEvents:none的装饰Button
+    - 核对MUI ButtonBase默认disabled=false、tabIndex=0；本批未实际执行预览焦点场景
+    expectedResult: 装饰预览不会成为无动作的键盘按钮
+    actualResult: 两处未设disabled/tabIndex或静态语义；不证明正式审批/字段命令缺失
+    evidence:
+    - docs/development/branch-review-20261027-ui-evidence/evidence/static-triage.json#STATIC-TRIAGE-16,22
+    resolutionStatus: open
+    resolutionEvidence: []
+  - id: UI-SCROLLBAR-STANDARDS-FALLBACK-001
+    severity: low
+    scope: frontend/src/index.css:51
+    summary: 滚动条自定义样式缺标准CSS回退；不表示滚动功能失效
+    reproductionSteps:
+    - 源码查看WebKit滚动条伪元素
+    - 查找scrollbar-color/scrollbar-width，当前应用源码没有声明；本批未运行Firefox专项
+    expectedResult: 需要统一样式时同时提供标准及引擎回退，并保持系统高对比可操作性
+    actualResult: 非WebKit引擎使用浏览器默认样式；后续专项核验/整改保留
+    evidence:
+    - docs/development/branch-review-20261027-ui-evidence/evidence/static-triage.json#STATIC-TRIAGE-27
+    resolutionStatus: open
+    resolutionEvidence: []
+  residualRisks:
+  - id: risk.login-validation-owner
+    description: 真实Login form无noValidate且required原生空值校验有效；尚未核对完整登录UX归属
+    impact: 不能仅为扫描绿色添加noValidate并取消现有保护
+    mitigation: 后续实际空值/键盘/失败流程验证后决定归属
+  - id: risk.static-and-lint
+    description: 严格扫描27项exit2及ESLint配置缺失仍存在
+    impact: 本批passed不能表述为全站静态规范通过
+    mitigation: 保留原件和人工分类，按真实缺陷与配置单独推进
+  - id: risk.partial-runtime-coverage
+    description: 仅390/1440 Chromium与隔离HTTP，未执行320px、200%缩放、Safari/Firefox、真实移动设备或后台持久化
+    impact: 不能外推全平台响应式或全栈E2E
+    mitigation: 按后续真实风险增加对应验证
+  - id: risk.overall-audit-and-deferrals
+    description: 完整W2/W3/W4及W5-W7尚未完成；性能方案、TaskDetail、记录控制相关DHR/A12、DHR分块与知识gap保留
+    impact: 不由本批关闭整体任务或原暂缓
+    mitigation: 按台账继续增量及无依赖审查，性能和业务取舍仍先讨论
+  blockingConditions: []

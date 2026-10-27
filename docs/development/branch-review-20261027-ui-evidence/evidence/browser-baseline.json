@@ -1,0 +1,56 @@
+{
+  "boundary": "real Chromium UI, fixture HTTP; no real backend writes",
+  "baseline": "52dcf9d27a41f8243ed59d0a05605da011e32f83",
+  "results": [
+    {
+      "name": "SN-1440",
+      "result": "passed",
+      "layoutChecks": [
+        {
+          "stage": "empty",
+          "horizontalOverflow": 0
+        },
+        {
+          "stage": "staged",
+          "horizontalOverflow": 0
+        },
+        {
+          "stage": "saved",
+          "horizontalOverflow": 0
+        }
+      ],
+      "checks": "dialog geometry; keyboard download/local table scroll; XLSX columns/example/help; import; negative validations; staged submit; console"
+    },
+    {
+      "name": "BATCH-1440",
+      "result": "passed",
+      "layoutChecks": [
+        {
+          "stage": "empty",
+          "horizontalOverflow": 0
+        },
+        {
+          "stage": "staged",
+          "horizontalOverflow": 0
+        },
+        {
+          "stage": "saved",
+          "horizontalOverflow": 0
+        }
+      ],
+      "checks": "dialog geometry; keyboard download/local table scroll; XLSX columns/example/help; import; negative validations; staged submit; console"
+    },
+    {
+      "name": "SN-390",
+      "result": "failed",
+      "message": "SN-390 empty: dialog content overflows horizontally by 322px",
+      "pageErrors": []
+    },
+    {
+      "name": "BATCH-390",
+      "result": "failed",
+      "message": "BATCH-390 empty: dialog content overflows horizontally by 322px",
+      "pageErrors": []
+    }
+  ]
+}

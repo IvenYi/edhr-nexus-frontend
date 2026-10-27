@@ -1,0 +1,63 @@
+decisionPackage:
+  id: DEC-PACKAGE-DIALOG-WITHDRAWAL-20261027
+  scope: 用户要求撤回PR32生产对象管理弹窗及相关测试，保留无依赖审计资料
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 588f46d0c7a6845d64319942e48f28c73d8bd91e
+    targetBranch: edhr-dev
+    targetCommit: 52dcf9d27a41f8243ed59d0a05605da011e32f83
+    contractReadCommit: 588f46d0c7a6845d64319942e48f28c73d8bd91e
+    uncommittedContractPaths: []
+  summary: 按用户最新指示恢复两个文件为目标原件；样式等待重新设计，旧通过结果仅历史。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L1
+    directImpacts:
+      - area: production-dialog
+        change: 撤回布局及对应新增测试，恢复52dcf9d2原件；当前窄屏问题user-deferred。
+        evidenceReferences: [docs/development/branch-review-20261027-ui-evidence/withdrawal.md]
+    transitiveImpacts: []
+    potentialImpacts: []
+    unaffectedAreas:
+      - area: business
+        reason: PR31修复、静态核实和规则合理性要求保留；无产品政策变化。
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts: []
+    permissionImpacts: []
+    testImpacts:
+      - scope: existing-browser-tests
+        scenarios: [保留原下载导入断言, 源文件与目标blob一致]
+        evidenceReferences: []
+    evidenceGaps: []
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 精确撤回已识别两文件，不进行新实现。
+    ownershipBoundaries:
+      - owner: primary
+        responsibility: 恢复原件、撤回说明及PR同步。
+      - owner: quality
+        responsibility: 独立核对撤回范围及保留资料。
+  affectedFiles:
+    - path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+      changeType: update
+      reason: 恢复目标原件。
+    - path: gmp-platform/frontend/scripts/test-work-order-template-browser.mjs
+      changeType: update
+      reason: 恢复目标原件及原有业务测试。
+  acceptanceScenarios:
+    - id: withdrawal-no-product-diff
+      given: 用户暂缓弹窗设计
+      when: 撤回本批布局及新增断言
+      then: 产品和测试目录与目标无差异，PR31修复保留，历史通过不当成当前验收
+      evidenceRequirements: [git blob比较, 文档状态核对]
+ontologyResult:
+  result: not-applicable
+  reason: 没有规则、数据或生命周期变化，仅恢复展示与测试原件。
