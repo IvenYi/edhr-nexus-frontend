@@ -1,0 +1,462 @@
+{
+  "status": "FINAL",
+  "verifier": "/root/pagination_import_final_qa; fresh, no product/test/fixture/knowledge repair participation",
+  "targetCommit": "1579c06c20e1382705362001278ae514583e9853",
+  "headCommit": "974eaa0cefde17f8aaf793d85586efc3dd57adf8",
+  "targetRef": "1579c06c20e1382705362001278ae514583e9853",
+  "workingTreePorcelain": "",
+  "knowledgeVersion": "0.3.25",
+  "node": {
+    "tests": 50,
+    "failures": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "backend": {
+    "tests": 29,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exitCode": 0,
+    "nativePostgresql": false
+  },
+  "knowledge": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "browser": {
+    "edhr-pagination-qa-import-desktop.json": {
+      "scenarios": 11,
+      "passed": 11,
+      "failed": 0,
+      "results": [
+        {
+          "name": "decimal-equality",
+          "result": "passed"
+        },
+        {
+          "name": "real-over-allocation",
+          "result": "passed"
+        },
+        {
+          "name": "extra-precision",
+          "result": "passed"
+        },
+        {
+          "name": "switch-order",
+          "result": "passed"
+        },
+        {
+          "name": "reopen-same-order",
+          "result": "passed"
+        },
+        {
+          "name": "pending-list-change",
+          "result": "passed"
+        },
+        {
+          "name": "process-change",
+          "result": "passed"
+        },
+        {
+          "name": "same-context-delay",
+          "result": "passed"
+        },
+        {
+          "name": "read-failure-preserves-list",
+          "result": "passed"
+        },
+        {
+          "name": "newer-import-wins",
+          "result": "passed"
+        },
+        {
+          "name": "submission-invalidates-import",
+          "result": "passed"
+        }
+      ]
+    },
+    "edhr-pagination-qa-import-narrow.json": {
+      "scenarios": 11,
+      "passed": 11,
+      "failed": 0,
+      "results": [
+        {
+          "name": "decimal-equality",
+          "result": "passed"
+        },
+        {
+          "name": "real-over-allocation",
+          "result": "passed"
+        },
+        {
+          "name": "extra-precision",
+          "result": "passed"
+        },
+        {
+          "name": "switch-order",
+          "result": "passed"
+        },
+        {
+          "name": "reopen-same-order",
+          "result": "passed"
+        },
+        {
+          "name": "pending-list-change",
+          "result": "passed"
+        },
+        {
+          "name": "process-change",
+          "result": "passed"
+        },
+        {
+          "name": "same-context-delay",
+          "result": "passed"
+        },
+        {
+          "name": "read-failure-preserves-list",
+          "result": "passed"
+        },
+        {
+          "name": "newer-import-wins",
+          "result": "passed"
+        },
+        {
+          "name": "submission-invalidates-import",
+          "result": "passed"
+        }
+      ]
+    },
+    "edhr-pagination-qa-import-base.json": {
+      "scenarios": 11,
+      "passed": 3,
+      "failed": 8,
+      "results": [
+        {
+          "name": "decimal-equality",
+          "result": "failed"
+        },
+        {
+          "name": "real-over-allocation",
+          "result": "passed"
+        },
+        {
+          "name": "extra-precision",
+          "result": "failed"
+        },
+        {
+          "name": "switch-order",
+          "result": "failed"
+        },
+        {
+          "name": "reopen-same-order",
+          "result": "failed"
+        },
+        {
+          "name": "pending-list-change",
+          "result": "failed"
+        },
+        {
+          "name": "process-change",
+          "result": "failed"
+        },
+        {
+          "name": "same-context-delay",
+          "result": "passed"
+        },
+        {
+          "name": "read-failure-preserves-list",
+          "result": "passed"
+        },
+        {
+          "name": "newer-import-wins",
+          "result": "failed"
+        },
+        {
+          "name": "submission-invalidates-import",
+          "result": "failed"
+        }
+      ]
+    },
+    "edhr-pagination-qa-shared.json": {
+      "scenarios": 3,
+      "passed": 3,
+      "failed": 0,
+      "results": [
+        {
+          "name": "shared",
+          "result": "passed"
+        },
+        {
+          "name": "icons",
+          "result": "passed"
+        },
+        {
+          "name": "equipment",
+          "result": "passed"
+        }
+      ]
+    },
+    "edhr-pagination-qa-shared-base.json": {
+      "scenarios": 3,
+      "passed": 2,
+      "failed": 1,
+      "results": [
+        {
+          "name": "shared",
+          "result": "passed"
+        },
+        {
+          "name": "icons",
+          "result": "failed"
+        },
+        {
+          "name": "equipment",
+          "result": "passed"
+        }
+      ]
+    },
+    "edhr-pagination-qa-production.json": {
+      "scenarios": 2,
+      "passed": 2,
+      "failed": 0,
+      "results": [
+        {
+          "name": "batches",
+          "result": "passed"
+        },
+        {
+          "name": "orders",
+          "result": "passed"
+        }
+      ]
+    },
+    "edhr-pagination-qa-template.json": {
+      "scenarios": 3,
+      "passed": 3,
+      "failed": 0,
+      "results": [
+        {
+          "name": "SN-1440",
+          "result": "passed"
+        },
+        {
+          "name": "BATCH-1440",
+          "result": "passed"
+        },
+        {
+          "name": "SN-390",
+          "result": "passed"
+        }
+      ]
+    },
+    "edhr-pagination-qa-session.json": {
+      "scenarios": 12,
+      "passed": 12,
+      "failed": 0,
+      "results": [
+        {
+          "name": "remote-late-success",
+          "result": "passed"
+        },
+        {
+          "name": "remote-late-401",
+          "result": "passed"
+        },
+        {
+          "name": "remote-late-409",
+          "result": "passed"
+        },
+        {
+          "name": "remote-late-blob",
+          "result": "passed"
+        },
+        {
+          "name": "remote-logout",
+          "result": "passed"
+        },
+        {
+          "name": "remote-clear",
+          "result": "passed"
+        },
+        {
+          "name": "same-token-new-login",
+          "result": "passed"
+        },
+        {
+          "name": "remote-aba",
+          "result": "passed"
+        },
+        {
+          "name": "profile-refresh",
+          "result": "passed"
+        },
+        {
+          "name": "keyboard-login-and-reauth",
+          "result": "passed"
+        },
+        {
+          "name": "same-tab-response-control",
+          "result": "passed"
+        },
+        {
+          "name": "actual-app-installation",
+          "result": "passed"
+        }
+      ]
+    }
+  },
+  "buildExitCode": 0,
+  "lintExitCode": 2,
+  "static": {
+    "scriptSha256": "b56ca0495ace4aaac2bfa779dc707b04baab0f7d4537e6856b6348c63230661c",
+    "selfCreatedExport": "/tmp/edhr-pagination-qa-static-mcyulpom",
+    "baselineCommit": "1579c06c20e1382705362001278ae514583e9853",
+    "candidateCommit": "974eaa0cefde17f8aaf793d85586efc3dd57adf8",
+    "runs": [
+      {
+        "name": "baseline",
+        "exitCode": 2,
+        "path": "/tmp/edhr-pagination-qa-static-baseline.json",
+        "sha256": "b51adc77b7814e7dfb75d257ab36830c3b994e1ef6682fed3b4a1ce729c25304",
+        "findings": 19
+      },
+      {
+        "name": "current",
+        "exitCode": 2,
+        "path": "/tmp/edhr-pagination-qa-static-current.json",
+        "sha256": "eca478601b550fc5f7dfc013d5f448836df6504e1cfe3eaa8a3d1cdcc1472076",
+        "findings": 19
+      }
+    ],
+    "fullFindingMultisetExceptLineEqual": true,
+    "added": [],
+    "removed": []
+  },
+  "cleanup": {
+    "selfCreatedStaticExport": "/tmp/edhr-pagination-qa-static-mcyulpom",
+    "removed": true,
+    "browserScriptsSelfCleanup": true,
+    "databaseCreated": false
+  },
+  "receipts": [
+    {
+      "path": "/tmp/edhr-pagination-qa-import-desktop.json",
+      "bytes": 2178,
+      "sha256": "d39f83562ebd18a34868db7471a185a83339331b478dab773a319a8df7ca2c82"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-import-narrow.json",
+      "bytes": 2177,
+      "sha256": "3e86436e73386cbe70c56918be28ac356457038c35585223e8e8d091e674257b"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-import-base.json",
+      "bytes": 12972,
+      "sha256": "2733d934896cad9f1466c019739cd86160ad725a57e35abf8de6f157cd37c3d0"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-shared.json",
+      "bytes": 1053,
+      "sha256": "c9dce94725b8f4f5de0a810578ea28cbc026b66a84d2a5a48e4d41c80c10f136"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-shared-base.json",
+      "bytes": 939,
+      "sha256": "58b5b126da935cdc2209b61b84c995b7d2f5554e69cca7ba9d6ecf39460ede1e"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-production.json",
+      "bytes": 2799,
+      "sha256": "0f724394a86bce8615204be56fe8ebfc9d688d88d1756a074a670787d51afde1"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-template.json",
+      "bytes": 659,
+      "sha256": "e7ddc3e8add48bf69f0da8d431b7c668c523789021b2b36f05a0391c59da6fb1"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-session.json",
+      "bytes": 23869,
+      "sha256": "e90d54fd547228f6d67cde65563c6486388cd70e0fb11bc3c4ac9abae24a27a6"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-node.log",
+      "bytes": 4859,
+      "sha256": "a694613edd4f334e288924f54e7cab3741834034d2fed461fff1559de988caaa"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-backend.log",
+      "bytes": 3506,
+      "sha256": "d690a51ed331ab7c2e9c994e822ecb02d3b3c77a1fe700692f4cc8552410101d"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-knowledge.log",
+      "bytes": 2112,
+      "sha256": "8d1ef7428e4bf9bd2ba012103b9309a1682e256813132f4a0f4eb131a9491545"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-build.log",
+      "bytes": 9691,
+      "sha256": "a1a61d5435762d037a19eaa8491990fd274c3d853e0a09322a517e50ebd725e4"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-lint.log",
+      "bytes": 819,
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-static-baseline.json",
+      "bytes": 7634,
+      "sha256": "b51adc77b7814e7dfb75d257ab36830c3b994e1ef6682fed3b4a1ce729c25304"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-static-current.json",
+      "bytes": 7625,
+      "sha256": "eca478601b550fc5f7dfc013d5f448836df6504e1cfe3eaa8a3d1cdcc1472076"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-static-comparison.json",
+      "bytes": 830,
+      "sha256": "a10b14b7ec658944ad77562ed3228b76134a4b94b42831d20141c0ac369c97d7"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-inventory-source.json",
+      "bytes": 3674,
+      "sha256": "2a30d2533a095b12ead8e9c1b2223dda04cbcf680d176f74d89a0a2e9c3e6ffa"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-inventory-source.md",
+      "bytes": 2251,
+      "sha256": "033ea93279a2df3457c52dae3396cf8777cbb489367d18a3fa4786233b71c650"
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-import-narrow/decimal-equality.png",
+      "bytes": 63014,
+      "sha256": "fc0f5b5b7db4e7f5b7591b37be87450974d7b5cb8925224c551b96276ae8807b",
+      "visuallyInspected": true
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-import-desktop/switch-order.png",
+      "bytes": 86548,
+      "sha256": "54fe3412cfe169471b83ec07142922ead6ca4390f78f12b60884e0fbf1876d65",
+      "visuallyInspected": true
+    },
+    {
+      "path": "/tmp/edhr-pagination-qa-shared/icons.png",
+      "bytes": 39047,
+      "sha256": "2d0444a84756190c859786582b943a657b11263e32755a3f24dd0db044105e3f",
+      "visuallyInspected": true
+    }
+  ],
+  "limits": [
+    "controlled HTTP browser, no browser-to-real-backend persistence E2E",
+    "same 11 import scenarios at two widths, not 22 unique business scenarios",
+    "no whole-file/full-branch or full ontology audit completion",
+    "strict19 existing findings and missing ESLint config remain; no historical27 count comparison",
+    "old pending-reproduction/size-performance/user-deferred items remain"
+  ]
+}
