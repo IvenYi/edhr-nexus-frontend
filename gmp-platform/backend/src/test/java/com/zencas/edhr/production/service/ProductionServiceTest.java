@@ -37,6 +37,7 @@ class ProductionServiceTest {
     @Mock private com.zencas.edhr.workflow.engine.StateMachineService stateMachineService;
     @Mock private com.zencas.edhr.common.util.SnowflakeIdGenerator idGenerator;
     @Mock private DhrInstanceService dhrInstances;
+    @Mock private com.zencas.edhr.production.repository.ProductionExecutionRepository executions;
     @InjectMocks private ProductionService productionService;
 
     @Test
@@ -58,7 +59,7 @@ class ProductionServiceTest {
         StateMachineDef definition = WorkOrderStatusMachine.class.getAnnotation(StateMachineDef.class);
         assertThat(definition.transitions()).containsExactlyInAnyOrder(
                 "CREATED->IN_PROCESS", "CREATED->COMPLETED", "IN_PROCESS->COMPLETED",
-                "IN_PROCESS->EARLY_TERMINATED", "COMPLETED->CLOSED", "CREATED->CANCELLED");
+                "IN_PROCESS->EARLY_TERMINATED", "COMPLETED->CLOSED", "CREATED->CANCELLED", "CREATED->EARLY_TERMINATED");
     }
 
     @Test
@@ -85,24 +86,23 @@ class ProductionServiceTest {
 
     @Test
     void endsInProgressObjectWithRequiredReason() {
-        WorkOrder order = WorkOrder.builder().id(10L).status("IN_PROCESS").build();
+        WorkOrder order = WorkOrder.builder().id(10L).status("IN_PROCESS").plannedQuantity(BigDecimal.ONE).build();
         ProductionObject object = ProductionObject.builder().id(20L).workOrderId(order.getId()).status("IN_PROGRESS").targetQuantity(BigDecimal.ONE).build();
         when(productionObjectRepository.findWorkOrderId("default", object.getId())).thenReturn(Optional.of(order.getId()));
         when(productionObjectRepository.findByTenantIdAndIdForUpdate("default", object.getId())).thenReturn(Optional.of(object));
         when(productionObjectRepository.save(object)).thenReturn(object);
         when(workOrderRepository.findByTenantIdAndIdForUpdate("default", order.getId())).thenReturn(Optional.of(order));
         when(productionObjectRepository.findByTenantIdAndWorkOrderIdOrderByCreatedAtAsc("default", order.getId())).thenReturn(List.of(object));
-        when(workOrderRepository.save(any(WorkOrder.class))).thenReturn(order);
 
         productionService.endObject(object.getId(), "设备故障");
 
         assertThat(object.getStatus()).isEqualTo("EARLY_TERMINATED");
         assertThat(object.getTerminationReason()).isEqualTo("设备故障");
         assertThat(object.getTerminationAt()).isNotNull();
-        assertThat(order.getStatus()).isEqualTo("EARLY_TERMINATED");
+        assertThat(order.getStatus()).isEqualTo("IN_PROCESS");
         verify(stateMachineService).transit("PRODUCTION_OBJECT", object.getId(), "IN_PROGRESS", "EARLY_TERMINATED");
         verify(dhrInstances).terminateWithProductionObject(eq(object.getId()), eq("设备故障"), any(LocalDateTime.class));
-        verify(stateMachineService).transit("WORK_ORDER", order.getId(), "IN_PROCESS", "EARLY_TERMINATED");
+        org.mockito.Mockito.verify(stateMachineService, org.mockito.Mockito.never()).transit(eq("WORK_ORDER"), any(), any(), any());
     }
 
     @Test
@@ -120,7 +120,7 @@ class ProductionServiceTest {
     }
 
     @Test
-    void blocksFirstSplitUntilTheWorkOrderHasAProcessVersion() {
+    void blocksSplitUntilTheBatchHasAnExplicitProcessVersion() {
         WorkOrder order = order(BigDecimal.TEN);
         when(workOrderRepository.findByTenantIdAndIdForUpdate("default", order.getId())).thenReturn(Optional.of(order));
         when(productionObjectRepository.findByTenantIdAndWorkOrderIdOrderByCreatedAtAsc("default", order.getId()))
@@ -145,21 +145,20 @@ class ProductionServiceTest {
 
         assertThat(created.getObjectNo()).isEqualTo("BATCH-200");
         assertThat(created.getStatus()).isEqualTo("CREATED");
-        assertThat(order.getProcessVersionId()).isEqualTo(version.getId());
+        assertThat(created.getProcessVersionId()).isEqualTo(version.getId());
     }
 
     @Test
-    void splitsInProcessWorkOrderWithItsLockedProcessVersion() {
+    void splitsInProcessWorkOrderWithAnExplicitVersion() {
         WorkOrder order = order(BigDecimal.TEN);
         order.setStatus("IN_PROCESS");
-        order.setProcessVersionId(100L);
         ProductProcessVersion version = version(100L, "BATCH");
         ProductionObject inProgress = ProductionObject.builder().id(200L).objectType("BATCH")
                 .status("IN_PROGRESS").targetQuantity(BigDecimal.valueOf(2)).build();
         when(workOrderRepository.findByTenantIdAndIdForUpdate("default", order.getId())).thenReturn(Optional.of(order));
         when(productionObjectRepository.findByTenantIdAndWorkOrderIdOrderByCreatedAtAsc("default", order.getId()))
                 .thenReturn(List.of(inProgress));
-        when(processResolutionService.findVersionForProduct(order.getProductId(), version.getId())).thenReturn(Optional.of(version));
+        when(processResolutionService.resolve(eq(order.getProductId()), any())).thenReturn(new ProductProcessResolutionService.ProcessResolution("PRODUCT", order.getProductId(), false, null, List.of(version)));
         when(idGenerator.nextId()).thenReturn(201L);
         when(productionObjectRepository.existsByTenantIdAndObjectNo("default", "BATCH-201")).thenReturn(false);
         when(workOrderRepository.save(order)).thenReturn(order);
@@ -217,15 +216,13 @@ class ProductionServiceTest {
     void allowsResplittingTheQuantityOfACancelledUnstartedObject() {
         WorkOrder order = order(BigDecimal.TEN);
         ProductProcessVersion version = version(100L, "BATCH");
-        order.setProcessVersionId(version.getId());
         ProductionObject cancelled = ProductionObject.builder()
                 .id(200L).objectType("BATCH").status("CANCELLED")
                 .targetQuantity(BigDecimal.TEN).build();
         when(workOrderRepository.findByTenantIdAndIdForUpdate("default", order.getId())).thenReturn(Optional.of(order));
         when(productionObjectRepository.findByTenantIdAndWorkOrderIdOrderByCreatedAtAsc("default", order.getId()))
                 .thenReturn(List.of(cancelled));
-        when(processResolutionService.findVersionForProduct(order.getProductId(), version.getId()))
-                .thenReturn(Optional.of(version));
+        when(processResolutionService.resolve(eq(order.getProductId()), any())).thenReturn(new ProductProcessResolutionService.ProcessResolution("PRODUCT", order.getProductId(), false, null, List.of(version)));
         when(idGenerator.nextId()).thenReturn(201L);
         when(productionObjectRepository.existsByTenantIdAndObjectNo("default", "BATCH-201")).thenReturn(false);
         when(workOrderRepository.save(order)).thenReturn(order);
@@ -241,7 +238,7 @@ class ProductionServiceTest {
 
     @Test
     void completesInProcessOrderWhenRemainingObjectsAreCompletedOrCancelled() {
-        WorkOrder order = WorkOrder.builder().id(10L).status("IN_PROCESS").build();
+        WorkOrder order = WorkOrder.builder().id(10L).status("IN_PROCESS").plannedQuantity(BigDecimal.ONE).build();
         ProductionObject completing = ProductionObject.builder().id(20L).workOrderId(order.getId())
                 .status("IN_PROGRESS").targetQuantity(BigDecimal.ONE).build();
         ProductionObject cancelled = ProductionObject.builder().id(21L).workOrderId(order.getId())
@@ -271,12 +268,90 @@ class ProductionServiceTest {
     }
 
     @Test
-    void rejectsChangingTheLockedProcessVersion() {
+    void allowsNewBatchUsingAnotherVersionWithTheSameProductionForm() {
         WorkOrder order = order(BigDecimal.TEN);
-        order.setProcessVersionId(100L);
+        ProductProcessVersion version = version(101L, "BATCH");
+        when(productionObjectRepository.findByTenantIdAndWorkOrderIdOrderByCreatedAtAsc("default", order.getId()))
+                .thenReturn(List.of(ProductionObject.builder().objectType("BATCH").processVersionId(100L).build()));
+        when(processResolutionService.resolve(eq(order.getProductId()), any()))
+                .thenReturn(new ProductProcessResolutionService.ProcessResolution("PRODUCT", order.getProductId(), false, null, List.of(version)));
+        assertThat(productionService.requireProcessVersion(order, 101L)).isSameAs(version);
+    }
 
-        assertThatThrownBy(() -> productionService.requireProcessVersion(order, 101L))
-                .hasMessageContaining("制程已锁定");
+    @Test
+    void editsQuantityByAvailableIncrementAndRetainsTheOrderPlan() {
+        WorkOrder order = order(BigDecimal.TEN);
+        ProductionObject object = editable(order);
+        when(processResolutionService.findVersionForProduct(1L, 100L)).thenReturn(Optional.of(version(100L, "BATCH")));
+        when(productionObjectRepository.save(object)).thenReturn(object);
+        productionService.updateObject(20L, 100L, BigDecimal.TEN, "计划调整", null, null);
+        assertThat(object.getTargetQuantity()).isEqualByComparingTo("10");
+        assertThat(order.getPlannedQuantity()).isEqualByComparingTo("10");
+        assertThatThrownBy(() -> productionService.updateObject(20L, 100L, new BigDecimal("10.5"), null, null, null))
+                .hasMessageContaining("剩余可分配");
+        productionService.updateObject(20L, 100L, new BigDecimal("0.5"), null, null, null);
+        assertThat(productionService.allocatedQuantity(order.getId())).isEqualByComparingTo("0.5");
+    }
+
+    @Test
+    void rejectsEditsAfterExecutionExistsEvenIfObjectStatusIsCreated() {
+        WorkOrder order = order(BigDecimal.TEN);
+        editable(order);
+        when(executions.existsById(20L)).thenReturn(true);
+        assertThatThrownBy(() -> productionService.updateObject(20L, 100L, BigDecimal.ONE, null, null, null)).hasMessageContaining("未开工");
+    }
+
+    @Test
+    void keepsOrderOpenWhenCompletedBatchesDoNotCoverThePlan() {
+        WorkOrder order = order(BigDecimal.TEN); order.setStatus("IN_PROCESS");
+        ProductionObject object = editable(order); object.setStatus("IN_PROGRESS");
+        when(productionObjectRepository.save(object)).thenReturn(object);
+        productionService.completeObject(object.getId());
+        assertThat(object.getStatus()).isEqualTo("COMPLETED");
+        assertThat(order.getStatus()).isEqualTo("IN_PROCESS");
+    }
+
+    @Test
+    void manualOrderEndRequiresTerminalChildrenAndAReason() {
+        WorkOrder order = order(BigDecimal.TEN); order.setStatus("IN_PROCESS");
+        ProductionObject object = editable(order);
+        assertThatThrownBy(() -> productionService.endOrder(order.getId(), "停止计划")).hasMessageContaining("请先取消");
+        object.setStatus("IN_PROGRESS");
+        assertThatThrownBy(() -> productionService.endOrder(order.getId(), "停止计划")).hasMessageContaining("请先取消");
+        object.setStatus("EARLY_TERMINATED");
+        assertThatThrownBy(() -> productionService.endOrder(order.getId(), " ")).hasMessageContaining("结束原因");
+        when(workOrderRepository.save(order)).thenReturn(order);
+        productionService.endOrder(order.getId(), " 停止剩余计划 ");
+        assertThat(order.getStatus()).isEqualTo("EARLY_TERMINATED");
+        assertThat(order.getTerminationReason()).isEqualTo("停止剩余计划");
+        assertThat(order.getTerminationAt()).isNotNull();
+        assertThat(order.getPlannedQuantity()).isEqualByComparingTo("10");
+    }
+
+    @Test
+    void existingReferenceMustRemainApplicableEffectiveAndInTheSameForm() {
+        WorkOrder order = order(BigDecimal.TEN);
+        ProductionObject object = ProductionObject.builder().objectType("BATCH").processVersionId(100L).build();
+        when(processResolutionService.findVersionForProduct(1L, 100L)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> productionService.requireApplicableProcess(object, order)).hasMessageContaining("不适用");
+        ProductProcessVersion version = version(100L, "BATCH");
+        when(processResolutionService.findVersionForProduct(1L, 100L)).thenReturn(Optional.of(version));
+        version.setEffectiveTo(LocalDateTime.now().minusSeconds(1));
+        assertThatThrownBy(() -> productionService.requireApplicableProcess(object, order)).hasMessageContaining("失效");
+        version.setEffectiveTo(null); version.setProductionForm("SN");
+        assertThatThrownBy(() -> productionService.requireApplicableProcess(object, order)).hasMessageContaining("生产形态");
+        version.setProductionForm("BATCH");
+        assertThat(productionService.requireApplicableProcess(object, order)).isSameAs(version);
+    }
+
+    private ProductionObject editable(WorkOrder order) {
+        ProductionObject object = ProductionObject.builder().id(20L).workOrderId(order.getId()).objectType("BATCH")
+                .status("CREATED").processVersionId(100L).targetQuantity(new BigDecimal("8")).build();
+        org.mockito.Mockito.lenient().when(productionObjectRepository.findWorkOrderId("default", 20L)).thenReturn(Optional.of(order.getId()));
+        org.mockito.Mockito.lenient().when(productionObjectRepository.findByTenantIdAndIdForUpdate("default", 20L)).thenReturn(Optional.of(object));
+        when(workOrderRepository.findByTenantIdAndIdForUpdate("default", order.getId())).thenReturn(Optional.of(order));
+        org.mockito.Mockito.lenient().when(productionObjectRepository.findByTenantIdAndWorkOrderIdOrderByCreatedAtAsc("default", order.getId())).thenReturn(List.of(object));
+        return object;
     }
 
     @Test

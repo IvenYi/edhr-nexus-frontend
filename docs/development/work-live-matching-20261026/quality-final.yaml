@@ -1,0 +1,164 @@
+qualityResult:
+  result: passed
+  baseCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+  headCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+  contractBaseline:
+    sourceCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+    targetBranch: edhr-dev
+    targetCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+    contractReadCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/business-knowledge-model.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml
+      - docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml
+      - docs/knowledge/evidence/production-execution.yaml
+      - docs/knowledge/evidence/transaction-runtime.yaml
+      - docs/knowledge/evidence/work-live-matching-2026-10-26.md
+      - docs/knowledge/facts/core-business.yaml
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/ontology.yaml
+      - docs/knowledge/rules/product-process.yaml
+      - docs/knowledge/rules/transaction-runtime.yaml
+      - docs/development/work-live-matching-20261026/decision-package.yaml
+      - docs/development/work-live-matching-20261026/impact-analysis.md
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    excludedPaths: [output/, gmp-platform/frontend/output/, premium-audit.json]
+    untrackedPaths:
+      - docs/knowledge/evidence/work-live-matching-2026-10-26.md
+      - docs/development/work-live-matching-20261026/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.final-contract-and-candidate
+      required: true
+      category: documentation
+      description: 全新质量实例独立读取契约、决策包、未决问题及本轮差异，核对最终候选范围
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git diff --check; git diff HEAD -- AGENTS.md codeplzreadme.md docs/agents/agent-handoff-contract.md docs/agents/quality-verifier.md
+      outcome: passed
+      evidence:
+        - 来源HEAD与目标origin/edhr-dev均为d5adf22066ea4d6bb1c7e7ede09961fc97bea675，契约没有工作树变更，diff检查退出0。
+        - 最终候选为该提交加includedPaths中的工作树内容；文件SHA-256见quality-final-evidence.json，不以提交号掩盖未提交修改。
+        - 本实例work_quality_final未参与实现或问题修复，只写本质量报告和验证证据；此前实例的failed记录保持。
+        - 本轮补充的impact-analysis.md及decisionPackage传递影响已纳入最终独立复核；后续收尾README只作交付结果记录，不在本报告已执行检查范围内。
+    - id: check.final-runtime-evidence-reuse
+      required: true
+      category: integration
+      description: 核对同一代码候选的独立PostgreSQL运行原件与新增六项测试的实际断言
+      method: inspection
+      command: compare SHA-256 of all three changed production classes and ProductionExecutionIntegrationTest against quality-postgres.json; inspect suite cases and source assertions
+      outcome: passed
+      evidence:
+        - docs/development/work-live-matching-20261026/quality-postgres.json
+        - docs/development/work-live-matching-20261026/quality-final-evidence.json
+        - 三份业务源码及集成测试的SHA-256全部与前轮独立运行相同，前轮后仅product-process当前规则语义修复；本实例未重新运行后端测试，明确复用同一代码候选原件，不宣称独立重跑。
+        - 隔离PostgreSQL库edhr_work_live_20261026_test运行共117项，115实跑通过、0失败、0错误，2条浏览器夹具按既有系统属性条件跳过；具体原始命令与逐项结果见quality-postgres.json。
+        - 新增六项断言覆盖首次开工前转簇/GET零写、零业务节点既有实例失配仍可继续、新发布版本及matchContext、旧后续计划刷新、例外规则、重复START、已过站不补做、无效未来配置隔离及审计失败回滚。
+        - 相邻运行证据覆盖并发START、REPEATABLE_READ配置视图、终止竞争、权限拒绝、DHR及表单份次/签署，未将这些局部测试扩展为全系统发布认证。
+    - id: check.final-knowledge-gates
+      required: true
+      category: ontology
+      description: 在两处规则修复后的最终知识候选上独立重跑结构、引用、类型与投影门禁
+      method: automated-test
+      command: mvn -q -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - docs/development/work-live-matching-20261026/quality-final-evidence.json
+        - 本实例实际执行，退出0；BusinessKnowledgeModelTest共89项，0失败、0错误、0跳过。
+        - 该结果只证明正式知识检查覆盖的结构与引用，不替代本报告的人工语义核对。
+    - id: check.final-current-definition-replacement
+      required: true
+      category: ontology
+      description: 关闭QF-WORK-LIVE-001并核对当前知识声明级替代、历史保留及工程边界
+      method: inspection
+      command: inspect product-process rules, DEC-0002-10, DEC-0007-03/04, transaction-runtime rules, glossary, facts, ontology, architecture, README and work-live-matching evidence
+      outcome: passed
+      evidence:
+        - rule.product-family.member-transfer-future-only的name/scope/result.affectedContext限定制程；result.excludedContexts显式排除production-work-applicability-candidates；explanation明确既有批次后续作业可采用当前簇。
+        - rule.product-process.freeze-batch-execution-snapshot.explanation已区分首次START制程冻结与各作业实例创建冻结，并将剩余差异限制到制程归属及工单继续拆分。
+        - DEC-0007-03/04、对应规则、词典、事实来源、三条关系描述及阅读文档一致表达实时候选、既有实例保留和查询/创建分离；无新增旧模式、迭代配置或不相关政策。
+        - 原DEC-0002/0007摘录及原差异的作业内容保留在work-live-matching-2026-10-26.md；制程差异保持open，原历史审计/实例不回写。
+        - 知识版本0.3.25和规则specified/internal保持；matchContext与matched事实的runtime可用性/源码来源纠正具有直接源码依据，不推定通用规则运行资格提升。
+        - OPERATION_START/PENDING/IN_PROGRESS边界在decisionPackage.inferred及确认证据中标明工程落实；既有作业条件运行、规则版本、多租户等未决项保持，不冒充本轮已确认或已完成。
+    - id: check.final-execution-and-scope
+      required: true
+      category: requirements
+      description: 独立静态核对最终实现、权限事务、既有实例及制程范围与验收要求一致
+      method: inspection
+      command: inspect ExecutionSnapshotBuilder.refreshWorks, ProductionExecutionService.get/view/act, ProductionExecutionEngine.start and six added integration scenarios
+      outcome: passed
+      evidence:
+        - refreshWorks只处理PENDING；以state.operations中的works识别既有嵌入实例，保留其原图/规则/表单；无状态的旧计划重新匹配；同一definition已有实例不会重复创建。
+        - START在原REPEATABLE_READ、工单/对象锁与revision检查内重新匹配，engine.start跳过已有状态；snapshotBefore/After和实例状态在原审计事务保存，失败回滚路径具有运行断言。
+        - 查询从字符串解析出响应内存树并仅修改投影，不保存production_execution或创建实例；IN_PROGRESS/COMPLETED不补入，已终止和已完工对象不刷新候选。
+        - 真实零业务节点实例测试在START后仅自动START节点done、首个FORM节点active时转簇并删除原规则，后续SUBMIT/CONFIRM仍成功，原作业快照比较相等。
+        - 制程构建及拆分策略未改；context和routeNodes有保持断言；DHR首次创建、权限及放行边界保持，未引入数据库迁移或前端修改。
+    - id: check.final-impact-analysis
+      required: true
+      category: requirements
+      description: 独立核对补充影响分析的语义矩阵、消费链、成本与未验证边界
+      method: inspection
+      command: inspect impact-analysis.md and decision-package.yaml against FormWorklistService, DhrFillingService, DhrInstanceService, FormInstanceRecordService and ProductionExecutionPage
+      outcome: passed
+      evidence:
+        - docs/development/work-live-matching-20261026/impact-analysis.md
+        - FormWorklistService:82共用executions.view，随后只遍历实际ExecutionFormCopies.ids及copy状态；不会从候选生成任务，但确实产生动态读取成本。
+        - DhrFillingService:34调用executions.get；DhrInstanceService:55冻结context/目录，268起查询form_instance_record并归入recordsByItem/unmapped，符合报告描述。
+        - FormInstanceRecordService.saved沿实际工序/copy读取冻结form及已保存值，原projection入口保持；ProductionExecutionPage.receive接收新snapshot/state，selectedWork保留原fallback，未新增推送。
+        - 每PENDING工序刷新读取成员关系和规则，匹配模板还需版本/表单查询；START保存snapshot前后增加审计体积，源码确认这些成本，但未执行容量基准或声称性能达标。
+        - 无簇入簇/移出簇共用解析路径属于静态推断，报告明确未单独运行；新影响分析未引入新的业务政策或扩大实现范围。现无可复现容量失败或当前验收容量阈值，容量与专项边界记录为残余风险，不伪造通过或失败结论。
+  findings:
+    - id: QF-WORK-LIVE-001
+      severity: medium
+      scope: docs/knowledge/rules/product-process.yaml
+      summary: 原产品簇转移与执行快照规则未排除作业候选范围，现已修正并由全新实例复核
+      reproductionSteps:
+        - 对照DEC-0002-10与DEC-0007-03/04的当前作业范围。
+        - 阅读rule.product-family.member-transfer-future-only的name、scope、result及explanation。
+        - 阅读rule.product-process.freeze-batch-execution-snapshot的explanation及制程差异边界。
+      expectedResult: 两条当前规则限定保留的制程范围，排除实时作业候选，区分制程首次冻结和实例创建冻结，保留历史来源。
+      actualResult: name/scope/result.affectedContext及excludedContexts均明确制程限定与作业排除，快照说明按实例创建时点表达，原差异只保留制程部分。
+      evidence:
+        - docs/development/work-live-matching-20261026/quality-initial.yaml
+        - docs/knowledge/rules/product-process.yaml:515
+        - docs/knowledge/rules/product-process.yaml:576
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: document
+          reference: docs/knowledge/rules/product-process.yaml
+        - type: document
+          reference: docs/development/work-live-matching-20261026/quality-final-evidence.json
+        - type: command
+          reference: mvn -q -f tools/knowledge-model/pom.xml test — work_quality_final独立执行89项通过
+  residualRisks:
+    - id: risk.dynamic-read-and-audit-volume-unmeasured
+      description: PENDING候选刷新和共用view的任务列表增加数据库读取，START审计保存完整snapshot前后增加事件体积，未做容量基准。
+      impact: 高对象数、工序数或规则量时的查询延迟和审计存储增幅尚未量化，不认证容量或性能达标。
+      mitigation: 本轮功能证据无可复现容量失败，不阻断当前功能验收；后续按实际负载测量，优化须保留实时查询、GET零写和START重新确认边界。
+    - id: risk-empty-family-transitions-not-separately-tested
+      description: 无簇到入簇及移出簇具体组合未单独运行专项测试，当前新增运行证据覆盖A到B转簇及实例保留。
+      impact: 共用空簇解析路径经静态核对，不把静态分析扩展为专项运行已验收。
+      mitigation: 作为当前证据边界披露；不扩大A到B测试结论，未来依赖该具体场景时补专项运行。
+    - id: risk.browser-not-executed
+      description: 本轮没有浏览器视觉或真实浏览器交互验证，两条原浏览器夹具未启用。
+      impact: 不认证前端视觉表现；后端实际API/service/数据库路径具有同候选独立运行证据。
+      mitigation: 无前端修改，按本次后端边界验收；若后续调整页面交互再补浏览器验证。
+    - id: risk.process-policy-deferred
+      description: 制程转簇、独立制程归属与同工单继续拆分按用户要求暂缓讨论。
+      impact: 本轮作业通过不关闭原制程侧差异。
+      mitigation: DEC-0002相关差异维持open，后续独立讨论并验证。
+    - id: risk.repository-enforcement-unverified
+      description: 未核验远端分支保护、ruleset或required checks配置，也未执行提交推送。
+      impact: 本地候选通过不证明远端强制门禁已启用或本次已集成。
+      mitigation: 保留工作树与提交基线证据，不作已发布或远端强制门禁声明。
+    - id: risk.full-runtime-contract-out-of-scope
+      description: 独立作业实体、完整规则修订/通用条件事实和多租户执行契约仍未闭环。
+      impact: 本轮仅认证既有OPERATION_START嵌入实例范围，不代表通用运行时或全系统发布验收。
+      mitigation: 相关open-questions及原差异保持，不提升知识整体成熟度。
+  blockingConditions: []

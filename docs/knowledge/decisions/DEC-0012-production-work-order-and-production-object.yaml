@@ -4,22 +4,22 @@ decisions:
     title: 工单与生产对象最小管理闭环
     status: implemented
     visibility: internal
-    context: "provenance: user-confirmed；本决策确认 eDHR 生产准备阶段工单与生产对象（批次/SN）的最小管理闭环。工单创建时制程可选，首次拆分生产对象时必须从产品制程或产品簇兜底制程中选择并写回锁定；同一工单的对象继承同一制程和生产形态。首版仅覆盖量产、对象拆分及基础生命周期，不扩展到报工执行、表单流程或批次转 SN。实现结论由 original-evidence 代码、迁移和测试证据核对；已锁定制程过期后仍可继续拆分属于 implementation inference，并非新的客户承诺。"
+    context: "provenance: user-confirmed；2026-10-27直接修正当前生产准备模型：工单表达产品及计划需求，不再绑定唯一制程。各生产对象创建时显式选择当前可用制程，产品优先、产品簇兜底，同一工单固定生产形态。未开工对象保存引用并可在资格内修改；首次合法START重核并冻结当时配置。旧工单锁版及过期继续拆分不再为有效策略。原始来源与声明级修正范围见批次制程确认证据。"
     decisionStatements:
       - id: DEC-0012-01
         statement: "provenance: user-confirmed；工单可拆分多个生产对象；一个工单只允许一种生产形态，生产形态来自制程且首版只支持 BATCH 与 SN。"
         status: implemented
         visibility: internal
       - id: DEC-0012-02
-        statement: "provenance: user-confirmed；工单创建和编辑使用 CREATED，不存在发布或 RELEASED 状态；CREATED 与 IN_PROCESS 工单均可在剩余计划数量内继续拆分生产对象，且必须沿用已锁定制程和生产形态；首次对象开工进入 IN_PROCESS；对象完成或取消后按终态回算工单；已完成工单可 CLOSED；尚未开工且无对象工单可 CANCELLED。"
+        statement: "provenance: user-confirmed；工单创建和编辑使用 CREATED，不存在发布或 RELEASED 状态；CREATED 与 IN_PROCESS 工单均可在剩余计划数量内继续拆分对象，各对象可选择不同制程版本但生产形态须一致。首次对象开工使工单进入 IN_PROCESS；只有计划全部分配且全部未取消对象正常完成才自动 COMPLETED；已完成可 CLOSED；无对象且未开工可 CANCELLED。生产中不开放工单编辑。"
         status: implemented
         visibility: internal
       - id: DEC-0012-03
-        statement: "provenance: user-confirmed；SN 对象目标数量必须为 1；非 CANCELLED 生产对象目标数量合计不得超过工单计划数量；良品、NG 和报废数量独立记录且不减少目标数量。"
+        statement: "provenance: user-confirmed；BATCH目标数量必须大于0，允许0<q<1；SN目标数量固定为1。非CANCELLED对象目标数量合计不得超过工单计划数量。编辑批次数量只改变分配量和剩余量，增加量不得超过当前剩余量，工单计划量不自动改变；提前结束仍占用原目标分配量。良品、NG、报废不减少目标数量。"
         status: implemented
         visibility: internal
       - id: DEC-0012-04
-        statement: "provenance: user-confirmed；产品制程优先于产品簇制程作为拆分选项来源；首次拆分锁定制程后，后续对象只能继承该版本。"
+        statement: "provenance: user-confirmed；制程从工单移至各生产对象的引用：每次创建显式选择，产品当前可用制程优先、无可用产品制程时用当前产品簇兜底。同一工单可有多个制程版本，不能改变既定生产形态。已保存但未开工对象可明确换版；不自动换成最新版本。"
         status: implemented
         visibility: internal
       - id: DEC-0012-05
@@ -27,32 +27,44 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0012-06
-        statement: "provenance: inference；当前实现通过不重新应用有效期筛选的锁定制程读取策略，使过期锁定制程仍可用于历史工单继续拆分；该策略需由主开发智能体与业务确认长期保留边界。"
+        statement: "provenance: user-confirmed；已有引用与新选择候选分开校验。产品新增自有制程不使仍有效且归属正确的既有簇制程失效；版本失效、产品转簇导致不适用、生产形态变化，在执行页面首次开工时阻断并要求明确重选，不能以工单曾绑定为由豁免。未开工时同一版本内容可变，首次合法开工冻结实际内容。"
         status: specified
         visibility: internal
       - id: DEC-0012-07
-        statement: "provenance: user-confirmed；批次转 SN、多工单合批、补产概念、报工执行台、表单流程、字段权限和审批节点不属于本次交付。未来生产对象良品/NG/报废填报接入标准作业或表单字段映射，完整执行快照另行决策。"
+        statement: "provenance: user-confirmed；本次不新增批次转SN、多工单合批、补产及既有BATCH再拆分。生产执行、表单流程、字段权限和审批已有后续独立能力，不再把早期交付排除解释为当前全产品缺失；本次仅改制程引用、开工校验和快照审计，不改变其既有语义。"
         status: specified
         visibility: internal
       - id: DEC-0012-08
         statement: "provenance: user-confirmed；关闭工单前需要二次确认；确认后调用关闭动作，服务端仍只允许已完成工单进入 CLOSED。"
         status: implemented
         visibility: internal
+      - id: DEC-0012-09
+        statement: "provenance: user-confirmed；CREATED工单无生产对象时可按原规则编辑；曾拆批后工单编号和产品固定，其余字段可编辑但计划量不能低于非取消对象目标总和。全部批次取消不解除身份锁定，IN_PROCESS保持不可编辑。全部编辑均记录数据审计。"
+        status: specified
+        visibility: internal
+      - id: DEC-0012-10
+        statement: "provenance: user-confirmed；对象CREATED且无执行实例、所属工单CREATED或IN_PROCESS时可修改制程及数量。已取消、已开工和父工单终态均不得通过编辑恢复。批次首次合法START后制程引用、实际配置和目标数量固定。"
+        status: specified
+        visibility: internal
+      - id: DEC-0012-11
+        statement: "provenance: user-confirmed；本次仍为MVP，可删除或硬性调整旧开发数据，不要求旧数据兼容。初始化schema/seed直接保持新结构干净，不保留工单退役制程字段或兼容分支。后续新数据合法形成的执行快照仍不可变，不将本次授权推广为未来随意删除历史。"
+        status: specified
+        visibility: internal
     supersedes: [DEC-0001, DEC-0002]
-    evidenceIds: [evidence.production-work-order-entity, evidence.production-object-entity, evidence.production-service, evidence.production-object-status-machine, evidence.work-order-status-machine, evidence.work-order-controller, evidence.production-object-controller, evidence.product-process-resolution-for-production, evidence.migration-0061-work-order, evidence.migration-0062-production-object-and-work-order-lifecycle, evidence.migration-0063-production-work-order-permission, evidence.migration-0064-production-work-order-fields, evidence.production-service-test, evidence.work-order-page, evidence.work-orders-api, evidence.production-frontend-menu-permission, evidence.production-frontend-layout-permission-filter, evidence.production-audit-annotations, evidence.production-object-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test]
+    evidenceIds: [evidence.production-work-order-entity, evidence.production-object-entity, evidence.production-service, evidence.production-object-status-machine, evidence.work-order-status-machine, evidence.work-order-controller, evidence.production-object-controller, evidence.product-process-resolution-for-production, evidence.migration-0061-work-order, evidence.migration-0062-production-object-and-work-order-lifecycle, evidence.migration-0063-production-work-order-permission, evidence.migration-0064-production-work-order-fields, evidence.production-service-test, evidence.work-order-page, evidence.work-orders-api, evidence.production-frontend-menu-permission, evidence.production-frontend-layout-permission-filter, evidence.production-audit-annotations, evidence.production-object-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test, evidence.batch-process-direct-correction-confirmed]
     acceptanceScenarios:
       - id: scenario.production-work-order-create-without-process
         given: 用户为产品创建工单且计划数量有效
-        when: 用户不选择制程并保存工单
-        then: 工单以 CREATED 保存，制程字段保持可空
+        when: 用户保存工单
+        then: 工单以CREATED保存，只记录产品和计划需求，不绑定制程版本
         evidenceIds: [evidence.production-work-order-entity, evidence.work-order-controller, evidence.production-service-test]
         evidenceRequirements: [工单创建 API 测试, 数据库读取验证]
       - id: scenario.production-first-split-locks-process
-        given: CREATED 工单尚无生产对象，或 IN_PROCESS 工单已锁定制程且仍有可分配数量
+        given: CREATED或IN_PROCESS工单仍有可分配数量，产品存在同生产形态的V1和V2
         when: 用户首次或后续拆分生产对象
-        then: 首次拆分时工单和生产对象保存同一制程版本；后续对象不得更换版本，且不因工单进入 IN_PROCESS 而被阻断
+        then: 每个对象保存用户所选制程，允许前批V1后批V2，工单不保存唯一制程；生产形态不能混用
         evidenceIds: [evidence.production-service, evidence.production-service-test]
-        evidenceRequirements: [首次拆分集成测试, 后续更换制程阻断测试]
+        evidenceRequirements: [跨版本拆分集成测试, 混用生产形态阻断测试]
       - id: scenario.production-process-fallback
         given: 产品没有可用制程但其产品簇存在可用制程
         when: 用户查看制程选项或首次拆分对象
@@ -72,9 +84,9 @@ decisions:
         evidenceIds: [evidence.production-object-status-machine, evidence.production-object-controller, evidence.production-object-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-service-test]
         evidenceRequirements: [状态机转移测试, API 生命周期测试]
       - id: scenario.production-work-order-terminal-link
-        given: IN_PROCESS 工单已存在对象，所有对象均为 COMPLETED 或 CANCELLED，且不存在 EARLY_TERMINATED 对象
+        given: IN_PROCESS工单计划数量已全部分配，全部未取消对象均为COMPLETED
         when: 最后一个对象进入终态
-        then: 工单进入 COMPLETED，之后可关闭为 CLOSED
+        then: 工单自动进入COMPLETED，之后可关闭；存在未分配数量或EARLY_TERMINATED对象时不自动完成
         evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.work-order-controller, evidence.production-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-service-test]
         evidenceRequirements: [对象终态联动测试, 工单关闭测试]
     implementationDiscrepancies:
@@ -84,7 +96,7 @@ decisions:
         visibility: internal
         path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java
         lineHint: 151
-        summary: "provenance: original-evidence；ProductionService 将 IN_PROCESS 工单在全部生产对象进入 COMPLETED 或 CANCELLED 后转为 COMPLETED；全部对象均为未开工取消时工单保持 CREATED，取消对象不占用可分配数量。ProductionServiceTest 覆盖两条联动。"
+        summary: "provenance: original-evidence + user-confirmed；全部未开工对象取消时工单保持CREATED、释放分配量，原修复范围保留。2026-10-27当前正常完成另要求计划全部分配且未取消对象全部正常完成；旧全部对象终态即完成的判断不再作为有效规则，运行验收取本次证据。"
         evidenceIds: [evidence.production-service, evidence.production-service-test]
       - id: discrepancy.production-work-order-create-fields-not-supported
         status: resolved

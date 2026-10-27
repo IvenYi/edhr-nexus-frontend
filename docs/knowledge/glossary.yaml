@@ -488,7 +488,7 @@ terms:
     visibility: internal
   - id: term.execution-snapshot
     name: 执行快照
-    definition: 生产执行使用的版本化依据，用于防止后续配置变更改写历史执行语义。当前生产对象首次合法 START 时，ExecutionSnapshotBuilder 将所选制程、路线、工序表单和文档、匹配作业及其已发布流程和命中规则写入 production_execution.snapshot_json；DHR 同事务另存上下文和目录快照。产品簇参与当前匹配，不等于已有独立冻结的产品簇上下文字段；通用事实、规则版本和求值依据的完整冻结仍待后续执行契约落实。
+    definition: 实际执行所用配置的冻结依据。对象未开工只有引用，同一V1内容可原地变化；首次合法START冻结当时制程身份、产品/产品簇、路线、工序表单及文档，DHR同事务保存自身上下文和目录。版本标签不等于内容身份，批次审计{}详情读取事件原件。作业后续按当前上下文匹配并在实例创建时另冻结图/规则/事实，已有实例保留。通用规则版本和完整求值证据仍待契约闭环；本次MVP开发数据可重置，不推导未来合法快照可删改。
     aliases: [制程执行快照, 批次执行快照, 作业执行快照]
     status: specified
     visibility: internal
@@ -572,19 +572,19 @@ terms:
     visibility: internal
   - id: term.production-work-applicability-rule
     name: 作业适用规则
-    definition: 将一个作业模板应用于全局、指定生产范围或例外排除范围的配置规则。规则只能配置存在当前已发布作业流程版本的模板；无当前已发布流程的模板仍展示但不可选。优先级固定由 ruleType 派生，顺序为 EXCEPTION 例外排除、SCOPED 指定范围、GLOBAL 全局适用；优先级不是用户可输入、修改或选择的字段，客户页面不展示。未来运行期按该顺序自动匹配作业，不在产品或工序配置中手工引用；当前不表示生产运行时已经完成。
+    definition: 将一个作业模板应用于全局、指定生产范围或例外排除范围的配置规则。只能配置有当前已发布流程的模板；无发布流程仍展示但不可选。优先级固定为EXCEPTION、SCOPED、GLOBAL，不供用户编辑或展示。按当前产品、产品簇和实际工序实时匹配，不手工引用作业；新匹配只对后续工序生效，已过站不补做，已有实例失配不移除。当前OPERATION_START局部实现不代表完整通用运行契约已完成。
     aliases: [作业适用范围, 作业绑定规则, 作业适用规则类型]
     status: specified
     visibility: internal
   - id: term.production-work-instance
     name: 作业实例
-    definition: 根据生产上下文和作业适用规则匹配后推进的作业运行对象。当前受限生产执行已在 production_execution 的快照及状态中保存匹配作业、已发布流程和命中规则；独立作业实例模型及其完整生命周期仍属后续设计，不能由现有内嵌状态推定全部完成。
+    definition: 按生产上下文和适用规则创建并沿自身冻结依据推进的作业运行对象。已创建实例包括尚未执行业务节点的实例持续归属原批次，不因转簇、失配或发布而删除、替换或重置。当前production_execution以state.operations中的works状态识别嵌入实例，snapshot的候选计划单独不证明实例存在；独立实例模型及完整生命周期仍属后续设计。
     aliases: [生产作业实例, 作业运行实例]
     status: specified
     visibility: internal
   - id: term.production-work-execution-snapshot
     name: 作业执行快照
-    definition: 作业实例创建时形成的不可变执行依据，包含作业模板引用、创建时当前已发布作业流程版本引用、命中的作业适用规则快照和该已发布流程的作业流程配置快照；后续模板、规则和流程变更不回写既有快照。
+    definition: 作业实例创建时形成的不可变执行依据，包含模板、创建时当前已发布流程、命中规则、当前产品簇等匹配事实及流程配置快照；后续转簇、规则或发布不回写既有快照。该实例冻结与批次制程冻结分别发生，不提前固定后续工序的作业候选。
     aliases: [作业快照, 作业实例快照]
     status: specified
     visibility: internal
@@ -614,25 +614,25 @@ terms:
     visibility: internal
   - id: term.work-order
     name: 工单
-    definition: 生产准备阶段的计划实体，保存必填工单编号、产品和计划数量，以及可选订单编号、计划起止时间、备注、可选或已锁定的产品制程版本、生产模式、生产形态和生命周期状态；创建后即处于 CREATED，CREATED 与 IN_PROCESS 状态均可在剩余计划数量内继续拆分多个生产对象，不存在 RELEASED 发布状态；生产执行中可主动提前结束并进入 EARLY_TERMINATED，区别于正常完成和行政关闭。
+    definition: 生产计划实体，保存工单编号、产品、计划数量、可选订单编号、计划时间、备注及状态，不绑定唯一制程。CREATED/IN_PROCESS可在剩余计划量内拆分各自制程版本的对象，但生产形态固定。CREATED曾拆批后产品和工单编号固定，其他字段按分配约束编辑；生产中不开放编辑。全计划已分配且全部有效对象正常完成才自动完成，手动提前结束要求先处理子对象并留原因。
     aliases: [生产工单, 工单计划]
     status: specified
     visibility: internal
   - id: term.production-object
     name: 生产对象
-    definition: 工单拆分后实际管理的批次或 SN 对象，保存对象编号、生产形态、锁定制程版本、目标数量、计划起止时间、备注和生命周期状态。批次与SN共用production_object模型，以object_type的BATCH和SN区分；新引用配置统一生产批次/SN入口，默认允许两种类型并能辨认，可按需限定批次或SN，保留真实对象身份与类型。BATCH的正式产出与质量累计分别按DEC-0078/0079从真实冻结来源解释，不以旧实体良品、NG、报废兼容列的默认0作为真实质量证据，也不据本轮BATCH算法推定SN质量算法已实现；旧引用与冻结记录不自动迁移。
+    definition: 工单下实际管理的BATCH或SN，保存对象编号、形态、显式制程版本引用、目标数量、计划时间、备注及状态。未开工且无执行实例时可按资格改制程和数量；首次合法开工后制程与数量固定并使用冻结配置。同一工单可有不同制程版本但不能混用形态。统一引用入口仍辨认真实类型，产出/质量继续按DEC-0078/0079真实冻结来源解释，旧兼容列默认0不是证据，旧实例不回写。
     aliases: [批次对象, SN 对象, 工单对象]
     status: implemented
     visibility: internal
   - id: term.production-object-early-termination
     name: 生产对象提前结束
-    definition: 生产对象处于进行中时由用户主动结束生产，不代表按完整制程正常完工；业务状态统一使用 EARLY_TERMINATED，并保留结束原因。本期确认其关联 DHR 同事务真实终止、保留已保存证据并停止普通执行；运行实现仍待独立验证。工单级主动命令不在本期范围。
+    definition: 生产中对象由用户填写原因主动结束，状态EARLY_TERMINATED，区别于正常完成；同事务终止关联DHR并保留已保存证据，不自动作废表单。对象原目标量仍计工单分配，单批提前结束不自动结束工单。
     aliases: [批次提前结束, 提前结束, early termination]
     status: specified
     visibility: internal
   - id: term.work-order-early-termination
     name: 工单提前结束
-    definition: 工单处于生产中时由用户主动终止剩余生产，不代表全部对象按完整制程正常完成；业务状态统一使用 EARLY_TERMINATED，工单状态机转移及生产对象全部终态后的自动汇总已经实现。用户主动发起的工单级提前结束接口、结束原因，以及对未完成生产对象、活动执行事务和 DHR 的主动级联仍待实现。
+    definition: 用户显式结束工单剩余生产需求的动作，状态EARLY_TERMINATED；要求先将全部子对象处理到终态，存在未开工或生产中批次时阻断，原因必填并保留时间审计。当前CREATED/IN_PROCESS入口集合是本轮工程选择，不主动级联子对象、表单或DHR，区别于正常完成及行政关闭。
     aliases: [生产工单提前结束, 工单强制结束, work order early termination]
     status: specified
     visibility: internal
@@ -650,7 +650,7 @@ terms:
     visibility: internal
   - id: term.work-order-production-object-split-dialog
     name: 工单生产对象拆分弹窗
-    definition: 工单管理页面用于把工单计划数量首次准备为多个 BATCH 或 SN 生产对象的弹窗；候选对象先进入待提交清单，提交后写入生产对象，不负责既有批次的再次拆分。
+    definition: 工单在CREATED或IN_PROCESS时将剩余计划量准备为BATCH或SN对象的弹窗；明确选择候选制程、单个/批量/导入生成待提交清单，每个候选保存自己的制程，最终一次事务提交。后续批次可换版本但形态固定；本入口不负责既有批次再拆分。
     aliases: [工单拆分弹窗, 初始拆分弹窗]
     status: implemented
     visibility: internal
@@ -662,25 +662,25 @@ terms:
     visibility: internal
   - id: term.production-mode
     name: 生产模式
-    definition: 当前首版工单与生产对象支持的生产模式，仅允许量产；其值从所选产品制程版本继承。
+    definition: 当前生产对象所选制程支持的模式，仅允许量产；制程选择归属各对象，工单不以唯一制程作为模式依据。
     aliases: [量产模式]
     status: implemented
     visibility: internal
   - id: term.production-form
     name: 生产形态
-    definition: 产品制程版本定义的对象识别形态，当前只支持 BATCH 和 SN；同一工单的全部生产对象必须使用同一种形态。
+    definition: 制程版本定义的对象识别形态，仅BATCH或SN。同一工单首次拆批确定形态，后续新批和未开工换制程均不得改变，开工时再次核对，取消全部旧对象也不解锁。
     aliases: [批次形态, SN 形态, object type]
     status: implemented
     visibility: internal
   - id: term.batch
     name: 批次
-    definition: 生产形态为 BATCH 的生产对象，可在工单计划数量范围内拆分。当前页面、服务及数据库按目标数量 > 0 校验；这是实现事实，不足以确认 0 < q < 1 的正式业务资格。原结构化规则 >= 1 与正数量表述的差异由 question.production-batch-quantity-lower-bound 待决，不能从本词条选择下限；数量必填、总量边界和已确认的分配及末批余数要求继续适用。
+    definition: 形态为BATCH的生产对象，可在工单计划量内拆分。目标数量必填且大于0，允许0<q<1，包括0.5；仍遵守存储精度及有效分配总量边界。按批次数或每批数量生成保留末批正余数，不擅自丢弃或补足。该下限由2026-10-27用户明确，不再待决。
     aliases: [生产批次]
     status: implemented
     visibility: internal
   - id: term.production-batch-management
     name: 批次管理页面
-    definition: 生产准备阶段面向既有 BATCH 生产对象的列表页面；页面复用 ProductionObject 列表投影，支持整行打开详情及数据审计，操作栏不重复提供查看动作。未开工对象可取消，进行中对象可填写原因后提前结束；DHR 图标对所有批次状态显示并按查看权限及实例存在性给出只读档案或提示，点击不创建 DHR。执行详情和流转单打印仍按各自能力边界提供，不得伪造数据。批次管理 MVP 不提供既有 BATCH 再拆分。
+    definition: 生产准备阶段面向既有BATCH的列表，复用ProductionObject，整行打开详情及数据审计。未开工且无执行实例、所属工单仍允许生产时可编辑制程/数量或取消；生产中可填写原因提前结束。审计显示制程身份与{}配置详情。DHR图标按权限和实例存在性只读查看，点击不创建；既有BATCH再拆分仍不在MVP。
     aliases: [批次列表, 生产批次管理]
     status: implemented
     visibility: internal
@@ -728,13 +728,13 @@ terms:
     visibility: internal
   - id: term.process-version-read-only-preview
     name: 制程版本只读预览
-    definition: 已关联工单制程版本在拆分阶段的只读引用与详情查看能力；不可改写版本选择，可查看版本元数据、工艺路线、批记录模板和工序配置。
-    aliases: [制程版本预览, 锁定制程预览]
+    definition: 查看候选或已选制程元数据、路线、DHR模板及工序配置的只读内容入口。未开工仍可显式更换引用，只读预览不意味着工单锁版。已开工历史使用实际冻结快照，不能凭V1标签读取最新内容。
+    aliases: [制程版本预览, 所选制程预览]
     status: implemented
     visibility: internal
   - id: term.audit-change-snapshot
     name: 审计变更快照
-    definition: 数据审计事件中用于追溯业务变化的变更前和变更后业务字段快照；创建事件的变更前快照为空对象，更新、取消和关闭事件均应保存真实持久化对象变化前后的字段，不得使用方法参数伪造快照。快照持久化继续使用稳定内部字段和值，客户界面通过共享生产审计映射将已知字段、状态、生产形态和时间转换为中文业务展示；该转换不得改写原始快照或其证据完整性。
+    definition: 审计事件用于追溯实际业务变化的前后字段原件；新增前为空，修改保留真实差量，不能由请求参数或当前主数据伪造历史。主视图使用中文字段与状态投影；涉及制程的条目说明引用或冻结状态，首次START保存的实际配置提供{}详情。普通差量事件不重复未变化的身份或整份配置；同V1标签可对应不同冻结内容，应有历史原件但缺失时不回填。
     aliases: [变更前后快照, 审计字段快照]
     status: implemented
     visibility: internal

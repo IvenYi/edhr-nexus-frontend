@@ -43,6 +43,23 @@ public class ProductionObjectController {
     private final AuditEventRepository auditEventRepository;
     private final ObjectMapper objectMapper;
     private final SnowflakeIdGenerator idGenerator;
+    private final com.zencas.edhr.production.service.ExecutionSnapshotBuilder snapshots;
+    private final com.zencas.edhr.production.repository.ProductionExecutionRepository executions;
+
+    @PutMapping("/objects/{id}")
+    @PreAuthorize("hasAnyAuthority('production.work-orders', 'production.batches')")
+    @Transactional
+    public ApiResponse<ProductionObjectResponse> update(@PathVariable Long id, @RequestBody SplitRequest request) {
+        // Lock before reading the audit preimage; all quantity/start paths use order then object.
+        productionService.lockObjectForEdit(id);
+        Map<String, Object> before = productionObjectSnapshot(id);
+        if (request == null) throw new BusinessException(ErrorCode.GENERAL_001, "请填写批次配置");
+        ProductionObject object = productionService.updateObject(id, request.processVersionId(), request.targetQuantity(), request.remark(), request.plannedStartAt(), request.plannedEndAt());
+        WorkOrder order = productionService.requireOrder(object.getWorkOrderId());
+        ProductionObjectResponse response = toResponse(object, order);
+        writeChangedAudit(id, "生产准备 · 批次管理", "修改批次配置", before, productionObjectSnapshot(response, order));
+        return ApiResponse.success(response);
+    }
 
     @GetMapping("/work-orders/{workOrderId}/objects")
     @PreAuthorize("hasAuthority('production.work-orders')")
@@ -53,7 +70,7 @@ public class ProductionObjectController {
     }
 
     @GetMapping("/work-orders/{workOrderId}/process-options")
-    @PreAuthorize("hasAuthority('production.work-orders')")
+    @PreAuthorize("hasAnyAuthority('production.work-orders', 'production.batches')")
     public ApiResponse<List<ProcessOption>> processOptions(@PathVariable Long workOrderId) {
         WorkOrder order = productionService.requireOrder(workOrderId);
         return ApiResponse.success(productionService.processOptions(order).stream().map(this::toOption).toList());
@@ -99,6 +116,7 @@ public class ProductionObjectController {
     @PreAuthorize("hasAnyAuthority('production.work-orders', 'production.batches')")
     @Transactional
     public ApiResponse<ProductionObjectResponse> cancel(@PathVariable Long id) {
+        productionService.lockObjectForEdit(id);
         Map<String, Object> before = productionObjectSnapshot(id);
         ProductionObjectResponse response = responseFor(id, productionService.cancelObject(id));
         writeChangedAudit(id, "生产准备 · 工单管理", "取消生产对象", before, productionObjectSnapshot(response, productionService.requireOrder(Long.valueOf(response.workOrderId()))));
@@ -109,6 +127,7 @@ public class ProductionObjectController {
     @PreAuthorize("hasAuthority('production.batches')")
     @Transactional
     public ApiResponse<ProductionObjectResponse> end(@PathVariable Long id, @RequestBody EndRequest request) {
+        productionService.lockObjectForEdit(id);
         Map<String, Object> before = productionObjectSnapshot(id);
         ProductionObjectResponse response = responseFor(id, productionService.endObject(id, request == null ? null : request.reason()));
         writeChangedAudit(id, "生产准备 · 批次管理", "提前结束批次", before, productionObjectSnapshot(response, productionService.requireOrder(Long.valueOf(response.workOrderId()))));
@@ -149,6 +168,12 @@ public class ProductionObjectController {
         snapshot.put("productCode", response.productCode());
         snapshot.put("processVersionId", response.processVersionId());
         snapshot.put("processVersion", response.processVersion());
+        com.fasterxml.jackson.databind.JsonNode reference = executions.findById(Long.valueOf(response.id())).map(execution -> {
+            try { return objectMapper.readTree(execution.getSnapshotJson()).path("processReference"); }
+            catch (JsonProcessingException exception) { throw new BusinessException(ErrorCode.GENERAL_001, "制程冻结快照无法读取"); }
+        }).orElseGet(() -> snapshots.processReference(Long.valueOf(response.processVersionId())));
+        snapshot.put("processReference", reference);
+        if (reference != null && reference.hasNonNull("processVersion")) snapshot.put("processVersion", reference.path("processVersion").asText());
         snapshot.put("targetQuantity", response.targetQuantity());
         snapshot.put("goodQuantity", response.goodQuantity());
         snapshot.put("ngQuantity", response.ngQuantity());
@@ -195,12 +220,12 @@ public class ProductionObjectController {
         RouteVersion routeVersion = routeVersionRepository.findById(version.getRouteVersionId()).orElse(null);
         DhrTemplateVersion dhrTemplateVersion = dhrTemplateVersionRepository.findById(version.getDhrTemplateVersionId()).orElse(null);
         return new ProcessOption(String.valueOf(version.getId()), version.getVersionLabel(), version.getProductionMode(), version.getProductionForm(),
-                routeVersion == null ? null : routeVersion.getVersion(), dhrTemplateVersion == null ? null : dhrTemplateVersion.getVersionLabel());
+                routeVersion == null ? null : routeVersion.getVersion(), dhrTemplateVersion == null ? null : dhrTemplateVersion.getVersionLabel(), snapshots.processReference(version.getId()));
     }
 
     public record SplitRequest(Long processVersionId, BigDecimal targetQuantity, String objectNo, String remark, LocalDateTime plannedStartAt, LocalDateTime plannedEndAt) {}
     public record BatchSplitRequest(List<SplitRequest> items) {}
     public record EndRequest(String reason) {}
-    public record ProcessOption(String id, String version, String productionMode, String productionForm, String routeVersion, String dhrTemplateVersion) {}
+    public record ProcessOption(String id, String version, String productionMode, String productionForm, String routeVersion, String dhrTemplateVersion, com.fasterxml.jackson.databind.JsonNode processReference) {}
     public record ProductionObjectResponse(String id, String objectNo, String objectType, String workOrderId, String productName, String productCode, String processVersionId, String processVersion, BigDecimal targetQuantity, BigDecimal goodQuantity, BigDecimal ngQuantity, BigDecimal scrapQuantity, String status, String remark, String terminationReason, LocalDateTime terminationAt, LocalDateTime plannedStartAt, LocalDateTime plannedEndAt, LocalDateTime createdAt, LocalDateTime updatedAt, com.fasterxml.jackson.databind.JsonNode output) {}
 }

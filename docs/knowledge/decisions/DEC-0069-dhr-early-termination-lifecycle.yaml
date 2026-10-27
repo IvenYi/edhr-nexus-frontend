@@ -14,7 +14,7 @@ decisions:
       具体数据库、接口、锁及快照存储路径属于 inferred，须由主开发核对实现。
     decisionStatements:
       - id: DEC-0069-01
-        statement: user-confirmed；BATCH/SN 生产对象执行既有“提前结束”时，已关联且仍填报中的 DHR 在同一事务真实进入已终止；任一环节失败全部回滚。终止不是正常完成、表单作废、审核通过或产品放行，不新增工单级直接提前结束命令。
+        statement: user-confirmed；BATCH/SN 生产对象执行“提前结束”时，已关联且仍填报中的 DHR 在同一事务真实进入已终止；任一环节失败全部回滚。终止不是正常完成、表单作废、审核通过或产品放行。工单手动提前结束按2026-10-27修正后的DEC-0018独立执行，必须先处理全部子对象，不级联触发本DHR终止动作；不再把原阶段未新增工单命令解释为当前禁止存在该入口。
         status: specified
         visibility: internal
       - id: DEC-0069-02
@@ -38,7 +38,7 @@ decisions:
         status: specified
         visibility: internal
     supersedes: [DEC-0018, DEC-0062]
-    evidenceIds: [evidence.dhr-termination-user-confirmed, evidence.dhr-termination-design, evidence.dhr-termination-working-tree-source]
+    evidenceIds: [evidence.dhr-termination-user-confirmed, evidence.dhr-termination-design, evidence.dhr-termination-working-tree-source, evidence.batch-process-direct-correction-confirmed]
     acceptanceScenarios:
       - id: scenario.dhr-termination-atomic-transition
         given: BATCH 或 SN 正在生产，关联 DHR 正在填报且不存在汇总草稿或正式版本

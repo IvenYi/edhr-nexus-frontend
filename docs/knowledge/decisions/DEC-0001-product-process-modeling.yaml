@@ -15,7 +15,7 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0001-03
-        statement: 历史初始产品制程建模基线确认生产执行须显式选择具体制程版本，当时工单拆分链路未实现，仅进入内部知识投影。后续 DEC-0012 已确认并提供首次拆分选择、锁定与后续对象继承；不能用本历史交付边界否认该局部实现，也不据此宣称通用规则运行层完成。
+        statement: 历史初始产品制程建模基线确认生产执行须显式选择具体制程版本，当时工单拆分链路未实现，仅进入内部知识投影。当前按2026-10-27直接修正后的DEC-0012，各生产对象创建时分别显式选版，工单不保存或锁定唯一制程；同一工单允许不同版本但生产形态固定。未开工对象可按资格修改引用，首次合法START重核并冻结实际配置，不要求后续对象继承首批版本。保留原始交付时点，不据此宣称通用规则运行层完成。
         status: specified
         visibility: internal
       - id: DEC-0001-04
@@ -39,7 +39,7 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0001-09
-        statement: 历史初始基线提出批次按选定制程版本冻结执行快照，当时未实现。当前对象拆分保存 processVersionId，首次合法 START 构建并保存局部执行快照，DHR 按后续 DEC-0062 同事务创建；产品簇独立冻结与通用规则集版本依据仍有缺口，不能由历史声明或局部实现推定完整运行资格。
+        statement: 历史初始基线提出批次按选定制程版本冻结执行快照，当时未实现。当前对象拆分仅保存显式processVersionId引用，首次合法START重核当前归属、有效期及生产形态，冻结当时制程身份、产品与产品簇依据和实际配置；DHR按DEC-0062同事务保存自身上下文与目录。相同V1标签不保证相同配置，后续主数据变化不回写已开工快照；作业候选实时匹配与实例创建冻结另按DEC-0007处理。通用规则集版本及完整求值证据仍待契约闭环，不由局部实现推定完整运行资格。
         status: specified
         visibility: internal
       - id: DEC-0001-10
@@ -69,6 +69,8 @@ decisions:
       - evidence.product-process-version-editor
       - evidence.process-modeling-page-verification
       - evidence.product-process-controller-test
+      - evidence.batch-process-direct-correction-confirmed
+      - evidence.production-execution-snapshot-builder-source
     acceptanceScenarios:
       - id: scenario.product-derived-from-material
         given: 物料管理中同时存在产成品、半成品和其他类型物料

@@ -1325,7 +1325,6 @@ CREATE TABLE public.work_order (
     tenant_id character varying(64) DEFAULT 'default'::character varying NOT NULL,
     order_no character varying(64) NOT NULL,
     product_id bigint NOT NULL,
-    process_version_id bigint,
     production_mode character varying(32) DEFAULT '量产'::character varying,
     production_form character varying(32),
     planned_quantity numeric(15,4) NOT NULL,
@@ -1337,7 +1336,9 @@ CREATE TABLE public.work_order (
     updated_at timestamp without time zone,
     order_number character varying(64),
     planned_start_at timestamp without time zone,
-    planned_end_at timestamp without time zone
+    planned_end_at timestamp without time zone,
+    termination_reason character varying(500),
+    termination_at timestamp without time zone
 );
 
 CREATE TABLE public.workflow_action_log (
@@ -2131,9 +2132,6 @@ ALTER TABLE ONLY public.serial_number
 
 ALTER TABLE ONLY public.product_process_version
     ADD CONSTRAINT fk_delete_guard_012 FOREIGN KEY (product_process_id) REFERENCES public.product_process(id) ON DELETE RESTRICT;
-
-ALTER TABLE ONLY public.work_order
-    ADD CONSTRAINT fk_delete_guard_013 FOREIGN KEY (process_version_id) REFERENCES public.product_process_version(id) ON DELETE RESTRICT;
 
 ALTER TABLE ONLY public.production_object
     ADD CONSTRAINT fk_delete_guard_014 FOREIGN KEY (process_version_id) REFERENCES public.product_process_version(id) ON DELETE RESTRICT;

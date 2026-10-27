@@ -7,7 +7,7 @@ decisions:
     context: "provenance: user-confirmed（工单需要补上提前结束能力；统一使用 EARLY_TERMINATED；MVP 暂不做既有 BATCH 再拆分及父子谱系查询；两个拆分弹窗分别归属工单初始拆分和批次管理再拆分）；provenance: original-evidence（冠骋批次关闭、批次转 SN、返工子批次、删除和开工源码）。本决策区分已确认的产品边界与后续规划，未将冠骋行为直接视为 eDHR 已实现功能。"
     decisionStatements:
       - id: DEC-0018-01
-        statement: "provenance: user-confirmed；eDHR 工单需要补上生产中的提前结束能力，该能力此前遗漏，并应补入工单状态机和审计语义。"
+        statement: "provenance: user-confirmed；工单提供用户主动的提前结束动作，使用EARLY_TERMINATED并保留结束原因、时间及审计；它不由单个批次提前结束自动触发。"
         status: specified
         visibility: internal
       - id: DEC-0018-01A
@@ -15,11 +15,11 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0018-02
-        statement: "provenance: user-confirmed + original-evidence；工单提前结束按既有级联逻辑由工单级动作发起并要求结束原因：未开工生产对象取消，进行中对象进入提前结束，已正常完成对象保持完成；活动执行事务停止，DHR 不再继续推进，工单进入 EARLY_TERMINATED 后不得继续拆分、开工或推进。具体权限与事务实现属于后续生产执行实现范围。"
+        statement: "provenance: user-confirmed；工单手动提前结束前必须先处理所有子批次：存在CREATED或IN_PROGRESS对象时阻止操作，用户须分别取消未开工对象或按既有规则处理生产中对象。无未结束对象后填写原因才可结束工单；不主动级联取消/终止批次、表单或DHR，已结束子对象保持原状态；工单结束后不得继续拆分或开工。"
         status: specified
         visibility: internal
       - id: DEC-0018-03
-        statement: "provenance: user-confirmed + original-evidence；未开工对象取消后不改变工单计划数量；CANCELLED 对象的 targetQuantity 不计入工单有效分配量。若全部对象均为未开工取消，工单保持 CREATED 并可按首次锁定制程继续拆分，不得误判为 COMPLETED。取消对象保留为逻辑记录并保留数据审计。"
+        statement: "provenance: user-confirmed；未开工对象取消不改变工单计划数量，CANCELLED对象targetQuantity不计有效分配量。全部未开工对象取消时工单保持CREATED，可以重新选择当前适用制程继续拆分，但既定生产形态及曾拆批后的产品身份锁定不解除；对象及审计保留。"
         status: implemented
         visibility: internal
       - id: DEC-0018-04
@@ -43,14 +43,14 @@ decisions:
         status: specified
         visibility: internal
     supersedes: [DEC-0013]
-    evidenceIds: [evidence.production-work-order-entity, evidence.work-order-status-machine, evidence.production-service, evidence.production-object-status-machine, evidence.production-object-entity, evidence.production-object-controller, evidence.production-object-audit-annotations, evidence.audit-controller-action-projection, evidence.guancheng-batch-lifecycle-source, evidence.guancheng-batch-close-source, evidence.guancheng-batch-remove-source, evidence.guancheng-batch-split-source, evidence.guancheng-batch-start-source]
+    evidenceIds: [evidence.production-work-order-entity, evidence.work-order-status-machine, evidence.production-service, evidence.production-object-status-machine, evidence.production-object-entity, evidence.production-object-controller, evidence.production-object-audit-annotations, evidence.audit-controller-action-projection, evidence.guancheng-batch-lifecycle-source, evidence.guancheng-batch-close-source, evidence.guancheng-batch-remove-source, evidence.guancheng-batch-split-source, evidence.guancheng-batch-start-source, evidence.batch-process-direct-correction-confirmed]
     acceptanceScenarios:
       - id: scenario.production-work-order-early-termination
-        given: 工单处于 IN_PROCESS，且至少存在尚未完成的生产对象
-        when: 用户填写结束原因并执行工单提前结束
-        then: 工单进入 EARLY_TERMINATED；未开工对象取消、进行中对象提前结束、已完成对象保持 COMPLETED；后续不得继续拆分或开工，并保留审计
+        given: 工单处于CREATED或IN_PROCESS（入口状态集合为本轮工程选择），所有子对象均为终态且不存在CREATED或IN_PROGRESS对象
+        when: 用户填写原因并执行工单提前结束
+        then: 工单EARLY_TERMINATED并保留原因时间审计，不修改任何子对象；若存在CREATED或IN_PROGRESS对象则阻断，后续不能拆分或开工
         evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.production-object-status-machine, evidence.guancheng-batch-close-source]
-        evidenceRequirements: [工单状态机转移测试, 活动对象级联测试, 结束原因和审计快照测试]
+        evidenceRequirements: [未结束对象阻断测试, 原因必填及审计测试, 子对象无级联变更测试]
       - id: scenario.production-cancel-releases-work-order-allocation
         given: CREATED 或 IN_PROCESS 工单有一个或多个未开工生产对象
         when: 用户取消其中对象或全部对象
@@ -82,15 +82,15 @@ decisions:
         visibility: internal
         path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/engine/WorkOrderStatusMachine.java
         lineHint: 8
-        summary: "provenance: original-evidence；工单状态机已实现 IN_PROCESS->EARLY_TERMINATED，ProductionService 在生产对象提前结束且关联对象全部进入终态后将工单自动汇总为 EARLY_TERMINATED，并已有聚焦测试验证。该修复只关闭原状态机及对象终态汇总缺口，不表示用户主动工单级提前结束命令已经实现。"
+        summary: "provenance: original-evidence + user-confirmed；状态机IN_PROCESS->EARLY_TERMINATED已有实现，该原缺口关闭。2026-10-27直接撤销全部对象终态且存在提前结束对象时的自动联动，改为独立工单命令；状态机存在不等于命令与审计已经验收。"
         evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.production-service-test]
       - id: discrepancy.production-work-order-early-termination-command-not-implemented
-        status: open
+        status: resolved
         severity: high
         visibility: internal
         path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java
         lineHint: 98
-        summary: "provenance: original-evidence；用户主动发起的工单级提前结束命令仍未实现：当前没有工单提前结束 endpoint 和工单结束原因字段，也未实现该命令对未开工对象 CANCELLED、进行中对象 EARLY_TERMINATED 的主动级联，以及活动执行事务停止和 DHR 不再推进的联动。对象提前结束后的工单终态自动汇总不能替代该命令链路。"
+        summary: "provenance: original-evidence；本轮WorkOrderController.end和ProductionService.endOrder已新增显式命令，原因及时间持久化、无未结束子对象校验、不主动级联，并写审计。CREATED/IN_PROCESS入口集合属于工程落实；状态机、数据库及运行验收取本轮证据，不能由旧对象自动汇总替代。"
         evidenceIds: [evidence.work-order-controller, evidence.production-service, evidence.production-service-test, evidence.production-object-early-termination-gap]
       - id: discrepancy.production-batch-resplit-not-mvp
         status: accepted

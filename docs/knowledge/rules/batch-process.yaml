@@ -1,0 +1,71 @@
+knowledgeModelVersion: 0.3.25
+rules:
+  - id: rule.production.unstarted-object-edit
+    name: 未开工生产对象可按资格修改制程和数量
+    status: specified
+    visibility: internal
+    trigger: production-object.update
+    scope: production-object
+    condition:
+      all:
+        - fact: productionObject.status
+          operator: equals
+          value: CREATED
+        - fact: productionObject.executionExists
+          operator: equals
+          value: false
+        - fact: workOrder.status
+          operator: in
+          value: [CREATED, IN_PROCESS]
+    result:
+      type: allow-with-governance
+      editableFields: [processVersionId, targetQuantity, plannedStartAt, plannedEndAt, remark]
+      requiredConstraints: [current-applicability, same-production-form, positive-quantity, within-order-allocation, audit-before-after]
+      frozenAfterFirstStart: true
+    explanation: 判断本批次是否开工，同工单其他批次已生产不阻止它编辑。已取消、已开工或所属工单终态时不能修改；检查执行实例防止仅靠状态绕过。数量增加不超过剩余额度，计划量不自动改变，过程与审计同事务。
+    evidenceIds: [evidence.batch-process-direct-correction-confirmed, evidence.production-service, evidence.production-object-controller]
+  - id: rule.production.work-order-edit-field-boundary
+    name: 已创建工单按是否曾拆批限制可编辑字段
+    status: specified
+    visibility: internal
+    trigger: work-order.update
+    scope: work-order
+    condition:
+      all:
+        - fact: workOrder.status
+          operator: equals
+          value: CREATED
+        - fact: workOrder.productionObjectCount
+          operator: greater-than-or-equal
+          value: 1
+    result:
+      type: allow-with-governance
+      readOnlyFields: [productId, orderNo]
+      editableFields: [orderNumber, plannedQuantity, plannedStartAt, plannedEndAt, remark]
+      requiredConstraints: [plan-not-below-effective-allocation, audit-before-after]
+    explanation: CREATED无对象可按原校验编辑；存在过任何批次后即使全部取消，产品和工单编号仍固定。其他字段可编辑但计划量不得低于非取消目标合计；IN_PROCESS及终态不开放工单编辑。所有允许的编辑都保留数据审计。
+    evidenceIds: [evidence.batch-process-direct-correction-confirmed, evidence.work-order-controller]
+  - id: rule.production.process-snapshot-audit-detail
+    name: 批次审计区分制程引用和实际冻结配置
+    status: specified
+    visibility: internal
+    trigger: production-object.audit.write-or-display
+    scope: production-object-audit
+    condition:
+      all:
+        - fact: audit.entityType
+          operator: equals
+          value: PRODUCTION_OBJECT
+    result:
+      type: write-audit-record
+      auditStorageMode: creation-fields-and-update-delta
+      processIdentityRequiredContexts: [production-object-create, process-reference-change, first-legal-start, process-reference-display]
+      processReferenceFields: [ownerType, ownerId, ownerName, processVersionId, processVersion]
+      frozenAtFirstStart: true
+      firstStartSnapshotFields: [processSnapshot, processFrozenAt]
+      explicitSnapshotDetailWhen: persisted-processSnapshot-present
+      repeatProcessSnapshotOnUnrelatedUpdate: false
+      historySource: persisted-audit-event
+      reconstructHistoryFromCurrentMasterData: false
+    explanation: 创建审计包含制程引用，制程引用变更按真实差量记录前后身份；首次合法START另保存processReference、实际processSnapshot和processFrozenAt。展示涉及制程的条目时说明归属和版本，实际保存了processSnapshot的条目提供{}详情；未开工引用须明确未冻结。普通数量修改、取消或COMPLETED等无制程变化的事件只保留真实变化字段，不要求每条重复制程身份或整份配置，也不把普通差量事件未带快照误报为历史缺失。同V1标签不是同内容保证；首次冻结原件不含后续动态匹配作业，应有历史原件但缺失时不从当前主数据补造。
+    evidenceIds: [evidence.batch-process-direct-correction-confirmed, evidence.production-object-audit-snapshot-controller, evidence.production-execution-service-source, evidence.production-audit-localized-formatter]

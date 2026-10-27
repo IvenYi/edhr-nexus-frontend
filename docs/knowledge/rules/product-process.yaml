@@ -422,8 +422,9 @@ rules:
     result:
       type: require-explicit-process-version
       target: production-batch
-    explanation: 该 specified/internal 记录保留初始显式选择意图。当前 DEC-0012 及 ProductionService.split/requireProcessVersion 要求工单首次拆分选择可用的产品或产品簇制程版本并锁定；后续对象继承同一引用，不要求每次重复选择。对象已保存 processVersionId，首次 START 消费该引用。此局部实现不表示本历史规则已经注册为通用执行契约。
+    explanation: 每个对象创建时显式选择当前适用的产品制程或产品簇兜底版本；工单不保存唯一版本。未开工可按资格换版，首次合法START冻结当时配置，同一工单可用不同版本但不能混用生产形态。
     evidenceIds:
+    - evidence.batch-process-direct-correction-confirmed
     - evidence.business-knowledge-model
     - evidence.production-service
   - id: rule.product-process.available-version-window
@@ -513,11 +514,11 @@ rules:
     explanation: 制程解析服务发现产品和所属产品簇都没有按 RdoVersionStatusResolver 判定为可用的制程版本时，阻断解析。
     evidenceIds: [evidence.product-process-resolution-service, evidence.product-process-resolution-service-test]
   - id: rule.product-family.member-transfer-future-only
-    name: 产品簇成员转移只影响未来生产对象
+    name: 产品簇转移按对象是否开工确定制程边界
     status: specified
     visibility: internal
     trigger: product-family.member.transfer
-    scope: product-family-membership-and-production
+    scope: product-family-membership-and-production-process
     condition:
       all:
         - fact: product.currentProductFamily
@@ -528,10 +529,13 @@ rules:
           value: true
     result:
       type: persist-version-references
-      appliesTo: future-production-objects
-      existingProductionObjectsUnchanged: true
-    explanation: 转移产品簇只影响未来创建的生产对象，已存在的生产对象不因成员关系变化而重算产品簇或制程。
-    evidenceIds: []
+      appliesTo: new-or-unstarted-production-objects
+      affectedContext: production-process
+      excludedContexts: [production-work-applicability-candidates]
+      startedExecutionSnapshotsUnchanged: true
+      unstartedReferencesRevalidatedAtStart: true
+    explanation: 新对象按当前归属选择；旧未开工对象保留原引用，首次开工按当前归属、有效期和形态重核，不适用须明确重选，不自动迁移。已开工制程快照不变。作业后续候选独立按当前簇匹配，已有实例保留，已过站不补做。
+    evidenceIds: [evidence.batch-process-direct-correction-confirmed]
   - id: rule.product-family.member-transfer-audit
     name: 产品簇成员转移需要事务确认和审计
     status: implemented
@@ -571,8 +575,9 @@ rules:
       type: freeze-execution-snapshot
       source: selected-product-process-version
       fields: [productId, productFamilyId, selectedProductProcessVersionId, configurationSnapshot]
-    explanation: 规范要求保存产品、产品簇、所选制程和配置依据。当前对象创建保存 processVersionId，首次合法 START 才冻结局部执行配置；快照包含匹配作业规则的所选字段、当前已发布作业版本和图，并非完全没有规则快照。但尚未保存独立 productFamilyId，首次 START 仍读取当前成员关系，见 discrepancy.product-family-transfer-unstarted-object-context。result.fields 是应满足的冻结要求，不能作为所有字段已持久化的证据；本记录保持 specified/internal，通用规则集版本依据另行建设。
+    explanation: 未开工仅保存引用，允许同一版本配置原地变化；首次合法START重核后冻结当时制程身份、产品/产品簇依据、路线、工序表单和文档等实际配置。同为V1的不同批次可有不同快照，历史解释不能回读最新主数据；作业实例在各工序START创建时单独冻结，既有实例保持、已过站不补做。
     evidenceIds:
+    - evidence.batch-process-direct-correction-confirmed
     - evidence.production-service
     - evidence.production-execution-snapshot-builder-source
     - evidence.product-family-membership-service

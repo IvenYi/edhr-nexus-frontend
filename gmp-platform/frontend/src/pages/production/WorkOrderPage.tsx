@@ -37,6 +37,7 @@ import {
 } from '@mui/material';
 import {
   Add,
+  StopCircleOutlined,
   Cancel,
   Check,
   Close,
@@ -58,16 +59,18 @@ import {
 import * as XLSX from 'xlsx';
 import ExcelJS from 'exceljs';
 import AppDialog from '@/components/AppDialog';
+import ProductionObjectEditDialog from '@/components/ProductionObjectEditDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { ListTableShell } from '@/components/ListTableShell';
 import StatusBadge from '@/components/StatusBadge';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import { getAuditLogs, type AuditLogItem } from '@/api/audit';
-import { getProductModelingProducts, getProductModelWorkspace, type ProductModelSource, type ProductProcessVersion } from '@/api/product-modeling';
+import { getProductModelingProducts, getProcessOwnerWorkspace, type ProcessOwnerType, type ProductModelSource, type ProductProcessVersion } from '@/api/product-modeling';
 import {
   cancelProductionObject,
   cancelWorkOrder,
   closeWorkOrder,
+  endWorkOrder,
   completeProductionObject,
   createWorkOrder,
   listProductionObjects,
@@ -91,18 +94,17 @@ import ListColumnSettingsPopover, {
 } from '@/components/ListColumnSettingsPopover';
 
 const PAGE_SIZE_OPTIONS = [20, 50, 100, 200] as const;
-const WORK_ORDER_COLUMN_SETTINGS_VERSION = 1;
+const WORK_ORDER_COLUMN_SETTINGS_VERSION = 2;
 const WORK_ORDER_COLUMN_SETTINGS_PREFIX = 'production-work-order-columns:';
 const WORK_ORDER_COLUMN_WIDTHS_PREFIX = 'production-work-order-column-widths:';
-const WORK_ORDER_ACTION_COLUMN_WIDTH = 128;
+const WORK_ORDER_ACTION_COLUMN_WIDTH = 160;
 const PENDING_OBJECT_ACTION_COLUMN_WIDTH = 64;
-type WorkOrderColumnId = 'orderNo' | 'product' | 'processVersion' | 'productionMode' | 'productionForm' | 'plannedQuantity' | 'output' | 'createdAt' | 'status';
+type WorkOrderColumnId = 'orderNo' | 'product' | 'productionMode' | 'productionForm' | 'plannedQuantity' | 'output' | 'createdAt' | 'status';
 type WorkOrderColumn = ListColumnOption<WorkOrderColumnId> & { width: number; minWidth: number };
 type WorkOrderColumnWidths = Partial<Record<WorkOrderColumnId, number>>;
 const WORK_ORDER_COLUMNS: WorkOrderColumn[] = [
   { id: 'orderNo', label: '工单号', width: 180, minWidth: 140 },
   { id: 'product', label: '产品', width: 190, minWidth: 160 },
-  { id: 'processVersion', label: '制程版本', width: 120, minWidth: 110 },
   { id: 'productionMode', label: '生产模式', width: 104, minWidth: 96 },
   { id: 'productionForm', label: '生产形态', width: 104, minWidth: 96 },
   { id: 'plannedQuantity', label: '计划数量', width: 110, minWidth: 96 },
@@ -110,7 +112,6 @@ const WORK_ORDER_COLUMNS: WorkOrderColumn[] = [
   { id: 'createdAt', label: '创建时间', width: 164, minWidth: 148 },
   { id: 'status', label: '状态', width: 104, minWidth: 96, fixed: true },
 ];
-const QUICK_ADD_PROCESS_VERSION = '__quick_add_process_version__';
 const statusLabels: Record<string, string> = {
   CREATED: '已创建',
   IN_PROCESS: '生产中',
@@ -175,7 +176,6 @@ interface WorkOrderForm {
   orderNo: string;
   orderNumber: string;
   productId: string;
-  processVersionId: string;
   plannedQuantity: string;
   plannedStartAt: string;
   plannedEndAt: string;
@@ -191,7 +191,7 @@ interface AuditRecord {
   afterFields: ProductionAuditField[];
 }
 
-const emptyForm = (): WorkOrderForm => ({ orderNo: '', orderNumber: '', productId: '', processVersionId: '', plannedQuantity: '', plannedStartAt: '', plannedEndAt: '', remark: '' });
+const emptyForm = (): WorkOrderForm => ({ orderNo: '', orderNumber: '', productId: '', plannedQuantity: '', plannedStartAt: '', plannedEndAt: '', remark: '' });
 
 function formatDateTime(value?: string | null) {
   if (!value) return '-';
@@ -276,7 +276,7 @@ function WorkOrderDetailDrawer({ open, order, tab, onTabChange, auditRecords, au
           <DetailSection title="工单信息"><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.75 }}>
             <DetailField label="工单编号">{order.orderNo}</DetailField><DetailField label="订单编号">{order.orderNumber}</DetailField>
             <DetailField label="产品名称">{order.productName}</DetailField><DetailField label="产品编码">{order.productCode}</DetailField>
-            <DetailField label="制程版本">{order.processVersion}</DetailField><DetailField label="生产模式">{order.productionMode}</DetailField>
+            <DetailField label="生产模式">{order.productionMode}</DetailField>
             <DetailField label="生产形态">{formLabels[order.productionForm || ''] || order.productionForm}</DetailField><DetailField label="计划数量">{order.plannedQuantity}</DetailField>
             <DetailField label="计划开始时间">{formatDateTime(order.plannedStartAt)}</DetailField><DetailField label="计划结束时间">{formatDateTime(order.plannedEndAt)}</DetailField>
             <DetailField label="工单状态">{statusBadge(order.status, statusLabels)}</DetailField><DetailField label="备注">{order.remark}</DetailField>
@@ -296,14 +296,6 @@ function WorkOrderDetailDrawer({ open, order, tab, onTabChange, auditRecords, au
 
 function ProcessVersionOption({ version }: { version: ProductProcessVersion | ProcessOption }) {
   return <Box sx={{ py: 0.25 }}><Typography variant="body2" sx={{ color: '#303133' }}>{version.version}</Typography><Typography variant="caption" display="block" sx={{ color: '#909399' }}>工艺路线版本：{version.routeVersion || '-'}</Typography><Typography variant="caption" display="block" sx={{ color: '#909399' }}>DHR模板版本：{version.dhrTemplateVersion || '-'}</Typography></Box>;
-}
-
-function ProcessVersionValue({ version }: { version: ProductProcessVersion | undefined }) {
-  if (!version) return null;
-  return <Typography variant="body2" noWrap sx={{ color: '#303133', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-    {version.version}
-    <Typography component="span" variant="caption" sx={{ ml: 1, color: '#909399' }}>工艺路线 {version.routeVersion || '-'} · DHR模板 {version.dhrTemplateVersion || '-'}</Typography>
-  </Typography>;
 }
 
 function ProcessVersionPreviewDialog({ open, version, loading, error, onClose }: {
@@ -357,6 +349,9 @@ export default function WorkOrderPage() {
   const [detailTab, setDetailTab] = useState(0);
   const [cancelTarget, setCancelTarget] = useState<WorkOrder | null>(null);
   const [cancelObject, setCancelObject] = useState<ProductionObject | null>(null);
+  const [editObject, setEditObject] = useState<ProductionObject | null>(null);
+  const [endTarget, setEndTarget] = useState<WorkOrder | null>(null);
+  const [endReason, setEndReason] = useState('');
   const [closeTarget, setCloseTarget] = useState<WorkOrder | null>(null);
   const [form, setForm] = useState<WorkOrderForm>(emptyForm);
   const [splitForm, setSplitForm] = useState({ processVersionId: '', targetQuantity: '', objectNo: '', remark: '', plannedStartAt: '', plannedEndAt: '' });
@@ -410,13 +405,14 @@ export default function WorkOrderPage() {
     if (page > lastPage) setPage(lastPage);
   }, [orders.data?.totalPages, page]);
   const products = useQuery({ queryKey: ['work-order-products'], queryFn: async () => (await getProductModelingProducts({ page: 1, size: 500, status: 'ACTIVE' })).data.data as PageResult<ProductModelSource> });
-  const process = useQuery({ queryKey: ['work-order-process', form.productId], enabled: Boolean(form.productId), queryFn: async () => (await getProductModelWorkspace(form.productId)).data.data });
   const objects = useQuery({ queryKey: ['production-objects', objectOrder?.id], enabled: Boolean(objectOrder), queryFn: async () => (await listProductionObjects(objectOrder!.id)).data.data });
   const processOptions = useQuery({ queryKey: ['production-process-options', objectOrder?.id], enabled: Boolean(objectOrder), queryFn: async () => (await listProcessOptions(objectOrder!.id)).data.data });
+  const selectedProcess = (processOptions.data ?? []).find((option) => option.id === splitForm.processVersionId);
+  const previewOwner = selectedProcess?.processReference;
   const processPreviewQuery = useQuery({
-    queryKey: ['production-process-preview', objectOrder?.productId],
-    enabled: Boolean(objectOrder && processPreviewOpen && objectOrder.productId),
-    queryFn: async () => (await getProductModelWorkspace(objectOrder!.productId)).data.data,
+    queryKey: ['production-process-preview', previewOwner?.ownerType, previewOwner?.ownerId],
+    enabled: Boolean(processPreviewOpen && previewOwner),
+    queryFn: async () => (await getProcessOwnerWorkspace(previewOwner!.ownerType as ProcessOwnerType, previewOwner!.ownerId)).data.data,
   });
   const auditQuery = useQuery({
     queryKey: ['work-order-audit', detailOrder?.id],
@@ -430,7 +426,7 @@ export default function WorkOrderPage() {
 
   const save = useMutation({
     mutationFn: () => {
-      const body = { orderNo: form.orderNo.trim(), orderNumber: form.orderNumber.trim() || null, productId: form.productId, processVersionId: form.processVersionId || null, plannedQuantity: Number(form.plannedQuantity), plannedStartAt: form.plannedStartAt || null, plannedEndAt: form.plannedEndAt || null, remark: form.remark.trim() };
+      const body = { orderNo: form.orderNo.trim(), orderNumber: form.orderNumber.trim() || null, productId: form.productId, plannedQuantity: Number(form.plannedQuantity), plannedStartAt: form.plannedStartAt || null, plannedEndAt: form.plannedEndAt || null, remark: form.remark.trim() };
       return editing ? updateWorkOrder(editing.id, body) : createWorkOrder(body);
     },
     onSuccess: () => { void client.invalidateQueries({ queryKey: ['work-orders'] }); setDialogOpen(false); showMessage(editing ? '工单更新成功' : '工单创建成功'); },
@@ -443,7 +439,7 @@ export default function WorkOrderPage() {
   });
   const split = useMutation({
     mutationFn: () => splitProductionObjectsBatch(objectOrder!.id, pendingObjects.map((item) => ({ processVersionId: item.processVersionId || null, targetQuantity: Number(item.targetQuantity), objectNo: item.objectNo.trim() || undefined, remark: item.remark.trim() || undefined, plannedStartAt: item.plannedStartAt || null, plannedEndAt: item.plannedEndAt || null }))),
-    onSuccess: (response) => { const created = response.data.data[0]; setObjectOrder((current) => current ? { ...current, processVersionId: created.processVersionId, processVersion: created.processVersion, productionForm: created.objectType } : current); void client.invalidateQueries({ queryKey: ['production-objects', objectOrder?.id] }); void client.invalidateQueries({ queryKey: ['work-orders'] }); setPendingObjects([]); setSplitForm((current) => ({ ...current, processVersionId: created.processVersionId, targetQuantity: '', objectNo: '', remark: '', plannedStartAt: '', plannedEndAt: '' })); showMessage(`已添加 ${response.data.data.length} 个生产对象`); },
+    onSuccess: (response) => { const created = response.data.data[0]; setObjectOrder((current) => current ? { ...current, hasObjects: true, productionForm: created.objectType } : current); void client.invalidateQueries({ queryKey: ['production-objects', objectOrder?.id] }); void client.invalidateQueries({ queryKey: ['work-orders'] }); setPendingObjects([]); setSplitForm((current) => ({ ...current, processVersionId: created.processVersionId, targetQuantity: '', objectNo: '', remark: '', plannedStartAt: '', plannedEndAt: '' })); showMessage(`已添加 ${response.data.data.length} 个生产对象`); },
     onError: (error: unknown) => showMessage(error instanceof Error ? error.message : '生产对象创建失败', 'error'),
   });
   const objectAction = useMutation({
@@ -457,21 +453,20 @@ export default function WorkOrderPage() {
     onError: (error: any) => showMessage(error?.response?.data?.message || '工单关闭失败', 'error'),
   });
 
-  const versions: ProductProcessVersion[] = process.data?.model?.versions ?? [];
-  const activeVersions = versions.filter((version) => version.status === 'ACTIVE');
+  const endOrder = useMutation({ mutationFn: () => endWorkOrder(endTarget!.id, endReason.trim()), onSuccess: () => { void client.invalidateQueries({ queryKey: ['work-orders'] }); setEndTarget(null); setEndReason(''); showMessage('工单已提前结束'); } });
   const showOrderTableState = orders.isLoading || orders.isError || !orders.data?.content.length;
   const selectedProduct = (products.data?.content ?? []).find((product) => String(product.id) === form.productId);
   const objectRows = objects.data ?? [];
-  const allocated = objectRows.filter((item) => item.status !== 'CANCELLED').reduce((sum, item) => sum + Number(item.targetQuantity), 0);
-  const remaining = Math.max(0, Number(objectOrder?.plannedQuantity || 0) - allocated);
-  const pendingAllocated = pendingObjects.reduce((sum, item) => sum + Number(item.targetQuantity || 0), 0);
-  const availableRemaining = Math.max(0, remaining - pendingAllocated);
+  const allocated = Math.round(objectRows.filter((item) => item.status !== 'CANCELLED').reduce((sum, item) => sum + Number(item.targetQuantity), 0) * 10000) / 10000;
+  const remaining = Math.max(0, Math.round((Number(objectOrder?.plannedQuantity || 0) - allocated) * 10000) / 10000);
+  const pendingAllocated = Math.round(pendingObjects.reduce((sum, item) => sum + Number(item.targetQuantity || 0), 0) * 10000) / 10000;
+  const availableRemaining = Math.max(0, Math.round((remaining - pendingAllocated) * 10000) / 10000);
   const canSplit = Boolean(objectOrder && ['CREATED', 'IN_PROCESS'].includes(objectOrder.status));
   const endBeforeStart = Boolean(form.plannedStartAt && form.plannedEndAt && form.plannedEndAt < form.plannedStartAt);
   const canSave = Boolean(form.orderNo.trim() && form.productId && Number(form.plannedQuantity) > 0 && !endBeforeStart && !save.isPending);
 
   const openCreate = () => { setEditing(null); setForm(emptyForm()); setDialogOpen(true); };
-  const openEdit = (item: WorkOrder) => { setEditing(item); setForm({ orderNo: item.orderNo, orderNumber: item.orderNumber || '', productId: item.productId, processVersionId: item.processVersionId || '', plannedQuantity: String(item.plannedQuantity), plannedStartAt: toInputDateTime(item.plannedStartAt), plannedEndAt: toInputDateTime(item.plannedEndAt), remark: item.remark || '' }); setDialogOpen(true); };
+  const openEdit = (item: WorkOrder) => { setEditing(item); setForm({ orderNo: item.orderNo, orderNumber: item.orderNumber || '', productId: item.productId, plannedQuantity: String(item.plannedQuantity), plannedStartAt: toInputDateTime(item.plannedStartAt), plannedEndAt: toInputDateTime(item.plannedEndAt), remark: item.remark || '' }); setDialogOpen(true); };
   const openDetail = (item: WorkOrder) => { setDetailOrder(item); setDetailTab(0); };
   useRecordLocationAction((location) => {
     if (location.type !== 'production_object') return false;
@@ -480,13 +475,18 @@ export default function WorkOrderPage() {
     setObjectOrder(order);
     return true;
   });
-  const openObjects = (item: WorkOrder) => { setObjectOrder(item); setProcessPreviewOpen(false); setSplitTab(0); setBatchAddType('count'); setPendingObjects([]); setSplitForm({ processVersionId: item.processVersionId || '', targetQuantity: '', objectNo: '', remark: '', plannedStartAt: '', plannedEndAt: '' }); };
-  const selectedProcess = (processOptions.data ?? []).find((option) => option.id === splitForm.processVersionId);
+  const openObjects = (item: WorkOrder) => { setObjectOrder(item); setProcessPreviewOpen(false); setSplitTab(0); setBatchAddType('count'); setPendingObjects([]); setSplitForm({ processVersionId: '', targetQuantity: '', objectNo: '', remark: '', plannedStartAt: '', plannedEndAt: '' }); };
   const selectedProductionMode = selectedProcess?.productionMode || objectOrder?.productionMode || '';
   const selectedProductionForm = selectedProcess?.productionForm || objectOrder?.productionForm || '';
   const isMassNonSn = selectedProductionMode === '量产' && ['BATCH', '批次'].includes(selectedProductionForm);
   const isSnProduction = selectedProductionForm === 'SN';
-  const previewVersion = processPreviewQuery.data?.model?.versions.find((version) => version.id === objectOrder?.processVersionId);
+  const fixedProductionForm = objectOrder?.productionForm || (processOptions.data ?? []).find((option) => option.id === pendingObjects[0]?.processVersionId)?.productionForm;
+  const batchInput = Number(splitForm.targetQuantity);
+  const validBatchInput = Number.isFinite(batchInput) && batchInput > 0 && availableRemaining > 0 &&
+    (isSnProduction || batchAddType === 'count'
+      ? Number.isInteger(batchInput) && batchInput <= (isSnProduction ? availableRemaining : Math.round(availableRemaining * 10000))
+      : Number(batchInput.toFixed(4)) === batchInput);
+  const previewVersion = processPreviewQuery.data?.model?.versions.find((version) => version.id === splitForm.processVersionId);
   const addPendingObject = () => {
     const targetQuantity = isSnProduction ? 1 : Number(splitForm.targetQuantity);
     if (!splitForm.processVersionId || targetQuantity <= 0 || targetQuantity > availableRemaining) return;
@@ -498,12 +498,12 @@ export default function WorkOrderPage() {
   };
   const addPendingBatch = () => {
     const input = Number(splitForm.targetQuantity);
-    const count = isSnProduction || batchAddType === 'count' ? Math.floor(input) : Math.ceil(availableRemaining / input);
-    if (!splitForm.processVersionId || !Number.isFinite(input) || input <= 0 || count < 1 || ((isSnProduction || batchAddType === 'count') && count > availableRemaining)) return;
-    const baseQuantity = batchAddType === 'quantity' && !isSnProduction ? input : Math.floor(availableRemaining / count);
+    if (!splitForm.processVersionId || !validBatchInput) return;
+    const count = isSnProduction || batchAddType === 'count' ? input : Math.ceil(Math.round(availableRemaining * 10000) / Math.round(input * 10000));
+    const baseQuantity = batchAddType === 'quantity' && !isSnProduction ? input : Math.floor(Math.round(availableRemaining * 10000) / count) / 10000;
     const next = Array.from({ length: count }, (_, index) => ({
       ...splitForm,
-      targetQuantity: isSnProduction ? '1' : String(index === count - 1 ? availableRemaining - (baseQuantity * (count - 1)) : baseQuantity),
+      targetQuantity: isSnProduction ? '1' : String(index === count - 1 ? Math.round((availableRemaining - (baseQuantity * (count - 1))) * 10000) / 10000 : baseQuantity),
       objectNo: splitForm.objectNo.trim() ? `${splitForm.objectNo.trim()}-${String(index + 1).padStart(3, '0')}` : '',
     }));
     const duplicateObject = next.find((item) => item.objectNo && (pendingObjects.some((existing) => existing.objectNo.trim() === item.objectNo) || objectRows.some((existing) => existing.objectNo.trim() === item.objectNo)));
@@ -630,10 +630,10 @@ export default function WorkOrderPage() {
       link.remove();
     }, 0);
   };
-  const processVersionFor = (id: string) => (processOptions.data ?? []).find((option) => option.id === id)?.version || (id === objectOrder?.processVersionId ? objectOrder.processVersion : '-');
-  const pendingTable = <TableContainer sx={{ maxHeight: { xs: 260, lg: 330 }, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ minWidth: 860 }}><TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{[isSnProduction ? 'SN编号' : '批次号', '状态', '制程版本', '数量', '计划开始', '计划结束', '备注', '操作'].map((label) => <TableCell key={label} align={label === '操作' ? 'center' : undefined} sx={label === '操作' ? { width: PENDING_OBJECT_ACTION_COLUMN_WIDTH, minWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH, maxWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH } : undefined}>{label}</TableCell>)}</TableRow></TableHead><TableBody>{pendingObjects.length === 0 ? <TableRow><TableStateCell colSpan={8} align="center" sx={{ height: 120, color: '#909399' }}>暂无待提交{isSnProduction ? 'SN' : '批次'}</TableStateCell></TableRow> : pendingObjects.map((item, index) => <TableRow key={`${item.objectNo}-${index}`} sx={{ ...tableRowSx, bgcolor: '#fffaf0' }}><TableCell>{item.objectNo || '系统生成'}</TableCell><TableCell><StatusBadge label="待提交" color="warning" /></TableCell><TableCell>{processVersionFor(item.processVersionId)}</TableCell><TableCell>{item.targetQuantity}</TableCell><TableCell>{item.plannedStartAt ? formatDateTime(item.plannedStartAt) : '-'}</TableCell><TableCell>{item.plannedEndAt ? formatDateTime(item.plannedEndAt) : '-'}</TableCell><TableCell sx={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.remark || '-'}</TableCell><TableCell align="center" sx={{ width: PENDING_OBJECT_ACTION_COLUMN_WIDTH, minWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH, maxWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH }}><Tooltip title="移除" arrow><IconButton size="small" aria-label="移除待添加批次" onClick={() => setPendingObjects((current) => current.filter((_, rowIndex) => rowIndex !== index))}><DeleteOutline fontSize="small" /></IconButton></Tooltip></TableCell></TableRow>)}</TableBody></Table></TableContainer>;
-  const objectTable = <TableContainer sx={{ maxHeight: { xs: 360, lg: 460 }, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ minWidth: 1060 }}><TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{[isSnProduction ? 'SN编号' : '批次号', '状态', '制程版本', '数量', '累计产出', '良品', 'NG', '产品报废登记', '计划开始', '计划结束', '备注'].map((label) => <TableCell key={label}>{label}</TableCell>)}</TableRow></TableHead><TableBody>{objects.isLoading ? <TableRow><TableStateCell colSpan={11} align="center" sx={{ height: 160 }}><CircularProgress size={24} /></TableStateCell></TableRow> : objects.isError ? <TableRow><TableStateCell colSpan={11} align="center" sx={{ height: 160, color: '#c62828' }}>生产对象加载失败</TableStateCell></TableRow> : objectRows.length === 0 ? <TableRow><TableStateCell colSpan={11} align="center" sx={{ height: 160, color: '#909399' }}>暂无已拆分{isSnProduction ? 'SN' : '批次'}</TableStateCell></TableRow> : objectRows.map((item) => <TableRow data-record-id={item.id} key={item.id} sx={tableRowSx}><TableCell>{item.objectNo}</TableCell><TableCell>{statusBadge(item.status, objectStatusLabels)}</TableCell><TableCell>{item.processVersion}</TableCell><TableCell>{item.targetQuantity}</TableCell><TableCell><ProductionOutputValue output={item.output} /></TableCell><TableCell><ProductionOutputValue output={item.output?.quality?.goodQuantity} label="批次良品" /></TableCell><TableCell><ProductionOutputValue output={item.output?.quality?.ngQuantity} label="批次不良品" /></TableCell><TableCell><ProductionOutputValue output={item.output?.quality?.scrapQuantity} label="产品报废登记" /></TableCell><TableCell>{item.plannedStartAt ? formatDateTime(item.plannedStartAt) : '-'}</TableCell><TableCell>{item.plannedEndAt ? formatDateTime(item.plannedEndAt) : '-'}</TableCell><TableCell sx={{ maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.remark || '-'}</TableCell></TableRow>)}</TableBody></Table></TableContainer>;
-  const selectProduct = (productId: string) => setForm((current) => ({ ...current, productId, processVersionId: '' }));
+  const processVersionFor = (id: string) => (processOptions.data ?? []).find((option) => option.id === id)?.version || '-';
+  const pendingTable = <TableContainer sx={{ maxHeight: { xs: 260, lg: 330 }, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ minWidth: 610 }}><TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{[isSnProduction ? 'SN编号' : '批次号', '制程版本', '数量', '计划时间', '备注', '操作'].map((label) => <TableCell key={label} align={label === '操作' ? 'center' : undefined} sx={label === '操作' ? { width: PENDING_OBJECT_ACTION_COLUMN_WIDTH, minWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH, maxWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH } : undefined}>{label}</TableCell>)}</TableRow></TableHead><TableBody>{pendingObjects.length === 0 ? <TableRow><TableStateCell colSpan={6} align="center" sx={{ height: 120, color: '#909399' }}>暂无待提交{isSnProduction ? 'SN' : '批次'}</TableStateCell></TableRow> : pendingObjects.map((item, index) => <TableRow key={`${item.objectNo}-${index}`} sx={{ ...tableRowSx, bgcolor: '#fffaf0' }}><TableCell>{item.objectNo || '系统生成'}</TableCell><TableCell>{processVersionFor(item.processVersionId)}</TableCell><TableCell>{item.targetQuantity}</TableCell><TableCell sx={{ whiteSpace: 'nowrap', fontSize: 12 }}><Box>{item.plannedStartAt ? formatDateTime(item.plannedStartAt) : '未设开始'}</Box><Box sx={{ color: 'text.secondary' }}>{item.plannedEndAt ? formatDateTime(item.plannedEndAt) : '未设结束'}</Box></TableCell><TableCell sx={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.remark || '-'}</TableCell><TableCell align="center" sx={{ width: PENDING_OBJECT_ACTION_COLUMN_WIDTH, minWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH, maxWidth: PENDING_OBJECT_ACTION_COLUMN_WIDTH }}><Tooltip title="移除" arrow><IconButton size="small" aria-label="移除待添加批次" onClick={() => setPendingObjects((current) => current.filter((_, rowIndex) => rowIndex !== index))}><DeleteOutline fontSize="small" /></IconButton></Tooltip></TableCell></TableRow>)}</TableBody></Table></TableContainer>;
+  const objectTable = <TableContainer sx={{ maxHeight: { xs: 360, lg: 460 }, overflow: 'auto' }}><Table stickyHeader size="small" sx={{ minWidth: 1060 }}><TableHead><TableRow sx={{ '& .MuiTableCell-root': tableHeaderCellSx }}>{[isSnProduction ? 'SN编号' : '批次号', '状态', '制程版本', '数量', '累计产出', '良品', 'NG', '产品报废登记', '计划开始', '计划结束', '备注', '操作'].map((label) => <TableCell key={label}>{label}</TableCell>)}</TableRow></TableHead><TableBody>{objects.isLoading ? <TableRow><TableStateCell colSpan={12} align="center" sx={{ height: 160 }}><CircularProgress size={24} /></TableStateCell></TableRow> : objects.isError ? <TableRow><TableStateCell colSpan={11} align="center" sx={{ height: 160, color: '#c62828' }}>生产对象加载失败</TableStateCell></TableRow> : objectRows.length === 0 ? <TableRow><TableStateCell colSpan={11} align="center" sx={{ height: 160, color: '#909399' }}>暂无已拆分{isSnProduction ? 'SN' : '批次'}</TableStateCell></TableRow> : objectRows.map((item) => <TableRow data-record-id={item.id} key={item.id} sx={tableRowSx}><TableCell>{item.objectNo}</TableCell><TableCell>{statusBadge(item.status, objectStatusLabels)}</TableCell><TableCell>{item.processVersion}</TableCell><TableCell>{item.targetQuantity}</TableCell><TableCell><ProductionOutputValue output={item.output} /></TableCell><TableCell><ProductionOutputValue output={item.output?.quality?.goodQuantity} label="批次良品" /></TableCell><TableCell><ProductionOutputValue output={item.output?.quality?.ngQuantity} label="批次不良品" /></TableCell><TableCell><ProductionOutputValue output={item.output?.quality?.scrapQuantity} label="产品报废登记" /></TableCell><TableCell>{item.plannedStartAt ? formatDateTime(item.plannedStartAt) : '-'}</TableCell><TableCell>{item.plannedEndAt ? formatDateTime(item.plannedEndAt) : '-'}</TableCell><TableCell sx={{ maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.remark || '-'}</TableCell><TableCell>{canSplit && item.status === 'CREATED' && <Stack direction="row"><Tooltip title="修改批次配置"><IconButton size="small" aria-label={`修改批次 ${item.objectNo}`} onClick={() => setEditObject(item)}><Edit fontSize="small" /></IconButton></Tooltip><Tooltip title="取消批次"><IconButton size="small" aria-label={`取消批次 ${item.objectNo}`} onClick={() => setCancelObject(item)}><Cancel fontSize="small" /></IconButton></Tooltip></Stack>}</TableCell></TableRow>)}</TableBody></Table></TableContainer>;
+  const selectProduct = (productId: string) => setForm((current) => ({ ...current, productId }));
   const submitSearch = () => { setPage(1); setSubmittedKeyword(keyword.trim()); };
   const renderWorkOrderCell = (item: WorkOrder, column: WorkOrderColumn) => {
     const width = resolvedColumnWidths[column.id];
@@ -641,7 +641,6 @@ export default function WorkOrderPage() {
     switch (column.id) {
       case 'orderNo': return <TableCell sx={commonSx} title={item.orderNo}>{item.orderNo}</TableCell>;
       case 'product': return <TableCell sx={commonSx} title={`${item.productName}（${item.productCode}）`}><Typography variant="body2" noWrap>{item.productName}</Typography><Typography variant="caption" display="block" color="text.secondary" noWrap>{item.productCode}</Typography></TableCell>;
-      case 'processVersion': return <TableCell sx={commonSx}>{item.processVersion || '-'}</TableCell>;
       case 'productionMode': return <TableCell sx={commonSx}>{item.productionMode || '-'}</TableCell>;
       case 'productionForm': return <TableCell sx={commonSx}>{formLabels[item.productionForm || ''] || item.productionForm || '-'}</TableCell>;
       case 'plannedQuantity': return <TableCell sx={commonSx}>{item.plannedQuantity}</TableCell>;
@@ -672,7 +671,8 @@ export default function WorkOrderPage() {
           <TableCell align="center" sx={getOperationColumnSx('body', hasVisibleStatusColumn)} onClick={(event) => event.stopPropagation()}>
             <Tooltip title="生产对象" arrow><IconButton size="small" aria-label="生产对象" onClick={() => openObjects(item)}><ViewList fontSize="small" /></IconButton></Tooltip>
             {item.status === 'CREATED' ? <Tooltip title="编辑" arrow><IconButton size="small" aria-label="编辑" onClick={() => openEdit(item)}><Edit fontSize="small" /></IconButton></Tooltip> : <Tooltip title="编辑（仅已创建工单可用）" arrow><span><IconButton size="small" disabled aria-label="编辑暂不可用"><Edit fontSize="small" /></IconButton></span></Tooltip>}
-            {item.status === 'CREATED' ? <Tooltip title="取消" arrow><IconButton size="small" aria-label="取消" color="error" onClick={() => setCancelTarget(item)}><Cancel fontSize="small" /></IconButton></Tooltip> : item.status === 'COMPLETED' ? <Tooltip title="关闭" arrow><IconButton size="small" aria-label="关闭" onClick={() => setCloseTarget(item)}><Close fontSize="small" /></IconButton></Tooltip> : <Tooltip title="取消（仅已创建工单可用）" arrow><span><IconButton size="small" disabled aria-label="取消暂不可用"><Cancel fontSize="small" /></IconButton></span></Tooltip>}
+            {['CREATED', 'IN_PROCESS'].includes(item.status) && <Tooltip title="提前结束工单"><IconButton size="small" aria-label="提前结束工单" onClick={() => { setEndTarget(item); setEndReason(''); endOrder.reset(); }}><StopCircleOutlined fontSize="small" /></IconButton></Tooltip>}
+            {item.status === 'CREATED' && !item.hasObjects ? <Tooltip title="取消" arrow><IconButton size="small" aria-label="取消" color="error" onClick={() => setCancelTarget(item)}><Cancel fontSize="small" /></IconButton></Tooltip> : item.status === 'COMPLETED' ? <Tooltip title="关闭" arrow><IconButton size="small" aria-label="关闭" onClick={() => setCloseTarget(item)}><Close fontSize="small" /></IconButton></Tooltip> : <Tooltip title="取消（仅已创建工单可用）" arrow><span><IconButton size="small" disabled aria-label="取消暂不可用"><Cancel fontSize="small" /></IconButton></span></Tooltip>}
           </TableCell>
         </TableRow>)}</TableBody>
       </Table></ListTableShell>
@@ -685,22 +685,12 @@ export default function WorkOrderPage() {
         <Stack spacing={1.5}>
           <FormSection title="基础信息">
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))' }, gap: 1.5 }}>
-              <TextField autoFocus={!editing} required fullWidth size="small" label="工单编号" value={form.orderNo} onChange={(event) => setForm({ ...form, orderNo: event.target.value })} />
+              <TextField autoFocus={!editing} required fullWidth size="small" label="工单编号" disabled={Boolean(editing?.hasObjects)} value={form.orderNo} onChange={(event) => setForm({ ...form, orderNo: event.target.value })} />
               <TextField fullWidth size="small" label="订单编号" value={form.orderNumber} onChange={(event) => setForm({ ...form, orderNumber: event.target.value })} />
-              <TextField select required fullWidth size="small" label="产品" value={form.productId} onChange={(event) => selectProduct(event.target.value)} SelectProps={{ renderValue: () => selectedProduct ? `${selectedProduct.name}（${selectedProduct.code}）` : '' }} className={form.productId ? 'has-value' : undefined} sx={clearableSelectSx} InputProps={{ endAdornment: form.productId ? <InputAdornment position="end" className="select-clear-adornment"><Tooltip title="清除产品" arrow><IconButton className="select-clear-button" size="small" aria-label="清除产品" onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); selectProduct(''); }}><Clear fontSize="small" /></IconButton></Tooltip></InputAdornment> : undefined }}>
+              <TextField select required fullWidth size="small" label="产品" disabled={Boolean(editing?.hasObjects)} value={form.productId} onChange={(event) => selectProduct(event.target.value)} SelectProps={{ renderValue: () => selectedProduct ? `${selectedProduct.name}（${selectedProduct.code}）` : '' }} className={form.productId ? 'has-value' : undefined} sx={clearableSelectSx} InputProps={{ endAdornment: form.productId && !editing?.hasObjects ? <InputAdornment position="end" className="select-clear-adornment"><Tooltip title="清除产品" arrow><IconButton className="select-clear-button" size="small" aria-label="清除产品" onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); selectProduct(''); }}><Clear fontSize="small" /></IconButton></Tooltip></InputAdornment> : undefined }}>
                 {(products.data?.content ?? []).map((product) => <MenuItem key={product.id} value={String(product.id)}>{product.name}（{product.code}）</MenuItem>)}
               </TextField>
-              <TextField select fullWidth size="small" label="制程版本" value={form.processVersionId} disabled={!form.productId || process.isLoading} onChange={(event) => {
-                if (event.target.value === QUICK_ADD_PROCESS_VERSION) {
-                  window.open(`/master-data/products/${encodeURIComponent(form.productId)}/modeling?intent=create`, '_blank', 'noopener,noreferrer');
-                  return;
-                }
-                setForm({ ...form, processVersionId: event.target.value });
-              }} SelectProps={{ onOpen: () => { void process.refetch(); }, renderValue: (selected) => <ProcessVersionValue version={versions.find((version) => version.id === String(selected))} /> }} className={form.processVersionId ? 'has-value' : undefined} sx={clearableSelectSx} InputProps={{ endAdornment: form.processVersionId ? <InputAdornment position="end" className="select-clear-adornment"><Tooltip title="清除制程版本" arrow><IconButton className="select-clear-button" size="small" aria-label="清除制程版本" onMouseDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); setForm((current) => ({ ...current, processVersionId: '' })); }}><Clear fontSize="small" /></IconButton></Tooltip></InputAdornment> : undefined }}>
-                {activeVersions.length === 0 && <MenuItem disabled value="" sx={{ justifyContent: 'center', py: 2, color: '#909399', '&.Mui-disabled': { opacity: 1 } }}>{process.isError ? '制程版本加载失败' : '暂无数据'}</MenuItem>}
-                {activeVersions.map((version) => <MenuItem key={version.id} value={version.id}><ProcessVersionOption version={version} /></MenuItem>)}
-                <MenuItem value={QUICK_ADD_PROCESS_VERSION} sx={{ borderTop: '1px solid #ebeef5', color: 'primary.main', gap: 0.75 }}><Add fontSize="small" />快速添加</MenuItem>
-              </TextField>
+
             </Box>
           </FormSection>
           <FormSection title="计划信息">
@@ -718,17 +708,26 @@ export default function WorkOrderPage() {
       <DialogActions sx={{ px: 3, py: 1.5 }}><Button onClick={() => setDialogOpen(false)} disabled={save.isPending}>取消</Button><Button variant="contained" onClick={() => save.mutate()} disabled={!canSave}>{save.isPending ? '保存中...' : '保存'}</Button></DialogActions>
     </AppDialog>
 
-    <AppDialog open={objectOrder !== null} onClose={() => setObjectOrder(null)} maxWidth="lg" fullWidth>
+    <AppDialog open={objectOrder !== null} onClose={() => setObjectOrder(null)} maxWidth="xl" fullWidth PaperProps={{ sx: { maxWidth: 1360, maxHeight: '94dvh' } }}>
       <DialogTitle>{canSplit ? '生产对象管理' : '生产对象查看'}</DialogTitle>
       <DialogContent dividers sx={{ p: { xs: 1.5, sm: 2.5 }, bgcolor: '#fff' }}>{objectOrder && <Stack spacing={2}>
-        <Box sx={{ p: 1.25, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1 }}><Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, minmax(0, 1fr))', sm: 'repeat(5, minmax(0, 1fr))' }, gap: 1.25, alignItems: 'center' }}><DetailField label="工单编号">{objectOrder.orderNo}</DetailField><DetailField label="产品">{objectOrder.productName || '-'}{objectOrder.productCode ? `（${objectOrder.productCode}）` : ''}</DetailField><DetailField label="生产形态">{formLabels[objectOrder.productionForm || ''] || objectOrder.productionForm || '拆分时确定'}</DetailField><DetailField label="计划数量">{objectOrder.plannedQuantity}</DetailField><DetailField label="已分配">{allocated}</DetailField><DetailField label="剩余">{remaining}</DetailField>{objectOrder.processVersionId && <Box sx={{ minWidth: 0, gridColumn: { xs: '1 / -1', sm: 'span 3' } }}><Stack direction="row" spacing={1} alignItems="center"><Box sx={{ minWidth: 0 }}><Typography variant="caption" sx={{ display: 'block', color: '#909399', mb: 0.25 }}>制程版本</Typography><Stack direction="row" spacing={0.75} alignItems="baseline"><Typography variant="body2" noWrap sx={{ color: '#303133', fontWeight: 600 }}>{selectedProcess?.version || objectOrder.processVersion || '-'}</Typography><Button size="small" variant="text" onClick={() => setProcessPreviewOpen(true)} sx={{ flexShrink: 0, minWidth: 'auto', p: 0, lineHeight: 1.4 }}>预览版本</Button></Stack><Typography variant="caption" noWrap sx={{ display: 'block', color: '#909399' }}>工艺路线 {selectedProcess?.routeVersion || '-'} · DHR模板 {selectedProcess?.dhrTemplateVersion || '-'}</Typography></Box></Stack></Box>}</Box></Box>
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: 'minmax(0, 0.9fr) minmax(480px, 1.2fr)' }, gap: 1.5, alignItems: 'start' }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 1fr) auto' }, gap: 3, alignItems: 'center', pb: 2, borderBottom: '1px solid #e4e7ed' }}>
+          <Box><Typography variant="h6" sx={{ fontWeight: 600 }}>{objectOrder.orderNo}</Typography><Typography variant="body2" color="text.secondary">{objectOrder.productName} · {objectOrder.productCode} · {formLabels[objectOrder.productionForm || ''] || '首次拆分确定生产形态'}</Typography></Box>
+          <Stack direction="row" spacing={4} sx={{ fontVariantNumeric: 'tabular-nums' }}>{[['计划数量', objectOrder.plannedQuantity], ['已分配', allocated], ['待提交', pendingAllocated], ['还可分配', availableRemaining]].map(([label, value]) => <Box key={label}><Typography variant="caption" color="text.secondary">{label}</Typography><Typography sx={{ fontSize: 22, fontWeight: 600, color: label === '还可分配' ? 'primary.main' : 'text.primary' }}>{value}</Typography></Box>)}</Stack>
+        </Box>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: 'minmax(360px, 0.85fr) minmax(0, 1.5fr)' }, gap: 1.5, alignItems: 'start' }}>
         {canSplit && <Box sx={{ p: 1.5, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, order: { xs: 2, lg: 2 } }}><Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}><Typography variant="subtitle2" sx={{ color: '#303133', fontWeight: 600 }}>待添加批次（{pendingObjects.length}）</Typography><Typography variant="caption" sx={{ color: '#909399' }}>提交后进入下方已拆分批次</Typography></Stack>{pendingTable}</Box>}
         {canSplit && <Box sx={{ p: 1.5, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, order: { xs: 1, lg: 1 } }}>
           <Typography variant="subtitle2" sx={{ mb: 1.25, color: '#303133', fontWeight: 600 }}>新增{isSnProduction ? ' SN' : '批次'}生产对象</Typography>
-          {!objectOrder.processVersionId && <Box sx={{ mb: 1.5, p: 1.5, bgcolor: '#f8fafc', border: '1px solid #e4e7ed', borderRadius: 1 }}><TextField select fullWidth size="small" label="制程版本" value={splitForm.processVersionId} disabled={!canSplit} onChange={(event) => setSplitForm({ ...splitForm, processVersionId: event.target.value })} SelectProps={{ displayEmpty: true, renderValue: (value) => { const selected = (processOptions.data ?? []).find((option) => option.id === String(value)); return selected ? <ProcessVersionOption version={selected} /> : <Typography variant="body2" sx={{ color: '#909399' }}>请选择制程版本</Typography>; } }}>
-            <MenuItem value=""><Typography variant="body2" sx={{ color: '#909399' }}>请选择制程版本</Typography></MenuItem>{(processOptions.data ?? []).filter((option) => option.productionMode === '量产').map((option) => <MenuItem key={option.id} value={option.id}><ProcessVersionOption version={option} /></MenuItem>)}
-          </TextField></Box>}
+          {<Box sx={{ mb: 1.5, p: 1.5, bgcolor: '#f8fafc', border: '1px solid #e4e7ed', borderRadius: 1 }}><TextField select fullWidth size="small" label="本次添加使用的制程" InputLabelProps={{ shrink: true }} value={splitForm.processVersionId} disabled={!canSplit || processOptions.isLoading} onChange={(event) => setSplitForm({ ...splitForm, processVersionId: event.target.value })} SelectProps={{ displayEmpty: true, renderValue: (value) => { const selected = (processOptions.data ?? []).find((option) => option.id === String(value)); return selected ? <ProcessVersionOption version={selected} /> : <Typography variant="body2" sx={{ color: '#909399' }}>请选择制程版本</Typography>; } }}>
+            <MenuItem value=""><Typography variant="body2" sx={{ color: '#909399' }}>请选择制程版本</Typography></MenuItem>{(processOptions.data ?? []).filter((option) => option.productionMode === '量产').map((option) => <MenuItem key={option.id} value={option.id} disabled={Boolean(fixedProductionForm) && (option.productionForm === 'SN') !== (fixedProductionForm === 'SN')}><ProcessVersionOption version={option} /></MenuItem>)}
+          </TextField>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>每个批次保存各自的制程引用，开工时冻结配置。已加入清单的选择不会随此处切换。</Typography>
+            {selectedProcess?.processReference && <Typography variant="caption" sx={{ display: 'block', mt: 0.5 }}>{selectedProcess.processReference.ownerType === 'PRODUCT_FAMILY' ? '产品簇兜底' : '产品制程'} · {selectedProcess.processReference.ownerName}</Typography>}
+            {selectedProcess && <Button size="small" onClick={() => setProcessPreviewOpen(true)}>预览当前配置</Button>}
+            {processOptions.isError && <Typography color="error" variant="body2" sx={{ mt: 1 }}>{processOptions.error.message}<Button size="small" onClick={() => void processOptions.refetch()}>重试</Button></Typography>}
+            {!processOptions.isLoading && !processOptions.isError && !processOptions.data?.length && <Typography color="text.secondary" variant="body2" sx={{ mt: 1 }}>当前没有可选择的相同生产形态制程</Typography>}
+          </Box>}
           <Tabs value={splitTab} onChange={(_, value) => setSplitTab(value)} variant="scrollable" allowScrollButtonsMobile sx={{ minHeight: 40, mb: 1.25, borderBottom: '1px solid #ebeef5', '& .MuiTabs-indicator': { height: 2 } }}><Tab sx={{ minHeight: 40, py: 0.5, px: 1.25 }} icon={<PlaylistAdd fontSize="small" />} iconPosition="start" label="批量添加" /><Tab sx={{ minHeight: 40, py: 0.5, px: 1.25 }} icon={<UploadFile fontSize="small" />} iconPosition="start" label="导入批次" /><Tab sx={{ minHeight: 40, py: 0.5, px: 1.25 }} icon={<PlaylistAdd fontSize="small" />} iconPosition="start" label="手动添加" /></Tabs>
           {splitTab === 1 ? <Box sx={{ p: 1.5, bgcolor: '#fbfdff', border: '1px dashed #b8c7d9', borderRadius: 1 }}>
             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 0.5 }}><Stack direction="row" spacing={0.75} alignItems="center"><Typography variant="body2" sx={{ color: '#303133', fontWeight: 600 }}>按模板导入{isSnProduction ? ' SN' : '批次'}</Typography><Tooltip title={`${isSnProduction ? 'SN编号必填，数量由 SN 形态固定为 1' : '批次号、数量必填'}；计划开始时间、计划结束时间和备注可选。上传后会直接加入右侧待添加清单，确认无误后再提交。`} arrow><InfoOutlined sx={{ fontSize: 16, color: '#909399', cursor: 'help' }} /></Tooltip></Stack><Stack direction="row" spacing={0.75} alignItems="center"><Button size="small" onClick={downloadImportTemplate} disabled={!canSplit}>下载导入模板</Button><Button component="label" size="small" variant="contained" startIcon={<UploadFile />} disabled={!canSplit || !splitForm.processVersionId}>选择文件<input hidden type="file" accept=".csv,.xlsx,.xls" onChange={(event) => { void importPendingObjects(event.target.files?.[0]); event.currentTarget.value = ''; }} /></Button></Stack></Stack>
@@ -746,14 +745,16 @@ export default function WorkOrderPage() {
             </Box>
             <Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ mt: 1.5 }}>
               {splitTab === 2 && <Button variant="contained" startIcon={<Add />} onClick={addPendingObject} disabled={!canSplit || !splitForm.processVersionId || (isSnProduction ? !splitForm.objectNo.trim() : Number(splitForm.targetQuantity) <= 0 || Number(splitForm.targetQuantity) > availableRemaining)}>加入清单</Button>}
-              {splitTab === 0 && <Button variant="contained" startIcon={<PlaylistAdd />} onClick={addPendingBatch} disabled={!canSplit || !splitForm.processVersionId || Number(splitForm.targetQuantity) <= 0 || ((isSnProduction || batchAddType === 'count') && Math.floor(Number(splitForm.targetQuantity)) > availableRemaining)}>批量加入</Button>}
+              {splitTab === 0 && <Button variant="contained" startIcon={<PlaylistAdd />} onClick={addPendingBatch} disabled={!canSplit || !splitForm.processVersionId || !validBatchInput}>批量加入</Button>}
             </Stack>
           </>}
         </Box>}
         </Box>
-        <Box sx={{ p: 1.5, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1 }}><Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}><Typography variant="subtitle2" sx={{ color: '#303133', fontWeight: 600 }}>已拆分批次（{objectRows.length}）</Typography><Typography variant="caption" sx={{ color: '#909399' }}>已落库批次</Typography></Stack>{objectTable}</Box>
+        <Box sx={{ p: 1.5, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1 }}><Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}><Typography variant="subtitle2" sx={{ color: '#303133', fontWeight: 600 }}>已拆分批次（{objectRows.length}）</Typography><Typography variant="caption" sx={{ color: '#909399' }}>未开工批次可修改制程与数量</Typography></Stack>{objectTable}</Box>
       </Stack>}</DialogContent><DialogActions sx={{ px: 3, py: 1.5 }}><Button onClick={() => setObjectOrder(null)}>关闭</Button>{canSplit && <Button variant="contained" onClick={() => split.mutate()} disabled={pendingObjects.length === 0 || split.isPending}>{split.isPending ? '提交中...' : `提交待添加（${pendingObjects.length}）`}</Button>}</DialogActions></AppDialog>
 
+    {editObject && <ProductionObjectEditDialog key={editObject.id} object={editObject} onClose={() => setEditObject(null)} />}
+    <AppDialog open={endTarget !== null} onClose={() => setEndTarget(null)} maxWidth="sm" fullWidth><DialogTitle>提前结束工单 · {endTarget?.orderNo}</DialogTitle><DialogContent dividers><Stack spacing={2}><Typography variant="body2">请先取消未开工批次，并完成或提前结束生产中的批次。结束工单后不能继续拆分，计划数量与已有记录保留。</Typography><TextField autoFocus required label="结束原因" multiline minRows={3} value={endReason} inputProps={{ maxLength: 500 }} onChange={e => setEndReason(e.target.value)} />{endOrder.isError && <Typography color="error">{endOrder.error.message}</Typography>}</Stack></DialogContent><DialogActions><Button onClick={() => setEndTarget(null)}>取消</Button><Button color="warning" variant="contained" disabled={!endReason.trim() || endOrder.isPending} onClick={() => endOrder.mutate()}>确认提前结束</Button></DialogActions></AppDialog>
     <WorkOrderDetailDrawer open={detailOrder !== null} order={detailOrder} tab={detailTab} onTabChange={setDetailTab} auditRecords={auditRecords} auditLoading={auditQuery.isLoading} auditError={auditQuery.isError} onClose={() => setDetailOrder(null)} />
     <ProcessVersionPreviewDialog open={processPreviewOpen} version={previewVersion} loading={processPreviewQuery.isLoading} error={processPreviewQuery.isError} onClose={() => setProcessPreviewOpen(false)} />
     <ConfirmDialog open={cancelTarget !== null} title="取消工单" message={cancelTarget ? `确定取消工单「${cancelTarget.orderNo}」吗？取消后将不能继续拆分生产对象。` : ''} confirmText="取消工单" destructive loading={cancel.isPending} onCancel={() => setCancelTarget(null)} onConfirm={() => cancelTarget && cancel.mutate(cancelTarget.id)} />

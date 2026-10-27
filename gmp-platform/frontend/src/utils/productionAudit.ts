@@ -2,6 +2,7 @@ export interface ProductionAuditField {
   key: string;
   label: string;
   value: string;
+  details?: unknown;
 }
 
 const fieldLabels: Record<string, string> = {
@@ -15,6 +16,9 @@ const fieldLabels: Record<string, string> = {
   productCode: '产品编码',
   processVersionId: '制程版本ID',
   processVersion: '制程版本',
+  processReference: '制程',
+  processSnapshot: '开工冻结配置',
+  processFrozenAt: '配置冻结时间',
   productionMode: '生产模式',
   productionForm: '生产形态',
   objectType: '生产形态',
@@ -41,6 +45,9 @@ const fieldOrder = [
   'productCode',
   'productId',
   'processVersion',
+  'processReference',
+  'processFrozenAt',
+  'processSnapshot',
   'processVersionId',
   'productionMode',
   'productionForm',
@@ -75,7 +82,7 @@ const productionFormLabels: Record<string, string> = {
   '批次转SN': '批次转SN',
 };
 
-const dateTimeFields = new Set(['plannedStartAt', 'plannedEndAt', 'terminationAt']);
+const dateTimeFields = new Set(['plannedStartAt', 'plannedEndAt', 'terminationAt', 'processFrozenAt']);
 
 function parseSnapshot(value: unknown): unknown {
   if (typeof value !== 'string') return value;
@@ -95,6 +102,11 @@ function formatDateTime(value: unknown): string {
 
 function formatValue(field: string, value: unknown): string {
   if (value === null || value === undefined || value === '') return '-';
+  if (field === 'processSnapshot') return '查看开工时的实际配置';
+  if (field === 'processReference' && typeof value === 'object') {
+    const ref = value as Record<string, unknown>;
+    return `${ref.ownerType === 'PRODUCT_FAMILY' ? '产品簇' : '产品'} · ${ref.ownerName || ref.ownerId || '-'} · ${ref.processVersion || '-'}（ID ${ref.processVersionId || '-'}）`;
+  }
   if (field === 'status' && typeof value === 'string') return statusLabels[value] || value;
   if ((field === 'productionForm' || field === 'objectType') && typeof value === 'string') return productionFormLabels[value] || value;
   if (dateTimeFields.has(field)) return formatDateTime(value);
@@ -117,5 +129,6 @@ export function toProductionAuditFields(
       key,
       label: labelOverrides[key] || fieldLabels[key] || key,
       value: formatValue(key, fieldValue),
+      details: key === 'processSnapshot' ? fieldValue : undefined,
     }));
 }

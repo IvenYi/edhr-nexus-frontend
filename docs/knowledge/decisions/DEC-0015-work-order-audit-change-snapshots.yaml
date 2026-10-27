@@ -23,7 +23,7 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0015-05
-        statement: "provenance: user-confirmed；工单制程选择下拉框无值时保持空白，有值时提供清除控件恢复空值，不增加‘暂不选择’选项。"
+        statement: "provenance: user-confirmed；工单不再提供制程选择字段；制程选择位于生产对象准备/编辑。候选未选为空值且不能保存对象，不增加暂不选择业务项；产品清除等原有有效交互保持。"
         status: implemented
         visibility: internal
     supersedes: []
@@ -47,9 +47,9 @@ decisions:
         then: 方法参数不作为 contentBefore/contentAfter 快照
         evidenceIds: [evidence.work-order-audit-snapshot-controller-test, evidence.audit-aspect-test]
       - id: scenario.work-order-process-selector-clear
-        given: 工单产品或制程版本下拉框已选择值
-        when: 用户点击清除控件
-        then: 选择恢复空值；无值时下拉框保持空白且不显示额外占位选项
+        given: 拆分候选制程或允许编辑的工单产品选择器存在选择
+        when: 用户清除尚未保存的选择
+        then: 候选恢复空值且不增加额外业务项；保存时仍按产品和对象制程必填校验，工单无制程选择字段
         evidenceIds: [evidence.production-process-selector-clearable]
     implementationDiscrepancies:
     - id: discrepancy.work-order-audit-snapshot-missing

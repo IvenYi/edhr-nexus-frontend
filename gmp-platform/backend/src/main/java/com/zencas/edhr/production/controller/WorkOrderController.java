@@ -11,9 +11,7 @@ import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.masterdata.entity.Material;
-import com.zencas.edhr.masterdata.entity.ProductProcessVersion;
 import com.zencas.edhr.masterdata.repository.MaterialRepository;
-import com.zencas.edhr.masterdata.repository.ProductProcessVersionRepository;
 import com.zencas.edhr.production.entity.WorkOrder;
 import com.zencas.edhr.production.repository.WorkOrderRepository;
 import com.zencas.edhr.production.service.ProductionService;
@@ -37,7 +35,6 @@ public class WorkOrderController {
     private static final String TENANT_ID = "default";
     private final WorkOrderRepository workOrderRepository;
     private final MaterialRepository materialRepository;
-    private final ProductProcessVersionRepository processVersionRepository;
     private final ProductionService productionService;
     private final com.zencas.edhr.production.service.ProductionOutputService outputs;
     private final SnowflakeIdGenerator idGenerator;
@@ -64,7 +61,7 @@ public class WorkOrderController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('production.work-orders')")
+    @PreAuthorize("hasAnyAuthority('production.work-orders', 'production.batches')")
     public ApiResponse<WorkOrderResponse> get(@PathVariable Long id) { return ApiResponse.success(toResponse(requireOrder(id))); }
 
     @PostMapping
@@ -85,9 +82,17 @@ public class WorkOrderController {
     @PreAuthorize("hasAuthority('production.work-orders')")
     @Transactional
     public ApiResponse<WorkOrderResponse> update(@PathVariable Long id, @RequestBody WorkOrderRequest request) {
-        WorkOrder order = requireOrder(id);
-        if (!"CREATED".equals(order.getStatus()) || !productionService.objects(id).isEmpty()) {
-            throw error("工单已进入生产准备，不允许编辑");
+        WorkOrder order = workOrderRepository.findByTenantIdAndIdForUpdate(TENANT_ID, id).orElseThrow(() -> error("工单不存在"));
+        if (!"CREATED".equals(order.getStatus())) {
+            throw error("只有已创建的工单可以编辑");
+        }
+        if (!productionService.objects(id).isEmpty() && (request == null || !Objects.equals(order.getProductId(), request.productId())
+                || !Objects.equals(order.getOrderNo(), request.orderNo() == null ? null : request.orderNo().trim()))) {
+            throw error("已拆分生产对象，不能修改产品或工单编号");
+        }
+        if (request != null && request.plannedQuantity() != null
+                && request.plannedQuantity().compareTo(productionService.allocatedQuantity(id)) < 0) {
+            throw error("工单计划数量不能小于已分配数量");
         }
         Map<String, Object> before = workOrderSnapshot(toResponse(order));
         apply(order, request, true);
@@ -123,6 +128,7 @@ public class WorkOrderController {
         if (request == null || !StringUtils.hasText(request.orderNo())) throw error("工单编号不能为空");
         if (request == null || request.productId() == null) throw error("请选择产品");
         if (request.plannedQuantity() == null || request.plannedQuantity().signum() <= 0) throw error("计划数量必须大于0");
+        if (request.plannedQuantity().stripTrailingZeros().scale() > 4 || request.plannedQuantity().compareTo(new BigDecimal("100000000000")) >= 0) throw error("计划数量最多11位整数和4位小数");
         String orderNo = request.orderNo().trim();
         if (orderNo.length() > 64) throw error("工单编号不能超过64个字符");
         workOrderRepository.findByTenantIdAndOrderNo(TENANT_ID, orderNo)
@@ -130,18 +136,6 @@ public class WorkOrderController {
                 .ifPresent(existing -> { throw error("工单编号已存在"); });
         materialRepository.findByTenantIdAndId(TENANT_ID, request.productId())
                 .orElseThrow(() -> error("产品不存在"));
-        if (request.processVersionId() != null) {
-            ProductProcessVersion selected = productionService.processOptions(request.productId()).stream()
-                    .filter(item -> item.getId().equals(request.processVersionId()))
-                    .findFirst().orElseThrow(() -> error("所选制程不属于该产品或当前不可用"));
-            order.setProcessVersionId(selected.getId());
-            order.setProductionMode(selected.getProductionMode());
-            order.setProductionForm(ProductionService.normalizeProductionForm(selected.getProductionForm()));
-        } else {
-            order.setProcessVersionId(null);
-            order.setProductionMode(null);
-            order.setProductionForm(null);
-        }
         order.setOrderNo(orderNo);
         order.setOrderNumber(StringUtils.hasText(request.orderNumber()) ? request.orderNumber().trim() : null);
         order.setProductId(request.productId());
@@ -159,14 +153,12 @@ public class WorkOrderController {
 
     private WorkOrderResponse toResponse(WorkOrder order) {
         Material product = materialRepository.findByTenantIdAndId(TENANT_ID, order.getProductId()).orElse(null);
-        ProductProcessVersion version = order.getProcessVersionId() == null ? null
-                : processVersionRepository.findByTenantIdAndId(TENANT_ID, order.getProcessVersionId()).orElse(null);
         return new WorkOrderResponse(String.valueOf(order.getId()), order.getOrderNo(), String.valueOf(order.getProductId()),
                 product == null ? "-" : product.getName(), product == null ? "-" : product.getCode(),
-                order.getProcessVersionId() == null ? null : String.valueOf(order.getProcessVersionId()),
-                version == null ? "-" : version.getVersionLabel(), order.getProductionMode(), order.getProductionForm(),
+                order.getProductionMode(), order.getProductionForm(),
                 order.getPlannedQuantity(), order.getPlannedStartAt(), order.getPlannedEndAt(), order.getOrderNumber(),
-                order.getStatus(), order.getRemark(), order.getCreatedAt(), order.getUpdatedAt(), outputs.order(order.getId()));
+                order.getStatus(), order.getRemark(), order.getCreatedAt(), order.getUpdatedAt(), outputs.order(order.getId()),
+                !productionService.objects(order.getId()).isEmpty(), productionService.allocatedQuantity(order.getId()), order.getTerminationReason(), order.getTerminationAt());
     }
 
     private Map<String, Object> workOrderSnapshot(WorkOrderResponse response) {
@@ -176,8 +168,6 @@ public class WorkOrderController {
         snapshot.put("productId", response.productId());
         snapshot.put("productName", response.productName());
         snapshot.put("productCode", response.productCode());
-        snapshot.put("processVersionId", response.processVersionId());
-        snapshot.put("processVersion", response.processVersion());
         snapshot.put("productionMode", response.productionMode());
         snapshot.put("productionForm", response.productionForm());
         snapshot.put("plannedQuantity", response.plannedQuantity());
@@ -185,6 +175,8 @@ public class WorkOrderController {
         snapshot.put("plannedEndAt", response.plannedEndAt());
         snapshot.put("status", response.status());
         snapshot.put("remark", response.remark());
+        snapshot.put("terminationReason", response.terminationReason());
+        snapshot.put("terminationAt", response.terminationAt());
         return snapshot;
     }
 
@@ -219,11 +211,23 @@ public class WorkOrderController {
 
     private BusinessException error(String message) { return new BusinessException(ErrorCode.GENERAL_001, message); }
 
-    public record WorkOrderRequest(String orderNo, String orderNumber, Long productId, Long processVersionId,
+    @PostMapping("/{id}/end")
+    @PreAuthorize("hasAuthority('production.work-orders')")
+    @Transactional
+    public ApiResponse<WorkOrderResponse> end(@PathVariable Long id, @RequestBody ProductionObjectController.EndRequest request) {
+        WorkOrder order = workOrderRepository.findByTenantIdAndIdForUpdate(TENANT_ID, id).orElseThrow(() -> error("工单不存在"));
+        Map<String, Object> before = workOrderSnapshot(toResponse(order));
+        WorkOrderResponse response = toResponse(productionService.endOrder(id, request == null ? null : request.reason()));
+        writeChangedAudit(id, "提前结束工单", before, workOrderSnapshot(response));
+        return ApiResponse.success(response);
+    }
+
+    public record WorkOrderRequest(String orderNo, String orderNumber, Long productId,
                                    BigDecimal plannedQuantity, LocalDateTime plannedStartAt, LocalDateTime plannedEndAt,
                                    String remark) {}
     public record WorkOrderResponse(String id, String orderNo, String productId, String productName, String productCode,
-                                    String processVersionId, String processVersion, String productionMode, String productionForm,
+                                    String productionMode, String productionForm,
                                     BigDecimal plannedQuantity, LocalDateTime plannedStartAt, LocalDateTime plannedEndAt,
-                                    String orderNumber, String status, String remark, LocalDateTime createdAt, LocalDateTime updatedAt, com.fasterxml.jackson.databind.JsonNode output) {}
+                                    String orderNumber, String status, String remark, LocalDateTime createdAt, LocalDateTime updatedAt, com.fasterxml.jackson.databind.JsonNode output,
+                                    boolean hasObjects, BigDecimal allocatedQuantity, String terminationReason, LocalDateTime terminationAt) {}
 }

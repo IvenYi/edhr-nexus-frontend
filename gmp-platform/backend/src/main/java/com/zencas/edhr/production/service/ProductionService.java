@@ -8,6 +8,8 @@ import com.zencas.edhr.masterdata.entity.Material;
 import com.zencas.edhr.masterdata.entity.ProductProcessVersion;
 import com.zencas.edhr.masterdata.repository.ProductProcessVersionRepository;
 import com.zencas.edhr.masterdata.service.ProductProcessResolutionService;
+import com.zencas.edhr.common.util.RdoVersionStatusResolver;
+import com.zencas.edhr.production.repository.ProductionExecutionRepository;
 import com.zencas.edhr.production.entity.ProductionObject;
 import com.zencas.edhr.production.entity.WorkOrder;
 import com.zencas.edhr.production.repository.ProductionObjectRepository;
@@ -36,6 +38,7 @@ public class ProductionService {
     private final StateMachineService stateMachineService;
     private final SnowflakeIdGenerator idGenerator;
     private final DhrInstanceService dhrInstances;
+    private final ProductionExecutionRepository executions;
 
     @Transactional
     public ProductionObject split(Long workOrderId, Long requestedProcessVersionId, BigDecimal targetQuantity,
@@ -53,6 +56,7 @@ public class ProductionService {
         if (targetQuantity == null || targetQuantity.signum() <= 0) {
             throw error("生产对象目标数量必须大于0");
         }
+        if (targetQuantity.stripTrailingZeros().scale() > 4) throw error("生产对象目标数量最多4位小数");
         if (plannedStartAt != null && plannedEndAt != null && plannedEndAt.isBefore(plannedStartAt)) {
             throw error("计划结束时间不能早于计划开始时间");
         }
@@ -75,11 +79,8 @@ public class ProductionService {
         }
 
         if (existing.isEmpty()) {
-            order.setProcessVersionId(version.getId());
             order.setProductionMode(version.getProductionMode());
             order.setProductionForm(productionForm);
-        } else if (!version.getId().equals(order.getProcessVersionId())) {
-            throw error("工单已有生产对象，只能继续使用已锁定的制程");
         }
 
         Long objectId = idGenerator.nextId();
@@ -191,22 +192,64 @@ public class ProductionService {
         return workOrderRepository.save(order);
     }
 
+    @Transactional
+    public WorkOrder endOrder(Long id, String reason) {
+        WorkOrder order = requireOrderForUpdate(id);
+        if (!List.of("CREATED", "IN_PROCESS").contains(order.getStatus())) throw error("只有未结束的工单可以提前结束");
+        if (!StringUtils.hasText(reason) || reason.strip().length() > 500) throw error("请填写500字以内的结束原因");
+        if (objects(id).stream().anyMatch(item -> List.of("CREATED", "IN_PROGRESS").contains(item.getStatus()))) {
+            throw error("请先取消未开工批次，并完成或提前结束生产中的批次");
+        }
+        stateMachineService.transit("WORK_ORDER", id, order.getStatus(), "EARLY_TERMINATED");
+        order.setStatus("EARLY_TERMINATED");
+        order.setTerminationReason(reason.strip());
+        order.setTerminationAt(LocalDateTime.now());
+        return workOrderRepository.save(order);
+    }
+
+    @Transactional
+    public ProductionObject updateObject(Long id, Long versionId, BigDecimal quantity,
+                                         String remark, LocalDateTime plannedStartAt, LocalDateTime plannedEndAt) {
+        WorkOrder order = requireOrderForObjectForUpdate(id);
+        ProductionObject object = requireObjectForUpdate(id);
+        if (!"CREATED".equals(object.getStatus()) || executions.existsById(id)) throw error("只有未开工且未取消的生产对象可以编辑");
+        if (!List.of("CREATED", "IN_PROCESS").contains(order.getStatus())) throw error("工单已结束，不允许修改生产对象");
+        ProductProcessVersion version = Objects.equals(versionId, object.getProcessVersionId())
+                ? requireApplicableProcess(object, order) : requireProcessVersion(order, versionId);
+        if (!object.getObjectType().equals(normalizeProductionForm(version.getProductionForm()))) throw error("更换制程不能改变生产形态");
+        if (quantity == null || quantity.signum() <= 0 || quantity.stripTrailingZeros().scale() > 4) throw error("目标数量必须大于0，最多4位小数");
+        if ("SN".equals(object.getObjectType()) && quantity.compareTo(BigDecimal.ONE) != 0) throw error("SN目标数量必须为1");
+        if (allocatedQuantity(order.getId()).subtract(object.getTargetQuantity()).add(quantity).compareTo(order.getPlannedQuantity()) > 0) {
+            throw error("增加的数量不能超过工单剩余可分配数量");
+        }
+        if (plannedStartAt != null && plannedEndAt != null && plannedEndAt.isBefore(plannedStartAt)) throw error("计划结束时间不能早于计划开始时间");
+        object.setProcessVersionId(versionId);
+        object.setTargetQuantity(quantity);
+        object.setRemark(StringUtils.hasText(remark) ? remark.strip() : null);
+        object.setPlannedStartAt(plannedStartAt);
+        object.setPlannedEndAt(plannedEndAt);
+        object.setUpdatedBy(currentOperator());
+        return productionObjectRepository.save(object);
+    }
+
+    public BigDecimal allocatedQuantity(Long orderId) {
+        return objects(orderId).stream().filter(item -> !"CANCELLED".equals(item.getStatus()))
+                .map(ProductionObject::getTargetQuantity).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public void lockObjectForEdit(Long id) {
+        requireOrderForObjectForUpdate(id);
+        requireObjectForUpdate(id);
+    }
+
     private void updateOrderWhenObjectsTerminal(WorkOrder order) {
         List<ProductionObject> current = objects(order.getId());
-        boolean terminal = !current.isEmpty() && current.stream()
-                .allMatch(item -> List.of("COMPLETED", "EARLY_TERMINATED", "CANCELLED").contains(item.getStatus()));
-        boolean hasEarlyTermination = current.stream().anyMatch(item -> "EARLY_TERMINATED".equals(item.getStatus()));
-        boolean allCompleted = current.stream().allMatch(item -> "COMPLETED".equals(item.getStatus()));
-        if (terminal && ("CREATED".equals(order.getStatus()) || "IN_PROCESS".equals(order.getStatus()))) {
-            if (hasEarlyTermination && "IN_PROCESS".equals(order.getStatus())) {
-                stateMachineService.transit("WORK_ORDER", order.getId(), order.getStatus(), "EARLY_TERMINATED");
-                order.setStatus("EARLY_TERMINATED");
-            } else if (allCompleted || "IN_PROCESS".equals(order.getStatus())) {
-                stateMachineService.transit("WORK_ORDER", order.getId(), order.getStatus(), "COMPLETED");
-                order.setStatus("COMPLETED");
-            } else {
-                return;
-            }
+        List<ProductionObject> allocated = current.stream().filter(item -> !"CANCELLED".equals(item.getStatus())).toList();
+        boolean allCompleted = !allocated.isEmpty() && allocated.stream().allMatch(item -> "COMPLETED".equals(item.getStatus()));
+        BigDecimal total = allocated.stream().map(ProductionObject::getTargetQuantity).reduce(BigDecimal.ZERO, BigDecimal::add);
+        if (allCompleted && total.compareTo(order.getPlannedQuantity()) == 0 && "IN_PROCESS".equals(order.getStatus())) {
+            stateMachineService.transit("WORK_ORDER", order.getId(), order.getStatus(), "COMPLETED");
+            order.setStatus("COMPLETED");
             workOrderRepository.save(order);
         }
     }
@@ -241,33 +284,28 @@ public class ProductionService {
     }
 
     public ProductProcessVersion requireProcessVersion(WorkOrder order, Long requestedId) {
-        if (order.getProcessVersionId() != null) {
-            if (requestedId != null && !order.getProcessVersionId().equals(requestedId)) {
-                throw error("工单制程已锁定，不允许更换");
-            }
-            ProductProcessVersion locked = processResolutionService
-                    .findVersionForProduct(order.getProductId(), order.getProcessVersionId())
-                    .filter(item -> MASS_PRODUCTION.equals(item.getProductionMode()))
-                    .orElse(null);
-            if (locked == null) throw error("工单已绑定的制程版本当前不可用");
-            return locked;
-        }
         if (requestedId == null) throw error("拆分生产对象前必须选择制程");
-        ProductProcessVersion selected = processOptions(order.getProductId()).stream()
+        ProductProcessVersion selected = processOptions(order).stream()
                 .filter(item -> requestedId.equals(item.getId()))
                 .findFirst().orElseThrow(() -> error("所选制程不属于该产品或当前不可用"));
         return selected;
     }
 
     public List<ProductProcessVersion> processOptions(WorkOrder order) {
-        if (order.getProcessVersionId() != null) {
-            ProductProcessVersion locked = processResolutionService
-                    .findVersionForProduct(order.getProductId(), order.getProcessVersionId())
-                    .filter(item -> MASS_PRODUCTION.equals(item.getProductionMode()))
-                    .orElse(null);
-            if (locked != null) return List.of(locked);
+        String form = objects(order.getId()).stream().findFirst().map(ProductionObject::getObjectType).orElse(null);
+        return processOptions(order.getProductId()).stream()
+                .filter(version -> form == null || form.equals(normalizeProductionForm(version.getProductionForm()))).toList();
+    }
+
+    public ProductProcessVersion requireApplicableProcess(ProductionObject object, WorkOrder order) {
+        ProductProcessVersion version = processResolutionService.findVersionForProduct(order.getProductId(), object.getProcessVersionId())
+                .orElseThrow(() -> error("批次制程已不适用于当前产品或产品簇，请在生产准备中重新选择制程"));
+        if (!MASS_PRODUCTION.equals(version.getProductionMode()) || !RdoVersionStatusResolver.ACTIVE.equals(
+                RdoVersionStatusResolver.resolve(version.getEffectiveFrom(), version.getEffectiveTo(), LocalDateTime.now()))) {
+            throw error("批次制程未生效或已失效，请在生产准备中重新选择制程");
         }
-        return processOptions(order.getProductId());
+        if (!object.getObjectType().equals(normalizeProductionForm(version.getProductionForm()))) throw error("批次制程的生产形态已改变，请重新选择相同生产形态的制程");
+        return version;
     }
 
     public List<ProductProcessVersion> processOptions(Long productId) {

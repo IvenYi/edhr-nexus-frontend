@@ -1414,18 +1414,18 @@ facts:
     name: "规则事实 productionBatch.productProcessVersion"
     conceptId: concept.production-batch
     valueType: string
-    sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    sourceType: database
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/entity/ProductionObject.java"
     aliases: ["productionBatch.productProcessVersion"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [explicitly-selected, is-present]
     status: specified
     visibility: internal
-    evidenceIds: [evidence.product-process-resolution-service]
+    evidenceIds: [evidence.production-object-entity, evidence.production-service, evidence.batch-process-direct-correction-confirmed]
     sourceRevision: working-tree
-    sourceLocator: "productionBatch.productProcessVersion"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "ProductionObject.processVersionId；每对象显式引用，未开工可按资格修改，开工后冻结。"
+    capturedAt: '2026-10-27'
+    reviewStatus: reviewed
   - id: fact.catalog.productionbatch-productprocessversion-ownertype
     name: "规则事实 productionBatch.productProcessVersion.ownerType"
     conceptId: concept.production-batch
@@ -1462,18 +1462,18 @@ facts:
     name: "规则事实 productionObject.allAssociatedObjectsTerminal"
     conceptId: concept.production-object
     valueType: boolean
-    sourceType: configuration
+    sourceType: derived
     sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
     aliases: ["productionObject.allAssociatedObjectsTerminal"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
     status: specified
     visibility: internal
     evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review]
     sourceRevision: working-tree
-    sourceLocator: "productionObject.allAssociatedObjectsTerminal"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "工单全部子对象无CREATED/IN_PROGRESS，是工单手动提前结束前置条件；不能单独推导正常完成或自动提前结束。"
+    capturedAt: '2026-10-27'
+    reviewStatus: reviewed
   - id: fact.catalog.productionobject-hasparentorchildren
     name: "规则事实 productionObject.hasParentOrChildren"
     conceptId: concept.production-object
@@ -1574,18 +1574,18 @@ facts:
     name: "规则事实 productionObject.status"
     conceptId: concept.production-object
     valueType: string
-    sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
+    sourceType: database
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/entity/ProductionObject.java"
     aliases: ["productionObject.status"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [in, equals]
     status: specified
     visibility: internal
     evidenceIds: [evidence.production-service]
     sourceRevision: working-tree
     sourceLocator: "productionObject.status"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    capturedAt: '2026-10-27'
+    reviewStatus: reviewed
   - id: fact.catalog.productionobject-statustransition
     name: "规则事实 productionObject.statusTransition"
     conceptId: concept.production-object
@@ -1669,19 +1669,19 @@ facts:
   - id: fact.catalog.productionworkapplicabilityrule-matchcontext
     name: "规则事实 productionWorkApplicabilityRule.matchContext"
     conceptId: concept.production-work
-    valueType: string
-    sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    valueType: object
+    sourceType: runtime-context
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java"
     aliases: ["productionWorkApplicabilityRule.matchContext"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [is-present]
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-work-template-configuration-controller]
+    evidenceIds: [evidence.production-execution-snapshot-builder-source, evidence.production-work-live-matching-confirmed]
     sourceRevision: working-tree
-    sourceLocator: "productionWorkApplicabilityRule.matchContext"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "refreshWorks读取当前product_family_member并将productId/productFamilyId/operationId/trigger保存在work.matchContext；候选查询时尚非实例冻结证据，START创建时随实例持久化"
+    capturedAt: '2026-10-26'
+    reviewStatus: reviewed
   - id: fact.catalog.productionworkapplicabilityrule-persisted
     name: "规则事实 productionWorkApplicabilityRule.persisted"
     conceptId: concept.production-work
@@ -1942,18 +1942,18 @@ facts:
     name: "规则事实 productionWorkMatch.matched"
     conceptId: concept.production-work
     valueType: boolean
-    sourceType: configuration
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java"
+    sourceType: derived
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java"
     aliases: ["productionWorkMatch.matched"]
-    availability: not-available
+    availability: runtime
     allowedOperators: [equals]
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-work-template-configuration-controller, evidence.ontology-foundation-fact-type-review]
+    evidenceIds: [evidence.production-execution-snapshot-builder-source, evidence.production-work-live-matching-confirmed, evidence.ontology-foundation-fact-type-review]
     sourceRevision: working-tree
-    sourceLocator: "productionWorkMatch.matched"
-    capturedAt: '2026-09-13'
-    reviewStatus: unreviewed
+    sourceLocator: "refreshWorks的当前productId/familyId/operationId匹配、EXCEPTION排除与GLOBAL/SCOPED命中派生结果；已有实例不以该结果决定保留"
+    capturedAt: '2026-10-26'
+    reviewStatus: reviewed
   - id: fact.catalog.rdoversion-effectivewindow
     name: "规则事实 rdoVersion.effectiveWindow"
     conceptId: concept.production-work
@@ -2441,14 +2441,14 @@ facts:
     sourceType: derived
     sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
     aliases: ["workOrder.processVersionId"]
-    availability: configuration-and-runtime
+    availability: not-available
     allowedOperators: [is-present, is-null]
-    status: implemented
+    status: deprecated
     visibility: internal
     evidenceIds: [evidence.production-service]
     sourceRevision: working-tree
-    sourceLocator: "workOrder.processVersionId"
-    capturedAt: '2026-09-13'
+    sourceLocator: "历史工单锁版事实已撤销；当前制程引用仅属于生产对象，保留ID供历史追溯，不参与新规则判断。"
+    capturedAt: '2026-10-27'
     reviewStatus: reviewed
   - id: fact.catalog.workorder-processversionlocked
     name: "规则事实 workOrder.processVersionLocked"
@@ -2457,14 +2457,14 @@ facts:
     sourceType: derived
     sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
     aliases: ["workOrder.processVersionLocked"]
-    availability: configuration-and-runtime
+    availability: not-available
     allowedOperators: [equals]
-    status: implemented
+    status: deprecated
     visibility: internal
     evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review]
     sourceRevision: working-tree
-    sourceLocator: "workOrder.processVersionLocked"
-    capturedAt: '2026-09-13'
+    sourceLocator: "历史工单锁版事实已撤销；当前制程引用仅属于生产对象，保留ID供历史追溯，不参与新规则判断。"
+    capturedAt: '2026-10-27'
     reviewStatus: reviewed
   - id: fact.catalog.workorder-productselected
     name: "规则事实 workOrder.productSelected"
@@ -2490,13 +2490,13 @@ facts:
     sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
     aliases: ["workOrder.productionObjectCount"]
     availability: configuration-and-runtime
-    allowedOperators: [equals]
+    allowedOperators: [equals, greater-than-or-equal]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-service, evidence.ontology-foundation-fact-type-review]
     sourceRevision: working-tree
     sourceLocator: "workOrder.productionObjectCount"
-    capturedAt: '2026-09-13'
+    capturedAt: '2026-10-27'
     reviewStatus: reviewed
   - id: fact.catalog.workorder-status
     name: "规则事实 workOrder.status"
@@ -2506,13 +2506,13 @@ facts:
     sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java"
     aliases: ["workOrder.status"]
     availability: runtime
-    allowedOperators: [equals]
+    allowedOperators: [equals, not-equals, in]
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-service]
     sourceRevision: working-tree
     sourceLocator: "WorkOrder.status"
-    capturedAt: '2026-09-13'
+    capturedAt: '2026-10-27'
     reviewStatus: reviewed
   - id: fact.catalog.workorder-statustransition
     name: "规则事实 workOrder.statusTransition"

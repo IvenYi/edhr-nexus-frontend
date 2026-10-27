@@ -1,9 +1,14 @@
 knowledgeModelVersion: 0.3.25
 evidence:
+  - id: evidence.production-work-live-matching-confirmed
+    type: document
+    path: docs/knowledge/evidence/work-live-matching-2026-10-26.md
+    description: user-confirmed；作业按当前上下文实时匹配，转簇后新匹配只对后续工序生效，已有实例包括零业务节点执行的实例保留原快照与归属。原位修正DEC-0007-03/04及DEC-0002-10作业范围；该原始记录中的制程待决已由2026-10-27批次制程确认收敛，历史原文仅说明当时范围。运行验证单列，不以确认代替实现验收。
+    visibility: internal
   - id: evidence.production-work-applicability-and-runtime-decision
     type: document
     path: docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml
-    description: 已确认的生产作业决策，规定无适用规则时可删除模板及全部流程配置、有规则时阻断；适用规则只准入有当前已发布流程的作业；未来按适用规则自动匹配，并在作业实例创建时冻结作业模板、已发布流程版本、命中规则和流程配置快照。该决策是业务权威来源，不是当前运行时实现证据。
+    description: 已确认的生产作业决策，规定无适用规则时可删除模板及全部流程配置、有规则时阻断；适用规则只准入有当前已发布流程的作业；按当前上下文实时匹配，后续工序创建实例时冻结作业模板、已发布流程版本、命中规则、匹配事实及流程配置，已有实例即使失配也保留。该决策是业务权威来源，不是运行验证证据。
     visibility: internal
   - id: evidence.ai-transaction-runtime-architecture
     type: document

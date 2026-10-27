@@ -1,13 +1,6 @@
 knowledgeModelVersion: 0.3.25
 questions:
-  - id: question.production-batch-quantity-lower-bound
-    question: BATCH 手动目标数量及按每批数量生成时，是否允许 0 < q < 1，还是要求输入数量至少为 1；所选下限如何适用于已经确认的末批余数？
-    context: 旧 rule.production.production-batch-input-quantity-required 与 rule.production.mass-batch-quantity-distribution 的结构化条件为 >= 1，旧词条及中文解释要求正数量，当前 WorkOrderPage、ProductionService.split 和数据库 CHECK(target_quantity > 0) 按 > 0 校验。DEC-0012/0014 明确数量必填、SN=1、分配及总量边界，但未明确该区间的业务资格。0d46558234a933a020430ccf6c6a064ecfa05687 将阈值改为 > 0 并判定无需业务确认属于过度推断，本次按用户授权撤回；两条组合规则的历史 AST 保留为 deprecated/internal，双方来源均不能自动决定当前政策。
-    options:
-      - 允许大于 0 的数量，包括 0 < q < 1；仍须遵守既有精度、总量及其他资格约束，并完成相应边界验证
-      - 输入数量至少为 1；同时明确已经确认的末批余数在不足 1 时如何处理，并核对实际入口、持久化和既有数据影响
-    impact: 仅在后续需要确定或改变该下限的业务规则、手动添加、批量生成、导入、服务或存储校验时阻塞依赖范围；不阻塞本次恢复待决记录及无关功能。确认前不把 > 0 或 >= 1 提升为已确认准入规范，不取消数量必填、正整数批次数、SN=1、总量和末批余数要求，不擅自丢弃、补足余数或改变生产数据。本次不修改运行代码，也未完成小数边界业务验证。补正来源见 docs/knowledge/evidence/ontology-foundation-fact-types.md 第四节。
-    visibility: internal
+
   - id: question.form-projection-notebook-effective-unit
     question: 长期记录本按单条还是整本最终生效，条目如何关联跨工单生产对象？
     context: DEC-0077首轮实施只覆盖普通生产表单，设计Q3尚未确定长期记录本的记录单位和生命周期。

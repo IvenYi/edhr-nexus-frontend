@@ -68,7 +68,7 @@ evidence:
   - id: evidence.production-execution-snapshot-builder-source
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
-    description: original-evidence；按对象与工单装配产品、制程版本、路线节点与连线、eDHR版本、表单模型/画布及SOP文档版本和页段；根据产品、产品簇和工序匹配WORK规则，命中EXCEPTION排除，冻结命中规则和当前已发布作业流程及表单流程配置。缺少或不唯一的配置拒绝构建。工序配置表单和作业表单即使引用同一模板版本，仍为独立来源：只有工序配置表单保留对应eDHR项身份，作业表单在节点到达后独立创建，不共享完成判断或实例。
+    description: original-evidence；按对象与工单装配产品、制程版本、路线节点与连线、eDHR版本、表单模型/画布及SOP文档版本和页段；build仅构建制程侧配置；refreshWorks仅在PENDING工序按当前产品、产品簇和工序匹配WORK规则，命中EXCEPTION排除，并保留已有state.works实例对应的作业与表单快照。新候选记录matchContext及当前已发布图，实际实例于START创建时冻结。缺少或不唯一的配置拒绝构建。工序配置表单和作业表单即使引用同一模板版本，仍为独立来源：只有工序配置表单保留对应eDHR项身份，作业表单在节点到达后独立创建，不共享完成判断或实例。
     visibility: internal
   - id: evidence.production-execution-engine-source
     type: code
@@ -78,7 +78,7 @@ evidence:
   - id: evidence.production-execution-service-source
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
-    description: original-evidence；扫码和查询只读；首次合法START生成并持久化对象执行快照，后续沿用快照与运行记录，revision防止过期提交。查询投影对未创建实例的计划表单按当前工序和作业节点返回 WAITING_OPERATION_START、WAITING_WORK_NODE 或 NOT_APPLICABLE，避免将不可填的计划表单冒充为未填报实例。执行事务按工单后对象获取锁并在锁后重新判断终态，历史已开工但无记录不能补造状态；全部普通工序完成后更新对象完成。2026-10-15本批源码将act声明为REPEATABLE_READ，使其首次START多次配置读取与同事务DHR目录构建使用一致已提交视图，防止所选旧路线/DHR身份混入新子绑定；该隔离机制属于工程选择，不新增发布、禁编辑或提前冻结政策。直接执行控制器在服务事务代理回滚后只将原因链SQLState40001映射为既有陈旧修订的400业务提示，不自动重试，其他异常继续抛出。执行状态、对象状态、DHR及PRODUCTION_EXECUTION前后快照审计保持同事务保存；源码本身不证明测试执行通过或全系统所有生产入口均获得相同隔离与验证。
+    description: original-evidence；扫码和查询只读；首次合法START生成并持久化制程侧执行快照；后续PENDING工序在查询中预览当前作业，START事务重新匹配、创建并保存新实例及snapshot审计前后内容，已有实例保持。GET不持久化候选，IN_PROGRESS/COMPLETED不补入；revision防止过期提交。查询投影对未创建实例的计划表单按当前工序和作业节点返回 WAITING_OPERATION_START、WAITING_WORK_NODE 或 NOT_APPLICABLE，避免将不可填的计划表单冒充为未填报实例。执行事务按工单后对象获取锁并在锁后重新判断终态，历史已开工但无记录不能补造状态；全部普通工序完成后更新对象完成。2026-10-15本批源码将act声明为REPEATABLE_READ，使其首次START多次配置读取与同事务DHR目录构建使用一致已提交视图，防止所选旧路线/DHR身份混入新子绑定；该隔离机制属于工程选择，不新增发布、禁编辑或提前冻结政策。直接执行控制器在服务事务代理回滚后只将原因链SQLState40001映射为既有陈旧修订的400业务提示，不自动重试，其他异常继续抛出。执行状态、对象状态、DHR及PRODUCTION_EXECUTION前后快照审计保持同事务保存；源码本身不证明测试执行通过或全系统所有生产入口均获得相同隔离与验证。
     visibility: internal
   - id: evidence.production-execution-access-source
     type: code

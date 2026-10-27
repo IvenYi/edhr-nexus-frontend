@@ -165,6 +165,7 @@ public class ProductionExecutionService {
         // Keep the order/object lock order consistent with order termination and allocation.
         Long orderId = objects.findWorkOrderId("default", id).orElseThrow(() -> invalid("生产对象不存在"));
         WorkOrder order = orders.findByTenantIdAndIdForUpdate("default", orderId).orElseThrow(() -> invalid("工单不存在"));
+        String previousOrderStatus = order.getStatus();
         ProductionObject object = objects.findByTenantIdAndIdForUpdate("default", id).orElseThrow(() -> invalid("生产对象不存在"));
         boolean recordAction = List.of("ATTACH_FORM", "SAVE", "SUBMIT", "APPROVE", "RETURN", "SIGN_FIELD", "TRANSFER", "ADD_FORM_COPY", "UPDATE_FORM_COPY_REMARK", "END_FORM").contains(command.action());
         boolean afterProduction = "COMPLETED".equals(object.getStatus()) && recordAction;
@@ -180,6 +181,7 @@ public class ProductionExecutionService {
         boolean created = execution == null;
         if (created) {
             if (!"START".equals(command.action()) || !"CREATED".equals(object.getStatus())) throw invalid("此对象尚无可用执行记录，不能补造历史执行状态");
+            production.requireApplicableProcess(object, order);
             snapshot = snapshots.build(object, order); state = engine.initialState(snapshot);
             if (snapshot.path("operations").isEmpty()) throw invalid("产品配置没有可执行工序");
             execution = ProductionExecution.builder().objectId(id).revision(0L).startedAt(LocalDateTime.now()).build();
@@ -194,7 +196,7 @@ public class ProductionExecutionService {
         if (supplement && (command.reason() == null || command.reason().isBlank())) throw invalid("请填写完工后补充记录的原因");
         if (command.reason() != null && command.reason().length() > 500) throw invalid("原因不能超过500个字符");
         ObjectNode before = state.deepCopy();
-        ObjectNode snapshotBefore = "ATTACH_FORM".equals(command.action()) ? snapshot.deepCopy() : null;
+        ObjectNode snapshotBefore = List.of("ATTACH_FORM", "START").contains(command.action()) ? snapshot.deepCopy() : null;
         String attachedFormId = null;
         String previousObjectStatus = object.getStatus();
         boolean remarkOnly = "UPDATE_FORM_COPY_REMARK".equals(command.action());
@@ -211,7 +213,10 @@ public class ProductionExecutionService {
                         .put("attachmentReason", command.reason().strip()).put("sourceOperationId", command.operationId());
                 engine.attachForm(snapshot, state, command.operationId(), custom, operator);
             }
-            case "START" -> engine.start(snapshot, state, command.operationId(), operator);
+            case "START" -> {
+                snapshots.refreshWorks(snapshot, (ObjectNode) targetOperation, state.path("operations").path(command.operationId()));
+                engine.start(snapshot, state, command.operationId(), operator);
+            }
             case "COMPLETE" -> engine.complete(snapshot, state, command.operationId(), operator, Boolean.TRUE.equals(command.acknowledgeIncomplete()));
             case "ADD_FORM_COPY" -> {
                 com.zencas.edhr.template.service.FormProjectionInterpreter.validateConfiguration(targetForm);
@@ -246,7 +251,16 @@ public class ProductionExecutionService {
         execution.setSnapshotJson(snapshot.toString()); execution.setStateJson(state.toString());
         execution.setRevision(execution.getRevision() + 1); execution.setUpdatedAt(LocalDateTime.now());
         executions.saveAndFlush(execution);
-        auditObjectStatusChange(object, previousObjectStatus, command.reason());
+        auditObjectStatusChange(object, previousObjectStatus, command.reason(), created ? snapshotBefore : null, execution.getStartedAt());
+        if (!java.util.Objects.equals(previousOrderStatus, order.getStatus())) {
+            audits.save(AuditEvent.builder().id(ids.nextId()).tenantId(order.getTenantId())
+                    .entityType("WORK_ORDER").entityId(order.getId().toString()).action("UPDATE")
+                    .contentBefore(mapper.createObjectNode().put("status", previousOrderStatus).toString())
+                    .contentAfter(mapper.createObjectNode().put("status", order.getStatus()).toString())
+                    .operatorId(AuditContext.getOperatorId()).operatorName(AuditContext.getOperatorName()).operatorAccount(AuditContext.getOperatorAccount())
+                    .source(AuditContext.getSource()).moduleName("生产").menuName("生产执行").functionName("工单状态变更")
+                    .dataSummary(order.getOrderNo()).ipAddress(AuditContext.getIpAddress()).createdAt(LocalDateTime.now()).build());
+        }
         ObjectNode auditBefore = mapper.createObjectNode().put("objectStatus", previousObjectStatus); auditBefore.set("execution", before);
         ObjectNode auditAfter = mapper.createObjectNode().put("objectStatus", object.getStatus()); auditAfter.set("execution", state);
         if (snapshotBefore != null) { auditBefore.set("snapshot", snapshotBefore); auditAfter.set("snapshot", snapshot); }
@@ -262,12 +276,18 @@ public class ProductionExecutionService {
         return result;
     }
 
-    private void auditObjectStatusChange(ProductionObject object, String previousStatus, String reason) {
+    private void auditObjectStatusChange(ProductionObject object, String previousStatus, String reason, ObjectNode processSnapshot, LocalDateTime startedAt) {
         if (java.util.Objects.equals(previousStatus, object.getStatus())) return;
+        ObjectNode after = mapper.createObjectNode().put("status", object.getStatus());
+        if (processSnapshot != null) {
+            after.set("processReference", processSnapshot.path("processReference"));
+            after.set("processSnapshot", processSnapshot);
+            after.put("processFrozenAt", startedAt.toString());
+        }
         audits.save(AuditEvent.builder().id(ids.nextId()).tenantId(object.getTenantId())
                 .entityType("PRODUCTION_OBJECT").entityId(object.getId().toString()).action("UPDATE")
                 .contentBefore(mapper.createObjectNode().put("status", previousStatus).toString())
-                .contentAfter(mapper.createObjectNode().put("status", object.getStatus()).toString())
+                .contentAfter(after.toString())
                 .operatorId(AuditContext.getOperatorId()).operatorName(AuditContext.getOperatorName())
                 .operatorAccount(AuditContext.getOperatorAccount()).source(AuditContext.getSource())
                 .moduleName("生产").menuName("生产执行").functionName("生产对象状态变更")
@@ -287,6 +307,11 @@ public class ProductionExecutionService {
             snapshot.putArray("operations"); response.put("configurationError", error.getMessage());
         }
         ObjectNode state = execution == null ? engine.initialState(snapshot) : parse(execution.getStateJson());
+        String processIssue = null;
+        if (execution == null && "CREATED".equals(object.getStatus())) {
+            try { production.requireApplicableProcess(object, order); }
+            catch (com.zencas.edhr.common.exception.BusinessException error) { processIssue = error.getMessage(); }
+        }
         if (execution != null) {
             formRecords.projectCreationMetadata(object.getId(), object.getTenantId(), state);
             Map<String, String> creatorNames = new java.util.HashMap<>();
@@ -319,12 +344,19 @@ public class ProductionExecutionService {
         ObjectNode processQuality = response.putObject("processQuality");
         response.set("formalOutput", outputs.object(object.getId()));
         for (JsonNode op : snapshot.path("operations")) {
+            String workConfigurationError = null;
+            if (allowed) {
+                try { snapshots.refreshWorks(snapshot, (ObjectNode) op, state.path("operations").path(op.path("id").asText())); }
+                catch (com.zencas.edhr.common.exception.BusinessException error) { workConfigurationError = error.getMessage(); }
+            }
             if (allowed) engine.settleCompletedWorkForms(snapshot, state, op.path("id").asText(), null);
             String id = op.path("id").asText(); JsonNode current = state.path("operations").path(id);
             operationOutputs.set(id, ExecutionOutputSummary.project(mapper, op, current));
             processQuality.set(id, ExecutionQualitySummary.project(mapper, op, current));
             ObjectNode entry = availability.putObject(id);
             List<String> start = engine.startIssues(snapshot, state, op);
+            if (processIssue != null) start.add(processIssue);
+            if (workConfigurationError != null) start.add(workConfigurationError);
             List<String> completion = engine.completionIssues(op, current);
             entry.set("startIssues", mapper.valueToTree(start)); entry.set("completionIssues", mapper.valueToTree(completion));
             entry.set("completionWarnings", mapper.valueToTree(engine.completionWarnings(op, current)));

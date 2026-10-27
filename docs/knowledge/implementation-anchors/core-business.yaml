@@ -34,7 +34,7 @@ implementationAnchors:
     targetId: concept.work-order
     targetType: concept
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java]
-    apiReferences: [POST /api/v1/production/work-orders]
+    apiReferences: ["POST /api/v1/production/work-orders","PUT /api/v1/production/work-orders/{id}","POST /api/v1/production/work-orders/{id}/end"]
     databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderControllerTest.java]
@@ -42,14 +42,14 @@ implementationAnchors:
     visibility: internal
     evidenceIds: [evidence.work-order-controller, evidence.work-order-audit-snapshot-controller-test]
     sourceRevision: working-tree
-    sourceLocator: "WorkOrderController；2026-10-21仅初始化定位维护（d405a9af工作树）：work_order及uk_work_order_no、idx_work_order_product、idx_work_order_status。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
-    capturedAt: '2026-09-13'
+    sourceLocator: "2026-10-27：WorkOrderController.create/update/end；work_order无process_version_id，保留固定生产形态、计划及终止原因时间。CREATED字段编辑与显式提前结束分别校验。"
+    capturedAt: '2026-10-27'
     reviewStatus: reviewed
   - id: anchor.core.production-object-runtime
     targetId: concept.production-object
     targetType: concept
     codeReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java]
-    apiReferences: []
+    apiReferences: ["POST /api/v1/production/work-orders/{workOrderId}/objects","PUT /api/v1/production/objects/{id}"]
     databaseReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql]
     uiReferences: [gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx]
     testReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionServiceTest.java]
@@ -57,8 +57,8 @@ implementationAnchors:
     visibility: internal
     evidenceIds: [evidence.production-service, evidence.production-service-test]
     sourceRevision: working-tree
-    sourceLocator: "ProductionService；2026-10-21仅初始化定位维护（d405a9af工作树）：production_object.object_type/target_quantity、ck_production_object_type/target及work_order_id外键；不重新解释数量下限业务待决。原sourceRevision/capturedAt仍标识先前实现核对，本注记不重做或提升其业务验收。"
-    capturedAt: '2026-09-13'
+    sourceLocator: "2026-10-27：ProductionService.split/updateObject/allocatedQuantity/requireApplicableProcess/updateOrderWhenObjectsTerminal；对象独立制程引用，数量正数且精度/分配守恒，正常完成与手动结束分开。"
+    capturedAt: '2026-10-27'
     reviewStatus: reviewed
   - id: anchor.core.production-work-configuration
     targetId: concept.production-work

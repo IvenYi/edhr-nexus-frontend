@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component;
 @Component
 @StateMachineDef(entityType = "WORK_ORDER", transitions = {
         "CREATED->IN_PROCESS", "CREATED->COMPLETED", "IN_PROCESS->COMPLETED", "IN_PROCESS->EARLY_TERMINATED", "COMPLETED->CLOSED",
-        "CREATED->CANCELLED"
+        "CREATED->CANCELLED", "CREATED->EARLY_TERMINATED"
 })
 public class WorkOrderStatusMachine {}

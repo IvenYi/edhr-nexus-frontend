@@ -1,0 +1,492 @@
+{
+  "decisionPackage": {
+    "id": "DEC-PACKAGE-BATCH-PROCESS-20261027",
+    "scope": "batch-process-binding-lifecycle-audit-and-split-ui",
+    "knowledgeBaselineVersion": "0.3.25",
+    "contractBaseline": {
+      "sourceCommit": "d5adf22066ea4d6bb1c7e7ede09961fc97bea675",
+      "targetBranch": "edhr-dev",
+      "targetCommit": "d5adf22066ea4d6bb1c7e7ede09961fc97bea675",
+      "contractReadCommit": "d5adf22066ea4d6bb1c7e7ede09961fc97bea675",
+      "uncommittedContractPaths": []
+    },
+    "summary": "直接修正批次制程归属、引用/冻结、数量及工单结束规则，增加审计快照详情并重排拆分弹窗。保留前序作业实时匹配改动。",
+    "confirmed": {
+      "concepts": [],
+      "relationships": [],
+      "rules": [
+        {
+          "id": "rule.batch-process.batch-process",
+          "name": "制程由生产对象显式选择，工单不再绑定唯一制程；新选产品优先簇兜底，同一工单生产形态固定。",
+          "status": "specified",
+          "trigger": "production.prepare-or-start",
+          "condition": {
+            "scope": "this-confirmed-functional-slice"
+          },
+          "result": {
+            "type": "enforce",
+            "statement": "制程由生产对象显式选择，工单不再绑定唯一制程；新选产品优先簇兜底，同一工单生产形态固定。"
+          },
+          "sourceReferences": [
+            "user-confirmed: 2026-10-26/27 conversation"
+          ]
+        },
+        {
+          "id": "rule.batch-process.prestart-edit",
+          "name": "CREATED且无执行实例的批次在工单CREATED/IN_PROCESS时可改制程和目标数量；已取消及已开工不可改。",
+          "status": "specified",
+          "trigger": "production.prepare-or-start",
+          "condition": {
+            "scope": "this-confirmed-functional-slice"
+          },
+          "result": {
+            "type": "enforce",
+            "statement": "CREATED且无执行实例的批次在工单CREATED/IN_PROCESS时可改制程和目标数量；已取消及已开工不可改。"
+          },
+          "sourceReferences": [
+            "user-confirmed: 2026-10-26/27 conversation"
+          ]
+        },
+        {
+          "id": "rule.batch-process.snapshot",
+          "name": "未开工只保存引用；首次START校验当前适用性、时间、形态并冻结当时配置。主数据同V1可原地更新，旧执行快照不受影响。",
+          "status": "specified",
+          "trigger": "production.prepare-or-start",
+          "condition": {
+            "scope": "this-confirmed-functional-slice"
+          },
+          "result": {
+            "type": "enforce",
+            "statement": "未开工只保存引用；首次START校验当前适用性、时间、形态并冻结当时配置。主数据同V1可原地更新，旧执行快照不受影响。"
+          },
+          "sourceReferences": [
+            "user-confirmed: 2026-10-26/27 conversation"
+          ]
+        },
+        {
+          "id": "rule.batch-process.eligibility",
+          "name": "产品新增自有制程不废弃仍合法的簇引用；转簇/失效/形态变化在开工阻止并要求明确重选，不自动换版。",
+          "status": "specified",
+          "trigger": "production.prepare-or-start",
+          "condition": {
+            "scope": "this-confirmed-functional-slice"
+          },
+          "result": {
+            "type": "enforce",
+            "statement": "产品新增自有制程不废弃仍合法的簇引用；转簇/失效/形态变化在开工阻止并要求明确重选，不自动换版。"
+          },
+          "sourceReferences": [
+            "user-confirmed: 2026-10-26/27 conversation"
+          ]
+        },
+        {
+          "id": "rule.batch-process.allocation",
+          "name": "批次数量大于0可小于1；SN=1；增量<=未分配数量，计划量不自动改变；取消释放，提前结束不释放原目标分配量。",
+          "status": "specified",
+          "trigger": "production.prepare-or-start",
+          "condition": {
+            "scope": "this-confirmed-functional-slice"
+          },
+          "result": {
+            "type": "enforce",
+            "statement": "批次数量大于0可小于1；SN=1；增量<=未分配数量，计划量不自动改变；取消释放，提前结束不释放原目标分配量。"
+          },
+          "sourceReferences": [
+            "user-confirmed: 2026-10-26/27 conversation"
+          ]
+        },
+        {
+          "id": "rule.batch-process.order-edit",
+          "name": "工单CREATED无批次可编辑；曾拆批后产品与工单编号固定，其他字段可改且计划量>=非取消目标总和；IN_PROCESS保持不可编辑。",
+          "status": "specified",
+          "trigger": "production.prepare-or-start",
+          "condition": {
+            "scope": "this-confirmed-functional-slice"
+          },
+          "result": {
+            "type": "enforce",
+            "statement": "工单CREATED无批次可编辑；曾拆批后产品与工单编号固定，其他字段可改且计划量>=非取消目标总和；IN_PROCESS保持不可编辑。"
+          },
+          "sourceReferences": [
+            "user-confirmed: 2026-10-26/27 conversation"
+          ]
+        },
+        {
+          "id": "rule.batch-process.order-end",
+          "name": "正常完成要求计划已全分配且全部非取消对象COMPLETED；单批提前结束不自动结束工单。手动工单提前结束要求无CREATED/IN_PROGRESS对象、原因必填。",
+          "status": "specified",
+          "trigger": "production.prepare-or-start",
+          "condition": {
+            "scope": "this-confirmed-functional-slice"
+          },
+          "result": {
+            "type": "enforce",
+            "statement": "正常完成要求计划已全分配且全部非取消对象COMPLETED；单批提前结束不自动结束工单。手动工单提前结束要求无CREATED/IN_PROGRESS对象、原因必填。"
+          },
+          "sourceReferences": [
+            "user-confirmed: 2026-10-26/27 conversation"
+          ]
+        },
+        {
+          "id": "rule.batch-process.audit",
+          "name": "所有修改有数据审计；批次审计显示制程身份与{}详情，开工冻结内容不能从当前主数据重构。其他快照入口只盘点。",
+          "status": "specified",
+          "trigger": "production.prepare-or-start",
+          "condition": {
+            "scope": "this-confirmed-functional-slice"
+          },
+          "result": {
+            "type": "enforce",
+            "statement": "所有修改有数据审计；批次审计显示制程身份与{}详情，开工冻结内容不能从当前主数据重构。其他快照入口只盘点。"
+          },
+          "sourceReferences": [
+            "user-confirmed: 2026-10-26/27 conversation"
+          ]
+        },
+        {
+          "id": "rule.batch-process.ui",
+          "name": "在既有React/MUI基础上重排工单生产对象拆分弹窗，保留单个/批量/导入，逐批引用明确；本体直接纠正当前含义。",
+          "status": "specified",
+          "trigger": "production.prepare-or-start",
+          "condition": {
+            "scope": "this-confirmed-functional-slice"
+          },
+          "result": {
+            "type": "enforce",
+            "statement": "在既有React/MUI基础上重排工单生产对象拆分弹窗，保留单个/批量/导入，逐批引用明确；本体直接纠正当前含义。"
+          },
+          "sourceReferences": [
+            "user-confirmed: 2026-10-26/27 conversation"
+          ]
+        }
+      ],
+      "executionContracts": []
+    },
+    "inferred": [
+      {
+        "id": "inference.batch-process.audit-unstarted",
+        "statement": "未开工的审计展示当次记录的制程引用；明确未冻结，不能伪称冻结快照。",
+        "rationale": "引用与首次开工冻结边界",
+        "relatedIds": []
+      },
+      {
+        "id": "inference.batch-process.manual-end-status",
+        "statement": "手动提前结束入口允许CREATED/IN_PROCESS；无对象或全取消的CREATED也可原因结束。",
+        "rationale": "已确认先处理完子对象且不级联，沿现有活动工单状态实现明确命令。",
+        "relatedIds": [
+          "DEC-0018-02"
+        ]
+      }
+    ],
+    "unresolved": [],
+    "replacementScopes": [
+      {
+        "decisionStatementId": "DEC-0001-03",
+        "supersededStatementIds": [
+          "DEC-0001-03",
+          "DEC-0001-09"
+        ],
+        "scope": "直接纠正旧DEC-0012锁版继承交叉说明，以及产品簇独立冻结仍有缺口的当前说明；对象逐批选版，首次START冻结productFamilyId。",
+        "retainedScope": "原始讨论来源及该决策其他未受影响声明保留；实时作业求值上下文不改写首次制程冻结。",
+        "sourceReferences": [
+          "user-confirmed: 2026-10-26/27 当前对话",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "decisionStatementId": "DEC-0002-10",
+        "supersededStatementIds": [
+          "DEC-0002-10"
+        ],
+        "scope": "成员转簇后的未开工对象资格与新候选/已有引用的不同边界",
+        "retainedScope": "各声明未被本轮替换的审计、执行、DHR及原始来源保持；具体ID处置见ontology-result.yaml",
+        "sourceReferences": [
+          "user-confirmed: 2026-10-26/27 当前对话",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "decisionStatementId": "DEC-0012-02",
+        "supersededStatementIds": [
+          "DEC-0012-02",
+          "DEC-0012-03",
+          "DEC-0012-04",
+          "DEC-0012-06",
+          "DEC-0012-07"
+        ],
+        "scope": "工单移除制程绑定、对象独立选版、字段编辑、分配及正常完成",
+        "retainedScope": "各声明未被本轮替换的审计、执行、DHR及原始来源保持；具体ID处置见ontology-result.yaml",
+        "sourceReferences": [
+          "user-confirmed: 2026-10-26/27 当前对话",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "decisionStatementId": "DEC-0013-02",
+        "supersededStatementIds": [
+          "DEC-0013-02",
+          "DEC-0013-04"
+        ],
+        "scope": "首拆仅固定生产形态与产品身份；对象先处理再显式结束工单",
+        "retainedScope": "各声明未被本轮替换的审计、执行、DHR及原始来源保持；具体ID处置见ontology-result.yaml",
+        "sourceReferences": [
+          "user-confirmed: 2026-10-26/27 当前对话",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "decisionStatementId": "DEC-0014-03",
+        "supersededStatementIds": [
+          "DEC-0014-03",
+          "DEC-0014-06",
+          "DEC-0014-08",
+          "DEC-0014-10"
+        ],
+        "scope": "待添加对象各自携带制程；拆分弹窗的预览、数量和已拆分编辑入口",
+        "retainedScope": "各声明未被本轮替换的审计、执行、DHR及原始来源保持；具体ID处置见ontology-result.yaml",
+        "sourceReferences": [
+          "user-confirmed: 2026-10-26/27 当前对话",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "decisionStatementId": "DEC-0015-05",
+        "supersededStatementIds": [
+          "DEC-0015-05"
+        ],
+        "scope": "工单审计不再投影退役制程字段；现有字段及终止原因留历史",
+        "retainedScope": "各声明未被本轮替换的审计、执行、DHR及原始来源保持；具体ID处置见ontology-result.yaml",
+        "sourceReferences": [
+          "user-confirmed: 2026-10-26/27 当前对话",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "decisionStatementId": "DEC-0018-01",
+        "supersededStatementIds": [
+          "DEC-0018-01",
+          "DEC-0018-02",
+          "DEC-0018-03"
+        ],
+        "scope": "取消批次提前结束自动联动，增加无未结束对象且原因必填的工单命令",
+        "retainedScope": "各声明未被本轮替换的审计、执行、DHR及原始来源保持；具体ID处置见ontology-result.yaml",
+        "sourceReferences": [
+          "user-confirmed: 2026-10-26/27 当前对话",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "decisionStatementId": "DEC-0019-02",
+        "supersededStatementIds": [
+          "DEC-0019-02",
+          "DEC-0019-03"
+        ],
+        "scope": "批次配置修改与审计制程身份、首次开工冻结详情",
+        "retainedScope": "各声明未被本轮替换的审计、执行、DHR及原始来源保持；具体ID处置见ontology-result.yaml",
+        "sourceReferences": [
+          "user-confirmed: 2026-10-26/27 当前对话",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "decisionStatementId": "DEC-0069-01",
+        "supersededStatementIds": [
+          "DEC-0069-01"
+        ],
+        "scope": "替换旧阶段排除工单命令的表述；不改变单批终止自身DHR的事务规则",
+        "retainedScope": "各声明未被本轮替换的审计、执行、DHR及原始来源保持；具体ID处置见ontology-result.yaml",
+        "sourceReferences": [
+          "user-confirmed: 2026-10-26/27 当前对话",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      }
+    ],
+    "impactAnalysis": {
+      "level": "L2",
+      "directImpacts": [
+        {
+          "area": "production preparation and execution",
+          "change": "解耦工单与制程，未开工批次修改，结束校验及审计",
+          "evidenceReferences": [
+            "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+            "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java"
+          ]
+        }
+      ],
+      "transitiveImpacts": [
+        {
+          "area": "DHR, audit, output, reference choices",
+          "change": "只沿对象制程/冻结快照读取，核对旧工单字段消费者",
+          "evidenceReferences": [
+            "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionRelations.java",
+            "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+            "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+            "docs/development/batch-process-20261027/impact-analysis.md"
+          ]
+        }
+      ],
+      "potentialImpacts": [
+        {
+          "area": "other frozen snapshot viewers",
+          "concern": "表单配置、作业实例、DHR审批配置等只盘点，不在本次加入口",
+          "evidenceReferences": [
+            "docs/knowledge/evidence/batch-process-2026-10-27.md"
+          ]
+        }
+      ],
+      "unaffectedAreas": [
+        "既有作业动态匹配",
+        "已开工执行及表单/DHR历史证据",
+        "产出统计规则"
+      ],
+      "compatibilityAndMigration": [
+        "用户明确MVP不考虑旧数据兼容：直接删除work_order.process_version_id及其FK，baseline增加termination_reason/termination_at，无新增兼容迁移、双读或遗留字段。新建独立PostgreSQL库已执行Liquibase初始化与Hibernate validate。未修改用户既有开发库；旧库运行新baseline需重建，不能沿用旧Liquibase校验和。"
+      ],
+      "snapshotImpacts": [
+        "首次START冻结制程身份、适用依据与实际配置；版本同名可不同内容。"
+      ],
+      "auditImpacts": [
+        "未开工修改记录引用前后值；首次START在PRODUCTION_OBJECT审计记录processReference/processSnapshot/processFrozenAt；WORK_ORDER状态随开工或最终完工变化另留审计。写审计失败与命令同事务回滚。"
+      ],
+      "permissionImpacts": [
+        "工单列表/写/拆分/提前结束保持production.work-orders；批次修改接受work-orders或batches；其所需单条工单和候选读取增加batches。production.execution和audit.logs沿原有边界。"
+      ],
+      "testImpacts": [
+        {
+          "scope": "backend, frontend, knowledge",
+          "scenarios": [
+            "跨版本拆批",
+            "量守恒与并发",
+            "已开工冻结",
+            "失效与转簇阻断",
+            "同标签不同内容审计",
+            "正常完成与手动结束",
+            "拆分导入/批量/编辑交互"
+          ],
+          "evidenceReferences": [
+            "docs/development/batch-process-20261027/verification.md"
+          ]
+        }
+      ],
+      "evidenceGaps": [
+        "其他快照详情入口仅盘点，全系统回归不在本轮范围；独立质量结果另列。远端分支保护及部署未核验。"
+      ]
+    },
+    "extensionStrategy": {
+      "selectedPaths": [
+        "product-core"
+      ],
+      "rationale": "标准生产领域契约，沿既有服务与审计组件，不增加客户分支。",
+      "ownershipBoundaries": [
+        {
+          "owner": "production",
+          "responsibility": "生产准备、状态与快照"
+        },
+        {
+          "owner": "compliance",
+          "responsibility": "展示不可变审计事件内容"
+        }
+      ]
+    },
+    "affectedFiles": [
+      {
+        "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production",
+        "changeType": "update",
+        "reason": "批次制程及生命周期"
+      },
+      {
+        "path": "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx",
+        "changeType": "update",
+        "reason": "拆分与编辑"
+      },
+      {
+        "path": "docs/knowledge",
+        "changeType": "update",
+        "reason": "直接修正受影响当前定义及关联范围"
+      }
+    ],
+    "acceptanceScenarios": [
+      {
+        "id": "scenario.batch-process.1",
+        "given": "已确认的生产准备与执行规则",
+        "when": "production.prepare-or-start",
+        "then": "制程由生产对象显式选择，工单不再绑定唯一制程；新选产品优先簇兜底，同一工单生产形态固定。",
+        "evidenceRequirements": [
+          "聚焦实现与独立验证证据"
+        ]
+      },
+      {
+        "id": "scenario.batch-process.2",
+        "given": "已确认的生产准备与执行规则",
+        "when": "production.prepare-or-start",
+        "then": "CREATED且无执行实例的批次在工单CREATED/IN_PROCESS时可改制程和目标数量；已取消及已开工不可改。",
+        "evidenceRequirements": [
+          "聚焦实现与独立验证证据"
+        ]
+      },
+      {
+        "id": "scenario.batch-process.3",
+        "given": "已确认的生产准备与执行规则",
+        "when": "production.prepare-or-start",
+        "then": "未开工只保存引用；首次START校验当前适用性、时间、形态并冻结当时配置。主数据同V1可原地更新，旧执行快照不受影响。",
+        "evidenceRequirements": [
+          "聚焦实现与独立验证证据"
+        ]
+      },
+      {
+        "id": "scenario.batch-process.4",
+        "given": "已确认的生产准备与执行规则",
+        "when": "production.prepare-or-start",
+        "then": "产品新增自有制程不废弃仍合法的簇引用；转簇/失效/形态变化在开工阻止并要求明确重选，不自动换版。",
+        "evidenceRequirements": [
+          "聚焦实现与独立验证证据"
+        ]
+      },
+      {
+        "id": "scenario.batch-process.5",
+        "given": "已确认的生产准备与执行规则",
+        "when": "production.prepare-or-start",
+        "then": "批次数量大于0可小于1；SN=1；增量<=未分配数量，计划量不自动改变；取消释放，提前结束不释放原目标分配量。",
+        "evidenceRequirements": [
+          "聚焦实现与独立验证证据"
+        ]
+      },
+      {
+        "id": "scenario.batch-process.6",
+        "given": "已确认的生产准备与执行规则",
+        "when": "production.prepare-or-start",
+        "then": "工单CREATED无批次可编辑；曾拆批后产品与工单编号固定，其他字段可改且计划量>=非取消目标总和；IN_PROCESS保持不可编辑。",
+        "evidenceRequirements": [
+          "聚焦实现与独立验证证据"
+        ]
+      },
+      {
+        "id": "scenario.batch-process.7",
+        "given": "已确认的生产准备与执行规则",
+        "when": "production.prepare-or-start",
+        "then": "正常完成要求计划已全分配且全部非取消对象COMPLETED；单批提前结束不自动结束工单。手动工单提前结束要求无CREATED/IN_PROGRESS对象、原因必填。",
+        "evidenceRequirements": [
+          "聚焦实现与独立验证证据"
+        ]
+      },
+      {
+        "id": "scenario.batch-process.8",
+        "given": "已确认的生产准备与执行规则",
+        "when": "production.prepare-or-start",
+        "then": "所有修改有数据审计；批次审计显示制程身份与{}详情，开工冻结内容不能从当前主数据重构。其他快照入口只盘点。",
+        "evidenceRequirements": [
+          "聚焦实现与独立验证证据"
+        ]
+      },
+      {
+        "id": "scenario.batch-process.9",
+        "given": "已确认的生产准备与执行规则",
+        "when": "production.prepare-or-start",
+        "then": "在既有React/MUI基础上重排工单生产对象拆分弹窗，保留单个/批量/导入，逐批引用明确；本体直接纠正当前含义。",
+        "evidenceRequirements": [
+          "聚焦实现与独立验证证据"
+        ]
+      }
+    ]
+  }
+}

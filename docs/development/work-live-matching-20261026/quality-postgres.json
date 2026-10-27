@@ -1,0 +1,524 @@
+{
+  "verifier": "work_quality",
+  "baseCommit": "d5adf22066ea4d6bb1c7e7ede09961fc97bea675",
+  "command": "mvn -q -Dtest=ProductionExecutionIntegrationTest,ProductionExecutionEngineTest,ProductionExecutionAvailabilityTest -Dexecution.test.url=jdbc:postgresql://127.0.0.1:5432/edhr_work_live_20261026_test -Dexecution.test.driver=org.postgresql.Driver -Dexecution.test.user=ivenwang -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect test",
+  "exitCode": 0,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+      "tests": "91",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "2",
+      "time": "8.33",
+      "cases": [
+        {
+          "name": "missingPermissionCannotReadOrExecute",
+          "result": "passed"
+        },
+        {
+          "name": "formRecordsBrowserFixture",
+          "result": "skipped",
+          "reason": "System property [form.records.browser] does not exist"
+        },
+        {
+          "name": "globalQueryRejectsUnsupportedAndMalformedConditions",
+          "result": "passed"
+        },
+        {
+          "name": "missingQueryPrincipalCannotAdvanceApprovalOrChangePersistedEvidence",
+          "result": "passed"
+        },
+        {
+          "name": "workFamilyChangesPreserveExistingInstancesAndOnlyRefreshFutureOperations",
+          "result": "passed"
+        },
+        {
+          "name": "globalQueryUsesFrozenMetadataCrossTemplateFiltersAndStablePages",
+          "result": "passed"
+        },
+        {
+          "name": "transferRechecksTheSelectedTenantUserWhenTheirAccountBecomesLocked",
+          "result": "passed"
+        },
+        {
+          "name": "workCandidatesUseCurrentFamilyBeforeFirstStartWithoutCreatingInstancesOnRead",
+          "result": "passed"
+        },
+        {
+          "name": "productionReferencesSaveTypedIdentityAndNumbersWithoutChangingExecutionOwnership",
+          "result": "passed"
+        },
+        {
+          "name": "directSigningBlocksMissingExpiredAndCustomerAdminLoginCredentialsWithoutLosingDraft",
+          "result": "passed"
+        },
+        {
+          "name": "failedSignedActionRollsBackSignatureValuesAndAudit",
+          "result": "passed"
+        },
+        {
+          "name": "worklistHistoricalNodeFiltersMatchTheSameEventBeforeSelectingTheLatest",
+          "result": "passed"
+        },
+        {
+          "name": "inlineSignatureHonorsFrozenReadonlyAndNodePermissions",
+          "result": "passed"
+        },
+        {
+          "name": "worklistFilteringPaginationAndLegacyHistoryDoNotInventParticipation",
+          "result": "passed"
+        },
+        {
+          "name": "inlineSignatureRollsBackWhenAuditFails",
+          "result": "passed"
+        },
+        {
+          "name": "executionPersistsSnapshotDraftAndAuditThenCompletesOnlyAfterAllOperations",
+          "result": "passed"
+        },
+        {
+          "name": "waitingExecutionSeesConcurrentTerminationAfterAcquiringLocks",
+          "result": "passed"
+        },
+        {
+          "name": "dhrSupplementUsesRealExecutionAndRecordServicesWithoutReopeningProduction",
+          "result": "passed"
+        },
+        {
+          "name": "worklistExplicitCreationIsIndependentFromFirstSaverAndSystemFirstCopy",
+          "result": "passed"
+        },
+        {
+          "name": "lifecycleAuditFailureRollsBackFinalCompletion(String)[1]",
+          "result": "passed"
+        },
+        {
+          "name": "lifecycleAuditFailureRollsBackFinalCompletion(String)[2]",
+          "result": "passed"
+        },
+        {
+          "name": "legacyTextSubtableColumnsUseTheSameStableIdsAsTheUnifiedRenderer",
+          "result": "passed"
+        },
+        {
+          "name": "previewReferencesRequireDesignPermissionAndDoNotWriteData",
+          "result": "passed"
+        },
+        {
+          "name": "executionMissingDhrCannotComplete",
+          "result": "passed"
+        },
+        {
+          "name": "historicalExecutionWithoutDhrCanAttachCustomFormWithoutFabricatingDhr",
+          "result": "passed"
+        },
+        {
+          "name": "workPlanExceptionIsRecheckedAtStartAndPassedOperationsAreNeverBackfilled",
+          "result": "passed"
+        },
+        {
+          "name": "historicalCopyMetadataUsesRecordedSourcesWithoutWritingOrInventingMissingValues",
+          "result": "passed"
+        },
+        {
+          "name": "inlineSignatureSavesWithoutSubmittingAndContentChangesInvalidateIt",
+          "result": "passed"
+        },
+        {
+          "name": "dhrFillingProjectsAndFiltersProductionStatusWithoutChangingDhrOrWriteRules",
+          "result": "passed"
+        },
+        {
+          "name": "inactiveReasonCanOnlyRemainUnchangedInItsPreviouslySavedSourceRow",
+          "result": "passed"
+        },
+        {
+          "name": "retiredTemplateCannotBeAttachedButExistingFrozenExecutionRemainsReadable",
+          "result": "passed"
+        },
+        {
+          "name": "inspectorChoiceOptionsSaveAndSubmitAgainstTheSameFrozenCanonicalValues",
+          "result": "passed"
+        },
+        {
+          "name": "paginatedReferenceApiUsesConfiguredSearchFieldsWithoutChangingDisplayOrWriting",
+          "result": "passed"
+        },
+        {
+          "name": "batchAndSnScanAreReadOnlyAndReturnCorrectConfiguration",
+          "result": "passed"
+        },
+        {
+          "name": "subtableCanvasReadonlyIsEnforcedForNewAndLegacySnapshots",
+          "result": "passed"
+        },
+        {
+          "name": "lifecycleAuditDoesNotRecordOrdinarySavesAsObjectChanges",
+          "result": "passed"
+        },
+        {
+          "name": "failedAuditRollsBackFormInstanceAllocation",
+          "result": "passed"
+        },
+        {
+          "name": "globalQueryRequiresBothPermissionsAndPreservesOldEntry",
+          "result": "passed"
+        },
+        {
+          "name": "remarkEditPersistsAuditsAndPreservesSubmittedFormReceipt",
+          "result": "passed"
+        },
+        {
+          "name": "lifecycleAuditFailureRollsBackFirstStart(String)[1]",
+          "result": "passed"
+        },
+        {
+          "name": "lifecycleAuditFailureRollsBackFirstStart(String)[2]",
+          "result": "passed"
+        },
+        {
+          "name": "globalQueryExactDetailsTenantBoundaryAndSourceControls",
+          "result": "passed"
+        },
+        {
+          "name": "deletingSignedRowsInvalidatesRemainingSignaturesAndRejectsForgery",
+          "result": "passed"
+        },
+        {
+          "name": "inlineSignatureRejectsUnavailableCertificationAndInvalidTargets",
+          "result": "passed"
+        },
+        {
+          "name": "legacyCompletedWorkProjectsNextNodeWithoutWritingAndSettlesOnTheNextAuditedAction",
+          "result": "passed"
+        },
+        {
+          "name": "obsoleteTestSnapshotsCannotCreateNewCopiesOrPersistMoreRetiredTraceRecords",
+          "result": "passed"
+        },
+        {
+          "name": "earlyTerminationFreezesSavedEvidenceAndLeavesOtherObjectRunning",
+          "result": "passed"
+        },
+        {
+          "name": "customTemplatePickerDoesNotTruncateVersions",
+          "result": "passed"
+        },
+        {
+          "name": "copiesPersistSeparateValuesSumOutputAndRejectStaleOrForeignWrites",
+          "result": "passed"
+        },
+        {
+          "name": "operationCustomGateAndExplicitScopeValidationCannotBeBypassed",
+          "result": "passed"
+        },
+        {
+          "name": "retiredTraceTemplateCannotCreateNewExecutionOrDhrAndScanExplainsTheConfigurationError",
+          "result": "passed"
+        },
+        {
+          "name": "batchCustomFormSurvivesOperationCompletionAndGatesOnlyBatch",
+          "result": "passed"
+        },
+        {
+          "name": "concurrentStartCreatesOneExecutionAndOneDhr",
+          "result": "passed"
+        },
+        {
+          "name": "firstStartRejectsUnconfiguredOperationModesWithoutExecutionDhrOrAuditWrites",
+          "result": "passed"
+        },
+        {
+          "name": "anOperationWithoutConfiguredFormsCanAttachItsFirstOptionalForm",
+          "result": "passed"
+        },
+        {
+          "name": "worklistReturnAndResubmitKeepPersonalHistoryAndUseActualApprovalQualification",
+          "result": "passed"
+        },
+        {
+          "name": "customFormTemplatesSearchAllVersionsWithoutPublicationAndKeepTenantBoundaries",
+          "result": "passed"
+        },
+        {
+          "name": "returnAndApprovalKeepTheOriginalFormNumber",
+          "result": "passed"
+        },
+        {
+          "name": "firstStartFreezesOneCommittedConfigurationDuringProcessRebinding",
+          "result": "passed"
+        },
+        {
+          "name": "failedAuditRollsBackObjectStateAndExecutionTogether",
+          "result": "passed"
+        },
+        {
+          "name": "browserEvidenceFixture",
+          "result": "skipped",
+          "reason": "System property [execution.browser] does not exist"
+        },
+        {
+          "name": "missingDhrBlocksEarlyTerminationWithoutChangingProduction",
+          "result": "passed"
+        },
+        {
+          "name": "tenantDelegationOutsideFrozenCandidatesPreservesSourceAndMovesOnlyCurrentResponsibility",
+          "result": "passed"
+        },
+        {
+          "name": "internalAdminUsesLoginPasswordOnlyForButtonAndUnsignedActionsDoNotImpersonate",
+          "result": "passed"
+        },
+        {
+          "name": "presenceCountsEditorsAcrossCopiesAndRejectsReadOnlyInstances",
+          "result": "passed"
+        },
+        {
+          "name": "configuredAndWorkFormsUsingTheSameTemplateRemainIndependent",
+          "result": "passed"
+        },
+        {
+          "name": "worklistRejectsWrongPermissionsParamsAndFailedActionsCreateNoHistory",
+          "result": "passed"
+        },
+        {
+          "name": "legacyFutureWorkPlansAreRefreshedButRealInstancesArePreserved",
+          "result": "passed"
+        },
+        {
+          "name": "globalQueryDoesNotGrantAnActiveApprovalNodeAndKeepsPrincipalHistory",
+          "result": "passed"
+        },
+        {
+          "name": "worklistIncludesUnsavedAndSavedButFilledRequiresActualSubmit",
+          "result": "passed"
+        },
+        {
+          "name": "copyMetadataPersistsAndSurvivesSaveWithoutChangingItsCreationIdentity",
+          "result": "passed"
+        },
+        {
+          "name": "automaticWorkAdvanceRollsBackWithItsSubmissionWhenAuditFails",
+          "result": "passed"
+        },
+        {
+          "name": "optionalCopyCompletionRequiresAcknowledgementAndPersistsUnfinishedState",
+          "result": "passed"
+        },
+        {
+          "name": "sharedWorkstationUsesSignerPermissionsAndDualIdentityWithoutChangingSession",
+          "result": "passed"
+        },
+        {
+          "name": "concurrentFirstSavesAllocateDifferentNumbers",
+          "result": "passed"
+        },
+        {
+          "name": "staleRevisionAndTerminatedObjectsCannotAdvance",
+          "result": "passed"
+        },
+        {
+          "name": "invalidFutureWorkOnlyBlocksItsOwnStartAndDoesNotBreakExistingWork",
+          "result": "passed"
+        },
+        {
+          "name": "formInstanceNumbersAreStableSearchableAndUseFrozenSnapshots",
+          "result": "passed"
+        },
+        {
+          "name": "realApprovalIdentityAndSignaturePasswordPersistAtomically",
+          "result": "passed"
+        },
+        {
+          "name": "workRefreshAndInstanceCreationRollBackTogetherWhenAuditFails",
+          "result": "passed"
+        },
+        {
+          "name": "formApprovalTransferMovesPendingTaskWithoutAdvancingTheFlow",
+          "result": "passed"
+        },
+        {
+          "name": "customFormsFreezeSelectedVersionAndRequireExplicitRequiredChoice",
+          "result": "passed"
+        },
+        {
+          "name": "contextualReferencesPersistOnceAndUseFrozenConfigurationAcrossReopenAndNewCopies",
+          "result": "passed"
+        },
+        {
+          "name": "lifecycleAuditRecordsOnlyRealObjectChangesForBatchAndSn",
+          "result": "passed"
+        },
+        {
+          "name": "firstStartAndDetailKeepSnowflakeDirectoryIdsAsStrings",
+          "result": "passed"
+        },
+        {
+          "name": "transferProjectionIsNodeScopedAndReassignmentIsClearedByReturn",
+          "result": "passed"
+        },
+        {
+          "name": "invalidCopyRemarksAndFailedAuditCannotCreateCopies",
+          "result": "passed"
+        },
+        {
+          "name": "optionalCustomFormCanBeFinishedAfterProductionWithReasonAndFrozenDhrProtection",
+          "result": "passed"
+        },
+        {
+          "name": "inlineSignaturesCoexistAndSubtableContentInvalidatesAllWithoutDeletingEvidence",
+          "result": "passed"
+        },
+        {
+          "name": "outputUsesSavedPurposeFieldsAndFrozenMappingWithoutChangingBatchCounters",
+          "result": "passed"
+        },
+        {
+          "name": "referenceLookupUsesFrozenCanvasAndValidatesCurrentRowAtSave",
+          "result": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionExecutionAvailabilityTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.262",
+      "cases": [
+        {
+          "name": "skippedConditionalFormStaysNotApplicableAfterOperationCompletion",
+          "result": "passed"
+        },
+        {
+          "name": "reachedWorkCopyAndMultipleConfiguredCopiesKeepTheirActualStatusAndIdentity",
+          "result": "passed"
+        },
+        {
+          "name": "optionalUnfinishedWorkCopyIsNotRelabeledNotApplicableWhenWorkAndOperationEnd",
+          "result": "passed"
+        },
+        {
+          "name": "beforeFirstStartProjectsOnlyFrozenPlansWithoutCreatingInstances",
+          "result": "passed"
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+      "tests": "22",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.013",
+      "cases": [
+        {
+          "name": "configuredConfirmationCannotBeSkippedByCompletingOperation",
+          "result": "passed"
+        },
+        {
+          "name": "routeCyclesAndUnsupportedNotificationsAreVisibleStartBlockers",
+          "result": "passed"
+        },
+        {
+          "name": "savedDraftDoesNotSatisfyRequiredFormAndReadOnlyValuesCannotBeForged",
+          "result": "passed"
+        },
+        {
+          "name": "missingRuntimeFactsNeverPassEvenWhenUsedUnderNot",
+          "result": "passed"
+        },
+        {
+          "name": "approvalAndSignatureAreRequiredBeforeFormCompletion",
+          "result": "passed"
+        },
+        {
+          "name": "skippedUnboundWorkFormDoesNotBlockCompletedConditionalWork",
+          "result": "passed"
+        },
+        {
+          "name": "requiredFieldsOwnedByLaterApprovalDoNotBlockEarlierSubmissionButBlockFinalCompletion",
+          "result": "passed"
+        },
+        {
+          "name": "workFormNeverSatisfiesIndependentRequiredOperationForm",
+          "result": "passed"
+        },
+        {
+          "name": "supplementCreatesNewCopyWithoutReopeningOrChangingCompletedRecord",
+          "result": "passed"
+        },
+        {
+          "name": "evaluatesStructuredConditionsWithoutExecutingCode",
+          "result": "passed"
+        },
+        {
+          "name": "directEntryConfigurationControlsPermissionsButtonsAndSignature",
+          "result": "passed"
+        },
+        {
+          "name": "rejectsDuplicateStartAndOutOfOrderCompletion",
+          "result": "passed"
+        },
+        {
+          "name": "transferDoesNotAdvanceOrChangeFormValuesAndRequiresReason",
+          "result": "passed"
+        },
+        {
+          "name": "supplementCannotBypassSubjectPermissionsOrUnreachedWorkForms",
+          "result": "passed"
+        },
+        {
+          "name": "validSubmissionPersistsValuesAndUnlocksCompletion",
+          "result": "passed"
+        },
+        {
+          "name": "enforcesNumericStructurePrecisionAndDateFormat",
+          "result": "passed"
+        },
+        {
+          "name": "blocksSuccessorUntilEveryParallelPredecessorCompletes",
+          "result": "passed"
+        },
+        {
+          "name": "disabledDirectSignatureEventIsNotExecuted",
+          "result": "passed"
+        },
+        {
+          "name": "explicitLegacyOrHiddenButtonsDoNotEnableTransfer",
+          "result": "passed"
+        },
+        {
+          "name": "rejectsUnknownFieldsAndInvalidNumbers",
+          "result": "passed"
+        },
+        {
+          "name": "activeButtonSignatureFillsActualSignerAndAllowsReporterProjection",
+          "result": "passed"
+        },
+        {
+          "name": "parallelWorkJoinWaitsForBothConfirmationBranches",
+          "result": "passed"
+        }
+      ]
+    }
+  ],
+  "reviewedFileSha256": {
+    "docs/architecture/business-knowledge-model.md": "78a5d26d12b8f61e4380d0b1f914dedbbe8c5472036030c456a1204da4da2537",
+    "docs/knowledge/README.md": "657a473b3abee7388aa1b90284aa4dd2a66e9cb67fadc6c359d2ee74dff5b396",
+    "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml": "a2e1d65320450359f2abab4fb691f43257b21e38290b99702859a18470f72c96",
+    "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml": "a7c87c418a1aa76145f88da40cd03955bb6877e731ec179e3735b7a1f98a27b5",
+    "docs/knowledge/evidence/production-execution.yaml": "c3f76a445be9768f143ceb9727d07431cf7fe50cc08e12d0d42eebd35eb1dde6",
+    "docs/knowledge/evidence/transaction-runtime.yaml": "1c77dac7d62e66eac7d290f22ef15176f530a3e06c338abc8b33530cd5c294ab",
+    "docs/knowledge/facts/core-business.yaml": "1ea14cf46fe4aabfa321b7675b265e1d9f143d39e0e000013984f20d74bc22f7",
+    "docs/knowledge/glossary.yaml": "701167353f6b764572aac585c4b6e83e449327018f0a4fce291970e1253a30d8",
+    "docs/knowledge/ontology.yaml": "426851893d2408cb8f719d65e7f5cba8cb65ff91332d450cbb700d13a8041ed8",
+    "docs/knowledge/rules/transaction-runtime.yaml": "27c55e03ffb5b76095f033c683665bbb2650ebfc9316703e4992638a2d798856",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java": "df26971a72564788a3543fba79a87576758813e3eed40a96ed1292e2ce9df862",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java": "d58fd29f2c4e7a00d9d56c725559c51bc186d9d0be3d42cfb6c7b8c377b493c1",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java": "1d0a8fec35959a24836f4f4029f55a6adfeba798edc103a47b4974a5e571aaca",
+    "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java": "d9c29e83b4be881498c64b3ee8541319d44db1cbcb12951b241d03e50d274aaa"
+  }
+}

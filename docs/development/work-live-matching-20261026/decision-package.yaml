@@ -1,0 +1,128 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261026-WORK-LIVE-MATCHING
+  scope: 作业实时适用匹配与既有实例保留；制程策略保持原样
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+    targetBranch: edhr-dev
+    targetCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+    contractReadCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+    uncommittedContractPaths: []
+  summary: 直接修正当前作业规则和实现，不保留旧匹配模式或增加配置开关。产品转簇后新匹配只对后续工序生效，已有实例包括未执行节点的实例保持。具体时间/状态矩阵及直接、传递影响见同目录impact-analysis.md。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: rule.production-work.instance-auto-matches-applicability
+        name: 作业按当前上下文实时匹配
+        status: specified
+        trigger: production.operation.start
+        condition: {operationPassed: false}
+        result: {type: match-current-work-rules, preserveExistingInstances: true, backfillPassedOperations: false}
+        sourceReferences: [本聊天2026-10-26用户原话及两条批注]
+      - id: rule.production-work.instance-freezes-work-and-rule-snapshot
+        name: 已有作业实例保持自身执行依据
+        status: specified
+        trigger: production.work.continue
+        condition: {instanceExists: true}
+        result: {type: preserve-instance, includesInstancesWithoutExecutedNodes: true}
+        sourceReferences: [本聊天2026-10-26用户第二条批注“是的”]
+    executionContracts: []
+  inferred:
+    - id: inference.work-operation-start-boundary
+      statement: 沿用现有OPERATION_START触发；待开工工序查询当前候选，工序开工事务再次匹配并创建实例；已开工工序不补入新作业。
+      rationale: 用户确认只对后续工序生效，现有系统实例在工序开工创建；不扩展触发类型。
+      relatedIds: [DEC-0007-03, DEC-0007-04]
+    - id: inference.work-plan-not-instance
+      statement: snapshot.operations.works中的计划项不单独证明实例已创建；state.operations.works中的实际状态为已有嵌入实例依据。
+      rationale: initialState创建空works，start才初始化工作图。
+      relatedIds: [DEC-0007-04]
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0007-03
+      supersededStatementIds: [DEC-0007-03, DEC-0002-10]
+      scope: 直接修正当前作业匹配解释；批次首次START不固定后续工序候选集合；当前产品簇可影响后续新作业。
+      retainedScope: 原始证据保留；已有实例快照保留；DEC-0002-10涉及制程选择、工单锁定的范围不在本轮决定或修复。
+      sourceReferences: [本聊天2026-10-26用户明确要求“这不是迭代这是直接修改”]
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: production-execution
+        change: 分离制程快照构建与作业匹配；待开工工序候选实时查询，START事务冻结新实例。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java]
+    transitiveImpacts:
+      - area: work-forms
+        change: 候选作业表单随匹配更新；已有作业表单、份次、签署和进度保留。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java]
+      - area: form-worklist
+        change: 共用view会查询待开工候选，但列表只消费实际copy状态，不生成候选任务；附加查询量需纳入容量边界。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormWorklistService.java]
+      - area: dhr
+        change: 填报工作区共用执行详情；目录快照不改，真实作业表单沿记录归集与原未映射路径进入档案。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFillingService.java, gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java]
+      - area: frontend-work-candidates
+        change: 原操作台消费最新响应中的works/forms；无新增推送机制，真实浏览器验证未执行。
+        evidenceReferences: [gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx]
+    potentialImpacts:
+      - area: capacity
+        concern: 动态查询增大PENDING工序及共用view的个人任务列表读量，START快照前后审计增大事件体积；本轮未做容量基准，不宣称性能已验收。
+        evidenceReferences: [impact-analysis.md]
+    unaffectedAreas:
+      - area: process
+        reason: 不改工单拆分、制程归属校验、路线或制程配置冻结时点。
+      - area: lifecycle
+        reason: 不改生产状态机、完工约束、放行、权限和签署要求。
+    compatibilityAndMigration:
+      - scope: existing-executions
+        handling: 无数据库迁移；已有state作业实例和表单保持，旧快照中没有实例的后续工序计划允许重新匹配；终止及完成对象只读保持。
+    snapshotImpacts:
+      - scope: work
+        handling: 保存实例创建时规则、已发布图及产品簇匹配事实；制程快照不重新构建。
+    auditImpacts:
+      - scope: operation-start
+        handling: 作业快照变化随START审计前后内容同事务落库；失败回滚，GET不落库。
+    permissionImpacts:
+      - scope: execution
+        handling: 沿用现有API权限、工单及对象锁、修订号检查。
+    testImpacts:
+      - scope: production-execution
+        scenarios: [首次开工前转簇, 后续工序开工前转簇, 已有实例失配仍可继续, 未执行节点实例保留, 新已发布版本, 规则删除及例外, 已过站不补做, GET零写, 重复START拒绝, 审计失败回滚, 表单与DHR回归]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java]
+    evidenceGaps:
+      - 未执行真实浏览器视觉验证；当前无前端修改，功能交互已由实际service与PostgreSQL集成验证。
+      - 未单独运行无簇入簇/移出簇专项及大规模查询容量测试；不扩大当前A到B转簇验收结论。
+  extensionStrategy:
+    selectedPaths: [product-core, transaction-orchestration]
+    rationale: 匹配属于生产内核，创建和冻结复用START事务；不新增客户条件分支或配置开关。
+    ownershipBoundaries:
+      - owner: ExecutionSnapshotBuilder
+        responsibility: 当前规则解析、候选与既有实例合并。
+      - owner: ProductionExecutionService
+        responsibility: 查询投影、开工匹配及原子审计持久化。
+      - owner: ProductionExecutionEngine
+        responsibility: 保留已有工作图状态，只初始化缺失实例。
+  affectedFiles:
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java, changeType: update, reason: 分离作业匹配}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java, changeType: update, reason: 查询与START接入}
+    - {path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java, changeType: update, reason: 不重置既有实例}
+    - {path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java, changeType: update, reason: 聚焦运行回归}
+    - {path: docs/knowledge, changeType: update, reason: 直接纠正受影响当前定义并保留历史来源}
+    - {path: docs/development/work-live-matching-20261026/impact-analysis.md, changeType: create, reason: 记录L2逐状态语义与相邻消费链影响及成本边界}
+  acceptanceScenarios:
+    - id: scenario.work-live-family-match
+      given: 批次已有a工序实例，b工序尚未开工，产品属于A簇
+      when: 产品转至B簇并刷新、开工b
+      then: a实例依据保持；b按B簇当前规则和已发布版本创建；GET不创建实例。
+      evidenceRequirements: [API响应, 数据库快照, START审计]
+    - id: scenario.work-instance-retention
+      given: 作业实例已创建但尚未执行任何业务节点
+      when: 原适用规则失配或停用
+      then: 实例及原配置仍保留可继续，不重复创建。
+      evidenceRequirements: [集成测试, 工作状态与表单快照比较]
+  ontologyRoadmap:
+    currentStage: P0
+    targetOutcome: 校正当前作业语义及实现证据，不提升整体路线成熟度
+    entryCriteria: [用户确认作业实时匹配与既有实例保留]
+    exitCriteria: [受影响知识与实现一致, 知识校验通过]
+    explicitNonGoals: [制程政策调整, 新触发类型, 通用规则引擎, 独立作业实体重构]
+    nextStage: P1

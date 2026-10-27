@@ -1,10 +1,10 @@
 knowledgeModelVersion: 0.3.25
 decisions:
   - id: DEC-0007
-    title: 生产作业适用规则准入、模板删除与未来执行快照
+    title: 生产作业适用规则准入、模板删除与实例执行快照
     status: specified
     visibility: internal
-    context: 初始作业配置阶段尚无生产执行、作业实例运行和快照落库；当时确认模板删除只受适用规则引用阻断，规则配置须使用当前已发布流程，生产执行按上下文自动匹配作业并冻结执行依据。后续 ExecutionSnapshotBuilder/ProductionExecutionEngine 已有 OPERATION_START 范围的匹配、嵌入作业图快照、受限条件求值和节点推进，不能再概括为全部未实现；独立作业实例、完整规则修订依据及通用事实/异常审计契约仍有缺口。本决策仅替代 DEC-0006 的“存在已发布流程即禁止删除模板”和仅冻结作业版本的旧边界，其余配置、生命周期、审计与页面语义保留。
+    context: 初始作业配置阶段尚无生产执行、作业实例运行和快照落库；当时确认模板删除只受适用规则引用阻断，规则配置须使用当前已发布流程，生产执行按上下文自动匹配作业并冻结执行依据。后续 ExecutionSnapshotBuilder/ProductionExecutionEngine 已有 OPERATION_START 范围的匹配、嵌入作业图快照、受限条件求值和节点推进，不能再概括为全部未实现；独立作业实例、完整规则修订依据及通用事实/异常审计契约仍有缺口。本决策初始仅替代 DEC-0006 的“存在已发布流程即禁止删除模板”和仅冻结作业版本的旧边界；2026-10-26直接修正03/04的作业实时匹配及实例保留含义，并明确DEC-0002-10的未来对象限制不适用于作业候选，其制程范围后由2026-10-27批次制程确认直接修正，按DEC-0002-10与DEC-0012当前定义执行。原始证据见evidence.production-work-live-matching-confirmed，其余配置、生命周期、审计与页面语义保留。
     decisionStatements:
       - id: DEC-0007-01
         statement: 作业模板没有任何适用规则时，无论是否存在草稿、历史流程或当前已发布流程，均允许同事务删除模板及全部流程配置；存在适用规则时禁止删除。初始配置阶段无生产运行的时点说明不再作为当前全系统事实；后续实例冻结仍须按自身证据验证。
@@ -15,11 +15,11 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0007-03
-        statement: 生产执行按生产上下文和作业适用规则自动匹配，不在产品或工序配置中手工引用作业模板/版本。后续首 START 已在受限 OPERATION_START 切片匹配并冻结命中规则所选字段与当前已发布作业图；其他触发及完整通用执行契约不能由此推定。
+        statement: 生产作业按当前生产上下文、产品簇和适用规则实时自动匹配，不在产品或工序配置中手工引用模板/版本。产品转簇后新命中的作业只对后续工序生效，已过站工序不补做；批次首次开工不冻结后续工序全部作业候选。当前 OPERATION_START 切片沿用工序开工触发：待开工工序查询当前候选，合法 START 事务重新匹配并创建缺失实例，已开工或已完成工序不补入新作业。该触发与查询/创建分离是工程落实，不新增触发类型或旧模式开关。
         status: specified
         visibility: internal
       - id: DEC-0007-04
-        statement: 创建作业实例时必须冻结作业模板引用、创建时的当前已发布作业流程版本引用、命中的作业适用规则快照和该已发布流程的作业流程配置快照；后续模板、规则或流程发布不得改变既有实例的执行依据。
+        statement: 创建作业实例时冻结作业模板、创建时当前已发布流程版本、命中适用规则、匹配事实及流程配置。已创建实例即使尚未执行任何业务节点，也继续归属于原批次并沿原快照执行；产品转簇、规则失配或后续发布均不删除、替换或重置既有实例。候选计划不等于实例；当前嵌入实现以 state.operations 中的 works 状态识别已创建实例，不以 snapshot 中的计划项单独判断。
         status: specified
         visibility: internal
       - id: DEC-0007-05
@@ -27,7 +27,7 @@ decisions:
         status: specified
         visibility: internal
     supersedes: [DEC-0006]
-    evidenceIds: [evidence.production-work-applicability-and-runtime-decision, evidence.ai-transaction-runtime-architecture, evidence.production-work-template-configuration-controller, evidence.production-work-applicability-dialog-ui, evidence.production-work-template-configuration-test]
+    evidenceIds: [evidence.production-work-live-matching-confirmed, evidence.production-work-applicability-and-runtime-decision, evidence.ai-transaction-runtime-architecture, evidence.production-work-template-configuration-controller, evidence.production-work-applicability-dialog-ui, evidence.production-work-template-configuration-test]
     acceptanceScenarios:
       - id: scenario.production-work-template-delete-without-applicability-rule
         given: 一个作业模板没有任何作业适用规则，但存在草稿、历史流程或当前已发布流程
@@ -48,11 +48,17 @@ decisions:
         evidenceIds: [evidence.production-work-applicability-dialog-ui, evidence.production-work-template-configuration-controller]
         evidenceRequirements: [适用规则 UI E2E, 适用规则 API 测试]
       - id: scenario.production-work-instance-auto-match-and-freeze
-        given: 未来生产对象上下文命中一条指向有当前已发布流程作业模板的适用规则
+        given: 待开工工序的当前生产上下文命中一条指向有当前已发布流程作业模板的适用规则
         when: 系统创建作业实例
         then: 系统不读取产品或工序上的手工作业引用，而是按适用规则自动选择作业，并冻结作业模板、已发布流程版本、命中规则快照和流程配置快照
         evidenceIds: []
-        evidenceRequirements: [未来作业运行时集成测试, 快照持久化测试, 版本兼容测试, 审计追溯测试]
+        evidenceRequirements: [作业运行时集成测试, 快照持久化测试, 版本兼容测试, 审计追溯测试]
+      - id: scenario.production-work-live-match-after-family-transfer
+        given: 批次已有作业实例且存在待开工工序
+        when: 产品转簇并查询和开工后续工序
+        then: 后续工序按当前规则及已发布流程匹配；查询不创建实例；已有实例包括零业务节点执行的实例保留原快照和归属；已过站工序不补做
+        evidenceIds: [evidence.production-work-live-matching-confirmed]
+        evidenceRequirements: [产品转簇集成测试, 既有实例及表单保留比较, 查询零写入, START审计回滚]
     implementationDiscrepancies:
       - id: discrepancy.production-work-template-delete-still-blocks-published-flow
         status: resolved
@@ -68,7 +74,7 @@ decisions:
         visibility: internal
         path: docs/architecture/ai-enabled-custom-delivery-and-transaction-runtime.md
         lineHint: 151
-        summary: 初始配置阶段未实现运行闭环的历史差异保留。当前已在首次合法 START 冻结路线、工序、表单及作业已发布版本/图，并保存命中规则 id/definitionId/type/productId/familyId/operationId 等所选字段；受限作业状态嵌入生产执行。尚缺独立作业实例完整规则修订依据、通用事实及异常审计契约，正式执行注册资格仍不能从局部源码或历史状态推定。
+        summary: 初始配置阶段未实现运行闭环的历史差异保留。首次合法 START 冻结制程侧路线、工序和表单；作业按 DEC-0007-03/04 在各工序实例创建时冻结规则、匹配事实和已发布图，后续候选实时匹配。受限作业状态嵌入生产执行；尚缺独立作业实例完整规则修订依据、通用事实及异常审计契约，正式执行注册资格不能从局部实现推定。2026-10-26直接修正当前定义，旧整批冻结表述及原始来源见本轮确认证据，不回写历史审计和快照。
         evidenceIds:
         - evidence.ai-transaction-runtime-architecture
         - evidence.production-execution-snapshot-builder-source

@@ -1,0 +1,34 @@
+knowledgeModelVersion: 0.3.25
+facts:
+  - id: fact.production.work-order-normal-completion-eligible
+    name: 工单是否满足正常自动完成条件
+    conceptId: concept.work-order
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java
+    aliases: [workOrder.normalCompletionEligible]
+    availability: runtime
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.batch-process-direct-correction-confirmed, evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: 有效目标分配合计等于工单计划量，且至少一个非取消对象、全部非取消对象均COMPLETED；不以全部终态或合格产量替代
+    capturedAt: '2026-10-27'
+    reviewStatus: reviewed
+  - id: fact.production.object-execution-exists
+    name: 生产对象是否已有执行实例
+    conceptId: concept.production-object
+    valueType: boolean
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java
+    aliases: [productionObject.executionExists]
+    availability: runtime
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.batch-process-direct-correction-confirmed, evidence.production-service]
+    sourceRevision: working-tree
+    sourceLocator: production_execution按生产对象身份判断实例存在；与对象CREATED及父工单活动状态共同限制未开工编辑
+    capturedAt: '2026-10-27'
+    reviewStatus: reviewed

@@ -115,6 +115,7 @@ public class ProductionExecutionEngine {
             initializeBindingForm(snapshot, op, form, current);
         }
         for (JsonNode work : op.path("works")) {
+            if (current.path("works").has(work.path("id").asText())) continue;
             ObjectNode workState = current.withObject("/works").putObject(work.path("id").asText());
             initializeGraph(work, workState);
             advanceWork(snapshot, op, current, work, workState);

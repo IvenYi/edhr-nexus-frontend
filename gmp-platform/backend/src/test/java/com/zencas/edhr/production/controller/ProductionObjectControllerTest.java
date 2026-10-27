@@ -40,6 +40,8 @@ class ProductionObjectControllerTest {
     @Mock private AuditEventRepository auditEventRepository;
     @Mock private SnowflakeIdGenerator idGenerator;
     @Spy private ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+    @Mock private com.zencas.edhr.production.service.ExecutionSnapshotBuilder snapshots;
+    @Mock private com.zencas.edhr.production.repository.ProductionExecutionRepository executions;
     @InjectMocks private ProductionObjectController controller;
 
     @Test
@@ -142,7 +144,7 @@ class ProductionObjectControllerTest {
 
     private WorkOrder order() {
         return WorkOrder.builder().id(10L).orderNo("WO-001").orderNumber("SO-001").productId(7L)
-                .processVersionId(20L).productionMode("量产").productionForm("BATCH")
+                .productionMode("量产").productionForm("BATCH")
                 .plannedQuantity(BigDecimal.TEN).status("CREATED").build();
     }
 

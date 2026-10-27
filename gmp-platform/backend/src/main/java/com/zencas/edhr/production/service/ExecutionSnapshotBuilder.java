@@ -15,12 +15,24 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-/** Builds the immutable, self-contained execution basis from configured versions. */
+/** Freezes process configuration and resolves work candidates separately at operation start. */
 @Component
 @RequiredArgsConstructor
 public class ExecutionSnapshotBuilder {
     private final JdbcTemplate jdbc;
     private final ObjectMapper mapper;
+
+    public ObjectNode processReference(Long versionId) {
+        return one("""
+            SELECT p.id AS "processVersionId", p.version_label AS "processVersion",
+                   pp.id AS "processId", pp.owner_type AS "ownerType", pp.owner_id AS "ownerId",
+                   COALESCE(m.name, f.name) AS "ownerName", p.effective_from AS "effectiveFrom", p.effective_to AS "effectiveTo"
+            FROM product_process_version p JOIN product_process pp ON pp.id = p.product_process_id
+            LEFT JOIN material m ON pp.owner_type = 'PRODUCT' AND m.id = pp.owner_id
+            LEFT JOIN product_family f ON pp.owner_type = 'PRODUCT_FAMILY' AND f.id = pp.owner_id
+            WHERE p.id = ? AND p.tenant_id = 'default'
+            """, versionId);
+    }
 
     public ObjectNode build(ProductionObject object, WorkOrder order) {
         ObjectNode root = mapper.createObjectNode();
@@ -50,6 +62,9 @@ public class ExecutionSnapshotBuilder {
                 .put("objectType", object.getObjectType()).put("workOrderId", order.getId().toString())
                 .put("workOrderNo", order.getOrderNo()).put("targetQuantity", object.getTargetQuantity());
         root.set("context", context);
+        root.set("processReference", processReference(object.getProcessVersionId()));
+        ArrayNode membership = rows("SELECT product_family_id AS id FROM product_family_member WHERE tenant_id = 'default' AND product_id = ?", order.getProductId());
+        context.set("productFamilyId", membership.isEmpty() ? mapper.nullNode() : membership.get(0).path("id"));
         root.put("outputPolicyVersion", 1);
         long routeId = context.path("routeVersionId").asLong();
         ArrayNode nodes = rows("""
@@ -63,15 +78,6 @@ public class ExecutionSnapshotBuilder {
             """, routeId);
         root.set("routeNodes", nodes); root.set("routeEdges", edges);
         ArrayNode operations = root.putArray("operations");
-        ArrayNode rules = rows("""
-            SELECT b.id, b.definition_id AS "definitionId", b.rule_type AS type,
-                   b.product_id AS "productId", b.product_family_id AS "familyId", b.operation_id AS "operationId"
-            FROM workflow_binding_rule b JOIN workflow_definition d ON d.id = b.definition_id
-            WHERE d.type = 'WORK' AND b.is_active = true AND b.tenant_id = 'default' AND d.tenant_id = 'default'
-            ORDER BY b.id
-            """);
-        ArrayNode families = rows("SELECT product_family_id AS id FROM product_family_member WHERE product_id = ? AND tenant_id = 'default'", order.getProductId());
-        String family = families.isEmpty() ? "" : families.get(0).path("id").asText();
         for (JsonNode node : nodes) {
             if (!Set.of("OPERATION", "REWORK").contains(node.path("type").asText())) continue;
             ObjectNode op = ((ObjectNode) node).deepCopy();
@@ -100,40 +106,68 @@ public class ExecutionSnapshotBuilder {
                     WHERE b.product_process_operation_binding_id = ? ORDER BY b.sort_order, b.id
                     """, bindingId));
             }
-            ArrayNode works = op.putArray("works");
-            Map<String, List<JsonNode>> matched = new LinkedHashMap<>();
-            for (JsonNode rule : rules) {
-                if (matches(rule, "productId", order.getProductId().toString()) && matches(rule, "familyId", family)
-                        && matches(rule, "operationId", node.path("operationId").asText())) {
-                    matched.computeIfAbsent(rule.path("definitionId").asText(), ignored -> new ArrayList<>()).add(rule);
-                }
-            }
-            for (var entry : matched.entrySet()) {
-                if (entry.getValue().stream().anyMatch(rule -> "EXCEPTION".equals(rule.path("type").asText()))) continue;
-                if (entry.getValue().stream().noneMatch(rule -> Set.of("GLOBAL", "SCOPED").contains(rule.path("type").asText()))) continue;
-                ObjectNode work = one("""
-                    SELECT v.id AS "versionId", v.version_number AS version, d.id, d.name,
-                           v.nodes_json AS nodes, v.edges_json AS edges
-                    FROM workflow_definition d JOIN workflow_definition_version v ON v.definition_id = d.id
-                    WHERE d.id = ? AND v.is_current = true AND v.status = 'PUBLISHED'
-                    """, Long.valueOf(entry.getKey()));
-                work.set("rules", mapper.valueToTree(entry.getValue()));
-                work.set("nodes", json(work.path("nodes").asText(), mapper.createArrayNode()));
-                work.set("edges", json(work.path("edges").asText(), mapper.createArrayNode()));
-                for (JsonNode workNode : work.path("nodes")) {
-                    if (!"FORM".equals(workNode.path("data").path("kind").asText())) continue;
-                    JsonNode config = workNode.path("data").path("config");
-                    ObjectNode form = form(config.path("formTemplateVersionId").asText());
-                    form.put("id", "work-" + work.path("id").asText() + "-" + workNode.path("id").asText());
-                    form.put("workId", work.path("id").asText()).put("workNodeId", workNode.path("id").asText());
-                    attachFillSettings(form, config);
-                    forms.add(form);
-                }
-                works.add(work);
-            }
+            op.putArray("works");
             operations.add(op);
         }
         return root;
+    }
+
+    /** Updates only uninstantiated plans. Existing work states and their configuration remain intact. */
+    public void refreshWorks(JsonNode snapshot, ObjectNode op, JsonNode opState) {
+        if (!"PENDING".equals(opState.path("status").asText())) return;
+        String productId = snapshot.path("context").path("productId").asText();
+        ArrayNode families = rows("SELECT product_family_id AS id FROM product_family_member WHERE product_id = ? AND tenant_id = 'default'", Long.valueOf(productId));
+        String family = families.isEmpty() ? "" : families.get(0).path("id").asText();
+        ArrayNode rules = rows("""
+            SELECT b.id, b.definition_id AS "definitionId", b.rule_type AS type,
+                   b.product_id AS "productId", b.product_family_id AS "familyId", b.operation_id AS "operationId"
+            FROM workflow_binding_rule b JOIN workflow_definition d ON d.id = b.definition_id
+            WHERE d.type = 'WORK' AND b.is_active = true AND b.tenant_id = 'default' AND d.tenant_id = 'default'
+            ORDER BY b.id
+            """);
+        ArrayNode works = mapper.createArrayNode(), forms = mapper.createArrayNode();
+        Set<String> retained = new HashSet<>();
+        for (JsonNode work : op.path("works")) {
+            String id = work.path("id").asText();
+            if (opState.path("works").has(id)) { works.add(work); retained.add(id); }
+        }
+        for (JsonNode form : op.path("forms")) {
+            if (!form.has("workId") || retained.contains(form.path("workId").asText())) forms.add(form);
+        }
+        Map<String, List<JsonNode>> matched = new LinkedHashMap<>();
+        for (JsonNode rule : rules) {
+            if (matches(rule, "productId", productId) && matches(rule, "familyId", family)
+                    && matches(rule, "operationId", op.path("operationId").asText())) {
+                matched.computeIfAbsent(rule.path("definitionId").asText(), ignored -> new ArrayList<>()).add(rule);
+            }
+        }
+        for (var entry : matched.entrySet()) {
+            if (retained.contains(entry.getKey())) continue;
+            if (entry.getValue().stream().anyMatch(rule -> "EXCEPTION".equals(rule.path("type").asText()))) continue;
+            if (entry.getValue().stream().noneMatch(rule -> Set.of("GLOBAL", "SCOPED").contains(rule.path("type").asText()))) continue;
+            ObjectNode work = one("""
+                SELECT v.id AS "versionId", v.version_number AS version, d.id, d.name,
+                       v.nodes_json AS nodes, v.edges_json AS edges
+                FROM workflow_definition d JOIN workflow_definition_version v ON v.definition_id = d.id
+                WHERE d.id = ? AND d.tenant_id = 'default' AND v.is_current = true AND v.status = 'PUBLISHED'
+                """, Long.valueOf(entry.getKey()));
+            work.set("rules", mapper.valueToTree(entry.getValue()));
+            work.putObject("matchContext").put("productId", productId).put("productFamilyId", family)
+                    .put("operationId", op.path("operationId").asText()).put("trigger", "OPERATION_START");
+            work.set("nodes", json(work.path("nodes").asText(), mapper.createArrayNode()));
+            work.set("edges", json(work.path("edges").asText(), mapper.createArrayNode()));
+            for (JsonNode workNode : work.path("nodes")) {
+                if (!"FORM".equals(workNode.path("data").path("kind").asText())) continue;
+                JsonNode config = workNode.path("data").path("config");
+                ObjectNode form = form(config.path("formTemplateVersionId").asText());
+                form.put("id", "work-" + work.path("id").asText() + "-" + workNode.path("id").asText());
+                form.put("workId", work.path("id").asText()).put("workNodeId", workNode.path("id").asText());
+                attachFillSettings(form, config);
+                forms.add(form);
+            }
+            works.add(work);
+        }
+        op.set("works", works); op.set("forms", forms);
     }
 
     private void attachFillSettings(ObjectNode form, JsonNode settings) {

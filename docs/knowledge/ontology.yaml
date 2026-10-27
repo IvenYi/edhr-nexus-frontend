@@ -444,6 +444,7 @@ concepts:
     status: implemented
     visibility: internal
     evidenceIds:
+    - evidence.batch-process-direct-correction-confirmed
     - evidence.production-object-entity
     - evidence.production-object-controller
     - evidence.production-service
@@ -457,6 +458,7 @@ concepts:
     status: specified
     visibility: internal
     evidenceIds:
+    - evidence.batch-process-direct-correction-confirmed
     - evidence.business-knowledge-model
     - evidence.production-execution-snapshot-builder-source
     - evidence.production-execution-engine-source
@@ -607,13 +609,13 @@ concepts:
     kind: business-fact
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-work-order-entity, evidence.work-order-controller, evidence.migration-0061-work-order, evidence.migration-0062-production-object-and-work-order-lifecycle, evidence.migration-0063-production-work-order-permission, evidence.production-frontend-menu-permission, evidence.production-frontend-layout-permission-filter, evidence.production-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test]
+    evidenceIds: [evidence.production-work-order-entity, evidence.work-order-controller, evidence.migration-0061-work-order, evidence.migration-0062-production-object-and-work-order-lifecycle, evidence.migration-0063-production-work-order-permission, evidence.production-frontend-menu-permission, evidence.production-frontend-layout-permission-filter, evidence.production-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test, evidence.batch-process-direct-correction-confirmed]
   - id: concept.production-object
     termId: term.production-object
     kind: runtime-fact
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.production-object-entity, evidence.production-object-controller, evidence.production-service, evidence.migration-0062-production-object-and-work-order-lifecycle, evidence.production-service-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.reference-dictionary-correction, evidence.reference-source-unification]
+    evidenceIds: [evidence.production-object-entity, evidence.production-object-controller, evidence.production-service, evidence.migration-0062-production-object-and-work-order-lifecycle, evidence.production-service-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.reference-dictionary-correction, evidence.reference-source-unification, evidence.batch-process-direct-correction-confirmed]
   - id: concept.production-object-early-termination
     termId: term.production-object-early-termination
     kind: runtime-fact
@@ -625,7 +627,7 @@ concepts:
     kind: runtime-fact
     status: specified
     visibility: internal
-    evidenceIds: [evidence.production-work-order-entity, evidence.work-order-status-machine, evidence.production-service, evidence.guancheng-batch-close-source, evidence.production-object-early-termination-gap]
+    evidenceIds: [evidence.production-work-order-entity, evidence.work-order-status-machine, evidence.production-service, evidence.guancheng-batch-close-source, evidence.production-object-early-termination-gap, evidence.batch-process-direct-correction-confirmed]
   - id: concept.production-object-lineage
     termId: term.production-object-lineage
     kind: business-concept
@@ -732,7 +734,7 @@ concepts:
     kind: business-concept
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-audit-localized-formatter, evidence.production-audit-localized-display-guideline, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test]
+    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-audit-localized-formatter, evidence.production-audit-localized-display-guideline, evidence.master-data-legacy-product-family-audit-controller, evidence.master-data-legacy-product-family-audit-test, evidence.batch-process-direct-correction-confirmed]
   - id: concept.audit-event
     termId: term.audit-event
     kind: runtime-fact
@@ -1344,6 +1346,7 @@ relations:
     source: concept.product-process-version
     target: concept.production-batch
     cardinality: one-to-zero-or-many
+    description: 制程版本由工单下各批次分别显式选择，允许同一工单不同版本但相同生产形态；不表示工单持有唯一制程。
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-service, evidence.production-object-controller, evidence.production-service-test]
@@ -1351,6 +1354,7 @@ relations:
     source: concept.production-batch
     target: concept.product
     cardinality: many-to-one
+    description: 批次沿工单取得产品身份；曾拆批后工单产品不可变，首次START冻结产品上下文。
     status: specified
     visibility: internal
     evidenceIds: [evidence.production-service, evidence.production-execution-snapshot-builder-source]
@@ -1358,6 +1362,7 @@ relations:
     source: concept.production-batch
     target: concept.product-family
     cardinality: one-to-zero-or-one
+    description: 批次未开工按当前产品簇复核制程归属，首次START冻结实际采用的产品簇依据；后续转簇不回写已开工快照，作业候选仍独立动态匹配。
     status: specified
     visibility: internal
     evidenceIds: [evidence.business-knowledge-model, evidence.product-family-membership-service, evidence.production-execution-snapshot-builder-source]
@@ -1365,9 +1370,10 @@ relations:
     source: concept.production-batch
     target: concept.execution-snapshot
     cardinality: one-to-zero-or-one
+    description: 未开工仅保留引用，首次合法START冻结当时配置；同版本标签可能对应不同内容，审计按实际冻结原件解释，后续动态作业不回写首次快照。
     status: specified
     visibility: internal
-    evidenceIds: [evidence.business-knowledge-model]
+    evidenceIds: [evidence.business-knowledge-model, evidence.production-execution-snapshot-builder-source, evidence.batch-process-direct-correction-confirmed]
   - id: relation.rule-runtime-reads-execution-snapshot
     source: concept.business-rule-runtime
     target: concept.execution-snapshot
@@ -1533,6 +1539,7 @@ relations:
     source: concept.production-work-instance
     target: concept.production-work-applicability-rule
     cardinality: many-to-one
+    description: 记录实例创建时的命中依据；之后规则失配不撤销实例与原批次归属，不用当前规则覆盖该历史关系。
     status: specified
     visibility: internal
     evidenceIds: [evidence.production-work-applicability-and-runtime-decision]
@@ -1540,6 +1547,7 @@ relations:
     source: concept.production-work-instance
     target: concept.production-work-execution-snapshot
     cardinality: one-to-zero-or-one
+    description: 实例创建时冻结并持续使用，包括尚未执行业务节点的实例；未实例化计划不承担此关系。
     status: specified
     visibility: internal
     evidenceIds: [evidence.ai-transaction-runtime-architecture, evidence.production-work-applicability-and-runtime-decision]
@@ -1568,6 +1576,7 @@ relations:
     source: concept.production-batch
     target: concept.production-work-flow-version
     cardinality: one-to-zero-or-many
+    description: 批次通过已创建作业实例保留各实例创建时的流程版本；不是批次首次开工就冻结后续全部工序的候选作业版本。
     status: specified
     visibility: internal
     evidenceIds: [evidence.business-knowledge-model]
@@ -1610,8 +1619,9 @@ relations:
     source: concept.work-order
     target: concept.product-process-version
     cardinality: one-to-zero-or-one
-    status: implemented
+    status: deprecated
     visibility: internal
+    description: 2026-10-27已撤销的历史关系，仅保留原政策的追溯索引；现行工单无制程字段，各生产对象独立保存显式版本引用。
     evidenceIds: [evidence.production-work-order-entity, evidence.production-service, evidence.product-process-resolution-for-production, evidence.production-service-test]
   - id: relation.production-object-belongs-to-work-order
     source: concept.production-object
@@ -1631,8 +1641,9 @@ relations:
     source: concept.work-order-early-termination
     target: concept.production-object
     cardinality: one-to-zero-or-many
-    status: specified
+    status: deprecated
     visibility: internal
+    description: 2026-10-27已撤销的历史级联关系；当前工单手动提前结束先验证所有子对象终态，不连带取消或终止子对象。
     evidenceIds: [evidence.guancheng-batch-close-source, evidence.production-object-early-termination-gap, evidence.production-service]
   - id: relation.production-object-has-lineage-parent
     source: concept.production-object
@@ -1666,6 +1677,7 @@ relations:
     source: concept.production-object
     target: concept.product-process-version
     cardinality: many-to-one
+    description: 对象创建时显式选择具体版本，未开工引用可按资格修改；首次START后引用及实际配置冻结，工单不再是唯一制程引用的来源。
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-object-entity, evidence.production-service, evidence.product-process-resolution-for-production]
@@ -1680,6 +1692,7 @@ relations:
     source: concept.work-order
     target: concept.production-form
     cardinality: one-to-zero-or-one
+    description: 工单首批确定的BATCH/SN形态约束全部后续对象及其换版；不要求所有批次使用相同制程版本。
     status: implemented
     visibility: internal
     evidenceIds: [evidence.production-work-order-entity, evidence.production-service]
@@ -1742,14 +1755,16 @@ relations:
   - id: relation.work-order-split-previews-locked-process-version
     source: concept.work-order
     target: concept.process-version-read-only-preview
-    cardinality: one-to-zero-or-one
-    status: implemented
+    cardinality: one-to-zero-or-many
+    status: specified
     visibility: internal
+    description: 稳定ID保留历史命名，当前拆分可分别预览各候选对象所选版本，不再代表工单唯一锁版。
     evidenceIds: [evidence.production-work-order-process-lock-preview-ui, evidence.production-service]
   - id: relation.audit-event-retains-change-snapshot
     source: concept.audit-event
     target: concept.audit-change-snapshot
     cardinality: one-to-zero-or-one
+    description: 审计保存事件发生时的业务变化；生产对象首次START另保留processSnapshot与processFrozenAt，明确区分未开工引用与实际冻结内容，详情不回读当前主数据补造。
     status: implemented
     visibility: internal
     evidenceIds: [evidence.ontology-audit-event-entity, evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.production-audit-localized-formatter]

@@ -51,7 +51,7 @@ class WorkOrderControllerTest {
         when(workOrderRepository.save(any(WorkOrder.class))).thenReturn(saved);
 
         controller.create(new WorkOrderController.WorkOrderRequest(
-                "WO-001", "ORDER-1", 7L, null, BigDecimal.TEN, null, null, "备注"));
+                "WO-001", "ORDER-1", 7L, BigDecimal.TEN, null, null, "备注"));
 
         var captor = org.mockito.ArgumentCaptor.forClass(AuditEvent.class);
         verify(auditEventRepository).save(captor.capture());
@@ -69,7 +69,7 @@ class WorkOrderControllerTest {
         when(materialRepository.findByTenantIdAndId("default", 999L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> controller.create(new WorkOrderController.WorkOrderRequest(
-                "WO-MISSING", null, 999L, null, BigDecimal.TEN, null, null, null)))
+                "WO-MISSING", null, 999L, BigDecimal.TEN, null, null, null)))
                 .hasMessage("产品不存在");
         verify(workOrderRepository, never()).save(any());
         verify(auditEventRepository, never()).save(any());

@@ -11,11 +11,11 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0019-02
-        statement: "provenance: user-confirmed；批次管理列表支持整行点击打开生产对象详情，并提供行级数据审计入口；审计沿用 PRODUCTION_OBJECT 实体和既有新增/修改动作投影。"
+        statement: "provenance: user-confirmed；批次管理支持整行详情及数据审计，沿PRODUCTION_OBJECT和新增/修改投影。展示涉及制程的条目时说明归属及版本；首次合法START保存实际冻结配置并提供{}详情，未开工引用须明确未冻结，不从当前主数据重建历史。保持创建完整字段、修改真实差量的审计语义，普通数量或状态变更不要求重复记录未变化的制程身份或整份配置。"
         status: implemented
         visibility: internal
       - id: DEC-0019-03
-        statement: "provenance: user-confirmed；本轮不新增独立批次实体、批次状态、批次拆分动作或批次生命周期规则。"
+        statement: "provenance: user-confirmed；继续复用生产对象实体与状态机，不新增批次再拆分。本轮补充CREATED且无执行实例的批次制程/数量编辑、当前制程资格校验及数据审计，已开工对象按实际快照固定。"
         status: implemented
         visibility: internal
       - id: DEC-0019-04
@@ -23,7 +23,7 @@ decisions:
         status: implemented
         visibility: internal
     supersedes: [DEC-0014]
-    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-management-controller, evidence.production-batch-management-api, evidence.migration-0067-production-batch-management-permission, evidence.production-batch-management-authorization-test, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect]
+    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-management-controller, evidence.production-batch-management-api, evidence.migration-0067-production-batch-management-permission, evidence.production-batch-management-authorization-test, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.batch-process-direct-correction-confirmed]
     acceptanceScenarios:
       - id: scenario.production-batch-management-menu-placement
         given: 用户拥有生产准备相关权限
@@ -43,7 +43,7 @@ decisions:
       - id: scenario.production-batch-management-row-audit
         given: 用户看到一条批次列表记录
         when: 点击行级数据审计入口
-        then: 查询该 ProductionObject 的审计记录并按新增/修改动作展示；新产生的记录包含业务字段快照，且不打开独立批次审计列表
+        then: 沿新增/修改展示对象审计；涉及制程的条目明确身份，首次START保存的实际配置可打开{}详情，同V1可有不同配置。普通差量事件不重复未变化的制程；应有冻结原件但缺失时明确缺失，不查询当前主数据补造
         evidenceIds: [evidence.production-batch-management-page, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test]
       - id: scenario.production-object-create-audit-snapshot
         given: 工单拆分出一个或多个生产对象
@@ -74,7 +74,7 @@ decisions:
       visibility: internal
       path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
       lineHint: 249
-      summary: 'provenance: original-evidence；2026-10-26在c49c0c7f基线上的修复保留PRODUCTION_EXECUTION事件，并在act中比较已持锁对象动作前后status；真实变化时同事务追加一条PRODUCTION_OBJECT UPDATE，前后只保存status。首次开工、最终工序完成和最后必填批次表单提交引发的对象完成使用同一判定，无状态变化不重复写对象事件。主侧原生PG六项新用例在旧代码全红、修复后同组六项全绿；原件在branch-review-20261026-w4-lifecycle，源码及测试证据分列。此处resolved只关闭缺失对象状态事件的实现差异，不认证完整生产审计、浏览器或历史回填；独立质量结果另记。'
+      summary: "provenance: original-evidence；2026-10-26修复了合法执行中对象状态变化的PRODUCTION_OBJECT事件缺失，旧证据保留其时点。2026-10-27首次START事件另加入processReference、processSnapshot及processFrozenAt；状态不变的普通执行不重复生成对象事件。原仅status说明只描述旧修复，不能限制当前冻结快照审计范围；运行与独立质量取本轮。"
       evidenceIds:
       - evidence.production-execution-service-source
       - evidence.production-object-controller

@@ -1,0 +1,31 @@
+{
+  "phase": "first implementation, four new integration cases; two additional cases pending next run",
+  "command": "mvn -q -Dtest=ProductionExecutionIntegrationTest,ProductionExecutionEngineTest,ProductionExecutionAvailabilityTest test",
+  "exitCode": 0,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest",
+      "tests": "89",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "3",
+      "time": "5.644"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionExecutionEngineTest",
+      "tests": "22",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.013"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionExecutionAvailabilityTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.282"
+    }
+  ]
+}

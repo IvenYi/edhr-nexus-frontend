@@ -31,8 +31,10 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
-import { Cancel, Close, ContentCopyOutlined, DescriptionOutlined, ExpandMore, InfoOutlined, PlayCircleOutline, RestartAlt, Search, StopCircleOutlined, TuneRounded, ViewColumnRounded } from '@mui/icons-material';
+import { Cancel, Close, ContentCopyOutlined, DescriptionOutlined, ExpandMore, InfoOutlined, PlayCircleOutline, RestartAlt, Search, StopCircleOutlined, TuneRounded, ViewColumnRounded, Edit,
+} from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
+import ProductionObjectEditDialog from '@/components/ProductionObjectEditDialog';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { ListTableShell } from '@/components/ListTableShell';
 import { useSnackbar } from '@/components/SnackbarProvider';
@@ -183,9 +185,11 @@ function DetailField({ label, value }: { label: string; value: ReactNode }) {
 }
 
 function AuditFieldBlock({ title, fields }: { title: string; fields: ProductionAuditField[] }) {
+  const [snapshot, setSnapshot] = useState<unknown>(null);
   return <Box sx={{ border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#f8fafc', p: 1, minWidth: 0 }}>
     <Typography variant="caption" sx={{ display: 'block', mb: 0.75, color: '#606266', fontWeight: 600 }}>{title}</Typography>
-    <Stack spacing={0.75}>{fields.length === 0 ? <Typography variant="caption" sx={{ color: '#909399' }}>无</Typography> : fields.map((field) => <Box key={field.key} sx={{ display: 'grid', gridTemplateColumns: '92px minmax(0, 1fr)', gap: 1 }}><Typography variant="caption" sx={{ color: '#606266' }}>{field.label}</Typography><Typography variant="caption" sx={{ color: '#303133', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{field.value}</Typography></Box>)}</Stack>
+    <Stack spacing={0.75}>{fields.length === 0 ? <Typography variant="caption" sx={{ color: '#909399' }}>无</Typography> : fields.map((field) => <Box key={field.key} sx={{ display: 'grid', gridTemplateColumns: '92px minmax(0, 1fr)', gap: 1 }}><Typography variant="caption" sx={{ color: '#606266' }}>{field.label}</Typography><Typography variant="caption" sx={{ color: '#303133', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{field.value}{field.details != null && <Button size="small" aria-label="查看制程冻结快照" onClick={() => setSnapshot(field.details)} sx={{ minWidth: 32, ml: 0.5, fontFamily: 'monospace' }}>{'{}'}</Button>}</Typography></Box>)}</Stack>
+    <AppDialog open={snapshot !== null} onClose={() => setSnapshot(null)} maxWidth="lg" fullWidth><DialogTitle>制程开工冻结快照</DialogTitle><DialogContent dividers><Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>以下内容来自该条历史审计，记录开工时实际使用的配置。</Typography><Box component="pre" sx={{ m: 0, p: 2, bgcolor: '#f5f7fa', borderRadius: 1, overflow: 'auto', maxHeight: '65dvh', fontSize: 12, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{JSON.stringify(snapshot, null, 2)}</Box></DialogContent><DialogActions><Button onClick={() => setSnapshot(null)}>关闭</Button></DialogActions></AppDialog>
   </Box>;
 }
 
@@ -218,6 +222,7 @@ function BatchDetailDrawer({ detail, tab, onTabChange, auditRows, auditLoading, 
           <DetailSection title="累计产出"><ProductionOutputDetails output={detail.output} /></DetailSection>
           <DetailSection title="备注"><Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', color: detail.remark ? '#303133' : '#909399' }}>{detail.remark || '暂无备注'}</Typography></DetailSection>
         </Stack> : <Stack spacing={1} sx={{ mt: 2 }}>
+          <Typography variant="caption" color="text.secondary">未开工时仅记录制程引用；实际冻结配置请展开首次开工记录，点击 {'{}'} 查看。</Typography>
           {auditLoading ? <Box sx={{ py: 8, display: 'grid', placeItems: 'center' }}><CircularProgress size={24} /></Box> : auditError ? <Box sx={{ py: 8, textAlign: 'center', color: '#c62828' }}>数据审计加载失败</Box> : auditRows.length === 0 ? <Box sx={{ py: 8, textAlign: 'center', color: '#909399' }}>暂无数据审计记录</Box> : auditRows.map((item) => <Accordion key={item.id} disableGutters elevation={0} sx={{ border: '1px solid #e4e7ed', borderRadius: '4px !important', overflow: 'hidden', '&::before': { display: 'none' }, '&.Mui-expanded': { m: 0 } }}>
             <AccordionSummary expandIcon={<ExpandMore fontSize="small" />} sx={{ minHeight: 44, px: 1.5, '&.Mui-expanded': { minHeight: 44 }, '& .MuiAccordionSummary-content': { my: 0, minWidth: 0 }, '& .MuiAccordionSummary-content.Mui-expanded': { my: 0 } }}><Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.25fr', columnGap: 1, width: '100%', minWidth: 0 }}><Typography variant="body2" noWrap>{item.operatorDisplayName || item.operatorAccount || '-'}</Typography><Typography variant="body2" noWrap>{auditActionLabel(item)}</Typography><Typography variant="body2" noWrap sx={{ color: '#606266' }}>{formatDateTime(item.operationTime || item.createdAt)}</Typography></Box></AccordionSummary>
             <AccordionDetails sx={{ pt: 0, pb: 1.5 }}><Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}><AuditFieldBlock title="变更前" fields={toProductionAuditFields(item.contentBefore, { objectNo: '批次号' })} /><AuditFieldBlock title="变更后" fields={toProductionAuditFields(item.contentAfter, { objectNo: '批次号' })} /></Box></AccordionDetails>
@@ -244,6 +249,7 @@ export default function BatchManagementPage() {
   const [detail, setDetail] = useState<BatchRecord | null>(null);
   const [detailTab, setDetailTab] = useState(0);
   const [cancelTarget, setCancelTarget] = useState<BatchRecord | null>(null);
+  const [editTarget, setEditTarget] = useState<BatchRecord | null>(null);
   const [endTarget, setEndTarget] = useState<BatchRecord | null>(null);
   const [endReason, setEndReason] = useState('');
   const [selectedDhr, setSelectedDhr] = useState<DhrInstanceSummary | null>(null);
@@ -399,6 +405,7 @@ export default function BatchManagementPage() {
               {!batches.isLoading && !batches.isError && rows.map((row) => <TableRow data-record-id={row.id} key={row.id} hover tabIndex={0} onClick={() => { setDetail(row); setDetailTab(0); }} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { setDetail(row); setDetailTab(0); } }} sx={{ ...tableRowSx, cursor: 'pointer' }}>
                 {visibleColumns.map((column) => <Fragment key={column.id}>{renderBatchCell(row, column)}</Fragment>)}
                 <TableCell align="center" onClick={(event) => event.stopPropagation()} sx={getOperationColumnSx('body', hasVisibleStatusColumn)}>
+                  {row.status === 'CREATED' && <Tooltip title="修改批次配置"><IconButton size="small" aria-label={`修改批次 ${row.objectNo}`} onClick={() => setEditTarget(row)}><Edit fontSize="small" /></IconButton></Tooltip>}
                   <Tooltip title="查看 DHR" arrow><IconButton size="small" aria-label={`查看DHR ${row.objectNo}`} disabled={dhrLookup.isPending} onClick={() => openDhr(row)}><DescriptionOutlined fontSize="small" /></IconButton></Tooltip>
                   {['IN_PROGRESS', 'COMPLETED', 'EARLY_TERMINATED'].includes(row.status) ? <Tooltip title="执行详情" arrow><IconButton size="small" aria-label="执行详情" onClick={() => navigate(`/production/execution?${new URLSearchParams({ barcode: row.objectNo, autoScan: '1' })}`)}><PlayCircleOutline fontSize="small" /></IconButton></Tooltip> : <Tooltip title="执行详情（开工后可用）" arrow><span><IconButton size="small" disabled aria-label="执行详情暂不可用"><PlayCircleOutline fontSize="small" /></IconButton></span></Tooltip>}
                   {row.status === 'IN_PROGRESS' ? <Tooltip title="结束" arrow><IconButton size="small" aria-label="提前结束批次" color="warning" onClick={() => { setEndTarget(row); setEndReason(''); }}><StopCircleOutlined fontSize="small" /></IconButton></Tooltip> : row.status === 'CREATED' ? <Tooltip title="取消" arrow><IconButton size="small" aria-label="取消批次" color="error" onClick={() => setCancelTarget(row)}><Cancel fontSize="small" /></IconButton></Tooltip> : <Tooltip title="结束（仅进行中的批次可用）" arrow><span><IconButton size="small" disabled aria-label="结束暂不可用"><StopCircleOutlined fontSize="small" /></IconButton></span></Tooltip>}
@@ -418,6 +425,7 @@ export default function BatchManagementPage() {
 
       <BatchDetailDrawer detail={detail} tab={detailTab} onTabChange={setDetailTab} auditRows={auditRows} auditLoading={audit.isLoading} auditError={audit.isError} onClose={() => setDetail(null)} />
       {selectedDhr && <DhrArchiveViewer selected={selectedDhr} viewOnly onClose={() => setSelectedDhr(null)} />}
+      {editTarget && <ProductionObjectEditDialog key={editTarget.id} object={editTarget} onClose={() => setEditTarget(null)} />}
       <ConfirmDialog open={cancelTarget !== null} title="取消批次" message={cancelTarget ? `确定取消批次「${cancelTarget.objectNo}」吗？取消后不能再开工。` : ''} confirmText="取消批次" destructive loading={cancelMutation.isPending} onCancel={() => setCancelTarget(null)} onConfirm={() => cancelTarget && cancelMutation.mutate(cancelTarget.id)} />
       <AppDialog open={endTarget !== null} onClose={() => { setEndTarget(null); setEndReason(''); }} maxWidth="sm" fullWidth>
         <DialogTitle>提前结束批次</DialogTitle>

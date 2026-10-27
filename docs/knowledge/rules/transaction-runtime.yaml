@@ -55,12 +55,12 @@ rules:
       type: resolve-published-production-work-flow
       definitionSource: productionWorkApplicabilityRule.definitionId
       flowVersionSource: productionWorkDefinition.currentPublishedFlowVersionId
-      freezeReferenceForFutureProductionObject: true
+      freezeReferenceAt: production-work-instance.create
       applicabilityRulePrioritySource: productionWorkApplicabilityRule.ruleType
       applicabilityRulePriorityOrder: [EXCEPTION, SCOPED, GLOBAL]
       userMayProvidePriority: false
       customerMaySeePriority: false
-    explanation: 适用规则引用作业模板，由系统按 EXCEPTION、SCOPED、GLOBAL 的固定优先级匹配，并解析模板当前已发布流程；草稿和历史流程不作为适用目标，优先级不供用户输入或展示。当前 ExecutionSnapshotBuilder 在首次合法 START 的受限 OPERATION_START 范围完成匹配和冻结，保存所选规则字段与已发布版本/图；完整独立作业实例及通用执行契约仍待建设。本记录保持原 specified，不能用初始未来时否认局部实现，也不由源码存在推定本轮运行通过。
+    explanation: 适用规则引用作业模板，由系统按 EXCEPTION、SCOPED、GLOBAL 的固定优先级匹配当前上下文，并解析模板当前已发布流程；草稿和历史流程不作为新实例目标，优先级不供用户输入或展示。作业实时匹配，后续工序创建实例时保存所选规则、匹配事实及已发布图；已创建实例即使失配仍保留，批次首次START不固定后续候选。完整独立实例及通用执行契约仍待建设；保持specified，不由源码存在推定本轮运行通过。
     evidenceIds:
     - evidence.ai-transaction-runtime-architecture
     - evidence.business-knowledge-model
@@ -133,7 +133,11 @@ rules:
       contractInputs: [productionObject, productId, productFamilyId, operationId, effectiveApplicabilityRules]
       contractOutputs: [matchedApplicabilityRule, selectedProductionWorkDefinition, currentPublishedFlowVersion]
       deterministic: true
-    explanation: 未来生产执行创建作业实例时，系统根据生产对象、产品、产品簇、工序等运行上下文自动匹配作业适用规则，并按 EXCEPTION、SCOPED、GLOBAL 的固定顺序解析；产品配置或工序配置不手工引用作业模板或流程版本。只有命中的规则所指向作业模板当前已发布流程版本才可进入实例创建。当前首次 START 的受限生产执行已进行WORK自动匹配并冻结选中规则字段与当前已发布图；result.contractTarget描述通用目标接口，不代表同名独立handler或完整注册已存在。
+      contextTiming: current-at-match
+      newlyMatchedWorkScope: subsequent-operations-only
+      backfillPassedOperations: false
+      preserveExistingInstances: true
+    explanation: 按当前生产对象、产品、产品簇及实际工序自动匹配，顺序为EXCEPTION、SCOPED、GLOBAL；不手工引用作业。产品转簇可改变后续工序候选，已过站不补做，已有实例失配仍保留。当前OPERATION_START工程边界为PENDING查询预览、合法START事务重新匹配创建缺失实例，IN_PROGRESS/COMPLETED不补入；GET不落库，不以批次首次START固定所有后续候选。新实例使用创建时当前已发布流程；result.contractTarget仍描述通用目标接口，不代表同名独立handler或完整注册已存在。
     evidenceIds:
     - evidence.ai-transaction-runtime-architecture
     - evidence.business-knowledge-model
@@ -160,13 +164,15 @@ rules:
       contractInputs: [productionObject, matchedApplicabilityRule, selectedProductionWorkDefinition, currentPublishedFlowVersion]
       contractOutputs: [productionWorkInstance, immutableProductionWorkExecutionSnapshot]
       freezeAt: production-work-instance.create
-      fields: [productionWorkDefinitionId, publishedProductionWorkFlowVersionId, applicabilityRuleSnapshot, productionWorkFlowConfigurationSnapshot]
+      fields: [productionWorkDefinitionId, publishedProductionWorkFlowVersionId, applicabilityRuleSnapshot, matchContext, productionWorkFlowConfigurationSnapshot]
       templateReference: productionWorkMatch.definitionId
       flowVersionReference: productionWorkDefinition.currentPublishedFlowVersionId
       applicabilityRuleSnapshotSource: matched-production-work-applicability-rule
       flowConfigurationSnapshotSource: current-published-production-work-flow-version
       immutableAfterCreate: true
-    explanation: 创建作业实例时必须同时冻结作业模板引用、创建时的当前已发布作业流程版本引用、命中的作业适用规则快照和该已发布流程的作业流程配置快照。后续修改或发布作业模板、适用规则或流程版本不得改变既有作业实例的执行依据。当前已有嵌入生产执行的作业状态，首次START冻结已发布版本/nodes/edges及匹配规则所选字段并据此推进；独立作业实例完整规则修订上下文和通用执行注册仍未闭环。此result列的是目标契约，不能把局部实现当全部目标已验收。
+      retainOnApplicabilityMismatch: true
+      retainBeforeFirstBusinessNode: true
+    explanation: 作业实例创建时冻结模板、当时已发布流程、命中规则、匹配事实和流程配置。已创建实例包括尚未执行业务节点的实例，均保持原批次归属、图、表单及进度；转簇、失配或发布不移除或重置。当前嵌入实现以state中的works状态识别实例，snapshot中的候选计划单独不算实例；制程快照冻结与作业实例冻结分开。独立实例完整规则修订上下文和通用执行注册仍未闭环；此result为目标契约，不将局部实现当全部目标已验收。
     evidenceIds:
     - evidence.ai-transaction-runtime-architecture
     - evidence.business-knowledge-model

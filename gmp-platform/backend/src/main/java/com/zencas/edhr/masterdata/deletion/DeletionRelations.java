@@ -96,7 +96,6 @@ final class DeletionRelations {
         new Reference("product_version", "batch", "product_version_id", false),
         new Reference("product_version", "serial_number", "product_version_id", false),
         new Reference("product_process", "product_process_version", "product_process_id", false),
-        new Reference("product_process_version", "work_order", "process_version_id", false),
         new Reference("product_process_version", "production_object", "process_version_id", false),
         new Reference("product_process_version", "dhr_instance", "process_version_id", false),
         new Reference("product_process_version", "product_process_operation_binding", "product_process_version_id", true),

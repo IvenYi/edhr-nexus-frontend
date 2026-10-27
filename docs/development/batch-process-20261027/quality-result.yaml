@@ -1,0 +1,278 @@
+{
+  "qualityResult": {
+    "result": "failed",
+    "baseCommit": "d5adf22066ea4d6bb1c7e7ede09961fc97bea675",
+    "headCommit": "d5adf22066ea4d6bb1c7e7ede09961fc97bea675",
+    "contractBaseline": {
+      "sourceCommit": "d5adf22066ea4d6bb1c7e7ede09961fc97bea675",
+      "targetBranch": "edhr-dev",
+      "targetCommit": "d5adf22066ea4d6bb1c7e7ede09961fc97bea675",
+      "contractReadCommit": "d5adf22066ea4d6bb1c7e7ede09961fc97bea675",
+      "uncommittedContractPaths": []
+    },
+    "workingTreeState": {
+      "status": "dirty",
+      "includedPaths": [
+        "docs/architecture/business-knowledge-model.md",
+        "docs/frontend/list-page-guidelines.md",
+        "docs/knowledge/README.md",
+        "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+        "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+        "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+        "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+        "docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml",
+        "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+        "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml",
+        "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+        "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml",
+        "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+        "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+        "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+        "docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml",
+        "docs/knowledge/evidence/production-execution.yaml",
+        "docs/knowledge/evidence/production.yaml",
+        "docs/knowledge/evidence/transaction-runtime.yaml",
+        "docs/knowledge/facts/core-business.yaml",
+        "docs/knowledge/glossary.yaml",
+        "docs/knowledge/implementation-anchors/core-business.yaml",
+        "docs/knowledge/ontology.yaml",
+        "docs/knowledge/open-questions.yaml",
+        "docs/knowledge/rules/product-process.yaml",
+        "docs/knowledge/rules/production.yaml",
+        "docs/knowledge/rules/transaction-runtime.yaml",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionRelations.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/engine/WorkOrderStatusMachine.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/entity/WorkOrder.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionIntegrationTest.java",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionObjectControllerTest.java",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderControllerTest.java",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionServiceTest.java",
+        "gmp-platform/frontend/src/api/work-orders.ts",
+        "gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx",
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx",
+        "gmp-platform/frontend/src/utils/productionAudit.ts"
+      ],
+      "excludedPaths": [
+        "docs/development/flow-canvas-unification-20261024/",
+        "gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs",
+        "gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx",
+        "gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx",
+        "output/ 下其他历史场景文件"
+      ],
+      "untrackedPaths": [
+        "docs/development/batch-process-20261027/",
+        "docs/knowledge/evidence/batch-process-2026-10-27.md",
+        "docs/knowledge/evidence/batch-process.yaml",
+        "docs/knowledge/facts/batch-process.yaml",
+        "docs/knowledge/rules/batch-process.yaml",
+        "docs/knowledge/evidence/work-live-matching-2026-10-26.md",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/BatchProcessIntegrationTest.java",
+        "gmp-platform/frontend/src/components/ProductionObjectEditDialog.tsx"
+      ]
+    },
+    "knowledgeBaselineVersion": "0.3.25",
+    "checks": [
+      {
+        "id": "check.batch-quality.baseline",
+        "required": true,
+        "category": "documentation",
+        "description": "独立读取项目/质量/交接契约并核对Git及实际脏工作树",
+        "method": "command",
+        "command": "git rev-parse HEAD origin/edhr-dev; git diff --name-only -- AGENTS.md codeplzreadme.md docs/agents; git diff --check",
+        "outcome": "passed",
+        "evidence": [
+          "HEAD、目标和契约读取提交均d5adf22066ea4d6bb1c7e7ede09961fc97bea675，契约无工作树变化；并非干净提交验收。",
+          "相关已跟踪实现差异SHA256 990237161db4e31852b34f0b81f3547283d32d6e1feda6a9d0e6e1829603e1d3；生成范围见quality-review.md。",
+          "末次git diff --check通过。"
+        ]
+      },
+      {
+        "id": "check.batch-quality.requirements-and-code",
+        "required": true,
+        "category": "requirements",
+        "description": "生产对象制程、同形态、数量、工单结束、冻结与审计源码独立审查",
+        "method": "inspection",
+        "command": "Review ProductionService/WorkOrderController/ProductionObjectController/ProductionExecutionService/ExecutionSnapshotBuilder/DeletionRelations and associated tests",
+        "outcome": "passed",
+        "evidence": [
+          "工单绑定已移除；对象选版按新候选资格和既有引用资格分别校验；批次编辑/拆分/开工/结束锁顺序一致。",
+          "首次START使用REPEATABLE_READ并实际重核资格；历史执行保留快照；数量按非取消目标占用。",
+          "审计引用与首次开工原件写入同事务，WORK_ORDER状态变化单独记录；旧直接start/complete接口仍阻断。"
+        ]
+      },
+      {
+        "id": "check.batch-quality.postgres-regression",
+        "required": true,
+        "category": "integration",
+        "description": "独立重跑真实PostgreSQL的生产/执行/控制器相关组合",
+        "method": "automated-test",
+        "command": "mvn -q -Dexec.skip=true -Dbatch.test.url=jdbc:postgresql://localhost:5432/edhr_batch_process_20261027 -Dexecution.test.url=jdbc:postgresql://localhost:5432/edhr_batch_execution_20261027 -Dexecution.test.driver=org.postgresql.Driver -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect -Dexecution.test.user=ivenwang -Dtest=ProductionServiceTest,WorkOrderControllerTest,ProductionObjectControllerTest,ProductionExecutionIntegrationTest,BatchProcessIntegrationTest test",
+        "outcome": "passed",
+        "evidence": [
+          "/tmp/batch-process-independent-quality-tests.log",
+          "132项：130执行通过、2个显式开发浏览器服务入口skip。ProductionService22、WorkOrderController3、ProductionObjectController4、ProductionExecutionIntegration91(89执行)、BatchProcessIntegration12。",
+          "覆盖并发数量与START/修改、同V1配置冻结、有效期/转簇/形态、工单完成与人工结束、批次权限、审计回滚及删除阻断。"
+        ]
+      },
+      {
+        "id": "check.batch-quality.clean-database",
+        "required": true,
+        "category": "database",
+        "description": "独立新建空库执行干净基线及真实API场景",
+        "method": "automated-test",
+        "command": "createdb edhr_batch_process_quality_20261027; mvn -q -Dexec.skip=true -Dbatch.test.url=jdbc:postgresql://localhost:5432/edhr_batch_process_quality_20261027 -Dtest=BatchProcessIntegrationTest test",
+        "outcome": "passed",
+        "evidence": [
+          "/tmp/batch-process-quality-fresh-baseline.log",
+          "全新库Liquibase与Hibernate validate成功，12项通过，无skip。SQL独立查询work_order.process_version_id列数0、fk_delete_guard_013约束数0、databasechangelog两项新基线。",
+          "未修改原开发库；新库未用clearCheckSums或旧结构兼容。"
+        ]
+      },
+      {
+        "id": "check.batch-quality.frontend-build",
+        "required": true,
+        "category": "regression",
+        "description": "最终小数分批实现后的独立前端类型检查与构建",
+        "method": "command",
+        "command": "npm run build",
+        "outcome": "passed",
+        "evidence": [
+          "/tmp/batch-process-independent-frontend-build.log",
+          "tsc -b和Vite build成功，built in 5.92s。"
+        ]
+      },
+      {
+        "id": "check.batch-quality.ui",
+        "required": true,
+        "category": "e2e",
+        "description": "独立浏览器会话验证拆分、引用保持、同形态与数量编辑",
+        "method": "browser",
+        "command": "Playwright CLI session batch-quality against 127.0.0.1:3002",
+        "outcome": "passed",
+        "evidence": [
+          "独立创建QA-INDEPENDENT-1793033775453计划0.07，按每批0.01生成并保存7批；生成后切到V2不改写待提交的V1；SN禁用。",
+          "0.02编辑超量时保存禁用；0.005修改成功。SQL确认计划0.0700、对象7个、已分配0.0650、保存版本均V1。",
+          "output/playwright/batch-process-independent-edit-1440.png",
+          "output/playwright/batch-process-independent-edit-1024.png"
+        ]
+      },
+      {
+        "id": "check.batch-quality.audit-original",
+        "required": true,
+        "category": "audit",
+        "description": "从批次审计真实打开{}，核对原件内容而非当前主数据",
+        "method": "browser",
+        "command": "Playwright batch-quality + PostgreSQL snapshot/master comparison",
+        "outcome": "passed",
+        "evidence": [
+          "样本BATCH-20261027004031431055-2288，审计390207977127727104冻结工序名为更新后的装配，当前route_node已为再次变化。",
+          "浏览器{}详情包含更新后的装配，不包含再次变化，版本身份及冻结时间可见。",
+          "output/playwright/batch-process-independent-audit-1024.png"
+        ]
+      },
+      {
+        "id": "check.batch-quality.visual",
+        "required": true,
+        "category": "visual",
+        "description": "1440与1024布局、操作可达和快照详情可读性",
+        "method": "browser",
+        "command": "Capture and visually inspect independent edit and audit screenshots",
+        "outcome": "passed",
+        "evidence": [
+          "output/playwright/batch-process-independent-edit-1440.png",
+          "output/playwright/batch-process-independent-edit-1024.png",
+          "output/playwright/batch-process-independent-audit-1024.png",
+          "下窄屏分区重排；数据表横向滚动保持结构；冻结对话框在抽屉上方且文本区可滚动。"
+        ]
+      },
+      {
+        "id": "check.batch-quality.knowledge-schema",
+        "required": true,
+        "category": "ontology",
+        "description": "独立知识子检查运行schema及退役引用检查",
+        "method": "automated-test",
+        "command": "mvn -q -f tools/knowledge-model/pom.xml test",
+        "outcome": "passed",
+        "evidence": [
+          "/tmp/batch-process-knowledge-independent.log",
+          "89项通过，无failure/error/skip；活跃规则无retired工单制程事实依赖；本体原交付28资产145ID无重复。"
+        ]
+      },
+      {
+        "id": "check.batch-quality.knowledge-semantics",
+        "required": true,
+        "category": "ontology",
+        "description": "当前声明替代与审计规则适用范围独立核对",
+        "method": "inspection",
+        "command": "Compare current DEC-0001-03/DEC-0012 and rule.production.process-snapshot-audit-detail with implementation/audit events",
+        "outcome": "failed",
+        "evidence": [
+          "见QF-BATCH-001和QF-BATCH-002。发现后主侧已开始修正，当前实例未参与修复且不承担修复后最终复验。",
+          "docs/development/batch-process-20261027/quality-review.md 保存发现时原文、实际运行证据和后续门禁边界。"
+        ]
+      }
+    ],
+    "findings": [
+      {
+        "id": "QF-BATCH-001",
+        "severity": "medium",
+        "scope": "DEC-0001-03 当前交叉说明及声明替代处置",
+        "summary": "旧当前说明仍将DEC-0012解释成工单首拆锁版与后续对象继承",
+        "reproductionSteps": [
+          "读取发现时docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml:18。",
+          "对照当前DEC-0012-04、ProductionService.split/requireProcessVersion和本轮replacementScopes/knowledgeSync。"
+        ],
+        "expectedResult": "当前交叉说明准确指向每对象显式选版；旧锁版仅保留有时点的历史依据，补齐受影响ID处置。",
+        "actualResult": "active specified的DEC-0001-03仍写“后续 DEC-0012 已确认并提供首次拆分选择、锁定与后续对象继承”，处置未含该ID。",
+        "evidence": [
+          "docs/development/batch-process-20261027/quality-review.md",
+          "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml:18"
+        ],
+        "resolutionStatus": "open",
+        "resolutionEvidence": []
+      },
+      {
+        "id": "QF-BATCH-002",
+        "severity": "medium",
+        "scope": "rule.production.process-snapshot-audit-detail 适用范围",
+        "summary": "结构化规则对每条PRODUCTION_OBJECT审计要求制程身份，超过实际差量审计契约",
+        "reproductionSteps": [
+          "读取发现时docs/knowledge/rules/batch-process.yaml:48-67，condition仅audit.entityType==PRODUCTION_OBJECT且processIdentityRequired=true。",
+          "查询新库COMPLETED对象审计或查看ProductionExecutionService.auditObjectStatusChange。"
+        ],
+        "expectedResult": "按创建、制程变更、首次START及详情展示语境明确身份/冻结要求；保留一般差量事件仅记录真实变化。",
+        "actualResult": "所有对象审计均被结构化字段声明必须含身份，但完成事件只有status；实际审计正确保留差量记录，知识规则范围过宽。",
+        "evidence": [
+          "docs/development/batch-process-20261027/quality-review.md",
+          "新库审计390211901486321664 content_after={\"status\":\"COMPLETED\"}",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java:279"
+        ],
+        "resolutionStatus": "open",
+        "resolutionEvidence": []
+      }
+    ],
+    "residualRisks": [
+      {
+        "id": "risk.final-revalidation",
+        "description": "主侧收到两项知识发现后正在修正；本结果保留初次失败，修复尚未由全新质量实例验收。",
+        "impact": "本结果不能用于宣布L2门禁通过。",
+        "mitigation": "修复后创建未参与修复的新质量实例核对两项及相邻知识/实现边界，记录最终passed。"
+      },
+      {
+        "id": "risk.scope-limits",
+        "description": "未执行全系统回归、远端部署或分支保护核验；两个开发辅助浏览器服务入口未启用。",
+        "impact": "不能把本切片验收泛化成整个产品或发布候选验证。",
+        "mitigation": "本轮只交付已确认影响范围，其他快照入口按用户要求仅盘点。"
+      }
+    ],
+    "blockingConditions": []
+  }
+}

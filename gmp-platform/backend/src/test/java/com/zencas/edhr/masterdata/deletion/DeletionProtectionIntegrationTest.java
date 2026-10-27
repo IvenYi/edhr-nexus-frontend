@@ -409,7 +409,7 @@ class DeletionProtectionIntegrationTest {
         jdbc.update("INSERT INTO product_process(id,tenant_id,owner_type,owner_id) VALUES (-86806,'default','PRODUCT',-86801)");
         jdbc.update("INSERT INTO product_process_version(id,tenant_id,product_process_id,version_label,production_mode,production_form,route_version_id,dhr_template_version_id) VALUES (-86807,'default',-86806,'V1.0','量产','BATCH',-86803,-86805)");
         order(-86808, -86801);
-        jdbc.update("UPDATE work_order SET process_version_id=-86807 WHERE id=-86808");
+        jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity) VALUES (-86815,'default',-86808,'DELETE-QA-SNAPSHOT-BATCH','BATCH',-86807,1)");
         jdbc.update("INSERT INTO product_process_operation_binding(id,product_process_version_id,route_node_key,operation_name) VALUES (-86809,-86807,'operation-1','链路工序')");
         jdbc.update("INSERT INTO sop_document(id,tenant_id,code,title) VALUES (-86810,'default','DELETE-QA-DOC','链路文档')");
         jdbc.update("INSERT INTO document_version(id,document_id,version,code) VALUES (-86811,-86810,'V1.0','DELETE-QA-DOC-V')");
@@ -434,7 +434,6 @@ class DeletionProtectionIntegrationTest {
         }
         jdbc.update("INSERT INTO form_template(id,tenant_id,code,name) VALUES (-86813,'default','DELETE-QA-SNAPSHOT-FORM','生产快照表单')");
         jdbc.update("INSERT INTO form_template_version(id,template_id,version_number,status) VALUES (86814,-86813,1,'DRAFT')");
-        jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity) VALUES (-86815,'default',-86808,'DELETE-QA-SNAPSHOT-BATCH','BATCH',-86807,1)");
         jdbc.update("INSERT INTO production_execution(object_id,snapshot_json,state_json,started_at,updated_at) VALUES (-86815,'{\"operations\":[{\"forms\":[{\"versionId\":86814}]}]}','{}',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
         jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity) VALUES (-86816,'default',-86808,'DELETE-QA-SN','SN',-86807,1)");
         String snImpact = mvc.perform(get("/api/v1/master-data/deletion-check/material/-86801")

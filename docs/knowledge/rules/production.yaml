@@ -286,7 +286,7 @@ rules:
     evidenceIds: [evidence.record-correction-void-design]
   - id: rule.production.work-order-required-fields
     name: 工单必填字段和计划数量校验
-    status: implemented
+    status: specified
     visibility: internal
     trigger: work-order.create-or-update
     scope: work-order
@@ -304,8 +304,8 @@ rules:
     result:
       type: block
       reason: work-order-required-field-invalid
-    explanation: 工单编号、产品和大于零的计划数量为必填/有效字段；订单编号、制程版本、计划起止时间和备注为可选字段。
-    evidenceIds: [evidence.work-order-create-contract, evidence.work-order-page, evidence.production-work-order-entity]
+    explanation: 工单编号、产品和大于零的计划数量必填；订单编号、计划时间和备注可选。工单不再绑定制程，制程由各生产对象创建时显式选择。
+    evidenceIds: [evidence.work-order-create-contract, evidence.work-order-page, evidence.production-work-order-entity, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.work-order-planned-time-order
     name: 工单计划时间顺序校验
     status: implemented
@@ -323,10 +323,10 @@ rules:
     explanation: 当计划开始和结束时间同时提供时，计划结束时间不能早于计划开始时间。
     evidenceIds: [evidence.work-order-create-contract, evidence.production-work-order-entity, evidence.migration-0064-production-work-order-fields, evidence.work-order-page]
   - id: rule.production.active-process-version-selection
-    name: 工单制程仅可选择 ACTIVE 版本
-    status: implemented
+    name: 生产对象新选制程必须当前有效
+    status: specified
     visibility: internal
-    trigger: work-order.create-or-split
+    trigger: production-object.create-or-change-process
     scope: product-process-resolution
     condition:
       all:
@@ -336,11 +336,11 @@ rules:
     result:
       type: block
       reason: inactive-process-version-unavailable
-    explanation: 工单创建和首次拆分的制程选项仅来自当前有效状态为 ACTIVE 的产品或产品簇制程版本；已锁定版本的后续历史拆分遵循独立锁定策略。
-    evidenceIds: [evidence.product-process-resolution-for-production, evidence.production-service, evidence.work-order-page, evidence.production-service-test]
+    explanation: 新建或更换批次制程只能选择当前有效且适用的产品或产品簇版本，候选不展示无效版本。已选版本后续失效保留引用并提示，首次开工必须重核，不能沿用旧工单锁版豁免。
+    evidenceIds: [evidence.product-process-resolution-for-production, evidence.production-service, evidence.work-order-page, evidence.production-service-test, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.work-order-mass-production-only
     name: 工单首版仅支持量产
-    status: implemented
+    status: specified
     visibility: internal
     trigger: work-order.create-or-split
     scope: work-order
@@ -355,8 +355,8 @@ rules:
     result:
       type: block
       reason: unsupported-production-mode
-    explanation: 工单和生产对象首版仅允许量产制程；非量产制程不能进入创建或拆分流程。
-    evidenceIds: [evidence.production-service, evidence.production-service-test]
+    explanation: 生产对象所选制程必须为量产；工单不再以制程字段指定生产方式，生产形态由首批确定并保持。
+    evidenceIds: [evidence.production-service, evidence.production-service-test, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.production-form-supported
     name: 生产形态仅支持批次或 SN
     status: implemented
@@ -428,8 +428,8 @@ rules:
     explanation: 批次导入模板 canonical 字段为批次号和数量（必填）、计划开始时间、计划结束时间和备注（可选）；支持 CSV、XLS、XLSX，上传后校验字段、时间顺序及总量边界并进入待提交清单。
     evidenceIds: [evidence.production-work-order-batch-import-template-ui, evidence.production-work-order-page-pending-list, evidence.work-orders-api]
   - id: rule.production.production-batch-input-quantity-required
-    name: 历史表达：生产批次数量输入与未确认下限
-    status: deprecated
+    name: 生产批次数量必填且大于零
+    status: specified
     visibility: internal
     trigger: production-object.prepare
     scope: production-batch
@@ -445,8 +445,8 @@ rules:
       type: persist-version-references
       requiredFields: [quantity]
       target: production-object-pending-list
-    explanation: 本记录仅保留 0d46558234a933a020430ccf6c6a064ecfa05687 中 condition/result 的历史表达。该次内审将旧 >= 1 改为 > 0 并认定无需业务确认，证据不足；2026-10-12 补正撤回这一组合规则的当前规范资格，具体下限由 question.production-batch-quantity-lower-bound 待决。代码实际校验 > 0 不等于已经确认 0 < q < 1 的业务资格，也不能把旧 >= 1 自动恢复为现行要求。deprecated 只撤回未充分确认的组合表达，不取消 DEC-0014-03/-09 的数量必填、不放宽既有校验、不取消 DEC-0012-03 的 SN=1 与总量约束；整数批次数及存储边界继续分别适用。本次未运行小数边界业务测试。
-    evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-work-order-batch-import-template-ui, evidence.production-service, evidence.production-batch-quantity-policy-boundary]
+    explanation: 2026-10-27用户明确BATCH数量必须大于0且允许0.5，本条恢复为当前规范。手动、按每批数量、导入及修改共用该边界，仍受存储精度、总量及其他资格约束；SN=1，批次数为正整数。2026-10-12撤回过度推断只保留为历史依据，不再是现行待决。
+    evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-work-order-batch-import-template-ui, evidence.production-service, evidence.production-batch-quantity-policy-boundary, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.production-object-pending-before-submit
     name: 生产对象先进入待提交清单
     status: implemented
@@ -464,22 +464,22 @@ rules:
     explanation: 手动添加、按数量批量添加和 CSV/XLS/XLSX 导入均先生成待提交清单记录，不直接调用持久化接口；用户确认后统一批量提交。
     evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-work-order-batch-import-template-ui, evidence.work-orders-api]
   - id: rule.production.locked-process-version-read-only-preview
-    name: 已关联制程版本只读并提供预览
-    status: implemented
+    name: 批次所选制程提供只读内容预览
+    status: specified
     visibility: internal
     trigger: production-object.prepare
-    scope: work-order
+    scope: production-object
     condition:
       all:
-        - fact: workOrder.processVersionId
+        - fact: productionBatch.productProcessVersion
           operator: is-present
           value: true
     result:
       type: require-explicit-process-version
-      immutableAfterFirstObject: true
+      immutableAfterFirstStart: true
       preview: read-only
-    explanation: 工单已关联制程版本后，拆分弹窗只读展示锁定版本，不允许改写选择；预览可查看版本元数据、工艺路线、批记录模板和工序配置，且不改变原有首次拆分锁定规则。
-    evidenceIds: [evidence.production-work-order-process-lock-preview-ui, evidence.production-service, evidence.production-service-test]
+    explanation: 保留稳定ID，当前含义直接改为批次所选制程的只读内容预览。预览只读不限制未开工批次选择或换版，已开工按实际冻结快照解释，不回读当前配置冒充历史。
+    evidenceIds: [evidence.production-work-order-process-lock-preview-ui, evidence.production-service, evidence.production-service-test, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.batch-prefix-generation
     name: 批量添加按前缀生成批次号
     status: implemented
@@ -521,8 +521,8 @@ rules:
     explanation: 量产且 BATCH 形态的批量添加“按批次数”模式中，用户输入的拆分数量表示批次数；当前可分配数量除以批次数得到前 N-1 批数量，最后一批承接余数。
     evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-service]
   - id: rule.production.mass-batch-quantity-distribution
-    name: 历史表达：量产批次按每批数量生成与未确认下限
-    status: deprecated
+    name: 量产批次按每批正数量生成并保留余数
+    status: specified
     visibility: internal
     trigger: production-object.prepare
     scope: production-batch
@@ -545,8 +545,8 @@ rules:
       target: production-object-pending-list
       distribution: fixed-quantity-with-final-remainder
       generatedCount: ceil(availableRemaining / quantityPerBatch)
-    explanation: 本记录仅保留 0d46558234a933a020430ccf6c6a064ecfa05687 中 condition/result 的历史表达。该次内审依据当前实现把每批数量下限从 >= 1 改为 > 0，尚无充分来源确认 0 < q < 1 的业务资格；2026-10-12 补正将这一组合规则撤为 deprecated/internal，下限由 question.production-batch-quantity-lower-bound 待决。DEC-0014-12 及 scenario.production-batch-fixed-quantity-distribution 中按 Q 生成、末批承接余数和总量边界继续有效；撤回本表达不取消该功能，也不授权放宽现有代码。若后续选择至少为 1，须同时明确不足 1 的末批余数边界，不得擅自丢弃或补足余数。实际 decimal 类型、DECIMAL(15,4) 存储和 > 0 校验作为实现证据保留，本次未运行小数边界业务测试。
-    evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-service, evidence.production-batch-quantity-policy-boundary]
+    explanation: 按每批正数量Q生成，Q可小于1，末批承接不足Q的正余数，总量不超过当前剩余量；不丢弃或补足余数。数量下限由2026-10-27确认，存储精度仍受约束。
+    evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-service, evidence.production-batch-quantity-policy-boundary, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.sn-bulk-count-creates-unit-objects
     name: SN 批量添加按拆分数量生成单件对象
     status: implemented
@@ -585,8 +585,8 @@ rules:
     explanation: SN 导入模板只包含 SN 编号、计划开始时间和计划结束时间；SN 数量不作为导入列，由生产形态隐含为 1。SN 编号为必填且必须唯一，导入记录先进入待提交清单并在批量提交时再次由服务端校验。
     evidenceIds: [evidence.production-work-order-page-pending-list, evidence.production-work-order-batch-import-template-ui, evidence.production-service, evidence.production-service-test]
   - id: rule.production.split-batch-table-action-boundary
-    name: 已拆分批次表不承载操作
-    status: implemented
+    name: 已拆分表提供受限未开工修改和取消
+    status: specified
     visibility: internal
     trigger: production-object.list.display
     scope: production-batch
@@ -596,10 +596,11 @@ rules:
           operator: equals
           value: work-order-split-dialog
     result:
-      type: omit-projection
-      omittedColumns: [operation]
-      operationOwner: production-batch-list
-    explanation: 工单拆分弹窗中的已拆分批次表仅展示批次信息、结果和状态，不显示操作列；批次操作后续统一归属于独立批次列表。
+      type: allow-with-governance
+      operationColumn: true
+      actions: [edit-unstarted, cancel-unstarted]
+      sharedCommandOwner: production-object
+    explanation: 用户已确认未开工批次可改；拆分弹窗与独立批次页复用编辑组件/API是本轮工程选择。已拆分表只对满足对象及父工单状态约束的未开工对象提供修改/取消，不新增正常完成旁路；待提交清单仍只是暂存。
     evidenceIds: [evidence.production-work-order-page-pending-list]
   - id: rule.production.batch-management-reuses-production-object-list
     name: 批次管理复用生产对象 BATCH 列表
@@ -621,7 +622,7 @@ rules:
     evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-management-controller, evidence.production-batch-management-api, evidence.production-object-entity]
   - id: rule.production.batch-management-row-detail-and-audit-entry
     name: 批次管理行级详情与数据审计入口
-    status: implemented
+    status: specified
     visibility: internal
     trigger: production-batch-management.row.interact
     scope: production-batch-management
@@ -636,8 +637,8 @@ rules:
       auditPlacement: production-object.detail.audit-tab
       auditEntityType: PRODUCTION_OBJECT
       auditActionProjection: [CREATE, UPDATE]
-    explanation: 批次管理列表整行点击打开既有生产对象详情，详情中的数据审计页签读取该对象的 PRODUCTION_OBJECT 审计记录并沿用新增/修改动作投影；不额外提供重复的查看或独立批次审计动作。对象控制器显式写入创建、取消和提前结束的业务快照；生产执行服务在合法执行导致对象状态实际变化时追加对象 UPDATE，原 PRODUCTION_EXECUTION 事件仍保存执行细节。AuditAspect 继续只负责通用元数据，不回填历史缺失事件。
-    evidenceIds: [evidence.production-batch-management-page, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.production-object-execution-status-audit-source, evidence.production-object-execution-status-audit-tests, evidence.audit-aspect]
+    explanation: 批次详情中的数据审计读取该对象PRODUCTION_OBJECT事件，涉及制程的条目显示归属及版本，首次START保存的冻结配置提供{}详情。未开工引用和已冻结配置须明确区分；应有的历史原件缺失不按当前主数据补造。普通UPDATE保持真实差量，不要求每条重复制程身份或配置；新增/修改动作投影不变，PRODUCTION_EXECUTION继续保存完整执行证据。
+    evidenceIds: [evidence.production-batch-management-page, evidence.audit-controller-action-projection, evidence.audit-controller-test, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.production-object-execution-status-audit-source, evidence.production-object-execution-status-audit-tests, evidence.audit-aspect, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.batch-management-action-entry-boundary
     name: 批次管理操作栏按状态提供业务动作入口
     status: specified
@@ -660,8 +661,8 @@ rules:
         print-travel-sheet: true
       rowClickOwns: [production-object.detail, production-object.detail.audit-tab]
       forbiddenAction: view
-    explanation: 批次管理操作栏只承载独立业务动作，不重复提供查看按钮。未开工 BATCH 可取消；进行中 BATCH 的“结束”语义为要求填写原因的提前结束，不得调用正常完成。DHR 图标对任意批次状态显示，点击后按既有查看权限和实例存在性给出结果，入口本身不创建实例；执行详情仍按开工后可用边界处理。流转单打印不得伪造下载，数据审计沿统一行点击详情及详情页签承载。
-    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-dhr-lookup-test, evidence.dhr-instance-controller, evidence.dhr-instance-service, evidence.production-object-status-machine, evidence.production-object-controller, evidence.production-object-cancel-side-effects-current, evidence.production-object-early-termination-gap, evidence.production-object-start-side-effects-current, evidence.guancheng-batch-close-source, evidence.guancheng-batch-start-source]
+    explanation: 未开工且无执行实例、所属工单仍CREATED或IN_PROCESS的BATCH可编辑制程和数量；已取消或已开工不能借编辑恢复。其他既有取消、原因必填的提前结束、DHR只读查阅及执行详情入口保持，不新增既有批次再拆分。
+    evidenceIds: [evidence.production-batch-management-page, evidence.production-batch-dhr-lookup-test, evidence.dhr-instance-controller, evidence.dhr-instance-service, evidence.production-object-status-machine, evidence.production-object-controller, evidence.production-object-cancel-side-effects-current, evidence.production-object-early-termination-gap, evidence.production-object-start-side-effects-current, evidence.guancheng-batch-close-source, evidence.guancheng-batch-start-source, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.batch-management-dhr-read-only-entry
     name: 批次 DHR 图标常显与只读查阅
     status: implemented
@@ -726,27 +727,24 @@ rules:
     explanation: 待提交清单通过一次 batch API 请求进入 ProductionService.splitBatch，并在同一事务边界内逐条校验和保存；任一条失败时整批回滚，不保留部分成功对象。
     evidenceIds: [evidence.production-object-batch-controller, evidence.production-service-batch-split, evidence.work-orders-api]
   - id: rule.production.process-required-on-first-split
-    name: 首次拆分必须选择制程
-    status: implemented
+    name: 每个生产对象创建必须选择制程
+    status: specified
     visibility: internal
     trigger: production-object.split
-    scope: work-order
+    scope: production-object
     condition:
       all:
-        - fact: workOrder.processVersionId
-          operator: is-null
-          value: null
         - fact: split.requestedProcessVersionId
           operator: is-null
           value: null
     result:
       type: block
-      reason: process-version-required-before-first-split
-    explanation: 工单创建时制程可以为空，但首次拆分生产对象时必须显式选择属于该产品或产品簇解析结果的制程。
-    evidenceIds: [evidence.production-service, evidence.work-order-controller, evidence.production-service-test]
+      reason: process-version-required-before-object-create
+    explanation: 保留稳定ID但取消首次限制：每个新建对象都须显式指定当前适用版本，工单无制程选择，不存在继承工单锁版的旁路。
+    evidenceIds: [evidence.production-service, evidence.work-order-controller, evidence.production-service-test, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.work-order-split-eligibility
     name: 工单在创建或生产中可继续拆分
-    status: implemented
+    status: specified
     visibility: internal
     trigger: production-object.split
     scope: work-order
@@ -761,32 +759,29 @@ rules:
     result:
       type: allow-with-governance
       allowedStatuses: [CREATED, IN_PROCESS]
-      requiredConstraints: [remaining-planned-quantity, locked-process-version, single-production-form]
+      requiredConstraints: [remaining-planned-quantity, explicit-applicable-process-version, single-production-form]
     explanation: 工单进入 IN_PROCESS 只表示至少一个生产对象已开工，不冻结尚未分配的计划数量；CREATED 与 IN_PROCESS 工单均可继续拆分。COMPLETED、CLOSED、CANCELLED 和 EARLY_TERMINATED 工单不得拆分。
-    evidenceIds: [evidence.production-service, evidence.production-service-test, evidence.work-order-page]
+    evidenceIds: [evidence.production-service, evidence.production-service-test, evidence.work-order-page, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.first-split-locks-process
-    name: 首次拆分写回并锁定制程
-    status: implemented
+    name: 生产对象保存所选制程引用
+    status: specified
     visibility: internal
     trigger: production-object.split
-    scope: work-order
+    scope: production-object
     condition:
       all:
-        - fact: workOrder.productionObjectCount
-          operator: equals
-          value: 0
         - fact: split.processVersionResolved
           operator: equals
           value: true
     result:
       type: persist-version-references
-      target: [workOrder.processVersionId, productionObject.processVersionId]
-      immutableAfterFirstObject: true
-    explanation: 首次拆分将选定制程版本写回工单并写入生产对象；后续对象必须继承同一制程，不能更换。
-    evidenceIds: [evidence.production-service, evidence.production-work-order-entity, evidence.production-object-entity, evidence.production-service-test]
+      target: productionObject.processVersionId
+      immutableAfterFirstStart: true
+    explanation: 历史ID原位修正为对象级引用：每次拆分只向该生产对象保存显式所选制程，不写回工单；未开工按资格换版，首次开工后引用和实际配置冻结。
+    evidenceIds: [evidence.production-service, evidence.production-work-order-entity, evidence.production-object-entity, evidence.production-service-test, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.process-resolution-product-then-family
     name: 制程按产品优先产品簇兜底解析
-    status: implemented
+    status: specified
     visibility: internal
     trigger: production-object.process-options
     scope: product-process-resolution
@@ -801,13 +796,13 @@ rules:
     result:
       type: require-explicit-process-version
       resolutionOrder: [product, product-family]
-    explanation: 可选制程先解析产品自身版本；产品没有可用版本时回退产品簇版本，双方均不可用时阻断。
-    evidenceIds: [evidence.product-process-resolution-for-production, evidence.production-service-test]
+    explanation: 新选候选按产品优先、无可用产品版本时产品簇兜底。已有簇引用若仍有效且产品仍属该簇，不因新增自有制程失效；候选优先级不是已有引用适用性的判据。
+    evidenceIds: [evidence.product-process-resolution-for-production, evidence.production-service-test, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.single-production-form-per-order
     name: 同一工单不得混用生产形态
-    status: implemented
+    status: specified
     visibility: internal
-    trigger: production-object.split
+    trigger: production-object.create-or-change-process-or-start
     scope: work-order
     condition:
       all:
@@ -817,8 +812,8 @@ rules:
     result:
       type: block
       reason: mixed-production-form-in-work-order
-    explanation: 一个工单可拆分多个生产对象，但所有对象必须使用同一个制程生产形态 BATCH 或 SN。
-    evidenceIds: [evidence.production-service, evidence.production-service-test]
+    explanation: 同一工单所有对象保持BATCH或SN同一形态，新拆批、未开工换版和首次开工均校验，防止同版本内容修改改变身份；全部旧批取消也不解除既定形态。
+    evidenceIds: [evidence.production-service, evidence.production-service-test, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.sn-object-target-one
     name: SN 对象目标数量必须为一
     status: implemented
@@ -859,9 +854,9 @@ rules:
     evidenceIds: [evidence.production-service, evidence.production-object-entity, evidence.production-service-test]
   - id: rule.production.object-allocation-within-order-plan
     name: 生产对象目标数量不得超过工单计划数量
-    status: implemented
+    status: specified
     visibility: internal
-    trigger: production-object.split
+    trigger: production-object.create-or-update-or-cancel
     scope: work-order
     condition:
       all:
@@ -871,8 +866,8 @@ rules:
     result:
       type: block
       reason: object-target-quantity-exceeds-work-order-plan
-    explanation: 同一工单非 CANCELLED 生产对象目标数量之和不得超过工单计划数量；取消的未开工对象释放其分配量。良品、NG 和报废数量独立记录，不减少对象目标数量。
-    evidenceIds: [evidence.production-service, evidence.production-object-entity, evidence.production-service-test]
+    explanation: 有效分配A为所有非CANCELLED对象目标量，剩余R=计划Q-A。改量须新量-旧量<=R，减少释放额度但不自动改变计划Q；取消释放、提前结束仍占原目标量。并发修改按同一工单约束校验，良品/NG/报废不减目标量。
+    evidenceIds: [evidence.production-service, evidence.production-object-entity, evidence.production-service-test, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.object-lifecycle
     name: 生产对象生命周期
     status: specified
@@ -917,7 +912,7 @@ rules:
     evidenceIds: [evidence.production-object-start-side-effects-current, evidence.production-object-status-machine, evidence.production-service, evidence.production-object-controller, evidence.dhr-instance-start-transaction-source]
   - id: rule.production.object-cancel-before-start
     name: 未开工生产对象取消保留追溯
-    status: implemented
+    status: specified
     visibility: internal
     trigger: production-object.cancel
     scope: production-object
@@ -932,8 +927,8 @@ rules:
       physicalDelete: false
       excludeFromWorkOrderAllocation: true
       reevaluateWorkOrderTerminalState: true
-    explanation: 取消仅适用于尚未开工的生产对象；取消对象保留对象记录和审计，但其 targetQuantity 不再计入工单有效分配量，工单计划数量不变。工单仍为 CREATED 时，可按首次锁定制程继续拆分；全部对象取消时工单保持 CREATED，不得误判为 COMPLETED。
-    evidenceIds: [evidence.production-object-cancel-side-effects-current, evidence.production-object-status-machine, evidence.production-service, evidence.production-object-controller, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.production-service-test, evidence.guancheng-batch-remove-source]
+    explanation: 未开工对象取消后保留记录及审计，其目标量退出有效分配而计划量不变。全部未开工对象取消时工单保持CREATED，后续可选择当前制程继续拆分，但产品和生产形态不解锁；剩余计划未分配时不因全部对象终态完成工单。
+    evidenceIds: [evidence.production-object-cancel-side-effects-current, evidence.production-object-status-machine, evidence.production-service, evidence.production-object-controller, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.production-service-test, evidence.guancheng-batch-remove-source, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.object-early-termination
     name: 进行中生产对象提前结束
     status: specified
@@ -955,10 +950,10 @@ rules:
       terminal: true
       sideEffects:
       - terminate-associated-dhr-without-voiding-forms
-      - reevaluate-work-order-status
+      - preserve-work-order-status
       canonicalStatusCode: EARLY_TERMINATED
-    explanation: 进行中生产对象点击“提前结束”不得投影为正常完成；记录原因和终止时间，同事务将关联 DHR 真实标记已终止，停止普通执行并保留真实表单，不自动作废。英文状态码统一使用 EARLY_TERMINATED。工单级直接提前结束命令仍非本期范围；联动实现与验证按 DEC-0069 核对。 当前已查明的副作用为对象终态、关联DHR终止与工单终态回算；旧外部调研提出的活动事务关闭、子对象级联不作为本期已实现结果，不借旧推断扩张当前生产行为。
-    evidenceIds: [evidence.production-object-early-termination-gap, evidence.guancheng-batch-close-source, evidence.production-service, evidence.production-object-controller, evidence.dhr-termination-user-confirmed]
+    explanation: 进行中批次要求原因和时间，同事务终止关联DHR、停止普通执行并保留真实表单，不自动作废。单批EARLY_TERMINATED不触发工单结束；原目标分配保留，剩余计划可继续拆分。工单主动结束单独判断，不级联其他对象。
+    evidenceIds: [evidence.production-object-early-termination-gap, evidence.guancheng-batch-close-source, evidence.production-service, evidence.production-object-controller, evidence.dhr-termination-user-confirmed, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.split-initializes-execution-context
     name: 批次拆分准备生产对象与制程引用
     status: specified
@@ -974,11 +969,11 @@ rules:
       type: persist-version-references
       initialStatus: CREATED
       objectReferences: [work-order, process-version]
-      firstSplitLocksWorkOrderProcessVersion: true
+      workOrderHasProcessVersion: false
       dhrCreatedBySplit: false
       dhrCreationTiming: first-legal-start
-    explanation: 沿用历史规则 ID 原位纠正前期错误语义。当前拆分仅创建 CREATED 生产对象并保存工单与锁定制程版本引用；分配量按未取消对象目标数量计算。拆分不生成 DHR，也不建立首工序执行记录。BATCH/SN 的唯一 DHR 只在首次合法 START 同事务创建；外部系统的拆分行为不能移植为本产品现行规则。
-    evidenceIds: [evidence.production-service, evidence.production-object-entity, evidence.production-object-batch-controller, evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source]
+    explanation: 拆分只创建CREATED对象并保存工单及对象显式制程引用，尚未冻结配置；不生成执行实例或DHR。首次合法START同事务重核并冻结实际制程配置、创建唯一DHR。
+    evidenceIds: [evidence.production-service, evidence.production-object-entity, evidence.production-object-batch-controller, evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.object-normal-completion-dhr-projection
     name: 正常完工同步 DHR 状态
     status: specified
@@ -998,23 +993,24 @@ rules:
     explanation: 同一生产执行动作确认全部工序完成后，生产对象与关联 DHR 在同一事务进入 COMPLETED；缺失 DHR 时阻断完成。DHR 正常完成不等于汇总定版、审核通过或产品放行；提前结束另按 DEC-0069 处理。历史外部系统的放行单联动不定义本产品当前动作。
     evidenceIds: [evidence.dhr-instance-management-user-confirmed, evidence.dhr-instance-start-transaction-source, evidence.dhr-instance-service, evidence.production-object-status-machine, evidence.production-service]
   - id: rule.production.object-terminal-cascade-to-work-order
-    name: 生产对象终态回算工单
-    status: planned
+    name: 完整分配且全部正常完成才自动完成工单
+    status: specified
     visibility: internal
     trigger: production-object.terminal
     scope: work-order
     condition:
       all:
-        - fact: productionObject.allAssociatedObjectsTerminal
+        - fact: workOrder.normalCompletionEligible
           operator: equals
           value: true
     result:
       type: write-audit-record
       reevaluateWorkOrderStatus: true
       terminalObjectStatuses: [COMPLETED, CANCELLED, EARLY_TERMINATED]
-      statusMapping: [all-completed->COMPLETED, all-unstarted-cancelled->CREATED, any-early-terminated-after-start->EARLY_TERMINATED]
-    explanation: 批次完成、取消或提前结束后必须重新计算关联工单；只有全部有效生产对象正常完成时工单才进入 COMPLETED。全部未开工对象取消时工单保持 CREATED 并恢复可分配量；已发生生产执行后再出现提前结束时，工单进入 EARLY_TERMINATED，不得把非正常结束伪装为完成。
-    evidenceIds: [evidence.production-object-cancel-side-effects-current, evidence.production-service, evidence.production-service-test, evidence.guancheng-batch-close-source]
+      statusMapping: [fully-allocated-and-all-non-cancelled-completed->COMPLETED]
+      autoEarlyTermination: false
+    explanation: 自动正常完成须计划全部分配、至少一个有效对象且所有未取消对象均COMPLETED。剩余未分配量或单批提前结束时保持原活动工单状态；不增加合格产量等于计划量的条件。
+    evidenceIds: [evidence.production-object-cancel-side-effects-current, evidence.production-service, evidence.production-service-test, evidence.guancheng-batch-close-source, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.work-order-lifecycle
     name: 工单生命周期
     status: specified
@@ -1023,6 +1019,9 @@ rules:
     scope: work-order
     condition:
       any:
+        - fact: workOrder.statusTransition
+          operator: equals
+          value: CREATED->EARLY_TERMINATED
         - fact: workOrder.statusTransition
           operator: equals
           value: CREATED->IN_PROCESS
@@ -1040,11 +1039,11 @@ rules:
           value: IN_PROCESS->EARLY_TERMINATED
     result:
       type: write-audit-record
-      allowedTransitions: [CREATED->IN_PROCESS, IN_PROCESS->COMPLETED, IN_PROCESS->EARLY_TERMINATED, COMPLETED->CLOSED, CREATED->CANCELLED]
-    explanation: 工单创建和编辑使用 CREATED；CREATED 与 IN_PROCESS 工单均可继续拆分剩余生产对象；首次对象开工使工单进入 IN_PROCESS；进行中工单的所有对象完成或取消后进入 COMPLETED；进行中工单可主动提前结束进入 EARLY_TERMINATED；已完成工单可 CLOSED；无对象且未开工工单可 CANCELLED。全部未开工对象取消后工单保持 CREATED 并恢复可分配量，不得误判为 COMPLETED。工单不再有 RELEASED 状态或发布动作。
-    evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.work-order-controller, evidence.production-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-service-test]
+      allowedTransitions: [CREATED->IN_PROCESS, CREATED->EARLY_TERMINATED, IN_PROCESS->COMPLETED, IN_PROCESS->EARLY_TERMINATED, COMPLETED->CLOSED, CREATED->CANCELLED]
+    explanation: CREATED按字段边界编辑；CREATED/IN_PROCESS可继续拆分。首次批次开工进入IN_PROCESS，计划已全分配且全部未取消对象正常完成才自动COMPLETED；单批提前结束不联动。手动工单结束要求无未结束子对象且原因必填；COMPLETED可CLOSED，无对象未开工可CANCELLED，全部未开工对象取消仍CREATED。无RELEASED。
+    evidenceIds: [evidence.work-order-status-machine, evidence.production-service, evidence.work-order-controller, evidence.production-audit-annotations, evidence.audit-aspect, evidence.audit-aspect-test, evidence.production-service-test, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.work-order-early-termination
-    name: 生产中工单提前结束
+    name: 未结束工单手动提前结束
     status: specified
     visibility: internal
     trigger: work-order.early-terminate
@@ -1052,8 +1051,11 @@ rules:
     condition:
       all:
         - fact: workOrder.status
+          operator: in
+          value: [CREATED, IN_PROCESS]
+        - fact: productionObject.allAssociatedObjectsTerminal
           operator: equals
-          value: IN_PROCESS
+          value: true
         - fact: earlyTermination.reasonPresent
           operator: equals
           value: true
@@ -1062,9 +1064,10 @@ rules:
       workOrderStatus: EARLY_TERMINATED
       requiresEndReason: true
       terminal: true
-      sideEffects: [cancel-not-started-production-objects, early-terminate-active-production-objects, close-active-production-transactions, terminate-associated-dhr-without-voiding-forms, prohibit-further-split-or-start]
-    explanation: 历史工单级规划仍为后续能力：用户主动工单提前结束命令当前不在 DEC-0069 本期范围。若未来实施，未开工对象取消、进行中对象提前结束及其 DHR 真实终止，已完成对象保持原状；DHR 不自动作废表单，具体权限、事务和级联仍需单独验证。
-    evidenceIds: [evidence.production-work-order-entity, evidence.work-order-status-machine, evidence.production-service, evidence.guancheng-batch-close-source, evidence.production-object-early-termination-gap]
+      sideEffects: [prohibit-further-split-or-start]
+      cascadeToObjects: false
+    explanation: 用户确认先处理全部子批次、原因必填、不主动级联；当前入口允许CREATED或IN_PROCESS是本轮工程选择。存在CREATED/IN_PROGRESS子对象时阻断，全部终态后记录工单终止原因时间及审计，子批次、表单和DHR保持既有结果，工单不能继续拆分或开工。
+    evidenceIds: [evidence.production-work-order-entity, evidence.work-order-status-machine, evidence.production-service, evidence.guancheng-batch-close-source, evidence.production-object-early-termination-gap, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.batch-management-resplit-planned
     name: 批次管理再拆分作为后续扩展能力
     status: planned
@@ -1129,7 +1132,7 @@ rules:
     evidenceIds: [evidence.audit-controller-action-projection, evidence.production-audit-annotations, evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test, evidence.audit-aspect, evidence.audit-aspect-test, evidence.audit-controller-test, evidence.work-order-page]
   - id: rule.production.work-order-audit-change-snapshot
     name: 工单审计保留变更前后业务快照
-    status: implemented
+    status: specified
     visibility: internal
     trigger: work-order.audit.write
     scope: work-order-audit
@@ -1146,12 +1149,12 @@ rules:
       snapshotFields: [contentBefore, contentAfter]
       createBefore: {}
       forbidSyntheticArguments: true
-    explanation: 工单新增、编辑、取消和关闭均需保留真实业务字段的变更前和变更后快照；新增事件的变更前快照为空对象，编辑、取消和关闭事件必须来自持久化对象的实际前后状态，不得把方法参数或请求对象直接伪装成快照。当前 WorkOrderController 显式构造并写入真实工单前后快照，AuditAspect 保留通用元数据职责；本条不把静态实现核对等同于本次事务运行验收。
-    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.audit-aspect, evidence.production-audit-annotations, evidence.audit-aspect-test]
+    explanation: 工单新增、编辑、取消、关闭及手动提前结束记录实际业务变化前后值，未拆批时改产品或计划量也要审计。新增前为空对象，请求参数不能冒充真实快照；终止原因和时间可追溯。
+    evidenceIds: [evidence.work-order-audit-snapshot-controller, evidence.work-order-audit-snapshot-controller-test, evidence.audit-aspect, evidence.production-audit-annotations, evidence.audit-aspect-test, evidence.batch-process-direct-correction-confirmed]
     implementationNote: WorkOrderController 已显式构造真实工单快照并写入审计事件；AuditAspect 仅负责通用元数据，原快照缺口已修复。
   - id: rule.production.production-object-audit-change-snapshot
     name: 生产对象审计保留新增及修改业务快照
-    status: implemented
+    status: specified
     visibility: internal
     trigger: production-object.audit.write
     scope: production-object-audit
@@ -1169,8 +1172,9 @@ rules:
       batchSplitOwnership: one-record-per-production-object
       batchSummaryAction: false
       actionProjection: [CREATE, UPDATE]
-    explanation: 单条或批量拆分成功时，每个生产对象分别写入一条 CREATE 审计；创建前快照为空对象，创建后快照包含来源工单、产品、制程版本、对象编号、生产形态、数量、计划时间、状态和备注等创建字段。开工、完成、取消和提前结束写入 UPDATE 审计，前后快照仅保存实际变化字段。批量拆分不新增汇总动作，历史空快照或缺失事件不回填。当前 ProductionExecutionService.act 比较已持锁对象的动作前后状态，仅在真实状态变化时同事务追加 PRODUCTION_OBJECT UPDATE，前后内容只含 status；判定不限定命令名，因此也覆盖最后必填批次表单提交触发的对象完成，无状态变化的工序推进或表单保存不新增对象事件。原 PRODUCTION_EXECUTION 首条 CREATE、后续 UPDATE 的完整执行证据保持，旧对象控制器 start/complete 继续拒绝旁路。既有 execution.production-object-audit-snapshot 的 handler 仍只表示控制器范围，不把该历史 verified/runtime 标记自动扩展到本次执行服务修复；本次实际运行及独立验收分别记录。
+    explanation: 每个实际生产对象单独写CREATE，新增前为空，包含工单、产品、制程身份、编号、形态、数量、计划与备注。未开工修改制程/数量及取消、开工、完成、提前结束写UPDATE，按真实前后变化留证。首次合法START的对象审计保留实际冻结制程配置，不能仅记录同名V1标签；未开工审计若仅引用须注明未冻结。PRODUCTION_EXECUTION仍保存执行细节，历史缺失不回填。既有execution.production-object-audit-snapshot只承接原控制器范围，不自动提升本轮快照详情的运行成熟度。
     evidenceIds:
+    - evidence.batch-process-direct-correction-confirmed
     - evidence.production-object-audit-snapshot-controller
     - evidence.production-object-audit-snapshot-controller-test
     - evidence.audit-controller-action-projection
@@ -1182,7 +1186,7 @@ rules:
     executionContractId: execution.production-object-audit-snapshot
   - id: rule.production.audit-field-localized-display
     name: 生产审计字段统一中文展示
-    status: implemented
+    status: specified
     visibility: internal
     trigger: production.audit.snapshot.display
     scope: production-audit
@@ -1194,16 +1198,17 @@ rules:
     result:
       type: omit-projection
       rawJsonVisible: false
+      explicitSnapshotDetailEnabled: true
       sharedMapping: production-audit-formatter
       localizedDimensions: [field-label, field-order, status, production-form, date-time]
       emptySnapshotLabel: 无
       emptyValueLabel: "-"
       preservesOriginalSnapshot: true
-    explanation: 工单和生产对象详情中的客户可见审计快照不得直接展示原始 JSON 或内部英文字段 key；两页复用同一生产审计格式化器，将已知字段按稳定顺序转换为中文业务标签，并统一格式化状态、生产形态、时间和空值。该规则只改变展示投影，不修改 contentBefore/contentAfter 原始字段、值或证据完整性；未知字段仍保留可见以避免证据被静默丢弃。
-    evidenceIds: [evidence.production-audit-localized-formatter, evidence.work-order-page, evidence.production-batch-management-page, evidence.production-audit-localized-display-guideline]
+    explanation: 审计主视图统一中文字段、状态、形态、时间及空值，保留未知字段可见。批次事件实际保存了processSnapshot时提供显式{}详情，读取该冻结原件；未涉及制程的差量事件不要求重复身份或配置。该详情不把主视图变为原始JSON列表，不查询当前主数据代替历史，也不修改原contentBefore/contentAfter。
+    evidenceIds: [evidence.production-audit-localized-formatter, evidence.work-order-page, evidence.production-batch-management-page, evidence.production-audit-localized-display-guideline, evidence.batch-process-direct-correction-confirmed]
   - id: rule.production.locked-process-ignores-effective-window
-    name: 已锁定制程用于历史对象继续拆分
-    status: implemented
+    name: 历史工单锁版不重核有效期策略已撤销
+    status: deprecated
     visibility: internal
     trigger: production-object.split
     scope: work-order
@@ -1218,5 +1223,5 @@ rules:
     result:
       type: persist-version-references
       effectiveWindowRecheck: false
-    explanation: 当前实现策略是工单首次拆分后锁定版本，后续对象继续使用该引用且不重新筛选有效时间窗；findVersionForProduct仍检查当前产品/产品簇归属，不等于忽略归属资格。DEC-0012-06已明确该长期政策仍待业务确认，因此记录实际行为但不由代码自行撤销待决；成员转移对已锁定版本的影响另见 discrepancy.product-family-transfer-unstarted-object-context。本次不要求为完成知识内审即决定长期政策。
-    evidenceIds: [evidence.production-service, evidence.product-process-resolution-for-production]
+    explanation: 只保留历史实现依据，2026-10-27已撤销工单锁版豁免。新对象/换版须当前有效适用，未开工首次START重核；已开工继续既有快照，不重新校验当前主数据有效期，也不回填历史。
+    evidenceIds: [evidence.production-service, evidence.product-process-resolution-for-production, evidence.batch-process-direct-correction-confirmed]

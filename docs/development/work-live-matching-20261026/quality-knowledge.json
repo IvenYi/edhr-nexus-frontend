@@ -1,0 +1,15 @@
+{
+  "verifier": "work_quality",
+  "command": "mvn -q -f tools/knowledge-model/pom.xml test",
+  "exitCode": 0,
+  "suites": [
+    {
+      "name": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": "89",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "3.759"
+    }
+  ]
+}

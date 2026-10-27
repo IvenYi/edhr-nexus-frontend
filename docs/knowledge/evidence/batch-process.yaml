@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.batch-process-direct-correction-confirmed
+    type: document
+    path: docs/knowledge/evidence/batch-process-2026-10-27.md
+    description: 2026-10-26/27用户确认的批次制程归属、同形态换版、首次START冻结、数量与工单结束、审计详情及直接本体纠正；明确user-confirmed、旧源码original-evidence和工程inference，不以本文件代替运行验收。
+    visibility: internal
+  - id: evidence.batch-process-clean-initialization
+    type: database
+    path: gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+    description: 本次MVP直接调整初始化基线，work_order不保留process_version_id及其约束，加入termination_reason/termination_at；production_object独立制程引用保留。旧开发数据不做兼容分支，初始化运行验收取本轮证据。
+    visibility: internal

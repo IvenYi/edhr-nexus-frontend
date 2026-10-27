@@ -16,12 +16,13 @@ export interface ProductionOutput {
 export interface WorkOrder {
   output?: ProductionOutput;
   id: string; orderNo: string; productId: string; productName: string; productCode: string;
-  processVersionId?: string | null; processVersion: string; productionMode?: string | null; productionForm?: string | null;
+  productionMode?: string | null; productionForm?: string | null;
+  hasObjects: boolean; allocatedQuantity: number; terminationReason?: string | null; terminationAt?: string | null;
   plannedQuantity: number; plannedStartAt?: string | null; plannedEndAt?: string | null; orderNumber?: string | null;
   status: string; remark?: string | null; createdAt?: string | null; updatedAt?: string | null;
 }
 export interface WorkOrderRequest {
-  orderNo: string; orderNumber?: string | null; productId: string; processVersionId?: string | null;
+  orderNo: string; orderNumber?: string | null; productId: string;
   plannedQuantity: number; plannedStartAt?: string | null; plannedEndAt?: string | null; remark?: string;
 }
 export interface ProductionObject {
@@ -38,6 +39,7 @@ export interface ProcessOption {
   productionForm: string;
   routeVersion?: string | null;
   dhrTemplateVersion?: string | null;
+  processReference?: { processVersionId: string; processVersion: string; ownerType: string; ownerName: string; ownerId: string };
 }
 export interface SplitProductionObjectRequest { processVersionId?: string | null; targetQuantity: number; objectNo?: string; remark?: string; plannedStartAt?: string | null; plannedEndAt?: string | null; }
 const basePath = '/production/work-orders';
@@ -46,6 +48,9 @@ export const createWorkOrder = (body: WorkOrderRequest) => client.post(basePath,
 export const updateWorkOrder = (id: string, body: WorkOrderRequest) => client.put(`${basePath}/${id}`, body) as Promise<{ data: { data: WorkOrder } }>;
 export const cancelWorkOrder = (id: string) => client.post(`${basePath}/${id}/cancel`) as Promise<{ data: { data: WorkOrder } }>;
 export const closeWorkOrder = (id: string) => client.post(`${basePath}/${id}/close`) as Promise<{ data: { data: WorkOrder } }>;
+export const getWorkOrder = (id: string) => client.get(`${basePath}/${id}`) as Promise<{ data: { data: WorkOrder } }>;
+export const endWorkOrder = (id: string, reason: string) => client.post(`${basePath}/${id}/end`, { reason }) as Promise<{ data: { data: WorkOrder } }>;
+export const updateProductionObject = (id: string, body: SplitProductionObjectRequest) => client.put(`/production/objects/${id}`, body) as Promise<{ data: { data: ProductionObject } }>;
 export const listProductionObjects = (workOrderId: string) => client.get(`/production/work-orders/${workOrderId}/objects`) as Promise<{ data: { data: ProductionObject[] } }>;
 export const listProcessOptions = (workOrderId: string) => client.get(`/production/work-orders/${workOrderId}/process-options`) as Promise<{ data: { data: ProcessOption[] } }>;
 export const splitProductionObject = (workOrderId: string, body: SplitProductionObjectRequest) => client.post(`/production/work-orders/${workOrderId}/objects`, body) as Promise<{ data: { data: ProductionObject } }>;

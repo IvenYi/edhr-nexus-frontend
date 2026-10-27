@@ -1,0 +1,119 @@
+qualityResult:
+  result: failed
+  baseCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+  headCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+  contractBaseline:
+    sourceCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+    targetBranch: edhr-dev
+    targetCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+    contractReadCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/business-knowledge-model.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml
+      - docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml
+      - docs/knowledge/evidence/transaction-runtime.yaml
+      - docs/knowledge/evidence/work-live-matching-2026-10-26.md
+      - docs/knowledge/facts/core-business.yaml
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/ontology.yaml
+      - docs/knowledge/rules/transaction-runtime.yaml
+      - docs/knowledge/rules/product-process.yaml
+      - docs/development/work-live-matching-20261026/decision-package.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    excludedPaths: [output/]
+    untrackedPaths:
+      - docs/knowledge/evidence/work-live-matching-2026-10-26.md
+      - docs/development/work-live-matching-20261026/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.contract-and-candidate
+      required: true
+      category: documentation
+      description: 独立核对契约、提交和本轮工作树范围
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git diff --check; git diff -- AGENTS.md codeplzreadme.md docs/agents/agent-handoff-contract.md docs/agents/quality-verifier.md
+      outcome: passed
+      evidence:
+        - HEAD及origin/edhr-dev均为d5adf22066ea4d6bb1c7e7ede09961fc97bea675；契约无未提交变化，diff检查退出0。
+        - 实际测试对象为该提交加本轮未提交候选；代码及已更改知识文件SHA-256见quality-postgres.json。
+    - id: check.runtime-postgres
+      required: true
+      category: integration
+      description: 独立运行真实MockMvc/service/PostgreSQL交互与引擎/可用性测试
+      method: automated-test
+      command: mvn -q -Dtest=ProductionExecutionIntegrationTest,ProductionExecutionEngineTest,ProductionExecutionAvailabilityTest -Dexecution.test.url=jdbc:postgresql://127.0.0.1:5432/edhr_work_live_20261026_test -Dexecution.test.driver=org.postgresql.Driver -Dexecution.test.user=ivenwang -Dexecution.test.dialect=org.hibernate.dialect.PostgreSQLDialect test
+      outcome: passed
+      evidence:
+        - docs/development/work-live-matching-20261026/quality-postgres.json
+        - 总117项，115实跑通过、0失败、0错误；2浏览器夹具因未启用系统属性跳过。
+        - 六项新增用例全部执行，覆盖转簇实时候选、零业务节点既有实例、后续发布版本、例外规则、已过站不补做、旧计划刷新、GET零写、重复START、无效后续配置隔离和审计失败回滚。
+        - 相邻用例覆盖并发START、PG配置并发MVCC、终止竞争、缺权限拒绝、DHR创建及完成、表单份次和签署回归。
+    - id: check.knowledge-structure
+      required: true
+      category: ontology
+      description: 独立执行知识结构、引用及投影门禁
+      method: automated-test
+      command: mvn -q -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - docs/development/work-live-matching-20261026/quality-knowledge.json
+        - 89项通过，0失败、0错误、0跳过；该结构结果不能替代语义一致性核对。
+    - id: check.current-knowledge-replacement
+      required: true
+      category: ontology
+      description: 核对DEC-0002-10作业范围替代与当前规则一致性
+      method: inspection
+      command: rg -n '转移只影响未来|只影响未来生产对象|首次.*START.*当前成员' docs/knowledge/rules
+      outcome: failed
+      evidence:
+        - docs/knowledge/rules/product-process.yaml:515-535仍无制程限定地声明只影响未来对象。
+        - docs/knowledge/rules/product-process.yaml:574仍将首次START读取当前簇作业匹配与已收缩的差异相连。
+    - id: check.execution-boundaries
+      required: true
+      category: requirements
+      description: 检查真实实例识别、快照冻结、权限事务和DHR消费边界
+      method: inspection
+      command: inspect ExecutionSnapshotBuilder, ProductionExecutionService, ProductionExecutionEngine, DhrInstanceService and ProductionExecutionController
+      outcome: passed
+      evidence:
+        - PENDING按当前产品簇匹配；IN_PROGRESS/COMPLETED不补入；旧未来计划只在无state实例时替换。
+        - 已有作业图及表单不重建，START快照前后纳入同事务审计，查询仅改响应内存对象；已有权限及工单/对象锁和revision保留。
+        - DHR首次创建仍只冻结上下文和目录，实际作业表单沿FormInstanceRecordService归集；制程配置构建和策略不改。
+  findings:
+    - id: QF-WORK-LIVE-001
+      severity: medium
+      scope: docs/knowledge/rules/product-process.yaml
+      summary: 已确认作业范围替代未同步到产品簇转移与执行快照的当前规则说明
+      reproductionSteps:
+        - 阅读DEC-0002-10和DEC-0007-03/04，本轮允许既有批次后续工序采用当前产品簇匹配作业。
+        - 阅读rule.product-family.member-transfer-future-only，其scope为product-family-membership-and-production，result为existingProductionObjectsUnchanged且解释未限定制程来源。
+        - 阅读rule.product-process.freeze-batch-execution-snapshot的explanation，仍以首次START读取当前成员关联原差异，未区分逐工序作业匹配事实。
+      expectedResult: 当前两条规则明确保留制程范围、排除已确认替代的作业候选范围；快照说明区分制程首次冻结和作业各实例创建时冻结，历史原文保留。
+      actualResult: 已更新决策和作业规则，但产品簇转移的相邻当前规则仍保留宽泛旧解释。
+      evidence:
+        - docs/knowledge/rules/product-process.yaml:515
+        - docs/knowledge/rules/product-process.yaml:574
+        - docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml:46
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: risk.browser-not-executed
+      description: 本轮未执行浏览器视觉或真实浏览器交互；两条浏览器夹具未启用。
+      impact: 不认证前端视觉效果；后端交互已由实际MockMvc和PostgreSQL覆盖。
+      mitigation: 无前端变更，保留此验证边界；后续若调整前端展示应补对应浏览器验证。
+    - id: risk.process-policy-deferred
+      description: 制程转簇及同工单继续拆分策略按用户要求暂缓。
+      impact: 本轮作业修正不关闭原制程差异。
+      mitigation: 独立后续讨论与验收，不把本次通过项扩大为制程通过。
+    - id: risk.repository-enforcement-unverified
+      description: 未核验远端分支保护或required checks配置。
+      impact: 本地测试通过不证明远端强制门禁启用。
+      mitigation: 不作强制门禁已启用声明。
+  blockingConditions: []

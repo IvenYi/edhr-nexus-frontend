@@ -15,7 +15,7 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0014-03
-        statement: "provenance: user-confirmed；批次候选记录保存批次号（后端对象编号）、数量（后端目标数量）、计划开始时间、计划结束时间和备注；导入时批次号、数量必填，计划起止时间和备注可选，结束时间不得早于开始时间且总量不得超过剩余计划数量。"
+        statement: "provenance: user-confirmed；批次候选保存制程版本、批次号、数量及可选计划起止时间和备注；每条制程明确，BATCH数量大于0且可小于1，SN=1。导入批次号和数量必填，结束时间不得早于开始时间，总量不超过剩余计划量。"
         status: implemented
         visibility: internal
       - id: DEC-0014-04
@@ -27,7 +27,7 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0014-06
-        statement: "provenance: user-confirmed；已关联工单的制程版本在拆分阶段只读锁定，不允许改写；用户可打开只读预览查看版本元数据、工艺路线、批记录模板和工序配置。"
+        statement: "provenance: user-confirmed；拆分弹窗提供制程选择和只读配置预览；只读限制预览内容，不限制待创建批次选择。工单不再锁定制程，各批次可选不同版本但生产形态一致；已保存未开工批次可明确修改，已开工按冻结快照查看。"
         status: implemented
         visibility: internal
       - id: DEC-0014-07
@@ -35,7 +35,7 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0014-08
-        statement: "provenance: user-confirmed；批次列表独立审计本轮不实现，保留为后续 TODO。"
+        statement: "provenance: user-confirmed；批次数据审计由既有批次详情页签提供，不再作为TODO；本次补充制程身份与{}冻结配置详情。读取当次审计保存内容，不能按当前主数据回填历史。其他冻结快照入口本次只盘点。"
         status: specified
         visibility: internal
       - id: DEC-0014-09
@@ -43,7 +43,7 @@ decisions:
         status: implemented
         visibility: internal
       - id: DEC-0014-10
-        statement: "provenance: user-confirmed；已拆分批次表移除操作列，批次操作后续统一归属于独立批次列表。"
+        statement: "provenance: user-confirmed + inference；用户确认未开工批次可修改，本轮在拆分弹窗已拆分表提供修改/取消列属于工程落实；只在对象CREATED、无执行实例且父工单允许生产时开放修改，复用独立批次管理的同一API及编辑组件。旧无操作列布局约定直接撤销，不新增业务模式。"
         status: implemented
         visibility: internal
       - id: DEC-0014-11
@@ -55,7 +55,7 @@ decisions:
         status: implemented
         visibility: internal
     supersedes: []
-    evidenceIds: [evidence.production-object-entity, evidence.production-object-status-machine, evidence.production-object-controller, evidence.production-service-batch-split, evidence.production-work-order-page-pending-list, evidence.production-work-order-batch-import-template-ui, evidence.production-work-order-process-lock-preview-ui, evidence.work-orders-api, evidence.migration-0066-production-object-planned-window, evidence.production-service-test]
+    evidenceIds: [evidence.production-object-entity, evidence.production-object-status-machine, evidence.production-object-controller, evidence.production-service-batch-split, evidence.production-work-order-page-pending-list, evidence.production-work-order-batch-import-template-ui, evidence.production-work-order-process-lock-preview-ui, evidence.work-orders-api, evidence.migration-0066-production-object-planned-window, evidence.production-service-test, evidence.batch-process-direct-correction-confirmed]
     acceptanceScenarios:
       - id: scenario.production-batch-reuses-batch-object
         given: 用户为 CREATED 或 IN_PROCESS 工单准备生产批次
@@ -79,9 +79,9 @@ decisions:
         evidenceIds: [evidence.production-object-batch-controller, evidence.production-service-batch-split]
         evidenceRequirements: [批量提交事务回滚集成测试]
       - id: scenario.production-batch-locked-process-preview
-        given: 工单已关联制程版本并进入生产对象拆分
-        when: 用户打开拆分弹窗并查看制程版本
-        then: 制程版本以只读方式展示且不可修改；只读预览显示版本元数据、工艺路线、批记录模板和工序配置
+        given: 工单正在拆分生产对象或用户编辑尚未开工的批次
+        when: 用户选择或预览某个制程版本
+        then: 允许显式选择同生产形态的可用版本；预览只读，保存的引用不等于开工快照
         evidenceIds: [evidence.production-work-order-process-lock-preview-ui, evidence.production-service]
       - id: scenario.production-batch-prefix-generation
         given: 用户在批量添加中输入批次前缀和数量
@@ -101,14 +101,14 @@ decisions:
       - id: scenario.production-batch-split-dialog-action-boundary
         given: 用户在工单拆分弹窗查看已拆分批次
         when: 批次表格渲染
-        then: 数量输入为必填，导入区标题旁显示“选择文件”并通过 Info hover 查看说明，已拆分批次表不显示操作列
+        then: 待提交清单保留暂存移除与提交；已拆分表提供满足资格的未开工对象修改/取消，独立批次页沿同一校验。数量必填，单条/批量/导入保持，不能借编辑恢复取消或已开工对象
         evidenceIds: [evidence.production-work-order-batch-import-template-ui, evidence.production-work-order-page-pending-list]
     implementationDiscrepancies:
       - id: discrepancy.production-batch-independent-audit
-        status: open
+        status: resolved
         severity: medium
         visibility: internal
         path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
         lineHint: 545
-        summary: 批次列表独立审计本轮按用户确认保留为 TODO，当前不新增独立批次审计列表。
+        summary: 既有DEC-0019及批次详情已实现对象数据审计，旧独立审计TODO陈旧。2026-10-27进一步要求制程身份和当次冻结快照详情，其实际实现与验证由本轮证据单列。
         evidenceIds: [evidence.production-work-order-page-pending-list]

@@ -124,7 +124,9 @@ class ProductionExecutionIntegrationTest {
             "operation(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),code VARCHAR(64),name VARCHAR(128))",
             "department(id BIGINT PRIMARY KEY,name VARCHAR(128))",
             "user_department(user_id BIGINT,department_id BIGINT)",
-            "product_process_version(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),version_label VARCHAR(64),production_mode VARCHAR(64),production_form VARCHAR(64),route_version_id BIGINT,dhr_template_version_id BIGINT,dhr_review_mode VARCHAR(16) DEFAULT 'NONE',dhr_review_workflow_definition_id BIGINT,dhr_review_workflow_version_id BIGINT)",
+            "product_process(id BIGINT PRIMARY KEY,owner_type VARCHAR(32),owner_id BIGINT)",
+            "product_family(id BIGINT PRIMARY KEY,name VARCHAR(128))",
+            "product_process_version(id BIGINT PRIMARY KEY,product_process_id BIGINT DEFAULT 1,effective_from TIMESTAMP,effective_to TIMESTAMP,tenant_id VARCHAR(64),version_label VARCHAR(64),production_mode VARCHAR(64),production_form VARCHAR(64),route_version_id BIGINT,dhr_template_version_id BIGINT,dhr_review_mode VARCHAR(16) DEFAULT 'NONE',dhr_review_workflow_definition_id BIGINT,dhr_review_workflow_version_id BIGINT)",
             "route(id BIGINT PRIMARY KEY,name VARCHAR(128),code VARCHAR(64))",
             "route_version(id BIGINT PRIMARY KEY,route_id BIGINT,version VARCHAR(64))",
             "dhr_template(id BIGINT PRIMARY KEY,name VARCHAR(128),code VARCHAR(64))",
@@ -166,7 +168,8 @@ class ProductionExecutionIntegrationTest {
         jdbc.update("INSERT INTO material(id,tenant_id,code,name,specification,unit) VALUES(1,'default','P01','导管','规格A','件')");
         jdbc.update("INSERT INTO material_type VALUES(1,'产成品')");
         jdbc.update("INSERT INTO operation VALUES(11,'default','O01','装配'),(12,'default','O02','检验')");
-        jdbc.update("INSERT INTO product_process_version(id,tenant_id,version_label,production_mode,production_form,route_version_id,dhr_template_version_id,dhr_review_mode) VALUES(2,'default','配置V1','量产','批次',3,4,'NONE')");
+        jdbc.update("INSERT INTO product_process VALUES(1,'PRODUCT',1)");
+        jdbc.update("INSERT INTO product_process_version(id,tenant_id,version_label,production_mode,production_form,route_version_id,dhr_template_version_id,dhr_review_mode) VALUES(2,'default','配置V1','量产','批次',3,4,'NONE'),(22,'default','配置V1','量产','SN',3,4,'NONE')");
         jdbc.update("INSERT INTO route VALUES(3,'导管装配','R01')"); jdbc.update("INSERT INTO route_version VALUES(3,3,'V1')");
         jdbc.update("INSERT INTO dhr_template VALUES(4,'导管生产记录','D01')");
         jdbc.update("INSERT INTO dhr_template_version(id,dhr_template_id,version_label) VALUES(4,4,'V1')");
@@ -180,8 +183,17 @@ class ProductionExecutionIntegrationTest {
             "{\"fields\":[{\"id\":\"temperature\",\"name\":\"温度\",\"type\":\"number\",\"status\":\"enabled\"}]}",
             "{\"bindings\":{\"fieldId\":\"temperature\",\"required\":true}}");
         jdbc.update("INSERT INTO product_process_operation_form_binding VALUES(51,11,5,50,true,1,'{\"fillMode\":\"DIRECT\"}')");
+        jdbc.update("INSERT INTO product_process_operation_binding(id,product_process_version_id,route_node_key) VALUES(21,22,'a'),(22,22,'b')");
+        jdbc.update("INSERT INTO product_process_operation_form_binding VALUES(61,21,5,50,true,1,'{\"fillMode\":\"DIRECT\"}')");
+        when(resolution.findVersionForProduct(anyLong(), anyLong())).thenAnswer(invocation -> {
+            Long versionId = invocation.getArgument(1);
+            return jdbc.query("SELECT production_form,effective_from,effective_to FROM product_process_version WHERE id=?", (rs, row) ->
+                    com.zencas.edhr.masterdata.entity.ProductProcessVersion.builder().id(versionId).productionMode("量产")
+                            .productionForm(rs.getString(1)).effectiveFrom(rs.getTimestamp(2) == null ? null : rs.getTimestamp(2).toLocalDateTime())
+                            .effectiveTo(rs.getTimestamp(3) == null ? null : rs.getTimestamp(3).toLocalDateTime()).build(), versionId).stream().findFirst();
+        });
         jdbc.update("INSERT INTO work_order(id,tenant_id,order_no,product_id,planned_quantity,status,created_at,updated_at) VALUES(100,'default','WO01',1,2,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
-        jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity,good_quantity,ng_quantity,scrap_quantity,status,created_at,updated_at) VALUES(101,'default',100,'B01','BATCH',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),(102,'default',100,'SN01','SN',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
+        jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity,good_quantity,ng_quantity,scrap_quantity,status,created_at,updated_at) VALUES(101,'default',100,'B01','BATCH',2,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),(102,'default',100,'SN01','SN',22,1,0,0,0,'CREATED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
     }
 
     @Test void lifecycleAuditRecordsOnlyRealObjectChangesForBatchAndSn() throws Exception {
@@ -231,6 +243,7 @@ class ProductionExecutionIntegrationTest {
     void lifecycleAuditFailureRollsBackFinalCompletion(String failedType) throws Exception {
         jdbc.update("DELETE FROM product_process_operation_form_binding");
         jdbc.update("DELETE FROM production_object WHERE id=102");
+        jdbc.update("UPDATE work_order SET planned_quantity=1 WHERE id=100");
         action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
         action(101, "COMPLETE", 1, "a", Map.of()).andExpect(status().isOk());
         action(101, "START", 2, "b", Map.of()).andExpect(status().isOk());
@@ -257,7 +270,13 @@ class ProductionExecutionIntegrationTest {
         for (int index = 0; index < events.size(); index++) {
             var event = events.get(index);
             assertThat(auditJson(event.get("content_before"))).isEqualTo(mapper.createObjectNode().put("status", before.get(index)));
-            assertThat(auditJson(event.get("content_after"))).isEqualTo(mapper.createObjectNode().put("status", after.get(index)));
+            JsonNode afterSnapshot = auditJson(event.get("content_after"));
+            assertThat(afterSnapshot.path("status").asText()).isEqualTo(after.get(index));
+            if ("CREATED".equals(before.get(index))) {
+                assertThat(afterSnapshot.path("processReference").path("ownerName").asText()).isEqualTo("导管");
+                assertThat(afterSnapshot.path("processSnapshot").path("operations").isArray()).isTrue();
+                assertThat(afterSnapshot.path("processFrozenAt").asText()).isNotBlank();
+            } else assertThat(afterSnapshot.size()).isEqualTo(1);
             assertThat(event).containsEntry("action", "UPDATE").containsEntry("tenant_id", "default")
                     .containsEntry("operator_id", "1").containsEntry("operator_account", "operator");
             assertThat(event.get("created_at")).isNotNull();
@@ -553,7 +572,7 @@ class ProductionExecutionIntegrationTest {
         for (long object : List.of(101L, 102L)) {
             action(object, "START", 0, "a", Map.of()).andExpect(status().isOk())
                     .andExpect(jsonPath("$.data.operationOutputs.a.status").value("PENDING"));
-            action(object, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", "0.1", "ng", "0.2", "scrap", 0)))
+action(object, "SAVE", 1, "a", Map.of("formId", object == 101 ? "form-51" : "form-61", "values", Map.of("temperature", "0.1", "ng", "0.2", "scrap", 0)))
                     .andExpect(status().isOk()).andExpect(jsonPath("$.data.operationOutputs.a.outputQuantity").isEmpty())
                     .andExpect(jsonPath("$.data.operationOutputs.a.goodQuantity").value("0.1"))
                     .andExpect(jsonPath("$.data.operationOutputs.b.status").value("NOT_CONFIGURED"));
@@ -655,11 +674,11 @@ class ProductionExecutionIntegrationTest {
             action(object, "START", 0, "a", Map.of()).andExpect(status().isOk());
             if (object == 101) jdbc.update("UPDATE route SET name='新的配置名称'");
             action(object, "COMPLETE", 1, "a", Map.of()).andExpect(status().isBadRequest());
-            action(object, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+            action(object, "SAVE", 1, "a", Map.of("formId", object == 101 ? "form-51" : "form-61", "values", Map.of("temperature", 22))).andExpect(status().isOk());
             mvc.perform(auth(get("/api/v1/production/execution/" + object))).andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.state.operations.a.forms.form-51.values.temperature").value(22));
-            action(object, "SUBMIT", 2, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().isOk());
-            action(object, "END_FORM", 3, "a", Map.of("formId", "form-51")).andExpect(status().isOk());
+                .andExpect(jsonPath("$.data.state.operations.a.forms." + (object == 101 ? "form-51" : "form-61") + ".values.temperature").value(22));
+            action(object, "SUBMIT", 2, "a", Map.of("formId", object == 101 ? "form-51" : "form-61", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+            action(object, "END_FORM", 3, "a", Map.of("formId", object == 101 ? "form-51" : "form-61")).andExpect(status().isOk());
             action(object, "COMPLETE", 4, "a", Map.of()).andExpect(status().isOk());
             action(object, "START", 5, "b", Map.of()).andExpect(status().isOk());
             action(object, "COMPLETE", 6, "b", Map.of()).andExpect(status().isOk())
@@ -733,7 +752,7 @@ class ProductionExecutionIntegrationTest {
         action(102, "START", 0, "a", Map.of()).andExpect(status().isOk());
         try (var pool = Executors.newFixedThreadPool(2)) {
             var saves = List.of(101L, 102L).stream().map(id -> pool.submit(() -> {
-                action(id, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().isOk());
+                action(id, "SAVE", 1, "a", Map.of("formId", id == 101 ? "form-51" : "form-61", "values", Map.of("temperature", 22))).andExpect(status().isOk());
                 return true;
             })).toList();
             for (var save : saves) assertThat(save.get(10, TimeUnit.SECONDS)).isTrue();
@@ -788,6 +807,7 @@ class ProductionExecutionIntegrationTest {
     // H2 does not provide PostgreSQL's database-wide MVCC snapshot at REPEATABLE_READ.
     @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named = "execution.test.driver", matches = "org\\.postgresql\\.Driver")
     @Test void firstStartFreezesOneCommittedConfigurationDuringProcessRebinding() throws Exception {
+        jdbc.update("UPDATE production_object SET object_type='BATCH',process_version_id=2 WHERE id=102");
         // Both configurations are valid; the writer mirrors updateVersion's atomic parent/child replacement.
         jdbc.update("INSERT INTO route VALUES(13,'新路线','R02')");
         jdbc.update("INSERT INTO route_version VALUES(13,13,'V2')");
@@ -952,6 +972,140 @@ class ProductionExecutionIntegrationTest {
             .allSatisfy(snapshot -> assertThat(snapshot).doesNotContain("dhrItemId"));
         assertThat(jdbc.queryForObject("SELECT content_after FROM audit_event WHERE function_name='SUBMIT' AND entity_id='101' ORDER BY created_at DESC LIMIT 1", String.class))
             .contains("ALL_COPIES_COMPLETED", "AUTO_END_FORM", "work-7-f:copy:2");
+    }
+
+    @Test void workCandidatesUseCurrentFamilyBeforeFirstStartWithoutCreatingInstancesOnRead() throws Exception {
+        seedConfirmationWork();
+        jdbc.update("INSERT INTO product_family_member VALUES(1,'default',1,10)");
+        jdbc.update("UPDATE workflow_binding_rule SET product_family_id=10 WHERE id=7");
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.snapshot.operations[0].works[0].id").value("7"));
+        jdbc.update("UPDATE product_family_member SET product_family_id=20 WHERE id=1");
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.snapshot.operations[0].works").isEmpty())
+            .andExpect(jsonPath("$.data.state.operations.a.works").isEmpty());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM production_execution", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM audit_event", Integer.class)).isZero();
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.works").isEmpty())
+            .andExpect(jsonPath("$.data.snapshot.context.processVersionId").value("2"));
+    }
+
+    @Test void workFamilyChangesPreserveExistingInstancesAndOnlyRefreshFutureOperations() throws Exception {
+        seedConfirmationWork();
+        jdbc.update("INSERT INTO product_family_member VALUES(1,'default',1,10)");
+        jdbc.update("UPDATE workflow_binding_rule SET product_family_id=10,operation_id=NULL WHERE id=7");
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        String frozen = jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class);
+        String state = jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class);
+        JsonNode originalWork = mapper.readTree(frozen).at("/operations/0/works/0");
+        assertThat(mapper.readTree(state).at("/operations/a/works/7/done")).containsExactly(mapper.getNodeFactory().textNode("s"));
+        assertThat(mapper.readTree(state).at("/operations/a/works/7/active/0").asText()).isEqualTo("f");
+        jdbc.update("UPDATE product_family_member SET product_family_id=20 WHERE id=1");
+        jdbc.update("INSERT INTO workflow_definition(id,tenant_id,type,name) VALUES(8,'default','WORK','新簇检查')");
+        jdbc.update("INSERT INTO workflow_definition_version SELECT 8,8,1,'PUBLISHED',true,nodes_json,edges_json FROM workflow_definition_version WHERE id=7");
+        jdbc.update("INSERT INTO workflow_binding_rule VALUES(8,'default',8,'SCOPED',true,1,20,NULL)");
+        // Removing the old rule and changing its source graph must not invalidate the existing instance.
+        jdbc.update("DELETE FROM workflow_binding_rule WHERE id=7");
+        jdbc.update("UPDATE workflow_definition_version SET nodes_json='[]' WHERE id=7");
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.snapshot.operations[0].works.length()").value(1))
+            .andExpect(jsonPath("$.data.snapshot.operations[0].works[0].id").value("7"))
+            .andExpect(jsonPath("$.data.snapshot.operations[1].works[0].id").value("8"))
+            .andExpect(jsonPath("$.data.state.operations.b.works").isEmpty());
+        assertThat(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(frozen);
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(state);
+        action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 25))).andExpect(status().isOk());
+        action(101, "CONFIRM", 2, "a", Map.of("workId", "7", "nodeId", "c")).andExpect(status().isOk());
+        action(101, "SUBMIT", 3, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 24))).andExpect(status().isOk());
+        action(101, "COMPLETE", 4, "a", Map.of()).andExpect(status().isOk());
+        // Re-publish between preview and START: creation must re-read the current published graph.
+        jdbc.update("UPDATE workflow_definition_version SET is_current=false WHERE id=8");
+        jdbc.update("INSERT INTO workflow_definition_version SELECT 9,8,2,'PUBLISHED',true,nodes_json,edges_json FROM workflow_definition_version WHERE id=8");
+        action(101, "START", 5, "b", Map.of()).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.snapshot.operations[1].works[0].versionId").value("9"))
+            .andExpect(jsonPath("$.data.snapshot.operations[1].works[0].matchContext.productFamilyId").value("20"))
+            .andExpect(jsonPath("$.data.state.operations.b.works['8'].active[0]").value("f"));
+        JsonNode saved = mapper.readTree(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class));
+        assertThat(saved.at("/operations/0/works/0")).isEqualTo(originalWork);
+        assertThat(saved.path("context")).isEqualTo(mapper.readTree(frozen).path("context"));
+        assertThat(saved.path("routeNodes")).isEqualTo(mapper.readTree(frozen).path("routeNodes"));
+        var audit = jdbc.queryForMap("SELECT content_before,content_after FROM audit_event WHERE entity_type='PRODUCTION_EXECUTION' AND entity_id='101' AND function_name='START' ORDER BY id DESC LIMIT 1");
+        assertThat(auditJson(audit.get("content_after")).at("/snapshot/operations/1/works/0/versionId").asText()).isEqualTo("9");
+        assertThat(auditJson(audit.get("content_before")).at("/snapshot/operations/1/works")).isEmpty();
+        action(101, "START", 6, "b", Map.of()).andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(6);
+    }
+
+    @Test void workPlanExceptionIsRecheckedAtStartAndPassedOperationsAreNeverBackfilled() throws Exception {
+        seedConfirmationWork();
+        jdbc.update("UPDATE workflow_binding_rule SET operation_id=12 WHERE id=7");
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SUBMIT", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 24))).andExpect(status().isOk());
+        action(101, "COMPLETE", 2, "a", Map.of()).andExpect(status().isOk());
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.snapshot.operations[1].works[0].id").value("7"));
+        jdbc.update("INSERT INTO workflow_binding_rule VALUES(8,'default',7,'EXCEPTION',true,1,NULL,12)");
+        jdbc.update("INSERT INTO workflow_binding_rule VALUES(9,'default',7,'SCOPED',true,1,NULL,11)");
+        action(101, "START", 3, "b", Map.of()).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.a.works").isEmpty())
+            .andExpect(jsonPath("$.data.state.operations.b.works").isEmpty());
+        action(101, "COMPLETE", 4, "b", Map.of()).andExpect(status().isOk());
+        String frozen = jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class);
+        jdbc.update("DELETE FROM workflow_binding_rule WHERE id=8");
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.snapshot.operations[0].works").isEmpty())
+            .andExpect(jsonPath("$.data.snapshot.operations[1].works").isEmpty());
+        assertThat(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(frozen);
+    }
+
+    @Test void workRefreshAndInstanceCreationRollBackTogetherWhenAuditFails() throws Exception {
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        action(101, "SUBMIT", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 24))).andExpect(status().isOk());
+        action(101, "COMPLETE", 2, "a", Map.of()).andExpect(status().isOk());
+        seedConfirmationWork();
+        jdbc.update("UPDATE workflow_binding_rule SET operation_id=12 WHERE id=7");
+        String snapshot = jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class);
+        String state = jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class);
+        doThrow(new IllegalStateException("audit unavailable")).when(audits).save(any(AuditEvent.class));
+        try { action(101, "START", 3, "b", Map.of()).andExpect(status().is5xxServerError()); }
+        finally { reset(audits); }
+        assertThat(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(snapshot);
+        assertThat(jdbc.queryForObject("SELECT state_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(state);
+        action(101, "START", 3, "b", Map.of()).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.state.operations.b.works.size()").value(1));
+    }
+
+    @Test void legacyFutureWorkPlansAreRefreshedButRealInstancesArePreserved() throws Exception {
+        seedConfirmationWork();
+        jdbc.update("UPDATE workflow_binding_rule SET operation_id=NULL WHERE id=7");
+        var response = action(101, "START", 0, "a", Map.of()).andExpect(status().isOk()).andReturn();
+        // Old releases stored future work plans at first START, without creating their work states.
+        JsonNode preview = mapper.readTree(response.getResponse().getContentAsString()).at("/data/snapshot");
+        jdbc.update("UPDATE production_execution SET snapshot_json=? WHERE object_id=101", preview.toString());
+        jdbc.update("DELETE FROM workflow_binding_rule");
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.snapshot.operations[0].works[0].id").value("7"))
+            .andExpect(jsonPath("$.data.snapshot.operations[1].works").isEmpty())
+            .andExpect(jsonPath("$.data.snapshot.operations[1].forms").isEmpty());
+        assertThat(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=101", String.class)).isEqualTo(preview.toString());
+    }
+
+    @Test void invalidFutureWorkOnlyBlocksItsOwnStartAndDoesNotBreakExistingWork() throws Exception {
+        seedConfirmationWork();
+        action(101, "START", 0, "a", Map.of()).andExpect(status().isOk());
+        jdbc.update("UPDATE workflow_binding_rule SET operation_id=12 WHERE id=7");
+        jdbc.update("UPDATE workflow_definition_version SET is_current=false WHERE id=7");
+        mvc.perform(auth(get("/api/v1/production/execution/101"))).andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.availability.b.canStart").value(false))
+            .andExpect(jsonPath("$.data.availability.b.startIssues").isNotEmpty())
+            .andExpect(jsonPath("$.data.state.operations.a.works['7'].active[0]").value("f"));
+        action(101, "SUBMIT", 1, "a", Map.of("formId", "work-7-f", "values", Map.of("temperature", 25))).andExpect(status().isOk());
+        action(101, "CONFIRM", 2, "a", Map.of("workId", "7", "nodeId", "c")).andExpect(status().isOk());
+        action(101, "SUBMIT", 3, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 24))).andExpect(status().isOk());
+        action(101, "COMPLETE", 4, "a", Map.of()).andExpect(status().isOk());
+        action(101, "START", 5, "b", Map.of()).andExpect(status().isBadRequest());
+        assertThat(jdbc.queryForObject("SELECT revision FROM production_execution WHERE object_id=101", Long.class)).isEqualTo(5);
     }
 
     private void seedConfirmationWork() {
@@ -1811,9 +1965,9 @@ class ProductionExecutionIntegrationTest {
         action(101, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 22))).andExpect(status().isOk());
         jdbc.update("INSERT INTO form_template(id,name,code,category_name) VALUES(6,'补充记录','F02','生产记录')");
         jdbc.update("INSERT INTO form_template_version(id,template_id,version_label,model_design_json,canvas_design_json) SELECT 6,6,'V1',model_design_json,canvas_design_json FROM form_template_version WHERE id=5");
-        jdbc.update("UPDATE product_process_operation_form_binding SET form_template_version_id=6 WHERE id=51");
+        jdbc.update("UPDATE product_process_operation_form_binding SET form_template_version_id=6 WHERE id IN (51,61)");
         action(102, "START", 0, "a", Map.of()).andExpect(status().isOk());
-        action(102, "SAVE", 1, "a", Map.of("formId", "form-51", "values", Map.of("temperature", 24))).andExpect(status().isOk());
+        action(102, "SAVE", 1, "a", Map.of("formId", "form-61", "values", Map.of("temperature", 24))).andExpect(status().isOk());
     }
 
     private MockHttpServletRequestBuilder queryAuth(MockHttpServletRequestBuilder request) {

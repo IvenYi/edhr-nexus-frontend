@@ -1,0 +1,1775 @@
+{
+  "ontologyResult": {
+    "result": "updated",
+    "baselineBefore": "0.3.25",
+    "baselineAfter": "0.3.25",
+    "contractBaseline": {
+      "sourceCommit": "d5adf22066ea4d6bb1c7e7ede09961fc97bea675",
+      "targetBranch": "edhr-dev",
+      "targetCommit": "d5adf22066ea4d6bb1c7e7ede09961fc97bea675",
+      "contractReadCommit": "d5adf22066ea4d6bb1c7e7ede09961fc97bea675",
+      "uncommittedContractPaths": []
+    },
+    "reason": "按同一功能切片的用户确认直接修正当前本体，不新增并存模式或版本号。同步对象级制程引用、首次START冻结、同形态换版、数量分配、工单字段/终态边界、手动提前结束、批次审计详情和清洁初始化；保留前序作业动态匹配工作树修改与原始历史来源。已核对当前源码及知识校验，本体不替代主侧功能验收或独立质量结果；新修正规则保持specified/internal。 同轮独立QA后的本体补正：纠正DEC-0001-03旧锁版继承及DEC-0001-09陈旧产品簇冻结缺口；将制程身份/详情要求收窄到创建、引用变化、首次START与制程展示语境，保留普通UPDATE差量。原始验证条目保留，新增本次针对性复核记录；独立质量终验仍由主侧取得。",
+    "changedArtifacts": [
+      {
+        "path": "docs/architecture/business-knowledge-model.md",
+        "changeType": "update",
+        "ids": []
+      },
+      {
+        "path": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+        "changeType": "update",
+        "ids": [
+          "DEC-0001-03",
+          "DEC-0001-09"
+        ]
+      },
+      {
+        "path": "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+        "changeType": "update",
+        "ids": [
+          "DEC-0002",
+          "DEC-0002-10",
+          "discrepancy.product-family-transfer-unstarted-object-context"
+        ]
+      },
+      {
+        "path": "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+        "changeType": "update",
+        "ids": [
+          "DEC-0007"
+        ]
+      },
+      {
+        "path": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+        "changeType": "update",
+        "ids": [
+          "DEC-0012",
+          "DEC-0012-02",
+          "DEC-0012-03",
+          "DEC-0012-04",
+          "DEC-0012-06",
+          "DEC-0012-07",
+          "DEC-0012-09",
+          "DEC-0012-10",
+          "DEC-0012-11",
+          "discrepancy.production-order-cancelled-objects-do-not-complete-created-order",
+          "scenario.production-first-split-locks-process",
+          "scenario.production-work-order-create-without-process",
+          "scenario.production-work-order-terminal-link"
+        ]
+      },
+      {
+        "path": "docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml",
+        "changeType": "update",
+        "ids": [
+          "DEC-0013",
+          "DEC-0013-02",
+          "DEC-0013-04",
+          "scenario.production-process-selection-clear",
+          "scenario.production-work-order-create-direct-split",
+          "scenario.production-work-order-start-and-terminal-link"
+        ]
+      },
+      {
+        "path": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+        "changeType": "update",
+        "ids": [
+          "DEC-0014",
+          "DEC-0014-03",
+          "DEC-0014-06",
+          "DEC-0014-08",
+          "DEC-0014-10",
+          "discrepancy.production-batch-independent-audit",
+          "scenario.production-batch-locked-process-preview",
+          "scenario.production-batch-split-dialog-action-boundary"
+        ]
+      },
+      {
+        "path": "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml",
+        "changeType": "update",
+        "ids": [
+          "DEC-0015-05",
+          "scenario.work-order-process-selector-clear"
+        ]
+      },
+      {
+        "path": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+        "changeType": "update",
+        "ids": [
+          "DEC-0016",
+          "scenario.sn-bulk-staged",
+          "scenario.sn-object-quantity-one"
+        ]
+      },
+      {
+        "path": "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml",
+        "changeType": "update",
+        "ids": [
+          "DEC-0018",
+          "DEC-0018-01",
+          "DEC-0018-02",
+          "DEC-0018-03",
+          "discrepancy.production-work-order-early-termination-command-not-implemented",
+          "discrepancy.production-work-order-early-termination-contract-not-implemented",
+          "scenario.production-work-order-early-termination"
+        ]
+      },
+      {
+        "path": "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+        "changeType": "update",
+        "ids": [
+          "DEC-0019",
+          "DEC-0019-02",
+          "DEC-0019-03",
+          "discrepancy.production-object-execution-lifecycle-audit-projection",
+          "scenario.production-batch-management-row-audit"
+        ]
+      },
+      {
+        "path": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+        "changeType": "update",
+        "ids": [
+          "DEC-0069-01"
+        ]
+      },
+      {
+        "path": "docs/knowledge/evidence/batch-process-2026-10-27.md",
+        "changeType": "create",
+        "ids": []
+      },
+      {
+        "path": "docs/knowledge/evidence/batch-process.yaml",
+        "changeType": "create",
+        "ids": [
+          "evidence.batch-process-clean-initialization",
+          "evidence.batch-process-direct-correction-confirmed"
+        ]
+      },
+      {
+        "path": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+        "changeType": "update",
+        "ids": []
+      },
+      {
+        "path": "docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml",
+        "changeType": "update",
+        "ids": [
+          "evidence.production-batch-quantity-policy-boundary"
+        ]
+      },
+      {
+        "path": "docs/knowledge/evidence/production.yaml",
+        "changeType": "update",
+        "ids": [
+          "evidence.production-audit-localized-display-guideline",
+          "evidence.production-audit-localized-formatter",
+          "evidence.production-object-controller",
+          "evidence.production-object-entity",
+          "evidence.production-object-execution-status-audit-source",
+          "evidence.production-service",
+          "evidence.production-service-test",
+          "evidence.production-work-order-entity",
+          "evidence.production-work-order-page-pending-list",
+          "evidence.production-work-order-process-lock-preview-ui",
+          "evidence.work-order-controller",
+          "evidence.work-order-create-contract",
+          "evidence.work-order-page",
+          "evidence.work-order-status-machine"
+        ]
+      },
+      {
+        "path": "docs/knowledge/evidence/transaction-runtime.yaml",
+        "changeType": "update",
+        "ids": [
+          "evidence.production-work-live-matching-confirmed"
+        ]
+      },
+      {
+        "path": "docs/knowledge/evidence/work-live-matching-2026-10-26.md",
+        "changeType": "update",
+        "ids": []
+      },
+      {
+        "path": "docs/knowledge/facts/batch-process.yaml",
+        "changeType": "create",
+        "ids": [
+          "fact.production.object-execution-exists",
+          "fact.production.work-order-normal-completion-eligible"
+        ]
+      },
+      {
+        "path": "docs/knowledge/facts/core-business.yaml",
+        "changeType": "update",
+        "ids": [
+          "fact.catalog.productionbatch-productprocessversion",
+          "fact.catalog.productionobject-allassociatedobjectsterminal",
+          "fact.catalog.productionobject-status",
+          "fact.catalog.workorder-processversionid",
+          "fact.catalog.workorder-processversionlocked",
+          "fact.catalog.workorder-productionobjectcount",
+          "fact.catalog.workorder-status"
+        ]
+      },
+      {
+        "path": "docs/knowledge/glossary.yaml",
+        "changeType": "update",
+        "ids": [
+          "term.audit-change-snapshot",
+          "term.batch",
+          "term.execution-snapshot",
+          "term.process-version-read-only-preview",
+          "term.production-batch-management",
+          "term.production-form",
+          "term.production-mode",
+          "term.production-object",
+          "term.production-object-early-termination",
+          "term.work-order",
+          "term.work-order-early-termination",
+          "term.work-order-production-object-split-dialog"
+        ]
+      },
+      {
+        "path": "docs/knowledge/implementation-anchors/core-business.yaml",
+        "changeType": "update",
+        "ids": [
+          "anchor.core.production-object-runtime",
+          "anchor.core.production-work-order"
+        ]
+      },
+      {
+        "path": "docs/knowledge/ontology.yaml",
+        "changeType": "update",
+        "ids": [
+          "concept.audit-change-snapshot",
+          "concept.execution-snapshot",
+          "concept.production-batch",
+          "concept.production-object",
+          "concept.work-order",
+          "concept.work-order-early-termination",
+          "relation.audit-event-retains-change-snapshot",
+          "relation.batch-freezes-execution-snapshot",
+          "relation.process-version-selected-by-work-order-batch",
+          "relation.production-batch-records-product",
+          "relation.production-batch-records-product-family",
+          "relation.production-object-uses-process-version",
+          "relation.work-order-early-terminates-active-production",
+          "relation.work-order-locks-process-version",
+          "relation.work-order-split-previews-locked-process-version",
+          "relation.work-order-uses-production-form"
+        ]
+      },
+      {
+        "path": "docs/knowledge/open-questions.yaml",
+        "changeType": "update",
+        "ids": [
+          "question.production-batch-quantity-lower-bound"
+        ]
+      },
+      {
+        "path": "docs/knowledge/README.md",
+        "changeType": "update",
+        "ids": []
+      },
+      {
+        "path": "docs/knowledge/rules/batch-process.yaml",
+        "changeType": "create",
+        "ids": [
+          "rule.production.process-snapshot-audit-detail",
+          "rule.production.unstarted-object-edit",
+          "rule.production.work-order-edit-field-boundary"
+        ]
+      },
+      {
+        "path": "docs/knowledge/rules/product-process.yaml",
+        "changeType": "update",
+        "ids": [
+          "rule.product-family.member-transfer-future-only",
+          "rule.product-process.explicit-execution-selection",
+          "rule.product-process.freeze-batch-execution-snapshot"
+        ]
+      },
+      {
+        "path": "docs/knowledge/rules/production.yaml",
+        "changeType": "update",
+        "ids": [
+          "rule.production.active-process-version-selection",
+          "rule.production.audit-field-localized-display",
+          "rule.production.batch-management-action-entry-boundary",
+          "rule.production.batch-management-row-detail-and-audit-entry",
+          "rule.production.first-split-locks-process",
+          "rule.production.locked-process-ignores-effective-window",
+          "rule.production.locked-process-version-read-only-preview",
+          "rule.production.mass-batch-quantity-distribution",
+          "rule.production.object-allocation-within-order-plan",
+          "rule.production.object-cancel-before-start",
+          "rule.production.object-early-termination",
+          "rule.production.object-terminal-cascade-to-work-order",
+          "rule.production.process-required-on-first-split",
+          "rule.production.process-resolution-product-then-family",
+          "rule.production.production-batch-input-quantity-required",
+          "rule.production.production-object-audit-change-snapshot",
+          "rule.production.single-production-form-per-order",
+          "rule.production.split-batch-table-action-boundary",
+          "rule.production.split-initializes-execution-context",
+          "rule.production.work-order-audit-change-snapshot",
+          "rule.production.work-order-early-termination",
+          "rule.production.work-order-lifecycle",
+          "rule.production.work-order-mass-production-only",
+          "rule.production.work-order-required-fields",
+          "rule.production.work-order-split-eligibility"
+        ]
+      }
+    ],
+    "knowledgeSync": [
+      {
+        "id": "DEC-0012",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；2026-10-27直接修正当前生产准备模型：工单表达产品及计划需求，不再绑定唯一制程。各生产对象创建时显式选择当前可用制程，产品优先、产品簇兜底，同一工单固定生产形态。未开工对象保存引用并可在资格内修改；首次合法START重核并冻结当时配置。旧工单锁版及过期继续拆分不再为有效策略。原始来源与声明级修正范围见批次制程确认证据。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0012-02",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；工单创建和编辑使用 CREATED，不存在发布或 RELEASED 状态；CREATED 与 IN_PROCESS 工单均可在剩余计划数量内继续拆分对象，各对象可选择不同制程版本但生产形态须一致。首次对象开工使工单进入 IN_PROCESS；只有计划全部分配且全部未取消对象正常完成才自动 COMPLETED；已完成可 CLOSED；无对象且未开工可 CANCELLED。生产中不开放工单编辑。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0012-03",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；BATCH目标数量必须大于0，允许0<q<1；SN目标数量固定为1。非CANCELLED对象目标数量合计不得超过工单计划数量。编辑批次数量只改变分配量和剩余量，增加量不得超过当前剩余量，工单计划量不自动改变；提前结束仍占用原目标分配量。良品、NG、报废不减少目标数量。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0012-04",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；制程从工单移至各生产对象的引用：每次创建显式选择，产品当前可用制程优先、无可用产品制程时用当前产品簇兜底。同一工单可有多个制程版本，不能改变既定生产形态。已保存但未开工对象可明确换版；不自动换成最新版本。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0012-06",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；已有引用与新选择候选分开校验。产品新增自有制程不使仍有效且归属正确的既有簇制程失效；版本失效、产品转簇导致不适用、生产形态变化，在执行页面首次开工时阻断并要求明确重选，不能以工单曾绑定为由豁免。未开工时同一版本内容可变，首次合法开工冻结实际内容。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0012-07",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；本次不新增批次转SN、多工单合批、补产及既有BATCH再拆分。生产执行、表单流程、字段权限和审批已有后续独立能力，不再把早期交付排除解释为当前全产品缺失；本次仅改制程引用、开工校验和快照审计，不改变其既有语义。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml"
+        ]
+      },
+      {
+        "id": "scenario.production-work-order-create-without-process",
+        "disposition": "updated",
+        "scope": "工单以CREATED保存，只记录产品和计划需求，不绑定制程版本",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml"
+        ]
+      },
+      {
+        "id": "scenario.production-first-split-locks-process",
+        "disposition": "updated",
+        "scope": "每个对象保存用户所选制程，允许前批V1后批V2，工单不保存唯一制程；生产形态不能混用",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml"
+        ]
+      },
+      {
+        "id": "scenario.production-work-order-terminal-link",
+        "disposition": "updated",
+        "scope": "工单自动进入COMPLETED，之后可关闭；存在未分配数量或EARLY_TERMINATED对象时不自动完成",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml"
+        ]
+      },
+      {
+        "id": "discrepancy.production-order-cancelled-objects-do-not-complete-created-order",
+        "disposition": "updated",
+        "scope": "provenance: original-evidence + user-confirmed；全部未开工对象取消时工单保持CREATED、释放分配量，原修复范围保留。2026-10-27当前正常完成另要求计划全部分配且未取消对象全部正常完成；旧全部对象终态即完成的判断不再作为有效规则，运行验收取本次证据。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0013-02",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；首次生产对象开工时CREATED工单转为IN_PROCESS；只有计划数量全部分配且所有未取消对象均正常COMPLETED，工单才自动COMPLETED。剩余未分配量或单批提前结束不触发工单结束；全部未开工对象取消仍保持CREATED。已完成可CLOSED；无对象且未开工可CANCELLED；工单手动提前结束另按DEC-0018执行。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0013-04",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；工单详情和数据审计保持行点击展开及追溯交互。工单不再选择制程；拆分候选未选制程时显示空值，不引入暂不选择业务选项，每个生产对象保存前必须明确选择。批次审计按事件保留制程身份及实际冻结配置详情，不以版本标签代替配置。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml"
+        ]
+      },
+      {
+        "id": "scenario.production-work-order-create-direct-split",
+        "disposition": "updated",
+        "scope": "允许拆分，不要求发布动作；后续对象可换版本但必须保持工单生产形态及分配约束",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml"
+        ]
+      },
+      {
+        "id": "scenario.production-work-order-start-and-terminal-link",
+        "disposition": "updated",
+        "scope": "首个对象开工使工单IN_PROCESS；所有未取消对象正常完成且计划已全分配才自动COMPLETED；全部未开工对象取消保持CREATED；单批提前结束不自动结束工单",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml"
+        ]
+      },
+      {
+        "id": "scenario.production-process-selection-clear",
+        "disposition": "updated",
+        "scope": "未选择时保持空值，可清除候选选择；持久化前必须明确选择，工单无制程选择字段",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0014-03",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；批次候选保存制程版本、批次号、数量及可选计划起止时间和备注；每条制程明确，BATCH数量大于0且可小于1，SN=1。导入批次号和数量必填，结束时间不得早于开始时间，总量不超过剩余计划量。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0014-06",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；拆分弹窗提供制程选择和只读配置预览；只读限制预览内容，不限制待创建批次选择。工单不再锁定制程，各批次可选不同版本但生产形态一致；已保存未开工批次可明确修改，已开工按冻结快照查看。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0014-08",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；批次数据审计由既有批次详情页签提供，不再作为TODO；本次补充制程身份与{}冻结配置详情。读取当次审计保存内容，不能按当前主数据回填历史。其他冻结快照入口本次只盘点。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml"
+        ]
+      },
+      {
+        "id": "scenario.production-batch-locked-process-preview",
+        "disposition": "updated",
+        "scope": "允许显式选择同生产形态的可用版本；预览只读，保存的引用不等于开工快照",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml"
+        ]
+      },
+      {
+        "id": "discrepancy.production-batch-independent-audit",
+        "disposition": "updated",
+        "scope": "既有DEC-0019及批次详情已实现对象数据审计，旧独立审计TODO陈旧。2026-10-27进一步要求制程身份和当次冻结快照详情，其实际实现与验证由本轮证据单列。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0018-01",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；工单提供用户主动的提前结束动作，使用EARLY_TERMINATED并保留结束原因、时间及审计；它不由单个批次提前结束自动触发。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0018-02",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；工单手动提前结束前必须先处理所有子批次：存在CREATED或IN_PROGRESS对象时阻止操作，用户须分别取消未开工对象或按既有规则处理生产中对象。无未结束对象后填写原因才可结束工单；不主动级联取消/终止批次、表单或DHR，已结束子对象保持原状态；工单结束后不得继续拆分或开工。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0018-03",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；未开工对象取消不改变工单计划数量，CANCELLED对象targetQuantity不计有效分配量。全部未开工对象取消时工单保持CREATED，可以重新选择当前适用制程继续拆分，但既定生产形态及曾拆批后的产品身份锁定不解除；对象及审计保留。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml"
+        ]
+      },
+      {
+        "id": "scenario.production-work-order-early-termination",
+        "disposition": "updated",
+        "scope": "工单EARLY_TERMINATED并保留原因时间审计，不修改任何子对象；若存在CREATED或IN_PROGRESS对象则阻断，后续不能拆分或开工",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml"
+        ]
+      },
+      {
+        "id": "discrepancy.production-work-order-early-termination-contract-not-implemented",
+        "disposition": "updated",
+        "scope": "provenance: original-evidence + user-confirmed；状态机IN_PROCESS->EARLY_TERMINATED已有实现，该原缺口关闭。2026-10-27直接撤销全部对象终态且存在提前结束对象时的自动联动，改为独立工单命令；状态机存在不等于命令与审计已经验收。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml"
+        ]
+      },
+      {
+        "id": "discrepancy.production-work-order-early-termination-command-not-implemented",
+        "disposition": "updated",
+        "scope": "provenance: original-evidence；本轮WorkOrderController.end和ProductionService.endOrder已新增显式命令，原因及时间持久化、无未结束子对象校验、不主动级联，并写审计。CREATED/IN_PROCESS入口集合属于工程落实；状态机、数据库及运行验收取本轮证据，不能由旧对象自动汇总替代。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0002-10",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；产品簇成员变化后，新对象按当前产品/产品簇选择制程；已有未开工对象仍保存原引用，但首次开工必须按当前归属、有效期及既定生产形态重核，不适用时提示并要求明确重选。已开工制程快照不改写。产品新增自有制程不否定仍合法的既有簇引用。作业独立按当前簇实时匹配后续工序，既有实例保留，已过站不补做，见DEC-0007-03/04。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.work-order-required-fields",
+        "disposition": "updated",
+        "scope": "工单编号、产品和大于零的计划数量必填；订单编号、计划时间和备注可选。工单不再绑定制程，制程由各生产对象创建时显式选择。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.active-process-version-selection",
+        "disposition": "updated",
+        "scope": "新建或更换批次制程只能选择当前有效且适用的产品或产品簇版本，候选不展示无效版本。已选版本后续失效保留引用并提示，首次开工必须重核，不能沿用旧工单锁版豁免。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.work-order-mass-production-only",
+        "disposition": "updated",
+        "scope": "生产对象所选制程必须为量产；工单不再以制程字段指定生产方式，生产形态由首批确定并保持。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.production-batch-input-quantity-required",
+        "disposition": "updated",
+        "scope": "2026-10-27用户明确BATCH数量必须大于0且允许0.5，本条恢复为当前规范。手动、按每批数量、导入及修改共用该边界，仍受存储精度、总量及其他资格约束；SN=1，批次数为正整数。2026-10-12撤回过度推断只保留为历史依据，不再是现行待决。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.mass-batch-quantity-distribution",
+        "disposition": "updated",
+        "scope": "按每批正数量Q生成，Q可小于1，末批承接不足Q的正余数，总量不超过当前剩余量；不丢弃或补足余数。数量下限由2026-10-27确认，存储精度仍受约束。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.locked-process-version-read-only-preview",
+        "disposition": "updated",
+        "scope": "保留稳定ID，当前含义直接改为批次所选制程的只读内容预览。预览只读不限制未开工批次选择或换版，已开工按实际冻结快照解释，不回读当前配置冒充历史。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.process-required-on-first-split",
+        "disposition": "updated",
+        "scope": "保留稳定ID但取消首次限制：每个新建对象都须显式指定当前适用版本，工单无制程选择，不存在继承工单锁版的旁路。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.first-split-locks-process",
+        "disposition": "updated",
+        "scope": "历史ID原位修正为对象级引用：每次拆分只向该生产对象保存显式所选制程，不写回工单；未开工按资格换版，首次开工后引用和实际配置冻结。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.process-resolution-product-then-family",
+        "disposition": "updated",
+        "scope": "新选候选按产品优先、无可用产品版本时产品簇兜底。已有簇引用若仍有效且产品仍属该簇，不因新增自有制程失效；候选优先级不是已有引用适用性的判据。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.single-production-form-per-order",
+        "disposition": "updated",
+        "scope": "同一工单所有对象保持BATCH或SN同一形态，新拆批、未开工换版和首次开工均校验，防止同版本内容修改改变身份；全部旧批取消也不解除既定形态。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.object-allocation-within-order-plan",
+        "disposition": "updated",
+        "scope": "有效分配A为所有非CANCELLED对象目标量，剩余R=计划Q-A。改量须新量-旧量<=R，减少释放额度但不自动改变计划Q；取消释放、提前结束仍占原目标量。并发修改按同一工单约束校验，良品/NG/报废不减目标量。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.object-cancel-before-start",
+        "disposition": "updated",
+        "scope": "未开工对象取消后保留记录及审计，其目标量退出有效分配而计划量不变。全部未开工对象取消时工单保持CREATED，后续可选择当前制程继续拆分，但产品和生产形态不解锁；剩余计划未分配时不因全部对象终态完成工单。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.object-early-termination",
+        "disposition": "updated",
+        "scope": "进行中批次要求原因和时间，同事务终止关联DHR、停止普通执行并保留真实表单，不自动作废。单批EARLY_TERMINATED不触发工单结束；原目标分配保留，剩余计划可继续拆分。工单主动结束单独判断，不级联其他对象。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.split-initializes-execution-context",
+        "disposition": "updated",
+        "scope": "拆分只创建CREATED对象并保存工单及对象显式制程引用，尚未冻结配置；不生成执行实例或DHR。首次合法START同事务重核并冻结实际制程配置、创建唯一DHR。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.object-terminal-cascade-to-work-order",
+        "disposition": "updated",
+        "scope": "自动正常完成须计划全部分配、至少一个有效对象且所有未取消对象均COMPLETED。剩余未分配量或单批提前结束时保持原活动工单状态；不增加合格产量等于计划量的条件。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.work-order-lifecycle",
+        "disposition": "updated",
+        "scope": "CREATED按字段边界编辑；CREATED/IN_PROCESS可继续拆分。首次批次开工进入IN_PROCESS，计划已全分配且全部未取消对象正常完成才自动COMPLETED；单批提前结束不联动。手动工单结束要求无未结束子对象且原因必填；COMPLETED可CLOSED，无对象未开工可CANCELLED，全部未开工对象取消仍CREATED。无RELEASED。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.work-order-early-termination",
+        "disposition": "updated",
+        "scope": "用户确认先处理全部子批次、原因必填、不主动级联；当前入口允许CREATED或IN_PROCESS是本轮工程选择。存在CREATED/IN_PROGRESS子对象时阻断，全部终态后记录工单终止原因时间及审计，子批次、表单和DHR保持既有结果，工单不能继续拆分或开工。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.work-order-audit-change-snapshot",
+        "disposition": "updated",
+        "scope": "工单新增、编辑、取消、关闭及手动提前结束记录实际业务变化前后值，未拆批时改产品或计划量也要审计。新增前为空对象，请求参数不能冒充真实快照；终止原因和时间可追溯。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.locked-process-ignores-effective-window",
+        "disposition": "historical",
+        "scope": "只保留历史实现依据，2026-10-27已撤销工单锁版豁免。新对象/换版须当前有效适用，未开工首次START重核；已开工继续既有快照，不重新校验当前主数据有效期，也不回填历史。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml",
+          "git:d5adf22066ea4d6bb1c7e7ede09961fc97bea675:docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.work-order-split-eligibility",
+        "disposition": "updated",
+        "scope": "工单进入 IN_PROCESS 只表示至少一个生产对象已开工，不冻结尚未分配的计划数量；CREATED 与 IN_PROCESS 工单均可继续拆分。COMPLETED、CLOSED、CANCELLED 和 EARLY_TERMINATED 工单不得拆分。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.product-process.explicit-execution-selection",
+        "disposition": "updated",
+        "scope": "每个对象创建时显式选择当前适用的产品制程或产品簇兜底版本；工单不保存唯一版本。未开工可按资格换版，首次合法START冻结当时配置，同一工单可用不同版本但不能混用生产形态。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/product-process.yaml"
+        ]
+      },
+      {
+        "id": "rule.product-family.member-transfer-future-only",
+        "disposition": "updated",
+        "scope": "新对象按当前归属选择；旧未开工对象保留原引用，首次开工按当前归属、有效期和形态重核，不适用须明确重选，不自动迁移。已开工制程快照不变。作业后续候选独立按当前簇匹配，已有实例保留，已过站不补做。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/product-process.yaml"
+        ]
+      },
+      {
+        "id": "rule.product-process.freeze-batch-execution-snapshot",
+        "disposition": "updated",
+        "scope": "未开工仅保存引用，允许同一版本配置原地变化；首次合法START重核后冻结当时制程身份、产品/产品簇依据、路线、工序表单和文档等实际配置。同为V1的不同批次可有不同快照，历史解释不能回读最新主数据；作业实例在各工序START创建时单独冻结，既有实例保持、已过站不补做。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/product-process.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.batch-management-row-detail-and-audit-entry",
+        "disposition": "updated",
+        "scope": "批次详情中的数据审计读取该对象PRODUCTION_OBJECT事件，涉及制程的条目显示归属及版本，首次START保存的冻结配置提供{}详情。未开工引用和已冻结配置须明确区分；应有的历史原件缺失不按当前主数据补造。普通UPDATE保持真实差量，不要求每条重复制程身份或配置；新增/修改动作投影不变，PRODUCTION_EXECUTION继续保存完整执行证据。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.batch-management-action-entry-boundary",
+        "disposition": "updated",
+        "scope": "未开工且无执行实例、所属工单仍CREATED或IN_PROCESS的BATCH可编辑制程和数量；已取消或已开工不能借编辑恢复。其他既有取消、原因必填的提前结束、DHR只读查阅及执行详情入口保持，不新增既有批次再拆分。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.audit-field-localized-display",
+        "disposition": "updated",
+        "scope": "审计主视图统一中文字段、状态、形态、时间及空值，保留未知字段可见。批次事件实际保存了processSnapshot时提供显式{}详情，读取该冻结原件；未涉及制程的差量事件不要求重复身份或配置。该详情不把主视图变为原始JSON列表，不查询当前主数据代替历史，也不修改原contentBefore/contentAfter。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.production-object-audit-change-snapshot",
+        "disposition": "updated",
+        "scope": "每个实际生产对象单独写CREATE，新增前为空，包含工单、产品、制程身份、编号、形态、数量、计划与备注。未开工修改制程/数量及取消、开工、完成、提前结束写UPDATE，按真实前后变化留证。首次合法START的对象审计保留实际冻结制程配置，不能仅记录同名V1标签；未开工审计若仅引用须注明未冻结。PRODUCTION_EXECUTION仍保存执行细节，历史缺失不回填。既有execution.production-object-audit-snapshot只承接原控制器范围，不自动提升本轮快照详情的运行成熟度。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "term.work-order",
+        "disposition": "updated",
+        "scope": "生产计划实体，保存工单编号、产品、计划数量、可选订单编号、计划时间、备注及状态，不绑定唯一制程。CREATED/IN_PROCESS可在剩余计划量内拆分各自制程版本的对象，但生产形态固定。CREATED曾拆批后产品和工单编号固定，其他字段按分配约束编辑；生产中不开放编辑。全计划已分配且全部有效对象正常完成才自动完成，手动提前结束要求先处理子对象并留原因。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/glossary.yaml"
+        ]
+      },
+      {
+        "id": "term.production-object",
+        "disposition": "updated",
+        "scope": "工单下实际管理的BATCH或SN，保存对象编号、形态、显式制程版本引用、目标数量、计划时间、备注及状态。未开工且无执行实例时可按资格改制程和数量；首次合法开工后制程与数量固定并使用冻结配置。同一工单可有不同制程版本但不能混用形态。统一引用入口仍辨认真实类型，产出/质量继续按DEC-0078/0079真实冻结来源解释，旧兼容列默认0不是证据，旧实例不回写。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/glossary.yaml"
+        ]
+      },
+      {
+        "id": "term.production-object-early-termination",
+        "disposition": "updated",
+        "scope": "生产中对象由用户填写原因主动结束，状态EARLY_TERMINATED，区别于正常完成；同事务终止关联DHR并保留已保存证据，不自动作废表单。对象原目标量仍计工单分配，单批提前结束不自动结束工单。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/glossary.yaml"
+        ]
+      },
+      {
+        "id": "term.work-order-early-termination",
+        "disposition": "updated",
+        "scope": "用户显式结束工单剩余生产需求的动作，状态EARLY_TERMINATED；要求先将全部子对象处理到终态，存在未开工或生产中批次时阻断，原因必填并保留时间审计。当前CREATED/IN_PROCESS入口集合是本轮工程选择，不主动级联子对象、表单或DHR，区别于正常完成及行政关闭。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/glossary.yaml"
+        ]
+      },
+      {
+        "id": "term.work-order-production-object-split-dialog",
+        "disposition": "updated",
+        "scope": "工单在CREATED或IN_PROCESS时将剩余计划量准备为BATCH或SN对象的弹窗；明确选择候选制程、单个/批量/导入生成待提交清单，每个候选保存自己的制程，最终一次事务提交。后续批次可换版本但形态固定；本入口不负责既有批次再拆分。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/glossary.yaml"
+        ]
+      },
+      {
+        "id": "term.production-mode",
+        "disposition": "updated",
+        "scope": "当前生产对象所选制程支持的模式，仅允许量产；制程选择归属各对象，工单不以唯一制程作为模式依据。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/glossary.yaml"
+        ]
+      },
+      {
+        "id": "term.production-form",
+        "disposition": "updated",
+        "scope": "制程版本定义的对象识别形态，仅BATCH或SN。同一工单首次拆批确定形态，后续新批和未开工换制程均不得改变，开工时再次核对，取消全部旧对象也不解锁。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/glossary.yaml"
+        ]
+      },
+      {
+        "id": "term.batch",
+        "disposition": "updated",
+        "scope": "形态为BATCH的生产对象，可在工单计划量内拆分。目标数量必填且大于0，允许0<q<1，包括0.5；仍遵守存储精度及有效分配总量边界。按批次数或每批数量生成保留末批正余数，不擅自丢弃或补足。该下限由2026-10-27用户明确，不再待决。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/glossary.yaml"
+        ]
+      },
+      {
+        "id": "term.process-version-read-only-preview",
+        "disposition": "updated",
+        "scope": "查看候选或已选制程元数据、路线、DHR模板及工序配置的只读内容入口。未开工仍可显式更换引用，只读预览不意味着工单锁版。已开工历史使用实际冻结快照，不能凭V1标签读取最新内容。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/glossary.yaml"
+        ]
+      },
+      {
+        "id": "term.audit-change-snapshot",
+        "disposition": "updated",
+        "scope": "审计事件用于追溯实际业务变化的前后字段原件；新增前为空，修改保留真实差量，不能由请求参数或当前主数据伪造历史。主视图使用中文字段与状态投影；涉及制程的条目说明引用或冻结状态，首次START保存的实际配置提供{}详情。普通差量事件不重复未变化的身份或整份配置；同V1标签可对应不同冻结内容，应有历史原件但缺失时不回填。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/glossary.yaml"
+        ]
+      },
+      {
+        "id": "term.production-batch-management",
+        "disposition": "updated",
+        "scope": "生产准备阶段面向既有BATCH的列表，复用ProductionObject，整行打开详情及数据审计。未开工且无执行实例、所属工单仍允许生产时可编辑制程/数量或取消；生产中可填写原因提前结束。审计显示制程身份与{}配置详情。DHR图标按权限和实例存在性只读查看，点击不创建；既有BATCH再拆分仍不在MVP。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/glossary.yaml"
+        ]
+      },
+      {
+        "id": "relation.work-order-locks-process-version",
+        "disposition": "historical",
+        "scope": "2026-10-27已撤销的历史关系，仅保留原政策的追溯索引；现行工单无制程字段，各生产对象独立保存显式版本引用。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml",
+          "git:d5adf22066ea4d6bb1c7e7ede09961fc97bea675:docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "relation.work-order-early-terminates-active-production",
+        "disposition": "historical",
+        "scope": "2026-10-27已撤销的历史级联关系；当前工单手动提前结束先验证所有子对象终态，不连带取消或终止子对象。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml",
+          "git:d5adf22066ea4d6bb1c7e7ede09961fc97bea675:docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "relation.production-object-uses-process-version",
+        "disposition": "updated",
+        "scope": "对象创建时显式选择具体版本，未开工引用可按资格修改；首次START后引用及实际配置冻结，工单不再是唯一制程引用的来源。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "relation.production-batch-records-product-family",
+        "disposition": "updated",
+        "scope": "批次未开工按当前产品簇复核制程归属，首次START冻结实际采用的产品簇依据；后续转簇不回写已开工快照，作业候选仍独立动态匹配。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "relation.production-batch-records-product",
+        "disposition": "updated",
+        "scope": "批次沿工单取得产品身份；曾拆批后工单产品不可变，首次START冻结产品上下文。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "relation.work-order-uses-production-form",
+        "disposition": "updated",
+        "scope": "工单首批确定的BATCH/SN形态约束全部后续对象及其换版；不要求所有批次使用相同制程版本。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "relation.work-order-split-previews-locked-process-version",
+        "disposition": "updated",
+        "scope": "稳定ID保留历史命名，当前拆分可分别预览各候选对象所选版本，不再代表工单唯一锁版。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "fact.catalog.workorder-processversionid",
+        "disposition": "historical",
+        "scope": "历史工单锁版事实已撤销；当前制程引用仅属于生产对象，保留ID供历史追溯，不参与新规则判断。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/facts/core-business.yaml",
+          "git:d5adf22066ea4d6bb1c7e7ede09961fc97bea675:docs/knowledge/facts/core-business.yaml"
+        ]
+      },
+      {
+        "id": "fact.catalog.workorder-processversionlocked",
+        "disposition": "historical",
+        "scope": "历史工单锁版事实已撤销；当前制程引用仅属于生产对象，保留ID供历史追溯，不参与新规则判断。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/facts/core-business.yaml",
+          "git:d5adf22066ea4d6bb1c7e7ede09961fc97bea675:docs/knowledge/facts/core-business.yaml"
+        ]
+      },
+      {
+        "id": "fact.catalog.workorder-productionobjectcount",
+        "disposition": "updated",
+        "scope": "workOrder.productionObjectCount",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/facts/core-business.yaml"
+        ]
+      },
+      {
+        "id": "fact.catalog.workorder-status",
+        "disposition": "updated",
+        "scope": "WorkOrder.status",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/facts/core-business.yaml"
+        ]
+      },
+      {
+        "id": "fact.catalog.productionbatch-productprocessversion",
+        "disposition": "updated",
+        "scope": "ProductionObject.processVersionId；每对象显式引用，未开工可按资格修改，开工后冻结。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/facts/core-business.yaml"
+        ]
+      },
+      {
+        "id": "fact.catalog.productionobject-allassociatedobjectsterminal",
+        "disposition": "updated",
+        "scope": "工单全部子对象无CREATED/IN_PROGRESS，是工单手动提前结束前置条件；不能单独推导正常完成或自动提前结束。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/facts/core-business.yaml"
+        ]
+      },
+      {
+        "id": "discrepancy.product-family-transfer-unstarted-object-context",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed + original-evidence；本轮直接收敛原制程差异：工单不锁版，按对象选择；未开工首次START重核当前归属/有效期/形态，冻结当时产品簇及配置，已开工不改。原作业范围已于2026-10-26修正为当前簇实时匹配；两者不再待讨论。源码范围见ProductionService及ExecutionSnapshotBuilder，运行验证取本轮，不沿用前序作业测试。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0019-02",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；批次管理支持整行详情及数据审计，沿PRODUCTION_OBJECT和新增/修改投影。展示涉及制程的条目时说明归属及版本；首次合法START保存实际冻结配置并提供{}详情，未开工引用须明确未冻结，不从当前主数据重建历史。保持创建完整字段、修改真实差量的审计语义，普通数量或状态变更不要求重复记录未变化的制程身份或整份配置。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0019-03",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；继续复用生产对象实体与状态机，不新增批次再拆分。本轮补充CREATED且无执行实例的批次制程/数量编辑、当前制程资格校验及数据审计，已开工对象按实际快照固定。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml"
+        ]
+      },
+      {
+        "id": "scenario.production-batch-management-row-audit",
+        "disposition": "updated",
+        "scope": "沿新增/修改展示对象审计；涉及制程的条目明确身份，首次START保存的实际配置可打开{}详情，同V1可有不同配置。普通差量事件不重复未变化的制程；应有冻结原件但缺失时明确缺失，不查询当前主数据补造",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml"
+        ]
+      },
+      {
+        "id": "discrepancy.production-object-execution-lifecycle-audit-projection",
+        "disposition": "updated",
+        "scope": "provenance: original-evidence；2026-10-26修复了合法执行中对象状态变化的PRODUCTION_OBJECT事件缺失，旧证据保留其时点。2026-10-27首次START事件另加入processReference、processSnapshot及processFrozenAt；状态不变的普通执行不重复生成对象事件。原仅status说明只描述旧修复，不能限制当前冻结快照审计范围；运行与独立质量取本轮。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml"
+        ]
+      },
+      {
+        "id": "question.production-batch-quantity-lower-bound",
+        "disposition": "updated",
+        "scope": "原未决问题已关闭：BATCH允许任意正数量（含0.5），SN固定1；当前两条数量规则恢复specified/internal。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/open-questions.yaml"
+        ]
+      },
+      {
+        "id": "evidence.production-batch-quantity-policy-boundary",
+        "disposition": "updated",
+        "scope": "历史来源：2026-10-12曾撤回仅凭代码把批次数量下限认定为>0的过度推断，当时规则deprecated且问题待决。2026-10-27用户已明确允许任意正数量包括0.5，见evidence.batch-process-direct-correction-confirmed；当前两规则直接恢复正数量规范并关闭问题。本历史文件不再作为现行待决依据，原审计账本及当时未运行测试的事实保留。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml"
+        ]
+      },
+      {
+        "id": "term.execution-snapshot",
+        "disposition": "updated",
+        "scope": "实际执行所用配置的冻结依据。对象未开工只有引用，同一V1内容可原地变化；首次合法START冻结当时制程身份、产品/产品簇、路线、工序表单及文档，DHR同事务保存自身上下文和目录。版本标签不等于内容身份，批次审计{}详情读取事件原件。作业后续按当前上下文匹配并在实例创建时另冻结图/规则/事实，已有实例保留。通用规则版本和完整求值证据仍待契约闭环；本次MVP开发数据可重置，不推导未来合法快照可删改。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/glossary.yaml"
+        ]
+      },
+      {
+        "id": "evidence.production-work-order-entity",
+        "disposition": "updated",
+        "scope": "original-evidence；当前WorkOrder保存工单编号、订单编号、产品、生产形态/模式、计划数量、计划时间、备注、状态及提前结束原因时间；已移除制程版本字段。MVP初始化直接移除旧列与约束，不保留退役兼容读取。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production.yaml"
+        ]
+      },
+      {
+        "id": "evidence.production-object-entity",
+        "disposition": "updated",
+        "scope": "生产对象保存工单、对象编号、BATCH/SN形态、对象独立制程引用、目标数量、计划时间、备注和状态；未开工引用可修改，首次START后固定。批次复用BATCH，不新增实体。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production.yaml"
+        ]
+      },
+      {
+        "id": "evidence.production-service",
+        "disposition": "updated",
+        "scope": "original-evidence；当前split每对象显式选版，只锁定工单生产形态；updateObject在工单→对象锁下校验CREATED、无执行实例、父工单活动、数量增量及当前制程资格。requireApplicableProcess用于已有引用及首START，区分产品优先候选和既有簇引用。allocatedQuantity排除CANCELLED，正常完成要求全量分配且未取消对象全部完成；endOrder须无未结束子对象、原因必填，不级联。实际运行另见本轮证据。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production.yaml"
+        ]
+      },
+      {
+        "id": "evidence.work-order-controller",
+        "disposition": "updated",
+        "scope": "工单CRUD不接收制程字段；CREATED按是否曾拆批限制产品/编号，计划量不得小于有效分配；手动end要求所有子对象先终态及必填原因并写审计。工单单条读取接受production.work-orders或production.batches以支持批次编辑；列表及工单写命令仍只接受production.work-orders。源码不代替实际接口测试。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production.yaml"
+        ]
+      },
+      {
+        "id": "evidence.production-object-controller",
+        "disposition": "updated",
+        "scope": "生产对象创建显式选择制程；未开工PUT共享服务校验与前后审计，新增取消/修改入口复用工单或批次权限。修改/取消及制程候选读取接受production.work-orders或production.batches；拆分仍只允许production.work-orders。生产执行开工不从此管理入口绕过。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production.yaml"
+        ]
+      },
+      {
+        "id": "evidence.production-service-test",
+        "disposition": "updated",
+        "scope": "original-evidence；本轮测试源码覆盖显式跨版本拆批、同形态、数量增量、无执行实例修改资格、剩余计划保持工单开放、手动结束前置和已有引用适用性；保留SN及取消释放等断言。Mockito单元测试不证明真实数据库锁或完整页面，实际运行与集成验收另记。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production.yaml"
+        ]
+      },
+      {
+        "id": "evidence.work-order-create-contract",
+        "disposition": "updated",
+        "scope": "当前工单请求接收编号、产品、正计划量及可选订单号、计划时间、备注，不再接收制程；CREATED曾拆批后锁产品/工单号，仍允许其余字段且计划不得小于有效分配，生产中不开放编辑。源码不替代API回归。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production.yaml"
+        ]
+      },
+      {
+        "id": "evidence.production-work-order-process-lock-preview-ui",
+        "disposition": "updated",
+        "scope": "稳定ID保留历史名称。当前对象拆分提供制程选择及只读配置预览；只读指配置内容，不能再解释为工单锁版。每个候选有自己的制程引用，同一工单形态固定；实际布局和交互取本轮页面验证。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production.yaml"
+        ]
+      },
+      {
+        "id": "evidence.production-object-execution-status-audit-source",
+        "disposition": "updated",
+        "scope": "original-evidence；ProductionExecutionService在对象状态真实变化时同事务写PRODUCTION_OBJECT UPDATE；首次START额外保存processReference、processSnapshot和processFrozenAt，快照取首次build实际制程配置、不含后续动态匹配作业。原PRODUCTION_EXECUTION事件继续保留，无状态变化不新增对象事件；不会按当前主数据回填旧事件。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production.yaml"
+        ]
+      },
+      {
+        "id": "evidence.production-audit-localized-formatter",
+        "disposition": "updated",
+        "scope": "生产审计主视图共享中文字段/状态/时间映射；本轮批次制程补充显式{}详情读取事件原件，区分未冻结引用及开工快照，不查询当前主数据替代历史。展示不改写contentBefore/contentAfter。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production.yaml"
+        ]
+      },
+      {
+        "id": "evidence.production-audit-localized-display-guideline",
+        "disposition": "updated",
+        "scope": "前端审计规范主视图中文展示、空快照及空值统一；本轮用户授权批次制程提供显式{}配置详情，因此不得把旧禁止原始JSON主视图解释为禁止此独立详情。原始事件证据不改写。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0013",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；本决策修订工单创建与发布分离的历史设计。工单创建后保持 CREATED，且在 CREATED 或 IN_PROCESS 状态均可继续拆分剩余生产对象；不再存在 RELEASED 状态或发布动作。对象开工、全部对象终态和工单关闭沿既定生产准备生命周期推进。生产工单及生产对象的数据审计在客户页面统一只展示新增和修改，取消、开工、完成、关闭等生命周期动作归入修改。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0014",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；本决策补充工单生产对象弹窗的批次录入方式。生产批次继续复用 ProductionObject 的 BATCH 形态，不新增独立批次状态或持久化实体。手动添加、按数量批量添加及 CSV/XLS/XLSX 导入先进入待提交清单，用户确认后通过一次批量接口提交；服务端在单一事务边界内处理整批，任一条失败时整批回滚。导入模板约定批次号、数量为必填，计划起止时间和备注为可选。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0018",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed（工单需要补上提前结束能力；统一使用 EARLY_TERMINATED；MVP 暂不做既有 BATCH 再拆分及父子谱系查询；两个拆分弹窗分别归属工单初始拆分和批次管理再拆分）；provenance: original-evidence（冠骋批次关闭、批次转 SN、返工子批次、删除和开工源码）。本决策区分已确认的产品边界与后续规划，未将冠骋行为直接视为 eDHR 已实现功能。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0019",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；批次管理页面放在生产 -> 生产准备，复用 ProductionObject 的 BATCH 列表；用户可整行打开详情，并通过行级入口查看该生产对象的数据审计。本决策不新增独立批次实体、状态、拆分动作或生命周期规则。DEC-0014-08 所称‘批次列表独立审计’按本决策修订为不提供独立批次审计列表，但允许行级复用既有 PRODUCTION_OBJECT 审计查询。original-evidence；生产对象控制器显式写入创建、取消和提前结束的业务快照；生产执行服务补齐合法执行中真实对象状态变化的 UPDATE，保留原执行事件。仅影响新产生的审计事件，不回填历史空快照或缺失事件；该实现纠错不构成新政策或发布认证。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0002",
+        "disposition": "updated",
+        "scope": "产品簇复用产品制程根、版本及工序绑定，解析按产品优先、簇兜底及有效期。2026-10-27直接修正工单锁版与转簇边界：各对象独立引用，未开工按当前资格重核，首次START冻结当时制程与产品簇依据，已开工不改写。作业按2026-10-26规则实时匹配后续工序，已有实例保留；制程原未决已收敛，不能继续用旧差异否定新规则。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0014-10",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed + inference；用户确认未开工批次可修改，本轮在拆分弹窗已拆分表提供修改/取消列属于工程落实；只在对象CREATED、无执行实例且父工单允许生产时开放修改，复用独立批次管理的同一API及编辑组件。旧无操作列布局约定直接撤销，不新增业务模式。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml"
+        ]
+      },
+      {
+        "id": "scenario.production-batch-split-dialog-action-boundary",
+        "disposition": "updated",
+        "scope": "待提交清单保留暂存移除与提交；已拆分表提供满足资格的未开工对象修改/取消，独立批次页沿同一校验。数量必填，单条/批量/导入保持，不能借编辑恢复取消或已开工对象",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.split-batch-table-action-boundary",
+        "disposition": "updated",
+        "scope": "用户已确认未开工批次可改；拆分弹窗与独立批次页复用编辑组件/API是本轮工程选择。已拆分表只对满足对象及父工单状态约束的未开工对象提供修改/取消，不新增正常完成旁路；待提交清单仍只是暂存。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/production.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0015-05",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；工单不再提供制程选择字段；制程选择位于生产对象准备/编辑。候选未选为空值且不能保存对象，不增加暂不选择业务项；产品清除等原有有效交互保持。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml"
+        ]
+      },
+      {
+        "id": "scenario.work-order-process-selector-clear",
+        "disposition": "updated",
+        "scope": "候选恢复空值且不增加额外业务项；保存时仍按产品和对象制程必填校验，工单无制程选择字段",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml"
+        ]
+      },
+      {
+        "id": "evidence.work-order-page",
+        "disposition": "updated",
+        "scope": "工单页不再绑定制程，生产对象拆分弹窗将数量概览、制程与添加方式、待提交清单分区；单条/批量/导入仍一次提交。已拆分表和独立批次页共享未开工编辑/取消边界；工单新增手动提前结束入口，运行与视觉验证取本轮。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production.yaml"
+        ]
+      },
+      {
+        "id": "evidence.work-order-status-machine",
+        "disposition": "updated",
+        "scope": "原始状态机含CREATED->IN_PROCESS/COMPLETED/CANCELLED、IN_PROCESS->COMPLETED/EARLY_TERMINATED、COMPLETED->CLOSED；本轮加入CREATED->EARLY_TERMINATED。正常自动完成仍受服务层全计划分配与有效批次完成条件限制，不因存在CREATED->COMPLETED边就允许绕过；无RELEASED。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production.yaml"
+        ]
+      },
+      {
+        "id": "evidence.production-work-order-page-pending-list",
+        "disposition": "updated",
+        "scope": "pendingObjects保存单条、按批次数/每批量生成和CSV/XLS/XLSX导入候选；每条有processVersionId，最终一次batch提交。BATCH正数量允许小于1，末批正余数保留；SN单件1。已拆分表新增未开工修改/取消并复用批次页API，待提交仍只移除/提交。SN模板额外备注列历史差异由DEC-0016保留，本轮不以源码替代既有确认；真实导入/视觉验证另记。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/production.yaml"
+        ]
+      },
+      {
+        "id": "anchor.core.production-work-order",
+        "disposition": "updated",
+        "scope": "2026-10-27：WorkOrderController.create/update/end；work_order无process_version_id，保留固定生产形态、计划及终止原因时间。CREATED字段编辑与显式提前结束分别校验。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/implementation-anchors/core-business.yaml"
+        ]
+      },
+      {
+        "id": "anchor.core.production-object-runtime",
+        "disposition": "updated",
+        "scope": "2026-10-27：ProductionService.split/updateObject/allocatedQuantity/requireApplicableProcess/updateOrderWhenObjectsTerminal；对象独立制程引用，数量正数且精度/分配守恒，正常完成与手动结束分开。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/implementation-anchors/core-business.yaml"
+        ]
+      },
+      {
+        "id": "relation.process-version-selected-by-work-order-batch",
+        "disposition": "updated",
+        "scope": "制程版本由工单下各批次分别显式选择，允许同一工单不同版本但相同生产形态；不表示工单持有唯一制程。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "relation.batch-freezes-execution-snapshot",
+        "disposition": "updated",
+        "scope": "未开工仅保留引用，首次合法START冻结当时配置；同版本标签可能对应不同内容，审计按实际冻结原件解释，后续动态作业不回写首次快照。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "relation.audit-event-retains-change-snapshot",
+        "disposition": "updated",
+        "scope": "审计保存事件发生时的业务变化；生产对象首次START另保留processSnapshot与processFrozenAt，明确区分未开工引用与实际冻结内容，详情不回读当前主数据补造。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "concept.work-order",
+        "disposition": "updated",
+        "scope": "补充本次确认依据，按term.work-order同步工单作为产品与计划需求载体的概念边界：不绑定唯一制程，各对象分别选版且同工单形态固定；曾拆批后的身份编辑限制、全量分配正常完成及显式提前结束按当前规则解释，概念成熟度不变。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "concept.production-object",
+        "disposition": "updated",
+        "scope": "补充本次确认依据，按term.production-object同步工单下BATCH/SN对象的独立制程引用及目标数量边界：未开工且无执行实例时按资格编辑，首次合法START后固定引用、配置与目标量；不同对象可选不同版本但不能混用生产形态，既有产出/质量语义不变。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "concept.production-batch",
+        "disposition": "updated",
+        "scope": "补充本次确认依据，保持term.production-batch所定义的BATCH生产对象业务称谓及既有生命周期；沿生产对象保存工单、显式制程版本、编号、目标量和计划，首次合法START使用执行快照及DHR上下文，不新增批次实体或改变冻结来源的质量口径。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "concept.execution-snapshot",
+        "disposition": "updated",
+        "scope": "补充本次确认依据，按term.execution-snapshot区分未开工的可变制程引用与首次合法START冻结的实际配置、产品/产品簇依据；同版本标签不等于同内容，作业候选实时匹配并在实例创建时独立冻结。保留通用规则版本与完整求值证据的未闭环边界，不提升成熟度。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "concept.work-order-early-termination",
+        "disposition": "updated",
+        "scope": "补充本次确认依据，按term.work-order-early-termination明确显式结束剩余生产需求的动作：全部子对象先达终态，原因及时间审计必留，不级联子对象、表单或DHR；当前CREATED/IN_PROCESS入口集合为工程选择，区别于正常完成和行政关闭。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "concept.audit-change-snapshot",
+        "disposition": "updated",
+        "scope": "补充本次确认依据，按term.audit-change-snapshot保留创建真实字段、修改真实差量的事件原件语义；涉及制程的条目说明身份与引用/冻结状态，首次START保存的实际配置提供{}详情，普通差量事件不重复未变化身份或整份配置，历史原件不得由当前主数据补造。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/ontology.yaml"
+        ]
+      },
+      {
+        "id": "fact.catalog.productionobject-status",
+        "disposition": "updated",
+        "scope": "productionObject.status",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/facts/core-business.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0012-09",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；CREATED工单无生产对象时可按原规则编辑；曾拆批后工单编号和产品固定，其余字段可编辑但计划量不能低于非取消对象目标总和。全部批次取消不解除身份锁定，IN_PROCESS保持不可编辑。全部编辑均记录数据审计。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0012-10",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；对象CREATED且无执行实例、所属工单CREATED或IN_PROCESS时可修改制程及数量。已取消、已开工和父工单终态均不得通过编辑恢复。批次首次合法START后制程引用、实际配置和目标数量固定。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0012-11",
+        "disposition": "updated",
+        "scope": "provenance: user-confirmed；本次仍为MVP，可删除或硬性调整旧开发数据，不要求旧数据兼容。初始化schema/seed直接保持新结构干净，不保留工单退役制程字段或兼容分支。后续新数据合法形成的执行快照仍不可变，不将本次授权推广为未来随意删除历史。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0007",
+        "disposition": "updated",
+        "scope": "只修正当前上下文对制程尚待讨论的陈旧描述；作业实时匹配、后续工序生效及所有既有实例保留的前序改动完整保留。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0016",
+        "disposition": "updated",
+        "scope": "当前上下文把“工单制程为SN”纠正为对象所选制程为SN且符合工单既定生产形态；SN=1、编号唯一及已有导入约束不变。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml"
+        ]
+      },
+      {
+        "id": "scenario.sn-object-quantity-one",
+        "disposition": "updated",
+        "scope": "对象目标数量固定为 1，保存为 SN 形态",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml"
+        ]
+      },
+      {
+        "id": "scenario.sn-bulk-staged",
+        "disposition": "updated",
+        "scope": "生成 N 个数量为 1 的 SN 候选对象并进入待提交清单，不按 BATCH 的均分余数规则分配",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0069-01",
+        "disposition": "updated",
+        "scope": "user-confirmed；BATCH/SN 生产对象执行“提前结束”时，已关联且仍填报中的 DHR 在同一事务真实进入已终止；任一环节失败全部回滚。终止不是正常完成、表单作废、审核通过或产品放行。工单手动提前结束按2026-10-27修正后的DEC-0018独立执行，必须先处理全部子对象，不级联触发本DHR终止动作；不再把原阶段未新增工单命令解释为当前禁止存在该入口。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml"
+        ]
+      },
+      {
+        "id": "evidence.production-work-live-matching-confirmed",
+        "disposition": "updated",
+        "scope": "user-confirmed；作业按当前上下文实时匹配，转簇后新匹配只对后续工序生效，已有实例包括零业务节点执行的实例保留原快照与归属。原位修正DEC-0007-03/04及DEC-0002-10作业范围；该原始记录中的制程待决已由2026-10-27批次制程确认收敛，历史原文仅说明当时范围。运行验证单列，不以确认代替实现验收。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/transaction-runtime.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.unstarted-object-edit",
+        "disposition": "updated",
+        "scope": "判断本批次是否开工，同工单其他批次已生产不阻止它编辑。已取消、已开工或所属工单终态时不能修改；检查执行实例防止仅靠状态绕过。数量增加不超过剩余额度，计划量不自动改变，过程与审计同事务。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/batch-process.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.work-order-edit-field-boundary",
+        "disposition": "updated",
+        "scope": "CREATED无对象可按原校验编辑；存在过任何批次后即使全部取消，产品和工单编号仍固定。其他字段可编辑但计划量不得低于非取消目标合计；IN_PROCESS及终态不开放工单编辑。所有允许的编辑都保留数据审计。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/batch-process.yaml"
+        ]
+      },
+      {
+        "id": "rule.production.process-snapshot-audit-detail",
+        "disposition": "updated",
+        "scope": "创建审计包含制程引用，制程引用变更按真实差量记录前后身份；首次合法START另保存processReference、实际processSnapshot和processFrozenAt。展示涉及制程的条目时说明归属和版本，实际保存了processSnapshot的条目提供{}详情；未开工引用须明确未冻结。普通数量修改、取消或COMPLETED等无制程变化的事件只保留真实变化字段，不要求每条重复制程身份或整份配置，也不把普通差量事件未带快照误报为历史缺失。同V1标签不是同内容保证；首次冻结原件不含后续动态匹配作业，应有历史原件但缺失时不从当前主数据补造。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/rules/batch-process.yaml"
+        ]
+      },
+      {
+        "id": "fact.production.work-order-normal-completion-eligible",
+        "disposition": "updated",
+        "scope": "有效目标分配合计等于工单计划量，且至少一个非取消对象、全部非取消对象均COMPLETED；不以全部终态或合格产量替代",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/facts/batch-process.yaml"
+        ]
+      },
+      {
+        "id": "fact.production.object-execution-exists",
+        "disposition": "updated",
+        "scope": "production_execution按生产对象身份判断实例存在；与对象CREATED及父工单活动状态共同限制未开工编辑",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/facts/batch-process.yaml"
+        ]
+      },
+      {
+        "id": "evidence.batch-process-direct-correction-confirmed",
+        "disposition": "updated",
+        "scope": "2026-10-26/27用户确认的批次制程归属、同形态换版、首次START冻结、数量与工单结束、审计详情及直接本体纠正；明确user-confirmed、旧源码original-evidence和工程inference，不以本文件代替运行验收。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/batch-process.yaml"
+        ]
+      },
+      {
+        "id": "evidence.batch-process-clean-initialization",
+        "disposition": "updated",
+        "scope": "本次MVP直接调整初始化基线，work_order不保留process_version_id及其约束，加入termination_reason/termination_at；production_object独立制程引用保留。旧开发数据不做兼容分支，初始化运行验收取本轮证据。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/evidence/batch-process.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0007-03",
+        "disposition": "retained",
+        "scope": "作业依当前上下文匹配，新增只影响后续工序；不因批次首次START冻结制程而锁定全部后续作业候选。",
+        "sourceReferences": [
+          "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "id": "DEC-0007-04",
+        "disposition": "retained",
+        "scope": "已创建实例（包括尚未执行业务节点）保留原批次归属、图、规则、表单与进度；失配不删除或重置。",
+        "sourceReferences": [
+          "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "id": "rule.production-work.instance-auto-matches-applicability",
+        "disposition": "retained",
+        "scope": "前序动态匹配工作树修改保留；本轮仅使制程边界与其分开，不回滚该规则。",
+        "sourceReferences": [
+          "docs/knowledge/rules/transaction-runtime.yaml",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "id": "rule.production-work.instance-freezes-work-and-rule-snapshot",
+        "disposition": "retained",
+        "scope": "实例创建冻结与制程首次START冻结分别成立；原嵌入实例与通用执行契约未闭环的成熟度说明保留。",
+        "sourceReferences": [
+          "docs/knowledge/rules/transaction-runtime.yaml",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "id": "execution.production-object-audit-snapshot",
+        "disposition": "retained",
+        "scope": "既有verified运行契约仅覆盖原ProductionObjectController.writeAudit范围，未修改或据此宣称本轮首次START制程详情已具备通用执行契约。",
+        "sourceReferences": [
+          "docs/knowledge/execution-contracts.yaml",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "id": "DEC-0069-02",
+        "disposition": "retained",
+        "scope": "单个生产对象/DHR终止时已保存表单、签署、审计和原始证据仍保留；手动工单结束不改写这些记录。",
+        "sourceReferences": [
+          "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "id": "discrepancy.production-sn-import-template-extra-remark",
+        "disposition": "retained",
+        "scope": "已有SN导入模板备注列差异保持原记录，本轮不借制程选择改造扩展其业务输入范围；交主侧判断相邻回归，不用本体修订伪称修复。",
+        "sourceReferences": [
+          "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "id": "DEC-0001-03",
+        "disposition": "updated",
+        "scope": "历史初始产品制程建模基线确认生产执行须显式选择具体制程版本，当时工单拆分链路未实现，仅进入内部知识投影。当前按2026-10-27直接修正后的DEC-0012，各生产对象创建时分别显式选版，工单不保存或锁定唯一制程；同一工单允许不同版本但生产形态固定。未开工对象可按资格修改引用，首次合法START重核并冻结实际配置，不要求后续对象继承首批版本。保留原始交付时点，不据此宣称通用规则运行层完成。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml"
+        ]
+      },
+      {
+        "id": "DEC-0001-09",
+        "disposition": "updated",
+        "scope": "历史初始基线提出批次按选定制程版本冻结执行快照，当时未实现。当前对象拆分仅保存显式processVersionId引用，首次合法START重核当前归属、有效期及生产形态，冻结当时制程身份、产品与产品簇依据和实际配置；DHR按DEC-0062同事务保存自身上下文与目录。相同V1标签不保证相同配置，后续主数据变化不回写已开工快照；作业候选实时匹配与实例创建冻结另按DEC-0007处理。通用规则集版本及完整求值证据仍待契约闭环，不由局部实现推定完整运行资格。",
+        "sourceReferences": [
+          "docs/knowledge/evidence/batch-process-2026-10-27.md",
+          "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml"
+        ]
+      }
+    ],
+    "conflicts": [],
+    "questions": [],
+    "validationEvidence": [
+      {
+        "id": "validation.batch-process-knowledge-model",
+        "checkType": "schema",
+        "command": "mvn -q -f tools/knowledge-model/pom.xml test",
+        "outcome": "passed",
+        "evidence": [
+          "tools/knowledge-model/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+          "89 tests，0 failures，0 errors，0 skipped；包含YAML结构、ID、引用、事实类型、生命周期和投影边界检查。"
+        ]
+      },
+      {
+        "id": "validation.batch-process-retired-fact-reference",
+        "checkType": "reference",
+        "command": "ruby -ryaml -e 'rules=Dir[\"docs/knowledge/rules/*.yaml\"].flat_map{|p| (YAML.load_file(p)[\"rules\"] || [])}; stale=rules.reject{|r|r[\"status\"]==\"deprecated\"}.select{|r|r[\"condition\"].inspect.match?(/workOrder\\.processVersion(Id|Locked)/)}; abort(stale.map{|r|r[\"id\"]}.join(\"\\n\")) unless stale.empty?; puts \"No active rule conditions use retired work-order process facts\"'",
+        "outcome": "passed",
+        "evidence": [
+          "No active rule conditions use retired work-order process facts",
+          "退役事实与关系只保留历史定位，当前规则不依赖工单制程列。"
+        ]
+      },
+      {
+        "id": "validation.batch-process-source-scope",
+        "checkType": "evidence-path",
+        "command": "源码核对ProductionService.endOrder/updateObject/updateOrderWhenObjectsTerminal，ExecutionSnapshotBuilder.build/processReference，ProductionExecutionService.auditObjectStatusChange及两个生产控制器的PreAuthorize",
+        "outcome": "passed",
+        "evidence": [
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java",
+          "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+          "核对的是实现位置及当前语义；主侧功能测试/浏览器/数据库运行记录由docs/development/batch-process-20261027/verification.md承接，本体未重跑这些功能检查，独立QA尚需后续结果。"
+        ]
+      },
+      {
+        "id": "validation.batch-process-contract-baseline",
+        "checkType": "evidence-path",
+        "command": "git rev-parse HEAD origin/edhr-dev; git diff --name-only -- AGENTS.md codeplzreadme.md docs/agents",
+        "outcome": "passed",
+        "evidence": [
+          "HEAD与origin/edhr-dev均为d5adf22066ea4d6bb1c7e7ede09961fc97bea675，契约路径无未提交变化；实际读取角色与交接契约。"
+        ]
+      },
+      {
+        "id": "validation.batch-process-diff-whitespace",
+        "checkType": "schema",
+        "command": "git diff --check -- docs/knowledge docs/architecture",
+        "outcome": "passed",
+        "evidence": [
+          "退出码0，无空白错误；不据此声称业务运行通过。"
+        ]
+      },
+      {
+        "id": "validation.batch-process-dec0001-and-audit-scope-repair",
+        "checkType": "reference",
+        "command": "ruby -ryaml -e 'd=YAML.load_file(\"docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml\")[\"decisions\"].first; s=d[\"decisionStatements\"].to_h{|x|[x[\"id\"],x[\"statement\"]]}; abort(\"old process inheritance\") if s[\"DEC-0001-03\"].include?(\"首次拆分选择、锁定与后续对象继承\"); abort(\"stale family freeze gap\") if s[\"DEC-0001-09\"].include?(\"产品簇独立冻结与通用规则集版本依据仍有缺口\"); r=YAML.load_file(\"docs/knowledge/rules/batch-process.yaml\")[\"rules\"].find{|x|x[\"id\"]==\"rule.production.process-snapshot-audit-detail\"}[\"result\"]; abort(\"unconditional identity\") if r.key?(\"processIdentityRequired\"); abort(\"delta policy missing\") unless r[\"auditStorageMode\"]==\"creation-fields-and-update-delta\" && r[\"repeatProcessSnapshotOnUnrelatedUpdate\"]==false; abort(\"detail condition missing\") unless r[\"explicitSnapshotDetailWhen\"]==\"persisted-processSnapshot-present\"; puts \"DEC-0001 current selection/freeze statements and conditional delta audit requirements verified\"'",
+        "outcome": "passed",
+        "evidence": [
+          "DEC-0001 current selection/freeze statements and conditional delta audit requirements verified",
+          "定向范围为DEC-0001、DEC-0002、DEC-0012、product-process规则/证据、glossary及ontology相关制程说明；无同类未纠正当前锁版继承句。仅deprecated历史关系或明确撤销说明保留锁版字样，不开展无关全仓审计。",
+          "docs/knowledge/evidence/batch-process-2026-10-27.md"
+        ]
+      },
+      {
+        "id": "validation.batch-process-delta-audit-source-review",
+        "checkType": "evidence-path",
+        "command": "sed -n '153,210p' gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java; sed -n '268,299p' gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java; sed -n '96,140p' gmp-platform/frontend/src/utils/productionAudit.ts",
+        "outcome": "passed",
+        "evidence": [
+          "ProductionObjectController.writeChangedAudit只写changedBefore/changedAfter；CREATE写真实创建字段。",
+          "ProductionExecutionService.auditObjectStatusChange仅在created首次START传入processSnapshot时记录processReference/processSnapshot/processFrozenAt，后续状态变化不重存。",
+          "productionAudit.ts仅给实际processSnapshot字段赋details；BatchManagementPage解释未开工引用与首次START冻结详情的区别。"
+        ]
+      },
+      {
+        "id": "validation.batch-process-qa-correction-knowledge-model",
+        "checkType": "schema",
+        "command": "mvn -q -f tools/knowledge-model/pom.xml test",
+        "outcome": "passed",
+        "evidence": [
+          "tools/knowledge-model/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+          "本次QA补正后重跑：89 tests，0 failures，0 errors，0 skipped，Time elapsed 3.759 s；原始验证记录不覆盖、不删除。"
+        ]
+      },
+      {
+        "id": "validation.batch-process-qa-correction-diff",
+        "checkType": "schema",
+        "command": "git diff --check -- docs/knowledge docs/architecture docs/development/batch-process-20261027/ontology-result.yaml",
+        "outcome": "passed",
+        "evidence": [
+          "本次补正后退出码0，无空白错误；知识版本与Git/契约基线未变化。"
+        ]
+      },
+      {
+        "id": "validation.batch-process-result-metadata-scope-review",
+        "checkType": "reference",
+        "command": "Ruby按knowledgeSync各ID解析其sourceReferences中的当前YAML记录，比较scope与同ID文本；人工复核非逐字摘要及6项concept→termId定义映射；再检查重复scope、唯一ID和文件摘要",
+        "outcome": "passed",
+        "evidence": [
+          "仅修正ontology-result.yaml中6条concept知识同步范围，未改实际概念、规则或代码；已有9条验证记录全部保留。",
+          "逐项检查147条scope：131条与其同ID当前文本直接一致；其余16条逐项复核，其中6条概念说明为本次修正，10条为已关闭问题或刻意概括的保留/更新范围，未发现其他明显复制错配。",
+          "重复范围仅剩两个被撤销工单制程事实的共同历史说明，语义与ID一致；数量下限关闭说明仅属于question.production-batch-quantity-lower-bound。",
+          "本次仅结果元数据修改，不重跑89项知识测试，不将历史测试标成本次重跑。29个已登记业务知识资产的SHA-256在修正前后全部相同；JSON结构及唯一ID检查通过，准确只有指定6条scope变化，原有9条验证记录逐项保持不变，git diff --check通过。"
+        ]
+      }
+    ],
+    "roadmapProgress": {
+      "stage": "P0",
+      "status": "in-progress",
+      "exitCriteriaEvidence": [],
+      "deferredStages": [
+        "P1",
+        "P2",
+        "P3"
+      ]
+    }
+  }
+}
