@@ -1,0 +1,61 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 52dcf9d27a41f8243ed59d0a05605da011e32f83
+    targetBranch: edhr-dev
+    targetCommit: 52dcf9d27a41f8243ed59d0a05605da011e32f83
+    contractReadCommit: 52dcf9d27a41f8243ed59d0a05605da011e32f83
+    uncommittedContractPaths: []
+  reason: 本批拟修复生产对象弹窗局部布局，不改变业务定义；已对9条有限规则或工程边界复核来源、当前适用性、合理性与源码，未发现需调整当前知识的冲突。三列模板是用户明确选择而非普适法规；旧备注解析是保留既有兼容的工程边界。历史截图本次未取得，未宣称原图复验、运行或全库一致。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: DEC-0012-04
+    disposition: retained
+    scope: 各生产对象显式选版、产品优先当前簇兜底；局部布局不能恢复工单锁版或自动挑最新版。
+    sourceReferences: [docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml, docs/knowledge/evidence/batch-process-2026-10-27.md]
+  - id: DEC-0012-01
+    disposition: retained
+    scope: 工单生产形态一致是当前MVP用户选择，不扩展为所有制造业务均须如此。
+    sourceReferences: [docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml]
+  - id: DEC-0012-03
+    disposition: retained
+    scope: 正数量、SN=1及非取消目标分配约束合理，技术4位小数精度不冒充用户原话。
+    sourceReferences: [docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml]
+  - id: DEC-0016-04
+    disposition: retained
+    scope: 标准SN模板三列的当前用户字段约定，不将其扩展成禁止对象备注、拒绝额外合法输入或永久兼容所有旧文件。
+    sourceReferences: [docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml]
+  - id: DEC-0014-02
+    disposition: retained
+    scope: 手动、批量、导入均先暂存，最终明确提交，布局应保护待提交对象的操作可达性。
+    sourceReferences: [docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml]
+  - id: DEC-0014-04
+    disposition: retained
+    scope: 整批原子提交可避免部分分配及逐项重试混乱，响应式和性能改造均不能拆成逐项独立持久化。
+    sourceReferences: [docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml]
+  - id: DEC-0014-06
+    disposition: retained
+    scope: 只读配置预览与待创建对象的可选版职责不同，布局修复不能将只读扩展到全部控件。
+    sourceReferences: [docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml]
+  - id: DEC-0012-10
+    disposition: retained
+    scope: 未开工且无执行实例可按父状态修改，首次START冻结；保持证据身份边界合理。
+    sourceReferences: [docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.ui-rule-reasonableness-source
+    checkType: evidence-path
+    command: Read current decision statements and source functions; inspect linked evidence and replacement scope
+    outcome: passed
+    evidence:
+    - /tmp/edhr-ui-rule-assessment.json
+    - 9条有限评估；8条当前业务声明与1条既有兼容工程边界。仅源码和来源核对，不等于运行验证。
+    - 未运行Maven、数据库或浏览器；未修改仓库。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

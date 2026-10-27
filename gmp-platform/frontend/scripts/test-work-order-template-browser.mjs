@@ -51,7 +51,7 @@ try {
   });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   browser = await chromium.launch({ headless: true, executablePath: process.env.CHROME_PATH });
-  for (const [form, width] of [['SN', 1440], ['BATCH', 1440], ['SN', 390]]) {
+  for (const [form, width] of [['SN', 1440], ['BATCH', 1440], ['SN', 390], ['BATCH', 390]]) {
     const name = `${form}-${width}`;
     const context = await browser.newContext({ viewport: { width, height: 960 } });
     const page = await context.newPage();
@@ -77,9 +77,23 @@ try {
       await page.goto(`http://127.0.0.1:${server.address().port}`);
       await page.getByRole('button', { name: '生产对象', exact: true }).click();
       const dialog = page.getByRole('dialog');
+      const assertLayout = async (stage) => {
+        const geometry = await dialog.evaluate(element => {
+          const content = element.querySelector('.MuiDialogContent-root');
+          const rect = content.getBoundingClientRect();
+          return { overflow: content.scrollWidth - content.clientWidth, left: rect.left, right: rect.right };
+        });
+        assert.ok(geometry.overflow <= 1, `${name} ${stage}: dialog content overflows horizontally by ${geometry.overflow}px`);
+        const button = await dialog.getByRole('button', { name: '下载导入模板' }).boundingBox();
+        assert.ok(button && button.x >= geometry.left && button.x + button.width <= geometry.right + 1,
+          `${name} ${stage}: download action must fit inside dialog content`);
+        return { stage, horizontalOverflow: geometry.overflow };
+      };
+      const layoutChecks = [];
       await dialog.getByRole('combobox', { name: '本次添加使用的制程' }).click();
       await page.getByRole('option').filter({ hasText: 'A1' }).click();
       await dialog.getByRole('tab', { name: '导入' }).click();
+      layoutChecks.push(await assertLayout('empty'));
       const downloadButton = dialog.getByRole('button', { name: '下载导入模板' });
       await downloadButton.focus();
       const downloaded = page.waitForEvent('download');
@@ -112,6 +126,7 @@ try {
         await upload('批次号,数量\nEXCESS,11', '导入失败：导入数量合计 11 超出剩余可分配数量 9');
       }
       const count = form === 'SN' ? 2 : 1;
+      layoutChecks.push(await assertLayout('staged'));
       if (artifacts) await page.screenshot({ path: path.join(artifacts, `${name}.png`), fullPage: true });
       await dialog.getByRole('button', { name: `提交待添加（${count}）` }).click();
       await page.waitForFunction(() => [...document.querySelectorAll('button')].some(button => button.textContent === '提交待添加（0）'));
@@ -120,8 +135,18 @@ try {
       assert.equal(posted[0].items[0].targetQuantity, 1);
       assert.equal(posted[0].items[0].plannedStartAt, '2026-08-29T08:00:00');
       if (form === 'SN') assert.equal(posted[0].items[1].remark, '保留旧备注');
+      await dialog.locator('[data-record-id]').first().waitFor();
+      layoutChecks.push(await assertLayout('saved'));
+      if (width === 390) {
+        const table = dialog.getByRole('region', { name: '已拆分生产对象表' });
+        await table.focus();
+        await table.press('ArrowRight');
+        await page.waitForFunction(() => document.querySelector('[aria-label="已拆分生产对象表"]').scrollLeft > 0);
+        layoutChecks.push(await assertLayout('table-keyboard-scroll'));
+      }
       assert.deepEqual(errors, []);
-      results.push({ name, result: 'passed', checks: 'keyboard download; XLSX columns/example/help; import; negative validations; staged submit; console' });
+      if (artifacts) await page.screenshot({ path: path.join(artifacts, `${name}-saved.png`), fullPage: true });
+      results.push({ name, result: 'passed', layoutChecks, checks: 'dialog geometry; keyboard download/local table scroll; XLSX columns/example/help; import; negative validations; staged submit; console' });
     } catch (error) {
       results.push({ name, result: 'failed', message: error.message, pageErrors: errors });
     } finally { await context.close(); }
