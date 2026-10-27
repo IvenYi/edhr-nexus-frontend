@@ -7,6 +7,7 @@ import { SnackbarProvider } from './components/SnackbarProvider';
 import AppRouter from './router';
 import DeletionProtectionDialog from './components/DeletionProtectionDialog';
 import RecordLocationHighlight from './components/RecordLocationHighlight';
+import SessionChangeBoundary from './components/SessionChangeBoundary';
 import { listTableHeaderCellStyle } from './components/listTableStyles';
 
 const theme = createTheme({
@@ -244,13 +245,15 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <SnackbarProvider>
-          <BrowserRouter>
-            <AppRouter />
-            <DeletionProtectionDialog />
-            <RecordLocationHighlight />
-          </BrowserRouter>
-        </SnackbarProvider>
+        <SessionChangeBoundary>
+          <SnackbarProvider>
+            <BrowserRouter>
+              <AppRouter />
+              <DeletionProtectionDialog />
+              <RecordLocationHighlight />
+            </BrowserRouter>
+          </SnackbarProvider>
+        </SessionChangeBoundary>
       </ThemeProvider>
     </QueryClientProvider>
   );

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { ApiResponse } from '@/types/common';
-import { clearAuthStorage } from '@/utils/sessionPolicy';
+import { clearAuthStorage, getPageAuthToken, isCurrentAuthSession, returnToLogin } from '@/utils/sessionPolicy';
 import { getSessionGeneration } from '@/utils/queryClient';
 import { showDeletionProtection } from './deletionProtection';
 
@@ -22,8 +22,12 @@ const client = axios.create({
 // Request interceptor: attach JWT token
 client.interceptors.request.use(
   (config) => {
+    if (!isCurrentAuthSession()) {
+      if (!['get', 'head', 'options'].includes(config.method?.toLowerCase() || 'get')) returnToLogin();
+      throw new axios.CanceledError('登录账号已在其他标签变化，请重新登录');
+    }
     config.authSessionGeneration = getSessionGeneration();
-    const token = localStorage.getItem('token');
+    const token = getPageAuthToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -36,7 +40,7 @@ client.interceptors.request.use(
 // Response interceptor: unwrap ApiResponse, handle 401
 client.interceptors.response.use(
   (response) => {
-    if (response.config.authSessionGeneration !== getSessionGeneration()) {
+    if (!isCurrentAuthSession() || response.config.authSessionGeneration !== getSessionGeneration()) {
       return Promise.reject(new axios.CanceledError('登录会话已切换，请重新操作'));
     }
     if (response.config.responseType === 'blob' || response.config.responseType === 'arraybuffer') {
@@ -49,6 +53,9 @@ client.interceptors.response.use(
     return response;
   },
   (error) => {
+    if (!isCurrentAuthSession()) {
+      return Promise.reject(new axios.CanceledError('登录会话已切换，请重新操作'));
+    }
     if (error.config?.authSessionGeneration !== undefined &&
         error.config.authSessionGeneration !== getSessionGeneration()) {
       return Promise.reject(new axios.CanceledError('登录会话已切换，请重新操作'));
@@ -56,8 +63,7 @@ client.interceptors.response.use(
     if (error.response?.status === 409) showDeletionProtection(error.response?.data?.data);
     const apiMessage = (error.response?.data as Partial<ApiResponse<unknown>> | undefined)?.message;
     if (error.response?.status === 401 && !error.config?.skipAuthRedirect) {
-      clearAuthStorage();
-      window.location.href = '/login';
+      if (clearAuthStorage(error.config?.authSessionGeneration)) returnToLogin();
     }
     return Promise.reject(new Error(apiMessage || error.message || '请求失败'));
   },

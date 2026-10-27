@@ -1,8 +1,8 @@
 # 登录输入、跨标签会话与设计器运行核查
 
-已创建[草稿PR35](https://github.com/IvenYi/edhr-nexus-frontend/pull/35)，当前明确不建议合并。代码/测试受测39f292d8之后仅L0元数据/原件/范围及草稿登记；正式failed保持。收到跨标签交互答复后在同一审查分支继续，修复及另一全新实例通过后再评估转ready，不重开已合并PR34。隔离PG已按确切ID停止并确认自动移除。
+继续[PR35](https://github.com/IvenYi/edhr-nexus-frontend/pull/35)：用户本轮已明确接受两层保护，同一分支完成实际前端整改，正在准备全新独立复验。初轮39f292d8 failed原件保持；daca7531之前只有L0归档，本轮有产品/测试/知识变更，不沿用“仅文档”结论。新独立passed前保持draft，不重开PR34。详见[跨标签整改](cross-tab-remediation/README.md)。
 
-基线 `edhr-dev@2c4b79e1641be4886fd5361b48df076e57abd768`，PR34已人工合入，树与交付e9562c8d相同，无其他代码/契约/知识增量。L2；本体审前9条有限评估not-applicable/FINAL。全新独立对 `39f292d883e35b8ff8d7dfc6271486498b7f276a` 正式failed/FINAL，13必需检查12通过、1失败；跨标签high仍open且交互待用户答复，当前不建议合并。
+目标 `edhr-dev@2c4b79e1641be4886fd5361b48df076e57abd768`，PR34合入树同e956，无其他目标增量。L2初轮本体NA、独立39f292d8 failed/FINAL（13必需12过1失败）只代表当时范围。当前已取得明确用户确认、DEC0085知识updated/FINAL和本轮实现侧证据，高风险正式关闭仍须新实例通过。
 
 ## 输入整改
 
@@ -20,9 +20,9 @@
 3. 同上但A迟到401：清掉共享B凭据并跳回登录，将新会话误登出。
 4. 另一个标签退出：当前页仍保留A身份/缓存，并接受退出前迟到成功；新请求已不带凭据。
 
-这些是受控真实组件的运行事实，不是仅脚本改store得出的全app推断；宿主明确展示真实store/cache，外壳是真实AppLayout并等待getMe初始化。未访问真实后台或泄露真实用户数据。[运行原件](evidence/session-observations.json)及[脚本](evidence/session-observation.mjs)保留边界。当前尚未修复，未宣称完整浏览器→后端E2E。
+这些是初轮受控真实组件运行事实，宿主是真实AppLayout并等待getMe初始化；无真实后台或用户数据。[初轮运行原件](evidence/session-observations.json)及[脚本](evidence/session-observation.mjs)不覆盖为绿。本轮修复与新场景另存cross-tab-remediation，不宣称完整浏览器→真实后端认证E2E。
 
-已向用户集中询问：建议检测到共享会话变化后，清理旧缓存、拒绝迟到响应并立即重载；未保存编辑会丢失。需用户确认该交互取舍，不能把“继续”视为同意，也不自行引入JWT撤销或跨标签独立登录政策。本项不依赖的输入修复继续，但不能把安全问题标done。
+此前立即重载方案仅为历史讨论。用户现在明确接受DEC0085两层保护：检测后停止旧操作并提示，发出保存/提交前再拦截，仅当前页回登录，不清其他标签新凭据、不自动补交。无该业务未决，不引入JWT撤销或独立多账号政策；high按新独立结果关闭。
 
 ## 设计器：7组实际观察
 
@@ -39,8 +39,8 @@
 
 设计器/会话两个只读辅助实例已产出脚本及运行数据，但在书面收尾时因平台usage limit退出，未冒称其正式FINAL验收。主审检查脚本与源代码后分别重新运行全部7组和4组观察，并查看真实跨标签截图，作为实现侧/审查侧证据；其数据不是独立质量结果。本体实例已正常返回正式NA/FINAL。
 
-独立质量实例已成功执行，**没有独立实例额度或环境阻塞**。当前failed的真实原因是会话隔离high未关闭，不能归因于先前辅助实例中断。独立新库56后端（17原生PG）、28 Node和89知识通过，设计器7组观察及会话1正3缺口独立重现；正式[质量原件](evidence/quality-result.yaml)、[可读报告](evidence/quality-review.md)、[安全证据](evidence/quality-evidence.json)及[门禁状态](acceptance.json)如实保留failed。本批不改前端产品文件，strict27/lint缺配置按前批原结果保留，前端build/strict/lint未本轮重跑。生产管理弹窗、TaskDetail签名密码、记录控制变更/作废及DHR high/A12、原知识gap/性能讨论保留。
+初轮独立实例无额度/环境阻塞，failed原因是真实会话high未关闭；当时56后端（17PG）、28 Node及89知识通过，7设计器观察及会话1正3缺口重现。[初轮质量原件](evidence/quality-result.yaml)、[报告](evidence/quality-review.md)和[证据](evidence/quality-evidence.json)不回写。初轮前端未改、未重跑build/strict/lint为当时事实；本轮已实际修改前端、构建及扫描，单列新证据。生产管理弹窗、TaskDetail、记录控制/DHR原暂缓、知识gap与性能讨论保持。
 
 直接输入矩阵还未覆盖不匹配Content-Type、所有超长值、Jackson数值到字符串兼容等，不将已验证12种情况外推全输入域。跨标签修复完成后须由另一全新实例做最终L2复验，不用本次局部通过覆盖high。
 
-本轮实际源码范围：登录DTO/入口、精确全局异常分类；会话generation/client/authStore/AppLayout四条入口；设计器前批ND01–10对应的七组UI。9条规则评估不等于全量本体审查；W0持续增量，W2–W5仍未完成，W6提取方案及W7反查未完成，没有可信整体百分比。下一步先获取跨标签交互答复、完成修复及全新独立复验，再决定是否可合并；期间有新提交即fetch并重新评估。
+初轮源码范围为登录入口/DTO、精确异常分类、四会话入口和设计器七组UI；本轮补统一页面边界、会话标记及三处退出收尾，见整改目录。有限规则/场景不等于全量审查；W0持续增量，W2–W5、W6提取及W7反查未完成，无可信整体百分比。下一步新独立复验，目标新增提交即fetch并重新评估，不自动merge/deploy/恢复。

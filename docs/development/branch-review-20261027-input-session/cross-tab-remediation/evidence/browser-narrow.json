@@ -1,0 +1,844 @@
+{
+  "head": "daca7531c475101ec1dd3ff0f2c0861d6f9e09cd",
+  "baseline": null,
+  "viewport": {
+    "width": 390,
+    "height": 900
+  },
+  "workingTreeStatus": "M docs/architecture/business-knowledge-model.md\n M docs/development/branch-review-20261027-input-session/decision-package.yaml\n M docs/knowledge/README.md\n M gmp-platform/frontend/scripts/test-review-batch-01.mjs\n M gmp-platform/frontend/src/App.tsx\n M gmp-platform/frontend/src/api/client.ts\n M gmp-platform/frontend/src/components/shared/AppLayout.tsx\n M gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx\n M gmp-platform/frontend/src/stores/authStore.ts\n M gmp-platform/frontend/src/utils/sessionPolicy.ts\n?? docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml\n?? docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md\n?? docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.yaml\n?? gmp-platform/frontend/scripts/test-cross-tab-session-browser.mjs\n?? gmp-platform/frontend/src/components/SessionChangeBoundary.tsx",
+  "boundary": "Real shared boundary/AppLayout/React/MUI/router/client/authStore/queryClient; fixture HTTP and synthetic identities. Probe form invokes the real client; actual App installation is separately exercised on /login. Not real backend authentication E2E.",
+  "results": [
+    {
+      "name": "remote-late-success",
+      "result": "passed",
+      "promptGeometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 900,
+        "scrollWidth": 390,
+        "button": {
+          "left": 40,
+          "top": 533.765625,
+          "right": 350,
+          "bottom": 570.265625
+        }
+      },
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        }
+      ]
+    },
+    {
+      "name": "remote-late-401",
+      "result": "passed",
+      "promptGeometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 900,
+        "scrollWidth": 390,
+        "button": {
+          "left": 40,
+          "top": 533.765625,
+          "right": 350,
+          "bottom": 570.265625
+        }
+      },
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-401",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        }
+      ]
+    },
+    {
+      "name": "remote-late-409",
+      "result": "passed",
+      "promptGeometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 900,
+        "scrollWidth": 390,
+        "button": {
+          "left": 40,
+          "top": 533.765625,
+          "right": 350,
+          "bottom": 570.265625
+        }
+      },
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-409",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        }
+      ]
+    },
+    {
+      "name": "remote-late-blob",
+      "result": "passed",
+      "promptGeometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 900,
+        "scrollWidth": 390,
+        "button": {
+          "left": 40,
+          "top": 533.765625,
+          "right": 350,
+          "bottom": 570.265625
+        }
+      },
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-blob",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        }
+      ]
+    },
+    {
+      "name": "remote-logout",
+      "result": "passed",
+      "promptGeometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 900,
+        "scrollWidth": 390,
+        "button": {
+          "left": 40,
+          "top": 533.765625,
+          "right": 350,
+          "bottom": 570.265625
+        }
+      },
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": null
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": null
+        }
+      ]
+    },
+    {
+      "name": "remote-clear",
+      "result": "passed",
+      "promptGeometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 900,
+        "scrollWidth": 390,
+        "button": {
+          "left": 40,
+          "top": 533.765625,
+          "right": 350,
+          "bottom": 570.265625
+        }
+      },
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        }
+      ]
+    },
+    {
+      "name": "same-token-new-login",
+      "result": "passed",
+      "promptGeometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 900,
+        "scrollWidth": 390,
+        "button": {
+          "left": 40,
+          "top": 533.765625,
+          "right": 350,
+          "bottom": 570.265625
+        }
+      },
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        }
+      ]
+    },
+    {
+      "name": "remote-aba",
+      "result": "passed",
+      "promptGeometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 900,
+        "scrollWidth": 390,
+        "button": {
+          "left": 40,
+          "top": 533.765625,
+          "right": 350,
+          "bottom": 570.265625
+        }
+      },
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        }
+      ]
+    },
+    {
+      "name": "profile-refresh",
+      "result": "passed",
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/save",
+          "method": "POST",
+          "authorization": "Bearer fixture-token-A"
+        }
+      ]
+    },
+    {
+      "name": "keyboard-login-and-reauth",
+      "result": "passed",
+      "promptGeometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 900,
+        "scrollWidth": 390,
+        "button": {
+          "left": 40,
+          "top": 533.765625,
+          "right": 350,
+          "bottom": 570.265625
+        }
+      },
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/auth/login",
+          "method": "POST",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-C"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-C"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-C"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-C"
+        }
+      ]
+    },
+    {
+      "name": "same-tab-response-control",
+      "result": "passed",
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        }
+      ]
+    },
+    {
+      "name": "actual-app-installation",
+      "result": "passed",
+      "promptGeometry": {
+        "viewportWidth": 390,
+        "viewportHeight": 900,
+        "scrollWidth": 390,
+        "button": {
+          "left": 41,
+          "top": 530.140625,
+          "right": 349,
+          "bottom": 562.140625
+        }
+      },
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        }
+      ]
+    }
+  ]
+}
