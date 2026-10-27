@@ -1,0 +1,55 @@
+{
+  "runs": [
+    {
+      "scope": "baseline-two-pg-suites",
+      "sourceCommit": "3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176",
+      "logSha256": "42f190b57ed9c61baa3daf54b580eff7f9e401dab905f4bc17b4341e35db343a",
+      "localLog": "/tmp/edhr-incremental-pg-20261027.log",
+      "buildSuccess": true,
+      "suites": [
+        {
+          "tests": 12,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "name": "com.zencas.edhr.production.controller.BatchProcessIntegrationTest"
+        },
+        {
+          "tests": 91,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 2,
+          "name": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest"
+        }
+      ],
+      "observations": []
+    },
+    {
+      "scope": "new-growth-observation",
+      "sourceCommit": "3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176",
+      "logSha256": "61b264a6cd3131bee6261d767c393c7fc2fb9c750272a4dbf28496d4b453d60e",
+      "localLog": "/tmp/edhr-incremental-observe-20261027.log",
+      "buildSuccess": true,
+      "suites": [
+        {
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0,
+          "name": "com.zencas.edhr.production.controller.ProductionExecutionIntegrationTest"
+        }
+      ],
+      "observations": [
+        "WORK_MATCH_OBSERVATION operations=2 rules=40 ruleQueries=2 ruleRows=80 membershipQueries=3",
+        "WORK_MATCH_OBSERVATION operations=10 rules=40 ruleQueries=10 ruleRows=400 membershipQueries=11",
+        "WORK_MATCH_OBSERVATION operations=50 rules=40 ruleQueries=50 ruleRows=2000 membershipQueries=51"
+      ]
+    }
+  ],
+  "limits": [
+    "First run is baseline before annotation and observation-test edits",
+    "Second run includes new test only, not a repeat of both complete suites",
+    "Raw logs stay outside repository because test harness may print authentication fixtures",
+    "No native client/network-browser or production capacity claim"
+  ]
+}

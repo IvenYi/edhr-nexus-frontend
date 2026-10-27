@@ -51,7 +51,7 @@ public class ProductProcessResolutionService {
 
     /**
      * Resolves a process version by product ownership without applying effective dates.
-     * A work order may continue using the version it froze even after that version expires.
+     * Callers must separately validate effective dates when selecting or starting a process.
      */
     public Optional<ProductProcessVersion> findVersionForProduct(Long productId, Long versionId) {
         if (productId == null || versionId == null) return Optional.empty();

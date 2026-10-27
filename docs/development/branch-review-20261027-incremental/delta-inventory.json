@@ -1,0 +1,910 @@
+{
+  "base": "d5adf22066ea4d6bb1c7e7ede09961fc97bea675",
+  "target": "3aebfd49faa21a27fb3db7075e1ac2d9c8b2f176",
+  "scope": "Changed paths only; method-level inspection is recorded separately in README; no full-file completion implied.",
+  "counts": {
+    "documentation": 25,
+    "knowledge": 30,
+    "source-or-config": 23,
+    "test": 10,
+    "evidence": 40
+  },
+  "paths": [
+    {
+      "status": "M",
+      "path": "docs/architecture/business-knowledge-model.md",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "5ae523a3ecf59ac473a01df2d80b5a681483ff21"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/batch-process-20261027/decision-package.yaml",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "21dda97c03163bc9b6ddc18bf45daf26aa3a759a"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/batch-process-20261027/impact-analysis.md",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "51cf30101b99aed60ac65be71deaaf69f2ae433f"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/batch-process-20261027/ontology-result.yaml",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "3dc6f8fb56c19b6b3aa61c06ee215556fccde0de"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/batch-process-20261027/quality-result-completion.yaml",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "655521cf2279810fc25d5be62df7bea494feb3e1"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/batch-process-20261027/quality-result-final.yaml",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "8e70a9e523cf2eb51244ac4df86e7ba9364e1828"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/batch-process-20261027/quality-result-integration.yaml",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "22863c8398583c87f7734f2ed4bf6d0850a8d893"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/batch-process-20261027/quality-result.yaml",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "af928e7aba877ba49b1faaa1eef202fc5870d264"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/batch-process-20261027/quality-review-completion.md",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "25aa922e581f369f85f10258a0ce32f2a54fc6c7"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/batch-process-20261027/quality-review-final.md",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "03233afcc4b0678e1ff055e91fe1a8c91b02d1f1"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/batch-process-20261027/quality-review.md",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "e89b3b4282e70c42bf8ef4f7709e4dce87f88efa"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/batch-process-20261027/submission.md",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "cda188dcb268a216e0ad5ad84fb1e00f9409cfb6"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/batch-process-20261027/verification.md",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "7927b6fddacf79edcea2711a57a848b92645c3f6"
+    },
+    {
+      "status": "M",
+      "path": "docs/development/flow-canvas-unification-20261024/decision-package.yaml",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "7b4e44ad5e6232364421dd66cc3608f8fdbf45a3"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/flow-canvas-unification-20261024/quality-result-readonly-preview.yaml",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "4080b4f719953e5226e2a17d7f089c2f9afec35e"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/work-live-matching-20261026/decision-package.yaml",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "a0786b7ca977ad6e8542c3b0a223d6315b322fba"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/work-live-matching-20261026/impact-analysis.md",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "0f0ad3b780f0536d96db6013a884dc5d9a1abe95"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/work-live-matching-20261026/primary-h2.json",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "c833b8486bf5daaf54aad7fe9958416bb9110770"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/work-live-matching-20261026/primary-postgres.json",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "e9604b1786ac55efe447ab5f8d5030bfad84babd"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/work-live-matching-20261026/quality-final-evidence.json",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "61ce8afa9bd996e92cfb1a288b1f1ee3385ada2d"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/work-live-matching-20261026/quality-final.yaml",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "e967f1aa5a218508b5eefb51a7dfb5063a03c31f"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/work-live-matching-20261026/quality-initial.yaml",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "2dcb8ecf8cb33941c9832ef8e5562c85af4957ea"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/work-live-matching-20261026/quality-knowledge.json",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "72b64d2ba405400338d488a414168debba050e29"
+    },
+    {
+      "status": "A",
+      "path": "docs/development/work-live-matching-20261026/quality-postgres.json",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "71f0ffae4b76f4f05d00e7608ad776c9ffbe1598"
+    },
+    {
+      "status": "M",
+      "path": "docs/frontend/list-page-guidelines.md",
+      "category": "documentation",
+      "reviewStatus": "pending",
+      "targetBlob": "bf6b59b5571f48adaa6504879493aa217842d453"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/README.md",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "fe08a0fb55c53ca68b1f04a2305a2cdc2e686ec1"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "8e9821531c6434f5ca479f256ef432409536a76b"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "887edeb1f677db888bdc9d5a48db66394db36fc2"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "d53697e32ee9c365f545848467a6e6bd37fbb9e8"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "1f8796d7ce4426f4fb6244bf8a8a68910d33916d"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "1e8c735443cf2b90aa4c0e3e40fc815daa08834d"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "64200684f35ffd7e32eed3c4da30d0df23d21738"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "9634d06a2f5db8f2dca037fc98f43916211a30ea"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "277ff9b628844099a91bd494010bb73110d2309d"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "f2364de05875dc1f66e01050457267f11ee021dd"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "751f0c17c9523680019564a86a5273bbddfa1416"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "76c8b09499dfe4906b529963fe5e0986e8c01f0c"
+    },
+    {
+      "status": "A",
+      "path": "docs/knowledge/evidence/batch-process-2026-10-27.md",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "257dfd4ce5622373a6519082854a8348b3fbd342"
+    },
+    {
+      "status": "A",
+      "path": "docs/knowledge/evidence/batch-process.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "04b7e10693d11329e31d173d064dfccea77e544c"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "6fd9bdd80dfb113f25a8f1ce85393219425fc4f6"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "34533cdd0bde4e78094d98368d0765b7c4923b0a"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/evidence/production-execution.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "3bd4973e1725d7a6c9347b941713f56aa18f7447"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/evidence/production.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "ff73a37a1cf18b74ca4c82eac8b4348c5feffc26"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/evidence/transaction-runtime.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "59c892dddbe65ca7c0c473e62682bb5c1ac81868"
+    },
+    {
+      "status": "A",
+      "path": "docs/knowledge/evidence/work-live-matching-2026-10-26.md",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "2c30c0533bc382c72d9d6549b3683f374af038ed"
+    },
+    {
+      "status": "A",
+      "path": "docs/knowledge/facts/batch-process.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "d1aac9356be340413275050933366f4245e7048b"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/facts/core-business.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "c42e59518c5d8ddb9ebdd4dedd413cc4d5b3e55f"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/glossary.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "fc6735e9c1fc34d2e2279f31a16b2236b0d71821"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "dfa0bb5dd17c3537efaee492a5f1d65a2b354ab2"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/ontology.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "5c7effce200f5a22fdadb198c184a63af0c02e3c"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/open-questions.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "875cd11925e689b41df3a296d8eb02e36ed02703"
+    },
+    {
+      "status": "A",
+      "path": "docs/knowledge/rules/batch-process.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "e21ed6f960bd81e481ef525136f8627d0966d379"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/rules/product-process.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "71a5286489a9f70526306f9b174646c155323915"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/rules/production.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "5c6166826bdcfe99e268dbd3c88534eb505cb1c2"
+    },
+    {
+      "status": "M",
+      "path": "docs/knowledge/rules/transaction-runtime.yaml",
+      "category": "knowledge",
+      "reviewStatus": "pending",
+      "targetBlob": "a076b75b14944436032500edd18b2b617430fa34"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionRelations.java",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "8650f489441eb2310380ea4292e621055d261030"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "7884aa6299537d8598557ba9ce24f45ab1af25d4"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "c2abc5c016a39d9a34fdc3846255847edcf2eafd"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/engine/WorkOrderStatusMachine.java",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "bdabb546bbbbc42de0a482e06f93f85e752024f6"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/entity/WorkOrder.java",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "4e7b8cdeac78739d222aa4a6f348bd4f505f4e83"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "c0c90554af0937bcd218d8f17625e653fca3810f"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "7743f3020a768a37bc096e4ba19cac50e0d9d927"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "372d90d5f5c3e33280bfc89edaf77ad911a4bc8e"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "191fa58fc2ce55dff71e104a6f5aad0261cd6aff"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "5b1c7d24656539644563e44ec02b5d86094a15fb"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionIntegrationTest.java",
+      "category": "test",
+      "reviewStatus": "pending",
+      "targetBlob": "e8d4a34e0ec0b63df95a7646eeaa2b234b53d3d0"
+    },
+    {
+      "status": "A",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/BatchProcessIntegrationTest.java",
+      "category": "test",
+      "reviewStatus": "pending",
+      "targetBlob": "b989f8097075650baf774ef111ef7e94e196349c"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+      "category": "test",
+      "reviewStatus": "pending",
+      "targetBlob": "60cca0bb4b8f7a68ef1a454c2188770b868060e7"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionObjectControllerTest.java",
+      "category": "test",
+      "reviewStatus": "pending",
+      "targetBlob": "42c11cb350a0100afbf009985f6b3bbcb96218fa"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderControllerTest.java",
+      "category": "test",
+      "reviewStatus": "pending",
+      "targetBlob": "38d0b1a4c6a71aed1300e34744866285e039baf7"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionServiceTest.java",
+      "category": "test",
+      "reviewStatus": "pending",
+      "targetBlob": "4572a12512e561549ca40e13656dc6573477414e"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/scripts/test-dhr-word-preview.mjs",
+      "category": "test",
+      "reviewStatus": "pending",
+      "targetBlob": "77026a9a2955036b3d2377cc14c82b13ae0d6006"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/scripts/test-execution-quick-panel.mjs",
+      "category": "test",
+      "reviewStatus": "pending",
+      "targetBlob": "3033c3ed6483ef95fc12c22d2389d33b28766a3b"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs",
+      "category": "test",
+      "reviewStatus": "pending",
+      "targetBlob": "ba61474d26fd408dbb7a3b957ce987b5e02eea57"
+    },
+    {
+      "status": "A",
+      "path": "gmp-platform/frontend/scripts/test-production-output-interactions.mjs",
+      "category": "test",
+      "reviewStatus": "pending",
+      "targetBlob": "ac71a95f6b6a1dc388520d3eb2121728ca859ea7"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/src/api/work-orders.ts",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "bc05f9317fc64d2d4c021779362c047b942ccbae"
+    },
+    {
+      "status": "A",
+      "path": "gmp-platform/frontend/src/components/ProductionObjectEditDialog.tsx",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "a971385882c74a7c1b04a448920324cc1480774a"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/src/components/ProductionOutput.tsx",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "480aa3fa11d1c2d6448e7f4f8b80e59f1b3083b1"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "3975d6e44efe1325493d1377041d00c9c9a8b9ea"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/src/components/form-renderer/FormRuntimeField.tsx",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "c02b09c182cdb207f476d7f1f05d3bfe5549af1a"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "8b3c867f2243e2f679ed9de09d188ea1844744fb"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "f763f9ffefdcbb5aa1defde4f4e283039f822510"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "8cb39844af4a0204cbccdfb8ab31f35cb0965181"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/src/pages/production/ExecutionQuickPanel.tsx",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "9b7ef49f605fc59133f41e89dc0169737c5caffc"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.css",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "dde99c6005e40d88f69325d2e055b25642bf0506"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/src/pages/production/ProductionExecutionPage.tsx",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "ab5acd7082c59289ea0ea749dd5216cc00286509"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "4597d481ecad33b7fc9fe136131ff168cd7c0635"
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/src/utils/productionAudit.ts",
+      "category": "source-or-config",
+      "reviewStatus": "pending",
+      "targetBlob": "3b031d4e4dd729cbee1cfb554397a64f9cdb66f9"
+    },
+    {
+      "status": "A",
+      "path": "output/playwright/batch-process-audit-snapshot-1024.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "e95744888b0f3b29e6fa5cccbc92871110dfd225"
+    },
+    {
+      "status": "A",
+      "path": "output/playwright/batch-process-audit-snapshot-1440.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "3be856220d850c43ed654e640646414a05e16562"
+    },
+    {
+      "status": "A",
+      "path": "output/playwright/batch-process-audit-snapshot-settled.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "c852f2cfe4d1d3effaaf40bdc420eefc0d0db2db"
+    },
+    {
+      "status": "A",
+      "path": "output/playwright/batch-process-decimal-bulk.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "840dc901caf064df216403c5a710c03f6ac95e24"
+    },
+    {
+      "status": "A",
+      "path": "output/playwright/batch-process-independent-audit-1024.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "c852f2cfe4d1d3effaaf40bdc420eefc0d0db2db"
+    },
+    {
+      "status": "A",
+      "path": "output/playwright/batch-process-independent-edit-1024.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "3e8a22248d4060cef7207084440438ba32bc82ee"
+    },
+    {
+      "status": "A",
+      "path": "output/playwright/batch-process-independent-edit-1440.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "7367209ea0197cd7d1d4351df756a33b615aa5b8"
+    },
+    {
+      "status": "A",
+      "path": "output/playwright/batch-process-manual-end-blocked.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "a7eeb842074517e4008a8fd86d095b69a72f89dc"
+    },
+    {
+      "status": "A",
+      "path": "output/playwright/batch-process-saved-1440.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "0be38ae20ea6a0b16720f47722be04c0c58a8e3d"
+    },
+    {
+      "status": "A",
+      "path": "output/playwright/batch-process-split-1024.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "b5fb65ee964e7319633890ccb3b15a57791be06e"
+    },
+    {
+      "status": "A",
+      "path": "output/playwright/batch-process-split-1440.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "7a4ed73538eaa1244b658617edd09c7ff8fd6e83"
+    },
+    {
+      "status": "A",
+      "path": "output/playwright/batch-process-split-initial.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "ffe5328c17a83a9bcd1b3e39499092f6e18c39a1"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-20261026/build.log",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "47a9f9305b576e1bf7a6154be9e8e71a1b2671bf"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/history-and-save/approval-editor-open.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "670844f4a87e61a6cd9e5bfc02a34049a5f67db0"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/history-and-save/form-history-and-save.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "99cc3d4f9bd68247a10a4080180722f52866888c"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/history-and-save/results.json",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "54d9548e79099505bedbe4e2ca7e10d84d36da42"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/history-and-save/review-history-and-save.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "81f3d0a12aa4460db147d41b39b9373c53db3d40"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/history-and-save/work-history-and-save.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "90fd33e135ec6599d32e432286a7dea6eb311f30"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/preview/preview-desktop.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "4e540e3d6114f710cc23cee7f3ce55142d6c0ea9"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/preview/preview-narrow.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "e32538c2f4cc83bac2a6f060f5db74ddc9ca57b0"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/preview/results.json",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "2e198dac99dedecd6811d627a02397127beda0cf"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/published-readonly/form-published-readonly.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "d01ee537bf21c1e422d8125ceb1928e1baf1087e"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/published-readonly/results.json",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "9f5289da1193a781c076d0b38fb83ea2ed1c2a8f"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/published-readonly/review-published-readonly.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "e02cacb31fbbf161c9117715947f5f1695173126"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/published-readonly/work-published-readonly.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "74c76b38db3fc63a1222b34fdd28e8f9d206ce99"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/selection-and-save/product-selection-and-save.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "2c51a080cf65c74af784977b8d9388d01f1a4967"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/selection-and-save/results.json",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "44f544255844ee60dcd4b9a53c42937e574d9997"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/selection-and-save/workspace-preview-controls.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "b69c22fe9def08ec178a9c14006bfafb3a06b5b4"
+    },
+    {
+      "status": "A",
+      "path": "output/route-preview-controls-quality-20261026/selection-and-save/workspace-selection-and-save.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "44cab42da6799ba27b93cb2c4b4a0049bd0ac4e1"
+    },
+    {
+      "status": "A",
+      "path": "output/submission-integration-20261027/build.log",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "6bb9ea670a2e9883d771d98b481049fc6425fb52"
+    },
+    {
+      "status": "A",
+      "path": "output/submission-integration-20261027/frontend-tests.log",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "efaea26ab5edc911cc64a491af75f5787aaf546d"
+    },
+    {
+      "status": "A",
+      "path": "output/submission-integration-20261027/preview.log",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "fa4c4a21897c27f98a55ae675e81c0db3795d23c"
+    },
+    {
+      "status": "A",
+      "path": "output/submission-integration-20261027/preview/preview-desktop.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "4e540e3d6114f710cc23cee7f3ce55142d6c0ea9"
+    },
+    {
+      "status": "A",
+      "path": "output/submission-integration-20261027/preview/preview-narrow.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "e32538c2f4cc83bac2a6f060f5db74ddc9ca57b0"
+    },
+    {
+      "status": "A",
+      "path": "output/submission-integration-20261027/preview/results.json",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "2e198dac99dedecd6811d627a02397127beda0cf"
+    },
+    {
+      "status": "A",
+      "path": "output/submission-integration-20261027/selection-and-save.log",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "fb6c9b17634374b12c77241e045fd0338a1fd990"
+    },
+    {
+      "status": "A",
+      "path": "output/submission-integration-20261027/selection-and-save/product-selection-and-save.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "2c51a080cf65c74af784977b8d9388d01f1a4967"
+    },
+    {
+      "status": "A",
+      "path": "output/submission-integration-20261027/selection-and-save/results.json",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "44f544255844ee60dcd4b9a53c42937e574d9997"
+    },
+    {
+      "status": "A",
+      "path": "output/submission-integration-20261027/selection-and-save/workspace-preview-controls.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "b69c22fe9def08ec178a9c14006bfafb3a06b5b4"
+    },
+    {
+      "status": "A",
+      "path": "output/submission-integration-20261027/selection-and-save/workspace-selection-and-save.png",
+      "category": "evidence",
+      "reviewStatus": "pending",
+      "targetBlob": "44cab42da6799ba27b93cb2c4b4a0049bd0ac4e1"
+    }
+  ]
+}
