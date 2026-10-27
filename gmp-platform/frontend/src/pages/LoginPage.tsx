@@ -79,7 +79,7 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      const res = await client.post('/auth/login', { username, password });
+      const res = await client.post('/auth/login', { username, password }, { skipAuthRedirect: true });
       const loginData = res.data.data as Record<string, unknown>;
       const { token, user } = loginData as { token: string; user: User };
       useAuthStore.getState().login(token, user);

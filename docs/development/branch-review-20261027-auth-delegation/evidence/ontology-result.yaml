@@ -1,0 +1,51 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c
+    targetBranch: edhr-dev
+    targetCommit: 00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c
+    contractReadCommit: 00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c
+    uncommittedContractPaths: []
+  reason: 本批保留现行租户内委托及既有登录配置含义，8条有限审前评估无新政策或待决；普通表单帮助文案存在实现解释差异，登录并发线索需主侧原生PG验证，均不要求改写本体。登录策略依据为当前设置/源码/测试，不伪称用户逐字确认。
+  changedArtifacts: []
+  knowledgeSync:
+    - id: DEC-0081-01
+      disposition: retained
+      scope: 普通生产表单可委托给同租户正常可用的非本人用户，原候选不是目标白名单；仅需纠正当前FORM_PROCESS帮助文字。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+        - docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md
+    - id: DEC-0081-02
+      disposition: retained
+      scope: 原候选证据与当前责任分开，帮助文字修复不改变证据机制或重建历史。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - id: DEC-0081-03
+      disposition: retained
+      scope: 明确目标和原因，转办不推进节点、不改表单、不产生审批结果。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+    - id: DEC-0081-04
+      disposition: retained
+      scope: DHR及记录控制边界保持；ReviewTemplateEditor显式RECORD_CONTROL不能沿普通表单政策一起改写。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml
+        - gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.auth-delegation-source-boundaries
+      checkType: evidence-path
+      command: 只读核对DEC0081及原始确认、当前profile调用、ExecutionAccess、SystemSetting/设置页、AuthController和既有顺序单测；未运行Maven/PG/浏览器
+      outcome: passed
+      evidence:
+        - /tmp/edhr-auth-delegation-rule-review.json
+        - 4条DEC声明与4条实现边界分列；未注册登录知识ID不伪造为正式规则
+        - 正常账号、锁定窗口、阈值和成功清零属于当前实现契约；并发修复需另取运行证据
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

@@ -1,0 +1,46 @@
+{
+  "baseline": null,
+  "boundary": "Real React/MUI/router/auth store/client; fixture HTTP, no real authentication or backend writes",
+  "results": [
+    {
+      "name": "native-empty",
+      "result": "passed",
+      "loginCalls": 0
+    },
+    {
+      "name": "credential-error",
+      "result": "passed",
+      "loginCalls": 1
+    },
+    {
+      "name": "normal-success",
+      "result": "passed",
+      "loginCalls": 1
+    },
+    {
+      "name": "password-action",
+      "result": "passed",
+      "loginCalls": 1
+    },
+    {
+      "name": "signature-action",
+      "result": "passed",
+      "loginCalls": 1
+    },
+    {
+      "name": "branding-retry",
+      "result": "passed",
+      "loginCalls": 0
+    },
+    {
+      "name": "ordinary-delegation",
+      "result": "passed",
+      "loginCalls": 0
+    },
+    {
+      "name": "record-control-boundary",
+      "result": "passed",
+      "loginCalls": 0
+    }
+  ]
+}

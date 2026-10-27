@@ -1,0 +1,226 @@
+{
+  "targetCommit": "00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c",
+  "testedCandidateCommit": "810e73f585608e2e86d8bb8c51f6cb41f8deb5f4",
+  "targetTrackedPaths": 3773,
+  "candidateTrackedPaths": 3794,
+  "pathCountMeaning": "Inventory only; includes historical docs/evidence and tests, not business review denominator. Frozen prior catalog retained; finite new scopes in source-review.json.",
+  "changes": [
+    {
+      "status": "M",
+      "path": "docs/development/branch-review-20261015/NEXT.md",
+      "classification": "audit-support",
+      "baseBlob": "86af7e8bba8993df5e40fa7f8b0a5adc05325dd5",
+      "candidateBlob": "a7dcdcb81e55d40673406d612d67845c631e7384",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/README.md",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "8722a0cd9fbb5631d2a109949cfa52eec9aba8aa",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/decision-package.yaml",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "d1619e6451aa01b128e50932798516178626dd36",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/browser-green.json",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "ff0e82f6c418ca3e7d8efe970f46c9872fdd70c6",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/browser-initial-fixture.json",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "c9c0dae87f71a5575174c8220eccb61914a834d9",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/browser-narrow.json",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "2914e069464044ef7ca9bae0f86133c4239c2898",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/browser-red.json",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "e2e433ff9c74cd5dc9e0c6ee8c0787ea9d94f773",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/designer-nondrag-review.json",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "7301cb205bdb1fe42272b58d59f7609a2aa57d06",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/designer-nondrag-review.md",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "58e4885c3b0cfecca07981439ae626aa3f5d45aa",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/green-delegation.png",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "76a7ee934fe3375b821c75762e083a17ffa7f5d7",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/green-login.png",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "e7b544a8c47bb62f93333eae5549b5aa0272764b",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/green-narrow-login.png",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "e91c07601bf2ff88684ff09fc740061cfc84c74a",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/ontology-result.yaml",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "e2563567a9415b3e9e8e2353d2067e00ccfadc32",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/primary-evidence.json",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "10912755eb1866fd3136c91d8053c29061b0bfda",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/red-delegation.png",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "79b4507fff4cc8505237026ae2800067c958cf60",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/red-login.png",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "0f2f81fc32a44a1d51c94d5ca3e90a8add2e8cc9",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/rule-review.json",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "e2d92998b03868bcde994a3b74fc6c348fa0d789",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/static-baseline.json",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "87b3ee39463ef05106109d6539b2560ff0c3224c",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/evidence/static-current.json",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "544b775bbedb28f447e136596539bcc49045220c",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-auth-delegation/source-review.json",
+      "classification": "audit-support",
+      "baseBlob": null,
+      "candidateBlob": "b31c4a9754627181231da41b8a40c1fb7719b1c0",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "classification": "product-source",
+      "baseBlob": "d6c03a7e95dbd6934f00c7efc821b839bacbf3e0",
+      "candidateBlob": "d14c6ae12cb45a43e6db3f0b26610c1aa808095b",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserAccountRepository.java",
+      "classification": "product-source",
+      "baseBlob": "8f0fe7a1ea3bcd3c1556ede0ff51f070d7db5187",
+      "candidateBlob": "9cf53858459f72ae96daca056a21794a8f088913",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/AuthControllerTest.java",
+      "classification": "test",
+      "baseBlob": "54d99a121a4f05867107d1720d42ad260bdd75c6",
+      "candidateBlob": "9262703d945f8118b7cea3928e7230376b74970a",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/AuthLoginConcurrencyPostgresTest.java",
+      "classification": "test",
+      "baseBlob": null,
+      "candidateBlob": "374a016119475314fef850448770380ad96b373f",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "gmp-platform/frontend/scripts/test-login-delegation-browser.mjs",
+      "classification": "test",
+      "baseBlob": null,
+      "candidateBlob": "f79e30f0e9899cac0de1353ff5696433aa4c83b0",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx",
+      "classification": "product-source",
+      "baseBlob": "53d6943f3c4996c419b9aba69618bef379b273f0",
+      "candidateBlob": "f6302362a526a8b382f435620a2fcfca896b231c",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/frontend/src/pages/LoginPage.tsx",
+      "classification": "product-source",
+      "baseBlob": "7bdbaf379dea6e00c5ff8bae090ef9458269fd54",
+      "candidateBlob": "183bba46baa836b520a829c1b84025b1f6cec7d5",
+      "wholeFileAuditComplete": false
+    }
+  ],
+  "laterArchives": "Acceptance/scope/quality archives are later L0 additions and are not retroactively included in candidate runtime scope."
+}
