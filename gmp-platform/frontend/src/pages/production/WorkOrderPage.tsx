@@ -562,8 +562,8 @@ export default function WorkOrderPage() {
     const serial = isSnProduction;
     const sheetName = serial ? 'SN导入模板' : '批次导入模板';
     const filename = serial ? '生产SN导入模板.xlsx' : '生产批次导入模板.xlsx';
-    const headers = serial ? ['SN编号', '计划开始时间', '计划结束时间', '备注'] : ['批次号', '数量', '计划开始时间', '计划结束时间', '备注'];
-    const example = serial ? ['SN-001', '2026-08-29 08:00', '2026-08-29 18:00', '可为空'] : ['BATCH-001', 1, '2026-08-29 08:00', '2026-08-29 18:00', '可为空'];
+    const headers = serial ? ['SN编号', '计划开始时间', '计划结束时间'] : ['批次号', '数量', '计划开始时间', '计划结束时间', '备注'];
+    const example = serial ? ['SN-001', '2026-08-29 08:00', '2026-08-29 18:00'] : ['BATCH-001', 1, '2026-08-29 08:00', '2026-08-29 18:00', '可为空'];
     const requiredColumns = new Set(serial ? ['SN编号'] : ['批次号', '数量']);
     const workbook = new ExcelJS.Workbook();
     workbook.creator = 'eDHR';
@@ -575,7 +575,7 @@ export default function WorkOrderPage() {
     worksheet.mergeCells(2, 1, 2, headers.length);
     worksheet.getCell('A2').value = `请按列填写${serial ? ' SN 编号' : '批次号、数量'}；红色表头为必填字段，示例数据请删除后再导入。`;
     worksheet.mergeCells(3, 1, 3, headers.length);
-    worksheet.getCell('A3').value = `示例：${serial ? 'SN编号=SN-001；计划开始时间=2026-08-29 08:00；计划结束时间=2026-08-29 18:00；备注=可为空' : '批次号=BATCH-001；数量=1；计划开始时间=2026-08-29 08:00；计划结束时间=2026-08-29 18:00；备注=可为空'}`;
+    worksheet.getCell('A3').value = `示例：${serial ? 'SN编号=SN-001；计划开始时间=2026-08-29 08:00；计划结束时间=2026-08-29 18:00' : '批次号=BATCH-001；数量=1；计划开始时间=2026-08-29 08:00；计划结束时间=2026-08-29 18:00；备注=可为空'}`;
     headers.forEach((header, index) => {
       worksheet.getCell(5, index + 1).value = header;
       worksheet.getCell(6, index + 1).value = example[index];

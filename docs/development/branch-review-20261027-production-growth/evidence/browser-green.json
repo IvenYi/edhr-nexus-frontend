@@ -1,0 +1,21 @@
+{
+  "boundary": "real Chromium UI, fixture HTTP; no real backend writes",
+  "baseline": null,
+  "results": [
+    {
+      "name": "SN-1440",
+      "result": "passed",
+      "checks": "keyboard download; XLSX columns/example/help; import; negative validations; staged submit; console"
+    },
+    {
+      "name": "BATCH-1440",
+      "result": "passed",
+      "checks": "keyboard download; XLSX columns/example/help; import; negative validations; staged submit; console"
+    },
+    {
+      "name": "SN-390",
+      "result": "passed",
+      "checks": "keyboard download; XLSX columns/example/help; import; negative validations; staged submit; console"
+    }
+  ]
+}

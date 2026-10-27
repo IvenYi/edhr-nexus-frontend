@@ -1,0 +1,455 @@
+{
+  "role": "business-knowledge-modeler",
+  "sourceCommit": "33f033383ae165d10d0006395dd17e5f0df89136",
+  "targetCommit": "33f033383ae165d10d0006395dd17e5f0df89136",
+  "knowledgeModelVersion": "0.3.25",
+  "scope": "Finite current-rule/source audit; no entire-domain assurance",
+  "records": [
+    {
+      "id": "DEC-0016-04",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+      "sourceLocator": "line:21",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "主侧已按原三列规范修正downloadImportTemplate的headers/example/A3；本角色复读代码及主侧实际Chromium红绿原件，无规则变更。既有备注解析和提交payload保持，不以修下载模板新增拒绝旧列政策。",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#downloadImportTemplate",
+        "git diff d5adf220..33f03338 -- docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+        "docs/development/branch-review-20261027-production-growth/evidence/browser-red.json",
+        "docs/development/branch-review-20261027-production-growth/evidence/browser-green.json"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "rule.production.sn-import-required-fields",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "line:571",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "主侧已按原三列规范修正downloadImportTemplate的headers/example/A3；本角色复读代码及主侧实际Chromium红绿原件，无规则变更。既有备注解析和提交payload保持，不以修下载模板新增拒绝旧列政策。",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importObjects",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split",
+        "docs/development/branch-review-20261027-production-growth/evidence/browser-red.json",
+        "docs/development/branch-review-20261027-production-growth/evidence/browser-green.json"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "discrepancy.production-sn-import-template-extra-remark",
+      "recordType": "implementation-discrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+      "sourceLocator": "line:63",
+      "originalMaturity": "open",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "历史差异与2026-10-12仅源码发现保留；当前候选三处下载修复且主侧真实浏览器红绿已取得，因此实现差异标resolved。独立最终QA仍由其正式结果承接，不冒称本体角色执行或全系统验收。",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#downloadImportTemplate",
+        "docs/development/branch-review-20261027-production-growth/evidence/browser-red.json",
+        "docs/development/branch-review-20261027-production-growth/evidence/browser-green.json"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role",
+      "currentDisposition": "resolved-in-candidate"
+    },
+    {
+      "id": "DEC-0014-04",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+      "sourceLocator": "line:21",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "控制器和服务splitBatch都有外层事务，顺序split及逐对象CREATE审计仍在同一控制器事务内；失败不应部分成功。该结论限源码，运行证据由主侧另列。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java#splitBatch",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#splitBatch"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "rule.production.production-object-batch-submit-atomic",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "line:712",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "当前single-request/rollbackOnAnyFailure要求与外层事务一致；性能复用不得改成逐条REQUIRES_NEW或省略审计。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java#splitBatch"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0014-05",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+      "sourceLocator": "line:25",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "BATCH标准5列含备注，不受SN3列修复影响。",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#downloadImportTemplate"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "rule.production.production-object-pending-before-submit",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "line:450",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "导入将记录放入pendingObjects，再由提交调用batch API，不应在解析时写对象。",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importObjects"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0016-01",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+      "sourceLocator": "line:9",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "SN目标1由服务split校验，模板移除数量列不代表绕过服务约束。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0016-03",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+      "sourceLocator": "line:17",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "同工单不得混用形态；split遍历existing与processOptions(order)限制实现此约束。重复读是性能风险，不能据此删除形态检查。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split,processOptions"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "rule.production.work-order-split-eligibility",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "line:745",
+      "originalMaturity": "specified",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "CREATED/IN_PROCESS可在余额范围继续拆分；split在锁工单后验证状态、分配量。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0015-02",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml",
+      "sourceLocator": "line:13",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "create/update以真实响应业务字段构建审计，批量观测应隔离统计而不能删实际审计。此项不扩展认证并发取消全链。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java#create,update,workOrderSnapshot"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0078-04",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml",
+      "sourceLocator": "line:21",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "工单累计所属批次产出并区分缺失/部分已知；outputs.order保留来源和状态，不可为分页简单截断同工单批次集合。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java#order"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0078-06",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml",
+      "sourceLocator": "line:29",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "outputs.read读取已冻结execution snapshot；summarize缺策略显示LEGACY，未按当前主数据补算。列表按页聚合须保留此来源边界。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java#read,summarize"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    }
+  ],
+  "H008": {
+    "status": "corrected-in-candidate-awaiting-independent-qa",
+    "minimumCorrection": "仅下载模板的headers/example/A3去备注第四列，保留BATCH五列、对象remark、手工备注及既有额外列解析兼容。",
+    "authority": [
+      "DEC-0016-04",
+      "rule.production.sn-import-required-fields"
+    ],
+    "history": "0d465582已保留同一三列声明；b05305ee只修上下文与形态/选版，未替代04。",
+    "sourceLimit": "未重新取得原用户截图；当前版本化决策/规则作为授权业务基线，直接源码为本次实现证据。"
+  },
+  "runtimeExecuted": false,
+  "knowledgeFilesChanged": [
+    "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+    "docs/knowledge/evidence/production.yaml"
+  ],
+  "counts": {
+    "reviewed": 13,
+    "consistent": 13,
+    "needs-fix": 0
+  },
+  "historicalInitialRecords": [
+    {
+      "id": "DEC-0016-04",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+      "sourceLocator": "line:21",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "needs-fix",
+      "explanation": "SN下载模板仅3列是现行明确约定；源码headers/example/A3仍有备注，属于H008已有实现差异。最新b05305ee仅改上下文及形态/选版场景，没有替代04。",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#downloadImportTemplate",
+        "git diff d5adf220..33f03338 -- docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+        "docs/development/branch-review-20261027-production-growth/evidence/browser-red.json",
+        "docs/development/branch-review-20261027-production-growth/evidence/browser-green.json"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "rule.production.sn-import-required-fields",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "line:571",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "needs-fix",
+      "explanation": "当前规则重复3列约定；SN编号必填、数量隐含1及服务端复核均为独立约束，修模板不得删除这些约束。",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importObjects",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split",
+        "docs/development/branch-review-20261027-production-growth/evidence/browser-red.json",
+        "docs/development/branch-review-20261027-production-growth/evidence/browser-green.json"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "discrepancy.production-sn-import-template-extra-remark",
+      "recordType": "implementation-discrepancy",
+      "sourcePath": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+      "sourceLocator": "line:63",
+      "originalMaturity": "open",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "当前open记录准确描述仍存在的第四列，与此次源码复读相符；尚无本角色运行验收，不关闭。",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#downloadImportTemplate",
+        "docs/development/branch-review-20261027-production-growth/evidence/browser-red.json",
+        "docs/development/branch-review-20261027-production-growth/evidence/browser-green.json"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0014-04",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+      "sourceLocator": "line:21",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "控制器和服务splitBatch都有外层事务，顺序split及逐对象CREATE审计仍在同一控制器事务内；失败不应部分成功。该结论限源码，运行证据由主侧另列。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java#splitBatch",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#splitBatch"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "rule.production.production-object-batch-submit-atomic",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "line:712",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "当前single-request/rollbackOnAnyFailure要求与外层事务一致；性能复用不得改成逐条REQUIRES_NEW或省略审计。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java#splitBatch"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0014-05",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+      "sourceLocator": "line:25",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "BATCH标准5列含备注，不受SN3列修复影响。",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#downloadImportTemplate"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "rule.production.production-object-pending-before-submit",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "line:450",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "导入将记录放入pendingObjects，再由提交调用batch API，不应在解析时写对象。",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importObjects"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0016-01",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+      "sourceLocator": "line:9",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "SN目标1由服务split校验，模板移除数量列不代表绕过服务约束。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0016-03",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+      "sourceLocator": "line:17",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "同工单不得混用形态；split遍历existing与processOptions(order)限制实现此约束。重复读是性能风险，不能据此删除形态检查。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split,processOptions"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "rule.production.work-order-split-eligibility",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "line:745",
+      "originalMaturity": "specified",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "CREATED/IN_PROCESS可在余额范围继续拆分；split在锁工单后验证状态、分配量。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0015-02",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml",
+      "sourceLocator": "line:13",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "create/update以真实响应业务字段构建审计，批量观测应隔离统计而不能删实际审计。此项不扩展认证并发取消全链。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java#create,update,workOrderSnapshot"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0078-04",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml",
+      "sourceLocator": "line:21",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "工单累计所属批次产出并区分缺失/部分已知；outputs.order保留来源和状态，不可为分页简单截断同工单批次集合。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java#order"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    },
+    {
+      "id": "DEC-0078-06",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml",
+      "sourceLocator": "line:29",
+      "originalMaturity": "implemented",
+      "auditScope": "production-list-and-split-growth-H008",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "explanation": "outputs.read读取已冻结execution snapshot；summarize缺策略显示LEGACY，未按当前主数据补算。列表按页聚合须保留此来源边界。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionOutputService.java#read,summarize"
+      ],
+      "verificationDepth": "source-inspected; no runtime execution by this role"
+    }
+  ],
+  "historicalInitialCounts": {
+    "reviewed": 13,
+    "consistent": 11,
+    "needs-fix": 2
+  },
+  "validationExecuted": {
+    "knowledgeTests": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "diffCheck": "passed",
+    "browser": "Main-role original evidence inspected; not executed by ontology role"
+  }
+}

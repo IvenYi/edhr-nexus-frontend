@@ -221,6 +221,79 @@ class BatchProcessIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT count(*) FROM product_process_version WHERE id=?",Integer.class,b+2)).isEqualTo(1);
     }
 
+    @Test void outOfRangeWorkOrderPagesReturnEmptyInsteadOfOverflowing() throws Exception {
+        for (int[] paging : List.of(new int[]{Integer.MAX_VALUE,20}, new int[]{2,Integer.MAX_VALUE}, new int[]{Integer.MAX_VALUE,Integer.MAX_VALUE})) {
+            JsonNode page = ok(get("/api/v1/production/work-orders").param("keyword","WO-"+b)
+                    .param("page",String.valueOf(paging[0])).param("size",String.valueOf(paging[1])), Map.of());
+            assertThat(page.path("content")).isEmpty();
+            assertThat(page.path("totalElements").asInt()).isEqualTo(1);
+            assertThat(page.path("page").asInt()).isEqualTo(paging[0]);
+            assertThat(page.path("size").asInt()).isEqualTo(paging[1]);
+        }
+        JsonNode first = ok(get("/api/v1/production/work-orders").param("keyword","WO-"+b).param("page","0").param("size","0"),Map.of());
+        assertThat(first.path("content")).hasSize(1);
+        assertThat(first.path("page").asInt()).isEqualTo(1);
+        assertThat(first.path("size").asInt()).isEqualTo(1);
+    }
+
+    @Test @EnabledIfSystemProperty(named="production.growth.observe", matches="true")
+    void smallWorkOrderPagesObserveWholeDatasetLoading() throws Exception {
+        jdbc.execute("CREATE EXTENSION IF NOT EXISTS pg_stat_statements");
+        int seeded = 0;
+        for (int count : List.of(10,50,100)) {
+            for (int i=seeded; i<count; i++) {
+                long id=b-1000-i;
+                jdbc.update("INSERT INTO work_order(id,tenant_id,order_no,product_id,planned_quantity,status,created_at) VALUES (?,'default',?, ?,1,'CREATED',CURRENT_TIMESTAMP)",id,"GROWTH-"+b+"-"+i,b);
+                jdbc.update("INSERT INTO production_object(id,tenant_id,work_order_id,object_no,object_type,process_version_id,target_quantity,status) VALUES (?,'default',?,?,'BATCH',?,1,'CREATED')",id,id,"OBJ-"+id,b+2);
+            }
+            seeded=count;
+            long allOrders=jdbc.queryForObject("SELECT count(*) FROM work_order WHERE tenant_id='default'",Long.class);
+            jdbc.execute("SELECT pg_stat_statements_reset()");
+            JsonNode page=ok(get("/api/v1/production/work-orders").param("keyword","GROWTH-"+b+"-").param("page","1").param("size","5"),Map.of());
+            observeQueries("work-order-page",Map.of("matchingOrders",count,"allOrders",allOrders,"returned",page.path("content").size()));
+            assertThat(page.path("content")).hasSize(5);
+            assertThat(page.path("totalElements").asInt()).isEqualTo(count);
+        }
+    }
+
+    @Test @EnabledIfSystemProperty(named="production.growth.observe", matches="true")
+    void bulkSplitObservesRepeatedReadsAndKeepsAtomicFailure() throws Exception {
+        jdbc.execute("CREATE EXTENSION IF NOT EXISTS pg_stat_statements");
+        for (int count : List.of(10,50,100)) {
+            Map<String,Object> body=new HashMap<>(orderBody("100")); body.put("orderNo","SPLIT-"+b+"-"+count);
+            String currentOrder=ok(post("/api/v1/production/work-orders"),body).path("id").asText();
+            List<Map<String,Object>> items=new ArrayList<>();
+            for (int i=0;i<count;i++) items.add(Map.of("processVersionId",b+4,"targetQuantity",1,"objectNo","SN-"+b+"-"+count+"-"+i));
+            jdbc.execute("SELECT pg_stat_statements_reset()");
+            JsonNode result=ok(post("/api/v1/production/work-orders/"+currentOrder+"/objects/batch"),Map.of("items",items));
+            observeQueries("bulk-split",Map.of("requested",count,"created",result.size()));
+            assertThat(result).hasSize(count);
+            assertThat(jdbc.queryForObject("SELECT count(*) FROM production_object WHERE work_order_id=?",Integer.class,Long.valueOf(currentOrder))).isEqualTo(count);
+            assertThat(jdbc.queryForObject("SELECT count(*) FROM audit_event WHERE entity_type='PRODUCTION_OBJECT' AND content_after::jsonb->>'workOrderId'=?",Integer.class,currentOrder)).isEqualTo(count);
+        }
+        // The second duplicate must roll the first new object and its audit back together.
+        Map<String,Object> item=new HashMap<>(batchBody(b+4,"1")); item.put("objectNo","DUP-"+b);
+        assertThat(send(post("/api/v1/production/work-orders/"+order+"/objects/batch"),Map.of("items",List.of(item,item)))).isEqualTo(400);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM production_object WHERE work_order_id=?",Integer.class,Long.valueOf(order))).isZero();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM audit_event WHERE entity_type='PRODUCTION_OBJECT' AND content_after::jsonb->>'workOrderId'=?",Integer.class,order)).isZero();
+    }
+
+    private void observeQueries(String scenario, Map<String,?> dimensions) throws Exception {
+        Map<String,long[]> counters=new TreeMap<>();
+        for (Map<String,Object> row:jdbc.queryForList("SELECT query,calls,rows FROM pg_stat_statements WHERE dbid=(SELECT oid FROM pg_database WHERE datname=current_database())")) {
+            String sql=row.get("query").toString().toLowerCase(Locale.ROOT).replaceAll("\\s+"," ");
+            if (!sql.startsWith("select")) continue;
+            String category=sql.contains("from production_object o left join production_execution") ? "output-reads"
+                    : sql.contains("from production_object") ? "object-reads"
+                    : sql.contains("from work_order") ? "order-reads"
+                    : sql.contains("from material ") ? "material-reads" : null;
+            if (category==null) continue;
+            long[] totals=counters.computeIfAbsent(category,key->new long[2]);
+            totals[0]+=((Number)row.get("calls")).longValue(); totals[1]+=((Number)row.get("rows")).longValue();
+        }
+        System.out.println("PRODUCTION_GROWTH_OBSERVATION "+mapper.writeValueAsString(Map.of("scenario",scenario,"dimensions",dimensions,"callsAndResultRows",counters)));
+    }
+
     @Test void failedAuditRollsBackBatchEdit() throws Exception {
         String id=split(b+2,"1").path("id").asText();
         doThrow(new IllegalStateException("audit unavailable")).when(audits).save(argThat(event -> event != null && "修改批次配置".equals(event.getFunctionName())));
