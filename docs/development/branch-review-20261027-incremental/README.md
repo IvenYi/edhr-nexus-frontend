@@ -1,5 +1,11 @@
 # 2026-10-27 整体审计续接检查点
 
+## 正式验收与交付
+
+全新独立质量对干净候选 `66d00d15ba3613201e0face1cf811013ae081d64` 正式 **passed/FINAL，8/8**。两个全新隔离PG库实际运行104项：102通过、2原有opt-in开发服务测试跳过、零失败/错误；知识89项通过。独立重现三组查询观察，128路径状态/blob重建一致，16条有限语义复核无阻断。原件见[evidence/quality-result.yaml](evidence/quality-result.yaml)、[独立说明](evidence/quality-review.md)和[安全运行证据](evidence/independent-evidence.json)。原件内/tmp路径对应本目录同名归档映射，原始文件保持字节不变。
+
+本体与质量实例均已FINAL。受测后仅追加L0归档/范围复核/交付登记，产品、测试、知识和冻结清单不改。自建PG容器已按确切ID停止且自动移除，未连接或修改用户业务库。PR前已实际向用户报告无任务漂移、当前整体进度和下一步，见[scope-review](scope-review.md)。
+
 ## 当前进展：本批运行与语义复核
 
 本批现已推进为有限L2审计交付：产品仅纠正一行过时注释，没有业务逻辑改动；新增1项增长场景只读回归与查询观察。主侧原生PG基线103项中101通过、2原opt-in入口跳过；新测试另跑1项通过，不能合称同次104项运行。实际2/10/50工序对应规则查询2/10/50次，结论及结构方案见[findings](findings.md)，安全原件摘要见[evidence/primary-postgres.json](evidence/primary-postgres.json)。
