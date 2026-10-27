@@ -255,6 +255,8 @@
 .execution-form-actions { display: flex; align-items: center; padding: 8px 14px; border-top: 1px solid #e8edf3; background: #fff; flex-shrink: 0; flex-wrap: wrap; gap: 8px; }
 .execution-form-footer-context { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 180px; }
 .execution-form-footer-context > .MuiTypography-root { font-size: 11px; }
+.execution-form-footer-context .execution-form-receipt.MuiButton-root { min-width: 0; padding: 2px 0; color: #718096; font-size: 11px; font-weight: 400; line-height: 1.5; text-transform: none; text-decoration: none; }
+.execution-form-footer-context .execution-form-receipt.MuiButton-root:hover { color: #1677c8; background: transparent; }
 .execution-layout-switch { position: relative; isolation: isolate; display: grid; grid-template-columns: repeat(2, 1fr); flex: 0 0 64px; width: 64px; height: 28px; box-sizing: border-box; padding: 2px; border: 1px solid #e1e6ed; border-radius: 7px; background: #eef1f5; }
 .execution-layout-switch::before { content: ''; position: absolute; z-index: -1; top: 2px; bottom: 2px; left: 2px; width: calc((100% - 4px) / 2); border-radius: 5px; background: #fff; box-shadow: 0 1px 3px #26365024; transition: transform 160ms ease; }
 .execution-layout-switch[data-layout="canvas"]::before { transform: translateX(100%); }

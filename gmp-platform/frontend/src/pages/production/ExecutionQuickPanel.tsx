@@ -40,6 +40,7 @@ export default function ExecutionQuickPanel({ active, onChange, panels, context,
     return () => { document.removeEventListener('pointerdown', reset, true); document.removeEventListener('click', consumeClick, true); };
   }, []);
   useEffect(() => {
+    if (active && !wasOpen.current) returnFocus.current = document.activeElement as HTMLElement | null;
     if (active && !suspended) titleRef.current?.focus({ preventScroll: true });
     if (!active && wasOpen.current && returnFocus.current?.isConnected) returnFocus.current.focus({ preventScroll: true });
     wasOpen.current = Boolean(active);

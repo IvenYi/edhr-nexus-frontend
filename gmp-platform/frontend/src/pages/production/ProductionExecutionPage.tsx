@@ -499,7 +499,7 @@ export default function ProductionExecutionPage() {
             <Box><Typography component="dt">目标数量</Typography><Typography component="dd">{context?.targetQuantity != null ? `${context.targetQuantity} ${context.unit ?? ''}`.trim() : '—'}</Typography></Box>
           </Box>
           <Box className="execution-quantity-summary">
-            <Typography component="h3">当前工序 · 已生效数量</Typography>
+            <Typography component="h3">当前工序</Typography>
             <Box component="dl" className="execution-quantity-grid">
               {([['产出', 'outputQuantity'], ['良品', 'goodQuantity'], ['不良品', 'ngQuantity'], ['报废登记', 'scrapQuantity']] as const).map(([label, role]) => <Box key={`${op?.id}:${role}`}><Typography component="dt">{label}</Typography><Box component="dd"><ProductionOutputValue output={role === 'outputQuantity' ? (op ? view.formalOutput?.operations?.[op.id] : undefined) : quality?.[role]} savedOutput={processQuality?.[role]} label={`当前工序${label}`} suspended={quantitySuspended} compact /></Box></Box>)}
             </Box>
@@ -577,7 +577,7 @@ export default function ProductionExecutionPage() {
                   <Tooltip title="按字段填报" placement="top" arrow><button type="button" aria-label="按字段填报" aria-pressed={layout === 'fields'} onClick={() => setLayout('fields')}><ViewListOutlined /></button></Tooltip>
                   <Tooltip title="按表单填报" placement="top" arrow><button type="button" aria-label="按表单填报" aria-pressed={layout === 'canvas'} onClick={() => setLayout('canvas')}><TableChartOutlined /></button></Tooltip>
                 </Box>
-                {formReceipt && <Typography variant="caption" color="text.secondary">{formReceipt.label} {time(formReceipt.at)}</Typography>}
+                {formReceipt && <Button size="small" className="execution-form-receipt" aria-label="查看填报记录" aria-haspopup="dialog" onClick={() => { setHistoryType('form'); setNavigationSection('history'); setActivePanel('history'); }}>{formReceipt.label} {time(formReceipt.at)}</Button>}
                 {formStatus === 'WAITING_OPERATION_START' && <Typography variant="caption" color="text.secondary">计划预览，工序开工后可填报</Typography>}
                 {formStatus === 'WAITING_WORK_NODE' && <Typography variant="caption" color="text.secondary">计划预览，作业流程到达后可填报</Typography>}
                 </Box>

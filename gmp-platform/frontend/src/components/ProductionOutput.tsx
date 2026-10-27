@@ -15,6 +15,8 @@ const display = (value: unknown): string => value == null || value === '' ? '—
 
 const formStatusLabels: Record<string, string> = { COMPLETED: '已完成', IN_PROGRESS: '填报中', RUNNING: '进行中', DRAFT: '草稿', PENDING: '待填报', ACTIVE: '进行中', RETURNED: '已退回' };
 
+let activeQuantityPreview: { id: string; close: () => void } | undefined;
+
 function QuantitySources({ output, savedOutput }: { output?: ProductionOutput; savedOutput?: ProductionOutput }) {
   const rows = quantitySourceRows(output, savedOutput);
   const reasons = quantitySourceRows(output ? { ...output, sources: output.reasonSources } : undefined, savedOutput ? { ...savedOutput, sources: savedOutput.reasonSources } : undefined);
@@ -81,9 +83,15 @@ export function ProductionOutputValue({ output, savedOutput, label = '累计产�
   const suppressFocus = useRef(false);
   const id = useId();
   const cancelClose = () => clearTimeout(timer.current);
-  const close = (restore = false) => { cancelClose(); setMode(null); if (restore) requestAnimationFrame(() => { suppressFocus.current = true; anchor.current?.focus({ preventScroll: true }); }); };
+  const close = (restore = false) => { cancelClose(); setMode(null); if (activeQuantityPreview?.id === id) activeQuantityPreview = undefined; if (restore) requestAnimationFrame(() => { suppressFocus.current = true; anchor.current?.focus({ preventScroll: true }); }); };
+  const show = (next: 'hover' | 'pinned') => {
+    cancelClose();
+    if (activeQuantityPreview?.id !== id) activeQuantityPreview?.close();
+    activeQuantityPreview = { id, close };
+    setMode(current => next === 'hover' ? current ?? 'hover' : current === 'pinned' ? null : 'pinned');
+  };
   const leave = () => { cancelClose(); if (mode === 'hover') timer.current = setTimeout(() => setMode(current => current === 'hover' ? null : current), 150); };
-  useEffect(() => () => clearTimeout(timer.current), []);
+  useEffect(() => () => { clearTimeout(timer.current); if (activeQuantityPreview?.id === id) activeQuantityPreview = undefined; }, [id]);
   useEffect(() => { if (suspended) { clearTimeout(timer.current); setMode(null); } }, [suspended]);
   useLayoutEffect(() => {
     if (!mode || suspended) return;
@@ -105,12 +113,12 @@ export function ProductionOutputValue({ output, savedOutput, label = '累计产�
   }, [mode]);
   const value = quantityText(output);
   const statusLabel = output ? labels[output.status] : '暂无数据';
-  return <ClickAwayListener onClickAway={() => close()}><Box component="span" sx={{ display: 'inline-flex', maxWidth: '100%' }}>
+  return <ClickAwayListener mouseEvent="onPointerDown" touchEvent={false} onClickAway={() => close()}><Box component="span" sx={{ display: 'inline-flex', maxWidth: '100%' }}>
     <ButtonBase ref={anchor} disabled={suspended} aria-label={`${label}：${value}${statusLabel ? `，${statusLabel}` : ''}，查看来源明细`} aria-haspopup="dialog" aria-expanded={Boolean(mode) && !suspended} aria-controls={mode && !suspended ? id : undefined}
-      onPointerEnter={event => { cancelClose(); if (event.pointerType === 'mouse' && !event.buttons) setMode(current => current ?? 'hover'); }} onPointerLeave={leave}
-      onFocus={() => { if (suppressFocus.current) suppressFocus.current = false; else setMode(current => current ?? 'hover'); }}
+      onPointerEnter={event => { cancelClose(); if (event.pointerType === 'mouse' && !event.buttons) show('hover'); }} onPointerLeave={leave}
+      onFocus={() => { if (suppressFocus.current) suppressFocus.current = false; else show('hover'); }}
       onBlur={event => { if (!event.relatedTarget || !(event.relatedTarget as HTMLElement).closest(`#${CSS.escape(id)}`)) leave(); }}
-      onClick={event => { event.stopPropagation(); cancelClose(); setMode(current => current === 'pinned' ? null : 'pinned'); }}
+      onClick={event => { event.stopPropagation(); show('pinned'); }}
       sx={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left', minWidth: 24, maxWidth: '100%', borderRadius: 0.5, color: 'primary.main', '&:hover': { color: 'primary.dark', textDecoration: 'underline' }, '&.Mui-focusVisible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: 2 } }}>
       {!(compact && value === '—' && statusLabel) ? <Typography component="span" variant="body2" sx={{ fontVariantNumeric: 'tabular-nums' }}>{value}</Typography> : null}
       {statusLabel ? <Typography component="span" variant="caption" color={['PARTIAL', 'UNIT_REVIEW', 'FAILED'].includes(output?.status ?? '') ? 'warning.dark' : 'inherit'}>{statusLabel}</Typography> : null}

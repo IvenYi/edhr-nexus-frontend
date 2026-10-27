@@ -89,6 +89,35 @@ test('explicit field-list layout remains available for Word documents', () => {
   assert.doesNotMatch(html, /内毒素检验记录/);
 });
 
+test('field filling puts required marks before names and disables controls without permission captions', () => {
+  const fields = [
+    { id: 'material', name: '物料', status: 'enabled', type: 'text', typeConfig: { required: true } },
+    { id: 'lot', name: '批号', status: 'enabled', type: 'text', typeConfig: {} },
+    { id: 'quantity', name: '数量', status: 'enabled', type: 'number', typeConfig: {} },
+    { id: 'result', name: '检验结果', status: 'enabled', type: 'singleSelect', typeConfig: { options: '合格:pass\n不合格:fail' } },
+  ];
+  const html = render(page(), { layout: 'fields', fields, runtime: { values: { lot: 'LOT-1', quantity: '12', result: 'pass' }, onChange() {} },
+    fieldPermissions: { material: 'EDIT', lot: 'READ_ONLY', quantity: 'READ_ONLY', result: 'READ_ONLY' } });
+  assert.match(html, /\*<\/span>物料/);
+  assert.doesNotMatch(html, /可编辑|只读/);
+  const material = html.match(/<input[^>]*aria-label="物料"[^>]*>/)?.[0];
+  assert.ok(material); assert.doesNotMatch(material, /disabled/);
+  for (const label of ['批号', '数量']) {
+    const input = html.match(new RegExp(`<input[^>]*aria-label="${label}"[^>]*>`))?.[0];
+    assert.ok(input); assert.match(input, /disabled=""/);
+  }
+  assert.match(html, /role="combobox"[^>]*aria-disabled="true"/);
+  assert.match(html, /value="LOT-1"/);
+});
+
+test('permission configuration preview retains its field permission captions', () => {
+  const html = render(page(), { layout: 'fields', fields: [
+    { id: 'material', name: '物料', status: 'enabled', type: 'text', typeConfig: {} },
+    { id: 'lot', name: '批号', status: 'enabled', type: 'text', typeConfig: {} },
+  ], fieldPermissions: { material: 'EDIT', lot: 'READ_ONLY' } });
+  assert.match(html, /可编辑/); assert.match(html, /只读/);
+});
+
 
 test('full-page sheet preview keeps portrait paper and configured margins around the grid', () => {
   const html = render(page({ cells: { '1:1': { value: '物料领用单' } } }), { fullPage: true });

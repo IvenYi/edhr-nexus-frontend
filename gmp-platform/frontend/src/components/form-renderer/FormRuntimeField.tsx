@@ -80,7 +80,7 @@ function RuntimeSubTable({ field, disabled, runtime }: { field: ModelField; disa
       signaturePermissions: { [column.id]: runtime.signaturePermissions?.[field.id] ?? 'READ_ONLY' },
       onSignatureRequest: runtime.onSignatureRequest ? () => runtime.onSignatureRequest?.({ fieldId: column.id, tableId: field.id, rowIndex: index }) : undefined,
       onChange: (id, value) => runtime.onChange(field.id, rows.map((item, i) => i === index ? { ...item, [id]: value } : item)) }}><FormRuntimeField field={column} readOnly={disabled || Boolean((column as ModelField & { readOnly?: boolean }).readOnly || column.typeConfig.readonly)} /></FormRuntimeContext.Provider> : null}</TableCell>)}
-      <TableCell><IconButton size="small" aria-label={`删除第 ${index + 1} 行`} disabled={disabled} onClick={() => runtime.onChange(field.id, rows.filter((_, i) => i !== index))}><DeleteOutlineRounded /></IconButton></TableCell></TableRow>)}
+      <TableCell><IconButton size="small" color="error" aria-label={`删除第 ${index + 1} 行`} disabled={disabled} onClick={() => runtime.onChange(field.id, rows.filter((_, i) => i !== index))}><DeleteOutlineRounded /></IconButton></TableCell></TableRow>)}
   </TableBody></Table><Button startIcon={<AddRounded />} size="small" disabled={disabled} onClick={() => runtime.onChange(field.id, [...rows, newSubTableRow(columns, templateNodes, runtime.referenceDefaults)])}>添加记录</Button></Box>;
 }
 

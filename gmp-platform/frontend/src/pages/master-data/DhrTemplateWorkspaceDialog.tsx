@@ -917,7 +917,7 @@ function FieldListPreview({
           if (!groupFields.length) return null;
           return (
             <Box key={group.id} sx={{ "& + &": { mt: 3 } }}>
-              <Typography
+              {!runtime || group.id !== 'default-group' ? <Typography
                 sx={{
                   pb: 1,
                   mb: 2,
@@ -928,7 +928,7 @@ function FieldListPreview({
                 }}
               >
                 {group.name}
-              </Typography>
+              </Typography> : null}
               <Box
                 sx={{
                   display: "grid",
@@ -937,6 +937,7 @@ function FieldListPreview({
                 }}
               >
                 {groupFields.map((field) => {
+                  const subTable = Boolean(runtime) && field.type === 'subTable';
                   const readOnly = Boolean(runtime?.disabled) || (field.type === 'signature' ? runtime?.signaturePermissions?.[field.id] !== 'EDIT' : fieldPermissions?.[field.id] === "READ_ONLY");
                   const highlighted =
                     interaction?.highlightFieldId === field.id;
@@ -947,7 +948,7 @@ function FieldListPreview({
                       type: field.type,
                     }) ?? [];
                   return (
-                    <Box key={field.id}>
+                    <Box key={field.id} sx={subTable ? { gridColumn: '1 / -1', minWidth: 0 } : undefined}>
                       <Stack
                         direction="row"
                         spacing={0.5}
@@ -955,10 +956,10 @@ function FieldListPreview({
                         sx={{ mb: 0.75 }}
                       >
                         <Typography sx={{ color: "#606266", fontSize: 13 }}>
+                          {runtime && (field.typeConfig.required || (field as typeof field & { required?: boolean }).required) ? <Box component="span" sx={{ color: 'error.main', mr: 0.5 }}>*</Box> : null}
                           {field.name}
-                          {runtime && (field.typeConfig.required || (field as typeof field & { required?: boolean }).required) ? <Box component="span" sx={{ color: 'error.main', ml: 0.5 }}>*</Box> : null}
                         </Typography>
-                        {fieldPermissions ? (
+                        {fieldPermissions && !runtime ? (
                           <Typography
                             component="span"
                             sx={{
@@ -978,16 +979,17 @@ function FieldListPreview({
                         sx={{
                           position: "relative",
                           minHeight: 36,
-                          px: 1,
+                          px: runtime ? 0 : 1,
                           display: "flex",
                           alignItems: "center",
-                          border: `1px solid ${highlighted ? "#1677c8" : readOnly ? "#d9dee7" : "#c7d8e8"}`,
-                          bgcolor: highlighted
+                          border: subTable ? '1px solid #dce3ed' : runtime ? 0 : `1px solid ${highlighted ? "#1677c8" : readOnly ? "#d9dee7" : "#c7d8e8"}`,
+                          borderRadius: subTable ? 1 : 0,
+                          bgcolor: runtime ? "transparent" : highlighted
                             ? "#eaf4ff"
                             : readOnly
                               ? "#f3f5f7"
                               : "#fff",
-                          boxShadow: highlighted
+                          boxShadow: highlighted && !runtime
                             ? "0 0 0 2px rgba(22,119,200,.16)"
                             : "none",
                           color: "#a8abb2",

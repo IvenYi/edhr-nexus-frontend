@@ -174,3 +174,12 @@ test('returning to a form from panel content restores focus after its button is 
   const f = fixture(); f.open('works'); f.closeExternally();
   assert.equal(f.document.activeElement, f.input); f.unmount();
 });
+
+test('opening history from a footer trigger returns focus there on Escape and retains the draft', () => {
+  const f = fixture(true, true), receipt = new f.Element('page'); receipt.focus();
+  f.openItem('history');
+  assert.equal(f.document.activeElement, f.refs[3].current);
+  f.fire('keydown', f.refs[3].current, 'Escape'); f.render();
+  assert.equal(f.active, null); assert.equal(f.document.activeElement, receipt);
+  assert.equal(f.form.draft, '37'); f.unmount();
+});
