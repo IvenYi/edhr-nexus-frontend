@@ -1,0 +1,85 @@
+{
+  "result": "passed",
+  "status": "FINAL",
+  "baseCommit": "2c4b79e1641be4886fd5361b48df076e57abd768",
+  "testedCommit": "4b45fb88679c8eddaec29f92ae7a36dcee9f5d68",
+  "qualityResult": {
+    "path": "docs/development/branch-review-20261027-input-session/cross-tab-remediation/evidence/quality-result.yaml",
+    "sha256": "46d439b3b4592c737b98c910622bbcd30c40ff3886c7c6dc1d1069fc3f7f4634",
+    "requiredPassed": 14,
+    "requiredTotal": 14
+  },
+  "ontology": {
+    "result": "updated",
+    "path": "docs/development/branch-review-20261027-input-session/cross-tab-remediation/evidence/ontology-result.yaml",
+    "sha256": "a68f0a18401d1697ad95d17c7b1e9f02debe4b9aba61215976d7d5ad4ee030b8",
+    "newDecision": "DEC-0085",
+    "newStatements": 6,
+    "finiteReviewRecords": 9
+  },
+  "findings": [
+    {
+      "id": "AUTH-INPUT-001",
+      "severity": "medium",
+      "status": "resolved",
+      "independentEvidence": "docs/development/branch-review-20261027-input-session/cross-tab-remediation/evidence/quality-result.yaml",
+      "testedCommit": "4b45fb88679c8eddaec29f92ae7a36dcee9f5d68"
+    },
+    {
+      "id": "API-BODY-001",
+      "severity": "medium",
+      "status": "resolved",
+      "independentEvidence": "docs/development/branch-review-20261027-input-session/cross-tab-remediation/evidence/quality-result.yaml",
+      "testedCommit": "4b45fb88679c8eddaec29f92ae7a36dcee9f5d68"
+    },
+    {
+      "id": "AUD-H014-XTAB-001",
+      "severity": "high",
+      "status": "resolved",
+      "independentEvidence": "docs/development/branch-review-20261027-input-session/cross-tab-remediation/evidence/quality-result.yaml",
+      "testedCommit": "4b45fb88679c8eddaec29f92ae7a36dcee9f5d68"
+    }
+  ],
+  "priorQuality": [
+    {
+      "result": "failed",
+      "testedCommit": "39f292d883e35b8ff8d7dfc6271486498b7f276a",
+      "path": "docs/development/branch-review-20261027-input-session/evidence/quality-result.yaml",
+      "sha256": "d60ea9721ba21b7a46e781346ea0a5a825ac0a845cec1d0fdba481c4d8906c80",
+      "historicalBytesPreserved": true
+    }
+  ],
+  "mergeRecommendation": "ready-for-manual-merge-after-publish",
+  "postCandidatePolicy": "After4b45 only L0 archive/scope/ledger/PR metadata. Source, tests, knowledge and architecture remain identical to independently tested candidate.",
+  "residualRisks": [
+    {
+      "id": "risk.existing-static-checks",
+      "description": "strict27、lint缺配置及两个旧字面量verify均保留实际失败",
+      "impact": "不能声称全站静态/无障碍或全部脚本通过",
+      "mitigation": "按原始结果逐项后续审查，不为绿灯改业务或降低断言"
+    },
+    {
+      "id": "risk.browser-fixture-boundary",
+      "description": "真实浏览器组件与fixture HTTP；真实PG为MockMvc，未做完整浏览器→真实后台认证E2E",
+      "impact": "本结果不证明所有浏览器、屏幕阅读器或完整生产认证链",
+      "mitigation": "按实际矩阵报告；后续部署/发布另取适用端到端证据"
+    },
+    {
+      "id": "risk.server-side-session-scope",
+      "description": "前端阻断不能撤回服务器已收到的写请求；本次未新增后端JWT撤销、任意自动续期或跨标签独立账号",
+      "impact": "不构成全设备单点登录/完整令牌生命周期的验收",
+      "mitigation": "保持DEC0085范围，不自动重放，后端与其他认证策略另行审查"
+    },
+    {
+      "id": "risk.full-audit-deferrals",
+      "description": "整体W0-W7、设计器剩余非拖动、TaskDetail协作者修复、生产管理弹窗、记录变更作废/DHR high/A12、原知识gap和性能讨论仍保留",
+      "impact": "本批passed不能表示全分支审计或发布完成",
+      "mitigation": "继续固定最新提交和有限入口推进；暂缓不擅自恢复"
+    }
+  ],
+  "cleanup": {
+    "container": "e59ce2cbbd4073a1c60a7841ec6245e9365414e98a4b02b72afe3ed2f7d16cab",
+    "stopExitCode": 0,
+    "userDatabaseTouched": false
+  }
+}

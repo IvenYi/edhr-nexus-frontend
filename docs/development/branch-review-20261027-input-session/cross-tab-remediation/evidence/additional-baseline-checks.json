@@ -1,0 +1,37 @@
+{
+  "checks": [
+    {
+      "check": "app-shell",
+      "baseline": false,
+      "exitCode": 1,
+      "rawLog": "/tmp/edhr-cross-tab-app-shell.log",
+      "sha256": "9f16855b9fdc064c09bed37ae8dcad6a0b9f3c2fabe87e98717a38cefa712481",
+      "excerpt": "App shell verification failed:\n- missing \"if (isPathSegmentMatch(path, '/form-management')) return [code, 'production.execution'];\" (form management routes should require both the records permission and production execution source permission)\n"
+    },
+    {
+      "check": "app-shell",
+      "baseline": true,
+      "exitCode": 1,
+      "rawLog": "/tmp/edhr-cross-tab-app-shell-baseline.log",
+      "sha256": "9f16855b9fdc064c09bed37ae8dcad6a0b9f3c2fabe87e98717a38cefa712481",
+      "excerpt": "App shell verification failed:\n- missing \"if (isPathSegmentMatch(path, '/form-management')) return [code, 'production.execution'];\" (form management routes should require both the records permission and production execution source permission)\n"
+    },
+    {
+      "check": "personal-settings",
+      "baseline": false,
+      "exitCode": 1,
+      "rawLog": "/tmp/edhr-cross-tab-personal-settings.log",
+      "sha256": "4fef053aa68e405eae44b417635f80dd8933d78a4dec69e1a57301ef684e99c3",
+      "excerpt": "file:///workspace/edhr-nexus-frontend/gmp-platform/frontend/scripts/verify-personal-settings-page.mjs:31\n    throw new Error(`${label} 缺少: ${missing.join(', ')}`);\n          ^\n\nError: src/pages/account/PersonalSettingsPage.tsx 缺少: 本人（{name}）授权该电子签名用于本系统内各类电子表单的审核、确认与批准等合规操作\n    at assertContains (file:///workspace/edhr-nexus-frontend/gmp-platform/frontend/scripts/verify-personal-settings-page.mjs:31:11)\n    at file:///workspace/edhr-nexus-frontend/gmp-platform/frontend/scripts/verify-personal-settings-page.mjs:72:1\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.19.0\n"
+    },
+    {
+      "check": "personal-settings",
+      "baseline": true,
+      "exitCode": 1,
+      "rawLog": "/tmp/edhr-cross-tab-personal-settings-baseline.log",
+      "sha256": "b2868aaeca239c00adb3443fe33d1d8b27f2bd4f155b36238bfc94cba8d9cd34",
+      "excerpt": "file:///tmp/edhr-cross-tab-static-base/gmp-platform/frontend/scripts/verify-personal-settings-page.mjs:31\n    throw new Error(`${label} 缺少: ${missing.join(', ')}`);\n          ^\n\nError: src/pages/account/PersonalSettingsPage.tsx 缺少: 本人（{name}）授权该电子签名用于本系统内各类电子表单的审核、确认与批准等合规操作\n    at assertContains (file:///tmp/edhr-cross-tab-static-base/gmp-platform/frontend/scripts/verify-personal-settings-page.mjs:31:11)\n    at file:///tmp/edhr-cross-tab-static-base/gmp-platform/frontend/scripts/verify-personal-settings-page.mjs:72:1\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.19.0\n"
+    }
+  ],
+  "meaning": "Actual failures retained, old literal expectations; not changed to obtain green. App-shell initial missing exported docs attempt was corrected before the baseline run recorded here."
+}

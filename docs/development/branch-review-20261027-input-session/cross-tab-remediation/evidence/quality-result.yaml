@@ -1,0 +1,272 @@
+qualityResult:
+  result: passed
+  baseCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+  headCommit: 4b45fb88679c8eddaec29f92ae7a36dcee9f5d68
+  contractBaseline:
+    sourceCommit: 4b45fb88679c8eddaec29f92ae7a36dcee9f5d68
+    targetBranch: edhr-dev
+    targetCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    contractReadCommit: 4b45fb88679c8eddaec29f92ae7a36dcee9f5d68
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.candidate-and-contracts
+    required: true
+    category: requirements
+    description: 实际候选、最新目标与读取契约核对
+    method: command
+    command: git fetch origin refs/heads/edhr-dev:refs/remotes/origin/edhr-dev; git rev-parse HEAD origin/edhr-dev; git status
+      --short; inspect contracts
+    outcome: passed
+    evidence:
+    - base/target=2c4b79e1641be4886fd5361b48df076e57abd768; head/tested=4b45fb88679c8eddaec29f92ae7a36dcee9f5d68; contractRead=4b45fb88679c8eddaec29f92ae7a36dcee9f5d68;
+      clean
+    - AGENTS/codeplz/角色契约内容与目标一致；知识0.3.25，新DEC0085单独核对
+  - id: check.confirmed-shared-session-policy
+    required: true
+    category: ontology
+    description: DEC0085六声明四场景与用户明确确认及保留边界
+    method: inspection
+    command: Inspect decision package, DEC0085, original confirmation/evidence, knowledge README/open questions and DEC0074
+    outcome: passed
+    evidence:
+    - 停止旧页及提示、发出前拒绝且仅本页回登录、不清B、不补交符合用户标注确认
+    - 资料更新与A登录/B本人签署保持，非自动进入B；0.3.25/specified/internal不提升，无新增运行fact/rule框架
+    - /tmp/edhr-cross-final-claims.json
+  - id: check.client-and-async-cleanup-source
+    required: true
+    category: security
+    description: 请求身份绑定、迟到响应及三处退出收尾源码
+    method: inspection
+    command: Inspect client/sessionPolicy/authStore/SessionChangeBoundary/App and all clearAuthStorage call sites
+    outcome: passed
+    evidence:
+    - Axios同步request rejected直接throw，实际Node验证adapter0
+    - header用本页认可token；token+本地非凭据nonce比较区分同token重登/ABA；失效后不安装远端身份
+    - 响应先检查会话/generation后处理成功/401/409/blob；三处await前捕获generation，晚返回不清/跳走新会话
+    - App边界包含旧操作区及其通知/私有弹窗，storage/focus/pageshow监听与HMR清理；无撤销已到服务器写入的虚假保证
+  - id: check.frontend-node-regression
+    required: true
+    category: unit
+    description: 原28及新增12实际client/回调保护
+    method: automated-test
+    command: node --test scripts/test-review-batch-01.mjs
+    outcome: passed
+    evidence:
+    - 40/40，无失败或skip
+    - 原断言精确归一化后与daca逐字节一致，仅两合法login setup和WebCrypto环境适配；新请求前零dispatch/窄读切换、同token、资料、clear及三退出同/跨标签晚返回通过
+    - /tmp/edhr-cross-final-node.log
+  - id: check.session-browser-desktop
+    required: true
+    category: e2e
+    description: 1280真实组件双标签与实际App安装点
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium SESSION_UI_WIDTH=1280 SESSION_UI_ARTIFACTS=/tmp/edhr-cross-final-ui node scripts/test-cross-tab-session-browser.mjs
+    outcome: passed
+    evidence:
+    - 12/12：成功/401/409/blob、退出/clear、同token、ABA、资料、登录恢复、同标签控制及实际App
+    - 旧表单卸载、缓存清空、B凭据保留；旧响应不导航；无旧保存/提交发送或重放
+    - 真实AppLayout/Boundary/client/store及实际App /login；HTTP为合成夹具，不冒称真实后端E2E
+  - id: check.session-browser-narrow
+    required: true
+    category: visual
+    description: 390同组12场景、键盘和实际截图
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium SESSION_UI_WIDTH=390 SESSION_UI_ARTIFACTS=/tmp/edhr-cross-final-ui-narrow node
+      scripts/test-cross-tab-session-browser.mjs
+    outcome: passed
+    evidence:
+    - 12/12，同组场景不计24个不同业务场景
+    - 横向溢出0、登录按钮完整在视口内，实际查看窄屏及App安装点提示截图
+    - 键盘进入登录页，实际LoginPage重登C后新工作区输入为空且无旧提交自动重放
+  - id: check.independent-baseline-counterexamples
+    required: true
+    category: regression
+    description: 旧daca子集反例独立复现
+    method: browser
+    command: SESSION_UI_BASELINE_COMMIT=daca7531c475101ec1dd3ff0f2c0861d6f9e09cd SESSION_UI_CASES=remote-late-success,remote-late-401,remote-logout,profile-refresh,same-tab-response-control
+      CHROME_PATH=/usr/bin/chromium SESSION_UI_ARTIFACTS=/tmp/edhr-cross-final-ui-baseline node scripts/test-cross-tab-session-browser.mjs
+    outcome: passed
+    evidence:
+    - 实际命令exit1，5项4红1正；候选同断言通过
+    - 原三会话缺口及远端资料store更新为红，同标签控制为正；没有为了3红2正改断言
+    - 旧版无边界用pass-through、其余旧模块git show，不以缺少新export编译失败冒充产品红
+  - id: check.original-login-delegation-browser
+    required: true
+    category: regression
+    description: 原登录及委托八场景回归
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium node scripts/test-login-delegation-browser.mjs
+    outcome: passed
+    evidence:
+    - 8/8；native空值保护、401恢复、登录及安全导航、branding重试、普通/记录控制帮助分支保持
+    - /tmp/edhr-cross-final-login.log
+  - id: check.backend-auth-and-input
+    required: true
+    category: integration
+    description: 最终候选原生PG输入/并发及相邻认证回归
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=AuthLoginConcurrencyPostgresTest,AuthControllerTest,JwtAuthenticationFilterTest,LoginLogControllerTest,GlobalExceptionHandlerTest,SecurityConfigTest,SecurityJwtExpirationTest
+      -Dauth.audit.url=jdbc:postgresql://127.0.0.1:55432/edhr_auth_audit_cross_tab_independent -Dauth.audit.user=postgres
+      -Dedhr.authorization-notice.font=/workspace/.edhr-cloud-tools/fonts/EdhrTestCJK-Regular.ttf test
+    outcome: passed
+    evidence:
+    - 56/56，零失败/错误/skip；AuthLoginConcurrencyPostgresTest17，其余39
+    - 12输入拒绝400且状态/日志无副作用，非空带空格密码保留；原并发阈值、失败计数和技术回滚继续通过；非登录转换400/正常绑定和技术500保持
+    - /tmp/edhr-cross-final-evidence.json#/backend
+  - id: check.fresh-postgres-schema
+    required: true
+    category: database
+    description: 独立空库与真实策略落库
+    method: query
+    command: docker exec <isolated-container> createdb -U postgres edhr_auth_audit_cross_tab_independent; native suite; psql
+      aggregate schema/config query
+    outcome: passed
+    evidence:
+    - fresh createdb退出0；Liquibase最终2changeset，hibernate validate实际通过
+    - 数据库实际查询liquibase_changesets=2、threshold=2,minutes=30；只用主审自建隔离PG，未访问用户库
+  - id: check.knowledge-suite
+    required: true
+    category: ontology
+    description: 知识结构/引用等既有校验
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - 89/89，无失败/错误/skip；不替代全量业务语义审计
+    - /tmp/edhr-cross-final-knowledge.log
+  - id: check.frontend-build
+    required: true
+    category: regression
+    description: TypeScript与生产构建
+    method: command
+    command: npm run build
+    outcome: passed
+    evidence:
+    - exit0，tsc -b及Vite实际完成
+    - /tmp/edhr-cross-final-build.log
+  - id: check.protected-scopes-and-assertions
+    required: true
+    category: regression
+    description: 原暂缓、未改页面及测试标准保持
+    method: command
+    command: git diff base HEAD -- protected pages/scripts and contracts; normalized old test comparison
+    outcome: passed
+    evidence:
+    - WorkOrderPage、原下载脚本及TaskDetail与目标字节相同，DhrManagement仅退出generation保护
+    - 原28断言无降低；业务表单/生产DHR规则、密码阈值/JWT后端策略及签署人例外无扩张
+    - /tmp/edhr-cross-final-claims.json
+  - id: check.failed-originals-and-scope
+    required: true
+    category: documentation
+    description: 历史失败、有限覆盖与整体未完成不混称
+    method: inspection
+    command: Inspect original failed documents and current remediation/decision/evidence; compare original bytes to daca
+    outcome: passed
+    evidence:
+    - 旧quality-result/review/evidence与daca原字节一致，仍failed/high open历史；新的正式关闭仅依据本实例候选复验
+    - 重复通知产品回归、TypeScript构造错误、浏览器nonce传播fixture失败及扫描脚本缺失均保留，不改为历史绿色
+    - 全量W0-W7、DHR/记录变更作废/TaskDetail/生产弹窗、性能方案及知识gap保留；无合并部署恢复或阶段提升
+  - id: check.strict-known-baseline
+    required: false
+    category: visual
+    description: 官方strict已知27项
+    method: command
+    command: python3 /tmp/edhr-cross-tab-audit-project.py <frontend-or-exported-baseline> --mode strict --no-write
+    outcome: failed
+    evidence:
+    - 基线/候选各27，完整findings数组完全相同；均exit2，不称strict通过
+  - id: check.lint-known-gap
+    required: false
+    category: regression
+    description: 既有ESLint配置缺口
+    method: command
+    command: npm run lint
+    outcome: failed
+    evidence:
+    - 实际exit2，缺少配置；未修改或降标准
+  - id: check.legacy-verifier-known-baseline
+    required: false
+    category: regression
+    description: 两个旧精确字面量脚本限制
+    method: command
+    command: node scripts/verify-app-shell-topbar.mjs; node scripts/verify-personal-settings-page.mjs (candidate and exported
+      daca)
+    outcome: failed
+    evidence:
+    - 四命令各exit1：App shell要求旧单一分支精确literal，实际联合projection分支仍要求production.execution，相关权限行未改
+    - 个人设置脚本期望审核，未改源码既有文本为审批；候选和基线同失败
+    - 独立已实际重跑及源码核对，不能称这两script通过
+  findings:
+  - id: AUTH-INPUT-001
+    severity: medium
+    scope: login-input
+    summary: 不完整登录字段缺少入口校验
+    reproductionSteps:
+    - 向登录接口提交缺失/null/空白username或password并查询账号状态
+    expectedResult: 400，计数/成功状态/日志不变，合法非空凭据原值匹配
+    actualResult: 本独立PG17及相邻测试通过，新输入12和空格密码正例全部通过
+    evidence:
+    - /tmp/edhr-cross-final-evidence.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 4b45fb88679c8eddaec29f92ae7a36dcee9f5d68
+    - type: command
+      reference: /tmp/edhr-cross-final-evidence.json
+  - id: API-BODY-001
+    severity: medium
+    scope: request-body-error-mapping
+    summary: 不可读JSON落入generic500
+    reproductionSteps:
+    - 提交空body、null根、数组、损坏JSON和对象密码，另验证非登录MVC转换及技术异常
+    expectedResult: 不可读body400安全消息，合法绑定200，技术故障500
+    actualResult: 本候选独立56中相关MVC/PG/映射回归全部通过
+    evidence:
+    - /tmp/edhr-cross-final-evidence.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 4b45fb88679c8eddaec29f92ae7a36dcee9f5d68
+    - type: command
+      reference: /tmp/edhr-cross-final-evidence.json
+  - id: AUD-H014-XTAB-001
+    severity: high
+    scope: shared-session-isolation
+    summary: 跨标签旧身份/缓存与新凭据混用及旧响应误清新会话
+    reproductionSteps:
+    - 真实AppLayout两页A→B或logout，持有A旧成功/401等结果后释放
+    - 验证页面卸载/提示、发出前adapter0、旧响应拒绝、B凭据保持及登录后不补交
+    expectedResult: 两层保护，旧页不按B身份提交，迟到结果/退出不清新会话，资料刷新保留编辑
+    actualResult: 旧基线4红1正独立复现；候选40 Node、同12浏览器两宽及实际App安装点全部通过
+    evidence:
+    - /tmp/edhr-cross-final-evidence.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 4b45fb88679c8eddaec29f92ae7a36dcee9f5d68
+    - type: command
+      reference: /tmp/edhr-cross-final-evidence.json
+  residualRisks:
+  - id: risk.existing-static-checks
+    description: strict27、lint缺配置及两个旧字面量verify均保留实际失败
+    impact: 不能声称全站静态/无障碍或全部脚本通过
+    mitigation: 按原始结果逐项后续审查，不为绿灯改业务或降低断言
+  - id: risk.browser-fixture-boundary
+    description: 真实浏览器组件与fixture HTTP；真实PG为MockMvc，未做完整浏览器→真实后台认证E2E
+    impact: 本结果不证明所有浏览器、屏幕阅读器或完整生产认证链
+    mitigation: 按实际矩阵报告；后续部署/发布另取适用端到端证据
+  - id: risk.server-side-session-scope
+    description: 前端阻断不能撤回服务器已收到的写请求；本次未新增后端JWT撤销、任意自动续期或跨标签独立账号
+    impact: 不构成全设备单点登录/完整令牌生命周期的验收
+    mitigation: 保持DEC0085范围，不自动重放，后端与其他认证策略另行审查
+  - id: risk.full-audit-deferrals
+    description: 整体W0-W7、设计器剩余非拖动、TaskDetail协作者修复、生产管理弹窗、记录变更作废/DHR high/A12、原知识gap和性能讨论仍保留
+    impact: 本批passed不能表示全分支审计或发布完成
+    mitigation: 继续固定最新提交和有限入口推进；暂缓不擅自恢复
+  blockingConditions: []

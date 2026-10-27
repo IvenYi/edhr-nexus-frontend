@@ -1,5 +1,7 @@
 # 跨标签会话保护整改
 
+全新独立对 `4b45fb88679c8eddaec29f92ae7a36dcee9f5d68` 正式 **passed/FINAL，14/14必需检查通过**。AUD-H014-XTAB-001按本次明确范围resolved；输入两个既有整改也通过最终候选回归。正式[质量原件](evidence/quality-result.yaml)、[报告](evidence/quality-review.md)、[安全证据](evidence/quality-evidence.json)及[验收状态](acceptance.json)分别保存；39f292d8的failed不回写。
+
 用户已标注并接受两层保护，来源为DEC-0085及本轮原始确认。共享会话变化时停止旧页面并提示重新登录；保存/提交发出前再检查，拒绝不一致请求，仅当前标签回登录，不清新凭据、不补交或恢复旧表单。不是较早未确认的自动进入B方案。目标仍2c4b79e1，同一PR35继续，不恢复原暂缓。
 
 ## 实现与边界
@@ -18,4 +20,6 @@
 
 后台产品及测试相对39f292d8未变化，主侧原56证据保留原受测范围，最终新独立实例需实际重跑。新本体updated/FINAL：DEC0085六声明四场景、九条有限评估，0.3.25及specified/internal不提升；不新增认证fact/rule/execution框架。
 
-旧39f292d8 failed原件及high/open作为历史保留，新独立passed前不提前关闭或转ready。源码辅助、测试实现及本体实例均FINAL且不冒充最终QA。生产管理弹窗及原脚本、TaskDetail、记录变更/作废及DHR high/A12、知识gap和性能讨论保持。前批设计器7组有限观察不外推完整可访问性；W0–W7整体审计未完成，没有可信整体百分比，不自动merge/deploy/恢复。
+新独立实际运行40 Node、56后端（fresh PG17、2changeset及阈值2）、89知识、两宽同12浏览器、原登录8及构建全部通过，基线五场景4红1正独立复现。strict27/lint缺配置及两旧verify脚本均真实失败单列，源码确认基线相同，不冒称全绿。所有正式角色及只读辅助均FINAL；4b45后仅L0归档/范围/交付登记，产品/测试/知识不变。
+
+旧39f292d8 failed原件及当时high/open作为历史保留。生产管理弹窗及原脚本、TaskDetail、记录变更/作废及其他DHR high/A12、知识gap和性能讨论保持。前批设计器7组有限观察不外推完整可访问性；W0–W7整体审计未完成，没有可信整体百分比，不自动merge/deploy/恢复。

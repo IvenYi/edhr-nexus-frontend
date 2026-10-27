@@ -1,0 +1,735 @@
+{
+  "head": "daca7531c475101ec1dd3ff0f2c0861d6f9e09cd",
+  "baseline": null,
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "boundary": "Real shared boundary/AppLayout/React/MUI/router/client/authStore/queryClient; fixture HTTP and synthetic identities. Probe form invokes the real client; actual App installation is separately exercised on /login. Not real backend authentication E2E.",
+  "results": [
+    {
+      "name": "remote-late-success",
+      "result": "passed",
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        }
+      ]
+    },
+    {
+      "name": "remote-late-401",
+      "result": "passed",
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-401",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        }
+      ]
+    },
+    {
+      "name": "remote-late-409",
+      "result": "passed",
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-409",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        }
+      ]
+    },
+    {
+      "name": "remote-late-blob",
+      "result": "passed",
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-blob",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        }
+      ]
+    },
+    {
+      "name": "remote-logout",
+      "result": "passed",
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": null
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": null
+        }
+      ]
+    },
+    {
+      "name": "remote-clear",
+      "result": "passed",
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        }
+      ]
+    },
+    {
+      "name": "same-token-new-login",
+      "result": "passed",
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        }
+      ]
+    },
+    {
+      "name": "remote-aba",
+      "result": "passed",
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        }
+      ]
+    },
+    {
+      "name": "profile-refresh",
+      "result": "passed",
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/save",
+          "method": "POST",
+          "authorization": "Bearer fixture-token-A"
+        }
+      ]
+    },
+    {
+      "name": "keyboard-login-and-reauth",
+      "result": "passed",
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/auth/login",
+          "method": "POST",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-C"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-C"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-C"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-C"
+        }
+      ]
+    },
+    {
+      "name": "same-tab-response-control",
+      "result": "failed",
+      "message": "A stale response must not clear the new credentials\n+ actual - expected\n\n  {\n+   sessionId: '1ca06667-e0712752-7a1e9d45-466bfca9',\n-   sessionId: 'initial-fixture-session-A',\n    token: 'fixture-token-B',\n    user: {\n      displayName: '隔离用户B',\n      id: '9007199254740992',\n      permissions: [\n",
+      "errors": [],
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        }
+      ]
+    },
+    {
+      "name": "actual-app-installation",
+      "result": "passed",
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "method": "GET",
+          "authorization": "Bearer fixture-token-B"
+        }
+      ]
+    }
+  ]
+}

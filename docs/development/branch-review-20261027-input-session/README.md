@@ -1,8 +1,8 @@
 # 登录输入、跨标签会话与设计器运行核查
 
-继续[PR35](https://github.com/IvenYi/edhr-nexus-frontend/pull/35)：用户本轮已明确接受两层保护，同一分支完成实际前端整改，正在准备全新独立复验。初轮39f292d8 failed原件保持；daca7531之前只有L0归档，本轮有产品/测试/知识变更，不沿用“仅文档”结论。新独立passed前保持draft，不重开PR34。详见[跨标签整改](cross-tab-remediation/README.md)。
+继续[PR35](https://github.com/IvenYi/edhr-nexus-frontend/pull/35)：用户确认两层保护后，已完成实际整改；全新独立对4b45fb88正式passed/FINAL，14/14必需检查通过，跨标签high按本次范围resolved。初轮39f292d8 failed原件保持。4b45之后仅L0归档/范围/交付，不改产品/测试/知识。详见[跨标签整改](cross-tab-remediation/README.md)及[当前验收](acceptance.json)，不重开PR34。
 
-目标 `edhr-dev@2c4b79e1641be4886fd5361b48df076e57abd768`，PR34合入树同e956，无其他目标增量。L2初轮本体NA、独立39f292d8 failed/FINAL（13必需12过1失败）只代表当时范围。当前已取得明确用户确认、DEC0085知识updated/FINAL和本轮实现侧证据，高风险正式关闭仍须新实例通过。
+目标 `edhr-dev@2c4b79e1641be4886fd5361b48df076e57abd768`，PR34合入树同e956，收尾fetch无其他增量。L2初轮NA/failed仅代表当时范围；当前DEC0085知识updated及全新独立passed均FINAL，当前状态取新验收，不把历史失败改写为绿。
 
 ## 输入整改
 
