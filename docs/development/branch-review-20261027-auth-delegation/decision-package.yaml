@@ -1,0 +1,115 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUTH-DELEGATION-AUDIT-20261027
+  scope: 整体审计W3委托说明、W5登录验证/失败计数并发及W2非拖动入口核对
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c
+    targetBranch: edhr-dev
+    targetCommit: 00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c
+    contractReadCommit: 00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c
+    uncommittedContractPaths: []
+  summary: PR33合并树相同；现行规则先核对合理性；修复登录并发失败丢计数/技术异常部分提交、401重载及普通表单转办旧说明，保留生产管理弹窗等暂缓。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: tenant-delegation-copy
+        change: 对照DEC0081与真实使用profile，核对普通表单转办帮助文字。
+        evidenceReferences: [gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx]
+      - area: login-failure-guard
+        change: 真实PG复现并发失败是否丢计数，检查锁定/成功清零及用户间锁隔离。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java]
+      - area: login-validation
+        change: 真实浏览器保留native required空值保护；公开登录请求显式使用既有skipAuthRedirect以保留401错误及用户名，不改全局受保护请求跳转。
+        evidenceReferences: [gmp-platform/frontend/src/pages/LoginPage.tsx]
+    transitiveImpacts:
+      - area: login-audit
+        concern: 登录加入账户行锁及同事务；仅专用FailedLoginException提交密码失败计数，技术异常回滚成功登录写入，不豁免所有BusinessException。
+    potentialImpacts:
+      - area: concurrency
+        concern: 账户锁应仅作用于相同账号，不引入租户全局串行；未证明所有账户管理并发路径均已覆盖。
+    unaffectedAreas:
+      - area: user-deferred
+        reason: 不改生产管理弹窗样式、TaskDetail签名或记录控制运行政策。
+    compatibilityAndMigration:
+      - area: identity
+        change: 无迁移，无历史修补；原findByUsername保留给其他读取，新增锁查询仅由login调用。
+    snapshotImpacts: []
+    auditImpacts:
+      - area: login
+        change: 核对现有登录日志与失败状态事务语义，不新增审计政策或历史修补。
+    permissionImpacts:
+      - area: auth
+        change: 沿用现有阈值/锁定时长/禁用状态/JWT及权限策略，不降低密码标准。
+    testImpacts:
+      - scope: native-pg
+        scenarios: [同账号并发失败, 异账号独立, 锁定/解锁/成功清零]
+        evidenceReferences: []
+      - scope: browser
+        scenarios: [登录空值保护, 错误恢复, 委托帮助文字]
+        evidenceReferences: []
+    evidenceGaps:
+      - 直接畸形API请求、完整账户管理并发、令牌撤销和全套安全矩阵未在本批运行，不外推全认证域完成。
+      - 设计器非拖动10条仅源码审查，普通已有字段首次放置及键盘菜单仍待运行验证；不新增产品交互。
+  extensionStrategy:
+    selectedPaths: [product-core, transaction-orchestration]
+    rationale: 仅在现有身份登录及配置帮助入口做有依据整改，不新增通用认证框架。
+    ownershipBoundaries:
+      - owner: primary
+        responsibility: 复现、代码修复、测试及台账。
+      - owner: ontology
+        responsibility: 规则来源、适用性及合理性评估，不机械改政策。
+      - owner: source-helper
+        responsibility: 只读查设计器非拖动入口及具体缺口。
+      - owner: quality
+        responsibility: 收尾全新独立复验，不参与修复。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java
+      changeType: update
+      reason: 真实PG复现计数丢失和技术异常部分提交，增加同账号锁及失败分类的事务边界。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserAccountRepository.java
+      changeType: update
+      reason: 登录专用账户行级写锁，不改其他普通读取。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/AuthControllerTest.java
+      changeType: update
+      reason: 七处登录stub改用新锁查询，不降低原断言。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/AuthLoginConcurrencyPostgresTest.java
+      changeType: create
+      reason: 原生PG四场景覆盖并发、独立账号、顺序失败/过期锁/成功清零、禁用和技术故障回滚。
+    - path: gmp-platform/frontend/src/pages/LoginPage.tsx
+      changeType: update
+      reason: 公开登录401保留现有错误恢复流程；原native required保护不变。
+    - path: gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx
+      changeType: update
+      reason: 仅纠正FORM_PROCESS审批分支帮助文字，保留RECORD_CONTROL/DHR运行规则。
+    - path: gmp-platform/frontend/scripts/test-login-delegation-browser.mjs
+      changeType: create
+      reason: 真实React/MUI/路由/client/会话store受控HTTP八场景，支持基线及正常/窄屏；不冒称真实认证端到端。
+  acceptanceScenarios:
+    - id: login-attempt-accounting
+      given: 配置失败次数阈值和锁定时长
+      when: 同一账号并发失败登录
+      then: 每次失败按原阈值计入，达到阈值锁定；不同账号互不共用全局锁
+      evidenceRequirements: [原生PG可控竞争, 现行策略核对]
+    - id: login-technical-rollback
+      given: 账号已有失败计数
+      when: 正确密码后的登录日志写入发生技术故障
+      then: 返回失败，失败计数不提前清零，lastLogin不发布成功状态
+      evidenceRequirements: [原生PG故障注入及库记录]
+    - id: login-error-recovery
+      given: 公开登录页与有效输入
+      when: 后台返回401
+      then: 不整页重载，用户名保留、错误可见且可重试；空字段仍不请求
+      evidenceRequirements: [真实浏览器正反例]
+    - id: delegation-profile-boundary
+      given: FORM_PROCESS或RECORD_CONTROL审批配置
+      when: 展示帮助文字
+      then: 普通表单匹配DEC0081租户委托，记录控制仍用原固定配置说明
+      evidenceRequirements: [现行知识及调用profile, 浏览器]

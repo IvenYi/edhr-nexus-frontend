@@ -109,7 +109,7 @@ class AuthControllerTest {
         AuthController.LoginRequest request = new AuthController.LoginRequest();
         request.setUsername("admin");
         request.setPassword("123456");
-        when(userAccountRepository.findByUsername("admin")).thenReturn(Optional.of(user));
+        when(userAccountRepository.findByUsernameForUpdate("admin")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("123456", "hash")).thenReturn(true);
         when(userRoleRepository.findByUserId(1L)).thenReturn(List.of(
                 UserRole.builder().userId(1L).roleId(10L).build()));
@@ -148,7 +148,7 @@ class AuthControllerTest {
         AuthController.LoginRequest loginRequest = new AuthController.LoginRequest();
         loginRequest.setUsername("qa.snowflake");
         loginRequest.setPassword("123456");
-        when(userAccountRepository.findByUsername("qa.snowflake")).thenReturn(Optional.of(user));
+        when(userAccountRepository.findByUsernameForUpdate("qa.snowflake")).thenReturn(Optional.of(user));
         when(userAccountRepository.findById(userId)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("123456", "hash")).thenReturn(true);
         when(userRoleRepository.findByUserId(userId)).thenReturn(List.of());
@@ -198,7 +198,7 @@ class AuthControllerTest {
         AuthController.LoginRequest request = new AuthController.LoginRequest();
         request.setUsername("admin");
         request.setPassword("123456");
-        when(userAccountRepository.findByUsername("admin")).thenReturn(Optional.of(user));
+        when(userAccountRepository.findByUsernameForUpdate("admin")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("123456", "hash")).thenReturn(true);
         when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.of(SystemSetting.builder()
                 .tenantId("default")
@@ -238,7 +238,7 @@ class AuthControllerTest {
         AuthController.LoginRequest request = new AuthController.LoginRequest();
         request.setUsername("admin");
         request.setPassword("wrong");
-        when(userAccountRepository.findByUsername("admin")).thenReturn(Optional.of(user));
+        when(userAccountRepository.findByUsernameForUpdate("admin")).thenReturn(Optional.of(user));
         when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.of(SystemSetting.builder()
                 .tenantId("default")
                 .passwordFailureLockThreshold(3)
@@ -267,7 +267,7 @@ class AuthControllerTest {
         AuthController.LoginRequest request = new AuthController.LoginRequest();
         request.setUsername("admin");
         request.setPassword("123456");
-        when(userAccountRepository.findByUsername("admin")).thenReturn(Optional.of(user));
+        when(userAccountRepository.findByUsernameForUpdate("admin")).thenReturn(Optional.of(user));
         when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> controller.login(request, new MockHttpServletRequest()))
@@ -293,7 +293,7 @@ class AuthControllerTest {
         MockHttpServletRequest servletRequest = new MockHttpServletRequest();
         servletRequest.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/125.0 Safari/537.36");
         servletRequest.addHeader("X-Forwarded-For", "203.0.113.10, 10.0.0.2");
-        when(userAccountRepository.findByUsername("qa.admin")).thenReturn(Optional.of(user));
+        when(userAccountRepository.findByUsernameForUpdate("qa.admin")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("123456", "hash")).thenReturn(true);
         when(userRoleRepository.findByUserId(1L)).thenReturn(List.of());
         when(systemSettingRepository.findByTenantId("default")).thenReturn(Optional.empty());
@@ -1031,7 +1031,7 @@ class AuthControllerTest {
         AuthController.LoginRequest request = new AuthController.LoginRequest();
         request.setUsername("admin");
         request.setPassword("123456");
-        when(userAccountRepository.findByUsername("admin")).thenReturn(Optional.of(user));
+        when(userAccountRepository.findByUsernameForUpdate("admin")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("123456", "hash")).thenReturn(true);
         when(userRoleRepository.findByUserId(1L)).thenReturn(List.of(
                 UserRole.builder().userId(1L).roleId(341646126926241792L).build()));

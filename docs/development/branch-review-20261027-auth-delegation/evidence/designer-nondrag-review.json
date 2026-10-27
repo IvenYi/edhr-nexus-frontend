@@ -1,0 +1,194 @@
+{
+  "role": "read-only source-helper; not independent quality acceptance",
+  "sourceCommit": "00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c",
+  "decisionPackage": "docs/development/branch-review-20261027-auth-delegation/decision-package.yaml",
+  "knowledgeBaselineVersion": "0.3.25 (decision package; no ontology review performed here)",
+  "scope": "maintained React designer non-drag/keyboard ordinary-field placement alternatives; 10 bounded entry/method scopes, not whole-file completion",
+  "records": [
+    {
+      "id": "ND01",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx",
+      "methods": [
+        "CanvasTab rail Buttons",
+        "DesignerSidebar/ComponentLibrary rendering"
+      ],
+      "locator": "90-160",
+      "sourceConclusion": "fields/grid等侧栏有真实Button.onClick；fields展示DesignerSidebar，grid展示ComponentLibrary。切换侧栏本身不放置业务字段。",
+      "runtimeNext": "在真实设计器按Tab聚焦侧栏按钮，以Enter切换fields/grid，检查焦点和当前画布选择保留。",
+      "sourceStatus": "source-inspected",
+      "runtimeStatus": "pending-runtime"
+    },
+    {
+      "id": "ND02",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx",
+      "methods": [
+        "handleFieldPointerDown",
+        "field card Button"
+      ],
+      "locator": "212-279;340-373",
+      "sourceConclusion": "普通字段卡为真实Button，draggable=false，只有onPointerDown；4px阈值后通过template-designer-field-pointer-drop发出目标坐标。未发现本地onClick/onKeyDown插入处理。只能证明本卡片已接入指针路径，不能由此推断整个设计器。",
+      "runtimeNext": "准备一个可用未放置普通字段，Tab聚焦其卡片，分别Enter/Space，观察nodes和焦点；随后指针拖放作为对照。",
+      "sourceStatus": "source-inspected",
+      "runtimeStatus": "pending-runtime"
+    },
+    {
+      "id": "ND03",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+      "methods": [
+        "addDroppedFieldToCell",
+        "addDroppedFieldToWordTableCell",
+        "FIELD_POINTER_DROP_EVENT listener"
+      ],
+      "locator": "2800;3422-3533;4945+",
+      "sourceConclusion": "指针事件按sheet/Word目标分流，网格drop解析范围后调用ToCell，Word drop调用Word cell API。网格原生onDrop也是现有入口；这些仍依赖拖放，不是非拖动替代。",
+      "runtimeNext": "分别以普通网格和Word表格作为真实目标，验证坐标绑定、重复放置限制与撤销。",
+      "sourceStatus": "source-inspected",
+      "runtimeStatus": "pending-runtime"
+    },
+    {
+      "id": "ND04",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+      "methods": [
+        "handleOpenQuickAddFieldsDialog",
+        "handleConfirmQuickAddFields",
+        "renderQuickAddFieldDialog",
+        "quick-add-fields MenuItem"
+      ],
+      "locator": "4487;4504;4583;5768;6947",
+      "sourceConclusion": "单元格右键菜单“快速添加字段”打开可点击对话框；确认只调用addFields/addSubTableFields创建模型字段并切换fields侧栏，没有调用节点放置API。不能算已有普通字段的非拖动放置入口。",
+      "runtimeNext": "从可选区域打开快速添加，检查model.fields增加、canvas nodes不增加；再检查键盘是否能进入和办理该菜单/对话框。",
+      "sourceStatus": "source-inspected",
+      "runtimeStatus": "pending-runtime"
+    },
+    {
+      "id": "ND05",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+      "methods": [
+        "handleSetSubTableField",
+        "renderSetSubTableMenu",
+        "handleCreateQuickSubTable"
+      ],
+      "locator": "4343-4380;4809+;4878-4893;6953;7072+",
+      "sourceConclusion": "已有子表存在确定的非拖动放置路径：“设为子表”MenuItem/子菜单onClick→addNodeFromFieldToRange。菜单需cell轴、多单元格、非已有子表选择、存在availableSubTableFields。另“快速设为子表”调用createSubTableFromRange，同时创建模型及绑定。该能力不能泛化到普通字段。",
+      "runtimeNext": "使用一份仅一个和一份多个可用子表的模型，在合法多格范围点击设为子表；验证选择、范围绑定、重叠拒绝和undo/redo。",
+      "sourceStatus": "source-inspected",
+      "runtimeStatus": "pending-runtime"
+    },
+    {
+      "id": "ND06",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ComponentLibrary.tsx",
+      "methods": [
+        "dispatchInsert",
+        "ComponentLibrary card Button.onClick"
+      ],
+      "locator": "80;94-110",
+      "relatedPaths": [
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/registry/commonComponentRegistry.ts",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx:4174+"
+      ],
+      "sourceConclusion": "组件卡明确onClick发common-component-insert；CanvasSheetWorkspace监听并在选中范围或free canvas插入。registry明确为display components，不创建business fields。text等显示组件有非拖动入口，不能替代普通模型字段的放置。",
+      "runtimeNext": "选一个cell，点击及键盘Enter激活text组件；检查display node产生而model.fields不增加。没有选择范围时检查原有提示。",
+      "sourceStatus": "source-inspected",
+      "runtimeStatus": "pending-runtime"
+    },
+    {
+      "id": "ND07",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+      "methods": [
+        "handleSheetKeyDown",
+        "sheet root tabIndex/onKeyDown",
+        "cell onContextMenu"
+      ],
+      "locator": "3539+;4945+;6535-6542",
+      "sourceConclusion": "键盘支持已放置节点的cut/paste、清除及Enter/F2文本编辑；sheet根tabIndex=0，cell为-1。未发现显式ContextMenu/Shift+F10、普通字段选择插入命令。浏览器可能对当前焦点合成contextmenu，不能仅凭未写按键分支宣称不能键盘开菜单。",
+      "runtimeNext": "在真实页面从Tab进入sheet，测试ContextMenu及Shift+F10菜单位置和有效range；检查是否可仅键盘选择目标并首次插入普通字段。另测试已绑定节点cut/paste，区分移动与首次放置。",
+      "sourceStatus": "source-inspected",
+      "runtimeStatus": "pending-runtime"
+    },
+    {
+      "id": "ND08",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+      "methods": [
+        "addNodeFromField",
+        "addNodeFromFieldToCell",
+        "addNodeFromFieldToWordTableCell",
+        "addNodeFromFieldToRange"
+      ],
+      "locator": "1899-1903;2398-2520",
+      "sourceConclusion": "通用addNodeFromField存在，但rg frontend/src仅找到API声明/实现，未找到实际产品UI调用，不能作为用户入口。各专用方法保留enabled/available过滤、表格目标/范围及子表限制，并以pushDocumentHistory管理绑定修改。",
+      "runtimeNext": "后续任何确认修复应调用匹配当前目标的现有guarded API，验证可用/已绑定/禁用字段、Word/网格、历史及序列化，而不是直接绕过store追加node。",
+      "sourceStatus": "source-inspected",
+      "runtimeStatus": "pending-runtime"
+    },
+    {
+      "id": "ND09",
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+      "methods": [
+        "addFields",
+        "addSubTableFields",
+        "createSubTableFromRange",
+        "getAvailableFieldsForCurrentVersion"
+      ],
+      "locator": "2189-2240;2544+;3514+",
+      "sourceConclusion": "addFields创建模型及选中字段，不生成画布节点；子表range创建同时生成模型及绑定。可用字段基于enabled及当前页已绑定ID过滤。快速添加与普通字段卡的能力边界在store层也不同。",
+      "runtimeNext": "对真实入口核对模型和节点数、唯一字段名、可用列表、重复绑定限制及保存后重新读取；不要把内部store脚本调用冒充UI覆盖。",
+      "sourceStatus": "source-inspected",
+      "runtimeStatus": "pending-runtime"
+    },
+    {
+      "id": "ND10",
+      "path": "gmp-platform/frontend/scripts/verify-template-designer-react.mjs",
+      "methods": [
+        "source assertions",
+        "store helper checks"
+      ],
+      "locator": "1207-1318;1542;2222",
+      "relatedPaths": [
+        "gmp-platform/frontend/scripts/test-designer-save-browser.mjs",
+        "gmp-platform/frontend/scripts/test-decorative-preview-browser.mjs"
+      ],
+      "sourceConclusion": "现有脚本明确拒绝字段卡onClick直接addNodeFromField的字符串模式，并覆盖quick-add/store APIs；browser save脚本用store API注入绑定数据，不能证明UI普通字段插入；decorative preview browser只实际验证指针drop和ghost语义。此次只阅读，所有脚本均未执行。",
+      "runtimeNext": "新增验证应覆盖真实CanvasTab/Sidebar/menu与store联动；不以脚本中程序化store放置或只含handler源码字符串冒充非拖动可用。",
+      "sourceStatus": "source-inspected",
+      "runtimeStatus": "pending-runtime"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "adjacent.designer-field-card-keyboard-placement",
+      "status": "source-inspected/pending-runtime",
+      "dedupReference": "docs/development/branch-review-20261027-ui-evidence/evidence/static-triage.json#adjacentCandidates",
+      "notNewDefectId": true,
+      "conclusion": "延续原候选而非新增同根缺陷。已找到显示组件点击插入、子表菜单放置、快速创建模型字段，均不能证明已有普通字段首次放置有非拖动替代。在已追踪的产品UI调用中未找到此普通字段替代；未作浏览器复验，不宣称整个设计器无替代或已构成完整可访问性缺陷。",
+      "minimalOptionIfConfirmed": "若真实浏览器确认已有普通字段缺少可用非拖动放置，先明确现有交互合同，再考虑选择目标cell/range后提供显式放置/绑定命令；通过现有ToCell/Word/Range API实现。不要直接把旧generic addNodeFromField绑到卡片点击；现有测试有意禁止该形式。",
+      "protectionConditions": [
+        "保留现有字段可用性、enabled、当前页重复绑定限制",
+        "尊重网格与Word目标差异和现有子表多格/重叠guard",
+        "保留选区、撤销/重做、保存序列化和原指针拖放",
+        "不更改业务字段/模型定义和业务政策，不降低现有测试标准"
+      ]
+    }
+  ],
+  "conclusions": [
+    "设计器确实存在若干非拖动操作；不可以全局断言只有拖动。",
+    "普通已有未放置字段、已有子表、显示组件、快速新建模型字段四者必须区分。",
+    "键盘原生Button activation与浏览器contextmenu需真实运行验证；源码可识别入口但不等于已可用通过。",
+    "未发现可据本次纯源码证据直接实施的确定代码缺陷；候选保留等待真实交互复验。"
+  ],
+  "execution": {
+    "testsRun": [],
+    "browserRun": false,
+    "buildRun": false,
+    "repositoryFilesModified": [],
+    "artifactFiles": [
+      "/tmp/edhr-designer-nondrag-review.json",
+      "/tmp/edhr-designer-nondrag-review.md"
+    ],
+    "productionManagementDialogTouched": false
+  },
+  "limitations": [
+    "只覆盖这10个具体方法/入口范围，不代表整个DesignerSidebar/CanvasSheetWorkspace/store审查完成。",
+    "没有运行屏幕阅读器、跨浏览器或全键盘设备矩阵。",
+    "当前仓库工作区存在主审并行改动；本辅助实例未修改这些文件。"
+  ]
+}

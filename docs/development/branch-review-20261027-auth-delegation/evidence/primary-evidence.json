@@ -1,0 +1,332 @@
+{
+  "baselineCommit": "00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c",
+  "workingTree": "Uncommitted implementation at run time; freeze candidate commit separately before formal QA.",
+  "backendCommand": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=AuthLoginConcurrencyPostgresTest,AuthControllerTest,JwtAuthenticationFilterTest,LoginLogControllerTest -Dauth.audit.url=jdbc:postgresql://127.0.0.1:55432/edhr_auth_audit_primary -Dauth.audit.user=postgres -Dedhr.authorization-notice.font=/workspace/.edhr-cloud-tools/fonts/EdhrTestCJK-Regular.ttf test",
+  "runHistory": [
+    {
+      "id": "red",
+      "rawLog": "/tmp/edhr-auth-audit-red.log",
+      "sha256": "579560234fd6e000d1bda945ce7f6b52d19c29c9bcb4ca456c7a99260866d784",
+      "bytes": 43332,
+      "lastReportedCounts": {
+        "tests": 4,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      },
+      "meaning": "Initial red; fixture UPDATE affected0, configured2 not established (default5). Lost count and partial success independently still reproduced."
+    },
+    {
+      "id": "green",
+      "rawLog": "/tmp/edhr-auth-audit-green.log",
+      "sha256": "b8dacae52db4debf420442364345adadc3103373fde061ac829762d721012d69",
+      "bytes": 45368,
+      "lastReportedCounts": {
+        "tests": 30,
+        "failures": 1,
+        "errors": 3,
+        "skipped": 0
+      },
+      "meaning": "First implementation run: native count fixed but fixture threshold not persisted; three existing PDF tests errored without CJK font."
+    },
+    {
+      "id": "final",
+      "rawLog": "/tmp/edhr-auth-audit-final.log",
+      "sha256": "fd374653560f170ade86366ad17f1cc9ba9e06f9cdabff5bc218ed59e5955ad6",
+      "bytes": 42630,
+      "lastReportedCounts": {
+        "tests": 30,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      "meaning": "Corrected upsert fixture with asserted2: native4 pass; Noto Chinese PDF ToUnicode maps 人 to ⼈, one existing assertion fails."
+    },
+    {
+      "id": "font-final",
+      "rawLog": "/tmp/edhr-auth-audit-font-final.log",
+      "sha256": "0da9c08b4ac159ffb4718fbd5333dc6ffb876f71e54c4ebfcfee7e19ff9a3558",
+      "bytes": 38978,
+      "lastReportedCounts": {
+        "tests": 30,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "meaning": "Existing EdhrTestCJK font supplied;30 pass, no assertion/source weakening."
+    },
+    {
+      "id": "corrected-red",
+      "rawLog": "/tmp/edhr-auth-audit-corrected-red.log",
+      "sha256": "acbca3dfe7873822b8ec413a78c08fd14c7ee1a697830603b963bbfbb8774e81",
+      "bytes": 4056,
+      "lastReportedCounts": null,
+      "meaning": "Baseline scratch first attempt: missing Vite, no tests executed."
+    },
+    {
+      "id": "corrected-red-with-deps",
+      "rawLog": "/tmp/edhr-auth-audit-corrected-red-with-deps.log",
+      "sha256": "987260920078b25424a33bf7b20bd2d8a327c333a0b6053c770688b1e7d82a25",
+      "bytes": 42091,
+      "lastReportedCounts": {
+        "tests": 4,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      },
+      "meaning": "Baseline scratch with candidate test only and dependency symlink: proper fixture asserts2;4 tests,2 actual product failures,2 pass."
+    }
+  ],
+  "finalSuites": [
+    {
+      "suite": "com.zencas.edhr.identity.security.JwtAuthenticationFilterTest",
+      "counts": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "testcases": [
+        {
+          "name": "validTokenExposesCurrentUserIdAsRequestAttribute",
+          "result": "passed",
+          "failureMessage": null
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.identity.controller.AuthControllerTest",
+      "counts": {
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "testcases": [
+        {
+          "name": "changeCurrentUserPasswordRejectsWrongCurrentPasswordAndMismatchedConfirmation",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "updateProfileStoresEditableEmailPhoneAndBirthdayForCurrentUser",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "createPersonalSignatureDoesNotUseIdCardOcrValidation",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "updateProfileRejectsInvalidEmailAndPhone",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "loginKeepsJwtSmallButReturnsPermissionsInUserPayload",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "createPersonalSignatureReauthenticatesStoresSignatureAndWritesAudit",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "verifyCurrentUserSignatureRejectsWrongPassword",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "loginLocksAccountAfterConfiguredFailedPasswordAttempts",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "loginMeAndProfileResponsesSerializeSnowflakeUserIdAsExactString",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "createPersonalSignatureUsesSecuritySettingsDefaultCycleWhenNoSettingsPersisted",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "verifyCurrentUserSignatureRequiresPersonalSignatureCertification",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "loginRejectsLockedAccountUntilLockWindowExpires",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "meReturnsCurrentRoleIdsAndLatestPermissions",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "meDoesNotReturnRawRoleIdAsRoleNameWhenRoleIsUnmapped",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "loginUsesConfiguredTokenValidityAndReturnsRequiredSecurityActions",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "loginRecordsWhoAccountTimeActionMethodClientBrowserAndIp",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "changeCurrentUserPasswordRequiresCurrentPasswordAndStoresEncodedNewPassword",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "logoutRecordsCurrentUserClientBrowserAndIp",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "verifyCurrentUserSignatureReturnsAuthorizedSignatureImageAfterPasswordAuth",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "changeCurrentUserPasswordRejectsPasswordBelowConfiguredComplexity",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "uploadAvatarStoresFileReferenceAndReturnsUpdatedCurrentUser",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "meReturnsAvatarBirthdayAndLatestElectronicSignatureEvidence",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "loginDoesNotReturnRawRoleIdAsRoleNameWhenRoleIsUnmapped",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "createPersonalSignatureRejectsWrongPassword",
+          "result": "passed",
+          "failureMessage": null
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.identity.controller.LoginLogControllerTest",
+      "counts": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "testcases": [
+        {
+          "name": "listMyLoginLogsOnlyReturnsCurrentUserLoginLogoutRows",
+          "result": "passed",
+          "failureMessage": null
+        }
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.identity.controller.AuthLoginConcurrencyPostgresTest",
+      "counts": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "testcases": [
+        {
+          "name": "persistedFailureAndExpiredLockClearOnlyOnSuccessfulLogin",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "disabledAccountCannotLoginOrAccumulatePasswordFailures",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "overlappingFailuresReachConfiguredThresholdWithoutBlockingOtherAccounts",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "technicalLoginLogFailureDoesNotPublishSuccessfulState",
+          "result": "passed",
+          "failureMessage": null
+        }
+      ]
+    }
+  ],
+  "correctedBaselineSuites": [
+    {
+      "suite": "com.zencas.edhr.identity.controller.AuthLoginConcurrencyPostgresTest",
+      "counts": {
+        "tests": 4,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      },
+      "testcases": [
+        {
+          "name": "persistedFailureAndExpiredLockClearOnlyOnSuccessfulLogin",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "disabledAccountCannotLoginOrAccumulatePasswordFailures",
+          "result": "passed",
+          "failureMessage": null
+        },
+        {
+          "name": "overlappingFailuresReachConfiguredThresholdWithoutBlockingOtherAccounts",
+          "result": "failed",
+          "failureMessage": "\nexpected: 2\n but was: 1"
+        },
+        {
+          "name": "technicalLoginLogFailureDoesNotPublishSuccessfulState",
+          "result": "failed",
+          "failureMessage": "\nexpected: 1\n but was: 0"
+        }
+      ]
+    }
+  ],
+  "frontend": {
+    "browser": "CHROME_PATH=/usr/bin/chromium AUTH_UI_WIDTH=1280|390 node scripts/test-login-delegation-browser.mjs",
+    "build": {
+      "command": "npm run build",
+      "exit": 0,
+      "sha256": "c75c865da2ec0ae178cea7ae2f0e2702e0dce308f33a0fd1ada97ca278009331",
+      "containsBuildSuccess": true
+    },
+    "lint": {
+      "command": "npm run lint",
+      "exit": 2,
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389",
+      "excerpt": "\n> edhr-frontend@0.0.1 lint\n> eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0\n\n\nOops! Something went wrong! :(\n\nESLint: 8.57.1\n\nESLint couldn't find a configuration file. To set up a configuration file for this project, please run:\n\n    npm init @eslint/config\n\nESLint looked for configuration files in /workspace/edhr-nexus-frontend/gmp-platform/frontend/scripts and its ancestors. If it found none, it then looked in your home directory.\n\nIf you think you already have a configuration file or if you need more help, please stop by the ESLint Discord server: https://eslint.org/chat\n\nnpm notice\nnpm notice New major version of npm available! 11.9.0 -> 12.2.1\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1\nnpm notice To update run: npm install -g npm@12.2.1\nnpm notice\n"
+    },
+    "strict": {
+      "command": "python3 /tmp/edhr-auth-audit-project.py gmp-platform/frontend --mode strict",
+      "baselineExit": 2,
+      "candidateExit": 2,
+      "sameFullFindings": true,
+      "count": 27
+    }
+  },
+  "secretsBoundary": "Raw backend output not committed; fixtures only, no real user database; source/test passwords are synthetic. Font binaries not committed."
+}

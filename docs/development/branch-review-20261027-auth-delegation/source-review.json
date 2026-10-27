@@ -1,0 +1,33 @@
+{
+  "baselineCommit": "00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c",
+  "scope": "Finite named methods and call sites; not whole-file or full-branch assurance. Designer helper has ten additional bounded records in evidence/designer-nondrag-review.json; overlapping paths must not be added as unique file counts.",
+  "remoteDelta": "PR33 merge tree equals delivered b1eaac8c; no other target product/contract delta. Prior frozen catalog and accepted ranges are retained with their original source commits.",
+  "records": [
+    {"id":"AUTH01","path":"gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java","methods":["login","FailedLoginException"],"status":"source-reviewed-and-reproduced","conclusion":"Baseline repository reads/saves are separate transactions. Same-account failure increments race; success state commits before login-log failure. Candidate account row lock and narrow failure commit exception tested on native PostgreSQL."},
+    {"id":"AUTH02","path":"gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java","methods":["currentSecurityPolicy","toSecurityPolicy","ensureLoginAllowed","handleFailedLogin","clearFailedLoginState"],"status":"source-reviewed","conclusion":"Retain configured threshold, minutes, disabled/locked gate, expired-lock behavior and successful clear. Existing settings/source/tests are implementation evidence, not a newly invented user policy."},
+    {"id":"AUTH03","path":"gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserAccountRepository.java","methods":["findByUsername","findByUsernameForUpdate"],"status":"source-reviewed","conclusion":"New PESSIMISTIC_WRITE JPQL query only used by login. Existing read method remains. No schema/data migration or tenant-global mutex."},
+    {"id":"AUTH04","path":"gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java","methods":["recordLoginEvent","login event call site"],"status":"source-reviewed-and-reproduced","conclusion":"Synthetic LOGIN save failure must leave attempts and lastLogin unchanged. No token returned on500. No broader claim on all audit/identity paths."},
+    {"id":"AUTH05","path":"gmp-platform/frontend/src/pages/LoginPage.tsx","methods":["handleSubmit","native form required fields","branding error/retry branch","security-action navigation"],"status":"source-reviewed-and-browser-verified","conclusion":"Request-scoped skipAuthRedirect prevents credential401 reload. Native empty guards retain zero requests, username/error recovery works; success and both security destinations tested with fixture HTTP at1280/390."},
+    {"id":"AUTH06","path":"gmp-platform/frontend/src/api/client.ts","methods":["request interceptor","response401 interceptor","skipAuthRedirect config"],"status":"source-reviewed-and-browser-verified","conclusion":"Existing opt-out is reused only on public login. Global protected-request401 source unchanged; complete protected-route session matrix not rerun."},
+    {"id":"AUTH07","path":"gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx","methods":["APPROVAL helper ternary","FORM_PROCESS versus RECORD_CONTROL profile"],"status":"source-reviewed-and-browser-verified","conclusion":"Only ordinary-approval helper corrected to DEC0081. Record-control profile retains existing fixed-action explanation, runtime policies unchanged."},
+    {"id":"AUTH08","path":"gmp-platform/frontend/src/pages/workflow-center/FormProcessEditor.tsx","methods":["WorkflowActionConfig APPROVAL and START callers"],"status":"source-reviewed","conclusion":"Default FORM_PROCESS applies to ordinary form configuration; helper correction is scoped to approval branch."},
+    {"id":"AUTH09","path":"gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx","methods":["WorkflowActionConfig RECORD_CONTROL caller"],"status":"source-reviewed","conclusion":"Explicit RECORD_CONTROL stays outside the ordinary delegation helper branch."},
+    {"id":"AUTH10","path":"gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java","methods":["resolveUserPermissionSnapshot","putDepartmentSnapshot","resolveDepartmentPath"],"status":"source-reviewed-performance-candidate","conclusion":"Roles/permissions are bulk loaded by IDs, no per-role repository loop here. Department ancestors fall back to findById in a while loop guarded at20. This is bounded depth-dependent round trips, not evidence of an unbounded list N+1. Native runtime statement counts, latency and load not measured; no optimization implemented."}
+  ],
+  "performanceFollowup": {
+    "id":"candidate.auth-department-ancestor-roundtrips",
+    "status":"source-candidate-pending-measurement-and-discussion",
+    "growthModel":"Department depth (loop max20), roles/permissions per user and concurrent logins; not total DHR/form count.",
+    "risk":"Ancestor lookups extend successful login processing while same-account row lock is held. The different-account test proves absence of a shared global mutex only, not throughput or an SLA.",
+    "next":"Measure SQL count, lock duration and payload at realistic department depths/role counts; discuss request-local reuse or recursive/bulk reading only if measured cost justifies it.",
+    "implementationAuthorized":false
+  },
+  "conditionalExtractionProposal": {
+    "status":"proposal-only-no-refactor",
+    "module":"AuthController login orchestration",
+    "boundary":"If later identity changes create maintenance pressure, extract only login/use-case transaction to AuthLoginService, keeping controller HTTP DTO conversion and unrelated PDF/signature/profile endpoints in place.",
+    "preserve":["one same-account transaction","FailedLoginException commit semantics","technical rollback","permission/department response","JWT and security-action flags"],
+    "verification":"Native race/fault tests plus current response/unit/browser scenarios must remain valid; no abstract security framework or new business policy. Not required to fix this batch."
+  },
+  "unverified":["malformed direct login API matrix","all account-management concurrency","full token lifecycle/revocation","designer non-drag runtime","overall identity/whole-file review"]
+}

@@ -1,0 +1,193 @@
+{
+  "role": "business-knowledge-modeler",
+  "baseline": "00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c",
+  "knowledgeModelVersion": "0.3.25",
+  "scope": "Eight finite current decisions/implementation boundaries; no complete identity-domain or whole-branch assurance",
+  "records": [
+    {
+      "id": "DEC-0081-01",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceLocator": "decisionStatements/DEC-0081-01",
+      "knowledgeMaturity": "specified/internal",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "currentApplicability": "普通生产表单及通用任务；不扩展至记录控制或DHR",
+      "reasonableness": "把创建候选证据与后续显式委托责任分开，保留同租户、有效未锁定、非本人及当前处理权约束；符合用户2026-10-20明确范围选择。",
+      "semanticReview": "reviewed",
+      "conclusion": "needs-fix",
+      "implementation": "FormProcessEditor调用WorkflowActionConfig时使用默认FORM_PROCESS；帮助文字仍称目标受当前节点审批主体范围约束。ExecutionAccess.requireTransferTarget调用TenantTransferTargets，已允许原候选外有效同租户目标。",
+      "evidence": [
+        "docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+        "gmp-platform/frontend/src/pages/workflow-center/FormProcessEditor.tsx#WorkflowActionConfig",
+        "gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx#approval-help",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java#transferTargets,requireTransferTarget"
+      ],
+      "requiredDisposition": "仅纠正普通表单配置帮助说明，不改变运行资格、后端或DHR/记录控制政策。"
+    },
+    {
+      "id": "DEC-0081-02",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceLocator": "decisionStatements/DEC-0081-02",
+      "knowledgeMaturity": "specified/internal",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "currentApplicability": "当前责任与原候选证据分离，保持各路径既有证据机制",
+      "reasonableness": "允许委托不等于重写来源；保留原approvers/限制标记与独立transferAssignees使历史解释和当前授权可区分。",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "implementation": "当前普通表单以ExecutionAccess和TenantTransferTargets做目标资格；原来源与实际受让人分开。本角色只读实现/证据，不重新认证转办运行。",
+      "evidence": [
+        "docs/knowledge/evidence/form-approval-transfer.yaml",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionAccess.java"
+      ],
+      "requiredDisposition": "保留，不把本次文案或登录修复扩展为重建候选原件。"
+    },
+    {
+      "id": "DEC-0081-03",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceLocator": "decisionStatements/DEC-0081-03",
+      "knowledgeMaturity": "specified/internal",
+      "provenance": [
+        "user-confirmed"
+      ],
+      "currentApplicability": "显式目标、原因和责任变化，不推进节点/改表单/产审批结果",
+      "reasonableness": "限定委托为责任转移，避免帮助文字修复被解释为新增跳过审批或修改业务结果。",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "implementation": "本批拟修改帮助文字，现有运行边界保留，未重跑其历史验收。",
+      "evidence": [
+        "docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+        "docs/knowledge/evidence/form-approval-transfer.yaml"
+      ],
+      "requiredDisposition": "保留原因必填及现有动作/审计边界。"
+    },
+    {
+      "id": "DEC-0081-04",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sourceLocator": "decisionStatements/DEC-0081-04",
+      "knowledgeMaturity": "specified/internal",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "currentApplicability": "DHR保持专属动作；不开发记录控制变更/作废委托运行时",
+      "reasonableness": "不同流程的证据和签署契约不同，用户只对通用/普通表单授权租户内委托，不能全局改成相同说明。",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "implementation": "ReviewTemplateEditor显式profile=RECORD_CONTROL，WorkflowActionConfig已分支提供另一段说明；FormFillSettings的DIRECT_FILL只用于START，不把审批说明推广至所有profile。",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateEditor.tsx#WorkflowActionConfig",
+        "gmp-platform/frontend/src/components/form-fill-settings/FormFillSettings.tsx#WorkflowActionConfig",
+        "gmp-platform/frontend/src/components/flow-designer/WorkflowActionConfig.tsx#recordControl"
+      ],
+      "requiredDisposition": "记录控制说明和运行仍保持，TaskDetail签名及生产管理弹窗样式继续暂缓。"
+    },
+    {
+      "id": "AUDIT-AUTH-CONFIG-001",
+      "knowledgeId": null,
+      "recordType": "implementation-boundary",
+      "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/system/entity/SystemSetting.java",
+      "sourceLocator": "passwordFailureLockThreshold,passwordFailureLockMinutes",
+      "knowledgeMaturity": "not-registered-as-knowledge-rule",
+      "provenance": [
+        "original-evidence"
+      ],
+      "currentApplicability": "现有系统设置按default租户读取，正数阈值和分钟配置",
+      "reasonableness": "设置页明确命名为密码输错次数与锁定时长，配置变化应影响登录保护；保持既有值和默认值属于实现一致性，不需要发明新阈值。",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "implementation": "AuthController.currentSecurityPolicy/toSecurityPolicy读取现有字段，系统设置页检查>=1；未找到专门知识ID，不能包装为用户逐字确认。",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/system/SystemSettingsPage.tsx#security-fields-and-validation",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java#currentSecurityPolicy,toSecurityPolicy",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/AuthControllerTest.java#loginLocksAccountAfterConfiguredFailedPasswordAttempts"
+      ],
+      "requiredDisposition": "保留数值、默认、单位与当前租户边界，不提高成熟度或新增规则ID。"
+    },
+    {
+      "id": "AUDIT-AUTH-ELIGIBILITY-002",
+      "knowledgeId": null,
+      "recordType": "implementation-boundary",
+      "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "sourceLocator": "ensureLoginAllowed",
+      "knowledgeMaturity": "not-registered-as-knowledge-rule",
+      "provenance": [
+        "original-evidence"
+      ],
+      "currentApplicability": "DISABLED/LOCKED账号拒绝；lockedUntil未来则拒绝",
+      "reasonableness": "账号行政状态与临时密码锁定是不同事实；并发修复应继续检查二者，不能为计数方便绕过禁用或提前放开未到期锁定。",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "implementation": "ensureLoginAllowed在密码匹配前执行；已有顺序单测断言锁定时不调用PasswordEncoder。",
+      "evidence": [
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/AuthControllerTest.java#loginRejectsLockedAccountUntilLockWindowExpires"
+      ],
+      "requiredDisposition": "账号锁或事务方案应保持现有拒绝语义与锁定窗口，不改变行政状态。"
+    },
+    {
+      "id": "AUDIT-AUTH-FAILURE-ACCOUNTING-003",
+      "knowledgeId": null,
+      "recordType": "implementation-boundary",
+      "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "sourceLocator": "login,handleFailedLogin",
+      "knowledgeMaturity": "not-registered-as-knowledge-rule",
+      "provenance": [
+        "original-evidence",
+        "inference"
+      ],
+      "currentApplicability": "每次实际密码失败计一次，达到现有配置阈值设置lockedUntil",
+      "reasonableness": "并发不能让同样的失败请求数量少计，否则配置的安全保护不确定；按同账号串行或原子更新保留此含义属于实现修复。",
+      "semanticReview": "reviewed",
+      "conclusion": "evidence-gap",
+      "implementation": "基线findByUsername无写锁，login无外层事务；handleFailedLogin以读取值+1后save，存在并发覆盖线索。本角色未运行PG，不提前判定实际缺陷或修复通过。",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/repository/UserAccountRepository.java#findByUsername",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/AuthControllerTest.java#loginLocksAccountAfterConfiguredFailedPasswordAttempts"
+      ],
+      "requiredDisposition": "主侧需可控原生PG竞争、同账号计数和异账号独立证据；AUTH业务失败后计数必须按原语义保留，不能被新事务默认回滚。"
+    },
+    {
+      "id": "AUDIT-AUTH-SUCCESS-LOGGING-004",
+      "knowledgeId": null,
+      "recordType": "implementation-boundary",
+      "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "sourceLocator": "clearFailedLoginState,login,recordLoginEvent",
+      "knowledgeMaturity": "not-registered-as-knowledge-rule",
+      "provenance": [
+        "original-evidence",
+        "inference"
+      ],
+      "currentApplicability": "成功密码认证清零失败计数及临时锁、更新lastLoginAt并写LOGIN日志",
+      "reasonableness": "保护机制应可按现有成功条件恢复，成功日志应反映实际登录。技术异常回滚可作为引入一致事务后的工程验收，但本次未找到其用户逐字政策，不能伪造确认来源。",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "implementation": "基线clearFailedLoginState清零，login保存lastLoginAt后recordLoginEvent写LoginLog；现有无外层TX，技术故障原子性尚未运行核验。",
+      "evidence": [
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/AuthControllerTest.java#loginRecordsWhoAccountTimeActionMethodClientBrowserAndIp",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java#recordLoginEvent"
+      ],
+      "requiredDisposition": "新事务应保留成功清零及日志字段；明确期望AUTH失败持久化、技术异常回滚的差别，不把宽泛BusinessException豁免推广到未来任意业务错误。"
+    }
+  ],
+  "counts": {
+    "reviewed": 8,
+    "needsFix": 1,
+    "evidenceGap": 1,
+    "consistent": 6
+  },
+  "notExecuted": [
+    "Maven",
+    "PostgreSQL",
+    "Browser",
+    "Knowledge mutation"
+  ],
+  "conclusion": "No unresolved product question blocks this slice. Preserve existing policies; fix ordinary-form helper copy and prove any auth concurrency issue before remediation. No ontology change required."
+}

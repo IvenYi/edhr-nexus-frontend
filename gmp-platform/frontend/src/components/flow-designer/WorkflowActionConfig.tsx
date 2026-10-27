@@ -111,7 +111,7 @@ export function WorkflowActionConfig({
         <Typography variant="caption" color="text.secondary">
           {recordControl
             ? "审批动作及显隐由系统固定；可配置显示名称、按钮样式和电子签名，审批与退回可设置意见必填。"
-            : kind === "APPROVAL" ? "配置审批、退回和转办动作；转办始终要求填写原因，并受当前节点审批主体范围约束。" : "设置用户在此节点可以看到和执行的操作。"}
+            : kind === "APPROVAL" ? "配置审批、退回和转办动作；可转办给同租户正常可用的其他用户，转办必须填写原因。" : "设置用户在此节点可以看到和执行的操作。"}
         </Typography>
       </Stack>
 
