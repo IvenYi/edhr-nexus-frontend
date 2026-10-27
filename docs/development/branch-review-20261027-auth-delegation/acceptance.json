@@ -1,0 +1,85 @@
+{
+  "result": "passed",
+  "status": "FINAL",
+  "baseCommit": "00b98f8cf3ca8a3696e15d1ffac2b3b766314f2c",
+  "testedCommit": "810e73f585608e2e86d8bb8c51f6cb41f8deb5f4",
+  "formalQuality": {
+    "path": "docs/development/branch-review-20261027-auth-delegation/evidence/quality-result.yaml",
+    "sha256": "89ccbd4b0820142ea766ed6f232afaf55cd439e60d24112319e715544cd10742",
+    "requiredPassed": 13
+  },
+  "ontology": {
+    "result": "not-applicable",
+    "path": "docs/development/branch-review-20261027-auth-delegation/evidence/ontology-result.yaml",
+    "sha256": "ac91e8088417c610c2f3b2f41f1d03223e7acdac73a4fa77f97c6203779b998b",
+    "finiteRuleRecords": 8
+  },
+  "findings": [
+    {
+      "id": "AUTH-CONCURRENCY-001",
+      "severity": "high",
+      "status": "resolved",
+      "fixCommit": "810e73f585608e2e86d8bb8c51f6cb41f8deb5f4",
+      "independentlyTestedCommit": "810e73f585608e2e86d8bb8c51f6cb41f8deb5f4"
+    },
+    {
+      "id": "AUTH-ATOMICITY-001",
+      "severity": "medium",
+      "status": "resolved",
+      "fixCommit": "810e73f585608e2e86d8bb8c51f6cb41f8deb5f4",
+      "independentlyTestedCommit": "810e73f585608e2e86d8bb8c51f6cb41f8deb5f4"
+    },
+    {
+      "id": "LOGIN-RECOVERY-001",
+      "severity": "medium",
+      "status": "resolved",
+      "fixCommit": "810e73f585608e2e86d8bb8c51f6cb41f8deb5f4",
+      "independentlyTestedCommit": "810e73f585608e2e86d8bb8c51f6cb41f8deb5f4"
+    },
+    {
+      "id": "DELEGATION-COPY-001",
+      "severity": "low",
+      "status": "resolved",
+      "fixCommit": "810e73f585608e2e86d8bb8c51f6cb41f8deb5f4",
+      "independentlyTestedCommit": "810e73f585608e2e86d8bb8c51f6cb41f8deb5f4"
+    }
+  ],
+  "postAcceptancePolicy": "Only L0 original-evidence archive, task-scope/ledger and PR registration; product, tests, knowledge and contracts remain identical to tested commit. No new runtime acceptance implied by later doc SHA.",
+  "residualRisks": [
+    {
+      "id": "risk.existing-strict-and-lint",
+      "description": "strict27与基线相同且lint缺配置仍失败",
+      "impact": "不能声称全站静态/无障碍或lint通过",
+      "mitigation": "保留原结果，后续逐项有依据审查；不为扫描取消校验"
+    },
+    {
+      "id": "risk.fixture-browser-boundary",
+      "description": "浏览器使用真实组件及受控HTTP；真实PG使用MockMvc",
+      "impact": "本批没有完整真实浏览器→运行后端认证端到端",
+      "mitigation": "分别报告两条实际验证边界，不混称完整E2E"
+    },
+    {
+      "id": "risk.auth-security-not-complete",
+      "description": "畸形API输入、全部账户管理并发、令牌生命周期/撤销和安全矩阵未全覆盖",
+      "impact": "不构成完整身份域或分支审计完成",
+      "mitigation": "按整体台账后续有限入口增量审查"
+    },
+    {
+      "id": "risk.auth-department-candidate",
+      "description": "部门祖先max20轮回查和角色/权限量仅源码增长候选，未量化",
+      "impact": "不能给出吞吐、锁持有时间或容量保证",
+      "mitigation": "先测SQL/锁/负载，性能方案另讨论，不直接实施"
+    },
+    {
+      "id": "risk.original-deferrals",
+      "description": "设计器普通字段非拖动runtime待验证，生产管理弹窗、TaskDetail朋友修复、记录变更作废/DHR high/A12及原知识gap/性能方案保留",
+      "impact": "整体W0-W7仍未完成；本批通过不关闭这些事项",
+      "mitigation": "继续按台账逐项推进，用户暂缓不恢复"
+    }
+  ],
+  "cleanup": {
+    "isolatedPostgresContainer": "e1931feefe0c633ea2ed629b30bc768f64bb72c2e6d9cdcdcfbf022363e00a10",
+    "stopExitCode": 0,
+    "userDatabaseTouched": false
+  }
+}
