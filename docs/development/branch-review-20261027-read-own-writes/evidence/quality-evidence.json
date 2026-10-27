@@ -1,0 +1,215 @@
+{
+  "role": "independent-quality-verifier",
+  "baseCommit": "26796235085b9759295f3dfff8e078ded3cd5ed8",
+  "headCommit": "8eeefac024a496fa27ec8d9201f8b31110e5ab65",
+  "workingTree": "clean",
+  "knowledgeModelVersion": "0.3.25",
+  "backend": [
+    {
+      "name": "com.zencas.edhr.production.controller.BatchProcessIntegrationTest",
+      "tests": 21,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 2,
+      "skippedCases": [
+        {
+          "name": "bulkSplitObservesRepeatedReadsAndKeepsAtomicFailure",
+          "reason": "System property [production.growth.observe] does not exist"
+        },
+        {
+          "name": "smallWorkOrderPagesObserveWholeDatasetLoading",
+          "reason": "System property [production.growth.observe] does not exist"
+        }
+      ],
+      "newCases": [
+        {
+          "name": "creationAuditFailureRollsBackBeforeResponseIsPublished(boolean)[1]",
+          "passed": true
+        },
+        {
+          "name": "creationAuditFailureRollsBackBeforeResponseIsPublished(boolean)[2]",
+          "passed": true
+        },
+        {
+          "name": "creationOutputMatchesSubsequentReadForSingleAndBulk(String, boolean)[1]",
+          "passed": true
+        },
+        {
+          "name": "creationOutputMatchesSubsequentReadForSingleAndBulk(String, boolean)[2]",
+          "passed": true
+        },
+        {
+          "name": "creationOutputMatchesSubsequentReadForSingleAndBulk(String, boolean)[3]",
+          "passed": true
+        },
+        {
+          "name": "creationOutputMatchesSubsequentReadForSingleAndBulk(String, boolean)[4]",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.ProductionServiceTest",
+      "tests": 22,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": [],
+      "newCases": []
+    },
+    {
+      "name": "com.zencas.edhr.production.controller.ProductionObjectControllerTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": [],
+      "newCases": []
+    }
+  ],
+  "commands": [
+    {
+      "id": "native-pg",
+      "logPath": "/tmp/edhr-own-writes-independent-pg.log",
+      "logSha256": "bc133ac9023eb0d750275a4c27fa4dc949378dd4f32a53d672f22be450649a37",
+      "exitCode": 0
+    },
+    {
+      "id": "knowledge",
+      "logPath": "/tmp/edhr-own-writes-independent-knowledge.log",
+      "logSha256": "b7d44f3d7fe038ae21ab92c40e4c0ab3c3a67094cc88e43cc0e103e9c5d427c6",
+      "exitCode": 0
+    },
+    {
+      "id": "browser-candidate",
+      "logPath": "/tmp/edhr-own-writes-independent-browser.log",
+      "logSha256": "22b4d1205aef5201b714d9b819a192e5f8e7e318e02cfa6f9a8282096ccbcb29",
+      "exitCode": 0
+    },
+    {
+      "id": "browser-baseline-red",
+      "logPath": "/tmp/edhr-own-writes-independent-browser-baseline.log",
+      "logSha256": "b0607986b6a0fea48d458577de1953369e3ef7137725064c5a5ad6f51594f8ee",
+      "exitCode": 1
+    },
+    {
+      "id": "production-build",
+      "logPath": "/tmp/edhr-own-writes-independent-build.log",
+      "logSha256": "8e43e2a3f7dd717c219b716454dacabb0a754313491a57b4e0f6686193596491",
+      "exitCode": 0
+    },
+    {
+      "id": "designer-static",
+      "logPath": "/tmp/edhr-own-writes-independent-designer-static.log",
+      "logSha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77",
+      "exitCode": 0
+    },
+    {
+      "id": "strict-ui",
+      "logPath": "/tmp/edhr-own-writes-independent-static.log",
+      "logSha256": "c0a8f73953a5be67218b0c3add151929ecceca8d2eb83296f7a68960dd438720",
+      "exitCode": 2
+    },
+    {
+      "id": "strict-ui-baseline",
+      "logPath": "/tmp/edhr-own-writes-independent-static-baseline.log",
+      "logSha256": "f76e0f43b70f09889c41cc83f39571e0552b41efc61a5c32effc55cddee0d94b",
+      "exitCode": 2
+    },
+    {
+      "id": "lint",
+      "logPath": "/tmp/edhr-own-writes-independent-lint.log",
+      "logSha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389",
+      "exitCode": 2
+    }
+  ],
+  "protectedFiles": [
+    {
+      "path": "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx",
+      "sha256": "fe242bfd161ef5bc7db625efa0639e6ad9ada39b62faf2d57f011d3e09ada351",
+      "matchesTarget": true
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-work-order-template-browser.mjs",
+      "sha256": "00df1530a0b344455447fe5c81a346789439b0829a9317ec504f8297a3d44772",
+      "matchesTarget": true
+    }
+  ],
+  "browserCandidate": {
+    "baseline": null,
+    "boundary": "real components, CanvasTab and Zustand in Chromium; fixture document, no backend writes",
+    "results": [
+      {
+        "name": "workflow",
+        "result": "passed"
+      },
+      {
+        "name": "designer",
+        "result": "passed"
+      }
+    ]
+  },
+  "browserBaseline": {
+    "baseline": "26796235085b9759295f3dfff8e078ded3cd5ed8",
+    "boundary": "real components, CanvasTab and Zustand in Chromium; fixture document, no backend writes",
+    "results": [
+      {
+        "name": "workflow",
+        "result": "failed",
+        "message": "decorative workflow previews must not advertise a button action\n\n2 !== 0\n",
+        "pageErrors": []
+      },
+      {
+        "name": "designer",
+        "result": "failed",
+        "message": "Expected values to be strictly equal:\n\n'BUTTON' !== 'SPAN'\n",
+        "pageErrors": []
+      }
+    ]
+  },
+  "static": {
+    "baselineSummary": {
+      "errors": 27,
+      "total": 27,
+      "unresolved": 13,
+      "violations": 14,
+      "warnings": 0
+    },
+    "candidateSummary": {
+      "errors": 27,
+      "total": 27,
+      "unresolved": 13,
+      "violations": 14,
+      "warnings": 0
+    },
+    "added": 0,
+    "removed": 0,
+    "officialScriptMatchesSkill": true
+  },
+  "semanticIdsVerified": [
+    "DEC-0078-02",
+    "DEC-0078-03",
+    "DEC-0078-04",
+    "DEC-0078-06",
+    "DEC-0014-04",
+    "rule.production.production-object-batch-submit-atomic",
+    "rule.production.production-object-audit-change-snapshot",
+    "evidence.final-output-linkage-confirmed"
+  ],
+  "inspection": {
+    "transaction": "same outer controller and service transaction; one flush not commit; native audit-failure markers observed",
+    "visualsViewed": [
+      "/tmp/edhr-own-writes-qa-browser/workflow.png",
+      "/tmp/edhr-own-writes-qa-browser/designer.png"
+    ],
+    "sourceReview": "three production source changes only; config and field-card pointer handlers unchanged",
+    "backendBaselineRed": "primary raw logs and hashes inspected; not independently re-executed"
+  },
+  "limitations": [
+    "No backend production data writes; native DB is isolated clean baseline",
+    "No performance observation flag; two existing opt-in tests skipped",
+    "No screen reader or full-device/keyboard matrix",
+    "No entire-branch assurance",
+    "Raw backend logs remain in /tmp because test-authentication fixtures may appear"
+  ]
+}
