@@ -80,6 +80,16 @@
   "cleanup": {
     "isolatedPostgresContainer": "e1931feefe0c633ea2ed629b30bc768f64bb72c2e6d9cdcdcfbf022363e00a10",
     "stopExitCode": 0,
-    "userDatabaseTouched": false
+    "userDatabaseTouched": false,
+    "containerAutoRemovedConfirmed": true,
+    "baselineWorktreeRemoved": true
+  },
+  "pullRequest": {
+    "number": 34,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/34",
+    "stateAtCreation": "OPEN",
+    "mergeableAtCreation": "MERGEABLE",
+    "mergeStateAtCreation": "CLEAN",
+    "manualMergeOnly": true
   }
 }
