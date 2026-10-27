@@ -3,19 +3,24 @@ decisionPackage:
   scope: 整体审计W3/W5登录请求与会话边界，W2设计器非拖动运行核查
   knowledgeBaselineVersion: 0.3.25
   contractBaseline:
-    sourceCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    sourceCommit: 39f292d883e35b8ff8d7dfc6271486498b7f276a
     targetBranch: edhr-dev
     targetCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
     contractReadCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
     uncommittedContractPaths: []
-  summary: PR34人工合并树与交付相同；验证畸形登录请求及会话隔离，设计器非拖动只作真实交互核查，有确定缺陷再最小修复。
+  summary: PR34人工合并树相同；输入两个问题已最小修复并独立运行通过；跨标签high未修复导致整体质量failed，交互待用户确认，设计器七组仅有限观察。
   confirmed:
     concepts: []
     relationships: []
     rules: []
     executionContracts: []
   inferred: []
-  unresolved: []
+  unresolved:
+    - id: question.cross-tab-session-reset
+      question: 是否接受其他标签切换或退出会话后，本页清理旧缓存、拒绝旧响应并立即重载，放弃未保存编辑？
+      context: 真实AppLayout双页及独立复验均证实旧store/cache与新共享token混用，旧401误清新会话；此前没有确认跨标签重载及未保存编辑处理方式。
+      options: [接受立即重载新会话, 先记录问题交互另议]
+      impact: 依赖交互修改等待用户；无依赖输入修复已通过，但当前L2切片high仍open，整体独立failed，不建议合并。
   replacementScopes: []
   impactAnalysis:
     level: L2
@@ -72,14 +77,23 @@ decisionPackage:
         responsibility: 冻结候选后全新独立复验。
   affectedFiles:
     - path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java
-      changeType: read-only
-      reason: 验证真实输入边界，缺陷确认后最小整改。
+      changeType: update
+      reason: 真实输入红例后补Valid及NotBlank，不改变合法非空凭据或真实密码失败策略。
     - path: gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java
+      changeType: update
+      reason: 仅捕获HttpMessageNotReadableException为400，不记录转换详情，技术错误仍500。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/AuthLoginConcurrencyPostgresTest.java
+      changeType: update
+      reason: 新增12输入边界和带首尾空格密码正例，原4并发/状态回归不变。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/common/exception/GlobalExceptionHandlerTest.java
+      changeType: update
+      reason: 安全响应、非登录MVC转换/正常绑定及技术500相邻验证。
+    - path: gmp-platform/frontend/src/stores/authStore.ts
       changeType: read-only
-      reason: 区分不可读请求与技术错误，范围明确后才修改。
+      reason: 跨标签问题已复现，仅观察，不在未答复前实施交互取舍。
   acceptanceScenarios:
     - id: incomplete-login-input
       given: 现有账号与已保存登录失败计数
       when: 缺失或不完整的登录字段、不可读请求体
-      then: 客户端错误明确拒绝，不误报技术错误、不改变成功状态；真实密码失败规则不变
+      then: 本批12种客户端输入明确400拒绝，不误报技术错误、不改变成功状态；真实密码失败规则不变，不外推所有畸形输入
       evidenceRequirements: [真实MVC/PG请求, 状态与日志查询, 相邻回归]
