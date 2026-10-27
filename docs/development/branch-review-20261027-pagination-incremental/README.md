@@ -8,6 +8,8 @@
 
 ## 正式验收
 
+已创建[PR36](https://github.com/IvenYi/edhr-nexus-frontend/pull/36)，目标`edhr-dev`，待用户人工合并；未自动merge/deploy。下轮先fetch核对实际合入和新提交，再按scope-review继续，创建PR不等于已合入。
+
 全新独立实例对干净候选`974eaa0cefde17f8aaf793d85586efc3dd57adf8`正式**passed/FINAL，18/18必需检查通过**，三项整改均resolved（含high）。[质量原件](evidence/quality-result.yaml)、[独立说明](evidence/quality-review.md)、[acceptance](acceptance.json)及安全原件按字节归档。源码、知识摘要和盘点已独立核对，后续仅L0归档/进度/PR登记；不把归档SHA冒称重新执行测试。
 
 全部角色已FINAL，创建PR前已向用户报告[任务漂移和整体进度复核](scope-review.md)。当前本批无blocked，原暂缓与全分支剩余保持；自建扫描导出已清理，未建数据库或操作用户数据。下节“待最终签收”保留为受测候选提交时的历史证据，不覆盖本节正式结果。
