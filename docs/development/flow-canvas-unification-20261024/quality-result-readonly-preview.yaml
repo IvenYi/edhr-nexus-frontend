@@ -1,0 +1,132 @@
+qualityResult:
+  result: passed
+  baseCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+  headCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+  contractBaseline:
+    sourceCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+    targetBranch: edhr-dev
+    targetCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+    contractReadCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/development/flow-canvas-unification-20261024/decision-package.yaml
+      - gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx
+      - gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx
+      - gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs
+    excludedPaths:
+      - docs/architecture/business-knowledge-model.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml
+      - docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml
+      - docs/knowledge/evidence/production-execution.yaml
+      - docs/knowledge/evidence/transaction-runtime.yaml
+      - docs/knowledge/facts/core-business.yaml
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/ontology.yaml
+      - docs/knowledge/rules/product-process.yaml
+      - docs/knowledge/rules/transaction-runtime.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java
+    untrackedPaths:
+      - docs/development/flow-canvas-unification-20261024/quality-result-readonly-preview.yaml
+      - output/route-preview-controls-quality-20261026/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.readonly-preview-baseline
+      required: true
+      category: documentation
+      description: 独立核对当前来源、目标及契约并限定L1视口交互切片。
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git diff HEAD origin/edhr-dev -- AGENTS.md codeplzreadme.md docs/agents/agent-handoff-contract.md docs/agents/quality-verifier.md
+      outcome: passed
+      evidence:
+        - 来源、目标及实际测试基线均为d5adf22066ea4d6bb1c7e7ede09961fc97bea675；契约无提交或未提交差异；实际候选包含includedPaths未提交差异，不编造候选提交。
+        - 本实例只读业务及测试代码，未参与实现修复，未执行暂存、提交、推送；只产出测试证据和本结果。
+        - FlowDesigner.tsx SHA256 8721b5eab22be11138f86e12c7a9c23d9356abe9e535c58f2fb1c7fcb6e2a962
+        - RouteGraphPreview.tsx SHA256 dda4976e01243b13f257dd5dc9c4f2f70d3cf47feac1daa436f4b6de78045cc8
+        - test-flow-canvas-browser.mjs SHA256 274db67b71ca78645dc249045e6fd63e275dcab85fb0a25517590101cd869f60
+        - decision-package.yaml SHA256 00167958a8a28ebea61209a3f94cdee553f240acf6665c7a7ad396c82575077d
+    - id: check.readonly-preview-scope
+      required: true
+      category: requirements
+      description: 核对基本工具、共用实现、只读边界和业务不变性。
+      method: inspection
+      command: git diff -- gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx docs/development/flow-canvas-unification-20261024/decision-package.yaml
+      outcome: passed
+      evidence:
+        - RouteGraphPreview接入FlowCanvasControls editable=false；Controls隐藏interactive按钮，仅保留放大、缩小、适应画布。编辑态仍传入mode及onModeChange。
+        - ProductFamilyModelingPage使用ProductProcessVersionEditorDialog，其与ProductModelingWorkspacePage均调用同一SharedRouteGraphPreview；没有页面专用工具栏分叉。
+        - nodesDraggable=false、nodesConnectable=false、edgesReconnectable=false、deleteKeyCode=null，节点逐项draggable/deletable=false继续保持；无onConnect或图写入回调，点选回调及panOnDrag保持。
+        - readonlyPreviewContinuation影响分析和product-core所有权符合实际；未改路线图保存、节点身份、版本、快照或执行语义，本体not-applicable适用。
+        - 已读知识0.3.25、开放问题及DEC-0083/0084和route-graph规则事实；本切片不替代任何声明，不关闭无关生产未决问题，不覆盖其他任务在途知识。
+    - id: check.readonly-preview-browser
+      required: true
+      category: e2e
+      description: 独立运行共享预览桌面与390px窄屏两例。
+      method: automated-test
+      command: CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' FLOW_CASE_FILTER=preview FLOW_OUTPUT_DIR=../../output/route-preview-controls-quality-20261026/preview npm run test:flow-canvas-browser
+      outcome: passed
+      evidence:
+        - output/route-preview-controls-quality-20261026/preview/results.json
+        - 两例通过、零失败；三按钮计数、真实放大缩小、平移后fit恢复全节点可视、无编辑按钮及零HTTP写请求均通过。
+        - 桌面点选、Delete和节点拖动后节点数量与位置不变；连线只读以对应ReactFlow属性及受控数据源码核对。
+    - id: check.readonly-preview-config-save
+      required: true
+      category: regression
+      description: 独立验证两个实际配置组件的视口操作、工序点选和原保存数据。
+      method: automated-test
+      command: CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' FLOW_CASE_FILTER=selection-and-save FLOW_OUTPUT_DIR=../../output/route-preview-controls-quality-20261026/selection-and-save npm run test:flow-canvas-browser
+      outcome: passed
+      evidence:
+        - output/route-preview-controls-quality-20261026/selection-and-save/results.json
+        - 两例通过、零失败；视口操作阶段零写；产品簇共用弹窗提交回调和产品工作区PUT保持routeVersionId及operationBindings/finalOutput。
+        - 初次结果截图为工作区保存后的列表；主实现者只新增保存前截图语句，未改变断言或实现，本实例随后重跑上述两例均通过。
+    - id: check.readonly-preview-adjacent-workflows
+      required: true
+      category: regression
+      description: 独立验证表单、审批、作业三类已发布只读和编辑态历史保存。
+      method: automated-test
+      command: 分别以FLOW_CASE_FILTER=published-readonly及history-and-save运行npm run test:flow-canvas-browser，输出对应隔离子目录。
+      outcome: passed
+      evidence:
+        - output/route-preview-controls-quality-20261026/published-readonly/results.json
+        - output/route-preview-controls-quality-20261026/history-and-save/results.json
+        - 已发布3例隐藏解锁按钮、节点名称禁用、零写；编辑态3例名称修改、节点拖动、撤销重做和图保存通过，总计6例零失败。
+        - 最终测试脚本仅追加workspace保存前截图；上述六个通用流程场景源码、断言及业务实现未改变，复用本实例刚运行结果。
+    - id: check.readonly-preview-visual
+      required: true
+      category: visual
+      description: 独立目视两处配置及窄屏预览的实际浏览器截图。
+      method: inspection
+      command: view_image查看本实例浏览器输出截图
+      outcome: passed
+      evidence:
+        - output/route-preview-controls-quality-20261026/selection-and-save/product-selection-and-save.png
+        - output/route-preview-controls-quality-20261026/selection-and-save/workspace-preview-controls.png
+        - output/route-preview-controls-quality-20261026/preview/preview-narrow.png
+        - 两处配置均在画布左下显示统一三按钮，无解锁、撤销重做及快捷添加；节点及返工标记可见，工具未遮挡表单操作。390px共享预览工具保持可见。
+    - id: check.readonly-preview-build-evidence
+      required: true
+      category: integration
+      description: 核对主实现者同候选构建证据及独立diff静态检查。
+      method: inspection
+      command: 阅读output/route-preview-controls-20261026/build.log；git diff --check -- 本轮四个includedPaths
+      outcome: passed
+      evidence:
+        - output/route-preview-controls-20261026/build.log
+        - 主侧npm run build完成tsc及Vite构建；本实例读取成功日志，未独立重跑构建。独立diff --check退出0。
+  findings: []
+  residualRisks:
+    - id: risk.readonly-preview-isolated-http
+      description: 浏览器使用真实React组件及隔离HTTP数据；未连接真实数据库或完整登录菜单导航，产品簇页面接入链通过源码核对共用实际弹窗。
+      impact: 不构成后端、数据库、部署或全系统回归验收。
+      mitigation: 本次仅视口工具L1变更，实际组件点选与保存载荷已独立回归；后端和生产在途改动由所属任务另行验收。
+    - id: risk.readonly-preview-shared-worktree
+      description: 工作树包含明确排除的其他任务生产和知识修改，以及无关未跟踪产物；本结果只覆盖includedPaths及列明证据。
+      impact: 本结果不能作为整工作树或其他功能的完成门禁。
+      mitigation: 主智能体按限定文件差异和哈希交付，若实际实现候选变化，增量核对并重跑受影响检查。
+  blockingConditions: []

@@ -1,0 +1,31 @@
+
+> edhr-frontend@0.0.1 test:flow-canvas-browser
+> node scripts/test-flow-canvas-browser.mjs
+
+preview-desktop: passed
+preview-narrow: passed
+{
+  "tests": 2,
+  "failures": 0,
+  "results": [
+    {
+      "name": "preview-desktop",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": []
+    },
+    {
+      "name": "preview-narrow",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "writes": []
+    }
+  ],
+  "output": "/Users/ivenwang/Documents/edhr-nexus/output/submission-integration-20261027/preview"
+}

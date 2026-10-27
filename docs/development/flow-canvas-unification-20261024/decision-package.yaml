@@ -28,6 +28,54 @@ decisionPackage:
     source: user-confirmed
     requirement: 2026-10-25用户要求先暂停推送，修复同一对节点重复连线和普通生产循环，并检查其他不合理连线；重复工序的已有节点候选须可区分；返工连线须明确标记。
     implementationBoundary: 所有节点禁止自连及同向节点对重复边（不按端口或关系类型区分）；正常生产骨架禁止环，保留并行及合流。既有显式REWORK配置与执行阻断保留，返工线明确文字及样式，不新增返工执行能力。手动连线、重连、快捷连接、并行补线及类型切换均核对拓扑，保存前后端兜底；重复工序采用全图一致的节点序号，不更改nodeKey或operationId。
+  readonlyPreviewContinuation:
+    date: 2026-10-26
+    source: user-confirmed
+    requirement: 产品制程和产品簇制程的只读路线图补充基本查看工具。
+    contractBaseline:
+      sourceCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+      targetBranch: edhr-dev
+      targetCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+      contractReadCommit: d5adf22066ea4d6bb1c7e7ede09961fc97bea675
+      uncommittedContractPaths: []
+    implementationBoundary: 共用RouteGraphPreview接入FlowCanvasControls，只显示放大、缩小、适应画布；公共工具栏在editable=false时隐藏交互解锁按钮。保持点选工序、平移、图只读及现有制程配置保存。
+    inferred:
+      - 适应画布属于用户所述基本查看能力；采用既有工具栏位置和图标。
+    unresolved: []
+    ontologyResult:
+      result: not-applicable
+      reason: 仅增加视口操作，不改变节点、关系、业务校验、版本、执行、审计或持久化语义。
+    impactAnalysis:
+      level: L1
+      directImpacts:
+        - area: 产品制程及产品簇制程
+          change: 两处共用预览补齐三项视口工具，缩放后仍可选择工序。
+          evidenceReferences: [gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx, gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx, gmp-platform/frontend/src/pages/master-data/ProductModelingWorkspacePage.tsx]
+      transitiveImpacts:
+        - area: 三类通用流程已发布只读版本
+          change: 共同隐藏交互解锁按钮，编辑状态工具保持。
+          evidenceReferences: [gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx]
+      potentialImpacts: []
+      unaffectedAreas: [业务规则、后端、存储、版本和执行机制]
+      compatibilityAndMigration: []
+      snapshotImpacts: []
+      auditImpacts: []
+      permissionImpacts: []
+      testImpacts:
+        - scope: 预览及两个实际配置组件
+          scenarios: [放大缩小适应画布, 桌面及窄屏, 无解锁及编辑入口, 不能拖动删除节点, 点选与配置保存回归, 三类通用流程只读回归]
+          evidenceReferences: [gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs]
+      evidenceGaps: []
+    extensionStrategy:
+      selectedPaths: [product-core]
+      rationale: 复用已有公共工具栏，不引入新编辑器或领域配置。
+      ownershipBoundaries:
+        - owner: flow-designer
+          responsibility: 公共工具栏按editable隐藏编辑交互入口。
+        - owner: route-graph
+          responsibility: 共享只读预览接入基础视口工具。
+    escalationCriteria: 若涉及保存校验、生产执行、权限或版本契约变更，重新判定为L2。
+    excludedWorkingTree: 启动时已有production执行与知识资产的其他任务修改及无关未跟踪产物均不属于本次范围。
   confirmed:
     concepts: []
     relationships: []

@@ -1,0 +1,36 @@
+
+> edhr-frontend@0.0.1 test:flow-canvas-browser
+> node scripts/test-flow-canvas-browser.mjs
+
+product-selection-and-save: passed
+workspace-selection-and-save: passed
+{
+  "tests": 2,
+  "failures": 0,
+  "results": [
+    {
+      "name": "product-selection-and-save",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": []
+    },
+    {
+      "name": "workspace-selection-and-save",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "writes": [
+        {
+          "method": "PUT",
+          "pathname": "/api/v1/master-data/product-modeling/products/101/versions/701"
+        }
+      ]
+    }
+  ],
+  "output": "/Users/ivenwang/Documents/edhr-nexus/output/submission-integration-20261027/selection-and-save"
+}

@@ -8,7 +8,7 @@ import { chromium } from 'playwright';
 
 // Actual editors and preview in Chromium, with isolated HTTP data. Never writes a real database.
 const root = path.resolve(import.meta.dirname, '..');
-const output = path.resolve(root, '../../output/playwright/route-topology-20261025');
+const output = path.resolve(root, process.env.FLOW_OUTPUT_DIR || '../../output/playwright/route-topology-20261025');
 const temp = await mkdtemp(path.join(os.tmpdir(), 'edhr-flow-canvas-'));
 const results = [];
 let server;
@@ -206,8 +206,43 @@ try {
     assert.equal(await page.locator('[data-process-route-rework-badge]').count(), 1);
     assert.equal(await page.locator('[data-record-id="a"] .source[data-handleid="route-handle-right"]').count(), 1);
   }
+  async function expectPreviewControls(page, writes) {
+    const preview = page.locator('[data-route-graph-preview]');
+    const controls = preview.locator('.flow-canvas-controls');
+    await controls.waitFor();
+    assert.equal(await controls.locator('button').count(), 3);
+    assert.equal(await controls.locator('.react-flow__controls-interactive').count(), 0);
+    const graphBefore = await preview.locator('.react-flow__node').evaluateAll(nodes => nodes.map(node => [node.dataset.id, node.style.transform]));
+    const zoom = () => preview.locator('.react-flow__viewport').evaluate(el => new DOMMatrix(getComputedStyle(el).transform).a);
+    const before = await zoom();
+    await controls.locator('.react-flow__controls-zoomin').click();
+    assert.ok(await zoom() > before);
+    await controls.locator('.react-flow__controls-zoomout').click();
+    assert.ok(Math.abs(await zoom() - before) < 0.001);
+    const bounds = await preview.boundingBox();
+    const viewportTransform = () => preview.locator('.react-flow__viewport').evaluate(el => el.style.transform);
+    const beforePan = await viewportTransform();
+    await page.mouse.move(bounds.x + bounds.width - 10, bounds.y + 10);
+    await page.mouse.down();
+    await page.mouse.move(bounds.x + bounds.width - 110, bounds.y + 90, { steps: 5 });
+    await page.mouse.up();
+    const afterPan = await viewportTransform();
+    assert.notEqual(afterPan, beforePan);
+    await controls.locator('.react-flow__controls-fitview').click();
+    await page.waitForFunction(previous => document.querySelector('[data-route-graph-preview] .react-flow__viewport').style.transform !== previous, afterPan);
+    assert.notEqual(await viewportTransform(), afterPan);
+    assert.ok(await zoom() > 0);
+    for (const node of await preview.locator('.react-flow__node').all()) {
+      const box = await node.boundingBox();
+      assert.ok(box.x >= bounds.x && box.y >= bounds.y && box.x + box.width <= bounds.x + bounds.width && box.y + box.height <= bounds.y + bounds.height, '适应画布后所有节点可见');
+    }
+    assert.deepEqual(await preview.locator('.react-flow__node').evaluateAll(nodes => nodes.map(node => [node.dataset.id, node.style.transform])), graphBefore);
+    assert.equal(await preview.getByRole('button', { name: /连接或添加节点|撤销|重做|框选工具/ }).count(), 0);
+    assert.deepEqual(writes, []);
+  }
   await run('preview-desktop', 'preview', async (page, writes) => {
     await expectRoute(page);
+    await expectPreviewControls(page, writes);
     await page.locator('[data-record-id="b"][data-process-route-node]').click();
     await page.waitForFunction(() => window.__selected === 'b');
     assert.equal(await page.locator('.react-flow__node[data-id="b"]').evaluate(node => node.classList.contains('selected')), true);
@@ -220,9 +255,13 @@ try {
     assert.equal(await page.locator('[data-process-route-node]').count(), 6);
     assert.deepEqual(writes, []);
   });
-  await run('preview-narrow', 'preview', expectRoute, {}, { width: 390, height: 844 });
+  await run('preview-narrow', 'preview', async (page, writes) => {
+    await expectRoute(page);
+    await expectPreviewControls(page, writes);
+  }, {}, { width: 390, height: 844 });
   await run('product-selection-and-save', 'product', async (page, writes) => {
     await expectRoute(page);
+    await expectPreviewControls(page, writes);
     await page.locator('[data-record-id="c"][data-process-route-node]').click();
     await page.getByText('当前工序', { exact: true }).waitFor();
     assert.equal(await page.locator('.react-flow__node[data-id="c"]').evaluate(node => node.classList.contains('selected')), true);
@@ -235,8 +274,10 @@ try {
   });
   await run('workspace-selection-and-save', 'workspace', async (page, writes) => {
     await expectRoute(page);
+    await expectPreviewControls(page, writes);
     await page.locator('[data-record-id="c"][data-process-route-node]').click();
     assert.equal(await page.locator('.react-flow__node[data-id="c"]').evaluate(node => node.classList.contains('selected')), true);
+    await page.screenshot({ path: path.join(output, 'workspace-preview-controls.png'), fullPage: true, animations: 'disabled' });
     const saved = page.waitForResponse(response => response.request().method() === 'PUT');
     await page.getByRole('button', { name: '保存', exact: true }).click();
     await saved;
@@ -286,6 +327,7 @@ try {
     });
     await run(`${surface}-published-readonly`, surface, async (page, writes) => {
       await page.locator('.react-flow__node[data-id="step"]').waitFor();
+      assert.equal(await page.locator('.react-flow__controls-interactive').count(), 0);
       const undo = page.getByRole('button', { name: '撤销', exact: true });
       if (await undo.count()) assert.equal(await undo.isDisabled(), true);
       await page.locator('.react-flow__node[data-id="step"]').click();

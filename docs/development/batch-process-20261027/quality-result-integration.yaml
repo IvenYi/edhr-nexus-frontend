@@ -1,0 +1,201 @@
+{
+  "qualityResult": {
+    "result": "passed",
+    "baseCommit": "d5adf22066ea4d6bb1c7e7ede09961fc97bea675",
+    "headCommit": "0756df8054a37da5e2f86eb7e1de82fcb874ea08",
+    "contractBaseline": {
+      "sourceCommit": "0756df8054a37da5e2f86eb7e1de82fcb874ea08",
+      "targetBranch": "edhr-dev",
+      "targetCommit": "0756df8054a37da5e2f86eb7e1de82fcb874ea08",
+      "contractReadCommit": "0756df8054a37da5e2f86eb7e1de82fcb874ea08",
+      "uncommittedContractPaths": []
+    },
+    "workingTreeState": {
+      "status": "dirty",
+      "includedPaths": [
+        "docs/architecture/business-knowledge-model.md",
+        "docs/frontend/list-page-guidelines.md",
+        "docs/knowledge/README.md",
+        "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+        "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+        "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+        "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+        "docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml",
+        "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+        "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml",
+        "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+        "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml",
+        "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+        "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+        "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+        "docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml",
+        "docs/knowledge/evidence/production-execution.yaml",
+        "docs/knowledge/evidence/production.yaml",
+        "docs/knowledge/evidence/transaction-runtime.yaml",
+        "docs/knowledge/facts/core-business.yaml",
+        "docs/knowledge/glossary.yaml",
+        "docs/knowledge/implementation-anchors/core-business.yaml",
+        "docs/knowledge/ontology.yaml",
+        "docs/knowledge/open-questions.yaml",
+        "docs/knowledge/rules/product-process.yaml",
+        "docs/knowledge/rules/production.yaml",
+        "docs/knowledge/rules/transaction-runtime.yaml",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionRelations.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/ProductionObjectController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/WorkOrderController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/engine/WorkOrderStatusMachine.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/entity/WorkOrder.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ExecutionSnapshotBuilder.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionEngine.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java",
+        "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionIntegrationTest.java",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionExecutionIntegrationTest.java",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/ProductionObjectControllerTest.java",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/WorkOrderControllerTest.java",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ProductionServiceTest.java",
+        "gmp-platform/frontend/src/api/work-orders.ts",
+        "gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx",
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx",
+        "gmp-platform/frontend/src/utils/productionAudit.ts",
+        "docs/development/batch-process-20261027/",
+        "docs/knowledge/evidence/batch-process-2026-10-27.md",
+        "docs/knowledge/evidence/batch-process.yaml",
+        "docs/knowledge/facts/batch-process.yaml",
+        "docs/knowledge/rules/batch-process.yaml",
+        "docs/knowledge/evidence/work-live-matching-2026-10-26.md",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/BatchProcessIntegrationTest.java",
+        "gmp-platform/frontend/src/components/ProductionObjectEditDialog.tsx",
+        "docs/development/work-live-matching-20261026/",
+        "docs/development/flow-canvas-unification-20261024/decision-package.yaml",
+        "docs/development/flow-canvas-unification-20261024/quality-result-readonly-preview.yaml",
+        "gmp-platform/frontend/src/components/flow-designer/FlowDesigner.tsx",
+        "gmp-platform/frontend/src/components/route-graph/RouteGraphPreview.tsx",
+        "gmp-platform/frontend/scripts/test-flow-canvas-browser.mjs",
+        "output/playwright/batch-process-*.png",
+        "output/route-preview-controls-20261026/build.log",
+        "output/route-preview-controls-quality-20261026/",
+        "output/submission-integration-20261027/"
+      ],
+      "excludedPaths": [
+        "gmp-platform/frontend/output/",
+        "premium-audit.json",
+        "output/下除includedPaths列明证据以外的历史资产"
+      ],
+      "untrackedPaths": [
+        "docs/development/batch-process-20261027/",
+        "docs/development/work-live-matching-20261026/",
+        "output/playwright/batch-process-*.png",
+        "output/route-preview-controls-20261026/build.log",
+        "output/route-preview-controls-quality-20261026/",
+        "output/submission-integration-20261027/"
+      ]
+    },
+    "knowledgeBaselineVersion": "0.3.25",
+    "checks": [
+      {
+        "id": "check.submission-target-contract",
+        "required": true,
+        "category": "documentation",
+        "description": "独立核对远端增量、实际候选与契约读取基线",
+        "method": "command",
+        "command": "git rev-parse HEAD origin/edhr-dev; git diff d5adf220 HEAD -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge; git diff --name-only -- AGENTS.md codeplzreadme.md docs/agents",
+        "outcome": "passed",
+        "evidence": [
+          "HEAD及origin/edhr-dev均为0756df8054a37da5e2f86eb7e1de82fcb874ea08；相对原d5adf220仅9个前端文件变化，无后端、知识或契约变化，工作树契约也无变化。",
+          "实际被测候选为0756df80加includedPaths列明的未提交变更，尚无包含工作树的独立提交。本报告不把HEAD冒充最终提交。",
+          "本实例读取当前AGENTS、质量角色及交接契约、知识README与相关开放问题、批次/作业/画布决策包和影响分析；知识0.3.25，未产生新业务决策。"
+        ]
+      },
+      {
+        "id": "check.submission-accepted-fingerprints",
+        "required": true,
+        "category": "regression",
+        "description": "验证功能及画布实现与前序已通过验收的内容一致",
+        "method": "command",
+        "command": "quality-review.md所列production diff范围 | shasum -a 256；sha256sum新增测试/编辑组件及三项画布文件",
+        "outcome": "passed",
+        "evidence": [
+          "生产域、指定前端和baseline差异SHA256=990237161db4e31852b34f0b81f3547283d32d6e1feda6a9d0e6e1829603e1d3，与quality-result-completion.yaml一致。",
+          "BatchProcessIntegrationTest.java=5e4ed61ff5dbf66c850d470a8eaa825ee9e7e3ba927f7bf0715ddb25dbc26d0f；ProductionObjectEditDialog.tsx=ed2bb4a3837215d7c86df669d4d9b2799a03ce7b1247ff32cd4b636264804088。",
+          "FlowDesigner.tsx=8721b5eab22be11138f86e12c7a9c23d9356abe9e535c58f2fb1c7fcb6e2a962；RouteGraphPreview.tsx=dda4976e01243b13f257dd5dc9c4f2f70d3cf47feac1daa436f4b6de78045cc8；test-flow-canvas-browser.mjs=274db67b71ca78645dc249045e6fd63e275dcab85fb0a25517590101cd869f60，均与画布独立通过结果一致。",
+          "复用前序业务quality-result-completion.yaml、作业quality-final.yaml及画布quality-result-readonly-preview.yaml已通过的未受影响检查；不宣称本实例重新执行其数据库、完整业务E2E或全部视觉检查。"
+        ]
+      },
+      {
+        "id": "check.submission-semantic-integration",
+        "required": true,
+        "category": "integration",
+        "description": "审查远端前端增量与生产/画布变更的相邻调用边界",
+        "method": "inspection",
+        "command": "git diff d5adf220 HEAD -- gmp-platform/frontend/src；阅读相关决策、影响说明、当前批次规则及画布差异",
+        "outcome": "passed",
+        "evidence": [
+          "远端ProductionOutput修改浮层互斥及焦点，不改变产出/计划/目标量计算；新的批次目标量编辑与拆分仍沿既有生产API，不出现同一字段多重定义。",
+          "ProductionExecutionPage新增填报回执入口及显示文案，ExecutionQuickPanel修复焦点；没有更改START命令、实时作业候选或冻结快照处理。",
+          "DhrTemplateWorkspaceDialog与FormRuntimeField修改运行表单展示；只读制程预览和FlowCanvasControls的editable边界无冲突。",
+          "远端未引入知识ID或旧业务约束；批次ontology-result.yaml仍为updated，当前README直接表达新规则。作业历史报告中的制程未改仅表示前序时间点，由批次决策包明确接续，不回写历史通过记录。"
+        ]
+      },
+      {
+        "id": "check.submission-build-unit",
+        "required": true,
+        "category": "regression",
+        "description": "核对本次实际组合的TypeScript/Vite构建及目标前端测试",
+        "method": "inspection",
+        "command": "读取主侧npm run build及node --test四个脚本原始日志",
+        "outcome": "passed",
+        "evidence": [
+          "output/submission-integration-20261027/build.log：tsc -b && vite build成功，built in 5.85s；与本实例读取的/tmp/edhr-submission-build-20261027.log原始日志对应。",
+          "output/submission-integration-20261027/frontend-tests.log：49 tests、49 pass、0 fail、0 skipped；覆盖test-dhr-word-preview、test-execution-quick-panel、test-production-output-interactions与test-flow-canvas。",
+          "本项为本实例独立读取当前组合的原始运行日志，运行命令由主智能体执行，未用旧基线的通过结果替代新组合验证。"
+        ]
+      },
+      {
+        "id": "check.submission-browser",
+        "required": true,
+        "category": "e2e",
+        "description": "核对当前组合的只读预览、点选及保存回归",
+        "method": "inspection",
+        "command": "读取FLOW_CASE_FILTER=preview及selection-and-save的本轮日志和results.json",
+        "outcome": "passed",
+        "evidence": [
+          "output/submission-integration-20261027/preview/results.json：preview-desktop与preview-narrow均passed，1440×960及390×844，writes均为空。",
+          "output/submission-integration-20261027/selection-and-save/results.json：product-selection-and-save与workspace-selection-and-save均passed，保存沿原配置回调/产品版本PUT。",
+          "主智能体运行当前真实React组件与Chrome，HTTP为脚本隔离夹具，本项不是实际后端或数据库集成验收。前序三类已发布只读/编辑历史保存证据未受远端增量影响。"
+        ]
+      },
+      {
+        "id": "check.submission-allowlist",
+        "required": true,
+        "category": "documentation",
+        "description": "核对明确提交范围，防止历史输出混入",
+        "method": "command",
+        "command": "检查/tmp/edhr-production-stage-20261027.txt与/tmp/edhr-flow-stage-20261027.txt；git diff --name-only；git diff --check",
+        "outcome": "passed",
+        "evidence": [
+          "业务清单84文件、画布清单22文件均存在；全部50个已跟踪修改均落入这两份授权范围，无trackedOutsideScope。",
+          "清单只包含相应代码、测试、知识、历史/最终验收记录和本切片证据。gmp-platform/frontend/output、premium-audit.json和无关output历史资产均排除。",
+          "git diff --check及git diff --cached --check通过；本实例最终检查第一笔index为84文件，与生产清单完全一致，无缺失和额外项。提交说明submission.md已核对，区分两笔范围、旧记录和本次验证。本报告与综合说明、当前集成证据随第二笔提交，主智能体仍须对第二笔index执行同样清单检查。"
+        ]
+      }
+    ],
+    "findings": [],
+    "residualRisks": [
+      {
+        "id": "risk.submission-verification-boundary",
+        "description": "本次为已通过功能的远端增量集成复核，未重新执行全部后端/数据库测试或全系统回归。",
+        "impact": "不能把当前增量结果解释为全系统重新验收或部署完成。",
+        "mitigation": "仅复用远端无变动且实现指纹一致的前序证据；本次受影响前端组合重新构建并运行49项目标测试及4项浏览器场景。"
+      },
+      {
+        "id": "risk.submission-repository-enforcement",
+        "description": "未核验GitHub分支保护、必需检查或远端CI执行。",
+        "impact": "本地质量通过不等于远端强制门禁已开启。",
+        "mitigation": "主智能体提交推送后核对实际分支与远端提交一致；不得将本报告当作部署或CI通过证明。"
+      }
+    ],
+    "blockingConditions": []
+  }
+}

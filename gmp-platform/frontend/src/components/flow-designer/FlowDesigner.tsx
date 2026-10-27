@@ -51,16 +51,16 @@ export const FLOW_NODE_APPEARANCE = {
 } as const;
 
 export function FlowCanvasControls({
-  editable, mode, onModeChange, children,
+  editable, mode = "pan", onModeChange, children,
 }: {
   editable: boolean;
-  mode: FlowInteractionMode;
-  onModeChange: (mode: FlowInteractionMode) => void;
+  mode?: FlowInteractionMode;
+  onModeChange?: (mode: FlowInteractionMode) => void;
   children?: ReactNode;
 }) {
   return (
-    <Controls position="bottom-left" className="flow-canvas-controls">
-      {editable ? <FlowInteractionModeControls mode={mode} onChange={onModeChange} /> : null}
+    <Controls position="bottom-left" className="flow-canvas-controls" showInteractive={editable}>
+      {editable && onModeChange ? <FlowInteractionModeControls mode={mode} onChange={onModeChange} /> : null}
       {children}
     </Controls>
   );

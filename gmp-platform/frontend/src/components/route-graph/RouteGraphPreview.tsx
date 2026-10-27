@@ -1,4 +1,4 @@
-import { FlowCanvasBackground } from '@/components/flow-designer/FlowDesigner';
+import { FlowCanvasBackground, FlowCanvasControls } from '@/components/flow-designer/FlowDesigner';
 import { useMemo } from 'react';
 import { Box } from '@mui/material';
 import { ReactFlow, ReactFlowProvider } from '@xyflow/react';
@@ -45,6 +45,7 @@ export default function RouteGraphPreview({ graph, selectedNodeKey, onSelectNode
         proOptions={{ hideAttribution: true }}
       >
         <FlowCanvasBackground />
+        <FlowCanvasControls editable={false} />
       </ReactFlow>
     </ReactFlowProvider>
   </Box>;
