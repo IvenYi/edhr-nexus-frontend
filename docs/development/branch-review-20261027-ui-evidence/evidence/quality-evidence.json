@@ -1,0 +1,264 @@
+{
+  "baseCommit": "52dcf9d27a41f8243ed59d0a05605da011e32f83",
+  "testedCommit": "cbf139a2e85fc37b5e00a9a9c7956fda25e88a98",
+  "workingTreeClean": true,
+  "knowledgeModelVersion": "0.3.25",
+  "browser": {
+    "candidate": {
+      "boundary": "real Chromium UI, fixture HTTP; no real backend writes",
+      "baseline": null,
+      "results": [
+        {
+          "name": "SN-1440",
+          "result": "passed",
+          "layoutChecks": [
+            {
+              "stage": "empty",
+              "horizontalOverflow": 0
+            },
+            {
+              "stage": "staged",
+              "horizontalOverflow": 0
+            },
+            {
+              "stage": "saved",
+              "horizontalOverflow": 0
+            }
+          ],
+          "checks": "dialog geometry; keyboard download/local table scroll; XLSX columns/example/help; import; negative validations; staged submit; console"
+        },
+        {
+          "name": "BATCH-1440",
+          "result": "passed",
+          "layoutChecks": [
+            {
+              "stage": "empty",
+              "horizontalOverflow": 0
+            },
+            {
+              "stage": "staged",
+              "horizontalOverflow": 0
+            },
+            {
+              "stage": "saved",
+              "horizontalOverflow": 0
+            }
+          ],
+          "checks": "dialog geometry; keyboard download/local table scroll; XLSX columns/example/help; import; negative validations; staged submit; console"
+        },
+        {
+          "name": "SN-390",
+          "result": "passed",
+          "layoutChecks": [
+            {
+              "stage": "empty",
+              "horizontalOverflow": 0
+            },
+            {
+              "stage": "staged",
+              "horizontalOverflow": 0
+            },
+            {
+              "stage": "saved",
+              "horizontalOverflow": 0
+            },
+            {
+              "stage": "table-keyboard-scroll",
+              "horizontalOverflow": 0
+            }
+          ],
+          "checks": "dialog geometry; keyboard download/local table scroll; XLSX columns/example/help; import; negative validations; staged submit; console"
+        },
+        {
+          "name": "BATCH-390",
+          "result": "passed",
+          "layoutChecks": [
+            {
+              "stage": "empty",
+              "horizontalOverflow": 0
+            },
+            {
+              "stage": "staged",
+              "horizontalOverflow": 0
+            },
+            {
+              "stage": "saved",
+              "horizontalOverflow": 0
+            },
+            {
+              "stage": "table-keyboard-scroll",
+              "horizontalOverflow": 0
+            }
+          ],
+          "checks": "dialog geometry; keyboard download/local table scroll; XLSX columns/example/help; import; negative validations; staged submit; console"
+        }
+      ]
+    },
+    "baseline": {
+      "boundary": "real Chromium UI, fixture HTTP; no real backend writes",
+      "baseline": "52dcf9d27a41f8243ed59d0a05605da011e32f83",
+      "results": [
+        {
+          "name": "SN-1440",
+          "result": "passed",
+          "layoutChecks": [
+            {
+              "stage": "empty",
+              "horizontalOverflow": 0
+            },
+            {
+              "stage": "staged",
+              "horizontalOverflow": 0
+            },
+            {
+              "stage": "saved",
+              "horizontalOverflow": 0
+            }
+          ],
+          "checks": "dialog geometry; keyboard download/local table scroll; XLSX columns/example/help; import; negative validations; staged submit; console"
+        },
+        {
+          "name": "BATCH-1440",
+          "result": "passed",
+          "layoutChecks": [
+            {
+              "stage": "empty",
+              "horizontalOverflow": 0
+            },
+            {
+              "stage": "staged",
+              "horizontalOverflow": 0
+            },
+            {
+              "stage": "saved",
+              "horizontalOverflow": 0
+            }
+          ],
+          "checks": "dialog geometry; keyboard download/local table scroll; XLSX columns/example/help; import; negative validations; staged submit; console"
+        },
+        {
+          "name": "SN-390",
+          "result": "failed",
+          "message": "SN-390 empty: dialog content overflows horizontally by 322px",
+          "pageErrors": []
+        },
+        {
+          "name": "BATCH-390",
+          "result": "failed",
+          "message": "BATCH-390 empty: dialog content overflows horizontally by 322px",
+          "pageErrors": []
+        }
+      ]
+    }
+  },
+  "browserExitCodes": {
+    "candidate": 0,
+    "baseline": 1
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "includes": "tsc -b && vite build"
+  },
+  "knowledge": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exitCode": 0
+  },
+  "static": {
+    "baseline": {
+      "errors": 27,
+      "total": 27,
+      "unresolved": 13,
+      "violations": 14,
+      "warnings": 0
+    },
+    "candidate": {
+      "errors": 27,
+      "total": 27,
+      "unresolved": 13,
+      "violations": 14,
+      "warnings": 0
+    },
+    "baselineExitCode": 2,
+    "candidateExitCode": 2,
+    "fullMultisetAdded": 0,
+    "fullMultisetRemoved": 0
+  },
+  "lint": {
+    "exitCode": 2,
+    "reason": "No ESLint configuration; lint rules did not run"
+  },
+  "triage": {
+    "records": 27,
+    "paths": 24,
+    "classifications": {
+      "false-positive": 23,
+      "confirmed-defect": 3,
+      "evidence-gap": 1
+    },
+    "causeGroups": 8,
+    "lowRiskRootCauses": 2,
+    "sourceOnly": true
+  },
+  "rules": {
+    "finiteAssessmentCount": 9,
+    "currentBusinessStatements": 8,
+    "engineeringBoundary": 1,
+    "policyChanged": false,
+    "historicalImageRetrieved": false
+  },
+  "logs": {
+    "candidate": {
+      "path": "/tmp/edhr-ui-independent-candidate.log",
+      "sha256": "d3b7e2f747aa1931efaff674ea0376b4ce1391bcea755f61fb98f363788a7481"
+    },
+    "baseline": {
+      "path": "/tmp/edhr-ui-independent-baseline.log",
+      "sha256": "ae32e5bd1a2c977c1829e804287288aba51c3cce74ab06f5f3d1e1fb0dec1905"
+    },
+    "build": {
+      "path": "/tmp/edhr-ui-independent-build.log",
+      "sha256": "1df1654521778e0005b0bee5a569c9411e47f6b29a592195122db896d630499e"
+    },
+    "knowledge": {
+      "path": "/tmp/edhr-ui-independent-knowledge.log",
+      "sha256": "bc9d6df47881b7685526659957b4d1e6407f142257a6f0ebd853ff5544801464"
+    },
+    "lint": {
+      "path": "/tmp/edhr-ui-independent-lint.log",
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389"
+    },
+    "static-current": {
+      "path": "/tmp/edhr-ui-independent-static-current.log",
+      "sha256": "c0a8f73953a5be67218b0c3add151929ecceca8d2eb83296f7a68960dd438720"
+    },
+    "static-baseline": {
+      "path": "/tmp/edhr-ui-independent-static-baseline.log",
+      "sha256": "f565ef894dc75f5a90fde962afcbc16679dc25cb11c4b8bb36b33e798a6b81bb"
+    }
+  },
+  "screenshotsViewed": [
+    {
+      "path": "/tmp/edhr-ui-independent-candidate/SN-390-download.png",
+      "sha256": "8ddee05c6fb5b228d0c17357239ac15a742fdafbd0a0ecaaeb790209c8c356db"
+    },
+    {
+      "path": "/tmp/edhr-ui-independent-candidate/SN-390-saved.png",
+      "sha256": "bed6ba10244375aeba49d2330a50796d782a1ce8aa6d682bcff4f8e4c1f56049"
+    },
+    {
+      "path": "/tmp/edhr-ui-independent-candidate/SN-1440-saved.png",
+      "sha256": "0da2dd7764e130d150e3b62cb15d79a6b54b205be8cc54a657f18254a01f538d"
+    }
+  ],
+  "boundaries": [
+    "Real Chromium and page/client/React Query with fixture HTTP; no real backend persistence",
+    "27 scanner positions only; not whole-file or whole-branch audit",
+    "390px/1440px tested; no 320px, full zoom, Safari/Firefox or mobile-device certification",
+    "No backend change; backend database suites not rerun",
+    "No code/test/knowledge/report in repository modified by this instance"
+  ]
+}
