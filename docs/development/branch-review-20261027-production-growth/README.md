@@ -4,6 +4,8 @@
 
 ## 正式验收
 
+已交付 [PR31](https://github.com/IvenYi/edhr-nexus-frontend/pull/31)，来源 `audit/edhr-dev-production-growth-20261027`，目标 `edhr-dev`，等待用户人工合并。下轮先fetch核对真实合入及新增提交。
+
 全新独立实例对干净候选 `54daa6d7cef654a272a9821a767a1323babd4125` 正式 **passed/FINAL，13/13**。真实新PG库44/44通过、知识89/89通过，均零失败/错误/跳过；浏览器候选3/3，基线SN两例红/BATCH对照绿独立重现，TypeScript及生产构建通过。13条有限语义无阻断，六组查询观察独立重现。本体updated/FINAL。两项本批功能缺陷据此关闭，性能风险仍待讨论。
 
 原件：[quality-result](evidence/quality-result.yaml)、[独立说明](evidence/quality-review.md)、[独立安全证据](evidence/independent-evidence.json)。原件中的/tmp文件与本目录同名档案映射，归档保持原字节。候选之后仅L0验收原件、范围与PR登记，产品、测试、知识内容保持；没有把归档提交称为重新受测。精确ID自建PG已停止并自动移除，用户业务库未连接。
