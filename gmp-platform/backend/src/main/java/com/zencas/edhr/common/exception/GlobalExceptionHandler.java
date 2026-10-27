@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -49,6 +50,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .badRequest()
                 .body(ApiResponse.error(400, "参数校验失败: " + detail));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<Void>> handleUnreadableRequestBody(
+            HttpMessageNotReadableException ex, HttpServletRequest request) {
+        // Converter details may contain credentials; log only the request path.
+        log.warn("Unreadable request body: path={}", request.getRequestURI());
+        return ResponseEntity.badRequest().body(ApiResponse.error(400, "请求体格式不正确"));
     }
 
     @ExceptionHandler(AccessDeniedException.class)

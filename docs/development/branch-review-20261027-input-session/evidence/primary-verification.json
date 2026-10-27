@@ -1,0 +1,203 @@
+{
+  "baselineCommit": "2c4b79e1641be4886fd5361b48df076e57abd768",
+  "scope": "primary implementation/regression and runtime observations, not independent quality",
+  "backendSuites": [
+    {
+      "suite": "com.zencas.edhr.identity.controller.AuthControllerTest",
+      "counts": {
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "cases": [
+        "changeCurrentUserPasswordRejectsWrongCurrentPasswordAndMismatchedConfirmation",
+        "updateProfileStoresEditableEmailPhoneAndBirthdayForCurrentUser",
+        "createPersonalSignatureDoesNotUseIdCardOcrValidation",
+        "updateProfileRejectsInvalidEmailAndPhone",
+        "loginKeepsJwtSmallButReturnsPermissionsInUserPayload",
+        "createPersonalSignatureReauthenticatesStoresSignatureAndWritesAudit",
+        "verifyCurrentUserSignatureRejectsWrongPassword",
+        "loginLocksAccountAfterConfiguredFailedPasswordAttempts",
+        "loginMeAndProfileResponsesSerializeSnowflakeUserIdAsExactString",
+        "createPersonalSignatureUsesSecuritySettingsDefaultCycleWhenNoSettingsPersisted",
+        "verifyCurrentUserSignatureRequiresPersonalSignatureCertification",
+        "loginRejectsLockedAccountUntilLockWindowExpires",
+        "meReturnsCurrentRoleIdsAndLatestPermissions",
+        "meDoesNotReturnRawRoleIdAsRoleNameWhenRoleIsUnmapped",
+        "loginUsesConfiguredTokenValidityAndReturnsRequiredSecurityActions",
+        "loginRecordsWhoAccountTimeActionMethodClientBrowserAndIp",
+        "changeCurrentUserPasswordRequiresCurrentPasswordAndStoresEncodedNewPassword",
+        "logoutRecordsCurrentUserClientBrowserAndIp",
+        "verifyCurrentUserSignatureReturnsAuthorizedSignatureImageAfterPasswordAuth",
+        "changeCurrentUserPasswordRejectsPasswordBelowConfiguredComplexity",
+        "uploadAvatarStoresFileReferenceAndReturnsUpdatedCurrentUser",
+        "meReturnsAvatarBirthdayAndLatestElectronicSignatureEvidence",
+        "loginDoesNotReturnRawRoleIdAsRoleNameWhenRoleIsUnmapped",
+        "createPersonalSignatureRejectsWrongPassword"
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.identity.controller.AuthLoginConcurrencyPostgresTest",
+      "counts": {
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "cases": [
+        "persistedFailureAndExpiredLockClearOnlyOnSuccessfulLogin",
+        "unreadableLoginBodiesAreBadRequestsWithoutChangingAccount(String)[1]",
+        "unreadableLoginBodiesAreBadRequestsWithoutChangingAccount(String)[2]",
+        "unreadableLoginBodiesAreBadRequestsWithoutChangingAccount(String)[3]",
+        "unreadableLoginBodiesAreBadRequestsWithoutChangingAccount(String)[4]",
+        "unreadableLoginBodiesAreBadRequestsWithoutChangingAccount(String)[5]",
+        "disabledAccountCannotLoginOrAccumulatePasswordFailures",
+        "overlappingFailuresReachConfiguredThresholdWithoutBlockingOtherAccounts",
+        "incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String)[1]",
+        "incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String)[2]",
+        "incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String)[3]",
+        "incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String)[4]",
+        "incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String)[5]",
+        "incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String)[6]",
+        "incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String)[7]",
+        "nonblankPasswordKeepsItsExactWhitespace",
+        "technicalLoginLogFailureDoesNotPublishSuccessfulState"
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.identity.controller.LoginLogControllerTest",
+      "counts": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "cases": [
+        "listMyLoginLogsOnlyReturnsCurrentUserLoginLogoutRows"
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.identity.security.JwtAuthenticationFilterTest",
+      "counts": {
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "cases": [
+        "validTokenExposesCurrentUserIdAsRequestAttribute"
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.common.exception.GlobalExceptionHandlerTest",
+      "counts": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "cases": [
+        "maxUploadSizeExceededReturnsReadableBadRequest",
+        "unreadableBodyReturnsBadRequestWithoutConverterDetails",
+        "converterErrorsOutsideLoginReturn400AndValidBodiesStillBind",
+        "dataIntegrityViolationsReturnReadableUserSaveMessages",
+        "technicalFailuresRemain500"
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.common.config.SecurityJwtExpirationTest",
+      "counts": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "cases": [
+        "expiredCorrectlySignedFixtureIsRejectedByActualParserAndSecurityChain",
+        "validProviderTokenReachesProtectedResourceWithExactIdentity"
+      ]
+    },
+    {
+      "suite": "com.zencas.edhr.common.config.SecurityConfigTest",
+      "counts": {
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "cases": [
+        "publicFilePreviewCanBeRequestedWithoutJwtForImageTags",
+        "authenticatedApiWithNoRequiredPermissionReturnsForbiddenJson",
+        "invalidTokenProtectedApiReturnsUnauthorizedJson",
+        "authenticatedFilePreviewStillRequiresJwt",
+        "authenticatedApiWithRequiredPermissionCanAccessProtectedResource",
+        "unauthenticatedProtectedApiReturnsUnauthorizedJson"
+      ]
+    }
+  ],
+  "backendTotal": 56,
+  "nodeExisting": {
+    "tests": 28,
+    "passed": 28,
+    "command": "node --test scripts/test-review-batch-01.mjs"
+  },
+  "designer": {
+    "groups": 7,
+    "viewport": "1440x1050",
+    "command": "CHROME_PATH=/usr/bin/chromium node /tmp/edhr-nondrag-runtime.mjs",
+    "exitCode": 0,
+    "meaning": "observations satisfied, includes unchanged missing ordinary activation; not 7 remediated bugs"
+  },
+  "session": {
+    "groups": 4,
+    "command": "CHROME_PATH=/usr/bin/chromium node /tmp/edhr-session-boundary-run.mjs",
+    "exitCode": 1,
+    "meaning": "one same-tab control passed;three cross-tab gaps reproduced, expected observation exit1, not green"
+  },
+  "helperFailures": [
+    {
+      "role": "designer_nondrag_runtime",
+      "result": "platform-usage-limit-error",
+      "primaryContinued": true
+    },
+    {
+      "role": "session_boundary_source",
+      "result": "platform-usage-limit-error",
+      "primaryContinued": true
+    }
+  ],
+  "logs": [
+    {
+      "path": "/tmp/edhr-input-red.log",
+      "sha256": "de74efae1fb8d23b8fe3090ac7420c9b33e4b9e4a6d5ee7a85068928793c1d5f",
+      "bytes": 325747
+    },
+    {
+      "path": "/tmp/edhr-input-green.log",
+      "sha256": "80e24a71b4d48cac8df63103757739234176b8cd5307e6cd2a8e8599f76d10d8",
+      "bytes": 56088
+    },
+    {
+      "path": "/tmp/edhr-input-final.log",
+      "sha256": "b30ea6dde5ee6f71742903b67eb5e8b088530063be57625f9e6036c0d55352c0",
+      "bytes": 69801
+    },
+    {
+      "path": "/tmp/edhr-session-existing.log",
+      "sha256": "72578983c73d4366a43876f5e46aa3b17c79f88d057022e20f6ad0ad2afcb53d",
+      "bytes": 2909
+    },
+    {
+      "path": "/tmp/edhr-nondrag-primary.log",
+      "sha256": "edb9c3090821e36e3e4a30fe89168966c4ff13f59cfef80bd4a2e320df582f72",
+      "bytes": 740
+    },
+    {
+      "path": "/tmp/edhr-session-primary.log",
+      "sha256": "99b45e7e80270628b3b1602dc1f71689876d7e9f386c595ed22aec78227942b9",
+      "bytes": 472
+    }
+  ],
+  "secretsBoundary": "Synthetic fixture HTTP and isolated PG only; raw backend/XML not committed; no real credentials/token or user database."
+}

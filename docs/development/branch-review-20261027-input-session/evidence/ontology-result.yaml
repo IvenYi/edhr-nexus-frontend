@@ -1,0 +1,45 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    targetBranch: edhr-dev
+    targetCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    contractReadCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    uncommittedContractPaths: []
+  reason: 本批九条有限审前评估区分工程输入契约、会话实现和设计器交互合同；缺失/null/全空白登录字段在真实认证前拒绝，以及不可读请求体按客户端400处理，与既有前端判空和MVC校验分类一致，不新增密码/锁定/身份业务政策。合法非空凭据不裁剪，真实错误密码仍按既有401计数。会话代际隔离已有AUD-H014历史修复，不重复造知识或缺陷。设计器仅运行核查，未定义新点击/绑定含义；真实交互缺口应单独记录，不以本结论授权功能变化。无受影响当前知识ID需要改写，无新的阻断性业务歧义。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.input-session-engineering-boundaries
+      checkType: evidence-path
+      command: 只读核对本批decisionPackage、LoginPage required、UserPage.getUserFormValidationError、UserController.resetPassword、AuthController.login/策略/DTO、GlobalExceptionHandler及旧AuthControllerTest；未运行数据库或测试
+      outcome: passed
+      evidence:
+        - /tmp/edhr-input-session-rules.json
+        - username全空白在管理页已trim判空；密码重置用hasText，登录UI required；这些是实现依据而非伪造的用户逐字政策
+        - 全局已有MethodArgumentNotValidException映射400，HttpMessageNotReadableException未单列；只建议精确分类且不泄露转换内容
+        - 新增校验必须在认证读写前发生；不能裁剪合法非空凭据、放宽密码错误401或改变阈值/锁定/技术回滚
+    - id: validation.session-and-designer-scope
+      checkType: evidence-path
+      command: 只读核对queryClient/sessionPolicy/authStore/client及AUD-H014历史去重，DesignerSidebar指针入口与verify-template-designer-react的既有断言
+      outcome: passed
+      evidence:
+        - 旧代际失败响应隔离是known-fixed；本角色仅核对源码与来源，不重新认证其浏览器运行
+        - 设计器测试有意禁止卡片直接generic addNodeFromField；这是实现合同，不是业务政策或无障碍豁免
+        - 跨标签、完整JWT撤销、设计器新交互和用户暂缓均不由本批推断确认
+    - id: validation.contract-baseline
+      checkType: reference
+      command: git rev-parse HEAD origin/edhr-dev; git diff e9562c8dd5eb2813789d4fd611fb91b0902c788d 2c4b79e1641be4886fd5361b48df076e57abd768 -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge docs/architecture; read schema header
+      outcome: passed
+      evidence:
+        - 实际source/target/contractRead均2c4b79e1641be4886fd5361b48df076e57abd768，PR34合并无契约或知识增量
+        - schema知识基线0.3.25/schema1.2.0，本批未更新知识或提升成熟度
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

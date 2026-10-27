@@ -1,0 +1,171 @@
+{
+  "role": "business-knowledge-modeler",
+  "state": "FINAL",
+  "baselineCommit": "2c4b79e1641be4886fd5361b48df076e57abd768",
+  "knowledgeModelVersion": "0.3.25",
+  "scope": "Nine finite engineering/source boundaries for this batch; no whole identity-domain, business ontology or designer runtime assurance",
+  "runtimeExecuted": false,
+  "repositoryChanged": false,
+  "records": [
+    {
+      "id": "review.input-session.01-required-credentials",
+      "recordType": "implementation-contract",
+      "knowledgeId": null,
+      "sourcePath": "gmp-platform/frontend/src/pages/LoginPage.tsx",
+      "sourceLocator": "native form username/password required; src/pages/system/UserPage.tsx#getUserFormValidationError; UserController.resetPassword",
+      "knowledgeMaturity": "unregistered implementation evidence; not user-verbatim policy",
+      "provenance": ["original-evidence", "inference"],
+      "currentApplicability": "登录请求的缺失/null/空字符串/全空白字段；不涉及合法非空字段的规范化",
+      "reasonableness": "当前产品已要求账号和密码输入，账号管理页用trim判空，密码重置用hasText拒绝空白；在API入口防止不完整请求进入密码比较和状态写入符合已有输入合同。后端UserController.create本身未声明完整DTO校验，不能据管理UI推断所有存量账号已符合该约束或顺带迁移它们。",
+      "semanticReview": "reviewed",
+      "conclusion": "engineering-fix-consistent",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/LoginPage.tsx#form-required",
+        "gmp-platform/frontend/src/pages/system/UserPage.tsx#getUserFormValidationError",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/UserController.java#resetPassword",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java#LoginRequest"
+      ],
+      "requiredDisposition": "允许精确DTO校验；实际HTTP/库状态结果由主侧复现及正式质量验收，不改本体。"
+    },
+    {
+      "id": "review.input-session.02-client-error-classification",
+      "recordType": "implementation-contract",
+      "knowledgeId": null,
+      "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "sourceLocator": "handleValidationException / handleGenericException",
+      "knowledgeMaturity": "unregistered MVC/API implementation contract",
+      "provenance": ["original-evidence", "inference"],
+      "currentApplicability": "不可读/不兼容的JSON请求体与BeanValidation输入错误；全局MVC范围",
+      "reasonableness": "现有BeanValidation错误已为400。JSON无法绑定是客户端请求错误，精确映射HttpMessageNotReadableException为400可避免伪500，且不重新定义业务拒绝、401/403或技术500。不能泛化为所有IllegalArgumentException都400，也不能吞技术故障。",
+      "semanticReview": "reviewed",
+      "conclusion": "engineering-fix-consistent",
+      "evidence": ["gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java#handleValidationException,handleBusinessException,handleGenericException"],
+      "requiredDisposition": "限定异常类型，保留既有ResponseEntity/ApiResponse分类，增补非登录入口的相邻验证；不是新增业务政策。"
+    },
+    {
+      "id": "review.input-session.03-attempt-counter-boundary",
+      "recordType": "implementation-contract",
+      "knowledgeId": null,
+      "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "sourceLocator": "login / handleFailedLogin / FailedLoginException / currentSecurityPolicy",
+      "knowledgeMaturity": "current implementation/settings/old tests; no dedicated knowledge ID",
+      "provenance": ["original-evidence", "inference"],
+      "currentApplicability": "格式完整后实际密码验证失败，及成功清零/技术失败回滚；PR34账户事务保持",
+      "reasonableness": "不完整请求不是一次有效密码比较，先拒绝可防止空输入意外消耗计数；完整非空错误密码仍必须401且持久化次数并按配置锁定。不可据新校验取消真实失败计数、放松阈值或扩大dontRollbackOn。",
+      "semanticReview": "reviewed",
+      "conclusion": "retain-current-strategy",
+      "evidence": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java#login,handleFailedLogin,FailedLoginException",
+        "gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/AuthControllerTest.java#loginLocksAccountAfterConfiguredFailedPasswordAttempts,loginRejectsLockedAccountUntilLockWindowExpires",
+        "docs/development/branch-review-20261027-auth-delegation/evidence/ontology-result.yaml"
+      ],
+      "requiredDisposition": "验证不完整输入不改计数/lastLogin/日志，真实错误密码及锁定回归按原断言执行。"
+    },
+    {
+      "id": "review.input-session.04-no-credential-normalization",
+      "recordType": "compatibility-boundary",
+      "knowledgeId": null,
+      "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "sourceLocator": "login request.getUsername / PasswordEncoder.matches",
+      "knowledgeMaturity": "implementation compatibility evidence",
+      "provenance": ["original-evidence", "inference"],
+      "currentApplicability": "合法非空凭据，尤其包含首尾空格的非空密码/用户名",
+      "reasonableness": "判空与变换凭据含义不同。NotBlank本身不裁剪；新增trim、大小写折叠、登录时复杂度/长度规则会改变原身份或已存密码匹配，不能由本次防500修复推定授权。",
+      "semanticReview": "reviewed",
+      "conclusion": "preserve-exact-values",
+      "evidence": ["gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java#login"],
+      "requiredDisposition": "保留原输入原样参与查询/比较；需要新增凭据政策时另定范围。"
+    },
+    {
+      "id": "review.input-session.05-safe-error-detail",
+      "recordType": "security-engineering-boundary",
+      "knowledgeId": null,
+      "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "sourceLocator": "proposed HttpMessageNotReadableException mapping / current generic exception logger",
+      "knowledgeMaturity": "engineering inference; not a newly invented domain rule",
+      "provenance": ["original-evidence", "inference"],
+      "currentApplicability": "认证请求反序列化失败的响应和新分类日志",
+      "reasonableness": "转换异常可能包含原始JSON值或路径，不能把密码和请求片段返回给调用者或写入新的日志。返回固定可理解消息，不记录转换异常明细，可解决分类问题并避免制造敏感数据暴露。",
+      "semanticReview": "reviewed",
+      "conclusion": "safe-generic-message-required",
+      "evidence": ["gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java#handleGenericException"],
+      "requiredDisposition": "仅固定信息或安全元数据；不把本条当作已完成全系统日志敏感值审计。"
+    },
+    {
+      "id": "review.input-session.06-session-generation-known-fix",
+      "recordType": "historical-finding-and-implementation-boundary",
+      "knowledgeId": null,
+      "sourcePath": "docs/development/branch-review-20261015/history/history-dedup.md",
+      "sourceLocator": "AUD-H014 / F-001 auth cache-session-generation isolation",
+      "knowledgeMaturity": "historical scoped acceptance, not fresh runtime assurance",
+      "provenance": ["original-evidence", "secondary-reference"],
+      "currentApplicability": "同标签内清除缓存/切换身份，以及旧generation成功或失败响应先行拒绝",
+      "reasonableness": "queryClient的代际递增和取消/clear、authStore登录先清缓存、client同步捕获generation并在响应处理前校验共同避免旧会话结果污染新身份。既有根因已记录known-fixed，新相邻验证不可重复登记为新修复。",
+      "semanticReview": "reviewed",
+      "conclusion": "retain-and-test-adjacent-scope",
+      "evidence": [
+        "docs/development/branch-review-20261015/history/history-dedup.md#AUD-H014",
+        "gmp-platform/frontend/src/utils/queryClient.ts#clearSessionQueryCache",
+        "gmp-platform/frontend/src/utils/sessionPolicy.ts#clearAuthStorage",
+        "gmp-platform/frontend/src/stores/authStore.ts#login,logout,refreshAuthSnapshot",
+        "gmp-platform/frontend/src/api/client.ts#request-response-interceptors"
+      ],
+      "requiredDisposition": "运行证据另记本批实际场景；本角色未运行浏览器，不将旧修复当完整会话域通过。"
+    },
+    {
+      "id": "review.input-session.07-no-new-token-policy",
+      "recordType": "scope-boundary",
+      "knowledgeId": null,
+      "sourcePath": "gmp-platform/frontend/src/stores/authStore.ts",
+      "sourceLocator": "same-tab AUTH_USER_CHANGE_EVENT; client storage snapshot; decisionPackage.permissionImpacts",
+      "knowledgeMaturity": "engineering scope limit; policy not newly confirmed",
+      "provenance": ["original-evidence", "inference"],
+      "currentApplicability": "跨标签同步、自然JWT有效期/服务端撤销及完整安全矩阵未在本批确认",
+      "reasonableness": "同标签代际代码不能证明全部跨标签或令牌生命周期；也不能自行新增全局JWT撤销、全设备退出或跨标签交互政策。若发现具体身份/数据污染需主审复现并按安全风险定位，不能仅因没有storage监听就直接宣称新业务规则或整个认证域有漏洞。",
+      "semanticReview": "reviewed",
+      "conclusion": "retain-unverified-boundaries",
+      "evidence": ["gmp-platform/frontend/src/stores/authStore.ts#refreshAuthSnapshot", "docs/development/branch-review-20261027-input-session/decision-package.yaml#permissionImpacts,evidenceGaps"],
+      "requiredDisposition": "精确记录已测行为及证据缺口；真正影响实现的业务取舍再确认，无依赖审查继续。"
+    },
+    {
+      "id": "review.input-session.08-designer-interaction-contract",
+      "recordType": "implementation-contract",
+      "knowledgeId": null,
+      "sourcePath": "gmp-platform/frontend/scripts/verify-template-designer-react.mjs",
+      "sourceLocator": "field cards must be consumed by dropping onto a cell, not by clicking the sidebar; DesignerSidebar.handleFieldPointerDown",
+      "knowledgeMaturity": "current source/test interaction contract; not user-verbatim business policy",
+      "provenance": ["original-evidence", "inference"],
+      "currentApplicability": "普通已有字段首次放置、现有显示组件及子表入口的能力边界",
+      "reasonableness": "既有测试明确禁止卡片直接generic addNodeFromField，因此不能为补非拖动替代直接替换卡片点击语义或绕过目标/可用性/撤销guard。该测试也不是无障碍豁免；若真实操作确认缺口，应提供具体操作证据和保留guard的独立方案。",
+      "semanticReview": "reviewed",
+      "conclusion": "runtime-check-only-no-policy-change",
+      "evidence": [
+        "gmp-platform/frontend/scripts/verify-template-designer-react.mjs#field-card-onClick-guard",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx#handleFieldPointerDown,field-card",
+        "docs/development/branch-review-20261027-auth-delegation/evidence/designer-nondrag-review.md"
+      ],
+      "requiredDisposition": "沿用adjacent.designer-field-card-keyboard-placement候选；本角色未运行UI，不能断言整个设计器无替代或授权新功能。"
+    },
+    {
+      "id": "review.input-session.09-original-deferrals",
+      "recordType": "task-scope-boundary",
+      "knowledgeId": null,
+      "sourcePath": "docs/development/branch-review-20261027-input-session/decision-package.yaml",
+      "sourceLocator": "unaffectedAreas / potentialImpacts / evidenceGaps",
+      "knowledgeMaturity": "current user-task scope and prior explicit deferrals",
+      "provenance": ["user-confirmed", "secondary-reference"],
+      "currentApplicability": "生产管理弹窗、TaskDetail签名密码、记录控制变更/作废及相关DHR、未批准性能优化",
+      "reasonableness": "用户只要求继续整体审计，并未恢复已暂缓设计或授权新的性能实施。本批输入和会话工程修复不依赖这些政策，必须保持独立推进与剩余边界并列。",
+      "semanticReview": "reviewed",
+      "conclusion": "retained-deferred",
+      "evidence": ["docs/development/branch-review-20261015/NEXT.md", "docs/development/branch-review-20261027-input-session/decision-package.yaml"],
+      "requiredDisposition": "不恢复暂缓、不更改制程/作业规则、不部署/合并/恢复数据；不把本批NA提升为全库合理性完成。"
+    }
+  ],
+  "limits": [
+    "Only listed source/contract boundaries inspected; no Maven, PostgreSQL, browser or runtime test executed by this role.",
+    "No repository code, test, configuration or knowledge files modified; only /tmp result artifacts written.",
+    "Business rules and actual HTTP/DB defects must be distinguished; engineering conclusions do not fabricate user decisions or registered knowledge IDs.",
+    "No full-branch, whole-file, identity-domain, multi-tenant or ontology-stage completion claim."
+  ]
+}

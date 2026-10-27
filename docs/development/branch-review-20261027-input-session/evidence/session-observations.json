@@ -1,0 +1,752 @@
+{
+  "role": "read-only source/runtime helper, not formal independent quality acceptance",
+  "baseline": "2c4b79e1641be4886fd5361b48df076e57abd768",
+  "boundary": "Real AppLayout, React/MUI/router/authStore/queryClient/sessionPolicy/api client in two pages of one Chromium context; fixture HTTP and synthetic users/tokens; no real backend; fixture buttons only invoke actual auth store methods.",
+  "results": [
+    {
+      "scenario": "same-tab-switch-control",
+      "status": "control-passed",
+      "before": {
+        "store": {
+          "token": "fixture-token-A",
+          "user": {
+            "id": "9007199254740993",
+            "username": "audit-A",
+            "displayName": "隔离用户A",
+            "permissions": [
+              "dashboard"
+            ]
+          },
+          "isAuthenticated": true
+        },
+        "shared": {
+          "token": "fixture-token-A",
+          "user": {
+            "id": "9007199254740993",
+            "username": "audit-A",
+            "displayName": "隔离用户A",
+            "permissions": [
+              "dashboard"
+            ]
+          }
+        },
+        "generation": 0,
+        "cache": {
+          "owner": "A",
+          "value": "A-private-fixture"
+        },
+        "storageEvents": [],
+        "authEvents": 1,
+        "lastResults": {}
+      },
+      "afterIdentity": {
+        "store": {
+          "token": "fixture-token-B",
+          "user": {
+            "id": "9007199254740992",
+            "username": "audit-B",
+            "displayName": "隔离用户B",
+            "permissions": [
+              "dashboard"
+            ]
+          },
+          "isAuthenticated": true
+        },
+        "shared": {
+          "token": "fixture-token-B",
+          "user": {
+            "id": "9007199254740992",
+            "username": "audit-B",
+            "displayName": "隔离用户B",
+            "permissions": [
+              "dashboard"
+            ]
+          }
+        },
+        "generation": 1,
+        "cache": null,
+        "storageEvents": [],
+        "authEvents": 2,
+        "lastResults": {}
+      },
+      "newRequest": {
+        "authorization": "Bearer fixture-token-B"
+      },
+      "afterResponse": {
+        "store": {
+          "token": "fixture-token-B",
+          "user": {
+            "id": "9007199254740992",
+            "username": "audit-B",
+            "displayName": "隔离用户B",
+            "permissions": [
+              "dashboard"
+            ]
+          },
+          "isAuthenticated": true
+        },
+        "shared": {
+          "token": "fixture-token-B",
+          "user": {
+            "id": "9007199254740992",
+            "username": "audit-B",
+            "displayName": "隔离用户B",
+            "permissions": [
+              "dashboard"
+            ]
+          }
+        },
+        "generation": 1,
+        "cache": null,
+        "storageEvents": [],
+        "authEvents": 2,
+        "lastResults": {
+          "late-success": {
+            "outcome": "rejected",
+            "message": "登录会话已切换，请重新操作",
+            "canceled": true
+          }
+        }
+      },
+      "sharedB": {
+        "token": "fixture-token-B",
+        "user": {
+          "id": "9007199254740992",
+          "username": "audit-B",
+          "displayName": "隔离用户B",
+          "permissions": [
+            "dashboard"
+          ]
+        }
+      },
+      "checks": {
+        "generationAdvanced": true,
+        "storeB": true,
+        "oldCacheCleared": true,
+        "oldResponseRejected": true
+      },
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "auth": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "auth": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/audit/current",
+          "auth": "Bearer fixture-token-B"
+        }
+      ],
+      "screenshot": "/tmp/edhr-session-boundary-artifacts/same-tab-switch-control-before-old-response.png"
+    },
+    {
+      "scenario": "cross-tab-switch-late-success",
+      "status": "observed-gap",
+      "before": {
+        "store": {
+          "token": "fixture-token-A",
+          "user": {
+            "id": "9007199254740993",
+            "username": "audit-A",
+            "displayName": "隔离用户A",
+            "permissions": [
+              "dashboard"
+            ]
+          },
+          "isAuthenticated": true
+        },
+        "shared": {
+          "token": "fixture-token-A",
+          "user": {
+            "id": "9007199254740993",
+            "username": "audit-A",
+            "displayName": "隔离用户A",
+            "permissions": [
+              "dashboard"
+            ]
+          }
+        },
+        "generation": 0,
+        "cache": {
+          "owner": "A",
+          "value": "A-private-fixture"
+        },
+        "storageEvents": [],
+        "authEvents": 1,
+        "lastResults": {}
+      },
+      "afterIdentity": {
+        "store": {
+          "token": "fixture-token-A",
+          "user": {
+            "id": "9007199254740993",
+            "username": "audit-A",
+            "displayName": "隔离用户A",
+            "permissions": [
+              "dashboard"
+            ]
+          },
+          "isAuthenticated": true
+        },
+        "shared": {
+          "token": "fixture-token-B",
+          "user": {
+            "id": "9007199254740992",
+            "username": "audit-B",
+            "displayName": "隔离用户B",
+            "permissions": [
+              "dashboard"
+            ]
+          }
+        },
+        "generation": 0,
+        "cache": {
+          "owner": "A",
+          "value": "A-private-fixture"
+        },
+        "storageEvents": [
+          {
+            "key": "token",
+            "area": "localStorage"
+          },
+          {
+            "key": "user",
+            "area": "localStorage"
+          }
+        ],
+        "authEvents": 1,
+        "lastResults": {}
+      },
+      "newRequest": {
+        "authorization": "Bearer fixture-token-B"
+      },
+      "afterResponse": {
+        "store": {
+          "token": "fixture-token-A",
+          "user": {
+            "id": "9007199254740993",
+            "username": "audit-A",
+            "displayName": "隔离用户A",
+            "permissions": [
+              "dashboard"
+            ]
+          },
+          "isAuthenticated": true
+        },
+        "shared": {
+          "token": "fixture-token-B",
+          "user": {
+            "id": "9007199254740992",
+            "username": "audit-B",
+            "displayName": "隔离用户B",
+            "permissions": [
+              "dashboard"
+            ]
+          }
+        },
+        "generation": 0,
+        "cache": {
+          "owner": "A",
+          "value": "A-private-fixture"
+        },
+        "storageEvents": [
+          {
+            "key": "token",
+            "area": "localStorage"
+          },
+          {
+            "key": "user",
+            "area": "localStorage"
+          }
+        ],
+        "authEvents": 1,
+        "lastResults": {
+          "late-success": {
+            "outcome": "accepted",
+            "data": {
+              "owner": "A",
+              "value": "A-old-response-fixture"
+            }
+          }
+        }
+      },
+      "sharedB": {
+        "token": "fixture-token-B",
+        "user": {
+          "id": "9007199254740992",
+          "username": "audit-B",
+          "displayName": "隔离用户B",
+          "permissions": [
+            "dashboard"
+          ]
+        }
+      },
+      "checks": {
+        "generationUnchangedOnRemoteSwitch": true,
+        "storeStillA": true,
+        "oldCacheRemains": true,
+        "newRequestUsesSharedToken": true,
+        "oldAResponseAccepted": true
+      },
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "auth": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "auth": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/audit/current",
+          "auth": "Bearer fixture-token-B"
+        }
+      ],
+      "screenshot": "/tmp/edhr-session-boundary-artifacts/cross-tab-switch-late-success-before-old-response.png"
+    },
+    {
+      "scenario": "cross-tab-switch-late-401",
+      "status": "observed-gap",
+      "before": {
+        "store": {
+          "token": "fixture-token-A",
+          "user": {
+            "id": "9007199254740993",
+            "username": "audit-A",
+            "displayName": "隔离用户A",
+            "permissions": [
+              "dashboard"
+            ]
+          },
+          "isAuthenticated": true
+        },
+        "shared": {
+          "token": "fixture-token-A",
+          "user": {
+            "id": "9007199254740993",
+            "username": "audit-A",
+            "displayName": "隔离用户A",
+            "permissions": [
+              "dashboard"
+            ]
+          }
+        },
+        "generation": 0,
+        "cache": {
+          "owner": "A",
+          "value": "A-private-fixture"
+        },
+        "storageEvents": [],
+        "authEvents": 1,
+        "lastResults": {}
+      },
+      "afterIdentity": {
+        "store": {
+          "token": "fixture-token-A",
+          "user": {
+            "id": "9007199254740993",
+            "username": "audit-A",
+            "displayName": "隔离用户A",
+            "permissions": [
+              "dashboard"
+            ]
+          },
+          "isAuthenticated": true
+        },
+        "shared": {
+          "token": "fixture-token-B",
+          "user": {
+            "id": "9007199254740992",
+            "username": "audit-B",
+            "displayName": "隔离用户B",
+            "permissions": [
+              "dashboard"
+            ]
+          }
+        },
+        "generation": 0,
+        "cache": {
+          "owner": "A",
+          "value": "A-private-fixture"
+        },
+        "storageEvents": [
+          {
+            "key": "token",
+            "area": "localStorage"
+          },
+          {
+            "key": "user",
+            "area": "localStorage"
+          }
+        ],
+        "authEvents": 1,
+        "lastResults": {}
+      },
+      "newRequest": {
+        "authorization": "Bearer fixture-token-B"
+      },
+      "afterResponse": {
+        "store": {
+          "token": null,
+          "user": null,
+          "isAuthenticated": false
+        },
+        "shared": {
+          "token": null,
+          "user": null
+        },
+        "generation": 0,
+        "cache": null,
+        "storageEvents": [],
+        "authEvents": 0,
+        "lastResults": {}
+      },
+      "sharedB": {
+        "token": null,
+        "user": null
+      },
+      "checks": {
+        "generationUnchangedOnRemoteSwitch": true,
+        "storeStillA": true,
+        "sharedAlreadyB": true,
+        "newRequestUsesB": true,
+        "old401RemovedBToken": true,
+        "navigatedToLogin": true
+      },
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-401",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "auth": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "auth": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/audit/current",
+          "auth": "Bearer fixture-token-B"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "auth": null
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "auth": null
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "auth": null
+        }
+      ],
+      "screenshot": "/tmp/edhr-session-boundary-artifacts/cross-tab-switch-late-401-before-old-response.png"
+    },
+    {
+      "scenario": "cross-tab-logout-late-success",
+      "status": "observed-gap",
+      "before": {
+        "store": {
+          "token": "fixture-token-A",
+          "user": {
+            "id": "9007199254740993",
+            "username": "audit-A",
+            "displayName": "隔离用户A",
+            "permissions": [
+              "dashboard"
+            ]
+          },
+          "isAuthenticated": true
+        },
+        "shared": {
+          "token": "fixture-token-A",
+          "user": {
+            "id": "9007199254740993",
+            "username": "audit-A",
+            "displayName": "隔离用户A",
+            "permissions": [
+              "dashboard"
+            ]
+          }
+        },
+        "generation": 0,
+        "cache": {
+          "owner": "A",
+          "value": "A-private-fixture"
+        },
+        "storageEvents": [],
+        "authEvents": 1,
+        "lastResults": {}
+      },
+      "afterIdentity": {
+        "store": {
+          "token": "fixture-token-A",
+          "user": {
+            "id": "9007199254740993",
+            "username": "audit-A",
+            "displayName": "隔离用户A",
+            "permissions": [
+              "dashboard"
+            ]
+          },
+          "isAuthenticated": true
+        },
+        "shared": {
+          "token": null,
+          "user": null
+        },
+        "generation": 0,
+        "cache": {
+          "owner": "A",
+          "value": "A-private-fixture"
+        },
+        "storageEvents": [
+          {
+            "key": "token",
+            "area": "localStorage"
+          },
+          {
+            "key": "user",
+            "area": "localStorage"
+          },
+          {
+            "key": "sessionStartedAt",
+            "area": "localStorage"
+          },
+          {
+            "key": "lastActivityAt",
+            "area": "localStorage"
+          }
+        ],
+        "authEvents": 1,
+        "lastResults": {}
+      },
+      "newRequest": {
+        "authorization": null
+      },
+      "afterResponse": {
+        "store": {
+          "token": "fixture-token-A",
+          "user": {
+            "id": "9007199254740993",
+            "username": "audit-A",
+            "displayName": "隔离用户A",
+            "permissions": [
+              "dashboard"
+            ]
+          },
+          "isAuthenticated": true
+        },
+        "shared": {
+          "token": null,
+          "user": null
+        },
+        "generation": 0,
+        "cache": {
+          "owner": "A",
+          "value": "A-private-fixture"
+        },
+        "storageEvents": [
+          {
+            "key": "token",
+            "area": "localStorage"
+          },
+          {
+            "key": "user",
+            "area": "localStorage"
+          },
+          {
+            "key": "sessionStartedAt",
+            "area": "localStorage"
+          },
+          {
+            "key": "lastActivityAt",
+            "area": "localStorage"
+          }
+        ],
+        "authEvents": 1,
+        "lastResults": {
+          "late-success": {
+            "outcome": "accepted",
+            "data": {
+              "owner": "A",
+              "value": "A-old-response-fixture"
+            }
+          }
+        }
+      },
+      "sharedB": {
+        "token": null,
+        "user": null
+      },
+      "checks": {
+        "generationUnchangedOnRemoteSwitch": true,
+        "storeStillA": true,
+        "oldCacheRemains": true,
+        "newRequestUsesSharedToken": true,
+        "oldAResponseAccepted": true
+      },
+      "requests": [
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/menu-configuration",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/auth/me",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/audit/late-success",
+          "auth": "Bearer fixture-token-A"
+        },
+        {
+          "pathname": "/api/v1/system/settings/public",
+          "auth": null
+        },
+        {
+          "pathname": "/api/v1/identity/roles",
+          "auth": null
+        },
+        {
+          "pathname": "/api/v1/audit/current",
+          "auth": null
+        }
+      ],
+      "screenshot": "/tmp/edhr-session-boundary-artifacts/cross-tab-logout-late-success-before-old-response.png"
+    }
+  ],
+  "pageErrors": []
+}

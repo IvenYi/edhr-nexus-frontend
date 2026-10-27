@@ -1,0 +1,85 @@
+decisionPackage:
+  id: DEC-PACKAGE-INPUT-SESSION-AUDIT-20261027
+  scope: 整体审计W3/W5登录请求与会话边界，W2设计器非拖动运行核查
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    targetBranch: edhr-dev
+    targetCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    contractReadCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    uncommittedContractPaths: []
+  summary: PR34人工合并树与交付相同；验证畸形登录请求及会话隔离，设计器非拖动只作真实交互核查，有确定缺陷再最小修复。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: login-input
+        change: 核对缺失/null/空白字段及不可读请求体，不把客户端输入错误误报技术500，不让不完整请求消耗已有失败计数。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java]
+      - area: session-isolation
+        change: 核对既有generation取消/退出/登录身份切换，先查旧验收避免重复登记。
+        evidenceReferences: [gmp-platform/frontend/src/utils/queryClient.ts, gmp-platform/frontend/src/utils/sessionPolicy.ts, gmp-platform/frontend/src/stores/authStore.ts]
+      - area: designer-nondrag
+        change: 运行核对真实普通字段卡键盘、ContextMenu/Shift+F10和已存在替代入口；不以内部store脚本冒称用户入口。
+        evidenceReferences: [docs/development/branch-review-20261027-auth-delegation/evidence/designer-nondrag-review.md]
+    transitiveImpacts:
+      - area: exception-mapping
+        concern: 若增加不可读请求体400处理，属于全局MVC错误语义；保留业务异常/权限/技术异常既有区分，不输出原始请求或转换异常明细。
+    potentialImpacts:
+      - area: designer-interaction
+        concern: 若真实缺少替代且现有交互合同未定，记录证据与具体建议，不擅自改点击/拖放含义。
+    unaffectedAreas:
+      - area: user-deferred
+        reason: 不恢复生产管理弹窗、TaskDetail签名密码、记录变更/作废及相关DHR暂缓，不重定制程/作业政策。
+    compatibilityAndMigration:
+      - area: auth
+        change: 合法用户名/密码不裁剪、不改复杂度/阈值/锁定策略，无schema或数据迁移。
+    snapshotImpacts: []
+    auditImpacts:
+      - area: login
+        change: 不完整请求不发布登录成功/日志；真实非空错误密码仍按PR34现有策略计数及锁定。
+    permissionImpacts:
+      - area: auth
+        change: 会话权限策略先查证；不自行新增JWT撤销或跨标签政策。
+    testImpacts:
+      - scope: native-pg
+        scenarios: [合法登录回归, 缺失/null/空白字段, 不可读JSON, 失败计数和成功状态不变]
+        evidenceReferences: []
+      - scope: browser
+        scenarios: [真实设计器现有入口, 会话迟到响应隔离]
+        evidenceReferences: []
+    evidenceGaps:
+      - 直接输入/会话和设计器当前仅待验证线索，不预先宣称缺陷或完成全身份域。
+      - 性能新候选仅提出，未经讨论不实施；原22维度审计及待审范围保留。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用现有DTO校验、全局异常映射和会话代际，不造新认证框架或设计器绑定机制。
+    ownershipBoundaries:
+      - owner: primary
+        responsibility: 源码复核、复现、最小修复和实现侧验证。
+      - owner: ontology
+        responsibility: 规则来源、适用性和合理性评估，无新政策时正式NA。
+      - owner: browser-helper
+        responsibility: 仅现有设计器交互观察与证据，不参与产品修复或替代正式独立验收。
+      - owner: quality
+        responsibility: 冻结候选后全新独立复验。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java
+      changeType: read-only
+      reason: 验证真实输入边界，缺陷确认后最小整改。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java
+      changeType: read-only
+      reason: 区分不可读请求与技术错误，范围明确后才修改。
+  acceptanceScenarios:
+    - id: incomplete-login-input
+      given: 现有账号与已保存登录失败计数
+      when: 缺失或不完整的登录字段、不可读请求体
+      then: 客户端错误明确拒绝，不误报技术错误、不改变成功状态；真实密码失败规则不变
+      evidenceRequirements: [真实MVC/PG请求, 状态与日志查询, 相邻回归]

@@ -1,0 +1,94 @@
+{
+  "baseCommit": "2c4b79e1641be4886fd5361b48df076e57abd768",
+  "counts": {
+    "tests": 16,
+    "failures": 12,
+    "errors": 0,
+    "skipped": 0
+  },
+  "command": "mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=AuthLoginConcurrencyPostgresTest -Dauth.audit.url=jdbc:postgresql://127.0.0.1:55432/edhr_auth_audit_input -Dauth.audit.user=postgres test",
+  "rawLog": "/tmp/edhr-input-red.log",
+  "rawLogSha256": "de74efae1fb8d23b8fe3090ac7420c9b33e4b9e4a6d5ee7a85068928793c1d5f",
+  "cases": [
+    {
+      "name": "persistedFailureAndExpiredLockClearOnlyOnSuccessfulLogin",
+      "result": "passed",
+      "message": null
+    },
+    {
+      "name": "unreadableLoginBodiesAreBadRequestsWithoutChangingAccount(String)[1]",
+      "result": "failed",
+      "message": "\nexpected: 400\n but was: 500"
+    },
+    {
+      "name": "unreadableLoginBodiesAreBadRequestsWithoutChangingAccount(String)[2]",
+      "result": "failed",
+      "message": "\nexpected: 400\n but was: 500"
+    },
+    {
+      "name": "unreadableLoginBodiesAreBadRequestsWithoutChangingAccount(String)[3]",
+      "result": "failed",
+      "message": "\nexpected: 400\n but was: 500"
+    },
+    {
+      "name": "unreadableLoginBodiesAreBadRequestsWithoutChangingAccount(String)[4]",
+      "result": "failed",
+      "message": "\nexpected: 400\n but was: 500"
+    },
+    {
+      "name": "unreadableLoginBodiesAreBadRequestsWithoutChangingAccount(String)[5]",
+      "result": "failed",
+      "message": "\nexpected: 400\n but was: 500"
+    },
+    {
+      "name": "disabledAccountCannotLoginOrAccumulatePasswordFailures",
+      "result": "passed",
+      "message": null
+    },
+    {
+      "name": "overlappingFailuresReachConfiguredThresholdWithoutBlockingOtherAccounts",
+      "result": "passed",
+      "message": null
+    },
+    {
+      "name": "incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String)[1]",
+      "result": "failed",
+      "message": "\nexpected: 400\n but was: 401"
+    },
+    {
+      "name": "incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String)[2]",
+      "result": "failed",
+      "message": "\nexpected: 400\n but was: 401"
+    },
+    {
+      "name": "incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String)[3]",
+      "result": "failed",
+      "message": "\nexpected: 400\n but was: 401"
+    },
+    {
+      "name": "incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String)[4]",
+      "result": "failed",
+      "message": "\nexpected: 400\n but was: 500"
+    },
+    {
+      "name": "incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String)[5]",
+      "result": "failed",
+      "message": "\nexpected: 400\n but was: 500"
+    },
+    {
+      "name": "incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String)[6]",
+      "result": "failed",
+      "message": "\nexpected: 400\n but was: 401"
+    },
+    {
+      "name": "incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String)[7]",
+      "result": "failed",
+      "message": "\nexpected: 400\n but was: 401"
+    },
+    {
+      "name": "technicalLoginLogFailureDoesNotPublishSuccessfulState",
+      "result": "passed",
+      "message": null
+    }
+  ]
+}
