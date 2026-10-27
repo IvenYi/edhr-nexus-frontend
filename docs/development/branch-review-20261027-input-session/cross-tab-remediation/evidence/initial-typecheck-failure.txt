@@ -1,0 +1,10 @@
+
+> edhr-frontend@0.0.1 build
+> tsc -b && vite build --config vite.config.ts
+
+src/api/client.ts(27,59): error TS2345: Argument of type 'InternalAxiosRequestConfig<any>' is not assignable to parameter of type 'string'.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice

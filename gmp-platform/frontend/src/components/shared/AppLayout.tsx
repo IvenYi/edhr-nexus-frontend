@@ -49,6 +49,7 @@ import { useSystemBranding } from '@/hooks/useSystemBranding';
 import { renderManagedIcon } from '@/utils/iconAssets';
 import { getMe, logout } from '@/api/auth';
 import { getRoles } from '@/api/identity';
+import { getSessionGeneration } from '@/utils/queryClient';
 import {
   clearAuthStorage,
   DEFAULT_IDLE_LOGOUT_MINUTES,
@@ -432,14 +433,14 @@ export default function AppLayout() {
   }, []);
 
   const handleSessionTimeoutLogout = useCallback(async () => {
+    const generation = getSessionGeneration();
     setUserAnchorEl(null);
     try {
       await logout();
     } catch {
       // Timeout sign-out should still clear the local session when the server token is already invalid.
     }
-    clearAuthStorage();
-    navigate('/login', { replace: true });
+    if (clearAuthStorage(generation)) navigate('/login', { replace: true });
   }, [navigate]);
 
   useEffect(() => {
@@ -646,14 +647,14 @@ export default function AppLayout() {
   }, []);
 
   const handleLogout = useCallback(async () => {
+    const generation = getSessionGeneration();
     setUserAnchorEl(null);
     try {
       await logout();
     } catch {
       // Local sign-out should still proceed when the server session has expired.
     }
-    clearAuthStorage();
-    navigate('/login');
+    if (clearAuthStorage(generation)) navigate('/login');
   }, [navigate]);
 
   const handleOpenPersonalSettings = useCallback(() => {

@@ -34,6 +34,8 @@ import com.zencas.edhr.system.entity.SystemSetting;
 import com.zencas.edhr.system.repository.SystemSettingRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -123,7 +125,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @Transactional(dontRollbackOn = FailedLoginException.class)
-    public ApiResponse<Map<String, Object>> login(@RequestBody LoginRequest request,
+    public ApiResponse<Map<String, Object>> login(@Valid @RequestBody LoginRequest request,
                                                   HttpServletRequest servletRequest) {
         SecurityPolicy policy = currentSecurityPolicy();
         UserAccount user = userAccountRepository.findByUsernameForUpdate(request.getUsername())
@@ -1306,7 +1308,9 @@ public class AuthController {
 
     @Data
     public static class LoginRequest {
+        @NotBlank(message = "用户名不能为空")
         private String username;
+        @NotBlank(message = "密码不能为空")
         private String password;
     }
 

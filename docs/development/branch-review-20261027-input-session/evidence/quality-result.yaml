@@ -1,0 +1,252 @@
+qualityResult:
+  result: failed
+  baseCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+  headCommit: 39f292d883e35b8ff8d7dfc6271486498b7f276a
+  contractBaseline:
+    sourceCommit: 39f292d883e35b8ff8d7dfc6271486498b7f276a
+    targetBranch: edhr-dev
+    targetCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    contractReadCommit: 39f292d883e35b8ff8d7dfc6271486498b7f276a
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.fixed-candidate-contract
+    required: true
+    category: requirements
+    description: 实际目标、冻结候选、契约与知识基线
+    method: command
+    command: git fetch origin refs/heads/edhr-dev:refs/remotes/origin/edhr-dev; git rev-parse HEAD origin/edhr-dev; diff contracts/knowledge
+    outcome: passed
+    evidence:
+    - base/target=2c4b79e1641be4886fd5361b48df076e57abd768; head/tested/contractRead=39f292d883e35b8ff8d7dfc6271486498b7f276a;
+      clean
+    - 契约/知识与目标字节一致；知识0.3.25；未复用PR34质量作为当前运行
+  - id: check.login-input-source
+    required: true
+    category: security
+    description: 校验在认证执行前发生，非空值保持原样
+    method: inspection
+    command: Inspect AuthController LoginRequest/@Valid and unchanged login transaction/strategy
+    outcome: passed
+    evidence:
+    - 仅NotBlank，无trim/大小写折叠/新长度复杂度规则
+    - 真实错误密码的FailedLoginException提交计数、技术回滚及行锁保持
+    - Bean Validation由真实MVC执行，非仅直接调用controller单测
+  - id: check.native-postgres-input-concurrency
+    required: true
+    category: integration
+    description: 原生PG17项含12输入边界、精确空格正例和原并发回滚
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=AuthLoginConcurrencyPostgresTest,AuthControllerTest,JwtAuthenticationFilterTest,LoginLogControllerTest,GlobalExceptionHandlerTest,SecurityConfigTest,SecurityJwtExpirationTest
+      -Dauth.audit.url=jdbc:postgresql://127.0.0.1:55432/edhr_auth_audit_input_independent -Dauth.audit.user=postgres -Dedhr.authorization-notice.font=/workspace/.edhr-cloud-tools/fonts/EdhrTestCJK-Regular.ttf
+      test
+    outcome: passed
+    evidence:
+    - AuthLoginConcurrencyPostgresTest17/17，无failure/error/skip
+    - 输入400、响应code400、不回显凭据，原计数1/lastLogin/lockedUntil/日志保持
+    - 同账号并发/异账号独立/锁定/成功清零/日志故障回滚旧4项仍实跑通过
+    - /tmp/edhr-input-independent-evidence.json#/backend
+  - id: check.global-error-mapping
+    required: true
+    category: api
+    description: 全局精确不可读请求体400、非登录转换及技术500
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=AuthLoginConcurrencyPostgresTest,AuthControllerTest,JwtAuthenticationFilterTest,LoginLogControllerTest,GlobalExceptionHandlerTest,SecurityConfigTest,SecurityJwtExpirationTest
+      -Dauth.audit.url=jdbc:postgresql://127.0.0.1:55432/edhr_auth_audit_input_independent -Dauth.audit.user=postgres -Dedhr.authorization-notice.font=/workspace/.edhr-cloud-tools/fonts/EdhrTestCJK-Regular.ttf
+      test
+    outcome: passed
+    evidence:
+    - GlobalExceptionHandlerTest5/5
+    - 非登录MVC转换400、合法绑定200、真正技术故障500
+    - 响应与新日志不带converter异常详情；源码只日志URI
+  - id: check.adjacent-auth-regression
+    required: true
+    category: regression
+    description: 既有认证、个人签名PDF、日志与JWT/安全配置
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=AuthLoginConcurrencyPostgresTest,AuthControllerTest,JwtAuthenticationFilterTest,LoginLogControllerTest,GlobalExceptionHandlerTest,SecurityConfigTest,SecurityJwtExpirationTest
+      -Dauth.audit.url=jdbc:postgresql://127.0.0.1:55432/edhr_auth_audit_input_independent -Dauth.audit.user=postgres -Dedhr.authorization-notice.font=/workspace/.edhr-cloud-tools/fonts/EdhrTestCJK-Regular.ttf
+      test
+    outcome: passed
+    evidence:
+    - 其余34项全部通过，旧断言未改/无skip
+    - AuthController24、LoginLog1、JwtFilter1、SecurityConfig6、JwtExpiration2
+    - 已提供既有CJK测试字体；没有改变产品PDF或降低断言
+  - id: check.fresh-schema-config
+    required: true
+    category: database
+    description: 独立全新PG初始化及阈值真实持久化
+    method: query
+    command: docker exec <isolated-id> createdb -U postgres edhr_auth_audit_input_independent; suite; psql schema/settings
+      receipt
+    outcome: passed
+    evidence:
+    - 新库创建exit0；Liquibase2changesets、Hibernate validate通过
+    - 实际查询changesets=2；threshold=2,minutes=30
+    - 只使用主审自建隔离容器，未停止容器或接触用户库
+  - id: check.existing-node-session
+    required: true
+    category: unit
+    description: 既有同标签会话/身份与工作区回归
+    method: automated-test
+    command: node --test scripts/test-review-batch-01.mjs
+    outcome: passed
+    evidence:
+    - 28/28，0fail/skip
+    - 同标签旧HTTP成功/401隔离等原断言实际通过
+    - /tmp/edhr-input-independent-node.log
+  - id: check.knowledge-structural-suite
+    required: true
+    category: ontology
+    description: 既有知识结构及引用校验
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - 89/89，0failure/error/skip；不等于全量业务语义审计
+    - /tmp/edhr-input-independent-knowledge.log
+  - id: check.cross-tab-session-isolation
+    required: true
+    category: security
+    description: 跨标签换身份/退出必须隔离旧缓存与响应
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium node docs/development/branch-review-20261027-input-session/evidence/session-observation.mjs
+    outcome: failed
+    evidence:
+    - 脚本实际exit1；同标签正对照通过，3组cross-tab observed-gap独立复现
+    - 另一标签B登录：本页header B，但store A/cache A/generation不变；新请求B凭据；A旧成功接受
+    - A旧401清除B共享凭据并跳登录；另一标签退出后A旧成功仍被接受
+    - 真实AppLayout及modules，fixture HTTP；不是完整生产路由/后台E2E
+    - /tmp/edhr-input-independent-session.json
+  - id: check.designer-seven-observations
+    required: true
+    category: e2e
+    description: 有限设计器现有UI运行事实与原报告一致
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium node docs/development/branch-review-20261027-input-session/evidence/designer-observation.mjs
+    outcome: passed
+    evidence:
+    - 7组observed/exit0，非7个缺陷修复通过
+    - 普通字段Enter/Space/click不放置，pointer与undo/redo可用
+    - Shift+F10/ContextMenu可开菜单；display点击/Enter与子表菜单可放置；quick-add仅模型
+    - 1440x1050，仅所列网格路径，不外推Word/全部无障碍
+    - /tmp/edhr-input-independent-designer.json
+  - id: check.protected-scopes-unchanged
+    required: true
+    category: regression
+    description: 暂缓前端/运行规则、schema及原标准保持
+    method: command
+    command: git diff --exit-code base HEAD -- gmp-platform/frontend docs/knowledge AGENTS.md codeplzreadme.md docs/agents;
+      inspect complete source diff
+    outcome: passed
+    evidence:
+    - 前端产品/原测试与目标字节一致，WorkOrderPage/原下载脚本/TaskDetail未改
+    - 无schema/迁移/历史数据或未授权性能方案实施
+    - 原PR34四项并发/回滚测试内容不变，仅追加输入测试
+  - id: check.ontology-and-rule-boundary
+    required: true
+    category: ontology
+    description: 规则来源合理性与正式NA结果核对
+    method: inspection
+    command: Read ontology-result/rule-review and original LoginPage/UserController/GlobalExceptionHandler sources
+    outcome: passed
+    evidence:
+    - 9条有限实现边界，无新增政策；输入判空/400工程一致性合理
+    - 非空凭据原值、密码规则及原暂缓保持；跨标签交互尚未确认
+    - 设计器初始合同不授权直接卡片generic addNode；原候选不重复登记
+  - id: check.evidence-claim-boundaries
+    required: true
+    category: documentation
+    description: 真实执行、有限范围与门禁状态未夸大
+    method: inspection
+    command: Inspect current README/decision-package/primary receipts/NEXT and own results
+    outcome: passed
+    evidence:
+    - 主侧baseline12红4正只核对原件，不称本QA重跑
+    - 本QA无额度/环境阻塞，独立实际56/28/89及两组browser执行完毕
+    - 当前README明确high open/待用户交互，不应声称整体质量通过
+    - decision-package初始read-only/unresolved[]需L0同步当前状态；不当作用户授权或无代码改动结论
+  findings:
+  - id: AUTH-INPUT-001
+    severity: medium
+    scope: public-login-input
+    summary: 不完整凭据缺少入口校验，原实现错误分类或进入密码失败逻辑
+    reproductionSteps:
+    - 通过真实MVC请求缺失/null/空白字段
+    - 检查HTTP/ApiResponse及隔离账号计数/lastLogin/lock/log
+    expectedResult: 在认证执行前拒绝为400，既有账号状态不变；合法非空原值不裁剪
+    actualResult: 原基线主侧12例均红；本独立候选12例及空格正例全部通过
+    evidence:
+    - check.native-postgres-input-concurrency
+    - check.login-input-source
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 39f292d883e35b8ff8d7dfc6271486498b7f276a
+    - type: command
+      reference: /tmp/edhr-input-independent-evidence.json#/backend
+  - id: API-BODY-001
+    severity: medium
+    scope: mvc-unreadable-body
+    summary: 不可读请求体被generic handler误报500
+    reproductionSteps:
+    - 提交空体/null/数组/截断或错误字段形状JSON
+    - 另在非登录fixture MVC入口验证转换及正常绑定/技术异常
+    expectedResult: 精确不可读body400且不回显转换详情；合法200、技术500保持
+    actualResult: 候选原生PG和MVC回归均通过，源码只记录URI
+    evidence:
+    - check.global-error-mapping
+    - check.native-postgres-input-concurrency
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 39f292d883e35b8ff8d7dfc6271486498b7f276a
+    - type: command
+      reference: /tmp/edhr-input-independent-evidence.json#/backend
+  - id: AUD-H014-XTAB-001
+    severity: high
+    scope: shared-localStorage-cross-tab-session
+    summary: 远端标签身份切换不推进本页会话代际，旧身份/缓存/响应与新token混用
+    reproductionSteps:
+    - 同origin打开两个真实AppLayout标签，A页准备A缓存及挂起A请求
+    - 另一个标签login B或logout，等待本页实际storage事件/头部更新
+    - 本页发新请求，再释放旧A成功或401，检查store/cache/generation/token
+    expectedResult: 共享会话变化后旧身份/缓存和迟到响应被隔离；A旧401不能清掉B凭据；具体重载/丢稿交互待用户确认
+    actualResult: 独立3组重现：store/cache仍A、generation不变但新请求带B；A旧成功接受，A旧401清B并跳登录，远端退出后A旧成功仍接受
+    evidence:
+    - check.cross-tab-session-isolation
+    - /tmp/edhr-input-independent-session.json
+    - /tmp/edhr-session-boundary-artifacts/cross-tab-switch-late-success-before-old-response.png
+    resolutionStatus: open
+    resolutionEvidence: []
+  residualRisks:
+  - id: risk.pending-cross-tab-interaction
+    description: 是否立即重载及未保存编辑丢失取舍仍待用户答复
+    impact: 不能把继续或初始unresolved[]当批准；隔离high尚未修复
+    mitigation: 集中确认交互后修复，L2 high最终由未参与修复的全新实例回归
+  - id: risk.initial-handoff-metadata
+    description: decision-package affectedFiles保留初始read-only且unresolved为空；README已真实写出代码及待决
+    impact: 结构化交接易与最新状态脱节，不构成用户已确认
+    mitigation: 主审L0同步实际受影响文件/测试和待决声明，不改历史证据
+  - id: risk.fixture-boundaries
+    description: 浏览器是真实组件+受控HTTP；后端为真实Spring MockMvc+PG
+    impact: 没有完整浏览器到运行后端认证E2E或全部生产路由覆盖
+    mitigation: 按两条实际边界报告，后续按风险补矩阵
+  - id: risk.designer-limited-observation
+    description: 普通字段未找到替代沿旧候选；本次只有限网格/1440px
+    impact: 不证明整个设计器无替代，也不证明完整无障碍合规
+    mitigation: 另行明确选区放置命令，覆盖Word/保存重开等后续边界，不擅改既有点击含义
+  - id: risk.existing-audit-deferrals
+    description: 生产弹窗、TaskDetail、记录变更作废/DHR high/A12、知识gap与性能讨论保持
+    impact: 全分支审计、W2–W5、W6/W7尚未完成
+    mitigation: 继续台账增量审查，不以本批测试数量替代全量完成
+  - id: risk.unexecuted-current-ui-static-build
+    description: 本QA未重跑完整前端build/strict/lint，前端产品字节未变；strict27/lint缺配置为旧结果
+    impact: 不能把既有结果写作本次执行或全站绿色
+    mitigation: 如前端产品变化再按影响重跑，当前如实保留未执行
+  blockingConditions: []

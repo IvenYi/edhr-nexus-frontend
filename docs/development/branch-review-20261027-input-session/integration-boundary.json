@@ -1,0 +1,140 @@
+{
+  "targetCommit": "2c4b79e1641be4886fd5361b48df076e57abd768",
+  "testedCandidateCommit": "39f292d883e35b8ff8d7dfc6271486498b7f276a",
+  "meaning": "Finite delivery path/blob inventory only; not whole-file/full-branch audit or an acceptance override. Earlier frozen catalogs remain historical; later changes only L0 archive/metadata.",
+  "changes": [
+    {
+      "status": "M",
+      "path": "docs/development/branch-review-20261015/NEXT.md",
+      "classification": "audit-support",
+      "candidateBlob": "12d251883877762da2ba90a9906a197aa4a149f9",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-input-session/README.md",
+      "classification": "audit-support",
+      "candidateBlob": "01dce41ae2bbebbb5521186a49fd1fd3ea20b339",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-input-session/decision-package.yaml",
+      "classification": "audit-support",
+      "candidateBlob": "361a936e90001ca482c2f06c52097cc4378136ff",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-input-session/evidence/cross-tab-identity-mismatch.png",
+      "classification": "audit-support",
+      "candidateBlob": "ac6fd3ca40aa8a41fa973b5e8446bc5adede7c37",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-input-session/evidence/designer-helper-initial.json",
+      "classification": "audit-support",
+      "candidateBlob": "fdb0876d73772f93d388a03440e6f4dde34983b1",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-input-session/evidence/designer-keyboard-menu.png",
+      "classification": "audit-support",
+      "candidateBlob": "4d8414ce20c0174186825aa5f8314563ee7b3e32",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-input-session/evidence/designer-observation.mjs",
+      "classification": "audit-support",
+      "candidateBlob": "80ad43117b08279a4862b16308f2039146587ce2",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-input-session/evidence/designer-observations.json",
+      "classification": "audit-support",
+      "candidateBlob": "d210e04ddbe0dca2b8554c893b8dd1f7d758f1f0",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-input-session/evidence/designer-ordinary-field.png",
+      "classification": "audit-support",
+      "candidateBlob": "ea615b9500d1ff75f0c283a49a80e2f5249c3de0",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-input-session/evidence/ontology-result.yaml",
+      "classification": "audit-support",
+      "candidateBlob": "378836310e08cb08e3e69a2948d97d78bd67acd6",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-input-session/evidence/primary-red.json",
+      "classification": "audit-support",
+      "candidateBlob": "601db9cedec7a3e2cbecbee8efb1607de71c522a",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-input-session/evidence/primary-verification.json",
+      "classification": "audit-support",
+      "candidateBlob": "87de566b56b1d48a50872cde37722a4da89549dc",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-input-session/evidence/rule-review.json",
+      "classification": "audit-support",
+      "candidateBlob": "dd2c65ef2e3395af9c5a855742450b04cb984988",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-input-session/evidence/session-observation.mjs",
+      "classification": "audit-support",
+      "candidateBlob": "d7d83ced1425eb2dd528121307fc9077787a9e66",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "A",
+      "path": "docs/development/branch-review-20261027-input-session/evidence/session-observations.json",
+      "classification": "audit-support",
+      "candidateBlob": "8ba39de88b58556bf83b4b8453e7d3010b2a758b",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java",
+      "classification": "product-source",
+      "candidateBlob": "dcd62e2b0b178724f7c92c12ba0636219cc3aaf5",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java",
+      "classification": "product-source",
+      "candidateBlob": "a29a53eabbefce17725cfca0684860ea76858aec",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/common/exception/GlobalExceptionHandlerTest.java",
+      "classification": "test",
+      "candidateBlob": "1db8aea3c99d516318f8341ef4f210d7473cb727",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "status": "M",
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/AuthLoginConcurrencyPostgresTest.java",
+      "classification": "test",
+      "candidateBlob": "e3f87c123a57fedfe6552e111ecc5d0c91e1d9e3",
+      "wholeFileAuditComplete": false
+    }
+  ]
+}

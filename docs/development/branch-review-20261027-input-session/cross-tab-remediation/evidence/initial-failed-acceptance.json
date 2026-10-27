@@ -1,0 +1,55 @@
+{
+  "result": "failed",
+  "status": "FINAL",
+  "baseCommit": "2c4b79e1641be4886fd5361b48df076e57abd768",
+  "testedCommit": "39f292d883e35b8ff8d7dfc6271486498b7f276a",
+  "qualityResult": {
+    "path": "docs/development/branch-review-20261027-input-session/evidence/quality-result.yaml",
+    "sha256": "d60ea9721ba21b7a46e781346ea0a5a825ac0a845cec1d0fdba481c4d8906c80",
+    "requiredPassed": 12,
+    "requiredTotal": 13
+  },
+  "ontology": {
+    "result": "not-applicable",
+    "finiteRecords": 9,
+    "path": "docs/development/branch-review-20261027-input-session/evidence/ontology-result.yaml"
+  },
+  "findings": [
+    {
+      "id": "AUTH-INPUT-001",
+      "severity": "medium",
+      "status": "resolved"
+    },
+    {
+      "id": "API-BODY-001",
+      "severity": "medium",
+      "status": "resolved"
+    },
+    {
+      "id": "AUD-H014-XTAB-001",
+      "severity": "high",
+      "status": "open"
+    }
+  ],
+  "mergeRecommendation": "do-not-merge-draft",
+  "requiredNext": [
+    "User cross-tab reset interaction choice",
+    "Implement chosen security/session fix",
+    "Fresh independent L2 final regression"
+  ],
+  "independentEnvironmentBlocked": false,
+  "postCandidatePolicy": "Only L0 exact evidence archive, metadata correction, task scope and draft PR registration; no product/test/knowledge changed after tested commit.",
+  "pullRequest": {
+    "number": 35,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/35",
+    "isDraft": true,
+    "manualMergeOnly": true,
+    "mergeRecommended": false
+  },
+  "cleanup": {
+    "isolatedPostgresContainer": "d5fa1730a0858e27019ee92a78bfcb9ebe2cb9dd5a8a888e6fc138f0bc39981a",
+    "stopExitCode": 0,
+    "autoRemovedConfirmed": true,
+    "userDatabaseTouched": false
+  }
+}

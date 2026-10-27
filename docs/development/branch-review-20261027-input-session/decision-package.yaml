@@ -1,0 +1,145 @@
+decisionPackage:
+  id: DEC-PACKAGE-INPUT-SESSION-AUDIT-20261027
+  scope: 整体审计W3/W5登录请求与会话边界，W2设计器非拖动运行核查
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: daca7531c475101ec1dd3ff0f2c0861d6f9e09cd
+    targetBranch: edhr-dev
+    targetCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    contractReadCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    uncommittedContractPaths: []
+  summary: 用户已明确接受共享会话两层保护，继续同一PR35修复跨标签high；保留39f292d8独立failed原件，不自动进入另一账号，不清其他标签新凭据，不自动补交。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: confirmed.cross-tab-shared-session-guard
+        name: 共享登录跨标签会话保护
+        status: planned
+        trigger: 其他标签切换或退出共享登录会话，以及当前页保存提交前
+        condition:
+          type: session-comparison
+          expected: 当前页面认可的登录会话
+          observed: 当前共享登录会话
+          operator: differs
+        result:
+          type: block-current-page-and-reauthenticate
+          notification: 登录账号已在其他标签变化，请重新登录
+          beforeRequest: 不一致时拒绝发出保存提交并让当前标签回登录页
+          preserveOtherTabCredentials: true
+          automaticallyReplayOldSubmission: false
+        sourceReferences: [docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml, docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md]
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: login-input
+        change: 核对缺失/null/空白字段及不可读请求体，不把客户端输入错误误报技术500，不让不完整请求消耗已有失败计数。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java]
+      - area: session-isolation
+        change: 复用会话generation和统一client；新增共享会话身份检查及全局页面阻断，保护请求前、迟到响应与旧退出收尾，不重复登记旧同标签AUD-H014。
+        evidenceReferences: [gmp-platform/frontend/src/utils/queryClient.ts, gmp-platform/frontend/src/utils/sessionPolicy.ts, gmp-platform/frontend/src/stores/authStore.ts]
+      - area: designer-nondrag
+        change: 运行核对真实普通字段卡键盘、ContextMenu/Shift+F10和已存在替代入口；不以内部store脚本冒称用户入口。
+        evidenceReferences: [docs/development/branch-review-20261027-auth-delegation/evidence/designer-nondrag-review.md]
+    transitiveImpacts:
+      - area: exception-mapping
+        concern: 若增加不可读请求体400处理，属于全局MVC错误语义；保留业务异常/权限/技术异常既有区分，不输出原始请求或转换异常明细。
+      - area: async-logout
+        concern: AppLayout超时/手动退出及DHR重新认证的await后收尾要携带发起时generation，不能清理或跳走新会话。
+      - area: app-boundary
+        concern: 阻断时卸载旧操作区及其通知/弹窗，展示明确登录提示，不依赖每页增加确认。
+    potentialImpacts:
+      - area: designer-interaction
+        concern: 若真实缺少替代且现有交互合同未定，记录证据与具体建议，不擅自改点击/拖放含义。
+    unaffectedAreas:
+      - area: user-deferred
+        reason: 不恢复生产管理弹窗、TaskDetail签名密码、记录变更/作废及相关DHR暂缓，不重定制程/作业政策。
+    compatibilityAndMigration:
+      - area: auth
+        change: 合法用户名/密码不裁剪、不改复杂度/阈值/锁定策略，无schema或数据迁移。
+      - area: browser-session
+        change: 本地随机标记区分同秒相同JWT登录，旧token且无标记的浏览器会话正常初始化；标记不是认证凭据，不改JWT后端策略。
+    snapshotImpacts: []
+    auditImpacts:
+      - area: login
+        change: 不完整请求不发布登录成功/日志；真实非空错误密码仍按PR34现有策略计数及锁定。
+    permissionImpacts:
+      - area: auth
+        change: 落实本轮已确认跨标签共享会话保护；不新增JWT后端撤销、跨标签独立账号或自动草稿恢复。
+    testImpacts:
+      - scope: native-pg
+        scenarios: [合法登录回归, 缺失/null/空白字段, 不可读JSON, 失败计数和成功状态不变]
+        evidenceReferences: []
+      - scope: browser
+        scenarios: [真实设计器现有入口, 会话迟到响应隔离]
+        evidenceReferences: []
+    evidenceGaps:
+      - 39f292d8初轮failed保留；本轮修复须全新独立实例通过，不外推完整身份域。
+      - 性能新候选仅提出，未经讨论不实施；原22维度审计及待审范围保留。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 复用现有DTO校验、全局异常映射和会话代际，不造新认证框架或设计器绑定机制。
+    ownershipBoundaries:
+      - owner: primary
+        responsibility: 源码复核、复现、最小修复和实现侧验证。
+      - owner: ontology
+        responsibility: 规则来源、适用性和合理性评估，无新政策时正式NA。
+      - owner: browser-helper
+        responsibility: 仅现有设计器交互观察与证据，不参与产品修复或替代正式独立验收。
+      - owner: quality
+        responsibility: 冻结候选后全新独立复验。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/identity/controller/AuthController.java
+      changeType: update
+      reason: 真实输入红例后补Valid及NotBlank，不改变合法非空凭据或真实密码失败策略。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/common/exception/GlobalExceptionHandler.java
+      changeType: update
+      reason: 仅捕获HttpMessageNotReadableException为400，不记录转换详情，技术错误仍500。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/AuthLoginConcurrencyPostgresTest.java
+      changeType: update
+      reason: 新增12输入边界和带首尾空格密码正例，原4并发/状态回归不变。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/common/exception/GlobalExceptionHandlerTest.java
+      changeType: update
+      reason: 安全响应、非登录MVC转换/正常绑定及技术500相邻验证。
+    - path: gmp-platform/frontend/src/stores/authStore.ts
+      changeType: update
+      reason: 本轮用户已确认两层保护；本地成功登录认可新会话，资料刷新不清工作，会话失效不安装其他标签的身份。
+    - path: gmp-platform/frontend/src/utils/sessionPolicy.ts
+      changeType: update
+      reason: 集中共享会话检测/通知、成功登录会话标记及带generation的安全清理。
+    - path: gmp-platform/frontend/src/api/client.ts
+      changeType: update
+      reason: 请求发出前与响应消费前检查，拒绝迟到响应/旧401且不清其他标签凭据。
+    - path: gmp-platform/frontend/src/App.tsx
+      changeType: update
+      reason: 安装统一页面阻断，不修改各业务表单或生产管理弹窗。
+    - path: gmp-platform/frontend/src/components/SessionChangeBoundary.tsx
+      changeType: create
+      reason: 统一卸载旧操作区和私有弹窗，显示可访问的重新登录提示。
+    - path: gmp-platform/frontend/src/components/shared/AppLayout.tsx
+      changeType: update
+      reason: 两处异步退出携带发起时generation，晚返回不清新会话或跳转。
+    - path: gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx
+      changeType: update
+      reason: 仅重新认证退出收尾增加generation保护，不改DHR政策。
+    - path: gmp-platform/frontend/scripts/test-review-batch-01.mjs
+      changeType: update
+      reason: 原28项断言保留，正常登录fixture及VM crypto适配，新增12项保护回归。
+    - path: gmp-platform/frontend/scripts/test-cross-tab-session-browser.mjs
+      changeType: create
+      reason: 12场景真实组件/双标签/实际App安装点及重新登录，HTTP为受控夹具。
+  acceptanceScenarios:
+    - id: incomplete-login-input
+      given: 现有账号与已保存登录失败计数
+      when: 缺失或不完整的登录字段、不可读请求体
+      then: 本批12种客户端输入明确400拒绝，不误报技术错误、不改变成功状态；真实密码失败规则不变，不外推所有畸形输入
+      evidenceRequirements: [真实MVC/PG请求, 状态与日志查询, 相邻回归]
+    - id: shared-session-two-layer-guard
+      given: 页面属于A会话，另一标签改变或退出共享登录
+      when: 当前页检测变化或准备保存提交，以及旧响应/退出收尾返回
+      then: 旧操作区停止并提示，发出前阻断写入，仅当前页回登录；不清新凭据、不重放旧内容，仅资料刷新不中断
+      evidenceRequirements: [adapter零调用, 实际三退出回调, 双页真实边界/App安装点, 全新独立L2复验]

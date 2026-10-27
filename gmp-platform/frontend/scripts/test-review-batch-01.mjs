@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { webcrypto } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
@@ -37,7 +38,7 @@ function authEnvironment() {
     removeItem: (key) => storage.delete(key),
   };
   const window = Object.assign(new EventTarget(), { location: { href: '' } });
-  return { storage, localStorage, window };
+  return { storage, localStorage, window, crypto: webcrypto };
 }
 
 async function loadAuth() {
@@ -69,6 +70,7 @@ function pageCallback(path, name, globals) {
 
 test('F-001: logout removes queries, mutations and authentication storage', async () => {
   const auth = await loadAuth();
+  auth.useAuthStore.getState().login('A', { id: 1, permissions: [] });
   auth.queryClient.setQueryData(['form-filling-worklist'], [{ instanceNo: 'A-private' }]);
   auth.queryClient.getMutationCache().build(auth.queryClient, { mutationKey: ['A-action'] });
   for (const key of ['token', 'user', ...Object.values(auth.SESSION_STORAGE_KEYS)]) auth.localStorage.setItem(key, 'A');
@@ -144,6 +146,132 @@ test('F-001: old HTTP successes and old 401 responses cannot affect the new sess
   assert.equal(auth.useAuthStore.getState().user, null);
   assert.equal(auth.window.location.href, '/login');
 });
+
+function installRemoteSession(auth, token = 'B-token') {
+  auth.localStorage.setItem('token', token);
+  auth.localStorage.setItem('user', JSON.stringify({ id: 2, username: 'B', permissions: [] }));
+  auth.localStorage.setItem(auth.AUTH_SESSION_ID_KEY, 'remote-login-occurrence');
+}
+
+test('XTAB: submit is blocked before adapter dispatch even before the storage event', async () => {
+  const auth = await loadAuth();
+  auth.useAuthStore.getState().login('A-token', { id: 1, permissions: [] });
+  auth.queryClient.setQueryData(['private'], 'A-draft');
+  installRemoteSession(auth);
+  let requests = 0;
+  auth.client.defaults.adapter = async () => { requests++; throw new Error('must not dispatch'); };
+  const error = await auth.client.post('/submit', { draft: 'A' }).catch((error) => error);
+  assert.equal(error.code, 'ERR_CANCELED');
+  assert.equal(requests, 0);
+  assert.equal(auth.window.location.href, '/login');
+  assert.equal(auth.localStorage.getItem('token'), 'B-token');
+  assert.equal(auth.useAuthStore.getState().user, null);
+  assert.equal(auth.queryClient.getQueryData(['private']), undefined);
+});
+
+test('XTAB: late responses detect a remote switch without waiting for a storage event', async () => {
+  const auth = await loadAuth();
+  auth.useAuthStore.getState().login('A-token', { id: 1, permissions: [] });
+  const pending = [];
+  auth.client.defaults.adapter = (config) => new Promise((resolve, reject) => pending.push({ config, resolve, reject }));
+  const success = auth.client.get('/old-success').catch((error) => error);
+  const unauthorized = auth.client.get('/old-401').catch((error) => error);
+  await new Promise(setImmediate);
+  installRemoteSession(auth);
+  pending[0].resolve({ config: pending[0].config, status: 200, data: { code: 200, data: 'A-private' } });
+  pending[1].reject({ config: pending[1].config, response: { status: 401, data: {} } });
+  assert.equal((await success).code, 'ERR_CANCELED');
+  assert.equal((await unauthorized).code, 'ERR_CANCELED');
+  assert.equal(auth.localStorage.getItem('token'), 'B-token');
+  assert.equal(auth.window.location.href, '');
+});
+
+test('XTAB: a switch during storage reads cannot attach B to an A submission', async () => {
+  const auth = await loadAuth();
+  auth.useAuthStore.getState().login('A-token', { id: 1, permissions: [] });
+  const originalGet = auth.localStorage.getItem;
+  let switchOnce = true;
+  auth.localStorage.getItem = (key) => {
+    const value = originalGet(key);
+    if (key === auth.AUTH_SESSION_ID_KEY && switchOnce) {
+      switchOnce = false;
+      installRemoteSession(auth);
+    }
+    return value;
+  };
+  let sent;
+  auth.client.defaults.adapter = async (config) => {
+    sent = config;
+    return { config, status: 200, data: { code: 200, data: 'old-result' } };
+  };
+  const response = await auth.client.post('/save', { draft: 'A' }).catch((error) => error);
+  assert.equal(sent.headers.Authorization, 'Bearer A-token');
+  assert.equal(response.code, 'ERR_CANCELED');
+  assert.equal(auth.localStorage.getItem('token'), 'B-token');
+});
+
+test('XTAB: an equal JWT from another login still invalidates the old page', async () => {
+  const auth = await loadAuth();
+  auth.useAuthStore.getState().login('same-token', { id: 1, permissions: [] });
+  const previousId = auth.localStorage.getItem(auth.AUTH_SESSION_ID_KEY);
+  installRemoteSession(auth, 'same-token');
+  assert.notEqual(auth.localStorage.getItem(auth.AUTH_SESSION_ID_KEY), previousId);
+  assert.equal(auth.isCurrentAuthSession(), false);
+  assert.equal(auth.hasSessionChanged(), true);
+  assert.equal(auth.localStorage.getItem('token'), 'same-token');
+});
+
+test('XTAB: a remote profile refresh preserves the session and draft cache', async () => {
+  const auth = await loadAuth();
+  auth.useAuthStore.getState().login('A-token', { id: 1, displayName: 'old', permissions: [] });
+  auth.queryClient.setQueryData(['draft'], 'keep');
+  const generation = auth.getSessionGeneration();
+  auth.localStorage.setItem('user', JSON.stringify({ id: 1, displayName: 'new', permissions: [] }));
+  auth.window.dispatchEvent(Object.assign(new Event('storage'), { key: 'user', storageArea: auth.localStorage }));
+  assert.equal(auth.hasSessionChanged(), false);
+  assert.equal(auth.useAuthStore.getState().user.displayName, 'new');
+  assert.equal(auth.queryClient.getQueryData(['draft']), 'keep');
+  assert.equal(auth.getSessionGeneration(), generation);
+});
+
+test('XTAB: remote clear locks the local page and leaves shared storage alone', async () => {
+  const auth = await loadAuth();
+  auth.useAuthStore.getState().login('A-token', { id: 1, permissions: [] });
+  auth.queryClient.setQueryData(['draft'], 'A-private');
+  auth.storage.clear();
+  auth.window.dispatchEvent(Object.assign(new Event('storage'), { key: null, storageArea: auth.localStorage }));
+  assert.equal(auth.hasSessionChanged(), true);
+  assert.equal(auth.useAuthStore.getState().isAuthenticated, false);
+  assert.equal(auth.queryClient.getQueryData(['draft']), undefined);
+  assert.equal(auth.storage.size, 0);
+});
+
+for (const [path, name] of [
+  ['src/components/shared/AppLayout.tsx', 'handleSessionTimeoutLogout'],
+  ['src/components/shared/AppLayout.tsx', 'handleLogout'],
+  ['src/pages/dhr-management/DhrManagementPage.tsx', 'reauthenticate'],
+]) {
+  for (const mode of ['same-tab', 'remote-tab']) {
+    test(`XTAB: late logout ${name}/${mode} cannot clear or navigate B`, async () => {
+      const auth = await loadAuth();
+      auth.useAuthStore.getState().login('A-token', { id: 1, permissions: [] });
+      let finish;
+      const response = new Promise((resolve) => { finish = resolve; });
+      const navigations = [];
+      const callback = pageCallback(path, name, {
+        useCallback: (callback) => callback, setUserAnchorEl: () => {}, logout: () => response,
+        getSessionGeneration: auth.getSessionGeneration, clearAuthStorage: auth.clearAuthStorage,
+        navigate: (...args) => navigations.push(args),
+      });
+      const operation = callback();
+      if (mode === 'same-tab') auth.useAuthStore.getState().login('B-token', { id: 2, permissions: [] });
+      else installRemoteSession(auth);
+      finish(); await operation;
+      assert.equal(auth.localStorage.getItem('token'), 'B-token');
+      assert.deepEqual(navigations, []);
+    });
+  }
+}
 
 test('HOME-IDENTITY: A to B to A updates memory and announces the installed identity', async () => {
   const auth = await loadAuth();
@@ -271,7 +399,7 @@ test('F-001: same-session requests and signature verification preserve cached wo
 
 test('F-001: a request binds its identity before an immediate session switch', async () => {
   const auth = await loadAuth();
-  auth.localStorage.setItem('token', 'A-token');
+  auth.useAuthStore.getState().login('A-token', { id: 1, username: 'A', permissions: [] });
   let sent;
   auth.client.defaults.adapter = (config) => new Promise((resolve) => { sent = { config, resolve }; });
   const response = auth.client.get('/started-by-A').catch((error) => error);

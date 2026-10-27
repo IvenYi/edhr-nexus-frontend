@@ -1,0 +1,22 @@
+{
+  "role": "read-only design/source helper; not formal independent quality verification",
+  "state": "FINAL",
+  "sourceCommit": "daca7531c475101ec1dd3ff0f2c0861d6f9e09cd",
+  "targetCommit": "2c4b79e1641be4886fd5361b48df076e57abd768",
+  "knowledgeBaselineVersion": "0.3.25 context only; no ontology audit",
+  "repositoryModified": false,
+  "runtimeExecuted": false,
+  "axiosInstalledVersion": "1.17.0",
+  "records": [
+    {"id":"XT-SRC-01","scope":"Axios synchronous request chain","evidence":["node_modules/axios/lib/core/Axios.js:205-225","src/api/client.ts:23-33"],"conclusion":"Keep throwing rejected callback. Returning Promise.reject from synchronous rejected callback without throwing can still reach dispatchRequest.","requiredProof":"Real adapter/network dispatch remains zero for rejected old writes."},
+    {"id":"XT-SRC-02","scope":"Late logout cleanup","evidence":["src/components/shared/AppLayout.tsx:434-443","src/components/shared/AppLayout.tsx:648-657","src/pages/dhr-management/DhrManagementPage.tsx:382-390","src/utils/sessionPolicy.ts:26-31"],"conclusion":"Three await/catch/clear paths can clear a newer session. Capture expected generation/fingerprint before await and CAS at cleanup; default current-baseline check alone does not handle same-tab legitimate B login before A cleanup.","requiredProof":"Old logout late return cannot delete B or route B out."},
+    {"id":"XT-SRC-03","scope":"JWT string reuse","evidence":["backend identity/security/JwtTokenProvider.java#generateToken"],"conclusion":"No jti; same claims and NumericDate second can repeat token. This is source inference, not measured collision. Minimal independent login nonce distinguishes fresh login/ABA from old session.","requiredProof":"A-B-A and same-token/different-login-marker rejection; profile-only update preserves session."},
+    {"id":"XT-SRC-04","scope":"Response side-effect ordering","evidence":["src/api/client.ts:38-60"],"conclusion":"Live shared-session comparison and captured request generation/fingerprint checks must run before blob return,409 UI,401 clear and business errors. Reject old request without invalidating a legitimate newer same-tab session.","requiredProof":"Old success/401/409/blob rejected while B remains active."},
+    {"id":"XT-SRC-05","scope":"Application UI integration","evidence":["src/App.tsx:248-252","src/router/index.tsx:63-69","src/components/shared/AppLayout.tsx:403-426"],"conclusion":"One boundary inside BrowserRouter wrapping router and private overlays can replace/unmount old routes with accessible relogin prompt. ProtectedRoute/local header sync alone is insufficient.","requiredProof":"Real installed boundary unmounts old form and only current tab reaches login; no clear of shared B credentials."},
+    {"id":"XT-SRC-06","scope":"Existing Node fixtures","evidence":["scripts/test-review-batch-01.mjs:70-80","scripts/test-review-batch-01.mjs:272-282","scripts/test-review-batch-01.mjs#authEnvironment"],"conclusion":"Two raw-token setups should establish actual login before exercising guards; preserve all assertions. Browser globals for storageArea/crypto may need faithful VM injection.","requiredProof":"All28 existing cases keep assertions; new cross-tab and late-cleanup cases execute real modules."},
+    {"id":"XT-SRC-07","scope":"Storage and restored pages","evidence":["src/stores/authStore.ts#same-tab event listener","src/utils/sessionPolicy.ts"],"conclusion":"Storage event is notification, live comparison is safety check. Focus/pageshow recheck covers suspended/restored pages. A latched invalid page must not silently resume when shared token later equals old value.","requiredProof":"Suppressed storage event preflight and ABA tests; ignore sessionStorage events."}
+  ],
+  "nonGoals": ["server JWT revocation", "multi-account isolated browser tabs", "autosave or draft recovery", "business/DHR policy changes", "large module refactor", "performance optimization"],
+  "artifacts": ["/tmp/edhr-cross-tab-source-review.md", "/tmp/edhr-cross-tab-source-review.json"],
+  "limitations": ["No product edits", "No tests/browser executed", "JWT collision remains source-based concern", "Source baseline only; concurrent parent edits are not certified by this helper"]
+}

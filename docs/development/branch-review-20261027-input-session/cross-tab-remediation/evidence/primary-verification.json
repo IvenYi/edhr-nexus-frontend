@@ -1,0 +1,101 @@
+{
+  "baseCommit": "daca7531c475101ec1dd3ff0f2c0861d6f9e09cd",
+  "workingTree": "Implementation runs before freeze; exact candidate commit follows. Browser JSON records HEAD plus dirty status, not a fabricated tested SHA.",
+  "node": {
+    "tests": 40,
+    "passed": 40,
+    "originalTests": 28,
+    "newTests": 12
+  },
+  "browser": {
+    "sameScenarios": 12,
+    "widths": [
+      1280,
+      390
+    ],
+    "passedEachWidth": 12,
+    "baselineSubset": {
+      "tests": 5,
+      "failed": 4,
+      "passed": 1
+    }
+  },
+  "loginRegression": {
+    "tests": 8,
+    "passed": 8
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0
+  },
+  "knowledge": {
+    "tests": 89,
+    "passed": 89,
+    "actor": "ontology sync instance, see exact evidence"
+  },
+  "strict": {
+    "baselineExit": 2,
+    "candidateExit": 2,
+    "count": 27,
+    "sameFullFindings": true,
+    "initialAttempt": "Old /tmp script absent; tool exit2 was no scan. Restored current official skill script and ran both actual scans."
+  },
+  "lint": {
+    "exitCode": 2,
+    "reason": "Existing missing ESLint config"
+  },
+  "failuresPreserved": [
+    "Repeated login notification was a real implementation regression, fixed without lowering original HOME assertions",
+    "Two old token-only setups adapted to actual successful login, preserving original assertions",
+    "CanceledError TypeScript constructor mismatch fixed; first build did not reach Vite",
+    "Browser first11/12 fixture read incomplete propagated nonce, fixed synchronization and retained full credentials comparison"
+  ],
+  "logs": [
+    {
+      "path": "/tmp/edhr-cross-tab-existing-first.log",
+      "bytes": 4583,
+      "sha256": "b7e70f45522a5194bfe5bbc9bf685d14cbe1de3f829d03eb95dd33ae04b6e358"
+    },
+    {
+      "path": "/tmp/edhr-cross-tab-unit.log",
+      "bytes": 5578,
+      "sha256": "358690406de8e3f1b366fbd8182c74ca9596918683d734dfe23681211b095890"
+    },
+    {
+      "path": "/tmp/edhr-cross-tab-unit-final.log",
+      "bytes": 3898,
+      "sha256": "75254688a17e43af239086da69296883987d6ed4cedd348081cf8e0e9377f340"
+    },
+    {
+      "path": "/tmp/edhr-cross-tab-unit-verified.log",
+      "bytes": 3985,
+      "sha256": "9501cb467086f21123bbf40114fc5ee93ba159943d1852867b19260b4bc2bb56"
+    },
+    {
+      "path": "/tmp/edhr-cross-tab-build.log",
+      "bytes": 425,
+      "sha256": "4fccbe56cff182a2516e3eb856566d95c6ecc91a50ec0948a716764b44a1dc9f"
+    },
+    {
+      "path": "/tmp/edhr-cross-tab-build-final.log",
+      "bytes": 9691,
+      "sha256": "b75df26e3ffcc43ce635273f9553a67d8e587f3030987f8e5da1de01f7287346"
+    },
+    {
+      "path": "/tmp/edhr-cross-tab-login-regression.log",
+      "bytes": 941,
+      "sha256": "7bf332497c23ccb08a5b071c49be98ce4e0484de0c59e2d04334130846298157"
+    },
+    {
+      "path": "/tmp/edhr-cross-tab-lint.log",
+      "bytes": 819,
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389"
+    },
+    {
+      "path": "/tmp/edhr-cross-tab-browser-first.log",
+      "bytes": 21599,
+      "sha256": "309d4c222e5477359d2d8a73aba654fb170e8258a92c0e86fd03824e120d96a6"
+    }
+  ],
+  "backend": "No backend source/test diff from39f292d8; prior primary56 remains scoped to that code. Final independent must actually rerun final candidate."
+}

@@ -1,0 +1,89 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: daca7531c475101ec1dd3ff0f2c0861d6f9e09cd
+    targetBranch: edhr-dev
+    targetCommit: 2c4b79e1641be4886fd5361b48df076e57abd768
+    contractReadCommit: daca7531c475101ec1dd3ff0f2c0861d6f9e09cd
+    uncommittedContractPaths:
+      - docs/development/branch-review-20261027-input-session/decision-package.yaml
+  reason: 用户本轮标注并明确接受共享登录两层保护，新增DEC-0085的6条精确声明、4个验收场景及必要证据和阅读入口；不再把较早未确认的自动进入B方案当当前政策。只更新决策与来源，不新增整套认证fact/rule/execution资产，规范保持specified/internal、知识0.3.25及P0状态。历史failed和high不因知识确认关闭；本角色未参与业务代码或测试修复。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml
+      changeType: create
+      ids: [DEC-0085, DEC-0085-01, DEC-0085-02, DEC-0085-03, DEC-0085-04, DEC-0085-05, DEC-0085-06, scenario.shared-login-cross-tab-stops-old-page, scenario.shared-login-cross-tab-blocks-before-submit, scenario.shared-login-cross-tab-preserves-new-session, scenario.shared-login-profile-and-signer-boundaries]
+    - path: docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.yaml
+      changeType: create
+      ids: [evidence.shared-login-cross-tab-confirmed, evidence.shared-login-cross-tab-failed-baseline, evidence.shared-login-cross-tab-session-source, evidence.shared-login-cross-tab-client-source, evidence.shared-login-cross-tab-existing-regression]
+    - path: docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md
+      changeType: create
+      ids: [evidence.shared-login-cross-tab-confirmed]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: [DEC-0085]
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      ids: [DEC-0085]
+  knowledgeSync:
+    - id: DEC-0085-01
+      disposition: updated
+      scope: 同站点共享登录模式保持；检测其他标签切换或退出即停止旧页操作并提示重新登录，不自动进入B继续旧工作。
+      sourceReferences: [docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md]
+    - id: DEC-0085-02
+      disposition: updated
+      scope: 保存提交发出前再次校验；不一致时先拦截请求再让当前标签回登录页，不只靠按钮或晚到401。
+      sourceReferences: [docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md]
+    - id: DEC-0085-03
+      disposition: updated
+      scope: 保留另一标签新凭据，旧成功/401/退出收尾不能影响新会话；不把前端隔离解释成撤销服务器已执行写入或JWT后端撤销。
+      sourceReferences: [docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md, docs/development/branch-review-20261027-input-session/evidence/quality-result.yaml]
+    - id: DEC-0085-04
+      disposition: updated
+      scope: 旧内容不自动以新账号保存提交，重新登录不自动补交；本次不提供跨账号草稿迁移或恢复，不放宽原业务约束。
+      sourceReferences: [docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md]
+    - id: DEC-0085-05
+      disposition: updated
+      scope: 仅资料刷新不是实际登录变化，保留既有编辑与同会话同步；不据此新增未来静默令牌续期政策。
+      sourceReferences: [docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md, gmp-platform/frontend/scripts/test-review-batch-01.mjs]
+    - id: DEC-0085-06
+      disposition: updated
+      scope: 明确不把DEC-0074中的跨签署人本人认证当作登录变化，原DHR与字段签署、权限快照和暂缓保持。
+      sourceReferences: [docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml, docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md]
+    - id: DEC-0074
+      disposition: retained
+      scope: 01/03/04的A登录B本人普通按钮签署、不切A会话、未认证就地阻断和SIGN_FIELD原范围完全保留，不被DEC-0085 supersede。
+      sourceReferences: [docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml]
+    - id: question.cross-tab-session-reset
+      disposition: updated
+      scope: 此ID是本切片旧决策包本地待决而非全局知识问题记录；本轮用户明确接受两层保护后由主审清除unresolved，旧Git版本及failed原件保持，不新增伪全局问题或历史政策替代。
+      sourceReferences: [docs/development/branch-review-20261027-input-session/decision-package.yaml, docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.cross-tab-knowledge-suite
+      checkType: schema
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence: [/tmp/edhr-cross-tab-ontology-validation.log, 89 tests with zero failures/errors/skips and exit0]
+    - id: validation.cross-tab-id-reference-status
+      checkType: reference
+      command: 知识89项校验及手工核对DEC-0085/声明/场景/证据ID唯一性和引用，检查schema1.2.0及新增资产specified/internal
+      outcome: passed
+      evidence: [docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml, docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.yaml, /tmp/edhr-cross-tab-rules-sync.json]
+    - id: validation.cross-tab-user-source-and-retained-boundary
+      checkType: evidence-path
+      command: 核对本轮用户标注原文与明确确认、旧failed质量、DEC-0074及daca7531会话/client/JWT源码和既有同标签/资料刷新测试；未运行业务浏览器/后端/数据库
+      outcome: passed
+      evidence: [docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md, docs/development/branch-review-20261027-input-session/evidence/quality-result.yaml, /tmp/edhr-cross-tab-rules-sync.json]
+    - id: validation.cross-tab-projection-and-history
+      checkType: projection
+      command: 核对新增仅决策/证据与阅读入口，无runtime或customer发布、无新执行注册、无旧failed和DEC-0074改写；git diff --check -- docs/knowledge docs/architecture
+      outcome: passed
+      evidence: [全部新增规范specified/internal、supersedes为空且阶段不提升, docs/knowledge/README.md, docs/architecture/business-knowledge-model.md]
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

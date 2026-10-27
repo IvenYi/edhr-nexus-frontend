@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { AUTH_USER_CHANGE_EVENT, clearAuthStorage } from '@/utils/sessionPolicy';
+import { AUTH_USER_CHANGE_EVENT, acceptNewAuthSession, clearAuthStorage, hasSessionChanged } from '@/utils/sessionPolicy';
 import { clearSessionQueryCache } from '@/utils/queryClient';
 
 export interface User {
@@ -20,6 +20,7 @@ interface AuthState {
 }
 
 function readAuthSnapshot() {
+  if (hasSessionChanged()) return { token: null, user: null, isAuthenticated: false };
   const token = typeof localStorage === 'undefined' ? null : localStorage.getItem('token');
   let user: User | null = null;
   try { user = token ? JSON.parse(localStorage.getItem('user') || 'null') : null; }
@@ -33,8 +34,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     clearSessionQueryCache();
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
+    acceptNewAuthSession();
     set({ token, user, isAuthenticated: true });
-    window.dispatchEvent(new Event(AUTH_USER_CHANGE_EVENT));
   },
   logout: () => {
     clearAuthStorage();

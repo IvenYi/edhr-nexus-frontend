@@ -6,6 +6,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -111,6 +113,49 @@ class AuthLoginConcurrencyPostgresTest {
         assertThat(login(username,VALID)).isEqualTo(500);
         assertThat(attempts()).isEqualTo(1);
         assertThat(jdbc.queryForObject("SELECT last_login_at IS NULL FROM user_account WHERE id=?",Boolean.class,id)).isTrue();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM login_log WHERE operator_id=?",Integer.class,id)).isZero();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings={"missing-username","null-username","blank-username","missing-password","null-password","blank-password","empty-password"})
+    void incompleteLoginFieldsAreBadRequestsWithoutChangingAccount(String variant) throws Exception {
+        var input=mapper.createObjectNode().put("username",username).put("password",VALID);
+        switch(variant) {
+            case "missing-username" -> input.remove("username");
+            case "null-username" -> input.putNull("username");
+            case "blank-username" -> input.put("username"," \t ");
+            case "missing-password" -> input.remove("password");
+            case "null-password" -> input.putNull("password");
+            case "blank-password" -> input.put("password"," \t ");
+            case "empty-password" -> input.put("password","");
+            default -> throw new IllegalArgumentException(variant);
+        }
+        assertRejectedBodyWithoutStateChange(input.toString());
+    }
+
+    @Test void nonblankPasswordKeepsItsExactWhitespace() throws Exception {
+        String exact=" "+VALID+" ";
+        jdbc.update("UPDATE user_account SET password_hash=? WHERE id=?",passwords.encode(exact),id);
+        assertThat(login(username,exact)).isEqualTo(200);
+        assertThat(attempts()).isZero();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM login_log WHERE operator_id=? AND event_type='LOGIN'",Integer.class,id)).isEqualTo(1);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings={"", "null", "[]", "{", "{\"password\":{\"secret\":\"fixture-only\"}}"})
+    void unreadableLoginBodiesAreBadRequestsWithoutChangingAccount(String body) throws Exception {
+        assertRejectedBodyWithoutStateChange(body);
+    }
+
+    private void assertRejectedBodyWithoutStateChange(String body) throws Exception {
+        jdbc.update("UPDATE user_account SET failed_login_attempts=1 WHERE id=?",id);
+        var response=mvc.perform(post("/api/v1/auth/login").contentType("application/json").content(body))
+                .andReturn().getResponse();
+        assertThat(response.getStatus()).isEqualTo(400);
+        assertThat(mapper.readTree(response.getContentAsString()).path("code").asInt()).isEqualTo(400);
+        assertThat(response.getContentAsString()).doesNotContain(VALID,"fixture-only");
+        assertThat(attempts()).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT last_login_at IS NULL AND locked_until IS NULL FROM user_account WHERE id=?",Boolean.class,id)).isTrue();
         assertThat(jdbc.queryForObject("SELECT count(*) FROM login_log WHERE operator_id=?",Integer.class,id)).isZero();
     }
 }

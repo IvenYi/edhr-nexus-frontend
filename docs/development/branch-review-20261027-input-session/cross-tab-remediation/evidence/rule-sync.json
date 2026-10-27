@@ -1,0 +1,174 @@
+{
+  "role": "business-knowledge-modeler",
+  "state": "FINAL",
+  "baselineCommit": "daca7531c475101ec1dd3ff0f2c0861d6f9e09cd",
+  "targetCommit": "2c4b79e1641be4886fd5361b48df076e57abd768",
+  "knowledgeModelVersion": "0.3.25",
+  "scope": "Six precise policy statements and three engineering/history boundaries; not full identity-domain or ontology audit",
+  "records": [
+    {
+      "id": "DEC-0085-01",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml",
+      "sourceLocator": "decisionStatements/DEC-0085-01",
+      "knowledgeMaturity": "specified/internal",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "currentApplicability": "沿用同一浏览器配置下同一站点共享登录会话的模式。当其他标签切换或退出共享登录会话，当前旧页面检测到变化后立即停止继续操作，并明确提示“登录账号已在其他标签变化，请重新登录”；不能让旧页面在用户未重新确认身份时继续使用另一账号处理其原有内容。本次不改为每个标签独立保持不同账号，也不自动重载后直接让旧页面进入另一账号继续工作。",
+      "reasonableness": "用户明确选择共享登录与检测即停止旧页；与当前同源共享认证存储及已复现身份混用问题一致，不强迫引入独立多账号架构。",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent-with-confirmed-scope",
+      "requiredDisposition": "知识已同步；业务实现及全新独立验收另取当前候选证据，不能因知识确认关闭high。"
+    },
+    {
+      "id": "DEC-0085-02",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml",
+      "sourceLocator": "decisionStatements/DEC-0085-02",
+      "knowledgeMaturity": "specified/internal",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "currentApplicability": "保存、提交请求发出前再次校验页面所认可的登录会话与当前共享会话是否一致；不一致时先阻止请求，并让当前标签回到登录页，不得先执行操作再跳转。页面通知与请求前校验为两层保护，不能只依赖可见提示、按钮禁用或后续服务器返回401。",
+      "reasonableness": "请求会读取新共享凭据，因此不能依赖服务器把旧页面操作判401；请求发出前拦截是避免用新账号提交旧内容的必要保护。",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent-with-confirmed-scope",
+      "requiredDisposition": "知识已同步；业务实现及全新独立验收另取当前候选证据，不能因知识确认关闭high。"
+    },
+    {
+      "id": "DEC-0085-03",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml",
+      "sourceLocator": "decisionStatements/DEC-0085-03",
+      "knowledgeMaturity": "specified/internal",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "currentApplicability": "使旧页面失效、跳回登录页或处理旧请求的迟到结果时，保留另一标签已建立的新登录凭据。旧会话的迟到成功、401及异步退出收尾不能安装旧数据、清掉新会话或把新会话误登出；旧页面恢复登录前不再消费其原会话操作结果。本声明不等于服务器能撤回此前已经收到并执行的写请求，也不新增后端JWT撤销或全设备单点登录政策。",
+      "reasonableness": "独立旧401误清B凭据反例证明仅刷新显示不足；保留新凭据和拒旧结果保护新会话，不承诺撤回已被服务器接收的请求。",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent-with-confirmed-scope",
+      "requiredDisposition": "知识已同步；业务实现及全新独立验收另取当前候选证据，不能因知识确认关闭high。"
+    },
+    {
+      "id": "DEC-0085-04",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml",
+      "sourceLocator": "decisionStatements/DEC-0085-04",
+      "knowledgeMaturity": "specified/internal",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "currentApplicability": "不把旧表单的未提交内容自动按新账号保存或提交，也不在重新登录后自动补交原表单。本次不提供跨账号草稿迁移、自动保存或自动恢复；重新登录后重新打开记录并按当前业务权限处理，不能借会话保护放宽原有记录、状态、签署、冻结或审计约束。",
+      "reasonableness": "自动重放或代新账号提交会改变操作者和行为意图，已被用户明确排除；本次无需新增草稿迁移或恢复政策。",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent-with-confirmed-scope",
+      "requiredDisposition": "知识已同步；业务实现及全新独立验收另取当前候选证据，不能因知识确认关闭high。"
+    },
+    {
+      "id": "DEC-0085-05",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml",
+      "sourceLocator": "decisionStatements/DEC-0085-05",
+      "knowledgeMaturity": "specified/internal",
+      "provenance": [
+        "original-evidence",
+        "inference"
+      ],
+      "currentApplicability": "本确认针对实际登录会话变化。同一登录会话内仅头像、姓名等资料刷新沿用既有同步行为，不视为跨账号变化而中断编辑；工程识别应与显示文字解耦，不从本声明推定新的后台自动令牌续期政策或无条件清理当前编辑。",
+      "reasonableness": "账号显示资料更新不等于登录会话变化，保留旧资料刷新测试及编辑兼容，避免每次头像/姓名变化都破坏工作；未来静默续期保持未扩展。",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent-with-confirmed-scope",
+      "requiredDisposition": "知识已同步；业务实现及全新独立验收另取当前候选证据，不能因知识确认关闭high。"
+    },
+    {
+      "id": "DEC-0085-06",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml",
+      "sourceLocator": "decisionStatements/DEC-0085-06",
+      "knowledgeMaturity": "specified/internal",
+      "provenance": [
+        "original-evidence",
+        "inference"
+      ],
+      "currentApplicability": "DEC-0074允许A登录而B本人使用独立电子签名密码完成有权的普通按钮签署，该过程不切换A的登录会话，因此不能仅因签署人不同触发本决策的跨标签会话阻断。原按钮与SIGN_FIELD区分、DHR专属签署、节点与字段权限、快照及审计规则保持；TaskDetail签名密码、记录控制变更作废及其DHR依赖等原暂缓不因本次恢复。",
+      "reasonableness": "DEC-0074明确签署人B不切换登录人A；将签署人变化误判会破坏既有共享终端政策，因此精确保留。",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent-with-confirmed-scope",
+      "requiredDisposition": "知识已同步；业务实现及全新独立验收另取当前候选证据，不能因知识确认关闭high。"
+    },
+    {
+      "id": "review.cross-tab.engineering-session-marker",
+      "recordType": "engineering-boundary",
+      "sourcePath": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtTokenProvider.java",
+      "sourceLocator": "generateToken baseline daca7531",
+      "knowledgeMaturity": "implementation evidence, not registered business fact",
+      "provenance": [
+        "original-evidence",
+        "inference"
+      ],
+      "currentApplicability": "代际、随机客户端登录标记及同秒相同token/ABA边界",
+      "reasonableness": "当前token无jti，不应假定每次登录字符串必不同；本地标记和代际是实现手段，不改变后端JWT或引入新业务凭据。",
+      "semanticReview": "reviewed",
+      "conclusion": "engineering-choice-only"
+    },
+    {
+      "id": "review.cross-tab.engineering-async-cleanup",
+      "recordType": "engineering-boundary",
+      "sourcePath": "gmp-platform/frontend/src/components/shared/AppLayout.tsx",
+      "sourceLocator": "handleSessionTimeoutLogout/handleLogout; DhrManagementPage reauthenticate",
+      "knowledgeMaturity": "implementation evidence, not user-verbatim mechanism",
+      "provenance": [
+        "original-evidence",
+        "inference"
+      ],
+      "currentApplicability": "旧退出await后收尾不可清理新会话",
+      "reasonableness": "当前会话可能在await期间更换；发起时generation/指纹比较是落实保留B凭据的工程保护，不授予新退出政策。",
+      "semanticReview": "reviewed",
+      "conclusion": "engineering-choice-only"
+    },
+    {
+      "id": "review.cross-tab.history-and-maturity",
+      "recordType": "historical-boundary",
+      "sourcePath": "docs/development/branch-review-20261027-input-session/evidence/quality-result.yaml",
+      "sourceLocator": "qualityResult head39f292d8/resultfailed/findings AUD-H014-XTAB-001",
+      "knowledgeMaturity": "historical independent evidence",
+      "provenance": [
+        "original-evidence"
+      ],
+      "currentApplicability": "旧失败及high状态保留，等待实际修复后新实例验收",
+      "reasonableness": "政策确认不能证明实现或运行通过；旧同标签修复与新跨标签缺口分范围，原failed字节不改写。",
+      "semanticReview": "reviewed",
+      "conclusion": "retained-history"
+    }
+  ],
+  "newDecisionId": "DEC-0085",
+  "supersedes": [],
+  "replacementScope": "No prior formal cross-tab policy is superseded; unaccepted early auto-enter-B proposal is discussion history, local pending package question is resolved by the new confirmation. DEC-0074 retained.",
+  "changedPaths": [
+    "docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml",
+    "docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.yaml",
+    "docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md",
+    "docs/knowledge/README.md",
+    "docs/architecture/business-knowledge-model.md"
+  ],
+  "validation": {
+    "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test",
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exitCode": 0,
+    "log": "/tmp/edhr-cross-tab-ontology-validation.log",
+    "logSha256": "45b4ce628ef26421c14d27aa661b144f195175a505bc1496e5a9bf7db2a2850d"
+  },
+  "businessRuntimeExecuted": false,
+  "businessCodeOrTestsModified": false,
+  "conflicts": [],
+  "questions": []
+}

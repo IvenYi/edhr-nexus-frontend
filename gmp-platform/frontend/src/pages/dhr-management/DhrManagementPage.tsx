@@ -74,6 +74,7 @@ import {
   FormListPagination,
 } from '@/pages/form-management/formManagementListStyles';
 import { clearAuthStorage } from '@/utils/sessionPolicy';
+import { getSessionGeneration } from '@/utils/queryClient';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
 import { dhrDetailRowSx, dhrRowDetailProps, dhrObjectTypeLabel, dhrStatusFilters, dhrStatusMeta } from './dhrListPresentation';
@@ -380,13 +381,13 @@ export default function DhrManagementPage() {
   };
 
   const reauthenticate = async () => {
+    const generation = getSessionGeneration();
     try {
       await logout();
     } catch {
       // The current token remains usable for sign-out even when it lacks this page permission.
     }
-    clearAuthStorage();
-    navigate('/login', { replace: true });
+    if (clearAuthStorage(generation)) navigate('/login', { replace: true });
   };
 
   const filterActions = (

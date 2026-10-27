@@ -1,0 +1,27 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.shared-login-cross-tab-confirmed
+    type: document
+    path: docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md
+    description: user-confirmed；用户标注并明确接受共享登录两层保护：检测其他标签登录变化后停止旧页操作并提示重新登录，保存提交前再次校验并先拦截再回登录页，保留另一标签新凭据、不自动补交。原话、未采用的早期方案及工程机制分列，不预称实现或独立验收通过。
+    visibility: internal
+  - id: evidence.shared-login-cross-tab-failed-baseline
+    type: document
+    path: docs/development/branch-review-20261027-input-session/evidence/quality-result.yaml
+    description: original-evidence；候选39f292d883e35b8ff8d7dfc6271486498b7f276a的正式独立failed原件，13必需检查12通过1失败，AUD-H014-XTAB-001为high/open，包含跨标签迟到成功、旧401误清新凭据及退出后仍接受旧响应的反例。该结果只证明原候选缺口，不能因后续政策确认反写为passed，也不能代替修复后全新独立验收。
+    visibility: internal
+  - id: evidence.shared-login-cross-tab-session-source
+    type: code
+    path: gmp-platform/frontend/src/utils/sessionPolicy.ts
+    description: original-evidence；共享登录存储与本地清理的代码定位。政策确认时基线daca7531仍只有同标签清理与通知，跨标签检测、会话标记及防旧退出收尾的具体代码由本切片后续实现。文件存在或工程设计不代表运行完成，验收须定位实际修复候选。
+    visibility: internal
+  - id: evidence.shared-login-cross-tab-client-source
+    type: code
+    path: gmp-platform/frontend/src/api/client.ts
+    description: original-evidence；统一请求拦截及响应代际检查的代码定位。原候选只比较本标签generation并从共享存储实时取token，已被跨标签反例证明不足；本轮需补请求发出前和响应消费前保护，不将前端保护误称后端JWT撤销或已执行写请求的撤销能力。
+    visibility: internal
+  - id: evidence.shared-login-cross-tab-existing-regression
+    type: test
+    path: gmp-platform/frontend/scripts/test-review-batch-01.mjs
+    description: original-evidence；旧AUD-H014同标签切换、退出、迟到成功/401以及同会话资料刷新保留编辑和query generation的回归源码。旧同标签通过不覆盖跨标签，也不由本证据登记本轮运行；本次只保留这些既有边界并要求实际候选重验。
+    visibility: internal
