@@ -110,7 +110,10 @@ public class ProductionService {
     public List<ProductionObject> splitBatch(Long workOrderId, List<com.zencas.edhr.production.controller.ProductionObjectController.SplitRequest> requests) {
         if (requests == null || requests.isEmpty()) throw error("至少添加一个生产对象");
         if (requests.stream().anyMatch(java.util.Objects::isNull)) throw error("生产对象记录不能为空");
-        return requests.stream().map(request -> split(workOrderId, request.processVersionId(), request.targetQuantity(), request.objectNo(), request.remark(), request.plannedStartAt(), request.plannedEndAt())).toList();
+        List<ProductionObject> created = requests.stream().map(request -> split(workOrderId, request.processVersionId(), request.targetQuantity(), request.objectNo(), request.remark(), request.plannedStartAt(), request.plannedEndAt())).toList();
+        // Response summaries use JDBC; expose every new object within the current transaction.
+        productionObjectRepository.flush();
+        return created;
     }
 
     @Transactional

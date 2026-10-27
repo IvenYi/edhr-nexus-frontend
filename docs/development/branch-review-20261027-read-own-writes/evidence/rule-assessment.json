@@ -1,0 +1,182 @@
+{
+  "role": "business-knowledge-modeler",
+  "knowledgeModelVersion": "0.3.25",
+  "baseline": "26796235085b9759295f3dfff8e078ded3cd5ed8",
+  "scope": "8 finite records: 5 decision statements, 2 rules, 1 evidence boundary; rule reasonableness before implementation",
+  "records": [
+    {
+      "id": "DEC-0078-02",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml",
+      "sourceLocator": "id:DEC-0078-02",
+      "sourceBlob": "60452a365074a45ed7f5d3952d572a12f9ad18a3",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "sourceAuthority": "user-confirmed in versioned decision and quoted source evidence",
+      "currentApplicability": "Current bounded creation/output semantics; no supersession found in this slice",
+      "meaning": "正式产出只在最终完成且投影成功后累计，不把保存/未开工/待处理数据当成正式产出。",
+      "reasonableness": "合理：把可修改或失败的工作数据隔离在正式数量之外，避免重复及过早计数；是本产品当前选择，不据此推断通用监管要求。",
+      "implementationLocator": "ProductionOutputService#read,operation",
+      "implementationAssessment": "Implemented source filters formal projection and never creates output from target quantity.",
+      "verificationDepth": "source-inspected and provenance-assessed; no runtime/Maven/browser execution",
+      "limits": [
+        "No whole-file or whole-domain assurance",
+        "Read-own-writes bug not closed by this review"
+      ]
+    },
+    {
+      "id": "DEC-0078-03",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml",
+      "sourceLocator": "id:DEC-0078-03",
+      "sourceBlob": "60452a365074a45ed7f5d3952d572a12f9ad18a3",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "sourceAuthority": "user-confirmed in versioned decision and quoted source evidence",
+      "currentApplicability": "Current bounded creation/output semantics; no supersession found in this slice",
+      "meaning": "工单/批次/工序各按真实归属与冻结最终节点解释，目标数量不冒充实际产出。",
+      "reasonableness": "合理：层级和来源界定避免跨工序重复加总；响应一致性修复不改变累计范围或质量公式。",
+      "implementationLocator": "ProductionOutputService#object,order,summarize",
+      "implementationAssessment": "POST/GET both use existing object(id) projection; a read-own-writes repair must reuse it, not invent a new quantity formula.",
+      "verificationDepth": "source-inspected and provenance-assessed; no runtime/Maven/browser execution",
+      "limits": [
+        "No whole-file or whole-domain assurance",
+        "Read-own-writes bug not closed by this review"
+      ]
+    },
+    {
+      "id": "DEC-0078-04",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml",
+      "sourceLocator": "id:DEC-0078-04",
+      "sourceBlob": "60452a365074a45ed7f5d3952d572a12f9ad18a3",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "sourceAuthority": "user-confirmed in decision plus original quoted acceptance of proposal",
+      "currentApplicability": "Current bounded creation/output semantics; no supersession found in this slice",
+      "meaning": "缺数与实际0区分，并说明未齐或对应状态。",
+      "reasonableness": "合理：尚无正式事实时显示实际0会误导生产判断；状态差异应准确描述且不得被夸大为数量数据丢失。",
+      "implementationLocator": "ProductionOutputService#empty,object,summarize",
+      "implementationAssessment": "Current empty projections carry null quantity; missing DB row uses NO_DATA, an existing unstarted BATCH uses NOT_STARTED. Their exact enum spelling is engineering, not user policy.",
+      "verificationDepth": "source-inspected and provenance-assessed; no runtime/Maven/browser execution",
+      "limits": [
+        "No whole-file or whole-domain assurance",
+        "Read-own-writes bug not closed by this review"
+      ]
+    },
+    {
+      "id": "DEC-0078-06",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml",
+      "sourceLocator": "id:DEC-0078-06",
+      "sourceBlob": "60452a365074a45ed7f5d3952d572a12f9ad18a3",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "sourceAuthority": "explicit user quote 不用补 in current provenance source",
+      "currentApplicability": "Current bounded creation/output semantics; no supersession found in this slice",
+      "meaning": "旧实例缺冻结依据不按当前制程补算。",
+      "reasonableness": "合理且当前有效：保持历史原件解释，不用当前主数据制造历史产出。新增对象的事务可见性与历史回填是不同范围。",
+      "implementationLocator": "ProductionOutputService#summarize",
+      "implementationAssessment": "LEGACY branch remains independent; flushing an authorized current transaction must not reconstruct old snapshots or quantities.",
+      "verificationDepth": "source-inspected and provenance-assessed; no runtime/Maven/browser execution",
+      "limits": [
+        "No whole-file or whole-domain assurance",
+        "Read-own-writes bug not closed by this review"
+      ]
+    },
+    {
+      "id": "DEC-0014-04",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+      "sourceLocator": "id:DEC-0014-04",
+      "sourceBlob": "64200684f35ffd7e32eed3c4da30d0df23d21738",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "sourceAuthority": "explicit user-confirmed current decision; not replaced by later batch-process correction",
+      "currentApplicability": "Current bounded creation/output semantics; no supersession found in this slice",
+      "meaning": "批量提交一个事务，任一候选校验或持久化失败整批回滚。",
+      "reasonableness": "合理：用户一次确认对应整批结果，不留无法从响应识别的部分成功。同步pending SQL仍须留在同一事务。",
+      "implementationLocator": "ProductionObjectController#splitBatch;ProductionService#splitBatch,split",
+      "implementationAssessment": "Controller/service use @Transactional; saves accumulate in the persistence context. A flush synchronizes SQL but is not commit; post-flush audit failure must still roll back everything.",
+      "verificationDepth": "source-inspected and provenance-assessed; no runtime/Maven/browser execution",
+      "limits": [
+        "No whole-file or whole-domain assurance",
+        "Read-own-writes bug not closed by this review"
+      ]
+    },
+    {
+      "id": "rule.production.production-object-batch-submit-atomic",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "id:rule.production.production-object-batch-submit-atomic",
+      "sourceBlob": "5c6166826bdcfe99e268dbd3c88534eb505cb1c2",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "sourceAuthority": "current structured rule linked to DEC-0014 and existing controller/service evidence",
+      "currentApplicability": "Current bounded creation/output semantics; no supersession found in this slice",
+      "meaning": "单请求批量校验和保存，失败不保留部分对象。",
+      "reasonableness": "合理：与当前单次batch API和暂存提交一致，不授权每对象REQUIRES_NEW或审计异步脱离事务。",
+      "implementationLocator": "ProductionObjectController#splitBatch;ProductionService#splitBatch",
+      "implementationAssessment": "Check remains necessary for any response-read synchronization fix; runtime proof belongs to primary and independent QA.",
+      "verificationDepth": "source-inspected and provenance-assessed; no runtime/Maven/browser execution",
+      "limits": [
+        "No whole-file or whole-domain assurance",
+        "Read-own-writes bug not closed by this review"
+      ]
+    },
+    {
+      "id": "rule.production.production-object-audit-change-snapshot",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "id:rule.production.production-object-audit-change-snapshot",
+      "sourceBlob": "5c6166826bdcfe99e268dbd3c88534eb505cb1c2",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "sourceAuthority": "current rule with DEC-0019/batch correction evidence and explicit original audit contracts",
+      "currentApplicability": "Current bounded creation/output semantics; no supersession found in this slice",
+      "meaning": "每个真实对象分别写CREATE及真实业务快照，不能用一条批量摘要替代。",
+      "reasonableness": "合理：对象级定位/追溯要求与目前批次详情读取路径一致，保持逐对象审计和失败原子性。",
+      "implementationLocator": "ProductionObjectController#productionObjectSnapshot,writeAudit,split,splitBatch",
+      "implementationAssessment": "Responses are built before writeAudit, then controller saves events. A flush before projection must not move audit out of transaction or claim success on later failure.",
+      "verificationDepth": "source-inspected and provenance-assessed; no runtime/Maven/browser execution",
+      "limits": [
+        "No whole-file or whole-domain assurance",
+        "Read-own-writes bug not closed by this review"
+      ]
+    },
+    {
+      "id": "evidence.final-output-linkage-confirmed",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/final-output-linkage-2026-10-15.yaml",
+      "sourceLocator": "id:evidence.final-output-linkage-confirmed",
+      "sourceBlob": "c0dd9362e6e2199bf45cf8e1f21dc7cd60ed8ab7",
+      "semanticReview": "reviewed",
+      "conclusion": "consistent",
+      "sourceAuthority": "versioned evidence index plus direct Markdown with quoted confirmation and separated inference",
+      "currentApplicability": "Current bounded creation/output semantics; no supersession found in this slice",
+      "meaning": "SN实际产量算法不在本轮；SN返回UNSUPPORTED、未开工BATCH无冻结配置等具体状态是确定性服务工程解释。",
+      "reasonableness": "合理边界：SN数量目标固定1不代表已实现实际产量算法；未START对象不应伪装成有冻结产出依据。不能把状态枚举或永久SN不支持提升成业务政策。",
+      "implementationLocator": "ProductionOutputService#summarize;docs/knowledge/evidence/final-output-linkage-2026-10-15.md",
+      "implementationAssessment": "Source returns UNSUPPORTED for non-BATCH, NOT_STARTED when snapshot absent, LEGACY without policy marker. Exact metadata consistency is implementation-level, not a new policy question.",
+      "verificationDepth": "source-inspected and provenance-assessed; no runtime/Maven/browser execution",
+      "limits": [
+        "No whole-file or whole-domain assurance",
+        "Read-own-writes bug not closed by this review"
+      ]
+    }
+  ],
+  "engineeringAssessment": {
+    "postGetConsistency": "Same newly created object should receive consistent interpretation through existing output(id) function; this is implementation coherence, not a new product policy.",
+    "flush": "Synchronizes pending SQL within existing transaction. It does not imply commit. Must prove subsequent audit failure rolls object and audit back together.",
+    "notAuthorized": [
+      "new SN output algorithm",
+      "new output quantity formula",
+      "historical backfill",
+      "per-object independent transactions",
+      "performance refactor",
+      "production management dialog styling"
+    ]
+  },
+  "questions": [],
+  "runtimeExecution": false
+}

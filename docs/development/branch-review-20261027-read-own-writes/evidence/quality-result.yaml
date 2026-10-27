@@ -1,0 +1,182 @@
+qualityResult:
+  result: passed
+  baseCommit: 26796235085b9759295f3dfff8e078ded3cd5ed8
+  headCommit: 8eeefac024a496fa27ec8d9201f8b31110e5ab65
+  contractBaseline:
+    sourceCommit: 8eeefac024a496fa27ec8d9201f8b31110e5ab65
+    targetBranch: edhr-dev
+    targetCommit: 26796235085b9759295f3dfff8e078ded3cd5ed8
+    contractReadCommit: 8eeefac024a496fa27ec8d9201f8b31110e5ab65
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.baseline-contract-and-candidate
+      required: true
+      category: documentation
+      description: 核对实际目标、干净候选与角色/交接契约
+      method: command
+      command: git status --short; git rev-parse HEAD; git ls-remote origin refs/heads/edhr-dev; read AGENTS and contracts
+      outcome: passed
+      evidence:
+        - target=26796235085b9759295f3dfff8e078ded3cd5ed8; head=tested=8eeefac024a496fa27ec8d9201f8b31110e5ab65; clean
+        - 项目/角色契约及知识目录相对目标无差异
+    - id: check.scope-and-protected-dialog
+      required: true
+      category: requirements
+      description: 只修改响应同步及两处装饰预览，生产管理弹窗继续暂缓
+      method: command
+      command: git diff target..HEAD -- production service and preview owners; byte-compare protected page/script
+      outcome: passed
+      evidence:
+        - WorkOrderPage.tsx及test-work-order-template-browser.mjs逐字节等于目标
+        - 未改弹窗设计、权限、数量规则、数据库schema、提交点或性能查询算法
+    - id: check.rule-reasonableness-and-ontology
+      required: true
+      category: ontology
+      description: 复核8条有限规则/决策/证据的来源、适用性与合理性边界
+      method: inspection
+      command: Inspect DEC0078/DEC0014/current production rules/provenance; verify IDs and blobs from rule-assessment.json
+      outcome: passed
+      evidence:
+        - 8个ID均唯一存在且当前blob与本体角色原件一致；逐条核对当前定义与实现
+        - 缺失量不等于0、SN算法不在本批、历史不补算、逐对象审计及整批回滚保持
+        - POST/GET一致属于实现要求；枚举是工程解释，无知识改写或成熟度提升；本体NA成立
+    - id: check.flush-and-audit-atomicity
+      required: true
+      category: audit
+      description: flush仅同步当前事务，后续审计失败仍整批回滚
+      method: inspection
+      command: Inspect ProductionService.splitBatch and ProductionObjectController.splitBatch; execute native audit-failure cases
+      outcome: passed
+      evidence:
+        - 新增一次repository.flush位于原@Transactional批量方法末尾，Controller外层事务及审计位置不变
+        - 两个审计故障例实际通过，日志包含creation audit unavailable；对象与对象审计为0、分配量0
+        - 没有REQUIRES_NEW、手工commit、异步审计或逐对象独立事务
+    - id: check.native-pg-regression
+      required: true
+      category: integration
+      description: 在全新隔离PostgreSQL库重跑实际候选
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=BatchProcessIntegrationTest,ProductionServiceTest,ProductionObjectControllerTest -Dbatch.test.url=jdbc:postgresql://127.0.0.1:55432/edhr_batch_process_visibility_independent -Dbatch.test.user=postgres test
+      outcome: passed
+      evidence:
+        - 47 total / 45 passed / 2 existing opt-in performance observations skipped / 0 failures or errors
+        - Batch21含19通过2跳过；Service22及Controller4全部通过；新增6场景全部执行通过
+        - 跳过原因是production.growth.observe未设置，不是跳过业务或浏览器回归；本批不运行性能校准
+    - id: check.preview-browser-candidate
+      required: true
+      category: e2e
+      description: 真实组件、CanvasTab及Zustand验证预览与真实编辑/指针拖放
+      method: browser
+      command: CHROME_PATH=/usr/bin/chromium PREVIEW_ARTIFACTS=/tmp/edhr-own-writes-qa-browser node scripts/test-decorative-preview-browser.mjs
+      outcome: passed
+      evidence:
+        - workflow与designer两组均通过；名称编辑触发真实onChange，Tab不进入装饰预览
+        - ghost为SPAN/presentation/-1；实际画布drop生成字段绑定及撤销历史，释放后ghost移除
+        - 使用真实组件逻辑和store，隔离文档与宿主，不写真实后台、不宣称完整产品E2E
+    - id: check.preview-browser-baseline-red
+      required: true
+      category: regression
+      description: 同脚本独立重现旧基线两处实际语义缺陷
+      method: browser
+      command: CHROME_PATH=/usr/bin/chromium PREVIEW_BASELINE_COMMIT=26796235085b9759295f3dfff8e078ded3cd5ed8 PREVIEW_ARTIFACTS=/tmp/edhr-own-writes-qa-browser-baseline node scripts/test-decorative-preview-browser.mjs
+      outcome: passed
+      evidence:
+        - 基线workflow有2个装饰按钮，designer ghost为BUTTON而非SPAN；两项断言失败且无pageerror
+        - 基线命令exit1是预期真实红例，未改断言使其通过
+    - id: check.preview-visual-and-style-preservation
+      required: true
+      category: visual
+      description: 实际查看独立桌面截图并核对装饰样式与真实控件保持
+      method: inspection
+      command: view workflow.png and designer.png; inspect MUI Button/ButtonBase prop forwarding and source diff
+      outcome: passed
+      evidence:
+        - 工作流配置文字及预览样式保留，画布实际放置成功；没有使用disabled将预览改灰
+        - 只新增组件/role/tabIndex属性；实际字段卡、拖动事件和配置控件不改
+        - 没有屏幕阅读器或全设备矩阵，不能外推全部可访问性合规
+    - id: check.typecheck-and-production-build
+      required: true
+      category: regression
+      description: 实际执行TypeScript与生产构建
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence:
+        - 命令exit0，TypeScript和Vite生产构建通过
+    - id: check.designer-owned-static-verifier
+      required: true
+      category: regression
+      description: 既有设计器结构验证
+      method: command
+      command: node scripts/verify-template-designer-react.mjs
+      outcome: passed
+      evidence:
+        - exit0; verify-template-designer-react passed
+    - id: check.knowledge-structural-suite
+      required: true
+      category: regression
+      description: 独立运行知识结构/引用/类型检查
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - 89 passed，0 failure/error/skip；不替代全库业务语义审计
+    - id: check.evidence-static-delta-and-honest-scope
+      required: true
+      category: documentation
+      description: 原件、失败记录和静态限制表述准确
+      method: command
+      command: Compare log hashes and complete static finding multisets; git diff --check target..HEAD
+      outcome: passed
+      evidence:
+        - 主侧PG红/绿日志hash吻合，6项红例2失败4对照；本实例未重跑旧后端，仅核验其原件与源码
+        - 新宿主CSS初错单列，不冒充产品红例；浏览器真实红例独立重现
+        - 官方脚本与技能资源内容相符；严格扫描基线/候选均27项，完整多重集合增减0
+        - strict与lint没有伪称通过，整分支、全部设计器交互和性能容量均未宣称完成
+    - id: check.strict-ui-scan-known-baseline
+      required: false
+      category: regression
+      description: 已有严格扫描限制仍存在
+      method: command
+      command: python3 /tmp/edhr-own-writes-audit-project.py gmp-platform/frontend --mode strict
+      outcome: failed
+      evidence:
+        - exit2；27项（13 unresolved/14 violations）保持；包含已被源码/运行核实的工具误报，非27个已确认业务缺陷
+    - id: check.lint-known-configuration-gap
+      required: false
+      category: regression
+      description: 既有ESLint配置缺失
+      method: command
+      command: npm run lint
+      outcome: failed
+      evidence:
+        - exit2；ESLint无法找到配置文件；不计lint通过
+  findings: []
+  residualRisks:
+    - id: risk.finite-slice
+      description: 本批只覆盖批量创建响应自身写入和两处装饰预览；完整W2/W3/W4及W5-W7尚未完成
+      impact: 不能将本批passed当作全分支或全部生产流程认证
+      mitigation: 按现有覆盖台账继续增量审计，目标变化后核对受影响范围
+    - id: risk.preview-test-boundary
+      description: 浏览器使用隔离文档/宿主，未执行后台持久化、屏幕阅读器、全设备矩阵或字段非拖动替代入口审查
+      impact: 不能声称完整系统E2E或全部键盘/可访问性合规
+      mitigation: 对实际后续入口和可达替代路径继续专项验证
+    - id: risk.static-and-build-config-gaps
+      description: strict扫描27项、lint缺配置、标准滚动条样式回退及登录验证归属仍保留
+      impact: 本批不代表全站静态规范通过
+      mitigation: 保留误报核实与真实缺口分列，按后续范围处理，不机械添加noValidate或改业务使工具变绿
+    - id: risk.performance-not-remeasured
+      description: 工单列表、批内重复扫描、作业匹配性能方案仍待讨论；新增最终flush改变最后对象可见性，旧N-1返回行数字仅历史
+      impact: 本批不是性能优化或容量/SLA认证
+      mitigation: 实施前讨论并按新候选重新测量，保持锁/事务/审计与校验边界
+    - id: risk.existing-deferrals
+      description: 生产管理弹窗设计、TaskDetail签名、记录控制变更作废/DHR high/A12、分块及知识gap仍按用户要求暂缓
+      impact: 本批不关闭上述范围
+      mitigation: 等待对应设计/协作者修复或明确业务依据后独立复验
+  blockingConditions: []

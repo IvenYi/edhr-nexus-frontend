@@ -123,7 +123,7 @@ export function WorkflowActionConfig({
         <Stack direction="row" spacing={0.75} useFlexGap flexWrap="wrap">
           {visibleButtons.length ? visibleButtons.map((button) => {
             const style = button.style ?? (button.action === "RETURN" ? "DANGER" : "DEFAULT");
-            return <Button key={button.id} size="small" variant={style === "DEFAULT" ? "outlined" : "contained"} color={style === "DANGER" ? "error" : "primary"} sx={{ pointerEvents: "none", textTransform: "none", maxWidth: "100%", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{button.label || actionLabels[button.action]}</Button>;
+            return <Button key={button.id} component="span" role="presentation" tabIndex={-1} size="small" variant={style === "DEFAULT" ? "outlined" : "contained"} color={style === "DANGER" ? "error" : "primary"} sx={{ pointerEvents: "none", textTransform: "none", maxWidth: "100%", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{button.label || actionLabels[button.action]}</Button>;
           }) : <Typography variant="caption" color="text.secondary">暂无可用按钮</Typography>}
         </Stack>
       </Box>
