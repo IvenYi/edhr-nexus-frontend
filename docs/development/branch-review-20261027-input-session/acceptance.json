@@ -38,5 +38,18 @@
     "Fresh independent L2 final regression"
   ],
   "independentEnvironmentBlocked": false,
-  "postCandidatePolicy": "Only L0 exact evidence archive, metadata correction, task scope and draft PR registration; no product/test/knowledge changed after tested commit."
+  "postCandidatePolicy": "Only L0 exact evidence archive, metadata correction, task scope and draft PR registration; no product/test/knowledge changed after tested commit.",
+  "pullRequest": {
+    "number": 35,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/35",
+    "isDraft": true,
+    "manualMergeOnly": true,
+    "mergeRecommended": false
+  },
+  "cleanup": {
+    "isolatedPostgresContainer": "d5fa1730a0858e27019ee92a78bfcb9ebe2cb9dd5a8a888e6fc138f0bc39981a",
+    "stopExitCode": 0,
+    "autoRemovedConfirmed": true,
+    "userDatabaseTouched": false
+  }
 }
