@@ -1,0 +1,453 @@
+{
+  "status": "FINAL",
+  "knowledgeBaselineVersion": "0.3.25",
+  "contractBaseline": {
+    "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "1579c06c20e1382705362001278ae514583e9853",
+    "contractReadCommit": "1579c06c20e1382705362001278ae514583e9853",
+    "uncommittedContractPaths": []
+  },
+  "workingTreeState": {
+    "status": "dirty",
+    "includedPaths": [
+      "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx",
+      "gmp-platform/frontend/src/pages/system/IconManagementPage.tsx",
+      "docs/development/branch-review-20261027-pagination-incremental/decision-package.yaml"
+    ],
+    "uncommittedKnowledgePaths": [],
+    "scopeNote": "源码未提交差异以路径SHA256固定，不将sourceCommit冒称包含补丁。测试作者文件正在独立编写，不作为本体运行证据。"
+  },
+  "sourceSha256": {
+    "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx": "041670ece7b0adfe7572b880cdb4ad721e3f78502d4f46f44b22e5ad4549cab5",
+    "gmp-platform/frontend/src/pages/system/IconManagementPage.tsx": "678ddfd34b1f23f46ed3fe7b8555a2d257683d8525413d31e6add001cdeb9993",
+    "gmp-platform/frontend/src/utils/productionAudit.ts": "9642504083145d4de29d3b31a138c530076dbc89c3e6ab31c49c059a08945454",
+    "gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx": "656e1d9b94a7772283b4da7dd3b69333076afcf1a2bbbbb39da41838dc8fe448",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java": "89a5b406c8a2ec19e8c0b6d1288f5a408f37f6a33db3a183817ad0d5cdf2e389"
+  },
+  "reviewCount": 19,
+  "wholeFileAuditComplete": false,
+  "wholeBranchAuditComplete": false,
+  "knowledgeChanged": false,
+  "records": [
+    {
+      "id": "rule.production.production-batch-import-required-fields",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/21",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "9e89afdacf09f0bf3dfbbe53324014478481683bb8ac495632c052caea04b60b",
+      "assetStatus": "implemented",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "批次编号/数量必填，时间及总量校验后先暂存，避免不完整候选直接保存。",
+      "implementationAssessment": "本次保留CSV/XLS/XLSX字段和顺序校验；四位精度预检与既有存储边界一致，不改变标准模板。",
+      "sourceReferences": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split",
+        "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml#DEC-0014-03"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.production.production-batch-input-quantity-required",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/22",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "9fc313ebf37cfafa452d58a7e50cc6e0ad2910f774258ed2b494d730f803246c",
+      "assetStatus": "specified",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "BATCH允许正小数符合已确认的任意正数量；存储精度与计划额度仍限制实际可保存值。",
+      "implementationAssessment": "先拒绝超过四位小数，再按万分整数累加，修复0.1+0.2误拒；不使用epsilon或放宽后端额度。",
+      "sourceReferences": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#updateObject",
+        "docs/knowledge/evidence/batch-process-2026-10-27.md#用户确认"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.production.mass-batch-quantity-distribution",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/27",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "de5be25d6e533ccfe5f59aa7e1f1e688f0aa6ef373b45698ba4214e016c18e9a",
+      "assetStatus": "specified",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "正数量与末批余数保留避免漏量或擅自补量；不因这次导入修复改变两种批量分配含义。",
+      "implementationAssessment": "addPendingBatch原算法未改，本次仅进口合计比较；未执行分配运行验收。",
+      "sourceReferences": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#addPendingBatch",
+        "docs/knowledge/evidence/batch-process-2026-10-27.md#用户确认"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.production.sn-import-required-fields",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/29",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "1a23650a4be9abc148db36136978a2d31028b510baf97a0cbf5a2be0ebcb1354",
+      "assetStatus": "implemented",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "单件SN必须有真实唯一编号，隐含1的数量与其身份一致，不应把BATCH任意正数量套到SN。",
+      "implementationAssessment": "原SN缺数量默认1与显式非1拒绝保持，标准三列和旧备注导入均未修改。",
+      "sourceReferences": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.production.production-object-pending-before-submit",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/23",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "182a2fa52ec0563c7a92fd866e877c312b970f42c1e174b501b36d5cc87c5a83",
+      "assetStatus": "implemented",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "本地候选与实际对象分开，用户确认后持久化；工单切换不能认领另一工单尚未确认的候选。",
+      "implementationAssessment": "代次/当前上下文比对属于该边界工程修复；成功读取只setPendingObjects，真正写入仍在用户显式split命令。",
+      "sourceReferences": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects",
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#split",
+        "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml#DEC-0014-02"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.production.object-allocation-within-order-plan",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/44",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "77ca0c82e688ac487b3b44e40cd5725172d3f0523965a2ccaf95cdfe67c9660c",
+      "assetStatus": "specified",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "目标量按非取消对象占用额度，计划量独立；避免超分配且不借良品/NG累计改变目标。",
+      "implementationAssessment": "本次四位整数比较保留总量<=当前剩余；导入期间额度/清单变化需重选文件，服务端仍锁内BigDecimal重核。",
+      "sourceReferences": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#availableRemaining",
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#updateObject"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.production.production-object-batch-submit-atomic",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/36",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "32272d578a8020e073925873c2a9d796715a761619f2602c49f319eb96b5ada0",
+      "assetStatus": "implemented",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "整批失败回滚避免用户以为一次提交成功但仅部分对象落库；逐对象审计不由前端暂存替代。",
+      "implementationAssessment": "splitBatch事务与末尾flush未改；前端旧文件失效不新增请求、不重试已发请求、不改变事务。",
+      "sourceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#splitBatch",
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#split"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.production.first-split-locks-process",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/39",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "8038c313c86c27649195fc60f73140fb8cd476ad54d2fe79b6d49f820dc71d06",
+      "assetStatus": "specified",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "对象级显式引用支持同工单多版本；首次开工冻结与未开工换版分别表达准备及执行事实。",
+      "implementationAssessment": "此次不写工单制程、不改制程引用持久化/首次START冻结，也不恢复旧创建时产品簇规则。",
+      "sourceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#updateObject",
+        "docs/knowledge/evidence/batch-process-2026-10-27.md#用户确认"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.production.locked-process-version-read-only-preview",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/24",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "905643cb236339082a9a7c77433c45d5dd2a65e243440ae5710b2d6ed8110bf8",
+      "assetStatus": "specified",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "只读预览能检查当前候选但不能冒充历史冻结，避免同V1名称误解释实际执行配置。",
+      "implementationAssessment": "新预览查询/所选版本未被本次补丁改动，历史审计详情直接沿本条快照原件。",
+      "sourceReferences": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#processPreviewQuery",
+        "gmp-platform/frontend/src/utils/productionAudit.ts#toProductionAuditFields",
+        "docs/knowledge/evidence/batch-process-2026-10-27.md"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.production.work-order-split-eligibility",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/38",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "c3acd303cce9d1b6c33f070aa0efcbb6004f4161c893977e6488c0c0ad888317",
+      "assetStatus": "specified",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "生产中仍可分配剩余计划，而已结束工单不可继续拆分，符合父子生命周期独立。",
+      "implementationAssessment": "导入ready沿canSplit(CREATED/IN_PROCESS)与数据资格，未新增状态或放宽结束工单拆分。",
+      "sourceReferences": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#canSplit",
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importContext",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.production.single-production-form-per-order",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/41",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "1c05053df070b663599d4c8d3282d49d6aec30cda98517bfe5b4c8cc36295580",
+      "assetStatus": "specified",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "同工单BATCH或SN固定避免单件与批次数量规则混用；同一形态可选不同制程版本。",
+      "implementationAssessment": "本次仅使旧制程/工单上下文异步结果失效，不改变候选列表过滤、fixedProductionForm或服务端形态校验。",
+      "sourceReferences": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#fixedProductionForm",
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.production.sn-object-target-one",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/42",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "5862544b192d52fba782b26103dfffa32fa625003b8365a330bbcb1755d8af92",
+      "assetStatus": "implemented",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "SN以单件身份管理，目标量固定1与BATCH小数边界独立。",
+      "implementationAssessment": "实际import和split的SN=1拒绝分支均保留；四位精度预检不把非1放行。",
+      "sourceReferences": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.production.audit-action-projection",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/56",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "c941c955428e6b0787abadb0d92eef863e3ae95720c70ffe67286dc2d91487ff",
+      "assetStatus": "implemented",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "生命周期动作在客户审计页统一新增/修改，开工说明须以真实冻结记录为依据且不能变成第三类动作。",
+      "implementationAssessment": "当前BatchManagementPage仍auditActionLabel后另caption开工；productionAudit只将同条processSnapshot挂到processReference，不读当前主数据补造。",
+      "sourceReferences": [
+        "gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx#BatchDetailDrawer",
+        "gmp-platform/frontend/src/utils/productionAudit.ts#toProductionAuditFields",
+        "docs/knowledge/evidence/batch-process-2026-10-27.md#分页修复与批次开工审计呈现续核"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.production.production-object-audit-change-snapshot",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/58",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "1da531d423eb6e3476cd4c8cfc6ea84a15b46b9f256ffa6ba1be74469e650a5f",
+      "assetStatus": "specified",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "真实前后差量与首次START实际快照承担不同证据职责；普通修改无需重复制程，缺失历史不回填。",
+      "implementationAssessment": "后端auditObjectStatusChange仅收到初始processSnapshot时附冻结字段；本次导入修复不改审计写入或已形成快照。",
+      "sourceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java#auditObjectStatusChange",
+        "gmp-platform/frontend/src/utils/productionAudit.ts#toProductionAuditFields",
+        "docs/knowledge/evidence/batch-process-2026-10-27.md"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.production.batch-management-row-detail-and-audit-entry",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/production.yaml",
+      "sourceLocator": "/rules/32",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "45ecbc58da612848ace63a9756202ce52eb6072175a382bfd6ff892669b4f649",
+      "assetStatus": "specified",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "行详情与数据审计分层，用户可从具体制程查看实际冻结配置，保留身份与证据对应。",
+      "implementationAssessment": "新增将详情附在同条制程行并保留缺reference时的snapshot入口，与现行定义一致；未将所有UPDATE要求整快照。",
+      "sourceReferences": [
+        "gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx#BatchDetailDrawer",
+        "gmp-platform/frontend/src/utils/productionAudit.ts#toProductionAuditFields"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "DEC-0014-02",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/1",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "b0997948cfd99a8f3252ab4bbf5b93e11ba3420b3125464f04efe5281c543c03",
+      "assetStatus": "implemented",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "三种录入先暂存再确认可防止文件选择意外直接生成对象，保持单一确认路径。",
+      "implementationAssessment": "导入read成功仅追加当前合法本次候选，旧结果无效不补交；原手动/批量路径不改。",
+      "sourceReferences": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects",
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#split",
+        "docs/knowledge/evidence/batch-process-2026-10-27.md"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "DEC-0014-03",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/2",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "b61a732ebc990c7f559c0eceac4d03694274d514f706f4afe3a9dd49bc20d07f",
+      "assetStatus": "implemented",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "每条候选明确制程及数量且不超剩余额度，避免以工单整体制程或浮点误差改变真实对象。",
+      "implementationAssessment": "所选制程/待提交/额度变更会使在途文件结果失效，后端原约束保持；无新增业务状态。",
+      "sourceReferences": [
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split",
+        "docs/knowledge/evidence/batch-process-2026-10-27.md"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "DEC-0014-09",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+      "sourceLocator": "/decisions/0/decisionStatements/8",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "d495a7ca3b295b39f2bfdb464b90e8581114c7c9d741745d54ff942e8ac4bb2b",
+      "assetStatus": "implemented",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "数量必填与易见导入提示保留；具体位置/内联样式是用户授权内工程呈现，不应误标为业务新政策。",
+      "implementationAssessment": "当前声明明确user-confirmed+inference及替代旧位置约定；本次补丁不改布局，用户新提交的样式保持。",
+      "sourceReferences": [
+        "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml#DEC-0014-09",
+        "docs/knowledge/evidence/batch-process-2026-10-27.md#同日界面修复与运行服务一致性",
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx"
+      ],
+      "disposition": "retained"
+    },
+    {
+      "id": "DEC-0085",
+      "recordType": "decision",
+      "sourcePath": "docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml",
+      "sourceLocator": "/decisions/0",
+      "sourceCommit": "1579c06c20e1382705362001278ae514583e9853",
+      "recordSha256": "208d7a86ba10453dcbe56767031030d61b9ed7f5c896a07c0a4ad845b6780cee",
+      "assetStatus": "specified",
+      "assetVisibility": "internal",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "semanticScope": "本批规则合理性与列明方法/声明一致性；不代表整条生命周期或运行发布验收",
+      "policyReasonableness": "共享登录变化阻断旧内容与保留新凭据，避免跨身份提交；正常同会话资料刷新与独立签署不应误中断。",
+      "implementationAssessment": "本次未改sessionPolicy/client/App边界，文件读取在页面卸载失效；不声称本次已重跑双标签验收，也不新增JWT撤销。",
+      "sourceReferences": [
+        "docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml",
+        "gmp-platform/frontend/src/utils/sessionPolicy.ts",
+        "gmp-platform/frontend/src/api/client.ts",
+        "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importRequestId"
+      ],
+      "disposition": "retained"
+    }
+  ],
+  "validation": {
+    "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test",
+    "exitCode": 0,
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": "/tmp/edhr-pagination-import-ontology-validation.log"
+  },
+  "evidenceClassification": {
+    "original-evidence": "亲读当前知识、当前产品源码/未提交diff、后端校验/审计写入及本角色实际知识JUnit输出。",
+    "user-confirmed": "沿当前DEC0014、DEC0085及batch-process证据所引用用户确认；不将本轮工程机制伪装用户逐字指定。",
+    "secondary-reference": "a32/af1附带验收与主审/辅助报告只作线索，不作为本角色运行通过证据。",
+    "inference": "request序号、上下文失效、万分整数计算及有效成功响应才夹页属于既有边界的工程落实。"
+  },
+  "remainingLimits": [
+    "未执行浏览器/数据库/后端业务测试，不代替最终独立质量验收。",
+    "本批19条有限语义记录不是全知识或整文件覆盖；未审资产及旧gap继续保留。",
+    "未改业务政策、知识成熟度、P0阶段、执行注册或旧审计原件。",
+    "性能候选无本角色运行量化，不以规则一致推导性能安全。",
+    "本体结论只对应上述sourceSha256与当前未提交上下文；最终候选变化须核对增量。"
+  ]
+}

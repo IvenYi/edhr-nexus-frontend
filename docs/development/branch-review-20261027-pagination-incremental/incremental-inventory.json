@@ -1,0 +1,958 @@
+{
+  "previousDelivery": "66b89eafa97a82b2080afd4f60a468d3f6824458",
+  "baselineCommit": "1579c06c20e1382705362001278ae514583e9853",
+  "targetBranch": "edhr-dev",
+  "mergedPr": 35,
+  "additionalCommits": [
+    "a32d8d761293661cc3209342512050e96bba3ba7",
+    "af1e024442faf0f9cfce106624a2aabbb64e2320"
+  ],
+  "contractDeltaPaths": [],
+  "paths": [
+    {
+      "path": "docs/development/batch-process-20261027/decision-package.yaml",
+      "change": "M",
+      "beforeBlob": "21dda97c03163bc9b6ddc18bf45daf26aa3a759a",
+      "baselineBlob": "9d41c17f0fefc89f767c45290b8976cbc56d0185",
+      "category": "development-record",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "docs/development/batch-process-20261027/ontology-result-pagination-audit.yaml",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "a6b39fd2ad1f483a17ad73bed214a4d8da1b2612",
+      "category": "development-record",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "docs/development/batch-process-20261027/ontology-result-ui-repair-integration.yaml",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "80076916cf8b06e7e879d59d0a46ba74ac548a62",
+      "category": "development-record",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "docs/development/batch-process-20261027/ontology-result-ui-repair.yaml",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "2b0cccba6dcb316eaabdadb153798192280296d2",
+      "category": "development-record",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "docs/development/batch-process-20261027/pagination-audit-verification.md",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "be6462e9ce5bf4a2a907978348111d5844283d5c",
+      "category": "development-record",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "docs/development/batch-process-20261027/quality-result-pagination-audit-final.yaml",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "7f7e8938e52ed6396e39857e318ebf0e6fc3b6be",
+      "category": "development-record",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "docs/development/batch-process-20261027/quality-result-pagination-audit.yaml",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "6b545f6009a8240ed73d4318d663c94b69c80343",
+      "category": "development-record",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "docs/development/batch-process-20261027/quality-result-ui-repair-final.yaml",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "80aef5fe71658b0c1fc52c02617868940e409d84",
+      "category": "development-record",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "docs/development/batch-process-20261027/quality-result-ui-repair.yaml",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "9e9d0514631763d68157549c9e0f539ac47b1b31",
+      "category": "development-record",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "docs/development/batch-process-20261027/ui-repair-verification.md",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "d95e4d648d1487b4f5e6eaa1b691c16af2888274",
+      "category": "development-record",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+      "change": "M",
+      "beforeBlob": "64200684f35ffd7e32eed3c4da30d0df23d21738",
+      "baselineBlob": "c46ff06d75dfc62e0635d7dcd1bfce4265611be4",
+      "category": "knowledge",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "docs/knowledge/evidence/batch-process-2026-10-27.md",
+      "change": "M",
+      "beforeBlob": "257dfd4ce5622373a6519082854a8348b3fbd342",
+      "baselineBlob": "22214f8b781fed839564f870ca2eb742f9ce640e",
+      "category": "knowledge",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "docs/knowledge/evidence/batch-process.yaml",
+      "change": "M",
+      "beforeBlob": "04b7e10693d11329e31d173d064dfccea77e544c",
+      "baselineBlob": "015b8c3df5eb3e7d87f0f0e521af77c9e29a9c90",
+      "category": "knowledge",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "docs/knowledge/evidence/production.yaml",
+      "change": "M",
+      "beforeBlob": "1eca58f9d6647945acfa0221c1326a999613807b",
+      "baselineBlob": "ac9d832bddde190e1b69f0effc75af2c6b47b84b",
+      "category": "knowledge",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "docs/knowledge/rules/production.yaml",
+      "change": "M",
+      "beforeBlob": "5c6166826bdcfe99e268dbd3c88534eb505cb1c2",
+      "baselineBlob": "d95a956b2abdc30376a755919e151c12eac15224",
+      "category": "knowledge",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-production-audit.mjs",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "f31c3d0924c600631f10d6fedc27e7240f368785",
+      "category": "test",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-production-object-edit.mjs",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "fec90d4a5d7a7e41c86a28526187f348beba3cd7",
+      "category": "test",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-production-pagination-browser.mjs",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "ba75b1d8bfb845f43d09a8af35b093446d4b1ac7",
+      "category": "test",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-shared-pagination-browser.mjs",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "a55ae283f3c6fed129fec2a42856de792f6007e2",
+      "category": "test",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-work-order-template-browser.mjs",
+      "change": "M",
+      "beforeBlob": "25e8660f4d03431683b2ee95ce970d3073cf086e",
+      "baselineBlob": "e09fadc49444cc15cbfe80070ecdfd39268bed19",
+      "category": "test",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/ProductionObjectEditDialog.tsx",
+      "change": "M",
+      "beforeBlob": "a971385882c74a7c1b04a448920324cc1480774a",
+      "baselineBlob": "7cc0f255f4dc5644a07ab98c4164563c2facf8a0",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/account/PersonalSettingsPage.tsx",
+      "change": "M",
+      "beforeBlob": "47b0216c31e9445ec6e2a25f265d08203d964055",
+      "baselineBlob": "1f96f8cda97aa6c49e17952cd292acc4e7dc9b77",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx",
+      "change": "M",
+      "beforeBlob": "eb823708281829189091f3c17fa0763bc2ab51c6",
+      "baselineBlob": "fd38bf5c5f93f55aee7185e985e032b5a236c579",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx",
+      "change": "M",
+      "beforeBlob": "bbd2bfa0169c6764b6efbbeaa90fe9632a8857f4",
+      "baselineBlob": "e5fd9e1ec8cab8e72a9afe6af8138759e528c324",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "change": "M",
+      "beforeBlob": "a9aa299bd0f515c6be943e5e92ce3173fdb7f1bb",
+      "baselineBlob": "c5773a51cc4f47c94174f11c3dc9c0186f46ba62",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx",
+      "change": "M",
+      "beforeBlob": "66d93cb530da46ea90149d2a415bef8ed2023937",
+      "baselineBlob": "ba4e005fdde62d4631e4186c156e6b6d86e60ade",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrWorklistTable.tsx",
+      "change": "M",
+      "beforeBlob": "dcd41acfa198acf0e41415b83e94f74b1df1fa41",
+      "baselineBlob": "d9cef579280a4d3966280cfab83bb7ad8ae13e30",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/form-management/FormFillingPage.tsx",
+      "change": "M",
+      "beforeBlob": "5e3b8d8bf353ff2c4cfc518c1c73c9a57447c4da",
+      "baselineBlob": "4d6a3fdff65c33651189bb7b4ed78efc6dc19520",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/form-management/FormInstanceListPage.tsx",
+      "change": "M",
+      "beforeBlob": "7a1b593042bc049d5f416ed68d1297d079baba90",
+      "baselineBlob": "2bed882b9fdc1cd3e1cd32db1111fdd04524127e",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/form-management/FormReviewPage.tsx",
+      "change": "M",
+      "beforeBlob": "b6bf1f6bc027f3b43391f4bba01a2582624e7488",
+      "baselineBlob": "f9e678cf82135b76f18942eb931f5c35ff8a668e",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/form-management/formManagementListStyles.tsx",
+      "change": "M",
+      "beforeBlob": "6c74625588d43258790b867d051b1002d88820aa",
+      "baselineBlob": "53a128040fde91421b436336e223557eefa4753e",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx",
+      "change": "M",
+      "beforeBlob": "4f971c4ac71ee43b9bae897c139e1124b26b8ba4",
+      "baselineBlob": "107b8aa2685f9dd2f7b8142e1fe917e20420c835",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/EquipmentPage.tsx",
+      "change": "M",
+      "beforeBlob": "3a3ad1791e7f2168cfe8d8afd69305aa2fbac317",
+      "baselineBlob": "7c149c9ac29366db52d4dca9a6ce8bb38cb63f0a",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+      "change": "M",
+      "beforeBlob": "0030bfc06919ce4ddfbea898577103b5cccedcdb",
+      "baselineBlob": "4fa8dea07a77d6b8282abeb0d07adae12acb4f2b",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProductFamilyModelingPage.tsx",
+      "change": "M",
+      "beforeBlob": "4bf471ba97e946ef4a6ead9b0c6609e5e72dc07b",
+      "baselineBlob": "ee757f4566d1589044cbc1c059feff5fc0a730b3",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProductModelingPage.tsx",
+      "change": "M",
+      "beforeBlob": "ede257b6975cef012c7f9cb3aa6cdebb808295b1",
+      "baselineBlob": "c32810f0bdb1073edcb0e91b56e294ad0018bb88",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/QualityReasonPage.tsx",
+      "change": "M",
+      "beforeBlob": "f1360dc71f0e58b755a3f5a53b22f2bbd3551c4f",
+      "baselineBlob": "40a93fd277031e72d1168004095077def82967de",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx",
+      "change": "M",
+      "beforeBlob": "88d6dfcb130cd2e66ed70a2ad35b69c941f7a621",
+      "baselineBlob": "f5ad8e6b1d50a728c6cd25c140ce2616c4a19972",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/WorkshopManagementPage.tsx",
+      "change": "M",
+      "beforeBlob": "1a130e8c7d0c3176c85504f10130ef593ee92156",
+      "baselineBlob": "df9224fbaa22e289f370e2ddaec576d3e808c811",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx",
+      "change": "M",
+      "beforeBlob": "6ceba5768ec29243f1a34f5bc9f140e6405ab0b5",
+      "baselineBlob": "c45b949cc669247a38015eeee0a4667763213666",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx",
+      "change": "M",
+      "beforeBlob": "8cb39844af4a0204cbccdfb8ab31f35cb0965181",
+      "baselineBlob": "dc391ba1ca807497d8301b6dbfeae954cd77ee9f",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx",
+      "change": "M",
+      "beforeBlob": "40256b4debe5072713cf2301fccddc9445eaf934",
+      "baselineBlob": "f44aa75a5dd80a4f34709b3e772b6605b6584014",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/reports/DhrTraceReportPage.tsx",
+      "change": "M",
+      "beforeBlob": "4927d32b6c5cffe5375fdb412d16f984b5db4495",
+      "baselineBlob": "b6dba0615feec5a22ef15da56142191240a24bc6",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/reports/FormProjectionReportPage.tsx",
+      "change": "M",
+      "beforeBlob": "58156ea58a812f3c1749b304a213a819f9ee10f5",
+      "baselineBlob": "9ad3509121271bf3a8646f4a766a7909adb02d1a",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/system/AuditLogPage.tsx",
+      "change": "M",
+      "beforeBlob": "f565e246a2ce22de1dc26ec9f342b6d2c875d8d0",
+      "baselineBlob": "9bcceefd850450cbff2cdff5b3587bb43d3cda89",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx",
+      "change": "M",
+      "beforeBlob": "7315fbe5654cfba49701f3a105adc371f91c12d3",
+      "baselineBlob": "f775ca17768f85713bb147a95096fe5ac6d9e116",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/system/FormLookupItemsPage.tsx",
+      "change": "M",
+      "beforeBlob": "2e5b32549a0fe840194d6ce28579f149d6c82669",
+      "baselineBlob": "72230cb17369cc33e2c9e00535942dedd1c424f9",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/system/IconManagementPage.tsx",
+      "change": "M",
+      "beforeBlob": "369005cc66a71371edfa5b84babba4abcbb2310a",
+      "baselineBlob": "2b9444cfebedced923aa57e1e509c1cdc0bc9b54",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/system/MenuManagementPage.tsx",
+      "change": "M",
+      "beforeBlob": "f6b5e6030881f55c64d62441d26bb230547684b1",
+      "baselineBlob": "b6ef331abf80333edeae88babc436950fd149856",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/FormProcessList.tsx",
+      "change": "M",
+      "beforeBlob": "9dca5cfd34327e6ec769cf102cf9c08aba63f54d",
+      "baselineBlob": "c1c314380c9c6688a893ed6fbea79de0480e774d",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/ReviewTemplateList.tsx",
+      "change": "M",
+      "beforeBlob": "a6e45aac93cef6546420ae9cb685eec7f2aa8d19",
+      "baselineBlob": "ff48733504103476a83d6638febb1a060b745db4",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkTemplateList.tsx",
+      "change": "M",
+      "beforeBlob": "2dce518f6597c5f155dac9947c73dc6552e65fb2",
+      "baselineBlob": "c01bb24e94208da38d539408fd9ac091ab71f9b7",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/utils/productionAudit.ts",
+      "change": "M",
+      "beforeBlob": "3b031d4e4dd729cbee1cfb554397a64f9cdb66f9",
+      "baselineBlob": "c616d423ae8c331e69b5a241732cfcfe35439b39",
+      "category": "source",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/fixture.json",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "ca1b3763e6e544f7e1e0685c28a27cbacaffe4f8",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/order-full-row-final.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "c3f478ebf7a747565aac1810a624a0b82e448ffc",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/persisted-result.json",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "2ce072306bb5b62260650012483f595a48d49392",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/quality-edit-max82.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "db682aaa23f7b523b49bce7175091a57a7a20795",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/quality-failed-order-read.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "af6e3ddd00d90174db9d366cdb02f5e6c3f009fc",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/quality-missing-allocation.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "0f335a96e365192685146e8c7e05375442259abf",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/quality-pending-preserved.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "7a87c3ad2efc304a11a249c0c962aec2828f9a9c",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/quality-preview-1440.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "cc845d4c4d7a172ef8c3f90e253d7e801ea7cd98",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/quality-split-1024.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "4bd4f04502f0d3818b21d05f7c52a7cff88bf62e",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/quality-split-1440.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "24dc3d3b1aab206e4487e119dcc3db8a7c467e61",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/quality-split-390-top.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "af3bd35169464e90843672749eba9e7510fcfe67",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/quality-workorder-fullrow-final.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "0c62901fbdb492581f991d7276a30b6c2701a047",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/saved-edited.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "a1a6c63b5cd73c2cd870f40e5608fc0225d7ef70",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/split-1024.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "99d638780dc8eaa428383958580fc33b2ce2884e",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/split-390.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "75ca7f24055ccacf15416f5939f2ba83b2f05759",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-20261027/split-final-1440.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "aa7077410d76b5f2637733c7c3b43854f08b618a",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-integration-20261027/BATCH-1440-download.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "fe079f0043eeb91e878380cac0941992dc71d496",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-integration-20261027/BATCH-1440.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "ff1c190a235d16ea1a22e502fa987f1e31e9c99c",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-integration-20261027/SN-1440-download.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "e613449c0de273cd0fd84ded1d1702b5ecfc5370",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-integration-20261027/SN-1440.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "d665b76057a9aaa80d71c7c87ab2f7ade3675803",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-integration-20261027/SN-390-download.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "3c9c8e4ee15d59e79d40aff2a2e233a465c14026",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-integration-20261027/SN-390.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "8b97fd11ac39651e91100dcc268bcc3d86b4d254",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/batch-ui-repair-integration-20261027/browser-green.json",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "e7e92ddf94b10ad671da9149f0c38611198915bc",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-final-independent-20261027/batches.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "ac9c7bc002dde747151293e7e2c45e7ed3e4404f",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-final-independent-20261027/equipment.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "8269bb1bee6a0d83e314d782fa933a9ce571546f",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-final-independent-20261027/icons.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "647e38e1052d8dc3d326841e07eb85742ce2d23a",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-final-independent-20261027/orders.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "f13e43abd7f8b3735f07ae179c31c25c79fcc626",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-final-independent-20261027/production-browser.json",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "70ef64a4776cc1a6de49348bc7b01847303d3ee4",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-final-independent-20261027/review-state.json",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "9ef58d6d8f69dd44e34b5a404394d780c1c4642c",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-final-independent-20261027/shared-browser.json",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "2f4daf1121d3d4c33da7bd425a84d1ff4e179c01",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-final-independent-20261027/shared.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "2df6c939f2e857d5661eaf1f4a24eabf7c4c3bb1",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-followup-20261027/batches.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "ac9c7bc002dde747151293e7e2c45e7ed3e4404f",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-followup-20261027/equipment.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "87ece239b71529adedf6c29a50c7d0e370f0cac3",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-followup-20261027/icon-group-red.json",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "21a9f2cc02e3eb56ee96c12f58464e0ba7ed9933",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-followup-20261027/icons.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "647e38e1052d8dc3d326841e07eb85742ce2d23a",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-followup-20261027/orders.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "f13e43abd7f8b3735f07ae179c31c25c79fcc626",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-followup-20261027/pagination-audit-green.json",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "70ef64a4776cc1a6de49348bc7b01847303d3ee4",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-followup-20261027/pagination-red.json",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "cfbff7492c2082df7e9366e3519ec7ccb54b4e9a",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-followup-20261027/shared-pagination-green.json",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "2f4daf1121d3d4c33da7bd425a84d1ff4e179c01",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-followup-20261027/shared.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "2e0b628b72d46d5fc8125191f9a9f7dcc3e2cc07",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-independent-20261027/batches.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "6256800d74996e76cbd4ec4b214a0275249bd76f",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-independent-20261027/equipment.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "ee18b296a7e7382a2863c3c94b234bb6cedf8fee",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-independent-20261027/icon-context-repro.json",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "923b100f0a3d5b4dc8d657052332c6fff765d41d",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-independent-20261027/icon-context-repro.mjs",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "72c3b11bb3081df89be3db7ac5e99b58d1c9463b",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-independent-20261027/icon-context-repro.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "06c49b1e546a997a6d5810dadad4570022c4dfc8",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-independent-20261027/icons.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "60e1a706c3cf73e79d500987266e89005fb36b6b",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-independent-20261027/orders.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "f13e43abd7f8b3735f07ae179c31c25c79fcc626",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-independent-20261027/production-browser.json",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "70ef64a4776cc1a6de49348bc7b01847303d3ee4",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-independent-20261027/review-state.json",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "0934b8474a5647a0c059201356b642d8cd7a7e27",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-independent-20261027/shared-browser.json",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "a59752fa2288f5bddfd7a37dcae68f6394d79109",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "output/playwright/pagination-audit-independent-20261027/shared.png",
+      "change": "A",
+      "beforeBlob": null,
+      "baselineBlob": "5269ddc59e919963085f0762ea18732c3fbccebb",
+      "category": "historical-evidence",
+      "semanticStatus": "pending",
+      "wholeFileAuditComplete": false
+    }
+  ],
+  "counts": {
+    "development-record": 10,
+    "knowledge": 5,
+    "test": 5,
+    "source": 33,
+    "historical-evidence": 51
+  },
+  "wholeFileAuditComplete": false,
+  "note": "Inventory only. Source methods and knowledge semantic reviews recorded separately; old evidence retained at original commits."
+}

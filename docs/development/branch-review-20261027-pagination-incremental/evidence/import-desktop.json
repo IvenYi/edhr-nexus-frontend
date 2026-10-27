@@ -1,0 +1,99 @@
+{
+  "boundary": "Real WorkOrderPage/React Query/client/Chromium; delayed File.arrayBuffer and fixture HTTP; no backend persistence",
+  "baseline": null,
+  "width": 1440,
+  "results": [
+    {
+      "name": "decimal-equality",
+      "result": "passed",
+      "posted": [
+        {
+          "orderId": "100",
+          "body": {
+            "items": [
+              {
+                "processVersionId": "12",
+                "targetQuantity": 0.1,
+                "objectNo": "DECIMAL-1",
+                "plannedStartAt": null,
+                "plannedEndAt": null
+              },
+              {
+                "processVersionId": "12",
+                "targetQuantity": 0.2,
+                "objectNo": "DECIMAL-2",
+                "plannedStartAt": null,
+                "plannedEndAt": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "real-over-allocation",
+      "result": "passed",
+      "posted": []
+    },
+    {
+      "name": "extra-precision",
+      "result": "passed",
+      "posted": []
+    },
+    {
+      "name": "switch-order",
+      "result": "passed",
+      "posted": []
+    },
+    {
+      "name": "reopen-same-order",
+      "result": "passed",
+      "posted": []
+    },
+    {
+      "name": "pending-list-change",
+      "result": "passed",
+      "posted": []
+    },
+    {
+      "name": "process-change",
+      "result": "passed",
+      "posted": []
+    },
+    {
+      "name": "same-context-delay",
+      "result": "passed",
+      "posted": []
+    },
+    {
+      "name": "read-failure-preserves-list",
+      "result": "passed",
+      "posted": []
+    },
+    {
+      "name": "newer-import-wins",
+      "result": "passed",
+      "posted": []
+    },
+    {
+      "name": "submission-invalidates-import",
+      "result": "passed",
+      "posted": [
+        {
+          "orderId": "100",
+          "body": {
+            "items": [
+              {
+                "processVersionId": "12",
+                "targetQuantity": 1,
+                "objectNo": "SUBMITTED-CURRENT",
+                "plannedStartAt": null,
+                "plannedEndAt": null
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

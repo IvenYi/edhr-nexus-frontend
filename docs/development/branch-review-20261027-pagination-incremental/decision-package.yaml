@@ -1,0 +1,99 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-PAGINATION-INCREMENTAL-20261027
+  scope: edhr-dev分页与生产准备新增提交的有限增量审计；整体W0至W7审计持续
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 1579c06c20e1382705362001278ae514583e9853
+    targetBranch: edhr-dev
+    targetCommit: 1579c06c20e1382705362001278ae514583e9853
+    contractReadCommit: 1579c06c20e1382705362001278ae514583e9853
+    uncommittedContractPaths: []
+  summary: 核对PR35真实合并及两笔新增提交；修复图标成功缩页回退、合法小数导入误拒及跨工单旧文件回调污染，不新增业务政策或重做弹窗设计。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: pagination
+        change: 核对新增keepPreviousData、页码夹取及共享FormListPagination所有消费方。
+        evidenceReferences: [gmp-platform/frontend/src/pages/form-management/formManagementListStyles.tsx]
+      - area: production-preparation
+        change: 核对当前额度和制程数据完整性、失败阻止保存、首次冻结历史投影。
+        evidenceReferences: [gmp-platform/frontend/src/components/ProductionObjectEditDialog.tsx, docs/knowledge/evidence/batch-process-2026-10-27.md]
+    transitiveImpacts:
+      - area: list-consumers
+        change: 用户新增提交跨表单、DHR、主数据、工作流和系统列表；逐项登记方法范围，不声称整页覆盖。
+        evidenceReferences: [gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx]
+    potentialImpacts:
+      - area: stale-row-actions
+        concern: 保留旧页数据时筛选/分类上下文与行操作是否一致，须源码和真实浏览器核对。
+        evidenceReferences: [gmp-platform/frontend/src/pages/system/IconManagementPage.tsx]
+      - area: import-draft-context
+        concern: 文件读取异步完成须归属于原本次工单编辑；关闭重开、清单变化、制程变化和新的导入须使旧结果失效，未提交仍不落库。
+        evidenceReferences: [gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx]
+    unaffectedAreas:
+      - area: auth-protocol
+        change: 新增提交未改会话基础设施；仍对实际集成候选执行适用回归。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml]
+    compatibilityAndMigration:
+      - area: persistence
+        change: 当前增量未含后端/迁移；不恢复历史数据，不将缺失额度作为零。
+        evidenceReferences: [gmp-platform/frontend/src/components/ProductionObjectEditDialog.tsx]
+    snapshotImpacts:
+      - area: production-audit
+        change: 仅核对该条历史事件的引用和冻结详情展示，不从当前主数据补造。
+        evidenceReferences: [gmp-platform/frontend/src/utils/productionAudit.ts]
+    auditImpacts:
+      - area: audit-label
+        change: 核对开工次要说明与新增/修改动作投影，禁止把普通差量误认为首次冻结。
+        evidenceReferences: [docs/knowledge/rules/production.yaml]
+    permissionImpacts:
+      - area: stale-context
+        change: 核对旧分类或旧页数据不被作为当前上下文的写入依据；服务端权限不变。
+        evidenceReferences: [gmp-platform/frontend/src/pages/system/IconManagementPage.tsx]
+    testImpacts:
+      - scope: finite-increment
+        scenarios: [等待与失败不跳页, 成功缩页, 分类隔离, 当前额度编辑, 会话相邻回归]
+        evidenceReferences: [gmp-platform/frontend/scripts/test-shared-pagination-browser.mjs, gmp-platform/frontend/scripts/test-production-object-edit.mjs, gmp-platform/frontend/scripts/test-cross-tab-session-browser.mjs]
+    evidenceGaps:
+      - 真实生产规模和全栈浏览器持久化不由受控HTTP夹具证明；全量W0至W7未审范围继续保留。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 只审计和必要修复已有列表与生产准备能力，复用共享组件，不新增客户分支或通用框架。
+    ownershipBoundaries:
+      - owner: shared-list-and-domain-pages
+        responsibility: 共享分页处理通用页码边界；领域页负责筛选上下文及领域数据资格。
+  affectedFiles:
+    - path: gmp-platform/frontend/src/pages/form-management/formManagementListStyles.tsx
+      changeType: read-only
+      reason: 新共享分页边界。
+    - path: gmp-platform/frontend/src/components/ProductionObjectEditDialog.tsx
+      changeType: read-only
+      reason: 新生产编辑数据资格。
+    - path: docs/knowledge/rules/production.yaml
+      changeType: read-only
+      reason: 当前业务规则合理性与实现一致性核对。
+    - path: gmp-platform/frontend/src/pages/system/IconManagementPage.tsx
+      changeType: update
+      reason: 仅成功且非占位非刷新响应缩页时回退有效页。
+    - path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+      changeType: update
+      reason: 既有四位精度和额度用整数单位比较，旧文件读取不能污染新的工单编辑上下文；布局保持。
+    - path: gmp-platform/frontend/scripts/test-production-import-boundaries-browser.mjs
+      changeType: create
+      reason: 实际页面小数及迟到导入反例、正对照与相邻边界。
+    - path: gmp-platform/frontend/scripts/test-shared-pagination-browser.mjs
+      changeType: update
+      reason: 保留原断言并补上原先跳过的图标缩页场景与基线覆写。
+  acceptanceScenarios:
+    - id: scenario.incremental-audit-boundary
+      given: PR35已合入且目标含两笔额外提交
+      when: 恢复整体审计
+      then: 增量逐项复核且新测试不冒用旧候选结果
+      evidenceRequirements: [Git差异与路径blob, 真实运行原件, 专业角色最终结果]

@@ -1,0 +1,179 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 1579c06c20e1382705362001278ae514583e9853
+    targetBranch: edhr-dev
+    targetCommit: 1579c06c20e1382705362001278ae514583e9853
+    contractReadCommit: 1579c06c20e1382705362001278ae514583e9853
+    uncommittedContractPaths: []
+  reason: 已按本批19条有限记录先评估现行规则合理性，并核对列明当前定义、确认来源、源码及未提交修复。图标成功缩页回退不改变数据范围；合法四位精度数量按整数单位比较和旧文件上下文失效，均修正既有额度/真实工单归属/暂存再确认的实现差异，不新增政策、持久化状态或发布契约。当前知识已表达这些边界，无需改写。sourceCommit是实际HEAD，产品补丁未提交，实际范围与SHA256见rule-sync的workingTreeState；不是已提交或运行验收声明。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: rule.production.production-batch-import-required-fields
+    disposition: retained
+    scope: 本次保留CSV/XLS/XLSX字段和顺序校验；四位精度预检与既有存储边界一致，不改变标准模板。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split
+    - docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml#DEC-0014-03
+  - id: rule.production.production-batch-input-quantity-required
+    disposition: retained
+    scope: 先拒绝超过四位小数，再按万分整数累加，修复0.1+0.2误拒；不使用epsilon或放宽后端额度。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#updateObject
+    - docs/knowledge/evidence/batch-process-2026-10-27.md#用户确认
+  - id: rule.production.mass-batch-quantity-distribution
+    disposition: retained
+    scope: addPendingBatch原算法未改，本次仅进口合计比较；未执行分配运行验收。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#addPendingBatch
+    - docs/knowledge/evidence/batch-process-2026-10-27.md#用户确认
+  - id: rule.production.sn-import-required-fields
+    disposition: retained
+    scope: 原SN缺数量默认1与显式非1拒绝保持，标准三列和旧备注导入均未修改。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split
+  - id: rule.production.production-object-pending-before-submit
+    disposition: retained
+    scope: 代次/当前上下文比对属于该边界工程修复；成功读取只setPendingObjects，真正写入仍在用户显式split命令。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#split
+    - docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml#DEC-0014-02
+  - id: rule.production.object-allocation-within-order-plan
+    disposition: retained
+    scope: 本次四位整数比较保留总量<=当前剩余；导入期间额度/清单变化需重选文件，服务端仍锁内BigDecimal重核。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#availableRemaining
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#updateObject
+  - id: rule.production.production-object-batch-submit-atomic
+    disposition: retained
+    scope: splitBatch事务与末尾flush未改；前端旧文件失效不新增请求、不重试已发请求、不改变事务。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#splitBatch
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#split
+  - id: rule.production.first-split-locks-process
+    disposition: retained
+    scope: 此次不写工单制程、不改制程引用持久化/首次START冻结，也不恢复旧创建时产品簇规则。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#updateObject
+    - docs/knowledge/evidence/batch-process-2026-10-27.md#用户确认
+  - id: rule.production.locked-process-version-read-only-preview
+    disposition: retained
+    scope: 新预览查询/所选版本未被本次补丁改动，历史审计详情直接沿本条快照原件。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#processPreviewQuery
+    - gmp-platform/frontend/src/utils/productionAudit.ts#toProductionAuditFields
+    - docs/knowledge/evidence/batch-process-2026-10-27.md
+  - id: rule.production.work-order-split-eligibility
+    disposition: retained
+    scope: 导入ready沿canSplit(CREATED/IN_PROCESS)与数据资格，未新增状态或放宽结束工单拆分。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#canSplit
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importContext
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split
+  - id: rule.production.single-production-form-per-order
+    disposition: retained
+    scope: 本次仅使旧制程/工单上下文异步结果失效，不改变候选列表过滤、fixedProductionForm或服务端形态校验。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#fixedProductionForm
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split
+  - id: rule.production.sn-object-target-one
+    disposition: retained
+    scope: 实际import和split的SN=1拒绝分支均保留；四位精度预检不把非1放行。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split
+  - id: rule.production.audit-action-projection
+    disposition: retained
+    scope: 当前BatchManagementPage仍auditActionLabel后另caption开工；productionAudit只将同条processSnapshot挂到processReference，不读当前主数据补造。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx#BatchDetailDrawer
+    - gmp-platform/frontend/src/utils/productionAudit.ts#toProductionAuditFields
+    - docs/knowledge/evidence/batch-process-2026-10-27.md#分页修复与批次开工审计呈现续核
+  - id: rule.production.production-object-audit-change-snapshot
+    disposition: retained
+    scope: 后端auditObjectStatusChange仅收到初始processSnapshot时附冻结字段；本次导入修复不改审计写入或已形成快照。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionExecutionService.java#auditObjectStatusChange
+    - gmp-platform/frontend/src/utils/productionAudit.ts#toProductionAuditFields
+    - docs/knowledge/evidence/batch-process-2026-10-27.md
+  - id: rule.production.batch-management-row-detail-and-audit-entry
+    disposition: retained
+    scope: 新增将详情附在同条制程行并保留缺reference时的snapshot入口，与现行定义一致；未将所有UPDATE要求整快照。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/BatchManagementPage.tsx#BatchDetailDrawer
+    - gmp-platform/frontend/src/utils/productionAudit.ts#toProductionAuditFields
+  - id: DEC-0014-02
+    disposition: retained
+    scope: 导入read成功仅追加当前合法本次候选，旧结果无效不补交；原手动/批量路径不改。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#split
+    - docs/knowledge/evidence/batch-process-2026-10-27.md
+  - id: DEC-0014-03
+    disposition: retained
+    scope: 所选制程/待提交/额度变更会使在途文件结果失效，后端原约束保持；无新增业务状态。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importPendingObjects
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/ProductionService.java#split
+    - docs/knowledge/evidence/batch-process-2026-10-27.md
+  - id: DEC-0014-09
+    disposition: retained
+    scope: 当前声明明确user-confirmed+inference及替代旧位置约定；本次补丁不改布局，用户新提交的样式保持。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml#DEC-0014-09
+    - docs/knowledge/evidence/batch-process-2026-10-27.md#同日界面修复与运行服务一致性
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+  - id: DEC-0085
+    disposition: retained
+    scope: 本次未改sessionPolicy/client/App边界，文件读取在页面卸载失效；不声称本次已重跑双标签验收，也不新增JWT撤销。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml
+    - gmp-platform/frontend/src/utils/sessionPolicy.ts
+    - gmp-platform/frontend/src/api/client.ts
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx#importRequestId
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.pagination-import-knowledge-junit
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-pagination-import-ontology-validation.log
+    - 89 tests; failures0; errors0; skipped0; exit0
+  - id: validation.pagination-import-scoped-semantics
+    checkType: evidence-path
+    command: 亲读19条规则/决策与当前确认来源，核对WorkOrderPage导入、后端split/updateObject、审计快照写入和详情投影；核对未提交diff与SHA256。
+    outcome: passed
+    evidence:
+    - /tmp/edhr-pagination-import-rule-sync.json
+    - docs/knowledge/evidence/batch-process-2026-10-27.md
+    - docs/knowledge/rules/production.yaml
+    - docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml
+    - docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml
+  - id: validation.pagination-import-projection-retained
+    checkType: projection
+    command: 核对知识/架构无本角色修改，知识0.3.25和现有成熟度/可见性保持，无新运行执行注册。
+    outcome: passed
+    evidence:
+    - git diff -- docs/knowledge docs/architecture（空）
+    - /tmp/edhr-pagination-import-rule-sync.json
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

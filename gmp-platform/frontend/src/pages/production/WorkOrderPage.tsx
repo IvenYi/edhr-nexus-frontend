@@ -357,6 +357,8 @@ export default function WorkOrderPage() {
   const [batchAddType, setBatchAddType] = useState<'count' | 'quantity'>('count');
   const [processPreviewOpen, setProcessPreviewOpen] = useState(false);
   const [pendingObjects, setPendingObjects] = useState<Array<{ processVersionId: string; targetQuantity: string; objectNo: string; remark: string; plannedStartAt: string; plannedEndAt: string }>>([]);
+  const importRequestId = useRef(0);
+  useEffect(() => () => { importRequestId.current += 1; }, []);
 
   const visibleColumns = useMemo(() => columnSettings.order
     .map((id) => WORK_ORDER_COLUMNS.find((column) => column.id === id))
@@ -474,7 +476,8 @@ export default function WorkOrderPage() {
     setObjectOrder(order);
     return true;
   });
-  const openObjects = (item: WorkOrder) => { setObjectOrder(item); setObjectListTab(0); setProcessPreviewOpen(false); setSplitTab(0); setBatchAddType('count'); setPendingObjects([]); setSplitForm({ processVersionId: '', targetQuantity: '', objectNo: '', remark: '', plannedStartAt: '', plannedEndAt: '' }); };
+  const openObjects = (item: WorkOrder) => { importRequestId.current += 1; setObjectOrder(item); setObjectListTab(0); setProcessPreviewOpen(false); setSplitTab(0); setBatchAddType('count'); setPendingObjects([]); setSplitForm({ processVersionId: '', targetQuantity: '', objectNo: '', remark: '', plannedStartAt: '', plannedEndAt: '' }); };
+  const closeObjects = () => { importRequestId.current += 1; setObjectOrder(null); };
   const selectedProductionMode = selectedProcess?.productionMode || objectOrder?.productionMode || '';
   const selectedProductionForm = selectedProcess?.productionForm || objectOrder?.productionForm || '';
   const isMassNonSn = selectedProductionMode === '量产' && ['BATCH', '批次'].includes(selectedProductionForm);
@@ -488,6 +491,9 @@ export default function WorkOrderPage() {
   const previewVersion = processPreviewQuery.data?.model?.versions.find((version) => version.id === splitForm.processVersionId);
   const incompleteProcessOptions = (processOptions.data ?? []).some(option => !option.processReference?.ownerName || !option.processReference?.ownerId);
   const splitDataReady = objects.isSuccess && !objects.isFetching && processOptions.isSuccess && !processOptions.isFetching && !incompleteProcessOptions;
+  const importContext = { order: objectOrder, processVersionId: splitForm.processVersionId, pendingObjects, objectRows, availableRemaining, ready: splitDataReady && canSplit && !split.isPending };
+  const currentImportContext = useRef(importContext);
+  currentImportContext.current = importContext;
   const addPendingObject = () => {
     const targetQuantity = isSnProduction ? 1 : Number(splitForm.targetQuantity);
     if (!splitDataReady || !splitForm.processVersionId || !Number.isFinite(targetQuantity) || targetQuantity <= 0 || targetQuantity > availableRemaining) return;
@@ -515,9 +521,16 @@ export default function WorkOrderPage() {
     setSplitForm((current) => ({ ...current, targetQuantity: '', objectNo: '', remark: '', plannedStartAt: '', plannedEndAt: '' }));
   };
   const importPendingObjects = async (file?: File) => {
-    if (!file) return;
+    if (!file || !importContext.ready || !importContext.processVersionId) return;
+    const requestId = ++importRequestId.current;
     try {
-      const workbook = XLSX.read(await file.arrayBuffer(), { type: 'array', cellDates: true, codepage: 65001 });
+      const bytes = await file.arrayBuffer();
+      if (requestId !== importRequestId.current) return;
+      const current = currentImportContext.current;
+      if (!current.ready || current.order !== importContext.order || current.processVersionId !== importContext.processVersionId || current.pendingObjects !== importContext.pendingObjects || current.objectRows !== importContext.objectRows || current.availableRemaining !== importContext.availableRemaining) {
+        throw new Error('导入期间配置或清单已变化，请重新选择文件');
+      }
+      const workbook = XLSX.read(bytes, { type: 'array', cellDates: true, codepage: 65001 });
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const matrix = XLSX.utils.sheet_to_json<unknown[]>(sheet, { header: 1, defval: '', raw: true });
       const normalizeHeader = (value: unknown) => String(value ?? '').replace(/^\ufeff/, '').trim().toLowerCase();
@@ -544,6 +557,8 @@ export default function WorkOrderPage() {
       const parsedRows = rows.map((row, index) => { const quantity = get(row, ['数量', '目标数量', 'targetquantity', 'quantity']); return { rowNumber: headerIndex + index + 2, processVersionId: splitForm.processVersionId, targetQuantity: isSnProduction ? (quantity || '1') : quantity, objectNo: get(row, objectHeaderNames), remark: get(row, ['备注', 'remark']), plannedStartAt: getDate(row, ['计划开始时间', 'plannedstartat']), plannedEndAt: getDate(row, ['计划结束时间', 'plannedendat']) }; });
       const invalidQuantityRows = parsedRows.filter((row) => !Number.isFinite(Number(row.targetQuantity)) || Number(row.targetQuantity) <= 0).map((row) => row.rowNumber);
       if (invalidQuantityRows.length > 0) throw new Error(`导入失败：第 ${invalidQuantityRows.join('、')} 行数量无效，请修正后重新导入`);
+      const excessPrecisionRows = parsedRows.filter(row => Number(Number(row.targetQuantity).toFixed(4)) !== Number(row.targetQuantity)).map(row => row.rowNumber);
+      if (excessPrecisionRows.length > 0) throw new Error(`导入失败：第 ${excessPrecisionRows.join('、')} 行数量最多4位小数`);
       const invalidSnQuantityRows = isSnProduction ? parsedRows.filter((row) => Number(row.targetQuantity) !== 1).map((row) => row.rowNumber) : [];
       if (invalidSnQuantityRows.length > 0) throw new Error(`导入失败：SN生产形态第 ${invalidSnQuantityRows.join('、')} 行数量必须为1`);
       const invalidObjectRows = parsedRows.filter((row) => !row.objectNo).map((row) => row.rowNumber);
@@ -554,13 +569,13 @@ export default function WorkOrderPage() {
       if (invalidDateRows.length > 0) throw new Error(`导入失败：第 ${invalidDateRows.join('、')} 行计划结束时间早于开始时间`);
       const imported = parsedRows;
       if (imported.length === 0) throw new Error(`未识别到有效数据，请使用包含“${isSnProduction ? 'SN编号' : '批次号'}”的 CSV、XLS 或 XLSX 文件`);
-      const importedQuantity = imported.reduce((sum, row) => sum + Number(row.targetQuantity), 0);
-      if (importedQuantity > availableRemaining) throw new Error(`导入失败：导入数量合计 ${importedQuantity} 超出剩余可分配数量 ${availableRemaining}`);
+      const importedQuantityUnits = imported.reduce((sum, row) => sum + Math.round(Number(row.targetQuantity) * 10000), 0);
+      if (importedQuantityUnits > Math.round(availableRemaining * 10000)) throw new Error(`导入失败：导入数量合计 ${importedQuantityUnits / 10000} 超出剩余可分配数量 ${availableRemaining}`);
       setPendingObjects((current) => [...current, ...imported]);
       setSplitTab(1);
       showMessage(`已导入 ${imported.length} 条待添加记录`);
       setObjectListTab(0);
-    } catch (error) { showMessage(error instanceof Error ? error.message : '批次导入失败', 'error'); }
+    } catch (error) { if (requestId === importRequestId.current) showMessage(error instanceof Error ? error.message : '批次导入失败', 'error'); }
   };
   const downloadImportTemplate = async () => {
     const serial = isSnProduction;
@@ -711,7 +726,7 @@ export default function WorkOrderPage() {
       <DialogActions sx={{ px: 3, py: 1.5 }}><Button onClick={() => setDialogOpen(false)} disabled={save.isPending}>取消</Button><Button variant="contained" onClick={() => save.mutate()} disabled={!canSave}>{save.isPending ? '保存中...' : '保存'}</Button></DialogActions>
     </AppDialog>
 
-    <AppDialog open={objectOrder !== null} onClose={split.isPending ? undefined : () => setObjectOrder(null)} maxWidth="xl" fullWidth PaperProps={{ sx: { maxWidth: 1280, maxHeight: '94dvh' } }}>
+    <AppDialog open={objectOrder !== null} onClose={split.isPending ? undefined : closeObjects} maxWidth="xl" fullWidth PaperProps={{ sx: { maxWidth: 1280, maxHeight: '94dvh' } }}>
       <DialogTitle>{canSplit ? '生产对象管理' : '生产对象查看'}</DialogTitle>
       <DialogContent dividers sx={{ p: { xs: 2, sm: 3 }, bgcolor: 'background.paper' }}>{objectOrder && <Stack spacing={2.5}>
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 1fr) auto' }, gap: 2, alignItems: 'center' }}>
@@ -765,7 +780,7 @@ export default function WorkOrderPage() {
       </Stack>}</DialogContent>
       <DialogActions sx={{ px: { xs: 2, sm: 3 }, py: 1.5, gap: 1 }}>
         <Typography variant="caption" color="text.secondary" sx={{ mr: 'auto', display: { xs: 'none', sm: 'block' } }}>每批独立保存制程引用，开工时冻结配置。</Typography>
-        <Button onClick={() => setObjectOrder(null)} disabled={split.isPending}>关闭</Button>
+        <Button onClick={closeObjects} disabled={split.isPending}>关闭</Button>
         {canSplit && <Button variant="contained" onClick={() => split.mutate()} disabled={!splitDataReady || pendingObjects.length === 0 || split.isPending} sx={{ whiteSpace: 'nowrap' }}>{split.isPending ? '提交中...' : `提交批次（${pendingObjects.length}）`}</Button>}
       </DialogActions>
     </AppDialog>

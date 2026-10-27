@@ -201,6 +201,11 @@ export default function IconManagementPage() {
   }), [groups]);
   const builtinGroupId = toId(orderedGroups.find(isBuiltinGroup)?.id);
   const iconsPage = iconsQuery.data;
+  useEffect(() => {
+    if (!iconsQuery.isSuccess || iconsQuery.isPlaceholderData || iconsQuery.isFetching) return;
+    const lastPage = Math.max(iconsPage?.totalPages ?? 0, 1);
+    if (page > lastPage) setPage(lastPage);
+  }, [iconsPage?.totalPages, iconsQuery.isSuccess, iconsQuery.isPlaceholderData, iconsQuery.isFetching, page]);
   const icons = iconsPage?.content ?? [];
   const visibleIcons = useMemo(() => {
     if (selectedGroupId === 'ALL') return icons;
