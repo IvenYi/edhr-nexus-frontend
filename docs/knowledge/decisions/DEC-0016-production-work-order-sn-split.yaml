@@ -61,12 +61,12 @@ decisions:
       evidenceIds:
       - evidence.guancheng-sn-split-source
     - id: discrepancy.production-sn-import-template-extra-remark
-      status: open
+      status: resolved
       severity: medium
       visibility: internal
       path: gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
       lineHint: 565
-      summary: 'provenance: original-evidence；用户确认 SN 导入模板只包含编号和计划起止三列，但当前下载模板另有备注第四列，导入解析也接收备注；数量仍隐含为1。确认规则与当前功能应并列记录，不把额外列写成已确认规则。 本次仅核对源码及已有断言，未修改生产代码或执行业务运行验收。'
+      summary: 'provenance: original-evidence；历史发现：2026-10-12 源码复核时，用户确认 SN 导入模板只包含编号和计划起止三列，但下载模板另有备注第四列，解析也接收备注；当时仅核对源码及已有断言，未执行业务运行验收。2026-10-27 按原 DEC-0016-04 修正下载模板表头、示例行及帮助文字为三列；BATCH 五列、对象备注及旧文件备注解析保持。主侧真实 Chromium/隔离 HTTP 夹具中，修复前 SN 1440/390 两例因多列失败、BATCH 对照通过；修复后三例通过，覆盖实际 XLSX 下载解析、导入校验、待提交及旧备注提交 payload。此为当前候选实现差异已修正，不改变业务政策，不代表服务端持久化、完整响应式或独立最终验收；相应结果由本批正式质量记录单列。'
       evidenceIds:
       - evidence.production-work-order-page-pending-list
       - evidence.production-work-order-batch-import-template-ui

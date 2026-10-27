@@ -1,0 +1,90 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 33f033383ae165d10d0006395dd17e5f0df89136
+    targetBranch: edhr-dev
+    targetCommit: 33f033383ae165d10d0006395dd17e5f0df89136
+    contractReadCommit: 33f033383ae165d10d0006395dd17e5f0df89136
+    uncommittedContractPaths: []
+  reason: 按现行三列规则同步H008候选修复处置与两条实现证据，保留原始发现及主侧红绿运行边界；没有新增业务政策或提高知识成熟度。13条有限语义当前一致，初始两条needs-fix历史另存。
+  changedArtifacts:
+  - path: docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml
+    changeType: update
+    ids:
+    - discrepancy.production-sn-import-template-extra-remark
+  - path: docs/knowledge/evidence/production.yaml
+    changeType: update
+    ids:
+    - evidence.production-work-order-page-pending-list
+    - evidence.production-work-order-batch-import-template-ui
+  knowledgeSync:
+  - id: DEC-0016-04
+    disposition: retained
+    scope: SN下载模板三列仍有效；BATCH五列及对象备注不在替代范围。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml
+    - docs/knowledge/evidence/production.yaml
+  - id: discrepancy.production-sn-import-template-extra-remark
+    disposition: updated
+    scope: 标记候选实现差异已修正，保留2026-10-12原始发现与当时未运行验证事实，新增主侧红绿及独立验收未覆盖边界。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml
+  - id: rule.production.production-object-batch-submit-atomic
+    disposition: retained
+    scope: 批量保存和逐对象审计仍要求同事务整体回滚；重复SQL的性能讨论不改变此规则。
+    sourceReferences:
+    - docs/knowledge/rules/production.yaml
+  - id: evidence.production-work-order-page-pending-list
+    disposition: updated
+    scope: 当前SN三列下载与旧备注兼容的实际实现证据，保留历史差异。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx
+    - docs/development/branch-review-20261027-production-growth/evidence/browser-green.json
+  - id: evidence.production-work-order-batch-import-template-ui
+    disposition: updated
+    scope: 记录真实浏览器下载/导入/提交红绿证据为主侧隔离HTTP夹具，不外推后端持久化或完整响应式。
+    sourceReferences:
+    - gmp-platform/frontend/scripts/test-work-order-template-browser.mjs
+    - docs/development/branch-review-20261027-production-growth/evidence/browser-red.json
+    - docs/development/branch-review-20261027-production-growth/evidence/browser-green.json
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.knowledge-suite
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - 89 tests,0 failures/errors/skips
+    - /tmp/edhr-production-growth-ontology-knowledge.log
+    - sha256:b84eef0381163aa6fcc5c35f9e9f3ceacb5fdbc4185b4195133f0d568e580ef0
+  - id: validation.finite-semantics
+    checkType: reference
+    command: Read current YAML IDs, product code diff and primary browser JSON; Python
+      JSON/YAML parse
+    outcome: passed
+    evidence:
+    - 13 finite records current-consistent; initial13 with 2 needs-fix preserved
+    - /tmp/edhr-production-growth-semantic.json
+    - /tmp/edhr-production-growth-semantic-initial.json
+    - Browser evidence read only; no backend/browser runtime executed by ontology
+      role
+  - id: validation.knowledge-diff
+    checkType: evidence-path
+    command: git diff --check -- docs/knowledge; read evidence paths
+    outcome: passed
+    evidence:
+    - Only two permitted knowledge files changed
+    - Existing DEC/rules and maturity unchanged; initial implementation discrepancy
+      retained in summary
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

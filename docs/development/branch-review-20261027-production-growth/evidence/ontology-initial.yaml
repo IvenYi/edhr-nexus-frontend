@@ -1,0 +1,50 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 33f033383ae165d10d0006395dd17e5f0df89136
+    targetBranch: edhr-dev
+    targetCommit: 33f033383ae165d10d0006395dd17e5f0df89136
+    contractReadCommit: 33f033383ae165d10d0006395dd17e5f0df89136
+    uncommittedContractPaths: []
+  reason: 只读核对13条有限语义，当前定义无需更改。H008仍是已登记实现差异，不是规则冲突；纠正下载模板不构成新业务政策。性能观察不改变业务规则。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: DEC-0016-04
+    disposition: retained
+    scope: SN下载模板三列仍有效；BATCH五列及对象备注不在替代范围。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml
+    - docs/knowledge/evidence/production.yaml
+  - id: discrepancy.production-sn-import-template-extra-remark
+    disposition: retained
+    scope: 本角色读源码时仍open；由主侧修复并取得运行/独立验证后再更新处置，不提前关闭。
+    sourceReferences:
+    - docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml
+  - id: rule.production.production-object-batch-submit-atomic
+    disposition: retained
+    scope: 批量保存和逐对象审计仍要求同事务整体回滚；重复SQL的性能讨论不改变此规则。
+    sourceReferences:
+    - docs/knowledge/rules/production.yaml
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: semantic.source-and-id-check
+    checkType: reference
+    command: Python parse YAML IDs and inspect current source/commit diff; details
+      in /tmp/edhr-production-growth-semantic.json
+    outcome: passed
+    evidence:
+    - 13 IDs uniquely located; 11 consistent and 2 needs-fix (same H008 implementation
+      discrepancy), no rule conflict
+    - No Maven, PostgreSQL or browser execution by this role
+    - No repository files modified
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

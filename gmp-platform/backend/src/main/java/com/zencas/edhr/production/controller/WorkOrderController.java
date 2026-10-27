@@ -55,8 +55,8 @@ public class WorkOrderController {
                         || status.equalsIgnoreCase(row.status()))
                 .toList();
         int safePage = Math.max(page, 1), safeSize = Math.max(size, 1);
-        int from = Math.min((safePage - 1) * safeSize, rows.size());
-        int to = Math.min(from + safeSize, rows.size());
+        int from = (int) Math.min((safePage - 1L) * safeSize, rows.size());
+        int to = (int) Math.min((long) from + safeSize, rows.size());
         return ApiResponse.success(PageResult.of(rows.subList(from, to), safePage, safeSize, rows.size()));
     }
 
