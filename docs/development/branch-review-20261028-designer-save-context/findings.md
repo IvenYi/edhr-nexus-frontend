@@ -2,6 +2,8 @@
 
 固定目标72fad6488a66561a698c11c5bcfd411fad13c8ca，PR39已真实合入且树同d77699cf。原`candidate.designer-save-catalog-context`由源码候选进入实际原hook/HTTP目录等待复现，不重开PR39已验收的导入修复。
 
+本项high已在干净5009bfe3由全新独立实例正式验收，14/14必需检查passed/FINAL，按acceptance resolved。同13场景旧7红6正、修复双宽全过，正常编辑/失败/校验对照保持。后续仅文档归档，不把单根因的7种红例算7项缺陷。
+
 ## W2-SAVE-EDITOR-CONTEXT-001 · high
 
 Shell.handleSave等待用途目录后再次读取当前document，却没有确认原编辑上下文是否还存在。切换版本、关闭重开后，旧保存意图可能继续调用持久化回调；旧完成后的清dialog/finally也可能影响新会话。仅比较templateId/versionId无法区分同版本的关闭重开；store.markSaved原保护只比较这两个ID，不能代表编辑会话隔离。
