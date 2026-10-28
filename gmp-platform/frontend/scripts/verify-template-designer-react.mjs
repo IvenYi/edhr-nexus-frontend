@@ -605,7 +605,6 @@ const apiClient = read('../src/api/client.ts');
 const identityApi = read('../src/api/identity.ts');
 const shellFile = shell;
 const headerActionButtonStyleBlock = shell.match(/const headerActionButtonSx = \{[\s\S]*?\n\};/)?.[0] ?? '';
-const workflowTab = read('../src/pages/master-data/template-designer-react/tabs/workflow/WorkflowTab.tsx');
 const componentRegistry = read('../src/pages/master-data/template-designer-react/registry/componentRegistry.tsx');
 const parseConfiguredOptionsBlock = componentRegistry.match(/function parseConfiguredOptions[\s\S]*?return text/)?.[0] ?? '';
 const referenceFieldTypeConfigBlock = fieldRegistry.match(/const REFERENCE_TYPE_CONFIG_SCHEMA: PropertySchemaItem\[\] = \[[\s\S]*?\];/)?.[0] ?? '';
@@ -722,7 +721,7 @@ if (dialog.includes('../template-designer') || shell.includes('../template-desig
 if (!dialog.includes('fullScreen')) failures.push('TemplateDesignerReactDialog.tsx: missing fullScreen dialog');
 if (!shell.includes('字段设计')) failures.push('TemplateDesignerReactShell.tsx: missing model tab');
 if (!shell.includes('表单设计')) failures.push('TemplateDesignerReactShell.tsx: missing canvas tab');
-if (!shell.includes('流程设计')) failures.push('TemplateDesignerReactShell.tsx: missing workflow tab');
+if (shell.includes('流程设计') || shell.includes('WorkflowTab')) failures.push('TemplateDesignerReactShell.tsx: removed workflow tab must not be exposed');
 if (!shellFile.includes('模板导入')) failures.push('TemplateDesignerReactShell.tsx: missing import action');
 if (!shellFile.includes('模拟填报')) failures.push('TemplateDesignerReactShell.tsx: missing mock-fill action');
 if (!shellFile.includes('const headerActionButtonSx =')) failures.push('TemplateDesignerReactShell.tsx: header actions must share a single size style');
@@ -2774,11 +2773,6 @@ if (!/diagonalTopLeftToBottomRight[\s\S]*?linear-gradient\(to bottom left/.test(
 if (!/diagonalTopRightToBottomLeft[\s\S]*?linear-gradient\(to bottom right/.test(wordDiagonalBackground)) failures.push('CanvasSheetWorkspace.tsx: tr2bl borders must render from top-right to bottom-left');
 if (canvasWorkspace.includes('selectedWordBlockId') || canvasWorkspace.includes('normalizeWordComponentMeta')) failures.push('CanvasSheetWorkspace.tsx: Word import blocks must not be coupled to the common component library');
 if (storeFile.includes('selectedWordBlockId') || storeFile.includes('updateWordComponent') || storeFile.includes('removeWordBlock')) failures.push('useTemplateDesignerStore.ts: Word import blocks must not carry component-manager state');
-if (!workflowTab.includes('ReactFlow')) failures.push('WorkflowTab.tsx: missing ReactFlow canvas');
-if (!workflowTab.includes('addEdge')) failures.push('WorkflowTab.tsx: missing edge creation support');
-if (!workflowTab.includes('新增节点')) failures.push('WorkflowTab.tsx: missing add node action');
-if (!workflowTab.includes('onNodeClick')) failures.push('WorkflowTab.tsx: missing workflow node selection');
-if (!workflowTab.includes('节点名称')) failures.push('WorkflowTab.tsx: missing workflow node inspector');
 
 await verifyExcelImportStyleBehavior();
 await verifySubTableGroupRepeatBehavior();

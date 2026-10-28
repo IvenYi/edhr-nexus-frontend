@@ -1953,9 +1953,6 @@ export interface TemplateDesignerStore {
   getSubTableFieldForSelectedRange: () => ModelField | null;
   subTableFieldIdsUsedOnCanvas: (subTableId: string) => string[];
   getAvailableFieldsForCurrentVersion: (nodeId?: string | null) => ModelField[];
-  addWorkflowNode: () => void;
-  setWorkflowNodes: (nodes: TemplateDesignerDocument['workflow']['nodes']) => void;
-  setWorkflowEdges: (edges: TemplateDesignerDocument['workflow']['edges']) => void;
   markSaved: (savedDocument?: TemplateDesignerDocument) => void;
   isDirty: () => boolean;
 }
@@ -3524,51 +3521,6 @@ export const useTemplateDesignerStore = create<TemplateDesignerStore>((set, get)
       return field.id === currentFieldId || !usedFieldIds.has(field.id);
     });
   },
-  addWorkflowNode: () => set((state) => pushDocumentHistory(state, {
-    document: state.document
-      ? {
-          ...state.document,
-          workflow: {
-            ...state.document.workflow,
-            nodes: [
-              ...state.document.workflow.nodes,
-              {
-                id: createId('workflow-node'),
-                position: {
-                  x: 80 + state.document.workflow.nodes.length * 40,
-                  y: 80 + state.document.workflow.nodes.length * 24,
-                },
-                data: {
-                  label: `节点 ${state.document.workflow.nodes.length + 1}`,
-                },
-              },
-            ],
-          },
-        }
-      : state.document,
-  })),
-  setWorkflowNodes: (nodes) => set((state) => pushDocumentHistory(state, {
-    document: state.document
-      ? {
-          ...state.document,
-          workflow: {
-            ...state.document.workflow,
-            nodes,
-          },
-        }
-      : state.document,
-  })),
-  setWorkflowEdges: (edges) => set((state) => pushDocumentHistory(state, {
-    document: state.document
-      ? {
-          ...state.document,
-          workflow: {
-            ...state.document.workflow,
-            edges,
-          },
-        }
-      : state.document,
-  })),
   markSaved: (savedDocument) => {
     const currentDocument = get().document;
     if (savedDocument && (

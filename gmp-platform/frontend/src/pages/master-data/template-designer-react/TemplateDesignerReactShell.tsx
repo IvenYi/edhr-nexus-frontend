@@ -9,7 +9,6 @@ import { useTemplateDesignerStore } from './store/useTemplateDesignerStore';
 import CanvasTab from './tabs/canvas/CanvasTab';
 import MockFillDialog from './components/mock-fill/MockFillDialog';
 import ModelTab from './tabs/model/ModelTab';
-import WorkflowTab from './tabs/workflow/WorkflowTab';
 import ProjectionDialog from './components/ProjectionDialog';
 import ProjectionValidationDialog from './components/ProjectionValidationDialog';
 import { parseReactTemplateDesignerDocument, serializeTemplateDesignerDocument } from './utils/document';
@@ -250,12 +249,14 @@ export default function TemplateDesignerReactShell({
           minHeight: 64,
           flexShrink: 0,
           gap: 1,
-          flexWrap: 'wrap',
           py: 1,
           px: 3,
-          display: 'flex',
+          display: 'grid',
+          gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
+          '@media (max-width: 1399px)': {
+            gridTemplateColumns: 'minmax(0, 1fr) auto',
+          },
           alignItems: 'center',
-          justifyContent: 'space-between',
           bgcolor: '#1f2128',
           color: '#fff',
           borderBottom: '1px solid rgba(255,255,255,0.06)',
@@ -286,11 +287,10 @@ export default function TemplateDesignerReactShell({
           </Typography>
         </Stack>
         {isSubTableDesigning ? null : (
-          <Stack direction="row" spacing={1.25} alignItems="center">
+          <Stack direction="row" spacing={1.25} alignItems="center" sx={{ justifySelf: 'center', '@media (max-width: 1399px)': { gridRow: 2, gridColumn: '1 / -1' } }}>
             {[
               { key: 'model', label: '字段设计' },
               { key: 'canvas', label: '表单设计' },
-              { key: 'workflow', label: '流程设计' },
             ].map((item) => (
               <Button
                 key={item.key}
@@ -311,7 +311,7 @@ export default function TemplateDesignerReactShell({
           </Stack>
         )}
         {isSubTableDesigning ? null : (
-          <Stack direction="row" spacing={1.25} alignItems="center">
+          <Stack direction="row" spacing={1.25} alignItems="center" sx={{ justifySelf: 'end', '@media (max-width: 1399px)': { gridRow: 1, gridColumn: 2 } }}>
             <Button variant="outlined" onClick={() => { setProjectionField(null); setProjectionOpen(true); }} sx={headerOutlinedActionButtonSx}>用途总览</Button>
             <Button
               variant="outlined"
@@ -351,11 +351,6 @@ export default function TemplateDesignerReactShell({
           </Box>
         ) : null}
         {activeTab === 'canvas' ? <CanvasTab /> : null}
-        {activeTab === 'workflow' ? (
-          <Box sx={{ height: '100%', minHeight: 0, p: 3 }}>
-            <WorkflowTab />
-          </Box>
-        ) : null}
       </Box>
       <ProjectionDialog open={projectionOpen && !projectionValidationRequested} onClose={() => setProjectionOpen(false)} focusField={projectionField} />
       <ProjectionValidationDialog open={projectionValidationRequested} onClose={() => { setProjectionValidationRequested(false); setProjectionOpen(false); }}
