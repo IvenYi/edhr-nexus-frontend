@@ -2,7 +2,7 @@ import type { CanvasDesignState } from './canvas';
 import type { ModelDesignState } from './model';
 import type { WorkflowDesignState } from './workflow';
 
-export type TemplateDesignerTabKey = 'model' | 'canvas' | 'workflow';
+export type TemplateDesignerTabKey = 'model' | 'canvas';
 export type TemplateDesignerCanvasRailKey = 'thumbnails' | 'fields' | 'grid' | 'config' | 'projection';
 
 export interface TemplateDesignerMeta {
