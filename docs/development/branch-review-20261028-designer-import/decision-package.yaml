@@ -1,0 +1,97 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-DESIGNER-IMPORT-20261028
+  scope: 整体审计W2设计器异步导入归属和失败恢复
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 189cb2c100dd7bc81048981c99d0350daf93ec4d
+    targetBranch: edhr-dev
+    targetCommit: 189cb2c100dd7bc81048981c99d0350daf93ec4d
+    contractReadCommit: 189cb2c100dd7bc81048981c99d0350daf93ec4d
+    uncommittedContractPaths: []
+  summary: 旧文件不能覆盖变更后的设计，损坏XML不能作为空白Word导入；保留合法空白文件、模型归属及完整撤销，错误沿用Snackbar。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.import-belongs-to-starting-draft
+      statement: 文件解析的结果归属发起时的编辑上下文，不应写入新模板/版本/页面或覆盖期间的新编辑。
+      rationale: Shell异步读取与store当前页写入分离，旧闭包不构成新上下文的导入授权；属于工程隔离。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: designer-import
+        change: 请求代次和不可变document/page身份阻止过期结果，生命周期和实际关闭使旧请求失效。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx]
+      - area: word-xml-structure
+        change: 识别DOMParser返回的XML解析错误，不将损坏内容当空白导入；合法空白XML仍可导入。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts]
+    transitiveImpacts:
+      - area: local-document-history
+        change: 当前合法导入仍一次替换当前页、保留其他页及model/workflow并沿原undo/redo；旧结果不写历史或跳tab。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+    potentialImpacts:
+      - area: parser-capacity
+        concern: DOCX全ZIP解压及Excel矩形扫描可能放大输入，先记增长模型/反证及讨论，不本批优化。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts, gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importExcel.ts]
+    unaffectedAreas:
+      - area: parsing-policy
+        change: 保留格式、首工作表、原版式转换和模型字段定义；不恢复已保存/历史数据。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/templateImport.ts]
+    compatibilityAndMigration:
+      - area: persisted-data
+        change: 无API/schema/迁移/序列化改动。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: runtime-history
+        change: 不改生产冻结或已保存版本/实例。
+        evidenceReferences: []
+    auditImpacts:
+      - area: edit-history
+        change: 过期导入不创建本地历史；正常命令及后台审计保持。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+    permissionImpacts:
+      - area: access
+        change: 不改权限/签署/发布资格或保存规则。
+        evidenceReferences: []
+    testImpacts:
+      - scope: actual-shell-and-parser
+        scenarios: [正常xlsx和docx, 单次撤销重做, 切页, 切版本, 关闭重开, 中途编辑, 并发反序, 旧错误隔离, 当前错误重试, 取消选文件]
+        evidenceReferences: [gmp-platform/frontend/scripts/test-designer-import-browser.mjs]
+    evidenceGaps:
+      - 浏览器可控File读取及实际解析不代表真实后端持久化或容量认证；其他保存await上下文需独立核对。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 文件异步结果的编辑归属由现有Shell持有，解析器与store写入所有权保持。
+    ownershipBoundaries:
+      - owner: TemplateDesignerReactShell
+        responsibility: 本次导入的请求生命周期、上下文重核及反馈。
+      - owner: import-parsers
+        responsibility: 保留原格式解析及CanvasPage结果，不管理编辑会话。
+      - owner: useTemplateDesignerStore
+        responsibility: 保留整document历史及实际替换命令，本批只读。
+  affectedFiles:
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx
+      changeType: update
+      reason: 归属及请求代次隔离、明确关闭/卸载取消及错误恢复。
+    - path: gmp-platform/frontend/scripts/test-designer-import-browser.mjs
+      changeType: create
+      reason: 真实文件解析的红绿及相邻回归。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts
+      changeType: update
+      reason: 明确拒绝XML解析错误，不误替换为空白页面。
+  acceptanceScenarios:
+    - id: scenario.import-draft-isolation
+      given: 文件仍在解析
+      when: 页面/版本/编辑会话/文档变化或更新文件导入
+      then: 旧结果不覆盖当前文档、不跳tab或写历史，当前编辑变更提示重选，过期错误不污染新会话。
+      evidenceRequirements: [原基线红, 实际Shell和解析器, 完整状态及请求顺序]
+    - id: scenario.import-success-and-retry
+      given: 当前文档未变
+      when: 合法文件导入或非法文件失败后重新导入
+      then: 正常仅替换原目标页、可撤销重做，错误用原共享消息呈现且不改文档，不自动保存。
+      evidenceRequirements: [xlsx及docx, 失败/重试, 键盘/窄屏适用检查]

@@ -1,0 +1,187 @@
+{
+  "baseCommit": "189cb2c100dd7bc81048981c99d0350daf93ec4d",
+  "status": "implementation verification complete; clean independent candidate follows",
+  "checks": [
+    {
+      "command": "node --test scripts/test-designer-save-state.mjs scripts/test-designer-choice-options.mjs scripts/test-designer-subfield-sync.mjs scripts/test-cell-display-components.mjs scripts/test-designer-column-insertion.mjs",
+      "exitCode": 0,
+      "passed": 35,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "CHROME_PATH=/usr/bin/chromium W2_CASE_FILTER=save W2_RESULT_PATH=/tmp/edhr-import-save.json node scripts/test-designer-save-browser.mjs",
+      "exitCode": 0,
+      "passedRuns": 9
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/verify-template-designer-react.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test",
+      "exitCode": 0,
+      "passed": 89,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "command": "npm run lint",
+      "exitCode": 2,
+      "reason": "missing ESLint configuration"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/browser-baseline.json",
+      "originalPath": "/tmp/edhr-designer-import-baseline-final/result.json",
+      "sha256": "d4360378d78c32a02c25b0bc777ea5c9805eb03ace236e238ccd6060e4a3620a"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/browser-desktop.json",
+      "originalPath": "/tmp/edhr-designer-import-fixed-desktop/result.json",
+      "sha256": "e88c3da1581f3ae558d14b4ee338dd0ce442362d275fc84b06d0db110f7ecb94"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/browser-narrow.json",
+      "originalPath": "/tmp/edhr-designer-import-fixed-narrow/result.json",
+      "sha256": "1e498408291876cff55c8559386ab4592fdd8f5f7de2e8c6a66037ffb07d9b95"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/initial-browser-desktop.json",
+      "originalPath": "/tmp/edhr-designer-import-candidate-desktop/result.json",
+      "sha256": "139c732bf849b9361a07b18932f790951c193dcea117ebaa36e2d33485b011fc"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/initial-browser-narrow.json",
+      "originalPath": "/tmp/edhr-designer-import-candidate-narrow/result.json",
+      "sha256": "1b1dbcef13774e73b8c14595b2042c809c6dc5ecdecacabfa2786b57ce791988"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/initial-fixture-diagnostic.json",
+      "originalPath": "/tmp/edhr-designer-import-initial-fixture-diagnostic.json",
+      "sha256": "e651d0d310d19c6316fc0d4546802bcaab8aa078136627e89733a3f895a62d91"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/xml-probe.json",
+      "originalPath": "/tmp/edhr-designer-import-xml-probe.json",
+      "sha256": "cb58b409bca75ee12ff86ef58c4f12797aeecf9c1dbe2990049265c1b548ebac"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/browser-author-summary.json",
+      "originalPath": "/tmp/edhr-designer-import-author-summary.json",
+      "sha256": "4e25458bb57913743ba207c9cd77da7a5a9b272f21aea3219a2daf2c6ee9d2e8"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/ontology-result.yaml",
+      "originalPath": "/tmp/edhr-import-ontology-final.yaml",
+      "sha256": "1221e7e52adb47ae5c401fe36fb107b536a61682a18e80880956ebc7e64e04e7"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/ontology-initial.yaml",
+      "originalPath": "/tmp/edhr-import-ontology.yaml",
+      "sha256": "4e797f65703a40ea3a6139f303b1ca2bf65b3540c99d0ab69a620c06bfccb2f0"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/rule-review.json",
+      "originalPath": "/tmp/edhr-import-rule-review.json",
+      "sha256": "c7c35b8db79786838a806c0ef6100f9addc89527134b27dab7e10758460724bc"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/rule-review.md",
+      "originalPath": "/tmp/edhr-import-rule-review.md",
+      "sha256": "cbf135b38e86b05cfc29aeec32353061d9905386f223ac9e18128ff92ff846b0"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/rule-review-followup.json",
+      "originalPath": "/tmp/edhr-import-rule-review-final.json",
+      "sha256": "f7ccb65052c1b41a1ecb33d52278b4d7735d7278644c578ab36a737d7787b557"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/rule-review-followup.md",
+      "originalPath": "/tmp/edhr-import-rule-review-final.md",
+      "sha256": "af6968177a946ec7039172b7b11b48d03f77a57de5ab9773ff3634a3d9cdd128"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/ontology-validation.json",
+      "originalPath": "/tmp/edhr-import-ontology-validation.json",
+      "sha256": "c99b65ec9ce175bb1052b8b73a299beed13784432c7336efb498b879a90db59d"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/ontology-followup-validation.json",
+      "originalPath": "/tmp/edhr-import-ontology-final-validation.json",
+      "sha256": "bd17011051640b82caa0769d4ca662632774277ac8f0dc51d4d8de046d088ad5"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/static-current.json",
+      "originalPath": "/tmp/edhr-import-static.json",
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/static-comparison.json",
+      "originalPath": "/tmp/edhr-import-static-comparison.json",
+      "sha256": "7db9695d2ad81aae4e186a44f583e328d54ad35de74dcc9ed93947593c1182c0"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/node.txt",
+      "originalPath": "/tmp/edhr-import-node.log",
+      "sha256": "6f38ab92815b1bf87d681eae2eead63541ff92c6aaa20bd83acf9766e83b36e1"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/save-browser.json",
+      "originalPath": "/tmp/edhr-import-save.json",
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/lint.txt",
+      "originalPath": "/tmp/edhr-import-lint.log",
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/designer-verifier.txt",
+      "originalPath": "/tmp/edhr-import-designer-verifier-final.log",
+      "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/desktop-import.png",
+      "originalPath": "/tmp/edhr-designer-import-fixed-desktop/normal-xlsx.png",
+      "sha256": "b80c23186e315ea0748f65f7e150482359ab08b424564b181c378d931436641f"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/narrow-edit-preserved.png",
+      "originalPath": "/tmp/edhr-designer-import-fixed-narrow/edit-during-read.png",
+      "sha256": "94f2a2486d53ca945ffb12c6953adb272ade494a43397ef387114adb7d9ed18d"
+    }
+  ],
+  "rawLogs": [
+    {
+      "path": "/tmp/edhr-import-build-final.log",
+      "sha256": "b67e83ae978a4151babc4c7aeab76e8d87dec026952c95caf6d6a450e825cf2d",
+      "bytes": 9780
+    },
+    {
+      "path": "/tmp/edhr-import-save.log",
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab",
+      "bytes": 1868
+    },
+    {
+      "path": "/tmp/edhr-import-knowledge.log",
+      "sha256": "6a5b9f964c0a9113bba79ba9533c9b583f272db83fb034d3cea9d93d3475afa0",
+      "bytes": 2112
+    }
+  ],
+  "notRun": [
+    "Firefox/WebKit actual XML parser",
+    "native old .doc backend importer",
+    ".xls/.xlsm whole format matrix",
+    "physical file chooser",
+    "capacity/heap experiment",
+    "backend persistence E2E"
+  ],
+  "initialEnvironmentDiagnostic": "The previous /tmp audit script was absent; initial command exited2 before scanning. Re-read exact official skill script and ran successfully to obtain existing strict findings (still exit2). No product finding inferred from missing script."
+}

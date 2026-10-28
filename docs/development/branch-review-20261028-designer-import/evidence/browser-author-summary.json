@@ -1,0 +1,83 @@
+{
+  "role": "test implementation helper, not independent final QA",
+  "status": "FINAL",
+  "baseCommit": "189cb2c100dd7bc81048981c99d0350daf93ec4d",
+  "testFilesAdded": [
+    "gmp-platform/frontend/scripts/test-designer-import-browser.mjs"
+  ],
+  "productFilesEdited": [],
+  "testedWorkingTreeSourceHashes": {
+    "gmp-platform/frontend/scripts/test-designer-import-browser.mjs": "350d246442e15e8d9dfa27990a018065b529c2c6a4d18db5689bf495fba48525",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx": "c091eaa950cbad13f22c29706714f856ed216e00f9c7a8197fdf08e5d8db4b7a",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts": "4711d383c3a1b4b9153973b24ff337e052aaad640db5e3a690ca6ff793249ff2"
+  },
+  "runs": [
+    {
+      "label": "baseline",
+      "path": "/tmp/edhr-designer-import-baseline-final/result.json",
+      "sha256": "d4360378d78c32a02c25b0bc777ea5c9805eb03ace236e238ccd6060e4a3620a",
+      "width": 1440,
+      "passed": 5,
+      "failed": 10,
+      "fixtureBlocked": 0
+    },
+    {
+      "label": "candidateDesktop",
+      "path": "/tmp/edhr-designer-import-fixed-desktop/result.json",
+      "sha256": "e88c3da1581f3ae558d14b4ee338dd0ce442362d275fc84b06d0db110f7ecb94",
+      "width": 1440,
+      "passed": 15,
+      "failed": 0,
+      "fixtureBlocked": 0
+    },
+    {
+      "label": "candidateNarrow",
+      "path": "/tmp/edhr-designer-import-fixed-narrow/result.json",
+      "sha256": "1e498408291876cff55c8559386ab4592fdd8f5f7de2e8c6a66037ffb07d9b95",
+      "width": 390,
+      "passed": 15,
+      "failed": 0,
+      "fixtureBlocked": 0
+    },
+    {
+      "label": "initialCandidateDesktop",
+      "path": "/tmp/edhr-designer-import-candidate-desktop/result.json",
+      "sha256": "139c732bf849b9361a07b18932f790951c193dcea117ebaa36e2d33485b011fc",
+      "width": 1440,
+      "passed": 13,
+      "failed": 2,
+      "fixtureBlocked": 0
+    },
+    {
+      "label": "initialCandidateNarrow",
+      "path": "/tmp/edhr-designer-import-candidate-narrow/result.json",
+      "sha256": "1b1dbcef13774e73b8c14595b2042c809c6dc5ecdecacabfa2786b57ce791988",
+      "width": 390,
+      "passed": 13,
+      "failed": 2,
+      "fixtureBlocked": 0
+    }
+  ],
+  "commands": [
+    "CHROME_PATH=/usr/bin/chromium IMPORT_BASELINE_COMMIT=189cb2c100dd7bc81048981c99d0350daf93ec4d IMPORT_ARTIFACTS=/tmp/edhr-designer-import-baseline-final node scripts/test-designer-import-browser.mjs",
+    "CHROME_PATH=/usr/bin/chromium IMPORT_ARTIFACTS=/tmp/edhr-designer-import-fixed-desktop node scripts/test-designer-import-browser.mjs",
+    "CHROME_PATH=/usr/bin/chromium IMPORT_WIDTH=390 IMPORT_ARTIFACTS=/tmp/edhr-designer-import-fixed-narrow node scripts/test-designer-import-browser.mjs",
+    "node --check scripts/test-designer-import-browser.mjs"
+  ],
+  "screenshotsViewed": [
+    "/tmp/edhr-designer-import-fixed-desktop/normal-xlsx.png",
+    "/tmp/edhr-designer-import-fixed-narrow/current-error-and-retry.png",
+    "/tmp/edhr-designer-import-fixed-narrow/edit-during-read.png"
+  ],
+  "initialFixtureDiagnostic": "/tmp/edhr-designer-import-initial-fixture-diagnostic.json",
+  "xmlNamespaceProbe": "/tmp/edhr-designer-import-xml-probe.json",
+  "cleanup": "Every completed run closes its own contexts/browser/server and removes its exact mkdtemp directory in finally; namespace probe also closed browser.",
+  "limits": [
+    "Current successful author runs used the uncommitted product fix over HEAD189cb2c1; not labelled a clean tested commit.",
+    "15 unique scenarios at two widths are not30 independent business cases.",
+    "Original Excel and DOCX parsers run, with file.arrayBuffer timing controlled; transparent module try/finally observer only marks actual completion, no parser result stubs.",
+    "Host version switch/open state is explicit fixture UI; actual page switches, cell F2 edits, close dialogs, import input and undo/redo use product UI.",
+    "No backend persistence or physical native file-picker UI certification. Empty selection is a real input empty-change protocol test.",
+    "390 retains existing side-panel width and header/canvas clipping; no responsive redesign or full responsive certification."
+  ]
+}

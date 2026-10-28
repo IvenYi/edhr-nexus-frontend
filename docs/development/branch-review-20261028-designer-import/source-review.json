@@ -1,0 +1,17 @@
+{
+  "baseCommit":"189cb2c100dd7bc81048981c99d0350daf93ec4d",
+  "reviewer":"primary",
+  "wholeFileCompletion":0,
+  "records":[
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx","methods":["initialization effect","handleImportFileChange","handleClose","persistCurrentDocument","handleSave"],"dimensions":["A01","A03","A08","A11","A13","A17","A19"],"outcome":"导入归属已定位并修复待QA；保存catalog await另记source候选，不外推通过。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/templateImport.ts","methods":["getExtension","normalizeImportPage","importTemplateToCanvasPage"],"dimensions":["A03","A07","A08"],"outcome":"格式分流及原page身份仅normalize，不保证实际写入归属；未改格式列表。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts","methods":["parseXml","parseRelationships","readZipEntries","parseBlocks","importDocxToCanvasPage","importLegacyDocToCanvasPage"],"dimensions":["A07","A08","A12","A13","A18","A19"],"outcome":"XML失败不能当空白；全ZIP并发解压为性能候选，旧doc服务仅源码不认证。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importExcel.ts","methods":["getModernWorksheetBounds","importModernExcel","importLegacyExcel","importExcelToCanvasPage"],"dimensions":["A07","A08","A12","A13","A18"],"outcome":"完整工作簿解析先于首表选择和clamp，不误报矩形无界；复杂版式/所有格式仍待审。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importGrid.ts","methods":["clampImportedRowCount","clampImportedColumnCount","createImportedCanvasPage"],"dimensions":["A03","A12"],"outcome":"已有300/75边界反证保留，不当成新业务限制。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts","methods":["setCurrentPageId","requestPagePreviewScroll","replaceCurrentPageFromImport","pushDocumentHistory","markSaved"],"dimensions":["A03","A08","A11","A17"],"outcome":"写入当前页而非importedPage.id是异步错归属根因；保留整document历史。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts","methods":["safeParseJson","buildMeta","parseReactTemplateDesignerDocument","serializeTemplateDesignerDocument"],"dimensions":["A03","A08"],"outcome":"只读加载meta与导出归属；未证明所有畸形存量JSON解析安全。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactDialog.tsx","methods":["Shell mounting and onClose wiring"],"dimensions":["A08","A17"],"outcome":"宿主Dialog实际卸载/关闭与Shell生命周期核对；未改弹窗样式或外部关闭政策。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasPageThumbnails.tsx","methods":["thumbnail activation and requestPagePreviewScroll"],"dimensions":["A17"],"outcome":"测试通过真实缩略图变更current page；不认证缩略图全渲染容量。"}
+  ],
+  "coverageBoundary":"9条有限源码记录，不等于9整文件完成；真实浏览器范围/知识语义范围分别记录。"
+}

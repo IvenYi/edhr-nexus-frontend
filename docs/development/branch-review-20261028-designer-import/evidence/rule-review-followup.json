@@ -1,0 +1,220 @@
+{
+  "role": "business-knowledge-modeler",
+  "status": "FINAL",
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "189cb2c100dd7bc81048981c99d0350daf93ec4d",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "189cb2c100dd7bc81048981c99d0350daf93ec4d",
+    "contractReadCommit": "189cb2c100dd7bc81048981c99d0350daf93ec4d",
+    "uncommittedContractPaths": []
+  },
+  "scope": "本批W2异步导入归属和Word XML解析错误识别的有限核对；非全W2/全库审计完成",
+  "workingTreeEvidence": {
+    "description": "原首轮及7ID证据原件保留；本跟进只读取parseXml命名空间增量和当前文件hash。",
+    "productHashes": {
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx": "c091eaa950cbad13f22c29706714f856ed216e00f9c7a8197fdf08e5d8db4b7a",
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts": "4711d383c3a1b4b9153973b24ff337e052aaad640db5e3a690ca6ff793249ff2",
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts": "8e21536a02bc5502ed2c65d70288d38a980b686999d227dc0c687ba72b5d40ab",
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/templateImport.ts": "b7b433dd43f67a6bcb59069d1d84f081818bc5c16659d6322a22c06e79ec87b0"
+    },
+    "knowledgeOrContractChanges": []
+  },
+  "summary": {
+    "knowledgeIdsReviewed": 7,
+    "consistentWithinStatedScope": 6,
+    "retainedEvidenceGap": 1,
+    "knowledgeChanges": 0,
+    "newBusinessPolicies": 0,
+    "runtimeTestsExecutedByThisRole": 0
+  },
+  "reviews": [
+    {
+      "id": "DEC-0077-12",
+      "path": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "scope": "使用时复制配置与已形成执行快照/来源/投影不回写；当前导入只编辑设计草稿。",
+      "reasonableness": "原用户纠正明确沿用使用时快照，不新增投影专属发布冻结。本批旧异步结果拒绝不改变模板版本编辑或新使用取当时配置的政策。",
+      "sources": [
+        "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md:82-87",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx::handleImportFileChange",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts::replaceCurrentPageFromImport"
+      ],
+      "disposition": "retained",
+      "limit": "仅核对本批未改变该定义及相关实际写入边界，不认证其完整运行路径。"
+    },
+    {
+      "id": "DEC-0077-22",
+      "path": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "scope": "同一画布共享配置、选择、定位与原保存撤销；本批导入继续沿统一document历史。",
+      "reasonableness": "原用户接受同画布独立同级侧栏及共享配置/保存撤销，避免并列配置源。迟到导入不能代表新上下文的编辑意图；请求代次与对象重核是工程落实，不是新增业务规则。",
+      "sources": [
+        "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md:337-355",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts::pushDocumentHistory",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts::replaceCurrentPageFromImport",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx::handleImportFileChange"
+      ],
+      "disposition": "retained",
+      "limit": "仅核对本批未改变该定义及相关实际写入边界，不认证其完整运行路径。"
+    },
+    {
+      "id": "DEC-0080-01",
+      "path": "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "scope": "同稳定字段多处共享选项，导入仍不生成新的模型字段或改变选项定义。",
+      "reasonableness": "原答复明确必须共用同组选项；绑定位置和名称不重新定义字段身份。当前补丁不修改model字段/选项或widget合并行为。DEC supersedes为空；旧July阶段非目标不恢复为当前永久禁止。",
+      "sources": [
+        "docs/knowledge/evidence/shared-choice-options-2026-10-18.md:7-20",
+        "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts::replaceCurrentPageFromImport",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/templateImport.ts"
+      ],
+      "disposition": "retained",
+      "limit": "仅核对本批未改变该定义及相关实际写入边界，不认证其完整运行路径。"
+    },
+    {
+      "id": "term.form-template-field",
+      "path": "docs/knowledge/glossary.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "scope": "实际稳定fieldId与布局位置分离，文件导入目标为CanvasPage，字段模型保留。",
+      "reasonableness": "字段身份用于权限及合法值，不能因为导入布局或晚返回就另造/混同身份。本批只阻止旧结果跨编辑上下文写入，没有更改字段生命周期。",
+      "sources": [
+        "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts::replaceCurrentPageFromImport",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/templateImport.ts"
+      ],
+      "disposition": "retained",
+      "limit": "仅核对本批未改变该定义及相关实际写入边界，不认证其完整运行路径。"
+    },
+    {
+      "id": "concept.form-template-field",
+      "path": "docs/knowledge/ontology.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "scope": "真实字段概念关联原词条，当前导入结果归属不改变概念、关系和基数。",
+      "reasonableness": "概念引用稳定真实字段及原证据，布局替换不等于修改数据模型；保留模型和无关页/流程是当前store实际命令边界。",
+      "sources": [
+        "docs/knowledge/glossary.yaml",
+        "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts::replaceCurrentPageFromImport"
+      ],
+      "disposition": "retained",
+      "limit": "仅核对本批未改变该定义及相关实际写入边界，不认证其完整运行路径。"
+    },
+    {
+      "id": "scenario.shared-choice-options-single-document-history",
+      "path": "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "scope": "完整document的单次撤销/重做及保存重读为既有工程验收边界。",
+      "reasonableness": "模型与画布不应分叉。导入原store命令只替换当前页并push一次document历史；本批合法导入保持此命令，旧结果不创建历史，不新增第二套保存事务。",
+      "sources": [
+        "docs/knowledge/evidence/shared-choice-options-2026-10-18.md:33-40",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts::pushDocumentHistory",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts::replaceCurrentPageFromImport"
+      ],
+      "disposition": "retained",
+      "limit": "仅源码核对既有历史所有权；实际xlsx/docx、undo/redo和保存验证由主侧及全新独立QA执行，本角色未运行。"
+    },
+    {
+      "id": "question.form-projection-sidebar-mode-interaction",
+      "path": "docs/knowledge/open-questions.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "evidence-gap",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "scope": "客户试用、操作负担及低学习成本证据仍有缺口。",
+      "reasonableness": "既有用户入口确认和工程回归不等于客户易用性验证。导入隔离与XML结构识别均不补足该试用证据，也不重新询问已确认入口。",
+      "sources": [
+        "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md:337-355",
+        "docs/knowledge/open-questions.yaml"
+      ],
+      "disposition": "retained",
+      "limit": "保留原试用证据缺口；不阻断无依赖技术修复，不计一致通过。"
+    }
+  ],
+  "technicalBoundary": [
+    {
+      "scope": "Shell import",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx::handleImportFileChange",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx::closeDesigner",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx::useEffect"
+      ],
+      "conclusion": "请求代次、生命周期清理和不可变document/page重核仅确认当前导入所属编辑仍有效；旧结果静默、当前修改提示重选属于工程反馈，不自动保存或迁移历史。"
+    },
+    {
+      "scope": "Word XML parse error",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts::parseXml",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts::importDocxToCanvasPage",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts::parseRelationships"
+      ],
+      "conclusion": "最终parseXml检测Mozilla与HTML两种命名空间中的parsererror元素，拒绝DOMParser技术解析错误。合法well-formed空白Word仍允许；非文本匹配，不新增业务规则。"
+    }
+  ],
+  "replacementBoundary": "本批无业务声明替代，无知识或成熟度更新；历史原话、旧阶段说明和当前有效定义分别保留。",
+  "uncovered": [
+    "其他保存await上下文风险",
+    "全解析器合法/畸形格式矩阵",
+    "DOCX全ZIP/Excel矩形扫描容量",
+    "普通字段非拖动入口",
+    "客户试用",
+    "后台持久化/执行快照实际运行",
+    "原四知识gap及用户暂缓事项"
+  ],
+  "didNotExecute": [
+    "browser",
+    "Maven89",
+    "backend",
+    "build",
+    "performance experiment"
+  ],
+  "newQuestions": [],
+  "followup": {
+    "kind": "incremental-source-only-namespace-check",
+    "priorReport": "/tmp/edhr-import-rule-review.json",
+    "priorReportSha256": "c7c35b8db79786838a806c0ef6100f9addc89527134b27dab7e10758460724bc",
+    "priorOntologySha256": "4e797f65703a40ea3a6139f303b1ca2bf65b3540c99d0ab69a620c06bfccb2f0",
+    "priorWordHash": "b90d9210ae5073d5f0b91fdbdd6a506c2212e2bfdb6db3ea5bfc757e1cf872ae",
+    "currentWordHash": "4711d383c3a1b4b9153973b24ff337e052aaad640db5e3a690ca6ff793249ff2",
+    "change": "parseXml增加Chromium使用的HTML命名空间，保留Mozilla命名空间；按命名空间+parsererror元素识别，不匹配普通文本。",
+    "reason": "主侧报告首轮真实浏览器两项未识别；本角色只读取最终两行增量，不冒称亲自执行该运行测试。",
+    "semanticEffect": "仍只拒绝DOMParser技术解析错误，不禁止合法well-formed空白Word，不改字段、版式或生命周期规则。",
+    "newSemanticIdsReviewed": 0,
+    "priorSevenReviewsUnchanged": true,
+    "runtimeTestsExecutedByThisRole": 0
+  }
+}
