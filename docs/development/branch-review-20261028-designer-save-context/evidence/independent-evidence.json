@@ -1,0 +1,316 @@
+{
+  "role": "fresh independent final L2 quality verifier; no product/test/knowledge fixes",
+  "status": "FINAL",
+  "timestampUTC": "2026-10-28T08:45:01.580219+00:00",
+  "baseCommit": "72fad6488a66561a698c11c5bcfd411fad13c8ca",
+  "headCommit": "5009bfe3cf695debf18a616db464835685f3b2f6",
+  "testedCommit": "5009bfe3cf695debf18a616db464835685f3b2f6",
+  "contractReadCommit": "5009bfe3cf695debf18a616db464835685f3b2f6",
+  "knowledgeBaselineVersion": "0.3.25",
+  "workingTreeState": "clean",
+  "commands": [
+    {
+      "id": "browser.desktop",
+      "cwd": "gmp-platform/frontend",
+      "command": "CHROME_PATH=/usr/bin/chromium SAVE_CONTEXT_ARTIFACTS=/tmp/edhr-save-qa-desktop node scripts/test-designer-save-context-browser.mjs",
+      "exitCode": 0,
+      "resultPath": "/tmp/edhr-save-qa-desktop/result.json",
+      "log": "/tmp/edhr-save-qa-desktop.log"
+    },
+    {
+      "id": "browser.narrow",
+      "cwd": "gmp-platform/frontend",
+      "command": "CHROME_PATH=/usr/bin/chromium SAVE_CONTEXT_WIDTH=390 SAVE_CONTEXT_ARTIFACTS=/tmp/edhr-save-qa-narrow node scripts/test-designer-save-context-browser.mjs",
+      "exitCode": 0,
+      "resultPath": "/tmp/edhr-save-qa-narrow/result.json",
+      "log": "/tmp/edhr-save-qa-narrow.log"
+    },
+    {
+      "id": "browser.baseline",
+      "cwd": "gmp-platform/frontend",
+      "command": "CHROME_PATH=/usr/bin/chromium SAVE_CONTEXT_BASELINE_COMMIT=72fad6488a66561a698c11c5bcfd411fad13c8ca SAVE_CONTEXT_ARTIFACTS=/tmp/edhr-save-qa-baseline node scripts/test-designer-save-context-browser.mjs",
+      "exitCode": 1,
+      "resultPath": "/tmp/edhr-save-qa-baseline/result.json",
+      "log": "/tmp/edhr-save-qa-baseline.log"
+    },
+    {
+      "id": "node",
+      "cwd": "gmp-platform/frontend",
+      "command": "node --test scripts/test-designer-save-state.mjs scripts/test-designer-choice-options.mjs scripts/test-designer-subfield-sync.mjs scripts/test-cell-display-components.mjs scripts/test-designer-column-insertion.mjs",
+      "exitCode": 0,
+      "log": "/tmp/edhr-save-qa-node.log"
+    },
+    {
+      "id": "save",
+      "cwd": "gmp-platform/frontend",
+      "command": "CHROME_PATH=/usr/bin/chromium W2_CASE_FILTER=save W2_RESULT_PATH=/tmp/edhr-save-qa-save.json node scripts/test-designer-save-browser.mjs",
+      "exitCode": 0,
+      "resultPath": "/tmp/edhr-save-qa-save.json",
+      "log": "/tmp/edhr-save-qa-save.log"
+    },
+    {
+      "id": "import",
+      "cwd": "gmp-platform/frontend",
+      "command": "CHROME_PATH=/usr/bin/chromium IMPORT_ARTIFACTS=/tmp/edhr-save-qa-import node scripts/test-designer-import-browser.mjs",
+      "exitCode": 0,
+      "resultPath": "/tmp/edhr-save-qa-import/result.json",
+      "log": "/tmp/edhr-save-qa-import.log"
+    },
+    {
+      "id": "build",
+      "cwd": "gmp-platform/frontend",
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": "/tmp/edhr-save-qa-build.log"
+    },
+    {
+      "id": "verifier",
+      "cwd": "gmp-platform/frontend",
+      "command": "node scripts/verify-template-designer-react.mjs",
+      "exitCode": 0,
+      "log": "/tmp/edhr-save-qa-verifier.log"
+    },
+    {
+      "id": "knowledge",
+      "cwd": ".",
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test",
+      "exitCode": 0,
+      "log": "/tmp/edhr-save-qa-knowledge.log"
+    },
+    {
+      "id": "inventory",
+      "cwd": ".",
+      "command": "python scripts/build-branch-review-inventory.py --ref 72fad6488a66561a698c11c5bcfd411fad13c8ca --out /tmp/edhr-save-qa-inventory-rebuilt",
+      "exitCode": 0,
+      "log": "/tmp/edhr-save-qa-inventory.log"
+    },
+    {
+      "id": "static",
+      "cwd": ".",
+      "command": "python /tmp/edhr-save-context-audit-project.py gmp-platform/frontend/src --mode strict --no-write",
+      "exitCode": 2,
+      "resultPath": "/tmp/edhr-save-qa-static.json"
+    },
+    {
+      "id": "lint",
+      "cwd": "gmp-platform/frontend",
+      "command": "npm run lint",
+      "exitCode": 2,
+      "log": "/tmp/edhr-save-qa-lint.log"
+    },
+    {
+      "id": "fresh-target",
+      "cwd": ".",
+      "command": "git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git status --porcelain=v1",
+      "exitCode": 0,
+      "output": [
+        "5009bfe3cf695debf18a616db464835685f3b2f6",
+        "72fad6488a66561a698c11c5bcfd411fad13c8ca",
+        "clean"
+      ]
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx",
+      "sha256": "ab4750d0e4509f440aea69bb57da8a44529bd27077b118d6d036f1f81de2a650",
+      "blob": "542eaab2450818e4d91f996222d878f08bfb2a19"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-designer-save-context-browser.mjs",
+      "sha256": "c2ceec108ce128c2b1dd01847c3cb1d0a04c624796de58d4a36b10cb3af6a5c4",
+      "blob": "2a240a1e30c9c16e19e55300658f543feebfddf1"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/tmp/edhr-save-context-audit-project.py",
+      "sha256": "b56ca0495ace4aaac2bfa779dc707b04baab0f7d4537e6856b6348c63230661c",
+      "bytes": 37717
+    },
+    {
+      "path": "/tmp/edhr-save-qa-baseline.log",
+      "sha256": "1087e10215e56a0ded7d1916c0d7d4281392bed880e02e6b98848909333950fe",
+      "bytes": 2014
+    },
+    {
+      "path": "/tmp/edhr-save-qa-baseline/result.json",
+      "sha256": "1e3592cbfbf8bb3aafc96a1369f80f4587f1547ae465866fd29c9e9dd853063d",
+      "bytes": 40143
+    },
+    {
+      "path": "/tmp/edhr-save-qa-build.log",
+      "sha256": "93ef9949d3510326d008cb5daea4a9b0b814b3569a3a81a2feca6e13b6f0f7f7",
+      "bytes": 9780
+    },
+    {
+      "path": "/tmp/edhr-save-qa-desktop.log",
+      "sha256": "b36be9a71f9ae18333d15df60877d7f9ef6dd720d8068a254aa0c69ac334ad3e",
+      "bytes": 1189
+    },
+    {
+      "path": "/tmp/edhr-save-qa-desktop/result.json",
+      "sha256": "425d8f2ce0b17812871c3926790b0329cacdfa7eb9498b6a28926c8d03455802",
+      "bytes": 38484
+    },
+    {
+      "path": "/tmp/edhr-save-qa-desktop/same-context-latest-edit.png",
+      "sha256": "bc84b2f054a419a19e2040fa80c74688ce63b76e85473508f3389462412cbc80",
+      "bytes": 59618
+    },
+    {
+      "path": "/tmp/edhr-save-qa-import.log",
+      "sha256": "5c3c04001d218e3bb7d6943110073ddab8fbff836555be3c636b843942ea718a",
+      "bytes": 1265
+    },
+    {
+      "path": "/tmp/edhr-save-qa-import/result.json",
+      "sha256": "119c7ee224c6e06c07f645890947fcc3e7b50a05ad61b1884537d71052f263f5",
+      "bytes": 59176
+    },
+    {
+      "path": "/tmp/edhr-save-qa-inspection.json",
+      "sha256": "29dfce91f0f7e55d916898a1486997901873e7592e4eff1958947479a6273f35",
+      "bytes": 5863
+    },
+    {
+      "path": "/tmp/edhr-save-qa-inventory.log",
+      "sha256": "5c23dcb09d498ffac17b13162facbc0b49afadb8bb06d7a558a9ac14eb9e22c8",
+      "bytes": 933
+    },
+    {
+      "path": "/tmp/edhr-save-qa-knowledge.log",
+      "sha256": "149753e3eaa383ddef76462e3ecda5448840cce9d93d7537c81550977d0ce8c7",
+      "bytes": 2112
+    },
+    {
+      "path": "/tmp/edhr-save-qa-lint.log",
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389",
+      "bytes": 819
+    },
+    {
+      "path": "/tmp/edhr-save-qa-narrow.log",
+      "sha256": "ba16ad784221eb7bf2ec3b4f7d2468a146e575aa4c1c94a07910488a996c8c07",
+      "bytes": 1187
+    },
+    {
+      "path": "/tmp/edhr-save-qa-narrow/catalog-failure-retry.png",
+      "sha256": "4d23db898a1b70e82659907df625feefdf2148891fef098f265ec5ab079b56d7",
+      "bytes": 38577
+    },
+    {
+      "path": "/tmp/edhr-save-qa-narrow/late-ack-after-reopen.png",
+      "sha256": "22f7b31a42f156afacf72d612461e816c2f0cdfb00cda0dcca12eb7366572057",
+      "bytes": 38746
+    },
+    {
+      "path": "/tmp/edhr-save-qa-narrow/result.json",
+      "sha256": "1cae55a4961df2c851218e01179d296abe75de17b6e0194117ea641395e509b4",
+      "bytes": 38483
+    },
+    {
+      "path": "/tmp/edhr-save-qa-node.log",
+      "sha256": "9f7902efb4633b976ec73f1a374af20a7d2a3137638eb6eed2045d08855c14b9",
+      "bytes": 4049
+    },
+    {
+      "path": "/tmp/edhr-save-qa-save.json",
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab",
+      "bytes": 1868
+    },
+    {
+      "path": "/tmp/edhr-save-qa-save.log",
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab",
+      "bytes": 1868
+    },
+    {
+      "path": "/tmp/edhr-save-qa-static-comparison.json",
+      "sha256": "57a11a678b9e23ad43c23ae5ea06c47db5dd13d18a4560d51de99bb4584eb110",
+      "bytes": 658
+    },
+    {
+      "path": "/tmp/edhr-save-qa-static.json",
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856",
+      "bytes": 7625
+    },
+    {
+      "path": "/tmp/edhr-save-qa-verifier.log",
+      "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77",
+      "bytes": 38
+    }
+  ],
+  "browserSummary": {
+    "uniqueCases": 13,
+    "viewports": [
+      1440,
+      390
+    ],
+    "passedEach": 13,
+    "baselineProductRed": 7,
+    "baselinePositiveControls": 6,
+    "fixtureBlocked": 0,
+    "boundary": "Real Shell/CanvasTab/store/useProjectionCatalog and controlled HTTP GET; host props/open/save callbacks and finally observer; host saving=false; no production parent URL/toast/pending availability or backend persistence certification."
+  },
+  "unitSummary": {
+    "tests": 35,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "saveSummary": {
+    "passedRuns": 9,
+    "includesWidthVariants": true,
+    "controlledSaveCallback": true
+  },
+  "importSummary": {
+    "passedCases": 15,
+    "viewport": 1440,
+    "actualParsers": true
+  },
+  "knowledgeSummary": {
+    "structuralTests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "semanticIdsRechecked": 7,
+    "consistentWithinScope": 6,
+    "retainedGap": 1,
+    "newUniqueSemanticIds": 0
+  },
+  "visualInspection": {
+    "viewedWithViewImage": [
+      "/tmp/edhr-save-qa-desktop/same-context-latest-edit.png",
+      "/tmp/edhr-save-qa-narrow/late-ack-after-reopen.png",
+      "/tmp/edhr-save-qa-narrow/catalog-failure-retry.png"
+    ],
+    "observed": "Controls remain existing MUI style; current editing text and save state retained. 390 has existing header/canvas/side-panel clipping; no full responsive/a11y claim."
+  },
+  "inspection": "/tmp/edhr-save-qa-inspection.json",
+  "staticSummary": {
+    "baselineEvidence": "docs/development/branch-review-20261028-designer-import/evidence/independent-static.json",
+    "baselineTestedCommit": "55461b8d3a11c757471ae891564c13a4393f9fd7",
+    "currentBaseCommit": "72fad6488a66561a698c11c5bcfd411fad13c8ca",
+    "bothSrcTree": "4a3a78975dda6695ba168bc3288e1bce30354fa4",
+    "baselineReexecuted": false,
+    "sameSrcTreeIndependentlyVerified": true,
+    "candidateReexecuted": true,
+    "baselineFindings": 19,
+    "candidateFindings": 19,
+    "sameNormalizedMultiset": true,
+    "baselineExitCode": 2,
+    "candidateExitCode": 2,
+    "localOfficialScriptSha256": "b56ca0495ace4aaac2bfa779dc707b04baab0f7d4537e6856b6348c63230661c"
+  },
+  "didNotExecute": [
+    "native PG/backend persistence",
+    "actual TemplateModelingPage mutation URL/toast E2E",
+    "complete autoSave/main concurrency",
+    "heap/capacity experiment",
+    "physical file chooser/device matrix",
+    "GitHub ruleset verification",
+    "baseline strict reexecution (same src tree independently checked before inheritance)"
+  ],
+  "repositoryMutation": false,
+  "subagentsSpawned": [],
+  "cleanup": "All three new harness host.json directories verified absent; rebuilt inventory exact self-owned directory removed; browser scripts close their own resources in finally."
+}

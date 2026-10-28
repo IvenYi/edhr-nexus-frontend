@@ -1,0 +1,175 @@
+{
+  "status": "passed",
+  "baseCommit": "72fad6488a66561a698c11c5bcfd411fad13c8ca",
+  "testedCommit": "5009bfe3cf695debf18a616db464835685f3b2f6",
+  "requiredChecks": 14,
+  "passedRequiredChecks": 14,
+  "codeAndTestsFrozen": true,
+  "afterTestedCommitPolicy": "Only L0 evidence/acceptance/scope/PR registration; no product/test/knowledge changes.",
+  "allRolesFinal": true,
+  "scopeReviewCommunicatedBeforePr": true,
+  "findings": [
+    {
+      "id": "W2-SAVE-EDITOR-CONTEXT-001",
+      "severity": "high",
+      "status": "resolved"
+    }
+  ],
+  "ontology": {
+    "result": "not-applicable",
+    "status": "FINAL",
+    "reviewedExistingIds": 7,
+    "consistentWithinScope": 6,
+    "retainedGap": 1,
+    "newUniqueSemanticIds": 0
+  },
+  "validation": {
+    "browserUniqueCases": 13,
+    "viewports": [
+      1440,
+      390
+    ],
+    "baselineRed": 7,
+    "baselinePositive": 6,
+    "nodePassed": 35,
+    "existingSaveBrowserRunsIncludingWidthVariants": 9,
+    "importRegressionCases": 15,
+    "importRegressionViewport": 1440,
+    "knowledgeStructuralPassed": 89,
+    "build": "passed",
+    "designerVerifier": "passed"
+  },
+  "blockingConditions": [],
+  "remaining": [
+    {
+      "id": "residual.global-quality",
+      "description": "strict既有19项和lint配置仍未通过；不是本批新缺陷。",
+      "impact": "全局质量债继续存在。",
+      "mitigation": "保持原件和实际exit2，不把本批passed当全项目green。"
+    },
+    {
+      "id": "residual.production-parent-boundary",
+      "description": "宿主saving=false隔离Shell状态，实际父页mutation URL、pending可用性、toast及后台持久化未运行。",
+      "impact": "不能由callback证明生产父页并发或请求撤销。",
+      "mitigation": "保留源码边界，后续真实父页HTTP和autoSave/main矩阵独立审查。"
+    },
+    {
+      "id": "residual.performance-structure",
+      "description": "JSON物化性能/提取建议仅源码，未测堆/容量或实施优化。",
+      "impact": "不构成性能故障或容量认证。",
+      "mitigation": "保留3子树与50历史引用/结构共享反证，测后讨论。"
+    },
+    {
+      "id": "residual.visual-coverage",
+      "description": "390仍有header/canvas/sidebar裁切。",
+      "impact": "测试通过不代表完整响应式或无障碍。",
+      "mitigation": "保留真实截图，单独设计/验证。"
+    },
+    {
+      "id": "residual.overall-deferred",
+      "description": "整体W0-W7、非拖动、TaskDetail/生产弹窗/记录控制与DHR high/A12、四旧gap及试用gap仍保留。",
+      "impact": "不得扩大本批关闭范围。",
+      "mitigation": "按台账继续W3/W4及未审范围，不合并/部署/恢复历史。"
+    }
+  ],
+  "archive": [
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/quality-result.yaml",
+      "originalPath": "/tmp/edhr-save-context-quality-result.yaml",
+      "sha256": "f694b84797168db56856d01372925c3eae60f9467bc87346374077a5238278fe"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/quality-review.md",
+      "originalPath": "/tmp/edhr-save-context-quality-review.md",
+      "sha256": "81243722b6b5e1bdfa7a14af51ad304acfbb7f60dfbf609a95acbb91eda9db0e"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-evidence.json",
+      "originalPath": "/tmp/edhr-save-context-independent-evidence.json",
+      "sha256": "14ce7d9559e57e0ef16292e5a227dfdb4a37a126f7955a2a9d8ff04f6817e25b"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-browser-baseline.json",
+      "originalPath": "/tmp/edhr-save-qa-baseline/result.json",
+      "sha256": "1e3592cbfbf8bb3aafc96a1369f80f4587f1547ae465866fd29c9e9dd853063d"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-browser-desktop.json",
+      "originalPath": "/tmp/edhr-save-qa-desktop/result.json",
+      "sha256": "425d8f2ce0b17812871c3926790b0329cacdfa7eb9498b6a28926c8d03455802"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-browser-narrow.json",
+      "originalPath": "/tmp/edhr-save-qa-narrow/result.json",
+      "sha256": "1cae55a4961df2c851218e01179d296abe75de17b6e0194117ea641395e509b4"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-save.json",
+      "originalPath": "/tmp/edhr-save-qa-save.json",
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-import.json",
+      "originalPath": "/tmp/edhr-save-qa-import/result.json",
+      "sha256": "119c7ee224c6e06c07f645890947fcc3e7b50a05ad61b1884537d71052f263f5"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-inspection.json",
+      "originalPath": "/tmp/edhr-save-qa-inspection.json",
+      "sha256": "29dfce91f0f7e55d916898a1486997901873e7592e4eff1958947479a6273f35"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-static-comparison.json",
+      "originalPath": "/tmp/edhr-save-qa-static-comparison.json",
+      "sha256": "57a11a678b9e23ad43c23ae5ea06c47db5dd13d18a4560d51de99bb4584eb110"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-static.json",
+      "originalPath": "/tmp/edhr-save-qa-static.json",
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-node.txt",
+      "originalPath": "/tmp/edhr-save-qa-node.log",
+      "sha256": "9f7902efb4633b976ec73f1a374af20a7d2a3137638eb6eed2045d08855c14b9"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-build.txt",
+      "originalPath": "/tmp/edhr-save-qa-build.log",
+      "sha256": "93ef9949d3510326d008cb5daea4a9b0b814b3569a3a81a2feca6e13b6f0f7f7"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-verifier.txt",
+      "originalPath": "/tmp/edhr-save-qa-verifier.log",
+      "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-knowledge.txt",
+      "originalPath": "/tmp/edhr-save-qa-knowledge.log",
+      "sha256": "149753e3eaa383ddef76462e3ecda5448840cce9d93d7537c81550977d0ce8c7"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-lint.txt",
+      "originalPath": "/tmp/edhr-save-qa-lint.log",
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/independent-narrow-reopen.png",
+      "originalPath": "/tmp/edhr-save-qa-narrow/late-ack-after-reopen.png",
+      "sha256": "22f7b31a42f156afacf72d612461e816c2f0cdfb00cda0dcca12eb7366572057"
+    }
+  ],
+  "cleanup": {
+    "databasesCreated": false,
+    "browserHosts": "All owned browser/contexts/servers and temporary hosts closed in finally. QA rebuilt inventory removed by exact owned path.",
+    "noMergeDeploymentOrHistoricalDataRestoration": true
+  },
+  "pullRequest": {
+    "number": 40,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/40",
+    "headBranch": "audit/edhr-dev-designer-save-context-20261028",
+    "baseBranch": "edhr-dev",
+    "statusAtRegistration": "open-awaiting-manual-merge",
+    "createdAtHead": "7e8209b591cf0c37f0ee8b197b0e9c3b75c7cb36"
+  }
+}

@@ -1,0 +1,689 @@
+{
+  "sourceCommit": "72fad6488a66561a698c11c5bcfd411fad13c8ca",
+  "workingTreeState": " M gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx\n?? docs/development/branch-review-20261028-designer-save-context/\n?? gmp-platform/frontend/scripts/test-designer-save-context-browser.mjs\n",
+  "baselineSourceCommit": null,
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "boundary": "Actual Shell/CanvasTab/store/useProjectionCatalog and controlled HTTP GET; transparent handleSave finally observer. Host props/open and save callback completion controlled, not actual TemplateModelingPage mutation URLs/toasts, backend persistence or physical-device certification.",
+  "results": [
+    {
+      "name": "catalog-version-switch",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "46e5f317b804495855f74ab74e992417ca314dafdf2c693ed604a43bca7340b3",
+            "savedSnapshotSha256": "c2d0723630cedc494748d7e48d2e061ad801b378015791b65454c6667425b7b7",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "ba6c9e42aaacf94c576b111486c1e625a54bd3060ac803c29909ba43fd4b9e8f",
+            "savedSnapshotSha256": "d8c691b8a92d4c51f498facee1682e83b90e3b33fdae6fcad690e9fc5bed00a0",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-B",
+            "text": "原稿B"
+          },
+          "saves": []
+        }
+      ],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "catalog-switch-back",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "bd482ea2aea582f40cd1b7166aeec6a4045b606efda2fe4e87817790d894f5df",
+            "savedSnapshotSha256": "4f13f6766f926cb9418f9c73a56439ea20216f6d059c7a58998475875f3bc574",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "bd482ea2aea582f40cd1b7166aeec6a4045b606efda2fe4e87817790d894f5df",
+            "savedSnapshotSha256": "4f13f6766f926cb9418f9c73a56439ea20216f6d059c7a58998475875f3bc574",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          },
+          "saves": []
+        }
+      ],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "catalog-close-reopen",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "f5fa407f104d17f6827159845593afcc03f58de5861e1d169bc6384955d4094b",
+            "savedSnapshotSha256": "a42f525c4595b4799b87be3b9270d7129bc9c19fc82e33c4be4349b50a26f019",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "f5fa407f104d17f6827159845593afcc03f58de5861e1d169bc6384955d4094b",
+            "savedSnapshotSha256": "a42f525c4595b4799b87be3b9270d7129bc9c19fc82e33c4be4349b50a26f019",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          },
+          "saves": []
+        }
+      ],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "catalog-stale-error",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "c7f5781b5d5866bc600cda90958b8314ca0ec5223ee4eda810e574f6ef01533c",
+            "savedSnapshotSha256": "189354090aa6e9a65ba966b10452483e538554830acc430a6ec8f862410268fa",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "b9b8c0cc780ce86344e5dee2ab6e23ce8234e305ac46324bae99e1d241530908",
+            "savedSnapshotSha256": "d05d30e3f36fb95a9a530be936b4a0f53ffb09d3ecd7925469262d481583eaf4",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-B",
+            "text": "原稿B"
+          },
+          "saves": []
+        }
+      ],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "same-context-latest-edit",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "25cb4cf848f6cd56c6f5c67ee786890618fa00a29d245033fda4818ac7517cd0",
+            "savedSnapshotSha256": "ca90c2c9cdc9e572a168e31e526cd3178b43ce4ed4792fa640fd9831460a5fec",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "2d9fa088cad6285ffa85d27ee95124318b13041049fef272a38d3cbedf8affea",
+            "savedSnapshotSha256": "45357f646b3dceaaba9e731e3dd86276313ac0b97bb6b26ed45e378965bb2856",
+            "undoSha256": "7662b9aac8382a3281cd8395bf55d8c0c8567eef9b349adc95ff9002ccc151a1",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "目录等待时的新内容"
+          },
+          "saves": [
+            {
+              "target": "version-A",
+              "payload": {
+                "modelDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"groups\":[{\"id\":\"default-group\",\"name\":\"默认分组\"}],\"fields\":[{\"id\":\"field-bdd1753b-121f-4cc6-8a19-b0c5a577fb79\",\"code\":\"text\",\"name\":\"标识字段\",\"type\":\"text\",\"groupId\":\"default-group\",\"sortOrder\":1,\"status\":\"enabled\",\"description\":\"\",\"typeConfig\":{\"textMode\":\"short\"}}],\"fieldReportColumnWidths\":{},\"projection\":{\"version\":\"form-projection-v1\",\"bindings\":[{\"id\":\"lookup\",\"modelId\":\"formTrace\",\"enabled\":true,\"sources\":{\"lookup_fixture\":\"field-bdd1753b-121f-4cc6-8a19-b0c5a577fb79\"}}]}}}",
+                "canvasDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"pages\":[{\"id\":\"page-1\",\"name\":\"页面 1\",\"nodes\":[],\"sheet\":{\"rowCount\":5,\"columnCount\":4,\"defaultRowHeight\":36,\"defaultColumnWidth\":98,\"rowHeights\":[36,36,36,36,36],\"columnWidths\":[84,84,84,84],\"showGridLines\":true,\"showHeader\":false,\"showFooter\":false,\"showRuler\":false,\"canvasMode\":\"sheet\",\"paperMode\":\"table\",\"paperOrientation\":\"portrait\",\"paperMarginTopMm\":5,\"paperMarginRightMm\":6,\"paperMarginBottomMm\":6,\"paperMarginLeftMm\":6,\"importedGridTop\":0},\"cells\":{\"1:1\":{\"value\":\"目录等待时的新内容\"}},\"mergedCells\":[],\"medias\":[],\"images\":[]}],\"currentPageId\":\"page-1\"}}",
+                "workflowDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"nodes\":[],\"edges\":[],\"config\":{}}}"
+              }
+            }
+          ]
+        }
+      ],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "catalog-failure-retry",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "f6b1732c370713662358f06e34ce3972d3914f2afb71ed902a72a937b0b85c04",
+            "savedSnapshotSha256": "8ad9c6a75fb380b8b3f435ef8f1d1df5c8c1f17294ed3e8f64a367ea3367d24d",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "f6b1732c370713662358f06e34ce3972d3914f2afb71ed902a72a937b0b85c04",
+            "savedSnapshotSha256": "8ad9c6a75fb380b8b3f435ef8f1d1df5c8c1f17294ed3e8f64a367ea3367d24d",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          },
+          "saves": [
+            {
+              "target": "version-A",
+              "payload": {
+                "modelDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"groups\":[{\"id\":\"default-group\",\"name\":\"默认分组\"}],\"fields\":[{\"id\":\"field-d3a2f174-02e6-4feb-b4ab-416974f46b14\",\"code\":\"text\",\"name\":\"标识字段\",\"type\":\"text\",\"groupId\":\"default-group\",\"sortOrder\":1,\"status\":\"enabled\",\"description\":\"\",\"typeConfig\":{\"textMode\":\"short\"}}],\"fieldReportColumnWidths\":{},\"projection\":{\"version\":\"form-projection-v1\",\"bindings\":[{\"id\":\"lookup\",\"modelId\":\"formTrace\",\"enabled\":true,\"sources\":{\"lookup_fixture\":\"field-d3a2f174-02e6-4feb-b4ab-416974f46b14\"}}]}}}",
+                "canvasDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"pages\":[{\"id\":\"page-1\",\"name\":\"页面 1\",\"nodes\":[],\"sheet\":{\"rowCount\":5,\"columnCount\":4,\"defaultRowHeight\":36,\"defaultColumnWidth\":98,\"rowHeights\":[36,36,36,36,36],\"columnWidths\":[84,84,84,84],\"showGridLines\":true,\"showHeader\":false,\"showFooter\":false,\"showRuler\":false,\"canvasMode\":\"sheet\",\"paperMode\":\"table\",\"paperOrientation\":\"portrait\",\"paperMarginTopMm\":5,\"paperMarginRightMm\":6,\"paperMarginBottomMm\":6,\"paperMarginLeftMm\":6,\"importedGridTop\":0},\"cells\":{\"1:1\":{\"value\":\"原稿A\"}},\"mergedCells\":[],\"medias\":[],\"images\":[]}],\"currentPageId\":\"page-1\"}}",
+                "workflowDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"nodes\":[],\"edges\":[],\"config\":{}}}"
+              }
+            }
+          ]
+        }
+      ],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "invalid-config-blocks",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "9d5cbbdd38923f3c9acf189961f27a9211fb94277abbcbbadaf25d7cb5ebf7e3",
+            "savedSnapshotSha256": "5a4619ce8b62d1b8e468b6b1dc7b28b7818a3c4ea4a99e333e06a3be1123d6c2",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "8f696fe137018fd18f8a45a8752627e2005e3a813a6ef31aeccbe39723eccb0e",
+            "savedSnapshotSha256": "4720b8aeaa179b5322c03fb9385350929f0873d7fac453aab4f1f5ae9663bfbe",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-C",
+            "text": "原稿C"
+          },
+          "saves": []
+        }
+      ],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "old-completion-keeps-new-busy",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "f585ff437a4bd3082d0966a32243259f116057c325a980b6b6a6d4615027b2a4",
+            "savedSnapshotSha256": "573ccc9d7e6953a22f153c876867beb91517d39d4d1b3c91db6024ca84efeb3c",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "395014cbed8c724cad8017440c757fcbccddc439e7a254b8a50c7dda8b52b18c",
+            "savedSnapshotSha256": "60dfa62b810365cac7503880a57de0d4d369351cc86750e14572c7d15e7db08e",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-B",
+            "text": "原稿B"
+          },
+          "saves": [
+            {
+              "target": "version-A",
+              "payload": {
+                "modelDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"groups\":[{\"id\":\"default-group\",\"name\":\"默认分组\"}],\"fields\":[{\"id\":\"field-82cbe84a-7c8b-41a3-9062-29e952c536ed\",\"code\":\"text\",\"name\":\"标识字段\",\"type\":\"text\",\"groupId\":\"default-group\",\"sortOrder\":1,\"status\":\"enabled\",\"description\":\"\",\"typeConfig\":{\"textMode\":\"short\"}}],\"fieldReportColumnWidths\":{},\"projection\":{\"version\":\"form-projection-v1\",\"bindings\":[{\"id\":\"lookup\",\"modelId\":\"formTrace\",\"enabled\":true,\"sources\":{\"lookup_fixture\":\"field-82cbe84a-7c8b-41a3-9062-29e952c536ed\"}}]}}}",
+                "canvasDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"pages\":[{\"id\":\"page-1\",\"name\":\"页面 1\",\"nodes\":[],\"sheet\":{\"rowCount\":5,\"columnCount\":4,\"defaultRowHeight\":36,\"defaultColumnWidth\":98,\"rowHeights\":[36,36,36,36,36],\"columnWidths\":[84,84,84,84],\"showGridLines\":true,\"showHeader\":false,\"showFooter\":false,\"showRuler\":false,\"canvasMode\":\"sheet\",\"paperMode\":\"table\",\"paperOrientation\":\"portrait\",\"paperMarginTopMm\":5,\"paperMarginRightMm\":6,\"paperMarginBottomMm\":6,\"paperMarginLeftMm\":6,\"importedGridTop\":0},\"cells\":{\"1:1\":{\"value\":\"原稿A\"}},\"mergedCells\":[],\"medias\":[],\"images\":[]}],\"currentPageId\":\"page-1\"}}",
+                "workflowDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"nodes\":[],\"edges\":[],\"config\":{}}}"
+              }
+            },
+            {
+              "target": "version-B",
+              "payload": {
+                "modelDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"groups\":[{\"id\":\"default-group\",\"name\":\"默认分组\"}],\"fields\":[{\"id\":\"field-3c3ecadd-2bfc-4404-98fe-ec8b9c922f87\",\"code\":\"text\",\"name\":\"标识字段\",\"type\":\"text\",\"groupId\":\"default-group\",\"sortOrder\":1,\"status\":\"enabled\",\"description\":\"\",\"typeConfig\":{\"textMode\":\"short\"}}],\"fieldReportColumnWidths\":{},\"projection\":{\"version\":\"form-projection-v1\",\"bindings\":[{\"id\":\"lookup\",\"modelId\":\"formTrace\",\"enabled\":true,\"sources\":{\"lookup_fixture\":\"field-3c3ecadd-2bfc-4404-98fe-ec8b9c922f87\"}}]}}}",
+                "canvasDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"pages\":[{\"id\":\"page-1\",\"name\":\"页面 1\",\"nodes\":[],\"sheet\":{\"rowCount\":5,\"columnCount\":4,\"defaultRowHeight\":36,\"defaultColumnWidth\":98,\"rowHeights\":[36,36,36,36,36],\"columnWidths\":[84,84,84,84],\"showGridLines\":true,\"showHeader\":false,\"showFooter\":false,\"showRuler\":false,\"canvasMode\":\"sheet\",\"paperMode\":\"table\",\"paperOrientation\":\"portrait\",\"paperMarginTopMm\":5,\"paperMarginRightMm\":6,\"paperMarginBottomMm\":6,\"paperMarginLeftMm\":6,\"importedGridTop\":0},\"cells\":{\"1:1\":{\"value\":\"原稿B\"}},\"mergedCells\":[],\"medias\":[],\"images\":[]}],\"currentPageId\":\"page-1\"}}",
+                "workflowDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"nodes\":[],\"edges\":[],\"config\":{}}}"
+              }
+            }
+          ]
+        }
+      ],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "late-ack-after-reopen",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "0a410f2528c19ea0f3e1d9107938dd67dc140df0e91ff70d6d2c38370e81e551",
+            "savedSnapshotSha256": "4eae8c2048eb450600d9eba0033e5913dc7f6f6de0dc8892803ede63623f2237",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "0a410f2528c19ea0f3e1d9107938dd67dc140df0e91ff70d6d2c38370e81e551",
+            "savedSnapshotSha256": "4eae8c2048eb450600d9eba0033e5913dc7f6f6de0dc8892803ede63623f2237",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          },
+          "saves": [
+            {
+              "target": "version-A",
+              "payload": {
+                "modelDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"groups\":[{\"id\":\"default-group\",\"name\":\"默认分组\"}],\"fields\":[{\"id\":\"field-8eba9fca-deb3-4332-b4cf-6968a07e4bb1\",\"code\":\"text\",\"name\":\"标识字段\",\"type\":\"text\",\"groupId\":\"default-group\",\"sortOrder\":1,\"status\":\"enabled\",\"description\":\"\",\"typeConfig\":{\"textMode\":\"short\"}}],\"fieldReportColumnWidths\":{},\"projection\":{\"version\":\"form-projection-v1\",\"bindings\":[{\"id\":\"lookup\",\"modelId\":\"formTrace\",\"enabled\":true,\"sources\":{\"lookup_fixture\":\"field-8eba9fca-deb3-4332-b4cf-6968a07e4bb1\"}}]}}}",
+                "canvasDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"pages\":[{\"id\":\"page-1\",\"name\":\"页面 1\",\"nodes\":[],\"sheet\":{\"rowCount\":5,\"columnCount\":4,\"defaultRowHeight\":36,\"defaultColumnWidth\":98,\"rowHeights\":[36,36,36,36,36],\"columnWidths\":[84,84,84,84],\"showGridLines\":true,\"showHeader\":false,\"showFooter\":false,\"showRuler\":false,\"canvasMode\":\"sheet\",\"paperMode\":\"table\",\"paperOrientation\":\"portrait\",\"paperMarginTopMm\":5,\"paperMarginRightMm\":6,\"paperMarginBottomMm\":6,\"paperMarginLeftMm\":6,\"importedGridTop\":0},\"cells\":{\"1:1\":{\"value\":\"已经发送的A稿\"}},\"mergedCells\":[],\"medias\":[],\"images\":[]}],\"currentPageId\":\"page-1\"}}",
+                "workflowDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"nodes\":[],\"edges\":[],\"config\":{}}}"
+              }
+            }
+          ]
+        }
+      ],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "normal-save-clean",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "d2e6a768c2065aeb7d96df75a4536907f993385bd75495fd9d436df8de33b9e7",
+            "savedSnapshotSha256": "b883daf0910237f2284b4bf4279feecccf902b20c3aa9cb551884d0417fdd83e",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "44ecc35576de806ea2a34dacf2d3f876c856e0a8842dd908f84767ffd50269f0",
+            "savedSnapshotSha256": "147849e0f5d22d180f35314dc79ba35a3a200f9e4149800cd2dce5d963a97cd6",
+            "undoSha256": "30eaf0bd0819a322e506b679da5375c95f78e3312ced0547488ad460f335a7e7",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "正常保存内容"
+          },
+          "saves": [
+            {
+              "target": "version-A",
+              "payload": {
+                "modelDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"groups\":[{\"id\":\"default-group\",\"name\":\"默认分组\"}],\"fields\":[{\"id\":\"field-748f3110-16a3-442e-8eb4-ad9d9114d804\",\"code\":\"text\",\"name\":\"标识字段\",\"type\":\"text\",\"groupId\":\"default-group\",\"sortOrder\":1,\"status\":\"enabled\",\"description\":\"\",\"typeConfig\":{\"textMode\":\"short\"}}],\"fieldReportColumnWidths\":{},\"projection\":{\"version\":\"form-projection-v1\",\"bindings\":[{\"id\":\"lookup\",\"modelId\":\"formTrace\",\"enabled\":true,\"sources\":{\"lookup_fixture\":\"field-748f3110-16a3-442e-8eb4-ad9d9114d804\"}}]}}}",
+                "canvasDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"pages\":[{\"id\":\"page-1\",\"name\":\"页面 1\",\"nodes\":[],\"sheet\":{\"rowCount\":5,\"columnCount\":4,\"defaultRowHeight\":36,\"defaultColumnWidth\":98,\"rowHeights\":[36,36,36,36,36],\"columnWidths\":[84,84,84,84],\"showGridLines\":true,\"showHeader\":false,\"showFooter\":false,\"showRuler\":false,\"canvasMode\":\"sheet\",\"paperMode\":\"table\",\"paperOrientation\":\"portrait\",\"paperMarginTopMm\":5,\"paperMarginRightMm\":6,\"paperMarginBottomMm\":6,\"paperMarginLeftMm\":6,\"importedGridTop\":0},\"cells\":{\"1:1\":{\"value\":\"正常保存内容\"}},\"mergedCells\":[],\"medias\":[],\"images\":[]}],\"currentPageId\":\"page-1\"}}",
+                "workflowDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"nodes\":[],\"edges\":[],\"config\":{}}}"
+              }
+            }
+          ]
+        }
+      ],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "edit-after-send-remains-dirty",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "8b9f04415027893f914778b79fb0b624210e39452af0dd1e01a19578e548249f",
+            "savedSnapshotSha256": "b012e3287476dfc910e5fa8c0a532fc71ab2a8b392c5e242b6750440692a2385",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "d593371814a4f4bad16d0c7f73be48d427d1b3c1e77507687dd71281b5d22fc8",
+            "savedSnapshotSha256": "b012e3287476dfc910e5fa8c0a532fc71ab2a8b392c5e242b6750440692a2385",
+            "undoSha256": "19493587a1c2cebf435a4257470a87eb33026a3e9cf2e4aefd071825a89f2062",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": true,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "发送后的新修改"
+          },
+          "saves": [
+            {
+              "target": "version-A",
+              "payload": {
+                "modelDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"groups\":[{\"id\":\"default-group\",\"name\":\"默认分组\"}],\"fields\":[{\"id\":\"field-317d4ef7-a21f-4e8e-8b85-af34cad6aeae\",\"code\":\"text\",\"name\":\"标识字段\",\"type\":\"text\",\"groupId\":\"default-group\",\"sortOrder\":1,\"status\":\"enabled\",\"description\":\"\",\"typeConfig\":{\"textMode\":\"short\"}}],\"fieldReportColumnWidths\":{},\"projection\":{\"version\":\"form-projection-v1\",\"bindings\":[{\"id\":\"lookup\",\"modelId\":\"formTrace\",\"enabled\":true,\"sources\":{\"lookup_fixture\":\"field-317d4ef7-a21f-4e8e-8b85-af34cad6aeae\"}}]}}}",
+                "canvasDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"pages\":[{\"id\":\"page-1\",\"name\":\"页面 1\",\"nodes\":[],\"sheet\":{\"rowCount\":5,\"columnCount\":4,\"defaultRowHeight\":36,\"defaultColumnWidth\":98,\"rowHeights\":[36,36,36,36,36],\"columnWidths\":[84,84,84,84],\"showGridLines\":true,\"showHeader\":false,\"showFooter\":false,\"showRuler\":false,\"canvasMode\":\"sheet\",\"paperMode\":\"table\",\"paperOrientation\":\"portrait\",\"paperMarginTopMm\":5,\"paperMarginRightMm\":6,\"paperMarginBottomMm\":6,\"paperMarginLeftMm\":6,\"importedGridTop\":0},\"cells\":{\"1:1\":{\"value\":\"原稿A\"}},\"mergedCells\":[],\"medias\":[],\"images\":[]}],\"currentPageId\":\"page-1\"}}",
+                "workflowDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"nodes\":[],\"edges\":[],\"config\":{}}}"
+              }
+            }
+          ]
+        }
+      ],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "same-event-double-click",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "302db1c7d7a91e2a895890a866ede5db685022678abe26fa03c48b9a7aa0bde7",
+            "savedSnapshotSha256": "f16b2ca843c966e3aa563e4d5bb367d7fedc5636f367979b4a03d2575113c48f",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "302db1c7d7a91e2a895890a866ede5db685022678abe26fa03c48b9a7aa0bde7",
+            "savedSnapshotSha256": "f16b2ca843c966e3aa563e4d5bb367d7fedc5636f367979b4a03d2575113c48f",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          },
+          "saves": [
+            {
+              "target": "version-A",
+              "payload": {
+                "modelDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"groups\":[{\"id\":\"default-group\",\"name\":\"默认分组\"}],\"fields\":[{\"id\":\"field-8bdaead4-bf70-4313-9f28-b8fb5a673c6a\",\"code\":\"text\",\"name\":\"标识字段\",\"type\":\"text\",\"groupId\":\"default-group\",\"sortOrder\":1,\"status\":\"enabled\",\"description\":\"\",\"typeConfig\":{\"textMode\":\"short\"}}],\"fieldReportColumnWidths\":{},\"projection\":{\"version\":\"form-projection-v1\",\"bindings\":[{\"id\":\"lookup\",\"modelId\":\"formTrace\",\"enabled\":true,\"sources\":{\"lookup_fixture\":\"field-8bdaead4-bf70-4313-9f28-b8fb5a673c6a\"}}]}}}",
+                "canvasDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"pages\":[{\"id\":\"page-1\",\"name\":\"页面 1\",\"nodes\":[],\"sheet\":{\"rowCount\":5,\"columnCount\":4,\"defaultRowHeight\":36,\"defaultColumnWidth\":98,\"rowHeights\":[36,36,36,36,36],\"columnWidths\":[84,84,84,84],\"showGridLines\":true,\"showHeader\":false,\"showFooter\":false,\"showRuler\":false,\"canvasMode\":\"sheet\",\"paperMode\":\"table\",\"paperOrientation\":\"portrait\",\"paperMarginTopMm\":5,\"paperMarginRightMm\":6,\"paperMarginBottomMm\":6,\"paperMarginLeftMm\":6,\"importedGridTop\":0},\"cells\":{\"1:1\":{\"value\":\"原稿A\"}},\"mergedCells\":[],\"medias\":[],\"images\":[]}],\"currentPageId\":\"page-1\"}}",
+                "workflowDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"nodes\":[],\"edges\":[],\"config\":{}}}"
+              }
+            }
+          ]
+        }
+      ],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "cancel-close-prompt",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "22edd797486861fa4163a63638bc0d836f068b1d79c8175a13302a4137cd1690",
+            "savedSnapshotSha256": "17affbb9206dbf2756c7ae2983d786a957602239061eb328642a0e5aa251740e",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "原稿A"
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "0278d22bcd2465603a8072ef62d2621da25f29981560918793a4cee28a819f76",
+            "savedSnapshotSha256": "ec362034f597028b7734055bb142d5e1b48132d01f27215c9ac19f2b07e0306e",
+            "undoSha256": "26ee9bf5311c9a62936a9050d9a74bf0984ddf9a38cf62143ea01e6d9964539a",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "dirty": false,
+            "activeTab": "canvas",
+            "versionId": "version-A",
+            "text": "未保存内容"
+          },
+          "saves": [
+            {
+              "target": "version-A",
+              "payload": {
+                "modelDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"groups\":[{\"id\":\"default-group\",\"name\":\"默认分组\"}],\"fields\":[{\"id\":\"field-d072ebec-e58e-48cc-b574-69907fda6276\",\"code\":\"text\",\"name\":\"标识字段\",\"type\":\"text\",\"groupId\":\"default-group\",\"sortOrder\":1,\"status\":\"enabled\",\"description\":\"\",\"typeConfig\":{\"textMode\":\"short\"}}],\"fieldReportColumnWidths\":{},\"projection\":{\"version\":\"form-projection-v1\",\"bindings\":[{\"id\":\"lookup\",\"modelId\":\"formTrace\",\"enabled\":true,\"sources\":{\"lookup_fixture\":\"field-d072ebec-e58e-48cc-b574-69907fda6276\"}}]}}}",
+                "canvasDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"pages\":[{\"id\":\"page-1\",\"name\":\"页面 1\",\"nodes\":[],\"sheet\":{\"rowCount\":5,\"columnCount\":4,\"defaultRowHeight\":36,\"defaultColumnWidth\":98,\"rowHeights\":[36,36,36,36,36],\"columnWidths\":[84,84,84,84],\"showGridLines\":true,\"showHeader\":false,\"showFooter\":false,\"showRuler\":false,\"canvasMode\":\"sheet\",\"paperMode\":\"table\",\"paperOrientation\":\"portrait\",\"paperMarginTopMm\":5,\"paperMarginRightMm\":6,\"paperMarginBottomMm\":6,\"paperMarginLeftMm\":6,\"importedGridTop\":0},\"cells\":{\"1:1\":{\"value\":\"未保存内容\"}},\"mergedCells\":[],\"medias\":[],\"images\":[]}],\"currentPageId\":\"page-1\"}}",
+                "workflowDesignJson": "{\"schema\":\"edhr-template-designer-react\",\"version\":1,\"payload\":{\"nodes\":[],\"edges\":[],\"config\":{}}}"
+              }
+            }
+          ]
+        }
+      ],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:45285/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    }
+  ]
+}

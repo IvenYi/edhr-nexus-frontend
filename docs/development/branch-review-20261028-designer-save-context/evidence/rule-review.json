@@ -1,0 +1,205 @@
+{
+  "role": "business-knowledge-modeler",
+  "status": "FINAL",
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "72fad6488a66561a698c11c5bcfd411fad13c8ca",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "72fad6488a66561a698c11c5bcfd411fad13c8ca",
+    "contractReadCommit": "72fad6488a66561a698c11c5bcfd411fad13c8ca",
+    "uncommittedContractPaths": []
+  },
+  "scope": "W2保存目录预检、保存完成和finally的编辑会话技术归属有限复核",
+  "summary": {
+    "knowledgeIdsReviewed": 7,
+    "consistentWithinStatedScope": 6,
+    "retainedEvidenceGap": 1,
+    "newUniqueSemanticIds": 0,
+    "knowledgeChanges": 0,
+    "newBusinessPolicies": 0,
+    "runtimeTestsExecutedByThisRole": 0
+  },
+  "workingTreeEvidence": {
+    "description": "实际读取base上的未提交Shell差异，不把工作树伪装为HEAD；其他相关产品源码只读。",
+    "productHashes": {
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx": "ab4750d0e4509f440aea69bb57da8a44529bd27077b118d6d036f1f81de2a650",
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts": "8e21536a02bc5502ed2c65d70288d38a980b686999d227dc0c687ba72b5d40ab",
+      "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx": "b8b4784a68ca6d71aa3a34d1e1dfb040e452062c963a02358ef6171e16813034",
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts": "41c9d82177d0a03b0babfec20ec6b2295c4aeb9346bf65e7061f4126f30cd31a",
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts": "b6278b838ec15ac02bbbcc283f3bc49d0deecfb9c356d2b80b470e8a0a5fc293"
+    },
+    "knowledgeOrContractChanges": []
+  },
+  "reviews": [
+    {
+      "id": "DEC-0077-12",
+      "path": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "scope": "使用时快照与设计草稿的所有权不变；旧保存预检不构成新编辑会话的保存意图。",
+      "reasonableness": "原始用户明确沿用使用时冻结而非另设投影发布冻结。本补丁不改变模板编辑资格、首次使用配置或历史执行快照。",
+      "sources": [
+        "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md:82-87",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx::handleSave"
+      ],
+      "disposition": "retained",
+      "limit": "本角色只读当前声明、原始来源和相关源码，不认证完整运行或新客户试用；本ID与前批重复，新增唯一语义ID为0。"
+    },
+    {
+      "id": "DEC-0077-22",
+      "path": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "scope": "同画布共享配置、保存与撤销；仅原编辑会话可处理该次保存的本地完成状态。",
+      "reasonableness": "用户接受同级侧栏和共享配置/保存撤销，避免并列配置源。会话token和旧finally保护是工程落实，不改变同会话保存最新内容或已发请求的服务器含义。",
+      "sources": [
+        "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md:337-355",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx::persistCurrentDocument",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts::markSaved"
+      ],
+      "disposition": "retained",
+      "limit": "本角色只读当前声明、原始来源和相关源码，不认证完整运行或新客户试用；本ID与前批重复，新增唯一语义ID为0。"
+    },
+    {
+      "id": "DEC-0080-01",
+      "path": "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "scope": "同稳定字段的各处选项共享，保存会话隔离不改变模型/控件选项定义。",
+      "reasonableness": "原答复只确认必须共用同组选项。旧July阶段非目标不能恢复成当前永久禁止；本次不增删字段定义或重写历史选项。",
+      "sources": [
+        "docs/knowledge/evidence/shared-choice-options-2026-10-18.md:7-20",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx::persistCurrentDocument",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts::serializeTemplateDesignerDocument"
+      ],
+      "disposition": "retained",
+      "limit": "本角色只读当前声明、原始来源和相关源码，不认证完整运行或新客户试用；本ID与前批重复，新增唯一语义ID为0。"
+    },
+    {
+      "id": "term.form-template-field",
+      "path": "docs/knowledge/glossary.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "scope": "字段稳定身份与布局位置分离，不因保存预检或完成回调变成另一字段。",
+      "reasonableness": "共享的字段身份用于权限与合法值解释。修复阻止旧会话继续操作，新载荷仍由原document序列化，不定义新身份或生命周期。",
+      "sources": [
+        "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts::serializeTemplateDesignerDocument"
+      ],
+      "disposition": "retained",
+      "limit": "本角色只读当前声明、原始来源和相关源码，不认证完整运行或新客户试用；本ID与前批重复，新增唯一语义ID为0。"
+    },
+    {
+      "id": "concept.form-template-field",
+      "path": "docs/knowledge/ontology.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "scope": "真实字段概念、词条引用与业务事实含义保留。",
+      "reasonableness": "本次只增加异步会话技术状态；不把busy/token注册为业务概念、事实或运行契约。",
+      "sources": [
+        "docs/knowledge/glossary.yaml",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx::handleSave"
+      ],
+      "disposition": "retained",
+      "limit": "本角色只读当前声明、原始来源和相关源码，不认证完整运行或新客户试用；本ID与前批重复，新增唯一语义ID为0。"
+    },
+    {
+      "id": "scenario.shared-choice-options-single-document-history",
+      "path": "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "scope": "原完整document保存/撤销及已保存快照仍同一所有者；不引入第二套历史。",
+      "reasonableness": "原场景定义完整document单次历史是工程验收边界。本次只控制何时可确认原提交快照，发送后继续编辑应保持dirty；不能以此宣称服务器事务被取消。",
+      "sources": [
+        "docs/knowledge/evidence/shared-choice-options-2026-10-18.md:33-40",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts::markSaved",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts::isDirty",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx::persistCurrentDocument"
+      ],
+      "disposition": "retained",
+      "limit": "本角色只读当前声明、原始来源和相关源码，不认证完整运行或新客户试用；本ID与前批重复，新增唯一语义ID为0。"
+    },
+    {
+      "id": "question.form-projection-sidebar-mode-interaction",
+      "path": "docs/knowledge/open-questions.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "evidence-gap",
+      "provenance": [
+        "user-confirmed",
+        "original-evidence"
+      ],
+      "scope": "客户试用、操作负担及低学习成本证据仍保留缺口。",
+      "reasonableness": "用户已经确认入口组织，但工程异步保护和回归不等于客户易用性试用。不得重复询问已确认入口或宣称该gap关闭。",
+      "sources": [
+        "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md:337-355",
+        "docs/knowledge/open-questions.yaml"
+      ],
+      "disposition": "retained",
+      "limit": "本角色只读当前声明、原始来源和相关源码，不认证完整运行或新客户试用；本ID与前批重复，新增唯一语义ID为0。"
+    }
+  ],
+  "technicalBoundary": [
+    {
+      "scope": "save preflight and local completion",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx::handleSave",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx::persistCurrentDocument",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx::closeDesigner"
+      ],
+      "conclusion": "保存会话对象/busy和异步返回后的身份重核只落实该次操作归属；当前会话继续保留目录、追溯、引用校验、最新文档保存及发送后dirty规则。"
+    },
+    {
+      "scope": "parent mutation and already-sent request",
+      "evidence": [
+        "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx::saveDesignerMutation",
+        "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx::autoSaveDesignerMutation"
+      ],
+      "conclusion": "父页mutationFn从reactDesignerState获取目标，不能只凭Shell旧闭包推断实际URL必定写错A/B。已经发出的请求和父页toast未由本补丁回滚或抑制，真实HTTP目标/后台事务须独立运行证据。"
+    }
+  ],
+  "replacementBoundary": "无业务声明替代、无知识成熟度或版本更新；既有当前定义和历史证据保持。",
+  "uncovered": [
+    "真实父页HTTP目标及后台持久化",
+    "autoSave/main全部并发矩阵",
+    "父页旧toast隔离",
+    "完整目录/引用/追溯运行矩阵",
+    "普通字段非拖动入口",
+    "容量量测/性能方案",
+    "客户试用",
+    "四旧知识gap和原用户暂缓事项"
+  ],
+  "didNotExecute": [
+    "browser",
+    "Node tests",
+    "Maven89",
+    "backend/PG",
+    "build",
+    "performance experiment"
+  ],
+  "newQuestions": []
+}

@@ -1,0 +1,31 @@
+# 保存会话归属发现与剩余范围
+
+固定目标72fad6488a66561a698c11c5bcfd411fad13c8ca，PR39已真实合入且树同d77699cf。原`candidate.designer-save-catalog-context`由源码候选进入实际原hook/HTTP目录等待复现，不重开PR39已验收的导入修复。
+
+本项high已在干净5009bfe3由全新独立实例正式验收，14/14必需检查passed/FINAL，按acceptance resolved。同13场景旧7红6正、修复双宽全过，正常编辑/失败/校验对照保持。后续仅文档归档，不把单根因的7种红例算7项缺陷。
+
+## W2-SAVE-EDITOR-CONTEXT-001 · high
+
+Shell.handleSave等待用途目录后再次读取当前document，却没有确认原编辑上下文是否还存在。切换版本、关闭重开后，旧保存意图可能继续调用持久化回调；旧完成后的清dialog/finally也可能影响新会话。仅比较templateId/versionId无法区分同版本的关闭重开；store.markSaved原保护只比较这两个ID，不能代表编辑会话隔离。
+
+最小修复只改Shell：每次初始化/实际关闭/卸载更换会话对象；保存同步占busy，目录await后、persist完成后及finally都先核对对象；common persist只在原会话确认savedSnapshot。初始化和关闭清本地checking，在原saving prop允许时新会话可保存，旧finally不能解锁新请求。真实父页全局mutation.isPending仍可能暂时禁用新会话按钮，不能把saving=false宿主测试当实际父页并发可用性认证。正常同会话目录等待期间仍采用最新文档并完整校验，提交后编辑仍由原已提交快照决定dirty，关闭确认的继续编辑不使原保存失效。
+
+真实父页TemplateModelingPage的mutationFn读取reactDesignerState，而mutateAsync函数由TanStack维护；不能从Shell旧闭包单独断言实际HTTP目标必然为A或B。本批浏览器宿主记录target和payload以证明旧保存不应继续，但不是原父页HTTP目标/后台持久化认证。已经发送的请求不假称取消或回滚，父页自身成功/错误toast亦不因Shell保护而全部消失；原后台审计和版本规则保持。
+
+同一根因覆盖预检和完成两个阶段，不能按每个红例重复计缺陷。原/新同组浏览器结果、完整document/undo/redo/savedSnapshot/dirty/保存次数及控件忙态证据分别归档。首轮测试启动等待器注册晚造成的夹具等待仅单列，不作为产品红例。
+
+## 有限源码和残余边界
+
+本轮只沿Shell、store.markSaved/isDirty、原serializer、真实父页mutation与宿主挂载、用途query及校验、字段确认持久化和验证对话框核对。没有修改保存资格、引用/追溯规则、模型/画布/流程结构、生产快照、共享选项或历史数据。原Node保存状态测试只覆盖提交后ack规则，不证明目录await及编辑会话保护；本批新增真实目录时序回归。
+
+其他autoSave/main请求并发顺序、实际父页mutation反馈和完整宿主API目标，旧格式/存量JSON、全部验证弹窗状态与权限矩阵仍须分别审查。本批不能外推全W2保存链或整文件完成。
+
+## 性能和拆分建议（未实施）
+
+`PERF-DESIGNER-SAVE-JSON-MATERIALIZATION-001`，source-confirmed/pending-discussion：画布节点/图片编码/页数令当前文档字节D增大。serializer分别stringify model/canvas/workflow三个子树，总量约D而非每份都完整复制D；保存pending还持有提交时document引用，markSaved再生成整文档字符串，isDirty在关闭判断时再stringify当前文档。存在额外分配与同步CPU成本，但本轮没有测峰值、GC或卡顿，不声称每次render都全量序列化。
+
+反证：三个payload各自负责不同子树，history最多50个文档引用且存在结构共享，不能直接算50×D全深拷贝；已有导入300×75网格限制不等于图片/Office输入或最终D受同一大小约束。无此路径SQL，不是N+1查询或SQL循环证据。先用合法多页、宽模型/图片内容记录序列化字节、CPU、分配/GC、并发保存数量与关闭耗时，再讨论缓存/dirty跟踪等方案；不得用有碰撞风险的摘要代替完整相等标准或改变保存规则。前批Office解压风险仍按原ID保留，不因本批新增风险重复关闭。
+
+具体提取边界：未来可将Shell的保存预检/会话token/确认收尾提为`useDesignerSaveOperation`，输入当前document getter、目录refetch、原校验/serializer/persist/markSaved及消息接口；输出save、busy、invalidate。宿主API目标仍归TemplateModelingPage，document历史仍归store，导入代次独立，不能把多个领域整个搬进一个长hook。保护测试须保留本批跨上下文/失败/重复触发/脏值和既有合法配置校验，状态只能有一个owner；本批局部22增4删已足够，不做预防性抽取。
+
+整体W0–W7未完成；原非拖动/性能讨论、TaskDetail签名、生产弹窗样式、记录变更作废及DHR high/A12、四知识gap保持。后续在补必要宿主证据时同步转查W3/W4未审入口，避免只追最新UI缺陷。用户人工merge，不部署或恢复历史。

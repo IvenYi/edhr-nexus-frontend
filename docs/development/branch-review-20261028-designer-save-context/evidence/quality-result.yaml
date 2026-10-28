@@ -1,0 +1,219 @@
+qualityResult:
+  result: passed
+  baseCommit: 72fad6488a66561a698c11c5bcfd411fad13c8ca
+  headCommit: 5009bfe3cf695debf18a616db464835685f3b2f6
+  contractBaseline:
+    sourceCommit: 5009bfe3cf695debf18a616db464835685f3b2f6
+    targetBranch: edhr-dev
+    targetCommit: 72fad6488a66561a698c11c5bcfd411fad13c8ca
+    contractReadCommit: 5009bfe3cf695debf18a616db464835685f3b2f6
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.candidate-contract
+    required: true
+    category: requirements
+    description: 实际base/head、契约、独立性和干净工作树；无保护域差异
+    method: inspection
+    command: git rev-parse HEAD origin/edhr-dev; git status --porcelain=v1; git diff --name-only <base> <head>
+    outcome: passed
+    evidence:
+    - /tmp/edhr-save-qa-inspection.json
+  - id: check.source-and-test-boundary
+    required: true
+    category: regression
+    description: 22增4删的会话保护与真实HTTP/透明observer断言，原业务校验未降低
+    method: inspection
+    command: read Shell diff, parent mutations, store, serializer and new browser script
+    outcome: passed
+    evidence:
+    - product and test source hashes in /tmp/edhr-save-context-independent-evidence.json
+    - host saving=false / production parent pending and URL boundary retained
+  - id: check.baseline-red
+    required: true
+    category: e2e
+    description: 同组13原base7产品红6正向、0夹具阻断
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium SAVE_CONTEXT_BASELINE_COMMIT=72fad6488a66561a698c11c5bcfd411fad13c8ca
+      SAVE_CONTEXT_ARTIFACTS=/tmp/edhr-save-qa-baseline node scripts/test-designer-save-context-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-save-qa-baseline/result.json
+    - expected exit1; seven product failures reproduced
+  - id: check.current-browser
+    required: true
+    category: e2e
+    description: 1440/390同13场景各全过，不累计成26唯一场景
+    method: browser
+    command: 'CHROME_PATH=/usr/bin/chromium SAVE_CONTEXT_ARTIFACTS=/tmp/edhr-save-qa-desktop node scripts/test-designer-save-context-browser.mjs
+
+      CHROME_PATH=/usr/bin/chromium SAVE_CONTEXT_WIDTH=390 SAVE_CONTEXT_ARTIFACTS=/tmp/edhr-save-qa-narrow node
+      scripts/test-designer-save-context-browser.mjs'
+    outcome: passed
+    evidence:
+    - /tmp/edhr-save-qa-desktop/result.json
+    - /tmp/edhr-save-qa-narrow/result.json
+  - id: check.node35
+    required: true
+    category: unit
+    description: 35相关Node全过，0skip
+    method: automated-test
+    command: node --test scripts/test-designer-save-state.mjs scripts/test-designer-choice-options.mjs scripts/test-designer-subfield-sync.mjs
+      scripts/test-cell-display-components.mjs scripts/test-designer-column-insertion.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-save-qa-node.log
+  - id: check.existing-save9
+    required: true
+    category: regression
+    description: 保存相关9次运行通过，保留宽度复用与受控回调边界
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium W2_CASE_FILTER=save W2_RESULT_PATH=/tmp/edhr-save-qa-save.json node scripts/test-designer-save-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-save-qa-save.json
+  - id: check.import15
+    required: true
+    category: regression
+    description: 实际解析器导入15场景桌面回归通过
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium IMPORT_ARTIFACTS=/tmp/edhr-save-qa-import node scripts/test-designer-import-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-save-qa-import/result.json
+  - id: check.build
+    required: true
+    category: regression
+    description: TypeScript和Vite生产构建通过
+    method: command
+    command: npm run build
+    outcome: passed
+    evidence:
+    - /tmp/edhr-save-qa-build.log
+  - id: check.verifier
+    required: true
+    category: regression
+    description: 既有设计器校验通过
+    method: command
+    command: node scripts/verify-template-designer-react.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-save-qa-verifier.log
+  - id: check.knowledge89
+    required: true
+    category: ontology
+    description: 89结构/引用测试通过，不代表全语义审完
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-save-qa-knowledge.log
+  - id: check.scoped-ontology
+    required: true
+    category: ontology
+    description: NA及7旧ID有限重审6一致1gap、新增unique0与实际候选hash一致
+    method: inspection
+    command: read current declarations/original confirmations, ontologyResult and rule-review
+    outcome: passed
+    evidence:
+    - docs/development/branch-review-20261028-designer-save-context/evidence/ontology-result.yaml
+    - /tmp/edhr-save-qa-inspection.json
+  - id: check.inventory-provenance
+    required: true
+    category: documentation
+    description: 4清单独立重建byte equal，4124全pending/130迁移，21归档和4日志hash匹配
+    method: command
+    command: python scripts/build-branch-review-inventory.py --ref 72fad6488a66561a698c11c5bcfd411fad13c8ca --out
+      /tmp/edhr-save-qa-inventory-rebuilt
+    outcome: passed
+    evidence:
+    - /tmp/edhr-save-qa-inspection.json
+    - no whole-file/whole-branch completion claimed
+  - id: check.visual-scope-residuals
+    required: true
+    category: visual
+    description: 亲自实看3截图；范围、性能反证/提取与原暂缓准确
+    method: inspection
+    command: view_image three listed screenshots; read scope-review/findings
+    outcome: passed
+    evidence:
+    - /tmp/edhr-save-context-independent-evidence.json
+    - 390 clipping retained; actual parent mutation and backend certification excluded
+  - id: check.strict-no-new-findings
+    required: true
+    category: regression
+    description: 当前strict19与已核同src树的原baseline规范化多重集合相同
+    method: command
+    command: python /tmp/edhr-save-context-audit-project.py gmp-platform/frontend/src --mode strict --no-write
+    outcome: passed
+    evidence:
+    - /tmp/edhr-save-qa-static-comparison.json
+    - baseline inherited, not reexecuted; actual strict exit2 remains below
+  - id: check.global-strict
+    required: false
+    category: regression
+    description: 既有全局strict仍19项、exit2，未通过
+    method: command
+    command: python /tmp/edhr-save-context-audit-project.py gmp-platform/frontend/src --mode strict --no-write
+    outcome: failed
+    evidence:
+    - /tmp/edhr-save-qa-static.json
+  - id: check.global-lint
+    required: false
+    category: regression
+    description: ESLint配置缺失exit2，未通过
+    method: command
+    command: npm run lint
+    outcome: failed
+    evidence:
+    - /tmp/edhr-save-qa-lint.log
+  findings:
+  - id: W2-SAVE-EDITOR-CONTEXT-001
+    severity: high
+    scope: TemplateDesignerReactShell.save preflight, local acknowledgement and finally
+    summary: 旧保存预检/完成曾延续到新编辑会话；候选已隔离保存会话和本地收尾。
+    reproductionSteps:
+    - 在真实Shell发起需要catalog预检的保存并延迟GET。
+    - 通过宿主切版本/切回或真实关闭重开，再返回原目录；另延迟已发保存完成。
+    - 核对保存callback次数、完整document/history/savedSnapshot/dirty及新会话busy。
+    expectedResult: 旧预检不得调用新会话持久化，旧本地确认/清理不改新状态；同会话最新内容、校验、失败重试和发送后dirty保持。
+    actualResult: base同13项7红6正；候选双宽各13/13通过，旧操作只失效于本地，不声称取消已发服务器请求或修复父页URL/toast。
+    evidence:
+    - /tmp/edhr-save-qa-baseline/result.json
+    - /tmp/edhr-save-qa-desktop/result.json
+    - /tmp/edhr-save-qa-narrow/result.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 5009bfe3cf695debf18a616db464835685f3b2f6
+    - type: command
+      reference: /tmp/edhr-save-qa-desktop.log
+    - type: command
+      reference: /tmp/edhr-save-qa-narrow.log
+  residualRisks:
+  - id: residual.global-quality
+    description: strict既有19项和lint配置仍未通过；不是本批新缺陷。
+    impact: 全局质量债继续存在。
+    mitigation: 保持原件和实际exit2，不把本批passed当全项目green。
+  - id: residual.production-parent-boundary
+    description: 宿主saving=false隔离Shell状态，实际父页mutation URL、pending可用性、toast及后台持久化未运行。
+    impact: 不能由callback证明生产父页并发或请求撤销。
+    mitigation: 保留源码边界，后续真实父页HTTP和autoSave/main矩阵独立审查。
+  - id: residual.performance-structure
+    description: JSON物化性能/提取建议仅源码，未测堆/容量或实施优化。
+    impact: 不构成性能故障或容量认证。
+    mitigation: 保留3子树与50历史引用/结构共享反证，测后讨论。
+  - id: residual.visual-coverage
+    description: 390仍有header/canvas/sidebar裁切。
+    impact: 测试通过不代表完整响应式或无障碍。
+    mitigation: 保留真实截图，单独设计/验证。
+  - id: residual.overall-deferred
+    description: 整体W0-W7、非拖动、TaskDetail/生产弹窗/记录控制与DHR high/A12、四旧gap及试用gap仍保留。
+    impact: 不得扩大本批关闭范围。
+    mitigation: 按台账继续W3/W4及未审范围，不合并/部署/恢复历史。
+  blockingConditions: []

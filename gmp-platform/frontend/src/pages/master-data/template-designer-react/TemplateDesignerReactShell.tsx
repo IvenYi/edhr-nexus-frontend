@@ -67,6 +67,7 @@ export default function TemplateDesignerReactShell({
   const replaceCurrentPageFromImport = useTemplateDesignerStore((state) => state.replaceCurrentPageFromImport);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const importRequestRef = useRef(0);
+  const saveContextRef = useRef({ busy: false });
   const [mockFillOpen, setMockFillOpen] = useState(false);
   const [projectionOpen, setProjectionOpen] = useState(false);
   const [projectionValidationRequested, setProjectionValidationRequested] = useState(false);
@@ -89,13 +90,18 @@ export default function TemplateDesignerReactShell({
 
   useEffect(() => {
     importRequestRef.current += 1;
+    saveContextRef.current = { busy: false };
+    setCheckingProjection(false);
     if (row && version) {
       setDocument(parseReactTemplateDesignerDocument(row, version));
       setActiveTab('canvas');
       setSubTableDesignFieldId(null);
       markSaved();
     }
-    return () => { importRequestRef.current += 1; };
+    return () => {
+      importRequestRef.current += 1;
+      saveContextRef.current = { busy: false };
+    };
   }, [markSaved, row, setActiveTab, setDocument, version]);
 
   useEffect(() => {
@@ -105,6 +111,7 @@ export default function TemplateDesignerReactShell({
   }, [activeSubTableDesignField, subTableDesignFieldId]);
 
   const persistCurrentDocument = async (persist: TemplateDesignerDialogProps['onSave']) => {
+    const context = saveContextRef.current;
     const currentDocument = useTemplateDesignerStore.getState().document;
     if (!currentDocument) return;
     const traceConflict = currentDocument.model.projection?.bindings.some(binding => binding.modelId === 'formTrace'
@@ -120,16 +127,19 @@ export default function TemplateDesignerReactShell({
       throw new Error(referenceIssues[0]);
     }
     await persist(serializeTemplateDesignerDocument(currentDocument));
-    markSaved(currentDocument);
+    if (context === saveContextRef.current) markSaved(currentDocument);
   };
 
   const handleSave = async () => {
-    if (checkingProjection || saving) return;
+    const context = saveContextRef.current;
+    if (context.busy || saving) return;
+    context.busy = true;
     setCheckingProjection(true);
     try {
       let current = useTemplateDesignerStore.getState().document;
       if (current?.model.projection?.bindings.length) {
         const result = await refetchProjectionCatalog();
+        if (context !== saveContextRef.current) return;
         if (result.isError || !result.data) { showMessage('用途目录加载失败，请重试保存', 'error'); return; }
         current = useTemplateDesignerStore.getState().document;
         if (!current) return;
@@ -141,11 +151,17 @@ export default function TemplateDesignerReactShell({
         }
       }
       await persistCurrentDocument(onSave);
+      if (context !== saveContextRef.current) return;
       setProjectionValidationRequested(false);
       setProjectionOpen(false);
     } catch {
       // The existing save mutation reports API errors and retains the document.
-    } finally { setCheckingProjection(false); }
+    } finally {
+      if (context === saveContextRef.current) {
+        context.busy = false;
+        setCheckingProjection(false);
+      }
+    }
   };
 
   const handleFieldConfirmPersist = async () => {
@@ -155,6 +171,8 @@ export default function TemplateDesignerReactShell({
 
   const closeDesigner = () => {
     importRequestRef.current += 1;
+    saveContextRef.current = { busy: false };
+    setCheckingProjection(false);
     onClose();
   };
 

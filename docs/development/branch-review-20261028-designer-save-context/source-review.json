@@ -1,0 +1,15 @@
+{
+  "baseCommit":"72fad6488a66561a698c11c5bcfd411fad13c8ca",
+  "reviewer":"primary",
+  "wholeFileCompletion":0,
+  "records":[
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx","methods":["initialization effect","persistCurrentDocument","handleSave","handleFieldConfirmPersist","closeDesigner","handleClose"],"dimensions":["A01","A03","A05","A08","A11","A17","A19"],"conclusion":"目录/保存跨await缺会话边界，局部修复待QA；正常编辑/失败/校验规则保持。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx","methods":["saveDesignerPayload","autoSaveDesignerMutation","saveDesignerMutation","reactDesignerState host"],"dimensions":["A03","A05","A08","A17"],"conclusion":"真实mutationFn读reactDesignerState；Shell fixture不代表真实URL错配或父页全部toast抑制，其他宿主边界保留。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts","methods":["markSaved","isDirty"],"dimensions":["A03","A08","A11","A12"],"conclusion":"原ID保护不等于同ID新编辑会话；整文档JSON成本仅性能候选，不改相等标准。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts","methods":["serializeTemplateDesignerDocument"],"dimensions":["A03","A12","A13"],"conclusion":"三个独立子树payload，不误称三份整文档复制；存储格式不改。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts","methods":["useProjectionCatalog","projectionConfigurationIssues"],"dimensions":["A07","A08","A11"],"conclusion":"真实共享query原机制保留，不改缓存或省略目录校验。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx","methods":["onFieldConfirmPersist call site"],"dimensions":["A08","A17"],"conclusion":"common persist确认受会话保护，不认证所有autoSave/main并发顺序。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ProjectionValidationDialog.tsx","methods":["onSave and saving callback wiring"],"dimensions":["A08","A17"],"conclusion":"沿原save入口及忙态，未更改校验弹窗业务。"}
+  ],
+  "countingBoundary":"7条有限方法范围，不是7整文件完成；既有知识ID重审不新增unique语义数。"
+}
