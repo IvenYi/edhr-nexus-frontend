@@ -1,0 +1,89 @@
+{
+  "status": "FINAL",
+  "purpose": "Independent QA support; no total qualityResult or runtime compliance claim",
+  "contractBaseline": {
+    "sourceCommit": "974eaa0cefde17f8aaf793d85586efc3dd57adf8",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "1579c06c20e1382705362001278ae514583e9853",
+    "contractReadCommit": "974eaa0cefde17f8aaf793d85586efc3dd57adf8",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "incremental": {
+    "oldDelivery": "66b89eafa97a82b2080afd4f60a468d3f6824458",
+    "target": "1579c06c20e1382705362001278ae514583e9853",
+    "paths": 104,
+    "categories": {
+      "development-record": 10,
+      "knowledge": 5,
+      "test": 5,
+      "source": 33,
+      "historical-evidence": 51
+    },
+    "oldNewBlobsMatch": true,
+    "pendingPreserved": true
+  },
+  "sourceMap": {
+    "scopedRecords": 37,
+    "allBaselineBlobsAndCurrentSHA256Match": true,
+    "wholeFileAuditComplete": false
+  },
+  "ontology": {
+    "result": "not-applicable",
+    "reviewedScopedRecords": 19,
+    "allRecordedProductSHA256MatchCandidate": true,
+    "historicalDirtyBaselineRetained": true
+  },
+  "protectedChangedPaths": [],
+  "productChangedPaths": [
+    "gmp-platform/frontend/src/pages/production/WorkOrderPage.tsx",
+    "gmp-platform/frontend/src/pages/system/IconManagementPage.tsx"
+  ],
+  "workingTree": [],
+  "sourceInspection": {
+    "newHighOrCriticalFindings": [],
+    "independentNotes": [
+      "Integer units are safe while total is within existing <1e11 plan bound: quantities*10000 remain <1e15 exact integers; positive sums above bound remain rejected. No epsilon or backend guard changes.",
+      "Request ID is invalidated by open/close/unmount/new file; after sole await, current order/process/draft/objects/available/ready checks precede synchronous parse/stage. Same-order ABA through close is guarded.",
+      "Success shrink effect excludes pending/failure/placeholder; group placeholder key isolation retained.",
+      "Browser tests assert staged content, no unsolicited POST, explicit decimal payload; invalid precision case is 0.10001 below0.3, separating precision from quantity rejection.",
+      "No JSX layout tokens changed; only onClose/button callbacks wired to invalidation."
+    ],
+    "reviewedRelevantBackendBound": "WorkOrderController.apply requires 0<plannedQuantity<100000000000 with <=4 decimal places; ProductionService.split/updateObject retain positive,scale<=4,plan allocation andSN=1 guards."
+  },
+  "baselineInventoryRebuildPending": false,
+  "baselineInventoryRebuild": {
+    "command": "python scripts/build-branch-review-inventory.py --ref 1579c06c20e1382705362001278ae514583e9853 --out /tmp/edhr-pagination-qa-inventory-rebuild",
+    "exitCode": 0,
+    "trackedPaths": 3917,
+    "migrationFiles": 130,
+    "generatedFiles": [
+      {
+        "file": "coverage.csv",
+        "bytes": 1156027,
+        "sha256": "ca5f470c01f84c4a61daa8dca9509211cf30a6fbc4916fd3a091f65c2da9eefa",
+        "byteEqual": true
+      },
+      {
+        "file": "entrypoints.csv",
+        "bytes": 152332,
+        "sha256": "dd4bb6a16987190c6dde5d02c765151cf7a61cf3a3dd4a2908b1a08b84eed162",
+        "byteEqual": true
+      },
+      {
+        "file": "inventory-summary.json",
+        "bytes": 1043,
+        "sha256": "9b4a96bd2cfc7ac36b8b5fae8e63a79f7d02d4efb646e485fe9015552ae824a6",
+        "byteEqual": true
+      },
+      {
+        "file": "migrations.csv",
+        "bytes": 33469,
+        "sha256": "208e2c5371246062a0f803d8c411f1364f72a43ba774f1071aaa90b37df14e1f",
+        "byteEqual": true
+      }
+    ],
+    "allGeneratedBytesEqual": true,
+    "allCoverageRowsPendingInventoryOnly": true
+  }
+}

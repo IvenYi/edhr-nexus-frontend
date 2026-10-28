@@ -1,0 +1,101 @@
+{
+  "boundary": "Real WorkOrderPage/React Query/client/Chromium; delayed File.arrayBuffer and fixture HTTP; no backend persistence",
+  "baseline": "1579c06c20e1382705362001278ae514583e9853",
+  "width": 1440,
+  "results": [
+    {
+      "name": "decimal-equality",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog').getByRole('tab', { name: '待提交（2）', exact: true }) to be visible\u001b[22m\n",
+      "errors": [],
+      "posted": [],
+      "pageText": "工单号/产品名称/编码\n​\n工单号/产品名称/编码\n状态\n​\n状态\n重置\n查询\n新建工单\n工单号\n\t\n产品\n\t\n生产模式\n\t\n生产形态\n\t\n计划数量\n\t\n累计产出\n\t\n创建时间\n\t\n状态\n\t操作\nQA-ORDER-A\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t0.3\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\nQA-ORDER-B\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t0.3\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\n共 2 条数据\n\n1\n20 条/页\n​\n生产对象管理\n\nQA-ORDER-A\n\n隔离验收产品（QA-1）\n\n计划数量\n\n0.3\n\n已分配\n\n0\n\n待提交\n\n0\n\n还可分配\n\n0.3\n\n批量添加\n导入批次\n手动添加\n制程版本\nV1 · 隔离验收产品\n制程版本\n下载导入模板\n选择文件\n工艺路线 - / DHR 模板 -\n预览当前配置\n批次号和数量必填。支持 Excel / CSV；计划时间、备注可选。\n待提交（0）\n已拆分（0）\n批次号\t制程版本\t数量\t计划时间\t备注\t操作\n\n从上方添加批次，确认清单后统一提交\n每批独立保存制程引用，开工时冻结配置。\n关闭\n提交批次（0）"
+    },
+    {
+      "name": "real-over-allocation",
+      "result": "passed",
+      "posted": []
+    },
+    {
+      "name": "extra-precision",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText(/导入失败/) to be visible\u001b[22m\n",
+      "errors": [],
+      "posted": [],
+      "pageText": "工单号/产品名称/编码\n​\n工单号/产品名称/编码\n状态\n​\n状态\n重置\n查询\n新建工单\n工单号\n\t\n产品\n\t\n生产模式\n\t\n生产形态\n\t\n计划数量\n\t\n累计产出\n\t\n创建时间\n\t\n状态\n\t操作\nQA-ORDER-A\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t0.3\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\nQA-ORDER-B\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t0.3\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\n共 2 条数据\n\n1\n20 条/页\n​\n生产对象管理\n\nQA-ORDER-A\n\n隔离验收产品（QA-1）\n\n计划数量\n\n0.3\n\n已分配\n\n0\n\n待提交\n\n0.1\n\n还可分配\n\n0.2\n\n批量添加\n导入批次\n手动添加\n制程版本\nV1 · 隔离验收产品\n制程版本\n下载导入模板\n选择文件\n工艺路线 - / DHR 模板 -\n预览当前配置\n批次号和数量必填。支持 Excel / CSV；计划时间、备注可选。\n待提交（1）\n已拆分（0）\n批次号\t制程版本\t数量\t计划时间\t备注\t操作\nINVALID\tV1\t0.10001\t\n未设开始\n未设结束\n\t-\t\n每批独立保存制程引用，开工时冻结配置。\n关闭\n提交批次（1）"
+    },
+    {
+      "name": "switch-order",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog').getByRole('tab', { name: '待提交（0）', exact: true }) to be visible\u001b[22m\n",
+      "errors": [],
+      "posted": [],
+      "pageText": "工单号/产品名称/编码\n​\n工单号/产品名称/编码\n状态\n​\n状态\n重置\n查询\n新建工单\n工单号\n\t\n产品\n\t\n生产模式\n\t\n生产形态\n\t\n计划数量\n\t\n累计产出\n\t\n创建时间\n\t\n状态\n\t操作\nQA-ORDER-A\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t10\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\nQA-ORDER-B\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t10\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\n共 2 条数据\n\n1\n20 条/页\n​\n生产对象管理\n\nQA-ORDER-B\n\n隔离验收产品（QA-1）\n\n计划数量\n\n10\n\n已分配\n\n0\n\n待提交\n\n1\n\n还可分配\n\n9\n\n批量添加\n导入批次\n手动添加\n制程版本\nV1 · 隔离验收产品\n制程版本\n下载导入模板\n选择文件\n工艺路线 - / DHR 模板 -\n预览当前配置\n批次号和数量必填。支持 Excel / CSV；计划时间、备注可选。\n待提交（1）\n已拆分（0）\n批次号\t制程版本\t数量\t计划时间\t备注\t操作\nOLD-A\tV1\t1\t\n未设开始\n未设结束\n\t-\t\n每批独立保存制程引用，开工时冻结配置。\n关闭\n提交批次（1）"
+    },
+    {
+      "name": "reopen-same-order",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog').getByRole('tab', { name: '待提交（0）', exact: true }) to be visible\u001b[22m\n",
+      "errors": [],
+      "posted": [],
+      "pageText": "工单号/产品名称/编码\n​\n工单号/产品名称/编码\n状态\n​\n状态\n重置\n查询\n新建工单\n工单号\n\t\n产品\n\t\n生产模式\n\t\n生产形态\n\t\n计划数量\n\t\n累计产出\n\t\n创建时间\n\t\n状态\n\t操作\nQA-ORDER-A\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t10\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\nQA-ORDER-B\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t10\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\n共 2 条数据\n\n1\n20 条/页\n​\n生产对象管理\n\nQA-ORDER-A\n\n隔离验收产品（QA-1）\n\n计划数量\n\n10\n\n已分配\n\n0\n\n待提交\n\n1\n\n还可分配\n\n9\n\n批量添加\n导入批次\n手动添加\n制程版本\nV1 · 隔离验收产品\n制程版本\n下载导入模板\n选择文件\n工艺路线 - / DHR 模板 -\n预览当前配置\n批次号和数量必填。支持 Excel / CSV；计划时间、备注可选。\n待提交（1）\n已拆分（0）\n批次号\t制程版本\t数量\t计划时间\t备注\t操作\nOLD-A\tV1\t1\t\n未设开始\n未设结束\n\t-\t\n每批独立保存制程引用，开工时冻结配置。\n关闭\n提交批次（1）"
+    },
+    {
+      "name": "pending-list-change",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog').getByRole('tab', { name: '待提交（1）', exact: true }) to be visible\u001b[22m\n",
+      "errors": [],
+      "posted": [],
+      "pageText": "工单号/产品名称/编码\n​\n工单号/产品名称/编码\n状态\n​\n状态\n重置\n查询\n新建工单\n工单号\n\t\n产品\n\t\n生产模式\n\t\n生产形态\n\t\n计划数量\n\t\n累计产出\n\t\n创建时间\n\t\n状态\n\t操作\nQA-ORDER-A\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t10\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\nQA-ORDER-B\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t10\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\n共 2 条数据\n\n1\n20 条/页\n​\n生产对象管理\n\nQA-ORDER-A\n\n隔离验收产品（QA-1）\n\n计划数量\n\n10\n\n已分配\n\n0\n\n待提交\n\n2\n\n还可分配\n\n8\n\n批量添加\n导入批次\n手动添加\n制程版本\nV1 · 隔离验收产品\n制程版本\n下载导入模板\n选择文件\n工艺路线 - / DHR 模板 -\n预览当前配置\n批次号和数量必填。支持 Excel / CSV；计划时间、备注可选。\n待提交（2）\n已拆分（0）\n批次号\t制程版本\t数量\t计划时间\t备注\t操作\nCURRENT-DRAFT\tV1\t1\t\n未设开始\n未设结束\n\t-\t\n\nOLD-A\tV1\t1\t\n未设开始\n未设结束\n\t-\t\n每批独立保存制程引用，开工时冻结配置。\n关闭\n提交批次（2）"
+    },
+    {
+      "name": "process-change",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog').getByRole('tab', { name: '待提交（0）', exact: true }) to be visible\u001b[22m\n",
+      "errors": [],
+      "posted": [],
+      "pageText": "工单号/产品名称/编码\n​\n工单号/产品名称/编码\n状态\n​\n状态\n重置\n查询\n新建工单\n工单号\n\t\n产品\n\t\n生产模式\n\t\n生产形态\n\t\n计划数量\n\t\n累计产出\n\t\n创建时间\n\t\n状态\n\t操作\nQA-ORDER-A\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t10\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\nQA-ORDER-B\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t10\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\n共 2 条数据\n\n1\n20 条/页\n​\n生产对象管理\n\nQA-ORDER-A\n\n隔离验收产品（QA-1）\n\n计划数量\n\n10\n\n已分配\n\n0\n\n待提交\n\n1\n\n还可分配\n\n9\n\n批量添加\n导入批次\n手动添加\n制程版本\nV2 · 隔离验收产品\n制程版本\n下载导入模板\n选择文件\n工艺路线 - / DHR 模板 -\n预览当前配置\n批次号和数量必填。支持 Excel / CSV；计划时间、备注可选。\n待提交（1）\n已拆分（0）\n批次号\t制程版本\t数量\t计划时间\t备注\t操作\nOLD-A\tV1\t1\t\n未设开始\n未设结束\n\t-\t\n每批独立保存制程引用，开工时冻结配置。\n关闭\n提交批次（1）"
+    },
+    {
+      "name": "same-context-delay",
+      "result": "passed",
+      "posted": []
+    },
+    {
+      "name": "read-failure-preserves-list",
+      "result": "passed",
+      "posted": []
+    },
+    {
+      "name": "newer-import-wins",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog').getByRole('tab', { name: '待提交（1）', exact: true }) to be visible\u001b[22m\n",
+      "errors": [],
+      "posted": [],
+      "pageText": "工单号/产品名称/编码\n​\n工单号/产品名称/编码\n状态\n​\n状态\n重置\n查询\n新建工单\n工单号\n\t\n产品\n\t\n生产模式\n\t\n生产形态\n\t\n计划数量\n\t\n累计产出\n\t\n创建时间\n\t\n状态\n\t操作\nQA-ORDER-A\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t10\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\nQA-ORDER-B\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t10\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\n共 2 条数据\n\n1\n20 条/页\n​\n生产对象管理\n\nQA-ORDER-A\n\n隔离验收产品（QA-1）\n\n计划数量\n\n10\n\n已分配\n\n0\n\n待提交\n\n2\n\n还可分配\n\n8\n\n批量添加\n导入批次\n手动添加\n制程版本\nV1 · 隔离验收产品\n制程版本\n下载导入模板\n选择文件\n工艺路线 - / DHR 模板 -\n预览当前配置\n批次号和数量必填。支持 Excel / CSV；计划时间、备注可选。\n待提交（2）\n已拆分（0）\n批次号\t制程版本\t数量\t计划时间\t备注\t操作\nNEW-SECOND\tV1\t1\t\n未设开始\n未设结束\n\t-\t\n\nOLD-FIRST\tV1\t1\t\n未设开始\n未设结束\n\t-\t\n每批独立保存制程引用，开工时冻结配置。\n关闭\n提交批次（2）"
+    },
+    {
+      "name": "submission-invalidates-import",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog').getByRole('tab', { name: '待提交（0）', exact: true }) to be visible\u001b[22m\n",
+      "errors": [],
+      "posted": [
+        {
+          "orderId": "100",
+          "body": {
+            "items": [
+              {
+                "processVersionId": "12",
+                "targetQuantity": 1,
+                "objectNo": "SUBMITTED-CURRENT",
+                "plannedStartAt": null,
+                "plannedEndAt": null
+              }
+            ]
+          }
+        }
+      ],
+      "pageText": "工单号/产品名称/编码\n​\n工单号/产品名称/编码\n状态\n​\n状态\n重置\n查询\n新建工单\n工单号\n\t\n产品\n\t\n生产模式\n\t\n生产形态\n\t\n计划数量\n\t\n累计产出\n\t\n创建时间\n\t\n状态\n\t操作\nQA-ORDER-A\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t10\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\nQA-ORDER-B\t\n\n隔离验收产品\n\nQA-1\n\t量产\t批次\t10\t\n—\n暂无数据\n\t-\t\n已创建\n\t\n\n共 2 条数据\n\n1\n20 条/页\n​\n生产对象管理\n\nQA-ORDER-A\n\n隔离验收产品（QA-1）\n\n计划数量\n\n10\n\n已分配\n\n1\n\n待提交\n\n1\n\n还可分配\n\n8\n\n批量添加\n导入批次\n手动添加\n制程版本\nV1 · 隔离验收产品\n制程版本\n下载导入模板\n选择文件\n工艺路线 - / DHR 模板 -\n预览当前配置\n批次号和数量必填。支持 Excel / CSV；计划时间、备注可选。\n待提交（1）\n已拆分（1）\n批次号\t制程版本\t数量\t计划时间\t备注\t操作\nOLD-UNSUBMITTED\tV1\t1\t\n未设开始\n未设结束\n\t-\t\n每批独立保存制程引用，开工时冻结配置。\n关闭\n提交批次（1）"
+    }
+  ]
+}

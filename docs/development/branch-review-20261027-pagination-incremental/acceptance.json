@@ -1,0 +1,123 @@
+{
+  "status": "passed",
+  "final": true,
+  "baselineCommit": "1579c06c20e1382705362001278ae514583e9853",
+  "testedCandidateCommit": "974eaa0cefde17f8aaf793d85586efc3dd57adf8",
+  "knowledgeBaselineVersion": "0.3.25",
+  "ontologyResult": "not-applicable",
+  "ontologyScopeRecords": 19,
+  "qualityResult": "passed",
+  "requiredChecks": 18,
+  "requiredPassed": 18,
+  "findings": [
+    {
+      "id": "W4-IMPORT-DRAFT-CONTEXT-001",
+      "severity": "high",
+      "status": "resolved",
+      "resolutionCommit": "974eaa0cefde17f8aaf793d85586efc3dd57adf8"
+    },
+    {
+      "id": "W4-IMPORT-DECIMAL-SUM-001",
+      "severity": "medium",
+      "status": "resolved",
+      "resolutionCommit": "974eaa0cefde17f8aaf793d85586efc3dd57adf8"
+    },
+    {
+      "id": "W5-ICON-SUCCESS-SHRINK-001",
+      "severity": "medium",
+      "status": "resolved",
+      "resolutionCommit": "974eaa0cefde17f8aaf793d85586efc3dd57adf8"
+    }
+  ],
+  "qualityResultPath": "evidence/quality-result.yaml",
+  "qualityReportPath": "evidence/quality-review.md",
+  "originalIndependentArchives": [
+    {
+      "source": "/tmp/edhr-pagination-final-quality.yaml",
+      "archive": "evidence/quality-result.yaml",
+      "sha256": "1009ce0ab1994722003343e5ed74cff49c46fa24f6b73410e4657f9e2c6acb4b"
+    },
+    {
+      "source": "/tmp/edhr-pagination-final-review.md",
+      "archive": "evidence/quality-review.md",
+      "sha256": "bbc85957b4d92c16f8bac08ff1ffe3fd371d42f0e1f6b3f877904737dcfeca2e"
+    },
+    {
+      "source": "/tmp/edhr-pagination-final-evidence.json",
+      "archive": "evidence/independent-evidence.json",
+      "sha256": "6736e943f0f328b3ae8314ac539f9fcaee3ce28365c3651c534b6bf709e51a25"
+    },
+    {
+      "source": "/tmp/edhr-pagination-qa-inventory-source.json",
+      "archive": "evidence/independent-inventory-source.json",
+      "sha256": "2a30d2533a095b12ead8e9c1b2223dda04cbcf680d176f74d89a0a2e9c3e6ffa"
+    },
+    {
+      "source": "/tmp/edhr-pagination-qa-inventory-source.md",
+      "archive": "evidence/independent-inventory-source.md",
+      "sha256": "033ea93279a2df3457c52dae3396cf8777cbb489367d18a3fa4786233b71c650"
+    },
+    {
+      "source": "/tmp/edhr-pagination-qa-import-base.json",
+      "archive": "evidence/independent-import-baseline.json",
+      "sha256": "2733d934896cad9f1466c019739cd86160ad725a57e35abf8de6f157cd37c3d0"
+    },
+    {
+      "source": "/tmp/edhr-pagination-qa-import-desktop.json",
+      "archive": "evidence/independent-import-desktop.json",
+      "sha256": "d39f83562ebd18a34868db7471a185a83339331b478dab773a319a8df7ca2c82"
+    },
+    {
+      "source": "/tmp/edhr-pagination-qa-import-narrow.json",
+      "archive": "evidence/independent-import-narrow.json",
+      "sha256": "3e86436e73386cbe70c56918be28ac356457038c35585223e8e8d091e674257b"
+    },
+    {
+      "source": "/tmp/edhr-pagination-qa-shared-base.json",
+      "archive": "evidence/independent-shared-baseline.json",
+      "sha256": "58b5b126da935cdc2209b61b84c995b7d2f5554e69cca7ba9d6ecf39460ede1e"
+    },
+    {
+      "source": "/tmp/edhr-pagination-qa-shared.json",
+      "archive": "evidence/independent-shared-current.json",
+      "sha256": "c9dce94725b8f4f5de0a810578ea28cbc026b66a84d2a5a48e4d41c80c10f136"
+    }
+  ],
+  "scopeReviewPath": "scope-review.md",
+  "afterCandidatePolicy": "Only L0 evidence, acceptance, progress and PR registration may follow without rerunning product tests. Actual candidate SHA remains unchanged.",
+  "remaining": {
+    "currentBatchBlocked": [],
+    "adjacentPendingReproduction": [
+      "W5-LIST-SHRINK-ADJACENT-001",
+      "adjacent.designer-field-card-keyboard-placement"
+    ],
+    "performance": "pending-discussion; no optimization implemented",
+    "globalLimitations": [
+      "strict scanner baseline/candidate19 findings and exit2",
+      "ESLint config absent exit2",
+      "controlled HTTP browser; backend29 unit/controller, no nativePG or real persistence browser E2E"
+    ],
+    "userDeferred": [
+      "production dialog style",
+      "TaskDetail signature password",
+      "record-control change/void and dependent DHR high/A12",
+      "knowledge evidence gaps"
+    ],
+    "overallAuditComplete": false
+  },
+  "cleanup": {
+    "selfCreatedStaticExport": "/tmp/edhr-pagination-static-base-oiubv64w",
+    "removed": true,
+    "databaseCreated": false,
+    "userDataModified": false
+  },
+  "pr": {
+    "number": 36,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/36",
+    "targetBranch": "edhr-dev",
+    "sourceBranch": "audit/edhr-dev-pagination-incremental-20261027",
+    "stateAtCreation": "OPEN",
+    "manualMergeRequired": true,
+    "merged": false
+  }
+}

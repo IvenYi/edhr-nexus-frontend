@@ -1,0 +1,201 @@
+{
+  "baselineCommit": "1579c06c20e1382705362001278ae514583e9853",
+  "workingTreeState": "dirty-product-and-tests",
+  "node": {
+    "tests": 50,
+    "failures": 0,
+    "skipped": 0
+  },
+  "backend": {
+    "tests": 29,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "boundary": "existing Mockito/controller tests; no native PostgreSQL run"
+  },
+  "knowledge": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "importScenarios": 11,
+    "viewports": [
+      1440,
+      390
+    ],
+    "sameScenariosAcrossWidths": true,
+    "baselineFailures": 8,
+    "baselinePositiveControls": 3,
+    "sharedGroups": 3,
+    "productionPaginationGroups": 2,
+    "templateGroups": 3,
+    "sessionScenariosAt390": 12,
+    "boundary": "real pages with controlled HTTP; no backend persistence browser E2E"
+  },
+  "build": "passed",
+  "lint": {
+    "exitCode": 2,
+    "reason": "ESLint config absent"
+  },
+  "static": {
+    "baseline": 19,
+    "current": 19,
+    "multisetEqualExceptLines": true,
+    "exitCodes": [
+      2,
+      2
+    ],
+    "note": "actual current official script; not compared with historical27 scan count"
+  },
+  "rawLogs": [
+    {
+      "source": "/tmp/edhr-pagination-primary-node-final.log",
+      "sha256": "f02eaecfacca6f7fb6ab35fb8239a1e30310fc6c066fdc092f32f787206df929",
+      "bytes": 4841,
+      "summary": [
+        "ℹ tests 50",
+        "ℹ pass 50",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "source": "/tmp/edhr-pagination-primary-backend.log",
+      "sha256": "d9f0f80e3ccee173acdc151fa616f164d5e09737341028333b54c117c804a1c0",
+      "bytes": 3505,
+      "summary": [
+        "✓ built in 4.74s",
+        "[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.282 s -- in com.zencas.edhr.production.controller.ProductionObjectControllerTest",
+        "[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.130 s -- in com.zencas.edhr.production.controller.WorkOrderControllerTest",
+        "[INFO] Tests run: 22, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.222 s -- in com.zencas.edhr.production.service.ProductionServiceTest",
+        "[INFO] Tests run: 29, Failures: 0, Errors: 0, Skipped: 0",
+        "[INFO] BUILD SUCCESS"
+      ]
+    },
+    {
+      "source": "/tmp/edhr-pagination-primary-build.log",
+      "sha256": "b3e76c3e174f2bfae562560d9d801e7f88fa16307fa321e1d85953894d53417b",
+      "bytes": 9691,
+      "summary": [
+        "✓ built in 12.37s"
+      ]
+    },
+    {
+      "source": "/tmp/edhr-pagination-lint.log",
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389",
+      "bytes": 819,
+      "summary": [
+        "Oops! Something went wrong! :(",
+        "ESLint couldn't find a configuration file. To set up a configuration file for this project, please run:"
+      ]
+    },
+    {
+      "source": "/tmp/edhr-pagination-import-ontology-validation.log",
+      "sha256": "e581f94a8f82031da9150b4d3a3e2841f827bd669a6e4b3e87d4466f635a9a36",
+      "bytes": 2112,
+      "summary": [
+        "[INFO] Tests run: 89, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.120 s -- in com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+        "[INFO] Tests run: 89, Failures: 0, Errors: 0, Skipped: 0",
+        "[INFO] BUILD SUCCESS"
+      ]
+    }
+  ],
+  "archive": [
+    {
+      "source": "/tmp/edhr-pagination-source-inventory.md",
+      "archive": "evidence/pagination-source-inventory.md",
+      "sha256": "77136f280946b74606ed9077e0d5e14e6563d254ecb82a1a542f769e06d12572"
+    },
+    {
+      "source": "/tmp/edhr-production-increment-source.md",
+      "archive": "evidence/production-source-review.md",
+      "sha256": "413955535ea24c05aed3ed6fbe774c0d79d2e540a1da85433172eff51ea4e7f2"
+    },
+    {
+      "source": "/tmp/edhr-pagination-import-ontology.yaml",
+      "archive": "evidence/ontology-result.yaml",
+      "sha256": "11946d6b087309a7ed4ba6e4418ca171370f067fa461e0857456b376f7fc4d3f"
+    },
+    {
+      "source": "/tmp/edhr-pagination-import-rule-sync.json",
+      "archive": "evidence/rule-sync.json",
+      "sha256": "bc965cd58166cb3908fe4ac67847cd8092354d4bd7e984bdec01109df1e135fa"
+    },
+    {
+      "source": "/tmp/edhr-import-baseline.json",
+      "archive": "evidence/import-baseline.json",
+      "sha256": "2733d934896cad9f1466c019739cd86160ad725a57e35abf8de6f157cd37c3d0"
+    },
+    {
+      "source": "/tmp/edhr-import-primary-final.json",
+      "archive": "evidence/import-desktop.json",
+      "sha256": "d39f83562ebd18a34868db7471a185a83339331b478dab773a319a8df7ca2c82"
+    },
+    {
+      "source": "/tmp/edhr-import-candidate-narrow.json",
+      "archive": "evidence/import-narrow.json",
+      "sha256": "3e86436e73386cbe70c56918be28ac356457038c35585223e8e8d091e674257b"
+    },
+    {
+      "source": "/tmp/edhr-pagination-shrink-red.json",
+      "archive": "evidence/pagination-shrink-baseline.json",
+      "sha256": "58b5b126da935cdc2209b61b84c995b7d2f5554e69cca7ba9d6ecf39460ede1e"
+    },
+    {
+      "source": "/tmp/edhr-pagination-shrink-green.json",
+      "archive": "evidence/pagination-shrink-current.json",
+      "sha256": "c9dce94725b8f4f5de0a810578ea28cbc026b66a84d2a5a48e4d41c80c10f136"
+    },
+    {
+      "source": "/tmp/edhr-pagination-primary-production.json",
+      "archive": "evidence/production-pagination.json",
+      "sha256": "0f724394a86bce8615204be56fe8ebfc9d688d88d1756a074a670787d51afde1"
+    },
+    {
+      "source": "/tmp/edhr-pagination-template-regression.json",
+      "archive": "evidence/template-regression.json",
+      "sha256": "e7ddc3e8add48bf69f0da8d431b7c668c523789021b2b36f05a0391c59da6fb1"
+    },
+    {
+      "source": "/tmp/edhr-pagination-session-narrow.json",
+      "archive": "evidence/session-narrow.json",
+      "sha256": "6df732786360bed380e788833115bc43113a19dc40578d11f26924a8f56651bc"
+    },
+    {
+      "source": "/tmp/edhr-pagination-static-baseline.json",
+      "archive": "evidence/static-baseline.json",
+      "sha256": "db9c75ea3c2e1ad80a2e97d29cc98057dc67f11e64118531f9246b1318a32fda"
+    },
+    {
+      "source": "/tmp/edhr-pagination-static-current.json",
+      "archive": "evidence/static-current.json",
+      "sha256": "eca478601b550fc5f7dfc013d5f448836df6504e1cfe3eaa8a3d1cdcc1472076"
+    },
+    {
+      "source": "/tmp/edhr-pagination-static-comparison.json",
+      "archive": "evidence/static-comparison.json",
+      "sha256": "03aa4574a5e4ea9d1346ef35df3e8c2838b86b3b7c50c499c30a0a9ec94b47bd"
+    },
+    {
+      "source": "/tmp/edhr-import-initial-selector-failure.json",
+      "archive": "evidence/initial-selector-failure.json",
+      "sha256": "03602a2e4382f8160352fa7acc2f557ac36612f3cdf255abf63d99f380ff6f92"
+    },
+    {
+      "source": "/tmp/edhr-import-primary-green.json",
+      "archive": "evidence/initial-primary-selector-failure.json",
+      "sha256": "7b32d11bcb7756650e7a3f6e1c195eee99e18485b09a82d3df1efc3b73900acc"
+    },
+    {
+      "source": "/tmp/edhr-import-candidate-narrow-browser/decimal-equality.png",
+      "archive": "evidence/narrow-decimal-submit.png",
+      "sha256": "1ce2aae268841bbd07a7d8d4c73ab826ac77e1cec018d9b6407f72bcc179e001"
+    },
+    {
+      "source": "/tmp/edhr-pagination-shrink-green/icons.png",
+      "archive": "evidence/icon-success-shrink.png",
+      "sha256": "2d0444a84756190c859786582b943a657b11263e32755a3f24dd0db044105e3f"
+    }
+  ]
+}

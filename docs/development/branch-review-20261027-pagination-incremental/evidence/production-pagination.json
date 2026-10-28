@@ -1,0 +1,140 @@
+{
+  "baseline": null,
+  "boundary": "real Chromium pages with delayed fixture HTTP; no backend writes",
+  "results": [
+    {
+      "kind": "batches",
+      "result": "passed",
+      "requests": [
+        {
+          "page": 1,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 2,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 2,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 3,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 4,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 3,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 1,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 1,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 2,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 1,
+          "keyword": "新筛选",
+          "size": "20"
+        },
+        {
+          "page": 2,
+          "keyword": "新筛选",
+          "size": "20"
+        },
+        {
+          "page": 1,
+          "keyword": "新筛选",
+          "size": "50"
+        }
+      ],
+      "checks": "uncached/cached/delayed/racing/failed/shrinking/filter/page-size; batch historical snapshot action and reference details"
+    },
+    {
+      "kind": "orders",
+      "result": "passed",
+      "requests": [
+        {
+          "page": 1,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 2,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 2,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 3,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 4,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 3,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 1,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 1,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 2,
+          "keyword": "",
+          "size": "20"
+        },
+        {
+          "page": 1,
+          "keyword": "新筛选",
+          "size": "20"
+        },
+        {
+          "page": 2,
+          "keyword": "新筛选",
+          "size": "20"
+        },
+        {
+          "page": 1,
+          "keyword": "新筛选",
+          "size": "50"
+        }
+      ],
+      "checks": "uncached/cached/delayed/racing/failed/shrinking/filter/page-size; batch historical snapshot action and reference details"
+    }
+  ]
+}

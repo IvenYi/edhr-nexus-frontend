@@ -1,0 +1,240 @@
+qualityResult:
+  result: passed
+  baseCommit: 1579c06c20e1382705362001278ae514583e9853
+  headCommit: 974eaa0cefde17f8aaf793d85586efc3dd57adf8
+  contractBaseline:
+    sourceCommit: 974eaa0cefde17f8aaf793d85586efc3dd57adf8
+    targetBranch: edhr-dev
+    targetCommit: 1579c06c20e1382705362001278ae514583e9853
+    contractReadCommit: 974eaa0cefde17f8aaf793d85586efc3dd57adf8
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.candidate-and-contract-boundary
+      required: true
+      category: requirements
+      description: 独立核对实际目标、候选、契约和修复边界，未参与修复。
+      method: inspection
+      command: git rev-parse HEAD origin/edhr-dev; git status --porcelain; git diff 1579c06c..974eaa0c; 读取项目/角色/交接契约及决策包
+      outcome: passed
+      evidence: [target=1579c06c20e1382705362001278ae514583e9853, functionalHead=974eaa0cefde17f8aaf793d85586efc3dd57adf8, testedCandidate=974eaa0cefde17f8aaf793d85586efc3dd57adf8, /tmp/edhr-pagination-final-evidence.json]
+    - id: check.knowledge-and-policy-scope
+      required: true
+      category: ontology
+      description: 核对现行正数/四位精度/额度、当前工单候选、待提交再确认及本体NA的精确边界。
+      method: inspection
+      command: 读取DEC0014/DEC0085、production当前规则与确认证据、ontology-result及rule-sync；核对后台BigDecimal/锁内校验和首次START保持
+      outcome: passed
+      evidence: [docs/development/branch-review-20261027-pagination-incremental/evidence/ontology-result.yaml, /tmp/edhr-pagination-qa-inventory-source.json, 未新增业务政策或知识修改]
+    - id: check.node-regression
+      required: true
+      category: unit
+      description: 50项实际前端聚焦回归。
+      method: automated-test
+      command: node --test scripts/test-production-audit.mjs scripts/test-production-object-edit.mjs scripts/test-review-batch-01.mjs
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-node.log, tests50/pass50/fail0/skipped0, exit0]
+    - id: check.backend-existing-contracts
+      required: true
+      category: unit
+      description: 29项既有服务/控制器聚焦测试；不是原生PG验收。
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=ProductionServiceTest,WorkOrderControllerTest,ProductionObjectControllerTest test
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-backend.log, tests29/failures0/errors0/skipped0, exit0]
+    - id: check.knowledge-suite
+      required: true
+      category: ontology
+      description: 实际知识结构、引用、类型和投影套件89项，不代表全部语义完成。
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-knowledge.log, tests89/failures0/errors0/skipped0, exit0]
+    - id: check.import-desktop
+      required: true
+      category: e2e
+      description: 真实页面1440px受控HTTP的11项导入边界，含真实提交payload和旧读取失效。
+      method: browser
+      command: CHROME_PATH=/usr/bin/chromium IMPORT_ARTIFACTS=/tmp/edhr-pagination-qa-import-desktop node scripts/test-production-import-boundaries-browser.mjs
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-import-desktop.json, 11/11 passed, .1+.2 payload保留且.3001超额及.10001超精度均阻止, exit0]
+    - id: check.import-narrow
+      required: true
+      category: regression
+      description: 390px重跑同11项导入业务场景，不计为22种不同业务场景。
+      method: browser
+      command: CHROME_PATH=/usr/bin/chromium IMPORT_WIDTH=390 IMPORT_ARTIFACTS=/tmp/edhr-pagination-qa-import-narrow node scripts/test-production-import-boundaries-browser.mjs
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-import-narrow.json, 11/11 passed, exit0]
+    - id: check.import-baseline-reproduction
+      required: true
+      category: regression
+      description: 固定1579原页面亲自重现8红和3项正对照，预期红例退出1。
+      method: browser
+      command: CHROME_PATH=/usr/bin/chromium IMPORT_BASELINE_COMMIT=1579c06c20e1382705362001278ae514583e9853 IMPORT_ARTIFACTS=/tmp/edhr-pagination-qa-import-base node scripts/test-production-import-boundaries-browser.mjs
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-import-base.json, 8 expected failures/3 positive controls, exit1符合红例预期, 只覆写原WorkOrderPage且相同断言]
+    - id: check.shared-pagination
+      required: true
+      category: regression
+      description: 共享分页/图标/设备三组延迟失败缓存缩页及图标跨分类隔离。
+      method: browser
+      command: CHROME_PATH=/usr/bin/chromium PAGINATION_ARTIFACTS=/tmp/edhr-pagination-qa-shared node scripts/test-shared-pagination-browser.mjs
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-shared.json, 3/3 groups passed, 保留原跨组无错写断言, exit0]
+    - id: check.icon-baseline-reproduction
+      required: true
+      category: regression
+      description: 原图标页面成功缩页不回退独立复现，另两组正对照保持。
+      method: browser
+      command: CHROME_PATH=/usr/bin/chromium PAGINATION_BASELINE_COMMIT=1579c06c20e1382705362001278ae514583e9853 PAGINATION_ARTIFACTS=/tmp/edhr-pagination-qa-shared-base node scripts/test-shared-pagination-browser.mjs
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-shared-base.json, 1 expected icon failure/2 positive groups, exit1符合红例预期]
+    - id: check.production-pagination
+      required: true
+      category: regression
+      description: 批次/工单两组实际页面分页相邻回归及冻结审计详情。
+      method: browser
+      command: CHROME_PATH=/usr/bin/chromium PAGINATION_ARTIFACTS=/tmp/edhr-pagination-qa-production node scripts/test-production-pagination-browser.mjs
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-production.json, 2/2 groups passed, exit0]
+    - id: check.template-download-and-import
+      required: true
+      category: regression
+      description: SN1440/BATCH1440/SN390三组真实XLSX下载及导入回归。
+      method: browser
+      command: CHROME_PATH=/usr/bin/chromium W4_BROWSER_ARTIFACTS=/tmp/edhr-pagination-qa-template node scripts/test-work-order-template-browser.mjs
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-template.json, 3/3 groups passed, keyboard/download/columns/old remark/staged submit, exit0]
+    - id: check.session-neighbor-regression
+      required: true
+      category: security
+      description: 当前集成候选390px的12项跨标签会话相邻回归。
+      method: browser
+      command: CHROME_PATH=/usr/bin/chromium SESSION_UI_WIDTH=390 SESSION_UI_ARTIFACTS=/tmp/edhr-pagination-qa-session node scripts/test-cross-tab-session-browser.mjs
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-session.json, 12/12 passed, exit0, 不沿用PR35旧候选通过记录]
+    - id: check.build
+      required: true
+      category: regression
+      description: 实际TypeScript与生产构建。
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-build.log, tsc及Vite生产构建exit0]
+    - id: check.source-guards-and-protected-paths
+      required: true
+      category: security
+      description: 独立源码核对序号/上下文、四位整数、成功缩页及后端/知识/布局保护范围。
+      method: inspection
+      command: 亲读两个产品补丁及异步读取到写入链；git diff目标候选的backend/knowledge/DESIGN/docs/frontend；检查无epsilon/自动提交/冻结点变动
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-inventory-source.json, /tmp/edhr-pagination-final-review.md, 后端与知识无diff且仅关闭handler替换无样式变更]
+    - id: check.visual-finite-scope
+      required: true
+      category: visual
+      description: 实际查看窄屏小数提交、跨工单空清单和图标分类失败截图，不声明全站视觉完成。
+      method: inspection
+      command: view_image窄屏decimal-equality、桌面switch-order及图标截图
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-import-narrow/decimal-equality.png, /tmp/edhr-pagination-qa-import-desktop/switch-order.png, /tmp/edhr-pagination-qa-shared/icons.png, 窄屏动作与两条结果可见且B清单未混入A]
+    - id: check.inventory-and-evidence-integrity
+      required: true
+      category: documentation
+      description: 独立重建全量盘点与104增量、37有限源码及本体19记录SHA，保留未审状态。
+      method: command
+      command: 独立辅助在临时目录运行build-branch-review-inventory.py固定1579并逐字节比较四文件；逐path比较old/new blob及当前SHA
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-inventory-source.json, /tmp/edhr-pagination-qa-inventory-source.md, 3917路径/130迁移/104增量/37范围摘要全匹配, 19本体有限记录源码摘要与974e一致, 无整文件或全库完成宣称]
+    - id: check.static-increment-comparison
+      required: true
+      category: regression
+      description: 当前官方脚本对基线与候选严格扫描均19项且完整多重集合除line相同。
+      method: command
+      command: python /tmp/edhr-pagination-audit-project.py <baseline-or-candidate-src> --mode strict --no-write; 比较完整finding多重集合忽略行号
+      outcome: passed
+      evidence: [/tmp/edhr-pagination-qa-static-comparison.json, 两边19项且exit2/无新增无移除, scriptSha256=b56ca0495ace4aaac2bfa779dc707b04baab0f7d4537e6856b6348c63230661c, 不与历史27项直接比较]
+    - id: check.eslint-existing-limit
+      required: false
+      category: regression
+      description: ESLint仍缺少配置，不将其称为绿。
+      method: command
+      command: npm run lint
+      outcome: failed
+      evidence: [/tmp/edhr-pagination-qa-lint.log, exit2/ESLint could not find a configuration file]
+    - id: check.strict-global-existing-limit
+      required: false
+      category: regression
+      description: 全局严格扫描仍有既存19项，不称全站合规。
+      method: command
+      command: python /tmp/edhr-pagination-audit-project.py gmp-platform/frontend/src --mode strict --no-write
+      outcome: failed
+      evidence: [/tmp/edhr-pagination-qa-static-current.json, 19既存finding/exit2]
+  findings:
+    - id: W4-IMPORT-DRAFT-CONTEXT-001
+      severity: high
+      scope: WorkOrderPage.importPendingObjects及工单对象编辑会话
+      summary: 旧文件读取曾可污染其他工单或已失效的本次清单；当前候选独立复验已修复。
+      reproductionSteps: [固定1579原WorkOrderPage, A选文件并延迟File.arrayBuffer, 关闭A打开同产品同制程B或同ID重开, 释放旧文件读取并检查待提交清单, 再核对清单/制程变化及提交期间和并发新文件]
+      expectedResult: 旧结果失效且不追加到新清单、不自动提交；当前未变上下文正常导入。
+      actualResult: 基线相关迟到路径失败；974e桌面与390px同11场景全部通过，当前同上下文和读取失败保留清单正例也通过。
+      evidence: [/tmp/edhr-pagination-qa-import-base.json, /tmp/edhr-pagination-qa-import-desktop.json, /tmp/edhr-pagination-qa-import-narrow.json]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: 974eaa0cefde17f8aaf793d85586efc3dd57adf8
+        - type: command
+          reference: /tmp/edhr-pagination-qa-import-desktop.json
+        - type: command
+          reference: /tmp/edhr-pagination-qa-import-narrow.json
+    - id: W4-IMPORT-DECIMAL-SUM-001
+      severity: medium
+      scope: WorkOrderPage.importPendingObjects数量精度与合计比较
+      summary: 合法0.1+0.2曾被误拒为超过0.3；当前按既有四位精度单位精确合计。
+      reproductionSteps: [还可分配数量0.3, 导入批次号及数量两行0.1和0.2, 检查清单并显式提交, 另测0.3001真正超额与0.10001小于额度但超精度]
+      expectedResult: 合法数量进入清单及保持原payload；真正超额或超四位精度不能进入清单或POST。
+      actualResult: 基线合法小数与额外精度两例失败；候选两宽度均正确，payload为0.1和0.2，非法输入无POST。
+      evidence: [/tmp/edhr-pagination-qa-import-base.json, /tmp/edhr-pagination-qa-import-desktop.json]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: 974eaa0cefde17f8aaf793d85586efc3dd57adf8
+        - type: command
+          reference: /tmp/edhr-pagination-qa-import-desktop.json
+    - id: W5-ICON-SUCCESS-SHRINK-001
+      severity: medium
+      scope: IconManagementPage成功响应后的越界页码
+      summary: 图标总页数减少后旧page曾不回退；当前只在非等待非占位成功结果回退。
+      reproductionSteps: [打开图标列表第2页, 使后续成功响应totalPages缩至1并invalidate, 检查目标页及重新读取, 同时核对等待/失败保持页和跨分类隔离]
+      expectedResult: 成功证实越界才回有效第1页；等待与失败保持目标页，分类间不能错用旧图标。
+      actualResult: 固定1579为图标1红及两组正对照；当前三组全部通过且原跨组断言保持。
+      evidence: [/tmp/edhr-pagination-qa-shared-base.json, /tmp/edhr-pagination-qa-shared.json]
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: commit
+          reference: 974eaa0cefde17f8aaf793d85586efc3dd57adf8
+        - type: command
+          reference: /tmp/edhr-pagination-qa-shared.json
+  residualRisks:
+    - id: residual.existing-lint-and-static
+      description: ESLint缺配置exit2；官方当前扫描19项既存finding，严格exit2，完整集合无新增。不与历史27项混合推断进度。
+      impact: 本批功能通过不等于全站静态合规。
+      mitigation: 保留实际原件，另按整体审计处理已登记限制，不为本批降标准或改政策。
+    - id: residual.browser-http-and-backend-depth
+      description: 浏览器使用受控HTTP，29后端是单元/controller测试，本批没有原生PG或浏览器到真实后端持久化E2E。
+      impact: 不证明生产数据库容量或完整全栈运行。
+      mitigation: 按实际本次前端变更范围签收，后端/迁移未改，后续真实集成按风险补验。
+    - id: residual.pending-audit-and-performance
+      description: 字典/其他页缩页源码候选、普通字段非拖动、字典子项计数及导入重复扫描性能候选继续待复现/讨论；完整W0至W7未完成。
+      impact: 本批三项修复不能外推全文件、全本体或全分支完成，也不是容量认证。
+      mitigation: 按findings和持续台账续接，不未经讨论实施性能方案。
+    - id: residual.user-deferred
+      description: TaskDetail签名密码、记录控制变更作废及相关DHR high/A12、知识gap和原生产弹窗样式暂缓继续保留。
+      impact: 完整生命周期验收仍受原有依赖限制。
+      mitigation: 不因本批通过或人工merge自动恢复暂缓项，不重开PR5/6，不自动合并/部署/恢复数据。
+  blockingConditions: []

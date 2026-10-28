@@ -1,5 +1,13 @@
 # 持续推进台账
 
+## PR35已合入：分页与生产准备增量审计
+
+已交付[PR36](https://github.com/IvenYi/edhr-nexus-frontend/pull/36)，分支`audit/edhr-dev-pagination-incremental-20261027`，目标`edhr-dev`，待用户人工merge。受测`974eaa0c`之后仅L0证据/验收/范围/PR登记，产品/测试/知识保持。下一轮先fetch实际状态和新增提交；不得把本PR创建当作合并，不恢复原暂缓或自动实施性能方案。
+
+本批正式全新独立对`974eaa0c` passed/FINAL，18/18必需检查；三项（含旧导入跨工单污染high）按acceptance resolved。本体19有限核对NA/FINAL；50 Node、29后端单元/控制器、89知识、双宽同11导入、分页/模板/会话及构建通过。3917路径盘点和104增量/37范围摘要独立复现；不外推整文件/整体完成。已在全部角色FINAL后向用户作PR前范围及整体进度复核；随后仅L0归档/验收/PR交付，不自动merge/deploy。下一批先fetch，优先字典等相邻缩页合法复现，性能先量化讨论；原暂缓保持。
+
+已fetch并核对PR35于2026-10-27人工合入`1579c06c`。目标另有`a32d8d76`/`af1e0244`两笔产品/知识增量，不能声明树同原66b89或沿用原14/14覆盖新增组合。已从最新目标创建`audit/edhr-dev-pagination-incremental-20261027`，先核对全部增量分页及生产编辑/冻结证据，详见[进行中检查点](../branch-review-20261027-pagination-incremental/README.md)。契约无增量且当前已重读；本批未完成、整体W0–W7未完成，原暂缓及性能先讨论保持。
+
 ## PR35继续：用户已确认跨标签两层保护
 
 已将[PR35](https://github.com/IvenYi/edhr-nexus-frontend/pull/35)转为待审，OPEN/MERGEABLE/CLEAN，建议用户人工合并。实际受测4b45fb88，之后仅L0原件/范围/PR登记，产品、测试、知识保持。隔离PG确切ID停止并自动移除；临时扫描导出已清理。下一轮先fetch核对真实合入和新提交，再按范围复核继续整体审计；不再把本项写作待用户确认或未修复，不自动merge/deploy/恢复。

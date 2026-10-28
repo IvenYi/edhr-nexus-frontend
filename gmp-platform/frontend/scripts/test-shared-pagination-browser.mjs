@@ -4,11 +4,14 @@ import http from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { execFileSync } from 'node:child_process';
 import { build } from 'esbuild';
 const { chromium } = createRequire(import.meta.url)('playwright');
 const root = path.resolve(import.meta.dirname, '..');
 const temp = await mkdtemp(path.join(os.tmpdir(), 'edhr-shared-pagination-'));
 const artifacts = process.env.PAGINATION_ARTIFACTS;
+const baseline = process.env.PAGINATION_BASELINE_COMMIT;
+if (baseline && !/^[a-f0-9]{40}$/.test(baseline)) throw new Error('Expected full baseline SHA');
 const results = [];
 let server, browser;
 try {
@@ -37,7 +40,13 @@ try {
     const Page = location.search.includes('icons') ? Icons : location.search.includes('equipment') ? Equipment : Shared;
     createRoot(document.getElementById('root')).render(<ThemeProvider theme={createTheme()}><CssBaseline /><MemoryRouter>
       <QueryClientProvider client={client}><SnackbarProvider><Page /></SnackbarProvider></QueryClientProvider>
-    </MemoryRouter></ThemeProvider>);` }, bundle: true, platform: 'browser', format: 'esm', outfile: path.join(temp, 'bundle.js'), alias: { '@': path.join(root, 'src') }, define: { 'process.env.NODE_ENV': '"production"' } });
+    </MemoryRouter></ThemeProvider>);` }, bundle: true, platform: 'browser', format: 'esm', outfile: path.join(temp, 'bundle.js'), alias: { '@': path.join(root, 'src') }, define: { 'process.env.NODE_ENV': '"production"' },
+    plugins: baseline ? [{ name: 'baseline-icon-page', setup(plugin) {
+      plugin.onLoad({ filter: /\/IconManagementPage\.tsx$/ }, ({ path: filename }) => ({
+        contents: execFileSync('git', ['show', `${baseline}:gmp-platform/frontend/src/pages/system/IconManagementPage.tsx`], { cwd: root, encoding: 'utf8' }),
+        loader: 'tsx', resolveDir: path.dirname(filename),
+      }));
+    } }] : [] });
   await writeFile(path.join(temp, 'index.html'), '<!doctype html><html><body><div id="root"></div><script type="module" src="/bundle.js"></script></body></html>');
   server = http.createServer(async (request, response) => {
     const pathname = new URL(request.url, 'http://localhost').pathname;
@@ -93,13 +102,14 @@ try {
       failPage = 0;
       await page.getByRole('button', { name: 'Go to page 2', exact: true }).click();
       assert.equal(await active(), '2');
-      if (kind !== 'icons') {
+      {
         totalPages = 1;
         await page.evaluate(() => { void window.qaQueryClient.invalidateQueries(); });
         await page.waitForTimeout(100);
         assert.equal(await active(), '2', 'Old range must not clamp the page during refresh');
         await page.waitForFunction(() => document.querySelector('button[aria-current]')?.textContent === '1');
-      } else {
+      }
+      if (kind === 'icons') {
         await page.getByRole('button', { name: '组A', exact: true }).click();
         await page.getByText('A图标1', { exact: true }).waitFor();
         await page.getByRole('button', { name: '组B', exact: true }).click();
@@ -123,7 +133,7 @@ try {
         assert.equal(await oldIcon.count(), 0, 'Failed group response must not restore another group’s icons');
       }
       assert.deepEqual(errors, []);
-      results.push({ kind, result: 'passed', requests, checks: 'delayed/failed/cached pagination; successful shrink on shared and equipment; icon group isolation during delay/failure and no cross-group reorder' });
+      results.push({ kind, result: 'passed', requests, checks: 'delayed/failed/cached pagination and successful shrink on all three; icon group isolation during delay/failure and no cross-group reorder' });
     } catch (error) { results.push({ kind, result: 'failed', message: error.message, requests, errors }); }
     finally { if (artifacts) await page.screenshot({ path: path.join(artifacts, `${kind}.png`), fullPage: true }); await context.close(); }
   }
