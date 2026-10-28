@@ -1,0 +1,137 @@
+{
+  "baseCommit": "8784ba87166addae9cb9659d6120aa84f993c7ef",
+  "functionalHead": "aef427c524bd7270b3775fbd7c599c72a545e21b",
+  "candidateCommit": "40e39a17ee1ca775695b7af42f31393fb76b6df4",
+  "tests": [
+    {
+      "class": "RecordControlAccessTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "RecordControlDiffTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "RecordControlMigrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "RecordControlTaskActionServiceTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "RecordControlWorkflowServiceTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "RecordControlWorkflowControllerTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "WorkflowEngineTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "WorkflowTaskControllerTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "ExecutionAccessTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "DhrGenericAccessTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "ProductionExecutionIntegrationTest",
+      "tests": 92,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3
+    },
+    {
+      "class": "AuthControllerTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "AuthorizationNoticeFontTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "CurrentDatabaseBaselineTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "CurrentDatabaseBaselinePostgresTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "class": "RecordControlPostgresIntegrationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 290,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3
+  },
+  "productWorkingDiff": [],
+  "disposableDatabases": [
+    "edhr_record_control_test_quality_20261028_a",
+    "edhr_baseline_test_quality_rc_20261028_a"
+  ]
+}

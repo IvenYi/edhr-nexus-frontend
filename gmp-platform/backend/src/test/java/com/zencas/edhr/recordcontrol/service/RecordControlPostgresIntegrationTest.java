@@ -65,10 +65,10 @@ class RecordControlPostgresIntegrationTest {
         jdbc.update("INSERT INTO form_template_version(id,template_id) VALUES (111,110)");
         snapshot = (ObjectNode) mapper.readTree("""
             {"context":{"workOrderId":"108","workOrderNo":"RC-WO","objectNo":"RC-BATCH","objectType":"BATCH"},
-             "operations":[{"id":"op","name":"工序","forms":[{"id":"form","versionId":"111","fields":[{"id":"value","type":"text","name":"值"}]}]}]}
+             "operations":[{"id":"op","name":"工序","forms":[{"id":"form","versionId":"111","fields":[{"id":"value","type":"text","name":"值"},{"id":"rows","type":"subTable","name":"明细","typeConfig":{"columns":[{"id":"note","type":"text"}]}}]}]}]}
             """);
         state = (ObjectNode) mapper.readTree("""
-            {"operations":{"op":{"forms":{"form":{"status":"COMPLETED","savedAt":"2026-10-28T10:00:00","values":{"value":"old"}}}}}}
+            {"operations":{"op":{"forms":{"form":{"status":"COMPLETED","savedAt":"2026-10-28T10:00:00","values":{"value":"old","rows":[{"__rowId":"11111111-1111-4111-8111-111111111111","note":"original"}]}}}}}}
             """);
         jdbc.update("INSERT INTO production_execution(object_id,snapshot_json,state_json,started_at,updated_at) VALUES (109,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)", snapshot.toString(), state.toString());
         for (String type : List.of("CHANGE", "OBSOLETE")) {
@@ -111,7 +111,7 @@ class RecordControlPostgresIntegrationTest {
         assertThat(scalar("SELECT r.id=v.current_revision_id FROM form_instance_revision r JOIN form_instance_record v ON v.id=r.record_id")).isEqualTo("t");
     }
 
-    @Test void signedChangeAndDuplicateConfirmationApplyExactlyOneNewRevision() {
+    @Test void signedChangeAndDuplicateConfirmationApplyExactlyOneNewRevision() throws Exception {
         var command = command(BusinessType.CHANGE);
         var request = requests.submit(command);
         assertThat(requests.submit(command).path("id")).isEqualTo(request.path("id"));
@@ -122,6 +122,8 @@ class RecordControlPostgresIntegrationTest {
         assertThat(scalar("SELECT status FROM record_control_request")).isEqualTo("APPROVED");
         assertThat(scalar("SELECT revision_no FROM form_instance_revision WHERE status='EFFECTIVE'")).isEqualTo("2");
         assertThat(scalar("SELECT values_json FROM form_instance_record")).contains("new");
+        assertThat(mapper.readTree(scalar("SELECT values_json FROM form_instance_record")).path("rows").get(0).path("__rowId").asText())
+                .isEqualTo("11111111-1111-4111-8111-111111111111");
         assertThat(scalar("SELECT values_json FROM form_instance_revision WHERE revision_no=1")).contains("old");
         assertThatThrownBy(() -> complete(task, "APPROVE")).isInstanceOf(RuntimeException.class);
         assertThat(count("form_instance_revision")).isEqualTo(2);

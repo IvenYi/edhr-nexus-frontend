@@ -19,6 +19,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class RecordControlDiff {
     private static final String ROW_ID = "__recordRowId";
+    private static final String SOURCE_ROW_ID = "__rowId";
     private final ObjectMapper mapper;
     private final ProductionExecutionEngine engine;
     private final ExecutionAccess evidence;
@@ -90,7 +91,11 @@ public class RecordControlDiff {
         if (!next.isArray()) throw invalid("子表字段必须为数组");
         Map<String, JsonNode> oldRows = new HashMap<>();
         for (JsonNode row : old) oldRows.put(row.path(ROW_ID).asText(), row);
+        Map<String, String> existingSourceIds = new HashMap<>();
+        for (JsonNode row : old) if (row.hasNonNull(SOURCE_ROW_ID))
+            existingSourceIds.put(row.path(SOURCE_ROW_ID).asText(), row.path(ROW_ID).asText());
         Set<String> seen = new HashSet<>();
+        Set<String> sourceRowIds = new HashSet<>();
         Set<String> columns = new HashSet<>();
         for (JsonNode column : field.path("typeConfig").path("columns")) columns.add(column.path("id").asText());
         ArrayNode rows = mapper.createArrayNode();
@@ -98,6 +103,11 @@ public class RecordControlDiff {
             if (!(item instanceof ObjectNode)) throw invalid("子表行格式不正确");
             ObjectNode row = ((ObjectNode) item).deepCopy();
             String rowId = row.path(ROW_ID).asText();
+            String existingId = existingSourceIds.get(row.path(SOURCE_ROW_ID).asText());
+            if (existingId != null) {
+                if (!rowId.isBlank() && !existingId.equals(rowId)) throw invalid("已有子表来源行标识不可修改");
+                rowId = existingId;
+            }
             if (rowId.isBlank()) rowId = UUID.randomUUID().toString();
             else if (!oldRows.containsKey(rowId)) {
                 try { UUID.fromString(rowId); } catch (IllegalArgumentException ex) { throw invalid("子表新行标识格式不正确"); }
@@ -106,9 +116,17 @@ public class RecordControlDiff {
             row.put(ROW_ID, rowId);
             for (Iterator<String> keys = row.fieldNames(); keys.hasNext();) {
                 String key = keys.next();
-                if (!ROW_ID.equals(key) && !columns.contains(key)) throw invalid("子表包含未知字段");
+                if (!ROW_ID.equals(key) && !SOURCE_ROW_ID.equals(key) && !columns.contains(key)) throw invalid("子表包含未知字段");
             }
             JsonNode previous = oldRows.get(rowId);
+            if (previous != null) {
+                if (row.has(SOURCE_ROW_ID) && !Objects.equals(row.get(SOURCE_ROW_ID), previous.get(SOURCE_ROW_ID)))
+                    throw invalid("已有子表来源行标识不可修改");
+                if (previous.hasNonNull(SOURCE_ROW_ID)) row.set(SOURCE_ROW_ID, previous.get(SOURCE_ROW_ID).deepCopy());
+            }
+            if (row.has(SOURCE_ROW_ID) && (!row.path(SOURCE_ROW_ID).isTextual()
+                    || row.path(SOURCE_ROW_ID).asText().isBlank() || !sourceRowIds.add(row.path(SOURCE_ROW_ID).asText())))
+                throw invalid("子表来源行标识无效或重复");
             for (JsonNode column : field.path("typeConfig").path("columns")) {
                 String key = column.path("id").asText();
                 boolean locked = column.path("readOnly").asBoolean()

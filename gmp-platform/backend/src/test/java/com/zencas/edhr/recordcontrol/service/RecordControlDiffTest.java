@@ -102,4 +102,58 @@ class RecordControlDiffTest {
         assertThat(prepared.values().path("rows").get(0).has("signed")).isFalse();
         assertThat(source.path("rows").get(0).path("signed").asText()).isEqualTo("old signature");
     }
+
+    @Test void productionRowIdentitySurvivesAMainFieldOnlyChange() throws Exception {
+        ObjectNode form = (ObjectNode) mapper.readTree("""
+            {"fields":[{"id":"body","type":"text"},{"id":"rows","type":"subTable","typeConfig":{"columns":[{"id":"value","type":"text"}]}}]}
+            """);
+        ObjectNode source = (ObjectNode) service.identifyRows(mapper.readTree("""
+            {"body":"old","rows":[{"__rowId":"production-row-1","value":"A"}]}
+            """), form, "123");
+        var prepared = service.prepare(form, source, mapper.createObjectNode().put("body", "new"), "44");
+        assertThat(prepared.differences()).hasSize(1);
+        var saved = service.stripRowIds(prepared.values()).path("rows").get(0);
+        assertThat(saved.path("__rowId").asText()).isEqualTo("production-row-1");
+        assertThat(saved.has("__recordRowId")).isFalse();
+    }
+
+    @Test void productionRowReorderingAndNewRowsPreserveNativeIdentities() throws Exception {
+        ObjectNode form = (ObjectNode) mapper.readTree("""
+            {"fields":[{"id":"rows","type":"subTable","typeConfig":{"columns":[{"id":"value","type":"text"}]}}]}
+            """);
+        ObjectNode source = (ObjectNode) service.identifyRows(mapper.readTree("""
+            {"rows":[{"__rowId":"row-a","value":"A"},{"__rowId":"row-b","value":"B"}]}
+            """), form, "123");
+        ObjectNode proposal = mapper.createObjectNode();
+        ArrayNode rows = proposal.putArray("rows").add(source.path("rows").get(1)).add(source.path("rows").get(0));
+        assertThat(service.prepare(form, source, proposal, "44").differences()).isEmpty();
+        rows.add(mapper.createObjectNode().put("__rowId", "row-c").put("value", "C"));
+        var prepared = service.prepare(form, source, proposal, "44");
+        assertThat(prepared.differences()).hasSize(1);
+        assertThat(prepared.differences().get(0).path("changeType").asText()).isEqualTo("ROW_ADDED");
+        assertThat(service.stripRowIds(prepared.values()).path("rows").get(2).path("__rowId").asText()).isEqualTo("row-c");
+    }
+
+    @Test void productionRowIdentityCannotBeReplacedOrReusedByANewRow() throws Exception {
+        ObjectNode form = (ObjectNode) mapper.readTree("""
+            {"fields":[{"id":"rows","type":"subTable","typeConfig":{"columns":[{"id":"value","type":"text"}]}}]}
+            """);
+        ObjectNode source = (ObjectNode) service.identifyRows(mapper.readTree("""
+            {"rows":[{"__rowId":"row-a","value":"A"}]}
+            """), form, "123");
+        ObjectNode proposal = source.deepCopy();
+        ((ObjectNode) proposal.path("rows").get(0)).put("__rowId", "replaced");
+        assertThatThrownBy(() -> service.prepare(form, source, proposal, "44")).hasMessageContaining("行标识");
+        proposal.set("rows", mapper.createArrayNode().add(source.path("rows").get(0))
+                .add(mapper.createObjectNode().put("__rowId", "row-a").put("value", "B")));
+        assertThatThrownBy(() -> service.prepare(form, source, proposal, "44")).hasMessageContaining("行标识");
+        proposal.set("rows", source.path("rows").deepCopy());
+        ((ObjectNode) proposal.path("rows").get(0)).put("__recordRowId", java.util.UUID.randomUUID().toString());
+        assertThatThrownBy(() -> service.prepare(form, source, proposal, "44")).hasMessageContaining("行标识");
+        proposal.set("rows", source.path("rows").deepCopy());
+        ((ObjectNode) proposal.path("rows").get(0)).remove("__rowId");
+        assertThat(service.prepare(form, source, proposal, "44").values().path("rows").get(0).path("__rowId").asText()).isEqualTo("row-a");
+        ((ObjectNode) proposal.path("rows").get(0)).put("unknown", "not a column");
+        assertThatThrownBy(() -> service.prepare(form, source, proposal, "44")).hasMessageContaining("未知字段");
+    }
 }
