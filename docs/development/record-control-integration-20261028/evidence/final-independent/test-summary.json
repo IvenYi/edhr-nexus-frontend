@@ -1,0 +1,152 @@
+{
+  "candidate": "1437f73b5172310e073f8dd8e8011b6f2017f1c9",
+  "suites": [
+    {
+      "class": "RecordControlAccessTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "RecordControlDiffTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "RecordControlMigrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "RecordControlTaskActionServiceTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "RecordControlWorkflowServiceTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "RecordControlWorkflowControllerTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "WorkflowEngineTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "WorkflowTaskControllerTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "ExecutionAccessTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "DhrGenericAccessTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "ProductionExecutionIntegrationTest",
+      "tests": 92,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3,
+      "skippedCases": [
+        "formRecordsBrowserFixture",
+        "firstStartFreezesOneCommittedConfigurationDuringProcessRebinding",
+        "browserEvidenceFixture"
+      ]
+    },
+    {
+      "class": "AuthControllerTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "AuthorizationNoticeFontTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "CurrentDatabaseBaselineTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "CurrentDatabaseBaselinePostgresTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    },
+    {
+      "class": "RecordControlPostgresIntegrationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "skippedCases": []
+    }
+  ],
+  "totals": {
+    "tests": 293,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3,
+    "passed": 290
+  }
+}

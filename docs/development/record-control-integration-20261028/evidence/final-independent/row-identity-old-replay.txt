@@ -1,0 +1,9 @@
+WARNING: A Java agent has been loaded dynamically (/Users/ivenwang/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+Existing production row identity: "1c3068b9-3faa-4c64-b584-18380b84fa9b"
+Actual result: 子表包含未知字段
+Control without production row identity: 1 valid field change(s)
+Confirmed: current production __rowId prevents record-control subtable changes.
