@@ -4,7 +4,7 @@ decisions:
     title: 表单变更与作废受控申请及审核边界
     status: specified
     visibility: internal
-    context: "provenance: user-confirmed；表单变更与作废采用独立申请对象和独立落地语义，共用审核引擎但不共用业务状态；本决策只描述 P0 设计和内部知识投影，不声称生产代码、数据库迁移或运行时审核引擎已实现。"
+    context: "provenance: user-confirmed；表单变更与作废采用独立申请和独立落地语义，共用审批引擎但不共用业务结果。本决策保留 P0 设计与内部知识边界；后续首期按 DEC-0087 收敛来源资格、批准后创建修订及退回另起申请，当前提交的实现证据见 DEC-0042/0087，不能据此宣称撤回、转办、重新分配、DHR/A12 或全部 P0 已完成。"
     decisionStatements:
       - id: DEC-0037-01
         statement: "provenance: user-confirmed；表单变更和表单作废分别创建独立申请，已完成记录不可直接编辑；变更产生新修订，作废只使当前有效修订失效且不修改字段值。"
@@ -54,8 +54,8 @@ decisions:
       - id: scenario.record-correction-creates-new-revision
         given: 一条已完成且存在当前有效修订的记录
         when: 申请人提交表单变更
-        then: 系统生成新修订并保留来源修订只读，未批准前不改写来源记录
-        evidenceIds: [evidence.record-correction-void-design]
+        then: 申请保存隔离的拟变更内容，批准后才生成下一有效修订；来源修订及原签名保留只读，未批准前不改写来源记录
+        evidenceIds: [evidence.record-correction-void-design, evidence.record-control-v1-user-confirmed]
         evidenceRequirements: [修订状态和哈希持久化测试, 来源记录不变验证]
       - id: scenario.record-control-explicit-workflow-freeze
         given: 申请人拥有多条不同类型的已发布审核流程版本
@@ -82,7 +82,7 @@ decisions:
         visibility: internal
         path: docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md
         lineHint: 1
-        summary: "provenance: original-evidence；本决策为设计收敛，记录申请、修订、并行审核、字段标红、DHR 重汇总、投影冲销和审计落地尚无本次实现证据；不得标记为 implemented、verified 或 runtime。"
+        summary: "provenance: original-evidence；本设计形成时尚无记录控制运行实现。2026-10-28 来支已提供申请、有效修订切换、审批/退回适配与部分安全实现；完整 P0 仍缺撤回/转办/重新分配、DHR 真实生效联动、投影冲销及相应独立验收，不能将本设计整体标记为 implemented、verified 或 runtime。"
         evidenceIds: [evidence.record-correction-void-design]
       - id: discrepancy.record-control-no-database-migration
         status: accepted
@@ -90,5 +90,5 @@ decisions:
         visibility: internal
         path: docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md
         lineHint: 1
-        summary: "provenance: user-confirmed；本次本体门禁不创建数据库迁移；后续实现必须单独定义历史记录、快照、DHR 投影和回滚兼容策略。"
+        summary: "provenance: user-confirmed-and-original-evidence；本设计形成时的本体门禁没有创建数据库迁移；来支随后提供 0087/0088 SQL，当前目标已使用合并基线，迁移注册、首次完成修订及回滚的实际验证由集成切片记录，不从 SQL 文件存在推定已执行或完整 DHR/A12 兼容。"
         evidenceIds: [evidence.record-correction-void-design]

@@ -1,0 +1,123 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261028-RECORD-CONTROL-INTEGRATION
+  scope: Integrate the submitted record-control V1 with current edhr-dev in an isolated candidate and establish a verified starting point for DHR and projection follow-up.
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 099bb29f4873d863f51e61493c0ebcbe94803801
+    targetBranch: edhr-dev
+    targetCommit: 8784ba87166addae9cb9659d6120aa84f993c7ef
+    contractReadCommit: 099bb29f4873d863f51e61493c0ebcbe94803801
+    uncommittedContractPaths: []
+  summary: Preserve both development histories, resolve integration defects and knowledge identifier collisions, and verify the actual application-to-effective-revision path. DHR notifications and A12 projection changes remain a following functional slice.
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedSourceReferences:
+    - AGENTS.md
+    - docs/development/record-control-work-allocation-and-integration-contract.md
+    - docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml
+    - docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml
+    - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+    - docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml
+    - docs/knowledge/evidence/record-control-v1-user-confirmed.md
+    - docs/development/branch-review-20261016-w1-review-export/followup-20261016-source-dependency.md
+  functionalHead: aef427c524bd7270b3775fbd7c599c72a545e21b
+  inferred:
+    - id: inference.record-control-integration-minimal-slice
+      statement: This slice prepares and verifies the integrated record-control source capability; it does not implement notifications, projection replacement, rule rebuild or every historic P0 action.
+      rationale: The user asks how our work can safely start on the submitted implementation; downstream behavior needs its own real source and concurrency verification.
+      relatedIds: [discrepancy.dhr-review-effective-source-integration, discrepancy.dhr-review-complete-evidence-impact-gap]
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0086-03
+      supersededStatementIds: [DEC-0050-04]
+      scope: V1 record-control entry uses the complete form instance number; batch/SN and other combined search entry points remain deferred.
+      retainedScope: Existing global form queries and numbering identity are unchanged.
+      sourceReferences: [docs/knowledge/evidence/record-change-search-scope-user-confirmed.md]
+    - decisionStatementId: DEC-0089-01
+      supersededStatementIds: [DEC-0050-01, DEC-0050-02, DEC-0050-03]
+      scope: The current display term is 表单实例编号.
+      retainedScope: Identity, number format, allocation timing, string transport and permission boundaries remain unchanged.
+      sourceReferences: [docs/knowledge/evidence/form-instance-number-display-user-confirmed.md]
+    - decisionStatementId: DEC-0087-02
+      supersededStatementIds: [rule.record-correction.new-revision-only, scenario.record-correction-creates-new-revision]
+      scope: Correct the old description using the existing confirmed policy: proposed content is isolated during review; a new content revision becomes effective only on approval.
+      retainedScope: Completed original data remains read-only and old revisions and signatures remain historical evidence.
+      sourceReferences: [docs/knowledge/evidence/record-control-v1-user-confirmed.md]
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: record-control
+        change: Merge application, revision, workflow-result delivery, signing and dedicated task query implementation.
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol]
+      - area: knowledge
+        change: Remap the incoming DEC-0075 through DEC-0078 identifiers without replacing the target branch decisions and preserve source provenance.
+        evidenceReferences: [docs/agents/business-knowledge-modeler.md]
+    transitiveImpacts:
+      - area: workflow-and-signature
+        change: Preserve current authentication, task locking, immutable audit and signature payload guarantees alongside the record-control adapter.
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java]
+      - area: dhr-and-projection
+        change: Identify effective revision integration points and keep the two inherited high findings and A12 open until real downstream verification.
+        evidenceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    potentialImpacts:
+      - area: production-execution
+        concern: Record control rewrites current form values and status; verify execution locking and first-completion revision initialization against current production services.
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java]
+    unaffectedAreas:
+      - area: product-policy
+        reason: No new active-form void eligibility, managerial signature policy, release policy or customer-specific exception is authorized here.
+    compatibilityAndMigration:
+      - concern: The current target uses a consolidated schema and seed baseline while the source adds historic-numbered migrations; verify real registration and upgrade behavior on an isolated PostgreSQL database.
+    snapshotImpacts:
+      - concern: Preserve source snapshots, revision history, existing signature ownership and DHR frozen evidence.
+    auditImpacts:
+      - concern: Final approval, result delivery, source revision update and immutable audit must succeed or roll back together.
+    permissionImpacts:
+      - concern: Preserve authenticated applicant/signer/candidate boundaries and current target hardening; do not broaden unrelated workflow or signature access.
+    testImpacts:
+      - scope: integration-readiness
+        scenarios: [backend compilation, frontend build, knowledge validation, workflow and authentication regressions, fresh migration, actual revision initialization and result application, rollback and idempotency]
+        evidenceReferences: []
+    evidenceGaps:
+      - Source branch documentation and test existence do not establish execution on the merged candidate.
+      - Complete DHR impact notifications, A12 revision-aware projection switching and release-level browser/concurrency acceptance remain outside this preparation slice.
+  extensionStrategy:
+    selectedPaths: [product-core, transaction-orchestration, standard-action]
+    rationale: Reuse the public workflow engine and existing signature execution while keeping record-control result application in its owning domain.
+    ownershipBoundaries:
+      - owner: primary-agent
+        responsibility: Merge resolution, application and migration fixes, implementation tests and integration report.
+      - owner: ontology-agent
+        responsibility: Knowledge identifier remapping, scoped semantic reconciliation and structured ontologyResult; no application or test edits.
+      - owner: quality-agent
+        responsibility: Independent candidate validation and structured qualityResult; no repairs.
+  affectedFiles:
+    - path: docs/knowledge
+      changeType: update
+      reason: Source knowledge identifiers and current target definitions require reconciliation.
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol
+      changeType: create
+      reason: Submitted source capability.
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow
+      changeType: update
+      reason: Public workflow integration and conflict resolution.
+    - path: gmp-platform/backend/src/main/resources/db/changelog
+      changeType: update
+      reason: Register record-control schema against current baseline if missing.
+    - path: gmp-platform/frontend/src/router/index.tsx
+      changeType: update
+      reason: Preserve current routes alongside record-control entry points.
+  acceptanceScenarios:
+    - id: scenario.record-control-integrated-build
+      given: Current target and submitted feature are combined.
+      when: Focused backend checks, frontend build and knowledge validation run on the same candidate.
+      then: Both branches' relevant behavior remains buildable and knowledge IDs are unique and resolvable.
+      evidenceRequirements: [command outputs, fixed base and functional head, candidate commit]
+    - id: scenario.record-control-real-effective-revision
+      given: An isolated current-schema database and a legitimately completed form.
+      when: A signed application is approved or returned through the supported adapter.
+      then: The proper revision or void result is applied once, rejected paths preserve source data, and business failure rolls back final approval.
+      evidenceRequirements: [PostgreSQL migration and integration tests]

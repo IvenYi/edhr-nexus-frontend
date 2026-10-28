@@ -217,9 +217,9 @@ terms:
     status: specified
     visibility: internal
   - id: term.form-instance-number
-    name: 表单实例号
+    name: 表单实例编号
     definition: 由系统为一份具体填报记录生成的不可修改编号；同份记录后续保存、提交、审批和退回修改保持编号不变，新建另一份生成新编号，区别于模板编号、版本号和子表明细行号。
-    aliases: [表单记录号]
+    aliases: [表单实例号, 表单流水号, 表单记录号]
     status: specified
     visibility: internal
   - id: term.form-process-template
@@ -266,7 +266,7 @@ terms:
     visibility: internal
   - id: term.workflow-return-action
     name: 退回
-    definition: 审批人对当前审批任务作出不通过并将本轮申请退回申请阶段的标准动作；它不是独立的“拒绝”动作。
+    definition: 审批人对当前审批任务作出不通过决定的标准动作；它不是独立的“拒绝”动作。记录控制首期按 DEC-0087-05 终结旧申请和本轮流程，再发起使用新的申请、编号、签名和流程实例；普通生产表单自身的退回修改规则不因该记录控制范围而改变。
     aliases: [RETURN]
     status: specified
     visibility: internal
@@ -278,7 +278,7 @@ terms:
     visibility: internal
   - id: term.record-control-workflow-integration
     name: 记录控制流程集成边界
-    definition: 记录控制申请域与公共流程域之间的稳定协作边界；记录控制域拥有申请、来源资格、签名和业务落地，公共流程域拥有候选查询、显式版本启动、路由、任务和流程运行日志。阶段一已实现候选查询与显式启动，其他共享类型仍是后续运行时边界。
+    definition: 记录控制申请域与公共流程域之间的稳定协作边界；记录控制域拥有申请、来源资格、签名和业务落地，公共流程域拥有候选查询、显式版本启动、路由、任务和流程运行日志。阶段一已实现候选查询与显式启动；后续来支提供申请确认、审批/退回适配及最终结果同步消费的源码。撤回、记录控制转办、重新分配和完整 DHR/A12 仍按各自未闭环边界处理，不能由接口或合并推定通过验收。
     aliases: [记录控制审批流程集成边界, RecordControlWorkflowPort]
     status: implemented
     visibility: internal
@@ -746,7 +746,7 @@ terms:
     visibility: internal
   - id: term.record-correction-request
     name: 表单变更申请
-    definition: 针对已完成记录发起的独立受控申请；申请提交新修订，经匹配的已发布审批流程批准后替代当前有效修订。
+    definition: 针对已完成记录发起的独立受控申请；申请保存与正式值隔离的拟变更内容，经匹配的已发布审批流程批准后生成下一内容修订并替代当前有效修订；退回终结旧申请，再发起使用新的申请和流程实例。
     aliases: [变更申请, 变更申请单, RecordCorrectionRequest]
     status: specified
     visibility: internal
@@ -760,6 +760,12 @@ terms:
     name: 变更修订
     definition: 表单变更产生的完整数据修订，保留基于修订、哈希、生效区间和申请引用；历史修订只读且不可覆盖。
     aliases: [记录修订, CorrectionRevision]
+    status: specified
+    visibility: internal
+  - id: term.form-instance-revision
+    name: 表单实例修订
+    definition: 同一表单实例在受控变更中保留的完整内容版本；模板版本与实例修订相互独立，历史修订只读，且同一实例同时最多存在一个当前有效修订。
+    aliases: [实例修订, FormInstanceRevision]
     status: specified
     visibility: internal
   - id: term.record-impact-assessment

@@ -46,6 +46,7 @@ class FormTraceIndexPostgresTest {
         dataSource = new DriverManagerDataSource(url + "?currentSchema=" + schema, user, password);
         jdbc = new JdbcTemplate(dataSource); tx = new TransactionTemplate(new DataSourceTransactionManager(dataSource));
         jdbc.execute("CREATE SEQUENCE form_instance_number_seq");
+        jdbc.execute("CREATE SEQUENCE hibernate_sequence");
         jdbc.execute("CREATE TABLE form_template_version(id bigint PRIMARY KEY,template_id bigint)");
         jdbc.update("INSERT INTO form_template_version VALUES(20,10)");
         jdbc.execute("""
@@ -57,6 +58,8 @@ class FormTraceIndexPostgresTest {
                     operation_name text,created_by_id text,updated_by_id text)
                 """);
         jdbc.execute("CREATE TABLE dhr_instance(id bigint,dhr_no text,status text,production_object_id bigint,tenant_id text)");
+        jdbc.execute("ALTER TABLE form_instance_record ADD COLUMN current_revision_id bigint");
+        jdbc.execute("CREATE TABLE form_instance_revision(id bigint PRIMARY KEY,tenant_id text,record_id bigint,revision_no int,status text,values_json text,content_hash text,created_by text,created_at timestamp)");
         jdbc.execute("CREATE TABLE work_order(id bigint PRIMARY KEY,tenant_id text,order_no text)");
         jdbc.execute("CREATE TABLE production_object(id bigint PRIMARY KEY,tenant_id text,work_order_id bigint,object_no text,object_type text)");
         try (var connection = dataSource.getConnection()) {

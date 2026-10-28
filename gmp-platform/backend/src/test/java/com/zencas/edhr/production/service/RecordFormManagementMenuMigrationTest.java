@@ -50,4 +50,37 @@ class RecordFormManagementMenuMigrationTest {
             }
         }
     }
+
+    @Test
+    void recordChangeNavigationPermissionsAreSeededAndAdminGrantIsIdempotent() throws Exception {
+        try (var connection = DriverManager.getConnection("jdbc:h2:mem:record-change-menu-migration;MODE=PostgreSQL", "sa", "")) {
+            var sql = connection.createStatement();
+            sql.execute("CREATE SEQUENCE hibernate_sequence START WITH 1000");
+            sql.execute("CREATE TABLE permission(id BIGINT PRIMARY KEY,code VARCHAR(128) UNIQUE,name VARCHAR(128),type VARCHAR(32),parent_code VARCHAR(128),sort_order INT)");
+            sql.execute("CREATE TABLE role(id BIGINT PRIMARY KEY,code VARCHAR(64))");
+            sql.execute("CREATE TABLE role_permission(id BIGINT PRIMARY KEY,role_id BIGINT,permission_id BIGINT)");
+            sql.execute("INSERT INTO permission VALUES(1,'records','记录','PAGE',NULL,5)");
+            sql.execute("INSERT INTO role VALUES(1,'ADMIN'),(2,'OPERATOR')");
+            try (var migration = new Liquibase("db/changelog/0088-record-change-menu-permissions.sql", new ClassLoaderResourceAccessor(), new JdbcConnection(connection))) {
+                migration.update(new Contexts(), new LabelExpression());
+                migration.update(new Contexts(), new LabelExpression());
+                try (var rows = sql.executeQuery("SELECT code,parent_code FROM permission WHERE code LIKE 'records.%' ORDER BY code")) {
+                    for (String code : new String[]{"records.approvals", "records.change", "records.history", "records.mine"}) {
+                        assertThat(rows.next()).isTrue();
+                        assertThat(rows.getString(1)).isEqualTo(code);
+                        assertThat(rows.getString(2)).isEqualTo("records");
+                    }
+                    assertThat(rows.next()).isFalse();
+                }
+                try (var rows = sql.executeQuery("SELECT count(*) FROM role_permission WHERE role_id=1")) {
+                    rows.next();
+                    assertThat(rows.getInt(1)).isEqualTo(4);
+                }
+                try (var rows = sql.executeQuery("SELECT count(*) FROM role_permission WHERE role_id=2")) {
+                    rows.next();
+                    assertThat(rows.getInt(1)).isZero();
+                }
+            }
+        }
+    }
 }

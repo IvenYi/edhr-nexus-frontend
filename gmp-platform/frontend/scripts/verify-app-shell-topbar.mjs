@@ -195,7 +195,7 @@ mustInclude('data-app-function-menu', 'function menu should expose a QA selector
 mustInclude('height: MODULE_ITEM_HEIGHT', 'module entries should clamp height to 64px');
 mustInclude('minHeight: MODULE_ITEM_HEIGHT', 'module entries should clamp minimum height to 64px');
 mustMatch(
-  /width:\s*54,\n\s*height:\s*MODULE_ITEM_HEIGHT,\n\s*minHeight:\s*MODULE_ITEM_HEIGHT,\n\s*flex:\s*'0 0 auto'/,
+  /width:\s*54,\r?\n\s*height:\s*MODULE_ITEM_HEIGHT,\r?\n\s*minHeight:\s*MODULE_ITEM_HEIGHT,\r?\n\s*flex:\s*'0 0 auto'/,
   'module entry style should clamp height and disable flex growth in the same block',
 );
 mustInclude('height: \'100vh\'', 'left navigation columns should fill the viewport height');

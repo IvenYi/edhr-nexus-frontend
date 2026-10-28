@@ -19,7 +19,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0041-04
-        statement: "provenance: implementation-boundary；本决策形成时的模板切片只修正开始节点和发布契约。公共流程侧显式版本实例创建、版本快照及越过开始节点进入首审批的后续实现由 DEC-0042-02/03 补充；记录控制申请入口、申请人签名真实性校验、来源资格与业务锁、申请和流程原子提交及结果消费仍无完整实现证据，不投影为已实现申请闭环或发布验收。"
+        statement: "provenance: implementation-boundary；本决策形成时的模板切片只修正开始节点和发布契约。公共流程侧显式版本实例创建、版本快照及越过开始节点进入首审批由 DEC-0042-02/03 补充；后续来支已提供记录控制申请、签署、来源资格、活动锁及结果消费源码，当前成熟度见 DEC-0042/0087 及集成切片证据。本声明保留原模板切片的验收边界，不把它或当前来支源码等同于完整 P0 或生产发布。"
         status: specified
         visibility: internal
       - id: DEC-0041-05

@@ -11,8 +11,11 @@ class CurrentDatabaseBaselineTest {
         try (var paths = Files.walk(root)) {
             assertThat(paths.filter(Files::isRegularFile).map(root::relativize).map(Path::toString).toList())
                 .containsExactlyInAnyOrder("db.changelog-master.yaml",
-                    "baseline/0001-current-schema.sql", "baseline/0002-current-seed.sql");
+                    "baseline/0001-current-schema.sql", "baseline/0002-current-seed.sql",
+                    "0087-record-control.sql", "0088-record-change-menu-permissions.sql");
         }
+        String master = Files.readString(root.resolve("db.changelog-master.yaml"));
+        assertThat(master).contains("0087-record-control.sql", "0088-record-change-menu-permissions.sql");
         String schema = Files.readString(root.resolve("baseline/0001-current-schema.sql"));
         assertThat(schema).contains("CREATE TABLE public.signature", "snapshot_data text",
                 "ck_signature_snapshot_data_json", "CREATE FUNCTION public.sync_deletion_form_references")

@@ -97,12 +97,16 @@ class ProductionExecutionIntegrationTest {
         jdbc.execute("DROP TABLE IF EXISTS dhr_instance");
         jdbc.execute("DROP SEQUENCE IF EXISTS dhr_instance_number_seq");
         jdbc.execute("DROP TABLE IF EXISTS form_trace_value");
+        jdbc.execute("DROP TABLE IF EXISTS form_instance_revision");
         jdbc.execute("DROP TABLE IF EXISTS form_instance_record");
         jdbc.execute("DROP SEQUENCE IF EXISTS form_instance_number_seq");
         var migration = new String(getClass().getResourceAsStream("/db/changelog/0082-form-instance-records.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
         for (String sql : migration.split("--changeset codex:0082-form-instance-history")[0].split(";")) {
             if (sql.contains("CREATE")) jdbc.execute(sql);
         }
+        jdbc.execute("CREATE SEQUENCE IF NOT EXISTS hibernate_sequence");
+        jdbc.execute("ALTER TABLE form_instance_record ADD COLUMN current_revision_id BIGINT");
+        jdbc.execute("CREATE TABLE form_instance_revision(id BIGINT PRIMARY KEY,tenant_id VARCHAR(64),record_id BIGINT,revision_no INT,status VARCHAR(32),values_json TEXT,content_hash VARCHAR(64),created_by VARCHAR(192),created_at TIMESTAMP)");
         var queryMigration = new String(getClass().getResourceAsStream("/db/changelog/0083-form-instance-query.sql").readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
         for (String sql : queryMigration.split("--changeset codex:0083-form-instance-query-history")[0].split(";")) {
             if (sql.contains("ALTER") || sql.contains("CREATE")) jdbc.execute(sql);

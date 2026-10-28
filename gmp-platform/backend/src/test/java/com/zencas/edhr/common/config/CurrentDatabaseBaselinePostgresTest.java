@@ -47,18 +47,20 @@ class CurrentDatabaseBaselinePostgresTest {
     @Test void freshInstallIsCurrentCompleteAndRepeatableWithoutBusinessBackfills() throws Exception {
         install();
         connection.setAutoCommit(true);
-        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("2");
+        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("7");
         assertThat(scalar("SELECT count(*) FROM pg_constraint WHERE connamespace='public'::regnamespace AND NOT convalidated")).isEqualTo("0");
         assertThat(scalar("SELECT count(*) FROM form_lookup_item WHERE builtin")).isEqualTo("9");
         assertThat(scalar("SELECT string_agg(id,',' ORDER BY id) FROM form_lookup_item WHERE builtin"))
             .isEqualTo("equipmentText,lookup_material_code,lookup_order_number,lookup_product_code,lookup_production_batch,lookup_supplier_lot,lookup_trace_date,lookup_work_order,materialLotText");
         assertThat(scalar("SELECT count(*) FROM material_type")).isEqualTo("5");
-        assertThat(scalar("SELECT count(*) FROM pg_sequences WHERE schemaname='public'")).isEqualTo("6");
+        assertThat(scalar("SELECT count(*) FROM pg_sequences WHERE schemaname='public'")).isEqualTo("7");
+        assertThat(scalar("SELECT count(*) FROM form_instance_revision")).isEqualTo("0");
+        assertThat(scalar("SELECT count(*) FROM record_control_request")).isEqualTo("0");
         assertThat(scalar("SELECT count(*) FROM form_instance_record")).isEqualTo("0");
         assertThat(scalar("SELECT count(*) FROM dhr_instance")).isEqualTo("0");
         assertThat(scalar("SELECT count(*) FROM audit_event")).isEqualTo("0");
         assertThat(scalar("SELECT count(*) FROM permission p JOIN role_permission rp ON rp.permission_id=p.id JOIN role r ON r.id=rp.role_id WHERE r.code='ADMIN'"))
-            .isEqualTo("72");
+            .isEqualTo("76");
         assertThat(scalar("SELECT count(*) FROM quality_reason")).isEqualTo("0");
         assertThat(scalar("SELECT count(*) FROM permission p JOIN role_permission rp ON rp.permission_id=p.id JOIN role r ON r.id=rp.role_id WHERE r.code='ADMIN' AND p.code IN ('master-data.reason-modeling','master-data.defect-reasons','master-data.scrap-reasons')"))
             .isEqualTo("3");
@@ -70,7 +72,7 @@ class CurrentDatabaseBaselinePostgresTest {
         String before = scalar("SELECT md5(string_agg(row_to_json(p)::text,',' ORDER BY id)) FROM permission p");
         install();
         connection.setAutoCommit(true);
-        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("2");
+        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("7");
         assertThat(scalar("SELECT md5(string_agg(row_to_json(p)::text,',' ORDER BY id)) FROM permission p")).isEqualTo(before);
 
         // First release stores the original bytes, not the normalized JSONB representation.
@@ -93,5 +95,38 @@ class CurrentDatabaseBaselinePostgresTest {
         assertThatThrownBy(this::install).hasMessageContaining("SQL Precondition failed.  Expected '0' got '1'");
         assertThat(scalar("SELECT value FROM existing_test_data WHERE id=1")).isEqualTo("keep");
         assertThat(scalar("SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_name='signature'")).isEqualTo("0");
+    }
+
+    @Test void existingCurrentBaselineGainsOnlyRealCompletedRevisionHistory() throws Exception {
+        try (var resource = new ClassLoaderResourceAccessor()) {
+            new Liquibase("db/changelog/baseline/0001-current-schema.sql", resource, new JdbcConnection(connection))
+                    .update(new Contexts(), new LabelExpression());
+            new Liquibase("db/changelog/baseline/0002-current-seed.sql", resource, new JdbcConnection(connection))
+                    .update(new Contexts(), new LabelExpression());
+        }
+        connection.setAutoCommit(true);
+        var sql = connection.createStatement();
+        sql.execute("INSERT INTO material(id,code,name) VALUES(-20,'RC-UPGRADE-P','升级产品')");
+        sql.execute("INSERT INTO route(id,code,name) VALUES(-21,'RC-UPGRADE-R','升级路线')");
+        sql.execute("INSERT INTO route_version(id,route_id,version,code) VALUES(-22,-21,'1','RC-UPGRADE-RV')");
+        sql.execute("INSERT INTO dhr_template(id,code,name) VALUES(-23,'RC-UPGRADE-D','升级目录')");
+        sql.execute("INSERT INTO dhr_template_version(id,dhr_template_id,version_label) VALUES(-24,-23,'1')");
+        sql.execute("INSERT INTO product_process(id,owner_type,owner_id) VALUES(-25,'PRODUCT',-20)");
+        sql.execute("INSERT INTO product_process_version(id,product_process_id,version_label,production_mode,production_form,route_version_id,dhr_template_version_id) VALUES(-26,-25,'1','量产','批次',-22,-24)");
+        sql.execute("INSERT INTO work_order(id,order_no,product_id,planned_quantity) VALUES(-27,'RC-UPGRADE-WO',-20,1)");
+        sql.execute("INSERT INTO production_object(id,work_order_id,object_no,object_type,process_version_id,target_quantity) VALUES(-1,-27,'RC-UPGRADE-B','BATCH',-26,1)");
+        sql.execute("INSERT INTO form_template(id,code,name) VALUES(-10,'RC-UPGRADE','升级来源')");
+        sql.execute("INSERT INTO form_template_version(id,template_id) VALUES(-11,-10)");
+        sql.execute("INSERT INTO form_instance_record(id,tenant_id,source_type,instance_no,object_id,operation_id,form_id,copy_id,template_id,version_id,snapshot_json,values_json,status,updated_at) VALUES(-12,'default','PRODUCTION_EXECUTION','RC-OLD',-1,'op','form','form',-10,-11,'{}','{\"value\":1}','COMPLETED',CURRENT_TIMESTAMP),(-13,'default','PRODUCTION_EXECUTION','RC-ACTIVE',-1,'op','form2','form2',-10,-11,'{}','{}','FILLING',CURRENT_TIMESTAMP)");
+        install();
+        connection.setAutoCommit(true);
+        assertThat(scalar("SELECT count(*) FROM form_instance_revision")).isEqualTo("1");
+        assertThat(scalar("SELECT values_json FROM form_instance_revision")).isEqualTo("{\"value\":1}");
+        assertThat(scalar("SELECT created_by FROM form_instance_revision")).isNull();
+        assertThat(scalar("SELECT current_revision_id FROM form_instance_record WHERE id=-13")).isNull();
+        assertThat(scalar("SELECT count(*) FROM signature")).isEqualTo("0");
+        assertThat(scalar("SELECT count(*) FROM audit_event")).isEqualTo("0");
+        install();
+        assertThat(scalar("SELECT count(*) FROM form_instance_revision")).isEqualTo("1");
     }
 }

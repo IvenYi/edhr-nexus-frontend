@@ -3,3 +3,7 @@ databaseChangeLog:
       file: db/changelog/baseline/0001-current-schema.sql
   - include:
       file: db/changelog/baseline/0002-current-seed.sql
+  - include:
+      file: db/changelog/0087-record-control.sql
+  - include:
+      file: db/changelog/0088-record-change-menu-permissions.sql

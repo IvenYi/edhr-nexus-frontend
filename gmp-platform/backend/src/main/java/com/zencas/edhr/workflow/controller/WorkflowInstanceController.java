@@ -49,14 +49,14 @@ public class WorkflowInstanceController {
             @RequestParam(defaultValue = "desc") String order) {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(direction, sort));
-        Page<WorkflowInstance> result = workflowInstanceRepository.findNonDhr(pageable);
+        Page<WorkflowInstance> result = workflowInstanceRepository.findGeneric(pageable);
         return ApiResponse.success(PageResult.of(
                 result.getContent(), page, size, result.getTotalElements()));
     }
 
     @GetMapping("/{id}")
     public ApiResponse<WorkflowInstance> getById(@PathVariable Long id) {
-        workflowEngine.assertNotDhrInstance(id);
+        workflowEngine.assertGenericInstanceAccessAllowed(id);
         return workflowInstanceRepository.findById(id)
                 .map(ApiResponse::success)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
@@ -65,15 +65,15 @@ public class WorkflowInstanceController {
     @PostMapping
     @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<WorkflowInstance> create(@RequestBody WorkflowInstance entity) {
-        protectDhr(entity);
+        protectControlled(entity);
         return ApiResponse.success(workflowInstanceRepository.save(entity));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<WorkflowInstance> update(@PathVariable Long id, @RequestBody WorkflowInstance entity) {
-        workflowEngine.assertNotDhrInstance(id);
-        protectDhr(entity);
+        workflowEngine.assertGenericInstanceAccessAllowed(id);
+        protectControlled(entity);
         entity.setId(id);
         return ApiResponse.success(workflowInstanceRepository.save(entity));
     }
@@ -81,7 +81,7 @@ public class WorkflowInstanceController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<Void> delete(@PathVariable Long id) {
-        workflowEngine.assertNotDhrInstance(id);
+        workflowEngine.assertGenericInstanceAccessAllowed(id);
         workflowInstanceRepository.deleteById(id);
         return ApiResponse.success(null);
     }
@@ -94,7 +94,7 @@ public class WorkflowInstanceController {
      */
     @GetMapping("/{id}/graph")
     public ApiResponse<GraphData> graph(@PathVariable Long id) {
-        workflowEngine.assertNotDhrInstance(id);
+        workflowEngine.assertGenericInstanceAccessAllowed(id);
         WorkflowInstance instance = workflowInstanceRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
 
@@ -153,7 +153,7 @@ public class WorkflowInstanceController {
      */
     @GetMapping("/{id}/logs")
     public ApiResponse<List<WorkflowActionLog>> logs(@PathVariable Long id) {
-        workflowEngine.assertNotDhrInstance(id);
+        workflowEngine.assertGenericInstanceAccessAllowed(id);
         workflowInstanceRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
 
@@ -223,9 +223,14 @@ public class WorkflowInstanceController {
         private Long signatureId;
     }
 
-    private void protectDhr(WorkflowInstance entity) {
-        workflowEngine.assertNotDhrInstance(entity.getId());
-        if ("DHR_SUMMARY".equals(entity.getBusinessType())) throw new BusinessException(ErrorCode.WF_007, "请通过 DHR 汇总发起审核");
+    private void protectControlled(WorkflowInstance entity) {
+        workflowEngine.assertGenericInstanceIfPresent(entity.getId());
+        if ("DHR_SUMMARY".equals(entity.getBusinessType())) {
+            throw new BusinessException(ErrorCode.WF_007, "请通过 DHR 汇总发起审核");
+        }
+        if ("CHANGE".equals(entity.getBusinessType()) || "OBSOLETE".equals(entity.getBusinessType())) {
+            throw new BusinessException(ErrorCode.WF_007, "请通过记录控制入口发起变更或作废流程");
+        }
     }
 
     private String currentOperatorId() {

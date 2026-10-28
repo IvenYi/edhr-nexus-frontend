@@ -1,0 +1,34 @@
+{
+  "knowledgeBaselineVersion": "0.3.25",
+  "sourceCommit": "099bb29f4873d863f51e61493c0ebcbe94803801",
+  "targetCommit": "8784ba87166addae9cb9659d6120aa84f993c7ef",
+  "functionalHead": "aef427c524bd7270b3775fbd7c599c72a545e21b",
+  "testedState": "uncommitted integration worktree; knowledge delta over sourceCommit",
+  "formalKnowledgeTest": {
+    "command": "mvn -q -Dtest=BusinessKnowledgeModelTest test",
+    "exitCode": 0,
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": "ontology-knowledge-final.txt"
+  },
+  "initialAttempt": {
+    "phase": "testCompile",
+    "outcome": "failed-before-knowledge-test-execution",
+    "cause": "Source RecordControlAccessTest called obsolete generic task query overloads; primary agent repaired the test calls before final run.",
+    "log": "ontology-knowledge-test.txt"
+  },
+  "limitedInventory": {
+    "parsedKnowledgeYamlFiles": 237,
+    "duplicateDecisionIds": [],
+    "noncurrentKnowledgeVersionFiles": [],
+    "meaning": "YAML, version and decision identifier inventory only; not a whole-repository semantic review."
+  },
+  "whitespace": {
+    "command": "git diff --check -- docs/knowledge docs/architecture",
+    "exitCode": 0
+  },
+  "runtimeValidationExecutedByOntology": false,
+  "productionReadinessClaimed": false
+}

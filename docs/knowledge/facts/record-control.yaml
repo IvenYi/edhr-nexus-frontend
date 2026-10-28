@@ -1,0 +1,146 @@
+knowledgeModelVersion: 0.3.25
+facts:
+  - id: fact.record-control-release-scope
+    name: 记录变更首期检索范围
+    conceptId: concept.record-control-application
+    valueType: string
+    sourceType: configuration
+    sourcePath: docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml
+    aliases: [recordChange.releaseScope]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-change-search-scope-user-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: DEC-0086-03
+    capturedAt: '2026-10-28'
+    reviewStatus: reviewed
+  - id: fact.record-control-source-status
+    name: 来源表单实例主状态
+    conceptId: concept.form-instance
+    valueType: string
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java
+    aliases: [recordControl.sourceStatus]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-v1-user-confirmed]
+    sourceRevision: aef427c524bd7270b3775fbd7c599c72a545e21b
+    sourceLocator: source-status-validation-pending
+    capturedAt: '2026-09-16'
+    reviewStatus: unreviewed
+  - id: fact.record-control-current-revision-present
+    name: 来源实例当前有效修订存在
+    conceptId: concept.form-instance-revision
+    valueType: boolean
+    sourceType: derived
+    sourcePath: docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml
+    aliases: [recordControl.currentRevisionPresent]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-v1-user-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: DEC-0087-03
+    capturedAt: '2026-10-28'
+    reviewStatus: reviewed
+  - id: fact.record-control-active-application-present
+    name: 来源实例活动申请存在
+    conceptId: concept.record-control-application
+    valueType: boolean
+    sourceType: derived
+    sourcePath: docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml
+    aliases: [recordControl.activeApplicationPresent]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-v1-user-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: DEC-0087-03
+    capturedAt: '2026-10-28'
+    reviewStatus: reviewed
+  - id: fact.record-control-authenticated-user-present
+    name: 后端认证用户存在
+    conceptId: concept.record-control-application
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml
+    aliases: [recordControl.authenticatedUserPresent]
+    availability: not-available
+    allowedOperators: [equals]
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.record-control-v1-user-confirmed]
+    sourceRevision: working-tree
+    sourceLocator: DEC-0087-07
+    capturedAt: '2026-10-28'
+    reviewStatus: reviewed
+  - id: fact.record-control-workflow-result
+    name: 记录控制流程结果
+    conceptId: concept.record-control-application
+    valueType: string
+    sourceType: derived
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+    aliases: [recordControl.workflowResult]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.record-control-workflow-result-delivery-adapter, evidence.record-control-workflow-result-business-handler, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-task-action-result-tests]
+    sourceRevision: aef427c524bd7270b3775fbd7c599c72a545e21b
+    sourceLocator: WorkflowEngine.recordControlResultEvent 与 RecordControlTaskActionService.complete
+    capturedAt: '2026-10-23'
+    reviewStatus: reviewed
+  - id: fact.record-control-signature-target-type
+    name: 记录控制签名目标类型
+    conceptId: concept.record-control-application
+    valueType: string
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java
+    aliases: [signature.targetType]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.record-control-signature-generic-controller-boundary, evidence.record-control-signature-generic-list-boundary, evidence.record-control-signature-generic-crud-tests, evidence.record-control-signature-generic-list-tests]
+    sourceRevision: aef427c524bd7270b3775fbd7c599c72a545e21b
+    sourceLocator: SignatureController.protectExecutionSignature / SignatureRepository.findGeneric
+    capturedAt: '2026-10-28'
+    reviewStatus: reviewed
+  - id: fact.record-control-request-status
+    name: 记录控制申请状态
+    conceptId: concept.record-control-application
+    valueType: string
+    sourceType: database
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+    aliases: [recordControl.requestStatus]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests]
+    sourceRevision: aef427c524bd7270b3775fbd7c599c72a545e21b
+    sourceLocator: RecordControlService.requestDetail / requireRequestDetailAccess
+    capturedAt: '2026-10-28'
+    reviewStatus: reviewed
+  - id: fact.record-control-workflow-task-authenticated-user-present
+    name: 记录控制审批任务认证用户存在
+    conceptId: concept.record-control-application
+    valueType: boolean
+    sourceType: runtime-context
+    sourcePath: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+    aliases: [recordControl.workflowTaskAuthenticatedUserPresent]
+    availability: runtime
+    allowedOperators: [equals]
+    status: implemented
+    visibility: internal
+    evidenceIds: [evidence.record-control-workflow-task-projection-repository, evidence.record-control-workflow-task-projection-service, evidence.record-control-workflow-task-projection-tests]
+    sourceRevision: aef427c524bd7270b3775fbd7c599c72a545e21b
+    sourceLocator: RecordControlService.listMyWorkflowTasks / actor
+    capturedAt: '2026-10-28'
+    reviewStatus: reviewed

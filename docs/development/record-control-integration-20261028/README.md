@@ -1,0 +1,35 @@
+# 记录控制集成与后续开发入口
+
+本切片为 L2 集成准备。功能来源为 `feat/record-change@aef427c524bd7270b3775fbd7c599c72a545e21b`，初始目标为 `edhr-dev@099bb29f4873d863f51e61493c0ebcbe94803801`，随后取得目标增量 `8784ba87166addae9cb9659d6120aa84f993c7ef`。工作在隔离分支 `codex/record-control-integration-20261028` 中进行；实际最终候选和独立质量结果以质量报告为准。
+
+## 已确认的集成问题
+
+1. **迁移未注册**（original-evidence）：主线已采用 schema/seed 初版基线，来支 `0087-record-control.sql`、`0088-record-change-menu-permissions.sql` 未进入正常 master。已在不可变基线之后追加原文件，不改历史 SQL 或基线摘要。新装、重复执行及已安装当前基线后的完成记录回填均由独立 PostgreSQL 数据库验证。
+2. **新完成表单缺少 Rev.1**（original-evidence）：迁移只处理执行当时的旧完成记录；当前 `FormInstanceRecordService.saved` 没有创建初始修订。已在首次完成的同一事务中保存 Rev.1、原值摘要和当前引用；重复完成不新增修订。
+3. **申请签名外键失败**（original-evidence）：JPA 保存的申请签名尚未 flush，JDBC 已插入引用该签名的申请，真实 PostgreSQL 拒绝外键。已在记录控制提交服务局部 flush 签名，仍由原事务负责整体回滚。
+4. **知识 ID 与成熟度冲突**（original-evidence）：来支 DEC-0075～0078 与主线同号不同义，已映射为 DEC-0086～0089 并更新引用。来支缺本候选发布证据的 verified/runtime 声明收回至内部实现规格；旧用户确认与历史 Git 原件保留。
+5. **公共文件集成**（original-evidence）：保留主线任务锁、认证与字体配置保证，接入记录控制适配器；路由和菜单同时保留变更管理、DHR 和现有报表及自定义报表。来支两处旧任务分页测试调用已适配现有方法签名。
+
+首轮真实失败及夹具清理/外键引用遗漏均保留在 evidence 中；夹具问题不计为产品缺陷。所有测试数据库均为专用 `edhr_record_control_test_*` 或 `edhr_baseline_test_*`，未修改 `edhr_dev`。
+
+## 后续 DHR / A12 切片应消费的真实来源
+
+- 申请确认入口：`RecordControlService.submit`。申请在审时来源仍为 COMPLETED，不能据申请创建或流程待办触发来源失效。
+- 签署和最终任务入口：`RecordControlTaskActionService.complete` → `WorkflowEngine.completeRecordControlTask` → `RecordControlWorkflowResultHandler.handle`。最终业务失败必须回滚任务、签名、日志、修订和申请结果。
+- 实际生效点：`RecordControlService.handle` 中 APPROVED 分支的 `applyChange` / `applyObsolete`。变更后用 `form_instance_record.id + current_revision_id` 定位当前有效修订；作废读取来源状态和修订 VOIDED。工作流 APPROVED 事件只是传入编排的结果，不能脱离实际业务事务当作已生效通知。
+- 当前实现同时更新 `production_execution.state_json` 的表单值/状态，但**尚未刷新追溯索引、冲销/重建正式投影或发送 DHR 影响通知**。不得将它作为当前报表正确性的证明。
+- 后续应先定义含来源实例、前后修订、实际生效类型及事件/审计关联的消费契约，再分别接入 DHR 与投影，复用幂等和事务边界。通知的受众/渠道如无现行决定，集中确认后实现；不在页面或通用流程引擎中复制领域落地逻辑。
+
+## 保留范围与待核对事项
+
+- `discrepancy.dhr-review-effective-source-integration`、`discrepancy.dhr-review-complete-evidence-impact-gap` 保持 high/open。当前 DHR 有读时证据比较和批准阻断；实际生效消费、主动通知及生效/批准并发仍需后续联调。
+- A12 的修订切换、作废冲销、规则重建和历史解释仍未验收。正式投影仍以首次最终修订为基线，不能直接支持新修订统计。
+- 旧 P0 的撤回、记录控制转办和重新分配尚无完整业务运行入口；不因存在 WITHDRAWN 枚举或公共通用转办而计为完成。活动表单作废和重新分配签名的未来政策问题保持原范围。
+- 普通用户候选流程权限仍有原来支已记录的差异：申请入口为已认证范围，候选接口要求 `record-control.corrections.create` / `record-control.voids.create`。拥有菜单不自动拥有这些权限；必须单独核对普通用户矩阵，不能用特权主路径通过替代。
+- 2026-09-16 的“无可靠 DHR 来源”属于旧阶段说明。当前主线已有真实 DHR 实现，待完成的是跨域集成；不据旧记录删除、绕过或重新定义现有 DHR 规则。
+
+## 验证边界
+
+主侧已经执行真实 PostgreSQL 应用服务链、初始化及升级、聚焦后端回归、菜单/报表导航和前端构建；具体命令和结果见本目录 evidence。本体独立知识检查 89 项通过，结果见 `ontology-result.yaml`。
+
+页面运行验证和最终独立质量验收在进行中；未取得最终结果前，本文件不表示集成候选已验收，更不表示完整 P0、DHR 生命周期或生产发布通过。

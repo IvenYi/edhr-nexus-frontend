@@ -16,6 +16,9 @@ import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.identity.service.TenantTransferTargets;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
+import com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.BusinessType;
+import com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.Result;
+import com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.WorkflowResultEvent;
 import com.zencas.edhr.workflow.entity.*;
 import com.zencas.edhr.workflow.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -241,23 +244,35 @@ public class WorkflowEngine {
      * Process task completion and advance the workflow.
      */
     @Transactional
-    public void completeTask(Long taskId, String action, String opinion, String operatorId, Long signatureId) {
-        completeTask(taskId, action, opinion, operatorId, signatureId, false);
+    public WorkflowResultEvent completeTask(Long taskId, String action, String opinion, String operatorId, Long signatureId) {
+        return completeTask(taskId, action, opinion, operatorId, signatureId, false, false);
+    }
+
+    /** Record-control domain service has already authenticated and signed the action. */
+    @Transactional
+    public WorkflowResultEvent completeRecordControlTask(Long taskId, String action, String opinion,
+                                                         String operatorId, Long signatureId) {
+        if (!Set.of("APPROVE", "REJECT").contains(action)) throw new BusinessException(ErrorCode.WF_007);
+        return completeTask(taskId, action, opinion, operatorId, signatureId, false, true);
     }
 
     /** DHR domain service has already checked the frozen evidence and signed action. */
     @Transactional
     public void completeDhrTask(Long taskId, String action, String opinion, String operatorId, Long signatureId) {
         if (!Set.of("APPROVE", "REJECT").contains(action)) throw new BusinessException(ErrorCode.WF_007);
-        completeTask(taskId, action, opinion, operatorId, signatureId, true);
+        completeTask(taskId, action, opinion, operatorId, signatureId, true, false);
     }
 
-    private void completeTask(Long taskId, String action, String opinion, String operatorId, Long signatureId, boolean dhrAction) {
+    private WorkflowResultEvent completeTask(Long taskId, String action, String opinion, String operatorId,
+                                             Long signatureId, boolean dhrAction, boolean recordControlAction) {
         WorkflowTask taskRef = taskRepository.findById(taskId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
         WorkflowInstance instance = lockInstance(taskRef.getInstanceId());
         if ("DHR_SUMMARY".equals(instance.getBusinessType()) != dhrAction) {
             throw new BusinessException(ErrorCode.WF_007, "DHR 审核必须通过 DHR 审核入口处理");
+        }
+        if (isRecordControlInstance(instance) != recordControlAction) {
+            throw new BusinessException(ErrorCode.WF_007, "记录变更/作废任务必须通过电子签名审批入口处理");
         }
         if (!"RUNNING".equals(instance.getStatus())) {
             throw new BusinessException(ErrorCode.WF_007, "流程实例已结束");
@@ -302,6 +317,37 @@ public class WorkflowEngine {
                     .orElseThrow(() -> new BusinessException(ErrorCode.WF_011));
             progressFromNode(instance, node, operatorId, null);
         }
+        return recordControlResultEvent(instance, action, operatorId, signatureId);
+    }
+
+    private WorkflowResultEvent recordControlResultEvent(
+            WorkflowInstance instance,
+            String action,
+            String operatorId,
+            Long signatureId) {
+        if (!isRecordControlInstance(instance)) return null;
+        Result result;
+        if ("COMPLETED".equals(instance.getStatus()) && "APPROVE".equals(action)) {
+            result = Result.APPROVED;
+        } else if ("TERMINATED".equals(instance.getStatus()) && "REJECT".equals(action)) {
+            result = Result.RETURNED;
+        } else {
+            return null;
+        }
+        LocalDateTime occurredAt = instance.getCompletedAt() == null ? LocalDateTime.now() : instance.getCompletedAt();
+        return new WorkflowResultEvent(
+                "workflow-result:" + instance.getId() + ":" + result.name(),
+                String.valueOf(instance.getId()),
+                String.valueOf(instance.getDefinitionId()),
+                String.valueOf(instance.getVersionId()),
+                BusinessType.valueOf(instance.getBusinessType()),
+                instance.getBusinessId(),
+                result,
+                occurredAt,
+                operatorId,
+                signatureId == null ? null : String.valueOf(signatureId),
+                instance.getAuditCorrelationId(),
+                instance.getWorkflowSnapshotHash());
     }
 
     /** Progress from a node to its downstream nodes. */
@@ -440,7 +486,9 @@ public class WorkflowEngine {
                 taskRepository.save(other);
             }
         });
-        if ("DHR_SUMMARY".equals(instance.getBusinessType()) || hasParallelSplitAncestor(task.getNodeId())) {
+        if (isRecordControlInstance(instance)
+                || "DHR_SUMMARY".equals(instance.getBusinessType())
+                || hasParallelSplitAncestor(task.getNodeId())) {
             terminateInstance(instance);
             return;
         }
@@ -683,6 +731,9 @@ public class WorkflowEngine {
         WorkflowTask taskRef = taskRepository.findById(taskId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
         WorkflowInstance instance = lockInstance(taskRef.getInstanceId());
+        if (isRecordControlInstance(instance)) {
+            throw new BusinessException(ErrorCode.WF_007, "记录变更/作废任务暂不支持通过通用入口转办");
+        }
         if (!"RUNNING".equals(instance.getStatus())) {
             throw new BusinessException(ErrorCode.WF_007, "流程实例已结束");
         }
@@ -732,6 +783,9 @@ public class WorkflowEngine {
     public void terminateInstance(Long instanceId, String reason, String operatorId, Long signatureId) {
         WorkflowInstance instance = lockInstance(instanceId);
         if ("DHR_SUMMARY".equals(instance.getBusinessType())) throw new BusinessException(ErrorCode.WF_007, "请通过 DHR 审核退回整理");
+        if (isRecordControlInstance(instance)) {
+            throw new BusinessException(ErrorCode.WF_007, "记录变更/作废流程不能通过通用入口终止");
+        }
         if (!"RUNNING".equals(instance.getStatus())) {
             throw new BusinessException(ErrorCode.WF_007, "流程实例已结束");
         }
@@ -774,6 +828,58 @@ public class WorkflowEngine {
 
     public void assertNotDhrTask(Long taskId) {
         if (taskId != null) taskRepository.findById(taskId).ifPresent(task -> assertNotDhrInstance(task.getInstanceId()));
+    }
+
+    /** Protect controlled domains from generic task CRUD and audit-log endpoints. */
+    public void assertGenericTaskAccessAllowed(Long taskId) {
+        if (taskId == null) return;
+        WorkflowTask task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
+        assertGenericInstanceAccessAllowed(task.getInstanceId());
+    }
+
+    public void assertGenericTaskIfPresent(Long taskId) {
+        if (taskId != null) taskRepository.findById(taskId)
+                .ifPresent(task -> assertGenericInstanceAccessAllowed(task.getInstanceId()));
+    }
+
+    /** Protect DHR and record-control instances from generic instance mutation/read surfaces. */
+    public void assertGenericInstanceAccessAllowed(Long instanceId) {
+        if (instanceId == null) return;
+        WorkflowInstance instance = instanceRepository.findById(instanceId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
+        if ("DHR_SUMMARY".equals(instance.getBusinessType())) {
+            throw new BusinessException(ErrorCode.WF_007, "DHR 审核证据不能通过通用流程接口访问");
+        }
+        if (isRecordControlInstance(instance)) {
+            throw new BusinessException(ErrorCode.WF_007, "记录变更/作废流程必须通过记录控制入口访问");
+        }
+    }
+
+    public void assertGenericInstanceIfPresent(Long instanceId) {
+        if (instanceId != null) instanceRepository.findById(instanceId)
+                .ifPresent(instance -> {
+                    if ("DHR_SUMMARY".equals(instance.getBusinessType()) || isRecordControlInstance(instance)) {
+                        assertGenericInstanceAccessAllowed(instanceId);
+                    }
+                });
+    }
+
+    /** Restrict a task detail read to its active candidates or the operator who completed it. */
+    public void assertTaskReadableBy(Long taskId, String operatorId) {
+        WorkflowTask task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
+        WorkflowInstance instance = instanceRepository.findById(task.getInstanceId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
+        if ("DHR_SUMMARY".equals(instance.getBusinessType())) {
+            throw new BusinessException(ErrorCode.WF_007, "DHR 审核证据不能通过通用流程接口读取");
+        }
+        boolean active = "PENDING".equals(task.getStatus()) || "PROCESSING".equals(task.getStatus());
+        boolean readable = active ? isTaskOperator(task, operatorId)
+                : operatorId != null && operatorId.equals(task.getAssigneeId());
+        if (!readable) {
+            throw new BusinessException(ErrorCode.AUTH_003, "当前用户无权查看该审批任务");
+        }
     }
 
     public void assertNotDhrInstance(Long instanceId) {

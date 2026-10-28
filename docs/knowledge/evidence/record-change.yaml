@@ -1,0 +1,17 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.record-change-form-management-coexistence-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/record-change-form-management-coexistence-user-confirmed.md
+    description: user-confirmed；用户确认表单管理页面已有实际代码，记录模块应同时保留表单管理和变更管理两组菜单；两组菜单均仅对拥有对应菜单权限的用户可见，不授予或绕过现有权限校验。
+    visibility: internal
+  - id: evidence.record-change-search-scope-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/record-change-search-scope-user-confirmed.md
+    description: user-confirmed；用户先确认记录变更首版考虑按表单流水号和按批次/SN两种检索，后因交期明确用最新决策覆盖当前交付范围：本次只做按表单流水号检索并发起变更，按批次/SN延期到后续版本而非永久取消，仍不提供独立DHR或记录本检索入口。具体控件样式、资格状态、结果字段、审批、签名和审计语义未确认。
+    visibility: internal
+  - id: evidence.record-change-existing-prd
+    type: document
+    path: docs/superpowers/specs/2026-06-05-edhr-p0-business-closure-and-function-matrix-design.md
+    description: secondary-reference；既有功能矩阵将表单变更、DHR变更、变更审核、变更记录和记录本变更拆分描述，其中表单变更按表单流水号查询，DHR变更从DHR目录选择表单。本证据仅作为历史产品范围参考；记录变更首版的当前检索范围以用户确认决策为准。
+    visibility: internal

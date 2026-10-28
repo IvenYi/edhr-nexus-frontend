@@ -1,0 +1,116 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0087
+    title: 记录变更与作废首期闭环及暂缓边界
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed-and-original-evidence；补充 DEC-0037、DEC-0041、DEC-0042、DEC-0043 和 DEC-0086。表单管理与变更管理菜单并列及其权限边界由 DEC-0088 定义；DHR 放行判断暂缓、Rev.2 原业务签署人不重签覆盖旧资料中的首期范围。公共流程代码由逸文负责；当前记录控制申请、修订、同步结果落地及安全边界的实现成熟度以本决策的实现差异、规则和证据记录为准。 original-evidence；本记录从 feat/record-change@aef427c524bd7270b3775fbd7c599c72a545e21b 的 DEC-0076 重分配为 DEC-0087，避免覆盖 edhr-dev 当前同号不同义决策；原始证据及Git历史保留，映射见 evidence.record-control-integration-20261028。"
+    decisionStatements:
+      - id: DEC-0087-01
+        statement: "provenance: user-confirmed；本期在变更管理下交付记录变更、我的变更、变更审批、变更记录四个入口。表单管理与变更管理的并列菜单范围由 DEC-0088 定义。首期仅按表单流水号检索已完成且存在当前有效修订的实例，并在同页发起 CHANGE 或 OBSOLETE；批次/SN 检索延期，不设置 DHR 或记录本独立入口。"
+        status: specified
+        visibility: internal
+      - id: DEC-0087-02
+        statement: "provenance: user-confirmed；表单模板版本与实例修订独立。同一实例 ID、流水号、模板版本和模板快照不变；首次完成建立 Rev.1，变更批准才产生唯一当前有效的下一 Rev.N，旧修订完整只读保留。拟数据审批前不写正式值；退回或撤回使拟数据失效且来源不变；作废批准不产生内容新修订，也不删除原值、附件、签名或历史。"
+        status: specified
+        visibility: internal
+      - id: DEC-0087-03
+        statement: "provenance: user-confirmed；同一实例同一时刻最多一笔活动申请，打开页面或进入编辑不占锁；最终确认须在事务中复核来源已完成、当前修订、活动锁与认证身份。审批期间来源主状态仍为已完成，只增加活动申请标识；变更批准后仍已完成但指向新修订，作废批准后才进入已作废。"
+        status: specified
+        visibility: internal
+      - id: DEC-0087-04
+        statement: "provenance: user-confirmed；变更拟数据使用同一模板快照、稳定 fieldId/子行 ID/附件 fileId 比对；无实际内容差异不得提交，原因必填。作废原文只读且原因必填，不建立拟内容修订。两类申请均显式选择类型匹配的已发布流程版本，内容与版本确定后取得申请人真实签名，再由记录控制域一次确认并原子启动公共流程。"
+        status: specified
+        visibility: internal
+      - id: DEC-0087-05
+        statement: "provenance: user-confirmed；APPROVED 在同步事务中幂等落地业务结果；RETURNED 终结旧申请和旧流程、使并行其他待办失效、释放活动锁且来源不变；WITHDRAWN 仅允许当前审批轮次尚无批准或退回决定时执行，终结申请并保持来源不变。退回后不能编辑或重提旧申请，再发起必须获得新申请 ID、编号、签名与流程实例。业务落地失败须回滚最终审批动作。"
+        status: specified
+        visibility: internal
+      - id: DEC-0087-06
+        statement: "provenance: user-confirmed；原表单签名永久归属原修订，申请人与审批人的新签名是各自动作的独立证据，不得冒充原表单对新内容的签署；本期不增加原业务签署人对 Rev.2 重新签署动作。申请、修订、完整前后快照及哈希、字段差异、状态历史、WorkflowActionLog 和不可变 AuditEvent 通过申请、流程、事件与审计关联标识追溯。"
+        status: specified
+        visibility: internal
+      - id: DEC-0087-07
+        statement: "provenance: user-confirmed；变更管理菜单仅向拥有对应菜单权限的用户展示。我的变更列表及详情仅当前申请人可见，变更审批仅当前候选/处理人和本人已处理任务可见。后端从认证上下文取得用户身份，不信任前端传入的人员参数。现有公共流程候选接口的权限校验须与本菜单权限边界协同收敛。"
+        status: specified
+        visibility: internal
+      - id: DEC-0087-08
+        statement: "provenance: user-confirmed-and-original-evidence；2026-09-16 的首期材料以当时缺少可靠 DHR/放行来源为暂缓依据，原始材料保留。当前目标分支已具有 DHR 实例、汇总及审批实现，不能继续将该历史前提写成当前事实；本次记录控制集成仍未接通 DHR 放行判断、证据影响主动通知、补开或重汇总，不能宣称已阻断外部/历史已放行 DHR，也不自动创建替代表单。DEC-0068 的真实生效消费和影响识别两项 high 与 A12 继续开放。"
+        status: specified
+        visibility: internal
+      - id: DEC-0087-09
+        statement: "provenance: original-and-test-evidence；RECORD_CONTROL_REQUEST 签名属于受控业务证据，必须从通用签名列表排除并拒绝通用单条读取、创建、覆盖、更新和删除。IN_REVIEW 申请详情仅申请人、当前候选或处理人及本人已处理任务相关人员可见；已结束历史详情继续对当前租户认证用户开放。"
+        status: implemented
+        visibility: internal
+      - id: DEC-0087-10
+        statement: "provenance: original-and-test-evidence；变更审批待办与已办必须使用记录控制专用数据库分页投影，在分页和总数计算前限定 CHANGE/OBSOLETE、待办或已办状态及认证用户的处理人/候选关系；页面不得读取通用流程任务分页后再做客户端过滤。"
+        status: implemented
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-change-search-scope-user-confirmed, evidence.record-control-v1-service, evidence.record-control-signature-generic-controller-boundary, evidence.record-control-signature-generic-list-boundary, evidence.record-control-signature-generic-crud-tests, evidence.record-control-signature-generic-list-tests, evidence.record-control-active-detail-access-tests, evidence.record-control-workflow-task-projection-repository, evidence.record-control-workflow-task-projection-service, evidence.record-control-workflow-task-projection-api, evidence.record-control-workflow-task-projection-ui, evidence.record-control-workflow-task-projection-tests]
+    acceptanceScenarios:
+      - id: scenario.record-control-v1-menu-scope
+        given: 用户拥有表单管理及变更管理对应菜单权限
+        when: 用户查看首期记录菜单
+        then: 记录模块同时展示表单管理和变更管理；变更管理下展示记录变更、我的变更、变更审批和变更记录四个入口
+        evidenceIds: [evidence.record-change-form-management-coexistence-user-confirmed]
+        evidenceRequirements: [菜单配置检查, 页面路由检查, 浏览器菜单验证]
+      - id: scenario.record-control-v1-revision-approval
+        given: 已完成表单拥有当前 Rev.1 且申请人提交了存在真实差异的变更申请
+        when: 匹配流程全部批准且业务落地成功
+        then: Rev.2 唯一生效，Rev.1 及其原签名只读保留；审批前的正式值未改变
+        evidenceIds: [evidence.record-control-v1-user-confirmed]
+        evidenceRequirements: [迁移与修订集成测试, 差异与签名归属测试, 审批事务回滚测试]
+      - id: scenario.record-control-v1-return-reapply
+        given: 一笔表单变更或作废申请正在审批
+        when: 任一待办退回，随后用户再次发起
+        then: 旧申请和流程终结且来源不变，新申请生成不同编号和流程实例；旧新申请分别占一行历史
+        evidenceIds: [evidence.record-control-v1-user-confirmed]
+        evidenceRequirements: [并行待办失效测试, 活动锁释放测试, 新申请编号与流程实例测试]
+      - id: scenario.record-control-v1-authenticated-access
+        given: 当前租户用户已登录且拥有对应变更管理菜单权限
+        when: 查询流水号、发起申请、打开我的变更或变更审批
+        then: 可按授权菜单进入相应入口，但不能查看他人的我的变更或非本人候选及已处理审批任务
+        evidenceIds: [evidence.record-control-v1-user-confirmed]
+        evidenceRequirements: [非管理员接口授权测试, 伪造前端人员参数测试, 列表和详情越权测试]
+      - id: scenario.record-control-v1-dhr-deferred
+        given: 当前目标分支已有 DHR 实例和审批能力，但记录控制真实生效与 DHR 的完整消费链路仍未集成
+        when: 验收首期记录变更与作废
+        then: 保留真实生效消费、影响识别和通知的缺口，不宣称已实现放行阻断、证据缺项、补开或重汇总，也不自动生成替代表单
+        evidenceIds: [evidence.record-control-v1-user-confirmed]
+        evidenceRequirements: [页面文案检查, 验收范围检查]
+      - id: scenario.record-control-signature-generic-isolation
+        given: 存在 targetType 为 RECORD_CONTROL_REQUEST 的记录控制签名证据
+        when: 通过通用签名列表或单条读取、创建、覆盖、更新、删除接口访问
+        then: 通用列表不返回该证据，且所有通用单条读取和写入删除操作均被拒绝
+        evidenceIds: [evidence.record-control-signature-generic-controller-boundary, evidence.record-control-signature-generic-list-boundary, evidence.record-control-signature-generic-crud-tests, evidence.record-control-signature-generic-list-tests]
+        evidenceRequirements: [通用列表持久化集成测试, 通用签名单条及写入拒绝测试]
+      - id: scenario.record-control-active-detail-boundary
+        given: 记录控制申请处于 IN_REVIEW
+        when: 申请人、相关审批处理人或无关用户查看详情
+        then: 申请人和相关审批处理人允许查看，无关用户被拒绝；申请结束后当前租户认证用户仍可查看历史详情
+        evidenceIds: [evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests]
+        evidenceRequirements: [申请人详情测试, 审批人详情测试, 无关用户拒绝测试, 已结束历史开放测试]
+      - id: scenario.record-control-approval-task-dedicated-pagination
+        given: 当前认证用户打开变更审批待办或已办列表且系统同时存在其他业务类型任务
+        when: 页面请求记录控制审批任务分页
+        then: 数据库在分页和计数前只保留 CHANGE/OBSOLETE 及当前用户相关的对应状态任务，接口返回真实 PageResult，页面不从通用任务页客户端过滤
+        evidenceIds: [evidence.record-control-workflow-task-projection-repository, evidence.record-control-workflow-task-projection-service, evidence.record-control-workflow-task-projection-api, evidence.record-control-workflow-task-projection-ui, evidence.record-control-workflow-task-projection-tests]
+        evidenceRequirements: [待办专用投影测试, 已办专用投影测试, 前端构建]
+    implementationDiscrepancies:
+      - id: discrepancy.record-control-v1-runtime-pending
+        status: resolved
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlTaskActionService.java
+        lineHint: 1
+        summary: "provenance: original-evidence；申请、修订、电子签名、最终审批或退回的同步结果投递、eventId 幂等消费、事务回滚及数据访问边界已具有实现和聚焦测试证据。真实 PostgreSQL 历史升级、并发争用和双账号浏览器 E2E 仍是发布验证缺口，不影响将已核对能力投影为 implemented。"
+        evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-control-v1-service, evidence.record-control-workflow-result-delivery-adapter, evidence.record-control-workflow-result-business-handler, evidence.record-control-task-action-result-tests, evidence.record-control-active-detail-access-tests, evidence.record-control-signature-generic-crud-tests, evidence.record-control-signature-generic-list-tests, evidence.record-control-workflow-task-projection-repository, evidence.record-control-workflow-task-projection-service, evidence.record-control-workflow-task-projection-api, evidence.record-control-workflow-task-projection-ui, evidence.record-control-workflow-task-projection-tests]
+      - id: discrepancy.record-control-v1-workflow-permission-mismatch
+        status: accepted
+        severity: high
+        visibility: internal
+        path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/RecordControlWorkflowController.java
+        lineHint: 1
+        summary: "provenance: original-evidence-and-user-confirmed；用户已明确本期不新增岗位、角色或模板级功能授权，公共流程候选接口权限码与菜单授权的进一步协同收敛暂缓。申请人、候选/处理人及已处理任务的数据范围仍必须由认证上下文强制执行，不因该暂缓而放宽。"
+        evidenceIds: [evidence.record-control-workflow-stage1-candidate-api, evidence.record-control-v1-user-confirmed]

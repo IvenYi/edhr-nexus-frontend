@@ -4,7 +4,7 @@ rules:
     name: 表单变更必须形成新修订
     status: specified
     visibility: internal
-    trigger: record-correction.submit
+    trigger: record-correction.approved
     scope: record-control
     condition:
       all:
@@ -19,8 +19,8 @@ rules:
       target: correctionRevision
       referenceMode: new-revision-with-frozen-source
       sourceRevisionReadOnly: true
-    explanation: 已完成记录的变更提交必须创建新修订并保留来源修订的完整快照、签名和哈希；审批通过前不得写回来源记录，审批通过后新修订成为当前有效修订，旧修订只读保留。
-    evidenceIds: [evidence.record-correction-void-design]
+    explanation: DEC-0087-02 明确首期申请保存与正式值隔离的拟变更内容，批准时才生成并切换到下一有效内容修订；审批通过前不写回来源记录，来源修订的完整快照、原签名和哈希作为历史证据只读保留。该时点补正不取消受控变更必须形成新修订的约束。
+    evidenceIds: [evidence.record-correction-void-design, evidence.record-control-v1-user-confirmed, evidence.record-control-integration-20261028]
   - id: rule.record-void.no-field-mutation
     name: 表单作废不修改字段值
     status: specified
@@ -63,7 +63,7 @@ rules:
       type: freeze-execution-snapshot
       references: [workflowDefinitionId, workflowVersionId]
       blockWhenNoCandidate: true
-    explanation: P0 变更和作废不预绑定、不自动代选；申请人必须从有对应发起权限且动作类型匹配的当前已发布流程版本中显式选择。公共流程阶段一已实现候选查询和显式版本启动，启动时重新校验定义类型、申请类型和当前已发布版本，冻结定义、版本、上下文和流程快照摘要；草稿、历史非当前版本和停用模板不可用于发起。来源记录资格、申请人签名真实性、申请确认事务和申请侧审批流程引用仍由记录控制域后续实现。
+    explanation: P0 变更和作废不预绑定、不自动代选；申请人必须从有对应发起权限且动作类型匹配的当前已发布流程版本中显式选择。公共流程阶段一已实现候选查询和显式版本启动，启动时重新校验定义类型、申请类型和当前已发布版本，冻结定义、版本、上下文和流程快照摘要；草稿、历史非当前版本和停用模板不可用于发起。来支已提供记录控制域的来源资格、签名、申请确认事务和流程引用回写实现；当前集成候选的迁移、首次完成修订和实际运行验证另取本切片证据，不由该实现说明宣称完整 P0 通过。
     evidenceIds: [evidence.record-correction-void-design, evidence.record-control-start-entry-user-confirmed, evidence.record-control-workflow-stage1-candidate-service, evidence.record-control-workflow-stage1-candidate-api, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-workflow-stage1-service-tests, evidence.record-control-workflow-stage1-api-tests]
   - id: rule.record-control.application-confirmation-starts-review
     name: 记录控制申请确认即启动审批
@@ -94,7 +94,7 @@ rules:
       freezeReferences: [workflowDefinitionId, workflowVersionId]
       target: firstApprovalNode
       startNodeTask: none
-    explanation: 申请内容准备完成、申请人电子签名验证通过且显式选择匹配的已发布流程后，点击确认即构成一次发起动作；系统应在同一确定性事务中创建审批实例、冻结流程版本并直接推进到首个审批节点，不产生开始节点待办或二次保存、提交动作。公共流程 Java 端口、幂等显式启动和首审批任务推进已有阶段一实现，但记录控制申请入口、签名真实性验证、申请与流程原子提交及申请侧回写尚未实现，因此本条更广业务规则仍保持 specified/internal。
+    explanation: 申请内容准备完成、申请人电子签名验证通过且显式选择匹配的已发布流程后，点击确认即构成一次发起动作；系统应在同一确定性事务中创建审批实例、冻结流程版本并直接推进到首个审批节点，不产生开始节点待办或二次保存、提交动作。公共流程 Java 端口及记录控制申请适配器已有源码和聚焦断言；本条更广业务规则保留 specified/internal，当前集成运行证据不覆盖非管理员完整矩阵、撤回/转办/重新分配及完整 DHR/A12 生命周期。
     evidenceIds: [evidence.record-control-start-entry-user-confirmed, evidence.record-correction-void-design, evidence.record-control-workflow-stage1-port, evidence.record-control-workflow-stage1-explicit-start-engine, evidence.record-control-workflow-stage1-engine-tests]
   - id: rule.record-control.review-template-category-scope
     name: 首切片审批流程仅支持表单变更和表单作废

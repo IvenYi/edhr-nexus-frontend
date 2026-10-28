@@ -1,0 +1,129 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 099bb29f4873d863f51e61493c0ebcbe94803801
+    targetBranch: edhr-dev
+    targetCommit: 8784ba87166addae9cb9659d6120aa84f993c7ef
+    contractReadCommit: 099bb29f4873d863f51e61493c0ebcbe94803801
+    uncommittedContractPaths: []
+  reason: 本切片已消解来支知识编号冲突、同步已确认的首期范围和修订时点、纠正旧DHR前提及过度成熟度；对未提交集成工作树执行正式知识89项检查通过。仅核对受影响语义和结构，不代替主侧与独立质量的业务运行验收，也不表示全量语义审计完成。
+  changedArtifacts:
+    - {path: docs/knowledge/decisions/DEC-0075-record-change-search-scope.yaml, changeType: delete, ids: [DEC-0075]}
+    - {path: docs/knowledge/decisions/DEC-0076-record-control-v1-closure.yaml, changeType: delete, ids: [DEC-0076]}
+    - {path: docs/knowledge/decisions/DEC-0077-form-and-change-management-menu-boundary.yaml, changeType: delete, ids: [DEC-0077]}
+    - {path: docs/knowledge/decisions/DEC-0078-form-instance-number-display.yaml, changeType: delete, ids: [DEC-0078]}
+    - {path: docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml, changeType: create, ids: [DEC-0086, DEC-0086-01, DEC-0086-02, DEC-0086-03, DEC-0086-04]}
+    - {path: docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml, changeType: create, ids: [DEC-0087, DEC-0087-01, DEC-0087-02, DEC-0087-03, DEC-0087-04, DEC-0087-05, DEC-0087-06, DEC-0087-07, DEC-0087-08, DEC-0087-09, DEC-0087-10]}
+    - {path: docs/knowledge/decisions/DEC-0088-form-and-change-management-menu-boundary.yaml, changeType: create, ids: [DEC-0088, DEC-0088-01, DEC-0088-02]}
+    - {path: docs/knowledge/decisions/DEC-0089-form-instance-number-display.yaml, changeType: create, ids: [DEC-0089, DEC-0089-01, DEC-0089-02]}
+    - {path: docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml, changeType: update, ids: [DEC-0037, scenario.record-correction-creates-new-revision]}
+    - {path: docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml, changeType: update, ids: [DEC-0041-04]}
+    - {path: docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml, changeType: update, ids: [DEC-0042]}
+    - {path: docs/knowledge/decisions/DEC-0050-form-instance-number.yaml, changeType: update, ids: [DEC-0050]}
+    - {path: docs/knowledge/glossary.yaml, changeType: update, ids: [term.form-instance-number, term.record-correction-request, term.workflow-return-action, term.record-control-workflow-integration]}
+    - {path: docs/knowledge/rules/production.yaml, changeType: update, ids: [rule.record-correction.new-revision-only, rule.record-control.explicit-published-workflow-selection, rule.record-control.application-confirmation-starts-review]}
+    - {path: docs/knowledge/rules/record-change.yaml, changeType: update, ids: [rule.record-change-search-scope-v1, rule.record-control-signature-immutable-generic-boundary, rule.record-control-active-detail-access, rule.record-control-workflow-task-projection, rule.record-control-final-result-delivery]}
+    - {path: docs/knowledge/rules/form-instance-number.yaml, changeType: update, ids: [rule.form-instance-stable-number]}
+    - {path: docs/knowledge/facts/record-control.yaml, changeType: update, ids: [fact.record-control-release-scope, fact.record-control-current-revision-present, fact.record-control-active-application-present, fact.record-control-authenticated-user-present]}
+    - {path: docs/knowledge/implementation-anchors/core-business.yaml, changeType: update, ids: [anchor.core.record-control-signature-generic-boundary, anchor.core.record-control-active-detail-access, anchor.core.record-control-workflow-task-projection]}
+    - {path: docs/knowledge/evidence/record-control-v1.yaml, changeType: update, ids: [evidence.record-control-integration-20261028]}
+    - {path: docs/knowledge/evidence/record-change.yaml, changeType: update, ids: [evidence.record-change-search-scope-user-confirmed]}
+    - {path: docs/knowledge/evidence/form-instance-number-display.yaml, changeType: update, ids: [evidence.form-instance-number-display-user-confirmed]}
+    - {path: docs/knowledge/evidence/record-control-integration-2026-10-28.md, changeType: create, ids: [evidence.record-control-integration-20261028]}
+    - {path: docs/knowledge/open-questions.yaml, changeType: update, ids: [question.record-control-active-form-void-boundary]}
+    - {path: docs/knowledge/README.md, changeType: update, ids: []}
+    - {path: docs/knowledge/impact-analysis/record-control-workflow-stage1-contract.md, changeType: update, ids: []}
+  knowledgeSync:
+    - id: DEC-0086
+      disposition: updated
+      scope: 来支DEC-0075及01至04声明重分配为DEC-0086及01至04；只在首期检索范围内替代DEC-0050-04的多条件入口要求，批次/SN延期，真实业务关联与授权约束保留。主线DEC-0075含义不变。
+      sourceReferences: [docs/knowledge/evidence/record-change-search-scope-user-confirmed.md, docs/knowledge/evidence/record-control-integration-2026-10-28.md]
+    - id: DEC-0087
+      disposition: updated
+      scope: 来支DEC-0076及01至10声明重分配为DEC-0087及01至10；来源资格、批准后创建修订、退回另起申请、签名与数据范围按已有确认同步，不把实现存在当发布验收。主线DEC-0076含义不变。
+      sourceReferences: [docs/knowledge/evidence/record-control-v1-user-confirmed.md, docs/knowledge/evidence/record-control-integration-2026-10-28.md]
+    - id: DEC-0088
+      disposition: updated
+      scope: 来支DEC-0077及01至02声明重分配为DEC-0088及01至02；保留表单管理与变更管理并列及菜单权限，替代原首期材料的页面不存在判断。主线DEC-0077追溯投影定义及A12边界保留。
+      sourceReferences: [docs/knowledge/evidence/record-change-form-management-coexistence-user-confirmed.md, docs/knowledge/evidence/record-control-integration-2026-10-28.md]
+    - id: DEC-0089
+      disposition: updated
+      scope: 来支DEC-0078及01至02声明重分配为DEC-0089及01至02；只替代DEC-0050-01/02/03的现行展示名称，旧称作为别名，编号格式、实例身份及技术字段不变。主线DEC-0078正式产出含义保留。
+      sourceReferences: [docs/knowledge/evidence/form-instance-number-display-user-confirmed.md, docs/knowledge/evidence/record-control-integration-2026-10-28.md]
+    - id: rule.record-correction.new-revision-only
+      disposition: updated
+      scope: 按DEC-0087-02将旧提交即建内容修订的时点纠正为批准时建立；申请保存隔离拟内容，旧快照、签名和哈希保留。原scenario及词典同步，未改变批准前不写正式值和受控修订要求。
+      sourceReferences: [docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml, docs/knowledge/rules/production.yaml]
+    - id: DEC-0087-08
+      disposition: updated
+      scope: 将无可靠DHR来源限定为2026-09-16历史前提；当前主线真实DHR实现存在，待接通的是有效来源消费、影响通知及A12，不新增放行政策。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml, docs/knowledge/evidence/record-control-integration-2026-10-28.md]
+    - id: rule.record-control-signature-immutable-generic-boundary
+      disposition: updated
+      scope: 按源码和断言保留implemented/internal，撤下来支缺发布证据的verified/runtime声明；对应锚点同样不提升成熟度。
+      sourceReferences: [docs/knowledge/rules/record-change.yaml, docs/knowledge/implementation-anchors/core-business.yaml]
+    - id: rule.record-control-active-detail-access
+      disposition: updated
+      scope: 活动详情相关人员限制及结束历史范围保留，成熟度按implemented/internal，不将聚焦断言当发布级账号矩阵。
+      sourceReferences: [docs/knowledge/rules/record-change.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java]
+    - id: rule.record-control-workflow-task-projection
+      disposition: updated
+      scope: 专用数据库分页及认证身份过滤语义保留，成熟度按implemented/internal，当前测试与主线分页签名已由主侧修复后通过编译。
+      sourceReferences: [docs/knowledge/rules/record-change.yaml, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java]
+    - id: execution.record-control-final-result-delivery
+      disposition: deferred
+      scope: 来支原契约ID、handler及证据保留在内部集成说明；尚未获得本候选完整运行发布证据，不注册到要求verified的正式执行契约表，不放松schema。
+      sourceReferences: [docs/knowledge/evidence/record-control-integration-2026-10-28.md, docs/knowledge/schema.yaml]
+    - id: execution.record-control-security-closure
+      disposition: deferred
+      scope: 同上；保留内部实现规格，移除implemented规则的可选正式executionContractId，原来支Git记录保持。
+      sourceReferences: [docs/knowledge/evidence/record-control-integration-2026-10-28.md, docs/knowledge/schema.yaml]
+    - id: execution.record-control-workflow-task-projection
+      disposition: deferred
+      scope: 同上；专用分页实现可核对不等于正式运行知识发布。
+      sourceReferences: [docs/knowledge/evidence/record-control-integration-2026-10-28.md, docs/knowledge/schema.yaml]
+    - id: question.record-control-active-form-void-boundary
+      disposition: deferred
+      scope: 首期已完成来源资格已确认，不重复提问；未来活动表单作废政策仍开放，只阻塞未来范围扩展，不推定永久禁止或开放。
+      sourceReferences: [docs/knowledge/open-questions.yaml, docs/knowledge/decisions/DEC-0087-record-control-v1-closure.yaml]
+    - id: discrepancy.dhr-review-effective-source-integration
+      disposition: deferred
+      scope: 保持high/open，本切片未验收真实来源生效与DHR消费、批准并发；未从表单修订或数据库修复推定关闭。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: discrepancy.dhr-review-complete-evidence-impact-gap
+      disposition: deferred
+      scope: 保持high/open，完整影响、主动通知及A12有效统计切换未由本体处理或结构测试证明。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml, docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml]
+    - id: question.record-control-managerial-reassignment-signature
+      disposition: deferred
+      scope: 保留原未决边界；撤回、记录控制转办、重新分配及完整P0标准动作尚不能由申请/审批适配器推定实现。
+      sourceReferences: [docs/knowledge/open-questions.yaml, docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml]
+    - id: evidence.record-control-v1-user-confirmed
+      disposition: historical
+      scope: 原始首期用户证据不改写；后续菜单、展示名和DHR当前前提在现行定义中明确范围，不回填旧日期、旧验收或旧审计。
+      sourceReferences: [docs/knowledge/evidence/record-control-v1-user-confirmed.md]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.record-control-knowledge-formal
+      checkType: schema
+      command: mvn -q -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence: [docs/development/record-control-integration-20261028/ontology-knowledge-final.txt, docs/development/record-control-integration-20261028/ontology-validation.json, '89 passed; 0 failures; 0 errors; 0 skipped; exit 0']
+    - id: validation.record-control-decision-identifiers
+      checkType: reference
+      command: Ruby YAML.safe_load over docs/knowledge/**/*.yaml; collect decision and decision-statement IDs and knowledgeModelVersion.
+      outcome: passed
+      evidence: [docs/development/record-control-integration-20261028/ontology-validation.json, '237 YAML files parse; duplicate decision IDs 0; noncurrent knowledge versions 0; this is structural inventory only']
+    - id: validation.record-control-scoped-diff
+      checkType: evidence-path
+      command: git diff --check -- docs/knowledge docs/architecture
+      outcome: passed
+      evidence: [docs/development/record-control-integration-20261028/ontology-validation.json, 'exit 0; primary DEC-0075/76/77/78 original files have no delta over HEAD']
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

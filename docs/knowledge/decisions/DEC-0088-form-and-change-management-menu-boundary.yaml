@@ -1,0 +1,25 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0088
+    title: 表单管理与变更管理并列菜单边界
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；表单列表、表单填报和表单审核页面已经存在。记录模块必须同时保留表单管理与变更管理两组菜单；变更管理不再以表单管理页面尚不存在为由排除表单管理入口。本决定仅替代 DEC-0087 中有关菜单边界的原有表述，不替代其余记录变更流程约束。 original-evidence；本记录从 feat/record-change@aef427c524bd7270b3775fbd7c599c72a545e21b 的 DEC-0077 重分配为 DEC-0088，避免覆盖 edhr-dev 当前同号不同义决策；原始证据及Git历史保留，映射见 evidence.record-control-integration-20261028。"
+    decisionStatements:
+      - id: DEC-0088-01
+        statement: 记录模块并列展示表单管理和变更管理；表单管理包含表单列表、表单填报和表单审核，变更管理包含记录变更、我的变更、变更审批和变更记录。
+        status: specified
+        visibility: internal
+      - id: DEC-0088-02
+        statement: 两组菜单均仅对拥有对应菜单权限的用户可见；本决定不授予或绕过现有权限校验。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.record-change-form-management-coexistence-user-confirmed]
+    acceptanceScenarios:
+      - id: scenario.record-menu-coexistence
+        given: 用户拥有相应菜单权限
+        when: 打开记录模块
+        then: 同时可见表单管理和变更管理两组菜单，且各入口跳转到对应页面
+        evidenceIds: [evidence.record-change-form-management-coexistence-user-confirmed]
+        evidenceRequirements: [菜单配置检查, 路由检查, 浏览器权限验证]

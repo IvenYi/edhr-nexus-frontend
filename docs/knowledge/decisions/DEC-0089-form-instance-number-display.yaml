@@ -1,0 +1,31 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0089
+    title: 表单实例编号现行展示术语
+    status: specified
+    visibility: internal
+    context: "provenance: user-confirmed；用户在记录变更页面截图明确批注‘统一叫表单实例编号’。本决策仅替代 DEC-0050 中‘表单实例号’作为现行产品展示名称的部分；DEC-0050 的实例身份、编号生成、格式、稳定性与历史追溯规则继续有效。记录变更历史资料中的‘表单流水号’也仅作为旧称保留。 original-evidence；本记录从 feat/record-change@aef427c524bd7270b3775fbd7c599c72a545e21b 的 DEC-0078 重分配为 DEC-0089，避免覆盖 edhr-dev 当前同号不同义决策；原始证据及Git历史保留，映射见 evidence.record-control-integration-20261028。"
+    decisionStatements:
+      - id: DEC-0089-01
+        statement: "provenance: user-confirmed；记录变更、表单管理及相关客户可见界面中，指称同一份具体表单记录的编号时，标签、查询提示、结果列和错误文案统一使用‘表单实例编号’；‘表单实例号’及‘表单流水号’只作为历史别名，不作为并列现行展示名。"
+        status: specified
+        visibility: internal
+      - id: DEC-0089-02
+        statement: "provenance: scope-boundary；本次仅统一展示术语，不改变 FR-YYYYMMDD-流水号的值和格式、同份记录编号稳定性、instanceNo 技术字段、API/数据库契约、旧审计内容或实例修订语义；DEC-0050 其余业务规则仍有效。"
+        status: specified
+        visibility: internal
+    supersedes: [DEC-0050]
+    evidenceIds: [evidence.form-instance-number-display-user-confirmed, evidence.form-instance-number-user-decision]
+    acceptanceScenarios:
+      - id: scenario.form-instance-number-display-canonical
+        given: 用户在表单管理或记录变更界面按具体表单实例编号定位记录
+        when: 页面显示查询入口、结果或详情
+        then: 当前业务标签统一为“表单实例编号”，返回的真实编号及记录身份与历史值相同
+        evidenceIds: [evidence.form-instance-number-display-user-confirmed]
+        evidenceRequirements: [前端可见文案扫描, 页面交互验证, API 重读编号一致性]
+      - id: scenario.form-instance-number-display-history
+        given: 历史决策和审计中已使用旧称或旧编号
+        when: 应用现行展示术语
+        then: 不重写历史决策、审计事实或编号值，旧称仅用于历史解释
+        evidenceIds: [evidence.form-instance-number-display-user-confirmed, evidence.form-instance-number-user-decision]
+        evidenceRequirements: [知识决策差异检查, 持久化和审计边界核对]
