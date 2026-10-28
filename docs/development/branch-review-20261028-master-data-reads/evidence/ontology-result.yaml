@@ -1,0 +1,63 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: bbd2ff88886ade456aac8d7d73f8af4f5c1575e2
+    targetBranch: edhr-dev
+    targetCommit: bbd2ff88886ade456aac8d7d73f8af4f5c1575e2
+    contractReadCommit: bbd2ff88886ade456aac8d7d73f8af4f5c1575e2
+    uncommittedContractPaths: []
+  reason: 本轮在29条既有ID的有限声明/来源核对中发现并更正两条事实的过时源码锚点，仅修sourcePath/sourceLocator及匹配的既有evidenceIds。未修改业务含义、类型、availability、状态、知识版本或成熟度；没有新增政策或ID。本结果不认证运行容量、全域主数据、W2保存宿主或整体审计完成。
+  changedArtifacts:
+    - path: docs/knowledge/facts/core-business.yaml
+      changeType: update
+      ids: [fact.catalog.equipment-purchasedateisfuture, fact.catalog.material-typename]
+  knowledgeSync:
+    - id: fact.catalog.equipment-purchasedateisfuture
+      disposition: updated
+      scope: 原sourceLocator标作purchaseDate(LocalDate)，实际EquipmentController方法为purchaseDate(String)，内部解析LocalDate后比较是否晚于今天；只修准确签名，保留原派生布尔含义、历史capturedAt及所有其余字段。
+      sourceReferences:
+        - docs/knowledge/rules/equipment.yaml
+        - docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml
+        - docs/superpowers/plans/2026-09-09-equipment-modeling.md
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java
+    - id: fact.catalog.material-typename
+      disposition: updated
+      scope: 原sourcePath指向仅解析制程且没有物料类型读取的ProductProcessResolutionService；改为实际ProductProcessController.materialTypeNames及isProductMaterial，并使用既有evidence.product-process-controller。只修来源元数据，保留产成品/半成品派生含义、事实类型/别名/availability/状态及原历史capturedAt，不声明通用运行时求值已实现。
+      sourceReferences:
+        - docs/knowledge/rules/product-process.yaml
+        - docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml
+        - docs/knowledge/evidence/product-process.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.master-reads.knowledge-schema-reference
+      checkType: schema
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-master-reads-ontology-knowledge.log
+        - 89 tests; failures 0; errors 0; skipped 0; BUILD SUCCESS. 结构/引用校验不能替代逐ID语义或产品运行验证。
+    - id: validation.master-reads.anchor-and-source-invariants
+      checkType: evidence-path
+      command: python3 -c 'import json; r=json.load(open("/tmp/edhr-master-reads-ontology-validation.json")); assert r["result"]=="passed" and r["reviewedRecordCount"]==29 and r["correctedFactCount"]==2 and r["nonAnchorFactFieldsUnchanged"] and r["otherFactsUnchanged"]'
+      outcome: passed
+      evidence:
+        - /tmp/edhr-master-reads-ontology-validation.json
+        - 逐条解析29实际YAML记录、成熟度和来源路径；核对两个实际方法签名、匹配evidence；相对于固定bbd2ff88其余事实及本两条非锚点字段全部不变。命令复核已生成原始检查结果，不冒充重新执行完整检查器。
+    - id: validation.master-reads.limited-semantic-inspection
+      checkType: evidence-path
+      command: git diff --check -- docs/knowledge/facts/core-business.yaml
+      outcome: passed
+      evidence:
+        - /tmp/edhr-master-reads-rule-review.json
+        - /tmp/edhr-master-reads-rule-review.md
+        - 正式本体角色实际阅读版本化确认、当前决策/定义及所列源码，29条有限一致，其中2条源锚点纠正；不将diff-check声称为语义自动校验。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

@@ -1,0 +1,51 @@
+schema: edhr-audit-risk-delta-register/v1
+productCommit: bbd2ff88886ade456aac8d7d73f8af4f5c1575e2
+qualification: 本批新增独立机制，与旧字典/DHR风险不合并计整改；历史原件不回写。仅观测/讨论，未实施优化。
+discussionOwner: /root
+reopenOnAffectedChange: true
+risks:
+  - id: PERF-EQUIPMENT-ASSOCIATION-READS-001
+    state: pending-discussion
+    evidenceLevel: runtime-observed-h2
+    affectedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/EquipmentRepository.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/EquipmentTypeRepository.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/EquipmentCategoryRepository.java
+    measured: 设备页5/20分别12/42SQL，同/异类型相同；类型页5/20分别7/22SQL；分类6/21分别7/22SQL。
+    counterevidence: 设备/类型主列表DB分页且P上限200；分类count不加载类型实体；默认分类较少。
+    proposal: 请求内批量读取页内引用及分类计数聚合，保留零分类、缺失名称与租户、分页次序；原生PG后续核对。
+  - id: PERF-MATERIAL-TYPE-DIRECTORY-RELOAD-001
+    state: pending-discussion
+    evidenceLevel: runtime-observed-h2
+    affectedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/MaterialTypeRepository.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Material.java
+    measured: N100/500、T2、size5，类型筛选102/502SQL；类型实体202/1002。
+    counterevidence: 无类型条件/关键字或关键字在前置字段命中时仅2SQL，不是所有请求无条件N+1。
+    proposal: 只在本请求加载一次目录并显式传给筛选/enrich，不跨请求缓存，不改变过滤阶段。
+  - id: PERF-MATERIAL-VERSION-MATERIALIZATION-001
+    state: pending-discussion
+    evidenceLevel: runtime-observed-h2
+    affectedPaths:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/MaterialRepository.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/dto/MaterialGroupRecord.java
+    measured: N100/500、size5，无条件2SQL但加载所有100/500版本；实际同组全部版本不截断。
+    counterevidence: 按组分页非按版本行分页；写侧存在按code定向查询，不等于所有物料入口全量。
+    proposal: 先设计组键页再批量取页内完整版本及状态聚合，保留筛选/排序时点，不直接对版本行LIMIT。
+adjacent:
+  - id: UX-DESIGNER-HOST-LATE-FEEDBACK-001
+    state: runtime-observed-pending-design
+    affectedPaths: [gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx, gmp-platform/frontend/src/components/SnackbarProvider.tsx]
+    observation: 真实父页旧A完成在新B显示泛称成功/失败；实际请求目标保持A且B在共享pending期间不可再提交。
+    boundary: 不声称B被保存或PR40未保护Shell；反馈关联目标还是会话抑制未实施，完整并发/持久化仍待核。
+  - id: CAND-MASTER-DATA-PAGING-OVERFLOW-001
+    state: source-candidate-runtime-pending
+    affectedPaths: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java]
+    next: 合法正整数边界HTTP复现后确定最小整改范围。
+  - id: CAND-MASTER-DATA-VERSION-NUMERIC-001
+    state: source-candidate-runtime-pending
+    affectedPaths: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java]
+    next: 先验证正常写入接受的长数字版本与真实列表排序失败，不只凭parseLong认定缺陷。

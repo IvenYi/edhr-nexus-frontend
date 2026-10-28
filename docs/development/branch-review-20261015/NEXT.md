@@ -1,5 +1,13 @@
 # 持续推进台账
 
+## PR40已合入：W4设备/物料关联读取与保存宿主补证
+
+已fetch最新`edhr-dev@bbd2ff88`，PR40人工merge、整树同c642f0e8，无其他产品/知识/契约增量。[本批](../branch-review-20261028-master-data-reads/README.md)已实际转W4设备/物料读取，主侧16H2观测（17读取记录）、77既有后端、14设备Node、6真实保存父页/受控子组件场景和build通过。本体29既有ID有限一致、两fact锚点纠错，updated/FINAL及89结构通过；新增unique语义未去重，不报29个新增。本批产品源码零修改，当前待全新独立QA，未宣告本批通过。
+
+新[三项性能风险](../branch-review-20261028-master-data-reads/risk-register.yaml)均实测H2机制、pending-discussion：设备页20条42SQL；物料类型筛选500版本502SQL；不筛选仍全量加载500版本后按组分页。没有PG计划、生产时延/容量结论，保留DB分页/既有页上限、关键词短路和完整组版本的反证。仅报告不授权性能实施；原候选/暂缓继续。真实父页旧A请求保持A，B受共享pending限制，但旧泛称反馈仍在新会话显示，完整并发/持久化未认证。
+
+固定目标4174路径/130迁移只是盘点，10主侧方法范围与本体有交叉、整文件完成0。接下来完成独立验收及实际PR前漂移复核；下一批先fetch再做API页下标/版本数字段合法复现、W3/W4其余入口，性能先讨论；W2余项/W5–W7及TaskDetail/生产弹窗设计/记录变更作废依赖DHR high/A12/四gap保持，不自动merge/deploy/恢复。下文PR40交付时“待合并”为历史检查点。
+
 ## PR39已合入：W2保存编辑会话隔离
 
 已交付[PR40](https://github.com/IvenYi/edhr-nexus-frontend/pull/40)，分支`audit/edhr-dev-designer-save-context-20261028`，目标`edhr-dev`，待人工merge。实际受测5009bfe3后仅L0原件/验收/范围/PR登记，产品/测试/知识保持。收到继续先fetch真实合入与新增增量；补必要保存宿主HTTP/反馈边界时转查W3/W4主数据及关联查询等未审入口，W2剩余/W5–W7、非拖动/性能讨论及用户暂缓保持。

@@ -823,15 +823,15 @@ facts:
     conceptId: concept.material
     valueType: string
     sourceType: derived
-    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java"
+    sourcePath: "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java"
     aliases: ["material.typeName"]
     availability: configuration-and-runtime
     allowedOperators: [in]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.product-process-resolution-service]
+    evidenceIds: [evidence.product-process-controller]
     sourceRevision: working-tree
-    sourceLocator: "material.typeName"
+    sourceLocator: "materialTypeNames() / isProductMaterial(Material, Map<Long, String>)"
     capturedAt: '2026-09-13'
     reviewStatus: reviewed
   - id: fact.catalog.operation-finaloutput
@@ -2783,7 +2783,7 @@ facts:
     visibility: internal
     evidenceIds: [evidence.equipment-modeling-controller, evidence.equipment-modeling-integration-tests, evidence.equipment-modeling-page]
     sourceRevision: working-tree
-    sourceLocator: "purchaseDate(LocalDate)"
+    sourceLocator: "purchaseDate(String)"
     capturedAt: '2026-09-15'
     reviewStatus: reviewed
   - id: fact.catalog.execution-operationselected

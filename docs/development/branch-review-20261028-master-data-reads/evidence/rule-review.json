@@ -1,0 +1,866 @@
+{
+  "schema": "edhr-limited-semantic-review/v1",
+  "reviewer": "/root/master_data_reads_ontology_20261028",
+  "baseCommit": "bbd2ff88886ade456aac8d7d73f8af4f5c1575e2",
+  "knowledgeBaselineVersion": "0.3.25",
+  "scope": "W4设备与物料读取涉及的有限规范和来源锚点；不认证W2保存宿主或全部主数据",
+  "counts": {
+    "reviewedRecords": 29,
+    "limitedConsistent": 29,
+    "correctedAnchorRecords": 2,
+    "newKnowledgeIds": 0,
+    "newUniqueHistoricalCoverage": null,
+    "wholeFileCompletion": 0
+  },
+  "countingBoundary": "29条既有ID的有限声明核对，与历史语义范围可能重叠，未做全历史去重，不报29个新unique。原四知识gap及全部未审资产保留。",
+  "evidenceProvenance": {
+    "userConfirmed": "版本化原始需求记录/决策，按原有确认范围读取；本次未取得最早聊天导出或历史截图。",
+    "originalEvidence": "当前实际源码、实体、路由、菜单和测试源码已读取。",
+    "secondaryReference": "旧计划中历史运行日志/浏览器/部署描述只作线索，未当成本次复验。",
+    "inference": "历史兼容、删除保护、人员解析、品牌长度、日期时区、分页/查询策略仍属工程选择。"
+  },
+  "records": [
+    {
+      "id": "DEC-0044-01",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml",
+      "sourceLocator": "DEC-0044-01",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "目录及两个子页面",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/frontend/src/pages/master-data/EquipmentPage.tsx",
+        "gmp-platform/frontend/src/router/index.tsx",
+        "gmp-platform/frontend/src/utils/menuManagement.ts"
+      ],
+      "reasonablenessAssessment": "类型管理与单台设备管理职责不同，现有菜单/路由保持这个边界。",
+      "limitations": [
+        "仅源代码/版本化确认记录核对；未把历史运行报告当作本轮浏览器或数据库复验。"
+      ]
+    },
+    {
+      "id": "DEC-0044-02",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml",
+      "sourceLocator": "DEC-0044-02",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "三内置分类及自定义分类",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java#categories/createCategory",
+        "gmp-platform/frontend/src/pages/master-data/EquipmentPage.tsx#categoriesQuery"
+      ],
+      "reasonablenessAssessment": "通用分类与用户新增分类可共存；分类是类型分组而不是设备实体。",
+      "limitations": [
+        "仅源代码/版本化确认记录核对；未把历史运行报告当作本轮浏览器或数据库复验。"
+      ]
+    },
+    {
+      "id": "DEC-0044-03",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml",
+      "sourceLocator": "DEC-0044-03",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "指定分类下显示具体设备种类",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java#types/fillType",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/EquipmentType.java",
+        "gmp-platform/frontend/src/pages/master-data/EquipmentPage.tsx"
+      ],
+      "reasonablenessAssessment": "种类层如注塑机与实物层如注塑机001不混同；分类筛选沿categoryId。",
+      "limitations": [
+        "仅源代码/版本化确认记录核对；未把历史运行报告当作本轮浏览器或数据库复验。"
+      ]
+    },
+    {
+      "id": "DEC-0044-04",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml",
+      "sourceLocator": "DEC-0044-04",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "单台设备对类型的真实引用",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Equipment.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java#equipmentResponse/fillEquipment"
+      ],
+      "reasonablenessAssessment": "单台设备保留独立ID并引用类型，适于多个实物归属同类型；名称不充当关系身份。",
+      "limitations": [
+        "仅源代码/版本化确认记录核对；未把历史运行报告当作本轮浏览器或数据库复验。"
+      ]
+    },
+    {
+      "id": "DEC-0044-05",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml",
+      "sourceLocator": "DEC-0044-05",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "两个列表的四个系统字段",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java#TypeResponse/EquipmentResponse",
+        "gmp-platform/frontend/src/pages/master-data/EquipmentPage.tsx#systemColumns"
+      ],
+      "reasonablenessAssessment": "创建/更新人时有助于来源解释；人员解析和历史回填策略仍是工程选择。",
+      "limitations": [
+        "仅源代码/版本化确认记录核对；未把历史运行报告当作本轮浏览器或数据库复验。"
+      ]
+    },
+    {
+      "id": "DEC-0044-06",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml",
+      "sourceLocator": "DEC-0044-06",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "品牌与采购日期及品牌在型号前",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Equipment.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java#fillEquipment",
+        "gmp-platform/frontend/src/pages/master-data/EquipmentPage.tsx#columnOptions/editor"
+      ],
+      "reasonablenessAssessment": "两项是单台设备属性，没有由此扩成采购流程；列顺序与确认一致。",
+      "limitations": [
+        "仅源代码/版本化确认记录核对；未把历史运行报告当作本轮浏览器或数据库复验。"
+      ]
+    },
+    {
+      "id": "DEC-0044-07",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml",
+      "sourceLocator": "DEC-0044-07",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "采购日期不得晚于今天",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java#purchaseDate(String)",
+        "gmp-platform/frontend/src/pages/master-data/EquipmentPage.tsx#equipmentPurchaseDateError"
+      ],
+      "reasonablenessAssessment": "已采购日期与未来计划日期含义不同，原确认只约束此字段；服务端执行校验。",
+      "limitations": [
+        "仅源代码/版本化确认记录核对；未把历史运行报告当作本轮浏览器或数据库复验。"
+      ]
+    },
+    {
+      "id": "DEC-0044-08",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml",
+      "sourceLocator": "DEC-0044-08",
+      "originalMaturity": "specified",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "类型可选描述随无版本主数据保存",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/equipment-description-confirmed.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/EquipmentType.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java#fillType",
+        "gmp-platform/frontend/src/pages/master-data/EquipmentPage.tsx#description"
+      ],
+      "reasonablenessAssessment": "描述归于类型本身，留空可保存；512上限与审计字段形状不提升为政策。",
+      "limitations": [
+        "仅源代码/版本化确认记录核对；未把历史运行报告当作本轮浏览器或数据库复验。"
+      ]
+    },
+    {
+      "id": "DEC-0044-09",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml",
+      "sourceLocator": "DEC-0044-09",
+      "originalMaturity": "specified",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "设备可选描述随无版本主数据保存",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/equipment-description-confirmed.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Equipment.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java#fillEquipment",
+        "gmp-platform/frontend/src/pages/master-data/EquipmentPage.tsx#description"
+      ],
+      "reasonablenessAssessment": "描述归于具体设备，留空可保存；没有推导版本、审批或校准规则。",
+      "limitations": [
+        "仅源代码/版本化确认记录核对；未把历史运行报告当作本轮浏览器或数据库复验。"
+      ]
+    },
+    {
+      "id": "rule.equipment-purchase-date-not-future",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/equipment.yaml",
+      "sourceLocator": "rule.equipment-purchase-date-not-future",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "配置保存时派生未来日期布尔量并阻断",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java#purchaseDate(String)"
+      ],
+      "reasonablenessAssessment": "规则沿用户确认，只对未来日期阻断；缺值/自然日时区属于现有实现推断。",
+      "limitations": [
+        "未证明跨时区部署的一致今天，也未在本角色执行日期运行测试。"
+      ]
+    },
+    {
+      "id": "rule.material.required-type",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/material-fields.yaml",
+      "sourceLocator": "rule.material.required-type",
+      "originalMaturity": "specified",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "物料新增及基础编辑必须解析可用类型",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/material-fields-user-confirmed.md",
+          "docs/knowledge/decisions/DEC-0048-material-type-and-brand.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#resolveMaterialTypeId",
+        "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx#configs.materials"
+      ],
+      "reasonablenessAssessment": "保持类型归属，防止基础信息缺少类别；没有授权自动补历史类型。",
+      "limitations": [
+        "测试源码核对不替代实际运行；不提升specified/internal。"
+      ]
+    },
+    {
+      "id": "rule.material.optional-brand",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/material-fields.yaml",
+      "sourceLocator": "rule.material.optional-brand",
+      "originalMaturity": "specified",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "品牌可填或空，其他校验仍执行",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/material-fields-user-confirmed.md",
+          "docs/knowledge/decisions/DEC-0048-material-type-and-brand.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#resolveMaterialBrandName/createMaterial/updateMaterialBaseInformation",
+        "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx#configs.materials"
+      ],
+      "reasonablenessAssessment": "可选品牌不成为新增保存阻断；多版本同步、空白裁剪、255上限是工程实现。",
+      "limitations": [
+        "测试源码核对不替代实际运行；不提升specified/internal。"
+      ]
+    },
+    {
+      "id": "rule.product.source-from-material",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/product-process.yaml",
+      "sourceLocator": "rule.product.source-from-material",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "产品列表只由产成品/半成品物料派生并沿用物料ID",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+          "docs/knowledge/glossary.yaml#term.product"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java#listProducts/isProductMaterial/materialTypeNames",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#listProducts/derivedProductMutationException"
+      ],
+      "reasonablenessAssessment": "避免物料和产品双份主数据；按真实类型映射筛选，产品不是拆分后的生产对象。",
+      "limitations": [
+        "不扩成生产开工、产品簇优先级或引用配置的全链验收；DEC0001是维护中的原始规范记录，未重新取得最早原聊天。"
+      ]
+    },
+    {
+      "id": "concept.equipment-category",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "concept.equipment-category",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "设备分类的概念/事实身份",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/EquipmentCategory.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java"
+      ],
+      "reasonablenessAssessment": "概念身份与源码实体分别建模；不把种类和实物合并，不派生保养/校准生命周期。",
+      "limitations": [
+        "仅定义及所列实体范围。"
+      ]
+    },
+    {
+      "id": "term.equipment-category",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "term.equipment-category",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "设备分类术语定义",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/EquipmentCategory.java"
+      ],
+      "reasonablenessAssessment": "当前定义准确区分分类、设备类型与具体单台，例子与确认一致。",
+      "limitations": [
+        "术语核对不等于该实体所有接口已审。"
+      ]
+    },
+    {
+      "id": "concept.equipment-type",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "concept.equipment-type",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "设备种类的概念/事实身份",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/EquipmentType.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java"
+      ],
+      "reasonablenessAssessment": "概念身份与源码实体分别建模；不把种类和实物合并，不派生保养/校准生命周期。",
+      "limitations": [
+        "仅定义及所列实体范围。"
+      ]
+    },
+    {
+      "id": "term.equipment-type",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "term.equipment-type",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "设备种类术语定义",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/EquipmentType.java"
+      ],
+      "reasonablenessAssessment": "当前定义准确区分分类、设备类型与具体单台，例子与确认一致。",
+      "limitations": [
+        "术语核对不等于该实体所有接口已审。"
+      ]
+    },
+    {
+      "id": "concept.equipment",
+      "recordType": "concept",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "concept.equipment",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "设备单台的概念/事实身份",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Equipment.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java"
+      ],
+      "reasonablenessAssessment": "概念身份与源码实体分别建模；不把种类和实物合并，不派生保养/校准生命周期。",
+      "limitations": [
+        "仅定义及所列实体范围。"
+      ]
+    },
+    {
+      "id": "term.equipment",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "term.equipment",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "设备单台术语定义",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Equipment.java"
+      ],
+      "reasonablenessAssessment": "当前定义准确区分分类、设备类型与具体单台，例子与确认一致。",
+      "limitations": [
+        "术语核对不等于该实体所有接口已审。"
+      ]
+    },
+    {
+      "id": "relation.equipment-category-types",
+      "recordType": "relation",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "relation.equipment-category-types",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "分类可有0到多种设备类型",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/EquipmentType.java#categoryId",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java"
+      ],
+      "reasonablenessAssessment": "父级可为空集合；每条子记录真实上级用ID保存，没有由父侧one-to-zero-or-many推定自动补历史空引用。",
+      "limitations": [
+        "实际历史孤立/未分类数据及删除并发另行验收。"
+      ]
+    },
+    {
+      "id": "relation.equipment-type-instances",
+      "recordType": "relation",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "relation.equipment-type-instances",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "设备类型可有0到多台设备",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Equipment.java#equipmentTypeId",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java"
+      ],
+      "reasonablenessAssessment": "父级可为空集合；每条子记录真实上级用ID保存，没有由父侧one-to-zero-or-many推定自动补历史空引用。",
+      "limitations": [
+        "实际历史孤立/未分类数据及删除并发另行验收。"
+      ]
+    },
+    {
+      "id": "term.material",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "term.material",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "物料包含各类型，产品视图只取产成品/半成品并沿原物料身份",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+          "docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml#DEC-0082-15"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Material.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java#isProductMaterial/toProductSourceResponse"
+      ],
+      "reasonablenessAssessment": "共用身份避免重复建档；只核对本批派生边界，保持新引用入口与历史冻结的既有确认。",
+      "limitations": [
+        "本条定义的引用候选/自动带入/旧冻结部分仅核对现有规范承接，不在本批重新运行。"
+      ]
+    },
+    {
+      "id": "term.product",
+      "recordType": "term",
+      "sourcePath": "docs/knowledge/glossary.yaml",
+      "sourceLocator": "term.product",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "产品为物料派生生产用途视图，与生产对象分离",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+          "docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml#DEC-0082-15"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Material.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java#isProductMaterial/toProductSourceResponse"
+      ],
+      "reasonablenessAssessment": "共用身份避免重复建档；只核对本批派生边界，保持新引用入口与历史冻结的既有确认。",
+      "limitations": [
+        "本条定义的引用候选/自动带入/旧冻结部分仅核对现有规范承接，不在本批重新运行。"
+      ]
+    },
+    {
+      "id": "relation.material-derives-product",
+      "recordType": "relation",
+      "sourcePath": "docs/knowledge/ontology.yaml",
+      "sourceLocator": "relation.material-derives-product",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "单份物料版本在产品视图中最多对应自身一次",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml#DEC-0001-01"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java#listProducts/toProductSourceResponse"
+      ],
+      "reasonablenessAssessment": "条件不满足不进入产品视图，满足则保留物料ID，不另创建Product记录。",
+      "limitations": [
+        "不据此合并同编码的不同物料版本。"
+      ]
+    },
+    {
+      "id": "DEC-0048-01",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0048-material-type-and-brand.yaml",
+      "sourceLocator": "DEC-0048-01",
+      "originalMaturity": "specified",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "新增及基础编辑物料类型必填",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/material-fields-user-confirmed.md",
+          "docs/knowledge/decisions/DEC-0048-material-type-and-brand.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#resolveMaterialTypeId"
+      ],
+      "reasonablenessAssessment": "确认范围清楚，现有服务端校验/品牌处理未改变确认语义；附带工程策略仍区分。",
+      "limitations": [
+        "不新增迁移/版本政策；本角色只查源码与测试源码。"
+      ]
+    },
+    {
+      "id": "DEC-0048-02",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0048-material-type-and-brand.yaml",
+      "sourceLocator": "DEC-0048-02",
+      "originalMaturity": "specified",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "物料品牌选填",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/knowledge/evidence/material-fields-user-confirmed.md",
+          "docs/knowledge/decisions/DEC-0048-material-type-and-brand.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#resolveMaterialBrandName"
+      ],
+      "reasonablenessAssessment": "确认范围清楚，现有服务端校验/品牌处理未改变确认语义；附带工程策略仍区分。",
+      "limitations": [
+        "不新增迁移/版本政策；本角色只查源码与测试源码。"
+      ]
+    },
+    {
+      "id": "DEC-0001-01",
+      "recordType": "decision-statement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "sourceLocator": "DEC-0001-01",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "产品来源限定产成品/半成品物料，身份复用",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java#isProductMaterial",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#resolveProductMaterialTypeIds"
+      ],
+      "reasonablenessAssessment": "产品业务视图复用主数据是明确既有规范，不把最新查询算法当该规则内容。",
+      "limitations": [
+        "最早原聊天不可得；当前版本化规范和原始源码可核对。"
+      ]
+    },
+    {
+      "id": "fact.catalog.equipment-purchasedateisfuture",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/core-business.yaml",
+      "sourceLocator": "fact.catalog.equipment-purchasedateisfuture",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "保存时采购日期晚于服务器当前自然日的派生布尔量及源码锚点",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/superpowers/plans/2026-09-09-equipment-modeling.md",
+          "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java#purchaseDate(String)"
+      ],
+      "reasonablenessAssessment": "布尔事实直接来自解析后date.isAfter(LocalDate.now())，不是新增持久化字段。",
+      "limitations": [
+        "不声称已有通用运行时事实求值/目录发布；旧capturedAt保留为历史日期，不反填本次读取。"
+      ],
+      "initialConclusion": "needs-fix",
+      "issueId": "KNOWLEDGE-MASTER-READS-ANCHOR-001",
+      "disposition": "updated",
+      "change": "sourceLocator由不存在的purchaseDate(LocalDate)更正为实际purchaseDate(String)，仅此元数据，无政策变化。"
+    },
+    {
+      "id": "fact.catalog.material-typename",
+      "recordType": "fact",
+      "sourcePath": "docs/knowledge/facts/core-business.yaml",
+      "sourceLocator": "fact.catalog.material-typename",
+      "originalMaturity": "implemented",
+      "auditScope": "limited-statement-and-source",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "scope": "物料类型ID解析为名称用于产品派生筛选，校正实际源码/证据锚点",
+      "authority": {
+        "classification": "versioned-user-confirmed-record",
+        "originalEvidenceReferences": [
+          "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml#DEC-0001-01",
+          "docs/knowledge/evidence/product-process.yaml#evidence.product-process-controller"
+        ]
+      },
+      "implementationReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java#materialTypeNames()/isProductMaterial(Material, Map<Long, String>)"
+      ],
+      "reasonablenessAssessment": "String名称由真实类型映射派生，既有in操作符仅判断产成品/半成品；旧解析制程服务并不生产此值。",
+      "limitations": [
+        "不声称全域租户隔离或完整规则运行层；availability及成熟度保留，不由本次锚点修正升级。"
+      ],
+      "initialConclusion": "needs-fix",
+      "issueId": "KNOWLEDGE-MASTER-READS-ANCHOR-002",
+      "disposition": "updated",
+      "change": "sourcePath改到实际ProductProcessController；sourceLocator精确方法；evidenceIds改为既有evidence.product-process-controller。"
+    }
+  ],
+  "sourceReview": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java",
+      "scope": [
+        "categories/types/list",
+        "fillType/fillEquipment",
+        "purchaseDate(String)",
+        "categoryResponse/typeResponse/equipmentResponse"
+      ],
+      "depth": "source-inspected",
+      "wholeFileComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "scope": [
+        "listMaterials/listProducts",
+        "resolveMaterialTypeId/resolveMaterialBrandName",
+        "materialTypeNameMap/matchesMaterialTypeName",
+        "toPagedResult/toMaterialGroups/toMaterialGroup/compareVersion"
+      ],
+      "depth": "source-inspected",
+      "wholeFileComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java",
+      "scope": [
+        "listProducts",
+        "requireProductMaterial/isProductMaterial/materialTypeNames/toProductSourceResponse"
+      ],
+      "depth": "source-inspected",
+      "wholeFileComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/ProductProcessResolutionService.java",
+      "scope": [
+        "resolve/findVersionForProduct/availableVersions",
+        "确认没有生产material.typeName的代码"
+      ],
+      "depth": "source-inspected",
+      "wholeFileComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/EquipmentPage.tsx",
+      "scope": [
+        "字段/系统列/描述/采购日期校验接线",
+        "分类/type/设备查询及表单持久化接线"
+      ],
+      "depth": "source-inspected",
+      "wholeFileComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+      "scope": [
+        "configs.materials：类型必填/品牌可选",
+        "产品派生只读说明"
+      ],
+      "depth": "source-inspected",
+      "wholeFileComplete": false
+    }
+  ],
+  "pendingSourceCandidates": [
+    {
+      "id": "candidate.material-pagination-overflow",
+      "scope": "toPagedResult及ProductProcessController.listProducts中的int乘法/加法",
+      "status": "source-candidate-runtime-pending",
+      "disposition": "主智能体已决定下一小批合法构造复现；本轮不整改。"
+    },
+    {
+      "id": "candidate.material-version-number-range",
+      "scope": "compareVersion的Long.parseLong数段",
+      "status": "source-candidate-runtime-pending",
+      "disposition": "主智能体已决定下一小批合法构造复现；本轮不新增版本格式政策。"
+    }
+  ],
+  "runtimeValidation": {
+    "ontologyRoleExecuted": [
+      "tools/knowledge-model: 89 structural/reference checks; failures/errors/skips 0"
+    ],
+    "notExecuted": [
+      "浏览器页面交互",
+      "业务后端运行测试",
+      "原生PostgreSQL执行计划/容量/并发",
+      "客户环境/历史数据恢复"
+    ],
+    "boundary": "主侧/独立QA后续运行另列，不将源码及知识89换算为功能或容量已通过。"
+  }
+}
