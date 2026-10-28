@@ -1,0 +1,67 @@
+/workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/esbuild/lib/main.js:1472
+  let error = new Error(text);
+              ^
+
+Error: Build failed with 3 errors:
+src/components/identity/SubjectSelector.tsx:38:9: ERROR: No matching export in "stub:api" for import "getDepartmentTree"
+src/components/identity/SubjectSelector.tsx:38:28: ERROR: No matching export in "stub:api" for import "getRoles"
+src/components/identity/SubjectSelector.tsx:38:38: ERROR: No matching export in "stub:api" for import "getUsers"
+    at failureErrorWithLog (/workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/esbuild/lib/main.js:1472:15)
+    at /workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/esbuild/lib/main.js:945:25
+    at runOnEndCallbacks (/workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/esbuild/lib/main.js:1315:45)
+    at buildResponseToResult (/workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/esbuild/lib/main.js:943:7)
+    at /workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/esbuild/lib/main.js:970:16
+    at responseCallbacks.<computed> (/workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/esbuild/lib/main.js:622:9)
+    at handleIncomingPacket (/workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/esbuild/lib/main.js:677:12)
+    at Socket.readFromStdout (/workspace/edhr-nexus-frontend/gmp-platform/frontend/node_modules/esbuild/lib/main.js:600:7)
+    at Socket.emit (node:events:509:28)
+    at addChunk (node:internal/streams/readable:563:12) {
+  errors: [Getter/Setter],
+  warnings: [Getter/Setter]
+}
+
+Node.js v24.19.0
+✖ scripts/test-cell-display-components.mjs (139.605567ms)
+✔ new choice fields persist the same two presets already shown by their controls (5.8593ms)
+✔ reading old choice fields with missing or empty options never creates current write-command presets (5.629142ms)
+✔ ModelTab parent-column creation initializes only new choice columns and preserves an old empty column (1.574284ms)
+✔ ModelTab parent-column type changes initialize choice definitions and embedded placements in one history step (1.522738ms)
+✔ editing either placement shares single and multi options with the canonical field and other placements (1.29277ms)
+✔ subtable options update canonical columns and embedded placements across pages without touching another table (1.131412ms)
+✔ model option edits update every placement while preserving compatible widget configuration (0.57843ms)
+✔ renaming an option label preserves its existing value identity and former immutable document (0.589556ms)
+✔ one choice edit is one complete undo step and round-trips model and canvas consistently (1.130741ms)
+✔ the existing row factory saves a configured single-select default as the actual canonical option value (1.083172ms)
+✔ unrelated binding and widget edits do not adopt a saved inconsistent placement or reactivate disabled options (0.525432ms)
+✔ rebinding a compatible choice control takes its new field options without carrying another field option list (0.743733ms)
+✔ inserting before a bound field shifts the same source with its cell, preserves other pages and round-trips undo/redo (5.503998ms)
+✔ inserting inside a merged field expands it, while insertion after its right edge leaves it unchanged (1.239101ms)
+✔ inserting before a subtable keeps its region, record group and actual field offsets aligned (3.053426ms)
+✔ inserting inside a subtable keeps its region, record group and actual field offsets aligned (1.93329ms)
+✔ nested bound nodes move recursively and free components without a cell anchor keep their position (0.963615ms)
+✔ a successful save acknowledges its submitted document, retaining edits made in flight (1.294803ms)
+✔ a save without further edits becomes clean and the next successful save can acknowledge B (0.337586ms)
+✔ undo and redo compare with the acknowledged document rather than the latest local edit (0.421059ms)
+✔ a late acknowledgement for another template or version cannot replace its saved baseline (0.394951ms)
+✔ source mappings and layout share one document history and survive serialization (2.120767ms)
+✔ renaming or disabling the same model column updates its placed definition without changing identity or inventing visibility policy (3.982352ms)
+✔ a changed column type uses the compatible component and clears only incompatible widget overrides (1.178102ms)
+✔ compatible column edits retain explicit widget overrides and preserve the previous immutable definition (0.824371ms)
+✔ the same parent column updates on other pages and nested nodes without changing unrelated fields (1.125604ms)
+✔ column edit is one complete undo step and serializes consistently without rewriting the former document (1.725806ms)
+✔ mock paper and full runtime paper both render the edited column definition (129.585209ms)
+✔ generic table renderer already reads canonical model columns and remains a separate positive control (9.028557ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 29
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4173.739981
+
+✖ failing tests:
+
+test at scripts/test-cell-display-components.mjs:1:1
+✖ scripts/test-cell-display-components.mjs (139.605567ms)
+  'test failed'

@@ -1,0 +1,159 @@
+{
+  "role": "business-knowledge-modeler",
+  "status": "FINAL",
+  "scope": "W2字段拖动取消的有限语义与实现边界核对；不是全W2或全库审计完成",
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "contractBaseline": {
+    "sourceCommit": "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+    "contractReadCommit": "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+    "uncommittedContractPaths": []
+  },
+  "workingTreeEvidence": {
+    "description": "读取本轮未提交两处commit guard差异；测试正在实现，未把未提交产品冒充HEAD内容。",
+    "productHashes": {
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx": "ccaa131145496b1a5edf64c818e2572e26064b7222a336d681a9fdde6bc686ed",
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx": "eadac1fb15cf6841067a86068671d10bdfbab5014b7c633c436956e157847c34"
+    },
+    "knowledgeOrContractChanges": []
+  },
+  "summary": {
+    "knowledgeIdsReviewed": 7,
+    "consistentWithinStatedScope": 6,
+    "retainedEvidenceGap": 1,
+    "knowledgeChanges": 0,
+    "newBusinessPolicies": 0,
+    "runtimeTestsExecutedByThisRole": 0
+  },
+  "reviews": [
+    {
+      "id": "DEC-0080-01",
+      "path": "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": ["user-confirmed", "original-evidence"],
+      "sources": ["docs/knowledge/evidence/shared-choice-options-2026-10-18.md:7-20", "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts:2398-2518"],
+      "scope": "同一表单同一稳定字段多处共享选项；取消修复不生成或重定义字段身份/选项。",
+      "reasonableness": "用户明确答复必须共用同一组选项，保证一个采集字段的允许值定义一致；不同字段不因同名自动共享，边界合理且已确认。",
+      "replacementBoundary": "决策supersedes=[]；无旧独立选项政策须替代。旧July规格的多处展示非目标是阶段记录，不构成当前禁止，不伪造整份DEC替代。",
+      "disposition": "retained",
+      "limit": "只核对本批不影响该规则，不重验完整共享选项所有写入/填报路径。"
+    },
+    {
+      "id": "term.form-template-field",
+      "path": "docs/knowledge/glossary.yaml:405",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": ["user-confirmed", "original-evidence"],
+      "sources": ["docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml:9-12", "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts:2406-2487"],
+      "scope": "实际稳定fieldId与画布位置副本区分。",
+      "reasonableness": "位置变化不应另造业务字段身份；取消手势不写节点或绑定正好避免无意增加位置副本。",
+      "disposition": "retained",
+      "limit": "未将主表fieldId规则外推为不同父子表的身份可混同。"
+    },
+    {
+      "id": "concept.form-template-field",
+      "path": "docs/knowledge/ontology.yaml:375",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": ["original-evidence"],
+      "sources": ["docs/knowledge/glossary.yaml:405", "docs/knowledge/evidence/shared-choice-options-2026-10-18.yaml"],
+      "scope": "表单真实字段概念仍引用同一术语及已确认来源。",
+      "reasonableness": "取消事件是UI暂态，不能因此引入新的业务实体、事实或运行规则。",
+      "disposition": "retained",
+      "limit": "specified/internal保持，不因本体核对提升成熟度或运行投影资格。"
+    },
+    {
+      "id": "DEC-0077-12",
+      "path": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml:53",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": ["user-confirmed", "original-evidence"],
+      "sources": ["docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md:82-86", "docs/development/branch-review-20261028-designer-cancel/decision-package.yaml"],
+      "scope": "使用时复制配置、未来配置不回写已形成快照；本批只改变未保存编辑手势的提交条件。",
+      "reasonableness": "用户明确要求使用时冻结且历史不可变；取消动作无意改变草稿不应成为另一种冻结或保存。",
+      "replacementBoundary": "原证据旧编号DEC-0075按该证据开头映射为DEC-0077，后缀保留；此次不创建新的发布冻结，也不恢复旧H006政策。",
+      "disposition": "retained",
+      "limit": "未重新运行后端START/ATTACH_FORM/历史读取；这里只证实本批差异未触及该链。"
+    },
+    {
+      "id": "DEC-0077-22",
+      "path": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml:93",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": ["user-confirmed", "original-evidence"],
+      "sources": ["docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md:337-354", "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts:1963-1977"],
+      "scope": "同一画布配置、保存与撤销的所有权；不引入第二套history。",
+      "reasonableness": "用户接受同一画布同级侧栏、共享选择与保存撤销，保持操作上下文；取消不pushDocumentHistory与此一致。",
+      "replacementBoundary": "该确认收敛入口组织与上下文连续性，不定义普通字段卡片点击放置、多选批量或无障碍全方案。",
+      "disposition": "retained",
+      "limit": "没有据此宣称全部侧栏或低学习成本完成客户验证。"
+    },
+    {
+      "id": "scenario.shared-choice-options-single-document-history",
+      "path": "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml:22",
+      "reviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "provenance": ["inference", "original-evidence"],
+      "sources": ["docs/knowledge/evidence/shared-choice-options-2026-10-18.md:34-38", "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts:1963-1977"],
+      "scope": "单次完整document撤销是既有历史所有权下工程验收边界。",
+      "reasonableness": "完整恢复相关配置避免局部状态和身份脱节；本次取消应保持整个document及undo/redo，正常放置仍沿原一次历史。",
+      "disposition": "retained",
+      "limit": "该验收场景本来针对选项编辑，不能将其文字扩张为新的业务级事件或撤销生产审计政策。"
+    },
+    {
+      "id": "question.form-projection-sidebar-mode-interaction",
+      "path": "docs/knowledge/open-questions.yaml:36",
+      "reviewStatus": "reviewed",
+      "conclusion": "evidence-gap",
+      "provenance": ["user-confirmed", "secondary-reference"],
+      "sources": ["docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md:337-354", "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml:93"],
+      "scope": "已确认同级侧栏组织，剩余客户试用和低学习成本证据保持缺口。",
+      "reasonableness": "已确认入口不重问；缺少代表性任务试用不能写易用性通过。",
+      "disposition": "deferred",
+      "limit": "不阻断本批取消修复；非拖动首次放置建议亦不能以此开放问题自动获产品语义授权。"
+    }
+  ],
+  "nonIdEvidence": [
+    {
+      "path": "gmp-platform/docs/superpowers/specs/2026-07-10-template-designer-field-design.md:19-37",
+      "kind": "historical-source",
+      "conclusion": "字段模型/版本画布分离为来源线索；本阶段不做多处展示不是永久禁止。当前具体选项身份边界以已确认DEC-0080-01为准，历史原文保留。"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ComponentLibrary.tsx:38-81",
+      "kind": "original-evidence",
+      "conclusion": "相邻显示组件的pointercancel只cleanup，只有匹配pointerup才派发insert；说明取消与提交分离已有实现参照，但代码不是新增业务政策。"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/verify-template-designer-react.mjs",
+      "kind": "original-evidence",
+      "conclusion": "既有断言禁止普通卡片直接onClick generic addNode。从取消修复不能推导改变该点击语义；本角色未执行此脚本。"
+    }
+  ],
+  "implementationReview": [
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx:238-310",
+      "methods": ["finishPointerDrag", "handlePointerUp", "handlePointerCancel"],
+      "finding": "基线取消与松手共用会派发drop的finish；本轮未提交修复以commit && active限制派发，正常up true、cancel false，pointerId和cleanup保留。",
+      "ontologyImpact": "none"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx:2849-2915",
+      "methods": ["beginWordTableInlineFieldMove", "finish", "moveWordTableFieldToDropPosition"],
+      "finding": "基线cancel传false仅影响非active选择分支，active仍会移动marker/绑定；本轮未提交修复两个写分支均要求commit。未改目标解析与移动命令。",
+      "ontologyImpact": "none"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts:2398-2518",
+      "methods": ["addNodeFromFieldToCell", "addNodeFromFieldToWordTableCell", "addNodeFromSubTableFieldToCell", "addNodeFromFieldToRange"],
+      "finding": "既有enabled/available检查、grid局部内容替换、Word单格多独立字段及subTable身份限制仍由原命令与workspace包装负责；store本批无差异。",
+      "ontologyImpact": "none",
+      "limit": "不声称这些API自身覆盖所有UI目标与重叠guard，也不声称完整保存/提交验证已运行。"
+    }
+  ],
+  "unchangedDeferrals": ["TaskDetail签名由协作者修复后复验", "生产弹窗样式用户暂缓", "记录控制与DHR high/A12依赖", "四项旧知识证据缺口", "非拖动放置建议仍候选", "性能优化先讨论"],
+  "runtimeBoundary": "本角色只读语义、原始源码与未提交差异，未运行浏览器、后端、Maven或构建；独立质量必须使用实际最终候选。"
+}

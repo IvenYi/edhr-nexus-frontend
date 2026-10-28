@@ -1,0 +1,395 @@
+{
+  "role": "independent final quality verifier, L2; no participation in product/test/knowledge fixes",
+  "status": "FINAL",
+  "timestampUTC": "2026-10-28T06:35:25.232990+00:00",
+  "baseCommit": "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+  "headCommit": "52c1069ea14dfee0ad79f9501005148d302fcca0",
+  "testedCommit": "52c1069ea14dfee0ad79f9501005148d302fcca0",
+  "targetBranch": "edhr-dev",
+  "contractReadCommit": "52c1069ea14dfee0ad79f9501005148d302fcca0",
+  "knowledgeBaselineVersion": "0.3.25",
+  "workingTreeState": "clean",
+  "commands": [
+    {
+      "id": "browser.current.desktop",
+      "cwd": "gmp-platform/frontend",
+      "command": "CHROME_PATH=/usr/bin/chromium DESIGNER_WIDTH=1440 DESIGNER_ARTIFACTS=/tmp/edhr-designer-qa-desktop node scripts/test-designer-pointer-cancel-browser.mjs",
+      "exitCode": 0,
+      "resultPath": "/tmp/edhr-designer-qa-desktop/result.json",
+      "log": "/tmp/edhr-designer-qa-desktop.log"
+    },
+    {
+      "id": "browser.current.narrow",
+      "cwd": "gmp-platform/frontend",
+      "command": "CHROME_PATH=/usr/bin/chromium DESIGNER_WIDTH=390 DESIGNER_ARTIFACTS=/tmp/edhr-designer-qa-narrow node scripts/test-designer-pointer-cancel-browser.mjs",
+      "exitCode": 0,
+      "resultPath": "/tmp/edhr-designer-qa-narrow/result.json",
+      "log": "/tmp/edhr-designer-qa-narrow.log"
+    },
+    {
+      "id": "browser.baseline",
+      "cwd": "gmp-platform/frontend",
+      "command": "CHROME_PATH=/usr/bin/chromium DESIGNER_BASELINE_COMMIT=6306457580dbd2787db7df8f2e3cf80ddd21defd DESIGNER_WIDTH=1440 DESIGNER_ARTIFACTS=/tmp/edhr-designer-qa-baseline node scripts/test-designer-pointer-cancel-browser.mjs",
+      "exitCode": 1,
+      "resultPath": "/tmp/edhr-designer-qa-baseline/result.json",
+      "log": "/tmp/edhr-designer-qa-baseline.log",
+      "interpretation": "Expected baseline five product-red / seven positive; no fixture blocked."
+    },
+    {
+      "id": "unit35",
+      "cwd": "gmp-platform/frontend",
+      "command": "node --test scripts/test-designer-choice-options.mjs scripts/test-designer-subfield-sync.mjs scripts/test-designer-column-insertion.mjs scripts/test-cell-display-components.mjs scripts/test-designer-save-state.mjs",
+      "exitCode": 0,
+      "log": "/tmp/edhr-designer-qa-node.log"
+    },
+    {
+      "id": "save.browser",
+      "cwd": "gmp-platform/frontend",
+      "command": "CHROME_PATH=/usr/bin/chromium W2_CASE_FILTER=save W2_RESULT_PATH=/tmp/edhr-designer-qa-save.json node scripts/test-designer-save-browser.mjs",
+      "exitCode": 0,
+      "resultPath": "/tmp/edhr-designer-qa-save.json",
+      "log": "/tmp/edhr-designer-qa-save.log"
+    },
+    {
+      "id": "build",
+      "cwd": "gmp-platform/frontend",
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": "/tmp/edhr-designer-qa-build.log"
+    },
+    {
+      "id": "designer.verifier",
+      "cwd": "gmp-platform/frontend",
+      "command": "node scripts/verify-template-designer-react.mjs",
+      "exitCode": 0,
+      "log": "/tmp/edhr-designer-qa-verify.log"
+    },
+    {
+      "id": "knowledge89",
+      "cwd": ".",
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test",
+      "exitCode": 0,
+      "log": "/tmp/edhr-designer-qa-knowledge.log"
+    },
+    {
+      "id": "nondrag.observation",
+      "cwd": ".",
+      "command": "CHROME_PATH=/usr/bin/chromium node docs/development/branch-review-20261027-input-session/evidence/designer-observation.mjs",
+      "exitCode": 0,
+      "resultPath": "/tmp/edhr-designer-qa-nondrag.json",
+      "log": "/tmp/edhr-designer-qa-nondrag.log"
+    },
+    {
+      "id": "strict.current",
+      "cwd": ".",
+      "command": "python /tmp/edhr-designer-audit-project.py gmp-platform/frontend/src --mode strict --no-write",
+      "exitCode": 2,
+      "resultPath": "/tmp/edhr-designer-qa-static-current.json"
+    },
+    {
+      "id": "strict.baseline",
+      "cwd": ".",
+      "command": "git archive 6306457580dbd2787db7df8f2e3cf80ddd21defd gmp-platform/frontend/src -> QA-owned temporary directory; python /tmp/edhr-designer-qa-audit-project.py <export>/gmp-platform/frontend/src --mode strict --no-write",
+      "exitCode": 2,
+      "resultPath": "/tmp/edhr-designer-qa-static-baseline.json"
+    },
+    {
+      "id": "lint",
+      "cwd": "gmp-platform/frontend",
+      "command": "npm run lint",
+      "exitCode": 2,
+      "log": "/tmp/edhr-designer-qa-lint.log",
+      "interpretation": "ESLint 8.57.1: configuration file not found; not passed."
+    },
+    {
+      "id": "fresh.fetch",
+      "cwd": ".",
+      "command": "git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git status --porcelain=v1",
+      "exitCode": 0,
+      "output": [
+        "52c1069ea14dfee0ad79f9501005148d302fcca0",
+        "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+        "working tree clean"
+      ]
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx",
+      "blob": "c827bda35cdbc0c2cf22fd65b5b76cf29180874c",
+      "sha256": "ccaa131145496b1a5edf64c818e2572e26064b7222a336d681a9fdde6bc686ed"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+      "blob": "e93612e2c65e26a1e36843fe6711514497946c24",
+      "sha256": "eadac1fb15cf6841067a86068671d10bdfbab5014b7c633c436956e157847c34"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-designer-pointer-cancel-browser.mjs",
+      "blob": "02b68e80a70c67e2e2c2662eaa93097fe91c1d04",
+      "sha256": "d0a888a576bac8260222fb5d7cef2b905b73efe73e8c852bfb585c3c8ca608c3"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-cell-display-components.mjs",
+      "blob": "8f41618fc51cbacacfff1d52f9e8115ae6623adc",
+      "sha256": "66594dcacf14ff1d42e773e439e8621b22c306e60e0da3797bc7f494f5328e54"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/tmp/edhr-designer-qa-audit-project.py",
+      "bytes": 37717,
+      "sha256": "b56ca0495ace4aaac2bfa779dc707b04baab0f7d4537e6856b6348c63230661c"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-baseline.log",
+      "bytes": 2378,
+      "sha256": "be8b99cb5bffdc9ccc3ffd556be9f81fbbf5acba5b817f37cb3e499a1ce751c3"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-baseline/grid-cancel-failed.png",
+      "bytes": 43830,
+      "sha256": "484160e47de8152dca424d4fc011d2aa9e3a99b45b3d4e863d18c209b674dd2f"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-baseline/merged-cancel-failed.png",
+      "bytes": 45038,
+      "sha256": "c1fb301b86e17118b38d6acf8162d31a32a7cc5144546dabd5aa85c61363de18"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-baseline/normal-word-inline-move.png",
+      "bytes": 58576,
+      "sha256": "40b2312623ea8d5fefa53c6b78c8d66b3f741329fb74aa2dd3a03c218b502c68"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-baseline/result.json",
+      "bytes": 63070,
+      "sha256": "81755d462d219d543c9c4b61f5ab79065356898427bf990fa2033778b837c4b1"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-baseline/subfield-cancel-failed.png",
+      "bytes": 45879,
+      "sha256": "14dd23a417bb869fd80b0e6ab9ec67418a6202c950c6d2b685dd6ce5e788b27e"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-baseline/word-inline-move-cancel-failed.png",
+      "bytes": 58577,
+      "sha256": "9e1a9e6c21d4e5c8bdf3a481e1103d086d806d72290dcdb15952097c2d6fcfa0"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-baseline/word-new-cancel-failed.png",
+      "bytes": 59586,
+      "sha256": "16c5884a152c7ee3e9170beb15621977fc1006e30de57a8c2082752605bf09b8"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-build.log",
+      "bytes": 9780,
+      "sha256": "0f5432ed7939c9590248526e10cff4d18dabd47afd59d21184865405361c57c9"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-desktop.log",
+      "bytes": 1074,
+      "sha256": "ff841dca07c5b9f8043447ac5dae353ea3616965aec2bcc8f631dbf7a70aaa2f"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-desktop/grid-cancel.png",
+      "bytes": 44753,
+      "sha256": "5f82074f3f1f3216bec282392402a88aaf23cc41d58b5493fe6c6fdce5a1b811"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-desktop/normal-word-inline-move.png",
+      "bytes": 58581,
+      "sha256": "34eb72005d09e3fbe30c8158ce8856fb9d308ed7d4651f0df454223360f96bf9"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-desktop/result.json",
+      "bytes": 55460,
+      "sha256": "e25e11c5bbb8b2f428b6073e9c3229b852ab63f76e178d8157daf45d66fdadbb"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-desktop/word-inline-move-cancel.png",
+      "bytes": 58491,
+      "sha256": "b8dad8ff693d4e6dcedf3e7c192bc3efa684051dbb740b3396bb464ffb857ea6"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-inventory.json",
+      "bytes": 24394,
+      "sha256": "7dca11707cd337e580983c76d67872209ab75480cf9afe2f43fd92d564565ca0"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-inventory.md",
+      "bytes": 2347,
+      "sha256": "d00d0123c83c4e1ee13690d6f6f2566f8fd4be975acc6e9616c2b4b5ee6474fe"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-knowledge.log",
+      "bytes": 2112,
+      "sha256": "e1c6f7f19120fd57a183ba797b367733e4803f0e74e5bc6a1687d886a217e6bb"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-lint.log",
+      "bytes": 819,
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-narrow.log",
+      "bytes": 1072,
+      "sha256": "d0df0b770df41cb2282bbfd0389ccc7ccbbc38d68218b71c456ae96dee808563"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-narrow/grid-cancel.png",
+      "bytes": 14762,
+      "sha256": "726fc5f8d5d09dfcf3d01e80608599d19d82e03cef0d216c843e8b5e84769102"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-narrow/normal-word-inline-move.png",
+      "bytes": 13862,
+      "sha256": "631b8744f0fa22f4b1e15a263b4f061dcad365d9d47db7642fc0da4bd808b8af"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-narrow/result.json",
+      "bytes": 55450,
+      "sha256": "e948669d88bd80149f86c4dcb41e6d1ead9c603f952464739203f87e0c9e7cb5"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-narrow/word-inline-move-cancel.png",
+      "bytes": 13829,
+      "sha256": "97eea21273f32738939dce71590f574f25b5d562c0a2eb0eaebe79e561675a94"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-node.log",
+      "bytes": 4040,
+      "sha256": "7c2f40ffa400517d37e04009536dd5ecf2a60bf4feda4213b3c6745a36442a9c"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-nondrag.json",
+      "bytes": 28268,
+      "sha256": "6f4a6bd32e7a44664b22e5318fd6561c3c5f920fb83363b21e20b0803af2c187"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-nondrag.log",
+      "bytes": 740,
+      "sha256": "f5a84c6edac8af140ed8fc56b120187e9d5a32cf34721514fd4ed885241b2be7"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-save.json",
+      "bytes": 1868,
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-save.log",
+      "bytes": 1868,
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-static-baseline.json",
+      "bytes": 7637,
+      "sha256": "25a1d10e5cf40cd0dd5efc8637c6de0d68f15a9ccf10d56bcaed1f6ea9a6c11a"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-static-cleanup.json",
+      "bytes": 100,
+      "sha256": "95ae11390d7e91aaf8ac4ccb8004f5d266574d245cb069ceb07dbbfc5880ea55"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-static-comparison.json",
+      "bytes": 363,
+      "sha256": "b87c55b60d7e4d8c7e819edbec244fce5e9c8d0099cc848db933bc8e9dd63280"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-static-current.json",
+      "bytes": 7625,
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856"
+    },
+    {
+      "path": "/tmp/edhr-designer-qa-verify.log",
+      "bytes": 38,
+      "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77"
+    }
+  ],
+  "browserSummary": {
+    "uniqueScenarios": 12,
+    "current1440": {
+      "passed": 12,
+      "failed": 0
+    },
+    "current390": {
+      "passed": 12,
+      "failed": 0
+    },
+    "baseline1440": {
+      "failed": 5,
+      "passed": 7,
+      "fixtureBlocked": 0
+    },
+    "baselineSourceOverride": [
+      "DesignerSidebar.tsx",
+      "CanvasSheetWorkspace.tsx"
+    ],
+    "boundary": "Real mouse down/move/up plus synthetic PointerEvent pointercancel; no physical OS/touch or real backend persistence assertion."
+  },
+  "unitSummary": {
+    "tests": 35,
+    "passed": 35,
+    "failed": 0,
+    "skipped": 0
+  },
+  "saveSummary": {
+    "runs": 9,
+    "passed": 9,
+    "boundary": "Includes reused widths; controlled save callback with actual shell/canvas, not real backend."
+  },
+  "knowledgeSummary": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "boundary": "Structural/reference validation, not full natural-language semantics."
+  },
+  "nonDragSummary": {
+    "observations": 7,
+    "blocked": 0,
+    "status": "candidate remains open; runtime observation does not introduce interaction rule"
+  },
+  "visualInspection": {
+    "method": "view_image",
+    "files": [
+      "/tmp/edhr-designer-qa-desktop/word-inline-move-cancel.png",
+      "/tmp/edhr-designer-qa-narrow/grid-cancel.png",
+      "/tmp/edhr-designer-qa-narrow/word-inline-move-cancel.png"
+    ],
+    "observations": [
+      "Desktop Word source marker and text remain after cancellation; no drag preview/guide remains.",
+      "At 390 existing sidebar occupies most of width and canvas is clipped; grid original text remains and Word source remains.",
+      "Narrow tests use visible intersections and existing scrolling, not product style overrides. Not a full responsive certification."
+    ]
+  },
+  "staticSummary": {
+    "baseCommit": "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+    "testedCommit": "52c1069ea14dfee0ad79f9501005148d302fcca0",
+    "scriptSha256": "b56ca0495ace4aaac2bfa779dc707b04baab0f7d4537e6856b6348c63230661c",
+    "officialScriptBytesMatch": true,
+    "baselineExitCode": 2,
+    "baselineFindings": 19,
+    "candidateFindings": 19,
+    "sameNormalizedFullMultiset": true
+  },
+  "helper": {
+    "task": "/root/designer_cancel_final_qa_20261028/inventory_evidence",
+    "status": "FINAL",
+    "checksPassed": 13,
+    "reports": [
+      "/tmp/edhr-designer-qa-inventory.json",
+      "/tmp/edhr-designer-qa-inventory.md"
+    ]
+  },
+  "didNotExecute": [
+    "PostgreSQL/production migrations",
+    "backend save/persistence",
+    "physical touchscreen or OS-generated cancellation",
+    "capacity or performance benchmark",
+    "previous-batch process verifier ENOENT reproduction",
+    "old display fixture baseline command (reviewed preserved primary evidence and source instead)"
+  ],
+  "repositoryMutation": "none; no product, test, knowledge, contract or repository report edit; only /tmp QA reports/artifacts and build outputs ignored by git"
+}

@@ -1,0 +1,101 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-DESIGNER-CANCEL-20261028
+  scope: edhr-dev整体审计W2已有字段放置与Word字段移动的取消边界
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 6306457580dbd2787db7df8f2e3cf80ddd21defd
+    targetBranch: edhr-dev
+    targetCommit: 6306457580dbd2787db7df8f2e3cf80ddd21defd
+    contractReadCommit: 6306457580dbd2787db7df8f2e3cf80ddd21defd
+    uncommittedContractPaths: []
+  summary: 核对非拖动入口时发现两个pointercancel仍提交的路径；仅分离取消与松手提交，保持字段及布局规则。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.cancel-does-not-commit
+      statement: 浏览器取消字段拖动只应清理手势，不应新建或移动字段，也不应写撤销历史。
+      rationale: pointercancel表示取消；相邻ComponentLibrary和样式填充既有实现区分提交与取消。属于交互正确性修复，不创建业务政策。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: field-pointer-placement
+        change: 普通字段及子表列共用Sidebar源端仅在匹配pointerup时派发放置事件。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx]
+      - area: word-inline-field-move
+        change: 既有Word表格字段的pointercancel不移动绑定或内联marker。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx]
+    transitiveImpacts:
+      - area: document-history
+        change: 取消保持document和undo/redo；正常放置、移动及撤销重做仍走原命令。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+    potentialImpacts:
+      - area: other-pointer-gestures
+        concern: 其他缩放、选区、Escape及blur取消路径须分别审查，不能由本批结论外推。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx]
+    unaffectedAreas:
+      - area: placement-policy
+        change: 不改变卡片点击、单格或多选区放置含义、字段启停/身份/共享选项、覆盖行为及Word多字段规则。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml, gmp-platform/frontend/scripts/verify-template-designer-react.mjs]
+    compatibilityAndMigration:
+      - area: saved-data
+        change: 无序列化、后台、迁移或已保存数据修复。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: historical-forms
+        change: 不改生产使用时快照及历史读取。
+        evidenceReferences: []
+    auditImpacts:
+      - area: local-edit-history
+        change: 仅取消不创建本地编辑记录，不改变服务器审计。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+    permissionImpacts:
+      - area: designer-access
+        change: 不改权限、签署、设计保存与发布资格。
+        evidenceReferences: []
+    testImpacts:
+      - scope: real-canvas-pointer-events
+        scenarios: [普通及合并格取消, Word新放取消, 子表列取消, Word已有字段移动取消, 正常提交, 撤销重做, 错误pointerId, 阈值前取消, 落区外结束, 取消后迟到pointerup]
+        evidenceReferences: [gmp-platform/frontend/scripts/test-designer-pointer-cancel-browser.mjs]
+    evidenceGaps:
+      - 浏览器协议取消事件不等同真实操作系统触控设备；不声明全设备、全设计器或完整无障碍通过。
+      - 非拖动首次放置沿原候选登记具体方案，尚不改变既有点击或多选语义。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 在两个实际提交手势的函数内分开commit和cleanup，复用已有目标解析与document命令。
+    ownershipBoundaries:
+      - owner: DesignerSidebar
+        responsibility: 字段拖动来源、pointerId、预览、清理与放置事件。
+      - owner: CanvasSheetWorkspace
+        responsibility: Word已有字段移动、选区与布局目标解析。
+      - owner: useTemplateDesignerStore
+        responsibility: 既有字段约束、document写入、完整撤销历史；本批只读。
+  affectedFiles:
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx
+      changeType: update
+      reason: 取消不派发放置事件。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx
+      changeType: update
+      reason: 取消不移动已放置Word字段。
+    - path: gmp-platform/frontend/scripts/test-designer-pointer-cancel-browser.mjs
+      changeType: create
+      reason: 实际组件红绿回归和相邻正对照。
+    - path: gmp-platform/frontend/scripts/test-cell-display-components.mjs
+      changeType: update
+      reason: 补齐既有身份查询导出，替身意外调用直接抛错；保留全部6项原断言。
+  acceptanceScenarios:
+    - id: scenario.cancel-preserves-document
+      given: 已激活的字段拖动，末坐标为可接受放置的目标
+      when: 同pointerId收到pointercancel及后续迟到pointerup
+      then: 文档、既有内容、绑定和undo/redo不变，手势预览及监听清理。
+      evidenceRequirements: [旧基线失败, 候选完整状态对比, 正常提交对照, 窄屏复验]
+    - id: scenario.normal-up-still-commits
+      given: 合法字段拖动且目标可接受
+      when: 同pointerId正常pointerup
+      then: 原放置或移动执行一次，撤销重做还原完整文档；其他pointerId的取消不影响它。
+      evidenceRequirements: [真实浏览器操作, document及history断言]

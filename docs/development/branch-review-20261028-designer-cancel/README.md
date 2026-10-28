@@ -1,0 +1,23 @@
+# 设计器字段拖动取消审计
+
+整体L2审计续接，基线`6306457580dbd2787db7df8f2e3cf80ddd21defd`。实际fetch确认PR37已人工合并，整树同交付`6f7af830668b3a701d0e826ab6ae4ef53199d14e`，无额外产品、知识或契约增量。当前知识0.3.25，契约已在此基线读取。
+
+## 正式验收
+
+已交付[PR38](https://github.com/IvenYi/edhr-nexus-frontend/pull/38)，分支`audit/edhr-dev-designer-placement-20261028` → `edhr-dev`，等待用户人工合并。创建PR不代表已合入；下轮先fetch实际合并及新增提交，再按scope-review推进导入/解析/保存失败边界。不自动merge/deploy。
+
+全新独立实例对干净候选`52c1069ea14dfee0ad79f9501005148d302fcca0`返回**passed/FINAL，18/18必需检查通过，本批无阻断**。两项发现按[acceptance](acceptance.json) resolved：[质量原件](evidence/quality-result.yaml)、[独立说明](evidence/quality-review.md)及[实际命令/证据](evidence/independent-evidence.json)均按原字节归档。独立重跑同组浏览器、35 Node、保存9次、7项非拖动观察、89知识、构建/静态及清单重建；主侧与独立结果不累计唯一覆盖。
+
+所有正式及辅助实例已FINAL，已在PR前实际向用户完成[范围/整体进度复核](scope-review.md)，无任务漂移，整体未完成。受测后只做L0原件/验收/范围与PR登记，产品、测试、知识及冻结清单保持。下方“待独立”段落保留冻结时点事实，当前以本节正式结果为准。
+
+本批从W2既有`adjacent.designer-field-card-keyboard-placement`候选进入实际UI到store的源码复核。发现Sidebar新放字段与Word已有字段移动两条pointercancel仍提交路径，属于同一取消错误的两入口。先做原基线浏览器复现，再局部修复并验证，最终由未参与修复/测试编写的全新实例独立收尾。当前状态是审查/验证进行中，不冒称已通过。
+
+主侧实现及验证已完成，当前待冻结候选后的全新独立验收：[发现与边界](findings.md)、[逐方法记录](source-review.json)、[原件与命令摘要](evidence/primary-verification.json)。旧基线12项5红7正，修复后1440/390同12项通过；35 Node、9次既有保存相关浏览器运行、7项非拖动观察、89知识结构、构建与既有设计器静态验证通过。本体7ID中6有限一致/1试用证据gap，正式NA/FINAL；不改变知识版本和规则。官方strict旧新各19完整finding集合相同、exit2，lint缺配置exit2，均未声明通过。
+
+本次[完整路径盘点](inventory/inventory-summary.json)固定63064575的4008路径、130迁移，入口候选442 HTTP注解、198前端route、8状态定义及1后台候选，全部inventory-only/pending。6条主侧方法记录与13辅助记录有交叉，不加总为19唯一文件。没有全文件或全分支完成率。
+
+最小范围及成功标准见[决策包](decision-package.yaml)。不改变卡片点击语义、字段定义、目标覆盖策略、单格/多选范围、共享选项、保存或发布政策。不将相邻非拖动入口建议直接当成已确认产品规则；其具体边界与提取方案会记录在本批findings。
+
+持续按[22维审计契约](../branch-review-20261026-capacity-audit/audit-charter.md)核对；原基线盘点3961路径仅代表cf0eb57c时点，不能当当前语义完成数。当前源码/运行记录与既有冻结证据分别保留，不提供虚假整体百分比。性能风险先证据、后讨论，不自行优化。
+
+PR前须实际复核任务范围与整体进度，更新持续台账。用户暂缓的生产弹窗样式、TaskDetail签名、记录控制及依赖DHR high/A12、旧知识gap保持；不自动合并、部署、恢复或重算历史数据。

@@ -1,0 +1,323 @@
+qualityResult:
+  result: passed
+  baseCommit: 6306457580dbd2787db7df8f2e3cf80ddd21defd
+  headCommit: 52c1069ea14dfee0ad79f9501005148d302fcca0
+  contractBaseline:
+    sourceCommit: 52c1069ea14dfee0ad79f9501005148d302fcca0
+    targetBranch: edhr-dev
+    targetCommit: 6306457580dbd2787db7df8f2e3cf80ddd21defd
+    contractReadCommit: 52c1069ea14dfee0ad79f9501005148d302fcca0
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.fixed-candidate-contract
+    required: true
+    category: requirements
+    description: 独立核对最新目标、候选、工作树及契约；本次并无额外契约/知识 delta。
+    method: command
+    command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git status --porcelain=v1; git diff base..HEAD
+      -- AGENTS.md docs/agents docs/knowledge
+    outcome: passed
+    evidence:
+    - 实际目标 base=6306457580dbd2787db7df8f2e3cf80ddd21defd；功能 head=受测合并候选=52c1069ea14dfee0ad79f9501005148d302fcca0；基线已在候选祖先中，无额外未提交内容。
+    - contractReadCommit=52c1069ea14dfee0ad79f9501005148d302fcca0；0.3.25；工作树起止 clean；目标未推进。
+    - /tmp/edhr-designer-cancel-independent-evidence.json
+    - /tmp/edhr-designer-qa-inventory.json
+  - id: check.product-cancel-source
+    required: true
+    category: requirements
+    description: 两个终止路径仅在 commit=true 时写 document；取消仍清理 pointer/preview/listener，正常 pointerup 保持。
+    method: inspection
+    command: git diff base..HEAD -- DesignerSidebar.tsx CanvasSheetWorkspace.tsx；逐方法读取相邻 ComponentLibrary/store
+    outcome: passed
+    evidence:
+    - 仅两个产品文件合计7增7删；Sidebar新字段和Workspace已有Word字段移动，同一根因两个入口。
+    - 未改规则、字段身份、API、权限、保存结构、生产状态、执行快照或迁移。
+    - /tmp/edhr-designer-cancel-independent-evidence.json
+    - /tmp/edhr-designer-qa-inventory.json
+  - id: check.baseline-product-red
+    required: true
+    category: regression
+    description: 在固定目标源覆盖同组浏览器用例复现原始产品缺陷并保留正向对照。
+    method: automated-test
+    command: CHROME_PATH=/usr/bin/chromium DESIGNER_BASELINE_COMMIT=6306457580dbd2787db7df8f2e3cf80ddd21defd DESIGNER_WIDTH=1440
+      DESIGNER_ARTIFACTS=/tmp/edhr-designer-qa-baseline node scripts/test-designer-pointer-cancel-browser.mjs
+    outcome: passed
+    evidence:
+    - exit 1 为预期的旧产品5红；grid/merged/Word新放/subfield/Word已有移动取消失败；其余7正向通过，0 fixtureBlocked。
+    - 候选 harness 覆盖两个产品源为固定 base；基线与候选其他产品源码无差异。
+    - /tmp/edhr-designer-qa-baseline/result.json
+    - /tmp/edhr-designer-qa-baseline.log
+  - id: check.browser-current-desktop
+    required: true
+    category: e2e
+    description: 真实画布1440宽下12项取消/正常放置与移动/历史回归。
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium DESIGNER_WIDTH=1440 DESIGNER_ARTIFACTS=/tmp/edhr-designer-qa-desktop node scripts/test-designer-pointer-cancel-browser.mjs
+    outcome: passed
+    evidence:
+    - exit0；12/12；完整document、undo/redo、迟到pointerup、未达阈值、不同pointerId、画布外释放、正常Word移动目标及单次undo/redo均受断言保护。
+    - 真实mouse事件与合成pointercancel组合；不认证物理触屏或OS中断。
+    - /tmp/edhr-designer-qa-desktop/result.json
+  - id: check.browser-current-narrow
+    required: true
+    category: e2e
+    description: 390宽重复同一12项并保持现有产品样式。
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium DESIGNER_WIDTH=390 DESIGNER_ARTIFACTS=/tmp/edhr-designer-qa-narrow node scripts/test-designer-pointer-cancel-browser.mjs
+    outcome: passed
+    evidence:
+    - exit0；12/12；这是同12场景第二视口，不能累计为24个唯一场景。
+    - 现有侧栏占宽/画布可视范围受限仍存在；仅验证可见交互位置下当前修复。
+    - /tmp/edhr-designer-qa-narrow/result.json
+  - id: check.unit-neighbor35
+    required: true
+    category: unit
+    description: 既有选项/子字段/插列/呈现/保存状态邻接测试。
+    method: automated-test
+    command: node --test scripts/test-designer-choice-options.mjs scripts/test-designer-subfield-sync.mjs scripts/test-designer-column-insertion.mjs
+      scripts/test-cell-display-components.mjs scripts/test-designer-save-state.mjs
+    outcome: passed
+    evidence:
+    - 35 tests,35 pass,0 fail,0 skip；呈现测试仍是原6项，三个新增identity stub调用即抛错。
+    - /tmp/edhr-designer-qa-node.log
+  - id: check.fixture-integrity
+    required: true
+    category: regression
+    description: 旧测试缺导出是编译夹具问题；新增替身未削弱断言，并与产品基线红区分。
+    method: inspection
+    command: diff original/candidate test-cell-display-components.mjs; inspect archived old-fixture-baseline and initial-error
+      evidence
+    outcome: passed
+    evidence:
+    - 替身之后的原6项测试内容逐字节一致；getDepartmentTree/getRoles/getUsers均绑定unexpectedIdentityRead。
+    - 旧夹具基线复现命令由主侧实跑，本QA检查保留原日志/哈希和源码，不冒称再次运行；本QA实际独立运行修复后35项。
+    - /tmp/edhr-designer-qa-inventory.json
+    - docs/development/branch-review-20261028-designer-cancel/evidence/old-fixture-baseline.json
+    - docs/development/branch-review-20261028-designer-cancel/evidence/initial-old-fixture-export-error.txt
+  - id: check.save-browser9
+    required: true
+    category: regression
+    description: 保存边界、失败重试、编辑时保存、undo/redo、空主表追溯和子字段的9次运行。
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium W2_CASE_FILTER=save W2_RESULT_PATH=/tmp/edhr-designer-qa-save.json node scripts/test-designer-save-browser.mjs
+    outcome: passed
+    evidence:
+    - exit0；9/9运行（含宽度复用）；实际shell/canvas，受控save callback；不构成真实后端保存重开认证。
+    - /tmp/edhr-designer-qa-save.json
+    - /tmp/edhr-designer-qa-save.log
+  - id: check.nondrag-observation
+    required: true
+    category: e2e
+    description: 补核当前7项非拖动观察，确认普通字段候选保持开放。
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium node docs/development/branch-review-20261027-input-session/evidence/designer-observation.mjs
+    outcome: passed
+    evidence:
+    - 7 observed、0 blocked、0 pageErrors、0 unexpectedApiRequests；普通字段Tab可达但Enter/Space/click不首次放置，其他显示组件、子表菜单和上下文菜单已有非拖动入口。
+    - 仅复核现状，未新增默认目标或键盘规则；不关闭adjacent.designer-field-card-keyboard-placement。
+    - /tmp/edhr-designer-qa-nondrag.json
+  - id: check.build
+    required: true
+    category: regression
+    description: TypeScript与Vite生产构建。
+    method: command
+    command: npm run build
+    outcome: passed
+    evidence:
+    - exit0；12191 modules transformed，built in25.21s。
+    - /tmp/edhr-designer-qa-build.log
+  - id: check.designer-verifier
+    required: true
+    category: regression
+    description: 既有设计器结构校验。
+    method: command
+    command: node scripts/verify-template-designer-react.mjs
+    outcome: passed
+    evidence:
+    - exit0；PASS。
+    - /tmp/edhr-designer-qa-verify.log
+  - id: check.knowledge-structural89
+    required: true
+    category: ontology
+    description: 当前组合候选的知识ID/引用/类型结构检查。
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - 89 tests,0 failures,0 errors,0 skipped；BUILD SUCCESS；不等于全量自然语言/业务实现一致性审计。
+    - /tmp/edhr-designer-qa-knowledge.log
+  - id: check.ontology-scoped-rule-review
+    required: true
+    category: ontology
+    description: 七个相关知识ID、字段身份/共享选项/统一历史/冻结保护与未决体验边界。
+    method: inspection
+    command: read DEC-0080, DEC-0077-12/22, term/concept.form-template-field, scenario.shared-choice-options-single-document-history,
+      open question; inspect ontology artifact hashes
+    outcome: passed
+    evidence:
+    - 7ID=6项有限一致+1客户试用证据gap；知识角色原结果not-applicable/FINAL，未提升成熟度或关闭旧gap。
+    - 原本体工作树两产品hash与当前候选完全一致；基线时点验证器仅校对原件，不在新HEAD盲跑。
+    - /tmp/edhr-designer-qa-inventory.json
+    - docs/development/branch-review-20261028-designer-cancel/evidence/rule-review.json
+    - docs/development/branch-review-20261028-designer-cancel/evidence/ontology-result.yaml
+  - id: check.inventory-rebuild
+    required: true
+    category: documentation
+    description: 独立从固定target重建全部盘点文件并逐字节比较。
+    method: command
+    command: python scripts/build-branch-review-inventory.py --ref 6306457580dbd2787db7df8f2e3cf80ddd21defd --out <QA-owned-temp>;
+      git ls-tree -r -z --name-only 6306457580dbd2787db7df8f2e3cf80ddd21defd
+    outcome: passed
+    evidence:
+    - coverage.csv/entrypoints.csv/migrations.csv/inventory-summary.json均byte equal；4008唯一路径，130迁移，4008全部pending。
+    - 仅盘点分母，不宣称4008已审；自建目录已按确切路径清除。
+    - /tmp/edhr-designer-qa-inventory.json
+    - /tmp/edhr-designer-qa-inventory.md
+  - id: check.source-evidence-provenance
+    required: true
+    category: documentation
+    description: 核对主侧证据原件、源码范围和各角色完成状态。
+    method: inspection
+    command: SHA256 archived artifacts and git blobs; inspect source-review/helper/status
+    outcome: passed
+    evidence:
+    - 31归档原件与4现存原日志hash匹配；13辅助范围与6主侧范围重叠，不能相加为19个唯一项；整文件完成数0。
+    - 本QA只读helper正式FINAL 13/13；独立runtime输出与主侧原件分开；原初始夹具失败不删除。
+    - /tmp/edhr-designer-qa-inventory.json
+    - /tmp/edhr-designer-cancel-independent-evidence.json
+  - id: check.impact-robustness-scope
+    required: true
+    category: requirements
+    description: 完整影响分析、性能风险和具体拆分建议不漂移为未授权功能或大重构。
+    method: inspection
+    command: read decision-package.yaml scope-review.md source-review.json; inspect pointer hit-test, available-field lookup
+      and history ownership
+    outcome: passed
+    evidence:
+    - 输入生命周期、单次历史、迟到事件和正常目标分支已覆盖；两项DOM/内存扫描性能仅候选，未宣称实测掉帧或SQL N+1；history有50上限。
+    - 三项提取方案具体到接口、状态所有权和保护测试，本批未实施。用户暂缓、原DHR high/A12和四gap保持。
+    - /tmp/edhr-designer-qa-inventory.json
+    - docs/development/branch-review-20261028-designer-cancel/scope-review.md
+  - id: check.visual-screenshots
+    required: true
+    category: visual
+    description: 亲自查看独立桌面及390取消截图。
+    method: inspection
+    command: view_image /tmp/edhr-designer-qa-desktop/word-inline-move-cancel.png; view_image /tmp/edhr-designer-qa-narrow/grid-cancel.png;
+      view_image /tmp/edhr-designer-qa-narrow/word-inline-move-cancel.png
+    outcome: passed
+    evidence:
+    - 桌面Word原字段及目标原文保留；窄屏保留原grid文字/Word源；取消后无残留拖动预览。
+    - 390侧栏仍占大部分宽度且画布裁切；未重新设计该界面，不作为完整响应式通过。
+    - /tmp/edhr-designer-qa-desktop/word-inline-move-cancel.png
+    - /tmp/edhr-designer-qa-narrow/grid-cancel.png
+    - /tmp/edhr-designer-qa-narrow/word-inline-move-cancel.png
+  - id: check.strict-no-new-findings
+    required: true
+    category: regression
+    description: 官方strict脚本在固定base/current的完整finding多重集合无新增。
+    method: command
+    command: official audit-project.py --mode strict --no-write on current and independent git archive(base)
+    outcome: passed
+    evidence:
+    - 官方脚本bytes一致，SHA256=b56ca0495ace4aaac2bfa779dc707b04baab0f7d4537e6856b6348c63230661c
+    - 基线与当前均exit2且19条；按路径/规则/类别/严重性/消息等规范化完整多重集合一致（只去输出根目录和行号偏移）。
+    - /tmp/edhr-designer-qa-static-comparison.json
+    - /tmp/edhr-designer-qa-static-baseline.json
+    - /tmp/edhr-designer-qa-static-current.json
+    - /tmp/edhr-designer-qa-static-cleanup.json
+  - id: check.global-strict
+    required: false
+    category: regression
+    description: 全局strict仍未通过：既有19项，范围内未新增。
+    method: command
+    command: python /tmp/edhr-designer-audit-project.py gmp-platform/frontend/src --mode strict --no-write
+    outcome: failed
+    evidence:
+    - exit2；19 errors=10 unresolved+9 violations；不得称全仓strict已绿。
+    - /tmp/edhr-designer-qa-static-current.json
+  - id: check.global-lint
+    required: false
+    category: regression
+    description: 全局lint缺少ESLint配置，无法完成。
+    method: command
+    command: npm run lint
+    outcome: failed
+    evidence:
+    - exit2；ESLint 8.57.1 could not find a configuration file；没有降低lint标准或改无关配置。
+    - /tmp/edhr-designer-qa-lint.log
+  findings:
+  - id: W2-DESIGNER-POINTER-CANCEL-COMMIT-001
+    severity: medium
+    scope: DesignerSidebar.new-field-placement and CanvasSheetWorkspace.Word-inline-field-move
+    summary: pointercancel曾继续执行落点写入；候选已将取消与提交分开。
+    reproductionSteps:
+    - 使用固定base两产品源及新浏览器harness。
+    - 将侧栏字段拖入grid/merged/Word/subfield目标，或移动已有Word字段，跨过激活阈值。
+    - 在合法目标发出相同pointerId的pointercancel，随后释放鼠标。
+    expectedResult: 取消仅清理交互；完整document、undo和redo保持，迟到up无提交；正常up仍单次写入且可undo/redo。
+    actualResult: base5取消场景失败、7正向通过；候选两宽各12/12通过。一个根因两个入口，不计5个独立缺陷。
+    evidence:
+    - /tmp/edhr-designer-qa-baseline/result.json
+    - /tmp/edhr-designer-qa-desktop/result.json
+    - /tmp/edhr-designer-qa-narrow/result.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 52c1069ea14dfee0ad79f9501005148d302fcca0
+    - type: command
+      reference: /tmp/edhr-designer-qa-desktop.log
+    - type: command
+      reference: /tmp/edhr-designer-qa-narrow.log
+  - id: TEST-DESIGNER-DISPLAY-IDENTITY-STUB-001
+    severity: low
+    scope: test-cell-display-components.mjs isolated API stub
+    summary: 身份API导出缺失导致既有呈现测试无法编译；候选增加失败即抛错替身而未降低原6项断言。
+    reproductionSteps:
+    - 查阅已归档固定base原测试编译错误及SubjectSelector身份API导入。
+    - 比较候选三个fail-fast导出及替身后的六项测试内容。
+    - 在当前候选实际运行邻接35项Node测试。
+    expectedResult: 不需要身份API的呈现测试可编译；意外身份读取仍明确失败；原断言保留。
+    actualResult: 旧缺导出证据保留且hash匹配；原6项主体byte equal；当前35项全过。此为夹具缺陷，不算pointercancel产品红。
+    evidence:
+    - docs/development/branch-review-20261028-designer-cancel/evidence/old-fixture-baseline.json
+    - /tmp/edhr-designer-qa-inventory.json
+    - /tmp/edhr-designer-qa-node.log
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 52c1069ea14dfee0ad79f9501005148d302fcca0
+    - type: command
+      reference: /tmp/edhr-designer-qa-node.log
+  residualRisks:
+  - id: residual.global-tooling
+    description: 全局strict19项与lint配置缺失继续未通过；既有工艺校验ENOENT属于上批记录，本QA未运行该命令。
+    impact: 本批可验收不代表全仓静态门禁全绿；也未核验GitHub保护/ruleset配置。
+    mitigation: 保留原始失败及增量比较；按后续独立切片处理，不修改无关业务或降低标准。
+  - id: residual.nondrag-and-other-gestures
+    description: 普通字段首次非拖动放置仍是候选；Escape/blur/buttons/lost capture/unmount和其他resize手势未全覆盖。
+    impact: 不能声称设计器所有输入取消或键盘可用性闭环。
+    mitigation: 继续真实现状映射，定义目标选择/取消语义后另做小批整改；本批只收口两个pointercancel入口。
+  - id: residual.visual-device-boundary
+    description: 390宽现有侧栏占宽和画布裁切保留；pointercancel为合成事件。
+    impact: 不认证完整响应式体验或物理触屏/OS事件。
+    mitigation: 后续按实际支持设备专项验证；截图与事件边界明确保留。
+  - id: residual.performance-candidates
+    description: DOM命中fallback扫描与可用字段Word位置重复扫描两项仅源码候选；三拆分方案未实施。
+    impact: 未证明真实大模板掉帧或容量上限，未优化整体历史内存。
+    mitigation: 以现实字段/单元格规模设计量测再与用户讨论，不从源码复杂度直接宣告性能故障。
+  - id: residual.backend-and-full-audit
+    description: 本批无真实后端保存、PG、迁移、生产或容量验证；4008路径仅盘点，13辅助/6主侧范围有重叠。
+    impact: 不能将本批passed外推为全分支完成或生产发布认证。
+    mitigation: 保持逐链条/函数/规则证据和增量审计，后续按W0–W7继续。
+  - id: residual.deferred-product-boundaries
+    description: TaskDetail签名朋友侧待处理、生产弹窗样式、记录变更/作废及依赖DHR high/A12、原四知识gap仍保留；相关Q10客户试用证据仍缺。
+    impact: 本轮没有关闭这些延期或业务体验证据项。
+    mitigation: 按已有用户授权和暂缓边界继续；朋友修复后拉取最新代码专项复核，不自动标done。
+  blockingConditions: []

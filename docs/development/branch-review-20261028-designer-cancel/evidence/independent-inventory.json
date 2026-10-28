@@ -1,0 +1,605 @@
+{
+  "role": "independent QA readonly inventory/evidence helper",
+  "status": "FINAL",
+  "baseCommit": "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+  "headCommit": "52c1069ea14dfee0ad79f9501005148d302fcca0",
+  "knowledgeBaselineVersion": "0.3.25",
+  "contractBaseline": {
+    "sourceCommit": "52c1069ea14dfee0ad79f9501005148d302fcca0",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+    "contractReadCommit": "52c1069ea14dfee0ad79f9501005148d302fcca0",
+    "uncommittedContractPaths": []
+  },
+  "checks": [
+    {
+      "id": "baseline-clean",
+      "outcome": "passed",
+      "evidence": {
+        "head": "52c1069ea14dfee0ad79f9501005148d302fcca0",
+        "target": "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+        "workingTree": ""
+      }
+    },
+    {
+      "id": "inventory-four-file-rebuild",
+      "outcome": "passed",
+      "evidence": {
+        "command": [
+          "python",
+          "scripts/build-branch-review-inventory.py",
+          "--ref",
+          "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+          "--out",
+          "/tmp/edhr-designer-qa-inventory-rebuild-objxrcb3"
+        ],
+        "exitCode": 0,
+        "files": [
+          {
+            "name": "coverage.csv",
+            "equal": true,
+            "committedSha256": "468c6131be64da4e908d680649eec4dfab0dd16f7d7ed2f98018cfc2b0c42c4b",
+            "recomputedSha256": "468c6131be64da4e908d680649eec4dfab0dd16f7d7ed2f98018cfc2b0c42c4b"
+          },
+          {
+            "name": "entrypoints.csv",
+            "equal": true,
+            "committedSha256": "e9c65031d1dbdf884a318903734d238cdd4080dbd3b98c6dbc85d8fa255e1aaa",
+            "recomputedSha256": "e9c65031d1dbdf884a318903734d238cdd4080dbd3b98c6dbc85d8fa255e1aaa"
+          },
+          {
+            "name": "migrations.csv",
+            "equal": true,
+            "committedSha256": "965d829dade2a32f4f96de4ae3f67159e1dc62e649677fe9b256cb28ad5180c3",
+            "recomputedSha256": "965d829dade2a32f4f96de4ae3f67159e1dc62e649677fe9b256cb28ad5180c3"
+          },
+          {
+            "name": "inventory-summary.json",
+            "equal": true,
+            "committedSha256": "e3a8b3b32d02d9861cbf0bd573e44b366999ed1345c7a523c3a6a00432b8d81c",
+            "recomputedSha256": "e3a8b3b32d02d9861cbf0bd573e44b366999ed1345c7a523c3a6a00432b8d81c"
+          }
+        ]
+      }
+    },
+    {
+      "id": "complete-pending-inventory",
+      "outcome": "passed",
+      "evidence": {
+        "trackedPaths": 4008,
+        "coverageRows": 4008,
+        "uniquePaths": 4008,
+        "statusCounts": {
+          "pending": 4008
+        },
+        "summary": {
+          "sourceCommit": "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+          "tree": "f7bb70017b4ed2a246874873393b723dd79c4fb1",
+          "trackedPaths": 4008,
+          "scopeCount": 4008,
+          "excludedPaths": [],
+          "assetTypes": {
+            "configuration-or-data": 1677,
+            "documentation": 341,
+            "binary-asset": 581,
+            "source-or-tool": 750,
+            "knowledge": 303,
+            "test": 225,
+            "database-migration": 130,
+            "dependency-lock": 1
+          },
+          "workPackages": {
+            "W5": 686,
+            "W4": 246,
+            "W0-W7": 2524,
+            "W1": 137,
+            "W2": 219,
+            "W3": 196
+          },
+          "entrypointCandidates": {
+            "http-annotation": 442,
+            "state-definition-candidate": 8,
+            "background-candidate": 1,
+            "frontend-route-candidate": 198
+          },
+          "migrationFiles": 130,
+          "semanticReviewComplete": false,
+          "entrypointLimitations": "Static candidate locations include class annotations and dynamic route shapes; URLs, auth and worker activation require source review. No route execution claimed.",
+          "coverageSha256": "468c6131be64da4e908d680649eec4dfab0dd16f7d7ed2f98018cfc2b0c42c4b"
+        },
+        "enumeration": "git ls-tree -r -z --name-only"
+      }
+    },
+    {
+      "id": "primary-archived-artifact-hashes",
+      "outcome": "passed",
+      "evidence": {
+        "count": 31,
+        "artifacts": [
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/source-helper.md",
+            "matches": true,
+            "sha256": "c5e4d7c001effa6acfb83595dc8370f29aab350b0606b37609bf9ed5d6c37758"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/source-helper.json",
+            "matches": true,
+            "sha256": "658b749b1fc40ac8da24109bc40150aaa6f4811953d132704c1e063ce5f94b23"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/ontology-result.yaml",
+            "matches": true,
+            "sha256": "b49aa33e9f0b9e2d71c8d68efaee5ea9569b1f9867bd95f3c4a50256a21c77a9"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/rule-review.json",
+            "matches": true,
+            "sha256": "8a54dc899c25538d902939821cba4c1ffe433ae8c1eb5b3b104a7be347c19af8"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/rule-review.md",
+            "matches": true,
+            "sha256": "4f024ff531fa91766e31518c97a6973b8c9f2913c87ba517fc2fd22a2fdeedc6"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/ontology-validation.json",
+            "matches": true,
+            "sha256": "4fadf4604dedaece80ceac1df7c7109202ee7e2e128d2a97c4a9484bad2e01d4"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/ontology-validate-at-baseline.py",
+            "matches": true,
+            "sha256": "24337ac143b27371b03d2f0db707ea721440e39f87495e4a4f49cb62b640b17e"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/browser-baseline.json",
+            "matches": true,
+            "sha256": "fb4ad8cdd5bc6430bdd93fa7c46a344dcbc53632d2a3c812fc5cd19275943d82"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/browser-desktop.json",
+            "matches": true,
+            "sha256": "5a439ef23c193aab61a7816533366a53bd721d4aa6edd321a28092c4cb22d80a"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/browser-narrow.json",
+            "matches": true,
+            "sha256": "0cd5e6f911c4a701375fc2e61e3a93d72b74104558c44c4378a45a948638ecb0"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/browser-author-summary.json",
+            "matches": true,
+            "sha256": "bf8098496a8d9947a2d754acbfff732454dad5ad0ae06af660e5ea9414cd0f91"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/initial-browser-fixture-error.json",
+            "matches": true,
+            "sha256": "c841699f9b5052c4e7c4ba3ca8f9ddcae7b48e88d0218a4f83ded4354028a8b7"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/save-browser.json",
+            "matches": true,
+            "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/nondrag-observation.json",
+            "matches": true,
+            "sha256": "c7ef0ad1eae2d2c4250fbdddfa749bc60791010e63467d8c165c3bcccfefdd9d"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/static-baseline.json",
+            "matches": true,
+            "sha256": "1658fe25f9381c0264d643d1cbf40a56214cce196c760e2720cb8ce3b9c2b59c"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/static-current.json",
+            "matches": true,
+            "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/static-comparison.json",
+            "matches": true,
+            "sha256": "b0ef31ed41d062b68774fabd89b1b28b00aba874a84cde5bd1032ccb4c376d7e"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/static-baseline-meta.json",
+            "matches": true,
+            "sha256": "8c36b7da62b9a7048080b5f1ef890b4b9d98c485c1f84b5da39306b41e25ec4a"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/static-cleanup.json",
+            "matches": true,
+            "sha256": "f0ba35b49de0b0d2409d703e50e81fe49971b41f9f162d7902bf5b941862146a"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/old-fixture-baseline.json",
+            "matches": true,
+            "sha256": "dd92f95742e2d116a5e535a666c30ff014b73780168485c5692e240082f4def1"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/old-fixture-baseline.txt",
+            "matches": true,
+            "sha256": "f9990da07bee1c5d1e7564e1cc7578ac4feb9797a01a7a931e39a3091bf2f517"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/initial-old-fixture-export-error.txt",
+            "matches": true,
+            "sha256": "929f434f4626dc28cb00fdf80f0382654357d803ce9da87ace894e821b1d306a"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/old-test-cleanup.json",
+            "matches": true,
+            "sha256": "baaf11e84c0f275678682ba4d4983404b0e276d3a7ede5f867d26d080ea063b1"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/node-initial.txt",
+            "matches": true,
+            "sha256": "ea82aa343800964e0ad3cf1d6d91d2ea78c4d075884672624d0847f09623874a"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/node-passed.txt",
+            "matches": true,
+            "sha256": "e65f2aa0ae0bb360a43c6c7ce005a1a6f5f7a60e24f2d55f267f364fbab2de15"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/lint.txt",
+            "matches": true,
+            "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/verify-baseline.txt",
+            "matches": true,
+            "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/verify-current.txt",
+            "matches": true,
+            "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/narrow-grid-cancel.png",
+            "matches": true,
+            "sha256": "5145385dfaf03590cae7670f79990a5b48ac7df21c557a0eaac54785df68dabf"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/narrow-word-cancel.png",
+            "matches": true,
+            "sha256": "97eea21273f32738939dce71590f574f25b5d562c0a2eb0eaebe79e561675a94"
+          },
+          {
+            "path": "docs/development/branch-review-20261028-designer-cancel/evidence/desktop-word-cancel.png",
+            "matches": true,
+            "sha256": "b8dad8ff693d4e6dcedf3e7c192bc3efa684051dbb740b3396bb464ffb857ea6"
+          }
+        ]
+      }
+    },
+    {
+      "id": "primary-existing-runtime-log-hashes",
+      "outcome": "passed",
+      "evidence": [
+        {
+          "path": "/tmp/edhr-designer-cancel-build.log",
+          "exists": true,
+          "matches": true
+        },
+        {
+          "path": "/tmp/edhr-designer-cancel-knowledge.log",
+          "exists": true,
+          "matches": true
+        },
+        {
+          "path": "/tmp/edhr-designer-cancel-save-browser.log",
+          "exists": true,
+          "matches": true
+        },
+        {
+          "path": "/tmp/edhr-designer-nondrag-recheck.log",
+          "exists": true,
+          "matches": true
+        }
+      ]
+    },
+    {
+      "id": "source-records-fixed-and-limited",
+      "outcome": "passed",
+      "evidence": {
+        "helperCount": 13,
+        "primaryCount": 6,
+        "overlappingPaths": [
+          "gmp-platform/frontend/scripts/verify-template-designer-react.mjs",
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ComponentLibrary.tsx",
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx",
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts"
+        ],
+        "records": [
+          {
+            "id": "DP01",
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx",
+            "blobMatches": true,
+            "shaMatches": true,
+            "wholeFileComplete": false
+          },
+          {
+            "id": "DP02",
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx",
+            "blobMatches": true,
+            "shaMatches": true,
+            "wholeFileComplete": false
+          },
+          {
+            "id": "DP03",
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+            "blobMatches": true,
+            "shaMatches": true,
+            "wholeFileComplete": false
+          },
+          {
+            "id": "DP04",
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+            "blobMatches": true,
+            "shaMatches": true,
+            "wholeFileComplete": false
+          },
+          {
+            "id": "DP05",
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+            "blobMatches": true,
+            "shaMatches": true,
+            "wholeFileComplete": false
+          },
+          {
+            "id": "DP06",
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+            "blobMatches": true,
+            "shaMatches": true,
+            "wholeFileComplete": false
+          },
+          {
+            "id": "DP07",
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts",
+            "blobMatches": true,
+            "shaMatches": true,
+            "wholeFileComplete": false
+          },
+          {
+            "id": "DP08",
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+            "blobMatches": true,
+            "shaMatches": true,
+            "wholeFileComplete": false
+          },
+          {
+            "id": "DP09",
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ComponentLibrary.tsx",
+            "blobMatches": true,
+            "shaMatches": true,
+            "wholeFileComplete": false
+          },
+          {
+            "id": "DP10",
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+            "blobMatches": true,
+            "shaMatches": true,
+            "wholeFileComplete": false
+          },
+          {
+            "id": "DP11",
+            "path": "gmp-platform/frontend/scripts/verify-template-designer-react.mjs",
+            "blobMatches": true,
+            "shaMatches": true,
+            "wholeFileComplete": false
+          },
+          {
+            "id": "DP12",
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/canvas/CanvasTab.tsx",
+            "blobMatches": true,
+            "shaMatches": true,
+            "wholeFileComplete": false
+          },
+          {
+            "id": "DP13",
+            "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx",
+            "blobMatches": true,
+            "shaMatches": true,
+            "wholeFileComplete": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "ontology-na-scope-and-same-candidate",
+      "outcome": "passed",
+      "evidence": {
+        "knowledgeVersion": "0.3.25",
+        "ids": [
+          {
+            "id": "DEC-0080-01",
+            "existsAtPath": true,
+            "referencesExist": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "term.form-template-field",
+            "existsAtPath": true,
+            "referencesExist": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "concept.form-template-field",
+            "existsAtPath": true,
+            "referencesExist": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "DEC-0077-12",
+            "existsAtPath": true,
+            "referencesExist": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "DEC-0077-22",
+            "existsAtPath": true,
+            "referencesExist": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "scenario.shared-choice-options-single-document-history",
+            "existsAtPath": true,
+            "referencesExist": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "question.form-projection-sidebar-mode-interaction",
+            "existsAtPath": true,
+            "referencesExist": true,
+            "conclusion": "evidence-gap"
+          }
+        ],
+        "currentProductHashes": {
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx": "ccaa131145496b1a5edf64c818e2572e26064b7222a336d681a9fdde6bc686ed",
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx": "eadac1fb15cf6841067a86068671d10bdfbab5014b7c633c436956e157847c34"
+        },
+        "note": "Baseline-only ontology validator was not run against new HEAD; original時点 retained, independently checked referenced IDs/paths and actual product hashes."
+      }
+    },
+    {
+      "id": "minimal-product-and-protected-scopes",
+      "outcome": "passed",
+      "evidence": {
+        "protectedChanges": [],
+        "productNumstat": [
+          "4\t4\tgmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx",
+          "3\t3\tgmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx"
+        ]
+      }
+    },
+    {
+      "id": "old-test-assertions-unchanged",
+      "outcome": "passed",
+      "evidence": {
+        "originalTestCount": 6,
+        "candidateTestCount": 6,
+        "bodyAfterStubByteEqual": true,
+        "newExports": "all three throw immediately if used"
+      }
+    },
+    {
+      "id": "impact-and-document-links",
+      "outcome": "passed",
+      "evidence": {
+        "affectedFiles": [
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx",
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx",
+          "gmp-platform/frontend/scripts/test-designer-pointer-cancel-browser.mjs",
+          "gmp-platform/frontend/scripts/test-cell-display-components.mjs"
+        ],
+        "actualFrontendDelta": [
+          "gmp-platform/frontend/scripts/test-cell-display-components.mjs",
+          "gmp-platform/frontend/scripts/test-designer-pointer-cancel-browser.mjs",
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx",
+          "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx"
+        ],
+        "links": [
+          {
+            "source": "README.md",
+            "target": "findings.md",
+            "exists": true
+          },
+          {
+            "source": "README.md",
+            "target": "source-review.json",
+            "exists": true
+          },
+          {
+            "source": "README.md",
+            "target": "evidence/primary-verification.json",
+            "exists": true
+          },
+          {
+            "source": "README.md",
+            "target": "inventory/inventory-summary.json",
+            "exists": true
+          },
+          {
+            "source": "README.md",
+            "target": "decision-package.yaml",
+            "exists": true
+          },
+          {
+            "source": "README.md",
+            "target": "../branch-review-20261026-capacity-audit/audit-charter.md",
+            "exists": true
+          },
+          {
+            "source": "findings.md",
+            "target": "evidence/source-helper.md",
+            "exists": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "historical-red-and-fixture-separation",
+      "outcome": "passed",
+      "evidence": {
+        "baselineStatus": {
+          "failed": 5,
+          "passed": 7
+        },
+        "candidateDesktop": 12,
+        "candidateNarrow": 12,
+        "boundary": "Artifact inspection only, parent QA executes own runtime; unique12 not24; initial fixture errors separate."
+      }
+    },
+    {
+      "id": "performance-and-extraction-source-scope",
+      "outcome": "passed",
+      "evidence": {
+        "inspected": [
+          "DesignerSidebar.tsx:177-197 (fallback DOM hit test)",
+          "useTemplateDesignerStore.ts:1767-1802 (Word block/cell scans)",
+          "useTemplateDesignerStore.ts:1963-1977 and 3490-3525 (history/available fields)",
+          "CanvasSheetWorkspace.tsx:2740-2763 (offset geometry)"
+        ],
+        "conclusion": "两项风险来自真实DOM/内存扫描，文档明确未测性能、不指控N+1 SQL、保留直接命中/当前页/50历史上限反证；三提取建议明确接口/所有权/保护回归，当前只作建议，产品diff未实施优化或重构。",
+        "scope": "纯源码机制核对；不验证实际容量或耗时"
+      }
+    },
+    {
+      "id": "governance-boundaries-and-current-status",
+      "outcome": "passed",
+      "evidence": {
+        "inspected": [
+          "README.md",
+          "findings.md",
+          "scope-review.md",
+          "decision-package.yaml",
+          "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+          "docs/knowledge/open-questions.yaml:36-42"
+        ],
+        "conclusion": "当前知识0.3.25及specified/internal未变；旧阶段多处展示非目标未被恢复为当前禁令；候选非拖动和其他手势/性能/全W0-W7未完成明确保留，用户暂缓保持。决策包工程推断非伪造confirmed规则；独立验收待父QA，不拿主侧结果提前签收。"
+      }
+    }
+  ],
+  "findings": [],
+  "cleanup": {
+    "removedExactSelfCreatedPath": "/tmp/edhr-designer-qa-inventory-rebuild-objxrcb3",
+    "exists": false
+  },
+  "notExecuted": [
+    "product tests",
+    "browser",
+    "build",
+    "performance experiments"
+  ],
+  "overallOutcome": "passed",
+  "finalWorkingTreeStatus": "",
+  "limitations": [
+    "只读辅助13项，不是正式最终qualityResult",
+    "未执行浏览器/Node/构建/知识测试，父QA独立执行",
+    "31归档原件哈希核验不替代行为运行",
+    "4008盘点路径不等于语义完成"
+  ]
+}

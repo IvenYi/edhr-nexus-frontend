@@ -1,0 +1,60 @@
+{
+  "role": "test implementation helper, not independent final QA",
+  "productFilesEdited": [],
+  "testFilesAdded": [
+    "gmp-platform/frontend/scripts/test-designer-pointer-cancel-browser.mjs"
+  ],
+  "sourceFilesSha256": {
+    "gmp-platform/frontend/scripts/test-designer-pointer-cancel-browser.mjs": "d0a888a576bac8260222fb5d7cef2b905b73efe73e8c852bfb585c3c8ca608c3",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx": "ccaa131145496b1a5edf64c818e2572e26064b7222a336d681a9fdde6bc686ed",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx": "eadac1fb15cf6841067a86068671d10bdfbab5014b7c633c436956e157847c34"
+  },
+  "runs": [
+    {
+      "label": "baseline",
+      "path": "/tmp/edhr-pointer-baseline-desktop/result.json",
+      "sha256": "fb4ad8cdd5bc6430bdd93fa7c46a344dcbc53632d2a3c812fc5cd19275943d82",
+      "passed": 7,
+      "failed": 5,
+      "fixtureBlocked": 0,
+      "width": 1440
+    },
+    {
+      "label": "candidateDesktop",
+      "path": "/tmp/edhr-pointer-candidate-desktop/result.json",
+      "sha256": "5a439ef23c193aab61a7816533366a53bd721d4aa6edd321a28092c4cb22d80a",
+      "passed": 12,
+      "failed": 0,
+      "fixtureBlocked": 0,
+      "width": 1440
+    },
+    {
+      "label": "candidateNarrow",
+      "path": "/tmp/edhr-pointer-candidate-narrow/result.json",
+      "sha256": "0cd5e6f911c4a701375fc2e61e3a93d72b74104558c44c4378a45a948638ecb0",
+      "passed": 12,
+      "failed": 0,
+      "fixtureBlocked": 0,
+      "width": 390
+    }
+  ],
+  "screenshotsViewed": [
+    "/tmp/edhr-pointer-candidate-desktop/word-inline-move-cancel.png",
+    "/tmp/edhr-pointer-candidate-narrow/word-inline-move-cancel.png",
+    "/tmp/edhr-pointer-candidate-narrow/grid-cancel.png"
+  ],
+  "initialDiagnostic": "/tmp/edhr-pointer-initial-fixture-diagnostic.json",
+  "cleanup": {
+    "initialFailedHostExactPath": "/tmp/edhr-pointer-cancel-host-I1TLuE",
+    "existed": true,
+    "removed": true,
+    "normalRuns": "Each completed run closes its own browser/server and removes its exact mkdtemp directory in finally."
+  },
+  "limits": [
+    "Current successful runs used the uncommitted product fix at HEAD63064575; not falsely labelled clean tested commit.",
+    "12 unique cases run at two widths, not24 independent scenarios.",
+    "Synthetic pointercancel plus actual mouse gestures, no physical touchscreen or OS-interruption certification.",
+    "Controlled local browser host with no API calls; no server persistence/save-reopen or full designer accessibility certification.",
+    "390px sidebar leaves a narrow canvas; existing scroll is used and screenshots preserve this limitation, no responsive redesign claimed."
+  ]
+}

@@ -1,0 +1,260 @@
+{
+  "baseCommit": "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+  "workingTree": "uncommitted product/test fixes at recorded baseline; clean final candidate QA follows",
+  "checks": [
+    {
+      "id": "node",
+      "command": "node --test scripts/test-designer-choice-options.mjs scripts/test-designer-subfield-sync.mjs scripts/test-designer-column-insertion.mjs scripts/test-cell-display-components.mjs scripts/test-designer-save-state.mjs",
+      "exitCode": 0,
+      "passed": 35,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "browser-cancel",
+      "command": "CHROME_PATH=/usr/bin/chromium DESIGNER_WIDTH=1440|390 node scripts/test-designer-pointer-cancel-browser.mjs",
+      "passedUniqueCases": 12,
+      "viewports": [
+        1440,
+        390
+      ],
+      "baselineFailed": 5,
+      "baselinePositiveControls": 7,
+      "boundary": "test implementation helper runs, not independent QA"
+    },
+    {
+      "id": "save-browser",
+      "command": "CHROME_PATH=/usr/bin/chromium W2_RESULT_PATH=/tmp/edhr-designer-cancel-save-browser.json W2_CASE_FILTER=save node scripts/test-designer-save-browser.mjs",
+      "exitCode": 0,
+      "passedRuns": 9,
+      "boundary": "width variants retained, controlled save callback, no backend persistence"
+    },
+    {
+      "id": "nondrag-observation",
+      "command": "CHROME_PATH=/usr/bin/chromium node docs/development/branch-review-20261027-input-session/evidence/designer-observation.mjs",
+      "exitCode": 0,
+      "observations": 7,
+      "boundary": "not seven fixed defects, 1440px only"
+    },
+    {
+      "id": "build",
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "id": "designer-static-verifier",
+      "command": "node scripts/verify-template-designer-react.mjs",
+      "baselineExitCode": 0,
+      "candidateExitCode": 0
+    },
+    {
+      "id": "knowledge-structure",
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test",
+      "exitCode": 0,
+      "passed": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "boundary": "not full semantic audit"
+    },
+    {
+      "id": "premium-strict",
+      "command": "python /tmp/edhr-designer-audit-project.py gmp-platform/frontend/src --mode strict --no-write",
+      "baselineExitCode": 2,
+      "candidateExitCode": 2,
+      "findingsEach": 19,
+      "sameNormalizedMultiset": true
+    },
+    {
+      "id": "lint",
+      "command": "npm run lint",
+      "exitCode": 2,
+      "reason": "existing missing ESLint configuration"
+    }
+  ],
+  "logs": [
+    {
+      "path": "/tmp/edhr-designer-cancel-build.log",
+      "sha256": "e89040ff13ab03450ba5a199c8278928ad683ed987c9e95964489c60c2fc03a2",
+      "bytes": 9780
+    },
+    {
+      "path": "/tmp/edhr-designer-cancel-knowledge.log",
+      "sha256": "b400ead00a0a106a2e85ab43f32ec300118e68c0a66bea01f562e04382c7f165",
+      "bytes": 2112
+    },
+    {
+      "path": "/tmp/edhr-designer-cancel-save-browser.log",
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab",
+      "bytes": 1868
+    },
+    {
+      "path": "/tmp/edhr-designer-nondrag-recheck.log",
+      "sha256": "4c437e6a4aecd3340c24eae05f3f597d0db158090b440000001856ad36134dd2",
+      "bytes": 740
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/source-helper.md",
+      "originalPath": "/tmp/edhr-designer-placement-source-20261028.md",
+      "sha256": "c5e4d7c001effa6acfb83595dc8370f29aab350b0606b37609bf9ed5d6c37758"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/source-helper.json",
+      "originalPath": "/tmp/edhr-designer-placement-source-20261028.json",
+      "sha256": "658b749b1fc40ac8da24109bc40150aaa6f4811953d132704c1e063ce5f94b23"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/ontology-result.yaml",
+      "originalPath": "/tmp/edhr-designer-cancel-ontology-20261028.yaml",
+      "sha256": "b49aa33e9f0b9e2d71c8d68efaee5ea9569b1f9867bd95f3c4a50256a21c77a9"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/rule-review.json",
+      "originalPath": "/tmp/edhr-designer-cancel-rule-review-20261028.json",
+      "sha256": "8a54dc899c25538d902939821cba4c1ffe433ae8c1eb5b3b104a7be347c19af8"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/rule-review.md",
+      "originalPath": "/tmp/edhr-designer-cancel-rule-review-20261028.md",
+      "sha256": "4f024ff531fa91766e31518c97a6973b8c9f2913c87ba517fc2fd22a2fdeedc6"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/ontology-validation.json",
+      "originalPath": "/tmp/edhr-designer-cancel-ontology-validation-20261028.json",
+      "sha256": "4fadf4604dedaece80ceac1df7c7109202ee7e2e128d2a97c4a9484bad2e01d4"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/ontology-validate-at-baseline.py",
+      "originalPath": "/tmp/edhr-designer-cancel-ontology-validate-20261028.py",
+      "sha256": "24337ac143b27371b03d2f0db707ea721440e39f87495e4a4f49cb62b640b17e"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/browser-baseline.json",
+      "originalPath": "/tmp/edhr-pointer-baseline-desktop/result.json",
+      "sha256": "fb4ad8cdd5bc6430bdd93fa7c46a344dcbc53632d2a3c812fc5cd19275943d82"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/browser-desktop.json",
+      "originalPath": "/tmp/edhr-pointer-candidate-desktop/result.json",
+      "sha256": "5a439ef23c193aab61a7816533366a53bd721d4aa6edd321a28092c4cb22d80a"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/browser-narrow.json",
+      "originalPath": "/tmp/edhr-pointer-candidate-narrow/result.json",
+      "sha256": "0cd5e6f911c4a701375fc2e61e3a93d72b74104558c44c4378a45a948638ecb0"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/browser-author-summary.json",
+      "originalPath": "/tmp/edhr-pointer-test-author-summary.json",
+      "sha256": "bf8098496a8d9947a2d754acbfff732454dad5ad0ae06af660e5ea9414cd0f91"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/initial-browser-fixture-error.json",
+      "originalPath": "/tmp/edhr-pointer-initial-fixture-diagnostic.json",
+      "sha256": "c841699f9b5052c4e7c4ba3ca8f9ddcae7b48e88d0218a4f83ded4354028a8b7"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/save-browser.json",
+      "originalPath": "/tmp/edhr-designer-cancel-save-browser.json",
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/nondrag-observation.json",
+      "originalPath": "/tmp/edhr-nondrag-runtime.json",
+      "sha256": "c7ef0ad1eae2d2c4250fbdddfa749bc60791010e63467d8c165c3bcccfefdd9d"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/static-baseline.json",
+      "originalPath": "/tmp/edhr-designer-cancel-static-baseline.json",
+      "sha256": "1658fe25f9381c0264d643d1cbf40a56214cce196c760e2720cb8ce3b9c2b59c"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/static-current.json",
+      "originalPath": "/tmp/edhr-designer-cancel-static-current.json",
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/static-comparison.json",
+      "originalPath": "/tmp/edhr-designer-cancel-static-comparison.json",
+      "sha256": "b0ef31ed41d062b68774fabd89b1b28b00aba874a84cde5bd1032ccb4c376d7e"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/static-baseline-meta.json",
+      "originalPath": "/tmp/edhr-designer-cancel-static-baseline-meta.json",
+      "sha256": "8c36b7da62b9a7048080b5f1ef890b4b9d98c485c1f84b5da39306b41e25ec4a"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/static-cleanup.json",
+      "originalPath": "/tmp/edhr-designer-cancel-static-cleanup.json",
+      "sha256": "f0ba35b49de0b0d2409d703e50e81fe49971b41f9f162d7902bf5b941862146a"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/old-fixture-baseline.json",
+      "originalPath": "/tmp/edhr-designer-cancel-old-fixture-complete.json",
+      "sha256": "dd92f95742e2d116a5e535a666c30ff014b73780168485c5692e240082f4def1"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/old-fixture-baseline.txt",
+      "originalPath": "/tmp/edhr-designer-cancel-old-fixture-complete.log",
+      "sha256": "f9990da07bee1c5d1e7564e1cc7578ac4feb9797a01a7a931e39a3091bf2f517"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/initial-old-fixture-export-error.txt",
+      "originalPath": "/tmp/edhr-designer-cancel-old-fixture-baseline.log",
+      "sha256": "929f434f4626dc28cb00fdf80f0382654357d803ce9da87ace894e821b1d306a"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/old-test-cleanup.json",
+      "originalPath": "/tmp/edhr-designer-old-test-complete-cleanup.json",
+      "sha256": "baaf11e84c0f275678682ba4d4983404b0e276d3a7ede5f867d26d080ea063b1"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/node-initial.txt",
+      "originalPath": "/tmp/edhr-designer-cancel-node.log",
+      "sha256": "ea82aa343800964e0ad3cf1d6d91d2ea78c4d075884672624d0847f09623874a"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/node-passed.txt",
+      "originalPath": "/tmp/edhr-designer-cancel-node-fixed.log",
+      "sha256": "e65f2aa0ae0bb360a43c6c7ce005a1a6f5f7a60e24f2d55f267f364fbab2de15"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/lint.txt",
+      "originalPath": "/tmp/edhr-designer-cancel-lint.log",
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/verify-baseline.txt",
+      "originalPath": "/tmp/edhr-designer-cancel-verify-baseline.log",
+      "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/verify-current.txt",
+      "originalPath": "/tmp/edhr-designer-cancel-verify-current.log",
+      "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/narrow-grid-cancel.png",
+      "originalPath": "/tmp/edhr-pointer-candidate-narrow/grid-cancel.png",
+      "sha256": "5145385dfaf03590cae7670f79990a5b48ac7df21c557a0eaac54785df68dabf"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/narrow-word-cancel.png",
+      "originalPath": "/tmp/edhr-pointer-candidate-narrow/word-inline-move-cancel.png",
+      "sha256": "97eea21273f32738939dce71590f574f25b5d562c0a2eb0eaebe79e561675a94"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/desktop-word-cancel.png",
+      "originalPath": "/tmp/edhr-pointer-candidate-desktop/word-inline-move-cancel.png",
+      "sha256": "b8dad8ff693d4e6dcedf3e7c192bc3efa684051dbb740b3396bb464ffb857ea6"
+    }
+  ],
+  "notRun": [
+    "native PG/backend API regression (no backend changes)",
+    "physical touchscreen OS cancellation",
+    "full accessibility or capacity audit"
+  ],
+  "initialExportDiagnostic": "First baseline export lacked tsconfig; second archive command included nonexistent tsconfig.app.json and exited128. Both self-created directories removed; third exact-source export including actual tsconfig.json/tsconfig.node.json reproduced the missing identity exports."
+}

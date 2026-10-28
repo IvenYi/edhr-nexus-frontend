@@ -235,12 +235,12 @@ export default function DesignerSidebar() {
       ownerDocument.removeEventListener('pointercancel', handlePointerCancel);
     };
 
-    const finishPointerDrag = (eventTarget: EventTarget | null, clientX: number, clientY: number) => {
+    const finishPointerDrag = (eventTarget: EventTarget | null, clientX: number, clientY: number, commit: boolean) => {
       const currentDrag = pointerDragRef.current;
       removeListeners();
       pointerDragCleanupRef.current = null;
 
-      if (currentDrag?.active) {
+      if (commit && currentDrag?.active) {
         const dropCell = findFieldDropCellAtPoint(ownerDocument, clientX, clientY);
         const row = Number(dropCell?.getAttribute('data-sheet-cell-row'));
         const col = Number(dropCell?.getAttribute('data-sheet-cell-col'));
@@ -300,12 +300,12 @@ export default function DesignerSidebar() {
 
     function handlePointerUp(upEvent: PointerEvent) {
       if (upEvent.pointerId !== pointerId) return;
-      finishPointerDrag(upEvent.target, upEvent.clientX, upEvent.clientY);
+      finishPointerDrag(upEvent.target, upEvent.clientX, upEvent.clientY, true);
     }
 
     function handlePointerCancel(cancelEvent: PointerEvent) {
       if (cancelEvent.pointerId !== pointerId) return;
-      finishPointerDrag(cancelEvent.target, cancelEvent.clientX, cancelEvent.clientY);
+      finishPointerDrag(cancelEvent.target, cancelEvent.clientX, cancelEvent.clientY, false);
     }
 
     updatePointerDrag(initialDrag);

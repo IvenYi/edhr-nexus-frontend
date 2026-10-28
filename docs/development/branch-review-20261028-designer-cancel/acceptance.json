@@ -1,0 +1,200 @@
+{
+  "status": "passed",
+  "baseCommit": "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+  "testedCommit": "52c1069ea14dfee0ad79f9501005148d302fcca0",
+  "requiredChecks": 18,
+  "passedRequiredChecks": 18,
+  "codeAndTestsFrozen": true,
+  "afterTestedCommitPolicy": "Only L0 evidence/acceptance/scope/PR registration; no product/test/knowledge changes.",
+  "findings": [
+    {
+      "id": "W2-DESIGNER-POINTER-CANCEL-COMMIT-001",
+      "severity": "medium",
+      "status": "resolved"
+    },
+    {
+      "id": "TEST-DESIGNER-DISPLAY-IDENTITY-STUB-001",
+      "severity": "low",
+      "status": "resolved"
+    }
+  ],
+  "ontology": {
+    "result": "not-applicable",
+    "status": "FINAL",
+    "reviewedIds": 7,
+    "consistentWithinScope": 6,
+    "retainedEvidenceGap": 1
+  },
+  "actualValidation": {
+    "nodePassed": 35,
+    "knowledgeStructuralPassed": 89,
+    "browserUniqueCases": 12,
+    "viewports": [
+      1440,
+      390
+    ],
+    "baselineProductRed": 5,
+    "baselinePositiveControls": 7,
+    "saveBrowserRunsIncludingWidthVariants": 9,
+    "nonDragObservations": 7,
+    "build": "passed",
+    "designerVerifier": "passed"
+  },
+  "blockingConditions": [],
+  "remaining": [
+    {
+      "id": "residual.global-tooling",
+      "description": "全局strict19项与lint配置缺失继续未通过；既有工艺校验ENOENT属于上批记录，本QA未运行该命令。",
+      "impact": "本批可验收不代表全仓静态门禁全绿；也未核验GitHub保护/ruleset配置。",
+      "mitigation": "保留原始失败及增量比较；按后续独立切片处理，不修改无关业务或降低标准。"
+    },
+    {
+      "id": "residual.nondrag-and-other-gestures",
+      "description": "普通字段首次非拖动放置仍是候选；Escape/blur/buttons/lost capture/unmount和其他resize手势未全覆盖。",
+      "impact": "不能声称设计器所有输入取消或键盘可用性闭环。",
+      "mitigation": "继续真实现状映射，定义目标选择/取消语义后另做小批整改；本批只收口两个pointercancel入口。"
+    },
+    {
+      "id": "residual.visual-device-boundary",
+      "description": "390宽现有侧栏占宽和画布裁切保留；pointercancel为合成事件。",
+      "impact": "不认证完整响应式体验或物理触屏/OS事件。",
+      "mitigation": "后续按实际支持设备专项验证；截图与事件边界明确保留。"
+    },
+    {
+      "id": "residual.performance-candidates",
+      "description": "DOM命中fallback扫描与可用字段Word位置重复扫描两项仅源码候选；三拆分方案未实施。",
+      "impact": "未证明真实大模板掉帧或容量上限，未优化整体历史内存。",
+      "mitigation": "以现实字段/单元格规模设计量测再与用户讨论，不从源码复杂度直接宣告性能故障。"
+    },
+    {
+      "id": "residual.backend-and-full-audit",
+      "description": "本批无真实后端保存、PG、迁移、生产或容量验证；4008路径仅盘点，13辅助/6主侧范围有重叠。",
+      "impact": "不能将本批passed外推为全分支完成或生产发布认证。",
+      "mitigation": "保持逐链条/函数/规则证据和增量审计，后续按W0–W7继续。"
+    },
+    {
+      "id": "residual.deferred-product-boundaries",
+      "description": "TaskDetail签名朋友侧待处理、生产弹窗样式、记录变更/作废及依赖DHR high/A12、原四知识gap仍保留；相关Q10客户试用证据仍缺。",
+      "impact": "本轮没有关闭这些延期或业务体验证据项。",
+      "mitigation": "按已有用户授权和暂缓边界继续；朋友修复后拉取最新代码专项复核，不自动标done。"
+    }
+  ],
+  "allRolesFinal": true,
+  "scopeReviewCompletedBeforePr": true,
+  "archive": [
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/quality-result.yaml",
+      "originalPath": "/tmp/edhr-designer-cancel-quality-result.yaml",
+      "sha256": "f29cdc8909d27e027e8952cc3a717fedc0d153b5121ca432be085db9b28ca086"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/quality-review.md",
+      "originalPath": "/tmp/edhr-designer-cancel-quality-review.md",
+      "sha256": "6b0a34ea28dba4a044dc443726c925d40074ce4f67f4bbf942b5c9997beab977"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-evidence.json",
+      "originalPath": "/tmp/edhr-designer-cancel-independent-evidence.json",
+      "sha256": "f2bd324f0d864c5980ad706c606d332d5ed8e30c59d425e624a94f3cba5139fc"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-browser-baseline.json",
+      "originalPath": "/tmp/edhr-designer-qa-baseline/result.json",
+      "sha256": "81755d462d219d543c9c4b61f5ab79065356898427bf990fa2033778b837c4b1"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-browser-desktop.json",
+      "originalPath": "/tmp/edhr-designer-qa-desktop/result.json",
+      "sha256": "e25e11c5bbb8b2f428b6073e9c3229b852ab63f76e178d8157daf45d66fdadbb"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-browser-narrow.json",
+      "originalPath": "/tmp/edhr-designer-qa-narrow/result.json",
+      "sha256": "e948669d88bd80149f86c4dcb41e6d1ead9c603f952464739203f87e0c9e7cb5"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-save-browser.json",
+      "originalPath": "/tmp/edhr-designer-qa-save.json",
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-nondrag.json",
+      "originalPath": "/tmp/edhr-designer-qa-nondrag.json",
+      "sha256": "6f4a6bd32e7a44664b22e5318fd6561c3c5f920fb83363b21e20b0803af2c187"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-inventory.json",
+      "originalPath": "/tmp/edhr-designer-qa-inventory.json",
+      "sha256": "7dca11707cd337e580983c76d67872209ab75480cf9afe2f43fd92d564565ca0"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-inventory.md",
+      "originalPath": "/tmp/edhr-designer-qa-inventory.md",
+      "sha256": "d00d0123c83c4e1ee13690d6f6f2566f8fd4be975acc6e9616c2b4b5ee6474fe"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-static-comparison.json",
+      "originalPath": "/tmp/edhr-designer-qa-static-comparison.json",
+      "sha256": "b87c55b60d7e4d8c7e819edbec244fce5e9c8d0099cc848db933bc8e9dd63280"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-static-baseline.json",
+      "originalPath": "/tmp/edhr-designer-qa-static-baseline.json",
+      "sha256": "25a1d10e5cf40cd0dd5efc8637c6de0d68f15a9ccf10d56bcaed1f6ea9a6c11a"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-static-current.json",
+      "originalPath": "/tmp/edhr-designer-qa-static-current.json",
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-node.txt",
+      "originalPath": "/tmp/edhr-designer-qa-node.log",
+      "sha256": "7c2f40ffa400517d37e04009536dd5ecf2a60bf4feda4213b3c6745a36442a9c"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-build.txt",
+      "originalPath": "/tmp/edhr-designer-qa-build.log",
+      "sha256": "0f5432ed7939c9590248526e10cff4d18dabd47afd59d21184865405361c57c9"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-verifier.txt",
+      "originalPath": "/tmp/edhr-designer-qa-verify.log",
+      "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-knowledge.txt",
+      "originalPath": "/tmp/edhr-designer-qa-knowledge.log",
+      "sha256": "e1c6f7f19120fd57a183ba797b367733e4803f0e74e5bc6a1687d886a217e6bb"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-lint.txt",
+      "originalPath": "/tmp/edhr-designer-qa-lint.log",
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-narrow-grid-cancel.png",
+      "originalPath": "/tmp/edhr-designer-qa-narrow/grid-cancel.png",
+      "sha256": "726fc5f8d5d09dfcf3d01e80608599d19d82e03cef0d216c843e8b5e84769102"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-desktop-word-cancel.png",
+      "originalPath": "/tmp/edhr-designer-qa-desktop/word-inline-move-cancel.png",
+      "sha256": "b8dad8ff693d4e6dcedf3e7c192bc3efa684051dbb740b3396bb464ffb857ea6"
+    }
+  ],
+  "cleanup": {
+    "databasesCreated": false,
+    "browserServers": "Each harness closes its own browser/server and exact temporary host in finally.",
+    "sourceExports": "Primary and independent self-created exports removed by exact path; raw receipts retained.",
+    "noMergeOrDeployment": true
+  },
+  "pullRequest": {
+    "number": 38,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/38",
+    "baseBranch": "edhr-dev",
+    "headBranch": "audit/edhr-dev-designer-placement-20261028",
+    "statusAtRegistration": "open-awaiting-manual-merge",
+    "createdAtHead": "00422f0c3c65685854a141566123754928077fb1"
+  }
+}
