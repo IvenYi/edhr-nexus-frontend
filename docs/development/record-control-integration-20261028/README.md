@@ -13,6 +13,8 @@
 
 首轮真实失败及夹具清理/外键引用遗漏均保留在 evidence 中；夹具问题不计为产品缺陷。所有测试数据库均为专用 `edhr_record_control_test_*` 或 `edhr_baseline_test_*`，未修改 `edhr_dev`。
 
+冗长原始日志以同名 `.log.gz` 无损归档，避免将大量 Hibernate SQL 展开在功能差异中。`evidence/log-archives.json` 记录原始路径、字节数和 SHA-256；解压即还原结果文件引用的原始 `.log`，当前工作树也保留原日志。首轮 failed 结果内容未改写。
+
 ## 后续 DHR / A12 切片应消费的真实来源
 
 - 申请确认入口：`RecordControlService.submit`。申请在审时来源仍为 COMPLETED，不能据申请创建或流程待办触发来源失效。
