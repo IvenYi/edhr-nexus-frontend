@@ -2,6 +2,12 @@
 
 整体L2审计续接，基线`6306457580dbd2787db7df8f2e3cf80ddd21defd`。实际fetch确认PR37已人工合并，整树同交付`6f7af830668b3a701d0e826ab6ae4ef53199d14e`，无额外产品、知识或契约增量。当前知识0.3.25，契约已在此基线读取。
 
+## 正式验收
+
+全新独立实例对干净候选`52c1069ea14dfee0ad79f9501005148d302fcca0`返回**passed/FINAL，18/18必需检查通过，本批无阻断**。两项发现按[acceptance](acceptance.json) resolved：[质量原件](evidence/quality-result.yaml)、[独立说明](evidence/quality-review.md)及[实际命令/证据](evidence/independent-evidence.json)均按原字节归档。独立重跑同组浏览器、35 Node、保存9次、7项非拖动观察、89知识、构建/静态及清单重建；主侧与独立结果不累计唯一覆盖。
+
+所有正式及辅助实例已FINAL，已在PR前实际向用户完成[范围/整体进度复核](scope-review.md)，无任务漂移，整体未完成。受测后只做L0原件/验收/范围与PR登记，产品、测试、知识及冻结清单保持。下方“待独立”段落保留冻结时点事实，当前以本节正式结果为准。
+
 本批从W2既有`adjacent.designer-field-card-keyboard-placement`候选进入实际UI到store的源码复核。发现Sidebar新放字段与Word已有字段移动两条pointercancel仍提交路径，属于同一取消错误的两入口。先做原基线浏览器复现，再局部修复并验证，最终由未参与修复/测试编写的全新实例独立收尾。当前状态是审查/验证进行中，不冒称已通过。
 
 主侧实现及验证已完成，当前待冻结候选后的全新独立验收：[发现与边界](findings.md)、[逐方法记录](source-review.json)、[原件与命令摘要](evidence/primary-verification.json)。旧基线12项5红7正，修复后1440/390同12项通过；35 Node、9次既有保存相关浏览器运行、7项非拖动观察、89知识结构、构建与既有设计器静态验证通过。本体7ID中6有限一致/1试用证据gap，正式NA/FINAL；不改变知识版本和规则。官方strict旧新各19完整finding集合相同、exit2，lint缺配置exit2，均未声明通过。

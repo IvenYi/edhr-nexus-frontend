@@ -1,0 +1,78 @@
+{
+  "kind": "actual-shell-and-canvas-with-controlled-save-callback",
+  "baseline": null,
+  "results": [
+    {
+      "name": "edits during save remain unsaved and closing asks for confirmation",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "successful save without later edits allows closing",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "failed save preserves unsaved content and retry can save it",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "trace blank-region assignment stays visible, saves and can be removed at 1440px",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "trace blank-region assignment stays visible, saves and can be removed at 390px",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "name": "undo and redo retain the correct successful-save boundary",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "narrow viewport retains keyboard access to the unsaved warning",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    },
+    {
+      "name": "subfield edit updates the placed control and saved definition at 1440px",
+      "status": "passed",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      }
+    },
+    {
+      "name": "subfield edit updates the placed control and saved definition at 390px",
+      "status": "passed",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    }
+  ]
+}
