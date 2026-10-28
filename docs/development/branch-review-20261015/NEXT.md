@@ -2,6 +2,8 @@
 
 ## PR37已合入：W2设计器取消边界
 
+已交付[PR38](https://github.com/IvenYi/edhr-nexus-frontend/pull/38)，分支`audit/edhr-dev-designer-placement-20261028`，目标`edhr-dev`，待人工合并；受测52c1069e后仅L0文档/验收/交付，产品/测试/知识不变。下次收到已merge先fetch实际状态及新提交，不重开已验收旧PR。下一步W2导入/文档解析/保存失败边界及新增增量；非拖动命令与性能/提取方案保持原讨论状态，所有用户暂缓继续。
+
 全新独立对干净`52c1069e`正式passed/FINAL，18/18必需检查；取消误提交medium及原呈现测试夹具low按[验收](../branch-review-20261028-designer-cancel/acceptance.json) resolved。主/独立各自35 Node、89知识、双宽同12取消、9次保存、7非拖动观察及build/verifier通过，独立旧5红7正和4008路径逐字节重建闭环。本体及全部辅助FINAL后已实际做PR前无漂移/整体进度汇报；当前仅L0原件/验收/交付，下面“待QA”为历史冻结状态。整体未完成，后续先fetch，再审W2导入/文档解析/保存失败边界及新提交增量，原候选/性能待测讨论/用户暂缓保持。
 
 已fetch核对`edhr-dev@63064575`，PR37人工合并整树同6f7af830，无额外产品/知识/契约增量。本批[设计器取消审查](../branch-review-20261028-designer-cancel/README.md)从普通字段非拖动候选追到两个pointercancel仍提交路径；最小修复只分离提交与清理，两产品文件7增7删，另补原呈现测试缺导出的fail-fast替身，全部旧断言保持。
