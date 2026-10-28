@@ -1,0 +1,60 @@
+{
+  "sourceCommit": "5c233972ec67799ffdee1aadba80e031828be8f8",
+  "baselineSourceCommit": null,
+  "width": 1440,
+  "artifacts": "/tmp/edhr-boundary-qa-save1440",
+  "results": [
+    {
+      "name": "catalog-version-switch",
+      "status": "passed"
+    },
+    {
+      "name": "catalog-switch-back",
+      "status": "passed"
+    },
+    {
+      "name": "catalog-close-reopen",
+      "status": "passed"
+    },
+    {
+      "name": "catalog-stale-error",
+      "status": "passed"
+    },
+    {
+      "name": "same-context-latest-edit",
+      "status": "passed"
+    },
+    {
+      "name": "catalog-failure-retry",
+      "status": "passed"
+    },
+    {
+      "name": "invalid-config-blocks",
+      "status": "passed"
+    },
+    {
+      "name": "old-completion-keeps-new-busy",
+      "status": "passed"
+    },
+    {
+      "name": "late-ack-after-reopen",
+      "status": "passed"
+    },
+    {
+      "name": "normal-save-clean",
+      "status": "passed"
+    },
+    {
+      "name": "edit-after-send-remains-dirty",
+      "status": "passed"
+    },
+    {
+      "name": "same-event-double-click",
+      "status": "passed"
+    },
+    {
+      "name": "cancel-close-prompt",
+      "status": "passed"
+    }
+  ]
+}

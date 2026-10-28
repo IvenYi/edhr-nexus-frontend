@@ -2,6 +2,10 @@
 
 ## PR41已合入：W4数字边界与新增设计器提交增量
 
+全新独立对干净`5c233972`正式passed/FINAL，17/17必需检查，页算术medium/版本数字范围high/头部窄屏medium均resolved；[acceptance](../branch-review-20261028-master-data-boundaries/acceptance.json)承接PR41两个CAND而不重复算新缺陷。独立36旧12红24正→36绿、72回归/36Node/头部4宽旧1红3正→4绿/双宽同13保存/导入15/宿主6/知识89/verifier/build及四清单/35主侧hash闭环。全部角色FINAL后已实际完成PR前无漂移/整体进度沟通；受测后仅L0原件/验收/范围/交付。strict19与原样日志空白非绿，42非原件路径通过，原件不清洗。下文待QA为历史检查点。
+
+独立新增`CAND-W4-VERSION-COMPARATOR-ORDER-001`：当前/旧基线混合标签compareVersion反射结果同样违反反对称性，尚无正常API排序后果复现；不叫本轮已修或所有标签排序已审完。下一轮先fetch，优先该候选合法路径，再继续其他W3/W4未审关联入口；三性能仍待讨论、原暂缓与W5–W7保持。
+
 已实际fetch最新`edhr-dev@8784ba87`；PR41合并099bb29f树同01a8，另有8784移除模板流程入口/三个store动作并调整头部，契约/知识无新增差异。[本批](../branch-review-20261028-master-data-boundaries/README.md)正常API复现两个W4候选并最小修复：36同组旧12红24正→36通过，保留页归一化/组完整性/数字段顺序，SQL和性能机制未改。额外390头部title0/首屏操作溢出仅小屏分行换行，四宽旧1红3正→4通过；13保存双宽、72后端/36Node/15导入/6宿主/verifier/build通过。本体8既有ID有限一致、NA/FINAL及知识89保持；当前待全新独立QA，不提前关闭high。
 
 4219固定目标路径/130迁移只是盘点，8主侧范围与8语义有交叉，整文件完成0、unique历史增量未知。原13窄屏保存均前置fixture-blocked，不冒报13保存逻辑红；专门头部回归及CSS夹具首轮失败分别保留。strict19同多集仍非绿、lint旧缺配置保持；当前仅局部正确性/布局修复，三性能仍待讨论。后续正式验收/全部角色FINAL后PR前实际漂移复核；下轮先fetch转其他未审主数据/生产关联入口，W2/W3/W4余项与W5–W7、原用户暂缓/旧反馈/四gap保持，不自动merge/deploy/恢复。

@@ -1,0 +1,320 @@
+qualityResult:
+  result: passed
+  baseCommit: 8784ba87166addae9cb9659d6120aa84f993c7ef
+  headCommit: 5c233972ec67799ffdee1aadba80e031828be8f8
+  contractBaseline:
+    sourceCommit: 5c233972ec67799ffdee1aadba80e031828be8f8
+    targetBranch: edhr-dev
+    targetCommit: 8784ba87166addae9cb9659d6120aa84f993c7ef
+    contractReadCommit: 5c233972ec67799ffdee1aadba80e031828be8f8
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.boundary.candidate-contract
+    required: true
+    category: requirements
+    description: 实际目标、干净候选、契约和独立性；自建验证资源已结束。
+    method: inspection
+    command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git status --porcelain; read AGENTS/agent-handoff-contract/quality-verifier.
+    outcome: passed
+    evidence:
+    - base 8784ba87166addae9cb9659d6120aa84f993c7ef；feature head/tested commit 5c233972ec67799ffdee1aadba80e031828be8f8，包含实际目标；两次独立fetch目标未变，运行前后主工作树干净。
+    - 本实例未参与产品、测试、夹具或知识修复；只写/tmp，未创建子实例。实际读取当前候选契约，contractReadCommit记候选；契约相对目标无差异。
+    - /tmp/edhr-boundary-qa-cleanup.json：自己的固定基线worktree、原字节测试副本、node_modules符号链接和清单重建目录均精确清理；共享依赖未改。
+  - id: check.boundary.source-ontology
+    required: true
+    category: ontology
+    description: 核对局部修复、8个既有ID的原始依据、职责边界及本体NA。
+    method: inspection
+    command: Review two controller diffs, Shell styles, original declarations/evidence, rule-review and ontologyResult.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-inspection.json
+    - 后端仅6增5删、Shell样式8增1删；long在clamp前处理int乘/加，正int最大乘积在long范围；BigInteger仅替代相同数字段比较，既有页归一化、组结构/状态/ID与文本回退保持。
+    - 8既有ID有限复核：物料/产品、产品派生、DEC0001显示版本与执行冻结、PROCESS绑定、DEC0009草稿分层均未改变；未新建分页/格式政策，知识0.3.25/成熟度及契约相对base零差异。
+    - 旧workflowDesignJson仍parse/serialize及后台保存；实际PROCESS配置继续引用已发布WorkflowDefinitionVersion。被移除模板编辑入口保持移除，不推定后台流程取消。
+  - id: check.boundary.backend-red-green
+    required: true
+    category: integration
+    description: 独立重放正常POST/JWT/H2读取的同组旧红新绿，并核对身份、全版本和完整行不变。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=MasterDataBoundaryIntegrationTest
+      -Dedhr.audit.boundaryOutput=/tmp/edhr-boundary-qa.jsonl test; same unmodified test in own fixed-base worktree.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-current.txt
+    - /tmp/edhr-boundary-qa-baseline.txt
+    - /tmp/edhr-boundary-qa-red-green.json
+    - 旧基线实际36测试12失败24正向、0error/skip；9页边界和3超long版本GET500，正常POST已接受并数据库回读。当前36/36、0failure/error/skip。
+    - 35条授权GET记录键两次完全对应；另1匿名测试覆盖3请求，不能加成38测试。数据/类型/audit行完整快照前后相同。
+    - 基线runtime源码未改，只复制候选新增测试原字节；物料/类型/audit真实repository及JWT/filter/controller，其他空产品配置依赖mock。不是PG/完整制程验收。
+  - id: check.boundary.backend-regression
+    required: true
+    category: regression
+    description: 独立运行既有后端72项，保持全部断言。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=ProcessModelingControllerTest,ProductProcessControllerTest,MaterialImportIntegrationTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-regression.txt
+    - 72 tests，0failure/error/skip；54建模控制器、14产品制程控制器、4物料H2导入集成。
+  - id: check.boundary.node-regression
+    required: true
+    category: unit
+    description: 独立运行36项Node，包含旧workflow载荷保留。
+    method: automated-test
+    command: cd gmp-platform/frontend && node --test scripts/test-designer-save-state.mjs scripts/test-designer-choice-options.mjs
+      scripts/test-designer-subfield-sync.mjs scripts/test-cell-display-components.mjs scripts/test-designer-column-insertion.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-node.txt
+    - 36 tests全过、0skip/cancel；35既有及1新增载荷经编辑/undo/redo/serialize/parse保留，不恢复流程编辑入口。
+  - id: check.boundary.header-red-green
+    required: true
+    category: e2e
+    description: 独立实跑四宽头部原始几何及非强制点击，和固定基线对照。
+    method: browser
+    command: cd gmp-platform/frontend && CHROME_PATH=/usr/bin/chromium HEADER_ARTIFACTS=/tmp/edhr-boundary-qa-header node
+      scripts/test-designer-header-browser.mjs; repeat with HEADER_BASELINE_COMMIT=8784ba87166addae9cb9659d6120aa84f993c7ef
+      HEADER_ARTIFACTS=/tmp/edhr-boundary-qa-header-baseline
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-header/result.json
+    - /tmp/edhr-boundary-qa-header-baseline/result.json
+    - 390/768/1024/1440当前4通过，旧基线390失败其余3正向。旧390标题width0、初始保存/关闭超出viewport；当前390标题width100.109375，全部初始按钮在viewport且trial可点。
+    - 几何在任何trial滚动前采集；自动滚动可点击反证保留，不说完全不可达；trial不提交，流程入口仍无。不是整画布移动端认证。
+  - id: check.boundary.save-context
+    required: true
+    category: regression
+    description: 独立运行原13保存上下文场景两宽，保留原可见性前置与断言。
+    method: browser
+    command: cd gmp-platform/frontend && CHROME_PATH=/usr/bin/chromium SAVE_CONTEXT_ARTIFACTS=/tmp/edhr-boundary-qa-save1440
+      node scripts/test-designer-save-context-browser.mjs; repeat SAVE_CONTEXT_WIDTH=390 SAVE_CONTEXT_ARTIFACTS=/tmp/edhr-boundary-qa-save390
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-save1440/result.json
+    - /tmp/edhr-boundary-qa-save390/result.json
+    - 同13在1440和390均passed；旧incoming390的13 fixture-blocked仅标题前置失效，不虚报13保存逻辑红，不把双宽算26unique。真实Shell/Canvas/store/catalog HTTP，宿主props及完成回调受控。
+  - id: check.boundary.import-regression
+    required: true
+    category: regression
+    description: 独立重跑15桌面异步导入及XML错误/恢复场景。
+    method: browser
+    command: cd gmp-platform/frontend && CHROME_PATH=/usr/bin/chromium IMPORT_ARTIFACTS=/tmp/edhr-boundary-qa-import node
+      scripts/test-designer-import-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-import/result.json
+    - 15/15 passed，实际Shell/store/parser与受控File读取，未外推所有Office格式、真实后台转换或生产容量。
+  - id: check.boundary.actual-host
+    required: true
+    category: e2e
+    description: 独立运行真实父页/TanStack/axios及受控子组件的6保存宿主场景。
+    method: browser
+    command: cd gmp-platform/frontend && CHROME_PATH=/usr/bin/chromium SAVE_HOST_ARTIFACTS=/tmp/edhr-boundary-qa-host node
+      scripts/test-designer-save-host-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-host/results.json
+    - 6/6 passed，A URL/三段payload保持A，无额外B写；B共享pending及旧泛称反馈现状保留。不是后台持久化或完整main/autoSave并发认证。
+  - id: check.boundary.visual
+    required: true
+    category: visual
+    description: 实际查看旧390、当前390/1440原始截图及头部边界。
+    method: inspection
+    command: view_image /tmp/edhr-boundary-qa-header-baseline/390-failed.png; view_image /tmp/edhr-boundary-qa-header/390.png;
+      view_image /tmp/edhr-boundary-qa-header/1440.png
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-header-baseline/390-failed.png
+    - /tmp/edhr-boundary-qa-header/390.png
+    - /tmp/edhr-boundary-qa-header/1440.png
+    - 旧上下文消失/动作溢出与DOM相符；当前小屏标题/两页签/操作完整分行，1440居中布局保持。侧栏/宽画布既有裁剪仍在，不认证整页响应式/a11y/物理设备。
+  - id: check.boundary.designer-verifier
+    required: true
+    category: regression
+    description: 独立执行当前官方设计器检查，保持远端移除入口的现行断言。
+    method: command
+    command: cd gmp-platform/frontend && node scripts/verify-template-designer-react.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-verifier.txt
+    - 退出0；本批没有改官方脚本或恢复被删除UI。
+  - id: check.boundary.frontend-build
+    required: true
+    category: regression
+    description: 实际候选独立通过类型检查与前端构建。
+    method: command
+    command: cd gmp-platform/frontend && npm run build
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-build.txt
+    - tsc -b及Vite构建退出0；不等于全局lint绿。
+  - id: check.boundary.knowledge-structure
+    required: true
+    category: ontology
+    description: 独立执行知识结构/引用校验。
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-knowledge.txt
+    - 89 tests，0failure/error/skip。结构校验不代替有限8ID语义或全库一致性。
+  - id: check.boundary.inventory
+    required: true
+    category: documentation
+    description: 固定目标四份清单逐字节重建及盘点边界核对。
+    method: command
+    command: python3 scripts/build-branch-review-inventory.py --ref 8784ba87166addae9cb9659d6120aa84f993c7ef --out /tmp/edhr-boundary-qa-inventory;
+      compare bytes with batch inventory.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-artifact-inspection.json
+    - 四文件字节和SHA一致；4219路径全部inventory-only/pending、130迁移。主侧8有限范围与8语义有交叉，whole-file0、历史unique增量未知，不以盘点当审完。重建目录在保存hash后已精确清理。
+  - id: check.boundary.originals
+    required: true
+    category: documentation
+    description: 核对35主侧原件hash、失败来源、范围声明及未决风险。
+    method: inspection
+    command: Parse primary-verification archives; verify bytes/SHA/tracked state; inspect baseline and fixture provenance
+      against findings/scope-review.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-artifact-inspection.json
+    - 35原件hash/字节/跟踪状态有效，原始后端12真红、旧13标题前置blocked、独立诊断与新header CSS夹具失败分列；没有为通过改写原件。
+    - 当前片仅局部正确性和头部，三性能继续pending-discussion，用户暂缓及W2/W3/W4、W5–W7未完成保持。
+  - id: check.boundary.static-incremental
+    required: true
+    category: regression
+    description: 独立strict扫描并核对相对实际目标无新提示。
+    method: command
+    command: python3 /tmp/edhr-boundary-audit-project.py gmp-platform/frontend/src --mode strict --no-write; compare normalized
+      multiset with archived actual-base scan.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-static.json
+    - /tmp/edhr-boundary-qa-artifact-inspection.json
+    - 官方脚本SHA b56ca0495ace4aaac2bfa779dc707b04baab0f7d4537e6856b6348c63230661c；19 findings与实际目标规范化多集相同。增量检查passed，global strict自身仍exit2。
+  - id: check.boundary.nonraw-whitespace
+    required: true
+    category: documentation
+    description: 对源码/手写文档及非原件格式路径检查空白，原样日志例外单列。
+    method: command
+    command: git -c core.whitespace=cr-at-eol diff --check 8784ba87166addae9cb9659d6120aa84f993c7ef 5c233972ec67799ffdee1aadba80e031828be8f8
+      -- <42 non-raw-log paths>
+    outcome: passed
+    evidence:
+    - /tmp/edhr-boundary-qa-nonraw-whitespace.txt
+    - /tmp/edhr-boundary-qa-whitespace.json
+    - 42非raw日志路径退出0；全区间告警均在5份原始Maven/JUnit日志，保留原字节，不strip、不改全局whitespace配置。
+  - id: check.boundary.global-strict
+    required: false
+    category: regression
+    description: 全局strict现存问题保持非绿。
+    method: command
+    command: python3 /tmp/edhr-boundary-audit-project.py gmp-platform/frontend/src --mode strict --no-write
+    outcome: failed
+    evidence:
+    - /tmp/edhr-boundary-qa-static.json
+    - 退出2，19既有提示；当前修复无新增。
+  - id: check.boundary.all-whitespace
+    required: false
+    category: documentation
+    description: 全提交空白检查因原始日志尾空格保持非绿。
+    method: command
+    command: git -c core.whitespace=cr-at-eol diff --check 8784ba87166addae9cb9659d6120aa84f993c7ef 5c233972ec67799ffdee1aadba80e031828be8f8
+    outcome: failed
+    evidence:
+    - /tmp/edhr-boundary-qa-all-whitespace.txt
+    - /tmp/edhr-boundary-qa-whitespace.json
+    - 退出2；5份原始日志带格式空白，原件未被清洗。
+  findings:
+  - id: AUD-W4-PAGE-ARITHMETIC-001
+    severity: medium
+    scope: master-data-list-pagination
+    summary: 合法int页号/页长在裁剪前溢出，三个列表返回500。
+    reproductionSteps:
+    - 正常POST创建两组产成品物料。
+    - 分别请求三列表，page=2147483647,size=20；或page=2,size=2147483647；或两项均最大int。
+    expectedResult: 沿原页归一化及末后空页语义返回200，结构/总数及数据不变。
+    actualResult: 固定旧基线9案例HTTP500；当前27页案例全通过，包含正常页和既有归一化。
+    evidence:
+    - /tmp/edhr-boundary-qa-baseline.jsonl
+    - /tmp/edhr-boundary-qa.jsonl
+    - /tmp/edhr-boundary-qa-red-green.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 5c233972ec67799ffdee1aadba80e031828be8f8
+    - type: command
+      reference: /tmp/edhr-boundary-qa-red-green.json
+  - id: AUD-W4-VERSION-NUMBER-RANGE-001
+    severity: high
+    scope: material-version-display
+    summary: 正常API已接受的超long版本数字段使普通物料列表整个500。
+    reproductionSteps:
+    - 正常POST创建同code/name的V9223372036854775808和其他版本，确认写入及数据库回读。
+    - GET普通物料列表触发组内数字段排序。
+    expectedResult: 按原数字段/文本回退规则读取已接受版本，保留全组身份和状态；不新增格式/长度政策。
+    actualResult: 旧基线3种超long案例GET500；当前8组排序均通过，包括多段/前导零/文本回退正向。仅认证已测数字范围，其他混合标签比较器另列候选。
+    evidence:
+    - /tmp/edhr-boundary-qa-baseline.txt
+    - /tmp/edhr-boundary-qa-current.txt
+    - /tmp/edhr-boundary-qa-red-green.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 5c233972ec67799ffdee1aadba80e031828be8f8
+    - type: command
+      reference: /tmp/edhr-boundary-qa-red-green.json
+  - id: AUD-W2-HEADER-NARROW-CONTEXT-001
+    severity: medium
+    scope: designer-header
+    summary: 新增grid在390px把模板上下文压成0宽并使部分头部动作溢出首屏。
+    reproductionSteps:
+    - 在固定8784原Shell、390px打开真实设计器。
+    - 在任何trial滚动前读取标题/按钮几何并查看截图；再与当前四宽度对照。
+    expectedResult: 标题有可见宽度，头部动作首屏内且可非强制点击，保持新桌面布局和流程入口移除。
+    actualResult: 旧390标题width0、保存/关闭初始溢出；当前四宽通过，同13保存双宽通过。自动横向滚动可点的反证保留，不称完全不可达。
+    evidence:
+    - /tmp/edhr-boundary-qa-header-baseline/result.json
+    - /tmp/edhr-boundary-qa-header/result.json
+    - /tmp/edhr-boundary-qa-header/390.png
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 5c233972ec67799ffdee1aadba80e031828be8f8
+    - type: command
+      reference: /tmp/edhr-boundary-qa-header/result.json
+  residualRisks:
+  - id: CAND-W4-VERSION-COMPARATOR-ORDER-001
+    description: 额外方法级候选：真实compareVersion("V2a3","V2b")=-1，反向也=-1；固定旧基线与当前编译代码结果相同，非本次BigInteger引入。完整命令和源码在/tmp/edhr-boundary-qa-adjacent-comparator-command.json、/tmp/EdhrBoundaryComparatorProbe.java及两份原始输出。
+    impact: 比较器反对称性存在候选问题，但尚无正常API/实际排序后果复现；本批不能宣称所有合法标签比较完整正确。
+    mitigation: 主侧已接受作为下一小批首个正常写入/读取、多个标签实际排序的复现目标；当前不改测试/业务政策或隐藏该风险。
+  - id: RES-BOUNDARY-PERFORMANCE
+    description: PR41设备关联N+1、物料类型目录重复读取、全版本物化三个性能风险继续pending-discussion；当前没有SQL/缓存/索引/分组分页优化。
+    impact: 本批正确性通过不说明大数据/并发容量已解决。
+    mitigation: 保留既有量化与反证，用户讨论后再单独设计和验证。
+  - id: RES-BOUNDARY-ENVIRONMENT-SCOPE
+    description: H2实际物料repository及空制程依赖mock；浏览器API/callback或子组件受控。未执行原生PG、真实后台持久化、完整main/autoSave并发、时延/堆/GC/生产容量。
+    impact: 不可将局部测试通过外推完整制程、生产运行或容量认证。
+    mitigation: 后续按真实风险入口补相应独立集成/规模证据。
+  - id: RES-BOUNDARY-UI-SCOPE
+    description: 仅修并认证头部；宽画布/侧栏窄屏裁剪仍在，未认证完整移动端/a11y/物理设备。旧宿主泛称反馈与普通字段非拖动入口候选保持。
+    impact: 本批不能宣称整页响应式或全部设计器体验完成。
+    mitigation: 保持原候选和范围声明，无授权不扩大交互或重设计。
+  - id: RES-BOUNDARY-GLOBAL-CHECKS
+    description: 官方strict19、原样日志全区间空白非绿；ESLint既有缺配置本批未运行且未修复。
+    impact: 17必需检查通过不等于全局所有工具绿。
+    mitigation: 保留原始输出及增量无新增证据，不为工具绿改业务或破坏原件。
+  - id: RES-BOUNDARY-OVERALL-AUDIT
+    description: TaskDetail、生产弹窗设计、记录变更/作废依赖DHR high/A12、四知识gap与整体W2/W3/W4、W5–W7未完成保持。
+    impact: 当前三个问题已复验，不表示整体审计或所有本体/代码一致性通过。
+    mitigation: 继续按台账、最新提交及用户暂缓推进，不自动合并/部署/恢复历史。
+  blockingConditions: []

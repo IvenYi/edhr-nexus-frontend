@@ -1,0 +1,409 @@
+{
+  "schema": "edhr-audit-batch-acceptance/v1",
+  "executionLevel": "L2",
+  "baseCommit": "8784ba87166addae9cb9659d6120aa84f993c7ef",
+  "testedCommit": "5c233972ec67799ffdee1aadba80e031828be8f8",
+  "status": "passed",
+  "independentReviewer": "/root/master_data_boundaries_final_qa_20261028",
+  "requiredChecks": 17,
+  "requiredPassed": 17,
+  "optionalFailed": 2,
+  "qualityResult": "evidence/quality-result.yaml",
+  "ontologyResult": {
+    "result": "not-applicable",
+    "path": "evidence/ontology-result.yaml",
+    "knowledgeVersion": "0.3.25",
+    "limitedExistingIds": 8,
+    "knowledgeChanges": 0,
+    "newUniqueHistoricalCoverage": null
+  },
+  "findings": [
+    {
+      "id": "AUD-W4-PAGE-ARITHMETIC-001",
+      "severity": "medium",
+      "status": "resolved"
+    },
+    {
+      "id": "AUD-W4-VERSION-NUMBER-RANGE-001",
+      "severity": "high",
+      "status": "resolved"
+    },
+    {
+      "id": "AUD-W2-HEADER-NARROW-CONTEXT-001",
+      "severity": "medium",
+      "status": "resolved"
+    }
+  ],
+  "historicalCandidateDispositions": [
+    {
+      "id": "CAND-MASTER-DATA-PAGING-OVERFLOW-001",
+      "resolvedAs": "AUD-W4-PAGE-ARITHMETIC-001",
+      "status": "independently-verified",
+      "qualification": "Prior frozen risk register unchanged; overlay prevents double-counting."
+    },
+    {
+      "id": "CAND-MASTER-DATA-VERSION-NUMERIC-001",
+      "resolvedAs": "AUD-W4-VERSION-NUMBER-RANGE-001",
+      "status": "independently-verified",
+      "qualification": "Same prior candidate now proven and fixed, not an additional separate defect."
+    }
+  ],
+  "postTestChangesPolicy": "Only L0 raw archives, acceptance, scope/next-candidate explanation and PR registration. Product/tests/knowledge/contracts must remain identical to tested5c233972.",
+  "actualIndependentRuns": {
+    "newH2": 36,
+    "baselineH2Failed": 12,
+    "baselineH2Passed": 24,
+    "authorizedGetRecordsPerRun": 35,
+    "backendRegression": 72,
+    "node": 36,
+    "headerWidths": [
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "headerBaselineFailed": 1,
+    "saveUniqueCases": 13,
+    "saveWidths": [
+      1440,
+      390
+    ],
+    "importDesktop": 15,
+    "actualHostDesktop": 6,
+    "knowledgeStructural": 89
+  },
+  "independentArchives": [
+    {
+      "original": "/tmp/edhr-boundary-qa-current.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-current.txt",
+      "sha256": "5c6801cca2ab6f781a2287cad5548c68483191016e0def03a30dcee1dd2bdf48",
+      "bytes": 142184
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa.jsonl",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/edhr-boundary-qa.jsonl",
+      "sha256": "3759f6a20bb097099c56352f2cdc15da62b242bfec9f90f17d792dcaf31ba65c",
+      "bytes": 28489
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-candidate-junit.xml",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-candidate-junit.xml",
+      "sha256": "9f40b7a515b02e006914e79803c8020d076b5f7166b0f94e8e06bdf885ca8aa1",
+      "bytes": 180403
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-baseline.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-baseline.txt",
+      "sha256": "2e200faa22466d6cb7729513aae7112bd42535b92c9d6ac31da02ad49ea7ccda",
+      "bytes": 685635
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-baseline.jsonl",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-baseline.jsonl",
+      "sha256": "94ef0c414e57936835cc84423ba1723b6d9b9c8e2815e74f4f60381b0d59b882",
+      "bytes": 23132
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-baseline-junit.xml",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-baseline-junit.xml",
+      "sha256": "9d0cc0e0a8f5702f4c94b4673cc85df3a3b4f1ed33ce9071726a0793cfe52edd",
+      "bytes": 719393
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-baseline-worktree.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-baseline-worktree.json",
+      "sha256": "7e616d885dad506e89c8a60aaea068ecd600b25f195e15f17dc87ab15664d386",
+      "bytes": 547
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-red-green.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-red-green.json",
+      "sha256": "2fe49fba911ea354bdf88aaf0c5be13107f68eebf9502489231972941700b134",
+      "bytes": 462
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-regression.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-regression.txt",
+      "sha256": "80d433c6852d8291963b2e2de0c4e513f24fae97c2d2bd00c3bb12f863e44d3c",
+      "bytes": 100187
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-node.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-node.txt",
+      "sha256": "f8d53d717d2dcf99f5e5f3102599e72dc5ccf58897ae7c9248703f0091c0f17e",
+      "bytes": 4156
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-header.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-header.txt",
+      "sha256": "23034406331110be3f662bc9b6736e4bfb87598aa611bf95eaa4d140cfda14f1",
+      "bytes": 7146
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-header-baseline.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-header-baseline.txt",
+      "sha256": "9d3bc45cc7a021f25d0ba8bc2febf3970472540ca1ee2608cd04b59a997ee770",
+      "bytes": 7208
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-header/result.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-header.json",
+      "sha256": "23034406331110be3f662bc9b6736e4bfb87598aa611bf95eaa4d140cfda14f1",
+      "bytes": 7146
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-header-baseline/result.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-header-baseline.json",
+      "sha256": "9d3bc45cc7a021f25d0ba8bc2febf3970472540ca1ee2608cd04b59a997ee770",
+      "bytes": 7208
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-header/390.png",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-header-390.png",
+      "sha256": "7b4c5d5b92baf6e681f501c25bf2c2342438595b39e39a7c107bba873f07876b",
+      "bytes": 36503
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-header/1440.png",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-header-1440.png",
+      "sha256": "36088fedae7548fa7e81547b9d06c5beb6ea384008e7fe115bed7afdc3ae53d3",
+      "bytes": 63332
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-header-baseline/390-failed.png",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-header-baseline-390.png",
+      "sha256": "de272edce4ad6ea1cbbe00c3fc8788c3c2559f137b6f6bb31b18b40f0e77ce93",
+      "bytes": 37968
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-save1440/result.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-save1440.json",
+      "sha256": "e3da9f83a7bbc156c2af2236324a76c83dff22bfd34f07cab764491eee11f276",
+      "bytes": 38484
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-save390/result.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-save390.json",
+      "sha256": "4f5f0c13825d6062fb71e6edee0458109433ac52c52d6fea63945c56f19fe71f",
+      "bytes": 38483
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-save1440.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-save1440.txt",
+      "sha256": "7075b63611ea2ded7f65f1f1ad9ba1806c57f85e8e408c164da354be3b8cd96b",
+      "bytes": 1194
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-save390.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-save390.txt",
+      "sha256": "cce6aee35ad2561d6662c510fd31c89ee5dbf026b0a3998d945093aa42282359",
+      "bytes": 1192
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-import/result.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-import.json",
+      "sha256": "eb74fd9a5fa68f22b3b812d40ab47f984b5cb065553b889b3c70156efa1bd935",
+      "bytes": 59176
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-import.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-import.txt",
+      "sha256": "512eae3dffe376210e6590d456e220a24aa43024bb71b8abcda8d7c2ccf117a1",
+      "bytes": 1269
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-host/results.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-host.json",
+      "sha256": "d56704847d0755aeb2ac6658abe8676b9c55bcb0e8889a39256c395e41265c60",
+      "bytes": 8567
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-host.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-host.txt",
+      "sha256": "de57e3f5d7262dc773456dd632f63129cec079c690425918ebf4de27e19c8320",
+      "bytes": 8568
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-verifier.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-verifier.txt",
+      "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77",
+      "bytes": 38
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-build.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-build.txt",
+      "sha256": "ecfc718baeb25c34541e8026aebef29b9c16691fc95aa8a2400e06dc9145a754",
+      "bytes": 9780
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-knowledge.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-knowledge.txt",
+      "sha256": "e073ee46fc5c12cd616bdceebc3351dd8d0ea33acc3d0dbb04ca896470e57c88",
+      "bytes": 2112
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-inventory.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-inventory.txt",
+      "sha256": "ce72ea09d9b1de7b376f86ac1b26a2eb478c803a87d8b0d35d1b2611bbf2d240",
+      "bytes": 933
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-artifact-inspection.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-artifact-inspection.json",
+      "sha256": "b0b0a8005690d1d08a3e35af730e6bfe749000b83da80df1585cc7c94855d88f",
+      "bytes": 8784
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-static.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-static.json",
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856",
+      "bytes": 7625
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-whitespace.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-whitespace.json",
+      "sha256": "c1d057871fd867b3a1168991408538072f47a3bcc925f396c2fedf4eb2d6834f",
+      "bytes": 1794
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-all-whitespace.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-all-whitespace.txt",
+      "sha256": "2055e2b0ae3df93a19729ca3944cdf9cd99945c8a1b49016281d01e13e3591f0",
+      "bytes": 63681
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-nonraw-whitespace.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-nonraw-whitespace.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "original": "/tmp/EdhrBoundaryComparatorProbe.java",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-comparator-probe.java",
+      "sha256": "4af9525547a864a3cb1950facb4e0b377807782b42a54b12ad229b407b9708df",
+      "bytes": 633
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-adjacent-comparator.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-adjacent-comparator.txt",
+      "sha256": "c750c4dffc1554b5a322e06d0a8fa424d0c26253267e33c7cbc201e2d10f17ce",
+      "bytes": 34
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-adjacent-comparator-baseline.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-adjacent-comparator-baseline.txt",
+      "sha256": "c750c4dffc1554b5a322e06d0a8fa424d0c26253267e33c7cbc201e2d10f17ce",
+      "bytes": 34
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-adjacent-comparator-command.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-adjacent-comparator-command.json",
+      "sha256": "68bea61c6c8dbd8a97e55734f663401af83e3a735ed9af686a47af2c193c194c",
+      "bytes": 28878
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-frontend-runs.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-frontend-runs.json",
+      "sha256": "c5fe778b07a8de276f23bccbfe430d60d3967406365f47d33a9e7c3445d83812",
+      "bytes": 2026
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-inspection.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-inspection.json",
+      "sha256": "58def7e2d7dede8dfdb1733685579f2b0d70ddab1213d3cc1adf0ea2ca5d4aa0",
+      "bytes": 13314
+    },
+    {
+      "original": "/tmp/edhr-boundary-qa-cleanup.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-cleanup.json",
+      "sha256": "e74867c6176e4601d653ff687c2162696bdc5dd5f06fc546d4baf66c4d3d6b32",
+      "bytes": 784
+    },
+    {
+      "original": "/tmp/edhr-boundary-quality-result.yaml",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/quality-result.yaml",
+      "sha256": "2fb6603b4ed444308190d859eddd000d91144e5391854194e256233a63f14c45",
+      "bytes": 19399
+    },
+    {
+      "original": "/tmp/edhr-boundary-quality-review.md",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/quality-review.md",
+      "sha256": "cfb3e61457b352e06db0cf109a0274d0077694668d970cb1687d8501ee33b99b",
+      "bytes": 4686
+    },
+    {
+      "original": "/tmp/edhr-boundary-independent-evidence.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/independent-evidence.json",
+      "sha256": "1f91925eed1b6ec079ce1d0745e20b0587e1fa21613bac35d80a79892c96b7b2",
+      "bytes": 31058
+    }
+  ],
+  "sourceReviewRecords": 8,
+  "wholeFileCompletion": 0,
+  "inventory": {
+    "baseCommit": "8784ba87166addae9cb9659d6120aa84f993c7ef",
+    "trackedPaths": 4219,
+    "migrationFiles": 130,
+    "status": "inventory-only/pending"
+  },
+  "newPendingCandidate": {
+    "id": "CAND-W4-VERSION-COMPARATOR-ORDER-001",
+    "status": "method-observed-api-pending",
+    "observation": "compareVersion(V2a3,V2b)=-1 and reverse=-1, unchanged on old and current compiled methods",
+    "next": "Normal API accepted multi-version data and actual sorting consequence, then minimal fix if established. No full-label-order certification."
+  },
+  "remainingRisks": [
+    {
+      "id": "CAND-W4-VERSION-COMPARATOR-ORDER-001",
+      "description": "额外方法级候选：真实compareVersion(\"V2a3\",\"V2b\")=-1，反向也=-1；固定旧基线与当前编译代码结果相同，非本次BigInteger引入。完整命令和源码在/tmp/edhr-boundary-qa-adjacent-comparator-command.json、/tmp/EdhrBoundaryComparatorProbe.java及两份原始输出。",
+      "impact": "比较器反对称性存在候选问题，但尚无正常API/实际排序后果复现；本批不能宣称所有合法标签比较完整正确。",
+      "mitigation": "主侧已接受作为下一小批首个正常写入/读取、多个标签实际排序的复现目标；当前不改测试/业务政策或隐藏该风险。"
+    },
+    {
+      "id": "RES-BOUNDARY-PERFORMANCE",
+      "description": "PR41设备关联N+1、物料类型目录重复读取、全版本物化三个性能风险继续pending-discussion；当前没有SQL/缓存/索引/分组分页优化。",
+      "impact": "本批正确性通过不说明大数据/并发容量已解决。",
+      "mitigation": "保留既有量化与反证，用户讨论后再单独设计和验证。"
+    },
+    {
+      "id": "RES-BOUNDARY-ENVIRONMENT-SCOPE",
+      "description": "H2实际物料repository及空制程依赖mock；浏览器API/callback或子组件受控。未执行原生PG、真实后台持久化、完整main/autoSave并发、时延/堆/GC/生产容量。",
+      "impact": "不可将局部测试通过外推完整制程、生产运行或容量认证。",
+      "mitigation": "后续按真实风险入口补相应独立集成/规模证据。"
+    },
+    {
+      "id": "RES-BOUNDARY-UI-SCOPE",
+      "description": "仅修并认证头部；宽画布/侧栏窄屏裁剪仍在，未认证完整移动端/a11y/物理设备。旧宿主泛称反馈与普通字段非拖动入口候选保持。",
+      "impact": "本批不能宣称整页响应式或全部设计器体验完成。",
+      "mitigation": "保持原候选和范围声明，无授权不扩大交互或重设计。"
+    },
+    {
+      "id": "RES-BOUNDARY-GLOBAL-CHECKS",
+      "description": "官方strict19、原样日志全区间空白非绿；ESLint既有缺配置本批未运行且未修复。",
+      "impact": "17必需检查通过不等于全局所有工具绿。",
+      "mitigation": "保留原始输出及增量无新增证据，不为工具绿改业务或破坏原件。"
+    },
+    {
+      "id": "RES-BOUNDARY-OVERALL-AUDIT",
+      "description": "TaskDetail、生产弹窗设计、记录变更/作废依赖DHR high/A12、四知识gap与整体W2/W3/W4、W5–W7未完成保持。",
+      "impact": "当前三个问题已复验，不表示整体审计或所有本体/代码一致性通过。",
+      "mitigation": "继续按台账、最新提交及用户暂缓推进，不自动合并/部署/恢复历史。"
+    }
+  ],
+  "blockingConditions": [],
+  "cleanup": {
+    "removedOwnBaselineWorktree": "/tmp/edhr-boundary-qa-base-2tpeayjl",
+    "copiedTestRemovedAfterHashCheck": true,
+    "removedOwnNodeModulesSymlinkOnly": true,
+    "baselineRuntimeTrackedFilesCleanBeforeRemoval": true,
+    "removedOwnInventory": "/tmp/edhr-boundary-qa-inventory",
+    "saveHarnessTempDirectoriesAbsent": [
+      "/tmp/edhr-save-context-host-qx5a6h",
+      "/tmp/edhr-save-context-host-MB8lbo"
+    ],
+    "noLiveExternalDatabaseCreated": true,
+    "initialCleanupGuard": "Untracked own node_modules symlink was explicitly removed after resolving target, then worktree was clean; shared dependencies untouched.",
+    "qualification": "Browser/server processes returned through harness finally; read-only artifact folders kept. No broad temp deletion or changes to main tracked files."
+  },
+  "scopeReviewCommunication": "All roles FINAL; actual pre-PR user-facing review confirmed no feature/performance/large-refactor drift, three narrow fixes, limited overall progress and next candidate; no merge/deploy/history restoration."
+}

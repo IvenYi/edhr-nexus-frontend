@@ -1,0 +1,184 @@
+{
+  "cases": 6,
+  "passed": 6,
+  "results": [
+    {
+      "name": "main-normal",
+      "passed": true,
+      "writes": [
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates/3001/versions/4001/design",
+          "payload": {
+            "modelDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"main\",\"key\":\"modelDesignJson\"}",
+            "canvasDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"main\",\"key\":\"canvasDesignJson\"}",
+            "workflowDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"main\",\"key\":\"workflowDesignJson\"}"
+          }
+        }
+      ],
+      "reads": [
+        "/api/v1/master-data/template-modeling/form-templates/categories",
+        "/api/v1/master-data/template-modeling/form-templates",
+        "/api/v1/master-data/template-modeling/form-templates"
+      ],
+      "completion": {
+        "templateId": "3001",
+        "versionId": "4001",
+        "kind": "main",
+        "outcome": "success"
+      },
+      "blockedWhileOldPending": null,
+      "feedback": [
+        "设计已保存"
+      ],
+      "qualification": "Actual TemplateModelingPage/TanStack/API client and public template design entry; controlled child callbacks and intercepted HTTP. No real canvas validation, server persistence, full autosave/main ordering, mobile or accessibility certification. Late feedback is recorded, not defined as desired policy."
+    },
+    {
+      "name": "main-reopen-success",
+      "passed": true,
+      "writes": [
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates/3001/versions/4001/design",
+          "payload": {
+            "modelDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"main\",\"key\":\"modelDesignJson\"}",
+            "canvasDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"main\",\"key\":\"canvasDesignJson\"}",
+            "workflowDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"main\",\"key\":\"workflowDesignJson\"}"
+          }
+        }
+      ],
+      "reads": [
+        "/api/v1/master-data/template-modeling/form-templates/categories",
+        "/api/v1/master-data/template-modeling/form-templates",
+        "/api/v1/master-data/template-modeling/form-templates"
+      ],
+      "completion": {
+        "templateId": "3001",
+        "versionId": "4001",
+        "kind": "main",
+        "outcome": "success"
+      },
+      "blockedWhileOldPending": true,
+      "feedback": [
+        "设计已保存"
+      ],
+      "qualification": "Actual TemplateModelingPage/TanStack/API client and public template design entry; controlled child callbacks and intercepted HTTP. No real canvas validation, server persistence, full autosave/main ordering, mobile or accessibility certification. Late feedback is recorded, not defined as desired policy."
+    },
+    {
+      "name": "main-reopen-error",
+      "passed": true,
+      "writes": [
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates/3001/versions/4001/design",
+          "payload": {
+            "modelDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"main\",\"key\":\"modelDesignJson\"}",
+            "canvasDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"main\",\"key\":\"canvasDesignJson\"}",
+            "workflowDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"main\",\"key\":\"workflowDesignJson\"}"
+          }
+        }
+      ],
+      "reads": [
+        "/api/v1/master-data/template-modeling/form-templates/categories",
+        "/api/v1/master-data/template-modeling/form-templates"
+      ],
+      "completion": {
+        "templateId": "3001",
+        "versionId": "4001",
+        "kind": "main",
+        "outcome": "error"
+      },
+      "blockedWhileOldPending": true,
+      "feedback": [
+        "A会话保存失败"
+      ],
+      "qualification": "Actual TemplateModelingPage/TanStack/API client and public template design entry; controlled child callbacks and intercepted HTTP. No real canvas validation, server persistence, full autosave/main ordering, mobile or accessibility certification. Late feedback is recorded, not defined as desired policy."
+    },
+    {
+      "name": "field-normal",
+      "passed": true,
+      "writes": [
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates/3001/versions/4001/design",
+          "payload": {
+            "modelDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"field\",\"key\":\"modelDesignJson\"}",
+            "canvasDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"field\",\"key\":\"canvasDesignJson\"}",
+            "workflowDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"field\",\"key\":\"workflowDesignJson\"}"
+          }
+        }
+      ],
+      "reads": [
+        "/api/v1/master-data/template-modeling/form-templates/categories",
+        "/api/v1/master-data/template-modeling/form-templates",
+        "/api/v1/master-data/template-modeling/form-templates"
+      ],
+      "completion": {
+        "templateId": "3001",
+        "versionId": "4001",
+        "kind": "field",
+        "outcome": "success"
+      },
+      "blockedWhileOldPending": null,
+      "feedback": [
+        "字段已保存"
+      ],
+      "qualification": "Actual TemplateModelingPage/TanStack/API client and public template design entry; controlled child callbacks and intercepted HTTP. No real canvas validation, server persistence, full autosave/main ordering, mobile or accessibility certification. Late feedback is recorded, not defined as desired policy."
+    },
+    {
+      "name": "field-reopen-success",
+      "passed": true,
+      "writes": [
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates/3001/versions/4001/design",
+          "payload": {
+            "modelDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"field\",\"key\":\"modelDesignJson\"}",
+            "canvasDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"field\",\"key\":\"canvasDesignJson\"}",
+            "workflowDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"field\",\"key\":\"workflowDesignJson\"}"
+          }
+        }
+      ],
+      "reads": [
+        "/api/v1/master-data/template-modeling/form-templates/categories",
+        "/api/v1/master-data/template-modeling/form-templates",
+        "/api/v1/master-data/template-modeling/form-templates"
+      ],
+      "completion": {
+        "templateId": "3001",
+        "versionId": "4001",
+        "kind": "field",
+        "outcome": "success"
+      },
+      "blockedWhileOldPending": true,
+      "feedback": [
+        "字段已保存"
+      ],
+      "qualification": "Actual TemplateModelingPage/TanStack/API client and public template design entry; controlled child callbacks and intercepted HTTP. No real canvas validation, server persistence, full autosave/main ordering, mobile or accessibility certification. Late feedback is recorded, not defined as desired policy."
+    },
+    {
+      "name": "field-reopen-error",
+      "passed": true,
+      "writes": [
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates/3001/versions/4001/design",
+          "payload": {
+            "modelDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"field\",\"key\":\"modelDesignJson\"}",
+            "canvasDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"field\",\"key\":\"canvasDesignJson\"}",
+            "workflowDesignJson": "{\"templateId\":\"3001\",\"versionId\":\"4001\",\"kind\":\"field\",\"key\":\"workflowDesignJson\"}"
+          }
+        }
+      ],
+      "reads": [
+        "/api/v1/master-data/template-modeling/form-templates/categories",
+        "/api/v1/master-data/template-modeling/form-templates"
+      ],
+      "completion": {
+        "templateId": "3001",
+        "versionId": "4001",
+        "kind": "field",
+        "outcome": "error"
+      },
+      "blockedWhileOldPending": true,
+      "feedback": [
+        "A会话保存失败"
+      ],
+      "qualification": "Actual TemplateModelingPage/TanStack/API client and public template design entry; controlled child callbacks and intercepted HTTP. No real canvas validation, server persistence, full autosave/main ordering, mobile or accessibility certification. Late feedback is recorded, not defined as desired policy."
+    }
+  ]
+}

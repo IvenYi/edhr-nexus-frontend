@@ -1,6 +1,6 @@
 # 发现、根因和验收边界
 
-固定目标8784ba87166addae9cb9659d6120aa84f993c7ef。PR41合入并未授权三项性能优化；本批仅数据/交互健壮性修复。下述问题均为实现完成、等待最终独立验收，正式关闭以acceptance overlay为准。
+固定目标8784ba87166addae9cb9659d6120aa84f993c7ef。PR41合入并未授权三项性能优化；本批仅数据/交互健壮性修复。全新独立对干净5c233972正式passed/FINAL、17/17必需检查通过，下述三个问题均resolved，原始结论见quality-result，关闭及历史候选去重见acceptance overlay。受测后仅L0归档/说明，不改产品、测试或知识。
 
 ## AUD-W4-PAGE-ARITHMETIC-001 · medium
 
@@ -35,6 +35,8 @@
 本体8个既有ID有限一致、NA/FINAL，无需改知识；原来源合理性和工程选择见rule-review，8不称为历史新增unique。高风险数据读取修复需要全新独立QA；业务规则、知识0.3.25及成熟度、权限/签署、审计和生产/DHR冻结没有改变。
 
 ## 结构与性能
+
+新保留`CAND-W4-VERSION-COMPARATOR-ORDER-001`：独立实际反射调用当前及固定旧基线compareVersion("V2a3","V2b")=-1，反向也=-1。两版本结果相同，说明是既有控制流反对称性候选，非本批BigInteger修复引入。尚未通过正常API多版本保存及实际排序后果复现；下一小批优先核实，不能把本批8类验证概括为所有标签排序完整正确。完整Java探针、真实classpath命令及两个输出在独立原件中，不为关闭这个候选改写本轮测试或原始QA。
 
 原大控制器的具体拆分方案继续见[前批findings](../branch-review-20261028-master-data-reads/findings.md)：MaterialListQueryService负责组键页/页内完整版本及筛选编排，MaterialGroupAssembler只做纯组装/排序/状态；写侧多版本同步、审计及冻结不搬入此只读服务。未来实施必须保护分组、有效期、身份和分页顺序。本批只修5行算术表达式，不机械搬模块。
 
