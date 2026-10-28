@@ -105,3 +105,24 @@ test('source mappings and layout share one document history and survive serializ
   assert.deepEqual(reopened.model.projection.bindings, bindings);
   assert.equal(reopened.canvas.pages[0].cells['1:1'].value, '请求之后的布局修改');
 });
+
+test('removing workflow editing leaves persisted workflow payload intact during model and canvas saves', () => {
+  reset();
+  const workflow = {
+    nodes: [{ id: 'old-node', position: { x: 12, y: 34 }, data: { label: '旧配置', retained: true } }],
+    edges: [], config: { retainedSetting: { enabled: true, value: '旧流程载荷' } },
+  };
+  const oldDocument = { ...store.getState().document, workflow };
+  const persisted = serialize(oldDocument);
+  const reopened = parse({ id: 'qa-template', name: '保存一致性验收' }, { id: 'qa-version', version: 'V1.0', ...persisted });
+  store.getState().setDocument(reopened);
+  store.getState().addField('text', '其他字段');
+  store.getState().updateSheetCellValue(1, 1, '只修改表单');
+  const saved = serialize(store.getState().document);
+  assert.deepEqual(JSON.parse(saved.workflowDesignJson).payload, workflow);
+  store.getState().undoCanvasChange();
+  assert.deepEqual(store.getState().document.workflow, workflow);
+  store.getState().redoCanvasChange();
+  assert.deepEqual(store.getState().document.workflow, workflow);
+  assert.deepEqual(parse({ id: 'qa-template', name: '保存一致性验收' }, { id: 'qa-version', version: 'V1.0', ...saved }).workflow, workflow);
+});
