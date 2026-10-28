@@ -1,0 +1,194 @@
+{
+  "baseCommit": "72fad6488a66561a698c11c5bcfd411fad13c8ca",
+  "state": "author runs over uncommitted product fix; clean independent candidate follows",
+  "checks": [
+    {
+      "command": "node --test scripts/test-designer-save-state.mjs scripts/test-designer-choice-options.mjs scripts/test-designer-subfield-sync.mjs scripts/test-cell-display-components.mjs scripts/test-designer-column-insertion.mjs",
+      "exitCode": 0,
+      "passed": 35,
+      "failures": 0,
+      "skipped": 0
+    },
+    {
+      "command": "CHROME_PATH=/usr/bin/chromium W2_CASE_FILTER=save W2_RESULT_PATH=/tmp/edhr-save-context-save.json node scripts/test-designer-save-browser.mjs",
+      "exitCode": 0,
+      "passedRuns": 9
+    },
+    {
+      "command": "CHROME_PATH=/usr/bin/chromium IMPORT_ARTIFACTS=/tmp/edhr-save-context-import node scripts/test-designer-import-browser.mjs",
+      "exitCode": 0,
+      "passed": 15,
+      "viewport": 1440
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/verify-template-designer-react.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test",
+      "exitCode": 0,
+      "passed": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "command": "python /tmp/edhr-save-context-audit-project.py gmp-platform/frontend/src --mode strict --no-write",
+      "exitCode": 2,
+      "findings": 19,
+      "baselineInherited": "same src tree of prior independent tested55461b8d and currentbase72fad648; no new normalized findings"
+    },
+    {
+      "command": "npm run lint",
+      "exitCode": 2,
+      "reason": "missing ESLint configuration"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/browser-baseline.json",
+      "originalPath": "/tmp/edhr-save-context-baseline-13/result.json",
+      "sha256": "ec4ea6a1123ac3ed23e6ce780fc78139b3015c369a0492512a25c5928407af2e"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/browser-desktop.json",
+      "originalPath": "/tmp/edhr-save-context-desktop-13/result.json",
+      "sha256": "4babe0f2008cf9e979af1e6e835dc9bfb55518db88c61602d833b8674db6df60"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/browser-narrow.json",
+      "originalPath": "/tmp/edhr-save-context-narrow-13/result.json",
+      "sha256": "f67f610f57cee8e399315264a07b8d23124bb48ac4388a0f147eb36b08f0cc35"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/prior-baseline-12.json",
+      "originalPath": "/tmp/edhr-save-context-baseline-final/result.json",
+      "sha256": "fe43babab2d66c1a1fbd2e02bdd1ed566dc7e99b719bada8fd07a2ef2cf3ff1c"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/prior-desktop-12.json",
+      "originalPath": "/tmp/edhr-save-context-desktop-final/result.json",
+      "sha256": "93a8d697af1d25072b6cd38b51c72aed5f5d3d69d205df72d138a1450dd108a8"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/prior-narrow-12.json",
+      "originalPath": "/tmp/edhr-save-context-narrow-final/result.json",
+      "sha256": "57f49f13eef1428c97941697116d7a05c030cdd17b6fe61a0e5e6d54ed3bf51f"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/browser-author-summary.json",
+      "originalPath": "/tmp/edhr-save-context-author-summary.json",
+      "sha256": "07de3053389b88e77e1e1dd87d86441af02f8f7e7d56099d3b19f260f1f8ccc6"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/initial-fixture-diagnostic.json",
+      "originalPath": "/tmp/edhr-save-context-initial-diagnostic.json",
+      "sha256": "b4db62076e726b0a101561b759de2b087eabd2ff372ae314c7cce23a5de1cf03"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/ontology-result.yaml",
+      "originalPath": "/tmp/edhr-save-context-ontology.yaml",
+      "sha256": "ffa766a8a46035712e6573cbf915519f1e03544ecf5668eaf1f75fb0f7b7641f"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/rule-review.json",
+      "originalPath": "/tmp/edhr-save-context-rule-review.json",
+      "sha256": "f75df713f5fa62481d38fdba30743c5cff2a04d4aa4ca647dde245249659046d"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/rule-review.md",
+      "originalPath": "/tmp/edhr-save-context-rule-review.md",
+      "sha256": "f4b71ca8ed517dc15130c83e83b99f1035e618a2a3787306d6426be25f3a2049"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/ontology-validation.json",
+      "originalPath": "/tmp/edhr-save-context-ontology-validation.json",
+      "sha256": "0238c594f7b332de6c678c59a8f51b881095a6bf72928ebb9f101093025851df"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/node.txt",
+      "originalPath": "/tmp/edhr-save-context-node.log",
+      "sha256": "1da10d467b1b6b87b3e792a923569404b6bbfe20da084a931064525455cc7d1e"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/save-browser.json",
+      "originalPath": "/tmp/edhr-save-context-save.json",
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/import-regression.json",
+      "originalPath": "/tmp/edhr-save-context-import/result.json",
+      "sha256": "516d1c0956dc9676047088f73471cb0633f0f53848d39dfb2c5791973daec867"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/static-current.json",
+      "originalPath": "/tmp/edhr-save-context-static.json",
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/static-comparison.json",
+      "originalPath": "/tmp/edhr-save-context-static-comparison.json",
+      "sha256": "3872acd799475753f16f4ee6fdf47090ae22032e7e7c5e74d24782f832255f54"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/lint.txt",
+      "originalPath": "/tmp/edhr-save-context-lint.log",
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/verifier.txt",
+      "originalPath": "/tmp/edhr-save-context-verifier.log",
+      "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/desktop-latest-edit.png",
+      "originalPath": "/tmp/edhr-save-context-desktop-13/same-context-latest-edit.png",
+      "sha256": "0e10ee1f0abb40b63555a7a0dc3f00cbbaa58f51f20e0604022791532b4e4505"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-save-context/evidence/narrow-reopen.png",
+      "originalPath": "/tmp/edhr-save-context-narrow-13/late-ack-after-reopen.png",
+      "sha256": "e416a6b6e1913417a54f674e371481c4022d098b7beddbbc8c70f220784d37d1"
+    }
+  ],
+  "rawLogs": [
+    {
+      "path": "/tmp/edhr-save-context-build.log",
+      "sha256": "cd39b5d0e568ec84fd805d48eec5edb62f8393ea520d3e8e704c0baea6c6e904",
+      "bytes": 9780
+    },
+    {
+      "path": "/tmp/edhr-save-context-knowledge.log",
+      "sha256": "f6d61505ebbd2b0c6d9f7304681e66f67d99439b9c3cc1224ab95b2e4ae494e3",
+      "bytes": 2112
+    },
+    {
+      "path": "/tmp/edhr-save-context-save.log",
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab",
+      "bytes": 1868
+    },
+    {
+      "path": "/tmp/edhr-save-context-import.log",
+      "sha256": "35025278fa7a726f609ec992044ac7584a4966f6d43409f761bf6bf74acfb9ee",
+      "bytes": 1270
+    }
+  ],
+  "browserUniqueCases": 13,
+  "browserViewports": [
+    1440,
+    390
+  ],
+  "oldRed": 7,
+  "oldPositiveControls": 6,
+  "notRun": [
+    "actual TemplateModelingPage mutation HTTP target/toasts",
+    "backend persistence",
+    "complete autoSave/main concurrency",
+    "capacity/heap measurements",
+    "full responsive/a11y certification"
+  ]
+}

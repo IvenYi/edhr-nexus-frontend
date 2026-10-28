@@ -1,0 +1,91 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-DESIGNER-SAVE-CONTEXT-20261028
+  scope: 整体审计W2保存目录预检和完成回调的编辑会话归属
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 72fad6488a66561a698c11c5bcfd411fad13c8ca
+    targetBranch: edhr-dev
+    targetCommit: 72fad6488a66561a698c11c5bcfd411fad13c8ca
+    contractReadCommit: 72fad6488a66561a698c11c5bcfd411fad13c8ca
+    uncommittedContractPaths: []
+  summary: 旧保存预检不能延续为新编辑会话的保存，旧完成不改新会话本地状态；正常保存和校验规则保持。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.save-intent-editor-context
+      statement: 保存意图和本地完成状态属于发起它的编辑会话，跨上下文不能继续或清理新会话状态。
+      rationale: 目录refetch与persist异步跨越宿主加载/关闭；这是技术隔离，不是新增保存政策。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: designer-save
+        change: Shell用会话对象和同步busy隔离目录返回/保存完成/finally，实际关闭和卸载失效。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx]
+    transitiveImpacts:
+      - area: saved-baseline-and-controls
+        change: common persist只在原会话确认savedSnapshot，旧finally不解锁新保存；同会话期间编辑和提交后dirty仍按原规则。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts]
+    potentialImpacts:
+      - area: parent-mutation
+        concern: 真实父页TanStack mutationFn使用reactDesignerState目标，不能只凭Shell旧闭包推断实际URL必然A/B错配；已发送请求及父页toast不由此回滚或抑制。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx]
+    unaffectedAreas:
+      - area: business-validation
+        change: 保留最新目录、引用/追溯校验、正常payload及提交后脏值规则，不跳过校验或改变发布权限。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/projectionConfiguration.ts]
+    compatibilityAndMigration:
+      - area: data-format
+        change: 无后端/schema/迁移/保存结构变化或存量恢复。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: production
+        change: 已保存版本及生产冻结历史不改。
+        evidenceReferences: []
+    auditImpacts:
+      - area: local-save-acknowledgement
+        change: 只限制旧会话本地确认/清理，不重写后台审计或已提交事务。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: authorization
+        change: 权限、签署、保存/发布资格保持。
+        evidenceReferences: []
+    testImpacts:
+      - scope: real-shell-catalog-and-save
+        scenarios: [目录等待跨版本, 关闭重开, 旧请求不解锁新保存, 同会话最新编辑, 失败重试, 非法配置, 发送后新编辑, 取消关闭, 正常保存, 重复触发]
+        evidenceReferences: [gmp-platform/frontend/scripts/test-designer-save-context-browser.mjs]
+    evidenceGaps:
+      - 宿主props/open及保存回调受控，不代表真实父页HTTP目标或后台持久化E2E；其他autoSave/main并发和父页旧toast须另审。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 保存操作的编辑会话所有权在现有Shell，复用原store和校验，不引入通用任务框架。
+    ownershipBoundaries:
+      - owner: TemplateDesignerReactShell
+        responsibility: 会话、保存忙态与旧异步结果隔离。
+      - owner: TemplateModelingPage
+        responsibility: 原API目标与mutation反馈，当前只读核对。
+      - owner: useTemplateDesignerStore
+        responsibility: 原document历史与已保存快照，保持不变。
+  affectedFiles:
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx
+      changeType: update
+      reason: 保存预检、确认及finally归属保护。
+    - path: gmp-platform/frontend/scripts/test-designer-save-context-browser.mjs
+      changeType: create
+      reason: 实际HTTP目录时序与编辑会话红绿回归。
+  acceptanceScenarios:
+    - id: scenario.preflight-context-isolation
+      given: 保存仍在等待用途目录
+      when: 版本或编辑会话变化
+      then: 原保存不继续发出持久化调用，也不弹旧错误或改变新会话状态；正常新保存仍可执行。
+      evidenceRequirements: [同组旧红新绿, 实际目录HTTP, 完整状态/请求次数]
+    - id: scenario.save-completion-boundary
+      given: 保存已发出
+      when: 当前会话继续编辑或换到新会话
+      then: 原会话正确确认已提交快照并保留新编辑dirty；新会话不受旧本地确认/finally影响，不声称撤销服务器请求。
+      evidenceRequirements: [dirty及savedSnapshot, 失败重试/undo对照, 无越权清理]

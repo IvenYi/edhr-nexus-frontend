@@ -1,0 +1,10 @@
+{
+  "kind": "harness-retry-interaction",
+  "initialBaselineLog": "/tmp/edhr-save-context-baseline.log",
+  "initialDesktopLog": "/tmp/edhr-save-context-desktop.log",
+  "observed": "waitForRequest promise rejected before awaited when retry click waited behind shared toast; no completed all-case product result. Add immediate rejection handling and dismiss the already-asserted shared alert before retry, preserving all assertions.",
+  "removedVerifiedOwnFixtureDirectories": [
+    "/tmp/edhr-save-context-host-1KD7wn",
+    "/tmp/edhr-save-context-host-2ABvBr"
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "role": "test implementation helper, not independent final QA",
+  "status": "FINAL",
+  "baseCommit": "72fad6488a66561a698c11c5bcfd411fad13c8ca",
+  "testFilesAdded": [
+    "gmp-platform/frontend/scripts/test-designer-save-context-browser.mjs"
+  ],
+  "productFilesEdited": [],
+  "sourceHashes": {
+    "gmp-platform/frontend/scripts/test-designer-save-context-browser.mjs": "c2ceec108ce128c2b1dd01847c3cb1d0a04c624796de58d4a36b10cb3af6a5c4",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx": "ab4750d0e4509f440aea69bb57da8a44529bd27077b118d6d036f1f81de2a650"
+  },
+  "runs": [
+    {
+      "label": "baseline",
+      "path": "/tmp/edhr-save-context-baseline-13/result.json",
+      "sha256": "ec4ea6a1123ac3ed23e6ce780fc78139b3015c369a0492512a25c5928407af2e",
+      "width": 1440,
+      "passed": 6,
+      "failed": 7,
+      "fixtureBlocked": 0
+    },
+    {
+      "label": "candidateDesktop",
+      "path": "/tmp/edhr-save-context-desktop-13/result.json",
+      "sha256": "4babe0f2008cf9e979af1e6e835dc9bfb55518db88c61602d833b8674db6df60",
+      "width": 1440,
+      "passed": 13,
+      "failed": 0,
+      "fixtureBlocked": 0
+    },
+    {
+      "label": "candidateNarrow",
+      "path": "/tmp/edhr-save-context-narrow-13/result.json",
+      "sha256": "f67f610f57cee8e399315264a07b8d23124bb48ac4388a0f147eb36b08f0cc35",
+      "width": 390,
+      "passed": 13,
+      "failed": 0,
+      "fixtureBlocked": 0
+    },
+    {
+      "label": "priorBaseline12",
+      "path": "/tmp/edhr-save-context-baseline-final/result.json",
+      "sha256": "fe43babab2d66c1a1fbd2e02bdd1ed566dc7e99b719bada8fd07a2ef2cf3ff1c",
+      "width": 1440,
+      "passed": 6,
+      "failed": 6,
+      "fixtureBlocked": 0
+    },
+    {
+      "label": "priorDesktop12",
+      "path": "/tmp/edhr-save-context-desktop-final/result.json",
+      "sha256": "93a8d697af1d25072b6cd38b51c72aed5f5d3d69d205df72d138a1450dd108a8",
+      "width": 1440,
+      "passed": 12,
+      "failed": 0,
+      "fixtureBlocked": 0
+    },
+    {
+      "label": "priorNarrow12",
+      "path": "/tmp/edhr-save-context-narrow-final/result.json",
+      "sha256": "57f49f13eef1428c97941697116d7a05c030cdd17b6fe61a0e5e6d54ed3bf51f",
+      "width": 390,
+      "passed": 12,
+      "failed": 0,
+      "fixtureBlocked": 0
+    }
+  ],
+  "commands": [
+    "CHROME_PATH=/usr/bin/chromium SAVE_CONTEXT_BASELINE_COMMIT=72fad6488a66561a698c11c5bcfd411fad13c8ca SAVE_CONTEXT_ARTIFACTS=/tmp/edhr-save-context-baseline-13 node scripts/test-designer-save-context-browser.mjs",
+    "CHROME_PATH=/usr/bin/chromium SAVE_CONTEXT_ARTIFACTS=/tmp/edhr-save-context-desktop-13 node scripts/test-designer-save-context-browser.mjs",
+    "CHROME_PATH=/usr/bin/chromium SAVE_CONTEXT_WIDTH=390 SAVE_CONTEXT_ARTIFACTS=/tmp/edhr-save-context-narrow-13 node scripts/test-designer-save-context-browser.mjs",
+    "node --check gmp-platform/frontend/scripts/test-designer-save-context-browser.mjs"
+  ],
+  "screenshotsViewed": [
+    "/tmp/edhr-save-context-desktop-13/same-context-latest-edit.png",
+    "/tmp/edhr-save-context-narrow-13/late-ack-after-reopen.png",
+    "/tmp/edhr-save-context-narrow-13/catalog-failure-retry.png"
+  ],
+  "initialDiagnostic": "/tmp/edhr-save-context-initial-diagnostic.json",
+  "cleanup": [
+    {
+      "path": "/tmp/edhr-save-context-host-B7R2Wj",
+      "existsAfterRun": false
+    },
+    {
+      "path": "/tmp/edhr-save-context-host-2NHiDO",
+      "existsAfterRun": false
+    },
+    {
+      "path": "/tmp/edhr-save-context-host-n5Z6qy",
+      "existsAfterRun": false
+    },
+    {
+      "path": "/tmp/edhr-save-context-host-FqEzzZ",
+      "existsAfterRun": false
+    }
+  ],
+  "limits": [
+    "Author runs used uncommitted product fix at recorded base HEAD; formal fresh independent QA must test frozen candidate.",
+    "13 unique cases at two widths are not26 independent scenarios; prior12 runs and reruns are not summed.",
+    "Real Shell/CanvasTab/store/useProjectionCatalog and actual HTTP GET interception; transparent finally observer only marks original handleSave completion without substituting results.",
+    "Host props/open and save callback promises controlled; callback target/payload observations do not prove actual TemplateModelingPage mutation URL selection or parent toast behavior.",
+    "Host saving=false isolates Shell checking/context state. Production parent mutation.isPending may independently keep save disabled while an older backend request is pending; the new-context-available case does not certify production parent parallel availability.",
+    "Same-event double activation uses native HTMLElement.click twice in one JS evaluation; not physical human double-click certification. Other save/close/F2/undo/redo actions use real product controls.",
+    "No backend persistence/reversal/abort certification. Already-sent save callback completes normally; test only ensures stale completion cannot acknowledge/release a new local context.",
+    "390 keeps existing header/canvas/sidebar clipping and horizontal overflow; screenshots do not certify complete responsive design.",
+    "Initial baseline/desktop harness runs crashed during request-listener rejection before full results; preserved diagnosis is not product-red evidence. Added immediate promise rejection handling and dismissed already-asserted shared alert before legitimate retry, preserving assertions."
+  ]
+}

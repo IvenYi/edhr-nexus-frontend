@@ -1,0 +1,39 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 72fad6488a66561a698c11c5bcfd411fad13c8ca
+    targetBranch: edhr-dev
+    targetCommit: 72fad6488a66561a698c11c5bcfd411fad13c8ca
+    contractReadCommit: 72fad6488a66561a698c11c5bcfd411fad13c8ca
+    uncommittedContractPaths: []
+  reason: 本批只限定保存预检、完成确认与finally属于发起的编辑会话；没有修改字段身份、共享选项、统一document历史、目录/追溯/reference校验、权限、保存结构、发布或使用时快照。已按原始来源有限重审既有7个知识ID，6项列明范围一致、1项客户试用gap保留，新增唯一语义ID为0。会话token及busy是技术状态，不建立新业务决策/事实/运行契约。已发送请求不假取消，真实父页HTTP目标和父页旧toast不在此源码结论内。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.save-context-contract-and-references
+    checkType: reference
+    command: python /tmp/edhr-save-context-ontology-report.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-save-context-ontology-validation.json
+    - 当前决策包、基线、7个知识ID及路径引用的本地结构核对，不是全库运行或schema CI认证。
+  - id: validation.save-context-semantic-boundary
+    checkType: evidence-path
+    command: 只读当前声明/原始确认、Shell差异、store保存快照与父页mutation源码
+    outcome: passed
+    evidence:
+    - /tmp/edhr-save-context-rule-review.json
+    - /tmp/edhr-save-context-rule-review.md
+    - 6项有限一致/1gap及新增unique语义ID0分列；无业务政策替代。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3
