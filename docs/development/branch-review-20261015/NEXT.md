@@ -2,6 +2,8 @@
 
 ## PR41已合入：W4数字边界与新增设计器提交增量
 
+已交付[PR42](https://github.com/IvenYi/edhr-nexus-frontend/pull/42)，分支`audit/edhr-dev-master-data-boundaries-20261028`，目标`edhr-dev`，待人工merge。实际独立受测5c233972后仅L0原件/验收/范围/PR登记，产品/测试/知识保持。下次继续先fetch真实合入及新增提交，优先混合版本标签比较器正常API/实际排序后果复现，再推进其他未审关联读取；三性能仍先讨论，原暂缓与整体未完成保持，不自动merge/deploy/恢复。
+
 全新独立对干净`5c233972`正式passed/FINAL，17/17必需检查，页算术medium/版本数字范围high/头部窄屏medium均resolved；[acceptance](../branch-review-20261028-master-data-boundaries/acceptance.json)承接PR41两个CAND而不重复算新缺陷。独立36旧12红24正→36绿、72回归/36Node/头部4宽旧1红3正→4绿/双宽同13保存/导入15/宿主6/知识89/verifier/build及四清单/35主侧hash闭环。全部角色FINAL后已实际完成PR前无漂移/整体进度沟通；受测后仅L0原件/验收/范围/交付。strict19与原样日志空白非绿，42非原件路径通过，原件不清洗。下文待QA为历史检查点。
 
 独立新增`CAND-W4-VERSION-COMPARATOR-ORDER-001`：当前/旧基线混合标签compareVersion反射结果同样违反反对称性，尚无正常API排序后果复现；不叫本轮已修或所有标签排序已审完。下一轮先fetch，优先该候选合法路径，再继续其他W3/W4未审关联入口；三性能仍待讨论、原暂缓与W5–W7保持。

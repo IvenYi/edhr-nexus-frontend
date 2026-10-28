@@ -405,5 +405,13 @@
     "initialCleanupGuard": "Untracked own node_modules symlink was explicitly removed after resolving target, then worktree was clean; shared dependencies untouched.",
     "qualification": "Browser/server processes returned through harness finally; read-only artifact folders kept. No broad temp deletion or changes to main tracked files."
   },
-  "scopeReviewCommunication": "All roles FINAL; actual pre-PR user-facing review confirmed no feature/performance/large-refactor drift, three narrow fixes, limited overall progress and next candidate; no merge/deploy/history restoration."
+  "scopeReviewCommunication": "All roles FINAL; actual pre-PR user-facing review confirmed no feature/performance/large-refactor drift, three narrow fixes, limited overall progress and next candidate; no merge/deploy/history restoration.",
+  "pullRequest": {
+    "number": 42,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/42",
+    "sourceBranch": "audit/edhr-dev-master-data-boundaries-20261028",
+    "targetBranch": "edhr-dev",
+    "createdAtHead": "6651e6a40eb063c16b8e3da837a19a9cffeaecad",
+    "merge": "manual-only"
+  }
 }
