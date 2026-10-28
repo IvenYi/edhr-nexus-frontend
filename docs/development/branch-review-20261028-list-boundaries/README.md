@@ -4,6 +4,8 @@
 
 ## 正式验收
 
+已交付[PR37](https://github.com/IvenYi/edhr-nexus-frontend/pull/37)，目标`edhr-dev`，待用户人工合并。创建PR不等于已合入，下轮先fetch真实状态和新增提交再按scope-review继续；不自动merge/deploy。
+
 全新独立实例对干净候选`8efb21f74dcc07050ccfbc3f516747ff2accab90`正式**passed/FINAL，16/16必需检查通过**。两项medium按[acceptance](acceptance.json) resolved，无本批blocked；[质量原件](evidence/quality-result.yaml)和[独立说明](evidence/quality-review.md)按原字节归档。之后仅L0证据/验收/范围/PR登记，不把文档提交SHA冒充重新受测。
 
 全部角色已FINAL，创建PR前已向用户报告[任务漂移与整体进度复核](scope-review.md)，本批无漂移、整体未完成。独立实际重现主侧同组测试、基线5红6正及清单/源码/本体/证据摘要；三项原有全局失败均单列未通过及残余，未隐藏为绿。下方“待独立”段落保留冻版时点事实，当前状态以本节正式结果为准。
