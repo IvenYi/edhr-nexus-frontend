@@ -1,0 +1,17 @@
+✔ legacy saved menus normalize to independent reports including DHR trace without duplicating pages or losing custom reports (1.201875ms)
+✔ all six pages and the legacy URL remain within the report permission boundary (0.08425ms)
+✔ source location uses stable identity after reordering, not a matching value or stale index (1.303958ms)
+✔ missing or duplicate identities never highlight a guessed row; main groups highlight only their own sources (0.108958ms)
+✔ default navigation has one canonical records module with all menu groups (0.967084ms)
+✔ saved records modules retain custom entries and all canonical groups exactly once (0.669875ms)
+✔ configuration containing only the obsolete records module uses the current default (0.098541ms)
+✔ change pages retain distinct menu permission codes (0.091875ms)
+✔ every record-change navigation target has an application route (2.414208ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 387.900291

@@ -1,0 +1,387 @@
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+23:37:29.545 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest]: RecordControlPostgresIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+23:37:29.591 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.zencas.edhr.EdhrApplication for test class com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.0)
+
+2026-10-28T23:37:29.706+08:00  INFO 14325 --- [edhr] [           main] r.s.RecordControlPostgresIntegrationTest : Starting RecordControlPostgresIntegrationTest using Java 21.0.11 with PID 14325 (started by ivenwang in /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend)
+2026-10-28T23:37:29.706+08:00 DEBUG 14325 --- [edhr] [           main] r.s.RecordControlPostgresIntegrationTest : Running with Spring Boot v3.3.0, Spring v6.1.8
+2026-10-28T23:37:29.706+08:00  INFO 14325 --- [edhr] [           main] r.s.RecordControlPostgresIntegrationTest : The following 1 profile is active: "dev"
+2026-10-28T23:37:30.098+08:00  INFO 14325 --- [edhr] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-28T23:37:30.169+08:00  INFO 14325 --- [edhr] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 68 ms. Found 82 JPA repository interfaces.
+2026-10-28T23:37:30.451+08:00  INFO 14325 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-28T23:37:30.490+08:00  INFO 14325 --- [edhr] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1d2046bb
+2026-10-28T23:37:30.491+08:00  INFO 14325 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-28T23:37:30.536+08:00  INFO 14325 --- [edhr] [           main] liquibase.database                       : Set default schema name to public
+2026-10-28T23:37:30.652+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-10-28T23:37:30.670+08:00  INFO 14325 --- [edhr] [           main] liquibase.ui                             : Database is up to date, no changesets to execute
+2026-10-28T23:37:30.671+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-10-28T23:37:30.674+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : UPDATE SUMMARY
+2026-10-28T23:37:30.674+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Run:                          0
+2026-10-28T23:37:30.674+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Previously run:               7
+2026-10-28T23:37:30.674+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Filtered out:                 0
+2026-10-28T23:37:30.674+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : -------------------------------
+2026-10-28T23:37:30.674+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Total change sets:            7
+2026-10-28T23:37:30.674+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Update summary generated
+2026-10-28T23:37:30.680+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully released change log lock
+2026-10-28T23:37:30.681+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Command execution complete
+2026-10-28T23:37:30.725+08:00  INFO 14325 --- [edhr] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-28T23:37:30.744+08:00  INFO 14325 --- [edhr] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-10-28T23:37:30.753+08:00  INFO 14325 --- [edhr] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-28T23:37:30.797+08:00  WARN 14325 --- [edhr] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-28T23:37:30.881+08:00  INFO 14325 --- [edhr] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-28T23:37:31.493+08:00  INFO 14325 --- [edhr] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-28T23:37:31.494+08:00  INFO 14325 --- [edhr] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-28T23:37:31.579+08:00  INFO 14325 --- [edhr] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-28T23:37:32.481+08:00  INFO 14325 --- [edhr] [           main] c.z.e.w.engine.StateMachineRegistry      : StateMachineRegistry: registered 8 state machines
+2026-10-28T23:37:32.772+08:00  INFO 14325 --- [edhr] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-10-28T23:37:32.904+08:00  INFO 14325 --- [edhr] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@17c523e2, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6796beb2, org.springframework.security.web.context.SecurityContextHolderFilter@70b25e9b, org.springframework.security.web.header.HeaderWriterFilter@aae2f9e, org.springframework.web.filter.CorsFilter@34e40e50, org.springframework.security.web.authentication.logout.LogoutFilter@7530068f, com.zencas.edhr.identity.security.JwtAuthenticationFilter@1c3b884, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@74ef129e, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5d60139c, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2c44dccf, org.springframework.security.web.session.SessionManagementFilter@4a46d7bd, org.springframework.security.web.access.ExceptionTranslationFilter@499b6ed, org.springframework.security.web.access.intercept.AuthorizationFilter@380d659d]
+2026-10-28T23:37:33.119+08:00  INFO 14325 --- [edhr] [           main] r.s.RecordControlPostgresIntegrationTest : Started RecordControlPostgresIntegrationTest in 3.493 seconds (process running for 3.839)
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (/Users/ivenwang/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-10-28T23:37:33.595+08:00  INFO 14325 --- [edhr] [           main] liquibase.database                       : Set default schema name to public
+2026-10-28T23:37:33.611+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Creating database history table with name: public.databasechangelog
+2026-10-28T23:37:33.616+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-10-28T23:37:33.626+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully acquired change log lock
+2026-10-28T23:37:33.627+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Using deploymentId: 3201853626
+2026-10-28T23:37:33.627+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+Running Changeset: db/changelog/baseline/0001-current-schema.sql::1.0-current-schema::edhr
+2026-10-28T23:37:33.814+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:37:33.817+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/baseline/0001-current-schema.sql::1.0-current-schema::edhr ran successfully in 185ms
+Running Changeset: db/changelog/baseline/0002-current-seed.sql::1.0-current-seed::edhr
+2026-10-28T23:37:33.877+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:37:33.877+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/baseline/0002-current-seed.sql::1.0-current-seed::edhr ran successfully in 56ms
+Running Changeset: db/changelog/0087-record-control.sql::0087-record-control-revisions::codex
+2026-10-28T23:37:33.881+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:37:33.881+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/0087-record-control.sql::0087-record-control-revisions::codex ran successfully in 3ms
+Running Changeset: db/changelog/0087-record-control.sql::0087-record-control-baseline::codex
+2026-10-28T23:37:33.882+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:37:33.883+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/0087-record-control.sql::0087-record-control-baseline::codex ran successfully in 2ms
+Running Changeset: db/changelog/0087-record-control.sql::0087-record-control-requests::codex
+2026-10-28T23:37:33.886+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:37:33.887+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/0087-record-control.sql::0087-record-control-requests::codex ran successfully in 4ms
+Running Changeset: db/changelog/0087-record-control.sql::0087-record-control-active-index::codex
+2026-10-28T23:37:33.888+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:37:33.888+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/0087-record-control.sql::0087-record-control-active-index::codex ran successfully in 1ms
+Running Changeset: db/changelog/0088-record-change-menu-permissions.sql::0088-record-change-menu-permissions::codex
+2026-10-28T23:37:33.890+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:37:33.890+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/0088-record-change-menu-permissions.sql::0088-record-change-menu-permissions::codex ran successfully in 1ms
+
+UPDATE SUMMARY
+Run:                          7
+Previously run:               0
+Filtered out:                 0
+-------------------------------
+Total change sets:            7
+
+2026-10-28T23:37:33.891+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : UPDATE SUMMARY
+2026-10-28T23:37:33.891+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Run:                          7
+2026-10-28T23:37:33.891+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Previously run:               0
+2026-10-28T23:37:33.891+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Filtered out:                 0
+2026-10-28T23:37:33.891+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : -------------------------------
+2026-10-28T23:37:33.891+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Total change sets:            7
+2026-10-28T23:37:33.891+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Update summary generated
+2026-10-28T23:37:33.892+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Update command completed successfully.
+Liquibase: Update has been successful. Rows affected: 273
+2026-10-28T23:37:33.893+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully released change log lock
+2026-10-28T23:37:33.893+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Command execution complete
+2026-10-28T23:37:33.898+08:00  INFO 14325 --- [edhr] [           main] liquibase.database                       : Set default schema name to public
+2026-10-28T23:37:33.909+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-10-28T23:37:33.913+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully acquired change log lock
+2026-10-28T23:37:33.914+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Using deploymentId: 3201853914
+2026-10-28T23:37:33.914+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+
+UPDATE SUMMARY
+Run:                          0
+Previously run:               7
+Filtered out:                 0
+-------------------------------
+Total change sets:            7
+
+2026-10-28T23:37:33.914+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : UPDATE SUMMARY
+2026-10-28T23:37:33.914+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Run:                          0
+2026-10-28T23:37:33.914+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Previously run:               7
+2026-10-28T23:37:33.914+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Filtered out:                 0
+2026-10-28T23:37:33.914+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : -------------------------------
+2026-10-28T23:37:33.914+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Total change sets:            7
+2026-10-28T23:37:33.914+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Update summary generated
+2026-10-28T23:37:33.915+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Update command completed successfully.
+Liquibase: Update has been successful. Rows affected: 0
+2026-10-28T23:37:33.915+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully released change log lock
+2026-10-28T23:37:33.915+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Command execution complete
+2026-10-28T23:37:33.961+08:00  INFO 14325 --- [edhr] [           main] liquibase.database                       : Set default schema name to public
+2026-10-28T23:37:33.966+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Creating database history table with name: public.databasechangelog
+2026-10-28T23:37:33.968+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-10-28T23:37:33.973+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully acquired change log lock
+2026-10-28T23:37:33.973+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Using deploymentId: 3201853973
+2026-10-28T23:37:33.973+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+Running Changeset: db/changelog/baseline/0001-current-schema.sql::1.0-current-schema::edhr
+2026-10-28T23:37:34.100+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:37:34.101+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/baseline/0001-current-schema.sql::1.0-current-schema::edhr ran successfully in 126ms
+
+UPDATE SUMMARY
+Run:                          1
+Previously run:               0
+Filtered out:                 0
+-------------------------------
+Total change sets:            1
+
+2026-10-28T23:37:34.104+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : UPDATE SUMMARY
+2026-10-28T23:37:34.104+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Run:                          1
+2026-10-28T23:37:34.104+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Previously run:               0
+2026-10-28T23:37:34.104+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Filtered out:                 0
+2026-10-28T23:37:34.104+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : -------------------------------
+2026-10-28T23:37:34.104+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Total change sets:            1
+2026-10-28T23:37:34.104+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Update summary generated
+2026-10-28T23:37:34.104+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Update command completed successfully.
+Liquibase: Update has been successful. Rows affected: 1
+2026-10-28T23:37:34.105+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully released change log lock
+2026-10-28T23:37:34.105+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Command execution complete
+2026-10-28T23:37:34.106+08:00  INFO 14325 --- [edhr] [           main] liquibase.database                       : Set default schema name to public
+2026-10-28T23:37:34.111+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-10-28T23:37:34.114+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully acquired change log lock
+2026-10-28T23:37:34.114+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Using deploymentId: 3201854114
+2026-10-28T23:37:34.114+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+Running Changeset: db/changelog/baseline/0002-current-seed.sql::1.0-current-seed::edhr
+2026-10-28T23:37:34.154+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:37:34.155+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/baseline/0002-current-seed.sql::1.0-current-seed::edhr ran successfully in 39ms
+
+UPDATE SUMMARY
+Run:                          1
+Previously run:               0
+Filtered out:                 0
+-------------------------------
+Total change sets:            1
+
+2026-10-28T23:37:34.156+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : UPDATE SUMMARY
+2026-10-28T23:37:34.156+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Run:                          1
+2026-10-28T23:37:34.156+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Previously run:               0
+2026-10-28T23:37:34.156+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Filtered out:                 0
+2026-10-28T23:37:34.156+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : -------------------------------
+2026-10-28T23:37:34.156+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Total change sets:            1
+2026-10-28T23:37:34.156+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Update summary generated
+2026-10-28T23:37:34.156+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Update command completed successfully.
+Liquibase: Update has been successful. Rows affected: 259
+2026-10-28T23:37:34.156+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully released change log lock
+2026-10-28T23:37:34.156+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Command execution complete
+2026-10-28T23:37:34.161+08:00  INFO 14325 --- [edhr] [           main] liquibase.database                       : Set default schema name to public
+2026-10-28T23:37:34.173+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-10-28T23:37:34.176+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully acquired change log lock
+2026-10-28T23:37:34.176+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Using deploymentId: 3201854176
+2026-10-28T23:37:34.177+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+Running Changeset: db/changelog/0087-record-control.sql::0087-record-control-revisions::codex
+2026-10-28T23:37:34.179+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:37:34.180+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/0087-record-control.sql::0087-record-control-revisions::codex ran successfully in 3ms
+Running Changeset: db/changelog/0087-record-control.sql::0087-record-control-baseline::codex
+2026-10-28T23:37:34.182+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:37:34.182+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/0087-record-control.sql::0087-record-control-baseline::codex ran successfully in 2ms
+Running Changeset: db/changelog/0087-record-control.sql::0087-record-control-requests::codex
+2026-10-28T23:37:34.185+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:37:34.185+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/0087-record-control.sql::0087-record-control-requests::codex ran successfully in 3ms
+Running Changeset: db/changelog/0087-record-control.sql::0087-record-control-active-index::codex
+2026-10-28T23:37:34.186+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:37:34.186+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/0087-record-control.sql::0087-record-control-active-index::codex ran successfully in 0ms
+Running Changeset: db/changelog/0088-record-change-menu-permissions.sql::0088-record-change-menu-permissions::codex
+2026-10-28T23:37:34.188+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:37:34.188+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/0088-record-change-menu-permissions.sql::0088-record-change-menu-permissions::codex ran successfully in 1ms
+
+UPDATE SUMMARY
+Run:                          5
+Previously run:               2
+Filtered out:                 0
+-------------------------------
+Total change sets:            7
+
+2026-10-28T23:37:34.189+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : UPDATE SUMMARY
+2026-10-28T23:37:34.189+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Run:                          5
+2026-10-28T23:37:34.189+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Previously run:               2
+2026-10-28T23:37:34.189+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Filtered out:                 0
+2026-10-28T23:37:34.189+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : -------------------------------
+2026-10-28T23:37:34.189+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Total change sets:            7
+2026-10-28T23:37:34.189+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Update summary generated
+2026-10-28T23:37:34.189+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Update command completed successfully.
+Liquibase: Update has been successful. Rows affected: 15
+2026-10-28T23:37:34.189+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully released change log lock
+2026-10-28T23:37:34.190+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Command execution complete
+2026-10-28T23:37:34.191+08:00  INFO 14325 --- [edhr] [           main] liquibase.database                       : Set default schema name to public
+2026-10-28T23:37:34.199+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-10-28T23:37:34.202+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully acquired change log lock
+2026-10-28T23:37:34.203+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Using deploymentId: 3201854203
+2026-10-28T23:37:34.203+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+
+UPDATE SUMMARY
+Run:                          0
+Previously run:               7
+Filtered out:                 0
+-------------------------------
+Total change sets:            7
+
+2026-10-28T23:37:34.203+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : UPDATE SUMMARY
+2026-10-28T23:37:34.203+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Run:                          0
+2026-10-28T23:37:34.203+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Previously run:               7
+2026-10-28T23:37:34.203+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Filtered out:                 0
+2026-10-28T23:37:34.203+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : -------------------------------
+2026-10-28T23:37:34.203+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Total change sets:            7
+2026-10-28T23:37:34.203+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Update summary generated
+2026-10-28T23:37:34.204+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Update command completed successfully.
+Liquibase: Update has been successful. Rows affected: 0
+2026-10-28T23:37:34.204+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully released change log lock
+2026-10-28T23:37:34.204+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Command execution complete
+2026-10-28T23:37:34.248+08:00  INFO 14325 --- [edhr] [           main] liquibase.database                       : Set default schema name to public
+2026-10-28T23:37:34.255+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Creating database history table with name: public.databasechangelog
+2026-10-28T23:37:34.257+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-10-28T23:37:34.261+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully acquired change log lock
+2026-10-28T23:37:34.261+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Using deploymentId: 3201854261
+2026-10-28T23:37:34.261+08:00  INFO 14325 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+Running Changeset: db/changelog/baseline/0001-current-schema.sql::1.0-current-schema::edhr
+2026-10-28T23:37:34.265+08:00 ERROR 14325 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/baseline/0001-current-schema.sql::1.0-current-schema::edhr encountered an exception.
+
+liquibase.exception.MigrationFailedException: Migration failed for changeset db/changelog/baseline/0001-current-schema.sql::1.0-current-schema::edhr:
+     Reason: 
+          db/changelog/db.changelog-master.yaml : SQL Precondition failed.  Expected '0' got '1'
+
+	at liquibase.changelog.ChangeSet.execute(ChangeSet.java:692) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.changelog.visitor.UpdateVisitor.executeAcceptedChange(UpdateVisitor.java:119) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.changelog.visitor.UpdateVisitor.visit(UpdateVisitor.java:68) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.changelog.ChangeLogIterator$2.lambda$run$0(ChangeLogIterator.java:133) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.lambda$child$0(Scope.java:190) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.child(Scope.java:199) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.child(Scope.java:189) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.child(Scope.java:168) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.changelog.ChangeLogIterator$2.run(ChangeLogIterator.java:122) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.lambda$child$0(Scope.java:190) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.child(Scope.java:199) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.child(Scope.java:189) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.child(Scope.java:168) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.child(Scope.java:256) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.child(Scope.java:260) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.changelog.ChangeLogIterator.run(ChangeLogIterator.java:89) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.command.core.AbstractUpdateCommandStep.lambda$run$0(AbstractUpdateCommandStep.java:112) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.lambda$child$0(Scope.java:190) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.child(Scope.java:199) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.child(Scope.java:189) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.child(Scope.java:168) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.command.core.AbstractUpdateCommandStep.run(AbstractUpdateCommandStep.java:110) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.command.core.UpdateCommandStep.run(UpdateCommandStep.java:105) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.command.CommandScope.execute(CommandScope.java:219) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Liquibase.lambda$update$0(Liquibase.java:245) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.lambda$child$0(Scope.java:190) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.child(Scope.java:199) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.child(Scope.java:189) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Scope.child(Scope.java:168) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Liquibase.runInScope(Liquibase.java:1436) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Liquibase.update(Liquibase.java:234) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.Liquibase.update(Liquibase.java:212) ~[liquibase-core-4.27.0.jar:na]
+	at com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest.install(CurrentDatabaseBaselinePostgresTest.java:38) ~[test-classes/:na]
+	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63) ~[assertj-core-3.25.3.jar:na]
+	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:892) ~[assertj-core-3.25.3.jar:na]
+	at org.assertj.core.api.Assertions.catchThrowable(Assertions.java:1365) ~[assertj-core-3.25.3.jar:na]
+	at org.assertj.core.api.Assertions.assertThatThrownBy(Assertions.java:1209) ~[assertj-core-3.25.3.jar:na]
+	at com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest.existingBusinessSchemaIsRejectedWithoutCleaningOrGuessingData(CurrentDatabaseBaselinePostgresTest.java:95) ~[test-classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:728) ~[junit-platform-commons-1.10.2.jar:1.10.2]
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:218) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:214) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:139) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69) ~[junit-jupiter-engine-5.10.2.jar:5.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54) ~[junit-platform-engine-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47) ~[junit-platform-launcher-1.10.2.jar:1.10.2]
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122) ~[surefire-junit-platform-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385) ~[surefire-booter-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162) ~[surefire-booter-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507) ~[surefire-booter-3.2.5.jar:3.2.5]
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495) ~[surefire-booter-3.2.5.jar:3.2.5]
+Caused by: liquibase.exception.PreconditionFailedException: Preconditions Failed
+	at liquibase.precondition.core.AndPrecondition.check(AndPrecondition.java:47) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.precondition.core.PreconditionContainer.check(PreconditionContainer.java:213) ~[liquibase-core-4.27.0.jar:na]
+	at liquibase.changelog.ChangeSet.execute(ChangeSet.java:678) ~[liquibase-core-4.27.0.jar:na]
+	... 106 common frames omitted
+
+
+UPDATE SUMMARY
+Run:                          0
+Previously run:               0
+Filtered out:                 0
+-------------------------------
+Total change sets:            0
+
+2026-10-28T23:37:34.267+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : UPDATE SUMMARY
+2026-10-28T23:37:34.267+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Run:                          0
+2026-10-28T23:37:34.267+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Previously run:               0
+2026-10-28T23:37:34.267+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Filtered out:                 0
+2026-10-28T23:37:34.267+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : -------------------------------
+2026-10-28T23:37:34.267+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Total change sets:            0
+2026-10-28T23:37:34.267+08:00  INFO 14325 --- [edhr] [           main] liquibase.util                           : Update summary generated
+2026-10-28T23:37:34.267+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Update command encountered an exception.
+2026-10-28T23:37:34.267+08:00  INFO 14325 --- [edhr] [           main] liquibase.lockservice                    : Successfully released change log lock
+2026-10-28T23:37:34.268+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Logging exception.
+ERROR: Exception Details
+ERROR: Exception Primary Class:  PreconditionFailedException
+ERROR: Exception Primary Reason:  Preconditions Failed
+ERROR: Exception Primary Source:  PostgreSQL 16.14 (Homebrew)
+2026-10-28T23:37:34.268+08:00  INFO 14325 --- [edhr] [           main] liquibase.command                        : Command execution complete

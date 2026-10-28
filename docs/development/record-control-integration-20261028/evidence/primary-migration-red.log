@@ -1,0 +1,309 @@
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+23:28:05.013 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest]: RecordControlPostgresIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+23:28:05.068 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.zencas.edhr.EdhrApplication for test class com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.0)
+
+2026-10-28T23:28:05.218+08:00  INFO 12995 --- [edhr] [           main] r.s.RecordControlPostgresIntegrationTest : Starting RecordControlPostgresIntegrationTest using Java 21.0.11 with PID 12995 (started by ivenwang in /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend)
+2026-10-28T23:28:05.218+08:00 DEBUG 12995 --- [edhr] [           main] r.s.RecordControlPostgresIntegrationTest : Running with Spring Boot v3.3.0, Spring v6.1.8
+2026-10-28T23:28:05.218+08:00  INFO 12995 --- [edhr] [           main] r.s.RecordControlPostgresIntegrationTest : The following 1 profile is active: "dev"
+2026-10-28T23:28:05.712+08:00  INFO 12995 --- [edhr] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-28T23:28:05.794+08:00  INFO 12995 --- [edhr] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 78 ms. Found 82 JPA repository interfaces.
+2026-10-28T23:28:06.078+08:00  INFO 12995 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-28T23:28:06.129+08:00  INFO 12995 --- [edhr] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@16e907b6
+2026-10-28T23:28:06.129+08:00  INFO 12995 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-28T23:28:06.263+08:00  INFO 12995 --- [edhr] [           main] liquibase.database                       : Set default schema name to public
+2026-10-28T23:28:06.376+08:00  INFO 12995 --- [edhr] [           main] liquibase.changelog                      : Creating database history table with name: public.databasechangelog
+2026-10-28T23:28:06.391+08:00  INFO 12995 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-10-28T23:28:06.407+08:00  INFO 12995 --- [edhr] [           main] liquibase.lockservice                    : Successfully acquired change log lock
+2026-10-28T23:28:06.408+08:00  INFO 12995 --- [edhr] [           main] liquibase.command                        : Using deploymentId: 3201286408
+2026-10-28T23:28:06.408+08:00  INFO 12995 --- [edhr] [           main] liquibase.changelog                      : Reading from public.databasechangelog
+2026-10-28T23:28:06.420+08:00  INFO 12995 --- [edhr] [           main] liquibase.ui                             : Running Changeset: db/changelog/baseline/0001-current-schema.sql::1.0-current-schema::edhr
+2026-10-28T23:28:06.647+08:00  INFO 12995 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:28:06.649+08:00  INFO 12995 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/baseline/0001-current-schema.sql::1.0-current-schema::edhr ran successfully in 228ms
+2026-10-28T23:28:06.653+08:00  INFO 12995 --- [edhr] [           main] liquibase.ui                             : Running Changeset: db/changelog/baseline/0002-current-seed.sql::1.0-current-seed::edhr
+2026-10-28T23:28:06.719+08:00  INFO 12995 --- [edhr] [           main] liquibase.changelog                      : Custom SQL executed
+2026-10-28T23:28:06.719+08:00  INFO 12995 --- [edhr] [           main] liquibase.changelog                      : ChangeSet db/changelog/baseline/0002-current-seed.sql::1.0-current-seed::edhr ran successfully in 65ms
+2026-10-28T23:28:06.722+08:00  INFO 12995 --- [edhr] [           main] liquibase.util                           : UPDATE SUMMARY
+2026-10-28T23:28:06.722+08:00  INFO 12995 --- [edhr] [           main] liquibase.util                           : Run:                          2
+2026-10-28T23:28:06.722+08:00  INFO 12995 --- [edhr] [           main] liquibase.util                           : Previously run:               0
+2026-10-28T23:28:06.722+08:00  INFO 12995 --- [edhr] [           main] liquibase.util                           : Filtered out:                 0
+2026-10-28T23:28:06.722+08:00  INFO 12995 --- [edhr] [           main] liquibase.util                           : -------------------------------
+2026-10-28T23:28:06.722+08:00  INFO 12995 --- [edhr] [           main] liquibase.util                           : Total change sets:            2
+2026-10-28T23:28:06.723+08:00  INFO 12995 --- [edhr] [           main] liquibase.util                           : Update summary generated
+2026-10-28T23:28:06.723+08:00  INFO 12995 --- [edhr] [           main] liquibase.command                        : Update command completed successfully.
+2026-10-28T23:28:06.723+08:00  INFO 12995 --- [edhr] [           main] liquibase.ui                             : Liquibase: Update has been successful. Rows affected: 260
+2026-10-28T23:28:06.724+08:00  INFO 12995 --- [edhr] [           main] liquibase.lockservice                    : Successfully released change log lock
+2026-10-28T23:28:06.725+08:00  INFO 12995 --- [edhr] [           main] liquibase.command                        : Command execution complete
+2026-10-28T23:28:06.774+08:00  INFO 12995 --- [edhr] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-28T23:28:06.799+08:00  INFO 12995 --- [edhr] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-10-28T23:28:06.812+08:00  INFO 12995 --- [edhr] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-28T23:28:06.857+08:00  WARN 12995 --- [edhr] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-28T23:28:06.941+08:00  INFO 12995 --- [edhr] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-28T23:28:07.576+08:00  INFO 12995 --- [edhr] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-28T23:28:07.577+08:00  INFO 12995 --- [edhr] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-28T23:28:07.684+08:00  INFO 12995 --- [edhr] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-28T23:28:08.456+08:00  INFO 12995 --- [edhr] [           main] c.z.e.w.engine.StateMachineRegistry      : StateMachineRegistry: registered 8 state machines
+2026-10-28T23:28:08.742+08:00  INFO 12995 --- [edhr] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-10-28T23:28:08.890+08:00  INFO 12995 --- [edhr] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@654a3f0b, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5fe91184, org.springframework.security.web.context.SecurityContextHolderFilter@4f2fcbe0, org.springframework.security.web.header.HeaderWriterFilter@5db7413, org.springframework.web.filter.CorsFilter@30180e67, org.springframework.security.web.authentication.logout.LogoutFilter@5a91b737, com.zencas.edhr.identity.security.JwtAuthenticationFilter@32850adc, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6578cfe8, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2e38e9c2, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5cd1e346, org.springframework.security.web.session.SessionManagementFilter@1c87d155, org.springframework.security.web.access.ExceptionTranslationFilter@368648c, org.springframework.security.web.access.intercept.AuthorizationFilter@3a4aba84]
+2026-10-28T23:28:09.113+08:00  INFO 12995 --- [edhr] [           main] r.s.RecordControlPostgresIntegrationTest : Started RecordControlPostgresIntegrationTest in 3.998 seconds (process running for 4.331)
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (/Users/ivenwang/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+[ERROR] Tests run: 6, Failures: 0, Errors: 6, Skipped: 0, Time elapsed: 5.145 s <<< FAILURE! -- in com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest
+[ERROR] com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.returnedRequestLeavesSourceUnchangedAndAllowsANewApplication -- Time elapsed: 0.440 s <<< ERROR!
+org.springframework.jdbc.BadSqlGrammarException: StatementCallback; bad SQL grammar [SELECT current_revision_id FROM form_instance_record]
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:112)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1548)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:408)
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:476)
+	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:486)
+	at org.springframework.jdbc.core.JdbcTemplate.queryForObject(JdbcTemplate.java:519)
+	at org.springframework.jdbc.core.JdbcTemplate.queryForObject(JdbcTemplate.java:526)
+	at com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.scalar(RecordControlPostgresIntegrationTest.java:92)
+	at com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.command(RecordControlPostgresIntegrationTest.java:97)
+	at com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.returnedRequestLeavesSourceUnchangedAndAllowsANewApplication(RecordControlPostgresIntegrationTest.java:142)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: column "current_revision_id" does not exist
+  位置：8
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgStatement.executeWithFlags(PgStatement.java:341)
+	at org.postgresql.jdbc.PgStatement.executeCachedSql(PgStatement.java:326)
+	at org.postgresql.jdbc.PgStatement.executeWithFlags(PgStatement.java:302)
+	at org.postgresql.jdbc.PgStatement.executeQuery(PgStatement.java:251)
+	at com.zaxxer.hikari.pool.ProxyStatement.executeQuery(ProxyStatement.java:110)
+	at com.zaxxer.hikari.pool.HikariProxyStatement.executeQuery(HikariProxyStatement.java)
+	at org.springframework.jdbc.core.JdbcTemplate$1QueryStatementCallback.doInStatement(JdbcTemplate.java:463)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:393)
+	... 10 more
+
+[ERROR] com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.failedBusinessApplicationRollsBackFinalTaskSignatureAndRevision -- Time elapsed: 0.128 s <<< ERROR!
+org.springframework.dao.DuplicateKeyException: 
+PreparedStatementCallback; SQL [INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES (?,?,'START','开始','{}'),(?,?,'APPROVAL','审批',?::jsonb),(?,?,'END','结束','{}')]; ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1548)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:677)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:970)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1014)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1024)
+	at com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.fixture(RecordControlPostgresIntegrationTest.java:78)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:155)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at org.springframework.jdbc.core.JdbcTemplate.lambda$update$2(JdbcTemplate.java:975)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:658)
+	... 7 more
+
+[ERROR] com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.signedChangeAndDuplicateConfirmationApplyExactlyOneNewRevision -- Time elapsed: 0.102 s <<< ERROR!
+org.springframework.dao.DuplicateKeyException: 
+PreparedStatementCallback; SQL [INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES (?,?,'START','开始','{}'),(?,?,'APPROVAL','审批',?::jsonb),(?,?,'END','结束','{}')]; ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1548)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:677)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:970)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1014)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1024)
+	at com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.fixture(RecordControlPostgresIntegrationTest.java:78)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:155)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at org.springframework.jdbc.core.JdbcTemplate.lambda$update$2(JdbcTemplate.java:975)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:658)
+	... 7 more
+
+[ERROR] com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.approvedVoidPreservesValuesAndHistoricalRevision -- Time elapsed: 0.103 s <<< ERROR!
+org.springframework.dao.DuplicateKeyException: 
+PreparedStatementCallback; SQL [INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES (?,?,'START','开始','{}'),(?,?,'APPROVAL','审批',?::jsonb),(?,?,'END','结束','{}')]; ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1548)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:677)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:970)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1014)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1024)
+	at com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.fixture(RecordControlPostgresIntegrationTest.java:78)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:155)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at org.springframework.jdbc.core.JdbcTemplate.lambda$update$2(JdbcTemplate.java:975)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:658)
+	... 7 more
+
+[ERROR] com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.firstCompletionCreatesOneImmutableInitialRevision -- Time elapsed: 0.104 s <<< ERROR!
+org.springframework.dao.DuplicateKeyException: 
+PreparedStatementCallback; SQL [INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES (?,?,'START','开始','{}'),(?,?,'APPROVAL','审批',?::jsonb),(?,?,'END','结束','{}')]; ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1548)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:677)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:970)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1014)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1024)
+	at com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.fixture(RecordControlPostgresIntegrationTest.java:78)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:155)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at org.springframework.jdbc.core.JdbcTemplate.lambda$update$2(JdbcTemplate.java:975)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:658)
+	... 7 more
+
+[ERROR] com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.concurrentApplicationsCreateOneWorkflowAndOneActiveRequest -- Time elapsed: 0.096 s <<< ERROR!
+org.springframework.dao.DuplicateKeyException: 
+PreparedStatementCallback; SQL [INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES (?,?,'START','开始','{}'),(?,?,'APPROVAL','审批',?::jsonb),(?,?,'END','结束','{}')]; ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116)
+	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1548)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:677)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:970)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1014)
+	at org.springframework.jdbc.core.JdbcTemplate.update(JdbcTemplate.java:1024)
+	at com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.fixture(RecordControlPostgresIntegrationTest.java:78)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.postgresql.util.PSQLException: ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:155)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java)
+	at org.springframework.jdbc.core.JdbcTemplate.lambda$update$2(JdbcTemplate.java:975)
+	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:658)
+	... 7 more
+
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.024 s <<< FAILURE! -- in com.zencas.edhr.common.config.CurrentDatabaseBaselineTest
+[ERROR] com.zencas.edhr.common.config.CurrentDatabaseBaselineTest.productionResourcesContainOnlyCurrentSchemaAndRequiredSeed -- Time elapsed: 0.024 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting actual:
+  "databaseChangeLog:
+  - include:
+      file: db/changelog/baseline/0001-current-schema.sql
+  - include:
+      file: db/changelog/baseline/0002-current-seed.sql
+"
+to contain:
+  ["0087-record-control.sql", "0088-record-change-menu-permissions.sql"]
+but could not find:
+  ["0087-record-control.sql", "0088-record-change-menu-permissions.sql"]
+ 
+	at com.zencas.edhr.common.config.CurrentDatabaseBaselineTest.productionResourcesContainOnlyCurrentSchemaAndRequiredSeed(CurrentDatabaseBaselineTest.java:18)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] Failures: 
+[ERROR]   CurrentDatabaseBaselineTest.productionResourcesContainOnlyCurrentSchemaAndRequiredSeed:18 
+Expecting actual:
+  "databaseChangeLog:
+  - include:
+      file: db/changelog/baseline/0001-current-schema.sql
+  - include:
+      file: db/changelog/baseline/0002-current-seed.sql
+"
+to contain:
+  ["0087-record-control.sql", "0088-record-change-menu-permissions.sql"]
+but could not find:
+  ["0087-record-control.sql", "0088-record-change-menu-permissions.sql"]
+ 
+[ERROR] Errors: 
+[ERROR]   RecordControlPostgresIntegrationTest.fixture:78 » DuplicateKey PreparedStatementCallback; SQL [INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES (?,?,'START','开始','{}'),(?,?,'APPROVAL','审批',?::jsonb),(?,?,'END','结束','{}')]; ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+[ERROR]   RecordControlPostgresIntegrationTest.fixture:78 » DuplicateKey PreparedStatementCallback; SQL [INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES (?,?,'START','开始','{}'),(?,?,'APPROVAL','审批',?::jsonb),(?,?,'END','结束','{}')]; ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+[ERROR]   RecordControlPostgresIntegrationTest.fixture:78 » DuplicateKey PreparedStatementCallback; SQL [INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES (?,?,'START','开始','{}'),(?,?,'APPROVAL','审批',?::jsonb),(?,?,'END','结束','{}')]; ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+[ERROR]   RecordControlPostgresIntegrationTest.fixture:78 » DuplicateKey PreparedStatementCallback; SQL [INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES (?,?,'START','开始','{}'),(?,?,'APPROVAL','审批',?::jsonb),(?,?,'END','结束','{}')]; ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+[ERROR]   RecordControlPostgresIntegrationTest.returnedRequestLeavesSourceUnchangedAndAllowsANewApplication:142->command:97->scalar:92 » BadSqlGrammar StatementCallback; bad SQL grammar [SELECT current_revision_id FROM form_instance_record]
+[ERROR]   RecordControlPostgresIntegrationTest.fixture:78 » DuplicateKey PreparedStatementCallback; SQL [INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES (?,?,'START','开始','{}'),(?,?,'APPROVAL','审批',?::jsonb),(?,?,'END','结束','{}')]; ERROR: duplicate key value violates unique constraint "workflow_node_pkey"
+  详细：Key (id)=(203) already exists.
+[ERROR] Tests run: 7, Failures: 1, Errors: 6, Skipped: 0
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project edhr: There are test failures.
+[ERROR] 
+[ERROR] Please refer to /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/target/surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
