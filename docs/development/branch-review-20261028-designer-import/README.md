@@ -4,6 +4,8 @@
 
 ## 正式验收
 
+已交付[PR39](https://github.com/IvenYi/edhr-nexus-frontend/pull/39)，`audit/edhr-dev-designer-import-20261028` → `edhr-dev`，待用户人工合并。创建PR不等于合入；下轮先fetch真实状态及新增提交，再优先验证保存catalog-await跨版本线索。不自动merge/deploy。
+
 全新独立实例对干净`55461b8d3a11c757471ae891564c13a4393f9fd7`正式**passed/FINAL，14/14必需检查通过，本批无blocked**。两项发现已按[acceptance](acceptance.json) resolved；[qualityResult原件](evidence/quality-result.yaml)、[独立报告](evidence/quality-review.md)与[命令/原件索引](evidence/independent-evidence.json)按原字节归档。实际同组15场景双宽、旧10红5正、35 Node、保存9次、89知识、build/verifier及清单重建通过；主侧与独立重跑不累计覆盖数。
 
 本体、测试辅助及最终质量均FINAL后，已实际向用户完成PR前[范围和整体进度复核](scope-review.md)。无任务漂移、整体未完成；之后仅L0归档/验收/交付，产品/测试/知识及固定清单不变。下文“待独立”为冻结前事实，当前以本节为准。strict19、lint缺配置仍非绿灯；其他候选/性能/原暂缓均保留。

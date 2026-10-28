@@ -2,6 +2,8 @@
 
 ## PR38已合入：W2异步导入与XML结构
 
+已交付[PR39](https://github.com/IvenYi/edhr-nexus-frontend/pull/39)，分支`audit/edhr-dev-designer-import-20261028`，目标`edhr-dev`，待人工merge；实际受测55461b8d后仅L0原件/验收/范围/PR登记，产品/测试/知识保持。收到继续后先fetch真实合入与新提交；下一优先保存catalog-await跨版本runtime及相关宿主边界，继而W2剩余/W3/W4增量/W5–W7；原候选、性能讨论及用户暂缓不因本批关闭。
+
 本批干净`55461b8d`已获全新独立passed/FINAL，14/14必需检查，high/medium两项按[acceptance](../branch-review-20261028-designer-import/acceptance.json) resolved；主/独立各自双宽同15、旧10红5正、35 Node/保存9次/知识89/build/verifier及清单复现通过。全部角色FINAL后已实际向用户做PR前范围/整体进度复核，无漂移，整体未完成。当前仅L0验收归档/交付，下文“待QA”为冻结历史。下一步先fetch真实merge/新提交，再优先保存catalog-await跨版本的runtime复现及剩余入口；性能与原暂缓保持，不自动merge/deploy。
 
 已fetch核对`edhr-dev@189cb2c1`，PR38真实合并，整树同42c8467a，无其他业务/知识/契约增量。[本批](../branch-review-20261028-designer-import/README.md)沿导入/解析/失败恢复推进：旧异步结果跨页/版本/会话覆写high、畸形Word XML误当空白medium，两产品局部修复，不改业务政策/格式/版式/模型归属/保存与历史。主侧同15场景旧10红5正、双宽全过（首轮13/15原件保留）；35 Node、保存9次、知识89结构、build/verifier通过，本体7ID中6有限一致/1gap且NA/FINAL。4071路径仅盘点，9方法范围不是整文件审完；当前待全新独立QA，不能提前关闭。
