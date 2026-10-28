@@ -1,0 +1,22 @@
+✔ equipment type options load every page and preserve string IDs (3.376392ms)
+✔ type and individual equipment writes target distinct endpoints (1.090309ms)
+✔ failed option page fails the whole lookup instead of returning an incomplete selector (1.327489ms)
+✔ equipment descriptions populate both editors and default safely for older rows (1.269063ms)
+✔ purchase date accepts today past and empty but blocks future dates across month and year boundaries (0.62312ms)
+✔ existing personal layouts gain all four system fields without losing order hidden fields or widths (0.382695ms)
+✔ system dates follow the modeling page format and missing historical values remain empty markers (0.138694ms)
+✔ column preferences discard stale fields and invalid widths while keeping one data column visible (0.368583ms)
+✔ column preferences survive serialization with independent order visibility and widths (0.259423ms)
+✔ column sizing fills wide containers while preserving the fixed action column and horizontal overflow (0.340522ms)
+✔ legacy equipment types edit correctly when the server omits null category fields (0.130994ms)
+✔ individual equipment edits retain type and status while accepting omitted optional fields (0.089562ms)
+✔ equipment purchase fields edit losslessly and remain optional for legacy records (0.126787ms)
+✔ new brand and purchase date columns enter existing layouts at their default neighboring fields (0.226865ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 103.327605

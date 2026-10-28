@@ -1,0 +1,110 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-MASTER-DATA-READS-20261028
+  scope: 整体审计W4设备与物料关联读取，补W2真实保存宿主证据
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: bbd2ff88886ade456aac8d7d73f8af4f5c1575e2
+    targetBranch: edhr-dev
+    targetCommit: bbd2ff88886ade456aac8d7d73f8af4f5c1575e2
+    contractReadCommit: bbd2ff88886ade456aac8d7d73f8af4f5c1575e2
+    uncommittedContractPaths: []
+  summary: 核对当前规则及读取原件，以隔离数据库和浏览器观察查询放大、物料分组分页和实际保存HTTP目标；只纠正两处既有fact源码锚点，性能先讨论，本批不预授权优化。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.master-data-growth
+      statement: 单台设备、类型、物料版本及并发查询可能增长，应独立量化返回规模、实体加载和应用SQL往返。
+      rationale: 设备具体到单台；物料多版本累积。合成规模不是客户容量或SLA。
+      relatedIds: [DEC-0044-04, rule.product.source-from-material]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: audit-evidence
+        change: 新增可重放只读观测及审计台账；两处既有fact源码锚点纠错，没有产品修改。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java]
+    transitiveImpacts:
+      - area: association-display
+        change: 核对类型/分类名称、零类型分类、物料版本分组及产品派生范围，不用优化改变这些结果。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml, docs/knowledge/rules/product-process.yaml]
+    potentialImpacts:
+      - area: future-query-optimization
+        concern: 物料按组分页不能直接变为版本行LIMIT；将来方案需保留组状态、全部版本及筛选阶段。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java]
+      - area: designer-host
+        concern: 真父页mutation目标、旧完成反馈和pending不能由PR40的Shell受控callback推定；浏览器另行限定证据。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx]
+    unaffectedAreas:
+      - area: product-logic
+        change: 不修改状态、选择优先级、冻结、签署、发布、删除保护和用户暂缓页面。
+        evidenceReferences: []
+    compatibilityAndMigration:
+      - area: database
+        change: 只使用本次自建隔离库和合成记录；不连接恢复客户库，不改schema或迁移。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: historical-data
+        change: 不重算或修复存量快照。
+        evidenceReferences: []
+    auditImpacts:
+      - area: read-probes
+        change: 验证读取不产生主数据/成功审计写入；不优化逐动作审计。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: authorized-reads
+        change: 探针经过实际JWT/filter/方法权限，区分默认租户现状与未来多租户能力，不扩大读取权限。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java]
+    testImpacts:
+      - scope: master-data-read-observation
+        scenarios: [小页与全量对照, 相同及不同设备类型, 零类型分类, 类型名称与关键字筛选, 多版本同组, 产品派生, 无权限零读取]
+        evidenceReferences: []
+      - scope: actual-save-host
+        scenarios: [实际HTTP目标及payload, 主保存和字段保存, 关闭重开与旧完成]
+        evidenceReferences: []
+    evidenceGaps:
+      - 若仅H2观测，不能外推PG执行计划、索引收益、时延或生产容量；明确保留后续原生PG验证。
+      - 浏览器请求被受控API拦截，不证明服务器持久化；不在本批恢复暂缓TaskDetail或生产弹窗设计。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 本批先取证，不增加缓存、索引、限额或新业务。明确功能缺陷另按最小范围整改。
+    ownershipBoundaries:
+      - owner: EquipmentController
+        responsibility: 设备关系展示与现有查询。
+      - owner: ProcessModelingController
+        responsibility: 物料版本分组、派生及读取规则。
+      - owner: TemplateModelingPage
+        responsibility: 保存HTTP目标及父页mutation反馈。
+  affectedFiles:
+    - path: docs/knowledge/facts/core-business.yaml
+      changeType: update
+      reason: 只纠正设备日期及物料类型fact的实际源码定位/匹配证据，不改业务含义、版本或成熟度。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataReadObservationTest.java
+      changeType: create
+      reason: 真实JWT/H2/ORM读取观测；SQL成本记录而非锁定低效行为。
+    - path: gmp-platform/frontend/scripts/test-designer-save-host-browser.mjs
+      changeType: create
+      reason: 真实父页mutation和HTTP目标/反馈观察，子设计器受控。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java
+      changeType: read-only
+      reason: 关联查询与分页源码核对。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+      changeType: read-only
+      reason: 全量加载、类型目录重复读取、分组及版本语义。
+    - path: gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx
+      changeType: read-only
+      reason: 补真实保存宿主边界证据。
+  acceptanceScenarios:
+    - id: scenario.master-data-read-evidence
+      given: 隔离数据库中有合法分类/类型/设备及多版本物料
+      when: 实际授权读取不同规模及筛选条件
+      then: 记录真实SQL及实体加载量、返回身份与组结构、无写入和反证，不把现有低效行为锁为业务标准。
+      evidenceRequirements: [实际HTTP与ORM统计, 合法合成记录, 可重放命令, 限定结论]
+    - id: scenario.knowledge-review
+      given: 当前决策/规则及历史来源
+      when: 本体角色按ID核对原始依据、合理性和实现范围
+      then: 有限一致、待审和证据缺口分列；不提升成熟度，不把代码当新政策。
+      evidenceRequirements: [正式ontologyResult, 逐ID原始依据及范围]

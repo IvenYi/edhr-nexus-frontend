@@ -1,0 +1,17 @@
+{
+  "result": "passed",
+  "uniqueObservationKeys": 17,
+  "observations": 17,
+  "sameCostAsPrimary": true,
+  "queryCounterScope": "Hibernate SQL and entity loads; excludes JdbcTemplate setup/count probes",
+  "capacityQualification": "H2 only, no PG plan/SLA/heap",
+  "inventoryByteExact": [
+    "coverage.csv",
+    "entrypoints.csv",
+    "migrations.csv",
+    "inventory-summary.json"
+  ],
+  "inventoryPaths": 4174,
+  "inventoryPending": 4174,
+  "migrationFiles": 130
+}

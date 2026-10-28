@@ -1,0 +1,173 @@
+{
+  "schema": "edhr-audit-batch-acceptance/v1",
+  "executionLevel": "L2",
+  "baseCommit": "bbd2ff88886ade456aac8d7d73f8af4f5c1575e2",
+  "testedCommit": "ec85a434f801e9314e9c871958a363e69c889879",
+  "status": "passed",
+  "independentReviewer": "/root/master_data_reads_final_qa_20261028",
+  "requiredChecks": 14,
+  "requiredPassed": 14,
+  "optionalFailed": 1,
+  "qualityResult": "evidence/quality-result.yaml",
+  "ontologyResult": {
+    "result": "updated",
+    "path": "evidence/ontology-result.yaml",
+    "knowledgeBaselineVersion": "0.3.25",
+    "limitedExistingIds": 29,
+    "correctedFactAnchors": 2,
+    "newKnowledgeIds": 0,
+    "newUniqueHistoricalCoverage": null,
+    "wholeFileCompletion": 0
+  },
+  "postTestChangesPolicy": "L0 audit originals/acceptance/README clarification/delivery metadata only. Product, test, knowledge and contracts must stay identical to ec85a434.",
+  "postTestDocumentationCorrections": [
+    {
+      "id": "QF-MASTER-READS-DOC-001",
+      "formalQaOriginalStatus": "low/open",
+      "overlayDisposition": "corrected-after-qa-in-L0",
+      "path": "README.md",
+      "evidence": "README now explicitly states no product/schema/migration changes and two existing fact anchor corrections; original qualityResult remains unchanged.",
+      "correctionCommit": "d6f091b4f0540a5aaa8ce4b2d59f7a58fa39b9ec"
+    }
+  ],
+  "sourceReviewRecords": 10,
+  "inventory": {
+    "sourceCommit": "bbd2ff88886ade456aac8d7d73f8af4f5c1575e2",
+    "trackedPaths": 4174,
+    "migrationFiles": 130,
+    "status": "inventory-only/pending"
+  },
+  "actualIndependentRuns": {
+    "h2Tests": 16,
+    "h2ReadObservations": 17,
+    "backendRegressionTests": 77,
+    "frontendNodeTests": 14,
+    "browserHostCases": 6,
+    "knowledgeStructuralTests": 89,
+    "frontendBuild": "passed"
+  },
+  "independentArchives": [
+    {
+      "original": "/tmp/edhr-master-reads-qa-probe.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-probe.txt",
+      "sha256": "7b1cdb5c9d3b92aea261a5d07e866483d015bc8d6e5f3bab5fcc541ea685884e",
+      "bytes": 30554
+    },
+    {
+      "original": "/tmp/edhr-master-reads-qa.jsonl",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-observations.jsonl",
+      "sha256": "871b9d5981eb589995e05e136b055c14d9061c3ee2e85655f00e93c8b85cdbfa",
+      "bytes": 49654
+    },
+    {
+      "original": "/tmp/edhr-master-reads-qa-regression.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-regression.txt",
+      "sha256": "d39add3a89a8af8b6c9179a6e22c2a4fcda05aeff1c73e826447bf9c7305ce68",
+      "bytes": 569827
+    },
+    {
+      "original": "/tmp/edhr-master-reads-qa-node.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-node.txt",
+      "sha256": "750c76b3420a543ed24f57e79162a826e2e035bf1f882240a7bc8573b4d7199b",
+      "bytes": 1570
+    },
+    {
+      "original": "/tmp/edhr-master-reads-qa-host.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-host.txt",
+      "sha256": "de57e3f5d7262dc773456dd632f63129cec079c690425918ebf4de27e19c8320",
+      "bytes": 8568
+    },
+    {
+      "original": "/tmp/edhr-master-reads-qa-build.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-build.txt",
+      "sha256": "8aeaa8c4fcd7bb828e1d951b5dfe24dca5cdc253656c8d31628f6c8abf220c03",
+      "bytes": 9780
+    },
+    {
+      "original": "/tmp/edhr-master-reads-qa-knowledge.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-knowledge.txt",
+      "sha256": "4593e0fdf26d0412f370569e3863afcb0e623b8df390f2734af5bfe778c5a0e9",
+      "bytes": 2112
+    },
+    {
+      "original": "/tmp/edhr-master-reads-qa-inventory.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-inventory.txt",
+      "sha256": "a6fc090ef7ea472ddb8aa13b2f06cd0149dc78bf675020b516a42125974af6fc",
+      "bytes": 933
+    },
+    {
+      "original": "/tmp/edhr-master-reads-qa-inspection.json",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-inspection.json",
+      "sha256": "a0fa7ebfcaca18ee09666f2b3a4a1cb73c4d03cc02aad44be1e5ae1927ea9b3b",
+      "bytes": 4030
+    },
+    {
+      "original": "/tmp/edhr-master-reads-qa-comparison.json",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-comparison.json",
+      "sha256": "0741d60ef75263091788b3c560b80b977e166427099ce12f2523ee4e5020b2e5",
+      "bytes": 469
+    },
+    {
+      "original": "/tmp/edhr-master-reads-qa-whitespace.json",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-whitespace.json",
+      "sha256": "417c5a53616980c3ed73d97a5953439fb15e274af221fe728625bc7a92573385",
+      "bytes": 734
+    },
+    {
+      "original": "/tmp/edhr-master-reads-qa-all-whitespace.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-all-whitespace.txt",
+      "sha256": "ebbe109c8e54a7c6fc17c10fc28e593df33dad062df4f54154fd5b394c680c71",
+      "bytes": 1142421
+    },
+    {
+      "original": "/tmp/edhr-save-host-qa/results.json",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-host.json",
+      "sha256": "d56704847d0755aeb2ac6658abe8676b9c55bcb0e8889a39256c395e41265c60",
+      "bytes": 8567
+    },
+    {
+      "original": "/tmp/edhr-save-host-qa/old-main-completion.png",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-old-main-completion.png",
+      "sha256": "5375026376c3d882dc87ab0bdffbec33cf68d83640254dd3bc391ace72a9c971",
+      "bytes": 77811
+    },
+    {
+      "original": "/tmp/edhr-master-reads-quality-result.yaml",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/quality-result.yaml",
+      "sha256": "303966f137485b98596e68fbddcd4af62a4d2e6d15c23fabf7d3f68a7e421140",
+      "bytes": 15094
+    },
+    {
+      "original": "/tmp/edhr-master-reads-quality-review.md",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/quality-review.md",
+      "sha256": "d25c19e0f6f5c8031381313adcf0dceed92eb1a5c8e964959cf4befc010e9c76",
+      "bytes": 5755
+    },
+    {
+      "original": "/tmp/edhr-master-reads-independent-evidence.json",
+      "archive": "docs/development/branch-review-20261028-master-data-reads/evidence/independent-evidence.json",
+      "sha256": "6989981bd118ed2c41fdcf53e989c7592454ab4d60df25b07ba9f462a77b1479",
+      "bytes": 22584
+    }
+  ],
+  "remainingRisks": [
+    "3 measured H2 performance mechanisms pending discussion; no optimization authorized by report merge",
+    "late generic designer host feedback remains; complete main/autoSave ordering and actual backend persistence unverified",
+    "paging int arithmetic and numeric version segments remain source candidates for next legal-path reproduction",
+    "native PostgreSQL plans/latency/heap/concurrency/production capacity not tested",
+    "raw log trailing spaces keep whole-interval whitespace optional check failed; non-raw 24 paths passed; no raw bytes changed",
+    "historical strict19 and missing ESLint config retained, not rerun or claimed green",
+    "W2/W3/W4 incomplete, W5-W7 pending; original TaskDetail/dialog/record-control DHR high/A12/4 knowledge gaps retained"
+  ],
+  "blockingConditions": [],
+  "scopeReviewCommunication": "All roles FINAL; actual user-facing scope/progress/next-step review sent before PR creation. No merge/deploy/history restoration.",
+  "cleanup": "Own H2 pools shut down; browser/server finished and own host mkdtemp directories absent; only exact self-created /tmp/edhr-master-reads-qa-inventory removed after byte comparison/hash; evidence artifacts retained for main archive. No external database or deployment created.",
+  "pullRequest": {
+    "number": 41,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/41",
+    "sourceBranch": "audit/edhr-dev-master-data-reads-20261028",
+    "targetBranch": "edhr-dev",
+    "createdAtHead": "d6f091b4f0540a5aaa8ce4b2d59f7a58fa39b9ec",
+    "merge": "manual-only"
+  }
+}

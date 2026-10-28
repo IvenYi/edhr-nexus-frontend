@@ -1,0 +1,90 @@
+{
+  "cases": 6,
+  "passed": 0,
+  "results": [
+    {
+      "name": "main-normal",
+      "passed": false,
+      "error": "locator.click: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('tr[data-record-id=\"3001\"]').locator('xpath=following-sibling::tr[1]').getByRole('button', { name: '设计', exact: true })\u001b[22m\n",
+      "writes": [],
+      "reads": [
+        "/api/v1/master-data/template-modeling/form-templates/categories",
+        "/api/v1/master-data/template-modeling/form-templates",
+        "/api/v1/audit/logs"
+      ],
+      "errors": [
+        "Unexpected GET /api/v1/audit/logs"
+      ]
+    },
+    {
+      "name": "main-reopen-success",
+      "passed": false,
+      "error": "locator.click: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('tr[data-record-id=\"3001\"]').locator('xpath=following-sibling::tr[1]').getByRole('button', { name: '设计', exact: true })\u001b[22m\n",
+      "writes": [],
+      "reads": [
+        "/api/v1/master-data/template-modeling/form-templates/categories",
+        "/api/v1/master-data/template-modeling/form-templates",
+        "/api/v1/audit/logs"
+      ],
+      "errors": [
+        "Unexpected GET /api/v1/audit/logs"
+      ]
+    },
+    {
+      "name": "main-reopen-error",
+      "passed": false,
+      "error": "locator.click: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('tr[data-record-id=\"3001\"]').locator('xpath=following-sibling::tr[1]').getByRole('button', { name: '设计', exact: true })\u001b[22m\n",
+      "writes": [],
+      "reads": [
+        "/api/v1/master-data/template-modeling/form-templates/categories",
+        "/api/v1/master-data/template-modeling/form-templates",
+        "/api/v1/audit/logs"
+      ],
+      "errors": [
+        "Unexpected GET /api/v1/audit/logs"
+      ]
+    },
+    {
+      "name": "field-normal",
+      "passed": false,
+      "error": "locator.click: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('tr[data-record-id=\"3001\"]').locator('xpath=following-sibling::tr[1]').getByRole('button', { name: '设计', exact: true })\u001b[22m\n",
+      "writes": [],
+      "reads": [
+        "/api/v1/master-data/template-modeling/form-templates/categories",
+        "/api/v1/master-data/template-modeling/form-templates",
+        "/api/v1/audit/logs"
+      ],
+      "errors": [
+        "Unexpected GET /api/v1/audit/logs"
+      ]
+    },
+    {
+      "name": "field-reopen-success",
+      "passed": false,
+      "error": "locator.click: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('tr[data-record-id=\"3001\"]').locator('xpath=following-sibling::tr[1]').getByRole('button', { name: '设计', exact: true })\u001b[22m\n",
+      "writes": [],
+      "reads": [
+        "/api/v1/master-data/template-modeling/form-templates/categories",
+        "/api/v1/master-data/template-modeling/form-templates",
+        "/api/v1/audit/logs"
+      ],
+      "errors": [
+        "Unexpected GET /api/v1/audit/logs"
+      ]
+    },
+    {
+      "name": "field-reopen-error",
+      "passed": false,
+      "error": "locator.click: Timeout 7000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('tr[data-record-id=\"3001\"]').locator('xpath=following-sibling::tr[1]').getByRole('button', { name: '设计', exact: true })\u001b[22m\n",
+      "writes": [],
+      "reads": [
+        "/api/v1/master-data/template-modeling/form-templates/categories",
+        "/api/v1/master-data/template-modeling/form-templates",
+        "/api/v1/audit/logs"
+      ],
+      "errors": [
+        "Unexpected GET /api/v1/audit/logs"
+      ]
+    }
+  ]
+}

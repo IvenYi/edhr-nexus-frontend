@@ -1,0 +1,18 @@
+{
+  "baseCommit": "bbd2ff88886ade456aac8d7d73f8af4f5c1575e2",
+  "reviewer": "primary",
+  "wholeFileCompletion": 0,
+  "records": [
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/EquipmentController.java","methods":["categories/types/list","categoryResponse/typeResponse/equipmentResponse/categoryName","pageable","fillType/fillEquipment","purchaseDate","audit"],"dimensions":["A01","A03","A06","A07","A09","A10","A11","A12","A19"],"conclusion":"设备与类型数据库分页反证保留；关联映射及分类count逐条SQL实测。写侧仅有限源码与既有回归，不认证并发删除全链。"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/EquipmentRepository.java","methods":["JpaSpecificationExecutor inherited read","lockById"],"dimensions":["A05","A09","A10"],"conclusion":"读取分页与写锁分开，未实现优化。"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/EquipmentTypeRepository.java","methods":["findByIdAndTenantId","countByCategoryIdAndTenantId","lockById"],"dimensions":["A06","A09","A11"],"conclusion":"JPQL按ID和固定租户查询不等同findById缓存；实际共享类型仍逐行SQL。"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/EquipmentCategoryRepository.java","methods":["findByTenantIdOrderBySortOrderAscCreatedAtAscIdAsc","findById inherited read","lockById"],"dimensions":["A06","A09","A11"],"conclusion":"categories取全目录；类型/设备名称回填逐行取分类。"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java","methods":["listMaterials/listProducts","matchesMaterialKeyword/matchesMaterialTypeName/materialTypeNameMap","enrichMaterialTypeNames","toPagedResult/toMaterialGroups/toMaterialGroup","materialComparator/compareVersion/resolveMaterialRuntimeStatus","findMaterialsByCode/findMaterialGroupVersions/updateMaterialBaseInformation"],"dimensions":["A01","A03","A07","A09","A10","A11","A12","A19"],"conclusion":"物料全版本后按组分页及重复类型目录实测；产品派生身份对照通过。数字段/页下标仅待复现候选，写侧按code定向查询反证保留，不外推整个大控制器审完。"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/MaterialRepository.java","methods":["findAll inherited read","findByTenantIdAndCodeIgnoreCase","findByTenantIdAndId"],"dimensions":["A06","A09","A10","A11"],"conclusion":"列表全量与写侧code分组读取区别；无新增查询。"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java","methods":["listProducts","materialTypeNames/isProductMaterial"],"dimensions":["A01","A03","A10","A11","A12"],"conclusion":"纠正实际类型名fact锚点；全表计数/values扫描及int分页源码候选，未对该入口运行容量探针。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx","methods":["renderTemplateTableRow/renderTemplateVersionActions","saveDesignerPayload","saveDesignerMutation/autoSaveDesignerMutation","reactDesignerState host"],"dimensions":["A03","A05","A08","A17","A19"],"conclusion":"6个真实父页/受控子组件场景补实际HTTP目标、payload、pending和反馈证据；未证明后端持久化或完整并发排序。"},
+    {"path":"gmp-platform/frontend/src/api/template-modeling.ts","methods":["getFormTemplates/getTemplateModelingCategories/saveFormTemplateVersionDesign"],"dimensions":["A03","A07","A17"],"conclusion":"实际axios URL及三字符串payload透传对照。"},
+    {"path":"gmp-platform/frontend/src/api/client.ts","methods":["request/response interceptors"],"dimensions":["A06","A08","A17"],"conclusion":"本批使用原实际interceptor，不重新认证既有完整跨标签身份安全。"}
+  ],
+  "countingBoundary":"10条有交叉有限方法范围；与本体角色来源覆盖不相加，不是10整文件完成。固定目标清单全pending；本批运行结果与历史台账由acceptance overlay区分。"
+}

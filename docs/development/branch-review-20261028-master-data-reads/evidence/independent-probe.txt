@@ -1,0 +1,173 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.zencas:edhr >---------------------------
+[INFO] Building eDHR 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- exec:3.5.0:exec (dhr-print-renderer) @ edhr ---
+
+> edhr-frontend@0.0.1 build:dhr-print
+> vite build --config vite.dhr-print.config.ts
+
+vite v5.4.21 building for production...
+transforming...
+✓ 11665 modules transformed.
+rendering chunks...
+computing gzip size...
+../backend/target/generated-resources/dhr-print/renderer.js  662.41 kB │ gzip: 211.13 kB
+✓ built in 12.70s
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ edhr ---
+[INFO] Copying 6 resources from src/main/resources to target/classes
+[INFO] Copying 1 resource from target/generated-resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ edhr ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ edhr ---
+[INFO] Copying 129 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ edhr ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ edhr ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.zencas.edhr.masterdata.controller.MasterDataReadObservationTest
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.0)
+
+2026-10-28T14:37:24.144Z  INFO 14071 --- [edhr] [           main] c.z.e.m.c.MasterDataReadObservationTest  : Starting MasterDataReadObservationTest using Java 21.0.12.1 with PID 14071 (started by agent in /workspace/edhr-nexus-frontend/gmp-platform/backend)
+2026-10-28T14:37:24.145Z DEBUG 14071 --- [edhr] [           main] c.z.e.m.c.MasterDataReadObservationTest  : Running with Spring Boot v3.3.0, Spring v6.1.8
+2026-10-28T14:37:24.146Z  INFO 14071 --- [edhr] [           main] c.z.e.m.c.MasterDataReadObservationTest  : The following 1 profile is active: "dev"
+2026-10-28T14:37:25.603Z  INFO 14071 --- [edhr] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-28T14:37:25.685Z  INFO 14071 --- [edhr] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-10-28T14:37:25.718Z  INFO 14071 --- [edhr] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-28T14:37:25.852Z  INFO 14071 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-28T14:37:26.044Z  INFO 14071 --- [edhr] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:master-read-audit user=SA
+2026-10-28T14:37:26.046Z  INFO 14071 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-28T14:37:26.070Z  WARN 14071 --- [edhr] [           main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-28T14:37:26.281Z  INFO 14071 --- [edhr] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-28T14:37:27.035Z  INFO 14071 --- [edhr] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-28T14:37:27.078Z  INFO 14071 --- [edhr] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-28T14:37:27.298Z  INFO 14071 --- [edhr] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-10-28T14:37:31.364Z  WARN 14071 --- [edhr] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: b93f5d6d-e212-4034-8b37-be4ebc2235c8
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-28T14:37:31.370Z  INFO 14071 --- [edhr] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-28T14:37:31.753Z  INFO 14071 --- [edhr] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5e84478, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@68a6e236, org.springframework.security.web.context.SecurityContextHolderFilter@223bbda6, org.springframework.security.web.header.HeaderWriterFilter@797f26ce, org.springframework.web.filter.CorsFilter@b82b59c, org.springframework.security.web.authentication.logout.LogoutFilter@6bbced25, com.zencas.edhr.identity.security.JwtAuthenticationFilter@108f7999, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@26b63bbb, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4262ac5e, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@717e4047, org.springframework.security.web.session.SessionManagementFilter@79c5de78, org.springframework.security.web.access.ExceptionTranslationFilter@4a256169, org.springframework.security.web.access.intercept.AuthorizationFilter@136e1533]
+2026-10-28T14:37:32.241Z DEBUG 14071 --- [edhr] [           main] c.z.e.i.s.JwtAuthenticationFilter        : Filter 'com.zencas.edhr.identity.security.JwtAuthenticationFilter' configured for use
+2026-10-28T14:37:32.242Z  INFO 14071 --- [edhr] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-28T14:37:32.242Z  INFO 14071 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-28T14:37:32.243Z  INFO 14071 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-10-28T14:37:32.266Z  INFO 14071 --- [edhr] [           main] c.z.e.m.c.MasterDataReadObservationTest  : Started MasterDataReadObservationTest in 8.487 seconds (process running for 9.698)
+2026-10-28T14:37:32.472Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:32.505Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:32.549Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listMaterials(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:32.556Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listMaterials(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:32.960Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:32.964Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:32.964Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listMaterials(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:32.965Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listMaterials(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:33.066Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:33.071Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:33.072Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listMaterials(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:33.072Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listMaterials(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:33.278Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:33.281Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:33.282Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listMaterials(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:33.282Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listMaterials(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:33.693Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:33.697Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:33.698Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listMaterials(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:33.699Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listMaterials(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:33.713Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/process-modeling/products
+2026-10-28T14:37:33.716Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/process-modeling/products
+2026-10-28T14:37:33.718Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listProducts(java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:33.719Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listProducts(java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:33.756Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/equipment/types
+2026-10-28T14:37:33.758Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/equipment/types
+2026-10-28T14:37:33.760Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.types(java.lang.String,java.lang.String,int,int); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:33.761Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.types(java.lang.String,java.lang.String,int,int); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:33.854Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/equipment/types
+2026-10-28T14:37:33.857Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/equipment/types
+2026-10-28T14:37:33.857Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.types(java.lang.String,java.lang.String,int,int); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:33.858Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.types(java.lang.String,java.lang.String,int,int); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:33.886Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/equipment/categories
+2026-10-28T14:37:33.888Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/equipment/categories
+2026-10-28T14:37:33.889Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.categories(); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:33.890Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.categories(); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:33.942Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/equipment/categories
+2026-10-28T14:37:33.945Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/equipment/categories
+2026-10-28T14:37:33.945Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.categories(); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:33.945Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.categories(); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:33.983Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/equipment
+2026-10-28T14:37:33.987Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/equipment
+2026-10-28T14:37:33.990Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.list(java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:33.991Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.list(java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:34.055Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/equipment
+2026-10-28T14:37:34.058Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/equipment
+2026-10-28T14:37:34.058Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.list(java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:34.059Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.list(java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:34.103Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/equipment
+2026-10-28T14:37:34.109Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/equipment
+2026-10-28T14:37:34.109Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.list(java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:34.109Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.list(java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:34.163Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/equipment
+2026-10-28T14:37:34.165Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/equipment
+2026-10-28T14:37:34.166Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.list(java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:34.166Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.list(java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:34.205Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:34.205Z DEBUG 14071 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-28T14:37:34.208Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/equipment
+2026-10-28T14:37:34.210Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/equipment
+2026-10-28T14:37:34.211Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.list(java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController]
+2026-10-28T14:37:34.213Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Failed to authorize ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.EquipmentController.list(java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.EquipmentController] with authorization manager org.springframework.security.config.annotation.method.configuration.DeferringObservationAuthorizationManager@7725070e and decision ExpressionAuthorizationDecision [granted=false, expressionAttribute=hasAuthority('master-data.equipment')]
+2026-10-28T14:37:34.214Z  WARN 14071 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Access denied: Access Denied
+2026-10-28T14:37:34.249Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:34.254Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:34.254Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listMaterials(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:34.255Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listMaterials(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:34.279Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:34.283Z DEBUG 14071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/process-modeling/materials
+2026-10-28T14:37:34.285Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorizing method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listMaterials(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:34.288Z DEBUG 14071 --- [edhr] [           main] horizationManagerBeforeMethodInterceptor : Authorized method invocation ReflectiveMethodInvocation: public com.zencas.edhr.common.dto.ApiResponse com.zencas.edhr.masterdata.controller.ProcessModelingController.listMaterials(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,int,int,java.lang.String,java.lang.String); target is of class [com.zencas.edhr.masterdata.controller.ProcessModelingController]
+2026-10-28T14:37:34.374Z  INFO 14071 --- [edhr] [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-10-28T14:37:34.377Z  INFO 14071 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-10-28T14:37:34.378Z  INFO 14071 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+[INFO] Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.01 s -- in com.zencas.edhr.masterdata.controller.MasterDataReadObservationTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 16, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  27.888 s
+[INFO] Finished at: 2026-10-28T14:37:34Z
+[INFO] ------------------------------------------------------------------------

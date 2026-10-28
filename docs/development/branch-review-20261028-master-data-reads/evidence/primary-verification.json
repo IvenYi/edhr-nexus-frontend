@@ -1,0 +1,131 @@
+{
+  "baseCommit": "bbd2ff88886ade456aac8d7d73f8af4f5c1575e2",
+  "createdAtUtc": "2026-10-28T14:35:15.575917+00:00",
+  "productSourceChanges": 0,
+  "knowledgeAnchorCorrections": 2,
+  "archives": [
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/initial-host-fixture.json",
+      "sha256": "5282091815410735cda12d96501555e83ed5167222d548d5136425261bef5366",
+      "bytes": 3621
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/initial-probe-test.txt",
+      "sha256": "5f13b0ffd651bb8ace90341980026532226c3712e9bbf2206fafac3bea9a4bed",
+      "bytes": 661307
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/initial-probe.jsonl",
+      "sha256": "c5ece69072037dcc4b6b8c41487a81c427b2b84aa06fe392067af2b51da72590",
+      "bytes": 49661
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/ontology-knowledge.txt",
+      "sha256": "2bf6b8bc11faa2cd15ab897fce82305d4729233df674d534a7d443ce7ee0686e",
+      "bytes": 2111
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/ontology-result.yaml",
+      "sha256": "74530da4737aee3776ab6e50f7fab34d97c4902b6a1d3f7b6ce215dbacb8b2a2",
+      "bytes": 4311
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/ontology-validation.json",
+      "sha256": "e3c48ef721160ffe840903b25f88945a3d91f95fd8bd8c37f919a50b03bc945b",
+      "bytes": 651
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/primary-build.txt",
+      "sha256": "7dc3bc4a2e011e748d82d679d44c4fd1fa58d083eab19f2d7ea0ac08815b27fb",
+      "bytes": 9780
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/primary-host.json",
+      "sha256": "d56704847d0755aeb2ac6658abe8676b9c55bcb0e8889a39256c395e41265c60",
+      "bytes": 8567
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/primary-node.txt",
+      "sha256": "028d10017a761b294062cd130f7edd5f7cdd3a70e41d5fc200738c6ab715b763",
+      "bytes": 1571
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/primary-observation-test.txt",
+      "sha256": "1efef6c50d0e4651bd92075c2429291ff062044b258489687f3c87354a41ace7",
+      "bytes": 31321
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/primary-observations.jsonl",
+      "sha256": "9bf0287597c5b68fd8d347df6d7574adf97fbf6429ac6577efba71d77f149404",
+      "bytes": 49655
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/primary-old-main-completion.png",
+      "sha256": "3cff7e87b83a8ac6e584b2d7f2f1711d528b535d9302608f5071c078b637c2e8",
+      "bytes": 77637
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/primary-regression.txt",
+      "sha256": "c6a7dce3e08fb42c4b38e6ec57c80ce2991eb17d149c53f6efcbb155f19ddecf",
+      "bytes": 569822
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/rule-review.json",
+      "sha256": "81d766fba332a3d74ca1b6c48f259373496b7c079e13fb7dd2b381d4358ecc6e",
+      "bytes": 40852
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-reads/evidence/rule-review.md",
+      "sha256": "0d5893343815be28708f19a2adf956a157135edbc4bb543b4732ccf4fa7d20a3",
+      "bytes": 5764
+    }
+  ],
+  "checks": [
+    {
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=MasterDataReadObservationTest -Dedhr.audit.masterDataReads=true -Dedhr.audit.masterDataOutput=/tmp/edhr-master-reads-primary-final.jsonl test",
+      "outcome": "passed",
+      "tests": 16,
+      "observations": 17,
+      "skips": 0
+    },
+    {
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=EquipmentControllerTest,EquipmentControllerIntegrationTest,MaterialImportIntegrationTest,ProcessModelingControllerTest test",
+      "outcome": "passed",
+      "tests": 77,
+      "skips": 0
+    },
+    {
+      "command": "node --test scripts/test-equipment-modeling.mjs",
+      "outcome": "passed",
+      "tests": 14,
+      "skips": 0
+    },
+    {
+      "command": "CHROME_PATH=/usr/bin/chromium SAVE_HOST_ARTIFACTS=/tmp/edhr-save-host-primary-final node scripts/test-designer-save-host-browser.mjs",
+      "outcome": "passed",
+      "cases": 6
+    },
+    {
+      "command": "npm run build",
+      "outcome": "passed"
+    },
+    {
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test",
+      "outcome": "passed",
+      "tests": 89,
+      "skips": 0,
+      "runner": "ontology-role"
+    }
+  ],
+  "limitations": [
+    "H2 actual ORM not native PG plan or capacity",
+    "controlled designer child and HTTP responses; real parent/mutation/axios",
+    "initial probe 2 wrong field assertions and host wrong expansion trigger are fixture failures, retained",
+    "strict19 and missing ESLint config remain historical failed globals; not rerun or claimed green",
+    "no new performance implementation; no whole-file completion or unique semantic coverage increment"
+  ],
+  "cleanup": [
+    "H2 create-drop and DirtiesContext close pool; no external DB created",
+    "each browser harness owns temporary mkdtemp/browser/server and closes/removes in finally; artifact folders intentionally retained"
+  ]
+}
