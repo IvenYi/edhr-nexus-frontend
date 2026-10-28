@@ -1,0 +1,931 @@
+{
+  "role": "read-only runtime helper, not formal independent quality acceptance",
+  "sourceCommit": "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+  "knowledgeBaselineVersion": "0.3.25 (scope context, no ontology semantic audit)",
+  "boundary": "Real CanvasTab/Sidebar/Workspace and Zustand in Chromium. Store APIs only construct initial blank document and fields; placement/selection/menus/undo use actual user UI. No server/backend writes; 1440x1050 only.",
+  "artifacts": "/tmp/edhr-nondrag-runtime-artifacts",
+  "results": [
+    {
+      "name": "ordinary-keyboard",
+      "status": "observed",
+      "steps": [
+        {
+          "operation": "fixture ready, no placement API called",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-1f503980-d077-461a-aed4-748b99934f6b",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 1,
+            "redo": 0,
+            "focus": {
+              "tag": "BODY",
+              "text": "9101112141618202224262836字段管理普通字段观察文本画布设置ABCDEFGHI12345678910111213141516171819202122232425262728293",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        },
+        {
+          "operation": "Tab to ordinary field card",
+          "tabPresses": 22,
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-1f503980-d077-461a-aed4-748b99934f6b",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 1,
+            "redo": 0,
+            "focus": {
+              "tag": "BUTTON",
+              "text": "普通字段观察文本",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        },
+        {
+          "operation": "ordinary card Enter",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-1f503980-d077-461a-aed4-748b99934f6b",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 1,
+            "redo": 0,
+            "focus": {
+              "tag": "BUTTON",
+              "text": "普通字段观察文本",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        },
+        {
+          "operation": "ordinary card Space",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-1f503980-d077-461a-aed4-748b99934f6b",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 1,
+            "redo": 0,
+            "focus": {
+              "tag": "BUTTON",
+              "text": "普通字段观察文本",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        },
+        {
+          "operation": "ordinary card click without drag",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-1f503980-d077-461a-aed4-748b99934f6b",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 1,
+            "redo": 0,
+            "focus": {
+              "tag": "BUTTON",
+              "text": "普通字段观察文本",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        }
+      ],
+      "pageErrors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "ordinary-pointer-control",
+      "status": "observed",
+      "steps": [
+        {
+          "operation": "fixture ready, no placement API called",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-cb3ad975-fe0c-4491-8ba3-95d86e166c2d",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 1,
+            "redo": 0,
+            "focus": {
+              "tag": "BODY",
+              "text": "9101112141618202224262836字段管理普通字段观察文本画布设置ABCDEFGHI12345678910111213141516171819202122232425262728293",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        },
+        {
+          "operation": "ordinary field actual pointer drag control",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-cb3ad975-fe0c-4491-8ba3-95d86e166c2d",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [
+              {
+                "id": "input-069710a9-04e0-4a03-b2eb-ca755ba2eb1b",
+                "type": "input",
+                "bindings": {
+                  "fieldId": "field-cb3ad975-fe0c-4491-8ba3-95d86e166c2d",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {}
+                },
+                "props": {
+                  "label": "普通字段观察",
+                  "placeholder": "",
+                  "emptySymbol": "",
+                  "required": false,
+                  "disabled": false,
+                  "viewState": "auto",
+                  "prefix": "",
+                  "suffix": "",
+                  "maxLength": 200
+                },
+                "style": {
+                  "compWidth": 126,
+                  "compHeight": 36,
+                  "position": "absolute",
+                  "compLeft": 83,
+                  "compTop": 36,
+                  "cellRange": {
+                    "t": 2,
+                    "l": 2,
+                    "b": 2,
+                    "r": 2
+                  }
+                }
+              }
+            ],
+            "undo": 2,
+            "redo": 0,
+            "focus": {
+              "tag": "BODY",
+              "text": "9101112141618202224262836字段管理暂无可添加字段画布设置ABCDEFGHI123456789101112131415161718192021222324252627282930",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        },
+        {
+          "operation": "toolbar undo",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-cb3ad975-fe0c-4491-8ba3-95d86e166c2d",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 1,
+            "redo": 1,
+            "focus": {
+              "tag": "BUTTON",
+              "text": "",
+              "label": "撤销",
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        },
+        {
+          "operation": "toolbar redo",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-cb3ad975-fe0c-4491-8ba3-95d86e166c2d",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [
+              {
+                "id": "input-069710a9-04e0-4a03-b2eb-ca755ba2eb1b",
+                "type": "input",
+                "bindings": {
+                  "fieldId": "field-cb3ad975-fe0c-4491-8ba3-95d86e166c2d",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {}
+                },
+                "props": {
+                  "label": "普通字段观察",
+                  "placeholder": "",
+                  "emptySymbol": "",
+                  "required": false,
+                  "disabled": false,
+                  "viewState": "auto",
+                  "prefix": "",
+                  "suffix": "",
+                  "maxLength": 200
+                },
+                "style": {
+                  "compWidth": 126,
+                  "compHeight": 36,
+                  "position": "absolute",
+                  "compLeft": 83,
+                  "compTop": 36,
+                  "cellRange": {
+                    "t": 2,
+                    "l": 2,
+                    "b": 2,
+                    "r": 2
+                  }
+                }
+              }
+            ],
+            "undo": 2,
+            "redo": 0,
+            "focus": {
+              "tag": "BODY",
+              "text": "9101112141618202224262836字段管理暂无可添加字段画布设置ABCDEFGHI123456789101112131415161718192021222324252627282930",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        }
+      ],
+      "pageErrors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "keyboard-context-menu",
+      "status": "observed",
+      "steps": [
+        {
+          "operation": "fixture ready, no placement API called",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-c8d022e9-7f81-41eb-9b37-222a811f7f61",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 1,
+            "redo": 0,
+            "focus": {
+              "tag": "BODY",
+              "text": "9101112141618202224262836字段管理普通字段观察文本画布设置ABCDEFGHI12345678910111213141516171819202122232425262728293",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        },
+        {
+          "operation": "focused cell Shift+F10",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-c8d022e9-7f81-41eb-9b37-222a811f7f61",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 1,
+            "redo": 0,
+            "focus": {
+              "tag": "DIV",
+              "text": "左侧新增列​右侧新增列​上方新增行​下方新增行​快速添加字段删除行删除列",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": [
+              {
+                "action": "insert-column-before",
+                "text": "左侧新增列​"
+              },
+              {
+                "action": "insert-column-after",
+                "text": "右侧新增列​"
+              },
+              {
+                "action": "insert-row-before",
+                "text": "上方新增行​"
+              },
+              {
+                "action": "insert-row-after",
+                "text": "下方新增行​"
+              },
+              {
+                "action": "quick-add-fields",
+                "text": "快速添加字段"
+              },
+              {
+                "action": "delete-row",
+                "text": "删除行"
+              },
+              {
+                "action": "delete-column",
+                "text": "删除列"
+              }
+            ]
+          }
+        },
+        {
+          "operation": "focused cell ContextMenu",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-c8d022e9-7f81-41eb-9b37-222a811f7f61",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 1,
+            "redo": 0,
+            "focus": {
+              "tag": "DIV",
+              "text": "左侧新增列​右侧新增列​上方新增行​下方新增行​快速添加字段删除行删除列",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": [
+              {
+                "action": "insert-column-before",
+                "text": "左侧新增列​"
+              },
+              {
+                "action": "insert-column-after",
+                "text": "右侧新增列​"
+              },
+              {
+                "action": "insert-row-before",
+                "text": "上方新增行​"
+              },
+              {
+                "action": "insert-row-after",
+                "text": "下方新增行​"
+              },
+              {
+                "action": "quick-add-fields",
+                "text": "快速添加字段"
+              },
+              {
+                "action": "delete-row",
+                "text": "删除行"
+              },
+              {
+                "action": "delete-column",
+                "text": "删除列"
+              }
+            ]
+          }
+        },
+        {
+          "operation": "right-click same cell positive control",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-c8d022e9-7f81-41eb-9b37-222a811f7f61",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 1,
+            "redo": 0,
+            "focus": {
+              "tag": "DIV",
+              "text": "左侧新增列​右侧新增列​上方新增行​下方新增行​快速添加字段删除行删除列",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": [
+              {
+                "action": "insert-column-before",
+                "text": "左侧新增列​"
+              },
+              {
+                "action": "insert-column-after",
+                "text": "右侧新增列​"
+              },
+              {
+                "action": "insert-row-before",
+                "text": "上方新增行​"
+              },
+              {
+                "action": "insert-row-after",
+                "text": "下方新增行​"
+              },
+              {
+                "action": "quick-add-fields",
+                "text": "快速添加字段"
+              },
+              {
+                "action": "delete-row",
+                "text": "删除行"
+              },
+              {
+                "action": "delete-column",
+                "text": "删除列"
+              }
+            ]
+          }
+        }
+      ],
+      "pageErrors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "display-click",
+      "status": "observed",
+      "steps": [
+        {
+          "operation": "fixture ready, no placement API called",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-1c1d0e9d-7094-44ff-9b25-5f7eff3c3958",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 1,
+            "redo": 0,
+            "focus": {
+              "tag": "BODY",
+              "text": "9101112141618202224262836字段管理普通字段观察文本画布设置ABCDEFGHI12345678910111213141516171819202122232425262728293",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        },
+        {
+          "operation": "display text actual click",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-1c1d0e9d-7094-44ff-9b25-5f7eff3c3958",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [
+              {
+                "id": "common-text-2bd3ec59-93ff-499f-9fab-85ae2509ce5e",
+                "type": "static-text",
+                "bindings": {},
+                "props": {
+                  "text": "文本",
+                  "commonComponentId": "text"
+                },
+                "style": {
+                  "position": "absolute",
+                  "compLeft": 83,
+                  "compTop": 36,
+                  "compWidth": 83,
+                  "compHeight": 36,
+                  "cellRange": {
+                    "t": 2,
+                    "l": 2,
+                    "b": 2,
+                    "r": 2
+                  }
+                }
+              }
+            ],
+            "undo": 2,
+            "redo": 0,
+            "focus": {
+              "tag": "BODY",
+              "text": "9101112141618202224262836分页缩略图文本第 1 页画布设置ABCDEFGHI12345678910111213141516171819202122232425262728293",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        }
+      ],
+      "pageErrors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "display-keyboard",
+      "status": "observed",
+      "steps": [
+        {
+          "operation": "fixture ready, no placement API called",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-324e65f6-529d-403b-a7a0-64984eed7053",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 1,
+            "redo": 0,
+            "focus": {
+              "tag": "BODY",
+              "text": "9101112141618202224262836字段管理普通字段观察文本画布设置ABCDEFGHI12345678910111213141516171819202122232425262728293",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        },
+        {
+          "operation": "display text actual Tab/Enter",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-324e65f6-529d-403b-a7a0-64984eed7053",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [
+              {
+                "id": "common-text-f021567b-94df-4c3d-99f6-218cf0779de7",
+                "type": "static-text",
+                "bindings": {},
+                "props": {
+                  "text": "文本",
+                  "commonComponentId": "text"
+                },
+                "style": {
+                  "position": "absolute",
+                  "compLeft": 83,
+                  "compTop": 36,
+                  "compWidth": 83,
+                  "compHeight": 36,
+                  "cellRange": {
+                    "t": 2,
+                    "l": 2,
+                    "b": 2,
+                    "r": 2
+                  }
+                }
+              }
+            ],
+            "undo": 2,
+            "redo": 0,
+            "focus": {
+              "tag": "BODY",
+              "text": "9101112141618202224262836分页缩略图文本第 1 页画布设置ABCDEFGHI12345678910111213141516171819202122232425262728293",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        }
+      ],
+      "pageErrors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "subtable-menu",
+      "status": "observed",
+      "steps": [
+        {
+          "operation": "fixture ready, no placement API called",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-ed52c9dd-d6e8-4a06-acee-e518cdebd733",
+                "type": "text",
+                "name": "普通字段观察"
+              },
+              {
+                "id": "field-f3cdd932-9995-473a-8dc1-8e87f837131b",
+                "type": "subTable",
+                "name": "已有明细观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 3,
+            "redo": 0,
+            "focus": {
+              "tag": "BODY",
+              "text": "9101112141618202224262836字段管理普通字段观察文本画布设置ABCDEFGHI12345678910111213141516171819202122232425262728293",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        },
+        {
+          "operation": "UI multi-cell selection and context menu",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-ed52c9dd-d6e8-4a06-acee-e518cdebd733",
+                "type": "text",
+                "name": "普通字段观察"
+              },
+              {
+                "id": "field-f3cdd932-9995-473a-8dc1-8e87f837131b",
+                "type": "subTable",
+                "name": "已有明细观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 3,
+            "redo": 0,
+            "focus": {
+              "tag": "DIV",
+              "text": "左侧新增列​右侧新增列​上方新增行​下方新增行​合并单元格快速添加字段快速设为子表设为子表删除行删除列",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": [
+              {
+                "action": "insert-column-before",
+                "text": "左侧新增列​"
+              },
+              {
+                "action": "insert-column-after",
+                "text": "右侧新增列​"
+              },
+              {
+                "action": "insert-row-before",
+                "text": "上方新增行​"
+              },
+              {
+                "action": "insert-row-after",
+                "text": "下方新增行​"
+              },
+              {
+                "action": "merge-cells",
+                "text": "合并单元格"
+              },
+              {
+                "action": "quick-add-fields",
+                "text": "快速添加字段"
+              },
+              {
+                "action": "quick-set-sub-table",
+                "text": "快速设为子表"
+              },
+              {
+                "action": "set-sub-table",
+                "text": "设为子表"
+              },
+              {
+                "action": "delete-row",
+                "text": "删除行"
+              },
+              {
+                "action": "delete-column",
+                "text": "删除列"
+              }
+            ]
+          }
+        },
+        {
+          "operation": "existing subtable menu binding",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-ed52c9dd-d6e8-4a06-acee-e518cdebd733",
+                "type": "text",
+                "name": "普通字段观察"
+              },
+              {
+                "id": "field-f3cdd932-9995-473a-8dc1-8e87f837131b",
+                "type": "subTable",
+                "name": "已有明细观察"
+              }
+            ],
+            "nodes": [
+              {
+                "id": "sub-table-8e371642-da5a-4d85-8c1e-e7b1b5630239",
+                "type": "sub-table",
+                "bindings": {
+                  "fieldId": "field-f3cdd932-9995-473a-8dc1-8e87f837131b",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {},
+                  "subTableRegion": {
+                    "id": "sub-table-region-ac9268b7-bc4f-4559-bf2c-33bda9c85d3a",
+                    "fieldId": "field-f3cdd932-9995-473a-8dc1-8e87f837131b",
+                    "mode": "record",
+                    "ranges": [
+                      {
+                        "pageId": "page-1",
+                        "range": {
+                          "t": 2,
+                          "l": 2,
+                          "b": 3,
+                          "r": 3
+                        },
+                        "order": 1
+                      }
+                    ],
+                    "repeat": {
+                      "type": "fixed",
+                      "count": 2,
+                      "stride": 1
+                    },
+                    "recordTemplate": {
+                      "direction": "row",
+                      "anchor": {
+                        "row": 2,
+                        "col": 2
+                      },
+                      "fields": []
+                    },
+                    "presentation": {
+                      "showHeader": false,
+                      "showIndex": false,
+                      "emptyText": "暂无数据",
+                      "addEntry": "bottom"
+                    }
+                  }
+                },
+                "props": {
+                  "title": "子表",
+                  "label": "已有明细观察"
+                },
+                "style": {
+                  "position": "absolute",
+                  "compLeft": 83,
+                  "compTop": 36,
+                  "compWidth": 166,
+                  "compHeight": 72,
+                  "cellRange": {
+                    "t": 2,
+                    "l": 2,
+                    "b": 3,
+                    "r": 3
+                  }
+                }
+              }
+            ],
+            "undo": 4,
+            "redo": 0,
+            "focus": {
+              "tag": "DIV",
+              "text": "",
+              "label": null,
+              "row": "2",
+              "col": "2"
+            },
+            "menus": []
+          }
+        },
+        {
+          "operation": "toolbar undo subtable placement",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-ed52c9dd-d6e8-4a06-acee-e518cdebd733",
+                "type": "text",
+                "name": "普通字段观察"
+              },
+              {
+                "id": "field-f3cdd932-9995-473a-8dc1-8e87f837131b",
+                "type": "subTable",
+                "name": "已有明细观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 3,
+            "redo": 1,
+            "focus": {
+              "tag": "BUTTON",
+              "text": "",
+              "label": "撤销",
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        }
+      ],
+      "pageErrors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "quick-add-model-only",
+      "status": "observed",
+      "steps": [
+        {
+          "operation": "fixture ready, no placement API called",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-51dd172f-8ec1-4d78-9c5e-42a9847f69c2",
+                "type": "text",
+                "name": "普通字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 1,
+            "redo": 0,
+            "focus": {
+              "tag": "BODY",
+              "text": "9101112141618202224262836字段管理普通字段观察文本画布设置ABCDEFGHI12345678910111213141516171819202122232425262728293",
+              "label": null,
+              "row": null,
+              "col": null
+            },
+            "menus": []
+          }
+        },
+        {
+          "operation": "quick add confirm from real cell menu/dialog",
+          "snapshot": {
+            "fields": [
+              {
+                "id": "field-51dd172f-8ec1-4d78-9c5e-42a9847f69c2",
+                "type": "text",
+                "name": "普通字段观察"
+              },
+              {
+                "id": "field-0af19c73-c230-43ff-8ea9-b1addd448433",
+                "type": "text",
+                "name": "快速模型字段观察"
+              }
+            ],
+            "nodes": [],
+            "undo": 2,
+            "redo": 0,
+            "focus": {
+              "tag": "DIV",
+              "text": "",
+              "label": null,
+              "row": "2",
+              "col": "2"
+            },
+            "menus": []
+          }
+        }
+      ],
+      "pageErrors": [],
+      "unexpectedApiRequests": []
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "kind": "test-harness-startup-error",
+  "command": "DESIGNER_CASES=grid-cancel,normal-grid-drop DESIGNER_ARTIFACTS=/tmp/edhr-pointer-initial-desktop CHROME_PATH=/usr/bin/chromium node scripts/test-designer-pointer-cancel-browser.mjs",
+  "observed": "ENOENT opening /tmp/edhr-pointer-cancel-host-I1TLuE/bundle.css in HTTP fixture handler; no stylesheet was emitted by this MUI-only bundle",
+  "productAssertionsReached": false,
+  "disposition": "Fixed test HTTP handler to return 404 for an absent optional bundle.css instead of crashing the process. No product code or assertions changed. Subsequent complete baseline is /tmp/edhr-pointer-baseline-desktop/result.json."
+}

@@ -1,0 +1,1844 @@
+{
+  "sourceCommit": "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+  "workingTreeState": " M gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx\n M gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx\n?? docs/development/branch-review-20261028-designer-cancel/\n?? gmp-platform/frontend/scripts/test-designer-pointer-cancel-browser.mjs\n",
+  "baselineSourceCommit": null,
+  "baselinePaths": [],
+  "viewport": {
+    "width": 1440,
+    "height": 960
+  },
+  "boundary": "Actual CanvasTab/Sidebar/Workspace/MUI/Zustand. Real mouse down/move/up, synthetic pointercancel; no physical touchscreen/OS interruption, backend persistence or save/reopen claim. Store APIs only construct fixtures.",
+  "results": [
+    {
+      "name": "grid-cancel",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "fixture-ready",
+          "state": {
+            "documentSha256": "868d37a468e00c6ac644ddf1281887d225d47e446212f5d944aa5a0fbbf393bf",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "2049a9e7c764c01b2d54c574d1506c0afc7347b1f878634858110fcb839bb51f",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          },
+          "start": {
+            "x": 174.5,
+            "y": 122,
+            "width": 225,
+            "height": 56
+          },
+          "end": {
+            "x": 529,
+            "y": 150,
+            "width": 64,
+            "height": 36
+          }
+        },
+        {
+          "operation": "pointercancel",
+          "state": {
+            "documentSha256": "868d37a468e00c6ac644ddf1281887d225d47e446212f5d944aa5a0fbbf393bf",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "2049a9e7c764c01b2d54c574d1506c0afc7347b1f878634858110fcb839bb51f",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "native-pointerup",
+          "state": {
+            "documentSha256": "868d37a468e00c6ac644ddf1281887d225d47e446212f5d944aa5a0fbbf393bf",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "2049a9e7c764c01b2d54c574d1506c0afc7347b1f878634858110fcb839bb51f",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointercancel",
+          "pointerId": 1,
+          "isTrusted": false
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        }
+      ],
+      "errors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "merged-cancel",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "fixture-ready",
+          "state": {
+            "documentSha256": "55bbc32731f0dd36fe4b355b1b85a82a570ea4cd6432a3cb93fd9e5af8d3dae3",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "c3bc7c6b61ae09ef58b01e2fa64e7c79af43fb62ab349806db1e39ef1b467818",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          },
+          "start": {
+            "x": 174.5,
+            "y": 122,
+            "width": 225,
+            "height": 56
+          },
+          "end": {
+            "x": 561,
+            "y": 150,
+            "width": 128,
+            "height": 36
+          }
+        },
+        {
+          "operation": "pointercancel",
+          "state": {
+            "documentSha256": "55bbc32731f0dd36fe4b355b1b85a82a570ea4cd6432a3cb93fd9e5af8d3dae3",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "c3bc7c6b61ae09ef58b01e2fa64e7c79af43fb62ab349806db1e39ef1b467818",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "native-pointerup",
+          "state": {
+            "documentSha256": "55bbc32731f0dd36fe4b355b1b85a82a570ea4cd6432a3cb93fd9e5af8d3dae3",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "c3bc7c6b61ae09ef58b01e2fa64e7c79af43fb62ab349806db1e39ef1b467818",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointercancel",
+          "pointerId": 1,
+          "isTrusted": false
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        }
+      ],
+      "errors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "word-new-cancel",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "fixture-ready",
+          "state": {
+            "documentSha256": "ad443cbcdf4ec8a2f77f80471567658c69c00f67093c3268f9148ee39cdc7308",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "1cb3dfc5dc75aa36f5dd3bd1d7102fda54d3622fd961df39cbc0b28e3680ff28",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            },
+            "wordCells": [
+              {
+                "id": "source-cell",
+                "row": 1,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "原位置："
+              },
+              {
+                "id": "target-cell",
+                "row": 2,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "目标原文"
+              }
+            ]
+          },
+          "start": {
+            "x": 174.5,
+            "y": 122,
+            "width": 225,
+            "height": 56
+          },
+          "end": {
+            "x": 617,
+            "y": 216,
+            "width": 240,
+            "height": 80
+          }
+        },
+        {
+          "operation": "pointercancel",
+          "state": {
+            "documentSha256": "ad443cbcdf4ec8a2f77f80471567658c69c00f67093c3268f9148ee39cdc7308",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "1cb3dfc5dc75aa36f5dd3bd1d7102fda54d3622fd961df39cbc0b28e3680ff28",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            },
+            "wordCells": [
+              {
+                "id": "source-cell",
+                "row": 1,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "原位置："
+              },
+              {
+                "id": "target-cell",
+                "row": 2,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "目标原文"
+              }
+            ]
+          }
+        },
+        {
+          "operation": "native-pointerup",
+          "state": {
+            "documentSha256": "ad443cbcdf4ec8a2f77f80471567658c69c00f67093c3268f9148ee39cdc7308",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "1cb3dfc5dc75aa36f5dd3bd1d7102fda54d3622fd961df39cbc0b28e3680ff28",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            },
+            "wordCells": [
+              {
+                "id": "source-cell",
+                "row": 1,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "原位置："
+              },
+              {
+                "id": "target-cell",
+                "row": 2,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "目标原文"
+              }
+            ]
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointercancel",
+          "pointerId": 1,
+          "isTrusted": false
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        }
+      ],
+      "errors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "subfield-cancel",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "fixture-ready",
+          "state": {
+            "documentSha256": "a2b81be8546b5c3ddaf25b4867daff95702dd6dd24cdaeebbc3bdbc12a603abf",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "d5a17e35f5895128197e1394034f059cb4253f128f787c9c863c38f0614635e3",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [
+              {
+                "id": "sub-table-40a612dd-5f16-4b8a-8bcf-8ac89deb2745",
+                "type": "sub-table",
+                "bindings": {
+                  "fieldId": "field-829c16ce-e65f-41cb-a55c-642fc260d0fb",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {},
+                  "subTableRegion": {
+                    "id": "sub-table-region-5a96dd4a-4724-4470-a421-a4a824624e5d",
+                    "fieldId": "field-829c16ce-e65f-41cb-a55c-642fc260d0fb",
+                    "mode": "record",
+                    "ranges": [
+                      {
+                        "pageId": "page-1",
+                        "range": {
+                          "t": 2,
+                          "l": 1,
+                          "b": 5,
+                          "r": 3
+                        },
+                        "order": 1
+                      }
+                    ],
+                    "repeat": {
+                      "type": "dynamic"
+                    },
+                    "recordTemplate": {
+                      "direction": "row",
+                      "anchor": {
+                        "row": 2,
+                        "col": 1
+                      },
+                      "fields": []
+                    },
+                    "presentation": {
+                      "showHeader": false,
+                      "showIndex": false,
+                      "emptyText": "暂无数据",
+                      "addEntry": "bottom"
+                    }
+                  }
+                },
+                "style": {
+                  "position": "absolute",
+                  "compLeft": 0,
+                  "compTop": 36,
+                  "compWidth": 192,
+                  "compHeight": 144,
+                  "cellRange": {
+                    "t": 2,
+                    "l": 1,
+                    "b": 5,
+                    "r": 3
+                  }
+                }
+              }
+            ],
+            "cells": {
+              "2:1": {
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          },
+          "start": {
+            "x": 174.5,
+            "y": 122,
+            "width": 225,
+            "height": 56
+          },
+          "end": {
+            "x": 529,
+            "y": 150,
+            "width": 64,
+            "height": 36
+          }
+        },
+        {
+          "operation": "pointercancel",
+          "state": {
+            "documentSha256": "a2b81be8546b5c3ddaf25b4867daff95702dd6dd24cdaeebbc3bdbc12a603abf",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "d5a17e35f5895128197e1394034f059cb4253f128f787c9c863c38f0614635e3",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [
+              {
+                "id": "sub-table-40a612dd-5f16-4b8a-8bcf-8ac89deb2745",
+                "type": "sub-table",
+                "bindings": {
+                  "fieldId": "field-829c16ce-e65f-41cb-a55c-642fc260d0fb",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {},
+                  "subTableRegion": {
+                    "id": "sub-table-region-5a96dd4a-4724-4470-a421-a4a824624e5d",
+                    "fieldId": "field-829c16ce-e65f-41cb-a55c-642fc260d0fb",
+                    "mode": "record",
+                    "ranges": [
+                      {
+                        "pageId": "page-1",
+                        "range": {
+                          "t": 2,
+                          "l": 1,
+                          "b": 5,
+                          "r": 3
+                        },
+                        "order": 1
+                      }
+                    ],
+                    "repeat": {
+                      "type": "dynamic"
+                    },
+                    "recordTemplate": {
+                      "direction": "row",
+                      "anchor": {
+                        "row": 2,
+                        "col": 1
+                      },
+                      "fields": []
+                    },
+                    "presentation": {
+                      "showHeader": false,
+                      "showIndex": false,
+                      "emptyText": "暂无数据",
+                      "addEntry": "bottom"
+                    }
+                  }
+                },
+                "style": {
+                  "position": "absolute",
+                  "compLeft": 0,
+                  "compTop": 36,
+                  "compWidth": 192,
+                  "compHeight": 144,
+                  "cellRange": {
+                    "t": 2,
+                    "l": 1,
+                    "b": 5,
+                    "r": 3
+                  }
+                }
+              }
+            ],
+            "cells": {
+              "2:1": {
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "native-pointerup",
+          "state": {
+            "documentSha256": "a2b81be8546b5c3ddaf25b4867daff95702dd6dd24cdaeebbc3bdbc12a603abf",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "d5a17e35f5895128197e1394034f059cb4253f128f787c9c863c38f0614635e3",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [
+              {
+                "id": "sub-table-40a612dd-5f16-4b8a-8bcf-8ac89deb2745",
+                "type": "sub-table",
+                "bindings": {
+                  "fieldId": "field-829c16ce-e65f-41cb-a55c-642fc260d0fb",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {},
+                  "subTableRegion": {
+                    "id": "sub-table-region-5a96dd4a-4724-4470-a421-a4a824624e5d",
+                    "fieldId": "field-829c16ce-e65f-41cb-a55c-642fc260d0fb",
+                    "mode": "record",
+                    "ranges": [
+                      {
+                        "pageId": "page-1",
+                        "range": {
+                          "t": 2,
+                          "l": 1,
+                          "b": 5,
+                          "r": 3
+                        },
+                        "order": 1
+                      }
+                    ],
+                    "repeat": {
+                      "type": "dynamic"
+                    },
+                    "recordTemplate": {
+                      "direction": "row",
+                      "anchor": {
+                        "row": 2,
+                        "col": 1
+                      },
+                      "fields": []
+                    },
+                    "presentation": {
+                      "showHeader": false,
+                      "showIndex": false,
+                      "emptyText": "暂无数据",
+                      "addEntry": "bottom"
+                    }
+                  }
+                },
+                "style": {
+                  "position": "absolute",
+                  "compLeft": 0,
+                  "compTop": 36,
+                  "compWidth": 192,
+                  "compHeight": 144,
+                  "cellRange": {
+                    "t": 2,
+                    "l": 1,
+                    "b": 5,
+                    "r": 3
+                  }
+                }
+              }
+            ],
+            "cells": {
+              "2:1": {
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointercancel",
+          "pointerId": 1,
+          "isTrusted": false
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        }
+      ],
+      "errors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "word-inline-move-cancel",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "fixture-ready",
+          "state": {
+            "documentSha256": "a4edffeaa906550afc637408b8f76ec110e8cf683bb508652f8859bbd71ca8d8",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "968b49821b3d29b46e8bc6cc34b60a9ac69e8d9fa41bf23ad81d93915b05022a",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [
+              {
+                "id": "input-d030ec56-30f2-4e62-bb3c-f97cdb070491",
+                "type": "input",
+                "bindings": {
+                  "fieldId": "field-37c8cc26-6cf6-41f1-a232-a88fd0984e73",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {}
+                },
+                "style": {
+                  "compWidth": 240,
+                  "compHeight": 80,
+                  "position": "absolute",
+                  "compLeft": 0,
+                  "compTop": 0,
+                  "wordTableCell": {
+                    "blockId": "word-table",
+                    "cellId": "source-cell"
+                  }
+                }
+              }
+            ],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            },
+            "wordCells": [
+              {
+                "id": "source-cell",
+                "row": 1,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "原位置：field:input-d030ec56-30f2-4e62-bb3c-f97cdb070491"
+              },
+              {
+                "id": "target-cell",
+                "row": 2,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "目标原文"
+              }
+            ]
+          },
+          "start": {
+            "x": 605.0078125,
+            "y": 136.5,
+            "width": 84.796875,
+            "height": 21
+          },
+          "end": {
+            "x": 617,
+            "y": 216,
+            "width": 240,
+            "height": 80
+          }
+        },
+        {
+          "operation": "pointercancel",
+          "state": {
+            "documentSha256": "a4edffeaa906550afc637408b8f76ec110e8cf683bb508652f8859bbd71ca8d8",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "968b49821b3d29b46e8bc6cc34b60a9ac69e8d9fa41bf23ad81d93915b05022a",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [
+              {
+                "id": "input-d030ec56-30f2-4e62-bb3c-f97cdb070491",
+                "type": "input",
+                "bindings": {
+                  "fieldId": "field-37c8cc26-6cf6-41f1-a232-a88fd0984e73",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {}
+                },
+                "style": {
+                  "compWidth": 240,
+                  "compHeight": 80,
+                  "position": "absolute",
+                  "compLeft": 0,
+                  "compTop": 0,
+                  "wordTableCell": {
+                    "blockId": "word-table",
+                    "cellId": "source-cell"
+                  }
+                }
+              }
+            ],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            },
+            "wordCells": [
+              {
+                "id": "source-cell",
+                "row": 1,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "原位置：field:input-d030ec56-30f2-4e62-bb3c-f97cdb070491"
+              },
+              {
+                "id": "target-cell",
+                "row": 2,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "目标原文"
+              }
+            ]
+          }
+        },
+        {
+          "operation": "native-pointerup",
+          "state": {
+            "documentSha256": "a4edffeaa906550afc637408b8f76ec110e8cf683bb508652f8859bbd71ca8d8",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "968b49821b3d29b46e8bc6cc34b60a9ac69e8d9fa41bf23ad81d93915b05022a",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [
+              {
+                "id": "input-d030ec56-30f2-4e62-bb3c-f97cdb070491",
+                "type": "input",
+                "bindings": {
+                  "fieldId": "field-37c8cc26-6cf6-41f1-a232-a88fd0984e73",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {}
+                },
+                "style": {
+                  "compWidth": 240,
+                  "compHeight": 80,
+                  "position": "absolute",
+                  "compLeft": 0,
+                  "compTop": 0,
+                  "wordTableCell": {
+                    "blockId": "word-table",
+                    "cellId": "source-cell"
+                  }
+                }
+              }
+            ],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            },
+            "wordCells": [
+              {
+                "id": "source-cell",
+                "row": 1,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "原位置：field:input-d030ec56-30f2-4e62-bb3c-f97cdb070491"
+              },
+              {
+                "id": "target-cell",
+                "row": 2,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "目标原文"
+              }
+            ]
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointercancel",
+          "pointerId": 1,
+          "isTrusted": false
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        }
+      ],
+      "errors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "cancel-before-threshold",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "fixture-ready",
+          "state": {
+            "documentSha256": "1de0c9017555aca07cad08293fb541e79bb574a00dfe8bdd6ee90cd3e2fd89c1",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "30137b40399db45d4fd4c1c685387114252118f5617461c70a5e690a1ab3a885",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          },
+          "start": {
+            "x": 174.5,
+            "y": 122,
+            "width": 225,
+            "height": 56
+          },
+          "end": {
+            "x": 529,
+            "y": 150,
+            "width": 64,
+            "height": 36
+          }
+        },
+        {
+          "operation": "pointercancel",
+          "state": {
+            "documentSha256": "1de0c9017555aca07cad08293fb541e79bb574a00dfe8bdd6ee90cd3e2fd89c1",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "30137b40399db45d4fd4c1c685387114252118f5617461c70a5e690a1ab3a885",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "native-pointerup",
+          "state": {
+            "documentSha256": "1de0c9017555aca07cad08293fb541e79bb574a00dfe8bdd6ee90cd3e2fd89c1",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "30137b40399db45d4fd4c1c685387114252118f5617461c70a5e690a1ab3a885",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointercancel",
+          "pointerId": 1,
+          "isTrusted": false
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        }
+      ],
+      "errors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "unrelated-pointer-cancel",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "fixture-ready",
+          "state": {
+            "documentSha256": "d8fe2552c899ffde3c28328a7f744c34025e31920488897c2db534368f8155a9",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "b3d0234676fa33b7f00a35e1e37c4a42e8863158b8ca7d0f587cf217573a22eb",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          },
+          "start": {
+            "x": 174.5,
+            "y": 122,
+            "width": 225,
+            "height": 56
+          },
+          "end": {
+            "x": 529,
+            "y": 150,
+            "width": 64,
+            "height": 36
+          }
+        },
+        {
+          "operation": "pointercancel",
+          "state": {
+            "documentSha256": "d8fe2552c899ffde3c28328a7f744c34025e31920488897c2db534368f8155a9",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "b3d0234676fa33b7f00a35e1e37c4a42e8863158b8ca7d0f587cf217573a22eb",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          }
+        },
+        {
+          "operation": "native-pointerup",
+          "state": {
+            "documentSha256": "55e74cfee66f6ceea01dc0f717dec344268d71d75ddbc0e04a875e011d9b6205",
+            "undoSha256": "8712baedb4404489ff35861bd76193dd97d920e8fb622f24690afbfec0d64928",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 1,
+            "redoLength": 0,
+            "nodes": [
+              {
+                "id": "input-db4a45de-c7ea-44d1-94e3-859ddb9c5d20",
+                "type": "input",
+                "bindings": {
+                  "fieldId": "field-7c5e0e4c-a5a9-4b87-8ae7-3569db0f5c22",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {}
+                },
+                "style": {
+                  "compWidth": 126,
+                  "compHeight": 36,
+                  "position": "absolute",
+                  "compLeft": 0,
+                  "compTop": 36,
+                  "cellRange": {
+                    "t": 2,
+                    "l": 1,
+                    "b": 2,
+                    "r": 1
+                  }
+                }
+              }
+            ],
+            "cells": {
+              "2:1": {
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointercancel",
+          "pointerId": 101,
+          "isTrusted": false
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        }
+      ],
+      "errors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "normal-grid-drop",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "fixture-ready",
+          "state": {
+            "documentSha256": "670b442b912d2e6b9fa17a40625c30f513e9c4ffbe23e1eceacd8df1873ca02c",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "e02440fabf5880700ba04966b5654c0494c8e9ad3988bef8c35c0e6d4418dc62",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          },
+          "start": {
+            "x": 174.5,
+            "y": 122,
+            "width": 225,
+            "height": 56
+          },
+          "end": {
+            "x": 529,
+            "y": 150,
+            "width": 64,
+            "height": 36
+          }
+        },
+        {
+          "operation": "native-pointerup",
+          "state": {
+            "documentSha256": "8296e7709c20ce883bf24b51aac9cfecb6246db5357cd3e056f1719f9dd167cf",
+            "undoSha256": "c57ea55e16bed5c81c5e274d23a259f01459a8c5d57d73de916223c7829b212f",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 1,
+            "redoLength": 0,
+            "nodes": [
+              {
+                "id": "input-d50e383e-46a4-4b15-850a-ce450278dfc8",
+                "type": "input",
+                "bindings": {
+                  "fieldId": "field-6f8d93d9-7859-4d66-8769-8ebd09df96f7",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {}
+                },
+                "style": {
+                  "compWidth": 126,
+                  "compHeight": 36,
+                  "position": "absolute",
+                  "compLeft": 0,
+                  "compTop": 36,
+                  "cellRange": {
+                    "t": 2,
+                    "l": 1,
+                    "b": 2,
+                    "r": 1
+                  }
+                }
+              }
+            ],
+            "cells": {
+              "2:1": {
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        }
+      ],
+      "errors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "normal-word-drop",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "fixture-ready",
+          "state": {
+            "documentSha256": "0547ca6757a34f1d82857ab05279619d0c75c52d5f1c2a673b8ae5d318576418",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "431ac049e7233ac4de197a632eb2d644d715d4075385b0ed111fe2be69adef3c",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            },
+            "wordCells": [
+              {
+                "id": "source-cell",
+                "row": 1,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "原位置："
+              },
+              {
+                "id": "target-cell",
+                "row": 2,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "目标原文"
+              }
+            ]
+          },
+          "start": {
+            "x": 174.5,
+            "y": 122,
+            "width": 225,
+            "height": 56
+          },
+          "end": {
+            "x": 617,
+            "y": 216,
+            "width": 240,
+            "height": 80
+          }
+        },
+        {
+          "operation": "native-pointerup",
+          "state": {
+            "documentSha256": "e3ae326a4abbf2c04d81222b83a08da59b9aa6366c100451c3c58616b31934a8",
+            "undoSha256": "150668679fad92ca2405ab59455ad522032112c20fb867200995132b1b6970e4",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 1,
+            "redoLength": 0,
+            "nodes": [
+              {
+                "id": "input-0f564a0f-2f49-4959-9fb1-464ec9f55da2",
+                "type": "input",
+                "bindings": {
+                  "fieldId": "field-73fc0d13-fde5-48b1-a320-3c6642e0c84c",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {}
+                },
+                "style": {
+                  "compWidth": 240,
+                  "compHeight": 80,
+                  "position": "absolute",
+                  "compLeft": 0,
+                  "compTop": 80,
+                  "wordTableCell": {
+                    "blockId": "word-table",
+                    "cellId": "target-cell"
+                  }
+                }
+              }
+            ],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            },
+            "wordCells": [
+              {
+                "id": "source-cell",
+                "row": 1,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "原位置："
+              },
+              {
+                "id": "target-cell",
+                "row": 2,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "目标原文field:input-0f564a0f-2f49-4959-9fb1-464ec9f55da2"
+              }
+            ]
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        }
+      ],
+      "errors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "normal-subfield-drop",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "fixture-ready",
+          "state": {
+            "documentSha256": "241d182f958f528fe36e2ae8929d512564f4617feeb2bfb588590b9a49b25de0",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "730a366335480abdd710f2872b95f720b04cb8e8de6d0e22e1d25421e936d451",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [
+              {
+                "id": "sub-table-a94e9f56-b6d1-4e7a-b4a2-3d78a42918cc",
+                "type": "sub-table",
+                "bindings": {
+                  "fieldId": "field-7aa8f759-9687-426d-b671-16a51d1273c2",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {},
+                  "subTableRegion": {
+                    "id": "sub-table-region-d68858d7-258c-4a20-bbb8-aafedb9d0fba",
+                    "fieldId": "field-7aa8f759-9687-426d-b671-16a51d1273c2",
+                    "mode": "record",
+                    "ranges": [
+                      {
+                        "pageId": "page-1",
+                        "range": {
+                          "t": 2,
+                          "l": 1,
+                          "b": 5,
+                          "r": 3
+                        },
+                        "order": 1
+                      }
+                    ],
+                    "repeat": {
+                      "type": "dynamic"
+                    },
+                    "recordTemplate": {
+                      "direction": "row",
+                      "anchor": {
+                        "row": 2,
+                        "col": 1
+                      },
+                      "fields": []
+                    },
+                    "presentation": {
+                      "showHeader": false,
+                      "showIndex": false,
+                      "emptyText": "暂无数据",
+                      "addEntry": "bottom"
+                    }
+                  }
+                },
+                "style": {
+                  "position": "absolute",
+                  "compLeft": 0,
+                  "compTop": 36,
+                  "compWidth": 192,
+                  "compHeight": 144,
+                  "cellRange": {
+                    "t": 2,
+                    "l": 1,
+                    "b": 5,
+                    "r": 3
+                  }
+                }
+              }
+            ],
+            "cells": {
+              "2:1": {
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          },
+          "start": {
+            "x": 174.5,
+            "y": 122,
+            "width": 225,
+            "height": 56
+          },
+          "end": {
+            "x": 529,
+            "y": 150,
+            "width": 64,
+            "height": 36
+          }
+        },
+        {
+          "operation": "native-pointerup",
+          "state": {
+            "documentSha256": "8e94deeefafb06af6158fb6e12335cbd941796454c8c25c2060446405ef8e132",
+            "undoSha256": "04512337e5bd13ced3ec51e535c0c8e5d3b299e34fa6269faec37cf196f6631d",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 1,
+            "redoLength": 0,
+            "nodes": [
+              {
+                "id": "sub-table-a94e9f56-b6d1-4e7a-b4a2-3d78a42918cc",
+                "type": "sub-table",
+                "bindings": {
+                  "fieldId": "field-7aa8f759-9687-426d-b671-16a51d1273c2",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {},
+                  "subTableRegion": {
+                    "id": "sub-table-region-d68858d7-258c-4a20-bbb8-aafedb9d0fba",
+                    "fieldId": "field-7aa8f759-9687-426d-b671-16a51d1273c2",
+                    "mode": "record",
+                    "ranges": [
+                      {
+                        "pageId": "page-1",
+                        "range": {
+                          "t": 2,
+                          "l": 1,
+                          "b": 5,
+                          "r": 3
+                        },
+                        "order": 1
+                      }
+                    ],
+                    "repeat": {
+                      "type": "dynamic"
+                    },
+                    "recordTemplate": {
+                      "direction": "row",
+                      "anchor": {
+                        "row": 2,
+                        "col": 1
+                      },
+                      "fields": [
+                        {
+                          "fieldId": "sub-field-9e56fd85-78b7-4d6d-8cb2-7eb7d5358329",
+                          "rowOffset": 0,
+                          "colOffset": 0,
+                          "rowSpan": 1,
+                          "colSpan": 1
+                        }
+                      ]
+                    },
+                    "presentation": {
+                      "showHeader": false,
+                      "showIndex": false,
+                      "emptyText": "暂无数据",
+                      "addEntry": "bottom"
+                    }
+                  }
+                },
+                "style": {
+                  "position": "absolute",
+                  "compLeft": 0,
+                  "compTop": 36,
+                  "compWidth": 192,
+                  "compHeight": 144,
+                  "cellRange": {
+                    "t": 2,
+                    "l": 1,
+                    "b": 5,
+                    "r": 3
+                  }
+                }
+              },
+              {
+                "id": "input-37968457-f7e3-4f74-81b2-d8612f873aa3",
+                "type": "input",
+                "bindings": {
+                  "fieldId": "sub-field-9e56fd85-78b7-4d6d-8cb2-7eb7d5358329",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {},
+                  "subTableId": "field-7aa8f759-9687-426d-b671-16a51d1273c2",
+                  "subTableFieldId": "sub-field-9e56fd85-78b7-4d6d-8cb2-7eb7d5358329",
+                  "subTableField": {
+                    "id": "sub-field-9e56fd85-78b7-4d6d-8cb2-7eb7d5358329",
+                    "code": "text",
+                    "name": "待放子字段",
+                    "type": "text",
+                    "groupId": "default-group",
+                    "sortOrder": 1,
+                    "status": "enabled",
+                    "description": "",
+                    "typeConfig": {
+                      "textMode": "short"
+                    }
+                  }
+                },
+                "style": {
+                  "compWidth": 126,
+                  "compHeight": 36,
+                  "position": "absolute",
+                  "compLeft": 0,
+                  "compTop": 36,
+                  "cellRange": {
+                    "t": 2,
+                    "l": 1,
+                    "b": 2,
+                    "r": 1
+                  }
+                }
+              }
+            ],
+            "cells": {
+              "2:1": {
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        }
+      ],
+      "errors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "normal-word-inline-move",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "fixture-ready",
+          "state": {
+            "documentSha256": "736480cd04666e0ca0a913a6793e6a4b5b9e6bff6278a128bb1da87dfccd132d",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "5952d9a459490083be48a7c75acb88a66f123f246f0dec18556e8351fa753310",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [
+              {
+                "id": "input-c2bcf571-245a-4c3c-8db8-916961725f0a",
+                "type": "input",
+                "bindings": {
+                  "fieldId": "field-4a2d0fe6-8a59-4763-a2eb-7f829d700061",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {}
+                },
+                "style": {
+                  "compWidth": 240,
+                  "compHeight": 80,
+                  "position": "absolute",
+                  "compLeft": 0,
+                  "compTop": 0,
+                  "wordTableCell": {
+                    "blockId": "word-table",
+                    "cellId": "source-cell"
+                  }
+                }
+              }
+            ],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            },
+            "wordCells": [
+              {
+                "id": "source-cell",
+                "row": 1,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "原位置：field:input-c2bcf571-245a-4c3c-8db8-916961725f0a"
+              },
+              {
+                "id": "target-cell",
+                "row": 2,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "目标原文"
+              }
+            ]
+          },
+          "start": {
+            "x": 605.0078125,
+            "y": 136.5,
+            "width": 84.796875,
+            "height": 21
+          },
+          "end": {
+            "x": 617,
+            "y": 216,
+            "width": 240,
+            "height": 80
+          }
+        },
+        {
+          "operation": "native-pointerup",
+          "state": {
+            "documentSha256": "8d031a7fc74f4b9d4610381cca596e3c57c2690c1b67c15aeffa730255c62258",
+            "undoSha256": "2e9fbd9a4d6ed1edf8762a185d29ca4848a1c1ec3c40a17266d28166af0f1768",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 1,
+            "redoLength": 0,
+            "nodes": [
+              {
+                "id": "input-c2bcf571-245a-4c3c-8db8-916961725f0a",
+                "type": "input",
+                "bindings": {
+                  "fieldId": "field-4a2d0fe6-8a59-4763-a2eb-7f829d700061",
+                  "required": false,
+                  "readonly": false,
+                  "hidden": false,
+                  "widgetConfig": {}
+                },
+                "style": {
+                  "compWidth": 240,
+                  "compHeight": 80,
+                  "position": "absolute",
+                  "compLeft": 0,
+                  "compTop": 0,
+                  "wordTableCell": {
+                    "blockId": "word-table",
+                    "cellId": "target-cell"
+                  }
+                }
+              }
+            ],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            },
+            "wordCells": [
+              {
+                "id": "source-cell",
+                "row": 1,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "原位置："
+              },
+              {
+                "id": "target-cell",
+                "row": 2,
+                "col": 1,
+                "rowSpan": 1,
+                "colSpan": 1,
+                "text": "目标原文field:input-c2bcf571-245a-4c3c-8db8-916961725f0a"
+              }
+            ]
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        }
+      ],
+      "errors": [],
+      "unexpectedApiRequests": []
+    },
+    {
+      "name": "release-outside-canvas",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "fixture-ready",
+          "state": {
+            "documentSha256": "04c1ff246b3eb2434044fe0dc9504538140fdc301046065c745d80fbc7964c16",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "3f7c972f8b4b982f7ef06e481a02774290a544fae81a7b1e527f0b02dc9eaa83",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          },
+          "start": {
+            "x": 174.5,
+            "y": 122,
+            "width": 225,
+            "height": 56
+          },
+          "end": {
+            "x": 529,
+            "y": 150,
+            "width": 64,
+            "height": 36
+          }
+        },
+        {
+          "operation": "native-pointerup",
+          "state": {
+            "documentSha256": "04c1ff246b3eb2434044fe0dc9504538140fdc301046065c745d80fbc7964c16",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "3f7c972f8b4b982f7ef06e481a02774290a544fae81a7b1e527f0b02dc9eaa83",
+            "undoLength": 0,
+            "redoLength": 1,
+            "nodes": [],
+            "cells": {
+              "2:1": {
+                "value": "保留原文",
+                "style": {
+                  "color": "#234567"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "pointerdown",
+          "pointerId": 1,
+          "isTrusted": true
+        },
+        {
+          "type": "pointerup",
+          "pointerId": 1,
+          "isTrusted": true
+        }
+      ],
+      "errors": [],
+      "unexpectedApiRequests": []
+    }
+  ]
+}

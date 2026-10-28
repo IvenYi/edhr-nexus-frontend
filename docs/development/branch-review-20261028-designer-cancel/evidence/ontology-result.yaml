@@ -1,0 +1,42 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 6306457580dbd2787db7df8f2e3cf80ddd21defd
+    targetBranch: edhr-dev
+    targetCommit: 6306457580dbd2787db7df8f2e3cf80ddd21defd
+    contractReadCommit: 6306457580dbd2787db7df8f2e3cf80ddd21defd
+    uncommittedContractPaths: []
+  reason: >-
+    本轮只区分两个实际UI拖动入口的pointerup提交与pointercancel清理；
+    未改变字段身份、启停/可用性、选项归属、单格多选含义、覆盖策略、Word多字段、权限、保存发布或生产快照。
+    已对7个知识ID完成有限来源、合理性和实现边界核对，6项在所列范围一致、1项客户试用证据缺口保留。
+    取消不提交是交互技术修复，不能伪造成新业务决策；非拖动首次放置方案仍候选。
+    实际读取了基线上的两处未提交commit guard差异，产品SHA256在逐项JSON，未将工作树伪装为HEAD内容。
+    本角色不执行或代替最终运行/质量验收，不修改知识版本、成熟度或阶段。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.designer-cancel-contract-and-package
+      checkType: reference
+      command: python /tmp/edhr-designer-cancel-ontology-validate-20261028.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-designer-cancel-ontology-validation-20261028.json
+        - 决策包必需字段、来源目标及契约基线、7个知识ID与引用路径存在性均已核对；不表示全库语义或正式知识测试通过。
+    - id: validation.designer-cancel-semantic-boundary
+      checkType: evidence-path
+      command: 逐项读取相关决策与原始确认Markdown，并人工对照两个产品文件git diff、现有store命令与相邻ComponentLibrary取消处理
+      outcome: passed
+      evidence:
+        - /tmp/edhr-designer-cancel-rule-review-20261028.json
+        - /tmp/edhr-designer-cancel-rule-review-20261028.md
+        - 6项有限一致及1项保留证据缺口分别记录；没有新政策、知识修改、历史恢复或全库完成声明。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

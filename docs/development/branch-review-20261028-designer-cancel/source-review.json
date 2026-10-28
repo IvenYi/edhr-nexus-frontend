@@ -1,0 +1,16 @@
+{
+  "baseCommit": "6306457580dbd2787db7df8f2e3cf80ddd21defd",
+  "reviewer": "primary",
+  "wholeFileCompletion": 0,
+  "records": [
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/components/DesignerSidebar.tsx","methods":["handleFieldPointerDown","finishPointerDrag","findFieldDropCellAtPoint","field-card render"],"dimensions":["A08","A11","A12","A17","A18","A19"],"conclusion":"cancel与up共用提交为已复现缺陷；非拖动仍候选；DOM重复扫描仅静态风险。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/components/canvas/CanvasSheetWorkspace.tsx","methods":["beginWordTableInlineFieldMove","moveWordTableFieldToDropPosition","addDroppedFieldToCell","addDroppedFieldToWordTableCell","handlePointerFieldDrop","startStyleFillDrag","renderSetSubTableMenu","handleConfirmQuickAddFields"],"dimensions":["A03","A08","A17","A19"],"conclusion":"Word取消仍移动为同根第二入口；复用既有布局/边界；非拖动的普通单格/多选/Word插入位置不可混同。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts","methods":["addNodeFromFieldToCell","addNodeFromFieldToWordTableCell","addNodeFromSubTableFieldToCell","addNodeFromFieldToRange","pushDocumentHistory"],"dimensions":["A01","A03","A08","A12","A17"],"conclusion":"文档写入/局部目标guard/历史归属核对，未修改store；取消完整状态和正常undo/redo已实测，非全store验收。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ComponentLibrary.tsx","methods":["handleCellPointerDown","dispatchInsert"],"dimensions":["A08","A17","A19"],"conclusion":"相邻取消只cleanup为反证；显示组件点击插入不是普通字段语义授权。"},
+    {"path":"gmp-platform/frontend/scripts/verify-template-designer-react.mjs","methods":["Sidebar contract assertions","Word drag assertions"],"dimensions":["A21"],"conclusion":"旧静态测试禁止卡片generic addNode，保留断言；旧新脚本实跑通过不证明cancel正确，须新增browser回归。"},
+    {"path":"gmp-platform/frontend/scripts/test-cell-display-components.mjs","methods":["presentation-test API stub","all six original tests"],"dimensions":["A21","A22"],"conclusion":"缺3个identity导出为旧夹具编译问题；补fail-fast替身且全部原断言保持，6项通过。"}
+  ],
+  "overlapPolicy": "与source-helper13条方法记录有交叉，不加总为唯一文件或已完成入口数。",
+  "runtimeEvidence": ["evidence/browser-baseline.json","evidence/browser-desktop.json","evidence/browser-narrow.json","evidence/nondrag-observation.json","evidence/save-browser.json"],
+  "notRun": ["真实触控OS取消","后端保存持久化E2E","容量实验","全设计器无障碍认证"]
+}

@@ -2868,9 +2868,9 @@ export default function CanvasSheetWorkspace() {
       ownerDocument.removeEventListener('pointerup', handlePointerUp);
       ownerDocument.removeEventListener('pointercancel', handlePointerCancel);
     };
-    const finish = (eventTarget: EventTarget | null, clientX: number, clientY: number, selectField: boolean) => {
+    const finish = (eventTarget: EventTarget | null, clientX: number, clientY: number, commit: boolean) => {
       removeListeners();
-      if (active) {
+      if (commit && active) {
         const targetCell = ownerDocument.elementFromPoint(clientX, clientY)?.closest<HTMLElement>('[data-word-table-cell="true"]');
         const blockId = targetCell?.dataset.wordTableBlockId;
         const cellId = targetCell?.dataset.wordTableCellId;
@@ -2879,7 +2879,7 @@ export default function CanvasSheetWorkspace() {
           const inlineContent = insertWordTableFieldAtDropPosition(content, clientX, clientY);
           moveWordTableFieldToDropPosition(nodeId, blockId, cellId, inlineContent);
         }
-      } else if (selectField) {
+      } else if (commit) {
         selectWordTable(sourceBlockId, true);
         setWordTableAdditionalCellRanges([]);
         setWordTableCellRange({

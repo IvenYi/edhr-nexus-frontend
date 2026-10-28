@@ -15,7 +15,14 @@ const result = await build({
     plugin.onResolve({ filter: /^@mui\/icons-material\// }, ({ path }) => ({ path: path.split('/').at(-1), namespace: 'icon' }));
     plugin.onLoad({ filter: /.*/, namespace: 'icon' }, ({ path }) => ({ contents: `export { ${path} as default } from '@mui/icons-material';` }));
     plugin.onResolve({ filter: /^@\/api\/(files|identity)$/ }, () => ({ path: 'api', namespace: 'stub' }));
-    plugin.onLoad({ filter: /.*/, namespace: 'stub' }, () => ({ contents: 'export const getFilePreviewBlob = () => {}; export const verifyCurrentUserSignaturePassword = () => {};' }));
+    plugin.onLoad({ filter: /.*/, namespace: 'stub' }, () => ({ contents: `
+      export const getFilePreviewBlob = () => {};
+      export const verifyCurrentUserSignaturePassword = () => {};
+      const unexpectedIdentityRead = () => { throw new Error('presentation tests must not request identity data'); };
+      export const getDepartmentTree = unexpectedIdentityRead;
+      export const getRoles = unexpectedIdentityRead;
+      export const getUsers = unexpectedIdentityRead;
+    ` }));
   } }],
 });
 const sandbox = { module: { exports: {} }, require: createRequire(import.meta.url), console, structuredClone };
