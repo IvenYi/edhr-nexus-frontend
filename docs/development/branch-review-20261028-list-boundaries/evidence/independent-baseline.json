@@ -1,0 +1,355 @@
+{
+  "baseline": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+  "width": 1440,
+  "boundary": "Actual dictionary, operation and form-template pages with React Query/client/Chromium; controlled HTTP and legal custom deletes, no backend persistence",
+  "results": [
+    {
+      "name": "dictionary-parent-delete",
+      "kind": "dictionary",
+      "scenario": "parent-delete",
+      "result": "failed",
+      "message": "page.waitForFunction: Timeout 5000ms exceeded.",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1021/items",
+          "dictionaryId": "1021",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 2,
+          "size": 20
+        }
+      ],
+      "writes": [
+        {
+          "method": "DELETE",
+          "path": "/api/v1/system/business-dictionaries/1021"
+        }
+      ],
+      "errors": [],
+      "pageText": "业务字典\n\n新增字典\n​\n​\n状态\n全部\n状态\n重置\n查询\n字典名称\n\t字典编码\n\t字典项数\n\t状态\n\t创建人\n\t创建时间\n\t更新人\n\t更新时间\n\t操作\n\n暂无数据\n\n共 20 条数据\n\n1\n20 条/页\n​\n\n字典项\n\n请选择业务字典\n新增字典项\n​\n​\n状态\n全部\n状态\n重置\n查询\n字典项名称\n\t字典项值\n\t排序\n\t状态\n\t创建人\n\t创建时间\n\t更新人\n\t更新时间\n\t操作\n\n请选择业务字典\n\n共 0 条数据\n\n1\n20 条/页\n​"
+    },
+    {
+      "name": "dictionary-item-delete",
+      "kind": "dictionary",
+      "scenario": "item-delete",
+      "result": "failed",
+      "message": "page.waitForFunction: Timeout 5000ms exceeded.",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        }
+      ],
+      "writes": [
+        {
+          "method": "DELETE",
+          "path": "/api/v1/system/business-dictionary-items/100121"
+        }
+      ],
+      "errors": [],
+      "pageText": "业务字典\n\n新增字典\n​\n​\n状态\n全部\n状态\n重置\n查询\n字典名称\n\t字典编码\n\t字典项数\n\t状态\n\t创建人\n\t创建时间\n\t更新人\n\t更新时间\n\t操作\nDICT-01\tDICT-CODE-01\t21\t\n启用\n\t-\t-\t-\t-\t\n\n共 1 条数据\n\n1\n20 条/页\n​\n\n字典项\n\nDICT-01 / DICT-CODE-01\n新增字典项\n​\n​\n状态\n全部\n状态\n重置\n查询\n字典项名称\n\t字典项值\n\t排序\n\t状态\n\t创建人\n\t创建时间\n\t更新人\n\t更新时间\n\t操作\n\n暂无数据\n\n共 20 条数据\n\n1\n20 条/页\n​"
+    },
+    {
+      "name": "dictionary-automatic-parent-change",
+      "kind": "dictionary",
+      "scenario": "automatic-parent-change",
+      "result": "failed",
+      "message": "page.waitForFunction: Timeout 5000ms exceeded.",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1021/items",
+          "dictionaryId": "1021",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1021/items",
+          "dictionaryId": "1021",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 2,
+          "size": 20
+        }
+      ],
+      "writes": [],
+      "errors": [],
+      "pageText": "业务字典\n\n新增字典\n​\n​\n状态\n全部\n状态\n重置\n查询\n字典名称\n\t字典编码\n\t字典项数\n\t状态\n\t创建人\n\t创建时间\n\t更新人\n\t更新时间\n\t操作\nDICT-01\tDICT-CODE-01\t21\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-02\tDICT-CODE-02\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-03\tDICT-CODE-03\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-04\tDICT-CODE-04\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-05\tDICT-CODE-05\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-06\tDICT-CODE-06\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-07\tDICT-CODE-07\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-08\tDICT-CODE-08\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-09\tDICT-CODE-09\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-10\tDICT-CODE-10\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-11\tDICT-CODE-11\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-12\tDICT-CODE-12\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-13\tDICT-CODE-13\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-14\tDICT-CODE-14\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-15\tDICT-CODE-15\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-16\tDICT-CODE-16\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-17\tDICT-CODE-17\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-18\tDICT-CODE-18\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-19\tDICT-CODE-19\t0\t\n启用\n\t-\t-\t-\t-\t\n\nDICT-20\tDICT-CODE-20\t0\t\n启用\n\t-\t-\t-\t-\t\n\n共 21 条数据\n\n1\n2\n20 条/页\n​\n\n字典项\n\nDICT-01 / DICT-CODE-01\n新增字典项\n​\n​\n状态\n全部\n状态\n重置\n查询\n字典项名称\n\t字典项值\n\t排序\n\t状态\n\t创建人\n\t创建时间\n\t更新人\n\t更新时间\n\t操作\nA-ITEM-21\tVALUE-21\t20\t\n启用\n\t-\t-\t-\t-\t\n\n共 21 条数据\n\n1\n2\n20 条/页\n​"
+    },
+    {
+      "name": "operations-delete-last-page",
+      "kind": "operations",
+      "scenario": "delete-last-page",
+      "result": "failed",
+      "message": "page.waitForFunction: Timeout 5000ms exceeded.",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/deletion-check/operation/2021",
+          "deletionCheck": true
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 2,
+          "size": 20
+        }
+      ],
+      "writes": [
+        {
+          "method": "DELETE",
+          "path": "/api/v1/master-data/process-modeling/operations/2021"
+        }
+      ],
+      "errors": [],
+      "pageText": "工序分类\n\n全部\n\n20\n\n未分类\n\n0\n工序名称\n​\n工序名称\n工序编码\n​\n工序编码\n工序分类\n全部\n工序分类\n状态\n全部\n状态\n重置\n查询\n下载模板\n导入数据\n新增\n工序名称\n\t工序编码\n\t工序分类\n\t默认工序类型\n\t标准工时\n\t工序通用描述\n\t状态\n\t创建人\n\t创建时间\n\t更新人\n\t更新时间\n\t操作\n\n暂无数据\n\n共 20 条数据\n\n1\n20 条/页\n​"
+    },
+    {
+      "name": "templates-delete-last-page",
+      "kind": "templates",
+      "scenario": "delete-last-page",
+      "result": "failed",
+      "message": "page.waitForFunction: Timeout 5000ms exceeded.",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/deletion-check/form_template/3021",
+          "deletionCheck": true
+        },
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 2,
+          "size": 20
+        }
+      ],
+      "writes": [
+        {
+          "method": "DELETE",
+          "path": "/api/v1/master-data/template-modeling/form-templates/3021"
+        }
+      ],
+      "errors": [],
+      "pageText": "模板分类\n\n全部\n\n20\n\n未分类\n\n0\n表单名称\n​\n表单名称\n表单编码\n表单编码\n状态\n全部\n状态\n重置\n查询\n新增\n表单名称\n\t表单编码\n\t版本数量\n\t模板分类\n\t模板描述\n\t状态\n\t创建人\n\t创建时间\n\t更新人\n\t更新时间\n\t操作\n\n暂无数据\n\n共 20 条数据\n\n1\n20 条/页\n​"
+    },
+    {
+      "name": "dictionary-pending-error-cache",
+      "kind": "dictionary",
+      "scenario": "pending-error-cache",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1021/items",
+          "dictionaryId": "1021",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 50
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "operations-pending-error-cache",
+      "kind": "operations",
+      "scenario": "pending-error-cache",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 1,
+          "size": 50
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "templates-pending-error-cache",
+      "kind": "templates",
+      "scenario": "pending-error-cache",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 1,
+          "size": 50
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "dictionary-empty-zero-pages",
+      "kind": "dictionary",
+      "scenario": "empty-zero-pages",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "operations-empty-zero-pages",
+      "kind": "operations",
+      "scenario": "empty-zero-pages",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 1,
+          "size": 20
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "templates-empty-zero-pages",
+      "kind": "templates",
+      "scenario": "empty-zero-pages",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 1,
+          "size": 20
+        }
+      ],
+      "writes": []
+    }
+  ]
+}

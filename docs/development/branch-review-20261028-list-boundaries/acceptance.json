@@ -1,0 +1,133 @@
+{
+  "status": "passed",
+  "final": true,
+  "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+  "testedCandidateCommit": "8efb21f74dcc07050ccfbc3f516747ff2accab90",
+  "knowledgeBaselineVersion": "0.3.25",
+  "ontologyResult": "not-applicable",
+  "ontologyScope": {
+    "knowledgeIds": 13,
+    "uiContractSections": 2,
+    "wholeKnowledgeAuditComplete": false
+  },
+  "qualityResult": "passed",
+  "requiredChecks": 16,
+  "requiredPassed": 16,
+  "findings": [
+    {
+      "id": "W5-LIST-SHRINK-DICTIONARY-MODELING-001",
+      "severity": "medium",
+      "status": "resolved",
+      "resolutionCommit": "8efb21f74dcc07050ccfbc3f516747ff2accab90"
+    },
+    {
+      "id": "W5-DICTIONARY-CHILD-PAGE-001",
+      "severity": "medium",
+      "status": "resolved",
+      "resolutionCommit": "8efb21f74dcc07050ccfbc3f516747ff2accab90"
+    }
+  ],
+  "parentCandidate": {
+    "id": "W5-LIST-SHRINK-ADJACENT-001",
+    "disposition": "only tested dictionary/process/form-template child scopes accepted",
+    "remaining": [
+      "ModelTab actual refresh reproduction",
+      "Menu icon selector actual refresh reproduction"
+    ]
+  },
+  "qualityResultPath": "evidence/quality-result.yaml",
+  "qualityReportPath": "evidence/quality-review.md",
+  "scopeReviewPath": "scope-review.md",
+  "independentArchiveReceipts": [
+    {
+      "source": "/tmp/edhr-list-final-quality.yaml",
+      "archive": "evidence/quality-result.yaml",
+      "sha256": "1bac8ab4ec77f5d526d12f36bb39cde5127484e935cac9207b25927e6b60b77d"
+    },
+    {
+      "source": "/tmp/edhr-list-final-review.md",
+      "archive": "evidence/quality-review.md",
+      "sha256": "fca0db2b609347bc37ba5df34a0f7211b8cf0c3dd57d9032de3c14572ffba5b6"
+    },
+    {
+      "source": "/tmp/edhr-list-final-evidence.json",
+      "archive": "evidence/independent-evidence.json",
+      "sha256": "a6f3d945ddb69530e592fc1761ccf763fa46102d94197b5aa08db24696b6b52d"
+    },
+    {
+      "source": "/tmp/edhr-list-qa-desktop.json",
+      "archive": "evidence/independent-desktop.json",
+      "sha256": "da388df640728d51f26454dbce3004ebba04707a6c8d4e1f1127148a61563d0c"
+    },
+    {
+      "source": "/tmp/edhr-list-qa-narrow.json",
+      "archive": "evidence/independent-narrow.json",
+      "sha256": "fcfad86e40bf5197a8b68ac502084b8938141fb9375bc15f661434dec9e6b2df"
+    },
+    {
+      "source": "/tmp/edhr-list-qa-base.json",
+      "archive": "evidence/independent-baseline.json",
+      "sha256": "992780a1b7effbba17e715bd0adcc7fb6b81d727e7710d3708dce41e0df2333d"
+    },
+    {
+      "source": "/tmp/edhr-list-qa-shared.json",
+      "archive": "evidence/independent-shared.json",
+      "sha256": "c9dce94725b8f4f5de0a810578ea28cbc026b66a84d2a5a48e4d41c80c10f136"
+    },
+    {
+      "source": "/tmp/edhr-list-qa-inventory-source.json",
+      "archive": "evidence/independent-inventory.json",
+      "sha256": "a20a7b149671623779da9a33a92831d70227bf63f6c65004aaf18b6c203d622f"
+    },
+    {
+      "source": "/tmp/edhr-list-qa-inventory-source.md",
+      "archive": "evidence/independent-inventory.md",
+      "sha256": "f373a875c51421981bf70bea89de92082355df758fa1d97ca4c7b641b1e46bda"
+    },
+    {
+      "source": "/tmp/edhr-list-qa-inventory-source-initial-path-decoding.json",
+      "archive": "evidence/initial-independent-path-decoding.json",
+      "sha256": "c8b84cac8f80a5a29aaa221ed64195f82c33d0483d2cc9c6887578c015f95edc"
+    },
+    {
+      "source": "/tmp/edhr-list-qa-static-meta.json",
+      "archive": "evidence/independent-static-meta.json",
+      "sha256": "498f1903933edaba7cb0b1823f4276b89020dd0ecc892c977542d372a882ee6d"
+    },
+    {
+      "source": "/tmp/edhr-list-qa-process-verify-baseline.txt",
+      "archive": "evidence/independent-process-baseline.txt",
+      "sha256": "a248788cc94733cb5df80c1550230cb614ff9067715d60ffbb5025560fd40b65"
+    },
+    {
+      "source": "/tmp/edhr-list-qa-process-verify-current.txt",
+      "archive": "evidence/independent-process-current.txt",
+      "sha256": "a0071515c6318c8ec138724be89f92b3ff02e4a5e9191f723baf9b1cdfd21e4e"
+    }
+  ],
+  "afterCandidatePolicy": "Only L0 evidence, acceptance, progress and PR registration follows; actual tested source/tests/knowledge remain unchanged.",
+  "remaining": {
+    "currentBatchBlocked": [],
+    "globalValidationFailures": [
+      "strict baseline/current19 findings exit2; same complete multiset except line",
+      "ESLint missing configuration exit2",
+      "old process verification script retired migration ENOENT baseline/current exit1; remaining assertions not executed"
+    ],
+    "performance": "existing risk IDs pending discussion; no optimization",
+    "userDeferred": [
+      "production dialog style",
+      "TaskDetail signature",
+      "record control change/void and dependent DHR high/A12",
+      "knowledge gaps"
+    ],
+    "overallAuditComplete": false,
+    "next": "fetch real manual merge/new commits, then W2 ordinary field non-drag placement; adjacent list candidates retained"
+  },
+  "cleanup": {
+    "selfCreatedStaticExport": "/tmp/edhr-list-static-base-rmaysi9j",
+    "removed": true,
+    "databaseCreated": false,
+    "userDataModified": false
+  },
+  "pr": null
+}

@@ -1,0 +1,42 @@
+{
+  "baseline": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+  "selfCreatedExport": "/tmp/edhr-list-qa-static-base-j5yznpff",
+  "scriptSha256": "b56ca0495ace4aaac2bfa779dc707b04baab0f7d4537e6856b6348c63230661c",
+  "runs": [
+    {
+      "name": "baseline",
+      "tool": "strict",
+      "exitCode": 2,
+      "path": "/tmp/edhr-list-qa-strict-baseline.json"
+    },
+    {
+      "name": "baseline",
+      "tool": "process-verify",
+      "exitCode": 1,
+      "path": "/tmp/edhr-list-qa-process-verify-baseline.txt"
+    },
+    {
+      "name": "current",
+      "tool": "strict",
+      "exitCode": 2,
+      "path": "/tmp/edhr-list-qa-strict-current.json"
+    },
+    {
+      "name": "current",
+      "tool": "process-verify",
+      "exitCode": 1,
+      "path": "/tmp/edhr-list-qa-process-verify-current.txt"
+    }
+  ],
+  "comparison": {
+    "baselineCount": 19,
+    "currentCount": 19,
+    "sameFullMultisetExceptLine": true,
+    "added": [],
+    "removed": []
+  },
+  "cleanup": {
+    "removedSelfCreatedStaticExport": "/tmp/edhr-list-qa-static-base-j5yznpff",
+    "removed": true
+  }
+}
