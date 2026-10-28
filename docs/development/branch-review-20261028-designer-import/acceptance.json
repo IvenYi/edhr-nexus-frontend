@@ -1,0 +1,170 @@
+{
+  "status": "passed",
+  "baseCommit": "189cb2c100dd7bc81048981c99d0350daf93ec4d",
+  "testedCommit": "55461b8d3a11c757471ae891564c13a4393f9fd7",
+  "requiredChecks": 14,
+  "passedRequiredChecks": 14,
+  "codeAndTestsFrozen": true,
+  "afterTestedCommitPolicy": "L0 evidence/acceptance/scope/PR registration only. Product/tests/knowledge remain identical.",
+  "allRolesFinal": true,
+  "scopeReviewCommunicatedBeforePr": true,
+  "findings": [
+    {
+      "id": "W2-IMPORT-DRAFT-CONTEXT-001",
+      "severity": "high",
+      "status": "resolved"
+    },
+    {
+      "id": "W2-IMPORT-WORD-XML-001",
+      "severity": "medium",
+      "status": "resolved"
+    }
+  ],
+  "ontology": {
+    "result": "not-applicable",
+    "status": "FINAL",
+    "knowledgeIds": 7,
+    "consistentWithinScope": 6,
+    "retainedGap": 1,
+    "followupNewSemanticIds": 0
+  },
+  "validation": {
+    "browserUniqueCases": 15,
+    "viewports": [
+      1440,
+      390
+    ],
+    "baselineRed": 10,
+    "baselinePositive": 5,
+    "nodePassed": 35,
+    "saveBrowserRunsIncludingWidthVariants": 9,
+    "knowledgeStructuralPassed": 89,
+    "build": "passed",
+    "designerVerifier": "passed"
+  },
+  "blockingConditions": [],
+  "remaining": [
+    {
+      "id": "risk.global-static-lint",
+      "description": "strict19和缺ESLint配置仍未通过。",
+      "impact": "本批不得称全局质量扫描绿灯或全分支完成。",
+      "mitigation": "保留原件，无新增finding；单独维护旧问题。"
+    },
+    {
+      "id": "risk.office-capacity",
+      "description": "Office ZIP/工作簿全量展开仅源码风险，尚未测堆/CPU/容量。",
+      "impact": "小文件通过不能证明大文件或并发容量；Excel300x75转换上界不限制库预加载。",
+      "mitigation": "按S/U/E/N量测后与用户讨论，不自动优化。"
+    },
+    {
+      "id": "risk.adjacent-save-context",
+      "description": "用途目录await后的跨版本保存候选未实际复现/关闭。",
+      "impact": "现有save9通过不能覆盖此路径。",
+      "mitigation": "按台账下一优先复现并单独处理。"
+    },
+    {
+      "id": "risk.validation-boundary",
+      "description": "只有Chromium真实解析且读取时序/宿主受控；无物理文件选择器、Firefox/WebKit、旧格式全矩阵或后台持久化。",
+      "impact": "不能泛化成全格式/全浏览器/全后端验收。",
+      "mitigation": "只对实际场景签收，后续按风险补审。"
+    },
+    {
+      "id": "risk.remaining-audit",
+      "description": "非拖动入口、其他W2/W3/W4/W5–W7、原四知识gap与客户试用证据，以及TaskDetail/生产弹窗/记录控制-DHR high/A12暂缓继续。",
+      "impact": "整体审计未完成；4071只是pending盘点分母。",
+      "mitigation": "持续台账分别跟踪，获取最新远端再增量审查。"
+    }
+  ],
+  "archive": [
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/quality-result.yaml",
+      "originalPath": "/tmp/edhr-import-quality-result.yaml",
+      "sha256": "4b8075138a719101cc1122d9b5463c6a26809097b0dade7ccce59a620da0c638"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/quality-review.md",
+      "originalPath": "/tmp/edhr-import-quality-review.md",
+      "sha256": "ff13de33333b4c58e6902187ee012998bb99a180ed3d13de434431eaac0ee165"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/independent-evidence.json",
+      "originalPath": "/tmp/edhr-import-independent-evidence.json",
+      "sha256": "6c440f0b4fbf9d12af521d420440479e8d7c94ec32ba62b4fc231e3f0a3f1e0f"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/independent-browser-baseline.json",
+      "originalPath": "/tmp/edhr-import-qa-baseline/result.json",
+      "sha256": "6190b34fd7318b0030feec997804c2fa03451d69e88f7a0f985fef6be546922a"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/independent-browser-desktop.json",
+      "originalPath": "/tmp/edhr-import-qa-desktop/result.json",
+      "sha256": "67dda1e5dcf6759066bf1323e5e645884817f6c3b75cbb78dc1c40ba6bf47966"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/independent-browser-narrow.json",
+      "originalPath": "/tmp/edhr-import-qa-narrow/result.json",
+      "sha256": "4e6442c217ca9926b92c11be39e9f47c3639a3b63bdbca2e4bf6e8802966d187"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/independent-save.json",
+      "originalPath": "/tmp/edhr-import-qa-save.json",
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/independent-inspection.json",
+      "originalPath": "/tmp/edhr-import-qa-inspection.json",
+      "sha256": "1012040f12339886f246b437f8c3cf409d95b4f875b5329b1093c6368f55e67b"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/independent-static.json",
+      "originalPath": "/tmp/edhr-import-qa-static.json",
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/independent-static-comparison.json",
+      "originalPath": "/tmp/edhr-import-qa-static-comparison.json",
+      "sha256": "68e2d0ddb45a65bc8c23353eaa1a64aea2d072390737ba9fa7d38689267b3add"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/independent-node.txt",
+      "originalPath": "/tmp/edhr-import-qa-node.log",
+      "sha256": "91ee0f8104a10ed08455022c671d5627655da01e58dc263683ab91fd67afd722"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/independent-build.txt",
+      "originalPath": "/tmp/edhr-import-qa-build.log",
+      "sha256": "7c29accfe75b232629b691eef91a3e9e5ab8855f831a7bc1a03db0456a1a25ae"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/independent-verifier.txt",
+      "originalPath": "/tmp/edhr-import-qa-verifier.log",
+      "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/independent-knowledge.txt",
+      "originalPath": "/tmp/edhr-import-qa-knowledge.log",
+      "sha256": "a1c1367f5638aea51c68191a289eccc9724351748135b03836486340d9c0588e"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/independent-lint.txt",
+      "originalPath": "/tmp/edhr-import-qa-lint.log",
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/independent-edit-preserved.png",
+      "originalPath": "/tmp/edhr-import-qa-narrow/edit-during-read.png",
+      "sha256": "e182c53e8970e7e26b33c4499989c222d781bc4b3d4e2557c2d984c312717ab5"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-designer-import/evidence/static-final.json",
+      "originalPath": "/tmp/edhr-import-static-final.json",
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856"
+    }
+  ],
+  "cleanup": {
+    "databasesCreated": false,
+    "hosts": "All harnesses close own contexts/browser/server and exact temporary directories in finally. QA rebuilt inventory removed by exact owned path.",
+    "noMergeDeploymentOrHistoricalDataRestoration": true
+  }
+}

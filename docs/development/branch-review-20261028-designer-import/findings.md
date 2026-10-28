@@ -1,6 +1,6 @@
 # 导入链审查发现
 
-固定base `189cb2c100dd7bc81048981c99d0350daf93ec4d`。PR38已人工merge，目标整树同42c8467a，无额外契约/知识增量。以下是实际源码和浏览器证据；当前修复尚待全新独立QA签收。
+固定base `189cb2c100dd7bc81048981c99d0350daf93ec4d`。PR38已人工merge，目标整树同42c8467a，无额外契约/知识增量。以下是实际源码和浏览器证据；两项修复已在干净55461b8d由全新独立QA正式验收，14/14必需检查passed/FINAL，按acceptance resolved，未将其他候选同时关闭。
 
 ## W2-IMPORT-DRAFT-CONTEXT-001 · high
 

@@ -1,0 +1,1920 @@
+{
+  "sourceCommit": "55461b8d3a11c757471ae891564c13a4393f9fd7",
+  "workingTreeState": "",
+  "baselineSourceCommit": "189cb2c100dd7bc81048981c99d0350daf93ec4d",
+  "baselinePaths": [
+    "TemplateDesignerReactShell.tsx",
+    "utils/importWord.ts"
+  ],
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "boundary": "Actual Shell, CanvasTab, store and original XLSX/DOCX parsers; file arrayBuffer promise gates and host props/open state controlled. Transparent parser finally marker only observes completion; no parser result mocks, backend writes, save/reopen persistence or physical-device claim.",
+  "results": [
+    {
+      "name": "normal-xlsx",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "0056a913e7ca1db8443dd7c966b666daf17c4b7caa1e9cdfdbe36ec2f9e422f1",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "379a0d917eebd1a60ab37ca473563acb1d5b2ab064711fe59e021e770c3aa7f4",
+            "undoSha256": "6c29c5169db0ad3cf180d7869e031e44e9538bb14f0d1540992d483ef08c339a",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 1,
+            "redoLength": 0,
+            "dirty": true,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "导入新内容",
+                    "style": {}
+                  },
+                  "1:2": {
+                    "value": "规格",
+                    "style": {}
+                  },
+                  "2:1": {
+                    "value": "记录",
+                    "style": {}
+                  },
+                  "2:2": {
+                    "value": "A",
+                    "style": {}
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "dialogs": [],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "normal-docx",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "4b701d95a8d215d7f8585ce562cfa3b7eaf9dae8eea7a753f8b9081d14b242f1",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "47863a1191563c9804a9d7268e47fc6f9eb63ce7d5df24d7eab9d431146820e4",
+            "undoSha256": "efe6844e7af5100466f9ac192df9543dfd6ebcbf69f5a1ed2ee20a73c3ac1841",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 1,
+            "redoLength": 0,
+            "dirty": true,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {},
+                "wordText": "Word导入新内容 parsererror"
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "dialogs": [],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "blank-docx",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "1c42e83726b5fc2f54c91aaa3b0d83265f6340d5d6ca74b2390bfd8c517b16eb",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "a50d83f9c17dad6d3fa5b27d52995fecb08c22728aa594099760fcb78ee68f95",
+            "undoSha256": "96da672bf39637b2db72be04bdbd3ca2e8f33e9c86dca162a67d4a87604c5848",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 1,
+            "redoLength": 0,
+            "dirty": true,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {},
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "dialogs": [],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "malformed-document-xml",
+      "status": "failed",
+      "message": "malformed XML must not become an accepted blank or partial import\n+ actual - expected\n\n+ 'e9383062bd29a01d1e4dffe3bb807c719e60e5b503674611b90fa60b2b3307fb'\n- '34d4deaeca5630d0cba23aa5972a32ca265eb49e230808fb669462ebb831733c'\n",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "7d78a1390172a91770396d9eee82d1948f48677c4b7f80cc875392e4de328991",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "actual": {
+        "documentSha256": "bd808291e51a1ba000fdfd095f6ad45aff069ffed87021828343b9ee90e519d7",
+        "undoSha256": "a8a89bc38f8483a1ab34ae3b6ac0656d0ed621956a6fb2524e56500284fe3f40",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "undoLength": 1,
+        "redoLength": 0,
+        "dirty": true,
+        "activeTab": "canvas",
+        "saves": 0,
+        "meta": {
+          "schema": "edhr-template-designer-react",
+          "version": 1,
+          "templateId": "import-audit",
+          "versionId": "version-A",
+          "templateName": "导入审计",
+          "versionLabel": "V1"
+        },
+        "currentPageId": "page-1",
+        "pages": [
+          {
+            "id": "page-1",
+            "name": "页面 1",
+            "cells": {},
+            "wordText": ""
+          },
+          {
+            "id": "page-2",
+            "name": "页面 2",
+            "cells": {
+              "1:1": {
+                "value": "另页原文"
+              }
+            },
+            "wordText": ""
+          }
+        ]
+      },
+      "dialogs": [],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "malformed-rels-xml",
+      "status": "failed",
+      "message": "malformed XML must not become an accepted blank or partial import\n+ actual - expected\n\n+ 'caf90106aa6846bfaf6fe041d577cdc292e121effd26c5aeca7d35b010715407'\n- 'eafd227b9716311d70c70375583990496f00b7a5fdc6b59e43256dda31ba50f4'\n",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "648124d035c5d9f287a87be5b8319df2492ad9406fce1c65d01301bf8cda1452",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "actual": {
+        "documentSha256": "fe0ee8ac50cec31907045621249060ff1f3e5c29e9586077ebb48ed7d84865c4",
+        "undoSha256": "152a897a21b8fe44bdaba621a0efb84421cef396d02e5a7f1c7ab623b8667531",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "undoLength": 1,
+        "redoLength": 0,
+        "dirty": true,
+        "activeTab": "canvas",
+        "saves": 0,
+        "meta": {
+          "schema": "edhr-template-designer-react",
+          "version": 1,
+          "templateId": "import-audit",
+          "versionId": "version-A",
+          "templateName": "导入审计",
+          "versionLabel": "V1"
+        },
+        "currentPageId": "page-1",
+        "pages": [
+          {
+            "id": "page-1",
+            "name": "页面 1",
+            "cells": {},
+            "wordText": "Word�e��� parsererror"
+          },
+          {
+            "id": "page-2",
+            "name": "页面 2",
+            "cells": {
+              "1:1": {
+                "value": "另页原文"
+              }
+            },
+            "wordText": ""
+          }
+        ]
+      },
+      "dialogs": [],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "page-switch",
+      "status": "failed",
+      "message": "late import cannot replace current context, edit or history\n+ actual - expected\n\n+ '53769310981814389c1b60d2e262755ecf1df88780e4e051ee9461a0afe2c37a'\n- '6f818f60a34f6f251b9195465040376c8086ce11a1197e08ef30a52d4f27818b'\n",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "ef210931389803cb5ebe3c2ae97db157e178a86d316657166eb0d3f1f38ffd49",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        },
+        {
+          "operation": "context-changed",
+          "state": {
+            "documentSha256": "4903b83e2a69c1777adc2964380b0f18d06781d37be7ba70a07af194627482ba",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": true,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-2",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "actual": {
+        "documentSha256": "2b0c8e053631bd3988d757886a981c5d298ed5151304fad25f48bd6eaa8a03ed",
+        "undoSha256": "f5501d28f3bc8395cf673f5f7c010f989112088b312b529c680ccbf377bcd3d7",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "undoLength": 1,
+        "redoLength": 0,
+        "dirty": true,
+        "activeTab": "canvas",
+        "saves": 0,
+        "meta": {
+          "schema": "edhr-template-designer-react",
+          "version": 1,
+          "templateId": "import-audit",
+          "versionId": "version-A",
+          "templateName": "导入审计",
+          "versionLabel": "V1"
+        },
+        "currentPageId": "page-2",
+        "pages": [
+          {
+            "id": "page-1",
+            "name": "页面 1",
+            "cells": {
+              "1:1": {
+                "value": "保留旧内容 V1",
+                "style": {
+                  "color": "#123456"
+                }
+              }
+            },
+            "wordText": ""
+          },
+          {
+            "id": "page-2",
+            "name": "页面 2",
+            "cells": {
+              "1:1": {
+                "value": "导入新内容",
+                "style": {}
+              },
+              "1:2": {
+                "value": "规格",
+                "style": {}
+              },
+              "2:1": {
+                "value": "记录",
+                "style": {}
+              },
+              "2:2": {
+                "value": "A",
+                "style": {}
+              }
+            },
+            "wordText": ""
+          }
+        ]
+      },
+      "dialogs": [],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "page-switch-back",
+      "status": "failed",
+      "message": "late import cannot replace current context, edit or history\n+ actual - expected\n\n+ '25adb34895c83bae6823a7b9285aa875420a967e0f45d05da838198709a5f544'\n- '382ccd01eeccdb9ac5e0bd3ff405b3d438d1f999f4ca47be8454cd32d60d3930'\n",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "6ee3d8c39d76a351212f383afbd90665c0bb0ffeb81da67a29f2944cac1cee20",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        },
+        {
+          "operation": "context-changed",
+          "state": {
+            "documentSha256": "6ee3d8c39d76a351212f383afbd90665c0bb0ffeb81da67a29f2944cac1cee20",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "actual": {
+        "documentSha256": "1b6fb15e340dfd359c8f356ad1b59d8419735953a32b8cd772a889788328b378",
+        "undoSha256": "f770193c056f7893fdff9af615591938f4a3428cad4a161d4c06cc8c9d70024f",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "undoLength": 1,
+        "redoLength": 0,
+        "dirty": true,
+        "activeTab": "canvas",
+        "saves": 0,
+        "meta": {
+          "schema": "edhr-template-designer-react",
+          "version": 1,
+          "templateId": "import-audit",
+          "versionId": "version-A",
+          "templateName": "导入审计",
+          "versionLabel": "V1"
+        },
+        "currentPageId": "page-1",
+        "pages": [
+          {
+            "id": "page-1",
+            "name": "页面 1",
+            "cells": {
+              "1:1": {
+                "value": "导入新内容",
+                "style": {}
+              },
+              "1:2": {
+                "value": "规格",
+                "style": {}
+              },
+              "2:1": {
+                "value": "记录",
+                "style": {}
+              },
+              "2:2": {
+                "value": "A",
+                "style": {}
+              }
+            },
+            "wordText": ""
+          },
+          {
+            "id": "page-2",
+            "name": "页面 2",
+            "cells": {
+              "1:1": {
+                "value": "另页原文"
+              }
+            },
+            "wordText": ""
+          }
+        ]
+      },
+      "dialogs": [],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "version-switch",
+      "status": "failed",
+      "message": "late import cannot replace current context, edit or history\n+ actual - expected\n\n+ 'a3570bf7fe5817e0871280f281ef0700463a2e4f04cab6969d2f642b655d6359'\n- '39ee69d0b20e241e0e22fe5ac0c1e6bcf6f676191947fb7e0230d740e07c847b'\n",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "b303701aef0436bdd73c502da9fef8368d082b5cfa47866c8e290a417a4c6724",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        },
+        {
+          "operation": "context-changed",
+          "state": {
+            "documentSha256": "3e2e487a0c2a858eb1b644bd55145de0515e9090add2a5560837b9a28b853222",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-B",
+              "templateName": "导入审计",
+              "versionLabel": "V2"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V2",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "actual": {
+        "documentSha256": "64c35ddcee2817cef9c0b61803bbe599b922706afc97ae4579f56116ab2d1cb3",
+        "undoSha256": "d81b2713ee9b8f2a12c7cb63c540abad3fe694add3c2494610da06390f48318d",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "undoLength": 1,
+        "redoLength": 0,
+        "dirty": true,
+        "activeTab": "canvas",
+        "saves": 0,
+        "meta": {
+          "schema": "edhr-template-designer-react",
+          "version": 1,
+          "templateId": "import-audit",
+          "versionId": "version-B",
+          "templateName": "导入审计",
+          "versionLabel": "V2"
+        },
+        "currentPageId": "page-1",
+        "pages": [
+          {
+            "id": "page-1",
+            "name": "页面 1",
+            "cells": {
+              "1:1": {
+                "value": "导入新内容",
+                "style": {}
+              },
+              "1:2": {
+                "value": "规格",
+                "style": {}
+              },
+              "2:1": {
+                "value": "记录",
+                "style": {}
+              },
+              "2:2": {
+                "value": "A",
+                "style": {}
+              }
+            },
+            "wordText": ""
+          },
+          {
+            "id": "page-2",
+            "name": "页面 2",
+            "cells": {
+              "1:1": {
+                "value": "另页原文"
+              }
+            },
+            "wordText": ""
+          }
+        ]
+      },
+      "dialogs": [],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "close-reopen",
+      "status": "failed",
+      "message": "late import cannot replace current context, edit or history\n+ actual - expected\n\n+ '80858fdfd237cb9450e79e2f6790c1b7f47800b6e2f0919dbcd62be6a80ca017'\n- 'acb7fc6431cf9a85b58db9b9667089073c69945ec484a8979c3a5973893f5cb2'\n",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "2fa87207b1d0ac6c5f4bd183584c09105bc7017facd04e99f7fa69481e6f1401",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        },
+        {
+          "operation": "context-changed",
+          "state": {
+            "documentSha256": "2fa87207b1d0ac6c5f4bd183584c09105bc7017facd04e99f7fa69481e6f1401",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "actual": {
+        "documentSha256": "a810f53714dd4c4da68a2c43c73b6243a762a6493e67dfa9bb28327b8640d894",
+        "undoSha256": "4eb95249b5511d97fc9d93092788e5981fc7a35f15a9511016f6bcf97fa60a83",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "undoLength": 1,
+        "redoLength": 0,
+        "dirty": true,
+        "activeTab": "canvas",
+        "saves": 0,
+        "meta": {
+          "schema": "edhr-template-designer-react",
+          "version": 1,
+          "templateId": "import-audit",
+          "versionId": "version-A",
+          "templateName": "导入审计",
+          "versionLabel": "V1"
+        },
+        "currentPageId": "page-1",
+        "pages": [
+          {
+            "id": "page-1",
+            "name": "页面 1",
+            "cells": {
+              "1:1": {
+                "value": "导入新内容",
+                "style": {}
+              },
+              "1:2": {
+                "value": "规格",
+                "style": {}
+              },
+              "2:1": {
+                "value": "记录",
+                "style": {}
+              },
+              "2:2": {
+                "value": "A",
+                "style": {}
+              }
+            },
+            "wordText": ""
+          },
+          {
+            "id": "page-2",
+            "name": "页面 2",
+            "cells": {
+              "1:1": {
+                "value": "另页原文"
+              }
+            },
+            "wordText": ""
+          }
+        ]
+      },
+      "dialogs": [],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        },
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "edit-during-read",
+      "status": "failed",
+      "message": "late import cannot replace current context, edit or history\n+ actual - expected\n\n+ 'bc6bb6f42fd3b7077cf3d9351c1681235c597dea6410f35223c432f4f6638337'\n- 'b6442efa6ff1dc979e487e57e89adce7188decc6d0de111a3d5324a0f07ec9ef'\n",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "677dfcfe2826b17f0e7b9553a987fa7beab217d83ea18f61610cb47577c4cb48",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        },
+        {
+          "operation": "context-changed",
+          "state": {
+            "documentSha256": "78aa1a3d42164e40169e014bc1447f18dabcce60275211847c311822b560db71",
+            "undoSha256": "40c2c8b2f56e953cbb32a52a513e6f501dffc1bbdf405ad56c51a84525c283a7",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 1,
+            "redoLength": 0,
+            "dirty": true,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "解析期间的新修改",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "actual": {
+        "documentSha256": "c50691d60d63db20e0902f843b5d9d7feb3081ac71a6e32900ef0df25967e4fd",
+        "undoSha256": "6686367927d7d434a82d7ee5162f840ef67a71b0037efdcb600cbb47eb3e731d",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "undoLength": 2,
+        "redoLength": 0,
+        "dirty": true,
+        "activeTab": "canvas",
+        "saves": 0,
+        "meta": {
+          "schema": "edhr-template-designer-react",
+          "version": 1,
+          "templateId": "import-audit",
+          "versionId": "version-A",
+          "templateName": "导入审计",
+          "versionLabel": "V1"
+        },
+        "currentPageId": "page-1",
+        "pages": [
+          {
+            "id": "page-1",
+            "name": "页面 1",
+            "cells": {
+              "1:1": {
+                "value": "导入新内容",
+                "style": {}
+              },
+              "1:2": {
+                "value": "规格",
+                "style": {}
+              },
+              "2:1": {
+                "value": "记录",
+                "style": {}
+              },
+              "2:2": {
+                "value": "A",
+                "style": {}
+              }
+            },
+            "wordText": ""
+          },
+          {
+            "id": "page-2",
+            "name": "页面 2",
+            "cells": {
+              "1:1": {
+                "value": "另页原文"
+              }
+            },
+            "wordText": ""
+          }
+        ]
+      },
+      "dialogs": [],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "newer-finishes-first",
+      "status": "failed",
+      "message": "old success cannot overwrite latest import or change tab\n+ actual - expected\n\n+ '916ed7b147f136488c2ffd95427689197800c71d7138b4b7e3595fec4f3ea813'\n- '9fd190e2c2c1223d84f8ee643cf3fecad67bcd01783f72e0ac45a81c63caa9bc'\n",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "c6c476c158e7fe860ad6870d71bbc157b0241d96b4b86fca5a8708780a17d423",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "actual": {
+        "documentSha256": "e7c6743b4d8116cfd132357e42f55f783a4e3b454982a78cbf9203972555dce0",
+        "undoSha256": "85f1a49d34bd087c2f04ba81e7ad7217a71f1b1bcf1aa8a7f1573f19c736b50f",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "undoLength": 2,
+        "redoLength": 0,
+        "dirty": true,
+        "activeTab": "canvas",
+        "saves": 0,
+        "meta": {
+          "schema": "edhr-template-designer-react",
+          "version": 1,
+          "templateId": "import-audit",
+          "versionId": "version-A",
+          "templateName": "导入审计",
+          "versionLabel": "V1"
+        },
+        "currentPageId": "page-1",
+        "pages": [
+          {
+            "id": "page-1",
+            "name": "页面 1",
+            "cells": {
+              "1:1": {
+                "value": "导入新内容",
+                "style": {}
+              },
+              "1:2": {
+                "value": "规格",
+                "style": {}
+              },
+              "2:1": {
+                "value": "记录",
+                "style": {}
+              },
+              "2:2": {
+                "value": "A",
+                "style": {}
+              }
+            },
+            "wordText": ""
+          },
+          {
+            "id": "page-2",
+            "name": "页面 2",
+            "cells": {
+              "1:1": {
+                "value": "另页原文"
+              }
+            },
+            "wordText": ""
+          }
+        ]
+      },
+      "dialogs": [],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "stale-error-after-new-selection",
+      "status": "failed",
+      "message": "stale error must not show a browser alert\n+ actual - expected\n\n+ [\n+   {\n+     message: \"Can't find end of central directory : is this a zip file ? If it is, see https://stuk.github.io/jszip/documentation/howto/read_zip.html\",\n+     type: 'alert'\n+   }\n+ ]\n- []\n",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "59335ab17d52fd5c8d857f995be69b7c5c2fcfa231255eb9204a4e1946fc6237",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "actual": {
+        "documentSha256": "59335ab17d52fd5c8d857f995be69b7c5c2fcfa231255eb9204a4e1946fc6237",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "undoLength": 0,
+        "redoLength": 0,
+        "dirty": false,
+        "activeTab": "canvas",
+        "saves": 0,
+        "meta": {
+          "schema": "edhr-template-designer-react",
+          "version": 1,
+          "templateId": "import-audit",
+          "versionId": "version-A",
+          "templateName": "导入审计",
+          "versionLabel": "V1"
+        },
+        "currentPageId": "page-1",
+        "pages": [
+          {
+            "id": "page-1",
+            "name": "页面 1",
+            "cells": {
+              "1:1": {
+                "value": "保留旧内容 V1",
+                "style": {
+                  "color": "#123456"
+                }
+              }
+            },
+            "wordText": ""
+          },
+          {
+            "id": "page-2",
+            "name": "页面 2",
+            "cells": {
+              "1:1": {
+                "value": "另页原文"
+              }
+            },
+            "wordText": ""
+          }
+        ]
+      },
+      "dialogs": [
+        {
+          "type": "alert",
+          "message": "Can't find end of central directory : is this a zip file ? If it is, see https://stuk.github.io/jszip/documentation/howto/read_zip.html"
+        }
+      ],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "current-error-and-retry",
+      "status": "failed",
+      "message": "current import errors use owned feedback, never browser alert\n+ actual - expected\n\n+ [\n+   {\n+     message: \"Can't find end of central directory : is this a zip file ? If it is, see https://stuk.github.io/jszip/documentation/howto/read_zip.html\",\n+     type: 'alert'\n+   }\n+ ]\n- []\n",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "c65da55441e93b40e491c04974902f022a4b2bcaff76485f686feea74adb87d0",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "actual": {
+        "documentSha256": "c65da55441e93b40e491c04974902f022a4b2bcaff76485f686feea74adb87d0",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "undoLength": 0,
+        "redoLength": 0,
+        "dirty": false,
+        "activeTab": "canvas",
+        "saves": 0,
+        "meta": {
+          "schema": "edhr-template-designer-react",
+          "version": 1,
+          "templateId": "import-audit",
+          "versionId": "version-A",
+          "templateName": "导入审计",
+          "versionLabel": "V1"
+        },
+        "currentPageId": "page-1",
+        "pages": [
+          {
+            "id": "page-1",
+            "name": "页面 1",
+            "cells": {
+              "1:1": {
+                "value": "保留旧内容 V1",
+                "style": {
+                  "color": "#123456"
+                }
+              }
+            },
+            "wordText": ""
+          },
+          {
+            "id": "page-2",
+            "name": "页面 2",
+            "cells": {
+              "1:1": {
+                "value": "另页原文"
+              }
+            },
+            "wordText": ""
+          }
+        ]
+      },
+      "dialogs": [
+        {
+          "type": "alert",
+          "message": "Can't find end of central directory : is this a zip file ? If it is, see https://stuk.github.io/jszip/documentation/howto/read_zip.html"
+        }
+      ],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "close-prompt-cancel",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "2c2188a4825b86d2912e82412fc4604afa1cfaad9187d3887cd65896262ce38c",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "40fe53353e9cdd78c28384fb3779c6d80d3e5974ccf8fa53d81fd882e1700a7d",
+            "undoSha256": "325b02683c208102111174fa298687da28fe6593d5ec1cb66390cc59f5290a92",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 2,
+            "redoLength": 0,
+            "dirty": true,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "导入新内容",
+                    "style": {}
+                  },
+                  "1:2": {
+                    "value": "规格",
+                    "style": {}
+                  },
+                  "2:1": {
+                    "value": "记录",
+                    "style": {}
+                  },
+                  "2:2": {
+                    "value": "A",
+                    "style": {}
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "dialogs": [],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "empty-selection",
+      "status": "passed",
+      "steps": [
+        {
+          "operation": "initial",
+          "state": {
+            "documentSha256": "f00a2a31ee794a427cfec404bbb4e1f7d5dd354292450ab1d94e52aae4440abc",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        },
+        {
+          "operation": "completed",
+          "state": {
+            "documentSha256": "f00a2a31ee794a427cfec404bbb4e1f7d5dd354292450ab1d94e52aae4440abc",
+            "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "undoLength": 0,
+            "redoLength": 0,
+            "dirty": false,
+            "activeTab": "canvas",
+            "saves": 0,
+            "meta": {
+              "schema": "edhr-template-designer-react",
+              "version": 1,
+              "templateId": "import-audit",
+              "versionId": "version-A",
+              "templateName": "导入审计",
+              "versionLabel": "V1"
+            },
+            "currentPageId": "page-1",
+            "pages": [
+              {
+                "id": "page-1",
+                "name": "页面 1",
+                "cells": {
+                  "1:1": {
+                    "value": "保留旧内容 V1",
+                    "style": {
+                      "color": "#123456"
+                    }
+                  }
+                },
+                "wordText": ""
+              },
+              {
+                "id": "page-2",
+                "name": "页面 2",
+                "cells": {
+                  "1:1": {
+                    "value": "另页原文"
+                  }
+                },
+                "wordText": ""
+              }
+            ]
+          }
+        }
+      ],
+      "dialogs": [],
+      "errors": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:32977/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,476 @@
+{
+  "role": "fresh independent final quality verifier; no product/test/knowledge fixes",
+  "status": "FINAL",
+  "timestampUTC": "2026-10-28T07:44:43.013877+00:00",
+  "baseCommit": "189cb2c100dd7bc81048981c99d0350daf93ec4d",
+  "headCommit": "55461b8d3a11c757471ae891564c13a4393f9fd7",
+  "testedCommit": "55461b8d3a11c757471ae891564c13a4393f9fd7",
+  "contractReadCommit": "55461b8d3a11c757471ae891564c13a4393f9fd7",
+  "knowledgeBaselineVersion": "0.3.25",
+  "workingTreeState": "clean",
+  "commands": [
+    {
+      "id": "browser.desktop",
+      "cwd": "gmp-platform/frontend",
+      "command": "CHROME_PATH=/usr/bin/chromium IMPORT_ARTIFACTS=/tmp/edhr-import-qa-desktop node scripts/test-designer-import-browser.mjs",
+      "exitCode": 0,
+      "resultPath": "/tmp/edhr-import-qa-desktop/result.json",
+      "log": "/tmp/edhr-import-qa-desktop.log"
+    },
+    {
+      "id": "browser.narrow",
+      "cwd": "gmp-platform/frontend",
+      "command": "CHROME_PATH=/usr/bin/chromium IMPORT_WIDTH=390 IMPORT_ARTIFACTS=/tmp/edhr-import-qa-narrow node scripts/test-designer-import-browser.mjs",
+      "exitCode": 0,
+      "resultPath": "/tmp/edhr-import-qa-narrow/result.json",
+      "log": "/tmp/edhr-import-qa-narrow.log"
+    },
+    {
+      "id": "browser.baseline",
+      "cwd": "gmp-platform/frontend",
+      "command": "CHROME_PATH=/usr/bin/chromium IMPORT_BASELINE_COMMIT=189cb2c100dd7bc81048981c99d0350daf93ec4d IMPORT_ARTIFACTS=/tmp/edhr-import-qa-baseline node scripts/test-designer-import-browser.mjs",
+      "exitCode": 1,
+      "resultPath": "/tmp/edhr-import-qa-baseline/result.json",
+      "expected": "10 product-red/5 positive, zero fixture-blocked",
+      "log": "/tmp/edhr-import-qa-baseline.log"
+    },
+    {
+      "id": "node",
+      "cwd": "gmp-platform/frontend",
+      "command": "node --test scripts/test-designer-save-state.mjs scripts/test-designer-choice-options.mjs scripts/test-designer-subfield-sync.mjs scripts/test-cell-display-components.mjs scripts/test-designer-column-insertion.mjs",
+      "exitCode": 0,
+      "log": "/tmp/edhr-import-qa-node.log"
+    },
+    {
+      "id": "save",
+      "cwd": "gmp-platform/frontend",
+      "command": "CHROME_PATH=/usr/bin/chromium W2_CASE_FILTER=save W2_RESULT_PATH=/tmp/edhr-import-qa-save.json node scripts/test-designer-save-browser.mjs",
+      "exitCode": 0,
+      "resultPath": "/tmp/edhr-import-qa-save.json",
+      "log": "/tmp/edhr-import-qa-save.log"
+    },
+    {
+      "id": "build",
+      "cwd": "gmp-platform/frontend",
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": "/tmp/edhr-import-qa-build.log"
+    },
+    {
+      "id": "verifier",
+      "cwd": "gmp-platform/frontend",
+      "command": "node scripts/verify-template-designer-react.mjs",
+      "exitCode": 0,
+      "log": "/tmp/edhr-import-qa-verifier.log"
+    },
+    {
+      "id": "knowledge",
+      "cwd": ".",
+      "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test",
+      "exitCode": 0,
+      "log": "/tmp/edhr-import-qa-knowledge.log"
+    },
+    {
+      "id": "inventory",
+      "cwd": ".",
+      "command": "python scripts/build-branch-review-inventory.py --ref 189cb2c100dd7bc81048981c99d0350daf93ec4d --out /tmp/edhr-import-qa-inventory-rebuilt",
+      "exitCode": 0,
+      "log": "/tmp/edhr-import-qa-inventory.log"
+    },
+    {
+      "id": "static",
+      "cwd": ".",
+      "command": "python /tmp/edhr-import-audit-project.py gmp-platform/frontend/src --mode strict --no-write",
+      "exitCode": 2,
+      "resultPath": "/tmp/edhr-import-qa-static.json"
+    },
+    {
+      "id": "lint",
+      "cwd": "gmp-platform/frontend",
+      "command": "npm run lint",
+      "exitCode": 2,
+      "log": "/tmp/edhr-import-qa-lint.log"
+    },
+    {
+      "id": "fresh-target",
+      "cwd": ".",
+      "command": "git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git status --porcelain=v1",
+      "exitCode": 0,
+      "output": [
+        "55461b8d3a11c757471ae891564c13a4393f9fd7",
+        "189cb2c100dd7bc81048981c99d0350daf93ec4d",
+        "clean"
+      ]
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "gmp-platform/frontend/scripts/test-designer-import-browser.mjs",
+      "sha256": "350d246442e15e8d9dfa27990a018065b529c2c6a4d18db5689bf495fba48525",
+      "blob": "1f3c1e064654660f67f038f6301fd621b8016e4c"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx",
+      "sha256": "c091eaa950cbad13f22c29706714f856ed216e00f9c7a8197fdf08e5d8db4b7a",
+      "blob": "44d7e5e37a7da8d7c814b5fe282e43026e2baabd"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts",
+      "sha256": "4711d383c3a1b4b9153973b24ff337e052aaad640db5e3a690ca6ff793249ff2",
+      "blob": "3888b7ebfa42693a1b98945b98f123a0622c501d"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/tmp/edhr-import-qa-baseline.log",
+      "sha256": "7e1dd48d27b580900017d08d6bfdfab2ab25075fd43fd254a6fa15fd172488dd",
+      "bytes": 3886
+    },
+    {
+      "path": "/tmp/edhr-import-qa-build.log",
+      "sha256": "7c29accfe75b232629b691eef91a3e9e5ab8855f831a7bc1a03db0456a1a25ae",
+      "bytes": 9780
+    },
+    {
+      "path": "/tmp/edhr-import-qa-desktop.log",
+      "sha256": "ecf54c00682ad07b5e81f6aac55f676d422cde7d7f4ed8604c760fd2aa37e100",
+      "bytes": 1268
+    },
+    {
+      "path": "/tmp/edhr-import-qa-inventory.log",
+      "sha256": "ed7bc3de59bc1e5be200abf6929e62691efdffad920f2294e036f87144fec50b",
+      "bytes": 933
+    },
+    {
+      "path": "/tmp/edhr-import-qa-knowledge.log",
+      "sha256": "a1c1367f5638aea51c68191a289eccc9724351748135b03836486340d9c0588e",
+      "bytes": 2112
+    },
+    {
+      "path": "/tmp/edhr-import-qa-lint.log",
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389",
+      "bytes": 819
+    },
+    {
+      "path": "/tmp/edhr-import-qa-narrow.log",
+      "sha256": "6d85811701a68ddb7d8f9aaa578689c291790202ed2ac7c8d914d19717ab35dd",
+      "bytes": 1266
+    },
+    {
+      "path": "/tmp/edhr-import-qa-node.log",
+      "sha256": "91ee0f8104a10ed08455022c671d5627655da01e58dc263683ab91fd67afd722",
+      "bytes": 4048
+    },
+    {
+      "path": "/tmp/edhr-import-qa-save.log",
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab",
+      "bytes": 1868
+    },
+    {
+      "path": "/tmp/edhr-import-qa-verifier.log",
+      "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77",
+      "bytes": 38
+    },
+    {
+      "path": "/tmp/edhr-import-qa-desktop/result.json",
+      "sha256": "67dda1e5dcf6759066bf1323e5e645884817f6c3b75cbb78dc1c40ba6bf47966",
+      "bytes": 59176
+    },
+    {
+      "path": "/tmp/edhr-import-qa-narrow/result.json",
+      "sha256": "4e6442c217ca9926b92c11be39e9f47c3639a3b63bdbca2e4bf6e8802966d187",
+      "bytes": 59175
+    },
+    {
+      "path": "/tmp/edhr-import-qa-baseline/result.json",
+      "sha256": "6190b34fd7318b0030feec997804c2fa03451d69e88f7a0f985fef6be546922a",
+      "bytes": 60810
+    },
+    {
+      "path": "/tmp/edhr-import-qa-save.json",
+      "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab",
+      "bytes": 1868
+    },
+    {
+      "path": "/tmp/edhr-import-qa-static.json",
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856",
+      "bytes": 7625
+    },
+    {
+      "path": "/tmp/edhr-import-qa-static-comparison.json",
+      "sha256": "68e2d0ddb45a65bc8c23353eaa1a64aea2d072390737ba9fa7d38689267b3add",
+      "bytes": 447
+    },
+    {
+      "path": "/tmp/edhr-import-qa-inspection.json",
+      "sha256": "1012040f12339886f246b437f8c3cf409d95b4f875b5329b1093c6368f55e67b",
+      "bytes": 8283
+    },
+    {
+      "path": "/tmp/edhr-import-qa-desktop/normal-xlsx.png",
+      "sha256": "146925dfe5448e8202d26814dbdc111e375bd42d6477ef7e9b7852bf456c6ab2",
+      "bytes": 52214
+    },
+    {
+      "path": "/tmp/edhr-import-qa-narrow/edit-during-read.png",
+      "sha256": "e182c53e8970e7e26b33c4499989c222d781bc4b3d4e2557c2d984c312717ab5",
+      "bytes": 38575
+    },
+    {
+      "path": "/tmp/edhr-import-qa-narrow/current-error-and-retry.png",
+      "sha256": "552408f5218c3797b1a348c495f484bc80cc713a64b98716df712725d729954c",
+      "bytes": 37471
+    }
+  ],
+  "browserSummary": {
+    "uniqueCases": 15,
+    "viewports": [
+      1440,
+      390
+    ],
+    "currentEachPassed": 15,
+    "baselineFailed": 10,
+    "baselinePositive": 5,
+    "fixtureBlocked": 0
+  },
+  "unitSummary": {
+    "passed": 35,
+    "failed": 0,
+    "skipped": 0
+  },
+  "saveSummary": {
+    "passedRuns": 9,
+    "widthVariantsIncluded": true,
+    "controlledSaveCallback": true
+  },
+  "knowledgeSummary": {
+    "structuralTests": 89,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "semanticIds": {
+      "consistentWithinScope": 6,
+      "retainedGap": 1
+    }
+  },
+  "visualInspection": [
+    {
+      "path": "/tmp/edhr-import-qa-desktop/normal-xlsx.png",
+      "observation": "正常XLSX导入内容可见，原Shell视觉与分页栏保持。"
+    },
+    {
+      "path": "/tmp/edhr-import-qa-narrow/edit-during-read.png",
+      "observation": "真实编辑文字保留、当前设计变化警告可见；现有侧栏占宽及header/canvas裁切保留。"
+    },
+    {
+      "path": "/tmp/edhr-import-qa-narrow/current-error-and-retry.png",
+      "observation": "错误后真实重新导入可用；窄屏画布仍裁切，不认证整体响应式。"
+    }
+  ],
+  "inspection": {
+    "status": "FINAL",
+    "baseCommit": "189cb2c100dd7bc81048981c99d0350daf93ec4d",
+    "headCommit": "55461b8d3a11c757471ae891564c13a4393f9fd7",
+    "inventory": [
+      {
+        "file": "coverage.csv",
+        "byteEqual": true,
+        "sha256": "57a8be6b8a031bfdccdb9a6e8f1bc6d458faab202c972c0de0efd13f7899d21b"
+      },
+      {
+        "file": "entrypoints.csv",
+        "byteEqual": true,
+        "sha256": "048c3623b259c2aeeb5a8c8b4605f482f41d8f3e1e9b887de2aa9ab6d747d292"
+      },
+      {
+        "file": "migrations.csv",
+        "byteEqual": true,
+        "sha256": "3c6d959a4c88de839bf5c202f66506b7bdaf90e36b07c3e085320101bc5872bc"
+      },
+      {
+        "file": "inventory-summary.json",
+        "byteEqual": true,
+        "sha256": "da8d0dcdbb8c3c3a2739348b993d69876436e1c6a5b6760cc952273fd5c86324"
+      }
+    ],
+    "trackedPaths": 4071,
+    "migrationFiles": 130,
+    "allPending": true,
+    "primaryArtifacts": [
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/browser-baseline.json",
+        "sha256": "d4360378d78c32a02c25b0bc777ea5c9805eb03ace236e238ccd6060e4a3620a",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/browser-desktop.json",
+        "sha256": "e88c3da1581f3ae558d14b4ee338dd0ce442362d275fc84b06d0db110f7ecb94",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/browser-narrow.json",
+        "sha256": "1e498408291876cff55c8559386ab4592fdd8f5f7de2e8c6a66037ffb07d9b95",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/initial-browser-desktop.json",
+        "sha256": "139c732bf849b9361a07b18932f790951c193dcea117ebaa36e2d33485b011fc",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/initial-browser-narrow.json",
+        "sha256": "1b1dbcef13774e73b8c14595b2042c809c6dc5ecdecacabfa2786b57ce791988",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/initial-fixture-diagnostic.json",
+        "sha256": "e651d0d310d19c6316fc0d4546802bcaab8aa078136627e89733a3f895a62d91",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/xml-probe.json",
+        "sha256": "cb58b409bca75ee12ff86ef58c4f12797aeecf9c1dbe2990049265c1b548ebac",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/browser-author-summary.json",
+        "sha256": "4e25458bb57913743ba207c9cd77da7a5a9b272f21aea3219a2daf2c6ee9d2e8",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/ontology-result.yaml",
+        "sha256": "1221e7e52adb47ae5c401fe36fb107b536a61682a18e80880956ebc7e64e04e7",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/ontology-initial.yaml",
+        "sha256": "4e797f65703a40ea3a6139f303b1ca2bf65b3540c99d0ab69a620c06bfccb2f0",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/rule-review.json",
+        "sha256": "c7c35b8db79786838a806c0ef6100f9addc89527134b27dab7e10758460724bc",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/rule-review.md",
+        "sha256": "cbf135b38e86b05cfc29aeec32353061d9905386f223ac9e18128ff92ff846b0",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/rule-review-followup.json",
+        "sha256": "f7ccb65052c1b41a1ecb33d52278b4d7735d7278644c578ab36a737d7787b557",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/rule-review-followup.md",
+        "sha256": "af6968177a946ec7039172b7b11b48d03f77a57de5ab9773ff3634a3d9cdd128",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/ontology-validation.json",
+        "sha256": "c99b65ec9ce175bb1052b8b73a299beed13784432c7336efb498b879a90db59d",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/ontology-followup-validation.json",
+        "sha256": "bd17011051640b82caa0769d4ca662632774277ac8f0dc51d4d8de046d088ad5",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/static-current.json",
+        "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/static-comparison.json",
+        "sha256": "7db9695d2ad81aae4e186a44f583e328d54ad35de74dcc9ed93947593c1182c0",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/node.txt",
+        "sha256": "6f38ab92815b1bf87d681eae2eead63541ff92c6aaa20bd83acf9766e83b36e1",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/save-browser.json",
+        "sha256": "ca4f8e581867a7f5f894b33fac09ec9bcc8ea19ee893ecd6176e96255a6bc2ab",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/lint.txt",
+        "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/designer-verifier.txt",
+        "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/desktop-import.png",
+        "sha256": "b80c23186e315ea0748f65f7e150482359ab08b424564b181c378d931436641f",
+        "originalMatches": true
+      },
+      {
+        "path": "docs/development/branch-review-20261028-designer-import/evidence/narrow-edit-preserved.png",
+        "sha256": "94f2a2486d53ca945ffb12c6953adb272ade494a43397ef387114adb7d9ed18d",
+        "originalMatches": true
+      }
+    ],
+    "rawPrimaryLogsHashMatched": 3,
+    "semanticIds": {
+      "reviewed": 7,
+      "consistentWithinScope": 6,
+      "retainedEvidenceGap": 1
+    },
+    "sourceHashes": [
+      {
+        "path": "gmp-platform/frontend/scripts/test-designer-import-browser.mjs",
+        "sha256": "350d246442e15e8d9dfa27990a018065b529c2c6a4d18db5689bf495fba48525",
+        "blob": "1f3c1e064654660f67f038f6301fd621b8016e4c"
+      },
+      {
+        "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx",
+        "sha256": "c091eaa950cbad13f22c29706714f856ed216e00f9c7a8197fdf08e5d8db4b7a",
+        "blob": "44d7e5e37a7da8d7c814b5fe282e43026e2baabd"
+      },
+      {
+        "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts",
+        "sha256": "4711d383c3a1b4b9153973b24ff337e052aaad640db5e3a690ca6ff793249ff2",
+        "blob": "3888b7ebfa42693a1b98945b98f123a0622c501d"
+      }
+    ],
+    "knowledgeAndContractChanged": false,
+    "productAndTestChangedPaths": [
+      "gmp-platform/frontend/scripts/test-designer-import-browser.mjs",
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx",
+      "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts"
+    ],
+    "static": {
+      "candidateExitCode": 2,
+      "candidateFindings": 19,
+      "baselineFindings": 19,
+      "baselineEvidence": "docs/development/branch-review-20261028-designer-cancel/evidence/independent-static-current.json",
+      "baselineWasReusedAfterIndependentSourceTreeEquality": true,
+      "sourceTree": "bf1a2b6a4acd551a279ddd9eea855c7a4dcda583",
+      "sameNormalizedMultiset": true,
+      "scriptSha256": "b56ca0495ace4aaac2bfa779dc707b04baab0f7d4537e6856b6348c63230661c"
+    },
+    "cleanup": {
+      "removedOwnFourGeneratedInventoryFiles": true,
+      "directoryRemovedIfEmpty": true
+    }
+  },
+  "didNotExecute": [
+    "Firefox/WebKit runtime",
+    "physical file picker",
+    "backend persistence/PG",
+    ".xls/.xlsm/.doc full format matrix",
+    "Office heap/capacity experiment",
+    "full accessibility or responsive certification",
+    "runtime proof of adjacent save-catalog candidate"
+  ],
+  "repositoryMutation": false,
+  "subagentsSpawned": false
+}
