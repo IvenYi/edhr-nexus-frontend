@@ -2,6 +2,8 @@
 
 ## PR39已合入：W2保存编辑会话隔离
 
+已交付[PR40](https://github.com/IvenYi/edhr-nexus-frontend/pull/40)，分支`audit/edhr-dev-designer-save-context-20261028`，目标`edhr-dev`，待人工merge。实际受测5009bfe3后仅L0原件/验收/范围/PR登记，产品/测试/知识保持。收到继续先fetch真实合入与新增增量；补必要保存宿主HTTP/反馈边界时转查W3/W4主数据及关联查询等未审入口，W2剩余/W5–W7、非拖动/性能讨论及用户暂缓保持。
+
 全新独立对干净`5009bfe3`正式passed/FINAL，14/14必需检查，high按[acceptance](../branch-review-20261028-designer-save-context/acceptance.json) resolved。主/独立各自13双宽/旧7红6正/35 Node/保存9次/导入15桌面/知识89/build/verifier与4124清单hash闭环，不加总唯一覆盖。全部角色FINAL后已实际做PR前范围/整体进度复核，无漂移，整体未完成。当前仅L0归档/验收/交付，下面“待QA”为历史冻结记录；后续fetch及必要宿主/W3W4未审入口、性能讨论和原暂缓继续。
 
 主侧实现/回归已闭环：新同13场景旧7红6正、1440/390全过，35 Node/保存9次/导入15桌面/知识89/build/verifier通过；strict19/lint缺配置仍未通过。本体沿7旧ID6有限一致1gap、NA/FINAL，新增unique语义0。正在冻结候选交全新独立QA；当前不提前resolved，不把双宽/重跑/盘点数当整体完成率。
