@@ -1,0 +1,40 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 189cb2c100dd7bc81048981c99d0350daf93ec4d
+    targetBranch: edhr-dev
+    targetCommit: 189cb2c100dd7bc81048981c99d0350daf93ec4d
+    contractReadCommit: 189cb2c100dd7bc81048981c99d0350daf93ec4d
+    uncommittedContractPaths: []
+  reason: 本轮只修复异步文件解析结果的编辑归属及明确识别Word XML技术解析失败；没有修改字段身份、共享选项、导入格式/布局规则、统一document历史、权限、保存发布或使用时快照。已实际核对7个知识ID及原始确认，6项有限一致、1客户试用证据缺口保留。Shell
+    guard和parseXml未提交差异的实际hash写入逐项报告；不新增业务决策，不以工程选择伪装用户政策。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.import-contract-id-references
+    checkType: reference
+    command: python /tmp/edhr-import-ontology-report.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-import-ontology-validation.json
+    - 决策包契约基线、7个ID/来源路径、当前知识和契约无差异及实际产品hash核对；非全库语义或运行验证。
+  - id: validation.import-technical-semantic-boundary
+    checkType: evidence-path
+    command: 只读当前声明/原始确认、Shell和Word parseXml差异及store替换历史命令
+    outcome: passed
+    evidence:
+    - /tmp/edhr-import-rule-review.json
+    - /tmp/edhr-import-rule-review.md
+    - 合法空白Word未被业务性禁止；其他保存await/性能/非拖动范围保持未覆盖。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

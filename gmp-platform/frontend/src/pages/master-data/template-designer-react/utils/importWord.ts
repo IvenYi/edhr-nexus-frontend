@@ -119,7 +119,12 @@ function closestAncestor(node: Element | null | undefined, name: string, stopAt?
 }
 
 function parseXml(xml: string) {
-  return new DOMParser().parseFromString(xml, 'application/xml');
+  const document = new DOMParser().parseFromString(xml, 'application/xml');
+  const errorNamespaces = ['http://www.mozilla.org/newlayout/xml/parsererror.xml', 'http://www.w3.org/1999/xhtml'];
+  if (errorNamespaces.some((namespace) => document.getElementsByTagNameNS(namespace, 'parsererror').length > 0)) {
+    throw new Error('Word 文件 XML 格式无效，请检查文件后重试');
+  }
+  return document;
 }
 
 function wordHexColor(value?: string | null) {

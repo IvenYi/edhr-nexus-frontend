@@ -1,0 +1,43 @@
+✔ catalogue only opens supported cell components (3.828509ms)
+✔ placing each component binds it to the sub-table without adding business fields; undo restores text (4.833449ms)
+✔ replacing a component does not stack nodes, and crossing the sub-table boundary is rejected (0.986512ms)
+✔ ordinary cells keep display components after document serialization and reload (0.871208ms)
+✔ mock dynamic rows render contiguous serials after adding and deleting records (121.220462ms)
+✔ actual runtime rows render derived serials without writing serial values into records (66.800281ms)
+✔ new choice fields persist the same two presets already shown by their controls (88.616809ms)
+✔ reading old choice fields with missing or empty options never creates current write-command presets (39.034689ms)
+✔ ModelTab parent-column creation initializes only new choice columns and preserves an old empty column (7.693129ms)
+✔ ModelTab parent-column type changes initialize choice definitions and embedded placements in one history step (2.136015ms)
+✔ editing either placement shares single and multi options with the canonical field and other placements (5.765881ms)
+✔ subtable options update canonical columns and embedded placements across pages without touching another table (4.233661ms)
+✔ model option edits update every placement while preserving compatible widget configuration (8.502365ms)
+✔ renaming an option label preserves its existing value identity and former immutable document (1.099114ms)
+✔ one choice edit is one complete undo step and round-trips model and canvas consistently (10.669316ms)
+✔ the existing row factory saves a configured single-select default as the actual canonical option value (29.6642ms)
+✔ unrelated binding and widget edits do not adopt a saved inconsistent placement or reactivate disabled options (0.981086ms)
+✔ rebinding a compatible choice control takes its new field options without carrying another field option list (0.817828ms)
+✔ inserting before a bound field shifts the same source with its cell, preserves other pages and round-trips undo/redo (47.632087ms)
+✔ inserting inside a merged field expands it, while insertion after its right edge leaves it unchanged (1.488474ms)
+✔ inserting before a subtable keeps its region, record group and actual field offsets aligned (7.21806ms)
+✔ inserting inside a subtable keeps its region, record group and actual field offsets aligned (11.503861ms)
+✔ nested bound nodes move recursively and free components without a cell anchor keep their position (1.524429ms)
+✔ a successful save acknowledges its submitted document, retaining edits made in flight (18.381391ms)
+✔ a save without further edits becomes clean and the next successful save can acknowledge B (0.533226ms)
+✔ undo and redo compare with the acknowledged document rather than the latest local edit (0.414416ms)
+✔ a late acknowledgement for another template or version cannot replace its saved baseline (0.556481ms)
+✔ source mappings and layout share one document history and survive serialization (35.008341ms)
+✔ renaming or disabling the same model column updates its placed definition without changing identity or inventing visibility policy (12.39342ms)
+✔ a changed column type uses the compatible component and clears only incompatible widget overrides (15.306535ms)
+✔ compatible column edits retain explicit widget overrides and preserve the previous immutable definition (1.730957ms)
+✔ the same parent column updates on other pages and nested nodes without changing unrelated fields (6.10425ms)
+✔ column edit is one complete undo step and serializes consistently without rewriting the former document (13.968633ms)
+✔ mock paper and full runtime paper both render the edited column definition (690.111265ms)
+✔ generic table renderer already reads canonical model columns and remains a separate positive control (34.201628ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13676.305896

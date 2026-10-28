@@ -1,0 +1,21 @@
+{
+  "result": "passed",
+  "contractBaseline": {
+    "sourceCommit": "189cb2c100dd7bc81048981c99d0350daf93ec4d",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "189cb2c100dd7bc81048981c99d0350daf93ec4d",
+    "contractReadCommit": "189cb2c100dd7bc81048981c99d0350daf93ec4d",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeIdsChecked": 7,
+  "consistentWithinScope": 6,
+  "retainedEvidenceGap": 1,
+  "knowledgeOrContractDelta": [],
+  "productWorkingTreeHashes": {
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx": "c091eaa950cbad13f22c29706714f856ed216e00f9c7a8197fdf08e5d8db4b7a",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/importWord.ts": "b90d9210ae5073d5f0b91fdbdd6a506c2212e2bfdb6db3ea5bfc757e1cf872ae",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts": "8e21536a02bc5502ed2c65d70288d38a980b686999d227dc0c687ba72b5d40ab",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/templateImport.ts": "b7b433dd43f67a6bcb59069d1d84f081818bc5c16659d6322a22c06e79ec87b0"
+  },
+  "boundary": "Package/reference/source-hash check only, not browser/Maven/backend/performance validation."
+}

@@ -1,0 +1,247 @@
+qualityResult:
+  result: passed
+  baseCommit: 189cb2c100dd7bc81048981c99d0350daf93ec4d
+  headCommit: 55461b8d3a11c757471ae891564c13a4393f9fd7
+  contractBaseline:
+    sourceCommit: 55461b8d3a11c757471ae891564c13a4393f9fd7
+    targetBranch: edhr-dev
+    targetCommit: 189cb2c100dd7bc81048981c99d0350daf93ec4d
+    contractReadCommit: 55461b8d3a11c757471ae891564c13a4393f9fd7
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.candidate-contract
+    required: true
+    category: documentation
+    description: 实际候选、目标、契约与干净工作树一致；无知识或契约改动。
+    method: inspection
+    command: git diff 189cb2c100dd7bc81048981c99d0350daf93ec4d 55461b8d3a11c757471ae891564c13a4393f9fd7; git status;
+      git fetch origin edhr-dev
+    outcome: passed
+    evidence:
+    - 55461b8d3a11c757471ae891564c13a4393f9fd7
+    - 189cb2c100dd7bc81048981c99d0350daf93ec4d
+    - 实际读取契约提交=55461b8d3a11c757471ae891564c13a4393f9fd7
+    - /tmp/edhr-import-qa-inspection.json
+  - id: check.import-source-and-tests
+    required: true
+    category: requirements
+    description: 最小请求代次/不可变上下文和XML失败识别；真实解析器及完整状态断言保持正常命令与业务边界。
+    method: inspection
+    command: 读取两产品diff、新脚本与store命令
+    outcome: passed
+    evidence:
+    - docs/development/branch-review-20261028-designer-import/decision-package.yaml
+    - /tmp/edhr-import-qa-inspection.json
+    - 两产品38增10删，原解析/版式/store未重构。
+  - id: check.baseline-red
+    required: true
+    category: e2e
+    description: 固定旧源同15项10红5正，0夹具阻断，确认两类缺陷可复现。
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium IMPORT_BASELINE_COMMIT=189cb2c100dd7bc81048981c99d0350daf93ec4d IMPORT_ARTIFACTS=/tmp/edhr-import-qa-baseline
+      node scripts/test-designer-import-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-import-qa-baseline/result.json
+    - expected exit1; malformed XML、上下文/顺序/反馈旧行为失败。
+  - id: check.browser-desktop
+    required: true
+    category: e2e
+    description: 实际Shell与XLSX/DOCX解析器15项桌面通过。
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium IMPORT_ARTIFACTS=/tmp/edhr-import-qa-desktop node scripts/test-designer-import-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-import-qa-desktop/result.json
+    - 15 passed，完整document/history/dirty/tab及自动保存次数断言。
+  - id: check.browser-narrow
+    required: true
+    category: e2e
+    description: 相同15项390通过，保留已有裁切限制。
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium IMPORT_WIDTH=390 IMPORT_ARTIFACTS=/tmp/edhr-import-qa-narrow node scripts/test-designer-import-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-import-qa-narrow/result.json
+    - 与桌面同15个唯一场景，不算30种。
+  - id: check.node35
+    required: true
+    category: unit
+    description: 相关五脚本35项通过，0fail/skip。
+    method: command
+    command: node --test scripts/test-designer-save-state.mjs scripts/test-designer-choice-options.mjs scripts/test-designer-subfield-sync.mjs
+      scripts/test-cell-display-components.mjs scripts/test-designer-column-insertion.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-import-qa-node.log
+  - id: check.save9
+    required: true
+    category: regression
+    description: 既有保存相关浏览器9次运行通过，含宽度复用，不替代新catalog跨版本候选。
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium W2_CASE_FILTER=save W2_RESULT_PATH=/tmp/edhr-import-qa-save.json node
+      scripts/test-designer-save-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-import-qa-save.json
+    - 受控save callback，非后台持久化。
+  - id: check.build
+    required: true
+    category: regression
+    description: TypeScript及Vite生产构建通过。
+    method: command
+    command: npm run build
+    outcome: passed
+    evidence:
+    - /tmp/edhr-import-qa-build.log
+  - id: check.designer-verifier
+    required: true
+    category: regression
+    description: 既有设计器静态/维护验证通过。
+    method: command
+    command: node scripts/verify-template-designer-react.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-import-qa-verifier.log
+  - id: check.knowledge89
+    required: true
+    category: ontology
+    description: 89项知识结构/引用测试通过；不称全量语义完成。
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-import-qa-knowledge.log
+  - id: check.ontology-boundary
+    required: true
+    category: ontology
+    description: 本体NA/FINAL与7ID中6有限一致/1gap及实际源码hash一致，保持原政策。
+    method: inspection
+    command: 读取相关7ID/确认来源、ontologyResult及最终hash
+    outcome: passed
+    evidence:
+    - docs/development/branch-review-20261028-designer-import/evidence/ontology-result.yaml
+    - docs/development/branch-review-20261028-designer-import/evidence/rule-review-followup.json
+    - /tmp/edhr-import-qa-inspection.json
+  - id: check.inventory-and-provenance
+    required: true
+    category: documentation
+    description: 4071路径/130迁移四清单逐字节重建，24归档与3原日志hash匹配，全pending。
+    method: command
+    command: python scripts/build-branch-review-inventory.py --ref 189cb2c100dd7bc81048981c99d0350daf93ec4d --out
+      /tmp/edhr-import-qa-inventory-rebuilt
+    outcome: passed
+    evidence:
+    - /tmp/edhr-import-qa-inspection.json
+    - 九条方法范围不升级整文件完成，原13/15失败和夹具诊断保留。
+  - id: check.visual-and-scope
+    required: true
+    category: visual
+    description: 亲自查看三截图，已有MUI/共享Snackbar和正常文件恢复一致；保持范围及性能/用户暂缓。
+    method: inspection
+    command: view_image and read scope/findings
+    outcome: passed
+    evidence:
+    - /tmp/edhr-import-qa-desktop/normal-xlsx.png
+    - /tmp/edhr-import-qa-narrow/edit-during-read.png
+    - /tmp/edhr-import-qa-narrow/current-error-and-retry.png
+    - 现有390裁切保留；未改布局/容量限制或擅增非拖动功能。
+  - id: check.strict-no-new-findings
+    required: true
+    category: regression
+    description: 当前strict实跑19与同源既有baseline完整规范化多重集合一致。
+    method: command
+    command: python /tmp/edhr-import-audit-project.py gmp-platform/frontend/src --mode strict --no-write
+    outcome: passed
+    evidence:
+    - /tmp/edhr-import-qa-static-comparison.json
+    - 独立核对52c与189c前端src树均bf1a2b6a4acd551a279ddd9eea855c7a4dcda583后复用baseline；未声称新跑baseline。
+  - id: check.global-strict
+    required: false
+    category: regression
+    description: 全局strict仍19项未通过。
+    method: command
+    command: python /tmp/edhr-import-audit-project.py gmp-platform/frontend/src --mode strict --no-write
+    outcome: failed
+    evidence:
+    - /tmp/edhr-import-qa-static.json
+  - id: check.global-lint
+    required: false
+    category: regression
+    description: ESLint配置缺失，lint未通过。
+    method: command
+    command: npm run lint
+    outcome: failed
+    evidence:
+    - /tmp/edhr-import-qa-lint.log
+  findings:
+  - id: W2-IMPORT-DRAFT-CONTEXT-001
+    severity: high
+    scope: TemplateDesignerReactShell asynchronous import ownership
+    summary: 旧文件解析完成后曾写入切换或已编辑的当前设计；候选已隔离。
+    reproductionSteps:
+    - 使用base两产品源与同一真实解析browser harness。
+    - 启动文件读取后切页/切回/版本/关闭重开/编辑，或让较旧文件较晚返回。
+    - 完成原读取并比较完整document/history/dirty/tab。
+    expectedResult: 旧结果不写当前设计；当前变更提示重选、过期错误静默；正常导入单次历史可undo/redo。
+    actualResult: 旧组相关失败可复现；候选两宽同15全过，正常/取消关闭提示/空选对照保持。
+    evidence:
+    - /tmp/edhr-import-qa-baseline/result.json
+    - /tmp/edhr-import-qa-desktop/result.json
+    - /tmp/edhr-import-qa-narrow/result.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 55461b8d3a11c757471ae891564c13a4393f9fd7
+    - type: command
+      reference: /tmp/edhr-import-qa-desktop.log
+    - type: command
+      reference: /tmp/edhr-import-qa-narrow.log
+  - id: W2-IMPORT-WORD-XML-001
+    severity: medium
+    scope: importWord.parseXml/document.xml and rels
+    summary: DOMParser错误文档曾被当合法空白或部分Word导入；候选明确识别解析错误元素。
+    reproductionSteps:
+    - 构造真实DOCX ZIP中畸形document.xml或rels。
+    - 实际file input导入并等待原parser完成。
+    - 比较原document与history，检查错误反馈；对照合法空白及正文parsererror文本。
+    expectedResult: 畸形XML失败且不改变文档，合法空白及正文文本允许。
+    actualResult: 基线两个畸形XML场景失败；候选两宽均拒绝并保留原文档，合法空白/文本正向通过。
+    evidence:
+    - /tmp/edhr-import-qa-baseline/result.json
+    - /tmp/edhr-import-qa-desktop/result.json
+    - /tmp/edhr-import-qa-narrow/result.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 55461b8d3a11c757471ae891564c13a4393f9fd7
+    - type: command
+      reference: /tmp/edhr-import-qa-desktop.log
+  residualRisks:
+  - id: risk.global-static-lint
+    description: strict19和缺ESLint配置仍未通过。
+    impact: 本批不得称全局质量扫描绿灯或全分支完成。
+    mitigation: 保留原件，无新增finding；单独维护旧问题。
+  - id: risk.office-capacity
+    description: Office ZIP/工作簿全量展开仅源码风险，尚未测堆/CPU/容量。
+    impact: 小文件通过不能证明大文件或并发容量；Excel300x75转换上界不限制库预加载。
+    mitigation: 按S/U/E/N量测后与用户讨论，不自动优化。
+  - id: risk.adjacent-save-context
+    description: 用途目录await后的跨版本保存候选未实际复现/关闭。
+    impact: 现有save9通过不能覆盖此路径。
+    mitigation: 按台账下一优先复现并单独处理。
+  - id: risk.validation-boundary
+    description: 只有Chromium真实解析且读取时序/宿主受控；无物理文件选择器、Firefox/WebKit、旧格式全矩阵或后台持久化。
+    impact: 不能泛化成全格式/全浏览器/全后端验收。
+    mitigation: 只对实际场景签收，后续按风险补审。
+  - id: risk.remaining-audit
+    description: 非拖动入口、其他W2/W3/W4/W5–W7、原四知识gap与客户试用证据，以及TaskDetail/生产弹窗/记录控制-DHR high/A12暂缓继续。
+    impact: 整体审计未完成；4071只是pending盘点分母。
+    mitigation: 持续台账分别跟踪，获取最新远端再增量审查。
+  blockingConditions: []

@@ -66,6 +66,7 @@ export default function TemplateDesignerReactShell({
   const getCurrentPage = useTemplateDesignerStore((state) => state.getCurrentPage);
   const replaceCurrentPageFromImport = useTemplateDesignerStore((state) => state.replaceCurrentPageFromImport);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const importRequestRef = useRef(0);
   const [mockFillOpen, setMockFillOpen] = useState(false);
   const [projectionOpen, setProjectionOpen] = useState(false);
   const [projectionValidationRequested, setProjectionValidationRequested] = useState(false);
@@ -87,11 +88,14 @@ export default function TemplateDesignerReactShell({
     : `${row?.name || '未命名表单'} : ${templateVersionLabel}`;
 
   useEffect(() => {
-    if (!row || !version) return;
-    setDocument(parseReactTemplateDesignerDocument(row, version));
-    setActiveTab('canvas');
-    setSubTableDesignFieldId(null);
-    markSaved();
+    importRequestRef.current += 1;
+    if (row && version) {
+      setDocument(parseReactTemplateDesignerDocument(row, version));
+      setActiveTab('canvas');
+      setSubTableDesignFieldId(null);
+      markSaved();
+    }
+    return () => { importRequestRef.current += 1; };
   }, [markSaved, row, setActiveTab, setDocument, version]);
 
   useEffect(() => {
@@ -149,12 +153,17 @@ export default function TemplateDesignerReactShell({
     await persistCurrentDocument(onAutoSave);
   };
 
+  const closeDesigner = () => {
+    importRequestRef.current += 1;
+    onClose();
+  };
+
   const handleClose = () => {
     if (isDirty()) {
       setCloseConfirmOpen(true);
       return;
     }
-    onClose();
+    closeDesigner();
   };
 
   const handleShellBack = () => {
@@ -174,12 +183,26 @@ export default function TemplateDesignerReactShell({
     event.target.value = '';
     if (!file) return;
 
+    const request = ++importRequestRef.current;
+    const sourceDocument = useTemplateDesignerStore.getState().document;
+    const sourcePage = getCurrentPage();
+    const canApplyResult = () => {
+      if (request !== importRequestRef.current) return false;
+      if (useTemplateDesignerStore.getState().document !== sourceDocument || getCurrentPage() !== sourcePage) {
+        showMessage('当前设计已变化，请重新选择文件导入', 'warning');
+        return false;
+      }
+      return true;
+    };
+
     try {
-      const importedPage = await importTemplateToCanvasPage(file, getCurrentPage());
+      const importedPage = await importTemplateToCanvasPage(file, sourcePage);
+      if (!canApplyResult()) return;
       replaceCurrentPageFromImport(importedPage);
       setActiveTab('canvas');
     } catch (error) {
-      window.alert(error instanceof Error ? error.message : '模板导入失败');
+      if (!canApplyResult()) return;
+      showMessage(error instanceof Error ? error.message : '模板导入失败', 'error');
     }
   };
 
@@ -358,7 +381,7 @@ export default function TemplateDesignerReactShell({
             color="error"
             onClick={() => {
               setCloseConfirmOpen(false);
-              onClose();
+              closeDesigner();
             }}
             size="small"
             sx={{ height: 28, px: 1.5, borderRadius: 1, fontSize: 13 }}
