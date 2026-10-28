@@ -1,0 +1,68 @@
+{
+  "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+  "priorDelivery": "8ec3c3a164ce49c66070734cd1cb01a539944ae5",
+  "priorDeliveryTreeMatchesBaseline": true,
+  "contractDelta": [],
+  "records": [
+    {
+      "path": "gmp-platform/frontend/src/components/useListPageBounds.ts",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": null,
+      "currentSha256": "610f22eb6ea594dcf7a458ff91af78f404d9cb4daea6cc89fa284df031d188ac",
+      "scope": [
+        "useListPageBounds:one-based ready-result upper bound effect"
+      ],
+      "depth": "listed-methods-and-diff-only",
+      "reviewStatus": "reviewed",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "f775ca17768f85713bb147a95096fe5ac6d9e116",
+      "currentSha256": "338730a4bc8792a67bf3437f28d8798c8fa746f404761482d637433a262cff43",
+      "scope": [
+        "dictionariesQuery/itemsQuery query key and readiness",
+        "selectedDictionary fallback/selectedItemPage/automatic selection effect",
+        "dictionary/item pagination and unchanged DELETE handlers"
+      ],
+      "depth": "listed-methods-and-diff-only",
+      "reviewStatus": "reviewed",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "4fa8dea07a77d6b8282abeb0d07adae12acb4f2b",
+      "currentSha256": "eb6dc9bcbdd09287282f03347b63d55246b0e05b6eff07ff96abe7feab4b1f53",
+      "scope": [
+        "main list query and successful bounds",
+        "operations deletion precheck/DELETE/invalidation",
+        "shared pageKey impact only; browser operations only"
+      ],
+      "depth": "listed-methods-and-diff-only",
+      "reviewStatus": "reviewed",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "f5ad8e6b1d50a728c6cd25c140ce2616c4a19972",
+      "currentSha256": "b8b4784a68ca6d71aa3a34d1e1dfb040e452062c963a02358ef6171e16813034",
+      "scope": [
+        "main list query and totalPages/totalElements fallback bounds",
+        "form-template parent deletion precheck/DELETE/invalidation",
+        "shared pageKey impact only; browser formTemplates only"
+      ],
+      "depth": "listed-methods-and-diff-only",
+      "reviewStatus": "reviewed",
+      "wholeFileAuditComplete": false
+    }
+  ],
+  "helperEvidence": "evidence/source-helper.json",
+  "helperScopeRecords": 14,
+  "knowledgeEvidence": "evidence/rule-sync.json",
+  "wholeFileAuditComplete": false,
+  "overallAuditComplete": false,
+  "note": "Four intersecting product path/method records plus helper14 method records are not a sum of unique whole-file completion; prior scoped evidence remains at original commits."
+}

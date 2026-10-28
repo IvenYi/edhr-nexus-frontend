@@ -1,0 +1,355 @@
+{
+  "baseline": null,
+  "width": 1440,
+  "boundary": "Actual dictionary, operation and form-template pages with React Query/client/Chromium; controlled HTTP and legal custom deletes, no backend persistence",
+  "results": [
+    {
+      "name": "dictionary-parent-delete",
+      "kind": "dictionary",
+      "scenario": "parent-delete",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1021/items",
+          "dictionaryId": "1021",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        }
+      ],
+      "writes": [
+        {
+          "method": "DELETE",
+          "path": "/api/v1/system/business-dictionaries/1021"
+        }
+      ]
+    },
+    {
+      "name": "dictionary-item-delete",
+      "kind": "dictionary",
+      "scenario": "item-delete",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 1,
+          "size": 20
+        }
+      ],
+      "writes": [
+        {
+          "method": "DELETE",
+          "path": "/api/v1/system/business-dictionary-items/100121"
+        }
+      ]
+    },
+    {
+      "name": "dictionary-automatic-parent-change",
+      "kind": "dictionary",
+      "scenario": "automatic-parent-change",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1021/items",
+          "dictionaryId": "1021",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1021/items",
+          "dictionaryId": "1021",
+          "page": 2,
+          "size": 20
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "operations-delete-last-page",
+      "kind": "operations",
+      "scenario": "delete-last-page",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/deletion-check/operation/2021",
+          "deletionCheck": true
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 1,
+          "size": 20
+        }
+      ],
+      "writes": [
+        {
+          "method": "DELETE",
+          "path": "/api/v1/master-data/process-modeling/operations/2021"
+        }
+      ]
+    },
+    {
+      "name": "templates-delete-last-page",
+      "kind": "templates",
+      "scenario": "delete-last-page",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/deletion-check/form_template/3021",
+          "deletionCheck": true
+        },
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 1,
+          "size": 20
+        }
+      ],
+      "writes": [
+        {
+          "method": "DELETE",
+          "path": "/api/v1/master-data/template-modeling/form-templates/3021"
+        }
+      ]
+    },
+    {
+      "name": "dictionary-pending-error-cache",
+      "kind": "dictionary",
+      "scenario": "pending-error-cache",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1021/items",
+          "dictionaryId": "1021",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 50
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "operations-pending-error-cache",
+      "kind": "operations",
+      "scenario": "pending-error-cache",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 1,
+          "size": 50
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "templates-pending-error-cache",
+      "kind": "templates",
+      "scenario": "pending-error-cache",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 1,
+          "size": 50
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "dictionary-empty-zero-pages",
+      "kind": "dictionary",
+      "scenario": "empty-zero-pages",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "operations-empty-zero-pages",
+      "kind": "operations",
+      "scenario": "empty-zero-pages",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 1,
+          "size": 20
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "templates-empty-zero-pages",
+      "kind": "templates",
+      "scenario": "empty-zero-pages",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/template-modeling/form-templates",
+          "page": 1,
+          "size": 20
+        }
+      ],
+      "writes": []
+    }
+  ]
+}

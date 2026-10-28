@@ -1,0 +1,297 @@
+qualityResult:
+  result: passed
+  baseCommit: cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34
+  headCommit: 8efb21f74dcc07050ccfbc3f516747ff2accab90
+  contractBaseline:
+    sourceCommit: 8efb21f74dcc07050ccfbc3f516747ff2accab90
+    targetBranch: edhr-dev
+    targetCommit: cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34
+    contractReadCommit: 8efb21f74dcc07050ccfbc3f516747ff2accab90
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.actual-candidate-contract
+    required: true
+    category: requirements
+    description: 实际来源、目标、受测候选及契约和干净工作树
+    method: command
+    command: git rev-parse HEAD origin/edhr-dev; git status --porcelain; git diff
+      base head -- protected paths
+    outcome: passed
+    evidence:
+    - target/base cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34; source/tested candidate
+      8efb21f74dcc07050ccfbc3f516747ff2accab90
+    - 实际读契约8efb21f7；worktree clean；不查询或触发CI
+  - id: check.knowledge-and-policy-boundaries
+    required: true
+    category: ontology
+    description: 核对13知识ID及2节UI契约有限NA与实际代码，保留删除权限/版本/审计边界
+    method: inspection
+    command: 亲读DEC0053/0065、模板隔离、当前production无改动、列表规范及ontology-result/rule-sync
+    outcome: passed
+    evidence:
+    - docs/development/branch-review-20261028-list-boundaries/evidence/ontology-result.yaml
+    - /tmp/edhr-list-qa-inventory-source.json
+    - 知识0.3.25；业务字典沿原builtin/子项保护，不宣称全量接入DEC0053预检
+  - id: check.source-bounds-context
+    required: true
+    category: regression
+    description: 亲读一基hook、四调用及字典派生子页，确认等待失败占位不夹页
+    method: inspection
+    command: 阅读useListPageBounds与三页主查询/字典选择effect及原DELETE handlers
+    outcome: passed
+    evidence:
+    - gmp-platform/frontend/src/components/useListPageBounds.ts
+    - gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx
+    - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx
+    - gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx
+    - 不动零基FormListPagination；无后台、SQL、知识、布局或权限修改
+  - id: check.browser-test-integrity
+    required: true
+    category: requirements
+    description: 核对真实页面和合法DELETE/预检/确认，fresh总数20及A/B多页上下文断言
+    method: inspection
+    command: 亲读test-list-boundaries-browser.mjs及实际请求结果
+    outcome: passed
+    evidence:
+    - 四删除场景等到共20条；自动换父项A/B均21子项且禁止新A旧page2请求
+    - scope为BusinessDictionaryPage、operations、formTemplates；不是其他pageKey浏览器全覆盖
+  - id: check.node-40
+    required: true
+    category: unit
+    description: 独立Node聚焦测试40通过
+    method: automated-test
+    command: node --test scripts/test-review-batch-01.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-list-qa-node.log
+    - 40 pass, zero fail/skip
+  - id: check.backend-103
+    required: true
+    category: unit
+    description: 既有字典/工艺/模板controller测试103通过，非原生PG
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=BusinessDictionaryControllerTest,ProcessModelingControllerTest,TemplateModelingControllerTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-list-qa-backend.log
+    - 103 tests, zero failures/errors/skips; Mockito/controller tests
+  - id: check.knowledge-89
+    required: true
+    category: ontology
+    description: 独立知识结构/引用/类型校验89通过
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-list-qa-knowledge.log
+    - 89 tests, zero failures/errors/skips；不等于全库语义通过
+  - id: check.desktop-11
+    required: true
+    category: e2e
+    description: 实际三页桌面同11场景通过
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium LIST_ARTIFACTS=/tmp/edhr-list-qa-desktop
+      node scripts/test-list-boundaries-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-list-qa-desktop.json
+    - 11/11；实际React Query/client/Chromium，受控HTTP
+  - id: check.narrow-11-visual
+    required: true
+    category: visual
+    description: 390px同11场景通过并实际查看删除与自动切父项截图
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium LIST_WIDTH=390 LIST_ARTIFACTS=/tmp/edhr-list-qa-narrow
+      node scripts/test-list-boundaries-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-list-qa-narrow.json
+    - /tmp/edhr-list-qa-narrow/templates-delete-last-page.png
+    - /tmp/edhr-list-qa-narrow/dictionary-automatic-parent-change.png
+    - 同11场景，不是22种不同业务场景；新总数20与页1、父子页1/内容明确
+  - id: check.baseline-red-controls
+    required: true
+    category: regression
+    description: 固定cf0原页面同11断言精确5红6正重现
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium LIST_BASELINE_COMMIT=cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34
+      LIST_ARTIFACTS=/tmp/edhr-list-qa-base node scripts/test-list-boundaries-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-list-qa-base.json
+    - 'expected exit1: four delete cases and automatic-parent-change fail; six positive
+      controls pass'
+  - id: check.shared-pagination-regression
+    required: true
+    category: regression
+    description: 相邻共享分页/图标/设备三组通过，零基边界保持
+    method: browser
+    command: CHROME_PATH=/usr/bin/chromium PAGINATION_ARTIFACTS=/tmp/edhr-list-qa-shared
+      node scripts/test-shared-pagination-browser.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-list-qa-shared.json
+    - 3/3 groups, original delay/failure/cache/shrink/group-isolation assertions intact
+  - id: check.typecheck-build
+    required: true
+    category: regression
+    description: TypeScript及Vite生产构建通过
+    method: command
+    command: npm run build
+    outcome: passed
+    evidence:
+    - /tmp/edhr-list-qa-build.log
+    - tsc -b && vite build exit0
+  - id: check.dictionary-template-static
+    required: true
+    category: regression
+    description: 字典及模板现有静态脚本通过
+    method: command
+    command: node scripts/verify-business-dictionary-page.mjs; node scripts/verify-template-modeling-page.mjs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-list-qa-dictionary.txt
+    - /tmp/edhr-list-qa-template.txt
+    - both exit0
+  - id: check.inventory-source-receipts
+    required: true
+    category: documentation
+    description: 独立重建3961清单四文件字节相同并核对方法、知识和原件摘要
+    method: command
+    command: python scripts/build-branch-review-inventory.py --ref cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34
+      --out 独立临时目录；Git NUL路径及SHA核对
+    outcome: passed
+    evidence:
+    - /tmp/edhr-list-qa-inventory-source.json
+    - /tmp/edhr-list-qa-inventory-source.md
+    - 3961 paths, 130 migrations; four main path/method records plus helper14 intersect,
+      not whole files; 13 knowledge+2 UI records and 19 archives match
+  - id: check.strict-baseline-parity
+    required: true
+    category: documentation
+    description: 官方严格扫描基线/候选各19项完整集合除行号相同
+    method: command
+    command: python /tmp/edhr-list-audit-project.py <baseline-or-candidate>/gmp-platform/frontend/src
+      --mode strict --no-write
+    outcome: passed
+    evidence:
+    - /tmp/edhr-list-qa-static-meta.json
+    - script sha256 b56ca0495ace4aaac2bfa779dc707b04baab0f7d4537e6856b6348c63230661c
+    - both exit2; no added/removed findings; historical27 not mixed
+  - id: check.process-script-existing-parity
+    required: true
+    category: documentation
+    description: 实际复现旧工艺脚本双方同因退役迁移ENOENT失败，不冒称完整断言已跑
+    method: command
+    command: node scripts/verify-process-modeling-pages.mjs（cf0隔离export与当前候选各运行）
+    outcome: passed
+    evidence:
+    - /tmp/edhr-list-qa-process-verify-baseline.txt
+    - /tmp/edhr-list-qa-process-verify-current.txt
+    - both exit1, retired0014-process-modeling-permissions.sql absent; later full
+      assertions not executed
+  - id: check.global-strict-unresolved
+    required: false
+    category: documentation
+    description: 既存全局strict19项仍未通过
+    method: command
+    command: python /tmp/edhr-list-audit-project.py gmp-platform/frontend/src --mode
+      strict --no-write
+    outcome: failed
+    evidence:
+    - /tmp/edhr-list-qa-strict-current.json
+    - exit2,19 pre-existing findings
+  - id: check.global-eslint-config
+    required: false
+    category: regression
+    description: ESLint缺配置仍未通过
+    method: command
+    command: npm run lint
+    outcome: failed
+    evidence:
+    - /tmp/edhr-list-qa-lint.txt
+    - exit2, missing configuration
+  - id: check.full-process-legacy-script
+    required: false
+    category: regression
+    description: 旧工艺完整验证脚本未通过，后续断言未执行
+    method: command
+    command: node scripts/verify-process-modeling-pages.mjs
+    outcome: failed
+    evidence:
+    - /tmp/edhr-list-qa-process-verify-current.txt
+    - exit1 on unchanged retired migration reference
+  findings:
+  - id: W5-LIST-SHRINK-DICTIONARY-MODELING-001
+    severity: medium
+    scope: 字典父子、工序及表单模板主列表
+    summary: 合法末页最后项删除后旧页曾不回退，候选只在新成功结果证实越界后回退。
+    reproductionSteps:
+    - 固定cf0，进入第2页合法删除唯一项
+    - 完成原确认及工序/模板预检
+    - 等待成功响应totalPages=1，检查有效页与fresh总数20
+    expectedResult: 收到新成功范围后回页1；等待/失败/占位不能先夹页。
+    actualResult: 固定cf0四删除场景红；8efb双宽相同四场景绿，新总数20和有效页1均实际验证。
+    evidence:
+    - /tmp/edhr-list-qa-base.json
+    - /tmp/edhr-list-qa-desktop.json
+    - /tmp/edhr-list-qa-narrow.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 8efb21f74dcc07050ccfbc3f516747ff2accab90
+    - type: command
+      reference: /tmp/edhr-list-qa-desktop.json
+    - type: command
+      reference: /tmp/edhr-list-qa-narrow.json
+  - id: W5-DICTIONARY-CHILD-PAGE-001
+    severity: medium
+    scope: BusinessDictionaryPage自动父项选择的子页归属
+    summary: 自动选择新字典时曾沿用旧itemPage，当前派生新父项子页1并同步状态。
+    reproductionSteps:
+    - A/B各21子项
+    - 父列表选到B，B子项page2
+    - 父列表自动回选A
+    - 检查A第1页且没有新A旧page2请求
+    expectedResult: 新父项从子项1读取/显示，不依靠缩页hook掩盖，不自动写入。
+    actualResult: cf0同场景红；候选1440/390均回A子项1并无旧page2请求、无写入。
+    evidence:
+    - /tmp/edhr-list-qa-base.json
+    - /tmp/edhr-list-qa-desktop.json
+    - /tmp/edhr-list-qa-narrow.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 8efb21f74dcc07050ccfbc3f516747ff2accab90
+    - type: command
+      reference: /tmp/edhr-list-qa-desktop.json
+    - type: command
+      reference: /tmp/edhr-list-qa-narrow.json
+  residualRisks:
+  - id: residual.global-static-lint-process-verify
+    description: 当前strict19项exit2、ESLint缺配置exit2、工艺旧脚本引用退役迁移exit1均保留，完整后续工艺断言未执行。
+    impact: 本批有限功能passed不等于全站静态或所有旧验证脚本通过。
+    mitigation: 原件及基线反证保持，后续验证工具维护不得改业务政策迎合过时断言。
+  - id: residual.runtime-depth-variants
+    description: 浏览器为受控HTTP，后端103为Mockito/controller，本批没有原生PG/真实持久化E2E；其他ProcessModeling/TemplateModeling
+      pageKey仅源码影响核对。
+    impact: 不认证完整后台运行、所有variant交互或容量。
+    mitigation: 严格按实际三页和两个pageKey签收，后续按风险安排真实集成和其他变体。
+  - id: residual.pending-full-audit-performance
+    description: ModelTab/Menu成功缩页仍pending-reproduction，不能用不存在的DELETE、焦点刷新或重挂载来造复现。字典计数、导入等原性能风险只分析未优化；整体W0至W7未完成。
+    impact: 本批子范围解决不关闭全部相邻父线索或全量审计。
+    mitigation: 保留原ID及下一步合法触发/量化讨论，有限方法/清单不升级整文件或全库完成。
+  - id: residual.user-deferred
+    description: 生产弹窗样式、TaskDetail签名、记录控制变更/作废及相关DHR high/A12、旧知识gap继续用户暂缓。
+    impact: 完整生命周期仍有原依赖限制，不属于本批已修复范围。
+    mitigation: 不因本批merge自动恢复暂缓，不自动merge/deploy或恢复用户数据。
+  blockingConditions: []

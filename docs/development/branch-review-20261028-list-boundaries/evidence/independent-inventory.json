@@ -1,0 +1,571 @@
+{
+  "status": "FINAL",
+  "role": "independent-quality-readonly-inventory-and-source-helper",
+  "contractBaseline": {
+    "sourceCommit": "8efb21f74dcc07050ccfbc3f516747ff2accab90",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+    "contractReadCommit": "8efb21f74dcc07050ccfbc3f516747ff2accab90",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "checks": [
+    {
+      "id": "inventory-byte-rebuild",
+      "outcome": "passed",
+      "evidence": [
+        {
+          "path": "coverage.csv",
+          "bytes": 1169299,
+          "rebuiltSha256": "fad5066f69c9705296dae373a6d1f5b2df312c710eee053cc8c0f501b17d23fd",
+          "committedSha256": "fad5066f69c9705296dae373a6d1f5b2df312c710eee053cc8c0f501b17d23fd",
+          "equal": true
+        },
+        {
+          "path": "entrypoints.csv",
+          "bytes": 152332,
+          "rebuiltSha256": "b36bc75f890e2fbcc328a55b802f52ae504337c462c654b978f69cfbc4df40c9",
+          "committedSha256": "b36bc75f890e2fbcc328a55b802f52ae504337c462c654b978f69cfbc4df40c9",
+          "equal": true
+        },
+        {
+          "path": "migrations.csv",
+          "bytes": 33469,
+          "rebuiltSha256": "181064884748277c541c53c132efe0fb8512cfdcdb17a1c0e46016e6b77fa490",
+          "committedSha256": "181064884748277c541c53c132efe0fb8512cfdcdb17a1c0e46016e6b77fa490",
+          "equal": true
+        },
+        {
+          "path": "inventory-summary.json",
+          "bytes": 1043,
+          "rebuiltSha256": "7dc5079d636981f31d544fb1ffa751b97409d749baea7dc00e4aa0af2c027f3e",
+          "committedSha256": "7dc5079d636981f31d544fb1ffa751b97409d749baea7dc00e4aa0af2c027f3e",
+          "equal": true
+        }
+      ]
+    },
+    {
+      "id": "inventory-coverage-and-pending",
+      "outcome": "passed",
+      "evidence": {
+        "rows": 3961,
+        "uniquePaths": 3961,
+        "migrationFiles": 130,
+        "allPendingInventoryOnly": true,
+        "semanticReviewComplete": false,
+        "nulDelimitedGitPaths": true,
+        "pathSetsExactlyEqual": true,
+        "missingPaths": [],
+        "extraPaths": []
+      }
+    },
+    {
+      "id": "merge-and-protected-boundary",
+      "outcome": "passed",
+      "evidence": {
+        "priorTree": "38bd7d3b232235131a3cafb97f9780a63ee99786",
+        "baseTree": "38bd7d3b232235131a3cafb97f9780a63ee99786",
+        "protectedDiffPaths": []
+      }
+    },
+    {
+      "id": "primary-four-method-scope-hashes",
+      "outcome": "passed",
+      "evidence": [
+        {
+          "path": "gmp-platform/frontend/src/components/useListPageBounds.ts",
+          "actualSha256": "610f22eb6ea594dcf7a458ff91af78f404d9cb4daea6cc89fa284df031d188ac",
+          "shaMatches": true,
+          "baselineBlobMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx",
+          "actualSha256": "338730a4bc8792a67bf3437f28d8798c8fa746f404761482d637433a262cff43",
+          "shaMatches": true,
+          "baselineBlobMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+          "actualSha256": "eb6dc9bcbdd09287282f03347b63d55246b0e05b6eff07ff96abe7feab4b1f53",
+          "shaMatches": true,
+          "baselineBlobMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx",
+          "actualSha256": "b8b4784a68ca6d71aa3a34d1e1dfb040e452062c963a02358ef6171e16813034",
+          "shaMatches": true,
+          "baselineBlobMatches": true,
+          "wholeFileAuditComplete": false
+        }
+      ]
+    },
+    {
+      "id": "helper-fourteen-limited-scopes",
+      "outcome": "passed",
+      "evidence": [
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx",
+          "symbols": [
+            "ModelTab.reportQuery",
+            "reportPageCount",
+            "pagedReportRows",
+            "subTableDesignFieldId effect",
+            "query/reset handlers",
+            "Pagination"
+          ],
+          "blobMatches": true,
+          "shaMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx",
+          "symbols": [
+            "TemplateDesignerReactShell activeTab model rendering"
+          ],
+          "blobMatches": true,
+          "shaMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/frontend/src/api/form-instance-records.ts",
+          "symbols": [
+            "listFormInstanceRecords",
+            "FormRecordQuery"
+          ],
+          "blobMatches": true,
+          "shaMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormInstanceRecordController.java",
+          "symbols": [
+            "list",
+            "detail"
+          ],
+          "blobMatches": true,
+          "shaMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java",
+          "symbols": [
+            "saved record update",
+            "list",
+            "row"
+          ],
+          "blobMatches": true,
+          "shaMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/system/MenuManagementPage.tsx",
+          "symbols": [
+            "IconSelectorField",
+            "MenuManagementPage.iconsQuery",
+            "page reset handlers"
+          ],
+          "blobMatches": true,
+          "shaMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/frontend/src/api/system.ts",
+          "symbols": [
+            "getIconPage",
+            "deleteIcon",
+            "batchDeleteIcons"
+          ],
+          "blobMatches": true,
+          "shaMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/IconManagementController.java",
+          "symbols": [
+            "listGroups",
+            "listIcons",
+            "deleteIcon",
+            "batchDeleteIcons"
+          ],
+          "blobMatches": true,
+          "shaMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/system/repository/IconAssetRepository.java",
+          "symbols": [
+            "countByGroupIdIn"
+          ],
+          "blobMatches": true,
+          "shaMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/BusinessDictionaryController.java",
+          "symbols": [
+            "listDictionaries",
+            "updateDictionary count",
+            "pageable",
+            "listOptions"
+          ],
+          "blobMatches": true,
+          "shaMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/system/repository/BusinessDictionaryItemRepository.java",
+          "symbols": [
+            "findByDictionaryIdIn",
+            "findByDictionaryIdOrderBySortOrderAscCreatedAtAsc"
+          ],
+          "blobMatches": true,
+          "shaMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/system/entity/BusinessDictionaryItem.java",
+          "symbols": [
+            "scalar entity fields"
+          ],
+          "blobMatches": true,
+          "shaMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+          "symbols": [
+            "business_dictionary_item",
+            "idx_business_dictionary_item_dictionary_sort"
+          ],
+          "blobMatches": true,
+          "shaMatches": true,
+          "wholeFileAuditComplete": false
+        },
+        {
+          "path": "gmp-platform/frontend/src/utils/queryClient.ts",
+          "symbols": [
+            "queryClient.defaultOptions"
+          ],
+          "blobMatches": true,
+          "shaMatches": true,
+          "wholeFileAuditComplete": false
+        }
+      ]
+    },
+    {
+      "id": "ontology-product-source-snapshots",
+      "outcome": "passed",
+      "evidence": [
+        {
+          "path": "gmp-platform/frontend/src/components/useListPageBounds.ts",
+          "shaMatches": true,
+          "basisRecorded": "working-tree"
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx",
+          "shaMatches": true,
+          "basisRecorded": "working-tree"
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+          "shaMatches": true,
+          "basisRecorded": "working-tree"
+        },
+        {
+          "path": "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx",
+          "shaMatches": true,
+          "basisRecorded": "working-tree"
+        },
+        {
+          "path": "gmp-platform/frontend/src/components/AppDialog.tsx",
+          "shaMatches": true,
+          "basisRecorded": "unchanged-target-file"
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+          "shaMatches": true,
+          "basisRecorded": "unchanged-target-file"
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java",
+          "shaMatches": true,
+          "basisRecorded": "unchanged-target-file"
+        },
+        {
+          "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/BusinessDictionaryController.java",
+          "shaMatches": true,
+          "basisRecorded": "unchanged-target-file"
+        }
+      ]
+    },
+    {
+      "id": "ontology-thirteen-records-and-two-ui-sections",
+      "outcome": "passed",
+      "evidence": {
+        "counts": {
+          "knowledgeIdRecords": 13,
+          "uiContractSections": 2,
+          "totalFiniteRecords": 15,
+          "wholeFileAuditComplete": 0
+        },
+        "knowledgeRecords": [
+          {
+            "id": "DEC-0053-01",
+            "recordFound": true,
+            "shaMatches": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "DEC-0053-03",
+            "recordFound": true,
+            "shaMatches": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "DEC-0053-04",
+            "recordFound": true,
+            "shaMatches": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "DEC-0053-08",
+            "recordFound": true,
+            "shaMatches": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "rule.master-data-deletion-precheck-order",
+            "recordFound": true,
+            "shaMatches": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "rule.master-data-deletion-dependencies",
+            "recordFound": true,
+            "shaMatches": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "rule.master-data.endpoint-page-authority",
+            "recordFound": true,
+            "shaMatches": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "rule.master-data.write-audit-snapshot",
+            "recordFound": true,
+            "shaMatches": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "DEC-0061-01",
+            "recordFound": true,
+            "shaMatches": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "DEC-0061-02",
+            "recordFound": true,
+            "shaMatches": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "rule.dhr-template-design-version-isolation",
+            "recordFound": true,
+            "shaMatches": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "DEC-0082-14",
+            "recordFound": true,
+            "shaMatches": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "rule.form-reference-runtime",
+            "recordFound": true,
+            "shaMatches": true,
+            "conclusion": "consistent"
+          }
+        ],
+        "uiSections": [
+          {
+            "id": "docs/frontend/list-page-guidelines.md#5.3",
+            "recordType": "ui-contract-section",
+            "pathPresent": true,
+            "conclusion": "consistent"
+          },
+          {
+            "id": "docs/frontend/list-page-guidelines.md#联动选择与明细输入",
+            "recordType": "ui-contract-section",
+            "pathPresent": true,
+            "conclusion": "consistent"
+          }
+        ],
+        "scope": "Hash/reference integrity plus listed source review; not a fresh semantic full-ontology audit."
+      }
+    },
+    {
+      "id": "nineteen-safe-archive-receipts",
+      "outcome": "passed",
+      "evidence": [
+        {
+          "archive": "evidence/ontology-result.yaml",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-ontology-result.yaml"
+        },
+        {
+          "archive": "evidence/rule-sync.json",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-rule-sync.json"
+        },
+        {
+          "archive": "evidence/source-helper.md",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-source-20261028.md"
+        },
+        {
+          "archive": "evidence/source-helper.json",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-source-20261028.json"
+        },
+        {
+          "archive": "evidence/browser-baseline.json",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-baseline.json"
+        },
+        {
+          "archive": "evidence/browser-desktop.json",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-candidate.json"
+        },
+        {
+          "archive": "evidence/browser-narrow.json",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-primary-narrow-final.json"
+        },
+        {
+          "archive": "evidence/browser-author-summary.json",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-browser-author-summary.json"
+        },
+        {
+          "archive": "evidence/shared-pagination-regression.json",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-primary-shared.json"
+        },
+        {
+          "archive": "evidence/initial-baseline-fixture-failure.json",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-initial-fixture-failure.json"
+        },
+        {
+          "archive": "evidence/initial-candidate-fixture-failure.json",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-initial-candidate-fixture-failure.json"
+        },
+        {
+          "archive": "evidence/initial-template-fixture-debug.json",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-template-debug.json"
+        },
+        {
+          "archive": "evidence/static-baseline.json",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-static-baseline.json"
+        },
+        {
+          "archive": "evidence/static-current.json",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-static-current.json"
+        },
+        {
+          "archive": "evidence/static-comparison.json",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-static-comparison.json"
+        },
+        {
+          "archive": "evidence/process-verify-baseline.txt",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-process-baseline.txt"
+        },
+        {
+          "archive": "evidence/process-verify-current.txt",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-primary-process-static.log"
+        },
+        {
+          "archive": "evidence/narrow-template-after-delete.png",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-candidate-narrow-browser/templates-delete-last-page.png"
+        },
+        {
+          "archive": "evidence/narrow-dictionary-parent-change.png",
+          "shaMatches": true,
+          "source": "/tmp/edhr-list-candidate-narrow-browser/dictionary-automatic-parent-change.png"
+        }
+      ]
+    },
+    {
+      "id": "product-change-ownership",
+      "outcome": "passed",
+      "evidence": {
+        "productFiles": [
+          "gmp-platform/frontend/src/components/useListPageBounds.ts",
+          "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+          "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx",
+          "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx"
+        ],
+        "testFiles": [
+          "gmp-platform/frontend/scripts/test-list-boundaries-browser.mjs"
+        ]
+      }
+    },
+    {
+      "id": "working-tree-unchanged",
+      "outcome": "passed",
+      "evidence": {
+        "statusPorcelain": "",
+        "head": "8efb21f74dcc07050ccfbc3f516747ff2accab90"
+      }
+    }
+  ],
+  "allChecksPassed": true,
+  "sourceReview": {
+    "scope": [
+      "useListPageBounds ready/new-response upper-bound effect",
+      "BusinessDictionaryPage fallback selection/selectedItemPage/queryKey+queryFn/page display/reset effects and unchanged delete handlers",
+      "ProcessModelingPage main query readiness call; TemplateModelingPage totalPages/totalElements fallback call"
+    ],
+    "observations": [
+      "All four consumers pass actual isSuccess&&!isFetching&&!isPlaceholderData; undefined totals are not treated as proof of bounds.",
+      "The one-based hook does not migrate zero-based FormListPagination or send writes.",
+      "Dictionary derived child page1 is used in both request key/parameters and visible pagination until new automatic parent selection state is committed.",
+      "No changes to backend/delete eligibility/precheck/permissions/template version or snapshot content appear in this candidate."
+    ],
+    "newReproducibleFindings": [],
+    "wholeFileAuditComplete": false
+  },
+  "cleanup": {
+    "selfCreatedPath": "/tmp/edhr-list-qa-inventory-rebuild-source-8efb21f7",
+    "removed": true,
+    "repositoryModified": false
+  },
+  "limits": [
+    "No browser/database/performance tests executed by this helper; parent QA owns them.",
+    "Four main path/method records and fourteen helper method records overlap and are not eighteen unique files completed.",
+    "Thirteen knowledge record hashes plus two UI sections are finite integrity/reasonableness evidence, not full ontology or branch completion.",
+    "Other pageKey variants, ModelTab/menu-picker refresh paths and performance risks retain declared pending/deferred boundaries."
+  ],
+  "helperDiagnosticCorrection": {
+    "initialPath": "/tmp/edhr-list-qa-inventory-source-initial-path-decoding.json",
+    "initialSha256": "c8b84cac8f80a5a29aaa221ed64195f82c33d0483d2cc9c6887578c015f95edc",
+    "cause": "First helper set check used line-delimited git ls-tree and received Git-quoted strings for six non-ASCII paths. Four rebuilt files already byte-matched; inventory contents were correct.",
+    "correction": "Re-enumerated fixed Git tree using ls-tree -r -z --name-only and compared decoded NUL-separated actual paths without changing the assertion.",
+    "repositoryFilesChanged": false,
+    "recheckedPathCount": 3961
+  }
+}

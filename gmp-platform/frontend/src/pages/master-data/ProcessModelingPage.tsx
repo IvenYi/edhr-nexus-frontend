@@ -1,5 +1,6 @@
 import { useFlowHistory } from '@/components/flow-designer/useFlowHistory';
 import { FlowCanvasBackground, FlowCanvasControls, FlowHistoryControls, FlowMiniMap, FlowMiniMapControl, FullScreenFlowDesigner, STANDARD_FLOW_FIT_VIEW_OPTIONS, type FlowDirection } from '@/components/flow-designer/FlowDesigner';
+import { useListPageBounds } from '@/components/useListPageBounds';
 import {
   presentRouteGraph,
   getRouteConnectivityErrors,
@@ -1180,7 +1181,7 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
     return materialTypeNameMap.get(String(value));
   };
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, isSuccess, isFetching, isPlaceholderData } = useQuery({
     placeholderData: (previousData, previousQuery) => previousQuery?.queryKey[0] === config.listQueryKey ? keepPreviousData(previousData) : undefined,
     queryKey: [config.listQueryKey, page, rowsPerPage, filters],
     queryFn: async () => {
@@ -1201,6 +1202,8 @@ export default function ProcessModelingPage({ pageKey }: { pageKey: ProcessModel
       return res.data.data;
     },
   });
+
+  useListPageBounds(page, data?.totalPages, isSuccess && !isFetching && !isPlaceholderData, setPage);
 
   const operationCategoriesQuery = useQuery({
     queryKey: ['process-modeling-operation-categories'],

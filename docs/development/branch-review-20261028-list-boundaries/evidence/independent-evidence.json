@@ -1,0 +1,241 @@
+{
+  "status": "FINAL",
+  "verifier": "/root/list_boundaries_final_qa_20261028; independent, no product/test/fixture/knowledge repairs",
+  "targetCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+  "headCommit": "8efb21f74dcc07050ccfbc3f516747ff2accab90",
+  "testedCandidateCommit": "8efb21f74dcc07050ccfbc3f516747ff2accab90",
+  "workingTreePorcelain": "",
+  "knowledgeVersion": "0.3.25",
+  "requiredChecks": 16,
+  "requiredPassed": 16,
+  "optionalGlobalFailed": 3,
+  "node": {
+    "tests": 40,
+    "failed": 0,
+    "skipped": 0
+  },
+  "backend": {
+    "tests": 103,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "nativePostgres": false
+  },
+  "knowledge": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "scenarios": 11,
+    "widths": [
+      1440,
+      390
+    ],
+    "sameScenariosAcrossWidths": true,
+    "passedEach": 11,
+    "baselineFailures": 5,
+    "baselinePositiveControls": 6,
+    "sharedGroups": 3,
+    "realBackendPersistence": false
+  },
+  "buildExitCode": 0,
+  "verifyMeta": [
+    {
+      "name": "dictionary",
+      "exitCode": 0,
+      "path": "/tmp/edhr-list-qa-dictionary.txt"
+    },
+    {
+      "name": "template",
+      "exitCode": 0,
+      "path": "/tmp/edhr-list-qa-template.txt"
+    },
+    {
+      "name": "lint",
+      "exitCode": 2,
+      "path": "/tmp/edhr-list-qa-lint.txt"
+    }
+  ],
+  "static": {
+    "baseline": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+    "selfCreatedExport": "/tmp/edhr-list-qa-static-base-j5yznpff",
+    "scriptSha256": "b56ca0495ace4aaac2bfa779dc707b04baab0f7d4537e6856b6348c63230661c",
+    "runs": [
+      {
+        "name": "baseline",
+        "tool": "strict",
+        "exitCode": 2,
+        "path": "/tmp/edhr-list-qa-strict-baseline.json"
+      },
+      {
+        "name": "baseline",
+        "tool": "process-verify",
+        "exitCode": 1,
+        "path": "/tmp/edhr-list-qa-process-verify-baseline.txt"
+      },
+      {
+        "name": "current",
+        "tool": "strict",
+        "exitCode": 2,
+        "path": "/tmp/edhr-list-qa-strict-current.json"
+      },
+      {
+        "name": "current",
+        "tool": "process-verify",
+        "exitCode": 1,
+        "path": "/tmp/edhr-list-qa-process-verify-current.txt"
+      }
+    ],
+    "comparison": {
+      "baselineCount": 19,
+      "currentCount": 19,
+      "sameFullMultisetExceptLine": true,
+      "added": [],
+      "removed": []
+    },
+    "cleanup": {
+      "removedSelfCreatedStaticExport": "/tmp/edhr-list-qa-static-base-j5yznpff",
+      "removed": true
+    }
+  },
+  "helper": {
+    "status": "FINAL",
+    "allChecksPassed": true,
+    "cleanup": {
+      "selfCreatedPath": "/tmp/edhr-list-qa-inventory-rebuild-source-8efb21f7",
+      "removed": true,
+      "repositoryModified": false
+    },
+    "diagnosticCorrection": {
+      "initialPath": "/tmp/edhr-list-qa-inventory-source-initial-path-decoding.json",
+      "initialSha256": "c8b84cac8f80a5a29aaa221ed64195f82c33d0483d2cc9c6887578c015f95edc",
+      "cause": "First helper set check used line-delimited git ls-tree and received Git-quoted strings for six non-ASCII paths. Four rebuilt files already byte-matched; inventory contents were correct.",
+      "correction": "Re-enumerated fixed Git tree using ls-tree -r -z --name-only and compared decoded NUL-separated actual paths without changing the assertion.",
+      "repositoryFilesChanged": false,
+      "recheckedPathCount": 3961
+    }
+  },
+  "cleanup": {
+    "selfCreatedStaticExport": {
+      "removedSelfCreatedStaticExport": "/tmp/edhr-list-qa-static-base-j5yznpff",
+      "removed": true
+    },
+    "createdDatabase": false,
+    "modifiedUserData": false
+  },
+  "receipts": [
+    {
+      "path": "/tmp/edhr-list-qa-desktop.json",
+      "bytes": 8986,
+      "sha256": "da388df640728d51f26454dbce3004ebba04707a6c8d4e1f1127148a61563d0c"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-narrow.json",
+      "bytes": 8985,
+      "sha256": "fcfad86e40bf5197a8b68ac502084b8938141fb9375bc15f661434dec9e6b2df"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-base.json",
+      "bytes": 12796,
+      "sha256": "992780a1b7effbba17e715bd0adcc7fb6b81d727e7710d3708dce41e0df2333d"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-shared.json",
+      "bytes": 1053,
+      "sha256": "c9dce94725b8f4f5de0a810578ea28cbc026b66a84d2a5a48e4d41c80c10f136"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-node.log",
+      "bytes": 4012,
+      "sha256": "b2d9a374ca41fbbe86261580b47443ae0d833d1d8278f63db673991458ff7298"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-backend.log",
+      "bytes": 3538,
+      "sha256": "3cb3aec546edf1c6262f4cab1fce90a2bab428d929a3620ef4d16c9c96422e50"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-knowledge.log",
+      "bytes": 2113,
+      "sha256": "92b7df24ac4d62c10605915e7fadb145720f0d53e42dfd2be4716d1ff0e26af9"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-build.log",
+      "bytes": 9780,
+      "sha256": "c7040f4a29b55120d232f0b4e78ffd23481594af0ab2774fbbb04c84c83b63c0"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-dictionary.txt",
+      "bytes": 41,
+      "sha256": "1b7a589cd9df05697b37ad310a2cf87436166d44dc2799ae8fdde8c9287d5d77"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-template.txt",
+      "bytes": 37,
+      "sha256": "edf4791c14be8db4836b361bace7d3cf6e08c9149cd1e98fbe6612532f050cba"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-lint.txt",
+      "bytes": 819,
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-static-meta.json",
+      "bytes": 1077,
+      "sha256": "498f1903933edaba7cb0b1823f4276b89020dd0ecc892c977542d372a882ee6d"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-strict-baseline.json",
+      "bytes": 7633,
+      "sha256": "7ec05e465c5c9b498c23e05f2cf61c94ae3a0f55e7762bb588fec7c5e5b978b8"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-strict-current.json",
+      "bytes": 7625,
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-process-verify-baseline.txt",
+      "bytes": 857,
+      "sha256": "a248788cc94733cb5df80c1550230cb614ff9067715d60ffbb5025560fd40b65"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-process-verify-current.txt",
+      "bytes": 833,
+      "sha256": "a0071515c6318c8ec138724be89f92b3ff02e4a5e9191f723baf9b1cdfd21e4e"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-inventory-source.json",
+      "bytes": 20195,
+      "sha256": "a20a7b149671623779da9a33a92831d70227bf63f6c65004aaf18b6c203d622f"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-inventory-source.md",
+      "bytes": 2780,
+      "sha256": "f373a875c51421981bf70bea89de92082355df758fa1d97ca4c7b641b1e46bda"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-inventory-source-initial-path-decoding.json",
+      "bytes": 19422,
+      "sha256": "c8b84cac8f80a5a29aaa221ed64195f82c33d0483d2cc9c6887578c015f95edc"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-narrow/templates-delete-last-page.png",
+      "bytes": 50556,
+      "sha256": "b4c7cc948f6e8a2e117861de8a8bc107dad80afc573e2052615179bb2226de2c"
+    },
+    {
+      "path": "/tmp/edhr-list-qa-narrow/dictionary-automatic-parent-change.png",
+      "bytes": 48063,
+      "sha256": "cb943d4cc7e955dbd21da569db5c1fad5d0e78217a582a890d7fc830a75c84c0"
+    }
+  ],
+  "limits": [
+    "当前strict19项exit2、ESLint缺配置exit2、工艺旧脚本引用退役迁移exit1均保留，完整后续工艺断言未执行。",
+    "浏览器为受控HTTP，后端103为Mockito/controller，本批没有原生PG/真实持久化E2E；其他ProcessModeling/TemplateModeling pageKey仅源码影响核对。",
+    "ModelTab/Menu成功缩页仍pending-reproduction，不能用不存在的DELETE、焦点刷新或重挂载来造复现。字典计数、导入等原性能风险只分析未优化；整体W0至W7未完成。",
+    "生产弹窗样式、TaskDetail签名、记录控制变更/作废及相关DHR high/A12、旧知识gap继续用户暂缓。"
+  ]
+}

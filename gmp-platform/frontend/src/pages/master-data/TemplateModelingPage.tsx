@@ -2,6 +2,7 @@ import { readRecordLocation, useRecordLocationAction } from '@/utils/recordLocat
 import TableStateCell from '@/components/TableStateCell';
 import { listTableHeaderCellSx, listTablePrimaryTextSx, listTableStickyEdgeSx } from '@/components/listTableStyles';
 import { ListTableShell, resolveListColumnWidths } from '@/components/ListTableShell';
+import { useListPageBounds } from '@/components/useListPageBounds';
 import {
   ContentCopy,
   DataObjectOutlined,
@@ -769,6 +770,8 @@ export default function TemplateModelingPage({ pageKey }: { pageKey: TemplateMod
       return res.data.data;
     },
   });
+
+  useListPageBounds(page, listQuery.data ? listQuery.data.totalPages ?? Math.ceil(listQuery.data.totalElements / pageSize) : undefined, listQuery.isSuccess && !listQuery.isFetching && !listQuery.isPlaceholderData, setPage);
 
   const auditQuery = useQuery({
     queryKey: [config.auditQueryKey, drawerVersionRow ? versionAuditEntityType : config.entityType, drawerVersionRow?.id ?? drawerRow?.id],

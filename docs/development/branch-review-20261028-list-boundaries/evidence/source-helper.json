@@ -1,0 +1,229 @@
+{
+  "status": "FINAL",
+  "role": "temporary-readonly-source-helper-not-qualityResult",
+  "knowledgeBaselineVersion": "0.3.25",
+  "contractBaseline": {
+    "sourceCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+    "contractReadCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+    "uncommittedContractPaths": []
+  },
+  "records": [
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/tabs/model/ModelTab.tsx",
+      "symbols": [
+        "ModelTab.reportQuery",
+        "reportPageCount",
+        "pagedReportRows",
+        "subTableDesignFieldId effect",
+        "query/reset handlers",
+        "Pagination"
+      ],
+      "sourceLocator": "397-410;483-512;664-671;1029-1049;1225-1233",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "c45b949cc669247a38015eeee0a4667763213666",
+      "baselineSha256": "43e4c81ec1733173d4e3360b36e9f0e4ebeb94780ce687c988cdf80eb0506b81",
+      "depth": "listed-methods-source-only",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx",
+      "symbols": [
+        "TemplateDesignerReactShell activeTab model rendering"
+      ],
+      "sourceLocator": "53-80;301-310",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "8cb1e55ecc8a501a9d3bebc10dff2e27f4badeb9",
+      "baselineSha256": "38a99aa09cfb7dc608ab547af1a7d27d600e15bbb98af920e6271ce1b8d3a4a0",
+      "depth": "listed-methods-source-only",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/form-instance-records.ts",
+      "symbols": [
+        "listFormInstanceRecords",
+        "FormRecordQuery"
+      ],
+      "sourceLocator": "1-27",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "038f6f5652e10de30eee93cee17d8e0a8db15ed9",
+      "baselineSha256": "d062398b11981506e5b81663611d7024861a0dad95669bb3b49843cca7b9e4d5",
+      "depth": "listed-methods-source-only",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/FormInstanceRecordController.java",
+      "symbols": [
+        "list",
+        "detail"
+      ],
+      "sourceLocator": "11-30",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "7222c6c808a0b2254a99dfb137df8a77bd90f463",
+      "baselineSha256": "c27a55b62729e1e9e2b7db1f939c914d8999538b5d6de25a922372181991f7e4",
+      "depth": "listed-methods-source-only",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormInstanceRecordService.java",
+      "symbols": [
+        "saved record update",
+        "list",
+        "row"
+      ],
+      "sourceLocator": "68-96;117-158",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "e066a65f69aab9f92b3f8f43d47941bbf8639e8e",
+      "baselineSha256": "26d86a47185bf3fbf6f0b289e3060516086b8d3260e382660d6552f956c31a51",
+      "depth": "listed-methods-source-only",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/system/MenuManagementPage.tsx",
+      "symbols": [
+        "IconSelectorField",
+        "MenuManagementPage.iconsQuery",
+        "page reset handlers"
+      ],
+      "sourceLocator": "90-274;324-387;633-645;671-683",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "b6ef331abf80333edeae88babc436950fd149856",
+      "baselineSha256": "8e8da41866fadaa7e808143145a0dc3944a383dd7666078be92f3e9085dc6f93",
+      "depth": "listed-methods-source-only",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/system.ts",
+      "symbols": [
+        "getIconPage",
+        "deleteIcon",
+        "batchDeleteIcons"
+      ],
+      "sourceLocator": "244-253;282-287",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "449172fe2675aa62838a965534c84b0cf8dba521",
+      "baselineSha256": "2bab1faccad815902519b6bcb5123321030cc421a7d0bee63f0975ce634a3485",
+      "depth": "listed-methods-source-only",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/IconManagementController.java",
+      "symbols": [
+        "listGroups",
+        "listIcons",
+        "deleteIcon",
+        "batchDeleteIcons"
+      ],
+      "sourceLocator": "86-95;195-220;279-302",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "81fc54b6c3520a0fa1f680ebc9eca78f649bc9a0",
+      "baselineSha256": "817572f9bc94d6e028ce1f264fe677d1c8017a823cff74bfb8d4839e6ffae54c",
+      "depth": "listed-methods-source-only",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/system/repository/IconAssetRepository.java",
+      "symbols": [
+        "countByGroupIdIn"
+      ],
+      "sourceLocator": "18-23",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "a59db74f021cfff12ff62e4ccb4181db0e3eaefc",
+      "baselineSha256": "193896bdaa35b19350afe6634956a868c1603903f5034870ad6d0926e31502b0",
+      "depth": "listed-methods-source-only",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/BusinessDictionaryController.java",
+      "symbols": [
+        "listDictionaries",
+        "updateDictionary count",
+        "pageable",
+        "listOptions"
+      ],
+      "sourceLocator": "67-85;133;278-288;325-327",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "c2c50c5fa1cba9941352b77e2f26c1c7e1a1cbaf",
+      "baselineSha256": "a06f27f47810476dc0dacb91f137b5f676c39e32b7482135b96d47030d6e3e2e",
+      "depth": "listed-methods-source-only",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/system/repository/BusinessDictionaryItemRepository.java",
+      "symbols": [
+        "findByDictionaryIdIn",
+        "findByDictionaryIdOrderBySortOrderAscCreatedAtAsc"
+      ],
+      "sourceLocator": "9-13",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "2efc5d4ed962ca0174d9f08bde20e8f8a4144a61",
+      "baselineSha256": "e3cde0885fc90db767acfda169554b6dce3689e38f7f2d0a3dc4e13fb6eec9ca",
+      "depth": "listed-methods-source-only",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/system/entity/BusinessDictionaryItem.java",
+      "symbols": [
+        "scalar entity fields"
+      ],
+      "sourceLocator": "20-45",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "ebfda74a86974355abcbae836a829e40a076207f",
+      "baselineSha256": "d4158b07bb943b1448c5f2549ee352fc7bf97d51f8d9a5803e400687c22decf3",
+      "depth": "listed-methods-source-only",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql",
+      "symbols": [
+        "business_dictionary_item",
+        "idx_business_dictionary_item_dictionary_sort"
+      ],
+      "sourceLocator": "110-123;1834",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "5b1c7d24656539644563e44ec02b5d86094a15fb",
+      "baselineSha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b",
+      "depth": "listed-methods-source-only",
+      "wholeFileAuditComplete": false
+    },
+    {
+      "path": "gmp-platform/frontend/src/utils/queryClient.ts",
+      "symbols": [
+        "queryClient.defaultOptions"
+      ],
+      "sourceLocator": "3-10",
+      "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+      "baselineBlob": "516148262a0afebc5ca432f2f16caa35ffa5512d",
+      "baselineSha256": "0bc4074f4695558790430eb60bb7199ce57e2f8dcc215dd9ffea751648aced78",
+      "depth": "listed-methods-source-only",
+      "wholeFileAuditComplete": false
+    }
+  ],
+  "candidates": [
+    {
+      "id": "W5-LIST-SHRINK-ADJACENT-001",
+      "scope": "ModelTab record refresh and MenuManagement icon picker",
+      "status": "pending-browser-reproduction",
+      "notNewRegression": true,
+      "refreshEvidenceGap": "Global refetchOnWindowFocus=false; Menu remount resets page. Must verify a legitimate same-mount refresh such as stale reconnect before claiming browser reproduction."
+    }
+  ],
+  "performance": [
+    {
+      "id": "PERF-DICTIONARY-ITEM-COUNT-MATERIALIZATION-001",
+      "status": "pending-discussion",
+      "model": "P parent rows; M=sum child counts for parent IDs; materialized child entities M; no per-parent loop query in this method",
+      "measured": false
+    }
+  ],
+  "executed": {
+    "sourceRead": true,
+    "browser": false,
+    "database": false,
+    "performance": false,
+    "tests": false
+  },
+  "modifiedRepositoryPaths": [],
+  "report": "/tmp/edhr-list-source-20261028.md"
+}

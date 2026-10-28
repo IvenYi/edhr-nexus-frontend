@@ -1,0 +1,94 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-LIST-BOUNDARIES-20261028
+  scope: edhr-dev整体审计中的字典父子及工艺模板一基列表边界；W0至W7持续
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34
+    targetBranch: edhr-dev
+    targetCommit: cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34
+    contractReadCommit: cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34
+    uncommittedContractPaths: []
+  summary: 复现并修正成功缩页与自动换字典的子页归属；最小共享hook，不改变删除、权限及业务规则。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: paged-lists
+        change: 字典父子、工序及模板主列表在非刷新非占位成功响应证实越界后回有效页。
+        evidenceReferences: [docs/frontend/list-page-guidelines.md, gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx]
+    transitiveImpacts:
+      - area: dictionary-item-context
+        change: 自动选中不同字典后子项请求和页码从1开始，已有显式选中和筛选重置保持。
+        evidenceReferences: [gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx]
+    potentialImpacts:
+      - area: variants
+        concern: ProcessModeling与TemplateModeling使用多pageKey共用组件，须区分实际受测variant与源码核对范围。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx, gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx]
+    unaffectedAreas:
+      - area: zero-based-pagination
+        change: FormListPagination及其表单/DHR消费者保持，不扩大为全站迁移。
+        evidenceReferences: [gmp-platform/frontend/src/pages/form-management/formManagementListStyles.tsx]
+    compatibilityAndMigration:
+      - area: persistence
+        change: 无后台、迁移、历史数据或持久化格式改动。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: production-and-template-snapshots
+        change: 不改制程/作业匹配、模板发布或生产首次冻结及历史读取。
+        evidenceReferences: []
+    auditImpacts:
+      - area: deletion-audit
+        change: 原真实DELETE、确认和后台审计保持，只纠正响应后浏览页码。
+        evidenceReferences: [gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx]
+    permissionImpacts:
+      - area: authorization
+        change: 不改按钮资格、系统内置保护或后台授权，夹具须遵循原合法删除前提。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx]
+    testImpacts:
+      - scope: real-page-bounded-regression
+        scenarios: [父页末项删除, 子页末项删除, 自动切父项, 工序末项删除, 模板末项删除, 成功缩页, 等待失败不跳页]
+        evidenceReferences: [gmp-platform/frontend/scripts/test-list-boundaries-browser.mjs]
+    evidenceGaps:
+      - 受控HTTP浏览器不证明真实数据库持久化或生产容量；其他pageKey及模型报表/菜单选择器未实测范围保留。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 多个已存在的一基列表共享同一成功响应页码校正；领域页继续负责上下文、权限和查询。
+    ownershipBoundaries:
+      - owner: shared-list-hook
+        responsibility: 仅一基页码、已就绪新响应与已知总页数的边界校正。
+      - owner: dictionary-page
+        responsibility: 父项选择、子项页码归属及原查询/写命令。
+  affectedFiles:
+    - path: gmp-platform/frontend/src/components/useListPageBounds.ts
+      changeType: create
+      reason: 多处同根因的最小一基成功响应hook。
+    - path: gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx
+      changeType: update
+      reason: 父子成功缩页及自动选择的子页归属。
+    - path: gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx
+      changeType: update
+      reason: 主列表新响应越界回退。
+    - path: gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx
+      changeType: update
+      reason: 主列表新响应越界回退。
+    - path: gmp-platform/frontend/scripts/test-list-boundaries-browser.mjs
+      changeType: create
+      reason: 实际页面合法删除红绿及失败/上下文正反例。
+  acceptanceScenarios:
+    - id: scenario.list-success-clamp
+      given: 合法删除当前末页最后一项
+      when: 新成功响应确定当前页越界
+      then: 自动请求最后有效页；等待或失败期间不提前夹取
+      evidenceRequirements: [真实页面DELETE与确认, 原基线红和候选绿, 相邻正对照]
+    - id: scenario.dictionary-auto-selection-page
+      given: 原字典子项停在第二页且新字典也有多页
+      when: 父列表变化使自动选择不同字典
+      then: 新字典从子项第一页读取且不借助缩页夹取掩盖错误
+      evidenceRequirements: [真实请求序列, 页码及内容, 新旧父项隔离]
