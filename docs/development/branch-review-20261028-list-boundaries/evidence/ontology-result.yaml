@@ -1,0 +1,136 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34
+    targetBranch: edhr-dev
+    targetCommit: cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34
+    contractReadCommit: cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34
+    uncommittedContractPaths: []
+  reason: 已先评估13条有限知识记录及2节UI契约的合理性，再核对当前未提交分页/父子浏览修复；它们只校正已有一基列表的新响应越界状态和管理页既有自动浏览的子页归属，不新增业务概念、删除/权限政策、版本或快照含义。当前知识已表达相关保留边界，无需改写。sourceCommit是实际HEAD，产品补丁尚未提交，精确工作树范围及源码SHA256见rule-sync；不是包含补丁的提交或运行验收声明。
+  changedArtifacts: []
+  knowledgeSync:
+  - id: DEC-0053-01
+    disposition: retained
+    scope: 分页hook仅在查询新响应后校正浏览页，不改变正式DELETE保护。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx#deleteMutation
+    - gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx#deleteMutation
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#deleteOperation
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java#deleteFormTemplate
+  - id: DEC-0053-03
+    disposition: retained
+    scope: 本批只核对工艺/模板对应入口；系统业务字典的内置及子项限制沿其控制器，不能宣称字典已全量接入主数据预检。
+    sourceReferences:
+    - gmp-platform/frontend/src/components/AppDialog.tsx
+    - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx
+    - gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/BusinessDictionaryController.java#deleteDictionary
+  - id: DEC-0053-04
+    disposition: retained
+    scope: AppDialog deletionTarget和原DELETE mutation保持；本轮成功回退不发送DELETE也不自动确认。
+    sourceReferences:
+    - gmp-platform/frontend/src/components/AppDialog.tsx
+    - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx#deletionTarget
+    - gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx#deletionTarget
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#deleteOperation
+  - id: DEC-0053-08
+    disposition: retained
+    scope: 本批没有改变引用分类、生产保留、旧数据处理或任何后端路径。
+    sourceReferences:
+    - docs/knowledge/evidence/master-data-deletion-user-confirmed.md
+    - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx
+    - gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx
+  - id: rule.master-data-deletion-precheck-order
+    disposition: retained
+    scope: 页码边界和父项浏览重置不参与删除资格；原AppDialog预检、关闭中止和失败状态保持。
+    sourceReferences:
+    - gmp-platform/frontend/src/components/AppDialog.tsx
+    - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx
+    - gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx
+  - id: rule.master-data-deletion-dependencies
+    disposition: retained
+    scope: ProtectDeletion及原写命令未改；未将本批浏览器夹具解释为完整删除保护验收。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#deleteOperation
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java#deleteFormTemplate
+    - docs/knowledge/evidence/master-data-deletion-user-confirmed.md
+  - id: rule.master-data.endpoint-page-authority
+    disposition: retained
+    scope: 本批仅前端页码修复，不增改后端权限；工序GET/DELETE仍保留master-data.operations。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+    - gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx#PROCESS_MODELING_PAGE_CONFIGS
+  - id: rule.master-data.write-audit-snapshot
+    disposition: retained
+    scope: 查询重新取页不会新增写审计；本批未改变原删除事务及审计内容。
+    sourceReferences:
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#deleteOperation
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java#deleteFormTemplate
+    - gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/BusinessDictionaryController.java#deleteItem
+  - id: DEC-0061-01
+    disposition: retained
+    scope: 分页主列表改变不进入版本composition写路径，复制和已形成执行快照均保持。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx#listQuery
+    - docs/knowledge/evidence/dhr-template-version-design-isolation-confirmed.md
+  - id: DEC-0061-02
+    disposition: retained
+    scope: 本批修复父列表页码不改设计上下文选择；未关闭DEC0061已有版本差异记录或宣称全生命周期通过。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx
+    - gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx
+    - docs/knowledge/evidence/dhr-template-version-design-isolation-confirmed.md
+  - id: rule.dhr-template-design-version-isolation
+    disposition: retained
+    scope: 共享hook不涉及composition、设计窗口或versionId；原隔离规则保持。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx
+    - gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx
+  - id: DEC-0082-14
+    disposition: retained
+    scope: 业务字典管理页自动浏览某父项仍是原既有行为，本轮仅重置子页；不将其外推为表单引用可自动选第一个字典，不替代显式配置。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx
+    - docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.md
+  - id: rule.form-reference-runtime
+    disposition: retained
+    scope: 本批不改引用字段配置、运行时查询或提交验证，不改变旧冻结解释。
+    sourceReferences:
+    - gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx
+    - gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ReferenceDictionaryConfig.tsx
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.list-knowledge-suite
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-list-ontology-validation.log
+    - 89 tests, zero failures/errors/skips, exit0
+  - id: validation.list-scope-and-rule-references
+    checkType: reference
+    command: 逐ID核对现行DEC0053/0065/0061/0082和相关规则、原始确认证据及当前前后端有限源码；本批不改知识ID/引用/成熟度
+    outcome: passed
+    evidence:
+    - /tmp/edhr-list-rule-sync.json
+    - docs/knowledge/evidence/master-data-deletion-user-confirmed.md
+    - docs/knowledge/evidence/dhr-template-version-design-isolation-confirmed.md
+  - id: validation.list-knowledge-unchanged
+    checkType: projection
+    command: git diff --exit-code HEAD -- docs/knowledge docs/architecture；核对保持0.3.25/internal与P0，不提升已实现成熟度或关闭旧差异
+    outcome: passed
+    evidence:
+    - 无知识及架构工作树差异
+    - 本角色未参与产品/测试修复，未执行浏览器或后端运行
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

@@ -1,0 +1,266 @@
+{
+  "baseline": null,
+  "width": 1440,
+  "boundary": "Actual dictionary, operation and form-template pages with React Query/client/Chromium; controlled HTTP and legal custom deletes, no backend persistence",
+  "results": [
+    {
+      "name": "dictionary-parent-delete",
+      "kind": "dictionary",
+      "scenario": "parent-delete",
+      "result": "failed",
+      "message": "locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('table').first().getByRole('row').filter({ has: getByRole('table').first().getByRole('cell', { name: 'DICT-B', exact: true }) }).getByRole('button', { name: '删除', exact: true })\u001b[22m\n",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1021/items",
+          "dictionaryId": "1021",
+          "page": 1,
+          "size": 20
+        }
+      ],
+      "writes": [],
+      "errors": [],
+      "pageText": "业务字典\n\n新增字典\n​\n​\n状态\n全部\n状态\n重置\n查询\n字典名称\n\t字典编码\n\t字典项数\n\t状态\n\t创建人\n\t创建时间\n\t更新人\n\t更新时间\n\t操作\nDICT-B\tDICT-CODE-21\t0\t\n启用\n\t-\t-\t-\t-\t\n\n共 21 条数据\n\n1\n2\n20 条/页\n​\n\n字典项\n\nDICT-B / DICT-CODE-21\n新增字典项\n​\n​\n状态\n全部\n状态\n重置\n查询\n字典项名称\n\t字典项值\n\t排序\n\t状态\n\t创建人\n\t创建时间\n\t更新人\n\t更新时间\n\t操作\n\n暂无数据\n\n共 0 条数据\n\n1\n20 条/页\n​"
+    },
+    {
+      "name": "dictionary-item-delete",
+      "kind": "dictionary",
+      "scenario": "item-delete",
+      "result": "failed",
+      "message": "locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('table').nth(1).getByRole('row').filter({ has: getByRole('table').nth(1).getByRole('cell', { name: 'A-ITEM-21', exact: true }) }).getByRole('button', { name: '删除', exact: true })\u001b[22m\n",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 2,
+          "size": 20
+        }
+      ],
+      "writes": [],
+      "errors": [],
+      "pageText": "业务字典\n\n新增字典\n​\n​\n状态\n全部\n状态\n重置\n查询\n字典名称\n\t字典编码\n\t字典项数\n\t状态\n\t创建人\n\t创建时间\n\t更新人\n\t更新时间\n\t操作\nDICT-01\tDICT-CODE-01\t21\t\n启用\n\t-\t-\t-\t-\t\n\n共 1 条数据\n\n1\n20 条/页\n​\n\n字典项\n\nDICT-01 / DICT-CODE-01\n新增字典项\n​\n​\n状态\n全部\n状态\n重置\n查询\n字典项名称\n\t字典项值\n\t排序\n\t状态\n\t创建人\n\t创建时间\n\t更新人\n\t更新时间\n\t操作\nA-ITEM-21\tVALUE-21\t20\t\n启用\n\t-\t-\t-\t-\t\n\n共 21 条数据\n\n1\n2\n20 条/页\n​"
+    },
+    {
+      "name": "dictionary-automatic-parent-change",
+      "kind": "dictionary",
+      "scenario": "automatic-parent-change",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1021/items",
+          "dictionaryId": "1021",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1021/items",
+          "dictionaryId": "1021",
+          "page": 2,
+          "size": 20
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "operations-delete-last-page",
+      "kind": "operations",
+      "scenario": "delete-last-page",
+      "result": "failed",
+      "message": "locator.click: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('table').first().getByRole('row').filter({ has: getByRole('table').first().getByRole('cell', { name: 'OPERATION-21', exact: true }) }).getByRole('button', { name: '删除', exact: true })\u001b[22m\n",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 2,
+          "size": 20
+        }
+      ],
+      "writes": [],
+      "errors": [],
+      "pageText": "工序分类\n\n全部\n\n21\n\n未分类\n\n0\n工序名称\n​\n工序名称\n工序编码\n​\n工序编码\n工序分类\n全部\n工序分类\n状态\n全部\n状态\n重置\n查询\n下载模板\n导入数据\n新增\n工序名称\n\t工序编码\n\t工序分类\n\t默认工序类型\n\t标准工时\n\t工序通用描述\n\t状态\n\t创建人\n\t创建时间\n\t更新人\n\t更新时间\n\t操作\nOPERATION-21\tOPERATION-CODE-21\t-\tNORMAL\t1 分钟\t-\t\n启用\n\t-\t-\t-\t-\t\n\n共 21 条数据\n\n1\n2\n20 条/页\n​"
+    },
+    {
+      "name": "templates-delete-last-page",
+      "kind": "templates",
+      "scenario": "delete-last-page",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('table').first().getByRole('cell', { name: 'TEMPLATE-01', exact: true }) to be visible\u001b[22m\n",
+      "requests": [],
+      "writes": [],
+      "errors": [
+        "Minified React error #130; visit https://reactjs.org/docs/error-decoder.html?invariant=130&args[]=object&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ],
+      "pageText": ""
+    },
+    {
+      "name": "dictionary-pending-error-cache",
+      "kind": "dictionary",
+      "scenario": "pending-error-cache",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1001/items",
+          "dictionaryId": "1001",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries/1021/items",
+          "dictionaryId": "1021",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 50
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "operations-pending-error-cache",
+      "kind": "operations",
+      "scenario": "pending-error-cache",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 1,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 2,
+          "size": 20
+        },
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 1,
+          "size": 50
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "templates-pending-error-cache",
+      "kind": "templates",
+      "scenario": "pending-error-cache",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('table').first().getByRole('cell', { name: 'TEMPLATE-01', exact: true }) to be visible\u001b[22m\n",
+      "requests": [],
+      "writes": [],
+      "errors": [
+        "Minified React error #130; visit https://reactjs.org/docs/error-decoder.html?invariant=130&args[]=object&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ],
+      "pageText": ""
+    },
+    {
+      "name": "dictionary-empty-zero-pages",
+      "kind": "dictionary",
+      "scenario": "empty-zero-pages",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/system/business-dictionaries",
+          "page": 1,
+          "size": 20
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "operations-empty-zero-pages",
+      "kind": "operations",
+      "scenario": "empty-zero-pages",
+      "result": "passed",
+      "requests": [
+        {
+          "path": "/api/v1/master-data/process-modeling/operations",
+          "page": 1,
+          "size": 20
+        }
+      ],
+      "writes": []
+    },
+    {
+      "name": "templates-empty-zero-pages",
+      "kind": "templates",
+      "scenario": "empty-zero-pages",
+      "result": "failed",
+      "message": "locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('table').first().getByText('暂无数据', { exact: true }) to be visible\u001b[22m\n",
+      "requests": [],
+      "writes": [],
+      "errors": [
+        "Minified React error #130; visit https://reactjs.org/docs/error-decoder.html?invariant=130&args[]=object&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings."
+      ],
+      "pageText": ""
+    }
+  ]
+}

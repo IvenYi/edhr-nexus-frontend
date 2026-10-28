@@ -1,6 +1,7 @@
 import TableStateCell from '@/components/TableStateCell';
 import { ListTableShell } from '@/components/ListTableShell';
 import { listTableHeaderCellSx, listTableStickyEdgeShadow, listTableStickyEdgeSx } from '@/components/listTableStyles';
+import { useListPageBounds } from '@/components/useListPageBounds';
 import {
   type DragEvent as ReactDragEvent,
   type MouseEvent,
@@ -504,21 +505,26 @@ export default function BusinessDictionaryPage() {
 
   const dictionaries = dictionariesQuery.data?.content ?? [];
   const selectedDictionary = dictionaries.find((dictionary) => String(dictionary.id) === selectedDictionaryId) ?? dictionaries[0];
+  const selectedItemPage = selectedDictionary && String(selectedDictionary.id) === selectedDictionaryId ? itemPage : 1;
+
+  useListPageBounds(dictionaryPage, dictionariesQuery.data?.totalPages, dictionariesQuery.isSuccess && !dictionariesQuery.isFetching && !dictionariesQuery.isPlaceholderData, setDictionaryPage);
 
   useEffect(() => {
     if (!selectedDictionaryId && dictionaries.length > 0) {
       setSelectedDictionaryId(String(dictionaries[0].id));
+      setItemPage(1);
     } else if (selectedDictionaryId && dictionaries.length > 0 && !dictionaries.some((dictionary) => String(dictionary.id) === selectedDictionaryId)) {
       setSelectedDictionaryId(String(dictionaries[0].id));
+      setItemPage(1);
     }
   }, [dictionaries, selectedDictionaryId]);
 
   const itemsQuery = useQuery({
     placeholderData: (previousData, previousQuery) => previousQuery?.queryKey[1] === selectedDictionary?.id ? keepPreviousData(previousData) : undefined,
-    queryKey: ['business-dictionary-items', selectedDictionary?.id, itemPage, itemPageSize, itemFilters],
+    queryKey: ['business-dictionary-items', selectedDictionary?.id, selectedItemPage, itemPageSize, itemFilters],
     enabled: Boolean(selectedDictionary?.id),
     queryFn: () => getBusinessDictionaryItems(selectedDictionary?.id ?? '', {
-      page: itemPage,
+      page: selectedItemPage,
       size: itemPageSize,
       keyword: itemFilters.keyword.trim() || undefined,
       status: itemFilters.status === 'ALL' ? undefined : itemFilters.status,
@@ -528,6 +534,7 @@ export default function BusinessDictionaryPage() {
   });
 
   const items = itemsQuery.data?.content ?? [];
+  useListPageBounds(selectedItemPage, itemsQuery.data?.totalPages, itemsQuery.isSuccess && !itemsQuery.isFetching && !itemsQuery.isPlaceholderData, setItemPage);
 
   const auditQuery = useQuery({
     queryKey: ['business-dictionary-audit', selectedDetail?.type, selectedDetail?.data.id],
@@ -557,7 +564,7 @@ export default function BusinessDictionaryPage() {
   const dictionaryEmptyState = dictionariesQuery.isLoading || dictionariesQuery.isError || dictionaries.length === 0;
   const itemEmptyState = itemsQuery.isLoading || itemsQuery.isError || items.length === 0;
   const dictionaryPageCount = Math.max(1, dictionariesQuery.data?.totalPages ?? dictionaryPage);
-  const itemPageCount = Math.max(1, itemsQuery.data?.totalPages ?? itemPage);
+  const itemPageCount = Math.max(1, itemsQuery.data?.totalPages ?? selectedItemPage);
   const itemTotalElements = itemsQuery.data?.totalElements ?? 0;
   const canReorderCurrentItems = Boolean(selectedDictionary) && itemTotalElements > 0 && itemTotalElements === items.length;
 
@@ -1189,7 +1196,7 @@ export default function BusinessDictionaryPage() {
         <Box sx={{ minHeight: 52, px: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexShrink: 0, borderTop: '1px solid #e4e7ed' }}>
           <Typography sx={{ color: '#909399' }}>共 {itemTotalElements} 条数据</Typography>
           <Stack direction="row" spacing={1.5} alignItems="center">
-            <Pagination page={itemPage} count={itemPageCount} color="primary" size="small" onChange={(_, value) => setItemPage(value)} />
+            <Pagination page={selectedItemPage} count={itemPageCount} color="primary" size="small" onChange={(_, value) => setItemPage(value)} />
             <FormControl size="small" sx={{ minWidth: 116 }}>
               <Select value={itemPageSize} onChange={(event) => { setItemPageSize(Number(event.target.value)); setItemPage(1); }} sx={{ height: 32, fontSize: 14 }}>
                 {PAGE_SIZE_OPTIONS.map((option) => <MenuItem key={option} value={option}>{option} 条/页</MenuItem>)}

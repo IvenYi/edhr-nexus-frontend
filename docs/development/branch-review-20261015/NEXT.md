@@ -1,5 +1,9 @@
 # 持续推进台账
 
+## PR36已合入：列表边界有限审计
+
+已fetch核对PR36人工合入`cf0eb57c`，整树同8ec3c3a1，无其他产品/契约增量。从最新目标建立`audit/edhr-dev-list-boundaries-20261028`；先将原相邻缩页候选推进为字典父/子、工序/模板合法删除和自动切父项实测，详见[本批进行中检查点](../branch-review-20261028-list-boundaries/README.md)。不改业务政策、原删除资格、布局或未经讨论性能方案；本批及整体尚未完成，原暂缓保持。
+
 ## PR35已合入：分页与生产准备增量审计
 
 已交付[PR36](https://github.com/IvenYi/edhr-nexus-frontend/pull/36)，分支`audit/edhr-dev-pagination-incremental-20261027`，目标`edhr-dev`，待用户人工merge。受测`974eaa0c`之后仅L0证据/验收/范围/PR登记，产品/测试/知识保持。下一轮先fetch实际状态和新增提交；不得把本PR创建当作合并，不恢复原暂缓或自动实施性能方案。

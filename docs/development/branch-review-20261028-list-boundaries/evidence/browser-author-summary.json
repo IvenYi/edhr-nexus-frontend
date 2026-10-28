@@ -1,0 +1,88 @@
+{
+  "status": "FINAL",
+  "role": "test-implementation; not independent quality verification",
+  "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+  "headAtReturn": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+  "knowledgeBaselineVersion": "0.3.25",
+  "contractReadCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+  "changesOwnedByThisAgent": [
+    "gmp-platform/frontend/scripts/test-list-boundaries-browser.mjs"
+  ],
+  "scenarios": 11,
+  "baselineResult": {
+    "failures": 5,
+    "positiveControls": 6,
+    "exitCode": 1
+  },
+  "candidateResult": {
+    "widths": [
+      1440,
+      390
+    ],
+    "sameScenariosAcrossWidths": true,
+    "passedPerWidth": 11,
+    "exitCodes": [
+      0,
+      0
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": "gmp-platform/frontend/scripts/test-list-boundaries-browser.mjs",
+      "sha256": "0e83083fabeb46e7ca7dcdd131ff236b9734e318ee8819e0c6b2fde10e21318d"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/useListPageBounds.ts",
+      "sha256": "610f22eb6ea594dcf7a458ff91af78f404d9cb4daea6cc89fa284df031d188ac"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx",
+      "sha256": "338730a4bc8792a67bf3437f28d8798c8fa746f404761482d637433a262cff43"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+      "sha256": "eb6dc9bcbdd09287282f03347b63d55246b0e05b6eff07ff96abe7feab4b1f53"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx",
+      "sha256": "b8b4784a68ca6d71aa3a34d1e1dfb040e452062c963a02358ef6171e16813034"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/tmp/edhr-list-baseline.json",
+      "sha256": "992780a1b7effbba17e715bd0adcc7fb6b81d727e7710d3708dce41e0df2333d"
+    },
+    {
+      "path": "/tmp/edhr-list-candidate.json",
+      "sha256": "da388df640728d51f26454dbce3004ebba04707a6c8d4e1f1127148a61563d0c"
+    },
+    {
+      "path": "/tmp/edhr-list-candidate-narrow.json",
+      "sha256": "fcfad86e40bf5197a8b68ac502084b8938141fb9375bc15f661434dec9e6b2df"
+    },
+    {
+      "path": "/tmp/edhr-list-initial-fixture-failure.json",
+      "sha256": "6d9a61d91b03f8188b7217e3cef738a206da2cffddff143ba8d8df49658340bb"
+    },
+    {
+      "path": "/tmp/edhr-list-initial-candidate-fixture-failure.json",
+      "sha256": "d0dfd6557a55776612f333a84630b79b4079b417fd755ad4e877ffd9fe93a82c"
+    },
+    {
+      "path": "/tmp/edhr-list-template-debug.json",
+      "sha256": "b1bc621d7542b23c4b41fb8ce66da082bacd00f32c391999f63513d04269322c"
+    }
+  ],
+  "limits": [
+    "Actual pages with controlled HTTP, no native backend persistence/auth/DB E2E",
+    "Operations and formTemplates variants only; no claim of all ProcessModeling/TemplateModeling variants",
+    "No full screenreader/responsive audit",
+    "Readiness baseline failures occur after real custom eligible deletes, or automatic parent change; fixture errors separately retained"
+  ],
+  "screenshotInspected": [
+    "/tmp/edhr-list-candidate-narrow-browser/dictionary-automatic-parent-change.png",
+    "/tmp/edhr-list-candidate-narrow-browser/templates-delete-last-page.png",
+    "/tmp/edhr-list-candidate-browser/templates-delete-last-page.png"
+  ]
+}

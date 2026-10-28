@@ -1,0 +1,384 @@
+{
+  "status": "FINAL",
+  "role": "business-knowledge-modeler",
+  "contractBaseline": {
+    "sourceCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+    "contractReadCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+    "uncommittedContractPaths": []
+  },
+  "knowledgeBaselineVersion": "0.3.25",
+  "workingTreeState": {
+    "status": "dirty",
+    "includedPaths": [
+      "gmp-platform/frontend/src/components/useListPageBounds.ts",
+      "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx",
+      "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+      "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx",
+      "docs/development/branch-review-20261028-list-boundaries/decision-package.yaml"
+    ],
+    "excludedPaths": [
+      "docs/development/branch-review-20261015/NEXT.md",
+      "docs/development/branch-review-20261028-list-boundaries/README.md",
+      "docs/development/branch-review-20261028-list-boundaries/inventory/coverage.csv",
+      "docs/development/branch-review-20261028-list-boundaries/inventory/entrypoints.csv",
+      "docs/development/branch-review-20261028-list-boundaries/inventory/inventory-summary.json",
+      "docs/development/branch-review-20261028-list-boundaries/inventory/migrations.csv",
+      "gmp-platform/frontend/scripts/test-list-boundaries-browser.mjs"
+    ],
+    "untrackedPaths": [
+      "docs/development/branch-review-20261028-list-boundaries/README.md",
+      "docs/development/branch-review-20261028-list-boundaries/decision-package.yaml",
+      "docs/development/branch-review-20261028-list-boundaries/inventory/coverage.csv",
+      "docs/development/branch-review-20261028-list-boundaries/inventory/entrypoints.csv",
+      "docs/development/branch-review-20261028-list-boundaries/inventory/inventory-summary.json",
+      "docs/development/branch-review-20261028-list-boundaries/inventory/migrations.csv",
+      "gmp-platform/frontend/scripts/test-list-boundaries-browser.mjs",
+      "gmp-platform/frontend/src/components/useListPageBounds.ts"
+    ]
+  },
+  "productAndAdjacentSourceSnapshots": [
+    {
+      "path": "gmp-platform/frontend/src/components/useListPageBounds.ts",
+      "sha256": "610f22eb6ea594dcf7a458ff91af78f404d9cb4daea6cc89fa284df031d188ac",
+      "basis": "working-tree"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx",
+      "sha256": "338730a4bc8792a67bf3437f28d8798c8fa746f404761482d637433a262cff43",
+      "basis": "working-tree"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+      "sha256": "eb6dc9bcbdd09287282f03347b63d55246b0e05b6eff07ff96abe7feab4b1f53",
+      "basis": "working-tree"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx",
+      "sha256": "b8b4784a68ca6d71aa3a34d1e1dfb040e452062c963a02358ef6171e16813034",
+      "basis": "working-tree"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/AppDialog.tsx",
+      "sha256": "e0a0b6a22f8cb33f8659eaf3810f20a06fed5338bb8c0980a6e9d871a28a7fac",
+      "basis": "unchanged-target-file"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+      "sha256": "cf2a6616c713ce884740eed6fd89941dbef6077f26a019eeb888c33abbfc6032",
+      "basis": "unchanged-target-file"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java",
+      "sha256": "0533382eaf92b25035d0913966567ccb0894926441cceedac2fb9fbfde19b318",
+      "basis": "unchanged-target-file"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/BusinessDictionaryController.java",
+      "sha256": "a06f27f47810476dc0dacb91f137b5f676c39e32b7482135b96d47030d6e3e2e",
+      "basis": "unchanged-target-file"
+    }
+  ],
+  "knowledgeFilesChanged": false,
+  "records": [
+    {
+      "id": "DEC-0053-01",
+      "recordType": "knowledge-record",
+      "sourcePath": "docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml",
+      "assetMaturity": "specified",
+      "visibility": "internal",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "reviewScope": "本批分页/自动父项浏览与原删除、权限、版本契约是否相容；不审定其他方法或整个资产",
+      "ruleReasonableness": "删除引用保护可避免失去下游配置及历史解释；无引用仍需满足原资格，合理。",
+      "semanticConclusion": "分页hook仅在查询新响应后校正浏览页，不改变正式DELETE保护。",
+      "evidenceReferences": [
+        "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx#deleteMutation",
+        "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx#deleteMutation",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#deleteOperation",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java#deleteFormTemplate"
+      ],
+      "recordSha256": "a3119f9778f865dfa79145199dafcb844b0ec7f2bcfe73ad261cb78f1648b05d",
+      "disposition": "retained"
+    },
+    {
+      "id": "DEC-0053-03",
+      "recordType": "knowledge-record",
+      "sourcePath": "docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml",
+      "assetMaturity": "specified",
+      "visibility": "internal",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "reviewScope": "本批分页/自动父项浏览与原删除、权限、版本契约是否相容；不审定其他方法或整个资产",
+      "ruleReasonableness": "分模块推进且不声称全覆盖，可防止局部通过被误解为全部删除入口具备保护，合理。",
+      "semanticConclusion": "本批只核对工艺/模板对应入口；系统业务字典的内置及子项限制沿其控制器，不能宣称字典已全量接入主数据预检。",
+      "evidenceReferences": [
+        "gmp-platform/frontend/src/components/AppDialog.tsx",
+        "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+        "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/BusinessDictionaryController.java#deleteDictionary"
+      ],
+      "recordSha256": "1cfcb174528e0d6273edac41c38320279bb984974c523df39ef45ab312d21f85",
+      "disposition": "retained"
+    },
+    {
+      "id": "DEC-0053-04",
+      "recordType": "knowledge-record",
+      "sourcePath": "docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml",
+      "assetMaturity": "specified",
+      "visibility": "internal",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "reviewScope": "本批分页/自动父项浏览与原删除、权限、版本契约是否相容；不审定其他方法或整个资产",
+      "ruleReasonableness": "预检查未知或失败不得转入删除确认，正式删除仍复核，可覆盖预检与提交间状态变化，合理。",
+      "semanticConclusion": "AppDialog deletionTarget和原DELETE mutation保持；本轮成功回退不发送DELETE也不自动确认。",
+      "evidenceReferences": [
+        "gmp-platform/frontend/src/components/AppDialog.tsx",
+        "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx#deletionTarget",
+        "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx#deletionTarget",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#deleteOperation"
+      ],
+      "recordSha256": "e03a1a60305424500b87d6c21a9aa496cd78148c7836edb8d6b941b1a1a5bb12",
+      "disposition": "retained"
+    },
+    {
+      "id": "DEC-0053-08",
+      "recordType": "knowledge-record",
+      "sourcePath": "docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml",
+      "assetMaturity": "specified",
+      "visibility": "internal",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "reviewScope": "本批分页/自动父项浏览与原删除、权限、版本契约是否相容；不审定其他方法或整个资产",
+      "ruleReasonableness": "业务/保留/异常分类不放宽真实引用保护，避免为清理主数据损坏历史，合理。",
+      "semanticConclusion": "本批没有改变引用分类、生产保留、旧数据处理或任何后端路径。",
+      "evidenceReferences": [
+        "docs/knowledge/evidence/master-data-deletion-user-confirmed.md",
+        "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+        "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx"
+      ],
+      "recordSha256": "85d38489205eeaf5fe14d59254407eeffcf1659ede1e3d1274fd30335aed2cf3",
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.master-data-deletion-precheck-order",
+      "recordType": "knowledge-record",
+      "sourcePath": "docs/knowledge/rules/master-data-deletion.yaml",
+      "assetMaturity": "specified",
+      "visibility": "internal",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "reviewScope": "本批分页/自动父项浏览与原删除、权限、版本契约是否相容；不审定其他方法或整个资产",
+      "ruleReasonableness": "关联检查必须先于无关联删除确认，属于上述确认的规范化表达，合理。",
+      "semanticConclusion": "页码边界和父项浏览重置不参与删除资格；原AppDialog预检、关闭中止和失败状态保持。",
+      "evidenceReferences": [
+        "gmp-platform/frontend/src/components/AppDialog.tsx",
+        "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx",
+        "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx"
+      ],
+      "recordSha256": "6c4e3b133924e5e52345eae2a2dd972f798be7b4829207400e5d375e6728a791",
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.master-data-deletion-dependencies",
+      "recordType": "knowledge-record",
+      "sourcePath": "docs/knowledge/rules/master-data-deletion.yaml",
+      "assetMaturity": "specified",
+      "visibility": "internal",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "reviewScope": "本批分页/自动父项浏览与原删除、权限、版本契约是否相容；不审定其他方法或整个资产",
+      "ruleReasonableness": "阻断引用与原权限/生命周期同时保留，不能将无引用当作全条件通过，合理。",
+      "semanticConclusion": "ProtectDeletion及原写命令未改；未将本批浏览器夹具解释为完整删除保护验收。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#deleteOperation",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java#deleteFormTemplate",
+        "docs/knowledge/evidence/master-data-deletion-user-confirmed.md"
+      ],
+      "recordSha256": "a896c457e43d496b09f45c0ce541568f8b981f7d0288f043bc9b6182cea85d52",
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.master-data.endpoint-page-authority",
+      "recordType": "knowledge-record",
+      "sourcePath": "docs/knowledge/rules/master-data-permission-audit.yaml",
+      "assetMaturity": "implemented",
+      "visibility": "internal",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "reviewScope": "本批分页/自动父项浏览与原删除、权限、版本契约是否相容；不审定其他方法或整个资产",
+      "ruleReasonableness": "服务端按真实页面authority隔离资源可避免仅登录即能跨页面操作，合理。",
+      "semanticConclusion": "本批仅前端页码修复，不增改后端权限；工序GET/DELETE仍保留master-data.operations。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java",
+        "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx#PROCESS_MODELING_PAGE_CONFIGS"
+      ],
+      "recordSha256": "8c82ff63e17fade4c88fb360210e165d3742078cff2b9bf8b414ad7ffff37ec0",
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.master-data.write-audit-snapshot",
+      "recordType": "knowledge-record",
+      "sourcePath": "docs/knowledge/rules/master-data-permission-audit.yaml",
+      "assetMaturity": "implemented",
+      "visibility": "internal",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "reviewScope": "本批分页/自动父项浏览与原删除、权限、版本契约是否相容；不审定其他方法或整个资产",
+      "ruleReasonableness": "写审计沿持久化真实前后像而非请求或前端显示推断，满足追溯需求，合理。",
+      "semanticConclusion": "查询重新取页不会新增写审计；本批未改变原删除事务及审计内容。",
+      "evidenceReferences": [
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#deleteOperation",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java#deleteFormTemplate",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/BusinessDictionaryController.java#deleteItem"
+      ],
+      "recordSha256": "bdb83a818bf4a739ec137bc288997c2fc58be2a5cd45def5eabe083747ec245d",
+      "disposition": "retained"
+    },
+    {
+      "id": "DEC-0061-01",
+      "recordType": "knowledge-record",
+      "sourcePath": "docs/knowledge/decisions/DEC-0061-dhr-template-version-design-isolation.yaml",
+      "assetMaturity": "implemented",
+      "visibility": "internal",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "reviewScope": "本批分页/自动父项浏览与原删除、权限、版本契约是否相容；不审定其他方法或整个资产",
+      "ruleReasonableness": "复制后目录及表单引用应按具体模板版本独立保存，支持版本解释，合理。",
+      "semanticConclusion": "分页主列表改变不进入版本composition写路径，复制和已形成执行快照均保持。",
+      "evidenceReferences": [
+        "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx#listQuery",
+        "docs/knowledge/evidence/dhr-template-version-design-isolation-confirmed.md"
+      ],
+      "recordSha256": "0e88a45eb995cb2d721ff902fd645010ef7ac85f779936eb16866a5904e77498",
+      "disposition": "retained"
+    },
+    {
+      "id": "DEC-0061-02",
+      "recordType": "knowledge-record",
+      "sourcePath": "docs/knowledge/decisions/DEC-0061-dhr-template-version-design-isolation.yaml",
+      "assetMaturity": "implemented",
+      "visibility": "internal",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "reviewScope": "本批分页/自动父项浏览与原删除、权限、版本契约是否相容；不审定其他方法或整个资产",
+      "ruleReasonableness": "明确用户选定templateId/versionId比缓存或默认排序可靠，合理。",
+      "semanticConclusion": "本批修复父列表页码不改设计上下文选择；未关闭DEC0061已有版本差异记录或宣称全生命周期通过。",
+      "evidenceReferences": [
+        "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx",
+        "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx",
+        "docs/knowledge/evidence/dhr-template-version-design-isolation-confirmed.md"
+      ],
+      "recordSha256": "70684e19f35551db1cd8401cfad8fbcd0e21efd9c8da0e073c3b6b7452bd2134",
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.dhr-template-design-version-isolation",
+      "recordType": "knowledge-record",
+      "sourcePath": "docs/knowledge/rules/dhr-template-version-design-isolation.yaml",
+      "assetMaturity": "implemented",
+      "visibility": "internal",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "reviewScope": "本批分页/自动父项浏览与原删除、权限、版本契约是否相容；不审定其他方法或整个资产",
+      "ruleReasonableness": "按显式模板+版本隔离读取和保存，禁止隐式回退，合理。",
+      "semanticConclusion": "共享hook不涉及composition、设计窗口或versionId；原隔离规则保持。",
+      "evidenceReferences": [
+        "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx",
+        "gmp-platform/frontend/src/pages/master-data/DhrTemplateWorkspaceDialog.tsx"
+      ],
+      "recordSha256": "db7f1622cb426e32e6eb1977d0aa0bfde778ef61ab01d09d0246bc8a3a38aba3",
+      "disposition": "retained"
+    },
+    {
+      "id": "DEC-0082-14",
+      "recordType": "knowledge-record",
+      "sourcePath": "docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml",
+      "assetMaturity": "specified",
+      "visibility": "internal",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "reviewScope": "本批分页/自动父项浏览与原删除、权限、版本契约是否相容；不审定其他方法或整个资产",
+      "ruleReasonableness": "表单引用具体字典及有效项限定，避免同名字典项混淆真实身份，合理。",
+      "semanticConclusion": "业务字典管理页自动浏览某父项仍是原既有行为，本轮仅重置子页；不将其外推为表单引用可自动选第一个字典，不替代显式配置。",
+      "evidenceReferences": [
+        "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx",
+        "docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.md"
+      ],
+      "recordSha256": "39dfefe1a887c3c75ea620366feaafd346992d2ae0848050da7c9b4599a32af4",
+      "disposition": "retained"
+    },
+    {
+      "id": "rule.form-reference-runtime",
+      "recordType": "knowledge-record",
+      "sourcePath": "docs/knowledge/rules/form-reference-runtime.yaml",
+      "assetMaturity": "implemented",
+      "visibility": "internal",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "reviewScope": "本批分页/自动父项浏览与原删除、权限、版本契约是否相容；不审定其他方法或整个资产",
+      "ruleReasonableness": "来源、具体字典范围与正式引用有效性校验必须一致，合理。",
+      "semanticConclusion": "本批不改引用字段配置、运行时查询或提交验证，不改变旧冻结解释。",
+      "evidenceReferences": [
+        "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx",
+        "gmp-platform/frontend/src/pages/master-data/template-designer-react/components/ReferenceDictionaryConfig.tsx"
+      ],
+      "recordSha256": "89a4b16ae626bd0deb15f5908cd3607b637cd120f929bfeb5c05b0854907e220",
+      "disposition": "retained"
+    },
+    {
+      "id": "docs/frontend/list-page-guidelines.md#5.3",
+      "recordType": "ui-contract-section",
+      "sourcePath": "docs/frontend/list-page-guidelines.md",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "ruleReasonableness": "零或单页稳定显示页1，页码应表示真实查询状态而不是Math.min掩盖，合理。",
+      "semanticConclusion": "本轮只在成功、非占位、非刷新且总页数已知时回有效页；等待或失败不能据旧总数夹页。一基hook未迁移零基FormListPagination。",
+      "evidenceReferences": [
+        "gmp-platform/frontend/src/components/useListPageBounds.ts",
+        "gmp-platform/frontend/src/pages/master-data/ProcessModelingPage.tsx#useListPageBounds",
+        "gmp-platform/frontend/src/pages/master-data/TemplateModelingPage.tsx#useListPageBounds",
+        "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx#useListPageBounds"
+      ]
+    },
+    {
+      "id": "docs/frontend/list-page-guidelines.md#联动选择与明细输入",
+      "recordType": "ui-contract-section",
+      "sourcePath": "docs/frontend/list-page-guidelines.md",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "ruleReasonableness": "父子真实归属与最终使用标识须一致，合理；规范明确不批量改写既有业务选择规则。",
+      "semanticConclusion": "本轮保持管理页原自动浏览选择，切父项只把子项页码归到新父项第一页，不改子项实体身份或编辑目标。",
+      "evidenceReferences": [
+        "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx#selectedDictionary",
+        "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx#selectedItemPage",
+        "gmp-platform/frontend/src/pages/system/BusinessDictionaryPage.tsx#itemsQuery",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/system/controller/BusinessDictionaryController.java#listItems"
+      ]
+    }
+  ],
+  "counts": {
+    "knowledgeIdRecords": 13,
+    "uiContractSections": 2,
+    "totalFiniteRecords": 15,
+    "wholeFileAuditComplete": 0
+  },
+  "limitations": [
+    "有限分页与父子浏览上下文核对，不是全部知识或整个删除权限/版本生命周期审计。",
+    "未运行浏览器、原生PG或真实后端持久化；最终质量角色另行独立验收。",
+    "ModelTab和菜单图标选择器仍沿主审只读候选，未计修复或运行通过。",
+    "性能PERF-DICTIONARY-ITEM-COUNT-MATERIALIZATION-001保持待讨论，不实施优化。",
+    "原TaskDetail、生产弹窗样式、记录控制/DHR high/A12与知识gap暂缓保持。"
+  ],
+  "validation": {
+    "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test",
+    "exitCode": 0,
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": "/tmp/edhr-list-ontology-validation.log",
+    "logSha256": "891b4504d14d428752a4b618798c719f9ce961497bdbc522d54a2bb275c14cd6"
+  }
+}

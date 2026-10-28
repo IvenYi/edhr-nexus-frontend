@@ -1,0 +1,221 @@
+{
+  "baselineCommit": "cf0eb57c3553b5efee7a4cfee20a0ea0a50c0d34",
+  "workingTreeState": "dirty-listed-product-and-tests",
+  "node": {
+    "tests": 40,
+    "failed": 0,
+    "skipped": 0
+  },
+  "backend": {
+    "tests": 103,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "boundary": "existing Mockito/controller tests, no native PostgreSQL"
+  },
+  "knowledge": {
+    "tests": 89,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "sameScenariosAcrossWidths": true,
+    "scenarios": 11,
+    "widths": [
+      1440,
+      390
+    ],
+    "baselineFailures": 5,
+    "baselinePositiveControls": 6,
+    "candidatePassedPerWidth": 11,
+    "sharedPaginationGroups": 3,
+    "testedVariants": [
+      "BusinessDictionaryPage",
+      "ProcessModelingPage:operations",
+      "TemplateModelingPage:formTemplates"
+    ],
+    "boundary": "actual pages and controlled HTTP; no actual backend persistence E2E"
+  },
+  "staticVerify": {
+    "dictionary": "passed",
+    "template": "passed",
+    "process": {
+      "baselineExitCode": 1,
+      "currentExitCode": 1,
+      "reason": "unchanged stale reference to retired 0014 migration; later assertions not executed"
+    }
+  },
+  "strict": {
+    "baseline": 19,
+    "current": 19,
+    "sameFullMultisetExceptLine": true,
+    "exitCodes": [
+      2,
+      2
+    ]
+  },
+  "lint": {
+    "exitCode": 2,
+    "reason": "missing ESLint config"
+  },
+  "build": "passed",
+  "rawLogReceipts": [
+    {
+      "path": "/tmp/edhr-list-primary-node.log",
+      "sha256": "f4b9c954bb5dfed95b20ce92fe5db67ec0188ad7012797c05e72400d8618675c",
+      "summary": [
+        "ℹ tests 40",
+        "ℹ pass 40",
+        "ℹ fail 0"
+      ]
+    },
+    {
+      "path": "/tmp/edhr-list-primary-backend.log",
+      "sha256": "a96cb98edbb57762057f9f61a63772b6893e16a8b00f186c8f2eed1f5524eea1",
+      "summary": [
+        "✓ built in 11.47s",
+        "[INFO] Tests run: 54, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.689 s -- in com.zencas.edhr.masterdata.controller.ProcessModelingControllerTest",
+        "[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.245 s -- in com.zencas.edhr.system.controller.BusinessDictionaryControllerTest",
+        "[INFO] Tests run: 41, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.457 s -- in com.zencas.edhr.template.controller.TemplateModelingControllerTest",
+        "[INFO] Tests run: 103, Failures: 0, Errors: 0, Skipped: 0",
+        "[INFO] BUILD SUCCESS"
+      ]
+    },
+    {
+      "path": "/tmp/edhr-list-primary-build-final.log",
+      "sha256": "c13a2c1bc54b31a06a2205a0f492e4a943941c7b97684c81d2ec04757cf5b3fc",
+      "summary": [
+        "✓ built in 38.25s"
+      ]
+    },
+    {
+      "path": "/tmp/edhr-list-ontology-validation.log",
+      "sha256": "891b4504d14d428752a4b618798c719f9ce961497bdbc522d54a2bb275c14cd6",
+      "summary": [
+        "[INFO] Tests run: 89, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.45 s -- in com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+        "[INFO] Tests run: 89, Failures: 0, Errors: 0, Skipped: 0",
+        "[INFO] BUILD SUCCESS"
+      ]
+    },
+    {
+      "path": "/tmp/edhr-list-primary-lint.txt",
+      "sha256": "446ed7ac9236fe41200af4b44faa1d78796308bf2dd47df92db7f7e97e13c389",
+      "summary": [
+        "Oops! Something went wrong! :(",
+        "ESLint couldn't find a configuration file. To set up a configuration file for this project, please run:"
+      ]
+    },
+    {
+      "path": "/tmp/edhr-list-primary-dictionary-static.log",
+      "sha256": "1b7a589cd9df05697b37ad310a2cf87436166d44dc2799ae8fdde8c9287d5d77",
+      "summary": [
+        "Business dictionary verification passed."
+      ]
+    },
+    {
+      "path": "/tmp/edhr-list-primary-template-static.log",
+      "sha256": "edf4791c14be8db4836b361bace7d3cf6e08c9149cd1e98fbe6612532f050cba",
+      "summary": [
+        "verify-template-modeling-page passed"
+      ]
+    }
+  ],
+  "archiveReceipts": [
+    {
+      "source": "/tmp/edhr-list-ontology-result.yaml",
+      "archive": "evidence/ontology-result.yaml",
+      "sha256": "0e5753f71405ea80ecba3d8b251d432de0d81f62c6df31f323e9f7ef142d98dd"
+    },
+    {
+      "source": "/tmp/edhr-list-rule-sync.json",
+      "archive": "evidence/rule-sync.json",
+      "sha256": "5cfc81e48622325b8ea17e61e50ac23fb241da78ed78efeb63e00837b2b603f1"
+    },
+    {
+      "source": "/tmp/edhr-list-source-20261028.md",
+      "archive": "evidence/source-helper.md",
+      "sha256": "29355886969b6df985197a0b02102190121a5b9cf0505e4812d16fdfcfb7c92b"
+    },
+    {
+      "source": "/tmp/edhr-list-source-20261028.json",
+      "archive": "evidence/source-helper.json",
+      "sha256": "4ae3985a74fb5f4f4086b040e6bf47d7c92ca0764702f72970798f012b8006ef"
+    },
+    {
+      "source": "/tmp/edhr-list-baseline.json",
+      "archive": "evidence/browser-baseline.json",
+      "sha256": "992780a1b7effbba17e715bd0adcc7fb6b81d727e7710d3708dce41e0df2333d"
+    },
+    {
+      "source": "/tmp/edhr-list-candidate.json",
+      "archive": "evidence/browser-desktop.json",
+      "sha256": "da388df640728d51f26454dbce3004ebba04707a6c8d4e1f1127148a61563d0c"
+    },
+    {
+      "source": "/tmp/edhr-list-primary-narrow-final.json",
+      "archive": "evidence/browser-narrow.json",
+      "sha256": "fcfad86e40bf5197a8b68ac502084b8938141fb9375bc15f661434dec9e6b2df"
+    },
+    {
+      "source": "/tmp/edhr-list-browser-author-summary.json",
+      "archive": "evidence/browser-author-summary.json",
+      "sha256": "60c81e307c6832d3cebc0cd86d804de6d330136ab95df2a71eef92cdbb4a02e9"
+    },
+    {
+      "source": "/tmp/edhr-list-primary-shared.json",
+      "archive": "evidence/shared-pagination-regression.json",
+      "sha256": "c9dce94725b8f4f5de0a810578ea28cbc026b66a84d2a5a48e4d41c80c10f136"
+    },
+    {
+      "source": "/tmp/edhr-list-initial-fixture-failure.json",
+      "archive": "evidence/initial-baseline-fixture-failure.json",
+      "sha256": "6d9a61d91b03f8188b7217e3cef738a206da2cffddff143ba8d8df49658340bb"
+    },
+    {
+      "source": "/tmp/edhr-list-initial-candidate-fixture-failure.json",
+      "archive": "evidence/initial-candidate-fixture-failure.json",
+      "sha256": "d0dfd6557a55776612f333a84630b79b4079b417fd755ad4e877ffd9fe93a82c"
+    },
+    {
+      "source": "/tmp/edhr-list-template-debug.json",
+      "archive": "evidence/initial-template-fixture-debug.json",
+      "sha256": "b1bc621d7542b23c4b41fb8ce66da082bacd00f32c391999f63513d04269322c"
+    },
+    {
+      "source": "/tmp/edhr-list-static-baseline.json",
+      "archive": "evidence/static-baseline.json",
+      "sha256": "2dd8c444c9ba0614f4567e93684008df41005cd650f5e366791ee3ab12041fa4"
+    },
+    {
+      "source": "/tmp/edhr-list-static-current.json",
+      "archive": "evidence/static-current.json",
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856"
+    },
+    {
+      "source": "/tmp/edhr-list-static-comparison.json",
+      "archive": "evidence/static-comparison.json",
+      "sha256": "9e9aca4f5802302ae691f04ad372a5e201dfa489c7a7a84b0f02547beac2f0b2"
+    },
+    {
+      "source": "/tmp/edhr-list-process-baseline.txt",
+      "archive": "evidence/process-verify-baseline.txt",
+      "sha256": "39141f798fd9ebebf6c4e233d2b6d26ff263795dec5831b2c9f63b1c23a8fc18"
+    },
+    {
+      "source": "/tmp/edhr-list-primary-process-static.log",
+      "archive": "evidence/process-verify-current.txt",
+      "sha256": "a0071515c6318c8ec138724be89f92b3ff02e4a5e9191f723baf9b1cdfd21e4e"
+    },
+    {
+      "source": "/tmp/edhr-list-candidate-narrow-browser/templates-delete-last-page.png",
+      "archive": "evidence/narrow-template-after-delete.png",
+      "sha256": "b4c7cc948f6e8a2e117861de8a8bc107dad80afc573e2052615179bb2226de2c"
+    },
+    {
+      "source": "/tmp/edhr-list-candidate-narrow-browser/dictionary-automatic-parent-change.png",
+      "archive": "evidence/narrow-dictionary-parent-change.png",
+      "sha256": "cb943d4cc7e955dbd21da569db5c1fad5d0e78217a582a890d7fc830a75c84c0"
+    }
+  ]
+}
