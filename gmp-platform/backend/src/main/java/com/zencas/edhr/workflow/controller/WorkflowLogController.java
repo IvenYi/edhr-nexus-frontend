@@ -28,7 +28,7 @@ public class WorkflowLogController {
             @RequestParam(defaultValue = "desc") String order) {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(direction, sort));
-        Page<WorkflowActionLog> result = workflowActionLogRepository.findNonDhr(pageable);
+        Page<WorkflowActionLog> result = workflowActionLogRepository.findGeneric(pageable);
         return ApiResponse.success(PageResult.of(
                 result.getContent(), page, size, result.getTotalElements()));
     }
@@ -67,7 +67,7 @@ public class WorkflowLogController {
     }
 
     private void protect(WorkflowActionLog log) {
-        workflowEngine.assertNotDhrInstance(log.getInstanceId());
-        workflowEngine.assertNotDhrTask(log.getTaskId());
+        workflowEngine.assertGenericInstanceAccessAllowed(log.getInstanceId());
+        workflowEngine.assertGenericTaskIfPresent(log.getTaskId());
     }
 }

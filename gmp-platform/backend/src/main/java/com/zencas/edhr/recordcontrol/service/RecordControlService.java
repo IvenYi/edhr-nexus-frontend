@@ -9,18 +9,18 @@ import com.zencas.edhr.common.exception.BusinessException;
 import com.zencas.edhr.common.exception.ErrorCode;
 import com.zencas.edhr.common.util.SnowflakeIdGenerator;
 import com.zencas.edhr.compliance.entity.AuditEvent;
-import com.zencas.edhr.compliance.entity.Signature;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
-import com.zencas.edhr.compliance.repository.SignatureRepository;
-import com.zencas.edhr.identity.repository.UserAccountRepository;
 import com.zencas.edhr.production.service.ExecutionAccess;
 import com.zencas.edhr.workflow.contract.RecordControlBusinessProjectionPort;
 import com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.*;
 import com.zencas.edhr.workflow.contract.RecordControlWorkflowPort;
 import com.zencas.edhr.workflow.contract.RecordControlWorkflowResultHandler;
+import com.zencas.edhr.workflow.entity.WorkflowTask;
+import com.zencas.edhr.workflow.repository.WorkflowTaskRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,12 +39,10 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
     private final ObjectMapper mapper;
     private final SnowflakeIdGenerator ids;
     private final RecordControlWorkflowPort workflows;
-    private final UserAccountRepository users;
-    private final PasswordEncoder passwords;
-    private final SignatureRepository signatures;
+    private final WorkflowTaskRepository workflowTasks;
     private final AuditEventRepository audits;
     private final RecordControlDiff differences;
-    private final ExecutionAccess references;
+    private final ExecutionAccess executionAccess;
 
     public record SubmitCommand(BusinessType requestType, String instanceNo, String sourceRevisionId,
                                 JsonNode proposedValues, String reason, String workflowDefinitionId,
@@ -82,7 +80,7 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
         if (records.isEmpty()) throw invalid("表单记录不存在");
         JsonNode field = findField(json(records.getFirst().get("snapshot_json")).path("fields"), fieldId);
         if (field == null || !"reference".equals(field.path("type").asText())) throw invalid("引用字段不存在");
-        return references.references(field, keyword);
+        return executionAccess.references(field, keyword);
     }
 
     @Transactional(readOnly = true)
@@ -153,6 +151,21 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
     }
 
     @Transactional(readOnly = true)
+    public PageResult<WorkflowTask> listMyWorkflowTasks(String scope, int page, int size) {
+        String currentUser = actor();
+        page = Math.max(0, page);
+        size = Math.max(1, Math.min(200, size));
+        PageRequest pageable = PageRequest.of(page, size);
+        Page<WorkflowTask> tasks = switch (scope) {
+            case "todo" -> workflowTasks.findRecordControlTodoForUser(
+                    currentUser, "[\"" + currentUser + "\"]", pageable);
+            case "done" -> workflowTasks.findRecordControlDoneForUser(currentUser, pageable);
+            default -> throw invalid("审批任务范围不正确");
+        };
+        return PageResult.of(tasks.getContent(), page, size, tasks.getTotalElements());
+    }
+
+    @Transactional(readOnly = true)
     public List<ObjectNode> requestsForMyWorkflowTasks(List<String> instanceIds) {
         String currentUser = actor();
         if (instanceIds == null || instanceIds.isEmpty()) return List.of();
@@ -179,6 +192,10 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
 
     @Transactional(readOnly = true)
     public ObjectNode requestDetail(String requestId) {
+        return requestDetail(requestId, true);
+    }
+
+    private ObjectNode requestDetail(String requestId, boolean enforceAccess) {
         var rows = jdbc.queryForList("""
             SELECT q.*,r.instance_no,r.status AS record_status,r.snapshot_json,rev.revision_no AS source_revision_no
             FROM record_control_request q JOIN form_instance_record r ON r.id=q.record_id
@@ -187,6 +204,7 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
             """, TENANT, id(requestId));
         if (rows.isEmpty()) throw invalid("申请不存在");
         Map<String, Object> row = rows.getFirst();
+        if (enforceAccess) requireRequestDetailAccess(row);
         ObjectNode result = requestSummary(row);
         for (String key : List.of("record_id", "source_revision_id", "source_revision_no", "applicant_signature_id",
                 "workflow_definition_id", "workflow_version_id", "audit_correlation_id")) put(result, key, row.get(key));
@@ -207,23 +225,43 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
         return result;
     }
 
+    private void requireRequestDetailAccess(Map<String, Object> request) {
+        String currentUser = actor();
+        if (!"IN_REVIEW".equals(str(request.get("status")))
+                || currentUser.equals(str(request.get("applicant_id")))) return;
+        String workflowInstanceId = str(request.get("workflow_instance_id"));
+        if (!workflowInstanceId.isBlank()) {
+            Long relatedTaskCount = jdbc.queryForObject("""
+                    SELECT count(*) FROM workflow_task task
+                    WHERE CAST(task.instance_id AS VARCHAR)=?
+                      AND ((task.status IN ('PENDING','PROCESSING') AND (task.assignee_id=?
+                           OR (task.candidate_snapshot -> 'userIds') @> CAST(? AS jsonb)
+                           OR task.candidate_snapshot ->> 'unrestricted'='true'))
+                        OR (task.assignee_id=? AND task.status IN ('COMPLETED','REJECTED','TRANSFERRED')))
+                    """, Long.class, workflowInstanceId, currentUser, "[\"" + currentUser + "\"]", currentUser);
+            if (relatedTaskCount != null && relatedTaskCount > 0) return;
+        }
+        throw new BusinessException(ErrorCode.AUTH_003, "当前用户无权查看该变更申请");
+    }
+
     @Transactional
     public ObjectNode submit(SubmitCommand command) {
-        String applicant = actor();
         if (command == null || command.requestType() == null || command.instanceNo() == null
                 || command.sourceRevisionId() == null || command.reason() == null || command.reason().isBlank()
                 || command.workflowDefinitionId() == null || command.workflowVersionId() == null
                 || command.idempotencyKey() == null || command.idempotencyKey().isBlank()) throw invalid("申请信息不完整");
         if (command.reason().trim().length() > 2000 || command.idempotencyKey().length() > 128) throw invalid("申请原因或幂等键过长");
+        ExecutionAccess.ButtonSigner signer = executionAccess.authenticateButtonSigner(command.account(), command.password());
+        String applicant = signer.id();
         var prior = jdbc.queryForList("SELECT id FROM record_control_request WHERE tenant_id=? AND applicant_id=? AND idempotency_key=?",
                 TENANT, applicant, command.idempotencyKey());
-        if (!prior.isEmpty()) return requestDetail(str(prior.getFirst().get("id")));
+        if (!prior.isEmpty()) return requestDetail(str(prior.getFirst().get("id")), false);
         Map<String, Object> record = recordByNumber(command.instanceNo());
         lockSource(((Number) record.get("object_id")).longValue());
         record = lockedRecord(((Number) record.get("id")).longValue());
         prior = jdbc.queryForList("SELECT id FROM record_control_request WHERE tenant_id=? AND applicant_id=? AND idempotency_key=?",
                 TENANT, applicant, command.idempotencyKey());
-        if (!prior.isEmpty()) return requestDetail(str(prior.getFirst().get("id")));
+        if (!prior.isEmpty()) return requestDetail(str(prior.getFirst().get("id")), false);
         if (!"COMPLETED".equals(record.get("status")) || record.get("current_revision_id") == null)
             throw invalid("只有已有有效修订的已完成表单可申请变更或作废");
         if (!command.sourceRevisionId().equals(str(record.get("current_revision_id")))) throw invalid("表单修订已变化，请刷新后重试");
@@ -254,7 +292,8 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
                 .put("reason", command.reason().trim()).put("workflowDefinitionId", command.workflowDefinitionId())
                 .put("workflowVersionId", command.workflowVersionId());
         signed.set("sourceValues", source); if (proposal != null) signed.set("proposedValues", proposal);
-        long signatureId = sign(requestId, signed, command.account(), command.password());
+        long signatureId = id(executionAccess.signTarget("RECORD_CONTROL_REQUEST", str(requestId), command.instanceNo(),
+                "SUBMIT", signed, signer));
         jdbc.update("""
             INSERT INTO record_control_request(id,tenant_id,request_no,request_type,status,record_id,source_revision_id,
                 source_values_json,proposed_values_json,diff_json,reason_text,applicant_id,applicant_name,applicant_signature_id,
@@ -262,14 +301,15 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
             VALUES(?,?,?,?,'IN_REVIEW',?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             """, requestId, TENANT, requestNo, command.requestType().name(), record.get("id"),
                 id(command.sourceRevisionId()), source.toString(), proposal == null ? null : proposal.toString(), diff.toString(),
-                command.reason().trim(), applicant, AuditContext.getOperatorName(), signatureId,
+                command.reason().trim(), applicant, signer.name(), signatureId,
                 command.workflowDefinitionId(), command.workflowVersionId(), command.idempotencyKey(), correlationId, LocalDateTime.now());
         var started = workflows.start(new StartCommand(str(requestId), command.requestType(), command.workflowDefinitionId(),
                 command.workflowVersionId(), applicant, str(signatureId), command.idempotencyKey(), correlationId));
         jdbc.update("UPDATE record_control_request SET workflow_instance_id=?,workflow_snapshot_hash=? WHERE id=? AND tenant_id=?",
                 started.workflowInstanceId(), started.workflowSnapshotHash(), requestId, TENANT);
-        audit(requestId, "SUBMIT", null, signed, command.reason().trim(), requestNo, applicant);
-        return requestDetail(str(requestId));
+        audit(requestId, "SUBMIT", null, signed, command.reason().trim(), requestNo,
+                applicant, signer.name(), signer.account());
+        return requestDetail(str(requestId), false);
     }
 
     @Override
@@ -367,27 +407,18 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
                 state.toString(), LocalDateTime.now(), record.get("object_id"));
     }
 
-    private long sign(long requestId, ObjectNode signed, String account, String password) {
-        var user = users.findById(id(actor())).orElseThrow(() -> invalid("签署用户不存在"));
-        if (!Objects.equals(user.getUsername(), account) || !"ACTIVE".equals(user.getStatus())
-                || (user.getLockedUntil() != null && user.getLockedUntil().isAfter(LocalDateTime.now()))
-                || password == null || !passwords.matches(password, user.getPasswordHash()))
-            throw invalid("签署账户或密码不正确，或账户不可用");
-        long signatureId = ids.nextId();
-        signatures.saveAndFlush(Signature.builder().id(signatureId).tenantId(TENANT).targetType("RECORD_CONTROL_REQUEST")
-                .targetId(str(requestId)).meaning("记录变更/作废申请提交").signerId(actor()).signerName(user.getDisplayName())
-                .authMethod("PASSWORD").snapshotData(signed.toString()).snapshotHash(hash(signed.toString()))
-                .signedAt(LocalDateTime.now()).build());
-        return signatureId;
+    private void audit(long requestId, String action, JsonNode before, JsonNode after, String reason, String summary, String operatorId) {
+        audit(requestId, action, before, after, reason, summary, operatorId, null, null);
     }
 
-    private void audit(long requestId, String action, JsonNode before, JsonNode after, String reason, String summary, String operatorId) {
+    private void audit(long requestId, String action, JsonNode before, JsonNode after, String reason, String summary,
+                       String operatorId, String operatorName, String operatorAccount) {
         boolean currentOperator = Objects.equals(operatorId, AuditContext.getOperatorId());
         audits.save(AuditEvent.builder().id(ids.nextId()).tenantId(TENANT).entityType("RECORD_CONTROL_REQUEST")
                 .entityId(str(requestId)).action(action).contentBefore(before == null ? null : before.toString())
                 .contentAfter(after == null ? null : after.toString()).operatorId(operatorId)
-                .operatorName(currentOperator ? AuditContext.getOperatorName() : operatorId)
-                .operatorAccount(currentOperator ? AuditContext.getOperatorAccount() : null)
+                .operatorName(operatorName != null ? operatorName : currentOperator ? AuditContext.getOperatorName() : operatorId)
+                .operatorAccount(operatorAccount != null ? operatorAccount : currentOperator ? AuditContext.getOperatorAccount() : null)
                 .source("SUBMIT".equals(action) ? AuditContext.getSource() : "WORKFLOW")
                 .moduleName("记录").menuName("变更管理").functionName(action)
                 .dataSummary(summary).reason(reason).ipAddress(AuditContext.getIpAddress()).createdAt(LocalDateTime.now()).build());

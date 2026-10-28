@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zencas.edhr.common.dto.ApiResponse;
 import com.zencas.edhr.common.dto.PageResult;
 import com.zencas.edhr.recordcontrol.service.RecordControlService;
+import com.zencas.edhr.recordcontrol.service.RecordControlTaskActionService;
+import com.zencas.edhr.workflow.entity.WorkflowTask;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,6 +21,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class RecordControlController {
     private final RecordControlService service;
+    private final RecordControlTaskActionService taskActions;
 
     @GetMapping("/records/by-number")
     public ApiResponse<ObjectNode> findRecord(@RequestParam String instanceNo) {
@@ -67,8 +70,22 @@ public class RecordControlController {
         return ApiResponse.success(service.requestsForMyWorkflowTasks(instanceIds));
     }
 
+    @GetMapping("/workflow-tasks")
+    public ApiResponse<PageResult<WorkflowTask>> workflowTasks(
+            @RequestParam(defaultValue = "todo") String scope,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
+        return ApiResponse.success(service.listMyWorkflowTasks(scope, page, size));
+    }
+
     @GetMapping("/requests/{requestId}")
     public ApiResponse<ObjectNode> detail(@PathVariable String requestId) {
         return ApiResponse.success(service.requestDetail(requestId));
+    }
+
+    @PostMapping("/workflow-tasks/{taskId}/{action}")
+    public ApiResponse<Map<String, Object>> completeTask(@PathVariable String taskId, @PathVariable String action,
+            @RequestBody RecordControlTaskActionService.TaskActionCommand command) {
+        return ApiResponse.success(taskActions.complete(taskId, action, command));
     }
 }

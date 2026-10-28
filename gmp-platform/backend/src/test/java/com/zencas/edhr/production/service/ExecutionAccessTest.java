@@ -162,6 +162,18 @@ class ExecutionAccessTest {
         verify(signatures, never()).save(any()); verify(signatures, never()).deleteById(any());
     }
 
+    @Test void recordControlSignaturesCannotBeReadForgedOverwrittenOrDeletedThroughGenericCrud() {
+        Signature stored = Signature.builder().id(2L).targetType("RECORD_CONTROL_REQUEST").build();
+        when(signatures.findById(2L)).thenReturn(Optional.of(stored));
+        SignatureController controller = new SignatureController(signatures);
+        assertThatThrownBy(() -> controller.getById(2L)).hasMessageContaining("记录变更或作废");
+        assertThatThrownBy(() -> controller.create(stored)).hasMessageContaining("不可通过通用接口");
+        assertThatThrownBy(() -> controller.create(Signature.builder().id(2L).targetType("OTHER").build())).hasMessageContaining("不可通过通用接口");
+        assertThatThrownBy(() -> controller.update(2L, Signature.builder().targetType("OTHER").build())).hasMessageContaining("不可通过通用接口");
+        assertThatThrownBy(() -> controller.delete(2L)).hasMessageContaining("不可通过通用接口");
+        verify(signatures, never()).save(any()); verify(signatures, never()).deleteById(any());
+    }
+
     @Test void executionAttachmentsCannotBeDeletedThroughGenericFiles() {
         var files = mock(FileObjectRepository.class);
         when(files.findById(1L)).thenReturn(Optional.of(FileObject.builder().id(1L).targetType("PRODUCTION_EXECUTION").build()));

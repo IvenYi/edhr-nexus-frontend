@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Alert, Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle,
   Divider, MenuItem, Paper, Snackbar, Stack, TextField, Typography } from '@mui/material';
+import { DescriptionOutlined, FactCheckOutlined, RateReviewOutlined, SearchRounded } from '@mui/icons-material';
+import ButtonSignatureCredentials from '@/components/workflow/ButtonSignatureCredentials';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
 import { uploadExecutionFile } from '@/api/production-execution';
@@ -130,6 +132,14 @@ export default function RecordChangePage() {
             onKeyDown={(event) => { if (event.key === 'Enter') void search(); }} />
           <Button variant="contained" disabled={loading} onClick={() => void search()}>查询</Button>
         </Stack>
+        {!record && <Box sx={{ mt: 3, pt: 2.5, borderTop: '1px solid #ebeef5' }}>
+          <Typography variant="body2" fontWeight={600} color="text.primary" sx={{ mb: 1.25 }}>查询说明</Typography>
+          <Stack spacing={1.25}>
+            <QueryHint index="1" text="输入完整的表单实例编号，例如 FR-20260917-000004" />
+            <QueryHint index="2" text="查询后先核对表单状态、当前修订与原始填报内容" />
+            <QueryHint index="3" text="仅已完成且存在有效修订的表单可以发起申请" />
+          </Stack>
+        </Box>}
         {record && <Box sx={{ mt: 2.5 }}>
           <Divider sx={{ mb: 2 }} />
           <Info label="表单名称" value={record.template_name} />
@@ -149,19 +159,19 @@ export default function RecordChangePage() {
           {!eligible && !record.active_request_id && <Alert severity="info" sx={{ mt: 2 }}>仅已完成且有有效修订的表单可以发起申请。</Alert>}
         </Box>}
       </Paper>
-      <Paper variant="outlined" sx={{ flex: 1, minWidth: 0, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <Paper variant="outlined" sx={{ flex: 1, minWidth: 0, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', bgcolor: record ? '#fff' : '#fbfcfe' }}>
         <Box sx={{ flex: 1, minHeight: 0, p: 2, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          {loading && !record ? <CircularProgress /> : record && document && runtime
+          {loading && !record ? <Box sx={{ flex: 1, display: 'grid', placeItems: 'center' }}><Stack spacing={1.5} alignItems="center">
+              <CircularProgress size={32} /><Typography variant="body2" color="text.secondary">正在查询表单记录…</Typography>
+            </Stack></Box> : record && document && runtime
             ? <>{Object.keys(record.fieldValues).length === 0 && record.snapshot.fields.length > 0 &&
                 <Alert severity="warning" sx={{ mb: 2, flexShrink: 0 }}>当前实例没有已保存的字段值；下方内容不能作为原始填报记录{mode === 'CHANGE' ? '，新填写的内容仅是未提交的变更草稿' : ''}。请先核对生产执行中的保存记录。</Alert>}
               <Box sx={{ flex: 1, minHeight: 0, display: 'flex', overflow: 'hidden' }}>
                 <FormCanvasPreview document={document} runtime={runtime} />
               </Box></>
-            : <Box sx={{ flex: 1, display: 'grid', placeItems: 'center' }}>
-              <Typography color="text.secondary">请先输入表单实例编号并查询</Typography>
-            </Box>}
+            : <RecordChangeEmptyState />}
         </Box>
-        <Stack direction="row" justifyContent="flex-end" spacing={1} sx={{ p: 1.5, flexShrink: 0, borderTop: '1px solid #e4e7ed', bgcolor: '#fff' }}>
+        {record && <Stack direction="row" justifyContent="flex-end" spacing={1} sx={{ p: 1.5, flexShrink: 0, borderTop: '1px solid #e4e7ed', bgcolor: '#fff' }}>
           {mode === 'READ' ? <>
             <Button disabled={!eligible || loading} onClick={() => void chooseMode('CHANGE')}>表单变更</Button>
             <Button color="error" disabled={!eligible || loading} onClick={() => void chooseMode('OBSOLETE')}>表单作废</Button>
@@ -169,7 +179,7 @@ export default function RecordChangePage() {
             <Button onClick={() => { setMode('READ'); setValues(structuredClone(record?.fieldValues ?? {})); }}>取消</Button>
             <Button variant="contained" disabled={loading || (mode === 'CHANGE' && !modified)} onClick={openConfirmation}>提交{mode === 'CHANGE' ? '变更' : '作废'}审批</Button>
           </>}
-        </Stack>
+        </Stack>}
       </Paper>
     </Stack>
     <Dialog open={dialog} onClose={loading ? undefined : () => setDialog(false)} maxWidth="sm" fullWidth>
@@ -184,8 +194,8 @@ export default function RecordChangePage() {
           </MenuItem>)}
         </TextField>
         {!candidates.length && <Alert severity="warning">暂无可用审批流程。若账号无权读取候选流程，请联系公共流程负责人处理接口开放范围。</Alert>}
-        <TextField fullWidth required label="签署账号" value={account} onChange={(event) => setAccount(event.target.value)} />
-        <TextField fullWidth required type="password" label="签署密码" value={password} onChange={(event) => setPassword(event.target.value)} />
+        <ButtonSignatureCredentials account={account} password={password} disabled={loading}
+          onAccountChange={setAccount} onPasswordChange={setPassword} />
       </Stack></DialogContent>
       <DialogActions><Button disabled={loading} onClick={() => setDialog(false)}>取消</Button>
         <Button variant="contained" disabled={loading || !reason.trim() || !selectedCandidate || !account.trim() || !password}
@@ -193,6 +203,53 @@ export default function RecordChangePage() {
       </DialogActions>
     </Dialog>
   </Box>;
+}
+
+function RecordChangeEmptyState() {
+  const steps = [
+    { icon: <SearchRounded />, number: '01', title: '查询表单', description: '输入表单实例编号，定位需要处理的生产记录。' },
+    { icon: <FactCheckOutlined />, number: '02', title: '核对原始内容', description: '确认表单状态、当前修订及已保存的字段值。' },
+    { icon: <RateReviewOutlined />, number: '03', title: '发起申请', description: '选择变更或作废，填写原因并完成电子签署。' },
+  ];
+
+  return <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto', display: 'grid', placeItems: 'center', px: { xs: 1, md: 4 }, py: 3 }}>
+    <Box sx={{ width: '100%', maxWidth: 820 }}>
+      <Stack alignItems="center" textAlign="center" spacing={1.25} sx={{ mb: 4 }}>
+        <Box sx={{ width: 64, height: 64, borderRadius: 3, display: 'grid', placeItems: 'center', bgcolor: '#ecf5ff', color: 'primary.main' }}>
+          <DescriptionOutlined sx={{ fontSize: 34 }} />
+        </Box>
+        <Typography variant="h6" fontWeight={700} color="text.primary">从一份已完成的表单开始</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 560, lineHeight: 1.8 }}>
+          在左侧输入表单实例编号。系统会加载原始填报内容，并在同一工作区完成变更或作废申请。
+        </Typography>
+      </Stack>
+
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: 'repeat(3, minmax(0, 1fr))' }, gap: 1.5 }}>
+        {steps.map((step) => <Box key={step.number} sx={{ p: 2.25, minHeight: 150, border: '1px solid #e4e7ed', borderRadius: 2, bgcolor: '#fff' }}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+            <Box sx={{ width: 38, height: 38, borderRadius: 2, display: 'grid', placeItems: 'center', bgcolor: '#ecf5ff', color: 'primary.main', '& svg': { fontSize: 21 } }}>{step.icon}</Box>
+            <Typography variant="caption" fontWeight={700} color="#c0c4cc">STEP {step.number}</Typography>
+          </Stack>
+          <Typography variant="body1" fontWeight={600} sx={{ mb: 0.75 }}>{step.title}</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>{step.description}</Typography>
+        </Box>)}
+      </Box>
+
+      <Box sx={{ mt: 2, px: 2, py: 1.5, borderRadius: 1.5, bgcolor: '#f4f8ff', border: '1px solid #d9ecff' }}>
+        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+          <Box component="span" sx={{ color: 'primary.main', fontWeight: 600 }}>提示：</Box>
+          查询不会修改原始记录；申请审批完成前，原表单仍保持当前状态。
+        </Typography>
+      </Box>
+    </Box>
+  </Box>;
+}
+
+function QueryHint({ index, text }: { index: string; text: string }) {
+  return <Stack direction="row" spacing={1.25} alignItems="flex-start">
+    <Box sx={{ width: 22, height: 22, mt: '1px', flexShrink: 0, display: 'grid', placeItems: 'center', borderRadius: '50%', bgcolor: '#ecf5ff', color: 'primary.main', fontSize: 12, fontWeight: 700 }}>{index}</Box>
+    <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.65 }}>{text}</Typography>
+  </Stack>;
 }
 
 function Info({ label, value }: { label: string; value: string }) {

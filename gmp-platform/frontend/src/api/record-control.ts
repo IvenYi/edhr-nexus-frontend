@@ -119,12 +119,33 @@ export interface RecordControlWorkflowTask {
   nodeId: string;
   status: string;
   assigneeId: string | null;
+  action?: string | null;
+  opinion?: string | null;
+  signatureId?: string | null;
   createdAt: string;
   completedAt: string | null;
 }
 
-export const listMyWorkflowTasks = async (scope: 'todo' | 'done', page = 1, size = 50): Promise<RecordControlWorkflowTask[]> =>
-  (await client.get(`/workflow/tasks/${scope}`, { params: { page, size } })).data.data;
+export interface RecordControlWorkflowTaskPage {
+  content: RecordControlWorkflowTask[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+}
+
+export const listMyWorkflowTasks = async (scope: 'todo' | 'done', page = 0, size = 50): Promise<RecordControlWorkflowTaskPage> =>
+  (await client.get('/record-control/workflow-tasks', { params: { scope, page, size } })).data.data;
 
 export const getRequestsForMyWorkflowTasks = async (instanceIds: string[]): Promise<RecordControlRequest[]> =>
   (await client.post('/record-control/requests/for-my-workflow-tasks', instanceIds)).data.data;
+
+export const getRecordControlWorkflowTask = async (taskId: string): Promise<RecordControlWorkflowTask> =>
+  (await client.get(`/workflow/tasks/${taskId}`)).data.data;
+
+export const completeRecordControlWorkflowTask = async (
+  taskId: string,
+  action: 'approve' | 'reject',
+  command: { opinion: string; account: string; password: string },
+): Promise<RecordControlWorkflowTask> =>
+  (await client.post(`/record-control/workflow-tasks/${taskId}/${action}`, command)).data.data;

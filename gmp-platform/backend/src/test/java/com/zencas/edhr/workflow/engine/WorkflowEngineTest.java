@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -334,6 +335,145 @@ class WorkflowEngineTest {
         workflowEngine.completeTask(12L, "APPROVE", null, "user-b", null);
         assertThat(instance.getStatus()).isEqualTo("COMPLETED");
         assertThat(instance.getCurrentNodeIds()).isNull();
+    }
+
+    @Test
+    void finalRecordControlApprovalReturnsApprovedResultEvent() {
+        WorkflowTask task = WorkflowTask.builder().id(10L).instanceId(20L).nodeId(30L).status("PENDING")
+                .candidateSnapshot("{\"unrestricted\":true}").build();
+        WorkflowInstance instance = WorkflowInstance.builder()
+                .id(20L).definitionId(100L).versionId(200L).businessType("CHANGE").businessId("300")
+                .status("RUNNING").currentNodeIds("30").auditCorrelationId("audit-1")
+                .workflowSnapshotHash("snapshot-1").build();
+        WorkflowNode approval = WorkflowNode.builder().id(30L).versionId(200L).nodeType("APPROVAL").name("审批").build();
+        WorkflowNode end = WorkflowNode.builder().id(31L).versionId(200L).nodeType("END").name("结束").build();
+        WorkflowEdge edge = WorkflowEdge.builder().sourceNodeId(30L).targetNodeId(31L).build();
+        when(taskRepository.findById(10L)).thenReturn(Optional.of(task));
+        when(instanceRepository.findByIdForUpdate(20L)).thenReturn(Optional.of(instance));
+        when(taskRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(task));
+        when(nodeRepository.findById(30L)).thenReturn(Optional.of(approval));
+        when(nodeRepository.findByVersionId(200L)).thenReturn(List.of(approval, end));
+        when(edgeRepository.findBySourceNodeId(30L)).thenReturn(List.of(edge));
+
+        var event = workflowEngine.completeRecordControlTask(10L, "APPROVE", "同意", "42", 404L);
+
+        assertThat(instance.getStatus()).isEqualTo("COMPLETED");
+        assertThat(event).isNotNull();
+        assertThat(event.eventId()).isEqualTo("workflow-result:20:APPROVED");
+        assertThat(event.result()).isEqualTo(com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.Result.APPROVED);
+        assertThat(event.businessId()).isEqualTo("300");
+        assertThat(event.operatorId()).isEqualTo("42");
+        assertThat(event.signatureId()).isEqualTo("404");
+        assertThat(event.auditCorrelationId()).isEqualTo("audit-1");
+        assertThat(event.workflowSnapshotHash()).isEqualTo("snapshot-1");
+    }
+
+    @Test
+    void genericTaskCompletionCannotBypassRecordControlSignatureEntry() {
+        WorkflowTask task = WorkflowTask.builder().id(10L).instanceId(20L).nodeId(30L).status("PENDING")
+                .candidateSnapshot("{\"unrestricted\":true}").build();
+        WorkflowInstance instance = WorkflowInstance.builder()
+                .id(20L).businessType("CHANGE").status("RUNNING").build();
+        when(taskRepository.findById(10L)).thenReturn(Optional.of(task));
+        when(instanceRepository.findByIdForUpdate(20L)).thenReturn(Optional.of(instance));
+
+        assertThatThrownBy(() -> workflowEngine.completeTask(10L, "APPROVE", "同意", "42", 404L))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("电子签名审批入口");
+
+        verify(taskRepository, never()).findByIdForUpdate(anyLong());
+        verify(taskRepository, never()).save(any());
+    }
+
+    @Test
+    void genericMutationAndTerminationGuardsRejectRecordControlObjects() {
+        WorkflowTask task = WorkflowTask.builder().id(10L).instanceId(20L).status("PENDING").build();
+        WorkflowInstance instance = WorkflowInstance.builder()
+                .id(20L).businessType("OBSOLETE").status("RUNNING").build();
+        when(taskRepository.findById(10L)).thenReturn(Optional.of(task));
+        when(instanceRepository.findById(20L)).thenReturn(Optional.of(instance));
+        when(instanceRepository.findByIdForUpdate(20L)).thenReturn(Optional.of(instance));
+
+        assertThatThrownBy(() -> workflowEngine.assertGenericTaskAccessAllowed(10L))
+                .isInstanceOf(BusinessException.class).hasMessageContaining("记录变更/作废");
+        assertThatThrownBy(() -> workflowEngine.assertGenericInstanceAccessAllowed(20L))
+                .isInstanceOf(BusinessException.class).hasMessageContaining("记录变更/作废");
+        assertThatThrownBy(() -> workflowEngine.terminateInstance(20L, "测试", "admin", null))
+                .isInstanceOf(BusinessException.class).hasMessageContaining("通用入口终止");
+
+        verify(instanceRepository, never()).save(any());
+        verify(taskRepository, never()).save(any());
+    }
+
+    @Test
+    void taskDetailIsRestrictedToCurrentCandidateOrActualHandler() {
+        WorkflowTask pending = pendingCandidateTask("user-a");
+        WorkflowInstance instance = WorkflowInstance.builder()
+                .id(20L).businessType("CHANGE").status("RUNNING").build();
+        when(taskRepository.findById(10L)).thenReturn(Optional.of(pending));
+        when(instanceRepository.findById(20L)).thenReturn(Optional.of(instance));
+
+        assertThatThrownBy(() -> workflowEngine.assertTaskReadableBy(10L, "user-b"))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("无权查看");
+        assertThatCode(() -> workflowEngine.assertTaskReadableBy(10L, "user-a"))
+                .doesNotThrowAnyException();
+
+        pending.setStatus("COMPLETED");
+        pending.setAssigneeId("user-a");
+        assertThatThrownBy(() -> workflowEngine.assertTaskReadableBy(10L, "user-b"))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("无权查看");
+        assertThatCode(() -> workflowEngine.assertTaskReadableBy(10L, "user-a"))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void intermediateRecordControlApprovalDoesNotReturnResultEvent() {
+        WorkflowTask task = WorkflowTask.builder().id(10L).instanceId(20L).nodeId(30L).status("PENDING")
+                .candidateSnapshot("{\"unrestricted\":true}").build();
+        WorkflowInstance instance = WorkflowInstance.builder()
+                .id(20L).definitionId(100L).versionId(200L).businessType("CHANGE").businessId("300")
+                .initiatorId("1").status("RUNNING").currentNodeIds("30").build();
+        WorkflowNode first = WorkflowNode.builder().id(30L).versionId(200L).nodeType("APPROVAL").name("一级审批").build();
+        WorkflowNode second = WorkflowNode.builder().id(31L).versionId(200L).nodeType("APPROVAL").name("二级审批").build();
+        WorkflowEdge edge = WorkflowEdge.builder().sourceNodeId(30L).targetNodeId(31L).build();
+        when(taskRepository.findById(10L)).thenReturn(Optional.of(task));
+        when(instanceRepository.findByIdForUpdate(20L)).thenReturn(Optional.of(instance));
+        when(taskRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(task));
+        when(nodeRepository.findById(30L)).thenReturn(Optional.of(first));
+        when(nodeRepository.findByVersionId(200L)).thenReturn(List.of(first, second));
+        when(edgeRepository.findBySourceNodeId(30L)).thenReturn(List.of(edge));
+        when(taskRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userAccountRepository.findById(1L)).thenReturn(Optional.of(
+                UserAccount.builder().id(1L).tenantId(5L).status("ACTIVE").build()));
+
+        var event = workflowEngine.completeRecordControlTask(10L, "APPROVE", "同意", "42", 404L);
+
+        assertThat(event).isNull();
+        assertThat(instance.getStatus()).isEqualTo("RUNNING");
+        assertThat(instance.getCurrentNodeIds()).isEqualTo("31");
+    }
+
+    @Test
+    void recordControlRejectionTerminatesRoundAndReturnsReturnedResultEvent() {
+        WorkflowTask task = pendingCandidateTask("user-a");
+        WorkflowInstance instance = WorkflowInstance.builder()
+                .id(20L).definitionId(100L).versionId(200L).businessType("CHANGE").businessId("300")
+                .status("RUNNING").currentNodeIds("30").auditCorrelationId("audit-1")
+                .workflowSnapshotHash("snapshot-1").build();
+        when(taskRepository.findById(10L)).thenReturn(Optional.of(task));
+        when(instanceRepository.findByIdForUpdate(20L)).thenReturn(Optional.of(instance));
+        when(taskRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(task));
+        when(taskRepository.findByInstanceId(20L)).thenReturn(List.of(task));
+
+        var event = workflowEngine.completeRecordControlTask(10L, "REJECT", "资料不完整", "user-a", 405L);
+
+        assertThat(instance.getStatus()).isEqualTo("TERMINATED");
+        assertThat(event).isNotNull();
+        assertThat(event.result()).isEqualTo(com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.Result.RETURNED);
+        assertThat(event.signatureId()).isEqualTo("405");
+        verify(nodeRepository, never()).findById(anyLong());
     }
 
     @Test

@@ -25,6 +25,30 @@ const STATUS: Record<string, { label: string; color: 'warning' | 'success' | 'er
 const fieldSx = { '& .MuiInputBase-root': { height: 40, bgcolor: '#fff' } };
 const headerCellSx = { bgcolor: '#f5f7fa', color: '#606266', fontWeight: 600, whiteSpace: 'nowrap' };
 const bodyCellSx = { height: 48, color: '#606266', whiteSpace: 'nowrap' };
+const actionHeaderCellSx = {
+  ...headerCellSx,
+  position: 'sticky' as const,
+  right: 0,
+  zIndex: 4,
+  width: 128,
+  minWidth: 128,
+  maxWidth: 128,
+  textAlign: 'center' as const,
+  borderLeft: '1px solid #ebeef5',
+  boxShadow: '-6px 0 10px rgba(31, 45, 61, 0.06)',
+};
+const actionBodyCellSx = {
+  position: 'sticky' as const,
+  right: 0,
+  zIndex: 2,
+  width: 128,
+  minWidth: 128,
+  maxWidth: 128,
+  bgcolor: '#fff',
+  textAlign: 'center' as const,
+  borderLeft: '1px solid #ebeef5',
+  boxShadow: '-6px 0 10px rgba(31, 45, 61, 0.06)',
+};
 
 const compactQuery = (query: RecordControlRequestQuery): RecordControlRequestQuery =>
   Object.fromEntries(Object.entries(query).filter(([, value]) => value !== '')) as RecordControlRequestQuery;
@@ -95,7 +119,7 @@ export default function RecordRequestListPage({ scope }: { scope: 'mine' | 'all'
     <Box sx={{ border: '1px solid #e4e7ed', borderRadius: 1, bgcolor: '#fff', display: 'flex', flexDirection: 'column', minHeight: 0, flex: 1, overflow: 'hidden' }}>
       <TableContainer sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
         <Table stickyHeader size="small" sx={{ minWidth: 1480 }}>
-          <TableHead><TableRow>{['申请编号', '申请类型', '表单实例编号', '表单名称', '表单编码', '申请人', '申请时间', '状态', '操作'].map((column) => <TableCell key={column} sx={headerCellSx}>{column}</TableCell>)}</TableRow></TableHead>
+          <TableHead><TableRow>{['申请编号', '申请类型', '表单实例编号', '表单名称', '表单编码', '申请人', '申请时间', '状态', '操作'].map((column) => <TableCell key={column} sx={column === '操作' ? actionHeaderCellSx : headerCellSx}>{column}</TableCell>)}</TableRow></TableHead>
           <TableBody>
             {busy ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={9} sx={{ height: '100%', color: '#909399' }}>加载中...</TableStateCell></TableRow>
               : error ? <TableRow sx={{ height: '100%' }}><TableStateCell colSpan={9} sx={{ height: '100%', color: '#c62828' }}>{error}</TableStateCell></TableRow>
@@ -109,7 +133,7 @@ export default function RecordRequestListPage({ scope }: { scope: 'mine' | 'all'
                     <TableCell>{item.applicant_name || item.applicant_id}</TableCell>
                     <TableCell>{formatTime(item.submitted_at)}</TableCell>
                     <TableCell><StatusBadge label={STATUS[item.status]?.label || item.status} color={STATUS[item.status]?.color || 'default'} /></TableCell>
-                    <TableCell><Button size="small" onClick={() => navigate(`/records/requests/${item.id}`)}>查看详情</Button></TableCell>
+                    <TableCell sx={actionBodyCellSx}><Button size="small" onClick={() => navigate(`/records/requests/${item.id}`)}>查看详情</Button></TableCell>
                   </TableRow>)}
           </TableBody>
         </Table>

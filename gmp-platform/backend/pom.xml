@@ -25,6 +25,7 @@
         <testcontainers.version>1.19.8</testcontainers.version>
         <hibernate-types.version>2.21.1</hibernate-types.version>
         <springdoc.version>2.5.0</springdoc.version>
+        <dhr.print.frontend.dir>${project.basedir}/../frontend</dhr.print.frontend.dir>
     </properties>
 
     <dependencies>
@@ -188,7 +189,7 @@
                 <executions><execution>
                     <id>dhr-print-renderer</id><phase>generate-resources</phase><goals><goal>exec</goal></goals>
                     <configuration>
-                        <workingDirectory>${project.basedir}/../frontend</workingDirectory>
+                        <workingDirectory>${dhr.print.frontend.dir}</workingDirectory>
                         <executable>npm</executable><arguments><argument>run</argument><argument>build:dhr-print</argument></arguments>
                     </configuration>
                 </execution></executions>

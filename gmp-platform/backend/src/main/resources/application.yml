@@ -44,6 +44,8 @@ app:
     max-size: 10MB
 
 edhr:
+  signature:
+    authorization-notice-font-path: ${SIGNATURE_AUTHORIZATION_NOTICE_FONT_PATH:}
   ocr:
     paddle:
       enabled: ${OCR_PADDLE_ENABLED:true}

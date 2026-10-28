@@ -24,6 +24,11 @@ const TaskDetail = lazy(() => import('@/pages/workflow-center/TaskDetail'));
 const FormInstanceListPage = lazy(() => import('@/pages/form-management/FormInstanceListPage'));
 const FormFillingPage = lazy(() => import('@/pages/form-management/FormFillingPage'));
 const FormReviewPage = lazy(() => import('@/pages/form-management/FormReviewPage'));
+const RecordChangePage = lazy(() => import('@/pages/record-control/RecordChangePage'));
+const RecordRequestListPage = lazy(() => import('@/pages/record-control/RecordRequestListPage'));
+const RecordRequestDetailPage = lazy(() => import('@/pages/record-control/RecordRequestDetailPage'));
+const RecordApprovalPage = lazy(() => import('@/pages/record-control/RecordApprovalPage'));
+const RecordApprovalDetailPage = lazy(() => import('@/pages/record-control/RecordApprovalDetailPage'));
 const DhrManagementPage = lazy(() => import('@/pages/dhr-management/DhrManagementPage'));
 const DhrSummaryPage = lazy(() => import('@/pages/dhr-management/DhrSummaryPage'));
 const DhrFillingPage = lazy(() => import('@/pages/dhr-management/DhrFillingPage'));
@@ -102,6 +107,14 @@ const AppRouter = () => {
           <Route path="list" element={<Suspense fallback={<Loading />}><FormInstanceListPage /></Suspense>} />
           <Route path="filling" element={<Suspense fallback={<Loading />}><FormFillingPage /></Suspense>} />
           <Route path="review" element={<Suspense fallback={<Loading />}><FormReviewPage /></Suspense>} />
+        </Route>
+        <Route path="records">
+          <Route path="change" element={<Suspense fallback={<Loading />}><RecordChangePage /></Suspense>} />
+          <Route path="mine" element={<Suspense fallback={<Loading />}><RecordRequestListPage scope="mine" /></Suspense>} />
+          <Route path="approvals" element={<Suspense fallback={<Loading />}><RecordApprovalPage /></Suspense>} />
+          <Route path="approvals/:taskId/:requestId" element={<Suspense fallback={<Loading />}><RecordApprovalDetailPage /></Suspense>} />
+          <Route path="history" element={<Suspense fallback={<Loading />}><RecordRequestListPage scope="all" /></Suspense>} />
+          <Route path="requests/:requestId" element={<Suspense fallback={<Loading />}><RecordRequestDetailPage /></Suspense>} />
         </Route>
         <Route path="dhr-management">
           <Route path="list" element={<Suspense fallback={<Loading />}><DhrManagementPage /></Suspense>} />

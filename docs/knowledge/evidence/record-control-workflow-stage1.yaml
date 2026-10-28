@@ -28,7 +28,17 @@ evidence:
   - id: evidence.record-control-workflow-stage1-result-handler-boundary
     type: code
     path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowResultHandler.java
-    description: P0 同步结果处理器的 Java 接口边界；当前仅声明 WorkflowResultEvent 消费端口，尚无记录控制处理器实现、流程完成触发调用或结果消费幂等测试，因此不能作为已实现结果投递契约。
+    description: P0 同步结果处理器的 Java 接口边界；后续记录控制实现已由任务动作适配器在最终审批或退回时同步调用，具体运行证据见结果投递适配器、业务结果处理器及其聚焦测试。
+    visibility: internal
+  - id: evidence.record-control-workflow-result-delivery-adapter
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlTaskActionService.java
+    description: 记录控制审批动作在同一事务中先完成公共流程任务；只有最终 APPROVED/RETURNED 结果才同步交给 RecordControlWorkflowResultHandler，中间审批节点保持 IN_REVIEW，业务落地异常不被吞掉并使外层事务回滚。
+    visibility: internal
+  - id: evidence.record-control-workflow-result-business-handler
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+    description: 记录控制业务结果处理器按 eventId 幂等消费最终流程结果，锁定来源和申请，复核流程冻结引用；APPROVED 落地变更或作废并更新申请状态，RETURNED 只终结申请且保持来源不变，同时记录结果事件和审计。
     visibility: internal
   - id: evidence.record-control-workflow-stage1-withdrawal-port
     type: code
@@ -43,7 +53,12 @@ evidence:
   - id: evidence.record-control-workflow-stage1-engine-tests
     type: test
     path: gmp-platform/backend/src/test/java/com/zencas/edhr/workflow/engine/WorkflowEngineTest.java
-    description: 聚焦覆盖显式当前已发布版本启动、绕过绑定规则、开始节点无任务、首审批候选排除申请人、快照与审计关联、同请求幂等复用、冲突复用拒绝及草稿/错配版本拒绝。
+    description: 聚焦覆盖显式当前已发布版本启动、绕过绑定规则、开始节点无任务、首审批候选排除申请人、快照与审计关联、同请求幂等复用、冲突复用拒绝、草稿/错配版本拒绝，以及最终批准返回 APPROVED、最终退回返回 RETURNED、中间批准不提前产生业务结果。
+    visibility: internal
+  - id: evidence.record-control-task-action-result-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlTaskActionServiceTest.java
+    description: 聚焦覆盖实际签署人完成任务、非最终节点不调用业务处理器、最终结果同步交付，以及业务结果处理失败异常向外传播以支持同事务回滚。
     visibility: internal
   - id: evidence.record-control-workflow-stage1-service-tests
     type: test

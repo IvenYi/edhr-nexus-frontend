@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
@@ -15,11 +16,11 @@ try {
   const { SIDEBAR_MODULES } = await server.ssrLoadModule('/src/utils/constants.ts');
   const { ensureRequiredMenus, inferPermissionCode, normalizeManagedSidebarModules } = await server.ssrLoadModule('/src/utils/menuManagement.ts');
 
-  test('default navigation has one records module with both menu groups', () => {
+  test('default navigation has one canonical records module with all menu groups', () => {
     const records = SIDEBAR_MODULES.filter((module) => module.id === 'records');
     assert.equal(records.length, 1);
     assert.equal(records[0].icon, 'FactCheck');
-    assert.deepEqual(records[0].menus.map((menu) => menu.label), ['表单管理', '变更管理']);
+    assert.deepEqual(records[0].menus.map((menu) => menu.label), ['表单管理', 'DHR管理', '变更管理']);
   });
 
   test('saved records modules never override the canonical module', () => {
@@ -60,6 +61,14 @@ try {
   test('change pages retain distinct menu permission codes', () => {
     for (const path of ['/records/change', '/records/mine', '/records/approvals', '/records/history']) {
       assert.equal(inferPermissionCode(path), path.slice(1).replace('/', '.'));
+    }
+  });
+
+  test('every record-change navigation target has an application route', async () => {
+    const routerSource = await readFile(fileURLToPath(new URL('../src/router/index.tsx', import.meta.url)), 'utf8');
+    assert.match(routerSource, /<Route path="records">/);
+    for (const route of ['change', 'mine', 'approvals', 'history', 'requests/:requestId']) {
+      assert.match(routerSource, new RegExp(`<Route path="${route.replace('/', '\\/')}"`));
     }
   });
 } finally {

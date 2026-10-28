@@ -1,7 +1,62 @@
-knowledgeModelVersion: 0.3.21
+knowledgeModelVersion: 0.3.24
 evidence:
   - id: evidence.record-control-v1-user-confirmed
     type: document
     path: docs/knowledge/evidence/record-control-v1-user-confirmed.md
     description: 用户交接文档与后续对话确认的记录变更/作废首期范围、修订和终态、开放访问边界、签名归属及 DHR 暂缓；仅为业务决策证据，不是实现证明。
+    visibility: internal
+  - id: evidence.record-control-v1-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+    description: original-evidence；记录控制申请确认、来源资格与活动锁复核、申请签名、流程启动回写、申请详情和最终结果落地的业务服务实现；活动申请详情由认证身份和流程任务关系强制限制，已结束历史继续按当前租户认证范围开放。
+    visibility: internal
+  - id: evidence.record-control-signature-generic-controller-boundary
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java
+    description: original-evidence；通用签名单条读取、创建、覆盖和删除入口在返回或写入前拒绝 targetType 为 RECORD_CONTROL_REQUEST 的受控签名，阻止伪造目标类型覆盖既有证据。
+    visibility: internal
+  - id: evidence.record-control-signature-generic-list-boundary
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/SignatureRepository.java
+    description: original-evidence；通用签名分页查询在数据库分页和计数前排除 RECORD_CONTROL_REQUEST，与 DHR、生产执行和个人认证签名共同保持专用业务证据边界。
+    visibility: internal
+  - id: evidence.record-control-signature-generic-crud-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java
+    description: test-evidence；聚焦验证记录控制签名不能通过通用单条读取、创建、伪造目标类型覆盖、更新或删除，且被拒绝时不会调用通用保存或删除仓储方法。
+    visibility: internal
+  - id: evidence.record-control-signature-generic-list-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrGenericAccessTest.java
+    description: test-evidence；持久化集成测试验证 RECORD_CONTROL_REQUEST 签名在数据库分页和总数计算前从通用列表排除，并验证通用单条读取拒绝该证据。
+    visibility: internal
+  - id: evidence.record-control-active-detail-access-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java
+    description: test-evidence；聚焦验证活动申请详情允许申请人及当前相关审批处理人，拒绝无关用户；已结束历史详情仍允许当前租户认证用户查看，并覆盖我的申请和审批投影按认证身份过滤。
+    visibility: internal
+  - id: evidence.record-control-workflow-task-projection-repository
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java
+    description: original-evidence；专用待办和已办分页查询在数据库层先限定 workflow_instance.business_type 为 CHANGE/OBSOLETE，再按认证用户的处理人或候选关系及任务状态过滤，随后执行排序、分页和总数计算。
+    visibility: internal
+  - id: evidence.record-control-workflow-task-projection-service
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+    description: original-evidence；listMyWorkflowTasks 只从后端认证上下文取得用户身份，校验 todo/done 范围和分页参数，调用记录控制专用仓储分页并返回真实 PageResult 及总数。
+    visibility: internal
+  - id: evidence.record-control-workflow-task-projection-api
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/controller/RecordControlController.java
+    description: original-evidence；GET /api/v1/record-control/workflow-tasks 暴露记录控制专用待办和已办分页，不接收客户端人员身份参数。
+    visibility: internal
+  - id: evidence.record-control-workflow-task-projection-ui
+    type: code
+    path: gmp-platform/frontend/src/pages/record-control/RecordApprovalPage.tsx
+    description: original-evidence；变更审批页面使用记录控制专用分页接口分别加载待办和已办，再按返回任务对应的流程实例读取申请投影，不再从通用流程任务集合做客户端过滤和切页。
+    visibility: internal
+  - id: evidence.record-control-workflow-task-projection-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java
+    description: test-evidence；聚焦验证待办和已办分别调用记录控制专用仓储分页、保留真实 totalElements/totalPages，并禁止回退到通用 findTodoForUser/findDoneForUser 投影。
     visibility: internal

@@ -42,14 +42,14 @@ public class WorkflowTaskController {
             @RequestParam(defaultValue = "desc") String order) {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(direction, sort));
-        Page<WorkflowTask> result = workflowTaskRepository.findNonDhr(pageable);
+        Page<WorkflowTask> result = workflowTaskRepository.findGeneric(pageable);
         return ApiResponse.success(PageResult.of(
                 result.getContent(), page, size, result.getTotalElements()));
     }
 
     @GetMapping("/{id}")
     public ApiResponse<WorkflowTask> getById(@PathVariable Long id) {
-        workflowEngine.assertNotDhrTask(id);
+        workflowEngine.assertTaskReadableBy(id, currentOperatorId());
         return workflowTaskRepository.findById(id)
                 .map(ApiResponse::success)
                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
@@ -58,16 +58,16 @@ public class WorkflowTaskController {
     @PostMapping
     @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<WorkflowTask> create(@RequestBody WorkflowTask entity) {
-        workflowEngine.assertNotDhrTask(entity.getId());
-        workflowEngine.assertNotDhrInstance(entity.getInstanceId());
+        workflowEngine.assertGenericTaskIfPresent(entity.getId());
+        workflowEngine.assertGenericInstanceAccessAllowed(entity.getInstanceId());
         return ApiResponse.success(workflowTaskRepository.save(entity));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<WorkflowTask> update(@PathVariable Long id, @RequestBody WorkflowTask entity) {
-        workflowEngine.assertNotDhrTask(id);
-        workflowEngine.assertNotDhrInstance(entity.getInstanceId());
+        workflowEngine.assertGenericTaskAccessAllowed(id);
+        workflowEngine.assertGenericInstanceAccessAllowed(entity.getInstanceId());
         entity.setId(id);
         return ApiResponse.success(workflowTaskRepository.save(entity));
     }
@@ -75,7 +75,7 @@ public class WorkflowTaskController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<Void> delete(@PathVariable Long id) {
-        workflowEngine.assertNotDhrTask(id);
+        workflowEngine.assertGenericTaskAccessAllowed(id);
         workflowTaskRepository.deleteById(id);
         return ApiResponse.success(null);
     }

@@ -672,6 +672,12 @@ terms:
     aliases: [记录修订, CorrectionRevision]
     status: specified
     visibility: internal
+  - id: term.form-instance-revision
+    name: 表单实例修订
+    definition: 同一表单实例在受控变更中保留的完整内容版本；模板版本与实例修订相互独立，历史修订只读，且同一实例同时最多存在一个当前有效修订。
+    aliases: [实例修订, FormInstanceRevision]
+    status: specified
+    visibility: internal
   - id: term.record-impact-assessment
     name: 记录影响评估
     definition: 表单变更或作废申请对 DHR、放行、审批完整性和替代记录影响的结构化评估摘要。

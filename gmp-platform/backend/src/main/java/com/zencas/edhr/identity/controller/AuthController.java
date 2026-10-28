@@ -96,6 +96,13 @@ public class AuthController {
     private static final float PDF_LABEL_COLUMN_WIDTH = 134F;
     private static final float PDF_LINE_HEIGHT = 15F;
     private static final List<String> PDF_FONT_CANDIDATES = List.of(
+            "C:/Windows/Fonts/simhei.ttf",
+            "C:/Windows/Fonts/Deng.ttf",
+            "C:/Windows/Fonts/Noto Sans SC (TrueType).otf",
+            "C:/Windows/Fonts/NotoSansSC-VF.ttf",
+            "/usr/share/fonts/opentype/noto/NotoSansCJKsc-Regular.otf",
+            "/usr/share/fonts/truetype/noto/NotoSansSC-Regular.ttf",
+            "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
             "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
             "/Library/Fonts/Arial Unicode.ttf",
             "/System/Library/Fonts/Supplemental/Songti.ttc");
@@ -120,6 +127,9 @@ public class AuthController {
 
     @Value("${edhr.file.storage-path:#{systemProperties['user.home'] + '/.edhr/files'}}")
     private String storagePath;
+
+    @Value("${edhr.signature.authorization-notice-font-path:}")
+    private String authorizationNoticeFontPath;
 
     @PostMapping("/login")
     public ApiResponse<Map<String, Object>> login(@RequestBody LoginRequest request,
@@ -743,13 +753,24 @@ public class AuthController {
     }
 
     private PDType0Font loadAuthorizationNoticeFont(PDDocument document) throws IOException {
-        for (String fontPath : PDF_FONT_CANDIDATES) {
+        LinkedHashSet<String> fontCandidates = new LinkedHashSet<>();
+        if (StringUtils.hasText(authorizationNoticeFontPath)) {
+            fontCandidates.add(authorizationNoticeFontPath.trim());
+        }
+        fontCandidates.addAll(PDF_FONT_CANDIDATES);
+
+        IOException lastFailure = null;
+        for (String fontPath : fontCandidates) {
             Path path = Path.of(fontPath);
             if (Files.exists(path)) {
-                return PDType0Font.load(document, path.toFile());
+                try {
+                    return PDType0Font.load(document, path.toFile());
+                } catch (IOException e) {
+                    lastFailure = e;
+                }
             }
         }
-        throw new IOException("缺少授权通知书 PDF 中文字体");
+        throw new IOException("缺少授权通知书 PDF 中文字体，请安装 Noto Sans SC 或配置 edhr.signature.authorization-notice-font-path", lastFailure);
     }
 
     private void drawCenteredText(PDPageContentStream content, PDType0Font font, float fontSize, Color color, float y, String text) throws IOException {

@@ -1,4 +1,4 @@
-knowledgeModelVersion: 0.3.21
+knowledgeModelVersion: 0.3.24
 rules:
   - id: rule.record-change-search-scope-v1
     name: 记录变更首版检索范围
@@ -50,10 +50,75 @@ rules:
       changeRecordHistory: all-authenticated-users-in-current-tenant
       myChanges: current-applicant-only
       approvalTasks: current-candidate-or-processor-and-own-processed-only
+      activeRequestDetail: applicant-or-current-candidate-or-assignee-or-own-processed-task
+      resolvedRequestDetail: all-authenticated-users-in-current-tenant
       actorSource: backend-authentication-context
       forbidClientActorOverride: true
-    explanation: user-confirmed；本期不实施岗位角色或菜单权限授权，但“我的变更”和“变更审批”的身份边界仍由后端认证上下文强制执行；已有公共流程候选权限检查待负责人收敛。
-    evidenceIds: [evidence.record-control-v1-user-confirmed]
+    explanation: user-confirmed-and-original-evidence；本期不新增岗位、角色或模板级功能授权，但“我的变更”、变更审批及活动申请详情的数据范围仍由后端认证上下文强制执行；已结束历史继续对当前租户认证用户开放。
+    evidenceIds: [evidence.record-control-v1-user-confirmed, evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests]
+  - id: rule.record-control-signature-immutable-generic-boundary
+    name: 记录控制签名证据通用接口隔离
+    status: verified
+    visibility: runtime
+    trigger: generic-signature-read-or-mutation
+    scope: record-control
+    condition:
+      all:
+        - {fact: fact.record-control-signature-target-type, operator: equals, value: RECORD_CONTROL_REQUEST}
+    result:
+      type: block
+      action: generic-signature-access
+      target: signature
+      listBehavior: exclude-before-pagination-and-count
+      rejectedOperations: [single-read, create, overwrite, update, delete]
+      reason: protected-record-control-evidence
+    explanation: original-and-test-evidence；记录控制申请签名只能由专用申请或审批动作生成和读取。通用签名列表在分页前排除该证据，通用单条读取和所有写入、覆盖、删除路径均拒绝，防止受控签名被暴露、伪造、篡改或删除。
+    evidenceIds: [evidence.record-control-signature-generic-controller-boundary, evidence.record-control-signature-generic-list-boundary, evidence.record-control-signature-generic-crud-tests, evidence.record-control-signature-generic-list-tests]
+    executionContractId: execution.record-control-security-closure
+  - id: rule.record-control-active-detail-access
+    name: 活动变更申请详情数据范围
+    status: verified
+    visibility: runtime
+    trigger: record-control.request-detail
+    scope: record-control
+    condition:
+      all:
+        - {fact: fact.record-control-request-status, operator: equals, value: IN_REVIEW}
+    result:
+      type: allow-with-governance
+      action: authorize-related-actor-only
+      target: recordControlRequest.detail
+      allowedActors: [applicant, current-candidate, current-assignee, own-processed-task-actor]
+      unrelatedActorBehavior: reject
+      resolvedHistoryBehavior: allow-authenticated-current-tenant-user
+      actorSource: backend-authentication-context
+    explanation: original-and-test-evidence；活动申请详情仅允许申请人、当前候选或处理人及本人已处理任务的相关人员查看，无关用户被拒绝；申请进入已批准、已退回或已撤回等终态后，历史详情继续按当前租户认证范围开放。
+    evidenceIds: [evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests]
+    executionContractId: execution.record-control-security-closure
+  - id: rule.record-control-workflow-task-projection
+    name: 记录控制审批任务专用分页投影
+    status: verified
+    visibility: runtime
+    trigger: record-control.workflow-tasks.list
+    scope: record-control
+    condition:
+      all:
+        - {fact: fact.record-control-workflow-task-authenticated-user-present, operator: equals, value: true}
+    result:
+      type: return-query-projection
+      action: list-record-control-workflow-tasks
+      target: recordControl.workflowTasks
+      businessTypes: [CHANGE, OBSOLETE]
+      todoStatuses: [PENDING, PROCESSING]
+      todoActorMatch: assignee-or-candidate-or-unrestricted-candidate
+      doneStatuses: [COMPLETED, REJECTED, TRANSFERRED]
+      doneActorMatch: assignee-only
+      filterStage: database-before-pagination-and-count
+      actorSource: backend-authentication-context
+      response: PageResult
+    explanation: original-and-test-evidence；变更审批待办和已办必须通过记录控制专用数据库分页查询，在分页与总数计算前限定 CHANGE/OBSOLETE、任务状态和认证用户关系；前端消费该专用分页，不能先读取通用任务页再在客户端过滤。
+    evidenceIds: [evidence.record-control-workflow-task-projection-repository, evidence.record-control-workflow-task-projection-service, evidence.record-control-workflow-task-projection-api, evidence.record-control-workflow-task-projection-ui, evidence.record-control-workflow-task-projection-tests]
+    executionContractId: execution.record-control-workflow-task-projection
   - id: rule.record-control-return-terminates-request
     name: 记录控制退回终结旧申请
     status: specified
@@ -72,3 +137,23 @@ rules:
       retrySemantics: new-request-and-workflow-instance
     explanation: user-confirmed；退回即终结旧申请和流程，不能在旧申请上修改或重新提交；再次发起使用新编号和流程实例。该目标规则尚未进入运行时投影。
     evidenceIds: [evidence.record-control-v1-user-confirmed]
+  - id: rule.record-control-final-result-delivery
+    name: 记录控制最终审批结果同步落地
+    status: implemented
+    visibility: internal
+    trigger: recordControl.workflowTask.complete
+    scope: record-control
+    condition:
+      any:
+        - {fact: fact.record-control-workflow-result, operator: equals, value: APPROVED}
+        - {fact: fact.record-control-workflow-result, operator: equals, value: RETURNED}
+    result:
+      type: allow-with-governance
+      action: transactional-business-result
+      target: recordControl.applicationAndSourceRevision
+      valueFrom: workflowResultEvent
+      intermediateNodeBehavior: keep-application-in-review
+      failureBehavior: rollback-task-action
+    explanation: original-evidence；公共流程仅在记录控制最终批准或退回时生成确定性结果事件；记录控制任务动作在同一事务中同步消费，中间节点不提前落地，业务处理异常继续向外传播并回滚任务动作。
+    evidenceIds: [evidence.record-control-workflow-result-delivery-adapter, evidence.record-control-workflow-result-business-handler, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-task-action-result-tests]
+    executionContractId: execution.record-control-final-result-delivery

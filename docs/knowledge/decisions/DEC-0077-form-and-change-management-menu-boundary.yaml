@@ -1,16 +1,16 @@
-knowledgeModelVersion: 0.3.21
+knowledgeModelVersion: 0.3.24
 decisions:
-  - id: DEC-0056
+  - id: DEC-0077
     title: 表单管理与变更管理并列菜单边界
     status: specified
     visibility: internal
-    context: "provenance: user-confirmed；表单列表、表单填报和表单审核页面已经存在。记录模块必须同时保留表单管理与变更管理两组菜单；变更管理不再以表单管理页面尚不存在为由排除表单管理入口。本决定仅替代 DEC-0055 中有关菜单边界的原有表述，不替代其余记录变更流程约束。"
+    context: "provenance: user-confirmed；表单列表、表单填报和表单审核页面已经存在。记录模块必须同时保留表单管理与变更管理两组菜单；变更管理不再以表单管理页面尚不存在为由排除表单管理入口。本决定仅替代 DEC-0076 中有关菜单边界的原有表述，不替代其余记录变更流程约束。"
     decisionStatements:
-      - id: DEC-0056-01
+      - id: DEC-0077-01
         statement: 记录模块并列展示表单管理和变更管理；表单管理包含表单列表、表单填报和表单审核，变更管理包含记录变更、我的变更、变更审批和变更记录。
         status: specified
         visibility: internal
-      - id: DEC-0056-02
+      - id: DEC-0077-02
         statement: 两组菜单均仅对拥有对应菜单权限的用户可见；本决定不授予或绕过现有权限校验。
         status: specified
         visibility: internal

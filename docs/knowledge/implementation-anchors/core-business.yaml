@@ -223,6 +223,64 @@ implementationAnchors:
     sourceLocator: 'RecordControlWorkflowService.listPublishedCandidates/start / WorkflowEngine.createRecordControlInstance'
     capturedAt: '2026-09-15'
     reviewStatus: reviewed
+  - id: anchor.core.record-control-signature-generic-boundary
+    targetId: rule.record-control-signature-immutable-generic-boundary
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/SignatureRepository.java
+    apiReferences: ['GET/POST/PUT/DELETE /api/v1/signatures']
+    databaseReferences: []
+    uiReferences: []
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/ExecutionAccessTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/controller/DhrGenericAccessTest.java
+    status: verified
+    visibility: internal
+    evidenceIds: [evidence.record-control-signature-generic-controller-boundary, evidence.record-control-signature-generic-list-boundary, evidence.record-control-signature-generic-crud-tests, evidence.record-control-signature-generic-list-tests]
+    sourceRevision: working-tree
+    sourceLocator: SignatureRepository.findGeneric / SignatureController.protectExecutionSignature
+    capturedAt: '2026-10-28'
+    reviewStatus: reviewed
+  - id: anchor.core.record-control-active-detail-access
+    targetId: rule.record-control-active-detail-access
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/controller/RecordControlController.java
+    apiReferences: ['GET /api/v1/record-control/requests/{requestId}']
+    databaseReferences: []
+    uiReferences: []
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java
+    status: verified
+    visibility: internal
+    evidenceIds: [evidence.record-control-v1-service, evidence.record-control-active-detail-access-tests]
+    sourceRevision: working-tree
+    sourceLocator: RecordControlService.requestDetail / requireRequestDetailAccess
+    capturedAt: '2026-10-28'
+    reviewStatus: reviewed
+  - id: anchor.core.record-control-workflow-task-projection
+    targetId: rule.record-control-workflow-task-projection
+    targetType: rule
+    codeReferences:
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/repository/WorkflowTaskRepository.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/controller/RecordControlController.java
+      - gmp-platform/frontend/src/pages/record-control/RecordApprovalPage.tsx
+    apiReferences: ['GET /api/v1/record-control/workflow-tasks']
+    databaseReferences: []
+    uiReferences:
+      - gmp-platform/frontend/src/pages/record-control/RecordApprovalPage.tsx
+    testReferences:
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java
+    status: verified
+    visibility: internal
+    evidenceIds: [evidence.record-control-workflow-task-projection-repository, evidence.record-control-workflow-task-projection-service, evidence.record-control-workflow-task-projection-api, evidence.record-control-workflow-task-projection-ui, evidence.record-control-workflow-task-projection-tests]
+    sourceRevision: working-tree
+    sourceLocator: WorkflowTaskRepository.findRecordControlTodoForUser/findRecordControlDoneForUser / RecordControlService.listMyWorkflowTasks
+    capturedAt: '2026-10-28'
+    reviewStatus: reviewed
   - id: anchor.core.workflow-definition-version-record-control-start
     targetId: concept.workflow-definition-version
     targetType: concept

@@ -14,3 +14,24 @@ executionContracts:
     actionType: production-object-audit-snapshot
     handler: ProductionObjectController.writeAudit
     evidenceIds: [evidence.production-object-audit-snapshot-controller, evidence.production-object-audit-snapshot-controller-test]
+  - id: execution.record-control-final-result-delivery
+    name: 记录控制最终结果同步投递与落地契约
+    status: verified
+    visibility: runtime
+    actionType: record-control-final-result-delivery
+    handler: WorkflowEngine.recordControlResultEvent -> RecordControlTaskActionService.complete -> RecordControlService.handle
+    evidenceIds: [evidence.record-control-workflow-result-delivery-adapter, evidence.record-control-workflow-result-business-handler, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-task-action-result-tests]
+  - id: execution.record-control-security-closure
+    name: 记录控制签名证据与活动详情安全边界契约
+    status: verified
+    visibility: runtime
+    actionType: record-control-security-closure
+    handler: SignatureRepository.findGeneric / SignatureController.protectExecutionSignature / RecordControlService.requireRequestDetailAccess
+    evidenceIds: [evidence.record-control-v1-service, evidence.record-control-signature-generic-controller-boundary, evidence.record-control-signature-generic-list-boundary, evidence.record-control-signature-generic-crud-tests, evidence.record-control-signature-generic-list-tests, evidence.record-control-active-detail-access-tests]
+  - id: execution.record-control-workflow-task-projection
+    name: 记录控制审批任务专用分页执行契约
+    status: verified
+    visibility: runtime
+    actionType: record-control-workflow-task-projection
+    handler: RecordControlController.workflowTasks -> RecordControlService.listMyWorkflowTasks -> WorkflowTaskRepository.findRecordControlTodoForUser/findRecordControlDoneForUser
+    evidenceIds: [evidence.record-control-workflow-task-projection-repository, evidence.record-control-workflow-task-projection-service, evidence.record-control-workflow-task-projection-api, evidence.record-control-workflow-task-projection-ui, evidence.record-control-workflow-task-projection-tests]
