@@ -26,7 +26,8 @@
       "formalQaOriginalStatus": "low/open",
       "overlayDisposition": "corrected-after-qa-in-L0",
       "path": "README.md",
-      "evidence": "README now explicitly states no product/schema/migration changes and two existing fact anchor corrections; original qualityResult remains unchanged."
+      "evidence": "README now explicitly states no product/schema/migration changes and two existing fact anchor corrections; original qualityResult remains unchanged.",
+      "correctionCommit": "d6f091b4f0540a5aaa8ce4b2d59f7a58fa39b9ec"
     }
   ],
   "sourceReviewRecords": 10,
@@ -160,5 +161,13 @@
   ],
   "blockingConditions": [],
   "scopeReviewCommunication": "All roles FINAL; actual user-facing scope/progress/next-step review sent before PR creation. No merge/deploy/history restoration.",
-  "cleanup": "Own H2 pools shut down; browser/server finished and own host mkdtemp directories absent; only exact self-created /tmp/edhr-master-reads-qa-inventory removed after byte comparison/hash; evidence artifacts retained for main archive. No external database or deployment created."
+  "cleanup": "Own H2 pools shut down; browser/server finished and own host mkdtemp directories absent; only exact self-created /tmp/edhr-master-reads-qa-inventory removed after byte comparison/hash; evidence artifacts retained for main archive. No external database or deployment created.",
+  "pullRequest": {
+    "number": 41,
+    "url": "https://github.com/IvenYi/edhr-nexus-frontend/pull/41",
+    "sourceBranch": "audit/edhr-dev-master-data-reads-20261028",
+    "targetBranch": "edhr-dev",
+    "createdAtHead": "d6f091b4f0540a5aaa8ce4b2d59f7a58fa39b9ec",
+    "merge": "manual-only"
+  }
 }
