@@ -1,0 +1,214 @@
+qualityResult:
+  result: passed
+  baseCommit: bbd2ff88886ade456aac8d7d73f8af4f5c1575e2
+  headCommit: ec85a434f801e9314e9c871958a363e69c889879
+  contractBaseline:
+    sourceCommit: ec85a434f801e9314e9c871958a363e69c889879
+    targetBranch: edhr-dev
+    targetCommit: bbd2ff88886ade456aac8d7d73f8af4f5c1575e2
+    contractReadCommit: ec85a434f801e9314e9c871958a363e69c889879
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.master-reads.candidate-and-contract
+      required: true
+      category: requirements
+      description: 核对实际目标、受测候选、契约与独立性。
+      method: command
+      command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git status --porcelain; git diff base head -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - 目标base bbd2ff88886ade456aac8d7d73f8af4f5c1575e2；feature head和实际tested commit均ec85a434f801e9314e9c871958a363e69c889879，干净且包含目标；两次fetch目标未变。
+        - 实际读取当前候选的AGENTS/统一交接/质量角色、知识README/open-questions及decision/impact；契约相对base无差异。
+        - 本实例未参与产品、测试、夹具或知识修复，没有创建子实例；所有运行输出仅在/tmp。
+    - id: check.master-reads.source-and-scope
+      required: true
+      category: requirements
+      description: 核对新增探针的真实依赖、业务边界、反证与未实施优化。
+      method: inspection
+      command: Review MasterDataReadObservationTest, test-designer-save-host-browser.mjs, EquipmentController/ProcessModelingController repositories and findings/source-review/risk-register.
+      outcome: passed
+      evidence:
+        - 产品backend/src/main、frontend/src、schema和契约相对base零差异；仅两个新观测入口及知识来源元数据、审计资产。
+        - H2探针经过真实JWT/filter/方法权限和所列真实repository；未使用依赖显式mock，SQL计数只记录，不锁定低效行为为正确业务。
+        - 物料完整组版本、设备主列表DB分页/P上限200、关键字短路等反证与源码相符；三个性能风险仍pending-discussion。
+        - 10条主侧有限方法范围和29既有ID不作为整文件、全域或新增unique覆盖，用户暂缓及W5–W7保持。
+    - id: check.master-reads.h2-observations
+      required: true
+      category: integration
+      description: 独立重放实际授权H2读取、关联显示、组版本及零写入观察。
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=MasterDataReadObservationTest -Dedhr.audit.masterDataReads=true -Dedhr.audit.masterDataOutput=/tmp/edhr-master-reads-qa.jsonl test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-master-reads-qa-probe.txt
+        - /tmp/edhr-master-reads-qa.jsonl
+        - 16 tests，0 failure/error/skip；17读取观察，其中同一分组/派生测试有两请求，不累计成17测试。
+        - 观察请求中ORM SQL均SELECT，六表行数前后相同；匿名401与缺权限403无主数据ORM读取。仅H2，不认证PG迁移/执行计划或生产容量。
+    - id: check.master-reads.cost-and-counterevidence
+      required: true
+      category: database
+      description: 独立比较实际SQL/实体加载，并确认风险不是笼统N+1推测。
+      method: query
+      command: Parse /tmp/edhr-master-reads-qa.jsonl; compare 17 case/fixture/SQL/entity-load records with archived primary observations.
+      outcome: passed
+      evidence:
+        - /tmp/edhr-master-reads-qa-comparison.json
+        - 17唯一观察键与主侧成本逐项一致：设备页5/20条为12/42SQL，同/异类型均如此；类型页7/22SQL；分类6/21为7/22SQL且不加载类型实体。
+        - 物料100/500版本按类型筛选102/502SQL，MaterialType累计202/1002；无条件2SQL仍加载全部100/500版本；关键字名称命中2SQL、类型命中102SQL。
+        - size1分组仍有V10/V2/V1完整版本，派生产品保留物料ID；不能直接以版本行LIMIT替代组分页。
+        - 统计仅Hibernate SQL/实体加载，排除JdbcTemplate种子和行数核对；不外推时延/堆/网络成本或PG计划。
+    - id: check.master-reads.backend-regression
+      required: true
+      category: regression
+      description: 独立运行设备和物料既有回归，不改断言或跳过。
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=EquipmentControllerTest,EquipmentControllerIntegrationTest,MaterialImportIntegrationTest,ProcessModelingControllerTest test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-master-reads-qa-regression.txt
+        - 77 tests，0 failure/error/skip；EquipmentControllerTest 3、EquipmentControllerIntegrationTest 16、MaterialImportIntegrationTest 4、ProcessModelingControllerTest 54。数据库场景为H2，不伪称原生PG。
+    - id: check.master-reads.frontend-node
+      required: true
+      category: unit
+      description: 独立运行设备前端字段、日期与偏好回归。
+      method: automated-test
+      command: cd gmp-platform/frontend && node --test scripts/test-equipment-modeling.mjs
+      outcome: passed
+      evidence: [/tmp/edhr-master-reads-qa-node.txt, 14 tests，0 fail/skip/cancel。]
+    - id: check.master-reads.actual-host
+      required: true
+      category: e2e
+      description: 实际父页/TanStack/axios、受控子设计器及HTTP的目标与完成归属观察。
+      method: browser
+      command: cd gmp-platform/frontend && CHROME_PATH=/usr/bin/chromium SAVE_HOST_ARTIFACTS=/tmp/edhr-save-host-qa node scripts/test-designer-save-host-browser.mjs
+      outcome: passed
+      evidence:
+        - /tmp/edhr-save-host-qa/results.json
+        - /tmp/edhr-master-reads-qa-host.txt
+        - main/field各正常、A关闭后B打开时A成功/失败共6场景均通过；每次仅A目标URL，三payload段的template/version/kind与A一致，无额外B写请求。
+        - B在A未完成时继承真实父页pending，完成后可用；新B仍有旧泛称反馈这一现状被如实记录，未宣称已整改。
+        - 子设计器及服务器响应受控，不能认证真实Canvas校验、持久化、完整autoSave/main并发排序、移动端或无障碍。
+    - id: check.master-reads.visual-evidence
+      required: true
+      category: visual
+      description: 实际查看新B会话与A完成提示同屏的原始截图。
+      method: inspection
+      command: view_image /tmp/edhr-save-host-qa/old-main-completion.png
+      outcome: passed
+      evidence:
+        - /tmp/edhr-save-host-qa/old-main-completion.png
+        - 已查看1440宽截图：受控子组件标识3002/4002，右上“设计已保存”来自旧A；原父页两个模板/版本仍可见。只是反馈边界证据，不是整页视觉/响应式认证。
+    - id: check.master-reads.frontend-build
+      required: true
+      category: regression
+      description: 对实际候选独立执行前端类型检查与生产构建。
+      method: command
+      command: cd gmp-platform/frontend && npm run build
+      outcome: passed
+      evidence: [/tmp/edhr-master-reads-qa-build.txt, tsc -b及Vite构建退出0。]
+    - id: check.master-reads.knowledge-validation
+      required: true
+      category: ontology
+      description: 独立执行知识结构和引用正式校验。
+      method: automated-test
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence: [/tmp/edhr-master-reads-qa-knowledge.txt, 89 tests，0 failure/error/skip；不替代语义或运行验收。]
+    - id: check.master-reads.limited-semantics-and-anchors
+      required: true
+      category: ontology
+      description: 核对29既有ID的有限依据、实际来源锚点及最小差异。
+      method: inspection
+      command: Parse the 29 archived review records against actual YAML and base facts; inspect versioned confirmation sources and actual controller/entity/UI symbols.
+      outcome: passed
+      evidence:
+        - /tmp/edhr-master-reads-qa-inspection.json
+        - 29条均为本批唯一既有ID，有限规范与当前来源核对成立；未做全历史unique去重，不报新增29语义完成。
+        - 实际仅fact.catalog.material-typename的sourcePath/sourceLocator/evidenceIds和fact.catalog.equipment-purchasedateisfuture的sourceLocator变动；所有其他事实、非锚点字段及版本0.3.25不变。
+        - 设备三级关系、系统字段、品牌日期/可选描述，以及物料类型必填/品牌可选/产成品半成品派生沿版本化用户确认；512/255长度、时区/历史回填/删除保护仍明确为工程选择。
+        - 新锚点精确匹配purchaseDate(String)、materialTypeNames()/isProductMaterial(Material, Map<Long,String>)；没有把代码当新政策或将P0升级。
+    - id: check.master-reads.inventory
+      required: true
+      category: documentation
+      description: 从固定目标重新生成四份清单并逐字节核对。
+      method: command
+      command: python3 scripts/build-branch-review-inventory.py --ref bbd2ff88886ade456aac8d7d73f8af4f5c1575e2 --out /tmp/edhr-master-reads-qa-inventory
+      outcome: passed
+      evidence:
+        - /tmp/edhr-master-reads-qa-inventory.txt
+        - /tmp/edhr-master-reads-qa-comparison.json
+        - coverage.csv/entrypoints.csv/migrations.csv/inventory-summary.json与归档逐字节一致，4174路径/130迁移；所有路径inventory-only/pending，不提升为已审。
+    - id: check.master-reads.archive-and-failures
+      required: true
+      category: documentation
+      description: 核对原件hash、失败保留与限缩说明。
+      method: inspection
+      command: Verify every primary-verification archive SHA256/size/tracked path and inspect initial fixture failure records.
+      outcome: passed
+      evidence:
+        - /tmp/edhr-master-reads-qa-inspection.json
+        - 15份原件全部hash/大小/已跟踪状态匹配；初轮H2两处错误响应字段断言、浏览器错误进入详情产生审计GET的6项夹具阻塞原件保留，未算产品红或修复成绩。
+        - findings/risk/scope保留三性能待讨论、旧反馈风险、两源码待复现和用户暂缓；README一处初始“无知识修改”残留为低风险说明项，主侧已承诺FINAL后L0更正。
+    - id: check.master-reads.authored-hygiene-and-cleanup
+      required: true
+      category: documentation
+      description: 检查手写源码/文档空白与本实例资源结束边界。
+      method: command
+      command: git diff --check base..head for 24 changed non-verbatim-log paths; inspect Hikari shutdown and own host temporary-directory cleanup.
+      outcome: passed
+      evidence:
+        - /tmp/edhr-master-reads-qa-whitespace.json
+        - 24个非原始日志路径空白检查通过；未修改全局whitespace配置，也未strip原件。
+        - H2 pool正常关闭；host浏览器/服务finally关闭，自己的edhr-designer-save-host临时目录不存在；没有创建外部数据库或部署服务。
+    - id: check.master-reads.full-diff-verbatim-whitespace
+      required: false
+      category: documentation
+      description: 全提交空白检查包含原样Maven/SQL证据日志。
+      method: command
+      command: git -c core.whitespace=cr-at-eol diff --check bbd2ff88886ade456aac8d7d73f8af4f5c1575e2..ec85a434f801e9314e9c871958a363e69c889879
+      outcome: failed
+      evidence:
+        - /tmp/edhr-master-reads-qa-all-whitespace.txt
+        - /tmp/edhr-master-reads-qa-whitespace.json
+        - 退出2，全部定位在四份原样Maven/格式化SQL日志的尾空格；作者源码/文档/清单另查通过。为保留原件SHA不删除尾空格，不声称全区间空白检查全绿。
+  findings:
+    - id: QF-MASTER-READS-DOC-001
+      severity: low
+      scope: audit-report-summary
+      summary: 本批README保留初始“没有知识修改”陈述，与实际两fact锚点纠错不一致。
+      reproductionSteps:
+        - 查看docs/development/branch-review-20261028-master-data-reads/README.md的范围段落。
+        - 比较相同候选的decisionPackage、findings和知识diff。
+      expectedResult: 当前摘要准确说明无产品/schema/迁移修改，知识仅两处来源锚点纠错。
+      actualResult: README初始段落仍称当前没有产品、知识、schema或迁移修改；其他本批资料已准确说明两处纠错。
+      evidence: [docs/development/branch-review-20261028-master-data-reads/README.md, docs/development/branch-review-20261028-master-data-reads/decision-package.yaml]
+      resolutionStatus: open
+      resolutionEvidence: []
+  residualRisks:
+    - id: residual.master-reads.performance-not-implemented
+      description: 三项查询/实体放大风险仅完成源路径和H2观察，尚未实施优化。
+      impact: 设备/类型页关联往返、物料目录重复加载和全部版本物化仍存在，报告合并不消除它们。
+      mitigation: 按风险登记先讨论请求内map/页内批量/按组分页方案，再对独立候选执行PG与业务保护验证。
+    - id: residual.master-reads.host-feedback-and-ordering
+      description: 旧A泛称完成提示仍可出现在新B；完整主保存/字段保存顺序和后端持久化未验证。
+      impact: 反馈可能混淆归属；本6场景不能当完整保存端到端认证。
+      mitigation: 后续独立处理请求目标/会话反馈和实际子设计器/服务器联合链；不改变已发出的服务器事务。
+    - id: residual.master-reads.pg-and-capacity
+      description: 本批未测原生PG计划/索引、网络时延、堆、GC、并发容量或客户SLA。
+      impact: ORM观察不能给生产容量承诺，也不能推算严重度或响应秒数。
+      mitigation: 在方案讨论后自建隔离原生PG和合法多规模场景量化，不操作客户数据库。
+    - id: residual.master-reads.adjacent-candidates
+      description: 页下标int算术与版本Long数字段目前仅源码候选。
+      impact: 未完成合法正常写入及真实API失败复现，不能写成已修或产品无缺陷。
+      mitigation: 下一小批先正常入口构造边界并复现，再按根因最小整改及回归。
+    - id: residual.master-reads.global-and-coverage
+      description: strict19/ESLint缺配置本批未重跑或修复；全项目审计和用户暂缓项仍未闭环。
+      impact: 本批passed不等于全局工具绿、W2/W3/W4全审、W5–W7完成或部署许可。
+      mitigation: 按NEXT活跃检查点fetch和增量，保持四知识gap、TaskDetail、生产弹窗及记录控制依赖DHR high/A12等原状态。
+  blockingConditions: []

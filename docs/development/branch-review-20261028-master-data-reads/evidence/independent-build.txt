@@ -1,0 +1,120 @@
+
+> edhr-frontend@0.0.1 build
+> tsc -b && vite build --config vite.config.ts
+
+vite v5.4.21 building for production...
+transforming...
+✓ 12191 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                              1.06 kB │ gzip:   0.49 kB
+dist/assets/index-D1qztUc1.css                               6.54 kB │ gzip:   1.56 kB
+dist/assets/DashboardPage-pihZbRUB.css                      11.47 kB │ gzip:   2.74 kB
+dist/assets/vendor-flow-C5ap-Sga.css                        15.87 kB │ gzip:   2.67 kB
+dist/assets/ProductionExecutionPage-hxm03ol_.css            45.66 kB │ gzip:   8.23 kB
+dist/assets/workflow-logs-DKql3OUh.js                        0.12 kB │ gzip:   0.13 kB
+dist/assets/workflow-instances-CrTMKHQ8.js                   0.15 kB │ gzip:   0.14 kB
+dist/assets/rdoVersionStatus-CohesD9G.js                     0.15 kB │ gzip:   0.15 kB
+dist/assets/audit-sNi5_Tq2.js                                0.17 kB │ gzip:   0.14 kB
+dist/assets/useListPageBounds-XmmXA6Y8.js                    0.17 kB │ gzip:   0.16 kB
+dist/assets/FormDialog-gT7z3aRl.js                           0.18 kB │ gzip:   0.16 kB
+dist/assets/loginLogs-REez0GAJ.js                            0.22 kB │ gzip:   0.15 kB
+dist/assets/FormDialogSection-DLKoWlr4.js                    0.40 kB │ gzip:   0.28 kB
+dist/assets/FormDialogFieldGrid-K0qSPMpJ.js                  0.43 kB │ gzip:   0.30 kB
+dist/assets/files-CNx-C-93.js                                0.45 kB │ gzip:   0.29 kB
+dist/assets/TableStateCell-CLxXm0QQ.js                       0.47 kB │ gzip:   0.34 kB
+dist/assets/ButtonSignatureCredentials-DEJ-fMNh.js           0.49 kB │ gzip:   0.36 kB
+dist/assets/projectionSourceHighlight-7iKJswe_.js            0.62 kB │ gzip:   0.42 kB
+dist/assets/workflow-templates-xypOaue8.js                   0.71 kB │ gzip:   0.28 kB
+dist/assets/form-processes-CUnyFUpY.js                       0.73 kB │ gzip:   0.27 kB
+dist/assets/WorkflowActionButtons-DkAGE53T.js                0.85 kB │ gzip:   0.60 kB
+dist/assets/StatusBadge-4vEQ1-MI.js                          0.85 kB │ gzip:   0.53 kB
+dist/assets/formLookupCatalog-CiXsM80K.js                    0.95 kB │ gzip:   0.42 kB
+dist/assets/ListTableShell-CpDwk7m6.js                       0.96 kB │ gzip:   0.60 kB
+dist/assets/ConfirmDialog-DsGMGIjB.js                        0.97 kB │ gzip:   0.60 kB
+dist/assets/form-instance-records-d0j6V0oL.js                1.08 kB │ gzip:   0.44 kB
+dist/assets/product-modeling-DBamljqq.js                     1.10 kB │ gzip:   0.44 kB
+dist/assets/useFlowHistory-BCIaFWxz.js                       1.11 kB │ gzip:   0.55 kB
+dist/assets/production-execution-BP0zD8_N.js                 1.17 kB │ gzip:   0.47 kB
+dist/assets/DetailDrawer-z_Pa8AD3.js                         1.23 kB │ gzip:   0.75 kB
+dist/assets/workflow-work-BRPkF_xi.js                        1.27 kB │ gzip:   0.40 kB
+dist/assets/formManagementListStyles-BfCfJlI1.js             1.63 kB │ gzip:   0.94 kB
+dist/assets/usePersistedListColumnWidths-f3fsGt8N.js         1.93 kB │ gzip:   0.85 kB
+dist/assets/SignatureLogPage-Dl5Eq1hN.js                     2.04 kB │ gzip:   1.00 kB
+dist/assets/InstanceLogs-BHwBcNsR.js                         2.11 kB │ gzip:   1.09 kB
+dist/assets/InstanceList-B0WldzWK.js                         2.44 kB │ gzip:   1.14 kB
+dist/assets/productionAudit-BpYCxoOA.js                      2.48 kB │ gzip:   1.36 kB
+dist/assets/EntryPermissionGroupEditor-UYFB0s_m.js           2.49 kB │ gzip:   1.30 kB
+dist/assets/DhrEvidenceCanvas-CtVWUA9z.js                    2.53 kB │ gzip:   1.33 kB
+dist/assets/master-data-tNTq0uzU.js                          2.87 kB │ gzip:   0.95 kB
+dist/assets/ListColumnSettingsPopover-BIMXVf-L.js            2.90 kB │ gzip:   1.50 kB
+dist/assets/DhrTraceReportPage-Be2thSII.js                   3.17 kB │ gzip:   1.95 kB
+dist/assets/LoginLogPage-QWxoHP0S.js                         3.68 kB │ gzip:   1.62 kB
+dist/assets/InstanceDetail-DfIskYDy.js                       3.85 kB │ gzip:   1.44 kB
+dist/assets/DhrWorklistTable-CUEAKLBz.js                     4.03 kB │ gzip:   1.94 kB
+dist/assets/ProductionObjectEditDialog-C8QOH9UT.js           4.96 kB │ gzip:   2.34 kB
+dist/assets/BindingRuleList-BPKvZS43.js                      5.11 kB │ gzip:   2.01 kB
+dist/assets/TaskDetail-DsazvJ1Q.js                           5.58 kB │ gzip:   2.70 kB
+dist/assets/WorkflowActionConfig-D0E_XHHB.js                 8.75 kB │ gzip:   3.32 kB
+dist/assets/DhrReviewPage-Z7A2_gjt.js                       11.08 kB │ gzip:   5.10 kB
+dist/assets/FlowDesigner-CU06fkpl.js                        12.73 kB │ gzip:   4.79 kB
+dist/assets/ProductionOutput-CgoAXIIT.js                    13.72 kB │ gzip:   5.44 kB
+dist/assets/QualityReasonPage-CKZR5C80.js                   14.18 kB │ gzip:   5.50 kB
+dist/assets/MenuManagementPage-bcuj4g88.js                  14.50 kB │ gzip:   5.24 kB
+dist/assets/WorkshopManagementPage-D9mQiRpp.js              15.02 kB │ gzip:   5.51 kB
+dist/assets/IconManagementPage-BK-JmQtl.js                  16.01 kB │ gzip:   6.02 kB
+dist/assets/DhrFillingPage-kULvk6cY.js                      16.20 kB │ gzip:   6.99 kB
+dist/assets/ReviewTemplateList-D5p5I0VL.js                  16.24 kB │ gzip:   6.13 kB
+dist/assets/FormLookupItemsPage-T6r4eNsf.js                 17.41 kB │ gzip:   7.08 kB
+dist/assets/RouteGraphNode-XQvutMhe.js                      17.64 kB │ gzip:   6.79 kB
+dist/assets/FormProcessEditor-UsGmheof.js                   17.71 kB │ gzip:   6.91 kB
+dist/assets/SubjectSelector-CQceddBm.js                     17.84 kB │ gzip:   5.69 kB
+dist/assets/SystemSettingsPage-Ca1tGzd0.js                  19.38 kB │ gzip:   5.86 kB
+dist/assets/EquipmentPage-37rUYT-4.js                       19.88 kB │ gzip:   7.07 kB
+dist/assets/FormProcessList-Cm6zAbHO.js                     20.00 kB │ gzip:   7.13 kB
+dist/assets/FormInstanceListPage-9jlJ56xm.js                20.02 kB │ gzip:   7.15 kB
+dist/assets/DashboardPage-B-mZZYe2.js                       20.32 kB │ gzip:   9.45 kB
+dist/assets/vendor-router-2wDVgh4A.js                       21.11 kB │ gzip:   7.85 kB
+dist/assets/DhrManagementPage-LqS_yLPV.js                   21.22 kB │ gzip:   8.24 kB
+dist/assets/BatchManagementPage-BUM6GR3O.js                 21.95 kB │ gzip:   8.12 kB
+dist/assets/AuditLogPage-Fv_Mz2Ad.js                        23.93 kB │ gzip:   8.48 kB
+dist/assets/FormFillSettings-ZfaHSfIv.js                    24.38 kB │ gzip:   9.20 kB
+dist/assets/ProductModelingPage-D1sPGA-I.js                 25.47 kB │ gzip:   8.49 kB
+dist/assets/FormReviewPage-DZqWS17Q.js                      26.63 kB │ gzip:   9.68 kB
+dist/assets/ProductModelingWorkspacePage-C5ee9aiQ.js        27.16 kB │ gzip:   8.80 kB
+dist/assets/FormProjectionReportPage-CaPnCy69.js            27.26 kB │ gzip:  10.97 kB
+dist/assets/ReviewTemplateEditor-DJjSSsJw.js                28.42 kB │ gzip:  10.20 kB
+dist/assets/dhrSourceNavigation-bmj6Wxuy.js                 28.91 kB │ gzip:  10.82 kB
+dist/assets/FormFillingPage-Bbpllg7L.js                     30.04 kB │ gzip:   9.58 kB
+dist/assets/ProductFamilyModelingPage-iPptshCW.js           30.21 kB │ gzip:   9.90 kB
+dist/assets/BusinessDictionaryPage-Ba6qVgGE.js              33.71 kB │ gzip:   9.93 kB
+dist/assets/RolePage-BFJaG2F9.js                            36.04 kB │ gzip:  11.98 kB
+dist/assets/UserPage-DVOmMG2n.js                            38.06 kB │ gzip:  12.09 kB
+dist/assets/DocumentManagementPage-Dke87iT7.js              38.15 kB │ gzip:  12.17 kB
+dist/assets/OrganizationPage-CElNCeYq.js                    39.58 kB │ gzip:  12.76 kB
+dist/assets/vendor-react-query-CMwB0H9y.js                  41.36 kB │ gzip:  12.32 kB
+dist/assets/ProductProcessVersionEditorDialog-Bil7tKf9.js   41.73 kB │ gzip:  12.33 kB
+dist/assets/PersonalSettingsPage-DzZzX3fs.js                42.22 kB │ gzip:  14.50 kB
+dist/assets/WorkTemplateList-Bo32JxaY.js                    42.81 kB │ gzip:  12.73 kB
+dist/assets/WorkOrderPage-DELuZkQC.js                       47.56 kB │ gzip:  15.78 kB
+dist/assets/TemplateModelingPage-eajBLt7d.js                55.72 kB │ gzip:  15.44 kB
+dist/assets/WorkTemplateEditor-CGEj7iG1.js                  65.30 kB │ gzip:  23.31 kB
+dist/assets/DhrSummaryPage-B04NgGdl.js                      65.51 kB │ gzip:  22.96 kB
+dist/assets/ProductionExecutionPage-BBqMRykj.js             78.49 kB │ gzip:  25.89 kB
+dist/assets/vendor-mui-icons-B0K84TG-.js                    80.70 kB │ gzip:  24.04 kB
+dist/assets/vendor-template-import-CFjvEKkE.js              96.86 kB │ gzip:  29.98 kB
+dist/assets/ProcessModelingPage-Qm_0RdYf.js                102.55 kB │ gzip:  29.38 kB
+dist/assets/index-CoWpiVJf.js                              134.72 kB │ gzip:  45.67 kB
+dist/assets/DhrTemplateWorkspaceDialog-Dfgm6Cz0.js         137.68 kB │ gzip:  42.45 kB
+dist/assets/vendor-react-Bg2r9_vo.js                       142.84 kB │ gzip:  45.75 kB
+dist/assets/vendor-flow-vjYSLC23.js                        182.70 kB │ gzip:  59.53 kB
+dist/assets/vendor-template-xlsx-DLNWaC59.js               332.45 kB │ gzip: 113.83 kB
+dist/assets/index-BTZvRxMx.js                              385.92 kB │ gzip: 115.58 kB
+dist/assets/vendor-mui-C57xfiKx.js                         401.29 kB │ gzip: 120.83 kB
+dist/assets/vendor-template-excel-DZNEoNPh.js              938.19 kB │ gzip: 270.84 kB
+✓ built in 21.32s
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice

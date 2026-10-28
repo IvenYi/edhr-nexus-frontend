@@ -2,6 +2,8 @@
 
 ## PR40已合入：W4设备/物料关联读取与保存宿主补证
 
+全新独立对干净`ec85a434`正式passed/FINAL，14/14必需检查、本体updated/FINAL，全部角色FINAL后已在PR前实际向用户复核范围无漂移/整体未完成。16H2（17观察）/77后端/14Node/6保存父页/89知识/build及15主侧hash、四清单逐字节闭环；原始日志尾空格导致全区间空白检查非绿，24非原件路径通过。QA low README初始“无知识修改”已在L0更正，原QA保持，由[acceptance](../branch-review-20261028-master-data-reads/acceptance.json) overlay列明；受测后仅L0归档/准确说明/交付登记，不改产品、测试或知识。下文待QA为历史检查点。
+
 已fetch最新`edhr-dev@bbd2ff88`，PR40人工merge、整树同c642f0e8，无其他产品/知识/契约增量。[本批](../branch-review-20261028-master-data-reads/README.md)已实际转W4设备/物料读取，主侧16H2观测（17读取记录）、77既有后端、14设备Node、6真实保存父页/受控子组件场景和build通过。本体29既有ID有限一致、两fact锚点纠错，updated/FINAL及89结构通过；新增unique语义未去重，不报29个新增。本批产品源码零修改，当前待全新独立QA，未宣告本批通过。
 
 新[三项性能风险](../branch-review-20261028-master-data-reads/risk-register.yaml)均实测H2机制、pending-discussion：设备页20条42SQL；物料类型筛选500版本502SQL；不筛选仍全量加载500版本后按组分页。没有PG计划、生产时延/容量结论，保留DB分页/既有页上限、关键词短路和完整组版本的反证。仅报告不授权性能实施；原候选/暂缓继续。真实父页旧A请求保持A，B受共享pending限制，但旧泛称反馈仍在新会话显示，完整并发/持久化未认证。
