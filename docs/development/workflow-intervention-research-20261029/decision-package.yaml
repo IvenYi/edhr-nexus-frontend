@@ -1,0 +1,95 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261029-WORKFLOW-INTERVENTION-RESEARCH
+  scope: 调研冠骋流程干预、重新分配、转办、撤回与日志；登记重新分配必须签名，形成有原始证据的改进建议，不实现产品功能。
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 8cf4df66d60e8f16677442197a9fc0defcd3ef8c
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 8cf4df66d60e8f16677442197a9fc0defcd3ef8c
+    uncommittedContractPaths: []
+  remoteFreshness: 本轮git fetch超时；targetCommit为最近已核验并已包含的目标缓存，不声称本轮成功刷新远端；本轮只调研和同步知识，不集成或部署。
+  summary: 重新分配额外电子签名由未决改为必须；原始源码和探索文档分别核对；其他改进只列建议，不将竞品代码或本次研究转化为用户已确认规则。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  confirmedBusinessDecisions:
+    - 用户确认重新分配必须签名，替代question.record-control-managerial-reassignment-signature的是否需要签名选择；不把已登录或仅具有干预权限视为已完成电子签名。
+    - 保留原专门权限、原因、目标资格和不改变节点/路径/业务结果的边界；本轮只登记要求，不将运行时成熟度升级。
+    - 原P0不开放终止、跳过、强制跳转、加签或管理员直接批准；普通转办、受限撤回和重新分配的入口与主体继续分开。
+  inferred:
+    - id: inference.workflow-intervention-research-improvements
+      statement: 后续建议复用现有签署、任务授权、锁与事务、结果处理和审计能力，由公共流程域提供标准动作，记录控制域处理业务后果。
+      rationale: 避免复制审批引擎或直接改业务状态；具体交互与候选细则须由原始证据及现行决策核对后提出，不预先固化为政策。
+      relatedIds: [DEC-0037, DEC-0042, DEC-0043, DEC-0074, DEC-0081]
+  unresolved: []
+  replacementScopes:
+    - decisionStatementId: DEC-0091-01
+      supersededStatementIds: []
+      scope: 仅关闭question.record-control-managerial-reassignment-signature中重新分配是否额外电子签名的未决选择；更新当前说明，不改历史待决时点记录。
+      retainedScope: 原专门权限、目标资格、原因、任务路径不变和审计要求；其他动作签署政策及DHR专属路径保持，运行实现仍未完成。
+      sourceReferences: [docs/development/workflow-intervention-research-20261029/user-confirmed.md]
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: reassignment-signature-policy
+        change: 当前未决项改为明确的必须签名要求，知识与当前说明同步；不产生运行时动作。
+        evidenceReferences: [docs/knowledge/open-questions.yaml, docs/development/workflow-intervention-research-20261029/user-confirmed.md]
+      - area: competitor-research
+        change: 对照冠骋原始前后端、请求类型、任务及日志服务与可用原图，输出事实/缺口/建议。
+        evidenceReferences: [/Users/ivenwang/Documents/iven space/paas-main-front, /Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed, /Users/ivenwang/Documents/iven space/edhr探索之旅.docx]
+    transitiveImpacts:
+      - area: future-task-and-record-control-orchestration
+        change: 后续实现需将签署证据与管理动作及申请关联，权限和业务锁仍由所属服务校验；本轮仅分析。
+        evidenceReferences: [docs/development/record-control-work-allocation-and-integration-contract.md]
+    potentialImpacts:
+      - area: reference-platform-dependencies
+        concern: 冠骋导出源码可能缺外部流程内核、鉴权切面或部署页面配置；未找到实现不得推断没有校验或全局不签名。
+        evidenceReferences: []
+      - area: future-signature-target-protection
+        concern: 后续实现须明确重新分配签署对象和内容绑定，以及通用签名读写旁路保护；已有记录控制专用保护不能外推所有新目标类型自动受控，本轮不新增签名类型或接口。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlTaskActionService.java, DEC-0074]
+    unaffectedAreas:
+      - area: existing-product-and-archive
+        reason: 不改产品代码、测试、迁移、配置、生产实例、表单/DHR生命周期或归档暂缓范围。
+    compatibilityAndMigration:
+      - concern: 只更新指定政策与人类说明；保留旧决策和待决原始记录，不回写历史签名、DTO或数据库。
+    snapshotImpacts:
+      - concern: 当前生产与流程快照无变化；后续建议应明确动作时任务状态和签署对象，不在本轮补造历史。
+    auditImpacts:
+      - concern: 必须签名与已有不可变审计要求并存，竞品普通流程日志不能直接视为等价合规审计。
+    permissionImpacts:
+      - concern: 签名不替代workflow.intervene等授权，不能将重新分配等同审批通过或取得来源内容编辑权。
+    testImpacts:
+      - scope: research-and-knowledge
+        scenarios: [确认来源准确, 声明级替代与历史保留, 原始证据可定位及哈希, 代码与建议分列, 无产品路径改动, 知识schema与引用, 独立调研结论核对]
+        evidenceReferences: []
+    evidenceGaps:
+      - 远端fetch超时，不冒称获取新目标；后续实现/集成前须再次刷新核对契约。
+      - 源码为本地导出目录而非Git仓库，使用原文件SHA256及行号固定本次证据。
+      - 本轮不登录冠骋部署环境，不调用变更/干预接口；截图与源码仅证明各自可见范围，不等于运行验证。
+  extensionStrategy:
+    selectedPaths: [standard-action, transaction-orchestration, product-core]
+    rationale: 为后续公共流程标准动作保留单一实现及领域落地边界；本轮不新增运行代码或客户配置。
+    ownershipBoundaries:
+      - {owner: primary-agent, responsibility: 原始材料调研、比较和改进建议、决策包及主报告}
+      - {owner: ontology-agent, responsibility: 同步用户已确认签名政策、关闭相应未决及必要当前说明，不将研究建议升格政策}
+      - {owner: quality-agent, responsibility: 收尾独立核对原始证据、政策同步与未实现边界，禁止修复产品代码}
+  affectedFiles:
+    - {path: docs/development/workflow-intervention-research-20261029, changeType: create, reason: 同一调研切片的确认、原始证据索引、比较及角色结果}
+    - {path: docs/knowledge, changeType: update, reason: 重新分配必须签名的指定知识同步}
+    - {path: docs/architecture/business-knowledge-model.md, changeType: update, reason: 必要的现行规则说明同步}
+    - {path: docs/development/record-control-work-allocation-and-integration-contract.md, changeType: update, reason: 仅当前签名未决描述按新确认收敛，保留历史实现边界}
+  acceptanceScenarios:
+    - id: scenario.reassignment-signature-policy-recorded
+      given: 原重新分配签名问题尚未确认
+      when: 用户明确重新分配需要签名
+      then: 当前知识明确必须签名，保留历史来源和其他动作政策，不宣称运行功能已实现
+      evidenceRequirements: [用户原话, 当前知识及替代范围, 结构与引用检查]
+    - id: scenario.crown-intervention-evidence-comparison
+      given: 可读冠骋原始源码及探索文档
+      when: 调研流程干预/转办/撤回/日志并比较我们当前实现
+      then: 每项结论有原始定位，区分original-evidence/secondary-reference/user-confirmed/inference，未知明确标出且改善建议不冒充确认规则
+      evidenceRequirements: [原始文件manifest, 精确行号/原图, 研究报告, 独立质量结果]

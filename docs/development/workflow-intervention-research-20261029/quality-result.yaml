@@ -1,0 +1,161 @@
+qualityResult:
+  result: passed
+  baseCommit: 8cf4df66d60e8f16677442197a9fc0defcd3ef8c
+  headCommit: 8cf4df66d60e8f16677442197a9fc0defcd3ef8c
+  contractBaseline:
+    sourceCommit: 8cf4df66d60e8f16677442197a9fc0defcd3ef8c
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 8cf4df66d60e8f16677442197a9fc0defcd3ef8c
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/business-knowledge-model.md
+      - docs/development/record-control-work-allocation-and-integration-contract.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml
+      - docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml
+      - docs/knowledge/evidence/workflow-reassignment-signature-confirmed.md
+      - docs/knowledge/evidence/workflow-reassignment-signature.yaml
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/impact-analysis/record-control-workflow-stage1-contract.md
+      - docs/knowledge/open-questions.yaml
+      - docs/knowledge/rules/production.yaml
+      - docs/development/workflow-intervention-research-20261029/
+    excludedPaths:
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028/
+    untrackedPaths:
+      - docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml
+      - docs/knowledge/evidence/workflow-reassignment-signature-confirmed.md
+      - docs/knowledge/evidence/workflow-reassignment-signature.yaml
+      - docs/development/workflow-intervention-research-20261029/
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028/
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.independent-contract-and-fixed-baseline
+      required: true
+      category: documentation
+      description: 独立读取治理/质量/交接契约并核对实际固定提交、缓存目标及契约增量
+      method: command
+      command: git rev-parse HEAD origin/edhr-dev; git merge-base --is-ancestor 635711f97e9b794f4af02e1e5d1939bb2ecf920f HEAD; git diff --name-only 635711f97e9b794f4af02e1e5d1939bb2ecf920f HEAD -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - evidence/independent/git-scope.json
+        - 实际HEAD为8cf4df66，缓存目标635711f9已包含；契约无工作树和目标增量。本轮刷新远端失败，不将本结果作为新远端合并或发布验收。
+        - evidence/remote-refresh.json
+    - id: check.independent-original-source-and-document-integrity
+      required: true
+      category: documentation
+      description: 回到原始22文件及原始Word，独立计算摘要、解析段落和ZIP图片，另核对五个相邻源码
+      method: command
+      command: python3 docs/development/workflow-intervention-research-20261029/evidence/independent/verify_evidence.py
+      outcome: passed
+      evidence:
+        - evidence/independent/source-check.json
+        - evidence/independent/original-document-check.json
+        - 原始22文件SHA/字节数/行数和行范围均符合记录；原始Word整件及全部登记段落文本和图片引用一致；七张PNG与原ZIP条目逐字节相同。
+    - id: check.independent-original-product-facts
+      required: true
+      category: requirements
+      description: 独立检查原始控制器、服务、请求、前端调用、待办监听和路径/日志客户端，核对事实与证据限制
+      method: inspection
+      command: 直接读取C01-C15和QA-C16-C18原始文件及主报告，按source-check和semantic-review中的行号复核
+      outcome: passed
+      evidence:
+        - evidence/independent/semantic-review.md
+        - evidence/independent/source-check.json
+        - 普通/管理接口分开、变更与DHR干预页用普通接口、撤回到开始、已办不等于批准均有原件支持；报告未将缺失平台鉴权/签名内核外推为全局缺陷。
+    - id: check.independent-original-images
+      required: true
+      category: visual
+      description: 独立逐张查看原Word七张相关原图，核对列表、路径、转交弹窗和撤回确认
+      method: inspection
+      command: view_image original-image294.png/295.png/296.png/297.png/298.png/682.png/683.png
+      outcome: passed
+      evidence:
+        - evidence/independent/original-document-check.json
+        - evidence/independent/semantic-review.md
+        - 所见两种转交弹窗没有原因或签名输入；仅证明原图可见范围，未运行冠骋部署，未断言它与源码为同一版本。
+    - id: check.independent-policy-replacement-and-history
+      required: true
+      category: ontology
+      description: 核对用户原话、DEC0037/0042/0043/0074/0081/0091及11文件的限定同步、历史保留和成熟度
+      method: inspection
+      command: git diff HEAD -- docs/knowledge docs/architecture/business-knowledge-model.md docs/development/record-control-work-allocation-and-integration-contract.md；直接对照相关决策和原open question
+      outcome: passed
+      evidence:
+        - evidence/independent/policy-check.json
+        - evidence/independent/semantic-review.md
+        - 仅关闭question.record-control-managerial-reassignment-signature；其余问题逐对象不变。必须签名仅指定重新分配；普通转办/撤回、共享终端凭证及DHR专用边界保持。
+        - DEC0091及三声明为specified/internal；原决策及原问题时点保留，未新增运行事实/执行契约，未提高知识版本、成熟度或路线阶段。
+        - ontology-result.yaml已返回updated，结构化同步范围与实际11文件一致；本体结果不替代本次独立语义核对。
+    - id: check.independent-knowledge-automated-test
+      required: true
+      category: unit
+      description: 在本轮实际dirty候选上独立执行知识模型测试并归档本次原始JUnit
+      method: automated-test
+      command: mvn -q -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - evidence/independent/knowledge-test.log
+        - evidence/independent/knowledge-test.json
+        - evidence/independent/knowledge-junit.xml.gz
+        - 后端目录执行退出0，89项测试，0失败、0错误、0跳过；这是知识schema/引用等自动验证，不是重新分配或其他业务运行测试。
+    - id: check.independent-yaml-and-archived-evidence
+      required: true
+      category: ontology
+      description: 独立解析242份知识YAML、校对关闭问题及指定状态，并复核本体角色89项原归档计数和摘要
+      method: command
+      command: python3 docs/development/workflow-intervention-research-20261029/evidence/independent/verify_evidence.py
+      outcome: passed
+      evidence:
+        - evidence/independent/policy-check.json
+        - evidence/independent/knowledge-test.json
+        - evidence/ontology-validation.json
+        - 两份本体角色原归档解压后字节数/SHA256均一致，JUnit计数89/0/0/0；不复用其运行结果代替独立测试。
+    - id: check.independent-l2-impact-and-boundaries
+      required: true
+      category: security
+      description: 核对L2权限、签署、不可变审计、任务快照、兼容迁移及后续扩展边界
+      method: inspection
+      command: 直接核对decision-package.yaml、主报告、O01-O07及QA-O08/O09保护代码和DEC0074/0081
+      outcome: passed
+      evidence:
+        - evidence/independent/semantic-review.md
+        - decision-package.yaml
+        - 影响分析与研究/规范切片相符；标准动作/事务协作/产品核心的所有权清楚，无新运行机制或归档范围。
+        - 现有普通转办含锁/权限/原因/审计，记录控制仍禁通用入口；通用日志保留intervene授权CRUD而DHR/记录控制有专属保护，报告未混淆。
+        - 建议明确要求签名主体/任务/动作/内容绑定和新目标签名读写保护；其payload、页面及并发细则保持inference，不宣称已实现或已用户确认。
+    - id: check.independent-no-product-diff
+      required: true
+      category: regression
+      description: 核对当前backend/frontend/tests/migration/config无相对HEAD差异，不覆盖原有未跟踪内容
+      method: command
+      command: git diff --name-only HEAD; git ls-files --others --exclude-standard; git diff --check
+      outcome: passed
+      evidence:
+        - evidence/independent/git-scope.json
+        - tracked差异仅八个知识/人员说明文件；新增三知识文件及研究目录。产品路径无差异；原node_modules链接和旧Playwright产物排除。
+        - 独立角色仅新增自身quality-result及evidence/independent证据，不修改产品、测试、主报告、规则或数据库，未提交Git。
+  findings: []
+  residualRisks:
+    - id: risk.remote-freshness
+      description: 本轮未成功刷新远端，目标为最近已核验且包含于HEAD的缓存提交。
+      impact: 本结论只覆盖固定本地研究/知识候选，不能代表远端最新集成候选或发布安全。
+      mitigation: 后续实施或集成前重新获取目标并核对契约和受影响范围；本轮不合并、不部署。
+    - id: risk.reference-platform-and-deployment-unknown
+      description: 冠骋为无Git导出目录，平台流程内核、鉴权切面和部分日志后端未取得，截图与源码部署对应关系未知。
+      impact: 只能确认原文件和原图呈现，不能判定线上全局签署、权限、事务及不可变审计保障。
+      mitigation: 使用原始SHA/行号及Word原件固定证据，报告保留缺口，不调用其业务接口或据缺失源码推断线上缺陷。
+    - id: risk.future-runtime-remains-unimplemented
+      description: 重新分配、记录控制转办/撤回及相关页面/投影仍需实际实现，签名payload和并发细则仍是建议。
+      impact: 研究和知识测试通过不证明业务功能完成，也不关闭其他功能切片的既有未决或发布缺口。
+      mitigation: 后续实际实现遵守DEC0091/0074及既有边界，执行适用的权限、无效签名/复用保护、并发、事务、审计、界面和端到端L2验证；归档继续暂缓。
+    - id: risk.validation-scope
+      description: 本轮未执行冠骋运行页面/API、我们产品完整E2E、数据库迁移或CI分支保护设置核验。
+      impact: 不提供上述运行或强制集成门禁的结论。
+      mitigation: 当前无产品代码/测试/迁移/配置变更，以原件核对、知识测试及静态边界为适用验证；实施与发布另取实际候选证据。
+  blockingConditions: []

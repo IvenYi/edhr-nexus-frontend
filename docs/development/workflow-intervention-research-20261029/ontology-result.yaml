@@ -1,0 +1,127 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 8cf4df66d60e8f16677442197a9fc0defcd3ef8c
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 8cf4df66d60e8f16677442197a9fc0defcd3ef8c
+    uncommittedContractPaths: []
+  reason: 依据用户直接确认新增DEC-0091，关闭重新分配是否额外电子签名的选择，并同步相关当前规则、术语和说明；保留历史未决来源及其他动作政策，不将冠骋行为或研究建议升格为用户规则，不声称重新分配运行时已经实现。目标为最近已核验且已包含的缓存；主侧本轮fetch超时，未冒称本轮成功刷新远端。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml
+      changeType: create
+      ids: [DEC-0091, DEC-0091-01, DEC-0091-02, DEC-0091-03, scenario.workflow-reassignment-requires-signature, scenario.workflow-reassignment-policy-boundary]
+    - path: docs/knowledge/evidence/workflow-reassignment-signature.yaml
+      changeType: create
+      ids: [evidence.workflow-reassignment-signature-user-confirmed]
+    - path: docs/knowledge/evidence/workflow-reassignment-signature-confirmed.md
+      changeType: create
+      ids: [evidence.workflow-reassignment-signature-user-confirmed]
+    - path: docs/knowledge/open-questions.yaml
+      changeType: update
+      ids: [question.record-control-managerial-reassignment-signature]
+    - path: docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml
+      changeType: update
+      ids: [DEC-0037-06, scenario.record-control-intervention-audit]
+    - path: docs/knowledge/rules/production.yaml
+      changeType: update
+      ids: [rule.record-control.intervention-preserves-path]
+    - path: docs/knowledge/glossary.yaml
+      changeType: update
+      ids: [term.workflow-reassignment-action]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: [DEC-0091]
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      ids: [DEC-0091, rule.record-control.intervention-preserves-path]
+    - path: docs/knowledge/impact-analysis/record-control-workflow-stage1-contract.md
+      changeType: update
+      ids: [DEC-0091, question.record-control-managerial-reassignment-signature]
+    - path: docs/development/record-control-work-allocation-and-integration-contract.md
+      changeType: update
+      ids: [DEC-0091, question.record-control-managerial-reassignment-signature]
+  knowledgeSync:
+    - id: DEC-0091
+      disposition: updated
+      scope: 新记录当前流程干预范围内记录控制审批重新分配必须电子签名，只关闭原是否额外签名选择；专门权限、目标资格、原因和路径不变仍保留，保持specified/internal。
+      sourceReferences: [docs/development/workflow-intervention-research-20261029/user-confirmed.md, docs/knowledge/evidence/workflow-reassignment-signature-confirmed.md]
+    - id: question.record-control-managerial-reassignment-signature
+      disposition: historical
+      scope: 已被本次直接确认回答，从当前open questions移除；原ID、题干、背景、三种选择及当时影响范围保留于确认来源，原Git提交和历史审查证据不改写。
+      sourceReferences: [docs/knowledge/evidence/workflow-reassignment-signature-confirmed.md, DEC-0091-01]
+    - id: DEC-0037-06
+      disposition: updated
+      scope: 在原权限、目标、原因和不改变业务结果约束上补充后续DEC-0091引用；不将新要求回填为最初已确认或废弃原声明。
+      sourceReferences: [DEC-0091, evidence.workflow-reassignment-signature-user-confirmed]
+    - id: scenario.record-control-intervention-audit
+      disposition: updated
+      scope: 重新分配验收前提增加有效电子签名，普通转办原前提和日志审计结果保留；本轮没有执行该业务场景。
+      sourceReferences: [DEC-0091-01, DEC-0091-02]
+    - id: rule.record-control.intervention-preserves-path
+      disposition: updated
+      scope: 仅增加managerialSignatureRequired并在解释中限定为重新分配，保留managerialPermissionRequired、原因和路径不变，未引入新的运行事实或执行契约。
+      sourceReferences: [DEC-0091-01, DEC-0037-06]
+    - id: term.workflow-reassignment-action
+      disposition: updated
+      scope: 术语当前定义增加记录控制重新分配的强制电子签名边界；不扩展普通转办、撤回或DHR通用干预，术语仍specified/internal。
+      sourceReferences: [DEC-0091-01, DEC-0091-03]
+    - id: DEC-0074
+      disposition: retained
+      scope: 本轮不改变现行按钮签署的实际签署人、独立签名密码、共享终端、admin精确账号认证例外或字段签名边界；必须签名不等于新建另一套凭证政策。
+      sourceReferences: [docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml]
+    - id: DEC-0081-04
+      disposition: retained
+      scope: DHR继续专属审批与退回整理，普通通用流程及生产表单委托范围不因本次重新分配签名确认扩大。
+      sourceReferences: [docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml]
+    - id: question.record-control-active-form-void-boundary
+      disposition: retained
+      scope: 活动表单未来作废资格仍按原开放问题处理；本次不将签名确认误用为活动状态动作授权。
+      sourceReferences: [docs/knowledge/open-questions.yaml]
+    - id: DEC-0042-04
+      disposition: retained
+      scope: 共享DTO可选signatureId、独立撤回端口及现有批准/退回结果边界仍按实际源码解释；字段存在不表示重新分配已实现或已强制验签。
+      sourceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowContracts.java, gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowIntervention.java]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.workflow-reassignment-knowledge
+      checkType: schema
+      command: mvn -q -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - 本角色实际执行，退出0；原JUnit89项，0失败、0错误、0跳过；不是业务运行验收
+        - docs/development/workflow-intervention-research-20261029/evidence/ontology-validation.json保存命令、计数及两原件归档的字节数和SHA256
+        - 原JUnit51472字节，SHA256=5ac2a0a46976a4c74f0de019253111d8b5c6eb38ca22ef60884737f4fd9d73b5
+        - Maven生命周期实际重建离线打印资源；未手工修改产品源或将该构建当作重新分配功能测试
+    - id: validation.workflow-reassignment-reference-and-maturity
+      checkType: reference
+      command: Ruby解析242份知识YAML、检查DEC0091证据引用和状态；核对当前问题关闭与其他未决保留
+      outcome: passed
+      evidence:
+        - DEC0091及其三声明均specified/internal，证据ID可解析；未改知识版本0.3.25或schema1.2.0
+        - 当前open questions没有对应签名问题，历史题干/选择/影响保留；活动作废及作业条件等其他问题未删除
+        - 未新增运行时事实、执行契约或客户投影，未把研究建议与竞品行为纳入权威规则
+    - id: validation.workflow-reassignment-current-policy-and-history
+      checkType: projection
+      command: 对照用户原话、DEC0037/0042/0074/0081/0087、原Git问题与当前DTO/entity源码及限定工作划分说明
+      outcome: passed
+      evidence:
+        - 当前§3.3/§8.5/§11.2/证据缺口/已解决摘要不再将签名选择表述为未决
+        - 当前规则只增加重新分配强制签名，不使普通转办/撤回也必须签名，不开放DHR通用干预或P0禁止动作
+        - 2026-10-21/28历史证据原件保持当时范围；阶段一影响报告用后续政策注记解释历史未决，不改旧验收结果
+    - id: validation.workflow-reassignment-contract-and-scope
+      checkType: evidence-path
+      command: git rev-parse HEAD origin/edhr-dev；git diff --name-only 635711f9 HEAD -- AGENTS.md codeplzreadme.md docs/agents；git diff --check
+      outcome: passed
+      evidence:
+        - 实际源HEAD8cf4df66，缓存目标635711f9已包含于HEAD，项目/角色/交接契约无差异且无未提交治理契约变更
+        - 主侧本轮获取远端超时，target为缓存边界；本角色没有声称已刷新最新远端，本轮不集成或部署
+        - 仅修改11个知识及获准人员说明文件和本结果/验证证据；未修改产品代码、测试、迁移、配置或主调研报告
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

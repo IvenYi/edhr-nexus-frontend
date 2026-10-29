@@ -27,7 +27,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0037-06
-        statement: "provenance: user-confirmed；申请人只可在当前审核轮次尚无批准或退回决定时撤回；当前任务处理人可在授权范围内转办，具备专门权限的管理人员可重新分配，二者均不改变流程节点、路径或业务结果且必须记录原因和审计身份。"
+        statement: "provenance: user-confirmed；申请人只可在当前审核轮次尚无批准或退回决定时撤回；当前任务处理人可在授权范围内转办，具备专门权限的管理人员可重新分配，二者均不改变流程节点、路径或业务结果且必须记录原因和审计身份。2026-10-29后续DEC-0091补充记录控制审批重新分配必须电子签名，关闭原是否额外签名选择，不将该补充回填为本声明最初已确认或外推普通转办、撤回的签名要求。"
         status: specified
         visibility: internal
       - id: DEC-0037-07
@@ -71,9 +71,9 @@ decisions:
         evidenceRequirements: [并行汇合测试, 字段差异渲染验证]
       - id: scenario.record-control-intervention-audit
         given: 当前审核任务需要转办或重新分配
-        when: 具备相应权限的人员执行并填写原因
+        when: 具备相应权限的人员执行并填写原因，重新分配另按DEC-0091完成有效电子签名
         then: 只更新任务处理人，不改变流程路径，并同时写入流程日志和不可变审计事件
-        evidenceIds: [evidence.record-correction-void-design]
+        evidenceIds: [evidence.record-correction-void-design, evidence.workflow-reassignment-signature-user-confirmed]
         evidenceRequirements: [权限边界测试, 流程日志和审计记录验证]
     implementationDiscrepancies:
       - id: discrepancy.record-control-p0-runtime-not-implemented

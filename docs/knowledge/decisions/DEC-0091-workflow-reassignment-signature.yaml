@@ -1,0 +1,35 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0091
+    title: 流程干预重新分配必须电子签名
+    status: specified
+    visibility: internal
+    context: user-confirmed；2026-10-29用户在核对公共流程干预、记录控制转办和受限撤回的未完范围后，直接确认“重新分配需要签名”，并要求调研冠骋。该确认关闭question.record-control-managerial-reassignment-signature中记录控制审批重新分配是否需要额外电子签名的选择，补充DEC-0037-06，保留其专门权限、原因、目标资格、节点和路径不变及审计要求。原未决记录按当时提交保留，不将竞品实现或本次研究建议提升为用户政策；本轮只记录specified/internal规范，不实现产品动作或改变DTO、存量签名及任务。
+    decisionStatements:
+      - id: DEC-0091-01
+        statement: user-confirmed；当前流程干预范围内的记录控制审批重新分配必须完成电子签名，缺少有效签名不得执行该动作；不能以已经登录、具有干预权限或仅填写原因替代电子签名。该确认仅收敛原是否额外签名的未决选择，不因运行时尚未实现而保留可免签的现行选项。
+        status: specified
+        visibility: internal
+      - id: DEC-0091-02
+        statement: user-confirmed-and-existing-policy；重新分配仍须专门权限、合法目标和原因，只变更当前任务处理责任，不改变节点、流程路径或业务结果；签名不替代授权或审计。现行按钮签署身份及凭证规则继续按DEC-0074核对，不由本次确认改变共享终端或admin认证例外，也不将重新分配强制签名外推为普通转办、申请撤回同样必须签名。
+        status: specified
+        visibility: internal
+      - id: DEC-0091-03
+        statement: scope-boundary；本轮为调研和知识同步，重新分配运行时、签名强制、任务更新和审计事务仍须在后续实现中验证，不据此标记implemented、verified或runtime。DHR继续保持专属审批和退回整理路径；本确认不开放通用DHR干预、流程终止、跳过、强制跳转、加签或管理员直接批准。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.workflow-reassignment-signature-user-confirmed, evidence.record-control-workflow-stage1-contract-types]
+    acceptanceScenarios:
+      - id: scenario.workflow-reassignment-requires-signature
+        given: 管理人员具备重新分配权限且目标、原因和任务状态均满足要求
+        when: 后续运行实现收到缺少或无效电子签名的重新分配请求
+        then: 拒绝动作，不改变当前处理责任、节点、路径或业务结果；该场景为待实现验收要求，本轮知识记录不代表已经运行通过
+        evidenceIds: [evidence.workflow-reassignment-signature-user-confirmed]
+        evidenceRequirements: [后续签名缺失和无效负向测试, 任务及业务无副作用读回]
+      - id: scenario.workflow-reassignment-policy-boundary
+        given: 普通转办、申请撤回、DHR专属任务或已存在历史签名与流程记录
+        when: 同步重新分配必须签名的政策并继续原始调研
+        then: 只关闭对应重新分配签名选择，不改变其他动作签署政策或DHR禁通用绕过，不回填旧签名或提升未实现能力成熟度
+        evidenceIds: [evidence.workflow-reassignment-signature-user-confirmed]
+        evidenceRequirements: [声明级范围及原来源核对, 当前知识与历史证据保留, 无产品代码迁移差异检查]

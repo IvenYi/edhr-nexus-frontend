@@ -1,0 +1,27 @@
+{
+  "knowledgeVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "parsedKnowledgeYamlCount": 242,
+  "onlyClosedQuestion": "question.record-control-managerial-reassignment-signature",
+  "otherQuestionsUnchanged": true,
+  "newDecisionMaturity": "specified/internal",
+  "newDecisionStatements": [
+    "DEC-0091-01",
+    "DEC-0091-02",
+    "DEC-0091-03"
+  ],
+  "runtimeFactsOrExecutionContractDiffs": [],
+  "credentialAndDhrPolicyDiffs": [],
+  "rawHistoricalQuestion": {
+    "id": "question.record-control-managerial-reassignment-signature",
+    "question": "记录控制审批的重新分配是否必须额外完成电子签名，还是只要求专门权限、原因和不可变审计？",
+    "context": "阶段一共享命令保留可选 signatureId，但重新分配运行时尚未实现；当前已确认其需要专门权限、目标资格、原因并保持节点和流程路径不变，尚未确认是否以电子签名作为执行阻断条件。",
+    "options": [
+      "重新分配必须电子签名，缺少有效签名时阻断动作",
+      "重新分配不强制电子签名，但仍记录管理员、原因、原处理人、目标处理人和时间",
+      "按已发布流程或租户合规配置决定，并补充配置所有权、默认值和审计语义"
+    ],
+    "impact": "该问题只阻塞重新分配的签名校验、签名审计字段和发布级验收，不阻塞阶段一候选查询、显式版本启动以及后续权限、原因和目标资格边界实现。",
+    "visibility": "internal"
+  }
+}

@@ -263,8 +263,9 @@ rules:
       preserves: [currentNode, workflowPath, businessOutcome]
       requiresReason: true
       managerialPermissionRequired: true
-    explanation: 转办只允许当前处理人转给授权候选范围内人员；重新分配需要专门权限。两者均只改变当前任务处理人，并记录原因、原处理人、目标处理人和管理操作身份，不改变节点、路径或业务结果。
-    evidenceIds: [evidence.record-correction-void-design]
+      managerialSignatureRequired: true
+    explanation: 转办只允许当前处理人转给授权候选范围内人员；重新分配需要专门权限，并按DEC-0091强制电子签名，缺少有效签名不能执行。签名不替代授权或原因，也不将该要求外推普通转办或撤回。两者均只改变当前任务处理人，并记录原因、原处理人、目标处理人和管理操作身份，不改变节点、路径或业务结果；本条保持specified/internal，不代表重新分配运行时已实现。
+    evidenceIds: [evidence.record-correction-void-design, evidence.workflow-reassignment-signature-user-confirmed]
   - id: rule.record-control.p0-intervention-boundary
     name: P0 不提供终止跳过强制跳转加签和管理员直接批准
     status: specified

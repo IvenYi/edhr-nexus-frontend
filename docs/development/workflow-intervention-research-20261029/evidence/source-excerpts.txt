@@ -1,0 +1,1475 @@
+## C01: /Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/useDocumentTask.ts
+Lines 70-162
+70: };
+71:
+72: const userActions = computed(() => {
+73:   const page = 'approval-process-intervention';
+74:   return {
+75:     // 表单流程
+76:     Doc: !!getPermissionByKey(page, 'Doc'),
+77:     DocReassign: !!getPermissionByKey(page, 'Doc.Reassign'),
+78:     DocWithdraw: !!getPermissionByKey(page, 'Doc.Withdraw'),
+79:     // 模板审核
+80:     Tmpl: !!getPermissionByKey(page, 'Tmpl'),
+81:     TmplReassign: !!getPermissionByKey(page, 'Tmpl.Reassign'),
+82:     TmplWithdraw: !!getPermissionByKey(page, 'Tmpl.Withdraw'),
+83:     // 工艺审核
+84:     Routing: !!getPermissionByKey(page, 'Routing'),
+85:     RoutingReassign: !!getPermissionByKey(page, 'Routing.Reassign'),
+86:     RoutingWithdraw: !!getPermissionByKey(page, 'Routing.Withdraw'),
+87:     // 制程审核
+88:     ProductProcess: !!getPermissionByKey(page, 'ProductProcess'),
+89:     ProductProcessReassign: !!getPermissionByKey(page, 'ProductProcess.Reassign'),
+90:     ProductProcessWithdraw: !!getPermissionByKey(page, 'ProductProcess.Withdraw'),
+91:     // DHR审核
+92:     Dhr: !!getPermissionByKey(page, 'Dhr'),
+93:     DhrReassign: !!getPermissionByKey(page, 'Dhr.Reassign'),
+94:     DhrWithdraw: !!getPermissionByKey(page, 'Dhr.Withdraw'),
+95:     // 变更审核
+96:     Change: !!getPermissionByKey(page, 'Change'),
+97:     ChangeReassign: !!getPermissionByKey(page, 'Change.Reassign'),
+98:     ChangeWithdraw: !!getPermissionByKey(page, 'Change.Withdraw'),
+99:   };
+100: });
+101:
+102: const initialTabs = computed(() => [
+103:   {
+104:     key: 'doc',
+105:     name: t('sys.edhr.approvalTab.form'),
+106:     visible: computedSetting.value.enableDoc && userActions.value.Doc,
+107:     component: DocTab,
+108:   },
+109:   {
+110:     key: 'tmpl',
+111:     name: t('sys.edhr.approvalTab.tmpl'),
+112:     visible: computedSetting.value.enableDocControl && userActions.value.Tmpl,
+113:     component: ControlTab,
+114:   },
+115:   {
+116:     key: 'routing',
+117:     name: t('sys.edhr.approvalTab.routing'),
+118:     visible: computedSetting.value.enableRoutingApprove && userActions.value.Routing,
+119:     component: RoutingTab,
+120:   },
+121:   {
+122:     key: 'productProcess',
+123:     name: t('sys.edhr.approvalTab.productProcess'),
+124:     visible: computedSetting.value.enableProductProcessApprove && userActions.value.ProductProcess,
+125:     component: ProductProcessTab,
+126:   },
+127:   {
+128:     key: 'dhr',
+129:     name: t('sys.edhr.approvalTab.dhr'),
+130:     visible: computedSetting.value.dhrSumDisabled && userActions.value.Dhr,
+131:     component: DhrTab,
+132:   },
+133:   {
+134:     key: 'change',
+135:     name: t('sys.edhr.approvalTab.change'),
+136:     visible: userActions.value.Change,
+137:     component: ChangeTab,
+138:   },
+139: ]);
+140:
+141: function transferFirstLetter(str, type: 'UPPER' | 'LOWER') {
+142:   if (type === 'UPPER') {
+143:     return str.charAt(0).toUpperCase() + str.slice(1);
+144:   }
+145:   return str.charAt(0).toLowerCase() + str.slice(1);
+146: }
+147:
+148: export function useDocumentTask() {
+149:   const activeTabKey = ref('doc');
+150:   const tabList = computed(() => initialTabs.value.filter((item) => item.visible));
+151:
+152:   const tabObj = Object.entries(
+153:     pick(
+154:       userActions.value,
+155:       tabList.value.map((item) => transferFirstLetter(item.key, 'UPPER')),
+156:     ),
+157:   ).find(([k, v]) => v);
+158:   if (tabObj) {
+159:     activeTabKey.value = transferFirstLetter(tabObj[0], 'LOWER');
+160:   }
+161:
+162:   return {
+
+
+## C02: /Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/change-tab/todo.vue
+Lines 15-31
+15:           {
+16:             label: t('sys.detail'),
+17:             onClick: () => handleView(record),
+18:           },
+19:           {
+20:             ifShow: userActions.ChangeReassign,
+21:             label: t('sys.bpmn.button.Reassign'),
+22:             onClick: () => handleReassign(record),
+23:           },
+24:           {
+25:             ifShow: userActions.ChangeWithdraw,
+26:             label: t('sys.edhr.withdraw'),
+27:             onClick: () => handleWithdraw(record),
+28:           },
+29:         ]"
+30:         :stopButtonPropagation="true"
+31:       />
+
+
+## C02: /Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/change-tab/todo.vue
+Lines 66-95
+66:       formatter: ({ cellValue }) => t(`sys.edhr.changeType.${cellValue}`),
+67:     },
+68:     { title: t('sys.onlineForm.formIdent'), field: 'serialNo', minWidth: 150 },
+69:     { title: t('sys.onlineForm.formRemarkName'), field: 'title', minWidth: 150 },
+70:     { title: t('sys.onlineForm.formName'), field: 'ofTmplName', minWidth: 150 },
+71:     { title: t('sys.onlineForm.formTmplCode'), field: 'ofCode', minWidth: 150 },
+72:     { title: t('sys.edhr.field.assignee'), field: 'assigneeName' },
+73:     { title: t('sys.edhr.field.createUser'), field: 'approveHisCreateUserName' },
+74:     { title: t('sys.edhr.field.createTime'), field: 'taskStartTime', minWidth: 176 },
+75:   ];
+76:
+77:   const { formState, userActions } = useDocumentTask();
+78:   const { openFillWikiFullScreenModal, openSingleDrawer } = useApaasEbr();
+79:
+80:   const loading = ref<boolean>(false);
+81:
+82:   const pagination: TablePaginationConfig = reactive({
+83:     current: 1,
+84:     pageSize: 20,
+85:     total: 0,
+86:   });
+87:
+88:   const tableData = ref<ProcessTaskTodoResponse[]>([]);
+89:
+90:   onMounted(() => getTableData(1));
+91:
+92:   const getTableData = async (initCurrent = 0) => {
+93:     if (initCurrent) {
+94:       Object.assign(pagination, { current: 1 });
+95:     }
+
+
+## C02: /Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/change-tab/todo.vue
+Lines 105-121
+105:       loading.value = false;
+106:     });
+107:     pagination.current = res?.pageNo ?? 1;
+108:     pagination.total = res?.totalCount ?? 0;
+109:     tableData.value = res?.data ?? [];
+110:   };
+111:
+112:   const handleTableChange = (paginationInfo) => {
+113:     Object.assign(pagination, paginationInfo);
+114:     getTableData();
+115:   };
+116:
+117:   const handleView = (record: ProcessTaskTodoResponse) => {
+118:     if (shouldShowFormSource(record)) {
+119:       openFillWikiFullScreenModal({
+120:         materialNo: record.materialNo,
+121:         ofTmplId: record.docOutlineId,
+
+
+## C02: /Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/change-tab/todo.vue
+Lines 150-185
+150:             ...queryData,
+151:             ofInstId: record.ofInstanceId!,
+152:             businessId: record.businessId,
+153:             taskId: record.taskId,
+154:           });
+155:         },
+156:       },
+157:       {
+158:         title: t('sys.edhr.taskTransfer'),
+159:       },
+160:     );
+161:     if (res.ok) {
+162:       getTableData(1);
+163:     }
+164:   };
+165:
+166:   /** 撤回 */
+167:   const handleWithdraw = async (record: ProcessTaskTodoResponse) => {
+168:     Modal.confirm({
+169:       title: t('sys.edhr.withdrawConfirm'),
+170:       async onOk() {
+171:         await postApproveProcessReturn({
+172:           businessId: record.businessId,
+173:           taskId: record.taskId,
+174:         });
+175:         message.success(t('sys.edhr.withdrawSuccess'));
+176:         getTableData(1);
+177:       },
+178:       onCancel() {},
+179:     });
+180:   };
+181:
+182:   defineExpose({
+183:     getTableData,
+184:   });
+185: </script>
+
+
+## C03: /Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/approval-process-intervention/reassign-modal.vue
+Lines 1-78
+1: <template>
+2:   <a-form
+3:     :class="ns.b()"
+4:     ref="formRef"
+5:     :model="formData"
+6:     :label-col="{ span: 6 }"
+7:     :wrapper-col="{ span: 16 }"
+8:     autocomplete="off"
+9:   >
+10:     <a-form-item :label="t('sys.pageDesigner.originalHandler')">
+11:       <a-input :disabled="true" :value="data.assigneeName" :placeholder="t('sys.inputText')" />
+12:     </a-form-item>
+13:     <a-form-item
+14:       required
+15:       :label="t('sys.pageDesigner.handler')"
+16:       name="reassignUser"
+17:       :rules="[
+18:         {
+19:           required: true,
+20:           message: t('sys.chooseTextTip', { name: t('sys.pageDesigner.handler') }),
+21:         },
+22:       ]"
+23:     >
+24:       <GrantUserSelect
+25:         :placeholder="t('sys.chooseTextTip', { name: t('sys.pageDesigner.handler') })"
+26:         v-model:value="formData.reassignUser"
+27:         :is-granted="true"
+28:       />
+29:     </a-form-item>
+30:   </a-form>
+31: </template>
+32:
+33: <script setup lang="ts" name="edhr-configure-drawer">
+34:   import { reactive, ref } from 'vue';
+35:   import type { FormInstance } from 'ant-design-vue';
+36:   import { useModal, useNamespace } from '@gct/runtime';
+37:   import { ProcessTaskTodoResponse } from '/@/apis/gct-apaas/model';
+38:   import { useI18n } from 'vue-i18n';
+39:   import GrantUserSelect from '/@web-render/views/edhr-application/render/user-granted/components/grant-user-select.vue';
+40:
+41:   const { t } = useI18n();
+42:
+43:   const ns = useNamespace('edhr-outline-modal');
+44:
+45:   const props = defineProps<{
+46:     data: ProcessTaskTodoResponse;
+47:     callback: Function;
+48:   }>();
+49:
+50:   const formData = reactive<{
+51:     reassignUser?: string;
+52:   }>({
+53:     reassignUser: undefined,
+54:   });
+55:
+56:   const formRef = ref<FormInstance>();
+57:
+58:   useModal(async () => {
+59:     await formRef.value?.validate();
+60:
+61:     if (props.callback && typeof props.callback === 'function') {
+62:       await props.callback({
+63:         toUserId: formData.reassignUser!,
+64:       });
+65:     }
+66:
+67:     return {
+68:       // 修改过后返回ok,外面刷新数据
+69:       ok: true,
+70:     };
+71:   });
+72: </script>
+73:
+74: <style lang="scss" scoped>
+75:   @include b(edhr-outline-modal) {
+76:     padding-top: 12px;
+77:   }
+78: </style>
+
+
+## C04: /Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/process-intervention/reassign-modal.vue
+Lines 1-83
+1: <template>
+2:   <a-form
+3:     :class="ns.b()"
+4:     ref="formRef"
+5:     :model="formData"
+6:     :label-col="{ span: 6 }"
+7:     :wrapper-col="{ span: 16 }"
+8:     autocomplete="off"
+9:   >
+10:     <a-form-item :label="t('sys.edhr.lotOrSn')">
+11:       <a-input :disabled="true" :value="data.materialNo" :placeholder="t('sys.inputText')" />
+12:     </a-form-item>
+13:     <a-form-item :label="$t('sys.onlineForm.formName')">
+14:       <a-input :disabled="true" :value="data.ofTmplName" :placeholder="t('sys.inputText')" />
+15:     </a-form-item>
+16:     <a-form-item :label="$t('sys.pageDesigner.originalHandler')">
+17:       <a-input :disabled="true" :value="data.assigneeName" :placeholder="t('sys.inputText')" />
+18:     </a-form-item>
+19:     <a-form-item
+20:       required
+21:       :label="$t('sys.pageDesigner.handler')"
+22:       name="reassignUser"
+23:       :rules="[
+24:         {
+25:           required: true,
+26:           message: t('sys.chooseTextTip', { name: t('sys.pageDesigner.handler') }),
+27:         },
+28:       ]"
+29:     >
+30:       <GrantUserSelect
+31:         :placeholder="t('sys.chooseTextTip', { name: t('sys.pageDesigner.handler') })"
+32:         v-model:value="formData.reassignUser"
+33:         :is-granted="true"
+34:       />
+35:     </a-form-item>
+36:   </a-form>
+37: </template>
+38:
+39: <script setup lang="ts" name="edhr-configure-drawer">
+40:   import { reactive, ref } from 'vue';
+41:   import type { FormInstance } from 'ant-design-vue';
+42:   import { useModal, useNamespace } from '@gct/runtime';
+43:   import { ProcessTaskTodoResponse } from '/@/apis/gct-apaas/model';
+44:   import { useI18n } from 'vue-i18n';
+45:   import { postOnlineFormProcessInterfereReassign } from '/@/apis/gct-apaas/OnlineFormProcessController';
+46:   import GrantUserSelect from '/@web-render/views/edhr-application/render/user-granted/components/grant-user-select.vue';
+47:
+48:   const { t } = useI18n();
+49:
+50:   const ns = useNamespace('edhr-outline-modal');
+51:
+52:   const props = defineProps<{
+53:     data: ProcessTaskTodoResponse;
+54:   }>();
+55:
+56:   const formData = reactive<{
+57:     reassignUser?: string;
+58:   }>({
+59:     reassignUser: undefined,
+60:   });
+61:
+62:   const formRef = ref<FormInstance>();
+63:
+64:   useModal(async () => {
+65:     await formRef.value?.validate();
+66:     await postOnlineFormProcessInterfereReassign({
+67:       ofInstId: props.data.ofInstanceId!,
+68:       taskId: props.data.taskId!,
+69:       toUserId: formData.reassignUser!,
+70:     });
+71:
+72:     return {
+73:       // 修改过后返回ok,外面刷新数据
+74:       ok: true,
+75:     };
+76:   });
+77: </script>
+78:
+79: <style lang="scss" scoped>
+80:   @include b(edhr-outline-modal) {
+81:     padding-top: 12px;
+82:   }
+83: </style>
+
+
+## C05: /Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/user-granted/components/grant-user-select.vue
+Lines 30-43
+30:
+31:   const props = withDefaults(
+32:     defineProps<{
+33:       value?: string | string[];
+34:       multiple?: boolean;
+35:       /** 是否是授权用户,true是授权用户，false是未授权用户，undefined是全部用户 */
+36:       isGranted?: boolean;
+37:       /** 需要额外隐藏的id集合 */
+38:       hiddenKeys?: string[];
+39:       placeholder?: string;
+40:     }>(),
+41:     {
+42:       isGranted: undefined,
+43:     },
+
+
+## C05: /Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/user-granted/components/grant-user-select.vue
+Lines 68-98
+68:
+69:   const handleOpenModal = async () => {
+70:     let sceneType = SceneType.Paas;
+71:     if (props.isGranted === true) {
+72:       sceneType = SceneType.Edhr_Granted;
+73:     } else if (props.isGranted === false) {
+74:       sceneType = SceneType.Edhr_UnGranted;
+75:     }
+76:
+77:     openSelectUserModal({
+78:       title: t('sys.appDesigner.approval.approvalUserSelect'),
+79:       values: valueArr.value.map((id) => `USER:${id}`),
+80:       modelKey: '',
+81:       multiple: props.multiple,
+82:       showTabs: ['User'],
+83:       sceneType,
+84:       hiddenKeys: props.hiddenKeys ? props.hiddenKeys.map((id) => `USER:${id}`) : undefined,
+85:       callback: async (ids, selectMap) => {
+86:         console.log('选中数据', selectMap.users);
+87:         const userIds = selectMap.users.map((e) => e.id);
+88:         valueArr.value = userIds;
+89:         emit(
+90:           'select',
+91:           selectMap.users.map((e) => ({ id: e.id, name: e.fullname })),
+92:         );
+93:       },
+94:     });
+95:   };
+96:
+97:   watch(
+98:     () => props.value,
+
+
+## C06: /Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/controller/ApproveProcessController.java
+Lines 35-105
+35:     private ILock lockService;
+36:
+37:     /**
+38:      * 尝试加锁执行
+39:      * 锁的粒度为表单实例
+40:      */
+41:     public <T> T tryToRunWithLock(String ofInstId, Callable<T> callable) {
+42:         LockKeyEnum lockKey = LockKeyEnum.ONLINE_FORM_INST;
+43:         return lockService.tryToRunWithLock(
+44:                 lockKey.ofString(Constants.ONLINE_FORM_INSTANCE_ID, ofInstId),
+45:                 lockKey.getLeaseTime(),
+46:                 lockKey.getLeaseTime(),
+47:                 callable);
+48:     }
+49:
+50:     public void tryToRunWithLock(String ofInstId, Runnable runnable) {
+51:         LockKeyEnum lockKey = LockKeyEnum.ONLINE_FORM_INST;
+52:         lockService.tryToRunWithLock(
+53:                 lockKey.ofString(Constants.ONLINE_FORM_INSTANCE_ID, ofInstId),
+54:                 lockKey.getLeaseTime(),
+55:                 lockKey.getLeaseTime(),
+56:                 runnable);
+57:     }
+58:
+59:     @PostMapping("/approve")
+60:     @ApiOperation("审核")
+61:     public ResponseEntity<String> approve(@RequestBody ProcessApproveRequest request) {
+62:         tryToRunWithLock(request.getBusinessId(), () -> {
+63:             approveProcessService.approve(request);
+64:         });
+65:         return ResponseEntity.ok();
+66:     }
+67:
+68:     @PostMapping("/reassign")
+69:     @ApiOperation("转办")
+70:     public ResponseEntity<String> reassign(@RequestBody ProcessReassignRequest request) {
+71:         tryToRunWithLock(request.getBusinessId(), () -> {
+72:             approveProcessService.reassign(request);
+73:         });
+74:         return ResponseEntity.ok();
+75:     }
+76:
+77:     @PostMapping("/interfere/reassign")
+78:     @ApiOperation("流程干预转办")
+79:     public ResponseEntity<String> reassign4Interfere(@RequestBody ProcessReassign4InterfereRequest request) {
+80:         tryToRunWithLock(request.getBusinessId(), () -> approveProcessService.reassign4Interfere(request));
+81:         return ResponseEntity.ok();
+82:     }
+83:
+84:     @PostMapping("/return")
+85:     @ApiOperation("退回")
+86:     public ResponseEntity<String> return0(@RequestBody ProcessReturnRequest request) {
+87:         tryToRunWithLock(request.getBusinessId(), () -> {
+88:             approveProcessService.return0(request);
+89:         });
+90:         return ResponseEntity.ok();
+91:     }
+92:
+93:     @PostMapping("/interfere/return")
+94:     @ApiOperation("流程干预退回")
+95:     public ResponseEntity<String> return4Interfere(@RequestBody ProcessReturn4InterfereRequest request) {
+96:         tryToRunWithLock(request.getBusinessId(), () -> approveProcessService.return4Interfere(request));
+97:         return ResponseEntity.ok();
+98:     }
+99:
+100:
+101:     @PostMapping("/jump")
+102:     @ApiOperation("根据按钮key跳转流程节点")
+103:     public ResponseEntity<String> jump(@RequestBody DhrProcessJumpRequest request) {
+104:         tryToRunWithLock(request.getBusinessId(), () -> {
+105:             approveProcessService.jump(request);
+
+
+## C07: /Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/service/ApproveProcessService.java
+Lines 136-184
+136:      * 转办
+137:      */
+138:     @ProcessPath(method = "reassign", businessKey = PmProcessDefinitionTypeEnum.BUSINESS_APPROVE)
+139:     @Transactional(rollbackFor = Exception.class)
+140:     public void reassign(ProcessReassignRequest request) {
+141:         String taskId = request.getTaskId();
+142:         String toUserId = request.getToUserId();
+143:         Validate.notBlank(toUserId, "sys.ncdp.api.process.data.reassign.toUserIdCannotBeBlank");
+144:
+145:         // 兼容前端范围人员组件带前缀的传参
+146:         if (toUserId.startsWith(RangeUserTypeEnum.USER.getPrefix())) {
+147:             toUserId = toUserId.substring(RangeUserTypeEnum.USER.getPrefix().length());
+148:         }
+149:
+150:         Map<String, Object> approveHisMap = modelManager.getById(ModelName.EDHR_SUMMARY_APPROVE_HIS, request.getBusinessId());
+151:         if (approveHisMap == null
+152:                 || (!SummaryApproveHisStatus.IN_AUDIT.name().equals(approveHisMap.get(FieldName.STATUS_)) && !SummaryApproveHisType.EDHR_SUMMARY.name().equals(approveHisMap.get(FieldName.TYPE)))) {
+153:             return;
+154:         }
+155:         EdhrSummaryApproveHisEntity approveHisEntity = new EdhrSummaryApproveHisEntity(approveHisMap);
+156:         ProcessInstance processInstance = processInstanceService.findById(approveHisEntity.getProcInstId());
+157:         Pair<ProcessInstance, ProcessNodeDefinition> pair = processRuntimeService.getProcInstAndUserTaskNodeDef(processInstance.getProcDefId(), taskId);
+158:         // 转办任务
+159:         reassignTask(request.getTaskId(), toUserId, request.getBusinessId());
+160:
+161:         // 刷新流程实例
+162:         refreshProcInstInfo(pair.getKey().getId());
+163:
+164:         ProcessHandlerFactory.getHandler(approveHisEntity.getType()).reassign(approveHisEntity, request);
+165:     }
+166:
+167:     /**
+168:      * 流程干预转办
+169:      */
+170:     @ProcessPath(method = "reassign4Interfere", businessKey = PmProcessDefinitionTypeEnum.BUSINESS_APPROVE)
+171:     @Transactional(rollbackFor = Exception.class)
+172:     public void reassign4Interfere(ProcessReassign4InterfereRequest request) {
+173:
+174:         String taskId = request.getTaskId();
+175:         String toUserId = request.getToUserId();
+176:         Validate.notBlank(toUserId, "sys.ncdp.api.process.data.reassign.toUserIdCannotBeBlank");
+177:         // 兼容前端范围人员组件带前缀的传参
+178:         if (toUserId.startsWith(RangeUserTypeEnum.USER.getPrefix())) {
+179:             toUserId = toUserId.substring(RangeUserTypeEnum.USER.getPrefix().length());
+180:         }
+181:
+182:         // 转办任务
+183:         Task task = processRuntimeService.getTaskAndAssertNotNull(taskId);
+184:         reassignTask(taskId, toUserId, request.getBusinessId());
+
+
+## C07: /Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/service/ApproveProcessService.java
+Lines 187-242
+187:         refreshProcInstInfo(task.getProcessInstanceId());
+188:     }
+189:
+190:     /**
+191:      * 退回
+192:      */
+193:     @ProcessPath(method = "return0", businessKey = PmProcessDefinitionTypeEnum.BUSINESS_APPROVE)
+194:     @Transactional(rollbackFor = Exception.class)
+195:     public void return0(ProcessReturnRequest request) {
+196:         Map<String, Object> approveHisMap = modelManager.getById(ModelName.EDHR_SUMMARY_APPROVE_HIS, request.getBusinessId());
+197:         if (approveHisMap == null
+198:                 || (!SummaryApproveHisStatus.IN_AUDIT.name().equals(approveHisMap.get(FieldName.STATUS_)) && !SummaryApproveHisType.EDHR_SUMMARY.name().equals(approveHisMap.get(FieldName.TYPE)))) {
+199:             return;
+200:         }
+201:         EdhrSummaryApproveHisEntity approveHisEntity = new EdhrSummaryApproveHisEntity(approveHisMap);
+202:         ProcessInstance processInstance = processInstanceService.findById(approveHisEntity.getProcInstId());
+203:
+204:         String taskId = request.getTaskId();
+205:         // 先保存数据
+206:         Pair<ProcessInstance, ProcessNodeDefinition> pair = processRuntimeService.getProcInstAndUserTaskNodeDef(processInstance.getProcDefId(), taskId);
+207:
+208:         // 退回到开始节点
+209:         processRuntimeService.return0(taskId);
+210:
+211:         // 刷新流程实例
+212:         refreshProcInstInfo(pair.getKey().getId());
+213:
+214:         ProcessHandlerFactory.getHandler(approveHisEntity.getType()).return0(approveHisEntity, request);
+215:
+216:         //EDHR汇总审批流程记录结束
+217:         modelManager.updateById(ModelName.EDHR_SUMMARY_APPROVE_HIS, Map.of(FieldName.STATUS_, SummaryApproveHisStatus.ENDED.name()), approveHisEntity.getId());
+218:     }
+219:
+220:     /**
+221:      * 流程干预退回
+222:      */
+223:     @ProcessPath(method = "return4Interfere", businessKey = PmProcessDefinitionTypeEnum.BUSINESS_APPROVE)
+224:     @Transactional(rollbackFor = Exception.class)
+225:     public void return4Interfere(ProcessReturn4InterfereRequest request) {
+226:         Map<String, Object> approveHisMap = modelManager.getById(ModelName.EDHR_SUMMARY_APPROVE_HIS, request.getBusinessId());
+227:         if (approveHisMap == null
+228:                 || (!SummaryApproveHisStatus.IN_AUDIT.name().equals(approveHisMap.get(FieldName.STATUS_)) && !SummaryApproveHisType.EDHR_SUMMARY.name().equals(approveHisMap.get(FieldName.TYPE)))) {
+229:             return;
+230:         }
+231:         EdhrSummaryApproveHisEntity approveHisEntity = new EdhrSummaryApproveHisEntity(approveHisMap);
+232:
+233:         // 退回到开始节点
+234:         processRuntimeService.return0ByProcInstId(approveHisEntity.getProcInstId());
+235:
+236:         // 刷新流程实例
+237:         refreshProcInstInfo(approveHisEntity.getProcInstId());
+238:
+239:         ProcessHandlerFactory.getHandler(approveHisEntity.getType()).return0(approveHisEntity, BeanUtils.toBean(request, ProcessReturnRequest.class));
+240:
+241:         //EDHR汇总审批流程记录结束
+242:         modelManager.updateById(ModelName.EDHR_SUMMARY_APPROVE_HIS, Map.of(FieldName.STATUS_, SummaryApproveHisStatus.ENDED.name()), approveHisEntity.getId());
+
+
+## C07: /Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/service/ApproveProcessService.java
+Lines 246-262
+246:     /**
+247:      * 转办任务
+248:      */
+249:     private void reassignTask(String taskId, String toUserId, String businessId) {
+250:         Task task = processRuntimeService.getTaskAndAssertNotNull(taskId);
+251:         Validate.isTrue(!task.getAssignee().equals(toUserId), "sys.ncdp.api.process.data.reassign.toUserIdCannotBeSelf");
+252:
+253:         //原任务处理人(转办人)
+254:         String fromUserId = task.getAssignee();
+255:
+256:         // 转办任务
+257:         processRuntimeService.reassignTask(taskId, toUserId);
+258:
+259:         //生成待办任务
+260:         processTaskEventListener.onTaskAssignmentHandle(task, fromUserId, toUserId, businessId);
+261:     }
+262:
+
+
+## C08: /Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/entity/ProcessReassign4InterfereRequest.java
+Lines 1-31
+1: package com.gct.apaas.edhr.approve.entity;
+2:
+3: import io.swagger.annotations.ApiModelProperty;
+4: import lombok.Data;
+5:
+6: /**
+7:  * 流程干预转办 请求参数
+8:  * @author wen
+9:  */
+10: @Data
+11: public class ProcessReassign4InterfereRequest {
+12:
+13:     @ApiModelProperty(value = "Edhr实例id", required = true)
+14:     private String edhrInstanceId;
+15:
+16:     @ApiModelProperty(value = "表单实例ID", required = true)
+17:     private String ofInstanceId;
+18:
+19:     @ApiModelProperty(value = "业务ID")
+20:     private String businessId;
+21:
+22:     @ApiModelProperty(value = "任务id", required = true)
+23:     private String taskId;
+24:
+25:     @ApiModelProperty(value = "转给的用户id", required = true)
+26:     private String toUserId;
+27:
+28:     @ApiModelProperty(value = "意见")
+29:     private String opinion;
+30:
+31: }
+
+
+## C09: /Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/entity/ProcessReassignRequest.java
+Lines 1-28
+1: package com.gct.apaas.edhr.approve.entity;
+2:
+3: import io.swagger.annotations.ApiModelProperty;
+4: import lombok.Data;
+5:
+6: /**
+7:  * 转办 请求参数
+8:  * @author wen
+9:  */
+10: @Data
+11: public class ProcessReassignRequest extends ProcessOperationRequest {
+12:
+13:     @ApiModelProperty(value = "任务id", required = true)
+14:     private String taskId;
+15:
+16:     @ApiModelProperty(value = "签名数据")
+17:     private String signature;
+18:
+19:     @ApiModelProperty(value = "意见")
+20:     private String opinion;
+21:
+22:     @ApiModelProperty(value = "转给的用户id", required = true)
+23:     private String toUserId;
+24:
+25:     @ApiModelProperty(value = "点击的按钮key", required = true)
+26:     private String btnKey;
+27:
+28: }
+
+
+## C10: /Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/listener/ProcessTaskEventListener.java
+Lines 190-245
+190:
+191:     }
+192:
+193:     /**
+194:      * 生成待办逻辑
+195:      * 任务转办监听 : 任务自然流转也会发送转办事件出来
+196:      * 故此处放弃监听转办事件 ，改为在业务代码中手动调用此方法来完成转办之业务监听
+197:      * @param task       任务
+198:      * @param fromUserId 转办人(消息切面中使用)
+199:      * @param toUserId   被转办人
+200:      */
+201:     public void onTaskAssignmentHandle(Task task, String fromUserId, String toUserId, String businessId) {
+202:         String taskId = task.getId();
+203:         String taskDefinitionKey = task.getTaskDefinitionKey();
+204:         String processInstanceId = task.getProcessInstanceId();
+205:         if (runtimeService.createProcessInstanceQuery()
+206:                 .processInstanceId(processInstanceId).singleResult() == null) {
+207:             //表示流程已经结束
+208:             return;
+209:         }
+210:         Map<String, Object> vars = runtimeService.getVariables(processInstanceId);
+211:
+212:         //新增任务待办(给转办的人)
+213:         ProcessTaskTodo taskTodo = createTaskTodo(taskId, (String) vars.get(ProcessConstant.USER_ID), (String) vars.get(ProcessConstant.USER_NAME), processInstanceId, businessId);
+214:         taskTodo.setAssigneeId(toUserId);
+215:         taskTodo.setAssigneeName(getFullNameByUserId(toUserId));
+216:         taskTodo.setTaskStartTime(LocalDateTime.now());
+217:         taskTodo.setNodeKey(taskDefinitionKey);
+218:
+219:         //将原来的任务待办 设置为已办(原任务人新增一条已办)
+220:         ProcessTaskTodo originalTaskTodo = taskTodoService.findByTaskId(taskId);
+221:         ProcessTaskDone taskDone = createTaskDone(taskId, originalTaskTodo);
+222:         taskDone.setStarterId(taskTodo.getStarterId());
+223:         taskDone.setStarterName(taskTodo.getStarterName());
+224:         taskDone.setAssigneeId(originalTaskTodo.getAssigneeId());
+225:         taskDone.setAssigneeName(originalTaskTodo.getAssigneeName());
+226:
+227:         //移除原任务待办
+228:         taskTodoService.removeByTaskId(taskId);
+229:         //插入新代办任务
+230:         ProcessTaskTodoPO po = BeanUtil.toBean(taskTodo, ProcessTaskTodoPO.class);
+231:         po.setId(UUIDUtil.newSimpleUuid());
+232:         taskTodoRepository.save(po);
+233:         //新增一条已完成任务
+234:         ProcessTaskDonePO poDone = BeanUtil.toBean(taskDone, ProcessTaskDonePO.class);
+235:         poDone.setId(UUIDUtil.newSimpleUuid());
+236:         processTaskDoneRepository.save(poDone);
+237:
+238:     }
+239:
+240:     /**
+241:      * 根据userId获取用户名
+242:      * @param userId userId
+243:      * @return 用户名
+244:      */
+245:     private String getFullNameByUserId(String userId) {
+
+
+## C11: /Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/handler/process/ProcessPathHandler.java
+Lines 72-118
+72:     /**
+73:      * 转办处理
+74:      */
+75:     protected void baseReassignPathHandler(String taskId, String toUserId) {
+76:
+77:         Task task = getTaskService().createTaskQuery().taskId(taskId).singleResult();
+78:         String processInstanceId = task.getProcessInstanceId();
+79:         Map<String, Object> variables = getRuntimeService().getVariables(processInstanceId);
+80:         String procDefVerId = (String) variables.get(ProcessConstant.PROC_DEF_VER_ID);
+81:         ProcessNodeDefinition node = getProcessNodeDefinitionService().findByProcDefVerIdAndKey(procDefVerId, task.getTaskDefinitionKey());
+82:
+83:         boolean hasApproveWay = hasApproveWay(node);
+84:         if (!hasApproveWay) {
+85:             return;
+86:         }
+87:
+88:         //根据表单实例id和nodeId 找到原来的那个流程中 那个节点running中的 将范围人员json改了
+89:         ProcessPath path = getProcessPathService().findByNodeIdAndProcessInstanceId(node.getId(), processInstanceId);
+90:         if (path == null) {
+91:             return;
+92:         }
+93:
+94:         //更新范围人员中的json
+95:         String rangeUserExchange = path.getRangeUserExchange();
+96:         //根据任务id找到fromUserId 即最后一个任务处理人
+97:         ProcessTaskDone lastTaskCompleter = getProcessTaskDoneService().getLastTaskCompleter(taskId);
+98:         if (lastTaskCompleter == null || StrUtil.isBlank(lastTaskCompleter.getAssigneeId())) {
+99:             //一般来说 不会有问题(出问题 则将此切面执行弄成同步)
+100:             log.error("修改转办节点人员失败，转办之前人员未找到：taskId为：{}", taskId);
+101:             return;
+102:         }
+103:         //修改范围人员json
+104:         String fromUserId = lastTaskCompleter.getAssigneeId();
+105:         Map<String, UserInfo> userIdToUserInfoMap = getUserIdToUserInfoMap(fromUserId, toUserId);
+106:         List<ExchangeUserRange> ranges = replaceRangeUser(fromUserId, toUserId, userIdToUserInfoMap, rangeUserExchange);
+107:
+108:         if (CollUtil.isNotEmpty(ranges)) {
+109:
+110:             getProcessPathService().updateRangeUserExchangeById(
+111:                     path.getId(), JSONObject.toJSONString(ranges, SerializerFeature.WriteMapNullValue));
+112:         }
+113:     }
+114:
+115:     /**
+116:      * 结束节点处理
+117:      *
+118:      * @return
+
+
+## C12: /Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/components/approval-process-temp/process.vue
+Lines 1-76
+1: <template>
+2:   <div class="process-wrap ks-column overflow-hidden">
+3:     <a-collapse v-model:activeKey="activeKey" ghost expand-icon-position="right" v-if="processId">
+4:       <a-collapse-panel key="1">
+5:         <template #header>
+6:           <div class="title">{{ $t('sys.edhr.flowPathInfo') }}</div>
+7:         </template>
+8:         <div class="rounded-8px bg-[#FAFAFA] px16px pt16px">
+9:           <a-descriptions
+10:             layout="vertical"
+11:             :colon="false"
+12:             :column="2"
+13:             :label-style="{ color: '#737E87' }"
+14:             :content-style="{ color: '#252525' }"
+15:           >
+16:             <a-descriptions-item :label="$t('sys.edhr.flowPathName')">
+17:               {{ processInfo.name_ }}
+18:             </a-descriptions-item>
+19:             <a-descriptions-item :label="$t('sys.edhr.field.createTime')">
+20:               {{ processInfo.create_time_ }}
+21:             </a-descriptions-item>
+22:             <a-descriptions-item :label="$t('sys.edhr.flowPathDesc')">
+23:               {{ processInfo.description_ }}
+24:             </a-descriptions-item>
+25:           </a-descriptions>
+26:         </div>
+27:       </a-collapse-panel>
+28:     </a-collapse>
+29:     <div class="title px16px py12px">{{ $t('sys.edhr.flowPath') }}</div>
+30:     <div class="ks-col overflow-hidden">
+31:       <ProcessPath
+32:         :ofInstId="instId"
+33:         modelKey="gct_edhr_instance"
+34:         :api="getProcessPathFindAllByProcessInstanceId"
+35:       />
+36:     </div>
+37:   </div>
+38: </template>
+39: <script setup lang="ts">
+40:   import ProcessPath from '@/components/BpmnRuntime/form/index.vue';
+41:   import { getProcessPathFindAllByProcessInstanceId } from '@/apis/gct-apaas/ProcessPathController';
+42:   import { ref, watch } from 'vue';
+43:   import { getModelComprehensiveBizServiceByModelCategoryByModelKeyByBsKey } from '/@/apis/gct-apaas/ModelComprehensiveController';
+44:
+45:   const props = defineProps<{
+46:     instId: string;
+47:     processId: string;
+48:   }>();
+49:
+50:   const activeKey = ref('1');
+51:   const processInfo = ref<any>({});
+52:
+53:   watch(
+54:     () => props.processId,
+55:     (id) => {
+56:       if (id) getProcessInfo();
+57:     },
+58:     {
+59:       immediate: true,
+60:     },
+61:   );
+62:
+63:   async function getProcessInfo() {
+64:     const res: any = await getModelComprehensiveBizServiceByModelCategoryByModelKeyByBsKey(
+65:       {
+66:         modelKey: 'em_edhr_summary_process',
+67:         bsKey: 'getById',
+68:         modelCategory: 'entity',
+69:       },
+70:       { id: props.processId },
+71:     );
+72:     processInfo.value = res?.data || {};
+73:   }
+74: </script>
+75: <style lang="less" scoped>
+76:   .process-wrap {
+
+
+## C13: /Users/ivenwang/Documents/iven space/paas-main-front/src/apis/gct-apaas/ProcessPathController.ts
+Lines 1-55
+1: import { defHttp } from '@/utils/http/axios';
+2: import { ResponseEntityProcessPathDefRelationResponse } from './model/index';
+3:
+4: /**
+5:  * 根据表单实例id查询已完成的审批节点
+6:  * import { getProcessPathFindAllByOfInstanceId } from "/@/apis/gct-apaas/ProcessPathController"
+7:  */
+8: export interface getProcessPathFindAllByOfInstanceIdQueryInterface {
+9:   ofInstanceId: string; // ofInstanceId
+10: }
+11: export async function getProcessPathFindAllByOfInstanceId(params: getProcessPathFindAllByOfInstanceIdQueryInterface = {}, config = {}): Promise<ResponseEntityProcessPathDefRelationResponse['data']> {
+12:   return defHttp.get(
+13:     {
+14:       url: `/gct-apaas/api/process-path/findAllByOfInstanceId`,
+15:       params,
+16:     },
+17:     {
+18:       joinTenantIdToHeader: true,
+19:       ...config,
+20:     },
+21:   );
+22: }
+23:
+24: /**
+25:  * 根据表单实例id查询已完成的审批节点
+26:  * import { getProcessPathFindAllByProcessInstanceId } from "/@/apis/gct-apaas/ProcessPathController"
+27:  */
+28: export interface getProcessPathFindAllByProcessInstanceIdQueryInterface {
+29:   processInstanceId: string; // processInstanceId
+30: }
+31: export async function getProcessPathFindAllByProcessInstanceId(params: getProcessPathFindAllByProcessInstanceIdQueryInterface = {}, config = {}): Promise<ResponseEntityProcessPathDefRelationResponse['data']> {
+32:   return defHttp.get(
+33:     {
+34:       url: `/gct-apaas/api/process-path/findAllByProcessInstanceId`,
+35:       params,
+36:     },
+37:     {
+38:       joinTenantIdToHeader: true,
+39:       ...config,
+40:     },
+41:   );
+42: }
+43:
+44: /**
+45:  * 根据文控模板版本id查询已完成的审批节点
+46:  * import { getProcessPathFindAllByTmplId } from "/@/apis/gct-apaas/ProcessPathController"
+47:  */
+48: export interface getProcessPathFindAllByTmplIdQueryInterface {
+49:   tmplId: string; // 文控模板版本id,格式：baseId:id
+50: }
+51: export async function getProcessPathFindAllByTmplId(params: getProcessPathFindAllByTmplIdQueryInterface = {}, config = {}): Promise<ResponseEntityProcessPathDefRelationResponse['data']> {
+52:   return defHttp.get(
+53:     {
+54:       url: `/gct-apaas/api/process-path/findAllByTmplId`,
+55:       params,
+
+
+## C14: /Users/ivenwang/Documents/iven space/paas-main-front/src/apis/gct-apaas/ProcessApprovalLogController.ts
+Lines 1-85
+1: import { defHttp } from '@/utils/http/axios';
+2: import { ProcessApprovalLogRequest, ResponseEntitystring, ResponseEntityProcessHistoryResult, ResponseEntityProcessApprovalLogResponse, ResponseEntityListProcessApprovalLogResponse, ResponseEntityPageBaseProcessApprovalLogResponse } from './model/index';
+3:
+4: /**
+5:  * 保存
+6:  * import { postProcessApprovalLog } from "/@/apis/gct-apaas/ProcessApprovalLogController"
+7:  */
+8: export async function postProcessApprovalLog(data: ProcessApprovalLogRequest, config = {}): Promise<ResponseEntitystring['data']> {
+9:   return defHttp.post(
+10:     {
+11:       url: `/gct-apaas/api/process-approval-log`,
+12:       data,
+13:     },
+14:     {
+15:       joinTenantIdToHeader: true,
+16:       ...config,
+17:     },
+18:   );
+19: }
+20:
+21: /**
+22:  * 删除
+23:  * import { deleteProcessApprovalLog } from "/@/apis/gct-apaas/ProcessApprovalLogController"
+24:  */
+25: export interface deleteProcessApprovalLogQueryInterface {
+26:   ids: string; // 删除的id，多个按','分割
+27: }
+28: export async function deleteProcessApprovalLog(params: deleteProcessApprovalLogQueryInterface = {}, config = {}): Promise<ResponseEntitystring['data']> {
+29:   return defHttp.delete(
+30:     {
+31:       url: `/gct-apaas/api/process-approval-log`,
+32:       params,
+33:     },
+34:     {
+35:       joinTenantIdToHeader: true,
+36:       joinParamsToUrl: true,
+37:       ...config,
+38:     },
+39:   );
+40: }
+41:
+42: /**
+43:  * 详情
+44:  * import { getProcessApprovalLogApproveHistory } from "/@/apis/gct-apaas/ProcessApprovalLogController"
+45:  */
+46: export interface getProcessApprovalLogApproveHistoryQueryInterface {
+47:   id_: string; // id_
+48: }
+49: export async function getProcessApprovalLogApproveHistory(params: getProcessApprovalLogApproveHistoryQueryInterface = {}, config = {}): Promise<ResponseEntityProcessHistoryResult['data']> {
+50:   return defHttp.get(
+51:     {
+52:       url: `/gct-apaas/api/process-approval-log/approveHistory`,
+53:       params,
+54:     },
+55:     {
+56:       joinTenantIdToHeader: true,
+57:       ...config,
+58:     },
+59:   );
+60: }
+61:
+62: /**
+63:  * 详情
+64:  * import { getProcessApprovalLogInfo } from "/@/apis/gct-apaas/ProcessApprovalLogController"
+65:  */
+66: export interface getProcessApprovalLogInfoQueryInterface {
+67:   id: string; // id
+68: }
+69: export async function getProcessApprovalLogInfo(params: getProcessApprovalLogInfoQueryInterface = {}, config = {}): Promise<ResponseEntityProcessApprovalLogResponse['data']> {
+70:   return defHttp.get(
+71:     {
+72:       url: `/gct-apaas/api/process-approval-log/info`,
+73:       params,
+74:     },
+75:     {
+76:       joinTenantIdToHeader: true,
+77:       ...config,
+78:     },
+79:   );
+80: }
+81:
+82: /**
+83:  * 列表
+84:  * import { getProcessApprovalLogList } from "/@/apis/gct-apaas/ProcessApprovalLogController"
+85:  */
+
+
+## C15: /Users/ivenwang/Documents/iven space/paas-main-front/src/locales/lang/zh-CN/sys/bpmn.ts
+Lines 25-42
+25:     fieldValue: '字段值',
+26:   },
+27:   timeOperator: {
+28:     ge: '晚于',
+29:     le: '早于',
+30:   },
+31:   button: {
+32:     Save: '保存',
+33:     Submit: '提交',
+34:     Approve: '审核',
+35:     Return: '退回',
+36:     Reassign: '转办',
+37:     Qualified: '合格',
+38:     Unqualified: '不合格',
+39:   },
+40:   logicalOperators: {
+41:     or: '或',
+42:     and: '且',
+
+
+## O01: /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/contract/RecordControlWorkflowWithdrawalPort.java
+Lines 1-14
+1: package com.zencas.edhr.workflow.contract;
+2:
+3: import com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.WithdrawCommand;
+4: import com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.WorkflowResultEvent;
+5:
+6: /**
+7:  * Restricted withdrawal capability called by the record-control application service.
+8:  * The record-control domain owns the external endpoint and business-state transaction;
+9:  * the workflow domain owns withdrawal eligibility and pending-task invalidation.
+10:  */
+11: public interface RecordControlWorkflowWithdrawalPort {
+12:
+13:     WorkflowResultEvent withdraw(WithdrawCommand command);
+14: }
+
+
+## O02: /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlTaskActionService.java
+Lines 20-45
+20: /** Record-control adapter for shared-terminal signing before delegating to the public workflow engine. */
+21: @Service
+22: @RequiredArgsConstructor
+23: public class RecordControlTaskActionService {
+24:     private static final String TENANT = "default";
+25:     private static final Set<String> ACTIONS = Set.of("APPROVE", "REJECT");
+26:
+27:     private final JdbcTemplate jdbc;
+28:     private final ObjectMapper mapper;
+29:     private final ExecutionAccess executionAccess;
+30:     private final WorkflowEngine workflowEngine;
+31:     private final RecordControlWorkflowResultHandler resultHandler;
+32:
+33:     public record TaskActionCommand(String opinion, String account, String password) {}
+34:
+35:     @Transactional
+36:     public Map<String, Object> complete(String taskId, String requestedAction, TaskActionCommand command) {
+37:         long parsedTaskId = parseId(taskId, "审批任务编号不正确");
+38:         String action = requestedAction == null ? "" : requestedAction.trim().toUpperCase(Locale.ROOT);
+39:         if (!ACTIONS.contains(action)) throw invalid("审批动作不正确");
+40:         if (command == null) throw invalid("审批信息不完整");
+41:         String opinion = command.opinion() == null ? "" : command.opinion().trim();
+42:         if ("REJECT".equals(action) && opinion.isBlank()) throw invalid("审批退回时必须填写退回原因");
+43:
+44:         var taskRows = jdbc.queryForList("SELECT instance_id FROM workflow_task WHERE id=?", parsedTaskId);
+45:         if (taskRows.isEmpty()) throw invalid("审批任务不存在");
+
+
+## O02: /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlTaskActionService.java
+Lines 60-80
+60:                 .put("action", action)
+61:                 .put("opinion", opinion);
+62:         long signatureId = parseId(executionAccess.signTarget("RECORD_CONTROL_REQUEST",
+63:                 String.valueOf(request.get("id")), "workflow-task-" + taskId, action, evidence, signer), "签署记录编号不正确");
+64:
+65:         // Workflow remains authoritative for task ownership, candidate checks and routing.
+66:         WorkflowResultEvent result = workflowEngine.completeRecordControlTask(
+67:                 parsedTaskId, action, opinion, signer.id(), signatureId);
+68:         if (result != null) resultHandler.handle(result);
+69:         return Map.of("taskId", taskId, "action", action, "signerId", signer.id(), "result", "ok");
+70:     }
+71:
+72:     private long parseId(String value, String message) {
+73:         try { return Long.parseLong(value); }
+74:         catch (RuntimeException exception) { throw invalid(message); }
+75:     }
+76:
+77:     private BusinessException invalid(String message) {
+78:         return new BusinessException(ErrorCode.GENERAL_001, message);
+79:     }
+80: }
+
+
+## O03: /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+Lines 727-779
+727:     /** Transfer the current responsibility while retaining the first available resolution evidence. */
+728:     @Transactional
+729:     public void transferTask(Long taskId, String newAssigneeId, String operatorId, String reason) {
+730:         assertNotDhrTask(taskId);
+731:         WorkflowTask taskRef = taskRepository.findById(taskId)
+732:                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_006));
+733:         WorkflowInstance instance = lockInstance(taskRef.getInstanceId());
+734:         if (isRecordControlInstance(instance)) {
+735:             throw new BusinessException(ErrorCode.WF_007, "记录变更/作废任务暂不支持通过通用入口转办");
+736:         }
+737:         if (!"RUNNING".equals(instance.getStatus())) {
+738:             throw new BusinessException(ErrorCode.WF_007, "流程实例已结束");
+739:         }
+740:         WorkflowTask task = lockTask(taskId);
+741:         if (!"PENDING".equals(task.getStatus()) && !"PROCESSING".equals(task.getStatus())) {
+742:             throw new BusinessException(ErrorCode.WF_007);
+743:         }
+744:         if (!isTaskOperator(task, operatorId)) {
+745:             throw new BusinessException(ErrorCode.WF_007, "当前用户不是该任务的待处理人");
+746:         }
+747:         UserAccount target;
+748:         try {
+749:             target = new TenantTransferTargets(userAccountRepository).require(resolveInstanceTenant(instance), operatorId, newAssigneeId);
+750:         } catch (IllegalArgumentException exception) {
+751:             throw new BusinessException(ErrorCode.WF_007, exception.getMessage());
+752:         }
+753:         if (reason == null || reason.isBlank()) throw new BusinessException(ErrorCode.WF_007, "请填写转办原因");
+754:         if (reason.strip().length() > 500) throw new BusinessException(ErrorCode.WF_007, "转办原因不能超过500个字符");
+755:         newAssigneeId = target.getId().toString();
+756:         String nextSnapshot = singleUserSnapshot(newAssigneeId, task);
+757:         String previousSnapshot = task.getCandidateSnapshot();
+758:         LocalDateTime transferredAt = LocalDateTime.now();
+759:         String previousAssignee = task.getAssigneeId() == null ? operatorId : task.getAssigneeId();
+760:         task.setOriginalAssigneeId(previousAssignee);
+761:         task.setAssigneeId(newAssigneeId);
+762:         task.setCandidateSnapshot(nextSnapshot);
+763:         task.setStatus("PENDING");
+764:         task.setCompletedAt(null);
+765:         taskRepository.save(task);
+766:
+767:         logAction(task.getInstanceId(), task.getId(), task.getNodeId().toString(),
+768:                 "TASK_TRANSFER", operatorId, "转办: " + previousAssignee + " -> " + newAssigneeId + "；原因: " + reason.strip());
+769:         auditEventRepository.save(AuditEvent.builder().id(idGenerator.nextId())
+770:                 .entityType("WORKFLOW_TASK").entityId(taskId.toString()).action("TRANSFER")
+771:                 .contentBefore(objectMapper.createObjectNode().put("assigneeId", previousAssignee).put("candidateSnapshot", previousSnapshot).toString())
+772:                 .contentAfter(objectMapper.createObjectNode().put("instanceId", task.getInstanceId().toString())
+773:                         .put("nodeId", task.getNodeId().toString()).put("assigneeId", newAssigneeId)
+774:                         .put("assigneeName", target.getDisplayName()).put("candidateSnapshot", nextSnapshot)
+775:                         .put("transferredAt", transferredAt.toString()).toString())
+776:                 .operatorId(operatorId).operatorName(AuditContext.getOperatorName()).operatorAccount(AuditContext.getOperatorAccount())
+777:                 .source(AuditContext.getSource()).moduleName("流程中心").menuName("任务处理").functionName("TRANSFER")
+778:                 .reason(reason.strip()).createdAt(transferredAt).build());
+779:     }
+
+
+## O04: /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowLogController.java
+Lines 15-73
+15: @RestController
+16: @RequestMapping("/api/v1/workflow/logs")
+17: @RequiredArgsConstructor
+18: public class WorkflowLogController {
+19:
+20:     private final WorkflowActionLogRepository workflowActionLogRepository;
+21:     private final com.zencas.edhr.workflow.engine.WorkflowEngine workflowEngine;
+22:
+23:     @GetMapping
+24:     public ApiResponse<PageResult<WorkflowActionLog>> list(
+25:             @RequestParam(defaultValue = "1") int page,
+26:             @RequestParam(defaultValue = "20") int size,
+27:             @RequestParam(defaultValue = "createdAt") String sort,
+28:             @RequestParam(defaultValue = "desc") String order) {
+29:         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+30:         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(direction, sort));
+31:         Page<WorkflowActionLog> result = workflowActionLogRepository.findGeneric(pageable);
+32:         return ApiResponse.success(PageResult.of(
+33:                 result.getContent(), page, size, result.getTotalElements()));
+34:     }
+35:
+36:     @GetMapping("/{id}")
+37:     public ApiResponse<WorkflowActionLog> getById(@PathVariable Long id) {
+38:         return workflowActionLogRepository.findById(id)
+39:                 .map(entity -> { protect(entity); return ApiResponse.success(entity); })
+40:                 .orElseThrow(() -> new com.zencas.edhr.common.exception.BusinessException(
+41:                         com.zencas.edhr.common.exception.ErrorCode.GENERAL_001, "记录不存在"));
+42:     }
+43:
+44:     @PostMapping
+45:     @org.springframework.security.access.prepost.PreAuthorize("hasAuthority('workflow.intervene')")
+46:     public ApiResponse<WorkflowActionLog> create(@RequestBody WorkflowActionLog entity) {
+47:         protect(entity);
+48:         if (entity.getId() != null) workflowActionLogRepository.findById(entity.getId()).ifPresent(this::protect);
+49:         return ApiResponse.success(workflowActionLogRepository.save(entity));
+50:     }
+51:
+52:     @PutMapping("/{id}")
+53:     @org.springframework.security.access.prepost.PreAuthorize("hasAuthority('workflow.intervene')")
+54:     public ApiResponse<WorkflowActionLog> update(@PathVariable Long id, @RequestBody WorkflowActionLog entity) {
+55:         protect(entity);
+56:         workflowActionLogRepository.findById(id).ifPresent(this::protect);
+57:         entity.setId(id);
+58:         return ApiResponse.success(workflowActionLogRepository.save(entity));
+59:     }
+60:
+61:     @DeleteMapping("/{id}")
+62:     @org.springframework.security.access.prepost.PreAuthorize("hasAuthority('workflow.intervene')")
+63:     public ApiResponse<Void> delete(@PathVariable Long id) {
+64:         workflowActionLogRepository.findById(id).ifPresent(this::protect);
+65:         workflowActionLogRepository.deleteById(id);
+66:         return ApiResponse.success(null);
+67:     }
+68:
+69:     private void protect(WorkflowActionLog log) {
+70:         workflowEngine.assertGenericInstanceAccessAllowed(log.getInstanceId());
+71:         workflowEngine.assertGenericTaskIfPresent(log.getTaskId());
+72:     }
+73: }
+
+
+## O05: /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/entity/WorkflowIntervention.java
+Lines 1-23
+1: package com.zencas.edhr.workflow.entity;
+2:
+3: import jakarta.persistence.*;
+4: import lombok.*;
+5: import java.time.LocalDateTime;
+6:
+7: @Entity @Table(name = "workflow_intervention")
+8: @Data @NoArgsConstructor @AllArgsConstructor @Builder
+9: public class WorkflowIntervention {
+10:     @Id private Long id;
+11:     @Column(name = "instance_id")
+12:     private Long instanceId;
+13:     @Column(name = "action")
+14:     private String action;
+15:     @Column(name = "operator_id")
+16:     private String operatorId;
+17:     @Column(name = "reason", columnDefinition = "TEXT")
+18:     private String reason;
+19:     @Column(name = "signature_id")
+20:     private Long signatureId;
+21:     @Column(name = "created_at") private LocalDateTime createdAt;
+22:     @PrePersist void prePersist() { if (createdAt == null) createdAt = LocalDateTime.now(); }
+23: }
+
+
+## O06: /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/pages/workflow-center/InstanceDetail.tsx
+Lines 12-61
+12:   id: string;
+13:   type: string;
+14:   name: string;
+15:   status: string;
+16: }
+17:
+18: interface InstanceDetail {
+19:   id: number;
+20:   templateName: string;
+21:   businessKey: string;
+22:   status: string;
+23:   startUserName: string;
+24:   startTime: string;
+25:   endTime: string;
+26:   nodes: WorkflowNode[];
+27: }
+28:
+29: interface InstanceLog {
+30:   id: number;
+31:   nodeName: string;
+32:   action: string;
+33:   operatorName: string;
+34:   comment: string;
+35:   createdAt: string;
+36: }
+37:
+38: export default function InstanceDetail() {
+39:   const { id } = useParams<{ id: string }>();
+40:
+41:   const { data: instance, isLoading, isError } = useQuery({
+42:     queryKey: ['workflow-instance', id],
+43:     queryFn: async () => {
+44:       const res = await getInstance(id!);
+45:       return res.data.data as InstanceDetail;
+46:     },
+47:     enabled: !!id,
+48:   });
+49:
+50:   const { data: logs } = useQuery({
+51:     queryKey: ['workflow-instance-logs', id],
+52:     queryFn: async () => {
+53:       const res = await getInstanceLogs(id!, { size: 100 });
+54:       const body = res.data.data as { content: InstanceLog[] } | InstanceLog[];
+55:       return Array.isArray(body) ? body : body.content ?? [];
+56:     },
+57:     enabled: !!id,
+58:   });
+59:
+60:   if (isLoading) return <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}><CircularProgress /></Box>;
+61:   if (isError || !instance) return <Box sx={{ textAlign: 'center', py: 4 }}>加载失败或实例不存在</Box>;
+
+
+## O06: /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/pages/workflow-center/InstanceDetail.tsx
+Lines 70-101
+70:       {/* Basic Info */}
+71:       <Paper sx={{ p: 2, mb: 3 }}>
+72:         <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+73:           <Box>
+74:             <Typography variant="body2" color="text.secondary">模板名称</Typography>
+75:             <Typography variant="body1">{instance.templateName}</Typography>
+76:           </Box>
+77:           <Box>
+78:             <Typography variant="body2" color="text.secondary">业务编号</Typography>
+79:             <Typography variant="body1">{instance.businessKey}</Typography>
+80:           </Box>
+81:           <Box>
+82:             <Typography variant="body2" color="text.secondary">状态</Typography>
+83:             <StatusBadge
+84:                 label={INSTANCE_STATUS_MAP[instance.status as keyof typeof INSTANCE_STATUS_MAP]?.label || instance.status}
+85:                 color={INSTANCE_STATUS_MAP[instance.status as keyof typeof INSTANCE_STATUS_MAP]?.color || 'default'}
+86:               />
+87:           </Box>
+88:           <Box>
+89:             <Typography variant="body2" color="text.secondary">发起人</Typography>
+90:             <Typography variant="body1">{instance.startUserName}</Typography>
+91:           </Box>
+92:           <Box>
+93:             <Typography variant="body2" color="text.secondary">开始时间</Typography>
+94:             <Typography variant="body1">{instance.startTime}</Typography>
+95:           </Box>
+96:           <Box>
+97:             <Typography variant="body2" color="text.secondary">结束时间</Typography>
+98:             <Typography variant="body1">{instance.endTime || '-'}</Typography>
+99:           </Box>
+100:         </Box>
+101:       </Paper>
+
+
+## O07: /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java
+Lines 43-87
+43:
+44:     @GetMapping
+45:     public ApiResponse<PageResult<WorkflowInstance>> list(
+46:             @RequestParam(defaultValue = "1") int page,
+47:             @RequestParam(defaultValue = "20") int size,
+48:             @RequestParam(defaultValue = "startedAt") String sort,
+49:             @RequestParam(defaultValue = "desc") String order) {
+50:         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
+51:         PageRequest pageable = PageRequest.of(page - 1, size, Sort.by(direction, sort));
+52:         Page<WorkflowInstance> result = workflowInstanceRepository.findGeneric(pageable);
+53:         return ApiResponse.success(PageResult.of(
+54:                 result.getContent(), page, size, result.getTotalElements()));
+55:     }
+56:
+57:     @GetMapping("/{id}")
+58:     public ApiResponse<WorkflowInstance> getById(@PathVariable Long id) {
+59:         workflowEngine.assertGenericInstanceAccessAllowed(id);
+60:         return workflowInstanceRepository.findById(id)
+61:                 .map(ApiResponse::success)
+62:                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
+63:     }
+64:
+65:     @PostMapping
+66:     @PreAuthorize("hasAuthority('workflow.intervene')")
+67:     public ApiResponse<WorkflowInstance> create(@RequestBody WorkflowInstance entity) {
+68:         protectControlled(entity);
+69:         return ApiResponse.success(workflowInstanceRepository.save(entity));
+70:     }
+71:
+72:     @PutMapping("/{id}")
+73:     @PreAuthorize("hasAuthority('workflow.intervene')")
+74:     public ApiResponse<WorkflowInstance> update(@PathVariable Long id, @RequestBody WorkflowInstance entity) {
+75:         workflowEngine.assertGenericInstanceAccessAllowed(id);
+76:         protectControlled(entity);
+77:         entity.setId(id);
+78:         return ApiResponse.success(workflowInstanceRepository.save(entity));
+79:     }
+80:
+81:     @DeleteMapping("/{id}")
+82:     @PreAuthorize("hasAuthority('workflow.intervene')")
+83:     public ApiResponse<Void> delete(@PathVariable Long id) {
+84:         workflowEngine.assertGenericInstanceAccessAllowed(id);
+85:         workflowInstanceRepository.deleteById(id);
+86:         return ApiResponse.success(null);
+87:     }
+
+
+## O07: /Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java
+Lines 94-135
+94:      */
+95:     @GetMapping("/{id}/graph")
+96:     public ApiResponse<GraphData> graph(@PathVariable Long id) {
+97:         workflowEngine.assertGenericInstanceAccessAllowed(id);
+98:         WorkflowInstance instance = workflowInstanceRepository.findById(id)
+99:                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_005));
+100:
+101:         // Get the version that was used when this instance was created
+102:         WorkflowDefinitionVersion version = versionRepository.findById(instance.getVersionId())
+103:                 .orElseThrow(() -> new BusinessException(ErrorCode.WF_010));
+104:
+105:         List<WorkflowNode> nodes = nodeRepository.findByVersionId(version.getId());
+106:         List<WorkflowEdge> edges = edgeRepository.findByVersionId(version.getId());
+107:
+108:         // Determine current node IDs from instance
+109:         Set<String> currentNodeIds = instance.getCurrentNodeIds() == null ? Set.of()
+110:                 : Arrays.stream(instance.getCurrentNodeIds().split(","))
+111:                         .map(String::trim).collect(Collectors.toSet());
+112:
+113:         // Build node data with highlight info
+114:         List<GraphNode> graphNodes = nodes.stream()
+115:                 .map(n -> {
+116:                     boolean isCurrent = currentNodeIds.contains(n.getId().toString());
+117:                     return new GraphNode(
+118:                             n.getId(), n.getVersionId(), n.getNodeType(), n.getName(),
+119:                             n.getPositionX(), n.getPositionY(), n.getProperties(),
+120:                             n.getSortOrder(), isCurrent);
+121:                 })
+122:                 .toList();
+123:
+124:         List<GraphEdge> graphEdges = edges.stream()
+125:                 .map(e -> new GraphEdge(
+126:                         e.getId(), e.getVersionId(), e.getSourceNodeId(),
+127:                         e.getTargetNodeId(), e.getLabel(), e.getConditionExpression()))
+128:                 .toList();
+129:
+130:         GraphData data = new GraphData(
+131:                 instance.getId(), instance.getStatus(),
+132:                 version.getVersionNumber(), graphNodes, graphEdges);
+133:         return ApiResponse.success(data);
+134:     }
+135:
