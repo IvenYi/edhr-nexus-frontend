@@ -1,14 +1,14 @@
 decisionPackage:
   id: DEC-PACKAGE-20261029-CROWN-DHR-CHANGE-RESEARCH
-  scope: 同一研究切片的连续澄清；补充活动申请阻断DHR收尾及作废默认展示规则，复核冠骋入口状态，不含产品实现
+  scope: 同一研究切片继续确认DHR审批中先人工退回再申请表单变更作废，盘点审核封存及DHR变更实际能力，不含新业务实现
   knowledgeBaselineVersion: 0.3.25
   contractBaseline:
-    sourceCommit: 2453124919a1532fdd9bbde292e2d7dbb92e04b2
+    sourceCommit: a4cb9a9fa4f3f88ed801d47463158495990b0308
     targetBranch: edhr-dev
     targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
-    contractReadCommit: 2453124919a1532fdd9bbde292e2d7dbb92e04b2
+    contractReadCommit: a4cb9a9fa4f3f88ed801d47463158495990b0308
     uncommittedContractPaths: []
-  summary: 保留原有效修订并暂停有活动变更或作废申请的DHR汇总提交及批准；作废默认隐藏但可低频查看，打印留待专门设计；不把竞品页面限制当成我方新增入口禁令
+  summary: 用户新确认DHR审批中禁止新发起相关表单变更作废，先人工退回；既有在审申请阻断DHR收尾及作废隐藏规则保留，封存和入口盘点不自动新增政策
   confirmed:
     concepts: []
     relationships: []
@@ -52,6 +52,19 @@ decisionPackage:
           access: 不显眼但可发现的查看作废表单入口
           preserve: [原实例, 历史, 冻结证据, 完整性检查]
         sourceReferences: [本轮用户第2项批注]
+      - id: clarification.dhr-review-blocks-new-record-control
+        name: DHR审批中先人工退回再申请表单变更或作废
+        status: specified
+        trigger: 用户发起相关表单变更或作废
+        condition:
+          all:
+            - relatedDhr: 正在审批
+        result:
+          type: block-new-request
+          actions: [新发起表单变更, 新发起表单作废]
+          nextAction: 先由有权人员通过DHR专属入口人工退回，再按原资格发起
+          entryBoundary: 包含按流水号和未来DHR目录入口，最终提交服务复核
+        sourceReferences: [本轮用户明确要求也按冠骋DHR审批中先禁止发起需要修改先退回]
     executionContracts: []
   inferred:
     - id: inference.crown-dhr-change-research-next-slice
@@ -65,6 +78,11 @@ decisionPackage:
       scope: 仅替代把作废记录理解为必须常规展开显示的展示要求
       retainedScope: 全量证据归集、冻结、历史保留、可达性、核查、权限和其他状态记录规则保持
       sourceReferences: [本轮用户第2项批注, clarification-round.md]
+    - decisionStatementId: DEC-0068-14
+      supersededStatementIds: [DEC-0068-13]
+      scope: 仅替代其中我方DHR审批期间发起资格仍未确认的说明
+      retainedScope: 已有活动申请暂缓DHR提交批准、原有效修订保留、申请结束按结果重核及不自动退回保持
+      sourceReferences: [本轮用户原话, capability-inventory.md]
   impactAnalysis:
     level: L1
     directImpacts:
@@ -77,6 +95,9 @@ decisionPackage:
       - area: dhr-policy-clarification
         change: 活动申请阻断相关DHR汇总提交和批准，作废常规视图隐藏但保留完整证据
         evidenceReferences: [clarification-round.md]
+      - area: record-control-request-eligibility
+        change: 新确认DHR审批中禁止发起关联表单变更或作废，须覆盖服务端及全部入口，不减少读取权限
+        evidenceReferences: [capability-inventory.md, gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java]
     transitiveImpacts: []
     potentialImpacts:
       - area: dhr-and-projection
@@ -96,6 +117,7 @@ decisionPackage:
       - 未取得冠骋跨DHR主动影响通知、不可变汇总修订与旧批准保留的完整证据
       - 冠骋DHR专用入口限制不能证明按流水号入口或所有后端调用均强制同等限制
       - 打印过滤及历史批准版输出的范围与标识明确留待打印设计，不在本轮改现行导出契约
+      - 封存目前只有产品目标及通用状态声明，未找到实际生产DHR封存执行闭环，时点责任签署解封和后续更正需专门设计
   extensionStrategy:
     selectedPaths: [product-core, transaction-orchestration]
     rationale: 仅为下一实现切片建议；真实来源结果由记录控制域负责，DHR和投影在自身领域消费，复用已有编排
@@ -140,18 +162,29 @@ decisionPackage:
       when: 本轮仅同步用户确认的规则文本
       then: 待审不当成已生效，DHR收尾仍暂缓；作废隐藏不删除或绕过核查，打印另行设计
       evidenceRequirements: [正式知识校验, 原话与声明及替代范围独立复核]
+    - id: scenario.dhr-review-blocks-new-record-control-policy
+      given: 相关DHR已经进入审批，用户可能从流水号或DHR目录发起
+      when: 确认新变更或作废申请
+      then: 需要先人工退回DHR，不能绕入口提交；当前只同步政策，后续须补真实服务和并发测试
+      evidenceRequirements: [本轮知识一致性检查, 后续服务端全入口及并发验收]
 confirmedNotificationReply:
   provenance: user-confirmed
   exactReply: 站内提醒当前审批人和该版本汇总提交人（推荐）
   interpretation: 站内渠道及上述两类接收人已确认；保留DEC-0068真实生效、人工退回、新版本重审和旧批准保留，不增加历史批准人或邮件要求
   modelingBoundary: 本包clarification条目只表达交接语义，优先补充既有DEC-0068，不要求伪造可执行规则、事实或运行契约
 gateStatus:
-  ontology: updated-see-clarification-ontology-result.yaml
-  quality: passed-see-clarification-quality-result.yaml
+  ontology: updated-see-capability-ontology-result.yaml
+  quality: passed-see-capability-quality-result.yaml
 clarificationRound:
   priorResearchCommit: 2453124919a1532fdd9bbde292e2d7dbb92e04b2
   sourceReferences: [clarification-round.md, clarification-source-manifest.json]
   pendingGuardExactReply: 原版可查看，暂缓 DHR 汇总提交和审批通过，等申请结束（推荐）
   obsoleteViewExactReply: 保留，但我觉得不应该常规展示出来，而是可以通过某个按钮触发查看作废表单的视图，但这个按钮并不需要放在显眼的位置。然后我们打印的时候，应该也是需要过滤掉作废表单的，等做打印的时候再说吧
   deferredDirections: [打印过滤作废留待打印设计，不改当前打印或ZIP实现]
-  notConfirmed: [我方DHR审批中是否禁止发起表单变更，不能由冠骋行为直接代定]
+  notConfirmed: []
+capabilityRound:
+  sourceCommit: a4cb9a9fa4f3f88ed801d47463158495990b0308
+  userExactReply: 那我们也按冠骋这样，DHR审批中先禁止发起表单变更或作废，需要修改就先退回
+  researchQuestions: [当前是否有封存操作和规划, 当前DHR审核实现程度, 冠骋DHR变更是否对应我方缺口]
+  evidenceReferences: [capability-inventory.md, capability-source-manifest.json, capability-tests/manifest.json]
+  deferredDirections: [封存和放行的具体生命周期及后续变更机制未新增确认, 批次或DHR目录变更入口仍按既有范围延期]

@@ -1,0 +1,532 @@
+{
+  "reviewedAt": "2026-10-29T12:21:32.968534+00:00",
+  "reviewer": "/root/dhr_capability_quality",
+  "scope": "L1 research and knowledge update only; no product implementation or merged target candidate",
+  "headCommit": "a4cb9a9fa4f3f88ed801d47463158495990b0308",
+  "targetCommit": "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+  "contractDeltaHeadToTarget": "",
+  "contractHashes": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "13dc7cdacea0b1bb0aef2abb268781f9c69584acd4879b204d2b7fd81a2927fc"
+    },
+    {
+      "path": "codeplzreadme.md",
+      "sha256": "7a1be8efffec596b034335058dca2860346d256622f899c8dac97c5172dd6df2"
+    },
+    {
+      "path": "docs/agents/quality-verifier.md",
+      "sha256": "6b3de9323924fb4ba5ae87be76c5136d28e754810c46b22b8e3d1cdd6c2f826f"
+    },
+    {
+      "path": "docs/agents/agent-handoff-contract.md",
+      "sha256": "3439a35dd1baa77ac723f1b5afa237a338d56e31386f06b02b4aacfd754e3a12"
+    }
+  ],
+  "sourceManifestChecks": [
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "bytes": 33825,
+      "sha256": "463f68177e64d9c69a4d02a2a5b165ac9cfcb5bb621ef900bffb9d4a8b7fb89e",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "bytes": 44291,
+      "sha256": "362f27fd9c84fccda347a312916ce790f32a6b99c1cf0ba53038c14ee4d03b13",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "bytes": 15710,
+      "sha256": "42cf405959931f1ab74b046a32267cf4041723257dfd7a7f4d9a9bbcf30fb932",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrArchiveService.java",
+      "bytes": 24562,
+      "sha256": "bf1d938746ebd3d4c4df7f94b54c0892647639cedefcc85633d6fa28cf402e08",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrReviewController.java",
+      "bytes": 3309,
+      "sha256": "37f6af83e063e1593e15ac28e021ec719888c21fe45d314916c9f20975e2417e",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrArchiveController.java",
+      "bytes": 2401,
+      "sha256": "61d4e871153607b9af9bdc26882418d77fe8599e93b04c5e09be546872bd9108",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrSummaryController.java",
+      "bytes": 3419,
+      "sha256": "5ce62999330203581417a182a68621658ade5a8f5f264293d9e810e394c8292f",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/DhrStatusMachine.java",
+      "bytes": 421,
+      "sha256": "44f5a6b87e486e41871b7b234688ced01f2fa4fdb0c94a40b34c68c5b82b697c",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/StateMachineService.java",
+      "bytes": 2617,
+      "sha256": "3f61fc4f3eb3cff4fd572037f33e5dec4f3629da2921f9b128e84b3c430ecec8",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "bytes": 50659,
+      "sha256": "6f5d4180f3ae60758d8c0b84aee308105d9fd5eb2e6cd0582da5b5c77268f151",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "bytes": 35398,
+      "sha256": "98965b422386c056caf5c85e8a613c50f6aab52da5d246898c0f175b2efc48b2",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/controller/RecordControlController.java",
+      "bytes": 5048,
+      "sha256": "7bac9eda8269697a02c172877a47d96666159cbadf89422196dec58c20632d8b",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "bytes": 16015,
+      "sha256": "a4a20170d02d2baf2f2bd4520acb524d7a691fece2b104889cb31af74099300b",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx",
+      "bytes": 106046,
+      "sha256": "bf9802a89f0b4a08c370ddf4514855023a6ea6ce6b791650f60009dac34de579",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx",
+      "bytes": 38565,
+      "sha256": "b8bea9ea921aac1de288aa2eef4a40836007a6dbfa9039dd85f54e8c3a05de8e",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/pages/record-control/RecordChangePage.tsx",
+      "bytes": 18252,
+      "sha256": "061d4feb16b7f4f357f89105b4e4a4b943f4c738e75ffbcc47495ba8b74c5b2e",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/api/dhr-workbenches.ts",
+      "bytes": 4194,
+      "sha256": "a713994ffa638d38253718c3f40f22ed5f57379adfbac62c13044d85fab117a0",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/frontend/src/router/index.tsx",
+      "bytes": 13058,
+      "sha256": "775c4fc828751e1da55e5383a2e3f63e37a6f5c00ed885d454081ecec10263f2",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/docs/prd/edhr-mvp-prd.md",
+      "bytes": 58708,
+      "sha256": "8bd4bc6e18464fe14944eb58a5c949b2364a5aebb3b329c05d05d8d1a0cf79c7",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/docs/prd/edhr-commercial-prd.md",
+      "bytes": 51025,
+      "sha256": "43508e90b61e697eb4f27f97d6c80c5ba5c4d4c5739c246e1ea87e7895255cc4",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md",
+      "bytes": 26906,
+      "sha256": "2a92e375a5e190639ac1a176882b3fcfa00d0eb95059ef11c68324022f9ae090",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/record-change/edhr-change.vue",
+      "bytes": 198,
+      "sha256": "0c181bf0046beeb8269534b5f4993bf2ebaca57e4213a2a4ee9850e7535f3efb",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/record-change/record-change-container.vue",
+      "bytes": 3736,
+      "sha256": "29d38a0bdc9f3bab5183230402497a526f45f03e405700fd1cb03c8358e57121",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/online-form/src/views/integration/apaas_ebr/hooks/useEbrWikiFactory.ts",
+      "bytes": 8509,
+      "sha256": "7fec1c9c4cd3906e4bb9b69150e1207d5e0199c3e771e2c3b92d0279903dd0d7",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/online-form/src/views/integration/apaas_ebr/utils/instance-status/useInstanceStatus.ts",
+      "bytes": 8325,
+      "sha256": "4ded4c26c0371c61881385b808fbd837c77aa2a2611c3b7a42940b44c6dc6349",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/edhr/biz/UpdateEdhrArchivedStatus.java",
+      "bytes": 1464,
+      "sha256": "0878ff5bc8cf6aa458171cc6ac4719ad1bbfe085c672060b415e1d29f5fc7908",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/factory/ProcessHandlerFactory.java",
+      "bytes": 1792,
+      "sha256": "e6368c13c07712fafb7f53b72ad9f9c1863d8c258604df3218928ca470fff7e8",
+      "matchesManifest": true
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/gct-edhr-bed/gct-edhr-bed/src/main/java/com/gct/apaas/edhr/approve/handler/business/OnlineFormChangeProcessHandler.java",
+      "bytes": 10940,
+      "sha256": "d284cee884d23fa66a5f416a838f9520a5e3d147b291665ef7f5ac23e1895240",
+      "matchesManifest": true
+    }
+  ],
+  "archiveChecks": [
+    {
+      "manifest": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/manifest.json",
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/focused-tests.log.gz",
+      "rawBytes": 255553,
+      "rawSha256": "55ad800b3b87ac68344fbda42742c0c3ef0d421a8c998fd83064ee42d69fbf1a",
+      "matchesManifest": true,
+      "originalStillMatches": true
+    },
+    {
+      "manifest": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/manifest.json",
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml.gz",
+      "rawBytes": 39490,
+      "rawSha256": "a7d2abbe101f490cf4768688e448b81a99303b14955639a6d47ffcc3d58eb8bb",
+      "matchesManifest": true,
+      "originalStillMatches": true
+    },
+    {
+      "manifest": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/manifest.json",
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml.gz",
+      "rawBytes": 293770,
+      "rawSha256": "50f14504d78205bff1dbbe406b5dd9e16bb6bdddfa46176501059d0f8d430b43",
+      "matchesManifest": true,
+      "originalStillMatches": true
+    },
+    {
+      "manifest": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/manifest.json",
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/TEST-com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest.xml.gz",
+      "rawBytes": 39519,
+      "rawSha256": "a0e1d7fa50bd33af9b266f4862671a94e9b9abc5449bc8386e73d979341540bd",
+      "matchesManifest": true,
+      "originalStillMatches": true
+    },
+    {
+      "manifest": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/manifest.json",
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/TEST-com.zencas.edhr.production.service.DhrSummaryServiceTest.xml.gz",
+      "rawBytes": 38756,
+      "rawSha256": "8c1c0a8298d734db930c23f9c429fb8baf1e7bf3363459121a94c9fb620fd19f",
+      "matchesManifest": true,
+      "originalStillMatches": true
+    },
+    {
+      "manifest": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-archives.json",
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-knowledge.txt",
+      "rawBytes": 327,
+      "rawSha256": "2c2a259f1a20bf921b17d46fae40296b7091795638ed200cc138f2a40e968c41",
+      "matchesManifest": true,
+      "originalStillMatches": true
+    },
+    {
+      "manifest": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-archives.json",
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-junit.xml.gz",
+      "rawBytes": 51475,
+      "rawSha256": "7fe6dec74a584cb55358628944370744d8bdfb43ad50e694400a06f436053da0",
+      "matchesManifest": true,
+      "originalStillMatches": true
+    }
+  ],
+  "testEvidenceReadOnly": [
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "cases": [
+        "personalListAndDetailCannotLeakAnotherUsersTask",
+        "frozenButtonVisibilityOpinionAndSignatureAreEnforcedOnServer",
+        "approvalRequiresUnchangedEvidenceAndCurrentHashButDoesNotAutoReturn",
+        "approvalSeparatesRuntimeOutcomeFromFrozenEvidenceAndRejectsSecondAction",
+        "signedReviewChecksNamedSignerAndRecordsBothIdentities",
+        "missingFrozenFormOriginalBlocksApprovalButNotReturn",
+        "intermediateApprovalKeepsPendingAndAuditFailureRollsBackOutcome",
+        "humanReturnAllowsChangedEvidenceAndCreatesNextDraftOnlyExplicitly",
+        "missingAndNewRecordsBothAffectCompleteEvidenceScope",
+        "unreadableLiveValuesAreReportedAsImpactAndBlockApproval"
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "cases": [
+        "incompleteFrozenManualReviewBlocksApprovalButAllowsReturn",
+        "realWorkflowReturnResubmitSignAndApprovedImpactPreserveHistory",
+        "concurrentApprovalCreatesOnlyOneOutcomeAndSignature",
+        "reviewDetailCurrentlyComparesTheSameFrozenVersionTwice",
+        "newlyAppearingRecordAndAttachmentBlockApprovalWithoutChangingFrozenVersion",
+        "legacyPendingReviewCannotApproveUnfinishedUnincludedCustomCopyButCanReturn"
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "cases": [
+        "reviewAttachmentDownloadRequiresReviewMenuPermission",
+        "reviewAuditChecksTaskThenUsesOnlyServerResolvedVersion",
+        "reorganizingDoesNotInheritOrdinaryEditOrSubmitPermission",
+        "summaryDetailAndAuditKeepExistingReadBoundary",
+        "reviewRequiresBothMenuAndActionPermission",
+        "fillingDetailAndAuditUseMenuReadPermissionWithoutGlobalViewOrWrite",
+        "fillingAndSupplementPermissionsAreIndependent",
+        "reviewOfficeDownloadKeepsOriginalNameAndTaskFrozenVersion"
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrSummaryServiceTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "cases": [
+        "placementsAutoIncludeEveryActualInstanceWithoutManualSelection",
+        "sameInstanceCannotBePlacedTwiceAndIncompleteEvidenceRemainsVisible",
+        "requiredBaseDirectoryItemMustContainACompletedDirectInstance",
+        "submitRequiresTheExactSavedDraftRevision",
+        "overlaySupportsArbitraryDepthButRejectsCycles",
+        "existingDraftRequiresExplicitMatchingRevision",
+        "sourceGroupingDoesNotRestrictIndividualPlacementOrOrder",
+        "placementOrderIsPreservedAndInsertionAnchorMustBelongToTargetDirectory"
+      ]
+    },
+    {
+      "name": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": "89",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "cases": [
+        "yamlParserErrorsContainTheRepositoryRelativeFilePath(Path)",
+        "unknownScalarCollectionsAreRejected",
+        "explicitFactReferencesCannotBeUsedAsPredicateExpectations",
+        "factCatalogCannotBeBypassedByOmittingProfile",
+        "conditionGroupsRejectAdditionalFields",
+        "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[1]",
+        "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[2]",
+        "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[3]",
+        "repositoryRootCanBeLocatedFromRootBackendAndIdeWorkingDirectories",
+        "invalidRuleResultTypesAreRejected",
+        "nestedCollectionsAreDiscoveredFromSchemaMappings",
+        "currentKnowledgeModelIsValid",
+        "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[1]",
+        "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[2]",
+        "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[3]",
+        "factsRequireProvenanceFields",
+        "schemaCollectionMappingsMustCoverEveryRecordType",
+        "verifiedInternalRecordsRequireExecutionContracts",
+        "stringOperatorsRejectNonStringFacts",
+        "malformedTopLevelCollectionsReportTheirDocument",
+        "executionContractReferencesMustResolveEvenForNonVerifiedRules",
+        "invalidStatusesAreRejected",
+        "factCatalogRejectsOperatorNotAllowedByFact",
+        "schemaRejectsNestedDescriptorMappingMismatch",
+        "factValueTypesMustComeFromTheControlledVocabulary",
+        "factNamesInStringsAreNeverImplicitlyDereferenced",
+        "knownNestedCollectionsCannotAppearOnUndeclaredParentRecordTypes",
+        "invalidConditionOperatorsAreRejected",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[1]",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[2]",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[3]",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[4]",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[5]",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[6]",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[7]",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[8]",
+        "danglingEvidenceIdsAreRejected",
+        "verifiedRulesCanReferenceValidRegisteredExecutionContracts",
+        "invalidCardinalitiesAreRejected",
+        "factCatalogRejectsUnknownSemanticAlias",
+        "conditionNotGroupsRequireOneExpression",
+        "enumFactsRequireAnExplicitNonEmptyValueSet",
+        "numericComparisonRejectsStringFactEvenWhenItsOperatorIsListed",
+        "schemaIdPrefixesMustCoverEveryRecordType",
+        "nestedDuplicateIdsAreRejected",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[1]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[2]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[3]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[4]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[5]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[6]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[7]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[8]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[9]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[10]",
+        "conditionLeavesRejectAdditionalFields",
+        "absoluteEvidencePathsAreRejectedEvenWhenTheyExist",
+        "conditionGroupsMustBeNonEmpty",
+        "unknownEmptyCollectionsAreRejected",
+        "implementationAnchorsRejectUnknownProvenanceReviewStatus",
+        "numericOperandsMustBeFinite",
+        "currentKnowledgeBaselineUsesTheTypedFactSchema",
+        "factReferenceObjectsMustUseTheExactOperandShape",
+        "topLevelCollectionsAreDiscoveredFromSchemaMappings",
+        "danglingTermIdsAreRejected",
+        "verifiedRuntimeRecordsRequireEvidence",
+        "schemaCollectionMappingsRejectDuplicateTargetsDeterministically",
+        "recordIdsMustUseSchemaPrefixes(String, String)[1]",
+        "recordIdsMustUseSchemaPrefixes(String, String)[2]",
+        "normalizedEvidencePathsCannotEscapeRepository(Path)",
+        "duplicateIdsAreRejected",
+        "explicitFactOperandsMustHaveCompatibleTypes",
+        "conditionValuesMustUseSchemaValueTypes",
+        "schemaCollectionMappingsRejectUnknownRecordTypes",
+        "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[1]",
+        "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[2]",
+        "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[3]",
+        "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[4]",
+        "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[5]",
+        "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[6]",
+        "explicitFactOperandsResolveIdsAndAliasesWithoutBeingTreatedAsClauses",
+        "unknownNestedRecordCollectionsAreRejected",
+        "unknownTopLevelCollectionsReportTheirDocumentAndSortedAllowedCollections",
+        "missingEvidencePathsAreRejected",
+        "explicitFactOperandsRejectUnknownReferences",
+        "executionContractIdsUseSchemaPrefixes",
+        "realEvidencePathsCannotEscapeRepositoryThroughSymlinks(Path)",
+        "implementedRecordsCannotEnterCustomerProjection",
+        "aliasesCannotShadowAnotherFactIdInEitherCollectionOrder"
+      ]
+    }
+  ],
+  "supplementaryPrimarySources": [
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+      "sha256": "b0156e4671d0f7a60ff7400f4fabf180ce0cbe544c02c515a7dc29f6c21ecbfb"
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/record-change/index.vue",
+      "sha256": "9ca01d5ad317007e84137efe65d9aaf4e16b8de5f103f552c05675b7ace6daa9"
+    },
+    {
+      "path": "/Users/ivenwang/Documents/iven space/paas-main-front/src/projects/web-render/src/views/edhr-application/render/record-change/left-container.vue",
+      "sha256": "ab80d959c7046f068362c9879a093be7227a47f8619fd5670024c7eb3306dbb0"
+    },
+    {
+      "path": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "sha256": "f7480ed96318e7a29e45e0319b765714aace4bebe02f35468cab7f202755817a"
+    }
+  ],
+  "reviewedArtifactHashes": [
+    {
+      "path": "docs/architecture/transaction-traceability-dhr-business-rules.md",
+      "sha256": "746196b3497902b45aaa389141ee0813eb9f4ab1813af5a59b243eed3cc6c759"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "sha256": "2e8f57cbd35a9f793546c5d1cd02709df3f23bcf6d3635a7ec8fa89ec51e6532"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sha256": "1c389b56e86f17f899ab4ab0fa92b656d0e94cf5f03fd5e548ef85009469a5c3"
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+      "sha256": "940b83995f81be21d6391fd071db22cbcffc7507c67918115c9d99434f3d7349"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-source-manifest.json",
+      "sha256": "b231c9a7be8b7fe18d6e3ea94207eebfa2a60db7a93f18a3ffd9b20a606e9913"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-result.yaml",
+      "sha256": "91b20474bd89f5a5afc53bab00957e24c0dfee510dd9830adf7dff2652779e89"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-inventory.md",
+      "sha256": "d9ba4ad0474aaae5c9c64249a432a1a2c8c6f853c0e681d3594bc59b63a26dcf"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-knowledge.txt",
+      "sha256": "2c2a259f1a20bf921b17d46fae40296b7091795638ed200cc138f2a40e968c41"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-archives.json",
+      "sha256": "fc757c88a239c627526c96ec9ffe4b6e7572ea210a6e611efa5052c1cea44c68"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/handoff.yaml",
+      "sha256": "2e614df81ab12761662ff241e2b4fd7c185288ef08642a67ce6f8ef78fa27e7a"
+    },
+    {
+      "path": "docs/reference-assets/research/crown-dhr-change-downstream-20261029/README.md",
+      "sha256": "2982f787ec3a052f049cecf9a5544cc0498d1ecf0d6083d56df800d9417a375c"
+    }
+  ],
+  "gitDiffCheckExitCode": 0,
+  "diffStat": "1\t1\tdocs/architecture/transaction-traceability-dhr-business-rules.md\n1\t1\tdocs/knowledge/README.md\n15\t5\tdocs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml\n10\t0\tdocs/knowledge/evidence/dhr-filling-review-confirmed.md\n1\t1\tdocs/reference-assets/research/crown-dhr-change-downstream-20261029/README.md\n40\t7\tdocs/reference-assets/research/crown-dhr-change-downstream-20261029/handoff.yaml",
+  "statusAtEvidenceCapture": "M docs/architecture/transaction-traceability-dhr-business-rules.md\n M docs/knowledge/README.md\n M docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml\n M docs/knowledge/evidence/dhr-filling-review-confirmed.md\n M docs/reference-assets/research/crown-dhr-change-downstream-20261029/README.md\n M docs/reference-assets/research/crown-dhr-change-downstream-20261029/handoff.yaml\n?? docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-independent-evidence.json\n?? docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-inventory.md\n?? docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-archives.json\n?? docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-junit.xml.gz\n?? docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-knowledge.txt\n?? docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-ontology-result.yaml\n?? docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-quality-result.yaml\n?? docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-source-manifest.json\n?? docs/reference-assets/research/crown-dhr-change-downstream-20261029/capability-tests/\n?? gmp-platform/frontend/node_modules\n?? output/playwright/record-control-integration-20261028/",
+  "manualConclusions": [
+    "DEC-0068-14 only replaces earlier unconfirmed initiation eligibility; DEC-0068-13 active-request finalization gate retained. Both specified/internal, runtime guards not delivered.",
+    "DHR review actual route/controller/service/frozen-version workflow/signature/human-return chain exists; REQUIRED starts workflow, NONE formalizes; reorganize creates new draft.",
+    "Archive export produces ZIP/PDF and audit; DhrStatusMachine declaration and StateMachineService logger do not implement persisted DHR sealing. PRD archive/release wording is planning.",
+    "Crown V1 actual call chain checks IN_AUDIT/ABANDON and ARCHIVED buttons; DHR_CHANGE aliases FORM_CHANGE handler. Backend platform implementation not all supplied.",
+    "DEC-0086 keeps serial-only current scope and defers batch/SN/directory initiation; separate source correction, summary revision and sealing concepts preserved."
+  ],
+  "verificationLimits": [
+    "Reviewer did not rerun business or ontology Maven suites; independently parsed raw archived JUnit and hashes from actual owner runs.",
+    "Lifecycle fixture mocks DhrInstanceService, DhrFormFiles, DhrAttachmentService, SubjectResolver, StateMachineService and WorkflowBindingRuleRepository; real imported summary/review/impact/workflow/access and repositories cover a focused service transaction chain.",
+    "No PostgreSQL, browser, deployed Crown, branch protection or full-product acceptance tested.",
+    "Two DHR high discrepancies and A12 remain open; this documentation review does not close them."
+  ],
+  "knowledgeValidation": {
+    "method": "Ruby/Psych safe_load of all docs/knowledge/**/*.yaml; dedicated maturity and ID inspections",
+    "parsedYamlCount": 237,
+    "knowledgeModelVersion": "0.3.25",
+    "newStatements": "DEC-0068-14 specified/internal",
+    "bothDhrHighDiscrepancies": "open",
+    "A12": "deferred/open",
+    "ontologyChangedFileHashesMatch": 4,
+    "correctedResultReferenceExists": "question.form-projection-trace-index-effective-scope",
+    "incorrectResultReferenceAbsentFromKnowledge": true
+  },
+  "findingRecheck": {
+    "id": "QF-CAPABILITY-001",
+    "severity": "low",
+    "reportedOriginalPhrase": "生命周期测试仅将 DHR 元数据投影 stub",
+    "fixedBy": "root implementation owner; reviewer did not modify report",
+    "currentLine": 39,
+    "rechecked": true,
+    "actualScope": "real imported summary/review/workflow/signature/audit service chain; DHR metadata stub and file/attachment/subject/state/binding mocks disclosed"
+  },
+  "readmeIndexRecheck": {
+    "line": 3,
+    "latestReportLinked": true,
+    "currentDecisions": [
+      "DEC-0063-16",
+      "DEC-0068-13",
+      "DEC-0068-14"
+    ],
+    "historicalBodyPreserved": true
+  }
+}

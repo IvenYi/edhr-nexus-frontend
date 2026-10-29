@@ -28,7 +28,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0068-04
-        statement: user-confirmed；表单变更、表单作废由朋友负责的记录控制模块实现与判定生效，DHR 只以真实生效的来源变化评估证据影响；活动申请另按 DEC-0068-13 暂缓汇总提交和审批通过，不等同于来源已生效，不接管变更作废审批或替其定义活动记录作废资格。
+        statement: user-confirmed；表单变更、表单作废由朋友负责的记录控制模块实现与判定生效，DHR 只以真实生效的来源变化评估证据影响；活动申请另按 DEC-0068-13 暂缓汇总提交和审批通过，关联 DHR 审批中另按 DEC-0068-14 禁止新发起申请，不等同于来源已生效，不接管变更作废审批或替其定义活动记录作废资格。
         status: specified
         visibility: internal
       - id: DEC-0068-05
@@ -64,7 +64,11 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0068-13
-        statement: user-confirmed；DHR 引用的来源表单存在在审变更或作废申请时，原有效修订仍可查看，来源主状态不因申请改写，但相关 DHR 暂缓汇总提交和审批通过，直到该申请结束。申请结束后仍按结果及既有资格复核，不自动批准：退回／撤回且来源未变时恢复普通处理资格；批准变更／作废后，过时冻结证据仍须按 DEC-0068-05／06 人工退回或发起修订。该阻断不自动退回 DHR、不暂停所有无关动作、不改变旧批准、生产或放行状态；也不代表用户已确认在 DHR 审批中禁止发起表单变更这一独立入口规则。站内生效提醒仍按 DEC-0068-12，不将待审提示冒充生效通知；撤回运行入口及本条阻断的实现验收尚未完成。
+        statement: user-confirmed；DHR 引用的来源表单存在在审变更或作废申请时，原有效修订仍可查看，来源主状态不因申请改写，但相关 DHR 暂缓汇总提交和审批通过，直到该申请结束。申请结束后仍按结果及既有资格复核，不自动批准：退回／撤回且来源未变时恢复普通处理资格；批准变更／作废后，过时冻结证据仍须按 DEC-0068-05／06 人工退回或发起修订。该阻断不自动退回 DHR、不暂停所有无关动作、不改变旧批准、生产或放行状态；DHR 审批中禁止新发起申请的独立规则由后续用户直接确认并按 DEC-0068-14 补齐，不由本条原始选择外推。站内生效提醒仍按 DEC-0068-12，不将待审提示冒充生效通知；撤回运行入口及本条阻断的实现验收尚未完成。
+        status: specified
+        visibility: internal
+      - id: DEC-0068-14
+        statement: user-confirmed；引用来源表单的关联 DHR 正在审批时，禁止新发起该表单的变更或作废申请；需要修改须先由有权人员通过 DHR 专属审批路径人工退回，再按来源表单原有资格、权限及签署要求申请。此限制适用于按表单流水号及未来 DHR 目录等发起入口，并须在最终提交服务复核，不能只隐藏按钮；原记录及修订仍可按原权限查询，不自动退回、不额外赋权。此条仅替代 DEC-0068-13 中发起资格尚未确认的说明，与该条已有活动申请阻断 DHR 汇总提交和审批通过构成双向保护；保留原有效修订、真实生效通知、旧冻结与批准及生产／放行边界。本次不新增 DHR 目录入口，不确认封存、解封或已放行后的修改资格；本条尚未实现和运行验收。
         status: specified
         visibility: internal
     supersedes: [DEC-0062, DEC-0063, DEC-0056]
@@ -107,11 +111,17 @@ decisions:
         evidenceIds: [evidence.dhr-filling-review-confirmed]
         evidenceRequirements: [后续真实生效站内通知接收人矩阵测试, 待审申请不发送生效通知对照测试, 无当前审批任务场景, 历史冻结与批准及生产放行无副作用回归]
       - id: scenario.dhr-pending-record-control-blocks-finalization
-        given: DHR 引用的表单原修订仍有效，存在在审变更或作废申请，申请可在提交前或 DHR 审批中出现
+        given: DHR 引用的表单原修订仍有效，提交前已有在审变更或作废申请，或并发及历史数据造成 DHR 审批中仍存在活动申请
         when: 用户查看原版、提交汇总或执行 DHR 审批通过，随后申请以不同结果结束
         then: 原版可查看，活动申请期间汇总提交和审批通过被阻断但不自动退回；退回／撤回且来源未变时恢复普通资格检查，批准生效后仍检查证据是否过时并保留人工处理，不因申请结束自动批准或改写旧冻结／批准和生产放行状态
         evidenceIds: [evidence.dhr-filling-review-confirmed]
         evidenceRequirements: [后续真实申请与DHR提交批准集成测试, 提交前及审批中活动申请矩阵, 申请不同结束结果测试, 并发发起申请与DHR批准测试, 原修订可读及历史无副作用回归]
+      - id: scenario.dhr-review-blocks-new-record-control
+        given: 来源表单本来符合变更或作废申请资格，但引用它的关联 DHR 正在审批
+        when: 用户从表单流水号或未来 DHR 目录入口新发起申请，或打开页面后 DHR 才进入审批并继续提交
+        then: 新申请由最终提交服务拒绝，原记录及修订仍按原权限可读；有权人员通过 DHR 专属审批路径人工退回后，才按来源原有资格和权限重新判断是否可申请，不自动退回、不新增入口或权限、不改写旧冻结／批准及生产放行状态；与已有活动申请阻断 DHR 收尾分别验证
+        evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.record-control-v1-service]
+        evidenceRequirements: [后续变更和作废最终提交服务阻断测试, 表单流水号及未来目录入口一致性验证, 并发DHR提交与申请发起测试, DHR专属人工退回及原资格回归, 原修订可读与历史无副作用回归]
       - id: scenario.dhr-filling-review-approved-history
         given: 汇总版本已经批准，后续其证据发生有效变化
         when: 系统识别影响且用户决定发起重新审核
@@ -125,8 +135,8 @@ decisions:
         visibility: internal
         path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java
         lineHint: 19
-        summary: original-evidence；当前 changes 已比较冻结表单、新增关联实例及受控附件，DhrReviewService 在批准时阻断发现变化并保留人工退回路径。尚未见来源生效事件驱动的主动通知、质量检查结果变化的完整比较、记录控制真实生效联调与并发发布级证据；2026-10-29 新确认的 DEC-0068-13 活动申请收尾阻断亦未见 DhrSummaryService／DhrReviewService／DhrEvidenceImpactService 消费 record_control_request 在审状态。不能把读取时比较视为全部影响闭环；本轮仅静态核对，不计为新阻断已实现。
-        evidenceIds: [evidence.dhr-review-service, evidence.dhr-evidence-impact-service, evidence.dhr-summary-service]
+        summary: original-evidence；当前 changes 已比较冻结表单、新增关联实例及受控附件，DhrReviewService 在批准时阻断发现变化并保留人工退回路径。尚未见来源生效事件驱动的主动通知、质量检查结果变化的完整比较、记录控制真实生效联调与并发发布级证据；2026-10-29 新确认的 DEC-0068-13 活动申请收尾阻断亦未见 DhrSummaryService／DhrReviewService／DhrEvidenceImpactService 消费 record_control_request 在审状态，DEC-0068-14 的反向发起阻断也未见 RecordControlService.submit 检查关联 DHR 的 PENDING_REVIEW。不能把读取时比较或既有审核测试通过视为全部影响闭环或新阻断已实现；本角色只静态核对，新增双向阻断仍待实现及运行验收。
+        evidenceIds: [evidence.dhr-review-service, evidence.dhr-evidence-impact-service, evidence.dhr-summary-service, evidence.record-control-v1-service]
       - id: discrepancy.dhr-review-effective-source-integration
         status: open
         severity: high

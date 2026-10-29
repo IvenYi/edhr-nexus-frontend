@@ -1,6 +1,6 @@
 # 冠骋 DHR／表单变更与下游影响复核
 
-同日后续澄清见 [clarification-round.md](clarification-round.md)：补查冠骋 DHR 变更入口的前置状态门禁，并同步用户确认的作废默认隐藏及活动申请阻断 DHR 收尾。下面保留此前研究与验收范围，当前补充规则以 DEC-0063-16／DEC-0068-13 为准；两轮均未修改产品代码。
+同日后续澄清见 [clarification-round.md](clarification-round.md)；最新能力盘点见 [capability-inventory.md](capability-inventory.md)，核对现有审核、封存规划与 DHR 变更缺口，并记录用户新确认的“DHR审批中先退回，再申请表单变更／作废”。下面保留此前研究与验收范围，当前补充规则以 DEC-0063-16／DEC-0068-13／DEC-0068-14 为准；各轮均未修改产品代码。
 
 日期：2026-10-29，Asia/Shanghai。范围：用户要求在继续记录控制、DHR 与 A12 TODO 前，重新核对冠骋参考材料。执行级别 L1；本次增加内部调研材料，并同步用户随后明确确认的通知对象与渠道；不修改产品代码、数据库或既有验收结果。
 
