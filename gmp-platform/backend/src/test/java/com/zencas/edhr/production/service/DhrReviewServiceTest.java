@@ -47,6 +47,9 @@ class DhrReviewServiceTest {
         jdbc.execute("CREATE TABLE workflow_task(id BIGINT PRIMARY KEY,instance_id BIGINT,node_id BIGINT,status VARCHAR(32),assignee_id VARCHAR(64),candidate_snapshot TEXT,opinion TEXT,action VARCHAR(32),created_at TIMESTAMP,completed_at TIMESTAMP)");
         jdbc.execute("CREATE TABLE dhr_summary_evidence(tenant_id VARCHAR(32),summary_version_id BIGINT,source_record_id BIGINT,source_snapshot TEXT)");
         jdbc.execute("CREATE TABLE form_instance_record(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),snapshot_json TEXT,values_json TEXT,status VARCHAR(32),version_id BIGINT)");
+        jdbc.execute("ALTER TABLE form_instance_record ADD COLUMN current_revision_id BIGINT");
+        jdbc.execute("CREATE TABLE record_control_request(tenant_id VARCHAR,record_id BIGINT,status VARCHAR)");
+        jdbc.execute("CREATE TABLE dhr_evidence_impact(tenant_id VARCHAR,summary_version_id BIGINT,record_id BIGINT)");
         jdbc.update("INSERT INTO dhr_instance(id,tenant_id,summary_status,dhr_no,object_no,object_type,work_order_no,product_name) VALUES(1,'default','PENDING_REVIEW','DHR-1','B1','BATCH','W1','产品')");
         jdbc.update("INSERT INTO dhr_summary_version(id,tenant_id,version_no,snapshot_hash,dhr_instance_id,submitted_by,submitted_at) VALUES(2,'default',1,'hash',1,'提交人',CURRENT_TIMESTAMP)");
         jdbc.update("UPDATE dhr_summary_version SET check_result_snapshot=?", """
@@ -71,6 +74,21 @@ class DhrReviewServiceTest {
     }
     @AfterEach void clear() { AuditContext.clear(); }
     ObjectNode command(String action) { return mapper.createObjectNode().put("action", action).put("expectedSnapshotHash", "hash").put("opinion", "已核对"); }
+
+    @Test void pendingRecordApplicationBlocksApprovalButStillAllowsHumanReturn() {
+        jdbc.update("INSERT INTO record_control_request VALUES('default',10,'IN_REVIEW')");
+        assertThatThrownBy(() -> service.act(5L, command("APPROVE"))).hasMessageContaining("审批中的变更或作废申请");
+        verify(engine, never()).completeDhrTask(any(), any(), any(), any(), any());
+        service.act(5L, command("RETURN"));
+        verify(summaries).prepareNextDraft(eq(1L), eq(2L), anyString());
+    }
+
+    @Test void aDifferentRevisionBlocksApprovalEvenWhenValuesMatch() {
+        jdbc.update("UPDATE form_instance_record SET current_revision_id=102 WHERE id=10");
+        jdbc.update("UPDATE dhr_summary_evidence SET source_snapshot=?", "{\"id\":\"10\",\"currentRevisionId\":\"101\",\"instanceNo\":\"FR-10\",\"templateVersionId\":\"100\",\"status\":\"COMPLETED\",\"snapshot\":{\"name\":\"表单\"},\"fieldValues\":{\"temperature\":20}}");
+        assertThatThrownBy(() -> service.act(5L, command("APPROVE"))).hasMessageContaining("过时证据");
+        assertThat(service.evidenceChanges(2L, false)).hasSize(1);
+    }
 
     @Test void personalListAndDetailCannotLeakAnotherUsersTask() {
         assertThat(service.list("PENDING", "B1", 0, 20).getTotalElements()).isEqualTo(1);

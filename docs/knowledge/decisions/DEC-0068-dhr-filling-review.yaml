@@ -60,15 +60,15 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0068-12
-        statement: user-confirmed；表单变更或作废正式生效并影响 DHR 时，采用站内提醒，接收人为当前审批人和该受影响冻结汇总版本的汇总提交人。本次范围不增加历史批准人提醒或邮件等外部渠道；没有当前审批任务时不虚构当前审批人。该确认只补充通知对象和渠道，不改变申请待审非生效、人工退回、新版本重审、旧批准和冻结证据保留、生产及放行状态不自动变化的边界，也不代表通知功能已经实现。
+        statement: user-confirmed；表单变更或作废正式生效并影响 DHR 时，采用站内提醒，接收人为当前审批人和该受影响冻结汇总版本的汇总提交人。本次范围不增加历史批准人提醒或邮件等外部渠道；没有当前审批任务时不虚构当前审批人。该确认只补充通知对象和渠道，不改变申请待审非生效、人工退回、新版本重审、旧批准和冻结证据保留、生产及放行状态不自动变化的边界。实现按真实账号身份投递，不以显示姓名推定收件人；本轮新增submitted_by_id及旧版原审批／唯一SUBMIT审计身份恢复属工程落实，不重写历史证据。用户确认本身不证明通知已实现，当前后端聚焦实现与PG证据及剩余验收边界见本轮生效联动证据。
         status: specified
         visibility: internal
       - id: DEC-0068-13
-        statement: user-confirmed；DHR 引用的来源表单存在在审变更或作废申请时，原有效修订仍可查看，来源主状态不因申请改写，但相关 DHR 暂缓汇总提交和审批通过，直到该申请结束。申请结束后仍按结果及既有资格复核，不自动批准：退回／撤回且来源未变时恢复普通处理资格；批准变更／作废后，过时冻结证据仍须按 DEC-0068-05／06 人工退回或发起修订。该阻断不自动退回 DHR、不暂停所有无关动作、不改变旧批准、生产或放行状态；DHR 审批中禁止新发起申请的独立规则由后续用户直接确认并按 DEC-0068-14 补齐，不由本条原始选择外推。站内生效提醒仍按 DEC-0068-12，不将待审提示冒充生效通知；撤回运行入口及本条阻断的实现验收尚未完成。
+        statement: user-confirmed；DHR 引用的来源表单存在在审变更或作废申请时，原有效修订仍可查看，来源主状态不因申请改写，但相关 DHR 暂缓汇总提交和审批通过，直到该申请结束。申请结束后仍按结果及既有资格复核，不自动批准：退回／撤回且来源未变时恢复普通处理资格；批准变更／作废后，过时冻结证据仍须按 DEC-0068-05／06 人工退回或发起修订。该阻断不自动退回 DHR、不暂停所有无关动作、不改变旧批准、生产或放行状态；DHR 审批中禁止新发起申请的独立规则由后续用户直接确认并按 DEC-0068-14 补齐，不由本条原始选择外推。站内生效提醒仍按 DEC-0068-12，不将待审提示冒充生效通知；撤回运行入口仍未完成，本条阻断的实现与聚焦验收范围取本轮固定联动原件，最终独立结论另取同切片quality-final-result.yaml，不把两者同时解释为未实现。
         status: specified
         visibility: internal
       - id: DEC-0068-14
-        statement: user-confirmed；引用来源表单的关联 DHR 正在审批时，禁止新发起该表单的变更或作废申请；需要修改须先由有权人员通过 DHR 专属审批路径人工退回，再按来源表单原有资格、权限及签署要求申请。此限制适用于按表单流水号及未来 DHR 目录等发起入口，并须在最终提交服务复核，不能只隐藏按钮；原记录及修订仍可按原权限查询，不自动退回、不额外赋权。此条仅替代 DEC-0068-13 中发起资格尚未确认的说明，与该条已有活动申请阻断 DHR 汇总提交和审批通过构成双向保护；保留原有效修订、真实生效通知、旧冻结与批准及生产／放行边界。本次不新增 DHR 目录入口，不确认封存、解封或已放行后的修改资格；本条尚未实现和运行验收。
+        statement: user-confirmed；引用来源表单的关联 DHR 正在审批时，禁止新发起该表单的变更或作废申请；需要修改须先由有权人员通过 DHR 专属审批路径人工退回，再按来源表单原有资格、权限及签署要求申请。此限制适用于按表单流水号及未来 DHR 目录等发起入口，并须在最终提交服务复核，不能只隐藏按钮；原记录及修订仍可按原权限查询，不自动退回、不额外赋权。此条仅替代 DEC-0068-13 中发起资格尚未确认的说明，与该条已有活动申请阻断 DHR 汇总提交和审批通过构成双向保护；保留原有效修订、真实生效通知、旧冻结与批准及生产／放行边界。本次不新增 DHR 目录入口；当时归档等提问只属调研，后续归档术语及MVP最小范围按 DEC-0090 新确认解释，不能据此开放解封或普通放行后修改。本条实现及运行验收须取本轮联动证据。
         status: specified
         visibility: internal
     supersedes: [DEC-0062, DEC-0063, DEC-0056]
@@ -135,13 +135,13 @@ decisions:
         visibility: internal
         path: gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java
         lineHint: 19
-        summary: original-evidence；当前 changes 已比较冻结表单、新增关联实例及受控附件，DhrReviewService 在批准时阻断发现变化并保留人工退回路径。尚未见来源生效事件驱动的主动通知、质量检查结果变化的完整比较、记录控制真实生效联调与并发发布级证据；2026-10-29 新确认的 DEC-0068-13 活动申请收尾阻断亦未见 DhrSummaryService／DhrReviewService／DhrEvidenceImpactService 消费 record_control_request 在审状态，DEC-0068-14 的反向发起阻断也未见 RecordControlService.submit 检查关联 DHR 的 PENDING_REVIEW。不能把读取时比较或既有审核测试通过视为全部影响闭环或新阻断已实现；本角色只静态核对，新增双向阻断仍待实现及运行验收。
-        evidenceIds: [evidence.dhr-review-service, evidence.dhr-evidence-impact-service, evidence.dhr-summary-service, evidence.record-control-v1-service]
+        summary: original-evidence；e0b416a合并候选的固定压缩原件支持两向在审检查、修订影响、账号ID通知、人工退回、并发阻断及旧冻结不变，已有真实PG迁移/升级/重复与容量证据。当前来源变化提示、草稿作废默认隐藏及全量计数、低频查看和V1冻结状态也有部分真实UI原件。本项仍high/open的实质范围为质量检查结果变化的完整比较及尚未覆盖的全面矩阵；本轮最终独立结论另取docs/development/record-control-dhr-linkage-20261029/quality-final-result.yaml，不由本索引或初轮failed代替，不以局部PG/UI或知识检查关闭完整缺口，不自动退回或改旧冻结批准。
+        evidenceIds: [evidence.dhr-review-service, evidence.dhr-evidence-impact-service, evidence.dhr-summary-service, evidence.record-control-v1-service, evidence.record-control-dhr-effective-orchestration, evidence.dhr-record-control-linkage-source, evidence.dhr-linkage-backend-verification, evidence.dhr-linkage-browser-verification]
       - id: discrepancy.dhr-review-effective-source-integration
         status: open
         severity: high
         visibility: internal
         path: docs/knowledge/evidence/dhr-filling-review-implementation.md
         lineHint: 1
-        summary: secondary-reference；旧实现报告记录真实变更/作废生效接口、有效修订标识、主动通知及并发集成证据尚有缺口；本轮只核对现有只读比较源码，未重做该业务验收。该缺口阻止宣称运行闭环，不阻塞已获授权的通用文档修订。
-        evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-evidence-impact-service]
+        summary: original-evidence与secondary-reference分列；旧报告为历史索引，当前固定backend-verification原件支持真实批准后索引、正式贡献切换、DHR影响和ID提醒，含回滚、重投、两类并发及重名隔离。控制器/服务授权负例已有原件，合成ADMIN浏览器已验证本人提醒/已读、低频作废查看及新草稿和旧冻结隔离；并非完全没有HTTP层或UI证据。剩余实质范围为未覆盖的完整普通权限UI、全部接收人/账号状态等全面矩阵；本轮最终独立结论另取docs/development/record-control-dhr-linkage-20261029/quality-final-result.yaml，初轮failed原件仅保留当时范围，不由本索引代替最终结论，本项仍high/open，不宣称全链或完整A12验收。
+        evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-evidence-impact-service, evidence.record-control-dhr-effective-orchestration, evidence.dhr-record-control-linkage-source, evidence.dhr-impact-notification-personal-source, evidence.dhr-impact-linkage-migration, evidence.dhr-linkage-backend-verification, evidence.dhr-linkage-browser-verification, evidence.dhr-linkage-initial-quality-result]

@@ -1,0 +1,1006 @@
+{
+  "head": "e0b416a12507cd15e411d4becdd4d75b47ed77d9",
+  "workingTree": true,
+  "command": "RECORD_CONTROL_TEST_DATABASE_URL=<owned DB> BASELINE_TEST_DATABASE_URL=<owned DB> W3_COMMAND_DATABASE_URL=<owned DB> W3_COMMAND_DATABASE_USER=ivenwang PGUSER=ivenwang mvn -q '-Dtest=*Dhr*,RecordControl*,FormProjection*,FormTraceIndexServiceTest,ProductionOutput*,ProductionQuality*,CurrentDatabaseBaseline*,BusinessKnowledgeModelTest,MasterDataBoundaryIntegrationTest' test",
+  "exitCode": 0,
+  "suites": [
+    {
+      "class": "com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "freshInstallIsCurrentCompleteAndRepeatableWithoutBusinessBackfills",
+        "existingCurrentBaselineGainsOnlyRealCompletedRevisionHistory",
+        "existingBusinessSchemaIsRejectedWithoutCleaningOrGuessingData"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.common.config.CurrentDatabaseBaselineTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "productionResourcesContainOnlyCurrentSchemaAndRequiredSeed"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "yamlParserErrorsContainTheRepositoryRelativeFilePath(Path)",
+        "unknownScalarCollectionsAreRejected",
+        "explicitFactReferencesCannotBeUsedAsPredicateExpectations",
+        "factCatalogCannotBeBypassedByOmittingProfile",
+        "conditionGroupsRejectAdditionalFields",
+        "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[1]",
+        "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[2]",
+        "schemaRejectsInvalidFieldTypeDescriptors(String, String, String, String)[3]",
+        "repositoryRootCanBeLocatedFromRootBackendAndIdeWorkingDirectories",
+        "invalidRuleResultTypesAreRejected",
+        "nestedCollectionsAreDiscoveredFromSchemaMappings",
+        "currentKnowledgeModelIsValid",
+        "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[1]",
+        "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[2]",
+        "referencedExecutionContractsMustSatisfySchemaPolicy(String, String, Object, String)[3]",
+        "factsRequireProvenanceFields",
+        "schemaCollectionMappingsMustCoverEveryRecordType",
+        "verifiedInternalRecordsRequireExecutionContracts",
+        "stringOperatorsRejectNonStringFacts",
+        "malformedTopLevelCollectionsReportTheirDocument",
+        "executionContractReferencesMustResolveEvenForNonVerifiedRules",
+        "invalidStatusesAreRejected",
+        "factCatalogRejectsOperatorNotAllowedByFact",
+        "schemaRejectsNestedDescriptorMappingMismatch",
+        "factValueTypesMustComeFromTheControlledVocabulary",
+        "factNamesInStringsAreNeverImplicitlyDereferenced",
+        "knownNestedCollectionsCannotAppearOnUndeclaredParentRecordTypes",
+        "invalidConditionOperatorsAreRejected",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[1]",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[2]",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[3]",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[4]",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[5]",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[6]",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[7]",
+        "typedComparisonsPreserveNumericAndPredicateSemantics(String, String, String, Object)[8]",
+        "danglingEvidenceIdsAreRejected",
+        "verifiedRulesCanReferenceValidRegisteredExecutionContracts",
+        "invalidCardinalitiesAreRejected",
+        "factCatalogRejectsUnknownSemanticAlias",
+        "conditionNotGroupsRequireOneExpression",
+        "enumFactsRequireAnExplicitNonEmptyValueSet",
+        "numericComparisonRejectsStringFactEvenWhenItsOperatorIsListed",
+        "schemaIdPrefixesMustCoverEveryRecordType",
+        "nestedDuplicateIdsAreRejected",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[1]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[2]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[3]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[4]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[5]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[6]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[7]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[8]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[9]",
+        "ruleOperandsMustMatchTheirDeclaredFacts(String, String, String, Object, String)[10]",
+        "conditionLeavesRejectAdditionalFields",
+        "absoluteEvidencePathsAreRejectedEvenWhenTheyExist",
+        "conditionGroupsMustBeNonEmpty",
+        "unknownEmptyCollectionsAreRejected",
+        "implementationAnchorsRejectUnknownProvenanceReviewStatus",
+        "numericOperandsMustBeFinite",
+        "currentKnowledgeBaselineUsesTheTypedFactSchema",
+        "factReferenceObjectsMustUseTheExactOperandShape",
+        "topLevelCollectionsAreDiscoveredFromSchemaMappings",
+        "danglingTermIdsAreRejected",
+        "verifiedRuntimeRecordsRequireEvidence",
+        "schemaCollectionMappingsRejectDuplicateTargetsDeterministically",
+        "recordIdsMustUseSchemaPrefixes(String, String)[1]",
+        "recordIdsMustUseSchemaPrefixes(String, String)[2]",
+        "normalizedEvidencePathsCannotEscapeRepository(Path)",
+        "duplicateIdsAreRejected",
+        "explicitFactOperandsMustHaveCompatibleTypes",
+        "conditionValuesMustUseSchemaValueTypes",
+        "schemaCollectionMappingsRejectUnknownRecordTypes",
+        "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[1]",
+        "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[2]",
+        "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[3]",
+        "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[4]",
+        "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[5]",
+        "nestedRecordsUseSchemaRequiredFieldsEnumsAndBasicTypes(String, String, String, Object, boolean, String)[6]",
+        "explicitFactOperandsResolveIdsAndAliasesWithoutBeingTreatedAsClauses",
+        "unknownNestedRecordCollectionsAreRejected",
+        "unknownTopLevelCollectionsReportTheirDocumentAndSortedAllowedCollections",
+        "missingEvidencePathsAreRejected",
+        "explicitFactOperandsRejectUnknownReferences",
+        "executionContractIdsUseSchemaPrefixes",
+        "realEvidencePathsCannotEscapeRepositoryThroughSymlinks(Path)",
+        "implementedRecordsCannotEnterCustomerProjection",
+        "aliasesCannotShadowAnotherFactIdInEitherCollectionOrder"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.masterdata.controller.MasterDataBoundaryIntegrationTest",
+      "tests": 36,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "anonymousListsDoNotExposeAcceptedMaterialVersions",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[1]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[2]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[3]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[4]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[5]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[6]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[7]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[8]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[9]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[10]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[11]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[12]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[13]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[14]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[15]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[16]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[17]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[18]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[19]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[20]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[21]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[22]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[23]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[24]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[25]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[26]",
+        "legalPageBoundsAndExistingNormalizationDoNotOverflow(String, int, int)[27]",
+        "acceptedVersionNumbersSortAndKeepTheWholeGroup(String, String)[1]",
+        "acceptedVersionNumbersSortAndKeepTheWholeGroup(String, String)[2]",
+        "acceptedVersionNumbersSortAndKeepTheWholeGroup(String, String)[3]",
+        "acceptedVersionNumbersSortAndKeepTheWholeGroup(String, String)[4]",
+        "acceptedVersionNumbersSortAndKeepTheWholeGroup(String, String)[5]",
+        "acceptedVersionNumbersSortAndKeepTheWholeGroup(String, String)[6]",
+        "acceptedVersionNumbersSortAndKeepTheWholeGroup(String, String)[7]",
+        "acceptedVersionNumbersSortAndKeepTheWholeGroup(String, String)[8]"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.controller.DhrGenericAccessTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "allGenericSingleObjectReadsRejectDhrBeforeReturningEvidence",
+        "cannotForgeReparentOverwriteOrDeleteDhrAuditLogs",
+        "databasePaginationExcludesDhrBeforeComputingCounts"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "reviewAttachmentDownloadRequiresReviewMenuPermission",
+        "reviewAuditChecksTaskThenUsesOnlyServerResolvedVersion",
+        "reorganizingDoesNotInheritOrdinaryEditOrSubmitPermission",
+        "summaryDetailAndAuditKeepExistingReadBoundary",
+        "reviewRequiresBothMenuAndActionPermission",
+        "fillingDetailAndAuditUseMenuReadPermissionWithoutGlobalViewOrWrite",
+        "fillingAndSupplementPermissionsAreIndependent",
+        "reviewOfficeDownloadKeepsOriginalNameAndTaskFrozenVersion"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.controller.FormProjectionAuthorizationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "businessFiltersRejectLookupItemsAndRolesFromOtherModelsBeforeReadingData",
+        "reportReaderCannotRetryOrReadDhrWithoutThosePermissions",
+        "administrativePermissionsDoNotReplaceSourcePermissions",
+        "reportPermissionAloneCannotReadProductionSourceOrCount"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "draftReturnsSavedLayoutAndScopedExecutionIdentityWithoutWrites",
+        "unstartedLayoutDoesNotReadStaleDraft",
+        "submittedLayoutUsesLatestVersionNotDraftOrOtherTenant"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "rejectsRenamedOfficeTemplatesAndTruncatedZipDirectory(String)[1]",
+        "rejectsRenamedOfficeTemplatesAndTruncatedZipDirectory(String)[2]",
+        "rejectsExcessiveOfficeZipExpansionBeforeParsing",
+        "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[1]",
+        "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[2]",
+        "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[3]",
+        "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[4]",
+        "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[5]",
+        "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[6]",
+        "fullAndSelectedArchivesUseOneFrozenVersionAndFailOnCorruptAttachment(String)[7]",
+        "acceptsExactly50MiBButRejectsOneByteOverBeforeReading",
+        "officeRejectsDisguisedUnsupportedCorruptEncryptedAndMacroFiles",
+        "attachmentRequiresReadableBytesAndPreservesUnlinkedHistory"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrAuditReadTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "versionAuditDoesNotLeakOtherVersionsOrDraftsAndRejectsMismatchedDhr",
+        "removedDevelopmentSummaryAuditRemainsVisibleWithoutCrossDhrLeak",
+        "dhrAuditIncludesOnlyItsLifecycleDraftAttachmentsAndVersions",
+        "paginationIsStableAndDoesNotRewriteAuditEvidence"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrEvidenceBatchPostgresTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "comparisonQueryCountIsConstantForGrowingEvidence(int)[1]",
+        "comparisonQueryCountIsConstantForGrowingEvidence(int)[2]",
+        "comparisonQueryCountIsConstantForGrowingEvidence(int)[3]",
+        "comparisonQueryCountIsConstantForGrowingEvidence(int)[4]",
+        "emptyFrozenSetStillReportsNewMembersAndInvalidVersionKeepsExistingBehavior",
+        "missingForeignChangedAndNewMembersRemainVisibleInOriginalOrder",
+        "lockedComparisonWaitsForWriterAndUsesCommittedValues"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrFillingServiceTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "auditFailureRollsBackNewCopyAndRevision",
+        "supplementChangesExecutionRevisionButNeverProductionOrDraftStatus",
+        "rejectsReviewInProgressMissingReasonFutureTimestampAndUnknownDhr",
+        "finalizedDhrRequiresExplicitReorganizationBeforeSupplement"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrFormFilesTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "includesNestedOriginalsOnceAndRejectsTamperingCrossObjectOrMissingFiles",
+        "filenameRemainsChineseSafeUniqueAndPreservesOfficeExtension"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrInstanceLookupTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "findsDhrByProductionObjectWithinTenant",
+        "missingDhrReturnsNullWithoutCreatingOne"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrInstanceMigrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "migrationCreatesEmptyRegistryAndGrantsOnlyAdministrator"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrLegacyMigrationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5,
+      "cases": [
+        "workflowActionSnapshotRoundTripsAsJsonObject",
+        "alreadyUpgradedRegistryAndItsRecordsAreUntouched",
+        "nonemptyLegacyRegistryFailsWithoutChangingRowsOrReferences",
+        "emptyLegacyTableNoLongerBlocksRegistryAndKeepsLegacyForeignKeys",
+        "freshSchemaStillCreatesRegistry"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrPdfRendererTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1,
+      "cases": [
+        "paginatesLongSheetsAndLandscapeWordWithoutLosingLastRowOrAddingBlankPages",
+        "refusesClippedFieldValuesInsteadOfReturningIncompletePrintableEvidence",
+        "usesFrozenPlacementOrderingAndNeverMutatesSourceIdentity",
+        "rendersAvailableFrozenDatabaseTemplatesReadOnly",
+        "rendersFrozenValuesAsRealTextAndRetainsTemplateLayout",
+        "refusesEllipsizedWordSelectValuesToo",
+        "rejectsMissingLayoutAndExternalImagesInsteadOfSilentIncompletePdf"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "incompleteFrozenManualReviewBlocksApprovalButAllowsReturn",
+        "realWorkflowReturnResubmitSignAndApprovedImpactPreserveHistory",
+        "concurrentApprovalCreatesOnlyOneOutcomeAndSignature",
+        "reviewDetailCurrentlyComparesTheSameFrozenVersionTwice",
+        "newlyAppearingRecordAndAttachmentBlockApprovalWithoutChangingFrozenVersion",
+        "legacyPendingReviewCannotApproveUnfinishedUnincludedCustomCopyButCanReturn"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrReviewMigrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "additiveDdlAndSeedsPreserveHistoricalVersionsAndEnforceReviewIdentity"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "personalListAndDetailCannotLeakAnotherUsersTask",
+        "frozenButtonVisibilityOpinionAndSignatureAreEnforcedOnServer",
+        "approvalRequiresUnchangedEvidenceAndCurrentHashButDoesNotAutoReturn",
+        "approvalSeparatesRuntimeOutcomeFromFrozenEvidenceAndRejectsSecondAction",
+        "aDifferentRevisionBlocksApprovalEvenWhenValuesMatch",
+        "signedReviewChecksNamedSignerAndRecordsBothIdentities",
+        "missingFrozenFormOriginalBlocksApprovalButNotReturn",
+        "intermediateApprovalKeepsPendingAndAuditFailureRollsBackOutcome",
+        "pendingRecordApplicationBlocksApprovalButStillAllowsHumanReturn",
+        "humanReturnAllowsChangedEvidenceAndCreatesNextDraftOnlyExplicitly",
+        "missingAndNewRecordsBothAffectCompleteEvidenceScope",
+        "unreadableLiveValuesAreReportedAsImpactAndBlockApproval"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrSummaryDisplayNameMigrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "nullableDisplayNamePreservesExistingEvidence"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrSummaryMigrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "migrationDeclaresIndependentVersionedSummaryWorkspaceAndPermissions"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrSummaryOrderMigrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "nullableOrderColumnsPreserveExistingFrozenEvidence"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "auditFailureRollsBackDraftAndStatus",
+        "unnumberedOptionalCustomCopyBlocksSummaryEvenWhenNotPlaced",
+        "partialDisplayPlacementStillFreezesAllActualEvidence",
+        "missingFormOriginalBlocksSubmitWithoutDiscardingDraft",
+        "recoveredDraftRequiresFreshScopeSaveAndManualCheckBeforeFreezing",
+        "failedSubmitRetainsSavedRevisionAndSuccessfulRetryFreezesEvidence",
+        "directoryProjectionKeepsLongIdsExactWithoutMutatingFrozenData",
+        "explicitReorganizationPreservesOriginalEvidenceAndChecksVersionAndReason",
+        "historicalVersionDoesNotRequireReadableLiveFormValues",
+        "savesRecordBeforeAndAfterAndRejectStaleRevisionWithoutChangingData",
+        "historicalVersionDoesNotReturnLiveFormValuesOutsideFrozenCandidates",
+        "sourceCopiesMayFreezeAtSeparateDirectoriesOrInterleavedPositions",
+        "changedFrozenAttachmentListBlocksHistoricalVersionRead",
+        "summaryDisplayNameRejectsBlankAndOversizedValues",
+        "requiredReviewUsesFrozenBindingAndFailedWorkflowRollsBackSubmission",
+        "changedFrozenCandidateCannotBypassOriginalFileCheck",
+        "newSourceRecordAfterDraftRequiresFreshCheckAndIsNeverSilentlyOmitted",
+        "submitRequiresAuditableManualCheckBeforeFreezing",
+        "directoryDisplayNameSurvivesDraftFreezeAndReorganizationWithoutChangingBase",
+        "summaryDisplayNameIsFrozenWithoutChangingSourceAndSurvivesReorganization",
+        "optionalInstanceOrderSurvivesDraftFreezeReadAndReorganization",
+        "directoryRenameCannotMoveReorderDuplicateOrUseInvalidNames",
+        "submitAuditFailureRollsBackVersionEvidenceAndDraftDeletion",
+        "staleScopeAndIncompleteSupplementBlockSubmission"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrSummaryServiceTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "placementsAutoIncludeEveryActualInstanceWithoutManualSelection",
+        "sameInstanceCannotBePlacedTwiceAndIncompleteEvidenceRemainsVisible",
+        "requiredBaseDirectoryItemMustContainACompletedDirectInstance",
+        "submitRequiresTheExactSavedDraftRevision",
+        "overlaySupportsArbitraryDepthButRejectsCycles",
+        "existingDraftRequiresExplicitMatchingRevision",
+        "sourceGroupingDoesNotRestrictIndividualPlacementOrOrder",
+        "placementOrderIsPreservedAndInsertionAnchorMustBelongToTargetDirectory"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.DhrTraceReportPostgresTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5,
+      "cases": [
+        "crossFormConditionsMatchOneRealDhrAndDetailKeepsUnmatchedForms",
+        "forwardFiltersDoNotDependOnAnyContentIndexAndPaginationIsDeduplicated",
+        "terminatedQueriesAndDetailUseSameFrozenValuesInsteadOfLiveIndex",
+        "typedCrossFormAndTerminatedMatchesUseTheSameNumericAndDatePredicates",
+        "terminatedBlankMainRegionMatchesFrozenEvidenceWithoutRewritingIt"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormProjectionPostgresTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 14,
+      "cases": [
+        "repeatedCompletionAndConcurrentConsumersPublishOneSet",
+        "aggregatesKeepOperationsAndUnitsSeparate",
+        "legacyScrapReasonsRemainQueryableAndCategoryEvidenceSurvivesWithoutANewCategoryFilter",
+        "reportBusinessFieldsSurviveCompletionAndFiltersApplyToRecordsAndTotals",
+        "savedTraceIsIndependentOfPendingStatisticalProjectionAndDoesNotReuseStatisticalFields",
+        "traceOnlyCompletionDoesNotCreateOutboxOrValidateTraceAsFormalStatisticalData",
+        "completionAndOutboxRollbackTogetherOnFailure",
+        "statisticalRowLocationUsesFrozenSystemIdentityRatherThanLatestOrder",
+        "defectDetailsKeepReasonSnapshotsAndSourceRowsWithoutGeneratingNgTotals",
+        "partialInsertFailureRollsBackAndRetryRecovers",
+        "finalProjectionPublishesOnlyStatisticalFactsWhenTraceAndStatisticsAreBothConfigured",
+        "restartUsesPersistedSnapshotRatherThanLaterValues",
+        "signatureReporterIsFrozenAndQueryableWithoutChangingQuantities",
+        "editingTemplateAfterFirstUseDoesNotChangeThatExecutionSnapshot"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.FormTraceIndexServiceTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "onlyExplicitTraceSourcesAndSavedSupportedValuesAreCollected",
+        "systemRowIdentityIsIndependentOfBindingsAndDisplayOrder",
+        "legalBlankMainRegionsUseRootValuesWithoutChangingFrozenConfiguration",
+        "referenceUsesFrozenCodeAndRequiresCompatibleIdentity",
+        "nonblankTableIdsKeepExactIdentityAndRemainSeparateFromMainAndOtherRows"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionOutputPostgresTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 13,
+      "cases": [
+        "pendingFailedAndRetryNeverEraseOrDoubleKnownOutput",
+        "zeroIsKnownButEmptyAndDifferentUnitsAreExcludedWithVisibleEvidence",
+        "repeatedReportingUsesCompleteFactsNotOtherOperationsOrCallbackCounts",
+        "pendingQualityKeepsItsRecordedEvidenceAndRetryDoesNotAddTwice",
+        "ordinaryOperationKeepsDifferentUnitsSeparateAndNoFinalNodeDoesNotInventZero",
+        "independentDefectReasonsReachTheWorkbenchWithoutInflatingNgOrOutput",
+        "batchSharedCustomFormCannotBeClaimedByItsDisplayOperation",
+        "ordinaryOutputWithoutUnitKeepsEvidenceButDoesNotEnterEitherCumulative",
+        "oldSnapshotsAreNotReinterpretedAndMixedFrozenBatchUnitsAreNotAdded",
+        "concurrentConsumersExposeOneCommittedSourceSet",
+        "uniqueFinalNodeIsEnforcedByDatabaseAndExistingRowsStayUnconfigured",
+        "qualityUsesFinalRolesAndProductScrapWithoutUpdatingAnyProductionRows",
+        "subtableActualRowsAndIndependentMainBindingsEachContributeOnce"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.production.service.ProductionQualitySummaryTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "unidentifiedScrapIsPendingReviewRatherThanClassifiedAsAnotherMaterial",
+        "sourcePositionUsesFrozenFieldAndActualRowIdentity",
+        "savedDefectReasonRetainsIdentityAndDoesNotInventNgCount",
+        "sourceMetadataDistinguishesFormCompletionFromProjectionFailure",
+        "savedReferenceUsesBindingsWithoutRequiringAllMetricsOrBorrowingProductUnits",
+        "defectReasonsExplainNgWithoutAddingToItsQuantityAndStayInTheirOperation",
+        "absentIsNotZeroAndAnExplicitZeroIsKnown",
+        "productScrapSpansOperationsButRetainsOtherMaterialsAndUnknownUnitsAsEvidence",
+        "finalGoodAndNgAreSeparateAndDoNotIncludeEarlierOperations"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.recordcontrol.service.RecordControlAccessTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "applicationListFiltersAreAppliedBeforePagination",
+        "assignedApproverCanReadActiveRequestDetail",
+        "tenantHistoryIsOpenToAuthenticatedActorButNotAnonymous",
+        "completedApprovalQueueUsesDedicatedRecordControlProjection",
+        "myApplicationsAreFilteredByAuthenticatedActor",
+        "authenticatedTenantUserCanReadResolvedHistoryDetail",
+        "approvalProjectionRequiresCurrentTaskOwnership",
+        "approvalQueueFiltersRecordControlTasksBeforePagination",
+        "unrelatedUserCannotReadActiveRequestDetail",
+        "applicantCanReadOwnActiveRequestDetail"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.recordcontrol.service.RecordControlDiffTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "productionRowReorderingAndNewRowsPreserveNativeIdentities",
+        "attachmentOrderDoesNotCountAsContentChange",
+        "nestedHistoricalSignatureIsNotCarriedIntoNewRevisionWhenSubtableIsOmitted",
+        "subtableDiffUsesRowIdentityAndRejectsUnknownExistingIdentity",
+        "historicalSubtableRowsGetStableIdentityAndReorderingIsNotAChange",
+        "productionRowIdentitySurvivesAMainFieldOnlyChange",
+        "productionRowIdentityCannotBeReplacedOrReusedByANewRow",
+        "historicalSignatureCannotBeEditedAndIsNotCopiedIntoNewRevision"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.recordcontrol.service.RecordControlMigrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "schemaKeepsOneRevisionNumberPerRecordAndRejectsInvalidRequestState"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "concurrentDhrSubmissionAndApplicationHaveOnlyOneWinner",
+        "returnedRequestLeavesSourceUnchangedAndAllowsANewApplication",
+        "changeAndVoidSwitchCurrentReportsAndOutputWithoutDeletingHistoricalContributions",
+        "notificationFailureRollsBackSourceProjectionTraceSignatureAndFinalApproval",
+        "failedBusinessApplicationRollsBackFinalTaskSignatureAndRevision",
+        "signedChangeAndDuplicateConfirmationApplyExactlyOneNewRevision",
+        "approvedVoidPreservesValuesAndHistoricalRevision",
+        "firstCompletionCreatesOneImmutableInitialRevision",
+        "dhrReviewBlocksBothNewApplicationKindsUntilHumanReturn",
+        "activeApplicationBlocksSummaryButReturnRestoresOrdinarySubmissionChecks",
+        "approvedChangePreservesFrozenVersionAndDeliversOnlyTheAffectedSubmitterInbox",
+        "legacySubmitterIdentityComesFromOriginalAuditInsteadOfDisplayName",
+        "legacyConcurrentApplicationAndDhrApprovalCannotApproveStaleEvidenceAndNotifyOnlyCurrentPeople",
+        "concurrentApplicationsCreateOneWorkflowAndOneActiveRequest"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.recordcontrol.service.RecordControlTaskActionServiceTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "finalWorkflowResultIsDeliveredInTheTaskTransaction",
+        "sharedTerminalSignerCompletesTaskAsActualSigner",
+        "businessResultFailureIsPropagatedSoTheOuterTransactionCanRollBack",
+        "rejectionRequiresOpinionBeforeSigning"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.template.service.FormProjectionInterpreterTest",
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "subtableHoursRemainPerRowAndCannotBorrowHeaderHours",
+        "disabledIncompleteDraftIsExplicitlyAllowed",
+        "outputCanReuseOneQualityFieldButCannotMakeGoodAndNgTheSameSource",
+        "retiredTraceMeaningsCannotBeFrozenAgainButHistoricalEvidenceStillInterprets",
+        "horizontalGroupsStayPairedAndDeterministic",
+        "scrapDictionaryRolesKeepCodesAndLabelsWithoutChangingQuantity",
+        "blankTableRegionsShareTheRuntimeMainTableFieldIdentity",
+        "reporterAcceptsOnlyUserReferenceOrSignatureAndUsesActualSigner",
+        "noInventedStatisticsOrUnknownAttributes",
+        "subtableSignatureReportersStayWithTheirOwnRows",
+        "businessTeamAndDocumentRolesAreIndependentOfRetiredTraceCatalogMeanings",
+        "subtableRequiresStableUniqueRowKeysAndRejectsCrossGroupReferences",
+        "reportTemporalRolesRejectWrongFieldTypesInvalidDatesAndReversedPeriod",
+        "formalQuantityAllowsBlankUnitsButRejectsNegativeAndDuplicateSources",
+        "newTraceConfigurationRejectsCrossBindingConflictsWithoutRewritingFrozenInterpretation",
+        "dictionaryUnitUsesFrozenValueWithoutConversion",
+        "referenceTraceUsesFrozenCodeAndRejectsWrongTypesOrLegacyDisplayFallback",
+        "objectValuesCannotMasqueradeAsTextIdentities",
+        "noConfigurationDoesNotBlockOrdinaryForms",
+        "referenceSubtableRowsRetainSeparateCodesAndLocations",
+        "personHoursAreExplicitAndIndependentOfPeriodDateAndReporter",
+        "consumptionNeedsOnlyMaterialAndQuantityAndUsesSystemRowIdentity",
+        "deletedOrChangedFieldsCannotPublish",
+        "sameTraceMeaningCanBeReusedAcrossFieldsAndTableRegions",
+        "traceDateAndProductionDateMayUseTheSameBusinessField"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "mapsChineseApplicationRequestToTypedPublishedCandidates",
+        "rejectsUnsupportedBusinessType",
+        "candidateEndpointRequiresMatchingRecordControlCreatePermission"
+      ]
+    },
+    {
+      "class": "com.zencas.edhr.workflow.service.RecordControlWorkflowServiceTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "listsOnlyCurrentPublishedCandidatesForRequestedBusinessType",
+        "startsThroughExplicitVersionPortAndReturnsFrozenReferences",
+        "rejectsIncompleteStartCommandBeforeCallingEngine"
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 360,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 38
+  },
+  "archives": [
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest.xml",
+      "archive": "TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest.xml.gz",
+      "bytes": 78587,
+      "sha256": "e0dcd2a0ccc49c0621d32bd3c196088c3e208f00673b5a5f724a9bb57515891a"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselineTest.xml",
+      "archive": "TEST-com.zencas.edhr.common.config.CurrentDatabaseBaselineTest.xml.gz",
+      "bytes": 38122,
+      "sha256": "ea996f9c63148d115e46f4be0658ce0f2d7eeff2f71ecdf6d91bba1e294608c6"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "archive": "TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml.gz",
+      "bytes": 52089,
+      "sha256": "3a88af41c687e0aba56b1c85b842aebb84827dde2ca33c724ba2f3a0a46fe1bd"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.masterdata.controller.MasterDataBoundaryIntegrationTest.xml",
+      "archive": "TEST-com.zencas.edhr.masterdata.controller.MasterDataBoundaryIntegrationTest.xml.gz",
+      "bytes": 187316,
+      "sha256": "c75608430953424b8bdb9828f5d47205e664d2593aed7f06af823de5fd49dd1a"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.controller.DhrGenericAccessTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.controller.DhrGenericAccessTest.xml.gz",
+      "bytes": 122836,
+      "sha256": "4aed7111a294faf414d8a568e4fc7a7ab0aab70583e60c51df535035e4190d3b"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.controller.DhrWorkbenchPermissionsTest.xml.gz",
+      "bytes": 66858,
+      "sha256": "9bc4764987f1dc5a7b98d8f0bbcfa0e4c39526cd90bcf6bbdc577ff41358fd04"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.controller.FormProjectionAuthorizationTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.controller.FormProjectionAuthorizationTest.xml.gz",
+      "bytes": 57522,
+      "sha256": "68dc54347394f3b1187c3df08d6c9ae3b16375005eb6696a2340f73ae2840558"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrArchiveLayoutReaderTest.xml.gz",
+      "bytes": 38439,
+      "sha256": "a4ebc7b7f4933b963cfa5d7db959a79e809b5025ae4eebd88098509cabd0d725"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest.xml.gz",
+      "bytes": 42132,
+      "sha256": "72909f9e8fd7a4fb85153ab91dda7146a60074058d2e1d7805cf80087504d4d3"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrAuditReadTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrAuditReadTest.xml.gz",
+      "bytes": 38586,
+      "sha256": "c48cf290b578bffb7fde85801c5aa1e7a374baa6714050453e8539c68be0b3bb"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrEvidenceBatchPostgresTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrEvidenceBatchPostgresTest.xml.gz",
+      "bytes": 101804,
+      "sha256": "ea4211f57a7b637070b376c5dd494a2993722560de4b70e11d2f89006100dcb0"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrFillingServiceTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrFillingServiceTest.xml.gz",
+      "bytes": 38600,
+      "sha256": "ab05830a144c99da699378047ddf0de25abd4f7db4354c41c80a16c23280efa0"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrFormFilesTest.xml.gz",
+      "bytes": 38281,
+      "sha256": "652252ec8b8f442d955aeefd52a94c62b91837df5db69f837db259bb30e7be4b"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrInstanceLookupTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrInstanceLookupTest.xml.gz",
+      "bytes": 38243,
+      "sha256": "d483bca1259c2d4c8060e875c636c9c9b89da21d4694c85fa3cf7a3ec82975c2"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrInstanceMigrationTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrInstanceMigrationTest.xml.gz",
+      "bytes": 53969,
+      "sha256": "003af46bf9293358ff4086a4b3fcad458538c54cbd53dd87dafe6eb0bfa11339"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrLegacyMigrationTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrLegacyMigrationTest.xml.gz",
+      "bytes": 39186,
+      "sha256": "8abdf9b778c2841d76f50bc347854586c957f36aa88f71edbd3336527c8aeec9"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrPdfRendererTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrPdfRendererTest.xml.gz",
+      "bytes": 39149,
+      "sha256": "947550e3ad950feb84121aeb75439c64cece7fa2afc4190e10fc410bd3271967"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml.gz",
+      "bytes": 293510,
+      "sha256": "8a73c997b209fee51c08c58a47228cbaf74d324d884777227de904133a3e59f6"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrReviewMigrationTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrReviewMigrationTest.xml.gz",
+      "bytes": 38133,
+      "sha256": "a5dd84a272d09282ab19759d17ebe8c1f691a7d6c4d794e861508ba300fdf5f0"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml.gz",
+      "bytes": 39891,
+      "sha256": "b2cb9af6c425b87f77508ec127e6ddf2857f4ef78e5c1cf6641dae6f4b4bd12b"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrSummaryDisplayNameMigrationTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrSummaryDisplayNameMigrationTest.xml.gz",
+      "bytes": 43580,
+      "sha256": "8b73c0a8a55c82814eac1b19bff520f710bdeb4ebc788b7d5b137cd02874a44f"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrSummaryMigrationTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrSummaryMigrationTest.xml.gz",
+      "bytes": 38133,
+      "sha256": "1d46065144b74dac187f3f5cbcba71dd1c2f4fb68972904e5ae45eff28aee661"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrSummaryOrderMigrationTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrSummaryOrderMigrationTest.xml.gz",
+      "bytes": 43546,
+      "sha256": "36f18a7f1178909665d69ce0ca7e7bf9b854e3d29f0492ec1931193474fdbd8c"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml.gz",
+      "bytes": 41971,
+      "sha256": "fecefb3199d843a1aada57105dc09bf7d36835655a0d3bbe6da591ea558782f8"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrSummaryServiceTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrSummaryServiceTest.xml.gz",
+      "bytes": 39228,
+      "sha256": "9beb6f173e07800cbdbb642f88a89e222a2087df544e6bbd9e4dc6998d68bd3b"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.DhrTraceReportPostgresTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.DhrTraceReportPostgresTest.xml.gz",
+      "bytes": 39347,
+      "sha256": "da3ace2c278b23ea9cc317444241b378942bc7989e274342b76c73a62d2ff2ab"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.FormProjectionPostgresTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.FormProjectionPostgresTest.xml.gz",
+      "bytes": 41822,
+      "sha256": "a3de9c88303060be74a78d1fed6560c7fbe360ead66994c6ba368f233b48aa7e"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.FormTraceIndexServiceTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.FormTraceIndexServiceTest.xml.gz",
+      "bytes": 38804,
+      "sha256": "5def76a254cbf04a295a34916fa8542e64681236d247fdd6929cf0d04016613a"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.ProductionOutputPostgresTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.ProductionOutputPostgresTest.xml.gz",
+      "bytes": 41568,
+      "sha256": "cce1f1c9255164bdb334ddf5674cef2319972a50a7a7a52167d4b3c34d1e239e"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.production.service.ProductionQualitySummaryTest.xml",
+      "archive": "TEST-com.zencas.edhr.production.service.ProductionQualitySummaryTest.xml.gz",
+      "bytes": 39499,
+      "sha256": "a334ed499e84334d0475f2b541963cdc2add1a5fc47de3fcccf0a1ff1dd21a37"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.recordcontrol.service.RecordControlAccessTest.xml",
+      "archive": "TEST-com.zencas.edhr.recordcontrol.service.RecordControlAccessTest.xml.gz",
+      "bytes": 39128,
+      "sha256": "bd326331164fdbc88db9deb6905d7dd6b35a2ccff8f6a458e106e47c7b2c15c0"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.recordcontrol.service.RecordControlDiffTest.xml",
+      "archive": "TEST-com.zencas.edhr.recordcontrol.service.RecordControlDiffTest.xml.gz",
+      "bytes": 39399,
+      "sha256": "110bea14de41e8ebfd21824c100f3cc77d1c310b1c0a03192484512faf881843"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.recordcontrol.service.RecordControlMigrationTest.xml",
+      "archive": "TEST-com.zencas.edhr.recordcontrol.service.RecordControlMigrationTest.xml.gz",
+      "bytes": 44688,
+      "sha256": "d5707f3ebee02315609cf317c55201adfc38e30c32a089e2025303f51cda4b25"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml",
+      "archive": "TEST-com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest.xml.gz",
+      "bytes": 700315,
+      "sha256": "0df46ebfbe6739a63ba290c44f38d62ec75622f01764e6e95bdb9843ac915126"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.recordcontrol.service.RecordControlTaskActionServiceTest.xml",
+      "archive": "TEST-com.zencas.edhr.recordcontrol.service.RecordControlTaskActionServiceTest.xml.gz",
+      "bytes": 38651,
+      "sha256": "ea6dc6a5b4408f6b5756b7cb6ca015e16c9365fca92d5c03910447c31423174f"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.template.service.FormProjectionInterpreterTest.xml",
+      "archive": "TEST-com.zencas.edhr.template.service.FormProjectionInterpreterTest.xml.gz",
+      "bytes": 42085,
+      "sha256": "8de565b0d7bc976b7caa3d9574a1087b0b1eedd4d2d5581a6338b6b18b977186"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest.xml",
+      "archive": "TEST-com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest.xml.gz",
+      "bytes": 38474,
+      "sha256": "fb1008180aa01831df49f1f2413c96f14d47df2e6da2e0c952a6297b56ec39be"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.workflow.service.RecordControlWorkflowServiceTest.xml",
+      "archive": "TEST-com.zencas.edhr.workflow.service.RecordControlWorkflowServiceTest.xml.gz",
+      "bytes": 38469,
+      "sha256": "d82c89d252209895d5d7d44d59f4ff6b0cc378455a4d64b589f20a87d0d2d7cc"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/dhr-linkage-postgres-initial.log",
+      "archive": "dhr-linkage-postgres-initial.log.gz",
+      "bytes": 228508,
+      "sha256": "62c6c88a10830885b36e9562da37d8a22288edd840643e39cdd7b2b4ca1e6a1a"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/dhr-linkage-ontology-20261029.log",
+      "archive": "dhr-linkage-ontology-20261029.log.gz",
+      "bytes": 327,
+      "sha256": "c90e2cf97694f27978681371e64941d586c449d3a4b981ab5644c01d97468f41"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/dhr-linkage-postgres-third.log",
+      "archive": "dhr-linkage-postgres-third.log.gz",
+      "bytes": 919283,
+      "sha256": "fce37ca095debc0e12273423a01d37fac7d16d180b1fa9a5ed50ba6161fe9171"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/dhr-linkage-regression.log",
+      "archive": "dhr-linkage-regression.log.gz",
+      "bytes": 1352008,
+      "sha256": "e8d6b94567e8cfacf369fb8333d42240b4c1fb59beee0f5488dc4daea05daa88"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/dhr-linkage-regression-final.log",
+      "archive": "dhr-linkage-regression-final.log.gz",
+      "bytes": 1322030,
+      "sha256": "1464d77f939e932b14718fa45f279e8fccd599983196b620fb20d12e25b3ae79"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/dhr-linkage-focused.log",
+      "archive": "dhr-linkage-focused.log.gz",
+      "bytes": 150491,
+      "sha256": "41d11581069f8d2052f622b174847d9e22126ccdf162b407cabd65222156df3f"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/dhr-linkage-postgres-second.log",
+      "archive": "dhr-linkage-postgres-second.log.gz",
+      "bytes": 464676,
+      "sha256": "2786947129f9c4bbd2bd9c9666e051e4750953af5458ae0ed5b44917721306a5"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/dhr-linkage-export-regression.log",
+      "archive": "dhr-linkage-export-regression.log.gz",
+      "bytes": 2203,
+      "sha256": "ea19f3828bfa0226500941b564c4ad889ac12636ceb5e16230119b37df413476"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/dhr-linkage-compile.log",
+      "archive": "dhr-linkage-compile.log.gz",
+      "bytes": 327,
+      "sha256": "0b99d1060566b09a012106623ee8d6479e688983d9b3f446170ca85a1a1d465e"
+    },
+    {
+      "originalPath": "gmp-platform/backend/target/dhr-linkage-focused-second.log",
+      "archive": "dhr-linkage-focused-second.log.gz",
+      "bytes": 255554,
+      "sha256": "ea519d81cadf97095a67e6b7c47a23b3882a8433d28a34d267598944c859a6d7"
+    }
+  ]
+}

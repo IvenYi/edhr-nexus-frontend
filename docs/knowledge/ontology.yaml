@@ -186,6 +186,12 @@ concepts:
     status: specified
     visibility: internal
     evidenceIds: [evidence.dhr-summary-source-group-user-confirmed, evidence.dhr-summary-service, evidence.dhr-summary-display-name-migration]
+  - id: concept.dhr-archive
+    termId: term.dhr-archive
+    kind: business-concept
+    status: specified
+    visibility: internal
+    evidenceIds: [evidence.dhr-archive-minimum-user-confirmed, evidence.dhr-archive-prd-direction]
   - id: concept.form-template-version
     termId: term.form-template-version
     kind: business-fact

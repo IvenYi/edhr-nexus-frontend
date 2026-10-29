@@ -1,0 +1,51 @@
+{
+  "scope": "Final independent current 52-case focused run, no PG fixture writes",
+  "suites": [
+    {
+      "suite": "DhrReviewServiceTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "archive": "TEST-com.zencas.edhr.production.service.DhrReviewServiceTest.xml.gz",
+      "sourceMtime": 1793282906.1185672,
+      "rawSha256": "c5bc9caf89efaedc8c40b95b095ef5bbd03bb1107a7cb31fa4facd45cedf854b"
+    },
+    {
+      "suite": "DhrSummaryPersistenceTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "archive": "TEST-com.zencas.edhr.production.service.DhrSummaryPersistenceTest.xml.gz",
+      "sourceMtime": 1793282904.4652498,
+      "rawSha256": "1e98f6f1812973f63445c4d221b53a3f2d26e3b8b2c334df06bab0077cadac8b"
+    },
+    {
+      "suite": "DhrReviewLifecycleIntegrationTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "archive": "TEST-com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest.xml.gz",
+      "sourceMtime": 1793282906.005679,
+      "rawSha256": "12988083589ca1540d9e6a848ad78ff4ebde91d98ad482eaf578d02217f84e76"
+    },
+    {
+      "suite": "RecordControlAccessTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "archive": "TEST-com.zencas.edhr.recordcontrol.service.RecordControlAccessTest.xml.gz",
+      "sourceMtime": 1793282903.8478718,
+      "rawSha256": "7c206d032f8069eaaa1c0242ba34c323205ade730843eb8dde579a84d62f2d57"
+    }
+  ],
+  "totals": {
+    "tests": 52,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

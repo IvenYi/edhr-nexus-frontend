@@ -34,7 +34,9 @@ class RecordControlAccessTest {
             mock(SnowflakeIdGenerator.class), mock(RecordControlWorkflowPort.class), workflowTasks,
             mock(AuditEventRepository.class),
             mock(RecordControlDiff.class), mock(ExecutionAccess.class),
-            mock(com.zencas.edhr.compliance.repository.SignatureRepository.class));
+            mock(com.zencas.edhr.compliance.repository.SignatureRepository.class),
+            mock(com.zencas.edhr.production.service.DhrEvidenceImpactService.class),
+            mock(com.zencas.edhr.production.service.FormProjectionService.class));
 
     @AfterEach void clearActor() { AuditContext.clear(); }
 

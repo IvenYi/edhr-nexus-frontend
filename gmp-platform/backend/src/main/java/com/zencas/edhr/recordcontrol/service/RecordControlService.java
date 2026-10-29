@@ -12,6 +12,9 @@ import com.zencas.edhr.compliance.entity.AuditEvent;
 import com.zencas.edhr.compliance.repository.AuditEventRepository;
 import com.zencas.edhr.compliance.repository.SignatureRepository;
 import com.zencas.edhr.production.service.ExecutionAccess;
+import com.zencas.edhr.production.service.DhrEvidenceImpactService;
+import com.zencas.edhr.production.service.FormProjectionService;
+import com.zencas.edhr.production.service.FormTraceIndexService;
 import com.zencas.edhr.workflow.contract.RecordControlBusinessProjectionPort;
 import com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.*;
 import com.zencas.edhr.workflow.contract.RecordControlWorkflowPort;
@@ -45,6 +48,8 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
     private final RecordControlDiff differences;
     private final ExecutionAccess executionAccess;
     private final SignatureRepository signatures;
+    private final DhrEvidenceImpactService dhrImpacts;
+    private final FormProjectionService projection;
 
     public record SubmitCommand(BusinessType requestType, String instanceNo, String sourceRevisionId,
                                 JsonNode proposedValues, String reason, String workflowDefinitionId,
@@ -264,6 +269,7 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
         prior = jdbc.queryForList("SELECT id FROM record_control_request WHERE tenant_id=? AND applicant_id=? AND idempotency_key=?",
                 TENANT, applicant, command.idempotencyKey());
         if (!prior.isEmpty()) return requestDetail(str(prior.getFirst().get("id")), false);
+        dhrImpacts.requireRecordControlAllowed(((Number) record.get("object_id")).longValue());
         if (!"COMPLETED".equals(record.get("status")) || record.get("current_revision_id") == null)
             throw invalid("只有已有有效修订的已完成表单可申请变更或作废");
         if (!command.sourceRevisionId().equals(str(record.get("current_revision_id")))) throw invalid("表单修订已变化，请刷新后重试");
@@ -356,6 +362,18 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
                 event.result().name(), resolvedAt, request.get("id"), TENANT);
         jdbc.update("INSERT INTO record_control_result_event(event_id,tenant_id,request_id,result,occurred_at) VALUES(?,?,?,?,?)",
                 event.eventId(), TENANT, request.get("id"), event.result().name(), resolvedAt);
+        if (event.result() == Result.APPROVED) {
+            long currentRevision = id(after.path("currentRevisionId").asText());
+            var current = lockedRecord(recordId);
+            JsonNode form = json(current.get("snapshot_json")), values = json(current.get("values_json"));
+            new FormTraceIndexService(jdbc, mapper).refresh(recordId, TENANT, form, values);
+            JsonNode execution = json(jdbc.queryForObject("SELECT snapshot_json FROM production_execution WHERE object_id=?", String.class, record.get("object_id")));
+            int revisionNo = jdbc.queryForObject("SELECT revision_no FROM form_instance_revision WHERE id=? AND tenant_id=?", Integer.class, currentRevision, TENANT);
+            projection.revised(recordId, TENANT, form, values, execution.path("context"), str(record.get("operation_id")),
+                    revisionNo, str(currentRevision), "OBSOLETE".equals(request.get("request_type")));
+            dhrImpacts.sourceEffective(event.eventId(), ((Number) request.get("id")).longValue(), recordId,
+                    id(before.path("currentRevisionId").asText()), currentRevision, str(request.get("request_type")), resolvedAt);
+        }
         audit(((Number) request.get("id")).longValue(), event.result().name(), before, after,
                 str(request.get("reason_text")), str(request.get("request_no")), event.operatorId());
     }

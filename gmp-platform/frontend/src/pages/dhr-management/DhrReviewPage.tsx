@@ -36,13 +36,14 @@ function ReviewDialog({ task, onClose }: { task: DhrReviewTask; onClose: () => v
   const [navigationView, setNavigationView] = useState<DhrNavigationView>('ARCHIVE');
   const [source, setSource] = useState<DhrSource>('DIRECTORY');
   const [instancesOpen, setInstancesOpen] = useState(false);
+  const [showObsolete, setShowObsolete] = useState(false);
   const [button, setButton] = useState<ExecutionButton | null>(null), [busy, setBusy] = useState(false);
   const [attachmentsOpen, setAttachmentsOpen] = useState(false);
   const busyRef = useRef(false);
   const detail = query.data;
   const directoryNodes = useMemo(() => !detail ? [] : navigationView === 'ARCHIVE'
-    ? archiveNavigation(detail.version.baseDirectory.directories, detail.version.candidates, detail.version.overlayDirectories, detail.placements)
-    : evidenceNavigation(source, detail.version.baseDirectory.directories, detail.version.candidates), [detail, navigationView, source]);
+    ? archiveNavigation(detail.version.baseDirectory.directories, detail.version.candidates, detail.version.overlayDirectories, detail.placements, showObsolete)
+    : evidenceNavigation(source, detail.version.baseDirectory.directories, detail.version.candidates, showObsolete), [detail, navigationView, source, showObsolete]);
   const activeNode = directoryNodes.find(node => !node.folder && node.key === nodeKey) ?? directoryNodes.find(node => !node.folder);
   const activeRecordId = activeNode?.recordIds.includes(recordId) ? recordId : activeNode?.recordIds[0];
   const record = detail?.version.candidates.find(r => r.id === activeRecordId) ?? null;
@@ -82,12 +83,13 @@ function ReviewDialog({ task, onClose }: { task: DhrReviewTask; onClose: () => v
       <DialogContent dividers sx={{ ...workspaceBodySx, p: 1.5, bgcolor: '#f3f5f8' }}>
         {!detail ? <Box sx={{ m: 'auto', p: 3 }}>{query.isError ? <><Typography color="error">{errorText(query.error)}</Typography><Button onClick={() => query.refetch()}>重新加载</Button></> : '加载中…'}</Box> : <>
           <DhrWorkspaceNavigation view={navigationView} source={source} nodes={directoryNodes} selectedKey={activeNode?.key ?? ''} instancesOpen={instancesOpen}
-            onViewChange={next => { const origin = record?.originKind ?? source; const nodes = next === 'ARCHIVE' ? archiveNavigation(detail.version.baseDirectory.directories, detail.version.candidates, detail.version.overlayDirectories, detail.placements) : evidenceNavigation(origin, detail.version.baseDirectory.directories, detail.version.candidates); setNodeKey(nodes.find(n => record && n.recordIds.includes(record.id))?.key ?? ''); setRecordId(record?.id ?? ''); setSource(origin); setNavigationView(next); }}
+            obsoleteView={{ count: detail.version.candidates.filter(item => item.status === 'OBSOLETE').length, show: showObsolete, onToggle: () => setShowObsolete(value => !value) }}
+            onViewChange={next => { const origin = record?.originKind ?? source; const nodes = next === 'ARCHIVE' ? archiveNavigation(detail.version.baseDirectory.directories, detail.version.candidates, detail.version.overlayDirectories, detail.placements, showObsolete) : evidenceNavigation(origin, detail.version.baseDirectory.directories, detail.version.candidates, showObsolete); setNodeKey(nodes.find(n => record && n.recordIds.includes(record.id))?.key ?? ''); setRecordId(record?.id ?? ''); setSource(origin); setNavigationView(next); }}
             onSourceChange={next => { setSource(next); setNodeKey(''); setRecordId(''); setInstancesOpen(false); }}
             onSelect={node => { if (node.key !== activeNode?.key) { setNodeKey(node.key); setRecordId(''); } }}
             onInstances={node => { if (node.key === activeNode?.key) setInstancesOpen(open => !open); else { setNodeKey(node.key); setRecordId(''); setInstancesOpen(true); } }} />
           <DhrInstancePanel open={instancesOpen} title={activeNode?.label ?? '表单'} selectedId={record?.id ?? ''} onSelect={setRecordId} onClose={() => setInstancesOpen(false)}
-            items={(activeNode?.recordIds ?? []).map(id => { const item = detail.version.candidates.find(r => r.id === id)!; return { id, label: item.instanceNo, secondary: item.status === 'COMPLETED' ? '已完成' : '未完成' }; })} />
+            items={(activeNode?.recordIds ?? []).map(id => { const item = detail.version.candidates.find(r => r.id === id)!; return { id, label: item.instanceNo, secondary: item.status === 'COMPLETED' ? '已完成' : item.status === 'OBSOLETE' ? '已作废' : '未完成' }; })} />
           <Box sx={{ ...workspacePanelSx, flex: 1 }}>
             {affected > 0 && <Alert severity="warning">{affected} 项冻结证据或来源范围发生变化，本次冻结内容保持不变。请核对后退回整理，不能批准过时证据。{detail.evidenceChanges.map(c => <Typography key={c.recordId ?? `attachment-${c.attachmentId}`} variant="caption" component="div">{c.instanceNo || (c.attachmentId ? `附件 ${c.attachmentId}` : '证据')}：{c.message}</Typography>)}</Alert>}
             {missingReview && <Alert severity="error">本版本提交核查结果不完整，不能批准；请退回整理。</Alert>}

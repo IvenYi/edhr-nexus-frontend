@@ -1,6 +1,6 @@
-import { useState, type ReactNode } from 'react';
-import { ArticleOutlined, ChevronRightRounded, ExpandMoreRounded, CloseRounded, FolderOutlined, ViewListOutlined } from '@mui/icons-material';
-import { Box, Button, Chip, Collapse, IconButton, Stack, Tab, Tabs, ToggleButton, ToggleButtonGroup, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import { useId, useState, type ReactNode } from 'react';
+import { ArticleOutlined, CheckRounded, ChevronRightRounded, ExpandMoreRounded, CloseRounded, FolderOutlined, MoreVertRounded, ViewListOutlined } from '@mui/icons-material';
+import { Box, Button, Chip, Collapse, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Tab, Tabs, ToggleButton, ToggleButtonGroup, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import type { DhrNavigationNode, DhrNavigationView, DhrSource } from './dhrSourceNavigation';
 
 export const workspacePanelSx = { minWidth: 0, minHeight: 0, bgcolor: '#fff', border: '1px solid #e4e7ed', borderRadius: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' } as const;
@@ -21,14 +21,17 @@ export function DhrSourceTabs({ value, onChange }: { value: DhrSource; onChange:
   </Tabs>;
 }
 
-export function DhrWorkspaceNavigation({ source, onSourceChange, nodes, selectedKey, onSelect, onInstances, instancesOpen = false, action, footer, children, contentKey = 'browse', view = 'SOURCE', onViewChange, matchedRecordIds }: {
+export function DhrWorkspaceNavigation({ source, onSourceChange, nodes, selectedKey, onSelect, onInstances, instancesOpen = false, action, footer, children, contentKey = 'browse', view = 'SOURCE', onViewChange, matchedRecordIds, obsoleteView }: {
   source: DhrSource; onSourceChange: (source: DhrSource) => void; nodes: DhrNavigationNode[];
   selectedKey: string; onSelect: (node: DhrNavigationNode) => void; onInstances: (node: DhrNavigationNode) => void;
   instancesOpen?: boolean; action?: ReactNode; footer?: ReactNode; children?: ReactNode; contentKey?: string;
   view?: DhrNavigationView; onViewChange?: (view: DhrNavigationView) => void;
   matchedRecordIds?: Set<string>;
+  obsoleteView?: { count: number; show: boolean; onToggle: () => void };
 }) {
   const [collapsed, setCollapsed] = useState<string[]>([]);
+  const [viewOptionsAnchor, setViewOptionsAnchor] = useState<HTMLElement | null>(null);
+  const viewOptionsId = useId();
   const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const hiddenBelow: number[] = [];
   const visibility = nodes.map(node => {
@@ -38,7 +41,16 @@ export function DhrWorkspaceNavigation({ source, onSourceChange, nodes, selected
     return visible;
   });
   return <Box data-dhr-navigation sx={{ ...workspacePanelSx, width: { xs: 220, lg: 280 }, flexShrink: 0 }}>
-    <Stack data-dhr-navigation-heading direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 1.5, minHeight: 40, flexShrink: 0 }}><Typography fontWeight={600}>DHR 导航</Typography>{action}</Stack>
+    <Stack data-dhr-navigation-heading direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 1.5, minHeight: 40, flexShrink: 0 }}><Typography fontWeight={600}>DHR 导航</Typography><Stack direction="row" alignItems="center" gap={0.5}>{action}
+      {Boolean(obsoleteView?.count) && <Tooltip title="查看选项"><IconButton id={viewOptionsId} size="small" aria-label="DHR 查看选项" aria-haspopup="menu" aria-expanded={Boolean(viewOptionsAnchor)} aria-controls={viewOptionsAnchor ? `${viewOptionsId}-menu` : undefined}
+        color={obsoleteView!.show ? 'primary' : 'default'} onClick={event => setViewOptionsAnchor(event.currentTarget)} sx={{ width: 28, height: 28 }}><MoreVertRounded sx={{ fontSize: 18 }} /></IconButton></Tooltip>}
+    </Stack></Stack>
+    {Boolean(obsoleteView?.count) && <Menu id={`${viewOptionsId}-menu`} anchorEl={viewOptionsAnchor} open={Boolean(viewOptionsAnchor)} onClose={() => setViewOptionsAnchor(null)}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }} PaperProps={{ sx: { minWidth: 0 } }} MenuListProps={{ 'aria-labelledby': viewOptionsId, sx: { py: 0.5 } }}>
+      <MenuItem dense role="menuitemcheckbox" aria-checked={obsoleteView!.show} onClick={() => { setViewOptionsAnchor(null); obsoleteView!.onToggle(); }} sx={{ minHeight: 32, px: 1.25, gap: 1, '& .MuiListItemIcon-root': { minWidth: 18 } }}>
+        <ListItemIcon>{obsoleteView!.show && <CheckRounded sx={{ fontSize: 18 }} />}</ListItemIcon><ListItemText primary="显示作废表单" primaryTypographyProps={{ fontSize: 13, noWrap: true }} /><Typography variant="caption" color="text.secondary">{obsoleteView!.count}</Typography>
+      </MenuItem>
+    </Menu>}
     <Box key={contentKey} sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, ...contentEntranceSx }}>{children || <>
     {onViewChange && <ToggleButtonGroup exclusive fullWidth size="small" aria-label="DHR导航视图" value={view} onChange={(_, value: DhrNavigationView | null) => { if (value) onViewChange(value); }} sx={{ width: 'auto', m: 1, mt: 0.5, p: 0.375, bgcolor: '#f1f3f6', borderRadius: 1, '& .MuiToggleButton-root': { border: 0, borderRadius: '4px !important', py: 0.5, color: 'text.secondary', '&.Mui-selected': { bgcolor: '#fff', color: 'primary.main', boxShadow: '0 1px 3px #00000012' }, '&.Mui-selected:hover': { bgcolor: '#fff' } } }}><ToggleButton value="ARCHIVE">档案目录</ToggleButton><ToggleButton value="SOURCE">按来源</ToggleButton></ToggleButtonGroup>}
     {view === 'SOURCE' && <DhrSourceTabs value={source} onChange={onSourceChange} />}

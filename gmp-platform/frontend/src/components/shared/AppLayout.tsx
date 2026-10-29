@@ -3,7 +3,6 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
   Avatar,
-  Badge,
   Box,
   Divider,
   IconButton,
@@ -33,7 +32,6 @@ import {
   Logout,
   MoreVertRounded,
   NavigateNextRounded,
-  Notifications,
   PersonOutlineRounded,
   PrecisionManufacturing,
   RefreshRounded,
@@ -50,6 +48,7 @@ import { renderManagedIcon } from '@/utils/iconAssets';
 import { getMe, logout } from '@/api/auth';
 import { getRoles } from '@/api/identity';
 import { getSessionGeneration } from '@/utils/queryClient';
+import DhrImpactNotifications from './DhrImpactNotifications';
 import {
   clearAuthStorage,
   DEFAULT_IDLE_LOGOUT_MINUTES,
@@ -820,24 +819,7 @@ export default function AppLayout() {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
             <Tooltip title="锁屏" arrow><IconButton sx={headerIconButtonSx}><LockOutlined /></IconButton></Tooltip>
             <Tooltip title="搜索" arrow><IconButton sx={headerIconButtonSx}><SearchRounded /></IconButton></Tooltip>
-            <Tooltip title="通知" arrow>
-              <IconButton sx={headerIconButtonSx}>
-                <Badge
-                  badgeContent={4}
-                  sx={{
-                    '& .MuiBadge-badge': {
-                      minWidth: 16,
-                      height: 16,
-                      fontSize: 10,
-                      bgcolor: COLORS.error,
-                      color: '#fff',
-                    },
-                  }}
-                >
-                  <Notifications />
-                </Badge>
-              </IconButton>
-            </Tooltip>
+            <DhrImpactNotifications key={`${getSessionGeneration()}:${user.username ?? ''}`} sessionKey={`${getSessionGeneration()}:${user.username ?? ''}`} iconButtonSx={headerIconButtonSx} badgeColor={COLORS.error} />
             <Tooltip title="全屏" arrow><IconButton onClick={handleFullscreen} sx={headerIconButtonSx}><FullscreenRounded /></IconButton></Tooltip>
             <Tooltip title="语言" arrow><IconButton sx={headerIconButtonSx}><TranslateRounded /></IconButton></Tooltip>
             <Tooltip title="主题" arrow><IconButton sx={headerIconButtonSx}><ColorLensOutlined /></IconButton></Tooltip>

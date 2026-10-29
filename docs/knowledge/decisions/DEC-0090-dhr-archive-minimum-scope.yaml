@@ -1,0 +1,45 @@
+knowledgeModelVersion: 0.3.25
+decisions:
+  - id: DEC-0090
+    title: DHR归档现行术语与MVP最小范围
+    status: specified
+    visibility: internal
+    context: user-confirmed；2026-10-29用户在澄清归档与封存、冠骋参考行为及MVP取舍后，确认统一叫归档，按所述最小范围规划，先记录决策和TODO，再推进表单变更、作废与DHR联动；要求保持既有功能和页面规范。本决策记录后续归档交付边界，不把当前汇总冻结、已定稿或下载ZIP追认为已归档，也不新增当前执行动作。
+    decisionStatements:
+      - id: DEC-0090-01
+        statement: user-confirmed；本产品该生命周期能力的现行名称统一为“DHR归档”，状态说明使用“已归档”；“封存”仅作为参考系统或历史讨论中的旧称解释，不再并设另一套封存状态或操作。汇总版本冻结固定一次提交的证据，DHR归档结束日常办理并进入受控保存，导出归档包只生成指定版本副本，三者含义不能互换；现有技术标识和历史原文不因命名统一而重写。
+        status: specified
+        visibility: internal
+      - id: DEC-0090-02
+        statement: user-confirmed；面向客户实际使用的MVP保留最小归档能力：在最终产品放行后，绑定具体正式DHR汇总版本及其来源表单修订、附件、签名、审计和放行依据，保护其内容和证据关联并限制普通路径继续修改；记录归档主体、时间和版本，保持按原权限查询、追溯和导出。归档不是删除或隐藏证据，不用实时表单值替换已固定证据；DHR汇总提交、NONE定稿或审批通过仍不等于产品放行或归档。
+        status: specified
+        visibility: internal
+      - id: DEC-0090-03
+        statement: user-confirmed；MVP归档的保存保障应包含备份恢复验证，下载一个ZIP不能替代系统内受控保存和可用性保障；不由本次确认发明保存年限、自动销毁、跨租户访问或额外归档电子签名规则。具体执行和验证在归档交付切片落实，不能仅凭包导出或状态声明宣称已完成归档。
+        status: specified
+        visibility: internal
+      - id: DEC-0090-04
+        statement: user-confirmed；MVP先不增加独立归档审批、解封及完整放行后变更流程；放行后更正保留既有P1独立受控方向，在相应能力交付前不得以普通表单变更、作废或随意解封绕过已放行及已归档修改限制。本轮先记录归档决策与TODO，继续完成DEC-0068的表单变更、作废与DHR联动，不实现归档、解封或放行，不因此阻塞已获授权的联动开发，也不改变现有页面规范。
+        status: specified
+        visibility: internal
+    supersedes: []
+    evidenceIds: [evidence.dhr-archive-minimum-user-confirmed, evidence.dhr-archive-prd-direction]
+    acceptanceScenarios:
+      - id: scenario.dhr-archive-terminology-boundary
+        given: 产品同时提供汇总版本冻结和指定版本归档包导出，归档能力另按最小范围建设
+        when: 维护当前术语、状态与客户说明
+        then: 归档作为统一生命周期名称，下载副本不改变归档状态，汇总定稿不被重命名为已归档，不改历史原文或技术标识
+        evidenceIds: [evidence.dhr-archive-minimum-user-confirmed]
+        evidenceRequirements: [归档切片术语和状态语义核对, 现有汇总与导出无副作用回归]
+      - id: scenario.dhr-archive-minimum-evidence-and-access
+        given: 产品已最终放行且具有明确的正式DHR汇总版本及证据
+        when: 后续归档能力执行并被授权用户查询、追溯或导出
+        then: 明确绑定该正式版本及来源修订、附件、签名、审计和放行依据，记录主体时间版本，限制普通修改并保持按权可读；保存和恢复验证不由下载ZIP代替
+        evidenceIds: [evidence.dhr-archive-minimum-user-confirmed, evidence.dhr-archive-prd-direction]
+        evidenceRequirements: [后续真实归档事务与权限测试, 证据及版本固定验证, 备份恢复验证]
+      - id: scenario.dhr-archive-deferred-work-boundary
+        given: 当前功能切片继续记录控制真实生效与DHR联动
+        when: 记录归档TODO及后续验收范围
+        then: 归档执行仍为待实现，独立归档审批和解封不在MVP最小范围，放行后变更按P1受控切片另交付，不以当前联动或既有导出测试关闭归档TODO
+        evidenceIds: [evidence.dhr-archive-minimum-user-confirmed]
+        evidenceRequirements: [当前决策包和TODO边界核对, 后续归档交付证据]

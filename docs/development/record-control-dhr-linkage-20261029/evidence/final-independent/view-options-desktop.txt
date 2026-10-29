@@ -1,0 +1,43 @@
+### Result
+{
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "heading": {
+    "x": 17,
+    "y": 173.1875,
+    "width": 278,
+    "height": 40,
+    "top": 173.1875,
+    "right": 295,
+    "bottom": 213.1875,
+    "left": 17
+  },
+  "trigger": {
+    "x": 255,
+    "y": 179.1875,
+    "width": 28,
+    "height": 28,
+    "top": 179.1875,
+    "right": 283,
+    "bottom": 207.1875,
+    "left": 255
+  },
+  "icon": "MoreVertRoundedIcon",
+  "menu": {
+    "x": 146,
+    "y": 207,
+    "width": 136.8125,
+    "height": 40,
+    "top": 207,
+    "right": 282.8125,
+    "bottom": 247,
+    "left": 146
+  },
+  "checked": "false"
+}
+### Ran Playwright code
+```js
+await page.evaluate('() => (({viewport:{width:innerWidth,height:innerHeight},heading:document.querySelector("[data-dhr-navigation-heading]").getBoundingClientRect().toJSON(),trigger:document.querySelector("[aria-label=\\"DHR 查看选项\\"]").getBoundingClientRect().toJSON(),icon:document.querySelector("[aria-label=\\"DHR 查看选项\\"] svg").getAttribute("data-testid"),menu:document.querySelector("[role=menu]").parentElement.getBoundingClientRect().toJSON(),checked:document.querySelector("[role=menuitemcheckbox]").getAttribute("aria-checked")}))');
+```

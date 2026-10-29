@@ -180,6 +180,12 @@ terms:
     aliases: [DHR 附件证据, 纸质扫描附件]
     status: specified
     visibility: internal
+  - id: term.dhr-archive
+    name: DHR归档
+    definition: 最终产品放行后，将具体正式DHR汇总版本及来源表单修订、附件、签名、审计和放行依据固定关联并进入受控保存的生命周期能力；限制普通路径继续修改，记录归档主体、时间和版本，保留按权检索、追溯和导出及备份恢复保障。归档区别于汇总版本冻结和下载归档包，当前仅确认MVP最小范围，未交付归档执行；独立归档审批、解封及完整放行后变更不在本轮。
+    aliases: [DHR封存（历史旧称）]
+    status: specified
+    visibility: internal
   - id: term.dhr-summary-archive-display-name
     name: DHR 汇总归档显示名
     definition: 汇总草稿或冻结版本内真实证据的目录展示别名，与完整证据范围解耦；组行限当前范围，相邻折叠行限本段，单份限一份。别名不改变来源内容、实例身份或生产归属；正常冻结版本只读，未设置别名时显示来源名称。旧汇总转换保留可用别名、目录和位置，不表示继承旧核查结果。

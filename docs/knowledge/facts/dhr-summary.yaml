@@ -171,8 +171,8 @@ facts:
     allowedOperators: [equals]
     status: specified
     visibility: internal
-    evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-evidence-impact-service]
+    evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-evidence-impact-service, evidence.dhr-record-control-linkage-source, evidence.dhr-linkage-backend-verification, evidence.dhr-linkage-browser-verification]
     sourceRevision: working-tree
-    sourceLocator: DEC-0068-05/06 完整设计来源；当前 changes 已比较冻结表单、新增实例和附件，尚未见生效事件主动通知及质量检查结果变化的完整比较，本事实暂不作为已验证的完整运行来源
-    capturedAt: '2026-09-25'
+    sourceLocator: DEC-0068-05/06完整规范来源；e0b416a合并候选工作树的固定backend-verification归档与部分浏览器原件已支持修订影响、两向门禁、定向提醒、迁移与并发及新草稿/旧冻结隔离。剩余实质范围为质量检查结果变化的完整比较及未覆盖的全面矩阵，完整事实仍specified/not-available；本轮最终独立结论另取docs/development/record-control-dhr-linkage-20261029/quality-final-result.yaml，不由本索引或初轮failed代替，不把已有聚焦PG/HTTP层负例/部分UI证据说成完全缺失，也不由局部implemented/internal升级完整运行来源
+    capturedAt: '2026-10-29'
     reviewStatus: reviewed

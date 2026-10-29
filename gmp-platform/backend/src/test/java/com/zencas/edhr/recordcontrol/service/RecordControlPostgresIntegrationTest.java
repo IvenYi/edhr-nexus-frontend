@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -43,11 +44,19 @@ class RecordControlPostgresIntegrationTest {
     @Autowired FormInstanceRecordService records;
     @Autowired RecordControlService requests;
     @Autowired RecordControlTaskActionService actions;
+    @Autowired com.zencas.edhr.production.service.DhrSummaryService summaries;
+    @Autowired com.zencas.edhr.production.service.DhrReviewService reviews;
+    @Autowired com.zencas.edhr.production.service.DhrImpactNotificationService notifications;
+    @Autowired com.zencas.edhr.production.service.FormProjectionService projection;
+    @Autowired com.zencas.edhr.production.controller.FormProjectionController reports;
+    @Autowired com.zencas.edhr.production.service.ProductionOutputService outputs;
+    @MockBean com.zencas.edhr.production.service.FormProjectionWorker worker;
     private ObjectNode snapshot;
     private ObjectNode state;
 
     @BeforeEach void fixture() throws Exception {
         jdbc.execute("DROP FUNCTION IF EXISTS reject_record_control_result() CASCADE");
+        jdbc.execute("DROP FUNCTION IF EXISTS reject_dhr_notification() CASCADE");
         jdbc.execute("TRUNCATE material,form_template,route,dhr_template,workflow_definition,user_account,signature,workflow_task,workflow_instance,workflow_node,workflow_edge,workflow_action_log,form_instance_record,production_execution,production_object,work_order,product_process_version,product_process CASCADE");
         String password = passwords.encode("test-signature-password");
         jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES (41,0,'rc-applicant','申请人',?,'ACTIVE'),(42,0,'rc-reviewer','审批人',?,'ACTIVE')", password, password);
@@ -64,11 +73,12 @@ class RecordControlPostgresIntegrationTest {
         jdbc.update("INSERT INTO form_template(id,code,name) VALUES (110,'RC-FORM','集成测试表单')");
         jdbc.update("INSERT INTO form_template_version(id,template_id) VALUES (111,110)");
         snapshot = (ObjectNode) mapper.readTree("""
-            {"context":{"workOrderId":"108","workOrderNo":"RC-WO","objectNo":"RC-BATCH","objectType":"BATCH"},
-             "operations":[{"id":"op","name":"工序","forms":[{"id":"form","versionId":"111","fields":[{"id":"value","type":"text","name":"值"},{"id":"rows","type":"subTable","name":"明细","typeConfig":{"columns":[{"id":"note","type":"text"}]}}]}]}]}
+            {"outputPolicyVersion":1,"context":{"workOrderId":"108","workOrderNo":"RC-WO","objectNo":"RC-BATCH","objectType":"BATCH","unit":"件","productId":"101"},
+             "operations":[{"id":"op","name":"工序","finalOutput":true,"forms":[{"id":"form","versionId":"111","fields":[{"id":"value","type":"text","name":"值"},{"id":"qty","type":"number"},{"id":"unit","type":"text"},{"id":"rows","type":"subTable","name":"明细","typeConfig":{"columns":[{"id":"note","type":"text"}]}}],
+             "projection":{"version":"form-projection-v1","bindings":[{"id":"production","enabled":true,"modelId":"production","sources":{"outputQuantity":"qty","unit":"unit"}},{"id":"trace","enabled":true,"modelId":"formTrace","sources":{"materialLotText":"value"}}]}}]}]}
             """);
         state = (ObjectNode) mapper.readTree("""
-            {"operations":{"op":{"forms":{"form":{"status":"COMPLETED","savedAt":"2026-10-28T10:00:00","values":{"value":"old","rows":[{"__rowId":"11111111-1111-4111-8111-111111111111","note":"original"}]}}}}}}
+            {"operations":{"op":{"forms":{"form":{"status":"COMPLETED","savedAt":"2026-10-28T10:00:00","values":{"value":"old","qty":100,"unit":"件","rows":[{"__rowId":"11111111-1111-4111-8111-111111111111","note":"original"}]}}}}}}
             """);
         jdbc.update("INSERT INTO production_execution(object_id,snapshot_json,state_json,started_at,updated_at) VALUES (109,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)", snapshot.toString(), state.toString());
         for (String type : List.of("CHANGE", "OBSOLETE")) {
@@ -86,11 +96,11 @@ class RecordControlPostgresIntegrationTest {
         records.saved(109L, "default", snapshot, state, "op", "form", "form");
     }
 
-    @AfterEach void clearActor() { AuditContext.clear(); }
+    @AfterEach void clearActor() { AuditContext.clear(); org.springframework.security.core.context.SecurityContextHolder.clearContext(); }
     private void actor() { AuditContext.setOperator("41", "申请人"); }
     private long count(String table) { return jdbc.queryForObject("SELECT count(*) FROM " + table, Long.class); }
     private String scalar(String sql) { return jdbc.queryForObject(sql, String.class); }
-    private long taskId() { return jdbc.queryForObject("SELECT id FROM workflow_task WHERE status='PENDING'", Long.class); }
+    private long taskId() { return jdbc.queryForObject("SELECT t.id FROM workflow_task t JOIN workflow_instance w ON w.id=t.instance_id WHERE t.status='PENDING' AND w.business_type IN ('CHANGE','OBSOLETE')", Long.class); }
     private RecordControlService.SubmitCommand command(BusinessType type) {
         String definition = type == BusinessType.CHANGE ? "201" : "301";
         return new RecordControlService.SubmitCommand(type, scalar("SELECT instance_no FROM form_instance_record"),
@@ -101,6 +111,195 @@ class RecordControlPostgresIntegrationTest {
     private void complete(long task, String action) {
         actions.complete(String.valueOf(task), action,
                 new RecordControlTaskActionService.TaskActionCommand("复核意见", "rc-reviewer", "test-signature-password"));
+    }
+
+    private void dhr(boolean review) {
+        jdbc.update("UPDATE production_object SET status='COMPLETED' WHERE id=109");
+        jdbc.update("""
+            INSERT INTO dhr_instance(id,tenant_id,dhr_no,production_object_id,object_no,object_type,work_order_id,work_order_no,
+              product_id,process_version_id,route_version_id,dhr_template_id,dhr_template_version_id,context_snapshot,directory_snapshot,
+              status,summary_status,created_at,updated_at)
+            VALUES(1000,'default','DHR-LINKAGE',109,'RC-BATCH','BATCH',108,'RC-WO',101,107,103,104,105,'{}','{"directories":[]}',
+              'COMPLETED','NOT_STARTED',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
+            """);
+        if (review) {
+            jdbc.update("INSERT INTO workflow_definition(id,name,type,business_type,status) VALUES(501,'DHR审核','RECORD_CONTROL','DHR_SUMMARY','PUBLISHED')");
+            jdbc.update("INSERT INTO workflow_definition_version(id,definition_id,status,is_current,nodes_json,edges_json) VALUES(502,501,'PUBLISHED',true,'[]','[]')");
+            jdbc.update("INSERT INTO workflow_node(id,version_id,node_type,name,properties) VALUES(503,502,'START','开始','{}'),(504,502,'APPROVAL','审核',?::jsonb),(505,502,'END','结束','{}')",
+                    "{\"config\":{\"approverSubjects\":[{\"type\":\"USER\",\"id\":42}]}}");
+            jdbc.update("INSERT INTO workflow_edge(id,version_id,source_node_id,target_node_id) VALUES(506,502,503,504),(507,502,504,505)");
+            jdbc.update("UPDATE dhr_instance SET dhr_review_mode='REQUIRED',dhr_review_workflow_definition_id=501,dhr_review_workflow_version_id=502 WHERE id=1000");
+        }
+    }
+
+    private ObjectNode summaryCommand() {
+        var workspace = summaries.workspace(1000L);
+        var request = mapper.createObjectNode().put("expectedScopeHash", workspace.path("sourceScopeHash").asText());
+        request.putArray("overlayDirectories"); request.putArray("placements");
+        if (workspace.path("draft").hasNonNull("id")) request.put("draftId", workspace.path("draft").path("id").asText()).put("revision", workspace.path("draft").path("revision").asInt());
+        var draft = summaries.saveDraft(1000L, request);
+        var command = mapper.createObjectNode().put("expectedDraftId", draft.path("id").asText()).put("expectedRevision", draft.path("revision").asInt());
+        command.putObject("manualReview").put("qualityAndExceptionsReviewed", true).put("sourceSignaturesReviewed", true)
+                .put("completeScopeReviewed", true).put("note", "核对完整证据、签署和质量处置");
+        return command;
+    }
+
+    private long dhrTask() { return jdbc.queryForObject("SELECT t.id FROM workflow_task t JOIN dhr_summary_review r ON r.workflow_instance_id=t.instance_id WHERE t.status='PENDING'", Long.class); }
+    private void review(long task, String action) {
+        AuditContext.setOperator("42", "审批人");
+        try { reviews.act(task, mapper.createObjectNode().put("action", action).put("opinion", "核对后处理")
+                .put("expectedSnapshotHash", scalar("SELECT snapshot_hash FROM dhr_summary_version ORDER BY version_no DESC LIMIT 1"))); }
+        finally { actor(); }
+    }
+
+    private ObjectNode report() {
+        org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(
+                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken("41", null,
+                  org.springframework.security.core.authority.AuthorityUtils.createAuthorityList("form-instances.view", "production.execution")));
+        return reports.query(new com.zencas.edhr.production.controller.FormProjectionController.Query("production", null, null, java.util.Map.of(), 0, 20, null, null)).getData();
+    }
+
+    @Test void dhrReviewBlocksBothNewApplicationKindsUntilHumanReturn() {
+        dhr(true);
+        summaries.submit(1000L, summaryCommand());
+        for (var type : BusinessType.values()) assertThatThrownBy(() -> requests.submit(command(type))).hasMessageContaining("DHR 正在审批");
+        assertThat(requests.findRecord(scalar("SELECT instance_no FROM form_instance_record")).path("fieldValues").path("value").asText()).isEqualTo("old");
+        assertThat(count("record_control_request")).isZero();
+        review(dhrTask(), "RETURN");
+        assertThat(scalar("SELECT summary_status FROM dhr_instance")).isEqualTo("DRAFT");
+        requests.submit(command(BusinessType.CHANGE));
+        assertThat(count("record_control_request")).isEqualTo(1);
+    }
+
+    @Test void activeApplicationBlocksSummaryButReturnRestoresOrdinarySubmissionChecks() {
+        dhr(true);
+        var command = summaryCommand();
+        requests.submit(command(BusinessType.CHANGE));
+        assertThatThrownBy(() -> summaries.submit(1000L, command)).hasMessageContaining("审批中的变更或作废申请");
+        assertThat(count("dhr_summary_version")).isZero();
+        complete(taskId(), "REJECT");
+        summaries.submit(1000L, command);
+        assertThat(scalar("SELECT summary_status FROM dhr_instance")).isEqualTo("PENDING_REVIEW");
+        assertThat(count("dhr_evidence_impact")).isZero();
+    }
+
+    @Test void approvedChangePreservesFrozenVersionAndDeliversOnlyTheAffectedSubmitterInbox() {
+        dhr(false);
+        var submitted = summaries.submit(1000L, summaryCommand());
+        String frozen = scalar("SELECT candidate_snapshot||snapshot_hash FROM dhr_summary_version");
+        requests.submit(command(BusinessType.CHANGE));
+        complete(taskId(), "APPROVE");
+        assertThat(scalar("SELECT candidate_snapshot||snapshot_hash FROM dhr_summary_version")).isEqualTo(frozen);
+        assertThat(summaries.version(1000L, submitted.path("id").asLong()).path("evidenceChanges")).hasSize(1);
+        assertThat(count("dhr_evidence_impact")).isEqualTo(1);
+        assertThat(notifications.list(0).path("unreadCount").asInt()).isEqualTo(1);
+        long impact = jdbc.queryForObject("SELECT id FROM dhr_evidence_impact", Long.class);
+        AuditContext.setOperator("42", "非当前审批人");
+        assertThat(notifications.list(0).path("total").asInt()).isZero();
+        notifications.read(impact);
+        actor();
+        assertThat(notifications.list(0).path("unreadCount").asInt()).isEqualTo(1);
+        notifications.read(impact); notifications.read(impact);
+        assertThat(notifications.list(0).path("unreadCount").asInt()).isZero();
+        assertThat(scalar("SELECT summary_status FROM dhr_instance")).isEqualTo("FORMALIZED");
+        assertThat(scalar("SELECT value_text FROM form_trace_value")).isEqualTo("new");
+    }
+
+    @Test void changeAndVoidSwitchCurrentReportsAndOutputWithoutDeletingHistoricalContributions() {
+        projection.process(jdbc.queryForObject("SELECT id FROM form_projection_batch", Long.class));
+        assertThat(report().path("totals").get(0).path("outputQuantity").asInt()).isEqualTo(100);
+        var first = command(BusinessType.CHANGE);
+        requests.submit(new RecordControlService.SubmitCommand(first.requestType(), first.instanceNo(), first.sourceRevisionId(),
+                mapper.createObjectNode().put("value", "new").put("qty", 90), first.reason(), first.workflowDefinitionId(), first.workflowVersionId(), first.account(), first.password(), first.idempotencyKey()));
+        complete(taskId(), "APPROVE");
+        assertThat(report().path("total").asInt()).isZero();
+        assertThat(outputs.object(109).path("status").asText()).isEqualTo("PENDING");
+        projection.process(jdbc.queryForObject("SELECT id FROM form_projection_batch WHERE status='PENDING'", Long.class));
+        assertThat(report().path("totals").get(0).path("outputQuantity").asInt()).isEqualTo(90);
+        assertThat(outputs.object(109).path("quantity").asText()).isEqualTo("90");
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM form_projection_record", Long.class)).isEqualTo(2);
+        requests.submit(command(BusinessType.OBSOLETE)); complete(taskId(), "APPROVE");
+        assertThat(report().path("total").asInt()).isZero();
+        assertThat(outputs.object(109).path("quantity").isNull()).isTrue();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM form_projection_batch WHERE status='INVALIDATED'", Long.class)).isEqualTo(2);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM form_projection_record", Long.class)).isEqualTo(2);
+        assertThat(count("form_instance_revision")).isEqualTo(2);
+    }
+
+    @Test void notificationFailureRollsBackSourceProjectionTraceSignatureAndFinalApproval() {
+        dhr(false); summaries.submit(1000L, summaryCommand());
+        requests.submit(command(BusinessType.CHANGE));
+        long task = taskId(), signatures = count("signature");
+        jdbc.execute("CREATE FUNCTION reject_dhr_notification() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'synthetic inbox failure'; END $$");
+        jdbc.execute("CREATE TRIGGER reject_dhr_notification BEFORE INSERT ON dhr_impact_notification FOR EACH ROW EXECUTE FUNCTION reject_dhr_notification()");
+        assertThatThrownBy(() -> complete(task, "APPROVE")).isInstanceOf(RuntimeException.class);
+        assertThat(scalar("SELECT status FROM record_control_request")).isEqualTo("IN_REVIEW");
+        assertThat(scalar("SELECT status FROM workflow_task")).isEqualTo("PENDING");
+        assertThat(scalar("SELECT value_text FROM form_trace_value")).isEqualTo("old");
+        assertThat(scalar("SELECT status FROM form_projection_batch")).isEqualTo("PENDING");
+        assertThat(count("form_instance_revision")).isEqualTo(1);
+        assertThat(count("signature")).isEqualTo(signatures);
+        assertThat(count("record_control_result_event")).isZero();
+        assertThat(count("dhr_evidence_impact")).isZero();
+    }
+
+    @Test void concurrentDhrSubmissionAndApplicationHaveOnlyOneWinner() throws Exception {
+        dhr(true);
+        var summary = summaryCommand(); var request = command(BusinessType.CHANGE);
+        try (var pool = Executors.newFixedThreadPool(2)) {
+            var start = new CountDownLatch(1);
+            var dhr = pool.submit(() -> { actor(); try { start.await(); summaries.submit(1000L, summary); return true; } catch (RuntimeException rejected) { return false; } finally { AuditContext.clear(); } });
+            var form = pool.submit(() -> { actor(); try { start.await(); requests.submit(request); return true; } catch (RuntimeException rejected) { return false; } finally { AuditContext.clear(); } });
+            start.countDown();
+            assertThat(List.of(dhr.get(15, TimeUnit.SECONDS), form.get(15, TimeUnit.SECONDS))).containsExactlyInAnyOrder(true, false);
+        }
+        assertThat(count("record_control_request") + count("dhr_summary_version")).isEqualTo(1);
+    }
+
+    @Test void legacyConcurrentApplicationAndDhrApprovalCannotApproveStaleEvidenceAndNotifyOnlyCurrentPeople() throws Exception {
+        dhr(true);
+        var request = requests.submit(command(BusinessType.CHANGE));
+        // Explicitly model pre-existing inconsistent data; current entry points forbid creating this pair.
+        jdbc.update("UPDATE record_control_request SET status='RETURNED'");
+        var version = summaries.submit(1000L, summaryCommand());
+        jdbc.update("UPDATE record_control_request SET status='IN_REVIEW'");
+        long sourceTask = taskId(), reviewTask = dhrTask();
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(43,0,'former-reviewer','历史审批人','unused','ACTIVE')");
+        jdbc.update("INSERT INTO workflow_task(id,instance_id,node_id,status,assignee_id,candidate_snapshot,created_at) SELECT 999,instance_id,node_id,'COMPLETED','43','{}'::jsonb,CURRENT_TIMESTAMP FROM workflow_task WHERE id=?", reviewTask);
+        String frozen = scalar("SELECT candidate_snapshot||snapshot_hash FROM dhr_summary_version");
+        try (var pool = Executors.newFixedThreadPool(2)) {
+            var start = new CountDownLatch(1);
+            var change = pool.submit(() -> { actor(); try { start.await(); complete(sourceTask, "APPROVE"); return true; } finally { AuditContext.clear(); } });
+            var approve = pool.submit(() -> { actor(); try { start.await(); review(reviewTask, "APPROVE"); return true; }
+                catch (RuntimeException blocked) { assertThat(blocked.getMessage()).containsAnyOf("审批中的变更或作废申请", "过时证据"); return false; }
+                finally { AuditContext.clear(); } });
+            start.countDown();
+            assertThat(change.get(15, TimeUnit.SECONDS)).isTrue();
+            assertThat(approve.get(15, TimeUnit.SECONDS)).isFalse();
+        }
+        assertThat(scalar("SELECT candidate_snapshot||snapshot_hash FROM dhr_summary_version")).isEqualTo(frozen);
+        assertThat(scalar("SELECT status FROM workflow_task WHERE id=" + reviewTask)).isEqualTo("PENDING");
+        assertThat(jdbc.queryForList("SELECT recipient_id FROM dhr_impact_notification ORDER BY recipient_id", String.class)).containsExactly("41", "42");
+        assertThat(summaries.version(1000L, version.path("id").asLong()).path("evidenceChanges")).hasSize(1);
+        var q = jdbc.queryForMap("SELECT * FROM record_control_request WHERE id=?", request.path("id").asLong());
+        var event = jdbc.queryForMap("SELECT * FROM record_control_result_event");
+        requests.handle(new com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.WorkflowResultEvent(
+                event.get("event_id").toString(), q.get("workflow_instance_id").toString(), q.get("workflow_definition_id").toString(), q.get("workflow_version_id").toString(),
+                BusinessType.CHANGE, request.path("id").asText(), com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.Result.APPROVED,
+                ((java.sql.Timestamp) event.get("occurred_at")).toLocalDateTime(), "42", null, q.get("audit_correlation_id").toString(), q.get("workflow_snapshot_hash").toString()));
+        assertThat(count("dhr_evidence_impact")).isEqualTo(1);
+        assertThat(count("dhr_impact_notification")).isEqualTo(2);
+        assertThat(count("form_instance_revision")).isEqualTo(2);
+    }
+
+    @Test void legacySubmitterIdentityComesFromOriginalAuditInsteadOfDisplayName() {
+        dhr(false); summaries.submit(1000L, summaryCommand());
+        jdbc.update("UPDATE dhr_summary_version SET submitted_by_id=NULL");
+        jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(43,0,'same-name','申请人','unused','ACTIVE')");
+        requests.submit(command(BusinessType.OBSOLETE)); complete(taskId(), "APPROVE");
+        assertThat(jdbc.queryForList("SELECT recipient_id FROM dhr_impact_notification", String.class)).containsExactly("41");
+        assertThat(scalar("SELECT submitted_by FROM dhr_summary_version")).isEqualTo("申请人");
+        assertThat(scalar("SELECT status FROM dhr_summary_version")).isEqualTo("FORMALIZED");
     }
 
     @Test void firstCompletionCreatesOneImmutableInitialRevision() {

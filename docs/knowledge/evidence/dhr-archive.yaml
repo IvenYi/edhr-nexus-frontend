@@ -1,0 +1,12 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.dhr-archive-minimum-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/dhr-archive-minimum-20261029.md
+    description: user-confirmed；2026-10-29用户确认统一称归档、MVP采用上一轮所述最小范围，先登记决策和TODO再继续记录控制与DHR联动。归档在最终放行后绑定正式版本和证据、限制普通修改、记录主体时间版本并按权可取，含保存及备份恢复保障；独立归档审批、解封及完整放行后变更不在本轮，保留P1方向及现有UI规范。新增specified/internal，不证明归档或联动已验收。
+    visibility: internal
+  - id: evidence.dhr-archive-prd-direction
+    type: document
+    path: docs/prd/edhr-mvp-prd.md
+    description: original-evidence；场景7规划汇总审核之后另有最终放行，已放行记录除P1受控更正外不可修改，归档包保留完整证据。该规划支持归档与审核、放行和导出的边界，不证明当前归档动作、权限或备份执行已实现。
+    visibility: internal

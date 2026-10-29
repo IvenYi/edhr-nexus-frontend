@@ -47,13 +47,15 @@ class CurrentDatabaseBaselinePostgresTest {
     @Test void freshInstallIsCurrentCompleteAndRepeatableWithoutBusinessBackfills() throws Exception {
         install();
         connection.setAutoCommit(true);
-        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("7");
+        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("8");
         assertThat(scalar("SELECT count(*) FROM pg_constraint WHERE connamespace='public'::regnamespace AND NOT convalidated")).isEqualTo("0");
         assertThat(scalar("SELECT count(*) FROM form_lookup_item WHERE builtin")).isEqualTo("9");
         assertThat(scalar("SELECT string_agg(id,',' ORDER BY id) FROM form_lookup_item WHERE builtin"))
             .isEqualTo("equipmentText,lookup_material_code,lookup_order_number,lookup_product_code,lookup_production_batch,lookup_supplier_lot,lookup_trace_date,lookup_work_order,materialLotText");
         assertThat(scalar("SELECT count(*) FROM material_type")).isEqualTo("5");
-        assertThat(scalar("SELECT count(*) FROM pg_sequences WHERE schemaname='public'")).isEqualTo("7");
+        assertThat(scalar("SELECT count(*) FROM pg_sequences WHERE schemaname='public'")).isEqualTo("8");
+        assertThat(scalar("SELECT count(*) FROM dhr_evidence_impact")).isEqualTo("0");
+        assertThat(scalar("SELECT count(*) FROM dhr_impact_notification")).isEqualTo("0");
         assertThat(scalar("SELECT count(*) FROM form_instance_revision")).isEqualTo("0");
         assertThat(scalar("SELECT count(*) FROM record_control_request")).isEqualTo("0");
         assertThat(scalar("SELECT count(*) FROM form_instance_record")).isEqualTo("0");
@@ -72,7 +74,7 @@ class CurrentDatabaseBaselinePostgresTest {
         String before = scalar("SELECT md5(string_agg(row_to_json(p)::text,',' ORDER BY id)) FROM permission p");
         install();
         connection.setAutoCommit(true);
-        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("7");
+        assertThat(scalar("SELECT count(*) FROM databasechangelog")).isEqualTo("8");
         assertThat(scalar("SELECT md5(string_agg(row_to_json(p)::text,',' ORDER BY id)) FROM permission p")).isEqualTo(before);
 
         // First release stores the original bytes, not the normalized JSONB representation.

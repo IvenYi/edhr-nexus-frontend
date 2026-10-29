@@ -20,6 +20,19 @@ public class FormProjectionService {
     @Transactional
     public void completed(long instanceId, String tenant, JsonNode form, JsonNode values, JsonNode context,
                           String operationId) {
+        enqueue(instanceId, tenant, form, values, context, operationId, 1, null);
+    }
+
+    /** Switch current contributions atomically; preserve all old source and result rows. */
+    @Transactional
+    public void revised(long instanceId, String tenant, JsonNode form, JsonNode values, JsonNode context,
+                        String operationId, int revisionNo, String revisionId, boolean obsolete) {
+        jdbc.update("UPDATE form_projection_batch SET status='INVALIDATED' WHERE tenant_id=? AND form_instance_id=? AND status<>'INVALIDATED'", tenant, instanceId);
+        if (!obsolete) enqueue(instanceId, tenant, form, values, context, operationId, revisionNo, revisionId);
+    }
+
+    private void enqueue(long instanceId, String tenant, JsonNode form, JsonNode values, JsonNode context,
+                         String operationId, int revisionNo, String revisionId) {
         if (!form.path("projection").path("bindings").isArray() || form.path("projection").path("bindings").isEmpty()) return;
         ObjectNode model = mapper.createObjectNode();
         model.set("fields", form.path("fields"));
@@ -31,12 +44,13 @@ public class FormProjectionService {
         configuration.set("bindings", statistical); model.set("projection", configuration);
         FormProjectionInterpreter.preview(model, values); // Domain errors abort completion, operational processing is separate.
         ObjectNode source = mapper.createObjectNode().put("operationId", operationId);
+        if (revisionId != null) source.put("sourceRevisionId", revisionId);
         source.set("form", form.deepCopy()); source.set("model", model); source.set("values", values.deepCopy());
         source.set("context", context.deepCopy());
         jdbc.update("""
             INSERT INTO form_projection_batch(tenant_id,form_instance_id,final_revision,rule_version,source_json)
-            VALUES (?,?,1,?,CAST(? AS jsonb)) ON CONFLICT (form_instance_id,final_revision,rule_version) DO NOTHING
-            """, tenant, instanceId, FormProjectionInterpreter.VERSION, source.toString());
+            VALUES (?,?,?,?,CAST(? AS jsonb)) ON CONFLICT (form_instance_id,final_revision,rule_version) DO NOTHING
+            """, tenant, instanceId, revisionNo, FormProjectionInterpreter.VERSION, source.toString());
     }
 
     @Transactional

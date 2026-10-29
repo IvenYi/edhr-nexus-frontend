@@ -1,0 +1,294 @@
+qualityResult:
+  result: passed
+  baseCommit: e0b416a12507cd15e411d4becdd4d75b47ed77d9
+  headCommit: e0b416a12507cd15e411d4becdd4d75b47ed77d9
+  contractBaseline:
+    sourceCommit: e0b416a12507cd15e411d4becdd4d75b47ed77d9
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: e0b416a12507cd15e411d4becdd4d75b47ed77d9
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: dirty
+    includedPaths:
+      - docs/architecture/business-knowledge-model.md
+      - docs/architecture/transaction-traceability-dhr-business-rules.md
+      - docs/knowledge/README.md
+      - docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+      - docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml
+      - docs/knowledge/evidence/dhr-filling-review-confirmed.md
+      - docs/knowledge/evidence/dhr-archive-minimum-20261029.md
+      - docs/knowledge/evidence/dhr-archive.yaml
+      - docs/knowledge/evidence/record-control-dhr-linkage.yaml
+      - docs/knowledge/facts/dhr-summary.yaml
+      - docs/knowledge/glossary.yaml
+      - docs/knowledge/ontology.yaml
+      - docs/knowledge/open-questions.yaml
+      - docs/development/record-control-dhr-linkage-20261029/decision-package.yaml
+      - docs/development/record-control-dhr-linkage-20261029/README.md
+      - docs/development/record-control-dhr-linkage-20261029/ontology-result.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrImpactNotificationController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrPdfRenderer.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java
+      - gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml
+      - gmp-platform/backend/src/main/resources/db/changelog/0089-record-control-dhr-linkage.sql
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselineTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrEvidenceBatchPostgresTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java
+      - gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+      - gmp-platform/frontend/scripts/test-dhr-workspace-navigation.mjs
+      - gmp-platform/frontend/scripts/verify-app-shell-topbar.mjs
+      - gmp-platform/frontend/src/api/dhr-impact-notifications.ts
+      - gmp-platform/frontend/src/components/shared/DhrImpactNotifications.tsx
+      - gmp-platform/frontend/src/components/shared/AppLayout.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/DhrWorkspaceNavigation.tsx
+      - gmp-platform/frontend/src/pages/dhr-management/dhrSourceNavigation.ts
+      - docs/development/record-control-dhr-linkage-20261029/quality-result.yaml
+      - docs/development/record-control-dhr-linkage-20261029/quality-final-result.yaml
+      - docs/development/record-control-dhr-linkage-20261029/evidence/final-independent/
+    excludedPaths:
+      - gmp-platform/frontend/node_modules
+      - output/playwright/record-control-integration-20261028/
+      - output/playwright/record-control-dhr-linkage-20261029/
+    untrackedPaths:
+      - docs/development/record-control-dhr-linkage-20261029/
+      - docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml
+      - docs/knowledge/evidence/dhr-archive-minimum-20261029.md
+      - docs/knowledge/evidence/dhr-archive.yaml
+      - docs/knowledge/evidence/record-control-dhr-linkage.yaml
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrImpactNotificationController.java
+      - gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java
+      - gmp-platform/backend/src/main/resources/db/changelog/0089-record-control-dhr-linkage.sql
+      - gmp-platform/frontend/src/api/dhr-impact-notifications.ts
+      - gmp-platform/frontend/src/components/shared/DhrImpactNotifications.tsx
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+    - id: check.final-contract-and-candidate
+      required: true
+      category: documentation
+      description: 全新未参与修复的质量实例核对实际候选与契约
+      method: inspection
+      command: git rev-parse HEAD origin/edhr-dev; git diff --name-only e63ed8dd2c3f63e5efb334b523efc7f3d9c32843 HEAD -- AGENTS.md codeplzreadme.md docs/agents
+      outcome: passed
+      evidence:
+        - 原始功能e63ed8dd2c3f63e5efb334b523efc7f3d9c32843，目标635711f97e9b794f4af02e1e5d1939bb2ecf920f，实际受审合并HEAD e0b416a12507cd15e411d4becdd4d75b47ed77d9及列明工作树；契约差异为空
+        - 实际读取项目、质量角色、交接、知识基线和决策包；本实例未参与任何产品或测试修复
+        - evidence/product-candidate.json固定30个产品及测试文件SHA256，本实例逐项核对当前内容相符
+        - evidence/final-independent/verification-integrity.json保存指纹核对及已有证据适用边界
+    - id: check.final-requirements-and-knowledge
+      required: true
+      category: ontology
+      description: 核对当前用户确认、影响分析、归档边界与本体增量
+      method: inspection
+      command: 读取DEC0063/0068/0077/0087/0090、decision-package、ontology-result和13个受影响知识及架构资产
+      outcome: passed
+      evidence:
+        - 双向在审保护、生效才消费、人工退回或新修订、冻结及历史批准不改写、账号ID定向站内提醒与实现对应
+        - 归档统一术语与最小MVP仅为specified/internal及TODO，无新增归档执行或将FORMALIZED/ZIP改称已归档
+        - 当前索引和正式统计切换不扩张为完整A12历史检索/规则重建；完整有效性事实仍specified/not-available
+        - 本体累计updated及固定原件索引可定位，未预填本实例通过；两项完整DHR high、剩余全面矩阵和质量变化全比较仍开放，不以局部验收关闭
+        - product-core与transaction-orchestration位于既有记录控制和生产领域，未新增客户条件或第二套审批
+    - id: check.final-knowledge-schema
+      required: true
+      category: ontology
+      description: 对收尾知识增量独立运行正式知识检查
+      method: automated-test
+      command: mvn -q -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - evidence/final-independent/knowledge-final.json
+        - evidence/final-independent/knowledge-final.log.gz
+        - 89项实际通过，0失败错误跳过；后续纯证据措辞核对不改变ID、类型、规则、成熟度或schema
+    - id: check.final-current-backend-focused
+      required: true
+      category: integration
+      description: 新实例对当前候选独立执行DHR审核汇总与记录控制授权聚焦回归
+      method: automated-test
+      command: mvn -q '-Dtest=DhrReviewServiceTest,DhrSummaryPersistenceTest,DhrReviewLifecycleIntegrationTest,RecordControlAccessTest' test
+      outcome: passed
+      evidence:
+        - evidence/final-independent/backend-focused.json
+        - evidence/final-independent/backend-focused.log.gz
+        - 52项当前JUnit实际通过，0失败错误跳过；本实例没有修改测试或夹具
+    - id: check.final-previous-postgres-evidence-applicability
+      required: true
+      category: database
+      description: 核对已有独立真实PG与主侧广回归原件及当前适用范围
+      method: inspection
+      command: 解析固定manifest和原JUnit，核对13份独立压缩件SHA256/用例数/结果，审查当前后端源码和测试及修改时间
+      outcome: passed
+      evidence:
+        - evidence/final-independent/verification-integrity.json
+        - 前实例197项中196通过1条件跳过，真实PG记录控制14、基线新装/升级/重复3及证据容量/锁7均实际通过；本实例未冒称重新运行这些PG用例
+        - 主侧固定原件38套360项，322通过38条件跳过0失败错误；未将跳过计入通过，未将其与本次52/89项累加为无重复总数
+        - 后端产品及测试mtime早于前实例测试，主侧确认后续仅修两页面状态且当前30指纹匹配；时间为佐证，不冒充历史源码密码学快照
+        - 结合当前源码审查与本实例52项回归复用有效证据，没有发现需再次创建破坏性PG夹具的风险信号
+        - 原件覆盖两向阻断、人工退回、100换90及作废退出、同值新修订、旧冻结保留、ID收件/重名隔离、幂等/失败回滚及两类并发
+    - id: check.final-audit-security-and-migration-source
+      required: true
+      category: security
+      description: 核对最终服务端门禁、事务、历史证据及个人提醒授权
+      method: inspection
+      command: 审查RecordControlService、DhrSummaryService、DhrReviewService、DhrEvidenceImpactService、FormProjectionService、通知服务/控制器、0089与PDF回归修复
+      outcome: passed
+      evidence:
+        - 申请与汇总/批准共享生产对象锁，在最终服务复核；DHR RETURN仍可执行
+        - 真实APPROVED在原事务内刷新当前追溯、失效旧贡献并排入新修订或作废退出、写影响/收件；原件支持异常整体回滚，事件/版本与个人收件键去重
+        - 新提交保留独立账号ID，旧版仅原审核或唯一原SUBMIT审计恢复，不按显示姓名；旧冻结正文/摘要/签署/批准不回写
+        - 提醒查询和已读限定认证本人，不返回字段正文或增加DHR操作权；当前候选/提交人与历史审批人边界一致
+        - 0089仅追加独立列/影响/提醒，不改历史基线；固定内存打印导航只精确本地fulfill，其余网络abort，未改打印作废政策
+    - id: check.final-authenticated-api-boundary
+      required: true
+      category: api
+      description: 真实HTTP核对提醒认证与账号隔离
+      method: browser
+      command: 正常登录41读取本人提醒，登出再登录42读取空收件箱；无认证curl GET通知接口
+      outcome: passed
+      evidence:
+        - evidence/final-independent/browser-observations.md
+        - evidence/final-independent/notification-reviewer-empty.png
+        - evidence/final-independent/notification-unauthenticated.json
+        - 无认证返回HTTP401且无个人提醒；切换账号后不复用前账号消息；ADMIN展示不扩称完整普通权限矩阵
+    - id: check.final-frontend-navigation
+      required: true
+      category: regression
+      description: 独立回归隐藏、冻结及完整导出导航与列表详情
+      method: automated-test
+      command: node --test scripts/test-dhr-workspace-navigation.mjs scripts/test-dhr-list-detail.mjs
+      outcome: passed
+      evidence:
+        - evidence/final-independent/frontend-targeted.tap
+        - 12项通过0失败跳过；默认helper包含作废供既有导出，普通UI显式过滤，失败/填报中/取代等状态不被误过滤
+        - 完整候选、placements、核查和计数不因低频开关缩小；填报开关沿既有未保存guard
+    - id: check.final-frontend-build
+      required: true
+      category: regression
+      description: 修复后当前前端类型检查及构建
+      method: command
+      command: npm run build
+      outcome: passed
+      evidence:
+        - evidence/final-independent/frontend-build.log.gz
+        - tsc与Vite实际通过，无新增依赖或页面布局体系
+    - id: check.final-obsolete-status-and-frozen-history
+      required: true
+      category: e2e
+      description: 独立真实页面复验QF001并核对邻接冻结及证据
+      method: browser
+      command: 正常登录41，当前草稿默认隐藏→低位查看→档案版本选择V1；42从列表档案入口查看同一草稿
+      outcome: passed
+      evidence:
+        - evidence/final-independent/summary-obsolete-hidden.png
+        - evidence/final-independent/summary-obsolete-corrected.png
+        - evidence/final-independent/summary-frozen-v1.png
+        - evidence/final-independent/version-select-open.png
+        - evidence/final-independent/list-archive-obsolete.png
+        - 当前作废明确已作废、概览保留实际1；V1仍冻结已完成和原old/100正文，影响提示1；不把表单作废重新解释成待填写
+    - id: check.final-notification-interaction
+      required: true
+      category: e2e
+      description: 通知成功/加载/错误/重试/空及窄屏键盘行为
+      method: browser
+      command: 独立真实浏览器正常读取，临时503和7秒延迟后恢复路由；390x844查看；Escape关闭并查焦点
+      outcome: passed
+      evidence:
+        - evidence/final-independent/notification-narrow.png
+        - evidence/final-independent/notification-loading.png
+        - evidence/final-independent/notification-error.png
+        - evidence/final-independent/notification-recovered.png
+        - evidence/final-independent/notification-reviewer-empty.png
+        - 浮层边界left16/right382/width366，关闭及分页可见；Escape后焦点回通知按钮；全部会话拦截撤除且已关闭浏览器
+    - id: check.final-visual-compatibility
+      required: true
+      category: visual
+      description: 实际截图、原组件及新旧静态签名核对本轮不引入呈现回归
+      method: inspection
+      command: 对照DESIGN.md、列表规范、既有壳层和双工作区；独立运行premium strict并按产品源码签名与原始基线比较
+      outcome: passed
+      evidence:
+        - evidence/final-independent/premium-current.json
+        - evidence/final-independent/premium-baseline.json
+        - evidence/final-independent/verification-integrity.json
+        - 产品源码旧28与当前28、0新增/移除签名；完整全仓86项仍非绿，不将无新增等同全仓无问题
+        - 复用现有MUI顶栏槽、浮层、工作区导航及徽标，未重排列表/画布；归档执行未加入页面
+    - id: check.final-global-static-audit
+      required: false
+      category: visual
+      description: 如实保留全仓静态审计的存量失败
+      method: command
+      command: python3 frontend-design-premium/scripts/audit_project.py . --mode strict
+      outcome: failed
+      evidence:
+        - 全仓86项；产品src28外其余为历史原型/HTML等，不声称全部已修复
+        - evidence/final-independent/premium-current.json
+    - id: check.final-global-shell-baseline
+      required: false
+      category: regression
+      description: 当前及原始基线独立运行壳层静态脚本的存量断言失败
+      method: command
+      command: node scripts/verify-app-shell-topbar.mjs
+      outcome: failed
+      evidence:
+        - evidence/final-independent/shell-current.log
+        - evidence/final-independent/shell-baseline.log
+        - 当前与原始e63快照均仅form-management双权限精确源码断言不匹配；本轮不改该权限逻辑
+        - 首次临时基线快照缺既有规范文档，补入git show原文后才得到有效同断言结果；未修改测试断言或产品文件
+  findings:
+    - id: QF-DHR-LINKAGE-001
+      severity: medium
+      scope: DHR当前草稿和来源查看作废状态
+      summary: 首轮发现的作废仍显示未完成已由主侧局部修复并经全新实例复核
+      reproductionSteps:
+        - 正常登录41打开DHR-LINKAGE当前汇总草稿
+        - 点击导航底部查看作废表单
+        - 再从档案版本选择V1
+      expectedResult: 当前OBSOLETE明确已作废，历史V1继续已完成并保留原正文
+      actualResult: 当前已作废、V1已完成且原old/100及证据计数保留，符合预期
+      evidence:
+        - quality-result.yaml保留初次failed历史，不被本结果覆写
+      resolutionStatus: resolved
+      resolutionEvidence:
+        - type: screenshot
+          reference: evidence/final-independent/summary-obsolete-corrected.png
+        - type: screenshot
+          reference: evidence/final-independent/summary-frozen-v1.png
+        - type: command
+          reference: evidence/final-independent/frontend-targeted.tap
+        - type: document
+          reference: evidence/product-candidate.json
+  residualRisks:
+    - id: risk.final-scope-and-existing-open-high
+      description: 归档/最终放行执行、放行后受控更正、打印过滤作废、完整质量结果变化比较、完整A12历史检索与规则重建及两项既有完整DHR high未闭环
+      impact: 本结果只验收本轮确认的记录控制与DHR/当前贡献联动，不代表完整DHR生命周期或发布完成
+      mitigation: 按DEC0090和现有TODO后续切片独立验收，不以本次passed关闭更广范围high或提升整体成熟度
+    - id: risk.final-browser-and-role-matrix
+      description: 合成ADMIN现场覆盖列明的汇总/列表/通知；审核任务、无汇总EvidenceViewer及填报未保存全状态未逐一浏览器运行，普通权限、全部账号状态和任意复杂存量画布未全矩阵验证
+      impact: 不证明所有角色、四工作区和设备的全组合均通过
+      mitigation: 当前源码、12项导航、52项聚焦及前独立PG/授权证据覆盖受影响规则；完整矩阵保持明确后续范围，不替代现有权限控制
+    - id: risk.final-optional-pdf-and-migration-rollback
+      description: 前独立真实库模板PDF因未设置dhr.pdf.qa.jdbcUrl跳过，迁移回滚路径未现场执行；既有冻结PDF/ZIP及新装升级重复已执行
+      impact: 不证明任意存量模板或任何部署数据库均已验证，不宣称生产应用迁移
+      mitigation: 部署或真实模板样本验证另在授权环境执行；保留当前追加迁移与回滚声明及原始证据
+    - id: risk.final-static-debt-and-console
+      description: 全仓premium及app-shell存量检查非绿；浏览器登录favicon404及Router警告、故障注入预期503均如实记录
+      impact: 本轮无新增产品静态签名并不等于全仓无技术债或控制台全会话零错误
+      mitigation: 保留独立基线/当前日志和原图，仅对本轮可复现问题修复，不借功能开发扩大无关UI/权限变更
+    - id: risk.final-host-enforcement
+      description: 未核验远端必需CI和分支保护设置，未推送或发布；PG原件复用基于当前源码审查、修改时间与主侧未变更陈述，不是历史源码SHA快照
+      impact: 不能将本地契约、一次测试或当前指纹称为远端强制门禁或生产安全证明
+      mitigation: 最终提交核对当前product-candidate指纹，目标/功能提交变化按影响重验；集成发布时单独核验远端保护与部署
+  blockingConditions: []

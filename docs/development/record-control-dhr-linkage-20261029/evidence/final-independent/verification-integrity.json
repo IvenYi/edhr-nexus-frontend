@@ -1,0 +1,249 @@
+{
+  "archivedIndependentJUnit": [
+    {
+      "suite": "com.zencas.edhr.production.service.DhrReviewLifecycleIntegrationTest",
+      "hashMatches": true,
+      "testsMatch": true,
+      "noFailure": true,
+      "hashScope": "compressed archive bytes"
+    },
+    {
+      "suite": "com.zencas.edhr.recordcontrol.service.RecordControlAccessTest",
+      "hashMatches": true,
+      "testsMatch": true,
+      "noFailure": true,
+      "hashScope": "compressed archive bytes"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "hashMatches": true,
+      "testsMatch": true,
+      "noFailure": true,
+      "hashScope": "compressed archive bytes"
+    },
+    {
+      "suite": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "hashMatches": true,
+      "testsMatch": true,
+      "noFailure": true,
+      "hashScope": "compressed archive bytes"
+    },
+    {
+      "suite": "com.zencas.edhr.common.config.CurrentDatabaseBaselineTest",
+      "hashMatches": true,
+      "testsMatch": true,
+      "noFailure": true,
+      "hashScope": "compressed archive bytes"
+    },
+    {
+      "suite": "com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest",
+      "hashMatches": true,
+      "testsMatch": true,
+      "noFailure": true,
+      "hashScope": "compressed archive bytes"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.DhrAttachmentAndArchiveTest",
+      "hashMatches": true,
+      "testsMatch": true,
+      "noFailure": true,
+      "hashScope": "compressed archive bytes"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.DhrEvidenceBatchPostgresTest",
+      "hashMatches": true,
+      "testsMatch": true,
+      "noFailure": true,
+      "hashScope": "compressed archive bytes"
+    },
+    {
+      "suite": "com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest",
+      "hashMatches": true,
+      "testsMatch": true,
+      "noFailure": true,
+      "hashScope": "compressed archive bytes"
+    },
+    {
+      "suite": "com.zencas.edhr.workflow.controller.RecordControlWorkflowControllerTest",
+      "hashMatches": true,
+      "testsMatch": true,
+      "noFailure": true,
+      "hashScope": "compressed archive bytes"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+      "hashMatches": true,
+      "testsMatch": true,
+      "noFailure": true,
+      "hashScope": "compressed archive bytes"
+    },
+    {
+      "suite": "com.zencas.edhr.production.service.DhrPdfRendererTest",
+      "hashMatches": true,
+      "testsMatch": true,
+      "noFailure": true,
+      "hashScope": "compressed archive bytes"
+    },
+    {
+      "suite": "com.zencas.edhr.recordcontrol.service.RecordControlDiffTest",
+      "hashMatches": true,
+      "testsMatch": true,
+      "noFailure": true,
+      "hashScope": "compressed archive bytes"
+    }
+  ],
+  "allIndependentArchivesMatch": true,
+  "premium": {
+    "baselineProduct": 28,
+    "currentProduct": 28,
+    "newSignatures": [],
+    "removedSignatures": [],
+    "globalAuditPassed": false
+  },
+  "productCandidateMatches": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrImpactNotificationController.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrPdfRenderer.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0089-record-control-dhr-linkage.sql",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselineTest.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrEvidenceBatchPostgresTest.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-dhr-workspace-navigation.mjs",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/verify-app-shell-topbar.mjs",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/dhr-impact-notifications.ts",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/shared/AppLayout.tsx",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/shared/DhrImpactNotifications.tsx",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrWorkspaceNavigation.tsx",
+      "matches": true
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/dhrSourceNavigation.ts",
+      "matches": true
+    }
+  ],
+  "backendEvidenceReuseBasis": {
+    "previousIndependentLastReportMtime": 1793282140.9354255,
+    "latestBackendSourceMtime": 1793281695.2186084,
+    "scope": "Unchanged backend reported by implementer and supported by source/test mtimes predating previous independent run; original XML integrity validated; this final independent instance reran 52 focused cases. Mtime is corroboration, not a cryptographic historical source snapshot."
+  },
+  "finalUserVisualRefinement": {
+    "changedPathsSinceOriginalQA": [
+      "gmp-platform/frontend/src/pages/dhr-management/DhrWorkspaceNavigation.tsx"
+    ],
+    "scope": "Only shared navigation presentation; source callbacks, evidence helpers, backend and knowledge business semantics unchanged",
+    "buildExitCode": 0,
+    "frontendNodeTests": {
+      "tests": 12,
+      "passed": 12,
+      "failed": 0
+    },
+    "browserSessionClosed": true,
+    "premium": {
+      "globalFindings": 86,
+      "baselineProductFindings": 28,
+      "finalProductFindings": 28,
+      "newSignatures": []
+    }
+  }
+}

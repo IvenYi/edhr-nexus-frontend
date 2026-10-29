@@ -45,7 +45,7 @@ class DhrReviewLifecycleIntegrationTest {
 
     @BeforeEach void seed() throws Exception {
         AuditContext.setOperator("7", "审核人");
-        for (String table : new String[]{"dhr_summary_review", "dhr_summary_evidence", "dhr_summary_draft", "dhr_summary_version", "dhr_attachment", "dhr_instance", "production_object", "form_instance_record"}) jdbc.execute("DROP TABLE IF EXISTS " + table);
+        for (String table : new String[]{"dhr_evidence_impact", "record_control_request", "dhr_summary_review", "dhr_summary_evidence", "dhr_summary_draft", "dhr_summary_version", "dhr_attachment", "dhr_instance", "production_object", "form_instance_record"}) jdbc.execute("DROP TABLE IF EXISTS " + table);
         for (String table : new String[]{"workflow_action_log", "workflow_task", "workflow_instance", "workflow_edge", "workflow_node", "workflow_definition_version", "workflow_definition", "audit_event", "signature", "user_account"}) jdbc.update("DELETE FROM " + table);
         jdbc.update("INSERT INTO user_account(id,tenant_id,username,display_name,password_hash,status) VALUES(7,0,'reviewer','审核人',?,'ACTIVE')", passwords.encode("test-secret"));
         jdbc.update("INSERT INTO signature(id,target_type,target_id,signer_id,signature_password_hash,signed_at,expires_at) VALUES(900,'USER_PROFILE','7','7',?,?,?)",
@@ -61,10 +61,13 @@ class DhrReviewLifecycleIntegrationTest {
         jdbc.execute("DROP TABLE IF EXISTS production_execution");
         jdbc.execute("CREATE TABLE production_execution(object_id BIGINT PRIMARY KEY,snapshot_json TEXT,state_json TEXT)");
         jdbc.execute("CREATE TABLE form_instance_record(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),source_type VARCHAR(32),object_id BIGINT,instance_no VARCHAR(64),snapshot_json TEXT,values_json TEXT,status VARCHAR(32),version_id BIGINT)");
+        jdbc.execute("CREATE TABLE record_control_request(tenant_id VARCHAR,record_id BIGINT,status VARCHAR)");
+        jdbc.execute("CREATE TABLE dhr_evidence_impact(tenant_id VARCHAR,summary_version_id BIGINT,record_id BIGINT)");
         jdbc.execute("CREATE TABLE dhr_attachment(id BIGINT PRIMARY KEY,tenant_id VARCHAR(32),dhr_instance_id BIGINT,active BOOLEAN,sha256 VARCHAR(64),verification_status VARCHAR(32),stored_path VARCHAR(1024))");
         String base = "{\"directories\":[{\"id\":10,\"name\":\"目录\",\"items\":[{\"id\":20,\"required\":true}]}]}";
         jdbc.update("INSERT INTO dhr_instance(id,tenant_id,production_object_id,status,summary_status,dhr_review_mode,dhr_review_workflow_definition_id,dhr_review_workflow_version_id,directory_snapshot,dhr_no,object_no,object_type,work_order_no,product_name) VALUES(1,'default',10,'COMPLETED','NOT_STARTED','REQUIRED',50,51,?,'DHR-1','B1','BATCH','WO1','产品')", base);
         jdbc.update("INSERT INTO form_instance_record VALUES(200,'default','PRODUCTION_EXECUTION',10,'FR-200','{\"dhrItemId\":\"20\"}','{\"temperature\":20}','COMPLETED',5)");
+        jdbc.execute("ALTER TABLE form_instance_record ADD COLUMN current_revision_id BIGINT");
         try (var stream = getClass().getResourceAsStream("/db/changelog/0092-dhr-summary-workspace.sql")) {
             for (String sql : new String(stream.readAllBytes(), StandardCharsets.UTF_8).split(";")) if (sql.contains("CREATE TABLE") || sql.contains("CREATE INDEX")) jdbc.execute(sql);
         }
@@ -73,6 +76,7 @@ class DhrReviewLifecycleIntegrationTest {
                 for (String sql : new String(stream.readAllBytes(), StandardCharsets.UTF_8).split(";")) if (sql.contains("ALTER TABLE")) jdbc.execute(sql);
             }
         }
+        jdbc.execute("ALTER TABLE dhr_summary_version ADD COLUMN submitted_by_id VARCHAR(64)");
         try (var stream = getClass().getResourceAsStream("/db/changelog/0097-dhr-review-workbench.sql")) {
             jdbc.execute(new String(stream.readAllBytes(), StandardCharsets.UTF_8).split(";")[0]);
         }
@@ -169,7 +173,7 @@ class DhrReviewLifecycleIntegrationTest {
         ObjectNode submitted = submit();
         Long taskId = jdbc.queryForObject("SELECT id FROM workflow_task WHERE status='PENDING'", Long.class);
         String frozen = jdbc.queryForObject("SELECT candidate_snapshot FROM dhr_summary_version WHERE id=?", String.class, submitted.path("id").asLong());
-        jdbc.update("INSERT INTO form_instance_record VALUES(201,'default','PRODUCTION_EXECUTION',10,'FR-201','{}','{}','COMPLETED',5)");
+        jdbc.update("INSERT INTO form_instance_record VALUES(201,'default','PRODUCTION_EXECUTION',10,'FR-201','{}','{}','COMPLETED',5,NULL)");
         jdbc.update("INSERT INTO dhr_attachment VALUES(301,'default',1,TRUE,'digest','VERIFIED','/missing')");
         var changes = reviews.detail(taskId).path("evidenceChanges");
         assertThat(changes.size()).isEqualTo(2);

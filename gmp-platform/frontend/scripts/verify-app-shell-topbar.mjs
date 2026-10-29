@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 
 const appLayout = readFileSync(new URL('../src/components/shared/AppLayout.tsx', import.meta.url), 'utf8');
 const authApi = readFileSync(new URL('../src/api/auth.ts', import.meta.url), 'utf8');
+const notifications = readFileSync(new URL('../src/components/shared/DhrImpactNotifications.tsx', import.meta.url), 'utf8');
 const packageJson = readFileSync(new URL('../package.json', import.meta.url), 'utf8');
 const standardDoc = readFileSync(new URL('../../../docs/design-audit/organization-management-ui-standard.md', import.meta.url), 'utf8');
 const failures = [];
@@ -189,7 +190,8 @@ mustNotInclude('试用企业版', 'user dropdown should remove enterprise trial'
 mustNotInclude('自由的', 'user dropdown should remove the trial pill');
 mustInclude('登出', 'user dropdown logout text should match the reference');
 mustNotInclude('退出登录', 'user dropdown should not use the old logout label');
-mustInclude('badgeContent={4}', 'notification badge should match the visible reference count');
+mustInclude('<DhrImpactNotifications', 'notification uses the existing header slot');
+if (!notifications.includes('badgeContent={query.data?.unreadCount ?? 0}') || !notifications.includes('listDhrImpactNotifications')) failures.push('notification badge must use the current user real unread count');
 mustInclude('data-app-module-rail', 'module rail should expose a QA selector');
 mustInclude('data-app-function-menu', 'function menu should expose a QA selector');
 mustInclude('height: MODULE_ITEM_HEIGHT', 'module entries should clamp height to 64px');

@@ -232,6 +232,7 @@ public class DhrSummaryService {
     public ObjectNode submit(Long dhrId, JsonNode command) {
         lockProductionObject(dhrId);
         ObjectNode dhr = lockedCompletedDhr(dhrId);
+        impacts.requireNoPendingApplications(dhrId);
         List<Map<String, Object>> rows = jdbc.queryForList(
                 "SELECT * FROM dhr_summary_draft WHERE tenant_id=? AND dhr_instance_id=? FOR UPDATE", TENANT, dhrId);
         if (rows.isEmpty()) throw invalid("请先保存 DHR 汇总草稿");
@@ -335,6 +336,7 @@ public class DhrSummaryService {
                     candidate.path("originKind").asText(), sourceSnapshot, hash(sourceSnapshot), now);
         }
         jdbc.update("DELETE FROM dhr_summary_draft WHERE id=?", draft.get("id"));
+        jdbc.update("UPDATE dhr_summary_version SET submitted_by_id=? WHERE id=? AND tenant_id=?", AuditContext.getOperatorId(), versionId, TENANT);
         jdbc.update("UPDATE dhr_instance SET summary_status=?,updated_by=?,updated_at=? WHERE id=?", status, actor, now, dhrId);
         if ("REQUIRED".equals(mode)) {
             var workflow = workflowEngine.createDhrSummaryInstance(reviewDefinitionId, reviewVersionId,

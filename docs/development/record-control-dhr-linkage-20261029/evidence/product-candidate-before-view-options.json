@@ -1,0 +1,126 @@
+{
+  "baseCommit": "e0b416a12507cd15e411d4becdd4d75b47ed77d9",
+  "workingTree": true,
+  "files": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/controller/DhrImpactNotificationController.java",
+      "sha256": "637b3d89e50452bddf364a08f4bebde29494ecd91b0fa7833323caedff8a93d7"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrEvidenceImpactService.java",
+      "sha256": "09ae4603a600df3a8cafb00e9e304e7cffbc840a2fab6b8b511f745822649c80"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrImpactNotificationService.java",
+      "sha256": "2ec8ab10285cb55892fbf71ae8a3c7bab2bac9a73510c0d6f855d2102a9c38ce"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrInstanceService.java",
+      "sha256": "e05d21e05bc1f41dd52c4e54454524cad924f122b715ac342da6e55f2d8c534d"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrPdfRenderer.java",
+      "sha256": "a223113e0d0e1a025f51c5f9ca108dacf6e113af5edb784c2fc2ede1e00fef72"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrReviewService.java",
+      "sha256": "afbf44533270c535188d4c78a7481022ea7cc0126bded081ec86631f181b7282"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrSummaryService.java",
+      "sha256": "20d96b976bd931ccf65c710204a01d8d571d51f8deebaf64bb0aaad8f7e24c3e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/FormProjectionService.java",
+      "sha256": "b2bab3dc76dfbd3df4928ffdb7c962048e8b4a0517ec696cd64a1e7171eed88e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "sha256": "aea5ab74de446f7b2156beb09797de736d05ba825d5aafba3d95c0887e2db2be"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/0089-record-control-dhr-linkage.sql",
+      "sha256": "fbce6af79d0c62413d105141650bf228e08c9436fc7ab806314128fbffe4469a"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/resources/db/changelog/db.changelog-master.yaml",
+      "sha256": "11111e967404e7a4bfb80c259df92e0031e76c3f7a78dd4d36dc267ee5507f17"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java",
+      "sha256": "eaaf4cce06279a91543f2e16867440303e5ce398760b81700ec501897dee280f"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselineTest.java",
+      "sha256": "32e0515ffb22c560e0d8dac8734d1a97215bb2b0b7834929209b17a4bd916339"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrEvidenceBatchPostgresTest.java",
+      "sha256": "853dae94a4a01505e1727901fa2160ae3f924707c75c9690d9ac30477884e088"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewLifecycleIntegrationTest.java",
+      "sha256": "7952eec381db06f1930e43958800febccf8e5299c5d422de2b1f31942e01753d"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrReviewServiceTest.java",
+      "sha256": "2f7132f707b6d01b1b043306afb35c942a95bd70113e28c71c61e1b0f55c505d"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/production/service/DhrSummaryPersistenceTest.java",
+      "sha256": "cc038173b44218b1278a16daed2d55f2d581f4e80be42e55070768c57f543a7d"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlAccessTest.java",
+      "sha256": "142205f12aa682b103f63091927f8d4f28aecf8e71970263dfc6f0fc0942dbdb"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "sha256": "a1f0dd5a6f1b62cc0cca25537acc96521f4b33c42e0f4e3e52db0c5e360f41c1"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/test-dhr-workspace-navigation.mjs",
+      "sha256": "5e8b6626778ad81669091879046facb54ce7c61e77d644d495edff78311ef1a5"
+    },
+    {
+      "path": "gmp-platform/frontend/scripts/verify-app-shell-topbar.mjs",
+      "sha256": "bc205800d5923d0dd68308fab106d87616e94e317d1c608b53990c5c066e3482"
+    },
+    {
+      "path": "gmp-platform/frontend/src/api/dhr-impact-notifications.ts",
+      "sha256": "bcc0eb9cab552082ee1bfc3977616efd8e29ec95541287f046b27bb8bbabc030"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/shared/AppLayout.tsx",
+      "sha256": "6ff0fb9e83287c383f90bf7838e5fd8d3a0beaa920bf3775c29833d071628674"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/shared/DhrImpactNotifications.tsx",
+      "sha256": "b41c73d668b835f7afcc6dcbdd6f069e3335c1098ceb11de88789eb09bf7d799"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrFillingPage.tsx",
+      "sha256": "06c682478b5709ada56e6b10e46044582431ac686641945ef4c12ecb486af6a1"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrManagementPage.tsx",
+      "sha256": "cfa9f1471bccebd3891fc45c6bbb16d53a7a394ca9ccd9fab2814af1b3e0e1e9"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrReviewPage.tsx",
+      "sha256": "49fe156db3b598f6615cd646c8ab9de92fb1e559a7955c37abdfe15258fd4892"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrSummaryPage.tsx",
+      "sha256": "4d796160a4c90b9834ecf6e207c09f0b132269c77411b7325610bee46a92d183"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/DhrWorkspaceNavigation.tsx",
+      "sha256": "c66288a7560327292eeaccf43ccbbc6455cd1d4b9c514fee388ce97407345167"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/dhr-management/dhrSourceNavigation.ts",
+      "sha256": "8a80bcd500663e4baa64a6c5fdc2cb083888025c5dd229ce143ee05d4cdf3051"
+    }
+  ]
+}

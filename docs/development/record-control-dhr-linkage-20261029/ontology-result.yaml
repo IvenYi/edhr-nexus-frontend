@@ -1,0 +1,175 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: e0b416a12507cd15e411d4becdd4d75b47ed77d9
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: e0b416a12507cd15e411d4becdd4d75b47ed77d9
+    uncommittedContractPaths: []
+  reason: 归档术语与MVP最小范围及同一联动切片知识已累计同步；现基线e0b416a已包含目标635711f9，契约重读无差异。固定后端归档及部分浏览器/前端原件已核对，明确已取得PG迁移、并发、授权负例及部分UI路径；剩余实质范围为完整质量变化比较及未覆盖全面矩阵。本轮最终独立结论另取同目录quality-final-result.yaml，不由本索引或初轮failed代替，也不预判其结果。归档概念、总体声明及完整事实成熟度与0.3.25/schema1.2.0和阶段保持，本次未重跑Maven，归档执行、两项DHR high和完整A12未关闭。
+  baselineHistory:
+    - sourceCommit: e63ed8dd2c3f63e5efb334b523efc7f3d9c32843
+      contractReadCommit: e63ed8dd2c3f63e5efb334b523efc7f3d9c32843
+      scope: 初轮归档知识同步、正式知识89项及第一次账号身份/PG索引增量，旧结果按当时时点保留
+    - sourceCommit: e0b416a12507cd15e411d4becdd4d75b47ed77d9
+      contractReadCommit: e0b416a12507cd15e411d4becdd4d75b47ed77d9
+      scope: 已合入目标后收尾原始归档与部分UI证据精确同步，实际受审为本HEAD上的工作树
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0090-dhr-archive-minimum-scope.yaml
+      changeType: create
+      ids: [DEC-0090, DEC-0090-01, DEC-0090-02, DEC-0090-03, DEC-0090-04, scenario.dhr-archive-terminology-boundary, scenario.dhr-archive-minimum-evidence-and-access, scenario.dhr-archive-deferred-work-boundary]
+    - path: docs/knowledge/evidence/dhr-archive-minimum-20261029.md
+      changeType: create
+      ids: [evidence.dhr-archive-minimum-user-confirmed]
+    - path: docs/knowledge/evidence/dhr-archive.yaml
+      changeType: create
+      ids: [evidence.dhr-archive-minimum-user-confirmed, evidence.dhr-archive-prd-direction]
+    - path: docs/knowledge/glossary.yaml
+      changeType: update
+      ids: [term.dhr-archive]
+    - path: docs/knowledge/ontology.yaml
+      changeType: update
+      ids: [concept.dhr-archive]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: [DEC-0090, DEC-0068-14]
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      ids: [concept.dhr-archive, DEC-0090]
+    - path: docs/architecture/transaction-traceability-dhr-business-rules.md
+      changeType: update
+      ids: [DEC-0090, DEC-0068-14]
+    - path: docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+      changeType: update
+      ids: [DEC-0068-12, DEC-0068-13, DEC-0068-14, discrepancy.dhr-review-complete-evidence-impact-gap, discrepancy.dhr-review-effective-source-integration]
+    - path: docs/knowledge/evidence/dhr-filling-review-confirmed.md
+      changeType: update
+      ids: [evidence.dhr-filling-review-confirmed]
+    - path: docs/knowledge/evidence/record-control-dhr-linkage.yaml
+      changeType: create
+      ids: [evidence.record-control-dhr-effective-orchestration, evidence.dhr-record-control-linkage-source, evidence.dhr-impact-notification-personal-source, evidence.dhr-impact-linkage-migration, evidence.dhr-linkage-backend-verification, evidence.dhr-linkage-browser-verification, evidence.dhr-linkage-frontend-verification, evidence.dhr-linkage-initial-quality-result]
+    - path: docs/knowledge/facts/dhr-summary.yaml
+      changeType: update
+      ids: [fact.dhr-summary.effective-evidence-change]
+    - path: docs/knowledge/open-questions.yaml
+      changeType: update
+      ids: [question.form-projection-trace-index-effective-scope]
+  knowledgeSync:
+    - id: DEC-0090
+      disposition: updated
+      scope: 新确认统一称DHR归档并记录最小MVP范围；在最终放行后绑定正式版本与证据、限制普通修改、记录主体时间版本并按权可取，含备份恢复保障。独立归档审批、解封及完整放行后更正不在本轮，P1受控方向保留，当前仅记录TODO。
+      sourceReferences: [本轮用户直接原话, docs/knowledge/evidence/dhr-archive-minimum-20261029.md, docs/development/record-control-dhr-linkage-20261029/decision-package.yaml]
+    - id: term.dhr-archive
+      disposition: updated
+      scope: 建立统一名称，封存仅历史旧称；不把汇总版本冻结、FORMALIZED或ZIP下载解释为归档，也不新增运行状态。
+      sourceReferences: [DEC-0090-01, DEC-0090-02]
+    - id: concept.dhr-archive
+      disposition: updated
+      scope: 仅登记specified/internal业务概念，未注册尚无执行来源的归档运行事实、数量约束或执行契约。
+      sourceReferences: [DEC-0090, docs/knowledge/evidence/dhr-archive.yaml]
+    - id: DEC-0068-14
+      disposition: updated
+      scope: 保留DHR审批中新申请禁令及全入口最终复核；仅将此前当时未确认归档的阶段说明改引后续DEC-0090，未替代原已有效门禁政策，不开放解封或普通放行后修改。
+      sourceReferences: [docs/knowledge/evidence/dhr-filling-review-confirmed.md, DEC-0090]
+    - id: discrepancy.dhr-review-complete-evidence-impact-gap
+      disposition: updated
+      scope: 保持high/open；已取得双向门禁、修订影响、定向收件、人工退回、并发、迁移及部分UI原件；实质剩余为质量变化完整比较和未覆盖全面矩阵，最终独立结论另取同目录quality-final-result.yaml，不由本索引或初轮failed代替，不把已取得证据泛述为完全缺失。
+      sourceReferences: [evidence.dhr-record-control-linkage-source, evidence.record-control-dhr-effective-orchestration, evidence.dhr-linkage-backend-verification, evidence.dhr-linkage-browser-verification]
+    - id: discrepancy.dhr-review-effective-source-integration
+      disposition: updated
+      scope: 保持high/open；已有生效编排、统计替换/作废、回滚、去重、两类并发、迁移、授权负例及部分UI原件；未覆盖全面矩阵仍保留，最新实际验收范围和最终独立结论另取同目录quality-final-result.yaml，不由初轮failed或本索引替代，不关闭完整A12。
+      sourceReferences: [evidence.record-control-dhr-effective-orchestration, evidence.dhr-impact-linkage-migration, evidence.dhr-impact-notification-personal-source, evidence.dhr-linkage-backend-verification, evidence.dhr-linkage-browser-verification, evidence.dhr-linkage-initial-quality-result]
+    - id: fact.dhr-summary.effective-evidence-change
+      disposition: updated
+      scope: 更新固定后端和部分浏览器证据定位，完整事实仍specified/internal且availability为not-available；已取得的聚焦PG、授权负例及UI原件不被笼统写成没有，局部implemented/internal不替代完整质量变化比较与最终验收。
+      sourceReferences: [evidence.dhr-record-control-linkage-source, DEC-0068-05, DEC-0068-06, evidence.dhr-linkage-backend-verification, evidence.dhr-linkage-browser-verification]
+    - id: question.form-projection-trace-index-effective-scope
+      disposition: updated
+      scope: 保留失效历史检索、当前历史切换UI和规则重建未决；澄清本轮授权的当前索引与正式贡献切换可独立推进，不据局部切换关闭完整A12。
+      sourceReferences: [docs/development/record-control-dhr-linkage-20261029/decision-package.yaml, DEC-0077]
+    - id: DEC-0068-12
+      disposition: updated
+      scope: 保留真实生效及既定两类收件人和可靠账号身份，已取得定向隔离PG及本人提醒/已读等部分UI；未覆盖全面矩阵保持，最终独立结论另取同目录quality-final-result.yaml，不由本索引或初轮failed替代，不改旧冻结和原权限。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml, evidence.dhr-record-control-linkage-source, evidence.dhr-impact-linkage-migration, evidence.dhr-linkage-browser-verification]
+    - id: DEC-0068-13
+      disposition: updated
+      scope: 仅纠正工程进度并保持用户政策：撤回运行入口仍延期；本条收尾阻断已实现并有聚焦固定原件，最终独立验收范围另取同目录quality-final-result.yaml，不把撤回延期和阻断同时写为未实现，原版可读及人工处理规则不变。
+      sourceReferences: [docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    - id: DEC-0063-16
+      disposition: retained
+      scope: 用户政策保持；当前草稿默认隐藏、低频查看、全量计数1和旧V1仍COMPLETED已有原始截图与交互记录，作废误标已局部修正但最终独立结果未预填；打印延期，不以隐藏绕过核查。
+      sourceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml, evidence.dhr-linkage-browser-verification, evidence.dhr-linkage-initial-quality-result]
+    - id: DEC-0063-08
+      disposition: retained
+      scope: DHR汇总提交、NONE定稿和审批通过均不等于最终产品放行；归档确认也不产生自动放行副作用。
+      sourceReferences: [docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml, DEC-0090-02]
+    - id: DEC-0086
+      disposition: retained
+      scope: 首版按表单实例编号发起，批次/SN及DHR目录便捷入口继续延期，本轮归档命名不新增入口。
+      sourceReferences: [docs/knowledge/decisions/DEC-0086-record-change-search-scope.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.dhr-linkage-knowledge-formal
+      checkType: schema
+      command: mvn -q -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - 本角色初轮知识同步在独占Maven窗口执行，退出0；89项，0失败、0错误、0跳过；后续账号身份与PG证据文本增量未重跑此命令，不把初轮结果冒充新增正式运行
+        - gmp-platform/backend/target/dhr-linkage-ontology-20261029.log，327字节，SHA256=c90e2cf97694f27978681371e64941d586c449d3a4b981ab5644c01d97468f41
+        - gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml，51470字节，SHA256=a8d856a028c54796af085fb6097ad2e2e07b3a4f9e1adaa13f34b51acce83f03
+    - id: validation.dhr-linkage-current-scope
+      checkType: reference
+      command: Ruby解析全部知识YAML并核对新增DEC/术语概念、证据路径与成熟度
+      outcome: passed
+      evidence: [240份知识YAML均可解析且版本为0.3.25, DEC-0090四声明均specified/internal, 新证据路径均存在, 两项DHR high仍open, A12历史未决未删除]
+    - id: validation.dhr-linkage-policy-and-source
+      checkType: projection
+      command: 对照直接用户确认、DEC0063/0068/0077及当前原始服务和追加迁移，核对当前解释与历史边界
+      outcome: passed
+      evidence:
+        - 归档为新确认规划，不追认现有冻结或下载为已归档，不注册未实现归档运行事实或新增封存状态
+        - 来源实际生效、在审非生效、两个方向门禁、定向站内收件和人工处理及旧冻结保留分别表述
+        - 原始代码、固定压缩JUnit及部分浏览器原图按各自范围登记；本体只读取验证原件，未冒称亲自重跑PG或浏览器，不宣称完整权限、全部并发或最终独立质量已通过
+        - 新归档与联动原话和旧阶段证据分别保存，不回填旧验收；未改变0.3.25/schema1.2.0或知识阶段
+    - id: validation.dhr-linkage-submitter-identity-and-pg-evidence
+      checkType: evidence-path
+      command: 读取DhrSummaryService、DhrEvidenceImpactService、0089迁移与RecordControlPostgresIntegrationTest；解析实际读到的原JUnit并计算日志哈希，本次未运行Maven
+      outcome: passed
+      evidence:
+        - 新submitted_by_id保存真实AuditContext账号ID；旧版仅从原审核提交人ID或唯一原SUBMIT审计operator_id恢复，不按姓名匹配；原submitted_by显示名与冻结正文摘要保持
+        - 当前读取的RecordControlPostgresIntegrationTest原JUnit为合计14项（8新6原），0失败错误跳过；SHA256=8327ca8e8846797d3e22adf6a84c95d1e59bc73c66b4a704f1e40fdd98e9ce65
+        - 主侧third日志原件target/dhr-linkage-postgres-third.log为919283字节，SHA256=fce37ca095debc0e12273423a01d37fac7d16d180b1fa9a5ed50ba6161fe9171；同名JUnit会被后续回归覆盖，本体未独立证明它与third为同次运行，分别索引，最终对应归档由主侧固定
+        - 代码及用例覆盖两向门禁、人工退回、100换90与作废退出当前贡献、旧结果和冻结保留、定向ID及重名隔离、通知失败回滚、两种并发及结果重投去重；不关闭完整high/A12或UI/HTTP验收
+    - id: validation.dhr-linkage-change-scope
+      checkType: evidence-path
+      command: git diff --check -- docs/knowledge docs/architecture；git status与文件所有权核对
+      outcome: passed
+      evidence: [本角色仅修改13个知识与必要架构文件及获准的本结果文件, 未改业务代码测试迁移UI或其他开发文件, 空白检查通过, 未提交Git]
+    - id: validation.dhr-linkage-fixed-final-backend-archives
+      checkType: evidence-path
+      command: 读取backend-verification.json，逐项解压48个归档核对字节数及SHA256，解析38个原JUnit并合计；本次未运行Maven
+      outcome: passed
+      evidence:
+        - 实际manifest基线e0b416a12507cd15e411d4becdd4d75b47ed77d9上的工作树，已合入目标635711f9；契约重读无差异
+        - 固定manifest SHA256=1ff3c9fdfaa184f0a1a61ae3a2883c39d5ac55ae562a97ba2fd46beabd84fa28；48个归档全部一致
+        - 38个原JUnit合计360项，322通过、38条件跳过、0失败错误；RC14、知识89和基线PG3无失败或跳过
+        - 原件含真实新装/已有基线升级/重复、容量及授权负例，不泛述为无PG迁移证据；未执行的回滚和全面部署不外推
+        - 新固定归档不与先前target14项单例或third日志强绑定，旧读取说明按当时时点保留
+    - id: validation.dhr-linkage-browser-and-frontend-evidence-boundaries
+      checkType: projection
+      command: 读取主侧browser观察与manifest及六张原图，核对前端归档原件和初轮独立结果；未执行浏览器或重跑构建
+      outcome: passed
+      evidence:
+        - 六张原始PNG已固定evidence/browser，当前草稿隐藏与全量计数1、低频查看修正后已作废、旧V1仍COMPLETED及通知390浮层有可读原图，本体直接看过其中四张
+        - 主侧现场记录本人提醒/已读、Escape焦点和真实发起修订建DRAFT；合成ADMIN不等于完整普通权限UI矩阵，也不宣称控制台零错误或全部工作区窄屏通过
+        - 前端原归档构建及8项目标/12项回归脚本通过，app-shell-final原件失败照实保留，不概括为所有脚本通过
+        - 初轮独立原件197项中196通过1跳过、前端12通过；quality-result仍failed，状态误标medium修复后的最终全新独立结果待其返回，不预填passed
+        - 本检查通过指证据定位和知识范围相符，不把未通过的原产品检查改写为通过
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

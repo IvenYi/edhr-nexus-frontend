@@ -137,6 +137,7 @@ function DhrStatusBadge({ displayStatus }: Pick<DhrInstanceSummary, 'displayStat
 function evidenceStatus(records: DhrEvidenceRecord[]) {
   const completedCount = records.filter((record) => record.status === 'COMPLETED').length;
   if (!records.length) return { label: '未填报', description: '尚无表单实例', color: '#909399', icon: <RadioButtonUncheckedRounded fontSize="small" /> };
+  if (records.every((record) => record.status === 'OBSOLETE')) return { label: '已作废', description: `${records.length} 份实例均已作废`, color: '#909399', icon: <RadioButtonUncheckedRounded fontSize="small" /> };
   if (completedCount === records.length) return { label: '已完成', description: `${records.length} 份实例均已完成`, color: '#18a058', icon: <TaskAltRounded fontSize="small" /> };
   return { label: '进行中', description: `${completedCount}/${records.length} 份实例已完成`, color: '#1890ff', icon: <PendingOutlined fontSize="small" /> };
 }
@@ -177,6 +178,7 @@ export function DhrEvidenceViewer({ selected, onClose, traceRequest }: { selecte
   const [recordId, setRecordId] = useState('');
   const [instancePanelOpen, setInstancePanelOpen] = useState(false);
   const [navigationView, setNavigationView] = useState<DhrNavigationView>('ARCHIVE');
+  const [showObsolete, setShowObsolete] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const [located, setLocated] = useState<boolean | null>(null);
   const matchedRecordIds = useMemo(() => new Set(detail?.traceHits?.map(hit => hit.instanceId) ?? []), [detail]);
@@ -194,8 +196,8 @@ export function DhrEvidenceViewer({ selected, onClose, traceRequest }: { selecte
   }, [detail]);
 
   const allRecords = useMemo(() => detail ? [...detail.recordsByOrigin.directory, ...detail.recordsByOrigin.work, ...detail.recordsByOrigin.custom] : [], [detail]);
-  const archiveNodes = useMemo(() => archiveNavigation(detail?.directorySnapshot.directories ?? [], allRecords, detail?.archiveLayout?.overlayDirectories, detail?.archiveLayout?.placements), [detail, allRecords]);
-  const navigation = useMemo(() => navigationView === 'ARCHIVE' ? archiveNodes : evidenceNavigation(source, detail?.directorySnapshot.directories ?? [], allRecords), [navigationView, archiveNodes, source, detail, allRecords]);
+  const archiveNodes = useMemo(() => archiveNavigation(detail?.directorySnapshot.directories ?? [], allRecords, detail?.archiveLayout?.overlayDirectories, detail?.archiveLayout?.placements, showObsolete), [detail, allRecords, showObsolete]);
+  const navigation = useMemo(() => navigationView === 'ARCHIVE' ? archiveNodes : evidenceNavigation(source, detail?.directorySnapshot.directories ?? [], allRecords, showObsolete), [navigationView, archiveNodes, source, detail, allRecords, showObsolete]);
   const selectedForm = navigation.find(node => !node.folder && node.key === nodeKey) ?? navigation.find(node => !node.folder);
   const sourceRecords = useMemo(() => (selectedForm?.recordIds ?? []).map(id => allRecords.find(item => item.id === id)).filter((item): item is DhrEvidenceRecord => Boolean(item)), [allRecords, selectedForm]);
   useEffect(() => {
@@ -262,9 +264,9 @@ export function DhrEvidenceViewer({ selected, onClose, traceRequest }: { selecte
             {!detail.terminationSnapshotAvailable && ' 此历史记录缺少终止时证据快照，当前展示仅供核对。'}
           </Alert>}
           <Box sx={{ ...workspaceBodySx, p: 1.5, bgcolor: '#f3f5f8' }}>
-            <DhrWorkspaceNavigation view={navigationView} onViewChange={value => {
+            <DhrWorkspaceNavigation view={navigationView} obsoleteView={{ count: allRecords.filter(item => item.status === 'OBSOLETE').length, show: showObsolete, onToggle: () => setShowObsolete(value => !value) }} onViewChange={value => {
               const nextSource = record?.originKind ?? source;
-              const nodes = value === 'ARCHIVE' ? archiveNodes : evidenceNavigation(nextSource, detail.directorySnapshot.directories, allRecords);
+              const nodes = value === 'ARCHIVE' ? archiveNodes : evidenceNavigation(nextSource, detail.directorySnapshot.directories, allRecords, showObsolete);
               setNodeKey(nodes.find(node => node.recordIds.includes(recordId))?.key ?? '');
               setSource(nextSource); setNavigationView(value);
             }} source={source} onSourceChange={value => { setSource(value); setNodeKey(''); setRecordId(''); setInstancePanelOpen(false); }}
@@ -272,7 +274,7 @@ export function DhrEvidenceViewer({ selected, onClose, traceRequest }: { selecte
               onSelect={node => { if (node.key !== selectedForm?.key) { setNodeKey(node.key); setRecordId(''); } }}
               onInstances={node => { if (node.key === selectedForm?.key) setInstancePanelOpen(open => !open); else { setNodeKey(node.key); setRecordId(''); setInstancePanelOpen(true); } }} />
             <DhrInstancePanel open={instancePanelOpen} title={selectedForm?.label ?? '表单'} selectedId={recordId} onSelect={setRecordId} onClose={() => setInstancePanelOpen(false)}
-              items={sourceRecords.map(item => ({ id: item.id, label: item.instanceNo, secondary: `${item.status === 'COMPLETED' ? '已完成' : '未完成'} · ${formatTime(item.updatedAt)}`, matched: matchedRecordIds.has(item.id) }))} />
+              items={sourceRecords.map(item => ({ id: item.id, label: item.instanceNo, secondary: `${item.status === 'COMPLETED' ? '已完成' : item.status === 'OBSOLETE' ? '已作废' : '未完成'} · ${formatTime(item.updatedAt)}`, matched: matchedRecordIds.has(item.id) }))} />
           <Box sx={{ ...workspacePanelSx, flex: 1 }}>
             <Box sx={{ px: 2.5, py: 1.5, bgcolor: '#fff', borderBottom: '1px solid #dfe3eb' }}>
               {record ? <Stack direction="row" justifyContent="space-between" alignItems="center" gap={2}><Box minWidth={0}><Typography fontWeight={700} noWrap>{(navigationView === 'ARCHIVE' && detail.archiveLayout?.placements.find(p => p.recordId === record.id)?.displayName) || selectedDirectoryItem?.displayName || selectedDirectoryItem?.formName || record.templateName}</Typography><Typography variant="caption" color="text.secondary">{record.instanceNo} · {record.templateVersion} · {record.operationName || '生产执行'} · {formatTime(record.updatedAt)}</Typography></Box><Stack direction="row" alignItems="center" gap={1}><EvidenceStatus records={[record]} showLabel stopped={detail.displayStatus === 'TERMINATED'} /></Stack></Stack> : <Stack direction="row" alignItems="center" gap={1}><EvidenceStatus records={selectedDirectoryItem?.records ?? []} showLabel stopped={detail.displayStatus === 'TERMINATED'} /><Typography color="text.secondary">{selectedDirectoryItem ? '该目录表单尚无实例' : '请选择一份表单实例'}</Typography></Stack>}
