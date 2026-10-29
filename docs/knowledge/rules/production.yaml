@@ -221,8 +221,8 @@ rules:
       target: sourceRecord
       referenceMode: retain-lifecycle-status-and-add-active-request-marker
       lockConflictingRequest: true
-    explanation: 审批中的变更或作废只锁定来源记录并显示对应标记，不借用 IN_AUDIT 改写表单主状态；来源记录继续显示提交前的完成或复核状态。
-    evidenceIds: [evidence.record-correction-void-design]
+    explanation: 审批中的变更或作废只锁定来源记录并显示对应标记，不借用 IN_AUDIT 改写表单主状态；来源记录继续显示提交前的完成或复核状态。保留原有效修订不代表下游可以继续收尾；相关 DHR 按 DEC-0068-13 在活动申请期间暂缓汇总提交和审批通过，该阻断与来源真实生效分别判断。
+    evidenceIds: [evidence.record-correction-void-design, evidence.dhr-filling-review-confirmed]
   - id: rule.record-control.parallel-review-joins-all-approval
     name: 记录控制并行审批全部通过后汇合
     status: specified
