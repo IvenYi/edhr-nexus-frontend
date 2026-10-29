@@ -104,6 +104,7 @@ const AppRouter = () => {
           <Route path="form-processes/:id" element={<Suspense fallback={<Loading />}><FormProcessEditor /></Suspense>} />
           <Route path="binding-rules" element={<Suspense fallback={<Loading />}><BindingRuleList /></Suspense>} />
           <Route path="instances" element={<Suspense fallback={<Loading />}><InstanceList /></Suspense>} />
+          <Route path="interventions" element={<Suspense fallback={<Loading />}><InstanceList intervention /></Suspense>} />
           <Route path="instances/:id" element={<Suspense fallback={<Loading />}><InstanceDetail /></Suspense>} />
           <Route path="instances/:id/logs" element={<Suspense fallback={<Loading />}><InstanceLogs /></Suspense>} />
           <Route path="tasks/:id" element={<Suspense fallback={<Loading />}><TaskDetail /></Suspense>} />

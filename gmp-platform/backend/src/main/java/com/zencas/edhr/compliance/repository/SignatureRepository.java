@@ -17,7 +17,7 @@ public interface SignatureRepository extends JpaRepository<Signature, Long>, Jpa
     @Query("""
             select s from Signature s
             where s.targetType is null
-               or s.targetType not in ('DHR_SUMMARY', 'PRODUCTION_EXECUTION', 'USER_PROFILE', 'RECORD_CONTROL_REQUEST')
+               or s.targetType not in ('DHR_SUMMARY', 'PRODUCTION_EXECUTION', 'USER_PROFILE', 'RECORD_CONTROL_REQUEST', 'WORKFLOW_INTERVENTION')
             """)
     org.springframework.data.domain.Page<Signature> findGeneric(org.springframework.data.domain.Pageable pageable);
 

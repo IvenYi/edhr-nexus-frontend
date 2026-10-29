@@ -87,7 +87,8 @@ const REQUIRED_PRODUCTION_WORKFLOW_CENTER_MENU: SidebarMenu = {
   children: [
     { label: '审批流程', path: '/workflow/review-templates' },
     { label: '表单流程', path: '/workflow/form-processes' },
-    { label: '流程实例', path: '/workflow/instances' },
+    { label: '流程日志', path: '/workflow/instances' },
+    { label: '流程干预', path: '/workflow/interventions' },
   ],
 };
 
@@ -164,6 +165,7 @@ const PRODUCTION_MANAGED_PATHS = new Set([
   '/workflow/review-templates',
   '/workflow/form-processes',
   '/workflow/instances',
+  '/workflow/interventions',
   '/workflow/txn-templates',
   '/workflow/work-templates',
   '/workflow/binding-rules',
@@ -540,6 +542,7 @@ export function useManagedSidebarModules(): SidebarModule[] {
 }
 
 export function inferPermissionCode(path: string): string | undefined {
+  if (path === '/workflow/interventions') return 'workflow.intervene';
   if (path === '/master-data/equipment-types') return 'master-data.equipment';
   if (path === '/') return 'dashboard';
   if (path === '/production/work-templates') return 'workflow.work-templates';

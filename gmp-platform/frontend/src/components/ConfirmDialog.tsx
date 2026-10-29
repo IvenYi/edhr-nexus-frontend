@@ -7,10 +7,12 @@ import {
   type DialogProps,
 } from '@mui/material';
 import AppDialog from '@/components/AppDialog';
+import type { ReactNode } from 'react';
 import { WarningAmberOutlined } from '@mui/icons-material';
 import type { DeletionTarget } from '@/api/deletionCheck';
 
 interface ConfirmDialogProps {
+  children?: ReactNode;
   open: boolean;
   title?: string;
   message: string;
@@ -42,6 +44,7 @@ export default function ConfirmDialog({
   initialFocus = 'confirm',
   container,
   deletionTarget,
+  children,
 }: ConfirmDialogProps) {
   return (
     <AppDialog open={open} onClose={loading ? undefined : onCancel} container={container} maxWidth="xs" fullWidth deletionTarget={deletionTarget} onDeletionBlocked={onCancel}>
@@ -53,6 +56,7 @@ export default function ConfirmDialog({
         <DialogContentText sx={{ color: 'text.secondary', fontSize: 14 }}>
           {message}
         </DialogContentText>
+        {children}
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2 }}>
         <Button onClick={onCancel} disabled={loading} autoFocus={initialFocus === 'cancel'}>

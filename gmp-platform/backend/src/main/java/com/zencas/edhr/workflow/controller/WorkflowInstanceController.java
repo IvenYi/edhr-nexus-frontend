@@ -66,7 +66,7 @@ public class WorkflowInstanceController {
     @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<WorkflowInstance> create(@RequestBody WorkflowInstance entity) {
         protectControlled(entity);
-        return ApiResponse.success(workflowInstanceRepository.save(entity));
+        throw readOnly();
     }
 
     @PutMapping("/{id}")
@@ -74,17 +74,17 @@ public class WorkflowInstanceController {
     public ApiResponse<WorkflowInstance> update(@PathVariable Long id, @RequestBody WorkflowInstance entity) {
         workflowEngine.assertGenericInstanceAccessAllowed(id);
         protectControlled(entity);
-        entity.setId(id);
-        return ApiResponse.success(workflowInstanceRepository.save(entity));
+        throw readOnly();
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<Void> delete(@PathVariable Long id) {
         workflowEngine.assertGenericInstanceAccessAllowed(id);
-        workflowInstanceRepository.deleteById(id);
-        return ApiResponse.success(null);
+        throw readOnly();
     }
+
+    private BusinessException readOnly() { return new BusinessException(ErrorCode.AUTH_003, "流程实例只能通过业务入口和流程标准动作变更"); }
 
     // ======================== Advanced Endpoints ========================
 

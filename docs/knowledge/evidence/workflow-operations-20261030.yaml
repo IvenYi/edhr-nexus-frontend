@@ -1,0 +1,37 @@
+knowledgeModelVersion: 0.3.25
+evidence:
+  - id: evidence.workflow-operations-20261030-user-confirmed
+    type: document
+    path: docs/knowledge/evidence/workflow-operations-20261030.md
+    description: user-confirmed-and-existing-policy；2026-10-30用户确认流程实例改显示名流程日志、新增流程干预并补齐重新分配、转办和受限撤回，再次明确重新分配必须签名及保留现有功能与页面规范。证据区分用户原话、既有规则和工程推断，保留10-29仅调研时点，不以实施授权或旧测试证明本轮实现已完成。
+    visibility: internal
+  - id: evidence.workflow-operations-responsibility-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java
+    description: original-evidence；本轮工作树基于40497474，change按实例及任务锁复核状态摘要，重新分配校验实际签署人专门权限并强制签名，转办读取冻结节点签署要求；目标保留原授权资格，记录控制排除申请人，保留originSnapshot并在同一事务写责任、运行日志、干预记录与审计。不是知识运行引擎或生产发布证明。
+    visibility: internal
+  - id: evidence.workflow-operations-withdrawal-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java
+    description: original-evidence；WorkflowEngine.withdraw实现既有RecordControlWorkflowWithdrawalPort，实例锁内校验申请人、关联身份、RUNNING及无审批决定，全部活动任务失效并输出确定性WITHDRAWN事件；记录控制服务withdraw在同一事务applyResult，不生成或切换来源修订。实际工作树基线及主侧验证见同轮证据文档。
+    visibility: internal
+  - id: evidence.workflow-operations-query-source
+    type: code
+    path: gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java
+    description: original-evidence；流程日志与干预同源查询，分页及计数前排除DHR并保留活动记录控制的申请关联范围；专门干预权限按管理查询职责访问。单条同样复核范围，详情读取冻结版本图、任务、意见、签名引用与日志；不等于通用业务修改授权。
+    visibility: internal
+  - id: evidence.workflow-operations-ui-source
+    type: code
+    path: gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx
+    description: original-evidence；同一列表组件承载流程日志和仅运行流程的干预模式，沿现有ListTableShell及DetailDrawer；WorkflowInstancePanel展示进度及只读日志，WorkflowResponsibilityDialog按动作呈现签署并提交。既有实例技术路由保留，记录控制任务与申请详情分别接入转办和受限撤回。
+    visibility: internal
+  - id: evidence.workflow-operations-postgres-tests
+    type: test
+    path: gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java
+    description: original-and-test-evidence；同一25项PG套件包含重新分配有效/缺失签名、原候选与陈旧请求、实际签署人权限、不合格目标、日志范围及DHR隔离、转办冻结签署配置、无决定撤回及全部待办失效、两个竞争改派、撤回与批准单胜及签名/任务/业务失败回滚；其余用例回归既有记录控制与DHR联动。实际执行结果见本轮主侧汇总，不把套件数当全系统覆盖。
+    visibility: internal
+  - id: evidence.workflow-operations-main-verification
+    type: document
+    path: docs/development/workflow-operations-20261030/evidence/backend-verification.json
+    description: original-and-test-evidence；主侧固定本轮工作树运行198项后端聚焦检查，0失败/错误/跳过，包含25项真实PG集成和89项知识校验；原JUnit及命令日志同目录压缩保留。本体侧独立核对汇总、原JUnit与相应源断言，不声称亲自执行主侧业务测试或独立质量/CSV/生产发布通过。
+    visibility: internal

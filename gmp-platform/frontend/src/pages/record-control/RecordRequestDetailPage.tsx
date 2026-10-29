@@ -2,15 +2,17 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
-  Alert, Box, Button, Chip, CircularProgress, Divider, Paper, Stack, Tab, Tabs, Typography,
+  Alert, Box, Button, Chip, CircularProgress, Divider, Paper, Stack, Tab, Tabs, TextField, Typography,
 } from '@mui/material';
 import { ArrowBack, CompareArrows } from '@mui/icons-material';
 import StatusBadge from '@/components/StatusBadge';
 import { useSnackbar } from '@/components/SnackbarProvider';
+import ConfirmDialog from '@/components/ConfirmDialog';
 import { FormCanvasPreview } from '@/pages/master-data/DhrTemplateWorkspaceDialog';
 import { parseReactTemplateDesignerDocument } from '@/pages/master-data/template-designer-react/utils/document';
 import {
   getRecordControlRequest,
+  withdrawRecordControlRequest,
   listRecordRevisions,
   type RecordControlRequestDetail,
 } from '@/api/record-control';
@@ -64,6 +66,12 @@ function DetailField({ label, value }: { label: string; value: React.ReactNode }
 }
 
 export default function RecordRequestDetailPage() {
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [withdrawReason, setWithdrawReason] = useState('');
+  const [withdrawBusy, setWithdrawBusy] = useState(false);
+  const [withdrawError, setWithdrawError] = useState('');
+  const withdrawing = useRef(false);
+  const reasonInput = useRef<HTMLInputElement>();
   const { requestId } = useParams();
   const navigate = useNavigate();
   const { showMessage } = useSnackbar();
@@ -211,8 +219,26 @@ export default function RecordRequestDetailPage() {
     <Paper variant="outlined" sx={{ flexShrink: 0, px: 1.5, py: 0.85, borderColor: '#e4e7ed' }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
         <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', md: 'block' } }}>原业务签名属于历史修订；申请与审批签名作为本次授权证据。</Typography>
-        <Button variant="outlined" startIcon={<ArrowBack />} onClick={() => navigate(-1)} sx={{ ml: 'auto' }}>返回列表</Button>
+        <Stack direction="row" spacing={1} sx={{ ml: 'auto' }}>
+          {detail.canWithdraw && <Button color="error" variant="outlined" onClick={() => { setWithdrawReason(''); setWithdrawError(''); setWithdrawOpen(true); }}>撤回申请</Button>}
+          <Button variant="outlined" startIcon={<ArrowBack />} onClick={() => navigate(-1)}>返回列表</Button>
+        </Stack>
       </Stack>
     </Paper>
+    <ConfirmDialog open={withdrawOpen} title="撤回申请" confirmText="撤回申请" destructive initialFocus="cancel"
+      message={`撤回申请 ${detail.request_no} 后，本轮全部待办将失效，原有效表单保持不变。仅本轮尚无批准或退回决定时允许撤回。`}
+      loading={withdrawBusy} onCancel={() => { if (!withdrawBusy) setWithdrawOpen(false); }} onConfirm={() => {
+        if (withdrawing.current) return;
+        if (!withdrawReason.trim()) { setWithdrawError('请填写撤回原因'); reasonInput.current?.focus(); return; }
+        withdrawing.current = true; setWithdrawBusy(true); setWithdrawError('');
+        void withdrawRecordControlRequest(detail.id, withdrawReason.trim()).then(async () => {
+          setWithdrawOpen(false); showMessage('申请已撤回', 'success'); await request.refetch();
+        }).catch(error => setWithdrawError(error instanceof Error ? error.message : '撤回失败，请重试'))
+          .finally(() => { withdrawing.current = false; setWithdrawBusy(false); });
+      }}>
+      <TextField inputRef={reasonInput} label="撤回原因" required multiline minRows={3} fullWidth size="small" sx={{ mt: 2 }}
+        disabled={withdrawBusy} value={withdrawReason} onChange={event => { setWithdrawReason(event.target.value); setWithdrawError(''); }}
+        inputProps={{ maxLength: 500 }} error={Boolean(withdrawError)} helperText={withdrawError || `${withdrawReason.length}/500`} />
+    </ConfirmDialog>
   </Box>;
 }

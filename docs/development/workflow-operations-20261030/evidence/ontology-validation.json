@@ -1,0 +1,160 @@
+{
+  "command": "mvn -q -Dtest=BusinessKnowledgeModelTest test",
+  "cwd": "gmp-platform/backend",
+  "exitCode": 0,
+  "tests": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "capturedAt": "2026-10-29T17:44:52.912556+00:00",
+  "sourceCommit": "40497474da006dfd52ea38070036a6e350eaab8e",
+  "targetCommit": "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+  "scope": "Ontology role executed knowledge tests only; product source and main-role verification inspected, not re-executed. Working tree based on sourceCommit. No CSV or deployment claim.",
+  "archives": [
+    {
+      "source": "gmp-platform/backend/target/surefire-reports/TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "archive": "docs/development/workflow-operations-20261030/evidence/ontology/knowledge-junit.xml.gz",
+      "originalBytes": 51469,
+      "originalSha256": "41f8785f16e73b952722eb1152b16f2732f5dff0c65030c57e1017edd9afbc53",
+      "archiveSha256": "a1d6466320faa98b8e018866692e08119a597201f8b4848b71c5382144e3fbbe"
+    },
+    {
+      "source": "/tmp/workflow-operations-ontology-final.log",
+      "archive": "docs/development/workflow-operations-20261030/evidence/ontology/knowledge-test.log.gz",
+      "originalBytes": 327,
+      "originalSha256": "67320b157d5f7a5a813de850e864681018cad20ac80eb5837e07c8efdb8ee332",
+      "archiveSha256": "348c06fd83926b17d0921e86d63b372faf02c7ce8874fa399b84bb9776f1998a"
+    }
+  ],
+  "knowledgeAssets": [
+    {
+      "path": "docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml",
+      "sha256": "52df0c8618a91276e3376728e0e519324e691c24345693fb8f977f267a7e866c"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml",
+      "sha256": "a1b13e9ae4a00848a4c8c8a8ad1619841ccbcb9163f1fcbc366082e72444c1e6"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sha256": "d6f287d848103087136ab6e7e7366862202a8799d221b84160a6be74a1f001d4"
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sha256": "dd596cef82ab5ced700724aa030198026397f99f4c5d5009b2506eb8cfbffc5b"
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "sha256": "ebec2f3f7345b05eaa16e6bde89ab61448fbe04e72133b071d6944b61fad6f15"
+    },
+    {
+      "path": "docs/knowledge/ontology.yaml",
+      "sha256": "c9c97162d8232196bcb47ad574c03783e2406c6ac530cfa27b1156b00bd8c8c6"
+    },
+    {
+      "path": "docs/knowledge/rules/production.yaml",
+      "sha256": "945585ae9b002baf5f9852be9bc62f9ba93bb9e38656f2749336c71c2fabbf05"
+    },
+    {
+      "path": "docs/knowledge/facts/record-control.yaml",
+      "sha256": "1c90c8eb1bd326dbfa48a71f0104050ffef5a4516f02875fe486d74c908237aa"
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-operations-20261030.yaml",
+      "sha256": "069402aa8ac933dab5704ba170c8339f1a0b799b54dba3522ecfbda538c8c06e"
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-operations-20261030.md",
+      "sha256": "262a381528be551c2d4550ade0d6c72ffb560f457b0ad5ddc5416abd38a79399"
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/workflow-operations.yaml",
+      "sha256": "1a711826fd5b84b72b3bac1406428befd74f2abb1340392e00da7437dbf89add"
+    },
+    {
+      "path": "docs/knowledge/README.md",
+      "sha256": "23d4aa15793b1fa1dbe54c3840e47a64602b3887c0ecbb5d79afa92e384474c5"
+    },
+    {
+      "path": "docs/architecture/business-knowledge-model.md",
+      "sha256": "5fdc7d831d378816370250dfc02bfa0d0b18b5eecb461c9b8e503ba4c7952b6e"
+    }
+  ],
+  "productSourcesInspected": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowResponsibilityService.java",
+      "sha256": "6abb3e1e7e1e1d0895657cce80e0954bc2320b5772c22778a767fffdf011f671"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/WorkflowOperationsQuery.java",
+      "sha256": "70a65712ac4ec562c86f2f00debaf7be762351b0b1b49bfe135667ef070641f8"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowOperationsController.java",
+      "sha256": "32d64ce843114b2b0b2544d6d9e4566b0b99fa99df0ce4c1c84e0d00e7356607"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/engine/WorkflowEngine.java",
+      "sha256": "7b29f2a1d4f5d3997ddbc952ae256cda66fad7d5ce02b61558e72d6bb16a24fd"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/recordcontrol/service/RecordControlService.java",
+      "sha256": "93507a91197f9a58dacfdb9b853d71c2cc0e4883babb5ad378ce7b153a672d44"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/SignatureController.java",
+      "sha256": "08ff51c53802c7cfed638c8a600882de8fce2b686b3db795e7dcebebcd55d2d4"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/repository/SignatureRepository.java",
+      "sha256": "331c096776bdaad908b90680dc00a063ae4ec42eafa11fdae0f3187de24c136e"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowTaskController.java",
+      "sha256": "b34d71c6f28b310df0593236f15af120df681cfb5a79009c7e1432ef35577c8c"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowInstanceController.java",
+      "sha256": "e89de86acf457546ca95c818c6fae2832fffa2f752f61b419d5a92f25e58f30f"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkflowLogController.java",
+      "sha256": "9fc62dc3f50aedcafe4c7421f50081223050399d139ad79afdfe9da42c38023f"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/recordcontrol/service/RecordControlPostgresIntegrationTest.java",
+      "sha256": "9472248f98ab5f5a15158137cbb893dc0d1bc0fe719fc81ea886bc1b870f1d7c"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/InstanceList.tsx",
+      "sha256": "79d108485367ec6bd5c0b3aa4002ab3bb5c02d4b28a6902727715d6c15f7c14f"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/workflow-center/WorkflowInstancePanel.tsx",
+      "sha256": "038acc4183187b8c7f4e87e9824a57365836c714b4ca60f8297ec7a00bf97f88"
+    },
+    {
+      "path": "gmp-platform/frontend/src/components/workflow/WorkflowResponsibilityDialog.tsx",
+      "sha256": "d85ea9343c0bd76d0f7b1329ed8bf6e96009ccb60d9226c91d0cfe8f63f1adf0"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordApprovalDetailPage.tsx",
+      "sha256": "16649a42548b597ffea107c4925f517e05033bf46843620150d154309f309f56"
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/record-control/RecordRequestDetailPage.tsx",
+      "sha256": "7b6b396f658bfa0aab1c0c1edc03fed4b463aeb1ed4e19d0d8c19c98c4ea5c2e"
+    },
+    {
+      "path": "gmp-platform/frontend/src/utils/menuManagement.ts",
+      "sha256": "417ea86a92f39fcfbcf592e4d8e7a12c249a076704fc3db31000f2c74065410e"
+    },
+    {
+      "path": "gmp-platform/frontend/src/router/index.tsx",
+      "sha256": "180d4c7081b4ea4c157311eaa23282138ef9b2cf175ecf7af49fd44f584d756e"
+    }
+  ],
+  "followupSourceRefresh": "集中核对期间主侧修正WorkflowInstancePanel的ReactFlow句柄名source-bottom/target-top；本角色重读确认仅连接呈现适配，责任、签名、权限及知识语义无变化，更新该源码摘要；知识89项结果不被表述为前端构建/交互验收。 同期InstanceList改为读取ListTableShell提供的tableWidth；本角色核对查询、模式、抽屉和动作入口不变，仅共享表格宽度适配，更新摘要，不冒称前端验收。"
+}

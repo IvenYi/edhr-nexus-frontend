@@ -91,10 +91,10 @@ facts:
     allowedOperators: [equals]
     status: implemented
     visibility: internal
-    evidenceIds: [evidence.record-control-workflow-result-delivery-adapter, evidence.record-control-workflow-result-business-handler, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-task-action-result-tests]
-    sourceRevision: aef427c524bd7270b3775fbd7c599c72a545e21b
-    sourceLocator: WorkflowEngine.recordControlResultEvent 与 RecordControlTaskActionService.complete
-    capturedAt: '2026-10-23'
+    evidenceIds: [evidence.record-control-workflow-result-delivery-adapter, evidence.record-control-workflow-result-business-handler, evidence.record-control-workflow-stage1-engine-tests, evidence.record-control-task-action-result-tests, evidence.workflow-operations-withdrawal-source, evidence.workflow-operations-postgres-tests, evidence.workflow-operations-main-verification]
+    sourceRevision: working-tree
+    sourceLocator: WorkflowEngine.recordControlResultEvent / withdraw；RecordControlTaskActionService.complete与RecordControlService.withdraw/applyResult同事务消费；2026-10-30工作树基于40497474，保留原批准/退回证据并补WITHDRAWN，基线和验证见本轮证据文档。
+    capturedAt: '2026-10-30'
     reviewStatus: reviewed
   - id: fact.record-control-signature-target-type
     name: 记录控制签名目标类型

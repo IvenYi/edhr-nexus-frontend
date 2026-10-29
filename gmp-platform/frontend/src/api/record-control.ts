@@ -53,6 +53,7 @@ export interface RecordControlRequestQuery {
 }
 
 export interface RecordControlRequestDetail extends RecordControlRequest {
+  canWithdraw: boolean;
   record_id: string;
   source_revision_id: string;
   source_revision_no: string;
@@ -106,6 +107,9 @@ export const listRecordControlRequests = async (scope: 'mine' | 'all', page = 0,
 
 export const getRecordControlRequest = async (requestId: string): Promise<RecordControlRequestDetail> =>
   (await client.get(`/record-control/requests/${requestId}`)).data.data;
+
+export const withdrawRecordControlRequest = async (requestId: string, reason: string) =>
+  (await client.post(`/record-control/requests/${requestId}/withdraw`, { reason })).data.data;
 
 export const listRecordRevisions = async (recordId: string): Promise<RecordControlRevision[]> =>
   (await client.get(`/record-control/records/${recordId}/revisions`)).data.data;

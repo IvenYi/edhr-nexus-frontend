@@ -8,6 +8,8 @@ import {
 import { ArrowBack, Cancel, CheckCircle, CompareArrows } from '@mui/icons-material';
 import AppDialog from '@/components/AppDialog';
 import ButtonSignatureCredentials from '@/components/workflow/ButtonSignatureCredentials';
+import WorkflowResponsibilityDialog from '@/components/workflow/WorkflowResponsibilityDialog';
+import { getTransferContext } from '@/api/workflow-operations';
 import StatusBadge from '@/components/StatusBadge';
 import { useSnackbar } from '@/components/SnackbarProvider';
 import {
@@ -64,6 +66,7 @@ export default function RecordApprovalDetailPage() {
   const { showMessage } = useSnackbar();
   const [previewMode, setPreviewMode] = useState<PreviewMode>('source');
   const [decision, setDecision] = useState<Decision | null>(null);
+  const [transferOpen, setTransferOpen] = useState(false);
   const [highlightFieldId, setHighlightFieldId] = useState<string | null>(null);
   const [opinion, setOpinion] = useState('');
   const [account, setAccount] = useState('');
@@ -107,6 +110,7 @@ export default function RecordApprovalDetailPage() {
   const loadError = requestQuery.isError || taskQuery.isError;
   const instanceMismatch = Boolean(detail && task && detail.workflow_instance_id !== task.instanceId);
   const actionable = Boolean(task?.status === 'PENDING' && detail?.status === 'IN_REVIEW' && !instanceMismatch);
+  const transferContext = useQuery({ queryKey: ['workflow-transfer-context', taskId], queryFn: () => getTransferContext(taskId!), enabled: actionable && Boolean(taskId), retry: false });
   const proposedAvailable = detail?.request_type === 'CHANGE' && Boolean(detail.proposedValues);
   const status = detail ? requestStatus(detail) : null;
 
@@ -231,11 +235,14 @@ export default function RecordApprovalDetailPage() {
         <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', md: 'block' } }}>{actionable ? '请核对变更原因、差异和表单内容后再处理。' : '当前任务已不可处理，本页仅供查看。'}</Typography>
         <Stack direction="row" spacing={1} justifyContent="flex-end" sx={{ ml: { sm: 'auto' } }}>
           <Button variant="outlined" startIcon={<ArrowBack />} onClick={() => navigate('/records/approvals')}>返回列表</Button>
+          {actionable && transferContext.data?.canTransfer && <Button variant="outlined" onClick={() => setTransferOpen(true)}>转办</Button>}
           {actionable && <><Button color="error" variant="outlined" startIcon={<Cancel />} onClick={() => setDecision('reject')}>审批退回</Button><Button color="success" variant="contained" startIcon={<CheckCircle />} onClick={() => setDecision('approve')}>审批通过</Button></>}
         </Stack>
       </Stack>
     </Paper>
 
+    {transferOpen && taskId && <WorkflowResponsibilityDialog taskId={taskId} onClose={() => setTransferOpen(false)}
+      onSuccess={() => { setTransferOpen(false); navigate('/records/approvals', { replace: true }); }} />}
     <AppDialog open={Boolean(decision)} onClose={closeDialog} fullWidth maxWidth="sm" variant="form">
       <DialogTitle>{decision === 'approve' ? '确认审批通过' : '确认审批退回'}</DialogTitle>
       <DialogContent>

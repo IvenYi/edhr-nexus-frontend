@@ -22,6 +22,19 @@ import java.util.Map;
 public class RecordControlController {
     private final RecordControlService service;
     private final RecordControlTaskActionService taskActions;
+    private final com.zencas.edhr.workflow.service.WorkflowResponsibilityService responsibility;
+
+    @PostMapping("/requests/{requestId}/withdraw")
+    public ApiResponse<ObjectNode> withdraw(@PathVariable String requestId, @RequestBody RecordControlService.WithdrawRequest command) {
+        return ApiResponse.success(service.withdraw(requestId, command));
+    }
+
+    @PostMapping("/workflow-tasks/{taskId}/transfer")
+    public ApiResponse<Void> transfer(@PathVariable Long taskId,
+            @RequestBody com.zencas.edhr.workflow.service.WorkflowResponsibilityService.Command command) {
+        responsibility.transferRecordControl(taskId, command);
+        return ApiResponse.success(null);
+    }
 
     @GetMapping("/records/by-number")
     public ApiResponse<ObjectNode> findRecord(@RequestParam String instanceNo) {

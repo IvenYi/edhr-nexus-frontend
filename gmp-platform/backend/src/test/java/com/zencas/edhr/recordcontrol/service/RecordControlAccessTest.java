@@ -36,7 +36,8 @@ class RecordControlAccessTest {
             mock(RecordControlDiff.class), mock(ExecutionAccess.class),
             mock(com.zencas.edhr.compliance.repository.SignatureRepository.class),
             mock(com.zencas.edhr.production.service.DhrEvidenceImpactService.class),
-            mock(com.zencas.edhr.production.service.FormProjectionService.class));
+            mock(com.zencas.edhr.production.service.FormProjectionService.class),
+            mock(com.zencas.edhr.workflow.contract.RecordControlWorkflowWithdrawalPort.class));
 
     @AfterEach void clearActor() { AuditContext.clear(); }
 
@@ -112,10 +113,10 @@ class RecordControlAccessTest {
     @Test void applicantCanReadOwnActiveRequestDetail() {
         AuditContext.setOperator("42", "申请人");
         stubRequestDetail(request("IN_REVIEW", "42", "900"));
+        when(jdbc.queryForObject(contains("SELECT count(*) FROM workflow_task"), eq(Long.class), eq("900"))).thenReturn(0L);
 
-        service.requestDetail("101");
-
-        verify(jdbc, never()).queryForObject(contains("FROM workflow_task"), eq(Long.class), any(Object[].class));
+        assertThat(service.requestDetail("101").path("canWithdraw").asBoolean()).isTrue();
+        verify(jdbc).queryForObject(contains("SELECT count(*) FROM workflow_task"), eq(Long.class), eq("900"));
     }
 
     @Test void assignedApproverCanReadActiveRequestDetail() {

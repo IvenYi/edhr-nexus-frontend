@@ -60,7 +60,7 @@ public class WorkflowTaskController {
     public ApiResponse<WorkflowTask> create(@RequestBody WorkflowTask entity) {
         workflowEngine.assertGenericTaskIfPresent(entity.getId());
         workflowEngine.assertGenericInstanceAccessAllowed(entity.getInstanceId());
-        return ApiResponse.success(workflowTaskRepository.save(entity));
+        throw readOnly();
     }
 
     @PutMapping("/{id}")
@@ -68,17 +68,17 @@ public class WorkflowTaskController {
     public ApiResponse<WorkflowTask> update(@PathVariable Long id, @RequestBody WorkflowTask entity) {
         workflowEngine.assertGenericTaskAccessAllowed(id);
         workflowEngine.assertGenericInstanceAccessAllowed(entity.getInstanceId());
-        entity.setId(id);
-        return ApiResponse.success(workflowTaskRepository.save(entity));
+        throw readOnly();
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('workflow.intervene')")
     public ApiResponse<Void> delete(@PathVariable Long id) {
         workflowEngine.assertGenericTaskAccessAllowed(id);
-        workflowTaskRepository.deleteById(id);
-        return ApiResponse.success(null);
+        throw readOnly();
     }
+
+    private BusinessException readOnly() { return new BusinessException(ErrorCode.AUTH_003, "任务只能通过流程标准动作变更"); }
 
     // ======================== My Tasks ========================
 

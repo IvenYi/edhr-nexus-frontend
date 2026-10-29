@@ -1,0 +1,174 @@
+ontologyResult:
+  result: updated
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 40497474da006dfd52ea38070036a6e350eaab8e
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 40497474da006dfd52ea38070036a6e350eaab8e
+    uncommittedContractPaths: []
+  reason: 用户确认、既有边界及本轮稳定实现已集中核对并同步；13项知识/架构资产更新，规范与实现事实分列，责任保持规则、重新分配术语、只读日志及WITHDRAWN派生结果具有本轮源码和主侧聚焦证据，记为implemented/internal；本角色正式知识生命周期测试89项通过。未提升verified、知识运行、CSV或生产发布，不代替独立质量门禁。
+  changedArtifacts:
+    - path: docs/knowledge/decisions/DEC-0092-workflow-operations-entry-and-actions.yaml
+      changeType: create
+      ids: [DEC-0092, DEC-0092-01, DEC-0092-02, DEC-0092-03, DEC-0092-04, DEC-0092-05, DEC-0092-06]
+    - path: docs/knowledge/evidence/workflow-operations-20261030.yaml
+      changeType: create
+      ids: [evidence.workflow-operations-20261030-user-confirmed, evidence.workflow-operations-responsibility-source, evidence.workflow-operations-withdrawal-source, evidence.workflow-operations-query-source, evidence.workflow-operations-ui-source, evidence.workflow-operations-postgres-tests, evidence.workflow-operations-main-verification]
+    - path: docs/knowledge/evidence/workflow-operations-20261030.md
+      changeType: create
+      ids: []
+    - path: docs/knowledge/decisions/DEC-0091-workflow-reassignment-signature.yaml
+      changeType: update
+      ids: [DEC-0091, DEC-0091-03]
+    - path: docs/knowledge/glossary.yaml
+      changeType: update
+      ids: [term.workflow-transfer-action, term.workflow-reassignment-action, term.workflow-event-log, term.record-control-workflow-integration]
+    - path: docs/knowledge/rules/production.yaml
+      changeType: update
+      ids: [rule.record-control.intervention-preserves-path]
+    - path: docs/knowledge/ontology.yaml
+      changeType: update
+      ids: [concept.workflow-event-log]
+    - path: docs/knowledge/README.md
+      changeType: update
+      ids: []
+    - path: docs/architecture/business-knowledge-model.md
+      changeType: update
+      ids: []
+    - path: docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml
+      changeType: update
+      ids: [discrepancy.record-control-p0-runtime-not-implemented]
+    - path: docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml
+      changeType: update
+      ids: [DEC-0042-04]
+    - path: docs/knowledge/facts/record-control.yaml
+      changeType: update
+      ids: [fact.record-control-workflow-result]
+    - path: docs/knowledge/implementation-anchors/workflow-operations.yaml
+      changeType: create
+      ids: [anchor.workflow-operations.responsibility, anchor.workflow-operations.withdrawal-result]
+  knowledgeSync:
+    - id: DEC-0092-01
+      disposition: updated
+      scope: 记录本轮流程实例菜单显示名改为流程日志及新增流程干预的确认；保留实例身份、技术路由和详情能力，不另增重复日志列表，不改历史审计。
+      sourceReferences: [docs/development/workflow-operations-20261030/user-confirmed.md, docs/development/workflow-operations-20261030/decision-package.yaml]
+    - id: DEC-0092-02
+      disposition: updated
+      scope: 当前处理人从任务详情转办；记录控制保留授权候选范围并排除申请人自审，与DEC-0081普通任务租户内委托分别解释；只改变责任。
+      sourceReferences: [DEC-0037-06, DEC-0081-01, DEC-0081-04, docs/development/record-control-work-allocation-and-integration-contract.md]
+    - id: DEC-0092-03
+      disposition: updated
+      scope: 本轮授权内重新分配必签，专门权限、目标资格、原因、路径保持和审计并存；身份凭证沿DEC-0074，不扩散其他动作或DHR通用权限。
+      sourceReferences: [DEC-0091-01, DEC-0091-02, DEC-0074-01, DEC-0074-02, docs/development/workflow-operations-20261030/user-confirmed.md]
+    - id: DEC-0092-04
+      disposition: updated
+      scope: 受限撤回由申请人在本轮无批准或退回决定时执行，失效全部待办；流程域输出确定结果，记录控制域同事务消费，不落地来源变更或作废。
+      sourceReferences: [DEC-0037-04, DEC-0037-06, DEC-0042-01, docs/development/record-control-work-allocation-and-integration-contract.md]
+    - id: DEC-0092-05
+      disposition: updated
+      scope: 运行日志只读与不可变审计分层；保持DHR专属路径及本轮禁止动作和归档暂缓。
+      sourceReferences: [DEC-0037-05, DEC-0037-08, DEC-0081-04, DEC-0091-03]
+    - id: DEC-0092-06
+      disposition: updated
+      scope: 新增original-and-test-evidence实现声明，记录三个动作、查询和只读日志及保护链；主侧198项含25项PG套件已核对，implemented/internal不外推独立质量、CSV或生产部署。
+      sourceReferences: [evidence.workflow-operations-responsibility-source, evidence.workflow-operations-withdrawal-source, evidence.workflow-operations-query-source, evidence.workflow-operations-postgres-tests, evidence.workflow-operations-main-verification]
+    - id: DEC-0091-03
+      disposition: historical
+      scope: 将“本轮只调研”的时点明确为2026-10-29，保留其未实现事实；后续实施引用DEC-0092，不用后续实现回填历史。
+      sourceReferences: [docs/knowledge/evidence/workflow-reassignment-signature-confirmed.md, docs/development/workflow-intervention-research-20261029/user-confirmed.md]
+    - id: term.workflow-transfer-action
+      disposition: updated
+      scope: 明确当前处理人、任务详情、原因和记录控制资格边界；转交不新增独立动作，沿现行转办/重新分配术语。
+      sourceReferences: [DEC-0043-01, DEC-0043-02, DEC-0092-02]
+    - id: term.workflow-reassignment-action
+      disposition: updated
+      scope: 明确专门权限主体不必是原处理人，流程干预入口及必签，不改变节点路径结果；按实际实现证据记implemented/internal，原资格与普通任务租户内转办范围分开。
+      sourceReferences: [DEC-0091-01, DEC-0092-03]
+    - id: term.workflow-event-log
+      disposition: updated
+      scope: 菜单显示名流程日志承载实例查询与只读时间线；实例和日志概念不合并，仍使用既有WorkflowActionLog载体并保留独立合规审计。本轮同源查询、只读详情与写入关闭已有源码证据，记implemented/internal。
+      sourceReferences: [DEC-0042-06, DEC-0092-01, DEC-0092-05]
+    - id: concept.workflow-event-log
+      disposition: updated
+      scope: 保持运行日志与不可变审计分层概念，追加实际同源查询和只读呈现证据，记implemented/internal，不发布客户或知识运行投影。
+      sourceReferences: [evidence.workflow-operations-20261030-user-confirmed, evidence.workflow-operations-query-source, evidence.workflow-operations-ui-source]
+    - id: rule.record-control.intervention-preserves-path
+      disposition: updated
+      scope: 记录控制转办授权候选与禁止申请人自审、重新分配入口和必签明确；根据稳定源码与主侧PG断言记implemented/internal，原节点、路径、结果和候选来源不变，不提升verified或知识runtime。
+      sourceReferences: [DEC-0037-06, DEC-0091-01, DEC-0092-02, DEC-0092-03, evidence.workflow-operations-responsibility-source, evidence.workflow-operations-postgres-tests]
+    - id: term.record-control-workflow-integration
+      disposition: updated
+      scope: 三动作不再概括为未实现，改为引用本轮各自代码与验证；保留领域所有权，不据局部实现推定完整P0、A12或发布通过。
+      sourceReferences: [DEC-0042-01, DEC-0092-06]
+    - id: fact.record-control-workflow-result
+      disposition: updated
+      scope: 保留原批准与退回来源和成熟度，补WITHDRAWN端口与业务事务消费的实际定位、采集时点和工作树来源，不补造历史执行事件。
+      sourceReferences: [evidence.workflow-operations-withdrawal-source, evidence.workflow-operations-postgres-tests]
+    - id: anchor.workflow-operations.responsibility
+      disposition: updated
+      scope: 将责任保持规则连接至实际服务、接口、签名保护、UI、既有数据库结构及PG断言；sourceRevision明确working-tree，采集基于40497474，不虚构新Git提交。
+      sourceReferences: [evidence.workflow-operations-responsibility-source, evidence.workflow-operations-postgres-tests]
+    - id: anchor.workflow-operations.withdrawal-result
+      disposition: updated
+      scope: 将派生流程结果连接至受限撤回端口、实例锁与业务同事务消费、申请详情入口及竞争/回滚断言；仅implemented/internal。
+      sourceReferences: [evidence.workflow-operations-withdrawal-source, evidence.workflow-operations-postgres-tests]
+    - id: discrepancy.record-control-p0-runtime-not-implemented
+      disposition: historical
+      scope: 保留设计形成及2026-10-28缺口时点，追加三动作后续实现引用；不再把三动作描述为完全未实现，完整P0和A12按各自范围判断，原历史未删除。
+      sourceReferences: [DEC-0092-06, docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml]
+    - id: DEC-0042-04
+      disposition: updated
+      scope: 保留阶段一类型不等于运行的规则，补后续三动作独立实现引用；不借早期阶段一通过替代本轮验收。
+      sourceReferences: [DEC-0092-06, docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml]
+    - id: DEC-0074
+      disposition: retained
+      scope: 实际签署人独立资格、共享终端会话及精确用户名admin认证例外保持，不以登录者权限补足签署人资格。
+      sourceReferences: [docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml]
+    - id: DEC-0081-04
+      disposition: retained
+      scope: 普通任务租户内委托不授权记录控制或DHR运行扩展；原决策当时未开发记录控制的范围按时点保留。
+      sourceReferences: [docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml]
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.workflow-operations-normative-knowledge
+      checkType: schema
+      command: mvn -q -Dtest=BusinessKnowledgeModelTest test
+      outcome: passed
+      evidence:
+        - 本角色在稳定实现上实际执行正式Maven生命周期，退出0；89项知识测试，0失败、0错误、0跳过；不是产品流程运行测试。
+        - docs/development/workflow-operations-20261030/evidence/ontology-validation.json保留命令、工作树基线、13项知识资产和18份核对源码摘要及原JUnit/日志压缩件。
+        - 原JUnit SHA256=41f8785f16e73b952722eb1152b16f2732f5dff0c65030c57e1017edd9afbc53；原件归档evidence/ontology/knowledge-junit.xml.gz。
+        - 开发早期第一次Maven生命周期遇到主侧尚未同步的构造器参数而失败，随后直接surefire的89项通过；本次正式重跑已在稳定代码上成功，不把早期失败冒称通过。
+    - id: validation.workflow-operations-contract-baseline
+      checkType: reference
+      command: git rev-parse HEAD origin/edhr-dev; git diff origin/edhr-dev -- AGENTS.md codeplzreadme.md docs/agents/agent-handoff-contract.md docs/agents/business-knowledge-modeler.md
+      outcome: passed
+      evidence:
+        - 实际HEAD40497474及缓存目标635711f9与决策包一致；本角色按实际提交读取项目、本体角色和交接契约，上述契约相对目标无差异。
+        - 开始时fetch超时，主侧最终fetch成功，evidence/remote-baseline.json表明目标仍635711f9且为当前HEAD祖先；本角色重新核对实际Git引用，不虚构集成或部署。
+    - id: validation.workflow-operations-policy-and-history
+      checkType: projection
+      command: 对照本轮用户原话、DEC0037/0042/0043/0074/0081/0091与当前知识；git diff --check -- docs/knowledge docs/architecture/business-knowledge-model.md
+      outcome: passed
+      evidence:
+        - 新确认与既有规范、原始开发前源码和工程推断分列；0091原始调研时点及历史问题原文保留。
+        - 未改变知识0.3.25、schema1.2.0、P0阶段、开放问题或既有权限码；未创建新事实、知识执行注册或标准工具试点，既有结果事实仅补WITHDRAWN来源定位。
+        - DEC0092的规范01..05保持specified/internal；06及相应实现资产最多implemented/internal，未标verified、客户或知识runtime；知识与架构diff检查无空白错误。
+    - id: validation.workflow-operations-stable-implementation
+      checkType: evidence-path
+      command: 集中阅读18份主侧指定稳定源码及原测试断言，解析evidence/backend-verification.json与原JUnit，查看三张原始PNG；SHA256固定于ontology-validation.json
+      outcome: passed
+      evidence:
+        - WorkflowResponsibilityService校验专门权限与实际签署身份、原资格、原因、状态摘要及DHR拒绝；保留原候选、同一任务、节点路径与结果，动作签名及日志审计同事务。
+        - Withdrawal端口由WorkflowEngine实现，申请人及无决定条件在实例锁内复核，全部待办失效；RecordControlService同事务消费结果，PG断言覆盖撤回与批准单胜、双重新分配单胜及失败回滚。
+        - 同源查询在分页/计数和单条前保留活动申请关联范围，干预权限管理查询与普通日志读取分开；WORKFLOW_INTERVENTION通用列表和单条读写保护同时存在，旧运行CRUD写入关闭。
+        - 本体角色核对主侧198项JUnit汇总无失败/错误/跳过，含25项PG套件及89项知识检查；没有亲自重跑主侧业务套件，独立质量由质量角色收尾。
+        - 原始PNG证明重新分配签名及错误反馈、转办和撤回入口与文案，不把弹窗截图当操作成功或数据库断言；运行结果证据取实际PG断言与主侧原报告。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

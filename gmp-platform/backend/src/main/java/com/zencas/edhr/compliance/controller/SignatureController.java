@@ -66,6 +66,9 @@ public class SignatureController {
     }
 
     private void protectExecutionSignature(Signature signature) {
+        if ("WORKFLOW_INTERVENTION".equals(signature.getTargetType()))
+            throw new com.zencas.edhr.common.exception.BusinessException(
+                com.zencas.edhr.common.exception.ErrorCode.GENERAL_003, "流程干预签名只能由专用动作生成，且不可通过通用接口查看、修改或删除");
         if ("DHR_SUMMARY".equals(signature.getTargetType()))
             throw new com.zencas.edhr.common.exception.BusinessException(
                 com.zencas.edhr.common.exception.ErrorCode.GENERAL_003, "DHR 签名只能由审核动作生成，且不可修改或删除");

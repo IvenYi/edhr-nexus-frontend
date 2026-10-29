@@ -246,7 +246,7 @@ rules:
     evidenceIds: [evidence.record-correction-void-design]
   - id: rule.record-control.intervention-preserves-path
     name: 转办和重新分配不改变流程路径
-    status: specified
+    status: implemented
     visibility: internal
     trigger: change-review-task.reassign
     scope: record-control-workflow
@@ -264,8 +264,8 @@ rules:
       requiresReason: true
       managerialPermissionRequired: true
       managerialSignatureRequired: true
-    explanation: 转办只允许当前处理人转给授权候选范围内人员；重新分配需要专门权限，并按DEC-0091强制电子签名，缺少有效签名不能执行。签名不替代授权或原因，也不将该要求外推普通转办或撤回。两者均只改变当前任务处理人，并记录原因、原处理人、目标处理人和管理操作身份，不改变节点、路径或业务结果；本条保持specified/internal，不代表重新分配运行时已实现。
-    evidenceIds: [evidence.record-correction-void-design, evidence.workflow-reassignment-signature-user-confirmed]
+    explanation: 记录控制转办只允许当前有处理权人员从任务详情转给授权候选范围内人员并排除申请人自审；DEC-0081的普通任务租户内集合外委托不扩展本范围。重新分配从流程干预进入，需要专门权限、原授权资格，并按DEC-0091/0092强制电子签名，缺少有效签名不能执行。签名不替代授权或原因，也不将该要求外推普通转办或撤回。两者均只改变当前任务处理责任，保留原候选依据，记录原因、原处理人、目标处理人和管理操作身份，不改变节点、路径或业务结果；本轮源码及主侧PG断言核对支持implemented/internal，不代表知识运行投影、独立质量或生产发布。
+    evidenceIds: [evidence.record-correction-void-design, evidence.workflow-reassignment-signature-user-confirmed, evidence.workflow-operations-20261030-user-confirmed, evidence.workflow-operations-responsibility-source, evidence.workflow-operations-postgres-tests, evidence.workflow-operations-main-verification]
   - id: rule.record-control.p0-intervention-boundary
     name: P0 不提供终止跳过强制跳转加签和管理员直接批准
     status: specified

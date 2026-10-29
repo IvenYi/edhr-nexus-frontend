@@ -50,6 +50,24 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
     private final SignatureRepository signatures;
     private final DhrEvidenceImpactService dhrImpacts;
     private final FormProjectionService projection;
+    private final com.zencas.edhr.workflow.contract.RecordControlWorkflowWithdrawalPort withdrawal;
+
+    public record WithdrawRequest(String reason) {}
+
+    @Transactional
+    public ObjectNode withdraw(String requestId, WithdrawRequest command) {
+        var rows = jdbc.queryForList("SELECT * FROM record_control_request WHERE tenant_id=? AND id=?", TENANT, id(requestId));
+        if (rows.isEmpty()) throw invalid("申请不存在");
+        var request = rows.getFirst();
+        if (!Objects.equals(actor(), str(request.get("applicant_id"))))
+            throw new BusinessException(ErrorCode.AUTH_003, "仅申请人可以撤回本人的申请");
+        if (!"IN_REVIEW".equals(request.get("status"))) throw invalid("申请已结束，不能撤回");
+        WorkflowResultEvent result = withdrawal.withdraw(new WithdrawCommand(requestId,
+                str(request.get("workflow_instance_id")), command == null ? null : command.reason(),
+                str(request.get("audit_correlation_id"))));
+        applyResult(result, command.reason().strip());
+        return requestDetail(requestId, false);
+    }
 
     public record SubmitCommand(BusinessType requestType, String instanceNo, String sourceRevisionId,
                                 JsonNode proposedValues, String reason, String workflowDefinitionId,
@@ -229,6 +247,12 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
             history.addObject().put("status", str(event.get("result"))).put("action", str(event.get("result")))
                     .put("eventId", str(event.get("event_id"))).put("occurredAt", str(event.get("occurred_at")));
         result.set("statusHistory", history);
+        boolean ownActive = "IN_REVIEW".equals(row.get("status")) && Objects.equals(actor(), str(row.get("applicant_id")));
+        Long decisions = ownActive ? jdbc.queryForObject("""
+                SELECT count(*) FROM workflow_task WHERE CAST(instance_id AS VARCHAR)=?
+                AND (action IN ('APPROVE','REJECT') OR status IN ('COMPLETED','REJECTED'))
+                """, Long.class, str(row.get("workflow_instance_id"))) : null;
+        result.put("canWithdraw", ownActive && decisions != null && decisions == 0);
         return result;
     }
 
@@ -325,6 +349,10 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
     @Override
     @Transactional
     public void handle(WorkflowResultEvent event) {
+        applyResult(event, null);
+    }
+
+    private void applyResult(WorkflowResultEvent event, String actionReason) {
         if (event == null || event.eventId() == null || event.eventId().isBlank() || event.result() == null
                 || event.businessId() == null || event.businessType() == null) throw invalid("审批结果不完整");
         var references = jdbc.queryForList("SELECT record_id FROM record_control_request WHERE tenant_id=? AND id=?", TENANT, id(event.businessId()));
@@ -375,7 +403,7 @@ public class RecordControlService implements RecordControlWorkflowResultHandler,
                     id(before.path("currentRevisionId").asText()), currentRevision, str(request.get("request_type")), resolvedAt);
         }
         audit(((Number) request.get("id")).longValue(), event.result().name(), before, after,
-                str(request.get("reason_text")), str(request.get("request_no")), event.operatorId());
+                actionReason == null ? str(request.get("reason_text")) : actionReason, str(request.get("request_no")), event.operatorId());
     }
 
     @Override

@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/0088-record-change-menu-permissions.sql
   - include:
       file: db/changelog/0089-record-control-dhr-linkage.sql
+  - include:
+      file: db/changelog/0090-workflow-operations.sql

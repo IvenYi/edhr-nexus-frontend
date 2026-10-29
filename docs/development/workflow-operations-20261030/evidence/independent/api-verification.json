@@ -1,0 +1,161 @@
+{
+  "database": "edhr_record_control_test_ops_quality_20261030",
+  "baseUrl": "http://127.0.0.1:8108/api/v1",
+  "checks": [
+    {
+      "name": "anonymous-query-rejected",
+      "passed": true,
+      "evidence": "HTTP 401"
+    },
+    {
+      "name": "unrelated-viewer-filtered-before-count",
+      "passed": true,
+      "evidence": {
+        "http": 200,
+        "count": 0
+      }
+    },
+    {
+      "name": "unrelated-viewer-cannot-read-active-detail",
+      "passed": true,
+      "evidence": "Active application detail denied"
+    },
+    {
+      "name": "unrelated-viewer-cannot-query-reassignment-targets",
+      "passed": true,
+      "evidence": "HTTP 403"
+    },
+    {
+      "name": "intervention-role-can-read-current-task",
+      "passed": true,
+      "evidence": "Current task is included"
+    },
+    {
+      "name": "session-without-intervention-permission-rejected",
+      "passed": true,
+      "evidence": "HTTP 403 despite valid signer credentials"
+    },
+    {
+      "name": "invalid-signature-rejected-without-mutation",
+      "passed": true,
+      "evidence": "No signature or task mutation"
+    },
+    {
+      "name": "frozen-node-requires-transfer-signature",
+      "passed": true,
+      "evidence": true
+    },
+    {
+      "name": "signed-transfer-succeeds",
+      "passed": true,
+      "evidence": "Current responsibility changed to 43"
+    },
+    {
+      "name": "transfer-signature-binds-request-and-action",
+      "passed": true,
+      "evidence": "One TRANSFER signature targets the application"
+    },
+    {
+      "name": "stale-transfer-replay-rejected",
+      "passed": true,
+      "evidence": "Stale task state denied"
+    },
+    {
+      "name": "transfer-moves-todo-to-current-user-only",
+      "passed": true,
+      "evidence": {
+        "old": 0,
+        "new": 1
+      }
+    },
+    {
+      "name": "signed-reassignment-succeeds",
+      "passed": true,
+      "evidence": "Current responsibility changed to 42"
+    },
+    {
+      "name": "responsibility-actions-do-not-approve",
+      "passed": true,
+      "evidence": "Application IN_REVIEW; workflow RUNNING"
+    },
+    {
+      "name": "intervention-signature-excluded-from-generic-list",
+      "passed": true,
+      "evidence": "Generic list excludes the protected target"
+    },
+    {
+      "name": "protected-signature-get",
+      "passed": true,
+      "evidence": "Protected signature action denied"
+    },
+    {
+      "name": "protected-signature-put",
+      "passed": true,
+      "evidence": "Protected signature action denied"
+    },
+    {
+      "name": "protected-signature-delete",
+      "passed": true,
+      "evidence": "Protected signature action denied"
+    },
+    {
+      "name": "runtime-crud-readonly-instances",
+      "passed": true,
+      "evidence": "HTTP 403 for direct runtime write"
+    },
+    {
+      "name": "runtime-crud-readonly-logs",
+      "passed": true,
+      "evidence": "HTTP 403 for direct runtime write"
+    },
+    {
+      "name": "runtime-task-crud-readonly",
+      "passed": true,
+      "evidence": "No direct assignment bypass"
+    },
+    {
+      "name": "dhr-operation-detail-isolated",
+      "passed": true,
+      "evidence": "DHR excluded from generic detail"
+    },
+    {
+      "name": "dhr-reassignment-targets-isolated",
+      "passed": true,
+      "evidence": "DHR targets denied"
+    },
+    {
+      "name": "unrelated-withdrawal-denied",
+      "passed": true,
+      "evidence": "HTTP 403"
+    },
+    {
+      "name": "transfer-and-reassign-do-not-close-withdrawal-window",
+      "passed": true,
+      "evidence": "No approval decision was created"
+    },
+    {
+      "name": "applicant-withdrawal-succeeds",
+      "passed": true,
+      "evidence": "HTTP 200"
+    },
+    {
+      "name": "withdrawal-atomically-closes-request-workflow-and-task",
+      "passed": true,
+      "evidence": "All three statuses WITHDRAWN"
+    },
+    {
+      "name": "withdrawal-preserves-effective-source",
+      "passed": true,
+      "evidence": "Effective source remains COMPLETED with old value"
+    },
+    {
+      "name": "withdrawal-replay-denied",
+      "passed": true,
+      "evidence": "Duplicate withdrawal denied"
+    }
+  ],
+  "summary": {
+    "passed": 29,
+    "failed": 0
+  }
+}

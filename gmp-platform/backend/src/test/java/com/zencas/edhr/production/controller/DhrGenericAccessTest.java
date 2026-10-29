@@ -47,6 +47,7 @@ class DhrGenericAccessTest {
         signatures.saveAndFlush(Signature.builder().id(1000L).targetType("DHR_SUMMARY").targetId("3").build());
         signatures.saveAndFlush(Signature.builder().id(2000L).targetType("OTHER").targetId("4").build());
         signatures.saveAndFlush(Signature.builder().id(3000L).targetType("RECORD_CONTROL_REQUEST").targetId("5").build());
+        signatures.saveAndFlush(Signature.builder().id(4000L).targetType("WORKFLOW_INTERVENTION").targetId("20").build());
         engine = mock(WorkflowEngine.class, CALLS_REAL_METHODS);
         ReflectionTestUtils.setField(engine, "instanceRepository", instances);
         ReflectionTestUtils.setField(engine, "taskRepository", tasks);
@@ -60,7 +61,7 @@ class DhrGenericAccessTest {
         assertThat(instances.findNonDhr(page).getTotalElements()).isEqualTo(1);
         assertThat(tasks.findNonDhr(page).getContent()).extracting(WorkflowTask::getId).containsExactly(20L);
         assertThat(logs.findNonDhr(page).getContent()).extracting(WorkflowActionLog::getId).containsExactly(200L);
-        assertThat(signatures.findNonDhr(page).getContent()).extracting(Signature::getId).containsExactly(2000L, 3000L);
+        assertThat(signatures.findNonDhr(page).getContent()).extracting(Signature::getId).containsExactly(2000L, 3000L, 4000L);
         assertThat(signatures.findGeneric(page).getContent()).extracting(Signature::getId).containsExactly(2000L);
         assertThat(instances.findGeneric(page).getContent()).isEmpty();
         assertThat(tasks.findGeneric(page).getContent()).isEmpty();
@@ -88,6 +89,15 @@ class DhrGenericAccessTest {
         assertThatThrownBy(() -> controller.delete(100L)).hasMessageContaining("DHR");
         assertThat(logs.findById(100L).orElseThrow().getComment()).isEqualTo("DHR original");
         assertThat(logs.count()).isEqualTo(2);
+    }
+
+    @Test void interventionSignaturesCannotBeForgedReadOverwrittenOrDeletedThroughGenericEndpoints() {
+        var controller = new SignatureController(signatures);
+        assertThatThrownBy(() -> controller.getById(4000L)).hasMessageContaining("流程干预");
+        assertThatThrownBy(() -> controller.create(Signature.builder().id(2000L).targetType("WORKFLOW_INTERVENTION").build())).hasMessageContaining("流程干预");
+        assertThatThrownBy(() -> controller.update(4000L, Signature.builder().targetType("OTHER").build())).hasMessageContaining("流程干预");
+        assertThatThrownBy(() -> controller.delete(4000L)).hasMessageContaining("流程干预");
+        assertThat(signatures.findById(4000L).orElseThrow().getTargetType()).isEqualTo("WORKFLOW_INTERVENTION");
     }
     @Configuration(proxyBeanMethods=false) @EnableAutoConfiguration(exclude=JpaRepositoriesAutoConfiguration.class)
     static class Config {

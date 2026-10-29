@@ -1,6 +1,8 @@
 # eDHR 结构化业务知识基线
 
-2026-10-29用户直接确认[DEC-0091](decisions/DEC-0091-workflow-reassignment-signature.yaml)：当前流程干预范围内的记录控制审批重新分配必须电子签名，缺少有效签名不得执行；不以已登录、干预权限或原因代替签名。对应`question.record-control-managerial-reassignment-signature`的是否需要签名选择已关闭，[原话与历史未决内容](evidence/workflow-reassignment-signature-confirmed.md)保留；原专门权限、目标资格、原因、节点/路径/业务结果不变及审计要求继续适用。普通转办、撤回的签署规则和DEC-0074身份凭证边界不由此改变，DHR不开放通用干预。当前只同步specified/internal规范，重新分配运行时及强制验签尚未实现，竞品调研和改进建议不能代替运行证据或用户确认；知识0.3.25/schema1.2.0及阶段保持。
+2026-10-30用户按[DEC-0092](decisions/DEC-0092-workflow-operations-entry-and-actions.yaml)授权补齐流程操作：既有流程实例入口显示名改为“流程日志”，保留实例查询和详情及技术路由；新增“流程干预”查询运行任务并执行重新分配。转办由当前处理人在任务详情发起，记录控制仍限本身授权候选并禁止申请人自审，不套用DEC-0081的普通任务集合外委托；申请人受限撤回仍限本轮无批准/退回决定时，公共流程失效全部待办，记录控制同事务消费结果而不落地拟变更/作废。重新分配必须有效电子签名、专门权限、原授权资格和原因，沿DEC-0074实际签署身份与凭证，不推进路径或产生批准。DHR专属路径及归档暂缓保持；[确认、历史基线及工程推断](evidence/workflow-operations-20261030.md)分列。01至05保留specified/internal规范，06及责任保持规则、只读日志和WITHDRAWN结果按实际源码及主侧198项聚焦检查（含25项真实PG集成）核对为implemented/internal；独立质量另取本轮结果，不冒称CSV、知识运行发布或部署。旧调研和阶段一验证不替代本轮证据；知识0.3.25/schema1.2.0及阶段保持。
+
+2026-10-29用户直接确认[DEC-0091](decisions/DEC-0091-workflow-reassignment-signature.yaml)：当前流程干预范围内的记录控制审批重新分配必须电子签名，缺少有效签名不得执行；不以已登录、干预权限或原因代替签名。对应`question.record-control-managerial-reassignment-signature`的是否需要签名选择已关闭，[原话与历史未决内容](evidence/workflow-reassignment-signature-confirmed.md)保留；原专门权限、目标资格、原因、节点/路径/业务结果不变及审计要求继续适用。普通转办、撤回的签署规则和DEC-0074身份凭证边界不由此改变，DHR不开放通用干预。该次调研时只同步specified/internal规范，未实现重新分配运行时及强制验签；后续实施授权见上方DEC-0092，竞品调研和改进建议不能代替运行证据或用户确认。知识0.3.25/schema1.2.0及阶段保持。
 
 2026-10-29 后续确认按 [DEC-0090](decisions/DEC-0090-dhr-archive-minimum-scope.yaml)统一称“DHR归档”，区别汇总版本冻结和导出归档包。面向实际使用的MVP最小范围为最终放行后绑定具体正式版本及来源修订、附件、签名、审计和放行依据，限制普通修改，记录主体时间版本，保持按权检索、追溯、导出及备份恢复保障；不增设另一套封存状态。独立归档审批、解封和完整放行后变更本轮不做，P1受控更正方向保留。当前先记录归档TODO并继续表单变更、作废与DHR联动；[原话与边界](evidence/dhr-archive-minimum-20261029.md)不证明归档执行已完成。新增定义specified/internal、知识0.3.25保持，具体权限、签署细则和保存参数不由最小范围推导。
 

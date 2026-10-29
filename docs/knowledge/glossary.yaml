@@ -260,15 +260,15 @@ terms:
     visibility: internal
   - id: term.workflow-transfer-action
     name: 转办
-    definition: 当前有处理权的用户显式变更任务处理责任的标准动作，不改变当前节点、流程路径或业务结果。通用工作流及普通生产表单按DEC-0081允许委托给同租户正常可用的其他用户，原候选来源保留而当前受让人单独记录，转后仅目标处理；记录控制仍按自身尚未闭环的动作规则，DHR不开放通用转办。中文产品文案不得使用“普通转办”作为并列正式名称。
+    definition: 当前有处理权的用户从任务详情显式变更任务处理责任的标准动作，原因必填，不改变当前节点、流程路径或业务结果。通用工作流及普通生产表单按DEC-0081允许委托给同租户正常可用的其他用户；记录控制按DEC-0037/0092保留自身授权候选范围并排除申请人自审。原候选依据保留，当前受让人单独记录，转后仅目标处理；DHR不开放通用转办。转交不是第三种独立产品动作名，中文产品文案不得使用“普通转办”作为并列正式名称。
     aliases: [TRANSFER]
     status: implemented
     visibility: internal
   - id: term.workflow-reassignment-action
     name: 重新分配
-    definition: 具备专门权限的管理人员变更当前审批任务处理人的标准干预动作；不改变当前节点、流程路径或业务结果。记录控制审批重新分配按DEC-0091必须完成电子签名，签名不替代权限、原因或审计，不由此扩展普通转办、撤回或DHR通用干预。中文产品文案不得使用“管理重新分配”作为并列正式名称。
+    definition: 具备专门干预权限的人员从流程干预入口变更当前任务处理人的标准动作，不要求其是原处理人；原因必填，保留任务原授权资格，不将普通任务的租户内转办政策外推为管理改派范围，不改变当前节点、流程路径或业务结果。本轮授权内的重新分配按DEC-0091/0092必须完成电子签名，签名不替代权限、原因或审计，不由此扩展普通转办、撤回的签署要求或DHR通用干预。中文产品文案不得使用“管理重新分配”作为并列正式名称。
     aliases: [REASSIGN]
-    status: specified
+    status: implemented
     visibility: internal
   - id: term.workflow-return-action
     name: 退回
@@ -284,7 +284,7 @@ terms:
     visibility: internal
   - id: term.record-control-workflow-integration
     name: 记录控制流程集成边界
-    definition: 记录控制申请域与公共流程域之间的稳定协作边界；记录控制域拥有申请、来源资格、签名和业务落地，公共流程域拥有候选查询、显式版本启动、路由、任务和流程运行日志。阶段一已实现候选查询与显式启动；后续来支提供申请确认、审批/退回适配及最终结果同步消费的源码。撤回、记录控制转办、重新分配和完整 DHR/A12 仍按各自未闭环边界处理，不能由接口或合并推定通过验收。
+    definition: 记录控制申请域与公共流程域之间的稳定协作边界；记录控制域拥有申请、来源资格、签名和业务落地，公共流程域拥有候选查询、显式版本启动、路由、任务和流程运行日志。阶段一已实现候选查询与显式启动，后续接入申请确认、审批/退回及最终结果同步消费；本轮DEC-0092按实际源码和主侧聚焦测试补齐受限撤回、记录控制转办及签署约束的重新分配。每项运行证据与独立验收分别判断，不由接口、合并或本切片推定完整P0、DHR/A12、CSV或生产发布通过。
     aliases: [记录控制审批流程集成边界, RecordControlWorkflowPort]
     status: implemented
     visibility: internal
@@ -794,9 +794,9 @@ terms:
     visibility: internal
   - id: term.workflow-event-log
     name: 流程事件日志
-    definition: 用于展示和排查记录控制审批时间线的业务运行日志概念；阶段一继续由现有 WorkflowActionLog/workflow_action_log 承载，不新建 WorkflowEventLog 第二套表。合规证据另由不可变审计事件保存。
-    aliases: [审批流程日志, WorkflowEventLog]
-    status: specified
+    definition: 用于展示和排查流程时间线的只读业务运行日志概念；继续由现有 WorkflowActionLog/workflow_action_log 承载，不新建 WorkflowEventLog 第二套表。流程中心按DEC-0092将既有流程实例入口显示为流程日志，保留实例查询、详情和历史身份；菜单显示名不把实例本身与日志记录合并为同一对象。合规证据另由不可变审计事件保存。
+    aliases: [审批流程日志, 流程日志, WorkflowEventLog]
+    status: implemented
     visibility: internal
   - id: term.execution-custom-form
     name: 执行自定义表单

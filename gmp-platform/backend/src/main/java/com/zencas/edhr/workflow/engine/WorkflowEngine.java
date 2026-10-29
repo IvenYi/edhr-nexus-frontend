@@ -39,7 +39,7 @@ import java.util.*;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class WorkflowEngine {
+public class WorkflowEngine implements com.zencas.edhr.workflow.contract.RecordControlWorkflowWithdrawalPort {
 
     private final WorkflowInstanceRepository instanceRepository;
     private final WorkflowTaskRepository taskRepository;
@@ -348,6 +348,42 @@ public class WorkflowEngine {
                 signatureId == null ? null : String.valueOf(signatureId),
                 instance.getAuditCorrelationId(),
                 instance.getWorkflowSnapshotHash());
+    }
+
+    @Override
+    @Transactional
+    public WorkflowResultEvent withdraw(com.zencas.edhr.workflow.contract.RecordControlWorkflowContracts.WithdrawCommand command) {
+        if (command == null || command.reason() == null || command.reason().isBlank()
+                || command.reason().strip().length() > 500) throw new BusinessException(ErrorCode.WF_007, "请填写不超过500字的撤回原因");
+        WorkflowInstance instance = lockInstance(Long.valueOf(command.workflowInstanceId()));
+        if (!isRecordControlInstance(instance) || !Objects.equals(instance.getBusinessId(), command.requestId())
+                || !Objects.equals(instance.getAuditCorrelationId(), command.auditCorrelationId())
+                || !Objects.equals(instance.getInitiatorId(), AuditContext.getOperatorId()))
+            throw new BusinessException(ErrorCode.AUTH_003, "仅申请人可以撤回本人的申请");
+        if (!"RUNNING".equals(instance.getStatus())) throw new BusinessException(ErrorCode.WF_007, "申请已结束，不能撤回");
+        List<WorkflowTask> current = taskRepository.findByInstanceId(instance.getId());
+        if (current.stream().anyMatch(task -> "APPROVE".equals(task.getAction()) || "REJECT".equals(task.getAction())
+                || "COMPLETED".equals(task.getStatus()) || "REJECTED".equals(task.getStatus())))
+            throw new BusinessException(ErrorCode.WF_007, "本轮已有审批决定，不能撤回");
+        LocalDateTime now = LocalDateTime.now();
+        for (WorkflowTask task : current) {
+            if ("PENDING".equals(task.getStatus()) || "PROCESSING".equals(task.getStatus())) {
+                task.setStatus("WITHDRAWN"); task.setCompletedAt(now); taskRepository.save(task);
+            }
+        }
+        instance.setStatus("WITHDRAWN"); instance.setCurrentNodeIds(""); instance.setCompletedAt(now);
+        instanceRepository.save(instance);
+        logAction(instance.getId(), null, "-", "INSTANCE_WITHDRAW", AuditContext.getOperatorId(), command.reason().strip());
+        auditEventRepository.save(AuditEvent.builder().id(idGenerator.nextId()).tenantId("default")
+                .entityType("WORKFLOW_INSTANCE").entityId(instance.getId().toString()).action("WITHDRAW")
+                .contentBefore("{\"status\":\"RUNNING\"}").contentAfter("{\"status\":\"WITHDRAWN\"}")
+                .operatorId(AuditContext.getOperatorId()).operatorName(AuditContext.getOperatorName())
+                .operatorAccount(AuditContext.getOperatorAccount()).source("WORKFLOW").moduleName("流程中心")
+                .menuName("流程日志").functionName("WITHDRAW").reason(command.reason().strip()).createdAt(now).build());
+        return new WorkflowResultEvent("workflow-result:" + instance.getId() + ":WITHDRAWN", instance.getId().toString(),
+                instance.getDefinitionId().toString(), instance.getVersionId().toString(), BusinessType.valueOf(instance.getBusinessType()),
+                instance.getBusinessId(), Result.WITHDRAWN, now, AuditContext.getOperatorId(), null,
+                instance.getAuditCorrelationId(), instance.getWorkflowSnapshotHash());
     }
 
     /** Progress from a node to its downstream nodes. */

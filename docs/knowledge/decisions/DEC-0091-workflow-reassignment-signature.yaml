@@ -4,7 +4,7 @@ decisions:
     title: 流程干预重新分配必须电子签名
     status: specified
     visibility: internal
-    context: user-confirmed；2026-10-29用户在核对公共流程干预、记录控制转办和受限撤回的未完范围后，直接确认“重新分配需要签名”，并要求调研冠骋。该确认关闭question.record-control-managerial-reassignment-signature中记录控制审批重新分配是否需要额外电子签名的选择，补充DEC-0037-06，保留其专门权限、原因、目标资格、节点和路径不变及审计要求。原未决记录按当时提交保留，不将竞品实现或本次研究建议提升为用户政策；本轮只记录specified/internal规范，不实现产品动作或改变DTO、存量签名及任务。
+    context: user-confirmed；2026-10-29用户在核对公共流程干预、记录控制转办和受限撤回的未完范围后，直接确认“重新分配需要签名”，并要求调研冠骋。该确认关闭question.record-control-managerial-reassignment-signature中记录控制审批重新分配是否需要额外电子签名的选择，补充DEC-0037-06，保留其专门权限、原因、目标资格、节点和路径不变及审计要求。原未决记录按当时提交保留，不将竞品实现或该次研究建议提升为用户政策；2026-10-29调研轮次只记录specified/internal规范，未实现产品动作或改变DTO、存量签名及任务。2026-10-30后续实施授权及入口安排见DEC-0092，不回填为调研时已完成实现。
     decisionStatements:
       - id: DEC-0091-01
         statement: user-confirmed；当前流程干预范围内的记录控制审批重新分配必须完成电子签名，缺少有效签名不得执行该动作；不能以已经登录、具有干预权限或仅填写原因替代电子签名。该确认仅收敛原是否额外签名的未决选择，不因运行时尚未实现而保留可免签的现行选项。
@@ -15,7 +15,7 @@ decisions:
         status: specified
         visibility: internal
       - id: DEC-0091-03
-        statement: scope-boundary；本轮为调研和知识同步，重新分配运行时、签名强制、任务更新和审计事务仍须在后续实现中验证，不据此标记implemented、verified或runtime。DHR继续保持专属审批和退回整理路径；本确认不开放通用DHR干预、流程终止、跳过、强制跳转、加签或管理员直接批准。
+        statement: scope-boundary；2026-10-29该轮为调研和知识同步，重新分配运行时、签名强制、任务更新和审计事务须在后续实现中验证，不据调研标记implemented、verified或runtime。2026-10-30的DEC-0092授权后续实施，不改写调研时点和历史证据；DHR继续保持专属审批和退回整理路径，不开放通用DHR干预、流程终止、跳过、强制跳转、加签或管理员直接批准。
         status: specified
         visibility: internal
     supersedes: []

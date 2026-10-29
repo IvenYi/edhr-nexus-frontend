@@ -82,8 +82,8 @@ decisions:
         visibility: internal
         path: docs/superpowers/specs/2026-09-11-record-correction-and-void-design.md
         lineHint: 1
-        summary: "provenance: original-evidence；本设计形成时尚无记录控制运行实现。2026-10-28 来支已提供申请、有效修订切换、审批/退回适配与部分安全实现；完整 P0 仍缺撤回/转办/重新分配、DHR 真实生效联动、投影冲销及相应独立验收，不能将本设计整体标记为 implemented、verified 或 runtime。"
-        evidenceIds: [evidence.record-correction-void-design]
+        summary: "provenance: historical-original-evidence-and-current-scope；本设计形成时尚无记录控制运行实现。2026-10-28 来支提供申请、有效修订切换、审批/退回适配与部分安全实现，当时仍缺撤回/转办/重新分配及DHR生效消费。后续DHR联动按其独立切片证据判断，2026-10-30三动作已有DEC-0092-06源码及主侧聚焦验证，不再将这三项概括为完全未实现。原始缺口时点保留，完整P0、A12及独立验收仍各按实际范围判断，不将设计整体标记verified或知识runtime。"
+        evidenceIds: [evidence.record-correction-void-design, evidence.workflow-operations-responsibility-source, evidence.workflow-operations-withdrawal-source, evidence.workflow-operations-main-verification]
       - id: discrepancy.record-control-no-database-migration
         status: accepted
         severity: medium

@@ -14,6 +14,7 @@ export const INSTANCE_STATUS_MAP = {
   RUNNING: { label: '运行中', color: 'info' as const },
   COMPLETED: { label: '已完成', color: 'success' as const },
   TERMINATED: { label: '已终止', color: 'error' as const },
+  WITHDRAWN: { label: '已撤回', color: 'default' as const },
 } as const;
 
 export const TASK_STATUS_MAP = {
@@ -197,7 +198,8 @@ export const SIDEBAR_MODULES: SidebarModule[] = [
         children: [
           { label: '审批流程', path: '/workflow/review-templates' },
           { label: '表单流程', path: '/workflow/form-processes' },
-          { label: '流程实例', path: '/workflow/instances' },
+          { label: '流程日志', path: '/workflow/instances' },
+          { label: '流程干预', path: '/workflow/interventions' },
         ],
       },
       {

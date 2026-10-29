@@ -76,7 +76,6 @@ const publicListPages = [
   'src/pages/workflow-center/FormProcessList.tsx',
   'src/pages/workflow-center/BindingRuleList.tsx',
   'src/pages/workflow-center/InstanceList.tsx',
-  'src/pages/workflow-center/InstanceLogs.tsx',
   'src/pages/workflow-center/WorkTemplateList.tsx',
   'src/pages/workflow-center/WorkApplicabilityRulesTab.tsx',
   'src/pages/dhr-management/DhrManagementPage.tsx',
@@ -226,7 +225,6 @@ const simpleActionColumnPages = [
   'src/pages/master-data/UnitPage.tsx',
   'src/pages/master-data/SopDocumentPage.tsx',
   'src/pages/workflow-center/BindingRuleList.tsx',
-  'src/pages/workflow-center/InstanceList.tsx',
 ];
 for (const path of simpleActionColumnPages) {
   const source = read(path);
