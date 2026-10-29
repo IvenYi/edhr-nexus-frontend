@@ -1,0 +1,16 @@
+{
+  "baseCommit":"8784ba87166addae9cb9659d6120aa84f993c7ef",
+  "reviewer":"primary",
+  "wholeFileCompletion":0,
+  "records":[
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java","methods":["listMaterials/listProducts/toPagedResult","createMaterial/resolveMaterialVersion/validateMaterialCodeForCreate","toMaterialGroups/toMaterialGroup/compareMaterialVersionDesc/compareVersion"],"dimensions":["A01","A03","A07","A08","A10","A12","A19"],"conclusion":"正常API复现页下标/版本数字段范围，两处局部修复；不改全量加载、筛选阶段、组状态或写侧规则。"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java","methods":["listProducts/materialTypeNames/isProductMaterial/toProductSourceResponse"],"dimensions":["A01","A03","A07","A10","A12"],"conclusion":"第二列表算术范围修复；物料派生/配置聚合查询保持，无配置真实物料读取验证，不认证完整制程。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx","methods":["incoming8784 diff","header grid/context/tabs/actions","save/close/import unchanged callback boundary"],"dimensions":["A08","A17","A18","A19"],"conclusion":"窄屏title0与初始按钮溢出已实测；只小屏分行换行；不恢复流程编辑，保存双宽保护继续。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/store/useTemplateDesignerStore.ts","methods":["incoming removed workflow commands","setDocument/undoCanvasChange/redoCanvasChange/markSaved"],"dimensions":["A03","A08","A17"],"conclusion":"增量核对移除三个workflow动作与其消费者；document/history/savedSnapshot相关正常测试保持，未审其他store全部命令。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts","methods":["createEmptyTemplateDesignerDocument workflow default","parseReactTemplateDesignerDocument/serializeTemplateDesignerDocument"],"dimensions":["A03","A08","A13"],"conclusion":"旧workflow仍往返保留，正常其他编辑不清空已存载荷。"},
+    {"path":"gmp-platform/frontend/src/pages/master-data/template-designer-react/types/document.ts","methods":["TemplateDesignerTabKey and document workflow member"],"dimensions":["A01","A03"],"conclusion":"Tab union移除workflow不等于删除document字段或后台流程。"},
+    {"path":"gmp-platform/frontend/scripts/verify-template-designer-react.mjs","methods":["incoming removed workflow UI assertions","retained designer checks"],"dimensions":["A21","A22"],"conclusion":"按最新入口移除旧UI存在断言；未由本批降低，当前正式脚本通过，不能代替业务运行验收。"},
+    {"path":"gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataReadObservationTest.java","methods":["Config actual material/type/audit repos and explicit other mocks"],"dimensions":["A21","A22"],"conclusion":"新HTTP边界测试复用实际配置，H2合成数据仅正常API写入物料，测试配置复用不算业务覆盖。"}
+  ],
+  "countingBoundary":"8条有交叉的主侧有限方法范围，不与本体8既有ID相加为全文件/全域或新增unique完成。4219固定目标路径只是inventory-only/pending。"
+}

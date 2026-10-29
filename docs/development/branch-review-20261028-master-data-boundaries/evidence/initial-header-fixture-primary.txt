@@ -1,0 +1,15 @@
+node:internal/fs/promises:697
+  return new FileHandle(await PromisePrototypeThen(
+                        ^
+
+Error: ENOENT: no such file or directory, open '/tmp/edhr-designer-header-IVPXTs/bundle.css'
+    at async open (node:internal/fs/promises:697:25)
+    at async readFile (node:internal/fs/promises:1348:14)
+    at async Server.<anonymous> (file:///workspace/edhr-nexus-frontend/gmp-platform/frontend/scripts/test-designer-header-browser.mjs:46:13) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/tmp/edhr-designer-header-IVPXTs/bundle.css'
+}
+
+Node.js v24.19.0

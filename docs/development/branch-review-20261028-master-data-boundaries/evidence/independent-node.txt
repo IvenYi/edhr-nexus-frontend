@@ -1,0 +1,44 @@
+✔ catalogue only opens supported cell components (2.415485ms)
+✔ placing each component binds it to the sub-table without adding business fields; undo restores text (3.91279ms)
+✔ replacing a component does not stack nodes, and crossing the sub-table boundary is rejected (7.648621ms)
+✔ ordinary cells keep display components after document serialization and reload (5.99096ms)
+✔ mock dynamic rows render contiguous serials after adding and deleting records (158.915159ms)
+✔ actual runtime rows render derived serials without writing serial values into records (73.707591ms)
+✔ new choice fields persist the same two presets already shown by their controls (10.328741ms)
+✔ reading old choice fields with missing or empty options never creates current write-command presets (9.604638ms)
+✔ ModelTab parent-column creation initializes only new choice columns and preserves an old empty column (3.787779ms)
+✔ ModelTab parent-column type changes initialize choice definitions and embedded placements in one history step (2.794996ms)
+✔ editing either placement shares single and multi options with the canonical field and other placements (2.061878ms)
+✔ subtable options update canonical columns and embedded placements across pages without touching another table (4.218447ms)
+✔ model option edits update every placement while preserving compatible widget configuration (1.046008ms)
+✔ renaming an option label preserves its existing value identity and former immutable document (1.066762ms)
+✔ one choice edit is one complete undo step and round-trips model and canvas consistently (5.744967ms)
+✔ the existing row factory saves a configured single-select default as the actual canonical option value (1.911648ms)
+✔ unrelated binding and widget edits do not adopt a saved inconsistent placement or reactivate disabled options (1.189218ms)
+✔ rebinding a compatible choice control takes its new field options without carrying another field option list (6.259173ms)
+✔ inserting before a bound field shifts the same source with its cell, preserves other pages and round-trips undo/redo (41.29884ms)
+✔ inserting inside a merged field expands it, while insertion after its right edge leaves it unchanged (7.136655ms)
+✔ inserting before a subtable keeps its region, record group and actual field offsets aligned (26.080688ms)
+✔ inserting inside a subtable keeps its region, record group and actual field offsets aligned (7.206253ms)
+✔ nested bound nodes move recursively and free components without a cell anchor keep their position (12.759287ms)
+✔ a successful save acknowledges its submitted document, retaining edits made in flight (22.14695ms)
+✔ a save without further edits becomes clean and the next successful save can acknowledge B (0.823252ms)
+✔ undo and redo compare with the acknowledged document rather than the latest local edit (0.998235ms)
+✔ a late acknowledgement for another template or version cannot replace its saved baseline (1.399452ms)
+✔ source mappings and layout share one document history and survive serialization (8.981752ms)
+✔ removing workflow editing leaves persisted workflow payload intact during model and canvas saves (4.698307ms)
+✔ renaming or disabling the same model column updates its placed definition without changing identity or inventing visibility policy (7.483551ms)
+✔ a changed column type uses the compatible component and clears only incompatible widget overrides (2.203916ms)
+✔ compatible column edits retain explicit widget overrides and preserve the previous immutable definition (2.134632ms)
+✔ the same parent column updates on other pages and nested nodes without changing unrelated fields (3.443773ms)
+✔ column edit is one complete undo step and serializes consistently without rewriting the former document (5.544013ms)
+✔ mock paper and full runtime paper both render the edited column definition (710.156114ms)
+✔ generic table renderer already reads canonical model columns and remains a separate positive control (66.654719ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15653.10207

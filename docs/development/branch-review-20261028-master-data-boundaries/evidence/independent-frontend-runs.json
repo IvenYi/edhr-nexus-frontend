@@ -1,0 +1,92 @@
+[
+  {
+    "name": "header-baseline",
+    "command": [
+      "node",
+      "scripts/test-designer-header-browser.mjs"
+    ],
+    "env": {
+      "HEADER_BASELINE_COMMIT": "8784ba87166addae9cb9659d6120aa84f993c7ef",
+      "HEADER_ARTIFACTS": "/tmp/edhr-boundary-qa-header-baseline"
+    },
+    "expectedExit": 1,
+    "actualExit": 1,
+    "log": "/tmp/edhr-boundary-qa-header-baseline.txt"
+  },
+  {
+    "name": "save1440",
+    "command": [
+      "node",
+      "scripts/test-designer-save-context-browser.mjs"
+    ],
+    "env": {
+      "SAVE_CONTEXT_ARTIFACTS": "/tmp/edhr-boundary-qa-save1440"
+    },
+    "expectedExit": 0,
+    "actualExit": 0,
+    "log": "/tmp/edhr-boundary-qa-save1440.txt"
+  },
+  {
+    "name": "save390",
+    "command": [
+      "node",
+      "scripts/test-designer-save-context-browser.mjs"
+    ],
+    "env": {
+      "SAVE_CONTEXT_WIDTH": "390",
+      "SAVE_CONTEXT_ARTIFACTS": "/tmp/edhr-boundary-qa-save390"
+    },
+    "expectedExit": 0,
+    "actualExit": 0,
+    "log": "/tmp/edhr-boundary-qa-save390.txt"
+  },
+  {
+    "name": "import",
+    "command": [
+      "node",
+      "scripts/test-designer-import-browser.mjs"
+    ],
+    "env": {
+      "IMPORT_ARTIFACTS": "/tmp/edhr-boundary-qa-import"
+    },
+    "expectedExit": 0,
+    "actualExit": 0,
+    "log": "/tmp/edhr-boundary-qa-import.txt"
+  },
+  {
+    "name": "host",
+    "command": [
+      "node",
+      "scripts/test-designer-save-host-browser.mjs"
+    ],
+    "env": {
+      "SAVE_HOST_ARTIFACTS": "/tmp/edhr-boundary-qa-host"
+    },
+    "expectedExit": 0,
+    "actualExit": 0,
+    "log": "/tmp/edhr-boundary-qa-host.txt"
+  },
+  {
+    "name": "verifier",
+    "command": [
+      "node",
+      "scripts/verify-template-designer-react.mjs"
+    ],
+    "env": {},
+    "expectedExit": 0,
+    "actualExit": 0,
+    "log": "/tmp/edhr-boundary-qa-verifier.txt"
+  },
+  {
+    "name": "build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "env": {},
+    "expectedExit": 0,
+    "actualExit": 0,
+    "log": "/tmp/edhr-boundary-qa-build.txt"
+  }
+]

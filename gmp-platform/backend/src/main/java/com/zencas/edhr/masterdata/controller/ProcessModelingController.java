@@ -73,6 +73,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -863,8 +864,8 @@ public class ProcessModelingController {
     private <T> PageResult<T> toPagedResult(List<T> rows, int page, int size) {
         int safePage = Math.max(page, 1);
         int safeSize = Math.max(size, 1);
-        int fromIndex = Math.min((safePage - 1) * safeSize, rows.size());
-        int toIndex = Math.min(fromIndex + safeSize, rows.size());
+        int fromIndex = (int) Math.min((long) (safePage - 1) * safeSize, rows.size());
+        int toIndex = (int) Math.min((long) fromIndex + safeSize, rows.size());
         return PageResult.of(rows.subList(fromIndex, toIndex), safePage, safeSize, rows.size());
     }
 
@@ -1126,7 +1127,7 @@ public class ProcessModelingController {
         Matcher leftMatcher = VERSION_NUMBER_PATTERN.matcher(leftValue);
         Matcher rightMatcher = VERSION_NUMBER_PATTERN.matcher(rightValue);
         while (leftMatcher.find() && rightMatcher.find()) {
-            int numberCompare = Long.compare(Long.parseLong(leftMatcher.group()), Long.parseLong(rightMatcher.group()));
+            int numberCompare = new BigInteger(leftMatcher.group()).compareTo(new BigInteger(rightMatcher.group()));
             if (numberCompare != 0) return numberCompare;
         }
         if (leftMatcher.find()) return 1;

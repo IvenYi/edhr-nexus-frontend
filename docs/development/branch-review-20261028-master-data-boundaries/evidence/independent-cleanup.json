@@ -1,0 +1,14 @@
+{
+  "removedOwnBaselineWorktree": "/tmp/edhr-boundary-qa-base-2tpeayjl",
+  "copiedTestRemovedAfterHashCheck": true,
+  "removedOwnNodeModulesSymlinkOnly": true,
+  "baselineRuntimeTrackedFilesCleanBeforeRemoval": true,
+  "removedOwnInventory": "/tmp/edhr-boundary-qa-inventory",
+  "saveHarnessTempDirectoriesAbsent": [
+    "/tmp/edhr-save-context-host-qx5a6h",
+    "/tmp/edhr-save-context-host-MB8lbo"
+  ],
+  "noLiveExternalDatabaseCreated": true,
+  "initialCleanupGuard": "Untracked own node_modules symlink was explicitly removed after resolving target, then worktree was clean; shared dependencies untouched.",
+  "qualification": "Browser/server processes returned through harness finally; read-only artifact folders kept. No broad temp deletion or changes to main tracked files."
+}

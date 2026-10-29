@@ -1,0 +1,25 @@
+{
+  "allExit": 2,
+  "nonRawExit": 0,
+  "nonRawPathCount": 42,
+  "excludedOriginalLogPaths": [
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/baseline-junit.xml",
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/baseline-test.txt",
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/initial-header-fixture-baseline.txt",
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/initial-header-fixture-primary.txt",
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/ontology-knowledge.txt",
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-boundary-test.txt",
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-build.txt",
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-node.txt",
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-regression.txt",
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-verifier.txt"
+  ],
+  "qualification": "Raw Maven/JUnit/fixture logs stay byte-identical; no whitespace configuration changes and no original stripping.",
+  "actualWarningPaths": [
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/baseline-junit.xml",
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/baseline-test.txt",
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/ontology-knowledge.txt",
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-boundary-test.txt",
+    "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-regression.txt"
+  ]
+}

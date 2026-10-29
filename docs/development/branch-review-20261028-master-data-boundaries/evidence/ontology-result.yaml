@@ -1,0 +1,51 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 8784ba87166addae9cb9659d6120aa84f993c7ef
+    targetBranch: edhr-dev
+    targetCommit: 8784ba87166addae9cb9659d6120aa84f993c7ef
+    contractReadCommit: 8784ba87166addae9cb9659d6120aa84f993c7ef
+    uncommittedContractPaths: []
+  reason: 本批两个控制器仅把页下标中间运算扩为long、把物料版本数字段比较扩为BigInteger，保留既有非正参数归一化、按组分页、全部版本、排序方向及文本回退；不改变物料/产品身份、发布、引用资格、执行快照或业务政策。8个既有ID在明确有限范围内核对一致，无需知识文件修改。后续已实际增量读取Shell头部767px以下一列、操作第3行和换行/useFlexGap及更新decisionPackage，只有响应式样式，没有更改事件、保存校验或载荷，因此同8ID及NA仍适用；此前89结果仅按知识无变化复用，不冒称对新样式执行运行验收。外部8784ba87移除的是模板document.workflow的编辑入口，原JSON仍保存；独立PROCESS绑定继续消费已发布表单流程版本，不能据此取消后台流程规则。没有发现知识直接指向已删WorkflowTab的失效锚点。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.boundary.knowledge-structure
+      checkType: schema
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-boundary-ontology-knowledge.txt
+        - 独立实际运行89 tests，0 failure/error/skip；这里只认证结构/引用，不替代有限语义或产品运行。
+    - id: validation.boundary.records-and-unchanged-knowledge
+      checkType: reference
+      command: python3 /tmp/edhr-boundary-ontology-validate.py
+      outcome: passed
+      evidence:
+        - /tmp/edhr-boundary-ontology-validation.json
+        - 解析8个实际ID，定位其来源文件/原状态及实际读取的实现路径；知识和契约相对8784ba87无差异，版本与成熟度未改变。
+    - id: validation.boundary.limited-semantic-inspection
+      checkType: evidence-path
+      command: Read current declarations, versioned confirmation sources, two controller diffs, template document persistence and independent form-process binding paths.
+      outcome: passed
+      evidence:
+        - /tmp/edhr-boundary-rule-review.json
+        - /tmp/edhr-boundary-rule-review.md
+        - 8条有限一致，不表示8整文件或8个新增历史unique；未取得最初聊天导出或重做旧运行测试，旧四gap及其他未审/暂缓保留。
+    - id: validation.boundary.header-style-delta
+      checkType: evidence-path
+      command: git diff -- gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx; read updated decisionPackage
+      outcome: passed
+      evidence:
+        - /tmp/edhr-boundary-rule-review.json
+        - /tmp/edhr-boundary-rule-review.md
+        - 本角色只核对纯样式不影响知识定义，实际读取小屏单列、操作分行/换行/useFlexGap；未运行四宽度几何、点击或13保存场景，不将主侧fixture-blocked归为保存逻辑红。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

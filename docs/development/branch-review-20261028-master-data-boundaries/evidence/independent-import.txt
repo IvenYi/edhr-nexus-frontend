@@ -1,0 +1,68 @@
+{
+  "sourceCommit": "5c233972ec67799ffdee1aadba80e031828be8f8",
+  "baselineSourceCommit": null,
+  "width": 1440,
+  "artifacts": "/tmp/edhr-boundary-qa-import",
+  "results": [
+    {
+      "name": "normal-xlsx",
+      "status": "passed"
+    },
+    {
+      "name": "normal-docx",
+      "status": "passed"
+    },
+    {
+      "name": "blank-docx",
+      "status": "passed"
+    },
+    {
+      "name": "malformed-document-xml",
+      "status": "passed"
+    },
+    {
+      "name": "malformed-rels-xml",
+      "status": "passed"
+    },
+    {
+      "name": "page-switch",
+      "status": "passed"
+    },
+    {
+      "name": "page-switch-back",
+      "status": "passed"
+    },
+    {
+      "name": "version-switch",
+      "status": "passed"
+    },
+    {
+      "name": "close-reopen",
+      "status": "passed"
+    },
+    {
+      "name": "edit-during-read",
+      "status": "passed"
+    },
+    {
+      "name": "newer-finishes-first",
+      "status": "passed"
+    },
+    {
+      "name": "stale-error-after-new-selection",
+      "status": "passed"
+    },
+    {
+      "name": "current-error-and-retry",
+      "status": "passed"
+    },
+    {
+      "name": "close-prompt-cancel",
+      "status": "passed"
+    },
+    {
+      "name": "empty-selection",
+      "status": "passed"
+    }
+  ]
+}

@@ -159,8 +159,8 @@ public class ProductProcessController {
                 .toList();
         int normalizedPage = Math.max(page, 1);
         int normalizedSize = Math.max(size, 1);
-        int from = Math.min((normalizedPage - 1) * normalizedSize, products.size());
-        int to = Math.min(from + normalizedSize, products.size());
+        int from = (int) Math.min((long) (normalizedPage - 1) * normalizedSize, products.size());
+        int to = (int) Math.min((long) from + normalizedSize, products.size());
         return ApiResponse.success(PageResult.of(products.subList(from, to), normalizedPage, normalizedSize, products.size()));
     }
 
