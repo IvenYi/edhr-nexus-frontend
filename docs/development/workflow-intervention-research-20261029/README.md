@@ -77,4 +77,6 @@
 
 本轮适用门禁已通过：[ontology-result.yaml](ontology-result.yaml) 为 `updated`，[quality-result.yaml](quality-result.yaml) 为 `passed`。主侧固定并核对22份原始源码及七张原图；独立质量重新核对Word原件、段落、七图和22文件摘要，并检查相邻源码与事实/建议边界。知识角色和独立质量各自执行89项知识测试均通过、0失败/错误/跳过；不将两次运行相加为178个不同用例。242份知识YAML、引用、指定替代及无产品差异检查通过，原件均保存在本目录evidence。
 
+原始 `.log` 按仓库规则忽略，已以同名 `.log.gz` 无损归档，可解压还原质量结果中引用的原文件；本体索引为 `evidence/ontology-validation.json`，独立日志索引为 `evidence/independent/log-archive.json`。源码摘录中空原文行的编号分隔空格已作纯格式修正，原文件及原图没有变化，记录见 `evidence/excerpt-format-check.json`。
+
 未运行冠骋接口、我们的干预功能运行测试或新浏览器验收；没有改产品文件、测试、配置、数据库或归档能力。当前功能仍未实现，不能把本轮研究与知识通过解释为运行交付。远端刷新状态见 [remote-refresh.json](evidence/remote-refresh.json)，不把缓存目标称为成功刷新结果；后续实现/集成前重新获取目标并核对契约。
