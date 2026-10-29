@@ -1,0 +1,115 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-MASTER-DATA-BOUNDARIES-20261028
+  scope: W4物料/产品分页下标与已接受版本号排序；新增设计器提交增量核对
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 8784ba87166addae9cb9659d6120aa84f993c7ef
+    targetBranch: edhr-dev
+    targetCommit: 8784ba87166addae9cb9659d6120aa84f993c7ef
+    contractReadCommit: 8784ba87166addae9cb9659d6120aa84f993c7ef
+    uncommittedContractPaths: []
+  summary: 正常API已复现两个整数范围问题并局部修复；增量复现新头部390px标题宽度0及操作溢出，仅补小屏分行换行。不改查询、分组、权限或业务政策。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.master-data-numeric-range
+      statement: 合法整数页越过末页应沿原有空页语义，写入已接受的版本号应可按原数字段顺序读取。
+      rationale: 当前Math.min截取及数字段比较的既有工程意图；不新增用户政策或版本格式限制。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: master-data-read
+        change: 计划仅修两个控制器页下标算术与物料数字段比较；先同组红绿复现。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java]
+      - area: designer-header
+        change: 原新grid在390px把模板上下文压到0宽且操作溢出首屏；仅767px以下一列分行并操作换行，保留更宽屏布局及流程入口移除。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx]
+    transitiveImpacts:
+      - area: grouped-material-response
+        change: 保留组内全部版本、原聚合状态/计数、产品沿物料身份与筛选/排序方向。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml]
+    potentialImpacts:
+      - area: incoming-designer-change
+        concern: 8784ba87移除流程设计入口和三个store动作，同时改头部布局；增量核对旧workflow载荷保留和保存会话防护，不恢复被移除入口或推断后台流程被取消。
+        evidenceReferences: [gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts, gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx]
+    unaffectedAreas:
+      - area: performance
+        change: 三项性能风险仍待讨论，不改SQL/缓存/索引/分页协议或全量加载方式。
+        evidenceReferences: [docs/development/branch-review-20261028-master-data-reads/risk-register.yaml]
+    compatibilityAndMigration:
+      - area: storage
+        change: 无schema/迁移、无历史数据修改；版本字符串、非正页/页大小的既有归一化保持。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: production-history
+        change: 不回算或改写生产与DHR快照。
+        evidenceReferences: []
+    auditImpacts:
+      - area: reads
+        change: 对照读取前后完整物料/类型/审计行，无新增读侧写入。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: authorization
+        change: 沿原JWT/filter及权限；不改授权、签署或冻结资格。
+        evidenceReferences: []
+    testImpacts:
+      - scope: normal-write-and-read
+        scenarios: [三个列表正常首末空页, 大页号, 大页长, 原非正参数归一化, 超long数字段, 多段和前导零, 同组完整性, 匿名拒绝]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataBoundaryIntegrationTest.java]
+      - scope: incoming-designer-delta
+        scenarios: [旧workflow载荷往返, 保存和导入回归, 390/768/1024/1440头部几何及非强制点击, 官方静态与build]
+        evidenceReferences: []
+    evidenceGaps:
+      - H2实际物料repository加产品建模其余空配置依赖mock，不代表完整制程/原生PG验收。
+      - 前端增量回归不代表后台持久化、完整响应式或已移除入口的业务政策确认。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 局部算术修正可保留现有控制器与返回类型，不引入通用分页框架或模块重构。
+    ownershipBoundaries:
+      - owner: ProcessModelingController
+        responsibility: 原物料分组/产品列表与数字版本顺序。
+      - owner: ProductProcessController
+        responsibility: 原产品建模列表及下标裁剪。
+      - owner: TemplateDesignerReactShell
+        responsibility: 头部响应式分行/操作换行，不接管业务校验或恢复流程编辑入口。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+      changeType: update
+      reason: 仅在复现后修复算术范围。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java
+      changeType: update
+      reason: 仅在复现后修复算术范围。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataBoundaryIntegrationTest.java
+      changeType: create
+      reason: 正常API写入与真实读取红绿回归。
+    - path: gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx
+      changeType: update
+      reason: 只修新提交小屏头部压缩/溢出，不改业务、页面风格或桌面居中布局。
+    - path: gmp-platform/frontend/scripts/test-designer-header-browser.mjs
+      changeType: create
+      reason: 四宽度真实头部几何和操作可达红绿检查。
+    - path: gmp-platform/frontend/scripts/test-designer-save-state.mjs
+      changeType: update
+      reason: 增量核验旧workflow载荷经其他编辑与保存往返保留。
+  acceptanceScenarios:
+    - id: scenario.master-data-page-range
+      given: 两组真实保存物料且三个列表可读取
+      when: 常规页、超出末页、大正整数及原非正归一化参数
+      then: 原响应结构与总数、有效页内容及空页正确，不发生整数溢出500。
+      evidenceRequirements: [同组旧红新绿, 实际JWT/H2/HTTP, 完整行无变更]
+    - id: scenario.accepted-version-range
+      given: 正常写入接口已接受长度不超过64的不同版本
+      when: 读取同一物料组
+      then: 按原数字段降序/相等文本回退展示全部版本，计数及状态不变，不因long范围500。
+      evidenceRequirements: [正常POST持久化与GET, long边界与正向控制, 全组身份及审计无改写]
+    - id: scenario.designer-header-visibility
+      given: 最新移除流程入口后的真实设计器
+      when: 在390/768/1024/1440宽度打开
+      then: 模板上下文有可见宽度、头部操作在首屏内且可非强制点击；不恢复流程入口，既有保存隔离不退化。
+      evidenceRequirements: [真实Shell几何和截图, 原窄屏回归不降标准, 同组基线/修复对照]

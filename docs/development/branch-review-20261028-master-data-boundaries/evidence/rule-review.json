@@ -1,0 +1,107 @@
+{
+  "schema": "edhr-limited-semantic-review/v1",
+  "reviewer": "/root/master_data_boundaries_ontology_20261028",
+  "baseCommit": "8784ba87166addae9cb9659d6120aa84f993c7ef",
+  "knowledgeBaselineVersion": "0.3.25",
+  "scope": "物料/产品列表算术边界及已接受版本数字段修复；模板流程编辑入口移除的知识影响边界；后续小屏头部纯样式增量",
+  "counts": {"reviewedRecords": 8, "limitedConsistent": 8, "knowledgeChanges": 0, "newKnowledgeIds": 0, "newUniqueHistoricalCoverage": null, "wholeFileCompletion": 0},
+  "countingBoundary": "8个既有ID的有限声明与源码核对，与历史可能重叠；未做全历史unique去重，不把它们算成8个新ID或整域完成。支持性术语/证据与主侧方法范围不重复累计。",
+  "evidenceProvenance": {
+    "versionedUserConfirmed": "仓库内现有决策、批次制程确认及填报设置原话记录按其已确认范围读取；本次没有最早聊天导出或截图复验。",
+    "originalEvidence": "实际两个控制器、实体、正常API测试源码、模板文档解析/序列化、保存API、FormFillSettingsService和WorkTemplateController，以及外部提交所删WorkflowTab原代码。",
+    "secondaryReference": "主侧基线12红/24正与当前36通过日志只作主侧运行证据读取；本角色没有运行产品H2或浏览器。",
+    "inference": "页归一化、空页结构、数字段自然序/相等文本回退、64字符存储边界及旧document.workflow保留是现有工程契约，不提升为新业务政策。"
+  },
+  "records": [
+    {
+      "id": "concept.material", "recordType": "concept", "sourcePath": "docs/knowledge/ontology.yaml", "sourceLocator": "concept.material", "originalMaturity": "implemented",
+      "auditScope": "limited-identity-and-read-model", "conclusion": "consistent",
+      "scope": "物料实体及版本记录身份，内部数值比较不改变物料记录标识或原字符串。",
+      "originalEvidenceReferences": ["docs/knowledge/glossary.yaml#term.material", "docs/knowledge/evidence/product-process.yaml#evidence.material-entity"],
+      "implementationReferences": ["gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Material.java", "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#createMaterial/resolveMaterialVersion/compareVersion"],
+      "reasonablenessAssessment": "版本是持久化字符串，数字段比较只用于既有显示排序；避免已接受字符串在读侧溢出比新增未确认格式限制更符合现有身份与存储责任。",
+      "limitations": ["64字符是当前实体/存储边界，不作为本次新增用户政策；不认证全部物料写入规则。"]
+    },
+    {
+      "id": "concept.product", "recordType": "concept", "sourcePath": "docs/knowledge/ontology.yaml", "sourceLocator": "concept.product", "originalMaturity": "implemented",
+      "auditScope": "limited-derived-identity", "conclusion": "consistent",
+      "scope": "产品查询沿用可生产物料的实际版本记录，不由显示组或页位置产生新身份。",
+      "originalEvidenceReferences": ["docs/knowledge/glossary.yaml#term.product", "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml#DEC-0001-01"],
+      "implementationReferences": ["gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java#toProductSourceResponse", "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#listProducts"],
+      "reasonablenessAssessment": "产品沿物料ID避免重复维护；下标修复只改变安全截取，不选择或重建产品身份。",
+      "limitations": ["不认证独立Product遗留表全部用途或多租户未来能力。"]
+    },
+    {
+      "id": "rule.product.source-from-material", "recordType": "rule", "sourcePath": "docs/knowledge/rules/product-process.yaml", "sourceLocator": "rule.product.source-from-material", "originalMaturity": "implemented",
+      "auditScope": "limited-type-filter-preservation", "conclusion": "consistent",
+      "scope": "产品候选仍限产成品/半成品，页下标修复不移动或放宽筛选阶段。",
+      "originalEvidenceReferences": ["docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml#DEC-0001-01", "docs/knowledge/evidence/product-process.yaml#evidence.product-process-controller"],
+      "implementationReferences": ["gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#listProducts/resolveProductMaterialTypeIds", "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java#listProducts/isProductMaterial/materialTypeNames"],
+      "reasonablenessAssessment": "产品生产用途筛选和列表裁剪职责分开；long运算位于原筛选/排序之后，没有改变允许的物料集合。",
+      "limitations": ["不把当前全量加载或内存分页变成业务要求；三项性能风险继续待讨论。"]
+    },
+    {
+      "id": "DEC-0001-01", "recordType": "decision-statement", "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml", "sourceLocator": "DEC-0001-01", "originalMaturity": "implemented",
+      "auditScope": "limited-current-source-policy", "conclusion": "consistent",
+      "scope": "产品源于产成品/半成品物料，不重复维护产品主数据。",
+      "originalEvidenceReferences": ["docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml", "docs/knowledge/evidence/product-process.yaml"],
+      "implementationReferences": ["gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#listProducts", "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java#toProductSourceResponse"],
+      "reasonablenessAssessment": "两个实际列表继续同源，修复不增写或生成产品实体。现有版本化决定可支持本次保留边界。",
+      "limitations": ["未重新获得最初需求聊天，不将仓库摘要升级为新的逐字用户确认。"]
+    },
+    {
+      "id": "DEC-0001-09", "recordType": "decision-statement", "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml", "sourceLocator": "DEC-0001-09", "originalMaturity": "specified",
+      "auditScope": "limited-display-label-versus-execution-freeze", "conclusion": "consistent",
+      "scope": "相同V1标签不代表相同配置，首次合法START冻结的实际身份/内容不由列表显示排序替代。",
+      "originalEvidenceReferences": ["docs/knowledge/evidence/batch-process-2026-10-27.md#用户确认", "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml#DEC-0001-09"],
+      "implementationReferences": ["gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#compareMaterialVersionDesc/toMaterialGroup", "git diff 8784ba87 -- gmp-platform/backend/src/main: only two read-controller arithmetic changes"],
+      "reasonablenessAssessment": "组头显示版本的选择和执行冻结是不同职责，本修复不自动挑制程、不回算快照。",
+      "limitations": ["这里只核对本批不触及冻结责任，未重新执行START/快照或通用规则运行层验收。"]
+    },
+    {
+      "id": "rule.form-fill-settings.workflow-configuration", "recordType": "rule", "sourcePath": "docs/knowledge/rules/form-fill-settings.yaml", "sourceLocator": "rule.form-fill-settings.workflow-configuration", "originalMaturity": "specified",
+      "auditScope": "limited-template-ui-versus-selected-process", "conclusion": "consistent",
+      "scope": "PROCESS模式继续消费所选已发布表单流程和绑定例外；模板document.workflow编辑入口移除不能视作取消此策略。",
+      "originalEvidenceReferences": ["docs/knowledge/evidence/form-fill-settings-confirmed.md#user-confirmed", "docs/knowledge/rules/form-fill-settings.yaml"],
+      "implementationReferences": ["gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java#process/validate", "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts#parseReactTemplateDesignerDocument/serializeTemplateDesignerDocument", "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java#saveFormTemplateVersionDesign"],
+      "reasonablenessAssessment": "模板布局载荷与可复用已发布流程有不同所有者和标识。现有代码继续保存旧workflow JSON且不使用它取代FORM_PROCESS版本资格。",
+      "limitations": ["本角色只读源码，没有运行完整PROCESS生产办理或后端保存E2E；保留原成熟度。旧载荷保留是局部工程延续，不撤销MVP旧开发数据可重造的既有确认。"]
+    },
+    {
+      "id": "rule.form-process.binding-requires-form-and-flow", "recordType": "rule", "sourcePath": "docs/knowledge/rules/transaction-runtime.yaml", "sourceLocator": "rule.form-process.binding-requires-form-and-flow", "originalMaturity": "specified",
+      "auditScope": "limited-paired-reference-ownership", "conclusion": "consistent",
+      "scope": "PROCESS模式须具体表单版本与已发布FORM_PROCESS版本；DIRECT另有自身校验，未因设计器入口删除而互换。",
+      "originalEvidenceReferences": ["docs/knowledge/evidence/production-form-process-user-confirmed-v2.md", "docs/knowledge/evidence/form-fill-settings-confirmed.md"],
+      "implementationReferences": ["gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java#process/validate", "gmp-platform/backend/src/main/java/com/zencas/edhr/template/entity/FormTemplateVersion.java#workflowDesignJson"],
+      "reasonablenessAssessment": "成对绑定仍保留实际表单与独立流程资格；可编辑模板图不是它的替代引用。",
+      "limitations": ["未重验全部绑定发布/运行组合，不将NA结果提升为这条specified规则完整verified。"]
+    },
+    {
+      "id": "DEC-0009-01", "recordType": "decision-statement", "sourcePath": "docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml", "sourceLocator": "DEC-0009-01", "originalMaturity": "specified",
+      "auditScope": "limited-draft-versus-publish-separation", "conclusion": "consistent",
+      "scope": "作业流程草稿与发布完整性职责继续分层，不从模板流程编辑入口删除推导草稿必须完整或工作流已取消。",
+      "originalEvidenceReferences": ["docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml", "docs/knowledge/evidence/form-fill-settings-confirmed.md"],
+      "implementationReferences": ["gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java#saveGraph/publishVersion", "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java#validateDraftBindingReferences"],
+      "reasonablenessAssessment": "逐步配置与对外发布责任不同，现有保存路径保留基础检查，发布路径另做表单/流程引用及全图检查；本批数学修复不扩展这些门禁。",
+      "limitations": ["本轮未运行作业发布或连通性回归，不认证整条生命周期。"]
+    }
+  ],
+  "engineeringConclusions": [
+    {"id":"engineering.page-intermediate-range","conclusion":"页和size保持int接口及原归一化；两个非负int乘积与加法在long中安全，截断到集合长度后回int，不改分页协议或SQL。"},
+    {"id":"engineering.version-numeric-range","conclusion":"BigInteger只替换原Long数字段比较；原Matcher遍历、降序调用、文本回退和字符串保存不变，不新增接受格式。"},
+    {"id":"engineering.removed-template-workflow-editor","conclusion":"外部删除WorkflowTab/三store动作有明确源码证据；已读取旧组件，系document.workflow节点/连线编辑。知识未发现直接指向该删除路径的锚点，后台FORM_PROCESS与作业流程仍独立存在，不能据此改业务政策。"},
+    {"id":"engineering.header-responsive-style","conclusion":"后续实际读取Shell的767px以下单列、actions第3行/跨列及flexWrap/useFlexGap；只有CSS布局，事件和保存/数据规则未改，原8ID及not-applicable继续适用；不认证四宽几何/点击或整页响应式。"}
+  ],
+  "incrementalReviews": [
+    {
+      "scope": "首轮结果后新增模板头部纯响应式整改",
+      "sourceCommit": "8784ba87166addae9cb9659d6120aa84f993c7ef",
+      "workingTreeDelta": "Shell header max-width767 grid single-column and actions gridRow3/column span/wrap/useFlexGap; updated decisionPackage",
+      "actuallyReadPaths": ["gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx", "docs/development/branch-review-20261028-master-data-boundaries/decision-package.yaml"],
+      "ontologyDisposition": "not-applicable retained after actual source delta review; no additional semantic ID count",
+      "knowledgeTests": "89先前已实跑通过；本增量知识及契约仍无变化，按影响复用，不称新样式运行复验",
+      "runtimeBoundary": "主侧报告390px标题0宽、保存场景13项fixture-blocked及trial滚动可点击是主侧证据；本角色未运行，不称13保存逻辑红或所有操作完全不可达。四宽headerprobe及新候选独立QA由主侧安排。"
+    }
+  ],
+  "unreviewedAndGaps": ["全部知识与源码的其他ID仍依原台账pending，不由8条升级", "四旧知识gap及用户暂缓保持", "原生PG、真实后台浏览器持久化、完整流程运行、客户试用与容量未验证", "外部移除入口的产品决策原话本角色未取得，只核对当前代码及未改变的知识责任"]
+}

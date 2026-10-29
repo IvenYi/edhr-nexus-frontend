@@ -1,0 +1,337 @@
+{
+  "sourceCommit": "8784ba87166addae9cb9659d6120aa84f993c7ef",
+  "workingTreeState": " M gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java\n M gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java\n M gmp-platform/frontend/scripts/test-designer-save-state.mjs\n?? docs/development/branch-review-20261028-master-data-boundaries/\n?? gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataBoundaryIntegrationTest.java\n",
+  "baselineSourceCommit": null,
+  "viewport": {
+    "width": 390,
+    "height": 1000
+  },
+  "boundary": "Actual Shell/CanvasTab/store/useProjectionCatalog and controlled HTTP GET; transparent handleSave finally observer. Host props/open and save callback completion controlled, not actual TemplateModelingPage mutation URLs/toasts, backend persistence or physical-device certification.",
+  "results": [
+    {
+      "name": "catalog-version-switch",
+      "status": "fixture-blocked",
+      "message": "page.goto: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:38643/\", waiting until \"load\"\u001b[22m\n",
+      "steps": [],
+      "actual": {
+        "documentSha256": "6136198111c3889a3d6fbf0f8f8b017d7f8dabe74c89dcdbe4c7e39d8fd274b9",
+        "savedSnapshotSha256": "304e3068b137c79532beb652de5e08a802c7ff10ab37db737dbe32c41546498b",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dirty": false,
+        "activeTab": "canvas",
+        "versionId": "version-A",
+        "text": "原稿A"
+      },
+      "saves": [],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:38643/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "catalog-switch-back",
+      "status": "fixture-blocked",
+      "message": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-shell-template-path]') to be visible\u001b[22m\n\u001b[2m    23 × locator resolved to hidden <p data-shell-template-path=\"true\" class=\"MuiTypography-root MuiTypography-body1 css-1a8kjrk\">保存上下文审查 : A</p>\u001b[22m\n",
+      "steps": [],
+      "actual": {
+        "documentSha256": "1d617bd03618fd745bd7804e991e8a7ae93013e01b4b19fa371f8c8828d51710",
+        "savedSnapshotSha256": "c044b7aa2c4db9cfeec537b059696f0b2ccaef0b579c366f44b5090613e18951",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dirty": false,
+        "activeTab": "canvas",
+        "versionId": "version-A",
+        "text": "原稿A"
+      },
+      "saves": [],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:38643/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "catalog-close-reopen",
+      "status": "fixture-blocked",
+      "message": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-shell-template-path]') to be visible\u001b[22m\n\u001b[2m    22 × locator resolved to hidden <p data-shell-template-path=\"true\" class=\"MuiTypography-root MuiTypography-body1 css-1a8kjrk\">保存上下文审查 : A</p>\u001b[22m\n",
+      "steps": [],
+      "actual": {
+        "documentSha256": "44f8c51745f93ecd2c266c2052f388cdf84022f5e4b79797aa97f45aac1df930",
+        "savedSnapshotSha256": "28361a7703f082e5bdca862ebd10ea79926351318016c766e350992285cb01b7",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dirty": false,
+        "activeTab": "canvas",
+        "versionId": "version-A",
+        "text": "原稿A"
+      },
+      "saves": [],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:38643/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "catalog-stale-error",
+      "status": "fixture-blocked",
+      "message": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-shell-template-path]') to be visible\u001b[22m\n\u001b[2m    23 × locator resolved to hidden <p data-shell-template-path=\"true\" class=\"MuiTypography-root MuiTypography-body1 css-1a8kjrk\">保存上下文审查 : A</p>\u001b[22m\n",
+      "steps": [],
+      "actual": {
+        "documentSha256": "d9720f8252d17ba2d8e6e2c908fab7c1d307715af6eef71aa97e6587da4926ad",
+        "savedSnapshotSha256": "196e050abdba2ccfc0b243438ab28af13e72faa7d13bdca1db1976ef4df87683",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dirty": false,
+        "activeTab": "canvas",
+        "versionId": "version-A",
+        "text": "原稿A"
+      },
+      "saves": [],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:38643/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "same-context-latest-edit",
+      "status": "fixture-blocked",
+      "message": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-shell-template-path]') to be visible\u001b[22m\n\u001b[2m    23 × locator resolved to hidden <p data-shell-template-path=\"true\" class=\"MuiTypography-root MuiTypography-body1 css-1a8kjrk\">保存上下文审查 : A</p>\u001b[22m\n",
+      "steps": [],
+      "actual": {
+        "documentSha256": "1b70e0e4927e5b102a3799741d5123cd331effb5fe38d2d888381a5ae38a21aa",
+        "savedSnapshotSha256": "040cdd9c2e9bbc27153cbfaf94d06ab4da347448b2e8d4fe8d32e6a600c29b96",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dirty": false,
+        "activeTab": "canvas",
+        "versionId": "version-A",
+        "text": "原稿A"
+      },
+      "saves": [],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:38643/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "catalog-failure-retry",
+      "status": "fixture-blocked",
+      "message": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-shell-template-path]') to be visible\u001b[22m\n\u001b[2m    21 × locator resolved to hidden <p data-shell-template-path=\"true\" class=\"MuiTypography-root MuiTypography-body1 css-1a8kjrk\">保存上下文审查 : A</p>\u001b[22m\n",
+      "steps": [],
+      "actual": {
+        "documentSha256": "4461d2a5085b8d8cfabfda592bd411a58bd39340c908c83eab7d7c49fef423c1",
+        "savedSnapshotSha256": "bab8c89e0915e2948c3bc115f093a9de1f7bd189ce74b6d6361a4fdf2af9703a",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dirty": false,
+        "activeTab": "canvas",
+        "versionId": "version-A",
+        "text": "原稿A"
+      },
+      "saves": [],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:38643/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "invalid-config-blocks",
+      "status": "fixture-blocked",
+      "message": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-shell-template-path]') to be visible\u001b[22m\n\u001b[2m    22 × locator resolved to hidden <p data-shell-template-path=\"true\" class=\"MuiTypography-root MuiTypography-body1 css-1a8kjrk\">保存上下文审查 : A</p>\u001b[22m\n",
+      "steps": [],
+      "actual": {
+        "documentSha256": "40e5ca6611149932a17e95efdfeb57779eb1db9befe8ca5189e55c98dff7d70a",
+        "savedSnapshotSha256": "812fc039989dd5605d79fe798545525890c9c64076468b85b59db8cc55e73106",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dirty": false,
+        "activeTab": "canvas",
+        "versionId": "version-A",
+        "text": "原稿A"
+      },
+      "saves": [],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:38643/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "old-completion-keeps-new-busy",
+      "status": "fixture-blocked",
+      "message": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-shell-template-path]') to be visible\u001b[22m\n\u001b[2m    23 × locator resolved to hidden <p data-shell-template-path=\"true\" class=\"MuiTypography-root MuiTypography-body1 css-1a8kjrk\">保存上下文审查 : A</p>\u001b[22m\n",
+      "steps": [],
+      "actual": {
+        "documentSha256": "48335db061099aa7fcb8e8b20acf6888ae3d05c70c96f333f44d7cffb4d98ecf",
+        "savedSnapshotSha256": "20bf24115bdc872c7a0270c597084795d953a9910a123086815c7c7b3dd387b5",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dirty": false,
+        "activeTab": "canvas",
+        "versionId": "version-A",
+        "text": "原稿A"
+      },
+      "saves": [],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:38643/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "late-ack-after-reopen",
+      "status": "fixture-blocked",
+      "message": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-shell-template-path]') to be visible\u001b[22m\n\u001b[2m    23 × locator resolved to hidden <p data-shell-template-path=\"true\" class=\"MuiTypography-root MuiTypography-body1 css-1a8kjrk\">保存上下文审查 : A</p>\u001b[22m\n",
+      "steps": [],
+      "actual": {
+        "documentSha256": "180392665bf9949106e03dbcf840d6fadef43aba9ce06906b9206766ee74b96d",
+        "savedSnapshotSha256": "9cbb571aa0ceee7db54ef656ef6a10ef6a4692bbe15ec983c65ffed73f22ceb4",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dirty": false,
+        "activeTab": "canvas",
+        "versionId": "version-A",
+        "text": "原稿A"
+      },
+      "saves": [],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:38643/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "normal-save-clean",
+      "status": "fixture-blocked",
+      "message": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-shell-template-path]') to be visible\u001b[22m\n\u001b[2m    23 × locator resolved to hidden <p data-shell-template-path=\"true\" class=\"MuiTypography-root MuiTypography-body1 css-1a8kjrk\">保存上下文审查 : A</p>\u001b[22m\n",
+      "steps": [],
+      "actual": {
+        "documentSha256": "678583d220912e0a057c8f6e09779b98bb49050ba60e02576d5189574d7f69ff",
+        "savedSnapshotSha256": "96148f3d3b5e76a265d27b780be852b29df9ee8638f12c760a07e8a84b7375e3",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dirty": false,
+        "activeTab": "canvas",
+        "versionId": "version-A",
+        "text": "原稿A"
+      },
+      "saves": [],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:38643/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "edit-after-send-remains-dirty",
+      "status": "fixture-blocked",
+      "message": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-shell-template-path]') to be visible\u001b[22m\n\u001b[2m    22 × locator resolved to hidden <p data-shell-template-path=\"true\" class=\"MuiTypography-root MuiTypography-body1 css-1a8kjrk\">保存上下文审查 : A</p>\u001b[22m\n",
+      "steps": [],
+      "actual": {
+        "documentSha256": "893cd8df5f5a20c67011bc91040e30d212e074b27286ffb5d326293461397300",
+        "savedSnapshotSha256": "2ac046dba3cc7d50da5b4b722ff0a0b139e6765ec4497b65a11c7cac64e11887",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dirty": false,
+        "activeTab": "canvas",
+        "versionId": "version-A",
+        "text": "原稿A"
+      },
+      "saves": [],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:38643/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "same-event-double-click",
+      "status": "fixture-blocked",
+      "message": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-shell-template-path]') to be visible\u001b[22m\n\u001b[2m    21 × locator resolved to hidden <p data-shell-template-path=\"true\" class=\"MuiTypography-root MuiTypography-body1 css-1a8kjrk\">保存上下文审查 : A</p>\u001b[22m\n",
+      "steps": [],
+      "actual": {
+        "documentSha256": "2dc77c97520ccb6f01a9e8594042a9f27de8523c426e5e790abc409b56f3e482",
+        "savedSnapshotSha256": "d58953ab191eafe0cbcd6cfbd92eb1ce598333a3d3231e8451cd6af24670751e",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dirty": false,
+        "activeTab": "canvas",
+        "versionId": "version-A",
+        "text": "原稿A"
+      },
+      "saves": [],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:38643/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    },
+    {
+      "name": "cancel-close-prompt",
+      "status": "fixture-blocked",
+      "message": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-shell-template-path]') to be visible\u001b[22m\n\u001b[2m    22 × locator resolved to hidden <p data-shell-template-path=\"true\" class=\"MuiTypography-root MuiTypography-body1 css-1a8kjrk\">保存上下文审查 : A</p>\u001b[22m\n",
+      "steps": [],
+      "actual": {
+        "documentSha256": "3395ec4ca0a6db7d679138fc380a890a9864ccee1e8e1db661f1ed8bca4466b2",
+        "savedSnapshotSha256": "8e6c33e81e8d444bf5ce01c6ac11a99aa7c5ff43fb6c87c4110d36ddb658f6a7",
+        "undoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "redoSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "dirty": false,
+        "activeTab": "canvas",
+        "versionId": "version-A",
+        "text": "原稿A"
+      },
+      "saves": [],
+      "errors": [],
+      "dialogs": [],
+      "requests": [
+        {
+          "method": "GET",
+          "url": "http://127.0.0.1:38643/api/v1/master-data/template-modeling/projection-catalog"
+        }
+      ]
+    }
+  ]
+}

@@ -256,6 +256,9 @@ export default function TemplateDesignerReactShell({
           '@media (max-width: 1399px)': {
             gridTemplateColumns: 'minmax(0, 1fr) auto',
           },
+          '@media (max-width: 767px)': {
+            gridTemplateColumns: 'minmax(0, 1fr)',
+          },
           alignItems: 'center',
           bgcolor: '#1f2128',
           color: '#fff',
@@ -311,7 +314,11 @@ export default function TemplateDesignerReactShell({
           </Stack>
         )}
         {isSubTableDesigning ? null : (
-          <Stack direction="row" spacing={1.25} alignItems="center" sx={{ justifySelf: 'end', '@media (max-width: 1399px)': { gridRow: 1, gridColumn: 2 } }}>
+          <Stack direction="row" spacing={1.25} useFlexGap alignItems="center" sx={{
+            justifySelf: 'end',
+            '@media (max-width: 1399px)': { gridRow: 1, gridColumn: 2 },
+            '@media (max-width: 767px)': { gridRow: 3, gridColumn: '1 / -1', justifySelf: 'stretch', flexWrap: 'wrap' },
+          }}>
             <Button variant="outlined" onClick={() => { setProjectionField(null); setProjectionOpen(true); }} sx={headerOutlinedActionButtonSx}>用途总览</Button>
             <Button
               variant="outlined"

@@ -1,0 +1,42 @@
+{
+  "result": "passed",
+  "baseCommit": "8784ba87166addae9cb9659d6120aa84f993c7ef",
+  "reviewedRecordCount": 8,
+  "uniqueWithinBatch": 8,
+  "newUniqueHistoricalCoverage": null,
+  "knowledgeVersion": "0.3.25",
+  "knowledgeAndContractDiff": [],
+  "incrementalPureStyleReviews": 1,
+  "knowledgeRunReusedForUnchangedKnowledge": true,
+  "knowledgeTests": {
+    "run": 89,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  },
+  "knowledgeLogSha256": "baa6604f7f134e03b8674a1f9f3566c971831ddea57e6d36d1024eed9d5c3d89",
+  "sourceHashes": {
+    "docs/development/branch-review-20261028-master-data-boundaries/decision-package.yaml": "6a24eb6d272796b25ffc7fb7888d11c4f046e7417a7408d110cf0dc2e31fcbc4",
+    "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml": "4e357fb25e03abcc90f452b63e5a298c913f85bbb3738137efd7e4a8620d6c79",
+    "docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml": "dc5311c43dd756f66c9d18919bde3288ab35225dbbdf7fe2a7bce029e62feca6",
+    "docs/knowledge/evidence/batch-process-2026-10-27.md": "2767ebbceeda567a10ed192a7f323ced80a5ec21bb5e60eb6dc7c9a48b6179d4",
+    "docs/knowledge/evidence/form-fill-settings-confirmed.md": "f25b4d452e61343a03b454c9a79ae8ba87421cedb5c7ba4693cbd5ca6c7dc2e1",
+    "docs/knowledge/evidence/product-process.yaml": "5a30d87ad2f6075a628e85b3f0c056ef97e7e35e678e21b3edb8cecda3147283",
+    "docs/knowledge/evidence/production-form-process-user-confirmed-v2.md": "9b5641c1d6e1b707ea41f364b7c8765f18db137c877997f96c74a4a7e4a21d8b",
+    "docs/knowledge/glossary.yaml": "a087723766456504f2744b6d9f42e1b33c2afad11431279b3af9c680d64fc14e",
+    "docs/knowledge/ontology.yaml": "e345b4f9c84dc59e5da27e1f00a6776b4b64556803520baf3b8bc56a8321c633",
+    "docs/knowledge/rules/form-fill-settings.yaml": "2240c29d96e2b7bd4c0cc5e7cb0e256aa106cca512eff1d93d938598b202884e",
+    "docs/knowledge/rules/product-process.yaml": "7c732995bd82f0c9c65645f212a0baa99f1174f497a8070eb7f6b3a9cbcdfcdf",
+    "docs/knowledge/rules/transaction-runtime.yaml": "27c55e03ffb5b76095f033c683665bbb2650ebfc9316703e4992638a2d798856",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java": "48334b8a8b9b9de315539d198e0af2b0df6e9adb779d5784b7a218eda00954d1",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java": "5a606ead1dead7a10d57514dbe4663f4a1a3054ea022fe86180bb7ca3a020925",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Material.java": "102a685f8978419c300bbfd45bcea07ba66cb1e92dcd4e9446aab25ef2574eb0",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java": "0533382eaf92b25035d0913966567ccb0894926441cceedac2fb9fbfde19b318",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/template/entity/FormTemplateVersion.java": "29ffd1e554969410b6b874738a8acdc2187a1df02001b2be229b86249ff8befd",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/controller/WorkTemplateController.java": "8fa8fc0c69e815d70c5f3f01e285f1489e151bc97d2d5c2be7ea797376467a67",
+    "gmp-platform/backend/src/main/java/com/zencas/edhr/workflow/service/FormFillSettingsService.java": "df7a1fc457cf38f9cd5c1c76175990674402af184ad051204ef1dbf572b2e136",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/TemplateDesignerReactShell.tsx": "4dd8ebf5fd5bcf748bca0313c0b9e1d4f7ffbd5c96e1fa4303664e7954270e1f",
+    "gmp-platform/frontend/src/pages/master-data/template-designer-react/utils/document.ts": "41c9d82177d0a03b0babfec20ec6b2295c4aeb9346bf65e7061f4126f30cd31a"
+  },
+  "qualification": "ID/path/status and unchanged-knowledge assertions plus structural/reference tests; finite semantic review is recorded separately, not certified by this script."
+}

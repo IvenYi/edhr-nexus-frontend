@@ -1,0 +1,334 @@
+{
+  "baseCommit": "8784ba87166addae9cb9659d6120aa84f993c7ef",
+  "executionLevel": "L2",
+  "productChanges": {
+    "backend": "two controllers,6 insertions/5 deletions",
+    "frontend": "Shell styles8 insertions/1 deletion"
+  },
+  "knowledgeChanges": 0,
+  "archives": [
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/baseline-http.jsonl",
+      "bytes": 23130,
+      "sha256": "4a169aff23a2be0776a35843010ef430ddb617773319a3b7759e7c8e58670f27"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/baseline-junit.xml",
+      "bytes": 718864,
+      "sha256": "ae8fdb360e1fbe1ec4143ee4f698040cb5a1be1f35a7ecefeb92996bcc6ed12d"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/baseline-summary.json",
+      "bytes": 427,
+      "sha256": "b8ec2e64ad8f4e25817d18659ed7c357738aaca000ec50a991fe0433e364d94b"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/baseline-test.txt",
+      "bytes": 684654,
+      "sha256": "acfb7affd9cfa1bb4b4a9d2c09bcc42bad5222f07ad838b29115ee853700b23c"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/diagnostic-limits.json",
+      "bytes": 831,
+      "sha256": "2c9ed002c2d17b73e1e577151ff2ba0debc2123bc9c6ad7a4a16886b399b9e81"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/header-baseline-390.png",
+      "bytes": 37968,
+      "sha256": "de272edce4ad6ea1cbbe00c3fc8788c3c2559f137b6f6bb31b18b40f0e77ce93"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/header-baseline.json",
+      "bytes": 7208,
+      "sha256": "9d3bc45cc7a021f25d0ba8bc2febf3970472540ca1ee2608cd04b59a997ee770"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/header-current-1440.png",
+      "bytes": 63237,
+      "sha256": "2add808d79882741d68f3a2f979f9fdb164af9c4c9b394af069ef0b79e68c127"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/header-current-390.png",
+      "bytes": 36475,
+      "sha256": "9b6882f7e8332af57c9e202bfccc7dd3129deffc093fec059c5bc29e388ffda9"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/header-current.json",
+      "bytes": 7146,
+      "sha256": "23034406331110be3f662bc9b6736e4bfb87598aa611bf95eaa4d140cfda14f1"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/header-diagnostic-helper.mjs",
+      "bytes": 20943,
+      "sha256": "984ad0df0411a24d1d5fcc3a3ba8843b90cdc6e685c03ded5a7fd56b6e330bff"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/host-regression.json",
+      "bytes": 8567,
+      "sha256": "d56704847d0755aeb2ac6658abe8676b9c55bcb0e8889a39256c395e41265c60"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/import-regression.json",
+      "bytes": 59638,
+      "sha256": "3c08e72b4cd5830078a385a0dd4129988264ead165f68aa6d4d7e45ad5e0e6dc"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/incoming-header-diagnostic.json",
+      "bytes": 950,
+      "sha256": "2abab293f561e43c5db9b90a4556946d014ce31dd0540d9f0fb0da1164c1af1f"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/incoming-narrow-blocked.json",
+      "bytes": 16421,
+      "sha256": "b95c14b9665c217080e06fb1f8f0a1bc9e578ff146998aed0199cbdcf08d09a2"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/incoming-narrow-hidden-title.png",
+      "bytes": 35865,
+      "sha256": "e8f28af4974abde9a7351b365620389c303d6e1ae9b13b623dfe3a626e58512b"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/initial-header-fixture-baseline.txt",
+      "bytes": 580,
+      "sha256": "1cd8d180064443a3c41e9b8c4e9e6dfd1aba25078b05b71850422c9aaa5c0b03"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/initial-header-fixture-primary.txt",
+      "bytes": 580,
+      "sha256": "5375ac88a27ea09ae38f8a382d429fe7148409efec2b41fca988459054fac37a"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/ontology-knowledge.txt",
+      "bytes": 2112,
+      "sha256": "baa6604f7f134e03b8674a1f9f3566c971831ddea57e6d36d1024eed9d5c3d89"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/ontology-result.yaml",
+      "bytes": 3454,
+      "sha256": "915dd0669be74f767ea9f941f9c2dc3375062a934f44b7ceb76d39976cdb8765"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/ontology-validation-helper.py",
+      "bytes": 3832,
+      "sha256": "14d1717d2575c25dd03c701ef2e886ecc43b50ff5ece2b105bae00749a81a310"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/ontology-validation.json",
+      "bytes": 3804,
+      "sha256": "6fb11210a80f72a7c318d97b407e522a5cba8c8c422c36d51379784396f33208"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-boundary-http.jsonl",
+      "bytes": 28498,
+      "sha256": "ebb5697261053220139acf0ab5db672021657f04ddfa070d24cfd18007656505"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-boundary-test.txt",
+      "bytes": 143045,
+      "sha256": "ebd3357f58246fba1b5d6f49bcdbb1cbebd855cd80a298549c079cff2f3e5199"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-build.txt",
+      "bytes": 9780,
+      "sha256": "ff215014f0c1d11867a3cf172b0ad51924f714ef2fb7c18dd94f09de2f1eebff"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-node.txt",
+      "bytes": 4155,
+      "sha256": "c9c1e182f4ffda98138f0bc181ab2e46138d795f1743d9ace3ff20a5ed07b33f"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-regression.txt",
+      "bytes": 100065,
+      "sha256": "66ea3276c86da7705d8aa409ea8dd5bb1017a933407b2a78ce849ef9658899ce"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-verifier.txt",
+      "bytes": 38,
+      "sha256": "2c3a52821b216a233ed57390eec9c6876a324a1dbddb70d011d831ae097f2c77"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/rule-review.json",
+      "bytes": 13960,
+      "sha256": "5e04ad0a82dea973d4cf7380b78520337cd7b4f3d23ef64cc1ffb523f8db8269"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/rule-review.md",
+      "bytes": 4037,
+      "sha256": "786d2698cc3e11635c2a495712744937886425494e2a282c468125d4f27a23ae"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/save-desktop.json",
+      "bytes": 39116,
+      "sha256": "bf49bf557cd0d68cd6a82f1d4c83aaab2135d0cd5643057951f54cc94eecd1d3"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/save-narrow.json",
+      "bytes": 39115,
+      "sha256": "a0f97d3c71a63cbf2b439c78c5534681705503876780ad068bcd97563eb60084"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/static-before-header-fix.json",
+      "bytes": 7625,
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/static-comparison.json",
+      "bytes": 360,
+      "sha256": "d49dc1106d361cca1fc222ea3456ad6d568179b562b50954d30476dd7b295ba1"
+    },
+    {
+      "path": "docs/development/branch-review-20261028-master-data-boundaries/evidence/static-current.json",
+      "bytes": 7625,
+      "sha256": "b7c08e0fec76acbe47910f7c30b4f2733bdcf9835d4b04e4c47155c820843856"
+    }
+  ],
+  "rawMappings": [
+    {
+      "original": "/tmp/edhr-boundary-primary.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-boundary-test.txt"
+    },
+    {
+      "original": "/tmp/edhr-boundary-primary.jsonl",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-boundary-http.jsonl"
+    },
+    {
+      "original": "/tmp/edhr-boundary-regression.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-regression.txt"
+    },
+    {
+      "original": "/tmp/edhr-boundary-designer-node.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-node.txt"
+    },
+    {
+      "original": "/tmp/edhr-boundary-final-build.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-build.txt"
+    },
+    {
+      "original": "/tmp/edhr-boundary-final-verifier.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/primary-verifier.txt"
+    },
+    {
+      "original": "/tmp/edhr-boundary-final-static.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/static-current.json"
+    },
+    {
+      "original": "/tmp/edhr-boundary-static.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/static-before-header-fix.json"
+    },
+    {
+      "original": "/tmp/edhr-boundary-static-comparison.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/static-comparison.json"
+    },
+    {
+      "original": "/tmp/edhr-boundary-header-baseline-accepted/result.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/header-baseline.json"
+    },
+    {
+      "original": "/tmp/edhr-boundary-header-primary-accepted/result.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/header-current.json"
+    },
+    {
+      "original": "/tmp/edhr-boundary-header-baseline-accepted/390-failed.png",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/header-baseline-390.png"
+    },
+    {
+      "original": "/tmp/edhr-boundary-header-primary-accepted/390.png",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/header-current-390.png"
+    },
+    {
+      "original": "/tmp/edhr-boundary-header-primary-accepted/1440.png",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/header-current-1440.png"
+    },
+    {
+      "original": "/tmp/edhr-boundary-save-narrow-fixed/result.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/save-narrow.json"
+    },
+    {
+      "original": "/tmp/edhr-boundary-save-desktop-fixed/result.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/save-desktop.json"
+    },
+    {
+      "original": "/tmp/edhr-boundary-import/result.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/import-regression.json"
+    },
+    {
+      "original": "/tmp/edhr-boundary-save-host/results.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/host-regression.json"
+    },
+    {
+      "original": "/tmp/edhr-boundary-ontology-result.yaml",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/ontology-result.yaml"
+    },
+    {
+      "original": "/tmp/edhr-boundary-rule-review.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/rule-review.json"
+    },
+    {
+      "original": "/tmp/edhr-boundary-rule-review.md",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/rule-review.md"
+    },
+    {
+      "original": "/tmp/edhr-boundary-ontology-validation.json",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/ontology-validation.json"
+    },
+    {
+      "original": "/tmp/edhr-boundary-ontology-knowledge.txt",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/ontology-knowledge.txt"
+    },
+    {
+      "original": "/tmp/edhr-boundary-ontology-validate.py",
+      "archive": "docs/development/branch-review-20261028-master-data-boundaries/evidence/ontology-validation-helper.py"
+    }
+  ],
+  "primaryChecks": {
+    "newH2Tests": 36,
+    "baselineNewH2": {
+      "failed": 12,
+      "passed": 24,
+      "errors": 0,
+      "skips": 0
+    },
+    "newH2HttpRecords": 35,
+    "backendRegression": 72,
+    "node": 36,
+    "headerViewportVariants": 4,
+    "headerBaseline": {
+      "passed": 3,
+      "failed": 1
+    },
+    "saveContextUniqueCases": 13,
+    "saveContextWidths": [
+      1440,
+      390
+    ],
+    "importCasesDesktop": 15,
+    "actualHostCasesDesktop": 6,
+    "knowledgeStructural": 89,
+    "knowledgeRunner": "ontology-role; reused after style-only change without knowledge changes",
+    "frontendBuild": "passed",
+    "officialVerifier": "passed",
+    "strictFindings": 19,
+    "strictExitCode": 2,
+    "strictNormalizedUnchanged": true
+  },
+  "reuseLimits": [
+    "Node and backend checks source dependencies unchanged by later pure header style",
+    "import15 and actual parent6 before header style fix; handler and parent source unchanged, retained as unaffected regressions; final QA will independently check actual candidate",
+    "old13 narrow fixture blocked is separate from header product red; diagnostic-only relaxed heading copy is not regression"
+  ],
+  "cleanup": {
+    "removedExactCrashedHeaderFixtureDirectories": [
+      "/tmp/edhr-designer-header-Q6EZaQ",
+      "/tmp/edhr-designer-header-1ABcSJ",
+      "/tmp/edhr-designer-header-IVPXTs"
+    ],
+    "qualification": "Only three exact self-owned failed harness directories extracted from own error logs removed; normal harness finally handles own browser/server/mkdtemp; artifacts retained. Earlier directory-sharing diagnostic exited ENOENT, no live Chromium remained before replacement."
+  },
+  "limits": [
+    "H2 actual repositories; other empty product configuration dependencies mocked",
+    "no production SQL optimization, no PG capacity/plan or historical restoration",
+    "whole-file completion0; inventory and partial semantic records not whole audit completion",
+    "strict19 and historical ESLint config issue retained; raw logs may contain trailing whitespace, originals unchanged"
+  ]
+}
