@@ -59,6 +59,10 @@ decisions:
         statement: user-confirmed；DHR 审批任务的专属附件下载只授权当前任务候选处理人或本人已办任务持有人，并且只可取得任务绑定冻结版本包含的附件；DHR 通用查看权或其他任务的资格不得替代任务授权，也不得越过版本附件快照。
         status: specified
         visibility: internal
+      - id: DEC-0068-12
+        statement: user-confirmed；表单变更或作废正式生效并影响 DHR 时，采用站内提醒，接收人为当前审批人和该受影响冻结汇总版本的汇总提交人。本次范围不增加历史批准人提醒或邮件等外部渠道；没有当前审批任务时不虚构当前审批人。该确认只补充通知对象和渠道，不改变申请待审非生效、人工退回、新版本重审、旧批准和冻结证据保留、生产及放行状态不自动变化的边界，也不代表通知功能已经实现。
+        status: specified
+        visibility: internal
     supersedes: [DEC-0062, DEC-0063, DEC-0056]
     evidenceIds: [evidence.dhr-filling-review-confirmed, evidence.dhr-filling-review-source-boundary, evidence.dhr-filling-review-ui-standard, evidence.dhr-review-controller, evidence.dhr-review-attachment-permission-tests]
     acceptanceScenarios:
@@ -92,6 +96,12 @@ decisions:
         then: 系统自动标识影响并阻断过时批准，人工退回整理后形成新版本，保留旧快照和退回历史；仅申请待审不伪装为来源已生效
         evidenceIds: [evidence.dhr-filling-review-confirmed]
         evidenceRequirements: [真实生效接口集成测试, 生效与批准并发测试, 待审申请对照测试, 人工退回与历史保留测试]
+      - id: scenario.dhr-effective-form-impact-in-app-recipients
+        given: 受影响冻结汇总版本具有真实汇总提交人，DHR 可能有当前审批人或已无当前审批任务
+        when: 记录控制模块的表单变更或作废正式生效并影响该 DHR
+        then: 使用站内渠道提醒当前审批人和该版本汇总提交人，无当前审批任务时不虚构审批人；不据本次范围增加历史批准人或邮件提醒，通知不自动退回、不改写旧冻结与批准或生产及放行状态；申请待审不冒充本次生效触发
+        evidenceIds: [evidence.dhr-filling-review-confirmed]
+        evidenceRequirements: [后续真实生效站内通知接收人矩阵测试, 待审申请不发送生效通知对照测试, 无当前审批任务场景, 历史冻结与批准及生产放行无副作用回归]
       - id: scenario.dhr-filling-review-approved-history
         given: 汇总版本已经批准，后续其证据发生有效变化
         when: 系统识别影响且用户决定发起重新审核

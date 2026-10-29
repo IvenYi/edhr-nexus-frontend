@@ -1,0 +1,34 @@
+{
+  "result": "passed",
+  "scope": "incremental notification clarification only; original runtime not executed",
+  "knowledgeDiffNumstat": "2\t0\tdocs/knowledge/README.md\n10\t0\tdocs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml\n10\t0\tdocs/knowledge/evidence/dhr-filling-review-confirmed.md\n",
+  "knowledgeAddedLines": 22,
+  "knowledgeRemovedLines": 0,
+  "ontologyEvidenceHashes": {
+    "ontology-knowledge.log": "06d63b30137db27f7d44dedc772ed67e86c7da0c0e535da7eb93da41f46d97a8",
+    "ontology-knowledge-junit.xml": "e273b00bae4ecb11a680420c5853c79c0d096c7be0c4a22622e03fb281162861"
+  },
+  "junitReportedStats": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "originalSourceAndImageManifest": "all current hashes unchanged",
+  "priorQualityArchivesAtFinalReview": {
+    "quality-result.yaml": "90b7a703967d9faa1f5924240841f4ca521024a0a9c377e47753809dcea1a7d7",
+    "independent-evidence.json": "296c201b8d7e384c0ee0a6766c056a5b33510d55b20ac57b139a3d64290d0346"
+  },
+  "reviewedCurrentArtifacts": {
+    "docs/knowledge/README.md": "21497928cc6e246f2ed691adb35133fd67e3f010a49bf505d8f3d4c91bad3a41",
+    "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml": "8d94c6789a3cd5f27d6b43acbae55c8cff6884fe301f00b004151e85604d02c5",
+    "docs/knowledge/evidence/dhr-filling-review-confirmed.md": "6c68aa9f7d2b48315fcd067221dc1a2ff7a4b72fe62f985637d71741d4c8ffe6",
+    "docs/reference-assets/research/crown-dhr-change-downstream-20261029/README.md": "6c58018501d669345e3c8f134f107269de9971004daa6efcd23ea0caa37ffaf3",
+    "docs/reference-assets/research/crown-dhr-change-downstream-20261029/handoff.yaml": "968117cb2cb4bfd336373dff9ebc4c826166e21e171164387b20d5f38e2a398c",
+    "docs/reference-assets/research/crown-dhr-change-downstream-20261029/ontology-result.yaml": "d61a7e46342361e3e16d2bd0b5ac97d678091b5cf4411a11dea20fbfe05d9c33"
+  },
+  "productDiff": "none",
+  "whitespace": "passed",
+  "head": "2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7",
+  "target": "635711f97e9b794f4af02e1e5d1939bb2ecf920f"
+}

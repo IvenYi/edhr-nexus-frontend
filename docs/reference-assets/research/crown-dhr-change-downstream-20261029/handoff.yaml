@@ -1,0 +1,100 @@
+decisionPackage:
+  id: DEC-PACKAGE-20261029-CROWN-DHR-CHANGE-RESEARCH
+  scope: 冠骋表单和DHR变更下游只读调研，以及用户随后确认的站内通知对象知识同步，不含产品实现
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 2f46b5f66af44ea5973b9ead93f6eb85e62dbcc7
+    uncommittedContractPaths: []
+  summary: 复核原始资料并对照既有决策；仅把本轮用户明确选择的通知对象和渠道同步为specified/internal，不将竞品实现变成产品规则
+  confirmed:
+    concepts: []
+    relationships: []
+    rules:
+      - id: clarification.dhr-effective-impact-notification-recipients
+        name: DHR来源生效影响的站内提醒对象
+        status: specified
+        trigger: 记录控制变更或作废正式生效并影响DHR冻结版本
+        condition:
+          all:
+            - sourceChange: 已正式生效
+            - dhrVersion: 受该来源变化影响
+        result:
+          type: notify
+          channel: in-app
+          recipients: [当前审批人, 该版本汇总提交人]
+        sourceReferences: [本轮用户对站内提醒范围选项的明确回答]
+    executionContracts: []
+  inferred:
+    - id: inference.crown-dhr-change-research-next-slice
+      statement: 复用记录控制生效点、现有DHR冻结与审核保护，补修订身份、影响消费、当前追溯和A12统计切换
+      rationale: 冠骋具有独立审批和下游处理入口，但其历史及通知完整闭环未获证实；本项目既有决策更明确
+      relatedIds: [DEC-0063, DEC-0068, DEC-0086, DEC-0087]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L1
+    directImpacts:
+      - area: internal-research
+        change: 新增原始参考核对与接续建议，记录与竞品的差异
+        evidenceReferences: [README.md, source-manifest.json, original-document-excerpts.txt]
+      - area: dhr-knowledge
+        change: 按本轮明确回答补充既有通知要求的接收人和渠道，不改原生效时点、人工退回和旧批准保留
+        evidenceReferences: [本轮用户回答, docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml]
+    transitiveImpacts: []
+    potentialImpacts:
+      - area: dhr-and-projection
+        concern: 后续实现须按真实生效及修订身份联调，不能复制当前汇总剔除作废记录的行为
+        evidenceReferences: [README.md]
+    unaffectedAreas: []
+    compatibilityAndMigration: []
+    snapshotImpacts: []
+    auditImpacts: []
+    permissionImpacts: []
+    testImpacts:
+      - scope: research-evidence
+        scenarios: [原始文件哈希, DOCX图片原件一致, 源码锚点, 事实推断与产品决策区分]
+        evidenceReferences: [source-manifest.json, original-document-excerpts.txt]
+    evidenceGaps:
+      - 冠骋平台层change/submit/abandon及DHR状态刷新服务源码缺失，未执行真实事件传播
+      - 未取得冠骋跨DHR主动影响通知、不可变汇总修订与旧批准保留的完整证据
+  extensionStrategy:
+    selectedPaths: [product-core, transaction-orchestration]
+    rationale: 仅为下一实现切片建议；真实来源结果由记录控制域负责，DHR和投影在自身领域消费，复用已有编排
+    ownershipBoundaries:
+      - owner: record-control
+        responsibility: 申请审批、真实生效和修订来源
+      - owner: dhr-and-production
+        responsibility: DHR影响、冻结证据、当前追溯和正式统计，不重复上游审批
+  affectedFiles:
+    - path: docs/reference-assets/research/crown-dhr-change-downstream-20261029/
+      changeType: create
+      reason: 内部研究报告和原始来源清单
+    - path: docs/reference-assets/screenshots/2026-10-29-crown-dhr-change/
+      changeType: create
+      reason: 原始DOCX内嵌截图原样归档
+    - path: docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
+      changeType: update
+      reason: 用户确认站内提醒当前审批人和该版本汇总提交人；由本体角色最小同步相关证据与人员说明
+    - path: docs/knowledge/evidence/dhr-filling-review-confirmed.md
+      changeType: update
+      reason: 原问答与当前通知对象渠道确认及未实现边界
+    - path: docs/knowledge/README.md
+      changeType: update
+      reason: 当前知识说明同步引用DEC-0068-12
+  acceptanceScenarios:
+    - id: scenario.research-original-evidence
+      given: 原始DOCX和冠骋前后端本地快照可读
+      when: 核对报告的确定性结论及方案对照
+      then: 每项结论可回溯原文或源码，缺失平台调用链不冒充完整运行结果，建议不冒充用户确认
+      evidenceRequirements: [来源哈希与定位检查, 独立证据审查]
+confirmedNotificationReply:
+  provenance: user-confirmed
+  exactReply: 站内提醒当前审批人和该版本汇总提交人（推荐）
+  interpretation: 站内渠道及上述两类接收人已确认；保留DEC-0068真实生效、人工退回、新版本重审和旧批准保留，不增加历史批准人或邮件要求
+  modelingBoundary: 本包clarification条目只表达交接语义，优先补充既有DEC-0068，不要求伪造可执行规则、事实或运行契约
+gateStatus:
+  ontology: updated-see-ontology-result.yaml
+  quality: passed-see-quality-final-result.yaml
