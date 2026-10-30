@@ -87,8 +87,8 @@ public class DocumentManagementController {
                 .toList();
         int safePage = Math.max(page, 1);
         int safeSize = Math.max(size, 1);
-        int from = Math.min((safePage - 1) * safeSize, documents.size());
-        int to = Math.min(from + safeSize, documents.size());
+        int from = (int) Math.min((long) (safePage - 1) * safeSize, documents.size());
+        int to = (int) Math.min((long) from + safeSize, documents.size());
         return ApiResponse.success(PageResult.of(documents.subList(from, to).stream()
                 .map(document -> toResponse(document, versionsByDocument.getOrDefault(document.getId(), List.of()), categoriesById))
                 .toList(), safePage, safeSize, documents.size()));

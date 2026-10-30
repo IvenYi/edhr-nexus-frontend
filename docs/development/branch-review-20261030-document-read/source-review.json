@@ -1,0 +1,16 @@
+{
+  "baseCommit":"31058765002e0705f1659f42abb1fb25b6dc7611",
+  "scopeType":"limited-method-ranges",
+  "wholeFileCompletion":0,
+  "historicalUniqueIncrement":null,
+  "records":[
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java","symbols":["list","listCategories","toDocumentCategoryResponses","create/createVersion required fixture path","toResponse/toVersionResponse","normalizeCategoryFilter/requireDocumentCategory","toAuditJson"],"scope":"实际读取HTTP/仓储/投影/分类及创建校验调用链；四页算术红绿、10成本观察；其余CRUD/删除/授权矩阵未认证"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentVersionRepository.java","symbols":["findByDocumentIdOrderByCreatedAtDesc","findByDocumentIdInOrderByCreatedAtDesc","existsByDocumentIdAndVersionIgnoreCase","existsByTenantIdAndCodeIgnoreCase"],"scope":"实际仓储接口及真实H2调用，不代表nativePG计划或全部事务行为"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java","symbols":["toMaterialGroups/toMaterialGroup/compareMaterialVersionDesc","toPagedResult"],"scope":"A23对旧已审方法实际重读；一可简化对象null分支候选与一必要页保护，不改代码，不认证整个控制器"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java","symbols":["listProducts page normalization/bounds only"],"scope":"A23旧已审页保护范围重读；其他映射/循环不计本轮完整复核"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java","symbols":["securityFilterChain authenticated fallback"],"scope":"当前文档匿名拒绝真实经过filter；方法权限规范仍候选，不外推全域授权"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/SopDocument.java","symbols":["code Column nullable=false"],"scope":"与当前canonical schema的父code nullable及实际POST写null核对；H2 fixture明确对齐，生产ORM用途待W5"}
+  ],
+  "schemaEvidence":"baseline/0001-current-schema.sql 的 document_category、document_version、sop_document声明及版本/分类索引定位；只读实际相关范围，非整库认证。",
+  "countingBoundary":"6个源码范围分组与7个A23方法记录有交叉，不相加成13个整文件。固定4372路径只是盘点，856个A23文件全部pending另有方法级overlay。"
+}

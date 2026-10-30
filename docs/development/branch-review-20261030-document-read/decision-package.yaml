@@ -1,0 +1,96 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-DOCUMENT-READ-20261030
+  scope: W4文档列表分页和关联读取；A23过度防御审查及W6全量补查安排
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+    targetBranch: edhr-dev
+    targetCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+    contractReadCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+    uncommittedContractPaths: []
+  summary: PR43真实合入后，正常POST/GET复现文档页算术；仅修下标中间运算，测量但不优化文档/版本/文件读取。按用户补充增加A23，旧已审范围也进入W6补查，不自动记通过。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.document-empty-page
+      statement: 正常接受的正整数分页应沿原空页语义安全截取，非正参数沿原归一化。
+      rationale: 既有Math.max/Math.min及返回结构的工程意图，不新增页长上限或业务政策。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: document-list
+        change: 计划只把页起止下标中间计算扩为long，clamp后转回int。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java]
+      - area: audit-scope
+        change: 用户新增过度防御检查，当前同步核对及W6全量回查，W7反查增量；旧A01-A22结论不代替A23。
+        evidenceReferences: [docs/development/branch-review-20261026-capacity-audit/audit-charter.md]
+    transitiveImpacts:
+      - area: document-projection
+        change: 保留文档/版本身份、分类、版本关键词匹配、完整版本成员和排序。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml]
+    potentialImpacts:
+      - area: performance
+        concern: 文档/版本全量物化和当前页逐版本文件lookup需实测增长变量、缓存和批量查询反证；只提出方案不实施。
+        evidenceReferences: [docs/development/branch-review-20261030-version-order/findings.md]
+    unaffectedAreas:
+      - area: product-policy
+        change: 不改变分类、发布、引用、权限或历史兼容政策；不恢复原用户暂缓。
+        evidenceReferences: [docs/development/branch-review-20261015/NEXT.md]
+    compatibilityAndMigration:
+      - area: schema
+        change: 无生产schema/迁移修改；H2 fixture显式按当前baseline允许sop_document.code为空，与遗留实体生成DDL差异单列，不当原生PG认证。
+        evidenceReferences: [gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/SopDocument.java]
+    snapshotImpacts:
+      - area: production-dhr
+        change: 不改已保存版本、引用绑定、执行或DHR快照。
+        evidenceReferences: []
+    auditImpacts:
+      - area: read-side
+        change: 对比读取前后文档/版本/分类/文件/审计五表完整行，不引入读取写入。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: authentication
+        change: 沿现有JWT/filter，回归匿名拒绝；不把此结果外推完整文档操作级授权已审。
+        evidenceReferences: []
+    testImpacts:
+      - scope: document-read
+        scenarios: [正常POST后分页, 大页号和页长, 非正归一化, 空库, 老版本编码关键词和完整成员, 分类/未分类/非法分类, 匿名拒绝, 完整行只读, SQL/实体加载量观测]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java]
+    evidenceGaps:
+      - H2成本机制不等于原生PG计划、堆峰值或生产SLA；合成文件元数据不验证上传/磁盘原件。
+      - A23全量回查计划不等于已完成；仅方法级实际结论单独overlay，旧覆盖不直接复用。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 局部算术修复保留现有读链，不提前做性能/模块重构；审查维度进入研发台账，不进入产品业务知识。
+    ownershipBoundaries:
+      - owner: DocumentManagementController
+        responsibility: 原文档列表与投影，写入/审计/引用仍沿原职责。
+      - owner: audit-ledger
+        responsibility: A23证据、待查分母、增量及W6/W7安排。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+      changeType: update
+      reason: 仅在正常API复现后修页下标。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java
+      changeType: create
+      reason: 真实读取红绿及独立成本观测。
+    - path: docs/development/branch-review-20261026-capacity-audit/audit-charter.md
+      changeType: update
+      reason: 用户新增A23及已审代码复查安排。
+  acceptanceScenarios:
+    - id: scenario.document-page-range
+      given: 正常API已保存文档与版本或空库
+      when: 大正整数或原有非正归一化分页请求
+      then: 元数据和完整版本保持，越界为空页，不发生int溢出500。
+      evidenceRequirements: [同组旧红新绿, 真实JWT/HTTP/H2, 完整五表只读]
+    - id: scenario.a23-retrospective
+      given: 用户增加过度防御检查并要求已审代码也重查
+      when: 当前审查及W6集中回查
+      then: 有独立维度/固定待查分母/实际方法级依据，旧通过不复用，不机械删必要保护。
+      evidenceRequirements: [A23安排与初轮记录, 全量待查清单, 增量与W7退出要求]

@@ -1,0 +1,46 @@
+{
+  "reviewer": "/root/document_read_ontology_20261030",
+  "contractReadCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "knowledgeVersion": "0.3.25",
+  "result": "not-applicable",
+  "knowledgeFilesChanged": [],
+  "limitedRecords": 6,
+  "historicalUniqueIncrement": null,
+  "wholeFileCompletion": 0,
+  "actualKnowledgeTest": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "actualKnowledgeCommand": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test",
+  "workingTreeProductDiff": "diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java\nindex 423fab31..2848cb75 100644\n--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java\n+++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java\n@@ -87,8 +87,8 @@ public class DocumentManagementController {\n                 .toList();\n         int safePage = Math.max(page, 1);\n         int safeSize = Math.max(size, 1);\n-        int from = Math.min((safePage - 1) * safeSize, documents.size());\n-        int to = Math.min(from + safeSize, documents.size());\n+        int from = (int) Math.min((long) (safePage - 1) * safeSize, documents.size());\n+        int to = (int) Math.min((long) from + safeSize, documents.size());\n         return ApiResponse.success(PageResult.of(documents.subList(from, to).stream()\n                 .map(document -> toResponse(document, versionsByDocument.getOrDefault(document.getId(), List.of()), categoriesById))\n                 .toList(), safePage, safeSize, documents.size()));\n",
+  "resultSchemaCheck": "passed:legal enum,complete lists,6 existing unique IDs,knowledge/architecture unchanged,89 actual original JUnit tests",
+  "files": [
+    {
+      "path": "/tmp/edhr-document-ontology-result.yaml",
+      "sha256": "2781ff6fefb1bf183d5d5bd5598b6390f157d695e59389c88f3d0d35cdb9a686",
+      "bytes": 2773
+    },
+    {
+      "path": "/tmp/edhr-document-rule-review.json",
+      "sha256": "f1e48b1c585195e705fb6a4d6bb045efb5148f4dc8570f75f01f776fe95d6123",
+      "bytes": 7736
+    },
+    {
+      "path": "/tmp/edhr-document-rule-review.md",
+      "sha256": "0e2f4e81bf47b0bc0b91a9b6fa44484b8bcca7873fabc1c086798e54bc8d1182",
+      "bytes": 3384
+    },
+    {
+      "path": "/tmp/edhr-document-ontology-knowledge-test.txt",
+      "sha256": "cfece529c0571b9dc7e571ddee632937c16c14b81b2e9e7238a9aa0353e5fa8c",
+      "bytes": 2111
+    },
+    {
+      "path": "/tmp/edhr-document-ontology-knowledge-junit.xml",
+      "sha256": "c3770692f8b2a4ddaf08d875f5c8504c3661e647826941a3818ec8551574d590",
+      "bytes": 20423
+    }
+  ]
+}
