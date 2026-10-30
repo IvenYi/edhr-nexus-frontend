@@ -92,9 +92,6 @@ class DocumentReadBoundaryIntegrationTest {
     void reset() {
         sqlObserver = null;
         for (String table : TABLES) jdbc.update("DELETE FROM " + table);
-        // Canonical baseline/0001-current-schema.sql permits null master code; version.code owns the required code.
-        // Hibernate's legacy SopDocument mapping still generates NOT NULL, so align this fixture explicitly.
-        jdbc.execute("ALTER TABLE sop_document ALTER COLUMN code DROP NOT NULL");
         jdbc.execute("CREATE INDEX IF NOT EXISTS idx_document_version_document ON document_version(document_id,created_at DESC)");
         // PostgreSQL provides NFC normalization; H2 needs this test-only compatibility function.
         // Native PostgreSQL assertions remain authoritative for locale-sensitive case behavior.
