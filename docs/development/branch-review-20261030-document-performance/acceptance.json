@@ -1,0 +1,152 @@
+{
+  "baseCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "runtimeTestedCommit": "61d81a645f06c78e9d75dc72bf5699af70819cf6",
+  "reviewedCommit": "61d81a645f06c78e9d75dc72bf5699af70819cf6",
+  "status": "passed",
+  "executionLevel": "L2",
+  "qualityResult": "evidence/final-quality/quality-result.yaml",
+  "independentReview": "evidence/final-quality/quality-review.md",
+  "requiredPassed": 18,
+  "requiredTotal": 18,
+  "optionalFailed": 1,
+  "findings": [
+    {
+      "id": "PERF-DOCUMENT-PAGE-VERSION-MATERIALIZATION-001",
+      "resolutionStatus": "resolved",
+      "scope": "Previously recorded risk; now explicitly user-authorized implementation and independently verified.",
+      "actualResult": "Small page100documents/300versions now materializes5/15; category aggregate0document entities; count/page/metadata share read-onlyRR snapshot.",
+      "resolutionEvidence": [
+        "evidence/final-quality/cost-observations.json",
+        "evidence/final-quality/h2-http.jsonl",
+        "evidence/final-quality/pg-http.jsonl",
+        "evidence/final-quality/pg-junit.xml"
+      ]
+    },
+    {
+      "id": "PERF-DOCUMENT-VERSION-FILE-LOOKUPS-001",
+      "resolutionStatus": "resolved",
+      "scope": "Same prior risk, not a second newly discovered finding.",
+      "actualResult": "5documents x4versions with files23to5SQL; shared files1entity;520members complete across512ID batches with2file queries.",
+      "resolutionEvidence": [
+        "evidence/final-quality/cost-observations.json",
+        "evidence/final-quality/h2-http.jsonl",
+        "evidence/final-quality/pg-http.jsonl"
+      ]
+    },
+    {
+      "id": "QF-DOCUMENT-UNICODE-FOLD-001",
+      "severity": "medium",
+      "resolutionStatus": "resolved",
+      "scope": "One fold-regression family across two failed independent candidates, not two repairs.",
+      "actualResult": "NativePG71 andH2/existing202 pass; exactUnicode8 and nativevariant12 verified; source text/identity unchanged.",
+      "resolutionEvidence": [
+        "evidence/final-quality/quality-result.yaml",
+        "evidence/final-quality/pg-junit.xml",
+        "61d81a645f06c78e9d75dc72bf5699af70819cf6"
+      ],
+      "historyPreserved": [
+        "evidence/first-quality",
+        "evidence/second-quality"
+      ]
+    }
+  ],
+  "priorPaginationFinding": {
+    "id": "AUD-W4-DOCUMENT-PAGE-ARITHMETIC-001",
+    "resolutionStatus": "resolved",
+    "priorAcceptancePreserved": "../branch-review-20261030-document-read/acceptance.json",
+    "currentEvidence": "Current suites pass; independently unchanged58 against old310=4pagination500+5performance assertion failures,49positive,0error/skip."
+  },
+  "independentRuns": {
+    "h2AndExisting": {
+      "tests": 202,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "nativePostgres": {
+      "tests": 71,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "knowledge": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "oldActualTarget": {
+      "tests": 58,
+      "failures": 9,
+      "positiveControls": 49,
+      "errors": 0,
+      "skipped": 0,
+      "expectedRed": true
+    }
+  },
+  "countingBoundary": "Current273 across engines, not273 unique scenarios; knowledge89 separate. H2helper60+2anonymous, PGhelper72+2anonymous+1rawconcurrent; oldhelper60. No primary/independent result added to unique coverage.",
+  "ontology": {
+    "result": "not-applicable",
+    "roleState": "FINAL",
+    "version": "0.3.25",
+    "limitedExistingIds": 6,
+    "knowledgeChanges": 0,
+    "newHistoricalUniqueIncrement": null,
+    "wholeFileCompletion": 0,
+    "results": [
+      "evidence/ontology-result.yaml",
+      "evidence/ontology-unicode-result.yaml",
+      "evidence/ontology-case-result.yaml"
+    ],
+    "knowledgeExecution": "Original ontology89 actual, unchanged incremental reuse explicitly stated; final QA independently reran89."
+  },
+  "independentArchive": "evidence/final-quality/archive-map.json",
+  "archiveCounts": {
+    "currentIndependent": 46,
+    "priorPrimaryManifestRecords": 141,
+    "firstFailedOriginals": 19,
+    "secondFailedOriginals": 26,
+    "previousReadBatch": 37
+  },
+  "scopeReview": {
+    "allFormalRoles": "FINAL",
+    "noDrift": true,
+    "actualUserCommunicationBeforePrUpdate": true,
+    "document": "scope-review.md"
+  },
+  "sourceCoverage": {
+    "limitedMethodGroups": 3,
+    "wholeFileCompletion": 0,
+    "historicalUniqueIncrement": null,
+    "document": "source-review.json"
+  },
+  "a23": {
+    "baseLanguageQueue": 856,
+    "previousFeatureAddedPending": 1,
+    "separateSqlQueue": 130,
+    "sqlChecked": 0,
+    "changedPending": 4,
+    "addedPending": 2,
+    "deltaDocument": "a23-delta.json",
+    "wholeFileCompletion": 0,
+    "handling": "Fixed historical pending denominators, current delta retained; W6 includes previously reviewed code, W7 reconciles target increments."
+  },
+  "performanceLimits": [
+    "No-file path3to4SQL trades extra count for bounded application entities; not all queries decrease.",
+    "DB count/contains/parent sort and deep offset still scan candidate ranges; page bound is not scan bound.",
+    "Complete versions remain, customer large page and exceptionally large single-document histories can still consume memory;512onlyboundsINparameters.",
+    "NativePG16.15/en_US.utf8 synthetic fixtures and6plans are not production migration, latency/heapGC/SLA or arbitraryUnicode/locale certification."
+  ],
+  "remainingAuditAndDeferrals": [
+    "W2/W3/W4 remaining entrypoints; W5 security/files/storage/capacity/batch/dependencies; W6 structure andA23whole-sourcebackcheck; W7 integration/coverage.",
+    "Other equipment/material performance proposals remain pending discussion.",
+    "Document method-authorization, parentcode mapping nullability and missing-file policy evidence gaps not closed.",
+    "TaskDetail friend-owned repair, production dialog redesign, record-control-dependentDHRhigh/A12, fourknowledgegaps and no historical data restoration remain.",
+    "NoUIchange: browser/completefrontendbuild/strict/lint not rerun; historicalstrict19/ESLintconfigurationgap staynongreen.",
+    "Optional fullrawwhitespace failed with immutable logs/XML/5frozenCSV preserved;24handwrittenpaths passed."
+  ],
+  "blockingConditions": [],
+  "recommendMergeForThisBatch": true,
+  "deliveryPolicy": "Manual user merge only; no CI/Actions query/trigger, merge, deploy, restore or shared-history rewrite.",
+  "postQaVerification": "evidence/delivery-verification.json"
+}

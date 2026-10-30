@@ -1,0 +1,29 @@
+{
+  "reports": [
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261030-document-performance/evidence/first-quality/edhr-document-perf-first-quality-result.yaml",
+      "result": "failed",
+      "head": "7d376e81ba32c543d671e11f1503dab28e7760c3",
+      "findings": [
+        {
+          "id": "QF-DOCUMENT-UNICODE-FOLD-001",
+          "severity": "medium",
+          "resolutionStatus": "open"
+        }
+      ]
+    },
+    {
+      "path": "/workspace/edhr-nexus-frontend/docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-second-quality-result.yaml",
+      "result": "failed",
+      "head": "092afa5bc1a967545569cae4910a92da25c0b292",
+      "findings": [
+        {
+          "id": "QF-DOCUMENT-UNICODE-FOLD-001",
+          "severity": "medium",
+          "resolutionStatus": "open"
+        }
+      ]
+    }
+  ],
+  "qualification": "Both failed historical finals retained; same Unicode family, no independent rerun of their old probes claimed. Current71 native suite independently executed by this fresh instance."
+}

@@ -1,0 +1,36 @@
+{
+  "baseCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "candidateTestsCommit": "3ccd178ba541b6a953347de2de6c8c577a0b538b",
+  "totals": {
+    "tests": 26,
+    "failures": 4,
+    "errors": 0,
+    "skipped": 0
+  },
+  "positiveControls": 22,
+  "failures": [
+    {
+      "name": "emptyListAcceptsOutOfRangePages",
+      "message": "\nexpected: 200\n but was: 500"
+    },
+    {
+      "name": "acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[5]",
+      "message": "\nexpected: 200\n but was: 500"
+    },
+    {
+      "name": "acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[6]",
+      "message": "\nexpected: 200\n but was: 500"
+    },
+    {
+      "name": "acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[7]",
+      "message": "\nexpected: 200\n but was: 500"
+    }
+  ],
+  "records": 27,
+  "recordStatusCounts": {
+    "200": 20,
+    "500": 4,
+    "400": 3
+  },
+  "qualification": "Exactly4 real paging500; no fixture/environment error/skip; initial primary fixture errors not counted as product defects."
+}

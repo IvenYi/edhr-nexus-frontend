@@ -1,0 +1,74 @@
+{
+  "sourceCommit": "7d376e81ba32c543d671e11f1503dab28e7760c3",
+  "workingTree": "Unicode fold fix and8 regression cases, final candidate not yet committed",
+  "suites": [
+    {
+      "suite": "DocumentReadBoundaryIntegrationTest",
+      "tests": 48,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentReadPerformancePostgresTest",
+      "tests": 49,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentManagementControllerTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MasterDataBoundaryIntegrationTest",
+      "tests": 60,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProcessModelingControllerTest",
+      "tests": 55,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProductProcessControllerTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MaterialImportIntegrationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 241,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "postgres": 49,
+  "h2AndExisting": 192,
+  "uniqueBoundary": "48 doc scenarios repeated across H2/PG plus1 PG concurrency, not241 unique",
+  "helperReadEvents": 100,
+  "runnerOrder": [
+    "com.zencas.edhr.masterdata.controller.DocumentManagementControllerTest",
+    "com.zencas.edhr.masterdata.controller.MasterDataBoundaryIntegrationTest",
+    "com.zencas.edhr.masterdata.controller.MaterialImportIntegrationTest",
+    "com.zencas.edhr.masterdata.controller.ProcessModelingControllerTest",
+    "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "com.zencas.edhr.masterdata.controller.DocumentReadBoundaryIntegrationTest",
+    "com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest"
+  ]
+}

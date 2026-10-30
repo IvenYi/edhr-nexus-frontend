@@ -1,5 +1,27 @@
 # 持续推进台账
 
+## PR44追加：用户明确授权文档两项性能整改
+
+已更新[PR44](https://github.com/IvenYi/edhr-nexus-frontend/pull/44)标题/正文为数据库分页与文件批量读取，同分支→`edhr-dev`，登记时MERGEABLE/CLEAN，待用户人工merge。独立实际受测61d81a64，后续152999e0仅L0原件/验收，当前只补交付登记；产品、测试、知识、契约与冻结清单无差异，运行证据继续适用，不冒称重跑。下轮先fetch实际合入和外部增量。
+
+PR44仍OPEN、目标fetch仍`31058765`，用户在解释后明确要求修复文档列表全量物化和逐版本文件读取，不再将这两项写成未获授权。基于上一交付`793503cb`在同分支继续，[本批](../branch-review-20261030-document-performance/README.md)3产品文件数据库count/page/聚合、局部RR读服务和文件map纯投影；原页算术与A23安排保留，设备/物料其他性能仍待讨论。
+
+两轮新候选7d/092独立failed先后证实同一个Unicode折叠medium家族，原件均保留，不重复计修复。当前统一DB LOWER(NORMALIZE(UPPER(...)))、原文不改，补12原生变体和17类字面符号。第三个全新质量实例对干净`61d81a645f06c78e9d75dc72bf5699af70819cf6`正式passed/FINAL、18/18必需检查；实际H2/既有202、PG71、知识89全部通过。真实旧目标31058765原样同58为9真实红（4分页500+5性能）、49正、0error/skip；与旧793同40=5红35正、早期225/241是不同历史检查点，不混写。两项性能与Unicode在[当前验收](../branch-review-20261030-document-performance/acceptance.json)resolved，旧原验收/failed不回填。
+
+主侧同273通过，本体6有限既有ID与两次检索增量均NA/FINAL，原89复用明确；最终质量的89另实际运行。H2仅测试NFC兼容别名，PG71是真实内建验证依据。SQL23→5，100文档/300版本→本页5/15，分类0文档实体；无文件3→4查询取舍及主侧/独立PG10k/30k仍库内扫描反证保留，无生产SLA/任意locale认证。原始日志/固定CSV空白可选failed保持、24手工路径通过；旧strict19/ESLint配置缺口不绿。所有正式角色FINAL后已实际向用户核对无漂移、仍W4及后续W5–W7，再做原件归档/验收/更新PR44；之后不改受测产品、测试、知识、契约或冻结清单。两主侧PG与独立唯一PG/旧worktree均按确切资源清理。
+
+下轮先fetch真实人工合入和外部增量，继续文档方法权限规范/父code映射用途及其他W2/W3/W4入口，再推进W5–W7；A23新增/变更六路径列pending增量，旧856语言代码+feature1与另130SQL未整批回查，原用户暂缓/四gap及设备物料其他性能方案保持。不得自动merge/deploy/恢复。下文PR44原交付与待讨论为历史检查点，本节和当前性能验收覆盖这两项新授权整改的最新状态。
+
+## PR43已合入：W4文档读取与A23过度防御补查
+
+已交付[PR44](https://github.com/IvenYi/edhr-nexus-frontend/pull/44)，`audit/edhr-dev-document-read-boundaries-20261030` → `edhr-dev`，创建时MERGEABLE/CLEAN，待用户人工merge。实际运行3ccd、最终独立审查b805，之后仅L0原件/验收/范围/PR登记；下轮先fetch真实合入及外部增量，继续文档操作权限规范/实体schema用途与其他W3/W4未审入口，A23按当前同步+W6旧已审全量回查+W7增量反查推进。两项新文档性能与既有性能先讨论，原用户暂缓/四gap/整体未完成保持，不自动merge/deploy/恢复。
+
+已fetch并核对`edhr-dev@31058765002e0705f1659f42abb1fb25b6dc7611`，PR43人工merge、树同0a8991b3，无额外产品/知识/契约增量。从最新目标建立`audit/edhr-dev-document-read-boundaries-20261030`，[本批](../branch-review-20261030-document-read/README.md)正常POST/GET旧26为4真实分页红22正、0error/skip（初轮fixture错误单独保留），仅改文档列表两行long中间运算；全新独立对b805正式passed/FINAL、15/15必需检查，分页medium按acceptance resolved。实际运行3ccd的170后端/89知识通过，后续SQL清单文档增量经独立核对同产品/测试/知识blob适用；本体6既有ID有限一致NA/FINAL不计新unique。全部角色FINAL后已实际完成PR前无漂移/整体进度说明，当前仅L0归档/验收/交付。
+
+用户新增A23过度防御已加入审计契约，当前领域同步 + W6全量自有代码回查（含旧已审）+ W7增量反查；固定队列全pending，旧通过不复用。当前7组方法范围初查5必要/1简化候选/1gap，非整文件通过。文档文件lookup页5×4共用或不同均23SQL，页5仍物化100文档/300版本的两个性能风险从源码候选推进H2实测pending-discussion，尚未优化。4372路径/130迁移只是盘点，原性能/用户暂缓/四gap保持；后续W3/W4余项和W5–W7继续，不自动merge/deploy/恢复。
+
+A23精度补充：856为九类语言代码，feature新增测试另pending1；自有SQL另130全pending、已查0，W5/W6按真实用途核对，不能把SQL冒称包含在856或执行历史迁移。候选产品/测试及原件不变，仅研发排程分母说明补齐。
+
 ## PR42已合入：W4混合版本标签排序与文档关联读取
 
 已交付[PR43](https://github.com/IvenYi/edhr-nexus-frontend/pull/43)，`audit/edhr-dev-version-order-20261030` → `edhr-dev`，创建时MERGEABLE/CLEAN，待用户人工merge。实际独立受测57d44a12，之后仅L0原件/验收/范围/交付登记；下次继续先fetch真实合入与新增提交，优先文档列表正常API分页复现及关联读取容量取证，再推进其他未审入口。性能先讨论、原暂缓及整体未完成保持，不自动merge/deploy/恢复。

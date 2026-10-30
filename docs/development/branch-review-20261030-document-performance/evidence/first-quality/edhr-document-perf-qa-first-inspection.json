@@ -1,0 +1,41 @@
+{
+  "headCommit": "7d376e81ba32c543d671e11f1503dab28e7760c3",
+  "targetCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "clean": true,
+  "primaryOriginalsVerified": 32,
+  "limitedKnowledgeRecords": [
+    {
+      "id": "concept.document-version",
+      "path": "docs/knowledge/ontology.yaml",
+      "definition": ""
+    },
+    {
+      "id": "relation.operation-binding-references-document-versions",
+      "path": "docs/knowledge/ontology.yaml",
+      "definition": ""
+    },
+    {
+      "id": "rule.product-process.multiple-classified-documents",
+      "path": "docs/knowledge/rules/product-process.yaml",
+      "definition": "工序文档绑定面向存在的受控文档版本，不限于 SOP 分类；同一工序可引用零到多个不同文档版本，但不可重复同一版本。"
+    },
+    {
+      "id": "DEC-0001-07",
+      "path": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "definition": "工序可绑定多个任意分类的文档版本，不限于 SOP。"
+    },
+    {
+      "id": "DEC-0001-09",
+      "path": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "definition": "历史初始基线提出批次按选定制程版本冻结执行快照，当时未实现。当前对象拆分仅保存显式processVersionId引用，首次合法START重核当前归属、有效期及生产形态，冻结当时制程身份、产品与产品簇依据和实际配置；DHR按DEC-0062同事务保存自身上下文与目录。相同V1标签不保证相同配置，后续主数据变化不回写已开工快照；作业候选实时匹配与实例创建冻结另按DEC-0007处理。通用规则集版本及完整求值证据仍待契约闭环，不由局部实现推定完整运行资格。"
+    },
+    {
+      "id": "DEC-0064-05",
+      "path": "docs/knowledge/decisions/DEC-0064-master-data-description-contract.yaml",
+      "definition": "历史审计 JSON 不因本次字段清理而回写或重构；新产生的产品簇、文档主记录和文档版本审计快照不再写入已删除的 remark 键，只保留当前 description/版本说明字段契约。"
+    }
+  ],
+  "contractKnowledgeDiff": "",
+  "scope": "partial first QA; confirmed Unicode failure stops further PG41/knowledge89/baseline40/plan reruns; no product/test/fixture repair",
+  "scratchProbeNote": "Initial SQL metadata probe used current_setting(lc_ctype), which is not a GUC and errored; corrected independent scratch query selects pg_database.datctype. This was tooling diagnostic, not product regression evidence."
+}

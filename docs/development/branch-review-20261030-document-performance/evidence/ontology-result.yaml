@@ -1,0 +1,52 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 793503cbbd32375d47fc76185cf0568ec1fe7bd4
+    targetBranch: edhr-dev
+    targetCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+    contractReadCommit: 793503cbbd32375d47fc76185cf0568ec1fe7bd4
+    uncommittedContractPaths: []
+  reason: 本轮明确授权后的读取机制优化保留文档/版本/文件身份、任意分类引用、完整版本、冻结及历史审计；六个既有ID在列明范围有限一致。数据库分页/聚合、512批次、RR和同时间id稳定排序是工程选择，不新增业务政策；缺文件政策、实体映射和方法权限候选仍保留。知识无需同步、版本成熟度不变。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.document-perf.limited-semantic-review
+    checkType: evidence-path
+    command: Read current six knowledge records and versioned sources, product diff,
+      read service, repositories, controller, entities and operation-document reference
+      code.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-rule-review.json
+    - /tmp/edhr-document-perf-rule-review.md
+    - Actual review of HEAD793503cb plus uncommitted product changes; not final-candidate
+      runtime QA.
+  - id: validation.document-perf.knowledge-structure
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-ontology-knowledge-test.txt
+    - /tmp/edhr-document-perf-ontology-knowledge-junit.xml
+    - Actual role run89,0failure/error/skip; not product/runtime/full-semantic certification.
+  - id: validation.document-perf.contract-knowledge-preserved
+    checkType: reference
+    command: git diff 31058765 HEAD -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge;
+      git diff --name-only -- docs/knowledge docs/architecture docs/agents AGENTS.md
+      codeplzreadme.md
+    outcome: passed
+    evidence:
+    - Both diffs empty; actual source/target hashes and product diff in ontology manifest.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

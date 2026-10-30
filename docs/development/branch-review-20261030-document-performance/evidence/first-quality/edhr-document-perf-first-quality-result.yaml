@@ -1,0 +1,139 @@
+qualityResult:
+  result: failed
+  baseCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+  headCommit: 7d376e81ba32c543d671e11f1503dab28e7760c3
+  contractBaseline:
+    sourceCommit: 7d376e81ba32c543d671e11f1503dab28e7760c3
+    targetBranch: edhr-dev
+    targetCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+    contractReadCommit: 7d376e81ba32c543d671e11f1503dab28e7760c3
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.document-perf-first.baseline
+    required: true
+    category: documentation
+    description: 独立核对目标/干净候选/契约知识无差异，当前真实范围。
+    method: command
+    command: git status --short; git rev-parse HEAD; git fetch origin edhr-dev; git
+      diff 31058765 HEAD -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-qa-first-inspection.json
+    - base=31058765002e0705f1659f42abb1fb25b6dc7611; tested=7d376e81ba32c543d671e11f1503dab28e7760c3
+  - id: check.document-perf-first.h2-backend
+    required: true
+    category: integration
+    description: 实际H2与既有后端184测试全部通过。
+    method: command
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=DocumentReadBoundaryIntegrationTest,DocumentManagementControllerTest,MasterDataBoundaryIntegrationTest,ProcessModelingControllerTest,ProductProcessControllerTest,MaterialImportIntegrationTest
+      -Dedhr.audit.documentReads=true -Dedhr.audit.documentOutput=/tmp/edhr-document-perf-qa-h2-http.jsonl
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-qa-h2-test.txt
+    - /tmp/edhr-document-perf-qa-h2-summary.json
+  - id: check.document-perf-first.query-source
+    required: true
+    category: requirements
+    description: 检查三文件的绑定参数/DB父分页/聚合/本页完整版本/批量上下文与原写入投影；Unicode折叠另项失败，不将源审查当全部行为一致。
+    method: inspection
+    command: Read DocumentListReadService/SopDocumentRepository/controller diff and
+      current decisionPackage.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-qa-first-inspection.json
+    - 产品仅三文件；没有修改测试或参与修复。
+  - id: check.document-perf-first.limited-knowledge
+    required: true
+    category: ontology
+    description: 直接核对六个现有ID，版本身份/分类/冻结/审计不因读取机制新增业务政策，非全量语义通过。
+    method: inspection
+    command: Parse current ontology/rules/DEC0001/DEC0064 records and compare ontologyResult
+      NA scope.
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-qa-first-inspection.json
+    - 知识0.3.25；本实例未运行knowledge89，不借用本体实例运行。
+  - id: check.document-perf-first.originals
+    required: true
+    category: documentation
+    description: 逐32主侧原件核对hash/bytes。
+    method: command
+    command: hashlib SHA256 each primary-verification.json files entry
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-qa-first-inspection.json
+  - id: check.document-perf-first.postgres-fold
+    required: true
+    category: database
+    description: 自建PG en_US.utf8证明LOWER与Java ROOT参数折叠不一致。
+    method: query
+    command: SELECT datctype, lower('İzmir'), lower('İzmir') LIKE '%i̇zmir%' FROM
+      pg_database WHERE datname=current_database();
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-qa-unicode-sql.txt
+    - 返回en_US.utf8|izmir|f；这是根因诊断，不是完整PG41回归。
+  - id: check.document-perf-first.unicode-api
+    required: true
+    category: api
+    description: 正常POST后同样Unicode关键词必须能找到自身；实际返回空结果。
+    method: command
+    command: java --class-path <actual surefire classpath> /tmp/DocumentUnicodeProbe.java;
+      owned localPG only
+    outcome: failed
+    evidence:
+    - /tmp/DocumentUnicodeProbe.java
+    - /tmp/edhr-document-perf-qa-classpath.txt
+    - /tmp/edhr-document-perf-qa-unicode-api-test.txt
+    - /tmp/edhr-document-perf-qa-unicode-api.json
+    - POST200 title=İzmir work instruction；keyword=İzmir GET200 total0；keyword=izmir
+      GET200 total1。
+  - id: check.document-perf-first.cleanup
+    required: true
+    category: documentation
+    description: 精确清理本实例合成PG容器，主仓干净，无共享依赖修改。
+    method: command
+    command: docker stop <exact created ID>; docker ps -a --no-trunc --filter id=<exact
+      created ID>
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-qa-first-cleanup.json
+  findings:
+  - id: QF-DOCUMENT-UNICODE-FOLD-001
+    severity: medium
+    scope: document-list-keyword-search
+    summary: Java ROOT规范化参数与PostgreSQL LOWER折叠不一致，合法Unicode标题用同样关键词无法查到自身。
+    reproductionSteps:
+    - 在候选7d376e81的真实JWT/filter/controller/service/repositories、独立本地PG(en_US.utf8)中，POST
+      /api/v1/master-data/documents title='İzmir work instruction', version='V1',
+      code='IZMIR-PROBE'。
+    - POST200且数据库保留原文；GET同列表 keyword='İzmir'。
+    - 同登录及数据下将keyword改为ASCII 'izmir'作为正向对照。
+    expectedResult: 合法已保存标题包含原关键词，使用原样关键词应命中同一文档，保持大小写不敏感检索。
+    actualResult: 原样İzmir查询HTTP200但totalElements=0；ASCII izmir HTTP200,totalElements=1。Java参数为i+组合点，PG
+      LOWER标题为izmir。
+    evidence:
+    - /tmp/edhr-document-perf-qa-unicode-api.json
+    - /tmp/edhr-document-perf-qa-unicode-api-test.txt
+    - /tmp/edhr-document-perf-qa-unicode-sql.txt
+    - /tmp/DocumentUnicodeProbe.java
+    resolutionStatus: open
+    resolutionEvidence: []
+  residualRisks:
+  - id: first-qa-not-complete
+    description: 因真实API回归暂停首轮，其余PG41、独立knowledge89、旧310基线40、六计划重验尚未执行；主侧225/本体89不是本实例独立运行。
+    impact: 本报告只可作为首轮failed，不可用于合并验收或宣称全部检查完成。
+    mitigation: 主侧修复并补回归后，按L2由全新未参与修复实例完成最终独立范围。
+  - id: original-deferrals-retained
+    description: 全量A23及其他未审、权限/schema/缺文件政策gap和用户暂缓保持；本轮未核验全仓。
+    impact: 局部检查不代表整体审计完成。
+    mitigation: 沿版本化台账和用户边界继续。
+  blockingConditions: []

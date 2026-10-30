@@ -1,0 +1,13 @@
+{
+  "createdContainer": "5ec8f3105bd4f9ab673c7a322c21307888ad4bbac06c8965496877b2d793f715",
+  "name": "edhr-document-perf-qa-0dffbb628f",
+  "url": "jdbc:postgresql://127.0.0.1:32769/edhr_document_read_test",
+  "stoppedExactOwnedContainer": true,
+  "autoRemoved": true,
+  "ownWorktreeCreated": false,
+  "sharedDependenciesTouched": false,
+  "mainSourceStatus": "",
+  "evidencePreserved": "/tmp/edhr-document-perf-qa-* and /tmp/DocumentUnicodeProbe.java",
+  "afterStopContainerListing": "",
+  "verification": "docker ps -a --no-trunc --filter exact created ID; immediate inspect after stop may race auto-removal"
+}

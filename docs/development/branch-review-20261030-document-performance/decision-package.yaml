@@ -1,0 +1,97 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-DOCUMENT-PERFORMANCE-20261030
+  scope: 用户明确授权修复文档列表全量物化与逐版本文件读取；同一未合并PR44补充
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 793503cbbd32375d47fc76185cf0568ec1fe7bd4
+    targetBranch: edhr-dev
+    targetCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+    contractReadCommit: 793503cbbd32375d47fc76185cf0568ec1fe7bd4
+    uncommittedContractPaths: []
+  summary: 数据库按原分类与父标题/任意版本编码匹配计数和分页，再批取本页完整版本及文件/分类元数据；分类计数数据库聚合。不改业务规则、权限、版本/文件身份和写入/快照。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.document-list-original-tradeoff
+      statement: 历史9e2aa490已有全量父记录筛选和内存分页，3574179e把编码检索改为具体版本，逐版本转换内部查询文件；未找到明确大数据容量设计决策。
+      rationale: 实际历史源码及差异，不将实现推断当作者原始动机或用户政策。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: document-list-read
+        change: 新增局部读服务负责count/DB page/有界批量上下文，投影接收已有文件对象；不在版本列表投影内逐行查库。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java]
+      - area: category-counts
+        change: GROUP BY分类计数替换加载全体文档；保留ALL/未分类/空分类及已有筛选含义。
+        evidenceReferences: []
+    transitiveImpacts:
+      - area: response-members
+        change: 旧版本编码可命中父文档，返回全部版本；保留特殊字符字面匹配、大小写不敏感、原null时间优先方向；同时间增加ID稳定次序。
+        evidenceReferences: [docs/development/branch-review-20261030-document-read/findings.md]
+    potentialImpacts:
+      - area: consistency
+        concern: count/page/versions/files多查询采用只读REPEATABLE_READ，实际PG并发检查同一视图；不改生产写入锁或审批事务。
+        evidenceReferences: []
+      - area: parameter-limits
+        concern: 元数据ID读取内部512个一批，避免一次IN绑定随页内版本数无界增长；不是客户页长上限。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: deferred-audit
+        change: 不恢复TaskDetail签名、生产弹窗、记录控制及DHR high/A12；A23旧已审全量回查仍按W6/W7，其他设备/物料性能未获本次授权。
+        evidenceReferences: [docs/development/branch-review-20261015/NEXT.md]
+    compatibilityAndMigration:
+      - area: schema-history
+        change: 无迁移、历史数据修改；父code遗留映射差异与方法权限候选不混入性能修复。
+        evidenceReferences: []
+      - area: missing-file
+        change: 只保留旧行为fileId存在而元数据缺失时的空属性投影，不新增缺失合法性政策。
+        evidenceReferences: []
+    snapshotImpacts:
+      - area: execution
+        change: 不改变生产/DHR快照或文档引用；读服务事务只保护本次列表视图。
+        evidenceReferences: []
+    auditImpacts:
+      - area: read-only
+        change: 完整五表读取前后无写入；原创建/版本/审计职责保留。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: existing-authorization
+        change: 原认证和分类租户检查保持，不增加跨租户分类信息，不把本批当完整操作权限已审。
+        evidenceReferences: []
+    testImpacts:
+      - scope: correctness-and-cost
+        scenarios: [原分页全部回归, 旧版本编码命中和完整版本, 字面通配字符/引号/大小写/中文, 分类聚合, 缺文件身份, null时间/同值分页, 有界实体加载, 文件请求内去重/分批, 原生PG查询与并发视图]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java]
+    evidenceGaps:
+      - SQL计数仍可能扫描匹配范围，不能将页面实体有界解释成数据库只扫描一页；无生产SLA承诺。
+      - 原生PG隔离合成库不代表生产迁移、任意部署locale或全量容量认证。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 一个局部读服务承载真实共享上下文及事务，控制器保留输入分类资格与原写入职责；私有分批方法有三处真实消费者，不引入通用缓存框架。
+    ownershipBoundaries:
+      - owner: DocumentListReadService
+        responsibility: 只读查询与一致视图、有界批次及返回实体上下文；不引用控制器DTO。
+      - owner: DocumentManagementController
+        responsibility: 输入资格、响应投影及既有写入/审计；列表投影不查文件仓储。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java
+      changeType: create
+      reason: 读侧职责与共享上下文。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java
+      changeType: update
+      reason: 数据库count/page和分类聚合。
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+      changeType: update
+      reason: 使用读上下文并保持写入/单版本响应。
+  acceptanceScenarios:
+    - id: scenario.document-bounded-read
+      given: 大于一页的合法文档版本数据
+      when: 查询5文档及完整版本
+      then: 实体读取限本页，文件按去重ID分批，分类计数不加载全部文档；匹配、分页、元数据/身份和只读保持。
+      evidenceRequirements: [旧正常API性能断言失败, H2和PG新绿, 完整成员及五表快照, 并发count/page同视图]

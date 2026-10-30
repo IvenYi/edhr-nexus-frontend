@@ -1,0 +1,58 @@
+{
+  "baseCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "workingTree": "2 product lines changed plus new test; not yet frozen",
+  "suites": [
+    {
+      "suite": "DocumentReadBoundaryIntegrationTest",
+      "tests": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentManagementControllerTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MasterDataBoundaryIntegrationTest",
+      "tests": 60,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProcessModelingControllerTest",
+      "tests": 55,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProductProcessControllerTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MaterialImportIntegrationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 170,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "authorizedReadRecords": 27,
+  "anonymousRequests": 2,
+  "observationCases": 10,
+  "command": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=DocumentReadBoundaryIntegrationTest,DocumentManagementControllerTest,MasterDataBoundaryIntegrationTest,ProcessModelingControllerTest,ProductProcessControllerTest,MaterialImportIntegrationTest -Dedhr.audit.documentReads=true -Dedhr.audit.documentOutput=/tmp/edhr-document-current-http.jsonl test"
+}

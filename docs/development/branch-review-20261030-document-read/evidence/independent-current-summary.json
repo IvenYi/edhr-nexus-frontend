@@ -1,0 +1,204 @@
+{
+  "runtimeTestedCommit": "3ccd178ba541b6a953347de2de6c8c577a0b538b",
+  "suites": [
+    {
+      "suite": "DocumentReadBoundaryIntegrationTest",
+      "tests": 26,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentManagementControllerTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MasterDataBoundaryIntegrationTest",
+      "tests": 60,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProcessModelingControllerTest",
+      "tests": 55,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProductProcessControllerTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MaterialImportIntegrationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 170,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "knowledgeTotals": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "authorizedReadRecords": 27,
+  "recordStatusCounts": {
+    "200": 24,
+    "400": 3
+  },
+  "anonymousRequests": 2,
+  "performanceObservations": [
+    {
+      "case": "volume-file-none",
+      "params": {
+        "size": "2"
+      },
+      "sqlCount": 3,
+      "entityLoads": {
+        "SopDocument": 8,
+        "DocumentVersion": 32,
+        "DocumentCategory": 1,
+        "FileObject": 0,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-file-none",
+      "params": {
+        "size": "5"
+      },
+      "sqlCount": 3,
+      "entityLoads": {
+        "SopDocument": 8,
+        "DocumentVersion": 32,
+        "DocumentCategory": 1,
+        "FileObject": 0,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-file-shared",
+      "params": {
+        "size": "2"
+      },
+      "sqlCount": 11,
+      "entityLoads": {
+        "SopDocument": 8,
+        "DocumentVersion": 32,
+        "DocumentCategory": 1,
+        "FileObject": 8,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-file-shared",
+      "params": {
+        "size": "5"
+      },
+      "sqlCount": 23,
+      "entityLoads": {
+        "SopDocument": 8,
+        "DocumentVersion": 32,
+        "DocumentCategory": 1,
+        "FileObject": 20,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-file-distinct",
+      "params": {
+        "size": "2"
+      },
+      "sqlCount": 11,
+      "entityLoads": {
+        "SopDocument": 8,
+        "DocumentVersion": 32,
+        "DocumentCategory": 1,
+        "FileObject": 8,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-file-distinct",
+      "params": {
+        "size": "5"
+      },
+      "sqlCount": 23,
+      "entityLoads": {
+        "SopDocument": 8,
+        "DocumentVersion": 32,
+        "DocumentCategory": 1,
+        "FileObject": 20,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-materialization",
+      "params": {
+        "size": "5"
+      },
+      "sqlCount": 3,
+      "entityLoads": {
+        "SopDocument": 20,
+        "DocumentVersion": 60,
+        "DocumentCategory": 1,
+        "FileObject": 0,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-materialization",
+      "params": {
+        "size": "5"
+      },
+      "sqlCount": 3,
+      "entityLoads": {
+        "SopDocument": 100,
+        "DocumentVersion": 300,
+        "DocumentCategory": 1,
+        "FileObject": 0,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-categories",
+      "params": {},
+      "sqlCount": 2,
+      "entityLoads": {
+        "SopDocument": 20,
+        "DocumentVersion": 0,
+        "DocumentCategory": 5,
+        "FileObject": 0,
+        "AuditEvent": 0
+      }
+    },
+    {
+      "case": "volume-categories",
+      "params": {},
+      "sqlCount": 2,
+      "entityLoads": {
+        "SopDocument": 100,
+        "DocumentVersion": 0,
+        "DocumentCategory": 5,
+        "FileObject": 0,
+        "AuditEvent": 0
+      }
+    }
+  ],
+  "countingBoundary": "170/89 actual independent runs, not added to primary/ontology duplicate runs; all10opt-in cases enabled."
+}

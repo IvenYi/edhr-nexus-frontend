@@ -1,0 +1,805 @@
+{
+  "h2": {
+    "helperGetEvents": 60,
+    "httpStatusCount": {
+      "200": 57,
+      "400": 3
+    },
+    "caseCounts": {
+      "bounded-page-loading": 1,
+      "volume-file-none": 2,
+      "volume-file-shared": 2,
+      "volume-file-distinct": 2,
+      "volume-materialization": 2,
+      "missing-file-metadata": 1,
+      "empty-large-page": 1,
+      "page-bounds": 9,
+      "invalid-category": 3,
+      "unicode-original-keyword": 8,
+      "multiple-batches": 1,
+      "null-first-page": 1,
+      "tied-second-page": 1,
+      "older-version-keyword": 1,
+      "volume-categories": 2,
+      "bounded-category-counts": 1,
+      "category-filter": 1,
+      "uncategorized-filter": 1,
+      "category-counts": 1,
+      "literal-keyword": 17,
+      "bounded-file-shared": 1,
+      "bounded-file-distinct": 1
+    },
+    "cost": [
+      {
+        "case": "bounded-page-loading",
+        "params": {
+          "size": "5"
+        },
+        "total": 100,
+        "sqlCount": 4,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 15,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-file-none",
+        "params": {
+          "size": "2"
+        },
+        "total": 8,
+        "sqlCount": 4,
+        "entityLoads": {
+          "SopDocument": 2,
+          "DocumentVersion": 8,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-file-none",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 4,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 20,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-file-shared",
+        "params": {
+          "size": "2"
+        },
+        "total": 8,
+        "sqlCount": 5,
+        "entityLoads": {
+          "SopDocument": 2,
+          "DocumentVersion": 8,
+          "DocumentCategory": 1,
+          "FileObject": 1,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 1
+      },
+      {
+        "case": "volume-file-shared",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 5,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 20,
+          "DocumentCategory": 1,
+          "FileObject": 1,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 1
+      },
+      {
+        "case": "volume-file-distinct",
+        "params": {
+          "size": "2"
+        },
+        "total": 8,
+        "sqlCount": 5,
+        "entityLoads": {
+          "SopDocument": 2,
+          "DocumentVersion": 8,
+          "DocumentCategory": 1,
+          "FileObject": 8,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 1
+      },
+      {
+        "case": "volume-file-distinct",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 5,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 20,
+          "DocumentCategory": 1,
+          "FileObject": 20,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 1
+      },
+      {
+        "case": "volume-materialization",
+        "params": {
+          "size": "5"
+        },
+        "total": 20,
+        "sqlCount": 4,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 15,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-materialization",
+        "params": {
+          "size": "5"
+        },
+        "total": 100,
+        "sqlCount": 4,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 15,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "multiple-batches",
+        "params": {
+          "size": "520"
+        },
+        "total": 520,
+        "sqlCount": 7,
+        "entityLoads": {
+          "SopDocument": 520,
+          "DocumentVersion": 520,
+          "DocumentCategory": 1,
+          "FileObject": 520,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 2
+      },
+      {
+        "case": "volume-categories",
+        "params": {},
+        "total": 20,
+        "sqlCount": 2,
+        "entityLoads": {
+          "SopDocument": 0,
+          "DocumentVersion": 0,
+          "DocumentCategory": 5,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-categories",
+        "params": {},
+        "total": 100,
+        "sqlCount": 2,
+        "entityLoads": {
+          "SopDocument": 0,
+          "DocumentVersion": 0,
+          "DocumentCategory": 5,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "bounded-category-counts",
+        "params": {},
+        "total": 100,
+        "sqlCount": 2,
+        "entityLoads": {
+          "SopDocument": 0,
+          "DocumentVersion": 0,
+          "DocumentCategory": 4,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "bounded-file-shared",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 5,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 20,
+          "DocumentCategory": 1,
+          "FileObject": 1,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 1
+      },
+      {
+        "case": "bounded-file-distinct",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 5,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 20,
+          "DocumentCategory": 1,
+          "FileObject": 20,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 1
+      }
+    ]
+  },
+  "pg": {
+    "helperGetEvents": 72,
+    "httpStatusCount": {
+      "200": 69,
+      "400": 3
+    },
+    "caseCounts": {
+      "bounded-page-loading": 1,
+      "volume-file-none": 2,
+      "volume-file-shared": 2,
+      "volume-file-distinct": 2,
+      "volume-materialization": 2,
+      "missing-file-metadata": 1,
+      "empty-large-page": 1,
+      "page-bounds": 9,
+      "invalid-category": 3,
+      "unicode-original-keyword": 8,
+      "multiple-batches": 1,
+      "null-first-page": 1,
+      "tied-second-page": 1,
+      "older-version-keyword": 1,
+      "volume-categories": 2,
+      "bounded-category-counts": 1,
+      "category-filter": 1,
+      "uncategorized-filter": 1,
+      "category-counts": 1,
+      "literal-keyword": 17,
+      "bounded-file-shared": 1,
+      "bounded-file-distinct": 1,
+      "native-case-variant": 12
+    },
+    "cost": [
+      {
+        "case": "bounded-page-loading",
+        "params": {
+          "size": "5"
+        },
+        "total": 100,
+        "sqlCount": 4,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 15,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-file-none",
+        "params": {
+          "size": "2"
+        },
+        "total": 8,
+        "sqlCount": 4,
+        "entityLoads": {
+          "SopDocument": 2,
+          "DocumentVersion": 8,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-file-none",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 4,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 20,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-file-shared",
+        "params": {
+          "size": "2"
+        },
+        "total": 8,
+        "sqlCount": 5,
+        "entityLoads": {
+          "SopDocument": 2,
+          "DocumentVersion": 8,
+          "DocumentCategory": 1,
+          "FileObject": 1,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 1
+      },
+      {
+        "case": "volume-file-shared",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 5,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 20,
+          "DocumentCategory": 1,
+          "FileObject": 1,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 1
+      },
+      {
+        "case": "volume-file-distinct",
+        "params": {
+          "size": "2"
+        },
+        "total": 8,
+        "sqlCount": 5,
+        "entityLoads": {
+          "SopDocument": 2,
+          "DocumentVersion": 8,
+          "DocumentCategory": 1,
+          "FileObject": 8,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 1
+      },
+      {
+        "case": "volume-file-distinct",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 5,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 20,
+          "DocumentCategory": 1,
+          "FileObject": 20,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 1
+      },
+      {
+        "case": "volume-materialization",
+        "params": {
+          "size": "5"
+        },
+        "total": 20,
+        "sqlCount": 4,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 15,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-materialization",
+        "params": {
+          "size": "5"
+        },
+        "total": 100,
+        "sqlCount": 4,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 15,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "multiple-batches",
+        "params": {
+          "size": "520"
+        },
+        "total": 520,
+        "sqlCount": 7,
+        "entityLoads": {
+          "SopDocument": 520,
+          "DocumentVersion": 520,
+          "DocumentCategory": 1,
+          "FileObject": 520,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 2
+      },
+      {
+        "case": "volume-categories",
+        "params": {},
+        "total": 20,
+        "sqlCount": 2,
+        "entityLoads": {
+          "SopDocument": 0,
+          "DocumentVersion": 0,
+          "DocumentCategory": 5,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-categories",
+        "params": {},
+        "total": 100,
+        "sqlCount": 2,
+        "entityLoads": {
+          "SopDocument": 0,
+          "DocumentVersion": 0,
+          "DocumentCategory": 5,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "bounded-category-counts",
+        "params": {},
+        "total": 100,
+        "sqlCount": 2,
+        "entityLoads": {
+          "SopDocument": 0,
+          "DocumentVersion": 0,
+          "DocumentCategory": 4,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "bounded-file-shared",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 5,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 20,
+          "DocumentCategory": 1,
+          "FileObject": 1,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 1
+      },
+      {
+        "case": "bounded-file-distinct",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 5,
+        "entityLoads": {
+          "SopDocument": 5,
+          "DocumentVersion": 20,
+          "DocumentCategory": 1,
+          "FileObject": 20,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 1
+      }
+    ]
+  },
+  "old": {
+    "helperGetEvents": 60,
+    "httpStatusCount": {
+      "200": 53,
+      "500": 4,
+      "400": 3
+    },
+    "caseCounts": {
+      "bounded-page-loading": 1,
+      "volume-file-none": 2,
+      "volume-file-shared": 2,
+      "volume-file-distinct": 2,
+      "volume-materialization": 2,
+      "missing-file-metadata": 1,
+      "empty-large-page": 1,
+      "page-bounds": 9,
+      "invalid-category": 3,
+      "unicode-original-keyword": 8,
+      "multiple-batches": 1,
+      "null-first-page": 1,
+      "tied-second-page": 1,
+      "older-version-keyword": 1,
+      "volume-categories": 2,
+      "bounded-category-counts": 1,
+      "category-filter": 1,
+      "uncategorized-filter": 1,
+      "category-counts": 1,
+      "literal-keyword": 17,
+      "bounded-file-shared": 1,
+      "bounded-file-distinct": 1
+    },
+    "cost": [
+      {
+        "case": "bounded-page-loading",
+        "params": {
+          "size": "5"
+        },
+        "total": 100,
+        "sqlCount": 3,
+        "entityLoads": {
+          "SopDocument": 100,
+          "DocumentVersion": 300,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-file-none",
+        "params": {
+          "size": "2"
+        },
+        "total": 8,
+        "sqlCount": 3,
+        "entityLoads": {
+          "SopDocument": 8,
+          "DocumentVersion": 32,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-file-none",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 3,
+        "entityLoads": {
+          "SopDocument": 8,
+          "DocumentVersion": 32,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-file-shared",
+        "params": {
+          "size": "2"
+        },
+        "total": 8,
+        "sqlCount": 11,
+        "entityLoads": {
+          "SopDocument": 8,
+          "DocumentVersion": 32,
+          "DocumentCategory": 1,
+          "FileObject": 8,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 8
+      },
+      {
+        "case": "volume-file-shared",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 23,
+        "entityLoads": {
+          "SopDocument": 8,
+          "DocumentVersion": 32,
+          "DocumentCategory": 1,
+          "FileObject": 20,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 20
+      },
+      {
+        "case": "volume-file-distinct",
+        "params": {
+          "size": "2"
+        },
+        "total": 8,
+        "sqlCount": 11,
+        "entityLoads": {
+          "SopDocument": 8,
+          "DocumentVersion": 32,
+          "DocumentCategory": 1,
+          "FileObject": 8,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 8
+      },
+      {
+        "case": "volume-file-distinct",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 23,
+        "entityLoads": {
+          "SopDocument": 8,
+          "DocumentVersion": 32,
+          "DocumentCategory": 1,
+          "FileObject": 20,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 20
+      },
+      {
+        "case": "volume-materialization",
+        "params": {
+          "size": "5"
+        },
+        "total": 20,
+        "sqlCount": 3,
+        "entityLoads": {
+          "SopDocument": 20,
+          "DocumentVersion": 60,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-materialization",
+        "params": {
+          "size": "5"
+        },
+        "total": 100,
+        "sqlCount": 3,
+        "entityLoads": {
+          "SopDocument": 100,
+          "DocumentVersion": 300,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "multiple-batches",
+        "params": {
+          "size": "520"
+        },
+        "total": 520,
+        "sqlCount": 523,
+        "entityLoads": {
+          "SopDocument": 520,
+          "DocumentVersion": 520,
+          "DocumentCategory": 1,
+          "FileObject": 520,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 520
+      },
+      {
+        "case": "volume-categories",
+        "params": {},
+        "total": 20,
+        "sqlCount": 2,
+        "entityLoads": {
+          "SopDocument": 20,
+          "DocumentVersion": 0,
+          "DocumentCategory": 5,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "volume-categories",
+        "params": {},
+        "total": 100,
+        "sqlCount": 2,
+        "entityLoads": {
+          "SopDocument": 100,
+          "DocumentVersion": 0,
+          "DocumentCategory": 5,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "bounded-category-counts",
+        "params": {},
+        "total": 100,
+        "sqlCount": 2,
+        "entityLoads": {
+          "SopDocument": 100,
+          "DocumentVersion": 0,
+          "DocumentCategory": 4,
+          "FileObject": 0,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 0
+      },
+      {
+        "case": "bounded-file-shared",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 23,
+        "entityLoads": {
+          "SopDocument": 8,
+          "DocumentVersion": 32,
+          "DocumentCategory": 1,
+          "FileObject": 20,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 20
+      },
+      {
+        "case": "bounded-file-distinct",
+        "params": {
+          "size": "5"
+        },
+        "total": 8,
+        "sqlCount": 23,
+        "entityLoads": {
+          "SopDocument": 8,
+          "DocumentVersion": 32,
+          "DocumentCategory": 1,
+          "FileObject": 20,
+          "AuditEvent": 0
+        },
+        "fileQueryCount": 20
+      }
+    ]
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "reviewer": "/root/document_performance_ontology_20261030",
+  "headCommit": "7d376e81ba32c543d671e11f1503dab28e7760c3",
+  "targetCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "contractReadCommit": "793503cbbd32375d47fc76185cf0568ec1fe7bd4",
+  "workingTreeProductDiff": "diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java\nindex eb73baa4..513ff710 100644\n--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java\n+++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java\n@@ -17,9 +17,9 @@ public interface SopDocumentRepository extends JpaRepository<SopDocument, Long>,\n             WHERE (:allCategories = true\n                 OR (:uncategorized = true AND d.category_id IS NULL)\n                 OR (:uncategorized = false AND d.category_id = :categoryId))\n-              AND (:pattern = '' OR LOWER(d.title) LIKE :pattern ESCAPE '!'\n+              AND (:pattern = '' OR LOWER(d.title) LIKE LOWER(:pattern) ESCAPE '!'\n                 OR EXISTS (SELECT 1 FROM document_version v\n-                    WHERE v.document_id = d.id AND LOWER(v.code) LIKE :pattern ESCAPE '!'))\n+                    WHERE v.document_id = d.id AND LOWER(v.code) LIKE LOWER(:pattern) ESCAPE '!'))\n             \"\"\";\n \n     @Query(value = \"SELECT COUNT(*) FROM sop_document d \" + LIST_FILTER, nativeQuery = true)\ndiff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java\nindex cc2ecc15..9cf98129 100644\n--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java\n+++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java\n@@ -16,7 +16,6 @@ import org.springframework.util.StringUtils;\n \n import java.util.ArrayList;\n import java.util.List;\n-import java.util.Locale;\n import java.util.Map;\n import java.util.Objects;\n import java.util.function.Function;\n@@ -37,7 +36,7 @@ public class DocumentListReadService {\n         int safePage = Math.max(page, 1), safeSize = Math.max(size, 1);\n         boolean all = \"ALL\".equals(normalizedCategoryId), uncategorized = \"UNCATEGORIZED\".equals(normalizedCategoryId);\n         long categoryId = all || uncategorized ? 0 : Long.parseLong(normalizedCategoryId);\n-        String pattern = StringUtils.hasText(keyword) ? \"%\" + keyword.trim().toLowerCase(Locale.ROOT)\n+        String pattern = StringUtils.hasText(keyword) ? \"%\" + keyword.trim()\n                 .replace(\"!\", \"!!\").replace(\"%\", \"!%\").replace(\"_\", \"!_\") + \"%\" : \"\";\n         long total = documents.countForList(all, uncategorized, categoryId, pattern);\n         long offset = (long) (safePage - 1) * safeSize;",
+  "productFiles": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java",
+      "sha256": "d70addc0d4ecdf31333c7db571ee56c851784854f39aecd8d806492339495afa"
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/service/DocumentListReadService.java",
+      "sha256": "3082585aad5d4d2b9c530b4abb54c9530d1214355038876e8e8d2503216d4972"
+    }
+  ],
+  "originalKnowledgeEvidenceReusedAndHashVerified": [
+    {
+      "path": "/tmp/edhr-document-perf-ontology-result.yaml",
+      "sha256": "0ab520cb76dce527fd86e65adee3aa5b9958118ea2c9582aa43a9076de6e0dd2",
+      "bytes": 2329
+    },
+    {
+      "path": "/tmp/edhr-document-perf-rule-review.json",
+      "sha256": "d13d9ef892d8b9a03f2ca0850b96a2b5181782e019981b991a3290977ec25af9",
+      "bytes": 10814
+    },
+    {
+      "path": "/tmp/edhr-document-perf-rule-review.md",
+      "sha256": "b4bccea255642a90dbdfbaa732fce96d08f901e3ae31eab03d91127bca4fd1db",
+      "bytes": 3264
+    },
+    {
+      "path": "/tmp/edhr-document-perf-ontology-knowledge-test.txt",
+      "sha256": "6bf3708825e8d367007ec75b4d0a1f37b01aaa4b873b6620cec8a396f6cf7cdd",
+      "bytes": 2111
+    },
+    {
+      "path": "/tmp/edhr-document-perf-ontology-knowledge-junit.xml",
+      "sha256": "49eb65d380d5ec33c9de952e1ffcac8fa730a883524490b856accf18f8945a29",
+      "bytes": 20421
+    }
+  ],
+  "resultSchemaCheck": "passed;NA/noartifacts/noquestions,prior89actualevidencepreserved,newsemanticunique0",
+  "files": [
+    {
+      "path": "/tmp/edhr-document-perf-ontology-unicode-result.yaml",
+      "sha256": "e40077afef3eea89d563f55aad4f367b889e4d7bfda0700f74a0412e3e0ec4cf",
+      "bytes": 2176
+    },
+    {
+      "path": "/tmp/edhr-document-perf-ontology-unicode-review.json",
+      "sha256": "324908a80dbd35b6674505b8140c1d1e086966b889b0c2c7833adb6cb9f5a434",
+      "bytes": 2685
+    },
+    {
+      "path": "/tmp/edhr-document-perf-ontology-unicode-review.md",
+      "sha256": "3e3cf5719e926c0c805235d668f2cf14bbb8ce7035ccfa1e904503a6974f8abb",
+      "bytes": 1940
+    }
+  ]
+}

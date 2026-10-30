@@ -1,0 +1,52 @@
+{
+  "schema": "edhr-limited-semantic-increment/v1",
+  "reviewer": "/root/document_performance_ontology_20261030",
+  "sourceCommit": "092afa5bc1a967545569cae4910a92da25c0b292",
+  "targetCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "knowledgeBaselineVersion": "0.3.25",
+  "workingTree": "Uncommitted repository predicate correction plus tests/H2 NFC adapter; not final QA candidate.",
+  "result": "not-applicable",
+  "relatedExistingIds": [
+    "concept.document-version",
+    "relation.operation-binding-references-document-versions",
+    "rule.product-process.multiple-classified-documents",
+    "DEC-0001-07",
+    "DEC-0001-09",
+    "DEC-0064-05"
+  ],
+  "counts": {
+    "relatedExistingIds": 6,
+    "newSemanticIdsReviewed": 0,
+    "newHistoricalUniqueCoverage": 0,
+    "knowledgeChanges": 0,
+    "wholeFileCompletion": 0
+  },
+  "actuallyRead": [
+    "Repository两处d.title/v.code及pattern统一LOWER(NORMALIZE(UPPER(...)))diff",
+    "Existing literal LIKE escape and added17-symbol list",
+    "Native12 variants:6stored/query pairs×title/version-code",
+    "H2-only CREATE ALIAS plus public JDK NFC adapter; PGbranchdoesnotregisteralias",
+    "Original decision scope and prior6ID conclusions; unchanged knowledge/contracts/tools diffs",
+    "SecondfailedQA review and main matrix-baseline12/6failure/0error/skip original summary"
+  ],
+  "conclusion": "同一已确认查询含义内的实现纠错：大小写不敏感检索不应因Greek sigma等变体漏掉自身对应记录；两端使用同一数据库变换。NFC只作用查询表达式，不重写原文、身份、唯一性或历史证据；不是新增地区业务政策。",
+  "engineeringBoundaries": [
+    "UPPER/NFC/LOWER是读取时匹配策略，不作为文档身份归并、去重或存储迁移规则。",
+    "LIKE参数化、!/%/_字面转义保留，17符号回归不开放regex查询语义。",
+    "H2缺少PG NORMALIZE，因此只在H2分支注册公开JDK NFC函数；不把此适配器当PG大小写/locale模拟器。",
+    "实际PG16.15 UTF8及其内建NORMALIZE适用性须由主侧和全新质量实例实测，本角色未运行PG。",
+    "部署locale、Unicode等价/规范化的完整输入域不做形式证明；仅有限用例和实际DB版本。",
+    "本次不触及RR、count/page、512批次、文件/文档/版本ID、分类、完整版本、绑定冻结和历史审计。"
+  ],
+  "validationOwnership": {
+    "earlierActualKnowledge": 89,
+    "knowledgeRerun": false,
+    "reuseReason": "知识、架构、契约、knowledge-model源码未变，先前本角色原件hash核对有效。",
+    "productTests": "No product/H2/PG tests executed by this role; main273 and earlier12/6red are external run evidence, not own verification.",
+    "quality": "Both prior failed reports remain original; final independent freshQA required after this fix."
+  },
+  "remaining": [
+    "文档方法权限/实体nullable及缺文件政策gap保留。",
+    "A23全量回查、原TaskDetail/生产弹窗/记录控制+DHRhigh/A12和四gap不关闭。"
+  ]
+}

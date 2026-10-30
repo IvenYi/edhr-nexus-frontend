@@ -1,0 +1,483 @@
+{
+  "reviewer": "/root/document_read_final_qa_20261030",
+  "baseCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "headCommit": "b8054cc6e5d3b0639c38b28f00181721f57b2718",
+  "runtimeTestedCommit": "3ccd178ba541b6a953347de2de6c8c577a0b538b",
+  "testedCommitQualification": "Actual170/89 at3ccd178b; docs-only b805 reviewed via identical protected blobs, no rerun claim.",
+  "independence": "No product/test/fixture/knowledge fixes; baseline copies candidate new test byte-identically only.",
+  "requiredPassed": 15,
+  "requiredTotal": 15,
+  "optionalFailed": 1,
+  "currentSummary": {
+    "runtimeTestedCommit": "3ccd178ba541b6a953347de2de6c8c577a0b538b",
+    "suites": [
+      {
+        "suite": "DocumentReadBoundaryIntegrationTest",
+        "tests": 26,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "DocumentManagementControllerTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "MasterDataBoundaryIntegrationTest",
+        "tests": 60,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "ProcessModelingControllerTest",
+        "tests": 55,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "ProductProcessControllerTest",
+        "tests": 14,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "MaterialImportIntegrationTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "totals": {
+      "tests": 170,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "knowledgeTotals": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "authorizedReadRecords": 27,
+    "recordStatusCounts": {
+      "200": 24,
+      "400": 3
+    },
+    "anonymousRequests": 2,
+    "performanceObservations": [
+      {
+        "case": "volume-file-none",
+        "params": {
+          "size": "2"
+        },
+        "sqlCount": 3,
+        "entityLoads": {
+          "SopDocument": 8,
+          "DocumentVersion": 32,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        }
+      },
+      {
+        "case": "volume-file-none",
+        "params": {
+          "size": "5"
+        },
+        "sqlCount": 3,
+        "entityLoads": {
+          "SopDocument": 8,
+          "DocumentVersion": 32,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        }
+      },
+      {
+        "case": "volume-file-shared",
+        "params": {
+          "size": "2"
+        },
+        "sqlCount": 11,
+        "entityLoads": {
+          "SopDocument": 8,
+          "DocumentVersion": 32,
+          "DocumentCategory": 1,
+          "FileObject": 8,
+          "AuditEvent": 0
+        }
+      },
+      {
+        "case": "volume-file-shared",
+        "params": {
+          "size": "5"
+        },
+        "sqlCount": 23,
+        "entityLoads": {
+          "SopDocument": 8,
+          "DocumentVersion": 32,
+          "DocumentCategory": 1,
+          "FileObject": 20,
+          "AuditEvent": 0
+        }
+      },
+      {
+        "case": "volume-file-distinct",
+        "params": {
+          "size": "2"
+        },
+        "sqlCount": 11,
+        "entityLoads": {
+          "SopDocument": 8,
+          "DocumentVersion": 32,
+          "DocumentCategory": 1,
+          "FileObject": 8,
+          "AuditEvent": 0
+        }
+      },
+      {
+        "case": "volume-file-distinct",
+        "params": {
+          "size": "5"
+        },
+        "sqlCount": 23,
+        "entityLoads": {
+          "SopDocument": 8,
+          "DocumentVersion": 32,
+          "DocumentCategory": 1,
+          "FileObject": 20,
+          "AuditEvent": 0
+        }
+      },
+      {
+        "case": "volume-materialization",
+        "params": {
+          "size": "5"
+        },
+        "sqlCount": 3,
+        "entityLoads": {
+          "SopDocument": 20,
+          "DocumentVersion": 60,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        }
+      },
+      {
+        "case": "volume-materialization",
+        "params": {
+          "size": "5"
+        },
+        "sqlCount": 3,
+        "entityLoads": {
+          "SopDocument": 100,
+          "DocumentVersion": 300,
+          "DocumentCategory": 1,
+          "FileObject": 0,
+          "AuditEvent": 0
+        }
+      },
+      {
+        "case": "volume-categories",
+        "params": {},
+        "sqlCount": 2,
+        "entityLoads": {
+          "SopDocument": 20,
+          "DocumentVersion": 0,
+          "DocumentCategory": 5,
+          "FileObject": 0,
+          "AuditEvent": 0
+        }
+      },
+      {
+        "case": "volume-categories",
+        "params": {},
+        "sqlCount": 2,
+        "entityLoads": {
+          "SopDocument": 100,
+          "DocumentVersion": 0,
+          "DocumentCategory": 5,
+          "FileObject": 0,
+          "AuditEvent": 0
+        }
+      }
+    ],
+    "countingBoundary": "170/89 actual independent runs, not added to primary/ontology duplicate runs; all10opt-in cases enabled."
+  },
+  "baselineSummary": {
+    "baseCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+    "candidateTestsCommit": "3ccd178ba541b6a953347de2de6c8c577a0b538b",
+    "totals": {
+      "tests": 26,
+      "failures": 4,
+      "errors": 0,
+      "skipped": 0
+    },
+    "positiveControls": 22,
+    "failures": [
+      {
+        "name": "emptyListAcceptsOutOfRangePages",
+        "message": "\nexpected: 200\n but was: 500"
+      },
+      {
+        "name": "acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[5]",
+        "message": "\nexpected: 200\n but was: 500"
+      },
+      {
+        "name": "acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[6]",
+        "message": "\nexpected: 200\n but was: 500"
+      },
+      {
+        "name": "acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[7]",
+        "message": "\nexpected: 200\n but was: 500"
+      }
+    ],
+    "records": 27,
+    "recordStatusCounts": {
+      "200": 20,
+      "500": 4,
+      "400": 3
+    },
+    "qualification": "Exactly4 real paging500; no fixture/environment error/skip; initial primary fixture errors not counted as product defects."
+  },
+  "docsDelta": {
+    "baseCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+    "runtimeTestedCommit": "3ccd178ba541b6a953347de2de6c8c577a0b538b",
+    "finalReviewedCandidate": "b8054cc6e5d3b0639c38b28f00181721f57b2718",
+    "docsOnlyChangedPaths": [
+      "docs/development/branch-review-20261015/NEXT.md",
+      "docs/development/branch-review-20261026-capacity-audit/audit-charter.md",
+      "docs/development/branch-review-20261030-document-read/README.md",
+      "docs/development/branch-review-20261030-document-read/a23-sql-recheck-summary.json",
+      "docs/development/branch-review-20261030-document-read/a23-sql-recheck.csv",
+      "docs/development/branch-review-20261030-document-read/overdefense-review.md"
+    ],
+    "protectedDelta": [],
+    "runtimeReuse": "Actual170/89 executed at3ccd178b; product/tests/knowledge/contracts byte-identical atb8054cc6; no runtime reexecution claimed.",
+    "sqlPending": 130,
+    "sqlKinds": {
+      "configuration-or-data": 1,
+      "database-migration": 129
+    },
+    "sqlChecked": 0,
+    "sqlQueueRebuiltSameBytes": true,
+    "oldQueueAndMethodOverlayUnchanged": true,
+    "finalNonEvidenceWhitespaceExit": 0,
+    "finalNonEvidencePaths": 19,
+    "finalFullWhitespaceExit": 2,
+    "finalRawWhitespacePaths": [
+      "docs/development/branch-review-20261030-document-read/evidence/baseline-junit.xml",
+      "docs/development/branch-review-20261030-document-read/evidence/baseline-test.txt",
+      "docs/development/branch-review-20261030-document-read/evidence/current-DocumentReadBoundaryIntegrationTest.xml",
+      "docs/development/branch-review-20261030-document-read/evidence/current-MasterDataBoundaryIntegrationTest.xml",
+      "docs/development/branch-review-20261030-document-read/evidence/current-MaterialImportIntegrationTest.xml",
+      "docs/development/branch-review-20261030-document-read/evidence/current-test.txt",
+      "docs/development/branch-review-20261030-document-read/evidence/initial-fixture-junit.xml",
+      "docs/development/branch-review-20261030-document-read/evidence/initial-fixture-test.txt",
+      "docs/development/branch-review-20261030-document-read/evidence/ontology-knowledge-test.txt"
+    ]
+  },
+  "cleanup": {
+    "exactCreatedWorktree": "/tmp/edhr-document-qa-base-5e3sa25s",
+    "beforeCleanupStatus": "?? gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java\n?? gmp-platform/frontend/node_modules\n",
+    "candidateTestCopyVerifiedBeforeRemoval": true,
+    "testCopyRemoved": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java",
+    "symlinkOnlyRemoved": "/tmp/edhr-document-qa-base-5e3sa25s/gmp-platform/frontend/node_modules",
+    "sharedNodeModulesPreserved": true,
+    "preRemovalClean": true,
+    "worktreeRemoved": true,
+    "mainStatus": "",
+    "evidencePreserved": "All /tmp/edhr-document-qa-* logs/HTTP/JUnit/metadata retained."
+  },
+  "files": [
+    {
+      "path": "/tmp/edhr-document-qa-base-assembly.json",
+      "sha256": "364e7945e97d43b3efd01fddbf7cb69dc1ace86b247ead26c8fa926cfe849cd4",
+      "bytes": 964
+    },
+    {
+      "path": "/tmp/edhr-document-qa-base-path.txt",
+      "sha256": "1f59e2a918b36706b77abb2697879b549391d0338c9c4ef8b25fd8bbafedbf7c",
+      "bytes": 36
+    },
+    {
+      "path": "/tmp/edhr-document-qa-baseline-exit.txt",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "bytes": 2
+    },
+    {
+      "path": "/tmp/edhr-document-qa-baseline-http.jsonl",
+      "sha256": "4627e521b64f4079d456e405c550049a57999a0586ae96fcb2153a40f54eb728",
+      "bytes": 72614
+    },
+    {
+      "path": "/tmp/edhr-document-qa-baseline-junit.xml",
+      "sha256": "529c72e0df2ad4f5f00cbda5a8f0a34867394c4d3cc8bea72263790622f4562e",
+      "bytes": 213489
+    },
+    {
+      "path": "/tmp/edhr-document-qa-baseline-summary.json",
+      "sha256": "b778dbd8b422d33a157a9ece1b70a47cc553a9b82ce4aec4708717557fcfaea3",
+      "bytes": 1035
+    },
+    {
+      "path": "/tmp/edhr-document-qa-baseline-test.txt",
+      "sha256": "ee799cd65db7db191e42d0d9ac2c3beb5f0fd0d3f807f04b2f1dcdba9d8a90d5",
+      "bytes": 180999
+    },
+    {
+      "path": "/tmp/edhr-document-qa-cleanup.json",
+      "sha256": "b95f7b617a259f04836df34adf7d25dc444bd7e48ae44bcf7668f1205ac0aa13",
+      "bytes": 741
+    },
+    {
+      "path": "/tmp/edhr-document-qa-current-DocumentManagementControllerTest.xml",
+      "sha256": "d5405c0d9db31323546681a2620e0343571e74f1bdaee29a38a7581a901ce89a",
+      "bytes": 34667
+    },
+    {
+      "path": "/tmp/edhr-document-qa-current-DocumentReadBoundaryIntegrationTest.xml",
+      "sha256": "cc6b531077d93498eb9c1f3f43bd4665f184ab9f800a11aec8197543fc231af7",
+      "bytes": 61550
+    },
+    {
+      "path": "/tmp/edhr-document-qa-current-MasterDataBoundaryIntegrationTest.xml",
+      "sha256": "5b80c40e9692ce80cf2e2f16dd0c79227d2e6dae0df46d2b03a74edce25d2209",
+      "bytes": 275855
+    },
+    {
+      "path": "/tmp/edhr-document-qa-current-MaterialImportIntegrationTest.xml",
+      "sha256": "c88cbd73cc9ee90f3d2b75f0ae7988b257eae2775159755a5e9f34b29752d5a6",
+      "bytes": 129580
+    },
+    {
+      "path": "/tmp/edhr-document-qa-current-ProcessModelingControllerTest.xml",
+      "sha256": "03bc02ddb4b3458fd3442fd030159f82321102206575afa77570764486039097",
+      "bytes": 41906
+    },
+    {
+      "path": "/tmp/edhr-document-qa-current-ProductProcessControllerTest.xml",
+      "sha256": "98d28248e0940d32909322d71edf361bca5d19f670dfc11b82e8ab4cd37c9eef",
+      "bytes": 35125
+    },
+    {
+      "path": "/tmp/edhr-document-qa-current-http.jsonl",
+      "sha256": "323664e6fd6420d99c06904b59c5f138a3aa3472e047cf6bebf4aa51d2bf39a5",
+      "bytes": 72915
+    },
+    {
+      "path": "/tmp/edhr-document-qa-current-summary.json",
+      "sha256": "0d4c77197451ee299aa6dfeb5b804905d6d6982c148bc72f276dec63ec38e5cd",
+      "bytes": 4217
+    },
+    {
+      "path": "/tmp/edhr-document-qa-current-test.txt",
+      "sha256": "406e73a3e02c2e00943cdbb8e0253b33c929724fbd994eb9b2fe93263448c33e",
+      "bytes": 352572
+    },
+    {
+      "path": "/tmp/edhr-document-qa-docs-delta.json",
+      "sha256": "7b85f0ee7e98fa805f3bfa1f5dff60ad2ec495c7f94a887e2163dcd3a6aa6830",
+      "bytes": 2107
+    },
+    {
+      "path": "/tmp/edhr-document-qa-initial-fixture-check.json",
+      "sha256": "4e63615e6325bbd674b8cd2b9621c01fd02c82ebf2ef406029816ad37f331414",
+      "bytes": 342
+    },
+    {
+      "path": "/tmp/edhr-document-qa-inspection.json",
+      "sha256": "6853c0d13c7565e47d039f353b36d377ac2ae904ff44af73b83544d637f788cb",
+      "bytes": 934
+    },
+    {
+      "path": "/tmp/edhr-document-qa-inventory-check.json",
+      "sha256": "c4d90c10cb687d4b56be3a0ab00b848bf9eec7edc5e473aa94540d4c45d2135d",
+      "bytes": 1409
+    },
+    {
+      "path": "/tmp/edhr-document-qa-inventory-rebuild.txt",
+      "sha256": "67c14255a857b0ccaef06c6143862904ce422636e4ced3d1d52ed9edfc03c508",
+      "bytes": 933
+    },
+    {
+      "path": "/tmp/edhr-document-qa-knowledge-junit.xml",
+      "sha256": "147c10cd34aa64a05a0b6b437124d621c204605921b45c895db0f4bfbc42ef29",
+      "bytes": 20417
+    },
+    {
+      "path": "/tmp/edhr-document-qa-knowledge-test.txt",
+      "sha256": "d1d06f5dc7ff43065754ba12871da6532439ebb7d8ce9c9954d8d7cb5c6098c6",
+      "bytes": 2111
+    },
+    {
+      "path": "/tmp/edhr-document-qa-product-diff.txt",
+      "sha256": "b781e11fb0c055b79393a758e253209643f2730dbaacdc1875fe65e08d7f4c58",
+      "bytes": 1254
+    },
+    {
+      "path": "/tmp/edhr-document-qa-whitespace-all.txt",
+      "sha256": "0ef9cea80f1cbb48e24ff9c5265ef4009ced22e34365b1b3c1d3151c67db048f",
+      "bytes": 120236
+    },
+    {
+      "path": "/tmp/edhr-document-qa-whitespace-final-all.txt",
+      "sha256": "0ef9cea80f1cbb48e24ff9c5265ef4009ced22e34365b1b3c1d3151c67db048f",
+      "bytes": 120236
+    },
+    {
+      "path": "/tmp/edhr-document-qa-whitespace-final-nonraw.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/tmp/edhr-document-qa-whitespace-nonraw.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/tmp/edhr-document-qa-whitespace-summary.json",
+      "sha256": "08a0b996f743ad66ee727718bb397ec2c63b6c6b1beff4c9f22a7f50da3115e9",
+      "bytes": 2586
+    },
+    {
+      "path": "/tmp/edhr-document-quality-result.yaml",
+      "sha256": "0ca66adb6e85fb97966b3ceb22d6c1c292c3a40b4a97e081b3f9ff35bbc3f935",
+      "bytes": 13651
+    },
+    {
+      "path": "/tmp/edhr-document-quality-review.md",
+      "sha256": "c9e4f4a7c4bf80b7bb0ee6f45a0cf8d7f4e2f76e5a32b536e8699a086212a33d",
+      "bytes": 3614
+    },
+    {
+      "path": "/tmp/edhr-document-qa-inventory-hcy950et/coverage.csv",
+      "sha256": "dd4d4ea32c21b7d3ed010ba0aafb72d56458c993f4d2b52dbfc2ed10654e1f07",
+      "bytes": 1292124
+    },
+    {
+      "path": "/tmp/edhr-document-qa-inventory-hcy950et/entrypoints.csv",
+      "sha256": "c43def17092515cf997233d83d95af0fb79e583fe5a0cc8f9c80de2ee8b7deb6",
+      "bytes": 152332
+    },
+    {
+      "path": "/tmp/edhr-document-qa-inventory-hcy950et/migrations.csv",
+      "sha256": "b2bec70659ccee7b47e1d5539056e877017be623da9809848f64c62ebc7e7465",
+      "bytes": 33469
+    },
+    {
+      "path": "/tmp/edhr-document-qa-inventory-hcy950et/inventory-summary.json",
+      "sha256": "c521a8fe6bb28cbcf486268a0bf580c2fcd209175fe5b7180d117b2b82e44704",
+      "bytes": 1043
+    }
+  ],
+  "manifestQualification": "Original files preserved; manifest excludes itself to avoid circular selfhash."
+}

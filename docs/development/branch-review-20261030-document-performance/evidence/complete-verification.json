@@ -1,0 +1,343 @@
+{
+  "sourceCommit": "092afa5bc1a967545569cae4910a92da25c0b292",
+  "workingTreeDelta": "same fold family NFC upper/lower plus literal/nativecase tests; finalcommitpending",
+  "backend": 273,
+  "postgres": 71,
+  "h2AndExisting": 202,
+  "olderOriginalHashesUnchanged": 79,
+  "ontologyCaseArchiveMap": [
+    {
+      "origin": "/tmp/edhr-document-perf-ontology-case-result.yaml",
+      "archive": "docs/development/branch-review-20261030-document-performance/evidence/ontology-case-result.yaml",
+      "sha256": "4d1d848936cdd1ed2119058b0aa383bb2049ca1cc650bb753fc4019f38552bc9"
+    },
+    {
+      "origin": "/tmp/edhr-document-perf-ontology-case-review.json",
+      "archive": "docs/development/branch-review-20261030-document-performance/evidence/ontology-case-review.json",
+      "sha256": "415b343dd77a893c9e3c492c930f2f30bb3f70f87d69eed84e82cbfe575d14b3"
+    },
+    {
+      "origin": "/tmp/edhr-document-perf-ontology-case-review.md",
+      "archive": "docs/development/branch-review-20261030-document-performance/evidence/ontology-case-review.md",
+      "sha256": "a6fd6241adfad4ad8d844ee8245d965ddf3c540b8d3a72e0b213da4e9b9a79cf"
+    },
+    {
+      "origin": "/tmp/edhr-document-perf-ontology-case-manifest.json",
+      "archive": "docs/development/branch-review-20261030-document-performance/evidence/ontology-case-manifest.json",
+      "sha256": "95fe556b7cfb898e24b650939a8a29f68dfcb9803092c65133dd81db5e012905"
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/case-baseline-http.jsonl",
+      "sha256": "9205ff8646c9a3713e6021e4be810ac8ae75df0ae990e9efa82386ec8ea20a7b",
+      "bytes": 347000
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/case-baseline-junit.xml",
+      "sha256": "0c21b4efda6e1e8f32fa6df23164de84fe51482df11fa1ae96cbdc8f5252d75d",
+      "bytes": 137740
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/case-baseline-summary.json",
+      "sha256": "2fd4a66fe1bbccfaf8793878b37f086f0e8238cafbc7cad4c743dfb823742767",
+      "bytes": 66
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/case-baseline-test.txt",
+      "sha256": "8220ea55d011c1dce3d9e9db78b6933c5ffbd1ae863aebc5acc50ff86acb6be0",
+      "bytes": 95254
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-DocumentManagementControllerTest.xml",
+      "sha256": "a6b796b94205b26a4b4638fff1ea9229a386d63034a2801fb0da1b8543995fea",
+      "bytes": 34705
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-DocumentReadBoundaryIntegrationTest.xml",
+      "sha256": "3ae6a2a4498e73c4b0dd1aecbe39486d4a4d1923ba6c3be75f3bcfb08addd3fd",
+      "bytes": 101078
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-DocumentReadPerformancePostgresTest.xml",
+      "sha256": "8ca0168382ee4134aadca2a5ea177d9a8a879026d064e314a4302ba8610969a0",
+      "bytes": 116960
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-MasterDataBoundaryIntegrationTest.xml",
+      "sha256": "1638fa2228131573fba2f6aba36d5ae4f9f83b979f7175ad578310bcf9b51bd8",
+      "bytes": 276653
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-MaterialImportIntegrationTest.xml",
+      "sha256": "db005461f83cdc684a93ce2f1054e80435955385e50082141f5ffe567cec4b1f",
+      "bytes": 129740
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-ProcessModelingControllerTest.xml",
+      "sha256": "7691234b97df9648cb9a1f0b95382b556e2f7c8901d86ba6ba303a841deb5268",
+      "bytes": 41946
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-ProductProcessControllerTest.xml",
+      "sha256": "ad511744e04eb72af5759b606595df98fc88f3f82ffd2f3a8ac1620f9b65fe82",
+      "bytes": 35165
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-database-cleanup.json",
+      "sha256": "c05c97ba4ef914fee4cc0aa1a65c2a60a0d3d444eacf69c792947071baf0cd78",
+      "bytes": 355
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-http.jsonl",
+      "sha256": "0e24c59ff89cc71d1639fdb03073b7e7953e6fd650ce554e3e8160ebb1f43014",
+      "bytes": 721257
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-postgres-plan-category-counts.json",
+      "sha256": "fbc833fd444bd057c767536994c4880942e3cc591df434737c0af0f80cea25de",
+      "bytes": 2181
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-postgres-plan-count-all.json",
+      "sha256": "a95a2c665a49116fa1fd87579acfc207088b4d871718b4c5d7055b135dfe5a23",
+      "bytes": 2019
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-postgres-plan-count-version-keyword.json",
+      "sha256": "7ab3a277b1dc1b229030f9a0034f46258f28bd89dc9f93368da2dda538e462a6",
+      "bytes": 3705
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-postgres-plan-page-all.json",
+      "sha256": "6d76ff63ecc82fa14980caf7efd1554ec7f127a772bd56997dd4e2282e01d2aa",
+      "bytes": 3044
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-postgres-plan-page-version-keyword.json",
+      "sha256": "e9790d8b00df9df28b6192345d831ebd59262f31c5efcfceeebb1a8b9fe24694",
+      "bytes": 4872
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-postgres-plan-page-versions.json",
+      "sha256": "10469a21d4cc029d8aafc0f085502eade5fe59b54f197790bf65dbb6850e9b45",
+      "bytes": 3390
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-postgres-plans.json",
+      "sha256": "4defe71b324b68f2b8e9d8b0c528121f65ab7d343f9bfa42bbae5e536c8f641f",
+      "bytes": 26828
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-summary.json",
+      "sha256": "aee1af1203f7f95ca59da9e0b3ff91f50e14f5d4c39444f8b827f133b59a4f5a",
+      "bytes": 2039
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/complete-test.txt",
+      "sha256": "fc1a2471894ca5aefd1645a0757ed419333a247d6fc10fe9de09e501e58ca171",
+      "bytes": 454012
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/final-verification.json",
+      "sha256": "c04cb48cbc24d37ad8810be57a1cf1f324baf12c4cfd49dcab9dc49ca7b6d0b5",
+      "bytes": 13414
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/matrix-baseline-http.jsonl",
+      "sha256": "5358f5e633919ca8c396dd1fb8425a9da582474442ea8e0ee519edc6266f12d7",
+      "bytes": 16566
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/matrix-baseline-junit.xml",
+      "sha256": "9bda8a8f6a1a5b4d0d8f8fdf2a6c4277c2499cc068b69cf2181426aca8712282",
+      "bytes": 125532
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/matrix-baseline-summary.json",
+      "sha256": "468bf99d7b7a334d4558cf8f9d55b265b08f46e122369399d373c9883824b1dd",
+      "bytes": 66
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/matrix-baseline-test.txt",
+      "sha256": "c8c8d60da474c3ea29f78e86965c234ef43466dea2aa3713b8a9ff4b53b34564",
+      "bytes": 95873
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/ontology-case-manifest.json",
+      "sha256": "95fe556b7cfb898e24b650939a8a29f68dfcb9803092c65133dd81db5e012905",
+      "bytes": 10693
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/ontology-case-result.yaml",
+      "sha256": "4d1d848936cdd1ed2119058b0aa383bb2049ca1cc650bb753fc4019f38552bc9",
+      "bytes": 2181
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/ontology-case-review.json",
+      "sha256": "415b343dd77a893c9e3c492c930f2f30bb3f70f87d69eed84e82cbfe575d14b3",
+      "bytes": 3054
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/ontology-case-review.md",
+      "sha256": "a6fd6241adfad4ad8d844ee8245d965ddf3c540b8d3a72e0b213da4e9b9a79cf",
+      "bytes": 2187
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/DocumentUnicodeCaseProbe.java",
+      "sha256": "dbcb4556ab7707c874c72e5010299a776b8d7a70768ee94b8edce3a2067699f3",
+      "bytes": 3665
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/archive-map.json",
+      "sha256": "1d1e14aa2d823e7292dfd5855e7310a864f80fc9e0ea4097074add20aae897cc",
+      "bytes": 9079
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-classpath.txt",
+      "sha256": "9924ee1d1c5c55ebd9140b90747cc22bba5c27b2c644d090c6ebfd42f90fd003",
+      "bytes": 13848
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-cleanup.json",
+      "sha256": "8b84d9c00292c5fe26bf29da71e2bf5daf13336e724530e8f962765cf4cb45cf",
+      "bytes": 337
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-h2-DocumentManagementControllerTest.xml",
+      "sha256": "260d3a248392a1ea9734dcc84d38e6b0749bb129ab9976b48f22b69b8ccf965f",
+      "bytes": 34672
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-h2-DocumentReadBoundaryIntegrationTest.xml",
+      "sha256": "8f39b52c4666bb811b28e90ba572ec38da7de4879c182862350b912873109597",
+      "bytes": 85756
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-h2-MasterDataBoundaryIntegrationTest.xml",
+      "sha256": "80afed0ea4ad6c66bc85f41830d4f76cbf1deb156588e0e051e1f81486f74d5d",
+      "bytes": 276619
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-h2-MaterialImportIntegrationTest.xml",
+      "sha256": "cf38ab83f13d33b7e97b51e3283a04d7b993e7ed459b31f70d329d1b1cab435b",
+      "bytes": 129706
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-h2-ProcessModelingControllerTest.xml",
+      "sha256": "0496caa60c753b5ac63c5ea6449f264705b6cba75500341105941a14f0cb338e",
+      "bytes": 41910
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-h2-ProductProcessControllerTest.xml",
+      "sha256": "7d164cb412cfcec3a23cf2a1dd7aadb9946316d78257e6cc77af497100029ed3",
+      "bytes": 35131
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-h2-http.jsonl",
+      "sha256": "dd6e689bf49ff3d5bd2997e98c4a896da1a402f695dc85af534dea35b3482dec",
+      "bytes": 318489
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-h2-summary.json",
+      "sha256": "ddd99d5468091f5ee725ac5fd6252c3b32c03f49b84a442823a0ff0eeee6e07d",
+      "bytes": 1016
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-h2-test.txt",
+      "sha256": "8073609a138f5c5a87a911b479d6a44cebcb8cf154fe43ccad38c93f6c7e5200",
+      "bytes": 371917
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-inspection.json",
+      "sha256": "3d2685fba240727761d6851f352f12ccff5bd32f501c66c87f772f36b84c5277",
+      "bytes": 682
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-observations.json",
+      "sha256": "b553e100885970f903130d46be5eae8f342293fe33ebd80a9baf97e74c55e1cf",
+      "bytes": 6371
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-pg-http.jsonl",
+      "sha256": "7ee94c518f3b15c4e02925f7486b0468a0116a5623a94fd89e13029b20416759",
+      "bytes": 318511
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-pg-junit.xml",
+      "sha256": "3e1b0b6f6ad44c3ce2a4137c691975a103aad6e343ad7ae4a144da1f2b570f0c",
+      "bytes": 88619
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-pg-summary.json",
+      "sha256": "035df21017eb8c178ad8cae54348b9c600c5ae0ef431384c10f394b3adda5d7d",
+      "bytes": 66
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-pg-test.txt",
+      "sha256": "2ed3afb54bcdf1261ac63f81b03c70072fec2531d8fb003c6f6991d16e57d2ba",
+      "bytes": 47646
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-sigma-api-test.txt",
+      "sha256": "3825349258b1728881b734d84d036b9e042d4d7d98f70e77bd11b55bc9824d92",
+      "bytes": 34809
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-sigma-api.json",
+      "sha256": "ecf01ed58fcb05451b05893468e938bc881fc1aec271de87d2dacaeaf4985673",
+      "bytes": 3535
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-whitespace-all.txt",
+      "sha256": "3f92ad12d24dd1fb57da084f32d5b2978ffdecce9b15761d9c1ec1a9ba70fb89",
+      "bytes": 862471
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-whitespace-nonraw.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-finalqa-whitespace-summary.json",
+      "sha256": "44eef2f01c886c280e1b1ae0eb6f77fbdde52d6e99b22700fc81438dc4fd2142",
+      "bytes": 283
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-second-independent-evidence.json",
+      "sha256": "3550cbade84b6da6a65241cd51166a9d8b631b67ca0740be62703a80b181faf9",
+      "bytes": 5978
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-second-quality-result.yaml",
+      "sha256": "8af98a261fbc9882fcc3afd04fc430b33112f71c9670cfe4e7461340f7a7054a",
+      "bytes": 8420
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/second-quality/edhr-document-perf-second-quality-review.md",
+      "sha256": "7857373171cae0bd8f82574bc13088b97c00ceb14002e747d0f658076f4b5564",
+      "bytes": 1943
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/sigma-baseline-http.jsonl",
+      "sha256": "7bc3636b0a8be565ace2ca38ecf5d65a21973d6df37bb24e586b6d089c94625d",
+      "bytes": 346246
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/sigma-baseline-junit.xml",
+      "sha256": "0766dfed81a163016f7a4c6bd8a62557fea2384ffad007d963ff2156c9b611e8",
+      "bytes": 127231
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/sigma-baseline-summary.json",
+      "sha256": "3c66b3de203f0622223529bebaa720ce93d40028e4fdfe53db354bb2d5869f99",
+      "bytes": 66
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/sigma-baseline-test.txt",
+      "sha256": "2df170b72b341877ec4d10a96c187564d479d668aa2d443103fac753412f1229",
+      "bytes": 84804
+    }
+  ],
+  "qualification": "First/second failed retained. H2NFCadapter cannot establish nativePG collation; no productionSLA/Unicodeformalproof; finalfreshqualitypending. Manifest notselfhashed."
+}

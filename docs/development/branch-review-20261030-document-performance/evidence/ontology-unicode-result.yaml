@@ -1,0 +1,50 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 7d376e81ba32c543d671e11f1503dab28e7760c3
+    targetBranch: edhr-dev
+    targetCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+    contractReadCommit: 793503cbbd32375d47fc76185cf0568ec1fe7bd4
+    uncommittedContractPaths: []
+  reason: 同一性能切片中把关键词和标题/版本编码统一交数据库LOWER处理，修复原样Unicode关键词不能匹配自身的实现差异。六既有ID业务含义和知识字节不变，无新增地区/locale政策；不覆盖首轮failed或宣称全Unicode证明。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.document-perf.unicode-semantic-increment
+    checkType: evidence-path
+    command: git diff -- SopDocumentRepository.java DocumentListReadService.java;
+      read8Unicode tests and original decisionPackage scope
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-ontology-unicode-review.json
+    - /tmp/edhr-document-perf-ontology-unicode-review.md
+    - 实际HEAD7d加未提交两文件，不冒称最终质量验收。
+  - id: validation.document-perf.unicode-knowledge-preserved
+    checkType: reference
+    command: git diff --name-only 793503cb 7d376e81 -- docs/knowledge docs/architecture
+      docs/agents AGENTS.md codeplzreadme.md; git diff --name-only -- same paths
+    outcome: passed
+    evidence:
+    - 两项差异均空，知识/契约内容不变。
+    - /tmp/edhr-document-perf-ontology-unicode-manifest.json
+  - id: validation.document-perf.unicode-prior-structure-evidence
+    checkType: schema
+    command: Reuse previous actual89knowledge test after unchanged-artifact and original
+      hash verification; no rerun
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-ontology-knowledge-test.txt
+    - /tmp/edhr-document-perf-ontology-knowledge-junit.xml
+    - 原本角色实际89/0failure/error/skip，未另行执行或计新增89。
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

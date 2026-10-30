@@ -93,11 +93,8 @@ class DocumentManagementControllerTest {
     void exposesVirtualAllAndUncategorizedBucketsAlongsidePersistedCategories() {
         DocumentCategory sop = DocumentCategory.builder().id(201L).tenantId("default").name("SOP").systemCategory(true).sortOrder(10).build();
         DocumentCategory sip = DocumentCategory.builder().id(202L).tenantId("default").name("SIP").systemCategory(true).sortOrder(20).build();
-        when(documentRepository.findAll()).thenReturn(List.of(
-                SopDocument.builder().id(101L).categoryId(201L).build(),
-                SopDocument.builder().id(102L).categoryId(201L).build(),
-                SopDocument.builder().id(103L).categoryId(202L).build(),
-                SopDocument.builder().id(104L).categoryId(null).build()));
+        when(documentRepository.countGroupedByCategory()).thenReturn(List.of(
+                categoryCount(201L, 2), categoryCount(202L, 1), categoryCount(null, 1)));
         when(documentCategoryRepository.findByTenantIdOrderBySortOrderAscNameAsc("default")).thenReturn(List.of(sop, sip));
 
         var categories = controller.listCategories().getData();
@@ -205,5 +202,12 @@ class DocumentManagementControllerTest {
                         LocalDateTime.of(2026, 9, 1, 0, 0), LocalDateTime.of(2026, 8, 1, 0, 0))))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("失效时间不能早于生效时间");
+    }
+
+    private SopDocumentRepository.CategoryCount categoryCount(Long id, long count) {
+        return new SopDocumentRepository.CategoryCount() {
+            public Long getCategoryId() { return id; }
+            public long getDocumentCount() { return count; }
+        };
     }
 }

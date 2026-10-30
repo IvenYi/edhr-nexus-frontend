@@ -1,0 +1,75 @@
+{
+  "baseFeatureCommit": "793503cbbd32375d47fc76185cf0568ec1fe7bd4",
+  "workingTree": "uncommitted performance product/test implementation",
+  "suites": [
+    {
+      "suite": "DocumentReadBoundaryIntegrationTest",
+      "tests": 40,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentReadPerformancePostgresTest",
+      "tests": 41,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentManagementControllerTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MasterDataBoundaryIntegrationTest",
+      "tests": 60,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProcessModelingControllerTest",
+      "tests": 55,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProductProcessControllerTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MaterialImportIntegrationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 225,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "postgres": 41,
+  "h2AndExisting": 184,
+  "uniqueCounting": "40 document scenarios repeated across H2 and PostgreSQL; extra PG snapshot test separate, do not call225 unique scenarios",
+  "recordedAuthorizedReadEvents": 84,
+  "runnerOrder": [
+    "com.zencas.edhr.masterdata.controller.DocumentManagementControllerTest",
+    "com.zencas.edhr.masterdata.controller.MasterDataBoundaryIntegrationTest",
+    "com.zencas.edhr.masterdata.controller.MaterialImportIntegrationTest",
+    "com.zencas.edhr.masterdata.controller.ProcessModelingControllerTest",
+    "com.zencas.edhr.masterdata.controller.ProductProcessControllerTest",
+    "com.zencas.edhr.masterdata.controller.DocumentReadBoundaryIntegrationTest",
+    "com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest"
+  ],
+  "primaryCommand": "Maven7 suites listed in this summary, edhr.audit.documentReads=true and unique documentOutput; PG env selects owned localhost DB only."
+}

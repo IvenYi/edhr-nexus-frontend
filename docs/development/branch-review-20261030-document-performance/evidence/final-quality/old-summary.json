@@ -1,0 +1,46 @@
+{
+  "counts": {
+    "tests": "58",
+    "failures": "9",
+    "errors": "0",
+    "skipped": "0"
+  },
+  "failures": [
+    {
+      "test": "aSmallPageDoesNotMaterializeOffPageDocumentsOrVersions",
+      "message": "\nExpecting actual:\n  100L\nto be less than or equal to:\n  5L "
+    },
+    {
+      "test": "emptyListAcceptsOutOfRangePages",
+      "message": "\nexpected: 200\n but was: 500"
+    },
+    {
+      "test": "acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[5]",
+      "message": "\nexpected: 200\n but was: 500"
+    },
+    {
+      "test": "acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[6]",
+      "message": "\nexpected: 200\n but was: 500"
+    },
+    {
+      "test": "acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[7]",
+      "message": "\nexpected: 200\n but was: 500"
+    },
+    {
+      "test": "largePagesReturnAllMembersWithBoundedMetadataBatches",
+      "message": "\nExpecting actual:\n  520L\nto be less than or equal to:\n  2L "
+    },
+    {
+      "test": "categoryCountsDoNotMaterializeEveryDocument",
+      "message": "\nexpected: 0L\n but was: 100L"
+    },
+    {
+      "test": "fileMetadataQueriesDoNotGrowPerVersion(String)[1]",
+      "message": "\nExpecting actual:\n  20L\nto be less than or equal to:\n  1L "
+    },
+    {
+      "test": "fileMetadataQueriesDoNotGrowPerVersion(String)[2]",
+      "message": "\nExpecting actual:\n  20L\nto be less than or equal to:\n  1L "
+    }
+  ]
+}
