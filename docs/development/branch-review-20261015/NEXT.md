@@ -2,6 +2,8 @@
 
 ## PR44追加：用户明确授权文档两项性能整改
 
+已更新[PR44](https://github.com/IvenYi/edhr-nexus-frontend/pull/44)标题/正文为数据库分页与文件批量读取，同分支→`edhr-dev`，登记时MERGEABLE/CLEAN，待用户人工merge。独立实际受测61d81a64，后续152999e0仅L0原件/验收，当前只补交付登记；产品、测试、知识、契约与冻结清单无差异，运行证据继续适用，不冒称重跑。下轮先fetch实际合入和外部增量。
+
 PR44仍OPEN、目标fetch仍`31058765`，用户在解释后明确要求修复文档列表全量物化和逐版本文件读取，不再将这两项写成未获授权。基于上一交付`793503cb`在同分支继续，[本批](../branch-review-20261030-document-performance/README.md)3产品文件数据库count/page/聚合、局部RR读服务和文件map纯投影；原页算术与A23安排保留，设备/物料其他性能仍待讨论。
 
 两轮新候选7d/092独立failed先后证实同一个Unicode折叠medium家族，原件均保留，不重复计修复。当前统一DB LOWER(NORMALIZE(UPPER(...)))、原文不改，补12原生变体和17类字面符号。第三个全新质量实例对干净`61d81a645f06c78e9d75dc72bf5699af70819cf6`正式passed/FINAL、18/18必需检查；实际H2/既有202、PG71、知识89全部通过。真实旧目标31058765原样同58为9真实红（4分页500+5性能）、49正、0error/skip；与旧793同40=5红35正、早期225/241是不同历史检查点，不混写。两项性能与Unicode在[当前验收](../branch-review-20261030-document-performance/acceptance.json)resolved，旧原验收/failed不回填。

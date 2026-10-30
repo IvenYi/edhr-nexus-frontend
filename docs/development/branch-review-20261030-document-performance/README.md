@@ -1,5 +1,7 @@
 # PR44 文档读取性能整改
 
+[PR44](https://github.com/IvenYi/edhr-nexus-frontend/pull/44)已按最终范围更新，登记时MERGEABLE/CLEAN，待人工merge。独立受测61d81a64之后仅L0归档/验收/交付登记，保护路径保持同blob。
+
 用户在解释两项风险后明确要求修复。本轮L2在仍未合入的同一PR44分支继续，不把之前的独立通过覆盖新代码。实际目标仍`edhr-dev@31058765002e0705f1659f42abb1fb25b6dc7611`，上一交付`793503cb`。两轮独立分别对7d/092返回failed，同一Unicode折叠问题家族原件保持；第三个全新实例针对干净`61d81a645f06c78e9d75dc72bf5699af70819cf6`正式passed/FINAL、18/18必需检查通过。当前[验收](acceptance.json)覆盖本批性能与检索整改状态，旧文档读取批次的原验收和failed不回写。
 
 ## 为什么会形成旧实现
