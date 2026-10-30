@@ -1,0 +1,1093 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.zencas:edhr >---------------------------
+[INFO] Building eDHR 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- exec:3.5.0:exec (dhr-print-renderer) @ edhr ---
+
+> edhr-frontend@0.0.1 build:dhr-print
+> vite build --config vite.dhr-print.config.ts
+
+vite v5.4.21 building for production...
+transforming...
+✓ 11665 modules transformed.
+rendering chunks...
+computing gzip size...
+../backend/target/generated-resources/dhr-print/renderer.js  662.41 kB │ gzip: 211.13 kB
+✓ built in 4.36s
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ edhr ---
+[INFO] Copying 6 resources from src/main/resources to target/classes
+[INFO] Copying 1 resource from target/generated-resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ edhr ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ edhr ---
+[INFO] Copying 129 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ edhr ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 149 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java: Some input files use or override a deprecated API.
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java: Recompile with -Xlint:deprecation for details.
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/LoginLogControllerTest.java: Some input files use unchecked or unsafe operations.
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/LoginLogControllerTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ edhr ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.0)
+
+2026-10-30T02:37:05.375Z  INFO 20855 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : Starting DocumentReadPerformancePostgresTest using Java 21.0.12.1 with PID 20855 (started by agent in /workspace/edhr-nexus-frontend/gmp-platform/backend)
+2026-10-30T02:37:05.377Z DEBUG 20855 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : Running with Spring Boot v3.3.0, Spring v6.1.8
+2026-10-30T02:37:05.377Z  INFO 20855 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : The following 1 profile is active: "dev"
+2026-10-30T02:37:06.009Z  INFO 20855 --- [edhr] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-30T02:37:06.048Z  INFO 20855 --- [edhr] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-10-30T02:37:06.071Z  INFO 20855 --- [edhr] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-30T02:37:06.113Z  INFO 20855 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-30T02:37:06.192Z  INFO 20855 --- [edhr] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7893c715
+2026-10-30T02:37:06.193Z  INFO 20855 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-30T02:37:06.207Z  WARN 20855 --- [edhr] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-30T02:37:06.312Z  INFO 20855 --- [edhr] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-30T02:37:06.707Z  INFO 20855 --- [edhr] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-30T02:37:06.715Z  WARN 20855 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T02:37:06.715Z  WARN 20855 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "audit_event" does not exist, skipping
+2026-10-30T02:37:06.744Z  INFO 20855 --- [edhr] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-30T02:37:06.881Z  INFO 20855 --- [edhr] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-10-30T02:37:07.940Z  WARN 20855 --- [edhr] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: a3251cd7-e7bd-476c-84ba-a272c7f7dafe
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-30T02:37:07.944Z  INFO 20855 --- [edhr] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-30T02:37:08.126Z  INFO 20855 --- [edhr] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@79382a05, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@41743ff4, org.springframework.security.web.context.SecurityContextHolderFilter@653b28b3, org.springframework.security.web.header.HeaderWriterFilter@416e5cb, org.springframework.web.filter.CorsFilter@266a77ac, org.springframework.security.web.authentication.logout.LogoutFilter@61dc0ff0, com.zencas.edhr.identity.security.JwtAuthenticationFilter@17163282, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2fab6393, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7da7b071, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@26234101, org.springframework.security.web.session.SessionManagementFilter@74f7eefa, org.springframework.security.web.access.ExceptionTranslationFilter@77ad33c, org.springframework.security.web.access.intercept.AuthorizationFilter@31813ea8]
+2026-10-30T02:37:08.379Z DEBUG 20855 --- [edhr] [           main] c.z.e.i.s.JwtAuthenticationFilter        : Filter 'com.zencas.edhr.identity.security.JwtAuthenticationFilter' configured for use
+2026-10-30T02:37:08.380Z  INFO 20855 --- [edhr] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-30T02:37:08.380Z  INFO 20855 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-30T02:37:08.381Z  INFO 20855 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-10-30T02:37:08.393Z  INFO 20855 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : Started DocumentReadPerformancePostgresTest in 3.161 seconds (process running for 3.599)
+2026-10-30T02:37:08.687Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:08.711Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:08.949Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:08.952Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:08.990Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:08.993Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.032Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.034Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.067Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.069Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.108Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.110Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.145Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.147Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.182Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.184Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.273Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.274Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.297Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.298Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.311Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.312Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.327Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.329Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.380Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.382Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.392Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.393Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.408Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.409Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.416Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.417Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.424Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.425Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.436Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.437Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.443Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.444Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.451Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.452Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.460Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.461Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.467Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.468Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.475Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.476Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.483Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.484Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.490Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.491Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.497Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.500Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.508Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.509Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.514Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.514Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.521Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.521Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.529Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.530Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.535Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.536Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.542Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.543Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.549Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.550Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.555Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.556Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.561Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.562Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.571Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.572Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.577Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.577Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.583Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.584Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.592Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.593Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.599Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.599Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.604Z  WARN 20855 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-001, message=文档分类不存在, path=/api/v1/master-data/documents
+2026-10-30T02:37:09.610Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.611Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.617Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.617Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.618Z  WARN 20855 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-001, message=文档分类不存在, path=/api/v1/master-data/documents
+2026-10-30T02:37:09.622Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.623Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.628Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.629Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.631Z  WARN 20855 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-001, message=文档分类不存在, path=/api/v1/master-data/documents
+2026-10-30T02:37:09.637Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.638Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.643Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.644Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.650Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.650Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI3ODI5LCJleHAiOjE3OTMzMjgxMjl9.xoVI8v3T6AfSFVlyPWfX2G0-pv6Gglh8ubOIovUlt6Q", Content-Length:"60"]
+             Body = {"code":"FIRST-CODE","title":"指令-İzmir","version":"V1"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391445289161986048","title":"指令-İzmir","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.638433596","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.638433596","versions":[{"id":"391445289170374656","documentId":"391445289161986048","version":"V1","code":"FIRST-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.638433596","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.638433596"}]},"timestamp":"2026-10-30T02:37:09.641260526Z","traceId":"bede70d8-294b-4038-a9e4-317ffb3fa62a"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI3ODI5LCJleHAiOjE3OTMzMjgxMjl9.xoVI8v3T6AfSFVlyPWfX2G0-pv6Gglh8ubOIovUlt6Q", Content-Length:"63"]
+             Body = {"code":"UNRELATED-CODE","title":"干扰文档","version":"V1"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391445289187151872","title":"干扰文档","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.644845992","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.644845992","versions":[{"id":"391445289195540480","documentId":"391445289187151872","version":"V1","code":"UNRELATED-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.644845992","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.644845992"}]},"timestamp":"2026-10-30T02:37:09.647110636Z","traceId":"9fb30b3f-ef15-4635-830e-136ffbe816a4"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/master-data/documents
+       Parameters = {keyword=[İzmir]}
+          Headers = [Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI3ODI5LCJleHAiOjE3OTMzMjgxMjl9.xoVI8v3T6AfSFVlyPWfX2G0-pv6Gglh8ubOIovUlt6Q"]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#list(String, String, int, int)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"content":[],"page":1,"size":20,"totalElements":0,"totalPages":0},"timestamp":"2026-10-30T02:37:09.652382357Z","traceId":"4697b7d8-8ca9-464e-9feb-56dd4f102069"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+2026-10-30T02:37:09.669Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.670Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.675Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.677Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.689Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.689Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI3ODI5LCJleHAiOjE3OTMzMjgxMjl9.xoVI8v3T6AfSFVlyPWfX2G0-pv6Gglh8ubOIovUlt6Q", Content-Length:"63"]
+             Body = {"code":"UNICODE-İzmir","title":"目标文档","version":"V1"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391445289296203776","title":"目标文档","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.670596964","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.670596964","versions":[{"id":"391445289304592384","documentId":"391445289296203776","version":"V1","code":"UNICODE-İzmir","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.670596964","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.670596964"}]},"timestamp":"2026-10-30T02:37:09.673221423Z","traceId":"b3886fa9-f4d6-4c12-bd26-e0949d428d94"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI3ODI5LCJleHAiOjE3OTMzMjgxMjl9.xoVI8v3T6AfSFVlyPWfX2G0-pv6Gglh8ubOIovUlt6Q", Content-Length:"63"]
+             Body = {"code":"UNRELATED-CODE","title":"干扰文档","version":"V1"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391445289333952512","title":"干扰文档","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.679061448","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.679061448","versions":[{"id":"391445289346535424","documentId":"391445289333952512","version":"V1","code":"UNRELATED-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.679061448","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.679061448"}]},"timestamp":"2026-10-30T02:37:09.683655653Z","traceId":"5a3d9ab9-49df-4af8-9e09-426a6c1ec0d2"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/master-data/documents
+       Parameters = {keyword=[İzmir]}
+          Headers = [Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI3ODI5LCJleHAiOjE3OTMzMjgxMjl9.xoVI8v3T6AfSFVlyPWfX2G0-pv6Gglh8ubOIovUlt6Q"]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#list(String, String, int, int)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"content":[],"page":1,"size":20,"totalElements":0,"totalPages":0},"timestamp":"2026-10-30T02:37:09.692201678Z","traceId":"cb960ff3-fe30-494b-aa61-fe8dd66c0e92"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+2026-10-30T02:37:09.702Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.703Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.713Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.714Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.722Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.723Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI3ODI5LCJleHAiOjE3OTMzMjgxMjl9.xoVI8v3T6AfSFVlyPWfX2G0-pv6Gglh8ubOIovUlt6Q", Content-Length:"58"]
+             Body = {"code":"FIRST-CODE","title":"指令-ΟΣ","version":"V1"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391445289438810112","title":"指令-ΟΣ","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.704398736","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.704398736","versions":[{"id":"391445289451393024","documentId":"391445289438810112","version":"V1","code":"FIRST-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.704398736","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.704398736"}]},"timestamp":"2026-10-30T02:37:09.709175582Z","traceId":"32af96b5-225d-4328-995c-39d4e77b4003"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI3ODI5LCJleHAiOjE3OTMzMjgxMjl9.xoVI8v3T6AfSFVlyPWfX2G0-pv6Gglh8ubOIovUlt6Q", Content-Length:"63"]
+             Body = {"code":"UNRELATED-CODE","title":"干扰文档","version":"V1"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391445289480753152","title":"干扰文档","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.714809381","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.714809381","versions":[{"id":"391445289489141760","documentId":"391445289480753152","version":"V1","code":"UNRELATED-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.714809381","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.714809381"}]},"timestamp":"2026-10-30T02:37:09.717793544Z","traceId":"c847b97d-3d1a-4149-8701-1eb1cf185ff0"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/master-data/documents
+       Parameters = {keyword=[ΟΣ]}
+          Headers = [Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI3ODI5LCJleHAiOjE3OTMzMjgxMjl9.xoVI8v3T6AfSFVlyPWfX2G0-pv6Gglh8ubOIovUlt6Q"]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#list(String, String, int, int)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"content":[],"page":1,"size":20,"totalElements":0,"totalPages":0},"timestamp":"2026-10-30T02:37:09.727850473Z","traceId":"cd89d4ec-8f26-4c62-a659-75fd1fbf6395"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+2026-10-30T02:37:09.738Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.738Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.746Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.747Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.755Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.755Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI3ODI5LCJleHAiOjE3OTMzMjgxMjl9.xoVI8v3T6AfSFVlyPWfX2G0-pv6Gglh8ubOIovUlt6Q", Content-Length:"61"]
+             Body = {"code":"UNICODE-ΟΣ","title":"目标文档","version":"V1"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391445289585610752","title":"目标文档","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.739465677","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.739465677","versions":[{"id":"391445289598193664","documentId":"391445289585610752","version":"V1","code":"UNICODE-ΟΣ","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.739465677","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.739465677"}]},"timestamp":"2026-10-30T02:37:09.743393823Z","traceId":"8ca8a1ce-550b-4924-ab59-a5310e0a2777"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI3ODI5LCJleHAiOjE3OTMzMjgxMjl9.xoVI8v3T6AfSFVlyPWfX2G0-pv6Gglh8ubOIovUlt6Q", Content-Length:"63"]
+             Body = {"code":"UNRELATED-CODE","title":"干扰文档","version":"V1"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391445289623359488","title":"干扰文档","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.748015919","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.748015919","versions":[{"id":"391445289627553792","documentId":"391445289623359488","version":"V1","code":"UNRELATED-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T02:37:09.748015919","updatedBy":"文档审查","updatedAt":"2026-10-30T02:37:09.748015919"}]},"timestamp":"2026-10-30T02:37:09.751015525Z","traceId":"4eb7d2e8-9055-476d-b1a2-be0ed735b439"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/master-data/documents
+       Parameters = {keyword=[ΟΣ]}
+          Headers = [Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI3ODI5LCJleHAiOjE3OTMzMjgxMjl9.xoVI8v3T6AfSFVlyPWfX2G0-pv6Gglh8ubOIovUlt6Q"]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#list(String, String, int, int)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"content":[],"page":1,"size":20,"totalElements":0,"totalPages":0},"timestamp":"2026-10-30T02:37:09.757329464Z","traceId":"a3d30b6b-3ae2-43b0-9e29-8b8c7e8c106d"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+2026-10-30T02:37:09.767Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.768Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.776Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.777Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.784Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.785Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.797Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.798Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.806Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.807Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.815Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.815Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.827Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.827Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.834Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.835Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.842Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.843Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:09.854Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.854Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.864Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:09.864Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:09.874Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:09.875Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.210Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.211Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.304Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.305Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.314Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.314Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.324Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.324Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.331Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391445292043472896/versions
+2026-10-30T02:37:10.332Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391445292043472896/versions
+2026-10-30T02:37:10.338Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.339Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.344Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.345Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.376Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T02:37:10.376Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents/categories
+2026-10-30T02:37:10.511Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T02:37:10.512Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents/categories
+2026-10-30T02:37:10.610Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T02:37:10.610Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents/categories
+2026-10-30T02:37:10.620Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.621Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.628Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.628Z DEBUG 20855 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-30T02:37:10.629Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T02:37:10.630Z DEBUG 20855 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-30T02:37:10.634Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/categories
+2026-10-30T02:37:10.635Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/categories
+2026-10-30T02:37:10.641Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.642Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.649Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.649Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.656Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.656Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.663Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.663Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.668Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T02:37:10.668Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents/categories
+2026-10-30T02:37:10.679Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.680Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.689Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391445293536645120/versions
+2026-10-30T02:37:10.689Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391445293536645120/versions
+2026-10-30T02:37:10.694Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.694Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.700Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.700Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.709Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.710Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.715Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391445293658279936/versions
+2026-10-30T02:37:10.715Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391445293658279936/versions
+2026-10-30T02:37:10.719Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.720Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.725Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.726Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.734Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.735Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.740Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391445293763137536/versions
+2026-10-30T02:37:10.740Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391445293763137536/versions
+2026-10-30T02:37:10.744Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.744Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.750Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.750Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.760Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.760Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.765Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391445293872189440/versions
+2026-10-30T02:37:10.766Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391445293872189440/versions
+2026-10-30T02:37:10.770Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.770Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.776Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.776Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.786Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.786Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.791Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391445293981241344/versions
+2026-10-30T02:37:10.792Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391445293981241344/versions
+2026-10-30T02:37:10.795Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.796Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.801Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.802Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.810Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.811Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.816Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391445294081904640/versions
+2026-10-30T02:37:10.816Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391445294081904640/versions
+2026-10-30T02:37:10.820Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.820Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.825Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.826Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.833Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.833Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.839Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391445294178373632/versions
+2026-10-30T02:37:10.839Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391445294178373632/versions
+2026-10-30T02:37:10.843Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:37:10.844Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:37:10.850Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.851Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.872Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.873Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.909Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.910Z DEBUG 20855 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.926Z DEBUG 20855 --- [edhr] [pool-2-thread-1] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:37:10.926Z DEBUG 20855 --- [edhr] [pool-2-thread-1] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:37:10.944Z  INFO 20855 --- [edhr] [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-10-30T02:37:10.953Z  INFO 20855 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-10-30T02:37:10.956Z  INFO 20855 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+[ERROR] Tests run: 49, Failures: 4, Errors: 0, Skipped: 0, Time elapsed: 5.880 s <<< FAILURE! -- in com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest
+[ERROR] com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(String, String)[1] -- Time elapsed: 0.025 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentReadBoundaryIntegrationTest.identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(DocumentReadBoundaryIntegrationTest.java:252)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(String, String)[2] -- Time elapsed: 0.035 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentReadBoundaryIntegrationTest.identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(DocumentReadBoundaryIntegrationTest.java:252)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(String, String)[3] -- Time elapsed: 0.035 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentReadBoundaryIntegrationTest.identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(DocumentReadBoundaryIntegrationTest.java:252)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(String, String)[4] -- Time elapsed: 0.027 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentReadBoundaryIntegrationTest.identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(DocumentReadBoundaryIntegrationTest.java:252)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   DocumentReadPerformancePostgresTest>DocumentReadBoundaryIntegrationTest.identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode:252 
+expected: 1
+ but was: 0
+[ERROR]   DocumentReadPerformancePostgresTest>DocumentReadBoundaryIntegrationTest.identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode:252 
+expected: 1
+ but was: 0
+[ERROR]   DocumentReadPerformancePostgresTest>DocumentReadBoundaryIntegrationTest.identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode:252 
+expected: 1
+ but was: 0
+[ERROR]   DocumentReadPerformancePostgresTest>DocumentReadBoundaryIntegrationTest.identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode:252 
+expected: 1
+ but was: 0
+[INFO] 
+[ERROR] Tests run: 49, Failures: 4, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  17.462 s
+[INFO] Finished at: 2026-10-30T02:37:10Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project edhr: There are test failures.
+[ERROR] 
+[ERROR] Please refer to /workspace/edhr-nexus-frontend/gmp-platform/backend/target/surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

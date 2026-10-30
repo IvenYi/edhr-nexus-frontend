@@ -238,6 +238,22 @@ class DocumentReadBoundaryIntegrationTest {
         assertThat(data.path("content").get(0).path("versions").size()).isEqualTo(2);
     }
 
+    static Stream<Arguments> unicodeKeywords() {
+        return Stream.of("İzmir", "ΟΣ", "Ångström", "Étage")
+                .flatMap(keyword -> Stream.of("title", "version-code").map(source -> Arguments.of(keyword, source)));
+    }
+
+    @ParameterizedTest @MethodSource("unicodeKeywords")
+    void identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(String keyword, String source) throws Exception {
+        String id = create(source.equals("title") ? "指令-" + keyword : "目标文档",
+                source.equals("version-code") ? "UNICODE-" + keyword : "FIRST-CODE", null);
+        create("干扰文档", "UNRELATED-CODE", null);
+        JsonNode data = read("unicode-original-keyword", DOCUMENTS, Map.of("keyword", keyword), 200);
+        assertThat(data.path("totalElements").asInt()).isEqualTo(1);
+        assertThat(data.path("content").get(0).path("id").asText()).isEqualTo(id);
+        assertThat(data.path("content").get(0).path("versions").size()).isEqualTo(1);
+    }
+
     @Test
     void nullTimestampsStayFirstAndTiedPagesHaveStableIdentity() throws Exception {
         seed(6, 1, 1, "none");

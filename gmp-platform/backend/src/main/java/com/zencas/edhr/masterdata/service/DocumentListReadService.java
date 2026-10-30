@@ -16,7 +16,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -37,7 +36,7 @@ public class DocumentListReadService {
         int safePage = Math.max(page, 1), safeSize = Math.max(size, 1);
         boolean all = "ALL".equals(normalizedCategoryId), uncategorized = "UNCATEGORIZED".equals(normalizedCategoryId);
         long categoryId = all || uncategorized ? 0 : Long.parseLong(normalizedCategoryId);
-        String pattern = StringUtils.hasText(keyword) ? "%" + keyword.trim().toLowerCase(Locale.ROOT)
+        String pattern = StringUtils.hasText(keyword) ? "%" + keyword.trim()
                 .replace("!", "!!").replace("%", "!%").replace("_", "!_") + "%" : "";
         long total = documents.countForList(all, uncategorized, categoryId, pattern);
         long offset = (long) (safePage - 1) * safeSize;
