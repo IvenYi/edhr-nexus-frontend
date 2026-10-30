@@ -1,0 +1,308 @@
+qualityResult:
+  result: passed
+  baseCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+  headCommit: 61d81a645f06c78e9d75dc72bf5699af70819cf6
+  contractBaseline:
+    sourceCommit: 61d81a645f06c78e9d75dc72bf5699af70819cf6
+    targetBranch: edhr-dev
+    targetCommit: 31058765002e0705f1659f42abb1fb25b6dc7611
+    contractReadCommit: 61d81a645f06c78e9d75dc72bf5699af70819cf6
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.q3.baselines-contract
+    required: true
+    category: documentation
+    description: 独立读取契约、实际 fetch 并核对目标祖先、干净候选；当前受测 SHA 定位明确。
+    method: command
+    command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git status --short; git merge-base --is-ancestor
+      BASE HEAD; inspect mandatory contracts
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-inspection.json
+    - actual base=31058765002e0705f1659f42abb1fb25b6dc7611; head=tested=61d81a645f06c78e9d75dc72bf5699af70819cf6;
+      clean tree; no uncommitted contract paths
+  - id: check.q3.business-scope
+    required: true
+    category: ontology
+    description: 六既有知识 ID 在文档身份、任意分类版本引用、START 冻结及历史审计边界有限一致；本体三个 NA/FINAL 原件、0.3.25 及阶段保持。
+    method: inspection
+    command: Read decision-package, current six ID definitions and related entity/binding/controller sources; verify
+      no knowledge/contract/tool diff
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-inspection.json
+    - docs/development/branch-review-20261030-document-performance/evidence/rule-review.json
+    - docs/development/branch-review-20261030-document-performance/evidence/ontology-result.yaml
+    - docs/development/branch-review-20261030-document-performance/evidence/ontology-unicode-result.yaml
+    - docs/development/branch-review-20261030-document-performance/evidence/ontology-case-result.yaml
+  - id: check.q3.source-boundaries
+    required: true
+    category: requirements
+    description: 三个产品文件范围匹配授权；局部读服务的三个真实批读消费者、纯投影、身份/完整成员/排序/过滤/空页保留，无客户页长 cap、全局缓存、大模块搬迁或写入规则变动。
+    method: inspection
+    command: Inspect three changed product files and baseline diff; compare original single-record/audit paths
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-product-diff.txt
+    - /tmp/edhr-document-perf-q3-inspection.json
+  - id: check.q3.sql-security
+    required: true
+    category: security
+    description: count/page 共用绑定过滤；关键词字面 LIKE 转义，所有 SQL 数据参数绑定；NFC 只用于查询，不改版本原文、身份或唯一性。
+    method: inspection
+    command: Inspect LIST_FILTER/@Param and service escaping; inspect17literal cases and native71 actual responses
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-inspection.json
+    - /tmp/edhr-document-perf-q3-pg-http.jsonl
+    - /tmp/edhr-document-perf-q3-pg-junit.xml
+  - id: check.q3.h2-regression202
+    required: true
+    category: integration
+    description: 当前候选 H2 与既有六类 202/202，0 failure/error/skip；不是主侧通过的转述。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=DocumentReadBoundaryIntegrationTest,DocumentManagementControllerTest,MasterDataBoundaryIntegrationTest,ProcessModelingControllerTest,ProductProcessControllerTest,MaterialImportIntegrationTest
+      -Dedhr.audit.documentReads=true -Dedhr.audit.documentOutput=/tmp/edhr-document-perf-q3-h2-http.jsonl test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-h2-test.txt
+    - /tmp/edhr-document-perf-q3-h2-summary.json
+    - /tmp/edhr-document-perf-q3-h2-DocumentReadBoundaryIntegrationTest.xml
+    - /tmp/edhr-document-perf-q3-h2-DocumentManagementControllerTest.xml
+    - /tmp/edhr-document-perf-q3-h2-MasterDataBoundaryIntegrationTest.xml
+    - /tmp/edhr-document-perf-q3-h2-ProcessModelingControllerTest.xml
+    - /tmp/edhr-document-perf-q3-h2-ProductProcessControllerTest.xml
+    - /tmp/edhr-document-perf-q3-h2-MaterialImportIntegrationTest.xml
+  - id: check.q3.native-postgres71
+    required: true
+    category: integration
+    description: 自有隔离 PG16.15/en_US.utf8 原生 71/71、0 failure/error/skip，包含58通用、12大小写变体、1并发视图；未注册 H2 NFC 别名。
+    method: automated-test
+    command: Own postgres:16-alpine --rm synthetic local DB edhr_document_read_test; pg_isready -h127.0.0.1; EDHR_DOCUMENT_DATABASE_URL=jdbc:postgresql://127.0.0.1:32772/edhr_document_read_test
+      EDHR_DOCUMENT_DATABASE_USER=q3_test [synthetic password] bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=DocumentReadPerformancePostgresTest -Dedhr.audit.documentReads=true -Dedhr.audit.documentOutput=/tmp/edhr-document-perf-q3-pg-http.jsonl
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-pg-ready.txt
+    - /tmp/edhr-document-perf-q3-pg-test.txt
+    - /tmp/edhr-document-perf-q3-pg-summary.json
+    - /tmp/edhr-document-perf-q3-pg-junit.xml
+    - /tmp/edhr-document-perf-q3-db.json
+  - id: check.q3.unicode-literal-context
+    required: true
+    category: api
+    description: 原样 Unicode8、PG双向 Greek/组合点/ß与ẞ等12变体、17字面符号均通过；旧版本编码命中仍返回完整父版本和实际文件身份，缺元数据 fileId 保留。
+    method: inspection
+    command: Inspect actual current helper GET response records (H2 60 / PG72) against assertions and raw JUnit;
+      native rows must each total1 and correct ID
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-h2-http.jsonl
+    - /tmp/edhr-document-perf-q3-pg-http.jsonl
+    - /tmp/edhr-document-perf-q3-cost-observations.json
+    - /tmp/edhr-document-perf-q3-pg-junit.xml
+  - id: check.q3.read-audit-snapshots
+    required: true
+    category: audit
+    description: helper 每次读取对五表完整排序快照逐项相等；每引擎2匿名401保持无写入；仅并发场景显式 writer 例外，不伪称全无变化。
+    method: inspection
+    command: Inspect original test snapshots and anonymousRead test, actual passing H2/PG XML and helper GETs
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-h2-DocumentReadBoundaryIntegrationTest.xml
+    - /tmp/edhr-document-perf-q3-pg-junit.xml
+    - /tmp/edhr-document-perf-q3-inspection.json
+  - id: check.q3.transaction-snapshot
+    required: true
+    category: database
+    description: PG实际在 count后/page前另事务新增第三行，响应 total/content 同为原2行，writer 最终3行；RR范围覆盖页及元数据。
+    method: automated-test
+    command: Actual native suite case countAndPageUseTheSameSnapshotAcrossAConcurrentInsert; inspect test and service
+      proxy transaction
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-pg-junit.xml
+    - /tmp/edhr-document-perf-q3-pg-test.txt
+    - Concurrent GET uses raw MockMvc, intentionally not one of72 helper events.
+  - id: check.q3.knowledge89
+    required: true
+    category: ontology
+    description: 独立实际运行正式知识89/89，0 failure/error/skip；不以原本体89复用充当本实例执行。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-knowledge-test.txt
+    - /tmp/edhr-document-perf-q3-knowledge-junit.xml
+    - /tmp/edhr-document-perf-q3-knowledge-summary.json
+  - id: check.q3.actual-old-target-red-controls
+    required: true
+    category: regression
+    description: 实际旧目标31058765仅装原样候选58测试，恰9真实断言红、49正、0error/skip：4原分页500 +5性能；此项通过指预期红对照成立，旧代码测试未通过。
+    method: automated-test
+    command: git worktree add --detach /tmp/edhr-document-perf-q3-old-target 31058765002e0705f1659f42abb1fb25b6dc7611;
+      byte-identical copy ONLY DocumentReadBoundaryIntegrationTest.java; symlink shared frontend/node_modules; run
+      wrapper -Dtest=DocumentReadBoundaryIntegrationTest -Dedhr.audit.documentReads=true -Dedhr.audit.documentOutput=/tmp/edhr-document-perf-q3-old-http.jsonl
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-old-install.json
+    - /tmp/edhr-document-perf-q3-old-test.txt
+    - /tmp/edhr-document-perf-q3-old-junit.xml
+    - /tmp/edhr-document-perf-q3-old-summary.json
+    - /tmp/edhr-document-perf-q3-old-http.jsonl
+    - Maven exit1 expected, no compile/config errors. Not previous-feature793 40-case comparison; old native Unicode
+      matrix not independently rerun.
+  - id: check.q3.costs-boundedness
+    required: true
+    category: database
+    description: 两引擎独立观测23→5 SQL、共享文件仅1实体；100doc300versions页5仅5/15；分类2SQL0doc；520成员完整跨512且file查询2；无文件3→4SQL的取舍已披露。
+    method: inspection
+    command: Compare own exact old/current helper event cases and entityLoads/sql arrays; inspect complete member
+      data
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-cost-observations.json
+    - /tmp/edhr-document-perf-q3-old-http.jsonl
+    - /tmp/edhr-document-perf-q3-h2-http.jsonl
+    - /tmp/edhr-document-perf-q3-pg-http.jsonl
+  - id: check.q3.current-postgres-plans
+    required: true
+    category: database
+    description: 自有PG以canonical4表/既有相关索引合成10k/30k，原样重跑complete-plans六SQL；页LIMIT5、版本既有索引15行，count/contains/父排序仍扫描。
+    method: query
+    command: Execute evidence/postgres-plan-setup.sql in own empty test DB after create-drop suite; EXPLAIN(ANALYZE,BUFFERS,FORMAT
+      JSON) six SQL from complete-postgres-plans.json; SELECT version(), pg_database.datcollate/datctype
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-plan-setup.txt
+    - /tmp/edhr-document-perf-q3-plans.json
+    - /tmp/edhr-document-perf-q3-plan-page-all.json
+    - /tmp/edhr-document-perf-q3-plan-page-versions.json
+  - id: check.q3.original-evidence-hashes
+    required: true
+    category: documentation
+    description: 三manifest32+47+62=141条原件记录以及本体6+4+4映射均核验；两旧failed19/26和前批37归档保持hash/size，未清洗/回写。
+    method: command
+    command: Python recompute sha256/size for every manifest files record, ontology ArchiveMap and both failed archive
+      maps, prior read-batch independentArchive
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-archive-check.json
+    - /tmp/edhr-document-perf-q3-historical-quality-check.json
+  - id: check.q3.historical-root-cause
+    required: true
+    category: documentation
+    description: 两段历史原件与git show字节一致，证明findAll/内存分页沿用及版本投影逐项file读取，不虚构作者容量设计考虑；两个failed同一家族不重复计修复。
+    method: inspection
+    command: git show 9e2aa490 and3574179e original controller vs archive; read both original failed finals and
+      API probes
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-archive-check.json
+    - /tmp/edhr-document-perf-q3-historical-quality-check.json
+    - docs/development/branch-review-20261030-document-performance/evidence/history-index.json
+  - id: check.q3.coverage-no-drift
+    required: true
+    category: requirements
+    description: 固定4372盘点、856语言代码+feature1和另列130SQL保持pending；六增量源/测试列入A23，三有限源码范围及六知识ID不扩大为整域/新unique完成。
+    method: command
+    command: Read actual ls-tree and frozen CSV rows/status/hash; inspect a23-delta/source-review/scope-review and
+      previous acceptance
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-inventory-scope.json
+    - docs/development/branch-review-20261030-document-performance/a23-delta.json
+    - docs/development/branch-review-20261030-document-performance/scope-review.md
+  - id: check.q3.handwritten-whitespace
+    required: true
+    category: documentation
+    description: 24条手工产品/测试/文档路径空白检查0；明确排除原始evidence及五份固定CRLF CSV；未清洗原件。
+    method: command
+    command: git diff --check BASE HEAD -- [exact24 manual paths in final summary] (exclude /evidence/ plus fixed5
+      CSV recorded verbatim)
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-whitespace-handwritten.txt
+    - /tmp/edhr-document-perf-q3-whitespace-final-summary.json
+  - id: check.q3.exact-resource-cleanup
+    required: true
+    category: documentation
+    description: 自建唯一PG容器按owner/name/ID核对后stop/--rm并inspect确认不存在；worktree仅删除已核hash的复制测试和symlink后正常remove，共享依赖保留，主仓HEAD/clean保持。
+    method: command
+    command: Exact own container3dff2c71e19b79582239afcbc06a420b248c5394720ea4f103e17223814e617c stop/inspect; exact
+      own worktree cleanup and git status
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-perf-q3-cleanup.json
+  - id: check.q3.all-interval-raw-whitespace
+    required: false
+    category: documentation
+    description: 全区间原始日志/XML及固定CSV空白exit2，保留原字节；非产品失败、非当前required阻断。
+    method: command
+    command: git diff --check BASE HEAD (all paths); diagnostic exclude /evidence/ only also flags immutable CSV
+      CRLF
+    outcome: failed
+    evidence:
+    - /tmp/edhr-document-perf-q3-whitespace-all.txt
+    - /tmp/edhr-document-perf-q3-whitespace-nonraw.txt
+    - /tmp/edhr-document-perf-q3-whitespace-summary.json
+  findings:
+  - id: QF-DOCUMENT-UNICODE-FOLD-001
+    severity: medium
+    scope: document-list-title-or-version-code-case-matching
+    summary: 两轮历史独立发现属于同一Unicode折叠回归；当前候选通过本实例原生回归，原两failed原件保持。
+    reproductionSteps:
+    - 历史7d正常POST标题İzmir，GET原样关键词漏；历史092正常POST ΟΣ，GET ος漏。原始独立API证据已归档。
+    - 本实例在当前61d自建原生PG运行8自匹配及12变体标题/版本码参数场景，并核对真实API回包。
+    expectedResult: 原样及已覆盖大小写变体命中同父身份、完整版本，字面符号不变；不重写存储原文。
+    actualResult: 当前PG71/71、H2/既有202/202全部0fail/error/skip；原生12变体每项total1并正确ID。H2 NFC alias不作为PG依据。
+    evidence:
+    - /tmp/edhr-document-perf-q3-pg-http.jsonl
+    - /tmp/edhr-document-perf-q3-pg-junit.xml
+    - /tmp/edhr-document-perf-q3-historical-quality-check.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 61d81a645f06c78e9d75dc72bf5699af70819cf6
+    - type: command
+      reference: /tmp/edhr-document-perf-q3-pg-test.txt
+    - type: document
+      reference: /tmp/edhr-document-perf-q3-cost-observations.json
+  residualRisks:
+  - id: risk.database-scanning
+    description: COUNT/包含搜索/父页排序仍扫描候选范围，深页offset仍有成本。
+    impact: 应用实体读取有界不代表数据库只扫一页。
+    mitigation: 按实际容量讨论索引或检索方案；本次不承诺生产SLA。
+  - id: risk.complete-page-version-size
+    description: 完整页内版本和metadata仍按业务完整性返回；客户可请求大页。
+    impact: 大页/单文档极多版本仍可能占用内存；512仅限制IN参数批次。
+    mitigation: 不擅加客户页长cap或删完整版本，实际大规模再测再讨论。
+  - id: risk.locale-and-fixture
+    description: 当前原生验证PG16.15/en_US.utf8，未形式证明任意Unicode或locale；H2仅测试NFC兼容。
+    impact: 不能泛化为所有部署locale/语言均等价。
+    mitigation: 部署locale变化时重跑代表性查询；NFC仅比较不改变身份。
+  - id: risk.production-migration-environment
+    description: 隔离合成库/4表计划复现不等于生产迁移、磁盘文件内容、堆GC或容量认证。
+    impact: 不覆盖实际生产环境全链。
+    mitigation: 按真实发布风险另行验证，不接生产库。
+  - id: risk.retained-policy-and-security-gaps
+    description: 方法权限、父code实体nullable、缺文件合法性与原四知识gap保持；TaskDetail友方页、生产弹窗、记录控制依赖DHRhigh/A12暂缓。
+    impact: 本批不关闭这些其他范围，也不恢复旧功能收尾。
+    mitigation: 按既有所有权与阶段继续，不以性能修复规避规则决策。
+  - id: risk.audit-coverage-pending
+    description: W2/W3/W4余项、W5安全/存储/容量、W6结构/A23全量回查、W7集成仍未完成。
+    impact: 当前通过仅本批有限范围。
+    mitigation: 保留4372/856/130固定清单和本批增量，后续fetch做增量核对。
+  - id: risk.ui-and-tooling-not-run
+    description: 本批无UI变化，未跑浏览器/完整前端build/strict/lint；历史strict19和缺ESLint配置仍非绿。
+    impact: 后台Maven生成打印资源不代表完整前端验收。
+    mitigation: 相应模块后续按实际风险验证；无CI强制门禁设置核验。
+  blockingConditions: []
