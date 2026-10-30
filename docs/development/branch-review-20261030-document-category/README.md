@@ -2,7 +2,19 @@
 
 本轮L2基线`edhr-dev@d10590bd3fe8f3da4e68bcc087b2102d2c211934`，PR45已人工合入、merge树同84cedb8b，无额外代码/知识/契约增量。4755路径/130迁移及442 HTTP注解/198 route仅固定盘点，不是审计完成比例。本轮不重开旧PR。
 
-## 当前并发补正（首轮独立failed原件保留）
+## 当前最终验收与下一步
+
+全新独立质量对干净候选`5d1487b195cec7e994285fc623c55097bde09bf2`正式**passed/FINAL，19/19必需检查通过**；本体原核对及并发增量均not-applicable/FINAL。两个发现按[acceptance.json](acceptance.json)有限resolved，建议人工合入本批，不等于整体审计完成。[最终报告](evidence/final-quality/quality-review.md)、[qualityResult](evidence/final-quality/quality-result.yaml)及[107份原件映射](evidence/final-quality/archive-map.json)保留实际命令、输出与sha256/bytes。下文“待全新独立”等表述属于首轮/修复过程检查点，由本节覆盖其当前状态，原始失败不回写。
+
+最终新实例实际H2/既有258、原生PG143（分类17+读取71+授权55），共401执行全部通过，跨引擎重复不称401个unique。相同最终17在实际目标d105得到9个真实断言失败/8正向，在首轮候选ac3a得到3并发失败/14正向，均0error/skip，当前17全通过。三并发组合使用外部行锁及pg_stat_activity等待屏障：两排序恢复原序仍有双方4条审计，排序/改名两个先后方向不覆盖字段。分类native按当前canonical全schema新建、ddl-auto:none；审计存储故障500/code500，完整五表及全部审计回滚。不是所有表或所有并发认证。
+
+最终质量另实际知识89通过、当前浏览器10/10（旧4文案红6正）、tsc/Vite、共享UI14及表格规范通过；亲看390确认/成功、1440引用阻断。390/1440为五场景双宽重复，受控API浏览器和真实PG服务测试分开，不冒称全栈E2E。官方同脚本旧/新appsrc各19提示逐项相同且仍非绿；lint缺配置、process verifier旧SQL路径ENOENT断言前阻塞均原样保留为三项非必需工具限制，不改业务洗绿。第一次oldworktree仅因vite依赖未链接在测试前退出127，原件保留；随后只链接既有依赖、原样测试完成两代红控。两只独立自有PG和两个旧工作树已按确切资源正常清理。
+
+原119、首failed88、并发27新增记录，初始6源码在Git ac3a的快照及当前7源码均经独立哈希核对；303知识/契约/工具未变。本体12既有ID无新语义或成熟度提升，增量明确复用原89，最终质量89是另一次实际运行。受测后仅L0原件/验收/进度/交付登记，保护范围核对见[evidence/delivery-verification.json](evidence/delivery-verification.json)。
+
+全部正式角色FINAL后、建PR前已实际向用户完成范围/漂移/阶段复核。本批未偏离整体审计，仅三个产品文件修复既有分类审计和错误删除解释，未新增业务政策、大模块重构或历史恢复。当前九源码有限组、12语义范围、A23七方法/5改2增有历史重叠，whole-file0、unique null；初版8/6/4改2增仅历史，不是当前覆盖。整体仍在W3/W4推进，W2/W3/W4余项和W5–W7未完；下一批先fetch合入及外部增量，再核文档上传/预览/下载的权限、文件一致性与资源释放。旧856语言+feature1/另130SQL和此前增量待W6（含旧已审）/W7；新性能先讨论，原暂缓/四gap及缺文件政策保持。不自动merge/deploy/恢复、不查询或触发CI。
+
+## 历史：并发补正检查点（首轮独立failed原件保留）
 
 首轮独立对ac3a421e正式failed/FINAL，实际标准398、知识89、浏览器新10/旧4红6正及构建等虽通过，额外真实HTTP/SQL锁屏障却证明同一排序审计家族仍有缺口：先反序qa-A、后原序qa-B都200，最终顺序恢复30/40，仅2条qa-A审计、qa-B为0条。首轮未实际执行旧native14/premium增量，不能借用主侧结果；容量中断恢复后同实例正式返回失败，88份原件在`evidence/first-quality/`，不回写为passed。
 

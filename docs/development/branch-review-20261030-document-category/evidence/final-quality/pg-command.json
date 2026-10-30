@@ -1,0 +1,12 @@
+[
+  "bash",
+  "/workspace/.edhr-cloud-tools/mvn-edhr",
+  "-f",
+  "gmp-platform/backend/pom.xml",
+  "-Dtest=DocumentCategoryAuditPostgresTest,DocumentReadPerformancePostgresTest,DocumentWriteBoundaryPostgresTest",
+  "-Dedhr.audit.documentReads=true",
+  "-Dedhr.audit.documentOutput=/tmp/edhr-document-category-q2-pg-read-http.jsonl",
+  "-Dedhr.audit.documentWriteOutput=/tmp/edhr-document-category-q2-pg-write-http.jsonl",
+  "-Dedhr.audit.categoryOutput=/tmp/edhr-document-category-q2-pg-category-http.jsonl",
+  "test"
+]
