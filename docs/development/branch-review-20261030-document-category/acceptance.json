@@ -276,5 +276,6 @@
   "recommendMergeForThisBatch": true,
   "nextAction": "Fetch actual merge and external increments; review document upload/preview/download permissions, file consistency and resource release; keep remaining entrypoints and deferred performance visible.",
   "deliveryPolicy": "Manual user merge only; no CI/Actions query/trigger, merge, deployment, historical restore or shared-history rewrite.",
-  "postQaVerification": "evidence/delivery-verification.json"
+  "postQaVerification": "evidence/delivery-verification.json",
+  "delivery": "delivery.json"
 }

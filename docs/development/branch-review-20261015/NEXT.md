@@ -2,6 +2,8 @@
 
 ## PR45已合入：W3/W4分类排序审计与真实删除契约
 
+已交付[PR46](https://github.com/IvenYi/edhr-nexus-frontend/pull/46)，`audit/edhr-dev-document-category-audit-20261030`→`edhr-dev`，登记时OPEN/MERGEABLE/CLEAN、待人工merge。实际受测5d1487，后续6a732131仅L0原件/验收/进度，当前只登记交付；受测保护路径无差异。下轮先fetch实际合入和外部代码/知识/契约增量，再核文档上传/预览/下载链；本批passed不覆盖整体余项或原暂缓，不自动merge/deploy/恢复。
+
 当前已通过全新最终独立质量：clean受测`5d1487b195cec7e994285fc623c55097bde09bf2`，passed/FINAL、19/19必需检查；本体原及并发NA/FINAL。按[本批验收](../branch-review-20261030-document-category/acceptance.json)关闭排序缺审计（含并发before/改名覆盖）和错误删除承诺两项，未改删除规则或新增冲突政策。实际独立401后端、89知识、浏览器10及构建/UI14/表格检查通过；相同最终17在旧d105为9真实红8正、ac3a为3并发红14正、当前全过，均0error/skip。107份最终原件归档，原119/首failed88/并发27保持；初版误断言、旧worktree依赖启动失败和全局工具三项非绿均如实保留。
 
 全部正式角色FINAL后已实际向用户完成PR前范围无漂移/整体进度复核，当前仅L0归档、验收和交付登记，受测产品/测试/知识/契约/工具/四清单及source-review/a23/当前包不变。整体仍W3/W4，九有限源码/12既有语义、A23七方法5改2增不计整文件或新增unique；4755/130只盘点。下一批先fetch实际合入及外部增量，再核上传/预览/下载权限、文件一致性和资源释放；W2–W4余项、W5–W7、A23旧已审全量及SQL队列、原暂缓/四gap/缺文件政策保持。性能候选继续先讨论，不自动merge/deploy/恢复。下文是本批首轮及补正历史检查点，由本段覆盖其当前“待QA”状态。

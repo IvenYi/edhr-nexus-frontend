@@ -4,6 +4,8 @@
 
 ## 当前最终验收与下一步
 
+已交付[PR46](https://github.com/IvenYi/edhr-nexus-frontend/pull/46)，`audit/edhr-dev-document-category-audit-20261030`→`edhr-dev`；登记时OPEN/MERGEABLE/CLEAN，待用户人工merge。受测5d1487之后6a732131仅L0原件/验收/进度，当前只补交付登记；下一轮先fetch核对实际合入与外部增量。观察时点及受测对应见[delivery.json](delivery.json)，不自动merge/deploy/恢复。
+
 全新独立质量对干净候选`5d1487b195cec7e994285fc623c55097bde09bf2`正式**passed/FINAL，19/19必需检查通过**；本体原核对及并发增量均not-applicable/FINAL。两个发现按[acceptance.json](acceptance.json)有限resolved，建议人工合入本批，不等于整体审计完成。[最终报告](evidence/final-quality/quality-review.md)、[qualityResult](evidence/final-quality/quality-result.yaml)及[107份原件映射](evidence/final-quality/archive-map.json)保留实际命令、输出与sha256/bytes。下文“待全新独立”等表述属于首轮/修复过程检查点，由本节覆盖其当前状态，原始失败不回写。
 
 最终新实例实际H2/既有258、原生PG143（分类17+读取71+授权55），共401执行全部通过，跨引擎重复不称401个unique。相同最终17在实际目标d105得到9个真实断言失败/8正向，在首轮候选ac3a得到3并发失败/14正向，均0error/skip，当前17全通过。三并发组合使用外部行锁及pg_stat_activity等待屏障：两排序恢复原序仍有双方4条审计，排序/改名两个先后方向不覆盖字段。分类native按当前canonical全schema新建、ddl-auto:none；审计存储故障500/code500，完整五表及全部审计回滚。不是所有表或所有并发认证。
