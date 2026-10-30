@@ -1,0 +1,22 @@
+{
+  "exactCreatedWorktree": "/tmp/edhr-version-order-qa-base-o4d9hba4",
+  "beforeCleanupStatus": " M gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataBoundaryIntegrationTest.java\n M gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java\n?? gmp-platform/frontend/node_modules\n",
+  "testCopyDisposal": [
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataBoundaryIntegrationTest.java",
+      "candidateCopyVerifiedBeforeRemoval": true,
+      "restoredExactBaselineSha256": "0d50a6b28b98910fb01a452436e508745f5ab436fe7d5dca9277fcc4e084b896"
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java",
+      "candidateCopyVerifiedBeforeRemoval": true,
+      "restoredExactBaselineSha256": "f51dd875cafb52a3c99bd3798d00c90d36657b32a35dff80c51731a54be5603f"
+    }
+  ],
+  "symlinkOnlyRemoved": "/tmp/edhr-version-order-qa-base-o4d9hba4/gmp-platform/frontend/node_modules",
+  "sharedNodeModulesPreserved": true,
+  "preRemovalClean": true,
+  "worktreeRemoved": true,
+  "mainStatus": "",
+  "evidencePreserved": "all /tmp/edhr-version-order-qa-* raw logs, reports, HTTP, assembly and summaries remain"
+}

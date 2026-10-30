@@ -1,0 +1,209 @@
+qualityResult:
+  result: passed
+  baseCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+  headCommit: 57d44a125132a788606507619e07896f0b21bc38
+  contractBaseline:
+    sourceCommit: 57d44a125132a788606507619e07896f0b21bc38
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 57d44a125132a788606507619e07896f0b21bc38
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.version-order.integration-baseline
+    required: true
+    category: requirements
+    description: 实际目标、干净候选和契约/保护范围核对
+    method: command
+    command: git fetch origin edhr-dev; git status --porcelain; git diff base head
+      -- protected paths
+    outcome: passed
+    evidence:
+    - target/base=635711f97e9b794f4af02e1e5d1939bb2ecf920f; feature head=tested integrated
+      candidate=57d44a125132a788606507619e07896f0b21bc38; target is ancestor, no additional
+      target changes.
+    - 实际读取 HEAD 的 AGENTS、quality-verifier、handoff，契约与目标无差异；工作树干净。
+    - /tmp/edhr-version-order-qa-inspection.json
+  - id: check.version-order.knowledge-basis
+    required: true
+    category: ontology
+    description: 有限业务/知识依据与not-applicable核对
+    method: inspection
+    command: Read DEC-0001, material/product definitions, product source rule, open
+      questions and ontology original result
+    outcome: passed
+    evidence:
+    - 知识0.3.25；5既有ID有限一致，保持身份、产品来源和START冻结含义；工程数字段比较不是用户确认SemVer。无知识或成熟度变更。
+    - docs/development/branch-review-20261030-version-order/evidence/rule-review.json
+    - /tmp/edhr-version-order-qa-inspection.json
+  - id: check.version-order.minimum-fix
+    required: true
+    category: regression
+    description: 比较器根因及最小修复审查
+    method: inspection
+    command: git diff base head -- backend/src/main; read listMaterials/toMaterialGroup/compareVersion
+    outcome: passed
+    evidence:
+    - 仅 ProcessModelingController.java 7增3删；双侧每轮各find一次，先处理存在性，再比较BigInteger，均结束才回退原文本。无SQL/写入/授权/格式变更。
+    - /tmp/edhr-version-order-qa-product-diff.txt
+  - id: check.version-order.test-strength
+    required: true
+    category: unit
+    description: 原断言和夹具保持、新增测试风险匹配
+    method: inspection
+    command: git diff base head -- MasterDataBoundaryIntegrationTest.java ProcessModelingControllerTest.java
+    outcome: passed
+    evidence:
+    - 两测试文件只新增24 API组合+1有限22标签性质测试，原36+54无删除/跳过/改断言。真实JWT/filter/物料仓储；其他制程依赖明确mock。
+    - /tmp/edhr-version-order-qa-base-assembly.json
+  - id: check.version-order.current-backend
+    required: true
+    category: integration
+    description: 候选独立后端回归
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=MasterDataBoundaryIntegrationTest,ProcessModelingControllerTest,ProductProcessControllerTest,MaterialImportIntegrationTest
+      -Dedhr.audit.boundaryOutput=/tmp/edhr-version-order-qa-current-http.jsonl test
+    outcome: passed
+    evidence:
+    - 133/133=60边界+55Process+14Product+4导入，0failure/error/skip；候选57d44a125132a788606507619e07896f0b21bc38
+    - /tmp/edhr-version-order-qa-current-test.txt
+    - /tmp/edhr-version-order-qa-current-summary.json
+  - id: check.version-order.baseline-red-green
+    required: true
+    category: integration
+    description: 独立旧基线同组实际失败复现
+    method: automated-test
+    command: Same unmodified candidate tests installed byte-for-byte on detached base;
+      mvn -Dtest=MasterDataBoundaryIntegrationTest,ProcessModelingControllerTest test
+    outcome: passed
+    evidence:
+    - 旧115项9真实失败/106正向，恰8个混合API排序断言+1性质失败，0error/skip。当前同组115均过，另18回归计入133；不是对旧结果摘要的引用。
+    - /tmp/edhr-version-order-qa-baseline-test.txt
+    - /tmp/edhr-version-order-qa-baseline-summary.json
+    - /tmp/edhr-version-order-qa-base-assembly.json
+  - id: check.version-order.api-identity-audit-auth
+    required: true
+    category: api
+    description: 实际API顺序、完整成员及只读/匿名回归
+    method: automated-test
+    command: Inspect independent current/baseline HTTP JSONL and executed full-row
+      assertions
+    outcome: passed
+    evidence:
+    - 候选59授权GET均200，24混合组合=6标签对×2创建顺序×2输入方向，组头/完整版本顺序/ID/计数/状态通过。60集成包含1项三路匿名401，完整material/material_type/audit_event行快照保持；匿名请求不在59记录中。旧所有记录也200，仅排序错误，不声称500。
+    - /tmp/edhr-version-order-qa-current-http.jsonl
+    - /tmp/edhr-version-order-qa-baseline-http.jsonl
+    - /tmp/edhr-version-order-qa-current-summary.json
+  - id: check.version-order.knowledge-validation
+    required: true
+    category: ontology
+    description: 独立正式知识结构/引用校验
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - 89/89,0failure/error/skip；结构检查不是全量语义完成。
+    - /tmp/edhr-version-order-qa-knowledge-test.txt
+    - /tmp/edhr-version-order-qa-current-summary.json
+  - id: check.version-order.inventory
+    required: true
+    category: documentation
+    description: 四清单独立逐字节重建
+    method: command
+    command: python3 scripts/build-branch-review-inventory.py --ref 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+      --out independent temporary directory
+    outcome: passed
+    evidence:
+    - 四文件逐字节同；4311路径/130迁移/442 HTTP注解/198前端路由候选仅盘点，未审项保持pending。
+    - /tmp/edhr-version-order-qa-inventory-check.json
+  - id: check.version-order.originals
+    required: true
+    category: documentation
+    description: 原始证据与本体归档校验
+    method: command
+    command: SHA-256/size verification of primary-verification.json and ontologyArchiveMap
+    outcome: passed
+    evidence:
+    - 20原件hash/size均匹配；6本体原件归档与/tmp源逐字节相同；未清洗原始日志。
+    - /tmp/edhr-version-order-qa-inspection.json
+  - id: check.version-order.scope-structure-deferrals
+    required: true
+    category: requirements
+    description: 有限覆盖、候选证据等级、结构方案和用户暂缓保持
+    method: inspection
+    command: Read source-review/findings/scope-review and actual DocumentManagementController
+      read methods
+    outcome: passed
+    evidence:
+    - 4组有限方法范围/5既有知识ID不计整文件或新增unique。文档版本IN读取批量反证、分页后文件查找范围F、D/V增长和未实测边界准确；ReadService/纯Assembler职责、收益和保护场景具体，未实施优化。TaskDetail/生产弹窗/记录控制及既有性能先讨论保持。
+    - /tmp/edhr-version-order-qa-inspection.json
+  - id: check.version-order.non-evidence-whitespace
+    required: true
+    category: documentation
+    description: 非证据路径空白检查
+    method: command
+    command: git -c core.whitespace=cr-at-eol diff --check base head -- . :(exclude)docs/development/branch-review-20261030-version-order/evidence
+    outcome: passed
+    evidence:
+    - 13个非证据路径exit0，含产品/测试/文档/库存。证据原件另行检查而非清洗。
+    - /tmp/edhr-version-order-qa-whitespace-nonraw.txt
+    - /tmp/edhr-version-order-qa-inspection.json
+  - id: check.version-order.all-whitespace
+    required: false
+    category: documentation
+    description: 全区间原样空白检查
+    method: command
+    command: git -c core.whitespace=cr-at-eol diff --check 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+      57d44a125132a788606507619e07896f0b21bc38
+    outcome: failed
+    evidence:
+    - exit2，诊断仅8个原样Maven/JUnit日志/XML文件；不修改原件，非产品/测试空白问题。
+    - /tmp/edhr-version-order-qa-whitespace-all.txt
+  findings:
+  - id: AUD-W4-VERSION-COMPARATOR-ORDER-001
+    severity: medium
+    scope: master-data-material-version-display
+    summary: 相同正常保存版本集合因输入顺序导致不同组头/版本列表；原比较器违反反对称性，本候选已修复。
+    reproductionSteps:
+    - 正常POST同组V2b与V2a3（或反向创建），保持不同真实创建时间。
+    - GET /api/v1/master-data/process-modeling/materials?size=1&sort=createdAt&order=desc，切换asc及创建顺序。
+    - 对照原候选测试安装于旧635711f9时的HTTP/断言及当前57d44a12。
+    expectedResult: 沿原数字段比较、额外数字段与文本回退工程意图形成一致顺序，组头与完整成员保持；不新定格式或发布政策。
+    actualResult: 旧24混合组合中8项组头/列表错误且性质测试失败；候选133全过，旧115中其余106正向保持。
+    evidence:
+    - /tmp/edhr-version-order-qa-baseline-summary.json
+    - /tmp/edhr-version-order-qa-baseline-http.jsonl
+    - /tmp/edhr-version-order-qa-current-summary.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 57d44a125132a788606507619e07896f0b21bc38
+    - type: command
+      reference: /tmp/edhr-version-order-qa-current-test.txt
+    - type: document
+      reference: /tmp/edhr-version-order-qa-baseline-summary.json
+  residualRisks:
+  - id: risk.version-order.finite-verification
+    description: 22标签性质和24混合组合为有限检查，不是任意字符串形式证明；忽略大小写/trim相等的原等价语义保持。
+    impact: 不能宣称所有版本标签政策或所有主数据输入均已认证。
+    mitigation: 保持范围说明；未来新增业务排序政策需单独确认。
+  - id: risk.version-order.environment-boundary
+    description: 本轮实际JWT/MockMvc/H2仓储及聚焦回归，不含原生PG计划/迁移、生产容量或浏览器持久化E2E。
+    impact: 不能据此关闭全域性能、部署或完整冻结链路验收。
+    mitigation: 纯比较器修复以适用API/性质证据签收；其他领域沿总账继续。
+  - id: risk.version-order.standing-work
+    description: 三项既有设备/物料性能待讨论；文档分页/性能仅源码候选。TaskDetail签名、生产弹窗、记录控制依赖DHR high/A12、四gap与旧审计/签署限制保持。
+    impact: 本批通过不等于整体审计或暂缓项完成。
+    mitigation: 持续台账下一批取证；性能取舍先讨论，不自动部署/合并/恢复。
+  - id: risk.version-order.global-checks
+    description: 全区间原样空白检查失败；既有strict19及ESLint缺配置本轮未重跑、仍非绿。没有前端产品修改。
+    impact: 不把本次局部门禁passed包装为全局质量全绿。
+    mitigation: 保留原件与明确披露，非证据13路径空白通过。
+  blockingConditions: []

@@ -2,9 +2,9 @@
 
 ## PR42已合入：W4混合版本标签排序与文档关联读取
 
-已实际fetch最新`edhr-dev@635711f97e9b794f4af02e1e5d1939bb2ecf920f`，确认PR42人工merge、整树同5539d26e且无额外代码/知识/契约增量。从该提交建立`audit/edhr-dev-version-order-20261030`，[本批](../branch-review-20261030-version-order/README.md)按L2继续。原混合标签CAND正常POST/GET已复现60项中8红52正、0error/skip，承接为同一medium缺陷，准备仅修Matcher遍历，不新增版本格式/发布策略，修复及独立验收尚未完成。
+已实际fetch最新`edhr-dev@635711f97e9b794f4af02e1e5d1939bb2ecf920f`，确认PR42人工merge、整树同5539d26e且无额外代码/知识/契约增量。从该提交建立`audit/edhr-dev-version-order-20261030`，[本批](../branch-review-20261030-version-order/README.md)按L2推进。原混合标签CAND正常POST/GET已复现60项中8红52正、0error/skip，承接为同一medium缺陷，仅修Matcher遍历，不新增版本格式/发布策略。
 
-已完成最小修复，产品一文件7增3删，主侧133/133（60边界API含新24、55Process含新1性质、14Product、4导入）通过；旧60的8红52正及性质旧1红原件保留。本体5既有ID有限一致、NA/FINAL及知识89通过，不计新unique。当前待全新独立质量，不提前关闭medium。
+已完成最小修复，产品一文件7增3删；全新独立对干净`57d44a12`正式passed/FINAL、12/12必需检查，本medium按[acceptance](../branch-review-20261030-version-order/acceptance.json) resolved。独立133后端/89知识通过，旧115为9真实红106正、0error/skip（8API+1性质），原件保留不与主侧加总unique。本体5既有ID有限一致、NA/FINAL，不计新unique。全部角色FINAL后已实际完成PR前无漂移/整体进度沟通；当前仅L0档案/验收/交付，不改产品、测试、知识或冻结清单。
 
 固定4311路径/130迁移只是盘点，4个有限方法范围分组非整文件，unique历史增量未去重。实际开始核对文档关联读取，登记分页算术与全量加载/文件lookup源码候选及具体拆分接口，运行后果/SQL/容量留下一批验证，未经讨论不优化。后续W3/W4其他未审入口、W2余项与W5–W7继续；三项既有性能、原用户暂缓/四gap不变，不自动merge/deploy/恢复。
 

@@ -1,0 +1,163 @@
+{
+  "baseCommit": "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+  "candidateTestsCommit": "57d44a125132a788606507619e07896f0b21bc38",
+  "suites": [
+    {
+      "suite": "MasterDataBoundaryIntegrationTest",
+      "evidence": "/tmp/edhr-version-order-qa-baseline-MasterDataBoundaryIntegrationTest.xml",
+      "tests": 60,
+      "failures": 8,
+      "errors": 0,
+      "skipped": 0,
+      "failureCases": [
+        {
+          "name": "acceptedMixedLabelsKeepTheirOrderRegardlessOfInputOrder(String, String, boolean, String)[2]",
+          "message": "\nexpected: \"V2a3\"\n but was: \"V2b\""
+        },
+        {
+          "name": "acceptedMixedLabelsKeepTheirOrderRegardlessOfInputOrder(String, String, boolean, String)[3]",
+          "message": "\nexpected: \"V2a3\"\n but was: \"V2b\""
+        },
+        {
+          "name": "acceptedMixedLabelsKeepTheirOrderRegardlessOfInputOrder(String, String, boolean, String)[6]",
+          "message": "\nexpected: \"V1.2a3\"\n but was: \"V1.2z\""
+        },
+        {
+          "name": "acceptedMixedLabelsKeepTheirOrderRegardlessOfInputOrder(String, String, boolean, String)[7]",
+          "message": "\nexpected: \"V1.2a3\"\n but was: \"V1.2z\""
+        },
+        {
+          "name": "acceptedMixedLabelsKeepTheirOrderRegardlessOfInputOrder(String, String, boolean, String)[10]",
+          "message": "\nexpected: \"A1\"\n but was: \"Z\""
+        },
+        {
+          "name": "acceptedMixedLabelsKeepTheirOrderRegardlessOfInputOrder(String, String, boolean, String)[11]",
+          "message": "\nexpected: \"A1\"\n but was: \"Z\""
+        },
+        {
+          "name": "acceptedMixedLabelsKeepTheirOrderRegardlessOfInputOrder(String, String, boolean, String)[14]",
+          "message": "\nexpected: \"V2a9223372036854775808\"\n but was: \"V2z\""
+        },
+        {
+          "name": "acceptedMixedLabelsKeepTheirOrderRegardlessOfInputOrder(String, String, boolean, String)[15]",
+          "message": "\nexpected: \"V2a9223372036854775808\"\n but was: \"V2z\""
+        }
+      ]
+    },
+    {
+      "suite": "ProcessModelingControllerTest",
+      "evidence": "/tmp/edhr-version-order-qa-baseline-ProcessModelingControllerTest.xml",
+      "tests": 55,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "failureCases": [
+        {
+          "name": "versionComparisonObeysOrderingLawsForAcceptedLabelsAndLegacyEmptyValues",
+          "message": "[antisymmetry: Z / A1] \nexpected: 1\n but was: -1"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 115,
+    "failures": 9,
+    "errors": 0,
+    "skipped": 0
+  },
+  "positiveControls": 106,
+  "authorizedHttpRecords": 59,
+  "mixedCases": 24,
+  "wrongOrderCases": [
+    {
+      "higher": "V2a3",
+      "lower": "V2b",
+      "reverseCreation": false,
+      "inputOrder": "desc",
+      "actualHead": "V2b",
+      "actualVersions": [
+        "V2b",
+        "V2a3"
+      ]
+    },
+    {
+      "higher": "V2a3",
+      "lower": "V2b",
+      "reverseCreation": true,
+      "inputOrder": "asc",
+      "actualHead": "V2b",
+      "actualVersions": [
+        "V2b",
+        "V2a3"
+      ]
+    },
+    {
+      "higher": "V1.2a3",
+      "lower": "V1.2z",
+      "reverseCreation": false,
+      "inputOrder": "desc",
+      "actualHead": "V1.2z",
+      "actualVersions": [
+        "V1.2z",
+        "V1.2a3"
+      ]
+    },
+    {
+      "higher": "V1.2a3",
+      "lower": "V1.2z",
+      "reverseCreation": true,
+      "inputOrder": "asc",
+      "actualHead": "V1.2z",
+      "actualVersions": [
+        "V1.2z",
+        "V1.2a3"
+      ]
+    },
+    {
+      "higher": "A1",
+      "lower": "Z",
+      "reverseCreation": false,
+      "inputOrder": "desc",
+      "actualHead": "Z",
+      "actualVersions": [
+        "Z",
+        "A1"
+      ]
+    },
+    {
+      "higher": "A1",
+      "lower": "Z",
+      "reverseCreation": true,
+      "inputOrder": "asc",
+      "actualHead": "Z",
+      "actualVersions": [
+        "Z",
+        "A1"
+      ]
+    },
+    {
+      "higher": "V2a9223372036854775808",
+      "lower": "V2z",
+      "reverseCreation": false,
+      "inputOrder": "desc",
+      "actualHead": "V2z",
+      "actualVersions": [
+        "V2z",
+        "V2a9223372036854775808"
+      ]
+    },
+    {
+      "higher": "V2a9223372036854775808",
+      "lower": "V2z",
+      "reverseCreation": true,
+      "inputOrder": "asc",
+      "actualHead": "V2z",
+      "actualVersions": [
+        "V2z",
+        "V2a9223372036854775808"
+      ]
+    }
+  ],
+  "exit": 1,
+  "qualification": "8 real API order assertion failures and1 comparator-law failure; no fixture/environment errors; all recorded HTTP200, no sorting500 claim"
+}
