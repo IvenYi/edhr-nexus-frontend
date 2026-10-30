@@ -35,6 +35,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -54,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
+import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -78,6 +81,7 @@ class DocumentReadBoundaryIntegrationTest {
     private static final String DOCUMENTS = "/api/v1/master-data/documents";
     private static final List<String> TABLES = List.of("document_version", "sop_document", "document_category", "file_object", "audit_event");
     private static final List<String> SQL = new CopyOnWriteArrayList<>();
+    static volatile Consumer<String> sqlObserver;
     @Autowired MockMvc mvc;
     @Autowired JdbcTemplate jdbc;
     @Autowired ObjectMapper mapper;
@@ -86,10 +90,12 @@ class DocumentReadBoundaryIntegrationTest {
 
     @BeforeEach
     void reset() {
+        sqlObserver = null;
         for (String table : TABLES) jdbc.update("DELETE FROM " + table);
         // Canonical baseline/0001-current-schema.sql permits null master code; version.code owns the required code.
         // Hibernate's legacy SopDocument mapping still generates NOT NULL, so align this fixture explicitly.
         jdbc.execute("ALTER TABLE sop_document ALTER COLUMN code DROP NOT NULL");
+        jdbc.execute("CREATE INDEX IF NOT EXISTS idx_document_version_document ON document_version(document_id,created_at DESC)");
     }
 
     static Stream<Arguments> pages() {
@@ -168,6 +174,96 @@ class DocumentReadBoundaryIntegrationTest {
         mvc.perform(get(DOCUMENTS)).andExpect(status().isUnauthorized());
         mvc.perform(get(DOCUMENTS + "/categories")).andExpect(status().isUnauthorized());
         assertThat(snapshots()).isEqualTo(before);
+    }
+
+    @Test
+    void aSmallPageDoesNotMaterializeOffPageDocumentsOrVersions() throws Exception {
+        seed(100, 3, 1, "none");
+        JsonNode data = read("bounded-page-loading", DOCUMENTS, Map.of("size", "5"), 200);
+        assertThat(data.path("totalElements").asInt()).isEqualTo(100);
+        assertThat(data.path("content").size()).isEqualTo(5);
+        data.path("content").forEach(d -> assertThat(d.path("versions").size()).isEqualTo(3));
+        var stats = factory.unwrap(SessionFactory.class).getStatistics();
+        assertThat(stats.getEntityStatistics(SopDocument.class.getName()).getLoadCount()).isLessThanOrEqualTo(5);
+        assertThat(stats.getEntityStatistics(DocumentVersion.class.getName()).getLoadCount()).isLessThanOrEqualTo(15);
+    }
+
+    @ParameterizedTest @ValueSource(strings = {"shared", "distinct"})
+    void fileMetadataQueriesDoNotGrowPerVersion(String files) throws Exception {
+        seed(8, 4, 1, files);
+        JsonNode data = read("bounded-file-" + files, DOCUMENTS, Map.of("size", "5"), 200);
+        assertThat(data.path("content").size()).isEqualTo(5);
+        data.path("content").forEach(doc -> doc.path("versions").forEach(v -> {
+            assertThat(v.path("fileName").asText()).isEqualTo("文件" + v.path("fileId").asText() + ".pdf");
+            assertThat(v.path("fileMimeType").asText()).isEqualTo("application/pdf");
+            assertThat(v.path("documentId").asText()).isEqualTo(doc.path("id").asText());
+        }));
+        assertThat(fileQueries()).isLessThanOrEqualTo(1);
+    }
+
+    @Test
+    void categoryCountsDoNotMaterializeEveryDocument() throws Exception {
+        seed(100, 3, 4, "none");
+        JsonNode categories = read("bounded-category-counts", DOCUMENTS + "/categories", Map.of(), 200);
+        assertThat(categories.get(0).path("count").asInt()).isEqualTo(100);
+        assertThat(categories.get(1).path("count").asInt()).isZero();
+        assertThat(factory.unwrap(SessionFactory.class).getStatistics()
+                .getEntityStatistics(SopDocument.class.getName()).getLoadCount()).isZero();
+    }
+
+    @Test
+    void largePagesReturnAllMembersWithBoundedMetadataBatches() throws Exception {
+        seed(520, 1, 1, "distinct");
+        JsonNode data = read("multiple-batches", DOCUMENTS, Map.of("size", "520"), 200);
+        assertThat(data.path("totalElements").asInt()).isEqualTo(520);
+        assertThat(data.path("content").size()).isEqualTo(520);
+        data.path("content").forEach(d -> {
+            assertThat(d.path("versions").size()).isEqualTo(1);
+            JsonNode v = d.path("versions").get(0);
+            assertThat(v.path("fileName").asText()).isEqualTo("文件" + v.path("fileId").asText() + ".pdf");
+        });
+        assertThat(fileQueries()).isLessThanOrEqualTo(2);
+    }
+
+    @ParameterizedTest @ValueSource(strings = {"%", "_", "!", "\\", "MiXeD", "中文", "O'Reilly"})
+    void keywordSpecialCharactersRemainLiteralAndOldVersionsRemainSearchable(String keyword) throws Exception {
+        String id = create("目标文档", "FIRST-CODE", null);
+        mvc.perform(post(DOCUMENTS + "/" + id + "/versions").header("Authorization", bearer()).contentType("application/json")
+                .content(mapper.writeValueAsString(Map.of("version", "V0", "code", "OLD-" + keyword + "-CODE"))))
+                .andExpect(status().isOk());
+        create("干扰文档", "UNRELATED-CODE", null);
+        JsonNode data = read("literal-keyword", DOCUMENTS, Map.of("keyword", "  " + keyword.toLowerCase(java.util.Locale.ROOT) + "  "), 200);
+        assertThat(data.path("totalElements").asInt()).isEqualTo(1);
+        assertThat(data.path("content").get(0).path("id").asText()).isEqualTo(id);
+        assertThat(data.path("content").get(0).path("versions").size()).isEqualTo(2);
+    }
+
+    @Test
+    void nullTimestampsStayFirstAndTiedPagesHaveStableIdentity() throws Exception {
+        seed(6, 1, 1, "none");
+        jdbc.update("UPDATE sop_document SET updated_at=TIMESTAMP '2026-01-01 00:00:00'");
+        jdbc.update("UPDATE sop_document SET updated_at=NULL WHERE id=1005");
+        JsonNode first = read("null-first-page", DOCUMENTS, Map.of("size", "2"), 200);
+        JsonNode second = read("tied-second-page", DOCUMENTS, Map.of("size", "2", "page", "2"), 200);
+        assertThat(first.path("content").get(0).path("id").asText()).isEqualTo("1005");
+        assertThat(first.path("content").get(1).path("id").asText()).isEqualTo("1000");
+        assertThat(second.path("content").get(0).path("id").asText()).isEqualTo("1001");
+        assertThat(second.path("content").get(1).path("id").asText()).isEqualTo("1002");
+    }
+
+    @Test
+    void missingFileMetadataKeepsTheExistingVersionAndFileIdentity() throws Exception {
+        seed(1, 1, 1, "shared");
+        jdbc.update("DELETE FROM file_object");
+        JsonNode data = read("missing-file-metadata", DOCUMENTS, Map.of(), 200);
+        JsonNode version = data.path("content").get(0).path("versions").get(0);
+        assertThat(version.path("fileId").asText()).isEqualTo("50000");
+        assertThat(version.hasNonNull("fileName")).isFalse();
+        assertThat(version.path("documentId").asText()).isEqualTo("1000");
+    }
+
+    private long fileQueries() {
+        return SQL.stream().filter(sql -> sql.toLowerCase(java.util.Locale.ROOT).contains("from file_object")).count();
     }
 
     @EnabledIfSystemProperty(named = "edhr.audit.documentReads", matches = "true")
@@ -250,7 +346,7 @@ class DocumentReadBoundaryIntegrationTest {
         return "Bearer " + tokens.generateToken("document-auditor", "document-auditor", "文档审查", 5, List.of("master-data.documents"));
     }
 
-    private void seed(int documents, int versions, int categories, String files) {
+    void seed(int documents, int versions, int categories, String files) {
         for (int c = 1; c <= categories; c++) jdbc.update("INSERT INTO document_category(id,tenant_id,name,system_category,sort_order) VALUES(?,'default',?,false,?)", c, "分类" + c, c);
         if (files.equals("shared")) seedFile(50000);
         for (int d = 0; d < documents; d++) {
@@ -270,6 +366,8 @@ class DocumentReadBoundaryIntegrationTest {
 
     @Configuration(proxyBeanMethods = false)
     @EnableAutoConfiguration(exclude = JpaRepositoriesAutoConfiguration.class)
+    @ComponentScan(basePackages = "com.zencas.edhr.masterdata.service", useDefaultFilters = false,
+            includeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = ".*\\.DocumentListReadService"))
     @Import({DocumentManagementController.class, GlobalExceptionHandler.class, SecurityConfig.class, JwtAuthenticationFilter.class})
     static class Config {
         @Bean EntityManager entityManager(EntityManagerFactory factory) { return SharedEntityManagerCreator.createSharedEntityManager(factory); }
@@ -282,6 +380,8 @@ class DocumentReadBoundaryIntegrationTest {
         @Bean ProductProcessOperationDocumentBindingRepository bindings() { return mock(ProductProcessOperationDocumentBindingRepository.class); }
         @Bean SnowflakeIdGenerator ids() { return new SnowflakeIdGenerator(1); }
         @Bean JwtTokenProvider tokens() { return new JwtTokenProvider("document-read-audit-key-at-least-32-characters", 300000); }
-        @Bean HibernatePropertiesCustomizer inspectSql() { return properties -> properties.put("hibernate.session_factory.statement_inspector", (StatementInspector) sql -> { SQL.add(sql); return sql; }); }
+        @Bean HibernatePropertiesCustomizer inspectSql() { return properties -> properties.put("hibernate.session_factory.statement_inspector", (StatementInspector) sql -> {
+            SQL.add(sql); Consumer<String> observer = sqlObserver; if (observer != null) observer.accept(sql); return sql;
+        }); }
     }
 }

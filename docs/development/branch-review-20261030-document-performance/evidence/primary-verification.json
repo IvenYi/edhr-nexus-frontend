@@ -1,0 +1,204 @@
+{
+  "previousFeatureCommit": "793503cbbd32375d47fc76185cf0568ec1fe7bd4",
+  "targetCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "backend": 225,
+  "postgres": 41,
+  "h2AndExisting": 184,
+  "baseline": "40:5fail35positive0error/skip againstpreviousfeature793",
+  "ontology": "NA/FINAL6limitedexisting89role actual",
+  "ontologyArchiveMap": [
+    {
+      "origin": "/tmp/edhr-document-perf-ontology-result.yaml",
+      "archive": "docs/development/branch-review-20261030-document-performance/evidence/ontology-result.yaml",
+      "sha256": "0ab520cb76dce527fd86e65adee3aa5b9958118ea2c9582aa43a9076de6e0dd2"
+    },
+    {
+      "origin": "/tmp/edhr-document-perf-rule-review.json",
+      "archive": "docs/development/branch-review-20261030-document-performance/evidence/rule-review.json",
+      "sha256": "d13d9ef892d8b9a03f2ca0850b96a2b5181782e019981b991a3290977ec25af9"
+    },
+    {
+      "origin": "/tmp/edhr-document-perf-rule-review.md",
+      "archive": "docs/development/branch-review-20261030-document-performance/evidence/rule-review.md",
+      "sha256": "b4bccea255642a90dbdfbaa732fce96d08f901e3ae31eab03d91127bca4fd1db"
+    },
+    {
+      "origin": "/tmp/edhr-document-perf-ontology-knowledge-test.txt",
+      "archive": "docs/development/branch-review-20261030-document-performance/evidence/ontology-knowledge-test.txt",
+      "sha256": "6bf3708825e8d367007ec75b4d0a1f37b01aaa4b873b6620cec8a396f6cf7cdd"
+    },
+    {
+      "origin": "/tmp/edhr-document-perf-ontology-knowledge-junit.xml",
+      "archive": "docs/development/branch-review-20261030-document-performance/evidence/ontology-knowledge-junit.xml",
+      "sha256": "49eb65d380d5ec33c9de952e1ffcac8fa730a883524490b856accf18f8945a29"
+    },
+    {
+      "origin": "/tmp/edhr-document-perf-ontology-manifest.json",
+      "archive": "docs/development/branch-review-20261030-document-performance/evidence/ontology-manifest.json",
+      "sha256": "4af9d0502188ccc99b660654453cba735fc5bf31b2951b38f247351bcae66a2f"
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/baseline-http.jsonl",
+      "sha256": "a13e45840f5d158b5b3f816c6d4820d3e7929240a1ce2bbb2708be77c78ed94a",
+      "bytes": 433679
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/baseline-junit.xml",
+      "sha256": "fb6c6bbe1f88d623c7d08cb58124a88aad201f9c3be0e066adfa173a4705e078",
+      "bytes": 301348
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/baseline-summary.json",
+      "sha256": "f164df1aae6174aaa52b36448567c1f33558abc403a1ac0e5611962edfdc8b2b",
+      "bytes": 379
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/baseline-test.txt",
+      "sha256": "e8c67092b2936003aef6e4095ee42a99df2448d0bfabb52bcf365a716f187da2",
+      "bytes": 265183
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/cost-comparison.json",
+      "sha256": "c1399914855e6a50d73117aaaf71d17faba20643186fcdf169e788e8a384578e",
+      "bytes": 14135
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/history-3574179e-DocumentManagementController.java",
+      "sha256": "a59d0f0561a4904cd07d1c8be23328a6b819cc1bc36ad48960ec1b5ffad9765a",
+      "bytes": 34566
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/history-9e2aa490-DocumentManagementController.java",
+      "sha256": "1ad58d30d46ac7f9d0df1a6e3b6b0913bd7ee2f87517edbdce28d6b549531217",
+      "bytes": 34225
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/history-index.json",
+      "sha256": "c066812b0258173f108b2b0c5515937104245908663f43ab5140b0953ea55ac9",
+      "bytes": 779
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/ontology-knowledge-junit.xml",
+      "sha256": "49eb65d380d5ec33c9de952e1ffcac8fa730a883524490b856accf18f8945a29",
+      "bytes": 20421
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/ontology-knowledge-test.txt",
+      "sha256": "6bf3708825e8d367007ec75b4d0a1f37b01aaa4b873b6620cec8a396f6cf7cdd",
+      "bytes": 2111
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/ontology-manifest.json",
+      "sha256": "4af9d0502188ccc99b660654453cba735fc5bf31b2951b38f247351bcae66a2f",
+      "bytes": 13729
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/ontology-result.yaml",
+      "sha256": "0ab520cb76dce527fd86e65adee3aa5b9958118ea2c9582aa43a9076de6e0dd2",
+      "bytes": 2329
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/postgres-plan-category-counts.json",
+      "sha256": "798e7ceb01c5bcddb5f9a01980da467d7d680ecce5e3402b6c1b49bce7a3c607",
+      "bytes": 2181
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/postgres-plan-count-all.json",
+      "sha256": "0a9f072da62225853bd47400e100cb82ef68d352d1afc41afa9771f3d5be4a23",
+      "bytes": 2019
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/postgres-plan-count-version-keyword.json",
+      "sha256": "04e30373ade35ba3d82bfa6726b59aeac7b40d8cd3baee610f0c471e959327e9",
+      "bytes": 3657
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/postgres-plan-page-all.json",
+      "sha256": "895f431cab0ae299b5e0223218a9fc7adf5c13fcd7962a965f8a39bbd3cb6e38",
+      "bytes": 3044
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/postgres-plan-page-version-keyword.json",
+      "sha256": "c132b6084fd47a3274fe0571b446d412ad0a054339cc80f710710d24dc56fbc2",
+      "bytes": 4820
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/postgres-plan-page-versions.json",
+      "sha256": "8008e6fa390eb0083dbab35763d43ec33d4c3454f6d1ddf238490e4ad91c861f",
+      "bytes": 3390
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/postgres-plan-setup.sql",
+      "sha256": "e59346057466828be6d6c8c41d9dff69913532df4fce95aa32f93d6b54ac0b23",
+      "bytes": 3709
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/postgres-plans.json",
+      "sha256": "99c9aa7cf39bbdc791ae2307a193ce819c9fa8879d5909da344898fa8330f131",
+      "bytes": 26359
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/primary-DocumentManagementControllerTest.xml",
+      "sha256": "0135d6fb56c0d4d3575c0cfb0f900a8aaae97a7e8a864828ab822f5c0168fea7",
+      "bytes": 34705
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/primary-DocumentReadBoundaryIntegrationTest.xml",
+      "sha256": "3665215c876e52b57af8baa37b59e5b541bbe751177f6e30500e937478cb12fa",
+      "bytes": 76461
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/primary-DocumentReadPerformancePostgresTest.xml",
+      "sha256": "751ff1b7f352ed08f5f344ca269d0aeb43820582b7222f45809b1e74f466c5b6",
+      "bytes": 78501
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/primary-MasterDataBoundaryIntegrationTest.xml",
+      "sha256": "87d04f18ac9d2eb4cec709e9d06f6cd266faa9397dcdc1f431b8807859c3767e",
+      "bytes": 276650
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/primary-MaterialImportIntegrationTest.xml",
+      "sha256": "586cdcfbcaf2ad1b1fcee3210079192dc83284486a4417b929b5f75e23399990",
+      "bytes": 129739
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/primary-ProcessModelingControllerTest.xml",
+      "sha256": "71a5d61bef67d493324235fb85911f647ed07bef5b87035c2945da02be634190",
+      "bytes": 41945
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/primary-ProductProcessControllerTest.xml",
+      "sha256": "bbe5e6ab59b58e2fd73d4d529b886e1002470174c0c140f876bcc5bfc36b2808",
+      "bytes": 35164
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/primary-http.jsonl",
+      "sha256": "4132789ce2ffcd39a85ccb32350c150a2555243b49f032f1014c2a9cda6208ff",
+      "bytes": 603542
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/primary-summary.json",
+      "sha256": "fbcd3315c4b50a33c7458193ce543e18b60b36b1b4f113b8881f0cb0acf3deb9",
+      "bytes": 2189
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/primary-test.txt",
+      "sha256": "f151ad712f37223acfa4f4cfb55b6f057b89b000aed3d39d8bb3b3e0fba1bbdd",
+      "bytes": 402968
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/rule-review.json",
+      "sha256": "d13d9ef892d8b9a03f2ca0850b96a2b5181782e019981b991a3290977ec25af9",
+      "bytes": 10814
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-performance/evidence/rule-review.md",
+      "sha256": "b4bccea255642a90dbdfbaa732fce96d08f901e3ae31eab03d91127bca4fd1db",
+      "bytes": 3264
+    }
+  ],
+  "limits": "No production connection/schema change; PG plans and local tests not production SLA; raw originals unchanged. Manifest not self-hashed."
+}
