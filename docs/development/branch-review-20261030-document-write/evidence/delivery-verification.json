@@ -1,0 +1,27 @@
+{
+  "baseCommit": "2e24711aad1124bb28674161ef8f3dbaf00b569a",
+  "runtimeTestedAndReviewedCommit": "fd1e80d9abb01e75b60d8d40e9f2c39587c420a1",
+  "protectedPaths": [
+    "gmp-platform",
+    "tools",
+    "docs/knowledge",
+    "docs/architecture",
+    "docs/agents",
+    "AGENTS.md",
+    "codeplzreadme.md",
+    "docs/development/branch-review-20261026-capacity-audit/audit-charter.md",
+    "docs/development/branch-review-20261030-document-read",
+    "docs/development/branch-review-20261030-document-performance",
+    "docs/development/branch-review-20261030-document-write/inventory",
+    "docs/development/branch-review-20261030-document-write/a23-review.json",
+    "docs/development/branch-review-20261030-document-write/source-review.json",
+    "docs/development/branch-review-20261030-document-write/decision-package.yaml",
+    "docs/development/branch-review-20261030-document-write/review-notes.md"
+  ],
+  "protectedDelta": [],
+  "primaryOriginalsUnchanged": 37,
+  "sourceSnapshotsUnchanged": 6,
+  "independentOriginalsArchived": 54,
+  "actualScopeCommunication": "After all formal roles FINAL and before new PR: document authority and code mapping only, W3/W4 intersection and W5-W7 remaining; no auto merge/deploy/restore.",
+  "postTestScope": "Only L0 originals archive, acceptance, progress and delivery registration; no runtime rerun claimed on documentation commits."
+}

@@ -1,0 +1,18 @@
+{
+  "baseCommit": "2e24711aad1124bb28674161ef8f3dbaf00b569a",
+  "scopeType": "limited-method-and-contract-ranges",
+  "wholeFileCompletion": 0,
+  "historicalUniqueIncrement": null,
+  "records": [
+    {"path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java", "symbols": ["13 HTTP mappings", "create/update/createVersion/updateVersion/deleteVersion/delete", "category CRUD/order", "audit/snapshot/file/category helper chains"], "scope": "逐段读取专用HTTP权限、事务和写入调用链；JWT缺权/有权矩阵及失败回滚实跑，性能与排序契约剩余候选单列，不认证所有并发/多租户/删除引用。"},
+    {"path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/SopDocument.java", "symbols": ["code Column", "prePersist/preUpdate"], "scope": "父code映射对照旧0051/currentDDL与真实freshORM；其他字段长度/全部回调并发语义未完整验收。"},
+    {"path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/DocumentVersion.java", "symbols": ["code/documentId/version required columns", "timestamps"], "scope": "版本编码义务保留和实际创建/更新；非所有索引或约束认证。"},
+    {"path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java", "symbols": ["EnableMethodSecurity", "authenticated fallback", "401/403 handlers"], "scope": "实际filter/方法安全装配；不声称依赖/所有公开端点/生产认证已全审。"},
+    {"path": "gmp-platform/backend/src/main/java/com/zencas/edhr/identity/security/JwtAuthenticationFilter.java", "symbols": ["authority claims to SecurityContext", "AuditContext lifecycle"], "scope": "真实缺权及相邻authoritytoken与审计主体贯通；JWT撤销/完整多租户安全另审。"},
+    {"path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java", "symbols": ["GET /documents page authority"], "scope": "同文档资源旧入口授权原始依据，复用既有测试，不报整控制器复审完成。"},
+    {"path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionAspect.java", "symbols": ["Order1000", "TransactionTemplate around ProtectDeletion"], "scope": "权限拦截器与删除Aspect顺序静态核对；Relations中的三个文档相关关系只定位，未重做完整删除图认证。"},
+    {"path": "gmp-platform/frontend/src/api/documents.ts", "symbols": ["basePath and document/category endpoint methods"], "scope": "核对同资源当前调用路径；未做UI设计/浏览器交互审查。"}
+  ],
+  "storageRanges": ["canonical sop_document/document_version columns", "0051 historical code migration", "PAGE permission seed10125", "application ddl-auto:none"],
+  "countingBoundary": "8有限源码分组与既有审查/A23重叠，不累加为整文件或新unique；4650路径只固定盘点，新增测试及本批增量另待查。"
+}

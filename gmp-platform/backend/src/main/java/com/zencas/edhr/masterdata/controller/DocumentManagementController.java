@@ -25,6 +25,7 @@ import com.zencas.edhr.masterdata.repository.SopDocumentRepository;
 import com.zencas.edhr.masterdata.service.DocumentListReadService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +51,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/master-data/documents")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('master-data.documents')")
 public class DocumentManagementController {
 
     private static final String TENANT_ID = "default";

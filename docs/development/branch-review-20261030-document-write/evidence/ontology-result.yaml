@@ -1,0 +1,60 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: 2e24711aad1124bb28674161ef8f3dbaf00b569a
+    targetBranch: edhr-dev
+    targetCommit: 2e24711aad1124bb28674161ef8f3dbaf00b569a
+    contractReadCommit: 2e24711aad1124bb28674161ef8f3dbaf00b569a
+    uncommittedContractPaths: []
+  reason: 现有term/rule已经规定主数据接口与对应页面权限一致；DEC0065-01对旧工艺建模端点的具体声明保留原范围，当前专用文档端点沿同资源master-data.documents补漏不新增权限政策、角色豁免或术语。父code可空/版本code必填由原0051迁移及当前canonical schema已有，ORM映射纠错不改变文档版本身份或业务规则。当前八个既有ID有限核对与原始来源支持保留规范，无须重复建模；产品修复、HTTP矩阵及最终独立质量由主侧另验，不以本NA认证其运行完成。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+    - id: validation.document-write.permission-policy-origin
+      checkType: evidence-path
+      command: Read current DEC0065/term/concept/fact/rule; git show1092c0ae originalDEC0065; current oldProcessModeling document PreAuthorize,seed PAGE andfrontenddocuments API; search knowledge for dedicated document exceptions
+      outcome: passed
+      evidence:
+        - /tmp/edhr-document-write-rule-review.json
+        - /tmp/edhr-document-write-rule-review.md
+        - /tmp/edhr-document-write-ontology-history-permission.yaml
+        - No specific exception found; this is versioned-current-policy plus original implementation evidence, not a newly retrieved user quote.
+    - id: validation.document-write.parent-code-storage-origin
+      checkType: evidence-path
+      command: git show3574179e original0051; compare current preserved0051/0045,canonical sop_document/document_version DDL,current entities/controller andddl-auto:none
+      outcome: passed
+      evidence:
+        - /tmp/edhr-document-write-ontology-history-version-code.sql
+        - /tmp/edhr-document-write-rule-review.json
+        - Mapping difference is implementation mismatch; default runtime does not auto rebuild schema. No migration or historical update executed.
+    - id: validation.document-write.knowledge-junit
+      checkType: schema
+      command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+      outcome: passed
+      evidence:
+        - /tmp/edhr-document-write-ontology-knowledge-test.txt
+        - /tmp/edhr-document-write-ontology-knowledge-junit.xml
+        - Actual89tests/0failure/0error/0skip,exit0; no product API or backend suite run by this role.
+    - id: validation.document-write.knowledge-contract-unchanged
+      checkType: reference
+      command: git diff --name-only2e24711a -- docs/knowledge docs/architecture docs/agents AGENTS.md codeplzreadme.md tools/knowledge-model
+      outcome: passed
+      evidence:
+        - /tmp/edhr-document-write-ontology-manifest.json
+        - No knowledge/contract/tool source delta at role snapshot;0.3.25/schema1.2.0 andmaturity retained.
+    - id: validation.document-write.minimal-source-correction
+      checkType: evidence-path
+      command: git diff2e24711a -- DocumentManagementController.java SopDocument.java; read actual classguard andparentcode Column
+      outcome: passed
+      evidence:
+        - /tmp/edhr-document-write-ontology-product-diff.txt
+        - Actual2eHEAD plusuncommitted3insertions1deletion in2productfiles; existingauthority guard andnullable mapping only, not runtime acceptance.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages: [P1, P2, P3]

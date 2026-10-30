@@ -1,0 +1,179 @@
+Compiled from "AuthorizationInterceptorsOrder.java"
+public final class org.springframework.security.authorization.method.AuthorizationInterceptorsOrder extends java.lang.Enum<org.springframework.security.authorization.method.AuthorizationInterceptorsOrder> {
+  public static final org.springframework.security.authorization.method.AuthorizationInterceptorsOrder FIRST;
+
+  public static final org.springframework.security.authorization.method.AuthorizationInterceptorsOrder PRE_FILTER;
+
+  public static final org.springframework.security.authorization.method.AuthorizationInterceptorsOrder PRE_AUTHORIZE;
+
+  public static final org.springframework.security.authorization.method.AuthorizationInterceptorsOrder SECURED;
+
+  public static final org.springframework.security.authorization.method.AuthorizationInterceptorsOrder JSR250;
+
+  public static final org.springframework.security.authorization.method.AuthorizationInterceptorsOrder SECURE_RESULT;
+
+  public static final org.springframework.security.authorization.method.AuthorizationInterceptorsOrder POST_AUTHORIZE;
+
+  public static final org.springframework.security.authorization.method.AuthorizationInterceptorsOrder POST_FILTER;
+
+  public static final org.springframework.security.authorization.method.AuthorizationInterceptorsOrder LAST;
+
+  private static final int INTERVAL;
+
+  private final int order;
+
+  private static final org.springframework.security.authorization.method.AuthorizationInterceptorsOrder[] $VALUES;
+
+  public static org.springframework.security.authorization.method.AuthorizationInterceptorsOrder[] values();
+    Code:
+       0: getstatic     #31                 // Field $VALUES:[Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+       3: invokevirtual #35                 // Method "[Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;".clone:()Ljava/lang/Object;
+       6: checkcast     #36                 // class "[Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;"
+       9: areturn
+
+  public static org.springframework.security.authorization.method.AuthorizationInterceptorsOrder valueOf(java.lang.String);
+    Code:
+       0: ldc           #1                  // class org/springframework/security/authorization/method/AuthorizationInterceptorsOrder
+       2: aload_0
+       3: invokestatic  #40                 // Method java/lang/Enum.valueOf:(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;
+       6: checkcast     #1                  // class org/springframework/security/authorization/method/AuthorizationInterceptorsOrder
+       9: areturn
+
+  private org.springframework.security.authorization.method.AuthorizationInterceptorsOrder();
+    Code:
+       0: aload_0
+       1: aload_1
+       2: iload_2
+       3: invokespecial #46                 // Method java/lang/Enum."<init>":(Ljava/lang/String;I)V
+       6: aload_0
+       7: aload_0
+       8: invokevirtual #50                 // Method ordinal:()I
+      11: bipush        100
+      13: imul
+      14: putfield      #54                 // Field order:I
+      17: return
+
+  private org.springframework.security.authorization.method.AuthorizationInterceptorsOrder(int);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: iload_2
+       3: invokespecial #46                 // Method java/lang/Enum."<init>":(Ljava/lang/String;I)V
+       6: aload_0
+       7: iload_3
+       8: putfield      #54                 // Field order:I
+      11: return
+
+  public int getOrder();
+    Code:
+       0: aload_0
+       1: getfield      #54                 // Field order:I
+       4: ireturn
+
+  private static org.springframework.security.authorization.method.AuthorizationInterceptorsOrder[] $values();
+    Code:
+       0: bipush        9
+       2: anewarray     #1                  // class org/springframework/security/authorization/method/AuthorizationInterceptorsOrder
+       5: dup
+       6: iconst_0
+       7: getstatic     #3                  // Field FIRST:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      10: aastore
+      11: dup
+      12: iconst_1
+      13: getstatic     #7                  // Field PRE_FILTER:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      16: aastore
+      17: dup
+      18: iconst_2
+      19: getstatic     #10                 // Field PRE_AUTHORIZE:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      22: aastore
+      23: dup
+      24: iconst_3
+      25: getstatic     #13                 // Field SECURED:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      28: aastore
+      29: dup
+      30: iconst_4
+      31: getstatic     #16                 // Field JSR250:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      34: aastore
+      35: dup
+      36: iconst_5
+      37: getstatic     #19                 // Field SECURE_RESULT:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      40: aastore
+      41: dup
+      42: bipush        6
+      44: getstatic     #22                 // Field POST_AUTHORIZE:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      47: aastore
+      48: dup
+      49: bipush        7
+      51: getstatic     #25                 // Field POST_FILTER:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      54: aastore
+      55: dup
+      56: bipush        8
+      58: getstatic     #28                 // Field LAST:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      61: aastore
+      62: areturn
+
+  static {};
+    Code:
+       0: new           #1                  // class org/springframework/security/authorization/method/AuthorizationInterceptorsOrder
+       3: dup
+       4: ldc           #58                 // String FIRST
+       6: iconst_0
+       7: ldc           #61                 // int -2147483648
+       9: invokespecial #62                 // Method "<init>":(Ljava/lang/String;II)V
+      12: putstatic     #3                  // Field FIRST:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      15: new           #1                  // class org/springframework/security/authorization/method/AuthorizationInterceptorsOrder
+      18: dup
+      19: ldc           #65                 // String PRE_FILTER
+      21: iconst_1
+      22: invokespecial #66                 // Method "<init>":(Ljava/lang/String;I)V
+      25: putstatic     #7                  // Field PRE_FILTER:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      28: new           #1                  // class org/springframework/security/authorization/method/AuthorizationInterceptorsOrder
+      31: dup
+      32: ldc           #67                 // String PRE_AUTHORIZE
+      34: iconst_2
+      35: invokespecial #66                 // Method "<init>":(Ljava/lang/String;I)V
+      38: putstatic     #10                 // Field PRE_AUTHORIZE:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      41: new           #1                  // class org/springframework/security/authorization/method/AuthorizationInterceptorsOrder
+      44: dup
+      45: ldc           #68                 // String SECURED
+      47: iconst_3
+      48: invokespecial #66                 // Method "<init>":(Ljava/lang/String;I)V
+      51: putstatic     #13                 // Field SECURED:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      54: new           #1                  // class org/springframework/security/authorization/method/AuthorizationInterceptorsOrder
+      57: dup
+      58: ldc           #69                 // String JSR250
+      60: iconst_4
+      61: invokespecial #66                 // Method "<init>":(Ljava/lang/String;I)V
+      64: putstatic     #16                 // Field JSR250:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      67: new           #1                  // class org/springframework/security/authorization/method/AuthorizationInterceptorsOrder
+      70: dup
+      71: ldc           #70                 // String SECURE_RESULT
+      73: iconst_5
+      74: sipush        450
+      77: invokespecial #62                 // Method "<init>":(Ljava/lang/String;II)V
+      80: putstatic     #19                 // Field SECURE_RESULT:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+      83: new           #1                  // class org/springframework/security/authorization/method/AuthorizationInterceptorsOrder
+      86: dup
+      87: ldc           #71                 // String POST_AUTHORIZE
+      89: bipush        6
+      91: sipush        500
+      94: invokespecial #62                 // Method "<init>":(Ljava/lang/String;II)V
+      97: putstatic     #22                 // Field POST_AUTHORIZE:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+     100: new           #1                  // class org/springframework/security/authorization/method/AuthorizationInterceptorsOrder
+     103: dup
+     104: ldc           #72                 // String POST_FILTER
+     106: bipush        7
+     108: sipush        600
+     111: invokespecial #62                 // Method "<init>":(Ljava/lang/String;II)V
+     114: putstatic     #25                 // Field POST_FILTER:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+     117: new           #1                  // class org/springframework/security/authorization/method/AuthorizationInterceptorsOrder
+     120: dup
+     121: ldc           #73                 // String LAST
+     123: bipush        8
+     125: ldc           #74                 // int 2147483647
+     127: invokespecial #62                 // Method "<init>":(Ljava/lang/String;II)V
+     130: putstatic     #28                 // Field LAST:Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+     133: invokestatic  #75                 // Method $values:()[Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+     136: putstatic     #31                 // Field $VALUES:[Lorg/springframework/security/authorization/method/AuthorizationInterceptorsOrder;
+     139: return
+}

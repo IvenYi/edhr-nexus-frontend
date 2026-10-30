@@ -1,0 +1,307 @@
+qualityResult:
+  result: passed
+  baseCommit: 2e24711aad1124bb28674161ef8f3dbaf00b569a
+  headCommit: fd1e80d9abb01e75b60d8d40e9f2c39587c420a1
+  contractBaseline:
+    sourceCommit: fd1e80d9abb01e75b60d8d40e9f2c39587c420a1
+    targetBranch: edhr-dev
+    targetCommit: 2e24711aad1124bb28674161ef8f3dbaf00b569a
+    contractReadCommit: fd1e80d9abb01e75b60d8d40e9f2c39587c420a1
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: check.document-write-q1.baseline-contract
+    required: true
+    category: documentation
+    description: 实际fetch目标2e、干净候选fd1e、目标为祖先；契约/知识/工具无差异，实际受测SHA明确。
+    method: command
+    command: git fetch origin edhr-dev; git rev-parse HEAD origin/edhr-dev; git merge-base --is-ancestor BASE HEAD; git
+      status --short; read applicable contracts
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-inspection.json
+    - base=2e24711aad1124bb28674161ef8f3dbaf00b569a
+    - head/tested=fd1e80d9abb01e75b60d8d40e9f2c39587c420a1
+  - id: check.document-write-q1.existing-policy-and-source
+    required: true
+    category: ontology
+    description: 现行term/rule及DEC0065、旧文档资源权限、seed与API支持专用同资源补漏；0051与canonical支持父code可空。八既有ID有限核对、本体NA/FINAL合理，不伪造新用户原话/政策/成熟度。
+    method: inspection
+    command: Read current normative assets, raw1092c0ae DEC0065 and3574179e0051 against Git objects; inspect PAGE seed,oldProcessModeling
+      andcurrent specialized API
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-inspection.json
+    - docs/development/branch-review-20261030-document-write/evidence/rule-review.json
+    - docs/development/branch-review-20261030-document-write/evidence/ontology-result.yaml
+  - id: check.document-write-q1.minimal-code-and-fixtures
+    required: true
+    category: requirements
+    description: 两产品文件3增1删仅既有authority与nullable；旧读取测试只去掉3行过时DDL补丁、无断言降低。权限比较双方canonical补丁与freshORM无补丁用途分开。
+    method: inspection
+    command: git diff BASE HEAD -- gmp-platform; inspect new tests/config andclassguard; inspectSpringSecurity6.3 PRE_AUTHORIZE
+      ordinal2*100 beforeDeletionAspect1000
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-product-diff.txt
+    - /tmp/edhr-document-write-q1-security-order-javap.txt
+    - /tmp/edhr-document-write-q1-inspection.json
+  - id: check.document-write-q1.h2-existing258
+    required: true
+    category: integration
+    description: 当前候选独立实际H2/既有258/258，0failure/error/skip。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml -Dtest=DocumentWriteBoundaryIntegrationTest,DocumentOrmSchemaIntegrationTest,DocumentReadBoundaryIntegrationTest,DocumentManagementControllerTest,MasterDataBoundaryIntegrationTest,ProcessModelingControllerTest,ProductProcessControllerTest,MaterialImportIntegrationTest
+      -Dedhr.audit.documentReads=true -Dedhr.audit.documentOutput=/tmp/edhr-document-write-q1-h2-read-http.jsonl -Dedhr.audit.documentWriteOutput=/tmp/edhr-document-write-q1-h2-http.jsonl
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-h2-test.txt
+    - /tmp/edhr-document-write-q1-h2-summary.json
+    - /tmp/edhr-document-write-q1-h2-DocumentWriteBoundaryIntegrationTest.xml
+    - /tmp/edhr-document-write-q1-h2-DocumentOrmSchemaIntegrationTest.xml
+  - id: check.document-write-q1.native-postgres126
+    required: true
+    category: integration
+    description: 独立自建PG16.15/en_US.utf8，当前126/126、0failure/error/skip；55授权/原子性及71既有读取/并发。
+    method: automated-test
+    command: Own labeledpostgres:16-alpine --rm DB edhr_document_read_test,loopback randomport; TCPpg_isready; EDHR_DOCUMENT_DATABASE_URL/USER/PASSWORD
+      bash wrapper -Dtest=DocumentWriteBoundaryPostgresTest,DocumentReadPerformancePostgresTest -Dedhr.audit.documentReads=true
+      -Dedhr.audit.documentOutput=/tmp/edhr-document-write-q1-pg-read-http.jsonl -Dedhr.audit.documentWriteOutput=/tmp/edhr-document-write-q1-pg-http.jsonl
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-db.json
+    - /tmp/edhr-document-write-q1-pg-ready.txt
+    - /tmp/edhr-document-write-q1-pg-version.txt
+    - /tmp/edhr-document-write-q1-pg-test.txt
+    - /tmp/edhr-document-write-q1-pg-summary.json
+    - /tmp/edhr-document-write-q1-pg-DocumentWriteBoundaryPostgresTest.xml
+    - /tmp/edhr-document-write-q1-pg-DocumentReadPerformancePostgresTest.xml
+  - id: check.document-write-q1.actual-13-route-authority
+    required: true
+    category: security
+    description: 每引擎39拒绝=13匿名401+26空/其他页authority403，均0业务SQL、五表不变；13有权操作正向、身份与审计主体保持。类级authority无角色名豁免。
+    method: inspection
+    command: Parse own two55HTTP streams andfive-table snapshots; inspect realJWT/filter/SecurityConfig/method-security
+      setup and13mapped routes
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-http-observations.json
+    - /tmp/edhr-document-write-q1-h2-http.jsonl
+    - /tmp/edhr-document-write-q1-pg-http.jsonl
+    - /tmp/edhr-document-write-q1-inspection.json
+  - id: check.document-write-q1.audit-failure-atomicity
+    required: true
+    category: audit
+    description: 在独立合成库用真实审计CHECK约束失败验证创建/更新/删除均400且五表完整回滚，两引擎各3例。没有mock审计成功代替事务。
+    method: automated-test
+    command: Run rejectedAuditInsertRollsBackAllBusinessChanges inH2/nativePG with ck_test_audit_failure; compare original
+      sorted full snapshots
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-h2-DocumentWriteBoundaryIntegrationTest.xml
+    - /tmp/edhr-document-write-q1-pg-DocumentWriteBoundaryPostgresTest.xml
+    - /tmp/edhr-document-write-q1-h2-http.jsonl
+    - /tmp/edhr-document-write-q1-pg-http.jsonl
+  - id: check.document-write-q1.fresh-orm-storage-contract
+    required: true
+    category: database
+    description: 无ALTER修补的freshORM正常创建200、父codeNULL、版本code正确、两条审计；后续缺版本code400且版本/审计不新增。生产ddl-auto:none，未误称规范生产库创建失败。
+    method: automated-test
+    command: Run freshMappingSupportsTheExistingVersionOwnedCodeContract; inspect0051/currentcanonical,parent/version
+      mapping andapplicationddl-auto
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-h2-DocumentOrmSchemaIntegrationTest.xml
+    - /tmp/edhr-document-write-q1-h2-test.txt
+    - /tmp/edhr-document-write-q1-product-diff.txt
+    - gmp-platform/backend/src/main/resources/application.yml
+  - id: check.document-write-q1.actual-old56-controls
+    required: true
+    category: regression
+    description: 真正旧2e只装原样两个新增测试，同56为27真实断言红、29正、0error/skip：26缺权200、1freshORM400。旧26中20改变业务/审计行、6读取；不是fixture/编译错误。
+    method: automated-test
+    command: git worktree add --detach exactownedpath BASE; byte-identical copy ONLY DocumentWriteBoundaryIntegrationTest.java/DocumentOrmSchemaIntegrationTest.java;
+      symlink shared frontend/node_modules; wrapper -Dtest=DocumentWriteBoundaryIntegrationTest,DocumentOrmSchemaIntegrationTest
+      -Dedhr.audit.documentWriteOutput=/tmp/edhr-document-write-q1-old-http.jsonl test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-old-install.json
+    - /tmp/edhr-document-write-q1-old-test.txt
+    - /tmp/edhr-document-write-q1-old-exit.json
+    - /tmp/edhr-document-write-q1-old-summary.json
+    - /tmp/edhr-document-write-q1-old-DocumentWriteBoundaryIntegrationTest.xml
+    - /tmp/edhr-document-write-q1-old-DocumentOrmSchemaIntegrationTest.xml
+    - /tmp/edhr-document-write-q1-old-http.jsonl
+  - id: check.document-write-q1.knowledge89
+    required: true
+    category: ontology
+    description: 本实例正式知识89/89实际执行，0failure/error/skip；不复用本体原89充当独立执行。
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-knowledge-test.txt
+    - /tmp/edhr-document-write-q1-knowledge-summary.json
+    - /tmp/edhr-document-write-q1-knowledge-TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml
+  - id: check.document-write-q1.raw-originals-and-hashes
+    required: true
+    category: documentation
+    description: 37条主侧原件hash/size、6产品/测试源snapshot、本体8原件与manifest、历史两Git原件及303知识摘要逐一匹配，知识/契约/工具未改。
+    method: command
+    command: Python recompute every primary-verification files/sourceSnapshot hash,size; ontology historyOriginals vs
+      gitshow; sourceSnapshot/knowledgeSnapshotFiles vs actualbytes
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-inspection.json
+    - docs/development/branch-review-20261030-document-write/evidence/primary-verification.json
+  - id: check.document-write-q1.inventory-and-pending-denominators
+    required: true
+    category: requirements
+    description: 实际重建四清单与归档逐字节相同：4650路径、649入口候选行、130迁移；856语言/另130SQL全pending、旧feature1及本批3改3增不算已全审。
+    method: command
+    command: python3 scripts/build-branch-review-inventory.py --ref BASE --out /tmp/edhr-document-write-q1-inventory;
+      compare rawbytes; independently count CSV statuses and ls-tree
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-inventory-build.txt
+    - /tmp/edhr-document-write-q1-inventory-check.json
+    - docs/development/branch-review-20261030-document-write/a23-review.json
+  - id: check.document-write-q1.robustness-performance-structure-scope
+    required: true
+    category: requirements
+    description: A23必要授权/缺失/失败透明度保持；merge-left为简化候选、排序兼容/审计为gap。分类findAll/详情逐文件/删除逐版本仅源候选与1文档观测，具体拆分含接口/所有权/保护测试，无擅自性能实施或整体完成。
+    method: inspection
+    command: Read actual controller helper chains andlimitedreview-notes/source-review/a23-review; compare ownallowedcosts
+      against documented8SQL/3SQL; inspect unchangedSQL/service boundaries
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-http-observations.json
+    - docs/development/branch-review-20261030-document-write/review-notes.md
+    - docs/development/branch-review-20261030-document-write/a23-review.json
+    - docs/development/branch-review-20261030-document-write/scope-review.md
+  - id: check.document-write-q1.retained-read-regression-and-limits
+    required: true
+    category: regression
+    description: 既有读取H258/PG71真实回归含Unicode/字面字符/分页/并发通过；不把删除绑定mock或缺Aspect测试称生产删除图认证，不称无UI变动已跑浏览器。
+    method: inspection
+    command: Inspect actual currentreadXML/streams,H2compatibility function,PGbuiltin tests andtestConfig ownership;
+      inspect nochangesfrontend/SQL/production snapshots
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-h2-DocumentReadBoundaryIntegrationTest.xml
+    - /tmp/edhr-document-write-q1-pg-DocumentReadPerformancePostgresTest.xml
+    - /tmp/edhr-document-write-q1-h2-read-http.jsonl
+    - /tmp/edhr-document-write-q1-pg-read-http.jsonl
+    - /tmp/edhr-document-write-q1-product-diff.txt
+  - id: check.document-write-q1.handwritten-whitespace
+    required: true
+    category: documentation
+    description: 14手工源/测试/文档路径空白exit0；三份冻结inventoryCSV与raw证据仅从此必需检查排除，原字节保留。
+    method: command
+    command: git diff --check BASE HEAD -- exact14manualpaths excluding evidence and3listedfrozenCSV
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-whitespace-handwritten.txt
+    - /tmp/edhr-document-write-q1-whitespace-summary.json
+  - id: check.document-write-q1.exact-owned-resource-cleanup
+    required: true
+    category: documentation
+    description: 唯一自建PG按owner/name/ID核验后stop/--rm并inspect不存在；旧worktree仅删除核hash副本与symlink后正常remove，共享依赖保留，主仓候选/clean未变。
+    method: command
+    command: Exact ownedcontainer cleanup andhash-verifiedoldworktree cleanup; gitstatus/revparse; nootherworktreeprune
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-write-q1-cleanup.json
+    - /tmp/edhr-document-write-q1-container-cleanup.json
+  - id: check.document-write-q1.raw-interval-whitespace
+    required: false
+    category: documentation
+    description: 可选全区间空白exit2：原始日志/XML及冻结CSV不清洗；非当前产品失败。
+    method: command
+    command: git diff --check BASE HEAD allpaths
+    outcome: failed
+    evidence:
+    - /tmp/edhr-document-write-q1-whitespace-all.txt
+    - /tmp/edhr-document-write-q1-whitespace-summary.json
+  findings:
+  - id: AUD-W3-DOCUMENT-PAGE-AUTHORITY-001
+    severity: high
+    scope: all13specializeddocument/categoryHTTPendpoints
+    summary: 承接旧CAND-W3-DOCUMENT-METHOD-AUTH-001；旧仅登录使无文档页面权限者可读写，当前同资源authority已独立验证解决。
+    reproductionSteps:
+    - 在旧2e创建真实签名JWT，permissions为空或仅master-data.materials。
+    - 逐个执行原样测试中的13个合法文档/分类请求；旧26缺权请求均200，20次改变业务/审计行、6读取。
+    - 同样测试在候选fd1e分别H2/PG执行，验证403/0SQL/完整五表无变，同时保留匿名401和有权正向。
+    expectedResult: 缺少master-data.documents的已认证请求403且不读写业务数据；匿名401，有权者可沿既有业务规则操作。
+    actualResult: 本实例当前两引擎每个13路矩阵全过；旧同组26缺权真实失败，当前26均403/0SQL/五表不变。
+    evidence:
+    - /tmp/edhr-document-write-q1-old-http.jsonl
+    - /tmp/edhr-document-write-q1-old-summary.json
+    - /tmp/edhr-document-write-q1-h2-http.jsonl
+    - /tmp/edhr-document-write-q1-pg-http.jsonl
+    - /tmp/edhr-document-write-q1-http-observations.json
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: fd1e80d9abb01e75b60d8d40e9f2c39587c420a1
+    - type: command
+      reference: /tmp/edhr-document-write-q1-h2-test.txt
+    - type: command
+      reference: /tmp/edhr-document-write-q1-pg-test.txt
+  - id: AUD-W5-DOCUMENT-PARENT-CODE-MAPPING-001
+    severity: medium
+    scope: SopDocument.code ORMnullability,existingversion-ownedcodecontract
+    summary: 承接旧CAND-W5-DOCUMENT-ENTITY-NULLABILITY-001；遗留父code NOTNULL映射与0051/canonical及正常创建不符，当前仅同步映射。
+    reproductionSteps:
+    - 独立fresh H2 ORM create-drop，不执行DROP NOT NULL或父编码补值。
+    - 有文档权限的真实JWT POST仅在version.code提供必填编码。
+    - 旧同测试400，当前200并持久化父codeNULL/版本code/两条审计；后续新版本缺code仍400且不新增记录。
+    expectedResult: 映射反映已有父code可空与版本code必填，正常创建无需fixtureDDL修补。
+    actualResult: 独立旧fresh1真实断言红、当前同1通过；生产默认ddl-auto:none，本结果不声称当前canonical生产库被自动重建或无法创建。
+    evidence:
+    - /tmp/edhr-document-write-q1-old-DocumentOrmSchemaIntegrationTest.xml
+    - /tmp/edhr-document-write-q1-h2-DocumentOrmSchemaIntegrationTest.xml
+    - /tmp/edhr-document-write-q1-product-diff.txt
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: fd1e80d9abb01e75b60d8d40e9f2c39587c420a1
+    - type: command
+      reference: /tmp/edhr-document-write-q1-h2-test.txt
+  residualRisks:
+  - id: risk.partial-deletion-and-files
+    description: 授权/原子性测试用真实五类实体仓储，但产品绑定repo为mock、删除Aspect未装配、文件只有合成元数据。
+    impact: 不能认证完整生产引用/删除图、多租户或磁盘文件内容。
+    mitigation: 按真实生产guard与文件领域后续单独验证；当前仅静态确认methodsecurity200先于删除Aspect1000。
+  - id: risk.schema-environment
+    description: freshORM为H2，PG为自建16.15/en_US.utf8合成库；生产Liquibase/完整迁移未回放，父code修改不执行历史数据修复。
+    impact: 不等同生产schema/部署全链认证。
+    mitigation: 保持ddl-auto:none与已有canonical，实际发布按风险补环境验证。
+  - id: risk.performance-candidates
+    description: 分类写全量读取/重复计数、详情文件及删除版本查询增长仍为source候选/单文档观测；库内扫描和大页完整历史风险保持。
+    impact: 本批不能声称全路径性能、生产时延/堆GC/SLA已通过。
+    mitigation: 先量化真实guard/缓存/增长反证，再与用户讨论方案；不未经讨论优化。
+  - id: risk.sorting-policy-gap
+    description: 分类排序未知/重复ID兼容与审计归属尚待核依据，访问正向测试没有固化其合法性。
+    impact: 不能以授权修复关闭排序业务/审计规范。
+    mitigation: 独立候选跟踪，按已有规则及真实来源核对后处理。
+  - id: risk.audit-coverage-remains
+    description: 4650盘点与有限8源码/8知识范围不等全审；W2/W3/W4余项、W5–W7、A23旧已审全量/SQL队列及新增增量仍待完成。
+    impact: 本批通过只覆盖当前切片，不给整体百分比或新unique。
+    mitigation: 保持固定清单/历史原件，后续fetch增量复核和W6/W7反查。
+  - id: risk.retained-deferrals
+    description: TaskDetail友方修复、生产弹窗设计、记录控制依赖DHRhigh/A12、四知识gap及缺文件政策不关闭。
+    impact: 原延期功能/政策缺口不能因本批通过自动变绿。
+    mitigation: 按既有所有权及用户确认推进，无merge/deploy/restore。
+  - id: risk.ui-tooling-not-run
+    description: 无UI变动，未跑浏览器/完整前端build/strict/lint；历史strict19/ESLint配置缺口仍非绿。
+    impact: Maven打印资源生成不代表前端全量验收；未核分支强制CI设置。
+    mitigation: 按适用模块后续验证，不查询触发CI/Actions。
+  blockingConditions: []

@@ -1,0 +1,18 @@
+{
+  "baseCommit": "2e24711aad1124bb28674161ef8f3dbaf00b569a",
+  "wholeFileCompletion": 0,
+  "historicalUniqueIncrement": null,
+  "records": [
+    {"symbol": "DocumentManagementController class authority", "disposition": "necessary-protection", "evidence": "既有页面权限；真实旧26缺权200、新403/0SQL/无变化。不是重复登录校验，登录不等于文档资格。"},
+    {"symbol": "SopDocument.code vs DocumentVersion.code", "disposition": "incorrect-invariant-fixed", "evidence": "父code必填与已确认迁移不符；只移除错误映射，版本必填仍有真实负向及正常创建保护。不是普遍删除null约束。"},
+    {"symbol": "requireDocument/requireVersion and category tenant filter", "disposition": "necessary-protection-limited", "evidence": "对象缺失/父子身份及当前默认租户分类是外部输入边界；不能为性能删校验，也不据此认证完整多租户。"},
+    {"symbol": "toAuditJson/writeChangedAudit", "disposition": "necessary-failure-transparency", "evidence": "序列化失败抛业务异常，不降级为空审计；真实DB审计失败回滚三写链，两引擎通过。没有新吞异常分支。"},
+    {"symbol": "authority fixture DROP NOT NULL and separate fresh ORM", "disposition": "necessary-comparison-fixture", "evidence": "旧/新权限对照双方按canonical对齐避免掩盖授权；freshORM完全无DDL补丁，两者用途不同。原读取fixture补丁本轮已因根因修正移除。"},
+    {"symbol": "documentCategoriesById Collectors.toMap merge-left", "disposition": "simplification-candidate", "evidence": "当前仓储按主键返回分类，重复ID合并策略无正常触发依据；W6可按真实唯一性核对后简化。本轮未修改，非功能bug。"},
+    {"symbol": "reorderCategories unknown IDs/null request/empty IDs", "disposition": "evidence-gap", "evidence": "未知项continue、空集返回当前列表以及重复ID处理是否承担客户端兼容职责尚无完整政策来源；不能仅因看似宽容擅自变为拒绝。另核排序审计归属，不在正向访问断言固化。"}
+  ],
+  "baseLanguageQueue": {"historicalRows": 856, "previousFeatureAddedPending": 1, "phase": "W6", "allInitialPending": true},
+  "separateSqlQueue": {"rows": 130, "checked": 0, "phase": "W5-W6"},
+  "currentDelta": {"changedPending": ["DocumentManagementController.java", "SopDocument.java", "DocumentReadBoundaryIntegrationTest.java"], "addedPending": ["DocumentWriteBoundaryIntegrationTest.java", "DocumentWriteBoundaryPostgresTest.java", "DocumentOrmSchemaIntegrationTest.java"]},
+  "remaining": "当前方法级结论不关闭整文件队列；W6全量包括此前已审，W7按最新目标和新增提交反查。PR44增量仍原样保留，不重写856/130为永久最新分母。"
+}
