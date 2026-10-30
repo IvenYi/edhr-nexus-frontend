@@ -2,6 +2,8 @@
 
 本批以最新 `edhr-dev@635711f97e9b794f4af02e1e5d1939bb2ecf920f` 为基线。PR42 已人工合入，整树与交付 `5539d26e` 相同，无额外代码、知识或契约增量。执行级别 L2；全新独立实例对干净候选 `57d44a125132a788606507619e07896f0b21bc38` 正式 `passed/FINAL`，12/12 必需检查通过，无本批交付阻断。详见 [acceptance.json](acceptance.json)，整体审计尚未完成。
 
+已交付 [PR43](https://github.com/IvenYi/edhr-nexus-frontend/pull/43)，目标 `edhr-dev`，创建时 `MERGEABLE/CLEAN`，等待用户人工合并。受测后仅 L0 档案/验收/范围/交付登记，产品、测试、知识、契约和冻结清单保持。
+
 ## 实际问题与修复边界
 
 `CAND-W4-VERSION-COMPARATOR-ORDER-001` 从上批方法级候选推进为实际 API 缺陷 `AUD-W4-VERSION-COMPARATOR-ORDER-001`，只算一个问题，严重度 medium。正常 POST 接受 `V2a3`、`V2b` 等同组标签，GET 列表在不同创建顺序/原始排序方向下给出不同的组头与版本顺序。旧基线 60 项检查为 8 失败、52 通过、0 error/skip；24 项为新增混合标签组合，36 项沿用上批边界回归。见原件 [baseline-summary.json](evidence/baseline-summary.json)、[baseline-http.jsonl](evidence/baseline-http.jsonl)。不声称已经复现排序异常引起的 500。

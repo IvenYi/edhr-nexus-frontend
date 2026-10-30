@@ -2,6 +2,8 @@
 
 ## PR42已合入：W4混合版本标签排序与文档关联读取
 
+已交付[PR43](https://github.com/IvenYi/edhr-nexus-frontend/pull/43)，`audit/edhr-dev-version-order-20261030` → `edhr-dev`，创建时MERGEABLE/CLEAN，待用户人工merge。实际独立受测57d44a12，之后仅L0原件/验收/范围/交付登记；下次继续先fetch真实合入与新增提交，优先文档列表正常API分页复现及关联读取容量取证，再推进其他未审入口。性能先讨论、原暂缓及整体未完成保持，不自动merge/deploy/恢复。
+
 已实际fetch最新`edhr-dev@635711f97e9b794f4af02e1e5d1939bb2ecf920f`，确认PR42人工merge、整树同5539d26e且无额外代码/知识/契约增量。从该提交建立`audit/edhr-dev-version-order-20261030`，[本批](../branch-review-20261030-version-order/README.md)按L2推进。原混合标签CAND正常POST/GET已复现60项中8红52正、0error/skip，承接为同一medium缺陷，仅修Matcher遍历，不新增版本格式/发布策略。
 
 已完成最小修复，产品一文件7增3删；全新独立对干净`57d44a12`正式passed/FINAL、12/12必需检查，本medium按[acceptance](../branch-review-20261030-version-order/acceptance.json) resolved。独立133后端/89知识通过，旧115为9真实红106正、0error/skip（8API+1性质），原件保留不与主侧加总unique。本体5既有ID有限一致、NA/FINAL，不计新unique。全部角色FINAL后已实际完成PR前无漂移/整体进度沟通；当前仅L0档案/验收/交付，不改产品、测试、知识或冻结清单。
