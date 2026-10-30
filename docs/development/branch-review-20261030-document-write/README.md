@@ -1,5 +1,7 @@
 # W3/W4 文档专用接口授权与映射
 
+[PR45](https://github.com/IvenYi/edhr-nexus-frontend/pull/45)已交付，登记时MERGEABLE/CLEAN，待人工merge。独立受测fd1e80d9之后仅L0原件归档、验收和交付登记，受保护产品/测试/知识/契约/固定清单同blob，运行证据适用。
+
 本轮L2从实际最新`edhr-dev@2e24711aad1124bb28674161ef8f3dbaf00b569a`建立新分支；PR44确已人工合入，merge树与17ef99b7交付完全相同，无额外代码、知识或契约增量。不重开已完成PR。固定清单4650路径/130迁移、442 HTTP注解候选/198前端route候选只是盘点，不是语义通过或整体完成比例。
 
 ## 规则来源、合理性与实际缺陷
