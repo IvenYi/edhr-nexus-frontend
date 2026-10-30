@@ -1,0 +1,45 @@
+{
+  "handwritten": {
+    "exit": 0,
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "2e24711aad1124bb28674161ef8f3dbaf00b569a",
+      "fd1e80d9abb01e75b60d8d40e9f2c39587c420a1",
+      "--",
+      "docs/development/branch-review-20261015/NEXT.md",
+      "docs/development/branch-review-20261030-document-write/README.md",
+      "docs/development/branch-review-20261030-document-write/a23-review.json",
+      "docs/development/branch-review-20261030-document-write/decision-package.yaml",
+      "docs/development/branch-review-20261030-document-write/inventory/inventory-summary.json",
+      "docs/development/branch-review-20261030-document-write/review-notes.md",
+      "docs/development/branch-review-20261030-document-write/scope-review.md",
+      "docs/development/branch-review-20261030-document-write/source-review.json",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java",
+      "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/SopDocument.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentOrmSchemaIntegrationTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentWriteBoundaryIntegrationTest.java",
+      "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentWriteBoundaryPostgresTest.java"
+    ],
+    "file": "/tmp/edhr-document-write-q1-whitespace-handwritten.txt"
+  },
+  "all": {
+    "exit": 2,
+    "command": [
+      "git",
+      "diff",
+      "--check",
+      "2e24711aad1124bb28674161ef8f3dbaf00b569a",
+      "fd1e80d9abb01e75b60d8d40e9f2c39587c420a1"
+    ],
+    "file": "/tmp/edhr-document-write-q1-whitespace-all.txt"
+  },
+  "excludedFrozenCsv": [
+    "docs/development/branch-review-20261030-document-write/inventory/coverage.csv",
+    "docs/development/branch-review-20261030-document-write/inventory/entrypoints.csv",
+    "docs/development/branch-review-20261030-document-write/inventory/migrations.csv"
+  ],
+  "rawEvidenceExcludedOnlyFromRequired": true
+}

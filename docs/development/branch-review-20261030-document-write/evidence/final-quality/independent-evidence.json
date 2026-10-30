@@ -1,0 +1,368 @@
+{
+  "reviewer": "/root/document_write_final_qa_20261030",
+  "roleState": "FINAL",
+  "qualityResult": "passed",
+  "actualBaseCommit": "2e24711aad1124bb28674161ef8f3dbaf00b569a",
+  "actualHeadCommit": "fd1e80d9abb01e75b60d8d40e9f2c39587c420a1",
+  "actualTestedCommit": "fd1e80d9abb01e75b60d8d40e9f2c39587c420a1",
+  "workingTreeState": "clean",
+  "knowledgeBaselineVersion": "0.3.25",
+  "contractBaseline": {
+    "sourceCommit": "fd1e80d9abb01e75b60d8d40e9f2c39587c420a1",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "2e24711aad1124bb28674161ef8f3dbaf00b569a",
+    "contractReadCommit": "fd1e80d9abb01e75b60d8d40e9f2c39587c420a1",
+    "uncommittedContractPaths": []
+  },
+  "requiredPassed": 16,
+  "requiredTotal": 16,
+  "optionalFailed": 1,
+  "actualRuns": {
+    "h2AndExisting": {
+      "tests": 258,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "nativePostgres": {
+      "tests": 126,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "knowledge": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "oldActualTarget": {
+      "tests": 56,
+      "failures": 27,
+      "positiveControls": 29,
+      "errors": 0,
+      "skipped": 0,
+      "expectedRed": true
+    }
+  },
+  "candidateMapping": [
+    {
+      "candidate": "CAND-W3-DOCUMENT-METHOD-AUTH-001",
+      "finding": "AUD-W3-DOCUMENT-PAGE-AUTHORITY-001",
+      "resolutionStatus": "resolved"
+    },
+    {
+      "candidate": "CAND-W5-DOCUMENT-ENTITY-NULLABILITY-001",
+      "finding": "AUD-W5-DOCUMENT-PARENT-CODE-MAPPING-001",
+      "resolutionStatus": "resolved"
+    }
+  ],
+  "countingBoundary": "Current384 cross-engine executions, not384unique; H2/PG each55write-helper and60/72read-helper; freshORM2POST separate; same primary/independent runs not added into unique.",
+  "rawFiles": [
+    {
+      "path": "/tmp/edhr-document-write-q1-cleanup.json",
+      "sha256": "48b4ee0ea9abf27fa036ad44c0daa283078998f6feed98d270b5209a208a56c4",
+      "bytes": 1430
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-container-cleanup.json",
+      "sha256": "04339f65330d9bdfcb01eacdf2f88d3c375c615e690d2b5e1d2d0fb0d586f409",
+      "bytes": 284
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-db.json",
+      "sha256": "688212004fac07c04a5645bfe8fdf78d4f75f40a0267710d69f92614824a7244",
+      "bytes": 232
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-finalize.py",
+      "sha256": "58a7a23b302defb61153137c8271cc0362646f4cbf5816ead5c1608bfa479ba6",
+      "bytes": 22097
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-h2-DocumentManagementControllerTest.xml",
+      "sha256": "4c4829f777ac377f0afc7b51202038fd0c891c343bdaddfffc8773ff80f3ab73",
+      "bytes": 34845
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-h2-DocumentOrmSchemaIntegrationTest.xml",
+      "sha256": "3fbcabb39a5be58c44fba5b998b958574c609f975951b00b3b1234f4630b0db0",
+      "bytes": 57786
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-h2-DocumentReadBoundaryIntegrationTest.xml",
+      "sha256": "badcc9496673d4739ffdcbe30ed36721343196c242d0839d4e615b8c4ca89dd7",
+      "bytes": 240105
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-h2-DocumentWriteBoundaryIntegrationTest.xml",
+      "sha256": "da830c19f4e7e4c0e7870d6f03fea792e58dbb72b3d6c63f50c824c265205bad",
+      "bytes": 126570
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-h2-MasterDataBoundaryIntegrationTest.xml",
+      "sha256": "26579961f52939e073bb4f945bc4d2360a36bd28654555bc2ff0da28c9ff3b3d",
+      "bytes": 275560
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-h2-MaterialImportIntegrationTest.xml",
+      "sha256": "aefbd8a81c9c759a48bf8fc8b4af98c94e4a30af0b477f90bd81d80e0aad9ebd",
+      "bytes": 129763
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-h2-ProcessModelingControllerTest.xml",
+      "sha256": "a026c7b0d59339e3c685b0e56e077d0dc5b28641d2fdf48e4432bbb661ef967f",
+      "bytes": 42086
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-h2-ProductProcessControllerTest.xml",
+      "sha256": "2872cb8c2cb9cd43d3fb403b4ea482a1a3a7525ded1808a41422a5d7ef2a55ff",
+      "bytes": 35303
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-h2-http.jsonl",
+      "sha256": "32f2e66cbd1baec09cc0917a76053fd1208590a751b41250402f24f0fb83fd77",
+      "bytes": 131445
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-h2-read-http.jsonl",
+      "sha256": "50148e335c986bf2d94556a75a7c1f88f1f3fc832fd864e523a186632a06fd74",
+      "bytes": 347904
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-h2-summary.json",
+      "sha256": "fc5f41ee624d4687e4540dec8b6108107ec0009f31854d7537398ff3eb415590",
+      "bytes": 1243
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-h2-test.txt",
+      "sha256": "0828b7c13042861fe1a66d0d0d48935e559406b93ece58f4975081b51a989429",
+      "bytes": 629550
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-http-observations.json",
+      "sha256": "a3f7b1515e08b85481affd98dc012d19a1ad398424708badfba459a67bd93f07",
+      "bytes": 3600
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-inspect.py",
+      "sha256": "ce7db947b10e58ea02e26a90a7a50a9203e89c21458bb89208a778ce20933b8f",
+      "bytes": 5791
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-inspection.json",
+      "sha256": "d72eebd7729e5e6ae413f2594e835bc805b074b4707d630427f4a1180b809e25",
+      "bytes": 12961
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-inventory-build.txt",
+      "sha256": "ec600928b913f6902071504c1aede4038d8f08efc72ff493bedc82991a04d5f9",
+      "bytes": 933
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-inventory-check.json",
+      "sha256": "8e1ac7fcf14e50c439ab7df834dbeed8d634c0bce58cf0a15eda0be9fc340fc7",
+      "bytes": 1802
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-knowledge-TEST-com.zencas.edhr.knowledge.BusinessKnowledgeModelTest.xml",
+      "sha256": "2a466bcd413194774f0be35f304c68e1f44ffbe9d94f887e728f3b074dba61d6",
+      "bytes": 20415
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-knowledge-summary.json",
+      "sha256": "28cc976f9a4ffc226519712816493be66e91269d01658fa0f683707bc9387a58",
+      "bytes": 272
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-knowledge-test.txt",
+      "sha256": "685f43e1e73a7813ab4492fc8177d6264bf54ffbae11580212a4c5d72a70bfdd",
+      "bytes": 2112
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-old-DocumentOrmSchemaIntegrationTest.xml",
+      "sha256": "dc3556599fa0e7e25bbbc22c46842aac5b2304ba4015b45e4f5bb9f4d6730806",
+      "bytes": 56127
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-old-DocumentWriteBoundaryIntegrationTest.xml",
+      "sha256": "23d6f5c2635abe8649139d2b88914d36dde30e3e8403e5dff4f9e696f4a3ecab",
+      "bytes": 286140
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-old-exit.json",
+      "sha256": "d0340cb528e430bfe6b4a0ee727a17f6a58555f3336309fbea0619744be9a2e0",
+      "bytes": 377
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-old-http.jsonl",
+      "sha256": "c93fd7f3dbfe62040917522753fee5864870d41cbd61dae0c82cde1735b8c82f",
+      "bytes": 157367
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-old-install.json",
+      "sha256": "60328ac45e481227a174c1bec9c2a66515fc8484d0049424ed14a114c28f64d4",
+      "bytes": 1164
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-old-summary.json",
+      "sha256": "8b6674bdae9b391ac2c00d91c1888ad9c798caa6d109f79b21849a3926143911",
+      "bytes": 5035
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-old-test.txt",
+      "sha256": "a2b6e5c453aad9792ae71fbc000fe963e6aaae0a6e0efabb47828c2f5ceaf1b0",
+      "bytes": 276005
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-pg-DocumentReadPerformancePostgresTest.xml",
+      "sha256": "55255175964368c713423486d27a052dc028e120fb55c7b7d201b40aa377e1d7",
+      "bytes": 289259
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-pg-DocumentWriteBoundaryPostgresTest.xml",
+      "sha256": "970aeb198452219842301886c854a1820074b4975598b0e19995d725b9d9604f",
+      "bytes": 136189
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-pg-exit.json",
+      "sha256": "4022b9e22cfeeb6bf8a35b9844634c1751dd7a9d32325e34d70b46555ce7c333",
+      "bytes": 696
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-pg-http.jsonl",
+      "sha256": "5db49d007a6726b0ed19b3a9daf9a48b81ebe62ca4265c7463c746889b98f415",
+      "bytes": 132765
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-pg-read-http.jsonl",
+      "sha256": "76feeff8c0c2cb5d12332d27be9838d9c30dff20e849f4f09cc8113abf6ad283",
+      "bytes": 373365
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-pg-ready.txt",
+      "sha256": "f65a06d12c78be4ce11dc662c4ebf525a1da13786331065f0fe973c6df5ddd29",
+      "bytes": 39
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-pg-summary.json",
+      "sha256": "b042812cf8e57db0b77ab8f84a0b2bc7d8df0457827746c0463e33b6fd157fd2",
+      "bytes": 399
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-pg-test.txt",
+      "sha256": "f2ebb0c5cb6323adee9f0f0df92914a073dfbfc9f2fcb29b2654e86e2d2af477",
+      "bytes": 333555
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-pg-version.txt",
+      "sha256": "c1b00ee83c6744f03199c44faddda8f20a96877037cc867744d965bfa7feae13",
+      "bytes": 111
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-product-diff.txt",
+      "sha256": "360e59432b48b301c0d32529e165cc1e768068ba484528187755df3936a47512",
+      "bytes": 2013
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-quality-result.yaml",
+      "sha256": "fde64abb8ff5a5368ae3a4bba2c8b8429e320168a24096481829ffea762579a4",
+      "bytes": 18892
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-quality-review.md",
+      "sha256": "ce7deaed232ef1ebd12ed24e601e69505502489b9ef57f5c60d1e6f780ac2617",
+      "bytes": 4221
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-run-old.py",
+      "sha256": "15f0b9c62c8bc1bfc5b7d6369de0131b5e930c265e247b823e9194dd31dfc305",
+      "bytes": 2049
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-run-pg.py",
+      "sha256": "df91cc338b7b25dd7dc743af5a664c12c2ccf0f9d3114a378cc2a18d8da4ab79",
+      "bytes": 2366
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-security-order-javap.txt",
+      "sha256": "cf083fc0a1d6f6f76dc87f87ba83a6e29b51044f84a305441bce8982a6a35dcd",
+      "bytes": 10467
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-whitespace-all.txt",
+      "sha256": "a99b22cec9b3f14d73cb55df2c987422a3a633cdee22fd04ac344e036deea68d",
+      "bytes": 2328011
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-whitespace-handwritten.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-whitespace-summary.json",
+      "sha256": "d3f297e3943be49e7516c072e108bbfc0dc3c5bca565a905fcbe84c7bee5c175",
+      "bytes": 2221
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-inventory/coverage.csv",
+      "sha256": "5f804f0f50cb7f6ae9f6e2d5d047b80f2f7187b2abf3f5c903f58092fe0e1372",
+      "bytes": 1378532
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-inventory/entrypoints.csv",
+      "sha256": "b7d1717fc3d7794db6363f8cc6c38617400e7ee54550be2fabae29c484836db4",
+      "bytes": 152331
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-inventory/inventory-summary.json",
+      "sha256": "d6cd9d9ed93379436cba78c6ed5e38b2a40526244c09b7ca81f6588866906b7d",
+      "bytes": 1043
+    },
+    {
+      "path": "/tmp/edhr-document-write-q1-inventory/migrations.csv",
+      "sha256": "8443134328f6b7004d19c9f78f0f762ec4d5f9f37f6bee6a090eeb105a7c7179",
+      "bytes": 33469
+    }
+  ],
+  "cleanup": {
+    "oldWorktree": "/tmp/edhr-document-write-q1-old-1fc9866c1b",
+    "beforeStatus": "?? gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentOrmSchemaIntegrationTest.java\n?? gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentWriteBoundaryIntegrationTest.java\n?? gmp-platform/frontend/node_modules\n",
+    "copiedTestHashesVerified": [
+      {
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentWriteBoundaryIntegrationTest.java",
+        "sha256": "e6e1fe7d4a1e8164b40ff2c91850c86acd397d607a36a9dcc2febceafeca302c",
+        "bytes": 13516
+      },
+      {
+        "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentOrmSchemaIntegrationTest.java",
+        "sha256": "42629a19ced94191128251d31d0d4e336b1a65ad6acb937c17c9e1b6a7171538",
+        "bytes": 3358
+      }
+    ],
+    "afterRemovingOwnedCopiesAndSymlinkStatus": "",
+    "worktreeRemoved": true,
+    "sharedNodeModulesPreserved": true,
+    "mainHead": "fd1e80d9abb01e75b60d8d40e9f2c39587c420a1",
+    "mainStatus": "",
+    "container": {
+      "container": "4fef5d86900b08a28eba398091f8f338271c2dbb5542f2cddde1c57c61b7171b",
+      "name": "edhr-document-write-q1-225e09443a",
+      "ownerVerified": true,
+      "removed": true,
+      "finalProbe": "Error: No such object: 4fef5d86900b08a28eba398091f8f338271c2dbb5542f2cddde1c57c61b7171b"
+    },
+    "noOtherWorktreePruned": true
+  },
+  "independence": "No product/test/fixture/knowledge/contract edits; copied byte-identical two existing tests into owned detached baseline worktree only, then removed verified owncopies/symlink andnormalworktree.",
+  "notRun": [
+    "browser/visual UI",
+    "complete frontend build/strict/lint",
+    "production DB or full migrations",
+    "full production deletion graph/file bytes/multi-tenant certification",
+    "new PG query plans (SQL unchanged)",
+    "new performance optimization or capacity SLA",
+    "CI/Actions query/trigger",
+    "merge/deploy/restore"
+  ]
+}

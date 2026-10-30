@@ -1,0 +1,13 @@
+{
+  "exit": 1,
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DocumentWriteBoundaryIntegrationTest,DocumentOrmSchemaIntegrationTest",
+    "-Dedhr.audit.documentWriteOutput=/tmp/edhr-document-write-q1-old-http.jsonl",
+    "test"
+  ],
+  "worktree": "/tmp/edhr-document-write-q1-old-1fc9866c1b"
+}

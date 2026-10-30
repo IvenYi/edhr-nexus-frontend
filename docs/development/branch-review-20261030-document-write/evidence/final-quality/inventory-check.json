@@ -1,0 +1,49 @@
+{
+  "rebuilt": [
+    {
+      "path": "docs/development/branch-review-20261030-document-write/inventory/migrations.csv",
+      "rebuilt": "/tmp/edhr-document-write-q1-inventory/migrations.csv",
+      "sha256": "8443134328f6b7004d19c9f78f0f762ec4d5f9f37f6bee6a090eeb105a7c7179",
+      "sameBytes": true
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-write/inventory/entrypoints.csv",
+      "rebuilt": "/tmp/edhr-document-write-q1-inventory/entrypoints.csv",
+      "sha256": "b7d1717fc3d7794db6363f8cc6c38617400e7ee54550be2fabae29c484836db4",
+      "sameBytes": true
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-write/inventory/coverage.csv",
+      "rebuilt": "/tmp/edhr-document-write-q1-inventory/coverage.csv",
+      "sha256": "5f804f0f50cb7f6ae9f6e2d5d047b80f2f7187b2abf3f5c903f58092fe0e1372",
+      "sameBytes": true
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-write/inventory/inventory-summary.json",
+      "rebuilt": "/tmp/edhr-document-write-q1-inventory/inventory-summary.json",
+      "sha256": "d6cd9d9ed93379436cba78c6ed5e38b2a40526244c09b7ca81f6588866906b7d",
+      "sameBytes": true
+    }
+  ],
+  "a23Queues": [
+    {
+      "path": "docs/development/branch-review-20261030-document-read/a23-recheck.csv",
+      "rows": 856,
+      "statuses": [
+        "pending"
+      ],
+      "sha256": "fa4a26672fbae2fbe5288008702c3d62e3ff9170debfc51874532d8cbac1fccf"
+    },
+    {
+      "path": "docs/development/branch-review-20261030-document-read/a23-sql-recheck.csv",
+      "rows": 130,
+      "statuses": [
+        "pending"
+      ],
+      "sha256": "7e9983f60a052397cf8f1a39013cf517c1f27849235197f70f438d42f253359b"
+    }
+  ],
+  "inventoryOnly": true,
+  "currentDeltaChanged": 3,
+  "currentDeltaAdded": 3
+}
