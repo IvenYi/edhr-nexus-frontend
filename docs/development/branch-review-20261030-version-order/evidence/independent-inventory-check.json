@@ -1,0 +1,72 @@
+{
+  "command": [
+    "python3",
+    "scripts/build-branch-review-inventory.py",
+    "--ref",
+    "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+    "--out",
+    "/tmp/edhr-version-order-qa-inventory-gfjhl_to"
+  ],
+  "files": [
+    {
+      "name": "coverage.csv",
+      "recreated": "/tmp/edhr-version-order-qa-inventory-gfjhl_to/coverage.csv",
+      "sha256": "8228917445fde354168517d06c9bad498b0da467f2648812d50f519fe69ea14b",
+      "identical": true
+    },
+    {
+      "name": "entrypoints.csv",
+      "recreated": "/tmp/edhr-version-order-qa-inventory-gfjhl_to/entrypoints.csv",
+      "sha256": "8a8082d9a348c82501d48c06b4b8f7ab7e8ac64163b088613e9565b3319c51ed",
+      "identical": true
+    },
+    {
+      "name": "migrations.csv",
+      "recreated": "/tmp/edhr-version-order-qa-inventory-gfjhl_to/migrations.csv",
+      "sha256": "1424edf4d9ec9657064036ac9c3de7743e264dfd2cf01ce231d3457b20057a4b",
+      "identical": true
+    },
+    {
+      "name": "inventory-summary.json",
+      "recreated": "/tmp/edhr-version-order-qa-inventory-gfjhl_to/inventory-summary.json",
+      "sha256": "145cc72d46c8acb34ccb90df95cf2d966cdc2d9e462d8067d1c622a1ecef9b46",
+      "identical": true
+    }
+  ],
+  "summary": {
+    "sourceCommit": "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+    "tree": "997fe4d83737e93a2fe2276c1ff1a2d8ac7bfa48",
+    "trackedPaths": 4311,
+    "scopeCount": 4311,
+    "excludedPaths": [],
+    "assetTypes": {
+      "configuration-or-data": 1922,
+      "documentation": 369,
+      "binary-asset": 601,
+      "source-or-tool": 753,
+      "knowledge": 303,
+      "test": 232,
+      "database-migration": 130,
+      "dependency-lock": 1
+    },
+    "workPackages": {
+      "W5": 686,
+      "W4": 248,
+      "W0-W7": 2821,
+      "W1": 137,
+      "W2": 224,
+      "W3": 195
+    },
+    "entrypointCandidates": {
+      "http-annotation": 442,
+      "state-definition-candidate": 8,
+      "background-candidate": 1,
+      "frontend-route-candidate": 198
+    },
+    "migrationFiles": 130,
+    "semanticReviewComplete": false,
+    "entrypointLimitations": "Static candidate locations include class annotations and dynamic route shapes; URLs, auth and worker activation require source review. No route execution claimed.",
+    "coverageSha256": "8228917445fde354168517d06c9bad498b0da467f2648812d50f519fe69ea14b"
+  },
+  "stdout": "{\"sourceCommit\": \"635711f97e9b794f4af02e1e5d1939bb2ecf920f\", \"tree\": \"997fe4d83737e93a2fe2276c1ff1a2d8ac7bfa48\", \"trackedPaths\": 4311, \"scopeCount\": 4311, \"excludedPaths\": [], \"assetTypes\": {\"configuration-or-data\": 1922, \"documentation\": 369, \"binary-asset\": 601, \"source-or-tool\": 753, \"knowledge\": 303, \"test\": 232, \"database-migration\": 130, \"dependency-lock\": 1}, \"workPackages\": {\"W5\": 686, \"W4\": 248, \"W0-W7\": 2821, \"W1\": 137, \"W2\": 224, \"W3\": 195}, \"entrypointCandidates\": {\"http-annotation\": 442, \"state-definition-candidate\": 8, \"background-candidate\": 1, \"frontend-route-candidate\": 198}, \"migrationFiles\": 130, \"semanticReviewComplete\": false, \"entrypointLimitations\": \"Static candidate locations include class annotations and dynamic route shapes; URLs, auth and worker activation require source review. No route execution claimed.\", \"coverageSha256\": \"8228917445fde354168517d06c9bad498b0da467f2648812d50f519fe69ea14b\"}\n"
+}

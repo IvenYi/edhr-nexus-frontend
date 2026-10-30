@@ -166,6 +166,47 @@ class MasterDataBoundaryIntegrationTest {
         assertThat(snapshots()).isEqualTo(before);
     }
 
+    static Stream<Arguments> mixedVersions() {
+        return Stream.of(new String[]{"V2a3", "V2b"}, new String[]{"V1.2a3", "V1.2z"},
+                        new String[]{"A1", "Z"}, new String[]{"V2a9223372036854775808", "V2z"},
+                        new String[]{"V2z", "V02a"}, new String[]{"V2a3.0", "V2b"})
+                .flatMap(pair -> Stream.of(false, true).flatMap(reverse -> Stream.of("asc", "desc")
+                        .map(order -> Arguments.of(pair[0], pair[1], reverse, order))));
+    }
+
+    @ParameterizedTest @MethodSource("mixedVersions")
+    void acceptedMixedLabelsKeepTheirOrderRegardlessOfInputOrder(
+            String higher, String lower, boolean reverseCreation, String inputOrder) throws Exception {
+        Map<String, String> ids = new LinkedHashMap<>();
+        for (String label : reverseCreation ? List.of(higher, lower) : List.of(lower, higher)) {
+            ids.put(label, create("MAT-MIXED", "混合版本物料", label));
+        }
+        Map<String, String> before = snapshots();
+        var response = mvc.perform(get(MATERIALS).header("Authorization", bearer()).param("size", "1")
+                        .param("sort", "createdAt").param("order", inputOrder))
+                .andReturn().getResponse();
+        JsonNode body = mapper.readTree(response.getContentAsString(StandardCharsets.UTF_8));
+        record(Map.of("case", "mixed-version-order", "higher", higher, "lower", lower,
+                "reverseCreation", reverseCreation, "inputOrder", inputOrder,
+                "httpStatus", response.getStatus(), "body", body));
+        assertThat(response.getStatus()).isEqualTo(200);
+        JsonNode data = body.path("data");
+        assertThat(data.path("totalElements").asInt()).isEqualTo(1);
+        assertThat(data.path("content").size()).isEqualTo(1);
+        JsonNode group = data.path("content").get(0);
+        assertThat(group.path("version").asText()).isEqualTo(higher);
+        assertThat(group.path("versionCount").asInt()).isEqualTo(2);
+        assertThat(group.path("effectiveVersionCount").asInt()).isEqualTo(2);
+        assertThat(group.path("status").asText()).isEqualTo("ACTIVE");
+        List<String> labels = new ArrayList<>(), actualIds = new ArrayList<>();
+        group.path("versions").forEach(row -> {
+            labels.add(row.path("version").asText()); actualIds.add(row.path("id").asText());
+        });
+        assertThat(labels).containsExactly(higher, lower);
+        assertThat(actualIds).containsExactly(ids.get(higher), ids.get(lower));
+        assertThat(snapshots()).isEqualTo(before);
+    }
+
     private String create(String code, String name, String version) throws Exception {
         assertThat(version.length()).isLessThanOrEqualTo(64);
         var response = mvc.perform(post(MATERIALS).header("Authorization", bearer()).contentType("application/json")

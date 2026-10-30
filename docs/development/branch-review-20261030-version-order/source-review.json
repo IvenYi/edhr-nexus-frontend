@@ -1,0 +1,13 @@
+{
+  "baseCommit": "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+  "scopeType": "limited-method-ranges",
+  "wholeFileCompletion": 0,
+  "historicalUniqueIncrement": null,
+  "records": [
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java","symbols":["listMaterials","createMaterial","toMaterialGroups","toMaterialGroup","compareMaterialVersionDesc","compareVersion"],"scope":"实际读取创建、过滤、原始排序、分组与组内排序调用链；8个API红，最小修复后主侧133通过，独立验收待完成；不认证整个写入领域"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java","symbols":["list","toResponse","toVersionResponse","toDocumentCategoryResponses","documentCategoriesById","countDocumentsByCategory"],"scope":"仅实际源码核对分页算术、批量版本读取、版本投影文件查询与分类统计；运行/SQL次数/容量待下一批"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/SopDocumentController.java","symbols":["list"],"scope":"实际读取独立旧CRUD列表使用仓储PageRequest，作为不能将所有SOP入口都称内存分页的反证；参数、授权、入口可达性待核对"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/RouteController.java","symbols":["list"],"scope":"实际读取独立旧CRUD列表使用仓储PageRequest；不外推全路线模块通过"}
+  ],
+  "countingBoundary":"4个方法范围分组，不是4个整文件完成；同一控制器多方法不按文件倍增；与历史范围可能重叠，唯一新增覆盖未去重。自动rg只作定位，不单独登记源码已审。"
+}

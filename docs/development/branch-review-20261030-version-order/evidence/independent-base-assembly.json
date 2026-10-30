@@ -1,0 +1,20 @@
+{
+  "baseline": "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+  "candidate": "57d44a125132a788606507619e07896f0b21bc38",
+  "worktree": "/tmp/edhr-version-order-qa-base-o4d9hba4",
+  "purpose": "byte-identical candidate tests installed on original baseline product; comparison assembly only; no fixes, assertion changes or fixture changes",
+  "tests": [
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataBoundaryIntegrationTest.java",
+      "sha256": "aa9ebfc8c81c5b8f8f7c6aa5730e745b3f071f3264c0efe92ea3c4404055b882",
+      "matchesCandidate": true
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java",
+      "sha256": "3d66178ff6a832fcdc6d6c52cdadf3f0680dbf00bde282cb38c1bd3f416118d6",
+      "matchesCandidate": true
+    }
+  ],
+  "nodeModulesLink": "/tmp/edhr-version-order-qa-base-o4d9hba4/gmp-platform/frontend/node_modules",
+  "status": " M gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataBoundaryIntegrationTest.java\n M gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/ProcessModelingControllerTest.java\n?? gmp-platform/frontend/node_modules\n"
+}
