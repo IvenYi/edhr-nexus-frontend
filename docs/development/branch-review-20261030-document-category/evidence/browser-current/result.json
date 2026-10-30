@@ -1,0 +1,306 @@
+{
+  "baselineSourceCommit": null,
+  "cases": 10,
+  "passed": 10,
+  "qualification": "Real document page and shared confirmation/protection/snackbar components in Chromium with controlled API; two viewport variants. Native PostgreSQL guard/audit verification is separate, not browser-to-production E2E.",
+  "results": [
+    {
+      "width": 390,
+      "mode": "confirm-copy-cancel",
+      "passed": true,
+      "checks": 1,
+      "deletes": 0,
+      "dialogBox": {
+        "x": 32,
+        "y": 371.25,
+        "width": 326,
+        "height": 157.5
+      },
+      "screenshot": "390-confirm-copy-cancel.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 390,
+      "mode": "success-feedback",
+      "passed": true,
+      "checks": 1,
+      "deletes": 1,
+      "dialogBox": {
+        "x": 32,
+        "y": 371.25,
+        "width": 326,
+        "height": 157.5
+      },
+      "screenshot": "390-success-feedback.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/v1/master-data/documents/categories/202"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 390,
+      "mode": "referenced",
+      "passed": true,
+      "checks": 1,
+      "deletes": 0,
+      "screenshot": "390-referenced.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/201"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 390,
+      "mode": "precheck-error",
+      "passed": true,
+      "checks": 2,
+      "deletes": 0,
+      "dialogBox": {
+        "x": 32,
+        "y": 371.25,
+        "width": 326,
+        "height": 157.5
+      },
+      "screenshot": "390-precheck-error.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 390,
+      "mode": "slow-cancel",
+      "passed": true,
+      "checks": 1,
+      "deletes": 0,
+      "screenshot": "390-slow-cancel.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "mode": "confirm-copy-cancel",
+      "passed": true,
+      "checks": 1,
+      "deletes": 0,
+      "dialogBox": {
+        "x": 498,
+        "y": 371.25,
+        "width": 444,
+        "height": 157.5
+      },
+      "screenshot": "1440-confirm-copy-cancel.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "mode": "success-feedback",
+      "passed": true,
+      "checks": 1,
+      "deletes": 1,
+      "dialogBox": {
+        "x": 498,
+        "y": 371.25,
+        "width": 444,
+        "height": 157.5
+      },
+      "screenshot": "1440-success-feedback.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/v1/master-data/documents/categories/202"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "mode": "referenced",
+      "passed": true,
+      "checks": 1,
+      "deletes": 0,
+      "screenshot": "1440-referenced.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/201"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "mode": "precheck-error",
+      "passed": true,
+      "checks": 2,
+      "deletes": 0,
+      "dialogBox": {
+        "x": 498,
+        "y": 371.25,
+        "width": 444,
+        "height": 157.5
+      },
+      "screenshot": "1440-precheck-error.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "mode": "slow-cancel",
+      "passed": true,
+      "checks": 1,
+      "deletes": 0,
+      "screenshot": "1440-slow-cancel.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        }
+      ],
+      "errors": []
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "tests": 14,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DocumentCategoryAuditPostgresTest",
+    "-Dedhr.audit.categoryOutput=/tmp/edhr-document-category-final-http.jsonl",
+    "test"
+  ],
+  "exit": 0
+}

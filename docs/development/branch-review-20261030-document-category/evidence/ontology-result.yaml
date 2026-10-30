@@ -1,0 +1,62 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: d10590bd3fe8f3da4e68bcc087b2102d2c211934
+    targetBranch: edhr-dev
+    targetCommit: d10590bd3fe8f3da4e68bcc087b2102d2c211934
+    contractReadCommit: d10590bd3fe8f3da4e68bcc087b2102d2c211934
+    uncommittedContractPaths: []
+  reason: 现有DEC0053/主数据删除规范明确覆盖文档分类引用保护，现有统一UPDATE及真实差量审计已表达分类排序含NULL原值语义。保留现行阻断、纠正旧提示/不可达迁移分支及补漏排序事件属于实现对齐，不新增概念/政策/权限/迁移或成熟度；当前12既有ID有限核对无需重复建模。产品修复和实际运行由主侧/独立质量另验，本NA不认证尚未发生的修复。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.document-category.deletion-origin
+    checkType: evidence-path
+    command: Read current DEC0053/rules/user-confirmed/architecture; git show ab308 original decision, confirmation
+      and architecture; inspect Aspect/Relations/canonical FK
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-category-rule-review.json
+    - /tmp/edhr-document-category-ontology-history-deletion-decision.yaml
+    - /tmp/edhr-document-category-ontology-history-deletion-confirmed.md
+    - /tmp/edhr-document-category-ontology-history-deletion-architecture.md
+    - No dedicated document-category automatic-reclassification exception found; no external user-chat retrieval
+      claimed.
+  - id: validation.document-category.audit-scope
+    checkType: evidence-path
+    command: Read DEC0065-03/rule.master-data.write-audit-snapshot/audit glossary+ontology; compare document snapshot/helper
+      and sibling template reorder; inspect nullable canonical sort_order and confirmed plan
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-category-rule-review.json
+    - /tmp/edhr-document-category-rule-review.md
+    - /tmp/edhr-document-category-ontology-history-audit-decision.yaml
+    - Semantic plan review only; no product runtime test or final repair acceptance by this role.
+  - id: validation.document-category.knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-category-ontology-knowledge-test.txt
+    - /tmp/edhr-document-category-ontology-knowledge-junit.xml
+    - Actual89/0failure/0error/0skip,exit0.
+  - id: validation.document-category.baseline-unchanged
+    checkType: reference
+    command: Actual git fetch origin edhr-dev; git rev-parse; compare knowledge/contracts/tool source to d105; hash
+      all303 current knowledge files
+    outcome: passed
+    evidence:
+    - /tmp/edhr-document-category-ontology-manifest.json
+    - source/target remain d105;0.3.25/schema1.2.0 and maturity retained; no source/knowledge modifications by role.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

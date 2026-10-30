@@ -60,7 +60,7 @@ class DocumentWriteBoundaryIntegrationTest {
                 new Endpoint("categories", "GET", "/categories", null),
                 new Endpoint("create-category", "POST", "/categories", "{\"name\":\"新分类\"}"),
                 new Endpoint("update-category", "PUT", "/categories/201", "{\"name\":\"改分类\"}"),
-                new Endpoint("delete-category", "DELETE", "/categories/201", null),
+                new Endpoint("delete-category", "DELETE", "/categories/202", null),
                 new Endpoint("order-categories", "PUT", "/categories/order", "{\"ids\":[\"202\",\"201\"]}"),
                 new Endpoint("detail", "GET", "/101", null),
                 new Endpoint("create", "POST", "", "{\"title\":\"新文档\",\"code\":\"NEW-DOC\",\"version\":\"V1\",\"categoryId\":\"201\",\"fileId\":401,\"description\":\"新描述\"}"),
@@ -122,7 +122,7 @@ class DocumentWriteBoundaryIntegrationTest {
             case "update-category" -> assertThat(jdbc.queryForObject("SELECT name FROM document_category WHERE id=201", String.class)).isEqualTo("改分类");
             case "delete-category" -> {
                 assertThat(count("document_category")).isEqualTo(1);
-                assertThat(jdbc.queryForObject("SELECT category_id FROM sop_document WHERE id=101", Long.class)).isNull();
+                assertThat(jdbc.queryForObject("SELECT category_id FROM sop_document WHERE id=101", Long.class)).isEqualTo(201L);
                 assertThat(count("document_version")).isEqualTo(1);
             }
             case "order-categories" -> assertThat(jdbc.queryForList("SELECT id FROM document_category ORDER BY sort_order", Long.class)).containsExactly(202L, 201L);

@@ -1,0 +1,310 @@
+{
+  "baselineSourceCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+  "cases": 10,
+  "passed": 6,
+  "qualification": "Real document page and shared confirmation/protection/snackbar components in Chromium with controlled API; two viewport variants. Native PostgreSQL guard/audit verification is separate, not browser-to-production E2E.",
+  "results": [
+    {
+      "width": 390,
+      "mode": "confirm-copy-cancel",
+      "passed": false,
+      "error": "The input was expected to not match the regular expression /转为未分类/. Input:\n\n'删除文档分类\\n\\n确定删除分类「空分类」吗？该分类下的文档将自动转为未分类。\\n\\n取消\\n删除'\n",
+      "checks": 1,
+      "deletes": 0,
+      "dialogBox": {
+        "x": 32,
+        "y": 360.75,
+        "width": 326,
+        "height": 178.5
+      },
+      "screenshot": "390-confirm-copy-cancel-failed.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 390,
+      "mode": "success-feedback",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '文档分类已删除，旗下文档已转为未分类'\n- '文档分类已删除'\n          ^\n",
+      "checks": 1,
+      "deletes": 1,
+      "dialogBox": {
+        "x": 32,
+        "y": 360.75,
+        "width": 326,
+        "height": 178.5
+      },
+      "screenshot": "390-success-feedback-failed.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/v1/master-data/documents/categories/202"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 390,
+      "mode": "referenced",
+      "passed": true,
+      "checks": 1,
+      "deletes": 0,
+      "screenshot": "390-referenced.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/201"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 390,
+      "mode": "precheck-error",
+      "passed": true,
+      "checks": 2,
+      "deletes": 0,
+      "dialogBox": {
+        "x": 32,
+        "y": 360.75,
+        "width": 326,
+        "height": 178.5
+      },
+      "screenshot": "390-precheck-error.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 390,
+      "mode": "slow-cancel",
+      "passed": true,
+      "checks": 1,
+      "deletes": 0,
+      "screenshot": "390-slow-cancel.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "mode": "confirm-copy-cancel",
+      "passed": false,
+      "error": "The input was expected to not match the regular expression /转为未分类/. Input:\n\n'删除文档分类\\n\\n确定删除分类「空分类」吗？该分类下的文档将自动转为未分类。\\n\\n取消\\n删除'\n",
+      "checks": 1,
+      "deletes": 0,
+      "dialogBox": {
+        "x": 498,
+        "y": 360.75,
+        "width": 444,
+        "height": 178.5
+      },
+      "screenshot": "1440-confirm-copy-cancel-failed.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "mode": "success-feedback",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '文档分类已删除，旗下文档已转为未分类'\n- '文档分类已删除'\n          ^\n",
+      "checks": 1,
+      "deletes": 1,
+      "dialogBox": {
+        "x": 498,
+        "y": 360.75,
+        "width": 444,
+        "height": 178.5
+      },
+      "screenshot": "1440-success-feedback-failed.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/v1/master-data/documents/categories/202"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "mode": "referenced",
+      "passed": true,
+      "checks": 1,
+      "deletes": 0,
+      "screenshot": "1440-referenced.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/201"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "mode": "precheck-error",
+      "passed": true,
+      "checks": 2,
+      "deletes": 0,
+      "dialogBox": {
+        "x": 498,
+        "y": 360.75,
+        "width": 444,
+        "height": 178.5
+      },
+      "screenshot": "1440-precheck-error.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "width": 1440,
+      "mode": "slow-cancel",
+      "passed": true,
+      "checks": 1,
+      "deletes": 0,
+      "screenshot": "1440-slow-cancel.png",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/documents/categories"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/master-data/deletion-check/document_category/202"
+        }
+      ],
+      "errors": []
+    }
+  ]
+}

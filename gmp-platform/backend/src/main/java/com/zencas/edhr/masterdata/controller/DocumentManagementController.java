@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,18 +130,6 @@ public class DocumentManagementController {
         DocumentCategory category = requireDocumentCategory(categoryId);
         ensureCustomDocumentCategory(category);
         Map<String, Object> before = documentCategorySnapshot(category, countDocumentsByCategory(category.getId()));
-        List<SopDocument> documents = documentRepository.findAll().stream()
-                .filter(document -> Objects.equals(document.getCategoryId(), category.getId()))
-                .peek(document -> {
-                    Map<String, Object> documentBefore = documentSnapshot(document);
-                    document.setCategoryId(null);
-                    document.setDocumentType("OTHER");
-                    document.setUpdatedBy(currentOperatorName());
-                    document.setUpdatedAt(LocalDateTime.now());
-                    writeChangedAudit("PROCESS_DOCUMENT", document.getId(), "编辑", documentBefore, documentSnapshot(document));
-                })
-                .toList();
-        documentRepository.saveAll(documents);
         documentCategoryRepository.delete(category);
         writeAudit("DOCUMENT_CATEGORY", category.getId(), "DELETE", "删除", before, Map.of());
         return ApiResponse.success(null);
@@ -154,6 +143,8 @@ public class DocumentManagementController {
         Map<String, DocumentCategory> customCategories = documentCategoryRepository.findByTenantIdOrderBySortOrderAscNameAsc(TENANT_ID).stream()
                 .filter(category -> !category.isSystemCategory())
                 .collect(Collectors.toMap(category -> String.valueOf(category.getId()), Function.identity(), (left, right) -> left, LinkedHashMap::new));
+        Map<Long, Integer> previousOrder = new LinkedHashMap<>();
+        customCategories.values().forEach(category -> previousOrder.put(category.getId(), category.getSortOrder()));
         int sortOrder = 30;
         for (String id : orderedIds) {
             DocumentCategory category = customCategories.get(String.valueOf(id));
@@ -164,6 +155,9 @@ public class DocumentManagementController {
             sortOrder += 10;
         }
         documentCategoryRepository.saveAll(new ArrayList<>(customCategories.values()));
+        customCategories.values().forEach(category -> writeChangedAudit("DOCUMENT_CATEGORY", category.getId(), "调整排序",
+                Collections.singletonMap("排序", previousOrder.get(category.getId())),
+                Collections.singletonMap("排序", category.getSortOrder())));
         return ApiResponse.success(toDocumentCategoryResponses());
     }
 

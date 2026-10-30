@@ -1,5 +1,13 @@
 # 持续推进台账
 
+## PR45已合入：W3/W4分类排序审计与真实删除契约
+
+实际fetch`edhr-dev@d10590bd3fe8f3da4e68bcc087b2102d2c211934`，PR45人工merge、树同84cedb8b，无其他知识/契约/代码增量。从最新目标建`audit/edhr-dev-document-category-audit-20261030`，[本批](../branch-review-20261030-document-category/README.md)按既有写审计/DEC0053核实排序与删除。真实canonical PG旧14=6排序审计红8正，有引用分类原已409；只补最终排序真实差量、纠正两处自动转未分类文案并移除不可达旧分支，保留引用阻断和原归属。原两个缺Aspect夹具改删空分类，新增真实Aspect/FK保护，未降低标准或新增政策。
+
+主侧原384回归通过，新增14最终通过；初轮398中1个故障码误断言400、实际500且全回滚的原件保留，按系统故障分类纠为明确500，未改产品异常处理。浏览器最终10过、旧4文案红6正（两宽重复不计unique），构建/Node14/表格规范通过；verifier旧SQL路径ENOENT、ESLint配置缺口、官方静态src旧新同19均非绿，根85另含原型等不当85产品bug。本体12既有ID有限NA/FINAL、89知识实跑、303文件不变；当前待全新最终QA，不提前宣布本批完成。
+
+固定4755路径/130迁移只盘点；八源码/12语义与旧有重叠，A23六方法与4改2增不关闭旧856语言+feature1或另130SQL及各批增量。W2/W3/W4余项和W5–W7、原暂缓/四gap保持；新性能仍先讨论。全部角色FINAL后实际无漂移/阶段汇报再PR，不自动merge/deploy/恢复。
+
 ## PR44已合入：W3/W4文档专用接口权限与父编码映射
 
 已交付[PR45](https://github.com/IvenYi/edhr-nexus-frontend/pull/45)，`audit/edhr-dev-document-write-boundaries-20261030`→`edhr-dev`，登记时MERGEABLE/CLEAN，待用户人工merge。实际独立受测fd1e80d9，之后2d8b2d78仅L0原件/验收，当前只补交付登记，保护路径无差异。下轮先fetch实际合入与外部增量，优先文档分类删除/排序契约核实及其余W2/W3/W4入口，再按W5–W7推进；新性能候选先讨论，不自动merge/deploy/恢复。
