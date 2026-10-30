@@ -1,0 +1,1308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="4.157" tests="12" errors="0" skipped="0" failures="6">
+  <properties>
+    <property name="java.specification.version" value="21"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.class.path" value="/workspace/edhr-nexus-frontend/gmp-platform/backend/target/test-classes:/workspace/edhr-nexus-frontend/gmp-platform/backend/target/classes:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-web/3.3.0/spring-boot-starter-web-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter/3.3.0/spring-boot-starter-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot/3.3.0/spring-boot-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-autoconfigure/3.3.0/spring-boot-autoconfigure-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-logging/3.3.0/spring-boot-starter-logging-3.3.0.jar:/workspace/.pr6-m2/ch/qos/logback/logback-classic/1.5.6/logback-classic-1.5.6.jar:/workspace/.pr6-m2/ch/qos/logback/logback-core/1.5.6/logback-core-1.5.6.jar:/workspace/.pr6-m2/org/apache/logging/log4j/log4j-to-slf4j/2.23.1/log4j-to-slf4j-2.23.1.jar:/workspace/.pr6-m2/org/slf4j/jul-to-slf4j/2.0.13/jul-to-slf4j-2.0.13.jar:/workspace/.pr6-m2/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-json/3.3.0/spring-boot-starter-json-3.3.0.jar:/workspace/.pr6-m2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.17.1/jackson-datatype-jdk8-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.17.1/jackson-datatype-jsr310-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/module/jackson-module-parameter-names/2.17.1/jackson-module-parameter-names-2.17.1.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-tomcat/3.3.0/spring-boot-starter-tomcat-3.3.0.jar:/workspace/.pr6-m2/org/apache/tomcat/embed/tomcat-embed-core/10.1.24/tomcat-embed-core-10.1.24.jar:/workspace/.pr6-m2/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.24/tomcat-embed-websocket-10.1.24.jar:/workspace/.pr6-m2/org/springframework/spring-web/6.1.8/spring-web-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-beans/6.1.8/spring-beans-6.1.8.jar:/workspace/.pr6-m2/io/micrometer/micrometer-observation/1.13.0/micrometer-observation-1.13.0.jar:/workspace/.pr6-m2/io/micrometer/micrometer-commons/1.13.0/micrometer-commons-1.13.0.jar:/workspace/.pr6-m2/org/springframework/spring-webmvc/6.1.8/spring-webmvc-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-context/6.1.8/spring-context-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-expression/6.1.8/spring-expression-6.1.8.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-validation/3.3.0/spring-boot-starter-validation-3.3.0.jar:/workspace/.pr6-m2/org/apache/tomcat/embed/tomcat-embed-el/10.1.24/tomcat-embed-el-10.1.24.jar:/workspace/.pr6-m2/org/hibernate/validator/hibernate-validator/8.0.1.Final/hibernate-validator-8.0.1.Final.jar:/workspace/.pr6-m2/jakarta/validation/jakarta.validation-api/3.0.2/jakarta.validation-api-3.0.2.jar:/workspace/.pr6-m2/org/jboss/logging/jboss-logging/3.5.3.Final/jboss-logging-3.5.3.Final.jar:/workspace/.pr6-m2/com/fasterxml/classmate/1.7.0/classmate-1.7.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-security/3.3.0/spring-boot-starter-security-3.3.0.jar:/workspace/.pr6-m2/org/springframework/spring-aop/6.1.8/spring-aop-6.1.8.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-config/6.3.0/spring-security-config-6.3.0.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-web/6.3.0/spring-security-web-6.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-data-jpa/3.3.0/spring-boot-starter-data-jpa-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-jdbc/3.3.0/spring-boot-starter-jdbc-3.3.0.jar:/workspace/.pr6-m2/com/zaxxer/HikariCP/5.1.0/HikariCP-5.1.0.jar:/workspace/.pr6-m2/org/springframework/spring-jdbc/6.1.8/spring-jdbc-6.1.8.jar:/workspace/.pr6-m2/org/hibernate/orm/hibernate-core/6.5.2.Final/hibernate-core-6.5.2.Final.jar:/workspace/.pr6-m2/jakarta/persistence/jakarta.persistence-api/3.1.0/jakarta.persistence-api-3.1.0.jar:/workspace/.pr6-m2/jakarta/transaction/jakarta.transaction-api/2.0.1/jakarta.transaction-api-2.0.1.jar:/workspace/.pr6-m2/org/hibernate/common/hibernate-commons-annotations/6.0.6.Final/hibernate-commons-annotations-6.0.6.Final.jar:/workspace/.pr6-m2/io/smallrye/jandex/3.1.2/jandex-3.1.2.jar:/workspace/.pr6-m2/net/bytebuddy/byte-buddy/1.14.16/byte-buddy-1.14.16.jar:/workspace/.pr6-m2/org/glassfish/jaxb/jaxb-runtime/4.0.5/jaxb-runtime-4.0.5.jar:/workspace/.pr6-m2/org/glassfish/jaxb/jaxb-core/4.0.5/jaxb-core-4.0.5.jar:/workspace/.pr6-m2/org/glassfish/jaxb/txw2/4.0.5/txw2-4.0.5.jar:/workspace/.pr6-m2/com/sun/istack/istack-commons-runtime/4.1.2/istack-commons-runtime-4.1.2.jar:/workspace/.pr6-m2/jakarta/inject/jakarta.inject-api/2.0.1/jakarta.inject-api-2.0.1.jar:/workspace/.pr6-m2/org/antlr/antlr4-runtime/4.13.0/antlr4-runtime-4.13.0.jar:/workspace/.pr6-m2/org/springframework/data/spring-data-jpa/3.3.0/spring-data-jpa-3.3.0.jar:/workspace/.pr6-m2/org/springframework/data/spring-data-commons/3.3.0/spring-data-commons-3.3.0.jar:/workspace/.pr6-m2/org/springframework/spring-orm/6.1.8/spring-orm-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-tx/6.1.8/spring-tx-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-aspects/6.1.8/spring-aspects-6.1.8.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-aop/3.3.0/spring-boot-starter-aop-3.3.0.jar:/workspace/.pr6-m2/org/aspectj/aspectjweaver/1.9.22/aspectjweaver-1.9.22.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-mail/3.3.0/spring-boot-starter-mail-3.3.0.jar:/workspace/.pr6-m2/org/springframework/spring-context-support/6.1.8/spring-context-support-6.1.8.jar:/workspace/.pr6-m2/org/eclipse/angus/jakarta.mail/2.0.3/jakarta.mail-2.0.3.jar:/workspace/.pr6-m2/jakarta/activation/jakarta.activation-api/2.1.3/jakarta.activation-api-2.1.3.jar:/workspace/.pr6-m2/org/eclipse/angus/angus-activation/2.0.2/angus-activation-2.0.2.jar:/workspace/.pr6-m2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3.jar:/workspace/.pr6-m2/org/checkerframework/checker-qual/3.42.0/checker-qual-3.42.0.jar:/workspace/.pr6-m2/org/liquibase/liquibase-core/4.27.0/liquibase-core-4.27.0.jar:/workspace/.pr6-m2/com/opencsv/opencsv/5.9/opencsv-5.9.jar:/workspace/.pr6-m2/org/apache/commons/commons-text/1.11.0/commons-text-1.11.0.jar:/workspace/.pr6-m2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:/workspace/.pr6-m2/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/workspace/.pr6-m2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar:/workspace/.pr6-m2/org/apache/commons/commons-lang3/3.14.0/commons-lang3-3.14.0.jar:/workspace/.pr6-m2/com/vladmihalcea/hibernate-types-60/2.21.1/hibernate-types-60-2.21.1.jar:/workspace/.pr6-m2/jakarta/xml/bind/jakarta.xml.bind-api/4.0.2/jakarta.xml.bind-api-4.0.2.jar:/workspace/.pr6-m2/io/jsonwebtoken/jjwt-api/0.12.5/jjwt-api-0.12.5.jar:/workspace/.pr6-m2/io/jsonwebtoken/jjwt-impl/0.12.5/jjwt-impl-0.12.5.jar:/workspace/.pr6-m2/io/jsonwebtoken/jjwt-jackson/0.12.5/jjwt-jackson-0.12.5.jar:/workspace/.pr6-m2/com/fasterxml/jackson/core/jackson-databind/2.17.1/jackson-databind-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/core/jackson-annotations/2.17.1/jackson-annotations-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/core/jackson-core/2.17.1/jackson-core-2.17.1.jar:/workspace/.pr6-m2/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar:/workspace/.pr6-m2/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar:/workspace/.pr6-m2/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar:/workspace/.pr6-m2/org/springdoc/springdoc-openapi-starter-webmvc-ui/2.5.0/springdoc-openapi-starter-webmvc-ui-2.5.0.jar:/workspace/.pr6-m2/org/springdoc/springdoc-openapi-starter-webmvc-api/2.5.0/springdoc-openapi-starter-webmvc-api-2.5.0.jar:/workspace/.pr6-m2/org/springdoc/springdoc-openapi-starter-common/2.5.0/springdoc-openapi-starter-common-2.5.0.jar:/workspace/.pr6-m2/io/swagger/core/v3/swagger-core-jakarta/2.2.21/swagger-core-jakarta-2.2.21.jar:/workspace/.pr6-m2/io/swagger/core/v3/swagger-annotations-jakarta/2.2.21/swagger-annotations-jakarta-2.2.21.jar:/workspace/.pr6-m2/io/swagger/core/v3/swagger-models-jakarta/2.2.21/swagger-models-jakarta-2.2.21.jar:/workspace/.pr6-m2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.17.1/jackson-dataformat-yaml-2.17.1.jar:/workspace/.pr6-m2/org/webjars/swagger-ui/5.13.0/swagger-ui-5.13.0.jar:/workspace/.pr6-m2/org/apache/pdfbox/pdfbox/3.0.3/pdfbox-3.0.3.jar:/workspace/.pr6-m2/org/apache/pdfbox/pdfbox-io/3.0.3/pdfbox-io-3.0.3.jar:/workspace/.pr6-m2/org/apache/pdfbox/fontbox/3.0.3/fontbox-3.0.3.jar:/workspace/.pr6-m2/commons-logging/commons-logging/1.3.3/commons-logging-1.3.3.jar:/workspace/.pr6-m2/com/microsoft/playwright/playwright/1.58.0/playwright-1.58.0.jar:/workspace/.pr6-m2/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar:/workspace/.pr6-m2/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/workspace/.pr6-m2/com/microsoft/playwright/driver/1.58.0/driver-1.58.0.jar:/workspace/.pr6-m2/com/microsoft/playwright/driver-bundle/1.58.0/driver-bundle-1.58.0.jar:/workspace/.pr6-m2/org/apache/poi/poi-ooxml/5.5.1/poi-ooxml-5.5.1.jar:/workspace/.pr6-m2/org/apache/poi/poi/5.5.1/poi-5.5.1.jar:/workspace/.pr6-m2/com/zaxxer/SparseBitSet/1.3/SparseBitSet-1.3.jar:/workspace/.pr6-m2/org/apache/poi/poi-ooxml-lite/5.5.1/poi-ooxml-lite-5.5.1.jar:/workspace/.pr6-m2/org/apache/xmlbeans/xmlbeans/5.3.0/xmlbeans-5.3.0.jar:/workspace/.pr6-m2/org/apache/commons/commons-compress/1.28.0/commons-compress-1.28.0.jar:/workspace/.pr6-m2/commons-io/commons-io/2.21.0/commons-io-2.21.0.jar:/workspace/.pr6-m2/com/github/virtuald/curvesapi/1.08/curvesapi-1.08.jar:/workspace/.pr6-m2/org/apache/logging/log4j/log4j-api/2.23.1/log4j-api-2.23.1.jar:/workspace/.pr6-m2/org/apache/poi/poi-scratchpad/5.5.1/poi-scratchpad-5.5.1.jar:/workspace/.pr6-m2/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar:/workspace/.pr6-m2/commons-codec/commons-codec/1.16.1/commons-codec-1.16.1.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-test/3.3.0/spring-boot-starter-test-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-test/3.3.0/spring-boot-test-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-test-autoconfigure/3.3.0/spring-boot-test-autoconfigure-3.3.0.jar:/workspace/.pr6-m2/com/jayway/jsonpath/json-path/2.9.0/json-path-2.9.0.jar:/workspace/.pr6-m2/net/minidev/json-smart/2.5.1/json-smart-2.5.1.jar:/workspace/.pr6-m2/net/minidev/accessors-smart/2.5.1/accessors-smart-2.5.1.jar:/workspace/.pr6-m2/org/ow2/asm/asm/9.6/asm-9.6.jar:/workspace/.pr6-m2/org/assertj/assertj-core/3.25.3/assertj-core-3.25.3.jar:/workspace/.pr6-m2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1.jar:/workspace/.pr6-m2/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter/5.10.2/junit-jupiter-5.10.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar:/workspace/.pr6-m2/org/junit/platform/junit-platform-commons/1.10.2/junit-platform-commons-1.10.2.jar:/workspace/.pr6-m2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-params/5.10.2/junit-jupiter-params-5.10.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-engine/5.10.2/junit-jupiter-engine-5.10.2.jar:/workspace/.pr6-m2/org/junit/platform/junit-platform-engine/1.10.2/junit-platform-engine-1.10.2.jar:/workspace/.pr6-m2/org/mockito/mockito-core/5.11.0/mockito-core-5.11.0.jar:/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar:/workspace/.pr6-m2/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/workspace/.pr6-m2/org/mockito/mockito-junit-jupiter/5.11.0/mockito-junit-jupiter-5.11.0.jar:/workspace/.pr6-m2/org/skyscreamer/jsonassert/1.5.1/jsonassert-1.5.1.jar:/workspace/.pr6-m2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar:/workspace/.pr6-m2/org/springframework/spring-core/6.1.8/spring-core-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-jcl/6.1.8/spring-jcl-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-test/6.1.8/spring-test-6.1.8.jar:/workspace/.pr6-m2/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-test/6.3.0/spring-security-test-6.3.0.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-core/6.3.0/spring-security-core-6.3.0.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-crypto/6.3.0/spring-security-crypto-6.3.0.jar:/workspace/.pr6-m2/org/testcontainers/testcontainers/1.19.8/testcontainers-1.19.8.jar:/workspace/.pr6-m2/junit/junit/4.13.2/junit-4.13.2.jar:/workspace/.pr6-m2/org/hamcrest/hamcrest-core/2.2/hamcrest-core-2.2.jar:/workspace/.pr6-m2/org/slf4j/slf4j-api/2.0.13/slf4j-api-2.0.13.jar:/workspace/.pr6-m2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8.jar:/workspace/.pr6-m2/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar:/workspace/.pr6-m2/com/github/docker-java/docker-java-api/3.3.6/docker-java-api-3.3.6.jar:/workspace/.pr6-m2/com/github/docker-java/docker-java-transport-zerodep/3.3.6/docker-java-transport-zerodep-3.3.6.jar:/workspace/.pr6-m2/com/github/docker-java/docker-java-transport/3.3.6/docker-java-transport-3.3.6.jar:/workspace/.pr6-m2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/workspace/.pr6-m2/org/testcontainers/postgresql/1.19.8/postgresql-1.19.8.jar:/workspace/.pr6-m2/org/testcontainers/jdbc/1.19.8/jdbc-1.19.8.jar:/workspace/.pr6-m2/org/testcontainers/database-commons/1.19.8/database-commons-1.19.8.jar:/workspace/.pr6-m2/org/testcontainers/junit-jupiter/1.19.8/junit-jupiter-1.19.8.jar:/workspace/.pr6-m2/com/h2database/h2/2.2.224/h2-2.2.224.jar:"/>
+    <property name="java.vm.vendor" value="Eclipse Adoptium"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.vendor.url" value="https://adoptium.net/"/>
+    <property name="user.timezone" value="Etc/UTC"/>
+    <property name="org.jboss.logging.provider" value="slf4j"/>
+    <property name="os.name" value="Linux"/>
+    <property name="java.vm.specification.version" value="21"/>
+    <property name="edhr.audit.documentReads" value="true"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.boot.library.path" value="/workspace/.edhr-cloud-tools/jdk-21.0.12.1+1/lib"/>
+    <property name="sun.java.command" value="/workspace/edhr-nexus-frontend/gmp-platform/backend/target/surefire/surefirebooter-20261030030830054_3.jar /workspace/edhr-nexus-frontend/gmp-platform/backend/target/surefire 2026-10-30T03-08-30_020-jvmRun1 surefire-20261030030830054_1tmp surefire_0-20261030030830054_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="/workspace/edhr-nexus-frontend/gmp-platform/backend/target/test-classes:/workspace/edhr-nexus-frontend/gmp-platform/backend/target/classes:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-web/3.3.0/spring-boot-starter-web-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter/3.3.0/spring-boot-starter-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot/3.3.0/spring-boot-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-autoconfigure/3.3.0/spring-boot-autoconfigure-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-logging/3.3.0/spring-boot-starter-logging-3.3.0.jar:/workspace/.pr6-m2/ch/qos/logback/logback-classic/1.5.6/logback-classic-1.5.6.jar:/workspace/.pr6-m2/ch/qos/logback/logback-core/1.5.6/logback-core-1.5.6.jar:/workspace/.pr6-m2/org/apache/logging/log4j/log4j-to-slf4j/2.23.1/log4j-to-slf4j-2.23.1.jar:/workspace/.pr6-m2/org/slf4j/jul-to-slf4j/2.0.13/jul-to-slf4j-2.0.13.jar:/workspace/.pr6-m2/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-json/3.3.0/spring-boot-starter-json-3.3.0.jar:/workspace/.pr6-m2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.17.1/jackson-datatype-jdk8-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.17.1/jackson-datatype-jsr310-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/module/jackson-module-parameter-names/2.17.1/jackson-module-parameter-names-2.17.1.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-tomcat/3.3.0/spring-boot-starter-tomcat-3.3.0.jar:/workspace/.pr6-m2/org/apache/tomcat/embed/tomcat-embed-core/10.1.24/tomcat-embed-core-10.1.24.jar:/workspace/.pr6-m2/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.24/tomcat-embed-websocket-10.1.24.jar:/workspace/.pr6-m2/org/springframework/spring-web/6.1.8/spring-web-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-beans/6.1.8/spring-beans-6.1.8.jar:/workspace/.pr6-m2/io/micrometer/micrometer-observation/1.13.0/micrometer-observation-1.13.0.jar:/workspace/.pr6-m2/io/micrometer/micrometer-commons/1.13.0/micrometer-commons-1.13.0.jar:/workspace/.pr6-m2/org/springframework/spring-webmvc/6.1.8/spring-webmvc-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-context/6.1.8/spring-context-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-expression/6.1.8/spring-expression-6.1.8.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-validation/3.3.0/spring-boot-starter-validation-3.3.0.jar:/workspace/.pr6-m2/org/apache/tomcat/embed/tomcat-embed-el/10.1.24/tomcat-embed-el-10.1.24.jar:/workspace/.pr6-m2/org/hibernate/validator/hibernate-validator/8.0.1.Final/hibernate-validator-8.0.1.Final.jar:/workspace/.pr6-m2/jakarta/validation/jakarta.validation-api/3.0.2/jakarta.validation-api-3.0.2.jar:/workspace/.pr6-m2/org/jboss/logging/jboss-logging/3.5.3.Final/jboss-logging-3.5.3.Final.jar:/workspace/.pr6-m2/com/fasterxml/classmate/1.7.0/classmate-1.7.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-security/3.3.0/spring-boot-starter-security-3.3.0.jar:/workspace/.pr6-m2/org/springframework/spring-aop/6.1.8/spring-aop-6.1.8.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-config/6.3.0/spring-security-config-6.3.0.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-web/6.3.0/spring-security-web-6.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-data-jpa/3.3.0/spring-boot-starter-data-jpa-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-jdbc/3.3.0/spring-boot-starter-jdbc-3.3.0.jar:/workspace/.pr6-m2/com/zaxxer/HikariCP/5.1.0/HikariCP-5.1.0.jar:/workspace/.pr6-m2/org/springframework/spring-jdbc/6.1.8/spring-jdbc-6.1.8.jar:/workspace/.pr6-m2/org/hibernate/orm/hibernate-core/6.5.2.Final/hibernate-core-6.5.2.Final.jar:/workspace/.pr6-m2/jakarta/persistence/jakarta.persistence-api/3.1.0/jakarta.persistence-api-3.1.0.jar:/workspace/.pr6-m2/jakarta/transaction/jakarta.transaction-api/2.0.1/jakarta.transaction-api-2.0.1.jar:/workspace/.pr6-m2/org/hibernate/common/hibernate-commons-annotations/6.0.6.Final/hibernate-commons-annotations-6.0.6.Final.jar:/workspace/.pr6-m2/io/smallrye/jandex/3.1.2/jandex-3.1.2.jar:/workspace/.pr6-m2/net/bytebuddy/byte-buddy/1.14.16/byte-buddy-1.14.16.jar:/workspace/.pr6-m2/org/glassfish/jaxb/jaxb-runtime/4.0.5/jaxb-runtime-4.0.5.jar:/workspace/.pr6-m2/org/glassfish/jaxb/jaxb-core/4.0.5/jaxb-core-4.0.5.jar:/workspace/.pr6-m2/org/glassfish/jaxb/txw2/4.0.5/txw2-4.0.5.jar:/workspace/.pr6-m2/com/sun/istack/istack-commons-runtime/4.1.2/istack-commons-runtime-4.1.2.jar:/workspace/.pr6-m2/jakarta/inject/jakarta.inject-api/2.0.1/jakarta.inject-api-2.0.1.jar:/workspace/.pr6-m2/org/antlr/antlr4-runtime/4.13.0/antlr4-runtime-4.13.0.jar:/workspace/.pr6-m2/org/springframework/data/spring-data-jpa/3.3.0/spring-data-jpa-3.3.0.jar:/workspace/.pr6-m2/org/springframework/data/spring-data-commons/3.3.0/spring-data-commons-3.3.0.jar:/workspace/.pr6-m2/org/springframework/spring-orm/6.1.8/spring-orm-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-tx/6.1.8/spring-tx-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-aspects/6.1.8/spring-aspects-6.1.8.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-aop/3.3.0/spring-boot-starter-aop-3.3.0.jar:/workspace/.pr6-m2/org/aspectj/aspectjweaver/1.9.22/aspectjweaver-1.9.22.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-mail/3.3.0/spring-boot-starter-mail-3.3.0.jar:/workspace/.pr6-m2/org/springframework/spring-context-support/6.1.8/spring-context-support-6.1.8.jar:/workspace/.pr6-m2/org/eclipse/angus/jakarta.mail/2.0.3/jakarta.mail-2.0.3.jar:/workspace/.pr6-m2/jakarta/activation/jakarta.activation-api/2.1.3/jakarta.activation-api-2.1.3.jar:/workspace/.pr6-m2/org/eclipse/angus/angus-activation/2.0.2/angus-activation-2.0.2.jar:/workspace/.pr6-m2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3.jar:/workspace/.pr6-m2/org/checkerframework/checker-qual/3.42.0/checker-qual-3.42.0.jar:/workspace/.pr6-m2/org/liquibase/liquibase-core/4.27.0/liquibase-core-4.27.0.jar:/workspace/.pr6-m2/com/opencsv/opencsv/5.9/opencsv-5.9.jar:/workspace/.pr6-m2/org/apache/commons/commons-text/1.11.0/commons-text-1.11.0.jar:/workspace/.pr6-m2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:/workspace/.pr6-m2/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/workspace/.pr6-m2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar:/workspace/.pr6-m2/org/apache/commons/commons-lang3/3.14.0/commons-lang3-3.14.0.jar:/workspace/.pr6-m2/com/vladmihalcea/hibernate-types-60/2.21.1/hibernate-types-60-2.21.1.jar:/workspace/.pr6-m2/jakarta/xml/bind/jakarta.xml.bind-api/4.0.2/jakarta.xml.bind-api-4.0.2.jar:/workspace/.pr6-m2/io/jsonwebtoken/jjwt-api/0.12.5/jjwt-api-0.12.5.jar:/workspace/.pr6-m2/io/jsonwebtoken/jjwt-impl/0.12.5/jjwt-impl-0.12.5.jar:/workspace/.pr6-m2/io/jsonwebtoken/jjwt-jackson/0.12.5/jjwt-jackson-0.12.5.jar:/workspace/.pr6-m2/com/fasterxml/jackson/core/jackson-databind/2.17.1/jackson-databind-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/core/jackson-annotations/2.17.1/jackson-annotations-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/core/jackson-core/2.17.1/jackson-core-2.17.1.jar:/workspace/.pr6-m2/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar:/workspace/.pr6-m2/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar:/workspace/.pr6-m2/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar:/workspace/.pr6-m2/org/springdoc/springdoc-openapi-starter-webmvc-ui/2.5.0/springdoc-openapi-starter-webmvc-ui-2.5.0.jar:/workspace/.pr6-m2/org/springdoc/springdoc-openapi-starter-webmvc-api/2.5.0/springdoc-openapi-starter-webmvc-api-2.5.0.jar:/workspace/.pr6-m2/org/springdoc/springdoc-openapi-starter-common/2.5.0/springdoc-openapi-starter-common-2.5.0.jar:/workspace/.pr6-m2/io/swagger/core/v3/swagger-core-jakarta/2.2.21/swagger-core-jakarta-2.2.21.jar:/workspace/.pr6-m2/io/swagger/core/v3/swagger-annotations-jakarta/2.2.21/swagger-annotations-jakarta-2.2.21.jar:/workspace/.pr6-m2/io/swagger/core/v3/swagger-models-jakarta/2.2.21/swagger-models-jakarta-2.2.21.jar:/workspace/.pr6-m2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.17.1/jackson-dataformat-yaml-2.17.1.jar:/workspace/.pr6-m2/org/webjars/swagger-ui/5.13.0/swagger-ui-5.13.0.jar:/workspace/.pr6-m2/org/apache/pdfbox/pdfbox/3.0.3/pdfbox-3.0.3.jar:/workspace/.pr6-m2/org/apache/pdfbox/pdfbox-io/3.0.3/pdfbox-io-3.0.3.jar:/workspace/.pr6-m2/org/apache/pdfbox/fontbox/3.0.3/fontbox-3.0.3.jar:/workspace/.pr6-m2/commons-logging/commons-logging/1.3.3/commons-logging-1.3.3.jar:/workspace/.pr6-m2/com/microsoft/playwright/playwright/1.58.0/playwright-1.58.0.jar:/workspace/.pr6-m2/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar:/workspace/.pr6-m2/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/workspace/.pr6-m2/com/microsoft/playwright/driver/1.58.0/driver-1.58.0.jar:/workspace/.pr6-m2/com/microsoft/playwright/driver-bundle/1.58.0/driver-bundle-1.58.0.jar:/workspace/.pr6-m2/org/apache/poi/poi-ooxml/5.5.1/poi-ooxml-5.5.1.jar:/workspace/.pr6-m2/org/apache/poi/poi/5.5.1/poi-5.5.1.jar:/workspace/.pr6-m2/com/zaxxer/SparseBitSet/1.3/SparseBitSet-1.3.jar:/workspace/.pr6-m2/org/apache/poi/poi-ooxml-lite/5.5.1/poi-ooxml-lite-5.5.1.jar:/workspace/.pr6-m2/org/apache/xmlbeans/xmlbeans/5.3.0/xmlbeans-5.3.0.jar:/workspace/.pr6-m2/org/apache/commons/commons-compress/1.28.0/commons-compress-1.28.0.jar:/workspace/.pr6-m2/commons-io/commons-io/2.21.0/commons-io-2.21.0.jar:/workspace/.pr6-m2/com/github/virtuald/curvesapi/1.08/curvesapi-1.08.jar:/workspace/.pr6-m2/org/apache/logging/log4j/log4j-api/2.23.1/log4j-api-2.23.1.jar:/workspace/.pr6-m2/org/apache/poi/poi-scratchpad/5.5.1/poi-scratchpad-5.5.1.jar:/workspace/.pr6-m2/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar:/workspace/.pr6-m2/commons-codec/commons-codec/1.16.1/commons-codec-1.16.1.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-test/3.3.0/spring-boot-starter-test-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-test/3.3.0/spring-boot-test-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-test-autoconfigure/3.3.0/spring-boot-test-autoconfigure-3.3.0.jar:/workspace/.pr6-m2/com/jayway/jsonpath/json-path/2.9.0/json-path-2.9.0.jar:/workspace/.pr6-m2/net/minidev/json-smart/2.5.1/json-smart-2.5.1.jar:/workspace/.pr6-m2/net/minidev/accessors-smart/2.5.1/accessors-smart-2.5.1.jar:/workspace/.pr6-m2/org/ow2/asm/asm/9.6/asm-9.6.jar:/workspace/.pr6-m2/org/assertj/assertj-core/3.25.3/assertj-core-3.25.3.jar:/workspace/.pr6-m2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1.jar:/workspace/.pr6-m2/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter/5.10.2/junit-jupiter-5.10.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar:/workspace/.pr6-m2/org/junit/platform/junit-platform-commons/1.10.2/junit-platform-commons-1.10.2.jar:/workspace/.pr6-m2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-params/5.10.2/junit-jupiter-params-5.10.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-engine/5.10.2/junit-jupiter-engine-5.10.2.jar:/workspace/.pr6-m2/org/junit/platform/junit-platform-engine/1.10.2/junit-platform-engine-1.10.2.jar:/workspace/.pr6-m2/org/mockito/mockito-core/5.11.0/mockito-core-5.11.0.jar:/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar:/workspace/.pr6-m2/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/workspace/.pr6-m2/org/mockito/mockito-junit-jupiter/5.11.0/mockito-junit-jupiter-5.11.0.jar:/workspace/.pr6-m2/org/skyscreamer/jsonassert/1.5.1/jsonassert-1.5.1.jar:/workspace/.pr6-m2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar:/workspace/.pr6-m2/org/springframework/spring-core/6.1.8/spring-core-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-jcl/6.1.8/spring-jcl-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-test/6.1.8/spring-test-6.1.8.jar:/workspace/.pr6-m2/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-test/6.3.0/spring-security-test-6.3.0.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-core/6.3.0/spring-security-core-6.3.0.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-crypto/6.3.0/spring-security-crypto-6.3.0.jar:/workspace/.pr6-m2/org/testcontainers/testcontainers/1.19.8/testcontainers-1.19.8.jar:/workspace/.pr6-m2/junit/junit/4.13.2/junit-4.13.2.jar:/workspace/.pr6-m2/org/hamcrest/hamcrest-core/2.2/hamcrest-core-2.2.jar:/workspace/.pr6-m2/org/slf4j/slf4j-api/2.0.13/slf4j-api-2.0.13.jar:/workspace/.pr6-m2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8.jar:/workspace/.pr6-m2/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar:/workspace/.pr6-m2/com/github/docker-java/docker-java-api/3.3.6/docker-java-api-3.3.6.jar:/workspace/.pr6-m2/com/github/docker-java/docker-java-transport-zerodep/3.3.6/docker-java-transport-zerodep-3.3.6.jar:/workspace/.pr6-m2/com/github/docker-java/docker-java-transport/3.3.6/docker-java-transport-3.3.6.jar:/workspace/.pr6-m2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/workspace/.pr6-m2/org/testcontainers/postgresql/1.19.8/postgresql-1.19.8.jar:/workspace/.pr6-m2/org/testcontainers/jdbc/1.19.8/jdbc-1.19.8.jar:/workspace/.pr6-m2/org/testcontainers/database-commons/1.19.8/database-commons-1.19.8.jar:/workspace/.pr6-m2/org/testcontainers/junit-jupiter/1.19.8/junit-jupiter-1.19.8.jar:/workspace/.pr6-m2/com/h2database/h2/2.2.224/h2-2.2.224.jar:"/>
+    <property name="test" value="DocumentReadPerformancePostgresTest#nativeUnicodeCaseVariantsKeepMatching"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="/home/agent"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2026-08-18"/>
+    <property name="java.home" value="/workspace/.edhr-cloud-tools/jdk-21.0.12.1+1"/>
+    <property name="file.separator" value="/"/>
+    <property name="basedir" value="/workspace/edhr-nexus-frontend/gmp-platform/backend"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="FILE_LOG_CHARSET" value="UTF-8"/>
+    <property name="java.awt.headless" value="true"/>
+    <property name="surefire.real.class.path" value="/workspace/edhr-nexus-frontend/gmp-platform/backend/target/surefire/surefirebooter-20261030030830054_3.jar"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="21.0.12.1+1-LTS"/>
+    <property name="user.name" value="agent"/>
+    <property name="stdout.encoding" value="UTF-8"/>
+    <property name="path.separator" value=":"/>
+    <property name="os.version" value="6.18.55"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="java.vendor.version" value="Temurin-21.0.12.1+1"/>
+    <property name="localRepository" value="/workspace/.pr6-m2"/>
+    <property name="java.vendor.url.bug" value="https://github.com/adoptium/adoptium-support/issues"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="com.zaxxer.hikari.pool_number" value="1"/>
+    <property name="java.version" value="21.0.12.1"/>
+    <property name="user.dir" value="/workspace/edhr-nexus-frontend/gmp-platform/backend"/>
+    <property name="edhr.audit.documentOutput" value="/tmp/edhr-document-perf-matrix-baseline-http.jsonl"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="PID" value="24879"/>
+    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
+    <property name="native.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib"/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="UTF-8"/>
+    <property name="java.vendor" value="Eclipse Adoptium"/>
+    <property name="java.vm.version" value="21.0.12.1+1-LTS"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="maven.repo.local" value="/workspace/.pr6-m2"/>
+    <property name="java.class.version" value="65.0"/>
+    <property name="LOGGED_APPLICATION_NAME" value="[edhr] "/>
+  </properties>
+  <testcase name="nativeUnicodeCaseVariantsKeepMatching(String, String, String)[1]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.383">
+    <failure message="&#10;expected: 1&#10; but was: 0" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.nativeUnicodeCaseVariantsKeepMatching(DocumentReadPerformancePostgresTest.java:45)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+]]></failure>
+    <system-out><![CDATA[Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.0)
+
+2026-10-30T03:08:30.703Z  INFO 24879 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : Starting DocumentReadPerformancePostgresTest using Java 21.0.12.1 with PID 24879 (started by agent in /workspace/edhr-nexus-frontend/gmp-platform/backend)
+2026-10-30T03:08:30.705Z DEBUG 24879 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : Running with Spring Boot v3.3.0, Spring v6.1.8
+2026-10-30T03:08:30.705Z  INFO 24879 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : The following 1 profile is active: "dev"
+2026-10-30T03:08:31.308Z  INFO 24879 --- [edhr] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-30T03:08:31.344Z  INFO 24879 --- [edhr] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-10-30T03:08:31.366Z  INFO 24879 --- [edhr] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-30T03:08:31.406Z  INFO 24879 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-30T03:08:31.485Z  INFO 24879 --- [edhr] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6003220a
+2026-10-30T03:08:31.486Z  INFO 24879 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-30T03:08:31.501Z  WARN 24879 --- [edhr] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-30T03:08:31.610Z  INFO 24879 --- [edhr] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-30T03:08:31.992Z  INFO 24879 --- [edhr] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-30T03:08:31.999Z  WARN 24879 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T03:08:31.999Z  WARN 24879 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "audit_event" does not exist, skipping
+2026-10-30T03:08:32.000Z  WARN 24879 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T03:08:32.000Z  WARN 24879 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "document_category" does not exist, skipping
+2026-10-30T03:08:32.000Z  WARN 24879 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T03:08:32.000Z  WARN 24879 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "document_version" does not exist, skipping
+2026-10-30T03:08:32.001Z  WARN 24879 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T03:08:32.001Z  WARN 24879 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "file_object" does not exist, skipping
+2026-10-30T03:08:32.001Z  WARN 24879 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T03:08:32.001Z  WARN 24879 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "sop_document" does not exist, skipping
+2026-10-30T03:08:32.024Z  INFO 24879 --- [edhr] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-30T03:08:32.165Z  INFO 24879 --- [edhr] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-30T03:08:33.230Z  WARN 24879 --- [edhr] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 3975ffac-80be-4808-85d9-6d4211f35255
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-30T03:08:33.234Z  INFO 24879 --- [edhr] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-30T03:08:33.380Z  INFO 24879 --- [edhr] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4e792ddf, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@67e28dad, org.springframework.security.web.context.SecurityContextHolderFilter@7e24f4e2, org.springframework.security.web.header.HeaderWriterFilter@749979f4, org.springframework.web.filter.CorsFilter@dfea3ca, org.springframework.security.web.authentication.logout.LogoutFilter@3a235f21, com.zencas.edhr.identity.security.JwtAuthenticationFilter@11972f4a, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7ce65a05, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1cce63a4, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@611bf705, org.springframework.security.web.session.SessionManagementFilter@394e21b9, org.springframework.security.web.access.ExceptionTranslationFilter@1c057fc8, org.springframework.security.web.access.intercept.AuthorizationFilter@70eb3b36]
+2026-10-30T03:08:33.647Z DEBUG 24879 --- [edhr] [           main] c.z.e.i.s.JwtAuthenticationFilter        : Filter 'com.zencas.edhr.identity.security.JwtAuthenticationFilter' configured for use
+2026-10-30T03:08:33.647Z  INFO 24879 --- [edhr] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-30T03:08:33.647Z  INFO 24879 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-30T03:08:33.648Z  INFO 24879 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-10-30T03:08:33.662Z  INFO 24879 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : Started DocumentReadPerformancePostgresTest in 3.114 seconds (process running for 3.581)
+2026-10-30T03:08:33.782Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:33.802Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:33.985Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:33.987Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.008Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:08:34.010Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzEzLCJleHAiOjE3OTMzMzAwMTN9.zzgPv9lujgLcqmwuFkUmBvgcjp5MgZQT3LbdSbiRpwM", Content-Length:"68"]
+             Body = {"version":"V1","code":"FIRST-CODE","title":"ΟΣ work instruction"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391453192069582848","title":"ΟΣ work instruction","createdBy":"文档审查","createdAt":"2026-10-30T03:08:33.838618274","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:33.838618274","versions":[{"id":"391453192371572736","documentId":"391453192069582848","version":"V1","code":"FIRST-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:08:33.838618274","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:33.838618274"}]},"timestamp":"2026-10-30T03:08:33.915777836Z","traceId":"825e57a8-6ed6-4e9f-959d-a9ef104ddef7"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzEzLCJleHAiOjE3OTMzMzAwMTN9.zzgPv9lujgLcqmwuFkUmBvgcjp5MgZQT3LbdSbiRpwM", Content-Length:"65"]
+             Body = {"version":"V1","code":"OTHER-CODE","title":"unrelated document"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391453192698728448","title":"unrelated document","createdBy":"文档审查","createdAt":"2026-10-30T03:08:33.988471075","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:33.988471075","versions":[{"id":"391453192715505664","documentId":"391453192698728448","version":"V1","code":"OTHER-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:08:33.988471075","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:33.988471075"}]},"timestamp":"2026-10-30T03:08:33.994137644Z","traceId":"c13355e4-b8c9-446d-b90a-9aea64ba3e35"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/master-data/documents
+       Parameters = {keyword=[ος]}
+          Headers = [Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s"]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#list(String, String, int, int)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"content":[],"page":1,"size":20,"totalElements":0,"totalPages":0},"timestamp":"2026-10-30T03:08:34.032687195Z","traceId":"e3ac4635-b739-4a6e-bea6-fdab0e1e3309"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+]]></system-out>
+    <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+  </testcase>
+  <testcase name="nativeUnicodeCaseVariantsKeepMatching(String, String, String)[2]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.048">
+    <failure message="&#10;expected: 1&#10; but was: 0" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.nativeUnicodeCaseVariantsKeepMatching(DocumentReadPerformancePostgresTest.java:45)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+]]></failure>
+    <system-out><![CDATA[2026-10-30T03:08:34.071Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.073Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.085Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.087Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.098Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:08:34.100Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s", Content-Length:"58"]
+             Body = {"version":"V1","code":"CASE-ΟΣ","title":"目标文档"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391453193059438592","title":"目标文档","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.074027307","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.074027307","versions":[{"id":"391453193080410112","documentId":"391453193059438592","version":"V1","code":"CASE-ΟΣ","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.074027307","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.074027307"}]},"timestamp":"2026-10-30T03:08:34.081495866Z","traceId":"1f5b66af-f1cc-4a2c-8d13-14c56efbc487"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s", Content-Length:"65"]
+             Body = {"version":"V1","code":"OTHER-CODE","title":"unrelated document"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391453193113964544","title":"unrelated document","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.087776638","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.087776638","versions":[{"id":"391453193122353152","documentId":"391453193113964544","version":"V1","code":"OTHER-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.087776638","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.087776638"}]},"timestamp":"2026-10-30T03:08:34.091335822Z","traceId":"7c5a4503-2f01-4012-a7cb-35633628a5b1"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/master-data/documents
+       Parameters = {keyword=[ος]}
+          Headers = [Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s"]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#list(String, String, int, int)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"content":[],"page":1,"size":20,"totalElements":0,"totalPages":0},"timestamp":"2026-10-30T03:08:34.102186683Z","traceId":"b60e9549-4e9b-4a15-858c-e8a31febf6ac"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+]]></system-out>
+  </testcase>
+  <testcase name="nativeUnicodeCaseVariantsKeepMatching(String, String, String)[3]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.035">
+    <failure message="&#10;expected: 1&#10; but was: 0" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.nativeUnicodeCaseVariantsKeepMatching(DocumentReadPerformancePostgresTest.java:45)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+]]></failure>
+    <system-out><![CDATA[2026-10-30T03:08:34.116Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.117Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.126Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.127Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.136Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:08:34.138Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s", Content-Length:"68"]
+             Body = {"version":"V1","code":"FIRST-CODE","title":"ος work instruction"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391453193243987968","title":"ος work instruction","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.118390155","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.118390155","versions":[{"id":"391453193256570880","documentId":"391453193243987968","version":"V1","code":"FIRST-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.118390155","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.118390155"}]},"timestamp":"2026-10-30T03:08:34.122852082Z","traceId":"66076cbc-f8a6-4880-bba5-1c9190a50602"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s", Content-Length:"65"]
+             Body = {"version":"V1","code":"OTHER-CODE","title":"unrelated document"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391453193285931008","title":"unrelated document","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.12804748","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.12804748","versions":[{"id":"391453193294319616","documentId":"391453193285931008","version":"V1","code":"OTHER-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.12804748","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.12804748"}]},"timestamp":"2026-10-30T03:08:34.131329362Z","traceId":"22c22f56-c4c5-487b-bfa8-08c12ef352d1"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/master-data/documents
+       Parameters = {keyword=[ΟΣ]}
+          Headers = [Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s"]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#list(String, String, int, int)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"content":[],"page":1,"size":20,"totalElements":0,"totalPages":0},"timestamp":"2026-10-30T03:08:34.139961782Z","traceId":"5ff1f31e-9f7e-4e29-885d-b795cdeafa94"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+]]></system-out>
+  </testcase>
+  <testcase name="nativeUnicodeCaseVariantsKeepMatching(String, String, String)[4]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.05">
+    <failure message="&#10;expected: 1&#10; but was: 0" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.nativeUnicodeCaseVariantsKeepMatching(DocumentReadPerformancePostgresTest.java:45)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+]]></failure>
+    <system-out><![CDATA[2026-10-30T03:08:34.157Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.160Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.170Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.171Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.180Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:08:34.181Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s", Content-Length:"58"]
+             Body = {"version":"V1","code":"CASE-ος","title":"目标文档"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391453193424343040","title":"目标文档","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.161011042","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.161011042","versions":[{"id":"391453193436925952","documentId":"391453193424343040","version":"V1","code":"CASE-ος","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.161011042","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.161011042"}]},"timestamp":"2026-10-30T03:08:34.166707926Z","traceId":"f0559c80-bb4e-4f9f-b3ad-3689d4a924d6"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s", Content-Length:"65"]
+             Body = {"version":"V1","code":"OTHER-CODE","title":"unrelated document"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391453193470480384","title":"unrelated document","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.17240508","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.17240508","versions":[{"id":"391453193478868992","documentId":"391453193470480384","version":"V1","code":"OTHER-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.17240508","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.17240508"}]},"timestamp":"2026-10-30T03:08:34.175655936Z","traceId":"8269c87a-5eb7-4063-bdca-fbacf3e6ea27"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/master-data/documents
+       Parameters = {keyword=[ΟΣ]}
+          Headers = [Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s"]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#list(String, String, int, int)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"content":[],"page":1,"size":20,"totalElements":0,"totalPages":0},"timestamp":"2026-10-30T03:08:34.188124422Z","traceId":"c683bd6a-966c-49e5-bbd2-0528a193ddb7"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+]]></system-out>
+  </testcase>
+  <testcase name="nativeUnicodeCaseVariantsKeepMatching(String, String, String)[5]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.053">
+    <system-out><![CDATA[2026-10-30T03:08:34.204Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.206Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.216Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.218Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.229Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:08:34.230Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="nativeUnicodeCaseVariantsKeepMatching(String, String, String)[6]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.038">
+    <system-out><![CDATA[2026-10-30T03:08:34.255Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.257Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.266Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.267Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.276Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:08:34.277Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="nativeUnicodeCaseVariantsKeepMatching(String, String, String)[7]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.038">
+    <system-out><![CDATA[2026-10-30T03:08:34.298Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.299Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.309Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.310Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.320Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:08:34.321Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="nativeUnicodeCaseVariantsKeepMatching(String, String, String)[8]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.033">
+    <system-out><![CDATA[2026-10-30T03:08:34.336Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.337Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.345Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.346Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.354Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:08:34.355Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="nativeUnicodeCaseVariantsKeepMatching(String, String, String)[9]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.033">
+    <failure message="&#10;expected: 1&#10; but was: 0" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.nativeUnicodeCaseVariantsKeepMatching(DocumentReadPerformancePostgresTest.java:45)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+]]></failure>
+    <system-out><![CDATA[2026-10-30T03:08:34.370Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.371Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.379Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.381Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.391Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:08:34.391Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s", Content-Length:"70"]
+             Body = {"version":"V1","code":"FIRST-CODE","title":"İzmir work instruction"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391453194305146880","title":"İzmir work instruction","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.371900592","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.371900592","versions":[{"id":"391453194317729792","documentId":"391453194305146880","version":"V1","code":"FIRST-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.371900592","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.371900592"}]},"timestamp":"2026-10-30T03:08:34.375850337Z","traceId":"b8d7dfa8-89cd-4f0f-9137-171e3f10a966"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s", Content-Length:"65"]
+             Body = {"version":"V1","code":"OTHER-CODE","title":"unrelated document"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391453194347089920","title":"unrelated document","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.381557657","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.381557657","versions":[{"id":"391453194355478528","documentId":"391453194347089920","version":"V1","code":"OTHER-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.381557657","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.381557657"}]},"timestamp":"2026-10-30T03:08:34.385383117Z","traceId":"a9b8edf4-f267-45c8-b089-196489221e53"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/master-data/documents
+       Parameters = {keyword=[i̇zmir]}
+          Headers = [Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s"]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#list(String, String, int, int)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"content":[],"page":1,"size":20,"totalElements":0,"totalPages":0},"timestamp":"2026-10-30T03:08:34.393917121Z","traceId":"5b3da815-8352-4182-8028-11c49b35471d"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+]]></system-out>
+  </testcase>
+  <testcase name="nativeUnicodeCaseVariantsKeepMatching(String, String, String)[10]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.035">
+    <failure message="&#10;expected: 1&#10; but was: 0" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.nativeUnicodeCaseVariantsKeepMatching(DocumentReadPerformancePostgresTest.java:45)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+]]></failure>
+    <system-out><![CDATA[2026-10-30T03:08:34.408Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.409Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.419Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.419Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.428Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:08:34.429Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s", Content-Length:"60"]
+             Body = {"version":"V1","code":"CASE-İzmir","title":"目标文档"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391453194468724736","title":"目标文档","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.410448972","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.410448972","versions":[{"id":"391453194481307648","documentId":"391453194468724736","version":"V1","code":"CASE-İzmir","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.410448972","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.410448972"}]},"timestamp":"2026-10-30T03:08:34.415493375Z","traceId":"53549b7c-f5cc-4f24-ad14-fdd511074595"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s", Content-Length:"65"]
+             Body = {"version":"V1","code":"OTHER-CODE","title":"unrelated document"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391453194510667776","title":"unrelated document","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.420320876","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.420320876","versions":[{"id":"391453194519056384","documentId":"391453194510667776","version":"V1","code":"OTHER-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:08:34.420320876","updatedBy":"文档审查","updatedAt":"2026-10-30T03:08:34.420320876"}]},"timestamp":"2026-10-30T03:08:34.423740963Z","traceId":"067e5d1c-fd1c-44a8-80cd-216d0a6c76be"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/master-data/documents
+       Parameters = {keyword=[i̇zmir]}
+          Headers = [Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5NzE0LCJleHAiOjE3OTMzMzAwMTR9.UrLTDzwBB0YhUqQ296Kx6qqF1LbIxyEHu4y259grY7s"]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#list(String, String, int, int)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"content":[],"page":1,"size":20,"totalElements":0,"totalPages":0},"timestamp":"2026-10-30T03:08:34.431811137Z","traceId":"b1c35f38-f2e2-437e-8f78-e0da0fafc9f1"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+]]></system-out>
+  </testcase>
+  <testcase name="nativeUnicodeCaseVariantsKeepMatching(String, String, String)[11]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.04">
+    <system-out><![CDATA[2026-10-30T03:08:34.447Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.448Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.457Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.458Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.468Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:08:34.469Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="nativeUnicodeCaseVariantsKeepMatching(String, String, String)[12]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.038">
+    <system-out><![CDATA[2026-10-30T03:08:34.484Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.485Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.494Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:08:34.495Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:08:34.506Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:08:34.507Z DEBUG 24879 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+</testsuite>

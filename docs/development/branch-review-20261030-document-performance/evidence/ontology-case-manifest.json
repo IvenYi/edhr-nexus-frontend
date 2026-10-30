@@ -1,0 +1,58 @@
+{
+  "reviewer": "/root/document_performance_ontology_20261030",
+  "sourceCommit": "092afa5bc1a967545569cae4910a92da25c0b292",
+  "targetCommit": "31058765002e0705f1659f42abb1fb25b6dc7611",
+  "contractReadCommit": "793503cbbd32375d47fc76185cf0568ec1fe7bd4",
+  "workingTreeProductDiff": "diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java\nindex 513ff710..682bc9ad 100644\n--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java\n+++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java\n@@ -17,9 +17,9 @@ public interface SopDocumentRepository extends JpaRepository<SopDocument, Long>,\n             WHERE (:allCategories = true\n                 OR (:uncategorized = true AND d.category_id IS NULL)\n                 OR (:uncategorized = false AND d.category_id = :categoryId))\n-              AND (:pattern = '' OR LOWER(d.title) LIKE LOWER(:pattern) ESCAPE '!'\n+              AND (:pattern = '' OR LOWER(NORMALIZE(UPPER(d.title))) LIKE LOWER(NORMALIZE(UPPER(:pattern))) ESCAPE '!'\n                 OR EXISTS (SELECT 1 FROM document_version v\n-                    WHERE v.document_id = d.id AND LOWER(v.code) LIKE LOWER(:pattern) ESCAPE '!'))\n+                    WHERE v.document_id = d.id AND LOWER(NORMALIZE(UPPER(v.code))) LIKE LOWER(NORMALIZE(UPPER(:pattern))) ESCAPE '!'))\n             \"\"\";\n \n     @Query(value = \"SELECT COUNT(*) FROM sop_document d \" + LIST_FILTER, nativeQuery = true)",
+  "actuallyReadTestDiff": "diff --git a/gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java b/gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java\nindex ade6a873..31e00116 100644\n--- a/gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java\n+++ b/gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadBoundaryIntegrationTest.java\n@@ -96,6 +96,11 @@ class DocumentReadBoundaryIntegrationTest {\n         // Hibernate's legacy SopDocument mapping still generates NOT NULL, so align this fixture explicitly.\n         jdbc.execute(\"ALTER TABLE sop_document ALTER COLUMN code DROP NOT NULL\");\n         jdbc.execute(\"CREATE INDEX IF NOT EXISTS idx_document_version_document ON document_version(document_id,created_at DESC)\");\n+        // PostgreSQL provides NFC normalization; H2 needs this test-only compatibility function.\n+        // Native PostgreSQL assertions remain authoritative for locale-sensitive case behavior.\n+        if (factory.getProperties().get(\"hibernate.dialect\").toString().contains(\"H2Dialect\")) {\n+            jdbc.execute(\"CREATE ALIAS IF NOT EXISTS NORMALIZE FOR 'com.zencas.edhr.masterdata.controller.DocumentReadBoundaryIntegrationTest$UnicodeFunctions.nfc'\");\n+        }\n     }\n \n     static Stream<Arguments> pages() {\n@@ -225,7 +230,8 @@ class DocumentReadBoundaryIntegrationTest {\n         assertThat(fileQueries()).isLessThanOrEqualTo(2);\n     }\n \n-    @ParameterizedTest @ValueSource(strings = {\"%\", \"_\", \"!\", \"\\\\\", \"MiXeD\", \"中文\", \"O'Reilly\"})\n+    @ParameterizedTest @ValueSource(strings = {\"%\", \"_\", \"!\", \"\\\\\", \"MiXeD\", \"中文\", \"O'Reilly\",\n+            \".\", \"[\", \"(\", \"*\", \"?\", \"^\", \"$\", \"a|b\", \"x+y\", \"{1}\"})\n     void keywordSpecialCharactersRemainLiteralAndOldVersionsRemainSearchable(String keyword) throws Exception {\n         String id = create(\"目标文档\", \"FIRST-CODE\", null);\n         mvc.perform(post(DOCUMENTS + \"/\" + id + \"/versions\").header(\"Authorization\", bearer()).contentType(\"application/json\")\n@@ -282,6 +288,12 @@ class DocumentReadBoundaryIntegrationTest {\n         return SQL.stream().filter(sql -> sql.toLowerCase(java.util.Locale.ROOT).contains(\"from file_object\")).count();\n     }\n \n+    public static class UnicodeFunctions {\n+        public static String nfc(String value) {\n+            return value == null ? null : java.text.Normalizer.normalize(value, java.text.Normalizer.Form.NFC);\n+        }\n+    }\n+\n     @EnabledIfSystemProperty(named = \"edhr.audit.documentReads\", matches = \"true\")\n     @ParameterizedTest @CsvSource({\"2,none\", \"5,none\", \"2,shared\", \"5,shared\", \"2,distinct\", \"5,distinct\"})\n     void observePageFileLookups(int size, String files) throws Exception {\n@@ -320,7 +332,7 @@ class DocumentReadBoundaryIntegrationTest {\n         assertThat(sum).isEqualTo(documents);\n     }\n \n-    private String create(String title, String code, String category) throws Exception {\n+    String create(String title, String code, String category) throws Exception {\n         Map<String, Object> body = new LinkedHashMap<>(Map.of(\"title\", title, \"code\", code, \"version\", \"V1\"));\n         if (category != null) body.put(\"categoryId\", category);\n         var response = mvc.perform(post(DOCUMENTS).header(\"Authorization\", bearer()).contentType(\"application/json\")\n@@ -330,7 +342,7 @@ class DocumentReadBoundaryIntegrationTest {\n         return doc.path(\"id\").asText();\n     }\n \n-    private JsonNode read(String label, String url, Map<String, String> params, int expectedStatus) throws Exception {\n+    JsonNode read(String label, String url, Map<String, String> params, int expectedStatus) throws Exception {\n         Map<String, String> before = snapshots();\n         SessionFactory sessions = factory.unwrap(SessionFactory.class);\n         sessions.getCache().evictAllRegions(); sessions.getStatistics().clear(); SQL.clear();\ndiff --git a/gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadPerformancePostgresTest.java b/gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadPerformancePostgresTest.java\nindex 0672e19b..832f1190 100644\n--- a/gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadPerformancePostgresTest.java\n+++ b/gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentReadPerformancePostgresTest.java\n@@ -2,6 +2,9 @@ package com.zencas.edhr.masterdata.controller;\n \n import org.junit.jupiter.api.Test;\n import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;\n+import org.junit.jupiter.params.ParameterizedTest;\n+import org.junit.jupiter.params.provider.Arguments;\n+import org.junit.jupiter.params.provider.MethodSource;\n import org.springframework.test.context.DynamicPropertyRegistry;\n import org.springframework.test.context.DynamicPropertySource;\n \n@@ -9,6 +12,7 @@ import java.nio.charset.StandardCharsets;\n import java.util.concurrent.CountDownLatch;\n import java.util.concurrent.Executors;\n import java.util.concurrent.TimeUnit;\n+import java.util.stream.Stream;\n \n import static org.assertj.core.api.Assertions.assertThat;\n import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;\n@@ -26,6 +30,22 @@ class DocumentReadPerformancePostgresTest extends DocumentReadBoundaryIntegratio\n         properties.add(\"spring.jpa.properties.hibernate.dialect\", () -> \"org.hibernate.dialect.PostgreSQLDialect\");\n     }\n \n+    static Stream<Arguments> caseVariants() {\n+        return Stream.of(new String[]{\"ΟΣ\", \"ος\"}, new String[]{\"ος\", \"ΟΣ\"}, new String[]{\"Ångström\", \"ångström\"},\n+                        new String[]{\"МИР\", \"мир\"}, new String[]{\"İzmir\", \"i\\u0307zmir\"}, new String[]{\"Straße\", \"STRAẞE\"})\n+                .flatMap(pair -> Stream.of(\"title\", \"version-code\").map(source -> Arguments.of(pair[0], pair[1], source)));\n+    }\n+\n+    @ParameterizedTest @MethodSource(\"caseVariants\")\n+    void nativeUnicodeCaseVariantsKeepMatching(String title, String keyword, String source) throws Exception {\n+        String id = create(source.equals(\"title\") ? title + \" work instruction\" : \"目标文档\",\n+                source.equals(\"version-code\") ? \"CASE-\" + title : \"FIRST-CODE\", null);\n+        create(\"unrelated document\", \"OTHER-CODE\", null);\n+        var data = read(\"native-case-variant\", \"/api/v1/master-data/documents\", java.util.Map.of(\"keyword\", keyword), 200);\n+        assertThat(data.path(\"totalElements\").asInt()).isEqualTo(1);\n+        assertThat(data.path(\"content\").get(0).path(\"id\").asText()).isEqualTo(id);\n+    }\n+\n     @Test\n     void countAndPageUseTheSameSnapshotAcrossAConcurrentInsert() throws Exception {\n         seed(2, 1, 1, \"none\");",
+  "productSourceHash": {
+    "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/SopDocumentRepository.java",
+    "sha256": "2dac65f59e0e8adc6ceb3a7a6796d89f4f1bd5aaf706182662e990fef93139c5"
+  },
+  "oldOntologyOriginalsPreserved": [
+    {
+      "path": "/tmp/edhr-document-perf-ontology-result.yaml",
+      "sha256": "0ab520cb76dce527fd86e65adee3aa5b9958118ea2c9582aa43a9076de6e0dd2",
+      "bytes": 2329
+    },
+    {
+      "path": "/tmp/edhr-document-perf-rule-review.json",
+      "sha256": "d13d9ef892d8b9a03f2ca0850b96a2b5181782e019981b991a3290977ec25af9",
+      "bytes": 10814
+    },
+    {
+      "path": "/tmp/edhr-document-perf-rule-review.md",
+      "sha256": "b4bccea255642a90dbdfbaa732fce96d08f901e3ae31eab03d91127bca4fd1db",
+      "bytes": 3264
+    },
+    {
+      "path": "/tmp/edhr-document-perf-ontology-knowledge-test.txt",
+      "sha256": "6bf3708825e8d367007ec75b4d0a1f37b01aaa4b873b6620cec8a396f6cf7cdd",
+      "bytes": 2111
+    },
+    {
+      "path": "/tmp/edhr-document-perf-ontology-knowledge-junit.xml",
+      "sha256": "49eb65d380d5ec33c9de952e1ffcac8fa730a883524490b856accf18f8945a29",
+      "bytes": 20421
+    }
+  ],
+  "previousFailedReportsPreserved": true,
+  "resultSchemaCheck": "passed;NA/nochangedArtifacts/noquestions,sixexistingIDs,newunique0,prior89reusedwithoutnewrun",
+  "files": [
+    {
+      "path": "/tmp/edhr-document-perf-ontology-case-result.yaml",
+      "sha256": "4d1d848936cdd1ed2119058b0aa383bb2049ca1cc650bb753fc4019f38552bc9",
+      "bytes": 2181
+    },
+    {
+      "path": "/tmp/edhr-document-perf-ontology-case-review.json",
+      "sha256": "415b343dd77a893c9e3c492c930f2f30bb3f70f87d69eed84e82cbfe575d14b3",
+      "bytes": 3054
+    },
+    {
+      "path": "/tmp/edhr-document-perf-ontology-case-review.md",
+      "sha256": "a6fd6241adfad4ad8d844ee8245d965ddf3c540b8d3a72e0b213da4e9b9a79cf",
+      "bytes": 2187
+    }
+  ]
+}

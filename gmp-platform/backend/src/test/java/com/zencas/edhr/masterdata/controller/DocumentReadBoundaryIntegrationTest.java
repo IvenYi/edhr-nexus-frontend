@@ -96,6 +96,11 @@ class DocumentReadBoundaryIntegrationTest {
         // Hibernate's legacy SopDocument mapping still generates NOT NULL, so align this fixture explicitly.
         jdbc.execute("ALTER TABLE sop_document ALTER COLUMN code DROP NOT NULL");
         jdbc.execute("CREATE INDEX IF NOT EXISTS idx_document_version_document ON document_version(document_id,created_at DESC)");
+        // PostgreSQL provides NFC normalization; H2 needs this test-only compatibility function.
+        // Native PostgreSQL assertions remain authoritative for locale-sensitive case behavior.
+        if (factory.getProperties().get("hibernate.dialect").toString().contains("H2Dialect")) {
+            jdbc.execute("CREATE ALIAS IF NOT EXISTS NORMALIZE FOR 'com.zencas.edhr.masterdata.controller.DocumentReadBoundaryIntegrationTest$UnicodeFunctions.nfc'");
+        }
     }
 
     static Stream<Arguments> pages() {
@@ -225,7 +230,8 @@ class DocumentReadBoundaryIntegrationTest {
         assertThat(fileQueries()).isLessThanOrEqualTo(2);
     }
 
-    @ParameterizedTest @ValueSource(strings = {"%", "_", "!", "\\", "MiXeD", "中文", "O'Reilly"})
+    @ParameterizedTest @ValueSource(strings = {"%", "_", "!", "\\", "MiXeD", "中文", "O'Reilly",
+            ".", "[", "(", "*", "?", "^", "$", "a|b", "x+y", "{1}"})
     void keywordSpecialCharactersRemainLiteralAndOldVersionsRemainSearchable(String keyword) throws Exception {
         String id = create("目标文档", "FIRST-CODE", null);
         mvc.perform(post(DOCUMENTS + "/" + id + "/versions").header("Authorization", bearer()).contentType("application/json")
@@ -282,6 +288,12 @@ class DocumentReadBoundaryIntegrationTest {
         return SQL.stream().filter(sql -> sql.toLowerCase(java.util.Locale.ROOT).contains("from file_object")).count();
     }
 
+    public static class UnicodeFunctions {
+        public static String nfc(String value) {
+            return value == null ? null : java.text.Normalizer.normalize(value, java.text.Normalizer.Form.NFC);
+        }
+    }
+
     @EnabledIfSystemProperty(named = "edhr.audit.documentReads", matches = "true")
     @ParameterizedTest @CsvSource({"2,none", "5,none", "2,shared", "5,shared", "2,distinct", "5,distinct"})
     void observePageFileLookups(int size, String files) throws Exception {
@@ -320,7 +332,7 @@ class DocumentReadBoundaryIntegrationTest {
         assertThat(sum).isEqualTo(documents);
     }
 
-    private String create(String title, String code, String category) throws Exception {
+    String create(String title, String code, String category) throws Exception {
         Map<String, Object> body = new LinkedHashMap<>(Map.of("title", title, "code", code, "version", "V1"));
         if (category != null) body.put("categoryId", category);
         var response = mvc.perform(post(DOCUMENTS).header("Authorization", bearer()).contentType("application/json")
@@ -330,7 +342,7 @@ class DocumentReadBoundaryIntegrationTest {
         return doc.path("id").asText();
     }
 
-    private JsonNode read(String label, String url, Map<String, String> params, int expectedStatus) throws Exception {
+    JsonNode read(String label, String url, Map<String, String> params, int expectedStatus) throws Exception {
         Map<String, String> before = snapshots();
         SessionFactory sessions = factory.unwrap(SessionFactory.class);
         sessions.getCache().evictAllRegions(); sessions.getStatistics().clear(); SQL.clear();

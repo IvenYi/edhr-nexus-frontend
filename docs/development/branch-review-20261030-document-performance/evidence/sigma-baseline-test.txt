@@ -1,0 +1,783 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.zencas:edhr >---------------------------
+[INFO] Building eDHR 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- exec:3.5.0:exec (dhr-print-renderer) @ edhr ---
+
+> edhr-frontend@0.0.1 build:dhr-print
+> vite build --config vite.dhr-print.config.ts
+
+vite v5.4.21 building for production...
+transforming...
+✓ 11663 modules transformed.
+rendering chunks...
+computing gzip size...
+../backend/target/generated-resources/dhr-print/renderer.js  662.12 kB │ gzip: 210.91 kB
+✓ built in 4.25s
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ edhr ---
+[INFO] Copying 6 resources from src/main/resources to target/classes
+[INFO] Copying 1 resource from target/generated-resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ edhr ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ edhr ---
+[INFO] Copying 129 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ edhr ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 149 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java: Some input files use or override a deprecated API.
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/common/config/CurrentDatabaseBaselinePostgresTest.java: Recompile with -Xlint:deprecation for details.
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/LoginLogControllerTest.java: Some input files use unchecked or unsafe operations.
+[INFO] /workspace/edhr-nexus-frontend/gmp-platform/backend/src/test/java/com/zencas/edhr/identity/controller/LoginLogControllerTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ edhr ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.0)
+
+2026-10-30T03:00:58.604Z  INFO 24170 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : Starting DocumentReadPerformancePostgresTest using Java 21.0.12.1 with PID 24170 (started by agent in /workspace/edhr-nexus-frontend/gmp-platform/backend)
+2026-10-30T03:00:58.606Z DEBUG 24170 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : Running with Spring Boot v3.3.0, Spring v6.1.8
+2026-10-30T03:00:58.606Z  INFO 24170 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : The following 1 profile is active: "dev"
+2026-10-30T03:00:59.279Z  INFO 24170 --- [edhr] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-30T03:00:59.317Z  INFO 24170 --- [edhr] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-10-30T03:00:59.351Z  INFO 24170 --- [edhr] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-30T03:00:59.396Z  INFO 24170 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-30T03:00:59.488Z  INFO 24170 --- [edhr] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7c4d1c7b
+2026-10-30T03:00:59.489Z  INFO 24170 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-30T03:00:59.504Z  WARN 24170 --- [edhr] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-30T03:00:59.627Z  INFO 24170 --- [edhr] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-30T03:01:00.047Z  INFO 24170 --- [edhr] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-30T03:01:00.055Z  WARN 24170 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T03:01:00.055Z  WARN 24170 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "audit_event" does not exist, skipping
+2026-10-30T03:01:00.055Z  WARN 24170 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T03:01:00.055Z  WARN 24170 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "document_category" does not exist, skipping
+2026-10-30T03:01:00.056Z  WARN 24170 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T03:01:00.056Z  WARN 24170 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "document_version" does not exist, skipping
+2026-10-30T03:01:00.056Z  WARN 24170 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T03:01:00.056Z  WARN 24170 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "file_object" does not exist, skipping
+2026-10-30T03:01:00.057Z  WARN 24170 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T03:01:00.057Z  WARN 24170 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "sop_document" does not exist, skipping
+2026-10-30T03:01:00.076Z  INFO 24170 --- [edhr] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-30T03:01:00.240Z  INFO 24170 --- [edhr] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-10-30T03:01:01.328Z  WARN 24170 --- [edhr] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 214223cd-eb45-4174-98d3-a9484d4ebc9e
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-30T03:01:01.332Z  INFO 24170 --- [edhr] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-30T03:01:01.512Z  INFO 24170 --- [edhr] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@31813ea8, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@79f3d15f, org.springframework.security.web.context.SecurityContextHolderFilter@74f7eefa, org.springframework.security.web.header.HeaderWriterFilter@5a5f65b9, org.springframework.web.filter.CorsFilter@2d55b38b, org.springframework.security.web.authentication.logout.LogoutFilter@1b1f7781, com.zencas.edhr.identity.security.JwtAuthenticationFilter@4605a571, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@69a0f018, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2ef08ad0, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@79382a05, org.springframework.security.web.session.SessionManagementFilter@35d36423, org.springframework.security.web.access.ExceptionTranslationFilter@7cf9dc4c, org.springframework.security.web.access.intercept.AuthorizationFilter@7f26f394]
+2026-10-30T03:01:01.770Z DEBUG 24170 --- [edhr] [           main] c.z.e.i.s.JwtAuthenticationFilter        : Filter 'com.zencas.edhr.identity.security.JwtAuthenticationFilter' configured for use
+2026-10-30T03:01:01.771Z  INFO 24170 --- [edhr] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-30T03:01:01.771Z  INFO 24170 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-30T03:01:01.772Z  INFO 24170 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-10-30T03:01:01.783Z  INFO 24170 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : Started DocumentReadPerformancePostgresTest in 3.342 seconds (process running for 3.94)
+2026-10-30T03:01:02.010Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.030Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.231Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.233Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.263Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.265Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.295Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.296Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.328Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.329Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.363Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.365Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.397Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.399Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.434Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.435Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.531Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.532Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.555Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.557Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.572Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.574Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.584Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.585Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.635Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.637Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.647Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.648Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.662Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.664Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.671Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.672Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.681Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.682Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.693Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.694Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.701Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.702Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.709Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.711Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.723Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.724Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.734Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.735Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.743Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.745Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.753Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.754Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.762Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.763Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.772Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.774Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.782Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.783Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.790Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.791Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.797Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.798Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.810Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.812Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.822Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.823Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.833Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.834Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.847Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.849Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.860Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.861Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.871Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.872Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.886Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.887Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.895Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.896Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.905Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.907Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.921Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.922Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.931Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.932Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.937Z  WARN 24170 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-001, message=文档分类不存在, path=/api/v1/master-data/documents
+2026-10-30T03:01:02.946Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.947Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.956Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.957Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.957Z  WARN 24170 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-001, message=文档分类不存在, path=/api/v1/master-data/documents
+2026-10-30T03:01:02.964Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.965Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.973Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:02.973Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:02.976Z  WARN 24170 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-001, message=文档分类不存在, path=/api/v1/master-data/documents
+2026-10-30T03:01:02.985Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.985Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:02.992Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:02.993Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.000Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.000Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.012Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.013Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.020Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.020Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.028Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.029Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.040Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.041Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.047Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.047Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.054Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.054Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.065Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.066Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.072Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.073Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.079Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.080Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.090Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.091Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.096Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.097Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.104Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.104Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.114Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.115Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.121Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.122Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.129Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.130Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.139Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.140Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.146Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.146Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.153Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.154Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.169Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.169Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.176Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.176Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.183Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.183Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.470Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.471Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.559Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.560Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.570Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.570Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.581Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.581Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.589Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451303559041024/versions
+2026-10-30T03:01:03.589Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451303559041024/versions
+2026-10-30T03:01:03.597Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.598Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.605Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.606Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.636Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T03:01:03.637Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents/categories
+2026-10-30T03:01:03.782Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T03:01:03.783Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents/categories
+2026-10-30T03:01:03.893Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T03:01:03.894Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents/categories
+2026-10-30T03:01:03.905Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.906Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.913Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.914Z DEBUG 24170 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-30T03:01:03.915Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T03:01:03.916Z DEBUG 24170 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-30T03:01:03.924Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/categories
+2026-10-30T03:01:03.924Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/categories
+2026-10-30T03:01:03.932Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.933Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.940Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.941Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.947Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.947Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.954Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.954Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.958Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T03:01:03.959Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents/categories
+2026-10-30T03:01:03.967Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.968Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.973Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451305178042368/versions
+2026-10-30T03:01:03.973Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451305178042368/versions
+2026-10-30T03:01:03.977Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.978Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:03.984Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:03.984Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:03.994Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:03.995Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.004Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451305291288576/versions
+2026-10-30T03:01:04.004Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451305291288576/versions
+2026-10-30T03:01:04.010Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.010Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.017Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.017Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.030Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.031Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.037Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451305442283520/versions
+2026-10-30T03:01:04.037Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451305442283520/versions
+2026-10-30T03:01:04.044Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.045Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.053Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.053Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.062Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.062Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.067Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451305576501248/versions
+2026-10-30T03:01:04.067Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451305576501248/versions
+2026-10-30T03:01:04.072Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.072Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.077Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.078Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.086Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.087Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.091Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451305681358848/versions
+2026-10-30T03:01:04.092Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451305681358848/versions
+2026-10-30T03:01:04.095Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.096Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.103Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.104Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.111Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.111Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.115Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451305782022144/versions
+2026-10-30T03:01:04.116Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451305782022144/versions
+2026-10-30T03:01:04.119Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.120Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.124Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.124Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.132Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.132Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.137Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451305870102528/versions
+2026-10-30T03:01:04.138Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451305870102528/versions
+2026-10-30T03:01:04.142Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.142Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.147Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.147Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.155Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.155Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.160Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451305966571520/versions
+2026-10-30T03:01:04.161Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451305966571520/versions
+2026-10-30T03:01:04.164Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.164Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.169Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.169Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.177Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.178Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.182Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451306058846208/versions
+2026-10-30T03:01:04.183Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451306058846208/versions
+2026-10-30T03:01:04.186Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.187Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.191Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.192Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.200Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.200Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.205Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451306151120896/versions
+2026-10-30T03:01:04.205Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451306151120896/versions
+2026-10-30T03:01:04.208Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.209Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.214Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.214Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.225Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.226Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.233Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451306264367104/versions
+2026-10-30T03:01:04.234Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451306264367104/versions
+2026-10-30T03:01:04.240Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.240Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.248Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.248Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.260Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.261Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.266Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451306406973440/versions
+2026-10-30T03:01:04.267Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451306406973440/versions
+2026-10-30T03:01:04.271Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.271Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.276Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.277Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.287Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.287Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.293Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451306520219648/versions
+2026-10-30T03:01:04.293Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451306520219648/versions
+2026-10-30T03:01:04.299Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.299Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.305Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.306Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.317Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.318Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.325Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451306646048768/versions
+2026-10-30T03:01:04.326Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451306646048768/versions
+2026-10-30T03:01:04.330Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.331Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.337Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.338Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.347Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.347Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.353Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451306771877888/versions
+2026-10-30T03:01:04.353Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451306771877888/versions
+2026-10-30T03:01:04.358Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.358Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.364Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.364Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.373Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.373Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.379Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451306880929792/versions
+2026-10-30T03:01:04.379Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451306880929792/versions
+2026-10-30T03:01:04.383Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.383Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.389Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.389Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.400Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.401Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.407Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391451306994176000/versions
+2026-10-30T03:01:04.407Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391451306994176000/versions
+2026-10-30T03:01:04.411Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.411Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.417Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.417Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.440Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.441Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.471Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.472Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.507Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.509Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.528Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.529Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.537Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.538Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5MjY0LCJleHAiOjE3OTMzMjk1NjR9.btVi8FSQS6rRilKvOxQd0H_dLsx6W_TcGgSVHvDUNlk", Content-Length:"67"]
+             Body = {"title":"ΟΣ work instruction","version":"V1","code":"CASE-ΟΣ"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391451307459743744","title":"ΟΣ work instruction","createdBy":"文档审查","createdAt":"2026-10-30T03:01:04.512336321","updatedBy":"文档审查","updatedAt":"2026-10-30T03:01:04.512336321","versions":[{"id":"391451307493298176","documentId":"391451307459743744","version":"V1","code":"CASE-ΟΣ","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:01:04.512336321","updatedBy":"文档审查","updatedAt":"2026-10-30T03:01:04.512336321"}]},"timestamp":"2026-10-30T03:01:04.522343588Z","traceId":"84bf5051-8158-4239-bbce-6832439ed7d7"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5MjY0LCJleHAiOjE3OTMzMjk1NjR9.btVi8FSQS6rRilKvOxQd0H_dLsx6W_TcGgSVHvDUNlk", Content-Length:"65"]
+             Body = {"title":"unrelated document","version":"V1","code":"OTHER-CODE"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391451307531046912","title":"unrelated document","createdBy":"文档审查","createdAt":"2026-10-30T03:01:04.529825196","updatedBy":"文档审查","updatedAt":"2026-10-30T03:01:04.529825196","versions":[{"id":"391451307539435520","documentId":"391451307531046912","version":"V1","code":"OTHER-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:01:04.529825196","updatedBy":"文档审查","updatedAt":"2026-10-30T03:01:04.529825196"}]},"timestamp":"2026-10-30T03:01:04.532706644Z","traceId":"71453a2b-e0b5-4c32-ae29-4571a932b7ed"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/master-data/documents
+       Parameters = {keyword=[ος]}
+          Headers = [Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5MjY0LCJleHAiOjE3OTMzMjk1NjR9.btVi8FSQS6rRilKvOxQd0H_dLsx6W_TcGgSVHvDUNlk"]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#list(String, String, int, int)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"content":[],"page":1,"size":20,"totalElements":0,"totalPages":0},"timestamp":"2026-10-30T03:01:04.541272421Z","traceId":"3b7dcef7-8706-4d44-92ca-50d206ebfb25"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+2026-10-30T03:01:04.589Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.592Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.609Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.610Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.617Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.617Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5MjY0LCJleHAiOjE3OTMzMjk1NjR9.btVi8FSQS6rRilKvOxQd0H_dLsx6W_TcGgSVHvDUNlk", Content-Length:"67"]
+             Body = {"title":"ος work instruction","version":"V1","code":"CASE-ος"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391451307803676672","title":"ος work instruction","createdBy":"文档审查","createdAt":"2026-10-30T03:01:04.594339412","updatedBy":"文档审查","updatedAt":"2026-10-30T03:01:04.594339412","versions":[{"id":"391451307837231104","documentId":"391451307803676672","version":"V1","code":"CASE-ος","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:01:04.594339412","updatedBy":"文档审查","updatedAt":"2026-10-30T03:01:04.594339412"}]},"timestamp":"2026-10-30T03:01:04.604423573Z","traceId":"8cc3d633-c1ba-4b9d-8d67-37024c6d5e2a"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/master-data/documents
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5MjY0LCJleHAiOjE3OTMzMjk1NjR9.btVi8FSQS6rRilKvOxQd0H_dLsx6W_TcGgSVHvDUNlk", Content-Length:"65"]
+             Body = {"title":"unrelated document","version":"V1","code":"OTHER-CODE"}
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#create(DocumentWriteRequest)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"id":"391451307874979840","title":"unrelated document","createdBy":"文档审查","createdAt":"2026-10-30T03:01:04.611034538","updatedBy":"文档审查","updatedAt":"2026-10-30T03:01:04.611034538","versions":[{"id":"391451307879174144","documentId":"391451307874979840","version":"V1","code":"OTHER-CODE","status":"ACTIVE","createdBy":"文档审查","createdAt":"2026-10-30T03:01:04.611034538","updatedBy":"文档审查","updatedAt":"2026-10-30T03:01:04.611034538"}]},"timestamp":"2026-10-30T03:01:04.613719675Z","traceId":"70569c39-4aed-4b45-bb1c-e2f61c023e1a"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/master-data/documents
+       Parameters = {keyword=[ΟΣ]}
+          Headers = [Authorization:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkb2N1bWVudC1hdWRpdG9yIiwidXNlcm5hbWUiOiJkb2N1bWVudC1hdWRpdG9yIiwiZGlzcGxheU5hbWUiOiLmlofmoaPlrqHmn6UiLCJwZXJtaXNzaW9ucyI6WyJtYXN0ZXItZGF0YS5kb2N1bWVudHMiXSwiaWF0IjoxNzkzMzI5MjY0LCJleHAiOjE3OTMzMjk1NjR9.btVi8FSQS6rRilKvOxQd0H_dLsx6W_TcGgSVHvDUNlk"]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.zencas.edhr.masterdata.controller.DocumentManagementController
+           Method = com.zencas.edhr.masterdata.controller.DocumentManagementController#list(String, String, int, int)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"code":200,"message":"success","data":{"content":[],"page":1,"size":20,"totalElements":0,"totalPages":0},"timestamp":"2026-10-30T03:01:04.620199575Z","traceId":"3e2fc375-5bba-41b6-8436-161f567951ae"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+2026-10-30T03:01:04.631Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.631Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.640Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.641Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.649Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.650Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.662Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.663Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.669Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T03:01:04.669Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T03:01:04.677Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.679Z DEBUG 24170 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.695Z DEBUG 24170 --- [edhr] [pool-2-thread-1] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T03:01:04.696Z DEBUG 24170 --- [edhr] [pool-2-thread-1] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T03:01:04.712Z  INFO 24170 --- [edhr] [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-10-30T03:01:04.720Z  INFO 24170 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-10-30T03:01:04.722Z  INFO 24170 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+[ERROR] Tests run: 63, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 6.476 s <<< FAILURE! -- in com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest
+[ERROR] com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.nativeUnicodeCaseVariantsKeepMatching(String, String)[1] -- Time elapsed: 0.079 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.nativeUnicodeCaseVariantsKeepMatching(DocumentReadPerformancePostgresTest.java:36)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:762)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[ERROR] com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.nativeUnicodeCaseVariantsKeepMatching(String, String)[2] -- Time elapsed: 0.042 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:502)
+	at com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest.nativeUnicodeCaseVariantsKeepMatching(DocumentReadPerformancePostgresTest.java:36)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:179)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:762)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:276)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1708)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   DocumentReadPerformancePostgresTest.nativeUnicodeCaseVariantsKeepMatching:36 
+expected: 1
+ but was: 0
+[ERROR]   DocumentReadPerformancePostgresTest.nativeUnicodeCaseVariantsKeepMatching:36 
+expected: 1
+ but was: 0
+[INFO] 
+[ERROR] Tests run: 63, Failures: 2, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  17.682 s
+[INFO] Finished at: 2026-10-30T03:01:04Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.2.5:test (default-test) on project edhr: There are test failures.
+[ERROR] 
+[ERROR] Please refer to /workspace/edhr-nexus-frontend/gmp-platform/backend/target/surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

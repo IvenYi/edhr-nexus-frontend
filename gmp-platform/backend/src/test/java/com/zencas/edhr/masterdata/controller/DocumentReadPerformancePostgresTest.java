@@ -2,6 +2,9 @@ package com.zencas.edhr.masterdata.controller;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
@@ -9,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,6 +28,22 @@ class DocumentReadPerformancePostgresTest extends DocumentReadBoundaryIntegratio
         properties.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
         properties.add("spring.jpa.database-platform", () -> "org.hibernate.dialect.PostgreSQLDialect");
         properties.add("spring.jpa.properties.hibernate.dialect", () -> "org.hibernate.dialect.PostgreSQLDialect");
+    }
+
+    static Stream<Arguments> caseVariants() {
+        return Stream.of(new String[]{"ΟΣ", "ος"}, new String[]{"ος", "ΟΣ"}, new String[]{"Ångström", "ångström"},
+                        new String[]{"МИР", "мир"}, new String[]{"İzmir", "i\u0307zmir"}, new String[]{"Straße", "STRAẞE"})
+                .flatMap(pair -> Stream.of("title", "version-code").map(source -> Arguments.of(pair[0], pair[1], source)));
+    }
+
+    @ParameterizedTest @MethodSource("caseVariants")
+    void nativeUnicodeCaseVariantsKeepMatching(String title, String keyword, String source) throws Exception {
+        String id = create(source.equals("title") ? title + " work instruction" : "目标文档",
+                source.equals("version-code") ? "CASE-" + title : "FIRST-CODE", null);
+        create("unrelated document", "OTHER-CODE", null);
+        var data = read("native-case-variant", "/api/v1/master-data/documents", java.util.Map.of("keyword", keyword), 200);
+        assertThat(data.path("totalElements").asInt()).isEqualTo(1);
+        assertThat(data.path("content").get(0).path("id").asText()).isEqualTo(id);
     }
 
     @Test

@@ -6,6 +6,8 @@ PR44仍OPEN、目标fetch仍`31058765`，用户在解释后明确要求修复文
 
 首轮新候选7d独立failed，正常POST/GET证实Unicode自匹配medium；failed原件保留，去掉Java预折叠、字段/参数统一DBLOWER，8新增回归使旧7d原生49为4红45正。主侧最终241通过（192H2/既有+49原生PG，48同场景跨引擎不计双倍unique），早期225/旧793同40为5性能红35正原件保留；本体6有限既有ID及Unicode增量NA/FINAL，知识89原实测字节相同明确复用。SQL23→5，100文档/300版本→本页5/15，分类0文档实体；无文件3→4查询的有界实体取舍与PG10k/30k仍库内扫描反证保留，未承诺SLA。当前待另一个全新最终独立质量，不能复用旧PR44通过或首轮角色；之后全部FINAL再实际PR前漂移复核/更新标题正文，不自动merge/deploy/恢复。A23新增/变更源已列pending增量，旧全量856+130及原暂缓/四gap仍未完成。
 
+当前补正覆盖上述历史241检查点：第二轮对092独立failed，Greek大小写回退仍属于同一Unicode家族（原8自匹配已过），原件在second-quality。查询统一DB LOWER(NORMALIZE(UPPER(...)))、原文不改，补12原生变体（旧092为6红6正）和17类字面符号；主侧当前273=202H2/既有+71PG全部通过，本体case增量NA/FINAL、原89明确复用。H2只注册测试NFC兼容别名，PG71真实内建验证为准。当前等待第三个全新最终质量，前两轮不能关闭问题；后续仅全部FINAL后实际范围汇报及更新PR44。两个主侧PG容器已按ID清理，当前complete六计划保留库内扫描/SLA边界。
+
 ## PR43已合入：W4文档读取与A23过度防御补查
 
 已交付[PR44](https://github.com/IvenYi/edhr-nexus-frontend/pull/44)，`audit/edhr-dev-document-read-boundaries-20261030` → `edhr-dev`，创建时MERGEABLE/CLEAN，待用户人工merge。实际运行3ccd、最终独立审查b805，之后仅L0原件/验收/范围/PR登记；下轮先fetch真实合入及外部增量，继续文档操作权限规范/实体schema用途与其他W3/W4未审入口，A23按当前同步+W6旧已审全量回查+W7增量反查推进。两项新文档性能与既有性能先讨论，原用户暂缓/四gap/整体未完成保持，不自动merge/deploy/恢复。

@@ -1,6 +1,6 @@
 # PR44 文档读取性能整改
 
-用户在解释两项风险后明确要求修复。本轮L2在仍未合入的同一PR44分支继续，不把之前的独立通过覆盖新代码。实际目标仍`edhr-dev@31058765002e0705f1659f42abb1fb25b6dc7611`，上一交付`793503cb`；首轮独立对7d376e81返回failed，Unicode自匹配问题已由主侧修复并241回归通过，当前等待另一个全新最终质量实例，未提前关闭。
+用户在解释两项风险后明确要求修复。本轮L2在仍未合入的同一PR44分支继续，不把之前的独立通过覆盖新代码。实际目标仍`edhr-dev@31058765002e0705f1659f42abb1fb25b6dc7611`，上一交付`793503cb`。两轮独立分别对7d/092返回failed，同一Unicode折叠问题家族原件保持；当前主侧273通过，等待第三个全新最终质量实例，不提前关闭。
 
 ## 为什么会形成旧实现
 
@@ -20,6 +20,10 @@
 
 首轮独立的正常POST/GET确证 `QF-DOCUMENT-UNICODE-FOLD-001` medium：Java ROOT把İ转成i+组合点、数据库LOWER不同，导致原样keyword不能匹配自身。已去掉Java预折叠，字段和参数统一使用数据库LOWER；标题/版本编码的İzmir、ΟΣ、Ångström、Étage共8例回归覆盖。原failed报告、容量中断恢复后的同实例FINAL及探针原件在evidence/first-quality，不改写为passed；最终必须由未参与修复的新实例验收。
 
+后续第二轮独立正常API又证实同家族的Greek大小写变体：ΟΣ命中而ος不命中，原8自匹配已过但修复不完整，不另计一个修复成绩。现改为查询两端统一`LOWER(NORMALIZE(UPPER(...)))`：UPPER合并sigma大小写形态，NFC处理大写后组合点的规范形式，末LOWER兼顾ß/ẞ；只用于比较，不改保存原文/身份/唯一性。12个原生变体场景（6对×标题/版本码）旧092为6红6正、0error/skip；新增17类字面符号仍经LIKE转义，不开放正则输入。两份failed原件分别在first-quality/second-quality。
+
+**当前主侧最终273/273**（202H2/既有+71原生PG），0failure/error/skip；PG71=继承58通用场景+12原生locale变体+1并发快照。H2缺PG内建NORMALIZE，仅测试注册JDK NFC别名；真实PG不注册别名，PG71是locale/内建函数验证依据，不用H2适配证明PG行为。早期225、241及旧63/64/12红绿原件保留为各候选历史检查点；原生完整Unicode/任意部署locale不作形式证明。
+
 实测同条件（两个数据库一致）：
 
 | 场景 | 旧实现 | 当前实现 |
@@ -31,9 +35,9 @@
 
 新性能断言约束有界加载/文件查询增长，不把旧低效SQL数固化为正确性标准；520条页验证跨批次仍完整。合并原件的H2/PG分组由实际runner顺序和最终每类50记录（早期42）推导，原始记录没有engine标签，不改写原件；独立最终质量应分输出路径复验。
 
-原生PostgreSQL16.15/en_US.utf8自有合成库以当前canonical四表定义及既有相关索引测得最终6份EXPLAIN：10000文档/30000版本，父页LIMIT5、页内版本走既有索引并返回15行。**count、包含关键词和父页排序仍可能扫描候选范围**，没有宣称数据库只读5行；没有新索引/迁移、生产时延、堆峰值或SLA认证。最终SQL/计划见evidence/final-postgres-plans.json，早期计划原件保留；主侧自建容器按确切ID已停止并自动移除，初次立即inspect赶上异步移除，后续只读检查确认清理。
+原生PostgreSQL16.15/en_US.utf8自有合成库以当前canonical四表定义及既有相关索引测得当前6份EXPLAIN：10000文档/30000版本，父页LIMIT5、页内版本走既有索引并返回15行。**count、包含关键词和父页排序仍可能扫描候选范围**，没有宣称数据库只读5行；没有新索引/迁移、生产时延、堆峰值或SLA认证。当前SQL/计划见evidence/complete-postgres-plans.json，final/更早计划均为历史原件不覆盖；主侧两个自建容器均按确切ID停止并确认自动移除。
 
-本体6既有ID有限一致、NA/FINAL，Unicode增量也实际核对NA/FINAL；知识/契约/验证源码字节不变，增量明确复用原89实测、未冒称重跑，版本/成熟度不变，不计新unique。最终独立质量待完成，两个风险和Unicode修复当前implemented/awaiting-independent；原pending-discussion和failed作为历史保留，不反填旧报告。
+本体6既有ID有限一致、NA/FINAL，Unicode自匹配及大小写变体/NFC增量分别实际核对NA/FINAL；知识/契约/验证源码字节不变，增量明确复用原89实测、未冒称重跑，版本/成熟度不变，不计新unique。最终独立质量待完成，两个风险和Unicode修复当前implemented/awaiting-independent；原pending-discussion和failed作为历史保留，不反填旧报告。
 
 ## 边界与整体审计
 

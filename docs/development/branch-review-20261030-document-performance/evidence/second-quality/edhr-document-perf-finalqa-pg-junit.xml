@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="5.711" tests="49" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="21"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.class.path" value="/workspace/edhr-nexus-frontend/gmp-platform/backend/target/test-classes:/workspace/edhr-nexus-frontend/gmp-platform/backend/target/classes:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-web/3.3.0/spring-boot-starter-web-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter/3.3.0/spring-boot-starter-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot/3.3.0/spring-boot-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-autoconfigure/3.3.0/spring-boot-autoconfigure-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-logging/3.3.0/spring-boot-starter-logging-3.3.0.jar:/workspace/.pr6-m2/ch/qos/logback/logback-classic/1.5.6/logback-classic-1.5.6.jar:/workspace/.pr6-m2/ch/qos/logback/logback-core/1.5.6/logback-core-1.5.6.jar:/workspace/.pr6-m2/org/apache/logging/log4j/log4j-to-slf4j/2.23.1/log4j-to-slf4j-2.23.1.jar:/workspace/.pr6-m2/org/slf4j/jul-to-slf4j/2.0.13/jul-to-slf4j-2.0.13.jar:/workspace/.pr6-m2/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-json/3.3.0/spring-boot-starter-json-3.3.0.jar:/workspace/.pr6-m2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.17.1/jackson-datatype-jdk8-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.17.1/jackson-datatype-jsr310-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/module/jackson-module-parameter-names/2.17.1/jackson-module-parameter-names-2.17.1.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-tomcat/3.3.0/spring-boot-starter-tomcat-3.3.0.jar:/workspace/.pr6-m2/org/apache/tomcat/embed/tomcat-embed-core/10.1.24/tomcat-embed-core-10.1.24.jar:/workspace/.pr6-m2/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.24/tomcat-embed-websocket-10.1.24.jar:/workspace/.pr6-m2/org/springframework/spring-web/6.1.8/spring-web-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-beans/6.1.8/spring-beans-6.1.8.jar:/workspace/.pr6-m2/io/micrometer/micrometer-observation/1.13.0/micrometer-observation-1.13.0.jar:/workspace/.pr6-m2/io/micrometer/micrometer-commons/1.13.0/micrometer-commons-1.13.0.jar:/workspace/.pr6-m2/org/springframework/spring-webmvc/6.1.8/spring-webmvc-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-context/6.1.8/spring-context-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-expression/6.1.8/spring-expression-6.1.8.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-validation/3.3.0/spring-boot-starter-validation-3.3.0.jar:/workspace/.pr6-m2/org/apache/tomcat/embed/tomcat-embed-el/10.1.24/tomcat-embed-el-10.1.24.jar:/workspace/.pr6-m2/org/hibernate/validator/hibernate-validator/8.0.1.Final/hibernate-validator-8.0.1.Final.jar:/workspace/.pr6-m2/jakarta/validation/jakarta.validation-api/3.0.2/jakarta.validation-api-3.0.2.jar:/workspace/.pr6-m2/org/jboss/logging/jboss-logging/3.5.3.Final/jboss-logging-3.5.3.Final.jar:/workspace/.pr6-m2/com/fasterxml/classmate/1.7.0/classmate-1.7.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-security/3.3.0/spring-boot-starter-security-3.3.0.jar:/workspace/.pr6-m2/org/springframework/spring-aop/6.1.8/spring-aop-6.1.8.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-config/6.3.0/spring-security-config-6.3.0.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-web/6.3.0/spring-security-web-6.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-data-jpa/3.3.0/spring-boot-starter-data-jpa-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-jdbc/3.3.0/spring-boot-starter-jdbc-3.3.0.jar:/workspace/.pr6-m2/com/zaxxer/HikariCP/5.1.0/HikariCP-5.1.0.jar:/workspace/.pr6-m2/org/springframework/spring-jdbc/6.1.8/spring-jdbc-6.1.8.jar:/workspace/.pr6-m2/org/hibernate/orm/hibernate-core/6.5.2.Final/hibernate-core-6.5.2.Final.jar:/workspace/.pr6-m2/jakarta/persistence/jakarta.persistence-api/3.1.0/jakarta.persistence-api-3.1.0.jar:/workspace/.pr6-m2/jakarta/transaction/jakarta.transaction-api/2.0.1/jakarta.transaction-api-2.0.1.jar:/workspace/.pr6-m2/org/hibernate/common/hibernate-commons-annotations/6.0.6.Final/hibernate-commons-annotations-6.0.6.Final.jar:/workspace/.pr6-m2/io/smallrye/jandex/3.1.2/jandex-3.1.2.jar:/workspace/.pr6-m2/net/bytebuddy/byte-buddy/1.14.16/byte-buddy-1.14.16.jar:/workspace/.pr6-m2/org/glassfish/jaxb/jaxb-runtime/4.0.5/jaxb-runtime-4.0.5.jar:/workspace/.pr6-m2/org/glassfish/jaxb/jaxb-core/4.0.5/jaxb-core-4.0.5.jar:/workspace/.pr6-m2/org/glassfish/jaxb/txw2/4.0.5/txw2-4.0.5.jar:/workspace/.pr6-m2/com/sun/istack/istack-commons-runtime/4.1.2/istack-commons-runtime-4.1.2.jar:/workspace/.pr6-m2/jakarta/inject/jakarta.inject-api/2.0.1/jakarta.inject-api-2.0.1.jar:/workspace/.pr6-m2/org/antlr/antlr4-runtime/4.13.0/antlr4-runtime-4.13.0.jar:/workspace/.pr6-m2/org/springframework/data/spring-data-jpa/3.3.0/spring-data-jpa-3.3.0.jar:/workspace/.pr6-m2/org/springframework/data/spring-data-commons/3.3.0/spring-data-commons-3.3.0.jar:/workspace/.pr6-m2/org/springframework/spring-orm/6.1.8/spring-orm-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-tx/6.1.8/spring-tx-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-aspects/6.1.8/spring-aspects-6.1.8.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-aop/3.3.0/spring-boot-starter-aop-3.3.0.jar:/workspace/.pr6-m2/org/aspectj/aspectjweaver/1.9.22/aspectjweaver-1.9.22.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-mail/3.3.0/spring-boot-starter-mail-3.3.0.jar:/workspace/.pr6-m2/org/springframework/spring-context-support/6.1.8/spring-context-support-6.1.8.jar:/workspace/.pr6-m2/org/eclipse/angus/jakarta.mail/2.0.3/jakarta.mail-2.0.3.jar:/workspace/.pr6-m2/jakarta/activation/jakarta.activation-api/2.1.3/jakarta.activation-api-2.1.3.jar:/workspace/.pr6-m2/org/eclipse/angus/angus-activation/2.0.2/angus-activation-2.0.2.jar:/workspace/.pr6-m2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3.jar:/workspace/.pr6-m2/org/checkerframework/checker-qual/3.42.0/checker-qual-3.42.0.jar:/workspace/.pr6-m2/org/liquibase/liquibase-core/4.27.0/liquibase-core-4.27.0.jar:/workspace/.pr6-m2/com/opencsv/opencsv/5.9/opencsv-5.9.jar:/workspace/.pr6-m2/org/apache/commons/commons-text/1.11.0/commons-text-1.11.0.jar:/workspace/.pr6-m2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:/workspace/.pr6-m2/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/workspace/.pr6-m2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar:/workspace/.pr6-m2/org/apache/commons/commons-lang3/3.14.0/commons-lang3-3.14.0.jar:/workspace/.pr6-m2/com/vladmihalcea/hibernate-types-60/2.21.1/hibernate-types-60-2.21.1.jar:/workspace/.pr6-m2/jakarta/xml/bind/jakarta.xml.bind-api/4.0.2/jakarta.xml.bind-api-4.0.2.jar:/workspace/.pr6-m2/io/jsonwebtoken/jjwt-api/0.12.5/jjwt-api-0.12.5.jar:/workspace/.pr6-m2/io/jsonwebtoken/jjwt-impl/0.12.5/jjwt-impl-0.12.5.jar:/workspace/.pr6-m2/io/jsonwebtoken/jjwt-jackson/0.12.5/jjwt-jackson-0.12.5.jar:/workspace/.pr6-m2/com/fasterxml/jackson/core/jackson-databind/2.17.1/jackson-databind-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/core/jackson-annotations/2.17.1/jackson-annotations-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/core/jackson-core/2.17.1/jackson-core-2.17.1.jar:/workspace/.pr6-m2/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar:/workspace/.pr6-m2/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar:/workspace/.pr6-m2/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar:/workspace/.pr6-m2/org/springdoc/springdoc-openapi-starter-webmvc-ui/2.5.0/springdoc-openapi-starter-webmvc-ui-2.5.0.jar:/workspace/.pr6-m2/org/springdoc/springdoc-openapi-starter-webmvc-api/2.5.0/springdoc-openapi-starter-webmvc-api-2.5.0.jar:/workspace/.pr6-m2/org/springdoc/springdoc-openapi-starter-common/2.5.0/springdoc-openapi-starter-common-2.5.0.jar:/workspace/.pr6-m2/io/swagger/core/v3/swagger-core-jakarta/2.2.21/swagger-core-jakarta-2.2.21.jar:/workspace/.pr6-m2/io/swagger/core/v3/swagger-annotations-jakarta/2.2.21/swagger-annotations-jakarta-2.2.21.jar:/workspace/.pr6-m2/io/swagger/core/v3/swagger-models-jakarta/2.2.21/swagger-models-jakarta-2.2.21.jar:/workspace/.pr6-m2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.17.1/jackson-dataformat-yaml-2.17.1.jar:/workspace/.pr6-m2/org/webjars/swagger-ui/5.13.0/swagger-ui-5.13.0.jar:/workspace/.pr6-m2/org/apache/pdfbox/pdfbox/3.0.3/pdfbox-3.0.3.jar:/workspace/.pr6-m2/org/apache/pdfbox/pdfbox-io/3.0.3/pdfbox-io-3.0.3.jar:/workspace/.pr6-m2/org/apache/pdfbox/fontbox/3.0.3/fontbox-3.0.3.jar:/workspace/.pr6-m2/commons-logging/commons-logging/1.3.3/commons-logging-1.3.3.jar:/workspace/.pr6-m2/com/microsoft/playwright/playwright/1.58.0/playwright-1.58.0.jar:/workspace/.pr6-m2/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar:/workspace/.pr6-m2/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/workspace/.pr6-m2/com/microsoft/playwright/driver/1.58.0/driver-1.58.0.jar:/workspace/.pr6-m2/com/microsoft/playwright/driver-bundle/1.58.0/driver-bundle-1.58.0.jar:/workspace/.pr6-m2/org/apache/poi/poi-ooxml/5.5.1/poi-ooxml-5.5.1.jar:/workspace/.pr6-m2/org/apache/poi/poi/5.5.1/poi-5.5.1.jar:/workspace/.pr6-m2/com/zaxxer/SparseBitSet/1.3/SparseBitSet-1.3.jar:/workspace/.pr6-m2/org/apache/poi/poi-ooxml-lite/5.5.1/poi-ooxml-lite-5.5.1.jar:/workspace/.pr6-m2/org/apache/xmlbeans/xmlbeans/5.3.0/xmlbeans-5.3.0.jar:/workspace/.pr6-m2/org/apache/commons/commons-compress/1.28.0/commons-compress-1.28.0.jar:/workspace/.pr6-m2/commons-io/commons-io/2.21.0/commons-io-2.21.0.jar:/workspace/.pr6-m2/com/github/virtuald/curvesapi/1.08/curvesapi-1.08.jar:/workspace/.pr6-m2/org/apache/logging/log4j/log4j-api/2.23.1/log4j-api-2.23.1.jar:/workspace/.pr6-m2/org/apache/poi/poi-scratchpad/5.5.1/poi-scratchpad-5.5.1.jar:/workspace/.pr6-m2/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar:/workspace/.pr6-m2/commons-codec/commons-codec/1.16.1/commons-codec-1.16.1.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-test/3.3.0/spring-boot-starter-test-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-test/3.3.0/spring-boot-test-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-test-autoconfigure/3.3.0/spring-boot-test-autoconfigure-3.3.0.jar:/workspace/.pr6-m2/com/jayway/jsonpath/json-path/2.9.0/json-path-2.9.0.jar:/workspace/.pr6-m2/net/minidev/json-smart/2.5.1/json-smart-2.5.1.jar:/workspace/.pr6-m2/net/minidev/accessors-smart/2.5.1/accessors-smart-2.5.1.jar:/workspace/.pr6-m2/org/ow2/asm/asm/9.6/asm-9.6.jar:/workspace/.pr6-m2/org/assertj/assertj-core/3.25.3/assertj-core-3.25.3.jar:/workspace/.pr6-m2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1.jar:/workspace/.pr6-m2/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter/5.10.2/junit-jupiter-5.10.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar:/workspace/.pr6-m2/org/junit/platform/junit-platform-commons/1.10.2/junit-platform-commons-1.10.2.jar:/workspace/.pr6-m2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-params/5.10.2/junit-jupiter-params-5.10.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-engine/5.10.2/junit-jupiter-engine-5.10.2.jar:/workspace/.pr6-m2/org/junit/platform/junit-platform-engine/1.10.2/junit-platform-engine-1.10.2.jar:/workspace/.pr6-m2/org/mockito/mockito-core/5.11.0/mockito-core-5.11.0.jar:/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar:/workspace/.pr6-m2/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/workspace/.pr6-m2/org/mockito/mockito-junit-jupiter/5.11.0/mockito-junit-jupiter-5.11.0.jar:/workspace/.pr6-m2/org/skyscreamer/jsonassert/1.5.1/jsonassert-1.5.1.jar:/workspace/.pr6-m2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar:/workspace/.pr6-m2/org/springframework/spring-core/6.1.8/spring-core-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-jcl/6.1.8/spring-jcl-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-test/6.1.8/spring-test-6.1.8.jar:/workspace/.pr6-m2/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-test/6.3.0/spring-security-test-6.3.0.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-core/6.3.0/spring-security-core-6.3.0.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-crypto/6.3.0/spring-security-crypto-6.3.0.jar:/workspace/.pr6-m2/org/testcontainers/testcontainers/1.19.8/testcontainers-1.19.8.jar:/workspace/.pr6-m2/junit/junit/4.13.2/junit-4.13.2.jar:/workspace/.pr6-m2/org/hamcrest/hamcrest-core/2.2/hamcrest-core-2.2.jar:/workspace/.pr6-m2/org/slf4j/slf4j-api/2.0.13/slf4j-api-2.0.13.jar:/workspace/.pr6-m2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8.jar:/workspace/.pr6-m2/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar:/workspace/.pr6-m2/com/github/docker-java/docker-java-api/3.3.6/docker-java-api-3.3.6.jar:/workspace/.pr6-m2/com/github/docker-java/docker-java-transport-zerodep/3.3.6/docker-java-transport-zerodep-3.3.6.jar:/workspace/.pr6-m2/com/github/docker-java/docker-java-transport/3.3.6/docker-java-transport-3.3.6.jar:/workspace/.pr6-m2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/workspace/.pr6-m2/org/testcontainers/postgresql/1.19.8/postgresql-1.19.8.jar:/workspace/.pr6-m2/org/testcontainers/jdbc/1.19.8/jdbc-1.19.8.jar:/workspace/.pr6-m2/org/testcontainers/database-commons/1.19.8/database-commons-1.19.8.jar:/workspace/.pr6-m2/org/testcontainers/junit-jupiter/1.19.8/junit-jupiter-1.19.8.jar:/workspace/.pr6-m2/com/h2database/h2/2.2.224/h2-2.2.224.jar:"/>
+    <property name="java.vm.vendor" value="Eclipse Adoptium"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.vendor.url" value="https://adoptium.net/"/>
+    <property name="user.timezone" value="Etc/UTC"/>
+    <property name="org.jboss.logging.provider" value="slf4j"/>
+    <property name="os.name" value="Linux"/>
+    <property name="java.vm.specification.version" value="21"/>
+    <property name="edhr.audit.documentReads" value="true"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.boot.library.path" value="/workspace/.edhr-cloud-tools/jdk-21.0.12.1+1/lib"/>
+    <property name="sun.java.command" value="/workspace/edhr-nexus-frontend/gmp-platform/backend/target/surefire/surefirebooter-20261030024857597_3.jar /workspace/edhr-nexus-frontend/gmp-platform/backend/target/surefire 2026-10-30T02-48-57_532-jvmRun1 surefire-20261030024857597_1tmp surefire_0-20261030024857597_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="/workspace/edhr-nexus-frontend/gmp-platform/backend/target/test-classes:/workspace/edhr-nexus-frontend/gmp-platform/backend/target/classes:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-web/3.3.0/spring-boot-starter-web-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter/3.3.0/spring-boot-starter-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot/3.3.0/spring-boot-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-autoconfigure/3.3.0/spring-boot-autoconfigure-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-logging/3.3.0/spring-boot-starter-logging-3.3.0.jar:/workspace/.pr6-m2/ch/qos/logback/logback-classic/1.5.6/logback-classic-1.5.6.jar:/workspace/.pr6-m2/ch/qos/logback/logback-core/1.5.6/logback-core-1.5.6.jar:/workspace/.pr6-m2/org/apache/logging/log4j/log4j-to-slf4j/2.23.1/log4j-to-slf4j-2.23.1.jar:/workspace/.pr6-m2/org/slf4j/jul-to-slf4j/2.0.13/jul-to-slf4j-2.0.13.jar:/workspace/.pr6-m2/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-json/3.3.0/spring-boot-starter-json-3.3.0.jar:/workspace/.pr6-m2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.17.1/jackson-datatype-jdk8-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.17.1/jackson-datatype-jsr310-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/module/jackson-module-parameter-names/2.17.1/jackson-module-parameter-names-2.17.1.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-tomcat/3.3.0/spring-boot-starter-tomcat-3.3.0.jar:/workspace/.pr6-m2/org/apache/tomcat/embed/tomcat-embed-core/10.1.24/tomcat-embed-core-10.1.24.jar:/workspace/.pr6-m2/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.24/tomcat-embed-websocket-10.1.24.jar:/workspace/.pr6-m2/org/springframework/spring-web/6.1.8/spring-web-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-beans/6.1.8/spring-beans-6.1.8.jar:/workspace/.pr6-m2/io/micrometer/micrometer-observation/1.13.0/micrometer-observation-1.13.0.jar:/workspace/.pr6-m2/io/micrometer/micrometer-commons/1.13.0/micrometer-commons-1.13.0.jar:/workspace/.pr6-m2/org/springframework/spring-webmvc/6.1.8/spring-webmvc-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-context/6.1.8/spring-context-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-expression/6.1.8/spring-expression-6.1.8.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-validation/3.3.0/spring-boot-starter-validation-3.3.0.jar:/workspace/.pr6-m2/org/apache/tomcat/embed/tomcat-embed-el/10.1.24/tomcat-embed-el-10.1.24.jar:/workspace/.pr6-m2/org/hibernate/validator/hibernate-validator/8.0.1.Final/hibernate-validator-8.0.1.Final.jar:/workspace/.pr6-m2/jakarta/validation/jakarta.validation-api/3.0.2/jakarta.validation-api-3.0.2.jar:/workspace/.pr6-m2/org/jboss/logging/jboss-logging/3.5.3.Final/jboss-logging-3.5.3.Final.jar:/workspace/.pr6-m2/com/fasterxml/classmate/1.7.0/classmate-1.7.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-security/3.3.0/spring-boot-starter-security-3.3.0.jar:/workspace/.pr6-m2/org/springframework/spring-aop/6.1.8/spring-aop-6.1.8.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-config/6.3.0/spring-security-config-6.3.0.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-web/6.3.0/spring-security-web-6.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-data-jpa/3.3.0/spring-boot-starter-data-jpa-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-jdbc/3.3.0/spring-boot-starter-jdbc-3.3.0.jar:/workspace/.pr6-m2/com/zaxxer/HikariCP/5.1.0/HikariCP-5.1.0.jar:/workspace/.pr6-m2/org/springframework/spring-jdbc/6.1.8/spring-jdbc-6.1.8.jar:/workspace/.pr6-m2/org/hibernate/orm/hibernate-core/6.5.2.Final/hibernate-core-6.5.2.Final.jar:/workspace/.pr6-m2/jakarta/persistence/jakarta.persistence-api/3.1.0/jakarta.persistence-api-3.1.0.jar:/workspace/.pr6-m2/jakarta/transaction/jakarta.transaction-api/2.0.1/jakarta.transaction-api-2.0.1.jar:/workspace/.pr6-m2/org/hibernate/common/hibernate-commons-annotations/6.0.6.Final/hibernate-commons-annotations-6.0.6.Final.jar:/workspace/.pr6-m2/io/smallrye/jandex/3.1.2/jandex-3.1.2.jar:/workspace/.pr6-m2/net/bytebuddy/byte-buddy/1.14.16/byte-buddy-1.14.16.jar:/workspace/.pr6-m2/org/glassfish/jaxb/jaxb-runtime/4.0.5/jaxb-runtime-4.0.5.jar:/workspace/.pr6-m2/org/glassfish/jaxb/jaxb-core/4.0.5/jaxb-core-4.0.5.jar:/workspace/.pr6-m2/org/glassfish/jaxb/txw2/4.0.5/txw2-4.0.5.jar:/workspace/.pr6-m2/com/sun/istack/istack-commons-runtime/4.1.2/istack-commons-runtime-4.1.2.jar:/workspace/.pr6-m2/jakarta/inject/jakarta.inject-api/2.0.1/jakarta.inject-api-2.0.1.jar:/workspace/.pr6-m2/org/antlr/antlr4-runtime/4.13.0/antlr4-runtime-4.13.0.jar:/workspace/.pr6-m2/org/springframework/data/spring-data-jpa/3.3.0/spring-data-jpa-3.3.0.jar:/workspace/.pr6-m2/org/springframework/data/spring-data-commons/3.3.0/spring-data-commons-3.3.0.jar:/workspace/.pr6-m2/org/springframework/spring-orm/6.1.8/spring-orm-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-tx/6.1.8/spring-tx-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-aspects/6.1.8/spring-aspects-6.1.8.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-aop/3.3.0/spring-boot-starter-aop-3.3.0.jar:/workspace/.pr6-m2/org/aspectj/aspectjweaver/1.9.22/aspectjweaver-1.9.22.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-mail/3.3.0/spring-boot-starter-mail-3.3.0.jar:/workspace/.pr6-m2/org/springframework/spring-context-support/6.1.8/spring-context-support-6.1.8.jar:/workspace/.pr6-m2/org/eclipse/angus/jakarta.mail/2.0.3/jakarta.mail-2.0.3.jar:/workspace/.pr6-m2/jakarta/activation/jakarta.activation-api/2.1.3/jakarta.activation-api-2.1.3.jar:/workspace/.pr6-m2/org/eclipse/angus/angus-activation/2.0.2/angus-activation-2.0.2.jar:/workspace/.pr6-m2/org/postgresql/postgresql/42.7.3/postgresql-42.7.3.jar:/workspace/.pr6-m2/org/checkerframework/checker-qual/3.42.0/checker-qual-3.42.0.jar:/workspace/.pr6-m2/org/liquibase/liquibase-core/4.27.0/liquibase-core-4.27.0.jar:/workspace/.pr6-m2/com/opencsv/opencsv/5.9/opencsv-5.9.jar:/workspace/.pr6-m2/org/apache/commons/commons-text/1.11.0/commons-text-1.11.0.jar:/workspace/.pr6-m2/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar:/workspace/.pr6-m2/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/workspace/.pr6-m2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar:/workspace/.pr6-m2/org/apache/commons/commons-lang3/3.14.0/commons-lang3-3.14.0.jar:/workspace/.pr6-m2/com/vladmihalcea/hibernate-types-60/2.21.1/hibernate-types-60-2.21.1.jar:/workspace/.pr6-m2/jakarta/xml/bind/jakarta.xml.bind-api/4.0.2/jakarta.xml.bind-api-4.0.2.jar:/workspace/.pr6-m2/io/jsonwebtoken/jjwt-api/0.12.5/jjwt-api-0.12.5.jar:/workspace/.pr6-m2/io/jsonwebtoken/jjwt-impl/0.12.5/jjwt-impl-0.12.5.jar:/workspace/.pr6-m2/io/jsonwebtoken/jjwt-jackson/0.12.5/jjwt-jackson-0.12.5.jar:/workspace/.pr6-m2/com/fasterxml/jackson/core/jackson-databind/2.17.1/jackson-databind-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/core/jackson-annotations/2.17.1/jackson-annotations-2.17.1.jar:/workspace/.pr6-m2/com/fasterxml/jackson/core/jackson-core/2.17.1/jackson-core-2.17.1.jar:/workspace/.pr6-m2/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar:/workspace/.pr6-m2/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar:/workspace/.pr6-m2/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar:/workspace/.pr6-m2/org/springdoc/springdoc-openapi-starter-webmvc-ui/2.5.0/springdoc-openapi-starter-webmvc-ui-2.5.0.jar:/workspace/.pr6-m2/org/springdoc/springdoc-openapi-starter-webmvc-api/2.5.0/springdoc-openapi-starter-webmvc-api-2.5.0.jar:/workspace/.pr6-m2/org/springdoc/springdoc-openapi-starter-common/2.5.0/springdoc-openapi-starter-common-2.5.0.jar:/workspace/.pr6-m2/io/swagger/core/v3/swagger-core-jakarta/2.2.21/swagger-core-jakarta-2.2.21.jar:/workspace/.pr6-m2/io/swagger/core/v3/swagger-annotations-jakarta/2.2.21/swagger-annotations-jakarta-2.2.21.jar:/workspace/.pr6-m2/io/swagger/core/v3/swagger-models-jakarta/2.2.21/swagger-models-jakarta-2.2.21.jar:/workspace/.pr6-m2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.17.1/jackson-dataformat-yaml-2.17.1.jar:/workspace/.pr6-m2/org/webjars/swagger-ui/5.13.0/swagger-ui-5.13.0.jar:/workspace/.pr6-m2/org/apache/pdfbox/pdfbox/3.0.3/pdfbox-3.0.3.jar:/workspace/.pr6-m2/org/apache/pdfbox/pdfbox-io/3.0.3/pdfbox-io-3.0.3.jar:/workspace/.pr6-m2/org/apache/pdfbox/fontbox/3.0.3/fontbox-3.0.3.jar:/workspace/.pr6-m2/commons-logging/commons-logging/1.3.3/commons-logging-1.3.3.jar:/workspace/.pr6-m2/com/microsoft/playwright/playwright/1.58.0/playwright-1.58.0.jar:/workspace/.pr6-m2/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar:/workspace/.pr6-m2/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/workspace/.pr6-m2/com/microsoft/playwright/driver/1.58.0/driver-1.58.0.jar:/workspace/.pr6-m2/com/microsoft/playwright/driver-bundle/1.58.0/driver-bundle-1.58.0.jar:/workspace/.pr6-m2/org/apache/poi/poi-ooxml/5.5.1/poi-ooxml-5.5.1.jar:/workspace/.pr6-m2/org/apache/poi/poi/5.5.1/poi-5.5.1.jar:/workspace/.pr6-m2/com/zaxxer/SparseBitSet/1.3/SparseBitSet-1.3.jar:/workspace/.pr6-m2/org/apache/poi/poi-ooxml-lite/5.5.1/poi-ooxml-lite-5.5.1.jar:/workspace/.pr6-m2/org/apache/xmlbeans/xmlbeans/5.3.0/xmlbeans-5.3.0.jar:/workspace/.pr6-m2/org/apache/commons/commons-compress/1.28.0/commons-compress-1.28.0.jar:/workspace/.pr6-m2/commons-io/commons-io/2.21.0/commons-io-2.21.0.jar:/workspace/.pr6-m2/com/github/virtuald/curvesapi/1.08/curvesapi-1.08.jar:/workspace/.pr6-m2/org/apache/logging/log4j/log4j-api/2.23.1/log4j-api-2.23.1.jar:/workspace/.pr6-m2/org/apache/poi/poi-scratchpad/5.5.1/poi-scratchpad-5.5.1.jar:/workspace/.pr6-m2/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar:/workspace/.pr6-m2/commons-codec/commons-codec/1.16.1/commons-codec-1.16.1.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-starter-test/3.3.0/spring-boot-starter-test-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-test/3.3.0/spring-boot-test-3.3.0.jar:/workspace/.pr6-m2/org/springframework/boot/spring-boot-test-autoconfigure/3.3.0/spring-boot-test-autoconfigure-3.3.0.jar:/workspace/.pr6-m2/com/jayway/jsonpath/json-path/2.9.0/json-path-2.9.0.jar:/workspace/.pr6-m2/net/minidev/json-smart/2.5.1/json-smart-2.5.1.jar:/workspace/.pr6-m2/net/minidev/accessors-smart/2.5.1/accessors-smart-2.5.1.jar:/workspace/.pr6-m2/org/ow2/asm/asm/9.6/asm-9.6.jar:/workspace/.pr6-m2/org/assertj/assertj-core/3.25.3/assertj-core-3.25.3.jar:/workspace/.pr6-m2/org/awaitility/awaitility/4.2.1/awaitility-4.2.1.jar:/workspace/.pr6-m2/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter/5.10.2/junit-jupiter-5.10.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar:/workspace/.pr6-m2/org/junit/platform/junit-platform-commons/1.10.2/junit-platform-commons-1.10.2.jar:/workspace/.pr6-m2/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-params/5.10.2/junit-jupiter-params-5.10.2.jar:/workspace/.pr6-m2/org/junit/jupiter/junit-jupiter-engine/5.10.2/junit-jupiter-engine-5.10.2.jar:/workspace/.pr6-m2/org/junit/platform/junit-platform-engine/1.10.2/junit-platform-engine-1.10.2.jar:/workspace/.pr6-m2/org/mockito/mockito-core/5.11.0/mockito-core-5.11.0.jar:/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar:/workspace/.pr6-m2/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/workspace/.pr6-m2/org/mockito/mockito-junit-jupiter/5.11.0/mockito-junit-jupiter-5.11.0.jar:/workspace/.pr6-m2/org/skyscreamer/jsonassert/1.5.1/jsonassert-1.5.1.jar:/workspace/.pr6-m2/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar:/workspace/.pr6-m2/org/springframework/spring-core/6.1.8/spring-core-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-jcl/6.1.8/spring-jcl-6.1.8.jar:/workspace/.pr6-m2/org/springframework/spring-test/6.1.8/spring-test-6.1.8.jar:/workspace/.pr6-m2/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-test/6.3.0/spring-security-test-6.3.0.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-core/6.3.0/spring-security-core-6.3.0.jar:/workspace/.pr6-m2/org/springframework/security/spring-security-crypto/6.3.0/spring-security-crypto-6.3.0.jar:/workspace/.pr6-m2/org/testcontainers/testcontainers/1.19.8/testcontainers-1.19.8.jar:/workspace/.pr6-m2/junit/junit/4.13.2/junit-4.13.2.jar:/workspace/.pr6-m2/org/hamcrest/hamcrest-core/2.2/hamcrest-core-2.2.jar:/workspace/.pr6-m2/org/slf4j/slf4j-api/2.0.13/slf4j-api-2.0.13.jar:/workspace/.pr6-m2/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8.jar:/workspace/.pr6-m2/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar:/workspace/.pr6-m2/com/github/docker-java/docker-java-api/3.3.6/docker-java-api-3.3.6.jar:/workspace/.pr6-m2/com/github/docker-java/docker-java-transport-zerodep/3.3.6/docker-java-transport-zerodep-3.3.6.jar:/workspace/.pr6-m2/com/github/docker-java/docker-java-transport/3.3.6/docker-java-transport-3.3.6.jar:/workspace/.pr6-m2/net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar:/workspace/.pr6-m2/org/testcontainers/postgresql/1.19.8/postgresql-1.19.8.jar:/workspace/.pr6-m2/org/testcontainers/jdbc/1.19.8/jdbc-1.19.8.jar:/workspace/.pr6-m2/org/testcontainers/database-commons/1.19.8/database-commons-1.19.8.jar:/workspace/.pr6-m2/org/testcontainers/junit-jupiter/1.19.8/junit-jupiter-1.19.8.jar:/workspace/.pr6-m2/com/h2database/h2/2.2.224/h2-2.2.224.jar:"/>
+    <property name="test" value="DocumentReadPerformancePostgresTest"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="/home/agent"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2026-08-18"/>
+    <property name="java.home" value="/workspace/.edhr-cloud-tools/jdk-21.0.12.1+1"/>
+    <property name="file.separator" value="/"/>
+    <property name="basedir" value="/workspace/edhr-nexus-frontend/gmp-platform/backend"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="FILE_LOG_CHARSET" value="UTF-8"/>
+    <property name="java.awt.headless" value="true"/>
+    <property name="surefire.real.class.path" value="/workspace/edhr-nexus-frontend/gmp-platform/backend/target/surefire/surefirebooter-20261030024857597_3.jar"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="21.0.12.1+1-LTS"/>
+    <property name="user.name" value="agent"/>
+    <property name="stdout.encoding" value="UTF-8"/>
+    <property name="path.separator" value=":"/>
+    <property name="os.version" value="6.18.55"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="java.vendor.version" value="Temurin-21.0.12.1+1"/>
+    <property name="localRepository" value="/workspace/.pr6-m2"/>
+    <property name="java.vendor.url.bug" value="https://github.com/adoptium/adoptium-support/issues"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="com.zaxxer.hikari.pool_number" value="1"/>
+    <property name="java.version" value="21.0.12.1"/>
+    <property name="user.dir" value="/workspace/edhr-nexus-frontend/gmp-platform/backend"/>
+    <property name="edhr.audit.documentOutput" value="/tmp/edhr-document-perf-finalqa-pg-http.jsonl"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="PID" value="22936"/>
+    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
+    <property name="native.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib"/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="UTF-8"/>
+    <property name="java.vendor" value="Eclipse Adoptium"/>
+    <property name="java.vm.version" value="21.0.12.1+1-LTS"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="maven.repo.local" value="/workspace/.pr6-m2"/>
+    <property name="java.class.version" value="65.0"/>
+    <property name="LOGGED_APPLICATION_NAME" value="[edhr] "/>
+  </properties>
+  <testcase name="aSmallPageDoesNotMaterializeOffPageDocumentsOrVersions" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.406">
+    <system-out><![CDATA[Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.0)
+
+2026-10-30T02:48:58.251Z  INFO 22936 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : Starting DocumentReadPerformancePostgresTest using Java 21.0.12.1 with PID 22936 (started by agent in /workspace/edhr-nexus-frontend/gmp-platform/backend)
+2026-10-30T02:48:58.252Z DEBUG 22936 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : Running with Spring Boot v3.3.0, Spring v6.1.8
+2026-10-30T02:48:58.252Z  INFO 22936 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : The following 1 profile is active: "dev"
+2026-10-30T02:48:58.912Z  INFO 22936 --- [edhr] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-30T02:48:58.947Z  INFO 22936 --- [edhr] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-10-30T02:48:58.978Z  INFO 22936 --- [edhr] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-10-30T02:48:59.024Z  INFO 22936 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-30T02:48:59.112Z  INFO 22936 --- [edhr] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6eed46e9
+2026-10-30T02:48:59.113Z  INFO 22936 --- [edhr] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-30T02:48:59.128Z  WARN 22936 --- [edhr] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-30T02:48:59.230Z  INFO 22936 --- [edhr] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-30T02:48:59.637Z  INFO 22936 --- [edhr] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-30T02:48:59.645Z  WARN 22936 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T02:48:59.645Z  WARN 22936 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "audit_event" does not exist, skipping
+2026-10-30T02:48:59.646Z  WARN 22936 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T02:48:59.646Z  WARN 22936 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "document_category" does not exist, skipping
+2026-10-30T02:48:59.646Z  WARN 22936 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T02:48:59.646Z  WARN 22936 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "document_version" does not exist, skipping
+2026-10-30T02:48:59.647Z  WARN 22936 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T02:48:59.647Z  WARN 22936 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "file_object" does not exist, skipping
+2026-10-30T02:48:59.647Z  WARN 22936 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T02:48:59.647Z  WARN 22936 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "sop_document" does not exist, skipping
+2026-10-30T02:48:59.666Z  INFO 22936 --- [edhr] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-30T02:48:59.807Z  INFO 22936 --- [edhr] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-30T02:49:00.833Z  WARN 22936 --- [edhr] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: a551304b-040d-413e-918a-bb4a0e9250df
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-30T02:49:00.837Z  INFO 22936 --- [edhr] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-30T02:49:01.005Z  INFO 22936 --- [edhr] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4875012c, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@dd9c37, org.springframework.security.web.context.SecurityContextHolderFilter@5a5f65b9, org.springframework.security.web.header.HeaderWriterFilter@3706ba88, org.springframework.web.filter.CorsFilter@7f26f394, org.springframework.security.web.authentication.logout.LogoutFilter@4fb52fa5, com.zencas.edhr.identity.security.JwtAuthenticationFilter@4e853286, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@35d36423, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@25452a5d, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3d4d27e5, org.springframework.security.web.session.SessionManagementFilter@5d100d1b, org.springframework.security.web.access.ExceptionTranslationFilter@960a64a, org.springframework.security.web.access.intercept.AuthorizationFilter@7787fce1]
+2026-10-30T02:49:01.211Z DEBUG 22936 --- [edhr] [           main] c.z.e.i.s.JwtAuthenticationFilter        : Filter 'com.zencas.edhr.identity.security.JwtAuthenticationFilter' configured for use
+2026-10-30T02:49:01.212Z  INFO 22936 --- [edhr] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-30T02:49:01.212Z  INFO 22936 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-30T02:49:01.212Z  INFO 22936 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-10-30T02:49:01.223Z  INFO 22936 --- [edhr] [           main] .m.c.DocumentReadPerformancePostgresTest : Started DocumentReadPerformancePostgresTest in 3.123 seconds (process running for 3.593)
+2026-10-30T02:49:01.462Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:01.480Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+    <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+  </testcase>
+  <testcase name="observePageFileLookups(int, String)[1]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.045">
+    <system-out><![CDATA[2026-10-30T02:49:01.677Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:01.681Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="observePageFileLookups(int, String)[2]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.037">
+    <system-out><![CDATA[2026-10-30T02:49:01.723Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:01.725Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="observePageFileLookups(int, String)[3]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.031">
+    <system-out><![CDATA[2026-10-30T02:49:01.754Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:01.756Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="observePageFileLookups(int, String)[4]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.03">
+    <system-out><![CDATA[2026-10-30T02:49:01.787Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:01.789Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="observePageFileLookups(int, String)[5]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.033">
+    <system-out><![CDATA[2026-10-30T02:49:01.820Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:01.822Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="observePageFileLookups(int, String)[6]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.033">
+    <system-out><![CDATA[2026-10-30T02:49:01.855Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:01.857Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="observeSmallPageMaterialization(int)[1]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.032">
+    <system-out><![CDATA[2026-10-30T02:49:01.892Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:01.894Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="observeSmallPageMaterialization(int)[2]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.107">
+    <system-out><![CDATA[2026-10-30T02:49:01.995Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:01.997Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="missingFileMetadataKeepsTheExistingVersionAndFileIdentity" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.017">
+    <system-out><![CDATA[2026-10-30T02:49:02.018Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.019Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="emptyListAcceptsOutOfRangePages" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.008">
+    <system-out><![CDATA[2026-10-30T02:49:02.033Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.035Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[1]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.087">
+    <system-out><![CDATA[2026-10-30T02:49:02.046Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.047Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.103Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.104Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.117Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.118Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[2]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.033">
+    <system-out><![CDATA[2026-10-30T02:49:02.138Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.139Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.148Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.149Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.156Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.157Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[3]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.025">
+    <system-out><![CDATA[2026-10-30T02:49:02.168Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.170Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.177Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.178Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.185Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.186Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[4]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.025">
+    <system-out><![CDATA[2026-10-30T02:49:02.195Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.196Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.203Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.204Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.211Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.212Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[5]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.027">
+    <system-out><![CDATA[2026-10-30T02:49:02.220Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.221Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.229Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.230Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.238Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.239Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[6]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.022">
+    <system-out><![CDATA[2026-10-30T02:49:02.247Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.248Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.254Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.255Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.261Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.262Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[7]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.035">
+    <system-out><![CDATA[2026-10-30T02:49:02.272Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.274Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.286Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.287Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.297Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.298Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[8]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.03">
+    <system-out><![CDATA[2026-10-30T02:49:02.309Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.310Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.319Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.319Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.327Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.328Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="acceptedPageBoundsKeepMetadataAndWholeVersions(int, int)[9]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.028">
+    <system-out><![CDATA[2026-10-30T02:49:02.339Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.340Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.347Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.348Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.355Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.355Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="invalidOrMissingCategoriesAreNotSilentlyTreatedAsAll(String)[1]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.034">
+    <system-out><![CDATA[2026-10-30T02:49:02.372Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.373Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.388Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.389Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:49:02.394Z  WARN 22936 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-001, message=文档分类不存在, path=/api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="invalidOrMissingCategoriesAreNotSilentlyTreatedAsAll(String)[2]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.022">
+    <system-out><![CDATA[2026-10-30T02:49:02.406Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.407Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.419Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.420Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:49:02.421Z  WARN 22936 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-001, message=文档分类不存在, path=/api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="invalidOrMissingCategoriesAreNotSilentlyTreatedAsAll(String)[3]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.023">
+    <system-out><![CDATA[2026-10-30T02:49:02.431Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.433Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.443Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.445Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:49:02.447Z  WARN 22936 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-001, message=文档分类不存在, path=/api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(String, String)[1]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.026">
+    <system-out><![CDATA[2026-10-30T02:49:02.456Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.457Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.465Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.466Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.472Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.473Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(String, String)[2]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.022">
+    <system-out><![CDATA[2026-10-30T02:49:02.483Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.483Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.490Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.490Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.496Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.497Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(String, String)[3]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.022">
+    <system-out><![CDATA[2026-10-30T02:49:02.507Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.507Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.513Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.514Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.520Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.521Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(String, String)[4]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.024">
+    <system-out><![CDATA[2026-10-30T02:49:02.531Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.531Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.539Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.540Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.546Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.546Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(String, String)[5]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.021">
+    <system-out><![CDATA[2026-10-30T02:49:02.557Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.557Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.564Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.564Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.570Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.570Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(String, String)[6]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.022">
+    <system-out><![CDATA[2026-10-30T02:49:02.580Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.580Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.587Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.588Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.594Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.594Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(String, String)[7]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.02">
+    <system-out><![CDATA[2026-10-30T02:49:02.603Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.603Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.609Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.609Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.615Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.615Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="identicalUnicodeKeywordsMatchTheirStoredTitleOrVersionCode(String, String)[8]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.019">
+    <system-out><![CDATA[2026-10-30T02:49:02.623Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.624Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.629Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:02.629Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:02.634Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.635Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="largePagesReturnAllMembersWithBoundedMetadataBatches" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.364">
+    <system-out><![CDATA[2026-10-30T02:49:02.939Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:02.940Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="nullTimestampsStayFirstAndTiedPagesHaveStableIdentity" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.028">
+    <system-out><![CDATA[2026-10-30T02:49:03.019Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.020Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:49:03.028Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.029Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="olderVersionKeywordStillReturnsTheCompleteDocument" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.029">
+    <system-out><![CDATA[2026-10-30T02:49:03.038Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.039Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.045Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391448281382653952/versions
+2026-10-30T02:49:03.045Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391448281382653952/versions
+2026-10-30T02:49:03.052Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.053Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.058Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.059Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="observeCategoryCountsWithoutVersionLoading(int)[1]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.068">
+    <system-out><![CDATA[2026-10-30T02:49:03.094Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T02:49:03.094Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents/categories
+]]></system-out>
+  </testcase>
+  <testcase name="observeCategoryCountsWithoutVersionLoading(int)[2]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.098">
+    <system-out><![CDATA[2026-10-30T02:49:03.228Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T02:49:03.228Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents/categories
+]]></system-out>
+  </testcase>
+  <testcase name="categoryCountsDoNotMaterializeEveryDocument" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.084">
+    <system-out><![CDATA[2026-10-30T02:49:03.310Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T02:49:03.311Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents/categories
+]]></system-out>
+  </testcase>
+  <testcase name="anonymousReadIsRejectedWithoutChangingRows" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.02">
+    <system-out><![CDATA[2026-10-30T02:49:03.325Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.325Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.335Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.336Z DEBUG 22936 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-30T02:49:03.338Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T02:49:03.338Z DEBUG 22936 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+]]></system-out>
+  </testcase>
+  <testcase name="categoriesAndUncategorizedCountsPreserveTheirScope" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.049">
+    <system-out><![CDATA[2026-10-30T02:49:03.345Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/categories
+2026-10-30T02:49:03.345Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/categories
+2026-10-30T02:49:03.354Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.355Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.364Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.365Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.373Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.373Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:49:03.381Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.382Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:49:03.387Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents/categories
+2026-10-30T02:49:03.387Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents/categories
+]]></system-out>
+  </testcase>
+  <testcase name="keywordSpecialCharactersRemainLiteralAndOldVersionsRemainSearchable(String)[1]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.027">
+    <system-out><![CDATA[2026-10-30T02:49:03.395Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.395Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.402Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391448282880020480/versions
+2026-10-30T02:49:03.403Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391448282880020480/versions
+2026-10-30T02:49:03.407Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.408Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.413Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.413Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="keywordSpecialCharactersRemainLiteralAndOldVersionsRemainSearchable(String)[2]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.024">
+    <system-out><![CDATA[2026-10-30T02:49:03.422Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.422Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.427Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391448282989072384/versions
+2026-10-30T02:49:03.428Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391448282989072384/versions
+2026-10-30T02:49:03.432Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.432Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.437Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.438Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="keywordSpecialCharactersRemainLiteralAndOldVersionsRemainSearchable(String)[3]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.023">
+    <system-out><![CDATA[2026-10-30T02:49:03.446Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.447Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.452Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391448283093929984/versions
+2026-10-30T02:49:03.453Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391448283093929984/versions
+2026-10-30T02:49:03.457Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.457Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.462Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.462Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="keywordSpecialCharactersRemainLiteralAndOldVersionsRemainSearchable(String)[4]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.023">
+    <system-out><![CDATA[2026-10-30T02:49:03.471Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.471Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.476Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391448283194593280/versions
+2026-10-30T02:49:03.476Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391448283194593280/versions
+2026-10-30T02:49:03.480Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.481Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.486Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.486Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="keywordSpecialCharactersRemainLiteralAndOldVersionsRemainSearchable(String)[5]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.023">
+    <system-out><![CDATA[2026-10-30T02:49:03.494Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.495Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.500Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391448283295256576/versions
+2026-10-30T02:49:03.500Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391448283295256576/versions
+2026-10-30T02:49:03.505Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.506Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.510Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.511Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="keywordSpecialCharactersRemainLiteralAndOldVersionsRemainSearchable(String)[6]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.025">
+    <system-out><![CDATA[2026-10-30T02:49:03.521Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.522Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.527Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391448283408502784/versions
+2026-10-30T02:49:03.528Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391448283408502784/versions
+2026-10-30T02:49:03.532Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.532Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.538Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.538Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="keywordSpecialCharactersRemainLiteralAndOldVersionsRemainSearchable(String)[7]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.027">
+    <system-out><![CDATA[2026-10-30T02:49:03.546Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.547Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.552Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents/391448283513360384/versions
+2026-10-30T02:49:03.552Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents/391448283513360384/versions
+2026-10-30T02:49:03.556Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:49:03.556Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:49:03.565Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.566Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="fileMetadataQueriesDoNotGrowPerVersion(String)[1]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.017">
+    <system-out><![CDATA[2026-10-30T02:49:03.583Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.584Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="fileMetadataQueriesDoNotGrowPerVersion(String)[2]" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.023">
+    <system-out><![CDATA[2026-10-30T02:49:03.608Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.608Z DEBUG 22936 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+  <testcase name="countAndPageUseTheSameSnapshotAcrossAConcurrentInsert" classname="com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest" time="0.017">
+    <system-out><![CDATA[2026-10-30T02:49:03.619Z DEBUG 22936 --- [edhr] [pool-2-thread-1] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:49:03.620Z DEBUG 22936 --- [edhr] [pool-2-thread-1] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+]]></system-out>
+  </testcase>
+</testsuite>

@@ -1,0 +1,939 @@
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.0)
+
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+2026-10-30T02:51:17.460Z DEBUG 23071 --- [edhr] [           main] c.z.e.i.s.JwtAuthenticationFilter        : Filter 'com.zencas.edhr.identity.security.JwtAuthenticationFilter' configured for use
+2026-10-30T02:51:17.667Z  WARN 23071 --- [edhr] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-30T02:51:18.230Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    drop table if exists audit_event cascade
+Hibernate: 
+    drop table if exists audit_event cascade
+2026-10-30T02:51:18.233Z  WARN 23071 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T02:51:18.233Z  WARN 23071 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "audit_event" does not exist, skipping
+2026-10-30T02:51:18.233Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    drop table if exists document_category cascade
+Hibernate: 
+    drop table if exists document_category cascade
+2026-10-30T02:51:18.234Z  WARN 23071 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T02:51:18.234Z  WARN 23071 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "document_category" does not exist, skipping
+2026-10-30T02:51:18.234Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    drop table if exists document_version cascade
+Hibernate: 
+    drop table if exists document_version cascade
+2026-10-30T02:51:18.234Z  WARN 23071 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T02:51:18.234Z  WARN 23071 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "document_version" does not exist, skipping
+2026-10-30T02:51:18.234Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    drop table if exists file_object cascade
+Hibernate: 
+    drop table if exists file_object cascade
+2026-10-30T02:51:18.234Z  WARN 23071 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T02:51:18.234Z  WARN 23071 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "file_object" does not exist, skipping
+2026-10-30T02:51:18.234Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    drop table if exists sop_document cascade
+Hibernate: 
+    drop table if exists sop_document cascade
+2026-10-30T02:51:18.235Z  WARN 23071 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Warning Code: 0, SQLState: 00000
+2026-10-30T02:51:18.235Z  WARN 23071 --- [edhr] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : table "sop_document" does not exist, skipping
+2026-10-30T02:51:18.237Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    create table audit_event (
+        created_at timestamp(6),
+        id bigint not null,
+        snapshot_hash varchar(64),
+        action varchar(255),
+        data_summary varchar(255),
+        entity_id varchar(255),
+        entity_type varchar(255),
+        function_name varchar(255),
+        ip_address varchar(255),
+        menu_name varchar(255),
+        module_name varchar(255),
+        operator_account varchar(255),
+        operator_id varchar(255),
+        operator_name varchar(255),
+        reason TEXT,
+        source varchar(255),
+        tenant_id varchar(255),
+        content_after jsonb,
+        content_before jsonb,
+        primary key (id)
+    )
+Hibernate: 
+    create table audit_event (
+        created_at timestamp(6),
+        id bigint not null,
+        snapshot_hash varchar(64),
+        action varchar(255),
+        data_summary varchar(255),
+        entity_id varchar(255),
+        entity_type varchar(255),
+        function_name varchar(255),
+        ip_address varchar(255),
+        menu_name varchar(255),
+        module_name varchar(255),
+        operator_account varchar(255),
+        operator_id varchar(255),
+        operator_name varchar(255),
+        reason TEXT,
+        source varchar(255),
+        tenant_id varchar(255),
+        content_after jsonb,
+        content_before jsonb,
+        primary key (id)
+    )
+2026-10-30T02:51:18.241Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    create table document_category (
+        sort_order integer,
+        system_category boolean not null,
+        created_at timestamp(6),
+        id bigint not null,
+        updated_at timestamp(6),
+        tenant_id varchar(64) not null,
+        name varchar(128) not null,
+        created_by varchar(255),
+        updated_by varchar(255),
+        primary key (id)
+    )
+Hibernate: 
+    create table document_category (
+        sort_order integer,
+        system_category boolean not null,
+        created_at timestamp(6),
+        id bigint not null,
+        updated_at timestamp(6),
+        tenant_id varchar(64) not null,
+        name varchar(128) not null,
+        created_by varchar(255),
+        updated_by varchar(255),
+        primary key (id)
+    )
+2026-10-30T02:51:18.243Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    create table document_version (
+        created_at timestamp(6),
+        document_id bigint not null,
+        effective_date timestamp(6),
+        expiry_date timestamp(6),
+        file_id bigint,
+        id bigint not null,
+        updated_at timestamp(6),
+        version_status varchar(32),
+        code varchar(64) not null,
+        version varchar(64) not null,
+        file_reference varchar(1024),
+        created_by varchar(255),
+        description TEXT,
+        tenant_id varchar(255) not null,
+        updated_by varchar(255),
+        primary key (id)
+    )
+Hibernate: 
+    create table document_version (
+        created_at timestamp(6),
+        document_id bigint not null,
+        effective_date timestamp(6),
+        expiry_date timestamp(6),
+        file_id bigint,
+        id bigint not null,
+        updated_at timestamp(6),
+        version_status varchar(32),
+        code varchar(64) not null,
+        version varchar(64) not null,
+        file_reference varchar(1024),
+        created_by varchar(255),
+        description TEXT,
+        tenant_id varchar(255) not null,
+        updated_by varchar(255),
+        primary key (id)
+    )
+2026-10-30T02:51:18.245Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    create table file_object (
+        created_at timestamp(6),
+        file_size bigint,
+        id bigint not null,
+        md5_hash varchar(255),
+        mime_type varchar(255),
+        original_name varchar(255),
+        stored_path varchar(255),
+        target_id varchar(255),
+        target_type varchar(255),
+        tenant_id varchar(255),
+        uploaded_by varchar(255),
+        primary key (id)
+    )
+Hibernate: 
+    create table file_object (
+        created_at timestamp(6),
+        file_size bigint,
+        id bigint not null,
+        md5_hash varchar(255),
+        mime_type varchar(255),
+        original_name varchar(255),
+        stored_path varchar(255),
+        target_id varchar(255),
+        target_type varchar(255),
+        tenant_id varchar(255),
+        uploaded_by varchar(255),
+        primary key (id)
+    )
+2026-10-30T02:51:18.248Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    create table sop_document (
+        category_id bigint,
+        created_at timestamp(6),
+        id bigint not null,
+        updated_at timestamp(6),
+        document_type varchar(32) not null,
+        code varchar(64) not null,
+        created_by varchar(255),
+        description TEXT,
+        file_reference varchar(255),
+        status varchar(255),
+        tenant_id varchar(255),
+        title varchar(255),
+        updated_by varchar(255),
+        version varchar(255),
+        primary key (id)
+    )
+Hibernate: 
+    create table sop_document (
+        category_id bigint,
+        created_at timestamp(6),
+        id bigint not null,
+        updated_at timestamp(6),
+        document_type varchar(32) not null,
+        code varchar(64) not null,
+        created_by varchar(255),
+        description TEXT,
+        file_reference varchar(255),
+        status varchar(255),
+        tenant_id varchar(255),
+        title varchar(255),
+        updated_by varchar(255),
+        version varchar(255),
+        primary key (id)
+    )
+WARNING: A Java agent has been loaded dynamically (/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-10-30T02:51:19.402Z  WARN 23071 --- [edhr] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: 6e4900ad-3ded-4fca-8c18-5bfad0d572de
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-30T02:51:19.405Z  INFO 23071 --- [edhr] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-30T02:51:19.533Z  INFO 23071 --- [edhr] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@785e65cd, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6a2affb6, org.springframework.security.web.context.SecurityContextHolderFilter@49e09b23, org.springframework.security.web.header.HeaderWriterFilter@30ad845d, org.springframework.web.filter.CorsFilter@683cd50d, org.springframework.security.web.authentication.logout.LogoutFilter@5fb8db6c, com.zencas.edhr.identity.security.JwtAuthenticationFilter@26ca12a2, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1459ffe4, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@27504ed3, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@280c955c, org.springframework.security.web.session.SessionManagementFilter@2668c100, org.springframework.security.web.access.ExceptionTranslationFilter@608df685, org.springframework.security.web.access.intercept.AuthorizationFilter@61be6b03]
+2026-10-30T02:51:19.780Z DEBUG 23071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/master-data/documents
+2026-10-30T02:51:19.799Z DEBUG 23071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured POST /api/v1/master-data/documents
+2026-10-30T02:51:19.850Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    select
+        sd1_0.id,
+        sd1_0.category_id,
+        sd1_0.code,
+        sd1_0.created_at,
+        sd1_0.created_by,
+        sd1_0.description,
+        sd1_0.document_type,
+        sd1_0.file_reference,
+        sd1_0.status,
+        sd1_0.tenant_id,
+        sd1_0.title,
+        sd1_0.updated_at,
+        sd1_0.updated_by,
+        sd1_0.version 
+    from
+        sop_document sd1_0 
+    where
+        sd1_0.id=?
+Hibernate: 
+    select
+        sd1_0.id,
+        sd1_0.category_id,
+        sd1_0.code,
+        sd1_0.created_at,
+        sd1_0.created_by,
+        sd1_0.description,
+        sd1_0.document_type,
+        sd1_0.file_reference,
+        sd1_0.status,
+        sd1_0.tenant_id,
+        sd1_0.title,
+        sd1_0.updated_at,
+        sd1_0.updated_by,
+        sd1_0.version 
+    from
+        sop_document sd1_0 
+    where
+        sd1_0.id=?
+2026-10-30T02:51:19.888Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    select
+        dv1_0.id 
+    from
+        document_version dv1_0 
+    where
+        dv1_0.document_id=? 
+        and upper(dv1_0.version)=upper(?) 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        dv1_0.id 
+    from
+        document_version dv1_0 
+    where
+        dv1_0.document_id=? 
+        and upper(dv1_0.version)=upper(?) 
+    fetch
+        first ? rows only
+2026-10-30T02:51:19.893Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    select
+        dv1_0.id 
+    from
+        document_version dv1_0 
+    where
+        dv1_0.tenant_id=? 
+        and upper(dv1_0.code)=upper(?) 
+    fetch
+        first ? rows only
+Hibernate: 
+    select
+        dv1_0.id 
+    from
+        document_version dv1_0 
+    where
+        dv1_0.tenant_id=? 
+        and upper(dv1_0.code)=upper(?) 
+    fetch
+        first ? rows only
+2026-10-30T02:51:19.896Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    select
+        dv1_0.id,
+        dv1_0.code,
+        dv1_0.created_at,
+        dv1_0.created_by,
+        dv1_0.description,
+        dv1_0.document_id,
+        dv1_0.effective_date,
+        dv1_0.expiry_date,
+        dv1_0.file_id,
+        dv1_0.file_reference,
+        dv1_0.tenant_id,
+        dv1_0.updated_at,
+        dv1_0.updated_by,
+        dv1_0.version,
+        dv1_0.version_status 
+    from
+        document_version dv1_0 
+    where
+        dv1_0.id=?
+Hibernate: 
+    select
+        dv1_0.id,
+        dv1_0.code,
+        dv1_0.created_at,
+        dv1_0.created_by,
+        dv1_0.description,
+        dv1_0.document_id,
+        dv1_0.effective_date,
+        dv1_0.expiry_date,
+        dv1_0.file_id,
+        dv1_0.file_reference,
+        dv1_0.tenant_id,
+        dv1_0.updated_at,
+        dv1_0.updated_by,
+        dv1_0.version,
+        dv1_0.version_status 
+    from
+        document_version dv1_0 
+    where
+        dv1_0.id=?
+2026-10-30T02:51:19.899Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    select
+        ae1_0.id,
+        ae1_0.action,
+        ae1_0.content_after,
+        ae1_0.content_before,
+        ae1_0.created_at,
+        ae1_0.data_summary,
+        ae1_0.entity_id,
+        ae1_0.entity_type,
+        ae1_0.function_name,
+        ae1_0.ip_address,
+        ae1_0.menu_name,
+        ae1_0.module_name,
+        ae1_0.operator_account,
+        ae1_0.operator_id,
+        ae1_0.operator_name,
+        ae1_0.reason,
+        ae1_0.snapshot_hash,
+        ae1_0.source,
+        ae1_0.tenant_id 
+    from
+        audit_event ae1_0 
+    where
+        ae1_0.id=?
+Hibernate: 
+    select
+        ae1_0.id,
+        ae1_0.action,
+        ae1_0.content_after,
+        ae1_0.content_before,
+        ae1_0.created_at,
+        ae1_0.data_summary,
+        ae1_0.entity_id,
+        ae1_0.entity_type,
+        ae1_0.function_name,
+        ae1_0.ip_address,
+        ae1_0.menu_name,
+        ae1_0.module_name,
+        ae1_0.operator_account,
+        ae1_0.operator_id,
+        ae1_0.operator_name,
+        ae1_0.reason,
+        ae1_0.snapshot_hash,
+        ae1_0.source,
+        ae1_0.tenant_id 
+    from
+        audit_event ae1_0 
+    where
+        ae1_0.id=?
+2026-10-30T02:51:19.901Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    select
+        ae1_0.id,
+        ae1_0.action,
+        ae1_0.content_after,
+        ae1_0.content_before,
+        ae1_0.created_at,
+        ae1_0.data_summary,
+        ae1_0.entity_id,
+        ae1_0.entity_type,
+        ae1_0.function_name,
+        ae1_0.ip_address,
+        ae1_0.menu_name,
+        ae1_0.module_name,
+        ae1_0.operator_account,
+        ae1_0.operator_id,
+        ae1_0.operator_name,
+        ae1_0.reason,
+        ae1_0.snapshot_hash,
+        ae1_0.source,
+        ae1_0.tenant_id 
+    from
+        audit_event ae1_0 
+    where
+        ae1_0.id=?
+Hibernate: 
+    select
+        ae1_0.id,
+        ae1_0.action,
+        ae1_0.content_after,
+        ae1_0.content_before,
+        ae1_0.created_at,
+        ae1_0.data_summary,
+        ae1_0.entity_id,
+        ae1_0.entity_type,
+        ae1_0.function_name,
+        ae1_0.ip_address,
+        ae1_0.menu_name,
+        ae1_0.module_name,
+        ae1_0.operator_account,
+        ae1_0.operator_id,
+        ae1_0.operator_name,
+        ae1_0.reason,
+        ae1_0.snapshot_hash,
+        ae1_0.source,
+        ae1_0.tenant_id 
+    from
+        audit_event ae1_0 
+    where
+        ae1_0.id=?
+2026-10-30T02:51:19.908Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    insert 
+    into
+        sop_document
+        (category_id, code, created_at, created_by, description, document_type, file_reference, status, tenant_id, title, updated_at, updated_by, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        sop_document
+        (category_id, code, created_at, created_by, description, document_type, file_reference, status, tenant_id, title, updated_at, updated_by, version, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-10-30T02:51:19.911Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    insert 
+    into
+        document_version
+        (code, created_at, created_by, description, document_id, effective_date, expiry_date, file_id, file_reference, tenant_id, updated_at, updated_by, version, version_status, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        document_version
+        (code, created_at, created_by, description, document_id, effective_date, expiry_date, file_id, file_reference, tenant_id, updated_at, updated_by, version, version_status, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-10-30T02:51:19.912Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    insert 
+    into
+        audit_event
+        (action, content_after, content_before, created_at, data_summary, entity_id, entity_type, function_name, ip_address, menu_name, module_name, operator_account, operator_id, operator_name, reason, snapshot_hash, source, tenant_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_event
+        (action, content_after, content_before, created_at, data_summary, entity_id, entity_type, function_name, ip_address, menu_name, module_name, operator_account, operator_id, operator_name, reason, snapshot_hash, source, tenant_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-10-30T02:51:19.914Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    insert 
+    into
+        audit_event
+        (action, content_after, content_before, created_at, data_summary, entity_id, entity_type, function_name, ip_address, menu_name, module_name, operator_account, operator_id, operator_name, reason, snapshot_hash, source, tenant_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        audit_event
+        (action, content_after, content_before, created_at, data_summary, entity_id, entity_type, function_name, ip_address, menu_name, module_name, operator_account, operator_id, operator_name, reason, snapshot_hash, source, tenant_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-10-30T02:51:19.932Z DEBUG 23071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:51:19.934Z DEBUG 23071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:51:19.951Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    SELECT
+        COUNT(*) 
+    FROM
+        sop_document d 
+    WHERE
+        (
+            ? = true     
+            OR (
+                ? = true 
+                AND d.category_id IS NULL
+            )     
+            OR (
+                ? = false 
+                AND d.category_id = ?
+            )
+        )   
+        AND (
+            ? = '' 
+            OR LOWER(d.title) LIKE LOWER(?) ESCAPE '!'     
+            OR EXISTS (SELECT
+                1 
+            FROM
+                document_version v         
+            WHERE
+                v.document_id = d.id 
+                AND LOWER(v.code) LIKE LOWER(?) ESCAPE '!')
+        ) 
+Hibernate: 
+    SELECT
+        COUNT(*) 
+    FROM
+        sop_document d 
+    WHERE
+        (
+            ? = true     
+            OR (
+                ? = true 
+                AND d.category_id IS NULL
+            )     
+            OR (
+                ? = false 
+                AND d.category_id = ?
+            )
+        )   
+        AND (
+            ? = '' 
+            OR LOWER(d.title) LIKE LOWER(?) ESCAPE '!'     
+            OR EXISTS (SELECT
+                1 
+            FROM
+                document_version v         
+            WHERE
+                v.document_id = d.id 
+                AND LOWER(v.code) LIKE LOWER(?) ESCAPE '!')
+        ) 
+2026-10-30T02:51:19.956Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    SELECT
+        d.* 
+    FROM
+        sop_document d 
+    WHERE
+        (
+            ? = true     
+            OR (
+                ? = true 
+                AND d.category_id IS NULL
+            )     
+            OR (
+                ? = false 
+                AND d.category_id = ?
+            )
+        )   
+        AND (
+            ? = '' 
+            OR LOWER(d.title) LIKE LOWER(?) ESCAPE '!'     
+            OR EXISTS (SELECT
+                1 
+            FROM
+                document_version v         
+            WHERE
+                v.document_id = d.id 
+                AND LOWER(v.code) LIKE LOWER(?) ESCAPE '!')
+        )  
+    ORDER BY
+        d.updated_at DESC NULLS FIRST,
+        d.id ASC 
+    LIMIT
+        ? 
+    OFFSET
+        ?
+Hibernate: 
+    SELECT
+        d.* 
+    FROM
+        sop_document d 
+    WHERE
+        (
+            ? = true     
+            OR (
+                ? = true 
+                AND d.category_id IS NULL
+            )     
+            OR (
+                ? = false 
+                AND d.category_id = ?
+            )
+        )   
+        AND (
+            ? = '' 
+            OR LOWER(d.title) LIKE LOWER(?) ESCAPE '!'     
+            OR EXISTS (SELECT
+                1 
+            FROM
+                document_version v         
+            WHERE
+                v.document_id = d.id 
+                AND LOWER(v.code) LIKE LOWER(?) ESCAPE '!')
+        )  
+    ORDER BY
+        d.updated_at DESC NULLS FIRST,
+        d.id ASC 
+    LIMIT
+        ? 
+    OFFSET
+        ?
+2026-10-30T02:51:19.964Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    select
+        dv1_0.id,
+        dv1_0.code,
+        dv1_0.created_at,
+        dv1_0.created_by,
+        dv1_0.description,
+        dv1_0.document_id,
+        dv1_0.effective_date,
+        dv1_0.expiry_date,
+        dv1_0.file_id,
+        dv1_0.file_reference,
+        dv1_0.tenant_id,
+        dv1_0.updated_at,
+        dv1_0.updated_by,
+        dv1_0.version,
+        dv1_0.version_status 
+    from
+        document_version dv1_0 
+    where
+        dv1_0.document_id in (?) 
+    order by
+        dv1_0.created_at desc
+Hibernate: 
+    select
+        dv1_0.id,
+        dv1_0.code,
+        dv1_0.created_at,
+        dv1_0.created_by,
+        dv1_0.description,
+        dv1_0.document_id,
+        dv1_0.effective_date,
+        dv1_0.expiry_date,
+        dv1_0.file_id,
+        dv1_0.file_reference,
+        dv1_0.tenant_id,
+        dv1_0.updated_at,
+        dv1_0.updated_by,
+        dv1_0.version,
+        dv1_0.version_status 
+    from
+        document_version dv1_0 
+    where
+        dv1_0.document_id in (?) 
+    order by
+        dv1_0.created_at desc
+2026-10-30T02:51:19.969Z DEBUG 23071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:51:19.971Z DEBUG 23071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:51:19.972Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    SELECT
+        COUNT(*) 
+    FROM
+        sop_document d 
+    WHERE
+        (
+            ? = true     
+            OR (
+                ? = true 
+                AND d.category_id IS NULL
+            )     
+            OR (
+                ? = false 
+                AND d.category_id = ?
+            )
+        )   
+        AND (
+            ? = '' 
+            OR LOWER(d.title) LIKE LOWER(?) ESCAPE '!'     
+            OR EXISTS (SELECT
+                1 
+            FROM
+                document_version v         
+            WHERE
+                v.document_id = d.id 
+                AND LOWER(v.code) LIKE LOWER(?) ESCAPE '!')
+        ) 
+Hibernate: 
+    SELECT
+        COUNT(*) 
+    FROM
+        sop_document d 
+    WHERE
+        (
+            ? = true     
+            OR (
+                ? = true 
+                AND d.category_id IS NULL
+            )     
+            OR (
+                ? = false 
+                AND d.category_id = ?
+            )
+        )   
+        AND (
+            ? = '' 
+            OR LOWER(d.title) LIKE LOWER(?) ESCAPE '!'     
+            OR EXISTS (SELECT
+                1 
+            FROM
+                document_version v         
+            WHERE
+                v.document_id = d.id 
+                AND LOWER(v.code) LIKE LOWER(?) ESCAPE '!')
+        ) 
+2026-10-30T02:51:19.974Z DEBUG 23071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/master-data/documents
+2026-10-30T02:51:19.976Z DEBUG 23071 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/master-data/documents
+2026-10-30T02:51:19.977Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    SELECT
+        COUNT(*) 
+    FROM
+        sop_document d 
+    WHERE
+        (
+            ? = true     
+            OR (
+                ? = true 
+                AND d.category_id IS NULL
+            )     
+            OR (
+                ? = false 
+                AND d.category_id = ?
+            )
+        )   
+        AND (
+            ? = '' 
+            OR LOWER(d.title) LIKE LOWER(?) ESCAPE '!'     
+            OR EXISTS (SELECT
+                1 
+            FROM
+                document_version v         
+            WHERE
+                v.document_id = d.id 
+                AND LOWER(v.code) LIKE LOWER(?) ESCAPE '!')
+        ) 
+Hibernate: 
+    SELECT
+        COUNT(*) 
+    FROM
+        sop_document d 
+    WHERE
+        (
+            ? = true     
+            OR (
+                ? = true 
+                AND d.category_id IS NULL
+            )     
+            OR (
+                ? = false 
+                AND d.category_id = ?
+            )
+        )   
+        AND (
+            ? = '' 
+            OR LOWER(d.title) LIKE LOWER(?) ESCAPE '!'     
+            OR EXISTS (SELECT
+                1 
+            FROM
+                document_version v         
+            WHERE
+                v.document_id = d.id 
+                AND LOWER(v.code) LIKE LOWER(?) ESCAPE '!')
+        ) 
+2026-10-30T02:51:19.978Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    SELECT
+        d.* 
+    FROM
+        sop_document d 
+    WHERE
+        (
+            ? = true     
+            OR (
+                ? = true 
+                AND d.category_id IS NULL
+            )     
+            OR (
+                ? = false 
+                AND d.category_id = ?
+            )
+        )   
+        AND (
+            ? = '' 
+            OR LOWER(d.title) LIKE LOWER(?) ESCAPE '!'     
+            OR EXISTS (SELECT
+                1 
+            FROM
+                document_version v         
+            WHERE
+                v.document_id = d.id 
+                AND LOWER(v.code) LIKE LOWER(?) ESCAPE '!')
+        )  
+    ORDER BY
+        d.updated_at DESC NULLS FIRST,
+        d.id ASC 
+    LIMIT
+        ? 
+    OFFSET
+        ?
+Hibernate: 
+    SELECT
+        d.* 
+    FROM
+        sop_document d 
+    WHERE
+        (
+            ? = true     
+            OR (
+                ? = true 
+                AND d.category_id IS NULL
+            )     
+            OR (
+                ? = false 
+                AND d.category_id = ?
+            )
+        )   
+        AND (
+            ? = '' 
+            OR LOWER(d.title) LIKE LOWER(?) ESCAPE '!'     
+            OR EXISTS (SELECT
+                1 
+            FROM
+                document_version v         
+            WHERE
+                v.document_id = d.id 
+                AND LOWER(v.code) LIKE LOWER(?) ESCAPE '!')
+        )  
+    ORDER BY
+        d.updated_at DESC NULLS FIRST,
+        d.id ASC 
+    LIMIT
+        ? 
+    OFFSET
+        ?
+2026-10-30T02:51:19.979Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    select
+        dv1_0.id,
+        dv1_0.code,
+        dv1_0.created_at,
+        dv1_0.created_by,
+        dv1_0.description,
+        dv1_0.document_id,
+        dv1_0.effective_date,
+        dv1_0.expiry_date,
+        dv1_0.file_id,
+        dv1_0.file_reference,
+        dv1_0.tenant_id,
+        dv1_0.updated_at,
+        dv1_0.updated_by,
+        dv1_0.version,
+        dv1_0.version_status 
+    from
+        document_version dv1_0 
+    where
+        dv1_0.document_id in (?) 
+    order by
+        dv1_0.created_at desc
+Hibernate: 
+    select
+        dv1_0.id,
+        dv1_0.code,
+        dv1_0.created_at,
+        dv1_0.created_by,
+        dv1_0.description,
+        dv1_0.document_id,
+        dv1_0.effective_date,
+        dv1_0.expiry_date,
+        dv1_0.file_id,
+        dv1_0.file_reference,
+        dv1_0.tenant_id,
+        dv1_0.updated_at,
+        dv1_0.updated_by,
+        dv1_0.version,
+        dv1_0.version_status 
+    from
+        document_version dv1_0 
+    where
+        dv1_0.document_id in (?) 
+    order by
+        dv1_0.created_at desc
+{"createStatus":200,"createBody":{"code":200,"message":"success","data":{"id":"391448855138275328","title":"ΟΣ work instruction","createdBy":"独立复验","createdAt":"2026-10-30T02:51:19.832944494","updatedBy":"独立复验","updatedAt":"2026-10-30T02:51:19.832944494","versions":[{"id":"391448855398322176","documentId":"391448855138275328","version":"V1","code":"SIGMA-PROBE","status":"ACTIVE","createdBy":"独立复验","createdAt":"2026-10-30T02:51:19.832944494","updatedBy":"独立复验","updatedAt":"2026-10-30T02:51:19.832944494"}]},"timestamp":"2026-10-30T02:51:19.902473551Z","traceId":"e336942f-bbbf-4696-b5b0-b04c125f1820"},"ΟΣ":{"status":200,"body":{"code":200,"message":"success","data":{"content":[{"id":"391448855138275328","title":"ΟΣ work instruction","createdBy":"独立复验","createdAt":"2026-10-30T02:51:19.832944","updatedBy":"独立复验","updatedAt":"2026-10-30T02:51:19.832944","versions":[{"id":"391448855398322176","documentId":"391448855138275328","version":"V1","code":"SIGMA-PROBE","status":"ACTIVE","createdBy":"独立复验","createdAt":"2026-10-30T02:51:19.832944","updatedBy":"独立复验","updatedAt":"2026-10-30T02:51:19.832944"}]}],"page":1,"size":20,"totalElements":1,"totalPages":1},"timestamp":"2026-10-30T02:51:19.967501375Z","traceId":"6894bf2c-8b3b-4a3a-b566-6ef1484ea28c"}},"ος":{"status":200,"body":{"code":200,"message":"success","data":{"content":[],"page":1,"size":20,"totalElements":0,"totalPages":0},"timestamp":"2026-10-30T02:51:19.974091656Z","traceId":"d988070a-9f45-4a9a-aeed-026c0221acaf"}},"οσ":{"status":200,"body":{"code":200,"message":"success","data":{"content":[{"id":"391448855138275328","title":"ΟΣ work instruction","createdBy":"独立复验","createdAt":"2026-10-30T02:51:19.832944","updatedBy":"独立复验","updatedAt":"2026-10-30T02:51:19.832944","versions":[{"id":"391448855398322176","documentId":"391448855138275328","version":"V1","code":"SIGMA-PROBE","status":"ACTIVE","createdBy":"独立复验","createdAt":"2026-10-30T02:51:19.832944","updatedBy":"独立复验","updatedAt":"2026-10-30T02:51:19.832944"}]}],"page":1,"size":20,"totalElements":1,"totalPages":1},"timestamp":"2026-10-30T02:51:19.980957639Z","traceId":"cd37bcdb-6a54-4e23-9add-ad8ac98041d9"}},"oldJavaLowerTitle":"ος work instruction","oldJavaLowerKeyword":"ος","oldJavaContains":true,"persistedTitle":"ΟΣ work instruction"}
+2026-10-30T02:51:19.994Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    drop table if exists audit_event cascade
+Hibernate: 
+    drop table if exists audit_event cascade
+2026-10-30T02:51:19.997Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    drop table if exists document_category cascade
+Hibernate: 
+    drop table if exists document_category cascade
+2026-10-30T02:51:19.998Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    drop table if exists document_version cascade
+Hibernate: 
+    drop table if exists document_version cascade
+2026-10-30T02:51:19.999Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    drop table if exists file_object cascade
+Hibernate: 
+    drop table if exists file_object cascade
+2026-10-30T02:51:20.001Z DEBUG 23071 --- [edhr] [           main] org.hibernate.SQL                        : 
+    drop table if exists sop_document cascade
+Hibernate: 
+    drop table if exists sop_document cascade

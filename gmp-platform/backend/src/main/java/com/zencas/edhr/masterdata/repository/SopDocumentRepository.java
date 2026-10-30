@@ -17,9 +17,9 @@ public interface SopDocumentRepository extends JpaRepository<SopDocument, Long>,
             WHERE (:allCategories = true
                 OR (:uncategorized = true AND d.category_id IS NULL)
                 OR (:uncategorized = false AND d.category_id = :categoryId))
-              AND (:pattern = '' OR LOWER(d.title) LIKE LOWER(:pattern) ESCAPE '!'
+              AND (:pattern = '' OR LOWER(NORMALIZE(UPPER(d.title))) LIKE LOWER(NORMALIZE(UPPER(:pattern))) ESCAPE '!'
                 OR EXISTS (SELECT 1 FROM document_version v
-                    WHERE v.document_id = d.id AND LOWER(v.code) LIKE LOWER(:pattern) ESCAPE '!'))
+                    WHERE v.document_id = d.id AND LOWER(NORMALIZE(UPPER(v.code))) LIKE LOWER(NORMALIZE(UPPER(:pattern))) ESCAPE '!'))
             """;
 
     @Query(value = "SELECT COUNT(*) FROM sop_document d " + LIST_FILTER, nativeQuery = true)
