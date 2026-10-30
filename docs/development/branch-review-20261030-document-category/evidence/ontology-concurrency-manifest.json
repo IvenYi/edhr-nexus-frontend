@@ -1,0 +1,148 @@
+{
+  "role": "business-knowledge-modeler",
+  "roleState": "FINAL",
+  "ontologyResult": "not-applicable",
+  "actualSourceCommit": "ac3a421e42529bdb304e2c72145ceb580ec70618",
+  "actualTargetCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+  "actualContractReadCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+  "contractBaseline": {
+    "sourceCommit": "ac3a421e42529bdb304e2c72145ceb580ec70618",
+    "targetBranch": "edhr-dev",
+    "targetCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+    "contractReadCommit": "d10590bd3fe8f3da4e68bcc087b2102d2c211934",
+    "uncommittedContractPaths": []
+  },
+  "workingTreeStatusAtFinal": "M docs/development/branch-review-20261015/NEXT.md\n M docs/development/branch-review-20261030-document-category/README.md\n M docs/development/branch-review-20261030-document-category/a23-review.json\n M docs/development/branch-review-20261030-document-category/decision-package.yaml\n M docs/development/branch-review-20261030-document-category/review-notes.md\n M docs/development/branch-review-20261030-document-category/scope-review.md\n M docs/development/branch-review-20261030-document-category/source-review.json\n M gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java\n M gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java\n M gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentCategoryAuditPostgresTest.java\n M gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/DocumentManagementControllerTest.java\n?? docs/development/branch-review-20261030-document-category/evidence/first-quality/\n?? docs/development/branch-review-20261030-document-category/evidence/original-decision-package.yaml",
+  "sourceState": "Actualac3aHEAD plus explicit uncommitted controller/repository locking fix; frontend unchanged fromac3a. Not final product runtime acceptance.",
+  "knowledgeBaselineVersion": "0.3.25",
+  "schemaVersion": "1.2.0",
+  "limitedExistingIds": 12,
+  "deltaCheckedIds": [
+    "rule.master-data.write-audit-snapshot",
+    "DEC-0065-03",
+    "term.audit-change-snapshot",
+    "concept.audit-change-snapshot",
+    "term.audit-event",
+    "concept.audit-event"
+  ],
+  "newSemanticIds": [],
+  "wholeFileCompletion": 0,
+  "newHistoricalUniqueIncrement": null,
+  "committedKnowledgeContractToolDelta": [],
+  "workingKnowledgeContractToolDelta": [],
+  "knowledgeChangedByRole": [],
+  "productOrTestChangedByRole": [],
+  "knowledgeRerun": false,
+  "priorActual89Reused": true,
+  "originalOntologyManifest": {
+    "path": "/tmp/edhr-document-category-ontology-manifest.json",
+    "sha256": "a47ae699f48111863c4c7d0ec413461813a5c115942a8651290fc6a106882a09",
+    "bytes": 88741
+  },
+  "originalOntologyFilesVerified": [
+    {
+      "path": "/tmp/edhr-document-category-ontology-result.yaml",
+      "sha256": "e21979eb0da4f2fcd46ad249602f6f4dd29f74b35576ae47afe4e5f66da8f3bd",
+      "bytes": 3151
+    },
+    {
+      "path": "/tmp/edhr-document-category-rule-review.json",
+      "sha256": "abc6b29e5529444f4055ace516f2a6294466fd36b17523b0202606a04bb465f9",
+      "bytes": 10894
+    },
+    {
+      "path": "/tmp/edhr-document-category-rule-review.md",
+      "sha256": "68291ac2f478a2afdacdd62a1412295efbb5ef8954194d4e2ab65a154d8eb886",
+      "bytes": 2420
+    },
+    {
+      "path": "/tmp/edhr-document-category-ontology-knowledge-test.txt",
+      "sha256": "5bf59c49e0478075e41163da8b194ba019be722a035e159aad3995e3316d21cd",
+      "bytes": 2111
+    },
+    {
+      "path": "/tmp/edhr-document-category-ontology-knowledge-junit.xml",
+      "sha256": "39baa87255a4b524756a4edc5819f50df3bfe2619ba73b8b52ace84190f5d7e2",
+      "bytes": 20421
+    },
+    {
+      "path": "/tmp/edhr-document-category-ontology-history-deletion-decision.yaml",
+      "sha256": "8caf2694aae0a4f0f33d9ac6c57fd82dc2447e44b8922d867433447b9a93d89f",
+      "bytes": 7592
+    },
+    {
+      "path": "/tmp/edhr-document-category-ontology-history-deletion-confirmed.md",
+      "sha256": "209acedbc8422dc1fb4052c3b70db7253fc6e6e0da751a8f305292a1b33329c4",
+      "bytes": 5612
+    },
+    {
+      "path": "/tmp/edhr-document-category-ontology-history-deletion-architecture.md",
+      "sha256": "c71d09a3150cdca1da81df51a666a6d5187915a9d8893418249117ed2b508f62",
+      "bytes": 5452
+    },
+    {
+      "path": "/tmp/edhr-document-category-ontology-history-audit-decision.yaml",
+      "sha256": "0e981beb87292e9fff406455c2049a2053015e871f71ba876118b71a3c9c6e5f",
+      "bytes": 4585
+    }
+  ],
+  "knowledgeFilesUnchanged": 303,
+  "knowledgeSnapshotBasis": "Original ontology manifest303exacthash/size, rechecked now without edits.",
+  "originalPrimaryRecordsVerified": 119,
+  "firstQualityArchiveRecordsVerified": 88,
+  "firstQualityResult": "failed",
+  "firstQualityResultSha256": "a833dae5dd2715c90f85e0ee459ccf0d7af36a4e4047d5f3e15b90a2af20cafc",
+  "initialPackageSha256": "88989a45bcf74ec32097869cefeda25fa1ec44fde2975cebe6993e1cd2fe6c94",
+  "currentPackageSha256": "d68c9293cd2f3038f85b1aed893006e2a5f7d91b1d35a9728585dc3d01f284ed",
+  "sourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java",
+      "featureBlob": "d75d696d198d779504fc3e4ebb9f25925218fb5a",
+      "actualSha256": "60b3179e256db34d9c4b272fedad9ac833ebf7e4c98d8af735ac903e24ea44c0",
+      "bytes": 33349
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java",
+      "featureBlob": "60c25fb3d2905fd58be9d303bead0cee075e8477",
+      "actualSha256": "0133496f0d9eedce0b11b6a2abd6eb3a8dce8bf6aae1c018f44745bb69961d9e",
+      "bytes": 1324
+    },
+    {
+      "path": "gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx",
+      "featureBlob": "138bd1a46813a0b990828315626fe5fe86a07f62",
+      "actualSha256": "a36c9d4f06c567ec1b2c6fe1a01395c0ed5959140db705e6731127a07047fc36",
+      "bytes": 68861
+    }
+  ],
+  "files": [
+    {
+      "path": "/tmp/edhr-document-category-ontology-concurrency-result.yaml",
+      "sha256": "7532407d263119e973d4d1f2dbc7c4e4c2b9747c292711f706d8f47ae20556ea",
+      "bytes": 2702
+    },
+    {
+      "path": "/tmp/edhr-document-category-ontology-concurrency-review.json",
+      "sha256": "85e1e9f6d159f2172508c625ad34de196d85a9831e50cbafd87e29ea1ec5b671",
+      "bytes": 5256
+    },
+    {
+      "path": "/tmp/edhr-document-category-ontology-concurrency-review.md",
+      "sha256": "2dfef261aa927a3b58c5126a944ce36c6dfe51ae4e5d40237ebd84a515de5b2f",
+      "bytes": 2291
+    },
+    {
+      "path": "/tmp/edhr-document-category-ontology-concurrency-product-diff.txt",
+      "sha256": "b0ae1be6dec70fc31b0d1428fc32ce05381e5a1466246ed6aeb363730f111994",
+      "bytes": 4147
+    }
+  ],
+  "notRun": [
+    "knowledge89 rerun",
+    "product401/backend tests",
+    "nativeconcurrency probes",
+    "browser",
+    "premiumauditor",
+    "CI/Actions",
+    "merge/deploy/restore"
+  ]
+}

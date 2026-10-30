@@ -1,0 +1,11 @@
+# 文档分类并发补正：本体增量核对
+
+FINAL：ontologyResult.result 为 not-applicable。当前实际来源ac3a421e42529bdb304e2c72145ceb580ec70618加明确未提交Controller/Repository锁定读取差异，目标和实际契约读取基线仍d10590bd3fe8f3da4e68bcc087b2102d2c211934。三产品文件中前端相对ac3a无变化。
+
+首轮独立failed确认第二成功排序写者恢复已变化顺序却没有自身审计，属于原AUD排序审计同一家族的前值新鲜度遗漏。规范仍是每个实际业务变化都有准确不可变前后差量，无需新增概念或业务政策。排序按同租户自定义分类稳定主键ID顺序PESSIMISTIC_WRITE读取，改名单行同租户先锁再读取before；现有Controller事务保持锁至业务与审计完成，避免排序/改名相互保存旧对象字段。固定ID锁序不随显示排序改变；普通列表读取未加写锁。
+
+更新后的包保留空/部分/未知/重复ID旧算法、同值不生成fake事件、既有权限及删除保护，没有新增409冲突政策、版本前置条件、迁移或历史数据回填。锁等待和同租户custom分类串行化是完整性代价，不是容量优化或SLA认证，也不保证网络先到请求必然先完成或所有并发组合成功。三个受控并发测试源码表达sort-sort、sort-rename、rename-sort意图；本角色未运行产品测试，未认证主侧401、并发或浏览器通过，最终仍须全新独立质量验收。
+
+原12既有ID保持，增量重点重核其中6个审计相关定义；无新semantic ID、无新增unique或整文件完成。知识0.3.25/schema1.2.0、DEC0053 specified/internal与P0 in-progress均不提升。303知识文件、契约/架构/知识验证源码与原执行逐字节相同，9份原本体原件与原89知识日志/JUnit哈希核验通过，因此明确复用原89/0fail/error/skip，不重复运行或冒称新89执行。
+
+119主侧旧原件、88首轮质量归档均核hash/size，failed原件及其medium open状态保持；初始包字节与ac3a中包及旧本体manifest哈希一致，另存original-decision-package.yaml。新包只记录此同一切片并发补正，不回写旧原件或把旧quality转绿。其他性能、原用户暂缓/四gap以及A23 W6/W7补查保持。

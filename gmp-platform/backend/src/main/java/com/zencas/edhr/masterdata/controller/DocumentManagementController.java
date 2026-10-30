@@ -108,7 +108,8 @@ public class DocumentManagementController {
     @PutMapping("/categories/{categoryId}")
     @Transactional
     public ApiResponse<DocumentCategoryResponse> updateCategory(@PathVariable Long categoryId, @RequestBody DocumentCategoryRequest request) {
-        DocumentCategory category = requireDocumentCategory(categoryId);
+        DocumentCategory category = documentCategoryRepository.findForUpdate(categoryId, TENANT_ID)
+                .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "文档分类不存在"));
         ensureCustomDocumentCategory(category);
         String name = requireCategoryName(request);
         documentCategoryRepository.findByTenantIdAndNameIgnoreCase(TENANT_ID, name)
@@ -140,8 +141,7 @@ public class DocumentManagementController {
     public ApiResponse<List<DocumentCategoryResponse>> reorderCategories(@RequestBody DocumentCategoryOrderRequest request) {
         List<String> orderedIds = request == null || request.ids() == null ? List.of() : request.ids();
         if (orderedIds.isEmpty()) return ApiResponse.success(toDocumentCategoryResponses());
-        Map<String, DocumentCategory> customCategories = documentCategoryRepository.findByTenantIdOrderBySortOrderAscNameAsc(TENANT_ID).stream()
-                .filter(category -> !category.isSystemCategory())
+        Map<String, DocumentCategory> customCategories = documentCategoryRepository.findCustomForUpdate(TENANT_ID).stream()
                 .collect(Collectors.toMap(category -> String.valueOf(category.getId()), Function.identity(), (left, right) -> left, LinkedHashMap::new));
         Map<Long, Integer> previousOrder = new LinkedHashMap<>();
         customCategories.values().forEach(category -> previousOrder.put(category.getId(), category.getSortOrder()));

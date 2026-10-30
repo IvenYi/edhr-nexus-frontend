@@ -1,0 +1,102 @@
+{
+  "command": [
+    "bash",
+    "/workspace/.edhr-cloud-tools/mvn-edhr",
+    "-f",
+    "gmp-platform/backend/pom.xml",
+    "-Dtest=DocumentCategoryAuditPostgresTest,DocumentWriteBoundaryIntegrationTest,DocumentOrmSchemaIntegrationTest,DocumentWriteBoundaryPostgresTest,DocumentReadBoundaryIntegrationTest,DocumentReadPerformancePostgresTest,DocumentManagementControllerTest,MasterDataBoundaryIntegrationTest,ProcessModelingControllerTest,ProductProcessControllerTest,MaterialImportIntegrationTest",
+    "-Dedhr.audit.documentReads=true",
+    "-Dedhr.audit.documentOutput=/tmp/edhr-document-category-concurrency-read-http.jsonl",
+    "-Dedhr.audit.documentWriteOutput=/tmp/edhr-document-category-concurrency-write-http.jsonl",
+    "-Dedhr.audit.categoryOutput=/tmp/edhr-document-category-concurrency-http.jsonl",
+    "test"
+  ],
+  "exit": 0,
+  "suites": [
+    {
+      "suite": "DocumentCategoryAuditPostgresTest",
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentWriteBoundaryIntegrationTest",
+      "tests": 55,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentOrmSchemaIntegrationTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentWriteBoundaryPostgresTest",
+      "tests": 55,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentReadBoundaryIntegrationTest",
+      "tests": 58,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentReadPerformancePostgresTest",
+      "tests": 71,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "DocumentManagementControllerTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MasterDataBoundaryIntegrationTest",
+      "tests": 60,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProcessModelingControllerTest",
+      "tests": 55,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "ProductProcessControllerTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "MaterialImportIntegrationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "totals": {
+    "tests": 401,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "canonicalSchemaSha256": "61560f972ef9eeeb8f69620c947b54b2326ad9341d929b19385653bec81cf99b",
+  "countingBoundary": "401 cross-engine executions, not401 unique; native category17 includes three controlled concurrent write pairs, old55write/58read repeat across engines."
+}

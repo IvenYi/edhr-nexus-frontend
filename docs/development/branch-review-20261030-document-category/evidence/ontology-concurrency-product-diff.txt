@@ -1,0 +1,55 @@
+diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+index d75d696d..9c6e4397 100644
+--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
++++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+@@ -108,7 +108,8 @@ public class DocumentManagementController {
+     @PutMapping("/categories/{categoryId}")
+     @Transactional
+     public ApiResponse<DocumentCategoryResponse> updateCategory(@PathVariable Long categoryId, @RequestBody DocumentCategoryRequest request) {
+-        DocumentCategory category = requireDocumentCategory(categoryId);
++        DocumentCategory category = documentCategoryRepository.findForUpdate(categoryId, TENANT_ID)
++                .orElseThrow(() -> new BusinessException(ErrorCode.GENERAL_001, "文档分类不存在"));
+         ensureCustomDocumentCategory(category);
+         String name = requireCategoryName(request);
+         documentCategoryRepository.findByTenantIdAndNameIgnoreCase(TENANT_ID, name)
+@@ -140,8 +141,7 @@ public class DocumentManagementController {
+     public ApiResponse<List<DocumentCategoryResponse>> reorderCategories(@RequestBody DocumentCategoryOrderRequest request) {
+         List<String> orderedIds = request == null || request.ids() == null ? List.of() : request.ids();
+         if (orderedIds.isEmpty()) return ApiResponse.success(toDocumentCategoryResponses());
+-        Map<String, DocumentCategory> customCategories = documentCategoryRepository.findByTenantIdOrderBySortOrderAscNameAsc(TENANT_ID).stream()
+-                .filter(category -> !category.isSystemCategory())
++        Map<String, DocumentCategory> customCategories = documentCategoryRepository.findCustomForUpdate(TENANT_ID).stream()
+                 .collect(Collectors.toMap(category -> String.valueOf(category.getId()), Function.identity(), (left, right) -> left, LinkedHashMap::new));
+         Map<Long, Integer> previousOrder = new LinkedHashMap<>();
+         customCategories.values().forEach(category -> previousOrder.put(category.getId(), category.getSortOrder()));
+diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java
+index 60c25fb3..0ddd5657 100644
+--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java
++++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java
+@@ -1,7 +1,11 @@
+ package com.zencas.edhr.masterdata.repository;
+ 
+ import com.zencas.edhr.masterdata.entity.DocumentCategory;
++import jakarta.persistence.LockModeType;
+ import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.data.jpa.repository.Lock;
++import org.springframework.data.jpa.repository.Query;
++import org.springframework.data.repository.query.Param;
+ import org.springframework.stereotype.Repository;
+ 
+ import java.util.List;
+@@ -11,6 +15,14 @@ import java.util.Optional;
+ public interface DocumentCategoryRepository extends JpaRepository<DocumentCategory, Long> {
+     List<DocumentCategory> findByTenantIdOrderBySortOrderAscNameAsc(String tenantId);
+ 
++    @Lock(LockModeType.PESSIMISTIC_WRITE)
++    @Query("select c from DocumentCategory c where c.tenantId = :tenantId and c.systemCategory = false order by c.id")
++    List<DocumentCategory> findCustomForUpdate(@Param("tenantId") String tenantId);
++
++    @Lock(LockModeType.PESSIMISTIC_WRITE)
++    @Query("select c from DocumentCategory c where c.id = :id and c.tenantId = :tenantId")
++    Optional<DocumentCategory> findForUpdate(@Param("id") Long id, @Param("tenantId") String tenantId);
++
+     Optional<DocumentCategory> findByTenantIdAndNameIgnoreCase(String tenantId, String name);
+ 
+     boolean existsByTenantIdAndNameIgnoreCase(String tenantId, String name);

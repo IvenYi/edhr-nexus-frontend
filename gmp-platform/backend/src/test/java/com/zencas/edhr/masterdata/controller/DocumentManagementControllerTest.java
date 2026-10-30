@@ -118,7 +118,7 @@ class DocumentManagementControllerTest {
     void rejectsRenamingACategoryToAnotherExistingName() {
         DocumentCategory existing = DocumentCategory.builder().id(301L).tenantId("default").name("装配").build();
         DocumentCategory duplicate = DocumentCategory.builder().id(302L).tenantId("default").name("检验").build();
-        when(documentCategoryRepository.findById(301L)).thenReturn(Optional.of(existing));
+        when(documentCategoryRepository.findForUpdate(301L, "default")).thenReturn(Optional.of(existing));
         when(documentCategoryRepository.findByTenantIdAndNameIgnoreCase("default", "检验")).thenReturn(Optional.of(duplicate));
 
         assertThatThrownBy(() -> controller.updateCategory(301L, new DocumentManagementController.DocumentCategoryRequest("检验")))

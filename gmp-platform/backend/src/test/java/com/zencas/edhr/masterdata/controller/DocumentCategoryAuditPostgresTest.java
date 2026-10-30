@@ -27,9 +27,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.sql.DriverManager;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
@@ -190,6 +193,68 @@ class DocumentCategoryAuditPostgresTest {
                 "{\"ids\":[\"202\",\"201\"]}", "fail-audit", 500);
         assertThat(failure.path("code").asInt()).isEqualTo(500);
         assertThat(snapshots()).isEqualTo(before);
+    }
+
+    @ParameterizedTest @ValueSource(strings = {"sort-sort", "sort-rename", "rename-sort"})
+    void concurrentCategoryWritesUseFreshBeforeValuesAndKeepEveryChange(String scenario) throws Exception {
+        String reverse = "{\"ids\":[\"202\",\"201\"]}", original = "{\"ids\":[\"201\",\"202\"]}";
+        String rename = "{\"name\":\"并发改名\"}";
+        try (var barrier = DriverManager.getConnection(System.getenv("EDHR_DOCUMENT_CATEGORY_DATABASE_URL"),
+                System.getenv("EDHR_DOCUMENT_CATEGORY_DATABASE_USER"), System.getenv("EDHR_DOCUMENT_CATEGORY_DATABASE_PASSWORD"));
+             var workers = Executors.newFixedThreadPool(2)) {
+            barrier.setAutoCommit(false);
+            try (var statement = barrier.createStatement()) {
+                statement.execute("SELECT id FROM document_category WHERE id=201 FOR UPDATE");
+            }
+            try {
+                var first = workers.submit(() -> perform("concurrent-first-" + scenario, "PUT",
+                        DOCUMENTS + (scenario.equals("rename-sort") ? "/categories/201" : "/categories/order"),
+                        scenario.equals("rename-sort") ? rename : reverse, "first-writer", 200));
+                awaitBlockedCategoryWriters(1);
+                var second = workers.submit(() -> perform("concurrent-second-" + scenario, "PUT",
+                        DOCUMENTS + (scenario.equals("sort-rename") ? "/categories/201" : "/categories/order"),
+                        scenario.equals("sort-rename") ? rename : scenario.equals("sort-sort") ? original : reverse,
+                        "second-writer", 200));
+                awaitBlockedCategoryWriters(2);
+                barrier.commit();
+                first.get(15, TimeUnit.SECONDS); second.get(15, TimeUnit.SECONDS);
+            } finally { barrier.rollback(); }
+        }
+        if (scenario.equals("sort-sort")) {
+            assertThat(sort(201)).isEqualTo(30); assertThat(sort(202)).isEqualTo(40);
+            assertThat(auditCount()).isEqualTo(4);
+            assertActorDelta("second-writer", 201, "{\"排序\":40}", "{\"排序\":30}");
+            assertActorDelta("second-writer", 202, "{\"排序\":30}", "{\"排序\":40}");
+        } else {
+            assertThat(sort(201)).isEqualTo(40); assertThat(sort(202)).isEqualTo(30);
+            assertThat(jdbc.queryForObject("SELECT name FROM document_category WHERE id=201", String.class)).isEqualTo("并发改名");
+            assertThat(auditCount()).isEqualTo(3);
+            if (scenario.equals("sort-rename")) {
+                assertActorDelta("second-writer", 201, "{\"名称\":\"甲分类\"}", "{\"名称\":\"并发改名\"}");
+            } else {
+                assertActorDelta("second-writer", 201, "{\"排序\":30}", "{\"排序\":40}");
+                assertActorDelta("second-writer", 202, "{\"排序\":40}", "{\"排序\":30}");
+            }
+        }
+    }
+
+    private void awaitBlockedCategoryWriters(int expected) throws InterruptedException {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10);
+        while (System.nanoTime() < deadline) {
+            int count = jdbc.queryForObject("SELECT COUNT(*) FROM pg_stat_activity WHERE datname=current_database()"
+                    + " AND pid<>pg_backend_pid() AND wait_event_type='Lock' AND query ILIKE '%document_category%'", Integer.class);
+            if (count >= expected) return;
+            Thread.sleep(20);
+        }
+        throw new AssertionError("Category writers did not reach the controlled row-lock barrier: " + expected);
+    }
+
+    private void assertActorDelta(String actor, long id, String before, String after) throws Exception {
+        var rows = jdbc.queryForList("SELECT content_before,content_after,snapshot_hash FROM audit_event WHERE entity_id=? AND operator_account=?", String.valueOf(id), actor);
+        assertThat(rows).hasSize(1);
+        assertThat(mapper.readTree(String.valueOf(rows.get(0).get("content_before")))).isEqualTo(mapper.readTree(before));
+        assertThat(mapper.readTree(String.valueOf(rows.get(0).get("content_after")))).isEqualTo(mapper.readTree(after));
+        assertThat(String.valueOf(rows.get(0).get("snapshot_hash"))).matches("[0-9a-f]{64}");
     }
 
     private void document(long id, long category) {

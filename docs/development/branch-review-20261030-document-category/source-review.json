@@ -4,7 +4,8 @@
   "wholeFileCompletion": 0,
   "historicalUniqueIncrement": null,
   "records": [
-    {"path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java", "symbols": ["deleteCategory", "reorderCategories", "writeChangedAudit/writeAudit", "documentCategorySnapshot/countDocumentsByCategory"], "scope": "真实原生排序/删除事务和差量；其他文档CRUD/并发全部语义不外推。"},
+    {"path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java", "symbols": ["deleteCategory", "reorderCategories", "updateCategory", "writeChangedAudit/writeAudit", "documentCategorySnapshot/countDocumentsByCategory"], "scope": "真实原生排序/删除事务和差量，三种排序/改名并发组合；其他文档CRUD/所有并发语义不外推。"},
+    {"path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java", "symbols": ["findCustomForUpdate", "findForUpdate", "unchanged ordinary read"], "scope": "同租户写锁、稳定ID锁序和取得锁后最新前值；普通列表无写锁，不认证全部数据库隔离/容量。"},
     {"path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionService.java", "symbols": ["check", "collectOwned/collectDependents", "children/row", "sameTenant/canView"], "scope": "真实文档分类关联链及权限参与；非全部600行、所有关系/定位/规模认证。"},
     {"path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionAspect.java", "symbols": ["Order1000", "TransactionTemplate wrapper"], "scope": "本轮第一次在专用文档分类测试实际装配；原权限先于Aspect，引用锁与方法同事务，不认证全图并发。"},
     {"path": "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionRelations.java", "symbols": ["document_category to sop_document nonowned", "sop_document/document_version owned relation"], "scope": "相关关系/当前canonical FK及nullable sort字段核对；其余图关系未全审。"},
@@ -13,5 +14,5 @@
     {"path": "gmp-platform/frontend/src/components/AppDialog.tsx", "symbols": ["precheck effect/abort/error/retry", "checking branch"], "scope": "受控API真实浏览器加载/失败/取消/迟到结果；未称全应用弹窗/弱网/多会话完成。"},
     {"path": "gmp-platform/backend/src/main/java/com/zencas/edhr/template/controller/TemplateModelingController.java", "symbols": ["reorderCategories audit sibling"], "scope": "同排序意图实现对照，业务依据来自现有规范，不以兄弟代码取代政策。"}
   ],
-  "countingBoundary": "8组与既有源码及12语义ID重叠，不累计为20整文件或新增unique；4755路径仅盘点。"
+  "countingBoundary": "当前9组（原8+锁端口）与既有源码及12语义ID重叠，不累计为21整文件或新增unique；4755路径仅盘点。"
 }
