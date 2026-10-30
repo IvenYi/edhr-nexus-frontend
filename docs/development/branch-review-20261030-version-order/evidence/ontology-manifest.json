@@ -1,0 +1,34 @@
+{
+  "reviewer": "/root/version_order_ontology_20261030",
+  "contractReadCommit": "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+  "knowledgeVersion": "0.3.25",
+  "workingTreeProductDiff": "diff --git a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java\nindex aa3406cf..ef911c4b 100644\n--- a/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java\n+++ b/gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java\n@@ -1126,12 +1126,16 @@ public class ProcessModelingController {\n         String rightValue = StringUtils.hasText(right) ? right.trim() : \"\";\n         Matcher leftMatcher = VERSION_NUMBER_PATTERN.matcher(leftValue);\n         Matcher rightMatcher = VERSION_NUMBER_PATTERN.matcher(rightValue);\n-        while (leftMatcher.find() && rightMatcher.find()) {\n+        while (true) {\n+            boolean hasLeftNumber = leftMatcher.find();\n+            boolean hasRightNumber = rightMatcher.find();\n+            if (!hasLeftNumber || !hasRightNumber) {\n+                if (hasLeftNumber != hasRightNumber) return hasLeftNumber ? 1 : -1;\n+                break;\n+            }\n             int numberCompare = new BigInteger(leftMatcher.group()).compareTo(new BigInteger(rightMatcher.group()));\n             if (numberCompare != 0) return numberCompare;\n         }\n-        if (leftMatcher.find()) return 1;\n-        if (rightMatcher.find()) return -1;\n         return leftValue.compareToIgnoreCase(rightValue);\n     }\n \n",
+  "resultSchemaCheck": "passed; legal outcome, existing 5 IDs, unchanged knowledge/architecture, 89 original JUnit result",
+  "files": [
+    {
+      "path": "/tmp/edhr-version-order-ontology-result.yaml",
+      "sha256": "9cc211f24305a08df323ad7531a3ef96672af402401a325b1054b52d1277ec34",
+      "bytes": 2354
+    },
+    {
+      "path": "/tmp/edhr-version-order-rule-review.json",
+      "sha256": "6307b48e44ff587213b6c3791978fac7d267066cd2c3b15118179bd470a584c6",
+      "bytes": 8869
+    },
+    {
+      "path": "/tmp/edhr-version-order-rule-review.md",
+      "sha256": "51d4f0502b8ed3476b811e14ea85144681032d76dd8cd2c40115a01f2c4d0068",
+      "bytes": 2840
+    },
+    {
+      "path": "/tmp/edhr-version-order-ontology-knowledge-test.txt",
+      "sha256": "2e6dfca616eb0ce55ba1f85411198a80f251185c305840b66a17778dafd2b476",
+      "bytes": 2112
+    },
+    {
+      "path": "/tmp/edhr-version-order-ontology-knowledge-junit.xml",
+      "sha256": "e72fb17879e2fd603f66fdc9d2e2be7e9b37022e15f128715bce960106739525",
+      "bytes": 20416
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "schema": "edhr-limited-semantic-review/v1",
+  "reviewer": "/root/version_order_ontology_20261030",
+  "baseCommit": "635711f97e9b794f4af02e1e5d1939bb2ecf920f",
+  "knowledgeBaselineVersion": "0.3.25",
+  "sourceState": "HEAD plus uncommitted compareVersion change; no uncommitted contracts or knowledge changes",
+  "scope": "物料显示排序工程修复与既有物料/产品身份、显示及执行冻结边界",
+  "counts": {"reviewedRecords": 5, "limitedConsistent": 5, "knowledgeChanges": 0, "newKnowledgeIds": 0, "newUniqueHistoricalCoverage": null, "wholeFileCompletion": 0},
+  "countingBoundary": "5个既有ID的有限声明核对，与PR42及历史覆盖重叠；未做全历史unique去重，不能计为5个新增ID、整文件或整领域完成。支持术语和证据不另加总。",
+  "evidenceProvenance": {
+    "originalEvidence": "本角色直接读取当前Material实体、ProcessModelingController的listMaterials/createMaterial/resolveMaterialVersion/validateMaterialCodeForCreate/toMaterialGroup/compareMaterialVersionDesc/compareVersion及其工作树diff；ProductProcessController.listProducts/isProductMaterial/toProductSourceResponse。",
+    "versionedUserConfirmed": "DEC-0001及批次制程2026-10-27证据中的已有确认按声明范围核对；本角色没有最初外部聊天/截图，不升级为本次新用户确认。",
+    "secondaryReference": "读取主侧baseline-summary.json与baseline-http.jsonl，见同样V2a3/V2b在四个输入组合下组头不同；这是主侧原始运行产物，本角色未重新运行产品H2/API。",
+    "inference": "数字段逐段比较、额外段优先和全部数字段相等后的原文本回退来自既有代码分支意图及比较器一致性要求；不是知识中已确认的SemVer/任意业务标签顺序政策。"
+  },
+  "records": [
+    {
+      "id": "concept.material", "recordType": "concept", "sourcePath": "docs/knowledge/ontology.yaml", "sourceLocator": "concept.material", "originalMaturity": "implemented", "auditScope": "limited-version-record-identity", "semanticReviewStatus": "reviewed", "conclusion": "consistent",
+      "scope": "物料管理维护独立持久化版本记录；字符串比较只影响现有显示，不更换记录ID或保存标签。",
+      "originalEvidenceReferences": ["docs/knowledge/glossary.yaml#term.material", "docs/knowledge/evidence/product-process.yaml#evidence.material-entity"],
+      "implementationReferences": ["gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Material.java#id/version", "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#createMaterial/resolveMaterialVersion/toMaterialGroup"],
+      "reasonablenessAssessment": "正常接口已接受的标签应能稳定展示；局部修正比较器比新增未确认格式限制更符合已有主数据所有权，且不修改已存原文。",
+      "limitations": ["64字符是实体当前存储边界，不是本轮新增业务规则。未重验全部写入、导入、并发或删除行为。"]
+    },
+    {
+      "id": "concept.product", "recordType": "concept", "sourcePath": "docs/knowledge/ontology.yaml", "sourceLocator": "concept.product", "originalMaturity": "implemented", "auditScope": "limited-source-identity", "semanticReviewStatus": "reviewed", "conclusion": "consistent",
+      "scope": "产品为物料生产用途视图，显示组的排序/组头不会产生新产品身份。",
+      "originalEvidenceReferences": ["docs/knowledge/glossary.yaml#term.product", "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml#DEC-0001-01"],
+      "implementationReferences": ["gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java#listProducts/toProductSourceResponse", "gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#toMaterialGroup/compareVersion"],
+      "reasonablenessAssessment": "复用实际物料ID避免另一份主数据；组头显示稳定性修正不接管选择或执行身份。",
+      "limitations": ["仅核对本次不触及来源身份；不是产品管理全域审完。"]
+    },
+    {
+      "id": "rule.product.source-from-material", "recordType": "rule", "sourcePath": "docs/knowledge/rules/product-process.yaml", "sourceLocator": "rule.product.source-from-material", "originalMaturity": "implemented", "auditScope": "limited-source-filter-preservation", "semanticReviewStatus": "reviewed", "conclusion": "consistent",
+      "scope": "产品仍限产成品/半成品物料，排序修复不改变筛选或创建重复产品。",
+      "originalEvidenceReferences": ["docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml#DEC-0001-01", "docs/knowledge/evidence/product-process.yaml#evidence.product-process-controller"],
+      "implementationReferences": ["gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java#isProductMaterial/toProductSourceResponse", "git diff 635711f9 -- gmp-platform/backend/src/main"],
+      "reasonablenessAssessment": "业务来源筛选与版本显示顺序分属不同责任；本次改动没有移动筛选阶段或放宽类型。",
+      "limitations": ["不把当前全量读取、内存分页或版本计数算法当业务政策；性能方案继续待讨论。"]
+    },
+    {
+      "id": "DEC-0001-01", "recordType": "decision-statement", "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml", "sourceLocator": "DEC-0001-01", "originalMaturity": "implemented", "auditScope": "limited-product-source-policy", "semanticReviewStatus": "reviewed", "conclusion": "consistent",
+      "scope": "产品数据从产成品/半成品物料派生，不另建重复主数据。",
+      "originalEvidenceReferences": ["docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml", "docs/knowledge/evidence/product-process.yaml"],
+      "implementationReferences": ["gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProductProcessController.java#listProducts/isProductMaterial/toProductSourceResponse"],
+      "reasonablenessAssessment": "沿单一身份来源保持下游引用；显示比较器修复未替换该已确认边界。",
+      "limitations": ["依据仓库版本化决定，不声称重新取得最初需求聊天。"]
+    },
+    {
+      "id": "DEC-0001-09", "recordType": "decision-statement", "sourcePath": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml", "sourceLocator": "DEC-0001-09", "originalMaturity": "specified", "auditScope": "limited-display-versus-freeze", "semanticReviewStatus": "reviewed", "conclusion": "consistent",
+      "scope": "生产对象显式选版，首次合法START重核并冻结实际配置；同V1标签不保证相同配置，物料列表排序不是执行冻结或制程默认选择规则。",
+      "originalEvidenceReferences": ["docs/knowledge/evidence/batch-process-2026-10-27.md#用户确认", "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml#DEC-0001-09"],
+      "implementationReferences": ["gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#compareMaterialVersionDesc/toMaterialGroup", "git diff 635711f9 -- gmp-platform/backend/src/main"],
+      "reasonablenessAssessment": "显示顺序与实际身份/内容冻结分别解释，能避免用最新显示标签改写历史；本次只改变私有比较方法，不接管START。",
+      "limitations": ["本角色未运行START、DHR或实际冻结链；仅核对本次改动不触及其规范/职责，不将specified提升为verified。"]
+    }
+  ],
+  "engineeringConclusions": [
+    {"id": "engineering.version-comparator-cursor", "conclusion": "旧while短路推进会消耗未配对数字段；当前每轮各find一次并检查hasLeft/hasRight差异，保留已有数字比较及文本回退。"},
+    {"id": "engineering.version-policy-boundary", "conclusion": "在相关权威资产及关键词搜索中未找到SemVer/混合标签排序用户政策；这是有限工程修复，不将更长数字段或显示最新解释为新增发布或执行规则。"},
+    {"id": "engineering.no-knowledge-delta", "conclusion": "当前知识/架构无差异，无新术语/关系/状态/事实/规则/执行契约/替代声明，0.3.25及成熟度保持。"}
+  ],
+  "validation": {"knowledgeCommand": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test", "executedByThisRole": true, "tests": 89, "failures": 0, "errors": 0, "skipped": 0, "evidence": "/tmp/edhr-version-order-ontology-knowledge-test.txt", "scope": "结构/引用门禁；不是全盘语义或产品运行认证"},
+  "questions": [],
+  "conflicts": [],
+  "knowledgeChanges": [],
+  "productRuntimeExecutedByThisRole": false
+}

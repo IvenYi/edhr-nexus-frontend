@@ -1,5 +1,13 @@
 # 持续推进台账
 
+## PR42已合入：W4混合版本标签排序与文档关联读取
+
+已实际fetch最新`edhr-dev@635711f97e9b794f4af02e1e5d1939bb2ecf920f`，确认PR42人工merge、整树同5539d26e且无额外代码/知识/契约增量。从该提交建立`audit/edhr-dev-version-order-20261030`，[本批](../branch-review-20261030-version-order/README.md)按L2继续。原混合标签CAND正常POST/GET已复现60项中8红52正、0error/skip，承接为同一medium缺陷，准备仅修Matcher遍历，不新增版本格式/发布策略，修复及独立验收尚未完成。
+
+已完成最小修复，产品一文件7增3删，主侧133/133（60边界API含新24、55Process含新1性质、14Product、4导入）通过；旧60的8红52正及性质旧1红原件保留。本体5既有ID有限一致、NA/FINAL及知识89通过，不计新unique。当前待全新独立质量，不提前关闭medium。
+
+固定4311路径/130迁移只是盘点，4个有限方法范围分组非整文件，unique历史增量未去重。实际开始核对文档关联读取，登记分页算术与全量加载/文件lookup源码候选及具体拆分接口，运行后果/SQL/容量留下一批验证，未经讨论不优化。后续W3/W4其他未审入口、W2余项与W5–W7继续；三项既有性能、原用户暂缓/四gap不变，不自动merge/deploy/恢复。
+
 ## PR41已合入：W4数字边界与新增设计器提交增量
 
 已交付[PR42](https://github.com/IvenYi/edhr-nexus-frontend/pull/42)，分支`audit/edhr-dev-master-data-boundaries-20261028`，目标`edhr-dev`，待人工merge。实际独立受测5c233972后仅L0原件/验收/范围/PR登记，产品/测试/知识保持。下次继续先fetch真实合入及新增提交，优先混合版本标签比较器正常API/实际排序后果复现，再推进其他未审关联读取；三性能仍先讨论，原暂缓与整体未完成保持，不自动merge/deploy/恢复。

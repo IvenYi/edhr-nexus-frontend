@@ -1,0 +1,86 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-VERSION-ORDER-20261030
+  scope: W4物料混合版本标签排序；PR42合入后的持续整体审计
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    targetBranch: edhr-dev
+    targetCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    contractReadCommit: 635711f97e9b794f4af02e1e5d1939bb2ecf920f
+    uncommittedContractPaths: []
+  summary: 先从正常POST和实际列表复现旧比较器反对称性候选，再仅修数字段遍历；保留数字段逐段比较、额外数字段排序及相等时原文本回退，不制定新版本格式。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.version-comparator-engineering-contract
+      statement: 现有数字段比较、多余数字段分支和文本回退应形成一致顺序，与输入行顺序无关。
+      rationale: 原compareVersion实现及Java Comparator契约；这是工程缺陷候选，不作为用户已确认的SemVer或发布策略。
+      relatedIds: [concept.material]
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: material-list
+        change: 修复比较器消耗未配对数字段，验证正常API接受的混合标签在不同输入顺序下均按原数字段规则排列。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java]
+    transitiveImpacts:
+      - area: group-summary
+        change: 组头从排序后的第一版本取展示字段；核验版本、身份、计数、聚合状态和完整版本成员。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java#toMaterialGroup]
+    potentialImpacts:
+      - area: comparator-contract
+        concern: 需要检查反对称性、传递性和等价类一致性；正常列表复现与方法级性质检查分开报告。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: performance
+        change: 三项既有设备/物料性能方案继续pending-discussion，不改SQL、缓存、索引、分组分页或加载方式。
+        evidenceReferences: [docs/development/branch-review-20261028-master-data-reads/risk-register.yaml]
+      - area: deferred-work
+        change: TaskDetail签名、生产弹窗设计和记录控制依赖继续暂缓。
+        evidenceReferences: [docs/development/branch-review-20261015/NEXT.md]
+    compatibilityAndMigration:
+      - area: version-labels
+        change: 保持原字符串、64字符存储边界及接受规则，无迁移或历史数据重算。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/entity/Material.java]
+    snapshotImpacts:
+      - area: execution
+        change: 物料列表显示排序不作为制程自动选择或生产/DHR冻结依据，不改快照。
+        evidenceReferences: [docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml]
+    auditImpacts:
+      - area: read-only
+        change: 比较列表读取前后完整物料、类型和审计行，不增加读取写入。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: authorization
+        change: 保持原JWT/filter/权限；回归匿名拒绝。
+        evidenceReferences: []
+    testImpacts:
+      - scope: accepted-mixed-labels
+        scenarios: [两种创建顺序, 两种列表输入排序方向, 单侧多数字段, 无数字标签, 超long数字段, 相同数字段文本回退, 原数字边界及分页回归]
+        evidenceReferences: [gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataBoundaryIntegrationTest.java]
+    evidenceGaps:
+      - H2用于真实JWT/HTTP/物料仓储，不替代原生PostgreSQL计划、迁移或生产容量验收。
+      - 有限标签集合性质验证不是对任意字符串的形式证明。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 一个私有调用链的局部遍历修正足够，不抽取单用途框架或重构大控制器。
+    ownershipBoundaries:
+      - owner: ProcessModelingController
+        responsibility: 保留现有物料组及版本显示排序，写入、授权、执行冻结由原职责负责。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/ProcessModelingController.java
+      changeType: update
+      reason: 仅在API复现后修数字段遍历。
+    - path: gmp-platform/backend/src/test/java/com/zencas/edhr/masterdata/controller/MasterDataBoundaryIntegrationTest.java
+      changeType: update
+      reason: 同组基线红绿及现有边界回归。
+  acceptanceScenarios:
+    - id: scenario.mixed-label-input-order
+      given: 正常接口接受同组多个混合数字/文本版本
+      when: 反向创建并切换原始行排序方向后读取
+      then: 版本列表及组头显示一致，完整身份、状态、计数和只读性质保持。
+      evidenceRequirements: [原基线失败与修复通过, 真实POST/GET响应, 完整数据库行快照]
