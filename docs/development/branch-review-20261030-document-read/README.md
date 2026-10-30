@@ -2,6 +2,8 @@
 
 最新基线 `edhr-dev@31058765002e0705f1659f42abb1fb25b6dc7611`；PR43 已人工合入，树同 `0a8991b3`，无其他代码/知识/契约增量。本批 L2，全新独立实例对 `b8054cc6` 正式 `passed/FINAL`，15/15 必需检查，无本批交付阻断。实际运行提交为 `3ccd178b`，后续仅SQL清单/说明增量，经独立核对产品/测试/知识/契约blob相同，运行结果适用；不冒称b805重跑170。详见[acceptance.json](acceptance.json)，整体审计未完成。
 
+已交付[PR44](https://github.com/IvenYi/edhr-nexus-frontend/pull/44)，目标`edhr-dev`，创建时MERGEABLE/CLEAN，等待用户人工合并；受审后仅L0原件/验收/范围/交付登记，保护范围保持不变。
+
 正常 POST 创建文档及版本，再 GET 列表，旧基线已复现页下标 int 溢出 500，包含空库。26 同组旧基线 4 红/22 正、0 error/skip；其中 16 正确性测试、10 opt-in 成本观察。产品只改列表两处下标中间运算为 long，裁剪后回 int，保留元数据、非正归一化、过滤/版本关键词、完整版本与分类/身份。无新页长上限、SQL/缓存/索引或业务政策修改。
 
 真实 JWT/filter/MockMvc、文档/版本/分类/文件/审计五实体仓储；正常 API 正确性场景与 JDBC 合成规模场景分开。H2 fixture 明确按当前规范 schema 允许 `sop_document.code` 为空，遗留实体却声明 NOT NULL，不冒充原生 PG schema 验收；文件只有合成元数据，没有磁盘上传/下载认证。初轮夹具10个H2参数乘区间错误与4个真实分页失败分别保留，修正种子日期及非空字段、符合NON_NULL响应的缺文件断言后，同组基线0error；不清洗初轮原件、不混为14个产品缺陷。
