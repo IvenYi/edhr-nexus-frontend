@@ -2,7 +2,7 @@
 
 ## AUD-W4-DOCUMENT-PAGE-ARITHMETIC-001 / medium
 
-承接上批 `CAND-W4-DOCUMENT-PAGE-ARITHMETIC-001`，同一缺陷不重复计数。正常API创建后，大页号/页长的3个组合，以及空库一个组合500。根因为int乘法/加法先溢出，再Math.min无法恢复合法下标。已仅改两行中间运算为long，主侧170通过，当前待独立验收。不新增400或页长上限，不改变原非正归一化。
+承接上批 `CAND-W4-DOCUMENT-PAGE-ARITHMETIC-001`，同一缺陷不重复计数。正常API创建后，大页号/页长的3个组合，以及空库一个组合500。根因为int乘法/加法先溢出，再Math.min无法恢复合法下标。已仅改两行中间运算为long，全新独立170通过、15/15必需检查，最终处置在acceptance overlay登记resolved，不回写旧候选原件。不新增400或页长上限，不改变原非正归一化。
 
 ## PERF-DOCUMENT-PAGE-VERSION-MATERIALIZATION-001 / runtime-observed, pending-discussion
 
