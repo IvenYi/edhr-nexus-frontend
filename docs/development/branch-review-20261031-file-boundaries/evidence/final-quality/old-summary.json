@@ -1,0 +1,58 @@
+{
+  "exit": 1,
+  "commit": "ccedd56453c02c5d3acd60aa4351809a3928e83e",
+  "suites": [
+    {
+      "suite": "FileUploadResourceTest",
+      "tests": 9,
+      "failures": 6,
+      "errors": 0,
+      "skipped": 0,
+      "failureCases": [
+        {
+          "name": "targetsOutsidePublicWhitelistAreRejectedWithoutReadingDisk(String)[1]",
+          "message": "\nExpecting actual throwable to be an instance of:\n  com.zencas.edhr.common.exception.BusinessException\nbut was:\n  java.lang.NullPointerException\n at java.base/java.util.Objects.requireNonNull(Objects.java:233)\n at java.base/java.util.ImmutableCollections$SetN.contains(ImmutableCollections.java:944)\n at com.zencas.edhr.compliance.controller.FileController.canPublicPreview(FileController.java:221)\n ...(120 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)"
+        },
+        {
+          "name": "streamFailuresPropagateCloseOwnedResourcesAndNeverRegisterSuccess(String)[1]",
+          "message": "\nExpecting code to raise a throwable."
+        },
+        {
+          "name": "streamFailuresPropagateCloseOwnedResourcesAndNeverRegisterSuccess(String)[2]",
+          "message": "\nExpecting code to raise a throwable."
+        },
+        {
+          "name": "streamFailuresPropagateCloseOwnedResourcesAndNeverRegisterSuccess(String)[3]",
+          "message": "\nExpecting all elements of:\n  [com.zencas.edhr.compliance.controller.FileUploadResourceTest$ObservedStream@3dd31157,\n    com.zencas.edhr.compliance.controller.FileUploadResourceTest$ObservedStream@31c628e7]\nto satisfy given requirements, but these elements did not:\n\ncom.zencas.edhr.compliance.controller.FileUploadResourceTest$ObservedStream@3dd31157\nerror: \nExpecting value to be true but was false\n\ncom.zencas.edhr.compliance.controller.FileUploadResourceTest$ObservedStream@31c628e7\nerror: \nExpecting value to be true but was false"
+        },
+        {
+          "name": "streamFailuresPropagateCloseOwnedResourcesAndNeverRegisterSuccess(String)[4]",
+          "message": "\nExpecting code to raise a throwable."
+        },
+        {
+          "name": "successfulUploadClosesBothStreamsAndPreservesDigestAndBytes",
+          "message": "\nExpecting all elements of:\n  [com.zencas.edhr.compliance.controller.FileUploadResourceTest$ObservedStream@7544ac86,\n    com.zencas.edhr.compliance.controller.FileUploadResourceTest$ObservedStream@3b27b497]\nto satisfy given requirements, but these elements did not:\n\ncom.zencas.edhr.compliance.controller.FileUploadResourceTest$ObservedStream@7544ac86\nerror: \nExpecting value to be true but was false\n\ncom.zencas.edhr.compliance.controller.FileUploadResourceTest$ObservedStream@3b27b497\nerror: \nExpecting value to be true but was false"
+        }
+      ]
+    },
+    {
+      "suite": "FileHttpBoundaryTest",
+      "tests": 9,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "failureCases": [
+        {
+          "name": "anonymousNullTargetPublicPreviewIsBusinessRejectionNotServerFailure",
+          "message": "Status expected:<400> but was:<500>"
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "tests": 18,
+    "failures": 7,
+    "errors": 0,
+    "skipped": 0
+  }
+}

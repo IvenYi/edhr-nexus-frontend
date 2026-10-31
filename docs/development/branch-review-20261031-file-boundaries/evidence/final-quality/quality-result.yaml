@@ -1,0 +1,225 @@
+qualityResult:
+  result: passed
+  baseCommit: ccedd56453c02c5d3acd60aa4351809a3928e83e
+  headCommit: 17f1fad49c863761269c1937b7d5059a5ecfe9e6
+  contractBaseline:
+    sourceCommit: 17f1fad49c863761269c1937b7d5059a5ecfe9e6
+    targetBranch: edhr-dev
+    targetCommit: ccedd56453c02c5d3acd60aa4351809a3928e83e
+    contractReadCommit: 17f1fad49c863761269c1937b7d5059a5ecfe9e6
+    uncommittedContractPaths: []
+  workingTreeState:
+    status: clean
+    includedPaths: []
+    excludedPaths: []
+    untrackedPaths: []
+  knowledgeBaselineVersion: 0.3.25
+  checks:
+  - id: q1.baseline-contract
+    required: true
+    category: documentation
+    description: 实时目标/干净候选/实际契约及祖先关系
+    method: command
+    command: git fetch origin edhr-dev; git status --porcelain; git rev-parse; git
+      merge-base --is-ancestor
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-q1-inspection.json
+    - base=ccedd56453c02c5d3acd60aa4351809a3928e83e; head=tested=17f1fad49c863761269c1937b7d5059a5ecfe9e6;
+      contractRead=17f1fad49c863761269c1937b7d5059a5ecfe9e6; clean
+  - id: q1.rules-and-scope
+    required: true
+    category: requirements
+    description: 工程修复与现有公开用途/文件完整性边界一致
+    method: inspection
+    command: Read actual FileController, SecurityConfig, FileObject, DhrFormFiles,
+      API wrapper, DEC0063-10/11 and original user confirmation; compare diff
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-q1-product-diff.txt
+    - /tmp/edhr-file-q1-inspection.json
+    - No new format/size/ACL/deletion/migration policy; common150MiB/MD5 is separate
+      from controlled DHR50MiB/SHA256.
+  - id: q1.provenance
+    required: true
+    category: documentation
+    description: 原始证据、本体结果和当前源码哈希
+    method: command
+    command: python3 /tmp/edhr-file-q1-inspect.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-q1-inspection.json
+    - 18 primary records and3source snapshots; ontology6raw+self manifest;303knowledge
+      unchanged; historical MockitoBean compile failure retained separately.
+  - id: q1.inventory-a23
+    required: true
+    category: documentation
+    description: 固定盘点、有限范围和A23未完队列核对
+    method: command
+    command: python3 scripts/build-branch-review-inventory.py --ref ccedd56453c02c5d3acd60aa4351809a3928e83e
+      --out /tmp/edhr-file-q1-inventory
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-q1-inspection.json
+    - /tmp/edhr-file-q1-inventory-build.txt
+    - Four files byte identical;5109paths/130SQL inventory only;6limitedsource/6existingsemantic
+      overlap;whole-file0/unique null;A23five method records,1changed2added,old856+feature1/SQL130
+      pending.
+  - id: q1.upload-resource-regression
+    required: true
+    category: regression
+    description: 实际流关闭/read-close失败/原件摘要回归9
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=FileUploadResourceTest,FileHttpBoundaryTest,FileControllerTest,DhrFormFilesTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-q1-current-test.txt
+    - /tmp/edhr-file-q1-current-FileUploadResourceTest.xml
+    - 9 passed; real disk bytes and observed owned stream lifecycle, mock repository;
+      read1/close1/read2/close2 propagate and never save; first-stage failures leave
+      no disk file.
+  - id: q1.http-security-boundaries
+    required: true
+    category: api
+    description: 实际JWT/filter/MVC公开引用与登录边界9
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=FileUploadResourceTest,FileHttpBoundaryTest,FileControllerTest,DhrFormFilesTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-q1-current-FileHttpBoundaryTest.xml
+    - '9 passed: NULL public request400 not500; four targets require real-reference
+      mock result; private read anonymous401 before repository then valid JWT text
+      bytes; anonymous mutation/list rejected. MockMvc, not TCP server or object ACL
+      certification.'
+  - id: q1.adjacent-regression
+    required: true
+    category: regression
+    description: 既有控制器及冻结原件检查相邻11回归
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f gmp-platform/backend/pom.xml
+      -Dtest=FileUploadResourceTest,FileHttpBoundaryTest,FileControllerTest,DhrFormFilesTest
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-q1-current-FileControllerTest.xml
+    - /tmp/edhr-file-q1-current-DhrFormFilesTest.xml
+    - /tmp/edhr-file-q1-current-summary.json
+    - 9existingcontroller+2DhrFormFiles allpass; total29 actual executions, no DB/SQL
+      integration claim.
+  - id: q1.actual-old-red
+    required: true
+    category: regression
+    description: 同最终18在实际旧目标识别真实缺陷
+    method: automated-test
+    command: python3 /tmp/edhr-file-q1-run-old.py
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-q1-old-command.json
+    - /tmp/edhr-file-q1-old-summary.json
+    - /tmp/edhr-file-q1-old-test.txt
+    - 18executions:7realassertionfailures/11positive,0error/skip; same finaltest hashes,
+      copied unchanged; node_modules existing dependency symlink only.
+  - id: q1.knowledge89
+    required: true
+    category: ontology
+    description: 独立实际知识89及本体FINAL核对
+    method: automated-test
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-q1-knowledge-test.txt
+    - /tmp/edhr-file-q1-knowledge-junit.xml
+    - /tmp/edhr-file-q1-knowledge-summary.json
+    - 89 passed,0failure/error/skip; ontology FINAL/not-applicable, no maturity/newunique
+      uplift.
+  - id: q1.authored-whitespace
+    required: true
+    category: documentation
+    description: 本批手工源码/测试/文档差量空白
+    method: command
+    command: git diff --check ccedd56453c02c5d3acd60aa4351809a3928e83e 17f1fad49c863761269c1937b7d5059a5ecfe9e6
+      -- <authored paths excluding immutable evidence and fixed inventory>
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-q1-whitespace.txt
+    - /tmp/edhr-file-q1-inspection.json
+  - id: q1.owned-cleanup
+    required: true
+    category: documentation
+    description: 隔离旧工作树正常清理且候选未修改
+    method: command
+    command: Remove only copied new test files and own dependency symlink; git worktree
+      remove exact owned path; git status --porcelain
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-q1-cleanup.json
+    - /tmp/edhr-file-q1-inspection.json
+    - No containers started; no other worktree prune or historical cleanup.
+  findings:
+  - id: AUD-W5-FILE-UPLOAD-STREAM-001
+    severity: medium
+    scope: FileController.upload/computeMd5
+    summary: 上传流未关闭和摘要IO被吞成伪成功已修复。
+    reproductionSteps:
+    - Run unchanged finalFileUploadResourceTest at actualbase; success/close failures/read1
+      swallowed and read2 streams left open are genuine assertion failures.
+    - Run same test at currentcandidate.
+    expectedResult: 每次打开的输入流成功或失败均关闭；摘要读取/关闭失败不写盘不注册，复制读取/关闭失败不注册成功。
+    actualResult: Currentresource9pass; first-stagefailure nofiles, allopenedstreams
+      closed, no save; successful bytes and expected MD5 preserved. Copy partial-file
+      compensation remains separate.
+    evidence:
+    - /tmp/edhr-file-q1-old-FileUploadResourceTest.xml
+    - /tmp/edhr-file-q1-current-FileUploadResourceTest.xml
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 17f1fad49c863761269c1937b7d5059a5ecfe9e6
+    - type: command
+      reference: /tmp/edhr-file-q1-current-test.txt
+  - id: AUD-W3-FILE-PUBLIC-NULL-TARGET-001
+    severity: medium
+    scope: FileController.publicPreview/canPublicPreview
+    summary: 可选用途null公开预览原500已恢复既有拒绝响应400。
+    reproductionSteps:
+    - FileObject targetType null; anonymous GET /api/v1/files/77/public-preview.
+    - OldsameHTTPtest expected400 but got500; current400 and existing message.
+    expectedResult: 未声明公开用途沿既有GENERAL003拒绝，四公开用途仍要求实际引用。
+    actualResult: CurrentHTTP9pass and unitnullcasepass; oldHTTP1realassertfail; no
+      extra public access granted.
+    evidence:
+    - /tmp/edhr-file-q1-old-FileHttpBoundaryTest.xml
+    - /tmp/edhr-file-q1-current-FileHttpBoundaryTest.xml
+    resolutionStatus: resolved
+    resolutionEvidence:
+    - type: commit
+      reference: 17f1fad49c863761269c1937b7d5059a5ecfe9e6
+    - type: command
+      reference: /tmp/edhr-file-q1-current-test.txt
+  residualRisks:
+  - id: risk.file-object-access
+    description: 通用私有文件仅要求登录；对象权限、实际业务归属与list路径暴露尚待完整核对。
+    impact: 本批不能认证共享文件ACL、跨对象保密或多租户。
+    mitigation: 沿已登记CAND-W3-FILE-OBJECT-ACCESS-001优先核实际文档/生产/签名引用及未绑定上传边界，不信任客户端targetType/targetId。
+  - id: risk.cross-storage
+    description: copy失败可能留下部分文件、DB失败孤儿、delete跨磁盘/DB顺序仍未整改。
+    impact: 流释放和摘要失败不等于跨介质原子提交。
+    mitigation: 后续真实事务/引用/磁盘故障注入及补偿方案，不自动删历史。
+  - id: risk.capacity-and-related-paths
+    description: PDF渲染/前端blob/DHR完整原件和签名Base64容量、AuthController相邻流与uploader system仍为候选。
+    impact: 无堆GC/SLA、所有上传路径或身份审计完成保证。
+    mitigation: 逐路径核实并量化；性能变更先讨论。
+  - id: risk.runtime-scope
+    description: 仓储mock，HTTP为MockMvc和text原件，非真实DB/TCP浏览器/全部文件格式测试。MD5算法缺失分支仅静态核对。
+    impact: 不认证数据库迁移、PDF渲染、生产E2E或所有异常提供者。
+    mitigation: 按后续对应风险增量验证；无需为当前局部流修复假造广泛运行通过。
+  - id: risk.global-audit-and-tools
+    description: W2–W4余项、W5–W7与A23旧已审全量/SQL仍未完；既有strict19/lint缺配置/process旧SQL路径非绿，本实例未重跑。
+    impact: 局部passed不是整体审计或全局工具通过。
+    mitigation: 保持固定清单与下一步队列，后续增量审查；原TaskDetail友方/生产弹窗/记录控制DHRhigh-A12/四gap/缺文件政策保持。
+  blockingConditions: []
