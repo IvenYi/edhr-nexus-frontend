@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-31",
+  "candidate": "310e01046d684888b8bdc0915c5f9eb0abe52319",
+  "frontend": "http://localhost:3000",
+  "backendPort": 8081,
+  "database": "edhr_dev",
+  "processes": {"frontend": 9731, "backend": 9823},
+  "checks": [
+    {"name": "manager-menu-and-seven-running-samples", "passed": true, "screenshot": "main-workflow.png"},
+    {"name": "manager-reassign-signature-dialog", "passed": true, "screenshot": "main-reassign.png"},
+    {"name": "reviewer-record-approval-transfer-signature-dialog", "passed": true, "screenshot": "main-transfer.png"},
+    {"name": "applicant-withdraw-entry-before-decision", "passed": true, "screenshot": "main-withdraw-ready.png"},
+    {"name": "applicant-withdraw-entry-absent-after-prior-approval", "passed": true, "screenshot": "main-withdraw-blocked.png"},
+    {"name": "four-dhr-samples-among-fifteen-preserved-archives", "passed": true, "screenshot": "main-dhr-list.png"},
+    {"name": "formalized-dhr-frozen-v1-renders-original-lot-and-100", "passed": true, "screenshot": "main-dhr-frozen-v1.png"}
+  ],
+  "accountLoginViaFrontendProxy": ["uat_manager", "uat_reviewer", "uat_target", "uat_applicant"],
+  "businessActionsSubmitted": false,
+  "runtimeMigrationsExecuted": 0,
+  "limitations": ["Only login/read/dialog opening/cancel performed on retained manual samples", "Workflow and DHR mutation outcomes tested separately on disposable PostgreSQL databases", "Login favicon404 and existing React/MUI console warnings do not prevent these entry flows"]
+}

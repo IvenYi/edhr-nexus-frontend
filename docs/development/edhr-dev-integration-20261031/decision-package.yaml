@@ -9,7 +9,7 @@ decisionPackage:
     contractReadCommit: 943dc9fed4ffde482fa3eff3dc10f8a157ce5134
     uncommittedContractPaths: []
   localTargetBefore: bbd2ff88
-  candidateCommit: 943dc9fed4ffde482fa3eff3dc10f8a157ce5134
+  candidateCommit: 310e01046d684888b8bdc0915c5f9eb0abe52319
   remoteFreshness: 2026-10-31已成功fetch；目标仍为d10590bd，适用契约无增量；最终交付前再次核对。
   summary: 保留双方提交与现有数据，用默认3000/8081及edhr_dev运行；不再依赖独立工作树或数据库切换。
   confirmed:
@@ -61,7 +61,7 @@ decisionPackage:
       - {owner: ontology-agent, responsibility: 核对当前知识与合并结果，必要时只同步受影响知识}
       - {owner: quality-agent, responsibility: 收尾独立验证，不修改实现}
   affectedFiles:
-    - {path: docs/development/edhr-dev-integration-20261031, changeType: add, reason: 记录候选/迁移/验证及交付证据}
+    - {path: docs/development/edhr-dev-integration-20261031, changeType: create, reason: 记录候选/迁移/验证及交付证据}
     - {path: docs/development/workflow-dhr-acceptance-20261030/README.md, changeType: update, reason: 改为正常主目录启动说明}
   acceptanceScenarios:
     - {id: scenario.normal-startup, given: 主目录edhr-dev已集成, when: 默认方式启动前后端, then: 3000显示新功能并连接edhr_dev, evidenceRequirements: [实际进程与页面, 数据库读回]}
