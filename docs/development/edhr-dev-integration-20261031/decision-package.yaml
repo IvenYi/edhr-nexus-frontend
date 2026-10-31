@@ -5,12 +5,12 @@ decisionPackage:
   contractBaseline:
     sourceCommit: 84995f7efab3abdf0012b974cb0a11e04920fe77
     targetBranch: edhr-dev
-    targetCommit: d10590bd3fe8f3da4e68bcc087b2102d2c211934
+    targetCommit: ccedd56453c02c5d3acd60aa4351809a3928e83e
     contractReadCommit: 943dc9fed4ffde482fa3eff3dc10f8a157ce5134
     uncommittedContractPaths: []
   localTargetBefore: bbd2ff88
-  candidateCommit: 310e01046d684888b8bdc0915c5f9eb0abe52319
-  remoteFreshness: 2026-10-31已成功fetch；目标仍为d10590bd，适用契约无增量；最终交付前再次核对。
+  candidateCommit: 63456e143063c13558db362d28cde83f8e0cdb9b
+  remoteFreshness: 2026-10-31收尾再次fetch发现PR46，已保留双亲历史合并ccedd564至63456e14；相对d10590bd契约和当前知识文件无增量。原943dc9fe契约读取仍适用，新增文档分类代码单独回归。
   summary: 保留双方提交与现有数据，用默认3000/8081及edhr_dev运行；不再依赖独立工作树或数据库切换。
   confirmed:
     concepts: []
@@ -31,6 +31,7 @@ decisionPackage:
       - {area: integration, change: 保留双亲历史合并目标和功能分支，迁入本地记录页面侧栏修复, evidenceReferences: [943dc9fe, d1891f97]}
       - {area: development-runtime, change: 主目录默认端口和edhr_dev运行新功能, evidenceReferences: [gmp-platform/frontend/vite.config.ts, gmp-platform/backend/src/main/resources/application-dev.yml]}
       - {area: acceptance-data, change: 只插入专用UAT样例和依赖；目标原有行禁止更新或删除, evidenceReferences: [docs/development/workflow-dhr-acceptance-20261030/manifest.json]}
+      - {area: latest-target-document-category, change: 保留PR46文档分类排序审计及并发锁、删除反馈修复；无迁移或流程/DHR代码差异, evidenceReferences: [ccedd56453c02c5d3acd60aa4351809a3928e83e, gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java]}
     transitiveImpacts:
       - {area: workflow-and-dhr, change: 验证现行签名/权限/修订/冻结/提醒及投影相邻行为, evidenceReferences: [docs/development/workflow-operations-20261030/decision-package.yaml, docs/development/record-control-dhr-linkage-20261029/decision-package.yaml]}
     potentialImpacts:

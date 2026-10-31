@@ -16,6 +16,9 @@ ontologyResult:
     依据现有DEC-0068/0092及原始源码修正DEC-0068-13、DEC-0087-08和其暂缓验收场景，
     保留历史原件、声明ID、完整矩阵、放行判断、A12与归档暂缓，不新增政策或提高成熟度。
     本结果覆盖候选加上述两个未提交知识文件修正，不代表全库语义审计、业务运行验收或独立质量通过。
+    以上保留首次核对时点；2026-10-31收尾追加PR46增量核对，当前候选63456e143063c13558db362d28cde83f8e0cdb9b、
+    新目标ccedd56453c02c5d3acd60aa4351809a3928e83e的限定结论见validation.integration-pr46-*。
+    文档分类修复符合现行删除保护、页面权限和审计规则，未发现与本切片知识冲突，本次追加不修改知识定义。
   changedArtifacts:
     - path: docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml
       changeType: update
@@ -114,6 +117,38 @@ ontologyResult:
       disposition: deferred
       scope: 本次当前有效贡献切换不关闭完整A12失效历史检索与独立历史视图，亦不改冻结配置和来源授权。
       sourceReferences: [docs/knowledge/open-questions.yaml]
+    - id: DEC-0053-01
+      disposition: retained
+      scope: PR46增量核对；文档分类存在文档引用时仍阻断删除，移除自动解除文档归类的旧控制器逻辑不新增删除政策；不删除文档、版本、生产历史或审计。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml
+        - docs/knowledge/evidence/master-data-deletion-user-confirmed.md
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionRelations.java
+        - gmp-platform/backend/src/main/resources/db/changelog/baseline/0001-current-schema.sql
+    - id: DEC-0053-04
+      disposition: retained
+      scope: PR46增量核对；删除前预检查和正式删除事务复核继续有效；取消、预检失败和阻断不执行删除，当前页面撤去自动转未分类的错误承诺。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml
+        - docs/architecture/master-data-deletion-protection.md
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/deletion/DeletionProtectionAspect.java
+        - gmp-platform/frontend/src/pages/master-data/DocumentManagementPage.tsx
+    - id: DEC-0065-01
+      disposition: retained
+      scope: PR46增量核对；文档控制器仍使用master-data.documents页面权限，分类改名和排序查询均限定default租户；未新增权限码或扩大流程、记录控制及DHR权限。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0065-master-data-permission-audit-contract.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java
+    - id: DEC-0065-03
+      disposition: retained
+      scope: PR46增量核对；分类排序按锁定持久化行的实际前后排序值追加既有AuditEvent，未变化不虚构业务变更；分类改名共用行锁保护前值，不改旧审计模型或历史快照，不把分类排序当作流程路径变化。
+      sourceReferences:
+        - docs/knowledge/decisions/DEC-0065-master-data-permission-audit-contract.yaml
+        - docs/knowledge/rules/master-data-permission-audit.yaml
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java
+        - gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/repository/DocumentCategoryRepository.java
   conflicts: []
   questions: []
   validationEvidence:
@@ -156,6 +191,34 @@ ontologyResult:
       evidence:
         - original-evidence；两个文件全部版本、成熟度、可见性字段保持不变，git diff --check通过。
         - 记录错误纠正不构成新政策替代；原声明ID保留，因此decisionPackage.replacementScopes无需增加政策替代条目。
+    - id: validation.integration-pr46-baseline-and-knowledge-delta
+      checkType: reference
+      command: git rev-parse HEAD; git rev-parse 310e0104 310e0104:docs/knowledge 63456e143063c13558db362d28cde83f8e0cdb9b:docs/knowledge; git diff --name-only d10590bd3fe8f3da4e68bcc087b2102d2c211934 ccedd56453c02c5d3acd60aa4351809a3928e83e -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge; git diff --name-only 310e0104 63456e143063c13558db362d28cde83f8e0cdb9b -- AGENTS.md codeplzreadme.md docs/agents docs/knowledge docs/architecture
+      outcome: passed
+      evidence:
+        - original-evidence；在/Users/ivenwang/Documents/edhr-nexus核对，当前来源/候选63456e143063c13558db362d28cde83f8e0cdb9b，新目标edhr-dev@ccedd56453c02c5d3acd60aa4351809a3928e83e；旧集成提交310e01046d684888b8bdc0915c5f9eb0abe52319和旧目标d10590bd仅用于限定增量。
+        - original-evidence；两组适用契约/当前知识差异均为空；原contractReadCommit 943dc9fed4ffde482fa3eff3dc10f8a157ce5134的适用契约继续有效，本轮重新查看角色/交接契约并读取更新的decisionPackage和文档分类相关知识。
+        - original-evidence；310e0104与63456e14的docs/knowledge树均为3d7a7bdbf40530d3a10cc31991c4ea3ac5b5a4b9，知识工作树无未提交差异，因此本轮无新ID、引用、声明级替代或成熟度变化；前次两项知识纠正完整保留。
+        - 本项仅重放已有知识结论并检查新目标影响；原报告顶层contractBaseline及原验证时点保留，不将旧目标报告冒称新候选运行验收。
+    - id: validation.integration-pr46-delete-audit-semantics
+      checkType: status-transition
+      command: git diff d10590bd3fe8f3da4e68bcc087b2102d2c211934 ccedd56453c02c5d3acd60aa4351809a3928e83e -- gmp-platform; 逐项读取DocumentManagementController、DocumentCategoryRepository、DeletionProtectionAspect/Service、DeletionRelations、现行schema外键及DEC-0053/0065和对应规则。
+      outcome: passed
+      evidence:
+        - original-evidence；PR46产品范围仅DocumentManagementController、DocumentCategoryRepository、DocumentManagementPage，另含3个测试文件和1个浏览器脚本；本轮核对候选这3个产品文件与新目标逐字无差异。
+        - original-evidence；deleteCategory仍由ProtectDeletion(document_category)包裹，保护切面将关联检查和删除放在同一事务；DeletionRelations保留sop_document.category_id引用，现行fk_delete_guard_035保持ON DELETE RESTRICT，未新增迁移或自动解除归类。
+        - original-evidence；reorderCategories与updateCategory均事务执行，仓储以PESSIMISTIC_WRITE锁定default租户分类；排序锁按分类ID排序，只为实际排序差异调用writeChangedAudit，沿既有身份上下文、前后值与AuditEvent写入，不改旧记录。
+        - original-evidence；页面删除继续使用deletionTarget预检查，仅撤下自动转未分类的错误承诺；控制器master-data.documents权限保持，未触及记录控制来源修订、审批、签名、DHR冻结或流程日志所有权。
+        - user-confirmed依据来自DEC-0053及其原始删除确认；DEC-0065既有权限和统一审计契约保持。未发现本次增量与现行声明冲突，无需新政策或知识成熟度提升。
+    - id: validation.integration-pr46-evidence-scope
+      checkType: evidence-path
+      command: 静态读取DocumentCategoryAuditPostgresTest、DocumentManagementControllerTest、DocumentWriteBoundaryIntegrationTest及test-document-category-delete-browser.mjs，并核对本轮新增产品差异的领域边界。
+      outcome: passed
+      evidence:
+        - original-evidence；新增PG测试源码分别断言关联删除阻断、预检后新增引用重核、空分类合法删除、权限拒绝、精确排序前后值、重复/空请求、NULL前值、审计失败回滚及排序/改名并发；这是断言范围核对，不是本角色执行测试通过。
+        - original-evidence；浏览器脚本覆盖确认文案、取消、成功反馈、有关联、预检失败及慢请求取消，使用拦截API；不将其解释为真实数据库浏览器验收。
+        - 本角色未执行Maven、数据库操作、产品业务动作或浏览器，本轮不修改产品代码、数据迁移或知识文件；新候选运行与独立质量仍由主智能体和质量实例取得。
+        - secondary-reference；PR46随附历史审计证据只作为来源索引，未用其历史通过结论代替63456e14候选验证；此前完整矩阵、放行、归档及A12暂缓保持。
   roadmapProgress:
     stage: P0
     status: in-progress

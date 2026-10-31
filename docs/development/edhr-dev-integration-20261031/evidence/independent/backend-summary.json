@@ -1,0 +1,64 @@
+{
+  "candidate": "310e01046d684888b8bdc0915c5f9eb0abe52319",
+  "sourceDirectory": "/Users/ivenwang/.codex/worktrees/record-control-integration/edhr-nexus/gmp-platform/backend",
+  "testDatabases": [
+    "edhr_record_control_test_integrate_quality_20261031",
+    "edhr_baseline_test_integrate_quality_20261031"
+  ],
+  "classes": [
+    {
+      "name": "com.zencas.edhr.recordcontrol.service.RecordControlPostgresIntegrationTest",
+      "tests": "25",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "12.888"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrReviewServiceTest",
+      "tests": "12",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.484"
+    },
+    {
+      "name": "com.zencas.edhr.production.service.DhrSummaryPersistenceTest",
+      "tests": "24",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "1.088"
+    },
+    {
+      "name": "com.zencas.edhr.common.config.CurrentDatabaseBaselineTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.002"
+    },
+    {
+      "name": "com.zencas.edhr.common.config.CurrentDatabaseBaselinePostgresTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.6"
+    },
+    {
+      "name": "com.zencas.edhr.knowledge.BusinessKnowledgeModelTest",
+      "tests": "89",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "7.319"
+    }
+  ],
+  "totals": {
+    "tests": 154,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

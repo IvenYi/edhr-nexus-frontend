@@ -1,0 +1,127 @@
+{
+  "candidate": "63456e143063c13558db362d28cde83f8e0cdb9b",
+  "readOnly": true,
+  "originalTables": 104,
+  "originalRows": 2120,
+  "missingOrChangedOriginalRows": {},
+  "missingOrChangedImportedExactRows": {
+    "user_account": 4
+  },
+  "uatAccountChangedFields": {
+    "883010000004": [
+      "last_login_at"
+    ],
+    "883010000002": [
+      "last_login_at"
+    ],
+    "883010000003": [
+      "last_login_at"
+    ],
+    "883010000001": [
+      "last_login_at"
+    ]
+  },
+  "uatAccountChangesAreLoginOnly": true,
+  "signatureRawPayloadChecks": [
+    {
+      "id": "883010000011",
+      "hashPresent": false,
+      "valid": true
+    },
+    {
+      "id": "883010000012",
+      "hashPresent": false,
+      "valid": true
+    },
+    {
+      "id": "883010000013",
+      "hashPresent": false,
+      "valid": true
+    },
+    {
+      "id": "883010000014",
+      "hashPresent": false,
+      "valid": true
+    },
+    {
+      "id": "391515361580879872",
+      "hashPresent": true,
+      "valid": true
+    },
+    {
+      "id": "391515362142916608",
+      "hashPresent": true,
+      "valid": true
+    },
+    {
+      "id": "391515362583318528",
+      "hashPresent": true,
+      "valid": true
+    },
+    {
+      "id": "391515363027914753",
+      "hashPresent": true,
+      "valid": true
+    },
+    {
+      "id": "391515363497676800",
+      "hashPresent": true,
+      "valid": true
+    },
+    {
+      "id": "391515364231680001",
+      "hashPresent": true,
+      "valid": true
+    },
+    {
+      "id": "391515364860825600",
+      "hashPresent": true,
+      "valid": true
+    },
+    {
+      "id": "391515365221535744",
+      "hashPresent": true,
+      "valid": true
+    },
+    {
+      "id": "391515365821321216",
+      "hashPresent": true,
+      "valid": true
+    },
+    {
+      "id": "391515366148476928",
+      "hashPresent": true,
+      "valid": true
+    }
+  ],
+  "sampleStatus": {
+    "recordCount": 8,
+    "recordStatuses": [
+      "COMPLETED",
+      "COMPLETED",
+      "COMPLETED",
+      "COMPLETED",
+      "COMPLETED",
+      "COMPLETED",
+      "COMPLETED",
+      "COMPLETED"
+    ],
+    "requestCount": 7,
+    "requestStatuses": [
+      "IN_REVIEW",
+      "IN_REVIEW",
+      "IN_REVIEW",
+      "IN_REVIEW",
+      "IN_REVIEW",
+      "IN_REVIEW",
+      "IN_REVIEW"
+    ],
+    "dhrCount": 4,
+    "revisionRefs": 8,
+    "unvalidatedConstraints": 0,
+    "disabledUserTriggers": 0
+  },
+  "originalUntrackedFiles": 886,
+  "changedOrMissingOriginalFiles": [],
+  "passed": true
+}

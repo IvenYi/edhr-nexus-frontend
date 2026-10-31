@@ -1,0 +1,32 @@
+{
+  "reportFiles": 47,
+  "actualTotals": {
+    "tests": 723,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 21
+  },
+  "declaredTotals": {
+    "tests": 723,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 21
+  },
+  "matches": true,
+  "documentPostgres": [
+    {
+      "name": "com.zencas.edhr.masterdata.controller.DocumentReadPerformancePostgresTest",
+      "tests": "64",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "3"
+    },
+    {
+      "name": "com.zencas.edhr.masterdata.controller.DocumentWriteBoundaryPostgresTest",
+      "tests": "55",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ]
+}
