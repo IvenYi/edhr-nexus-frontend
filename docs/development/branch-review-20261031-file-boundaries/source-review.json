@@ -1,0 +1,28 @@
+{
+  "baseCommit": "ccedd56453c02c5d3acd60aa4351809a3928e83e",
+  "scopeType": "limited-method-and-call-chain-review",
+  "wholeFileCompletion": 0,
+  "historicalUniqueIncrement": null,
+  "records": [
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java","scope":"upload/computeMd5/publicPreview/canPublicPreview及download/preview/pagePreview/delete/list/getCurrentOperatorId有限追踪，资源与空用途实际回归，不认证全部权限和跨存储原子性"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java","scope":"public-preview permitAll和其余authenticated映射；不等于文件业务对象ACL"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/FileObject.java","scope":"用途/租户/上传者/原件路径/MD5映射及Repository接口；无schema改动或生产DB验收"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java","scope":"流式validate与resolve原件读入/去重、大小MD5匹配；原2测试运行，不认证DHR完整导出"},
+    {"path":"gmp-platform/frontend/src/api/files.ts","scope":"上传DOCUMENT_VERSION无targetId、认证blob下载/预览调用图；仅读取API包装，不改UI或声称视觉验收"},
+    {"path":"gmp-platform/backend/src/main/java/com/zencas/edhr/masterdata/controller/DocumentManagementController.java","scope":"validateFile只存在性与版本fileId/响应URL映射，供后续对象归属权限核对"}
+  ],
+  "a23": {
+    "records": [
+      {"symbol":"computeMd5 catch IO return empty","status":"corrected","reason":"吞掉真实故障使伪成功继续，改传播；没有增加重试或默认摘要"},
+      {"symbol":"canPublicPreview entity null versus target null","status":"corrected","reason":"唯一入口orElseThrow确保实体存在，targetType实际可空；删除错位判断，覆盖真实边界"},
+      {"symbol":"public target plus actual reference","status":"necessary","reason":"不能只信上传者传来的用途，四类实际引用检查均HTTP回归"},
+      {"symbol":"try-with-resources around owned inputs","status":"necessary","reason":"成功及read/close失败均释放；响应Resource的流归框架，不提前关闭"},
+      {"symbol":"encodeFileName/resolveMediaType broad catches","status":"pending","reason":"需分别核固定UTF8不可达异常与历史MIME兼容，不直接批量删除兜底"}
+    ],
+    "historicalLanguageQueue":856,"previousFeatureAddedPending":1,"separateSqlQueue":130,"sqlChecked":0,
+    "currentChangedPending":["FileController.java"],
+    "currentAddedPending":["FileUploadResourceTest.java","FileHttpBoundaryTest.java"],
+    "wholeFileCompletion":0,
+    "remaining":"W6全量含旧已审，W7最新增量反查；历史各批队列保持"
+  }
+}

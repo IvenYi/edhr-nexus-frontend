@@ -1,0 +1,52 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: ccedd56453c02c5d3acd60aa4351809a3928e83e
+    targetBranch: edhr-dev
+    targetCommit: ccedd56453c02c5d3acd60aa4351809a3928e83e
+    contractReadCommit: ccedd56453c02c5d3acd60aa4351809a3928e83e
+    uncommittedContractPaths: []
+  reason: 仅修复现有通用文件流所有权、摘要读取失败不应成功登记以及空用途公开预览拒绝实现；保留MD5/大小/用途/实际引用、原证据冻结和删除规则。未新增业务概念、规则、状态、权限映射、迁移或成熟度。六个既有ID有限核对，无新unique，不能外推通用文件ACL/跨介质原子性或整体审计完成。实际源码为base加未提交FileController补正，精确diff/hash另存。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.file-resource-source-boundaries
+    checkType: evidence-path
+    command: Read decisionPackage, original recorded user confirmations, six existing
+      ID scopes, FileController/SecurityConfig/FileObject/DhrFormFiles/DhrAttachmentService;
+      inspect actual source diff
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-ontology-review.json
+    - /tmp/edhr-file-ontology-product-diff.txt
+    - /tmp/edhr-file-ontology-review.md
+  - id: validation.file-knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-ontology-knowledge-test.txt
+    - /tmp/edhr-file-ontology-knowledge-junit.xml
+    - Actual89tests,0failures,0errors,0skipped; this does not validate product runtime.
+  - id: validation.file-unchanged-assets
+    checkType: reference
+    command: Compare all tracked knowledge files with base Git bytes; verify knowledge/architecture/contract/tools
+      delta empty
+    outcome: passed
+    evidence:
+    - /tmp/edhr-file-ontology-review.json
+    - No current policy/ID/maturity changes; original evidence and historical definitions
+      retained.
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

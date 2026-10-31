@@ -1,0 +1,86 @@
+decisionPackage:
+  id: DEC-PACKAGE-AUDIT-FILE-BOUNDARIES-20261031
+  scope: PR46合入后的文件上传资源和公开预览失败边界
+  knowledgeBaselineVersion: 0.3.25
+  contractBaseline:
+    sourceCommit: ccedd56453c02c5d3acd60aa4351809a3928e83e
+    targetBranch: edhr-dev
+    targetCommit: ccedd56453c02c5d3acd60aa4351809a3928e83e
+    contractReadCommit: ccedd56453c02c5d3acd60aa4351809a3928e83e
+    uncommittedContractPaths: []
+  summary: 修复上传摘要与复制输入流未关闭、摘要I/O失败被吞为成功，以及无用途文件公开预览空指针；保留既有格式/大小/目标用途和实际引用白名单，不制定通用文件ACL或删除政策。
+  confirmed:
+    concepts: []
+    relationships: []
+    rules: []
+    executionContracts: []
+  inferred:
+    - id: inference.file-upload-resource-integrity
+      statement: 上传拥有的输入流须在成功或失败时释放，读取摘要失败不能保存空摘要并报成功。
+      rationale: Java流所有权、现有MD5元数据及DhrFormFiles原件一致性检查的工程要求，不是新的业务政策。
+      relatedIds: []
+    - id: inference.file-public-preview-null-target
+      statement: 未声明公开用途的文件应按既有不允许公开预览分支拒绝，而不是空指针500。
+      rationale: upload的targetType可选；公开预览只允许四种用途且有实际引用，空用途不在白名单。
+      relatedIds: []
+  unresolved: []
+  replacementScopes: []
+  impactAnalysis:
+    level: L2
+    directImpacts:
+      - area: upload
+        change: 两次输入流分别try-with-resources；摘要IO异常向上抛出，不保存伪完整记录。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java]
+      - area: public-preview
+        change: nullable targetType明确不在公开白名单，保留实际引用核对。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java]
+    transitiveImpacts:
+      - area: frozen-file-validation
+        change: 保留既有MD5格式/内容，避免成功登记空摘要；不改冻结原件验证。
+        evidenceReferences: [gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java]
+    potentialImpacts:
+      - area: failure-cleanup
+        concern: 文件复制失败的部分文件、数据库写失败的孤儿文件、通用删除顺序跨介质一致性另行审查；本批不宣称文件与DB原子事务。
+        evidenceReferences: []
+    unaffectedAreas:
+      - area: business-policy
+        change: 上传格式/150MB、targetId可空、生产/签名证据删除保护、公开资源四用途及实际引用保持。
+        evidenceReferences: []
+    compatibilityAndMigration: []
+    snapshotImpacts:
+      - area: historical-evidence
+        change: 不改既有摘要、冻结证据或历史数据。
+        evidenceReferences: []
+    auditImpacts:
+      - area: uploader
+        change: uploadedBy仍为旧system占位，仅记录后续候选，本次不冒称完成身份审计。
+        evidenceReferences: []
+    permissionImpacts:
+      - area: public-preview
+        change: 空用途沿既有拒绝分支；通用私有文件对象ACL需按业务归属继续核对，不新增权限映射。
+        evidenceReferences: []
+    testImpacts:
+      - scope: targeted-file-regression
+        scenarios: [成功流关闭及真实摘要, 摘要读取失败不落盘不入库, 复制失败关闭输入流, 摘要/复制关闭失败, 无用途公开预览拒绝, 四种公开用途及非公开边界, 真实JWT公开与私有端点]
+        evidenceReferences: []
+    evidenceGaps:
+      - 未认证完整通用文件ACL/多租户/删除图、跨介质回滚、生产堆GC/SLA或所有文件渲染格式。
+      - PDF逐请求渲染/前端blob/导出原件全量内存是容量候选，先量化讨论，不实施性能优化。
+  extensionStrategy:
+    selectedPaths: [product-core]
+    rationale: 原控制器局部释放资源和异常传播，无新抽象/配置/权限体系。
+    ownershipBoundaries:
+      - owner: FileController
+        responsibility: 本次打开的两个流及现有公开用途资格。
+      - owner: Spring Resource response
+        responsibility: 下载响应流由框架管理，不在控制器提前关闭。
+  affectedFiles:
+    - path: gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java
+      changeType: update
+      reason: 局部资源及失败边界。
+  acceptanceScenarios:
+    - id: scenario.file-stream-and-public-boundaries
+      given: 合法上传、可观察读/关闭失败的流及有/无公开用途的文件
+      when: 摘要、复制或公开预览
+      then: 成功摘要与原件一致；每个打开的流在成功/失败释放；摘要失败不保存记录；无用途正常拒绝公开读取。
+      evidenceRequirements: [相同测试旧红新绿, 真实HTTP权限边界, 原DHR原件验证回归, 新独立最终验收]

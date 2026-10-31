@@ -1,5 +1,11 @@
 # 持续推进台账
 
+## PR46已合入：文件上传资源与公开预览边界
+
+已fetch并核对edhr-dev@ccedd56453c02c5d3acd60aa4351809a3928e83e，PR46人工合入且整树同b5a29fbc，无额外增量。从最新目标建audit/edhr-dev-file-boundaries-20261031；[本批](../branch-review-20261031-file-boundaries/README.md)修复FileController上传流未关闭/摘要IO吞错，以及可选用途公开预览500。只有1个产品文件局部变动，旧同源资源9=6真实红3正、HTTP9=1红8正，当前29/29通过，0error/skip；HTTP初版编译错误独立保留。知识6既有ID有限NA/FINAL、89实际通过；当前待新独立最终QA，未提前关闭发现。
+
+5109路径/130SQL只盘点，六有限源码组/A23五记录、1改2增不计整文件或unique。上传DB/磁盘补偿、共享文件对象权限、上传者system、相关签名上传流与大PDF/导出内存候选已逐项登记，下一批优先真实对象授权和跨介质故障；性能先量化讨论。原W2–W4入口、W5–W7、A23旧已审全量/SQL及历史增量、原用户暂缓/四gap保持。全部正式角色FINAL后实际无漂移/阶段汇报再PR，不自动merge/deploy/恢复。
+
 ## PR45已合入：W3/W4分类排序审计与真实删除契约
 
 已交付[PR46](https://github.com/IvenYi/edhr-nexus-frontend/pull/46)，`audit/edhr-dev-document-category-audit-20261030`→`edhr-dev`，登记时OPEN/MERGEABLE/CLEAN、待人工merge。实际受测5d1487，后续6a732131仅L0原件/验收/进度，当前只登记交付；受测保护路径无差异。下轮先fetch实际合入和外部代码/知识/契约增量，再核文档上传/预览/下载链；本批passed不覆盖整体余项或原暂缓，不自动merge/deploy/恢复。

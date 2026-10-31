@@ -1,0 +1,1699 @@
+{
+  "roleState": "FINAL",
+  "ontologyResult": "not-applicable",
+  "baseCommit": "ccedd56453c02c5d3acd60aa4351809a3928e83e",
+  "headCommit": "ccedd56453c02c5d3acd60aa4351809a3928e83e",
+  "sourceRevision": "HEAD plus actual uncommitted FileController diff; exact hashes recorded",
+  "contractReadCommit": "ccedd56453c02c5d3acd60aa4351809a3928e83e",
+  "knowledgeBaselineVersion": "0.3.25",
+  "packageSha256": "d9ca3312ffecb0b02d08afd7926191e851d275afb3c30b945d330241ffc833d4",
+  "sourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+      "sha256": "5c0ed60d172d2408ca39e801fa548fac4ac41caf634321b26307c187089c027a",
+      "bytes": 16400
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/entity/FileObject.java",
+      "sha256": "5e9a5e9c7a3b56c72d7f217a89265d2c4d98101930923c50043be73e57a77e3c",
+      "bytes": 1043
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/common/config/SecurityConfig.java",
+      "sha256": "a8f3c83746619d893e5f1a1e41ae6d3430917a2da8eca97201d646fcd437124c",
+      "bytes": 3527
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java",
+      "sha256": "5fee2445f853d6fddd3202aa46a03efcbc5446989aabe36cbf6bf76814d4da8c",
+      "bytes": 6565
+    },
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrAttachmentService.java",
+      "sha256": "6493a32d00fd20d864bc37ee633babecc2001a001e9e54d4aba5b798295363d1",
+      "bytes": 15991
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "sha256": "51dc528c6fe38671023cec25cfbe6bf1f0a8dcf2fc088f7894524a2d5f035642",
+      "bytes": 36542
+    },
+    {
+      "path": "docs/development/branch-review-20261031-file-boundaries/decision-package.yaml",
+      "sha256": "d9ca3312ffecb0b02d08afd7926191e851d275afb3c30b945d330241ffc833d4",
+      "bytes": 5087
+    }
+  ],
+  "records": [
+    {
+      "id": "DEC-0063-10",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "DEC-0063-10",
+      "originalMaturity": "specified",
+      "scopeClassification": "limited-related-statement-and-source-boundary",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "disposition": "retained",
+      "assessment": "DHR受控附件50MiB/原件SHA256/核验保留，不套用通用上传150MiB/MD5。",
+      "originalEvidence": [
+        "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java"
+      ]
+    },
+    {
+      "id": "DEC-0063-11",
+      "recordType": "decisionStatement",
+      "sourcePath": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sourceLocator": "DEC-0063-11",
+      "originalMaturity": "specified",
+      "scopeClassification": "limited-related-statement-and-source-boundary",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "disposition": "retained",
+      "assessment": "冻结导出保留原件，缺失/损坏阻断；本次不修改冻结范围、版本、历史或导出。",
+      "originalEvidence": [
+        "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java"
+      ]
+    },
+    {
+      "id": "rule.dhr-summary-controlled-attachment-upload",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/dhr-summary.yaml",
+      "sourceLocator": "rule.dhr-summary-controlled-attachment-upload",
+      "originalMaturity": "specified",
+      "scopeClassification": "limited-related-statement-and-source-boundary",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "disposition": "retained",
+      "assessment": "受控附件来源/权限/核验边界保持；通用控制器资源修复不提升其成熟度或扩大格式。",
+      "originalEvidence": [
+        "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java"
+      ]
+    },
+    {
+      "id": "rule.dhr-summary-zip-source-trace",
+      "recordType": "rule",
+      "sourcePath": "docs/knowledge/rules/dhr-summary.yaml",
+      "sourceLocator": "rule.dhr-summary-zip-source-trace",
+      "originalMaturity": "specified",
+      "scopeClassification": "limited-related-statement-and-source-boundary",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "disposition": "retained",
+      "assessment": "原件一致性含义保持；摘要失败不能被吞成成功属于现有完整性要求的工程落实。",
+      "originalEvidence": [
+        "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java"
+      ]
+    },
+    {
+      "id": "evidence.dhr-form-files-source",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sourceLocator": "evidence.dhr-form-files-source",
+      "originalMaturity": "internal-code-evidence",
+      "scopeClassification": "limited-related-statement-and-source-boundary",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "disposition": "retained",
+      "assessment": "实际DhrFormFiles依旧比较登记MD5/大小、生产对象/时间/用途，源码核对不等业务运行验收。",
+      "originalEvidence": [
+        "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java"
+      ]
+    },
+    {
+      "id": "evidence.production-execution-file-preview-protection-source",
+      "recordType": "evidence",
+      "sourcePath": "docs/knowledge/evidence/production-execution.yaml",
+      "sourceLocator": "evidence.production-execution-file-preview-protection-source",
+      "originalMaturity": "internal-code-evidence",
+      "scopeClassification": "limited-related-statement-and-source-boundary",
+      "semanticReviewStatus": "reviewed",
+      "conclusion": "consistent",
+      "disposition": "retained",
+      "assessment": "实际FileController生产执行删除保护及PDF页码/内容处理仍保持；空公开用途沿既有拒绝分支，不定义通用文件对象ACL。",
+      "originalEvidence": [
+        "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+        "gmp-platform/backend/src/main/java/com/zencas/edhr/production/service/DhrFormFiles.java"
+      ]
+    }
+  ],
+  "coverage": {
+    "limitedExistingIds": 6,
+    "wholeFileCompletion": 0,
+    "newHistoricalUniqueIncrement": null,
+    "notGlobalCompletion": true
+  },
+  "knowledgeFiles": [
+    {
+      "path": "docs/knowledge/README.md",
+      "sha256": "664141952660c395c7392915df8c60648e382e93b6d1df95b418df12ba46f291",
+      "bytes": 103714
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0001-product-process-modeling.yaml",
+      "sha256": "4e357fb25e03abcc90f452b63e5a298c913f85bbb3738137efd7e4a8620d6c79",
+      "bytes": 11974
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0002-product-family-process-modeling.yaml",
+      "sha256": "feb3eacbe7c68b3e263b9f60679c5f5f6acf51987d0845d274ec34f96087faaa",
+      "bytes": 11336
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0003-ai-enabled-transaction-runtime.yaml",
+      "sha256": "646fef81541ebdab6f4b9bbe07389f4405c305dfcdabd2419d823612b7074eac",
+      "bytes": 12094
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0004-ontology-driven-impact-analysis.yaml",
+      "sha256": "709e1f2555a914b7c55ce247089a7306b23769dc19fa61708e8b93956b53f52a",
+      "bytes": 4144
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0006-production-work-template-configuration.yaml",
+      "sha256": "e24293e6b647aef276817a35d37324fbc04b1085382af793e1b0983055c5f090",
+      "bytes": 20427
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0007-production-work-applicability-and-runtime-snapshot.yaml",
+      "sha256": "f76bdff7f85e487d9a00883ac44c281e5779094d22b57b5d4303218e4ca0a30f",
+      "bytes": 10199
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0008-production-work-condition-rule-configuration.yaml",
+      "sha256": "915891356f6dad63ddc1bb803579ecc722d6c13fa3d9999707f2885f0be16a25",
+      "bytes": 6364
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0009-production-work-flow-publish-validation.yaml",
+      "sha256": "dc5311c43dd756f66c9d18919bde3288ab35225dbbdf7fe2a7bce029e62feca6",
+      "bytes": 8575
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0010-production-work-form-node-business-document-configuration.yaml",
+      "sha256": "911bdb38e05be0d05a08a0e624d69e0c1176d07eda1894c81e1fcf771ea19630",
+      "bytes": 4000
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0011-production-work-condition-branches.yaml",
+      "sha256": "e00c93731e12f012fe030e8a51728a865f63afd6e9e0636105306873e07bded2",
+      "bytes": 9316
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0012-production-work-order-and-production-object.yaml",
+      "sha256": "08266f4d57a14280b4eb4b88ac934d27dc4737809091c5f60a222158f4964928",
+      "bytes": 11422
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0013-production-work-order-lifecycle-and-audit-projection.yaml",
+      "sha256": "25ed18c343d386de1d633d2a46bbade374aad08e5620212f9f9b319324015238",
+      "bytes": 5113
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0014-production-batch-staged-bulk-submission.yaml",
+      "sha256": "42bcf5315ff89b63c2c5187513a5ae81efd364fbbc3ea2713f0366ad3f605e9b",
+      "bytes": 10286
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0015-work-order-audit-change-snapshots.yaml",
+      "sha256": "ce1913143ea03882cdc02a3cb4e88c66d4ef626a61a7e2b90bffa1b4f9dc8641",
+      "bytes": 6472
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0016-production-work-order-sn-split.yaml",
+      "sha256": "493e150565c173a1aa89b2503e60c20b668ac622b029b8cb52bc61f9d62d7078",
+      "bytes": 5552
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0018-work-order-early-termination-and-batch-resplit-boundary.yaml",
+      "sha256": "901b3e6a6c67e86fc34f0557cd83a6423aa04925c80410790c2e95e08d082c08",
+      "bytes": 10950
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0019-production-batch-management-list-and-row-audit.yaml",
+      "sha256": "55318228410bdbbc4fdede7e6c62d8bb6444615f155aa239466fbbfc9180779f",
+      "bytes": 7765
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0020-production-batch-actions.yaml",
+      "sha256": "98cf5b2d02e6fc7976250afd764c8376ca868e1afc79818c43b041c2b4554f70",
+      "bytes": 6754
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0021-production-audit-localized-display.yaml",
+      "sha256": "cff9612dbe45c453a1baf1c6754c6cbdca47e489b63c56ac2cf6d219ed8a84c4",
+      "bytes": 3233
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0022-production-form-process-configuration.yaml",
+      "sha256": "7258247db67cd743a6194fc23c421c7ee5a36d71d05f9e81fe9b62f5029fbac9",
+      "bytes": 7653
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0023-production-form-process-subject-default-and-binding-exceptions.yaml",
+      "sha256": "e96d2554e9928f34de37147e7512a8ac57e123d19624c9bf85dbcc9ce23739f9",
+      "bytes": 8855
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0024-production-form-process-buttons-and-events.yaml",
+      "sha256": "d4ba07c504cf7e2199507106f568d322b46b0c74b55718135bd79ea14e237867",
+      "bytes": 5670
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0025-production-form-process-builtin-events-and-field-bindings.yaml",
+      "sha256": "4a6131d0ab736337ce35ae62c4edef3eb3c45676303d197bbc81b3daa10477f5",
+      "bytes": 5504
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0026-product-process-production-form-values.yaml",
+      "sha256": "a343614a52f411642f9feb1794963b556903945a6fd0954de69b39c3a15c77e9",
+      "bytes": 2837
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0027-workshop-master-data.yaml",
+      "sha256": "bb25383572b129152de58ed8a187ca882c690b9f1f264a401f26687cde46a046",
+      "bytes": 4655
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0028-production-form-process-button-electronic-signature.yaml",
+      "sha256": "7865fe4d190bb25619ddca3907e432a932afce330e1e65982f3fdf695dd4b77c",
+      "bytes": 4090
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0029-form-process-subject-selector.yaml",
+      "sha256": "62c405f2665e18581916fcaf900c4af4e1011fd89d54b2fc8b7fa0d9a3ad7be6",
+      "bytes": 4031
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0030-identity-runtime-subject-resolution.yaml",
+      "sha256": "8596f81f4cdec7699026faf65fe3f7924cd32e3f1939e4bc5f4e7c91caab97b3",
+      "bytes": 4825
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0031-workflow-task-multi-candidate-runtime.yaml",
+      "sha256": "c54fdb4f7265382572fe65da61f3a31aa06667f11a6718ecd5d998119ef065d7",
+      "bytes": 7118
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0032-single-tenant-mvp-and-future-multitenancy.yaml",
+      "sha256": "3024eb2776c3f6230d3e7cd2ff21d50a799f716dd79979ce21f2026a77f794c8",
+      "bytes": 2462
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0033-form-process-optional-subjects-and-open-operation-scope.yaml",
+      "sha256": "1d8d32284b138707d7b6df0e106d0f5183d2d44770bb6e78be7f9047795bfc6e",
+      "bytes": 4020
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0034-form-renderer-field-permission-contract.yaml",
+      "sha256": "b20877ce26fbb2ed622ae0633eab24a54cd7498a3a94307b4c6f80ed4afe3ddf",
+      "bytes": 3404
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0035-form-process-permission-groups-and-node-events.yaml",
+      "sha256": "813ad1848494d624ce9a4071d282a2f01aa9e2e991d8392bcae77568c6524d09",
+      "bytes": 5508
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0036-form-process-version-reference-governance.yaml",
+      "sha256": "e129c49f5a9619e300f5f7adfee3b930275980aa89c68e47fd9083c6063405bb",
+      "bytes": 8858
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0037-record-correction-and-void-control.yaml",
+      "sha256": "25d8f09d2b1886e7803f69680a4156fceb6e1365d46c0020127c5b1b83830377",
+      "bytes": 7259
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0038-ontology-p0-foundation.yaml",
+      "sha256": "0a04102541d874bb390e1694f171865bee1dcf3dccc3bc1b89b76401d3be9a64",
+      "bytes": 5664
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0039-record-control-parallel-review-configuration.yaml",
+      "sha256": "65ed3fdd6109a60f9cefa953418511143ee423dbe2f021f9fff301ecb51c79ed",
+      "bytes": 6438
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0040-record-control-review-template-fixed-actions.yaml",
+      "sha256": "b05c6c287bf30995f7bdca5d3a81837bbfb0f028577298a265662d0b561c53cc",
+      "bytes": 5005
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0041-record-control-application-confirmation-start.yaml",
+      "sha256": "6504a9ff86aa6718d585097b27e23ab303f06186e40a99db8f74dad2d5c4fb39",
+      "bytes": 8614
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0042-record-control-workflow-stage1-contract.yaml",
+      "sha256": "3689081c7f4bbfc480e332e03a8e51365385654cbe5bdecb0b1403bde46c1cba",
+      "bytes": 8243
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0043-record-control-canonical-terminology.yaml",
+      "sha256": "877b20598c3173c530747ddd0a89c8aef2078c4844ef64cb8d39bdfa5b72142f",
+      "bytes": 2851
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0044-equipment-modeling.yaml",
+      "sha256": "7b06e575e0996a597f641be026c47f3c50a21b928e30629c42d05f04c6a4c146",
+      "bytes": 7827
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0045-production-execution-workspace.yaml",
+      "sha256": "e1f053a9a427ec2044a2ff165075eaf18ecd8d2b62ea9a6c26834c9c024c4810",
+      "bytes": 6942
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0046-production-form-copies.yaml",
+      "sha256": "9d51c12413b923a2dc49da1128436babc8d9391e0fbb02477993edfb1e663176",
+      "bytes": 4220
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0047-execution-form-selector.yaml",
+      "sha256": "3248c218fb2acf739549e64175d085ec09c6e36674930c0ae87df3a7c7621810",
+      "bytes": 7320
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0048-material-type-and-brand.yaml",
+      "sha256": "31835c2affec9f99c366e8c08e25c551a29a74b1aaf1c1a9284242992670d1cf",
+      "bytes": 2327
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0049-material-import.yaml",
+      "sha256": "1d1ec0b79a7a04dc32612bb297a094e983e48c4ec632e945aef132cf842fbd78",
+      "bytes": 3551
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0050-form-instance-number.yaml",
+      "sha256": "c803af21881ef16301039935a30487265e3a58f8af9dff25fe644c3118b83486",
+      "bytes": 4845
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0051-form-instance-global-query.yaml",
+      "sha256": "a4c2683d314033c11000313b9e3553f3ee82d5b0b5d935dc0e72263fae698878",
+      "bytes": 4122
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0052-form-management-personal-worklists.yaml",
+      "sha256": "0842416f08d6ea932c989c686b306df0e3312302081ed66805420ae5d5d72c4e",
+      "bytes": 3140
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0053-master-data-deletion-protection.yaml",
+      "sha256": "497f569b55f108a9e1cff6b975563785482e9ff2ebd325899e5b29330572326c",
+      "bytes": 7592
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0054-operation-import.yaml",
+      "sha256": "89e9d530cd780a112a8337bc631f7f17cca5ef7c05a3eed25b13daf88189024b",
+      "bytes": 3561
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0055-form-approval-transfer.yaml",
+      "sha256": "159dc61c2247c42ef3e1327264977b797a253a49e6de4aeece06e9c0e6420a95",
+      "bytes": 4729
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0056-approval-display-terminology.yaml",
+      "sha256": "3b7642a20d086ea70554ecd1ceed367673b6ce98701c5db879b01fe02f4febab",
+      "bytes": 3459
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0057-form-instance-business-source.yaml",
+      "sha256": "cc760692caf7b8a263bbae2505c35910f0be021db24d7620a54059c3044951de",
+      "bytes": 3425
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0058-production-field-signature.yaml",
+      "sha256": "1f0a8b0516bd0b758fba4bcfea15745b99bab8a863c6ec90f41ec08ca69412be",
+      "bytes": 3213
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0059-production-form-auto-finish.yaml",
+      "sha256": "d2cffeb36a31c695bc9eb89124966f041f6dc0934a28ac3c2143dcf5a3cfa1be",
+      "bytes": 4346
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0060-form-reference-runtime.yaml",
+      "sha256": "0e95e62e7651c20be4038a0df2bd1a3de1a5e821251a985b47a95c608814a99d",
+      "bytes": 5331
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0061-dhr-template-version-design-isolation.yaml",
+      "sha256": "7a45ad1ffca02d169893faaf9eb98b8da2c0e871b20b17cd28613d571f8f530e",
+      "bytes": 3606
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0062-dhr-instance-management-phase1.yaml",
+      "sha256": "c7543c60d2a7bb5e8c2d82c1941d255232310faa69b8c137b23dee1b37b1ed84",
+      "bytes": 6595
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0063-dhr-summary-and-review-configuration.yaml",
+      "sha256": "28b3ec4bfd08d19691f9a3dbb34ba056ffd8e0230a67804f81b73220fb9710a7",
+      "bytes": 21363
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0064-master-data-description-contract.yaml",
+      "sha256": "9e026fc6160f8a97fba8bfac99227a0ef7d559ce883e9e678d4864b279dfa00d",
+      "bytes": 4535
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0065-master-data-permission-audit-contract.yaml",
+      "sha256": "4b52387962ebfa238b53643d75b10ed647f21ff99ede13924f626d94322b4a22",
+      "bytes": 4594
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0066-production-form-copy-metadata.yaml",
+      "sha256": "87b2ed7b45348f7ab6b0f1b3f5ef7646af88da4c0de776544020a673161c7bc0",
+      "bytes": 4201
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0067-form-fill-settings.yaml",
+      "sha256": "2dd74904c246ba98b87134d9b36b455776b86028bcdb46b5e0b8f7dd2273276d",
+      "bytes": 6663
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0068-dhr-filling-review.yaml",
+      "sha256": "df0ae52ac747f44fbefc8eca2f324cf0e0aba7dbe4f882cf79ad03bccb25046f",
+      "bytes": 16783
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0069-dhr-early-termination-lifecycle.yaml",
+      "sha256": "333c2677ff28fc8437cd0615bce56678937851be6e4243e6527cb79db35f23bf",
+      "bytes": 6961
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0070-dhr-approval-menu-display.yaml",
+      "sha256": "31f03129204d441f8ead68a657d637637bf48e8eb2136903d3e1d7fc8f6872d0",
+      "bytes": 1665
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0071-dhr-summary-placement-order.yaml",
+      "sha256": "928d1793ab44a3c1a5dbcaff807fdb805a2b846105d0e3c3f2c571dabc2b4388",
+      "bytes": 3743
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0072-dhr-summary-source-group-presentation.yaml",
+      "sha256": "93a32428a53658205599ff3a1d6c4b755cded2591b228e75b0f4dc0181158f28",
+      "bytes": 9256
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0073-production-execution-form-action-projection.yaml",
+      "sha256": "d574782d329cab3816e8ed4dda0ef4264157cf6b3aa622a8d1d4f413cc7f900c",
+      "bytes": 5161
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0074-shared-terminal-button-signature.yaml",
+      "sha256": "09d6cb083c1350f3c64a2abb8583ca9a4eb1a7b3a837cdd67b9f6dc28d9e2d3f",
+      "bytes": 7527
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0075-custom-form-scope-and-record-completeness.yaml",
+      "sha256": "b2dbfc44407164b2b21a7ac59a74c8e32ca2601583a3a902aa64e3ab14cb2e7d",
+      "bytes": 7784
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0076-ontology-guided-pilots-and-legacy-audit.yaml",
+      "sha256": "98c406e07540a21efd6f5a69702e1c14e2b5bf39c98a4a36fe564e673e148cf3",
+      "bytes": 10770
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0077-form-traceability-projection-ownership.yaml",
+      "sha256": "324f5e292a5bcc1f7acd80066443af690045dab8fb6c78492e8b6c19ce577d2a",
+      "bytes": 74784
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0078-final-output-linkage.yaml",
+      "sha256": "fbc1f91fcc7eea1d2fdd2ac4c01ed808d9b60a1c6d4bc795e80050cb704cc89c",
+      "bytes": 5684
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0079-batch-quality-linkage.yaml",
+      "sha256": "aa47b25715e3ae8e6c0aaf857bf74ac62b8e65185de68de1865453cfe41831e1",
+      "bytes": 6391
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0080-shared-choice-field-options.yaml",
+      "sha256": "9b61e114aadf7948d86baa704aae94325449fe6cca0dd825c5b921a22814bd08",
+      "bytes": 3431
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0081-tenant-scoped-task-delegation.yaml",
+      "sha256": "c47a0ea204787a4f03cf5e507e71ec002e1e7514ade7cd122d2290049aa0c5da",
+      "bytes": 5824
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0082-defect-reason-detail-and-reference-ownership.yaml",
+      "sha256": "6bf632f81ddce0d0c33c2d0b3ac586490ea9762c13016781cd023633fcbcf641",
+      "bytes": 17752
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0083-route-graph-save-connectivity.yaml",
+      "sha256": "a882ed9bd1e076a65811b798fffda8d8b1eb27d95d1d1634ee4501cbad901213",
+      "bytes": 4547
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0084-route-graph-topology.yaml",
+      "sha256": "b8bf9cf032ce0c95e79b98a3931b600ae28a6ad6d29b98c53c405f135afd0fe2",
+      "bytes": 7499
+    },
+    {
+      "path": "docs/knowledge/decisions/DEC-0085-shared-login-cross-tab-isolation.yaml",
+      "sha256": "b8b37eae9745eb290176cde4fb734b23510f180ebd62cf03ceba2b3706d32c40",
+      "bytes": 7136
+    },
+    {
+      "path": "docs/knowledge/evidence/approval-display-terminology-user-confirmed.md",
+      "sha256": "99543394e582bab6d556d415131ed3ec4b50b13b0ad2a5e5baeaff50d3377cf3",
+      "bytes": 1121
+    },
+    {
+      "path": "docs/knowledge/evidence/approval-display-terminology.yaml",
+      "sha256": "1b8e74890053a70c47b8b5d72c4545cfe6c02c5593bb6fcc963d545345488a97",
+      "bytes": 469
+    },
+    {
+      "path": "docs/knowledge/evidence/batch-process-2026-10-27.md",
+      "sha256": "2767ebbceeda567a10ed192a7f323ced80a5ec21bb5e60eb6dc7c9a48b6179d4",
+      "bytes": 18336
+    },
+    {
+      "path": "docs/knowledge/evidence/batch-process.yaml",
+      "sha256": "eaa50095083217428c74a1b399200a0d99a6e8397fe9edbaaa345eadc72171ea",
+      "bytes": 1079
+    },
+    {
+      "path": "docs/knowledge/evidence/batch-quality-linkage-2026-10-15.md",
+      "sha256": "b711d733a5d1ef5131496b493b1c47aaf24d4f2918014dcde7ab0de17ce158a8",
+      "bytes": 9110
+    },
+    {
+      "path": "docs/knowledge/evidence/batch-quality-linkage-2026-10-15.yaml",
+      "sha256": "5664d9bb762aefda82ec8b4afdc88d6bad0d4037ecff7e4ca3f3d448b0c28434",
+      "bytes": 1888
+    },
+    {
+      "path": "docs/knowledge/evidence/binding-reference-audit-2026-10-18.md",
+      "sha256": "7e50c7c9d87cd74b9f84878b28819bd982b460ebb38325f47a7c2ab2e38c73bc",
+      "bytes": 14379
+    },
+    {
+      "path": "docs/knowledge/evidence/button-signature-confirmed.md",
+      "sha256": "6e8a7ef08b2c76c854d2d66bf257e611e75f545cbdc75bacad2ef4039d67dff8",
+      "bytes": 14758
+    },
+    {
+      "path": "docs/knowledge/evidence/button-signature.yaml",
+      "sha256": "18b32345e87897bf007dcce8535a72843c36cf65f0c6526ad4eb3c3e806a8d0e",
+      "bytes": 5406
+    },
+    {
+      "path": "docs/knowledge/evidence/custom-form-scope-confirmed.md",
+      "sha256": "ef6449bfd3762e7849dba9781e511c40e792936ee354fb5e594516b698e74a32",
+      "bytes": 5637
+    },
+    {
+      "path": "docs/knowledge/evidence/custom-form-scope.yaml",
+      "sha256": "a36fd2bf0b8f73e153e7b92944ab67b98aaa3e3d46b3c177c17fe6ab8753ad54",
+      "bytes": 1633
+    },
+    {
+      "path": "docs/knowledge/evidence/defect-reason-detail-reference-2026-10-18.md",
+      "sha256": "31ff800ef96b19a728aa68e7e944ff4061fdd18230568b9157d6ea9e61b37c0e",
+      "bytes": 16267
+    },
+    {
+      "path": "docs/knowledge/evidence/defect-reason-detail-reference-2026-10-18.yaml",
+      "sha256": "8954577928f5ea4afb201068a1fc1bf004bd51ccd00785abfcee58ef488c3393",
+      "bytes": 1211
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-approval-menu-display-user-confirmed.md",
+      "sha256": "d69036bb4076bbc1f4a781651e566e89ee16a24da0029001dfe5678a86d3e885",
+      "bytes": 1482
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-approval-menu-display.yaml",
+      "sha256": "de67768968051c9fb2c8e4f20ccf13b699bfb43070a25c5c84ed6c791ff69b11",
+      "bytes": 441
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review-confirmed.md",
+      "sha256": "1149c86587f810d2034b00533288285e1b5423438b0c50441df65a282511ac90",
+      "bytes": 37961
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review-implementation.md",
+      "sha256": "c7514abd7f2411d02eececf69e2dee7314d0c0bf1e99dad9c42046bfa90df04c",
+      "bytes": 22987
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-filling-review.yaml",
+      "sha256": "d57eb3de9b837565cde3c9227e747981e829e4bd8ea476e0024851ee4b21a854",
+      "bytes": 2193
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-instance-management-user-confirmed.md",
+      "sha256": "469fb252c4b7b0173b080716fae9b3469469a045a4efae387481183bfbfa3fc7",
+      "bytes": 1674
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-instance-management.yaml",
+      "sha256": "4fb2da540dad1b656cb9a48d70b9d04240cebc07aa41bd61d722b54253c3e9c4",
+      "bytes": 7308
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-robustness-review-fix.md",
+      "sha256": "0f563dc9cb50e83cc7c06a334cb522447694a7ecbebdd3b838408305afa03c84",
+      "bytes": 14060
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-robustness-review-fix.yaml",
+      "sha256": "6773cae134672af47da1ce816cbb328e431a4f0e15fdb7a46ffd3aea10466761",
+      "bytes": 4621
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-compliance-assessment.md",
+      "sha256": "e28c0f7dcaea273d64ffeaebfeae5d650e93665e2d9f2a36d6ce8d918eb5bb5c",
+      "bytes": 3546
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-order-user-confirmed.md",
+      "sha256": "cf597f0376c082dd9f7baa633320e4a013d77451df86a0aa5ea10cd1d6d1245f",
+      "bytes": 1319
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-source-group-user-confirmed.md",
+      "sha256": "15638b842fa6d3ea1feadec0f8ee068a40cf49b931fa29ca5b79aa62a3a6aea1",
+      "bytes": 4668
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary-user-confirmed.md",
+      "sha256": "51dc528c6fe38671023cec25cfbe6bf1f0a8dcf2fc088f7894524a2d5f035642",
+      "bytes": 36542
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-summary.yaml",
+      "sha256": "b121656c1c69b13066dbb34e2fed6f080140663c668c55ba5faf61a993b1b389",
+      "bytes": 19543
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-template-version-design-isolation-confirmed.md",
+      "sha256": "5d5528bc6a9ca79e05ad09b4a3af694d7021d7bcc50a901de78c90e5dbe1f00f",
+      "bytes": 716
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-template-version-design-isolation.yaml",
+      "sha256": "d25778e79ede99b26b82aef68775babfc2acac7dca6f687403dbdb70a3a22a98",
+      "bytes": 2631
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-termination-lifecycle-confirmed.md",
+      "sha256": "873b4caf3f3093f47a06844e3daae63b12e8872433855b3053734a48d97c0518",
+      "bytes": 4316
+    },
+    {
+      "path": "docs/knowledge/evidence/dhr-termination-lifecycle.yaml",
+      "sha256": "21c160b81ecf9f3740856f17df71f87a52804018016517965a5264daef2d12ac",
+      "bytes": 1413
+    },
+    {
+      "path": "docs/knowledge/evidence/equipment-description-confirmed.md",
+      "sha256": "8b76eb1e8a9ae9ab2b444220c4d1062e178fd807d9446e1c31c45b312d7b64bf",
+      "bytes": 638
+    },
+    {
+      "path": "docs/knowledge/evidence/equipment-modeling.yaml",
+      "sha256": "ede862f9ff18778fd829f98be111b7b73e7abbac0c1fca0433e3f9577cc9b510",
+      "bytes": 8344
+    },
+    {
+      "path": "docs/knowledge/evidence/execution-form-selector.yaml",
+      "sha256": "950cf4c3d658d0a4d7275895d06bdb2cd7e4b454bd5b52deeb0033851c50370f",
+      "bytes": 4277
+    },
+    {
+      "path": "docs/knowledge/evidence/explicit-fill-mode-audit-2026-10-18.md",
+      "sha256": "17ec9da145df1a575a5fc5008103be353af9e6de177f81e359eabeeba1fc3b95",
+      "bytes": 8517
+    },
+    {
+      "path": "docs/knowledge/evidence/final-output-linkage-2026-10-15.md",
+      "sha256": "a0a75b383f2ef0c6cb1bde4e7c962696c3649800cb22f019ff680ffac9f0c573",
+      "bytes": 6361
+    },
+    {
+      "path": "docs/knowledge/evidence/final-output-linkage-2026-10-15.yaml",
+      "sha256": "8d1ca7163b9975097740d14e00cab06b828b4cb5adcee39a5d599766ebcb6ef7",
+      "bytes": 3474
+    },
+    {
+      "path": "docs/knowledge/evidence/form-approval-transfer-user-confirmed.md",
+      "sha256": "5d0c42683143430fc52064d290572390436f3044167b10f0f064e9d60b38c369",
+      "bytes": 2296
+    },
+    {
+      "path": "docs/knowledge/evidence/form-approval-transfer.yaml",
+      "sha256": "0436c274f0a1ddc644562e9de0992d5dc74df6eb72fb7ea6c0ef309e552d6efc",
+      "bytes": 3405
+    },
+    {
+      "path": "docs/knowledge/evidence/form-fill-settings-confirmed.md",
+      "sha256": "f25b4d452e61343a03b454c9a79ae8ba87421cedb5c7ba4693cbd5ca6c7dc2e1",
+      "bytes": 6553
+    },
+    {
+      "path": "docs/knowledge/evidence/form-fill-settings.yaml",
+      "sha256": "9022056ed908318e4ddc26bde1d1a657e5418a503614a0c559281c1492cfdce7",
+      "bytes": 4301
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-business-source-user-confirmed.md",
+      "sha256": "c8fdb4e0ac9ef667ce0fd8adb2ed29c51df781770218eeeff3c11a6983484111",
+      "bytes": 1480
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-business-source.yaml",
+      "sha256": "33ea651cf82cbdd9233a34f28e82b53cf90d31eb84be893d000ab9b9b1f127f6",
+      "bytes": 1718
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-number-user-confirmed.md",
+      "sha256": "c599a9b48c27861b993f5c60733d3e52e2734eea65a8f842fc8d1f784d9df167",
+      "bytes": 4458
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-number.yaml",
+      "sha256": "832a0c563de4964e3efc679c41a37cacba8708d5309b4f2a174f4a66c5a7aedf",
+      "bytes": 2772
+    },
+    {
+      "path": "docs/knowledge/evidence/form-instance-query.yaml",
+      "sha256": "cca564b45c57a593896c5a215d06c1f609163caa828778810be22a94152b01b7",
+      "bytes": 5060
+    },
+    {
+      "path": "docs/knowledge/evidence/form-process-version-references.yaml",
+      "sha256": "9dee44828de75527b5d44bfaa0351ef146ed6f18fc4a76c1c1ecf9348fe774b3",
+      "bytes": 4612
+    },
+    {
+      "path": "docs/knowledge/evidence/form-reference-runtime-confirmed.md",
+      "sha256": "149b62750cf404cf1220232eaf472b50ec0695bf3dfcd53bcfc743ffb8a42998",
+      "bytes": 8411
+    },
+    {
+      "path": "docs/knowledge/evidence/form-reference-runtime.yaml",
+      "sha256": "b64ffa7ad428dda7f68411d3e335d6ae410a8633736f93b4400597522a55d218",
+      "bytes": 7099
+    },
+    {
+      "path": "docs/knowledge/evidence/form-renderer-permission-contract.yaml",
+      "sha256": "5291710cf328cc6383004737737af13904874ec2ae0d438f2c35d2753a15569a",
+      "bytes": 836
+    },
+    {
+      "path": "docs/knowledge/evidence/form-traceability-projection-ownership-user-confirmed.md",
+      "sha256": "a4b5c0bff36eb594d7432ccb571b68c68657a1cd817ab521cbb2c5066d8e61ee",
+      "bytes": 173872
+    },
+    {
+      "path": "docs/knowledge/evidence/form-traceability-projection-ownership.yaml",
+      "sha256": "f9d88fd2d18400cbd3fe341d531225c5276101cb5da409b6b132988143e45902",
+      "bytes": 17644
+    },
+    {
+      "path": "docs/knowledge/evidence/form-worklists.yaml",
+      "sha256": "c055deb2ea9aa868c8a5a0bdfd7cd2b46785241f99d550ad67c80eb3bbe73516",
+      "bytes": 3619
+    },
+    {
+      "path": "docs/knowledge/evidence/guancheng-batch-lifecycle-source.md",
+      "sha256": "4e4ea4ffff985d7644217790cf2a693c356b675a50e7fbdd9ed5d2d894fac40c",
+      "bytes": 3896
+    },
+    {
+      "path": "docs/knowledge/evidence/guancheng-sn-split-source.md",
+      "sha256": "3e9dbaf3f6c7a3c8f881f1e1a0e2d48b0f43ef671ffa5efea13feb792b759895",
+      "bytes": 1044
+    },
+    {
+      "path": "docs/knowledge/evidence/identity-subject-selector.yaml",
+      "sha256": "d8d39622df5cc561f0bc6dfd284e7db2629bb5fc4c0279f064a75fc98c854780",
+      "bytes": 6825
+    },
+    {
+      "path": "docs/knowledge/evidence/initialization-reference-maintenance-2026-10-21.md",
+      "sha256": "9798bd781f1b3379ab59a9a6f634786a524225a26d319eae57c4ee6094e68b78",
+      "bytes": 2666
+    },
+    {
+      "path": "docs/knowledge/evidence/master-data-deletion-user-confirmed.md",
+      "sha256": "209acedbc8422dc1fb4052c3b70db7253fc6e6e0da751a8f305292a1b33329c4",
+      "bytes": 5612
+    },
+    {
+      "path": "docs/knowledge/evidence/master-data-deletion.yaml",
+      "sha256": "2767fd3512420e1b1773724f6157e43d9b5e4df3fd6072b62168dce69949bfd5",
+      "bytes": 3094
+    },
+    {
+      "path": "docs/knowledge/evidence/master-data-description.yaml",
+      "sha256": "7b12e6cde2a6f263746ab6bffadf9892f25fa981485cee2ce40ba2049398f708",
+      "bytes": 4339
+    },
+    {
+      "path": "docs/knowledge/evidence/master-data-permission-audit.yaml",
+      "sha256": "fd90181148c564df6d3df5ad416687105c230f0fc0bee25ce85fc0142a57a726",
+      "bytes": 2612
+    },
+    {
+      "path": "docs/knowledge/evidence/material-fields-user-confirmed.md",
+      "sha256": "d46ca37a5dc13047eec1ad49390c372a5b81981a35e1a6f56aadef349490808e",
+      "bytes": 871
+    },
+    {
+      "path": "docs/knowledge/evidence/material-fields.yaml",
+      "sha256": "dde636b22c5603e2977e8b58923dc674d08f04aa1d5c2e6e65c95f83e65b2bbd",
+      "bytes": 2023
+    },
+    {
+      "path": "docs/knowledge/evidence/material-import-confirmed.md",
+      "sha256": "e4c24a338fc5f1e0cd1f240d8e0075f201e9e010a76629d4a37a9e2d81baa3a9",
+      "bytes": 4796
+    },
+    {
+      "path": "docs/knowledge/evidence/material-import.yaml",
+      "sha256": "b32d577134ddb12740387262b53b7bb366c92adbfee4ce0e81058c31718cae45",
+      "bytes": 2780
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-foundation-fact-types.md",
+      "sha256": "471a2ce65a05d3a9594a348ac69bef8cace86151bc69d0bcff1bba00d134ee9e",
+      "bytes": 19336
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-foundation-repair.yaml",
+      "sha256": "ab57aa8fde02fd10bab597faa66d869749b4157dbaaa8a4c3c9167aaa2761ad9",
+      "bytes": 1091
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-guided-pilot-confirmed.md",
+      "sha256": "6b18d8fd69c916538d39b2c1c0a74a69fbf04e0a540a01458a3f7e37b80cf18b",
+      "bytes": 7832
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-guided-pilots-and-audit.yaml",
+      "sha256": "431e773385db7e3aa00f8c71e71b7dbe0a9ee130c7ec731045f22ce54ab1bc76",
+      "bytes": 1818
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-impact-analysis.yaml",
+      "sha256": "8116596c7077e5c33a36f71c553a8a931e5157230d6fd5c65ca7bc9ff13c21a2",
+      "bytes": 920
+    },
+    {
+      "path": "docs/knowledge/evidence/ontology-p0-foundation.yaml",
+      "sha256": "42bcb772ba8326f00a4cc8b2e6fedaeb06133e1b8ebcb576b3d0f2e753d57e6d",
+      "bytes": 997
+    },
+    {
+      "path": "docs/knowledge/evidence/operation-import-confirmed.md",
+      "sha256": "e328a18ffb26e706e96d9e54187c20902779b870d8f1493d776a56b4375bf586",
+      "bytes": 2229
+    },
+    {
+      "path": "docs/knowledge/evidence/operation-import.yaml",
+      "sha256": "096c11fab6c9d308df4613949bb3624cfbca16187233367c0a0461ae0172a11d",
+      "bytes": 2982
+    },
+    {
+      "path": "docs/knowledge/evidence/operation-quantity-popover-2026-10-16.md",
+      "sha256": "0ac62b4af75e4faa53f308aae2862b3ea4bedc49eb85b46add9d2fbed0ae1313",
+      "bytes": 4572
+    },
+    {
+      "path": "docs/knowledge/evidence/operation-quantity-popover-2026-10-16.yaml",
+      "sha256": "d57b0fe0ca2279695bfe36ed9dfe1d76aae98ebdf6d78ab8761e06da40a95d71",
+      "bytes": 1168
+    },
+    {
+      "path": "docs/knowledge/evidence/product-process.yaml",
+      "sha256": "5a30d87ad2f6075a628e85b3f0c056ef97e7e35e678e21b3edb8cecda3147283",
+      "bytes": 14629
+    },
+    {
+      "path": "docs/knowledge/evidence/production-batch-quantity-policy-boundary.yaml",
+      "sha256": "1efe4581e67d22ffe907b2b67c90175a88f59958f73453a0a398d11a1203f5bd",
+      "bytes": 644
+    },
+    {
+      "path": "docs/knowledge/evidence/production-execution-form-action-projection-user-confirmed.md",
+      "sha256": "e01ad918102388e878f8c315b4b6a27fd95da3f8d2825388efef81c1f79c1687",
+      "bytes": 1097
+    },
+    {
+      "path": "docs/knowledge/evidence/production-execution-form-action-projection.yaml",
+      "sha256": "66bce66ce001d976f746478617bf9b38fbc82026be3329f08e6efe9945b4d9f9",
+      "bytes": 2434
+    },
+    {
+      "path": "docs/knowledge/evidence/production-execution.yaml",
+      "sha256": "c3f76a445be9768f143ceb9727d07431cf7fe50cc08e12d0d42eebd35eb1dde6",
+      "bytes": 17455
+    },
+    {
+      "path": "docs/knowledge/evidence/production-field-signature-confirmed.md",
+      "sha256": "e7ee4c0f678ce82b614493cfdba17961876d9ae57a4cf14e0ad56e9cb9a8e116",
+      "bytes": 2730
+    },
+    {
+      "path": "docs/knowledge/evidence/production-field-signature.yaml",
+      "sha256": "2588a962a8b4aa6c8a293ec83e1140bb6d94cb75b88df68279971a5ee1a8629a",
+      "bytes": 1779
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-auto-finish-confirmed.md",
+      "sha256": "61f1612a737d5a94134ac7c69f55e1e76d7f3c8d78fdda906cc2e696c47468b3",
+      "bytes": 2916
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-auto-finish.yaml",
+      "sha256": "010a8457f461002633ffae59798d7519bc511d7c5b1433896cc99549fd0e9279",
+      "bytes": 1132
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-copies.yaml",
+      "sha256": "93a66a36a1c3b244dbe1ea658fdf3f86989127dcc8a8cee47e78a29276e5bfee",
+      "bytes": 1104
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-copy-metadata-confirmed.md",
+      "sha256": "58ca6e690ca4c48c06f8a6363ba66a78be9502b0d17ff8bece897e98be297a0b",
+      "bytes": 4765
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-copy-metadata.yaml",
+      "sha256": "58b610ce0298f2ca2e6efc6485a3f7f95067f5bc3bf8582ffb1ec0b8f1dc80e2",
+      "bytes": 1332
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-buttons-events-v1.md",
+      "sha256": "50dd09d3f88070f9115935effcf4cb5919b1962e9b2cc0c7dd22e5ef5f5a9c80",
+      "bytes": 1391
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-buttons-events-v2.md",
+      "sha256": "4f690e9ea395f1004c622b07e98c165e3bb5cf424e47f832fd3e1dc61ad6a3a5",
+      "bytes": 2278
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-buttons-events-v3.md",
+      "sha256": "b113039a75227e58f448a06674ec6c088072436a79da809cb9d11744b1e36b49",
+      "bytes": 1063
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-permission-default-exception-design-v2.md",
+      "sha256": "3c8860753aecd5616bedb3372b6b0f0ea2d4644f028ab2dd75a62b570796a1d0",
+      "bytes": 1088
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-permission-default-exception-design.md",
+      "sha256": "cdc45c708c5b4ba6ca1260ff30fa2ebc1e21fb891a1dc17d4bf7bb6faa871f7b",
+      "bytes": 690
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed-v2.md",
+      "sha256": "9b5641c1d6e1b707ea41f364b7c8765f18db137c877997f96c74a4a7e4a21d8b",
+      "bytes": 1802
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed-v3.md",
+      "sha256": "6146c567473391d61dce27de8f2d136aed1d4d811048f6615879a6e64778b9f1",
+      "bytes": 837
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed-v4.md",
+      "sha256": "f4ee61c24e1403ac704c5a85cf39061649a98cc481574d30cdf51fd1d10db946",
+      "bytes": 1115
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed-v5.md",
+      "sha256": "d4c6e6a52494215906630b06c1c9185843def23eb6818101560bae23711ae27d",
+      "bytes": 2866
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process-user-confirmed.md",
+      "sha256": "975376876fa0112485993d23150b8ed3d3cebc1b28797369dabee307b6ec3115",
+      "bytes": 1192
+    },
+    {
+      "path": "docs/knowledge/evidence/production-form-process.yaml",
+      "sha256": "11a1b99a31d130067220f767a35e32a5b01ddb8ecb3d165591c1c2d9ee2676ef",
+      "bytes": 4775
+    },
+    {
+      "path": "docs/knowledge/evidence/production.yaml",
+      "sha256": "9f82bba1ed845c6d9762648837f816cb46693b2818d7ec8d1a869ebd095afa0e",
+      "bytes": 29765
+    },
+    {
+      "path": "docs/knowledge/evidence/projection-integration-2026-10-15.md",
+      "sha256": "3b562cdbf141c52395c6c5d8f95a2ebc51ea035f77921683818001491014f8b0",
+      "bytes": 8654
+    },
+    {
+      "path": "docs/knowledge/evidence/projection-integration-2026-10-15.yaml",
+      "sha256": "3b6bf36fa7f745a1cb648fc73cef7dbfcba1a54e05184e72a444082062a22dec",
+      "bytes": 1979
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-start-entry-user-confirmed.md",
+      "sha256": "66330e41b5cd5322e6cb0257816e812013b99840a4c2a40151f31035f5785c74",
+      "bytes": 1373
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-terminology-user-confirmed.md",
+      "sha256": "04dd1262acc8d74ff85ecec645b5286b7a33168ae29daaca47d1772b1510efad",
+      "bytes": 1400
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-workflow-stage1-local-validation.md",
+      "sha256": "e642a3d513e3852cf572cff43723e79d3fc9c1cb7b418aac14f404bff8f191ef",
+      "bytes": 2235
+    },
+    {
+      "path": "docs/knowledge/evidence/record-control-workflow-stage1.yaml",
+      "sha256": "6e9a70f81f136b6b2a875d8d3d49305a3ade193b9e8042a487c4e8be64e8382f",
+      "bytes": 6348
+    },
+    {
+      "path": "docs/knowledge/evidence/record-correction-void-design.yaml",
+      "sha256": "121d6637898997f4edb409d8c37b2a38b11a541deadb250303fec9e8a185d1d6",
+      "bytes": 3342
+    },
+    {
+      "path": "docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.md",
+      "sha256": "b09f0e076c4a7c0d470eb7ccdea7a6bbfdc259a59603dfd47c1585960e26605e",
+      "bytes": 9544
+    },
+    {
+      "path": "docs/knowledge/evidence/reference-dictionary-correction-2026-10-19.yaml",
+      "sha256": "c97e671958cfb97f5b5f0634a250f2bec4933c3a24bd75ab6505fc60c11bc948",
+      "bytes": 648
+    },
+    {
+      "path": "docs/knowledge/evidence/reference-source-unification-2026-10-19.md",
+      "sha256": "ec3dd63ddc9289c3dfe25b28044eac391607d440440e99f9363530158178be70",
+      "bytes": 10747
+    },
+    {
+      "path": "docs/knowledge/evidence/reference-source-unification-2026-10-19.yaml",
+      "sha256": "377734874d72734e2f5ab3f97c0c0ccf0e55e6d5eb38d99a51afb3774d9ed41b",
+      "bytes": 847
+    },
+    {
+      "path": "docs/knowledge/evidence/release-integration-2026-10-21.md",
+      "sha256": "039428af3a0becf7462849886866d4984a28cb3424425889862176d8de7f8479",
+      "bytes": 4995
+    },
+    {
+      "path": "docs/knowledge/evidence/route-graph-save-connectivity-20261025.md",
+      "sha256": "73fcd3c0c8909a432860029702508ef84f23f046e056e640294df41e27f460d8",
+      "bytes": 6260
+    },
+    {
+      "path": "docs/knowledge/evidence/route-graph-save-connectivity-20261025.yaml",
+      "sha256": "436c664ea717169f6c7fe1ee33091f9d5dc1917586c7ca03fa56205736f3516f",
+      "bytes": 2937
+    },
+    {
+      "path": "docs/knowledge/evidence/route-graph-topology-20261025.md",
+      "sha256": "c4b8cd965165723338e4fe644c9cabf0226c07007028c59f29fed33178fadff8",
+      "bytes": 7175
+    },
+    {
+      "path": "docs/knowledge/evidence/route-graph-topology-20261025.yaml",
+      "sha256": "e3856d6c3911dc53d65792f727c6b787e1a2258ae8785b440632081f86d4e011",
+      "bytes": 2219
+    },
+    {
+      "path": "docs/knowledge/evidence/shared-choice-options-2026-10-18.md",
+      "sha256": "bbd6694ea84e47c605942044558ee8a69cdc108aa4590e5ec524245cc50b7013",
+      "bytes": 11381
+    },
+    {
+      "path": "docs/knowledge/evidence/shared-choice-options-2026-10-18.yaml",
+      "sha256": "7a23fab99ec4690e5c58712cf7d9269de6717d85c6c16a4863d76fc8510f5dc5",
+      "bytes": 1073
+    },
+    {
+      "path": "docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.md",
+      "sha256": "97db228c620e9964d45427372e12f6eaac4a3334a0fe5c6d16c95b72f722ab2f",
+      "bytes": 6921
+    },
+    {
+      "path": "docs/knowledge/evidence/shared-login-cross-tab-2026-10-27.yaml",
+      "sha256": "506f684a192e4e446833cbaec9985a96eee0c29949217f67ce2fc0331b6cbdf1",
+      "bytes": 2601
+    },
+    {
+      "path": "docs/knowledge/evidence/signature-payload-storage-2026-10-21.md",
+      "sha256": "5912d58b09fb607e5f71e7b6150911df16bf82eae4114fa79e3fa7ef74120f8f",
+      "bytes": 3674
+    },
+    {
+      "path": "docs/knowledge/evidence/signature-payload-storage.yaml",
+      "sha256": "46619bfa11e567b37d2445b1be599c6f2b64176bb0d1d6ae38094f371394346f",
+      "bytes": 2757
+    },
+    {
+      "path": "docs/knowledge/evidence/tenant-task-delegation-2026-10-20.md",
+      "sha256": "0610323c3fad5a8c4052eeb68fdd77aea9f231d1b4119d8442022fdc574f1509",
+      "bytes": 7941
+    },
+    {
+      "path": "docs/knowledge/evidence/tenant-task-delegation-20261020.yaml",
+      "sha256": "94244dc0dc682e4c66ee9ec6cbbe20f2a794b6b21188a6aaa3fdd969847d52ce",
+      "bytes": 1398
+    },
+    {
+      "path": "docs/knowledge/evidence/trace-field-single-binding-2026-10-19.md",
+      "sha256": "d15111f5f3a686e0546f7a0a3e70f124713d9a2808e54d02c3c43ba4656140a5",
+      "bytes": 12808
+    },
+    {
+      "path": "docs/knowledge/evidence/trace-field-single-binding-2026-10-19.yaml",
+      "sha256": "c245ff3862fe42decc9d34618fc0b7474310c929ba6357c4d3fea0a805b7558e",
+      "bytes": 1099
+    },
+    {
+      "path": "docs/knowledge/evidence/trace-region-consumption-2026-10-20.md",
+      "sha256": "fa2908f55fdbc30ad55796fefc4180a8ff4ab1c7ff6acad425cb32c234b2b819",
+      "bytes": 6145
+    },
+    {
+      "path": "docs/knowledge/evidence/trace-region-consumption-2026-10-20.yaml",
+      "sha256": "a8382f9a9700a9dddb53a47d62e284807d0bd7fc6f59215471f461107108e04c",
+      "bytes": 782
+    },
+    {
+      "path": "docs/knowledge/evidence/transaction-runtime.yaml",
+      "sha256": "443a7a6243e1d66a129c72472ef11d0e5fa78126bc6f25fd4260c95e1e69b033",
+      "bytes": 14376
+    },
+    {
+      "path": "docs/knowledge/evidence/work-live-matching-2026-10-26.md",
+      "sha256": "bc53043b5efef4ccd8f0b1d34c68b5f5de6820591809ceb5e051bc9e5cb0ae86",
+      "bytes": 5879
+    },
+    {
+      "path": "docs/knowledge/evidence/work-template-write-shape-audit-2026-10-20.md",
+      "sha256": "a3d7569f6874145e6375a15b4f520f756fc482e9042474d8c9868e739c863499",
+      "bytes": 2594
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-instance-write-authorization-2026-10-21.md",
+      "sha256": "3d648c94eb5000e535d5ed38a556473f6be06b44398536a3f2f1b0157c36ca8a",
+      "bytes": 3565
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-instance-write-authorization.yaml",
+      "sha256": "884ed1212b7e3e6e950efd8e10afd9fd8bb5c887bf57c528d688818f4a74b732",
+      "bytes": 1515
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-single-tenant-mvp-user-confirmed.md",
+      "sha256": "fabd1b7be0d66637d21bf00cede50e852bf759f2e4c199a0711fd0fe733a46ef",
+      "bytes": 476
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-single-tenant-mvp.yaml",
+      "sha256": "41d6f010a10c7c8b3c88e5c2da24367341b5eff524f77216dc699eda5b4415aa",
+      "bytes": 432
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.md",
+      "sha256": "2ed11399abee88a568a8d8c75f6c6f5725aa5b38e1444b0a36d2afb7f4ea982f",
+      "bytes": 712
+    },
+    {
+      "path": "docs/knowledge/evidence/workflow-task-multi-candidate-user-confirmed.yaml",
+      "sha256": "c2fae6a54f34aeac003a322da4e5ff450b78a25e250dd90cd929fb736201bf22",
+      "bytes": 804
+    },
+    {
+      "path": "docs/knowledge/evidence/workshop.yaml",
+      "sha256": "6c5f850bb320ec66fcc0269830b65de7b1a01941234e87f10c25ce9b0136549d",
+      "bytes": 5172
+    },
+    {
+      "path": "docs/knowledge/execution-contracts.yaml",
+      "sha256": "5a093311cbd564dada065c193544998e229ced73f2f54f7121a8abe18d8aeac6",
+      "bytes": 1053
+    },
+    {
+      "path": "docs/knowledge/facts/batch-process.yaml",
+      "sha256": "4a2fb35a4a7c900c3fc24d803f649c602f858ea6c2bbeef23ac05ceb18d9e90c",
+      "bytes": 1641
+    },
+    {
+      "path": "docs/knowledge/facts/button-signature.yaml",
+      "sha256": "85600c7bca3dbaf7ce202f7e6226adc59113d5bcf7b6021dfc7da2a437f0750e",
+      "bytes": 2583
+    },
+    {
+      "path": "docs/knowledge/facts/core-business.yaml",
+      "sha256": "bc0c7adcd595acdc45706cd79617168d53fce9334e76fefd4a6f0fa06c7f941a",
+      "bytes": 138591
+    },
+    {
+      "path": "docs/knowledge/facts/custom-form-scope.yaml",
+      "sha256": "75efa6b462e80f9e4c8f51928832ae35473cb2e6c24bfc2a31db2d58452cbdd3",
+      "bytes": 2032
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-instance-management.yaml",
+      "sha256": "e7e587bf0f8c83fe14ce9078b59cb75e5810aea288003d790a3e75783fc1015f",
+      "bytes": 7238
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-summary.yaml",
+      "sha256": "c553c8bf2a9660610bd9b2ae6fa0bcfe327281db1f62563e0d6a2b65cd82188e",
+      "bytes": 10626
+    },
+    {
+      "path": "docs/knowledge/facts/dhr-template-version-design-isolation.yaml",
+      "sha256": "babd24b6588c948ad194c7e966f5c3c47fbb8f67094afd3dc715270db83bc407",
+      "bytes": 1267
+    },
+    {
+      "path": "docs/knowledge/facts/form-approval-transfer.yaml",
+      "sha256": "8a3b59c81fed2423d3bb56146af5a7e5693d1ba0c65c85e9d882f38ff591273f",
+      "bytes": 4090
+    },
+    {
+      "path": "docs/knowledge/facts/form-fill-settings.yaml",
+      "sha256": "b6ed27c5ea282f8ef98606f7ea7bd76d1edc4c76fe3590b0b7666196b72d0c93",
+      "bytes": 1346
+    },
+    {
+      "path": "docs/knowledge/facts/form-instance-number.yaml",
+      "sha256": "d58e64186f02b2ee8f490c4d236609e9d9ffedd06d02fe9cb65f183bbe1461b7",
+      "bytes": 777
+    },
+    {
+      "path": "docs/knowledge/facts/form-instance-query.yaml",
+      "sha256": "58590941bd2e4790c93c6b8b895f4a8b134241343de8d1704b61c9983dcf932c",
+      "bytes": 3275
+    },
+    {
+      "path": "docs/knowledge/facts/form-process-binding.yaml",
+      "sha256": "a21dc0256d9b69230dd3540350c6422d84eae8ad9e8030f47fc13c37e35aa5bd",
+      "bytes": 15473
+    },
+    {
+      "path": "docs/knowledge/facts/form-projection.yaml",
+      "sha256": "fc768f4aa149628a92e974f4da1861a3cfc16bfe6d05b9999440a3025b0282c9",
+      "bytes": 2665
+    },
+    {
+      "path": "docs/knowledge/facts/form-reference-runtime.yaml",
+      "sha256": "e4bc798fca27776bae6191d16641dc699346da75b881cec7c36e214db25268a4",
+      "bytes": 778
+    },
+    {
+      "path": "docs/knowledge/facts/form-worklists.yaml",
+      "sha256": "be0fd5a57097eeb384c32446639bb6d71426939884c30a6955f3c0c9095334b2",
+      "bytes": 3945
+    },
+    {
+      "path": "docs/knowledge/facts/master-data-deletion.yaml",
+      "sha256": "859858a46183725ef071aa0d1cf9698806cb884fe6b8e9eeff7f924de86e19e0",
+      "bytes": 746
+    },
+    {
+      "path": "docs/knowledge/facts/master-data-description.yaml",
+      "sha256": "aa950af21c63a26bc512884112f5a65f4f6d2d3be9cc25e5ce4ef4ca04f6e351",
+      "bytes": 1612
+    },
+    {
+      "path": "docs/knowledge/facts/master-data-permission-audit.yaml",
+      "sha256": "fadbd2e79286057032ef89cce6a4a91669e987a956819c1bb868e89477001f14",
+      "bytes": 1594
+    },
+    {
+      "path": "docs/knowledge/facts/material-fields.yaml",
+      "sha256": "e9259dcc5bf285d167f78f2209a11ac9cf41b9fc629d2a21d9593f7738fe4a2c",
+      "bytes": 1342
+    },
+    {
+      "path": "docs/knowledge/facts/material-import.yaml",
+      "sha256": "46eb68fba5b292e6ddc99806dccad982b21da2f222d3a5eef32271c90fcf7727",
+      "bytes": 771
+    },
+    {
+      "path": "docs/knowledge/facts/operation-import.yaml",
+      "sha256": "39253fc936a18dbc826f2e4ff0dadfbe8c8b0f587da03642f66f1944c213b67c",
+      "bytes": 782
+    },
+    {
+      "path": "docs/knowledge/facts/production-output.yaml",
+      "sha256": "d9445013149ac29955c1d324d7e9dec27bc310925d56edd2e86a3c904249cc88",
+      "bytes": 4539
+    },
+    {
+      "path": "docs/knowledge/facts/production-quality.yaml",
+      "sha256": "88a2c216447ffc82a5676713c95214f219dbf706f610f0b023b83d4ec5c86730",
+      "bytes": 2266
+    },
+    {
+      "path": "docs/knowledge/facts/route-graph.yaml",
+      "sha256": "9ff58bd76cf6dd638c30ded4f60dfc417227b7277481af287f0ec05a45f3f736",
+      "bytes": 1105
+    },
+    {
+      "path": "docs/knowledge/glossary.yaml",
+      "sha256": "a087723766456504f2744b6d9f42e1b33c2afad11431279b3af9c680d64fc14e",
+      "bytes": 69381
+    },
+    {
+      "path": "docs/knowledge/impact-analysis/form-process-binding-version-reference.md",
+      "sha256": "69083a7d74434b81010164cc4fd7b161f44dce5543d51c194399b4df508841be",
+      "bytes": 3712
+    },
+    {
+      "path": "docs/knowledge/impact-analysis/ontology-p0-coverage.md",
+      "sha256": "5cfd9ccc98c788a09d756f42134b23e1eaeedb508a20ba5d7563a1115ac089ba",
+      "bytes": 5396
+    },
+    {
+      "path": "docs/knowledge/impact-analysis/record-control-workflow-stage1-contract.md",
+      "sha256": "f8205982ae2f1e392c19c590d059ad0cc598f862a1677cb517a08431ffb97d1e",
+      "bytes": 4480
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/core-business.yaml",
+      "sha256": "d90a6c961fc2704533aa81776f0f40f9ebec4bbbdd8a2ae21cf0c80c1b17d2a8",
+      "bytes": 20663
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-instance-management.yaml",
+      "sha256": "ab2c79eef1e895d3a91a6237a044dd03d7b3d1b3d2e37843f8b7c9b18879c8ff",
+      "bytes": 9154
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-summary-order.yaml",
+      "sha256": "6712addb2d679b707d4e32604729d9589a212f40230081353368046653e99eee",
+      "bytes": 1837
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-summary-source-group.yaml",
+      "sha256": "0a91a1ff292834130fcf807f7ea5dd9ba12041b44ffedc376dbe1befe7d844d9",
+      "bytes": 5259
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-summary.yaml",
+      "sha256": "71c426aa7737f9bc1d1b7fe181958bf6d7bdf7b8c17ef59dcf7aa6607c77731d",
+      "bytes": 15647
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/dhr-template-version-design-isolation.yaml",
+      "sha256": "a50283edabe003c5c2b4f13e3b1c51aa33551ad5c78c39bf915b23984b5381df",
+      "bytes": 1984
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-approval-transfer.yaml",
+      "sha256": "85a7ce7bd55d3ff3d95211cf722c708e0ba1bb17338888b0b861c6ffa668e094",
+      "bytes": 3221
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-instance-number.yaml",
+      "sha256": "2abc4d9c7f0756d3bce26da65a3eb24404c5c63c825d472c1b6888ad0eb5d7e4",
+      "bytes": 918
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-instance-query.yaml",
+      "sha256": "669f68734e72a148d938c0233879342e689eba5522b1a1bc0e9eaaa4612e2ad9",
+      "bytes": 4789
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-process-binding.yaml",
+      "sha256": "5f6d7f949bb4b336a4352ab964a71d2fa8317badc8596f3b4f9ea4a2673007a9",
+      "bytes": 6526
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-projection.yaml",
+      "sha256": "e7af5564496e47951af83d8de68a353006ba0c63b654e4535ecd8e85db021626",
+      "bytes": 4991
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/form-worklists.yaml",
+      "sha256": "1b4810dc344aefd28cbb5e6821398a22f3f2e2309da833cafe614037dbb71be0",
+      "bytes": 5733
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/master-data-description.yaml",
+      "sha256": "3d599af3c26f870d22d535e628d80b6aa60b50ec8b3166dd61795f4e1a0cf070",
+      "bytes": 2474
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/master-data-permission-audit.yaml",
+      "sha256": "f08b87b1160c7f31541e70e11a96147d83357cee31bd69a162fbdec0eb59b71c",
+      "bytes": 2763
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/material-fields.yaml",
+      "sha256": "7ccdb7f2e9c371c1eddda1f2123d71ea26f4a578c241a79b8a2aad09ddcffac6",
+      "bytes": 2090
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/material-import.yaml",
+      "sha256": "b707f11300960b52864e4bb03432c5cdb12ff956860c21e6b77ec2669fc75cd3",
+      "bytes": 1354
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/operation-import.yaml",
+      "sha256": "9fde4b6cc79abe8889088a5d80cd33e623075b9053f98b8d486dd616dd3004a6",
+      "bytes": 1807
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/production-output.yaml",
+      "sha256": "96954263585f30a2d8a6ae034452c8a62448024e91f51a21425a98a0c751a5fa",
+      "bytes": 5252
+    },
+    {
+      "path": "docs/knowledge/implementation-anchors/production-quality.yaml",
+      "sha256": "774fcf4509a5507d2024227c891f927bfdffa9aeecf490ed8759790cdadf3729",
+      "bytes": 4040
+    },
+    {
+      "path": "docs/knowledge/ontology.yaml",
+      "sha256": "e345b4f9c84dc59e5da27e1f00a6776b4b64556803520baf3b8bc56a8321c633",
+      "bytes": 94274
+    },
+    {
+      "path": "docs/knowledge/open-questions.yaml",
+      "sha256": "08ff8aec090eda945725fe5401b84eb0a52df1583b3ce6f943770d2b4bf60e32",
+      "bytes": 22906
+    },
+    {
+      "path": "docs/knowledge/rules/batch-process.yaml",
+      "sha256": "f40440b92587019fb174f8ffc336e61c4c12dd4702633faa62af6f3a82a73ff9",
+      "bytes": 4350
+    },
+    {
+      "path": "docs/knowledge/rules/button-signature.yaml",
+      "sha256": "b257a7b50fd9dc5e7c4c89411e3725cc6515a9c88889373d2b4d53057bcc34ac",
+      "bytes": 3518
+    },
+    {
+      "path": "docs/knowledge/rules/custom-form-scope.yaml",
+      "sha256": "1ea4277b608b5f1eeb2ef14f1c6f7e8f4fa84c83a290c977878c96501d26766e",
+      "bytes": 3020
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-instance-management.yaml",
+      "sha256": "04e6187dd9e6744ddffaf3cbebb43950686bc18329064e3690466f4437c15392",
+      "bytes": 8301
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-summary.yaml",
+      "sha256": "7fc2b4b15bf79624a142721b6f3f2eb7b0dadae6f2a662c627bee836facf6154",
+      "bytes": 17985
+    },
+    {
+      "path": "docs/knowledge/rules/dhr-template-version-design-isolation.yaml",
+      "sha256": "e2ab3ad3ca79b70cb5d7ea2fdc252a1ef03ed2ab70cfdbfacc112c1024096698",
+      "bytes": 1262
+    },
+    {
+      "path": "docs/knowledge/rules/equipment.yaml",
+      "sha256": "5d69b8708f484a19dcf1c6ac0c24f05af621d9f7c362062b18b1f0974eb6ce54",
+      "bytes": 1020
+    },
+    {
+      "path": "docs/knowledge/rules/execution-form-selector.yaml",
+      "sha256": "b958e81140b0a2b76e0d8ec2ba0d10625d6e9ec28188b7e9f7a81f1c7cfb6719",
+      "bytes": 4109
+    },
+    {
+      "path": "docs/knowledge/rules/form-approval-transfer.yaml",
+      "sha256": "d151a3a48dd3f2ca6c12333733e261b4d2f2cc26fa0a27515d07e3d58e470c41",
+      "bytes": 2135
+    },
+    {
+      "path": "docs/knowledge/rules/form-fill-settings.yaml",
+      "sha256": "2240c29d96e2b7bd4c0cc5e7cb0e256aa106cca512eff1d93d938598b202884e",
+      "bytes": 4243
+    },
+    {
+      "path": "docs/knowledge/rules/form-instance-number.yaml",
+      "sha256": "be1dda89da1cff9ba60d8b27b825a4f423d8074afc5d67bd5ab7601ee75bbc87",
+      "bytes": 931
+    },
+    {
+      "path": "docs/knowledge/rules/form-instance-query.yaml",
+      "sha256": "c523fbb5036d3acc0c6d9fc0bad219891767500132c96497ced19dc7a60b5377",
+      "bytes": 3711
+    },
+    {
+      "path": "docs/knowledge/rules/form-reference-runtime.yaml",
+      "sha256": "e78c0eff557ac3283f86456b51cc664c9a709b5064be9aef46569a4af17c7bc7",
+      "bytes": 2421
+    },
+    {
+      "path": "docs/knowledge/rules/form-trace-field-binding.yaml",
+      "sha256": "8874846c7a66a7c00a7264e9da122da9fbcf57bf9eac875023f29e6295484f4a",
+      "bytes": 3224
+    },
+    {
+      "path": "docs/knowledge/rules/form-worklists.yaml",
+      "sha256": "6da0f961e9a130841202fe0601a43ae35075515011909b56787421b390abfaa5",
+      "bytes": 4684
+    },
+    {
+      "path": "docs/knowledge/rules/identity.yaml",
+      "sha256": "e57691cad48f3e4c06c21bf5516e9c032c76db3b2e1bf24325427a31efed34ed",
+      "bytes": 6379
+    },
+    {
+      "path": "docs/knowledge/rules/master-data-deletion.yaml",
+      "sha256": "605f971094db309116522d3bd21202b9e5ca2ccbefaff2c2a71810d89953ee60",
+      "bytes": 5055
+    },
+    {
+      "path": "docs/knowledge/rules/master-data-description.yaml",
+      "sha256": "2d58f41dfb61a09930f1ffb2bfa1888e72d1bfcf37604e883621e48693e51588",
+      "bytes": 1719
+    },
+    {
+      "path": "docs/knowledge/rules/master-data-permission-audit.yaml",
+      "sha256": "ced11b7ede0dd8c554b42734cad2159d704aaef3d9f319d9cba1cf07967d4a47",
+      "bytes": 2505
+    },
+    {
+      "path": "docs/knowledge/rules/material-fields.yaml",
+      "sha256": "35daa4b7641bda910c81267f96b4508829c476290b57d973dc0dcae5fd2fc936",
+      "bytes": 1646
+    },
+    {
+      "path": "docs/knowledge/rules/material-import.yaml",
+      "sha256": "3ae15b58feacc7c102adc2452ee70c544b519ca939ee4488b3e5fe49afb779bc",
+      "bytes": 1429
+    },
+    {
+      "path": "docs/knowledge/rules/operation-import.yaml",
+      "sha256": "035d38c4652e61b16a9026f60884e04353372ff00348c4d5ac8fa360d5144047",
+      "bytes": 1186
+    },
+    {
+      "path": "docs/knowledge/rules/product-process.yaml",
+      "sha256": "7c732995bd82f0c9c65645f212a0baa99f1174f497a8070eb7f6b3a9cbcdfcdf",
+      "bytes": 36075
+    },
+    {
+      "path": "docs/knowledge/rules/production-execution.yaml",
+      "sha256": "1babcbbd5b35c254d4a2b218cc232e834d97c5913d63e05e90267354abc92183",
+      "bytes": 6478
+    },
+    {
+      "path": "docs/knowledge/rules/production-field-signature.yaml",
+      "sha256": "dbb6ac0f5ea5a1fed354638d3b1e4c4bdff47c2be486330532a0e1343c232de8",
+      "bytes": 1530
+    },
+    {
+      "path": "docs/knowledge/rules/production-form-copies.yaml",
+      "sha256": "58cc78db94cd7d2dadd83c2fde4442952f2d32e3074043f4fd126bfaa1b7f592",
+      "bytes": 9072
+    },
+    {
+      "path": "docs/knowledge/rules/production-quality.yaml",
+      "sha256": "f93a092a9c81f945afd885802d841bfed53c7f633a513d0e8c3db5e3bf98d758",
+      "bytes": 3082
+    },
+    {
+      "path": "docs/knowledge/rules/production.yaml",
+      "sha256": "521eed4442da352367d921a6f4c6bfc9e76dbee8df40a9f1dfa1cddcffe019a9",
+      "bytes": 65746
+    },
+    {
+      "path": "docs/knowledge/rules/route-graph.yaml",
+      "sha256": "5ef81778bb141533cc9ebe48560932cd1a155e05c713af742e8860b6f8397ed3",
+      "bytes": 1979
+    },
+    {
+      "path": "docs/knowledge/rules/transaction-runtime.yaml",
+      "sha256": "27c55e03ffb5b76095f033c683665bbb2650ebfc9316703e4992638a2d798856",
+      "bytes": 81670
+    },
+    {
+      "path": "docs/knowledge/rules/workshop.yaml",
+      "sha256": "8219f04ec0cf5f0a40fa25cb07a2076dedd1049c73b4f49adb7559b696dd7fa9",
+      "bytes": 3623
+    },
+    {
+      "path": "docs/knowledge/schema.yaml",
+      "sha256": "e21dcf0b3cf15b540dc528b574e53202fe26b092017e00451afa326b59cfba84",
+      "bytes": 13171
+    }
+  ],
+  "knowledgeFilesUnchanged": 303,
+  "knowledgeTests": {
+    "tests": 89,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "knowledgeCommand": "bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml test",
+  "knowledgeAndContractDelta": [],
+  "businessSourceBoundary": "Public-preview whitelist and generic150MiB/MD5 are existing implementation constraints, not newly invented user-confirmed policies; stream closure and exception propagation are engineering corrections. DHRcontrolled50MiB/SHA256 stays separate.",
+  "remaining": [
+    "Generic object ACL/multitenant permission policy and private file routes remain to be audited.",
+    "Cross-medium file/DB deletion and upload failure cleanup remain unverified.",
+    "uploadedBy system placeholder remains an identity-audit candidate.",
+    "PDF-rendering/blob/export resource growth needs measurement/discussion before optimization.",
+    "Existing four knowledge gaps, record-control/DHRhigh/A12, friend-owned TaskDetail and production dialog deferrals unchanged."
+  ],
+  "notRun": [
+    "product tests",
+    "database integration",
+    "browser",
+    "load/heapGC/SLA",
+    "full-file/all-knowledge semantic audit"
+  ],
+  "noProductTestKnowledgeEdits": true
+}

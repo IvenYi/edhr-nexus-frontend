@@ -1,0 +1,154 @@
+{
+  "baseCommit": "ccedd56453c02c5d3acd60aa4351809a3928e83e",
+  "workingTree": "source snapshots below; no fabricated tested SHA",
+  "sourceSnapshot": [
+    {
+      "path": "gmp-platform/backend/src/main/java/com/zencas/edhr/compliance/controller/FileController.java",
+      "sha256": "5c0ed60d172d2408ca39e801fa548fac4ac41caf634321b26307c187089c027a",
+      "bytes": 16400
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileUploadResourceTest.java",
+      "sha256": "f1a8a9c9008b0645f2ba64ed61e4b3baeb71660518515f5628a5d95123ce39eb",
+      "bytes": 5427
+    },
+    {
+      "path": "gmp-platform/backend/src/test/java/com/zencas/edhr/compliance/controller/FileHttpBoundaryTest.java",
+      "sha256": "7799b76e0db0f87f100874eb921b09a6e9d09f8e5d9c3b18eafefcc5855d36e3",
+      "bytes": 4972
+    }
+  ],
+  "files": [
+    {
+      "origin": "/tmp/edhr-file-old-test.txt",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/old-test.txt",
+      "sha256": "8d2badcbf59df8bcb1c1f2c264487c28dc62409d722f64b79ac7a0a435cc8fd8",
+      "bytes": 41325
+    },
+    {
+      "origin": "/tmp/edhr-file-old-junit.xml",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/old-junit.xml",
+      "sha256": "8a95a4c8dea5337594024591755c79f9c7d94eefd7587eee52b74785e0935aff",
+      "bytes": 70050
+    },
+    {
+      "origin": "/tmp/edhr-file-old-http-test.txt",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/old-http-test.txt",
+      "sha256": "83a980f8392474701601d78208034a4c8ed507dc58e38cd80d2c143f89ee1aa1",
+      "bytes": 41386
+    },
+    {
+      "origin": "/tmp/edhr-file-old-http-junit.xml",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/old-http-junit.xml",
+      "sha256": "46f67efa8b2ce87095f02cbc7e1d4f4975cd074ab042d8675091c38eb1da2a4a",
+      "bytes": 71396
+    },
+    {
+      "origin": "/tmp/edhr-file-http-initial-compile-failure.txt",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/http-initial-compile-failure.txt",
+      "sha256": "bae66d78ebd60297dee4cac2d1fa63f98e3c67c0b7bf08b771dfb3bf7254028b",
+      "bytes": 5787
+    },
+    {
+      "origin": "/tmp/edhr-file-current-test.txt",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/current-test.txt",
+      "sha256": "b6df1a37894ca835fc42dccb77af4e4efa23f289061d063cd6b6e422697d40c3",
+      "bytes": 17360
+    },
+    {
+      "origin": "/tmp/edhr-file-current-summary.json",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/current-summary.json",
+      "sha256": "d9aed1ae770e41f91cf46bdb50d23798324854e95ae4a827723ae59284eb8705",
+      "bytes": 621
+    },
+    {
+      "origin": "/tmp/edhr-file-current-DhrFormFilesTest.xml",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/current-DhrFormFilesTest.xml",
+      "sha256": "508275dac10416edb2d302e4ab0f8e83e1fd28a99e257913d61f885c29fa5770",
+      "bytes": 32651
+    },
+    {
+      "origin": "/tmp/edhr-file-current-FileControllerTest.xml",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/current-FileControllerTest.xml",
+      "sha256": "4015133801f273b5579512d77e7002cb83aacf8e935d1c77182c65fdb2377588",
+      "bytes": 34464
+    },
+    {
+      "origin": "/tmp/edhr-file-current-FileHttpBoundaryTest.xml",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/current-FileHttpBoundaryTest.xml",
+      "sha256": "8cb4c99fa7e874f817c14a80b25841b11deecdee243c94a99f446797ee13a2eb",
+      "bytes": 46219
+    },
+    {
+      "origin": "/tmp/edhr-file-current-FileUploadResourceTest.xml",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/current-FileUploadResourceTest.xml",
+      "sha256": "65b34942ddbf772d678499ef241da76eb2602a2de70e510143c19d2a0ae2e6c8",
+      "bytes": 34160
+    },
+    {
+      "origin": "/tmp/edhr-file-ontology-result.yaml",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/ontology-result.yaml",
+      "sha256": "14611a35496b4a7f4501a72dd109ea969680b85ff0bdba5b6e6769c7dc6ab3d4",
+      "bytes": 2271
+    },
+    {
+      "origin": "/tmp/edhr-file-ontology-review.json",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/ontology-review.json",
+      "sha256": "b699795a6429d3c8868287f783919b347efb19039c3626ae550c7dee9e1ac307",
+      "bytes": 68021
+    },
+    {
+      "origin": "/tmp/edhr-file-ontology-review.md",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/ontology-review.md",
+      "sha256": "66facdfc3bcbaf80eb2f6b1ed3d513a6deff298e8f263a0f96f8dcdd94570e3f",
+      "bytes": 1641
+    },
+    {
+      "origin": "/tmp/edhr-file-ontology-product-diff.txt",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/ontology-product-diff.txt",
+      "sha256": "08870f730d4e0f921cd6217037242dd33ee3285df59a94bf4f9341dc3e4c228c",
+      "bytes": 2766
+    },
+    {
+      "origin": "/tmp/edhr-file-ontology-knowledge-test.txt",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/ontology-knowledge-test.txt",
+      "sha256": "645b4b5b07e71e35a08b42a64b521b679759753d2e9cb57f430760ecb1a5d572",
+      "bytes": 2111
+    },
+    {
+      "origin": "/tmp/edhr-file-ontology-knowledge-junit.xml",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/ontology-knowledge-junit.xml",
+      "sha256": "1ce7311408860e35e2bd0b589f29cc71127c35c4771d0d64d521695335bdae61",
+      "bytes": 20410
+    },
+    {
+      "origin": "/tmp/edhr-file-ontology-manifest.json",
+      "path": "docs/development/branch-review-20261031-file-boundaries/evidence/ontology-manifest.json",
+      "sha256": "531751cf760064d95c1e43aa4b489f483d0e2e0432a7db4da820fe5fc2db960e",
+      "bytes": 1457
+    }
+  ],
+  "old": {
+    "old-junit.xml": {
+      "tests": 9,
+      "failures": 6,
+      "errors": 0,
+      "skipped": 0
+    },
+    "old-http-junit.xml": {
+      "tests": 9,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "current": {
+    "tests": 29,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "ontology": "not-applicable/FINAL",
+  "knowledgeTests": 89,
+  "countingBoundary": "18 new executions plus9existing controller and2DhrFormFiles; mock repositories with actual streams/disk/JWT/HTTP, not SQL integration; initial HTTP compile failure preserved separately."
+}
