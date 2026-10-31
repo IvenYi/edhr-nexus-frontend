@@ -21,6 +21,10 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.channels.FileChannel;
+import java.nio.ByteBuffer;
+import java.nio.file.StandardOpenOption;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -74,6 +78,30 @@ class FileCopyOwnershipTest {
                         .isInstanceOf(DirectoryNotEmptyException.class));
         assertThat(closed).isTrue();
         verify(files, never()).save(any());
+    }
+
+    @Test void copyKeepsTheReservedFileObjectRatherThanUnlinkingAndRecreatingIt() throws Exception {
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.getSize()).thenReturn(3L);
+        when(file.getContentType()).thenReturn("application/pdf");
+        when(file.getOriginalFilename()).thenReturn("paper.pdf");
+        AtomicInteger opens = new AtomicInteger();
+        AtomicReference<FileChannel> reservedHandle = new AtomicReference<>();
+        when(file.getInputStream()).thenAnswer(call -> {
+            if (opens.incrementAndGet() == 2) {
+                assertThat(Files.exists(target())).as("copy must start with an owned reserved path").isTrue();
+                reservedHandle.set(FileChannel.open(target(), StandardOpenOption.READ));
+            }
+            return new ByteArrayInputStream(new byte[]{7, 8, 9});
+        });
+        try {
+            controller.upload(file, "DOCUMENT_VERSION", null);
+            ByteBuffer contents = ByteBuffer.allocate(3);
+            assertThat(reservedHandle.get().read(contents)).isEqualTo(3);
+            assertThat(contents.array()).containsExactly(7, 8, 9);
+        } finally {
+            if (reservedHandle.get() != null) reservedHandle.get().close();
+        }
     }
 
     private Path target() { return directory.resolve("77_paper.pdf"); }

@@ -2,6 +2,10 @@
 
 ## PR47已合入：上传文件所有权与认证上传者
 
+首轮独立持READ句柄探针实证REPLACE_EXISTING会unlink/recreate预占文件，同一所有权项仍有缺口；当前改为对已预占文件WRITE输出流transferTo，新增同句柄读字节回归后最新集成组合37/37通过。当前等fresh最终QA，原失败/旧36和16不改。新全量5758路径/134迁移与464HTTP/216路由仅盘点；旧SQL130历史队列+新增4迁移均待A23审查。
+
+本批收尾捕获目标新增至`0bd0848bbded6d6954d62a4f924e0b2eec6623ad`：记录控制/DHR/工作流等666路径，已正常merge保留历史，初始三源码未变、契约无增量；[增量逐项清单](../branch-review-20261031-file-consistency/integration-increment.json)全部pending，330当前知识另核，不继承原303不变声明。记录变更/作废和联动已具实现，原“未实现暂缓”转增量待审；旧DHRhigh/A12剩余历史视图、知识gap及TaskDetail友方不自动关闭。新候选重新本体/最终质量，旧36/89只作初始检查点，不冒称覆盖新增全系统。
+
 最新fetch edhr-dev@032b83e9d5b8a25bee6d5b59c45d86892f672d00，PR47人工合入、整树同f730，无外部增量。从最新目标建audit/edhr-dev-file-consistency-20261031；[本批](../branch-review-20261031-file-consistency/README.md)仅一个产品文件修复复制失败自有残片/碰撞保护和上传者system占位。旧同16为6真实红10正，当前5类36/36、0error/skip；当前待正式本体及新最终独立质量，不提前resolved。
 
 共享文件ACL已核文档页权/生产SOP/独立DHR冻结附件差异，三处未定边界已集中问用户，依赖实现pending，不凭targetType制定全局权限。DBsave/commit及delete顺序仍待真实事务/故障验证，本批只关闭复制子项，性能仍先讨论。5173/130仅盘点，六有限源码范围/A23六记录与2改1增不计整文件或unique，W6含旧已审/W7增量及原队列/暂缓/四gap保持。全部正式角色FINAL后实际范围/漂移/阶段复核再PR，不自动merge/deploy/恢复。

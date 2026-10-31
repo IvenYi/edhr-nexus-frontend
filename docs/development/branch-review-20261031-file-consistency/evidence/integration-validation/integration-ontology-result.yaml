@@ -1,0 +1,50 @@
+ontologyResult:
+  result: not-applicable
+  baselineBefore: 0.3.25
+  baselineAfter: 0.3.25
+  contractBaseline:
+    sourceCommit: e9548d5f9d555f78afbe1c1c8ea68f64d45e6c55
+    targetBranch: edhr-dev
+    targetCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    contractReadCommit: e9548d5f9d555f78afbe1c1c8ea68f64d45e6c55
+    uncommittedContractPaths: []
+  reason: 整合新目标0bd0848b后，文件路径所有权/失败清理及JWT上传主体修复仍只是工程纠错，无新增权限政策。初合并关键路径与原feature ec485同blob；独立随后发现copy替换会释放预占，当前FileController已在e954工作树增量改为newOutputStream(WRITE)/transferTo保持同一预占文件，并新增持有句柄对照；实际hash/diff单列，不宣称同旧feature完全未变。现有10项有限知识定义重放一致。当前知识330文件，较旧303有27新增17修改，44文件及新增/修改ID候选全量语义待审，不能声称旧303全不变。记录控制/DHR生效联动/流程签署已有新实现，转待增量审计；两DHRhigh、完整A12、四gap不自动关闭，三ACL选择未答不选默认。
+  changedArtifacts: []
+  knowledgeSync: []
+  conflicts: []
+  questions: []
+  validationEvidence:
+  - id: validation.copy-integration.current-source-policy
+    checkType: evidence-path
+    command: Read current package, knowledge README/openquestions, DEC0086-0092, current
+      DHR/signature/recordcontrol scope and protected source delta
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-integration-ontology-review.json
+    - /tmp/edhr-copy-integration-ontology-review.md
+    - /tmp/edhr-copy-integration-ontology-integration-diff.txt
+  - id: validation.copy-integration.knowledge89
+    checkType: schema
+    command: bash /workspace/.edhr-cloud-tools/mvn-edhr -f tools/knowledge-model/pom.xml
+      test
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-integration-ontology-knowledge-test.txt
+    - /tmp/edhr-copy-integration-ontology-knowledge-junit.xml
+    - 89 actual tests, zero failures/errors/skips
+  - id: validation.copy-integration.pending-provenance
+    checkType: reference
+    command: Hash330current knowledge files against0bd; inventory44changed files and
+      dictionary-ID candidate locations as pending; preserve original ontology originals
+    outcome: passed
+    evidence:
+    - /tmp/edhr-copy-integration-ontology-pending-increment.json
+    - /tmp/edhr-copy-integration-ontology-review.json
+  roadmapProgress:
+    stage: P0
+    status: in-progress
+    exitCriteriaEvidence: []
+    deferredStages:
+    - P1
+    - P2
+    - P3

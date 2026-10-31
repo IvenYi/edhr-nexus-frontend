@@ -3,10 +3,10 @@ decisionPackage:
   scope: PR47合入后的上传文件所有权、复制失败清理及认证上传身份；并行核对共享对象权限来源
   knowledgeBaselineVersion: 0.3.25
   contractBaseline:
-    sourceCommit: 032b83e9d5b8a25bee6d5b59c45d86892f672d00
+    sourceCommit: e9548d5f9d555f78afbe1c1c8ea68f64d45e6c55
     targetBranch: edhr-dev
-    targetCommit: 032b83e9d5b8a25bee6d5b59c45d86892f672d00
-    contractReadCommit: 032b83e9d5b8a25bee6d5b59c45d86892f672d00
+    targetCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
+    contractReadCommit: 0bd0848bbded6d6954d62a4f924e0b2eec6623ad
     uncommittedContractPaths: []
   summary: 原子预占本次新路径，复制或输入流关闭失败只清理本次拥有的文件，原失败/清理失败均保留；认证HTTP上传者保存现有JWT审计主体ID。完整DB补偿和共享ACL另做真实关联核对，不新增权限政策。
   confirmed: {concepts: [], relationships: [], rules: [], executionContracts: []}
@@ -59,7 +59,7 @@ decisionPackage:
       - scope: ownership-and-actor
         scenarios: [成功原件与MD5, 部分复制失败清理, 第二流关闭失败清理, 预占碰撞原件不动, 清理失败保留原异常与suppressed, 两用户真实JWT上传身份, 原资源/HTTP/DHR回归]
         evidenceReferences: []
-    evidenceGaps: [DB提交失败/删除/全部对象ACL仍待实际验证, PDF容量/导出内存先量化讨论, 不宣称全部文件入口均已审完]
+    evidenceGaps: [DB提交失败/删除/全部对象ACL仍待实际验证, PDF容量/导出内存先量化讨论, 不宣称全部文件入口均已审完, 目标新增记录控制/DHR/工作流666路径逐项pending见integration-increment.json不得借本批通过认证新增模块]
   extensionStrategy:
     selectedPaths: [product-core]
     rationale: 原FileController局部所有权与既有身份来源修复，不引入磁盘事务框架。

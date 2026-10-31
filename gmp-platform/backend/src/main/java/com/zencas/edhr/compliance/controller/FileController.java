@@ -29,9 +29,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -123,8 +124,9 @@ public class FileController {
         // Reserve a new path before taking cleanup ownership; never replace an existing original.
         Files.createFile(targetPath);
         try {
-            try (InputStream input = file.getInputStream()) {
-                Files.copy(input, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            try (InputStream input = file.getInputStream();
+                 OutputStream output = Files.newOutputStream(targetPath, StandardOpenOption.WRITE)) {
+                input.transferTo(output);
             }
         } catch (IOException | RuntimeException failure) {
             try {
