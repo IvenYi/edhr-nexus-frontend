@@ -1,0 +1,144 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.zencas:edhr >---------------------------
+[INFO] Building eDHR 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- exec:3.5.0:exec (dhr-print-renderer) @ edhr ---
+
+> edhr-frontend@0.0.1 build:dhr-print
+> vite build --config vite.dhr-print.config.ts
+
+vite v5.4.21 building for production...
+transforming...
+✓ 11665 modules transformed.
+rendering chunks...
+computing gzip size...
+../backend/target/generated-resources/dhr-print/renderer.js  662.41 kB │ gzip: 211.13 kB
+✓ built in 5.39s
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ edhr ---
+[INFO] Copying 6 resources from src/main/resources to target/classes
+[INFO] Copying 1 resource from target/generated-resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ edhr ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ edhr ---
+[INFO] Copying 129 resources from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ edhr ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ edhr ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.zencas.edhr.compliance.controller.FileControllerTest
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (/workspace/.pr6-m2/net/bytebuddy/byte-buddy-agent/1.14.16/byte-buddy-agent-1.14.16.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+07:16:22.868 [main] INFO com.zencas.edhr.compliance.controller.FileController -- File uploaded: id=341657966238777345, originalName=id-card-back.png, size=3
+07:16:22.883 [main] INFO com.zencas.edhr.compliance.controller.FileController -- File uploaded: id=341657966238777344, originalName=id-card-front.png, size=3
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.104 s -- in com.zencas.edhr.compliance.controller.FileControllerTest
+[INFO] Running com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+07:16:22.948 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.zencas.edhr.compliance.controller.FileHttpBoundaryTest]: FileHttpBoundaryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+07:16:23.067 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.zencas.edhr.EdhrApplication for test class com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.0)
+
+2026-10-31T07:16:23.304Z  INFO 7859 --- [edhr] [           main] c.z.e.c.controller.FileHttpBoundaryTest  : Starting FileHttpBoundaryTest using Java 21.0.12.1 with PID 7859 (started by agent in /workspace/edhr-nexus-frontend/gmp-platform/backend)
+2026-10-31T07:16:23.304Z DEBUG 7859 --- [edhr] [           main] c.z.e.c.controller.FileHttpBoundaryTest  : Running with Spring Boot v3.3.0, Spring v6.1.8
+2026-10-31T07:16:23.305Z  INFO 7859 --- [edhr] [           main] c.z.e.c.controller.FileHttpBoundaryTest  : The following 1 profile is active: "dev"
+2026-10-31T07:16:23.972Z  WARN 7859 --- [edhr] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: fc5c705d-7c97-4ed5-ac5a-91b336692254
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-10-31T07:16:23.975Z  INFO 7859 --- [edhr] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-31T07:16:24.116Z  INFO 7859 --- [edhr] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@550574cb, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1e7113f8, org.springframework.security.web.context.SecurityContextHolderFilter@13b4ee4e, org.springframework.security.web.header.HeaderWriterFilter@69c0bae6, org.springframework.web.filter.CorsFilter@3e149513, org.springframework.security.web.authentication.logout.LogoutFilter@fe09374, com.zencas.edhr.identity.security.JwtAuthenticationFilter@1c9975a8, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2c2edbe7, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4ba1f425, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@787a4519, org.springframework.security.web.session.SessionManagementFilter@5eb041b5, org.springframework.security.web.access.ExceptionTranslationFilter@6e225c34, org.springframework.security.web.access.intercept.AuthorizationFilter@21ed4a51]
+2026-10-31T07:16:24.237Z DEBUG 7859 --- [edhr] [           main] c.z.e.i.s.JwtAuthenticationFilter        : Filter 'jwtAuthenticationFilter' configured for use
+2026-10-31T07:16:24.240Z  INFO 7859 --- [edhr] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-31T07:16:24.240Z  INFO 7859 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-31T07:16:24.241Z  INFO 7859 --- [edhr] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-10-31T07:16:24.254Z  INFO 7859 --- [edhr] [           main] c.z.e.c.controller.FileHttpBoundaryTest  : Started FileHttpBoundaryTest in 1.143 seconds (process running for 3.09)
+2026-10-31T07:16:24.278Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.281Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.282Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.294Z  WARN 7859 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-003, message=文件不允许公开预览, path=/api/v1/files/77/public-preview
+2026-10-31T07:16:24.320Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.321Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.321Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.337Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.337Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.337Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.338Z  WARN 7859 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-003, message=文件不允许公开预览, path=/api/v1/files/77/public-preview
+2026-10-31T07:16:24.339Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.340Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.340Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.345Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.345Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.345Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.346Z  WARN 7859 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-003, message=文件不允许公开预览, path=/api/v1/files/77/public-preview
+2026-10-31T07:16:24.347Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.347Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.347Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.352Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.352Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.352Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.353Z  WARN 7859 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-003, message=文件不允许公开预览, path=/api/v1/files/77/public-preview
+2026-10-31T07:16:24.354Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.354Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.354Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.359Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing DELETE /api/v1/files/77
+2026-10-31T07:16:24.359Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.361Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files
+2026-10-31T07:16:24.361Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.364Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing POST /api/v1/files/upload
+2026-10-31T07:16:24.364Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.369Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.369Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.369Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/public-preview
+2026-10-31T07:16:24.370Z  WARN 7859 --- [edhr] [           main] c.z.e.c.e.GlobalExceptionHandler         : Business exception: code=GENERAL-003, message=文件不允许公开预览, path=/api/v1/files/77/public-preview
+2026-10-31T07:16:24.388Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/download
+2026-10-31T07:16:24.388Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.422Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/download
+2026-10-31T07:16:24.442Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/download
+2026-10-31T07:16:24.451Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/preview
+2026-10-31T07:16:24.452Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.454Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/preview
+2026-10-31T07:16:24.456Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/preview
+2026-10-31T07:16:24.465Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/page-preview
+2026-10-31T07:16:24.465Z DEBUG 7859 --- [edhr] [           main] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-10-31T07:16:24.466Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Securing GET /api/v1/files/77/page-preview
+2026-10-31T07:16:24.469Z DEBUG 7859 --- [edhr] [           main] o.s.security.web.FilterChainProxy        : Secured GET /api/v1/files/77/page-preview
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.575 s -- in com.zencas.edhr.compliance.controller.FileHttpBoundaryTest
+[INFO] Running com.zencas.edhr.compliance.controller.FileUploadResourceTest
+2026-10-31T07:16:24.545Z  INFO 7859 --- [edhr] [           main] c.z.e.c.controller.FileController        : File uploaded: id=77, originalName=sample.pdf, size=3
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.074 s -- in com.zencas.edhr.compliance.controller.FileUploadResourceTest
+[INFO] Running com.zencas.edhr.production.service.DhrFormFilesTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -- in com.zencas.edhr.production.service.DhrFormFilesTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 29, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  10.815 s
+[INFO] Finished at: 2026-10-31T07:16:24Z
+[INFO] ------------------------------------------------------------------------

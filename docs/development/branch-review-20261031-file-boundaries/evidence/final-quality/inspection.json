@@ -1,0 +1,93 @@
+{
+  "baseCommit": "ccedd56453c02c5d3acd60aa4351809a3928e83e",
+  "headCommit": "17f1fad49c863761269c1937b7d5059a5ecfe9e6",
+  "contractReadCommit": "17f1fad49c863761269c1937b7d5059a5ecfe9e6",
+  "workingTree": "clean",
+  "targetAncestor": true,
+  "contractKnowledgeToolDelta": [],
+  "primaryOriginalsVerified": 18,
+  "sourceSnapshotsVerified": 3,
+  "ontologyRawFilesVerified": 6,
+  "ontologyManifestVerifiedByPrimary": true,
+  "knowledgeFilesUnchanged": 303,
+  "inventoryFiles": [
+    {
+      "name": "coverage.csv",
+      "sha256": "b6cdf9003c63fba50154bb6ee28590662cc918adeebe0525a87beda472d4e42b",
+      "bytes": 1525551
+    },
+    {
+      "name": "entrypoints.csv",
+      "sha256": "d9e5d1c13e2f406720118ecf95e0eafc9a50886cf4469117b5bce7823a2d677b",
+      "bytes": 152331
+    },
+    {
+      "name": "inventory-summary.json",
+      "sha256": "e4c191e5e0a3d624ee51ec486ecd145fdc1225f1b6d3651c75bf970e922116f6",
+      "bytes": 1043
+    },
+    {
+      "name": "migrations.csv",
+      "sha256": "9b4fd5fc33a7e2822b06f9acd00da4ab9c61f9987e86459e3a821973553cca5e",
+      "bytes": 33469
+    }
+  ],
+  "inventorySummary": {
+    "sourceCommit": "ccedd56453c02c5d3acd60aa4351809a3928e83e",
+    "tree": "5e7d1d5be2e813dfcbe2e11c514f7eceba2ff2aa",
+    "trackedPaths": 5109,
+    "scopeCount": 5109,
+    "excludedPaths": [],
+    "assetTypes": {
+      "configuration-or-data": 2546,
+      "documentation": 402,
+      "binary-asset": 717,
+      "source-or-tool": 771,
+      "knowledge": 303,
+      "test": 239,
+      "database-migration": 130,
+      "dependency-lock": 1
+    },
+    "workPackages": {
+      "W5": 687,
+      "W4": 253,
+      "W0-W7": 3611,
+      "W1": 137,
+      "W2": 225,
+      "W3": 196
+    },
+    "entrypointCandidates": {
+      "http-annotation": 442,
+      "state-definition-candidate": 8,
+      "background-candidate": 1,
+      "frontend-route-candidate": 198
+    },
+    "migrationFiles": 130,
+    "semanticReviewComplete": false,
+    "entrypointLimitations": "Static candidate locations include class annotations and dynamic route shapes; URLs, auth and worker activation require source review. No route execution claimed.",
+    "coverageSha256": "b6cdf9003c63fba50154bb6ee28590662cc918adeebe0525a87beda472d4e42b"
+  },
+  "limitedSourceGroups": 6,
+  "limitedExistingKnowledgeIds": 6,
+  "wholeFileCompletion": 0,
+  "historicalUniqueIncrement": null,
+  "a23MethodRecords": 5,
+  "a23ChangedPending": 1,
+  "a23AddedPending": 2,
+  "authScope": "Real JWT/filter/MVC login and public-reference guard; controlled repositories, no object ACL or database validation",
+  "whitespaceAuthoredPaths": 8,
+  "whitespaceExit": 0,
+  "reviewedSource": [
+    "FileController upload/computeMd5/canPublicPreview and response Resource ownership",
+    "SecurityConfig permitAll/authenticated and real JWT path",
+    "FileObject optional target and persisted MD5 shape",
+    "DhrFormFiles validate/resolve digest and file-size checks",
+    "DEC0063-10/11 separate controlled attachment and frozen original rules"
+  ],
+  "scopeLimits": [
+    "No browser or frontend build/static rerun: no UI source delta",
+    "No SQL/native DB/production migration/heapGC/load validation",
+    "Cross-storage cleanup/object ACL/uploader placeholder/related AuthController upload streams remain candidates",
+    "No algorithm-provider failure injection: Java required MD5 assumption, branch static reviewed"
+  ]
+}
